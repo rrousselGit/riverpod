@@ -12,7 +12,7 @@ typedef ProviderWithDependencies2Ref = Ref<int>;
 const providerWithDependencies2Provider = ProviderWithDependencies2Provider._();
 
 final class ProviderWithDependencies2Provider
-    extends $FunctionalProvider<int, int, ProviderWithDependencies2Ref>
+    extends $FunctionalProvider<int, int>
     with $Provider<int, ProviderWithDependencies2Ref> {
   const ProviderWithDependencies2Provider._(
       {int Function(
@@ -91,7 +91,7 @@ typedef FamilyWithDependencies2Ref = Ref<int>;
 const familyWithDependencies2Provider = FamilyWithDependencies2Family._();
 
 final class FamilyWithDependencies2Provider
-    extends $FunctionalProvider<int, int, FamilyWithDependencies2Ref>
+    extends $FunctionalProvider<int, int>
     with $Provider<int, FamilyWithDependencies2Ref> {
   const FamilyWithDependencies2Provider._(
       {required FamilyWithDependencies2Family super.from,
@@ -515,8 +515,7 @@ typedef _Private2Ref = Ref<int>;
 @ProviderFor(_private2)
 const _private2Provider = _Private2Provider._();
 
-final class _Private2Provider
-    extends $FunctionalProvider<int, int, _Private2Ref>
+final class _Private2Provider extends $FunctionalProvider<int, int>
     with $Provider<int, _Private2Ref> {
   const _Private2Provider._(
       {int Function(
@@ -575,7 +574,7 @@ typedef Public2Ref = Ref<int>;
 @ProviderFor(public2)
 const public2Provider = Public2Provider._();
 
-final class Public2Provider extends $FunctionalProvider<int, int, Public2Ref>
+final class Public2Provider extends $FunctionalProvider<int, int>
     with $Provider<int, Public2Ref> {
   const Public2Provider._(
       {int Function(

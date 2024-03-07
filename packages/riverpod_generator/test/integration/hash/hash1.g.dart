@@ -11,8 +11,7 @@ typedef SimpleRef = Ref<String>;
 @ProviderFor(simple)
 const simpleProvider = SimpleProvider._();
 
-final class SimpleProvider
-    extends $FunctionalProvider<String, String, SimpleRef>
+final class SimpleProvider extends $FunctionalProvider<String, String>
     with $Provider<String, SimpleRef> {
   const SimpleProvider._(
       {String Function(
@@ -71,8 +70,7 @@ typedef Simple2Ref = Ref<String>;
 @ProviderFor(simple2)
 const simple2Provider = Simple2Provider._();
 
-final class Simple2Provider
-    extends $FunctionalProvider<String, String, Simple2Ref>
+final class Simple2Provider extends $FunctionalProvider<String, String>
     with $Provider<String, Simple2Ref> {
   const Simple2Provider._(
       {String Function(

@@ -13,7 +13,7 @@ typedef RandomRef = Ref<int>;
 @ProviderFor(random)
 const randomProvider = RandomFamily._();
 
-final class RandomProvider extends $FunctionalProvider<int, int, RandomRef>
+final class RandomProvider extends $FunctionalProvider<int, int>
     with $Provider<int, RandomRef> {
   const RandomProvider._(
       {required RandomFamily super.from,

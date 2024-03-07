@@ -11,8 +11,7 @@ typedef KeepAliveRef = Ref<int>;
 @ProviderFor(keepAlive)
 const keepAliveProvider = KeepAliveProvider._();
 
-final class KeepAliveProvider
-    extends $FunctionalProvider<int, int, KeepAliveRef>
+final class KeepAliveProvider extends $FunctionalProvider<int, int>
     with $Provider<int, KeepAliveRef> {
   const KeepAliveProvider._(
       {int Function(
@@ -140,8 +139,7 @@ typedef AutoDisposeRef = Ref<int>;
 @ProviderFor(autoDispose)
 const autoDisposeProvider = AutoDisposeProvider._();
 
-final class AutoDisposeProvider
-    extends $FunctionalProvider<int, int, AutoDisposeRef>
+final class AutoDisposeProvider extends $FunctionalProvider<int, int>
     with $Provider<int, AutoDisposeRef> {
   const AutoDisposeProvider._(
       {int Function(
@@ -269,7 +267,7 @@ typedef FnRef = Ref<int>;
 @ProviderFor(fn)
 const fnProvider = FnProvider._();
 
-final class FnProvider extends $FunctionalProvider<int, int, FnRef>
+final class FnProvider extends $FunctionalProvider<int, int>
     with $Provider<int, FnRef> {
   const FnProvider._(
       {int Function(

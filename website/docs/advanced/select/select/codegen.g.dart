@@ -13,7 +13,7 @@ typedef ExampleRef = Ref<User>;
 @ProviderFor(example)
 const exampleProvider = ExampleProvider._();
 
-final class ExampleProvider extends $FunctionalProvider<User, User, ExampleRef>
+final class ExampleProvider extends $FunctionalProvider<User, User>
     with $Provider<User, ExampleRef> {
   const ExampleProvider._(
       {User Function(

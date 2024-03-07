@@ -13,10 +13,9 @@ typedef TaskTrackerRef = Ref<TaskTrackerRepo>;
 @ProviderFor(taskTracker)
 const taskTrackerProvider = TaskTrackerProvider._();
 
-final class TaskTrackerProvider extends $FunctionalProvider<
-    TaskTrackerRepo,
-    TaskTrackerRepo,
-    TaskTrackerRef> with $Provider<TaskTrackerRepo, TaskTrackerRef> {
+final class TaskTrackerProvider
+    extends $FunctionalProvider<TaskTrackerRepo, TaskTrackerRepo>
+    with $Provider<TaskTrackerRepo, TaskTrackerRef> {
   const TaskTrackerProvider._(
       {TaskTrackerRepo Function(
         TaskTrackerRef ref,

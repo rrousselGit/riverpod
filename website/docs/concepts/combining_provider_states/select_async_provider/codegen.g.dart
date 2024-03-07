@@ -14,7 +14,7 @@ typedef ConfigRef = Ref<AsyncValue<Configuration>>;
 const configProvider = ConfigProvider._();
 
 final class ConfigProvider extends $FunctionalProvider<
-        AsyncValue<Configuration>, Stream<Configuration>, ConfigRef>
+        AsyncValue<Configuration>, Stream<Configuration>>
     with
         $FutureModifier<Configuration>,
         $StreamProvider<Configuration, ConfigRef> {
@@ -69,7 +69,7 @@ typedef ProductsRef = Ref<AsyncValue<List<Product>>>;
 const productsProvider = ProductsProvider._();
 
 final class ProductsProvider extends $FunctionalProvider<
-        AsyncValue<List<Product>>, FutureOr<List<Product>>, ProductsRef>
+        AsyncValue<List<Product>>, FutureOr<List<Product>>>
     with
         $FutureModifier<List<Product>>,
         $FutureProvider<List<Product>, ProductsRef> {

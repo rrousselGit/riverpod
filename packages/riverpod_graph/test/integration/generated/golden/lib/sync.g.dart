@@ -14,8 +14,7 @@ typedef PublicRef = Ref<String>;
 const publicProvider = PublicProvider._();
 
 /// A public generated provider.
-final class PublicProvider
-    extends $FunctionalProvider<String, String, PublicRef>
+final class PublicProvider extends $FunctionalProvider<String, String>
     with $Provider<String, PublicRef> {
   /// A public generated provider.
   const PublicProvider._(
@@ -78,8 +77,7 @@ typedef Supports$inNamesRef = Ref<String>;
 const supports$inNamesProvider = Supports$inNamesProvider._();
 
 /// A generated provider with a '$' in its name.
-final class Supports$inNamesProvider
-    extends $FunctionalProvider<String, String, Supports$inNamesRef>
+final class Supports$inNamesProvider extends $FunctionalProvider<String, String>
     with $Provider<String, Supports$inNamesRef> {
   /// A generated provider with a '$' in its name.
   const Supports$inNamesProvider._(
@@ -142,8 +140,7 @@ typedef FamilyRef = Ref<String>;
 const familyProvider = FamilyFamily._();
 
 /// A generated family provider.
-final class FamilyProvider
-    extends $FunctionalProvider<String, String, FamilyRef>
+final class FamilyProvider extends $FunctionalProvider<String, String>
     with $Provider<String, FamilyRef> {
   /// A generated family provider.
   const FamilyProvider._(
@@ -334,8 +331,7 @@ typedef _PrivateRef = Ref<String>;
 @ProviderFor(_private)
 const _privateProvider = _PrivateProvider._();
 
-final class _PrivateProvider
-    extends $FunctionalProvider<String, String, _PrivateRef>
+final class _PrivateProvider extends $FunctionalProvider<String, String>
     with $Provider<String, _PrivateRef> {
   const _PrivateProvider._(
       {String Function(

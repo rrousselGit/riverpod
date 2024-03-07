@@ -15,8 +15,7 @@ const locationProvider = LocationProvider._();
 
 final class LocationProvider extends $FunctionalProvider<
         AsyncValue<({double longitude, double latitude})>,
-        Stream<({double longitude, double latitude})>,
-        LocationRef>
+        Stream<({double longitude, double latitude})>>
     with
         $FutureModifier<({double longitude, double latitude})>,
         $StreamProvider<({double longitude, double latitude}), LocationRef> {
@@ -71,7 +70,7 @@ typedef RestaurantsNearMeRef = Ref<AsyncValue<List<String>>>;
 const restaurantsNearMeProvider = RestaurantsNearMeProvider._();
 
 final class RestaurantsNearMeProvider extends $FunctionalProvider<
-        AsyncValue<List<String>>, FutureOr<List<String>>, RestaurantsNearMeRef>
+        AsyncValue<List<String>>, FutureOr<List<String>>>
     with
         $FutureModifier<List<String>>,
         $FutureProvider<List<String>, RestaurantsNearMeRef> {

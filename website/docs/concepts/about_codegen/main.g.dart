@@ -14,7 +14,7 @@ typedef FetchUserRef = Ref<AsyncValue<User>>;
 const fetchUserProvider = FetchUserFamily._();
 
 final class FetchUserProvider
-    extends $FunctionalProvider<AsyncValue<User>, FutureOr<User>, FetchUserRef>
+    extends $FunctionalProvider<AsyncValue<User>, FutureOr<User>>
     with $FutureModifier<User>, $FutureProvider<User, FetchUserRef> {
   const FetchUserProvider._(
       {required FetchUserFamily super.from,

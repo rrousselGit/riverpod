@@ -13,8 +13,7 @@ typedef ExampleRef = Ref<String>;
 @ProviderFor(example)
 const exampleProvider = ExampleFamily._();
 
-final class ExampleProvider
-    extends $FunctionalProvider<String, String, ExampleRef>
+final class ExampleProvider extends $FunctionalProvider<String, String>
     with $Provider<String, ExampleRef> {
   const ExampleProvider._(
       {required ExampleFamily super.from,

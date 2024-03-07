@@ -13,7 +13,7 @@ typedef LabelRef = Ref<String>;
 @ProviderFor(label)
 const labelProvider = LabelFamily._();
 
-final class LabelProvider extends $FunctionalProvider<String, String, LabelRef>
+final class LabelProvider extends $FunctionalProvider<String, String>
     with $Provider<String, LabelRef> {
   const LabelProvider._(
       {required LabelFamily super.from,

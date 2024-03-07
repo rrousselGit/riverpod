@@ -11,8 +11,7 @@ typedef KeepAliveRef = Ref<int>;
 @ProviderFor(keepAlive)
 const keepAliveProvider = KeepAliveProvider._();
 
-final class KeepAliveProvider
-    extends $FunctionalProvider<int, int, KeepAliveRef>
+final class KeepAliveProvider extends $FunctionalProvider<int, int>
     with $Provider<int, KeepAliveRef> {
   const KeepAliveProvider._(
       {int Function(
@@ -71,8 +70,7 @@ typedef NotKeepAliveRef = Ref<int>;
 @ProviderFor(notKeepAlive)
 const notKeepAliveProvider = NotKeepAliveProvider._();
 
-final class NotKeepAliveProvider
-    extends $FunctionalProvider<int, int, NotKeepAliveRef>
+final class NotKeepAliveProvider extends $FunctionalProvider<int, int>
     with $Provider<int, NotKeepAliveRef> {
   const NotKeepAliveProvider._(
       {int Function(
@@ -131,8 +129,7 @@ typedef DefaultKeepAliveRef = Ref<int>;
 @ProviderFor(defaultKeepAlive)
 const defaultKeepAliveProvider = DefaultKeepAliveProvider._();
 
-final class DefaultKeepAliveProvider
-    extends $FunctionalProvider<int, int, DefaultKeepAliveRef>
+final class DefaultKeepAliveProvider extends $FunctionalProvider<int, int>
     with $Provider<int, DefaultKeepAliveRef> {
   const DefaultKeepAliveProvider._(
       {int Function(
@@ -191,8 +188,7 @@ typedef KeepAliveFamilyRef = Ref<int>;
 @ProviderFor(keepAliveFamily)
 const keepAliveFamilyProvider = KeepAliveFamilyFamily._();
 
-final class KeepAliveFamilyProvider
-    extends $FunctionalProvider<int, int, KeepAliveFamilyRef>
+final class KeepAliveFamilyProvider extends $FunctionalProvider<int, int>
     with $Provider<int, KeepAliveFamilyRef> {
   const KeepAliveFamilyProvider._(
       {required KeepAliveFamilyFamily super.from,
@@ -323,8 +319,7 @@ typedef NotKeepAliveFamilyRef = Ref<int>;
 @ProviderFor(notKeepAliveFamily)
 const notKeepAliveFamilyProvider = NotKeepAliveFamilyFamily._();
 
-final class NotKeepAliveFamilyProvider
-    extends $FunctionalProvider<int, int, NotKeepAliveFamilyRef>
+final class NotKeepAliveFamilyProvider extends $FunctionalProvider<int, int>
     with $Provider<int, NotKeepAliveFamilyRef> {
   const NotKeepAliveFamilyProvider._(
       {required NotKeepAliveFamilyFamily super.from,
@@ -456,8 +451,7 @@ typedef DefaultKeepAliveFamilyRef = Ref<int>;
 @ProviderFor(defaultKeepAliveFamily)
 const defaultKeepAliveFamilyProvider = DefaultKeepAliveFamilyFamily._();
 
-final class DefaultKeepAliveFamilyProvider
-    extends $FunctionalProvider<int, int, DefaultKeepAliveFamilyRef>
+final class DefaultKeepAliveFamilyProvider extends $FunctionalProvider<int, int>
     with $Provider<int, DefaultKeepAliveFamilyRef> {
   const DefaultKeepAliveFamilyProvider._(
       {required DefaultKeepAliveFamilyFamily super.from,

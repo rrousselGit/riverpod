@@ -13,8 +13,7 @@ typedef HelloWorldRef = Ref<String>;
 @ProviderFor(helloWorld)
 const helloWorldProvider = HelloWorldProvider._();
 
-final class HelloWorldProvider
-    extends $FunctionalProvider<String, String, HelloWorldRef>
+final class HelloWorldProvider extends $FunctionalProvider<String, String>
     with $Provider<String, HelloWorldRef> {
   const HelloWorldProvider._(
       {String Function(

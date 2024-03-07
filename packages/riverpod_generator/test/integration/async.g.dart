@@ -11,8 +11,8 @@ typedef GenericRef<T extends num> = Ref<AsyncValue<List<T>>>;
 @ProviderFor(generic)
 const genericProvider = GenericFamily._();
 
-final class GenericProvider<T extends num> extends $FunctionalProvider<
-        AsyncValue<List<T>>, FutureOr<List<T>>, GenericRef<T>>
+final class GenericProvider<T extends num>
+    extends $FunctionalProvider<AsyncValue<List<T>>, FutureOr<List<T>>>
     with $FutureModifier<List<T>>, $FutureProvider<List<T>, GenericRef<T>> {
   const GenericProvider._(
       {required GenericFamily super.from,
@@ -273,7 +273,7 @@ typedef PublicRef = Ref<AsyncValue<String>>;
 const publicProvider = PublicProvider._();
 
 final class PublicProvider
-    extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>, PublicRef>
+    extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>>
     with $FutureModifier<String>, $FutureProvider<String, PublicRef> {
   const PublicProvider._(
       {FutureOr<String> Function(
@@ -324,8 +324,8 @@ typedef _PrivateRef = Ref<AsyncValue<String>>;
 @ProviderFor(_private)
 const _privateProvider = _PrivateProvider._();
 
-final class _PrivateProvider extends $FunctionalProvider<AsyncValue<String>,
-        FutureOr<String>, _PrivateRef>
+final class _PrivateProvider
+    extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>>
     with $FutureModifier<String>, $FutureProvider<String, _PrivateRef> {
   const _PrivateProvider._(
       {FutureOr<String> Function(
@@ -376,8 +376,8 @@ typedef FamilyOrRef = Ref<AsyncValue<String>>;
 @ProviderFor(familyOr)
 const familyOrProvider = FamilyOrFamily._();
 
-final class FamilyOrProvider extends $FunctionalProvider<AsyncValue<String>,
-        FutureOr<String>, FamilyOrRef>
+final class FamilyOrProvider
+    extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>>
     with $FutureModifier<String>, $FutureProvider<String, FamilyOrRef> {
   const FamilyOrProvider._(
       {required FamilyOrFamily super.from,
@@ -501,7 +501,7 @@ typedef FamilyRef = Ref<AsyncValue<String>>;
 const familyProvider = FamilyFamily._();
 
 final class FamilyProvider
-    extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>, FamilyRef>
+    extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>>
     with $FutureModifier<String>, $FutureProvider<String, FamilyRef> {
   const FamilyProvider._(
       {required FamilyFamily super.from,

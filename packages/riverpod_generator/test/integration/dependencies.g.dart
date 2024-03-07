@@ -11,7 +11,7 @@ typedef DepRef = Ref<int>;
 @ProviderFor(dep)
 const depProvider = DepProvider._();
 
-final class DepProvider extends $FunctionalProvider<int, int, DepRef>
+final class DepProvider extends $FunctionalProvider<int, int>
     with $Provider<int, DepRef> {
   const DepProvider._(
       {int Function(
@@ -70,7 +70,7 @@ typedef FamilyRef = Ref<int>;
 @ProviderFor(family)
 const familyProvider = FamilyFamily._();
 
-final class FamilyProvider extends $FunctionalProvider<int, int, FamilyRef>
+final class FamilyProvider extends $FunctionalProvider<int, int>
     with $Provider<int, FamilyRef> {
   const FamilyProvider._(
       {required FamilyFamily super.from,
@@ -427,7 +427,7 @@ typedef ProviderRef = Ref<int>;
 @ProviderFor(provider)
 const providerProvider = ProviderProvider._();
 
-final class ProviderProvider extends $FunctionalProvider<int, int, ProviderRef>
+final class ProviderProvider extends $FunctionalProvider<int, int>
     with $Provider<int, ProviderRef> {
   const ProviderProvider._(
       {int Function(
@@ -501,8 +501,7 @@ typedef Provider2Ref = Ref<int>;
 @ProviderFor(provider2)
 const provider2Provider = Provider2Provider._();
 
-final class Provider2Provider
-    extends $FunctionalProvider<int, int, Provider2Ref>
+final class Provider2Provider extends $FunctionalProvider<int, int>
     with $Provider<int, Provider2Ref> {
   const Provider2Provider._(
       {int Function(
@@ -832,8 +831,7 @@ typedef TransitiveDependenciesRef = Ref<int>;
 @ProviderFor(transitiveDependencies)
 const transitiveDependenciesProvider = TransitiveDependenciesProvider._();
 
-final class TransitiveDependenciesProvider
-    extends $FunctionalProvider<int, int, TransitiveDependenciesRef>
+final class TransitiveDependenciesProvider extends $FunctionalProvider<int, int>
     with $Provider<int, TransitiveDependenciesRef> {
   const TransitiveDependenciesProvider._(
       {int Function(
@@ -911,7 +909,7 @@ const smallTransitiveDependencyCountProvider =
     SmallTransitiveDependencyCountProvider._();
 
 final class SmallTransitiveDependencyCountProvider
-    extends $FunctionalProvider<int, int, SmallTransitiveDependencyCountRef>
+    extends $FunctionalProvider<int, int>
     with $Provider<int, SmallTransitiveDependencyCountRef> {
   const SmallTransitiveDependencyCountProvider._(
       {int Function(
@@ -985,7 +983,7 @@ const emptyDependenciesFunctionalProvider =
     EmptyDependenciesFunctionalProvider._();
 
 final class EmptyDependenciesFunctionalProvider
-    extends $FunctionalProvider<int, int, EmptyDependenciesFunctionalRef>
+    extends $FunctionalProvider<int, int>
     with $Provider<int, EmptyDependenciesFunctionalRef> {
   const EmptyDependenciesFunctionalProvider._(
       {int Function(
@@ -1120,7 +1118,7 @@ typedef ProviderWithDependenciesRef = Ref<int>;
 const providerWithDependenciesProvider = ProviderWithDependenciesProvider._();
 
 final class ProviderWithDependenciesProvider
-    extends $FunctionalProvider<int, int, ProviderWithDependenciesRef>
+    extends $FunctionalProvider<int, int>
     with $Provider<int, ProviderWithDependenciesRef> {
   const ProviderWithDependenciesProvider._(
       {int Function(
@@ -1189,8 +1187,7 @@ typedef _PrivateDepRef = Ref<int>;
 @ProviderFor(_privateDep)
 const _privateDepProvider = _PrivateDepProvider._();
 
-final class _PrivateDepProvider
-    extends $FunctionalProvider<int, int, _PrivateDepRef>
+final class _PrivateDepProvider extends $FunctionalProvider<int, int>
     with $Provider<int, _PrivateDepRef> {
   const _PrivateDepProvider._(
       {int Function(
@@ -1249,8 +1246,7 @@ typedef PublicDepRef = Ref<int>;
 @ProviderFor(publicDep)
 const publicDepProvider = PublicDepProvider._();
 
-final class PublicDepProvider
-    extends $FunctionalProvider<int, int, PublicDepRef>
+final class PublicDepProvider extends $FunctionalProvider<int, int>
     with $Provider<int, PublicDepRef> {
   const PublicDepProvider._(
       {int Function(
@@ -1309,8 +1305,7 @@ typedef DuplicateDependenciesRef = Ref<int>;
 @ProviderFor(duplicateDependencies)
 const duplicateDependenciesProvider = DuplicateDependenciesProvider._();
 
-final class DuplicateDependenciesProvider
-    extends $FunctionalProvider<int, int, DuplicateDependenciesRef>
+final class DuplicateDependenciesProvider extends $FunctionalProvider<int, int>
     with $Provider<int, DuplicateDependenciesRef> {
   const DuplicateDependenciesProvider._(
       {int Function(
@@ -1376,8 +1371,7 @@ typedef DuplicateDependencies2Ref = Ref<int>;
 @ProviderFor(duplicateDependencies2)
 const duplicateDependencies2Provider = DuplicateDependencies2Provider._();
 
-final class DuplicateDependencies2Provider
-    extends $FunctionalProvider<int, int, DuplicateDependencies2Ref>
+final class DuplicateDependencies2Provider extends $FunctionalProvider<int, int>
     with $Provider<int, DuplicateDependencies2Ref> {
   const DuplicateDependencies2Provider._(
       {int Function(
@@ -1448,7 +1442,7 @@ const transitiveDuplicateDependenciesProvider =
     TransitiveDuplicateDependenciesProvider._();
 
 final class TransitiveDuplicateDependenciesProvider
-    extends $FunctionalProvider<int, int, TransitiveDuplicateDependenciesRef>
+    extends $FunctionalProvider<int, int>
     with $Provider<int, TransitiveDuplicateDependenciesRef> {
   const TransitiveDuplicateDependenciesProvider._(
       {int Function(

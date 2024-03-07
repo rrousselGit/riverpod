@@ -13,7 +13,7 @@ typedef NumberRef = Ref<int>;
 @ProviderFor(number)
 const numberProvider = NumberProvider._();
 
-final class NumberProvider extends $FunctionalProvider<int, int, NumberRef>
+final class NumberProvider extends $FunctionalProvider<int, int>
     with $Provider<int, NumberRef> {
   const NumberProvider._(
       {int Function(
@@ -72,7 +72,7 @@ typedef DoubledRef = Ref<int>;
 @ProviderFor(doubled)
 const doubledProvider = DoubledProvider._();
 
-final class DoubledProvider extends $FunctionalProvider<int, int, DoubledRef>
+final class DoubledProvider extends $FunctionalProvider<int, int>
     with $Provider<int, DoubledRef> {
   const DoubledProvider._(
       {int Function(

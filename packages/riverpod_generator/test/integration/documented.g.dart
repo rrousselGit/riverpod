@@ -17,8 +17,7 @@ const functionalProvider = FunctionalProvider._();
 
 /// Hello world
 // Foo
-final class FunctionalProvider
-    extends $FunctionalProvider<String, String, FunctionalRef>
+final class FunctionalProvider extends $FunctionalProvider<String, String>
     with $Provider<String, FunctionalRef> {
   /// Hello world
 // Foo
@@ -159,8 +158,7 @@ const familyProvider = FamilyFamily._();
 
 /// Hello world
 // Foo
-final class FamilyProvider
-    extends $FunctionalProvider<String, String, FamilyRef>
+final class FamilyProvider extends $FunctionalProvider<String, String>
     with $Provider<String, FamilyRef> {
   /// Hello world
 // Foo

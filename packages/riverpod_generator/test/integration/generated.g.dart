@@ -11,8 +11,7 @@ typedef GeneratedRef = Ref<_Test>;
 @ProviderFor(generated)
 const generatedProvider = GeneratedProvider._();
 
-final class GeneratedProvider
-    extends $FunctionalProvider<_Test, _Test, GeneratedRef>
+final class GeneratedProvider extends $FunctionalProvider<_Test, _Test>
     with $Provider<_Test, GeneratedRef> {
   const GeneratedProvider._(
       {_Test Function(
@@ -71,8 +70,7 @@ typedef GeneratedFamilyRef = Ref<_Test>;
 @ProviderFor(generatedFamily)
 const generatedFamilyProvider = GeneratedFamilyFamily._();
 
-final class GeneratedFamilyProvider
-    extends $FunctionalProvider<_Test, _Test, GeneratedFamilyRef>
+final class GeneratedFamilyProvider extends $FunctionalProvider<_Test, _Test>
     with $Provider<_Test, GeneratedFamilyRef> {
   const GeneratedFamilyProvider._(
       {required GeneratedFamilyFamily super.from,
@@ -435,8 +433,7 @@ typedef $DynamicRef = Ref<Object?>;
 @ProviderFor($dynamic)
 const $dynamicProvider = $DynamicProvider._();
 
-final class $DynamicProvider
-    extends $FunctionalProvider<Object?, Object?, $DynamicRef>
+final class $DynamicProvider extends $FunctionalProvider<Object?, Object?>
     with $Provider<Object?, $DynamicRef> {
   const $DynamicProvider._(
       {Object? Function(
@@ -495,8 +492,7 @@ typedef $DynamicFamilyRef = Ref<Object?>;
 @ProviderFor($dynamicFamily)
 const $dynamicFamilyProvider = $DynamicFamilyFamily._();
 
-final class $DynamicFamilyProvider
-    extends $FunctionalProvider<Object?, Object?, $DynamicFamilyRef>
+final class $DynamicFamilyProvider extends $FunctionalProvider<Object?, Object?>
     with $Provider<Object?, $DynamicFamilyRef> {
   const $DynamicFamilyProvider._(
       {required $DynamicFamilyFamily super.from,
@@ -859,8 +855,7 @@ typedef _DynamicRef = Ref<Object?>;
 @ProviderFor(_dynamic)
 const _dynamicProvider = _DynamicFamily._();
 
-final class _DynamicProvider
-    extends $FunctionalProvider<Object?, Object?, _DynamicRef>
+final class _DynamicProvider extends $FunctionalProvider<Object?, Object?>
     with $Provider<Object?, _DynamicRef> {
   const _DynamicProvider._(
       {required _DynamicFamily super.from,
@@ -992,7 +987,7 @@ typedef AliasRef = Ref<r.AsyncValue<int>>;
 const aliasProvider = AliasProvider._();
 
 final class AliasProvider
-    extends $FunctionalProvider<r.AsyncValue<int>, r.AsyncValue<int>, AliasRef>
+    extends $FunctionalProvider<r.AsyncValue<int>, r.AsyncValue<int>>
     with $Provider<r.AsyncValue<int>, AliasRef> {
   const AliasProvider._(
       {r.AsyncValue<int> Function(
@@ -1052,10 +1047,9 @@ typedef AliasFamilyRef = Ref<r.AsyncValue<int>>;
 @ProviderFor(aliasFamily)
 const aliasFamilyProvider = AliasFamilyFamily._();
 
-final class AliasFamilyProvider extends $FunctionalProvider<
-    r.AsyncValue<int>,
-    r.AsyncValue<int>,
-    AliasFamilyRef> with $Provider<r.AsyncValue<int>, AliasFamilyRef> {
+final class AliasFamilyProvider
+    extends $FunctionalProvider<r.AsyncValue<int>, r.AsyncValue<int>>
+    with $Provider<r.AsyncValue<int>, AliasFamilyRef> {
   const AliasFamilyProvider._(
       {required AliasFamilyFamily super.from,
       required r.AsyncValue<int> super.argument,

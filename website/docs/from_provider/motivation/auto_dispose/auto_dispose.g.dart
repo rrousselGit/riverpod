@@ -13,7 +13,7 @@ typedef DiceRollRef = Ref<int>;
 @ProviderFor(diceRoll)
 const diceRollProvider = DiceRollProvider._();
 
-final class DiceRollProvider extends $FunctionalProvider<int, int, DiceRollRef>
+final class DiceRollProvider extends $FunctionalProvider<int, int>
     with $Provider<int, DiceRollRef> {
   const DiceRollProvider._(
       {int Function(
@@ -72,8 +72,7 @@ typedef CachedDiceRollRef = Ref<int>;
 @ProviderFor(cachedDiceRoll)
 const cachedDiceRollProvider = CachedDiceRollProvider._();
 
-final class CachedDiceRollProvider
-    extends $FunctionalProvider<int, int, CachedDiceRollRef>
+final class CachedDiceRollProvider extends $FunctionalProvider<int, int>
     with $Provider<int, CachedDiceRollRef> {
   const CachedDiceRollProvider._(
       {int Function(

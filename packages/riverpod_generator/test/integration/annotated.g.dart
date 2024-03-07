@@ -14,8 +14,7 @@ typedef FunctionalRef = Ref<String>;
 @protected
 const functionalProvider = FunctionalFamily._();
 
-final class FunctionalProvider
-    extends $FunctionalProvider<String, String, FunctionalRef>
+final class FunctionalProvider extends $FunctionalProvider<String, String>
     with $Provider<String, FunctionalRef> {
   const FunctionalProvider._(
       {required FunctionalFamily super.from,
@@ -311,8 +310,7 @@ typedef FamilyRef = Ref<String>;
 @protected
 const familyProvider = FamilyFamily._();
 
-final class FamilyProvider
-    extends $FunctionalProvider<String, String, FamilyRef>
+final class FamilyProvider extends $FunctionalProvider<String, String>
     with $Provider<String, FamilyRef> {
   const FamilyProvider._(
       {required FamilyFamily super.from,
@@ -444,7 +442,7 @@ typedef NotCopiedFunctionalRef = Ref<String>;
 const notCopiedFunctionalProvider = NotCopiedFunctionalProvider._();
 
 final class NotCopiedFunctionalProvider
-    extends $FunctionalProvider<String, String, NotCopiedFunctionalRef>
+    extends $FunctionalProvider<String, String>
     with $Provider<String, NotCopiedFunctionalRef> {
   const NotCopiedFunctionalProvider._(
       {String Function(
@@ -574,8 +572,7 @@ typedef NotCopiedFamilyRef = Ref<String>;
 @ProviderFor(notCopiedFamily)
 const notCopiedFamilyProvider = NotCopiedFamilyFamily._();
 
-final class NotCopiedFamilyProvider
-    extends $FunctionalProvider<String, String, NotCopiedFamilyRef>
+final class NotCopiedFamilyProvider extends $FunctionalProvider<String, String>
     with $Provider<String, NotCopiedFamilyRef> {
   const NotCopiedFamilyProvider._(
       {required NotCopiedFamilyFamily super.from,

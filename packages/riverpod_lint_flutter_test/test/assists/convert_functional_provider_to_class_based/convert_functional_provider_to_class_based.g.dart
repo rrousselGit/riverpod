@@ -14,7 +14,7 @@ typedef ExampleRef = Ref<int>;
 const exampleProvider = ExampleProvider._();
 
 /// Some comment
-final class ExampleProvider extends $FunctionalProvider<int, int, ExampleRef>
+final class ExampleProvider extends $FunctionalProvider<int, int>
     with $Provider<int, ExampleRef> {
   /// Some comment
   const ExampleProvider._(
@@ -77,8 +77,7 @@ typedef ExampleFamilyRef = Ref<int>;
 const exampleFamilyProvider = ExampleFamilyFamily._();
 
 /// Some comment
-final class ExampleFamilyProvider
-    extends $FunctionalProvider<int, int, ExampleFamilyRef>
+final class ExampleFamilyProvider extends $FunctionalProvider<int, int>
     with $Provider<int, ExampleFamilyRef> {
   /// Some comment
   const ExampleFamilyProvider._(

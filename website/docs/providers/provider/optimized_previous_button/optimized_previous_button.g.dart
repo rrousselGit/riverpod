@@ -81,8 +81,7 @@ typedef CanGoToPreviousPageRef = Ref<bool>;
 @ProviderFor(canGoToPreviousPage)
 const canGoToPreviousPageProvider = CanGoToPreviousPageProvider._();
 
-final class CanGoToPreviousPageProvider
-    extends $FunctionalProvider<bool, bool, CanGoToPreviousPageRef>
+final class CanGoToPreviousPageProvider extends $FunctionalProvider<bool, bool>
     with $Provider<bool, CanGoToPreviousPageRef> {
   const CanGoToPreviousPageProvider._(
       {bool Function(

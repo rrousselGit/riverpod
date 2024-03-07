@@ -25,8 +25,7 @@ const themeProvider = ThemeProvider._();
 ///
 /// This is unimplemented by default, and will be overridden inside [MaterialApp]
 /// with the current theme obtained using a [BuildContext].
-final class ThemeProvider
-    extends $FunctionalProvider<ThemeData, ThemeData, ThemeRef>
+final class ThemeProvider extends $FunctionalProvider<ThemeData, ThemeData>
     with $Provider<ThemeData, ThemeRef> {
   /// A Provider that exposes the current theme.
   ///

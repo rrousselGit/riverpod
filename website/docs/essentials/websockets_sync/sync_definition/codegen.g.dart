@@ -13,8 +13,7 @@ typedef SynchronousExampleRef = Ref<int>;
 @ProviderFor(synchronousExample)
 const synchronousExampleProvider = SynchronousExampleProvider._();
 
-final class SynchronousExampleProvider
-    extends $FunctionalProvider<int, int, SynchronousExampleRef>
+final class SynchronousExampleProvider extends $FunctionalProvider<int, int>
     with $Provider<int, SynchronousExampleRef> {
   const SynchronousExampleProvider._(
       {int Function(

@@ -11,7 +11,7 @@ typedef BRef = Ref<int>;
 @ProviderFor(b)
 const bProvider = BProvider._();
 
-final class BProvider extends $FunctionalProvider<int, int, BRef>
+final class BProvider extends $FunctionalProvider<int, int>
     with $Provider<int, BRef> {
   const BProvider._(
       {int Function(
@@ -70,8 +70,7 @@ typedef AnotherScopedRef = Ref<int>;
 @ProviderFor(anotherScoped)
 const anotherScopedProvider = AnotherScopedProvider._();
 
-final class AnotherScopedProvider
-    extends $FunctionalProvider<int, int, AnotherScopedRef>
+final class AnotherScopedProvider extends $FunctionalProvider<int, int>
     with $Provider<int, AnotherScopedRef> {
   const AnotherScopedProvider._(
       {int Function(
@@ -130,8 +129,7 @@ typedef AnotherNonEmptyScopedRef = Ref<int>;
 @ProviderFor(anotherNonEmptyScoped)
 const anotherNonEmptyScopedProvider = AnotherNonEmptyScopedProvider._();
 
-final class AnotherNonEmptyScopedProvider
-    extends $FunctionalProvider<int, int, AnotherNonEmptyScopedRef>
+final class AnotherNonEmptyScopedProvider extends $FunctionalProvider<int, int>
     with $Provider<int, AnotherNonEmptyScopedRef> {
   const AnotherNonEmptyScopedProvider._(
       {int Function(

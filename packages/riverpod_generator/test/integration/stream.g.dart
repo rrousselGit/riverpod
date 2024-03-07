@@ -11,8 +11,8 @@ typedef GenericRef<T extends num> = Ref<AsyncValue<List<T>>>;
 @ProviderFor(generic)
 const genericProvider = GenericFamily._();
 
-final class GenericProvider<T extends num> extends $FunctionalProvider<
-        AsyncValue<List<T>>, Stream<List<T>>, GenericRef<T>>
+final class GenericProvider<T extends num>
+    extends $FunctionalProvider<AsyncValue<List<T>>, Stream<List<T>>>
     with $FutureModifier<List<T>>, $StreamProvider<List<T>, GenericRef<T>> {
   const GenericProvider._(
       {required GenericFamily super.from,
@@ -273,7 +273,7 @@ typedef PublicRef = Ref<AsyncValue<String>>;
 const publicProvider = PublicProvider._();
 
 final class PublicProvider
-    extends $FunctionalProvider<AsyncValue<String>, Stream<String>, PublicRef>
+    extends $FunctionalProvider<AsyncValue<String>, Stream<String>>
     with $FutureModifier<String>, $StreamProvider<String, PublicRef> {
   const PublicProvider._(
       {Stream<String> Function(
@@ -325,7 +325,7 @@ typedef _PrivateRef = Ref<AsyncValue<String>>;
 const _privateProvider = _PrivateProvider._();
 
 final class _PrivateProvider
-    extends $FunctionalProvider<AsyncValue<String>, Stream<String>, _PrivateRef>
+    extends $FunctionalProvider<AsyncValue<String>, Stream<String>>
     with $FutureModifier<String>, $StreamProvider<String, _PrivateRef> {
   const _PrivateProvider._(
       {Stream<String> Function(
@@ -377,7 +377,7 @@ typedef FamilyRef = Ref<AsyncValue<String>>;
 const familyProvider = FamilyFamily._();
 
 final class FamilyProvider
-    extends $FunctionalProvider<AsyncValue<String>, Stream<String>, FamilyRef>
+    extends $FunctionalProvider<AsyncValue<String>, Stream<String>>
     with $FutureModifier<String>, $StreamProvider<String, FamilyRef> {
   const FamilyProvider._(
       {required FamilyFamily super.from,

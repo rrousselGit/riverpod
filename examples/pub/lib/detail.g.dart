@@ -13,8 +13,8 @@ typedef FetchPackageDetailsRef = Ref<AsyncValue<Package>>;
 @ProviderFor(fetchPackageDetails)
 const fetchPackageDetailsProvider = FetchPackageDetailsFamily._();
 
-final class FetchPackageDetailsProvider extends $FunctionalProvider<
-        AsyncValue<Package>, FutureOr<Package>, FetchPackageDetailsRef>
+final class FetchPackageDetailsProvider
+    extends $FunctionalProvider<AsyncValue<Package>, FutureOr<Package>>
     with
         $FutureModifier<Package>,
         $FutureProvider<Package, FetchPackageDetailsRef> {
@@ -141,7 +141,7 @@ typedef LikedPackagesRef = Ref<AsyncValue<List<String>>>;
 const likedPackagesProvider = LikedPackagesProvider._();
 
 final class LikedPackagesProvider extends $FunctionalProvider<
-        AsyncValue<List<String>>, FutureOr<List<String>>, LikedPackagesRef>
+        AsyncValue<List<String>>, FutureOr<List<String>>>
     with
         $FutureModifier<List<String>>,
         $FutureProvider<List<String>, LikedPackagesRef> {
@@ -196,7 +196,7 @@ typedef PubRepositoryRef = Ref<PubRepository>;
 const pubRepositoryProvider = PubRepositoryProvider._();
 
 final class PubRepositoryProvider
-    extends $FunctionalProvider<PubRepository, PubRepository, PubRepositoryRef>
+    extends $FunctionalProvider<PubRepository, PubRepository>
     with $Provider<PubRepository, PubRepositoryRef> {
   const PubRepositoryProvider._(
       {PubRepository Function(

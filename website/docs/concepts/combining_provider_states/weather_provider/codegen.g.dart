@@ -13,7 +13,7 @@ typedef CityRef = Ref<String>;
 @ProviderFor(city)
 const cityProvider = CityProvider._();
 
-final class CityProvider extends $FunctionalProvider<String, String, CityRef>
+final class CityProvider extends $FunctionalProvider<String, String>
     with $Provider<String, CityRef> {
   const CityProvider._(
       {String Function(
@@ -72,8 +72,8 @@ typedef WeatherRef = Ref<AsyncValue<Weather>>;
 @ProviderFor(weather)
 const weatherProvider = WeatherProvider._();
 
-final class WeatherProvider extends $FunctionalProvider<AsyncValue<Weather>,
-        FutureOr<Weather>, WeatherRef>
+final class WeatherProvider
+    extends $FunctionalProvider<AsyncValue<Weather>, FutureOr<Weather>>
     with $FutureModifier<Weather>, $FutureProvider<Weather, WeatherRef> {
   const WeatherProvider._(
       {FutureOr<Weather> Function(

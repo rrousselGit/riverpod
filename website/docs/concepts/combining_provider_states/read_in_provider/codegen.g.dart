@@ -13,8 +13,7 @@ typedef AnotherRef = Ref<MyValue>;
 @ProviderFor(another)
 const anotherProvider = AnotherProvider._();
 
-final class AnotherProvider
-    extends $FunctionalProvider<MyValue, MyValue, AnotherRef>
+final class AnotherProvider extends $FunctionalProvider<MyValue, MyValue>
     with $Provider<MyValue, AnotherRef> {
   const AnotherProvider._(
       {MyValue Function(
@@ -73,7 +72,7 @@ typedef MyRef = Ref<MyValue>;
 @ProviderFor(my)
 const myProvider = MyProvider._();
 
-final class MyProvider extends $FunctionalProvider<MyValue, MyValue, MyRef>
+final class MyProvider extends $FunctionalProvider<MyValue, MyValue>
     with $Provider<MyValue, MyRef> {
   const MyProvider._(
       {MyValue Function(

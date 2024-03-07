@@ -14,9 +14,8 @@ typedef MyListenableRef = Ref<Raw<ValueNotifier<int>>>;
 const myListenableProvider = MyListenableProvider._();
 
 final class MyListenableProvider extends $FunctionalProvider<
-    Raw<ValueNotifier<int>>,
-    Raw<ValueNotifier<int>>,
-    MyListenableRef> with $Provider<Raw<ValueNotifier<int>>, MyListenableRef> {
+        Raw<ValueNotifier<int>>, Raw<ValueNotifier<int>>>
+    with $Provider<Raw<ValueNotifier<int>>, MyListenableRef> {
   const MyListenableProvider._(
       {Raw<ValueNotifier<int>> Function(
         MyListenableRef ref,
@@ -76,7 +75,7 @@ typedef AnotherListenableRef = Ref<Raw<ValueNotifier<int>>>;
 const anotherListenableProvider = AnotherListenableProvider._();
 
 final class AnotherListenableProvider extends $FunctionalProvider<
-        Raw<ValueNotifier<int>>, Raw<ValueNotifier<int>>, AnotherListenableRef>
+        Raw<ValueNotifier<int>>, Raw<ValueNotifier<int>>>
     with $Provider<Raw<ValueNotifier<int>>, AnotherListenableRef> {
   const AnotherListenableProvider._(
       {Raw<ValueNotifier<int>> Function(

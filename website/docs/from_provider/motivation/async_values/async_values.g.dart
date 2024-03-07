@@ -13,8 +13,8 @@ typedef ItemsApiRef = Ref<AsyncValue<List<Item>>>;
 @ProviderFor(itemsApi)
 const itemsApiProvider = ItemsApiProvider._();
 
-final class ItemsApiProvider extends $FunctionalProvider<AsyncValue<List<Item>>,
-        FutureOr<List<Item>>, ItemsApiRef>
+final class ItemsApiProvider
+    extends $FunctionalProvider<AsyncValue<List<Item>>, FutureOr<List<Item>>>
     with $FutureModifier<List<Item>>, $FutureProvider<List<Item>, ItemsApiRef> {
   const ItemsApiProvider._(
       {FutureOr<List<Item>> Function(
@@ -67,7 +67,7 @@ typedef EvenItemsRef = Ref<List<Item>>;
 const evenItemsProvider = EvenItemsProvider._();
 
 final class EvenItemsProvider
-    extends $FunctionalProvider<List<Item>, List<Item>, EvenItemsRef>
+    extends $FunctionalProvider<List<Item>, List<Item>>
     with $Provider<List<Item>, EvenItemsRef> {
   const EvenItemsProvider._(
       {List<Item> Function(

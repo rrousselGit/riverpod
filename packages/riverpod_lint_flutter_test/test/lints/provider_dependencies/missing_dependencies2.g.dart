@@ -11,7 +11,7 @@ typedef DepRef = Ref<int>;
 @ProviderFor(dep)
 const depProvider = DepProvider._();
 
-final class DepProvider extends $FunctionalProvider<int, int, DepRef>
+final class DepProvider extends $FunctionalProvider<int, int>
     with $Provider<int, DepRef> {
   const DepProvider._(
       {int Function(
@@ -70,8 +70,7 @@ typedef GeneratedScopedRef = Ref<int>;
 @ProviderFor(generatedScoped)
 const generatedScopedProvider = GeneratedScopedProvider._();
 
-final class GeneratedScopedProvider
-    extends $FunctionalProvider<int, int, GeneratedScopedRef>
+final class GeneratedScopedProvider extends $FunctionalProvider<int, int>
     with $Provider<int, GeneratedScopedRef> {
   const GeneratedScopedProvider._(
       {int Function(
@@ -130,8 +129,7 @@ typedef GeneratedRootRef = Ref<int>;
 @ProviderFor(generatedRoot)
 const generatedRootProvider = GeneratedRootProvider._();
 
-final class GeneratedRootProvider
-    extends $FunctionalProvider<int, int, GeneratedRootRef>
+final class GeneratedRootProvider extends $FunctionalProvider<int, int>
     with $Provider<int, GeneratedRootRef> {
   const GeneratedRootProvider._(
       {int Function(
@@ -192,7 +190,7 @@ const watchScopedButNoDependenciesProvider =
     WatchScopedButNoDependenciesProvider._();
 
 final class WatchScopedButNoDependenciesProvider
-    extends $FunctionalProvider<int, int, WatchScopedButNoDependenciesRef>
+    extends $FunctionalProvider<int, int>
     with $Provider<int, WatchScopedButNoDependenciesRef> {
   const WatchScopedButNoDependenciesProvider._(
       {int Function(
@@ -254,8 +252,7 @@ const watchGeneratedScopedButNoDependenciesProvider =
     WatchGeneratedScopedButNoDependenciesProvider._();
 
 final class WatchGeneratedScopedButNoDependenciesProvider
-    extends $FunctionalProvider<int, int,
-        WatchGeneratedScopedButNoDependenciesRef>
+    extends $FunctionalProvider<int, int>
     with $Provider<int, WatchGeneratedScopedButNoDependenciesRef> {
   const WatchGeneratedScopedButNoDependenciesProvider._(
       {int Function(
@@ -318,7 +315,7 @@ const watchRootButNoDependenciesProvider =
     WatchRootButNoDependenciesProvider._();
 
 final class WatchRootButNoDependenciesProvider
-    extends $FunctionalProvider<int, int, WatchRootButNoDependenciesRef>
+    extends $FunctionalProvider<int, int>
     with $Provider<int, WatchRootButNoDependenciesRef> {
   const WatchRootButNoDependenciesProvider._(
       {int Function(
@@ -380,8 +377,7 @@ const watchGeneratedRootButNoDependenciesProvider =
     WatchGeneratedRootButNoDependenciesProvider._();
 
 final class WatchGeneratedRootButNoDependenciesProvider
-    extends $FunctionalProvider<int, int,
-        WatchGeneratedRootButNoDependenciesRef>
+    extends $FunctionalProvider<int, int>
     with $Provider<int, WatchGeneratedRootButNoDependenciesRef> {
   const WatchGeneratedRootButNoDependenciesProvider._(
       {int Function(
@@ -444,7 +440,7 @@ const watchScopedButEmptyDependenciesProvider =
     WatchScopedButEmptyDependenciesProvider._();
 
 final class WatchScopedButEmptyDependenciesProvider
-    extends $FunctionalProvider<int, int, WatchScopedButEmptyDependenciesRef>
+    extends $FunctionalProvider<int, int>
     with $Provider<int, WatchScopedButEmptyDependenciesRef> {
   const WatchScopedButEmptyDependenciesProvider._(
       {int Function(
@@ -506,8 +502,7 @@ const watchGeneratedScopedButEmptyDependenciesProvider =
     WatchGeneratedScopedButEmptyDependenciesProvider._();
 
 final class WatchGeneratedScopedButEmptyDependenciesProvider
-    extends $FunctionalProvider<int, int,
-        WatchGeneratedScopedButEmptyDependenciesRef>
+    extends $FunctionalProvider<int, int>
     with $Provider<int, WatchGeneratedScopedButEmptyDependenciesRef> {
   const WatchGeneratedScopedButEmptyDependenciesProvider._(
       {int Function(
@@ -570,7 +565,7 @@ const watchRootButEmptyDependenciesProvider =
     WatchRootButEmptyDependenciesProvider._();
 
 final class WatchRootButEmptyDependenciesProvider
-    extends $FunctionalProvider<int, int, WatchRootButEmptyDependenciesRef>
+    extends $FunctionalProvider<int, int>
     with $Provider<int, WatchRootButEmptyDependenciesRef> {
   const WatchRootButEmptyDependenciesProvider._(
       {int Function(
@@ -632,8 +627,7 @@ const watchGeneratedRootButEmptyDependenciesProvider =
     WatchGeneratedRootButEmptyDependenciesProvider._();
 
 final class WatchGeneratedRootButEmptyDependenciesProvider
-    extends $FunctionalProvider<int, int,
-        WatchGeneratedRootButEmptyDependenciesRef>
+    extends $FunctionalProvider<int, int>
     with $Provider<int, WatchGeneratedRootButEmptyDependenciesRef> {
   const WatchGeneratedRootButEmptyDependenciesProvider._(
       {int Function(
@@ -696,8 +690,7 @@ const watchGeneratedScopedAndContainsDependencyProvider =
     WatchGeneratedScopedAndContainsDependencyProvider._();
 
 final class WatchGeneratedScopedAndContainsDependencyProvider
-    extends $FunctionalProvider<int, int,
-        WatchGeneratedScopedAndContainsDependencyRef>
+    extends $FunctionalProvider<int, int>
     with $Provider<int, WatchGeneratedScopedAndContainsDependencyRef> {
   const WatchGeneratedScopedAndContainsDependencyProvider._(
       {int Function(
@@ -841,8 +834,7 @@ typedef Regression2348Ref = Ref<int>;
 @ProviderFor(regression2348)
 const regression2348Provider = Regression2348Provider._();
 
-final class Regression2348Provider
-    extends $FunctionalProvider<int, int, Regression2348Ref>
+final class Regression2348Provider extends $FunctionalProvider<int, int>
     with $Provider<int, Regression2348Ref> {
   const Regression2348Provider._(
       {int Function(
@@ -978,8 +970,7 @@ typedef FamilyDepRef = Ref<int>;
 @ProviderFor(familyDep)
 const familyDepProvider = FamilyDepFamily._();
 
-final class FamilyDepProvider
-    extends $FunctionalProvider<int, int, FamilyDepRef>
+final class FamilyDepProvider extends $FunctionalProvider<int, int>
     with $Provider<int, FamilyDepRef> {
   const FamilyDepProvider._(
       {required FamilyDepFamily super.from,
@@ -1114,8 +1105,7 @@ typedef FamilyDep2Ref = Ref<int>;
 @ProviderFor(familyDep2)
 const familyDep2Provider = FamilyDep2Family._();
 
-final class FamilyDep2Provider
-    extends $FunctionalProvider<int, int, FamilyDep2Ref>
+final class FamilyDep2Provider extends $FunctionalProvider<int, int>
     with $Provider<int, FamilyDep2Ref> {
   const FamilyDep2Provider._(
       {required FamilyDep2Family super.from,
@@ -1253,7 +1243,7 @@ typedef AliasRef = Ref<int>;
 @ProviderFor(alias)
 const aliasProvider = AliasProvider._();
 
-final class AliasProvider extends $FunctionalProvider<int, int, AliasRef>
+final class AliasProvider extends $FunctionalProvider<int, int>
     with $Provider<int, AliasRef> {
   const AliasProvider._(
       {int Function(
@@ -1454,7 +1444,7 @@ typedef FooRef = Ref<int>;
 @ProviderFor(foo)
 const fooProvider = FooProvider._();
 
-final class FooProvider extends $FunctionalProvider<int, int, FooRef>
+final class FooProvider extends $FunctionalProvider<int, int>
     with $Provider<int, FooRef> {
   const FooProvider._(
       {int Function(
@@ -1513,8 +1503,7 @@ typedef CrossFileDependencyRef = Ref<int>;
 @ProviderFor(crossFileDependency)
 const crossFileDependencyProvider = CrossFileDependencyProvider._();
 
-final class CrossFileDependencyProvider
-    extends $FunctionalProvider<int, int, CrossFileDependencyRef>
+final class CrossFileDependencyProvider extends $FunctionalProvider<int, int>
     with $Provider<int, CrossFileDependencyRef> {
   const CrossFileDependencyProvider._(
       {int Function(

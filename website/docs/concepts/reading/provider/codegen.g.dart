@@ -14,7 +14,7 @@ typedef RepositoryRef = Ref<Repository>;
 const repositoryProvider = RepositoryProvider._();
 
 final class RepositoryProvider
-    extends $FunctionalProvider<Repository, Repository, RepositoryRef>
+    extends $FunctionalProvider<Repository, Repository>
     with $Provider<Repository, RepositoryRef> {
   const RepositoryProvider._(
       {Repository Function(
@@ -73,7 +73,7 @@ typedef ValueRef = Ref<String>;
 @ProviderFor(value)
 const valueProvider = ValueProvider._();
 
-final class ValueProvider extends $FunctionalProvider<String, String, ValueRef>
+final class ValueProvider extends $FunctionalProvider<String, String>
     with $Provider<String, ValueRef> {
   const ValueProvider._(
       {String Function(

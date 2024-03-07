@@ -13,8 +13,7 @@ typedef DurationRef = Ref<Duration>;
 @ProviderFor(duration)
 const durationProvider = DurationProvider._();
 
-final class DurationProvider
-    extends $FunctionalProvider<Duration, Duration, DurationRef>
+final class DurationProvider extends $FunctionalProvider<Duration, Duration>
     with $Provider<Duration, DurationRef> {
   const DurationProvider._(
       {Duration Function(
@@ -73,8 +72,7 @@ typedef RepositoryRef = Ref<_MyRepo>;
 @ProviderFor(repository)
 const repositoryProvider = RepositoryProvider._();
 
-final class RepositoryProvider
-    extends $FunctionalProvider<_MyRepo, _MyRepo, RepositoryRef>
+final class RepositoryProvider extends $FunctionalProvider<_MyRepo, _MyRepo>
     with $Provider<_MyRepo, RepositoryRef> {
   const RepositoryProvider._(
       {_MyRepo Function(

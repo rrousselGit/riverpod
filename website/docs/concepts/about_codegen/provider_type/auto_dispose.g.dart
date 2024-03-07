@@ -13,8 +13,7 @@ typedef Example1Ref = Ref<String>;
 @ProviderFor(example1)
 const example1Provider = Example1Provider._();
 
-final class Example1Provider
-    extends $FunctionalProvider<String, String, Example1Ref>
+final class Example1Provider extends $FunctionalProvider<String, String>
     with $Provider<String, Example1Ref> {
   const Example1Provider._(
       {String Function(
@@ -73,8 +72,7 @@ typedef Example2Ref = Ref<String>;
 @ProviderFor(example2)
 const example2Provider = Example2Provider._();
 
-final class Example2Provider
-    extends $FunctionalProvider<String, String, Example2Ref>
+final class Example2Provider extends $FunctionalProvider<String, String>
     with $Provider<String, Example2Ref> {
   const Example2Provider._(
       {String Function(

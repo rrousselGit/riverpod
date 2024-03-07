@@ -13,10 +13,9 @@ typedef RawStreamRef = Ref<Raw<Stream<int>>>;
 @ProviderFor(rawStream)
 const rawStreamProvider = RawStreamProvider._();
 
-final class RawStreamProvider extends $FunctionalProvider<
-    Raw<Stream<int>>,
-    Raw<Stream<int>>,
-    RawStreamRef> with $Provider<Raw<Stream<int>>, RawStreamRef> {
+final class RawStreamProvider
+    extends $FunctionalProvider<Raw<Stream<int>>, Raw<Stream<int>>>
+    with $Provider<Raw<Stream<int>>, RawStreamRef> {
   const RawStreamProvider._(
       {Raw<Stream<int>> Function(
         RawStreamRef ref,
