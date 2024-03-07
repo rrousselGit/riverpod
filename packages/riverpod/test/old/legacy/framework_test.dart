@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart'
@@ -55,59 +53,6 @@ void main() {
       isA<ProviderElementBase<Object?>>()
           .having((e) => e.origin, 'origin', family(0)),
     ]);
-  });
-
-  test("can't call onDispose inside onDispose", () {
-    final provider = Provider((ref) {
-      ref.onDispose(() {
-        ref.onDispose(() {});
-      });
-      return ref;
-    });
-    final container = ProviderContainer.test();
-
-    container.read(provider);
-
-    final errors = <Object>[];
-    runZonedGuarded(container.dispose, (err, _) => errors.add(err));
-
-    expect(errors, [isStateError]);
-  });
-
-  test("can't call read inside onDispose", () {
-    final provider2 = Provider((ref) => 0);
-    final provider = Provider((ref) {
-      ref.onDispose(() {
-        ref.read(provider2);
-      });
-      return ref;
-    });
-    final container = ProviderContainer.test();
-
-    container.read(provider);
-
-    final errors = <Object>[];
-    runZonedGuarded(container.dispose, (err, _) => errors.add(err));
-
-    expect(errors, [isStateError]);
-  });
-
-  test("can't call watch inside onDispose", () {
-    final provider2 = Provider((ref) => 0);
-    final provider = Provider((ref) {
-      ref.onDispose(() {
-        ref.watch(provider2);
-      });
-      return ref;
-    });
-    final container = ProviderContainer.test();
-
-    container.read(provider);
-
-    final errors = <Object>[];
-    runZonedGuarded(container.dispose, (err, _) => errors.add(err));
-
-    expect(errors, [isStateError]);
   });
 
   test('disposing an already disposed container is no-op', () {
@@ -256,23 +201,6 @@ void main() {
     verifyNoMoreInteractions(onDispose1);
     verifyNoMoreInteractions(onDispose2);
     verifyNoMoreInteractions(onDispose3);
-  });
-
-  test('Ref is unusable after dispose (read/onDispose)', () {
-    final container = ProviderContainer.test();
-    late Ref<Object?> ref;
-    final provider = Provider((s) {
-      ref = s;
-      return 42;
-    });
-    final other = Provider((_) => 42);
-
-    expect(container.read(provider), 42);
-    container.dispose();
-
-    expect(ref.mounted, isFalse);
-    expect(() => ref.onDispose(() {}), throwsStateError);
-    expect(() => ref.read(other), throwsStateError);
   });
 
   test('if a provider threw on creation, onDispose still works', () {

@@ -777,7 +777,7 @@ class ProviderContainer implements Node {
             ?.invalidateSelf(asReload: asReload);
       case Family():
         for (final element in _pointerManager.listFamily(provider)) {
-          element.ref?.invalidateSelf(asReload: asReload);
+          element.invalidateSelf(asReload: asReload);
         }
     }
   }
