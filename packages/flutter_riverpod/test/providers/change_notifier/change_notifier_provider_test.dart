@@ -18,12 +18,10 @@ void main() {
     final container = createContainer(
       overrides: [
         provider.overrideWith(
-          (ChangeNotifierProviderRef<ValueNotifier<int>> ref) =>
-              ValueNotifier(42),
+          (Ref<ValueNotifier<int>> ref) => ValueNotifier(42),
         ),
         autoDispose.overrideWith(
-          (ChangeNotifierProviderRef<ValueNotifier<int>> ref) =>
-              ValueNotifier(84),
+          (Ref<ValueNotifier<int>> ref) => ValueNotifier(84),
         ),
       ],
     );
@@ -43,12 +41,10 @@ void main() {
     final container = createContainer(
       overrides: [
         family.overrideWith(
-          (ChangeNotifierProviderRef<ValueNotifier<String>> ref, int arg) =>
-              ValueNotifier('42 $arg'),
+          (Ref<ValueNotifier<String>> ref, int arg) => ValueNotifier('42 $arg'),
         ),
         autoDisposeFamily.overrideWith(
-          (ChangeNotifierProviderRef<ValueNotifier<String>> ref, int arg) =>
-              ValueNotifier('84 $arg'),
+          (Ref<ValueNotifier<String>> ref, int arg) => ValueNotifier('84 $arg'),
         ),
       ],
     );
@@ -87,7 +83,7 @@ void main() {
   test('can read and set current ChangeNotifier', () async {
     final container = createContainer();
     final listener = Listener<ValueNotifier<int>>();
-    late ChangeNotifierProviderRef<ValueNotifier<int>> ref;
+    late Ref<ValueNotifier<int>> ref;
     final provider = ChangeNotifierProvider<ValueNotifier<int>>((r) {
       ref = r;
       return ValueNotifier(0);
@@ -96,7 +92,7 @@ void main() {
     container.listen(provider, listener.call);
 
     verifyZeroInteractions(listener);
-    expect(ref.notifier.value, 0);
+    expect(ref.state.value, 0);
   });
 
   test('can refresh .notifier', () async {

@@ -17,15 +17,7 @@ ProviderElementProxy<StateT, NotifierT>
   );
 }
 
-/// {@macro riverpod.provider_ref_base}
-abstract class StateNotifierProviderRef<NotifierT extends StateNotifier<T>, T>
-    implements Ref<T> {
-  /// The [StateNotifier] currently exposed by this provider.
-  ///
-  /// Cannot be accessed while creating the provider.
-  NotifierT get notifier;
-}
-
+// TODO changelog breaking: Removed StateNotifierProviderRef. Use Ref instead
 /// Creates a [StateNotifier] and exposes its current state.
 ///
 /// This provider is used in combination with `package:state_notifier`.
@@ -93,9 +85,7 @@ final class StateNotifierProvider< //
         StateT> //
     extends $FunctionalProvider< //
         StateT,
-        NotifierT,
-        StateNotifierProviderRef<NotifierT, StateT>>
-    with LegacyProviderMixin<StateT> {
+        NotifierT> with LegacyProviderMixin<StateT> {
   /// {@macro riverpod.statenotifierprovider}
   StateNotifierProvider(
     this._create, {
@@ -127,8 +117,7 @@ final class StateNotifierProvider< //
   /// {@macro riverpod.family}
   static const family = StateNotifierProviderFamilyBuilder();
 
-  final NotifierT Function(StateNotifierProviderRef<NotifierT, StateT> ref)
-      _create;
+  final NotifierT Function(Ref<StateT> ref) _create;
 
   /// Obtains the [StateNotifier] associated with this provider, without listening
   /// to state changes.
@@ -159,7 +148,7 @@ final class StateNotifierProvider< //
   @visibleForOverriding
   @override
   StateNotifierProvider<NotifierT, StateT> $copyWithCreate(
-    Create<NotifierT, StateNotifierProviderRef<NotifierT, StateT>> create,
+    Create<NotifierT, Ref<StateT>> create,
   ) {
     return StateNotifierProvider<NotifierT, StateT>.internal(
       create,
@@ -174,24 +163,22 @@ final class StateNotifierProvider< //
 }
 
 /// The element of [StateNotifierProvider].
-class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
-    extends ProviderElementBase<T>
-    implements StateNotifierProviderRef<NotifierT, T> {
+class StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
+    StateT> extends ProviderElementBase<StateT> {
   StateNotifierProviderElement._(this.provider, super.container);
 
   @override
-  final StateNotifierProvider<NotifierT, T> provider;
+  final StateNotifierProvider<NotifierT, StateT> provider;
 
-  @override
-  NotifierT get notifier => _notifierNotifier.value;
   final _notifierNotifier = ProxyElementValueListenable<NotifierT>();
 
   void Function()? _removeListener;
 
   @override
-  void create({required bool didChangeDependency}) {
-    final notifier =
-        _notifierNotifier.result = Result.guard(() => provider._create(this));
+  void create(Ref<StateT> ref, {required bool didChangeDependency}) {
+    final notifier = _notifierNotifier.result = Result.guard(
+      () => provider._create(ref),
+    );
 
     _removeListener = notifier
         // TODO test requireState, as ref.read(p) is expected to throw if notifier creation failed
@@ -203,7 +190,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
   }
 
   @override
-  bool updateShouldNotify(T previous, T next) {
+  bool updateShouldNotify(StateT previous, StateT next) {
     // TODO test that updateShouldNotify is applied
     return _notifierNotifier.result!.requireState
         // ignore: invalid_use_of_protected_member
@@ -241,8 +228,8 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
 
 /// The [Family] of [StateNotifierProvider].
 class StateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T, Arg>
-    extends FunctionalFamily<StateNotifierProviderRef<NotifierT, T>, T, Arg,
-        NotifierT, StateNotifierProvider<NotifierT, T>> {
+    extends FunctionalFamily<T, Arg, NotifierT,
+        StateNotifierProvider<NotifierT, T>> {
   /// The [Family] of [StateNotifierProvider].
   StateNotifierProviderFamily(
     super._createFn, {

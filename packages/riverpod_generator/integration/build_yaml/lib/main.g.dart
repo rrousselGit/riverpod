@@ -11,7 +11,7 @@ typedef CountRef = Ref<int>;
 @ProviderFor(count)
 const myCountPod = CountProvider._();
 
-final class CountProvider extends $FunctionalProvider<int, int, CountRef>
+final class CountProvider extends $FunctionalProvider<int, int>
     with $Provider<int, CountRef> {
   const CountProvider._(
       {int Function(
@@ -71,7 +71,7 @@ typedef CountFutureRef = Ref<AsyncValue<int>>;
 const myCountFuturePod = CountFutureProvider._();
 
 final class CountFutureProvider
-    extends $FunctionalProvider<AsyncValue<int>, FutureOr<int>, CountFutureRef>
+    extends $FunctionalProvider<AsyncValue<int>, FutureOr<int>>
     with $FutureModifier<int>, $FutureProvider<int, CountFutureRef> {
   const CountFutureProvider._(
       {FutureOr<int> Function(
@@ -123,7 +123,7 @@ typedef CountStreamRef = Ref<AsyncValue<int>>;
 const myCountStreamPod = CountStreamProvider._();
 
 final class CountStreamProvider
-    extends $FunctionalProvider<AsyncValue<int>, Stream<int>, CountStreamRef>
+    extends $FunctionalProvider<AsyncValue<int>, Stream<int>>
     with $FutureModifier<int>, $StreamProvider<int, CountStreamRef> {
   const CountStreamProvider._(
       {Stream<int> Function(
@@ -367,7 +367,7 @@ typedef Count2Ref = Ref<int>;
 @ProviderFor(count2)
 const myFamilyCount2ProviderFamily = Count2Family._();
 
-final class Count2Provider extends $FunctionalProvider<int, int, Count2Ref>
+final class Count2Provider extends $FunctionalProvider<int, int>
     with $Provider<int, Count2Ref> {
   const Count2Provider._(
       {required Count2Family super.from,
@@ -499,7 +499,7 @@ typedef CountFuture2Ref = Ref<AsyncValue<int>>;
 const myFamilyCountFuture2ProviderFamily = CountFuture2Family._();
 
 final class CountFuture2Provider
-    extends $FunctionalProvider<AsyncValue<int>, FutureOr<int>, CountFuture2Ref>
+    extends $FunctionalProvider<AsyncValue<int>, FutureOr<int>>
     with $FutureModifier<int>, $FutureProvider<int, CountFuture2Ref> {
   const CountFuture2Provider._(
       {required CountFuture2Family super.from,
@@ -623,7 +623,7 @@ typedef CountStream2Ref = Ref<AsyncValue<int>>;
 const myFamilyCountStream2ProviderFamily = CountStream2Family._();
 
 final class CountStream2Provider
-    extends $FunctionalProvider<AsyncValue<int>, Stream<int>, CountStream2Ref>
+    extends $FunctionalProvider<AsyncValue<int>, Stream<int>>
     with $FutureModifier<int>, $StreamProvider<int, CountStream2Ref> {
   const CountStream2Provider._(
       {required CountStream2Family super.from,
@@ -887,7 +887,7 @@ final class CountNotifier2Family extends Family {
 }
 
 abstract class _$CountNotifier2 extends $Notifier<int> {
-  late final _$args = (ref as $NotifierProviderElement).origin.argument as int;
+  late final _$args = ref.$arg as int;
   int get a => _$args;
 
   int build(
@@ -1041,8 +1041,7 @@ final class CountAsyncNotifier2Family extends Family {
 }
 
 abstract class _$CountAsyncNotifier2 extends $AsyncNotifier<int> {
-  late final _$args =
-      (ref as $AsyncNotifierProviderElement).origin.argument as int;
+  late final _$args = ref.$arg as int;
   int get a => _$args;
 
   FutureOr<int> build(
@@ -1197,8 +1196,7 @@ final class CountStreamNotifier2Family extends Family {
 }
 
 abstract class _$CountStreamNotifier2 extends $StreamNotifier<int> {
-  late final _$args =
-      (ref as $StreamNotifierProviderElement).origin.argument as int;
+  late final _$args = ref.$arg as int;
   int get a => _$args;
 
   Stream<int> build(

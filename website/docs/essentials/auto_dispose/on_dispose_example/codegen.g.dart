@@ -13,7 +13,7 @@ typedef OtherRef = Ref<int>;
 @ProviderFor(other)
 const otherProvider = OtherProvider._();
 
-final class OtherProvider extends $FunctionalProvider<int, int, OtherRef>
+final class OtherProvider extends $FunctionalProvider<int, int>
     with $Provider<int, OtherRef> {
   const OtherProvider._(
       {int Function(
@@ -73,7 +73,7 @@ typedef ExampleRef = Ref<AsyncValue<int>>;
 const exampleProvider = ExampleProvider._();
 
 final class ExampleProvider
-    extends $FunctionalProvider<AsyncValue<int>, Stream<int>, ExampleRef>
+    extends $FunctionalProvider<AsyncValue<int>, Stream<int>>
     with $FutureModifier<int>, $StreamProvider<int, ExampleRef> {
   const ExampleProvider._(
       {Stream<int> Function(

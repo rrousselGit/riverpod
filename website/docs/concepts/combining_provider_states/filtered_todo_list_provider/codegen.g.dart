@@ -13,8 +13,7 @@ typedef FilterRef = Ref<Filter>;
 @ProviderFor(filter)
 const filterProvider = FilterProvider._();
 
-final class FilterProvider
-    extends $FunctionalProvider<Filter, Filter, FilterRef>
+final class FilterProvider extends $FunctionalProvider<Filter, Filter>
     with $Provider<Filter, FilterRef> {
   const FilterProvider._(
       {Filter Function(
@@ -74,7 +73,7 @@ typedef FilteredTodoListRef = Ref<List<Todo>>;
 const filteredTodoListProvider = FilteredTodoListProvider._();
 
 final class FilteredTodoListProvider
-    extends $FunctionalProvider<List<Todo>, List<Todo>, FilteredTodoListRef>
+    extends $FunctionalProvider<List<Todo>, List<Todo>>
     with $Provider<List<Todo>, FilteredTodoListRef> {
   const FilteredTodoListProvider._(
       {List<Todo> Function(

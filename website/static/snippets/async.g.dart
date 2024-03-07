@@ -14,7 +14,7 @@ typedef ConfigurationsRef = Ref<AsyncValue<Configuration>>;
 const configurationsProvider = ConfigurationsProvider._();
 
 final class ConfigurationsProvider extends $FunctionalProvider<
-        AsyncValue<Configuration>, FutureOr<Configuration>, ConfigurationsRef>
+        AsyncValue<Configuration>, FutureOr<Configuration>>
     with
         $FutureModifier<Configuration>,
         $FutureProvider<Configuration, ConfigurationsRef> {

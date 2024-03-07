@@ -13,8 +13,7 @@ typedef ItemsRef = Ref<List<Item>>;
 @ProviderFor(items)
 const itemsProvider = ItemsProvider._();
 
-final class ItemsProvider
-    extends $FunctionalProvider<List<Item>, List<Item>, ItemsRef>
+final class ItemsProvider extends $FunctionalProvider<List<Item>, List<Item>>
     with $Provider<List<Item>, ItemsRef> {
   const ItemsProvider._(
       {List<Item> Function(
@@ -74,7 +73,7 @@ typedef EvenItemsRef = Ref<List<Item>>;
 const evenItemsProvider = EvenItemsProvider._();
 
 final class EvenItemsProvider
-    extends $FunctionalProvider<List<Item>, List<Item>, EvenItemsRef>
+    extends $FunctionalProvider<List<Item>, List<Item>>
     with $Provider<List<Item>, EvenItemsRef> {
   const EvenItemsProvider._(
       {List<Item> Function(

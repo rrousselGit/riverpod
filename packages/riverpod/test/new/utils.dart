@@ -5,7 +5,25 @@ import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
+class ProviderObserverMock extends Mock implements ProviderObserver {}
+
 class OnDisposeMock extends Mock {
+  void call();
+}
+
+class OnCancelMock extends Mock {
+  void call();
+}
+
+class OnResume extends Mock {
+  void call();
+}
+
+class OnAddListener extends Mock {
+  void call();
+}
+
+class OnRemoveListener extends Mock {
   void call();
 }
 

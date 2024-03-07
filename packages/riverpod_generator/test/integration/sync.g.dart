@@ -12,7 +12,7 @@ typedef GenericRef<T extends num> = Ref<List<T>>;
 const genericProvider = GenericFamily._();
 
 final class GenericProvider<T extends num>
-    extends $FunctionalProvider<List<T>, List<T>, GenericRef<T>>
+    extends $FunctionalProvider<List<T>, List<T>>
     with $Provider<List<T>, GenericRef<T>> {
   const GenericProvider._(
       {required GenericFamily super.from,
@@ -132,7 +132,7 @@ typedef ComplexGenericRef<T extends num, Foo extends String?> = Ref<List<T>>;
 const complexGenericProvider = ComplexGenericFamily._();
 
 final class ComplexGenericProvider<T extends num, Foo extends String?>
-    extends $FunctionalProvider<List<T>, List<T>, ComplexGenericRef<T, Foo>>
+    extends $FunctionalProvider<List<T>, List<T>>
     with $Provider<List<T>, ComplexGenericRef<T, Foo>> {
   const ComplexGenericProvider._(
       {required ComplexGenericFamily super.from,
@@ -463,10 +463,9 @@ typedef RawFutureRef = Ref<Raw<Future<String>>>;
 @ProviderFor(rawFuture)
 const rawFutureProvider = RawFutureProvider._();
 
-final class RawFutureProvider extends $FunctionalProvider<
-    Raw<Future<String>>,
-    Raw<Future<String>>,
-    RawFutureRef> with $Provider<Raw<Future<String>>, RawFutureRef> {
+final class RawFutureProvider
+    extends $FunctionalProvider<Raw<Future<String>>, Raw<Future<String>>>
+    with $Provider<Raw<Future<String>>, RawFutureRef> {
   const RawFutureProvider._(
       {Raw<Future<String>> Function(
         RawFutureRef ref,
@@ -525,10 +524,9 @@ typedef RawStreamRef = Ref<Raw<Stream<String>>>;
 @ProviderFor(rawStream)
 const rawStreamProvider = RawStreamProvider._();
 
-final class RawStreamProvider extends $FunctionalProvider<
-    Raw<Stream<String>>,
-    Raw<Stream<String>>,
-    RawStreamRef> with $Provider<Raw<Stream<String>>, RawStreamRef> {
+final class RawStreamProvider
+    extends $FunctionalProvider<Raw<Stream<String>>, Raw<Stream<String>>>
+    with $Provider<Raw<Stream<String>>, RawStreamRef> {
   const RawStreamProvider._(
       {Raw<Stream<String>> Function(
         RawStreamRef ref,
@@ -725,8 +723,8 @@ typedef RawFamilyFutureRef = Ref<Raw<Future<String>>>;
 @ProviderFor(rawFamilyFuture)
 const rawFamilyFutureProvider = RawFamilyFutureFamily._();
 
-final class RawFamilyFutureProvider extends $FunctionalProvider<
-        Raw<Future<String>>, Raw<Future<String>>, RawFamilyFutureRef>
+final class RawFamilyFutureProvider
+    extends $FunctionalProvider<Raw<Future<String>>, Raw<Future<String>>>
     with $Provider<Raw<Future<String>>, RawFamilyFutureRef> {
   const RawFamilyFutureProvider._(
       {required RawFamilyFutureFamily super.from,
@@ -858,8 +856,8 @@ typedef RawFamilyStreamRef = Ref<Raw<Stream<String>>>;
 @ProviderFor(rawFamilyStream)
 const rawFamilyStreamProvider = RawFamilyStreamFamily._();
 
-final class RawFamilyStreamProvider extends $FunctionalProvider<
-        Raw<Stream<String>>, Raw<Stream<String>>, RawFamilyStreamRef>
+final class RawFamilyStreamProvider
+    extends $FunctionalProvider<Raw<Stream<String>>, Raw<Stream<String>>>
     with $Provider<Raw<Stream<String>>, RawFamilyStreamRef> {
   const RawFamilyStreamProvider._(
       {required RawFamilyStreamFamily super.from,
@@ -1135,7 +1133,7 @@ final class RawFamilyFutureClassFamily extends Family {
 }
 
 abstract class _$RawFamilyFutureClass extends $Notifier<Raw<Future<String>>> {
-  late final _$args = (ref as $NotifierProviderElement).origin.argument as int;
+  late final _$args = ref.$arg as int;
   int get id => _$args;
 
   Raw<Future<String>> build(
@@ -1297,7 +1295,7 @@ final class RawFamilyStreamClassFamily extends Family {
 }
 
 abstract class _$RawFamilyStreamClass extends $Notifier<Raw<Stream<String>>> {
-  late final _$args = (ref as $NotifierProviderElement).origin.argument as int;
+  late final _$args = ref.$arg as int;
   int get id => _$args;
 
   Raw<Stream<String>> build(
@@ -1318,8 +1316,7 @@ typedef PublicRef = Ref<String>;
 const publicProvider = PublicProvider._();
 
 /// This is some documentation
-final class PublicProvider
-    extends $FunctionalProvider<String, String, PublicRef>
+final class PublicProvider extends $FunctionalProvider<String, String>
     with $Provider<String, PublicRef> {
   /// This is some documentation
   const PublicProvider._(
@@ -1379,8 +1376,7 @@ typedef Supports$inNamesRef = Ref<String>;
 @ProviderFor(supports$inNames)
 const supports$inNamesProvider = Supports$inNamesProvider._();
 
-final class Supports$inNamesProvider
-    extends $FunctionalProvider<String, String, Supports$inNamesRef>
+final class Supports$inNamesProvider extends $FunctionalProvider<String, String>
     with $Provider<String, Supports$inNamesRef> {
   const Supports$inNamesProvider._(
       {String Function(
@@ -1442,8 +1438,7 @@ typedef FamilyRef = Ref<String>;
 const familyProvider = FamilyFamily._();
 
 /// This is some documentation
-final class FamilyProvider
-    extends $FunctionalProvider<String, String, FamilyRef>
+final class FamilyProvider extends $FunctionalProvider<String, String>
     with $Provider<String, FamilyRef> {
   /// This is some documentation
   const FamilyProvider._(
@@ -1634,8 +1629,7 @@ typedef _PrivateRef = Ref<String>;
 @ProviderFor(_private)
 const _privateProvider = _PrivateProvider._();
 
-final class _PrivateProvider
-    extends $FunctionalProvider<String, String, _PrivateRef>
+final class _PrivateProvider extends $FunctionalProvider<String, String>
     with $Provider<String, _PrivateRef> {
   const _PrivateProvider._(
       {String Function(
@@ -2036,7 +2030,7 @@ final class FamilyClassFamily extends Family {
 }
 
 abstract class _$FamilyClass extends $Notifier<String> {
-  late final _$args = (ref as $NotifierProviderElement).origin.argument as (
+  late final _$args = ref.$arg as (
     int, {
     String? second,
     double third,
@@ -2073,7 +2067,7 @@ typedef Supports$InFnNameRef<And$InT> = Ref<String>;
 const supports$InFnNameProvider = Supports$InFnNameFamily._();
 
 final class Supports$InFnNameProvider<And$InT>
-    extends $FunctionalProvider<String, String, Supports$InFnNameRef<And$InT>>
+    extends $FunctionalProvider<String, String>
     with $Provider<String, Supports$InFnNameRef<And$InT>> {
   const Supports$InFnNameProvider._(
       {required Supports$InFnNameFamily super.from,
@@ -2195,8 +2189,7 @@ typedef Supports$InFnNameFamilyRef<And$InT> = Ref<String>;
 const supports$InFnNameFamilyProvider = Supports$InFnNameFamilyFamily._();
 
 final class Supports$InFnNameFamilyProvider<And$InT>
-    extends $FunctionalProvider<String, String,
-        Supports$InFnNameFamilyRef<And$InT>>
+    extends $FunctionalProvider<String, String>
     with $Provider<String, Supports$InFnNameFamilyRef<And$InT>> {
   const Supports$InFnNameFamilyProvider._(
       {required Supports$InFnNameFamilyFamily super.from,
@@ -2760,7 +2753,7 @@ final class Supports$InClassFamilyNameFamily extends Family {
 }
 
 abstract class _$Supports$InClassFamilyName<And$InT> extends $Notifier<String> {
-  late final _$args = (ref as $NotifierProviderElement).origin.argument as (
+  late final _$args = ref.$arg as (
     And$InT, {
     And$InT named$arg,
     String defaultArg,
@@ -2788,8 +2781,7 @@ typedef GeneratedRef = Ref<String>;
 @ProviderFor(generated)
 const generatedProvider = GeneratedProvider._();
 
-final class GeneratedProvider
-    extends $FunctionalProvider<String, String, GeneratedRef>
+final class GeneratedProvider extends $FunctionalProvider<String, String>
     with $Provider<String, GeneratedRef> {
   const GeneratedProvider._(
       {String Function(
@@ -2848,8 +2840,7 @@ typedef UnnecessaryCastRef = Ref<String>;
 @ProviderFor(unnecessaryCast)
 const unnecessaryCastProvider = UnnecessaryCastFamily._();
 
-final class UnnecessaryCastProvider
-    extends $FunctionalProvider<String, String, UnnecessaryCastRef>
+final class UnnecessaryCastProvider extends $FunctionalProvider<String, String>
     with $Provider<String, UnnecessaryCastRef> {
   const UnnecessaryCastProvider._(
       {required UnnecessaryCastFamily super.from,
@@ -3124,7 +3115,7 @@ final class UnnecessaryCastClassFamily extends Family {
 }
 
 abstract class _$UnnecessaryCastClass extends $Notifier<String> {
-  late final _$args = (ref as $NotifierProviderElement).origin.argument;
+  late final _$args = ref.$arg;
   Object? get arg => _$args;
 
   String build(
@@ -3144,8 +3135,7 @@ typedef ManyDataStreamRef<T extends Object, S extends Object>
 const manyDataStreamProvider = ManyDataStreamFamily._();
 
 final class ManyDataStreamProvider<T extends Object, S extends Object>
-    extends $FunctionalProvider<AsyncValue<List<T>>, Stream<List<T>>,
-        ManyDataStreamRef<T, S>>
+    extends $FunctionalProvider<AsyncValue<List<T>>, Stream<List<T>>>
     with
         $FutureModifier<List<T>>,
         $StreamProvider<List<T>, ManyDataStreamRef<T, S>> {

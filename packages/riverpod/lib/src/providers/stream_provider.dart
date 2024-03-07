@@ -81,8 +81,8 @@ base mixin $StreamProvider<StateT, RefT> on ProviderBase<AsyncValue<StateT>> {
 /// - [StreamProvider.family], to create a [StreamProvider] from external parameters
 /// - [StreamProvider.autoDispose], to destroy the state of a [StreamProvider] when no longer needed.
 /// {@endtemplate}
-base class StreamProvider<StateT> extends $FunctionalProvider<
-        AsyncValue<StateT>, Stream<StateT>, Ref<AsyncValue<StateT>>>
+base class StreamProvider<StateT>
+    extends $FunctionalProvider<AsyncValue<StateT>, Stream<StateT>>
     with
         $FutureModifier<StateT>,
         $StreamProvider<StateT, Ref<AsyncValue<StateT>>>,
@@ -134,8 +134,7 @@ base class StreamProvider<StateT> extends $FunctionalProvider<
   @mustBeOverridden
   @visibleForOverriding
   @override
-  $FunctionalProvider<AsyncValue<StateT>, Stream<StateT>,
-      Ref<AsyncValue<StateT>>> $copyWithCreate(
+  $FunctionalProvider<AsyncValue<StateT>, Stream<StateT>> $copyWithCreate(
     Create<Stream<StateT>, Ref<AsyncValue<StateT>>> create,
   ) {
     return StreamProvider<StateT>.internal(
@@ -166,12 +165,15 @@ class $StreamProviderElement<StateT>
       StreamController<StateT>.broadcast();
 
   @override
-  void create({required bool didChangeDependency}) {
+  void create(
+    Ref<AsyncValue<StateT>> ref, {
+    required bool didChangeDependency,
+  }) {
     asyncTransition(AsyncLoading<StateT>(), seamless: !didChangeDependency);
     _streamNotifier.result ??= Result.data(_streamController.stream);
 
     handleStream(
-      () => provider.create(this),
+      () => provider.create(ref),
       didChangeDependency: didChangeDependency,
     );
   }
@@ -230,11 +232,7 @@ class $StreamProviderElement<StateT>
 
 /// The [Family] of a [StreamProvider]
 class StreamProviderFamily<StateT, ArgT> extends FunctionalFamily<
-    Ref<AsyncValue<StateT>>,
-    AsyncValue<StateT>,
-    ArgT,
-    Stream<StateT>,
-    StreamProvider<StateT>> {
+    AsyncValue<StateT>, ArgT, Stream<StateT>, StreamProvider<StateT>> {
   StreamProviderFamily(
     super._createFn, {
     super.name,

@@ -10,7 +10,7 @@ void main() {
   test('can read and set current StateNotifier', () async {
     final container = ProviderContainer.test();
     final listener = Listener<int>();
-    late StateNotifierProviderRef<Counter, int> ref;
+    late Ref<int> ref;
     final provider = StateNotifierProvider.autoDispose<Counter, int>((r) {
       ref = r;
       return Counter();
@@ -19,7 +19,7 @@ void main() {
     container.listen(provider, listener.call);
 
     verifyZeroInteractions(listener);
-    expect(ref.notifier.state, 0);
+    expect(ref.state, 0);
   });
 
   test('can be auto-scoped', () async {

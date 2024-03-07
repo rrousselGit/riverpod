@@ -14,7 +14,7 @@ typedef FetchPackagesRef = Ref<AsyncValue<List<Package>>>;
 const fetchPackagesProvider = FetchPackagesFamily._();
 
 final class FetchPackagesProvider extends $FunctionalProvider<
-        AsyncValue<List<Package>>, FutureOr<List<Package>>, FetchPackagesRef>
+        AsyncValue<List<Package>>, FutureOr<List<Package>>>
     with
         $FutureModifier<List<Package>>,
         $FutureProvider<List<Package>, FetchPackagesRef> {

@@ -207,17 +207,38 @@ mixin FutureModifierElement<StateT> on ProviderElementBase<AsyncValue<StateT>> {
   CancelAsyncSubscription? _lastFutureSub;
   CancelAsyncSubscription? _cancelSubscription;
 
-  /// Handles manual state change (as opposed to automatic state change from
-  /// listening to the [Future]).
-  @override
-  @protected
-  AsyncValue<StateT> get state => requireState;
+  /// Internal utility for transitioning an [AsyncValue] after a provider refresh.
+  ///
+  /// [seamless] controls how the previous state is preserved:
+  /// - seamless:true => import previous state and skip loading
+  /// - seamless:false => import previous state and prefer loading
+  void asyncTransition(
+    AsyncValue<StateT> newState, {
+    required bool seamless,
+  }) {
+// ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+    final previous = stateResult?.requireState;
+
+    if (previous == null) {
+// ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+      super.setStateResult(ResultData(newState));
+    } else {
+// ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
+      super.setStateResult(
+        ResultData(
+          newState
+              .cast<StateT>()
+              .copyWithPrevious(previous, isRefresh: seamless),
+        ),
+      );
+    }
+  }
 
   @override
   @protected
-  set state(AsyncValue<StateT> newState) {
+  void setStateResult(Result<AsyncValue<StateT>> newState) {
     // TODO assert Notifier isn't disposed
-    newState.map(
+    newState.requireState.map(
       loading: onLoading,
       error: onError,
       data: onData,

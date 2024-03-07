@@ -1,5 +1,24 @@
 part of '../framework.dart';
 
+@internal
+extension $RefArg on Ref<Object?> {
+  // Implementation detail, do not use
+  Object? get $arg => _element.origin.argument;
+
+  // Implementation detail, do not use
+  ProviderElementBase<Object?> get $element => _element;
+}
+
+@internal
+class UnmountedRefException implements Exception {
+  @override
+  String toString() {
+    return 'Cannot use a Ref after it has been disposed. '
+        ' This typically happens when a provider rebuilt, but the previous "build" was still pending and is still performing operations.'
+        ' It is generally fine to let this exception be thrown, as it will be caught and handled by Riverpod.';
+  }
+}
+
 /// {@template riverpod.provider_ref_base}
 /// An object used by providers to interact with other providers and the life-cycles
 /// of the application.
@@ -9,9 +28,31 @@ part of '../framework.dart';
 /// - [read] and [watch], two methods that allow a provider to consume other providers.
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
 /// {@endtemplate}
-abstract class Ref<StateT> {
-  // TODO changelog breaking: AutoDisposeRef and related interfaces are removed.
-  //  Use the non-autodispose variant instead. They now have the same API.
+// TODO changelog breaking "ProviderElementBase" no-longer implements Ref
+// TODO changelog breaking: AutoDisposeRef and related interfaces are removed.
+//  Use the non-autodispose variant instead. They now have the same API.
+// TODO changelog breaking: All ref methods besides "mounted" now throw if used on unmounted refs.
+// TODO changelog patch: ref.exists now correct asserts that the ref can use the provider.
+base class Ref<StateT> {
+  /// {@macro riverpod.provider_ref_base}
+  Ref._(this._element);
+
+  final ProviderElementBase<StateT> _element;
+  // TODO changelog breaking: when a provider rebuilds, a new ref is created.
+  // This means that if the previous "build" didn't stop, using the older ref will now throw.
+
+  List<KeepAliveLink>? _keepAliveLinks;
+  List<void Function(StateT?, StateT)>? _onChangeSelfListeners;
+  List<void Function()>? _onDisposeListeners;
+  List<void Function()>? _onResumeListeners;
+  List<void Function()>? _onCancelListeners;
+  List<void Function()>? _onAddListeners;
+  List<void Function()>? _onRemoveListeners;
+  List<OnError>? _onErrorSelfListeners;
+
+  // TODO changelog minor: Added `Ref.mounted`, similar to `BuildContext.mounted`
+  bool get mounted => _mounted;
+  var _mounted = true;
 
   /// Obtains the state currently exposed by this provider.
   ///
@@ -22,11 +63,87 @@ abstract class Ref<StateT> {
   /// - on asynchronous providers, this will return an [AsyncLoading].
   ///
   /// Will throw if the provider threw during creation.
-  StateT get state;
-  set state(StateT newState);
+  StateT get state {
+    _throwIfInvalidUsage();
+
+    return _element.readSelf();
+  }
+
+  set state(StateT newState) {
+    _throwIfInvalidUsage();
+
+    _element.setStateResult(ResultData(newState));
+  }
 
   /// The [ProviderContainer] that this provider is associated with.
-  ProviderContainer get container;
+  ProviderContainer get container => _element.container;
+
+  void _debugAssertCanDependOn(ProviderListenableOrFamily listenable) {
+    final dependency = switch (listenable) {
+      ProviderOrFamily() => listenable,
+      _ => listenable.listenedProvider,
+    };
+
+    if (dependency == null) return;
+
+    final origin = _element.origin;
+    final provider = _element.provider;
+
+    assert(
+      dependency != origin,
+      'A provider cannot depend on itself',
+    );
+
+    final dependencies = origin.from?.dependencies ?? origin.dependencies ?? [];
+    final targetDependencies =
+        dependency.from?.dependencies ?? dependency.dependencies;
+
+    if (
+        // If the target has a null "dependencies", it should never be scoped.
+        !(targetDependencies == null ||
+            // Ignore dependency check if from an override
+            provider != origin ||
+            // Families are allowed to depend on themselves with different parameters.
+            (origin.from != null && dependency.from == origin.from) ||
+            dependencies.contains(dependency.from) ||
+            dependencies.contains(dependency))) {
+      throw StateError('''
+The provider `$origin` depends on `$dependency`, which may be scoped.
+Yet `$dependency` is not part of `$origin`'s `dependencies` list.
+
+To fix, add $dependency to $origin's 'dependencies' parameter.
+This can be done with either:
+
+@Riverpod(dependencies: [<dependency>])
+<your provider>
+
+or:
+
+final <yourProvider> = Provider(dependencies: [<dependency>]);
+''');
+    }
+
+    // TODO move to a "onAddDependency" life-cycle
+    final queue = Queue<ProviderElementBase<Object?>>.from(
+      _element._providerDependents,
+    );
+    while (queue.isNotEmpty) {
+      final current = queue.removeFirst();
+      queue.addAll(current._providerDependents);
+
+      if (current.origin == dependency) {
+        throw CircularDependencyError._();
+      }
+    }
+  }
+
+  void _throwIfInvalidUsage() {
+    assert(
+      !_debugIsRunningSelector,
+      'Cannot call ref.listen inside a selector',
+    );
+    if (!mounted) throw UnmountedRefException();
+  }
 
   /// Requests for the state of a provider to not be disposed when all the
   /// listeners of the provider are removed.
@@ -36,7 +153,21 @@ abstract class Ref<StateT> {
   ///
   /// If [keepAlive] is invoked multiple times, all [KeepAliveLink] will have
   /// to be closed for the provider to dispose itself when all listeners are removed.
-  KeepAliveLink keepAlive();
+  KeepAliveLink keepAlive() {
+    _throwIfInvalidUsage();
+
+    final links = _keepAliveLinks ??= [];
+
+    late KeepAliveLink link;
+    link = KeepAliveLink._(() {
+      if (links.remove(link)) {
+        if (links.isEmpty) _element._mayNeedDispose();
+      }
+    });
+    links.add(link);
+
+    return link;
+  }
 
   /// {@template riverpod.refresh}
   /// Forces a provider to re-evaluate its state immediately, and return the created value.
@@ -65,7 +196,13 @@ abstract class Ref<StateT> {
   /// to restart a specific provider.
   /// {@endtemplate}
   @useResult
-  T refresh<T>(Refreshable<T> provider);
+  T refresh<T>(Refreshable<T> refreshable) {
+    _throwIfInvalidUsage();
+
+    if (kDebugMode) _debugAssertCanDependOn(refreshable);
+
+    return container.refresh(refreshable);
+  }
 
   /// {@template riverpod.invalidate}
   /// Invalidates the state of the provider, causing it to refresh.
@@ -86,7 +223,21 @@ abstract class Ref<StateT> {
   ///
   /// If used on a provider which is not initialized, this method will have no effect.
   /// {@endtemplate}
-  void invalidate(ProviderOrFamily provider, {bool asReload = false});
+  void invalidate(ProviderOrFamily providerOrFamily, {bool asReload = false}) {
+    _throwIfInvalidUsage();
+    if (kDebugMode) _debugAssertCanDependOn(providerOrFamily);
+
+    container.invalidate(providerOrFamily, asReload: asReload);
+  }
+
+  /// Invokes [invalidate] on itself.
+  ///
+  /// {@macro riverpod.invalidate}
+  void invalidateSelf({bool asReload = false}) {
+    _throwIfInvalidUsage();
+
+    _element.invalidateSelf(asReload: asReload);
+  }
 
   /// Notify dependents that this provider has changed.
   ///
@@ -103,48 +254,44 @@ abstract class Ref<StateT> {
   ///   }
   /// }
   /// ```
-  void notifyListeners();
+  void notifyListeners() {
+    _throwIfInvalidUsage();
 
-  /// Listens to changes on the value exposed by this provider.
-  ///
-  /// The listener will be called immediately after the provider completes building.
-  ///
-  /// As opposed to [listen], the listener will be called even if
-  /// [ProviderElementBase.updateShouldNotify] returns false, meaning that the previous
-  /// and new value can potentially be identical.
-  void listenSelf(
-    void Function(StateT? previous, StateT next) listener, {
-    void Function(Object error, StackTrace stackTrace)? onError,
-  });
+    final currentResult = _element.stateResult;
+    // If `notifyListeners` is used during `build`, the result will be null.
+    // Throwing would be unnecessarily inconvenient, so we simply skip it.
+    if (currentResult == null) return;
 
-  /// Invokes [invalidate] on itself.
-  ///
-  /// {@macro riverpod.invalidate}
-  void invalidateSelf({bool asReload = false});
+    if (_element._didBuild) {
+      _element._notifyListeners(
+        currentResult,
+        currentResult,
+        checkUpdateShouldNotify: false,
+      );
+    }
+  }
 
   /// A life-cycle for whenever a new listener is added to the provider.
   ///
   /// See also:
   /// - [onRemoveListener], for when a listener is removed
-  void onAddListener(void Function() cb);
+  void onAddListener(void Function() cb) {
+    _throwIfInvalidUsage();
+
+    _onAddListeners ??= [];
+    _onAddListeners!.add(cb);
+  }
 
   /// A life-cycle for whenever a listener is removed from the provider.
   ///
   /// See also:
   /// - [onAddListener], for when a listener is added
-  void onRemoveListener(void Function() cb);
+  void onRemoveListener(void Function() cb) {
+    _throwIfInvalidUsage();
 
-  /// A life-cycle for when a provider is listened again after it was paused
-  /// (and [onCancel] was triggered).
-  ///
-  /// See also:
-  /// - [keepAlive], which can be combined with [onCancel] for
-  ///   advanced manipulation on when the provider should get disposed.
-  /// - [Provider.autoDispose], a modifier which tell a provider that it should
-  ///   destroy its state when no longer listened to.
-  /// - [onDispose], a life-cycle for when a provider is disposed.
-  /// - [onCancel], a life-cycle for when all listeners of a provider are removed.
-  void onResume(void Function() cb);
+    _onRemoveListeners ??= [];
+    _onRemoveListeners!.add(cb);
+  }
 
   /// Add a listener to perform an operation when the last listener of the provider
   /// is removed.
@@ -163,7 +310,29 @@ abstract class Ref<StateT> {
   ///   destroy its state when no longer listened to.
   /// - [onDispose], a life-cycle for when a provider is disposed.
   /// - [onResume], a life-cycle for when the provider is listened to again.
-  void onCancel(void Function() cb);
+  void onCancel(void Function() cb) {
+    _throwIfInvalidUsage();
+
+    _onCancelListeners ??= [];
+    _onCancelListeners!.add(cb);
+  }
+
+  /// A life-cycle for when a provider is listened again after it was paused
+  /// (and [onCancel] was triggered).
+  ///
+  /// See also:
+  /// - [keepAlive], which can be combined with [onCancel] for
+  ///   advanced manipulation on when the provider should get disposed.
+  /// - [Provider.autoDispose], a modifier which tell a provider that it should
+  ///   destroy its state when no longer listened to.
+  /// - [onDispose], a life-cycle for when a provider is disposed.
+  /// - [onCancel], a life-cycle for when all listeners of a provider are removed.
+  void onResume(void Function() cb) {
+    _throwIfInvalidUsage();
+
+    _onResumeListeners ??= [];
+    _onResumeListeners!.add(cb);
+  }
 
   /// Adds a listener to perform an operation right before the provider is destroyed.
   ///
@@ -211,7 +380,12 @@ abstract class Ref<StateT> {
   /// - [ProviderContainer.dispose], to destroy all providers associated with
   ///   a [ProviderContainer] at once.
   /// - [onCancel], a life-cycle for when all listeners of a provider are removed.
-  void onDispose(void Function() cb);
+  void onDispose(void Function() listener) {
+    _throwIfInvalidUsage();
+
+    _onDisposeListeners ??= [];
+    _onDisposeListeners!.add(listener);
+  }
 
   /// Read the state associated with a provider, without listening to that provider.
   ///
@@ -247,7 +421,12 @@ abstract class Ref<StateT> {
   ///
   /// If possible, avoid using [read] and prefer [watch], which is generally
   /// safer to use.
-  T read<T>(ProviderListenable<T> provider);
+  T read<T>(ProviderListenable<T> listenable) {
+    _throwIfInvalidUsage();
+    if (kDebugMode) _debugAssertCanDependOn(listenable);
+
+    return container.read(listenable);
+  }
 
   /// {@template riverpod.exists}
   /// Determines whether a provider is initialized or not.
@@ -282,7 +461,12 @@ abstract class Ref<StateT> {
   /// });
   /// ```
   /// {@endtemplate}
-  bool exists(ProviderBase<Object?> provider);
+  bool exists(ProviderBase<Object?> provider) {
+    _throwIfInvalidUsage();
+    if (kDebugMode) _debugAssertCanDependOn(provider);
+
+    return container.exists(provider);
+  }
 
   /// Obtains the state of a provider and causes the state to be re-evaluated
   /// when that provider emits a new value.
@@ -346,7 +530,45 @@ abstract class Ref<StateT> {
   ///    return sub.read();
   /// }
   /// ```
-  T watch<T>(ProviderListenable<T> provider);
+  T watch<T>(ProviderListenable<T> listenable) {
+    _throwIfInvalidUsage();
+    if (listenable is! ProviderBase<T>) {
+      final sub = _element.listen<T>(
+        listenable,
+        (prev, value) => invalidateSelf(asReload: true),
+        onError: (err, stack) => invalidateSelf(asReload: true),
+        onDependencyMayHaveChanged: _element._markDependencyMayHaveChanged,
+      );
+
+      return sub.read();
+    }
+
+    if (kDebugMode) _debugAssertCanDependOn(listenable);
+
+    final element = container.readProviderElement(listenable);
+    _element._dependencies.putIfAbsent(element, () {
+      final previousSub = _element._previousDependencies?.remove(element);
+      if (previousSub != null) {
+        return previousSub;
+      }
+
+      if (kDebugMode) {
+        // Flushing the provider before adding a new dependency
+        // as otherwise this could cause false positives with certain asserts.
+        // It's done only in debug mode since `readSelf` will flush the value
+        // again anyway, and the only value of this flush is to not break asserts.
+        element.flush();
+      }
+
+      element
+        .._onListen()
+        .._providerDependents.add(_element);
+
+      return Object();
+    });
+
+    return element.readSelf();
+  }
 
   /// {@template riverpod.listen}
   /// Listen to a provider and call [listener] whenever its value changes.
@@ -371,8 +593,38 @@ abstract class Ref<StateT> {
     ProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
-    bool fireImmediately,
-  });
+    bool fireImmediately = false,
+  }) {
+    return _element.listen(
+      provider,
+      listener,
+      onError: onError,
+      fireImmediately: fireImmediately,
+    );
+  }
+
+  /// Listens to changes on the value exposed by this provider.
+  ///
+  /// The listener will be called immediately after the provider completes building.
+  ///
+  /// As opposed to [listen], the listener will be called even if
+  /// [ProviderElementBase.updateShouldNotify] returns false, meaning that the previous
+  /// and new value can potentially be identical.
+  void listenSelf(
+    void Function(StateT? previous, StateT next) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  }) {
+    // TODO do we want to expose a way to close the subscription?
+    // TODO do we want a fireImmediately?
+
+    _onChangeSelfListeners ??= [];
+    _onChangeSelfListeners!.add(listener);
+
+    if (onError != null) {
+      _onErrorSelfListeners ??= [];
+      _onErrorSelfListeners!.add(onError);
+    }
+  }
 }
 
 /// A object that maintains a provider alive.

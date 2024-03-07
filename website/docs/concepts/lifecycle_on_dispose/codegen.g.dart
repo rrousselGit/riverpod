@@ -14,7 +14,7 @@ typedef ExampleRef = Ref<AsyncValue<int>>;
 const exampleProvider = ExampleProvider._();
 
 final class ExampleProvider
-    extends $FunctionalProvider<AsyncValue<int>, Stream<int>, ExampleRef>
+    extends $FunctionalProvider<AsyncValue<int>, Stream<int>>
     with $FutureModifier<int>, $StreamProvider<int, ExampleRef> {
   const ExampleProvider._(
       {Stream<int> Function(

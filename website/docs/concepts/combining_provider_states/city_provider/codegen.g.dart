@@ -13,7 +13,7 @@ typedef CityRef = Ref<String>;
 @ProviderFor(city)
 const cityProvider = CityProvider._();
 
-final class CityProvider extends $FunctionalProvider<String, String, CityRef>
+final class CityProvider extends $FunctionalProvider<String, String>
     with $Provider<String, CityRef> {
   const CityProvider._(
       {String Function(

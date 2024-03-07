@@ -13,8 +13,8 @@ typedef BoredSuggestionRef = Ref<AsyncValue<String>>;
 @ProviderFor(boredSuggestion)
 const boredSuggestionProvider = BoredSuggestionProvider._();
 
-final class BoredSuggestionProvider extends $FunctionalProvider<
-        AsyncValue<String>, FutureOr<String>, BoredSuggestionRef>
+final class BoredSuggestionProvider
+    extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>>
     with $FutureModifier<String>, $FutureProvider<String, BoredSuggestionRef> {
   const BoredSuggestionProvider._(
       {FutureOr<String> Function(

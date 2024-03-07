@@ -13,8 +13,8 @@ typedef ExampleRef = Ref<AsyncValue<String>>;
 @ProviderFor(example)
 const exampleProvider = ExampleProvider._();
 
-final class ExampleProvider extends $FunctionalProvider<AsyncValue<String>,
-        FutureOr<String>, ExampleRef>
+final class ExampleProvider
+    extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>>
     with $FutureModifier<String>, $FutureProvider<String, ExampleRef> {
   const ExampleProvider._(
       {FutureOr<String> Function(

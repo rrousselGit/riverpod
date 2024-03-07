@@ -220,7 +220,7 @@ final class ScopedClassFamilyFamily extends Family {
 }
 
 abstract class _$ScopedClassFamily extends $Notifier<int> {
-  late final _$args = (ref as $NotifierProviderElement).origin.argument as int;
+  late final _$args = ref.$arg as int;
   int get a => _$args;
 
   int build(

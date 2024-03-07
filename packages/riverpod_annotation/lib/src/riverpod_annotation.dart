@@ -2,9 +2,8 @@
 
 import 'package:meta/meta.dart';
 import 'package:meta/meta_meta.dart';
-import 'package:riverpod/riverpod.dart';
-// ignore: implementation_imports, invalid_use_of_internal_member
-import 'package:riverpod/src/internals.dart' show ProviderElementBase;
+
+import '../riverpod_annotation.dart';
 
 /// {@template riverpod_annotation.provider}
 /// An annotation placed on classes or functions.
@@ -198,8 +197,7 @@ class MissingScopeException implements Exception {
 
   @override
   String toString() {
-    // ignore: invalid_use_of_internal_member
-    final element = ref as ProviderElementBase<Object?>;
+    final element = ref.$element;
 
     return 'MissingScopeException: The provider ${element.origin} is scoped, '
         'but was accessed in a place where it is not overridden. '

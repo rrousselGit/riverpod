@@ -283,7 +283,7 @@ final class A3Family extends Family {
 }
 
 abstract class _$A3 extends $Notifier<int> {
-  late final _$args = (ref as $NotifierProviderElement).origin.argument as int;
+  late final _$args = ref.$arg as int;
   int get param => _$args;
 
   int build(
@@ -439,7 +439,7 @@ final class A4Family extends Family {
 }
 
 abstract class _$A4 extends $Notifier<int> {
-  late final _$args = (ref as $NotifierProviderElement).origin.argument as int;
+  late final _$args = ref.$arg as int;
   int get param => _$args;
 
   int build(
@@ -588,8 +588,7 @@ final class A5Family extends Family {
 }
 
 abstract class _$A5 extends $AsyncNotifier<int> {
-  late final _$args =
-      (ref as $AsyncNotifierProviderElement).origin.argument as int;
+  late final _$args = ref.$arg as int;
   int get param => _$args;
 
   FutureOr<int> build(
@@ -738,8 +737,7 @@ final class A6Family extends Family {
 }
 
 abstract class _$A6 extends $AsyncNotifier<int> {
-  late final _$args =
-      (ref as $AsyncNotifierProviderElement).origin.argument as int;
+  late final _$args = ref.$arg as int;
   int get param => _$args;
 
   FutureOr<int> build(
@@ -888,8 +886,7 @@ final class A7Family extends Family {
 }
 
 abstract class _$A7 extends $StreamNotifier<int> {
-  late final _$args =
-      (ref as $StreamNotifierProviderElement).origin.argument as int;
+  late final _$args = ref.$arg as int;
   int get param => _$args;
 
   Stream<int> build(
@@ -1038,8 +1035,7 @@ final class A8Family extends Family {
 }
 
 abstract class _$A8 extends $StreamNotifier<int> {
-  late final _$args =
-      (ref as $StreamNotifierProviderElement).origin.argument as int;
+  late final _$args = ref.$arg as int;
   int get param => _$args;
 
   Stream<int> build(

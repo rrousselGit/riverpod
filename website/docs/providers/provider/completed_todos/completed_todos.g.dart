@@ -14,7 +14,7 @@ typedef CompletedTodosRef = Ref<List<Todo>>;
 const completedTodosProvider = CompletedTodosProvider._();
 
 final class CompletedTodosProvider
-    extends $FunctionalProvider<List<Todo>, List<Todo>, CompletedTodosRef>
+    extends $FunctionalProvider<List<Todo>, List<Todo>>
     with $Provider<List<Todo>, CompletedTodosRef> {
   const CompletedTodosProvider._(
       {List<Todo> Function(

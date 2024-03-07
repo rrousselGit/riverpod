@@ -33,8 +33,8 @@ typedef ActivityRef = Ref<AsyncValue<Activity>>;
 @ProviderFor(activity)
 const activityProvider = ActivityProvider._();
 
-final class ActivityProvider extends $FunctionalProvider<AsyncValue<Activity>,
-        FutureOr<Activity>, ActivityRef>
+final class ActivityProvider
+    extends $FunctionalProvider<AsyncValue<Activity>, FutureOr<Activity>>
     with $FutureModifier<Activity>, $FutureProvider<Activity, ActivityRef> {
   const ActivityProvider._(
       {FutureOr<Activity> Function(

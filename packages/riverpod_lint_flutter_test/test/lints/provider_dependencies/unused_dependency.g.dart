@@ -11,7 +11,7 @@ typedef RootRef = Ref<int>;
 @ProviderFor(root)
 const rootProvider = RootProvider._();
 
-final class RootProvider extends $FunctionalProvider<int, int, RootRef>
+final class RootProvider extends $FunctionalProvider<int, int>
     with $Provider<int, RootRef> {
   const RootProvider._(
       {int Function(
@@ -70,7 +70,7 @@ typedef DepRef = Ref<int>;
 @ProviderFor(dep)
 const depProvider = DepProvider._();
 
-final class DepProvider extends $FunctionalProvider<int, int, DepRef>
+final class DepProvider extends $FunctionalProvider<int, int>
     with $Provider<int, DepRef> {
   const DepProvider._(
       {int Function(
@@ -129,7 +129,7 @@ typedef Dep2Ref = Ref<int>;
 @ProviderFor(dep2)
 const dep2Provider = Dep2Provider._();
 
-final class Dep2Provider extends $FunctionalProvider<int, int, Dep2Ref>
+final class Dep2Provider extends $FunctionalProvider<int, int>
     with $Provider<int, Dep2Ref> {
   const Dep2Provider._(
       {int Function(
@@ -191,7 +191,7 @@ typedef ExtraDepRef = Ref<int>;
 const extraDepProvider = ExtraDepProvider._();
 
 ////////////
-final class ExtraDepProvider extends $FunctionalProvider<int, int, ExtraDepRef>
+final class ExtraDepProvider extends $FunctionalProvider<int, int>
     with $Provider<int, ExtraDepRef> {
   ////////////
   const ExtraDepProvider._(
@@ -257,7 +257,7 @@ typedef NoDepRef = Ref<int>;
 @ProviderFor(noDep)
 const noDepProvider = NoDepProvider._();
 
-final class NoDepProvider extends $FunctionalProvider<int, int, NoDepRef>
+final class NoDepProvider extends $FunctionalProvider<int, int>
     with $Provider<int, NoDepRef> {
   const NoDepProvider._(
       {int Function(
@@ -322,7 +322,7 @@ const dependenciesFirstThenKeepAliveProvider =
     DependenciesFirstThenKeepAliveProvider._();
 
 final class DependenciesFirstThenKeepAliveProvider
-    extends $FunctionalProvider<int, int, DependenciesFirstThenKeepAliveRef>
+    extends $FunctionalProvider<int, int>
     with $Provider<int, DependenciesFirstThenKeepAliveRef> {
   const DependenciesFirstThenKeepAliveProvider._(
       {int Function(
@@ -386,8 +386,7 @@ typedef NoDepNoParamRef = Ref<int>;
 @ProviderFor(noDepNoParam)
 const noDepNoParamProvider = NoDepNoParamProvider._();
 
-final class NoDepNoParamProvider
-    extends $FunctionalProvider<int, int, NoDepNoParamRef>
+final class NoDepNoParamProvider extends $FunctionalProvider<int, int>
     with $Provider<int, NoDepNoParamRef> {
   const NoDepNoParamProvider._(
       {int Function(
@@ -450,8 +449,7 @@ typedef NoDepWithoutCommaRef = Ref<int>;
 @ProviderFor(noDepWithoutComma)
 const noDepWithoutCommaProvider = NoDepWithoutCommaProvider._();
 
-final class NoDepWithoutCommaProvider
-    extends $FunctionalProvider<int, int, NoDepWithoutCommaRef>
+final class NoDepWithoutCommaProvider extends $FunctionalProvider<int, int>
     with $Provider<int, NoDepWithoutCommaRef> {
   const NoDepWithoutCommaProvider._(
       {int Function(
@@ -514,7 +512,7 @@ typedef RootDepRef = Ref<int>;
 @ProviderFor(rootDep)
 const rootDepProvider = RootDepProvider._();
 
-final class RootDepProvider extends $FunctionalProvider<int, int, RootDepRef>
+final class RootDepProvider extends $FunctionalProvider<int, int>
     with $Provider<int, RootDepRef> {
   const RootDepProvider._(
       {int Function(

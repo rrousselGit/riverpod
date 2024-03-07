@@ -14,7 +14,7 @@ typedef RepositoryRef = Ref<Repository>;
 const repositoryProvider = RepositoryProvider._();
 
 final class RepositoryProvider
-    extends $FunctionalProvider<Repository, Repository, RepositoryRef>
+    extends $FunctionalProvider<Repository, Repository>
     with $Provider<Repository, RepositoryRef> {
   const RepositoryProvider._(
       {Repository Function(

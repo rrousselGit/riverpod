@@ -13,8 +13,8 @@ typedef ActivityRef = Ref<AsyncValue<Activity>>;
 @ProviderFor(activity)
 const activityProvider = ActivityFamily._();
 
-final class ActivityProvider extends $FunctionalProvider<AsyncValue<Activity>,
-        FutureOr<Activity>, ActivityRef>
+final class ActivityProvider
+    extends $FunctionalProvider<AsyncValue<Activity>, FutureOr<Activity>>
     with $FutureModifier<Activity>, $FutureProvider<Activity, ActivityRef> {
   const ActivityProvider._(
       {required ActivityFamily super.from,
@@ -273,8 +273,7 @@ final class ActivityNotifier2Family extends Family {
 }
 
 abstract class _$ActivityNotifier2 extends $AsyncNotifier<Activity> {
-  late final _$args =
-      (ref as $AsyncNotifierProviderElement).origin.argument as String;
+  late final _$args = ref.$arg as String;
   String get activityType => _$args;
 
   FutureOr<Activity> build(

@@ -11,8 +11,7 @@ typedef GeneratorRef = Ref<int>;
 @ProviderFor(generator)
 const generatorProvider = GeneratorFamily._();
 
-final class GeneratorProvider
-    extends $FunctionalProvider<int, int, GeneratorRef>
+final class GeneratorProvider extends $FunctionalProvider<int, int>
     with $Provider<int, GeneratorRef> {
   const GeneratorProvider._(
       {required GeneratorFamily super.from,

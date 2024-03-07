@@ -24,7 +24,7 @@ void main() {
     test('can read and set current ChangeNotifier', () async {
       final container = createContainer();
       final listener = Listener<ValueNotifier<int>>();
-      late ChangeNotifierProviderRef<ValueNotifier<int>> ref;
+      late Ref<ValueNotifier<int>> ref;
       final provider =
           ChangeNotifierProvider.autoDispose<ValueNotifier<int>>((r) {
         ref = r;
@@ -34,7 +34,7 @@ void main() {
       container.listen(provider, listener.call);
 
       verifyZeroInteractions(listener);
-      expect(ref.notifier.value, 0);
+      expect(ref.state.value, 0);
     });
 
     test('can refresh .notifier', () async {

@@ -11,7 +11,7 @@ typedef IntegerRef = Ref<int>;
 @ProviderFor(integer)
 const integerProvider = IntegerProvider._();
 
-final class IntegerProvider extends $FunctionalProvider<int, int, IntegerRef>
+final class IntegerProvider extends $FunctionalProvider<int, int>
     with $Provider<int, IntegerRef> {
   const IntegerProvider._(
       {int Function(
@@ -70,10 +70,9 @@ typedef StateNotifierRef = Ref<MyStateNotifier>;
 @ProviderFor(stateNotifier)
 const stateNotifierProvider = StateNotifierProvider._();
 
-final class StateNotifierProvider extends $FunctionalProvider<
-    MyStateNotifier,
-    MyStateNotifier,
-    StateNotifierRef> with $Provider<MyStateNotifier, StateNotifierRef> {
+final class StateNotifierProvider
+    extends $FunctionalProvider<MyStateNotifier, MyStateNotifier>
+    with $Provider<MyStateNotifier, StateNotifierRef> {
   const StateNotifierProvider._(
       {MyStateNotifier Function(
         StateNotifierRef ref,
@@ -133,9 +132,7 @@ typedef AsyncStateNotifierRef = Ref<AsyncValue<MyStateNotifier>>;
 const asyncStateNotifierProvider = AsyncStateNotifierProvider._();
 
 final class AsyncStateNotifierProvider extends $FunctionalProvider<
-        AsyncValue<MyStateNotifier>,
-        FutureOr<MyStateNotifier>,
-        AsyncStateNotifierRef>
+        AsyncValue<MyStateNotifier>, FutureOr<MyStateNotifier>>
     with
         $FutureModifier<MyStateNotifier>,
         $FutureProvider<MyStateNotifier, AsyncStateNotifierRef> {
@@ -261,9 +258,7 @@ typedef StateNotifierAsyncRef = Ref<AsyncValue<MyStateNotifier>>;
 const stateNotifierAsyncProvider = StateNotifierAsyncProvider._();
 
 final class StateNotifierAsyncProvider extends $FunctionalProvider<
-        AsyncValue<MyStateNotifier>,
-        FutureOr<MyStateNotifier>,
-        StateNotifierAsyncRef>
+        AsyncValue<MyStateNotifier>, FutureOr<MyStateNotifier>>
     with
         $FutureModifier<MyStateNotifier>,
         $FutureProvider<MyStateNotifier, StateNotifierAsyncRef> {
@@ -576,10 +571,9 @@ typedef ChangeNotifierRef = Ref<MyChangeNotifier>;
 @ProviderFor(changeNotifier)
 const changeNotifierProvider = ChangeNotifierProvider._();
 
-final class ChangeNotifierProvider extends $FunctionalProvider<
-    MyChangeNotifier,
-    MyChangeNotifier,
-    ChangeNotifierRef> with $Provider<MyChangeNotifier, ChangeNotifierRef> {
+final class ChangeNotifierProvider
+    extends $FunctionalProvider<MyChangeNotifier, MyChangeNotifier>
+    with $Provider<MyChangeNotifier, ChangeNotifierRef> {
   const ChangeNotifierProvider._(
       {MyChangeNotifier Function(
         ChangeNotifierRef ref,
@@ -708,8 +702,7 @@ typedef NotifierRef = Ref<MyNotifier>;
 @ProviderFor(notifier)
 const notifierProvider = NotifierProvider._();
 
-final class NotifierProvider
-    extends $FunctionalProvider<MyNotifier, MyNotifier, NotifierRef>
+final class NotifierProvider extends $FunctionalProvider<MyNotifier, MyNotifier>
     with $Provider<MyNotifier, NotifierRef> {
   const NotifierProvider._(
       {MyNotifier Function(
@@ -768,8 +761,8 @@ typedef AutoDisposeNotifierRef = Ref<MyAutoDisposeNotifier>;
 @ProviderFor(autoDisposeNotifier)
 const autoDisposeNotifierProvider = AutoDisposeNotifierProvider._();
 
-final class AutoDisposeNotifierProvider extends $FunctionalProvider<
-        MyAutoDisposeNotifier, MyAutoDisposeNotifier, AutoDisposeNotifierRef>
+final class AutoDisposeNotifierProvider
+    extends $FunctionalProvider<MyAutoDisposeNotifier, MyAutoDisposeNotifier>
     with $Provider<MyAutoDisposeNotifier, AutoDisposeNotifierRef> {
   const AutoDisposeNotifierProvider._(
       {MyAutoDisposeNotifier Function(
@@ -899,10 +892,9 @@ typedef AsyncNotifierRef = Ref<MyAsyncNotifier>;
 @ProviderFor(asyncNotifier)
 const asyncNotifierProvider = AsyncNotifierProvider._();
 
-final class AsyncNotifierProvider extends $FunctionalProvider<
-    MyAsyncNotifier,
-    MyAsyncNotifier,
-    AsyncNotifierRef> with $Provider<MyAsyncNotifier, AsyncNotifierRef> {
+final class AsyncNotifierProvider
+    extends $FunctionalProvider<MyAsyncNotifier, MyAsyncNotifier>
+    with $Provider<MyAsyncNotifier, AsyncNotifierRef> {
   const AsyncNotifierProvider._(
       {MyAsyncNotifier Function(
         AsyncNotifierRef ref,
@@ -1031,10 +1023,9 @@ typedef RawNotifierRef = Ref<Raw<MyChangeNotifier>>;
 @ProviderFor(rawNotifier)
 const rawNotifierProvider = RawNotifierProvider._();
 
-final class RawNotifierProvider extends $FunctionalProvider<
-    Raw<MyChangeNotifier>,
-    Raw<MyChangeNotifier>,
-    RawNotifierRef> with $Provider<Raw<MyChangeNotifier>, RawNotifierRef> {
+final class RawNotifierProvider
+    extends $FunctionalProvider<Raw<MyChangeNotifier>, Raw<MyChangeNotifier>>
+    with $Provider<Raw<MyChangeNotifier>, RawNotifierRef> {
   const RawNotifierProvider._(
       {Raw<MyChangeNotifier> Function(
         RawNotifierRef ref,
@@ -1094,9 +1085,7 @@ typedef RawFutureNotifierRef = Ref<Raw<Future<MyChangeNotifier>>>;
 const rawFutureNotifierProvider = RawFutureNotifierProvider._();
 
 final class RawFutureNotifierProvider extends $FunctionalProvider<
-        Raw<Future<MyChangeNotifier>>,
-        Raw<Future<MyChangeNotifier>>,
-        RawFutureNotifierRef>
+        Raw<Future<MyChangeNotifier>>, Raw<Future<MyChangeNotifier>>>
     with $Provider<Raw<Future<MyChangeNotifier>>, RawFutureNotifierRef> {
   const RawFutureNotifierProvider._(
       {Raw<Future<MyChangeNotifier>> Function(
@@ -1157,9 +1146,7 @@ typedef RawStreamNotifierRef = Ref<Raw<Stream<MyChangeNotifier>>>;
 const rawStreamNotifierProvider = RawStreamNotifierProvider._();
 
 final class RawStreamNotifierProvider extends $FunctionalProvider<
-        Raw<Stream<MyChangeNotifier>>,
-        Raw<Stream<MyChangeNotifier>>,
-        RawStreamNotifierRef>
+        Raw<Stream<MyChangeNotifier>>, Raw<Stream<MyChangeNotifier>>>
     with $Provider<Raw<Stream<MyChangeNotifier>>, RawStreamNotifierRef> {
   const RawStreamNotifierProvider._(
       {Raw<Stream<MyChangeNotifier>> Function(
@@ -1220,9 +1207,7 @@ typedef FutureRawNotifierRef = Ref<AsyncValue<Raw<MyChangeNotifier>>>;
 const futureRawNotifierProvider = FutureRawNotifierProvider._();
 
 final class FutureRawNotifierProvider extends $FunctionalProvider<
-        AsyncValue<Raw<MyChangeNotifier>>,
-        FutureOr<Raw<MyChangeNotifier>>,
-        FutureRawNotifierRef>
+        AsyncValue<Raw<MyChangeNotifier>>, FutureOr<Raw<MyChangeNotifier>>>
     with
         $FutureModifier<Raw<MyChangeNotifier>>,
         $FutureProvider<Raw<MyChangeNotifier>, FutureRawNotifierRef> {
@@ -1277,9 +1262,7 @@ typedef StreamRawNotifierRef = Ref<AsyncValue<Raw<MyChangeNotifier>>>;
 const streamRawNotifierProvider = StreamRawNotifierProvider._();
 
 final class StreamRawNotifierProvider extends $FunctionalProvider<
-        AsyncValue<Raw<MyChangeNotifier>>,
-        Stream<Raw<MyChangeNotifier>>,
-        StreamRawNotifierRef>
+        AsyncValue<Raw<MyChangeNotifier>>, Stream<Raw<MyChangeNotifier>>>
     with
         $FutureModifier<Raw<MyChangeNotifier>>,
         $StreamProvider<Raw<MyChangeNotifier>, StreamRawNotifierRef> {

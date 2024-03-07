@@ -11,7 +11,7 @@ typedef FnRef = Ref<int>;
 @ProviderFor(fn)
 const fnProvider = FnFamily._();
 
-final class FnProvider extends $FunctionalProvider<int, int, FnRef>
+final class FnProvider extends $FunctionalProvider<int, int>
     with $Provider<int, FnRef> {
   const FnProvider._(
       {required FnFamily super.from,
@@ -336,7 +336,7 @@ final class MyNotifierFamily extends Family {
 }
 
 abstract class _$MyNotifier extends $Notifier<int> {
-  late final _$args = (ref as $NotifierProviderElement).origin.argument as (
+  late final _$args = ref.$arg as (
     BuildContext, {
     BuildContext context2,
   });

@@ -14,9 +14,7 @@ typedef FetchConfigurationRef = Ref<AsyncValue<Configuration>>;
 const fetchConfigurationProvider = FetchConfigurationProvider._();
 
 final class FetchConfigurationProvider extends $FunctionalProvider<
-        AsyncValue<Configuration>,
-        FutureOr<Configuration>,
-        FetchConfigurationRef>
+        AsyncValue<Configuration>, FutureOr<Configuration>>
     with
         $FutureModifier<Configuration>,
         $FutureProvider<Configuration, FetchConfigurationRef> {

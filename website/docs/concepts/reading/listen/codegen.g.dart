@@ -13,7 +13,7 @@ typedef AnotherRef = Ref<void>;
 @ProviderFor(another)
 const anotherProvider = AnotherProvider._();
 
-final class AnotherProvider extends $FunctionalProvider<void, void, AnotherRef>
+final class AnotherProvider extends $FunctionalProvider<void, void>
     with $Provider<void, AnotherRef> {
   const AnotherProvider._(
       {void Function(

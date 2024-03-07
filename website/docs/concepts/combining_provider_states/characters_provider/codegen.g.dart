@@ -13,8 +13,7 @@ typedef SearchRef = Ref<String>;
 @ProviderFor(search)
 const searchProvider = SearchProvider._();
 
-final class SearchProvider
-    extends $FunctionalProvider<String, String, SearchRef>
+final class SearchProvider extends $FunctionalProvider<String, String>
     with $Provider<String, SearchRef> {
   const SearchProvider._(
       {String Function(
@@ -74,7 +73,7 @@ typedef ConfigsRef = Ref<AsyncValue<Configuration>>;
 const configsProvider = ConfigsProvider._();
 
 final class ConfigsProvider extends $FunctionalProvider<
-        AsyncValue<Configuration>, Stream<Configuration>, ConfigsRef>
+        AsyncValue<Configuration>, Stream<Configuration>>
     with
         $FutureModifier<Configuration>,
         $StreamProvider<Configuration, ConfigsRef> {
@@ -129,7 +128,7 @@ typedef CharactersRef = Ref<AsyncValue<List<Character>>>;
 const charactersProvider = CharactersProvider._();
 
 final class CharactersProvider extends $FunctionalProvider<
-        AsyncValue<List<Character>>, FutureOr<List<Character>>, CharactersRef>
+        AsyncValue<List<Character>>, FutureOr<List<Character>>>
     with
         $FutureModifier<List<Character>>,
         $FutureProvider<List<Character>, CharactersRef> {

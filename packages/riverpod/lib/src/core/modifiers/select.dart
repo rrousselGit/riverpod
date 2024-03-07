@@ -143,7 +143,8 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
   @override
   OutputT read(Node node) {
     final input = provider.read(node);
-    return selector(input);
+
+    return _select(Result.data(input)).requireState;
   }
 }
 

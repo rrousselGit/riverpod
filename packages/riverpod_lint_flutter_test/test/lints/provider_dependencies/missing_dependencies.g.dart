@@ -11,7 +11,7 @@ typedef DepRef = Ref<int>;
 @ProviderFor(dep)
 const depProvider = DepProvider._();
 
-final class DepProvider extends $FunctionalProvider<int, int, DepRef>
+final class DepProvider extends $FunctionalProvider<int, int>
     with $Provider<int, DepRef> {
   const DepProvider._(
       {int Function(
@@ -70,8 +70,7 @@ typedef TransitiveDepRef = Ref<int>;
 @ProviderFor(transitiveDep)
 const transitiveDepProvider = TransitiveDepProvider._();
 
-final class TransitiveDepProvider
-    extends $FunctionalProvider<int, int, TransitiveDepRef>
+final class TransitiveDepProvider extends $FunctionalProvider<int, int>
     with $Provider<int, TransitiveDepRef> {
   const TransitiveDepProvider._(
       {int Function(
@@ -134,7 +133,7 @@ typedef Dep2Ref = Ref<int>;
 @ProviderFor(dep2)
 const dep2Provider = Dep2Provider._();
 
-final class Dep2Provider extends $FunctionalProvider<int, int, Dep2Ref>
+final class Dep2Provider extends $FunctionalProvider<int, int>
     with $Provider<int, Dep2Ref> {
   const Dep2Provider._(
       {int Function(
@@ -193,8 +192,7 @@ typedef DepFamilyRef = Ref<int>;
 @ProviderFor(depFamily)
 const depFamilyProvider = DepFamilyFamily._();
 
-final class DepFamilyProvider
-    extends $FunctionalProvider<int, int, DepFamilyRef>
+final class DepFamilyProvider extends $FunctionalProvider<int, int>
     with $Provider<int, DepFamilyRef> {
   const DepFamilyProvider._(
       {required DepFamilyFamily super.from,
@@ -331,8 +329,7 @@ const plainAnnotationProvider = PlainAnnotationProvider._();
 
 ////////////
 // expect_lint: provider_dependencies
-final class PlainAnnotationProvider
-    extends $FunctionalProvider<int, int, PlainAnnotationRef>
+final class PlainAnnotationProvider extends $FunctionalProvider<int, int>
     with $Provider<int, PlainAnnotationRef> {
   ////////////
 // expect_lint: provider_dependencies
@@ -393,8 +390,7 @@ typedef CustomAnnotationRef = Ref<int>;
 @ProviderFor(customAnnotation)
 const customAnnotationProvider = CustomAnnotationProvider._();
 
-final class CustomAnnotationProvider
-    extends $FunctionalProvider<int, int, CustomAnnotationRef>
+final class CustomAnnotationProvider extends $FunctionalProvider<int, int>
     with $Provider<int, CustomAnnotationRef> {
   const CustomAnnotationProvider._(
       {int Function(
@@ -455,7 +451,7 @@ const customAnnotationWithTrailingCommaProvider =
     CustomAnnotationWithTrailingCommaProvider._();
 
 final class CustomAnnotationWithTrailingCommaProvider
-    extends $FunctionalProvider<int, int, CustomAnnotationWithTrailingCommaRef>
+    extends $FunctionalProvider<int, int>
     with $Provider<int, CustomAnnotationWithTrailingCommaRef> {
   const CustomAnnotationWithTrailingCommaProvider._(
       {int Function(
@@ -516,8 +512,7 @@ typedef ExistingDepRef = Ref<int>;
 @ProviderFor(existingDep)
 const existingDepProvider = ExistingDepProvider._();
 
-final class ExistingDepProvider
-    extends $FunctionalProvider<int, int, ExistingDepRef>
+final class ExistingDepProvider extends $FunctionalProvider<int, int>
     with $Provider<int, ExistingDepRef> {
   const ExistingDepProvider._(
       {int Function(
@@ -576,8 +571,7 @@ typedef MultipleDepsRef = Ref<int>;
 @ProviderFor(multipleDeps)
 const multipleDepsProvider = MultipleDepsProvider._();
 
-final class MultipleDepsProvider
-    extends $FunctionalProvider<int, int, MultipleDepsRef>
+final class MultipleDepsProvider extends $FunctionalProvider<int, int>
     with $Provider<int, MultipleDepsRef> {
   const MultipleDepsProvider._(
       {int Function(
@@ -642,8 +636,7 @@ const providerWithDartDocProvider = ProviderWithDartDocProvider._();
 
 /// Random doc to test that identifiers in docs don't trigger the lint.
 /// [dep], [DepWidget], [depProvider]
-final class ProviderWithDartDocProvider
-    extends $FunctionalProvider<int, int, ProviderWithDartDocRef>
+final class ProviderWithDartDocProvider extends $FunctionalProvider<int, int>
     with $Provider<int, ProviderWithDartDocRef> {
   /// Random doc to test that identifiers in docs don't trigger the lint.
   /// [dep], [DepWidget], [depProvider]

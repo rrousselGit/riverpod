@@ -71,7 +71,7 @@ class _ValueProviderElement<StateT> extends ProviderElementBase<StateT> {
   void _setValue(StateT value) => setStateResult(ResultData(value));
 
   @override
-  void create({required bool didChangeDependency}) {
+  void create(Ref<StateT> ref, {required bool didChangeDependency}) {
     _setValue(provider._value);
   }
 

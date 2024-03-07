@@ -13,8 +13,7 @@ typedef TagThemeRef = Ref<TagTheme>;
 @ProviderFor(tagTheme)
 const tagThemeProvider = TagThemeProvider._();
 
-final class TagThemeProvider
-    extends $FunctionalProvider<TagTheme, TagTheme, TagThemeRef>
+final class TagThemeProvider extends $FunctionalProvider<TagTheme, TagTheme>
     with $Provider<TagTheme, TagThemeRef> {
   const TagThemeProvider._(
       {TagTheme Function(

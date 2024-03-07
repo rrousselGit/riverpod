@@ -152,7 +152,7 @@ final class GeneratedNotifierFamily extends Family {
 }
 
 abstract class _$GeneratedNotifier extends $Notifier<int> {
-  late final _$args = (ref as $NotifierProviderElement).origin.argument as int;
+  late final _$args = ref.$arg as int;
   int get param => _$args;
 
   int build(

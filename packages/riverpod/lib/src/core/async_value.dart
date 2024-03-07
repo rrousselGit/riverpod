@@ -1,40 +1,13 @@
 import 'package:meta/meta.dart';
 
-import '../common/result.dart';
 import '../common/stack_trace.dart';
 import '../framework.dart';
 import '../providers/future_provider.dart' show FutureProvider;
 import '../providers/stream_provider.dart' show StreamProvider;
 
-/// An extension for [asyncTransition].
 @internal
-extension AsyncTransition<StateT> on ProviderElementBase<AsyncValue<StateT>> {
-  /// Internal utility for transitioning an [AsyncValue] after a provider refresh.
-  ///
-  /// [seamless] controls how the previous state is preserved:
-  /// - seamless:true => import previous state and skip loading
-  /// - seamless:false => import previous state and prefer loading
-  void asyncTransition(
-    AsyncValue<StateT> newState, {
-    required bool seamless,
-  }) {
-// ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-    final previous = stateResult?.requireState;
-
-    if (previous == null) {
-// ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-      setStateResult(ResultData(newState));
-    } else {
-// ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
-      setStateResult(
-        ResultData(
-          newState
-              ._cast<StateT>()
-              .copyWithPrevious(previous, isRefresh: seamless),
-        ),
-      );
-    }
-  }
+extension AsyncTransition<StateT> on AsyncValue<StateT> {
+  AsyncValue<T> cast<T>() => _cast<T>();
 }
 
 /// A utility for safely manipulating asynchronous data.

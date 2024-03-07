@@ -11,7 +11,7 @@ typedef ScopedRef = Ref<int>;
 @ProviderFor(scoped)
 const scopedProvider = ScopedProvider._();
 
-final class ScopedProvider extends $FunctionalProvider<int, int, ScopedRef>
+final class ScopedProvider extends $FunctionalProvider<int, int>
     with $Provider<int, ScopedRef> {
   const ScopedProvider._(
       {int Function(
@@ -70,7 +70,7 @@ typedef RootRef = Ref<int>;
 @ProviderFor(root)
 const rootProvider = RootProvider._();
 
-final class RootProvider extends $FunctionalProvider<int, int, RootRef>
+final class RootProvider extends $FunctionalProvider<int, int>
     with $Provider<int, RootRef> {
   const RootProvider._(
       {int Function(

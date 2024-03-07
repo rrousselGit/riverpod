@@ -15,8 +15,7 @@ base mixin $Provider<StateT, RefT> on ProviderBase<StateT> {
 
 // TODO changelog ProviderRef was removed. Used Ref directly
 /// {@macro riverpod.provider}
-base class Provider<StateT>
-    extends $FunctionalProvider<StateT, StateT, Ref<StateT>>
+base class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
     with $Provider<StateT, Ref<StateT>>, LegacyProviderMixin<StateT> {
   /// {@macro riverpod.provider}
   // TODO make all providers const under all variations
@@ -353,14 +352,8 @@ class $ProviderElement<StateT> extends ProviderElementBase<StateT> {
   final $Provider<StateT, Ref<StateT>> provider;
 
   @override
-  StateT get state => requireState;
-
-  @override
-  set state(StateT newState) => setStateResult(ResultData(newState));
-
-  @override
-  void create({required bool didChangeDependency}) {
-    setStateResult(ResultData(provider.create(this)));
+  void create(Ref<StateT> ref, {required bool didChangeDependency}) {
+    setStateResult(ResultData(provider.create(ref)));
   }
 
   @override
@@ -371,8 +364,8 @@ class $ProviderElement<StateT> extends ProviderElementBase<StateT> {
 
 /// The [Family] of [Provider]
 // TODO remove custom family types
-class ProviderFamily<R, Arg>
-    extends FunctionalFamily<Ref<R>, R, Arg, R, Provider<R>> {
+class ProviderFamily<StateT, ArgT>
+    extends FunctionalFamily<StateT, ArgT, StateT, Provider<StateT>> {
   ProviderFamily(
     super._createFn, {
     super.name,

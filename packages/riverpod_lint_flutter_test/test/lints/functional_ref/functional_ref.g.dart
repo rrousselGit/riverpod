@@ -11,7 +11,7 @@ typedef NamelessRef = Ref<int>;
 @ProviderFor(nameless)
 const namelessProvider = NamelessProvider._();
 
-final class NamelessProvider extends $FunctionalProvider<int, int, NamelessRef>
+final class NamelessProvider extends $FunctionalProvider<int, int>
     with $Provider<int, NamelessRef> {
   const NamelessProvider._(
       {int Function(
@@ -71,7 +71,7 @@ typedef GenericsRef<A extends num, B> = Ref<int>;
 const genericsProvider = GenericsFamily._();
 
 final class GenericsProvider<A extends num, B>
-    extends $FunctionalProvider<int, int, GenericsRef<A, B>>
+    extends $FunctionalProvider<int, int>
     with $Provider<int, GenericsRef<A, B>> {
   const GenericsProvider._(
       {required GenericsFamily super.from,
@@ -193,7 +193,7 @@ typedef NoGenericsRef<A extends num, B> = Ref<int>;
 const noGenericsProvider = NoGenericsFamily._();
 
 final class NoGenericsProvider<A extends num, B>
-    extends $FunctionalProvider<int, int, NoGenericsRef<A, B>>
+    extends $FunctionalProvider<int, int>
     with $Provider<int, NoGenericsRef<A, B>> {
   const NoGenericsProvider._(
       {required NoGenericsFamily super.from,
@@ -314,8 +314,7 @@ typedef MissingGenericsRef<A, B> = Ref<int>;
 @ProviderFor(missingGenerics)
 const missingGenericsProvider = MissingGenericsFamily._();
 
-final class MissingGenericsProvider<A, B>
-    extends $FunctionalProvider<int, int, MissingGenericsRef<A, B>>
+final class MissingGenericsProvider<A, B> extends $FunctionalProvider<int, int>
     with $Provider<int, MissingGenericsRef<A, B>> {
   const MissingGenericsProvider._(
       {required MissingGenericsFamily super.from,
@@ -436,8 +435,7 @@ typedef WrongOrderRef<B, A> = Ref<int>;
 @ProviderFor(wrongOrder)
 const wrongOrderProvider = WrongOrderFamily._();
 
-final class WrongOrderProvider<B, A>
-    extends $FunctionalProvider<int, int, WrongOrderRef<B, A>>
+final class WrongOrderProvider<B, A> extends $FunctionalProvider<int, int>
     with $Provider<int, WrongOrderRef<B, A>> {
   const WrongOrderProvider._(
       {required WrongOrderFamily super.from,

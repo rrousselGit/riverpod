@@ -113,6 +113,7 @@ class ProviderElementProxy<InputT, OutputT>
     final element = node.readProviderElement(provider);
     element.flush();
     element._mayNeedDispose();
+
     return _lense(element).value;
   }
 

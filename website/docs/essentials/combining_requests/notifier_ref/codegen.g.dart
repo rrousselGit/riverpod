@@ -13,7 +13,7 @@ typedef OtherRef = Ref<int>;
 @ProviderFor(other)
 const otherProvider = OtherProvider._();
 
-final class OtherProvider extends $FunctionalProvider<int, int, OtherRef>
+final class OtherProvider extends $FunctionalProvider<int, int>
     with $Provider<int, OtherRef> {
   const OtherProvider._(
       {int Function(

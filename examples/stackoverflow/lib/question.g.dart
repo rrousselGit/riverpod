@@ -104,8 +104,8 @@ const currentQuestionProvider = CurrentQuestionProvider._();
 ///
 /// This is an optional step. Since scoping is a fairly advanced mechanism,
 /// it's entirely fine to simply pass the [Question] to [QuestionItem] directly.
-final class CurrentQuestionProvider extends $FunctionalProvider<
-        AsyncValue<Question>, AsyncValue<Question>, CurrentQuestionRef>
+final class CurrentQuestionProvider
+    extends $FunctionalProvider<AsyncValue<Question>, AsyncValue<Question>>
     with $Provider<AsyncValue<Question>, CurrentQuestionRef> {
   /// A scoped provider, exposing the current question used by [QuestionItem].
   ///

@@ -20,9 +20,8 @@ const myListenableProvider = MyListenableProvider._();
 /// A provider which creates a ValueNotifier and update its listeners
 /// whenever the value changes.
 final class MyListenableProvider extends $FunctionalProvider<
-    Raw<ValueNotifier<int>>,
-    Raw<ValueNotifier<int>>,
-    MyListenableRef> with $Provider<Raw<ValueNotifier<int>>, MyListenableRef> {
+        Raw<ValueNotifier<int>>, Raw<ValueNotifier<int>>>
+    with $Provider<Raw<ValueNotifier<int>>, MyListenableRef> {
   /// A provider which creates a ValueNotifier and update its listeners
   /// whenever the value changes.
   const MyListenableProvider._(

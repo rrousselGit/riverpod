@@ -19,10 +19,10 @@ void main() {
     final container = ProviderContainer.test(
       overrides: [
         provider.overrideWith(
-          (StateNotifierProviderRef<TestNotifier, int> ref) => TestNotifier(42),
+          (Ref<int> ref) => TestNotifier(42),
         ),
         autoDispose.overrideWith(
-          (StateNotifierProviderRef<TestNotifier, int> ref) => TestNotifier(84),
+          (Ref<int> ref) => TestNotifier(84),
         ),
       ],
     );
@@ -42,12 +42,11 @@ void main() {
     final container = ProviderContainer.test(
       overrides: [
         family.overrideWith(
-          (StateNotifierProviderRef<TestNotifier, int> ref, int arg) =>
-              TestNotifier(42 + arg),
+          (Ref<int> ref, int arg) => TestNotifier(42 + arg),
         ),
         autoDisposeFamily.overrideWith(
           (
-            StateNotifierProviderRef<TestNotifier, int> ref,
+            Ref<int> ref,
             int arg,
           ) =>
               TestNotifier(84 + arg),
@@ -98,7 +97,7 @@ void main() {
   test('can read and set current StateNotifier', () async {
     final container = ProviderContainer.test();
     final listener = Listener<int>();
-    late StateNotifierProviderRef<Counter, int> ref;
+    late Ref<int> ref;
     final provider = StateNotifierProvider<Counter, int>((r) {
       ref = r;
       return Counter();
@@ -107,7 +106,7 @@ void main() {
     container.listen(provider, listener.call);
 
     verifyZeroInteractions(listener);
-    expect(ref.notifier.state, 0);
+    expect(ref.state, 0);
   });
 
   test('can be auto-scoped', () async {

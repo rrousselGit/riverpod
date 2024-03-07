@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart' show ProviderElementBase;
+import 'package:riverpod/src/internals.dart'
+    show CircularDependencyError, UnmountedRefException;
 import 'package:test/test.dart';
 
 import '../utils.dart';
@@ -16,6 +17,7 @@ final refMethodsThatDependOnProviders =
   'listen': (ref, p) => ref.listen(p, (prev, next) {}),
   'invalidate': (ref, p) => ref.invalidate(p),
   'refresh': (ref, p) => ref.refresh(p),
+  'exists': (ref, p) => ref.exists(p),
 };
 final refMethodsThatDependOnListenables =
     <String, void Function(Ref<Object?> ref, ProviderListenable<Object?>)>{
@@ -30,6 +32,175 @@ final refMethodsThatDependOnProviderOrFamilies =
 
 void main() {
   group('Ref', () {
+    test('asserts that a lifecycle cannot be used after a ref is unmounted',
+        () {
+      late Ref<Object?> ref;
+      final container = ProviderContainer.test();
+      final dep = StateProvider((ref) => 0);
+      final provider = Provider<Object?>((r) {
+        r.watch(dep);
+        ref = r;
+        return Object();
+      });
+
+      container.read(provider);
+
+      container.read(dep.notifier).state++;
+
+      final another = Provider((ref) => 0);
+
+      expect(
+        () => ref.state,
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.state = 42,
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.watch(another),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.invalidateSelf(),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.invalidate(dep),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.refresh(another),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.read(another),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.onDispose(() {}),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.onAddListener(() {}),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.onCancel(() {}),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.onRemoveListener(() {}),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.onResume(() {}),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.notifyListeners(),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.listen(another, (_, __) {}),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => ref.exists(another),
+        throwsA(isA<UnmountedRefException>()),
+      );
+
+      expect(
+        () => ref.keepAlive(),
+        throwsA(isA<UnmountedRefException>()),
+      );
+    });
+
+    test('asserts that a lifecycle cannot be used inside selectors', () {
+      late Ref<Object?> ref;
+      final container = ProviderContainer.test();
+      final dep = StateProvider((ref) => 0);
+      final provider = Provider<Object?>((r) {
+        r.watch(dep);
+        ref = r;
+        return Object();
+      });
+
+      container.read(provider);
+
+      container.read(dep.notifier).state++;
+
+      final another = Provider((ref) => 0);
+
+      expect(
+        () => container.read(provider.select((_) => ref.state)),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container.read(provider.select((_) => ref.state = 42)),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container.read(provider.select((_) => ref.watch(another))),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container.read(provider.select((_) => ref.invalidateSelf())),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container.read(provider.select((_) => ref.invalidate(dep))),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container.read(provider.select((_) => ref.refresh(another))),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container.read(provider.select((_) => ref.read(another))),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container.read(provider.select((_) => ref.onDispose(() {}))),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container.read(provider.select((_) => ref.onAddListener(() {}))),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container.read(provider.select((_) => ref.onCancel(() {}))),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () =>
+            container.read(provider.select((_) => ref.onRemoveListener(() {}))),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container.read(provider.select((_) => ref.onResume(() {}))),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container.read(provider.select((_) => ref.notifyListeners())),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container
+            .read(provider.select((_) => ref.listen(another, (_, __) {}))),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => container.read(provider.select((_) => ref.exists(another))),
+        throwsA(isA<AssertionError>()),
+      );
+
+      expect(
+        () => container.read(provider.select((_) => ref.keepAlive())),
+        throwsA(isA<AssertionError>()),
+      );
+    });
+
     group('invalidate', () {
       test('can disposes of the element if not used anymore', () async {
         late Ref<Object?> ref;
@@ -98,6 +269,69 @@ void main() {
     });
 
     group('invalidateSelf', () {
+      test('calls dispose immediately', () {
+        final container = ProviderContainer.test();
+        final listener = OnDisposeMock();
+        late Ref<Object?> ref;
+        final provider = Provider((r) {
+          ref = r;
+          ref.onDispose(listener.call);
+        });
+
+        container.read(provider);
+        verifyZeroInteractions(listener);
+
+        ref.invalidateSelf();
+
+        verifyOnly(listener, listener());
+      });
+
+      test('triggers a rebuild on next frame', () async {
+        final container = ProviderContainer.test();
+        final listener = Listener<int>();
+        var result = 0;
+        late Ref<Object?> ref;
+        final provider = Provider((r) {
+          ref = r;
+          return result;
+        });
+
+        container.listen(provider, listener.call);
+        verifyZeroInteractions(listener);
+
+        ref.invalidateSelf();
+        result = 1;
+
+        verifyZeroInteractions(listener);
+
+        await container.pump();
+
+        verifyOnly(listener, listener(0, 1));
+      });
+
+      test('merges the rebuild with dependency change rebuild', () async {
+        final container = ProviderContainer.test();
+        final listener = Listener<int>();
+        final dep = StateProvider((ref) => 0);
+        late Ref<Object?> ref;
+        final provider = Provider((r) {
+          ref = r;
+          return ref.watch(dep);
+        });
+
+        container.listen(provider, listener.call);
+        verifyZeroInteractions(listener);
+
+        ref.invalidateSelf();
+        container.read(dep.notifier).state++;
+
+        verifyZeroInteractions(listener);
+
+        await container.pump();
+
+        verifyOnly(listener, listener(0, 1));
+      });
+
       test('can disposes of the element if not used anymore', () async {
         late Ref<Object?> ref;
         final provider = Provider.autoDispose((r) {
@@ -135,46 +369,23 @@ void main() {
       });
     });
 
-    test(
-      'cannot call ref.watch/ref.read/ref.listen/ref.onDispose after a dependency changed',
-      () {
-        // TODO assert invalidate & co also throw
-        late Ref<Object?> ref;
-        final container = ProviderContainer.test();
-        final dep = StateProvider((ref) => 0);
-        final provider = Provider((r) {
-          r.watch(dep);
-          ref = r;
+    test("can't use ref inside onDispose", () {
+      final provider2 = Provider((ref) => 0);
+      final provider = Provider((ref) {
+        ref.onDispose(() {
+          ref.watch(provider2);
         });
+        return ref;
+      });
+      final container = ProviderContainer.test();
 
-        container.read(provider);
+      container.read(provider);
 
-        container.read(dep.notifier).state++;
+      final errors = <Object>[];
+      runZonedGuarded(container.dispose, (err, _) => errors.add(err));
 
-        final another = Provider((ref) => 0);
-
-        expect(
-          () => ref.watch(another),
-          throwsA(isA<AssertionError>()),
-        );
-        expect(
-          () => ref.refresh(another),
-          throwsA(isA<AssertionError>()),
-        );
-        expect(
-          () => ref.read(another),
-          throwsA(isA<AssertionError>()),
-        );
-        expect(
-          () => ref.onDispose(() {}),
-          throwsA(isA<AssertionError>()),
-        );
-        expect(
-          () => ref.listen(another, (_, __) {}),
-          throwsA(isA<AssertionError>()),
-        );
-      },
-    );
+      expect(errors, [isA<UnmountedRefException>()]);
+    });
 
     group(
         'asserts that a provider cannot depend on a provider that is not in its dependencies:',
@@ -340,6 +551,38 @@ void main() {
           );
         });
       }
+    });
+
+    group('.exists', () {
+      test('Returns true if available on ancestor container', () {
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(parent: root);
+        final provider = Provider((ref) => 0);
+
+        root.read(provider);
+
+        expect(container.exists(provider), true);
+        expect(root.exists(provider), true);
+      });
+
+      test('simple use-case', () {
+        final container = ProviderContainer.test();
+        final provider = Provider((ref) => 0);
+        final refProvider = Provider((ref) => ref);
+
+        final ref = container.read(refProvider);
+
+        expect(
+          container.getAllProviderElements().map((e) => e.origin),
+          [refProvider],
+        );
+        expect(container.exists(refProvider), true);
+        expect(ref.exists(provider), false);
+
+        ref.read(provider);
+
+        expect(ref.exists(provider), true);
+      });
     });
 
     group('listenSelf', () {
@@ -1438,6 +1681,1015 @@ void main() {
       });
     });
 
+    group('.notifyListeners', () {
+      test('If called after initialization, notify listeners', () {
+        final observer = ProviderObserverMock();
+        final listener = Listener<int>();
+        final selfListener = Listener<int>();
+        final container = ProviderContainer.test(observers: [observer]);
+        late Ref<int> ref;
+        final provider = Provider<int>((r) {
+          ref = r;
+          ref.listenSelf(selfListener.call);
+          return 0;
+        });
+
+        container.listen(provider, listener.call, fireImmediately: true);
+
+        verifyOnly(observer, observer.didAddProvider(provider, 0, container));
+        verifyOnly(listener, listener(null, 0));
+        verifyOnly(selfListener, selfListener(null, 0));
+
+        ref.notifyListeners();
+
+        verifyOnly(listener, listener(0, 0));
+        verifyOnly(selfListener, selfListener(0, 0));
+        verifyOnly(
+          observer,
+          observer.didUpdateProvider(provider, 0, 0, container),
+        );
+      });
+
+      test(
+          'can be invoked during first initialization, and does not notify listeners',
+          () {
+        final observer = ProviderObserverMock();
+        final selfListener = Listener<int>();
+        final listener = Listener<int>();
+        final container = ProviderContainer.test(observers: [observer]);
+        final provider = Provider<int>((ref) {
+          ref.listenSelf(selfListener.call);
+          ref.notifyListeners();
+          return 0;
+        });
+
+        container.listen(provider, listener.call, fireImmediately: true);
+
+        verifyOnly(observer, observer.didAddProvider(provider, 0, container));
+        verifyOnly(listener, listener(null, 0));
+        verifyOnly(selfListener, selfListener(null, 0));
+      });
+
+      test(
+          'can be invoked during a re-initialization, and does not notify listeners',
+          () {
+        final observer = ProviderObserverMock();
+        final listener = Listener<Object>();
+        final selfListener = Listener<Object>();
+        final container = ProviderContainer.test(observers: [observer]);
+        var callNotifyListeners = false;
+        const firstValue = 'first';
+        const secondValue = 'second';
+        var result = firstValue;
+        final provider = Provider<Object>((ref) {
+          ref.listenSelf(selfListener.call);
+          if (callNotifyListeners) {
+            ref.notifyListeners();
+          }
+          return result;
+        });
+
+        container.listen(provider, listener.call, fireImmediately: true);
+
+        verifyOnly(
+          observer,
+          observer.didAddProvider(provider, firstValue, container),
+        );
+        verifyOnly(selfListener, selfListener(null, firstValue));
+        verifyOnly(listener, listener(null, firstValue));
+
+        result = secondValue;
+        callNotifyListeners = true;
+        container.refresh(provider);
+
+        verifyOnly(selfListener, selfListener(firstValue, secondValue));
+        verifyOnly(listener, listener(firstValue, secondValue));
+        verify(observer.didDisposeProvider(provider, container));
+        verify(
+          observer.didUpdateProvider(
+            provider,
+            firstValue,
+            secondValue,
+            container,
+          ),
+        ).called(1);
+        verifyNoMoreInteractions(observer);
+      });
+    });
+
+    group('.refresh', () {
+      test('Throws if a circular dependency is detected', () {
+        // Regression test for https://github.com/rrousselGit/riverpod/issues/2336
+        late Ref<Object?> ref;
+        final a = Provider((r) {
+          ref = r;
+          return 0;
+        });
+        final b = Provider((r) => r.watch(a));
+        final container = ProviderContainer.test();
+
+        container.read(b);
+
+        expect(
+          () => ref.refresh(b),
+          throwsA(isA<CircularDependencyError>()),
+        );
+      });
+    });
+
+    group('.invalidate', () {
+      test('Throws if a circular dependency is detected', () {
+        // Regression test for https://github.com/rrousselGit/riverpod/issues/2336
+        late Ref<Object?> ref;
+        final a = Provider((r) {
+          ref = r;
+          return 0;
+        });
+        final b = Provider((r) => r.watch(a));
+        final container = ProviderContainer.test();
+
+        container.read(b);
+
+        expect(
+          () => ref.invalidate(b),
+          throwsA(isA<CircularDependencyError>()),
+        );
+      });
+
+      test('Circular dependency ignores families', () {
+        late Ref<Object?> ref;
+        final a = Provider((r) {
+          ref = r;
+          return 0;
+        });
+        final b = Provider.family<int, int>((r, id) => r.watch(a));
+        final container = ProviderContainer.test();
+
+        container.read(b(0));
+
+        expect(
+          () => ref.invalidate(b),
+          returnsNormally,
+        );
+      });
+
+      test('triggers a rebuild on next frame', () async {
+        final container = ProviderContainer.test();
+        final listener = Listener<int>();
+        var result = 0;
+        final provider = Provider((r) => result);
+        late Ref<Object?> ref;
+        final another = Provider((r) {
+          ref = r;
+        });
+
+        container.listen(provider, listener.call);
+        container.read(another);
+        verifyZeroInteractions(listener);
+
+        ref.invalidate(provider);
+        ref.invalidate(provider);
+        result = 1;
+
+        verifyZeroInteractions(listener);
+
+        await container.pump();
+
+        verifyOnly(listener, listener(0, 1));
+      });
+
+      group('on families', () {
+        test('recomputes providers associated with the family', () async {
+          final container = ProviderContainer.test();
+          final listener = Listener<String>();
+          final listener2 = Listener<String>();
+          final listener3 = Listener<int>();
+          var result = 0;
+          final unrelated = Provider((ref) => result);
+          final provider = Provider.family<String, int>((r, i) => '$result-$i');
+          late Ref<Object?> ref;
+          final another = Provider((r) {
+            ref = r;
+          });
+
+          container.read(another);
+
+          container.listen(provider(0), listener.call, fireImmediately: true);
+          container.listen(provider(1), listener2.call, fireImmediately: true);
+          container.listen(unrelated, listener3.call, fireImmediately: true);
+
+          verifyOnly(listener, listener(null, '0-0'));
+          verifyOnly(listener2, listener2(null, '0-1'));
+          verifyOnly(listener3, listener3(null, 0));
+
+          ref.invalidate(provider);
+          ref.invalidate(provider);
+          result = 1;
+
+          verifyNoMoreInteractions(listener);
+          verifyNoMoreInteractions(listener2);
+          verifyNoMoreInteractions(listener3);
+
+          await container.pump();
+
+          verifyOnly(listener, listener('0-0', '1-0'));
+          verifyOnly(listener2, listener2('0-1', '1-1'));
+          verifyNoMoreInteractions(listener3);
+        });
+
+        test('clears only on the closest family override', () async {
+          var result = 0;
+          final provider = Provider.family<int, int>(
+            (r, i) => result,
+            dependencies: const [],
+          );
+          late Ref<Object?> ref;
+          final another = Provider((r) => ref = r, dependencies: [provider]);
+
+          final listener = Listener<int>();
+          final listener2 = Listener<int>();
+          final root = ProviderContainer.test();
+          final container = ProviderContainer.test(
+            parent: root,
+            overrides: [provider, another],
+          );
+
+          container.read(another);
+          root.listen(provider(0), listener.call, fireImmediately: true);
+          container.listen(provider(1), listener2.call, fireImmediately: true);
+
+          verifyOnly(listener, listener(null, 0));
+          verifyOnly(listener2, listener2(null, 0));
+
+          ref.invalidate(provider);
+          result = 1;
+
+          verifyNoMoreInteractions(listener);
+          verifyNoMoreInteractions(listener2);
+
+          await container.pump();
+
+          verifyOnly(listener2, listener2(0, 1));
+          verifyNoMoreInteractions(listener);
+        });
+      });
+    });
+
+    group('.onRemoveListener', () {
+      test('is not called on read', () {
+        final container = ProviderContainer.test();
+        final listener = OnRemoveListener();
+        final provider = Provider((ref) {
+          ref.onRemoveListener(listener.call);
+        });
+
+        container.read(provider);
+
+        verifyZeroInteractions(listener);
+      });
+
+      test('calls listeners when container.listen subscriptions are closed',
+          () {
+        final container = ProviderContainer.test();
+        final listener = OnRemoveListener();
+        final listener2 = OnRemoveListener();
+        final provider = Provider((ref) {
+          ref.onRemoveListener(listener.call);
+          ref.onRemoveListener(listener2.call);
+        });
+
+        final sub = container.listen<void>(provider, (previous, next) {});
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+
+        sub.close();
+
+        verifyInOrder([listener(), listener2()]);
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+
+        final sub2 = container.listen<void>(provider, (previous, next) {});
+
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+
+        sub2.close();
+
+        verifyInOrder([listener(), listener2()]);
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+      });
+
+      test('calls listeners when ref.listen subscriptions are closed', () {
+        final container = ProviderContainer.test();
+        final listener = OnRemoveListener();
+        final listener2 = OnRemoveListener();
+        final dep = Provider(
+          name: 'dep',
+          (ref) {
+            ref.onRemoveListener(listener.call);
+            ref.onRemoveListener(listener2.call);
+          },
+        );
+        late Ref<Object?> ref;
+        final provider = Provider(
+          name: 'provider',
+          (r) {
+            ref = r;
+          },
+        );
+
+        // initialize ref
+        container.read(provider);
+
+        final sub = ref.listen<void>(dep, (previous, next) {});
+
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+
+        sub.close();
+
+        verifyInOrder([listener(), listener2()]);
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+
+        final sub2 = ref.listen<void>(dep, (previous, next) {});
+
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+
+        sub2.close();
+
+        verifyInOrder([listener(), listener2()]);
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+      });
+
+      test('calls listeners when ref.watch subscriptions are removed', () {
+        final container = ProviderContainer.test();
+        final listener = OnRemoveListener();
+        final listener2 = OnRemoveListener();
+        final dep = Provider(
+          name: 'dep',
+          (ref) {
+            ref.onRemoveListener(listener.call);
+            ref.onRemoveListener(listener2.call);
+          },
+        );
+        late Ref<Object?> ref;
+        final provider = Provider(
+          name: 'provider',
+          (r) => ref = r,
+        );
+
+        // initialize refs
+        container.read(provider);
+
+        ref.watch<void>(dep);
+
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+
+        container.refresh(provider);
+
+        verifyInOrder([listener(), listener2()]);
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+      });
+
+      test('listeners are cleared on rebuild', () {
+        final container = ProviderContainer.test();
+        final listener = OnRemoveListener();
+        final listener2 = OnRemoveListener();
+        var isSecondBuild = false;
+        final provider = Provider((ref) {
+          if (isSecondBuild) {
+            ref.onRemoveListener(listener2.call);
+          } else {
+            ref.onRemoveListener(listener.call);
+          }
+        });
+
+        container.read(provider);
+        isSecondBuild = true;
+        container.refresh(provider);
+
+        final sub = container.listen<void>(provider, (previous, next) {});
+        sub.close();
+
+        verify(listener2()).called(1);
+        verifyNoMoreInteractions(listener2);
+        verifyZeroInteractions(listener);
+      });
+
+      test('if a listener throws, still calls all listeners', () {
+        final errors = <Object?>[];
+        final container = ProviderContainer.test();
+        final listener = OnRemoveListener();
+        final listener2 = OnRemoveListener();
+        when(listener()).thenThrow(42);
+        final provider = Provider((ref) {
+          ref.onRemoveListener(listener.call);
+          ref.onRemoveListener(listener2.call);
+        });
+
+        final sub = container.listen<void>(provider, (prev, next) {});
+
+        runZonedGuarded(
+          sub.close,
+          (err, stack) => errors.add(err),
+        );
+
+        verifyInOrder([listener(), listener2()]);
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+        expect(errors, [42]);
+      });
+    });
+
+    group('.onAddListener', () {
+      test('is not called on read', () {
+        final container = ProviderContainer.test();
+        final listener = OnAddListener();
+        final provider = Provider((ref) {
+          ref.onAddListener(listener.call);
+        });
+
+        container.read(provider);
+
+        verifyZeroInteractions(listener);
+      });
+
+      test('calls listeners when container.listen is invoked', () {
+        final container = ProviderContainer.test();
+        final listener = OnAddListener();
+        final listener2 = OnAddListener();
+        final provider = Provider((ref) {
+          ref.onAddListener(listener.call);
+          ref.onAddListener(listener2.call);
+        });
+
+        container.listen<void>(provider, (previous, next) {});
+
+        verifyInOrder([listener(), listener2()]);
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+
+        container.listen<void>(provider, (previous, next) {});
+
+        verifyInOrder([listener(), listener2()]);
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+      });
+
+      test('calls listeners when new ref.listen is invoked', () {
+        final container = ProviderContainer.test();
+        final listener = OnAddListener();
+        final listener2 = OnAddListener();
+        final dep = Provider(
+          name: 'dep',
+          (ref) {
+            ref.onAddListener(listener.call);
+            ref.onAddListener(listener2.call);
+          },
+        );
+        late Ref<Object?> ref;
+        final provider = Provider(
+          name: 'provider',
+          (r) => ref = r,
+        );
+
+        // initialize ref
+        container.read(provider);
+
+        ref.listen<void>(dep, (previous, next) {});
+
+        verifyInOrder([listener(), listener2()]);
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+
+        ref.listen<void>(dep, (previous, next) {});
+
+        verifyInOrder([listener(), listener2()]);
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+      });
+
+      test('calls listeners when new ref.watch is invoked', () {
+        final container = ProviderContainer.test();
+        final listener = OnAddListener();
+        final listener2 = OnAddListener();
+        final dep = Provider(
+          name: 'dep',
+          (ref) {
+            ref.onAddListener(listener.call);
+            ref.onAddListener(listener2.call);
+          },
+        );
+        late Ref<Object?> ref;
+        final provider = Provider(
+          name: 'provider',
+          (r) => ref = r,
+        );
+        late Ref<Object?> ref2;
+        final provider2 = Provider(
+          name: 'provider',
+          (r) => ref2 = r,
+        );
+
+        // initialize refs
+        container.read(provider);
+        container.read(provider2);
+
+        ref.watch<void>(dep);
+
+        verifyInOrder([listener(), listener2()]);
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+
+        ref.watch<void>(dep);
+
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+
+        ref2.watch<void>(dep);
+
+        verifyInOrder([listener(), listener2()]);
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+      });
+
+      test('listeners are cleared on rebuild', () {
+        final container = ProviderContainer.test();
+        final listener = OnAddListener();
+        final listener2 = OnAddListener();
+        var isSecondBuild = false;
+        final provider = Provider((ref) {
+          if (isSecondBuild) {
+            ref.onAddListener(listener2.call);
+          } else {
+            ref.onAddListener(listener.call);
+          }
+        });
+
+        container.read(provider);
+        isSecondBuild = true;
+        container.refresh(provider);
+
+        container.listen<void>(provider, (previous, next) {});
+
+        verify(listener2()).called(1);
+        verifyNoMoreInteractions(listener2);
+        verifyZeroInteractions(listener);
+      });
+
+      test('if a listener throws, still calls all listeners', () {
+        final errors = <Object?>[];
+        final container = ProviderContainer.test();
+        final listener = OnAddListener();
+        final listener2 = OnAddListener();
+        when(listener()).thenThrow(42);
+        final provider = Provider((ref) {
+          ref.onAddListener(listener.call);
+          ref.onAddListener(listener2.call);
+        });
+
+        runZonedGuarded(
+          () => container.listen<void>(provider, (prev, next) {}),
+          (err, stack) => errors.add(err),
+        );
+
+        verifyInOrder([listener(), listener2()]);
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+        expect(errors, [42]);
+      });
+    });
+
+    group('.onResume', () {
+      test('is not called on initial subscription', () {
+        final container = ProviderContainer.test();
+        final listener = OnResume();
+        final provider = Provider((ref) {
+          ref.onResume(listener.call);
+        });
+
+        container.read(provider);
+        container.listen<void>(provider, (previous, next) {});
+
+        verifyZeroInteractions(listener);
+      });
+
+      test('calls listeners on the first new container.listen after a cancel',
+          () {
+        final container = ProviderContainer.test();
+        final listener = OnResume();
+        final listener2 = OnResume();
+        final provider = Provider((ref) {
+          ref.onResume(listener.call);
+          ref.onResume(listener2.call);
+        });
+
+        final sub = container.listen<void>(provider, (previous, next) {});
+        sub.close();
+
+        verifyZeroInteractions(listener);
+        verifyZeroInteractions(listener2);
+
+        container.listen<void>(provider, (previous, next) {});
+
+        verifyInOrder([listener(), listener2()]);
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+
+        container.listen<void>(provider, (previous, next) {});
+
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+      });
+
+      test('calls listeners on the first new ref.listen after a cancel', () {
+        final container = ProviderContainer.test();
+        final listener = OnResume();
+        final listener2 = OnResume();
+        final dep = Provider(
+          name: 'dep',
+          (ref) {
+            ref.onResume(listener.call);
+            ref.onResume(listener2.call);
+          },
+        );
+        late Ref<Object?> ref;
+        final provider = Provider(
+          name: 'provider',
+          (r) => ref = r,
+        );
+
+        // initialize ref
+        container.read(provider);
+
+        final sub = ref.listen<void>(dep, (previous, next) {});
+        sub.close();
+
+        verifyZeroInteractions(listener);
+
+        ref.listen<void>(dep, (previous, next) {});
+
+        verifyInOrder([listener(), listener2()]);
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+
+        ref.listen<void>(dep, (previous, next) {});
+
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+      });
+
+      test('does not call listeners on read after a cancel', () {
+        final container = ProviderContainer.test();
+        final listener = OnResume();
+        final provider = Provider((ref) {
+          ref.onResume(listener.call);
+        });
+
+        final sub = container.listen<void>(provider, (previous, next) {});
+        sub.close();
+
+        verifyZeroInteractions(listener);
+
+        container.read(provider);
+
+        verifyZeroInteractions(listener);
+      });
+
+      test('calls listeners when ref.watch is invoked after a cancel', () {
+        final container = ProviderContainer.test();
+        final listener = OnResume();
+        final listener2 = OnResume();
+        final dep = Provider(
+          name: 'dep',
+          (ref) {
+            ref.onAddListener(listener.call);
+            ref.onAddListener(listener2.call);
+          },
+        );
+        late Ref<Object?> ref;
+        final provider = Provider(
+          name: 'provider',
+          (r) => ref = r,
+        );
+
+        // initialize refs
+        container.read(provider);
+
+        final sub = container.listen<void>(provider, (previous, next) {});
+        sub.close();
+
+        verifyZeroInteractions(listener);
+
+        ref.watch<void>(dep);
+
+        verifyInOrder([listener(), listener2()]);
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+      });
+
+      test('listeners are cleared on rebuild', () {
+        final container = ProviderContainer.test();
+        final listener = OnResume();
+        final listener2 = OnResume();
+        var isSecondBuild = false;
+        final provider = Provider((ref) {
+          if (isSecondBuild) {
+            ref.onResume(listener2.call);
+          } else {
+            ref.onResume(listener.call);
+          }
+        });
+
+        container.read(provider);
+        isSecondBuild = true;
+        container.refresh(provider);
+
+        final sub = container.listen<void>(provider, (previous, next) {});
+        sub.close();
+
+        verifyZeroInteractions(listener);
+        verifyZeroInteractions(listener2);
+
+        container.listen<void>(provider, (previous, next) {});
+
+        verify(listener2()).called(1);
+        verifyNoMoreInteractions(listener2);
+        verifyZeroInteractions(listener);
+      });
+
+      test('internal resume status is cleared on rebuild', () {
+        final container = ProviderContainer.test();
+        final listener = OnResume();
+        final provider = Provider((ref) {
+          ref.onResume(listener.call);
+        });
+
+        final sub = container.listen<void>(provider, (previous, next) {});
+        sub.close();
+
+        container.refresh(provider);
+
+        final sub2 = container.listen<void>(provider, (previous, next) {});
+        sub2.close();
+
+        verifyZeroInteractions(listener);
+
+        container.listen<void>(provider, (previous, next) {});
+
+        verifyOnly(listener, listener());
+      });
+
+      test('if a listener throws, still calls all listeners', () {
+        final errors = <Object?>[];
+        final container = ProviderContainer.test();
+        final listener = OnResume();
+        final listener2 = OnResume();
+        when(listener()).thenThrow(42);
+        final provider = Provider((ref) {
+          ref.onResume(listener.call);
+          ref.onResume(listener2.call);
+        });
+
+        final sub = container.listen<void>(provider, (previous, next) {});
+        sub.close();
+
+        verifyZeroInteractions(listener);
+        verifyZeroInteractions(listener2);
+
+        runZonedGuarded(
+          () => container.listen<void>(provider, (prev, next) {}),
+          (err, stack) => errors.add(err),
+        );
+
+        verifyInOrder([listener(), listener2()]);
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+        expect(errors, [42]);
+      });
+    });
+
+    group('.onCancel', () {
+      test(
+        'is called when dependent is invalidated and was the only listener',
+        skip: 'Waiting for "clear dependencies after futureprovider rebuilds"',
+        () async {
+          //
+          final container = ProviderContainer.test();
+          final onCancel = OnCancelMock();
+          final dep = StateProvider((ref) {
+            ref.onCancel(onCancel.call);
+            return 0;
+          });
+          final provider = Provider.autoDispose((ref) => ref.watch(dep));
+
+          container.read(provider);
+
+          verifyZeroInteractions(onCancel);
+
+          container.read(dep.notifier).state++;
+
+          verify(onCancel()).called(1);
+
+          await container.pump();
+
+          verifyNoMoreInteractions(onCancel);
+        },
+      );
+
+      test('is called when all container listeners are removed', () {
+        final container = ProviderContainer.test();
+        final listener = OnCancelMock();
+        final listener2 = OnCancelMock();
+        final provider = Provider((ref) {
+          ref.onCancel(listener.call);
+          ref.onCancel(listener2.call);
+        });
+
+        final sub = container.listen<void>(provider, (previous, next) {});
+        final sub2 = container.listen<void>(provider, (previous, next) {});
+
+        verifyZeroInteractions(listener);
+        verifyZeroInteractions(listener2);
+
+        sub.close();
+
+        verifyZeroInteractions(listener2);
+
+        sub2.close();
+
+        verifyInOrder([listener(), listener2()]);
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+      });
+
+      test('is called when all provider listeners are removed', () {
+        final container = ProviderContainer.test();
+        final listener = OnCancelMock();
+        final listener2 = OnCancelMock();
+        final dep = Provider((ref) {
+          ref.onCancel(listener.call);
+          ref.onCancel(listener2.call);
+        });
+        late Ref<Object?> ref;
+        final provider = Provider((r) {
+          ref = r;
+        });
+
+        container.read(provider);
+        final sub = ref.listen<void>(dep, (previous, next) {});
+        final sub2 = ref.listen<void>(dep, (previous, next) {});
+
+        verifyZeroInteractions(listener);
+        verifyZeroInteractions(listener2);
+
+        sub.close();
+
+        verifyZeroInteractions(listener2);
+
+        sub2.close();
+
+        verifyInOrder([listener(), listener2()]);
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+      });
+
+      test('is called when all provider dependencies are removed', () {
+        final container = ProviderContainer.test();
+        final listener = OnCancelMock();
+        final listener2 = OnCancelMock();
+        final dep = Provider((ref) {
+          ref.onCancel(listener.call);
+          ref.onCancel(listener2.call);
+        });
+        var watching = true;
+        final provider = Provider((ref) {
+          if (watching) ref.watch(dep);
+        });
+        final provider2 = Provider((ref) {
+          if (watching) ref.watch(dep);
+        });
+
+        container.read(provider);
+        container.read(provider2);
+
+        verifyZeroInteractions(listener);
+        verifyZeroInteractions(listener2);
+
+        watching = false;
+        // remove the dependency provider<>dep
+        container.refresh(provider);
+
+        verifyZeroInteractions(listener2);
+
+        // remove the dependency provider2<>dep
+        container.refresh(provider2);
+
+        verifyInOrder([listener(), listener2()]);
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+      });
+
+      test('is not called when using container.read', () async {
+        final container = ProviderContainer.test();
+        final listener = OnCancelMock();
+        final provider = Provider((ref) {
+          ref.onCancel(listener.call);
+        });
+
+        container.read(provider);
+        await container.pump();
+
+        verifyZeroInteractions(listener);
+      });
+
+      test(
+        'is not called when using container.read (autoDispose)',
+        skip: true,
+        () async {
+          final container = ProviderContainer.test();
+          final listener = OnCancelMock();
+          final dispose = OnDisposeMock();
+          final provider = StateProvider.autoDispose((ref) {
+            ref.keepAlive();
+            ref.onCancel(listener.call);
+            ref.onDispose(dispose.call);
+          });
+
+          container.read(provider);
+          await container.pump();
+
+          verifyZeroInteractions(listener);
+          verifyZeroInteractions(dispose);
+        },
+      );
+
+      test('listeners are cleared on rebuild', () {
+        final container = ProviderContainer.test();
+        final listener = OnCancelMock();
+        final listener2 = OnCancelMock();
+        var isSecondBuild = false;
+        final provider = Provider((ref) {
+          if (isSecondBuild) {
+            ref.onCancel(listener2.call);
+          } else {
+            ref.onCancel(listener.call);
+          }
+        });
+
+        container.read(provider);
+        isSecondBuild = true;
+        container.refresh(provider);
+
+        verifyZeroInteractions(listener);
+        verifyZeroInteractions(listener2);
+
+        final sub = container.listen<void>(provider, (previous, next) {});
+
+        verifyZeroInteractions(listener);
+        verifyZeroInteractions(listener2);
+
+        sub.close();
+
+        verify(listener2()).called(1);
+        verifyNoMoreInteractions(listener2);
+        verifyZeroInteractions(listener);
+      });
+
+      test('if a listener throws, still calls all listeners', () {
+        final errors = <Object?>[];
+        final container = ProviderContainer.test();
+        final listener = OnCancelMock();
+        final listener2 = OnCancelMock();
+        when(listener()).thenThrow(42);
+        final provider = Provider((ref) {
+          ref.onCancel(listener.call);
+          ref.onCancel(listener2.call);
+        });
+
+        final sub = container.listen<void>(provider, (previous, next) {});
+
+        verifyZeroInteractions(listener);
+        verifyZeroInteractions(listener2);
+
+        runZonedGuarded(
+          sub.close,
+          (err, stack) => errors.add(err),
+        );
+
+        verifyInOrder([listener(), listener2()]);
+        verifyNoMoreInteractions(listener);
+        verifyNoMoreInteractions(listener2);
+        expect(errors, [42]);
+      });
+    });
+
     group('.onDispose', () {
       test(
           'calls all the listeners in order when the ProviderContainer is disposed',
@@ -1564,15 +2816,32 @@ void main() {
     });
 
     group('mounted', () {
+      test('stays false on older refs while new refs are building', () {
+        final container = ProviderContainer.test();
+        late Ref<int> ref;
+        final provider = Provider<int>((r) {
+          ref = r;
+          return 0;
+        });
+
+        container.read(provider);
+        final oldRef = ref;
+
+        container.refresh(provider);
+
+        expect(oldRef.mounted, false);
+        expect(ref.mounted, true);
+      });
+
       test('is false during onDispose caused by ref.watch', () {
         final container = ProviderContainer.test();
         bool? mounted;
-        late ProviderElementBase<Object?> element;
+        late Ref<Object?> ref;
         final dep = StateProvider((ref) => 0);
-        final provider = Provider((ref) {
+        final provider = Provider((r) {
+          ref = r;
           ref.watch(dep);
-          element = ref as ProviderElementBase;
-          ref.onDispose(() => mounted = element.mounted);
+          ref.onDispose(() => mounted = ref.mounted);
         });
 
         container.read(provider);
@@ -1586,12 +2855,12 @@ void main() {
       test('is false during onDispose caused by container dispose', () {
         final container = ProviderContainer.test();
         bool? mounted;
-        late ProviderElementBase<Object?> element;
+        late Ref<Object?> ref;
         final dep = StateProvider((ref) => 0);
-        final provider = Provider((ref) {
+        final provider = Provider((r) {
+          ref = r;
           ref.watch(dep);
-          element = ref as ProviderElementBase;
-          ref.onDispose(() => mounted = element.mounted);
+          ref.onDispose(() => mounted = ref.mounted);
         });
 
         container.read(provider);
@@ -1605,18 +2874,18 @@ void main() {
       test('is false in between rebuilds', () {
         final container = ProviderContainer.test();
         final dep = StateProvider((ref) => 0);
-        late ProviderElementBase<Object?> element;
-        final provider = Provider((ref) {
+        late Ref<Object?> ref;
+        final provider = Provider((r) {
+          ref = r;
           ref.watch(dep);
-          element = ref as ProviderElementBase;
         });
 
         container.read(provider);
-        expect(element.mounted, true);
+        expect(ref.mounted, true);
 
         container.read(dep.notifier).state++;
 
-        expect(element.mounted, false);
+        expect(ref.mounted, false);
       });
     });
   });

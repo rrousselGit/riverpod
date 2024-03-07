@@ -13,8 +13,8 @@ typedef TodoListRef = Ref<AsyncValue<List<Todo>>>;
 @ProviderFor(todoList)
 const todoListProvider = TodoListProvider._();
 
-final class TodoListProvider extends $FunctionalProvider<AsyncValue<List<Todo>>,
-        FutureOr<List<Todo>>, TodoListRef>
+final class TodoListProvider
+    extends $FunctionalProvider<AsyncValue<List<Todo>>, FutureOr<List<Todo>>>
     with $FutureModifier<List<Todo>>, $FutureProvider<List<Todo>, TodoListRef> {
   const TodoListProvider._(
       {FutureOr<List<Todo>> Function(

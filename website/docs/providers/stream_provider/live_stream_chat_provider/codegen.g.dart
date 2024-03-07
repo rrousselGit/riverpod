@@ -13,8 +13,8 @@ typedef ChatRef = Ref<AsyncValue<List<String>>>;
 @ProviderFor(chat)
 const chatProvider = ChatProvider._();
 
-final class ChatProvider extends $FunctionalProvider<AsyncValue<List<String>>,
-        Stream<List<String>>, ChatRef>
+final class ChatProvider
+    extends $FunctionalProvider<AsyncValue<List<String>>, Stream<List<String>>>
     with $FutureModifier<List<String>>, $StreamProvider<List<String>, ChatRef> {
   const ChatProvider._(
       {Stream<List<String>> Function(

@@ -81,7 +81,7 @@ typedef CounterRef = Ref<int>;
 @ProviderFor(counter)
 const counterProvider = CounterProvider._();
 
-final class CounterProvider extends $FunctionalProvider<int, int, CounterRef>
+final class CounterProvider extends $FunctionalProvider<int, int>
     with $Provider<int, CounterRef> {
   const CounterProvider._(
       {int Function(

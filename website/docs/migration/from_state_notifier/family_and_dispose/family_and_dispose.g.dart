@@ -13,10 +13,9 @@ typedef TaskTrackerRef = Ref<TaskTrackerRepo>;
 @ProviderFor(taskTracker)
 const taskTrackerProvider = TaskTrackerProvider._();
 
-final class TaskTrackerProvider extends $FunctionalProvider<
-    TaskTrackerRepo,
-    TaskTrackerRepo,
-    TaskTrackerRef> with $Provider<TaskTrackerRepo, TaskTrackerRef> {
+final class TaskTrackerProvider
+    extends $FunctionalProvider<TaskTrackerRepo, TaskTrackerRepo>
+    with $Provider<TaskTrackerRepo, TaskTrackerRef> {
   const TaskTrackerProvider._(
       {TaskTrackerRepo Function(
         TaskTrackerRef ref,
@@ -213,8 +212,7 @@ final class BugsEncounteredNotifierFamily extends Family {
 }
 
 abstract class _$BugsEncounteredNotifier extends $AsyncNotifier<int> {
-  late final _$args =
-      (ref as $AsyncNotifierProviderElement).origin.argument as String;
+  late final _$args = ref.$arg as String;
   String get featureId => _$args;
 
   FutureOr<int> build(
