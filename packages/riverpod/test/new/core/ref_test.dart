@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart' show ProviderElementBase;
 import 'package:test/test.dart';
 
 import '../utils.dart';
@@ -1567,12 +1566,12 @@ void main() {
       test('is false during onDispose caused by ref.watch', () {
         final container = ProviderContainer.test();
         bool? mounted;
-        late ProviderElementBase<Object?> element;
+        late Ref<Object?> ref;
         final dep = StateProvider((ref) => 0);
-        final provider = Provider((ref) {
+        final provider = Provider((r) {
+          ref = r;
           ref.watch(dep);
-          element = ref as ProviderElementBase;
-          ref.onDispose(() => mounted = element.mounted);
+          ref.onDispose(() => mounted = ref.mounted);
         });
 
         container.read(provider);
@@ -1586,12 +1585,12 @@ void main() {
       test('is false during onDispose caused by container dispose', () {
         final container = ProviderContainer.test();
         bool? mounted;
-        late ProviderElementBase<Object?> element;
+        late Ref<Object?> ref;
         final dep = StateProvider((ref) => 0);
-        final provider = Provider((ref) {
+        final provider = Provider((r) {
+          ref = r;
           ref.watch(dep);
-          element = ref as ProviderElementBase;
-          ref.onDispose(() => mounted = element.mounted);
+          ref.onDispose(() => mounted = ref.mounted);
         });
 
         container.read(provider);
@@ -1605,18 +1604,18 @@ void main() {
       test('is false in between rebuilds', () {
         final container = ProviderContainer.test();
         final dep = StateProvider((ref) => 0);
-        late ProviderElementBase<Object?> element;
-        final provider = Provider((ref) {
+        late Ref<Object?> ref;
+        final provider = Provider((r) {
+          ref = r;
           ref.watch(dep);
-          element = ref as ProviderElementBase;
         });
 
         container.read(provider);
-        expect(element.mounted, true);
+        expect(ref.mounted, true);
 
         container.read(dep.notifier).state++;
 
-        expect(element.mounted, false);
+        expect(ref.mounted, false);
       });
     });
   });
