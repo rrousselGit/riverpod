@@ -35,8 +35,8 @@ class NotifierTemplate extends Template {
           parameter: '_\$args.${parameter.name!.lexeme}',
     });
 
-    final _$args = r'late final _$args = '
-        '(ref as ${provider.elementName}).origin.argument${provider.argumentCast};';
+    final _$args = 'late final _\$args = ref.\$arg${provider.argumentCast};';
+
     var paramOffset = 0;
     final parametersAsFields = provider.parameters.map(
       (p) {

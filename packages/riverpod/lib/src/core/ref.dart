@@ -1,8 +1,12 @@
 part of '../framework.dart';
 
 @internal
-extension RefArg on Ref<Object?> {
-  Object? get arg => _element.origin.argument;
+extension $RefArg on Ref<Object?> {
+  // Implementation detail, do not use
+  Object? get $arg => _element.origin.argument;
+
+  // Implementation detail, do not use
+  ProviderElementBase<Object?> get $element => _element;
 }
 
 /// {@template riverpod.provider_ref_base}
