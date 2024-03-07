@@ -16,7 +16,7 @@ abstract class FamilyAsyncNotifier<StateT, ArgT>
   ///
   /// then [arg] will be `0`.
   /// {@endtemplate}
-  late final ArgT arg = (ref as ProviderElementBase).origin.argument as ArgT;
+  late final ArgT arg = ref.arg as ArgT;
 
   /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding

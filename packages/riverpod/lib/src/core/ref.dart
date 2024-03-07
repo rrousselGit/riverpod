@@ -1,5 +1,10 @@
 part of '../framework.dart';
 
+@internal
+extension RefArg on Ref<Object?> {
+  Object? get arg => _element.origin.argument;
+}
+
 /// {@template riverpod.provider_ref_base}
 /// An object used by providers to interact with other providers and the life-cycles
 /// of the application.

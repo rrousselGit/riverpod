@@ -16,6 +16,7 @@ export 'src/framework.dart'
         $ProviderOverride,
         ClassProviderFactory,
         FunctionalProviderFactory,
+        RefArg,
         computeAllTransitiveDependencies,
         Create,
         Node,

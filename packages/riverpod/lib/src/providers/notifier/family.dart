@@ -5,7 +5,7 @@ part of '../notifier.dart';
 /// {@macro riverpod.notifier_provider_modifier}
 abstract class FamilyNotifier<StateT, ArgT> extends $Notifier<StateT> {
   /// {@macro riverpod.notifier.family_arg}
-  late final ArgT arg = (ref as ProviderElementBase).origin.argument as ArgT;
+  late final ArgT arg = ref.arg as ArgT;
 
   /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
