@@ -142,6 +142,15 @@ abstract class ProviderElementBase<StateT> implements Node {
   @internal
   Result<StateT>? get stateResult => _stateResult;
 
+  /// Returns the currently exposed by a provider
+  ///
+  /// May throw if the provider threw when creating the exposed value.
+  StateT readSelf() {
+    flush();
+
+    return requireState;
+  }
+
   /// Update the exposed value of a provider and notify its listeners.
   ///
   /// Listeners will only be notified if [updateShouldNotify]
@@ -288,40 +297,6 @@ This could mean a few things:
   @visibleForOverriding
   void update(ProviderBase<StateT> newProvider) {}
 
-  /// A utility for re-initializing a provider when needed.
-  ///
-  /// Calling [flush] will only re-initialize the provider if it needs to rerun.
-  /// This can involve:
-  /// - a previous call to [Ref.invalidateSelf]
-  /// - a dependency of the provider has changed (such as when using [Ref.watch]).
-  ///
-  /// This is not meant for public consumption. Public API should hide
-  /// [flush] from users, such that they don't need to care about invoking this function.
-  @internal
-  void flush() {
-    _maybeRebuildDependencies();
-    if (_mustRecomputeState) {
-      _mustRecomputeState = false;
-      _performBuild();
-    }
-  }
-
-  /// Iterates over the dependencies of this provider, calling [flush] on them too.
-  ///
-  /// This work is only performed if a dependency has notified that it might
-  /// need to be re-executed.
-  void _maybeRebuildDependencies() {
-    if (!_dependencyMayHaveChanged) return;
-
-    _dependencyMayHaveChanged = false;
-
-    visitAncestors(
-      (element) {
-        element.flush();
-      },
-    );
-  }
-
   /// Initialize a provider and track dependencies used during the initialization.
   ///
   /// After a provider is initialized, this function takes care of unsubscribing
@@ -368,6 +343,40 @@ This could mean a few things:
   ///   by [Ref.watch] from one caused by [Ref.refresh]/[Ref.invalidate].
   @visibleForOverriding
   void create(Ref<StateT> ref, {required bool didChangeDependency});
+
+  /// A utility for re-initializing a provider when needed.
+  ///
+  /// Calling [flush] will only re-initialize the provider if it needs to rerun.
+  /// This can involve:
+  /// - a previous call to [Ref.invalidateSelf]
+  /// - a dependency of the provider has changed (such as when using [Ref.watch]).
+  ///
+  /// This is not meant for public consumption. Public API should hide
+  /// [flush] from users, such that they don't need to care about invoking this function.
+  @internal
+  void flush() {
+    _maybeRebuildDependencies();
+    if (_mustRecomputeState) {
+      _mustRecomputeState = false;
+      _performBuild();
+    }
+  }
+
+  /// Iterates over the dependencies of this provider, calling [flush] on them too.
+  ///
+  /// This work is only performed if a dependency has notified that it might
+  /// need to be re-executed.
+  void _maybeRebuildDependencies() {
+    if (!_dependencyMayHaveChanged) return;
+
+    _dependencyMayHaveChanged = false;
+
+    visitAncestors(
+      (element) {
+        element.flush();
+      },
+    );
+  }
 
   /// Invokes [create] and handles errors.
   @internal
@@ -591,84 +600,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     );
   }
 
-  /// Returns the currently exposed by a provider
-  ///
-  /// May throw if the provider threw when creating the exposed value.
-  StateT readSelf() {
-    flush();
-
-    return requireState;
-  }
-
-  /// Visit the [$ProviderElement]s of providers that are listening to this element.
-  ///
-  /// A provider is considered as listening to this element if it either [Ref.watch]
-  /// or [Ref.listen] this element.
-  ///
-  /// This method does not guarantee that a dependency is visited only once.
-  /// If a provider both [Ref.watch] and [Ref.listen] an element, or if a provider
-  /// [Ref.listen] multiple times to an element, it may be visited multiple times.
-  void visitChildren({
-    required void Function(ProviderElementBase<Object?> element) elementVisitor,
-    required void Function(ProxyElementValueListenable<Object?> element)
-        listenableVisitor,
-  }) {
-    for (var i = 0; i < _providerDependents.length; i++) {
-      elementVisitor(_providerDependents[i]);
-    }
-
-    for (var i = 0; i < _subscribers.length; i++) {
-      elementVisitor(_subscribers[i].dependentElement);
-    }
-  }
-
-  /// Visit the [ProviderElementBase]s that this provider is listening to.
-  ///
-  /// A provider is considered as listening to this element if it either [Ref.watch]
-  /// or [Ref.listen] this element.
-  ///
-  /// This method does not guarantee that a provider is visited only once.
-  /// If this provider both [Ref.watch] and [Ref.listen] an element, or if it
-  /// [Ref.listen] multiple times to an element, that element may be visited multiple times.
-  void visitAncestors(
-    void Function(ProviderElementBase<Object?> element) visitor,
-  ) {
-    _dependencies.keys.forEach(visitor);
-
-    for (var i = 0; i < _listenedProviderSubscriptions.length; i++) {
-      visitor(_listenedProviderSubscriptions[i].listenedElement);
-    }
-  }
-
-  /// Release the resources associated to this [ProviderElementBase].
-  ///
-  /// This will be invoked when:
-  /// - the provider is using `autoDispose` and it is no-longer used.
-  /// - the associated [ProviderContainer] is disposed
-  ///
-  /// On the other hand, this life-cycle will not be executed when a provider
-  /// rebuilds.
-  ///
-  /// As opposed to [runOnDispose], this life-cycle is executed only
-  /// for the lifetime of this element.
-  @protected
-  @mustCallSuper
-  void dispose() {
-    runOnDispose();
-    ref = null;
-
-    // TODO test invalidateSelf() then dispose() properly unlinks dependencies
-    // TODO test [Ref.listen] calls are cleared
-
-    for (final sub in _dependencies.entries) {
-      sub.key._providerDependents.remove(this);
-      sub.key._onRemoveListener();
-    }
-    _dependencies.clear();
-
-    _externalDependents.clear();
-  }
-
   void _onListen() {
     ref?._onAddListeners?.forEach(runGuarded);
     if (_didCancelOnce && !hasListeners) {
@@ -737,8 +668,77 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     );
   }
 
+  /// Release the resources associated to this [ProviderElementBase].
+  ///
+  /// This will be invoked when:
+  /// - the provider is using `autoDispose` and it is no-longer used.
+  /// - the associated [ProviderContainer] is disposed
+  ///
+  /// On the other hand, this life-cycle will not be executed when a provider
+  /// rebuilds.
+  ///
+  /// As opposed to [runOnDispose], this life-cycle is executed only
+  /// for the lifetime of this element.
+  @protected
+  @mustCallSuper
+  void dispose() {
+    runOnDispose();
+    ref = null;
+
+    // TODO test invalidateSelf() then dispose() properly unlinks dependencies
+    // TODO test [Ref.listen] calls are cleared
+
+    for (final sub in _dependencies.entries) {
+      sub.key._providerDependents.remove(this);
+      sub.key._onRemoveListener();
+    }
+    _dependencies.clear();
+
+    _externalDependents.clear();
+  }
+
   @override
   String toString() {
     return '$runtimeType(provider: $provider, origin: $origin)';
+  }
+
+  /// Visit the [$ProviderElement]s of providers that are listening to this element.
+  ///
+  /// A provider is considered as listening to this element if it either [Ref.watch]
+  /// or [Ref.listen] this element.
+  ///
+  /// This method does not guarantee that a dependency is visited only once.
+  /// If a provider both [Ref.watch] and [Ref.listen] an element, or if a provider
+  /// [Ref.listen] multiple times to an element, it may be visited multiple times.
+  void visitChildren({
+    required void Function(ProviderElementBase<Object?> element) elementVisitor,
+    required void Function(ProxyElementValueListenable<Object?> element)
+        listenableVisitor,
+  }) {
+    for (var i = 0; i < _providerDependents.length; i++) {
+      elementVisitor(_providerDependents[i]);
+    }
+
+    for (var i = 0; i < _subscribers.length; i++) {
+      elementVisitor(_subscribers[i].dependentElement);
+    }
+  }
+
+  /// Visit the [ProviderElementBase]s that this provider is listening to.
+  ///
+  /// A provider is considered as listening to this element if it either [Ref.watch]
+  /// or [Ref.listen] this element.
+  ///
+  /// This method does not guarantee that a provider is visited only once.
+  /// If this provider both [Ref.watch] and [Ref.listen] an element, or if it
+  /// [Ref.listen] multiple times to an element, that element may be visited multiple times.
+  void visitAncestors(
+    void Function(ProviderElementBase<Object?> element) visitor,
+  ) {
+    _dependencies.keys.forEach(visitor);
+
+    for (var i = 0; i < _listenedProviderSubscriptions.length; i++) {
+      visitor(_listenedProviderSubscriptions[i].listenedElement);
+    }
   }
 }
