@@ -336,7 +336,7 @@ final class MyNotifierFamily extends Family {
 }
 
 abstract class _$MyNotifier extends $Notifier<int> {
-  late final _$args = (ref as $NotifierProviderElement).origin.argument as (
+  late final _$args = ref.$arg as (
     BuildContext, {
     BuildContext context2,
   });

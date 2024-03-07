@@ -273,8 +273,7 @@ final class ActivityNotifier2Family extends Family {
 }
 
 abstract class _$ActivityNotifier2 extends $AsyncNotifier<Activity> {
-  late final _$args =
-      (ref as $AsyncNotifierProviderElement).origin.argument as String;
+  late final _$args = ref.$arg as String;
   String get activityType => _$args;
 
   FutureOr<Activity> build(

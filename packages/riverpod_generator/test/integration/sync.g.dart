@@ -1133,7 +1133,7 @@ final class RawFamilyFutureClassFamily extends Family {
 }
 
 abstract class _$RawFamilyFutureClass extends $Notifier<Raw<Future<String>>> {
-  late final _$args = (ref as $NotifierProviderElement).origin.argument as int;
+  late final _$args = ref.$arg as int;
   int get id => _$args;
 
   Raw<Future<String>> build(
@@ -1295,7 +1295,7 @@ final class RawFamilyStreamClassFamily extends Family {
 }
 
 abstract class _$RawFamilyStreamClass extends $Notifier<Raw<Stream<String>>> {
-  late final _$args = (ref as $NotifierProviderElement).origin.argument as int;
+  late final _$args = ref.$arg as int;
   int get id => _$args;
 
   Raw<Stream<String>> build(
@@ -2030,7 +2030,7 @@ final class FamilyClassFamily extends Family {
 }
 
 abstract class _$FamilyClass extends $Notifier<String> {
-  late final _$args = (ref as $NotifierProviderElement).origin.argument as (
+  late final _$args = ref.$arg as (
     int, {
     String? second,
     double third,
@@ -2753,7 +2753,7 @@ final class Supports$InClassFamilyNameFamily extends Family {
 }
 
 abstract class _$Supports$InClassFamilyName<And$InT> extends $Notifier<String> {
-  late final _$args = (ref as $NotifierProviderElement).origin.argument as (
+  late final _$args = ref.$arg as (
     And$InT, {
     And$InT named$arg,
     String defaultArg,
@@ -3115,7 +3115,7 @@ final class UnnecessaryCastClassFamily extends Family {
 }
 
 abstract class _$UnnecessaryCastClass extends $Notifier<String> {
-  late final _$args = (ref as $NotifierProviderElement).origin.argument;
+  late final _$args = ref.$arg;
   Object? get arg => _$args;
 
   String build(

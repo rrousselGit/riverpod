@@ -288,7 +288,7 @@ final class ClassBasedFamily extends Family {
 }
 
 abstract class _$ClassBased extends $Notifier<String> {
-  late final _$args = (ref as $NotifierProviderElement).origin.argument as int;
+  late final _$args = ref.$arg as int;
   @Deprecated('field')
   int get id => _$args;
 

@@ -414,8 +414,7 @@ final class GeneratedClassFamilyFamily extends Family {
 }
 
 abstract class _$GeneratedClassFamily extends $Notifier<_Test> {
-  late final _$args =
-      (ref as $NotifierProviderElement).origin.argument as _Test;
+  late final _$args = ref.$arg as _Test;
   _Test get test => _$args;
 
   _Test build(
@@ -836,8 +835,7 @@ final class $DynamicClassFamilyFamily extends Family {
 }
 
 abstract class _$$DynamicClassFamily extends $Notifier<Object?> {
-  late final _$args =
-      (ref as $NotifierProviderElement).origin.argument as dynamic;
+  late final _$args = ref.$arg as dynamic;
   dynamic get test => _$args;
 
   Object? build(
@@ -1392,8 +1390,7 @@ final class AliasClassFamilyFamily extends Family {
 }
 
 abstract class _$AliasClassFamily extends $Notifier<r.AsyncValue<int>> {
-  late final _$args =
-      (ref as $NotifierProviderElement).origin.argument as r.AsyncValue<int>;
+  late final _$args = ref.$arg as r.AsyncValue<int>;
   r.AsyncValue<int> get test => _$args;
 
   r.AsyncValue<int> build(

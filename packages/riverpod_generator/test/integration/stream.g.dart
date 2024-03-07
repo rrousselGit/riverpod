@@ -869,8 +869,7 @@ final class FamilyClassFamily extends Family {
 }
 
 abstract class _$FamilyClass extends $StreamNotifier<String> {
-  late final _$args =
-      (ref as $StreamNotifierProviderElement).origin.argument as (
+  late final _$args = ref.$arg as (
     int, {
     String? second,
     double third,

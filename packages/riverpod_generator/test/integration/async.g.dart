@@ -938,8 +938,7 @@ final class FamilyOrClassFamily extends Family {
 }
 
 abstract class _$FamilyOrClass extends $AsyncNotifier<String> {
-  late final _$args =
-      (ref as $AsyncNotifierProviderElement).origin.argument as int;
+  late final _$args = ref.$arg as int;
   int get first => _$args;
 
   FutureOr<String> build(
@@ -1147,8 +1146,7 @@ final class FamilyClassFamily extends Family {
 }
 
 abstract class _$FamilyClass extends $AsyncNotifier<String> {
-  late final _$args =
-      (ref as $AsyncNotifierProviderElement).origin.argument as (
+  late final _$args = ref.$arg as (
     int, {
     String? second,
     double third,

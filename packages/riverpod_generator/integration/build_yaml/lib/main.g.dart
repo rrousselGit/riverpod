@@ -887,7 +887,7 @@ final class CountNotifier2Family extends Family {
 }
 
 abstract class _$CountNotifier2 extends $Notifier<int> {
-  late final _$args = (ref as $NotifierProviderElement).origin.argument as int;
+  late final _$args = ref.$arg as int;
   int get a => _$args;
 
   int build(
@@ -1041,8 +1041,7 @@ final class CountAsyncNotifier2Family extends Family {
 }
 
 abstract class _$CountAsyncNotifier2 extends $AsyncNotifier<int> {
-  late final _$args =
-      (ref as $AsyncNotifierProviderElement).origin.argument as int;
+  late final _$args = ref.$arg as int;
   int get a => _$args;
 
   FutureOr<int> build(
@@ -1197,8 +1196,7 @@ final class CountStreamNotifier2Family extends Family {
 }
 
 abstract class _$CountStreamNotifier2 extends $StreamNotifier<int> {
-  late final _$args =
-      (ref as $StreamNotifierProviderElement).origin.argument as int;
+  late final _$args = ref.$arg as int;
   int get a => _$args;
 
   Stream<int> build(

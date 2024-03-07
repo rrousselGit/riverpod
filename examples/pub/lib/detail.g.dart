@@ -417,8 +417,7 @@ final class PackageMetricsFamily extends Family {
 }
 
 abstract class _$PackageMetrics extends $AsyncNotifier<PackageMetricsScore> {
-  late final _$args =
-      (ref as $AsyncNotifierProviderElement).origin.argument as String;
+  late final _$args = ref.$arg as String;
   String get packageName => _$args;
 
   FutureOr<PackageMetricsScore> build({

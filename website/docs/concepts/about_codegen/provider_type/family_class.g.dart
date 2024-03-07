@@ -183,7 +183,7 @@ final class ExampleFamily extends Family {
 }
 
 abstract class _$Example extends $Notifier<String> {
-  late final _$args = (ref as $NotifierProviderElement).origin.argument as (
+  late final _$args = ref.$arg as (
     int, {
     String param2,
   });

@@ -447,7 +447,7 @@ final class ClassFamilyBasedFamily extends Family {
 }
 
 abstract class _$ClassFamilyBased extends $Notifier<String> {
-  late final _$args = (ref as $NotifierProviderElement).origin.argument as int;
+  late final _$args = ref.$arg as int;
 
   /// Hello world
 // Foo

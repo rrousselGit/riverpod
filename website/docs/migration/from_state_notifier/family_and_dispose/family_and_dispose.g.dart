@@ -212,8 +212,7 @@ final class BugsEncounteredNotifierFamily extends Family {
 }
 
 abstract class _$BugsEncounteredNotifier extends $AsyncNotifier<int> {
-  late final _$args =
-      (ref as $AsyncNotifierProviderElement).origin.argument as String;
+  late final _$args = ref.$arg as String;
   String get featureId => _$args;
 
   FutureOr<int> build(

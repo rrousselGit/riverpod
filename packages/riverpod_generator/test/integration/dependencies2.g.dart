@@ -497,7 +497,7 @@ final class NotifierFamilyWithDependenciesFamily extends Family {
 }
 
 abstract class _$NotifierFamilyWithDependencies extends $Notifier<int> {
-  late final _$args = (ref as $NotifierProviderElement).origin.argument as int?;
+  late final _$args = ref.$arg as int?;
   int? get id => _$args;
 
   int build({
