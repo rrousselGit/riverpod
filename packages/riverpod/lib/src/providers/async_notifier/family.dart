@@ -35,7 +35,6 @@ class AsyncNotifierProviderFamily< //
     extends ClassFamily< //
         NotifierT,
         AsyncValue<StateT>,
-        Ref<AsyncValue<StateT>>,
         ArgT,
         FutureOr<StateT>,
         FamilyAsyncNotifierProvider<NotifierT, StateT, ArgT>> {

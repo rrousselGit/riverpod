@@ -58,8 +58,7 @@ class ProviderTemplate extends Template {
 ${provider.doc} final class $name$_genericsDefinition
     extends \$FunctionalProvider<
         $exposedType,
-        $createdType,
-        $_refType
+        $createdType
       >
     $mixins {
 ''');

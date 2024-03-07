@@ -92,8 +92,8 @@ base mixin $FutureProvider<StateT, RefT> on ProviderBase<AsyncValue<StateT>> {
 /// - [FutureProvider.family], to create a [FutureProvider] from external parameters
 /// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no longer needed.
 /// {@endtemplate}
-final class FutureProvider<StateT> extends $FunctionalProvider<
-        AsyncValue<StateT>, FutureOr<StateT>, Ref<AsyncValue<StateT>>>
+final class FutureProvider<StateT>
+    extends $FunctionalProvider<AsyncValue<StateT>, FutureOr<StateT>>
     with
         $FutureModifier<StateT>,
         $FutureProvider<StateT, Ref<AsyncValue<StateT>>>,
@@ -198,11 +198,7 @@ class $FutureProviderElement<StateT>
 
 /// The [Family] of a [FutureProvider]
 class FutureProviderFamily<StateT, ArgT> extends FunctionalFamily<
-    Ref<AsyncValue<StateT>>,
-    AsyncValue<StateT>,
-    ArgT,
-    FutureOr<StateT>,
-    FutureProvider<StateT>> {
+    AsyncValue<StateT>, ArgT, FutureOr<StateT>, FutureProvider<StateT>> {
   FutureProviderFamily(
     super._createFn, {
     super.name,

@@ -50,8 +50,7 @@ ProviderElementProxy<StateT, StateController<StateT>> _notifier<StateT>(
 /// }
 /// ```
 /// {@endtemplate}
-final class StateProvider<StateT>
-    extends $FunctionalProvider<StateT, StateT, Ref<StateT>>
+final class StateProvider<StateT> extends $FunctionalProvider<StateT, StateT>
     with LegacyProviderMixin<StateT> {
   /// {@macro riverpod.state_provider}
   StateProvider(
@@ -179,7 +178,6 @@ class StateProviderElement<T> extends ProviderElementBase<T> {
 
 /// The [Family] of [StateProvider].
 class StateProviderFamily<StateT, Arg> extends FunctionalFamily< //
-    Ref<StateT>,
     StateT,
     Arg,
     StateT,

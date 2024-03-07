@@ -72,19 +72,17 @@ typedef SetupFamilyOverride<Arg> = void Function(
 /// This API is not meant for public consumption.
 @internal
 class FunctionalFamily< //
-        RefT extends Ref<StateT>,
-        StateT,
-        ArgT,
-        CreatedT,
-        ProviderT extends $FunctionalProvider<StateT, CreatedT, RefT>>
-    extends Family {
+    StateT,
+    ArgT,
+    CreatedT,
+    ProviderT extends $FunctionalProvider<StateT, CreatedT>> extends Family {
   /// A base implementation for [Family], used by the various providers to
   /// help them define a [Family].
   ///
   /// This API is not meant for public consumption.
   const FunctionalFamily(
     this._createFn, {
-    required FunctionalProviderFactory<ProviderT, CreatedT, RefT, ArgT>
+    required FunctionalProviderFactory<ProviderT, CreatedT, Ref<StateT>, ArgT>
         providerFactory,
     required super.name,
     required super.dependencies,
@@ -92,10 +90,10 @@ class FunctionalFamily< //
     required super.isAutoDispose,
   }) : _providerFactory = providerFactory;
 
-  final FunctionalProviderFactory<ProviderT, CreatedT, RefT, ArgT>
+  final FunctionalProviderFactory<ProviderT, CreatedT, Ref<StateT>, ArgT>
       _providerFactory;
 
-  final CreatedT Function(RefT ref, ArgT arg) _createFn;
+  final CreatedT Function(Ref<StateT> ref, ArgT arg) _createFn;
 
   /// {@template family.call}
   /// Create a provider from an external value.
@@ -121,7 +119,7 @@ class FunctionalFamily< //
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    CreatedT Function(RefT ref, ArgT arg) create,
+    CreatedT Function(Ref<StateT> ref, ArgT arg) create,
   ) {
     return $FamilyOverride(
       from: this,
@@ -146,15 +144,14 @@ class FunctionalFamily< //
 /// This API is not meant for public consumption.
 @internal
 class ClassFamily< //
-        NotifierT extends NotifierBase< //
-            StateT,
-            CreatedT>,
+    NotifierT extends NotifierBase< //
         StateT,
-        RefT extends Ref<StateT>,
-        ArgT,
-        CreatedT,
-        ProviderT extends $ClassProvider<NotifierT, StateT, CreatedT, RefT>>
-    extends Family {
+        CreatedT>,
+    StateT,
+    ArgT,
+    CreatedT,
+    ProviderT extends $ClassProvider<NotifierT, StateT, CreatedT,
+        Ref<StateT>>> extends Family {
   /// A base implementation for [Family], used by the various providers to
   /// help them define a [Family].
   ///
@@ -170,7 +167,7 @@ class ClassFamily< //
 
 // TODO docs
   @internal
-  final ClassProviderFactory<NotifierT, ProviderT, CreatedT, RefT, ArgT>
+  final ClassProviderFactory<NotifierT, ProviderT, CreatedT, Ref<StateT>, ArgT>
       providerFactory;
 
   final NotifierT Function() _createFn;
@@ -206,7 +203,7 @@ class ClassFamily< //
 
   /// {@macro riverpod.override_with}
   Override overrideWithBuild(
-    RunNotifierBuild<NotifierT, CreatedT, RefT> build,
+    RunNotifierBuild<NotifierT, CreatedT, Ref<StateT>> build,
   ) {
     return $FamilyOverride(
       from: this,

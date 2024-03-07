@@ -86,7 +86,6 @@ class NotifierProviderFamily<
     extends ClassFamily< //
         NotifierT,
         StateT,
-        Ref<StateT>,
         ArgT,
         StateT,
         FamilyNotifierProvider<NotifierT, StateT, ArgT>> {

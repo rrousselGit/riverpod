@@ -82,7 +82,7 @@ ProviderElementProxy<NotifierT, NotifierT>
 /// }
 /// ```
 final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
-    extends $FunctionalProvider<NotifierT, NotifierT, Ref<NotifierT>>
+    extends $FunctionalProvider<NotifierT, NotifierT>
     with LegacyProviderMixin<NotifierT> {
   /// {@macro riverpod.change_notifier_provider}
   ChangeNotifierProvider(
@@ -224,7 +224,7 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
 
 /// The [Family] of [ChangeNotifierProvider].
 class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
-    extends FunctionalFamily<Ref<NotifierT>, NotifierT, Arg, NotifierT,
+    extends FunctionalFamily<NotifierT, Arg, NotifierT,
         ChangeNotifierProvider<NotifierT>> {
   /// The [Family] of [ChangeNotifierProvider].
   ChangeNotifierProviderFamily(

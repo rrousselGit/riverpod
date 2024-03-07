@@ -105,7 +105,6 @@ class StreamNotifierProviderFamily< //
     extends ClassFamily< //
         NotifierT,
         AsyncValue<StateT>,
-        Ref<AsyncValue<StateT>>,
         ArgT,
         Stream<StateT>,
         FamilyStreamNotifierProvider<NotifierT, StateT, ArgT>> {

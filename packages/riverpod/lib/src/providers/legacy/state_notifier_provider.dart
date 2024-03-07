@@ -85,8 +85,7 @@ final class StateNotifierProvider< //
         StateT> //
     extends $FunctionalProvider< //
         StateT,
-        NotifierT,
-        Ref<StateT>> with LegacyProviderMixin<StateT> {
+        NotifierT> with LegacyProviderMixin<StateT> {
   /// {@macro riverpod.statenotifierprovider}
   StateNotifierProvider(
     this._create, {
@@ -229,7 +228,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
 
 /// The [Family] of [StateNotifierProvider].
 class StateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T, Arg>
-    extends FunctionalFamily<Ref<T>, T, Arg, NotifierT,
+    extends FunctionalFamily<T, Arg, NotifierT,
         StateNotifierProvider<NotifierT, T>> {
   /// The [Family] of [StateNotifierProvider].
   StateNotifierProviderFamily(
