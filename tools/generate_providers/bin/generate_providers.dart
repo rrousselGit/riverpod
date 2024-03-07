@@ -95,7 +95,7 @@ Future<void> main(List<String> args) async {
             genericsUsage: 'StateT',
             genericsDefinition: 'StateT',
             createdT: 'StateT',
-            refT: 'StateProviderRef<StateT>',
+            refT: 'Ref<StateT>',
           ),
           _FunctionalBuilder(
             'StateNotifierProvider',
@@ -103,7 +103,7 @@ Future<void> main(List<String> args) async {
             genericsDefinition:
                 'NotifierT extends StateNotifier<StateT>, StateT',
             createdT: 'NotifierT',
-            refT: 'StateNotifierProviderRef<NotifierT, StateT>',
+            refT: 'Ref<StateT>',
           ),
           _FunctionalBuilder(
             'Provider',
@@ -190,7 +190,7 @@ import 'internals.dart';
             genericsUsage: 'NotifierT',
             genericsDefinition: 'NotifierT extends ChangeNotifier?',
             createdT: 'NotifierT',
-            refT: 'ChangeNotifierProviderRef<NotifierT>',
+            refT: 'Ref<NotifierT>',
           ),
         ],
         kinds: _ProviderKind.values,

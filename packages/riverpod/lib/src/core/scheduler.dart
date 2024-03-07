@@ -121,7 +121,7 @@ class ProviderScheduler {
     for (var i = 0; i < _stateToDispose.length; i++) {
       final element = _stateToDispose[i];
 
-      final links = element._keepAliveLinks;
+      final links = element.ref?._keepAliveLinks;
 
       if ((links != null && links.isNotEmpty) ||
           element.hasListeners ||

@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart'
-    show $ProviderElement, CircularDependencyError, ProviderElementBase;
+    show CircularDependencyError, ProviderElementBase;
 import 'package:test/test.dart';
 
 import '../utils.dart';
@@ -260,9 +260,9 @@ void main() {
 
   test('Ref is unusable after dispose (read/onDispose)', () {
     final container = ProviderContainer.test();
-    late $ProviderElement<Object?> ref;
+    late Ref<Object?> ref;
     final provider = Provider((s) {
-      ref = s as $ProviderElement;
+      ref = s;
       return 42;
     });
     final other = Provider((_) => 42);

@@ -21,14 +21,7 @@ ProviderElementProxy<NotifierT, NotifierT>
   );
 }
 
-/// {@macro riverpod.provider_ref_base}
-abstract class ChangeNotifierProviderRef<NotifierT extends ChangeNotifier?>
-    implements Ref<NotifierT> {
-  /// The [ChangeNotifier] currently exposed by this provider.
-  ///
-  /// Cannot be accessed while creating the provider.
-  NotifierT get notifier;
-}
+// TODO changelog breaking: Removed Ref. Use Ref instead
 
 /// Creates a [ChangeNotifier] and exposes its current state.
 ///
@@ -89,8 +82,7 @@ abstract class ChangeNotifierProviderRef<NotifierT extends ChangeNotifier?>
 /// }
 /// ```
 final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
-    extends $FunctionalProvider<NotifierT, NotifierT,
-        ChangeNotifierProviderRef<NotifierT>>
+    extends $FunctionalProvider<NotifierT, NotifierT, Ref<NotifierT>>
     with LegacyProviderMixin<NotifierT> {
   /// {@macro riverpod.change_notifier_provider}
   ChangeNotifierProvider(
@@ -140,7 +132,7 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   /// has changes.
   Refreshable<NotifierT> get notifier => _notifier<NotifierT>(this);
 
-  final NotifierT Function(ChangeNotifierProviderRef<NotifierT> ref) _createFn;
+  final NotifierT Function(Ref<NotifierT> ref) _createFn;
 
   @internal
   @override
@@ -154,7 +146,7 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   @visibleForOverriding
   @override
   ChangeNotifierProvider<NotifierT> $copyWithCreate(
-    Create<NotifierT, ChangeNotifierProviderRef<NotifierT>> create,
+    Create<NotifierT, Ref<NotifierT>> create,
   ) {
     return ChangeNotifierProvider<NotifierT>.internal(
       create,
@@ -170,23 +162,21 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
 
 /// The element of [ChangeNotifierProvider].
 class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
-    extends ProviderElementBase<NotifierT>
-    implements ChangeNotifierProviderRef<NotifierT> {
+    extends ProviderElementBase<NotifierT> {
   ChangeNotifierProviderElement._(this.provider, super.container);
 
   @override
   final ChangeNotifierProvider<NotifierT> provider;
 
-  @override
-  NotifierT get notifier => _notifierNotifier.value;
   final _notifierNotifier = ProxyElementValueListenable<NotifierT>();
 
   void Function()? _removeListener;
 
   @override
-  void create({required bool didChangeDependency}) {
-    final notifierResult =
-        _notifierNotifier.result = Result.guard(() => provider._createFn(this));
+  void create(Ref<NotifierT> ref, {required bool didChangeDependency}) {
+    final notifierResult = _notifierNotifier.result = Result.guard(
+      () => provider._createFn(ref),
+    );
 
     // TODO test requireState, as ref.read(p) is expected to throw if notifier creation failed
     final notifier = notifierResult.requireState;
@@ -234,8 +224,8 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
 
 /// The [Family] of [ChangeNotifierProvider].
 class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
-    extends FunctionalFamily<ChangeNotifierProviderRef<NotifierT>, NotifierT,
-        Arg, NotifierT, ChangeNotifierProvider<NotifierT>> {
+    extends FunctionalFamily<Ref<NotifierT>, NotifierT, Arg, NotifierT,
+        ChangeNotifierProvider<NotifierT>> {
   /// The [Family] of [ChangeNotifierProvider].
   ChangeNotifierProviderFamily(
     super._createFn, {
@@ -250,8 +240,7 @@ class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
 
   @override
   Override overrideWith(
-    NotifierT Function(ChangeNotifierProviderRef<NotifierT> ref, Arg arg)
-        create,
+    NotifierT Function(Ref<NotifierT> ref, Arg arg) create,
   ) {
     return $FamilyOverride(
       from: this,

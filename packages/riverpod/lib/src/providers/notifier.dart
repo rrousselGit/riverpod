@@ -133,6 +133,6 @@ class $NotifierProviderElement< //
     StateT created, {
     required bool didChangeDependency,
   }) {
-    state = created;
+    setStateResult(ResultData(created));
   }
 }

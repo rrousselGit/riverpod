@@ -1,10 +1,7 @@
-import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart' show ProviderElementBase;
 import 'package:test/test.dart';
-
-import '../../../utils.dart';
 
 void main() {
   test('supports .name', () {
@@ -37,70 +34,6 @@ void main() {
     expect(container.read(provider.notifier).state, 42);
 
     expect(root.getAllProviderElements(), isEmpty);
-  });
-
-  group('ref.state', () {
-    test('can read and change current value', () {
-      final container = ProviderContainer.test();
-      final listener = Listener<int>();
-      late StateProviderRef<int> ref;
-      final provider = StateProvider.autoDispose<int>((r) {
-        ref = r;
-        return 0;
-      });
-
-      container.listen<int>(provider, listener.call);
-      verifyZeroInteractions(listener);
-
-      expect(ref.controller, container.read(provider.notifier));
-
-      ref.controller.state = 42;
-
-      verifyOnly(listener, listener(0, 42));
-
-      expect(ref.controller.state, 42);
-    });
-
-    test('fails if trying to read the state before it was set', () {
-      final container = ProviderContainer.test();
-      Object? err;
-      final provider = StateProvider.autoDispose<int>((ref) {
-        try {
-          ref.controller;
-        } catch (e) {
-          err = e;
-        }
-        return 0;
-      });
-
-      container.read(provider);
-      expect(err, isStateError);
-    });
-
-    test('on rebuild, still fails if trying to read the state before was built',
-        () {
-      final dep = StateProvider((ref) => false);
-      final container = ProviderContainer.test();
-      Object? err;
-      final provider = StateProvider.autoDispose<int>((ref) {
-        if (ref.watch(dep)) {
-          try {
-            ref.controller;
-          } catch (e) {
-            err = e;
-          }
-        }
-        return 0;
-      });
-
-      container.read(provider);
-      expect(err, isNull);
-
-      container.read(dep.notifier).state = true;
-      container.read(provider);
-
-      expect(err, isStateError);
-    });
   });
 
   test('can refresh .notifier', () async {

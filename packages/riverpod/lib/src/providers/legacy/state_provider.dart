@@ -15,14 +15,7 @@ ProviderElementProxy<StateT, StateController<StateT>> _notifier<StateT>(
   );
 }
 
-/// {@macro riverpod.provider_ref_base}
-/// - [controller], the [StateController] currently exposed by this provider.
-abstract class StateProviderRef<StateT> implements Ref<StateT> {
-  /// The [StateController] currently exposed by this provider.
-  ///
-  /// Cannot be accessed while creating the provider.
-  StateController<StateT> get controller;
-}
+// TODO changelog breaking: Removed Ref. Use Ref and [Ref.state=] instead.
 
 /// {@template riverpod.state_provider}
 /// A provider that exposes a value that can be modified from outside.
@@ -58,7 +51,7 @@ abstract class StateProviderRef<StateT> implements Ref<StateT> {
 /// ```
 /// {@endtemplate}
 final class StateProvider<StateT>
-    extends $FunctionalProvider<StateT, StateT, StateProviderRef<StateT>>
+    extends $FunctionalProvider<StateT, StateT, Ref<StateT>>
     with LegacyProviderMixin<StateT> {
   /// {@macro riverpod.state_provider}
   StateProvider(
@@ -91,7 +84,7 @@ final class StateProvider<StateT>
   /// {@macro riverpod.family}
   static const family = StateProviderFamilyBuilder();
 
-  final StateT Function(StateProviderRef<StateT> ref) _createFn;
+  final StateT Function(Ref<StateT> ref) _createFn;
 
   Refreshable<StateController<StateT>> get notifier => _notifier(this);
 
@@ -107,7 +100,7 @@ final class StateProvider<StateT>
   @visibleForOverriding
   @override
   StateProvider<StateT> $copyWithCreate(
-    Create<StateT, StateProviderRef<StateT>> create,
+    Create<StateT, Ref<StateT>> create,
   ) {
     return StateProvider<StateT>.internal(
       create,
@@ -122,15 +115,12 @@ final class StateProvider<StateT>
 }
 
 /// The element of [StateProvider].
-class StateProviderElement<T> extends ProviderElementBase<T>
-    implements StateProviderRef<T> {
+class StateProviderElement<T> extends ProviderElementBase<T> {
   StateProviderElement._(this.provider, super.container);
 
   @override
   final StateProvider<T> provider;
 
-  @override
-  StateController<T> get controller => _controllerNotifier.value;
   final _controllerNotifier = ProxyElementValueListenable<StateController<T>>();
 
   final _stateNotifier = ProxyElementValueListenable<StateController<T>>();
@@ -138,8 +128,11 @@ class StateProviderElement<T> extends ProviderElementBase<T>
   void Function()? _removeListener;
 
   @override
-  void create({required bool didChangeDependency}) {
-    final initialState = provider._createFn(this);
+  void create(
+    Ref<T> ref, {
+    required bool didChangeDependency,
+  }) {
+    final initialState = provider._createFn(ref);
 
     final controller = StateController(initialState);
     _controllerNotifier.result = Result.data(controller);
@@ -186,7 +179,7 @@ class StateProviderElement<T> extends ProviderElementBase<T>
 
 /// The [Family] of [StateProvider].
 class StateProviderFamily<StateT, Arg> extends FunctionalFamily< //
-    StateProviderRef<StateT>,
+    Ref<StateT>,
     StateT,
     Arg,
     StateT,

@@ -229,7 +229,7 @@ class StateProviderFamilyBuilder {
   ///   ```
   /// {@endtemplate}
   StateProviderFamily<StateT, ArgT> call<StateT, ArgT>(
-    StateT Function(StateProviderRef<StateT> ref, ArgT param) create, {
+    StateT Function(Ref<StateT> ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
   }) {
@@ -299,7 +299,7 @@ class AutoDisposeStateProviderBuilder {
 
   /// {@macro riverpod.family}
   StateProvider<StateT> call<StateT>(
-    StateT Function(StateProviderRef<StateT> ref) create, {
+    StateT Function(Ref<StateT> ref) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
   }) {
@@ -322,7 +322,7 @@ class AutoDisposeStateProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   StateProviderFamily<StateT, ArgT> call<StateT, ArgT>(
-    StateT Function(StateProviderRef<StateT> ref, ArgT param) create, {
+    StateT Function(Ref<StateT> ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
   }) {
@@ -342,10 +342,7 @@ class StateNotifierProviderFamilyBuilder {
   /// {@macro riverpod.family}
   StateNotifierProviderFamily<NotifierT, StateT, ArgT>
       call<NotifierT extends StateNotifier<StateT>, StateT, ArgT>(
-    NotifierT Function(
-      StateNotifierProviderRef<NotifierT, StateT> ref,
-      ArgT param,
-    ) create, {
+    NotifierT Function(Ref<StateT> ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
   }) {
@@ -368,8 +365,7 @@ class AutoDisposeStateNotifierProviderBuilder {
   /// {@macro riverpod.family}
   StateNotifierProvider<NotifierT, StateT>
       call<NotifierT extends StateNotifier<StateT>, StateT>(
-    NotifierT Function(StateNotifierProviderRef<NotifierT, StateT> ref)
-        create, {
+    NotifierT Function(Ref<StateT> ref) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
   }) {
@@ -393,10 +389,7 @@ class AutoDisposeStateNotifierProviderFamilyBuilder {
   /// {@macro riverpod.family}
   StateNotifierProviderFamily<NotifierT, StateT, ArgT>
       call<NotifierT extends StateNotifier<StateT>, StateT, ArgT>(
-    NotifierT Function(
-      StateNotifierProviderRef<NotifierT, StateT> ref,
-      ArgT param,
-    ) create, {
+    NotifierT Function(Ref<StateT> ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
   }) {

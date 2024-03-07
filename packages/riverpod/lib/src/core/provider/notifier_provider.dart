@@ -61,10 +61,10 @@ abstract class NotifierBase<StateT, CreatedT> {
   // TODO docs
   @protected
   Ref<StateT> get ref {
-    final element = _element;
-    if (element == null) throw StateError(uninitializedElementError);
+    final ref = _element?.ref;
+    if (ref == null) throw StateError(uninitializedElementError);
 
-    return element;
+    return ref;
   }
 
   @visibleForTesting
@@ -83,7 +83,7 @@ abstract class NotifierBase<StateT, CreatedT> {
     final element = _element;
     if (element == null) throw StateError(uninitializedElementError);
 
-    element.state = newState;
+    element.setStateResult(ResultData(newState));
   }
 
   CreatedT runBuild();
@@ -187,7 +187,10 @@ abstract class ClassProviderElement< //
 
   @mustCallSuper
   @override
-  void create({required bool didChangeDependency}) {
+  void create(
+    Ref<StateT> ref, {
+    required bool didChangeDependency,
+  }) {
     final result = classListenable.result ??= Result.guard(() {
       final notifier = provider.create();
       if (notifier._element != null) {
@@ -208,7 +211,7 @@ abstract class ClassProviderElement< //
           handleNotifier(result.state, seamless: !didChangeDependency);
 
           final created =
-              provider.runNotifierBuildOverride?.call(this, result.state) ??
+              provider.runNotifierBuildOverride?.call(ref, result.state) ??
                   result.state.runBuild();
           handleValue(created, didChangeDependency: didChangeDependency);
         } catch (err, stack) {

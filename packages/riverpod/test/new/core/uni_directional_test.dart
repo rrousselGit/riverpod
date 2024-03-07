@@ -89,7 +89,7 @@ void main() {
     final dep = StateProvider((ref) => 0);
     final provider = Provider((ref) => ref.watch(dep));
     final another = StateProvider<int>((ref) {
-      ref.listen(provider, (prev, value) => ref.controller.state++);
+      ref.listen(provider, (prev, value) => ref.state++);
       return 0;
     });
     final container = ProviderContainer.test();

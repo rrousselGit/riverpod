@@ -18,8 +18,8 @@ void main() {
     );
     final container = ProviderContainer.test(
       overrides: [
-        provider.overrideWith((StateProviderRef<int> ref) => 42),
-        autoDispose.overrideWith((StateProviderRef<int> ref) => 84),
+        provider.overrideWith((Ref<int> ref) => 42),
+        autoDispose.overrideWith((Ref<int> ref) => 84),
       ],
     );
 
@@ -35,10 +35,10 @@ void main() {
     final container = ProviderContainer.test(
       overrides: [
         family.overrideWith(
-          (StateProviderRef<String> ref, int arg) => '42 $arg',
+          (Ref<String> ref, int arg) => '42 $arg',
         ),
         autoDisposeFamily.overrideWith(
-          (StateProviderRef<String> ref, int arg) => '84 $arg',
+          (Ref<String> ref, int arg) => '84 $arg',
         ),
       ],
     );
@@ -111,70 +111,6 @@ void main() {
     expect(container.read(provider.notifier).state, 42);
 
     expect(root.getAllProviderElements(), isEmpty);
-  });
-
-  group('ref.controller', () {
-    test('can read and change current value', () {
-      final container = ProviderContainer.test();
-      final listener = Listener<int>();
-      late StateProviderRef<int> ref;
-      final provider = StateProvider<int>((r) {
-        ref = r;
-        return 0;
-      });
-
-      container.listen<int>(provider, listener.call);
-      verifyZeroInteractions(listener);
-
-      expect(ref.controller, container.read(provider.notifier));
-
-      ref.controller.state = 42;
-
-      verifyOnly(listener, listener(0, 42));
-
-      expect(ref.controller.state, 42);
-    });
-
-    test('fails if trying to read the state before it was set', () {
-      final container = ProviderContainer.test();
-      Object? err;
-      final provider = StateProvider<int>((ref) {
-        try {
-          ref.controller;
-        } catch (e) {
-          err = e;
-        }
-        return 0;
-      });
-
-      container.read(provider);
-      expect(err, isStateError);
-    });
-
-    test('on rebuild, still fails if trying to read the state before was built',
-        () {
-      final dep = StateProvider((ref) => false);
-      final container = ProviderContainer.test();
-      Object? err;
-      final provider = StateProvider<int>((ref) {
-        if (ref.watch(dep)) {
-          try {
-            ref.controller;
-          } catch (e) {
-            err = e;
-          }
-        }
-        return 0;
-      });
-
-      container.read(provider);
-      expect(err, isNull);
-
-      container.read(dep.notifier).state = true;
-      container.read(provider);
-
-      expect(err, isStateError);
-    });
   });
 
   test('can refresh .notifier', () async {

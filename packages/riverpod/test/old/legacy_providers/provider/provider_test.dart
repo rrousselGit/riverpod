@@ -3,8 +3,7 @@
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart'
-    show $ProviderElement, ProviderElementBase;
+import 'package:riverpod/src/internals.dart' show ProviderElementBase;
 import 'package:test/test.dart';
 
 import '../../utils.dart';
@@ -68,11 +67,10 @@ void main() {
           throwsUnimplementedError,
         );
 
-        final element =
-            container.readProviderElement(provider) as $ProviderElement;
+        final element = container.readProviderElement(provider);
 
         expect(
-          () => element.state,
+          () => element.ref!.state,
           throwsUnimplementedError,
         );
       });
@@ -172,7 +170,7 @@ void main() {
       verifyNoMoreInteractions(listener);
     });
 
-    group('scoping an override overrides all the associated subproviders', () {
+    group('scoping an override overrides all the associated sub-providers', () {
       test('when passing the provider itself', () {
         final provider = Provider(
           (ref) => 0,

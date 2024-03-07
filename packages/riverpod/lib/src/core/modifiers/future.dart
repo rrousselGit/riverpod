@@ -207,17 +207,11 @@ mixin FutureModifierElement<StateT> on ProviderElementBase<AsyncValue<StateT>> {
   CancelAsyncSubscription? _lastFutureSub;
   CancelAsyncSubscription? _cancelSubscription;
 
-  /// Handles manual state change (as opposed to automatic state change from
-  /// listening to the [Future]).
   @override
   @protected
-  AsyncValue<StateT> get state => requireState;
-
-  @override
-  @protected
-  set state(AsyncValue<StateT> newState) {
+  void setStateResult(Result<AsyncValue<StateT>> newState) {
     // TODO assert Notifier isn't disposed
-    newState.map(
+    newState.requireState.map(
       loading: onLoading,
       error: onError,
       data: onData,
