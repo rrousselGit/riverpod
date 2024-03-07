@@ -111,12 +111,6 @@ abstract class ProviderElementBase<StateT> implements Node {
 
   var _didCancelOnce = false;
 
-  bool _mounted = false;
-
-  /// Whether the element was disposed or not
-  @internal
-  bool get mounted => _mounted;
-
   /// Whether the assert that prevents [requireState] from returning
   /// if the state was not set before is enabled.
   @visibleForOverriding
@@ -226,7 +220,6 @@ This could mean a few things:
   /// Called the first time a provider is obtained.
   @internal
   void mount() {
-    _mounted = true;
     if (kDebugMode) {
       _debugCurrentCreateHash = provider.debugGetCreateSourceHash();
     }
@@ -391,8 +384,6 @@ This could mean a few things:
 
     _didBuild = false;
     try {
-      // TODO move outside this function?
-      _mounted = true;
       create(ref, didChangeDependency: previousDidChangeDependency);
     } catch (err, stack) {
       if (kDebugMode) _debugDidSetState = true;

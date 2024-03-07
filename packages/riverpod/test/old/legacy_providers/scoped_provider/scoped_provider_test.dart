@@ -66,50 +66,6 @@ void main() {
       expect(root.read(provider), 21);
     });
 
-    test('supports auto-dispose', () async {
-      final provider = Provider.autoDispose((ref) => 0);
-      final container = ProviderContainer.test();
-
-      final sub = container.listen(provider, (_, __) {});
-      final element = container.readProviderElement(provider);
-
-      expect(element.mounted, true);
-      expect(sub.read(), 0);
-
-      sub.close();
-      await container.pump();
-
-      expect(element.mounted, false);
-
-      container.dispose();
-
-      expect(element.mounted, false);
-    });
-
-    test('are disposed on nested containers', () {
-      final provider = Provider(
-        (ref) => 0,
-        dependencies: const [],
-      );
-      final root = ProviderContainer.test(
-        overrides: [provider.overrideWithValue(1)],
-      );
-      final container = ProviderContainer.test(
-        parent: root,
-        overrides: [
-          provider.overrideWithValue(42),
-        ],
-      );
-
-      final element = container.readProviderElement(provider);
-
-      expect(element.mounted, true);
-
-      container.dispose();
-
-      expect(element.mounted, false);
-    });
-
     test('can be overridden on non-root container', () {
       final provider = Provider(
         (ref) => 0,
