@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_types_on_closure_parameters
+// ignore_for_file: avoid_types_on_closure_parameters, invalid_use_of_protected_member
 
 import 'dart:async';
 
@@ -6,21 +6,26 @@ import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/framework.dart' show UnmountedRefException;
+import 'package:riverpod/src/providers/stream_notifier.dart'
+    show $StreamNotifier;
 import 'package:test/test.dart';
 
-import '../../../new/matrix.dart';
-import '../../utils.dart';
+import '../matrix.dart';
+import '../utils.dart';
 
 void main() {
   test('Throws if using notifier properties in its constructor', () {
-    expect(
-      CtorNotifier.new,
-      throwsA(isA<StateError>()),
-    );
-    expect(
-      FamilyCtorNotifier.new,
-      throwsA(isA<StateError>()),
-    );
+    final errors = captureErrors([
+      () => CtorNotifier().state,
+      () => CtorNotifier().state = const AsyncData(42),
+      () => CtorNotifier().future,
+      () => CtorNotifier().ref,
+      () => FamilyCtorNotifier().state,
+      () => FamilyCtorNotifier().state = const AsyncData(42),
+      () => FamilyCtorNotifier().future,
+      () => FamilyCtorNotifier().ref,
+    ]);
   });
 
   streamNotifierProviderFactory.createGroup((factory) {
@@ -39,12 +44,17 @@ void main() {
       );
     });
 
-    test('Can read state inside onDispose', () {
+    test('Cannot properties inside onDispose', () {
       final container = ProviderContainer.test();
       late TestStreamNotifier<int> notifier;
+      late List<Object?> errors;
       final provider = factory.simpleTestProvider((ref) {
         ref.onDispose(() {
-          notifier.state;
+          errors = captureErrors([
+            () => notifier.state,
+            () => notifier.state = const AsyncData(42),
+            () => notifier.future,
+          ]);
         });
         return Stream.value(0);
       });
@@ -53,6 +63,11 @@ void main() {
       notifier = container.read(provider.notifier);
 
       container.dispose();
+
+      expect(
+        errors,
+        everyElement(isA<UnmountedRefException>()),
+      );
     });
 
     test('Using the notifier after dispose throws', () {
@@ -64,12 +79,23 @@ void main() {
 
       container.dispose();
 
-      expect(() => notifier.state, throwsStateError);
-      expect(() => notifier.future, throwsStateError);
-      expect(() => notifier.state = const AsyncData(42), throwsStateError);
-      // ignore: invalid_use_of_protected_member
-      expect(() => notifier.ref, throwsStateError);
-      expect(() => notifier.update((p1) => 42), throwsStateError);
+      expect(notifier.ref.mounted, false);
+      expect(
+        () => notifier.state,
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => notifier.future,
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => notifier.state = const AsyncData(42),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => notifier.update((p1) => 42),
+        throwsA(isA<UnmountedRefException>()),
+      );
     });
 
     group('supports AsyncValue transition', () {
@@ -446,39 +472,6 @@ void main() {
         );
       });
 
-      test(
-          'when read on outdated provider, refreshes the provider and return the up-to-date state',
-          () async {
-        final listener = OnBuildMock();
-        final dep = StateProvider((ref) => 0);
-        final provider = factory.simpleTestProvider<int>(
-          (ref) {
-            listener();
-            return Stream.value(ref.watch(dep));
-          },
-        );
-        final container = ProviderContainer.test();
-
-        container.listen(provider, (previous, next) {});
-        final notifier = container.read(provider.notifier);
-
-        expect(notifier.state, const AsyncLoading<int>());
-        expect(await container.read(provider.future), 0);
-        expect(notifier.state, const AsyncData(0));
-        verify(listener()).called(1);
-
-        container.read(dep.notifier).state++;
-
-        expect(
-          notifier.state,
-          const AsyncLoading<int>()
-              .copyWithPrevious(const AsyncData(0), isRefresh: false),
-        );
-        expect(await container.read(provider.future), 1);
-        expect(notifier.state, const AsyncData(1));
-        verify(listener()).called(1);
-      });
-
       test('can be read inside build', () {
         final dep = StateProvider((ref) => 0);
         late AsyncValue<int> state;
@@ -683,64 +676,40 @@ void main() {
 
         expect(notifier.future, same(container.read(provider.future)));
       });
-
-      test(
-          'when read on outdated provider, refreshes the provider and return the up-to-date state',
-          () async {
-        final listener = OnBuildMock();
-        final dep = StateProvider((ref) => 0);
-        final provider = factory.simpleTestProvider<int>(
-          (ref) {
-            listener();
-            return Stream.value(ref.watch(dep));
-          },
-        );
-        final container = ProviderContainer.test();
-
-        container.listen(provider, (previous, next) {});
-        final notifier = container.read(provider.notifier);
-
-        expect(await container.read(provider.future), 0);
-        verify(listener()).called(1);
-
-        container.read(dep.notifier).state++;
-
-        expect(notifier.future, notifier.future);
-        expect(notifier.future, same(container.read(provider.future)));
-        expect(await notifier.future, 1);
-        verify(listener()).called(1);
-      });
     });
 
     group('StreamNotifierProvider.notifier', () {
       test(
-          'never emits an update. The Notifier is never recreated once it is instantiated',
+          'Notifies listeners whenever `build` is re-executed, due to recreating a new notifier.',
           () async {
-        final listener = OnBuildMock();
+        final notifierListener = Listener<$StreamNotifier<int>>();
         final dep = StateProvider((ref) => 0);
         final provider = factory.provider<int>(() {
-          listener();
           return factory.deferredNotifier(
             (ref) => Stream.value(ref.watch(dep)),
           );
         });
         final container = ProviderContainer.test();
 
+        final sub = container.listen(provider.notifier, notifierListener.call);
+        final initialNotifier = sub.read();
+
+        expect(initialNotifier.ref.mounted, true);
+
         // Skip the loading
-        await container.listen(provider.future, (previous, next) {}).read();
-
-        container.listen(provider, (previous, next) {});
-        final notifier = container.read(provider.notifier);
-
-        verify(listener()).called(1);
-        expect(container.read(provider), const AsyncData(0));
-
-        container.read(dep.notifier).state++;
         await container.read(provider.future);
+        verifyNoMoreInteractions(notifierListener);
 
-        expect(container.read(provider), const AsyncData(1));
-        expect(container.read(provider.notifier), same(notifier));
-        verifyNoMoreInteractions(listener);
+        container.refresh(provider);
+        final newNotifier = sub.read();
+
+        expect(newNotifier, isNot(same(initialNotifier)));
+        verifyOnly(
+          notifierListener,
+          notifierListener(initialNotifier, newNotifier),
+        ).called(1);
+        expect(initialNotifier.ref.mounted, false);
+        expect(newNotifier.ref.mounted, true);
       });
     });
 
@@ -1118,19 +1087,11 @@ class Equal<T> {
 }
 
 class CtorNotifier extends StreamNotifier<int> {
-  CtorNotifier() {
-    state;
-  }
-
   @override
   Stream<int> build() => Stream.value(0);
 }
 
 class FamilyCtorNotifier extends FamilyStreamNotifier<int, int> {
-  FamilyCtorNotifier() {
-    state;
-  }
-
   @override
   Stream<int> build(int arg) => Stream.value(0);
 }

@@ -55,7 +55,8 @@ class $AsyncNotifierProviderElement< //
         AsyncValue<StateT>,
         FutureOr<StateT>> //
     with
-        FutureModifierElement<StateT> {
+        FutureModifierElement<StateT>,
+        FutureModifierClassElement<NotifierT, StateT, FutureOr<StateT>> {
   /// Implementation detail of `riverpod_generator`.
   /// Do not use.
   $AsyncNotifierProviderElement(this.provider, super.container);
@@ -64,22 +65,13 @@ class $AsyncNotifierProviderElement< //
   final $AsyncNotifierProvider<NotifierT, StateT> provider;
 
   @override
-  void handleError(
-    Object error,
-    StackTrace stackTrace, {
-    required bool didChangeDependency,
-  }) {
-    onError(AsyncError(error, stackTrace), seamless: !didChangeDependency);
-  }
-
-  @override
   void handleValue(
     FutureOr<StateT> created, {
-    required bool didChangeDependency,
+    required bool seamless,
   }) {
     handleFuture(
       () => created,
-      didChangeDependency: didChangeDependency,
+      seamless: seamless,
     );
   }
 }

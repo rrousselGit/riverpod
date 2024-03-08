@@ -5,7 +5,24 @@ import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
+List<Object?> captureErrors(List<void Function()> cb) {
+  final errors = <Object?>[];
+  for (final fn in cb) {
+    try {
+      fn();
+      errors.add(null);
+    } catch (e) {
+      errors.add(e);
+    }
+  }
+  return errors;
+}
+
 class ProviderObserverMock extends Mock implements ProviderObserver {}
+
+class OnBuildMock extends Mock {
+  void call();
+}
 
 class OnDisposeMock extends Mock {
   void call();
