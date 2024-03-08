@@ -16,14 +16,16 @@ import '../utils.dart';
 
 void main() {
   test('Throws if using notifier properties in its constructor', () {
-    expect(
-      CtorNotifier.new,
-      throwsA(isA<StateError>()),
-    );
-    expect(
-      FamilyCtorNotifier.new,
-      throwsA(isA<StateError>()),
-    );
+    final errors = captureErrors([
+      () => CtorNotifier().state,
+      () => CtorNotifier().state = const AsyncData(42),
+      () => CtorNotifier().future,
+      () => CtorNotifier().ref,
+      () => FamilyCtorNotifier().state,
+      () => FamilyCtorNotifier().state = const AsyncData(42),
+      () => FamilyCtorNotifier().future,
+      () => FamilyCtorNotifier().ref,
+    ]);
   });
 
   streamNotifierProviderFactory.createGroup((factory) {
@@ -1085,19 +1087,11 @@ class Equal<T> {
 }
 
 class CtorNotifier extends StreamNotifier<int> {
-  CtorNotifier() {
-    state;
-  }
-
   @override
   Stream<int> build() => Stream.value(0);
 }
 
 class FamilyCtorNotifier extends FamilyStreamNotifier<int, int> {
-  FamilyCtorNotifier() {
-    state;
-  }
-
   @override
   Stream<int> build(int arg) => Stream.value(0);
 }

@@ -1,9 +1,5 @@
 import 'package:meta/meta.dart';
 
-@internal
-// ignore: only_throw_errors
-Never throws(Object error) => throw error;
-
 /// A T|Error union type.
 @immutable
 @internal

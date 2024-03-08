@@ -13,14 +13,14 @@ import '../utils.dart';
 
 void main() {
   test('Throws if using notifier properties in its constructor', () {
-    expect(
-      CtorNotifier.new,
-      throwsA(isA<StateError>()),
-    );
-    expect(
-      FamilyCtorNotifier.new,
-      throwsA(isA<StateError>()),
-    );
+    final errors = captureErrors([
+      () => CtorNotifier().state,
+      () => CtorNotifier().state = 42,
+      () => CtorNotifier().ref,
+      () => FamilyCtorNotifier().state,
+      () => FamilyCtorNotifier().state = 42,
+      () => FamilyCtorNotifier().ref,
+    ]);
   });
 
   notifierProviderFactory.createGroup((factory) {
@@ -686,19 +686,11 @@ class Equal<T> {
 }
 
 class CtorNotifier extends Notifier<int> {
-  CtorNotifier() {
-    state;
-  }
-
   @override
   int build() => 0;
 }
 
 class FamilyCtorNotifier extends FamilyNotifier<int, int> {
-  FamilyCtorNotifier() {
-    state;
-  }
-
   @override
   int build(int arg) => 0;
 }
