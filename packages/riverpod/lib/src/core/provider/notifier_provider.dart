@@ -191,7 +191,7 @@ abstract class ClassProviderElement< //
     Ref<StateT> ref, {
     required bool didChangeDependency,
   }) {
-    final result = classListenable.result ??= Result.guard(() {
+    final result = classListenable.result = Result.guard(() {
       final notifier = provider.create();
       if (notifier._element != null) {
         throw StateError(alreadyInitializedError);

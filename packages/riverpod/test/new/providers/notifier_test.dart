@@ -6,8 +6,8 @@ import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
-import '../../matrix.dart';
-import '../../../old/utils.dart';
+import '../matrix.dart';
+import '../../old/utils.dart';
 
 void main() {
   test('Throws if using notifier properties in its constructor', () {
