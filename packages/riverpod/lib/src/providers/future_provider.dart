@@ -180,7 +180,7 @@ class $FutureProviderElement<StateT>
   }) {
     handleFuture(
       () => provider.create(ref),
-      didChangeDependency: didChangeDependency,
+      seamless: !didChangeDependency,
     );
   }
 

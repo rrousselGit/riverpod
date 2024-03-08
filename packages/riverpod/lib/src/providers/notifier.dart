@@ -121,7 +121,7 @@ class $NotifierProviderElement< //
   void handleError(
     Object error,
     StackTrace stackTrace, {
-    required bool didChangeDependency,
+    required bool seamless,
   }) {
     setStateResult(ResultError<StateT>(error, stackTrace));
     // TODO report uncaught error to the zone
@@ -131,7 +131,7 @@ class $NotifierProviderElement< //
   @override
   void handleValue(
     StateT created, {
-    required bool didChangeDependency,
+    required bool seamless,
   }) {
     setStateResult(ResultData(created));
   }

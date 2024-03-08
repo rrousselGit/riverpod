@@ -54,37 +54,28 @@ typedef RunNotifierBuild< //
 ///   }
 /// }
 /// ```
+// TODO changelog breaking: Notifiers are now recreated when `Notifier.build` is re-executed.
+// This enables using `if (ref.mounted)` inside notifiers.
 abstract class NotifierBase<StateT, CreatedT> {
-  ClassProviderElement<NotifierBase<StateT, CreatedT>, StateT, CreatedT>?
-      _element;
+  Ref<StateT>? _ref;
 
   // TODO docs
   @protected
   Ref<StateT> get ref {
-    final ref = _element?.ref;
+    final ref = _ref;
     if (ref == null) throw StateError(uninitializedElementError);
 
     return ref;
   }
 
+  // TODO chnagelog breaking: reading state/future in Notifiers after dispose throws
   @visibleForTesting
   @protected
-  StateT get state {
-    final element = _element;
-    if (element == null) throw StateError(uninitializedElementError);
-
-    element.flush();
-    return element.requireState;
-  }
+  StateT get state => ref.state;
 
   @visibleForTesting
   @protected
-  set state(StateT newState) {
-    final element = _element;
-    if (element == null) throw StateError(uninitializedElementError);
-
-    element.setStateResult(ResultData(newState));
-  }
+  set state(StateT newState) => ref.state = newState;
 
   CreatedT runBuild();
 
@@ -94,8 +85,7 @@ abstract class NotifierBase<StateT, CreatedT> {
 
 @internal
 extension ClassBaseX<StateT, CreatedT> on NotifierBase<StateT, CreatedT> {
-  ClassProviderElement<NotifierBase<StateT, CreatedT>, StateT, CreatedT>?
-      get element => _element;
+  ProviderElementBase<StateT>? get element => _ref?._element;
 }
 
 /// Implementation detail of `riverpod_generator`.
@@ -191,37 +181,35 @@ abstract class ClassProviderElement< //
     Ref<StateT> ref, {
     required bool didChangeDependency,
   }) {
+    final seamless = !didChangeDependency;
+
     final result = classListenable.result = Result.guard(() {
       final notifier = provider.create();
-      if (notifier._element != null) {
+      if (notifier._ref != null) {
         throw StateError(alreadyInitializedError);
       }
 
-      notifier._element = this;
+      notifier._ref = ref;
       return notifier;
     });
-
-    // TODO test notifier constructor throws -> provider emits AsyncError
-    // TODO test notifier constructor throws -> .notifier rethrows the error
-    // TODO test notifier constructor throws -> .future emits Future.error
 
     switch (result) {
       case ResultData():
         try {
-          handleNotifier(result.state, seamless: !didChangeDependency);
+          handleNotifier(result.state, seamless: seamless);
 
           final created =
               provider.runNotifierBuildOverride?.call(ref, result.state) ??
                   result.state.runBuild();
-          handleValue(created, didChangeDependency: didChangeDependency);
+          handleValue(created, seamless: seamless);
         } catch (err, stack) {
-          handleError(err, stack, didChangeDependency: didChangeDependency);
+          handleError(err, stack, seamless: seamless);
         }
       case ResultError():
         handleError(
           result.error,
           result.stackTrace,
-          didChangeDependency: didChangeDependency,
+          seamless: seamless,
         );
     }
   }
@@ -230,18 +218,12 @@ abstract class ClassProviderElement< //
     // Overridden by FutureModifier mixin
   }
 
-  void handleValue(CreatedT created, {required bool didChangeDependency});
+  void handleValue(CreatedT created, {required bool seamless});
   void handleError(
     Object error,
     StackTrace stackTrace, {
-    required bool didChangeDependency,
+    required bool seamless,
   });
-
-  @override
-  void dispose() {
-    super.dispose();
-    classListenable.result?.stateOrNull?._element = null;
-  }
 
   @override
   bool updateShouldNotify(StateT previous, StateT next) {

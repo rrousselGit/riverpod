@@ -1,12 +1,17 @@
+// ignore_for_file: invalid_use_of_protected_member
+
 import 'dart:async';
 
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/src/internals.dart';
+import 'package:riverpod/legacy.dart';
+import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/framework.dart' show UnmountedRefException;
+import 'package:riverpod/src/providers/async_notifier.dart' show $AsyncNotifier;
 import 'package:test/test.dart';
 
 import '../matrix.dart';
-import '../../old/utils.dart';
+import '../utils.dart';
 
 void main() {
   test('Throws if using notifier properties in its constructor', () {
@@ -39,9 +44,14 @@ void main() {
     test('Can read state inside onDispose', () {
       final container = ProviderContainer.test();
       late TestAsyncNotifier<int> notifier;
+      late List<Object?> errors;
       final provider = factory.simpleTestProvider((ref) {
         ref.onDispose(() {
-          notifier.state;
+          errors = captureErrors([
+            () => notifier.state,
+            () => notifier.state = const AsyncData(42),
+            () => notifier.future,
+          ]);
         });
         return 0;
       });
@@ -50,6 +60,11 @@ void main() {
       notifier = container.read(provider.notifier);
 
       container.dispose();
+
+      expect(
+        errors,
+        everyElement(isA<UnmountedRefException>()),
+      );
     });
 
     test('Using the notifier after dispose throws', () {
@@ -61,12 +76,23 @@ void main() {
 
       container.dispose();
 
-      expect(() => notifier.state, throwsStateError);
-      expect(() => notifier.future, throwsStateError);
-      expect(() => notifier.state = const AsyncData(42), throwsStateError);
-      // ignore: invalid_use_of_protected_member
-      expect(() => notifier.ref, throwsStateError);
-      expect(() => notifier.update((p1) => 42), throwsStateError);
+      expect(notifier.ref.mounted, false);
+      expect(
+        () => notifier.state,
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => notifier.future,
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => notifier.state = const AsyncData(42),
+        throwsA(isA<UnmountedRefException>()),
+      );
+      expect(
+        () => notifier.update((p1) => 42),
+        throwsA(isA<UnmountedRefException>()),
+      );
     });
 
     test('Can assign `AsyncLoading<T>` to `AsyncValue<void>`', () {
@@ -541,39 +567,6 @@ void main() {
         );
       });
 
-      test(
-          'when read on outdated provider, refreshes the provider and return the up-to-date state',
-          () async {
-        final listener = OnBuildMock();
-        final dep = StateProvider((ref) => 0);
-        final provider = factory.simpleTestProvider<int>(
-          (ref) {
-            listener();
-            return Future.value(ref.watch(dep));
-          },
-        );
-        final container = ProviderContainer.test();
-
-        container.listen(provider, (previous, next) {});
-        final notifier = container.read(provider.notifier);
-
-        expect(notifier.state, const AsyncLoading<int>());
-        expect(await container.read(provider.future), 0);
-        expect(notifier.state, const AsyncData(0));
-        verify(listener()).called(1);
-
-        container.read(dep.notifier).state++;
-
-        expect(
-          notifier.state,
-          const AsyncLoading<int>()
-              .copyWithPrevious(const AsyncData(0), isRefresh: false),
-        );
-        expect(await container.read(provider.future), 1);
-        expect(notifier.state, const AsyncData(1));
-        verify(listener()).called(1);
-      });
-
       test('can be read inside build', () {
         final dep = StateProvider((ref) => 0);
         late AsyncValue<int> state;
@@ -622,6 +615,31 @@ void main() {
     });
 
     group('AsyncNotifier.future', () {
+      test('If the notifier is recreated with an error, rethrows the new error',
+          () async {
+        final container = ProviderContainer.test();
+        final listener = Listener<Future<int>>();
+        var body = () => factory.deferredNotifier((ref) => 0);
+        final provider = factory.provider<int>(() => body());
+
+        container.listen(provider.future, listener.call);
+
+        await expectLater(
+          container.read(provider.future),
+          completion(0),
+        );
+        verifyZeroInteractions(listener);
+
+        body = () => throw StateError('foo');
+        container.invalidate(provider);
+
+        await expectLater(
+          container.read(provider.future),
+          throwsA(isA<StateError>()),
+        );
+        verify(listener(any, any)).called(1);
+      });
+
       test(
           'when disposed during loading, resolves with the content of AsyncNotifier.build',
           () async {
@@ -773,58 +791,69 @@ void main() {
 
         expect(notifier.future, same(container.read(provider.future)));
       });
-
-      test(
-          'when read on outdated provider, refreshes the provider and return the up-to-date state',
-          () async {
-        final listener = OnBuildMock();
-        final dep = StateProvider((ref) => 0);
-        final provider = factory.simpleTestProvider<int>(
-          (ref) {
-            listener();
-            return Future.value(ref.watch(dep));
-          },
-        );
-        final container = ProviderContainer.test();
-
-        container.listen(provider, (previous, next) {});
-        final notifier = container.read(provider.notifier);
-
-        expect(await container.read(provider.future), 0);
-        verify(listener()).called(1);
-
-        container.read(dep.notifier).state++;
-
-        expect(notifier.future, notifier.future);
-        expect(notifier.future, same(container.read(provider.future)));
-        expect(await notifier.future, 1);
-        verify(listener()).called(1);
-      });
     });
 
     group('AsyncNotifierProvider.notifier', () {
-      test(
-          'never emits an update. The Notifier is never recreated once it is instantiated',
+      test('If the notifier is recreated with an error, rethrows the new error',
           () async {
-        final listener = OnBuildMock();
+        final container = ProviderContainer.test();
+        final listener = Listener<$AsyncNotifier<int>>();
+        final onError = ErrorListener();
+        var body = () => factory.deferredNotifier((ref) => 0);
+        final provider = factory.provider<int>(() => body());
+
+        container.listen(
+          provider.notifier,
+          listener.call,
+          onError: onError.call,
+        );
+
+        await expectLater(container.read(provider.notifier), isNotNull);
+        verifyZeroInteractions(listener);
+        verifyZeroInteractions(onError);
+
+        body = () => throw StateError('foo');
+        container.invalidate(provider);
+
+        await expectLater(
+          () => container.read(provider.notifier),
+          throwsA(isA<StateError>()),
+        );
+        verifyZeroInteractions(listener);
+        verifyOnly(onError, onError(isA<StateError>(), any)).called(1);
+      });
+
+      test(
+          'Notifies listeners whenever `build` is re-executed, due to recreating a new notifier.',
+          () async {
+        final notifierListener = Listener<$AsyncNotifier<int>>();
         final dep = StateProvider((ref) => 0);
         final provider = factory.provider<int>(() {
-          listener();
-          return factory.deferredNotifier<int>((ref) => ref.watch(dep));
+          return factory.deferredNotifier(
+            (ref) => Future.value(ref.watch(dep)),
+          );
         });
         final container = ProviderContainer.test();
 
-        container.listen(provider, (previous, next) {});
-        final notifier = container.read(provider.notifier);
+        final sub = container.listen(provider.notifier, notifierListener.call);
+        final initialNotifier = sub.read();
 
-        verify(listener()).called(1);
-        expect(container.read(provider), const AsyncData(0));
+        expect(initialNotifier.ref.mounted, true);
 
-        container.read(dep.notifier).state++;
+        // Skip the loading
+        await container.read(provider.future);
+        verifyNoMoreInteractions(notifierListener);
 
-        expect(container.read(provider), const AsyncData(1));
-        expect(container.read(provider.notifier), same(notifier));
-        verifyNoMoreInteractions(listener);
+        container.refresh(provider);
+        final newNotifier = sub.read();
+
+        expect(newNotifier, isNot(same(initialNotifier)));
+        verifyOnly(
+          notifierListener,
+          notifierListener(initialNotifier, newNotifier),
+        ).called(1);
+        expect(initialNotifier.ref.mounted, false);
+        expect(newNotifier.ref.mounted, true);
       });
     });
 

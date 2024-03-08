@@ -174,7 +174,7 @@ class $StreamProviderElement<StateT>
 
     handleStream(
       () => provider.create(ref),
-      didChangeDependency: didChangeDependency,
+      seamless: !didChangeDependency,
     );
   }
 

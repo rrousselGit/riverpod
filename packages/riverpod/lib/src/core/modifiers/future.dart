@@ -42,10 +42,14 @@ mixin $AsyncClassModifier<StateT, CreatedT>
   @visibleForTesting
   @protected
   Future<StateT> get future {
-    // TODO remove downcast/upcast once "future" is merged with all providers
-    final Object? element = this.element;
-    if (element == null) throw StateError(uninitializedElementError);
+    final ref = _ref;
+    if (ref == null) {
+      throw StateError(uninitializedElementError);
+    }
 
+    ref._throwIfInvalidUsage();
+
+    final element = ref._element;
     element as FutureModifierElement<StateT>;
 
     element.flush();
@@ -181,6 +185,30 @@ base mixin $FutureModifier<StateT> on ProviderBase<AsyncValue<StateT>> {
   }
 }
 
+mixin FutureModifierClassElement<
+        NotifierT extends NotifierBase< //
+            AsyncValue<StateT>,
+            CreatedT>,
+        StateT,
+        CreatedT>
+    on
+        FutureModifierElement<StateT>,
+        ClassProviderElement<NotifierT, AsyncValue<StateT>, CreatedT> {
+  @override
+  void handleNotifier(Object? notifier, {required bool seamless}) {
+    asyncTransition(AsyncLoading<StateT>(), seamless: seamless);
+  }
+
+  @override
+  void handleError(
+    Object error,
+    StackTrace stackTrace, {
+    required bool seamless,
+  }) {
+    onError(AsyncError(error, stackTrace), seamless: seamless);
+  }
+}
+
 /// Mixin to help implement logic for listening to [Future]s/[Stream]s and setup
 /// `provider.future` + convert the object into an [AsyncValue].
 @internal
@@ -216,14 +244,11 @@ mixin FutureModifierElement<StateT> on ProviderElementBase<AsyncValue<StateT>> {
     AsyncValue<StateT> newState, {
     required bool seamless,
   }) {
-// ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
     final previous = stateResult?.requireState;
 
     if (previous == null) {
-// ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       super.setStateResult(ResultData(newState));
     } else {
-// ignore: invalid_use_of_protected_member, invalid_use_of_visible_for_testing_member
       super.setStateResult(
         ResultData(
           newState
@@ -252,11 +277,6 @@ mixin FutureModifierElement<StateT> on ProviderElementBase<AsyncValue<StateT>> {
       final completer = _futureCompleter = Completer();
       futureNotifier.result = ResultData(completer.future);
     }
-  }
-
-  void handleNotifier(Object? notifier, {required bool seamless}) {
-    // Overrides the default behavior of ClassProviderElement.handleNotifier
-    asyncTransition(AsyncLoading<StateT>(), seamless: seamless);
   }
 
   /// Life-cycle for when an error from the provider's "build" method is received.
@@ -321,9 +341,9 @@ mixin FutureModifierElement<StateT> on ProviderElementBase<AsyncValue<StateT>> {
   @internal
   void handleStream(
     Stream<StateT> Function() create, {
-    required bool didChangeDependency,
+    required bool seamless,
   }) {
-    _handleAsync(didChangeDependency: didChangeDependency, ({
+    _handleAsync(seamless: seamless, ({
       required data,
       required done,
       required error,
@@ -353,9 +373,9 @@ mixin FutureModifierElement<StateT> on ProviderElementBase<AsyncValue<StateT>> {
   @internal
   void handleFuture(
     FutureOr<StateT> Function() create, {
-    required bool didChangeDependency,
+    required bool seamless,
   }) {
-    _handleAsync(didChangeDependency: didChangeDependency, ({
+    _handleAsync(seamless: seamless, ({
       required data,
       required done,
       required error,
@@ -403,17 +423,17 @@ mixin FutureModifierElement<StateT> on ProviderElementBase<AsyncValue<StateT>> {
       required void Function() done,
       required void Function(Future<StateT>, CancelAsyncSubscription) last,
     }) listen, {
-    required bool didChangeDependency,
+    required bool seamless,
   }) {
-    onLoading(AsyncLoading<StateT>(), seamless: !didChangeDependency);
+    onLoading(AsyncLoading<StateT>(), seamless: seamless);
 
     try {
       final sub = _cancelSubscription = listen(
         data: (value) {
-          onData(AsyncData(value), seamless: !didChangeDependency);
+          onData(AsyncData(value), seamless: seamless);
         },
         error: (error, stack) {
-          onError(AsyncError(error, stack), seamless: !didChangeDependency);
+          onError(AsyncError(error, stack), seamless: seamless);
         },
         last: (last, sub) {
           assert(_lastFuture == null, 'bad state');
@@ -438,7 +458,7 @@ mixin FutureModifierElement<StateT> on ProviderElementBase<AsyncValue<StateT>> {
     } catch (error, stackTrace) {
       onError(
         AsyncError<StateT>(error, stackTrace),
-        seamless: !didChangeDependency,
+        seamless: seamless,
       );
     }
   }
