@@ -3,7 +3,7 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart' show ProviderElementBase;
 import 'package:test/test.dart';
 
-import '../../../old/utils.dart';
+import '../../utils.dart';
 
 void main() {
   group('Provider.autoDispose.family', () {
