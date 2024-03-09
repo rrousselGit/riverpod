@@ -1,3 +1,8 @@
+## Unreleased patch
+
+- Deprecate `ProviderScope.parent` due to fundamentally not working.
+  See https://github.com/rrousselGit/riverpod/issues/3261
+
 ## 2.4.10 - 2024-02-03
 
 - Fix out of date `pub.dev` description
