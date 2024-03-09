@@ -327,7 +327,11 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
   /// After a provider is initialized, this function takes care of unsubscribing
   /// to dependencies that are no-longer used.
   void _performBuild() {
-    _previousDependencies = _dependencies;
+    assert(
+      _previousDependencies == null,
+      'Bad state: _performBuild was called twice',
+    );
+    final previousDependencies = _previousDependencies = _dependencies;
     _dependencies = HashMap();
 
     final previousStateResult = _state;
@@ -362,7 +366,7 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
     }
 
     // Unsubscribe to everything that a provider no longer depends on.
-    for (final sub in _previousDependencies!.entries) {
+    for (final sub in previousDependencies.entries) {
       sub.key
         .._providerDependents.remove(this)
         .._onRemoveListener();
