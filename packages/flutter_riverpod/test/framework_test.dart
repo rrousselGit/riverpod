@@ -163,6 +163,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
+        // ignore: deprecated_member_use_from_same_package
         parent: container,
         child: Consumer(
           builder: (context, ref, _) {
@@ -184,6 +185,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
+        // ignore: deprecated_member_use_from_same_package
         parent: container,
         child: Container(),
       ),
@@ -191,6 +193,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
+        // ignore: deprecated_member_use_from_same_package
         parent: container2,
         child: Container(),
       ),

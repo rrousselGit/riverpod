@@ -6,7 +6,6 @@ import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 import asyncInitialization from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/concepts/async_initialization.dart";
-import dialogScope from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/concepts/dialog_scope.dart";
 import themeScope from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/concepts/theme_scope.dart";
 import subtreeScope from "!!raw-loader!/i18n/fr/docusaurus-plugin-content-docs/current/concepts/subtree_scope.dart";
 import { trimSnippet } from "../../../../../src/components/CodeSnippet";
@@ -82,17 +81,6 @@ Alors comment faire pour que ce genre d'états de provider soit disponible de ma
 Voici un exemple qui montre comment le scoping vous permet de remplacer un provider fictif lorsque votre API asynchrone est prête.
 
 <CodeBlock>{trimSnippet(asyncInitialization)}</CodeBlock>
-
-## Affichage des dialogues
-
-Lorsque vous affichez un `Dialog` ou un `OverlayEntry`, flutter crée une nouvelle `Route` ou ajoute à un `Overlay` qui a une portée de construction différente,
-afin qu'il puisse échapper à la disposition de son parent, et qu'il puisse être affiché au-dessus des autres `Routes`. 
-Cela pose un problème pour les `InheritedWidget`s en général, et comme [ProviderScope] est un `InheritedWidget`, il est également affecté.
-
-Pour résoudre ce problème, Riverpod vous permet de créer un `ProviderScope` qui peut accéder à l'état de tous les providers dans une portée `parent`.
-
-L'exemple suivant montre comment l'utiliser, pour permettre à un `Dialog` d'accéder à l'état d'un compteur depuis le contexte qui a provoqué l'affichage du `Dialog`.
-<CodeBlock>{trimSnippet(dialogScope)}</CodeBlock>
 
 ## Scoping de sous-arbres
 
