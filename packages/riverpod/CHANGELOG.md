@@ -6,6 +6,8 @@
   with the provider if the provider is no-longer used.
 - Fix `selectAsync` sometimes never resolving.
 - Fix `ProviderSubscription.read` returned by `ref.listen(provider.future)` not throwing if used after the subscription has been closed.
+- Fix `ref.onAddListener` and other life-cycles not being triggered when
+  listening to `provider.future`/`provider.notifier`.
 
 ## 2.5.0 - 2024-02-03
 

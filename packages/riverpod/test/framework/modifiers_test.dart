@@ -1,4 +1,5 @@
 // ignore_for_file: prefer_const_constructors
+import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/builders.dart';
 import 'package:test/test.dart';
@@ -21,6 +22,59 @@ void main() {
         );
       });
     });
+  });
+
+  test('Listening to a modifier correctly fires ref life-cycles', () async {
+    final container = createContainer();
+    final onDispose = OnDisposeMock();
+    final onAddListener = OnAddListener();
+    final onRemoveListener = OnRemoveListener();
+    final onResume = OnResume();
+    final onCancel = OnCancelMock();
+
+    final provider = FutureProvider((ref) {
+      ref.onDispose(onDispose.call);
+      ref.onAddListener(onAddListener.call);
+      ref.onRemoveListener(onRemoveListener.call);
+      ref.onCancel(onCancel.call);
+      ref.onResume(onResume.call);
+      return 0;
+    });
+
+    final sub = container.listen(provider.future, (prev, value) {});
+
+    verifyOnly(onAddListener, onAddListener());
+
+    final sub2 = container.listen(provider.future, (prev, value) {});
+
+    verifyOnly(onAddListener, onAddListener());
+
+    sub.close();
+
+    verifyOnly(onRemoveListener, onRemoveListener());
+    verifyZeroInteractions(onCancel);
+
+    sub2.close();
+
+    verifyOnly(onRemoveListener, onRemoveListener());
+    verifyZeroInteractions(onResume);
+    verifyOnly(onCancel, onCancel());
+
+    container.listen(provider.future, (prev, value) {});
+
+    verifyOnly(onAddListener, onAddListener());
+    verifyOnly(onResume, onResume());
+
+    container.listen(provider.future, (prev, value) {});
+
+    verifyOnly(onAddListener, onAddListener());
+    verifyNoMoreInteractions(onCancel);
+    verifyNoMoreInteractions(onResume);
+    verifyZeroInteractions(onDispose);
+
+    container.invalidate(provider);
+
+    verifyOnly(onDispose, onDispose());
   });
 
   test('builders', () {
