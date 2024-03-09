@@ -7,30 +7,39 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
-//   test('', () async {
-//     final dep = StreamProvider<int>((ref) => controller.stream);
+  group('If disposed before a value could be emitted', () {
+    test('resolves values with `sub.read()`', () async {
+      final container = createContainer();
+      final controller = StreamController<int>();
+      final provider = Provider((ref) => ref);
+      addTearDown(controller.close);
+      final dep = StreamProvider<int>((ref) => controller.stream);
 
-//     final provider = FutureProvider<String>((ref) async {
-//       return ref.watch(watchDatabaseProvider.selectAsync((id) => '$id+456'));
-//     });
+      final ref = container.read(provider);
+      final future = ref.watch(dep.selectAsync((data) => data * 2));
 
-// // // Provider using `.future`
-// // @riverpod
-// // Future<String> b(BRef ref) async {
-// //   final id = await ref.watch(watchDatabaseProvider.future);
-// //   return '$id+456';
-// // }
+      container.invalidate(provider);
+      controller.add(21);
 
-// // @riverpod
-// // Stream<String> watchDatabase(WatchDatabaseRef ref) => databaseStream;
+      expect(await future, 42);
+    });
 
-// // Stream<String> get databaseStream async* {
-// //   // Mock DB query delay
-// //   await Future.delayed(const Duration(milliseconds: 100));
+    test('resolves errors with `sub.read()`', () async {
+      final container = createContainer();
+      final controller = StreamController<int>();
+      final provider = Provider((ref) => ref);
+      addTearDown(controller.close);
+      final dep = StreamProvider<int>((ref) => controller.stream);
 
-// //   yield '123';
-// // }
-//   });
+      final ref = container.read(provider);
+      final future = ref.watch(dep.selectAsync((data) => data * 2));
+
+      container.invalidate(provider);
+      controller.addError('err');
+
+      await expectLater(future, throwsA('err'));
+    });
+  });
 
   test('implements ProviderSubscription.read on AsyncData', () async {
     final container = createContainer();

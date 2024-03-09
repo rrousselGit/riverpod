@@ -2,9 +2,8 @@ part of '../framework.dart';
 
 /// An abstraction of both [ProviderContainer] and [ProviderElement] used by
 /// [ProviderListenable].
-@internal
 abstract class Node {
-  /// Starts listening to this transformer
+  /// Starts listening to a listenable
   ProviderSubscription<State> listen<State>(
     ProviderListenable<State> listenable,
     void Function(State? previous, State next) listener, {

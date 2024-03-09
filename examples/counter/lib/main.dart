@@ -7,6 +7,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'main.g.dart';
 
 void main() {
+  final a = {if (true) {} else {}};
+  ;
+
   runApp(const App());
 }
 
