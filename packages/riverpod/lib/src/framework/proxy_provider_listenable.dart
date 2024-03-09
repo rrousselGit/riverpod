@@ -14,7 +14,6 @@ class _ProxySubscription<T> extends ProviderSubscription<T> {
 
   @override
   T read() {
-    // TODO test
     if (_closed) {
       throw StateError(
         'called ProviderSubscription.read on a subscription that was closed',
