@@ -140,11 +140,11 @@ void main() {
     test('Throws if a circular dependency is detected', () {
       // Regression test for https://github.com/rrousselGit/riverpod/issues/2336
       late Ref ref;
-      final a = Provider((r) {
+      final a = Provider(name: 'a', (r) {
         ref = r;
         return 0;
       });
-      final b = Provider((r) => r.watch(a));
+      final b = Provider(name: 'b', (r) => r.watch(a));
       final container = createContainer();
 
       container.read(b);
@@ -572,13 +572,10 @@ void main() {
       final container = createContainer();
       final listener = OnAddListener();
       final listener2 = OnAddListener();
-      final dep = Provider(
-        name: 'dep',
-        (ref) {
-          ref.onAddListener(listener.call);
-          ref.onAddListener(listener2.call);
-        },
-      );
+      final dep = Provider(name: 'dep', (ref) {
+        ref.onAddListener(listener.call);
+        ref.onAddListener(listener2.call);
+      });
       late Ref ref;
       final provider = Provider(
         name: 'provider',

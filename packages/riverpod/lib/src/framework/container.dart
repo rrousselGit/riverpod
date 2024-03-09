@@ -30,11 +30,11 @@ class _StateReader {
   /// at the creation of the [ProviderContainer]
   final bool isDynamicallyCreated;
 
-  ProviderElementBase<Object?>? _element;
+  ProviderElementBase? _element;
 
-  ProviderElementBase<Object?> getElement() => _element ??= _create();
+  ProviderElementBase getElement() => _element ??= _create();
 
-  ProviderElementBase<Object?> _create() {
+  ProviderElementBase _create() {
     if (origin == _circularDependencyLock) {
       throw CircularDependencyError._();
     }
@@ -266,23 +266,6 @@ class ProviderContainer implements Node {
       }(),
       '',
     );
-  }
-
-  @override
-  ProviderSubscription<State> _listenElement<State>(
-    ProviderElementBase<State> element, {
-    required void Function(State? previous, State next) listener,
-    required void Function(Object error, StackTrace stackTrace) onError,
-  }) {
-    final sub = _ExternalProviderSubscription<State>._(
-      element,
-      listener,
-      onError: onError,
-    );
-
-    element._externalDependents.add(sub);
-
-    return sub;
   }
 
   /// {@macro riverpod.listen}
@@ -653,7 +636,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
   }
 
   /// Traverse the [ProviderElementBase]s associated with this [ProviderContainer].
-  Iterable<ProviderElementBase<Object?>> getAllProviderElements() sync* {
+  Iterable<ProviderElementBase> getAllProviderElements() sync* {
     for (final reader in _stateReaders.values) {
       if (reader._element != null && reader.container == this) {
         yield reader._element!;
@@ -666,9 +649,9 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
   /// This is fairly expensive and should be avoided as much as possible.
   /// If you do not need for providers to be sorted, consider using [getAllProviderElements]
   /// instead, which returns an unsorted list and is significantly faster.
-  Iterable<ProviderElementBase<Object?>> getAllProviderElementsInOrder() sync* {
-    final visitedNodes = HashSet<ProviderElementBase<Object?>>();
-    final queue = DoubleLinkedQueue<ProviderElementBase<Object?>>();
+  Iterable<ProviderElementBase> getAllProviderElementsInOrder() sync* {
+    final visitedNodes = HashSet<ProviderElementBase>();
+    final queue = DoubleLinkedQueue<ProviderElementBase>();
 
     // get providers that don't depend on other providers from this container
     for (final reader in _stateReaders.values) {

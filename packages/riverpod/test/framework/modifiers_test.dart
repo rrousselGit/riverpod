@@ -3,7 +3,26 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/builders.dart';
 import 'package:test/test.dart';
 
+import '../utils.dart';
+
 void main() {
+  group('_ProxySubscription', () {
+    group('read', () {
+      test('throws if used after close', () {
+        final container = createContainer();
+        final provider = FutureProvider((ref) async => 0);
+
+        final sub = container.listen(provider.future, (prev, value) {});
+        sub.close();
+
+        expect(
+          sub.read,
+          throwsStateError,
+        );
+      });
+    });
+  });
+
   test('builders', () {
     expect(Provider.autoDispose.family, Provider.family.autoDispose);
     expect(
