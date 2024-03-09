@@ -229,11 +229,34 @@ mixin ProviderListenable<State> implements ProviderListenableOrFamily {
 }
 
 /// Represents the subscription to a [ProviderListenable]
+@optionalTypeArgs
 abstract class ProviderSubscription<State> {
-  /// Stops listening to the provider
-  @mustCallSuper
-  void close();
+  ProviderSubscription(this.source) {
+    final Object listener = source;
+    if (listener is ProviderElementBase) {
+      final subs = listener._subscriptions ??= [];
+      subs.add(this);
+    }
+  }
+
+  Type get type => State;
+
+  final Node source;
+  bool get closed => _closed;
+  var _closed = false;
 
   /// Obtain the latest value emitted by the provider
   State read();
+
+  /// Stops listening to the provider
+  @mustCallSuper
+  void close() {
+    if (_closed) return;
+    _closed = true;
+
+    final Object listener = source;
+    if (listener is ProviderElementBase) {
+      listener._subscriptions?.remove(this);
+    }
+  }
 }

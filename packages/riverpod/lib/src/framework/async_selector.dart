@@ -234,8 +234,18 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
     }
 
     return _SelectorSubscription(
+      node,
       sub,
       () => selectedFuture!,
+      onClose: () {
+        final completer = selectedCompleter;
+        if (completer != null && !completer.isCompleted) {
+          read(node).then(
+            completer.complete,
+            onError: completer.completeError,
+          );
+        }
+      },
     );
   }
 
