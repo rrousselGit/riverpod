@@ -1,63 +1,65 @@
 part of '../framework.dart';
 
 /// Represents the subscription to a [ProviderListenable]
-abstract class ProviderSubscription<StateT> {
-  /// Stops listening to the provider
-  @mustCallSuper
-  void close();
+@optionalTypeArgs
+abstract base class ProviderSubscription<StateT> {
+  /// Represents the subscription to a [ProviderListenable]
+  ProviderSubscription(this.source) {
+    final Object listener = source;
+    if (listener is ProviderElementBase) {
+      final subs = listener._subscriptions ??= [];
+      subs.add(this);
+    }
+  }
 
-  /// Obtain the latest value emitted by the provider
+  /// The object that listens to the associated [ProviderListenable].
+  ///
+  /// This is typically a [ProviderElementBase] or a [ProviderContainer],
+  /// but may be other values in the future.
+  final Node source;
+
+  /// Whether the subscription is closed.
+  bool get closed => _closed;
+  var _closed = false;
+
+  /// Obtain the latest value emitted by the provider.
+  ///
+  /// This method throws if [closed] is true.
   StateT read();
+
+  /// Stops listening to the provider.
+  ///
+  /// It is safe to call this method multiple times.
+  @mustCallSuper
+  void close() {
+    if (_closed) return;
+    _closed = true;
+
+    final Object listener = source;
+    if (listener is ProviderElementBase) {
+      listener._subscriptions?.remove(this);
+    }
+  }
 }
 
 /// When a provider listens to another provider using `listen`
-class _ProviderListener<StateT> implements ProviderSubscription<StateT> {
-  _ProviderListener._({
+@optionalTypeArgs
+final class _ProviderStateSubscription<StateT>
+    extends ProviderSubscription<StateT> {
+  _ProviderStateSubscription(
+    super.source, {
     required this.listenedElement,
-    required this.dependentElement,
     required this.listener,
     required this.onError,
-  });
+  }) {
+    final dependents = listenedElement._dependents ??= [];
+    dependents.add(this);
+  }
 
-// TODO can't we type it properly?
+  // Why can't this be typed correctly?
   final void Function(Object? prev, Object? state) listener;
-  final ProviderElementBase<Object?> dependentElement;
   final ProviderElementBase<StateT> listenedElement;
   final OnError onError;
-
-  @override
-  void close() {
-    dependentElement._listenedProviderSubscriptions.remove(this);
-    listenedElement
-      .._subscribers.remove(this)
-      .._onRemoveListener();
-  }
-
-  @override
-  StateT read() => listenedElement.readSelf();
-}
-
-var _debugIsRunningSelector = false;
-
-class _ExternalProviderSubscription<StateT>
-    implements ProviderSubscription<StateT> {
-  _ExternalProviderSubscription._(
-    this._listenedElement,
-    this._listener, {
-    required this.onError,
-  });
-
-  final void Function(StateT? previous, StateT next) _listener;
-  final ProviderElementBase<StateT> _listenedElement;
-  final void Function(Object error, StackTrace stackTrace) onError;
-  var _closed = false;
-
-  @override
-  void close() {
-    _closed = true;
-    _listenedElement._externalDependents.remove(this);
-    _listenedElement._onRemoveListener();
-  }
 
   @override
   StateT read() {
@@ -66,7 +68,17 @@ class _ExternalProviderSubscription<StateT>
         'called ProviderSubscription.read on a subscription that was closed',
       );
     }
-    return _listenedElement.readSelf();
+    return listenedElement.readSelf();
+  }
+
+  @override
+  void close() {
+    if (!closed) {
+      listenedElement._dependents?.remove(this);
+      listenedElement._onRemoveListener();
+    }
+
+    super.close();
   }
 }
 

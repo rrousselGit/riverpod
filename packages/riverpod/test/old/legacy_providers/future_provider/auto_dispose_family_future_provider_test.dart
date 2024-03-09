@@ -85,7 +85,7 @@ void main() {
       expect(container.read(provider(0)), const AsyncData(42));
       expect(root.getAllProviderElementsInOrder(), isEmpty);
       expect(container.getAllProviderElementsInOrder(), [
-        isA<ProviderElementBase<Object?>>()
+        isA<ProviderElementBase>()
             .having((e) => e.origin, 'origin', provider(0)),
       ]);
     });

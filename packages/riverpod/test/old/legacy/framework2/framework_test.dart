@@ -257,12 +257,12 @@ void main() {
     final sub = container.listen(computed, (_, __) {});
 
     expect(sub.read(), '0');
-    var firstDependents = <ProviderElementBase<Object?>>[];
+    var firstDependents = <ProviderElementBase>[];
     firstElement.visitChildren(
       elementVisitor: firstDependents.add,
       listenableVisitor: (_) {},
     );
-    var secondDependents = <ProviderElementBase<Object?>>[];
+    var secondDependents = <ProviderElementBase>[];
     secondElement.visitChildren(
       elementVisitor: secondDependents.add,
       listenableVisitor: (_) {},
@@ -276,12 +276,12 @@ void main() {
     container.read(first.notifier).state++;
     expect(sub.read(), 'fallback');
 
-    firstDependents = <ProviderElementBase<Object?>>[];
+    firstDependents = <ProviderElementBase>[];
     firstElement.visitChildren(
       elementVisitor: firstDependents.add,
       listenableVisitor: (_) {},
     );
-    secondDependents = <ProviderElementBase<Object?>>[];
+    secondDependents = <ProviderElementBase>[];
     secondElement.visitChildren(
       elementVisitor: secondDependents.add,
       listenableVisitor: (_) {},
@@ -322,7 +322,7 @@ void main() {
     final sub = container.listen(computed, (_, __) {});
 
     expect(sub.read(), 0);
-    var firstDependents = <ProviderElementBase<Object?>>[];
+    var firstDependents = <ProviderElementBase>[];
     firstElement.visitChildren(
       elementVisitor: firstDependents.add,
       listenableVisitor: (_) {},
@@ -333,7 +333,7 @@ void main() {
     sub.close();
     await container.pump();
 
-    firstDependents = <ProviderElementBase<Object?>>[];
+    firstDependents = <ProviderElementBase>[];
     firstElement.visitChildren(
       elementVisitor: firstDependents.add,
       listenableVisitor: (_) {},

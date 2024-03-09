@@ -8,6 +8,40 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
+  group('If disposed before a value could be emitted', () {
+    test('resolves values with `sub.read()`', () async {
+      final container = ProviderContainer.test();
+      final controller = StreamController<int>();
+      final provider = Provider((ref) => ref);
+      addTearDown(controller.close);
+      final dep = StreamProvider<int>((ref) => controller.stream);
+
+      final ref = container.read(provider);
+      final future = ref.watch(dep.selectAsync((data) => data * 2));
+
+      container.invalidate(provider);
+      controller.add(21);
+
+      expect(await future, 42);
+    });
+
+    test('resolves errors with `sub.read()`', () async {
+      final container = ProviderContainer.test();
+      final controller = StreamController<int>();
+      final provider = Provider((ref) => ref);
+      addTearDown(controller.close);
+      final dep = StreamProvider<int>((ref) => controller.stream);
+
+      final ref = container.read(provider);
+      final future = ref.watch(dep.selectAsync((data) => data * 2));
+
+      container.invalidate(provider);
+      controller.addError('err');
+
+      await expectLater(future, throwsA('err'));
+    });
+  });
+
   test('implements ProviderSubscription.read on AsyncData', () async {
     final container = ProviderContainer.test();
     final dep = StateProvider((ref) => 0);

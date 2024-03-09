@@ -31,6 +31,11 @@ Fix exceptions when using multiple root `ProviderContainers`/`ProviderScopes`.
 - **Breaking**: Removed everything marked as "deprecated"
 - Bumped minimum Dart SDK to >= 3.0.0-dev
 
+## Unreleased patch
+
+- Deprecate `ProviderScope.parent` due to fundamentally not working.
+  See https://github.com/rrousselGit/riverpod/issues/3261
+
 ## 2.4.10 - 2024-02-03
 
 - Fix out of date `pub.dev` description

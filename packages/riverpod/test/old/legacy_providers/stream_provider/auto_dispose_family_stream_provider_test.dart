@@ -33,7 +33,7 @@ void main() {
         expect(
           container.getAllProviderElements(),
           unorderedEquals(<Object?>[
-            isA<ProviderElementBase<Object?>>()
+            isA<ProviderElementBase>()
                 .having((e) => e.origin, 'origin', provider(0)),
           ]),
         );

@@ -25,7 +25,7 @@ void main() {
       expect(await container.read(provider(0).future), 0);
       expect(container.read(provider(0)), const AsyncData(0));
       expect(container.getAllProviderElementsInOrder(), [
-        isA<ProviderElementBase<Object?>>()
+        isA<ProviderElementBase>()
             .having((e) => e.origin, 'origin', provider(0)),
       ]);
       expect(root.getAllProviderElementsInOrder(), isEmpty);
@@ -69,7 +69,7 @@ void main() {
       expect(container.read(provider(0)), const AsyncData(42));
       expect(root.getAllProviderElementsInOrder(), isEmpty);
       expect(container.getAllProviderElementsInOrder(), [
-        isA<ProviderElementBase<Object?>>()
+        isA<ProviderElementBase>()
             .having((e) => e.origin, 'origin', provider(0)),
       ]);
     });

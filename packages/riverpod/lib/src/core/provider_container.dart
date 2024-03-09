@@ -32,7 +32,7 @@ class ProviderPointer implements _PointerBase {
   /// This override may be implicitly created by [ProviderOrFamily.allTransitiveDependencies].
   // ignore: library_private_types_in_public_api, not public API
   _ProviderOverride? providerOverride;
-  ProviderElementBase<Object?>? element;
+  ProviderElementBase? element;
   @override
   final ProviderContainer targetContainer;
 
@@ -165,7 +165,7 @@ class ProviderDirectory implements _PointerBase {
     );
 
     if (pointer.element == null) {
-      ProviderElementBase<Object?>? element;
+      ProviderElementBase? element;
 
       switch ((pointer.providerOverride, familyOverride)) {
         // The provider is overridden. This takes over any family override
@@ -417,7 +417,7 @@ class ProviderPointerManager {
     return readDirectory(provider)?.pointers[provider];
   }
 
-  ProviderElementBase<Object?>? readElement(ProviderBase<Object?> provider) {
+  ProviderElementBase? readElement(ProviderBase<Object?> provider) {
     return readPointer(provider)?.element;
   }
 
@@ -439,7 +439,7 @@ class ProviderPointerManager {
     );
   }
 
-  ProviderElementBase<Object?> upsertElement(ProviderBase<Object?> provider) {
+  ProviderElementBase upsertElement(ProviderBase<Object?> provider) {
     return upsertPointer(provider).element!;
   }
 
@@ -455,7 +455,7 @@ class ProviderPointerManager {
   }
 
   /// Read the [ProviderElementBase] for a provider, without creating it if it doesn't exist.
-  Iterable<ProviderElementBase<Object?>> listFamily(Family family) {
+  Iterable<ProviderElementBase> listFamily(Family family) {
     final _familyPointers = familyPointers[family];
     if (_familyPointers == null) return const [];
 
@@ -730,23 +730,6 @@ class ProviderContainer implements Node {
     }
   }
 
-  @override
-  ProviderSubscription<State> _listenElement<State>(
-    ProviderElementBase<State> element, {
-    required void Function(State? previous, State next) listener,
-    required void Function(Object error, StackTrace stackTrace) onError,
-  }) {
-    final sub = _ExternalProviderSubscription<State>._(
-      element,
-      listener,
-      onError: onError,
-    );
-
-    element._externalDependents.add(sub);
-
-    return sub;
-  }
-
   /// {@macro riverpod.listen}
   @override
   ProviderSubscription<State> listen<State>(
@@ -962,7 +945,7 @@ class ProviderContainer implements Node {
   void dispose() => _dispose(updateChildren: true);
 
   /// Traverse the [ProviderElementBase]s associated with this [ProviderContainer].
-  Iterable<ProviderElementBase<Object?>> getAllProviderElements() {
+  Iterable<ProviderElementBase> getAllProviderElements() {
     return _pointerManager
         .listProviderPointers()
         .map((e) => e.element)
@@ -975,9 +958,9 @@ class ProviderContainer implements Node {
   /// This is fairly expensive and should be avoided as much as possible.
   /// If you do not need for providers to be sorted, consider using [getAllProviderElements]
   /// instead, which returns an unsorted list and is significantly faster.
-  Iterable<ProviderElementBase<Object?>> getAllProviderElementsInOrder() sync* {
-    final visitedNodes = HashSet<ProviderElementBase<Object?>>();
-    final queue = DoubleLinkedQueue<ProviderElementBase<Object?>>();
+  Iterable<ProviderElementBase> getAllProviderElementsInOrder() sync* {
+    final visitedNodes = HashSet<ProviderElementBase>();
+    final queue = DoubleLinkedQueue<ProviderElementBase>();
 
     // get providers that don't depend on other providers from this container
     for (final pointer in _pointerManager.listProviderPointers()) {

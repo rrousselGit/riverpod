@@ -1,7 +1,8 @@
 part of '../framework.dart';
 
-class _ProxySubscription<StateT> extends ProviderSubscription<StateT> {
+final class _ProxySubscription<StateT> extends ProviderSubscription<StateT> {
   _ProxySubscription(
+    super.source,
     this._removeListeners,
     this._read, {
     required this.innerSubscription,
@@ -12,13 +13,24 @@ class _ProxySubscription<StateT> extends ProviderSubscription<StateT> {
   final StateT Function() _read;
 
   @override
-  void close() {
-    innerSubscription.close();
-    _removeListeners();
+  StateT read() {
+    if (closed) {
+      throw StateError(
+        'called ProviderSubscription.read on a subscription that was closed',
+      );
+    }
+    return _read();
   }
 
   @override
-  StateT read() => _read();
+  void close() {
+    if (!closed) {
+      innerSubscription.close();
+      _removeListeners();
+    }
+
+    super.close();
+  }
 }
 
 /// An internal utility for reading alternate values of a provider.
@@ -96,13 +108,14 @@ class ProviderElementProxy<InputT, OutputT>
     );
 
     return _ProxySubscription(
+      node,
       removeListener,
       () => read(node),
       // While we don't care about changes to the element, calling _listenElement
       // is necessary to tell the listened element that it is being listened.
-      innerSubscription: node._listenElement<InputT>(
-        element,
-        listener: (prev, next) {},
+      innerSubscription: node.listen(
+        provider,
+        (prev, next) {},
         onError: (err, stack) {},
       ),
     );

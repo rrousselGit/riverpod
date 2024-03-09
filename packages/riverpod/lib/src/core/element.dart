@@ -42,12 +42,13 @@ void Function()? debugCanModifyProviders;
 /// {@endtemplate}
 // TODO rename to ProviderElement
 @internal
+@optionalTypeArgs
 abstract class ProviderElementBase<StateT> implements Node {
   /// {@macro riverpod.provider_element_base}
   // TODO changelog: ProviderElement no-longer takes a provider as parameter but takes a ProviderContainer
   ProviderElementBase(this.container);
 
-  static ProviderElementBase<Object?>? _debugCurrentlyBuildingElement;
+  static ProviderElementBase? _debugCurrentlyBuildingElement;
 
   /// The last result of [ProviderBase.debugGetCreateSourceHash].
   ///
@@ -74,36 +75,15 @@ abstract class ProviderElementBase<StateT> implements Node {
   /// This maps to listeners added with [Ref.listen].
   /// See also [_mayNeedDispose], called when [hasListeners] may have changed.
   bool get hasListeners =>
-      _externalDependents.isNotEmpty ||
-      _subscribers.isNotEmpty ||
-      _providerDependents.isNotEmpty;
+      (_dependents?.isNotEmpty ?? false) || _providerDependents.isNotEmpty;
 
-  /// The list of [ProviderSubscription]s that are linked with this element,
-  /// which aren't coming from another provider.
-  ///
-  /// This is typically Flutter widgets or manual calls to [ProviderContainer.listen]
-  /// with this provider as target.
-  // TODO(rrousselGit) refactor to match ChangeNotifier
-  final _externalDependents = <_ExternalProviderSubscription<StateT>>[];
-
-  /// The [ProviderSubscription]s associated to the providers that this
-  /// [ProviderElementBase] listens to.
-  ///
-  /// This list is typically updated when this provider calls [Ref.listen] on
-  /// another provider.
-  final _listenedProviderSubscriptions = <_ProviderListener<Object?>>[];
+  var _dependencies = HashMap<ProviderElementBase, Object>();
+  HashMap<ProviderElementBase, Object>? _previousDependencies;
+  List<ProviderSubscription>? _subscriptions;
+  List<ProviderSubscription>? _dependents;
 
   /// The element of the providers that depends on this provider.
-  final _providerDependents = <ProviderElementBase<Object?>>[];
-
-  /// The subscriptions associated to other providers listening to this provider.
-  ///
-  /// Storing [_ProviderListener] instead of the raw [ProviderElementBase] as
-  /// a provider can listen multiple times to another provider with different listeners.
-  final _subscribers = <_ProviderListener<Object?>>[];
-
-  var _dependencies = HashMap<ProviderElementBase<Object?>, Object>();
-  HashMap<ProviderElementBase<Object?>, Object>? _previousDependencies;
+  final _providerDependents = <ProviderElementBase>[];
 
   bool _mustRecomputeState = false;
   bool _dependencyMayHaveChanged = false;
@@ -124,7 +104,6 @@ abstract class ProviderElementBase<StateT> implements Node {
 
   /// The current state of the provider.
   ///
-
   /// Obtains the current state, or null if the provider has yet to initialize.
   ///
   /// The returned object will contain error information, if any.
@@ -295,7 +274,11 @@ This could mean a few things:
   /// After a provider is initialized, this function takes care of unsubscribing
   /// to dependencies that are no-longer used.
   void _performBuild() {
-    _previousDependencies = _dependencies;
+    assert(
+      _previousDependencies == null,
+      'Bad state: _performBuild was called twice',
+    );
+    final previousDependencies = _previousDependencies = _dependencies;
     _dependencies = HashMap();
 
     runOnDispose();
@@ -317,12 +300,13 @@ This could mean a few things:
     }
 
     // Unsubscribe to everything that a provider no longer depends on.
-    for (final sub in _previousDependencies!.entries) {
+    for (final sub in previousDependencies.entries) {
       sub.key
         .._providerDependents.remove(this)
         .._onRemoveListener();
     }
     _previousDependencies = null;
+    // TODO clear subscriptions only after the provider has been rebuilt
   }
 
   /// Initialize a provider.
@@ -365,16 +349,14 @@ This could mean a few things:
     _dependencyMayHaveChanged = false;
 
     visitAncestors(
-      (element) {
-        element.flush();
-      },
+      (element) => element.flush(),
     );
   }
 
   /// Invokes [create] and handles errors.
   @internal
   void buildState(Ref<StateT> ref) {
-    ProviderElementBase<Object?>? debugPreviouslyBuildingElement;
+    ProviderElementBase? debugPreviouslyBuildingElement;
     final previousDidChangeDependency = _didChangeDependency;
     _didChangeDependency = false;
     if (kDebugMode) {
@@ -486,39 +468,34 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       return;
     }
 
-    final listeners = _externalDependents.toList(growable: false);
-    final subscribers = _subscribers.toList(growable: false);
+    final listeners = _dependents?.toList(growable: false);
     newState.map(
       data: (newState) {
-        for (var i = 0; i < listeners.length; i++) {
-          Zone.current.runBinaryGuarded(
-            listeners[i]._listener,
-            previousState,
-            newState.state,
-          );
-        }
-        for (var i = 0; i < subscribers.length; i++) {
-          Zone.current.runBinaryGuarded(
-            subscribers[i].listener,
-            previousState,
-            newState.state,
-          );
+        if (listeners != null) {
+          for (var i = 0; i < listeners.length; i++) {
+            final listener = listeners[i];
+            if (listener is _ProviderStateSubscription) {
+              Zone.current.runBinaryGuarded(
+                listener.listener,
+                previousState,
+                newState.state,
+              );
+            }
+          }
         }
       },
       error: (newState) {
-        for (var i = 0; i < listeners.length; i++) {
-          Zone.current.runBinaryGuarded(
-            listeners[i].onError,
-            newState.error,
-            newState.stackTrace,
-          );
-        }
-        for (var i = 0; i < subscribers.length; i++) {
-          Zone.current.runBinaryGuarded(
-            subscribers[i].onError,
-            newState.error,
-            newState.stackTrace,
-          );
+        if (listeners != null) {
+          for (var i = 0; i < listeners.length; i++) {
+            final listener = listeners[i];
+            if (listener is _ProviderStateSubscription<StateT>) {
+              Zone.current.runBinaryGuarded(
+                listener.onError,
+                newState.error,
+                newState.stackTrace,
+              );
+            }
+          }
         }
       },
     );
@@ -568,25 +545,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   @override
   ProviderElementBase<T> readProviderElement<T>(ProviderBase<T> provider) {
     return container.readProviderElement(provider);
-  }
-
-  @override
-  ProviderSubscription<T> _listenElement<T>(
-    ProviderElementBase<T> element, {
-    required void Function(T? previous, T next) listener,
-    required void Function(Object error, StackTrace stackTrace) onError,
-  }) {
-    final sub = _ProviderListener<T>._(
-      listenedElement: element,
-      dependentElement: this,
-      listener: (prev, value) => listener(prev as T?, value as T),
-      onError: onError,
-    );
-
-    element._subscribers.add(sub);
-    _listenedProviderSubscriptions.add(sub);
-
-    return sub;
   }
 
   @override
@@ -648,10 +606,25 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     if (ref == null || !ref._mounted) return;
 
     ref._mounted = false;
-    ref._keepAliveLinks?.clear();
 
-    while (_listenedProviderSubscriptions.isNotEmpty) {
-      _listenedProviderSubscriptions.first.close();
+    final subscriptions = _subscriptions;
+    if (subscriptions != null) {
+      while (subscriptions.isNotEmpty) {
+        late int debugPreviousLength;
+        if (kDebugMode) {
+          debugPreviousLength = subscriptions.length;
+        }
+
+        final sub = subscriptions.first;
+        sub.close();
+
+        if (kDebugMode) {
+          assert(
+            subscriptions.length < debugPreviousLength,
+            'ProviderSubscription.close did not remove the subscription',
+          );
+        }
+      }
     }
 
     ref._onDisposeListeners?.forEach(runGuarded);
@@ -664,6 +637,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       );
     }
 
+    ref._keepAliveLinks = null;
     ref._onDisposeListeners = null;
     ref._onCancelListeners = null;
     ref._onResumeListeners = null;
@@ -704,8 +678,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       sub.key._onRemoveListener();
     }
     _dependencies.clear();
-
-    _externalDependents.clear();
   }
 
   @override
@@ -722,16 +694,20 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   /// If a provider both [Ref.watch] and [Ref.listen] an element, or if a provider
   /// [Ref.listen] multiple times to an element, it may be visited multiple times.
   void visitChildren({
-    required void Function(ProviderElementBase<Object?> element) elementVisitor,
-    required void Function(ProxyElementValueListenable<Object?> element)
+    required void Function(ProviderElementBase element) elementVisitor,
+    required void Function(ProxyElementValueListenable element)
         listenableVisitor,
   }) {
     for (var i = 0; i < _providerDependents.length; i++) {
       elementVisitor(_providerDependents[i]);
     }
 
-    for (var i = 0; i < _subscribers.length; i++) {
-      elementVisitor(_subscribers[i].dependentElement);
+    final dependents = _dependents;
+    if (dependents != null) {
+      for (var i = 0; i < dependents.length; i++) {
+        final dependent = dependents[i].source;
+        if (dependent is ProviderElementBase) elementVisitor(dependent);
+      }
     }
   }
 
@@ -744,12 +720,18 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   /// If this provider both [Ref.watch] and [Ref.listen] an element, or if it
   /// [Ref.listen] multiple times to an element, that element may be visited multiple times.
   void visitAncestors(
-    void Function(ProviderElementBase<Object?> element) visitor,
+    void Function(ProviderElementBase element) visitor,
   ) {
     _dependencies.keys.forEach(visitor);
 
-    for (var i = 0; i < _listenedProviderSubscriptions.length; i++) {
-      visitor(_listenedProviderSubscriptions[i].listenedElement);
+    final subscriptions = _subscriptions;
+    if (subscriptions != null) {
+      for (var i = 0; i < subscriptions.length; i++) {
+        final sub = subscriptions[i];
+        if (sub is _ProviderStateSubscription) {
+          visitor(sub.listenedElement);
+        }
+      }
     }
   }
 }

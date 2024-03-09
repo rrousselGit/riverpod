@@ -28,7 +28,7 @@ void main() {
 
         expect(container.read(provider(0)), 0);
         expect(container.getAllProviderElements(), [
-          isA<ProviderElementBase<Object?>>()
+          isA<ProviderElementBase>()
               .having((e) => e.origin, 'origin', provider(0)),
         ]);
         expect(root.getAllProviderElements(), isEmpty);

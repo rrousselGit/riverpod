@@ -516,8 +516,8 @@ mixin FutureModifierElement<StateT> on ProviderElementBase<AsyncValue<StateT>> {
 
   @override
   void visitChildren({
-    required void Function(ProviderElementBase<Object?> element) elementVisitor,
-    required void Function(ProxyElementValueListenable<Object?> element)
+    required void Function(ProviderElementBase element) elementVisitor,
+    required void Function(ProxyElementValueListenable element)
         listenableVisitor,
   }) {
     super.visitChildren(

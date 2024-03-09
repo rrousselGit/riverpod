@@ -1,4 +1,4 @@
-// ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: invalid_use_of_internal_member, deprecated_member_use_from_same_package
 part of '../core.dart';
 
 /// {@template riverpod.provider_scope}
@@ -75,6 +75,9 @@ class ProviderScope extends StatefulWidget {
     super.key,
     this.overrides = const [],
     this.observers,
+    @Deprecated(
+      'Will be removed in 3.0.0. See https://github.com/rrousselGit/riverpod/issues/3261#issuecomment-1973514033',
+    )
     this.parent,
     required this.child,
   });
@@ -128,6 +131,9 @@ class ProviderScope extends StatefulWidget {
   ///
   ///
   /// The [parent] variable must never change.
+  @Deprecated(
+    'Will be removed in 3.0.0. See https://github.com/rrousselGit/riverpod/issues/3261#issuecomment-1973514033',
+  )
   final ProviderContainer? parent;
 
   /// The part of the widget tree that can use Riverpod and has overridden providers.

@@ -71,11 +71,15 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
       );
     }
 
+    // Calling before initializing the subscription,
+    // to ensure that "hasListeners" represents the state _before_
+    // the listener is added
     element._onListen();
 
-    return node._listenElement(
-      element,
-      listener: listener,
+    return _ProviderStateSubscription<StateT>(
+      node,
+      listenedElement: element,
+      listener: (prev, next) => listener(prev as StateT?, next as StateT),
       onError: onError,
     );
   }

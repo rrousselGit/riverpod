@@ -6,7 +6,7 @@ extension $RefArg on Ref<Object?> {
   Object? get $arg => _element.origin.argument;
 
   // Implementation detail, do not use
-  ProviderElementBase<Object?> get $element => _element;
+  ProviderElementBase get $element => _element;
 }
 
 @internal
@@ -124,7 +124,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     }
 
     // TODO move to a "onAddDependency" life-cycle
-    final queue = Queue<ProviderElementBase<Object?>>.from(
+    final queue = Queue<ProviderElementBase>.from(
       _element._providerDependents,
     );
     while (queue.isNotEmpty) {

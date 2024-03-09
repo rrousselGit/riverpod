@@ -72,6 +72,7 @@ void main() {
 
   flutter.runApp(
     ProviderScope(
+      // ignore: deprecated_member_use
       parent: rootContainer,
       overrides: [
         scopedProvider.overrideWith((ref) => 0),
@@ -121,6 +122,7 @@ void definitelyNotAMain() {
 
   flutter.runApp(
     ProviderScope(
+      // ignore: deprecated_member_use
       parent: rootContainer,
       overrides: [
         scopedProvider.overrideWith((ref) => 0),
@@ -159,6 +161,7 @@ void someTestFunction() {
 
     await tester.pumpWidget(
       ProviderScope(
+        // ignore: deprecated_member_use
         parent: rootContainer,
         overrides: [
           scopedProvider.overrideWith((ref) => 0),

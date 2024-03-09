@@ -54,15 +54,15 @@ class ProviderScheduler {
     return _defaultVsync;
   }
 
-  final _stateToDispose = <ProviderElementBase<Object?>>[];
-  final _stateToRefresh = <ProviderElementBase<Object?>>[];
+  final _stateToDispose = <ProviderElementBase>[];
+  final _stateToRefresh = <ProviderElementBase>[];
 
   Completer<void>? _pendingTaskCompleter;
   Future<void>? get pendingFuture => _pendingTaskCompleter?.future;
 
   void Function()? _cancel;
 
-  void scheduleProviderRefresh(ProviderElementBase<Object?> element) {
+  void scheduleProviderRefresh(ProviderElementBase element) {
     _stateToRefresh.add(element);
 
     _scheduleTask();
@@ -102,7 +102,7 @@ class ProviderScheduler {
     }
   }
 
-  void scheduleProviderDispose(ProviderElementBase<Object?> element) {
+  void scheduleProviderDispose(ProviderElementBase element) {
     assert(
       !element.hasListeners,
       'Tried to dispose ${element.origin} , but still has listeners',
