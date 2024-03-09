@@ -1,106 +1,56 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'main.g.dart';
 
-void main() {
-  final a = {if (true) {} else {}};
-  ;
+// A Counter example implemented with riverpod
 
-  runApp(const App());
+void main() {
+  runApp(
+    // Adding ProviderScope enables Riverpod for the entire project
+    const ProviderScope(child: MyApp()),
+  );
 }
 
-class App extends StatelessWidget {
-  const App({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const ProviderScope(
-      child: MaterialApp(
-        home: MainPage(title: 'Riverpod test'),
-      ),
-    );
+    return MaterialApp(home: Home());
   }
 }
 
-class MainPage extends ConsumerWidget {
-  const MainPage({required this.title, super.key});
+/// Annotating a class by `@riverpod` defines a new shared state for your application,
+/// accessible using the generated [counterProvider].
+/// This class is both responsible for initializing the state (through the [build] method)
+/// and exposing ways to modify it (cf [increment]).
+@riverpod
+class Counter extends _$Counter {
+  /// Classes annotated by `@riverpod` **must** define a [build] function.
+  /// This function is expected to return the initial state of your shared state.
+  /// It is totally acceptable for this function to return a [Future] or [Stream] if you need to.
+  /// You can also freely define parameters on this method.
+  @override
+  int build() => 0;
 
-  final String title;
+  void increment() => state++;
+}
 
+class Home extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: Text(title),
-      ),
+      appBar: AppBar(title: const Text('Counter example')),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ElevatedButton(
-              onPressed: () async {
-                final a = await ref.read(aProvider.future);
-                log(a, name: 'A');
-              },
-              child: const Text('A'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                final b = await ref.read(bProvider.future);
-                log(b, name: 'B');
-              },
-              child: const Text('B'),
-            ),
-            ElevatedButton(
-              onPressed: () async {
-                final c = await ref
-                    .read(watchDatabaseProvider.selectAsync((id) => '$id+456'));
-                log(c, name: 'C');
-              },
-              child: const Text('C'),
-            ),
-          ],
-        ),
+        child: Text('${ref.watch(counterProvider)}'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        // The read method is a utility to read a provider without listening to it
+        onPressed: () => ref.read(counterProvider.notifier).increment(),
+        child: const Icon(Icons.add),
       ),
     );
   }
-}
-
-// Provider using `.selectAsync`
-@riverpod
-Future<String> a(ARef ref) async {
-  print('a');
-  ref.onDispose(() {
-    print('a disposed');
-  });
-
-  try {
-    return await ref
-        .watch(watchDatabaseProvider.selectAsync((id) => '$id+456'));
-  } finally {
-    print('b');
-  }
-}
-
-// Provider using `.future`
-@riverpod
-Future<String> b(BRef ref) async {
-  final id = await ref.watch(watchDatabaseProvider.future);
-  return '$id+456';
-}
-
-@riverpod
-Stream<String> watchDatabase(WatchDatabaseRef ref) => databaseStream;
-
-Stream<String> get databaseStream async* {
-  // Mock DB query delay
-  await Future.delayed(const Duration(milliseconds: 100));
-
-  yield '123';
 }
