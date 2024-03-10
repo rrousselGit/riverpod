@@ -1,6 +1,7 @@
 ## Unreleased build
 
 - Added support for `Ref/ProviderContainer.invalidate(provider, asReload: true)`
+- Removed deprecated `@ProviderScope.parent`
 
 ## 3.0.0-dev.3 - 2023-11-27
 

@@ -69,21 +69,6 @@ void main() {
       child: Container(),
     ),
   );
-
-  flutter.runApp(
-    ProviderScope(
-      // ignore: deprecated_member_use
-      parent: rootContainer,
-      overrides: [
-        scopedProvider.overrideWith((ref) => 0),
-        unimplementedScopedProvider
-            .overrideWith(() => throw UnimplementedError()),
-        // expect_lint: scoped_providers_should_specify_dependencies
-        rootProvider.overrideWith((ref) => 0),
-      ],
-      child: Container(),
-    ),
-  );
 }
 
 // Regression tests for https://github.com/rrousselGit/riverpod/issues/2340
@@ -119,21 +104,6 @@ void definitelyNotAMain() {
       child: Container(),
     ),
   );
-
-  flutter.runApp(
-    ProviderScope(
-      // ignore: deprecated_member_use
-      parent: rootContainer,
-      overrides: [
-        scopedProvider.overrideWith((ref) => 0),
-        unimplementedScopedProvider
-            .overrideWith(() => throw UnimplementedError()),
-        // expect_lint: scoped_providers_should_specify_dependencies
-        rootProvider.overrideWith((ref) => 0),
-      ],
-      child: Container(),
-    ),
-  );
 }
 
 void someTestFunction() {
@@ -153,21 +123,6 @@ void someTestFunction() {
           scopedProvider.overrideWith((ref) => 0),
           unimplementedScopedProvider
               .overrideWith(() => throw UnimplementedError()),
-          rootProvider.overrideWith((ref) => 0),
-        ],
-        child: Container(),
-      ),
-    );
-
-    await tester.pumpWidget(
-      ProviderScope(
-        // ignore: deprecated_member_use
-        parent: rootContainer,
-        overrides: [
-          scopedProvider.overrideWith((ref) => 0),
-          unimplementedScopedProvider
-              .overrideWith(() => throw UnimplementedError()),
-          // expect_lint: scoped_providers_should_specify_dependencies
           rootProvider.overrideWith((ref) => 0),
         ],
         child: Container(),
