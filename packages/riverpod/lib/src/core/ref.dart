@@ -13,9 +13,14 @@ extension $RefArg on Ref<Object?> {
 class UnmountedRefException implements Exception {
   @override
   String toString() {
-    return 'Cannot use a Ref after it has been disposed. '
-        ' This typically happens when a provider rebuilt, but the previous "build" was still pending and is still performing operations.'
-        ' It is generally fine to let this exception be thrown, as it will be caught and handled by Riverpod.';
+    return '''
+Cannot use a Ref after it has been disposed. This typically happens if:
+- A provider rebuilt, but the previous "build" was still pending and is still performing operations.
+  You should therefore either use `ref.onDispose` to cancel pending work, or
+  check `ref.mounted` after async gaps or anything that could invalidate the provider.
+- You tried to use Ref inside `onDispose` or other life-cycles.
+  This is not supported, as the provider is already being disposed.
+''';
   }
 }
 
