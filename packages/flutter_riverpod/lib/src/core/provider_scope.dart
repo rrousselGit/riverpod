@@ -1,4 +1,4 @@
-// ignore_for_file: invalid_use_of_internal_member, deprecated_member_use_from_same_package
+// ignore_for_file: invalid_use_of_internal_member
 part of '../core.dart';
 
 /// {@template riverpod.provider_scope}
@@ -75,10 +75,6 @@ class ProviderScope extends StatefulWidget {
     super.key,
     this.overrides = const [],
     this.observers,
-    @Deprecated(
-      'Will be removed in 3.0.0. See https://github.com/rrousselGit/riverpod/issues/3261#issuecomment-1973514033',
-    )
-    this.parent,
     required this.child,
   });
 
@@ -104,37 +100,6 @@ class ProviderScope extends StatefulWidget {
 
     return scope.container;
   }
-
-  /// Explicitly override the parent [ProviderContainer] that this [ProviderScope]
-  /// would be a descendant of.
-  ///
-  /// A common use-case is to allow modals to access scoped providers, as they
-  /// would otherwise be unable to since they would be in a different branch
-  /// of the widget tree.
-  ///
-  /// That can be achieved with:
-  ///
-  /// ```dart
-  /// ElevatedButton(
-  ///   onTap: () {
-  ///     final container = ProviderScope.containerOf(context);
-  ///     showDialog(
-  ///       context: context,
-  ///       builder: (context) {
-  ///         return ProviderScope(parent: container, child: MyModal());
-  ///       },
-  ///     );
-  ///   },
-  ///   child: Text('show modal'),
-  /// )
-  /// ```
-  ///
-  ///
-  /// The [parent] variable must never change.
-  @Deprecated(
-    'Will be removed in 3.0.0. See https://github.com/rrousselGit/riverpod/issues/3261#issuecomment-1973514033',
-  )
-  final ProviderContainer? parent;
 
   /// The part of the widget tree that can use Riverpod and has overridden providers.
   final Widget child;
@@ -198,39 +163,20 @@ final class ProviderScopeState extends State<ProviderScope> {
   }
 
   ProviderContainer? _getParent() {
-    if (widget.parent != null) {
-      return widget.parent;
-    } else {
-      final scope = context
-          .getElementForInheritedWidgetOfExactType<UncontrolledProviderScope>()
-          ?.widget as UncontrolledProviderScope?;
+    final scope = context
+        .getElementForInheritedWidgetOfExactType<UncontrolledProviderScope>()
+        ?.widget as UncontrolledProviderScope?;
 
-      return scope?.container;
-    }
+    return scope?.container;
   }
 
   @override
   void didUpdateWidget(ProviderScope oldWidget) {
     super.didUpdateWidget(oldWidget);
     _dirty = true;
-
-    if (oldWidget.parent != widget.parent) {
-      FlutterError.reportError(
-        FlutterErrorDetails(
-          library: 'flutter_riverpod',
-          exception: UnsupportedError(
-            'Changing ProviderScope.parent is not supported',
-          ),
-          context: ErrorDescription('while rebuilding ProviderScope'),
-        ),
-      );
-    }
   }
 
   void _debugAssertParentDidNotChange() {
-    // didUpdateWidget already takes care of widget.parent change
-    if (widget.parent != null) return;
-
     final parent = _getParent();
 
     if (parent != _debugParentOwner) {

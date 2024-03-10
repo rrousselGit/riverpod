@@ -103,15 +103,6 @@ class ScopedProvidersShouldSpecifyDependencies extends RiverpodLintRule {
   bool isProviderScopeScoped(
     ProviderScopeInstanceCreationExpression expression,
   ) {
-    final hasParentParameter = expression.node.argumentList.arguments
-        .whereType<NamedExpression>()
-        // TODO move to riverpod_analyzer_utils
-        // TODO handle parent:null.
-        // This might be doable by checking that the expression's
-        // static type is non-nullable
-        .any((e) => e.name.label.name == 'parent');
-    if (hasParentParameter) return true;
-
     // in runApp(ProviderScope(..)) the direct parent of the ProviderScope
     // is an ArgumentList.
     final enclosingExpression = expression.node.parent?.parent;
