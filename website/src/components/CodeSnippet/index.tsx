@@ -44,40 +44,38 @@ export function trimSnippet(
       line = line.substring(leadingSpaces.length);
     }
 
-    if (translations) {
-      const templateMatch = templateRegex.exec(line);
-      const endTemplateMatch = endTemplateRegex.exec(line);
+    const templateMatch = templateRegex.exec(line);
+    const endTemplateMatch = endTemplateRegex.exec(line);
 
-      if (templateMatch) {
-        if (currentTemplateKey) {
-          throw new Error(
-            `Nested templates are not supported. Template ${currentTemplateKey} is already open (${templateMatch[1]})`
-          );
-        }
-
-        const templateKey = templateMatch[1];
-
-        const translation = translations[templateKey];
-
-        if (translation) {
-          // Replace the content if the template is translated, and insert the new content.
-          currentTemplateKey = templateKey;
-          transformedLines.push(translation);
-        }
-
-        // delete the template markup.
-        continue;
-      }
-
-      if (endTemplateMatch) {
-        currentTemplateKey = undefined;
-        continue;
-      }
-
-      // If inside a translation, delete the untranslated content.
+    if (templateMatch) {
       if (currentTemplateKey) {
-        continue;
+        throw new Error(
+          `Nested templates are not supported. Template ${currentTemplateKey} is already open (${templateMatch[1]})`
+        );
       }
+
+      const templateKey = templateMatch[1];
+
+      const translation = translations?.[templateKey];
+
+      if (translation) {
+        // Replace the content if the template is translated, and insert the new content.
+        currentTemplateKey = templateKey;
+        transformedLines.push(translation);
+      }
+
+      // delete the template markup.
+      continue;
+    }
+
+    if (endTemplateMatch) {
+      currentTemplateKey = undefined;
+      continue;
+    }
+
+    // If inside a translation, delete the untranslated content.
+    if (currentTemplateKey) {
+      continue;
     }
 
     transformedLines.push(line);
