@@ -87,7 +87,7 @@ class ProviderElementProxy<Input, Output>
 
     // While we don't care about changes to the element, calling _listenElement
     // is necessary to tell the listened element that it is being listened.
-    // We do it at the top of the file to trigger a a "flush" before adding
+    // We do it at the top of the file to trigger a "flush" before adding
     // a listener to the notifier.
     // This avoids the listener from being immediately notified of a new
     // future when adding the listener refreshes the future.
