@@ -532,6 +532,72 @@ void main() {
   });
 
   group('FutureProvider().future', () {
+    test(
+        '.future does not immediately notify listeners when adding a new listener '
+        'to .future flushes the provider', () async {
+      // Regression test for https://github.com/rrousselGit/riverpod/issues/2041
+
+      final container = ProviderContainer.test();
+      final onFuture = Listener<Future<int>>();
+
+      final dep = FutureProvider((ref) => 0);
+      final provider = Provider(
+        (ref) {
+          ref.listen(dep.future, onFuture.call);
+          return 0;
+        },
+      );
+
+      container.read(dep);
+      container.invalidate(dep);
+
+      container.read(provider);
+
+      verifyZeroInteractions(onFuture);
+    });
+
+    test('Regression 2041', () async {
+      final container = ProviderContainer.test();
+      final onFuture = Listener<Future<int>>();
+
+      final testNotifierProvider = FutureProvider.autoDispose<int>((ref) => 0);
+      // ProxyProvider is never rebuild directly, but rather indirectly through
+      // testNotifierProvider. This means the scheduler does not naturally cover it.
+      // Then testProvider is the one to trigger the rebuild by listening to it.
+      final proxyProvider = FutureProvider.autoDispose<int>(
+        (ref) => ref.watch(testNotifierProvider.future),
+      );
+
+      var buildCount = 0;
+      final testProvider = FutureProvider.autoDispose<int>(
+        (ref) async {
+          buildCount++;
+          return (await ref.watch(proxyProvider.future)) + 2;
+        },
+      );
+
+      container.listen<AsyncValue<void>>(
+        testProvider,
+        (previous, next) {
+          if (!next.isLoading && next is AsyncError) {
+            Zone.current.handleUncaughtError(next.error, next.stackTrace);
+          }
+        },
+        fireImmediately: true,
+      );
+
+      container.invalidate(testNotifierProvider);
+      container.invalidate(testProvider);
+
+      verifyZeroInteractions(onFuture);
+      expect(buildCount, 1);
+
+      await container.pump();
+      verifyZeroInteractions(onFuture);
+
+      expect(buildCount, 2);
+    });
+
     test('does not update dependents when the future completes', () async {
       final completer = Completer<int>.sync();
       final provider = FutureProvider((_) => completer.future);
