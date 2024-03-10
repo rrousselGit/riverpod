@@ -5,7 +5,7 @@ title: 성능 최적화하기
 import { AutoSnippet } from "../../../../../src/components/CodeSnippet";
 import select from "./select/select";
 
-import selectAsync from "./select/select_async";
+import selectAsync from "/docs/advanced/select/select_async"; 
 
 지금까지 살펴본 내용을 통해 이미 모든 기능을 갖춘 애플리케이션을 구축할 수 있습니다. 
 하지만 성능과 관련하여 궁금한 점이 있을 수 있습니다.
@@ -56,4 +56,9 @@ import selectAsync from "./select/select_async";
 이 함수는 비동기 코드에 고유하며, 공급자가 방출한 데이터에 대해 `select` 연산을 수행할 수 있게 해줍니다.  
 사용법은 `select`와 비슷하지만 대신 `Future`를 반환합니다:
 
-<AutoSnippet {...selectAsync} />
+<AutoSnippet
+  {...selectAsync}
+  translations={{
+    watch: "  // user를 사용할 수 있을 때까지 기다렸다가 \"firstName\" 속성만 수신합니다."
+  }}
+/>
