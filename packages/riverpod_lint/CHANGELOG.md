@@ -1,3 +1,7 @@
+## 2.3.10 - 2024-03-10
+
+- `riverpod` upgraded to `2.5.1`
+
 ## 2.3.9 - 2024-02-04
 
 - Bumped `custom_lint` version

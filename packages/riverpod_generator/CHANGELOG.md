@@ -1,4 +1,4 @@
-## Unreleased minor
+## 2.4.0 - 2024-03-10
 
 - Adds `provider_name_prefix` and `provider_family_name_prefix` to `build.yaml`. (thanks to @ValentinVignal)
 
