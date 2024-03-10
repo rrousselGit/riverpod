@@ -31,22 +31,7 @@ test/lints/scoped_providers_should_specify_dependencies.dart:67:9
 code: scoped_providers_should_specify_dependencies
 severity: Severity.warning
 message: Providers which are overridden in a non-root ProviderContainer/ProviderScope should specify dependencies.
-test/lints/scoped_providers_should_specify_dependencies.dart:82:9
-
-```dart
-            .overrideWith(() => throw UnimplementedError()),
-        // expect_lint: scoped_providers_should_specify_dependencies
-        >>>rootProvider.overrideWith((ref) => 0)<<<,
-      ],
-      child: Container(),
-```
-
-=======
-
-code: scoped_providers_should_specify_dependencies
-severity: Severity.warning
-message: Providers which are overridden in a non-root ProviderContainer/ProviderScope should specify dependencies.
-test/lints/scoped_providers_should_specify_dependencies.dart:107:7
+test/lints/scoped_providers_should_specify_dependencies.dart:92:7
 
 ```dart
           .overrideWith(() => throw UnimplementedError()),
@@ -61,37 +46,7 @@ test/lints/scoped_providers_should_specify_dependencies.dart:107:7
 code: scoped_providers_should_specify_dependencies
 severity: Severity.warning
 message: Providers which are overridden in a non-root ProviderContainer/ProviderScope should specify dependencies.
-test/lints/scoped_providers_should_specify_dependencies.dart:132:9
-
-```dart
-            .overrideWith(() => throw UnimplementedError()),
-        // expect_lint: scoped_providers_should_specify_dependencies
-        >>>rootProvider.overrideWith((ref) => 0)<<<,
-      ],
-      child: Container(),
-```
-
-=======
-
-code: scoped_providers_should_specify_dependencies
-severity: Severity.warning
-message: Providers which are overridden in a non-root ProviderContainer/ProviderScope should specify dependencies.
-test/lints/scoped_providers_should_specify_dependencies.dart:171:11
-
-```dart
-              .overrideWith(() => throw UnimplementedError()),
-          // expect_lint: scoped_providers_should_specify_dependencies
-          >>>rootProvider.overrideWith((ref) => 0)<<<,
-        ],
-        child: Container(),
-```
-
-=======
-
-code: scoped_providers_should_specify_dependencies
-severity: Severity.warning
-message: Providers which are overridden in a non-root ProviderContainer/ProviderScope should specify dependencies.
-test/lints/scoped_providers_should_specify_dependencies.dart:185:13
+test/lints/scoped_providers_should_specify_dependencies.dart:140:13
 
 ```dart
                 .overrideWith(() => throw UnimplementedError()),
@@ -106,7 +61,7 @@ test/lints/scoped_providers_should_specify_dependencies.dart:185:13
 code: scoped_providers_should_specify_dependencies
 severity: Severity.warning
 message: Providers which are overridden in a non-root ProviderContainer/ProviderScope should specify dependencies.
-test/lints/scoped_providers_should_specify_dependencies.dart:201:7
+test/lints/scoped_providers_should_specify_dependencies.dart:156:7
 
 ```dart
           .overrideWith(() => throw UnimplementedError()),
@@ -121,7 +76,7 @@ test/lints/scoped_providers_should_specify_dependencies.dart:201:7
 code: scoped_providers_should_specify_dependencies
 severity: Severity.warning
 message: Providers which are overridden in a non-root ProviderContainer/ProviderScope should specify dependencies.
-test/lints/scoped_providers_should_specify_dependencies.dart:217:11
+test/lints/scoped_providers_should_specify_dependencies.dart:172:11
 
 ```dart
               .overrideWith(() => throw UnimplementedError()),
@@ -136,7 +91,7 @@ test/lints/scoped_providers_should_specify_dependencies.dart:217:11
 code: scoped_providers_should_specify_dependencies
 severity: Severity.warning
 message: Providers which are overridden in a non-root ProviderContainer/ProviderScope should specify dependencies.
-test/lints/scoped_providers_should_specify_dependencies.dart:236:9
+test/lints/scoped_providers_should_specify_dependencies.dart:191:9
 
 ```dart
             .overrideWith(() => throw UnimplementedError()),
