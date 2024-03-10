@@ -85,8 +85,17 @@ class ProviderElementProxy<Input, Output>
   }) {
     final element = node.readProviderElement(_origin);
 
-    // TODO does this need a "flush"?
-    // element.flush();
+    // While we don't care about changes to the element, calling _listenElement
+    // is necessary to tell the listened element that it is being listened.
+    // We do it at the top of the file to trigger a a "flush" before adding
+    // a listener to the notifier.
+    // This avoids the listener from being immediately notified of a new
+    // future when adding the listener refreshes the future.
+    final innerSub = node.listen<Object?>(
+      _origin,
+      (prev, next) {},
+      onError: (err, stack) {},
+    );
 
     final notifier = _lense(element);
     if (fireImmediately) {
@@ -112,13 +121,7 @@ class ProviderElementProxy<Input, Output>
       node,
       removeListener,
       () => read(node),
-      // While we don't care about changes to the element, calling _listenElement
-      // is necessary to tell the listened element that it is being listened.
-      innerSubscription: node.listen(
-        _origin,
-        (prev, next) {},
-        onError: (err, stack) {},
-      ),
+      innerSubscription: innerSub,
     );
   }
 
