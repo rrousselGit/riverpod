@@ -7,13 +7,13 @@ import {
   AutoSnippet,
   When,
 } from "../../../../../src/components/CodeSnippet";
-import syncDefinition from "./websockets_sync/sync_definition";
-import streamProvider from "./websockets_sync/stream_provider";
-import syncConsumer from "!!raw-loader!./websockets_sync/sync_consumer.dart";
-import rawUsage from "!!raw-loader!./websockets_sync/raw_usage.dart";
-import pipeChangeNotifier from "!!raw-loader!./websockets_sync/pipe_change_notifier.dart";
-import sharedPipeChangeNotifier from "!!raw-loader!./websockets_sync/shared_pipe_change_notifier.dart";
-import changeNotifierProvider from "!!raw-loader!./websockets_sync/change_notifier_provider.dart";
+import syncDefinition from "/docs/essentials/websockets_sync/sync_definition";
+import streamProvider from "/docs/essentials/websockets_sync/stream_provider";
+import syncConsumer from "!!raw-loader!/docs/essentials/websockets_sync/sync_consumer.dart";
+import rawUsage from "!!raw-loader!/docs/essentials/websockets_sync/raw_usage.dart";
+import pipeChangeNotifier from "!!raw-loader!/docs/essentials/websockets_sync/pipe_change_notifier.dart";
+import sharedPipeChangeNotifier from "!!raw-loader!/docs/essentials/websockets_sync/shared_pipe_change_notifier.dart";
+import changeNotifierProvider from "!!raw-loader!/docs/essentials/websockets_sync/change_notifier_provider.dart";
 
 지금까지는 `Future`를 생성하는 방법만 다루었습니다.  
 이는 의도적으로 `Future`가 Riverpod 애플리케이션을 빌드하는 방법의 핵심이기 때문입니다. 
