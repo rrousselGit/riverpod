@@ -9,7 +9,6 @@ export 'dart:async' show FutureOr;
 export 'package:riverpod/src/internals.dart'
     show
         // General stuff
-        // TODO changelog changed exports,
         ProviderContainer,
         Family,
         ProviderOrFamily,

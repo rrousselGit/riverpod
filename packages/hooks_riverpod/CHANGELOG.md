@@ -1,3 +1,9 @@
+## Unreleased build
+
+- **Breaking**: `ChangeNotifierProvider`, `StateProvider` and `StateNotifierProvider`
+  are moved out of `package:hooks_riverpod/hooks_riverpod.dart` to
+  `package:hooks_riverpod/legacy.dart`.
+
 ## 3.0.0-dev.3 - 2023-11-27
 
 - Fix "pending timer" issue inside tests when using `ref.keepAlive()`.

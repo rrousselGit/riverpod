@@ -999,8 +999,6 @@ void main() {
     group('constructor', () {
       test('throws if trying to scope a provider/family with no dependencies',
           () {
-        // TODO changelog
-
         final provider = Provider((_) => 0);
         final family = Provider.family<int, int>((ref, _) => 0);
 
@@ -1039,8 +1037,6 @@ void main() {
       });
 
       test('throws if "parent" is disposed', () {
-        // TODO changelog
-
         final root = ProviderContainer();
         root.dispose();
 
@@ -1099,7 +1095,6 @@ void main() {
         test(
             'throws if the same provider is overridden twice in the same container',
             () {
-          // TODO changelog
           final provider = Provider((ref) => 0);
 
           expect(
@@ -1116,7 +1111,6 @@ void main() {
         test(
             'throws if the same family is overridden twice in the same container',
             () {
-          // TODO changelog
           final provider = Provider.family<int, int>((ref, id) => 0);
 
           expect(

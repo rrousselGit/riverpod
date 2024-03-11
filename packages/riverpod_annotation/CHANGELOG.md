@@ -1,5 +1,8 @@
 ## Unreleased build
 
+- **Breaking** various `package:riverpod` objects are no-longer exported.
+  If you wish to use providers by hand, you will have to separately import
+  `package:riverpod/riverpod.dart`.
 - Made `@Riverpod` final
 - Added `@Dependencies([...])`, for lint purposes.
   This is similar to `@Riverpod(dependencies: [...])`, but is applied on

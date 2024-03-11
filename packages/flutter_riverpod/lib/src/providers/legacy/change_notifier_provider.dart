@@ -21,8 +21,6 @@ ProviderElementProxy<NotifierT, NotifierT>
   );
 }
 
-// TODO changelog breaking: Removed Ref. Use Ref instead
-
 /// Creates a [ChangeNotifier] and exposes its current state.
 ///
 /// Combined with [ChangeNotifier], [ChangeNotifierProvider] can be used to manipulate

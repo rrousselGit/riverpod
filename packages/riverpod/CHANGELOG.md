@@ -1,8 +1,33 @@
 ## Unreleased build
 
+- **Breaking**: It is now a runtime exception to "scope" a provider
+  that is not specifying `dependencies`.
+- **Breaking**: Removed all `Ref` subclasses (such `FutureProviderRef`).
+  Use `Ref` directly instead.
+  For `FutureProviderRef.future`, migrate to using an `AsyncNotifier`.
+- **Breaking** All ref methods besides "mounted" now throw if used on unmounted refs.
+// TODO changelog patch: ref.exists now correct asserts that the ref can use the provider.
+
+- **Breaking**: `StateProvider` and `StateNotifierProvider`
+  are moved out of `package:flutter_riverpod/flutter_riverpod.dart` to
+  `package:flutter_riverpod/legacy.dart`.
+- **Breaking** Some internal utils are no-longer exported.
 - **Breaking** `AsyncValue.value` now returns `null` during errors.
 - **Breaking** removed `AsyncValue.valueOrNull` (use `.value` instead).
 - `Stream/FutureProvider.overrideWithValue` was added back.
+- **Breaking**: `Notifier` and variants are now recreated whenever the provider
+  rebuilds. This enables using `Ref.mounted` to check dispose.
+- An error is now thrown when trying to override a provider twice in the same
+  `ProviderContainer`.
+- Disposing a `ProviderContainer` now disposes of all of its sub `ProviderContainers` too.
+- Added `ProviderContainer.test()`. This is a custom constructor for testing
+  purpose. It is meant to replace the `createContainer` utility.
+- Added `NotifierProvider.overrideWithBuild`, to override `Notifier.build` without
+  overriding methods of the notifier.
+- `Ref.mounted` has been added. It can now be used to check if a provider
+  was disposed.
+- When a provider is rebuilt, a new `Ref` is now created. This avoids
+  issues where an old build of a provider is still performing work.
 - Updated `AsyncValue` documentations to use pattern matching.
 - Added support for `Ref/ProviderContainer.invalidate(provider, asReload: true)`
 - Fixed a bug when overriding a specific provider of a `family`, combined with `dependencies: [family]`

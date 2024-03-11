@@ -17,7 +17,6 @@ ProviderElementProxy<StateT, NotifierT>
   );
 }
 
-// TODO changelog breaking: Removed StateNotifierProviderRef. Use Ref instead
 /// Creates a [StateNotifier] and exposes its current state.
 ///
 /// This provider is used in combination with `package:state_notifier`.

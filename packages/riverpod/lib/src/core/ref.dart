@@ -33,19 +33,11 @@ Cannot use a Ref after it has been disposed. This typically happens if:
 /// - [read] and [watch], two methods that allow a provider to consume other providers.
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
 /// {@endtemplate}
-// TODO changelog breaking "ProviderElementBase" no-longer implements Ref
-// TODO changelog breaking: AutoDisposeRef and related interfaces are removed.
-//  Use the non-autodispose variant instead. They now have the same API.
-// TODO changelog breaking: All ref methods besides "mounted" now throw if used on unmounted refs.
-// TODO changelog patch: ref.exists now correct asserts that the ref can use the provider.
 base class Ref<StateT> {
   /// {@macro riverpod.provider_ref_base}
   Ref._(this._element);
 
   final ProviderElementBase<StateT> _element;
-  // TODO changelog breaking: when a provider rebuilds, a new ref is created.
-  // This means that if the previous "build" didn't stop, using the older ref will now throw.
-
   List<KeepAliveLink>? _keepAliveLinks;
   List<void Function(StateT?, StateT)>? _onChangeSelfListeners;
   List<void Function()>? _onDisposeListeners;
@@ -55,7 +47,6 @@ base class Ref<StateT> {
   List<void Function()>? _onRemoveListeners;
   List<OnError>? _onErrorSelfListeners;
 
-  // TODO changelog minor: Added `Ref.mounted`, similar to `BuildContext.mounted`
   bool get mounted => _mounted;
   var _mounted = true;
 

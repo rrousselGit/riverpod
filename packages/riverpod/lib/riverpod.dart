@@ -41,21 +41,15 @@ export 'src/framework.dart'
         $ClassProvider,
         LegacyProviderMixin,
         ClassProviderElement,
-        // TODO changelog breaking unexported
         alreadyInitializedError,
-        // TODO changelog breaking unexported
         uninitializedElementError,
-        // TODO changelog breaking unexported
         shortHash,
-        // TODO changelog breaking unexported
         describeIdentity,
         CircularDependencyError,
         $AsyncValueProvider;
 
 export 'src/providers/async_notifier.dart'
     hide $AsyncNotifier, $AsyncNotifierProvider, $AsyncNotifierProviderElement;
-// TODO changelog breaking: StateNotifier & co are no-longer exported from pkg:riverpod/riverpod.dart
-//  Use pkg:riverpod/legacy.dart
 
 export 'src/providers/future_provider.dart'
     hide $FutureProviderElement, $FutureProvider;

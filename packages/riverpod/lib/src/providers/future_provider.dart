@@ -161,7 +161,6 @@ final class FutureProvider<StateT>
 
 /// The element of a [FutureProvider]
 /// Implementation detail of `riverpod_generator`. Do not use.
-// TODO changelog breaking: Removed FutureProviderRef. To migrate ref.future, use an AsyncNotifier and its .future
 @internal
 class $FutureProviderElement<StateT>
     extends ProviderElementBase<AsyncValue<StateT>>

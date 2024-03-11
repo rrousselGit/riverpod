@@ -45,7 +45,6 @@ void Function()? debugCanModifyProviders;
 @optionalTypeArgs
 abstract class ProviderElementBase<StateT> implements Node {
   /// {@macro riverpod.provider_element_base}
-  // TODO changelog: ProviderElement no-longer takes a provider as parameter but takes a ProviderContainer
   ProviderElementBase(this.container);
 
   static ProviderElementBase? _debugCurrentlyBuildingElement;
@@ -62,7 +61,6 @@ abstract class ProviderElementBase<StateT> implements Node {
   late final ProviderBase<Object?> _origin;
 
   /// The provider associated with this [ProviderElementBase], after applying overrides.
-  // TODO changelog ProviderElement.provider is now abstract
   ProviderBase<StateT> get provider;
 
   /// The [ProviderContainer] that owns this [ProviderElementBase].

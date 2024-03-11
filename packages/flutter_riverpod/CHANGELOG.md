@@ -1,5 +1,12 @@
 ## Unreleased build
 
+- **Breaking**: Removed all `Ref` subclasses (such `FutureProviderRef`).
+  Use `Ref` directly instead.
+  For `FutureProviderRef.future`, migrate to using an `AsyncNotifier`.
+- **Breaking**: `ChangeNotifierProvider`, `StateProvider` and `StateNotifierProvider`
+  are moved out of `package:flutter_riverpod/flutter_riverpod.dart` to
+  `package:flutter_riverpod/legacy.dart`.
+- **Breaking** Some internal utils are no-longer exported.
 - Added support for `Ref/ProviderContainer.invalidate(provider, asReload: true)`
 - Removed deprecated `@ProviderScope.parent`
 

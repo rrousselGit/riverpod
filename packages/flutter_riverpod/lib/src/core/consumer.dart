@@ -3,7 +3,6 @@ part of '../core.dart';
 /// A function that can also listen to providers
 ///
 /// See also [Consumer]
-// TODO changelog breaking unexported
 @internal
 typedef ConsumerBuilder = Widget Function(
   BuildContext context,
@@ -345,7 +344,6 @@ abstract class ConsumerState<T extends ConsumerStatefulWidget>
 }
 
 /// The [Element] for a [ConsumerStatefulWidget]
-// TODO changelog breaking unexported
 @internal
 class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   /// The [Element] for a [ConsumerStatefulWidget]

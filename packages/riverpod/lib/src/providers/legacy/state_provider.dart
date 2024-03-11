@@ -15,8 +15,6 @@ ProviderElementProxy<StateT, StateController<StateT>> _notifier<StateT>(
   );
 }
 
-// TODO changelog breaking: Removed Ref. Use Ref and [Ref.state=] instead.
-
 /// {@template riverpod.state_provider}
 /// A provider that exposes a value that can be modified from outside.
 ///

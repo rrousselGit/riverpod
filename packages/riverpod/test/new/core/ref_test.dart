@@ -395,7 +395,6 @@ void main() {
         final call = entry.value;
 
         test('Using `$method` when passing a provider', () {
-          // TODO changelog "reading a provider that is not part of its dependencies is now forbidden"
           final transitiveDep = Provider((ref) => 0, dependencies: const []);
           final dep = Provider((ref) => 0, dependencies: [transitiveDep]);
           final depFamily = Provider.family(
@@ -460,7 +459,6 @@ void main() {
         final call = entry.value;
 
         test('Using `$method` when passing a listenable', () async {
-          // TODO changelog "reading a provider that is not part of its dependencies is now forbidden"
           final transitiveDep = FutureProvider(
             (ref) => 0,
             dependencies: const [],

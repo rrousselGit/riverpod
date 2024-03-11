@@ -13,7 +13,6 @@ base mixin $Provider<StateT, RefT> on ProviderBase<StateT> {
   StateT create(RefT ref);
 }
 
-// TODO changelog ProviderRef was removed. Used Ref directly
 /// {@macro riverpod.provider}
 base class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
     with $Provider<StateT, Ref<StateT>>, LegacyProviderMixin<StateT> {

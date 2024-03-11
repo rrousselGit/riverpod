@@ -54,8 +54,6 @@ typedef RunNotifierBuild< //
 ///   }
 /// }
 /// ```
-// TODO changelog breaking: Notifiers are now recreated when `Notifier.build` is re-executed.
-// This enables using `if (ref.mounted)` inside notifiers.
 abstract class NotifierBase<StateT, CreatedT> {
   Ref<StateT>? _ref;
 

@@ -132,7 +132,6 @@ class ProviderDirectory implements _PointerBase {
     ProviderBase<Object?> provider, {
     required ProviderContainer currentContainer,
   }) {
-    // TODO changelog that provider which don't specify dependencies can't be scoped
     // TODO throw if a provider is overridden but does not specify dependencies
 
     return pointers._upsert(
@@ -628,7 +627,6 @@ class ProviderContainer implements Node {
     List<Override> overrides = const [],
     List<ProviderObserver>? observers,
   }) {
-    // TODO changelog
     final container = ProviderContainer(
       parent: parent,
       overrides: overrides,
@@ -938,7 +936,6 @@ class ProviderContainer implements Node {
   ///
   /// It is safe to call this method multiple times. Subsequent calls will be no-op.
   ///
-  /// TODO changelog
   /// If this container has non-disposed child [ProviderContainer]s (cf `parent`),
   /// then this method will dispose those children first.
   /// Therefore, disposing the root [ProviderContainer] the entire graph.
@@ -1091,7 +1088,6 @@ typedef SetupOverride = void Function({
 /// and maintainability reasons.
 /// Consider reading about unidirectional data flow to learn about the
 /// benefits of avoiding circular dependencies.
-// TODO changelog: CircularDependencyError is no-longer exported
 @internal
 class CircularDependencyError extends Error {
   CircularDependencyError._();
