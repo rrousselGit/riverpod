@@ -89,8 +89,10 @@ void _handleFireImmediately<StateT>(
   required void Function(StateT? previous, StateT current) listener,
   required void Function(Object error, StackTrace stackTrace) onError,
 }) {
-  currentState.map(
-    data: (data) => runBinaryGuarded(listener, null, data.state),
-    error: (error) => runBinaryGuarded(onError, error.error, error.stackTrace),
-  );
+  switch (currentState) {
+    case ResultData():
+      runBinaryGuarded(listener, null, currentState.state);
+    case ResultError():
+      runBinaryGuarded(onError, currentState.error, currentState.stackTrace);
+  }
 }

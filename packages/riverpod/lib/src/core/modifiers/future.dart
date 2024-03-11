@@ -212,7 +212,6 @@ mixin FutureModifierClassElement<
 /// Mixin to help implement logic for listening to [Future]s/[Stream]s and setup
 /// `provider.future` + convert the object into an [AsyncValue].
 @internal
-// TODO merge with ProviderElementBase
 mixin FutureModifierElement<StateT> on ProviderElementBase<AsyncValue<StateT>> {
   /// A default implementation for [ProviderElementBase.updateShouldNotify].
   static bool handleUpdateShouldNotify<StateT>(
@@ -545,14 +544,14 @@ extension<T> on Stream<T> {
       },
       onDone: () {
         if (result != null) {
-          result!.map(
-            data: (result) => completer.complete(result.state),
-            error: (result) {
+          switch (result!) {
+            case ResultData(:final state):
+              completer.complete(state);
+            case ResultError(:final error, :final stackTrace):
               // TODO: should this be reported to the zone?
               completer.future.ignore();
-              completer.completeError(result.error, result.stackTrace);
-            },
-          );
+              completer.completeError(error, stackTrace);
+          }
         } else {
           // The error happens after the associated provider is disposed.
           // As such, it's normally never read. Reporting this error as uncaught

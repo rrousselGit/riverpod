@@ -610,9 +610,6 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     void Function(StateT? previous, StateT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
-    // TODO do we want to expose a way to close the subscription?
-    // TODO do we want a fireImmediately?
-
     _onChangeSelfListeners ??= [];
     _onChangeSelfListeners!.add(listener);
 

@@ -94,24 +94,21 @@ class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
           }
 
           final newSelectedValue = _select(value.value);
-
-          newSelectedValue.map(
-            data: (newSelectedValue) {
+          switch (newSelectedValue) {
+            case ResultData():
               if (newSelectedValue != lastSelectedValue) {
                 emitData(
                   newSelectedValue.state,
                   callListeners: callListeners,
                 );
               }
-            },
-            error: (newSelectedValue) {
+            case ResultError():
               emitError(
                 newSelectedValue.error,
                 newSelectedValue.stackTrace,
                 callListeners: callListeners,
               );
-            },
-          );
+          }
 
           lastSelectedValue = newSelectedValue;
         },

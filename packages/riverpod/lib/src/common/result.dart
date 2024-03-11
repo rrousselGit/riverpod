@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 /// A T|Error union type.
 @immutable
 @internal
-abstract class Result<State> {
+sealed class Result<State> {
   /// The data case
   // coverage:ignore-start
   factory Result.data(State state) = ResultData;
@@ -32,20 +32,6 @@ abstract class Result<State> {
 
   /// The state if this is a [ResultData], throws otherwise.
   State get requireState;
-
-  // TODO remove when migrating to Dart 3
-  /// Returns the result of calling [data] if this is a [ResultData] or [error]
-  R map<R>({
-    required R Function(ResultData<State> data) data,
-    required R Function(ResultError<State>) error,
-  });
-
-  // TODO remove when migrating to Dart 3
-  /// Returns the result of calling [data] if this is a [ResultData] or [error]
-  R when<R>({
-    required R Function(State data) data,
-    required R Function(Object error, StackTrace stackTrace) error,
-  });
 }
 
 /// The data case
@@ -65,22 +51,6 @@ class ResultData<State> implements Result<State> {
 
   @override
   State get requireState => state;
-
-  @override
-  R map<R>({
-    required R Function(ResultData<State> data) data,
-    required R Function(ResultError<State>) error,
-  }) {
-    return data(this);
-  }
-
-  @override
-  R when<R>({
-    required R Function(State data) data,
-    required R Function(Object error, StackTrace stackTrace) error,
-  }) {
-    return data(state);
-  }
 
   @override
   bool operator ==(Object other) =>
@@ -112,22 +82,6 @@ class ResultError<State> implements Result<State> {
 
   @override
   State get requireState => Error.throwWithStackTrace(error, stackTrace);
-
-  @override
-  R map<R>({
-    required R Function(ResultData<State> data) data,
-    required R Function(ResultError<State>) error,
-  }) {
-    return error(this);
-  }
-
-  @override
-  R when<R>({
-    required R Function(State data) data,
-    required R Function(Object error, StackTrace stackTrace) error,
-  }) {
-    return error(this.error, stackTrace);
-  }
 
   @override
   bool operator ==(Object other) =>

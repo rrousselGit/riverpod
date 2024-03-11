@@ -458,12 +458,7 @@ class ProviderPointerManager {
     final _familyPointers = familyPointers[family];
     if (_familyPointers == null) return const [];
 
-    return _familyPointers.pointers.values.map((e) {
-      final element = e.element;
-      // TODO debugAddDependency(element, debugDependentSource: debugDependentSource);
-
-      return element;
-    }).whereNotNull();
+    return _familyPointers.pointers.values.map((e) => e.element).whereNotNull();
   }
 
   /// Remove a provider from this container.
@@ -472,8 +467,6 @@ class ProviderPointerManager {
   ///
   /// Returns the associated pointer, even if it was not removed.
   ProviderPointer? remove(ProviderBase<Object?> provider) {
-    // TODO remove in all containers
-
     final directory = readDirectory(provider);
     if (directory == null) return null;
 
