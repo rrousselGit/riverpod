@@ -43,11 +43,12 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
     if (kDebugMode) _debugIsRunningSelector = true;
 
     try {
-      return value.map(
-        data: (data) => Result.data(selector(data.state)),
+      return switch (value) {
+        ResultData(:final state) => Result.data(selector(state)),
         // TODO test
-        error: (error) => Result.error(error.error, error.stackTrace),
-      );
+        ResultError(:final error, :final stackTrace) =>
+          Result.error(error, stackTrace),
+      };
     } catch (err, stack) {
       // TODO test
       return Result.error(err, stack);
@@ -71,16 +72,16 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
 
       onChange(newSelectedValue);
       // TODO test handle exception in listener
-      newSelectedValue.map(
-        data: (data) {
+      switch (newSelectedValue) {
+        case ResultData(:final state):
           listener(
             // TODO test from error
             lastSelectedValue.stateOrNull,
-            data.state,
+            state,
           );
-        },
-        error: (error) => onError(error.error, error.stackTrace),
-      );
+        case ResultError(:final error, :final stackTrace):
+          onError(error, stackTrace);
+      }
     }
   }
 
@@ -124,13 +125,14 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
       node,
       sub,
       () {
-        return lastSelectedValue.map(
-          data: (data) => data.state,
-          error: (error) => throwErrorWithCombinedStackTrace(
-            error.error,
-            error.stackTrace,
-          ),
-        );
+        return switch (lastSelectedValue) {
+          ResultData(:final state) => state,
+          ResultError(:final error, :final stackTrace) =>
+            throwErrorWithCombinedStackTrace(
+              error,
+              stackTrace,
+            ),
+        };
       },
     );
   }

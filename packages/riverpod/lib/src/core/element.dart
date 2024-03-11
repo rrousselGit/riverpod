@@ -166,10 +166,13 @@ This could mean a few things:
     final state = stateResult;
     if (state == null) throw StateError(uninitializedError);
 
-    return state.when(
-      error: throwErrorWithCombinedStackTrace,
-      data: (data) => data,
-    );
+    return switch (state) {
+      ResultError() => throwErrorWithCombinedStackTrace(
+          state.error,
+          state.stackTrace,
+        ),
+      ResultData() => state.state,
+    };
   }
 
   /// Called when a provider is rebuilt. Used for providers to not notify their
@@ -204,8 +207,8 @@ This could mean a few things:
     final ref = this.ref = Ref<StateT>._(this);
     buildState(ref);
 
-    _stateResult!.map(
-      data: (newState) {
+    switch (_stateResult!) {
+      case final ResultData<StateT> newState:
         final onChangeSelfListeners = ref._onChangeSelfListeners;
         if (onChangeSelfListeners != null) {
           for (var i = 0; i < onChangeSelfListeners.length; i++) {
@@ -225,8 +228,8 @@ This could mean a few things:
             container,
           );
         }
-      },
-      error: (newState) {
+
+      case final ResultError<StateT> newState:
         final onErrorSelfListeners = ref._onErrorSelfListeners;
         if (onErrorSelfListeners != null) {
           for (var i = 0; i < onErrorSelfListeners.length; i++) {
@@ -255,8 +258,7 @@ This could mean a few things:
             container,
           );
         }
-      },
-    );
+    }
   }
 
   /// Called when the override of a provider changes.
@@ -428,8 +430,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     final previousState = previousStateResult?.stateOrNull;
 
     // listenSelf listeners do not respect updateShouldNotify
-    newState.map(
-      data: (newState) {
+    switch (newState) {
+      case final ResultData<StateT> newState:
         final onChangeSelfListeners = ref?._onChangeSelfListeners;
         if (onChangeSelfListeners != null) {
           for (var i = 0; i < onChangeSelfListeners.length; i++) {
@@ -440,8 +442,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
             );
           }
         }
-      },
-      error: (newState) {
+      case final ResultError<StateT> newState:
         final onErrorSelfListeners = ref?._onErrorSelfListeners;
         if (onErrorSelfListeners != null) {
           for (var i = 0; i < onErrorSelfListeners.length; i++) {
@@ -452,8 +453,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
             );
           }
         }
-      },
-    );
+    }
 
     if (checkUpdateShouldNotify &&
         previousStateResult != null &&
@@ -467,8 +467,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
 
     final listeners = _dependents?.toList(growable: false);
-    newState.map(
-      data: (newState) {
+    switch (newState) {
+      case final ResultData<StateT> newState:
         if (listeners != null) {
           for (var i = 0; i < listeners.length; i++) {
             final listener = listeners[i];
@@ -481,8 +481,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
             }
           }
         }
-      },
-      error: (newState) {
+      case final ResultError<StateT> newState:
         if (listeners != null) {
           for (var i = 0; i < listeners.length; i++) {
             final listener = listeners[i];
@@ -495,8 +494,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
             }
           }
         }
-      },
-    );
+      default:
+    }
 
     for (var i = 0; i < _providerDependents.length; i++) {
       _providerDependents[i].invalidateSelf(asReload: true);
@@ -513,18 +512,15 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
 
     for (final observer in container.observers) {
-      newState.map(
-        data: (_) {},
-        error: (newState) {
-          runQuaternaryGuarded(
-            observer.providerDidFail,
-            origin,
-            newState.error,
-            newState.stackTrace,
-            container,
-          );
-        },
-      );
+      if (newState is ResultError<StateT>) {
+        runQuaternaryGuarded(
+          observer.providerDidFail,
+          origin,
+          newState.error,
+          newState.stackTrace,
+          container,
+        );
+      }
     }
   }
 

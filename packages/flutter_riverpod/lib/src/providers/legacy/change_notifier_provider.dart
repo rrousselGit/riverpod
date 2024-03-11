@@ -176,7 +176,6 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
       () => provider._createFn(ref),
     );
 
-    // TODO test requireState, as ref.read(p) is expected to throw if notifier creation failed
     final notifier = notifierResult.requireState;
 
     setStateResult(ResultData(notifier));
