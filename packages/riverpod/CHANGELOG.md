@@ -6,8 +6,6 @@
   Use `Ref` directly instead.
   For `FutureProviderRef.future`, migrate to using an `AsyncNotifier`.
 - **Breaking** All ref methods besides "mounted" now throw if used on unmounted refs.
-// TODO changelog patch: ref.exists now correct asserts that the ref can use the provider.
-
 - **Breaking**: `StateProvider` and `StateNotifierProvider`
   are moved out of `package:flutter_riverpod/flutter_riverpod.dart` to
   `package:flutter_riverpod/legacy.dart`.
@@ -62,7 +60,7 @@ Fix exceptions when using multiple root `ProviderContainers`/`ProviderScopes`.
 - **Breaking**: Removed everything marked as "deprecated"
 - Bumped minimum Dart SDK to >= 3.0.0-dev
 
-## Unreleased fix
+## 2.5.1 - 2024-03-10
 
 - Improved `Provider(dependencies: [...])` documentation.
 - Fix out of date `pub.dev` description

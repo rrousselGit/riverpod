@@ -3,7 +3,7 @@
 - Updated `provider_dependencies` to support `@Dependencies`
 - added `riverpod_syntax_error`, for reporting errors when the generator would throw.
 - added `avoid_keep_alive_dependency_inside_auto_dispose`
-- added `unknown_scoped_usage`, for reporting when a scoped provider is used but the ref could not be found.****
+- added `unknown_scoped_usage`, for reporting when a scoped provider is used but the ref could not be found.
 - added automatic migration to import `package:riverpod/legacy.dart` for corresponding providers.
 - Fix `provider_parameters` for objects using mixins.
 
@@ -41,6 +41,10 @@ Various lints had their severity changed:
 ## 3.0.0-dev.0 - 2023-10-29
 
 - `riverpod` upgraded to `3.0.0-dev.0`
+
+## 2.3.10 - 2024-03-10
+
+- `riverpod` upgraded to `2.5.1`
 
 ## 2.3.9 - 2024-02-04
 

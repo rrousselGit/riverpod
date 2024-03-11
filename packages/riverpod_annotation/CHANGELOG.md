@@ -24,6 +24,10 @@
 
 - `riverpod` upgraded to `3.0.0-dev.0`
 
+## 2.3.5 - 2024-03-10
+
+- `riverpod` upgraded to `2.5.1`
+
 ## 2.3.4 - 2024-02-03
 
 - Improved `@Riverpod(dependencies: [...])` documentation.

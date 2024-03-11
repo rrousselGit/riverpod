@@ -39,10 +39,19 @@ Fix exceptions when using multiple root `ProviderContainers`/`ProviderScopes`.
 - **Breaking**: Removed everything marked as "deprecated"
 - Bumped minimum Dart SDK to >= 3.0.0-dev
 
-## Unreleased patch
+## 2.5.1 - 2024-03-10
 
 - Deprecate `ProviderScope.parent` due to fundamentally not working.
   See https://github.com/rrousselGit/riverpod/issues/3261
+- Improved `Provider(dependencies: [...])` documentation.
+- Fix out of date `pub.dev` description
+- `ref.invalidate` now correctly clear all resources associated
+  with the provider if the provider is no-longer used.
+- Fix `selectAsync` sometimes never resolving.
+- Fix `ProviderSubscription.read` returned by `ref.listen(provider.future)` not throwing if used after the subscription has been closed.
+- Fix `ref.onAddListener` and other life-cycles not being triggered when
+  listening to `provider.future`/`provider.notifier`.
+- Fix a bug that caused `Assertion failed: _lastFuture == null`
 
 ## 2.4.10 - 2024-02-03
 
