@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_types_on_closure_parameters
 
+import 'dart:async';
+
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
@@ -9,6 +11,25 @@ import 'package:test/test.dart';
 import '../../../utils.dart';
 
 void main() {
+  test('Guards StateNotifier.dispose', () {
+    final notifier = DelegateNotifier(
+      onDispose: () => throw StateError('called'),
+    );
+    final container = ProviderContainer.test();
+    final provider = StateNotifierProvider((_) => notifier);
+
+    container.read(provider);
+
+    final errors = <Object>[];
+
+    runZonedGuarded(
+      () => container.invalidate(provider),
+      (error, stack) => errors.add(error),
+    );
+
+    expect(errors, [isStateError]);
+  });
+
   test('supports overrideWith', () {
     final provider = StateNotifierProvider<TestNotifier, int>(
       (ref) => TestNotifier(),
@@ -478,5 +499,17 @@ class TestNotifier extends StateNotifier<int> {
   @override
   String toString() {
     return 'TestNotifier($state)';
+  }
+}
+
+class DelegateNotifier extends StateNotifier<int> {
+  DelegateNotifier({this.onDispose}) : super(0);
+
+  final void Function()? onDispose;
+
+  @override
+  void dispose() {
+    onDispose?.call();
+    super.dispose();
   }
 }

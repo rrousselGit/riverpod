@@ -40,6 +40,7 @@ void main() {
   });
 
   test('public API snapshot', skip: 'Disabled', () async {
+    // TODO consider other imports
     expect(riverpod.exportNamespace.definedNames.keys, [
       'AsyncValue',
       'AsyncData',
@@ -61,24 +62,15 @@ void main() {
       'AsyncNotifier',
       'AsyncNotifierProvider',
       'FamilyAsyncNotifier',
-      'AsyncNotifierProviderFamily',
-      'FamilyAsyncNotifierProvider',
       'FutureProvider',
-      'FutureProviderFamily',
       'Notifier',
       'NotifierProvider',
       'FamilyNotifier',
-      'FamilyNotifierProvider',
-      'NotifierProviderFamily',
       'Provider',
-      'ProviderFamily',
       'FamilyStreamNotifier',
-      'FamilyStreamNotifierProvider',
-      'StreamNotifierProviderFamily',
       'StreamNotifier',
       'StreamNotifierProvider',
       'StreamProvider',
-      'StreamProviderFamily',
     ]);
 
     expect(visitor.undocumentedElements, isEmpty);

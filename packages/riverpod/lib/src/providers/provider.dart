@@ -362,7 +362,6 @@ class $ProviderElement<StateT> extends ProviderElementBase<StateT> {
 }
 
 /// The [Family] of [Provider]
-// TODO remove custom family types
 class ProviderFamily<StateT, ArgT>
     extends FunctionalFamily<StateT, ArgT, StateT, Provider<StateT>> {
   ProviderFamily(

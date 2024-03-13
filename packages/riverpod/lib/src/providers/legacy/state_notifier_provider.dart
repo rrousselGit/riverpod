@@ -205,7 +205,6 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
 
     final notifier = _notifierNotifier.result?.stateOrNull;
     if (notifier != null) {
-      // TODO test STateNotifier.dispose is guarded
       runGuarded(notifier.dispose);
     }
     _notifierNotifier.result = null;
