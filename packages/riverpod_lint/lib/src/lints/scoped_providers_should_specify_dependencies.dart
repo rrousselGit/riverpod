@@ -89,7 +89,6 @@ class ScopedProvidersShouldSpecifyDependencies extends RiverpodLintRule {
     ProviderContainerInstanceCreationExpression expression,
     ErrorReporter reporter,
   ) {
-    // TODO handle parent:null.
     // This might be doable by checking that the expression's
     // static type is non-nullable
     final hasParent = expression.parent != null;
