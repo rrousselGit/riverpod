@@ -1,5 +1,7 @@
 // ignore_for_file: invalid_use_of_internal_member, avoid_types_on_closure_parameters
 
+import 'dart:async';
+
 import 'package:flutter/widgets.dart' hide Listener;
 import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -8,6 +10,25 @@ import 'package:mockito/mockito.dart';
 import '../../utils.dart';
 
 void main() {
+  test('Guards ChangeNotifier.dispose', () {
+    final notifier = DelegateNotifier(
+      onDispose: () => throw StateError('called'),
+    );
+    final container = ProviderContainer.test();
+    final provider = ChangeNotifierProvider((_) => notifier);
+
+    container.read(provider);
+
+    final errors = <Object>[];
+
+    runZonedGuarded(
+      () => container.invalidate(provider),
+      (error, stack) => errors.add(error),
+    );
+
+    expect(errors, [isStateError]);
+  });
+
   test('supports overrideWith', () {
     final provider =
         ChangeNotifierProvider<ValueNotifier<int>>((ref) => ValueNotifier(0));
@@ -430,5 +451,17 @@ class TestNotifier extends ChangeNotifier {
   @override
   String toString() {
     return 'TestNotifier($debugLabel)';
+  }
+}
+
+class DelegateNotifier extends ChangeNotifier {
+  DelegateNotifier({this.onDispose});
+
+  final void Function()? onDispose;
+
+  @override
+  void dispose() {
+    onDispose?.call();
+    super.dispose();
   }
 }

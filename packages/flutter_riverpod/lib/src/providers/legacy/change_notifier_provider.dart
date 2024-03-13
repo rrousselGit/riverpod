@@ -199,8 +199,7 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
 
     final notifier = _notifierNotifier.result?.stateOrNull;
     if (notifier != null) {
-      // TODO test ChangeNotifier.dispose is guarded
-      notifier.dispose();
+      runGuarded(notifier.dispose);
     }
     _notifierNotifier.result = null;
   }
