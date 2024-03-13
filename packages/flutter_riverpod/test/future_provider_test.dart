@@ -10,7 +10,7 @@ import 'utils.dart';
 void main() {
   test('SynchronousFuture', () {
     final futureProvider = FutureProvider((_) => SynchronousFuture(42));
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     expect(container.read(futureProvider), const AsyncValue.data(42));
   });

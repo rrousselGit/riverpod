@@ -10,7 +10,7 @@ import '../../utils.dart';
 void main() {
   group('ChangeNotifierProvider.autoDispose', () {
     test('support null ChangeNotifier', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final provider = ChangeNotifierProvider.autoDispose<ValueNotifier<int>?>(
         (ref) => null,
       );
@@ -22,7 +22,7 @@ void main() {
     });
 
     test('can read and set current ChangeNotifier', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = Listener<ValueNotifier<int>>();
       late Ref<ValueNotifier<int>> ref;
       final provider =
@@ -42,7 +42,7 @@ void main() {
       final provider = ChangeNotifierProvider.autoDispose<ValueNotifier<int>>(
         (ref) => ValueNotifier<int>(initialValue),
       );
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       container.listen(provider.notifier, (prev, value) {});
 
@@ -57,7 +57,7 @@ void main() {
 
     test('can be refreshed', () async {
       var result = ValueNotifier(0);
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final provider = ChangeNotifierProvider.autoDispose((ref) => result);
 
       expect(container.read(provider), result);
@@ -76,8 +76,9 @@ void main() {
           (ref) => ValueNotifier(0),
           dependencies: const [],
         );
-        final root = createContainer();
-        final container = createContainer(parent: root, overrides: [provider]);
+        final root = ProviderContainer.test();
+        final container =
+            ProviderContainer.test(parent: root, overrides: [provider]);
 
         expect(container.read(provider.notifier).value, 0);
         expect(container.read(provider).value, 0);
@@ -94,8 +95,8 @@ void main() {
       // test('when using provider.overrideWithValue', () {
       //   final provider =
       //       ChangeNotifierProvider.autoDispose((ref) => ValueNotifier(0));
-      //   final root = createContainer();
-      //   final container = createContainer(parent: root, overrides: [
+      //   final root = ProviderContainer.test();
+      //   final container = ProviderContainer.test(parent: root, overrides: [
       //     provider.overrideWithValue(ValueNotifier(42)),
       //   ]);
 
@@ -118,8 +119,8 @@ void main() {
           (ref) => ValueNotifier(0),
           dependencies: const [],
         );
-        final root = createContainer();
-        final container = createContainer(
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
           parent: root,
           overrides: [
             provider.overrideWith((ref) => ValueNotifier(42)),
@@ -145,8 +146,8 @@ void main() {
         (ref) => ValueNotifier(ref.watch(dep)),
         dependencies: [dep],
       );
-      final root = createContainer();
-      final container = createContainer(
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(
         parent: root,
         overrides: [dep.overrideWithValue(42)],
       );

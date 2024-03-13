@@ -221,7 +221,7 @@ void main() {
     };
 
     final provider = StateProvider((ref) => 0);
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     // using runZonedGuarded as StateNotifier will emit an handleUncaughtError
     // if a listener threw
@@ -246,7 +246,7 @@ void main() {
 
   testWidgets('ref.watch within a build method can flush providers',
       (tester) async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final dep = StateProvider((ref) => 0);
     final provider = Provider((ref) => ref.watch(dep));
 
@@ -280,8 +280,8 @@ void main() {
 
   testWidgets('UncontrolledProviderScope gracefully handles vsync',
       (tester) async {
-    final container = createContainer();
-    final container2 = createContainer(parent: container);
+    final container = ProviderContainer.test();
+    final container2 = ProviderContainer.test(parent: container);
 
     expect(container.scheduler.flutterVsyncs, isEmpty);
 
@@ -367,7 +367,7 @@ void main() {
   testWidgets(
       'UncontrolledProviderScope gracefully handles debugCanModifyProviders',
       (tester) async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     expect(debugCanModifyProviders, null);
 
@@ -437,7 +437,7 @@ void main() {
   //     (tester) async {
   //   final provider = FutureProvider((ref) async => 42);
   //   late WidgetRef ref;
-  //   final container = createContainer(overrides: [
+  //   final container = ProviderContainer.test(overrides: [
   //     provider.overrideWithValue(const AsyncValue.data(42)),
   //   ]);
 
@@ -758,7 +758,7 @@ void main() {
       return 0;
     });
 
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final key = GlobalKey<NavigatorState>();
 
     await tester.pumpWidget(

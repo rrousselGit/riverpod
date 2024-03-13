@@ -4,8 +4,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../utils.dart';
-
 void main() {
   group('ChangeNotifierProvider.family', () {
     test('specifies `from` and `argument` for related providers', () {
@@ -18,7 +16,7 @@ void main() {
     });
 
     test('support null ChangeNotifier', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final provider = ChangeNotifierProvider.family<ValueNotifier<int>?, int>(
         (ref, _) => null,
       );
@@ -35,8 +33,9 @@ void main() {
           (ref, _) => ValueNotifier(0),
           dependencies: const [],
         );
-        final root = createContainer();
-        final container = createContainer(parent: root, overrides: [provider]);
+        final root = ProviderContainer.test();
+        final container =
+            ProviderContainer.test(parent: root, overrides: [provider]);
 
         expect(container.read(provider(0).notifier).value, 0);
         expect(container.read(provider(0)).value, 0);
@@ -57,8 +56,8 @@ void main() {
         (ref, i) => ValueNotifier(ref.watch(dep) + i),
         dependencies: [dep],
       );
-      final root = createContainer();
-      final container = createContainer(
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(
         parent: root,
         overrides: [dep.overrideWithValue(42)],
       );
@@ -74,8 +73,8 @@ void main() {
         (ref, _) => ValueNotifier(0),
         dependencies: const [],
       );
-      final root = createContainer();
-      final container = createContainer(
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(
         parent: root,
         overrides: [
           provider.overrideWith((ref, value) => ValueNotifier(42)),
@@ -99,7 +98,7 @@ void main() {
           ChangeNotifierProvider.family<ValueNotifier<int>, int>((ref, value) {
         return ValueNotifier(value);
       });
-      final container = createContainer(
+      final container = ProviderContainer.test(
         overrides: [
           provider.overrideWith((ref, value) => ValueNotifier(value * 2)),
         ],
