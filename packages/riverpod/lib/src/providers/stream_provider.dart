@@ -151,8 +151,7 @@ base class StreamProvider<StateT>
 
 /// The element of [StreamProvider].
 @internal
-class $StreamProviderElement<StateT>
-    extends ProviderElementBase<AsyncValue<StateT>>
+class $StreamProviderElement<StateT> extends ProviderElement<AsyncValue<StateT>>
     with FutureModifierElement<StateT> {
   /// The element of [StreamProvider].
   $StreamProviderElement(this.provider, super.container);
@@ -189,7 +188,7 @@ class $StreamProviderElement<StateT>
 
   @override
   void visitChildren({
-    required void Function(ProviderElementBase element) elementVisitor,
+    required void Function(ProviderElement element) elementVisitor,
     required void Function(ProxyElementValueListenable element)
         listenableVisitor,
   }) {

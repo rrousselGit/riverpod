@@ -3,7 +3,7 @@
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart' show ProviderContainerTest;
 import 'package:riverpod/src/internals.dart'
-    show $ProviderElement, ProviderElementBase;
+    show $ProviderElement, ProviderElement;
 import 'package:test/test.dart';
 
 import 'provider_container_test.dart';
@@ -562,13 +562,13 @@ Future<void> main() async {
       expect(
         mid2.getAllProviderElements(),
         unorderedEquals(<Object?>[
-          isA<ProviderElementBase>().having((e) => e.origin, 'origin', dep2),
-          isA<ProviderElementBase>().having((e) => e.origin, 'origin', a),
-          isA<ProviderElementBase>().having((e) => e.origin, 'origin', b),
+          isA<ProviderElement>().having((e) => e.origin, 'origin', dep2),
+          isA<ProviderElement>().having((e) => e.origin, 'origin', a),
+          isA<ProviderElement>().having((e) => e.origin, 'origin', b),
         ]),
       );
       expect(mid.getAllProviderElements(), [
-        isA<ProviderElementBase>().having((e) => e.origin, 'origin', dep),
+        isA<ProviderElement>().having((e) => e.origin, 'origin', dep),
       ]);
       expect(root.getAllProviderElements(), isEmpty);
     });
@@ -608,8 +608,8 @@ Future<void> main() async {
       expect(
         mid.getAllProviderElements(),
         unorderedEquals(<Object?>[
-          isA<ProviderElementBase>().having((e) => e.origin, 'origin', dep),
-          isA<ProviderElementBase>().having((e) => e.origin, 'origin', a),
+          isA<ProviderElement>().having((e) => e.origin, 'origin', dep),
+          isA<ProviderElement>().having((e) => e.origin, 'origin', a),
         ]),
       );
       expect(root.getAllProviderElements(), isEmpty);
@@ -641,8 +641,7 @@ Future<void> main() async {
       expect(
         mid.getAllProviderElements(),
         [
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider),
+          isA<ProviderElement>().having((e) => e.origin, 'origin', provider),
         ],
       );
     });
@@ -670,10 +669,8 @@ Future<void> main() async {
       expect(
         mid.getAllProviderElements(),
         unorderedEquals(<Object>[
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider),
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', family(21)),
+          isA<ProviderElement>().having((e) => e.origin, 'origin', provider),
+          isA<ProviderElement>().having((e) => e.origin, 'origin', family(21)),
         ]),
       );
     });
@@ -702,11 +699,9 @@ Future<void> main() async {
       expect(
         mid.getAllProviderElements(),
         unorderedEquals(<Object>[
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider),
-          isA<ProviderElementBase>().having((e) => e.origin, 'origin', dep),
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', family(21)),
+          isA<ProviderElement>().having((e) => e.origin, 'origin', provider),
+          isA<ProviderElement>().having((e) => e.origin, 'origin', dep),
+          isA<ProviderElement>().having((e) => e.origin, 'origin', family(21)),
         ]),
       );
     });
@@ -730,9 +725,8 @@ Future<void> main() async {
       expect(
         container.getAllProviderElements(),
         unorderedEquals(<Object>[
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider),
-          isA<ProviderElementBase>().having((e) => e.origin, 'origin', dep),
+          isA<ProviderElement>().having((e) => e.origin, 'origin', provider),
+          isA<ProviderElement>().having((e) => e.origin, 'origin', dep),
         ]),
       );
       expect(root.getAllProviderElements(), isEmpty);
@@ -742,7 +736,7 @@ Future<void> main() async {
       expect(
         container.getAllProviderElements(),
         [
-          isA<ProviderElementBase>().having((e) => e.origin, 'origin', dep),
+          isA<ProviderElement>().having((e) => e.origin, 'origin', dep),
         ],
       );
       expect(root.getAllProviderElements(), isEmpty);

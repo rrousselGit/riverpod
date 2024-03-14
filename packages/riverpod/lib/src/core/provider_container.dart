@@ -32,7 +32,7 @@ class ProviderPointer implements _PointerBase {
   /// This override may be implicitly created by [ProviderOrFamily.allTransitiveDependencies].
   // ignore: library_private_types_in_public_api, not public API
   _ProviderOverride? providerOverride;
-  ProviderElementBase? element;
+  ProviderElement? element;
   @override
   final ProviderContainer targetContainer;
 
@@ -178,7 +178,7 @@ class ProviderDirectory implements _PointerBase {
     );
 
     if (pointer.element == null) {
-      ProviderElementBase? element;
+      ProviderElement? element;
 
       switch ((pointer.providerOverride, familyOverride)) {
         // The provider is overridden. This takes over any family override
@@ -454,7 +454,7 @@ class ProviderPointerManager {
     return readDirectory(provider)?.pointers[provider];
   }
 
-  ProviderElementBase? readElement(ProviderBase<Object?> provider) {
+  ProviderElement? readElement(ProviderBase<Object?> provider) {
     return readPointer(provider)?.element;
   }
 
@@ -475,11 +475,11 @@ class ProviderPointerManager {
     );
   }
 
-  ProviderElementBase upsertElement(ProviderBase<Object?> provider) {
+  ProviderElement upsertElement(ProviderBase<Object?> provider) {
     return upsertPointer(provider).element!;
   }
 
-  /// Traverse the [ProviderElementBase]s associated with this [ProviderContainer].
+  /// Traverse the [ProviderElement]s associated with this [ProviderContainer].
   Iterable<ProviderPointer> listProviderPointers() {
     return orphanPointers.pointers.values
         .where((pointer) => pointer.targetContainer == container)
@@ -490,8 +490,8 @@ class ProviderPointerManager {
         );
   }
 
-  /// Read the [ProviderElementBase] for a provider, without creating it if it doesn't exist.
-  Iterable<ProviderElementBase> listFamily(Family family) {
+  /// Read the [ProviderElement] for a provider, without creating it if it doesn't exist.
+  Iterable<ProviderElement> listFamily(Family family) {
     final _familyPointers = familyPointers[family];
     if (_familyPointers == null) return const [];
 
@@ -743,7 +743,7 @@ class ProviderContainer implements Node {
         null;
   }
 
-  /// Executes [ProviderElementBase.debugReassemble] on all the providers.
+  /// Executes [ProviderElement.debugReassemble] on all the providers.
   void debugReassemble() {
 // TODO hot-reload handle provider type change
 // TODO hot-reload handle provider response type change
@@ -915,7 +915,7 @@ class ProviderContainer implements Node {
   /// TODO make private
   /// TODO remove generic
   @override
-  ProviderElementBase<State> readProviderElement<State>(
+  ProviderElement<State> readProviderElement<State>(
     ProviderBase<State> provider,
   ) {
     if (_disposed) {
@@ -926,7 +926,7 @@ class ProviderContainer implements Node {
 
     final element = _pointerManager.upsertElement(provider);
 
-    return element as ProviderElementBase<State>;
+    return element as ProviderElement<State>;
   }
 
   void _dispose({
@@ -971,8 +971,8 @@ class ProviderContainer implements Node {
   /// Therefore, disposing the root [ProviderContainer] the entire graph.
   void dispose() => _dispose(updateChildren: true);
 
-  /// Traverse the [ProviderElementBase]s associated with this [ProviderContainer].
-  Iterable<ProviderElementBase> getAllProviderElements() {
+  /// Traverse the [ProviderElement]s associated with this [ProviderContainer].
+  Iterable<ProviderElement> getAllProviderElements() {
     return _pointerManager
         .listProviderPointers()
         .map((e) => e.element)
@@ -985,9 +985,9 @@ class ProviderContainer implements Node {
   /// This is fairly expensive and should be avoided as much as possible.
   /// If you do not need for providers to be sorted, consider using [getAllProviderElements]
   /// instead, which returns an unsorted list and is significantly faster.
-  Iterable<ProviderElementBase> getAllProviderElementsInOrder() sync* {
-    final visitedNodes = HashSet<ProviderElementBase>();
-    final queue = DoubleLinkedQueue<ProviderElementBase>();
+  Iterable<ProviderElement> getAllProviderElementsInOrder() sync* {
+    final visitedNodes = HashSet<ProviderElement>();
+    final queue = DoubleLinkedQueue<ProviderElement>();
 
     // get providers that don't depend on other providers from this container
     for (final pointer in _pointerManager.listProviderPointers()) {

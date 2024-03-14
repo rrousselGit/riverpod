@@ -40,14 +40,13 @@ void Function()? debugCanModifyProviders;
 /// of providers.
 /// Do not use.
 /// {@endtemplate}
-// TODO rename to ProviderElement
 @internal
 @optionalTypeArgs
-abstract class ProviderElementBase<StateT> implements Node {
+abstract class ProviderElement<StateT> implements Node {
   /// {@macro riverpod.provider_element_base}
-  ProviderElementBase(this.container);
+  ProviderElement(this.container);
 
-  static ProviderElementBase? _debugCurrentlyBuildingElement;
+  static ProviderElement? _debugCurrentlyBuildingElement;
 
   /// The last result of [ProviderBase.debugGetCreateSourceHash].
   ///
@@ -55,33 +54,33 @@ abstract class ProviderElementBase<StateT> implements Node {
   String? _debugCurrentCreateHash;
   var _debugSkipNotifyListenersAsserts = false;
 
-  /// The provider associated with this [ProviderElementBase], before applying overrides.
+  /// The provider associated with this [ProviderElement], before applying overrides.
   // Not typed as <State> because of https://github.com/rrousselGit/riverpod/issues/1100
   ProviderBase<Object?> get origin => _origin;
   late final ProviderBase<Object?> _origin;
 
-  /// The provider associated with this [ProviderElementBase], after applying overrides.
+  /// The provider associated with this [ProviderElement], after applying overrides.
   ProviderBase<StateT> get provider;
 
-  /// The [ProviderContainer] that owns this [ProviderElementBase].
+  /// The [ProviderContainer] that owns this [ProviderElement].
   final ProviderContainer container;
 
   Ref<StateT>? ref;
 
-  /// Whether this [ProviderElementBase] is currently listened to or not.
+  /// Whether this [ProviderElement] is currently listened to or not.
   ///
   /// This maps to listeners added with [Ref.listen].
   /// See also [_mayNeedDispose], called when [hasListeners] may have changed.
   bool get hasListeners =>
       (_dependents?.isNotEmpty ?? false) || _providerDependents.isNotEmpty;
 
-  var _dependencies = HashMap<ProviderElementBase, Object>();
-  HashMap<ProviderElementBase, Object>? _previousDependencies;
+  var _dependencies = HashMap<ProviderElement, Object>();
+  HashMap<ProviderElement, Object>? _previousDependencies;
   List<ProviderSubscription>? _subscriptions;
   List<ProviderSubscription>? _dependents;
 
   /// The element of the providers that depends on this provider.
-  final _providerDependents = <ProviderElementBase>[];
+  final _providerDependents = <ProviderElement>[];
 
   bool _mustRecomputeState = false;
   bool _dependencyMayHaveChanged = false;
@@ -356,7 +355,7 @@ This could mean a few things:
   /// Invokes [create] and handles errors.
   @internal
   void buildState(Ref<StateT> ref) {
-    ProviderElementBase? debugPreviouslyBuildingElement;
+    ProviderElement? debugPreviouslyBuildingElement;
     final previousDidChangeDependency = _didChangeDependency;
     _didChangeDependency = false;
     if (kDebugMode) {
@@ -537,7 +536,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   @override
-  ProviderElementBase<T> readProviderElement<T>(ProviderBase<T> provider) {
+  ProviderElement<T> readProviderElement<T>(ProviderBase<T> provider) {
     return container.readProviderElement(provider);
   }
 
@@ -647,7 +646,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     );
   }
 
-  /// Release the resources associated to this [ProviderElementBase].
+  /// Release the resources associated to this [ProviderElement].
   ///
   /// This will be invoked when:
   /// - the provider is using `autoDispose` and it is no-longer used.
@@ -706,7 +705,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   /// If a provider both [Ref.watch] and [Ref.listen] an element, or if a provider
   /// [Ref.listen] multiple times to an element, it may be visited multiple times.
   void visitChildren({
-    required void Function(ProviderElementBase element) elementVisitor,
+    required void Function(ProviderElement element) elementVisitor,
     required void Function(ProxyElementValueListenable element)
         listenableVisitor,
   }) {
@@ -718,12 +717,12 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     if (dependents != null) {
       for (var i = 0; i < dependents.length; i++) {
         final dependent = dependents[i].source;
-        if (dependent is ProviderElementBase) elementVisitor(dependent);
+        if (dependent is ProviderElement) elementVisitor(dependent);
       }
     }
   }
 
-  /// Visit the [ProviderElementBase]s that this provider is listening to.
+  /// Visit the [ProviderElement]s that this provider is listening to.
   ///
   /// A provider is considered as listening to this element if it either [Ref.watch]
   /// or [Ref.listen] this element.
@@ -732,7 +731,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   /// If this provider both [Ref.watch] and [Ref.listen] an element, or if it
   /// [Ref.listen] multiple times to an element, that element may be visited multiple times.
   void visitAncestors(
-    void Function(ProviderElementBase element) visitor,
+    void Function(ProviderElement element) visitor,
   ) {
     _dependencies.keys.forEach(visitor);
 

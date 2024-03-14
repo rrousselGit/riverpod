@@ -6,7 +6,7 @@ extension $RefArg on Ref<Object?> {
   Object? get $arg => _element.origin.argument;
 
   // Implementation detail, do not use
-  ProviderElementBase get $element => _element;
+  ProviderElement get $element => _element;
 }
 
 @internal
@@ -37,7 +37,7 @@ base class Ref<StateT> {
   /// {@macro riverpod.provider_ref_base}
   Ref._(this._element);
 
-  final ProviderElementBase<StateT> _element;
+  final ProviderElement<StateT> _element;
   List<KeepAliveLink>? _keepAliveLinks;
   List<void Function(StateT?, StateT)>? _onChangeSelfListeners;
   List<void Function()>? _onDisposeListeners;
@@ -120,7 +120,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     }
 
     // TODO move to a "onAddDependency" life-cycle
-    final queue = Queue<ProviderElementBase>.from(
+    final queue = Queue<ProviderElement>.from(
       _element._providerDependents,
     );
     while (queue.isNotEmpty) {
@@ -604,7 +604,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// The listener will be called immediately after the provider completes building.
   ///
   /// As opposed to [listen], the listener will be called even if
-  /// [ProviderElementBase.updateShouldNotify] returns false, meaning that the previous
+  /// [ProviderElement.updateShouldNotify] returns false, meaning that the previous
   /// and new value can potentially be identical.
   void listenSelf(
     void Function(StateT? previous, StateT next) listener, {

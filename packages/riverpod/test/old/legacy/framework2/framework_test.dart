@@ -4,7 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart'
-    show $ProviderElement, ProviderElementBase;
+    show $ProviderElement, ProviderElement;
 import 'package:test/test.dart';
 
 import '../../utils.dart';
@@ -257,12 +257,12 @@ void main() {
     final sub = container.listen(computed, (_, __) {});
 
     expect(sub.read(), '0');
-    var firstDependents = <ProviderElementBase>[];
+    var firstDependents = <ProviderElement>[];
     firstElement.visitChildren(
       elementVisitor: firstDependents.add,
       listenableVisitor: (_) {},
     );
-    var secondDependents = <ProviderElementBase>[];
+    var secondDependents = <ProviderElement>[];
     secondElement.visitChildren(
       elementVisitor: secondDependents.add,
       listenableVisitor: (_) {},
@@ -276,12 +276,12 @@ void main() {
     container.read(first.notifier).state++;
     expect(sub.read(), 'fallback');
 
-    firstDependents = <ProviderElementBase>[];
+    firstDependents = <ProviderElement>[];
     firstElement.visitChildren(
       elementVisitor: firstDependents.add,
       listenableVisitor: (_) {},
     );
-    secondDependents = <ProviderElementBase>[];
+    secondDependents = <ProviderElement>[];
     secondElement.visitChildren(
       elementVisitor: secondDependents.add,
       listenableVisitor: (_) {},
@@ -322,7 +322,7 @@ void main() {
     final sub = container.listen(computed, (_, __) {});
 
     expect(sub.read(), 0);
-    var firstDependents = <ProviderElementBase>[];
+    var firstDependents = <ProviderElement>[];
     firstElement.visitChildren(
       elementVisitor: firstDependents.add,
       listenableVisitor: (_) {},
@@ -333,7 +333,7 @@ void main() {
     sub.close();
     await container.pump();
 
-    firstDependents = <ProviderElementBase>[];
+    firstDependents = <ProviderElement>[];
     firstElement.visitChildren(
       elementVisitor: firstDependents.add,
       listenableVisitor: (_) {},

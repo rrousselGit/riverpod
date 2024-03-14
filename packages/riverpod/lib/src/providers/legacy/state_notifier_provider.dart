@@ -163,7 +163,7 @@ final class StateNotifierProvider< //
 
 /// The element of [StateNotifierProvider].
 class StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
-    StateT> extends ProviderElementBase<StateT> {
+    StateT> extends ProviderElement<StateT> {
   StateNotifierProviderElement._(this.provider, super.container);
 
   @override
@@ -212,7 +212,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
 
   @override
   void visitChildren({
-    required void Function(ProviderElementBase element) elementVisitor,
+    required void Function(ProviderElement element) elementVisitor,
     required void Function(ProxyElementValueListenable element)
         listenableVisitor,
   }) {

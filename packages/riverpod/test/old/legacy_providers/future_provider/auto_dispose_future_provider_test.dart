@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart' show ProviderElementBase;
+import 'package:riverpod/src/internals.dart' show ProviderElement;
 import 'package:test/test.dart';
 
 import '../../utils.dart';
@@ -233,7 +233,7 @@ void main() {
       expect(container.read(provider), const AsyncValue.data(0));
       expect(root.getAllProviderElementsInOrder(), isEmpty);
       expect(container.getAllProviderElementsInOrder(), [
-        isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider),
+        isA<ProviderElement>().having((e) => e.origin, 'origin', provider),
       ]);
     });
 
@@ -254,7 +254,7 @@ void main() {
       expect(container.read(provider), const AsyncValue.data(42));
       expect(root.getAllProviderElementsInOrder(), isEmpty);
       expect(container.getAllProviderElementsInOrder(), [
-        isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider),
+        isA<ProviderElement>().having((e) => e.origin, 'origin', provider),
       ]);
     });
 
@@ -273,7 +273,7 @@ void main() {
       expect(container.read(provider), const AsyncValue.data(42));
       expect(root.getAllProviderElementsInOrder(), isEmpty);
       expect(container.getAllProviderElementsInOrder(), [
-        isA<ProviderElementBase>().having((e) => e.origin, 'origin', provider),
+        isA<ProviderElement>().having((e) => e.origin, 'origin', provider),
       ]);
     });
   });

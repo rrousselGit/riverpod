@@ -96,7 +96,7 @@ abstract class $FamilyOverride implements _FamilyOverride {
   /// Do not use: Internal object to used by [ProviderContainer]/`ProviderScope`
   /// to override the behavior of a "family" for part of the application.
   factory $FamilyOverride({
-    required ProviderElementBase Function(
+    required ProviderElement Function(
       ProviderContainer container,
       ProviderBase<Object?> provider,
     ) createElement,
@@ -107,7 +107,7 @@ abstract class $FamilyOverride implements _FamilyOverride {
   Family get from;
 
   /// The overridden [ProviderBase.$createElement].
-  ProviderElementBase createElement(
+  ProviderElement createElement(
     ProviderContainer container,
     ProviderBase<Object?> provider,
   );
@@ -125,7 +125,7 @@ class TransitiveFamilyOverride implements $FamilyOverride {
   final Family from;
 
   @override
-  ProviderElementBase createElement(
+  ProviderElement createElement(
     ProviderContainer container,
     ProviderBase<Object?> provider,
   ) {
@@ -141,7 +141,7 @@ class _FamilyOverrideImpl implements $FamilyOverride {
   /// An [Override] for families
   // ignore: library_private_types_in_public_api
   _FamilyOverrideImpl({
-    required ProviderElementBase Function(
+    required ProviderElement Function(
       ProviderContainer container,
       ProviderBase<Object?> provider,
     ) createElement,
@@ -151,13 +151,13 @@ class _FamilyOverrideImpl implements $FamilyOverride {
   @override
   final Family from;
 
-  final ProviderElementBase Function(
+  final ProviderElement Function(
     ProviderContainer container,
     ProviderBase<Object?> provider,
   ) _createElement;
 
   @override
-  ProviderElementBase createElement(
+  ProviderElement createElement(
     ProviderContainer container,
     ProviderBase<Object?> provider,
   ) {
