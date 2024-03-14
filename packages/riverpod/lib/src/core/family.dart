@@ -165,7 +165,6 @@ class ClassFamily< //
     required super.isAutoDispose,
   });
 
-// TODO docs
   @internal
   final ClassProviderFactory<NotifierT, ProviderT, CreatedT, Ref<StateT>, ArgT>
       providerFactory;

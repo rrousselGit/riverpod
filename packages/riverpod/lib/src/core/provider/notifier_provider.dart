@@ -57,7 +57,6 @@ typedef RunNotifierBuild< //
 abstract class NotifierBase<StateT, CreatedT> {
   Ref<StateT>? _ref;
 
-  // TODO docs
   @protected
   Ref<StateT> get ref {
     final ref = _ref;
@@ -137,7 +136,6 @@ abstract base class $ClassProvider< //
     );
   }
 
-  // TODO docs
   /// {@template riverpod.override_with_build}
   /// Hello world
   /// {@endtemplate}

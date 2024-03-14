@@ -9,7 +9,6 @@ import 'package:test/test.dart';
 
 import '../utils.dart';
 
-// TODO automatically generate this list for maintainability
 final refMethodsThatDependOnProviders =
     <String, void Function(Ref<Object?> ref, ProviderBase<Object?>)>{
   'watch': (ref, p) => ref.watch(p),

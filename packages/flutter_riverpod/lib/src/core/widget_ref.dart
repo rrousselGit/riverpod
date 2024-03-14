@@ -1,6 +1,5 @@
 part of '../core.dart';
 
-// TODO change this doc
 /// {@template flutter_riverpod.widget_ref}
 /// An object that allows widgets to interact with providers.
 ///

@@ -129,7 +129,6 @@ final class FutureProvider<StateT>
   /// {@macro riverpod.family}
   static const family = FutureProviderFamilyBuilder();
 
-  /// TODO add dartdoc on all create cbs.
   final Create<FutureOr<StateT>, Ref<AsyncValue<StateT>>> _create;
 
   @override

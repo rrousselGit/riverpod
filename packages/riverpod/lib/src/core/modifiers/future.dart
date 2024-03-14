@@ -446,10 +446,6 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
         sub == null || _lastFuture != null,
         'An async operation is pending but the state for provider.future was not initialized.',
       );
-
-      // TODO test build throws -> provider emits AsyncError synchronously & .future emits Future.error
-      // TODO test build resolves with error -> emits AsyncError & .future emits Future.error
-      // TODO test build emits value -> .future emits value & provider emits AsyncData
     } catch (error, stackTrace) {
       onError(
         AsyncError<StateT>(error, stackTrace),
