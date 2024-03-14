@@ -31,60 +31,6 @@ void main() {
     );
   });
 
-  group('ProviderContainer.debugVsyncs', () {
-    // test('are called before modifying a provider', () {
-    //   final provider = StateProvider((ref) => 0);
-    //   final container = ProviderContainer();
-    //   final vsync = VsyncMock();
-    //   final vsync2 = VsyncMock();
-
-    //   container.debugVsyncs.addAll([vsync, vsync2]);
-
-    //   final state = container.read(provider);
-
-    //   verifyZeroInteractions(vsync);
-    //   verifyZeroInteractions(vsync2);
-
-    //   state.state++;
-
-    //   verifyOnly(vsync, vsync());
-    //   verifyOnly(vsync2, vsync2());
-    // });
-
-    // test('are not called when flushing a provider', () {
-    //   final dep = StateProvider((ref) => 0);
-    //   final provider = Provider((ref) {
-    //     return ref.watch(dep);
-    //   });
-    //   final container = ProviderContainer();
-    //   final vsync = VsyncMock();
-
-    //   final sub = container.listen(provider, (_) {});
-    //   container.read(dep.notifier).state++;
-
-    //   container.debugVsyncs.add(vsync);
-
-    //   sub.flush();
-
-    //   verifyZeroInteractions(vsync);
-    // });
-
-    // test('are not called when re-creating a provider', () {
-    //   final provider = Provider((ref) => 0);
-    //   final container = ProviderContainer();
-    //   final vsync = VsyncMock();
-
-    //   final sub = container.listen(provider, (_) {});
-    //   container.refresh(provider);
-
-    //   container.debugVsyncs.add(vsync);
-
-    //   sub.flush();
-
-    //   verifyZeroInteractions(vsync);
-    // });
-  });
-
   test('rebuilding a provider can modify other providers', () async {
     final dep = StateProvider((ref) => 0);
     final provider = Provider((ref) => ref.watch(dep));

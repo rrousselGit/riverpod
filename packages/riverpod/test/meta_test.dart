@@ -100,8 +100,6 @@ void main() {
       expect(visitor.templates, contains(macro), reason: 'Missing template');
     }
   });
-
-  // TODO test @visibleForTesting/protected/internal & co are inherited when overridden
 }
 
 class _PublicAPIVisitor extends GeneralizingElementVisitor<void> {
