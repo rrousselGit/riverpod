@@ -292,25 +292,25 @@ void main() {
     expect(secondElement.hasListeners, false);
   });
 
-  // group('overrideWithValue', () {
-  //   test('synchronously overrides the value', () {
-  //     var callCount = 0;
-  //     final provider = FutureProvider((ref) async {
-  //       callCount++;
-  //       return 0;
-  //     });
-  //     final container = ProviderContainer.test(overrides: [
-  //       provider.overrideWithValue(const AsyncValue.data(42)),
-  //     ]);
+  group('overrideWithValue', () {
+    test('synchronously overrides the value', () {
+      var callCount = 0;
+      final provider = FutureProvider((ref) async {
+        callCount++;
+        return 0;
+      });
+      final container = ProviderContainer.test(
+        overrides: [provider.overrideWithValue(const AsyncValue.data(42))],
+      );
 
-  //     addTearDown(container.dispose);
+      addTearDown(container.dispose);
 
-  //     final sub = container.listen(provider, (_, __) {});
+      final sub = container.listen(provider, (_, __) {});
 
-  //     expect(callCount, 0);
-  //     expect(sub.read(), const AsyncValue.data(42));
-  //   });
-  // });
+      expect(callCount, 0);
+      expect(sub.read(), const AsyncValue.data(42));
+    });
+  });
 
   test('remove dependencies on dispose', () async {
     final first = StateProvider((ref) => 0);

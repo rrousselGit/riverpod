@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_types_on_closure_parameters
+
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
@@ -181,8 +183,9 @@ void main() {
 
       // No value were emitted, so the future will fail. Catching the error to
       // avoid false positive.
-      // ignore: unawaited_futures, avoid_types_on_closure_parameters
-      container.read(provider.future).catchError((Object _) => 0);
+      unawaited(
+        container.read(provider.future).catchError((Object _) => 0),
+      );
     });
 
     group('scoping an override overrides all the associated subproviders', () {
@@ -208,29 +211,29 @@ void main() {
         );
       });
 
-      // test('when using provider.overrideWithValue', () async {
-      //   final provider = StreamProvider.autoDispose((ref) => Stream.value(0));
-      //   final root = ProviderContainer.test();
-      //   final container = ProviderContainer.test(parent: root, overrides: [
-      //     provider.overrideWithValue(const AsyncValue.data(42)),
-      //   ]);
+      test('when using provider.overrideWithValue', () async {
+        final provider = StreamProvider.autoDispose(
+          (ref) => Stream.value(0),
+          dependencies: [],
+        );
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [
+            provider.overrideWithValue(const AsyncValue.data(42)),
+          ],
+        );
 
-      //   expect(await container.read(provider.stream).first, 42);
-      //   expect(await container.read(provider.future), 42);
-      //   expect(container.read(provider), const AsyncValue.data(42));
-      //   expect(root.getAllProviderElements(), isEmpty);
-      //   expect(
-      //     container.getAllProviderElements(),
-      //     unorderedEquals(<Object?>[
-      //       isA<ProviderElementBase>()
-      //           .having((e) => e.origin, 'origin', provider),
-      //       isA<ProviderElementBase>()
-      //           .having((e) => e.origin, 'origin', provider.future),
-      //       isA<ProviderElementBase>()
-      //           .having((e) => e.origin, 'origin', provider.stream),
-      //     ]),
-      //   );
-      // });
+        expect(await container.read(provider.future), 42);
+        expect(container.read(provider), const AsyncValue.data(42));
+        expect(root.getAllProviderElements(), isEmpty);
+        expect(
+          container.getAllProviderElements(),
+          unorderedEquals(<Object?>[
+            isA<ProviderElement>().having((e) => e.origin, 'origin', provider),
+          ]),
+        );
+      });
 
       test('when using provider.overrideWith', () async {
         final provider = StreamProvider.autoDispose(

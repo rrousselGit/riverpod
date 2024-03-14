@@ -1,4 +1,4 @@
-// ignore_for_file: invalid_use_of_protected_member
+// ignore_for_file: invalid_use_of_protected_member, void_checks, prefer_const_constructors, avoid_types_on_closure_parameters
 
 import 'dart:async';
 
@@ -117,7 +117,6 @@ void main() {
 
       final sub = container.listen(provider.notifier, (prev, next) {});
 
-      // ignore: void_checks
       expect(sub.read().state, const AsyncData<void>(42));
 
       sub.read().state = const AsyncLoading<int>();
@@ -137,7 +136,6 @@ void main() {
 
       final sub = container.listen(provider.notifier, (prev, next) {});
 
-      // ignore: void_checks
       expect(sub.read().state, const AsyncData<void>(42));
 
       sub.read().state = const AsyncData<int>(42);
@@ -157,7 +155,6 @@ void main() {
 
       final sub = container.listen(provider.notifier, (prev, next) {});
 
-      // ignore: void_checks
       expect(sub.read().state, const AsyncData<void>(42));
 
       sub.read().state = AsyncError<int>(21, StackTrace.current);
@@ -552,11 +549,8 @@ void main() {
 
         final sub = container.listen(provider.notifier, (previous, next) {});
 
-        // ignore: prefer_const_constructors, not using `const` as we voluntarily break identity to test `identical`
         final newState = AsyncData(84);
-        // ignore: prefer_const_constructors, not using `const` as we voluntarily break identity to test `identical`
         final newLoading = AsyncLoading<int>();
-        // ignore: prefer_const_constructors, not using `const` as we voluntarily break identity to test `identical`
         final newError = AsyncError<int>(84, StackTrace.empty);
 
         sub.read().state = newState;
@@ -1091,9 +1085,7 @@ void main() {
         () => DeferredAsyncNotifier((ref) => 0),
       );
 
-      // ignore: avoid_types_on_closure_parameters
       provider.select((AsyncValue<int> value) => 0);
-      // ignore: avoid_types_on_closure_parameters
       provider.selectAsync((int value) => 0);
 
       canBeAssignedToProviderListenable<AsyncValue<int>>(provider);
@@ -1112,9 +1104,7 @@ void main() {
         () => DeferredAsyncNotifier((ref) => 0),
       );
 
-      // ignore: avoid_types_on_closure_parameters
       autoDispose.select((AsyncValue<int> value) => 0);
-      // ignore: avoid_types_on_closure_parameters
       autoDispose.selectAsync((int value) => 0);
 
       canBeAssignedToProviderListenable<AsyncValue<int>>(autoDispose);
@@ -1137,9 +1127,7 @@ void main() {
         () => DeferredFamilyAsyncNotifier((ref) => '0'),
       );
 
-      // ignore: avoid_types_on_closure_parameters
       family(0).select((AsyncValue<String> value) => 0);
-      // ignore: avoid_types_on_closure_parameters
       family(0).selectAsync((String value) => 0);
 
       canBeAssignedToProviderListenable<AsyncValue<String>>(family(0));
@@ -1167,9 +1155,7 @@ void main() {
         () => DeferredFamilyAsyncNotifier((ref) => '0'),
       );
 
-      // ignore: avoid_types_on_closure_parameters
       autoDisposeFamily(0).select((AsyncValue<String> value) => 0);
-      // ignore: avoid_types_on_closure_parameters
       autoDisposeFamily(0).selectAsync((String value) => 0);
 
       canBeAssignedToProviderListenable<AsyncValue<String>>(
@@ -1198,8 +1184,7 @@ void main() {
 
 @immutable
 class Equal<T> {
-  // ignore: prefer_const_constructors_in_immutables
-  Equal(this.value);
+  const Equal(this.value);
 
   final T value;
 

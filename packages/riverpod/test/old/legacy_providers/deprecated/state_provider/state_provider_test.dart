@@ -181,27 +181,6 @@ void main() {
       );
     });
 
-    // test('when using provider.overrideWithValue', () async {
-    //   final provider = StateProvider<int>((ref) => 0);
-    //   final root = ProviderContainer.test();
-    //   final container = ProviderContainer.test(parent: root, overrides: [
-    //     provider.overrideWithValue(StateController(42)),
-    //   ]);
-
-    //   expect(container.read(provider.notifier).state, 42);
-    //   expect(container.read(provider), 42);
-    //   expect(root.getAllProviderElements(), isEmpty);
-    //   expect(
-    //     container.getAllProviderElements(),
-    //     unorderedEquals(<Object?>[
-    //       isA<ProviderElementBase>()
-    //           .having((e) => e.origin, 'origin', provider.state),
-    //       isA<ProviderElementBase>()
-    //           .having((e) => e.origin, 'origin', provider.notifier),
-    //     ]),
-    //   );
-    // });
-
     test('when using provider.overrideWith', () async {
       final provider = StateProvider<int>(
         (ref) => 0,
@@ -227,49 +206,7 @@ void main() {
     });
   });
 
-  // test(
-  //   'overrideWithValue listens to the new StateController and support controller changes',
-  //   () {
-  //     final provider = StateProvider((ref) => 0);
-  //     final container = ProviderContainer.test(overrides: [
-  //       provider.overrideWithValue(StateController(42)),
-  //     ]);
-  //     final listener = Listener<int>();
-
-  //     container.listen<StateController<int>>(
-  //       provider.state,
-  //       (prev, controller) => listener(prev?.state, controller.state),
-  //       fireImmediately: true,
-  //     );
-
-  //     verifyOnly(listener, listener(null, 42));
-
-  //     container.read(provider.notifier).state++;
-
-  //     verifyOnly(listener, listener(43, 43));
-  //   },
-  // );
-
   group('overrideWith', () {
-    // test('listens to state changes', () {
-    //   final override = StateController(21);
-    //   final provider = StateProvider((ref) => 0);
-    //   final container = ProviderContainer.test(overrides: [
-    //     provider.overrideWithValue(override),
-    //   ]);
-    //   addTearDown(container.dispose);
-    //   final container2 = ProviderContainer(overrides: [
-    //     provider.overrideWith(
-    //       ((ref) => 42),
-    //     ),
-    //   ]);
-    //   addTearDown(container.dispose);
-
-    //   expect(container.read(provider.notifier), override);
-    //   expect(container.read(provider), 21);
-    //   expect(container2.read(provider), 42);
-    // });
-
     test(
       'properly disposes of the StateController when the provider is disposed',
       () async {

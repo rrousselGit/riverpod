@@ -92,29 +92,6 @@ void main() {
       );
     });
 
-    // test('when using provider.overrideWithValue', () async {
-    //   final provider = StateProvider.autoDispose<int>((ref) => 0);
-    //   final root = ProviderContainer.test();
-    //   final container = ProviderContainer.test(parent: root, overrides: [
-    //     provider.overrideWithValue(StateController(42)),
-    //   ]);
-
-    //   expect(container.read(provider.notifier).state, 42);
-    //   expect(container.read(provider), 42);
-    //   expect(root.getAllProviderElements(), isEmpty);
-    //   expect(
-    //     container.getAllProviderElements(),
-    //     unorderedEquals(<Object?>[
-    //       isA<ProviderElementBase>()
-    //           .having((e) => e.origin, 'origin', provider),
-    //       isA<ProviderElementBase>()
-    //           .having((e) => e.origin, 'origin', provider.state),
-    //       isA<ProviderElementBase>()
-    //           .having((e) => e.origin, 'origin', provider.notifier),
-    //     ]),
-    //   );
-    // });
-
     test('when using provider.overrideWith', () async {
       final provider = StateProvider.autoDispose<int>(
         (ref) => 0,
@@ -142,24 +119,6 @@ void main() {
   });
 
   group('overrideWith', () {
-    // test('listens to state changes', () {
-    //   final override = StateController(42);
-    //   final provider = StateProvider.autoDispose((ref) => 0);
-    //   final container = ProviderContainer.test(overrides: [
-    //     provider.overrideWithValue(override),
-    //   ]);
-    //   addTearDown(container.dispose);
-    //   final container2 = ProviderContainer(overrides: [
-    //     provider.overrideWith(
-    //       StateProvider.autoDispose((ref) => 42),
-    //     ),
-    //   ]);
-    //   addTearDown(container.dispose);
-
-    //   expect(container.read(provider), 42);
-    //   expect(container.read(provider.notifier), override);
-    // });
-
     test(
       'properly disposes of the StateController when the provider is disposed',
       () async {

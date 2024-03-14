@@ -207,30 +207,6 @@ void main() {
         );
       });
 
-      // test('when using provider.overrideWithValue', () async {
-      //   final controller = StateController(0);
-      //   final provider = StateNotifierProvider<StateController<int>, int>(
-      //       (ref) => controller);
-      //   final root = ProviderContainer.test();
-      //   final controllerOverride = StateController(42);
-      //   final container = ProviderContainer.test(parent: root, overrides: [
-      //     provider.overrideWithValue(controllerOverride),
-      //   ]);
-
-      //   expect(container.read(provider.notifier), controllerOverride);
-      //   expect(container.read(provider), 42);
-      //   expect(root.getAllProviderElements(), isEmpty);
-      //   expect(
-      //     container.getAllProviderElements(),
-      //     unorderedEquals(<Object?>[
-      //       isA<ProviderElementBase>()
-      //           .having((e) => e.origin, 'origin', provider),
-      //       isA<ProviderElementBase>()
-      //           .having((e) => e.origin, 'origin', provider.notifier),
-      //     ]),
-      //   );
-      // });
-
       test('when using provider.overrideWith', () async {
         final controller = StateController(0);
         final provider =
@@ -259,30 +235,6 @@ void main() {
       });
     });
   });
-
-  // test('overriding the provider overrides provider.state too', () {
-  //   final notifier = TestNotifier(42);
-  //   final provider =
-  //       StateNotifierProvider<TestNotifier, int>((_) => TestNotifier());
-  //   final container = ProviderContainer.test(
-  //     overrides: [
-  //       provider.overrideWithValue(TestNotifier(10)),
-  //     ],
-  //   );
-  //   addTearDown(container.dispose);
-
-  //   // does not crash
-  //   container.updateOverrides([
-  //     provider.overrideWithValue(notifier),
-  //   ]);
-
-  //   expect(container.read(provider.notifier), notifier);
-  //   expect(container.read(provider), 42);
-
-  //   notifier.increment();
-
-  //   expect(container.read(provider), 43);
-  // });
 
   test('can specify name', () {
     final provider = StateNotifierProvider<TestNotifier, int>(

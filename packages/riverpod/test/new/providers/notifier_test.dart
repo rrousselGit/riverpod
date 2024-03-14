@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_types_on_closure_parameters, invalid_use_of_protected_member
+// ignore_for_file: avoid_types_on_closure_parameters, invalid_use_of_protected_member, prefer_const_constructors
 
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
@@ -673,8 +673,7 @@ void main() {
 
 @immutable
 class Equal<T> {
-  // ignore: prefer_const_constructors_in_immutables
-  Equal(this.value);
+  const Equal(this.value);
 
   final T value;
 

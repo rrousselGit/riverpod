@@ -27,9 +27,6 @@ void main() {
 
       container.listen(provider(0), (_, __) {});
 
-      // expect(await container.read(provider(0).future), 0);
-      // expect(container.read(provider(0)), const AsyncData(0));
-
       expect(
         container.pointerManager.familyPointers[provider],
         isProviderDirectory(

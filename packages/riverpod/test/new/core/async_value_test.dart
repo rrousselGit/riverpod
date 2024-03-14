@@ -1,4 +1,4 @@
-// ignore_for_file: avoid_types_on_closure_parameters
+// ignore_for_file: avoid_types_on_closure_parameters, prefer_const_constructors, prefer_const_declarations
 
 import 'dart:async';
 
@@ -380,7 +380,6 @@ void main() {
   test('asError', () {
     const value = AsyncValue<int>.error(42, StackTrace.empty);
 
-    // ignore: omit_local_variable_types, unused_local_variable, testing that assignment works,
     final AsyncError<int>? error = value.asError;
 
     expect(const AsyncData(42).asError, null);
@@ -485,7 +484,6 @@ void main() {
 
   group('mapOrNull', () {
     test('supports returning null when relying on type-inference', () {
-      // ignore: unused_local_variable, omit_local_variable_types
       final int? x2 = const AsyncValue.data(1).mapOrNull(
         data: (value) => null,
         error: (_) => null,
@@ -1011,7 +1009,6 @@ void main() {
 
   group('whenOrNull', () {
     test('supports returning null when relying on type-inference', () {
-      // ignore: unused_local_variable, omit_local_variable_types
       final int? x2 = const AsyncValue.data(1).whenOrNull(
         data: (value) => null,
         error: (err, stack) => null,
@@ -1077,9 +1074,7 @@ void main() {
   });
 
   test('==', () {
-    // ignore: prefer_const_declarations, not using const to test runtime
     final value = 42;
-    // ignore: prefer_const_declarations, not using const to test runtime
     final value2 = 21;
 
     final stack = StackTrace.current;
@@ -1144,21 +1139,15 @@ void main() {
     );
 
     expect(
-      // ignore: prefer_const_constructors
       AsyncLoading<int>(),
-      // ignore: prefer_const_constructors
       AsyncLoading<int>(),
     );
     expect(
-      // ignore: prefer_const_constructors
       AsyncLoading<int>(),
-      // ignore: prefer_const_constructors
       isNot(AsyncValue<num>.loading()),
     );
     expect(
-      // ignore: prefer_const_constructors
       AsyncValue<num>.loading(),
-      // ignore: prefer_const_constructors
       isNot(AsyncLoading<int>()),
     );
 
@@ -1181,9 +1170,7 @@ void main() {
   });
 
   test('hashCode', () {
-    // ignore: prefer_const_declarations
     final value = 42;
-    // ignore: prefer_const_declarations
     final value2 = 21;
 
     final stack = StackTrace.current;
@@ -1244,21 +1231,15 @@ void main() {
     );
 
     expect(
-      // ignore: prefer_const_constructors
       AsyncLoading<int>().hashCode,
-      // ignore: prefer_const_constructors
       AsyncLoading<int>().hashCode,
     );
     expect(
-      // ignore: prefer_const_constructors
       AsyncLoading<int>().hashCode,
-      // ignore: prefer_const_constructors
       isNot(AsyncValue<num>.loading().hashCode),
     );
     expect(
-      // ignore: prefer_const_constructors
       AsyncValue<num>.loading().hashCode,
-      // ignore: prefer_const_constructors
       isNot(AsyncLoading<int>().hashCode),
     );
 
@@ -1468,11 +1449,10 @@ void main() {
     test('catches errors in data transformer and return AsyncError', () {
       expect(
         const AsyncValue.data(42).whenData<int>(
-          // ignore: only_throw_errors
-          (value) => throw '42',
+          (value) => throw StateError('foo'),
         ),
         isA<AsyncError<int>>()
-            .having((e) => e.error, 'error', '42')
+            .having((e) => e.error, 'error', isStateError)
             .having((e) => e.stackTrace, 'stackTrace', isNotNull),
       );
     });
@@ -1481,7 +1461,6 @@ void main() {
   test('AsyncValue.asData', () {
     const value = AsyncValue<int>.data(42);
 
-    // ignore: omit_local_variable_types, unused_local_variable, testing that assignment works,
     final AsyncData<int>? data = value.asData;
 
     expect(

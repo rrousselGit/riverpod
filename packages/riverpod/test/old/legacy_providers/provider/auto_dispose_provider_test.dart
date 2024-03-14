@@ -74,10 +74,7 @@ void main() {
       test('can read the state if the setter was called before', () {
         final container = ProviderContainer.test();
         final provider = Provider.autoDispose<int>((ref) {
-          // ignore: join_return_with_assignment
-          ref.state = 42;
-
-          return ref.state;
+          return ref.state = 42;
         });
 
         expect(container.read(provider), 42);
