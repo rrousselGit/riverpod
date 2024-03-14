@@ -45,12 +45,10 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
     try {
       return switch (value) {
         ResultData(:final state) => Result.data(selector(state)),
-        // TODO test
         ResultError(:final error, :final stackTrace) =>
           Result.error(error, stackTrace),
       };
     } catch (err, stack) {
-      // TODO test
       return Result.error(err, stack);
     } finally {
       if (kDebugMode) _debugIsRunningSelector = false;
@@ -68,14 +66,10 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
     if (!lastSelectedValue.hasState ||
         !newSelectedValue.hasState ||
         lastSelectedValue.requireState != newSelectedValue.requireState) {
-      // TODO test events after selector exception correctly send `previous`s
-
       onChange(newSelectedValue);
-      // TODO test handle exception in listener
       switch (newSelectedValue) {
         case ResultData(:final state):
           listener(
-            // TODO test from error
             lastSelectedValue.stateOrNull,
             state,
           );
