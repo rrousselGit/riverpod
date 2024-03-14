@@ -106,13 +106,12 @@ sealed class ProviderOrFamily implements ProviderListenableOrFamily {
 }
 
 extension on ProviderListenableOrFamily {
-  ProviderBase<Object?>? get listenedProvider {
+  ProviderBase<Object?>? get debugListenedProvider {
     final that = this;
     return switch (that) {
       ProviderBase() => that,
-      // TODO refactor to listenable.provider
-      _ProviderSelector() => that.provider.listenedProvider,
-      _AsyncSelector() => that.provider.listenedProvider,
+      _ProviderSelector() => that.provider.debugListenedProvider,
+      _AsyncSelector() => that.provider.debugListenedProvider,
       ProviderElementProxy() => that.provider,
       _ => null,
     };
@@ -175,11 +174,9 @@ String shortHash(Object? object) {
 mixin ProviderListenable<StateT> implements ProviderListenableOrFamily {
   /// Starts listening to this transformer
   ProviderSubscription<StateT> addListener(
-    // TODO remove Node and pass directly the listened Element
     Node node,
     void Function(StateT? previous, StateT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
-    // TODO remove
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
   });

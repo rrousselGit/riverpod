@@ -318,7 +318,6 @@ class ProviderPointerManager {
     }
 
     final familyPointer = familyPointers[from] ??= ProviderDirectory.empty(
-      // TODO use rootOrSelf
       container._root ?? container,
       familyOverride: null,
     );
@@ -745,12 +744,6 @@ class ProviderContainer implements Node {
 
   /// Executes [ProviderElement.debugReassemble] on all the providers.
   void debugReassemble() {
-// TODO hot-reload handle provider type change
-// TODO hot-reload handle provider response type change
-// TODO hot-reload handle provider -> family
-// TODO hot-reload handle family adding parameters
-// TODO found "Future already completed error" after adding family parameter
-
     if (kDebugMode) {
       for (final element in getAllProviderElements()) {
         element.debugReassemble();
@@ -802,7 +795,6 @@ class ProviderContainer implements Node {
         providerToRefresh = refreshable;
       case _ProviderRefreshable<StateT>(:final provider):
         providerToRefresh = provider;
-      // TODO: Handle this case.
     }
 
     invalidate(providerToRefresh);

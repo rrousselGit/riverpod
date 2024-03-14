@@ -666,9 +666,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     runOnDispose();
     ref = null;
 
-    // TODO test invalidateSelf() then dispose() properly unlinks dependencies
-    // TODO test [Ref.listen] calls are cleared
-
     for (final sub in _dependencies.entries) {
       sub.key._providerDependents.remove(this);
       sub.key._onRemoveListener();

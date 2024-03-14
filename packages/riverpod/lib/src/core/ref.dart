@@ -77,7 +77,7 @@ base class Ref<StateT> {
   void _debugAssertCanDependOn(ProviderListenableOrFamily listenable) {
     final dependency = switch (listenable) {
       ProviderOrFamily() => listenable,
-      _ => listenable.listenedProvider,
+      _ => listenable.debugListenedProvider,
     };
 
     if (dependency == null) return;

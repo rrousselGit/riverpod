@@ -545,7 +545,6 @@ extension<T> on Stream<T> {
             case ResultData(:final state):
               completer.complete(state);
             case ResultError(:final error, :final stackTrace):
-              // TODO: should this be reported to the zone?
               completer.future.ignore();
               completer.completeError(error, stackTrace);
           }

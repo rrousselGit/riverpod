@@ -5,7 +5,7 @@
 - **Breaking**: Removed all `Ref` subclasses (such `FutureProviderRef`).
   Use `Ref` directly instead.
   For `FutureProviderRef.future`, migrate to using an `AsyncNotifier`.
-- **Breaking** All ref methods besides "mounted" now throw if used on unmounted refs.
+- **Breaking** All ref and notifier methods besides "mounted" now throw if used after getting disposed.
 - **Breaking**: `StateProvider` and `StateNotifierProvider`
   are moved out of `package:flutter_riverpod/flutter_riverpod.dart` to
   `package:flutter_riverpod/legacy.dart`.

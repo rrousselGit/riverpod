@@ -66,7 +66,6 @@ abstract class NotifierBase<StateT, CreatedT> {
     return ref;
   }
 
-  // TODO chnagelog breaking: reading state/future in Notifiers after dispose throws
   @visibleForTesting
   @protected
   StateT get state => ref.state;
