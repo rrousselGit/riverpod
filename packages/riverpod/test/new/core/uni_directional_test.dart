@@ -7,7 +7,7 @@ import '../utils.dart';
 void main() {
   test(
       'Catches sync circular dependency when the dependency is not yet mounted',
-      skip: true, () {
+      () {
     // regression for #1766
     final container = ProviderContainer.test();
 
@@ -80,6 +80,45 @@ void main() {
 
       expect(
         () => ref4.watch(provider),
+        throwsA(isA<CircularDependencyError>()),
+      );
+    });
+  });
+
+  group('ref.listen cannot end-up in a circular dependency', () {
+    test('direct dependency', () {
+      final provider = Provider((ref) => ref);
+      final provider2 = Provider((ref) => ref);
+      final container = ProviderContainer();
+
+      final ref = container.read(provider);
+      final ref2 = container.read(provider2);
+
+      ref.watch(provider2);
+      expect(
+        () => ref2.listen(provider, (a, b) {}),
+        throwsA(isA<CircularDependencyError>()),
+      );
+    });
+
+    test('indirect dependency', () {
+      final provider = Provider((ref) => ref);
+      final provider2 = Provider((ref) => ref);
+      final provider3 = Provider((ref) => ref);
+      final provider4 = Provider((ref) => ref);
+      final container = ProviderContainer();
+
+      final ref = container.read(provider);
+      final ref2 = container.read(provider2);
+      final ref3 = container.read(provider3);
+      final ref4 = container.read(provider4);
+
+      ref.listen(provider2, (a, b) {});
+      ref2.listen(provider3, (a, b) {});
+      ref3.listen(provider4, (a, b) {});
+
+      expect(
+        () => ref4.listen(provider, (a, b) {}),
         throwsA(isA<CircularDependencyError>()),
       );
     });

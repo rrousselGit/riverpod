@@ -120,12 +120,18 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     }
 
     // TODO Consider all dependencies, not just ref.watch
-    final queue = Queue<ProviderElement>.from(
-      _element._providerDependents,
+    final queue = Queue<ProviderElement>();
+    _element.visitChildren(
+      elementVisitor: queue.add,
+      listenableVisitor: (_) {},
     );
+
     while (queue.isNotEmpty) {
       final current = queue.removeFirst();
-      queue.addAll(current._providerDependents);
+      current.visitChildren(
+        elementVisitor: queue.add,
+        listenableVisitor: (_) {},
+      );
 
       if (current.origin == dependency) {
         throw CircularDependencyError._();
@@ -221,9 +227,10 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// {@endtemplate}
   void invalidate(ProviderOrFamily providerOrFamily, {bool asReload = false}) {
     _throwIfInvalidUsage();
-    if (kDebugMode) _debugAssertCanDependOn(providerOrFamily);
 
     container.invalidate(providerOrFamily, asReload: asReload);
+
+    if (kDebugMode) _debugAssertCanDependOn(providerOrFamily);
   }
 
   /// Invokes [invalidate] on itself.
@@ -419,9 +426,12 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// safer to use.
   T read<T>(ProviderListenable<T> listenable) {
     _throwIfInvalidUsage();
+
+    final result = container.read(listenable);
+
     if (kDebugMode) _debugAssertCanDependOn(listenable);
 
-    return container.read(listenable);
+    return result;
   }
 
   /// {@template riverpod.exists}
@@ -459,9 +469,12 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// {@endtemplate}
   bool exists(ProviderBase<Object?> provider) {
     _throwIfInvalidUsage();
+
+    final result = container.exists(provider);
+
     if (kDebugMode) _debugAssertCanDependOn(provider);
 
-    return container.exists(provider);
+    return result;
   }
 
   /// Obtains the state of a provider and causes the state to be re-evaluated
@@ -539,8 +552,6 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
       return sub.read();
     }
 
-    if (kDebugMode) _debugAssertCanDependOn(listenable);
-
     final element = container.readProviderElement(listenable);
     _element._dependencies.putIfAbsent(element, () {
       final previousSub = _element._previousDependencies?.remove(element);
@@ -563,7 +574,11 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
       return Object();
     });
 
-    return element.readSelf();
+    final result = element.readSelf();
+
+    if (kDebugMode) _debugAssertCanDependOn(listenable);
+
+    return result;
   }
 
   /// {@template riverpod.listen}

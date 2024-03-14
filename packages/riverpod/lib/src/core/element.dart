@@ -551,15 +551,18 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }) {
     final ref = this.ref!;
     ref._throwIfInvalidUsage();
-    if (kDebugMode) ref._debugAssertCanDependOn(listenable);
 
-    return listenable.addListener(
+    final result = listenable.addListener(
       this,
       listener,
       fireImmediately: fireImmediately,
       onError: onError,
       onDependencyMayHaveChanged: onDependencyMayHaveChanged,
     );
+
+    if (kDebugMode) ref._debugAssertCanDependOn(listenable);
+
+    return result;
   }
 
   void _onListen() {
