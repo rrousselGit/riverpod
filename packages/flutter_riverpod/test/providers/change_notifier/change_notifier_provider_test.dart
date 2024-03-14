@@ -183,27 +183,6 @@ void main() {
       expect(root.getAllProviderElements(), isEmpty);
     });
 
-    // test('when using provider.overrideWithValue', () {
-    //   final provider = ChangeNotifierProvider((ref) => ValueNotifier(0));
-    //   final root = ProviderContainer.test();
-    //   final container = ProviderContainer.test(parent: root, overrides: [
-    //     provider.overrideWithValue(ValueNotifier(42)),
-    //   ]);
-
-    //   expect(container.read(provider.notifier).value, 42);
-    //   expect(container.read(provider).value, 42);
-    //   expect(
-    //     container.getAllProviderElements(),
-    //     unorderedEquals(<Object>[
-    //       isA<ProviderElementBase>()
-    //           .having((e) => e.origin, 'origin', provider),
-    //       isA<ProviderElementBase>()
-    //           .having((e) => e.origin, 'origin', provider.notifier)
-    //     ]),
-    //   );
-    //   expect(root.getAllProviderElements(), isEmpty);
-    // });
-
     test('when using provider.overrideWith', () {
       final provider = ChangeNotifierProvider(
         (ref) => ValueNotifier(0),
@@ -228,28 +207,6 @@ void main() {
       expect(root.getAllProviderElements(), isEmpty);
     });
   });
-
-  // test('overriding with value listens to the ChangeNotifier', () {
-  //   final provider = ChangeNotifierProvider((ref) => ValueNotifier(0));
-  //   final notifier = ValueNotifier(42);
-  //   final listener = Listener<int>();
-
-  //   final container = ProviderContainer.test(
-  //     overrides: [provider.overrideWithValue(notifier)],
-  //   );
-
-  //   container.listen<ValueNotifier<int>>(
-  //     provider,
-  //     (prev, value) => listener(prev?.value, value.value),
-  //   );
-
-  //   expect(container.read(provider).value, 42);
-  //   expect(container.read(provider.notifier).value, 42);
-
-  //   notifier.value = 21;
-
-  //   verifyOnly(listener, listener(21, 21));
-  // });
 
   test('refresh recreates the ChangeNotifier', () {
     final provider = ChangeNotifierProvider((ref) => ValueNotifier(0));
