@@ -498,12 +498,6 @@ void main() {
       verifyOnly(listener, listener(Equal(42), Equal(21)));
     });
 
-    test(
-      'can override the Notifier with a matching custom implementation',
-      () {},
-      skip: 'TODO',
-    );
-
     test('can override Notifier.build', () {});
 
     if (factory.isAutoDispose) {

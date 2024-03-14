@@ -2606,26 +2606,22 @@ void main() {
         verifyZeroInteractions(listener);
       });
 
-      test(
-        'is not called when using container.read (autoDispose)',
-        skip: true,
-        () async {
-          final container = ProviderContainer.test();
-          final listener = OnCancelMock();
-          final dispose = OnDisposeMock();
-          final provider = StateProvider.autoDispose((ref) {
-            ref.keepAlive();
-            ref.onCancel(listener.call);
-            ref.onDispose(dispose.call);
-          });
+      test('is not called when using container.read (autoDispose)', () async {
+        final container = ProviderContainer.test();
+        final listener = OnCancelMock();
+        final dispose = OnDisposeMock();
+        final provider = StateProvider.autoDispose((ref) {
+          ref.keepAlive();
+          ref.onCancel(listener.call);
+          ref.onDispose(dispose.call);
+        });
 
-          container.read(provider);
-          await container.pump();
+        container.read(provider);
+        await container.pump();
 
-          verifyZeroInteractions(listener);
-          verifyZeroInteractions(dispose);
-        },
-      );
+        verifyZeroInteractions(listener);
+        verifyZeroInteractions(dispose);
+      });
 
       test('listeners are cleared on rebuild', () {
         final container = ProviderContainer.test();
@@ -2804,12 +2800,6 @@ void main() {
         expect(buildCount, 1);
         verifyNoMoreInteractions(onDispose);
       });
-
-      test(
-        'once a provider was disposed, cannot add more listeners until it is rebuilt',
-        () {},
-        skip: 'TODO',
-      );
     });
 
     group('mounted', () {

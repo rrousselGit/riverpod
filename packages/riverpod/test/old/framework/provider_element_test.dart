@@ -158,8 +158,6 @@ void main() {
         ]),
       );
     });
-
-    test('include ref.read dependents', () {}, skip: true);
   });
 
   group('hasListeners', () {

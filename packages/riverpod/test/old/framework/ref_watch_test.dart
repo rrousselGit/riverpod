@@ -107,8 +107,6 @@ void main() {
     expect(buildCount, 2);
   });
 
-  test('when selector throws, rebuild providers', () {}, skip: true);
-
   test('on provider that threw, exceptions bypass the selector', () {
     final container = ProviderContainer.test();
     final dep = Provider<int>((ref) {
