@@ -438,8 +438,8 @@ void main() {
 
       expect(container.read(provider.future), future);
 
-      // TODO(rrousselGit) test that the stacktrace is preserved
       await expectLater(future, throwsA(error));
+      expect(await future.stackTrace, StackTrace.empty);
 
       final error2 = Error();
 
@@ -476,8 +476,8 @@ void main() {
 
       expect(container.read(provider.future), future);
 
-      // TODO(rrousselGit) test that the stacktrace is preserved
       await expectLater(future, throwsA(error));
+      expect(await future.stackTrace, StackTrace.empty);
 
       final error2 = Error();
 
@@ -488,8 +488,8 @@ void main() {
 
       future = container.read(provider.future);
 
-      // TODO(rrousselGit) test that the stacktrace is preserved
       await expectLater(future, throwsA(error2));
+      expect(await future.stackTrace, StackTrace.empty);
     });
 
     test('supports loading then data then loading', () async {
@@ -924,4 +924,15 @@ void main() {
       });
     });
   });
+}
+
+extension on Future<Object?> {
+  Future<StackTrace?> get stackTrace async {
+    try {
+      await this;
+      return null;
+    } catch (e, s) {
+      return s;
+    }
+  }
 }
