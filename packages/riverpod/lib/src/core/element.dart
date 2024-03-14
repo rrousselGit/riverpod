@@ -676,7 +676,25 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
   @override
   String toString() {
-    return '$runtimeType(provider: $provider, origin: $origin)';
+    final buffer = StringBuffer('$runtimeType(');
+
+    buffer.writeAll(
+      [
+        switch (_stateResult) {
+          null => 'state: uninitialized',
+          ResultData<StateT>(:final state) => 'state: $state',
+          ResultError<StateT>(:final error, :final stackTrace) =>
+            'state: error $error\n$stackTrace',
+        },
+        if (provider != origin) 'provider: $provider',
+        'origin: $origin',
+      ],
+      ', ',
+    );
+
+    buffer.write(')');
+
+    return buffer.toString();
   }
 
   /// Visit the [$ProviderElement]s of providers that are listening to this element.

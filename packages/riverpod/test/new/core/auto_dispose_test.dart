@@ -75,8 +75,6 @@ void main() {
     });
 
     group('on unused providers', () {
-      // TODO test calls dispose only once
-
       test(
           'cleans up the pointers of a provider in the entire ProviderContainer tree',
           () async {

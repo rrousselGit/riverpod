@@ -1168,7 +1168,23 @@ void main() {
       });
     });
 
-    // TODO test that reading a provider with deps does not mount those deps if unused by the provider
+    test(
+        'Reading a provider with deps does not mount those deps if unused by the provider',
+        () {
+      final dep = Provider((_) => 0);
+      final provider = Provider((ref) => 0, dependencies: [dep]);
+
+      final container = ProviderContainer.test();
+
+      container.read(provider);
+
+      expect(
+        container.pointerManager
+            .listProviderPointers()
+            .map((e) => e.element?.origin),
+        [provider],
+      );
+    });
 
     group('pointers', () {
       test('has "container" pointing to "this"', () {
@@ -1194,6 +1210,39 @@ void main() {
       });
 
       group('on scoped containers', () {
+        test(
+            'Inheriting a transitively overridden family which contains family(arg) overrides '
+            'preserves the family(arg) overrides.', () {
+          final dep = Provider((_) => 0, dependencies: const []);
+          final provider = Provider.family<String, int>(
+            (ref, id) => 'root ${ref.watch(dep)}',
+            dependencies: [dep],
+          );
+
+          final root = ProviderContainer.test(
+            overrides: [
+              provider(42).overrideWith((ref) {
+                return 'override ${ref.watch(dep)}';
+              }),
+            ],
+          );
+
+          final container = ProviderContainer.test(
+            parent: root,
+            overrides: [dep.overrideWithValue(42)],
+          );
+
+          expect(
+            container.read(provider(42)),
+            'override 0',
+            reason: 'provider(42) is manually overridden, '
+                'so this disables auto-scoping',
+          );
+          expect(container.read(provider(21)), 'root 42');
+          expect(root.read(provider(21)), 'root 0');
+          expect(root.read(provider(42)), 'override 0');
+        });
+
         test('does not inherit transitive overrides', () {
           final unrelated = Provider((_) => 0, dependencies: const []);
           final dep = Provider(
@@ -1238,8 +1287,6 @@ void main() {
         });
 
         test('inherits overrides from its parents', () {
-          // TODO test that inheriting a transitively overridden family which contains family(arg) overrides preserves the family(arg) overrides
-
           final a = Provider((_) => 0, name: 'a');
           final aOverride = a.overrideWithValue(1);
           final b = Provider(
@@ -2437,49 +2484,41 @@ void main() {
       });
 
       test(
-        'if a listener removes another provider.listen, the removed listener is still called (ProviderListenable)',
-        skip: true,
-        () {
-          final provider = StateProvider((ref) => 0);
-          final container = ProviderContainer.test();
+          'if a listener removes another provider.listen, the removed listener is still called (ProviderListenable)',
+          () {
+        final provider = StateProvider((ref) => 0);
+        final container = ProviderContainer.test();
 
-          final listener = Listener<int>();
-          final listener2 = Listener<int>();
+        final listener = Listener<int>();
+        final listener2 = Listener<int>();
 
-          final p = Provider((ref) {
-            ProviderSubscription<int>? a;
-            ref.listen<int>(provider, (prev, value) {
-              listener(prev, value);
-              a?.close();
-              a = null;
-            });
-
-            a = ref.listen<int>(provider, listener2.call);
+        final p = Provider((ref) {
+          ProviderSubscription<int>? a;
+          ref.listen<int>(provider, (prev, value) {
+            listener(prev, value);
+            a?.close();
+            a = null;
           });
-          container.read(p);
 
-          verifyZeroInteractions(listener);
-          verifyZeroInteractions(listener2);
+          a = ref.listen<int>(provider, listener2.call);
+        });
+        container.read(p);
 
-          container.read(provider.notifier).state++;
+        verifyZeroInteractions(listener);
+        verifyZeroInteractions(listener2);
 
-          verifyInOrder([
-            listener(1, 1),
-            listener2(1, 1),
-          ]);
+        container.read(provider.notifier).state++;
 
-          container.read(provider.notifier).state++;
+        verifyInOrder([
+          listener(0, 1),
+          listener2(0, 1),
+        ]);
 
-          verify(listener(2, 2)).called(1);
-          verifyNoMoreInteractions(listener2);
-          // TODO the problem is that ProviderListenable subscriptions are separate from
-          // ProviderElement subscriptions. So the ProviderElement.notifyListeners
-          // making a local copy of the list of subscriptions before notifying listeners
-          // does not apply to ProviderListenables
-          // Support for modifying listeners within a listener probably should be dropped anyway for performance.
-          // This would remove a list copy
-        },
-      );
+        container.read(provider.notifier).state++;
+
+        verify(listener(1, 2)).called(1);
+        verifyNoMoreInteractions(listener2);
+      });
 
       test(
           'if a listener adds a provider.listen, the new listener is not called immediately',
@@ -2509,46 +2548,38 @@ void main() {
       });
 
       test(
-        'if a listener removes another container.listen, the removed listener is still called (ProviderListenable)',
-        skip: true,
-        () {
-          final provider = StateProvider((ref) => 0);
-          final container = ProviderContainer.test();
+          'if a listener removes another container.listen, the removed listener is still called (ProviderListenable)',
+          () {
+        final provider = StateProvider((ref) => 0);
+        final container = ProviderContainer.test();
 
-          final listener = Listener<int>();
-          final listener2 = Listener<int>();
+        final listener = Listener<int>();
+        final listener2 = Listener<int>();
 
-          ProviderSubscription<Object?>? a;
-          container.listen<int>(provider, (prev, value) {
-            listener(prev, value);
-            a?.close();
-            a = null;
-          });
+        ProviderSubscription<Object?>? a;
+        container.listen<int>(provider, (prev, value) {
+          listener(prev, value);
+          a?.close();
+          a = null;
+        });
 
-          a = container.listen<int>(provider, listener2.call);
+        a = container.listen<int>(provider, listener2.call);
 
-          verifyZeroInteractions(listener);
-          verifyZeroInteractions(listener2);
+        verifyZeroInteractions(listener);
+        verifyZeroInteractions(listener2);
 
-          container.read(provider.notifier).state++;
+        container.read(provider.notifier).state++;
 
-          verifyInOrder([
-            listener(1, 1),
-            listener2(1, 1),
-          ]);
+        verifyInOrder([
+          listener(0, 1),
+          listener2(0, 1),
+        ]);
 
-          container.read(provider.notifier).state++;
+        container.read(provider.notifier).state++;
 
-          verify(listener(2, 2)).called(1);
-          verifyNoMoreInteractions(listener2);
-          // TODO the problem is that ProviderListenable subscriptions are separate from
-          // ProviderElement subscriptions. So the ProviderElement.notifyListeners
-          // making a local copy of the list of subscriptions before notifying listeners
-          // does not apply to ProviderListenables
-          // Support for modifying listeners within a listener probably should be dropped anyway for performance.
-          // This would remove a list copy
-        },
-      );
+        verify(listener(1, 2)).called(1);
+        verifyNoMoreInteractions(listener2);
+      });
 
       test(
           'if a listener removes another container.listen, the removed listener is still called',

@@ -85,6 +85,14 @@ extension<PointerT extends _PointerBase, ProviderT extends ProviderOrFamily>
   }
 }
 
+extension on ProviderOrFamily {
+  bool get canBeTransitivelyOverridden {
+    final allTransitiveDependencies = this.allTransitiveDependencies;
+    return allTransitiveDependencies != null &&
+        allTransitiveDependencies.isNotEmpty;
+  }
+}
+
 @internal
 class ProviderDirectory implements _PointerBase {
   ProviderDirectory.empty(
@@ -94,9 +102,15 @@ class ProviderDirectory implements _PointerBase {
         targetContainer = container;
 
   ProviderDirectory.from(
-    ProviderDirectory pointer,
-  )   : familyOverride = pointer.familyOverride,
-        targetContainer = pointer.targetContainer,
+    ProviderDirectory pointer, {
+    ProviderContainer? targetContainer,
+    _FamilyOverride? familyOverride,
+  })  : assert(
+          (familyOverride == null) == (targetContainer == null),
+          'Either both or neither of familyOverride and targetContainer should be null',
+        ),
+        familyOverride = familyOverride ?? pointer.familyOverride,
+        targetContainer = targetContainer ?? pointer.targetContainer,
         pointers = HashMap.fromEntries(
           pointer.pointers.entries.where((e) => !e.value.isTransitiveOverride),
         );
@@ -266,7 +280,13 @@ class ProviderPointerManager {
 
       familyPointers: HashMap.fromEntries(
         parent._pointerManager.familyPointers.entries
-            .where((e) => !e.value.isTransitiveOverride)
+            .where(
+          (e) =>
+              !e.value.isTransitiveOverride &&
+              // Exclude families that may be automatically scoped unless they are overridden.
+              (!e.key.canBeTransitivelyOverridden ||
+                  e.value.familyOverride != null),
+        )
             .map(
           (e) {
             if (e.key.allTransitiveDependencies == null) return e;
@@ -348,14 +368,12 @@ class ProviderPointerManager {
     ProviderOrFamily provider,
   ) {
     if (container._parent == null) return null;
+    if (!provider.canBeTransitivelyOverridden) {
+      return null;
+    }
 
-    final transitiveDependencies = provider.allTransitiveDependencies;
-
-    /// If the provider has no dependencies, it cannot be locally overridden.
-    if (transitiveDependencies == null) return null;
-
-    final overrides =
-        transitiveDependencies.expand<ProviderContainer>((dependency) {
+    final overrides = provider.allTransitiveDependencies!
+        .expand<ProviderContainer>((dependency) {
       switch (dependency) {
         case Family():
           final familyPointer = familyPointers[dependency];
@@ -392,13 +410,33 @@ class ProviderPointerManager {
       family,
       currentContainer: container,
       targetContainer: null,
-      inherit: (target) => target._pointerManager._mountFamily(family),
-      scope: ({override}) => ProviderDirectory.empty(
-        container,
-        familyOverride: override == null //
+      inherit: (target) {
+        final parentPointer = target._pointerManager._mountFamily(family);
+
+        // TODO don't fork a family if no family(42) is overridden
+
+        return ProviderDirectory.from(parentPointer);
+      },
+      scope: ({override}) {
+        final familyOverride = override == null //
             ? null
-            : TransitiveFamilyOverride(override),
-      ),
+            : TransitiveFamilyOverride(override);
+
+        final parent = container.parent?._pointerManager.familyPointers[family];
+
+        if (parent != null) {
+          return ProviderDirectory.from(
+            parent,
+            targetContainer: container,
+            familyOverride: familyOverride,
+          );
+        }
+
+        return ProviderDirectory.empty(
+          container,
+          familyOverride: familyOverride,
+        );
+      },
     );
   }
 
@@ -426,7 +464,6 @@ class ProviderPointerManager {
     if (from == null) {
       return orphanPointers;
     } else {
-      //     // TODO debugAddDependency(element, debugDependentSource: debugDependentSource);
       return _mountFamily(from);
     }
   }
