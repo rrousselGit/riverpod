@@ -6,7 +6,7 @@ abstract base class ProviderSubscription<StateT> {
   /// Represents the subscription to a [ProviderListenable]
   ProviderSubscription(this.source) {
     final Object listener = source;
-    if (listener is ProviderElementBase) {
+    if (listener is ProviderElement) {
       final subs = listener._subscriptions ??= [];
       subs.add(this);
     }
@@ -14,7 +14,7 @@ abstract base class ProviderSubscription<StateT> {
 
   /// The object that listens to the associated [ProviderListenable].
   ///
-  /// This is typically a [ProviderElementBase] or a [ProviderContainer],
+  /// This is typically a [ProviderElement] or a [ProviderContainer],
   /// but may be other values in the future.
   final Node source;
 
@@ -36,7 +36,7 @@ abstract base class ProviderSubscription<StateT> {
     _closed = true;
 
     final Object listener = source;
-    if (listener is ProviderElementBase) {
+    if (listener is ProviderElement) {
       listener._subscriptions?.remove(this);
     }
   }
@@ -58,7 +58,7 @@ final class _ProviderStateSubscription<StateT>
 
   // Why can't this be typed correctly?
   final void Function(Object? prev, Object? state) listener;
-  final ProviderElementBase<StateT> listenedElement;
+  final ProviderElement<StateT> listenedElement;
   final OnError onError;
 
   @override

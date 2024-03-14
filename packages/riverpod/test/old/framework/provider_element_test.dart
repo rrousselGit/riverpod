@@ -112,7 +112,7 @@ void main() {
       container.read(dependent);
       container.read(dependent2);
 
-      final children = <ProviderElementBase>[];
+      final children = <ProviderElement>[];
 
       container.readProviderElement(provider).visitChildren(
             elementVisitor: children.add,
@@ -121,9 +121,9 @@ void main() {
       expect(
         children,
         unorderedMatches(<Object>[
-          isA<ProviderElementBase>()
+          isA<ProviderElement>()
               .having((e) => e.provider, 'provider', dependent),
-          isA<ProviderElementBase>()
+          isA<ProviderElement>()
               .having((e) => e.provider, 'provider', dependent2),
         ]),
       );
@@ -142,7 +142,7 @@ void main() {
       container.read(dependent);
       container.read(dependent2);
 
-      final children = <ProviderElementBase>[];
+      final children = <ProviderElement>[];
 
       container.readProviderElement(provider).visitChildren(
             elementVisitor: children.add,
@@ -151,9 +151,9 @@ void main() {
       expect(
         children,
         unorderedMatches(<Object>[
-          isA<ProviderElementBase>()
+          isA<ProviderElement>()
               .having((e) => e.provider, 'provider', dependent),
-          isA<ProviderElementBase>()
+          isA<ProviderElement>()
               .having((e) => e.provider, 'provider', dependent2),
         ]),
       );

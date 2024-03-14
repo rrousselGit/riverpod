@@ -278,7 +278,7 @@ void main() {
 
         expect(
           container.getAllProviderElements(),
-          [isA<ProviderElementBase<int>>()],
+          [isA<ProviderElement<int>>()],
         );
 
         sub = container.listen(provider, (_, __) {});

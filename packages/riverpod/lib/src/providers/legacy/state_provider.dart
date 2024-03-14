@@ -112,7 +112,7 @@ final class StateProvider<StateT> extends $FunctionalProvider<StateT, StateT>
 }
 
 /// The element of [StateProvider].
-class StateProviderElement<T> extends ProviderElementBase<T> {
+class StateProviderElement<T> extends ProviderElement<T> {
   StateProviderElement._(this.provider, super.container);
 
   @override
@@ -161,7 +161,7 @@ class StateProviderElement<T> extends ProviderElementBase<T> {
 
   @override
   void visitChildren({
-    required void Function(ProviderElementBase element) elementVisitor,
+    required void Function(ProviderElement element) elementVisitor,
     required void Function(ProxyElementValueListenable element)
         listenableVisitor,
   }) {

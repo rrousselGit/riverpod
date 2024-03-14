@@ -1,6 +1,6 @@
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart' show ProviderElementBase;
+import 'package:riverpod/src/internals.dart' show ProviderElement;
 import 'package:test/test.dart';
 
 import '../../utils.dart';
@@ -28,8 +28,7 @@ void main() {
 
         expect(container.read(provider(0)), 0);
         expect(container.getAllProviderElements(), [
-          isA<ProviderElementBase>()
-              .having((e) => e.origin, 'origin', provider(0)),
+          isA<ProviderElement>().having((e) => e.origin, 'origin', provider(0)),
         ]);
         expect(root.getAllProviderElements(), isEmpty);
       });

@@ -71,7 +71,7 @@ class ProviderElementProxy<InputT, OutputT>
   @override
   final ProviderBase<InputT> provider;
   final ProxyElementValueListenable<OutputT> Function(
-    ProviderElementBase<InputT> element,
+    ProviderElement<InputT> element,
   ) _lense;
 
   @override

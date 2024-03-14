@@ -1,7 +1,7 @@
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart' show ProviderElementBase;
+import 'package:riverpod/src/internals.dart' show ProviderElement;
 import 'package:test/test.dart';
 
 import '../utils.dart';
@@ -266,7 +266,7 @@ void main() {
     final element = container.readProviderElement(provider);
     final selectedElement = container.readProviderElement(selected);
 
-    final ancestors = <ProviderElementBase>[];
+    final ancestors = <ProviderElement>[];
     element.visitAncestors(ancestors.add);
 
     expect(ancestors, [selectedElement]);

@@ -17,7 +17,7 @@ abstract class Node {
   ///
   /// Do not use this in production code. This is exposed only for testing
   /// and devtools, to be able to test if a provider has listeners or similar.
-  ProviderElementBase<StateT> readProviderElement<StateT>(
+  ProviderElement<StateT> readProviderElement<StateT>(
     ProviderBase<StateT> provider,
   );
 }

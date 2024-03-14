@@ -83,7 +83,7 @@ abstract class NotifierBase<StateT, CreatedT> {
 
 @internal
 extension ClassBaseX<StateT, CreatedT> on NotifierBase<StateT, CreatedT> {
-  ProviderElementBase<StateT>? get element => _ref?._element;
+  ProviderElement<StateT>? get element => _ref?._element;
 }
 
 /// Implementation detail of `riverpod_generator`.
@@ -165,7 +165,7 @@ abstract class ClassProviderElement< //
             CreatedT>,
         StateT,
         CreatedT> //
-    extends ProviderElementBase<StateT> {
+    extends ProviderElement<StateT> {
   ClassProviderElement(super.container);
 
   @override
@@ -232,7 +232,7 @@ abstract class ClassProviderElement< //
 
   @override
   void visitChildren({
-    required void Function(ProviderElementBase element) elementVisitor,
+    required void Function(ProviderElement element) elementVisitor,
     required void Function(ProxyElementValueListenable element)
         listenableVisitor,
   }) {

@@ -212,8 +212,8 @@ mixin FutureModifierClassElement<
 /// Mixin to help implement logic for listening to [Future]s/[Stream]s and setup
 /// `provider.future` + convert the object into an [AsyncValue].
 @internal
-mixin FutureModifierElement<StateT> on ProviderElementBase<AsyncValue<StateT>> {
-  /// A default implementation for [ProviderElementBase.updateShouldNotify].
+mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
+  /// A default implementation for [ProviderElement.updateShouldNotify].
   static bool handleUpdateShouldNotify<StateT>(
     AsyncValue<StateT> previous,
     AsyncValue<StateT> next,
@@ -515,7 +515,7 @@ mixin FutureModifierElement<StateT> on ProviderElementBase<AsyncValue<StateT>> {
 
   @override
   void visitChildren({
-    required void Function(ProviderElementBase element) elementVisitor,
+    required void Function(ProviderElement element) elementVisitor,
     required void Function(ProxyElementValueListenable element)
         listenableVisitor,
   }) {

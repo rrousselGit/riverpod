@@ -1,6 +1,6 @@
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart' show ProviderElementBase;
+import 'package:riverpod/src/internals.dart' show ProviderElement;
 import 'package:test/test.dart';
 
 import '../../utils.dart';
@@ -40,7 +40,7 @@ void main() {
 
       expect(container.getAllProviderElements(), isEmpty);
       expect(mid.getAllProviderElements(), [
-        isA<ProviderElementBase<int>>()
+        isA<ProviderElement<int>>()
             .having((e) => e.origin, 'origin', provider)
             .having((e) => e.readSelf(), 'readSelf()', 42),
       ]);

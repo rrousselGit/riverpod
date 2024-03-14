@@ -162,8 +162,7 @@ final class FutureProvider<StateT>
 /// The element of a [FutureProvider]
 /// Implementation detail of `riverpod_generator`. Do not use.
 @internal
-class $FutureProviderElement<StateT>
-    extends ProviderElementBase<AsyncValue<StateT>>
+class $FutureProviderElement<StateT> extends ProviderElement<AsyncValue<StateT>>
     with FutureModifierElement<StateT> {
   /// The element of a [FutureProvider]
   /// Implementation detail of `riverpod_generator`. Do not use.

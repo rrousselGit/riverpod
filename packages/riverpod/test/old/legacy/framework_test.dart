@@ -1,7 +1,7 @@
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart'
-    show CircularDependencyError, ProviderElementBase;
+    show CircularDependencyError, ProviderElement;
 import 'package:test/test.dart';
 
 import '../utils.dart';
@@ -46,10 +46,10 @@ void main() {
     expect(container.read(family2(0)), '0 2');
 
     expect(container.getAllProviderElements(), [
-      isA<ProviderElementBase>().having((e) => e.origin, 'origin', family2(0)),
+      isA<ProviderElement>().having((e) => e.origin, 'origin', family2(0)),
     ]);
     expect(root.getAllProviderElements(), [
-      isA<ProviderElementBase>().having((e) => e.origin, 'origin', family(0)),
+      isA<ProviderElement>().having((e) => e.origin, 'origin', family(0)),
     ]);
   });
 

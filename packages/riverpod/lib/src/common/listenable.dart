@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import '../framework.dart' show ProviderElementBase;
+import '../framework.dart' show ProviderElement;
 import '../internals.dart' show OnError;
 import 'env.dart';
 import 'pragma.dart';
@@ -15,7 +15,7 @@ class _Listener<T> {
   final void Function()? onDependencyMayHaveChanged;
 }
 
-/// A listenable object used by [ProviderElementBase] as a mean to subscribe
+/// A listenable object used by [ProviderElement] as a mean to subscribe
 /// to subsets of the state exposed by a provider.
 @internal
 @optionalTypeArgs

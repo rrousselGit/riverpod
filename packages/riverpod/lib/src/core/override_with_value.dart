@@ -32,9 +32,9 @@ final class $ValueProvider<StateT> extends ProviderBase<StateT>
   }
 }
 
-/// The [ProviderElementBase] of a [$ValueProvider]
-class _ValueProviderElement<StateT> extends ProviderElementBase<StateT> {
-  /// The [ProviderElementBase] of a [$ValueProvider]
+/// The [ProviderElement] of a [$ValueProvider]
+class _ValueProviderElement<StateT> extends ProviderElement<StateT> {
+  /// The [ProviderElement] of a [$ValueProvider]
   _ValueProviderElement(this.provider, super.container);
 
   /// A custom listener called when `overrideWithValue` changes

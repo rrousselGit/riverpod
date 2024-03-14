@@ -343,8 +343,8 @@ base class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
 /// - [Provider.family], to allow providers to create a value from external parameters.
 /// {@endtemplate}
 @internal
-class $ProviderElement<StateT> extends ProviderElementBase<StateT> {
-  /// A [ProviderElementBase] for [Provider]
+class $ProviderElement<StateT> extends ProviderElement<StateT> {
+  /// A [ProviderElement] for [Provider]
   $ProviderElement(this.provider, super.container);
 
   @override

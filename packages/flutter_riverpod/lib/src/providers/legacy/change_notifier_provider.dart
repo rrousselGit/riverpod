@@ -160,7 +160,7 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
 
 /// The element of [ChangeNotifierProvider].
 class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
-    extends ProviderElementBase<NotifierT> {
+    extends ProviderElement<NotifierT> {
   ChangeNotifierProviderElement._(this.provider, super.container);
 
   @override
@@ -206,7 +206,7 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
 
   @override
   void visitChildren({
-    required void Function(ProviderElementBase element) elementVisitor,
+    required void Function(ProviderElement element) elementVisitor,
     required void Function(ProxyElementValueListenable element)
         listenableVisitor,
   }) {
