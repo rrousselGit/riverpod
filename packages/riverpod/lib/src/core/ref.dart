@@ -119,7 +119,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
 ''');
     }
 
-    // TODO move to a "onAddDependency" life-cycle
+    // TODO Consider all dependencies, not just ref.watch
     final queue = Queue<ProviderElement>.from(
       _element._providerDependents,
     );

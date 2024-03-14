@@ -124,8 +124,6 @@ class $NotifierProviderElement< //
     required bool seamless,
   }) {
     setStateResult(ResultError<StateT>(error, stackTrace));
-    // TODO report uncaught error to the zone
-    // Zone.current.handleUncaughtError(error, stackTrace);
   }
 
   @override

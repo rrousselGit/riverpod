@@ -127,24 +127,19 @@ void main() {
     expect(container.read(provider), 42);
   });
 
-  test(
-    'can refresh .state',
-    skip: 'TODO',
-    () async {
-      // TODO fix this test
-      var initialValue = 1;
-      final provider = StateProvider<int>((ref) => initialValue);
-      final container = ProviderContainer.test();
+  test('can refresh .state', () async {
+    var initialValue = 1;
+    final provider = StateProvider<int>((ref) => initialValue);
+    final container = ProviderContainer.test();
 
-      expect(container.read(provider), 1);
-      expect(container.read(provider.notifier).state, 1);
+    expect(container.read(provider), 1);
+    expect(container.read(provider.notifier).state, 1);
 
-      initialValue = 42;
+    initialValue = 42;
 
-      expect(container.refresh(provider.notifier).state, 42);
-      expect(container.read(provider), 42);
-    },
-  );
+    expect(container.refresh(provider.notifier).state, 42);
+    expect(container.read(provider), 42);
+  });
 
   test('can be refreshed', () async {
     var result = 0;

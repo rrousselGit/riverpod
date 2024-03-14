@@ -8,7 +8,6 @@ import 'package:test/test.dart';
 
 void main() {
   // TODO verify that inherited members reapply annotations
-  // TODO assert all ".notifier" and ".future" implement Refreshable
   // TODO assert all constructor parameters point to a field with dartdoc.
 
   // This verifies that:

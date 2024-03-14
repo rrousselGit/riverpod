@@ -299,17 +299,14 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
     final completer = _futureCompleter;
     if (completer != null) {
       completer
-        // TODO test ignore
         ..future.ignore()
         ..completeError(
           value.error,
           value.stackTrace,
         );
       _futureCompleter = null;
-      // TODO SynchronousFuture.error
     } else {
       futureNotifier.result = Result.data(
-        // TODO test ignore
         Future.error(
           value.error,
           value.stackTrace,
