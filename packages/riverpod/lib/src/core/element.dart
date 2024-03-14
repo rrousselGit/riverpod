@@ -305,7 +305,6 @@ This could mean a few things:
         .._onRemoveListener();
     }
     _previousDependencies = null;
-    // TODO clear subscriptions only after the provider has been rebuilt
   }
 
   /// Initialize a provider.

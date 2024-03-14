@@ -4,6 +4,7 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
   {
     'AsyncNotifierProvider': AsyncNotifierTestFactory(
       isAutoDispose: false,
+      isFamily: false,
       deferredNotifier: DeferredAsyncNotifier.new,
       deferredProvider: <StateT>(create, {updateShouldNotify}) {
         return AsyncNotifierProvider<DeferredAsyncNotifier<StateT>, StateT>(
@@ -27,6 +28,7 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
     ),
     'AsyncNotifierProvider.autoDispose': AsyncNotifierTestFactory(
       isAutoDispose: true,
+      isFamily: false,
       deferredNotifier: DeferredAsyncNotifier.new,
       deferredProvider: <StateT>(create, {updateShouldNotify}) {
         return AsyncNotifierProvider.autoDispose<DeferredAsyncNotifier<StateT>,
@@ -53,6 +55,7 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
     ),
     'AsyncNotifierProvider.family': AsyncNotifierTestFactory(
       isAutoDispose: false,
+      isFamily: true,
       deferredNotifier: DeferredFamilyAsyncNotifier.new,
       deferredProvider: <StateT>(create, {updateShouldNotify}) {
         return AsyncNotifierProvider.family<DeferredFamilyAsyncNotifier<StateT>,
@@ -80,6 +83,7 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
     ),
     'AsyncNotifierProvider.autoDispose.family': AsyncNotifierTestFactory(
       isAutoDispose: true,
+      isFamily: true,
       deferredNotifier: DeferredFamilyAsyncNotifier.new,
       deferredProvider: <StateT>(create, {updateShouldNotify}) {
         return AsyncNotifierProvider.family
@@ -175,6 +179,7 @@ class AsyncNotifierTestFactory extends TestFactory<
     ProviderFactory<$AsyncNotifier<Object?>, ProviderBase<Object?>, void>> {
   AsyncNotifierTestFactory({
     required super.isAutoDispose,
+    required super.isFamily,
     required super.value,
     required this.deferredNotifier,
     required this.deferredProvider,

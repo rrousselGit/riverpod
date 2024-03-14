@@ -23,10 +23,12 @@ class TestFactory<T> {
   TestFactory({
     required this.value,
     required this.isAutoDispose,
+    required this.isFamily,
   });
 
   final T value;
   final bool isAutoDispose;
+  final bool isFamily;
 }
 
 typedef ProviderFactory<BaseT, ProviderT, RefT>

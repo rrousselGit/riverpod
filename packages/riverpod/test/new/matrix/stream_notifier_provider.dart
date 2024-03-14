@@ -4,6 +4,7 @@ final streamNotifierProviderFactory = TestMatrix<StreamNotifierTestFactory>(
   {
     'StreamNotifierProvider': StreamNotifierTestFactory(
       isAutoDispose: false,
+      isFamily: false,
       deferredNotifier: DeferredStreamNotifier.new,
       deferredProvider: <StateT>(create, {updateShouldNotify}) {
         return StreamNotifierProvider<DeferredStreamNotifier<StateT>, StateT>(
@@ -27,6 +28,7 @@ final streamNotifierProviderFactory = TestMatrix<StreamNotifierTestFactory>(
     ),
     'StreamNotifierProvider.autoDispose': StreamNotifierTestFactory(
       isAutoDispose: true,
+      isFamily: false,
       deferredNotifier: DeferredStreamNotifier.new,
       deferredProvider: <StateT>(create, {updateShouldNotify}) {
         return StreamNotifierProvider.autoDispose<
@@ -54,6 +56,7 @@ final streamNotifierProviderFactory = TestMatrix<StreamNotifierTestFactory>(
     ),
     'StreamNotifierProvider.family': StreamNotifierTestFactory(
       isAutoDispose: false,
+      isFamily: true,
       deferredNotifier: DeferredFamilyStreamNotifier.new,
       deferredProvider: <StateT>(create, {updateShouldNotify}) {
         return StreamNotifierProvider.family<
@@ -81,6 +84,7 @@ final streamNotifierProviderFactory = TestMatrix<StreamNotifierTestFactory>(
     ),
     'StreamNotifierProvider.autoDispose.family': StreamNotifierTestFactory(
       isAutoDispose: true,
+      isFamily: true,
       deferredNotifier: DeferredFamilyStreamNotifier.new,
       deferredProvider: <StateT>(create, {updateShouldNotify}) {
         return StreamNotifierProvider.family
@@ -176,6 +180,7 @@ class StreamNotifierTestFactory extends TestFactory<
     ProviderFactory<$StreamNotifier<Object?>, ProviderBase<Object?>, void>> {
   StreamNotifierTestFactory({
     required super.isAutoDispose,
+    required super.isFamily,
     required super.value,
     required this.deferredNotifier,
     required this.deferredProvider,

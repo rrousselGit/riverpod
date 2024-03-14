@@ -28,6 +28,19 @@ void main() {
   });
 
   asyncNotifierProviderFactory.createGroup((factory) {
+    if (factory.isFamily) {
+      test('sets provider(arg) dependencies/allTransitiveDependencies to null',
+          () {
+        final provider = factory.value(
+          (_, arg) => factory.deferredNotifier((ref) => 0),
+          dependencies: [],
+        );
+
+        expect(provider().dependencies, null);
+        expect(provider().allTransitiveDependencies, null);
+      });
+    }
+
     test('Cannot share a Notifier instance between providers ', () {
       final container = ProviderContainer.test();
       final notifier = factory.deferredNotifier<int>((ref) => 0);

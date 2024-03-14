@@ -668,7 +668,7 @@ class ProviderContainer implements Node {
   /// How deep this [ProviderContainer] is in the graph of containers.
   ///
   /// Starts at 0.
-  /// TODO check this is still used after refactoring
+  @internal
   final int depth;
   final ProviderContainer? _root;
   final ProviderContainer? _parent;
@@ -697,14 +697,16 @@ class ProviderContainer implements Node {
   bool _disposed = false;
 
   /// Awaits for providers to rebuild/be disposed and for listeners to be notified.
+  ///
+  ///
+  /// This call is recursive and will wait for ancestor [ProviderContainer]s to
+  /// rebuild their providers too.
   Future<void> pump() async {
     final a = scheduler.pendingFuture;
-    // TODO should wait for all children, but not parents
-    final b = _parent?.scheduler.pendingFuture;
 
     await Future.wait<void>([
       if (a != null) a,
-      if (b != null) b,
+      if (parent case final parent?) parent.pump(),
     ]);
   }
 
@@ -880,8 +882,6 @@ class ProviderContainer implements Node {
           runUnaryGuarded(element.update, override.providerOverride);
 
         case _FamilyOverride():
-          // TODO assert family override did not change
-
           final pointer = _pointerManager.familyPointers[override.from];
 
           if (kDebugMode) {
@@ -896,8 +896,7 @@ class ProviderContainer implements Node {
     }
   }
 
-  /// TODO make private
-  /// TODO remove generic
+  @internal
   @override
   ProviderElement<State> readProviderElement<State>(
     ProviderBase<State> provider,

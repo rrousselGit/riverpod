@@ -108,7 +108,6 @@ class FunctionalFamily< //
       isAutoDispose: isAutoDispose,
       from: this,
       argument: argument,
-      // TODO test all families set dependencies as null
       dependencies: null,
       allTransitiveDependencies: null,
     );
@@ -179,9 +178,8 @@ class ClassFamily< //
       isAutoDispose: isAutoDispose,
       from: this,
       argument: argument,
-      // TODO Why are dependencies set here but not in FunctionalFanily?
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
+      dependencies: null,
+      allTransitiveDependencies: null,
       runNotifierBuildOverride: null,
     );
   }
