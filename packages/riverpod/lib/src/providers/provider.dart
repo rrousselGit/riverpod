@@ -17,7 +17,6 @@ base mixin $Provider<StateT, RefT> on ProviderBase<StateT> {
 base class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
     with $Provider<StateT, Ref<StateT>>, LegacyProviderMixin<StateT> {
   /// {@macro riverpod.provider}
-  // TODO make all providers const under all variations
   Provider(
     this._create, {
     super.name,

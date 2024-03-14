@@ -1,5 +1,3 @@
-// TODO assert all provider variants have const constructors
-
 export 'src/core/async_value.dart' hide AsyncTransition;
 export 'src/framework.dart'
     hide

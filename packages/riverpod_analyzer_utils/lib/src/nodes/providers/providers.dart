@@ -50,9 +50,6 @@ sealed class GeneratorProviderDeclaration extends ProviderDeclaration {
   TypeAnnotation? get createdTypeNode;
 
   String computeProviderHash() {
-    // TODO improve hash function to inspect the body of the create fn
-    // such that the hash changes if one of the element defined outside of the
-    // fn changes.
     final bytes = utf8.encode(node.toSource());
     final digest = sha1.convert(bytes);
     return digest.toString();

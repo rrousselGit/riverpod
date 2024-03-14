@@ -372,7 +372,6 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
 
   @override
   Widget build() {
-    // TODO disallow didChangeDependencies
     try {
       _oldDependencies = _dependencies;
       for (var i = 0; i < _listeners.length; i++) {
@@ -494,7 +493,6 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
     final container = ProviderScope.containerOf(this, listen: false);
 
     final sub = _ListenManual(
-      // TODO somehow pass "this" instead for the devtool's sake
       container,
       container.listen(
         provider,

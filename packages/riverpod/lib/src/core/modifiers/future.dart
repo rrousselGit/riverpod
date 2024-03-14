@@ -261,7 +261,6 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   @override
   @protected
   void setStateResult(Result<AsyncValue<StateT>> newState) {
-    // TODO assert Notifier isn't disposed
     newState.requireState.map(
       loading: onLoading,
       error: onError,

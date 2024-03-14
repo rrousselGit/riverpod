@@ -119,7 +119,6 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
 ''');
     }
 
-    // TODO Consider all dependencies, not just ref.watch
     final queue = Queue<ProviderElement>();
     _element.visitChildren(
       elementVisitor: queue.add,

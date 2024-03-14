@@ -76,7 +76,6 @@ abstract class $Notifier<StateT> extends NotifierBase<StateT, StateT> {
   @override
   @visibleForOverriding
   bool updateShouldNotify(StateT previous, StateT next) {
-    // TODO unify updateShouldNotify to use == or identical everywhere
     return !identical(previous, next);
   }
 }

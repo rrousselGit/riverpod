@@ -180,6 +180,7 @@ class ClassFamily< //
       isAutoDispose: isAutoDispose,
       from: this,
       argument: argument,
+      // TODO Why are dependencies set here but not in FunctionalFanily?
       dependencies: dependencies,
       allTransitiveDependencies: allTransitiveDependencies,
       runNotifierBuildOverride: null,

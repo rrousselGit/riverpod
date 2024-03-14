@@ -149,16 +149,6 @@ final class ProviderScopeState extends State<ProviderScope> {
       parent: parent,
       overrides: widget.overrides,
       observers: widget.observers,
-      // TODO How to report to FlutterError?
-      // onError: (dynamic error, stack) {
-      //   FlutterError.reportError(
-      //     FlutterErrorDetails(
-      //       library: 'flutter_provider',
-      //       exception: error,
-      //       stack: stack,
-      //     ),
-      //   );
-      // },
     );
   }
 

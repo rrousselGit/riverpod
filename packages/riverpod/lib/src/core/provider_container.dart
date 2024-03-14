@@ -146,8 +146,6 @@ class ProviderDirectory implements _PointerBase {
     ProviderBase<Object?> provider, {
     required ProviderContainer currentContainer,
   }) {
-    // TODO throw if a provider is overridden but does not specify dependencies
-
     return pointers._upsert(
       provider,
       currentContainer: currentContainer,
@@ -202,11 +200,8 @@ class ProviderDirectory implements _PointerBase {
       /// This has otherwise no impact unless there is a bug.
       pointer.element = element;
 
-      // TODO test family(42) overrides on nested containers receive the correct container
       element
-        // TODO remove
         .._origin = origin
-        // TODO make this optional
         ..mount();
     }
 
@@ -411,8 +406,6 @@ class ProviderPointerManager {
       targetContainer: null,
       inherit: (target) {
         final parentPointer = target._pointerManager._mountFamily(family);
-
-        // TODO don't fork a family if no family(42) is overridden
 
         return ProviderDirectory.from(parentPointer);
       },
@@ -706,7 +699,7 @@ class ProviderContainer implements Node {
   /// Awaits for providers to rebuild/be disposed and for listeners to be notified.
   Future<void> pump() async {
     final a = scheduler.pendingFuture;
-    // TODO should be recursive
+    // TODO should wait for all children, but not parents
     final b = _parent?.scheduler.pendingFuture;
 
     await Future.wait<void>([
@@ -759,7 +752,6 @@ class ProviderContainer implements Node {
     bool fireImmediately = false,
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
-    // TODO test always flushed provider
     return provider.addListener(
       this,
       listener,

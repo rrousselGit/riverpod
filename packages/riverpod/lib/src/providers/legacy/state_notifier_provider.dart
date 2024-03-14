@@ -179,10 +179,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
       () => provider._create(ref),
     );
 
-    _removeListener = notifier
-        // TODO test requireState, as ref.read(p) is expected to throw if notifier creation failed
-        .requireState
-        .addListener(
+    _removeListener = notifier.requireState.addListener(
       (newState) => setStateResult(ResultData(newState)),
       fireImmediately: true,
     );
@@ -190,7 +187,6 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
 
   @override
   bool updateShouldNotify(StateT previous, StateT next) {
-    // TODO test that updateShouldNotify is applied
     return _notifierNotifier.result!.requireState
         // ignore: invalid_use_of_protected_member
         .updateShouldNotify(previous, next);
