@@ -455,8 +455,8 @@ void main() {
 
       expect(container.read(provider.future), future);
 
-      // TODO(rrousselGit) test that the stacktrace is preserved
       await expectLater(future, throwsA(error2));
+      expect(await future.stackTrace, StackTrace.empty);
     });
 
     test('supports loading then error then another error', () async {
