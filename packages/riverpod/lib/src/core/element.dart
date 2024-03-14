@@ -40,7 +40,6 @@ void Function()? debugCanModifyProviders;
 /// of providers.
 /// Do not use.
 /// {@endtemplate}
-// TODO rename to ProviderElement
 @internal
 @optionalTypeArgs
 abstract class ProviderElement<StateT> implements Node {
