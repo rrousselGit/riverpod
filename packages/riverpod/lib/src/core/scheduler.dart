@@ -128,7 +128,7 @@ class ProviderScheduler {
           element.container._disposed) {
         continue;
       }
-      element.container._disposeProvider(element._origin);
+      element.container._disposeProvider(element.origin);
     }
   }
 

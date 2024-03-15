@@ -56,14 +56,13 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
     void Function(StateT? previous, StateT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,
-    required bool weak,
     required bool fireImmediately,
   }) {
     onError ??= Zone.current.handleUncaughtError;
 
     final element = node.readProviderElement(this);
 
-    if (!weak) element.flush();
+    if (!node.weak) element.flush();
 
     if (fireImmediately) {
       _handleFireImmediately(
@@ -100,7 +99,7 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
 
   /// An internal method that defines how a provider behaves.
   @visibleForOverriding
-  ProviderElement<StateT> $createElement(ProviderContainer container);
+  ProviderElement<StateT> $createElement($ProviderPointer pointer);
 
   @override
   String toString() {

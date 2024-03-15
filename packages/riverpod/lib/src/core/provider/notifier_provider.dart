@@ -152,7 +152,7 @@ abstract base class $ClassProvider< //
   ClassProviderElement< //
       NotifierT,
       StateT,
-      CreatedT> $createElement(ProviderContainer container);
+      CreatedT> $createElement($ProviderPointer pointer);
 }
 
 @internal
@@ -163,7 +163,7 @@ abstract class ClassProviderElement< //
         StateT,
         CreatedT> //
     extends ProviderElement<StateT> {
-  ClassProviderElement(super.container);
+  ClassProviderElement(super.pointer);
 
   @override
   $ClassProvider<NotifierT, StateT, CreatedT, Ref<StateT>> get provider;

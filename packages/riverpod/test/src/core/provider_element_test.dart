@@ -98,9 +98,13 @@ void main() {
         final dependent2 = Provider((ref) {
           ref.listen(provider, (_, __) {});
         });
+        final dependent3 = Provider((ref) {
+          ref.listen(provider, (_, __) {}, weak: true);
+        });
 
         container.read(dependent);
         container.read(dependent2);
+        container.read(dependent3);
 
         final children = <ProviderElement>[];
 
@@ -108,6 +112,7 @@ void main() {
               elementVisitor: children.add,
               listenableVisitor: (_) {},
             );
+
         expect(
           children,
           unorderedMatches(<Object>[
@@ -115,12 +120,81 @@ void main() {
                 .having((e) => e.provider, 'provider', dependent),
             isA<ProviderElement>()
                 .having((e) => e.provider, 'provider', dependent2),
+            isA<ProviderElement>()
+                .having((e) => e.provider, 'provider', dependent3),
           ]),
         );
       });
     });
 
+    group('isActive', () {
+      test('rejects weak listeners', () {
+        final provider = Provider((ref) => 0);
+        final container = ProviderContainer.test();
+
+        final element = container.readProviderElement(provider);
+
+        expect(element.isActive, false);
+
+        container.listen(provider, weak: true, (_, __) {});
+
+        expect(element.isActive, false);
+      });
+
+      test('includes provider listeners', () async {
+        final provider = Provider((ref) => 0);
+        final dep = Provider((ref) {
+          ref.listen(provider, (prev, value) {});
+        });
+        final container = ProviderContainer.test();
+
+        expect(container.readProviderElement(provider).isActive, false);
+
+        container.read(dep);
+
+        expect(container.readProviderElement(provider).isActive, true);
+      });
+
+      test('includes provider dependents', () async {
+        final provider = Provider((ref) => 0);
+        final dep = Provider((ref) {
+          ref.watch(provider);
+        });
+        final container = ProviderContainer.test();
+
+        expect(container.readProviderElement(provider).isActive, false);
+
+        container.read(dep);
+
+        expect(container.readProviderElement(provider).isActive, true);
+      });
+
+      test('includes container listeners', () async {
+        final provider = Provider((ref) => 0);
+        final container = ProviderContainer.test();
+
+        expect(container.readProviderElement(provider).isActive, false);
+
+        container.listen(provider, (_, __) {});
+
+        expect(container.readProviderElement(provider).isActive, true);
+      });
+    });
+
     group('hasListeners', () {
+      test('includes weak listeners', () {
+        final provider = Provider((ref) => 0);
+        final container = ProviderContainer.test();
+
+        final element = container.readProviderElement(provider);
+
+        expect(element.hasListeners, false);
+
+        container.listen(provider, weak: true, (_, __) {});
+
+        expect(element.hasListeners, true);
+      });
+
       test('includes provider listeners', () async {
         final provider = Provider((ref) => 0);
         final dep = Provider((ref) {
