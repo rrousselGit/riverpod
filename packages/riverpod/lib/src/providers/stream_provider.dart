@@ -125,10 +125,8 @@ base class StreamProvider<StateT>
 
   @internal
   @override
-  $StreamProviderElement<StateT> $createElement(
-    ProviderContainer container,
-  ) {
-    return $StreamProviderElement(this, container);
+  $StreamProviderElement<StateT> $createElement($ProviderPointer pointer) {
+    return $StreamProviderElement(this, pointer);
   }
 
   @mustBeOverridden
@@ -154,7 +152,7 @@ base class StreamProvider<StateT>
 class $StreamProviderElement<StateT> extends ProviderElement<AsyncValue<StateT>>
     with FutureModifierElement<StateT> {
   /// The element of [StreamProvider].
-  $StreamProviderElement(this.provider, super.container);
+  $StreamProviderElement(this.provider, super.pointer);
 
   @override
   final $StreamProvider<StateT, Ref<AsyncValue<StateT>>> provider;

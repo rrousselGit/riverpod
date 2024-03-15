@@ -61,8 +61,8 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
   @$internal
   @override
   $NotifierProviderElement<MyNotifier, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$myNotifierHash() => r'58f5439a3b1036ba7804f63a5a6ebe0114125039';
@@ -129,8 +129,8 @@ final class NoExtendsProvider extends $NotifierProvider<NoExtends, int> {
   @$internal
   @override
   $NotifierProviderElement<NoExtends, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$noExtendsHash() => r'3f1276999a9a6d3676c628c25ed853cbefb21ce9';
@@ -197,8 +197,8 @@ final class WrongExtendsProvider extends $NotifierProvider<WrongExtends, int> {
   @$internal
   @override
   $NotifierProviderElement<WrongExtends, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$wrongExtendsHash() => r'6479055793af10a34e225373a67f7eaac4d7c0de';
@@ -266,8 +266,8 @@ final class _PrivateClassProvider
   @$internal
   @override
   $NotifierProviderElement<_PrivateClass, String> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$privateClassHash() => r'ba68a29a609566bb8bc0792391f842762356e124';
@@ -362,8 +362,8 @@ final class GenericsProvider<A extends num, B>
   @$internal
   @override
   $NotifierProviderElement<Generics<A, B>, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -404,10 +404,10 @@ final class GenericsFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as GenericsProvider;
 
-        return provider._copyWithCreate(create).$createElement(container);
+        return provider._copyWithCreate(create).$createElement(pointer);
       },
     );
   }
@@ -418,10 +418,10 @@ final class GenericsFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as GenericsProvider;
 
-        return provider._copyWithBuild(build).$createElement(container);
+        return provider._copyWithBuild(build).$createElement(pointer);
       },
     );
   }
@@ -517,8 +517,8 @@ final class NoGenericsProvider<A extends num, B>
   @$internal
   @override
   $NotifierProviderElement<NoGenerics<A, B>, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -559,10 +559,10 @@ final class NoGenericsFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as NoGenericsProvider;
 
-        return provider._copyWithCreate(create).$createElement(container);
+        return provider._copyWithCreate(create).$createElement(pointer);
       },
     );
   }
@@ -574,10 +574,10 @@ final class NoGenericsFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as NoGenericsProvider;
 
-        return provider._copyWithBuild(build).$createElement(container);
+        return provider._copyWithBuild(build).$createElement(pointer);
       },
     );
   }
@@ -675,8 +675,8 @@ final class MissingGenericsProvider<A, B>
   @$internal
   @override
   $NotifierProviderElement<MissingGenerics<A, B>, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -717,10 +717,10 @@ final class MissingGenericsFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as MissingGenericsProvider;
 
-        return provider._copyWithCreate(create).$createElement(container);
+        return provider._copyWithCreate(create).$createElement(pointer);
       },
     );
   }
@@ -731,10 +731,10 @@ final class MissingGenericsFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as MissingGenericsProvider;
 
-        return provider._copyWithBuild(build).$createElement(container);
+        return provider._copyWithBuild(build).$createElement(pointer);
       },
     );
   }
@@ -830,8 +830,8 @@ final class WrongOrderProvider<A, B>
   @$internal
   @override
   $NotifierProviderElement<WrongOrder<A, B>, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -872,10 +872,10 @@ final class WrongOrderFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as WrongOrderProvider;
 
-        return provider._copyWithCreate(create).$createElement(container);
+        return provider._copyWithCreate(create).$createElement(pointer);
       },
     );
   }
@@ -886,10 +886,10 @@ final class WrongOrderFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as WrongOrderProvider;
 
-        return provider._copyWithBuild(build).$createElement(container);
+        return provider._copyWithBuild(build).$createElement(pointer);
       },
     );
   }

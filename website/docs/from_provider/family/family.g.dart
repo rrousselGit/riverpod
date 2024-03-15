@@ -61,8 +61,8 @@ final class RandomProvider extends $FunctionalProvider<int, int>
 
   @$internal
   @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   RandomProvider $copyWithCreate(
@@ -147,7 +147,7 @@ final class RandomFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as RandomProvider;
 
         final argument = provider.argument as ({
@@ -157,7 +157,7 @@ final class RandomFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }

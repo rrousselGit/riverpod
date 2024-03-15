@@ -59,9 +59,8 @@ final class AProvider extends $NotifierProvider<A, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<A, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+  $NotifierProviderElement<A, int> $createElement($ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$aHash() => r'9bf449b010f4dd5800e78f9f5b8a431b1a79c8b7';
@@ -126,9 +125,8 @@ final class A2Provider extends $NotifierProvider<A2, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<A2, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+  $NotifierProviderElement<A2, int> $createElement($ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$a2Hash() => r'898d46cbcec03233c7b8b0754810a6903226aa2e';
@@ -206,9 +204,8 @@ final class A3Provider extends $NotifierProvider<A3, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<A3, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+  $NotifierProviderElement<A3, int> $createElement($ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -251,14 +248,14 @@ final class A3Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as A3Provider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -269,14 +266,14 @@ final class A3Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as A3Provider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -362,9 +359,8 @@ final class A4Provider extends $NotifierProvider<A4, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<A4, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+  $NotifierProviderElement<A4, int> $createElement($ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -407,14 +403,14 @@ final class A4Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as A4Provider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -425,14 +421,14 @@ final class A4Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as A4Provider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -511,8 +507,8 @@ final class A5Provider extends $AsyncNotifierProvider<A5, int> {
   @$internal
   @override
   $AsyncNotifierProviderElement<A5, int> $createElement(
-          ProviderContainer container) =>
-      $AsyncNotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $AsyncNotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -555,14 +551,14 @@ final class A5Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as A5Provider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -574,14 +570,14 @@ final class A5Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as A5Provider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -660,8 +656,8 @@ final class A6Provider extends $AsyncNotifierProvider<A6, int> {
   @$internal
   @override
   $AsyncNotifierProviderElement<A6, int> $createElement(
-          ProviderContainer container) =>
-      $AsyncNotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $AsyncNotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -704,14 +700,14 @@ final class A6Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as A6Provider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -723,14 +719,14 @@ final class A6Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as A6Provider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -809,8 +805,8 @@ final class A7Provider extends $StreamNotifierProvider<A7, int> {
   @$internal
   @override
   $StreamNotifierProviderElement<A7, int> $createElement(
-          ProviderContainer container) =>
-      $StreamNotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $StreamNotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -853,14 +849,14 @@ final class A7Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as A7Provider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -872,14 +868,14 @@ final class A7Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as A7Provider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -958,8 +954,8 @@ final class A8Provider extends $StreamNotifierProvider<A8, int> {
   @$internal
   @override
   $StreamNotifierProviderElement<A8, int> $createElement(
-          ProviderContainer container) =>
-      $StreamNotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $StreamNotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -1002,14 +998,14 @@ final class A8Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as A8Provider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -1021,14 +1017,14 @@ final class A8Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as A8Provider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -1101,9 +1097,8 @@ final class BProvider extends $NotifierProvider<B, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<B, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+  $NotifierProviderElement<B, int> $createElement($ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$bHash() => r'44288285e9c28f846d609ba892520f577ecf7867';
@@ -1168,9 +1163,8 @@ final class B2Provider extends $NotifierProvider<B2, int> {
 
   @$internal
   @override
-  $NotifierProviderElement<B2, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+  $NotifierProviderElement<B2, int> $createElement($ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$b2Hash() => r'292925c285c6975ed6585d541c5a9ae18977d73c';

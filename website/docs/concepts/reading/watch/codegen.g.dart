@@ -47,8 +47,8 @@ final class FilterTypeProvider
 
   @$internal
   @override
-  $ProviderElement<FilterType> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<FilterType> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   FilterTypeProvider $copyWithCreate(
@@ -123,8 +123,8 @@ final class TodosProvider extends $NotifierProvider<Todos, List<Todo>> {
   @$internal
   @override
   $NotifierProviderElement<Todos, List<Todo>> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$todosHash() => r'b66ac2b1e5cf7ac7957d25864cfdffad1af233a6';
@@ -175,8 +175,8 @@ final class FilteredTodoListProvider
 
   @$internal
   @override
-  $ProviderElement<List<Todo>> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<List<Todo>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   FilteredTodoListProvider $copyWithCreate(

@@ -96,9 +96,9 @@ final class FamilyAsyncNotifierProvider< //
   @internal
   @override
   $AsyncNotifierProviderElement<NotifierT, StateT> $createElement(
-    ProviderContainer container,
+    $ProviderPointer pointer,
   ) {
-    return $AsyncNotifierProviderElement(this, container);
+    return $AsyncNotifierProviderElement(this, pointer);
   }
 
   @mustBeOverridden

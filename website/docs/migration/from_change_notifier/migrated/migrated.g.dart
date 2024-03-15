@@ -56,8 +56,8 @@ final class MyNotifierProvider
   @$internal
   @override
   $AsyncNotifierProviderElement<MyNotifier, List<Todo>> $createElement(
-          ProviderContainer container) =>
-      $AsyncNotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $AsyncNotifierProviderElement(this, pointer);
 }
 
 String _$myNotifierHash() => r'bde95c56aa12eff7c8c01ede57ae4ad2b616c225';

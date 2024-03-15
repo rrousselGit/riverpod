@@ -55,8 +55,8 @@ final class ExampleProvider extends $StreamNotifierProvider<Example, String> {
   @$internal
   @override
   $StreamNotifierProviderElement<Example, String> $createElement(
-          ProviderContainer container) =>
-      $StreamNotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $StreamNotifierProviderElement(this, pointer);
 }
 
 String _$exampleHash() => r'4bca936132b77a9a804549f086f33571724b4804';

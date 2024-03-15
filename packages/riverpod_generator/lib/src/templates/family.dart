@@ -106,7 +106,7 @@ ${provider.doc} final class ${provider.familyTypeName} extends Family {
 Override overrideWith($createType create,) {
   return \$FamilyOverride(
     from: this,
-    createElement: (container, provider) {
+    createElement: (pointer, provider) {
       provider as ${provider.providerTypeName};
 ''');
 
@@ -117,7 +117,7 @@ Override overrideWith($createType create,) {
     )) {
       case (hasParameters: false, hasGenerics: false, _):
         buffer.writeln(
-          r'return provider.$copyWithCreate(create).$createElement(container);',
+          r'return provider.$copyWithCreate(create).$createElement(pointer);',
         );
       case (hasParameters: true, hasGenerics: false, _):
         buffer.writeln('''
@@ -126,12 +126,12 @@ Override overrideWith($createType create,) {
         return provider.\$copyWithCreate(${switch (provider) {
           FunctionalProviderDeclaration() => '(ref) => create(ref, argument)',
           ClassBasedProviderDeclaration() => '() => create(argument)',
-        }}).\$createElement(container);
+        }}).\$createElement(pointer);
       ''');
 
       case (hasParameters: false, hasGenerics: true, _):
         buffer.writeln(
-          r'return provider._copyWithCreate(create).$createElement(container);',
+          r'return provider._copyWithCreate(create).$createElement(pointer);',
         );
 
       case (
@@ -142,7 +142,7 @@ Override overrideWith($createType create,) {
         buffer.writeln('''
         return provider._copyWithCreate($_genericsDefinition(ref, $_parameterDefinition) {
           return create(ref, ${provider.argumentToRecord()});
-        }).\$createElement(container);
+        }).\$createElement(pointer);
       ''');
       case (
           hasParameters: true,
@@ -154,7 +154,7 @@ Override overrideWith($createType create,) {
           final argument = provider.argument$_argumentCast;
 
           return create(argument);
-        }).\$createElement(container);
+        }).\$createElement(pointer);
       ''');
     }
 
@@ -184,7 +184,7 @@ ${provider.createdTypeDisplayString} Function$_genericsDefinition(
 Override overrideWithBuild($runNotifierBuildType build,) {
   return \$FamilyOverride(
     from: this,
-    createElement: (container, provider) {
+    createElement: (pointer, provider) {
       provider as ${provider.providerTypeName};
 ''');
 
@@ -194,18 +194,18 @@ Override overrideWithBuild($runNotifierBuildType build,) {
     )) {
       case (hasParameters: false, hasGenerics: false):
         buffer.writeln(
-          r'return provider.$copyWithBuild(build).$createElement(container);',
+          r'return provider.$copyWithBuild(build).$createElement(pointer);',
         );
       case (hasParameters: true, hasGenerics: false):
         buffer.writeln('''
         final argument = provider.argument$_argumentCast;
 
-        return provider.\$copyWithBuild((ref, notifier) => build(ref, notifier, argument)).\$createElement(container);
+        return provider.\$copyWithBuild((ref, notifier) => build(ref, notifier, argument)).\$createElement(pointer);
       ''');
 
       case (hasParameters: false, hasGenerics: true):
         buffer.writeln(
-          r'return provider._copyWithBuild(build).$createElement(container);',
+          r'return provider._copyWithBuild(build).$createElement(pointer);',
         );
 
       case (hasParameters: true, hasGenerics: true):
@@ -214,7 +214,7 @@ Override overrideWithBuild($runNotifierBuildType build,) {
           final argument = provider.argument$_argumentCast;
 
           return build(ref, notifier, argument);
-        }).\$createElement(container);
+        }).\$createElement(pointer);
       ''');
     }
 

@@ -44,8 +44,8 @@ final class KeepAliveProvider extends $FunctionalProvider<int, int>
 
   @$internal
   @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   KeepAliveProvider $copyWithCreate(
@@ -121,8 +121,8 @@ final class KeepAliveClassProvider
   @$internal
   @override
   $NotifierProviderElement<KeepAliveClass, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$keepAliveClassHash() => r'e2fffa4d14837dfef71f6a2cc230b826b82541ea';
@@ -172,8 +172,8 @@ final class AutoDisposeProvider extends $FunctionalProvider<int, int>
 
   @$internal
   @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   AutoDisposeProvider $copyWithCreate(
@@ -249,8 +249,8 @@ final class AutoDisposeClassProvider
   @$internal
   @override
   $NotifierProviderElement<AutoDisposeClass, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$autoDisposeClassHash() => r'5127ab94f7ab4ccf90deb3fca90d7a3c3c4c83f5';
@@ -300,8 +300,8 @@ final class FnProvider extends $FunctionalProvider<int, int>
 
   @$internal
   @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   FnProvider $copyWithCreate(

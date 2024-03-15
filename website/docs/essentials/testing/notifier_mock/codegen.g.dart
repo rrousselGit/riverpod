@@ -63,8 +63,8 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
   @$internal
   @override
   $NotifierProviderElement<MyNotifier, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$myNotifierHash() => r'912fa35c2296626fc0825bcbcfc6b6c85958be02';

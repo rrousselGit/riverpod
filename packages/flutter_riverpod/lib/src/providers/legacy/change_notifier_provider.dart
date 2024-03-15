@@ -135,9 +135,9 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   @internal
   @override
   ChangeNotifierProviderElement<NotifierT> $createElement(
-    ProviderContainer container,
+    $ProviderPointer pointer,
   ) {
-    return ChangeNotifierProviderElement<NotifierT>._(this, container);
+    return ChangeNotifierProviderElement<NotifierT>._(this, pointer);
   }
 
   @mustBeOverridden
@@ -161,7 +161,7 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
 /// The element of [ChangeNotifierProvider].
 class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
     extends ProviderElement<NotifierT> {
-  ChangeNotifierProviderElement._(this.provider, super.container);
+  ChangeNotifierProviderElement._(this.provider, super.pointer);
 
   @override
   final ChangeNotifierProvider<NotifierT> provider;

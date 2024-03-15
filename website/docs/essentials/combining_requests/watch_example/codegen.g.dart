@@ -43,8 +43,8 @@ final class LocationProvider extends $FunctionalProvider<
   @$internal
   @override
   $StreamProviderElement<({double longitude, double latitude})> $createElement(
-          ProviderContainer container) =>
-      $StreamProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $StreamProviderElement(this, pointer);
 
   @override
   LocationProvider $copyWithCreate(
@@ -98,8 +98,8 @@ final class RestaurantsNearMeProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<List<String>> $createElement(
-          ProviderContainer container) =>
-      $FutureProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
 
   @override
   RestaurantsNearMeProvider $copyWithCreate(

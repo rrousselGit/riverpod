@@ -63,8 +63,8 @@ final class TodoListProvider extends $NotifierProvider<TodoList, List<Todo>> {
   @$internal
   @override
   $NotifierProviderElement<TodoList, List<Todo>> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$todoListHash() => r'6c965beb867ffeee119133f0ae2e6ebeb68e6f7e';

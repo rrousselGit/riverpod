@@ -48,9 +48,8 @@ final class ActivityProvider
 
   @$internal
   @override
-  $FutureProviderElement<Activity> $createElement(
-          ProviderContainer container) =>
-      $FutureProviderElement(this, container);
+  $FutureProviderElement<Activity> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
 
   @override
   ActivityProvider $copyWithCreate(
@@ -120,14 +119,14 @@ final class ActivityFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as ActivityProvider;
 
         final argument = provider.argument as String;
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -195,8 +194,8 @@ final class ActivityNotifier2Provider
   @$internal
   @override
   $AsyncNotifierProviderElement<ActivityNotifier2, Activity> $createElement(
-          ProviderContainer container) =>
-      $AsyncNotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $AsyncNotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -239,14 +238,14 @@ final class ActivityNotifier2Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as ActivityNotifier2Provider;
 
         final argument = provider.argument as String;
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -259,14 +258,14 @@ final class ActivityNotifier2Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as ActivityNotifier2Provider;
 
         final argument = provider.argument as String;
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }

@@ -60,7 +60,7 @@ class $StreamNotifierProviderElement< //
         FutureModifierClassElement<NotifierT, StateT, Stream<StateT>> {
   /// Implementation detail of `riverpod_generator`.
   /// Do not use.
-  $StreamNotifierProviderElement(this.provider, super.container);
+  $StreamNotifierProviderElement(this.provider, super.pointer);
 
   @override
   final $StreamNotifierProvider<NotifierT, StateT> provider;

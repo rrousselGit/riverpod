@@ -40,8 +40,8 @@ final class ChatProvider
   @$internal
   @override
   $StreamProviderElement<List<String>> $createElement(
-          ProviderContainer container) =>
-      $StreamProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $StreamProviderElement(this, pointer);
 
   @override
   ChatProvider $copyWithCreate(

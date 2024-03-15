@@ -62,8 +62,8 @@ final class ThemeProvider extends $FunctionalProvider<ThemeData, ThemeData>
 
   @$internal
   @override
-  $ProviderElement<ThemeData> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<ThemeData> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   ThemeProvider $copyWithCreate(

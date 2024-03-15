@@ -47,9 +47,8 @@ final class ActivityProvider
 
   @$internal
   @override
-  $FutureProviderElement<Activity> $createElement(
-          ProviderContainer container) =>
-      $FutureProviderElement(this, container);
+  $FutureProviderElement<Activity> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
 
   @override
   ActivityProvider $copyWithCreate(

@@ -50,8 +50,8 @@ final class TagThemeProvider extends $FunctionalProvider<TagTheme, TagTheme>
 
   @$internal
   @override
-  $ProviderElement<TagTheme> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<TagTheme> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   TagThemeProvider $copyWithCreate(

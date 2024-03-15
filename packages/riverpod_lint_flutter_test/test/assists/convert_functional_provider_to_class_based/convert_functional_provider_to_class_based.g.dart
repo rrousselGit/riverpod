@@ -48,8 +48,8 @@ final class ExampleProvider extends $FunctionalProvider<int, int>
 
   @$internal
   @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   ExampleProvider $copyWithCreate(
@@ -126,8 +126,8 @@ final class ExampleFamilyProvider extends $FunctionalProvider<int, int>
 
   @$internal
   @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   ExampleFamilyProvider $copyWithCreate(
@@ -214,7 +214,7 @@ final class ExampleFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as ExampleFamilyProvider;
 
         final argument = provider.argument as ({
@@ -224,7 +224,7 @@ final class ExampleFamilyFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }

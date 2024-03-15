@@ -52,8 +52,8 @@ final class FunctionalProvider extends $FunctionalProvider<String, String>
 
   @$internal
   @override
-  $ProviderElement<String> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   FunctionalProvider $copyWithCreate(
@@ -134,8 +134,8 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
   @$internal
   @override
   $NotifierProviderElement<ClassBased, String> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$classBasedHash() => r'f1139017b1fcf38017402b514c61fb32dae40c39';
@@ -202,8 +202,8 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
 
   @$internal
   @override
-  $ProviderElement<String> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   FamilyProvider $copyWithCreate(
@@ -277,14 +277,14 @@ final class FamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as FamilyProvider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -366,8 +366,8 @@ final class ClassFamilyBasedProvider
   @$internal
   @override
   $NotifierProviderElement<ClassFamilyBased, String> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -414,14 +414,14 @@ final class ClassFamilyBasedFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as ClassFamilyBasedProvider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -433,14 +433,14 @@ final class ClassFamilyBasedFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as ClassFamilyBasedProvider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }

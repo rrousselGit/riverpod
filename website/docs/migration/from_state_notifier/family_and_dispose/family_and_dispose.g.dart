@@ -47,9 +47,8 @@ final class TaskTrackerProvider
 
   @$internal
   @override
-  $ProviderElement<TaskTrackerRepo> $createElement(
-          ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<TaskTrackerRepo> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   TaskTrackerProvider $copyWithCreate(
@@ -132,8 +131,8 @@ final class BugsEncounteredNotifierProvider
   @$internal
   @override
   $AsyncNotifierProviderElement<BugsEncounteredNotifier, int> $createElement(
-          ProviderContainer container) =>
-      $AsyncNotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $AsyncNotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -178,14 +177,14 @@ final class BugsEncounteredNotifierFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as BugsEncounteredNotifierProvider;
 
         final argument = provider.argument as String;
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -198,14 +197,14 @@ final class BugsEncounteredNotifierFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as BugsEncounteredNotifierProvider;
 
         final argument = provider.argument as String;
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }

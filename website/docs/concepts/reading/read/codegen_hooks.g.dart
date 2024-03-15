@@ -63,8 +63,8 @@ final class CounterProvider extends $NotifierProvider<Counter, int> {
   @$internal
   @override
   $NotifierProviderElement<Counter, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$counterHash() => r'600c6beb47b3732049b6955a9e49d7eef30c741a';

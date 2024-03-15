@@ -46,8 +46,8 @@ final class SearchProvider extends $FunctionalProvider<String, String>
 
   @$internal
   @override
-  $ProviderElement<String> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   SearchProvider $copyWithCreate(
@@ -101,8 +101,8 @@ final class ConfigsProvider extends $FunctionalProvider<
   @$internal
   @override
   $StreamProviderElement<Configuration> $createElement(
-          ProviderContainer container) =>
-      $StreamProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $StreamProviderElement(this, pointer);
 
   @override
   ConfigsProvider $copyWithCreate(
@@ -156,8 +156,8 @@ final class CharactersProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<List<Character>> $createElement(
-          ProviderContainer container) =>
-      $FutureProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
 
   @override
   CharactersProvider $copyWithCreate(

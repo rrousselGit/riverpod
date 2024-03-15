@@ -63,8 +63,8 @@ final class TodosProvider extends $NotifierProvider<Todos, List<Todo>> {
   @$internal
   @override
   $NotifierProviderElement<Todos, List<Todo>> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$todosHash() => r'4bd25c3c15bfff56ad6e733bd17ecb7284c4ceb2';

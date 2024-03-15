@@ -136,8 +136,8 @@ final class FutureProvider<StateT>
 
   @internal
   @override
-  $FutureProviderElement<StateT> $createElement(ProviderContainer container) {
-    return $FutureProviderElement(this, container);
+  $FutureProviderElement<StateT> $createElement($ProviderPointer pointer) {
+    return $FutureProviderElement(this, pointer);
   }
 
   @mustBeOverridden
@@ -165,7 +165,7 @@ class $FutureProviderElement<StateT> extends ProviderElement<AsyncValue<StateT>>
     with FutureModifierElement<StateT> {
   /// The element of a [FutureProvider]
   /// Implementation detail of `riverpod_generator`. Do not use.
-  $FutureProviderElement(this.provider, super.container);
+  $FutureProviderElement(this.provider, super.pointer);
 
   @override
   final $FutureProvider<StateT, Ref<AsyncValue<StateT>>> provider;

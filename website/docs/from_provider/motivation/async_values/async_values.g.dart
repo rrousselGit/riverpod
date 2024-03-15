@@ -39,9 +39,8 @@ final class ItemsApiProvider
 
   @$internal
   @override
-  $FutureProviderElement<List<Item>> $createElement(
-          ProviderContainer container) =>
-      $FutureProviderElement(this, container);
+  $FutureProviderElement<List<Item>> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
 
   @override
   ItemsApiProvider $copyWithCreate(
@@ -100,8 +99,8 @@ final class EvenItemsProvider
 
   @$internal
   @override
-  $ProviderElement<List<Item>> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<List<Item>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   EvenItemsProvider $copyWithCreate(

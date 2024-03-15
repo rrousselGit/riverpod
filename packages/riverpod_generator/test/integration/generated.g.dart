@@ -44,8 +44,8 @@ final class GeneratedProvider extends $FunctionalProvider<_Test, _Test>
 
   @$internal
   @override
-  $ProviderElement<_Test> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<_Test> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   GeneratedProvider $copyWithCreate(
@@ -112,8 +112,8 @@ final class GeneratedFamilyProvider extends $FunctionalProvider<_Test, _Test>
 
   @$internal
   @override
-  $ProviderElement<_Test> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<_Test> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   GeneratedFamilyProvider $copyWithCreate(
@@ -183,14 +183,14 @@ final class GeneratedFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as GeneratedFamilyProvider;
 
         final argument = provider.argument as _Test;
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -252,8 +252,8 @@ final class GeneratedClassProvider
   @$internal
   @override
   $NotifierProviderElement<GeneratedClass, _Test> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$generatedClassHash() => r'984153f97e25de687d2f19756b277aabd56f6e72';
@@ -335,8 +335,8 @@ final class GeneratedClassFamilyProvider
   @$internal
   @override
   $NotifierProviderElement<GeneratedClassFamily, _Test> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -380,14 +380,14 @@ final class GeneratedClassFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as GeneratedClassFamilyProvider;
 
         final argument = provider.argument as _Test;
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -400,14 +400,14 @@ final class GeneratedClassFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as GeneratedClassFamilyProvider;
 
         final argument = provider.argument as _Test;
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -465,8 +465,8 @@ final class $DynamicProvider extends $FunctionalProvider<Object?, Object?>
 
   @$internal
   @override
-  $ProviderElement<Object?> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<Object?> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   $DynamicProvider $copyWithCreate(
@@ -533,8 +533,8 @@ final class $DynamicFamilyProvider extends $FunctionalProvider<Object?, Object?>
 
   @$internal
   @override
-  $ProviderElement<Object?> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<Object?> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   $DynamicFamilyProvider $copyWithCreate(
@@ -604,14 +604,14 @@ final class $DynamicFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as $DynamicFamilyProvider;
 
         final argument = provider.argument as dynamic;
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -673,8 +673,8 @@ final class $DynamicClassProvider
   @$internal
   @override
   $NotifierProviderElement<$DynamicClass, Object?> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$$dynamicClassHash() => r'c6d8e5191c3f060df3ce3eee66107433fd4c3292';
@@ -756,8 +756,8 @@ final class $DynamicClassFamilyProvider
   @$internal
   @override
   $NotifierProviderElement<$DynamicClassFamily, Object?> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -801,14 +801,14 @@ final class $DynamicClassFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as $DynamicClassFamilyProvider;
 
         final argument = provider.argument as dynamic;
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -821,14 +821,14 @@ final class $DynamicClassFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as $DynamicClassFamilyProvider;
 
         final argument = provider.argument as dynamic;
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -895,8 +895,8 @@ final class _DynamicProvider extends $FunctionalProvider<Object?, Object?>
 
   @$internal
   @override
-  $ProviderElement<Object?> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<Object?> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   _DynamicProvider $copyWithCreate(
@@ -966,14 +966,14 @@ final class _DynamicFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as _DynamicProvider;
 
         final argument = provider.argument as dynamic;
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -1019,8 +1019,8 @@ final class AliasProvider
   @$internal
   @override
   $ProviderElement<r.AsyncValue<int>> $createElement(
-          ProviderContainer container) =>
-      $ProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   AliasProvider $copyWithCreate(
@@ -1089,8 +1089,8 @@ final class AliasFamilyProvider
   @$internal
   @override
   $ProviderElement<r.AsyncValue<int>> $createElement(
-          ProviderContainer container) =>
-      $ProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   AliasFamilyProvider $copyWithCreate(
@@ -1160,14 +1160,14 @@ final class AliasFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as AliasFamilyProvider;
 
         final argument = provider.argument as r.AsyncValue<int>;
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -1229,8 +1229,8 @@ final class AliasClassProvider
   @$internal
   @override
   $NotifierProviderElement<AliasClass, r.AsyncValue<int>> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$aliasClassHash() => r'a6c6d7594ebd09ba728e42d79b12af560d09c379';
@@ -1312,8 +1312,8 @@ final class AliasClassFamilyProvider
   @$internal
   @override
   $NotifierProviderElement<AliasClassFamily, r.AsyncValue<int>> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -1356,14 +1356,14 @@ final class AliasClassFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as AliasClassFamilyProvider;
 
         final argument = provider.argument as r.AsyncValue<int>;
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -1376,14 +1376,14 @@ final class AliasClassFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
+      createElement: (pointer, provider) {
         provider as AliasClassFamilyProvider;
 
         final argument = provider.argument as r.AsyncValue<int>;
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }

@@ -46,8 +46,8 @@ final class OtherProvider extends $FunctionalProvider<int, int>
 
   @$internal
   @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   OtherProvider $copyWithCreate(
@@ -105,8 +105,8 @@ final class ExampleProvider extends $FunctionalProvider<int, int>
 
   @$internal
   @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   ExampleProvider $copyWithCreate(
@@ -181,8 +181,8 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
   @$internal
   @override
   $NotifierProviderElement<MyNotifier, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$myNotifierHash() => r'ad79fdb5b0e72a800fa03efc1e7157f0d1524844';

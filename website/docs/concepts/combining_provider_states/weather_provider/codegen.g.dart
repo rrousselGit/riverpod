@@ -46,8 +46,8 @@ final class CityProvider extends $FunctionalProvider<String, String>
 
   @$internal
   @override
-  $ProviderElement<String> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   CityProvider $copyWithCreate(
@@ -98,8 +98,8 @@ final class WeatherProvider
 
   @$internal
   @override
-  $FutureProviderElement<Weather> $createElement(ProviderContainer container) =>
-      $FutureProviderElement(this, container);
+  $FutureProviderElement<Weather> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
 
   @override
   WeatherProvider $copyWithCreate(

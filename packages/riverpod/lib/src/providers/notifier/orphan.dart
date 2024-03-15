@@ -119,9 +119,9 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
   @internal
   @override
   $NotifierProviderElement<NotifierT, StateT> $createElement(
-    ProviderContainer container,
+    $ProviderPointer pointer,
   ) {
-    return $NotifierProviderElement(this, container);
+    return $NotifierProviderElement(this, pointer);
   }
 
   NotifierProvider<NotifierT, StateT> _copyWith({

@@ -54,10 +54,8 @@ base class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
 
   @internal
   @override
-  $ProviderElement<StateT> $createElement(
-    ProviderContainer container,
-  ) {
-    return $ProviderElement(this, container);
+  $ProviderElement<StateT> $createElement($ProviderPointer pointer) {
+    return $ProviderElement(this, pointer);
   }
 
   @mustBeOverridden
@@ -344,7 +342,7 @@ base class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
 @internal
 class $ProviderElement<StateT> extends ProviderElement<StateT> {
   /// A [ProviderElement] for [Provider]
-  $ProviderElement(this.provider, super.container);
+  $ProviderElement(this.provider, super.pointer);
 
   @override
   final $Provider<StateT, Ref<StateT>> provider;

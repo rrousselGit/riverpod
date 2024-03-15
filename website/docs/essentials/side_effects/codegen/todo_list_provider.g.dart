@@ -39,9 +39,8 @@ final class TodoListProvider
 
   @$internal
   @override
-  $FutureProviderElement<List<Todo>> $createElement(
-          ProviderContainer container) =>
-      $FutureProviderElement(this, container);
+  $FutureProviderElement<List<Todo>> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
 
   @override
   TodoListProvider $copyWithCreate(

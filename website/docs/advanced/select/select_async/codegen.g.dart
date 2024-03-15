@@ -39,8 +39,8 @@ final class UserProvider
 
   @$internal
   @override
-  $FutureProviderElement<User> $createElement(ProviderContainer container) =>
-      $FutureProviderElement(this, container);
+  $FutureProviderElement<User> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
 
   @override
   UserProvider $copyWithCreate(
@@ -98,8 +98,8 @@ final class ExampleProvider extends $FunctionalProvider<Object?, Object?>
 
   @$internal
   @override
-  $ProviderElement<Object?> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<Object?> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   ExampleProvider $copyWithCreate(

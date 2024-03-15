@@ -64,8 +64,8 @@ final class CounterNotifierProvider
   @$internal
   @override
   $NotifierProviderElement<CounterNotifier, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$counterNotifierHash() => r'8d4e4011da15a0ef79af9622336839a0c9e406ab';
