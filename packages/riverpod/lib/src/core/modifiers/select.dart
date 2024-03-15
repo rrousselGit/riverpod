@@ -7,8 +7,9 @@ abstract class Node {
   ProviderSubscription<StateT> listen<StateT>(
     ProviderListenable<StateT> listenable,
     void Function(StateT? previous, StateT next) listener, {
-    void Function(Object error, StackTrace stackTrace)? onError,
-    bool fireImmediately = false,
+    required void Function(Object error, StackTrace stackTrace)? onError,
+    required bool fireImmediately,
+    required bool weak,
   });
 
   /// Reads the state of a provider, potentially creating it in the process.
@@ -57,20 +58,21 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
 
   void _selectOnChange({
     required InputT newState,
-    required Result<OutputT> lastSelectedValue,
+    required Result<OutputT>? lastSelectedValue,
     required void Function(Object error, StackTrace stackTrace) onError,
     required void Function(OutputT? prev, OutputT next) listener,
     required void Function(Result<OutputT> newState) onChange,
   }) {
     final newSelectedValue = _select(Result.data(newState));
-    if (!lastSelectedValue.hasState ||
+    if (lastSelectedValue == null ||
+        !lastSelectedValue.hasState ||
         !newSelectedValue.hasState ||
         lastSelectedValue.requireState != newSelectedValue.requireState) {
       onChange(newSelectedValue);
       switch (newSelectedValue) {
         case ResultData(:final state):
           listener(
-            lastSelectedValue.stateOrNull,
+            lastSelectedValue?.stateOrNull,
             state,
           );
         case ResultError(:final error, :final stackTrace):
@@ -86,11 +88,11 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
     required void Function(Object error, StackTrace stackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
+    required bool weak,
   }) {
     onError ??= Zone.current.handleUncaughtError;
 
-    late Result<OutputT> lastSelectedValue;
-
+    Result<OutputT>? lastSelectedValue;
     final sub = node.listen<InputT>(
       provider,
       (prev, input) {
@@ -102,14 +104,16 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
           onChange: (newState) => lastSelectedValue = newState,
         );
       },
+      weak: weak,
+      fireImmediately: false,
       onError: onError,
     );
 
-    lastSelectedValue = _select(Result.guard(sub.read));
+    if (!weak) lastSelectedValue = _select(Result.guard(sub.read));
 
     if (fireImmediately) {
       _handleFireImmediately(
-        lastSelectedValue,
+        lastSelectedValue!,
         listener: listener,
         onError: onError,
       );
@@ -120,6 +124,7 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
       sub,
       () {
         return switch (lastSelectedValue) {
+          null => read(node),
           ResultData(:final state) => state,
           ResultError(:final error, :final stackTrace) =>
             throwErrorWithCombinedStackTrace(

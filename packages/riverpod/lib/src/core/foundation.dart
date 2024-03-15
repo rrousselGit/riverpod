@@ -176,6 +176,7 @@ mixin ProviderListenable<StateT> implements ProviderListenableOrFamily {
   ProviderSubscription<StateT> addListener(
     Node node,
     void Function(StateT? previous, StateT next) listener, {
+    required bool weak,
     required void Function(Object error, StackTrace stackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,

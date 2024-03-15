@@ -38,6 +38,7 @@ class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
     required void Function(Object error, StackTrace stackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
+    required bool weak,
   }) {
     Result<OutputT>? lastSelectedValue;
     Completer<OutputT>? selectedCompleter;
@@ -135,6 +136,8 @@ class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
       provider,
       (prev, input) => playValue(input),
       onError: onError,
+      weak: weak,
+      fireImmediately: false,
     );
 
     playValue(sub.read(), callListeners: false);

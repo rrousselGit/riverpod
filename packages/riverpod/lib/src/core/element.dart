@@ -67,20 +67,32 @@ abstract class ProviderElement<StateT> implements Node {
 
   Ref<StateT>? ref;
 
-  /// Whether this [ProviderElement] is currently listened to or not.
+  /// Whether this [ProviderElement] is actively in use.
   ///
-  /// This maps to listeners added with [Ref.listen].
-  /// See also [_mayNeedDispose], called when [hasListeners] may have changed.
-  bool get hasListeners =>
-      (_dependents?.isNotEmpty ?? false) || _providerDependents.isNotEmpty;
+  /// A provider is considered not used if:
+  /// - it has no listeners
+  /// - all of its listeners are "weak" (i.e. created with `listen(weak: true)`)
+  ///
+  /// See also [_mayNeedDispose], called when [isActive] may have changed.
+  bool get isActive =>
+      (_dependents?.isNotEmpty ?? false) || _watchDependents.isNotEmpty;
 
   var _dependencies = HashMap<ProviderElement, Object>();
   HashMap<ProviderElement, Object>? _previousDependencies;
   List<ProviderSubscription>? _subscriptions;
   List<ProviderSubscription>? _dependents;
 
+  /// "listen(weak: true)" pointing to this provider.
+  ///
+  /// Those subscriptions are separate from [_dependents] for a few reasons:
+  /// - They do not count towards [isActive].
+  /// - They may be reused between two instances of a [ProviderElement].
+  ///
+  /// The list is passed by reference before [_mount] by [ProviderPointer].
+  late final List<ProviderSubscription> _weakDependents;
+
   /// The element of the providers that depends on this provider.
-  final _providerDependents = <ProviderElement>[];
+  final _watchDependents = <ProviderElement>[];
 
   bool _mustRecomputeState = false;
   bool _dependencyMayHaveChanged = false;
@@ -95,6 +107,7 @@ abstract class ProviderElement<StateT> implements Node {
 
   bool _debugDidSetState = false;
   bool _didBuild = false;
+  var _didMount = false;
 
   /* STATE */
   Result<StateT>? _stateResult;
@@ -197,8 +210,7 @@ This could mean a few things:
   }
 
   /// Called the first time a provider is obtained.
-  @internal
-  void mount() {
+  void _mount() {
     if (kDebugMode) {
       _debugCurrentCreateHash = provider.debugGetCreateSourceHash();
     }
@@ -206,6 +218,7 @@ This could mean a few things:
     final ref = this.ref = Ref<StateT>._(this);
     buildState(ref);
 
+    // TODO refactor to use notifyListeners();
     switch (_stateResult!) {
       case final ResultData<StateT> newState:
         final onChangeSelfListeners = ref._onChangeSelfListeners;
@@ -216,6 +229,20 @@ This could mean a few things:
               null,
               newState.state,
             );
+          }
+        }
+
+        final listeners = _dependents?.toList(growable: false);
+        if (listeners != null) {
+          for (var i = 0; i < listeners.length; i++) {
+            final listener = listeners[i];
+            if (listener is _ProviderStateSubscription) {
+              Zone.current.runBinaryGuarded(
+                listener.listener,
+                null,
+                newState.state,
+              );
+            }
           }
         }
 
@@ -301,7 +328,7 @@ This could mean a few things:
     // Unsubscribe to everything that a provider no longer depends on.
     for (final sub in previousDependencies.entries) {
       sub.key
-        .._providerDependents.remove(this)
+        .._watchDependents.remove(this)
         .._onRemoveListener();
     }
     _previousDependencies = null;
@@ -330,6 +357,11 @@ This could mean a few things:
   /// [flush] from users, such that they don't need to care about invoking this function.
   @internal
   void flush() {
+    if (!_didMount) {
+      _didMount = true;
+      _mount();
+    }
+
     _maybeRebuildDependencies();
     if (_mustRecomputeState) {
       _mustRecomputeState = false;
@@ -495,8 +527,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       default:
     }
 
-    for (var i = 0; i < _providerDependents.length; i++) {
-      _providerDependents[i].invalidateSelf(asReload: true);
+    for (var i = 0; i < _watchDependents.length; i++) {
+      _watchDependents[i].invalidateSelf(asReload: true);
     }
 
     for (final observer in container.observers) {
@@ -543,6 +575,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   ProviderSubscription<T> listen<T>(
     ProviderListenable<T> listenable,
     void Function(T? previous, T value) listener, {
+    bool weak = false,
     void Function(Object error, StackTrace stackTrace)? onError,
     bool fireImmediately = false,
     // Not part of the public "Ref" API
@@ -554,6 +587,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     final result = listenable.addListener(
       this,
       listener,
+      weak: weak,
       fireImmediately: fireImmediately,
       onError: onError,
       onDependencyMayHaveChanged: onDependencyMayHaveChanged,
@@ -585,7 +619,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     if (provider.isAutoDispose) {
       final links = ref?._keepAliveLinks;
 
-      if (!hasListeners && (links == null || links.isEmpty)) {
+      if (!isActive && (links == null || links.isEmpty)) {
         container.scheduler.scheduleProviderDispose(this);
       }
     }
@@ -666,7 +700,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     ref = null;
 
     for (final sub in _dependencies.entries) {
-      sub.key._providerDependents.remove(this);
+      sub.key._watchDependents.remove(this);
       sub.key._onRemoveListener();
     }
     _dependencies.clear();
@@ -708,8 +742,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     required void Function(ProxyElementValueListenable element)
         listenableVisitor,
   }) {
-    for (var i = 0; i < _providerDependents.length; i++) {
-      elementVisitor(_providerDependents[i]);
+    for (var i = 0; i < _watchDependents.length; i++) {
+      elementVisitor(_watchDependents[i]);
     }
 
     final dependents = _dependents;

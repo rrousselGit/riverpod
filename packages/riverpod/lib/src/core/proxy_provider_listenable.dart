@@ -81,6 +81,7 @@ class ProviderElementProxy<InputT, OutputT>
     required void Function(Object error, StackTrace stackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
+    required bool weak,
   }) {
     final element = node.readProviderElement(provider);
 
@@ -93,6 +94,9 @@ class ProviderElementProxy<InputT, OutputT>
     final innerSub = node.listen<Object?>(
       provider,
       (prev, next) {},
+      weak: weak,
+      fireImmediately: false,
+      onError: null,
     );
 
     final notifier = _lense(element);

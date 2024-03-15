@@ -56,13 +56,15 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
     void Function(StateT? previous, StateT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,
+    required bool weak,
     required bool fireImmediately,
   }) {
     onError ??= Zone.current.handleUncaughtError;
 
     final element = node.readProviderElement(this);
 
-    element.flush();
+    if (!weak) element.flush();
+
     if (fireImmediately) {
       _handleFireImmediately(
         element.stateResult!,

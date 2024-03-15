@@ -200,9 +200,7 @@ class ProviderDirectory implements _PointerBase {
       /// This has otherwise no impact unless there is a bug.
       pointer.element = element;
 
-      element
-        .._origin = origin
-        ..mount();
+      element._origin = origin;
     }
 
     return pointer;
@@ -752,6 +750,7 @@ class ProviderContainer implements Node {
     ProviderListenable<State> provider,
     void Function(State? previous, State next) listener, {
     bool fireImmediately = false,
+    bool weak = false,
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
     return provider.addListener(
@@ -759,6 +758,7 @@ class ProviderContainer implements Node {
       listener,
       fireImmediately: fireImmediately,
       onError: onError,
+      weak: weak,
       onDependencyMayHaveChanged: null,
     );
   }

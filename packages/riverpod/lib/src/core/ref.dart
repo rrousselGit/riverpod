@@ -568,7 +568,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
 
       element
         .._onListen()
-        .._providerDependents.add(_element);
+        .._watchDependents.add(_element);
 
       return Object();
     });
@@ -603,11 +603,13 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     ProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
+    bool weak = false,
     bool fireImmediately = false,
   }) {
     return _element.listen(
       provider,
       listener,
+      weak: weak,
       onError: onError,
       fireImmediately: fireImmediately,
     );
