@@ -16,5 +16,22 @@ void main() {
       expect(b(21).allTransitiveDependencies, isNull);
       expect(b(21).dependencies, isNull);
     });
+
+    group('addListener', () {
+      test('throws if specifying both weak and fireImmediately', () {
+        final container = ProviderContainer.test();
+        final provider = Provider((ref) => 0);
+
+        expect(
+          () => container.listen(
+            provider,
+            (previous, value) {},
+            weak: true,
+            fireImmediately: true,
+          ),
+          throwsA(isA<AssertionError>()),
+        );
+      });
+    });
   });
 }

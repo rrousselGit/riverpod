@@ -58,6 +58,11 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
   }) {
+    assert(
+      !fireImmediately || !node.weak,
+      'Cannot use fireImmediately with weak listeners',
+    );
+
     onError ??= Zone.current.handleUncaughtError;
 
     final element = node.readProviderElement(this);

@@ -933,10 +933,6 @@ void main() {
           expect(container.readProviderElement(provider).hasListeners, false);
         });
 
-        test('throws if specifying both weak and fireImmediately', () {
-          throw UnimplementedError();
-        });
-
         test('does not count towards the pause mechanism', () async {
           final container = ProviderContainer.test();
 
