@@ -98,7 +98,6 @@ abstract class ProviderElement<StateT> implements WrappedNode {
   /// Those subscriptions are separate from [ProviderElement._dependents] for a few reasons:
   /// - They do not count towards [ProviderElement.isActive].
   /// - They may be reused between two instances of a [ProviderElement].
-  // TODO keep the pointer alive until all weak dependents are disposed
   final _weakDependents = <ProviderSubscription>[];
 
   /// The element of the providers that depends on this provider.
@@ -589,7 +588,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     ref._throwIfInvalidUsage();
 
     final result = listenable.addListener(
-      // TODO assert weak listeners are removed on dispose
       weak ? WeakNode(this) : this,
       listener,
       fireImmediately: fireImmediately,

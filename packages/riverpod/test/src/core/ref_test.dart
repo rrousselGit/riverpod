@@ -920,6 +920,19 @@ void main() {
           expect(buildCount, 1);
         });
 
+        test('closing the subscription updated element.hasListeners', () {
+          final container = ProviderContainer.test();
+          final provider = Provider((ref) => 0);
+
+          final sub = container.listen(provider, (previous, value) {});
+
+          expect(container.readProviderElement(provider).hasListeners, true);
+
+          sub.close();
+
+          expect(container.readProviderElement(provider).hasListeners, false);
+        });
+
         test('throws if specifying both weak and fireImmediately', () {
           throw UnimplementedError();
         });

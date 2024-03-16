@@ -29,6 +29,22 @@ void main() {
     });
 
     group('handles listen(weak: true)', () {
+      test('closing the subscription updated element.hasListeners', () {
+        final container = ProviderContainer.test();
+        final provider = Provider((ref) => 0);
+
+        final sub = container.listen(
+          provider.select((value) => 0),
+          (previous, value) {},
+        );
+
+        expect(container.readProviderElement(provider).hasListeners, true);
+
+        sub.close();
+
+        expect(container.readProviderElement(provider).hasListeners, false);
+      });
+
       test(
           'calls mayNeedDispose in ProviderSubscription.read for the sake of listen(weak: true)',
           () async {
