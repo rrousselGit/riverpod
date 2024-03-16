@@ -2,7 +2,7 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart';
 import 'package:test/test.dart';
 
-import '../../../new/core/provider_container_test.dart';
+import '../../../src/core/provider_container_test.dart';
 import '../../utils.dart';
 
 void main() {

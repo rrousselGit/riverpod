@@ -50,8 +50,8 @@ final class FetchPackageDetailsProvider
 
   @$internal
   @override
-  $FutureProviderElement<Package> $createElement(ProviderContainer container) =>
-      $FutureProviderElement(this, container);
+  $FutureProviderElement<Package> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
 
   @override
   FetchPackageDetailsProvider $copyWithCreate(
@@ -122,14 +122,14 @@ final class FetchPackageDetailsFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as FetchPackageDetailsProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as FetchPackageDetailsProvider;
 
         final argument = provider.argument as String;
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -169,8 +169,8 @@ final class LikedPackagesProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<List<String>> $createElement(
-          ProviderContainer container) =>
-      $FutureProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
 
   @override
   LikedPackagesProvider $copyWithCreate(
@@ -229,8 +229,8 @@ final class PubRepositoryProvider
 
   @$internal
   @override
-  $ProviderElement<PubRepository> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<PubRepository> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   PubRepositoryProvider $copyWithCreate(
@@ -327,8 +327,8 @@ final class PackageMetricsProvider
   @$internal
   @override
   $AsyncNotifierProviderElement<PackageMetrics, PackageMetricsScore>
-      $createElement(ProviderContainer container) =>
-          $AsyncNotifierProviderElement(this, container);
+      $createElement($ProviderPointer pointer) =>
+          $AsyncNotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -381,14 +381,14 @@ final class PackageMetricsFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as PackageMetricsProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as PackageMetricsProvider;
 
         final argument = provider.argument as String;
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -403,14 +403,14 @@ final class PackageMetricsFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as PackageMetricsProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as PackageMetricsProvider;
 
         final argument = provider.argument as String;
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }

@@ -47,8 +47,8 @@ final class CompletedTodosProvider
 
   @$internal
   @override
-  $ProviderElement<List<Todo>> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<List<Todo>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   CompletedTodosProvider $copyWithCreate(

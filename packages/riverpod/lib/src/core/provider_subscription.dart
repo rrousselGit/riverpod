@@ -5,9 +5,9 @@ part of '../framework.dart';
 abstract base class ProviderSubscription<StateT> {
   /// Represents the subscription to a [ProviderListenable]
   ProviderSubscription(this.source) {
-    final Object listener = source;
-    if (listener is ProviderElement) {
-      final subs = listener._subscriptions ??= [];
+    final source = this.source;
+    if (source is ProviderElement) {
+      final subs = source._subscriptions ??= [];
       subs.add(this);
     }
   }
@@ -52,8 +52,13 @@ final class _ProviderStateSubscription<StateT>
     required this.listener,
     required this.onError,
   }) {
-    final dependents = listenedElement._dependents ??= [];
-    dependents.add(this);
+    switch (source) {
+      case WeakNode():
+        listenedElement._weakDependents.add(this);
+      case _:
+        final dependents = listenedElement._dependents ??= [];
+        dependents.add(this);
+    }
   }
 
   // Why can't this be typed correctly?
@@ -68,13 +73,19 @@ final class _ProviderStateSubscription<StateT>
         'called ProviderSubscription.read on a subscription that was closed',
       );
     }
+    listenedElement._mayNeedDispose();
     return listenedElement.readSelf();
   }
 
   @override
   void close() {
     if (!closed) {
-      listenedElement._dependents?.remove(this);
+      switch (source) {
+        case WeakNode():
+          listenedElement._weakDependents.remove(this);
+        case _:
+          listenedElement._dependents?.remove(this);
+      }
       listenedElement._onRemoveListener();
     }
 

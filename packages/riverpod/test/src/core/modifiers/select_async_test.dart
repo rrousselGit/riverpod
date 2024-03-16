@@ -5,7 +5,7 @@ import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
-import '../utils.dart';
+import '../../utils.dart';
 
 void main() {
   group('If disposed before a value could be emitted', () {

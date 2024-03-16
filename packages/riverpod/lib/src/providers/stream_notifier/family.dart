@@ -53,9 +53,9 @@ final class FamilyStreamNotifierProvider< //
   @internal
   @override
   $StreamNotifierProviderElement<NotifierT, StateT> $createElement(
-    ProviderContainer container,
+    $ProviderPointer pointer,
   ) {
-    return $StreamNotifierProviderElement(this, container);
+    return $StreamNotifierProviderElement(this, pointer);
   }
 
   FamilyStreamNotifierProvider<NotifierT, StateT, ArgT> _copyWith({

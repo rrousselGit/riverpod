@@ -46,8 +46,8 @@ final class ItemsProvider extends $FunctionalProvider<List<Item>, List<Item>>
 
   @$internal
   @override
-  $ProviderElement<List<Item>> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<List<Item>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   ItemsProvider $copyWithCreate(
@@ -106,8 +106,8 @@ final class EvenItemsProvider
 
   @$internal
   @override
-  $ProviderElement<List<Item>> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<List<Item>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   EvenItemsProvider $copyWithCreate(

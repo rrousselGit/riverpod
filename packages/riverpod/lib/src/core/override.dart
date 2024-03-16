@@ -96,10 +96,7 @@ abstract class $FamilyOverride implements _FamilyOverride {
   /// Do not use: Internal object to used by [ProviderContainer]/`ProviderScope`
   /// to override the behavior of a "family" for part of the application.
   factory $FamilyOverride({
-    required ProviderElement Function(
-      ProviderContainer container,
-      ProviderBase<Object?> provider,
-    ) createElement,
+    required ProviderElement Function($ProviderPointer pointer) createElement,
     required Family from,
   }) = _FamilyOverrideImpl;
 
@@ -107,10 +104,7 @@ abstract class $FamilyOverride implements _FamilyOverride {
   Family get from;
 
   /// The overridden [ProviderBase.$createElement].
-  ProviderElement createElement(
-    ProviderContainer container,
-    ProviderBase<Object?> provider,
-  );
+  ProviderElement createElement($ProviderPointer pointer);
 
   @mustBeOverridden
   @override
@@ -125,11 +119,8 @@ class TransitiveFamilyOverride implements $FamilyOverride {
   final Family from;
 
   @override
-  ProviderElement createElement(
-    ProviderContainer container,
-    ProviderBase<Object?> provider,
-  ) {
-    return provider.$createElement(container);
+  ProviderElement createElement($ProviderPointer pointer) {
+    return pointer.origin.$createElement(pointer);
   }
 
   @override
@@ -141,27 +132,18 @@ class _FamilyOverrideImpl implements $FamilyOverride {
   /// An [Override] for families
   // ignore: library_private_types_in_public_api
   _FamilyOverrideImpl({
-    required ProviderElement Function(
-      ProviderContainer container,
-      ProviderBase<Object?> provider,
-    ) createElement,
+    required ProviderElement Function($ProviderPointer pointer) createElement,
     required this.from,
   }) : _createElement = createElement;
 
   @override
   final Family from;
 
-  final ProviderElement Function(
-    ProviderContainer container,
-    ProviderBase<Object?> provider,
-  ) _createElement;
+  final ProviderElement Function($ProviderPointer pointer) _createElement;
 
   @override
-  ProviderElement createElement(
-    ProviderContainer container,
-    ProviderBase<Object?> provider,
-  ) {
-    return _createElement(container, provider);
+  ProviderElement createElement($ProviderPointer pointer) {
+    return _createElement(pointer);
   }
 
   @mustBeOverridden

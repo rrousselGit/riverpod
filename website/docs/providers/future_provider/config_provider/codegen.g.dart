@@ -42,8 +42,8 @@ final class FetchConfigurationProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<Configuration> $createElement(
-          ProviderContainer container) =>
-      $FutureProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
 
   @override
   FetchConfigurationProvider $copyWithCreate(

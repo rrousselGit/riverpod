@@ -135,9 +135,9 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   @internal
   @override
   ChangeNotifierProviderElement<NotifierT> $createElement(
-    ProviderContainer container,
+    $ProviderPointer pointer,
   ) {
-    return ChangeNotifierProviderElement<NotifierT>._(this, container);
+    return ChangeNotifierProviderElement<NotifierT>._(this, pointer);
   }
 
   @mustBeOverridden
@@ -161,7 +161,7 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
 /// The element of [ChangeNotifierProvider].
 class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
     extends ProviderElement<NotifierT> {
-  ChangeNotifierProviderElement._(this.provider, super.container);
+  ChangeNotifierProviderElement._(this.provider, super.pointer);
 
   @override
   final ChangeNotifierProvider<NotifierT> provider;
@@ -240,8 +240,8 @@ class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as ChangeNotifierProvider<NotifierT>;
+      createElement: (pointer) {
+        final provider = pointer.origin as ChangeNotifierProvider<NotifierT>;
 
         return ChangeNotifierProvider<NotifierT>.internal(
           (ref) => create(ref, provider.argument as Arg),
@@ -251,7 +251,7 @@ class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
           dependencies: null,
           allTransitiveDependencies: null,
           name: null,
-        ).$createElement(container);
+        ).$createElement(pointer);
       },
     );
   }

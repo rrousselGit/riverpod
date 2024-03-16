@@ -46,8 +46,8 @@ final class FilterProvider extends $FunctionalProvider<Filter, Filter>
 
   @$internal
   @override
-  $ProviderElement<Filter> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<Filter> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   FilterProvider $copyWithCreate(
@@ -106,8 +106,8 @@ final class FilteredTodoListProvider
 
   @$internal
   @override
-  $ProviderElement<List<Todo>> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<List<Todo>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   FilteredTodoListProvider $copyWithCreate(

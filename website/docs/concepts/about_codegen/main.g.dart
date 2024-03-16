@@ -48,8 +48,8 @@ final class FetchUserProvider
 
   @$internal
   @override
-  $FutureProviderElement<User> $createElement(ProviderContainer container) =>
-      $FutureProviderElement(this, container);
+  $FutureProviderElement<User> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
 
   @override
   FetchUserProvider $copyWithCreate(
@@ -119,14 +119,14 @@ final class FetchUserFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as FetchUserProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as FetchUserProvider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }

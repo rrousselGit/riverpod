@@ -47,8 +47,8 @@ final class RepositoryProvider
 
   @$internal
   @override
-  $ProviderElement<Repository> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<Repository> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   RepositoryProvider $copyWithCreate(
@@ -106,8 +106,8 @@ final class ValueProvider extends $FunctionalProvider<String, String>
 
   @$internal
   @override
-  $ProviderElement<String> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   ValueProvider $copyWithCreate(

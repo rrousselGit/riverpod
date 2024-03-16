@@ -164,8 +164,8 @@ ${provider.doc} final class $name$_genericsDefinition
   @\$internal
   @override
   ${provider.elementName}<${provider.valueTypeDisplayString}> \$createElement(
-    ProviderContainer container
-  ) => ${provider.elementName}(this, container);
+    \$ProviderPointer pointer
+  ) => ${provider.elementName}(this, pointer);
 
   @override
   ${provider.providerTypeName}$_generics \$copyWithCreate(
@@ -213,8 +213,8 @@ ${provider.doc} final class $name$_genericsDefinition
   @\$internal
   @override
   ${provider.elementName}<$notifierType, ${provider.valueTypeDisplayString}> \$createElement(
-    ProviderContainer container
-  ) => ${provider.elementName}(this, container);
+    \$ProviderPointer pointer
+  ) => ${provider.elementName}(this, pointer);
 ''');
     }
 

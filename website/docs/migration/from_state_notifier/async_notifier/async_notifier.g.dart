@@ -56,8 +56,8 @@ final class AsyncTodosNotifierProvider
   @$internal
   @override
   $AsyncNotifierProviderElement<AsyncTodosNotifier, List<Todo>> $createElement(
-          ProviderContainer container) =>
-      $AsyncNotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $AsyncNotifierProviderElement(this, pointer);
 }
 
 String _$asyncTodosNotifierHash() =>

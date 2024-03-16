@@ -46,8 +46,8 @@ final class AnotherProvider extends $FunctionalProvider<MyValue, MyValue>
 
   @$internal
   @override
-  $ProviderElement<MyValue> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<MyValue> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   AnotherProvider $copyWithCreate(
@@ -105,8 +105,8 @@ final class MyProvider extends $FunctionalProvider<MyValue, MyValue>
 
   @$internal
   @override
-  $ProviderElement<MyValue> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<MyValue> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   MyProvider $copyWithCreate(

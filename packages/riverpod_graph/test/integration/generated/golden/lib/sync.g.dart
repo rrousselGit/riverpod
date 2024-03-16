@@ -48,8 +48,8 @@ final class PublicProvider extends $FunctionalProvider<String, String>
 
   @$internal
   @override
-  $ProviderElement<String> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   PublicProvider $copyWithCreate(
@@ -111,8 +111,8 @@ final class Supports$inNamesProvider extends $FunctionalProvider<String, String>
 
   @$internal
   @override
-  $ProviderElement<String> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   Supports$inNamesProvider $copyWithCreate(
@@ -198,8 +198,8 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
 
   @$internal
   @override
-  $ProviderElement<String> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   FamilyProvider $copyWithCreate(
@@ -307,8 +307,8 @@ final class FamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as FamilyProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as FamilyProvider;
 
         final argument = provider.argument as (
           int, {
@@ -320,7 +320,7 @@ final class FamilyFamily extends Family {
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -364,8 +364,8 @@ final class _PrivateProvider extends $FunctionalProvider<String, String>
 
   @$internal
   @override
-  $ProviderElement<String> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   _PrivateProvider $copyWithCreate(
@@ -443,8 +443,8 @@ final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
   @$internal
   @override
   $NotifierProviderElement<PublicClass, String> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$publicClassHash() => r'c27eae39f455b986e570abb84f1471de7445ef3b';
@@ -512,8 +512,8 @@ final class _PrivateClassProvider
   @$internal
   @override
   $NotifierProviderElement<_PrivateClass, String> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$privateClassHash() => r'3b08af72c6d4f24aed264efcf181572525b75603';
@@ -616,8 +616,8 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
   @$internal
   @override
   $NotifierProviderElement<FamilyClass, String> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -678,8 +678,8 @@ final class FamilyClassFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as FamilyClassProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as FamilyClassProvider;
 
         final argument = provider.argument as (
           int, {
@@ -691,7 +691,7 @@ final class FamilyClassFamily extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -712,8 +712,8 @@ final class FamilyClassFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as FamilyClassProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as FamilyClassProvider;
 
         final argument = provider.argument as (
           int, {
@@ -725,7 +725,7 @@ final class FamilyClassFamily extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -822,8 +822,8 @@ final class Supports$InClassNameProvider
   @$internal
   @override
   $NotifierProviderElement<Supports$InClassName, String> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$supports$InClassNameHash() =>

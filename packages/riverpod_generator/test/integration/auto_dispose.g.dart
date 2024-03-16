@@ -44,8 +44,8 @@ final class KeepAliveProvider extends $FunctionalProvider<int, int>
 
   @$internal
   @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   KeepAliveProvider $copyWithCreate(
@@ -103,8 +103,8 @@ final class NotKeepAliveProvider extends $FunctionalProvider<int, int>
 
   @$internal
   @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   NotKeepAliveProvider $copyWithCreate(
@@ -162,8 +162,8 @@ final class DefaultKeepAliveProvider extends $FunctionalProvider<int, int>
 
   @$internal
   @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   DefaultKeepAliveProvider $copyWithCreate(
@@ -230,8 +230,8 @@ final class KeepAliveFamilyProvider extends $FunctionalProvider<int, int>
 
   @$internal
   @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   KeepAliveFamilyProvider $copyWithCreate(
@@ -301,14 +301,14 @@ final class KeepAliveFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as KeepAliveFamilyProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as KeepAliveFamilyProvider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -361,8 +361,8 @@ final class NotKeepAliveFamilyProvider extends $FunctionalProvider<int, int>
 
   @$internal
   @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   NotKeepAliveFamilyProvider $copyWithCreate(
@@ -433,14 +433,14 @@ final class NotKeepAliveFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as NotKeepAliveFamilyProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as NotKeepAliveFamilyProvider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -493,8 +493,8 @@ final class DefaultKeepAliveFamilyProvider extends $FunctionalProvider<int, int>
 
   @$internal
   @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   DefaultKeepAliveFamilyProvider $copyWithCreate(
@@ -566,14 +566,14 @@ final class DefaultKeepAliveFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as DefaultKeepAliveFamilyProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as DefaultKeepAliveFamilyProvider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }

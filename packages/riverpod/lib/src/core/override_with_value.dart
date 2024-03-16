@@ -27,15 +27,15 @@ final class $ValueProvider<StateT> extends ProviderBase<StateT>
   @internal
   @override
   // ignore: library_private_types_in_public_api, not public API
-  _ValueProviderElement<StateT> $createElement(ProviderContainer container) {
-    return _ValueProviderElement(this, container);
+  _ValueProviderElement<StateT> $createElement($ProviderPointer pointer) {
+    return _ValueProviderElement(this, pointer);
   }
 }
 
 /// The [ProviderElement] of a [$ValueProvider]
 class _ValueProviderElement<StateT> extends ProviderElement<StateT> {
   /// The [ProviderElement] of a [$ValueProvider]
-  _ValueProviderElement(this.provider, super.container);
+  _ValueProviderElement(this.provider, super.pointer);
 
   /// A custom listener called when `overrideWithValue` changes
   /// with a different value.
@@ -89,16 +89,16 @@ final class $AsyncValueProvider<StateT>
   @override
   // ignore: library_private_types_in_public_api, not public API
   _AsyncValueProviderElement<StateT> $createElement(
-    ProviderContainer container,
+    $ProviderPointer pointer,
   ) {
-    return _AsyncValueProviderElement(this, container);
+    return _AsyncValueProviderElement(this, pointer);
   }
 }
 
 class _AsyncValueProviderElement<StateT>
     extends _ValueProviderElement<AsyncValue<StateT>>
     with FutureModifierElement<StateT> {
-  _AsyncValueProviderElement(super.provider, super.container);
+  _AsyncValueProviderElement(super.provider, super.pointer);
 
   @override
   void _setValue(AsyncValue<StateT> value) {

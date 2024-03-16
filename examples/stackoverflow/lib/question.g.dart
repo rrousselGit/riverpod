@@ -151,8 +151,8 @@ final class CurrentQuestionProvider
   @$internal
   @override
   $ProviderElement<AsyncValue<Question>> $createElement(
-          ProviderContainer container) =>
-      $ProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   CurrentQuestionProvider $copyWithCreate(

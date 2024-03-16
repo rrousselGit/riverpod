@@ -93,6 +93,8 @@ class ProviderElementProxy<InputT, OutputT>
     final innerSub = node.listen<Object?>(
       provider,
       (prev, next) {},
+      fireImmediately: false,
+      onError: null,
     );
 
     final notifier = _lense(element);

@@ -63,8 +63,8 @@ final class PageIndexProvider extends $NotifierProvider<PageIndex, int> {
   @$internal
   @override
   $NotifierProviderElement<PageIndex, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$pageIndexHash() => r'59307ecf23b5b2432833da5ad6b312bf36435d0e';
@@ -114,8 +114,8 @@ final class CanGoToPreviousPageProvider extends $FunctionalProvider<bool, bool>
 
   @$internal
   @override
-  $ProviderElement<bool> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<bool> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   CanGoToPreviousPageProvider $copyWithCreate(

@@ -98,13 +98,13 @@ class ProviderScheduler {
     /// child will automatically refresh its parent when it will try to read it
     for (var i = 0; i < _stateToRefresh.length; i++) {
       final element = _stateToRefresh[i];
-      if (element.hasListeners) element.flush();
+      if (element.isActive) element.flush();
     }
   }
 
   void scheduleProviderDispose(ProviderElement element) {
     assert(
-      !element.hasListeners,
+      !element.isActive,
       'Tried to dispose ${element.origin} , but still has listeners',
     );
 
@@ -124,11 +124,17 @@ class ProviderScheduler {
       final links = element.ref?._keepAliveLinks;
 
       if ((links != null && links.isNotEmpty) ||
-          element.hasListeners ||
-          element.container._disposed) {
+          element.container._disposed ||
+          element.isActive) {
         continue;
       }
-      element.container._disposeProvider(element._origin);
+
+      if (!element.hasListeners) {
+        element.container._disposeProvider(element.origin);
+      } else {
+        // Don't delete the pointer if there are some "weak" listeners active.
+        element.dispose();
+      }
     }
   }
 

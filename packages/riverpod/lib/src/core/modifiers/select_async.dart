@@ -135,6 +135,7 @@ class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
       provider,
       (prev, input) => playValue(input),
       onError: onError,
+      fireImmediately: false,
     );
 
     playValue(sub.read(), callListeners: false);

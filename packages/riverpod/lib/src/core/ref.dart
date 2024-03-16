@@ -568,7 +568,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
 
       element
         .._onListen()
-        .._providerDependents.add(_element);
+        .._watchDependents.add(_element);
 
       return Object();
     });
@@ -598,16 +598,23 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// and emit a valid value out of it. As such, if a
   /// [FutureProvider]/[StreamProvider] fail, [onError] will not be called.
   /// Instead the listener will receive an [AsyncError].
+  ///
+  /// - [weak] (false by default) can be optionally passed to have the listener
+  ///   not cause the provider to be initialized and kept alive.
+  ///   This enables listening to changes on a provider, without causing it to
+  ///   perform any work if it currently isn't used.
   /// {@endtemplate}
   ProviderSubscription<T> listen<T>(
     ProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
+    bool weak = false,
     bool fireImmediately = false,
   }) {
     return _element.listen(
       provider,
       listener,
+      weak: weak,
       onError: onError,
       fireImmediately: fireImmediately,
     );

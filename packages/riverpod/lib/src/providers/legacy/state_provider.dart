@@ -88,9 +88,9 @@ final class StateProvider<StateT> extends $FunctionalProvider<StateT, StateT>
   @internal
   @override
   StateProviderElement<StateT> $createElement(
-    ProviderContainer container,
+    $ProviderPointer pointer,
   ) {
-    return StateProviderElement._(this, container);
+    return StateProviderElement._(this, pointer);
   }
 
   @mustBeOverridden
@@ -113,7 +113,7 @@ final class StateProvider<StateT> extends $FunctionalProvider<StateT, StateT>
 
 /// The element of [StateProvider].
 class StateProviderElement<T> extends ProviderElement<T> {
-  StateProviderElement._(this.provider, super.container);
+  StateProviderElement._(this.provider, super.pointer);
 
   @override
   final StateProvider<T> provider;

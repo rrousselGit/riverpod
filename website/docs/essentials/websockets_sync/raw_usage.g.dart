@@ -47,9 +47,8 @@ final class RawStreamProvider
 
   @$internal
   @override
-  $ProviderElement<Raw<Stream<int>>> $createElement(
-          ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<Raw<Stream<int>>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   RawStreamProvider $copyWithCreate(

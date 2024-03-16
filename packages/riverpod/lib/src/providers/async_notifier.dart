@@ -59,7 +59,7 @@ class $AsyncNotifierProviderElement< //
         FutureModifierClassElement<NotifierT, StateT, FutureOr<StateT>> {
   /// Implementation detail of `riverpod_generator`.
   /// Do not use.
-  $AsyncNotifierProviderElement(this.provider, super.container);
+  $AsyncNotifierProviderElement(this.provider, super.pointer);
 
   @override
   final $AsyncNotifierProvider<NotifierT, StateT> provider;

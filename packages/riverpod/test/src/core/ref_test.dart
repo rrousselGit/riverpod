@@ -4,7 +4,11 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart'
-    show CircularDependencyError, UnmountedRefException;
+    show
+        CircularDependencyError,
+        ProviderContainerTest,
+        ProviderElement,
+        UnmountedRefException;
 import 'package:test/test.dart';
 
 import '../utils.dart';
@@ -824,6 +828,127 @@ void main() {
     });
 
     group('listen', () {
+      group('weak', () {
+        test('Mounts the element but does not initialize the provider', () {
+          final container = ProviderContainer.test();
+
+          final dep = StateProvider((ref) => 0);
+          final provider = Provider((ref) {
+            ref.listen(
+              dep,
+              weak: true,
+              (previous, next) {},
+            );
+            return 0;
+          });
+
+          container.read(provider);
+
+          expect(
+            container.pointerManager.orphanPointers.pointers[dep]!.element,
+            isA<ProviderElement<int>>()
+                .having((e) => e.stateResult, 'stateResult', null),
+          );
+        });
+
+        test('when finally mounting an element, notifies weak listeners', () {
+          final container = ProviderContainer.test();
+
+          final listener = Listener<int>();
+          final dep = StateProvider((ref) => 0);
+          final provider = Provider((ref) {
+            ref.listen(dep, weak: true, listener.call);
+            return 0;
+          });
+
+          container.read(provider);
+
+          verifyZeroInteractions(listener);
+
+          // Flush the provider
+          container.read(dep);
+
+          verifyOnly(listener, listener(null, 0));
+        });
+
+        test('when finally rebuilding a dirty element, notifies weak listeners',
+            () {
+          final container = ProviderContainer.test();
+
+          final listener = Listener<int>();
+          var result = 0;
+          final dep = StateProvider((ref) => result);
+          final provider = Provider((ref) {
+            ref.listen(dep, weak: true, listener.call);
+            return 0;
+          });
+
+          container.read(dep);
+          container.invalidate(dep);
+          result = 1;
+
+          container.read(provider);
+
+          verifyZeroInteractions(listener);
+
+          // Flush the provider
+          container.read(dep);
+
+          verifyOnly(listener, listener(0, 1));
+        });
+
+        test(
+            'adding a weak listener on an invalidated provider does not rebuild it',
+            () {
+          final container = ProviderContainer.test();
+          var buildCount = 0;
+          final dep = StateProvider((ref) {
+            buildCount++;
+            return 0;
+          });
+          final provider = Provider((ref) {
+            ref.listen(dep, weak: true, (previous, next) {});
+            return 0;
+          });
+
+          container.read(dep);
+          container.invalidate(dep);
+          expect(buildCount, 1);
+
+          container.read(provider);
+
+          expect(buildCount, 1);
+        });
+
+        test('closing the subscription updated element.hasListeners', () {
+          final container = ProviderContainer.test();
+          final provider = Provider((ref) => 0);
+
+          final sub =
+              container.listen(provider, weak: true, (previous, value) {});
+
+          expect(container.readProviderElement(provider).hasListeners, true);
+
+          sub.close();
+
+          expect(container.readProviderElement(provider).hasListeners, false);
+        });
+
+        test('does not count towards the pause mechanism', () async {
+          final container = ProviderContainer.test();
+
+          final listener = Listener<Object?>();
+          final provider = Provider((ref) => Object());
+
+          container.listen(provider, weak: true, listener.call);
+          container.invalidate(provider);
+
+          await container.pump();
+
+          verifyZeroInteractions(listener);
+        });
+      });
+
       test('ref.listen on outdated provider causes it to rebuild', () {
         final dep = StateProvider((ref) => 0);
         var buildCount = 0;

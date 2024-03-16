@@ -23,6 +23,7 @@ export 'package:riverpod/src/internals.dart'
         $ValueProvider,
         $ProviderOverride,
         $RefArg,
+        $ProviderPointer,
 
         // Provider
         $Provider,

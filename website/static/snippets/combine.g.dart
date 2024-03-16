@@ -46,8 +46,8 @@ final class TodosProvider extends $FunctionalProvider<List<Todo>, List<Todo>>
 
   @$internal
   @override
-  $ProviderElement<List<Todo>> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<List<Todo>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   TodosProvider $copyWithCreate(
@@ -105,8 +105,8 @@ final class FilterProvider extends $FunctionalProvider<Filter, Filter>
 
   @$internal
   @override
-  $ProviderElement<Filter> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<Filter> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   FilterProvider $copyWithCreate(
@@ -165,8 +165,8 @@ final class FilteredTodosProvider
 
   @$internal
   @override
-  $ProviderElement<List<Todo>> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<List<Todo>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   FilteredTodosProvider $copyWithCreate(

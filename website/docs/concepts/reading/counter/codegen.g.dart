@@ -47,8 +47,8 @@ final class RepositoryProvider
 
   @$internal
   @override
-  $ProviderElement<Repository> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<Repository> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   RepositoryProvider $copyWithCreate(
@@ -123,8 +123,8 @@ final class CounterProvider extends $NotifierProvider<Counter, int> {
   @$internal
   @override
   $NotifierProviderElement<Counter, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$counterHash() => r'6bd7806869af024b3288645da03c077af9478083';

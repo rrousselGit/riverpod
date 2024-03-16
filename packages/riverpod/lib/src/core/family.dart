@@ -122,12 +122,12 @@ class FunctionalFamily< //
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as ProviderT;
+      createElement: (pointer) {
+        final provider = pointer.origin as ProviderT;
 
         return provider
             .$copyWithCreate((ref) => create(ref, provider.argument as ArgT))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -191,10 +191,10 @@ class ClassFamily< //
   Override overrideWith(NotifierT Function() create) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as ProviderT;
+      createElement: (pointer) {
+        final provider = pointer.origin as ProviderT;
 
-        return provider.$copyWithCreate(create).$createElement(container);
+        return provider.$copyWithCreate(create).$createElement(pointer);
       },
     );
   }
@@ -205,10 +205,10 @@ class ClassFamily< //
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as ProviderT;
+      createElement: (pointer) {
+        final provider = pointer.origin as ProviderT;
 
-        return provider.$copyWithBuild(build).$createElement(container);
+        return provider.$copyWithBuild(build).$createElement(pointer);
       },
     );
   }

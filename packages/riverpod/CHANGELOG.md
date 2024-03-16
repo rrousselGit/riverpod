@@ -15,6 +15,10 @@
 - `Stream/FutureProvider.overrideWithValue` was added back.
 - **Breaking**: `Notifier` and variants are now recreated whenever the provider
   rebuilds. This enables using `Ref.mounted` to check dispose.
+- Added `Ref.listen(..., weak: true)`.
+  When specifying `weak: true`, the listener will not cause the provider to be
+  initialized. This is useful when wanting to react to changes to a provider,
+  but not trigger a network request if not necessary.
 - An error is now thrown when trying to override a provider twice in the same
   `ProviderContainer`.
 - Disposing a `ProviderContainer` now disposes of all of its sub `ProviderContainers` too.

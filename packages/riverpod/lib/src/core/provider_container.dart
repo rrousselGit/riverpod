@@ -15,15 +15,18 @@ abstract class _PointerBase {
 }
 
 @internal
-class ProviderPointer implements _PointerBase {
-  ProviderPointer({
+class $ProviderPointer implements _PointerBase {
+  $ProviderPointer({
     required this.providerOverride,
     required this.targetContainer,
+    required this.origin,
   });
 
   @override
   bool get isTransitiveOverride =>
       providerOverride is TransitiveProviderOverride;
+
+  final ProviderBase<Object?> origin;
 
   /// The override associated with this provider, if any.
   ///
@@ -125,7 +128,7 @@ class ProviderDirectory implements _PointerBase {
   /// This override may be implicitly created by [ProviderOrFamily.allTransitiveDependencies].
   // ignore: library_private_types_in_public_api, not public API
   _FamilyOverride? familyOverride;
-  final HashMap<ProviderBase<Object?>, ProviderPointer> pointers;
+  final HashMap<ProviderBase<Object?>, $ProviderPointer> pointers;
   @override
   ProviderContainer targetContainer;
 
@@ -136,13 +139,14 @@ class ProviderDirectory implements _PointerBase {
   }) {
     final origin = override.origin;
 
-    pointers[origin] = ProviderPointer(
+    pointers[origin] = $ProviderPointer(
       targetContainer: targetContainer,
       providerOverride: override,
+      origin: origin,
     );
   }
 
-  ProviderPointer upsertPointer(
+  $ProviderPointer upsertPointer(
     ProviderBase<Object?> provider, {
     required ProviderContainer currentContainer,
   }) {
@@ -151,11 +155,12 @@ class ProviderDirectory implements _PointerBase {
       currentContainer: currentContainer,
       targetContainer: targetContainer,
       inherit: (target) => target._pointerManager.upsertPointer(provider),
-      scope: ({override}) => ProviderPointer(
+      scope: ({override}) => $ProviderPointer(
         targetContainer: currentContainer,
         providerOverride: override == null || provider.from != null //
             ? null
             : TransitiveProviderOverride(override),
+        origin: provider,
       ),
     );
   }
@@ -166,7 +171,7 @@ class ProviderDirectory implements _PointerBase {
   /// are mounted in the current container.
   ///
   /// Non-overridden providers are mounted in the root container.
-  ProviderPointer mount(
+  $ProviderPointer mount(
     ProviderBase<Object?> origin, {
     required ProviderContainer currentContainer,
   }) {
@@ -181,16 +186,15 @@ class ProviderDirectory implements _PointerBase {
       switch ((pointer.providerOverride, familyOverride)) {
         // The provider is overridden. This takes over any family override
         case (final override?, _):
-          element =
-              override.providerOverride.$createElement(pointer.targetContainer);
+          element = override.providerOverride.$createElement(pointer);
 
         // The family was overridden using overrideWith & co.
         case (null, final $FamilyOverride override):
-          element = override.createElement(pointer.targetContainer, origin);
+          element = override.createElement(pointer);
 
         // Either the provider wasn't overridden or it was scoped.
         case (null, _FamilyOverride() || null):
-          element = origin.$createElement(pointer.targetContainer);
+          element = origin.$createElement(pointer);
       }
 
       /// Assigning the element before calling "mount" to guarantee
@@ -199,10 +203,6 @@ class ProviderDirectory implements _PointerBase {
       /// initialize the provider again.
       /// This has otherwise no impact unless there is a bug.
       pointer.element = element;
-
-      element
-        .._origin = origin
-        ..mount();
     }
 
     return pointer;
@@ -242,7 +242,7 @@ class ProviderDirectory implements _PointerBase {
 /// introduce a level of indirection by storing a [Map<Provider, ProviderPointer>].
 ///
 /// Then, when overriding a provider, it is guaranteed that the [ProviderContainer]
-/// and all of its children have the same [ProviderPointer] for a overridden provider.
+/// and all of its children have the same [$ProviderPointer] for a overridden provider.
 ///
 /// This way, we can read an overridden provider from any of the [ProviderContainer]s.
 /// And no-matter where the first read is made, all [ProviderContainer]s will
@@ -442,7 +442,7 @@ class ProviderPointerManager {
     }
   }
 
-  ProviderPointer? readPointer(ProviderBase<Object?> provider) {
+  $ProviderPointer? readPointer(ProviderBase<Object?> provider) {
     return readDirectory(provider)?.pointers[provider];
   }
 
@@ -460,7 +460,7 @@ class ProviderPointerManager {
     }
   }
 
-  ProviderPointer upsertPointer(ProviderBase<Object?> provider) {
+  $ProviderPointer upsertPointer(ProviderBase<Object?> provider) {
     return upsertDirectory(provider).mount(
       provider,
       currentContainer: container,
@@ -472,7 +472,7 @@ class ProviderPointerManager {
   }
 
   /// Traverse the [ProviderElement]s associated with this [ProviderContainer].
-  Iterable<ProviderPointer> listProviderPointers() {
+  Iterable<$ProviderPointer> listProviderPointers() {
     return orphanPointers.pointers.values
         .where((pointer) => pointer.targetContainer == container)
         .followedBy(
@@ -495,7 +495,7 @@ class ProviderPointerManager {
   /// Noop if the provider is from an override or doesn't exist.
   ///
   /// Returns the associated pointer, even if it was not removed.
-  ProviderPointer? remove(ProviderBase<Object?> provider) {
+  $ProviderPointer? remove(ProviderBase<Object?> provider) {
     final directory = readDirectory(provider);
     if (directory == null) return null;
 
@@ -564,7 +564,7 @@ class ProviderPointerManager {
 /// This will automatically dispose the container at the end of the test.
 /// {@endtemplate}
 @sealed
-class ProviderContainer implements Node {
+class ProviderContainer implements WrappedNode {
   /// {@macro riverpod.provider_container}
   ProviderContainer({
     ProviderContainer? parent,
@@ -752,10 +752,11 @@ class ProviderContainer implements Node {
     ProviderListenable<State> provider,
     void Function(State? previous, State next) listener, {
     bool fireImmediately = false,
+    bool weak = false,
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
     return provider.addListener(
-      this,
+      weak ? WeakNode(this) : this,
       listener,
       fireImmediately: fireImmediately,
       onError: onError,
@@ -797,7 +798,7 @@ class ProviderContainer implements Node {
 
   void _recursivePointerRemoval(
     ProviderBase<Object?> provider,
-    ProviderPointer pointer,
+    $ProviderPointer pointer,
   ) {
     for (final child in _children) {
       final childPointer = child._pointerManager.readPointer(provider);

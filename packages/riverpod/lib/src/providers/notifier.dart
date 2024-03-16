@@ -111,7 +111,7 @@ class $NotifierProviderElement< //
         StateT> {
   /// An implementation detail of `riverpod_generator`.
   /// Do not use.
-  $NotifierProviderElement(this.provider, super.container);
+  $NotifierProviderElement(this.provider, super.pointer);
 
   @override
   final $NotifierProvider<NotifierT, StateT> provider;

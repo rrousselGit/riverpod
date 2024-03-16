@@ -44,8 +44,8 @@ final class CountProvider extends $FunctionalProvider<int, int>
 
   @$internal
   @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   CountProvider $copyWithCreate(
@@ -96,8 +96,8 @@ final class CountFutureProvider
 
   @$internal
   @override
-  $FutureProviderElement<int> $createElement(ProviderContainer container) =>
-      $FutureProviderElement(this, container);
+  $FutureProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
 
   @override
   CountFutureProvider $copyWithCreate(
@@ -148,8 +148,8 @@ final class CountStreamProvider
 
   @$internal
   @override
-  $StreamProviderElement<int> $createElement(ProviderContainer container) =>
-      $StreamProviderElement(this, container);
+  $StreamProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $StreamProviderElement(this, pointer);
 
   @override
   CountStreamProvider $copyWithCreate(
@@ -225,8 +225,8 @@ final class CountNotifierProvider
   @$internal
   @override
   $NotifierProviderElement<CountNotifier, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$countNotifierHash() => r'a8dd7a66ee0002b8af657245c4affaa206fd99ec';
@@ -286,8 +286,8 @@ final class CountAsyncNotifierProvider
   @$internal
   @override
   $AsyncNotifierProviderElement<CountAsyncNotifier, int> $createElement(
-          ProviderContainer container) =>
-      $AsyncNotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $AsyncNotifierProviderElement(this, pointer);
 }
 
 String _$countAsyncNotifierHash() =>
@@ -348,8 +348,8 @@ final class CountStreamNotifierProvider
   @$internal
   @override
   $StreamNotifierProviderElement<CountStreamNotifier, int> $createElement(
-          ProviderContainer container) =>
-      $StreamNotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $StreamNotifierProviderElement(this, pointer);
 }
 
 String _$countStreamNotifierHash() =>
@@ -409,8 +409,8 @@ final class Count2Provider extends $FunctionalProvider<int, int>
 
   @$internal
   @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   Count2Provider $copyWithCreate(
@@ -480,14 +480,14 @@ final class Count2Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as Count2Provider;
+      createElement: (pointer) {
+        final provider = pointer.origin as Count2Provider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -533,8 +533,8 @@ final class CountFuture2Provider
 
   @$internal
   @override
-  $FutureProviderElement<int> $createElement(ProviderContainer container) =>
-      $FutureProviderElement(this, container);
+  $FutureProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
 
   @override
   CountFuture2Provider $copyWithCreate(
@@ -604,14 +604,14 @@ final class CountFuture2Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as CountFuture2Provider;
+      createElement: (pointer) {
+        final provider = pointer.origin as CountFuture2Provider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -657,8 +657,8 @@ final class CountStream2Provider
 
   @$internal
   @override
-  $StreamProviderElement<int> $createElement(ProviderContainer container) =>
-      $StreamProviderElement(this, container);
+  $StreamProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $StreamProviderElement(this, pointer);
 
   @override
   CountStream2Provider $copyWithCreate(
@@ -728,14 +728,14 @@ final class CountStream2Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as CountStream2Provider;
+      createElement: (pointer) {
+        final provider = pointer.origin as CountStream2Provider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -811,8 +811,8 @@ final class CountNotifier2Provider
   @$internal
   @override
   $NotifierProviderElement<CountNotifier2, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -855,14 +855,14 @@ final class CountNotifier2Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as CountNotifier2Provider;
+      createElement: (pointer) {
+        final provider = pointer.origin as CountNotifier2Provider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -873,14 +873,14 @@ final class CountNotifier2Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as CountNotifier2Provider;
+      createElement: (pointer) {
+        final provider = pointer.origin as CountNotifier2Provider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -962,8 +962,8 @@ final class CountAsyncNotifier2Provider
   @$internal
   @override
   $AsyncNotifierProviderElement<CountAsyncNotifier2, int> $createElement(
-          ProviderContainer container) =>
-      $AsyncNotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $AsyncNotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -1007,14 +1007,14 @@ final class CountAsyncNotifier2Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as CountAsyncNotifier2Provider;
+      createElement: (pointer) {
+        final provider = pointer.origin as CountAsyncNotifier2Provider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -1027,14 +1027,14 @@ final class CountAsyncNotifier2Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as CountAsyncNotifier2Provider;
+      createElement: (pointer) {
+        final provider = pointer.origin as CountAsyncNotifier2Provider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -1117,8 +1117,8 @@ final class CountStreamNotifier2Provider
   @$internal
   @override
   $StreamNotifierProviderElement<CountStreamNotifier2, int> $createElement(
-          ProviderContainer container) =>
-      $StreamNotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $StreamNotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -1162,14 +1162,14 @@ final class CountStreamNotifier2Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as CountStreamNotifier2Provider;
+      createElement: (pointer) {
+        final provider = pointer.origin as CountStreamNotifier2Provider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -1182,14 +1182,14 @@ final class CountStreamNotifier2Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as CountStreamNotifier2Provider;
+      createElement: (pointer) {
+        final provider = pointer.origin as CountStreamNotifier2Provider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }

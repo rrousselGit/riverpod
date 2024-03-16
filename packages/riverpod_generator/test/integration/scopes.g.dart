@@ -61,8 +61,8 @@ final class ScopedClassProvider extends $NotifierProvider<ScopedClass, int> {
   @$internal
   @override
   $NotifierProviderElement<ScopedClass, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$scopedClassHash() => r'113acc46a2e61abfeb61cf4b89a1dc555e915793';
@@ -144,8 +144,8 @@ final class ScopedClassFamilyProvider
   @$internal
   @override
   $NotifierProviderElement<ScopedClassFamily, int> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -188,14 +188,14 @@ final class ScopedClassFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as ScopedClassFamilyProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as ScopedClassFamilyProvider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -206,14 +206,14 @@ final class ScopedClassFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as ScopedClassFamilyProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as ScopedClassFamilyProvider;
 
         final argument = provider.argument as int;
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }

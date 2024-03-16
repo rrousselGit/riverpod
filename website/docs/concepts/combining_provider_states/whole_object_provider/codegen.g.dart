@@ -42,8 +42,8 @@ final class ConfigProvider extends $FunctionalProvider<
   @$internal
   @override
   $StreamProviderElement<Configuration> $createElement(
-          ProviderContainer container) =>
-      $StreamProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $StreamProviderElement(this, pointer);
 
   @override
   ConfigProvider $copyWithCreate(
@@ -97,8 +97,8 @@ final class ProductsProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<List<Product>> $createElement(
-          ProviderContainer container) =>
-      $FutureProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
 
   @override
   ProductsProvider $copyWithCreate(

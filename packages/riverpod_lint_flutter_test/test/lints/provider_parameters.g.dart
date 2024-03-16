@@ -53,8 +53,8 @@ final class GeneratorProvider extends $FunctionalProvider<int, int>
 
   @$internal
   @override
-  $ProviderElement<int> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   GeneratorProvider $copyWithCreate(
@@ -124,14 +124,14 @@ final class GeneratorFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as GeneratorProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as GeneratorProvider;
 
         final argument = provider.argument;
 
         return provider
             .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }

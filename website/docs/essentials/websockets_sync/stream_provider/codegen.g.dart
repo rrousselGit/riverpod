@@ -39,8 +39,8 @@ final class StreamExampleProvider
 
   @$internal
   @override
-  $StreamProviderElement<int> $createElement(ProviderContainer container) =>
-      $StreamProviderElement(this, container);
+  $StreamProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $StreamProviderElement(this, pointer);
 
   @override
   StreamExampleProvider $copyWithCreate(

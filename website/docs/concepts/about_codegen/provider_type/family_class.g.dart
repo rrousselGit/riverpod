@@ -87,8 +87,8 @@ final class ExampleProvider extends $NotifierProvider<Example, String> {
   @$internal
   @override
   $NotifierProviderElement<Example, String> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -138,8 +138,8 @@ final class ExampleFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as ExampleProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as ExampleProvider;
 
         final argument = provider.argument as (
           int, {
@@ -148,7 +148,7 @@ final class ExampleFamily extends Family {
 
         return provider
             .$copyWithCreate(() => create(argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }
@@ -166,8 +166,8 @@ final class ExampleFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as ExampleProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as ExampleProvider;
 
         final argument = provider.argument as (
           int, {
@@ -176,7 +176,7 @@ final class ExampleFamily extends Family {
 
         return provider
             .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(container);
+            .$createElement(pointer);
       },
     );
   }

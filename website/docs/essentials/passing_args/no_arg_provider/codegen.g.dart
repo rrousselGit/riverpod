@@ -39,9 +39,8 @@ final class ActivityProvider
 
   @$internal
   @override
-  $FutureProviderElement<Activity> $createElement(
-          ProviderContainer container) =>
-      $FutureProviderElement(this, container);
+  $FutureProviderElement<Activity> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
 
   @override
   ActivityProvider $copyWithCreate(
@@ -109,8 +108,8 @@ final class ActivityNotifier2Provider
   @$internal
   @override
   $AsyncNotifierProviderElement<ActivityNotifier2, Activity> $createElement(
-          ProviderContainer container) =>
-      $AsyncNotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $AsyncNotifierProviderElement(this, pointer);
 }
 
 String _$activityNotifier2Hash() => r'280f4d82a186cfb62827f4d7c74f5349bb0a9e4a';

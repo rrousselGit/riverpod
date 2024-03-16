@@ -40,9 +40,9 @@ final class FamilyNotifierProvider //
   @internal
   @override
   $NotifierProviderElement<NotifierT, StateT> $createElement(
-    ProviderContainer container,
+    $ProviderPointer pointer,
   ) {
-    return $NotifierProviderElement(this, container);
+    return $NotifierProviderElement(this, pointer);
   }
 
   FamilyNotifierProvider<NotifierT, StateT, ArgT> _copyWith({

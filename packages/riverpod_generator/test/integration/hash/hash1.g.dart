@@ -44,8 +44,8 @@ final class SimpleProvider extends $FunctionalProvider<String, String>
 
   @$internal
   @override
-  $ProviderElement<String> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   SimpleProvider $copyWithCreate(
@@ -103,8 +103,8 @@ final class Simple2Provider extends $FunctionalProvider<String, String>
 
   @$internal
   @override
-  $ProviderElement<String> $createElement(ProviderContainer container) =>
-      $ProviderElement(this, container);
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
 
   @override
   Simple2Provider $copyWithCreate(
@@ -179,8 +179,8 @@ final class SimpleClassProvider extends $NotifierProvider<SimpleClass, String> {
   @$internal
   @override
   $NotifierProviderElement<SimpleClass, String> $createElement(
-          ProviderContainer container) =>
-      $NotifierProviderElement(this, container);
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$simpleClassHash() => r'958123cd6179c5b88da040cfeb71eb3061765277';

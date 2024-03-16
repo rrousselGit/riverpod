@@ -251,7 +251,7 @@ void main() {
   });
 
   test(
-      'when selecting a provider, element.visitChildren visits the selected provider',
+      'when selecting a provider, element.visitAncestors visits the selected provider',
       () {
     final container = ProviderContainer.test();
     final selected = StateNotifierProvider<StateController<int>, int>((ref) {
@@ -260,6 +260,9 @@ void main() {
     final provider = Provider((ref) {
       ref.watch(selected.select((value) => null));
     });
+
+    container.read(provider);
+    container.read(selected);
 
     final element = container.readProviderElement(provider);
     final selectedElement = container.readProviderElement(selected);

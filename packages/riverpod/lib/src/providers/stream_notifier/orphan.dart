@@ -105,9 +105,9 @@ final class StreamNotifierProvider< //
   @internal
   @override
   $StreamNotifierProviderElement<NotifierT, StateT> $createElement(
-    ProviderContainer container,
+    $ProviderPointer pointer,
   ) {
-    return $StreamNotifierProviderElement(this, container);
+    return $StreamNotifierProviderElement(this, pointer);
   }
 
   @mustBeOverridden

@@ -10,12 +10,12 @@ import '../utils.dart';
 
 const _sentinel = Object();
 
-TypeMatcher<ProviderPointer> isPointer({
+TypeMatcher<$ProviderPointer> isPointer({
   Object? override = _sentinel,
   Object? element = _sentinel,
   Object? targetContainer = _sentinel,
 }) {
-  var matcher = isA<ProviderPointer>();
+  var matcher = isA<$ProviderPointer>();
 
   if (override != _sentinel) {
     matcher = matcher.having((p) => p.providerOverride, 'override', override);
@@ -706,11 +706,7 @@ void main() {
 
         expect(
           pointer,
-          isPointer(
-            targetContainer: container,
-            override: null,
-            element: isNotNull,
-          ),
+          isPointer(targetContainer: container, override: null),
         );
       });
 

@@ -7,25 +7,6 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
-  test('hasListeners', () {
-    final container = ProviderContainer.test();
-    final provider = Provider((_) => 42);
-
-    expect(container.read(provider), 42);
-
-    final state = container.getAllProviderElements().single;
-
-    expect(state.hasListeners, false);
-
-    final sub = container.listen(provider, (_, __) {});
-
-    expect(state.hasListeners, true);
-
-    sub.close();
-
-    expect(state.hasListeners, false);
-  });
-
   test('test two families one overridden the other not', () {
     final family = Provider.family<String, int>((ref, value) {
       return '$value';

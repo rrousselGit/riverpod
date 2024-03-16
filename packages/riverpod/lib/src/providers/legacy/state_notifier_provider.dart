@@ -138,9 +138,9 @@ final class StateNotifierProvider< //
   @internal
   @override
   StateNotifierProviderElement<NotifierT, StateT> $createElement(
-    ProviderContainer container,
+    $ProviderPointer pointer,
   ) {
-    return StateNotifierProviderElement._(this, container);
+    return StateNotifierProviderElement._(this, pointer);
   }
 
   @mustBeOverridden
@@ -164,7 +164,7 @@ final class StateNotifierProvider< //
 /// The element of [StateNotifierProvider].
 class StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
     StateT> extends ProviderElement<StateT> {
-  StateNotifierProviderElement._(this.provider, super.container);
+  StateNotifierProviderElement._(this.provider, super.pointer);
 
   @override
   final StateNotifierProvider<NotifierT, StateT> provider;
