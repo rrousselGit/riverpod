@@ -160,8 +160,9 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
       node,
       sub,
       () {
-        return switch (lastSelectedValue) {
-          null => read(node),
+        // Using ! because since `sub.read` flushes the inner subscription,
+        // it is guaranteed that `lastSelectedValue` is not null.
+        return switch (lastSelectedValue!) {
           ResultData(:final state) => state,
           ResultError(:final error, :final stackTrace) =>
             throwErrorWithCombinedStackTrace(
