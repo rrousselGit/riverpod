@@ -1,6 +1,5 @@
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/framework.dart';
 import 'package:test/test.dart';
 
 import '../matrix.dart';
