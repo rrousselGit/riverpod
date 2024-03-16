@@ -5,3 +5,6 @@ analyzer:
     # Files with errors on purpose
     - test/lints/notifier_extends.g.dart
     - test/lints/functional_ref.g.dart
+
+custom_lint:
+  debug: true
