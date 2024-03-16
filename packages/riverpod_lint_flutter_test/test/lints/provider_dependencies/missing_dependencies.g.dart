@@ -305,8 +305,8 @@ final class DepFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as DepFamilyProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as DepFamilyProvider;
 
         final argument = provider.argument as int;
 

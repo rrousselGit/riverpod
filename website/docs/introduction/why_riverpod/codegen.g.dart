@@ -143,8 +143,8 @@ final class FetchPackagesFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as FetchPackagesProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as FetchPackagesProvider;
 
         final argument = provider.argument as ({
           int page,

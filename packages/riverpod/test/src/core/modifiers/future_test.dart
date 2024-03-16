@@ -7,6 +7,32 @@ import '../../utils.dart';
 void main() {
   group('provider.future', () {
     group('handles listen(weak: true)', () {
+      test(
+          'calls mayNeedDispose in ProviderSubscription.read for the sake of listen(weak: true)',
+          () async {
+        final container = ProviderContainer.test();
+        final onDispose = OnDisposeMock();
+        final provider = FutureProvider.autoDispose((ref) {
+          ref.onDispose(onDispose.call);
+          return 0;
+        });
+
+        final element = container.readProviderElement(provider);
+
+        final sub = container.listen(
+          provider.future,
+          weak: true,
+          (previous, value) {},
+        );
+
+        expect(sub.read(), completion(0));
+        verifyZeroInteractions(onDispose);
+
+        await container.pump();
+
+        verifyOnly(onDispose, onDispose());
+      });
+
       test('common use-case ', () async {
         var buildCount = 0;
         final provider = FutureProvider((ref) {

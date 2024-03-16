@@ -697,6 +697,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   @mustCallSuper
   void dispose() {
     runOnDispose();
+    _didMount = false;
+    _stateResult = null;
     ref = null;
 
     for (final sub in _dependencies.entries) {

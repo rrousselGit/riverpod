@@ -224,8 +224,8 @@ final class FamilyWithDependencies2Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as FamilyWithDependencies2Provider;
+      createElement: (pointer) {
+        final provider = pointer.origin as FamilyWithDependencies2Provider;
 
         final argument = provider.argument as int?;
 
@@ -463,8 +463,9 @@ final class NotifierFamilyWithDependenciesFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as NotifierFamilyWithDependenciesProvider;
+      createElement: (pointer) {
+        final provider =
+            pointer.origin as NotifierFamilyWithDependenciesProvider;
 
         final argument = provider.argument as int?;
 
@@ -483,8 +484,9 @@ final class NotifierFamilyWithDependenciesFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as NotifierFamilyWithDependenciesProvider;
+      createElement: (pointer) {
+        final provider =
+            pointer.origin as NotifierFamilyWithDependenciesProvider;
 
         final argument = provider.argument as int?;
 

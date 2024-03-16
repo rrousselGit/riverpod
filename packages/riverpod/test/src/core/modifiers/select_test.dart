@@ -29,6 +29,32 @@ void main() {
     });
 
     group('handles listen(weak: true)', () {
+      test(
+          'calls mayNeedDispose in ProviderSubscription.read for the sake of listen(weak: true)',
+          () async {
+        final container = ProviderContainer.test();
+        final onDispose = OnDisposeMock();
+        final provider = Provider.autoDispose((ref) {
+          ref.onDispose(onDispose.call);
+          return 0;
+        });
+
+        final element = container.readProviderElement(provider);
+
+        final sub = container.listen(
+          provider.select((value) => value),
+          weak: true,
+          (previous, value) {},
+        );
+
+        expect(sub.read(), 0);
+        verifyZeroInteractions(onDispose);
+
+        await container.pump();
+
+        verifyOnly(onDispose, onDispose());
+      });
+
       test('common use-case ', () {
         final provider = StateProvider((ref) => 'Hello');
         final container = ProviderContainer.test();

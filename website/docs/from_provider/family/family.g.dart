@@ -147,8 +147,8 @@ final class RandomFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as RandomProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as RandomProvider;
 
         final argument = provider.argument as ({
           int seed,

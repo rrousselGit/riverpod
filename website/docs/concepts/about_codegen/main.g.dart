@@ -119,8 +119,8 @@ final class FetchUserFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as FetchUserProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as FetchUserProvider;
 
         final argument = provider.argument as int;
 

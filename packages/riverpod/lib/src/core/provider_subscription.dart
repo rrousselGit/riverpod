@@ -73,6 +73,7 @@ final class _ProviderStateSubscription<StateT>
         'called ProviderSubscription.read on a subscription that was closed',
       );
     }
+    listenedElement._mayNeedDispose();
     return listenedElement.readSelf();
   }
 

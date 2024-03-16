@@ -307,8 +307,8 @@ final class FamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as FamilyProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as FamilyProvider;
 
         final argument = provider.argument as (
           int, {
@@ -678,8 +678,8 @@ final class FamilyClassFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as FamilyClassProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as FamilyClassProvider;
 
         final argument = provider.argument as (
           int, {
@@ -712,8 +712,8 @@ final class FamilyClassFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as FamilyClassProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as FamilyClassProvider;
 
         final argument = provider.argument as (
           int, {

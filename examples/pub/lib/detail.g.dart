@@ -122,8 +122,8 @@ final class FetchPackageDetailsFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as FetchPackageDetailsProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as FetchPackageDetailsProvider;
 
         final argument = provider.argument as String;
 
@@ -381,8 +381,8 @@ final class PackageMetricsFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as PackageMetricsProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as PackageMetricsProvider;
 
         final argument = provider.argument as String;
 
@@ -403,8 +403,8 @@ final class PackageMetricsFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as PackageMetricsProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as PackageMetricsProvider;
 
         final argument = provider.argument as String;
 

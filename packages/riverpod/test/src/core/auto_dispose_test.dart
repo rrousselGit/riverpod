@@ -1,7 +1,5 @@
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/legacy.dart';
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/framework.dart';
+import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
 import '../utils.dart';
@@ -9,6 +7,42 @@ import 'provider_container_test.dart';
 
 void main() {
   group('AutoDispose', () {
+    test('Supports clearing the state of elements with only weak listeners',
+        () async {
+      final container = ProviderContainer.test();
+      final onDispose = OnDisposeMock();
+      var buildCount = 0;
+      final provider = Provider.autoDispose((ref) {
+        buildCount++;
+        ref.onDispose(onDispose.call);
+        return 0;
+      });
+
+      final element = container.readProviderElement(provider);
+
+      final sub = container.listen(
+        provider,
+        weak: true,
+        (previous, value) {},
+      );
+
+      expect(sub.read(), 0);
+      expect(buildCount, 1);
+      verifyZeroInteractions(onDispose);
+
+      await container.pump();
+
+      verifyOnly(onDispose, onDispose());
+
+      expect(buildCount, 1);
+      expect(container.readProviderElement(provider), same(element));
+      expect(element.stateResult, null);
+
+      expect(sub.read(), 0);
+      expect(element.stateResult, ResultData(0));
+      expect(buildCount, 2);
+    });
+
     test(
         'onDispose is triggered only once if within autoDispose unmount, a dependency changed',
         () async {

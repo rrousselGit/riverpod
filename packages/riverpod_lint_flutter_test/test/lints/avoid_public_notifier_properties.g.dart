@@ -120,8 +120,8 @@ final class GeneratedNotifierFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as GeneratedNotifierProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as GeneratedNotifierProvider;
 
         final argument = provider.argument as int;
 
@@ -138,8 +138,8 @@ final class GeneratedNotifierFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as GeneratedNotifierProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as GeneratedNotifierProvider;
 
         final argument = provider.argument as int;
 

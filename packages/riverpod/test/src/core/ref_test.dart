@@ -924,12 +924,18 @@ void main() {
           throw UnimplementedError();
         });
 
-        test('does not count towards the pause mechanism', () {
-          throw UnimplementedError();
-        });
+        test('does not count towards the pause mechanism', () async {
+          final container = ProviderContainer.test();
 
-        test('does not interfere with autoDispose', () {
-          throw UnimplementedError();
+          final listener = Listener<Object?>();
+          final provider = Provider((ref) => Object());
+
+          container.listen(provider, weak: true, listener.call);
+          container.invalidate(provider);
+
+          await container.pump();
+
+          verifyZeroInteractions(listener);
         });
       });
 

@@ -147,8 +147,8 @@ final class ExampleFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as ExampleProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as ExampleProvider;
 
         final argument = provider.argument as (
           int, {

@@ -213,8 +213,8 @@ final class ExampleFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as ExampleFamilyProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as ExampleFamilyProvider;
 
         final argument = provider.argument as ({
           int a,
@@ -241,8 +241,8 @@ final class ExampleFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as ExampleFamilyProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as ExampleFamilyProvider;
 
         final argument = provider.argument as ({
           int a,
@@ -401,8 +401,8 @@ final class GenericFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as GenericProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as GenericProvider;
 
         return provider._copyWithCreate(create).$createElement(pointer);
       },
@@ -415,8 +415,8 @@ final class GenericFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as GenericProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as GenericProvider;
 
         return provider._copyWithBuild(build).$createElement(pointer);
       },

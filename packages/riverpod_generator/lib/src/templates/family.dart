@@ -106,8 +106,8 @@ ${provider.doc} final class ${provider.familyTypeName} extends Family {
 Override overrideWith($createType create,) {
   return \$FamilyOverride(
     from: this,
-    createElement: (pointer, provider) {
-      provider as ${provider.providerTypeName};
+    createElement: (pointer) {
+      final provider = pointer.origin as ${provider.providerTypeName};
 ''');
 
     switch ((
@@ -184,8 +184,8 @@ ${provider.createdTypeDisplayString} Function$_genericsDefinition(
 Override overrideWithBuild($runNotifierBuildType build,) {
   return \$FamilyOverride(
     from: this,
-    createElement: (pointer, provider) {
-      provider as ${provider.providerTypeName};
+    createElement: (pointer) {
+      final provider = pointer.origin as ${provider.providerTypeName};
 ''');
 
     switch ((

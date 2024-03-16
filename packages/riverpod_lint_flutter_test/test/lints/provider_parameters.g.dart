@@ -124,8 +124,8 @@ final class GeneratorFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as GeneratorProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as GeneratorProvider;
 
         final argument = provider.argument;
 

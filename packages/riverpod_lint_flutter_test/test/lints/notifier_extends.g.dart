@@ -404,8 +404,8 @@ final class GenericsFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as GenericsProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as GenericsProvider;
 
         return provider._copyWithCreate(create).$createElement(pointer);
       },
@@ -418,8 +418,8 @@ final class GenericsFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as GenericsProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as GenericsProvider;
 
         return provider._copyWithBuild(build).$createElement(pointer);
       },
@@ -559,8 +559,8 @@ final class NoGenericsFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as NoGenericsProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as NoGenericsProvider;
 
         return provider._copyWithCreate(create).$createElement(pointer);
       },
@@ -574,8 +574,8 @@ final class NoGenericsFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as NoGenericsProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as NoGenericsProvider;
 
         return provider._copyWithBuild(build).$createElement(pointer);
       },
@@ -717,8 +717,8 @@ final class MissingGenericsFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as MissingGenericsProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as MissingGenericsProvider;
 
         return provider._copyWithCreate(create).$createElement(pointer);
       },
@@ -731,8 +731,8 @@ final class MissingGenericsFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as MissingGenericsProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as MissingGenericsProvider;
 
         return provider._copyWithBuild(build).$createElement(pointer);
       },
@@ -872,8 +872,8 @@ final class WrongOrderFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as WrongOrderProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as WrongOrderProvider;
 
         return provider._copyWithCreate(create).$createElement(pointer);
       },
@@ -886,8 +886,8 @@ final class WrongOrderFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as WrongOrderProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as WrongOrderProvider;
 
         return provider._copyWithBuild(build).$createElement(pointer);
       },

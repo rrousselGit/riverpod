@@ -480,8 +480,8 @@ final class Count2Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as Count2Provider;
+      createElement: (pointer) {
+        final provider = pointer.origin as Count2Provider;
 
         final argument = provider.argument as int;
 
@@ -604,8 +604,8 @@ final class CountFuture2Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as CountFuture2Provider;
+      createElement: (pointer) {
+        final provider = pointer.origin as CountFuture2Provider;
 
         final argument = provider.argument as int;
 
@@ -728,8 +728,8 @@ final class CountStream2Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as CountStream2Provider;
+      createElement: (pointer) {
+        final provider = pointer.origin as CountStream2Provider;
 
         final argument = provider.argument as int;
 
@@ -855,8 +855,8 @@ final class CountNotifier2Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as CountNotifier2Provider;
+      createElement: (pointer) {
+        final provider = pointer.origin as CountNotifier2Provider;
 
         final argument = provider.argument as int;
 
@@ -873,8 +873,8 @@ final class CountNotifier2Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as CountNotifier2Provider;
+      createElement: (pointer) {
+        final provider = pointer.origin as CountNotifier2Provider;
 
         final argument = provider.argument as int;
 
@@ -1007,8 +1007,8 @@ final class CountAsyncNotifier2Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as CountAsyncNotifier2Provider;
+      createElement: (pointer) {
+        final provider = pointer.origin as CountAsyncNotifier2Provider;
 
         final argument = provider.argument as int;
 
@@ -1027,8 +1027,8 @@ final class CountAsyncNotifier2Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as CountAsyncNotifier2Provider;
+      createElement: (pointer) {
+        final provider = pointer.origin as CountAsyncNotifier2Provider;
 
         final argument = provider.argument as int;
 
@@ -1162,8 +1162,8 @@ final class CountStreamNotifier2Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as CountStreamNotifier2Provider;
+      createElement: (pointer) {
+        final provider = pointer.origin as CountStreamNotifier2Provider;
 
         final argument = provider.argument as int;
 
@@ -1182,8 +1182,8 @@ final class CountStreamNotifier2Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as CountStreamNotifier2Provider;
+      createElement: (pointer) {
+        final provider = pointer.origin as CountStreamNotifier2Provider;
 
         final argument = provider.argument as int;
 

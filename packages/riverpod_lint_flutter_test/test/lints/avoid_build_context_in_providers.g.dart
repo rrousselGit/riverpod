@@ -145,8 +145,8 @@ final class FnFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as FnProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as FnProvider;
 
         final argument = provider.argument as (
           BuildContext, {
@@ -291,8 +291,8 @@ final class MyNotifierFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as MyNotifierProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as MyNotifierProvider;
 
         final argument = provider.argument as (
           BuildContext, {
@@ -319,8 +319,8 @@ final class MyNotifierFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as MyNotifierProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as MyNotifierProvider;
 
         final argument = provider.argument as (
           BuildContext, {

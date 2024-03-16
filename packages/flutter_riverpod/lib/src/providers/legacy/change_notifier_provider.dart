@@ -240,8 +240,8 @@ class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (container, provider) {
-        provider as ChangeNotifierProvider<NotifierT>;
+      createElement: (pointer) {
+        final provider = pointer.origin as ChangeNotifierProvider<NotifierT>;
 
         return ChangeNotifierProvider<NotifierT>.internal(
           (ref) => create(ref, provider.argument as Arg),
@@ -251,7 +251,7 @@ class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
           dependencies: null,
           allTransitiveDependencies: null,
           name: null,
-        ).$createElement(container);
+        ).$createElement(pointer);
       },
     );
   }

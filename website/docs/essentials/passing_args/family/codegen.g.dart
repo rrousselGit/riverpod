@@ -119,8 +119,8 @@ final class ActivityFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as ActivityProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as ActivityProvider;
 
         final argument = provider.argument as String;
 
@@ -238,8 +238,8 @@ final class ActivityNotifier2Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as ActivityNotifier2Provider;
+      createElement: (pointer) {
+        final provider = pointer.origin as ActivityNotifier2Provider;
 
         final argument = provider.argument as String;
 
@@ -258,8 +258,8 @@ final class ActivityNotifier2Family extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as ActivityNotifier2Provider;
+      createElement: (pointer) {
+        final provider = pointer.origin as ActivityNotifier2Provider;
 
         final argument = provider.argument as String;
 

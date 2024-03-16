@@ -177,8 +177,8 @@ final class BugsEncounteredNotifierFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as BugsEncounteredNotifierProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as BugsEncounteredNotifierProvider;
 
         final argument = provider.argument as String;
 
@@ -197,8 +197,8 @@ final class BugsEncounteredNotifierFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as BugsEncounteredNotifierProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as BugsEncounteredNotifierProvider;
 
         final argument = provider.argument as String;
 

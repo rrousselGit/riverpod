@@ -126,8 +126,8 @@ final class LabelFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as LabelProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as LabelProvider;
 
         final argument = provider.argument as String;
 

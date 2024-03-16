@@ -301,8 +301,8 @@ final class KeepAliveFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as KeepAliveFamilyProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as KeepAliveFamilyProvider;
 
         final argument = provider.argument as int;
 
@@ -433,8 +433,8 @@ final class NotKeepAliveFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as NotKeepAliveFamilyProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as NotKeepAliveFamilyProvider;
 
         final argument = provider.argument as int;
 
@@ -566,8 +566,8 @@ final class DefaultKeepAliveFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as DefaultKeepAliveFamilyProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as DefaultKeepAliveFamilyProvider;
 
         final argument = provider.argument as int;
 

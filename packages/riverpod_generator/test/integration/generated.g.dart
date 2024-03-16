@@ -183,8 +183,8 @@ final class GeneratedFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as GeneratedFamilyProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as GeneratedFamilyProvider;
 
         final argument = provider.argument as _Test;
 
@@ -380,8 +380,8 @@ final class GeneratedClassFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as GeneratedClassFamilyProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as GeneratedClassFamilyProvider;
 
         final argument = provider.argument as _Test;
 
@@ -400,8 +400,8 @@ final class GeneratedClassFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as GeneratedClassFamilyProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as GeneratedClassFamilyProvider;
 
         final argument = provider.argument as _Test;
 
@@ -604,8 +604,8 @@ final class $DynamicFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as $DynamicFamilyProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as $DynamicFamilyProvider;
 
         final argument = provider.argument as dynamic;
 
@@ -801,8 +801,8 @@ final class $DynamicClassFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as $DynamicClassFamilyProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as $DynamicClassFamilyProvider;
 
         final argument = provider.argument as dynamic;
 
@@ -821,8 +821,8 @@ final class $DynamicClassFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as $DynamicClassFamilyProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as $DynamicClassFamilyProvider;
 
         final argument = provider.argument as dynamic;
 
@@ -966,8 +966,8 @@ final class _DynamicFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as _DynamicProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as _DynamicProvider;
 
         final argument = provider.argument as dynamic;
 
@@ -1160,8 +1160,8 @@ final class AliasFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as AliasFamilyProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as AliasFamilyProvider;
 
         final argument = provider.argument as r.AsyncValue<int>;
 
@@ -1356,8 +1356,8 @@ final class AliasClassFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as AliasClassFamilyProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as AliasClassFamilyProvider;
 
         final argument = provider.argument as r.AsyncValue<int>;
 
@@ -1376,8 +1376,8 @@ final class AliasClassFamilyFamily extends Family {
   ) {
     return $FamilyOverride(
       from: this,
-      createElement: (pointer, provider) {
-        provider as AliasClassFamilyProvider;
+      createElement: (pointer) {
+        final provider = pointer.origin as AliasClassFamilyProvider;
 
         final argument = provider.argument as r.AsyncValue<int>;
 
