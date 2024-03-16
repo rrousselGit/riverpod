@@ -29,12 +29,27 @@ void main() {
     });
 
     group('handles listen(weak: true)', () {
+      test(
+          'supports calling ProviderSubscription.read when no value were emitted yet',
+          () {
+        final container = ProviderContainer.test();
+        final provider = Provider((ref) => 0);
+
+        final sub = container.listen(
+          provider.select((value) => 42),
+          (previous, value) {},
+        );
+
+        expect(sub.read(), 42);
+      });
+
       test('closing the subscription updated element.hasListeners', () {
         final container = ProviderContainer.test();
         final provider = Provider((ref) => 0);
 
         final sub = container.listen(
           provider.select((value) => 0),
+          weak: true,
           (previous, value) {},
         );
 

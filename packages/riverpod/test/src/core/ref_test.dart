@@ -924,7 +924,8 @@ void main() {
           final container = ProviderContainer.test();
           final provider = Provider((ref) => 0);
 
-          final sub = container.listen(provider, (previous, value) {});
+          final sub =
+              container.listen(provider, weak: true, (previous, value) {});
 
           expect(container.readProviderElement(provider).hasListeners, true);
 

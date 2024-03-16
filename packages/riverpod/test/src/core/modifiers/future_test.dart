@@ -11,7 +11,11 @@ void main() {
         final container = ProviderContainer.test();
         final provider = FutureProvider((ref) => 0);
 
-        final sub = container.listen(provider.future, (previous, value) {});
+        final sub = container.listen(
+          provider.future,
+          weak: true,
+          (previous, value) {},
+        );
 
         expect(container.readProviderElement(provider).hasListeners, true);
 
