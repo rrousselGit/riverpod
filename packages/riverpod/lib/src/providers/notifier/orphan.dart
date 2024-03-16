@@ -113,6 +113,7 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
 
   final NotifierT Function() _createNotifier;
 
+  @internal
   @override
   NotifierT create() => _createNotifier();
 

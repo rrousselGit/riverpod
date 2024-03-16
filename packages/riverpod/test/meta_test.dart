@@ -3,6 +3,7 @@ import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/dart/element/visitor.dart';
+import 'package:collection/collection.dart';
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
@@ -36,6 +37,10 @@ void main() {
     for (final publicApi in riverpod.exportNamespace.definedNames.values) {
       publicApi.accept(visitor);
     }
+  });
+
+  test('overrides re-apply annotations', () async {
+    expect(visitor.missingInheritedAnnotations, isEmpty);
   });
 
   test('public API snapshot', skip: 'Disabled', () async {
@@ -106,6 +111,7 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor<void> {
   _PublicAPIVisitor(this.riverpod);
 
   final LibraryElement riverpod;
+  final missingInheritedAnnotations = <String>{};
   final unexportedElements = <String>{};
   final undocumentedElements = <String>{};
 
@@ -156,6 +162,7 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor<void> {
     super.visitElement(element);
 
     if (_isPublicApi(element)) {
+      _verifyInheritsAnnotations(element);
       _verifyHasDocs(element);
       _parseTemplatesAndMacros(element);
     }
@@ -176,6 +183,40 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor<void> {
     super.visitVariableElement(element);
 
     _verifyTypeIsExported(element.type, element);
+  }
+
+  void _verifyInheritsAnnotations(Element element) {
+    final parent = element.enclosingElement;
+
+    if (parent is! ClassElement) return;
+
+    final overrides = parent.allSupertypes
+        .map((e) {
+          if (element is MethodElement) {
+            return e.getMethod(element.name);
+          } else if (element is PropertyAccessorElement && element.isGetter) {
+            return e.getGetter(element.name);
+          } else if (element is PropertyAccessorElement && element.isSetter) {
+            return e.getSetter(element.name);
+          }
+        })
+        .whereNotNull()
+        .toList();
+
+    if (overrides.isEmpty) return;
+
+    for (final override in overrides) {
+      if ((!element.hasInternal && override.hasInternal) ||
+          (!element.hasProtected && override.hasProtected) ||
+          (!element.hasVisibleForOverriding &&
+              override.hasVisibleForOverriding) ||
+          (!element.hasVisibleForTesting && override.hasVisibleForTesting)) {
+        missingInheritedAnnotations.add(
+          '${element.location} vs ${override.location}\n'
+          '${element.metadata} vs ${override.metadata}',
+        );
+      }
+    }
   }
 
   void _parseTemplatesAndMacros(Element element) {

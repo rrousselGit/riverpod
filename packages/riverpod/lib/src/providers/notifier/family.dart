@@ -34,6 +34,7 @@ final class FamilyNotifierProvider //
 
   final NotifierT Function() _createNotifier;
 
+  @internal
   @override
   NotifierT create() => _createNotifier();
 
