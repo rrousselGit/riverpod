@@ -174,7 +174,7 @@ String shortHash(Object? object) {
 mixin ProviderListenable<StateT> implements ProviderListenableOrFamily {
   /// Starts listening to this transformer
   ProviderSubscription<StateT> addListener(
-    Node node,
+    Node source,
     void Function(StateT? previous, StateT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,

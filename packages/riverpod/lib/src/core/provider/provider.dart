@@ -52,22 +52,22 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
 
   @override
   ProviderSubscription<StateT> addListener(
-    Node node,
+    Node source,
     void Function(StateT? previous, StateT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
   }) {
     assert(
-      !fireImmediately || !node.weak,
+      !fireImmediately || !source.weak,
       'Cannot use fireImmediately with weak listeners',
     );
 
     onError ??= Zone.current.handleUncaughtError;
 
-    final element = node.readProviderElement(this);
+    final element = source.readProviderElement(this);
 
-    if (!node.weak) element.flush();
+    if (!source.weak) element.flush();
 
     if (fireImmediately) {
       _handleFireImmediately(
@@ -80,10 +80,10 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
     // Calling before initializing the subscription,
     // to ensure that "hasListeners" represents the state _before_
     // the listener is added
-    element._onListen();
+    element._onListen(weak: source.weak);
 
     return _ProviderStateSubscription<StateT>(
-      node,
+      source,
       listenedElement: element,
       listener: (prev, next) => listener(prev as StateT?, next as StateT),
       onError: onError,

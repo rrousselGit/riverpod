@@ -42,7 +42,9 @@ void Function()? debugCanModifyProviders;
 /// {@endtemplate}
 @internal
 @optionalTypeArgs
-abstract class ProviderElement<StateT> implements WrappedNode {
+abstract class ProviderElement<StateT>
+    with _OnPauseMixin
+    implements WrappedNode {
   /// {@macro riverpod.provider_element_base}
   ProviderElement(this.pointer);
 
@@ -76,17 +78,17 @@ abstract class ProviderElement<StateT> implements WrappedNode {
   /// - all of its listeners are "weak" (i.e. created with `listen(weak: true)`)
   ///
   /// See also [_mayNeedDispose], called when [isActive] may have changed.
-  bool get isActive =>
-      (_dependents?.isNotEmpty ?? false) || _watchDependents.isNotEmpty;
+  bool get isActive => !_isPaused && _activeListenerCount > 0;
+
+  int get _activeListenerCount =>
+      (_dependents?.length ?? 0) + _watchDependents.length;
 
   /// Whether this [ProviderElement] is currently listened to or not.
   ///
   /// This maps to listeners added with `listen` and `watch`,
   /// excluding `listen(weak: true)`.
   bool get hasListeners =>
-      (_dependents?.isNotEmpty ?? false) ||
-      _watchDependents.isNotEmpty ||
-      _weakDependents.isNotEmpty;
+      _activeListenerCount > 0 || _weakDependents.isNotEmpty;
 
   var _dependencies = HashMap<ProviderElement, Object>();
   HashMap<ProviderElement, Object>? _previousDependencies;
@@ -106,8 +108,6 @@ abstract class ProviderElement<StateT> implements WrappedNode {
   bool _mustRecomputeState = false;
   bool _dependencyMayHaveChanged = false;
   bool _didChangeDependency = false;
-
-  var _didCancelOnce = false;
 
   /// Whether the assert that prevents [requireState] from returning
   /// if the state was not set before is enabled.
@@ -227,71 +227,12 @@ This could mean a few things:
     final ref = this.ref = Ref<StateT>._(this);
     buildState(ref);
 
-    // TODO refactor to use notifyListeners();
-    switch (_stateResult!) {
-      case final ResultData<StateT> newState:
-        final onChangeSelfListeners = ref._onChangeSelfListeners;
-        if (onChangeSelfListeners != null) {
-          for (var i = 0; i < onChangeSelfListeners.length; i++) {
-            Zone.current.runBinaryGuarded(
-              onChangeSelfListeners[i],
-              null,
-              newState.state,
-            );
-          }
-        }
-
-        final listeners = _weakDependents.toList(growable: false);
-        for (var i = 0; i < listeners.length; i++) {
-          final listener = listeners[i];
-          if (listener is _ProviderStateSubscription) {
-            Zone.current.runBinaryGuarded(
-              listener.listener,
-              null,
-              newState.state,
-            );
-          }
-        }
-
-        for (final observer in container.observers) {
-          runTernaryGuarded(
-            observer.didAddProvider,
-            origin,
-            newState.state,
-            container,
-          );
-        }
-
-      case final ResultError<StateT> newState:
-        final onErrorSelfListeners = ref._onErrorSelfListeners;
-        if (onErrorSelfListeners != null) {
-          for (var i = 0; i < onErrorSelfListeners.length; i++) {
-            Zone.current.runBinaryGuarded(
-              onErrorSelfListeners[i],
-              newState.error,
-              newState.stackTrace,
-            );
-          }
-        }
-
-        for (final observer in container.observers) {
-          runTernaryGuarded(
-            observer.didAddProvider,
-            origin,
-            null,
-            container,
-          );
-        }
-        for (final observer in container.observers) {
-          runQuaternaryGuarded(
-            observer.providerDidFail,
-            origin,
-            newState.error,
-            newState.stackTrace,
-            container,
-          );
-        }
-    }
+    _notifyListeners(
+      _stateResult!,
+      null,
+      isMount: true,
+      checkUpdateShouldNotify: false,
+    );
   }
 
   /// Called when the override of a provider changes.
@@ -335,8 +276,8 @@ This could mean a few things:
     // Unsubscribe to everything that a provider no longer depends on.
     for (final sub in previousDependencies.entries) {
       sub.key
-        .._watchDependents.remove(this)
-        .._onRemoveListener();
+        .._onRemoveListener(weak: false)
+        .._watchDependents.remove(this);
     }
     _previousDependencies = null;
   }
@@ -461,8 +402,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     Result<StateT> newState,
     Result<StateT>? previousStateResult, {
     bool checkUpdateShouldNotify = true,
+    bool isMount = false,
   }) {
-    if (kDebugMode) _debugAssertNotificationAllowed();
+    if (kDebugMode && !isMount) _debugAssertNotificationAllowed();
 
     final previousState = previousStateResult?.stateOrNull;
 
@@ -503,12 +445,12 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       return;
     }
 
-    final listeners = [..._weakDependents, ...?_dependents];
+    final listeners = [..._weakDependents, if (!isMount) ...?_dependents];
     switch (newState) {
       case final ResultData<StateT> newState:
         for (var i = 0; i < listeners.length; i++) {
           final listener = listeners[i];
-          if (listener is _ProviderStateSubscription) {
+          if (listener is _ProviderStateSubscription && !listener._isPaused) {
             Zone.current.runBinaryGuarded(
               listener.listener,
               previousState,
@@ -519,7 +461,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       case final ResultError<StateT> newState:
         for (var i = 0; i < listeners.length; i++) {
           final listener = listeners[i];
-          if (listener is _ProviderStateSubscription<StateT>) {
+          if (listener is _ProviderStateSubscription<StateT> &&
+              !listener._isPaused) {
             Zone.current.runBinaryGuarded(
               listener.onError,
               newState.error,
@@ -535,13 +478,22 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
 
     for (final observer in container.observers) {
-      runQuaternaryGuarded(
-        observer.didUpdateProvider,
-        origin,
-        previousState,
-        newState.stateOrNull,
-        container,
-      );
+      if (isMount) {
+        runTernaryGuarded(
+          observer.didAddProvider,
+          origin,
+          newState.stateOrNull,
+          container,
+        );
+      } else {
+        runQuaternaryGuarded(
+          observer.didUpdateProvider,
+          origin,
+          previousState,
+          newState.stateOrNull,
+          container,
+        );
+      }
     }
 
     for (final observer in container.observers) {
@@ -600,19 +552,24 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     return result;
   }
 
-  void _onListen() {
+  @override
+  void _onResume() => ref?._onResumeListeners?.forEach(runGuarded);
+
+  @override
+  void _onCancel() => ref?._onCancelListeners?.forEach(runGuarded);
+
+  void _onListen({required bool weak}) {
+    if (!weak && _isPaused && _activeListenerCount == 0) resume();
+
     ref?._onAddListeners?.forEach(runGuarded);
-    if (_didCancelOnce && !hasListeners) {
-      ref?._onResumeListeners?.forEach(runGuarded);
-    }
   }
 
-  void _onRemoveListener() {
-    ref?._onRemoveListeners?.forEach(runGuarded);
-    if (!hasListeners) {
-      _didCancelOnce = true;
-      ref?._onCancelListeners?.forEach(runGuarded);
+  void _onRemoveListener({required bool weak}) {
+    if (!weak && _activeListenerCount == 1) {
+      pause();
     }
+
+    ref?._onRemoveListeners?.forEach(runGuarded);
     _mayNeedDispose();
   }
 
@@ -672,7 +629,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     ref._onRemoveListeners = null;
     ref._onChangeSelfListeners = null;
     ref._onErrorSelfListeners = null;
-    _didCancelOnce = false;
+    _pauseCount = 0;
 
     assert(
       ref._keepAliveLinks == null || ref._keepAliveLinks!.isEmpty,
@@ -700,8 +657,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     ref = null;
 
     for (final sub in _dependencies.entries) {
+      sub.key._onRemoveListener(weak: false);
       sub.key._watchDependents.remove(this);
-      sub.key._onRemoveListener();
     }
     _dependencies.clear();
   }
