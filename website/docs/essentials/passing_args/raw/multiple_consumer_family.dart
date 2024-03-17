@@ -26,8 +26,8 @@ class Example extends ConsumerWidget {
         // Both requests will happen in parallel and correctly be cached.
         return Column(
           children: [
-            Text(recreational.valueOrNull?.activity ?? ''),
-            Text(cooking.valueOrNull?.activity ?? ''),
+            Text(recreational.value?.activity ?? ''),
+            Text(cooking.value?.activity ?? ''),
           ],
         );
       },

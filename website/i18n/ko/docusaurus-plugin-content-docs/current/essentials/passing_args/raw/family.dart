@@ -4,7 +4,8 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../first_request/raw/activity.dart';
 
-FutureOr<Activity> fetchActivity(String activityType) => throw UnimplementedError();
+FutureOr<Activity> fetchActivity(String activityType) =>
+    throw UnimplementedError();
 
 /* SNIPPET START */
 // "함수형" provider
@@ -26,8 +27,8 @@ final activityProvider2 = AsyncNotifierProvider.autoDispose
 
 // notifiers에 '.family'를 사용할 때는 notifier 서브클래스를 변경해야 합니다:
 // AsyncNotifier -> FamilyAsyncNotifier
-// AutoDisposeAsyncNotifier -> AutoDisposeFamilyAsyncNotifier
-class ActivityNotifier extends AutoDisposeFamilyAsyncNotifier<Activity, String> {
+// AsyncNotifier -> FamilyAsyncNotifier
+class ActivityNotifier extends FamilyAsyncNotifier<Activity, String> {
   /// Family 인자는 빌드 메서드에 전달되며 this.arg로 액세스할 수 있습니다.
   @override
   Future<Activity> build(String activityType) async {

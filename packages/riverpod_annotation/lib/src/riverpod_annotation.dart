@@ -17,7 +17,7 @@ import '../riverpod_annotation.dart';
 /// {@endtemplate}
 @Target({TargetKind.classType, TargetKind.function})
 @sealed
-class Riverpod {
+final class Riverpod {
   /// {@macro riverpod_annotation.provider}
   const Riverpod({
     this.keepAlive = false,
@@ -46,10 +46,18 @@ class Riverpod {
   /// // By not specifying "dependencies", we are saying that this provider is never scoped
   /// @riverpod
   /// Foo root(RootRef ref) => Foo();
+  ///
   /// // By specifying "dependencies" (even if the list is empty),
   /// // we are saying that this provider is potentially scoped
   /// @Riverpod(dependencies: [])
   /// Foo scoped(ScopedRef ref) => Foo();
+  ///
+  /// // Alternatively, notifiers with an abstract build method are also considered scoped
+  /// @riverpod
+  /// class MyNotifier extends _$MyNotifier {
+  ///  @override
+  ///  int build();
+  /// }
   /// ```
   ///
   /// Then if we were to depend on `rootProvider` in a scoped provider, we
@@ -94,7 +102,19 @@ class Riverpod {
   /// In that scenario, the `dependencies` parameter is required and it must
   /// include `scopedProvider`.
   ///
+  /// **Note**:
+  /// It is not necessary to specify an empty "dependencies" on notifiers with
+  /// an abstract build method:
+  /// ```dart
+  /// @riverpod
+  /// class MyNotifier extends _$MyNotifier {
+  ///   @override
+  ///   int build(); // Valid, marks this notifier as scoped
+  /// }
+  /// ```
+  ///
   /// See also:
+  /// - [Dependencies], for specifying dependencies on non-providers.
   /// - [provider_dependencies](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint#provider_dependencies-riverpod_generator-only)
   ///   and [scoped_providers_should_specify_dependencies](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint#scoped_providers_should_specify_dependencies-generator-only).\
   ///   These are lint rules that will warn about incorrect `dependencies` usages.
@@ -166,3 +186,92 @@ class ProviderFor {
 ///
 /// {@endtemplate}
 typedef Raw<T> = T;
+
+/// An exception thrown when a scoped provider is accessed when not yet overridden.
+class MissingScopeException implements Exception {
+  /// An exception thrown when a scoped provider is accessed when not yet overridden.
+  MissingScopeException(this.ref);
+
+  /// The [Ref] that threw the exception
+  final Ref<Object?> ref;
+
+  @override
+  String toString() {
+    final element = ref.$element;
+
+    return 'MissingScopeException: The provider ${element.origin} is scoped, '
+        'but was accessed in a place where it is not overridden. '
+        'Either you forgot to override the provider, or you tried to read it outside of where it is defined';
+  }
+}
+
+/// {@template riverpod_annotation.dependencies}
+/// An annotation to be specified on non-provider objects that use scoped providers.
+///
+/// This is equivalent to `@Riverpod(dependencies: [])`, but for non-provider objects.
+/// This is most commonly used on `Consumer`s, but can be used on anything,
+/// including functions.
+///
+/// The sole purpose of this annotation is to notify the linter
+/// that an object uses a scoped provider.
+/// It then enables the linter to warn in case this object is used in a place
+/// where the scoped provider is not overridden.
+///
+/// ## Usage example:
+///
+/// Consider the following scoped provider:
+/// ```dart
+/// @Riverpod(dependencies: [])
+/// String selectedBookID(SelectedBookIDRef ref)  => throw UnimplementedError();
+/// ```
+///
+/// Since this provider is scoped, we should specify `@Dependencies` on any object
+/// that uses it.
+/// For instance, a `Consumer`:
+///
+/// ```dart
+/// @Dependencies([selectedBookID])
+/// class BookView extends ConsumerWidget {
+///   @override
+///   Widget build(BuildContext context, WidgetRef ref) {
+///     final selectedBookID = ref.watch(selectedBookIDProvider);
+///     return Text(selectedBookID);
+///   }
+/// }
+/// ```
+///
+/// By doing so, using `BooKView` now requires either:
+/// - overriding `selectedBookIDProvider` in a `ProviderScope` that is an ancestor
+///   of `BookView`:
+///   ```dart
+///   ProviderScope(
+///     overrides: [
+///       selectedBookIDProvider.overrideWithValue('myBookID'),
+///     ],
+///     child: BookView(),
+///   ),
+///   ```
+/// - or using `BookView` in a widget that also specifies `@Dependencies([selectedBookID])`:
+///   ```dart
+///   @Dependencies([selectedBookID])
+///   class MyWidget extends StatelessWidget {
+///     @override
+///     Widget build(BuildContext context) {
+///       return BookView();
+///     }
+///   }
+///   ```
+///
+/// Failing to do so will result in a linter warning.
+///
+/// **Note**: When using a `StatefulWidget` (or variant),
+/// there is no need to specify `@Dependencies` on the `State` class.
+/// Specifying it on the `StatefulWidget` is enough.
+/// {@endtemplate}
+class Dependencies {
+  /// {@macro riverpod_annotation.dependencies}
+  const Dependencies(this.dependencies);
+
+  /// {@macro riverpod_annotation.dependencies}
+  final List<Object> dependencies;
+}

@@ -39,7 +39,8 @@ class _ExampleState extends ConsumerState<Example> {
       builder: (context, snapshot) {
         // 오류 상태가 있는지 여부를 계산합니다.
         // 연결 상태(connectionState) 확인은 연산을 다시 시도할 때 처리합니다.
-        final isErrored = snapshot.hasError && snapshot.connectionState != ConnectionState.waiting;
+        final isErrored = snapshot.hasError &&
+            snapshot.connectionState != ConnectionState.waiting;
 
         return Row(
           children: [
@@ -52,7 +53,9 @@ class _ExampleState extends ConsumerState<Example> {
               ),
               onPressed: () {
                 // addTodo가 반환한 future를 변수에 보관합니다.
-                final future = ref.read(todoListProvider.notifier).addTodo(Todo(description: 'This is a new todo'));
+                final future = ref
+                    .read(todoListProvider.notifier)
+                    .addTodo(Todo(description: 'This is a new todo'));
 
                 // 해당 future를 로컬 상태에 저장합니다.
                 setState(() {
@@ -65,7 +68,7 @@ class _ExampleState extends ConsumerState<Example> {
             if (snapshot.connectionState == ConnectionState.waiting) ...[
               const SizedBox(width: 8),
               const CircularProgressIndicator(),
-            ]
+            ],
           ],
         );
       },

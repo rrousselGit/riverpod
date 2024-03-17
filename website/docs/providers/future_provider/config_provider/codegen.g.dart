@@ -8,22 +8,61 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+typedef FetchConfigurationRef = Ref<AsyncValue<Configuration>>;
+
+@ProviderFor(fetchConfiguration)
+const fetchConfigurationProvider = FetchConfigurationProvider._();
+
+final class FetchConfigurationProvider extends $FunctionalProvider<
+        AsyncValue<Configuration>, FutureOr<Configuration>>
+    with
+        $FutureModifier<Configuration>,
+        $FutureProvider<Configuration, FetchConfigurationRef> {
+  const FetchConfigurationProvider._(
+      {FutureOr<Configuration> Function(
+        FetchConfigurationRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          name: r'fetchConfigurationProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final FutureOr<Configuration> Function(
+    FetchConfigurationRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$fetchConfigurationHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<Configuration> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
+
+  @override
+  FetchConfigurationProvider $copyWithCreate(
+    FutureOr<Configuration> Function(
+      FetchConfigurationRef ref,
+    ) create,
+  ) {
+    return FetchConfigurationProvider._(create: create);
+  }
+
+  @override
+  FutureOr<Configuration> create(FetchConfigurationRef ref) {
+    final _$cb = _createCb ?? fetchConfiguration;
+    return _$cb(ref);
+  }
+}
+
 String _$fetchConfigurationHash() =>
     r'6c0f062e6f20baf883c4282856f1197fbe633d89';
 
-/// See also [fetchConfiguration].
-@ProviderFor(fetchConfiguration)
-final fetchConfigurationProvider =
-    AutoDisposeFutureProvider<Configuration>.internal(
-  fetchConfiguration,
-  name: r'fetchConfigurationProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$fetchConfigurationHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef FetchConfigurationRef = AutoDisposeFutureProviderRef<Configuration>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member

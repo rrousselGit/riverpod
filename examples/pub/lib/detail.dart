@@ -12,7 +12,7 @@ import 'search.dart';
 
 part 'detail.g.dart';
 
-extension CancelTokenX on Ref {
+extension CancelTokenX on Ref<Object?> {
   CancelToken cancelToken() {
     final cancelToken = CancelToken();
     onDispose(cancelToken.cancel);
@@ -105,7 +105,7 @@ class PackageDetailPage extends ConsumerWidget {
         ref.watch(fetchPackageDetailsProvider(packageName: packageName));
 
     final likedPackages = ref.watch(likedPackagesProvider);
-    final isLiked = likedPackages.valueOrNull?.contains(packageName) ?? false;
+    final isLiked = likedPackages.value?.contains(packageName) ?? false;
 
     final metrics = ref.watch(packageMetricsProvider(packageName: packageName));
 

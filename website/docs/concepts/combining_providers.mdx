@@ -128,7 +128,7 @@ final repositoryProvider = Provider(Repository.new);
 class Repository {
   Repository(this.ref);
 
-  final Ref ref;
+  final Ref<Repository> ref;
 
   Future<Catalog> fetchCatalog() async {
     String token = ref.read(userTokenProvider);

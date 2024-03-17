@@ -1,9 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'utils.dart';
+import 'package:riverpod/legacy.dart';
 
 void main() {
   testWidgets('Riverpod test', (tester) async {
@@ -190,8 +190,7 @@ void main() {
     expect(find.byType(Container), findsOneWidget);
     expect(buildCount, 1);
 
-    // ignore: unawaited_futures
-    tester.binding.reassembleApplication();
+    unawaited(tester.binding.reassembleApplication());
     await tester.pump();
 
     expect(find.byType(Container), findsOneWidget);
@@ -452,7 +451,7 @@ void main() {
     final provider = StateNotifierProvider<TestNotifier, int>((_) => notifier);
     final computed = Provider((ref) => !ref.watch(provider).isNegative);
     var buildCount = 0;
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     await tester.pumpWidget(
       UncontrolledProviderScope(
@@ -478,104 +477,18 @@ void main() {
     expect(find.text('isPositive true'), findsOneWidget);
     expect(buildCount, 1);
 
-    notifier.value = -10;
+    notifier.state = -10;
     await tester.pump();
 
     expect(find.text('isPositive false'), findsOneWidget);
     expect(buildCount, 2);
 
-    notifier.value = -5;
+    notifier.state = -5;
     await tester.pump();
 
     expect(find.text('isPositive false'), findsOneWidget);
     expect(buildCount, 2);
   });
-
-  // testWidgets('remove listener when changing container', (tester) async {
-  //   final notifier = TestNotifier();
-  //   final provider = StateNotifierProvider<TestNotifier, int>((_) {
-  //     return notifier;
-  //   }, name: 'provider');
-  //   final notifier2 = TestNotifier(42);
-  //   const firstOwnerKey = Key('first');
-  //   const secondOwnerKey = Key('second');
-  //   final key = GlobalKey();
-
-  //   final consumer = Consumer(
-  //       builder: (context, ref, _) {
-  //         final value = ref.watch(provider);
-  //         return Text('$value', textDirection: TextDirection.ltr);
-  //       },
-  //       key: key);
-
-  //   await tester.pumpWidget(
-  //     Column(
-  //       children: [
-  //         ProviderScope(
-  //           key: firstOwnerKey,
-  //           child: consumer,
-  //         ),
-  //         ProviderScope(
-  //           key: secondOwnerKey,
-  //           overrides: [
-  //             provider.overrideWithValue(notifier2),
-  //           ],
-  //           child: Container(),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-
-  //   final owner1 = tester //
-  //       .firstState<ProviderScopeState>(find.byKey(firstOwnerKey))
-  //       .container;
-
-  //   final state1 = owner1
-  //       .getAllProviderElements()
-  //       .firstWhere((s) => s.provider == provider);
-
-  //   expect(state1.hasListeners, true);
-  //   expect(find.text('0'), findsOneWidget);
-
-  //   await tester.pumpWidget(
-  //     Column(
-  //       children: [
-  //         ProviderScope(
-  //           key: firstOwnerKey,
-  //           child: Container(),
-  //         ),
-  //         ProviderScope(
-  //           key: secondOwnerKey,
-  //           overrides: [
-  //             provider.overrideWithValue(notifier2),
-  //           ],
-  //           child: consumer,
-  //         ),
-  //       ],
-  //     ),
-  //   );
-
-  //   final container2 = tester //
-  //       .firstState<ProviderScopeState>(find.byKey(secondOwnerKey))
-  //       .container;
-
-  //   final state2 = container2
-  //       .getAllProviderElements()
-  //       .firstWhere((s) => s.provider is StateNotifierProvider);
-
-  //   expect(find.text('0'), findsNothing);
-  //   expect(find.text('42'), findsOneWidget);
-  //   expect(state1.hasListeners, false);
-  //   expect(state2.hasListeners, true);
-
-  //   notifier2.increment();
-  //   await tester.pump();
-
-  //   expect(find.text('0'), findsNothing);
-  //   expect(find.text('43'), findsOneWidget);
-  //   expect(state1.hasListeners, false);
-  //   expect(state2.hasListeners, true);
-  // });
 
   testWidgets('remove listener when destroying the consumer', (tester) async {
     final notifier = TestNotifier();
@@ -760,8 +673,8 @@ class TestNotifier extends StateNotifier<int> {
 
   void increment() => state++;
 
-  // ignore: avoid_setters_without_getters
-  set value(int value) => state = value;
+  @override
+  int get state;
 }
 
 final _provider = Provider((ref) => 'hello world');

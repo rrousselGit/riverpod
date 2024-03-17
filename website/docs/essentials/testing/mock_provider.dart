@@ -3,7 +3,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'create_container.dart';
 import 'full_widget_test.dart';
 import 'provider_to_mock/raw.dart';
 
@@ -13,8 +12,8 @@ void main() {
       const ProviderScope(child: YourWidgetYouWantToTest()),
     );
     /* SNIPPET START */
-    // In unit tests, by reusing our previous "createContainer" utility.
-    final container = createContainer(
+    // In unit tests, containers are created using `ProviderContainer.test`.
+    final container = ProviderContainer.test(
       // We can specify a list of providers to mock:
       overrides: [
         // In this case, we are mocking "exampleProvider".

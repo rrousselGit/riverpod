@@ -8,4 +8,3 @@ part 'codegen.g.dart';
 String city(CityRef ref) => 'London';
 @riverpod
 String country(CountryRef ref) => 'England';
-

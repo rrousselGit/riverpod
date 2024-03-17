@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/legacy.dart';
 
 import 'todo.dart';
 
@@ -10,7 +11,7 @@ final activeFilterKey = UniqueKey();
 final completedFilterKey = UniqueKey();
 final allFilterKey = UniqueKey();
 
-/// Creates a [TodoList] and initialise it with pre-defined values.
+/// Creates a [TodoList] and initialize it with pre-defined values.
 ///
 /// We are using [StateNotifierProvider] here as a `List<Todo>` is a complex
 /// object, with advanced business logic like how to edit a todo.
@@ -35,7 +36,7 @@ final todoListFilter = StateProvider((_) => TodoListFilter.all);
 /// Even multiple widgets try to read the number of uncompleted todos,
 /// the value will be computed only once (until the todo-list changes).
 ///
-/// This will also optimise unneeded rebuilds if the todo-list changes, but the
+/// This will also optimize unneeded rebuilds if the todo-list changes, but the
 /// number of uncompleted todos doesn't (such as when editing a todo).
 final uncompletedTodosCount = Provider<int>((ref) {
   return ref.watch(todoListProvider).where((todo) => !todo.completed).length;
@@ -223,7 +224,10 @@ class Title extends StatelessWidget {
 ///
 /// This ensures that when we add/remove/edit todos, only what the
 /// impacted widgets rebuilds, instead of the entire list of items.
-final _currentTodo = Provider<Todo>((ref) => throw UnimplementedError());
+final _currentTodo = Provider<Todo>(
+  dependencies: const [],
+  (ref) => throw UnimplementedError(),
+);
 
 /// The widget that that displays the components of an individual Todo Item
 class TodoItem extends HookConsumerWidget {

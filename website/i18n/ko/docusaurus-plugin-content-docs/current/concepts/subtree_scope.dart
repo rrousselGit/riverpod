@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 /* SNIPPET START */
 
@@ -23,36 +24,37 @@ class Home extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-        body: Column(
-      children: [
-        ProviderScope(
-          /// Just specify which provider you want to have a copy of in the subtree
-          ///
-          /// Note that dependant providers such as [adjustedCountProvider] will
-          /// also be copied for this subtree. If that is not the behavior you want,
-          /// consider using families instead
-          overrides: [counterProvider],
-          child: const CounterDisplay(),
-        ),
-        ProviderScope(
-          // You can change the provider's behavior in a particular subtree
-          overrides: [counterProvider.overrideWith((ref) => 1)],
-          child: const CounterDisplay(),
-        ),
-        ProviderScope(
-          overrides: [
-            counterProvider,
-            // You can also change dependent provider's behaviors
-            adjustedCountProvider.overrideWith(
-              (ref) => ref.watch(counterProvider) * 3,
-            ),
-          ],
-          child: const CounterDisplay(),
-        ),
-        // This particular display will use the provider state from the root ProviderScope
-        const CounterDisplay(),
-      ],
-    ));
+      body: Column(
+        children: [
+          ProviderScope(
+            /// Just specify which provider you want to have a copy of in the subtree
+            ///
+            /// Note that dependant providers such as [adjustedCountProvider] will
+            /// also be copied for this subtree. If that is not the behavior you want,
+            /// consider using families instead
+            overrides: [counterProvider],
+            child: const CounterDisplay(),
+          ),
+          ProviderScope(
+            // You can change the provider's behavior in a particular subtree
+            overrides: [counterProvider.overrideWith((ref) => 1)],
+            child: const CounterDisplay(),
+          ),
+          ProviderScope(
+            overrides: [
+              counterProvider,
+              // You can also change dependent provider's behaviors
+              adjustedCountProvider.overrideWith(
+                (ref) => ref.watch(counterProvider) * 3,
+              ),
+            ],
+            child: const CounterDisplay(),
+          ),
+          // This particular display will use the provider state from the root ProviderScope
+          const CounterDisplay(),
+        ],
+      ),
+    );
   }
 }
 

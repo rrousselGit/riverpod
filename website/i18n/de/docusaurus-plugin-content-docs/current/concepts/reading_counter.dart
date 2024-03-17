@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 
 final repositoryProvider = Provider((ref) => Repository());
@@ -15,7 +16,7 @@ final counterProvider = StateNotifierProvider<Counter, int>((ref) {
 class Counter extends StateNotifier<int> {
   Counter(this.ref) : super(0);
 
-  final Ref ref;
+  final Ref<int> ref;
 
   void increment() {
     // Counter kann "ref" dazu benutzen um andere Provider auszulesen

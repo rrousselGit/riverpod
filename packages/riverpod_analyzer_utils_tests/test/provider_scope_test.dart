@@ -43,11 +43,10 @@ class Example extends ConsumerWidget {
     return ProviderScope(child: Text('foo'));
   }
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     final scopes = result.providerScopeInstanceCreationExpressions;
-    final consumer = result.consumerWidgetDeclarations.single;
 
     final provider =
         result.legacyProviderDeclarations.takeAll(['provider']).values.single;
@@ -66,49 +65,49 @@ class Example extends ConsumerWidget {
     expect(scopes[1].overrides!.overrides, hasLength(6));
     expect(
       scopes[1].overrides!.node.toSource(),
-      'overrides: [provider.overrideWith((ref) => 0), provider.overrideWithValue(42), provider, family(42), family.overrideWith((ref, id) => 0), family(42).overrideWith((ref) => 0)]',
+      '[provider.overrideWith((ref) => 0), provider.overrideWithValue(42), provider, family(42), family.overrideWith((ref, id) => 0), family(42).overrideWith((ref) => 0)]',
     );
     {
       expect(
-        scopes[1].overrides!.overrides![0].providerElement,
+        scopes[1].overrides!.overrides![0].provider?.providerElement,
         same(provider.providerElement),
       );
       expect(
-        scopes[1].overrides!.overrides![0].expression.toSource(),
+        scopes[1].overrides!.overrides![0].node.toSource(),
         'provider.overrideWith((ref) => 0)',
       );
       expect(
-        scopes[1].overrides!.overrides![0].provider!.toSource(),
+        scopes[1].overrides!.overrides![0].provider!.node.toSource(),
         'provider',
       );
       expect(scopes[1].overrides!.overrides![0].familyArguments, null);
     }
     {
       expect(
-        scopes[1].overrides!.overrides![1].providerElement,
+        scopes[1].overrides!.overrides![1].provider?.providerElement,
         same(provider.providerElement),
       );
       expect(
-        scopes[1].overrides!.overrides![1].expression.toSource(),
+        scopes[1].overrides!.overrides![1].node.toSource(),
         'provider.overrideWithValue(42)',
       );
       expect(
-        scopes[1].overrides!.overrides![1].provider!.toSource(),
+        scopes[1].overrides!.overrides![1].provider!.node.toSource(),
         'provider',
       );
       expect(scopes[1].overrides!.overrides![1].familyArguments, null);
     }
     {
       expect(
-        scopes[1].overrides!.overrides![2].providerElement,
+        scopes[1].overrides!.overrides![2].provider?.providerElement,
         same(provider.providerElement),
       );
       expect(
-        scopes[1].overrides!.overrides![2].expression.toSource(),
+        scopes[1].overrides!.overrides![2].node.toSource(),
         'provider',
       );
       expect(
-        scopes[1].overrides!.overrides![2].provider!.toSource(),
+        scopes[1].overrides!.overrides![2].provider!.node.toSource(),
         'provider',
       );
       expect(scopes[1].overrides!.overrides![2].familyArguments, null);
@@ -116,15 +115,15 @@ class Example extends ConsumerWidget {
 
     {
       expect(
-        scopes[1].overrides!.overrides![3].providerElement,
+        scopes[1].overrides!.overrides![3].provider?.providerElement,
         same(family.providerElement),
       );
       expect(
-        scopes[1].overrides!.overrides![3].expression.toSource(),
+        scopes[1].overrides!.overrides![3].node.toSource(),
         'family(42)',
       );
       expect(
-        scopes[1].overrides!.overrides![3].provider!.toSource(),
+        scopes[1].overrides!.overrides![3].provider!.node.toSource(),
         'family',
       );
       expect(
@@ -134,30 +133,30 @@ class Example extends ConsumerWidget {
     }
     {
       expect(
-        scopes[1].overrides!.overrides![4].providerElement,
+        scopes[1].overrides!.overrides![4].provider?.providerElement,
         same(family.providerElement),
       );
       expect(
-        scopes[1].overrides!.overrides![4].expression.toSource(),
+        scopes[1].overrides!.overrides![4].node.toSource(),
         'family.overrideWith((ref, id) => 0)',
       );
       expect(
-        scopes[1].overrides!.overrides![4].provider!.toSource(),
+        scopes[1].overrides!.overrides![4].provider!.node.toSource(),
         'family',
       );
       expect(scopes[1].overrides!.overrides![4].familyArguments, null);
     }
     {
       expect(
-        scopes[1].overrides!.overrides![5].providerElement,
+        scopes[1].overrides!.overrides![5].provider?.providerElement,
         same(family.providerElement),
       );
       expect(
-        scopes[1].overrides!.overrides![5].expression.toSource(),
+        scopes[1].overrides!.overrides![5].node.toSource(),
         'family(42).overrideWith((ref) => 0)',
       );
       expect(
-        scopes[1].overrides!.overrides![5].provider!.toSource(),
+        scopes[1].overrides!.overrides![5].provider!.node.toSource(),
         'family',
       );
       expect(
@@ -171,7 +170,7 @@ class Example extends ConsumerWidget {
       'ProviderScope(overrides: fn(), child: Container())',
     );
     expect(scopes[2].overrides!.overrides, null);
-    expect(scopes[2].overrides!.node.toSource(), 'overrides: fn()');
+    expect(scopes[2].overrides!.node.toSource(), 'fn()');
 
     expect(
       scopes[3].node.toSource(),
@@ -180,22 +179,20 @@ class Example extends ConsumerWidget {
     expect(scopes[3].overrides?.overrides, hasLength(1));
     expect(
       scopes[3].overrides!.node.toSource(),
-      'overrides: [() {return provider;}()]',
+      '[() {return provider;}()]',
     );
     expect(
-      scopes[3].overrides?.overrides?.single.expression.toSource(),
+      scopes[3].overrides?.overrides?.single.node.toSource(),
       '() {return provider;}()',
     );
-    expect(scopes[3].overrides?.overrides?.single.providerElement, null);
-    expect(scopes[3].overrides?.overrides?.single.provider, null);
-    expect(scopes[3].overrides?.overrides?.single.familyArguments, null);
+    expect(
+      scopes[3].overrides?.overrides?.single.provider?.providerElement,
+      null,
+    );
+    expect(scopes[3].overrides!.overrides!.single.provider, null);
+    expect(scopes[3].overrides!.overrides!.single.familyArguments, null);
 
     expect(scopes[4].node.toSource(), "ProviderScope(child: Text('foo'))");
     expect(scopes[4].overrides, null);
-    expect(consumer.providerScopeInstanceCreateExpressions, hasLength(1));
-    expect(
-      consumer.providerScopeInstanceCreateExpressions.single,
-      same(scopes[4]),
-    );
   });
 }
