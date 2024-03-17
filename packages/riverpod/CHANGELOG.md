@@ -22,6 +22,8 @@
 - An error is now thrown when trying to override a provider twice in the same
   `ProviderContainer`.
 - Disposing a `ProviderContainer` now disposes of all of its sub `ProviderContainers` too.
+- Added `ProviderSubscription.pause()`/`.resume()`.
+  This enables temporarily stopping the subscription to a provider, without it possibly loosing its state when using `autoDispose`.
 - Added `ProviderContainer.test()`. This is a custom constructor for testing
   purpose. It is meant to replace the `createContainer` utility.
 - Added `NotifierProvider.overrideWithBuild`, to override `Notifier.build` without
