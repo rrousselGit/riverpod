@@ -15,6 +15,9 @@
 - `Stream/FutureProvider.overrideWithValue` was added back.
 - **Breaking**: `Notifier` and variants are now recreated whenever the provider
   rebuilds. This enables using `Ref.mounted` to check dispose.
+- **Breaking**: A provider is now considered "paused" if all
+  of its listeners are also paused. So if a provider `A` is watched _only_  by a provider `B`, and `B` is currently unused,
+  then `A` will be paused.
 - Added `Ref.listen(..., weak: true)`.
   When specifying `weak: true`, the listener will not cause the provider to be
   initialized. This is useful when wanting to react to changes to a provider,
