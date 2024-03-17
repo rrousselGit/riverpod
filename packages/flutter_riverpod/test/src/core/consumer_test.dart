@@ -6,6 +6,43 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:riverpod/legacy.dart';
 
 void main() {
+  group('_ListenManual', () {
+    testWidgets('handles pause/resume', (tester) async {
+      late WidgetRef ref;
+      late ProviderSubscription<int> sub;
+      final provider = Provider((ref) => 0);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: Consumer(
+            builder: (context, r, child) {
+              ref = r;
+              sub = ref.listenManual(
+                provider,
+                (_, __) {},
+              );
+              return const SizedBox();
+            },
+          ),
+        ),
+      );
+
+      final container = ProviderScope.containerOf(ref.context);
+      // ignore: invalid_use_of_internal_member
+      final element = container.readProviderElement(provider);
+
+      expect(element.isActive, true);
+
+      sub.pause();
+
+      expect(element.isActive, false);
+
+      sub.resume();
+
+      expect(element.isActive, true);
+    });
+  });
+
   testWidgets('Riverpod test', (tester) async {
     // Regression test for https://github.com/rrousselGit/riverpod/pull/3156
 
