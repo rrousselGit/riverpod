@@ -828,6 +828,25 @@ void main() {
     });
 
     group('listen', () {
+      test('does not invoke the listener if paused', () {
+        final container = ProviderContainer.test();
+        final listener = Listener<int>();
+        late Ref<int> ref;
+        final provider = Provider<int>((r) {
+          ref = r;
+          return 0;
+        });
+
+        final sub = container.listen(provider, listener.call);
+        sub.pause();
+
+        verifyZeroInteractions(listener);
+
+        ref.notifyListeners();
+
+        verifyZeroInteractions(listener);
+      });
+
       group('weak', () {
         test('Mounts the element but does not initialize the provider', () {
           final container = ProviderContainer.test();

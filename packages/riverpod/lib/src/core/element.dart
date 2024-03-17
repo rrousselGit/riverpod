@@ -227,71 +227,12 @@ This could mean a few things:
     final ref = this.ref = Ref<StateT>._(this);
     buildState(ref);
 
-    // TODO refactor to use notifyListeners();
-    switch (_stateResult!) {
-      case final ResultData<StateT> newState:
-        final onChangeSelfListeners = ref._onChangeSelfListeners;
-        if (onChangeSelfListeners != null) {
-          for (var i = 0; i < onChangeSelfListeners.length; i++) {
-            Zone.current.runBinaryGuarded(
-              onChangeSelfListeners[i],
-              null,
-              newState.state,
-            );
-          }
-        }
-
-        final listeners = _weakDependents.toList(growable: false);
-        for (var i = 0; i < listeners.length; i++) {
-          final listener = listeners[i];
-          if (listener is _ProviderStateSubscription) {
-            Zone.current.runBinaryGuarded(
-              listener.listener,
-              null,
-              newState.state,
-            );
-          }
-        }
-
-        for (final observer in container.observers) {
-          runTernaryGuarded(
-            observer.didAddProvider,
-            origin,
-            newState.state,
-            container,
-          );
-        }
-
-      case final ResultError<StateT> newState:
-        final onErrorSelfListeners = ref._onErrorSelfListeners;
-        if (onErrorSelfListeners != null) {
-          for (var i = 0; i < onErrorSelfListeners.length; i++) {
-            Zone.current.runBinaryGuarded(
-              onErrorSelfListeners[i],
-              newState.error,
-              newState.stackTrace,
-            );
-          }
-        }
-
-        for (final observer in container.observers) {
-          runTernaryGuarded(
-            observer.didAddProvider,
-            origin,
-            null,
-            container,
-          );
-        }
-        for (final observer in container.observers) {
-          runQuaternaryGuarded(
-            observer.providerDidFail,
-            origin,
-            newState.error,
-            newState.stackTrace,
-            container,
-          );
-        }
-    }
+    _notifyListeners(
+      _stateResult!,
+      null,
+      isMount: true,
+      checkUpdateShouldNotify: false,
+    );
   }
 
   /// Called when the override of a provider changes.
@@ -461,8 +402,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     Result<StateT> newState,
     Result<StateT>? previousStateResult, {
     bool checkUpdateShouldNotify = true,
+    bool isMount = false,
   }) {
-    if (kDebugMode) _debugAssertNotificationAllowed();
+    if (kDebugMode && !isMount) _debugAssertNotificationAllowed();
 
     final previousState = previousStateResult?.stateOrNull;
 
@@ -503,7 +445,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       return;
     }
 
-    final listeners = [..._weakDependents, ...?_dependents];
+    final listeners = [..._weakDependents, if (!isMount) ...?_dependents];
     switch (newState) {
       case final ResultData<StateT> newState:
         for (var i = 0; i < listeners.length; i++) {
@@ -535,13 +477,22 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
 
     for (final observer in container.observers) {
-      runQuaternaryGuarded(
-        observer.didUpdateProvider,
-        origin,
-        previousState,
-        newState.stateOrNull,
-        container,
-      );
+      if (isMount) {
+        runTernaryGuarded(
+          observer.didAddProvider,
+          origin,
+          newState.stateOrNull,
+          container,
+        );
+      } else {
+        runQuaternaryGuarded(
+          observer.didUpdateProvider,
+          origin,
+          previousState,
+          newState.stateOrNull,
+          container,
+        );
+      }
     }
 
     for (final observer in container.observers) {
