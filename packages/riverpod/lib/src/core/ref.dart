@@ -567,7 +567,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
       }
 
       element
-        .._onListen()
+        .._onListen(weak: false)
         .._watchDependents.add(_element);
 
       return Object();

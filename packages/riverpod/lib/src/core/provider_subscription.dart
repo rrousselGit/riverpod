@@ -22,6 +22,9 @@ abstract base class ProviderSubscription<StateT> {
   bool get closed => _closed;
   var _closed = false;
 
+  void pause();
+  void resume();
+
   /// Obtain the latest value emitted by the provider.
   ///
   /// This method throws if [closed] is true.
@@ -42,10 +45,35 @@ abstract base class ProviderSubscription<StateT> {
   }
 }
 
+mixin _OnPauseMixin {
+  bool get _isPaused => _pauseCount > 0;
+  var _pauseCount = 0;
+
+  @mustCallSuper
+  void pause() {
+    if (_pauseCount == 0) {
+      _onCancel();
+    }
+    _pauseCount = max(_pauseCount + 1, 0);
+  }
+
+  @mustCallSuper
+  void resume() {
+    if (_pauseCount == 1) {
+      _onResume();
+    }
+    _pauseCount = min(_pauseCount - 1, 0);
+  }
+
+  void _onResume();
+
+  void _onCancel();
+}
+
 /// When a provider listens to another provider using `listen`
 @optionalTypeArgs
 final class _ProviderStateSubscription<StateT>
-    extends ProviderSubscription<StateT> {
+    extends ProviderSubscription<StateT> with _OnPauseMixin {
   _ProviderStateSubscription(
     super.source, {
     required this.listenedElement,
@@ -80,17 +108,23 @@ final class _ProviderStateSubscription<StateT>
   @override
   void close() {
     if (!closed) {
+      listenedElement._onRemoveListener(weak: source.weak);
       switch (source) {
         case WeakNode():
           listenedElement._weakDependents.remove(this);
         case _:
           listenedElement._dependents?.remove(this);
       }
-      listenedElement._onRemoveListener();
     }
 
     super.close();
   }
+
+  @override
+  void _onCancel() => listenedElement.pause();
+
+  @override
+  void _onResume() => listenedElement.resume();
 }
 
 /// Deals with the internals of synchronously calling the listeners

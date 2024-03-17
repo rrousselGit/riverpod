@@ -31,6 +31,12 @@ final class _ProxySubscription<StateT> extends ProviderSubscription<StateT> {
 
     super.close();
   }
+
+  @override
+  void pause() => innerSubscription.pause();
+
+  @override
+  void resume() => innerSubscription.resume();
 }
 
 /// An internal utility for reading alternate values of a provider.
@@ -76,13 +82,13 @@ class ProviderElementProxy<InputT, OutputT>
 
   @override
   ProviderSubscription<OutputT> addListener(
-    Node node,
+    Node source,
     void Function(OutputT? previous, OutputT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
   }) {
-    final element = node.readProviderElement(provider);
+    final element = source.readProviderElement(provider);
 
     // While we don't care about changes to the element, calling _listenElement
     // is necessary to tell the listened element that it is being listened.
@@ -90,7 +96,7 @@ class ProviderElementProxy<InputT, OutputT>
     // a listener to the notifier.
     // This avoids the listener from being immediately notified of a new
     // future when adding the listener refreshes the future.
-    final innerSub = node.listen<Object?>(
+    final innerSub = source.listen<Object?>(
       provider,
       (prev, next) {},
       fireImmediately: false,
@@ -118,9 +124,9 @@ class ProviderElementProxy<InputT, OutputT>
     );
 
     return _ProxySubscription(
-      node,
+      source,
       removeListener,
-      () => read(node),
+      () => read(source),
       innerSubscription: innerSub,
     );
   }

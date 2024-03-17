@@ -2600,7 +2600,8 @@ void main() {
     group('.onCancel', () {
       test(
         'is called when dependent is invalidated and was the only listener',
-        skip: 'Waiting for "clear dependencies after futureprovider rebuilds"',
+        // TODO deal with now that we have onPause
+        skip: 'Waiting for "clear dependencies after FutureProvider rebuilds"',
         () async {
           //
           final container = ProviderContainer.test();

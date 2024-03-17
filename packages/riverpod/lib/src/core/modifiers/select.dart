@@ -216,4 +216,10 @@ final class _SelectorSubscription<Input, Output>
 
     return _read();
   }
+
+  @override
+  void pause() => _internalSub.pause();
+
+  @override
+  void resume() => _internalSub.resume();
 }

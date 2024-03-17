@@ -42,7 +42,9 @@ void Function()? debugCanModifyProviders;
 /// {@endtemplate}
 @internal
 @optionalTypeArgs
-abstract class ProviderElement<StateT> implements WrappedNode {
+abstract class ProviderElement<StateT>
+    with _OnPauseMixin
+    implements WrappedNode {
   /// {@macro riverpod.provider_element_base}
   ProviderElement(this.pointer);
 
@@ -76,17 +78,17 @@ abstract class ProviderElement<StateT> implements WrappedNode {
   /// - all of its listeners are "weak" (i.e. created with `listen(weak: true)`)
   ///
   /// See also [_mayNeedDispose], called when [isActive] may have changed.
-  bool get isActive =>
-      (_dependents?.isNotEmpty ?? false) || _watchDependents.isNotEmpty;
+  bool get isActive => !_isPaused && _activeListenerCount > 0;
+
+  int get _activeListenerCount =>
+      (_dependents?.length ?? 0) + _watchDependents.length;
 
   /// Whether this [ProviderElement] is currently listened to or not.
   ///
   /// This maps to listeners added with `listen` and `watch`,
   /// excluding `listen(weak: true)`.
   bool get hasListeners =>
-      (_dependents?.isNotEmpty ?? false) ||
-      _watchDependents.isNotEmpty ||
-      _weakDependents.isNotEmpty;
+      _activeListenerCount > 0 || _weakDependents.isNotEmpty;
 
   var _dependencies = HashMap<ProviderElement, Object>();
   HashMap<ProviderElement, Object>? _previousDependencies;
@@ -106,8 +108,6 @@ abstract class ProviderElement<StateT> implements WrappedNode {
   bool _mustRecomputeState = false;
   bool _dependencyMayHaveChanged = false;
   bool _didChangeDependency = false;
-
-  var _didCancelOnce = false;
 
   /// Whether the assert that prevents [requireState] from returning
   /// if the state was not set before is enabled.
@@ -335,8 +335,8 @@ This could mean a few things:
     // Unsubscribe to everything that a provider no longer depends on.
     for (final sub in previousDependencies.entries) {
       sub.key
-        .._watchDependents.remove(this)
-        .._onRemoveListener();
+        .._onRemoveListener(weak: false)
+        .._watchDependents.remove(this);
     }
     _previousDependencies = null;
   }
@@ -600,19 +600,24 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     return result;
   }
 
-  void _onListen() {
+  @override
+  void _onResume() => ref?._onResumeListeners?.forEach(runGuarded);
+
+  @override
+  void _onCancel() => ref?._onCancelListeners?.forEach(runGuarded);
+
+  void _onListen({required bool weak}) {
+    if (!weak && _isPaused && _activeListenerCount == 0) resume();
+
     ref?._onAddListeners?.forEach(runGuarded);
-    if (_didCancelOnce && !hasListeners) {
-      ref?._onResumeListeners?.forEach(runGuarded);
-    }
   }
 
-  void _onRemoveListener() {
-    ref?._onRemoveListeners?.forEach(runGuarded);
-    if (!hasListeners) {
-      _didCancelOnce = true;
-      ref?._onCancelListeners?.forEach(runGuarded);
+  void _onRemoveListener({required bool weak}) {
+    if (!weak && _activeListenerCount == 1) {
+      pause();
     }
+
+    ref?._onRemoveListeners?.forEach(runGuarded);
     _mayNeedDispose();
   }
 
@@ -672,7 +677,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     ref._onRemoveListeners = null;
     ref._onChangeSelfListeners = null;
     ref._onErrorSelfListeners = null;
-    _didCancelOnce = false;
+    _pauseCount = 0;
 
     assert(
       ref._keepAliveLinks == null || ref._keepAliveLinks!.isEmpty,
@@ -700,8 +705,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     ref = null;
 
     for (final sub in _dependencies.entries) {
+      sub.key._onRemoveListener(weak: false);
       sub.key._watchDependents.remove(this);
-      sub.key._onRemoveListener();
     }
     _dependencies.clear();
   }
