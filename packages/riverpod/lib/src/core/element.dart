@@ -450,7 +450,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       case final ResultData<StateT> newState:
         for (var i = 0; i < listeners.length; i++) {
           final listener = listeners[i];
-          if (listener is _ProviderStateSubscription) {
+          if (listener is _ProviderStateSubscription && !listener._isPaused) {
             Zone.current.runBinaryGuarded(
               listener.listener,
               previousState,
@@ -461,7 +461,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       case final ResultError<StateT> newState:
         for (var i = 0; i < listeners.length; i++) {
           final listener = listeners[i];
-          if (listener is _ProviderStateSubscription<StateT>) {
+          if (listener is _ProviderStateSubscription<StateT> &&
+              !listener._isPaused) {
             Zone.current.runBinaryGuarded(
               listener.onError,
               newState.error,

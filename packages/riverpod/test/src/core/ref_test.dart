@@ -3,12 +3,7 @@ import 'dart:async';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart'
-    show
-        CircularDependencyError,
-        ProviderContainerTest,
-        ProviderElement,
-        UnmountedRefException;
+import 'package:riverpod/src/framework.dart';
 import 'package:test/test.dart';
 
 import '../utils.dart';
@@ -828,7 +823,7 @@ void main() {
     });
 
     group('listen', () {
-      test('does not invoke the listener if paused', () {
+      test('does not invoke value listeners if paused', () {
         final container = ProviderContainer.test();
         final listener = Listener<int>();
         late Ref<int> ref;
@@ -845,6 +840,43 @@ void main() {
         ref.notifyListeners();
 
         verifyZeroInteractions(listener);
+      });
+
+      test('does not invoke error listeners if paused', () {
+        final container = ProviderContainer.test();
+        final listener = ErrorListener();
+        late Ref<void> ref;
+        var throws = false;
+        final provider = Provider<void>((r) {
+          ref = r;
+          if (throws) throw StateError('err');
+        });
+
+        final errors = <Object>[];
+        final sub = container.listen(
+          provider,
+          (a, b) {},
+          onError: listener.call,
+        );
+
+        sub.pause();
+
+        verifyZeroInteractions(listener);
+
+        throws = true;
+        runZonedGuarded(
+          () {
+            try {
+              container.refresh(provider);
+            } catch (e) {
+              // We just want to trigger onError listener
+            }
+          },
+          (error, stack) => errors.add(error),
+        );
+        verifyZeroInteractions(listener);
+
+        expect(errors, [isA<StateError>()]);
       });
 
       group('weak', () {
