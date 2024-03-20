@@ -133,9 +133,13 @@ abstract class AsyncValue<T> {
   ///     try {
   ///       final response = await dio.get('my_api/data');
   ///       final data = MyData.fromJson(response);
-  ///       state = AsyncValue.data(data);
+  ///       if(mounted){
+  ///          state = AsyncValue.data(data);
+  ///       }
   ///     } catch (err, stack) {
-  ///       state = AsyncValue.error(err, stack);
+  ///       if(mounted){
+  ///          state = AsyncValue.error(err, stack);
+  ///       }
   ///     }
   ///   }
   /// }
@@ -151,10 +155,13 @@ abstract class AsyncValue<T> {
   ///   Future<void> sideEffect() async {
   ///     state = const AsyncValue.loading();
   ///     // does the try/catch for us like previously
-  ///     state = await AsyncValue.guard(() async {
+  ///     final newState = await AsyncValue.guard(() async {
   ///       final response = await dio.get('my_api/data');
   ///       return Data.fromJson(response);
   ///     });
+  ///     if(mounted){
+  ///        state = newState;
+  ///     }
   ///   }
   /// }
   ///
