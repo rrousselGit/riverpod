@@ -4,7 +4,6 @@ title: Scopes
 
 import CodeBlock from "@theme/CodeBlock";
 import asyncInitialization from "!!raw-loader!/docs/concepts/async_initialization.dart";
-import dialogScope from "!!raw-loader!/docs/concepts/dialog_scope.dart";
 import themeScope from "!!raw-loader!/docs/concepts/theme_scope.dart";
 import subtreeScope from "!!raw-loader!/docs/concepts/subtree_scope.dart";
 import { trimSnippet } from "@site/src/components/CodeSnippet";
@@ -92,18 +91,6 @@ So how do you makes these sorts of provider states available synchronously?
 Here is an example that shows how scoping allows you override a dummy provider when your asynchronous API is ready.
 
 <CodeBlock>{trimSnippet(asyncInitialization)}</CodeBlock>
-
-## Showing Dialogs
-
-When you show a `Dialog` or `OverlayEntry`, flutter creates a new `Route` or adds to an `Overlay` that has a different build scope,
-so that it can escape the layout of it's parent, and can be shown above other `Routes`.
-This presents a problem for `InheritedWidget`s in general, and since [ProviderScope] is an `InheritedWidget`, it is also affected.
-
-To solve this problem, Riverpod allows you to create a `ProviderScope` that can access the state of all providers in a `parent` scope.
-
-The following example shows how to use this, to allow a `Dialog` to access the state of a counter from the context that caused the `Dialog` to be shown.
-
-<CodeBlock>{trimSnippet(dialogScope)}</CodeBlock>
 
 ## Subtree Scoping
 

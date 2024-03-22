@@ -176,9 +176,8 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
 
   @override
   void visitChildren({
-    required void Function(ProviderElementBase<Object?> element) elementVisitor,
-    required void Function(ProxyElementValueNotifier<Object?> element)
-        notifierVisitor,
+    required void Function(ProviderElementBase element) elementVisitor,
+    required void Function(ProxyElementValueNotifier element) notifierVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,

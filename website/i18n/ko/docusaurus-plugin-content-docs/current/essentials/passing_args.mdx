@@ -5,15 +5,15 @@ version: 1
 
 import { Link } from "../../../../../src/components/Link";
 import { AutoSnippet, When } from "../../../../../src/components/CodeSnippet";
-import noArgProvider from "./passing_args/no_arg_provider";
+import noArgProvider from "/docs/essentials/passing_args/no_arg_provider";
 import family from "!!raw-loader!./passing_args/raw/family.dart";
 import codegenFamily from "!!raw-loader!./passing_args/codegen/family.dart";
-import consumerProvider from "!!raw-loader!./passing_args/raw/consumer_provider.dart";
-import consumerFamily from "!!raw-loader!./passing_args/raw/consumer_family.dart";
-import consumerListFamily from "!!raw-loader!./passing_args/raw/consumer_list_family.dart";
-import multipleConsumerFamily from "!!raw-loader!./passing_args/raw/multiple_consumer_family.dart";
-import tupleFamily from "!!raw-loader!./passing_args/raw/tuple_family.dart";
-import consumerTupleFamily from "!!raw-loader!./passing_args/raw/consumer_tuple_family.dart";
+import consumerProvider from "!!raw-loader!/docs/essentials/passing_args/raw/consumer_provider.dart";
+import consumerFamily from "!!raw-loader!/docs/essentials/passing_args/raw/consumer_family.dart";
+import consumerListFamily from "!!raw-loader!/docs/essentials/passing_args/raw/consumer_list_family.dart";
+import multipleConsumerFamily from "!!raw-loader!/docs/essentials/passing_args/raw/multiple_consumer_family.dart";
+import tupleFamily from "!!raw-loader!/docs/essentials/passing_args/raw/tuple_family.dart";
+import consumerTupleFamily from "!!raw-loader!/docs/essentials/passing_args/raw/consumer_tuple_family.dart";
 
 이전 글에서 "provider"를 정의하여 간단한 _GET_ HTTP 요청을 만드는 방법을 살펴봤습니다.  
 하지만 HTTP 요청은 외부 매개변수(external parameters)에 의존하는 경우가 많습니다.

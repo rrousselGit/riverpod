@@ -204,6 +204,16 @@ module.exports = {
       items: [
         {
           type: "link",
+          label: "DummyMart: Full CRUD app with authentication + go_router integration",
+          href: "https://github.com/dhafinrayhan/dummymart",
+        },
+        {
+          type: "link",
+          label: "Easy Todo Riverpod Architecture",
+          href: "https://github.com/ilovekimchi6/todo_easy_riverpod_architecture",
+        },
+        {
+          type: "link",
           label: "Android Launcher",
           href: "https://github.com/lohanidamodar/fl_live_launcher",
         },

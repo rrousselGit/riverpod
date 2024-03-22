@@ -2,7 +2,7 @@ name: riverpod
 description: >
   A reactive caching and data-binding framework.
   Riverpod makes working with asynchronous code a breeze.
-version: 2.5.0
+version: 2.5.1
 homepage: https://riverpod.dev
 repository: https://github.com/rrousselGit/riverpod
 issue_tracker: https://github.com/rrousselGit/riverpod/issues
@@ -10,9 +10,10 @@ funding:
   - https://github.com/sponsors/rrousselGit/
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ">=2.17.0 <4.0.0"
 
 dependencies:
+  collection: ^1.18.0
   meta: ^1.9.0
   stack_trace: ^1.10.0
   state_notifier: ">=0.7.2 <2.0.0"

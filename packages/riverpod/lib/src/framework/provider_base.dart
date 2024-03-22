@@ -25,9 +25,9 @@ typedef DebugGetCreateSourceHash = String Function();
 
 /// A base class for _all_ providers.
 @immutable
-abstract class ProviderBase<State> extends ProviderOrFamily
-    with ProviderListenable<State>
-    implements ProviderOverride, Refreshable<State> {
+abstract class ProviderBase<StateT> extends ProviderOrFamily
+    with ProviderListenable<StateT>
+    implements ProviderOverride, Refreshable<StateT> {
   /// A base class for _all_ providers.
   const ProviderBase({
     required super.name,
@@ -67,9 +67,9 @@ abstract class ProviderBase<State> extends ProviderOrFamily
   final Object? argument;
 
   @override
-  ProviderSubscription<State> addListener(
+  ProviderSubscription<StateT> addListener(
     Node node,
-    void Function(State? previous, State next) listener, {
+    void Function(StateT? previous, StateT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
@@ -87,17 +87,21 @@ abstract class ProviderBase<State> extends ProviderOrFamily
       );
     }
 
+    // Calling before initializing the subscription,
+    // to ensure that "hasListeners" represents the state _before_
+    // the listener is added
     element._onListen();
 
-    return node._listenElement(
-      element,
-      listener: listener,
+    return _ProviderStateSubscription<StateT>(
+      node,
+      listenedElement: element,
+      listener: (prev, next) => listener(prev as StateT?, next as StateT),
       onError: onError,
     );
   }
 
   @override
-  State read(Node node) {
+  StateT read(Node node) {
     final element = node.readProviderElement(this);
 
     element.flush();
@@ -110,7 +114,7 @@ abstract class ProviderBase<State> extends ProviderOrFamily
 
   /// An internal method that defines how a provider behaves.
   @visibleForOverriding
-  ProviderElementBase<State> createElement();
+  ProviderElementBase<StateT> createElement();
 
   @override
   // ignore: avoid_equals_and_hash_code_on_mutable_classes
@@ -126,7 +130,7 @@ abstract class ProviderBase<State> extends ProviderOrFamily
     if (from == null) return identical(other, this);
 
     return other.runtimeType == runtimeType &&
-        other is ProviderBase<State> &&
+        other is ProviderBase<StateT> &&
         other.from == from &&
         other.argument == argument;
   }
@@ -149,62 +153,43 @@ abstract class ProviderBase<State> extends ProviderOrFamily
 
 var _debugIsRunningSelector = false;
 
-class _ExternalProviderSubscription<State>
-    implements ProviderSubscription<State> {
-  _ExternalProviderSubscription._(
-    this._listenedElement,
-    this._listener, {
+/// When a provider listens to another provider using `listen`
+@optionalTypeArgs
+class _ProviderStateSubscription<StateT> extends ProviderSubscription<StateT> {
+  _ProviderStateSubscription(
+    super.source, {
+    required this.listenedElement,
+    required this.listener,
     required this.onError,
-  });
-
-  final void Function(State? previous, State next) _listener;
-  final ProviderElementBase<State> _listenedElement;
-  final void Function(Object error, StackTrace stackTrace) onError;
-  var _closed = false;
-
-  @override
-  void close() {
-    _closed = true;
-    _listenedElement._externalDependents.remove(this);
-    _listenedElement._onRemoveListener();
+  }) {
+    final dependents = listenedElement._dependents ??= [];
+    dependents.add(this);
   }
 
+  // Why can't this be typed correctly?
+  final void Function(Object? prev, Object? state) listener;
+  final ProviderElementBase<StateT> listenedElement;
+  final OnError onError;
+
   @override
-  State read() {
+  StateT read() {
     if (_closed) {
       throw StateError(
         'called ProviderSubscription.read on a subscription that was closed',
       );
     }
-    return _listenedElement.readSelf();
+    return listenedElement.readSelf();
   }
-}
-
-/// When a provider listens to another provider using `listen`
-class _ProviderListener<State> implements ProviderSubscription<State> {
-  _ProviderListener._({
-    required this.listenedElement,
-    required this.dependentElement,
-    required this.listener,
-    required this.onError,
-  });
-
-// TODO can't we type it properly?
-  final void Function(Object? prev, Object? state) listener;
-  final ProviderElementBase<Object?> dependentElement;
-  final ProviderElementBase<State> listenedElement;
-  final OnError onError;
 
   @override
   void close() {
-    dependentElement._listenedProviderSubscriptions.remove(this);
-    listenedElement
-      .._subscribers.remove(this)
-      .._onRemoveListener();
-  }
+    if (!closed) {
+      listenedElement._dependents?.remove(this);
+      listenedElement._onRemoveListener();
+    }
 
-  @override
-  State read() => listenedElement.readSelf();
+    super.close();
+  }
 }
 
 /// A mixin to add [overrideWithValue] capability to a provider.

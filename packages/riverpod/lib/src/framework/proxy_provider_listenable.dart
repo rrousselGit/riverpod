@@ -2,6 +2,7 @@ part of '../framework.dart';
 
 class _ProxySubscription<T> extends ProviderSubscription<T> {
   _ProxySubscription(
+    super.source,
     this._removeListeners,
     this._read, {
     required this.innerSubscription,
@@ -12,13 +13,24 @@ class _ProxySubscription<T> extends ProviderSubscription<T> {
   final T Function() _read;
 
   @override
-  void close() {
-    innerSubscription.close();
-    _removeListeners();
+  T read() {
+    if (_closed) {
+      throw StateError(
+        'called ProviderSubscription.read on a subscription that was closed',
+      );
+    }
+    return _read();
   }
 
   @override
-  T read() => _read();
+  void close() {
+    if (!closed) {
+      innerSubscription.close();
+      _removeListeners();
+    }
+
+    super.close();
+  }
 }
 
 /// An internal utility for reading alternate values of a provider.
@@ -73,8 +85,16 @@ class ProviderElementProxy<Input, Output>
   }) {
     final element = node.readProviderElement(_origin);
 
-    // TODO does this need a "flush"?
-    // element.flush();
+    // While we don't care about changes to the element, calling _listenElement
+    // is necessary to tell the listened element that it is being listened.
+    // We do it at the top of the file to trigger a "flush" before adding
+    // a listener to the notifier.
+    // This avoids the listener from being immediately notified of a new
+    // future when adding the listener refreshes the future.
+    final innerSub = node.listen<Object?>(
+      _origin,
+      (prev, next) {},
+    );
 
     final notifier = _lense(element);
     if (fireImmediately) {
@@ -97,15 +117,10 @@ class ProviderElementProxy<Input, Output>
     );
 
     return _ProxySubscription(
+      node,
       removeListener,
       () => read(node),
-      // While we don't care about changes to the element, calling _listenElement
-      // is necessary to tell the listened element that it is being listened.
-      innerSubscription: node._listenElement<Input>(
-        element,
-        listener: (prev, next) {},
-        onError: (err, stack) {},
-      ),
+      innerSubscription: innerSub,
     );
   }
 

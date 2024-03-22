@@ -1,11 +1,18 @@
-## 2.5.0 - 2024-02-03
-
-- Add `test` argument to `AsyncValue.guard` method. (thanks to @utamori)
-
-## Unreleased fix
+## 2.5.1 - 2024-03-10
 
 - Improved `Provider(dependencies: [...])` documentation.
 - Fix out of date `pub.dev` description
+- `ref.invalidate` now correctly clear all resources associated
+  with the provider if the provider is no-longer used.
+- Fix `selectAsync` sometimes never resolving.
+- Fix `ProviderSubscription.read` returned by `ref.listen(provider.future)` not throwing if used after the subscription has been closed.
+- Fix `ref.onAddListener` and other life-cycles not being triggered when
+  listening to `provider.future`/`provider.notifier`.
+- Fix a bug that caused `Assertion failed: _lastFuture == null`
+
+## 2.5.0 - 2024-02-03
+
+- Add `test` argument to `AsyncValue.guard` method. (thanks to @utamori)
 
 ## 2.4.9 - 2023-11-27
 

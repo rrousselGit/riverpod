@@ -46,7 +46,7 @@ and it is not the best way to use Riverpod, but it's a gentle and very easy way 
 
 :::tip
 There is no rush to *immediately* try to change your `ChangeNotifier`s into the more modern [Riverpod's providers].
-Some requite a bit of a paradigm shift, so it may be difficult to do initially.  
+Some require a bit of a paradigm shift, so it may be difficult to do initially.  
 
 Take your time, as it is important to get yourself familiar with Riverpod first;
 you'll quickly find out that *almost* all Providers from pkg:provider have a strict equivalent in pkg:riverpod.
@@ -66,7 +66,7 @@ This should boost and simplify the migration process, while also minimizing / tr
 *Keep in mind that it is entirely possible to use both Provider and Riverpod at the same time.*
 
 Indeed, using import aliases, it is possible to use the two APIs altogether.  
-This is also great for readibilty and it removes any ambiguous API usage.
+This is also great for readability and it removes any ambiguous API usage.
 
 If you plan on doing this, consider using import aliases for each Provider import in your codebase.
 
@@ -131,7 +131,7 @@ you'll simply need to write `ref.watch` if you want to declare a direct dependen
 If anything, combining values with Riverpod should feel simpler and straightforward; thus, the migration should greatly
 simplify your code.
 
-Furthermore, there are no shanenigans about combining more than two providers together:
+Furthermore, there are no shenanigans about combining more than two providers together:
 just add another `ref.watch` and you'll be good to go.
 
 ## Eager initialization

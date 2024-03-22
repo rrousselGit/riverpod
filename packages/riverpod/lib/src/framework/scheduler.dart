@@ -51,12 +51,12 @@ class ProviderScheduler {
   }
 
   final _stateToDispose = <AutoDisposeProviderElementMixin<Object?>>[];
-  final _stateToRefresh = <ProviderElementBase<Object?>>[];
+  final _stateToRefresh = <ProviderElementBase>[];
 
   Completer<void>? _pendingTaskCompleter;
   Future<void>? get pendingFuture => _pendingTaskCompleter?.future;
 
-  void scheduleProviderRefresh(ProviderElementBase<Object?> element) {
+  void scheduleProviderRefresh(ProviderElementBase element) {
     _stateToRefresh.add(element);
 
     _scheduleTask();

@@ -2,9 +2,8 @@ part of '../framework.dart';
 
 /// An abstraction of both [ProviderContainer] and [ProviderElement] used by
 /// [ProviderListenable].
-@internal
 abstract class Node {
-  /// Starts listening to this transformer
+  /// Starts listening to a listenable
   ProviderSubscription<State> listen<State>(
     ProviderListenable<State> listenable,
     void Function(State? previous, State next) listener, {
@@ -21,13 +20,6 @@ abstract class Node {
   ProviderElementBase<State> readProviderElement<State>(
     ProviderBase<State> provider,
   );
-
-  /// Subscribes to a [ProviderElementBase].
-  ProviderSubscription<State> _listenElement<State>(
-    ProviderElementBase<State> element, {
-    required void Function(State? previous, State next) listener,
-    required void Function(Object error, StackTrace stackTrace) onError,
-  });
 }
 
 /// An internal class for `ProviderBase.select`.
@@ -139,6 +131,7 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
     }
 
     return _SelectorSubscription(
+      node,
       sub,
       () {
         return lastSelectedValue.map(
@@ -160,22 +153,30 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
 }
 
 class _SelectorSubscription<Input, Output>
-    implements ProviderSubscription<Output> {
-  _SelectorSubscription(this._internalSub, this._read);
+    extends ProviderSubscription<Output> {
+  _SelectorSubscription(
+    super.source,
+    this._internalSub,
+    this._read, {
+    this.onClose,
+  });
 
   final ProviderSubscription<Input> _internalSub;
   final Output Function() _read;
-  var _closed = false;
+  final void Function()? onClose;
 
   @override
   void close() {
-    _closed = true;
-    _internalSub.close();
+    if (!closed) {
+      onClose?.call();
+      _internalSub.close();
+    }
+    super.close();
   }
 
   @override
   Output read() {
-    if (_closed) {
+    if (closed) {
       throw StateError(
         'called ProviderSubscription.read on a subscription that was closed',
       );

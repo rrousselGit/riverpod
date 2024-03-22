@@ -3,7 +3,7 @@ description: A sample command-line application.
 publish_to: none
 
 environment:
-  sdk: ">=2.18.4 <3.0.0"
+  sdk: ">=2.18.4 <4.0.0"
 
 dependencies:
   riverpod:

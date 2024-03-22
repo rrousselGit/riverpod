@@ -43,11 +43,12 @@ void Function()? debugCanModifyProviders;
 /// of providers.
 /// Do not use.
 /// {@endtemplate}
-abstract class ProviderElementBase<State> implements Ref<State>, Node {
+@optionalTypeArgs
+abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
   /// {@macro riverpod.provider_element_base}
   ProviderElementBase(this._provider);
 
-  static ProviderElementBase<Object?>? _debugCurrentlyBuildingElement;
+  static ProviderElementBase? _debugCurrentlyBuildingElement;
 
   /// The last result of [ProviderBase.debugGetCreateSourceHash].
   ///
@@ -61,8 +62,8 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   late ProviderBase<Object?> _origin;
 
   /// The provider associated with this [ProviderElementBase], after applying overrides.
-  ProviderBase<State> get provider => _provider;
-  ProviderBase<State> _provider;
+  ProviderBase<StateT> get provider => _provider;
+  ProviderBase<StateT> _provider;
 
   /// The [ProviderContainer] that owns this [ProviderElementBase].
   @override
@@ -74,42 +75,22 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// This maps to listeners added with [listen].
   /// See also [mayNeedDispose], called when [hasListeners] may have changed.
   bool get hasListeners =>
-      _externalDependents.isNotEmpty ||
-      _subscribers.isNotEmpty ||
-      _providerDependents.isNotEmpty;
+      (_dependents?.isNotEmpty ?? false) || _providerDependents.isNotEmpty;
 
-  // TODO(rrousselGit) refactor to match ChangeNotifier
-  /// The list of [ProviderSubscription]s that are linked with this element,
-  /// which aren't coming from another provider.
-  ///
-  /// This is typically Flutter widgets or manual calls to [ProviderContainer.listen]
-  /// with this provider as target.
-  final _externalDependents = <_ExternalProviderSubscription<State>>[];
-
-  /// The [ProviderSubscription]s associated to the providers that this
-  /// [ProviderElementBase] listens to.
-  ///
-  /// This list is typically updated when this provider calls [listen] on
-  /// another provider.
-  final _listenedProviderSubscriptions = <_ProviderListener<Object?>>[];
+  var _dependencies = HashMap<ProviderElementBase<Object?>, Object>();
+  HashMap<ProviderElementBase<Object?>, Object>? _previousDependencies;
+  List<ProviderSubscription>? _subscriptions;
+  List<ProviderSubscription>? _dependents;
 
   /// The element of the providers that depends on this provider.
   final _providerDependents = <ProviderElementBase<Object?>>[];
 
-  /// The subscriptions associated to other providers listening to this provider.
-  ///
-  /// Storing [_ProviderListener] instead of the raw [ProviderElementBase] as
-  /// a provider can listen multiple times to another provider with different listeners.
-  final _subscribers = <_ProviderListener<Object?>>[];
-
-  var _dependencies = HashMap<ProviderElementBase<Object?>, Object>();
-  HashMap<ProviderElementBase<Object?>, Object>? _previousDependencies;
   List<void Function()>? _onDisposeListeners;
   List<void Function()>? _onResumeListeners;
   List<void Function()>? _onCancelListeners;
   List<void Function()>? _onAddListeners;
   List<void Function()>? _onRemoveListeners;
-  List<void Function(State?, State)>? _onChangeSelfListeners;
+  List<void Function(StateT?, StateT)>? _onChangeSelfListeners;
   List<OnError>? _onErrorSelfListeners;
 
   bool _mustRecomputeState = false;
@@ -118,11 +99,10 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
 
   var _didCancelOnce = false;
 
-  bool _mounted = false;
-
   /// Whether the element was disposed or not
   @internal
   bool get mounted => _mounted;
+  bool _mounted = false;
 
   /// Whether the assert that prevents [requireState] from returning
   /// if the state was not set before is enabled.
@@ -133,7 +113,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   bool _didBuild = false;
 
   /* STATE */
-  Result<State>? _state;
+  Result<StateT>? _state;
 
   /// Update the exposed value of a provider and notify its listeners.
   ///
@@ -143,7 +123,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// This API is not meant for public consumption. Instead if a [Ref] needs
   /// to expose a way to update the state, the practice is to expose a getter/setter.
   @internal
-  void setState(State newState) {
+  void setState(StateT newState) {
     assert(
       () {
         _debugDidSetState = true;
@@ -168,7 +148,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// This is not meant for public consumption. Instead, public API should use
   /// [readSelf].
   @internal
-  Result<State>? getState() => _state;
+  Result<StateT>? getState() => _state;
 
   /// Read the current value of a provider and:
   ///
@@ -178,7 +158,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// This is not meant for public consumption. Instead, public API should use
   /// [readSelf].
   @internal
-  State get requireState {
+  StateT get requireState {
     assert(
       () {
         if (debugAssertDidSetStateEnabled && !_debugDidSetState) {
@@ -205,7 +185,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// Called when a provider is rebuilt. Used for providers to not notify their
   /// listeners if the exposed value did not change.
   @internal
-  bool updateShouldNotify(State previous, State next);
+  bool updateShouldNotify(StateT previous, StateT next);
 
   /* /STATE */
 
@@ -281,7 +261,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   ///   the scenario where the value changed.
   @internal
   // ignore: use_setters_to_change_properties
-  void update(ProviderBase<State> newProvider) {
+  void update(ProviderBase<StateT> newProvider) {
     _provider = newProvider;
   }
 
@@ -297,6 +277,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
 
     _mustRecomputeState = true;
     runOnDispose();
+    mayNeedDispose();
     _container.scheduler.scheduleProviderRefresh(this);
 
     // We don't call this._markDependencyMayHaveChanged here because we voluntarily
@@ -337,9 +318,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     _dependencyMayHaveChanged = false;
 
     visitAncestors(
-      (element) {
-        element.flush();
-      },
+      (element) => element.flush(),
     );
   }
 
@@ -348,7 +327,11 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// After a provider is initialized, this function takes care of unsubscribing
   /// to dependencies that are no-longer used.
   void _performBuild() {
-    _previousDependencies = _dependencies;
+    assert(
+      _previousDependencies == null,
+      'Bad state: _performBuild was called twice',
+    );
+    final previousDependencies = _previousDependencies = _dependencies;
     _dependencies = HashMap();
 
     final previousStateResult = _state;
@@ -383,12 +366,14 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
     }
 
     // Unsubscribe to everything that a provider no longer depends on.
-    for (final sub in _previousDependencies!.entries) {
+    for (final sub in previousDependencies.entries) {
       sub.key
         .._providerDependents.remove(this)
         .._onRemoveListener();
     }
     _previousDependencies = null;
+
+    // TODO clear subscriptions only after the provider has been rebuilt
   }
 
   /// Initialize a provider.
@@ -406,7 +391,7 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   /// Invokes [create] and handles errors.
   @internal
   void buildState() {
-    ProviderElementBase<Object?>? debugPreviouslyBuildingElement;
+    ProviderElementBase? debugPreviouslyBuildingElement;
     final previousDidChangeDependency = _didChangeDependency;
     _didChangeDependency = false;
     assert(
@@ -465,8 +450,8 @@ abstract class ProviderElementBase<State> implements Ref<State>, Node {
   }
 
   void _notifyListeners(
-    Result<State> newState,
-    Result<State>? previousStateResult, {
+    Result<StateT> newState,
+    Result<StateT>? previousStateResult, {
     bool checkUpdateShouldNotify = true,
   }) {
     assert(
@@ -524,45 +509,40 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         previousStateResult.hasState &&
         newState.hasState &&
         !updateShouldNotify(
-          previousState as State,
+          previousState as StateT,
           newState.requireState,
         )) {
       return;
     }
 
-    final listeners = _externalDependents.toList(growable: false);
-    final subscribers = _subscribers.toList(growable: false);
+    final listeners = _dependents?.toList(growable: false);
     newState.map(
       data: (newState) {
-        for (var i = 0; i < listeners.length; i++) {
-          Zone.current.runBinaryGuarded(
-            listeners[i]._listener,
-            previousState,
-            newState.state,
-          );
-        }
-        for (var i = 0; i < subscribers.length; i++) {
-          Zone.current.runBinaryGuarded(
-            subscribers[i].listener,
-            previousState,
-            newState.state,
-          );
+        if (listeners != null) {
+          for (var i = 0; i < listeners.length; i++) {
+            final listener = listeners[i];
+            if (listener is _ProviderStateSubscription) {
+              Zone.current.runBinaryGuarded(
+                listener.listener,
+                previousState,
+                newState.state,
+              );
+            }
+          }
         }
       },
       error: (newState) {
-        for (var i = 0; i < listeners.length; i++) {
-          Zone.current.runBinaryGuarded(
-            listeners[i].onError,
-            newState.error,
-            newState.stackTrace,
-          );
-        }
-        for (var i = 0; i < subscribers.length; i++) {
-          Zone.current.runBinaryGuarded(
-            subscribers[i].onError,
-            newState.error,
-            newState.stackTrace,
-          );
+        if (listeners != null) {
+          for (var i = 0; i < listeners.length; i++) {
+            final listener = listeners[i];
+            if (listener is _ProviderStateSubscription<StateT>) {
+              Zone.current.runBinaryGuarded(
+                listener.onError,
+                newState.error,
+                newState.stackTrace,
+              );
+            }
+          }
         }
       },
     );
@@ -621,9 +601,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       () {
         if (listenable is! ProviderBase<Object?>) return true;
 
+        ProviderElementBase? listenableElement;
         try {
           // Initializing the provider, to make sure its dependencies are setup.
-          _container.readProviderElement(listenable);
+          listenableElement = _container.readProviderElement(listenable);
         } catch (err) {
           // We don't care whether the provider is in error or not. We're just
           // checking whether we're not in a circular dependency.
@@ -650,14 +631,17 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
           "To fix, add $listenable to $origin's 'dependencies' parameter",
         );
 
-        final queue =
-            Queue<ProviderElementBase<Object?>>.from(_providerDependents);
+        final queue = Queue<ProviderElementBase>();
+        visitAncestors(queue.add);
+        if (listenableElement != null) {
+          queue.add(listenableElement);
+        }
 
         while (queue.isNotEmpty) {
           final current = queue.removeFirst();
-          queue.addAll(current._providerDependents);
+          current.visitAncestors(queue.add);
 
-          if (current.origin == listenable) {
+          if (current.origin == _origin) {
             throw CircularDependencyError._();
           }
         }
@@ -747,25 +731,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   @override
-  ProviderSubscription<T> _listenElement<T>(
-    ProviderElementBase<T> element, {
-    required void Function(T? previous, T next) listener,
-    required void Function(Object error, StackTrace stackTrace) onError,
-  }) {
-    final sub = _ProviderListener<T>._(
-      listenedElement: element,
-      dependentElement: this,
-      listener: (prev, value) => listener(prev as T?, value as T),
-      onError: onError,
-    );
-
-    element._subscribers.add(sub);
-    _listenedProviderSubscriptions.add(sub);
-
-    return sub;
-  }
-
-  @override
   ProviderSubscription<T> listen<T>(
     ProviderListenable<T> listenable,
     void Function(T? previous, T value) listener, {
@@ -789,7 +754,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
   @override
   void listenSelf(
-    void Function(State? previous, State next) listener, {
+    void Function(StateT? previous, StateT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
     // TODO do we want to expose a way to close the subscription?
@@ -807,7 +772,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   /// Returns the currently exposed by a provider
   ///
   /// May throw if the provider threw when creating the exposed value.
-  State readSelf() {
+  StateT readSelf() {
     flush();
 
     return requireState;
@@ -822,16 +787,19 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   /// If a provider both [watch] and [listen] an element, or if a provider
   /// [listen] multiple times to an element, it may be visited multiple times.
   void visitChildren({
-    required void Function(ProviderElementBase<Object?> element) elementVisitor,
-    required void Function(ProxyElementValueNotifier<Object?> element)
-        notifierVisitor,
+    required void Function(ProviderElementBase element) elementVisitor,
+    required void Function(ProxyElementValueNotifier element) notifierVisitor,
   }) {
     for (var i = 0; i < _providerDependents.length; i++) {
       elementVisitor(_providerDependents[i]);
     }
 
-    for (var i = 0; i < _subscribers.length; i++) {
-      elementVisitor(_subscribers[i].dependentElement);
+    final dependents = _dependents;
+    if (dependents != null) {
+      for (var i = 0; i < dependents.length; i++) {
+        final dependent = dependents[i].source;
+        if (dependent is ProviderElementBase) elementVisitor(dependent);
+      }
     }
   }
 
@@ -844,12 +812,18 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   /// If this provider both [watch] and [listen] an element, or if it
   /// [listen] multiple times to an element, that element may be visited multiple times.
   void visitAncestors(
-    void Function(ProviderElementBase<Object?> element) visitor,
+    void Function(ProviderElementBase element) visitor,
   ) {
     _dependencies.keys.forEach(visitor);
 
-    for (var i = 0; i < _listenedProviderSubscriptions.length; i++) {
-      visitor(_listenedProviderSubscriptions[i].listenedElement);
+    final subscriptions = _subscriptions;
+    if (subscriptions != null) {
+      for (var i = 0; i < subscriptions.length; i++) {
+        final sub = subscriptions[i];
+        if (sub is _ProviderStateSubscription) {
+          visitor(sub.listenedElement);
+        }
+      }
     }
   }
 
@@ -869,16 +843,14 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   void dispose() {
     runOnDispose();
 
-    // TODO test invalidateSelf() then dispose() properly unlinks dependencies
-    // TODO test [listen] calls are cleared
-
     for (final sub in _dependencies.entries) {
       sub.key._providerDependents.remove(this);
       sub.key._onRemoveListener();
     }
     _dependencies.clear();
 
-    _externalDependents.clear();
+    // TODO test invalidateSelf() then dispose() properly unlinks dependencies
+    // TODO test [listen] calls are cleared
   }
 
   void _onListen() {
@@ -927,8 +899,24 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     if (!_mounted) return;
     _mounted = false;
 
-    while (_listenedProviderSubscriptions.isNotEmpty) {
-      _listenedProviderSubscriptions.first.close();
+    final subscriptions = _subscriptions;
+    if (subscriptions != null) {
+      while (subscriptions.isNotEmpty) {
+        late int debugPreviousLength;
+        if (kDebugMode) {
+          debugPreviousLength = subscriptions.length;
+        }
+
+        final sub = subscriptions.first;
+        sub.close();
+
+        if (kDebugMode) {
+          assert(
+            subscriptions.length < debugPreviousLength,
+            'ProviderSubscription.close did not remove the subscription',
+          );
+        }
+      }
     }
 
     _onDisposeListeners?.forEach(runGuarded);
