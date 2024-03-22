@@ -8,6 +8,9 @@ final class _ProxySubscription<StateT> extends ProviderSubscription<StateT> {
     required this.innerSubscription,
   });
 
+  @override
+  bool get isPaused => innerSubscription.isPaused;
+
   final ProviderSubscription<Object?> innerSubscription;
   final void Function() _removeListeners;
   final StateT Function() _read;

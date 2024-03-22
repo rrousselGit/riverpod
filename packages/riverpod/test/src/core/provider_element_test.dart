@@ -128,6 +128,65 @@ void main() {
     });
 
     group('isActive', () {
+      test('handles adding a listener from an already paused provider', () {
+        final provider = Provider((ref) => 0);
+        final dep = Provider((ref) {
+          ref.watch(provider);
+        });
+        final container = ProviderContainer.test();
+
+        expect(container.readProviderElement(provider).isActive, false);
+
+        // Using read, "dep" should still be considered as paused.
+        container.read(dep);
+
+        expect(container.readProviderElement(provider).isActive, false);
+      });
+
+      test('Is paused if all watchers are paused', () {
+        final container = ProviderContainer.test();
+        final provider = Provider(name: 'foo', (ref) => 0);
+        final dep = Provider(name: 'dep', (ref) => ref.watch(provider));
+        final dep2 = Provider(name: 'dep2', (ref) => ref.watch(provider));
+
+        final depSub = container.listen(dep, (a, b) {});
+        final dep2Sub = container.listen(dep2, (a, b) {});
+
+        final element = container.readProviderElement(provider);
+        final depElement = container.readProviderElement(dep);
+        final depElement2 = container.readProviderElement(dep2);
+
+        expect(element.isActive, true);
+
+        depSub.close();
+
+        expect(element.isActive, true);
+
+        dep2Sub.close();
+
+        expect(element.isActive, false);
+      });
+
+      test('Is paused if all subscriptions are paused', () {
+        final container = ProviderContainer.test();
+        final provider = Provider((ref) => 0);
+
+        final element = container.readProviderElement(provider);
+
+        final sub = container.listen(provider, (_, __) {});
+        final sub2 = container.listen(provider, (_, __) {});
+
+        expect(element.isActive, true);
+
+        sub.pause();
+
+        expect(element.isActive, true);
+
+        sub2.pause();
+
+        expect(element.isActive, false);
+      });
+
       test('rejects weak listeners', () {
         final provider = Provider((ref) => 0);
         final container = ProviderContainer.test();
@@ -164,7 +223,7 @@ void main() {
 
         expect(container.readProviderElement(provider).isActive, false);
 
-        container.read(dep);
+        container.listen(dep, (_, __) {});
 
         expect(container.readProviderElement(provider).isActive, true);
       });
@@ -233,6 +292,22 @@ void main() {
 
         expect(container.readProviderElement(provider).hasListeners, true);
       });
+    });
+
+    test('does not notify listeners twice when using fireImmediately',
+        () async {
+      final container = ProviderContainer.test();
+      final listener = Listener<int>();
+
+      final dep = StateProvider((ref) => 0);
+      final provider = Provider((ref) {
+        ref.watch(dep);
+        return ref.state = 0;
+      });
+
+      container.listen(provider, listener.call, fireImmediately: true);
+
+      verifyOnly(listener, listener(null, 0));
     });
 
     test('does not notify listeners when rebuilding the state', () async {

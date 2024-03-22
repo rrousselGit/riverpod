@@ -540,44 +540,39 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// ```
   T watch<T>(ProviderListenable<T> listenable) {
     _throwIfInvalidUsage();
-    if (listenable is! ProviderBase<T>) {
-      final sub = _element.listen<T>(
-        listenable,
-        (prev, value) => invalidateSelf(asReload: true),
-        onError: (err, stack) => invalidateSelf(asReload: true),
-        onDependencyMayHaveChanged: _element._markDependencyMayHaveChanged,
-      );
+    // if (listenable is! ProviderBase<T>) {
+    final sub = _element.listen<T>(
+      listenable,
+      (prev, value) => invalidateSelf(asReload: true),
+      onError: (err, stack) => invalidateSelf(asReload: true),
+      onDependencyMayHaveChanged: _element._markDependencyMayHaveChanged,
+    );
 
-      return sub.read();
-    }
+    return sub.read();
+    // }
 
-    final element = container.readProviderElement(listenable);
-    _element._dependencies.putIfAbsent(element, () {
-      final previousSub = _element._previousDependencies?.remove(element);
-      if (previousSub != null) {
-        return previousSub;
-      }
+    // final targetElement = container.readProviderElement(listenable);
+    // _element._dependencies.putIfAbsent(targetElement, () {
+    //   final previousSub = _element._previousDependencies?.remove(targetElement);
+    //   if (previousSub != null) {
+    //     return previousSub;
+    //   }
 
-      if (kDebugMode) {
-        // Flushing the provider before adding a new dependency
-        // as otherwise this could cause false positives with certain asserts.
-        // It's done only in debug mode since `readSelf` will flush the value
-        // again anyway, and the only value of this flush is to not break asserts.
-        element.flush();
-      }
+    //   targetElement
+    //     .._onListen(
+    //       weak: false,
+    //       isPaused: !_element.isActive,
+    //     )
+    //     .._watchDependents.add(_element);
 
-      element
-        .._onListen(weak: false)
-        .._watchDependents.add(_element);
+    //   return Object();
+    // });
 
-      return Object();
-    });
+    // final result = targetElement.readSelf();
 
-    final result = element.readSelf();
+    // if (kDebugMode) _debugAssertCanDependOn(listenable);
 
-    if (kDebugMode) _debugAssertCanDependOn(listenable);
-
-    return result;
+    // return result;
   }
 
   /// {@template riverpod.listen}

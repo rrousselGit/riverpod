@@ -191,6 +191,9 @@ final class _SelectorSubscription<Input, Output>
     this.onClose,
   });
 
+  @override
+  bool get isPaused => _internalSub.isPaused;
+
   final ProviderSubscription<Input> _internalSub;
   final Output Function() _read;
   final void Function()? onClose;

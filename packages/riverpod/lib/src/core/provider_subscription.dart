@@ -12,15 +12,17 @@ abstract base class ProviderSubscription<StateT> {
     }
   }
 
+  /// Whether the subscription is closed.
+  bool get closed => _closed;
+  var _closed = false;
+
+  bool get isPaused;
+
   /// The object that listens to the associated [ProviderListenable].
   ///
   /// This is typically a [ProviderElement] or a [ProviderContainer],
   /// but may be other values in the future.
   final Node source;
-
-  /// Whether the subscription is closed.
-  bool get closed => _closed;
-  var _closed = false;
 
   void pause();
   void resume();
@@ -54,7 +56,7 @@ mixin _OnPauseMixin {
     if (_pauseCount == 0) {
       _onCancel();
     }
-    _pauseCount = max(_pauseCount + 1, 0);
+    _pauseCount++;
   }
 
   @mustCallSuper
@@ -89,6 +91,9 @@ final class _ProviderStateSubscription<StateT>
     }
   }
 
+  @override
+  bool get isPaused => _isPaused;
+
   // Why can't this be typed correctly?
   final void Function(Object? prev, Object? state) listener;
   final ProviderElement<StateT> listenedElement;
@@ -108,23 +113,31 @@ final class _ProviderStateSubscription<StateT>
   @override
   void close() {
     if (!closed) {
-      listenedElement._onRemoveListener(weak: source.weak);
-      switch (source) {
-        case WeakNode():
-          listenedElement._weakDependents.remove(this);
-        case _:
-          listenedElement._dependents?.remove(this);
-      }
+      // if (isPaused) {
+      //   listenedElement._onSubscriptionResume(weak: source.weak);
+      // }
+      listenedElement._onRemoveListener(
+        () {
+          switch (source) {
+            case WeakNode():
+              listenedElement._weakDependents.remove(this);
+            case _:
+              listenedElement._dependents?.remove(this);
+          }
+
+          return this;
+        },
+      );
     }
 
     super.close();
   }
 
   @override
-  void _onCancel() => listenedElement.pause();
+  void _onCancel() => listenedElement._onSubscriptionPause(weak: source.weak);
 
   @override
-  void _onResume() => listenedElement.resume();
+  void _onResume() => listenedElement._onSubscriptionResume(weak: source.weak);
 }
 
 /// Deals with the internals of synchronously calling the listeners

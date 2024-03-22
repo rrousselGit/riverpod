@@ -21,5 +21,9 @@ void main() {
 
       expect(element.isActive, true);
     });
+
+    test('closing a paused subscription unpause the element', () {
+      throw UnimplementedError();
+    });
   });
 }

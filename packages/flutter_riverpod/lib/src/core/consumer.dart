@@ -514,6 +514,9 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
 final class _ListenManual<T> extends ProviderSubscription<T> {
   _ListenManual(super.source, this._subscription, this._element);
 
+  @override
+  bool get isPaused => _subscription.isPaused;
+
   final ProviderSubscription<T> _subscription;
   final ConsumerStatefulElement _element;
 

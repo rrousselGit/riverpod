@@ -29,6 +29,10 @@ void main() {
   });
 
   streamNotifierProviderFactory.createGroup((factory) {
+    test('Pauses the Stream when the provider is paused', () {
+      throw UnimplementedError();
+    });
+
     test('Cannot share a Notifier instance between providers ', () {
       final container = ProviderContainer.test();
       final notifier = factory.deferredNotifier((ref) => Stream.value(0));

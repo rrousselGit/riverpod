@@ -42,9 +42,7 @@ void Function()? debugCanModifyProviders;
 /// {@endtemplate}
 @internal
 @optionalTypeArgs
-abstract class ProviderElement<StateT>
-    with _OnPauseMixin
-    implements WrappedNode {
+abstract class ProviderElement<StateT> implements WrappedNode {
   /// {@macro riverpod.provider_element_base}
   ProviderElement(this.pointer);
 
@@ -78,20 +76,23 @@ abstract class ProviderElement<StateT>
   /// - all of its listeners are "weak" (i.e. created with `listen(weak: true)`)
   ///
   /// See also [_mayNeedDispose], called when [isActive] may have changed.
-  bool get isActive => !_isPaused && _activeListenerCount > 0;
+  bool get isActive => (_listenerCount - _pausedActiveSubscriptionCount) > 0;
 
-  int get _activeListenerCount =>
-      (_dependents?.length ?? 0) + _watchDependents.length;
+  int get _listenerCount => _dependents?.length ?? 0;
+  // (_dependents?.length ?? 0) + _watchDependents.length;
+
+  var _pausedActiveSubscriptionCount = 0;
+  var _didCancelOnce = false;
 
   /// Whether this [ProviderElement] is currently listened to or not.
   ///
   /// This maps to listeners added with `listen` and `watch`,
   /// excluding `listen(weak: true)`.
-  bool get hasListeners =>
-      _activeListenerCount > 0 || _weakDependents.isNotEmpty;
+  bool get hasListeners => _listenerCount > 0 || _weakDependents.isNotEmpty;
 
-  var _dependencies = HashMap<ProviderElement, Object>();
-  HashMap<ProviderElement, Object>? _previousDependencies;
+  // var _dependencies = HashMap<ProviderElement, Object>();
+  // HashMap<ProviderElement, Object>? _previousDependencies;
+  List<ProviderSubscription>? _previousSubscriptions;
   List<ProviderSubscription>? _subscriptions;
   List<ProviderSubscription>? _dependents;
 
@@ -102,8 +103,8 @@ abstract class ProviderElement<StateT>
   /// - They may be reused between two instances of a [ProviderElement].
   final _weakDependents = <ProviderSubscription>[];
 
-  /// The element of the providers that depends on this provider.
-  final _watchDependents = <ProviderElement>[];
+  // /// The element of the providers that depends on this provider.
+  // final _watchDependents = <ProviderElement>[];
 
   bool _mustRecomputeState = false;
   bool _dependencyMayHaveChanged = false;
@@ -248,12 +249,12 @@ This could mean a few things:
   /// After a provider is initialized, this function takes care of unsubscribing
   /// to dependencies that are no-longer used.
   void _performBuild() {
-    assert(
-      _previousDependencies == null,
-      'Bad state: _performBuild was called twice',
-    );
-    final previousDependencies = _previousDependencies = _dependencies;
-    _dependencies = HashMap();
+    // assert(
+    //   _previousDependencies == null,
+    //   'Bad state: _performBuild was called twice',
+    // );
+    // final previousDependencies = _previousDependencies = _dependencies;
+    // _dependencies = HashMap();
 
     runOnDispose();
     final ref = this.ref = Ref<StateT>._(this);
@@ -273,13 +274,20 @@ This could mean a few things:
       if (kDebugMode) _debugSkipNotifyListenersAsserts = false;
     }
 
-    // Unsubscribe to everything that a provider no longer depends on.
-    for (final sub in previousDependencies.entries) {
-      sub.key
-        .._onRemoveListener(weak: false)
-        .._watchDependents.remove(this);
+    final previousSubscriptions = _previousSubscriptions;
+    if (previousSubscriptions != null) {
+      _closeSubscriptions(previousSubscriptions);
     }
-    _previousDependencies = null;
+
+    // // Unsubscribe to everything that a provider no longer depends on.
+    // for (final sub in previousDependencies.entries) {
+    //   sub.key._onRemoveListener(
+    //     () => sub.key._watchDependents.remove(this),
+    //     weak: false,
+    //     isPaused: !isActive,
+    //   );
+    // }
+    // _previousDependencies = null;
   }
 
   /// Initialize a provider.
@@ -473,9 +481,11 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       default:
     }
 
-    for (var i = 0; i < _watchDependents.length; i++) {
-      _watchDependents[i].invalidateSelf(asReload: true);
-    }
+    // if (!isMount) {
+    //   for (var i = 0; i < _watchDependents.length; i++) {
+    //     _watchDependents[i].invalidateSelf(asReload: true);
+    //   }
+    // }
 
     for (final observer in container.observers) {
       if (isMount) {
@@ -515,6 +525,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     _dependencyMayHaveChanged = true;
 
     visitChildren(
+      // TODO skip paused subscriptions
       elementVisitor: (element) => element._markDependencyMayHaveChanged(),
       listenableVisitor: (notifier) =>
           notifier.notifyDependencyMayHaveChanged(),
@@ -552,25 +563,74 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     return result;
   }
 
-  @override
-  void _onResume() => ref?._onResumeListeners?.forEach(runGuarded);
-
-  @override
-  void _onCancel() => ref?._onCancelListeners?.forEach(runGuarded);
-
-  void _onListen({required bool weak}) {
-    if (!weak && _isPaused && _activeListenerCount == 0) resume();
-
+  SubT _onListen<SubT extends ProviderSubscription>(SubT Function() add) {
+    print('listen $origin');
+    final wasActive = isActive;
     ref?._onAddListeners?.forEach(runGuarded);
-  }
 
-  void _onRemoveListener({required bool weak}) {
-    if (!weak && _activeListenerCount == 1) {
-      pause();
+    final sub = add();
+    if (_didCancelOnce && !wasActive && isActive) {
+      _onResume();
     }
 
-    ref?._onRemoveListeners?.forEach(runGuarded);
+    return sub;
+  }
+
+  void _onRemoveListener(ProviderSubscription Function() remove) {
+    print('unsub $origin');
+    final wasActive = isActive;
+
+    final removedSub = remove();
+    if (removedSub.isPaused && !removedSub.source.weak)
+      ref?._onRemoveListeners?.forEach(runGuarded);
     _mayNeedDispose();
+
+    if (wasActive && !isActive) _onCancel();
+  }
+
+  void _onSubscriptionPause({required bool weak}) {
+    // Weak listeners are not counted towards isActive, so we don't want to change
+    // _pausedActiveSubscriptionCount
+    if (weak) return;
+
+    print('on pause sub at $origin');
+    final wasActive = isActive;
+    _pausedActiveSubscriptionCount++;
+
+    if (wasActive && !isActive) _onCancel();
+  }
+
+  void _onSubscriptionResume({
+    required bool weak,
+  }) {
+    // Weak listeners are not counted towards isActive, so we don't want to change
+    // _pausedActiveSubscriptionCount
+    if (weak) return;
+
+    print('on resume sub at $origin');
+    final wasActive = isActive;
+    _pausedActiveSubscriptionCount = max(0, _pausedActiveSubscriptionCount - 1);
+
+    if (!wasActive && isActive) _onResume();
+  }
+
+  void _onResume() {
+    print('resume $origin');
+    ref?._onResumeListeners?.forEach(runGuarded);
+
+    visitAncestors((element) {
+      element._onSubscriptionResume(weak: false);
+    });
+  }
+
+  void _onCancel() {
+    print('cancel $origin');
+    _didCancelOnce = true;
+    ref?._onCancelListeners?.forEach(runGuarded);
+
+    visitAncestors((element) {
+      element._onSubscriptionPause(weak: false);
+    });
   }
 
   /// Life-cycle for when a listener is removed.
@@ -581,6 +641,12 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       if (!isActive && (links == null || links.isEmpty)) {
         container.scheduler.scheduleProviderDispose(this);
       }
+    }
+  }
+
+  void _closeSubscriptions(List<ProviderSubscription> subscriptions) {
+    for (var i = 0; i < subscriptions.length; i++) {
+      subscriptions[i].close();
     }
   }
 
@@ -595,23 +661,11 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     ref._mounted = false;
 
-    final subscriptions = _subscriptions;
+    final subscriptions = _previousSubscriptions = _subscriptions;
+    _subscriptions = null;
     if (subscriptions != null) {
-      while (subscriptions.isNotEmpty) {
-        late int debugPreviousLength;
-        if (kDebugMode) {
-          debugPreviousLength = subscriptions.length;
-        }
-
-        final sub = subscriptions.first;
-        sub.close();
-
-        if (kDebugMode) {
-          assert(
-            subscriptions.length < debugPreviousLength,
-            'ProviderSubscription.close did not remove the subscription',
-          );
-        }
+      for (var i = 0; i < subscriptions.length; i++) {
+        subscriptions[i].pause();
       }
     }
 
@@ -629,7 +683,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     ref._onRemoveListeners = null;
     ref._onChangeSelfListeners = null;
     ref._onErrorSelfListeners = null;
-    _pauseCount = 0;
+    _pausedActiveSubscriptionCount = 0;
+    _didCancelOnce = false;
 
     assert(
       ref._keepAliveLinks == null || ref._keepAliveLinks!.isEmpty,
@@ -656,11 +711,20 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     _stateResult = null;
     ref = null;
 
-    for (final sub in _dependencies.entries) {
-      sub.key._onRemoveListener(weak: false);
-      sub.key._watchDependents.remove(this);
+    final previousSubscriptions = _previousSubscriptions;
+    if (previousSubscriptions != null) {
+      _closeSubscriptions(previousSubscriptions);
     }
-    _dependencies.clear();
+
+    // // TODO share with _performBuild
+    // for (final sub in _dependencies.entries) {
+    //   sub.key._onRemoveListener(
+    //     () => sub.key._watchDependents.remove(this),
+    //     weak: false,
+    //     isPaused: !sub.key.isActive,
+    //   );
+    // }
+    // _dependencies.clear();
   }
 
   @override
@@ -699,9 +763,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     required void Function(ProxyElementValueListenable element)
         listenableVisitor,
   }) {
-    for (var i = 0; i < _watchDependents.length; i++) {
-      elementVisitor(_watchDependents[i]);
-    }
+    // for (var i = 0; i < _watchDependents.length; i++) {
+    //   elementVisitor(_watchDependents[i]);
+    // }
 
     Iterable<ProviderSubscription> children = _weakDependents;
     if (_dependents case final dependents?) {
@@ -730,7 +794,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   void visitAncestors(
     void Function(ProviderElement element) visitor,
   ) {
-    _dependencies.keys.forEach(visitor);
+    // _dependencies.keys.forEach(visitor);
 
     final subscriptions = _subscriptions;
     if (subscriptions != null) {

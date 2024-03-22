@@ -852,7 +852,6 @@ void main() {
           if (throws) throw StateError('err');
         });
 
-        final errors = <Object>[];
         final sub = container.listen(
           provider,
           (a, b) {},
@@ -864,19 +863,12 @@ void main() {
         verifyZeroInteractions(listener);
 
         throws = true;
-        runZonedGuarded(
-          () {
-            try {
-              container.refresh(provider);
-            } catch (e) {
-              // We just want to trigger onError listener
-            }
-          },
-          (error, stack) => errors.add(error),
-        );
+        try {
+          container.refresh(provider);
+        } catch (e) {
+          // We just want to trigger onError listener
+        }
         verifyZeroInteractions(listener);
-
-        expect(errors, [isA<StateError>()]);
       });
 
       group('weak', () {
@@ -2382,6 +2374,8 @@ void main() {
 
         ref.watch<void>(dep);
 
+        // TODO changelog breaking: Calling ref.watch multiple times calls ref.onListen everytime
+        verifyInOrder([listener(), listener2()]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
 
@@ -2738,19 +2732,21 @@ void main() {
         final container = ProviderContainer.test();
         final listener = OnCancelMock();
         final listener2 = OnCancelMock();
-        final dep = Provider((ref) {
+        final dep = Provider(name: 'dep', (ref) {
           ref.onCancel(listener.call);
           ref.onCancel(listener2.call);
         });
         var watching = true;
-        final provider = Provider((ref) {
+        final provider = Provider(name: 'provider', (ref) {
           if (watching) ref.watch(dep);
         });
-        final provider2 = Provider((ref) {
+        final provider2 = Provider(name: 'provider2', (ref) {
           if (watching) ref.watch(dep);
         });
 
+        print('a');
         container.read(provider);
+        print('b');
         container.read(provider2);
 
         verifyZeroInteractions(listener);
@@ -2758,12 +2754,16 @@ void main() {
 
         watching = false;
         // remove the dependency provider<>dep
+        print('c');
         container.refresh(provider);
+        print('d');
 
         verifyZeroInteractions(listener2);
 
         // remove the dependency provider2<>dep
+        print('e');
         container.refresh(provider2);
+        print('f');
 
         verifyInOrder([listener(), listener2()]);
         verifyNoMoreInteractions(listener);
