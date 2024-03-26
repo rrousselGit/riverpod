@@ -1,3 +1,7 @@
+## 2.5.2 - 2024-03-18
+
+- Fixed `AsyncValue.guard` documentation (thanks to @drown0315)
+
 ## 2.5.1 - 2024-03-10
 
 - Improved `Provider(dependencies: [...])` documentation.
