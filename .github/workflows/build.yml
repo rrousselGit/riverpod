@@ -28,7 +28,8 @@ jobs:
     strategy:
       matrix:
         channel:
-          - stable
+          # Waiting for WidgetStateProperty to be stable
+          # - stable
           - master
         package_path:
           - examples/counter
