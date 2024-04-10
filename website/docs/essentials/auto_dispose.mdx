@@ -104,13 +104,13 @@ makes it easier to spot when we forget to dispose of something.
 
 Sometimes, you may want to force the destruction of a provider.
 This can be done by using `ref.invalidate`, which can be called from another
-provider or from a widget.
+provider or a widget.
 
 Using `ref.invalidate` will destroy the current provider state.
 There are then two possible outcomes:
 
-- If the provider is listened, a new state will be created.
-- If the provider is not listened, the provider will be fully destroyed.
+- If the provider is listened to, a new state will be created.
+- If the provider is not listened to, the provider will be fully destroyed.
 
 <AutoSnippet raw={invalidateExample} />
 
