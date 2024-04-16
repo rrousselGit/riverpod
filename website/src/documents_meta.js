@@ -424,7 +424,6 @@ export const outdatedTranslations = [
 {"countryCode":"ja","id":"providers/state_notifier_provider","englishPath":"/docs/providers/state_notifier_provider"},
 {"countryCode":"ja","id":"providers/state_provider","englishPath":"/docs/providers/state_provider"},
 {"countryCode":"ja","id":"providers/stream_provider","englishPath":"/docs/providers/stream_provider"},
-{"countryCode":"ko","id":"advanced/select","englishPath":"/docs/advanced/select"},
 {"countryCode":"ko","id":"case_studies/cancel","englishPath":"/docs/case_studies/cancel"},
 {"countryCode":"ko","id":"case_studies/pull_to_refresh","englishPath":"/docs/case_studies/pull_to_refresh"},
 {"countryCode":"ko","id":"concepts/about_code_generation","englishPath":"/docs/concepts/about_code_generation"},
