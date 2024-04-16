@@ -46,7 +46,7 @@ class _ExampleState extends ConsumerState<Example> {
             ElevatedButton(
               style: ButtonStyle(
                 // 오류가 있는 경우 버튼이 빨간색으로 표시됩니다.
-                backgroundColor: MaterialStateProperty.all(
+                backgroundColor: WidgetStatePropertyAll(
                   isErrored ? Colors.red : null,
                 ),
               ),

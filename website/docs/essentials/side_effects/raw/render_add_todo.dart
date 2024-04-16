@@ -47,7 +47,7 @@ class _ExampleState extends ConsumerState<Example> {
             ElevatedButton(
               style: ButtonStyle(
                 // If there is an error, we show the button in red
-                backgroundColor: MaterialStateProperty.all(
+                backgroundColor: WidgetStatePropertyAll(
                   isErrored ? Colors.red : null,
                 ),
               ),
