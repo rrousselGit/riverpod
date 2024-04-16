@@ -157,7 +157,7 @@ class Toolbar extends HookConsumerWidget {
               style: ButtonStyle(
                 visualDensity: VisualDensity.compact,
                 foregroundColor:
-                WidgetStatePropertyAll(textColorFor(TodoListFilter.all)),
+                    WidgetStatePropertyAll(textColorFor(TodoListFilter.all)),
               ),
               child: const Text('All'),
             ),
