@@ -41,7 +41,7 @@ class Example extends HookConsumerWidget {
         ElevatedButton(
           style: ButtonStyle(
             // 오류가 있는 경우 버튼을 빨간색으로 표시합니다.
-            backgroundColor: MaterialStateProperty.all(
+            backgroundColor: WidgetStatePropertyAll(
               isErrored ? Colors.red : null,
             ),
           ),
