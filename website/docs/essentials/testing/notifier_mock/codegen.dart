@@ -12,7 +12,9 @@ class MyNotifier extends _$MyNotifier {
   int build() => throw UnimplementedError();
 }
 
+// {@template codegen_mock}
 // Your mock needs to subclass the Notifier base-class corresponding
 // to whatever your notifier uses
+// {@endtemplate}
 class MyNotifierMock extends _$MyNotifier with Mock implements MyNotifier {}
 /* SNIPPET END */

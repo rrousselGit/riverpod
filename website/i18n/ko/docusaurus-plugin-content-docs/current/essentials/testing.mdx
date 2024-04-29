@@ -1,8 +1,9 @@
 ---
 title: providers 테스트하기
+version: 2
 ---
 
-import { AutoSnippet, When } from "../../../../../src/components/CodeSnippet";
+import { AutoSnippet, When } from "/src/components/CodeSnippet";
 import createContainer from "!!raw-loader!/docs/essentials/testing/create_container.dart";
 import unitTest from "!!raw-loader!/docs/essentials/testing/unit_test.dart";
 import widgetTest from "!!raw-loader!/docs/essentials/testing/widget_test.dart";
@@ -14,6 +15,7 @@ import autoDisposeListen from "!!raw-loader!/docs/essentials/testing/auto_dispos
 import listenProvider from "!!raw-loader!/docs/essentials/testing/listen_provider.dart";
 import awaitFuture from "!!raw-loader!/docs/essentials/testing/await_future.dart";
 import notifierMock from "/docs/essentials/testing/notifier_mock";
+import notifierUsage from "!!raw-loader!/docs/essentials/testing/notifier_usage.dart";
 
 Riverpod API의 핵심은 provider를 개별적으로 테스트할 수 있는 기능입니다.
 
@@ -43,11 +45,24 @@ Riverpod로 테스트를 정의할 때는 크게 두 가지 시나리오가 있�
 
 `ProviderContainer` 객체를 생성하고 폐기하기 위한 테스트 유틸리티를 만드는 것이 좋습니다:
 
-<AutoSnippet raw={createContainer} />
+<AutoSnippet 
+  raw={createContainer} 
+  translations={{
+    raw_createContainer: "/// [ProviderContainer]를 생성하고 테스트가 끝나면\n/// 자동으로 폐기하는 테스트 유틸리티입니다.",
+    raw_container: "  // ProviderContainer를 생성하고 선택적으로 매개변수 지정을 허용합니다.",
+    raw_addTearDown: "  // 테스트가 끝나면 container를 폐기(dispose)합니다.",
+  }}
+/>
 
 그런 다음 이 유틸리티를 사용하여 `test`를 정의할 수 있습니다:
 
-<AutoSnippet raw={unitTest} />
+<AutoSnippet 
+  raw={unitTest} 
+  translations={{
+    raw_container: "    // 이 테스트에 대한 프로바이더 컨테이너를 생성합니다.\n    // 테스트 간에 ProviderContainer를 공유하지 마세요.",
+    raw_useProvider: "    // TODO: 컨테이너를 사용하여 애플리케이션을 테스트합니다.",
+  }}
+/>
 
 이제 ProviderContainer가 생겼으니 이를 사용하여 provider를 읽을 수 있습니다:
 
@@ -62,7 +77,12 @@ provider가 리스닝되지 않으면 테스트 도중에 provider의 상태가 
 이 반환값은 어쨌든 provider의 현재 값을 읽을 수 있게 해주지만, 
 테스트 도중에 provider가 폐기되지 않도록 보장합니다:
 
-<AutoSnippet raw={autoDisposeListen} />
+<AutoSnippet 
+  raw={autoDisposeListen} 
+  translations={{
+    raw_read: "      // `container.read(provider)`와 동일합니다.\n      // 그러나 \"subscription\"이 폐기(dispose)되지 않는 한 provider는 폐기되지 않습니다.",
+  }}
+/>
 :::
 
 ### 위젯 테스트
@@ -71,7 +91,11 @@ provider가 리스닝되지 않으면 테스트 도중에 provider의 상태가 
 
 이 경우 일반적인 위젯 테스트와 가장 큰 차이점은 `tester.pumpWidget`의 루트에 `ProviderScope` 위젯을 추가해야 한다는 점입니다:
 
-<AutoSnippet raw={widgetTest} />
+<AutoSnippet 
+  raw={widgetTest} 
+  translations={{
+  }}
+/>
 
 이는 Flutter 앱에서 Riverpod을 활성화할 때 하는 작업과 유사합니다.
 
@@ -80,11 +104,20 @@ provider가 리스닝되지 않으면 테스트 도중에 provider의 상태가 
 이는 `ProviderScope.containerOf(buildContext)`를 사용하여 얻을 수 있습니다.  
 따라서 `tester`를 사용하면 다음과 같이 작성할 수 있습니다:
 
-<AutoSnippet raw={widgetContainerOf} />
+<AutoSnippet 
+  raw={widgetContainerOf} 
+  translations={{
+  }}
+/>
 
 그런 다음 이를 사용하여 provider를 읽을 수 있습니다. 다음은 전체 예제입니다:
 
-<AutoSnippet raw={fullWidgetTest} />
+<AutoSnippet 
+  raw={fullWidgetTest} 
+  translations={{
+    raw_useProvider: "    // TODO: providers와 상호 작용"
+  }}
+/>
 
 ## provider 모킹하기(Mocking)
 
@@ -96,17 +129,38 @@ provider가 리스닝되지 않으면 테스트 도중에 provider의 상태가 
 
 다음 provider를 살펴봅시다:
 
-<AutoSnippet {...providerToMock} />
+<AutoSnippet 
+  {...providerToMock} 
+  translations={{
+    raw_provider: "// 이른 초기화된 공급자.",
+    codegen_provider: "// 이른 초기화된 공급자.",
+  }}
+/>
 
 다음을 사용하여 모킹해 볼 수 있습니다:
 
-<AutoSnippet raw={mockProvider} />
+<AutoSnippet 
+  raw={mockProvider} 
+  translations={{
+    raw_container: "    // 단위 테스트에서는 이전의 \"createContainer\" 유틸리티를 재사용합니다.",
+    raw_providers: "      // 모의(Mock)할 공급자 목록을 지정할 수 있습니다:",
+    raw_exampleProvider: "        // 이 경우 \"exampleProvider\"를 모방(Mock)하고 있습니다.",
+    raw_note: "          // 이 함수는 공급자의 일반적인 초기화 함수입니다.\n          // 일반적으로 \"ref.watch\"를 호출하고 초기 상태를 반환하는 곳입니다.\n\n          // 기본값인 \"Hello world\"를 사용자 정의 값으로 바꿔보겠습니다.\n          // 그러면 `exampleProvider`와 상호작용하면 이 값이 반환됩니다.",
+    raw_providerScope: "    // ProviderScope를 사용하여 위젯 테스트에서도 동일한 작업을 수행할 수 있습니다:",
+    raw_overrides: "        // ProviderScope에는 정확히 동일한 \"overrides\" 매개 변수가 있습니다.",
+    raw_sameAsBefore: "          // 이전과 동일",
+  }}
+/>
 
 ## provider 변경 사항 감시(Spying)
 
 테스트에서 `ProviderContainer`를 얻었으므로 이를 사용하여 provider를 "listen"할 수 있습니다:
 
-<AutoSnippet raw={listenProvider} />
+<AutoSnippet 
+  raw={listenProvider} 
+  translations={{
+  }}
+/>
 
 그런 다음 이를 [mockito](https://pub.dev/packages/mockito) 또는 [mocktail](https://pub.dev/packages/mocktail)과 같은 패키지와 결합하여 해당 패키지의 `verify` API를 사용할 수 있습니다.  
 또는 더 간단하게는 목록에 모든 변경 사항을 추가하고 어설트(assert)할 수 있습니다.
@@ -118,11 +172,19 @@ Riverpod에서는 provider가 Future/Stream을 반환하는 경우가 매우 흔
 
 이를 위한 한 가지 방법은 프로바이더의 '.future'를 읽는 것입니다:
 
-<AutoSnippet raw={awaitFuture} />
+<AutoSnippet 
+  raw={awaitFuture} 
+  translations={{
+    raw_note: "    // TODO: 컨테이너를 사용하여 애플리케이션을 테스트합니다.\n    // 기대(expectation)가 비동기적이므로 \"expectLater\"를 사용해야 합니다.",
+    raw_read: "      // \"provider\" 대신 \"provider.future\"를 읽습니다.\n      // 이는 비동기 공급자에서 가능하며, 공급자의 값으로 해결(resolve)될 future를 반환합니다.",
+    raw_completion: "      // future가 예상한 값으로 resolve되는지 확인할 수 있습니다.\n      // 또는 오류에 \"throwsA\"를 사용할 수 있습니다.",
+  }}
+/>
 
 ## Notifiers 모킹하기
 
-일반적으로 Notifiers를 모의하는 것은 권장하지 않습니다.  
+일반적으로 Notifiers를 모의하는 것은 권장하지 않습니다.
+왜냐하면 Notifiers는 자체적으로 인스턴스화할 수 없으며 프로바이더의 일부로 사용될 때만 작동하기 때문입니다.  
 그 대신에, Notifier의 로직에 어느 정도 추상화 수준을 도입하여 그 추상화를 모킹할 수 있도록 해야 합니다.
 예를 들어, Notifier을 모킹하는 대신 Notifier가 데이터를 가져오는 데 사용하는 "repository"를 모킹할 수 있습니다.
 
@@ -138,7 +200,13 @@ class MyNotifierMock with Mock implements MyNotifier {}
 
 대신 다음과 같이 작성하세요:
 
-<AutoSnippet {...notifierMock} />
+<AutoSnippet 
+  {...notifierMock} 
+  translations={{
+    raw_mock: "// 모의클래스(Mock)는 notifier가 사용하는 것에 해당하는\n// Notifier base-class를 서브클래싱해야 합니다.",
+    codegen_mock: "// 모의클래스(Mock)는 notifier가 사용하는 것에 해당하는\n// Notifier base-class를 서브클래싱해야 합니다.",
+  }}
+/>
 
 <When codegen={true}>
 
@@ -146,3 +214,14 @@ class MyNotifierMock with Mock implements MyNotifier {}
 그렇지 않으면 `_$MyNotifier` 클래스에 액세스할 수 없습니다.
 
 </When>
+
+그런 다음 notifier를 사용하려면 다음과 같이 하세요:
+
+<AutoSnippet 
+  raw={notifierUsage} 
+  translations={{
+    raw_overrides: "      // provider를 Override하여 Mock Notifier를 생성하도록 합니다.",
+    raw_readNotifier: "    // 그런 다음 컨테이너를 통해 Mock Notifier를 가져옵니다:",
+    raw_interactNotifier: "    // 그러면 실제 notifier와 마찬가지로 notifier와 상호 작용할 수 있습니다:",
+  }}
+/>

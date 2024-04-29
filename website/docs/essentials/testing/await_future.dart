@@ -14,15 +14,21 @@ void main() {
     final container = createContainer();
 
     /* SNIPPET START */
+    // {@template raw_note}
     // TODO: use the container to test your application.
     // Our expectation is asynchronous, so we should use "expectLater"
+    // {@endtemplate}
     await expectLater(
+      // {@template raw_read}
       // We read "provider.future" instead of "provider".
       // This is possible on asynchronous providers, and returns a future
       // which will resolve with the value of the provider.
+      // {@endtemplate}
       container.read(provider.future),
+      // {@template raw_completion}
       // We can verify that the future resolves with the expected value.
       // Alternatively we can use "throwsA" for errors.
+      // {@endtemplate}
       completion('some value'),
     );
     /* SNIPPET END */

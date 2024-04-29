@@ -7,8 +7,7 @@ import 'package:http/http.dart' as http;
 
 import 'todo_list_notifier.dart';
 
-final todoListProvider =
-    AsyncNotifierProvider.autoDispose<TodoList, List<Todo>>(
+final todoListProvider = AsyncNotifierProvider.autoDispose<TodoList, List<Todo>>(
   TodoList.new,
 );
 
@@ -18,20 +17,26 @@ class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
 
   /* SNIPPET START */
   Future<void> addTodo(Todo todo) async {
+    // {@template raw_post}
     // We don't care about the API response
+    // {@endtemplate}
     await http.post(
       Uri.https('your_api.com', '/todos'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(todo.toJson()),
     );
 
+    // {@template raw_invalidateSelf}
     // Once the post request is done, we can mark the local cache as dirty.
     // This will cause "build" on our notifier to asynchronously be called again,
     // and will notify listeners when doing so.
+    // {@endtemplate}
     ref.invalidateSelf();
 
+    // {@template raw_future}
     // (Optional) We can then wait for the new state to be computed.
     // This ensures "addTodo" does not complete until the new state is available.
+    // {@endtemplate}
     await future;
   }
 /* SNIPPET END */

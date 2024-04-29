@@ -1,9 +1,10 @@
 ---
 title: 자주 묻는 질문(FAQ)
+version: 1
 ---
 
-import { Link } from "../../../../../src/components/Link";
-import { AutoSnippet, When } from "../../../../../src/components/CodeSnippet";
+import { Link } from "/src/components/Link";
+import { AutoSnippet, When } from "/src/components/CodeSnippet";
 
 다음은 커뮤니티에서 자주 묻는 질문입니다:
 
@@ -138,7 +139,7 @@ Notifiers는 `==` 대신 `identical`을 사용하여 업데이트를 필터링�
 ElevatedButton(
   onPressed: () async {
     await future;
-    ref.read(...); // May throw "Cannot use "ref" after the widget was disposed"
+    ref.read(...); // "위젯이 폐기된 후 "ref"를 사용할 수 없습니다." 를 throw할 수 있습니다.
   }
 )
 ```
@@ -150,7 +151,7 @@ ElevatedButton(
   onPressed: () async {
     await future;
     if (!context.mounted) return;
-    ref.read(...); // No longer throws
+    ref.read(...); // 더 이상 throw하지 않음
   }
 )
 ```

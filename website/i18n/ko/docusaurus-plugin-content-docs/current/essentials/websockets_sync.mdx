@@ -1,12 +1,13 @@
 ---
 title: 웹소켓 및 동기 실행
+version: 1
 ---
 
 import {
   trimSnippet,
   AutoSnippet,
   When,
-} from "../../../../../src/components/CodeSnippet";
+} from "/src/components/CodeSnippet";
 import syncDefinition from "/docs/essentials/websockets_sync/sync_definition";
 import streamProvider from "/docs/essentials/websockets_sync/stream_provider";
 import syncConsumer from "!!raw-loader!/docs/essentials/websockets_sync/sync_consumer.dart";
@@ -31,12 +32,21 @@ _하지만_ Riverpod는 필요한 경우 다른 형식도 지원합니다.
 
 객체를 동기적으로 생성하려면 provice가 Future를 반환하지 않는지 확인하세요:
 
-<AutoSnippet {...syncDefinition} />
+<AutoSnippet 
+  {...syncDefinition} 
+  translations={{
+  }}
+/>
 
 provider가 객체를 동기적으로 생성하면 객체가 소비되는 방식에 영향을 미칩니다.
 특히 동기식 값은 "AsyncValue"로 래핑되지 않습니다:
 
-<AutoSnippet raw={syncConsumer} />
+<AutoSnippet 
+  raw={syncConsumer} 
+  translations={{
+    raw_watch: "      // 값이 \"AsyncValue\"로 래핑되지 않습니다.",
+  }}
+/>
 
 이 차이로 인해 provice가 에러를 발생시키면 값을 읽으려고(read) 하면 에러가 다시 발생(rethrow)합니다.
 또는 `ref.listen`을 사용할 경우 "onError" 콜백이 호출됩니다.
@@ -48,13 +58,26 @@ provider가 객체를 동기적으로 생성하면 객체가 소비되는 방식
 `ChangeNotifier` 또는 `StateNotifier`과 같은 수신가능 객체는 지원되지 않습니다.  
 호환성상의 이유로 이러한 객체 중 하나와 상호 작용해야 하는 경우, 한 가지 우회 방법은 해당 알림 메커니즘(notification mechanism)을 Riverpod로 연결(pipe)하는 것입니다.
 
-<AutoSnippet raw={pipeChangeNotifier} />
+<AutoSnippet 
+  raw={pipeChangeNotifier} 
+  translations={{
+    raw_provider: "/// 값이 변경될 때마다 ValueNotifier를 생성하고 리스너를 업데이트하는 프로바이더입니다.",
+    raw_onDispose: "  // provider가 폐기되면 notifier를 폐기합니다.",
+    raw_addListener: "  // ValueNotifier가 업데이트될 때마다 provider의 리스너들에 알립니다.",
+  }}
+/>
 
 :::info
 이러한 로직이 여러 번 필요한 경우, 공유된 로직에 주목할 가치가 있습니다! "ref" 객체는 컴포저블(composable)하게 설계되었습니다.
 이를 통해 공급자에서 dispose/listening 로직을 추출할 수 있습니다:
 
-<AutoSnippet raw={sharedPipeChangeNotifier} />
+<AutoSnippet 
+  raw={sharedPipeChangeNotifier} 
+  translations={{
+    raw_extension: "  // 이전 로직을 Ref extension으로 옮길 수 있습니다.\n  // 이렇게 하면 provider 간에 로직을 재사용할 수 있습니다.",
+    raw_return: "    // 사용 편의성을 높이기 위해 notifier를 반환합니다.",    
+  }}
+/>
 :::
 
 </When>
@@ -68,7 +91,12 @@ Riverpod은 `ChangeNotifier`와 `StateNotifier`를 즉시 지원하는 "legacy" 
 이러한 providers는 새로운 비즈니스 로직에는 권장되지 않습니다.
 그러나 `pkg:provider`에서 Riverpod로 마이그레이션할 때와 같이 레거시 코드와 상호 작용할 때는 유용할 수 있습니다.
 
-<AutoSnippet raw={changeNotifierProvider} />
+<AutoSnippet 
+  raw={changeNotifierProvider} 
+  translations={{
+    raw_provider: "  // ValueNotifier를 수신하고 폐기합니다.\n  // 그러면 위젯은 이 공급자를 \"ref.watch\"하여 업데이트를 수신할 수 있습니다.",
+  }}
+/>
 
 </When>
 
@@ -80,7 +108,17 @@ Riverpod은 `ChangeNotifier`와 `StateNotifier`를 즉시 지원하는 "legacy" 
 이를 돕기 위해 Riverpod은 `Stream` 객체를 자연스럽게 지원합니다.
 `Future` 객체와 마찬가지로 이 객체는 `AsyncValue`로 변환됩니다:
 
-<AutoSnippet {...streamProvider} />
+<AutoSnippet 
+  {...streamProvider} 
+  translations={{
+    raw_provider: "  // 1초마다 0에서 41 사이의 숫자를 산출합니다.\n  // 이것은 Firestore나 GraphQL 또는 다른 것의 스트림으로 대체할 수 있습니다.",
+    raw_watch: "    // 스트림을 수신하고 AsyncValue로 변환합니다.",
+    raw_consumer: "    // 로딩/오류 상태를 처리하고 데이터를 표시하기 위해 AsyncValue를 사용할 수 있습니다.",
+    codegen_provider: "  // 1초마다 0에서 41 사이의 숫자를 산출합니다.\n  // 이것은 Firestore나 GraphQL 또는 다른 것의 스트림으로 대체할 수 있습니다.",
+    codegen_watch: "    // 스트림을 수신하고 AsyncValue로 변환합니다.",
+    codegen_consumer: "    // 로딩/오류 상태를 처리하고 데이터를 표시하기 위해 AsyncValue를 사용할 수 있습니다.",
+  }}
+/>
 
 :::info
 Riverpod은 RX의 `BehaviorSubject`와 같은 같은 커스텀 `Stream` 구현을 인식하지 못합니다.
@@ -97,4 +135,10 @@ Riverpod은 RX의 `BehaviorSubject`와 같은 같은 커스텀 `Stream` 구현�
 자신이 무엇을 하고 있는지 알고 있는 경우에만 그렇게 하세요.
 :::
 
-<AutoSnippet raw={rawUsage} />
+<AutoSnippet 
+  raw={rawUsage} 
+  translations={{
+    raw_provider: "  // \"Raw\"는 타입 정의입니다.\n  // 반환값을 \"Raw\" 생성자로 래핑할 필요가 없습니다.",
+    raw_watch: "    // 값이 더 이상 AsyncValue로 변환되지 않고\n    // 생성된 스트림이 그대로 반환됩니다.",
+  }}
+/>

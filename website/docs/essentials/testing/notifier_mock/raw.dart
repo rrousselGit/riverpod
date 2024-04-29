@@ -9,7 +9,9 @@ class MyNotifier extends Notifier<int> {
   int build() => throw UnimplementedError();
 }
 
+// {@template raw_mock}
 // Your mock needs to subclass the Notifier base-class corresponding
 // to whatever your notifier uses
+// {@endtemplate}
 class MyNotifierMock extends Notifier<int> with Mock implements MyNotifier {}
 /* SNIPPET END */

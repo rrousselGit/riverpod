@@ -23,15 +23,19 @@ class Todo {
 }
 
 /* SNIPPET START */
+// {@template raw_note}
 // We now use AsyncNotifierProvider instead of FutureProvider
+// {@endtemplate}
 final todoListProvider =
     AsyncNotifierProvider.autoDispose<TodoList, List<Todo>>(
   TodoList.new,
 );
 
+// {@template raw_autoDispose}
 // We use an AsyncNotifier because our logic is asynchronous.
 // More specifically, we'll need AutoDisposeAsyncNotifier because
 // of the "autoDispose" modifier.
+// {@endtemplate}
 class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
   @override
   Future<List<Todo>> build() async {

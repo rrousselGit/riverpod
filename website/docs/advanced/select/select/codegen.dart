@@ -19,13 +19,13 @@ User example(ExampleRef ref) => User()
 class ConsumerExample extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // {@template watch}
+    // {@template codegen_watch}
     // Instead of writing:
     // String name = ref.watch(provider).firstName!;
     // We can write:
     // {@endtemplate}
     String name = ref.watch(exampleProvider.select((it) => it.firstName));
-    // {@template note}
+    // {@template codegen_note}
     // This will cause the widget to only listen to changes on "firstName".
     // {@endtemplate}
 

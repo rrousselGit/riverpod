@@ -10,7 +10,9 @@ final provider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
 class MyNotifier extends Notifier<int> {
   @override
   int build() {
+    // {@template raw_watch}
     // "Ref" can be used here to read other providers
+    // {@endtemplate}
     final otherValue = ref.watch(otherProvider);
 
     return 0;

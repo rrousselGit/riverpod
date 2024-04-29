@@ -9,8 +9,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'main.g.dart';
 
+// {@template hooksCodegen_helloWorld}
 // We create a "provider", which will store a value (here "Hello world").
 // By using a provider, this allows us to mock/override the value exposed.
+// {@endtemplate}
 @riverpod
 String helloWorld(HelloWorldRef ref) {
   return 'Hello world';
@@ -18,20 +20,26 @@ String helloWorld(HelloWorldRef ref) {
 
 void main() {
   runApp(
+    // {@template hooksCodegen_ProviderScope}
     // For widgets to be able to read providers, we need to wrap the entire
     // application in a "ProviderScope" widget.
     // This is where the state of our providers will be stored.
+    // {@endtemplate}
     ProviderScope(
       child: MyApp(),
     ),
   );
 }
 
+// {@template hooksCodegen_HookConsumerWidget}
 // Extend HookConsumerWidget instead of HookWidget, which is exposed by Riverpod
+// {@endtemplate}
 class MyApp extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // {@template hooksCodegen_counter}
     // We can use hooks inside HookConsumerWidget
+    // {@endtemplate}
     final counter = useState(0);
 
     final String value = ref.watch(helloWorldProvider);

@@ -7,7 +7,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'activity.dart';
 import 'provider.dart';
 
+// {@template raw_note}
 /// The homepage of our application
+// {@endtemplate}
 class Home extends StatelessWidget {
   const Home({super.key});
 
@@ -15,6 +17,7 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer(
       builder: (context, ref, child) {
+        // {@template raw_activity}
         // Read the activityProvider. This will start the network request
         // if it wasn't already started.
         // By using ref.watch, this widget will rebuild whenever the
@@ -23,12 +26,15 @@ class Home extends StatelessWidget {
         // - The request was refreshed
         // - The result was modified locally (such as when performing side-effects)
         // ...
+        // {@endtemplate}
         final AsyncValue<Activity> activity = ref.watch(activityProvider);
 
         return Center(
+          // {@template raw_states}
           /// Since network-requests are asynchronous and can fail, we need to
           /// handle both error and loading states. We can use pattern matching for this.
           /// We could alternatively use `if (activity.isLoading) { ... } else if (...)`
+          // {@endtemplate}
           child: switch (activity) {
             AsyncData(:final value) => Text('Activity: ${value.activity}'),
             AsyncError() => const Text('Oops, something unexpected happened'),

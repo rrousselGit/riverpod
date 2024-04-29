@@ -1,16 +1,12 @@
 ---
 title: Provider vs Riverpod
+version: 1
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
-import CodeBlock from "@theme/CodeBlock";
 import family from "/docs/from_provider/family";
 import {
-  trimSnippet,
   AutoSnippet,
-  When,
-} from "../../../../../src/components/CodeSnippet";
+} from "/src/components/CodeSnippet";
 
 
 이 문서에서는 Provider와 Riverpod의 차이점과 유사점을 요약하여 설명합니다.
@@ -390,7 +386,11 @@ ref.onDispose((){
 이렇게 하면 providers에게 매개변수를 전달하여 내부적으로 여러 providers를 생성하고 추적할 수 있습니다.
 즉, 매개변수를 전달할 때 *고유한 매개변수당 고유한 상태가 생성됩니다*.
 
-<AutoSnippet language="dart" {...family}></AutoSnippet>
+<AutoSnippet language="dart" 
+  {...family}
+  translations={{
+  }}
+/>
 
 이렇게 하면 "페이지별 맞춤 상태(custom state per page)" 문제가 해결됩니다. 
 사실, 또 다른 이점이 있습니다. 이러한 상태는 더 이상 특정 페이지에 묶여 있지 않습니다.  

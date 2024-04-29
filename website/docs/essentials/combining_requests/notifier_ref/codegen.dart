@@ -12,7 +12,9 @@ int other(OtherRef ref) => 0;
 class Example extends _$Example {
   @override
   int build() {
+    // {@template codegen_watch}
     // "Ref" can be used here to read other providers
+    // {@endtemplate}
     final otherValue = ref.watch(otherProvider);
 
     return 0;

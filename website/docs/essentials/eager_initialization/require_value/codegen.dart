@@ -7,7 +7,9 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'codegen.g.dart';
 
 /* SNIPPET START */
+// {@template codegen_provider}
 // An eagerly initialized provider.
+// {@endtemplate}
 @riverpod
 Future<String> example(ExampleRef ref) async => 'Hello world';
 
@@ -16,8 +18,10 @@ class MyConsumer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final result = ref.watch(exampleProvider);
 
+    // {@template codegen_note}
     /// If the provider was correctly eagerly initialized, then we can
     /// directly read the data with "requireValue".
+    // {@endtemplate}
     return Text(result.requireValue);
   }
 }

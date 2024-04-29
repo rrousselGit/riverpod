@@ -1,10 +1,8 @@
 ---
 title: 동기부여(Motivation)
+version: 1
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
-import CodeBlock from "@theme/CodeBlock";
 import sameType from "/docs/from_provider/motivation/same_type";
 import combine from "/docs/from_provider/motivation/combine";
 import asyncValues from "/docs/from_provider/motivation/async_values";
@@ -12,10 +10,8 @@ import autoDispose from "/docs/from_provider/motivation/auto_dispose";
 import override from "/docs/from_provider/motivation/override";
 import sideEffects from "/docs/from_provider/motivation/side_effects";
 import {
-  trimSnippet,
   AutoSnippet,
-  When,
-} from "../../../../../../src/components/CodeSnippet";
+} from "/src/components/CodeSnippet";
 
 이 심층 글은 Riverpod의 존재 이유를 보여주기 위해 작성되었습니다.
 
@@ -95,7 +91,16 @@ Provider를 상요하면, 리팩토링 또는 대규모 변경 중에 `ProviderN
 Riverpod은 [autodispose]와 [keepAlive]와 같은 쉽게 이해할 수 있는 API로 이 문제를 해결합니다.
 이 두 API는 유연하고 창의적인 캐싱 전략(예: 시간 기반 캐싱)을 가능하게 합니다:
 
-<AutoSnippet language="dart" {...autoDispose}></AutoSnippet>
+<AutoSnippet language="dart" 
+  {...autoDispose}
+  translations={{
+    raw_dice: "  // 이 provider는 .autoDispose이므로,\n  // 리스닝을 해제하면 현재 노출된 상태(state)가 폐기(dispose)됩니다.\n  // 그런 다음 이 provider를 다시 수신(listen)할 때마다,\n  // 새로운 주사위를 굴려서 다시 노출합니다.",
+    raw_keepAlive: "  // 위의 조건이 실패할 수 있습니다;\n  // 그렇지 않은 경우 다음 명령어는 아무도 더 이상 수신하지 않더라도\n  // 캐시된 상태를 유지하도록 공급자에게 지시합니다.",
+    codegen_autoDispose: "// 코드 생성 시 .autoDispose가 기본값입니다.",
+    codegen_dice: "  // 이 provider는 .autoDispose이므로,\n  // 리스닝을 해제하면 현재 노출된 상태(state)가 폐기(dispose)됩니다.\n  // 그런 다음 이 provider를 다시 수신(listen)할 때마다,\n  // 새로운 주사위를 굴려서 다시 노출합니다.",
+    codegen_keepAlive: "  // 위의 조건이 실패할 수 있습니다;\n  // 그렇지 않은 경우 다음 명령어는 아무도 더 이상 수신하지 않더라도\n  // 캐시된 상태를 유지하도록 공급자에게 지시합니다.",
+  }}
+/>
 
 안타깝께도 원시 `InheritedWidget`으로는 이를 구현할 방법이 없으므로 Provider로 구현할 수 없습니다.
 

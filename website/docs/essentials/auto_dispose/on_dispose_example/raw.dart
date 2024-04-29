@@ -8,10 +8,14 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 final provider = StreamProvider<int>((ref) {
   final controller = StreamController<int>();
 
+  // {@template raw_onDispose}
   // When the state is destroyed, we close the StreamController.
+  // {@endtemplate}
   ref.onDispose(controller.close);
 
+  // {@template raw_todo}
   // TO-DO: Push some values in the StreamController
+  // {@endtemplate}
   return controller.stream;
 });
 /* SNIPPET END */

@@ -16,14 +16,14 @@ final userProvider = FutureProvider(
 /* SNIPPET START */
 @riverpod
 Object? example(ExampleRef ref) async {
-  // {@template watch}
+  // {@template codegen_watch}
   // Wait for a user to be available, and listen to only the "firstName" property
   // {@endtemplate}
   final firstName = await ref.watch(
     userProvider.selectAsync((it) => it.firstName),
   );
 
-  // {@template todo}
+  // {@template codegen_todo}
   // TODO use "firstName" to fetch something else
   // {@endtemplate}
 }

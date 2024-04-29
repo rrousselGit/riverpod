@@ -1,10 +1,10 @@
 ---
 title: Providers의 빠른 초기화(Eager initialization)
-version: 1
+version: 2
 ---
 
-import { Link } from "../../../../../src/components/Link";
-import { AutoSnippet } from "../../../../../src/components/CodeSnippet";
+import { Link } from "/src/components/Link";
+import { AutoSnippet } from "/src/components/CodeSnippet";
 import consumerExample from "!!raw-loader!/docs/essentials/eager_initialization/consumer_example.dart";
 import asyncConsumerExample from "!!raw-loader!/docs/essentials/eager_initialization/async_consumer_example.dart";
 import requireValue from "/docs/essentials/eager_initialization/require_value";
@@ -18,7 +18,13 @@ import requireValue from "/docs/essentials/eager_initialization/require_value";
 
 권장되는 접근 방식은 `ProviderScope` 바로 아래에 배치된 소비자(Consumer)에서 provider를 단순히 "watch"하는 것입니다:
 
-<AutoSnippet raw={consumerExample} />
+<AutoSnippet 
+    raw={consumerExample} 
+    translations={{
+        raw_render: "      // TODO: 여기에서 앱 렌더링",
+        raw_watch: "    // 공급자를 감시하여 공급자를 열심히 초기화합니다.\n    // \"watch\"를 사용하면 공급자가 폐기되지 않고 계속 살아 있습니다.",
+    }}
+/>
 
 :::note
 초기화 소비자(initialization consumer)를 "MyApp" 또는 공개 위젯에 넣는 것을 고려해 보세요.
@@ -43,14 +49,27 @@ import requireValue from "/docs/essentials/eager_initialization/require_value";
 `Consumer`에서 일반적으로 처리하는 것처럼 로딩/오류 상태를 처리할 수 있습니다.
 `_EagerInitialization`은 프로바이더가 "loading" 상태인지 확인하고, 만약 그렇다면 `child` 대신 `CircularProgressIndicator`를 반환할 수 있습니다:
 
-<AutoSnippet raw={asyncConsumerExample} />
+<AutoSnippet 
+    raw={asyncConsumerExample} 
+    translations={{
+        raw_states: "    // 오류 상태 및 로딩 상태 처리"
+    }}
+/>
 
 #### 로딩/오류 상태를 처리했지만 다른 Consumer는 여전히 AsyncValue를 받습니다! 모든 위젯에서 로딩/에러 상태를 처리하지 않아도 되는 방법이 있나요?
 
 provider가 `AsyncValue`를 노출하지 않도록 하는 대신 위젯이 `AsyncValue.requireValue`를 사용하도록 할 수 있습니다.  
 이렇게 하면 패턴 매칭을 수행하지 않고도 데이터를 읽을 수 있습니다. 그리고 버그가 발생하면 명확한 메시지와 함께 예외를 던집니다.
 
-<AutoSnippet {...requireValue} />
+<AutoSnippet 
+    {...requireValue} 
+    translations={{
+        raw_provider: "// 이른 초기화된 공급자.",
+        raw_note: "    /// 공급자가 올바르게 초기화되었다면, \"requireValue\"로 데이터를 직접 읽을 수 있습니다.",
+        codegen_provider: "// 이른 초기화된 공급자.",
+        codegen_note: "    /// 공급자가 올바르게 초기화되었다면, \"requireValue\"로 데이터를 직접 읽을 수 있습니다.",
+    }}
+/>
 
 :::note
 이러한 경우 로딩/오류 상태를 노출하지 않는 방법(스코핑(scoping)에 의존)이 있지만 일반적으로 그렇게 하지 않는 것이 좋습니다.  
