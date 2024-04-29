@@ -1,0 +1,99 @@
+---
+title: AsyncValue
+version: 1
+---
+
+# AsyncValue
+
+`AsyncValue` is a utility class to safely handle asynchronous data. This includes future and stream data.
+Whenever we provide a `state` using `FutureProvider` / `AsyncNotifier` riverpod transforms the `state` into its corresponding `AsyncValue`.
+`AsyncValue` is implemented as a sealed class with the following subtypes:
+
+| AsyncValue    | Description |
+| ---           | --- |
+| AsyncData     | The state contains data that can be resolved. |
+| AsyncLoading  | The state is currently loading. The data is not ready to be accessed. |
+| AsyncError    | The state contains an error. Something went wrong, e.g. the API request failed. |
+
+
+## Resolving AsyncValue
+We can always access the data of an `AsyncValue` using `.value`.
+Even though, this operation fails when `AsyncValue` has no data (yet). 
+We can safely use `.valueOrNull` which returns `null` when the provided data is not available.
+
+We can handle the different states of `AsyncValue` separately using dart [pattern matching](https://dart.dev/language/patterns).
+This is particulary useful in a flutter widget where we want to show different widgets based on the current async state.
+
+``` dart
+class Consumer extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final value = ref.watch(asyncProvider);
+
+    return switch (value) {
+        AsyncData(:final value) => const Text('$value'),
+        AsyncError(:final error) => const Text('$error'),
+        _ => const CircularProgressIndicator(),
+    };
+  }
+}
+```
+
+
+## Modifying an async state synchronous
+We can simply modify the async state of our provider by assigning a new `AsyncValue` to the `state`.
+
+``` dart
+state = AsyncLoading(); // set loading state
+var newData = obj;
+state = AsyncData(newData); // the state holds new data
+```
+
+## Modifying the async state asynchronous
+In order to safely modify an `AsyncValue` of a state asynchronously, we can use the convenience method `.guard()`, which again creates an `AsyncValue` that is safe to read.
+
+<!-- copy from api reference -->
+This is useful to avoid having to do a tedious `try/catch`. Instead of writing:
+
+``` dart 
+state = const AsyncValue.loading();
+try {
+    final response = await dio.get('my_api/data');
+    final data = MyData.fromJson(response);
+    state = AsyncValue.data(data);
+} catch (err, stack) {
+    state = AsyncValue.error(err, stack);
+}
+``` 
+
+We can use `.guard()` to simplify it:
+
+
+``` dart 
+state = const AsyncValue.loading();
+// does the try/catch for us like previously
+state = await AsyncValue.guard(() async {
+    final response = await dio.get('my_api/data');
+    return Data.fromJson(response);
+});
+```
+<!-- end copy -->
+
+:::note 
+It is recommended to use `.guard()`.
+:::
+
+
+## Assigning a previous value
+
+`AsyncValue` can contain information about multiple states at once. This can be useful in various ways.
+From the previous example, `.copyWithPrevious()` allows to hold the data from the previous state while updating the `state`.
+
+``` dart 
+state = const AsyncValue.loading().copyWithPrevious(state);
+// does the try/catch for us like previously
+state = await AsyncValue.guard(() async {
+    final response = await dio.get('my_api/data');
+    return Data.fromJson(response);
+});
+```

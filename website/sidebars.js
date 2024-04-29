@@ -26,6 +26,7 @@ module.exports = {
         "essentials/websockets_sync",
         "essentials/combining_requests",
         "essentials/auto_dispose",
+        "essentials/async_value",
         // {
         //   type: "link",
         //   label: "Progress indicators and error pages (WIP)",
