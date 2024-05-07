@@ -9,7 +9,7 @@ part 'codegen.g.dart';
 /* SNIPPET START */
 @riverpod
 Stream<int> streamExample(StreamExampleRef ref) async* {
-  // {@template codegen_provider}
+  // {@template provider}
   // Every 1 second, yield a number from 0 to 41.
   // This could be replaced with a Stream from Firestore or GraphQL or anything else.
   // {@endtemplate}
@@ -22,12 +22,12 @@ Stream<int> streamExample(StreamExampleRef ref) async* {
 class Consumer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // {@template codegen_watch}
+    // {@template watch}
     // The stream is listened to and converted to an AsyncValue.
     // {@endtemplate}
     AsyncValue<int> value = ref.watch(streamExampleProvider);
 
-    // {@template codegen_consumer}
+    // {@template consumer}
     // We can use the AsyncValue to handle loading/error states and show the data.
     // {@endtemplate}
     return switch (value) {

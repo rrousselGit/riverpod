@@ -10,7 +10,7 @@ part 'codegen.g.dart';
 /* SNIPPET START */
 @riverpod
 Future<Object> example(ExampleRef ref) async {
-  // {@template codegen_cacheFor}
+  // {@template cacheFor}
   /// Keeps the state alive for 5 minutes
   // {@endtemplate}
   ref.cacheFor(const Duration(minutes: 5));

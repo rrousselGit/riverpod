@@ -21,8 +21,8 @@ import requireValue from "/docs/essentials/eager_initialization/require_value";
 <AutoSnippet 
     raw={consumerExample} 
     translations={{
-        raw_render: "      // TODO: 여기에서 앱 렌더링",
-        raw_watch: "    // 공급자를 감시하여 공급자를 열심히 초기화합니다.\n    // \"watch\"를 사용하면 공급자가 폐기되지 않고 계속 살아 있습니다.",
+        render: "      // TODO: 여기에서 앱 렌더링",
+        watch: "    // 공급자를 감시하여 공급자를 열심히 초기화합니다.\n    // \"watch\"를 사용하면 공급자가 폐기되지 않고 계속 살아 있습니다.",
     }}
 />
 
@@ -52,7 +52,7 @@ import requireValue from "/docs/essentials/eager_initialization/require_value";
 <AutoSnippet 
     raw={asyncConsumerExample} 
     translations={{
-        raw_states: "    // 오류 상태 및 로딩 상태 처리"
+        states: "    // 오류 상태 및 로딩 상태 처리"
     }}
 />
 
@@ -64,10 +64,8 @@ provider가 `AsyncValue`를 노출하지 않도록 하는 대신 위젯이 `Asyn
 <AutoSnippet 
     {...requireValue} 
     translations={{
-        raw_provider: "// 이른 초기화된 공급자.",
-        raw_note: "    /// 공급자가 올바르게 초기화되었다면, \"requireValue\"로 데이터를 직접 읽을 수 있습니다.",
-        codegen_provider: "// 이른 초기화된 공급자.",
-        codegen_note: "    /// 공급자가 올바르게 초기화되었다면, \"requireValue\"로 데이터를 직접 읽을 수 있습니다.",
+        provider: "// 이른 초기화된 공급자.",
+        note: "    /// 공급자가 올바르게 초기화되었다면, \"requireValue\"로 데이터를 직접 읽을 수 있습니다.",
     }}
 />
 

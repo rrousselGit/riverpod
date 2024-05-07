@@ -19,7 +19,7 @@ class Todo {
 }
 
 final todoListProvider = FutureProvider.autoDispose<List<Todo>>((ref) async {
-  // {@template raw_note}
+  // {@template note}
   // Simulate a network request. This would normally come from a real API
   // {@endtemplate}
   return [

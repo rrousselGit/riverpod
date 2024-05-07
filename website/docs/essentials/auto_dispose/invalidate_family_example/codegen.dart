@@ -16,11 +16,11 @@ String label(LabelRef ref, String userName) {
 // ...
 
 void onTap() {
-  // {@template codegen_invalidateAll}
+  // {@template invalidateAll}
   // Invalidate all possible parameter combinations of this provider.
   // {@endtemplate}
   ref.invalidate(labelProvider);
-  // {@template codegen_invalidate}
+  // {@template invalidate}
   // Invalidate a specific combination only
   // {@endtemplate}
   ref.invalidate(labelProvider('John'));

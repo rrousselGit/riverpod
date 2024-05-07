@@ -10,7 +10,7 @@ int other(OtherRef ref) => 0;
 /* SNIPPET START */
 @riverpod
 int example(ExampleRef ref) {
-  // {@template codegen_provider}
+  // {@template provider}
   // "Ref" can be used here to read other providers
   // {@endtemplate}
   final otherValue = ref.watch(otherProvider);

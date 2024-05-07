@@ -39,8 +39,7 @@ import renderAddTodo from "/docs/essentials/side_effects/render_add_todo";
 <AutoSnippet 
   {...todoListProvider} 
   translations={{
-    raw_note: "  // 네트워크 요청을 시뮬레이션합니다. 이것은 일반적으로 실제 API에서 오는 것입니다.",
-    codegen_note: "  // 네트워크 요청을 시뮬레이션합니다. 이것은 일반적으로 실제 API에서 오는 것입니다.",
+    note: "  // 네트워크 요청을 시뮬레이션합니다. 이것은 일반적으로 실제 API에서 오는 것입니다.",
   }}
 />
 
@@ -265,9 +264,9 @@ UI에서 상태가 변경되었음을 알 수 있는 수단이 없기 때문에,
 <AutoSnippet 
   {...todoListNotifier} 
   translations={{
-    raw_note: "// 이제 FutureProvider 대신 AsyncNotifierProvider를 사용합니다.",
-    raw_autoDispose: "// 로직이 비동기식이기 때문에 AsyncNotifier를 사용합니다.\n// 더 구체적으로 말하자면, \"autoDispose\" 한정자(Modifier) 때문에\n// AutoDisposeAsyncNotifier가 필요합니다.",
-    codegen_note: "    // 이전에 FutureProvider에 있던 로직이 이제 build 메서드에 있습니다.",
+    note: "// 이제 FutureProvider 대신 AsyncNotifierProvider를 사용합니다.",
+    autoDispose: "// 로직이 비동기식이기 때문에 AsyncNotifier를 사용합니다.\n// 더 구체적으로 말하자면, \"autoDispose\" 한정자(Modifier) 때문에\n// AutoDisposeAsyncNotifier가 필요합니다.",
+    build_method: "    // 이전에 FutureProvider에 있던 로직이 이제 build 메서드에 있습니다.",
   }}
 />
 
@@ -335,9 +334,9 @@ notifier에 `addTodo` 메서드를 추가하면 그렇게 할 수 있습니다:
 <AutoSnippet 
   raw={restAddTodo} 
   translations={{
-    raw_post: "    // POST 요청은 새 애플리케이션 상태와 일치하는 List<Todo>를 반환합니다.",
-    raw_decode: "    // API 응답을 디코딩하여 List<Todo>로 변환합니다.",
-    raw_newState: "    // 새 상태와 일치하도록 로컬 캐시를 업데이트합니다.\n    // 이렇게 하면 모든 리스너에게 알림이 전송됩니다.",
+    post: "    // POST 요청은 새 애플리케이션 상태와 일치하는 List<Todo>를 반환합니다.",
+    decode: "    // API 응답을 디코딩하여 List<Todo>로 변환합니다.",
+    newState: "    // 새 상태와 일치하도록 로컬 캐시를 업데이트합니다.\n    // 이렇게 하면 모든 리스너에게 알림이 전송됩니다.",
   }}
 />
 
@@ -367,9 +366,9 @@ notifier에 `addTodo` 메서드를 추가하면 그렇게 할 수 있습니다:
 <AutoSnippet 
   raw={invalidateSelfAddTodo} 
   translations={{
-    raw_post: "    // API 응답은 신경 쓰지 않습니다.",
-    raw_invalidateSelf: "    // 포스트 요청이 완료되면 로컬 캐시를 더티(Dirty)로 표시할 수 있습니다.\n    // 이렇게 하면 notifier의 \"build\"가 비동기적으로 다시 호출되고,\n    // 이 때 리스너에게 알림이 전송됩니다.",
-    raw_future: "    // (선택 사항) 그런 다음 새 상태가 계산될 때까지 기다릴 수 있습니다.\n    // 이렇게 하면 새 상태를 사용할 수 있을 때까지 \"addTodo\"가 완료되지 않습니다.",
+    post: "    // API 응답은 신경 쓰지 않습니다.",
+    invalidateSelf: "    // 포스트 요청이 완료되면 로컬 캐시를 더티(Dirty)로 표시할 수 있습니다.\n    // 이렇게 하면 notifier의 \"build\"가 비동기적으로 다시 호출되고,\n    // 이 때 리스너에게 알림이 전송됩니다.",
+    future: "    // (선택 사항) 그런 다음 새 상태가 계산될 때까지 기다릴 수 있습니다.\n    // 이렇게 하면 새 상태를 사용할 수 있을 때까지 \"addTodo\"가 완료되지 않습니다.",
   }}
 />
 
@@ -399,9 +398,9 @@ notifier에 `addTodo` 메서드를 추가하면 그렇게 할 수 있습니다:
 <AutoSnippet 
   raw={manualAddTodo} 
   translations={{
-    raw_post: "    // API 응답은 중요하지 않습니다.",
-    raw_previousState: "    // 그런 다음 로컬 캐시를 수동으로 업데이트할 수 있습니다. \n    // 이를 위해서는 이전 상태를 가져와야 합니다.\n    // 주의: 이전 상태가 여전히 로딩 중이거나 오류 상태일 수 있습니다.\n    // 이를 처리하는 우아한 방법은 `this.state` 대신 \n    // `this.future`를 읽어서 로딩 상태를 기다리게 하고\n    // 상태가 오류 상태인 경우 오류를 던지는 것입니다.",
-    raw_newState: "    // 그런 다음 새 상태 객체를 생성하여 상태를 업데이트할 수 있습니다.\n    // 그러면 모든 리스너에게 알림이 전송됩니다.",
+    post: "    // API 응답은 중요하지 않습니다.",
+    previousState: "    // 그런 다음 로컬 캐시를 수동으로 업데이트할 수 있습니다. \n    // 이를 위해서는 이전 상태를 가져와야 합니다.\n    // 주의: 이전 상태가 여전히 로딩 중이거나 오류 상태일 수 있습니다.\n    // 이를 처리하는 우아한 방법은 `this.state` 대신 \n    // `this.future`를 읽어서 로딩 상태를 기다리게 하고\n    // 상태가 오류 상태인 경우 오류를 던지는 것입니다.",
+    newState: "    // 그런 다음 새 상태 객체를 생성하여 상태를 업데이트할 수 있습니다.\n    // 그러면 모든 리스너에게 알림이 전송됩니다.",
   }}
 />
 
@@ -413,8 +412,8 @@ notifier에 `addTodo` 메서드를 추가하면 그렇게 할 수 있습니다:
 <AutoSnippet 
   raw={mutableManualAddTodo} 
   translations={{
-    raw_mutable: "    // 이전 할 일 목록을 변경합니다.",
-    raw_notify: "    // 리스너에게 수동으로 알림을 보냅니다.",
+    mutable: "    // 이전 할 일 목록을 변경합니다.",
+    notify: "    // 리스너에게 수동으로 알림을 보냅니다.",
   }}
 />
 

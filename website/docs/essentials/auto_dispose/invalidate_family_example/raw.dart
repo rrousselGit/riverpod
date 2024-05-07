@@ -12,11 +12,11 @@ final provider = Provider.autoDispose.family<String, String>((ref, name) {
 // ...
 
 void onTap() {
-  // {@template raw_invalidateAll}
+  // {@template invalidateAll}
   // Invalidate all possible parameter combinations of this provider.
   // {@endtemplate}
   ref.invalidate(provider);
-  // {@template raw_invalidate}
+  // {@template invalidate}
   // Invalidate a specific combination only
   // {@endtemplate}
   ref.invalidate(provider('John'));

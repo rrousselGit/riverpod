@@ -7,7 +7,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'main.g.dart';
 
-// {@template codegen_helloWorld}
+// {@template helloWorld}
 // We create a "provider", which will store a value (here "Hello world").
 // By using a provider, this allows us to mock/override the value exposed.
 // {@endtemplate}
@@ -17,12 +17,12 @@ String helloWorld(HelloWorldRef ref) {
 }
 
 void main() {
-  // {@template codegen_container}
+  // {@template container}
   // This object is where the state of our providers will be stored.
   // {@endtemplate}
   final container = ProviderContainer();
 
-  // {@template codegen_value}
+  // {@template value}
   // Thanks to "container", we can read our provider.
   // {@endtemplate}
   final value = container.read(helloWorldProvider);

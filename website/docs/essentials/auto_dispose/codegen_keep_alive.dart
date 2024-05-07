@@ -3,7 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'codegen_keep_alive.g.dart';
 
 /* SNIPPET START */
-// {@template codegen_keepAlive}
+// {@template keepAlive}
 // We can specify "keepAlive" in the annotation to disable
 // the automatic state destruction
 // {@endtemplate}

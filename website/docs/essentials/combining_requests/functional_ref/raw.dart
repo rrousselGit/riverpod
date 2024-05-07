@@ -6,7 +6,7 @@ final otherProvider = Provider<int>((ref) => 0);
 
 /* SNIPPET START */
 final provider = Provider<int>((ref) {
-  // {@template raw_provider}
+  // {@template provider}
   // "Ref" can be used here to read other providers
   // {@endtemplate}
   final otherValue = ref.watch(otherProvider);

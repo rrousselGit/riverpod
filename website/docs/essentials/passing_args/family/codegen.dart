@@ -51,7 +51,7 @@ class ActivityNotifier2 extends _$ActivityNotifier2 {
     // {@endtemplate}
     print(this.activityType);
 
-    // {@template codegen_todo}
+    // {@template todo}
     // TODO: perform a network request to fetch an activity
     // {@endtemplate}
     return fetchActivity();

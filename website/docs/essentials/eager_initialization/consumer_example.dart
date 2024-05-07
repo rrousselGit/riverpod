@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const _EagerInitialization(
-      // {@template raw_render}
+      // {@template render}
       // TODO: Render your app here
       // {@endtemplate}
       child: MaterialApp(),
@@ -28,7 +28,7 @@ class _EagerInitialization extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // {@template raw_watch}
+    // {@template watch}
     // Eagerly initialize providers by watching them.
     // By using "watch", the provider will stay alive and not be disposed.
     // {@endtemplate}

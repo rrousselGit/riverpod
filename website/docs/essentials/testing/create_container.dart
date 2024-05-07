@@ -2,7 +2,7 @@
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
-// {@template raw_createContainer}
+// {@template createContainer}
 /// A testing utility which creates a [ProviderContainer] and automatically
 /// disposes it at the end of the test.
 // {@endtemplate}
@@ -11,7 +11,7 @@ ProviderContainer createContainer({
   List<Override> overrides = const [],
   List<ProviderObserver>? observers,
 }) {
-  // {@template raw_container}
+  // {@template container}
   // Create a ProviderContainer, and optionally allow specifying parameters.
   // {@endtemplate}
   final container = ProviderContainer(
@@ -20,7 +20,7 @@ ProviderContainer createContainer({
     observers: observers,
   );
 
-  // {@template raw_addTearDown}
+  // {@template addTearDown}
   // When the test ends, dispose the container.
   // {@endtemplate}
   addTearDown(container.dispose);

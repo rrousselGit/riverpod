@@ -81,10 +81,9 @@ Riverpod에서 비즈니스 로직은 "providers" 내부에 배치됩니다.
 <AutoSnippet title="activity.dart" 
   {...activity} 
   translations={{
-    raw_activity: "/// `GET /api/activity` 엔드포인트의 응답입니다.",
-    raw_fromJson: "  /// JSON 객체를 [Activity] 인스턴스로 변환합니다.\n  /// 이렇게 하면 API 응답을 유형 안전하게 읽을 수 있습니다.",
-    codegen_activity: "/// `GET /api/activity` 엔드포인트의 응답입니다.\n///\n/// `freezed`와 `json_serializable`을 사용하여 정의됩니다.",
-    codegen_fromJson: "  /// JSON 객체를 [Activity] 인스턴스로 변환합니다.\n  /// 이렇게 하면 API 응답을 유형 안전하게 읽을 수 있습니다.",
+    activity: "/// `GET /api/activity` 엔드포인트의 응답입니다.",
+    fromJson: "  /// JSON 객체를 [Activity] 인스턴스로 변환합니다.\n  /// 이렇게 하면 API 응답을 유형 안전하게 읽을 수 있습니다.",
+    codegen_freezed: "/// `freezed`와 `json_serializable`을 사용하여 정의됩니다.",
   }}
 />
 
@@ -242,14 +241,11 @@ _GET_은 비동기 연산이므로 `Future<Activity>`를 생성해야 합니다.
 <AutoSnippet title="provider.dart" 
   {...provider} 
   translations={{
-    raw_response: "  // package:http를 사용하여 Bored API에서 임의의 activity를 가져옵니다.",
-    raw_json: "  // 그런 다음 dart:convert를 사용하여 JSON 페이로드를 맵 데이터 구조로 디코딩합니다.",
-    raw_fromJson: "  // 마지막으로 맵을 Activity 인스턴스로 변환합니다.",
+    response: "  // package:http를 사용하여 Bored API에서 임의의 activity를 가져옵니다.",
+    json: "  // 그런 다음 dart:convert를 사용하여 JSON 페이로드를 맵 데이터 구조로 디코딩합니다.",
+    fromJson: "  // 마지막으로 맵을 Activity 인스턴스로 변환합니다.",
     codegen_note: "// 코드 생성이 작동하는 데 필요합니다.",
     codegen_provider: "/// 그러면 이 함수의 결과를 캐시할\n/// `activityProvider`라는 프로바이더가 생성됩니다.",
-    codegen_response: "  // package:http를 사용하여 Bored API에서 임의의 activity를 가져옵니다.",
-    codegen_json: "  // 그런 다음 dart:convert를 사용하여 JSON 페이로드를 맵 데이터 구조로 디코딩합니다.",
-    codegen_fromJson: "  // 마지막으로 맵을 Activity 인스턴스로 변환합니다.",
   }}
 />
 
@@ -285,9 +281,9 @@ provider는 당연히 "ref" 객체에 액세스할 수 있으므로 이전에 pr
 <AutoSnippet title="consumer.dart" 
   {...consumer} 
   translations={{
-    raw_note: "/// 애플리케이션 홈페이지",
-    raw_activity: "        // activityProvider를 읽습니다. \n        // 아직 시작되지 않은 경우 네트워크 요청이 시작됩니다.\n        // ref.watch를 사용하여 \n        // 이 위젯은 activityProvider가 업데이트될 때마다 다시 빌드됩니다.\n        // 다음과 같은 경우에 발생할 수 있습니다:\n        // - 응답이 \"loading\"에서 \"data/error\"로 바뀐 경우\n        // - 요청이 refreshed된 경우\n        // - 결과가 로컬에서 수정된 경우 (예: 부가작업(side-effects)을 수행할 때)\n        // ...",
-    raw_states: "          /// 네트워크 요청은 비동기식이며 실패할 수 있습니다, \n          /// 오류 상태와 로딩 상태를 모두 처리해야 합니다. \n          /// 이를 위해 패턴 매칭을 사용할 수 있습니다.\n          /// 또는 `if (activity.isLoading) { ... } else if (...)`를 사용할 수도 있습니다.",
+    note: "/// 애플리케이션 홈페이지",
+    activity: "        // activityProvider를 읽습니다. \n        // 아직 시작되지 않은 경우 네트워크 요청이 시작됩니다.\n        // ref.watch를 사용하여 \n        // 이 위젯은 activityProvider가 업데이트될 때마다 다시 빌드됩니다.\n        // 다음과 같은 경우에 발생할 수 있습니다:\n        // - 응답이 \"loading\"에서 \"data/error\"로 바뀐 경우\n        // - 요청이 refreshed된 경우\n        // - 결과가 로컬에서 수정된 경우 (예: 부가작업(side-effects)을 수행할 때)\n        // ...",
+    states: "          /// 네트워크 요청은 비동기식이며 실패할 수 있습니다, \n          /// 오류 상태와 로딩 상태를 모두 처리해야 합니다. \n          /// 이를 위해 패턴 매칭을 사용할 수 있습니다.\n          /// 또는 `if (activity.isLoading) { ... } else if (...)`를 사용할 수도 있습니다.",
   }}
 />
 
@@ -323,10 +319,10 @@ Riverpod은 동일한 결과를 얻을 수 있는 다른 방법을 제공합니�
 <AutoSnippet 
   {...consumerWidget} 
   translations={{
-    raw_note: "/// \"StatelessWidget\" 대신 \"ConsumerWidget\"을 서브클래스화했습니다.\n/// 이는 \"StatelessWidget\"을 만들고 \"Consumer\"를 재조정하는 것과 같습니다.",
-    raw_build: "  // 이제 \"build\"가 추가 매개변수 \"ref\"를 받는 방식에 주목하세요",
-    raw_watch: "    // \"Consumer\"를 사용했을 때와 마찬가지로 위젯 내부에서 \"ref.watch\"를 사용할 수 있습니다.",
-    raw_render: "    // 렌더링 로직은 동일하게 유지됩니다.",    
+    note: "/// \"StatelessWidget\" 대신 \"ConsumerWidget\"을 서브클래스화했습니다.\n/// 이는 \"StatelessWidget\"을 만들고 \"Consumer\"를 재조정하는 것과 같습니다.",
+    build: "  // 이제 \"build\"가 추가 매개변수 \"ref\"를 받는 방식에 주목하세요",
+    watch: "    // \"Consumer\"를 사용했을 때와 마찬가지로 위젯 내부에서 \"ref.watch\"를 사용할 수 있습니다.",
+    render: "    // 렌더링 로직은 동일하게 유지됩니다.",    
   }}
 />
 
@@ -335,11 +331,11 @@ Riverpod은 동일한 결과를 얻을 수 있는 다른 방법을 제공합니�
 <AutoSnippet 
   {...consumerStatefulWidget} 
   translations={{
-    raw_homeWidget: "// ConsumerStatefulWidget을 확장합니다.\n// 이것은 \"Consumer\" + \"StatefulWidget\"과 동일합니다.",
-    raw_homeState: "// \"State\" 대신 \"ConsumerState\"를 확장한 것을 볼 수 있습니다.\n// 이것은 \"ConsumerWidget\" 대 \"StatelessWidget\"과 동일한 원리를 사용합니다.",
-    raw_listen: "    // 상태 수명 주기에도 \"ref\"에 액세스할 수 있습니다.\n    // 이를 통해 특정 공급자에 리스너를 추가하여 대화 상자/스낵바를 표시하는 등의 작업을 수행할 수 있습니다.",
-    raw_todo: "      // TODO 스낵바/대화 상자 표시",
-    raw_watch: "    // \"ref\"는 더 이상 매개변수로 전달되지 않고 대신 \"ConsumerState\"의 프로퍼티가 됩니다.\n    // 따라서 \"build\" 내에서 \"ref.watch\"를 계속 사용할 수 있습니다.",
+    homeWidget: "// ConsumerStatefulWidget을 확장합니다.\n// 이것은 \"Consumer\" + \"StatefulWidget\"과 동일합니다.",
+    homeState: "// \"State\" 대신 \"ConsumerState\"를 확장한 것을 볼 수 있습니다.\n// 이것은 \"ConsumerWidget\" 대 \"StatelessWidget\"과 동일한 원리를 사용합니다.",
+    listen: "    // 상태 수명 주기에도 \"ref\"에 액세스할 수 있습니다.\n    // 이를 통해 특정 공급자에 리스너를 추가하여 대화 상자/스낵바를 표시하는 등의 작업을 수행할 수 있습니다.",
+    todo: "      // TODO 스낵바/대화 상자 표시",
+    watch: "    // \"ref\"는 더 이상 매개변수로 전달되지 않고 대신 \"ConsumerState\"의 프로퍼티가 됩니다.\n    // 따라서 \"build\" 내에서 \"ref.watch\"를 계속 사용할 수 있습니다.",
   }}
 />
 
@@ -364,9 +360,9 @@ Riverpod는 이 문제에 대한 해결책으로 `HookConsumerWidget`과 `Statef
 <AutoSnippet 
   {...hookConsumerWidget} 
   translations={{
-    raw_homeWidget: "/// \"HookConsumerWidget\"을 서브클래스화했습니다.\n/// 이것은 \"StatelessWidget\" + \"Consumer\" + \"HookWidget\"을 함께 결합합니다.",
-    raw_build: "  // 이제 \"build\"가 추가 매개변수를 받는 방식에 주목하세요: \"ref\"",
-    raw_useState: "    // 위젯 내부에서 \"useState\"와 같은 훅을 사용할 수 있습니다.",
-    raw_activity: "    // 공급자 읽기도 사용할 수도 있습니다.",
+    homeWidget: "/// \"HookConsumerWidget\"을 서브클래스화했습니다.\n/// 이것은 \"StatelessWidget\" + \"Consumer\" + \"HookWidget\"을 함께 결합합니다.",
+    build: "  // 이제 \"build\"가 추가 매개변수를 받는 방식에 주목하세요: \"ref\"",
+    useState: "    // 위젯 내부에서 \"useState\"와 같은 훅을 사용할 수 있습니다.",
+    activity: "    // 공급자 읽기도 사용할 수도 있습니다.",
   }}
 />

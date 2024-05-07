@@ -14,7 +14,7 @@ const someStream = Stream<({double longitude, double latitude})>.empty();
 /* SNIPPET START */
 @riverpod
 Stream<({double longitude, double latitude})> location(LocationRef ref) {
-  // {@template codegen_provider}
+  // {@template provider}
   // TO-DO: Return a stream which obtains the current location
   // {@endtemplate}
   return someStream;
@@ -22,14 +22,14 @@ Stream<({double longitude, double latitude})> location(LocationRef ref) {
 
 @riverpod
 Future<List<String>> restaurantsNearMe(RestaurantsNearMeRef ref) async {
-  // {@template codegen_watch}
+  // {@template watch}
   // We use "ref.watch" to obtain the latest location.
   // By specifying that ".future" after the provider, our code will wait
   // for at least one location to be available.
   // {@endtemplate}
   final location = await ref.watch(locationProvider.future);
 
-  // {@template codegen_get}
+  // {@template get}
   // We can now make a network request based on that location.
   // For example, we could use the Google Map API:
   // {@endtemplate}
@@ -42,7 +42,7 @@ Future<List<String>> restaurantsNearMe(RestaurantsNearMeRef ref) async {
       'key': '<your api key>',
     }),
   );
-  // {@template codegen_jsonDecode}
+  // {@template jsonDecode}
   // Obtain the restaurant names from the JSON
   // {@endtemplate}
   final json = jsonDecode(response.body) as Map;

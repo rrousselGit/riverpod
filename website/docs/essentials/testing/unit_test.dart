@@ -10,13 +10,13 @@ final provider = Provider((_) => 42);
 /* SNIPPET START */
 void main() {
   test('Some description', () {
-    // {@template raw_container}
+    // {@template container}
     // Create a ProviderContainer for this test.
     // DO NOT share ProviderContainers between tests.
     // {@endtemplate}
     final container = createContainer();
 
-    // {@template raw_useProvider}
+    // {@template useProvider}
     // TODO: use the container to test your application.
     // {@endtemplate}
     expect(

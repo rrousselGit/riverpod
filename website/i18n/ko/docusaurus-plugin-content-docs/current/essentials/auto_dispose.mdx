@@ -33,7 +33,7 @@ Riverpod은 상태 폐기(disposal)와 상호작용할 수 있는 다양한 방�
 <AutoSnippet 
   raw={codegenKeepAlive} 
   translations={{
-    codegen_keepAlive: "// 어노테이션에 \"keepAlive\"를 지정하여 자동 상태 소멸을 비활성화할 수 있습니다.",
+    keepAlive: "// 어노테이션에 \"keepAlive\"를 지정하여 자동 상태 소멸을 비활성화할 수 있습니다.",
   }}
 />
 
@@ -52,7 +52,7 @@ Riverpod은 상태 폐기(disposal)와 상호작용할 수 있는 다양한 방�
 <AutoSnippet 
   raw={rawAutoDispose} 
   translations={{
-    raw_autoDispose: "// 자동 상태 파기를 활성화하려면 autoDispose를 지정할 수 있습니다.",
+    autoDispose: "// 자동 상태 파기를 활성화하려면 autoDispose를 지정할 수 있습니다.",
   }}
 />
 
@@ -85,10 +85,8 @@ Riverpod에는 상태를 파기하는 몇 가지 기본 제공 방법이 있습�
 <AutoSnippet 
   {...onDisposeExample} 
   translations={{
-    raw_onDispose: "  // 상태가 소멸되면 스트림 컨트롤러를 닫습니다.",
-    raw_todo: "// TO-DO: StreamController에 일부 값을 푸시합니다.",
-    codegen_onDispose: "  // 상태가 소멸되면 스트림 컨트롤러를 닫습니다.",
-    codegen_todo: "// TO-DO: StreamController에 일부 값을 푸시합니다.",
+    onDispose: "  // 상태가 소멸되면 스트림 컨트롤러를 닫습니다.",
+    todo: "// TO-DO: StreamController에 일부 값을 푸시합니다.",
   }}
 />
 
@@ -125,7 +123,7 @@ provider의 Disposable 객체당 한 번씩 호출해도 됩니다.
 <AutoSnippet 
   raw={invalidateExample} 
   translations={{
-    raw_invalidate: "        // 클릭 시 공급자를 파괴(destroy)합니다.",
+    invalidate: "        // 클릭 시 공급자를 파괴(destroy)합니다.",
   }}
 />
 
@@ -141,10 +139,8 @@ provider가 `ref.invalidateSelf`를 사용하여 스스로 무효화할 수 있�
 <AutoSnippet 
   {...invalidateFamilyExample} 
   translations={{
-    raw_invalidateAll: "  // 이 공급자의 가능한 모든 매개변수 조합을 무효화합니다.",
-    raw_invalidate: "  // 특정 조합만 무효화",
-    codegen_invalidateAll: "  // 이 공급자의 가능한 모든 매개변수 조합을 무효화합니다.",
-    codegen_invalidate: "  // 특정 조합만 무효화",
+    invalidateAll: "  // 이 공급자의 가능한 모든 매개변수 조합을 무효화합니다.",
+    invalidate: "  // 특정 조합만 무효화",
   }}
 />
 :::
@@ -162,10 +158,8 @@ provider가 `ref.invalidateSelf`를 사용하여 스스로 무효화할 수 있�
 <AutoSnippet 
   {...keepAlive} 
   translations={{
-    raw_keepAlive: "  // 요청이 성공적으로 완료된 후에만 공급자를 살아있게 유지합니다.\n  // 요청이 실패한 경우(그리고 던져진 경우), 공급자가 수신 중지를 중단하면 상태가 파괴됩니다.",
-    raw_closeLink: "  // `link`를 사용하여 auto-dispose 동작을 복원(restore)할 수 있습니다:",
-    codegen_keepAlive: "  // 요청이 성공적으로 완료된 후에만 공급자를 살아있게 유지합니다.\n  // 요청이 실패한 경우(그리고 던져진 경우), 공급자가 수신 중지를 중단하면 상태가 파괴됩니다.",
-    codegen_closeLink: "  // `link`를 사용하여 auto-dispose 동작을 복원(restore)할 수 있습니다:",
+    keepAlive: "  // 요청이 성공적으로 완료된 후에만 공급자를 살아있게 유지합니다.\n  // 요청이 실패한 경우(그리고 던져진 경우), 공급자가 수신 중지를 중단하면 상태가 파괴됩니다.",
+    closeLink: "  // `link`를 사용하여 auto-dispose 동작을 복원(restore)할 수 있습니다:",
   }}
 />
 
@@ -186,10 +180,10 @@ provider가 다시 계산되면 자동 폐기가 다시 활성화됩니다.
 <AutoSnippet 
   raw={cacheForExtension} 
   translations={{
-    raw_cacheFor: "/// [duration] 동안 공급자를 살아있게 유지합니다.",
-    raw_keepAlive: "    // 상태가 파괴되는 것을 즉시 방지합니다.",
-    raw_timer: "    // 기간이 경과하면 자동 폐기를 다시 활성화합니다.",
-    raw_onDispose: "    // 선택 사항: 공급자가 다시 계산될 때(예: ref.watch 사용),\n    // 보류 중인 타이머를 취소합니다.",
+    cacheFor: "/// [duration] 동안 공급자를 살아있게 유지합니다.",
+    keepAlive: "    // 상태가 파괴되는 것을 즉시 방지합니다.",
+    timer: "    // 기간이 경과하면 자동 폐기를 다시 활성화합니다.",
+    onDispose: "    // 선택 사항: 공급자가 다시 계산될 때(예: ref.watch 사용),\n    // 보류 중인 타이머를 취소합니다.",
   }}
 />
 
@@ -198,8 +192,7 @@ provider가 다시 계산되면 자동 폐기가 다시 활성화됩니다.
 <AutoSnippet 
   {...cacheForUsage} 
   translations={{
-    raw_cacheFor: "  /// 5분 동안 상태를 유지합니다.",
-    codegen_cacheFor: "  /// 5분 동안 상태를 유지합니다.",
+    cacheFor: "  /// 5분 동안 상태를 유지합니다.",
   }}
 />
 

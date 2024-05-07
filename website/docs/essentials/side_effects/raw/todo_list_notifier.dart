@@ -23,7 +23,7 @@ class Todo {
 }
 
 /* SNIPPET START */
-// {@template raw_note}
+// {@template note}
 // We now use AsyncNotifierProvider instead of FutureProvider
 // {@endtemplate}
 final todoListProvider =
@@ -31,7 +31,7 @@ final todoListProvider =
   TodoList.new,
 );
 
-// {@template raw_autoDispose}
+// {@template autoDispose}
 // We use an AsyncNotifier because our logic is asynchronous.
 // More specifically, we'll need AutoDisposeAsyncNotifier because
 // of the "autoDispose" modifier.
@@ -39,7 +39,9 @@ final todoListProvider =
 class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
   @override
   Future<List<Todo>> build() async {
+    // {@template build_method}
     // The logic we previously had in our FutureProvider is now in the build method.
+    // {@endtemplate}
     return [
       Todo(description: 'Learn Flutter', completed: true),
       Todo(description: 'Learn Riverpod'),

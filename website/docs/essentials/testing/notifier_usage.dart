@@ -9,18 +9,18 @@ import 'notifier_mock/codegen.dart';
 void main() {
   test('Some description', () {
     final container = createContainer(
-      // {@template raw_overrides}
+      // {@template overrides}
       // Override the provider to have it create our mock Notifier.
       // {@endtemplate}
       overrides: [myNotifierProvider.overrideWith(MyNotifierMock.new)],
     );
 
-    // {@template raw_readNotifier}
+    // {@template readNotifier}
     // Then obtain the mocked notifier through the container:
     // {@endtemplate}
     final notifier = container.read(myNotifierProvider.notifier);
 
-    // {@template raw_interactNotifier}
+    // {@template interactNotifier}
     // You can then interact with the notifier as you would with the real one:
     // {@endtemplate}
     notifier.state = 42;

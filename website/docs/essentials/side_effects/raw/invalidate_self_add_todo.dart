@@ -17,7 +17,7 @@ class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
 
   /* SNIPPET START */
   Future<void> addTodo(Todo todo) async {
-    // {@template raw_post}
+    // {@template post}
     // We don't care about the API response
     // {@endtemplate}
     await http.post(
@@ -26,14 +26,14 @@ class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
       body: jsonEncode(todo.toJson()),
     );
 
-    // {@template raw_invalidateSelf}
+    // {@template invalidateSelf}
     // Once the post request is done, we can mark the local cache as dirty.
     // This will cause "build" on our notifier to asynchronously be called again,
     // and will notify listeners when doing so.
     // {@endtemplate}
     ref.invalidateSelf();
 
-    // {@template raw_future}
+    // {@template future}
     // (Optional) We can then wait for the new state to be computed.
     // This ensures "addTodo" does not complete until the new state is available.
     // {@endtemplate}

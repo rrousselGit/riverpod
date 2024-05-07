@@ -14,7 +14,7 @@ class _EagerInitialization extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final result = ref.watch(myProvider);
 
-    // {@template raw_states}
+    // {@template states}
     // Handle error states and loading states
     // {@endtemplate}
     if (result.isLoading) {

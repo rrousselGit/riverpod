@@ -14,7 +14,7 @@ class MyWidget extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return ElevatedButton(
       onPressed: () {
-        // {@template raw_invalidate}
+        // {@template invalidate}
         // On click, destroy the provider.
         // {@endtemplate}
         ref.invalidate(someProvider);

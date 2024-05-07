@@ -17,7 +17,7 @@ class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
 
   /* SNIPPET START */
   Future<void> addTodo(Todo todo) async {
-    // {@template raw_post}
+    // {@template post}
     // We don't care about the API response
     // {@endtemplate}
     await http.post(
@@ -26,7 +26,7 @@ class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
       body: jsonEncode(todo.toJson()),
     );
 
-    // {@template raw_previousState}
+    // {@template previousState}
     // We can then manually update the local cache. For this, we'll need to
     // obtain the previous state.
     // Caution: The previous state may still be loading or in error state.
@@ -36,7 +36,7 @@ class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
     // {@endtemplate}
     final previousState = await future;
 
-    // {@template raw_newState}
+    // {@template newState}
     // We can then update the state, by creating a new state object.
     // This will notify all listeners.
     // {@endtemplate}

@@ -1,6 +1,6 @@
 /* SNIPPET START */
 
-// {@template raw_activity}
+// {@template activity}
 /// The response of the `GET /api/activity` endpoint.
 // {@endtemplate}
 class Activity {
@@ -12,7 +12,7 @@ class Activity {
     required this.price,
   });
 
-  // {@template raw_fromJson}
+  // {@template fromJson}
   /// Convert a JSON object into an [Activity] instance.
   /// This enables type-safe reading of the API response.
   // {@endtemplate}

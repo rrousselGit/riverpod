@@ -9,7 +9,7 @@ part 'raw_usage.g.dart';
 /* SNIPPET START */
 @riverpod
 Raw<Stream<int>> rawStream(RawStreamRef ref) {
-  // {@template raw_provider}
+  // {@template provider}
   // "Raw" is a typedef. No need to wrap the return
   // value in a "Raw" constructor.
   // {@endtemplate}
@@ -19,7 +19,7 @@ Raw<Stream<int>> rawStream(RawStreamRef ref) {
 class Consumer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // {@template raw_watch}
+    // {@template watch}
     // The value is no-longer converted to AsyncValue,
     // and the created stream is returned as is.
     // {@endtemplate}

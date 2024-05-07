@@ -44,7 +44,7 @@ provider가 객체를 동기적으로 생성하면 객체가 소비되는 방식
 <AutoSnippet 
   raw={syncConsumer} 
   translations={{
-    raw_watch: "      // 값이 \"AsyncValue\"로 래핑되지 않습니다.",
+    watch: "      // 값이 \"AsyncValue\"로 래핑되지 않습니다.",
   }}
 />
 
@@ -61,9 +61,9 @@ provider가 객체를 동기적으로 생성하면 객체가 소비되는 방식
 <AutoSnippet 
   raw={pipeChangeNotifier} 
   translations={{
-    raw_provider: "/// 값이 변경될 때마다 ValueNotifier를 생성하고 리스너를 업데이트하는 프로바이더입니다.",
-    raw_onDispose: "  // provider가 폐기되면 notifier를 폐기합니다.",
-    raw_addListener: "  // ValueNotifier가 업데이트될 때마다 provider의 리스너들에 알립니다.",
+    provider: "/// 값이 변경될 때마다 ValueNotifier를 생성하고 리스너를 업데이트하는 프로바이더입니다.",
+    onDispose: "  // provider가 폐기되면 notifier를 폐기합니다.",
+    addListener: "  // ValueNotifier가 업데이트될 때마다 provider의 리스너들에 알립니다.",
   }}
 />
 
@@ -74,8 +74,8 @@ provider가 객체를 동기적으로 생성하면 객체가 소비되는 방식
 <AutoSnippet 
   raw={sharedPipeChangeNotifier} 
   translations={{
-    raw_extension: "  // 이전 로직을 Ref extension으로 옮길 수 있습니다.\n  // 이렇게 하면 provider 간에 로직을 재사용할 수 있습니다.",
-    raw_return: "    // 사용 편의성을 높이기 위해 notifier를 반환합니다.",    
+    extension: "  // 이전 로직을 Ref extension으로 옮길 수 있습니다.\n  // 이렇게 하면 provider 간에 로직을 재사용할 수 있습니다.",
+    return: "    // 사용 편의성을 높이기 위해 notifier를 반환합니다.",    
   }}
 />
 :::
@@ -94,7 +94,7 @@ Riverpod은 `ChangeNotifier`와 `StateNotifier`를 즉시 지원하는 "legacy" 
 <AutoSnippet 
   raw={changeNotifierProvider} 
   translations={{
-    raw_provider: "  // ValueNotifier를 수신하고 폐기합니다.\n  // 그러면 위젯은 이 공급자를 \"ref.watch\"하여 업데이트를 수신할 수 있습니다.",
+    provider: "  // ValueNotifier를 수신하고 폐기합니다.\n  // 그러면 위젯은 이 공급자를 \"ref.watch\"하여 업데이트를 수신할 수 있습니다.",
   }}
 />
 
@@ -111,12 +111,9 @@ Riverpod은 `ChangeNotifier`와 `StateNotifier`를 즉시 지원하는 "legacy" 
 <AutoSnippet 
   {...streamProvider} 
   translations={{
-    raw_provider: "  // 1초마다 0에서 41 사이의 숫자를 산출합니다.\n  // 이것은 Firestore나 GraphQL 또는 다른 것의 스트림으로 대체할 수 있습니다.",
-    raw_watch: "    // 스트림을 수신하고 AsyncValue로 변환합니다.",
-    raw_consumer: "    // 로딩/오류 상태를 처리하고 데이터를 표시하기 위해 AsyncValue를 사용할 수 있습니다.",
-    codegen_provider: "  // 1초마다 0에서 41 사이의 숫자를 산출합니다.\n  // 이것은 Firestore나 GraphQL 또는 다른 것의 스트림으로 대체할 수 있습니다.",
-    codegen_watch: "    // 스트림을 수신하고 AsyncValue로 변환합니다.",
-    codegen_consumer: "    // 로딩/오류 상태를 처리하고 데이터를 표시하기 위해 AsyncValue를 사용할 수 있습니다.",
+    provider: "  // 1초마다 0에서 41 사이의 숫자를 산출합니다.\n  // 이것은 Firestore나 GraphQL 또는 다른 것의 스트림으로 대체할 수 있습니다.",
+    watch: "    // 스트림을 수신하고 AsyncValue로 변환합니다.",
+    consumer: "    // 로딩/오류 상태를 처리하고 데이터를 표시하기 위해 AsyncValue를 사용할 수 있습니다.",
   }}
 />
 
@@ -138,7 +135,7 @@ Riverpod은 RX의 `BehaviorSubject`와 같은 같은 커스텀 `Stream` 구현�
 <AutoSnippet 
   raw={rawUsage} 
   translations={{
-    raw_provider: "  // \"Raw\"는 타입 정의입니다.\n  // 반환값을 \"Raw\" 생성자로 래핑할 필요가 없습니다.",
-    raw_watch: "    // 값이 더 이상 AsyncValue로 변환되지 않고\n    // 생성된 스트림이 그대로 반환됩니다.",
+    provider: "  // \"Raw\"는 타입 정의입니다.\n  // 반환값을 \"Raw\" 생성자로 래핑할 필요가 없습니다.",
+    watch: "    // 값이 더 이상 AsyncValue로 변환되지 않고\n    // 생성된 스트림이 그대로 반환됩니다.",
   }}
 />

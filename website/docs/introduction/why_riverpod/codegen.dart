@@ -13,7 +13,7 @@ class Package {
 
 /* SNIPPET START */
 
-// {@template codegen_fetchPackages}
+// {@template fetchPackages}
 // Fetches the list of packages from pub.dev
 // {@endtemplate}
 @riverpod
@@ -23,14 +23,14 @@ Future<List<Package>> fetchPackages(
   String search = '',
 }) async {
   final dio = Dio();
-  // {@template codegen_fetchApi}
+  // {@template fetchApi}
   // Fetch an API. Here we're using package:dio, but we could use anything else.
   // {@endtemplate}
   final response = await dio.get<List<Object?>>(
     'https://pub.dartlang.org/api/search?page=$page&q=${Uri.encodeQueryComponent(search)}',
   );
 
-  // {@template codegen_decodeJson}
+  // {@template decodeJson}
   // Decode the JSON response into a Dart class.
   // {@endtemplate}
   return response.data?.map(Package.fromJson).toList() ?? const [];

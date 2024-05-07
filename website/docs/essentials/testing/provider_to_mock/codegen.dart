@@ -3,7 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'codegen.g.dart';
 
 /* SNIPPET START */
-// {@template codegen_provider}
+// {@template provider}
 // An eagerly initialized provider.
 // {@endtemplate}
 @riverpod

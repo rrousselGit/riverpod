@@ -29,14 +29,10 @@ import consumerTupleFamily from "!!raw-loader!/docs/essentials/passing_args/raw/
 <AutoSnippet 
     {...noArgProvider} 
     translations={{
-        raw_functional: "// \"함수형\" provider",
-        raw_fetchActivity: "  // TODO: 네트워크 요청을 수행하여 활동을 가져옵니다.",
-        raw_notifier: "// 또는 \"notifier\"",
-        raw_fetchActivity2: "    // TODO: 네트워크 요청을 수행하여 활동을 가져옵니다.",
-        codegen_functional: "// \"함수형\" provider",
-        codegen_fetchActivity: "  // TODO: 네트워크 요청을 수행하여 활동을 가져옵니다.",
-        codegen_notifier: "// 또는 \"notifier\"",
-        codegen_fetchActivity2: "    // TODO: 네트워크 요청을 수행하여 활동을 가져옵니다.",
+        functional: "// \"함수형\" provider",
+        fetchActivity: "  // TODO: 네트워크 요청을 수행하여 활동을 가져옵니다.",
+        notifier: "// 또는 \"notifier\"",
+        fetchActivity2: "    // TODO: 네트워크 요청을 수행하여 활동을 가져옵니다.",
     }}
 />
 
@@ -60,19 +56,18 @@ provider에게 매개변수(parameters)를 전달하려면 어노테이션이 �
 <AutoSnippet 
     {...family} 
     translations={{
-        raw_family: "\n    // \".family\" 한정자를 사용합니다.\n    // \"문자열\" 일반 유형은 인자 유형에 해당합니다.\n    // 이제 공급자는 \"ref\" 위에 활동 유형이라는 추가 인수를 받습니다.",
+        todo: "    // TODO: 네트워크 요청을 수행하여 활동을 가져옵니다.",
+        raw_family: "    // \".family\" 한정자를 사용합니다.\n    // \"문자열\" 일반 유형은 인자 유형에 해당합니다.\n    // 이제 공급자는 \"ref\" 위에 활동 유형이라는 추가 인수를 받습니다.",
         raw_family_todo: "  // TODO: \"activityType\"을 사용하여 활동을 가져오기 위한 네트워크 요청을 수행합니다.",
         raw_activityProvider2: "// 다시 알림의 경우 \".family\" 수정자를 사용하고 인수를 \"문자열\" 유형으로 지정합니다.",
         raw_ActivityNotifier: "// notifiers에 \".family\"를 사용할 때는 notifier 서브클래스를 변경해야 합니다:",
         raw_build: "  /// 패밀리 인수는 빌드 메서드에 전달되며 this.arg로 액세스할 수 있습니다.",
         raw_args: "    // 인수는 \"this.arg\"로도 사용할 수 있습니다.",
-        raw_todo: "    // TODO: 네트워크 요청을 수행하여 활동을 가져옵니다.",
         codegen_activityType: "  // provider에 인수를 추가할 수 있습니다.\n  // 매개변수의 유형은 원하는 대로 지정할 수 있습니다.",
         codegen_get: "  // \"activityType\" 인수를 사용하여 URL을 작성할 수 있습니다.\n  // \"https://boredapi.com/api/activity?type=<activityType>\"을 가리키게 됩니다.",
         codegen_query: "      // 쿼리 매개변수를 수동으로 인코딩할 필요 없이 \"Uri\" 클래스가 자동으로 인코딩합니다.",
         codegen_build: "  /// Notifier arguments는 build 메서드에 지정됩니다.\n  /// 원하는 개수만큼 지정할 수 있고, 이름도 지정할 수 있으며, optional/named도 지정할 수 있습니다.",
         codegen_argument: "    // 인수는 \"this.<argumentName>\"으로도 사용할 수 있습니다.",
-        codegen_todo: "    // TODO: 네트워크 요청을 수행하여 활동을 가져옵니다.",
     }}
 />
 
@@ -88,7 +83,8 @@ provider에게 인수(arguments)를 전달할 때는 provider에서 "autoDispose
 
 <AutoSnippet 
     raw={consumerProvider} 
-    translations={{}}
+    translations={{
+    }}
 />
 
 하지만 이제 provider가 인수(arguments)를 받으므로 인수를 사용하는 구문이 약간 달라졌습니다. 
@@ -98,7 +94,7 @@ provider에게 인수(arguments)를 전달할 때는 provider에서 "autoDispose
 <AutoSnippet 
     raw={consumerFamily} 
     translations={{
-        raw_provider: "      // 이제 프로바이더는 activity type을 기대하는 함수입니다.\n      // 단순화를 위해 지금은 상수 문자열을 전달하겠습니다.",
+        provider: "      // 이제 프로바이더는 activity type을 기대하는 함수입니다.\n      // 단순화를 위해 지금은 상수 문자열을 전달하겠습니다.",
     }}
 />
 
@@ -115,7 +111,7 @@ provider에게 전달된 매개변수(parameters)는 어노테이션이 달린 �
 <AutoSnippet 
     raw={multipleConsumerFamily} 
     translations={{
-        raw_render: "        // 그러면 두 활동을 모두 렌더링할 수 있습니다.\n        // 두 요청이 모두 병렬로 발생하고 올바르게 캐시됩니다.",
+        render: "        // 그러면 두 활동을 모두 렌더링할 수 있습니다.\n        // 두 요청이 모두 병렬로 발생하고 올바르게 캐시됩니다.",
     }}
 />
 
@@ -145,7 +141,7 @@ provider에게 매개 변수를 전달하면, 내부적으로 동일한 로직�
 <AutoSnippet 
     raw={consumerListFamily} 
     translations={{
-        raw_providers: "    // 대신 문자열 목록을 허용하도록 activityProvider를 업데이트할 수 있습니다.\n    // 그런 다음 감시 호출에서 직접 해당 목록을 만들 수 있습니다.",
+        providers: "    // 대신 문자열 목록을 허용하도록 activityProvider를 업데이트할 수 있습니다.\n    // 그런 다음 감시 호출에서 직접 해당 목록을 만들 수 있습니다.",
     }}
 />
 
@@ -175,9 +171,9 @@ provider에게 매개 변수를 전달하면, 내부적으로 동일한 로직�
 <AutoSnippet 
     raw={tupleFamily} 
     translations={{
-        raw_parameters: "// 공급자에게 전달할 매개변수를 나타내는 레코드를 정의합니다.\n// 타입 정의는 선택 사항이지만 코드를 더 읽기 쉽게 만들 수 있습니다.",
-        raw_defined: "    // 이제 새로 정의된 레코드를 인수 유형으로 사용합니다.",
-        raw_query: "        // 마지막으로 인수를 사용하여 쿼리 매개변수를 업데이트할 수 있습니다.",
+        parameters: "// 공급자에게 전달할 매개변수를 나타내는 레코드를 정의합니다.\n// 타입 정의는 선택 사항이지만 코드를 더 읽기 쉽게 만들 수 있습니다.",
+        defined: "    // 이제 새로 정의된 레코드를 인수 유형으로 사용합니다.",
+        query: "        // 마지막으로 인수를 사용하여 쿼리 매개변수를 업데이트할 수 있습니다.",
     }}
 />
 
@@ -186,7 +182,7 @@ provider에게 매개 변수를 전달하면, 내부적으로 동일한 로직�
 <AutoSnippet 
     raw={consumerTupleFamily} 
     translations={{
-        raw_provider: "      // 레코드를 사용하여 매개 변수를 전달할 수 있습니다.\n      // 레코드가 ==를 오버라이드하므로 watch 호출에서 직접 레코드를 생성해도 괜찮습니다.",
+        provider: "      // 레코드를 사용하여 매개 변수를 전달할 수 있습니다.\n      // 레코드가 ==를 오버라이드하므로 watch 호출에서 직접 레코드를 생성해도 괜찮습니다.",
     }}
 />
 

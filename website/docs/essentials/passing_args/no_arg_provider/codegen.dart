@@ -9,25 +9,25 @@ part 'codegen.g.dart';
 FutureOr<Activity> fetchActivity() => throw UnimplementedError();
 
 /* SNIPPET START */
-// {@template codegen_functional}
+// {@template functional}
 // A "functional" provider
 // {@endtemplate}
 @riverpod
 Future<Activity> activity(ActivityRef ref) async {
-  // {@template codegen_fetchActivity}
+  // {@template fetchActivity}
   // TODO: perform a network request to fetch an activity
   // {@endtemplate}
   return fetchActivity();
 }
 
-// {@template codegen_notifier}
+// {@template notifier}
 // Or alternatively, a "notifier"
 // {@endtemplate}
 @riverpod
 class ActivityNotifier2 extends _$ActivityNotifier2 {
   @override
   Future<Activity> build() async {
-    // {@template codegen_fetchActivity2}
+    // {@template fetchActivity2}
     // TODO: perform a network request to fetch an activity
     // {@endtemplate}
     return fetchActivity();

@@ -9,7 +9,7 @@ void main() {
 /* SNIPPET START */
   Consumer(
     builder: (context, ref, child) {
-      // {@template raw_watch}
+      // {@template watch}
       // The value is not wrapped in an "AsyncValue"
       // {@endtemplate}
       int value = ref.watch(synchronousExampleProvider);

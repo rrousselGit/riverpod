@@ -14,12 +14,12 @@ int other(OtherRef ref) => 0;
 Stream<int> example(ExampleRef ref) {
   final controller = StreamController<int>();
 
-  // {@template codegen_onDispose}
+  // {@template onDispose}
   // When the state is destroyed, we close the StreamController.
   // {@endtemplate}
   ref.onDispose(controller.close);
 
-  // {@template codegen_todo}
+  // {@template todo}
   // TO-DO: Push some values in the StreamController
   // {@endtemplate}
   return controller.stream;

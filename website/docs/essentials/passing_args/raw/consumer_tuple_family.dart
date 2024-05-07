@@ -12,7 +12,7 @@ class Example extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
 /* SNIPPET START */
     ref.watch(
-      // {@template raw_provider}
+      // {@template provider}
       // Using a Record, we can pass our parameters.
       // It is fine to create the record directly
       // in the watch call as records override ==.

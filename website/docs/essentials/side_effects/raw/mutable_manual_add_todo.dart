@@ -23,13 +23,13 @@ class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
       body: jsonEncode(todo.toJson()),
     );
 
-    /* SNIPPET START */
+/* SNIPPET START */
     final previousState = await future;
-    // {@template raw_mutable}
+    // {@template mutable}
     // Mutable the previous list of todos.
     // {@endtemplate}
     previousState.add(todo);
-    // {@template raw_notify}
+    // {@template notify}
     // Manually notify listeners.
     // {@endtemplate}
     ref.notifyListeners();

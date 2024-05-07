@@ -13,7 +13,7 @@ class Example extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
 /* SNIPPET START */
     AsyncValue<Activity> activity = ref.watch(
-      // {@template raw_provider}
+      // {@template provider}
       // The provider is now a function expecting the activity type.
       // Let's pass a constant string for now, for the sake of simplicity.
       // {@endtemplate}

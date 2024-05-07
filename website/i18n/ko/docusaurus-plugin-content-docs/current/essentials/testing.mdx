@@ -48,9 +48,9 @@ Riverpod로 테스트를 정의할 때는 크게 두 가지 시나리오가 있�
 <AutoSnippet 
   raw={createContainer} 
   translations={{
-    raw_createContainer: "/// [ProviderContainer]를 생성하고 테스트가 끝나면\n/// 자동으로 폐기하는 테스트 유틸리티입니다.",
-    raw_container: "  // ProviderContainer를 생성하고 선택적으로 매개변수 지정을 허용합니다.",
-    raw_addTearDown: "  // 테스트가 끝나면 container를 폐기(dispose)합니다.",
+    createContainer: "/// [ProviderContainer]를 생성하고 테스트가 끝나면\n/// 자동으로 폐기하는 테스트 유틸리티입니다.",
+    container: "  // ProviderContainer를 생성하고 선택적으로 매개변수 지정을 허용합니다.",
+    addTearDown: "  // 테스트가 끝나면 container를 폐기(dispose)합니다.",
   }}
 />
 
@@ -59,8 +59,8 @@ Riverpod로 테스트를 정의할 때는 크게 두 가지 시나리오가 있�
 <AutoSnippet 
   raw={unitTest} 
   translations={{
-    raw_container: "    // 이 테스트에 대한 프로바이더 컨테이너를 생성합니다.\n    // 테스트 간에 ProviderContainer를 공유하지 마세요.",
-    raw_useProvider: "    // TODO: 컨테이너를 사용하여 애플리케이션을 테스트합니다.",
+    container: "    // 이 테스트에 대한 프로바이더 컨테이너를 생성합니다.\n    // 테스트 간에 ProviderContainer를 공유하지 마세요.",
+    useProvider: "    // TODO: 컨테이너를 사용하여 애플리케이션을 테스트합니다.",
   }}
 />
 
@@ -80,7 +80,7 @@ provider가 리스닝되지 않으면 테스트 도중에 provider의 상태가 
 <AutoSnippet 
   raw={autoDisposeListen} 
   translations={{
-    raw_read: "      // `container.read(provider)`와 동일합니다.\n      // 그러나 \"subscription\"이 폐기(dispose)되지 않는 한 provider는 폐기되지 않습니다.",
+    read: "      // `container.read(provider)`와 동일합니다.\n      // 그러나 \"subscription\"이 폐기(dispose)되지 않는 한 provider는 폐기되지 않습니다.",
   }}
 />
 :::
@@ -115,7 +115,7 @@ provider가 리스닝되지 않으면 테스트 도중에 provider의 상태가 
 <AutoSnippet 
   raw={fullWidgetTest} 
   translations={{
-    raw_useProvider: "    // TODO: providers와 상호 작용"
+    useProvider: "    // TODO: providers와 상호 작용"
   }}
 />
 
@@ -132,8 +132,7 @@ provider가 리스닝되지 않으면 테스트 도중에 provider의 상태가 
 <AutoSnippet 
   {...providerToMock} 
   translations={{
-    raw_provider: "// 이른 초기화된 공급자.",
-    codegen_provider: "// 이른 초기화된 공급자.",
+    provider: "// 이른 초기화된 공급자.",
   }}
 />
 
@@ -142,13 +141,13 @@ provider가 리스닝되지 않으면 테스트 도중에 provider의 상태가 
 <AutoSnippet 
   raw={mockProvider} 
   translations={{
-    raw_container: "    // 단위 테스트에서는 이전의 \"createContainer\" 유틸리티를 재사용합니다.",
-    raw_providers: "      // 모의(Mock)할 공급자 목록을 지정할 수 있습니다:",
-    raw_exampleProvider: "        // 이 경우 \"exampleProvider\"를 모방(Mock)하고 있습니다.",
-    raw_note: "          // 이 함수는 공급자의 일반적인 초기화 함수입니다.\n          // 일반적으로 \"ref.watch\"를 호출하고 초기 상태를 반환하는 곳입니다.\n\n          // 기본값인 \"Hello world\"를 사용자 정의 값으로 바꿔보겠습니다.\n          // 그러면 `exampleProvider`와 상호작용하면 이 값이 반환됩니다.",
-    raw_providerScope: "    // ProviderScope를 사용하여 위젯 테스트에서도 동일한 작업을 수행할 수 있습니다:",
-    raw_overrides: "        // ProviderScope에는 정확히 동일한 \"overrides\" 매개 변수가 있습니다.",
-    raw_sameAsBefore: "          // 이전과 동일",
+    container: "    // 단위 테스트에서는 이전의 \"createContainer\" 유틸리티를 재사용합니다.",
+    providers: "      // 모의(Mock)할 공급자 목록을 지정할 수 있습니다:",
+    exampleProvider: "        // 이 경우 \"exampleProvider\"를 모방(Mock)하고 있습니다.",
+    note: "          // 이 함수는 공급자의 일반적인 초기화 함수입니다.\n          // 일반적으로 \"ref.watch\"를 호출하고 초기 상태를 반환하는 곳입니다.\n\n          // 기본값인 \"Hello world\"를 사용자 정의 값으로 바꿔보겠습니다.\n          // 그러면 `exampleProvider`와 상호작용하면 이 값이 반환됩니다.",
+    providerScope: "    // ProviderScope를 사용하여 위젯 테스트에서도 동일한 작업을 수행할 수 있습니다:",
+    overrides: "        // ProviderScope에는 정확히 동일한 \"overrides\" 매개 변수가 있습니다.",
+    sameAsBefore: "          // 이전과 동일",
   }}
 />
 
@@ -175,9 +174,9 @@ Riverpod에서는 provider가 Future/Stream을 반환하는 경우가 매우 흔
 <AutoSnippet 
   raw={awaitFuture} 
   translations={{
-    raw_note: "    // TODO: 컨테이너를 사용하여 애플리케이션을 테스트합니다.\n    // 기대(expectation)가 비동기적이므로 \"expectLater\"를 사용해야 합니다.",
-    raw_read: "      // \"provider\" 대신 \"provider.future\"를 읽습니다.\n      // 이는 비동기 공급자에서 가능하며, 공급자의 값으로 해결(resolve)될 future를 반환합니다.",
-    raw_completion: "      // future가 예상한 값으로 resolve되는지 확인할 수 있습니다.\n      // 또는 오류에 \"throwsA\"를 사용할 수 있습니다.",
+    note: "    // TODO: 컨테이너를 사용하여 애플리케이션을 테스트합니다.\n    // 기대(expectation)가 비동기적이므로 \"expectLater\"를 사용해야 합니다.",
+    read: "      // \"provider\" 대신 \"provider.future\"를 읽습니다.\n      // 이는 비동기 공급자에서 가능하며, 공급자의 값으로 해결(resolve)될 future를 반환합니다.",
+    completion: "      // future가 예상한 값으로 resolve되는지 확인할 수 있습니다.\n      // 또는 오류에 \"throwsA\"를 사용할 수 있습니다.",
   }}
 />
 
@@ -203,8 +202,7 @@ class MyNotifierMock with Mock implements MyNotifier {}
 <AutoSnippet 
   {...notifierMock} 
   translations={{
-    raw_mock: "// 모의클래스(Mock)는 notifier가 사용하는 것에 해당하는\n// Notifier base-class를 서브클래싱해야 합니다.",
-    codegen_mock: "// 모의클래스(Mock)는 notifier가 사용하는 것에 해당하는\n// Notifier base-class를 서브클래싱해야 합니다.",
+    mock: "// 모의클래스(Mock)는 notifier가 사용하는 것에 해당하는\n// Notifier base-class를 서브클래싱해야 합니다.",
   }}
 />
 
@@ -220,8 +218,8 @@ class MyNotifierMock with Mock implements MyNotifier {}
 <AutoSnippet 
   raw={notifierUsage} 
   translations={{
-    raw_overrides: "      // provider를 Override하여 Mock Notifier를 생성하도록 합니다.",
-    raw_readNotifier: "    // 그런 다음 컨테이너를 통해 Mock Notifier를 가져옵니다:",
-    raw_interactNotifier: "    // 그러면 실제 notifier와 마찬가지로 notifier와 상호 작용할 수 있습니다:",
+    overrides: "      // provider를 Override하여 Mock Notifier를 생성하도록 합니다.",
+    readNotifier: "    // 그런 다음 컨테이너를 통해 Mock Notifier를 가져옵니다:",
+    interactNotifier: "    // 그러면 실제 notifier와 마찬가지로 notifier와 상호 작용할 수 있습니다:",
   }}
 />

@@ -11,7 +11,7 @@ part 'auto_dispose.g.dart';
 // {@endtemplate}
 @riverpod
 int diceRoll(DiceRollRef ref) {
-  // {@template codegen_dice}
+  // {@template dice}
   // Since this provider is .autoDispose, un-listening to it will dispose
   // its current exposed state.
   // Then, whenever this provider is listened to again,
@@ -25,7 +25,7 @@ int diceRoll(DiceRollRef ref) {
 int cachedDiceRoll(CachedDiceRollRef ref) {
   final coin = Random().nextInt(10);
   if (coin > 5) throw Exception('Way too large.');
-  // {@template codegen_keepAlive}
+  // {@template keepAlive}
   // The above condition might fail;
   // If it doesn't, the following instruction tells the Provider
   // to keep its cached state, even when no one listens to it anymore.
