@@ -17,7 +17,9 @@ class _MyRepo {
 class MyNotifier extends Notifier<int> {
   @override
   int build() {
+    // {@template period}
     // Just read/write the code here, in one place
+    // {@endtemplate}
     final period = ref.watch(durationProvider);
     final timer = Timer.periodic(period, (t) => update());
     ref.onDispose(timer.cancel);
