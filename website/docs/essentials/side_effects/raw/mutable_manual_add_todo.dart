@@ -7,8 +7,7 @@ import 'package:http/http.dart' as http;
 
 import 'todo_list_notifier.dart';
 
-final todoListProvider =
-    AsyncNotifierProvider.autoDispose<TodoList, List<Todo>>(
+final todoListProvider = AsyncNotifierProvider.autoDispose<TodoList, List<Todo>>(
   TodoList.new,
 );
 
@@ -24,11 +23,15 @@ class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
       body: jsonEncode(todo.toJson()),
     );
 
-    /* SNIPPET START */
+/* SNIPPET START */
     final previousState = await future;
+    // {@template mutable}
     // Mutable the previous list of todos.
+    // {@endtemplate}
     previousState.add(todo);
+    // {@template notify}
     // Manually notify listeners.
+    // {@endtemplate}
     ref.notifyListeners();
 /* SNIPPET END */
   }

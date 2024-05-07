@@ -1,20 +1,20 @@
 ---
 title: 부가 작업 수행(Performing side effects)
-version: 1
+version: 2
 ---
 
-import { Link } from "../../../../../src/components/Link";
-import { AutoSnippet, When } from "../../../../../src/components/CodeSnippet";
-import Legend, { colors } from "./first_request/legend/legend";
-import todoListProvider from "./side_effects/todo_list_provider";
-import todoListNotifier from "./side_effects/todo_list_notifier";
-import todoListNotifierAddTodo from "./side_effects/todo_list_notifier_add_todo";
+import { Link } from "/src/components/Link";
+import { AutoSnippet, When } from "/src/components/CodeSnippet";
+import Legend, { colors } from "/docs/essentials/first_request/legend/legend";
+import todoListProvider from "/docs/essentials/side_effects/todo_list_provider";
+import todoListNotifier from "/docs/essentials/side_effects/todo_list_notifier";
+import todoListNotifierAddTodo from "/docs/essentials/side_effects/todo_list_notifier_add_todo";
 import consumerAddTodoCall from "!!raw-loader!/docs/essentials/side_effects/raw/consumer_add_todo_call.dart";
 import restAddTodo from "!!raw-loader!/docs/essentials/side_effects/raw/rest_add_todo.dart";
 import invalidateSelfAddTodo from "!!raw-loader!/docs/essentials/side_effects/raw/invalidate_self_add_todo.dart";
 import manualAddTodo from "!!raw-loader!/docs/essentials/side_effects/raw/manual_add_todo.dart";
 import mutableManualAddTodo from "!!raw-loader!/docs/essentials/side_effects/raw/mutable_manual_add_todo.dart";
-import renderAddTodo from "./side_effects/render_add_todo";
+import renderAddTodo from "/docs/essentials/side_effects/render_add_todo";
 
 지금까지는 데이터를 가져오는 방법(일명 _GET_ HTTP 요청 수행)만 살펴봤습니다.
 하지만 _POST_ 요청과 같은 부수적 효과(side-effect)는 어떨까요?
@@ -36,7 +36,12 @@ import renderAddTodo from "./side_effects/render_add_todo";
 이 시점에서 우리가 이미 알고 있는 것부터 시작하겠습니다: 간단한 _GET_ 요청입니다.
 앞서 <Link documentID="essentials/first_request" />에서 보았듯이, 글쓰기를 통해 할일 목록을 가져올 수 있습니다:
 
-<AutoSnippet {...todoListProvider} />
+<AutoSnippet 
+  {...todoListProvider} 
+  translations={{
+    note: "  // 네트워크 요청을 시뮬레이션합니다. 이것은 일반적으로 실제 API에서 오는 것입니다.",
+  }}
+/>
 
 이제 할 일 목록을 가져왔으니 새 할 일을 추가하는 방법을 살펴봅시다.  
 이를 위해서는 상태(state) 수정을 위한 공개 API를 노출하도록 provider를 수정해야 합니다. 
@@ -255,9 +260,15 @@ UI에서 상태가 변경되었음을 알 수 있는 수단이 없기 때문에,
 :::
 
 이제 문법을 살펴봤으니 이전에 정의한 provider를 notifier으로 변환하는 방법을 살펴보겠습니다:
-Now that we've seen the syntax, let's see how to convert our previously defined provider to a notifier:
 
-<AutoSnippet {...todoListNotifier} />
+<AutoSnippet 
+  {...todoListNotifier} 
+  translations={{
+    note: "// 이제 FutureProvider 대신 AsyncNotifierProvider를 사용합니다.",
+    autoDispose: "// 로직이 비동기식이기 때문에 AsyncNotifier를 사용합니다.\n// 더 구체적으로 말하자면, \"autoDispose\" 한정자(Modifier) 때문에\n// AutoDisposeAsyncNotifier가 필요합니다.",
+    build_method: "    // 이전에 FutureProvider에 있던 로직이 이제 build 메서드에 있습니다.",
+  }}
+/>
 
 위젯 내에서 provider를 읽는 방법은 변경되지 않았습니다.  
 이전 구문과 마찬가지로 `ref.watch(todoListProvider)`를 계속 사용할 수 있습니다.
@@ -291,11 +302,17 @@ class MyNotifier extends ... {
 그러한 부가 작업 중 하나는 클라이언트가 새 할 일을 _POST_하도록 하는 것입니다.
 notifier에 `addTodo` 메서드를 추가하면 그렇게 할 수 있습니다:
 
-<AutoSnippet {...todoListNotifierAddTodo} />
+<AutoSnippet 
+  {...todoListNotifierAddTodo} 
+  translations={{}}
+/>
 
 그런 다음 <Link documentID="essentials/first_request" />에서 보았던 것과 동일한 `Consumer`/`ConsumerWidget`을 사용하여 UI에서 이 메서드를 호출할 수 있습니다:
 
-<AutoSnippet raw={consumerAddTodoCall} />
+<AutoSnippet 
+  raw={consumerAddTodoCall} 
+  translations={{}}
+/>
 
 :::info
 메서드를 호출할 때 `ref.watch` 대신 `ref.read`를 사용하고 있는 것을 주목하세요.  
@@ -314,7 +331,14 @@ notifier에 `addTodo` 메서드를 추가하면 그렇게 할 수 있습니다:
 특히, 저희 API는 새 할 일을 추가한 후 새 할 일 목록을 반환합니다. 
 이를 수행하는 한 가지 방법은 `state = AsyncData(response)`를 작성하는 것입니다:
 
-<AutoSnippet raw={restAddTodo} />
+<AutoSnippet 
+  raw={restAddTodo} 
+  translations={{
+    post: "    // POST 요청은 새 애플리케이션 상태와 일치하는 List<Todo>를 반환합니다.",
+    decode: "    // API 응답을 디코딩하여 List<Todo>로 변환합니다.",
+    newState: "    // 새 상태와 일치하도록 로컬 캐시를 업데이트합니다.\n    // 이렇게 하면 모든 리스너에게 알림이 전송됩니다.",
+  }}
+/>
 
 :::tip 장점
 
@@ -339,7 +363,14 @@ notifier에 `addTodo` 메서드를 추가하면 그렇게 할 수 있습니다:
 한 가지 옵션은 provider가 _GET_ 요청을 다시 실행하도록 하는 것입니다.  
 이는 _POST_ 요청 뒤에 `ref.invalidateSelf()`를 호출하여 수행할 수 있습니다:
 
-<AutoSnippet raw={invalidateSelfAddTodo} />
+<AutoSnippet 
+  raw={invalidateSelfAddTodo} 
+  translations={{
+    post: "    // API 응답은 신경 쓰지 않습니다.",
+    invalidateSelf: "    // 포스트 요청이 완료되면 로컬 캐시를 더티(Dirty)로 표시할 수 있습니다.\n    // 이렇게 하면 notifier의 \"build\"가 비동기적으로 다시 호출되고,\n    // 이 때 리스너에게 알림이 전송됩니다.",
+    future: "    // (선택 사항) 그런 다음 새 상태가 계산될 때까지 기다릴 수 있습니다.\n    // 이렇게 하면 새 상태를 사용할 수 있을 때까지 \"addTodo\"가 완료되지 않습니다.",
+  }}
+/>
 
 :::tip 장점
 
@@ -364,14 +395,27 @@ notifier에 `addTodo` 메서드를 추가하면 그렇게 할 수 있습니다:
 여기에는 백엔드의 동작을 모방하는 작업이 포함됩니다.
 예를 들어, 백엔드가 새 항목을 처음에 삽입하는지 아니면 마지막에 삽입하는지 알아야 합니다.
 
-<AutoSnippet raw={manualAddTodo} />
+<AutoSnippet 
+  raw={manualAddTodo} 
+  translations={{
+    post: "    // API 응답은 중요하지 않습니다.",
+    previousState: "    // 그런 다음 로컬 캐시를 수동으로 업데이트할 수 있습니다. \n    // 이를 위해서는 이전 상태를 가져와야 합니다.\n    // 주의: 이전 상태가 여전히 로딩 중이거나 오류 상태일 수 있습니다.\n    // 이를 처리하는 우아한 방법은 `this.state` 대신 \n    // `this.future`를 읽어서 로딩 상태를 기다리게 하고\n    // 상태가 오류 상태인 경우 오류를 던지는 것입니다.",
+    newState: "    // 그런 다음 새 상태 객체를 생성하여 상태를 업데이트할 수 있습니다.\n    // 그러면 모든 리스너에게 알림이 전송됩니다.",
+  }}
+/>
 
 :::info
 이 예제에서는 불변(immutable) 상태를 사용합니다. 이는 필수는 아니지만 권장 사항입니다.
 자세한 내용은 <Link documentID="concepts/why_immutability" />를 참조하세요.  
 대신 변경 가능한 상태를 사용하려는 경우 다른 방법을 사용할 수 있습니다:
 
-<AutoSnippet raw={mutableManualAddTodo} />
+<AutoSnippet 
+  raw={mutableManualAddTodo} 
+  translations={{
+    mutable: "    // 이전 할 일 목록을 변경합니다.",
+    notify: "    // 리스너에게 수동으로 알림을 보냅니다.",
+  }}
+/>
 
 :::
 
@@ -404,4 +448,22 @@ notifier에 `addTodo` 메서드를 추가하면 그렇게 할 수 있습니다:
 
 ![A button which turns red when the operation failed](/img/essentials/side_effects/spinner.gif)
 
-<AutoSnippet {...renderAddTodo} />
+<AutoSnippet 
+  {...renderAddTodo} 
+  translations={{
+    raw_pendingAddTodo: "  // 보류중(pending)인 addTodo 작업입니다. 또는 보류중인 작업이 없는 경우 null입니다.",
+    raw_listen: "      // 보류 중인 작업을 수신하여 그에 따라 UI를 업데이트합니다.",
+    raw_compute: "        // 오류 상태가 있는지 여부를 계산합니다.\n        // 연결 상태 확인은 연산을 다시 시도할 때 처리하기 위해 여기에 있습니다.",
+    raw_isError: "                // 오류가 있는 경우 버튼이 빨간색으로 표시됩니다.",
+    raw_future: "                // addTodo가 반환한 future를 변수에 보관합니다.",
+    raw_state: "                // 그 future를 로컬 상태(state)에 저장합니다.",
+    raw_progress: "            // 작업이 보류 중입니다. 진행률 표시기를 표시해 보겠습니다.",    
+    hooks_pendingAddTodo: "    // 보류중(pending)인 addTodo 작업입니다. 또는 보류중인 작업이 없는 경우 null입니다.",
+    hooks_listen: "    // 보류 중인 작업을 수신하여 그에 따라 UI를 업데이트합니다.",
+    hooks_compute: "    // 오류 상태가 있는지 여부를 계산합니다.\n    // 연결 상태 확인은 연산을 다시 시도할 때 처리하기 위해 여기에 있습니다.",
+    hooks_isError: "            // 오류가 있는 경우 버튼이 빨간색으로 표시됩니다.",
+    hooks_future: "            // addTodo가 반환한 future를 변수에 보관합니다.",
+    hooks_state: "            // 그 future를 로컬 상태(state)에 저장합니다.",
+    hooks_progress: "        // 작업이 보류 중입니다. 진행률 표시기를 표시해 보겠습니다.",    
+  }}
+/>

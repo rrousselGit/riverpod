@@ -1,9 +1,10 @@
 ---
 title: 네트워크요청 디바운싱/취소 (Debouncing/Cancelling)
+version: 1
 ---
 
-import { Link } from "../../../../../src/components/Link";
-import { AutoSnippet, When } from "../../../../../src/components/CodeSnippet";
+import { Link } from "/src/components/Link";
+import { AutoSnippet, When } from "/src/components/CodeSnippet";
 import homeScreen from "!raw-loader!./cancel/home_screen.dart";
 import extension from "!raw-loader!./cancel/extension.dart";
 import detailScreen from "/docs/case_studies/cancel/detail_screen";
@@ -54,12 +55,20 @@ Riverpod에서는 이 두 가지 기술을 비슷한 방식으로 구현할 수 
 먼저 홈 화면을 정의하는 것부터 시작하겠습니다. 
 평소와 마찬가지로 애플리케이션의 루트에 `ProviderScope`를 지정하는 것을 잊지 마세요.
 
-<AutoSnippet title="lib/src/main.dart" raw={homeScreen} />
+<AutoSnippet title="lib/src/main.dart" 
+  raw={homeScreen} 
+  translations={{
+  }}
+/>
 
 그런 다음 세부 정보 페이지를 정의해 보겠습니다. 
 활동을 가져오고 당겨서 새로고침(pull to refresh)를 구현하려면 <Link documentID="case_studies/pull_to_refresh" /> 사례 연구를 참조하세요.
 
-<AutoSnippet title="lib/src/detail_screen.dart" {...detailScreen} />
+<AutoSnippet title="lib/src/detail_screen.dart" 
+  {...detailScreen} 
+  translations={{
+  }}
+/>
 
 ## 요청 취소하기
 
@@ -76,7 +85,15 @@ Riverpod에서는 이 두 가지 기술을 비슷한 방식으로 구현할 수 
 따라서 이 콜백을 사용하여 요청을 취소할 수 있습니다. 
 `package:http`를 사용하는 경우 HTTP 클라이언트를 닫으면 이 작업을 수행할 수 있습니다.
 
-<AutoSnippet {...detailScreenCancel} />
+<AutoSnippet 
+  {...detailScreenCancel} 
+  translations={{
+    client: "  // package:http를 사용하여 HTTP 클라이언트를 생성합니다.",
+    onDispose: "  // 폐기 시 클라이언트를 닫습니다.\n  // 그러면 클라이언트에 있을 수 있는 모든 보류 중인 요청이 취소됩니다.",
+    get: "  // 이제 'get' 함수 대신 클라이언트를 사용하여 요청을 수행합니다.",
+    jsonDecode: "  // 나머지 코드는 이전과 동일합니다.",
+  }}
+/>
 
 ## 요청 디바운싱(Debouncing)
 
@@ -100,7 +117,15 @@ provider가 폐기된(disposed) 후에는 공급자 내부에 던지는(throw) �
 예외는 당연히 Riverpod에 의해 잡히고 무시됩니다.
 :::
 
-<AutoSnippet {...detailScreenDebounce} />
+<AutoSnippet 
+  {...detailScreenDebounce} 
+  translations={{
+    didDispose: "  // 공급자가 현재 폐기되었는지 여부를 캡처합니다.",
+    delayed: "  // 사용자가 새로 고침을 중단할 때까지 요청을 500밀리초 지연합니다.",
+    cancelled: "  // 지연 중에 공급자가 처리되었다면 사용자가 다시 새로고침했다는 의미입니다. \n  // 예외를 던져 요청을 취소합니다.\n  // 리버포드에 의해 포착되므로 예외를 사용하는 것이 안전합니다.",
+    http: "  // 다음 코드는 이전 스니펫에서 변경되지 않았습니다.",
+  }}
+/>
 
 ## 더 나아가기: 두 가지를 한 번에 수행하기
 
@@ -111,8 +136,24 @@ provider가 폐기된(disposed) 후에는 공급자 내부에 던지는(throw) �
 
 여기서는 단일 메서드에서 취소와 디바운싱을 모두 처리하는 확장 메서드(extension method)를 `Ref`에 구현하는 것이 아이디어입니다.
 
-<AutoSnippet raw={extension} />
+<AutoSnippet 
+  raw={extension} 
+  translations={{
+    note: "  /// [duration](기본값은 500ms) 동안 기다린 다음 요청에 사용할 수 있는 [http.Client]를 반환합니다.\n  ///\n  /// 해당 클라이언트는 공급자가 폐기되면 자동으로 닫힙니다.",
+    didDispose: "    // 먼저 디바운싱을 처리합니다.",
+    delay: "    // 사용자가 새로 고침을 중단할 때까지 요청을 500밀리초 지연합니다.",
+    cancel: "    // 지연 중에 공급자가 처리되었다면 사용자가 다시 새로고침했다는 의미입니다.\n    // 예외를 던져 요청을 취소합니다.\n    // 리버포드에 의해 포착되므로 예외를 사용하는 것이 안전합니다.",
+    client: "    // 이제 클라이언트를 생성하고 공급자가 폐기되면 닫습니다.",
+    return: "    // 마지막으로 클라이언트를 반환하여 공급자가 요청을 할 수 있도록 합니다.",
+  }}
+/>
 
 그런 다음 다음과 같이 공급자에서 이 확장 메서드를 사용할 수 있습니다:
 
-<AutoSnippet {...providerWithExtension} />
+<AutoSnippet 
+  {...providerWithExtension} 
+  translations={{
+    client: "  // 앞서 만든 확장자를 사용하여 HTTP 클라이언트를 가져옵니다.",
+    get: "  // 이제 'get' 함수 대신 클라이언트를 사용하여 요청을 수행합니다.\n  // 사용자가 페이지를 떠나면 요청이 자연스럽게 디바운스되고 취소됩니다.",
+  }}
+/>

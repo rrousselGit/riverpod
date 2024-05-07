@@ -1,10 +1,10 @@
 ---
 title: 왜 Riverpod인가?
-version: 1
+version: 2
 ---
 
+import { AutoSnippet } from "/src/components/CodeSnippet";
 import whyRiverpod from "/docs/introduction/why_riverpod";
-import { AutoSnippet } from "../../../../../src/components/CodeSnippet";
 
 ## Riverpod 이란?
 
@@ -51,6 +51,13 @@ Riverpod은 Flutter 위젯에서 영감을 받아, 비즈니스 로직을 작성
 회의적인가요? 여기 예제가 있습니다. 
 다음 스니펫은 Riverpod을 사용하여 구현된 [Pub.dev](https://github.com/rrousselGit/riverpod/tree/master/examples/pub) 클라이언트 어플리케이션의 단순화 버전입니다.
 
-<AutoSnippet language="dart" {...whyRiverpod}></AutoSnippet>
+<AutoSnippet language="dart" 
+    {...whyRiverpod}
+    translations={{
+        fetchPackages: "// pub.dev에서 패키지 목록을 가져옵니다.",
+        fetchApi: "  // API를 호출합니다. 여기서는 package:dio를 사용하고 있지만 다른 것을 사용할 수도 있습니다.",
+        decodeJson: "  // JSON 응답을 Dart 클래스로 디코딩합니다.",
+    }}
+/>
 
 이 스니펫은 당신이 에러/로딩 상태를 다루면서, "타이핑하는 동안 검색" + "당겨서 새로 고침" + "무한 목록"을 구현하는 데 필요한 모든 비즈니스 로직을 담고 있습니다.

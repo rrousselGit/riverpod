@@ -1,5 +1,6 @@
 ---
 title: "`StateNotifier`에서"
+version: 1
 ---
 
 import buildInit from "/docs/migration/from_state_notifier/build_init";
@@ -18,8 +19,8 @@ import oldLifecyclesOld from "!!raw-loader!/docs/migration/from_state_notifier/o
 import oldLifecyclesFinal from "/docs/migration/from_state_notifier/old_lifecycles_final";
 import obtainNotifierOnTests from "!!raw-loader!/docs/migration/from_state_notifier/obtain_notifier_on_tests.dart";
 
-import { Link } from "../../../../../src/components/Link";
-import { AutoSnippet } from "../../../../../src/components/CodeSnippet";
+import { Link } from "/src/components/Link";
+import { AutoSnippet } from "/src/components/CodeSnippet";
 
 [Riverpod 2.0](https://pub.dev/packages/flutter_riverpod/changelog#200)과 함께 새로운 클래스가 도입되었습니다: `Notifier` / `AsyncNotifer`.  
 이제 이러한 새로운 API를 위해 `StateNotifier`는 더 이상 사용되지 않습니다.
@@ -127,7 +128,11 @@ import { AutoSnippet } from "../../../../../src/components/CodeSnippet";
 
 이 예시는 이전 API의 로직이 얼마나 부족한지(sparse)를 다시 한 번 보여줍니다:
 
-<AutoSnippet raw={oldLifecyclesOld}/>
+<AutoSnippet 
+    raw={oldLifecyclesOld}
+    translations={{
+    }}
+/>
 
 여기서 `durationProvider`가 업데이트되면 `MyNotifier`를 _페기(dispose)_: 인스턴스가 다시 인스턴스화되고 내부 상태가 다시 초기화됩니다.  
 또한 다른 모든 provider와 달리 `dispose` 콜백은 클래스에서 별도로 정의해야 합니다.  
@@ -147,7 +152,13 @@ import { AutoSnippet } from "../../../../../src/components/CodeSnippet";
 
 위의 스니펫을 다음과 같이 마이그레이션할 수 있습니다:
 
-<AutoSnippet language="dart" {...oldLifecycles}></AutoSnippet>
+<AutoSnippet language="dart" 
+    {...oldLifecycles}
+    translations={{
+        period: "    // 코드를 한 곳에서 읽고 쓰기만 하면 됩니다.",
+        update: "    // `mounted`는 더 이상 없습니다!\n    state++; // throw될 수도 있습니다.",
+    }}
+/>
 
 이 마지막 스니펫에는 확실히 약간의 단순화가 있지만 여전히 열려 있는 문제가 있습니다: 
 이제 `update`를 수행하는 동안 notifiers가 아직 살아(alive)있는지 여부를 파악할 수 없습니다.  
@@ -167,7 +178,14 @@ import { AutoSnippet } from "../../../../../src/components/CodeSnippet";
 (<Link documentID="essentials/auto_dispose" /> 참고)
 
 따라서 위의 예는 다음과 같이 마이그레이션됩니다:
-<AutoSnippet language="dart" {...oldLifecyclesFinal}></AutoSnippet>
+
+<AutoSnippet language="dart" 
+    {...oldLifecyclesFinal}
+    translations={{
+        period: "    // 코드를 한 곳에서 읽고 쓰기만 하면 됩니다.",
+        codegen_cancel: "    // 취소 토큰이 호출되면 사용자 정의 예외가 발생합니다.",
+    }}
+/>
 
 ## 변이(Mutations) API는 이전과 동일합니다
 
@@ -192,7 +210,13 @@ Consumers는 동일한 구문으로 이 세 공급자로부터 데이터를 얻�
 실제로 `Notifier`나 `AsyncNotifier`를 사용하는 것은 다른 provier와 다르지 않아야 합니다.
 
 따라서 이 것이:
-<AutoSnippet raw={addListenerOld}/>
+
+<AutoSnippet 
+    raw={addListenerOld}
+    translations={{
+        listener: "  // 또는 동등하게:",
+    }}
+/>
 
 이렇게 됩니다:
 <AutoSnippet language="dart" {...addListener}></AutoSnippet>
@@ -222,7 +246,14 @@ ref와 family 인자가 초기화되지 않기 때문입니다.
 `Notifier` 인스턴스가 없으신가요?  
 문제없습니다. 노출된 상태를 읽을 때와 마찬가지로 `ref.read`로 인스턴스를 가져올 수 있습니다:
 
-<AutoSnippet raw={obtainNotifierOnTests}/>
+<AutoSnippet 
+    raw={obtainNotifierOnTests}
+    translations={{
+        notifier: "    // notifier 가져오기",
+        state: "    // 노출된 상태 가져오기",
+        test: "    // TODO 테스트 작성하기",
+    }}
+/>
 
 전용 가이드에서 테스트에 대해 자세히 알아보세요. <Link documentID="essentials/testing" />를 참고하세요.
 
