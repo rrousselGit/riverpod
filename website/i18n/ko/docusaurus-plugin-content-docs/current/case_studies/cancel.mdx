@@ -5,8 +5,8 @@ version: 1
 
 import { Link } from "/src/components/Link";
 import { AutoSnippet, When } from "/src/components/CodeSnippet";
-import homeScreen from "!raw-loader!./cancel/home_screen.dart";
-import extension from "!raw-loader!./cancel/extension.dart";
+import homeScreen from "!raw-loader!/docs/case_studies/cancel/home_screen.dart";
+import extension from "!raw-loader!/docs/case_studies/cancel/extension.dart";
 import detailScreen from "/docs/case_studies/cancel/detail_screen";
 import detailScreenCancel from "/docs/case_studies/cancel/detail_screen_cancel";
 import detailScreenDebounce from "/docs/case_studies/cancel/detail_screen_debounce";
@@ -46,7 +46,7 @@ Riverpod에서는 이 두 가지 기술을 비슷한 방식으로 구현할 수 
 
 <img
   src="/img/case_studies/cancel/app.gif"
-  alt="Gif showcasing the application, opening the detail page and refreshing the activity."
+  alt="Gif는 어플리케이션을 보여주고, 상세 페이지를 열고, 액티비티를 새로 고침합니다."
 />
 
 먼저, 디바운스나 취소 없이 애플리케이션을 만들어 봅시다.  
@@ -75,7 +75,7 @@ Riverpod에서는 이 두 가지 기술을 비슷한 방식으로 구현할 수 
 이제 애플리케이션이 작동하므로 취소(cancellation) 로직을 구현해 보겠습니다.
 
 이를 위해 사용자가 페이지에서 다른 곳으로 이동할 때 `ref.onDispose`를 사용하여 요청을 취소할 것입니다. 
-이 기능이 작동하려면 provider의 자동 폐기(automatic disposal)가 활성화되어 있어야 합니다.
+이 기능이 작동하려면 providers의 자동 폐기(automatic disposal)가 활성화되어 있어야 합니다.
 
 요청을 취소하는 데 필요한 정확한 코드는 HTTP 클라이언트에 따라 다릅니다.
 이 예에서는 `package:http`를 사용하지만 다른 클라이언트에도 동일한 원칙이 적용됩니다.
@@ -112,17 +112,17 @@ Riverpod에서는 이 두 가지 기술을 비슷한 방식으로 구현할 수 
 그런 다음 사용자가 500ms가 경과하기 전에 활동을 다시 새로고침하면 `onDispose`가 호출되어 요청이 중단됩니다.
 
 :::info
-요청을 중단하려면 자발적으로 던지는(throw) 것이 일반적입니다.  
-provider가 폐기된(disposed) 후에는 공급자 내부에 던지는(throw) 것이 안전합니다.
+요청을 중단하려면, 자발적(voluntarily)으로 던지는(throw) 것이 일반적입니다.  
+provider가 폐기된(disposed) 후에는 providers 내부에 던져도(throw) 안전합니다.
 예외는 당연히 Riverpod에 의해 잡히고 무시됩니다.
 :::
 
 <AutoSnippet 
   {...detailScreenDebounce} 
   translations={{
-    didDispose: "  // 공급자가 현재 폐기되었는지 여부를 캡처합니다.",
+    didDispose: "  // provider가 현재 폐기되었는지 여부를 캡처합니다.",
     delayed: "  // 사용자가 새로 고침을 중단할 때까지 요청을 500밀리초 지연합니다.",
-    cancelled: "  // 지연 중에 공급자가 처리되었다면 사용자가 다시 새로고침했다는 의미입니다. \n  // 예외를 던져 요청을 취소합니다.\n  // 리버포드에 의해 포착되므로 예외를 사용하는 것이 안전합니다.",
+    cancelled: "  // 지연 중에 provider가 dispose되었다면, 사용자가 다시 새로고침했다는 의미입니다. \n  // 예외를 던져 요청을 취소합니다.\n  // Riverpod에 의해 포착되므로 예외를 사용하는 것이 안전합니다.",
     http: "  // 다음 코드는 이전 스니펫에서 변경되지 않았습니다.",
   }}
 />
@@ -139,16 +139,16 @@ provider가 폐기된(disposed) 후에는 공급자 내부에 던지는(throw) �
 <AutoSnippet 
   raw={extension} 
   translations={{
-    note: "  /// [duration](기본값은 500ms) 동안 기다린 다음 요청에 사용할 수 있는 [http.Client]를 반환합니다.\n  ///\n  /// 해당 클라이언트는 공급자가 폐기되면 자동으로 닫힙니다.",
+    note: "  /// [duration](기본값은 500ms) 동안 기다린 다음 요청에 사용할 수 있는 [http.Client]를 반환합니다.\n  ///\n  /// 해당 클라이언트는 provider가 폐기되면 자동으로 닫힙니다.",
     didDispose: "    // 먼저 디바운싱을 처리합니다.",
     delay: "    // 사용자가 새로 고침을 중단할 때까지 요청을 500밀리초 지연합니다.",
-    cancel: "    // 지연 중에 공급자가 처리되었다면 사용자가 다시 새로고침했다는 의미입니다.\n    // 예외를 던져 요청을 취소합니다.\n    // 리버포드에 의해 포착되므로 예외를 사용하는 것이 안전합니다.",
-    client: "    // 이제 클라이언트를 생성하고 공급자가 폐기되면 닫습니다.",
-    return: "    // 마지막으로 클라이언트를 반환하여 공급자가 요청을 할 수 있도록 합니다.",
+    cancel: "    // 지연 중에 provider가 dispose되었다면, 사용자가 다시 새로고침했다는 의미입니다.\n    // 예외를 던져 요청을 취소합니다.\n    // Riverpod에 의해 포착되므로 예외를 사용하는 것이 안전합니다.",
+    client: "    // 이제 클라이언트를 생성하고 provider가 폐기되면 닫습니다.",
+    return: "    // 마지막으로 클라이언트를 반환하여 provider가 요청을 할 수 있도록 합니다.",
   }}
 />
 
-그런 다음 다음과 같이 공급자에서 이 확장 메서드를 사용할 수 있습니다:
+그런 다음 다음과 같이 providers에서 이 확장 메서드를 사용할 수 있습니다:
 
 <AutoSnippet 
   {...providerWithExtension} 

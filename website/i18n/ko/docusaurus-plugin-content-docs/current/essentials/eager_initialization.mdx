@@ -1,5 +1,5 @@
 ---
-title: Providers의 빠른 초기화(Eager initialization)
+title: providers의 빠른 초기화(Eager initialization)
 version: 2
 ---
 
@@ -14,7 +14,7 @@ import requireValue from "/docs/essentials/eager_initialization/require_value";
 이는 애플리케이션의 특정 부분에서만 사용되는 provider에 유용합니다.
 
 안타깝게도 Dart의 작동 방식(tree shaking 목적)으로 인해 provider를 이른 초기화(eagerly initialized)해야 하는 것으로 플래그를 지정할 수 있는 방법은 없습니다. 
-그러나 한 가지 해결책은 애플리케이션의 루트에서 초기화하려는 공급자를 강제로 읽는(read) 것입니다.
+그러나 한 가지 해결책은 애플리케이션의 루트에서 초기화하려는 providers를 강제로 읽는(read) 것입니다.
 
 권장되는 접근 방식은 `ProviderScope` 바로 아래에 배치된 소비자(Consumer)에서 provider를 단순히 "watch"하는 것입니다:
 
@@ -22,7 +22,7 @@ import requireValue from "/docs/essentials/eager_initialization/require_value";
     raw={consumerExample} 
     translations={{
         render: "      // TODO: 여기에서 앱 렌더링",
-        watch: "    // 공급자를 감시하여 공급자를 열심히 초기화합니다.\n    // \"watch\"를 사용하면 공급자가 폐기되지 않고 계속 살아 있습니다.",
+        watch: "    // providers를 감시(watch)하여 providers를 빠른 초기화합니다.\n    // \"watch\"를 사용하면 provider가 폐기(disposed)되지 않고 계속 살아(alive) 있습니다.",
     }}
 />
 
@@ -47,7 +47,7 @@ import requireValue from "/docs/essentials/eager_initialization/require_value";
 #### 이 접근 방식을 사용하면 로딩 및 오류 상태를 어떻게 처리할 수 있나요?
 
 `Consumer`에서 일반적으로 처리하는 것처럼 로딩/오류 상태를 처리할 수 있습니다.
-`_EagerInitialization`은 프로바이더가 "loading" 상태인지 확인하고, 만약 그렇다면 `child` 대신 `CircularProgressIndicator`를 반환할 수 있습니다:
+`_EagerInitialization`은 provider가 "loading" 상태인지 확인하고, 만약 그렇다면 `child` 대신 `CircularProgressIndicator`를 반환할 수 있습니다:
 
 <AutoSnippet 
     raw={asyncConsumerExample} 
@@ -64,8 +64,8 @@ provider가 `AsyncValue`를 노출하지 않도록 하는 대신 위젯이 `Asyn
 <AutoSnippet 
     {...requireValue} 
     translations={{
-        provider: "// 이른 초기화된 공급자.",
-        note: "    /// 공급자가 올바르게 초기화되었다면, \"requireValue\"로 데이터를 직접 읽을 수 있습니다.",
+        provider: "// 이른 초기화된 provider.",
+        note: "    /// provider가 올바르게 초기화되었다면, \"requireValue\"로 데이터를 직접 읽을 수 있습니다.",
     }}
 />
 

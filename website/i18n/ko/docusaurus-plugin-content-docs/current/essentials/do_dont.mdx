@@ -81,7 +81,7 @@ provider는 일반적으로 "read" 작업을 나타내는 데 사용해야 합�
 final submitProvider = FutureProvider((ref) async {
   final formState = ref.watch(formState);
 
-  // Bad: 공급자는 'write' 작업에 사용해서는 안 됩니다.
+  // Bad: providers는 'write' 작업에 사용해서는 안 됩니다.
   return http.post('https://my-api.com', body: formState.toJson());
 });
 ```
@@ -121,7 +121,7 @@ class Example extends ConsumerWidget {
 
 ## AVOID 동적으로 providers 생성하지 않기
 
-공급자는 최상위 레벨(top-level)의 final 변수만 사용해야 합니다.
+providers는 최상위 레벨(top-level)의 final 변수만 사용해야 합니다.
 
 **Do**:
 

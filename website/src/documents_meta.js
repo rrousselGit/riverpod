@@ -133,7 +133,7 @@ export const documentTitles = {
     "essentials/passing_args": "요청에 인자 전달하기",
     "essentials/first_request": "첫 번째 provider/네트워크 요청 만들기",
     "essentials/faq": "자주 묻는 질문(FAQ)",
-    "essentials/eager_initialization": "Providers의 빠른 초기화(Eager initialization)",
+    "essentials/eager_initialization": "providers의 빠른 초기화(Eager initialization)",
     "essentials/do_dont": "권장사항(DO/DON'T)",
     "essentials/combining_requests": "요청 결합하기",
     "essentials/auto_dispose": "캐시 지우기 및 상태 폐기(disposal)에 반응하기",
