@@ -7,21 +7,21 @@ version: 5
 import Tabs from "@theme/Tabs";
 import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
-import pubspec from "./getting_started/pubspec";
+import pubspec from "/docs/introduction/getting_started/pubspec";
 import dartHelloWorld from "/docs/introduction/getting_started/dart_hello_world";
-import pubadd from "./getting_started/pub_add";
+import pubadd from "/docs/introduction/getting_started/pub_add";
 import helloWorld from "/docs/introduction/getting_started/hello_world";
-import dartPubspec from "./getting_started/dart_pubspec";
-import dartPubadd from "./getting_started/dart_pub_add";
+import dartPubspec from "/docs/introduction/getting_started/dart_pubspec";
+import dartPubadd from "/docs/introduction/getting_started/dart_pub_add";
 import {
   AutoSnippet,
   When,
 } from "/src/components/CodeSnippet";
 import { Link } from "/src/components/Link";
 
-## Riverpod 온라인으로 경험해보기
+## 온라인에서 Riverpod 체험해보기
 
-Riverpod을 경험해보려면 [Dartpad](https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2)나 [Zapp](https://zapp.run/new)에서 온라인으로 시도해보세요:
+Riverpod을 체험해보려면 [Dartpad](https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2)나 [Zapp](https://zapp.run/new)에서 온라인으로 사용해보세요:
 
 <iframe
   src="https://zapp.run/edit/zv2060sv306?theme=dark&lazy=false"
@@ -30,7 +30,7 @@ Riverpod을 경험해보려면 [Dartpad](https://dartpad.dev/?null_safety=true&i
 
 ## 패키지 설치하기
 
-설치하려는 패키지가 결정되면, 아래와 같이 한 줄로 앱에 종속성을 추가합니다:
+설치하려는 패키지가 정해지면, 아래와 같이 한 줄로 앱에 종속성을 추가합니다:
 
 <Tabs
   groupId="riverpod"
@@ -54,7 +54,7 @@ Riverpod을 경험해보려면 [Dartpad](https://dartpad.dev/?null_safety=true&i
 
 </Tabs>
 
-대안으로, `pubspec.yaml`에 종속성을 직접 추가할 수도 있습니다:
+또는, `pubspec.yaml` 내에서 앱에 종속성을 수동으로 추가할 수 있습니다:
 
 <Tabs
   groupId="riverpod"
@@ -94,15 +94,14 @@ Riverpod을 경험해보려면 [Dartpad](https://dartpad.dev/?null_safety=true&i
 </TabItem>
 </Tabs>
 
-이게 다입니다. 당신의 앱에 [Riverpod]을 추가했습니다!
+이게 전부입니다. 당신의 앱에 [Riverpod]을 추가했습니다!
 
 ## riverpod_lint/custom_lint 활성화하기
 
 Riverpod은 선택사항으로 [riverpod_lint] 패키지를 제공합니다.
 이 패키지는 더 좋은 코드를 작성하는데 도움이 되는 린트 규칙과 사용자 정의 리팩토링 옵션을 제공합니다.
 
-이전 단계를 따라왔다면 이 패키지는 이미 설치되어 있을 것입니다. 
-하지만 활성화하기 위해서는 별도의 단계가 필요합니다.
+이전 단계를 수행했다면 이미 패키지가 설치되어 있지만, 활성화하려면 별도의 단계가 필요합니다.
 
 [riverpod_lint]를 활성화하려면, 당신의 `pubspec.yaml`옆에 `analysis_options.yaml`을 추가하고 다음을 포함해야 합니다:
 
@@ -147,10 +146,10 @@ dart run custom_lint
   language="dart"
   {...helloWorld}
   translations={{
-    helloWorld: "// 값을 저장할 \"provider\"를 생성합니다(여기서는 \"Hello world\").\n// 프로바이더를 사용하면 노출된 값을 모의(mock)//재정의(override)할 수 있습니다.",
-    ProviderScope: "    // 위젯이 프로바이더를 읽을 수 있게 하려면 전체 애플리케이션을 \"ProviderScope\" 위젯으로 감싸야 합니다.\n    // 여기에 프로바이더의 상태가 저장됩니다.",
-    ConsumerWidget: "// 리버포드에 의해 노출되는 StatelessWidget 대신 ConsumerWidget을 확장합니다.",
-    HookConsumerWidget: "// 리버포드에 의해 노출되는 HookWidget 대신 HookConsumerWidget을 확장합니다.",
+    helloWorld: "// 값을 저장할 \"provider\"를 생성합니다(여기서는 \"Hello world\").\n// provider를 사용하면 노출된 값을 모의(mock)//재정의(override)할 수 있습니다.",
+    ProviderScope: "    // 위젯이 providers를 읽을 수 있게 하려면 전체 애플리케이션을 \"ProviderScope\" 위젯으로 감싸야 합니다.\n    // 여기에 providers의 상태가 저장됩니다.",
+    ConsumerWidget: "// Riverpod에 의해 노출되는 StatelessWidget 대신 ConsumerWidget을 확장합니다.",
+    HookConsumerWidget: "// Riverpod에 의해 노출되는 HookWidget 대신 HookConsumerWidget을 확장합니다.",
     hooksCodegen_counter: "    // HookConsumerWidget 내부에서 훅을 사용할 수 있습니다.",
   }}
 />
@@ -166,9 +165,9 @@ dart run custom_lint
   language="dart"
   {...dartHelloWorld}
   translations={{
-    helloWorld: "// 값을 저장할 \"provider\"를 생성합니다(여기서는 \"Hello world\").\n// 프로바이더를 사용하면 노출된 값을 모의(mock)//재정의(override)할 수 있습니다.",
-    container: "  // 이 객체는 공급자의 상태가 저장되는 곳입니다.",
-    value: "  // \"컨테이너\" 덕분에 공급자를 읽을 수 있습니다.",
+    helloWorld: "// 값을 저장할 \"provider\"를 생성합니다(여기서는 \"Hello world\").\n// provider를 사용하면 노출된 값을 모의(mock)//재정의(override)할 수 있습니다.",
+    container: "  // 이 객체는 providers의 상태가 저장되는 곳입니다.",
+    value: "  // \"컨테이너\" 덕분에 provider를 읽을 수 있습니다.",
   }}
 />
 

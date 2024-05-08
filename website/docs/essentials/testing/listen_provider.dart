@@ -10,13 +10,13 @@ final provider = Provider((_) => 'Hello world');
 void main() {
   test('Some description', () {
     final container = createContainer();
-    /* SNIPPET START */
+/* SNIPPET START */
     container.listen<String>(
       provider,
       (previous, next) {
         print('The provider changed from $previous to $next');
       },
     );
-    /* SNIPPET END */
+/* SNIPPET END */
   });
 }

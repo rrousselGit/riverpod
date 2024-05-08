@@ -17,7 +17,7 @@ import {
 pkg:Provider나 pkg:Riverpod에서 제공되는 provider들을 "provider"로 표기합니다.
 :::
 
-## 공급자(Provider) 정의하기
+## Provider 정의하기
 
 두 패키지의 가장 큰 차이점은 "providers"를 정의하는 방식입니다.
 
@@ -111,7 +111,7 @@ class Example extends ConsumerWidget {
 
 - Riverpod에서는 `BuildContext.watch` 대신 `ConsumerWidget`에서 가져온 `WidgetRef`를 사용하여 `WidgetRef.watch`를 수행합니다.
 
-- Riverpod은 제네릭 타입에 의존하지 않습니다. 대신 공급자 정의(provider definition)를 통해 생성된 변수(variable)에 의존합니다.
+- Riverpod은 제네릭 타입에 의존하지 않습니다. 대신 provider 정의(definition)를 통해 생성된 변수(variable)에 의존합니다.
 
 문구가 얼마나 유사한지도 주목하세요. Provider와 Riverpod은 모두 "watch" 키워드를 사용하여 "이 위젯은 값이 변경되면 다시 빌드되어야 합니다"라고 설명합니다.
 
@@ -222,7 +222,7 @@ ProxyProvider<UserIdNotifier, String>(
 )
 ```
 
-이 프로바이더는 `UserIdNotifier.userId`가 변경될 때마다 자동으로 새 `String`을 반환합니다.
+이 provider는 `UserIdNotifier.userId`가 변경될 때마다 자동으로 새 `String`을 반환합니다.
 
 Riverpod에서도 비슷한 작업을 수행할 수 있지만 구문이 다릅니다.  
 먼저, Riverpod에서 `UserIdNotifier`의 정의는 다음과 같습니다:
@@ -350,9 +350,9 @@ final userNotifierProvider = ChangeNotifierProvider<UserNotifier>((ref) {
 이 스니펫의 핵심은 `ref.listen` 줄입니다.  
 이 `ref.listen` 함수는 provider를 수신 대기하고, provider가 변경될 때마다 함수를 실행하는 유틸리티입니다.
 
-해당 함수의 `previous` 및 `next` 매개 변수는 공급자가 변경되기 전의 마지막 값과 변경된 후의 새 값에 해당합니다.
+해당 함수의 `previous` 및 `next` 매개 변수는 provider가 변경되기 전의 마지막 값과 변경된 후의 새 값에 해당합니다.
 
-## 범위 지정 공급자(Scoping Providers) vs `.family` + `.autoDispose`
+## 범위 지정(Scoping) Providers vs `.family` + `.autoDispose`
 pkg:Provider에서 범위 지정은 두 가지 용도로 사용되었습니다:
   - 페이지 이탈 시 상태 소멸(destroying state)
   - 페이지당 커스텀 상태 보유
@@ -366,8 +366,8 @@ pkg:Provider에서 범위 지정은 두 가지 용도로 사용되었습니다:
 
 Riverpod은 다른 접근 방식을 취합니다: 첫째, 범위 지정(Scoping) providers는 권장하지 않으며, 둘째, `.family` 및 `.autoDispose`는 이를 완전히 대체하는 솔루션 입니다.
 
-Riverpod 내에서 '.autoDispose'로 표시된 공급자는 더 이상 사용되지 않을 때 자동으로 상태를 소멸(destroy)합니다.  
-공급자를 제거하는 마지막 위젯이 마운트 해제되면 Riverpod은 이를 감지하고 공급자를 파기(destroy)합니다.  
+Riverpod 내에서 '.autoDispose'로 표시된 providers는 더 이상 사용되지 않을 때 자동으로 상태를 소멸(destroy)합니다.  
+provider를 제거하는 마지막 위젯이 언마운트되면, Riverpod은 이를 감지하고 providers를 파기(destroy)합니다.
 이 동작을 테스트하려면 제공자에서 이 두 가지 수명 주기 메서드를 사용해 보세요:
 
 

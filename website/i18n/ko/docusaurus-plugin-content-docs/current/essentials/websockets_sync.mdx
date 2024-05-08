@@ -61,7 +61,7 @@ provider가 객체를 동기적으로 생성하면 객체가 소비되는 방식
 <AutoSnippet 
   raw={pipeChangeNotifier} 
   translations={{
-    provider: "/// 값이 변경될 때마다 ValueNotifier를 생성하고 리스너를 업데이트하는 프로바이더입니다.",
+    provider: "/// 값이 변경될 때마다 ValueNotifier를 생성하고 리스너를 업데이트하는 provider입니다.",
     onDispose: "  // provider가 폐기되면 notifier를 폐기합니다.",
     addListener: "  // ValueNotifier가 업데이트될 때마다 provider의 리스너들에 알립니다.",
   }}
@@ -69,7 +69,7 @@ provider가 객체를 동기적으로 생성하면 객체가 소비되는 방식
 
 :::info
 이러한 로직이 여러 번 필요한 경우, 공유된 로직에 주목할 가치가 있습니다! "ref" 객체는 컴포저블(composable)하게 설계되었습니다.
-이를 통해 공급자에서 dispose/listening 로직을 추출할 수 있습니다:
+이를 통해 provider에서 dispose/listening 로직을 추출할 수 있습니다:
 
 <AutoSnippet 
   raw={sharedPipeChangeNotifier} 
@@ -85,7 +85,7 @@ provider가 객체를 동기적으로 생성하면 객체가 소비되는 방식
 <When codegen={false}>
 
 코드 생성(code-generation)을 사용하지 않을 경우, 
-Riverpod은 `ChangeNotifier`와 `StateNotifier`를 즉시 지원하는 "legacy" 프로바이더를 제공합니다: `ChangeNotifierProvider` and `StateNotifierProvider`.
+Riverpod은 `ChangeNotifier`와 `StateNotifier`를 즉시 지원하는 "legacy" providers를 제공합니다: `ChangeNotifierProvider` and `StateNotifierProvider`.
 이들을 사용하는 것은 다른 종류의 provider를 사용하는 것과 비슷합니다. 가장 큰 차이점은 둘 다 반환된 객체를 자동으로 수신(listen)하고 폐기(dispose)한다는 점입니다.
 
 이러한 providers는 새로운 비즈니스 로직에는 권장되지 않습니다.
@@ -94,7 +94,7 @@ Riverpod은 `ChangeNotifier`와 `StateNotifier`를 즉시 지원하는 "legacy" 
 <AutoSnippet 
   raw={changeNotifierProvider} 
   translations={{
-    provider: "  // ValueNotifier를 수신하고 폐기합니다.\n  // 그러면 위젯은 이 공급자를 \"ref.watch\"하여 업데이트를 수신할 수 있습니다.",
+    provider: "  // ValueNotifier를 수신하고 폐기합니다.\n  // 그러면 위젯은 이 provider를 \"ref.watch\"하여 업데이트를 수신할 수 있습니다.",
   }}
 />
 

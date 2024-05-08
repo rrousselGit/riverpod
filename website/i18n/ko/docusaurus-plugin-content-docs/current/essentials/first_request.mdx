@@ -49,7 +49,7 @@ void main() {
 
 네트워크 요청을 수행하는 것을 보통 "비즈니스 로직"이라고 부릅니다.
 Riverpod에서 비즈니스 로직은 "providers" 내부에 배치됩니다.  
-프로바이더는 초강력(super-powered) 함수입니다.
+provider는 초강력(super-powered) 함수입니다.
 일반 함수처럼 동작하지만 다음과 같은 이점이 추가됩니다:
 
 - 캐시됩니다.
@@ -57,7 +57,7 @@ Riverpod에서 비즈니스 로직은 "providers" 내부에 배치됩니다.
 - 리스너를 추가할 수 있습니다.
 - 데이터가 변경될 때 자동으로 다시 실행됩니다.
 
-따라서 공급자는 _GET_ 네트워크 요청에 가장 적합합니다. (_POST/etc_ 요청의 경우, <Link documentID="essentials/side_effects" /> 참조)
+따라서 providers는 _GET_ 네트워크 요청에 가장 적합합니다. (_POST/etc_ 요청의 경우, <Link documentID="essentials/side_effects" /> 참조)
 
 예를 들어, 지루할 때 할 수 있는 무작위 활동을 제안하는 간단한 애플리케이션을 만들어 보겠습니다.  
 이를 위해 [Bored API](https://boredapi.com/)를 사용하겠습니다. 
@@ -87,12 +87,12 @@ Riverpod에서 비즈니스 로직은 "providers" 내부에 배치됩니다.
   }}
 />
 
-### 공급자 만들기
+### provider 만들기
 
 이제 모델이 생겼으니 API 쿼리를 시작할 수 있습니다.  
-그러기 위해서는 첫 번째 공급자를 만들어야 합니다.
+그러기 위해서는 첫 번째 provider를 만들어야 합니다.
 
-공급자를 정의하는 구문은 다음과 같습니다:
+provider를 정의하는 구문은 다음과 같습니다:
 
 <When codegen={false}>
 <Legend
@@ -107,7 +107,7 @@ Riverpod에서 비즈니스 로직은 "providers" 내부에 배치됩니다.
       label: "provider 변수",
       description: <>
 
-이 변수는 공급자와 상호 작용하는 데 사용되는 변수입니다.  
+이 변수는 provider와 상호 작용하는 데 사용되는 변수입니다.  
 변수는 final이여야하고, "top-level" (global)에 선언되어야 합니다.
 
 </>
@@ -127,7 +127,7 @@ Riverpod에서 비즈니스 로직은 "providers" 내부에 배치됩니다.
 :::tip
 "어떤 provider를 선택해야 하나"라는 관점에서 생각하지 마세요.
 대신 "내가 무엇을 반환하고 싶은가"라는 관점에서 생각하세요. 
-공급자 유형은 자연스럽게 따라올 것입니다.
+provider 타입은 자연스럽게 따라올 것입니다.
 :::
 
 </>
@@ -139,11 +139,11 @@ Riverpod에서 비즈니스 로직은 "providers" 내부에 배치됩니다.
       description: <>
 
 종종 provider 타입 뒤에 "수정자(Modifiers)"가 표시될 수 있습니다.  
-수정자(Modifiers)는 선택 사항이며, 타입에 안전한 방식으로 공급자의 동작을 조정하는 데 사용됩니다.
+수정자(Modifiers)는 선택 사항이며, 타입에 안전한 방식으로 provider의 동작을 조정하는 데 사용됩니다.
 
 현재 두 가지 수정자를 사용할 수 있습니다:
 
-- 공급자가 더 이상 사용되지 않을 때 캐시를 자동으로 지우는 `autoDispose`.  
+- provider가 더 이상 사용되지 않을 때 캐시를 자동으로 지우는 `autoDispose`.  
   <Link documentID="essentials/auto_dispose" />도 참조하세요.
 - provider에 인수를 전달할 수 있는 `family`.  
   <Link documentID="essentials/passing_args" />도 참조하세요.
@@ -156,7 +156,7 @@ Riverpod에서 비즈니스 로직은 "providers" 내부에 배치됩니다.
       label: "Ref",
       description: <>
 
-다른 provider와 상호작용하는 데 사용되는 객체입니다.  
+다른 providers와 상호작용하는 데 사용되는 객체입니다.  
 모든 providers는 provider 함수의 매개변수(parameter) 또는 Notifier의 속성(property)으로 하나씩 가지고 있습니다.
 
 </>
@@ -167,8 +167,8 @@ Riverpod에서 비즈니스 로직은 "providers" 내부에 배치됩니다.
       label: "provider 함수",
       description: <>
 
-여기에 프로바이더의 로직을 배치합니다.
-이 함수는 공급자를 처음 읽을 때 호출됩니다.  
+여기에 providers의 로직을 배치합니다.
+이 함수는 provider를 처음 읽을 때 호출됩니다.  
 이후 읽기는 이 함수를 다시 호출하지 않고 대신 캐시된 값을 반환합니다.
 
 </>
@@ -191,9 +191,9 @@ Result myFunction(MyFunctionRef ref) {
       label: "어노테이션(annotation)",
       description: <>
 
-모든 프로바이더는 `@riverpod` 또는 `@Riverpod()`로 어노테이션해야 합니다.
+모든 providers는 `@riverpod` 또는 `@Riverpod()`로 어노테이션해야 합니다.
 이 어노테이션은 전역 함수나 클래스에 배치할 수 있습니다.  
-이 어노테이션을 통해 프로바이더를 구성할 수 있습니다.
+이 어노테이션을 통해 provider를 설정(config)할 수 있습니다.
 
 예를 들어, `@Riverpod(keepAlive: true)`를 작성하여 "auto-dispose"(나중에 살펴보겠습니다)를 비활성화할 수 있습니다.
 
@@ -212,7 +212,7 @@ Result myFunction(MyFunctionRef ref) {
 그 외에도 함수는 제네릭을 포함하여 여러 개의 매개변수를 가질 수 있습니다.
 이 함수는 원할 경우 `Future`/`Stream`을 반환할 수도 있습니다.
 
-이 함수는 공급자를 처음 읽을 때 호출됩니다.  
+이 함수는 provider를 처음 읽을 때 호출됩니다.  
 이후 읽기는 함수를 다시 호출하지 않고 대신 캐시된 값을 반환합니다.
 
 </>
@@ -236,7 +236,7 @@ Result myFunction(MyFunctionRef ref) {
 여기서는 API에서 Activity를 _GET_하고자 합니다.  
 _GET_은 비동기 연산이므로 `Future<Activity>`를 생성해야 합니다.
 
-따라서 앞서 정의한 구문을 사용하여 다음과 같이 공급자를 정의할 수 있습니다:
+따라서 앞서 정의한 구문을 사용하여 다음과 같이 provider를 정의할 수 있습니다:
 
 <AutoSnippet title="provider.dart" 
   {...provider} 
@@ -245,24 +245,24 @@ _GET_은 비동기 연산이므로 `Future<Activity>`를 생성해야 합니다.
     json: "  // 그런 다음 dart:convert를 사용하여 JSON 페이로드를 맵 데이터 구조로 디코딩합니다.",
     fromJson: "  // 마지막으로 맵을 Activity 인스턴스로 변환합니다.",
     codegen_note: "// 코드 생성이 작동하는 데 필요합니다.",
-    codegen_provider: "/// 그러면 이 함수의 결과를 캐시할\n/// `activityProvider`라는 프로바이더가 생성됩니다.",
+    codegen_provider: "/// 그러면 이 함수의 결과를 캐시할\n/// `activityProvider`라는 provider가 생성됩니다.",
   }}
 />
 
-이 코드조각에서는 UI가 임의의 액티비티를 가져오는 데 사용할 수 있는 `activityProvider`라는 이름의 공급자를 정의했습니다.
+이 코드조각에서는 UI가 임의의 액티비티를 가져오는 데 사용할 수 있는 `activityProvider`라는 이름의 provider를 정의했습니다.
 다음과 같은 것은 주목할 가치가 있습니다:
 
 - 네트워크 요청은 UI가 provider를 한 번 이상 읽을 때까지 실행되지 않습니다.
-- 이후 읽기는 네트워크 요청을 다시 실행하지 않고 이전에 가져온 활동을 반환합니다.
-- UI가 이 공급자의 사용을 중단하면 캐시가 삭제됩니다.
-  그런 다음 UI가 이 공급자를 다시 사용하면 새로운 네트워크 요청이 이루어집니다.
-- 오류는 catch되지 않았습니다. 이는 공급자가 기본적으로 오류를 처리하기 때문에 자발적인 조치입니다.  
+- 이후 읽기는 네트워크 요청을 다시 실행하지 않고 이전에 가져온 활동(activity)을 반환합니다.
+- UI가 이 provider의 사용을 중단하면 캐시가 삭제됩니다.
+  그런 다음 UI가 이 provider를 다시 사용하면 새로운 네트워크 요청이 이루어집니다.
+- 오류는 catch되지 않았습니다. 이는 provider들이 기본적으로 오류를 처리하기 때문에 자발적인 조치입니다.  
   네트워크 요청이나 JSON 파싱에서 에러가 발생하면 riverpod에서 에러를 catch합니다. 
   그러면 UI에 오류 페이지를 렌더링하는 데 필요한 정보가 자동으로 표시됩니다.
 
 :::info
-Provider는 "지연(lazy)"입니다. 공급자를 정의해도 네트워크 요청이 실행되지 않습니다.
-대신 공급자를 처음 읽을 때 네트워크 요청이 실행됩니다.
+Provider는 "지연(lazy)"입니다. provider를 정의해도 네트워크 요청이 실행되지 않습니다.
+대신 provider를 처음 읽을 때 네트워크 요청이 실행됩니다.
 :::
 
 ### UI에서 네트워크 요청의 응답 렌더링하기
@@ -275,7 +275,7 @@ provider는 당연히 "ref" 객체에 액세스할 수 있으므로 이전에 pr
 
 해결책은 `Consumer`라는 커스텀 위젯을 사용하는 것입니다. 
 `Consumer`는 `Builder`와 비슷한 위젲이지만, "ref"를 제공한다는 추가적인 이점이 있습니다. 
-이를 통해 UI가 공급자를 읽을 수 있습니다.
+이를 통해 UI가 provider들을 읽을 수 있습니다.
 다음 예제는 `Consumer`를 사용하는 방법을 보여줍니다:
 
 <AutoSnippet title="consumer.dart" 
@@ -333,7 +333,7 @@ Riverpod은 동일한 결과를 얻을 수 있는 다른 방법을 제공합니�
   translations={{
     homeWidget: "// ConsumerStatefulWidget을 확장합니다.\n// 이것은 \"Consumer\" + \"StatefulWidget\"과 동일합니다.",
     homeState: "// \"State\" 대신 \"ConsumerState\"를 확장한 것을 볼 수 있습니다.\n// 이것은 \"ConsumerWidget\" 대 \"StatelessWidget\"과 동일한 원리를 사용합니다.",
-    listen: "    // 상태 수명 주기에도 \"ref\"에 액세스할 수 있습니다.\n    // 이를 통해 특정 공급자에 리스너를 추가하여 대화 상자/스낵바를 표시하는 등의 작업을 수행할 수 있습니다.",
+    listen: "    // 상태 수명 주기에도 \"ref\"에 액세스할 수 있습니다.\n    // 이를 통해 특정 provider에 리스너를 추가하여 대화 상자/스낵바를 표시하는 등의 작업을 수행할 수 있습니다.",
     todo: "      // TODO 스낵바/대화 상자 표시",
     watch: "    // \"ref\"는 더 이상 매개변수로 전달되지 않고 대신 \"ConsumerState\"의 프로퍼티가 됩니다.\n    // 따라서 \"build\" 내에서 \"ref.watch\"를 계속 사용할 수 있습니다.",
   }}
@@ -363,6 +363,6 @@ Riverpod는 이 문제에 대한 해결책으로 `HookConsumerWidget`과 `Statef
     homeWidget: "/// \"HookConsumerWidget\"을 서브클래스화했습니다.\n/// 이것은 \"StatelessWidget\" + \"Consumer\" + \"HookWidget\"을 함께 결합합니다.",
     build: "  // 이제 \"build\"가 추가 매개변수를 받는 방식에 주목하세요: \"ref\"",
     useState: "    // 위젯 내부에서 \"useState\"와 같은 훅을 사용할 수 있습니다.",
-    activity: "    // 공급자 읽기도 사용할 수도 있습니다.",
+    activity: "    // providers 읽기도 사용할 수도 있습니다.",
   }}
 />
