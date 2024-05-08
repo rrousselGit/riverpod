@@ -72,8 +72,19 @@ Alternatively, you can manually add the dependency to your app from within your 
 Then, install packages with `flutter pub get`.
 
 <When codegen={true}>
+  ## Generating code from the terminal. 
   You can now run the code-generator with{" "}
   <code>flutter pub run build_runner watch</code>.
+  This will generate main.g.dart
+  :::info
+  This command will monitor any <code>@riverpod</code> changes and regenerate code automatically.
+  :::info
+  :::tip
+  To generate code on an ad-hoc basis you can run the following:
+  ```sh
+  flutter pub build_runner build --delete-conflicting-outputs
+  ```
+  :::
 </When>
 
 </TabItem>
