@@ -56,10 +56,10 @@ import selectAsync from "/docs/advanced/select/select_async";
 다른 provider를 수신하는 provider를 최적화하려는 경우 다른 provider가 비동기식일 가능성이 있습니다.
 
 일반적으로는 `ref.watch(anotherProvider.future)`를 사용해 값을 가져옵니다.   
-문제는 `select`이 `AsyncValue`에 적용된다는 것인데, 이는 기다릴 수 있는(await) 상황이 아닙니다.
+이슈는 `select`가 기다릴수(await) 없는 `AsyncValue`에 적용된다는 것입니다.
 
 이를 위해 `selectAsync`를 대신 사용할 수 있습니다. 
-이 함수는 비동기 코드에 고유하며, 공급자가 방출한 데이터에 대해 `select` 연산을 수행할 수 있게 해줍니다.  
+이 함수는 비동기 코드에 고유하며, provider가 내보낸 데이터에 대해 `select` 연산을 수행할 수 있습니다.
 사용법은 `select`와 비슷하지만 대신 `Future`를 반환합니다:
 
 <AutoSnippet

@@ -87,13 +87,13 @@ Freezed/json_serializable을 반드시 사용해야 하는 것은 아니지만 �
 
 사용자가 화면을 아래로 내리면 `RefreshIndicator`가 `onRefresh` 콜백을 호출합니다. 
 이 콜백을 사용해 데이터를 새로 고칠 수 있습니다.
-여기서 `ref.refresh`를 사용하여 선택한 공급자를 새로 고칠 수 있습니다.
+여기서 `ref.refresh`를 사용하여 선택한 provider를 새로 고칠 수 있습니다.
 
 **참고**: `onRefresh`는 `Future`를 반환할 것으로 예상됩니다.
 그리고 새로 고침이 완료될 때 그 future가 완료되는 것이 중요합니다.
 
-이러한 future를 얻으려면 공급자의 '.future' 속성을 읽으면 됩니다.
-그러면 공급자가 해결(resolved)될 때 완료되는 future가 반환됩니다.
+이러한 future를 얻으려면 provider의 '.future' 속성을 읽으면 됩니다.
+그러면 provider가 해결(resolved)될 때 완료되는 future가 반환됩니다.
 
 따라서 `RefreshIndicator`를 다음과 같이 업데이트할 수 있습니다:
 
@@ -114,7 +114,7 @@ Freezed/json_serializable을 반드시 사용해야 하는 것은 아니지만 �
 - 초기 로드 중에는 전체 화면 스피너를 표시하고 싶습니다.
 - 새로 고침 중에는 새로 고침 표시기와 이전 데이터/오류를 표시하고 싶습니다.
 
-다행히도 Riverpod에서 비동기 프로바이더를 수신할 때, Riverpod는 필요한 모든 것을 제공하는 `AsyncValue`를 제공합니다.
+다행히도 Riverpod에서 비동기 provider를 수신할 때, Riverpod는 필요한 모든 것을 제공하는 `AsyncValue`를 제공합니다.
 
 이 `AsyncValue`는 다음과 같이 Dart 3.0의 패턴 일치(pattern matching)와 사용할 수 있습니다:
 

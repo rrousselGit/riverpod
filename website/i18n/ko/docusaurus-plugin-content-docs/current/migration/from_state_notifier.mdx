@@ -192,7 +192,7 @@ import { AutoSnippet } from "/src/components/CodeSnippet";
 지금까지 `StateNotifier`와 새로운 API의 차이점을 살펴보았습니다.  
 대신, `Notifier`, `AsyncNotifer`, `StateNotifier`가 공유하는 한 가지는 상태를 소비하고 변경할 수 있다는 점입니다.
 
-Consumers는 동일한 구문으로 이 세 공급자로부터 데이터를 얻을 수 있습니다, 
+Consumers는 동일한 구문으로 이 세 providers로부터 데이터를 얻을 수 있습니다, 
 이는 `StateNotifier`에서 마이그레이션하는 경우에 유용하며, 이는 notifiers 메서드에도 적용됩니다.
 
 <AutoSnippet raw={consumersDontChange}></AutoSnippet>

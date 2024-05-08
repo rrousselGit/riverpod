@@ -10,7 +10,7 @@ version: 1
 
 실제로 Provider에서 Riverpod로 마이그레이션하는 것은 매우 간단합니다.  
 
-마이그레이션은 기본적으로 *증분* 방식으로 수행할 수 있는 몇 가지 단계로 구성됩니다.
+마이그레이션은 기본적으로 *단계적* 방식으로 수행할 수 있는 몇 가지 단계로 구성됩니다.
 
 ## `ChangeNotifierProvider`로 시작하기
 
@@ -85,14 +85,16 @@ MultiProvider(
   ]
 )
 ```
+
 이렇게 하면 처음에 루트 위젯만 `ConsumerWidget`으로 변환하면 됩니다.  
 이렇게 하면 pkg:Riverpod로 마이그레이션하는 것이 훨씬 쉬워집니다.
+
 
 ## 한번에 하나씩 Provider를 마이그레이션하세요
 
 기존 앱이 있는 경우, 모든 Provider를 한꺼번에 마이그레이션하지 마세요!
 
-장기적으로 모든 애플리케이션을 Riverpod로 이동하려고 노력해야 하지만, **자신을 지치게(burn) 하지 마세요**.
+장기적으로 모든 애플리케이션을 Riverpod로 이동하려고 노력해야 하지만, **자신을 지치게(burn out) 하지 마세요**.
 한번에 하나의 Provider씩 처리하세요.
 
 위의 예를 들어보겠습니다. `myNotifierProvider`를 Riverpod으로 **완전히** 마이그레이션한다는 것은 다음과 같이 작성하는 것을 의미합니다:
@@ -108,27 +110,27 @@ class MyNotifier extends Notifier<int> {
 final myNotifierProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
 ```
 
-.. 그리고 _또한_ 해당 공급자가 소비되는 방식을 변경해야 합니다, 
-예를 들어 이 공급자에 대한 각 `context.watch`를 `ref.watch`로 변경해야 합니다.
+.. 그리고 _또한_ 해당 provider가 소비되는 방식을 변경해야 합니다, 
+예를 들어 이 provider에 대한 각 `context.watch`를 `ref.watch`로 변경해야 합니다.
 
 이 작업은 시간이 다소 걸리고 오류가 발생할 수 있으므로, 한 번에 끝내려고 서두르지 마세요.
 
 ## `ProxyProvider` 마이그레이션
-pkg:Provider 내에서 `ProxyProvider`는 다른 프로바이더의 값을 결합하는 데 사용됩니다;
-빌드는 다른 프로바이더의 값에 따라 반응적(reactively)으로 달라집니다.
+pkg:Provider 내에서 `ProxyProvider`는 다른 Providers의 값을 결합하는 데 사용됩니다;
+빌드는 다른 Providers의 값에 따라 반응적(reactively)으로 달라집니다.
 
-Riverpod에서는 대신 프로바이더는 [기본적으로 컴포저블이 가능]하므로, 
-`ProxyProvider`를 마이그레이션할 때 한 프로바이더에서 다른 프로바이더로 직접 종속성을 선언하려면 `ref.watch`를 작성하기만 하면 됩니다.
+Riverpod에서는 대신 providers는 [기본적으로 컴포저블이 가능]하므로, 
+`ProxyProvider`를 마이그레이션할 때 한 provider에서 다른 provider로 직접 종속성을 선언하려면 `ref.watch`를 작성하기만 하면 됩니다.
 
 오히려 Riverpod에서 값을 결합하는 것이 더 간단하고 직관적으로 느껴질 것이므로 마이그레이션을 통해 코드를 크게 간소화할 수 있습니다.
 
-또한 두 개 이상의 공급자를 결합할 때, 복잡한 과정을 거칠 필요 없이 `ref.watch`를 하나 더 추가하기만 하면 바로 사용할 수 있습니다.
+또한 두 개 이상의 providers를 결합할 때, 복잡한 과정을 거칠 필요 없이 `ref.watch`를 하나 더 추가하기만 하면 바로 사용할 수 있습니다.
 
 ## 빠른(Eager) 초기화
 
-Riverpod의 프로바이더는 최종 전역(global) 변수이기 때문에 [기본적으로 지연(Lazy)] 초기화 됩니다.
+Riverpod의 providers는 최종 전역(global) 변수이기 때문에 [기본적으로 지연(Lazy)] 초기화 됩니다.
 
-시작 시 일부 워밍업 데이터나 유용한 서비스를 초기화해야 하는 경우, 가장 좋은 방법은 `MultiProvider`를 넣었던 위치에서 프로바이더를 먼저 읽는 것입니다.
+시작 시 일부 워밍업 데이터나 유용한 서비스를 초기화해야 하는 경우, 가장 좋은 방법은 `MultiProvider`를 넣었던 위치에서 provider를 먼저 읽는 것입니다.
 
 즉, Riverpod은 강제로 초기화할 수 없기 때문에, 시작 단계에서 읽고 캐시하여, 나머지 애플리케이션 내에서 필요할 때 바로 사용할 수 있도록(warm and ready) 할 수 있습니다.
 
@@ -182,6 +184,10 @@ class MyNotifier extends _$MyNotifier {
 
 이 가이드에 따라 나중에 한 단계 더 나아가 코드생성으로 마이그레이션할 수 있습니다.
 
+[시작하기]: /docs/introduction/getting_started
+[sandbox]: https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2
+[Provider]: https://pub.dev/packages/provider
+[ChangeNotifierProvider]: /docs/providers/change_notifier_provider
 [코드 생성]: /docs/concepts/about_code_generation
 [Riverpod의 provider들]: /docs/providers/notifier_provider
 [기본적으로 컴포저블이 가능]: /docs/from_provider/motivation#combining-providers-is-hard-and-error-prone
