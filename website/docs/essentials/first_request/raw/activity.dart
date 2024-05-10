@@ -1,6 +1,8 @@
 /* SNIPPET START */
 
+// {@template activity}
 /// The response of the `GET /api/activity` endpoint.
+// {@endtemplate}
 class Activity {
   Activity({
     required this.key,
@@ -10,8 +12,10 @@ class Activity {
     required this.price,
   });
 
+  // {@template fromJson}
   /// Convert a JSON object into an [Activity] instance.
   /// This enables type-safe reading of the API response.
+  // {@endtemplate}
   factory Activity.fromJson(Map<String, dynamic> json) {
     return Activity(
       key: json['key'] as String,

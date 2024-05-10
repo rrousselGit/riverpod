@@ -12,18 +12,24 @@ const someStream = Stream<({double longitude, double latitude})>.empty();
 /* SNIPPET START */
 final locationProvider =
     StreamProvider<({double longitude, double latitude})>((ref) {
+  // {@template provider}
   // TO-DO: Return a stream which obtains the current location
+  // {@endtemplate}
   return someStream;
 });
 
 final restaurantsNearMeProvider = FutureProvider<List<String>>((ref) async {
+  // {@template watch}
   // We use "ref.watch" to obtain the latest location.
   // By specifying that ".future" after the provider, our code will wait
   // for at least one location to be available.
+  // {@endtemplate}
   final location = await ref.watch(locationProvider.future);
 
+  // {@template get}
   // We can now make a network request based on that location.
   // For example, we could use the Google Map API:
+  // {@endtemplate}
   // https://developers.google.com/maps/documentation/places/web-service/search-nearby
   final response = await http.get(
     Uri.https('maps.googleapis.com', 'maps/api/place/nearbysearch/json', {
@@ -33,7 +39,9 @@ final restaurantsNearMeProvider = FutureProvider<List<String>>((ref) async {
       'key': '<your api key>',
     }),
   );
+  // {@template jsonDecode}
   // Obtain the restaurant names from the JSON
+  // {@endtemplate}
   final json = jsonDecode(response.body) as Map;
   final results = (json['results'] as List).cast<Map<Object?, Object?>>();
   return results.map((e) => e['name']! as String).toList();
