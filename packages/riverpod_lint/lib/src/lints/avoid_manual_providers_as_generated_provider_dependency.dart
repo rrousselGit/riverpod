@@ -28,9 +28,9 @@ class AvoidManualProvidersAsGeneratedProviderDependency
     ) {
       final dependencyElement = dependency.provider.providerElement;
       if (dependencyElement is! GeneratorProviderDeclarationElement) {
-        reporter.reportErrorForNode(
-          code,
+        reporter.atNode(
           dependency.provider.provider ?? dependency.provider.node,
+          code,
         );
       }
     }

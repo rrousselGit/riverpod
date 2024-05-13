@@ -24,10 +24,10 @@ Then dispose of the listener when you no longer need the autoDispose provider to
   ) {
     riverpodRegistry(context).addRefReadInvocation((read) {
       if (read.provider.providerElement?.isAutoDispose ?? false) {
-        reporter.reportErrorForNode(
-          _code,
+        reporter.atNode(
           read.node,
-          [read.provider.provider!],
+          _code,
+          arguments: [read.provider.provider!],
         );
       }
     });

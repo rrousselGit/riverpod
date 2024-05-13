@@ -35,7 +35,7 @@ class AvoidRefInsideStateDispose extends RiverpodLintRule {
       });
 
       if (ancestor != null) {
-        reporter.reportErrorForNode(_code, node);
+        reporter.atNode(node, _code);
       }
     });
   }

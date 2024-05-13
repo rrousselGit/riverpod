@@ -1,3 +1,7 @@
+## Unreleased patch
+
+- Support analyzer 6.5.0
+
 ## 2.3.10 - 2024-03-10
 
 - `riverpod` upgraded to `2.5.1`

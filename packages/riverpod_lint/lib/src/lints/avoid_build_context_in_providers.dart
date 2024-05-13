@@ -54,7 +54,7 @@ class AvoidBuildContextInProviders extends RiverpodLintRule {
     );
 
     for (final contextParameter in buildContextParameters) {
-      reporter.reportErrorForNode(_code, contextParameter);
+      reporter.atNode(contextParameter, _code);
     }
   }
 }

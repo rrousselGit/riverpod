@@ -40,7 +40,7 @@ class MissingProviderScope extends DartLintRule {
         return;
       }
 
-      reporter.reportErrorForNode(_code, node.methodName);
+      reporter.atNode(node.methodName, _code);
     });
   }
 
