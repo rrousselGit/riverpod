@@ -12,7 +12,7 @@ _$ActivityImpl _$$ActivityImplFromJson(Map<String, dynamic> json) =>
     _$ActivityImpl(
       activity: json['activity'] as String,
       type: json['type'] as String,
-      participants: json['participants'] as int,
+      participants: (json['participants'] as num).toInt(),
       price: (json['price'] as num).toDouble(),
     );
 
