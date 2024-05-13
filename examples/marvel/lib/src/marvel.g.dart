@@ -8,7 +8,7 @@ part of 'marvel.dart';
 
 _$CharacterImpl _$$CharacterImplFromJson(Map<String, dynamic> json) =>
     _$CharacterImpl(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       name: json['name'] as String,
       thumbnail: Thumbnail.fromJson(json['thumbnail'] as Map<String, dynamic>),
     );
@@ -48,7 +48,7 @@ _$MarvelDataImpl _$$MarvelDataImplFromJson(Map<String, dynamic> json) =>
       (json['results'] as List<dynamic>)
           .map((e) => e as Map<String, dynamic>)
           .toList(),
-      json['total'] as int,
+      (json['total'] as num).toInt(),
     );
 
 Map<String, dynamic> _$$MarvelDataImplToJson(_$MarvelDataImpl instance) =>

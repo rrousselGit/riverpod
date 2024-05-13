@@ -44,7 +44,7 @@ Map<String, dynamic> _$$MarvelDataImplToJson(_$MarvelDataImpl instance) =>
     };
 
 _$ComicImpl _$$ComicImplFromJson(Map<String, dynamic> json) => _$ComicImpl(
-      id: json['id'] as int,
+      id: (json['id'] as num).toInt(),
       title: json['title'] as String,
     );
 
