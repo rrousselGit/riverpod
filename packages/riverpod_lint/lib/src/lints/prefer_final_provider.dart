@@ -19,7 +19,7 @@ class PreferFinalProvider extends RiverpodLintRule {
   ) {
     riverpodRegistry(context).addLegacyProviderDeclaration((provider) {
       if (!provider.node.isFinal) {
-        reporter.reportErrorForNode(_code, provider.node);
+        reporter.atNode(provider.node, _code);
       }
     });
   }

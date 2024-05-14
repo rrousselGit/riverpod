@@ -58,7 +58,7 @@ class ScopedProvidersShouldSpecifyDependencies extends RiverpodLintRule {
         if (provider is! GeneratorProviderDeclarationElement) continue;
 
         if (!provider.isScoped) {
-          reporter.reportErrorForNode(code, override.expression);
+          reporter.atNode(override.expression, code);
         }
       }
     }

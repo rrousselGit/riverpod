@@ -313,7 +313,7 @@ class $providerTypeNameImpl extends $providerType$providerGenerics {
     )}
   }) : super.internal();
 
-${parameters.map((e) => 'final ${e.type.getDisplayString(withNullability: true)} ${e.name};').join()}
+${parameters.map((e) => 'final ${e.type.getDisplayString()} ${e.name};').join()}
 
 $providerOther
 

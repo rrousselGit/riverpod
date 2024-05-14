@@ -68,7 +68,7 @@ class AsyncValueNullablePattern extends RiverpodLintRule {
         return;
       }
 
-      reporter.reportErrorForNode(_code, node);
+      reporter.atNode(node, _code);
     });
   }
 

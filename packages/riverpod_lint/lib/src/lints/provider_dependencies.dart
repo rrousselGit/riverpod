@@ -81,13 +81,13 @@ class ProviderDependencies extends RiverpodLintRule {
       final extraAndMissing = declaration.findExtraAndMissingDependencies();
 
       for (final extra in extraAndMissing.extra) {
-        reporter.reportErrorForNode(_code, extra.node);
+        reporter.atNode(extra.node, _code);
       }
       if (extraAndMissing.missing.isNotEmpty) {
-        reporter.reportErrorForNode(
-          _code,
+        reporter.atNode(
           declaration.annotation.dependencies?.node ??
               declaration.annotation.annotation,
+          _code,
         );
       }
     });

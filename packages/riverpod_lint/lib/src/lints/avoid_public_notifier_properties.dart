@@ -28,7 +28,7 @@ class AvoidPublicNotifierProperties extends DartLintRule {
       }
 
       for (final member in node.members) {
-        bool isVisibleOutsiteTheNotifier(Element? element) {
+        bool isVisibleOutsideTheNotifier(Element? element) {
           return element != null &&
               element.isPublic &&
               !element.hasProtected &&
@@ -41,18 +41,18 @@ class AvoidPublicNotifierProperties extends DartLintRule {
           if (member.isStatic) continue;
 
           for (final variable in member.fields.variables) {
-            if (!isVisibleOutsiteTheNotifier(variable.declaredElement)) {
+            if (!isVisibleOutsideTheNotifier(variable.declaredElement)) {
               continue;
             }
 
-            reporter.reportErrorForNode(_code, member);
+            reporter.atNode(member, _code);
           }
         } else if (member is MethodDeclaration) {
           if (!member.isGetter) continue;
           if (member.isStatic) continue;
-          if (!isVisibleOutsiteTheNotifier(member.declaredElement)) continue;
+          if (!isVisibleOutsideTheNotifier(member.declaredElement)) continue;
 
-          reporter.reportErrorForNode(_code, member);
+          reporter.atNode(member, _code);
         }
       }
     });

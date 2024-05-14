@@ -44,7 +44,7 @@ class ProtectedNotifierProperties extends DartLintRule {
       if (targetType == enclosingClass.thisType) return;
       if (!anyNotifierType.isAssignableFromType(targetType)) return;
 
-      reporter.reportErrorForNode(_code, propertyAccess.propertyName);
+      reporter.atNode(propertyAccess.propertyName, _code);
     });
   }
 }
