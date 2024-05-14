@@ -4,7 +4,7 @@ repository: https://github.com/rrousselGit/river_pod
 issue_tracker: https://github.com/rrousselGit/riverpod/issues
 funding:
   - https://github.com/sponsors/rrousselGit/
-version: 0.5.2
+version: 0.5.3
 
 environment:
   sdk: ">=3.0.0 <4.0.0"

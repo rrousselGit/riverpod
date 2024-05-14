@@ -1,4 +1,4 @@
-## Unreleased patch
+## 0.5.3 - 2024-05-14
 
 - Correctly set minimum support analyzer version to 6.5.0
 
