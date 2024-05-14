@@ -1,4 +1,4 @@
-## Unreleased patch
+## 2.3.11 - 2024-05-14
 
 - Support analyzer 6.5.0
 
