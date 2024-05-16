@@ -11,5 +11,5 @@ class CounterNotifier extends _$CounterNotifier {
   int build() => 0;
 
   void increment() => state++;
-  void decrement() => state++;
+  void decrement() => state--;
 }
