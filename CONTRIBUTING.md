@@ -74,6 +74,12 @@ documentation of Docusaurus.
 The English documentation is hosted in [`/website/docs`](https://github.com/rrousselGit/riverpod/tree/master/website/docs).  
 Translations are hosted in [`/website/i18n`](https://github.com/rrousselGit/riverpod/tree/master/website/i18n).
 
+Note that [you can only host one locale at a time](https://tutorial.docusaurus.io/docs/tutorial-extras/translate-your-site#start-your-localized-site) when hosting the website locally with `yarn dev`.
+
+```sh
+yarn dev -l ja # When you are checking the Japanese docs locally
+```
+
 ### Working on packages
 
 ### Updating English docs
