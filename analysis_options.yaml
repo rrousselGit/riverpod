@@ -32,7 +32,7 @@ linter:
     # false positive
     one_member_abstracts: false
 
-    # too verbose
+    # Conflicts with `avoid_final_parameters`
     prefer_final_parameters: false
 
     # Too verbose with little value, and this is taken care of by the Flutter devtool anyway.
