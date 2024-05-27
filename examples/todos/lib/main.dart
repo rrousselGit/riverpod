@@ -158,7 +158,7 @@ class Toolbar extends HookConsumerWidget {
               style: ButtonStyle(
                 visualDensity: VisualDensity.compact,
                 foregroundColor:
-                    MaterialStateProperty.all(textColorFor(TodoListFilter.all)),
+                    WidgetStatePropertyAll(textColorFor(TodoListFilter.all)),
               ),
               child: const Text('All'),
             ),
@@ -171,7 +171,7 @@ class Toolbar extends HookConsumerWidget {
                   TodoListFilter.active,
               style: ButtonStyle(
                 visualDensity: VisualDensity.compact,
-                foregroundColor: MaterialStateProperty.all(
+                foregroundColor: WidgetStatePropertyAll(
                   textColorFor(TodoListFilter.active),
                 ),
               ),
@@ -186,7 +186,7 @@ class Toolbar extends HookConsumerWidget {
                   TodoListFilter.completed,
               style: ButtonStyle(
                 visualDensity: VisualDensity.compact,
-                foregroundColor: MaterialStateProperty.all(
+                foregroundColor: WidgetStatePropertyAll(
                   textColorFor(TodoListFilter.completed),
                 ),
               ),

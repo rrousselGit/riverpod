@@ -56,10 +56,10 @@ class UnsupportedProviderValue extends RiverpodLintRule {
       }
 
       if (invalidValueName != null) {
-        reporter.reportErrorForToken(
-          _code,
+        reporter.atToken(
           declaration.name,
-          [invalidValueName],
+          _code,
+          arguments: [invalidValueName],
         );
       }
     }

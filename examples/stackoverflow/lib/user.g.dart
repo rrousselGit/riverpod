@@ -9,8 +9,8 @@ part of 'user.dart';
 // **************************************************************************
 
 _$UserImpl _$$UserImplFromJson(Map<String, dynamic> json) => _$UserImpl(
-      reputation: json['reputation'] as int,
-      userId: json['user_id'] as int,
+      reputation: (json['reputation'] as num).toInt(),
+      userId: (json['user_id'] as num).toInt(),
       badgeCounts: json['badge_counts'] == null
           ? null
           : BadgeCount.fromJson(
@@ -34,9 +34,9 @@ Map<String, dynamic> _$$UserImplToJson(_$UserImpl instance) =>
 
 _$BadgeCountImpl _$$BadgeCountImplFromJson(Map<String, dynamic> json) =>
     _$BadgeCountImpl(
-      bronze: json['bronze'] as int,
-      silver: json['silver'] as int,
-      gold: json['gold'] as int,
+      bronze: (json['bronze'] as num).toInt(),
+      silver: (json['silver'] as num).toInt(),
+      gold: (json['gold'] as num).toInt(),
     );
 
 Map<String, dynamic> _$$BadgeCountImplToJson(_$BadgeCountImpl instance) =>

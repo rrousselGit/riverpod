@@ -44,7 +44,7 @@ class ProtectedNotifierProperties extends RiverpodLintRule {
       if (targetType == enclosingClassElement.thisType) return;
       if (!anyNotifierType.isAssignableFromType(targetType)) return;
 
-      reporter.reportErrorForNode(_code, propertyAccess.propertyName);
+      reporter.atNode(propertyAccess.propertyName, _code);
     });
   }
 }

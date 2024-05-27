@@ -67,14 +67,14 @@ class NotifierExtends extends RiverpodLintRule {
 
       if (extendsClause == null) {
         // No ref parameter, underlining the function name
-        reporter.reportErrorForToken(_code, declaration.name);
+        reporter.atToken(declaration.name, _code);
         return;
       }
 
       final expectedClassName = _generatedClassName(declaration);
       if (extendsClause.superclass.name2.lexeme != expectedClassName) {
         // No type specified. Underlining the ref name
-        reporter.reportErrorForNode(_code, extendsClause.superclass);
+        reporter.atNode(extendsClause.superclass, _code);
         return;
       }
 

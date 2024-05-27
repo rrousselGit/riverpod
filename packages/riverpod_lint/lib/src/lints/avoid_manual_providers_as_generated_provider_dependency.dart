@@ -35,7 +35,7 @@ class AvoidManualProvidersAsGeneratedProviderDependency
           ?.provider;
 
       if (enclosingProvider != null) {
-        reporter.reportErrorForNode(code, dependency.node);
+        reporter.atNode(dependency.node, code);
       }
     });
   }

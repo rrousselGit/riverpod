@@ -5,7 +5,9 @@ import 'package:flutter_riverpod/legacy.dart';
 
 /* SNIPPET START */
 final myProvider = ChangeNotifierProvider<ValueNotifier<int>>((ref) {
+  // {@template provider}
   // Will listen to and dispose of the ValueNotifier.
   // Widgets can then "ref.watch" this provider to listen to updates.
+  // {@endtemplate}
   return ValueNotifier(0);
 });

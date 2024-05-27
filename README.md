@@ -63,11 +63,11 @@ Long story short:
     Widget build(BuildContext context, WidgetRef ref) {
       final boredSuggestion = ref.watch(boredSuggestionProvider);
       // Perform a switch-case on the result to handle loading/error states
-      return boredSuggestion.when(
-        loading: () => Text('loading'),
-        error: (error, stackTrace) => Text('error: $error'),
-        data: (data) => Text(data),
-      );
+      return switch (boredSuggestion) {
+        AsyncData(:final value) => Text('data: $value'),
+        AsyncError(:final error) => Text('error: $error'),
+        _ => const Text('loading'),
+      };
     }
   }
   ```

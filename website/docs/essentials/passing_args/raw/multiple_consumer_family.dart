@@ -22,8 +22,10 @@ class Example extends ConsumerWidget {
         final recreational = ref.watch(activityProvider('recreational'));
         final cooking = ref.watch(activityProvider('cooking'));
 
+        // {@template render}
         // We can then render both activities.
         // Both requests will happen in parallel and correctly be cached.
+        // {@endtemplate}
         return Column(
           children: [
             Text(recreational.value?.activity ?? ''),

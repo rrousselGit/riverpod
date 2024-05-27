@@ -15,6 +15,14 @@
   )
   ```
 
+## 2.4.2 - 2024-05-14
+
+- Correctly set minimum support analyzer version to 6.5.0
+
+## 2.4.1 - 2024-05-14 (retracted)
+
+- Support analyzer 6.5.0
+
 ## 2.4.0 - 2024-03-10
 
 - Adds `provider_name_prefix` and `provider_family_name_prefix` to `build.yaml`. (thanks to @ValentinVignal)

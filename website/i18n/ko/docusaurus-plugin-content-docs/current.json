@@ -5,7 +5,6 @@
   "riverpod.snippets.selectAsync.watch": {
     "message": "Foo"
   },
-
   "version.label": {
     "message": "다음",
     "description": "The label for version current"
@@ -77,6 +76,14 @@
   "sidebar.Sidebar.link.Marvel API": {
     "message": "Marvel API",
     "description": "The label for link Marvel API in sidebar Sidebar, linking to https://github.com/rrousselGit/riverpod/tree/master/examples/marvel"
+  },
+  "sidebar.Sidebar.link.DummyMart: Full CRUD app with authentication + go_router integration": {
+    "message": "DummyMart: 인증이 포함된 전체 CRUD 앱 + go_router 통합",
+    "description": "The label for link DummyMart: Full CRUD app with authentication + go_router integration in sidebar Sidebar, linking to https://github.com/dhafinrayhan/dummymart"
+  },
+  "sidebar.Sidebar.link.Easy Todo Riverpod Architecture": {
+    "message": "쉬운 Todo Riverpod 아키텍처",
+    "description": "The label for link Easy Todo Riverpod Architecture in sidebar Sidebar, linking to https://github.com/ilovekimchi6/todo_easy_riverpod_architecture"
   },
   "sidebar.Sidebar.link.Android Launcher": {
     "message": "안드로이드 Launcher",

@@ -42,7 +42,7 @@ class MissingProviderScope extends RiverpodLintRule {
         return;
       }
 
-      reporter.reportErrorForNode(_code, node.methodName);
+      reporter.atNode(node.methodName, _code);
     });
   }
 

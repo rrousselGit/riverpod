@@ -44,7 +44,7 @@ class NotifierBuild extends RiverpodLintRule {
 
       if (hasBuildMethod) return;
 
-      reporter.reportErrorForToken(_code, node.name);
+      reporter.atToken(node.name, _code);
     });
   }
 

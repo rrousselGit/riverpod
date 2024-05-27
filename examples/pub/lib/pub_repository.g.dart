@@ -11,9 +11,9 @@ part of 'pub_repository.dart';
 _$PackageMetricsScoreImpl _$$PackageMetricsScoreImplFromJson(
         Map<String, dynamic> json) =>
     _$PackageMetricsScoreImpl(
-      grantedPoints: json['grantedPoints'] as int,
-      maxPoints: json['maxPoints'] as int,
-      likeCount: json['likeCount'] as int,
+      grantedPoints: (json['grantedPoints'] as num).toInt(),
+      maxPoints: (json['maxPoints'] as num).toInt(),
+      likeCount: (json['likeCount'] as num).toInt(),
       popularityScore: (json['popularityScore'] as num).toDouble(),
       tags: (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
     );

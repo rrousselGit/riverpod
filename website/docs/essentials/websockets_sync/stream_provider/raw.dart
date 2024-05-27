@@ -5,8 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 /* SNIPPET START */
 final streamExampleProvider = StreamProvider.autoDispose<int>((ref) async* {
+  // {@template provider}
   // Every 1 second, yield a number from 0 to 41.
   // This could be replaced with a Stream from Firestore or GraphQL or anything else.
+  // {@endtemplate}
   for (var i = 0; i < 42; i++) {
     yield i;
     await Future<void>.delayed(const Duration(seconds: 1));
@@ -16,10 +18,14 @@ final streamExampleProvider = StreamProvider.autoDispose<int>((ref) async* {
 class Consumer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // {@template watch}
     // The stream is listened to and converted to an AsyncValue.
+    // {@endtemplate}
     AsyncValue<int> value = ref.watch(streamExampleProvider);
 
+    // {@template consumer}
     // We can use the AsyncValue to handle loading/error states and show the data.
+    // {@endtemplate}
     return switch (value) {
       AsyncValue(:final error?) => Text('Error: $error'),
       AsyncValue(:final value?) => Text('$value'),

@@ -1,10 +1,8 @@
 ---
 title: 동기부여(Motivation)
+version: 1
 ---
 
-import Tabs from "@theme/Tabs";
-import TabItem from "@theme/TabItem";
-import CodeBlock from "@theme/CodeBlock";
 import sameType from "/docs/from_provider/motivation/same_type";
 import combine from "/docs/from_provider/motivation/combine";
 import asyncValues from "/docs/from_provider/motivation/async_values";
@@ -12,10 +10,8 @@ import autoDispose from "/docs/from_provider/motivation/auto_dispose";
 import override from "/docs/from_provider/motivation/override";
 import sideEffects from "/docs/from_provider/motivation/side_effects";
 import {
-  trimSnippet,
   AutoSnippet,
-  When,
-} from "../../../../../../src/components/CodeSnippet";
+} from "/src/components/CodeSnippet";
 
 이 심층 글은 Riverpod의 존재 이유를 보여주기 위해 작성되었습니다.
 
@@ -61,10 +57,10 @@ Riverpod은 `AsyncValue`의 API를 통해 한 번에 두 개의 값(즉, 이전 
 1. 처음에, 요청이 이루어지고 빈 목록을 얻습니다;
 2. 그런 다음 오류가 발생한다고 가정합니다. `[Item(id: -1)]`을 얻습니다;
 3. 그런 다음 pull-to-refresh 로직으로 요청을 다시 시도합니다(예: `ref.invalidate`를 통해);
-4. 첫 번째 공급자를 다시 로드하는 동안 두 번째 공급자는 여전히 `[Item(id: -1)]`을 노출합니다;
+4. 첫 번째 provider를 다시 로드하는 동안 두 번째 provider는 여전히 `[Item(id: -1)]`을 노출합니다;
 5. 이번에는 일부 파싱된 데이터가 올바르게 수신됩니다: 짝수 항목이 올바르게 반환됩니다.
 
-프로바이더를 사용하면 위의 기능을 원격으로 구현할 수 없으며 해결 방법도 쉽지 않습니다.
+Provider를 사용하면 위의 기능을 원격으로 구현할 수 없으며 해결 방법도 쉽지 않습니다.
 
 ### providers를 결합하는 것은 어렵고 에러가 발생하기 쉽습니다
 
@@ -95,12 +91,19 @@ Provider를 상요하면, 리팩토링 또는 대규모 변경 중에 `ProviderN
 Riverpod은 [autodispose]와 [keepAlive]와 같은 쉽게 이해할 수 있는 API로 이 문제를 해결합니다.
 이 두 API는 유연하고 창의적인 캐싱 전략(예: 시간 기반 캐싱)을 가능하게 합니다:
 
-<AutoSnippet language="dart" {...autoDispose}></AutoSnippet>
+<AutoSnippet language="dart" 
+  {...autoDispose}
+  translations={{
+    dice: "  // 이 provider는 .autoDispose이므로,\n  // 리스닝을 해제하면 현재 노출된 상태(state)가 폐기(dispose)됩니다.\n  // 그런 다음 이 provider를 다시 수신(listen)할 때마다,\n  // 새로운 주사위를 굴려서 다시 노출합니다.",
+    keepAlive: "  // 위의 조건이 실패할 수 있습니다;\n  // 그렇지 않은 경우 다음 명령어는 아무도 더 이상 수신하지 않더라도\n  // 캐시된 상태를 유지하도록 provider에게 지시합니다.",
+    codegen_autoDispose: "// 코드 생성 시 .autoDispose가 기본값입니다.",
+  }}
+/>
 
 안타깝께도 원시 `InheritedWidget`으로는 이를 구현할 방법이 없으므로 Provider로 구현할 수 없습니다.
 
 ### 신뢰할 수 있는 매개변수화 매커니즘 부족
-Riverpod은 사용자가 [.family 수정자(modifier)]를 사용하여 "매개변수화된(parameterized)" 공급자를 선언할 수 있습니다.  
+Riverpod은 사용자가 [.family 수정자(modifier)]를 사용하여 "매개변수화된(parameterized)" providers를 선언할 수 있습니다.  
 실제로 `.family`는 Riverpod의 가장 강력한 기능 중 하나이며, Riverpod의 혁신의 핵심입니다.
 예를 들어, 엄청한 [로직의 단순화]을 가능하게 합니다.
 

@@ -19,16 +19,22 @@ void main(List<String> args) {
     final container = ProviderContainer();
     addTearDown(container.dispose);
 
+    // {@template notifier}
     // Obtaining a notifier
+    // {@endtemplate}
     /* highlight-start */
     final Notifier<int> notifier = container.read(myNotifierProvider.notifier);
     /* highlight-end */
 
+    // {@template state}
     // Obtaining its exposed state
+    // {@endtemplate}
     /* highlight-start */
     final int state = container.read(myNotifierProvider);
     /* highlight-end */
 
+    // {@template test}
     // TODO write your tests
+    // {@endtemplate}
   });
 }

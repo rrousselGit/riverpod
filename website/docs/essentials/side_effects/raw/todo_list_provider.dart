@@ -19,7 +19,9 @@ class Todo {
 }
 
 final todoListProvider = FutureProvider.autoDispose<List<Todo>>((ref) async {
+  // {@template note}
   // Simulate a network request. This would normally come from a real API
+  // {@endtemplate}
   return [
     Todo(description: 'Learn Flutter', completed: true),
     Todo(description: 'Learn Riverpod'),

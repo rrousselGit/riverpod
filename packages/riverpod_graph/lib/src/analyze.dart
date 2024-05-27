@@ -713,13 +713,15 @@ String? _displayDocCommentForWidget(ClassElement definition) {
 /// - `watch(family(id))`
 /// - `watch(variable.select(...))`
 /// - `watch(family(id).select(...))`
-VariableElement parseProviderFromExpression(Expression providerExpression) {
+VariableElement parseProviderFromExpression(
+  Expression providerExpression,
+) {
   if (providerExpression is PropertyAccess) {
     final staticElement = providerExpression.propertyName.staticElement;
     if (staticElement is PropertyAccessorElement &&
         !staticElement.library.isFromRiverpod) {
       // watch(SampleClass.familyProviders(id))
-      return staticElement.declaration.variable;
+      return staticElement.declaration.variable2!;
     }
     final target = providerExpression.realTarget;
     return parseProviderFromExpression(target);
@@ -728,7 +730,7 @@ VariableElement parseProviderFromExpression(Expression providerExpression) {
       // watch(SomeClass.provider)
       final Object? staticElement = providerExpression.staticElement;
       if (staticElement is PropertyAccessorElement) {
-        return staticElement.declaration.variable;
+        return staticElement.declaration.variable2!;
       }
     }
     // watch(provider.modifier)
@@ -737,7 +739,7 @@ VariableElement parseProviderFromExpression(Expression providerExpression) {
     // watch(variable)
     final Object? staticElement = providerExpression.staticElement;
     if (staticElement is PropertyAccessorElement) {
-      return staticElement.declaration.variable;
+      return staticElement.declaration.variable2!;
     }
   } else if (providerExpression is FunctionExpressionInvocation) {
     // watch(family(id))

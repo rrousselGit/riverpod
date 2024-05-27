@@ -13,6 +13,14 @@
 
 - Added `GeneratorProviderDeclarationElement.isFamily`
 
+## 0.5.3 - 2024-05-14
+
+- Correctly set minimum support analyzer version to 6.5.0
+
+## 0.5.2 - 2024-05-14 (retracted)
+
+- Support analyzer 6.5.0
+
 ## 0.5.1 - 2024-02-04
 
 - Bumped `custom_lint` version
