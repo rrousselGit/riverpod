@@ -10,7 +10,7 @@
     position: absolute;
     right: 0;
     left: 0;
-    z-index: 10;
+    z-index: 1;
     display: flex;
     align-items: center;
     padding: 16px 14px;
@@ -57,4 +57,9 @@
       margin-right: calc(var(--ifm-pre-padding) * 1.5);
     }
   }
+
+  .clean-btn {
+    z-index: 2;
+  }
+
 }
