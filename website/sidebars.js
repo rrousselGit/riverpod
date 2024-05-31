@@ -303,6 +303,11 @@ module.exports = {
           label: "Delivery App with Google Maps and Live Tracking",
           href: "https://github.com/AhmedLSayed9/deliverzler",
         },
+        {
+          type: "link",
+          label: "ChatGPT Chat App with Riverpod",
+          href: "https://github.com/never-inc/chat_gpt_boilerplate",
+        },
       ],
     },
 
