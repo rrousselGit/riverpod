@@ -8,7 +8,7 @@ part of 'build_init.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$counterNotifierHash() => r'8d4e4011da15a0ef79af9622336839a0c9e406ab';
+String _$counterNotifierHash() => r'4a971b45b66819f429f205806499527353d1a78e';
 
 /// See also [CounterNotifier].
 @ProviderFor(CounterNotifier)
