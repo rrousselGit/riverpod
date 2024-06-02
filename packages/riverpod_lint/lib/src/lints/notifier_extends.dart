@@ -89,7 +89,7 @@ class NotifierExtends extends RiverpodLintRule {
         actualTypeArguments,
       )) {
         // No type specified. Underlining the ref name
-        reporter.reportErrorForNode(_code, extendsClause.superclass);
+        reporter.atNode(extendsClause.superclass, _code);
         return;
       }
     });

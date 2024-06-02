@@ -6,15 +6,16 @@ extension ProviderIdentifierX on SimpleIdentifier {
     return upsert('ProviderIdentifier', () {
       final element = staticElement;
       if (element is! PropertyAccessorElement) return null;
+      final variable = element.variable2;
+      if (variable == null) return null;
 
-      final providerFor = parseFirstProviderFor(element.variable);
+      final providerFor = parseFirstProviderFor(variable);
 
       ProviderDeclarationElement? providerElement;
       if (providerFor != null) {
         providerElement = providerFor.$1;
       } else {
-        providerElement =
-            LegacyProviderDeclarationElement._parse(element.variable);
+        providerElement = LegacyProviderDeclarationElement._parse(variable);
       }
 
       if (providerElement == null) return null;

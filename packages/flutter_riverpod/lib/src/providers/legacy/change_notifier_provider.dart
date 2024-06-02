@@ -1,7 +1,6 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 // ignore: implementation_imports
 import 'package:riverpod/src/internals.dart';

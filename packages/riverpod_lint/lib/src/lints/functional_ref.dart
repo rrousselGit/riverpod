@@ -59,7 +59,7 @@ class FunctionalRef extends RiverpodLintRule {
 
       final currentRefType = refNode.type;
       if (currentRefType is! NamedType) {
-        reporter.reportErrorForNode(_code, refNodeType);
+        reporter.atNode(refNodeType, _code);
         return;
       }
       final actualTypeArguments =
@@ -69,7 +69,7 @@ class FunctionalRef extends RiverpodLintRule {
         expectedTypeArguments,
         actualTypeArguments,
       )) {
-        reporter.reportErrorForNode(_code, refNodeType);
+        reporter.atNode(refNodeType, _code);
         return;
       }
     });

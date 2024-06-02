@@ -39,7 +39,7 @@ class OnlyUseKeepAliveInsideKeepAlive extends RiverpodLintRule {
       // The enclosing provider is "autoDispose", so it is allowed to use other "autoDispose" providers
       if (provider.providerElement.isAutoDispose) return;
 
-      reporter.reportErrorForNode(_code, node.node);
+      reporter.atNode(node.node, _code);
     });
   }
 }

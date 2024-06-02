@@ -52,7 +52,7 @@ class MissingLegacyImport extends RiverpodLintRule {
 
       if (compatibleImports.any(imports.contains)) return;
 
-      reporter.reportErrorForNode(_code, node);
+      reporter.atNode(node, code);
     }
 
     context.registry.addNamedType((node) {

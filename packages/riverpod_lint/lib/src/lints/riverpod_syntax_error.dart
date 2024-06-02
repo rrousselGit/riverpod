@@ -35,11 +35,11 @@ class RiverpodSyntaxError extends RiverpodLintRule {
 
       if (location == null) return;
 
-      reporter.reportErrorForOffset(
-        _code,
-        location.offset,
-        location.length,
-        [error.message],
+      reporter.atOffset(
+        errorCode: _code,
+        offset: location.offset,
+        length: location.length,
+        arguments: [error.message],
       );
     });
   }
