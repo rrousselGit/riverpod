@@ -10,20 +10,24 @@ part of 'pipe_change_notifier.dart';
 
 /// A provider which creates a ValueNotifier and update its listeners
 /// whenever the value changes.
+// {@endtemplate}
 typedef MyListenableRef = Ref<Raw<ValueNotifier<int>>>;
 
 /// A provider which creates a ValueNotifier and update its listeners
 /// whenever the value changes.
+// {@endtemplate}
 @ProviderFor(myListenable)
 const myListenableProvider = MyListenableProvider._();
 
 /// A provider which creates a ValueNotifier and update its listeners
 /// whenever the value changes.
+// {@endtemplate}
 final class MyListenableProvider extends $FunctionalProvider<
         Raw<ValueNotifier<int>>, Raw<ValueNotifier<int>>>
     with $Provider<Raw<ValueNotifier<int>>, MyListenableRef> {
   /// A provider which creates a ValueNotifier and update its listeners
   /// whenever the value changes.
+// {@endtemplate}
   const MyListenableProvider._(
       {Raw<ValueNotifier<int>> Function(
         MyListenableRef ref,

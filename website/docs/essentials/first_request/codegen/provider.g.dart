@@ -10,20 +10,24 @@ part of 'provider.dart';
 
 /// This will create a provider named `activityProvider`
 /// which will cache the result of this function.
+// {@endtemplate}
 typedef ActivityRef = Ref<AsyncValue<Activity>>;
 
 /// This will create a provider named `activityProvider`
 /// which will cache the result of this function.
+// {@endtemplate}
 @ProviderFor(activity)
 const activityProvider = ActivityProvider._();
 
 /// This will create a provider named `activityProvider`
 /// which will cache the result of this function.
+// {@endtemplate}
 final class ActivityProvider
     extends $FunctionalProvider<AsyncValue<Activity>, FutureOr<Activity>>
     with $FutureModifier<Activity>, $FutureProvider<Activity, ActivityRef> {
   /// This will create a provider named `activityProvider`
   /// which will cache the result of this function.
+// {@endtemplate}
   const ActivityProvider._(
       {FutureOr<Activity> Function(
         ActivityRef ref,
