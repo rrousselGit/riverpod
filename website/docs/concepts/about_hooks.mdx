@@ -148,7 +148,7 @@ class FadeIn extends HookWidget {
 There are a few interesting things to note in this code:
 
 - There is no memory leak. This code does not recreate a new `AnimationController` whenever the
-  widget rebuild, and the controller is correctly released when the widget is unmounted.
+  widget rebuilds, and the controller is correctly released when the widget is unmounted.
 
 - It is possible to use hooks as many time as we want within the same widget.
   As such, we can create multiple `AnimationController` if we want:
