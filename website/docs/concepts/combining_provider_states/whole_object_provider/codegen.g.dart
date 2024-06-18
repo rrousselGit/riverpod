@@ -26,6 +26,7 @@ final class ConfigProvider extends $FunctionalProvider<
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'configProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -81,6 +82,7 @@ final class ProductsProvider extends $FunctionalProvider<
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'productsProvider',
           isAutoDispose: true,
           dependencies: null,

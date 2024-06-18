@@ -24,6 +24,7 @@ final class ActivityProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'activityProvider',
           isAutoDispose: true,
           dependencies: null,

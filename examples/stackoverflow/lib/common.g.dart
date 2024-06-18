@@ -39,6 +39,7 @@ final class ThemeProvider extends $FunctionalProvider<ThemeData, ThemeData>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'themeProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],

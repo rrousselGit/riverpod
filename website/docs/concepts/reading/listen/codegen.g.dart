@@ -23,6 +23,7 @@ final class AnotherProvider extends $FunctionalProvider<void, void>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'anotherProvider',
           isAutoDispose: true,
           dependencies: null,

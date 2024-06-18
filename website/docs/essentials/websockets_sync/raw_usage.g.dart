@@ -24,6 +24,7 @@ final class RawStreamProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'rawStreamProvider',
           isAutoDispose: true,
           dependencies: null,

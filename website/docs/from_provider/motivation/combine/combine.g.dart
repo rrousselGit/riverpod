@@ -23,6 +23,7 @@ final class NumberProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'numberProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -82,6 +83,7 @@ final class DoubledProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'doubledProvider',
           isAutoDispose: true,
           dependencies: null,

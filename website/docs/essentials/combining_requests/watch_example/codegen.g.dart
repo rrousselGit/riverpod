@@ -27,6 +27,7 @@ final class LocationProvider extends $FunctionalProvider<
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'locationProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -82,6 +83,7 @@ final class RestaurantsNearMeProvider extends $FunctionalProvider<
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'restaurantsNearMeProvider',
           isAutoDispose: true,
           dependencies: null,

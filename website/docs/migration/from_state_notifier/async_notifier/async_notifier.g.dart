@@ -19,6 +19,7 @@ final class AsyncTodosNotifierProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'asyncTodosNotifierProvider',
           isAutoDispose: true,
           dependencies: null,

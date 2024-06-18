@@ -23,6 +23,7 @@ final class OtherProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'otherProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -82,6 +83,7 @@ final class ExampleProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'exampleProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -136,6 +138,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'myNotifierProvider',
           isAutoDispose: true,
           dependencies: null,

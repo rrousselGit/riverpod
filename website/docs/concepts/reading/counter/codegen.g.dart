@@ -24,6 +24,7 @@ final class RepositoryProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'repositoryProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -78,6 +79,7 @@ final class CounterProvider extends $NotifierProvider<Counter, int> {
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'counterProvider',
           isAutoDispose: true,
           dependencies: null,

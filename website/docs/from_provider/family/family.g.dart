@@ -29,6 +29,7 @@ final class RandomProvider extends $FunctionalProvider<int, int>
       })? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'randomProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -114,6 +115,7 @@ String _$randomHash() => r'517b12aad4df7b31f8872b89af74e7880377b2ea';
 final class RandomFamily extends Family {
   const RandomFamily._()
       : super(
+          retry: null,
           name: r'randomProvider',
           dependencies: null,
           allTransitiveDependencies: null,

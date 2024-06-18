@@ -23,6 +23,7 @@ final class CityProvider extends $FunctionalProvider<String, String>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'cityProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -83,6 +84,7 @@ final class WeatherProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'weatherProvider',
           isAutoDispose: true,
           dependencies: null,

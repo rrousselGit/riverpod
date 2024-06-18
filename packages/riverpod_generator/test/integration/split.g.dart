@@ -21,6 +21,7 @@ final class Counter2Provider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'counter2Provider',
           isAutoDispose: true,
           dependencies: null,
@@ -80,6 +81,7 @@ final class CounterProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'counterProvider',
           isAutoDispose: true,
           dependencies: null,

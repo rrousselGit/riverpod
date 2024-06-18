@@ -23,6 +23,7 @@ final class FilterProvider extends $FunctionalProvider<Filter, Filter>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'filterProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -83,6 +84,7 @@ final class FilteredTodoListProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'filteredTodoListProvider',
           isAutoDispose: true,
           dependencies: null,

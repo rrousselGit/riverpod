@@ -21,6 +21,7 @@ final class KeepAliveProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'keepAliveProvider',
           isAutoDispose: false,
           dependencies: null,
@@ -76,6 +77,7 @@ final class KeepAliveClassProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'keepAliveClassProvider',
           isAutoDispose: false,
           dependencies: null,
@@ -149,6 +151,7 @@ final class AutoDisposeProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'autoDisposeProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -204,6 +207,7 @@ final class AutoDisposeClassProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'autoDisposeClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -277,6 +281,7 @@ final class FnProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'fnProvider',
           isAutoDispose: false,
           dependencies: null,

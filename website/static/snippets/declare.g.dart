@@ -18,6 +18,7 @@ final class CountProvider extends $NotifierProvider<Count, int> {
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'countProvider',
           isAutoDispose: true,
           dependencies: null,

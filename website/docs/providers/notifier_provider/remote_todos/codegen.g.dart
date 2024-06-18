@@ -36,6 +36,7 @@ final class AsyncTodosProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'asyncTodosProvider',
           isAutoDispose: true,
           dependencies: null,

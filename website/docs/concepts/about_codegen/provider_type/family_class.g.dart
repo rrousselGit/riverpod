@@ -23,6 +23,7 @@ final class ExampleProvider extends $NotifierProvider<Example, String> {
       Example Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'exampleProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -106,6 +107,7 @@ String _$exampleHash() => r'8025d93d6f5e9286043b1ce7ae55bead44f30acc';
 final class ExampleFamily extends Family {
   const ExampleFamily._()
       : super(
+          retry: null,
           name: r'exampleProvider',
           dependencies: null,
           allTransitiveDependencies: null,

@@ -23,6 +23,7 @@ final class SynchronousExampleProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'synchronousExampleProvider',
           isAutoDispose: true,
           dependencies: null,

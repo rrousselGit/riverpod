@@ -23,6 +23,7 @@ final class DurationProvider extends $FunctionalProvider<Duration, Duration>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'durationProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -82,6 +83,7 @@ final class RepositoryProvider extends $FunctionalProvider<_MyRepo, _MyRepo>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'repositoryProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -136,6 +138,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'myNotifierProvider',
           isAutoDispose: true,
           dependencies: null,

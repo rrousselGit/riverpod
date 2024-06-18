@@ -32,6 +32,7 @@ final class FetchPackagesProvider extends $FunctionalProvider<
       })? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'fetchPackagesProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -110,6 +111,7 @@ String _$fetchPackagesHash() => r'eebf7d838a57f493fffebfd2c8d8ab76d3233165';
 final class FetchPackagesFamily extends Family {
   const FetchPackagesFamily._()
       : super(
+          retry: null,
           name: r'fetchPackagesProvider',
           dependencies: null,
           allTransitiveDependencies: null,

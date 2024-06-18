@@ -25,6 +25,7 @@ final class ActivityProvider
       )? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'activityProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -93,6 +94,7 @@ String _$activityHash() => r'cb76e67cd45f1823d3ed497a235be53819ce2eaf';
 final class ActivityFamily extends Family {
   const ActivityFamily._()
       : super(
+          retry: null,
           name: r'activityProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -144,6 +146,7 @@ final class ActivityNotifier2Provider
       ActivityNotifier2 Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'activityNotifier2Provider',
           isAutoDispose: true,
           dependencies: null,
@@ -213,6 +216,7 @@ String _$activityNotifier2Hash() => r'9e67c655d53a9f98c3b012a0534421385dde0339';
 final class ActivityNotifier2Family extends Family {
   const ActivityNotifier2Family._()
       : super(
+          retry: null,
           name: r'activityNotifier2Provider',
           dependencies: null,
           allTransitiveDependencies: null,

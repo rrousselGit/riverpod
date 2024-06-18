@@ -25,6 +25,7 @@ final class FetchUserProvider
       })? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'fetchUserProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -93,6 +94,7 @@ String _$fetchUserHash() => r'ff427bbb4130a8a6994fa623ae70997f7b0f6bdb';
 final class FetchUserFamily extends Family {
   const FetchUserFamily._()
       : super(
+          retry: null,
           name: r'fetchUserProvider',
           dependencies: null,
           allTransitiveDependencies: null,

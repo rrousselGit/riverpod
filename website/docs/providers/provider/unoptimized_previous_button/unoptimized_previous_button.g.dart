@@ -18,6 +18,7 @@ final class PageIndexProvider extends $NotifierProvider<PageIndex, int> {
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'pageIndexProvider',
           isAutoDispose: true,
           dependencies: null,

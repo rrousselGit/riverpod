@@ -23,6 +23,7 @@ final class MyProvider extends $FunctionalProvider<MyValue, MyValue>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'myProvider',
           isAutoDispose: true,
           dependencies: null,

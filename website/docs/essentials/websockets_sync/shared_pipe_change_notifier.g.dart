@@ -24,6 +24,7 @@ final class MyListenableProvider extends $FunctionalProvider<
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'myListenableProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -85,6 +86,7 @@ final class AnotherListenableProvider extends $FunctionalProvider<
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'anotherListenableProvider',
           isAutoDispose: true,
           dependencies: null,
