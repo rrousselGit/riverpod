@@ -1,3 +1,7 @@
+## Unreleased patch
+
+- Added mutation pending state to example (thanks to @luketg8)
+
 ## 2.5.1 - 2024-03-10
 
 - Deprecate `ProviderScope.parent` due to fundamentally not working.
