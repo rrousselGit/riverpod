@@ -46,6 +46,12 @@ abstract class ProviderElement<StateT> implements WrappedNode {
   /// {@macro riverpod.provider_element_base}
   ProviderElement(this.pointer);
 
+  static Duration? _defaultRetry(int retryCount, Object error) {
+    return Duration(
+      milliseconds: math.min(200 * (retryCount + 1), 6400),
+    );
+  }
+
   static ProviderElement? _debugCurrentlyBuildingElement;
 
   /// The last result of [ProviderBase.debugGetCreateSourceHash].
@@ -108,6 +114,8 @@ abstract class ProviderElement<StateT> implements WrappedNode {
   bool _didChangeDependency = false;
 
   var _didCancelOnce = false;
+  var _retryCount = 0;
+  Timer? _pendingRetryTimer;
 
   /// Whether the assert that prevents [requireState] from returning
   /// if the state was not set before is enabled.
@@ -393,6 +401,8 @@ This could mean a few things:
   /// Invokes [create] and handles errors.
   @internal
   void buildState(Ref<StateT> ref) {
+    if (_didChangeDependency) _retryCount = 0;
+
     ProviderElement? debugPreviouslyBuildingElement;
     final previousDidChangeDependency = _didChangeDependency;
     _didChangeDependency = false;
@@ -408,6 +418,7 @@ This could mean a few things:
       if (kDebugMode) _debugDidSetState = true;
 
       _stateResult = Result.error(err, stack);
+      triggerRetry(err);
     } finally {
       _didBuild = true;
       if (kDebugMode) {
@@ -419,6 +430,24 @@ This could mean a few things:
         'Bad state, the provider did not initialize. Did "create" forget to set the state?',
       );
     }
+  }
+
+  @protected
+  void triggerRetry(Object error) {
+    final retry = origin.retry ?? container.retry ?? _defaultRetry;
+
+    // Capture exceptions. On error, stop retrying if the retry
+    // function failed
+    runGuarded(() {
+      final duration = retry(_retryCount, error);
+      if (duration == null) return;
+
+      _pendingRetryTimer = Timer(duration, () {
+        _pendingRetryTimer = null;
+        _retryCount++;
+        invalidateSelf(asReload: false);
+      });
+    });
   }
 
   void _debugAssertNotificationAllowed() {
@@ -637,6 +666,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     if (ref == null || !ref._mounted) return;
 
     ref._mounted = false;
+
+    _pendingRetryTimer?.cancel();
+    _pendingRetryTimer = null;
 
     final subscriptions = _subscriptions;
     if (subscriptions != null) {

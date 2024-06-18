@@ -109,6 +109,7 @@ ${provider.doc} final class $name$_genericsDefinition
   }): _createCb = create,
       super(
         $superParameters
+        retry: ${provider.annotation.retryNode?.name ?? 'null'},
         name: r'${provider.providerName(options)}',
         isAutoDispose: ${!provider.annotation.element.keepAlive},
         dependencies: ${!provider.providerElement.isFamily ? provider.dependencies(options) : 'null'},

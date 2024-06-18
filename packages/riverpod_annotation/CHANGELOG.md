@@ -7,6 +7,7 @@
 - Added `@Dependencies([...])`, for lint purposes.
   This is similar to `@Riverpod(dependencies: [...])`, but is applied on
   non-provider objects that may use a scoped provider.
+- Added support for `@Riverpod(retry: ...)`
 
 ## 3.0.0-dev.3 - 2023-11-27
 

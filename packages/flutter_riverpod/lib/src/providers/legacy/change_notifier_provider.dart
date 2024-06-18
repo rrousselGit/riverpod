@@ -87,6 +87,7 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     super.name,
     super.dependencies,
     super.isAutoDispose = false,
+    super.retry,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
@@ -104,6 +105,7 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     required super.isAutoDispose,
     super.from,
     super.argument,
+    super.retry,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -227,6 +229,7 @@ class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
     super.name,
     super.dependencies,
     super.isAutoDispose = false,
+    super.retry,
   }) : super(
           providerFactory: ChangeNotifierProvider.internal,
           allTransitiveDependencies:

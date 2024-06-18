@@ -11,6 +11,7 @@ import 'package:riverpod/src/providers/stream_notifier.dart'
     show $StreamNotifier;
 import 'package:test/test.dart';
 
+import '../../third_party/fake_async.dart';
 import '../matrix.dart';
 import '../utils.dart';
 
@@ -29,6 +30,70 @@ void main() {
   });
 
   streamNotifierProviderFactory.createGroup((factory) {
+    group('retry', () {
+      test(
+        'handles retry',
+        () => fakeAsync((fake) async {
+          final container = ProviderContainer.test();
+          var err = Exception('foo');
+          final stack = StackTrace.current;
+          final provider = factory.deferredProvider<int>(
+            (ref) => Error.throwWithStackTrace(err, stack),
+            retry: (_, __) => const Duration(seconds: 1),
+          );
+          final listener = Listener<AsyncValue<int>>();
+
+          container.listen(provider, fireImmediately: true, listener.call);
+          await container.read(provider.future).catchError((e) => 0);
+
+          verifyOnly(
+            listener,
+            listener(any, AsyncValue<int>.error(err, stack)),
+          );
+
+          err = Exception('bar');
+
+          fake.elapse(const Duration(seconds: 1));
+          fake.flushMicrotasks();
+
+          await container.read(provider.future).catchError((e) => 0);
+
+          verifyOnly(
+            listener,
+            listener(any, AsyncValue<int>.error(err, stack)),
+          );
+        }),
+      );
+
+      // test(
+      //   'manually setting the state to an error does not cause a retry',
+      //   () => fakeAsync((fake) async {
+      //     final container = ProviderContainer.test();
+      //     var retryCount = 0;
+      //     late Ref<AsyncValue<int>> r;
+      //     final provider = FutureProvider<int>(
+      //       (ref) {
+      //         r = ref;
+      //         return 0;
+      //       },
+      //       retry: (_, __) {
+      //         retryCount++;
+      //         return const Duration(seconds: 1);
+      //       },
+      //     );
+      //     final listener = Listener<AsyncValue<int>>();
+
+      //     container.listen(provider, fireImmediately: true, listener.call);
+
+      //     expect(retryCount, 0);
+
+      //     r.state = AsyncValue<int>.error(Error(), StackTrace.current);
+
+      //     expect(retryCount, 0);
+      //   }),
+      // );
+    });
+
     test('Cannot share a Notifier instance between providers ', () {
       final container = ProviderContainer.test();
       final notifier = factory.deferredNotifier((ref) => Stream.value(0));

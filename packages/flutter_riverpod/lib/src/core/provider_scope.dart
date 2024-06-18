@@ -75,6 +75,7 @@ class ProviderScope extends StatefulWidget {
     super.key,
     this.overrides = const [],
     this.observers,
+    this.retry,
     required this.child,
   });
 
@@ -100,6 +101,15 @@ class ProviderScope extends StatefulWidget {
 
     return scope.container;
   }
+
+  /// The default retry logic used by providers associated to this container.
+  ///
+  /// The default implementation:
+  /// - has unlimited retries
+  /// - starts with a delay of 200ms
+  /// - doubles the delay on each retry up to 6.4 seconds
+  /// - retries all failures
+  final Retry? retry;
 
   /// The part of the widget tree that can use Riverpod and has overridden providers.
   final Widget child;
@@ -149,6 +159,7 @@ final class ProviderScopeState extends State<ProviderScope> {
       parent: parent,
       overrides: widget.overrides,
       observers: widget.observers,
+      retry: widget.retry,
     );
   }
 

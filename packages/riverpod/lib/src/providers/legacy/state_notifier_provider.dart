@@ -91,6 +91,7 @@ final class StateNotifierProvider< //
     super.name,
     super.dependencies,
     super.isAutoDispose = false,
+    super.retry,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
@@ -108,6 +109,7 @@ final class StateNotifierProvider< //
     required super.from,
     required super.argument,
     required super.isAutoDispose,
+    required super.retry,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -157,6 +159,7 @@ final class StateNotifierProvider< //
       from: from,
       argument: argument,
       isAutoDispose: isAutoDispose,
+      retry: retry,
     );
   }
 }
@@ -230,6 +233,7 @@ class StateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T, Arg>
     super.name,
     super.dependencies,
     super.isAutoDispose = false,
+    super.retry,
   }) : super(
           providerFactory: StateNotifierProvider.internal,
           allTransitiveDependencies:

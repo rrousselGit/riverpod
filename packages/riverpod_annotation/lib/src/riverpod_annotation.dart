@@ -22,7 +22,17 @@ final class Riverpod {
   const Riverpod({
     this.keepAlive = false,
     this.dependencies,
+    this.retry,
   });
+
+  /// The default retry logic used by providers associated to this container.
+  ///
+  /// The default implementation:
+  /// - has unlimited retries
+  /// - starts with a delay of 200ms
+  /// - doubles the delay on each retry up to 6.4 seconds
+  /// - retries all failures
+  final Duration? Function(int retryCount, Object error)? retry;
 
   /// Whether the state of the provider should be maintained if it is no-longer used.
   ///
