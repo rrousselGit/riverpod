@@ -18,6 +18,6 @@ part of '../nodes.dart';
 (ProviderDeclarationElement?,)? parseFirstProviderFor(Element annotation) {
   return annotation.metadata
       .map((e) => parseProviderFor(e, from: annotation))
-      .whereNotNull()
+      .nonNulls
       .firstOrNull;
 }

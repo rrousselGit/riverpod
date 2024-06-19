@@ -1,5 +1,4 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:collection/collection.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:test/test.dart';
 
@@ -187,7 +186,7 @@ class KeepAliveNotifier extends _$KeepAliveNotifier {
 }
 ''', (resolver, unit, units) async {
     final providers =
-        unit.declarations.map((e) => e.provider).whereNotNull().toList();
+        unit.declarations.map((e) => e.provider).nonNulls.toList();
 
     final autoDispose = providers.takeAll([
       'autoDispose',
@@ -291,7 +290,7 @@ class FamilyClass extends _$FamilyClass {
 }
 ''', (resolver, unit, units) async {
     final providers =
-        unit.declarations.map((e) => e.provider).whereNotNull().toList();
+        unit.declarations.map((e) => e.provider).nonNulls.toList();
 
     final roots = providers.takeAll([
       'root',

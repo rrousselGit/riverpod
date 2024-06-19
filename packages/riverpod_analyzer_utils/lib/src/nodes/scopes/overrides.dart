@@ -55,7 +55,7 @@ extension ProviderOverrideListX on Expression {
       if (expression is ListLiteral) {
         overrides = expression.elements
             .map((e) => e.providerOverride)
-            .whereNotNull()
+            .nonNulls
             .toList();
       }
 

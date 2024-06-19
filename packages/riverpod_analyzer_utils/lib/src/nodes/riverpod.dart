@@ -3,7 +3,7 @@ part of '../nodes.dart';
 extension RiverpodAnnotatedAnnotatedNodeOfX on AnnotatedNode {
   RiverpodAnnotation? get riverpod {
     return upsert('RiverpodAnnotationAnnotatedNodeX', () {
-      return metadata.map((e) => e.riverpod).whereNotNull().firstOrNull;
+      return metadata.map((e) => e.riverpod).nonNulls.firstOrNull;
     });
   }
 }
@@ -105,7 +105,7 @@ final class RiverpodAnnotationElement {
   }
 
   static RiverpodAnnotationElement? _of(Element element) {
-    return element.metadata.map(_parse).whereNotNull().firstOrNull;
+    return element.metadata.map(_parse).nonNulls.firstOrNull;
   }
 
   final bool keepAlive;

@@ -3,7 +3,6 @@ import 'package:analyzer/dart/analysis/utilities.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer/dart/element/visitor.dart';
-import 'package:collection/collection.dart';
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
@@ -199,7 +198,7 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor<void> {
             return e.getSetter(element.name);
           }
         })
-        .whereNotNull()
+        .nonNulls
         .toList();
 
     if (overrides.isEmpty) return;
