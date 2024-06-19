@@ -1,0 +1,129 @@
+---
+title: .autoDispose
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+Provider'ın kullanırken yaygın bir kullanım durumu yok etmek istemektir
+artık kullanılmadığında provider'ın durumu.
+
+Bunu yapmanın birden fazla nedeni vardır, örneğin:
+
+- Firebase kullanırken bağlantıyı kapatmak ve gereksiz maliyetlerden kaçınmak için.
+- Kullanıcı bir ekrandan çıkıp tekrar girdiğinde durumu sıfırlamak için.
+
+Provider'lar bu tür kullanım durumları için yerleşik destekle birlikte gelir.
+`.autoDispose` değiştiricisi aracılığıyla.
+
+## Kullanım
+
+Riverpod'a, artık kullanılmadığında provider'ın durumunu yok etmesini söylemek için,
+provider'ınıza `.autoDispose`u eklemeniz yeterli:
+
+```dart
+final userProvider = StreamProvider.autoDispose<User>((ref) {
+
+});
+```
+
+Yani. Artık 'userProvider'ın durumu, artık kullanılmadığında otomatik olarak yok edilecek.
+
+Genel parametrelerin nasıl 'autoDispose'tan sonra iletildiğine ve öncesinde nasıl aktarılmadığına dikkat edin -
+'autoDispose' adlandırılmış bir kurucu değil.
+
+:::note NOT
+Aşağıdakilere ihtiyacınız varsa `.autoDispose`u diğer değiştiricilerle birleştirebilirsiniz:
+
+```dart
+final userProvider = StreamProvider.autoDispose.family<User, String>((ref, id) {
+
+});
+```
+
+:::
+
+### ref.keepAlive
+
+Bir provider'ın "autoDispose" ile işaretlenmesi aynı zamanda "ref"e ek bir özellik de ekler: "keepAlive".
+
+'keepAlive' özelliği, provider'a izin veren bir boole değeridir (varsayılan 'yanlış').
+Riverpod'a artık duyulmasa bile durumunun korunması gerekip gerekmediğini söyleyin.
+
+Bir HTTP isteği tamamlandıktan sonra bu bayrağın "true" olarak ayarlanması bir kullanım örneği olabilir:
+
+```dart
+final myProvider = FutureProvider.autoDispose((ref) async {
+  final response = await httpClient.get(...);
+  ref.keepAlive();
+  return response;
+});
+```
+
+Bu sayede eğer istek başarısız olursa ve kullanıcı ekrandan çıkıp tekrar girerse,
+yeniden talepte bulunulacaktır. Ancak istek başarıyla tamamlandıysa,
+durum korunacak ve ekrana yeniden girilmesi yeni bir isteği tetiklemeyecektir.
+
+## Örnek: Artık kullanılmadıklarında HTTP isteklerini iptal edin
+
+İptal etmek için "autoDispose" değiştiricisi [FutureProvider] ve "ref.onDispose" ile birleştirilebilir
+Artık ihtiyaç duyulmadığında HTTP isteklerini kolayca işleyin.
+
+Amaç:
+
+- Kullanıcı bir ekrana girdiğinde bir HTTP isteği başlatın.
+- Kullanıcı istek tamamlanmadan ekrandan ayrılırsa HTTP isteğini iptal edin.
+- istek başarılı olduysa ekrandan çıkıp tekrar girmek yeni bir istek başlatmaz.
+
+Kodda bu şöyle olacaktır:
+
+```dart
+final myProvider = FutureProvider.autoDispose((ref) async {
+  // http isteklerini iptal etmenizi sağlayan bir package:dio nesnesi
+  final cancelToken = CancelToken();
+  // Provider yok edildiğinde http isteğini iptal et
+  ref.onDispose(() => cancelToken.cancel());
+
+  // Verilerimizi alın ve iptal işleminin gerçekleşmesi için `cancelToken'ımızı iletin
+  final response = await dio.get('path', cancelToken: cancelToken);
+  //Eğer istek başarıyla tamamlandıysa durumu koru
+  ref.keepAlive();
+  return response;
+});
+```
+
+## 'AutoDisposeProvider' bağımsız değişken türü, 'AlwaysAliveProviderBase' parametre türüne atanamaz
+
+`.autoDispose`u kullanırken kendinizi şu durumda bulabilirsiniz:
+Uygulama şuna benzer bir hatayla derlenmiyor:
+
+> 'AutoDisposeProvider' bağımsız değişken türü parametreye atanamaz
+> 'AlwaysAliveProviderBase' yazın
+
+Merak etme! Bu hata isteğe bağlıdır. Bunun nedeni büyük olasılıkla bir hata (hata) yaşamanızdır:
+
+**işaretlenmemiş** bir provider'da `.autoDispose` ile işaretlenmiş bir provider'ı dinlemeye çalıştım
+`.autoDispose` ile şunun gibi:
+
+```dart
+final firstProvider = Provider.autoDispose((ref) => 0);
+
+final secondProvider = Provider((ref) {
+  // The argument type 'AutoDisposeProvider<int>' can't be assigned to the
+  // parameter type 'AlwaysAliveProviderBase<Object, Null>'
+  ref.watch(firstProvider);
+});
+```
+
+Bu, 'firstProvider'ın hiçbir zaman atılmamasına neden olacağından istenmeyen bir durumdur.
+
+Bunu düzeltmek için "secondProvider"ı ".autoDispose" ile işaretlemeyi de düşünün:
+
+```dart
+final firstProvider = Provider.autoDispose((ref) => 0);
+
+final secondProvider = Provider.autoDispose((ref) {
+  ref.watch(firstProvider);
+});
+```
+[futureprovider]: ../../providers/future_provider

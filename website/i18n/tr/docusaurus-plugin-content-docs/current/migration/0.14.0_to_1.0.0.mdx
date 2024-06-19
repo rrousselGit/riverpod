@@ -1,0 +1,222 @@
+---
+title: ^0.14.0'dan ^1.0.0'a
+---
+
+Uzun bir bekleyişin ardından, Riverpod'un ilk stable sürümü nihayet yayınlandı 👏
+
+Değişikliklerin tam listesi için [değişiklik günlüğüne](https://pub.dev/packages/flutter_riverpod/changelog#100) bakın.  
+Bu sayfada, mevcut bir Riverpod uygulamasını 0.14.x sürümünden 1.0.0 sürümüne nasıl geçireceğimizi inceleyeceğiz.
+
+## Projenizi yeni sözdizimine otomatik olarak güncellemek için geçiş aracını kullanma
+
+Çeşitli değişiklikleri açıklamadan önce, Riverpod'un projenizi otomatik olarak geçirmek için bir komut satırı aracıyla geldiğini belirtmekte fayda var.
+
+### Komut satırını yükleme
+
+Geçiş aracını yüklemek için şunu çalıştırın:
+
+```sh
+dart pub global activate riverpod_cli
+```
+
+Artık şu komutu çalıştırabilmelisiniz:
+
+```dart
+riverpod --help
+```
+
+### Kullanım
+Artık komut satırı aracı yüklendiğine göre, kullanmaya başlayabiliriz.
+
+İlk olarak, geçirmek istediğiniz projeyi terminalinizde açın.
+
+Riverpod'u güncellemeyin.
+Geçiş aracı, Riverpod sürümünü sizin için güncelleyecektir.
+:::danger Uyarı
+Riverpod'u güncellememek önemlidir.
+Aracı doğru bir şekilde çalıştırabilmek için 1.0.0 sürümünü zaten yüklememiş olmalısınız.
+Bu nedenle, aracı başlatmadan önce doğru şekilde önceki bir sürümü kullandığınızdan emin olun.
+:::
+
+Projenizin hata içermediğinden emin olun.
+
+Şunu çalıştırın:
+  ```sh
+  riverpod migrate
+  ```
+
+Araç, ardından projenizi analiz edecek ve değişiklikler önerecektir. Örneğin, şunu görebilirsiniz:
+
+```diff
+-Widget build(BuildContext context, ScopedReader watch) {
++Widget build(BuildContext context, Widget ref) {
+-  MyModel state = watch(provider);
++  MyModel state = ref.watch(provider);
+}
+
+Accept change (y = yes, n = no [default], A = yes to all, q = quit)?
+```
+
+Değişikliği kabul etmek için basitçe <kbd>y</kbd> tuşuna basın. Aksi takdirde, reddetmek için <kbd>n</kbd> tuşuna basın.
+
+## Değişiklikler
+
+Artık CLI kullanarak projenizi otomatik olarak nasıl güncelleyeceğimizi gördüğümüze göre, gerekli değişiklikleri detaylı bir şekilde inceleyelim.
+
+### Sözdizimi Birleştirme
+
+Riverpod 1.0.0 sürümü, provider'larla etkileşimde bulunmak için sözdizimini birleştirmeye odaklandı.
+Önceden, Riverpod bir provider'ı okumak için birçok benzer ama yine de farklı sözdizimine sahipti, ref.watch(provider) ile useProvider(provider) ve watch(provider) gibi.
+1.0.0 sürümüyle, yalnızca bir sözdizimi kaldı: ref.watch(provider). Diğerleri kaldırıldı.
+
+Örneğin:
+
+- `useProvider`, `HookConsumerWidget` lehine kaldırıldı.
+
+  Önceden:
+
+  ```dart
+  class Example extends HookWidget {
+    @override
+    Widget build(BuildContext context) {
+      useState(...);
+      int count = useProvider(counterProvider);
+      ...
+    }
+  }
+  ```
+
+  Sonra:
+
+  ```dart
+  class Example extends HookConsumerWidget {
+    @override
+    Widget build(BuildContext context, WidgetRef ref) {
+      useState(...);
+      int count = ref.watch(counterProvider);
+      ...
+    }
+  }
+  ```
+
+- ConsumerWidget'ın build yöntemi ve Consumer'ın builder yöntemi değiştirildi.
+
+  Önceden:
+
+  ```dart
+  class Example extends ConsumerWidget {
+    @override
+    Widget build(BuildContext context, ScopedReader watch) {
+      int count = watch(counterProvider);
+      ...
+    }
+  }
+
+  Consumer(
+    builder: (context, watch, child) {
+      int count = watch(counterProvider);
+      ...
+    }
+  )
+  ```
+
+  Sonra:
+
+  ```dart
+  class Example extends ConsumerWidget {
+    @override
+    Widget build(BuildContext context, WidgetRef ref) {
+      int count = ref.watch(counterProvider);
+      ...
+    }
+  }
+
+  Consumer(
+    builder: (context, ref, child) {
+      int count = ref.watch(counterProvider);
+      ...
+    }
+  )
+  ```
+
+- context.read, ref.read lehine kaldırıldı.
+
+  Önceden:
+
+  ```dart
+  class Example extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      SomeButton(
+        onPressed: () => context.read(provider.notifier).doSomething(),
+      );
+    }
+  }
+  ```
+
+  Sonra:
+
+  ```dart
+  class Example extends ConsumerWidget {
+    @override
+    Widget build(BuildContext context, WidgetRef ref) {
+      SomeButton(
+        onPressed: () => ref.read(provider.notifier).doSomething(),
+      );
+    }
+  }
+  ```
+
+### StateProvider'ın Güncellenmesi
+
+[StateProvider], [StateNotifierProvider] ile eşleşecek şekilde güncellendi.
+
+Önceden, `ref.watch(StateProvider)` bir `StateController` örneği döndürüyordu. Şimdi sadece `StateController` durumunu döndürüyor.
+
+Geçiş yapmak için bazı çözümleriniz var.
+Kodunuz sadece durumu alıyorsa, değiştirmeden değiştirebilirsiniz.
+
+Şöyle:
+
+```dart
+final provider = StateProvider<int>(...);
+
+Consumer(
+  builder: (context, ref, child) {
+    StateController<int> count = ref.watch(provider);
+
+    return Text('${count.state}');
+  }
+)
+```
+
+şuna:
+
+```dart
+final provider = StateProvider<int>(...);
+
+Consumer(
+  builder: (context, ref, child) {
+    int count = ref.watch(provider);
+
+    return Text('${count}');
+  }
+)
+```
+Alternatif olarak, önceki davranışı korumak için yeni StateProvider.state kullanabilirsiniz.
+
+```dart
+final provider = StateProvider<int>(...);
+
+Consumer(
+  builder: (context, ref, child) {
+    StateController<int> count = ref.watch(provider.state);
+
+    return Text('${count.state}');
+  }
+)
+```
+
+[statenotifierprovider]: ../providers/state_notifier_provider
+[stateprovider]: ../providers/state_provider
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html

@@ -1,0 +1,36 @@
+---
+title: StreamProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+
+`StreamProvider`, [FutureProvider]'a benzer, ancak [Futures] yerine [Streams] için uygulanır.
+
+`StreamProvider` genellikle şu amaçlarla kullanılır:
+
+- Firebase veya web-socket'leri dinlemek.
+- Her birkaç saniyede bir başka bir provider'ı yeniden oluşturmak.
+
+[Streams] güncellemeleri dinlemek için doğal bir yol sunduğundan, bazıları bir `StreamProvider` kullanmanın pek bir değeri olmadığını düşünebilir. Aslında, Flutter'ın [StreamBuilder]'larının bir [Stream] dinlerken aynı şekilde çalışacağını düşünebilir, ancak bu bir hatadır.
+
+[StreamBuilder] yerine bir `StreamProvider` kullanmanın birçok faydası vardır:
+
+- diğer provider'ların [ref.watch] kullanarak akışı dinlemesine olanak tanır.
+- [AsyncValue] sayesinde yükleme ve hata durumlarının doğru şekilde ele alınmasını sağlar.
+- aktarım akışları (broadcast streams) ile normal akışları ayırt etme ihtiyacını ortadan kaldırır.
+- akış tarafından yayılan son değeri önbelleğe alır, bu da bir olay yayıldıktan sonra bir dinleyici eklenirse, dinleyicinin hala en güncel olaya anında erişimini garanti eder.
+- `StreamProvider`'ı geçersiz kılarak akışı testler sırasında kolayca simüle etmenizi sağlar.
+
+[ref.watch]: ../concepts/reading#using-refwatch-to-observe-a-provider
+[statenotifierprovider]: ./state_notifier_provider
+[provider]: ./provider
+[futureprovider]: ./future_provider
+[asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
+[future]: https://api.dart.dev/dart-async/Future-class.html
+[stream]: https://api.dart.dev/dart-async/Stream-class.html
+[streams]: https://api.dart.dev/dart-async/Stream-class.html
+[stream.periodic]: https://api.dart.dev/stable/2.15.1/dart-async/Stream/Stream.periodic.html
+[family]: ../concepts/modifiers/family
+[streambuilder]: https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html
