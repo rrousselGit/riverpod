@@ -77,11 +77,12 @@ class FamilyTemplate extends Template {
       }
     }
 
-    final parameters = provider
-        .node.functionExpression.parameters!.parameterElements
-        .whereNotNull()
-        .skip(1)
-        .toList();
+    final parameters =
+        provider.node.functionExpression.parameters!.parameterElements
+            // ignore: deprecated_member_use, stuck with SDK >=2.x.0 for now
+            .whereNotNull()
+            .skip(1)
+            .toList();
 
     final parametersPassThrough = buildParamInvocationQuery({
       for (final parameter in parameters) parameter: parameter.name,
@@ -156,6 +157,7 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
     }
 
     final parameters = provider.buildMethod.parameters!.parameterElements
+        // ignore: deprecated_member_use, stuck with SDK >=2.x.0 for now
         .whereNotNull()
         .toList();
     final parameterDefinition = buildParamDefinitionQuery(parameters);
