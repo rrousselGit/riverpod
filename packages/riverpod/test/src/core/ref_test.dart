@@ -3,12 +3,7 @@ import 'dart:async';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart'
-    show
-        CircularDependencyError,
-        ProviderContainerTest,
-        ProviderElement,
-        UnmountedRefException;
+import 'package:riverpod/src/framework.dart';
 import 'package:test/test.dart';
 
 import '../utils.dart';
@@ -828,6 +823,62 @@ void main() {
     });
 
     group('listen', () {
+      test('does not invoke value listeners if paused', () {
+        final container = ProviderContainer.test();
+        final listener = Listener<int>();
+        late Ref<int> ref;
+        final provider = Provider<int>((r) {
+          ref = r;
+          return 0;
+        });
+
+        final sub = container.listen(provider, listener.call);
+        sub.pause();
+
+        verifyZeroInteractions(listener);
+
+        ref.notifyListeners();
+
+        verifyZeroInteractions(listener);
+      });
+
+      test('does not invoke error listeners if paused', () {
+        final container = ProviderContainer.test();
+        final listener = ErrorListener();
+        late Ref<void> ref;
+        var throws = false;
+        final provider = Provider<void>((r) {
+          ref = r;
+          if (throws) throw StateError('err');
+        });
+
+        final errors = <Object>[];
+        final sub = container.listen(
+          provider,
+          (a, b) {},
+          onError: listener.call,
+        );
+
+        sub.pause();
+
+        verifyZeroInteractions(listener);
+
+        throws = true;
+        runZonedGuarded(
+          () {
+            try {
+              container.refresh(provider);
+            } catch (e) {
+              // We just want to trigger onError listener
+            }
+          },
+          (error, stack) => errors.add(error),
+        );
+        verifyZeroInteractions(listener);
+
+        expect(errors, [isA<StateError>()]);
+      });
+
       group('weak', () {
         test('Mounts the element but does not initialize the provider', () {
           final container = ProviderContainer.test();
@@ -2600,7 +2651,8 @@ void main() {
     group('.onCancel', () {
       test(
         'is called when dependent is invalidated and was the only listener',
-        skip: 'Waiting for "clear dependencies after futureprovider rebuilds"',
+        // TODO deal with now that we have onPause
+        skip: 'Waiting for "clear dependencies after FutureProvider rebuilds"',
         () async {
           //
           final container = ProviderContainer.test();

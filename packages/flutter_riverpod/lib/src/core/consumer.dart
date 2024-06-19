@@ -528,4 +528,10 @@ final class _ListenManual<T> extends ProviderSubscription<T> {
 
   @override
   T read() => _subscription.read();
+
+  @override
+  void pause() => _subscription.pause();
+
+  @override
+  void resume() => _subscription.resume();
 }
