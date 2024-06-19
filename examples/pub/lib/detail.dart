@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -93,7 +94,7 @@ class PackageMetrics extends _$PackageMetrics {
 }
 
 /// The detail page of a package, typically reached by clicking on a package from [SearchPage].
-class PackageDetailPage extends ConsumerWidget {
+class PackageDetailPage extends HookConsumerWidget {
   const PackageDetailPage({super.key, required this.packageName});
 
   /// The name of the package that is inspected.
@@ -106,6 +107,11 @@ class PackageDetailPage extends ConsumerWidget {
 
     final likedPackages = ref.watch(likedPackagesProvider);
     final isLiked = likedPackages.value?.contains(packageName) ?? false;
+
+    final pendingToggleLike = useState<Future<void>?>(null);
+    final toggleLikeSnapshot = useFuture(pendingToggleLike.value);
+    final isToggleLikeLoading =
+        toggleLikeSnapshot.connectionState == ConnectionState.waiting;
 
     final metrics = ref.watch(packageMetricsProvider(packageName: packageName));
 
@@ -145,17 +151,19 @@ class PackageDetailPage extends ConsumerWidget {
         },
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          final packageLikes = ref.read(
-            packageMetricsProvider(packageName: packageName).notifier,
-          );
+        onPressed: isToggleLikeLoading
+            ? null
+            : () async {
+                final packageLikes = ref.read(
+                  packageMetricsProvider(packageName: packageName).notifier,
+                );
 
-          if (isLiked) {
-            await packageLikes.unlike();
-          } else {
-            await packageLikes.like();
-          }
-        },
+                if (isLiked) {
+                  pendingToggleLike.value = packageLikes.unlike();
+                } else {
+                  pendingToggleLike.value = packageLikes.like();
+                }
+              },
         child: isLiked
             ? const Icon(Icons.favorite)
             : const Icon(Icons.favorite_border),

@@ -84,7 +84,7 @@ module.exports = {
             },
             {
               label: "Stack Overflow",
-              href: "https://stackoverflow.com/questions/tagged/flutter",
+              href: "https://stackoverflow.com/questions/tagged/riverpod",
             },
             {
               label: "Twitter",
@@ -96,7 +96,7 @@ module.exports = {
             },
             {
               label: "Contributing guide",
-              href: "https://github.com/rrousselGit/riverpod/blob/rework-flow/CONTRIBUTING.md",
+              href: "https://github.com/rrousselGit/riverpod/blob/master/CONTRIBUTING.md",
             },
           ],
         },
