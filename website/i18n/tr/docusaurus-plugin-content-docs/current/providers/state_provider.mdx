@@ -1,0 +1,132 @@
+---
+title: StateProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import product from "!!raw-loader!/i18n/es/docusaurus-plugin-content-docs/current/providers/state_provider/product.dart";
+import productListView from "!!raw-loader!/i18n/es/docusaurus-plugin-content-docs/current/providers/state_provider/product_list_view.dart";
+import sortProvider from "!!raw-loader!/i18n/es/docusaurus-plugin-content-docs/current/providers/state_provider/sort_provider.dart";
+import connectedDropdown from "!!raw-loader!/i18n/es/docusaurus-plugin-content-docs/current/providers/state_provider/connected_dropdown.dart";
+import sortedProductProvider from "!!raw-loader!/i18n/es/docusaurus-plugin-content-docs/current/providers/state_provider/sorted_product_provider.dart";
+import updateReadTwice from "!!raw-loader!/i18n/es/docusaurus-plugin-content-docs/current/providers/state_provider/update_read_twice.dart";
+import updateReadOnce from "!!raw-loader!/i18n/es/docusaurus-plugin-content-docs/current/providers/state_provider/update_read_once.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+`StateProvider`, durumunu değiştirmek için bir yol sunan bir provider'dır. Çok basit kullanım durumları için bir [StateNotifier] sınıfı yazmak zorunda kalmamak için tasarlanmış bir [StateNotifierProvider]'ın basitleştirilmiş halidir.
+
+`StateProvider` öncelikle **basit** değişkenlerin kullanıcı arayüzü tarafından değiştirilmesine izin vermek için vardır. `StateProvider`ın durumu genellikle şu türlerden biridir:
+
+- bir enum, bir filtre türü olarak
+- bir String, genellikle bir metin alanının ham içeriği olarak
+- bir boolean, onay kutuları için
+- bir sayı, sayfalama veya yaş form alanları için
+
+`StateProvider`ı şu durumlarda kullanmamalısınız:
+
+- durumunuzun doğrulama mantığına ihtiyacı varsa
+- durumunuz karmaşık bir nesne ise (örneğin özel bir sınıf, Liste/Harita, ...)
+- durumunuzu değiştirme mantığı, basit bir `count++`'dan daha gelişmişse.
+
+Daha gelişmiş durumlar için, [StateNotifierProvider] kullanmayı ve bir [StateNotifier] sınıfı oluşturmayı düşünün. Kod miktarı biraz daha fazla olabilir, ancak özel bir [StateNotifier] sınıfına sahip olmak, projenizin uzun vadeli bakım yeteneği için kritik öneme sahiptir, çünkü durumunuzun iş mantığını tek bir yerde merkezileştirir.
+
+## Kullanım örneği: Bir açılır menü kullanarak filtre türünü değiştirme
+
+`StateProvider`ın gerçek dünyadaki bir kullanım durumu, açılır menüler/metin ve alanlar/onay kutuları gibi basit form bileşenlerinin durumunu yönetmek olacaktır.
+
+Özellikle, bir ürün listesini fiyat veya ada göre sıralamanıza izin verecek bir açılır menü uygulamak için `StateProvider`ı nasıl kullanacağımızı göreceğiz.
+
+Basitlik adına, elde edeceğimiz ürün listesi doğrudan uygulamada oluşturulacak ve aşağıdaki gibi olacaktır:
+
+<CodeBlock>{trimSnippet(product)}</CodeBlock>
+
+Gerçek dünyadaki bir uygulamada, bu liste genellikle bir ağ isteği yaparken [FutureProvider] kullanılarak elde edilecektir.
+
+Kullanıcı arayüzü, ürün listesini şu şekilde gösterebilir:
+
+<CodeBlock>{trimSnippet(productListView)}</CodeBlock>
+
+Şimdi temeli tamamladığımıza göre, ürünlerimizi fiyat veya ada göre sıralamamıza izin verecek bir açılır menü ekleyebiliriz. Bunun için [DropDownButton](https://api.flutter.dev/flutter/material/DropdownButton-class.html) kullanacağız.
+
+```dart
+// Bir filtre türünü temsil eden bir enum.
+enum ProductSortType {
+  name,
+  price,
+}
+
+Widget build(BuildContext context, WidgetRef ref) {
+  final products = ref.watch(productsProvider);
+  return Scaffold(
+    appBar: AppBar(
+      title: const Text('Ürünler'),
+      actions: [
+        DropdownButton<ProductSortType>(
+          value: ProductSortType.price,
+          onChanged: (value) {},
+          items: const [
+            DropdownMenuItem(
+              value: ProductSortType.name,
+              child: Icon(Icons.sort_by_alpha),
+            ),
+            DropdownMenuItem(
+              value: ProductSortType.price,
+              child: Icon(Icons.sort),
+            ),
+          ],
+        ),
+      ],
+    ),
+    body: ListView.builder(
+      // ... 
+    ),
+  );
+}
+```
+
+Artık bir açılır menümüz olduğuna göre, bir StateProvider oluşturalım ve açılır menünün durumunu provider'larımızla senkronize edelim.
+
+Öncelikle, StateProviderı oluşturalım:
+
+<CodeBlock>{trimSnippet(sortProvider)}</CodeBlock>
+
+Ardından, bu provider'ı açılır menümüzle şu şekilde bağlayabiliriz:
+
+<CodeBlock>{trimSnippet(connectedDropdown)}</CodeBlock>
+
+Bununla, artık sıralama türünü değiştirebilmemiz gerekir. Bu, ürün listesi üzerinde henüz bir etkisi yok! Şimdi son aşama: ürün listesini sıralamak için productsProviderımızı güncelleme zamanı.
+
+Bunu gerçekleştirmek için önemli bir bileşen, ref.watch kullanmaktır, böylece productsProviderımız sıralama türünü alır ve sıralama türü değiştiğinde ürün listesini yeniden hesaplar.
+
+Uygulama şu şekilde olacaktır:
+
+<CodeBlock>{trimSnippet(sortedProductProvider)}</CodeBlock>
+
+Hepsi bu kadar! Bu değişiklik, sıralama türü değiştiğinde kullanıcı arayüzünün otomatik olarak ürün listesini yeniden oluşturmasını sağlar.
+
+İşte Dartpad'deki tam örnek:
+
+<iframe src="https://dartpad.dev/embed-flutter.html?gh_owner=rrousselGit&gh_repo=riverpod&gh_path=website%2Fdocs%2Fproviders%2Fstate_provider" style={{ border: 0, width: "100%", aspectRatio: "2/1.5" }}></iframe>
+Provider'ı iki kez okumadan önceki değere göre durumu nasıl güncelleyebilirsiniz
+Bazen, bir StateProviderın durumunu önceki değere göre güncellemek isteriz. Doğal olarak, şu şekilde yazabilirsiniz:
+
+<CodeBlock>{trimSnippet(updateReadTwice)}</CodeBlock>
+
+Bu kod parçasında özel bir yanlışlık olmasa da, sözdizimi biraz rahatsız edicidir.
+
+Sözdizimini biraz iyileştirmek için, update işlevini kullanabiliriz. Bu işlev, mevcut durumu alacak bir geri çağırma alır ve yeni durumu döndürmesi beklenir. Önceki kodumuzu şu şekilde yeniden düzenlemek için kullanabiliriz:
+
+<CodeBlock>{trimSnippet(updateReadOnce)}</CodeBlock>
+
+Bu değişiklik, aynı etkiyi sağlayarak sözdizimini biraz iyileştirir.
+
+[ref.watch]: ../concepts/reading#uso-de-refwatch-para-observar-a-un-provider
+[ref.read]: ../concepts/reading#uso-de-refread-para-obtener-el-estado-de-un-provider-una-vez
+[statenotifierprovider]: ./state_notifier_provider
+[futureprovider]: ./future_provider
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
+[provider]: ./provider
+[asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
+[future]: https://api.dart.dev/dart-async/Future-class.html
+[family]: ../concepts/modifiers/family

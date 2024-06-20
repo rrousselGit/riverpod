@@ -1,0 +1,224 @@
+---
+title: Başlarken
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+[Riverpod]'un iç mekanizmalarına dalmadan önce, temel bilgilerle başlayalım: [Riverpod]'u kurmak ve ardından bir "Merhaba dünya" yazmak.
+
+## Hangi paketi kurmalısınız
+
+Her şeyden önce, [Riverpod]'un farklı kullanımlar için çeşitli paketlerde dağıtıldığını bilmelisiniz.
+Kurmanız gereken [Riverpod] varyantı, geliştirdiğiniz uygulamaya bağlıdır.
+
+Hangi paketi kullanmanız gerektiğine karar vermek için aşağıdaki tabloya başvurabilirsiniz:
+
+| Uygulama türü                 | Paket adı                                                                       | Açıklama                                                       |
+| ----------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| Flutter + [flutter_hooks]     | [hooks_riverpod]                                                                 | [flutter_hooks] ve [Riverpod]'u birlikte kullanmanızı sağlar.  |
+| Yalnızca Flutter              | [flutter_riverpod]                                                               | Flutter uygulamaları için [Riverpod]'u kullanmanın temel yolu. |
+| Yalnızca Dart (Flutter olmadan) | [riverpod](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod) | Flutter'a bağımlı olmayan [Riverpod].                          |
+
+## Kurulum
+
+Hangi paketi kurmak istediğinizi bildikten sonra, `pubspec.yaml` dosyanıza aşağıdakileri ekleyin:
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="hooks_riverpod"
+  values={[
+    { label: 'Flutter + flutter_hooks', value: 'hooks_riverpod', },
+    { label: 'Flutter', value: 'flutter_riverpod', },
+    { label: 'Yalnızca Dart', value: 'riverpod', },
+  ]}
+>
+<TabItem value="hooks_riverpod">
+
+```yaml title="pubspec.yaml"
+environment:
+  sdk: ">=2.12.0 <4.0.0"
+  flutter: ">=2.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_hooks: ^0.18.0
+  hooks_riverpod: ^2.1.3
+```
+
+Ardından flutter pub get komutunu çalıştırın.
+
+</TabItem>
+<TabItem value="flutter_riverpod">
+
+```yaml title="pubspec.yaml"
+environment:
+  sdk: ">=2.12.0 <4.0.0"
+  flutter: ">=2.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.1.3
+```
+
+Ardından flutter pub get komutunu çalıştırın.
+
+</TabItem>
+<TabItem value="riverpod">
+
+```yaml title="pubspec.yaml"
+environment:
+  sdk: ">=2.12.0-0 <4.0.0"
+
+dependencies:
+  riverpod: ^2.1.3
+```
+
+Ardından dart pub get komutunu çalıştırın.
+
+</TabItem>
+</Tabs>
+
+Hepsi bu kadar. Riverpod'u uygulamanıza eklemeyi başardınız!
+
+## Kullanım örneği: Merhaba dünya
+
+Artık Riverpod'u kurduğumuza göre, kullanmaya başlayabiliriz.
+
+Aşağıdaki kod parçacıkları, yeni bağımlılığımızı kullanarak nasıl bir "Merhaba dünya" oluşturabileceğinizi göstermektedir:
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="hooks_riverpod"
+  values={[
+    { label: "Flutter + flutter_hooks", value: "hooks_riverpod" },
+    { label: "Flutter", value: "flutter_riverpod" },
+    { label: "Yalnızca Dart", value: "riverpod" },
+  ]}
+>
+<TabItem value="hooks_riverpod">
+
+```dart title="lib/main.dart"
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+// "Merhaba dünya" (Hello world) değerini saklayacak bir "provider" oluşturuyoruz.
+// Bir provider kullanmak, sergilenmiş değeri simüle etmemizi/değiştirmemizi sağlar.
+final helloWorldProvider = Provider((_) => 'Merhaba dünya');
+
+void main() {
+  runApp(
+    // Widgetların provider'ları okuyabilmesi için
+    // tüm uygulamayı bir `ProviderScope` ile sarmalamamız gerekir.
+    // İşte burada provider'larımızın durumu saklanacak.
+    ProviderScope(
+      child: MyApp(),
+    ),
+  );
+}
+
+// Not: MyApp, flutter_hooks'tan HookConsumerWidget'tır.
+class MyApp extends HookConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final String value = ref.watch(helloWorldProvider);
+
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('Örnek')),
+        body: Center(
+          child: Text(value),
+        ),
+      ),
+    );
+  }
+}
+```
+
+Bunu flutter run komutuyla çalıştırabilirsiniz.
+Bu, cihazınızda bir "Merhaba dünya" gösterecektir.
+
+</TabItem>
+<TabItem value="flutter_riverpod">
+
+```dart title="lib/main.dart"
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+// "Merhaba dünya" (Hello world) değerini saklayacak bir "provider" oluşturuyoruz.
+// Bir provider kullanmak, sergilenmiş değeri simüle etmemizi/değiştirmemizi sağlar.
+final helloWorldProvider = Provider((_) => 'Merhaba dünya');
+
+void main() {
+  runApp(
+    // Widgetların provider'ları okuyabilmesi için
+    // tüm uygulamayı bir "ProviderScope" ile sarmalamamız gerekir.
+    // İşte burada provider'larımızın durumu saklanacak.
+    ProviderScope(
+      child: MyApp(),
+    ),
+  );
+}
+
+// StatelessWidget yerine Riverpod tarafından sağlanan ConsumerWidget'tan türetin.
+class MyApp extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final String value = ref.watch(helloWorldProvider);
+
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(title: Text('Örnek')),
+        body: Center(
+          child: Text(value),
+        ),
+      ),
+    );
+  }
+}
+```
+
+Bunu `flutter run` komutuyla çalıştırabilirsiniz.
+Bu, cihazınızda bir "Merhaba dünya" gösterecektir.
+
+</TabItem>
+<TabItem value="riverpod">
+
+```dart title="lib/main.dart"
+import 'package:riverpod/riverpod.dart';
+
+// "Merhaba dünya" (Hello world) değerini saklayacak bir "provider" oluşturuyoruz.
+// Bir provider kullanmak, sergilenmiş değeri simüle etmemizi/değiştirmemizi sağlar.
+final helloWorldProvider = Provider((_) => 'Merhaba dünya');
+
+void main() {
+  // Bu nesnede provider'larımızın durumu saklanacak.
+  final container = ProviderContainer();
+
+  // "container" sayesinde, provider'ımızı okuyabiliriz.
+  final value = container.read(helloWorldProvider);
+
+  print(value); // Merhaba dünya
+}
+```
+
+Bunu `dart lib/main.dart` komutuyla çalıştırabilirsiniz.
+Bu, konsolunuzda bir "Merhaba dünya" gösterecektir.
+
+</TabItem> 
+</Tabs>
+
+## Verimliliğinizi artırın: Kod kısayollarını yükleyin
+
+Eğer Flutter ve VS Code kullanıyorsanız, Flutter Riverpod Snippets kullanmayı düşünün.
+
+Eğer Flutter ve Android Studio veya IntelliJ kullanıyorsanız, Flutter Riverpod Snippets kullanmayı düşünün.
+
+![img](/img/snippets/greetingProvider.gif)
+
+[riverpod]: https://github.com/rrousselgit/riverpod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks

@@ -1,0 +1,119 @@
+---
+title: ^0.13.0'dan ^0.14.0'a
+---
+
+Riverpod'un `0.14.0` sürümünün yayınlanmasıyla birlikte [StateNotifierProvider] kullanma sözdizimi değişti
+(açıklama için https://github.com/rrousseGit/riverpod/issues/341 adresine bakın).
+
+
+Tüm makaleyi görmek için, aşağıdaki [StateNotifier]'ı göz önünde bulundurun:
+
+```dart
+class MyModel {}
+
+class MyStateNotifier extends StateNotifier<MyModel> {
+  MyStateNotifier(): super(MyModel());
+}
+```
+
+## Değişiklikler
+- [StateNotifierProvider], [StateNotifier]'ınızın durum türünde olması gereken ek bir genel parametre alır.
+
+  Önceden:
+
+  ```dart
+  final provider = StateNotifierProvider<MyStateNotifier>((ref) {
+    return MyStateNotifier();
+  });
+  ```
+
+  Sonra:
+
+  ```dart
+  final provider = StateNotifierProvider<MyStateNotifier, MyModel>((ref) {
+    return MyStateNotifier();
+  });
+  ```
+
+- [StateNotifier]'ı almak için artık sadece `myProvider` yerine `myProvider.notifier` okumalısınız:
+
+  Önceden:  
+
+  ```dart
+  Widget build(BuildContext context, ScopedReader watch) {
+    MyStateNotifier notifier = watch(provider);
+  }
+  ```
+
+  Sonra:
+
+  ```dart
+  Widget build(BuildContext context, ScopedReader watch) {
+    MyStateNotifier notifier = watch(provider.notifier);
+  }
+  ```
+
+- [StateNotifier]'ın durumunu dinlemek için artık `myProvider.state` yerine `myProvider` okumalısınız:
+
+  Önceden:
+
+  ```dart
+  Widget build(BuildContext context, ScopedReader watch) {
+    MyModel state = watch(provider.state);
+  }
+  ```
+
+  Sonra:
+
+  ```dart
+  Widget build(BuildContext context, ScopedReader watch) {
+    MyModel state = watch(provider);
+  }
+  ```
+
+## Projelerinizi yeni sözdizimine otomatik olarak güncellemek için geçiş aracını kullanma
+
+0.14.0 sürümüyle birlikte, projelerinizi geçirmek için size yardımcı olabilecek bir Riverpod komut satırı aracı yayınlandı.
+
+### Komut satırını yükleme
+
+Geçiş aracını yüklemek için şunu çalıştırın:
+
+```sh
+dart pub global activate riverpod_cli
+```
+
+Artık şu komutu çalıştırabilmelisiniz:
+
+```dart
+riverpod --help
+```
+
+### Kullanım
+
+Artık komut satırı aracı yüklendiğine göre, kullanmaya başlayabiliriz.
+
+- İlk olarak, geçirmek istediğiniz projeyi terminalinizde açın.
+- Riverpod'u **güncellemeyin**. 
+  Geçiş aracı, Riverpod sürümünü sizin için güncelleyecektir.
+- Projenizin hata içermediğinden emin olun.
+- Şunu çalıştırın:
+  ```sh
+  riverpod migrate
+  ```
+  
+Araç, ardından projenizi analiz edecek ve değişiklikler önerecektir. Örneğin, şunu görebilirsiniz:
+
+```diff
+Widget build(BuildContext context, ScopedReader watch) {
+-  MyModel state = watch(provider.state);
++  MyModel state = watch(provider);
+}
+
+Accept change (y = yes, n = no [default], A = yes to all, q = quit)? 
+```
+
+Değişikliği kabul etmek için basitçe <kbd>y</kbd> tuşuna basın. Aksi takdirde, reddetmek için <kbd>n</kbd> tuşuna basın.
+
+[statenotifierprovider]: ../providers/state_notifier_provider
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html

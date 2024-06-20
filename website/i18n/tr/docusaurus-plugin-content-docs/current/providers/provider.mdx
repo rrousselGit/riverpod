@@ -1,0 +1,87 @@
+---
+title: Provider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import todo from "!!raw-loader!/i18n/tr/docusaurus-plugin-content-docs/current/providers/provider/todo.dart";
+import completedTodos from "!!raw-loader!/i18n/tr/docusaurus-plugin-content-docs/current/providers/provider/completed_todos.dart";
+import unoptimizedPreviousButton from "!!raw-loader!/i18n/tr/docusaurus-plugin-content-docs/current/providers/provider/unoptimized_previous_button.dart";
+import optimizedPreviousButton from "!!raw-loader!/i18n/tr/docusaurus-plugin-content-docs/current/providers/provider/optimized_previous_button.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+`Provider`, tüm provider'ların en temelidir. Bir değer oluşturur... Hepsi bu.
+
+`Provider` genellikle şu amaçlarla kullanılır:
+
+- hesaplamaları önbelleğe almak
+- diğer provider'lara bir değer sunmak (örneğin bir `Repository`/`HttpClient`).
+- test etmek veya widget'ların bir değeri geçersiz kılmasına bir yol sunmak.
+- `select` kullanmadan provider/widget yeniden oluşturulmalarını azaltmak.
+
+## Hesaplamaları önbelleğe almak için `Provider` kullanma
+
+`Provider`, [ref.watch] ile birleştiğinde senkron işlemleri önbelleğe almak için güçlü bir araçtır.
+
+Bir örnek, yapılacaklar listesini filtrelemektir. Bir listeyi filtrelemek biraz maliyetli olabileceğinden, 
+uygulamamız her yeniden oluşturulduğunda yapılacaklar listemizi filtrelemek istemeyiz. Bu durumda, 
+filtreleme işlemini bizim için yapması için `Provider` kullanabiliriz.
+
+Bunun için, uygulamamızın bir yapılacaklar listesini yöneten mevcut bir [StateNotifierProvider]'a sahip olduğunu varsayalım:
+
+<CodeBlock>{trimSnippet(todo)}</CodeBlock>
+
+Bundan sonra, `Provider` kullanarak tamamlanmış görevleri gösteren filtrelenmiş görevler listesini sunabiliriz:
+
+<CodeBlock>{trimSnippet(completedTodos)}</CodeBlock>
+
+Bu kodla, kullanıcı arayüzümüz artık `completedTodosProvider`'ı dinleyerek tamamlanmış görevler listesini gösterebilir:
+
+```dart
+Consumer(builder: (context, ref, child) {
+  final completedTodos = ref.watch(completedTodosProvider);
+  // TODO: görev listesini (todos) bir ListView/GridView/... içinde göster.
+});
+```
+
+İlginç olan, liste filtrelemesinin artık önbelleğe alınmış olmasıdır.
+
+Bu, tamamlanmış görevler listesinin yeniden hesaplanmayacağı anlamına gelir, ta ki görevler eklenip/silinip/güncellenene kadar, hatta tamamlanmış görevler listesini birkaç kez okusak bile.
+
+Görevler listesi değiştiğinde önbelleği manuel olarak geçersiz kılmamıza gerek yoktur.
+Provider, ref.watch sayesinde sonucu ne zaman yeniden hesaplaması gerektiğini otomatik olarak bilebilir.
+
+Widget/provider yeniden oluşturulmalarını Provider kullanarak azaltma
+Provider'ın benzersiz bir yönü, Provider yeniden hesaplandığında bile
+(genellikle ref.watch kullanıldığında), dinleyen widget/provider'lar değer değişmedikçe güncellemeyecektir.
+
+Gerçek dünyadan bir örnek, sayfalı bir görünümde önceki/sonraki düğmelerini etkinleştirme/devre dışı bırakma olabilir:
+
+!["Geri/İleri" düğmesi](https://user-images.githubusercontent.com/134939/47580830-31263a00-d950-11e8-9b61-0eaddab2709e.png)
+
+Bu durumda, özellikle "önceki" düğmesine odaklanacağız.
+Bu düğmenin naif bir uygulaması, mevcut sayfa dizinini alan bir widget olacaktır,
+ve bu dizin 0'a eşitse, düğmeyi devre dışı bırakırız.
+
+Bu kod şöyle olabilir:
+
+<CodeBlock>{trimSnippet(unoptimizedPreviousButton)}</CodeBlock>
+
+Bu kodun sorunu, mevcut sayfayı her değiştirdiğimizde "önceki" düğmesinin yeniden oluşturulacak olmasıdır.
+İdeal dünyada, düğmenin yalnızca etkin/devre dışı durumu değiştiğinde yeniden oluşturulmasını isteriz.
+
+Buradaki sorunun kökü, kullanıcının önceki sayfaya gidip gidemeyeceğini doğrudan "önceki" düğmesinden hesaplamamızdır.
+
+Bunu çözmenin bir yolu, bu mantığı widget'tan çıkarıp bir Provider içine yerleştirmektir:
+
+<CodeBlock>{trimSnippet(optimizedPreviousButton)}</CodeBlock>
+
+Bu küçük yeniden düzenlemeyi yaparak, PreviousButton widget'ımız artık sayfa dizini değiştiğinde Provider sayesinde yeniden oluşturulmayacaktır.
+
+Bundan böyle, sayfa dizini değiştiğinde canGoToPreviousPageProvider yeniden hesaplanacaktır. Ancak provider tarafından sunulan değer değişmezse, PreviousButton yeniden oluşturulmayacaktır.
+
+Bu değişiklik, düğmemizin performansını artırdı ve widget'tan mantığı çıkarmanın ilginç bir faydası oldu.
+
+[ref.watch]: ../concepts/reading#uso-de-refwatch-para-observar-a-un-provider
+[statenotifierprovider]: ./state_notifier_provider

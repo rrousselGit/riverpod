@@ -1,0 +1,30 @@
+{
+  "link.title.Docs": {
+    "message": "Dokümanlar",
+    "description": "The title of the footer links column with title=Docs in the footer"
+  },
+  "link.title.Community": {
+    "message": "Topluluk",
+    "description": "The title of the footer links column with title=Community in the footer"
+  },
+  "link.item.label.Getting started": {
+    "message": "Başlangıç",
+    "description": "The label of footer link with label=Getting started linking to docs/getting_started"
+  },
+  "link.item.label.Stack Overflow": {
+    "message": "Stack Overflow",
+    "description": "The label of footer link with label=Stack Overflow linking to https://stackoverflow.com/questions/tagged/flutter"
+  },
+  "link.item.label.Twitter": {
+    "message": "Twitter",
+    "description": "The label of footer link with label=Twitter linking to https://twitter.com/remi_rousselet"
+  },
+  "link.item.label.GitHub": {
+    "message": "GitHub",
+    "description": "The label of footer link with label=GitHub linking to https://github.com/rrousselgit/riverpod"
+  },
+  "copyright": {
+    "message": "Telif Hakkı © 2023 Remi Rousselet. <br /> Docusaurus ile inşa edilmiştir.",
+    "description": "The footer copyright"
+  }
+}

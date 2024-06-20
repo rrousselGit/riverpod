@@ -1,0 +1,55 @@
+---
+title: FutureProvider
+version: 1
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import configProvider from "/docs/providers/future_provider/config_provider";
+import configConsumer from "/docs/providers/future_provider/config_consumer";
+import { trimSnippet,AutoSnippet} from "../../../../../src/components/CodeSnippet";
+
+`FutureProvider`, asenkron kodlar için [Provider]'ın eşdeğeridir.
+
+`FutureProvider` genellikle şu amaçlarla kullanılır:
+
+- asenkron işlemleri (ağ istekleri gibi) gerçekleştirmek ve önbelleğe almak 
+- asenkron işlemlerin hata/yükleme durumlarını iyi bir şekilde yönetmek 
+- birden fazla asenkron değeri başka bir değerde birleştirmek
+
+`FutureProvider`, [ref.watch] ile birleştirildiğinde çok iyi çalışır. Bu kombinasyon, bazı değişkenler değiştiğinde 
+otomatik olarak bazı verilerin alınmasını sağlar ve her zaman en güncel değere sahip olmamızı garanti eder.
+
+:::info
+`FutureProvider`, kullanıcı etkileşiminden sonra hesaplamayı doğrudan değiştirmek için bir yol sunmaz. 
+Basit kullanım durumlarını çözmek için tasarlanmıştır.  
+Daha gelişmiş senaryolar için [StateNotifierProvider] kullanmayı düşünün.
+:::
+
+## Kullanım Örneği: Bir yapılandırma dosyasını okumak
+
+`FutureProvider`, bir JSON dosyasını okuyarak oluşturulan bir `Configuration` nesnesini 
+göstermenin uygun bir yolu olabilir.
+
+Yapılandırmanın oluşturulması, tipik async/await sözdizimiyle yapılır, ancak provider içinde. 
+Flutter'ın varlık sistemi kullanılarak, bu şöyle olurdu:
+
+<AutoSnippet language="dart" {...configProvider}></AutoSnippet>
+
+Daha sonra, kullanıcı arayüzü yapılandırmaları şu şekilde dinleyebilir:
+
+<AutoSnippet language="dart" {...configConsumer}></AutoSnippet>
+
+Bu, [Future] tamamlandığında kullanıcı arayüzünü otomatik olarak yeniden oluşturur. 
+Aynı zamanda, birden fazla widget yapılandırmaları isterse, varlık yalnızca bir kez çözümlenir.
+
+Gördüğünüz gibi, bir widget içinde bir `FutureProvider` dinlemek bir [AsyncValue] döndürür, 
+bu da hata/yükleme durumlarını yönetmeyi sağlar.
+
+[ref.watch]: ../concepts/reading#uso-de-refwatch-para-observar-a-un-provider
+[statenotifierprovider]: ./state_notifier_provider
+[provider]: ./provider
+[asyncvalue]: https://pub.dev/documentation/riverpod/latest/riverpod/AsyncValue-class.html
+[future]: https://api.dart.dev/dart-async/Future-class.html
+[family]: ../concepts/modifiers/family

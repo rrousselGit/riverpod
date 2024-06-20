@@ -1,0 +1,267 @@
+---
+title: Combinando providers
+---
+
+[Önce provider'lar hakkında bilgi edindiğinizden](/docs/concepts/providers) emin olun.
+Bu kılavuzda provider'ların birleştirilmesiyle ilgili bilinmesi gereken her şeye bakacağız.
+
+### Provider'ların birleştirmek
+
+Daha önce basit bir provider'ın nasıl oluşturulacağını görmüştük. Ama gerçek şu ki,
+Çoğu durumda, bir provider başka bir provider'ın durumunu okumak isteyecektir.
+
+Bunu yapmak için, geri çağrımıza iletilen [ref] nesnesini kullanabiliriz.
+provider'ı seçin ve onun [izle] yöntemini kullanın.
+
+Örnek olarak aşağıdaki provider'ı düşünün:
+
+```dart
+final cityProvider = Provider((ref) => 'London');
+```
+
+Artık cityProvider'ımızı tüketecek başka bir provider oluşturabiliriz:
+
+```dart
+final weatherProvider = FutureProvider((ref) async {
+ // Başka bir provider'ı dinlemek için `ref.watch`ı kullanıyoruz ve provider'ı geçiyoruz
+ // tüketmek istediğimiz şey.
+ // Burada: cityProvider
+  final city = ref.watch(cityProvider);
+
+ // Daha sonra sonucu `cityProvider` değerine göre bir şeyler yapmak için kullanabiliriz.
+  return fetchWeather(city: city);
+});
+```
+Yani. Başka bir provider'a bağımlı olan bir provider oluşturduk.
+
+## Sık sorulan sorular
+
+### Ya duyduğumuz değer zamanla değişirse?
+
+Provider'ların dinlemesine bağlı olarak döndürülen değer zamanla değişebilir.
+Örneğin, bir [StateNotifierProvider] öğesini veya provider'ı dinliyor olabilirsiniz.
+dinliyor, [ProviderContainer.refresh]/[ref.refresh] kullanılarak yenilemeye zorlandı.
+
+Riverpod, [watch] öğesini kullanarak, dinlenen değerin değiştiğini tespit edebilir ve yeniden çalıştırır.
+Gerektiğinde provider _otomatik olarak_.
+
+Bu, hesaplanan durumlar için yararlı olabilir. Örneğin, bir [StateNotifierProvider] düşünün
+bekleyen görevlerin bir listesini gösterir:
+
+```dart
+class TodoList extends StateNotifier<List<Todo>> {
+  TodoList(): super(const []);
+}
+
+final todoListProvider = StateNotifierProvider((ref) => TodoList());
+```
+Yaygın bir kullanım örneği, kullanıcı arayüzünün gösterilecek herkes listesini filtrelemesini sağlamak olabilir
+yalnızca tamamlanmış/tamamlanmamış görevler.
+
+Böyle bir senaryoyu uygulamanın kolay bir yolu şöyle olacaktır:
+
+- şu anda seçili olan filtre yöntemini ortaya çıkaran bir [StateProvider] oluşturun:
+
+ ```dart
+  enum Filter {
+    none,
+    completed,
+    uncompleted,
+  }
+
+  final filterProvider = StateProvider((ref) => Filter.none);
+  ```
+  - filtre yöntemini birleştiren ayrı bir provider oluşturun
+  ve filtrelenen görev listesini ortaya çıkarmak için görev listesi:
+
+  ```dart
+  final filteredTodoListProvider = Provider<List<Todo>>((ref) {
+    final filter = ref.watch(filterProvider);
+    final todos = ref.watch(todoListProvider);
+
+    switch (filter) {
+      case Filter.none:
+        return todos;
+      case Filter.completed:
+        return todos.where((todo) => todo.completed).toList();
+      case Filter.uncompleted:
+        return todos.where((todo) => !todo.completed).toList();
+    }
+  });
+  ```
+
+Daha sonra kullanıcı arayüzümüz, filtrelenmiş görev listesini dinlemek için 'filteredTodoListProvider'ı dinleyebilir.
+Bu yaklaşımla, filtre veya yapılacaklar listesi değiştiğinde kullanıcı arayüzü otomatik olarak güncellenecektir.
+
+Bu yaklaşımı çalışırken görmek için [Yapılacaklar Listesi] örneğinin kaynak koduna göz atabilirsiniz.(https://github.com/rrousselGit/riverpod/tree/master/examples/todos).
+
+:::info
+Bu davranış [Provider]'a özel değildir ve tüm provider'larla çalışır.
+
+Örneğin, bir arama işlevi uygulamak için [watch]'ı [FutureProvider] ile birleştirebilirsiniz
+canlı yapılandırma değişikliklerini destekleyen:
+
+```dart
+// Geçerli arama filtresi
+final searchProvider = StateProvider((ref) => '');
+
+/// Zaman içinde değişebilecek ayarlar
+final configsProvider = StreamProvider<Configuration>(...);
+
+final charactersProvider = FutureProvider<List<Character>>((ref) async {
+  final search = ref.watch(searchProvider);
+  final configs = await ref.watch(configsProvider.future);
+  final response = await dio.get('${configs.host}/characters?search=$search');
+
+  return response.data.map((json) => Character.fromJson(json)).toList();
+});
+```
+
+Bu kod hizmetten karakterlerin bir listesini alacak ve geri dönecektir
+ayarlar her değiştiğinde veya arama sorgusu değiştiğinde otomatik olarak listelenir.
+:::
+
+### Bir provider'ı dinlemeden okuyabilir miyim?
+
+Bazen bir provider'ın içeriğini okumak isteriz, ancak elde edilen değer değiştiğinde açığa çıkan değeri yeniden oluşturmayız.
+
+Bir örnek, başka bir provider'dan kimlik doğrulama için kullanıcı belirtecini okuyan bir 'Repository' olabilir.
+Kullanıcı belirteci her değiştiğinde [watch]'ı kullanabilir ve yeni bir 'Repository' oluşturabiliriz, ancak bunu yapmanın bir faydası olmaz.
+
+Bu durumda [watch]'a benzeyen [read] kullanabiliriz ancak elde edilen değer değiştiğinde provider'ın ortaya çıkardığı değeri yeniden oluşturmasına neden olmaz.
+
+Bu durumda yaygın bir uygulama, oluşturulan nesneye 'ref.read' komutunu iletmektir. Oluşturulan nesne dilediği zaman provider'ları okuyabilecektir.
+
+
+```dart
+final userTokenProvider = StateProvider<String>((ref) => null);
+
+final repositoryProvider = Provider((ref) => Repository(ref.read));
+
+class Repository {
+  Repository(this.read);
+
+  /// 'ref.read' işlevi
+  final Reader read;
+
+  Future<Catalog> fetchCatalog() async {
+    String token = read(userTokenProvider);
+
+    final response = await dio.get('/path', queryParameters: {
+      'token': token,
+    });
+
+    return Catalog.fromJson(response.data);
+  }
+}
+```
+
+:::note NOT
+Ayrıca nesnenize 'ref.read' yerine 'ref'i de iletebilirsiniz:
+
+```dart
+final repositoryProvider = Provider((ref) => Repository(ref));
+
+class Repository {
+  Repository(this.ref);
+
+  final Ref ref;
+}
+```
+Ancak, 'ref.read'in iletilmesi biraz daha az ayrıntılı kodla sonuçlanır
+ve nesnemizin hiçbir zaman 'ref.watch' kullanmamasını sağlar.
+:::
+
+:::danger **Bir provider'ın gövdesinde [read] komutunu KULLANMAYIN**
+
+```dart
+final myProvider = Provider((ref) {
+  // Burada 'oku' çağrısı yapmak kötü bir uygulamadır.
+  final value = ref.read(anotherProvider);
+});
+```
+Nesnenizin istenmeyen şekilde yeniden oluşturulmasını önlemek amacıyla [okuma] seçeneğini kullandıysanız,
+bkz. [provider'ım çok sık güncelleniyor, ne yapabilirim?](#provider'ım-güncellendi-çok-sık-ne-yapabilirim)
+:::
+
+### Yapıcısına parametre olarak [read] alan bir nesne nasıl test edilir?
+
+[Bir provider'ı dinlemeden okuyabilir miyim?] bölümünde açıklanan modeli kullanıyorsanız,
+Nesneniz için testleri nasıl yazacağınızı merak ediyor olabilirsiniz.
+
+Bu senaryoda, ham nesne yerine doğrudan provider'ı test etmeyi düşünün.
+Bunu [ProviderContainer] sınıfını kullanarak yapabilirsiniz:
+
+```dart
+final repositoryProvider = Provider((ref) => Repository(ref.read));
+
+test('fetches catalog', () async {
+  final container = ProviderContainer();
+  addTearDown(container.dispose);
+
+  Repository repository = container.read(repositoryProvider);
+
+  await expectLater(
+    repository.fetchCatalog(),
+    completion(Catalog()),
+  );
+});
+```
+
+### Provider'ım çok sık güncelleniyor, ne yapabilirim?
+
+Nesneniz çok sık yeniden oluşturuluyorsa provider'ınız muhtemelen
+ilginizi çekmeyen nesneleri dinlemek.
+
+Örneğin, bir 'Yapılandırma' nesnesini dinliyor olabilirsiniz ancak bu nesne yalnızca 'ana bilgisayar' özelliğini kullanır.
+'Configuration' nesnesinin tamamını dinlerken, 'host' aynı özelliğin dışında bir özelliği değiştirirse,
+bu, provider'ınızın yeniden değerlendirilmesine neden olabilir ve bu da istenmeyebilir.
+
+Bu sorunun çözümü, yalnızca ihtiyacınız olanı ortaya çıkaran ayrı bir provider oluşturmaktır.
+'Yapılandırma'da (bu durumda, 'ana bilgisayar'):
+
+**KAÇININ** nesnenin tamamını dinlemekten kaçının:
+
+```dart
+final configsProvider = StreamProvider<Configuration>(...);
+
+final productsProvider = FutureProvider<List<Product>>((ref) async {
+ // ProductsProvider'ın bir şey olması durumunda ürünleri tekrar getirmesini sağlayacak
+ // yapılandırmada değiştirildi
+  final configs = await ref.watch(configsProvider.future);
+
+  return dio.get('${configs.host}/products');
+});
+```
+
+**Yalnızca kullandığınız şeyleri dinlemeyi TERCİH EDERİZ**:
+
+
+```dart
+final configsProvider = StreamProvider<Configuration>(...);
+
+/// Yalnızca geçerli ana bilgisayarı gösteren bir provider
+final _hostProvider = FutureProvider<String>((ref) async {
+  final config = await ref.watch(configsProvider.future);
+  return config.host;
+});
+
+final productsProvider = FutureProvider<List<Product>>((ref) async {
+ // Yalnızca toplantı sahibini dinleyin. Ayarlarda başka bir şey değişirse,
+ // bu durum provider'ımızın gereksiz değerlendirilmesine neden olmayacaktır.
+  final host = await ref.watch(_hostProvider.future);
+
+  return dio.get('$host/products');
+});
+```
+
+[provider]: https://pub.dev/documentation/riverpod/latest/riverpod/Provider-class.html
+[stateprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StateProvider-class.html
+[futureprovider]: ../providers/future_provider
+[statenotifierprovider]: ../providers/state_notifier_provider
+[ref]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref-class.html
+[watch]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/watch.html
+[read]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/read.html
+[providercontainer.refresh]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer/refresh.html
+[ref.refresh]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/WidgetRef/refresh.html
+[providercontainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html

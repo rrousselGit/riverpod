@@ -1,0 +1,425 @@
+---
+title: Testing
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+
+Orta ila büyük ölçekli herhangi bir uygulama için uygulamanın test edilmesi önemlidir.
+
+Uygulamamızı başarıyla test etmek için aşağıdakilere ihtiyacımız olacak:
+
+- `test`/`testWidgets` arasında hiçbir durumu korumayın.
+  Bu, uygulamada küresel bir durumun olmadığı veya tüm küresel durumların olmadığı anlamına gelir
+  Her testten sonra sıfırlanmaları gerekir.
+
+- provider'larımızı belirli bir duruma sahip olmaya zorlayabilecek,
+  ya "alaylar" yoluyla ya da istenen duruma ulaşana kadar onları manipüle ederek.
+
+[Riverpod]'un bu konuda size nasıl yardımcı olduğunu tek tek görelim.
+
+## `test`/`testWidgets` arasındaki herhangi bir durumu korumayın.
+
+provider'lar genellikle global değişkenler olarak tanımlandığından,
+bu konuda endişelenebilirsin. Nihayet,
+Küresel devlet testleri çok zorlaştırıyor,
+çünkü oldukça uzun bir 'setUp'/'tearDown' gerektirebilir.
+
+Ancak gerçek şu ki: provider'lar küresel olarak ilan edilirken,
+bir provider'ın durumu küresel **değildir**.
+
+Bunun yerine, [ProviderContainer] adlı bir nesnede saklanır.
+Solo Dart örneklerini incelerseniz görmüş olabilirsiniz.
+Henüz yapmadıysanız, bu [ProviderContainer] nesnesinin örtülü olarak oluşturulduğunu bilin.
+projemizde [Riverpod]'u etkinleştiren [ProviderScope] widget'ı.
+
+Somut olarak bunun anlamı, provider'ları kullanan iki "testWidget"ın
+Hiçbir statüyü paylaşmıyorlar. Bu nedenle, 'setUp'/'tearDown'a hiçbir şekilde gerek yoktur.
+
+Ancak bir örnek uzun açıklamalardan daha iyidir:
+
+<Tabs
+  defaultValue="testWidgets"
+  values={[
+    { label: 'testWidgets (Flutter)', value: 'testWidgets', },
+    { label: 'test (Solo Dart)', value: 'test', },
+  ]}
+>
+<TabItem value="testWidgets">
+
+```dart
+// Flutter kullanılarak uygulanan ve test edilen bir Sayaç
+
+// Global olarak bir provider ilan ediyoruz ve bunu görmek için iki testte kullanacağız.
+// testler arasında durum başarılı bir şekilde "0"a sıfırlanırsa.
+final counterProvider = StateProvider((ref) => 0);
+
+// Mevcut durumu ve durumu artırmanıza izin veren bir düğmeyi temsil eder
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Consumer(builder: (context, ref, _) {
+        final counter = ref.watch(counterProvider);
+        return ElevatedButton(
+          onPressed: () => ref.read(counterProvider.notifier).state++,
+          child: Text('${counter.state}'),
+        );
+      }),
+    );
+  }
+}
+
+void main() {
+  testWidgets('update the UI when incrementing the state', (tester) async {
+    await tester.pumpWidget(ProviderScope(child: MyApp()));
+
+    // provider'ımızın bildirdiği gibi varsayılan değer `0`dır
+    expect(find.text('0'), findsOneWidget);
+    expect(find.text('1'), findsNothing);
+
+    // Durumu artır ve yeniden oluştur
+    await tester.tap(find.byType(ElevatedButton));
+    await tester.pump();
+
+    // Durum uygun şekilde arttı
+    expect(find.text('1'), findsOneWidget);
+    expect(find.text('0'), findsNothing);
+  });
+
+  testWidgets('the counter state is not shared between tests', (tester) async {
+    await tester.pumpWidget(ProviderScope(child: MyApp()));
+
+    // Durum bir kez daha '0' oldu, sökmeye/kurmaya gerek yok
+    expect(find.text('0'), findsOneWidget);
+    expect(find.text('1'), findsNothing);
+  });
+}
+```
+
+</TabItem>
+<TabItem value="test">
+
+```dart
+// Yalnızca Dart ile uygulanan ve test edilen bir sayaç (Flutter'a bağımlı olmadan)
+
+// Global olarak bir provider ilan ediyoruz ve bunu iki testte kullanacağız.
+// durum testler arasında doğru şekilde "0"a sıfırlanırsa.
+
+final counterProvider = StateProvider((ref) => 0);
+
+// Bir provider'ın dinleyicilerine ne zaman bildirimde bulunduğunu izlemek için Mockito'yu kullanma
+class Listener extends Mock {
+  void call(int? previous, int value);
+}
+
+void main() {
+  test('defaults to 0 and notify listeners when value changes', () {
+    // provider'ları okumamızı sağlayacak bir nesne
+    // Bunu testler arasında paylaşmayın.
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    final listener = Listener();
+
+    // Bir provider'ı gözlemleyin ve değişiklikleri gözetleyin.
+    container.listen<int>(
+      counterProvider,
+      listener,
+      fireImmediately: true,
+    );
+
+    // dinleyici hemen varsayılan değer olan 0 ile çağrılır
+    verify(listener(null, 0)).called(1);
+    verifyNoMoreInteractions(listener);
+
+    // Değeri arttırıyoruz
+    container.read(counterProvider.notifier).state++;
+
+    // Dinleyici tekrar arandı ama bu sefer 1
+    verify(listener(0, 1)).called(1);
+    verifyNoMoreInteractions(listener);
+  });
+
+  test('the counter state is not shared between tests', () {
+    // provider'ımızı okumak için farklı bir ProviderContainer kullanıyoruz.
+    // Bu, testler arasında hiçbir durumun yeniden kullanılmamasını sağlar
+    final container = ProviderContainer();
+    addTearDown(container.dispose);
+    final listener = Listener();
+
+    container.listen<int>(
+      counterProvider,
+      listener,
+      fireImmediately: true,
+    );
+
+    // Bilgisayar 0'da yeni
+    verify(listener(null, 0)).called(1);
+    verifyNoMoreInteractions(listener);
+  });
+}
+```
+
+</TabItem>
+</Tabs>
+
+Gördüğünüz gibi 'counterProvider' global olarak bildirilmiş olmasına rağmen,
+testler arasında hiçbir durum paylaşılmadı.
+Bu nedenle, testlerimizin yapılması konusunda endişelenmemize gerek yok
+farklı bir sırayla yürütülürse farklı davranabilir,
+tamamen izole bir şekilde yürütüldükleri için.
+
+## Testler sırasında provider'ın davranışını geçersiz kılın.
+
+Yaygın bir gerçek dünya uygulaması aşağıdaki nesnelere sahip olabilir:
+
+- Basit ve güvenli bir API sağlayan bir 'Repository' sınıfı
+  HTTP istekleri yapmak için.
+
+- Uygulamanın durumunu yöneten ve kullanılabilen bir nesne
+  Farklı faktörlere dayalı olarak HTTP istekleri yapmak için 'Repository'.
+  Bu bir 'ChangeNotifier', 'Bloc' veya hatta bir provider olabilir.
+
+[Riverpod] kullanılarak bu şu şekilde temsil edilebilir:
+
+```dart
+class Repository {
+  Future<List<Todo>> fetchTodos() async {}
+}
+
+// Repository örneğimizi bir provider'da kullanıma sunuyoruz
+final repositoryProvider = Provider((ref) => Repository());
+
+/// Görev listesi. Burada, bunları kullanarak sunucudan alıyoruz.
+/// [Repository], yapacak başka bir şey yok.
+final todoListProvider = FutureProvider((ref) async {
+  // Repository örneğini alın
+  final repository = ref.read(repositoryProvider);
+
+  // Görevleri alın ve bunları kullanıcı arayüzüne gösterin.
+  return repository.fetchTodos();
+});
+```
+
+Bu durumda, bir birim veya widget testi gerçekleştirirken genellikle şunları isteriz:
+'Repository' örneğimizi, şunu döndüren sahte bir uygulamayla değiştirin:
+gerçek bir HTTP isteği yapmak yerine önceden tanımlanmış bir yanıt.
+
+Daha sonra todoListProvider veya eşdeğerimizin 'Repository'nin sahte uygulamasını kullanmasını isteyeceğiz.
+
+Bunu başarmak için [ProviderScope]/[ProviderContainer] 'geçersiz kılma' parametresini kullanabiliriz
+'repositoryProvider' davranışını geçersiz kılmak için:
+
+<Tabs
+  defaultValue="ProviderScope"
+  values={[
+    { label: 'ProviderScope (Flutter)', value: 'ProviderScope', },
+    { label: 'ProviderContainer (Solo Dart)', value: 'ProviderContainer', },
+  ]}
+>
+<TabItem value="ProviderScope">
+
+```dart {7}
+testWidgets('override repositoryProvider', (tester) async {
+  await tester.pumpWidget(
+    ProviderScope(
+      overrides: [
+        // Geri dönmek için repositoryProvider'ın davranışını geçersiz kılın
+        // Repository yerine FakeRepository.
+        repositoryProvider.overrideWithValue(FakeRepository())
+        // `todoListProvider`ı geçersiz kılmamıza gerek yok,
+        // geçersiz kılınan repositoryProvider'ı otomatik olarak kullanacak
+      ],
+      child: MyApp(),
+    ),
+  );
+}
+```
+
+</TabItem>
+<TabItem value="ProviderContainer">
+
+```dart {6}
+test('override repositoryProvider', () async {
+  final container = ProviderContainer(
+    overrides: [
+       // Geri dönmek için repositoryProvider'ın davranışını geçersiz kılın
+       // Repository yerine FakeRepository.
+        repositoryProvider.overrideWithValue(FakeRepository())
+        // `todoListProvider`ı geçersiz kılmamıza gerek yok,
+        // geçersiz kılınan repositoryProvider'ı otomatik olarak kullanacak
+    ],
+  );
+
+  // Şarj durumu ise ilk okuma
+  expect(
+    container.read(todoListProvider),
+    const AsyncValue<List<Todo>>.loading(),
+  );
+
+  /// İsteğin bitmesini bekle
+  await container.read(todoListProvider.future);
+
+  // Elde edilen verileri görüntüler
+  expect(container.read(todoListProvider).value, [
+    isA<Todo>()
+        .having((s) => s.id, 'id', '42')
+        .having((s) => s.label, 'label', 'Hello world')
+        .having((s) => s.completed, 'completed', false),
+  ]);
+});
+```
+
+</TabItem>
+</Tabs>
+
+Vurgulanan kodda görebileceğiniz gibi, [ProviderScope]/[ProviderContainer] şunları sağlar:
+bir provider'ın uygulamasını farklı davranışla değiştirin.
+
+:::info
+Bazı provider'lar davranışlarını geçersiz kılmanın basitleştirilmiş yollarını ortaya koyuyor.
+Örneğin, [FutureProvider], provider'ı bir 'AsyncValue' ile geçersiz kılmanıza olanak tanır:
+
+```dart
+final todoListProvider = FutureProvider((ref) async => <Todo>[]);
+// ...
+ProviderScope(
+  overrides: [
+    /// Sabit bir değer döndürmek için FutureProvider'ı geçersiz kılmanıza olanak tanır
+    todoListProvider.overrideWithValue(
+      AsyncValue.data([Todo(id: '42', label: 'Hello', completed: true)]),
+    ),
+  ],
+  child: MyApp(),
+);
+```
+
+:::
+
+:::info
+Bir provider'ı 'aile' değiştiricisiyle geçersiz kılmanın sözdizimi biraz farklıdır.
+
+Eğer böyle bir provider kullandıysanız:
+
+```dart
+final response = ref.watch(myProvider('12345'));
+```
+
+provider'ı şu şekilde geçersiz kılabilirsiniz:
+
+```dart
+myProvider('12345').overrideWithValue(...));
+```
+
+:::
+
+## Tam widget testi örneği
+
+Sonuç olarak, Flutter testimizin tam kodunu burada bulabilirsiniz.
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_test/flutter_test.dart';
+
+class Repository {
+  Future<List<Todo>> fetchTodos() async {}
+}
+
+class Todo {
+  Todo({
+    required this.id,
+    required this.label,
+    required this.completed,
+  });
+
+  final String id;
+  final String label;
+  final bool completed;
+}
+
+// Repository örneğimizi bir provider'da kullanıma sunuyoruz
+final repositoryProvider = Provider((ref) => Repository());
+
+/// Görev listesi. Burada basitçe sunucudan şunu kullanarak alıyoruz:
+/// [Repository] ve başka hiçbir şey yapmıyoruz.
+final todoListProvider = FutureProvider((ref) async {
+  // Repository örneğini alın
+  final repository = ref.read(repositoryProvider);
+
+  // Görevleri alın ve bunları kullanıcı arayüzüne gösterin.
+  return repository.fetchTodos();
+});
+
+/// Önceden tanımlanmış bir görev listesi döndüren sahte Repository uygulaması
+class FakeRepository implements Repository {
+  @override
+  Future<List<Todo>> fetchTodos() async {
+    return [
+      Todo(id: '42', label: 'Hello world', completed: false),
+    ];
+  }
+}
+
+class TodoItem extends StatelessWidget {
+  const TodoItem({Key? key, required this.todo}) : super(key: key);
+  final Todo todo;
+  @override
+  Widget build(BuildContext context) {
+    return Text(todo.label);
+  }
+}
+
+void main() {
+  testWidgets('override repositoryProvider', (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          repositoryProvider.overrideWithValue(FakeRepository())
+        ],
+        // Yapılacaklar listesini görüntülemek için todoListProvider'dan okuyacak uygulamamız.
+        // Bunu muhtemelen bir Uygulamam widget'ına çekeceksiniz
+        child: MaterialApp(
+          home: Scaffold(
+            body: Consumer(builder: (context, ref, _) {
+              final todos = ref.watch(todoListProvider);
+              // Görev listesi yükleniyor veya hatalı
+              if (todos.asData  == null) {
+                return const CircularProgressIndicator();
+              }
+              return ListView(
+                children: [
+                  for (final todo in todos.asData!.value) TodoItem(todo: todo)
+                ],
+              );
+            }),
+          ),
+        ),
+      ),
+    );
+
+    // İlk çerçeve bir yükleme durumudur.
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+
+    // Yeniden oluştur. TodoListProvider'ın tüm görevleri zaten getirmiş olması gerekirdi.
+    await tester.pump();
+
+    // Yükleme durumu yok.
+    expect(find.byType(CircularProgressIndicator), findsNothing);
+
+    // FakeRepository tarafından döndürülen verilerle bir görev oluşturuldu
+    expect(tester.widgetList(find.byType(TodoItem)), [
+      isA<TodoItem>()
+          .having((s) => s.todo.id, 'todo.id', '42')
+          .having((s) => s.todo.label, 'todo.label', 'Hello world')
+          .having((s) => s.todo.completed, 'todo.completed', false),
+    ]);
+  });
+}
+```
+
+[riverpod]: https://github.com/rrousselgit/riverpod
+[providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[providercontainer]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderContainer-class.html
+[futureprovider]: ../providers/future_provider
+[zone]: https://api.flutter.dev/flutter/dart-async/Zone-class.html

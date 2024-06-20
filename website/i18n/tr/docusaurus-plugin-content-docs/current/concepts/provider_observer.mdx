@@ -1,0 +1,86 @@
+---
+title: ProviderObserver
+---
+
+[ProviderObserver] ProviderContainer'da yapılan değişiklikleri dinler.
+
+Bunu kullanmak için ProviderObserver sınıfını genişletin ve kullanmak istediğiniz yöntemi geçersiz kılın.
+
+[ProviderObserver]'ın üç yöntemi vardır:
+
+- Bir provider her başlatıldığında 'didAddProviderse' çağrılır ve açığa çıkan değer 'value' olur.
+- Bir provider her atıldığında `didDisposeProvider` çağrılır.
+- `didUpdateProvider` provider'lar tarafından her bildirimde bulunulduğunda çağrılır.
+
+### Kullanım:
+
+[ProviderObserver] için basit bir kullanım örneği, provider'lardaki değişiklikleri günlüğe kaydetmektir
+'didUpdateProvider' yöntemini geçersiz kılma.
+
+```dart
+// Riverpod ile uygulanan bir Counter Logger örneği
+
+class Logger extends ProviderObserver {
+  @override
+  void didUpdateProvider(
+    ProviderBase provider,
+    Object? previousValue,
+    Object? newValue,
+    ProviderContainer container,
+  ) {
+    print('''
+{
+  "provider": "${provider.name ?? provider.runtimeType}",
+  "newValue": "$newValue"
+}''');
+  }
+}
+
+void main() {
+  runApp(
+    // ProviderScope'un eklenmesi Riverpod'un tüm proje için etkinleştirilmesini sağlar
+    // Logger'ımızı gözlemci listesine ekliyoruz
+    ProviderScope(observers: [Logger()], child: MyApp()),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(home: Home());
+  }
+}
+
+final counterProvider = StateProvider((ref) => 0, name: 'counter');
+
+class Home extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final count = ref.watch(counterProvider);
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Counter example')),
+      body: Center(
+        child: Text('$count'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () => ref.read(counterProvider.notifier).state++,
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+```
+
+Artık provider'ımızın değeri her güncellendiğinde, kaydedici bunu günlüğe kaydedecektir:
+
+```
+I/flutter (16783): {
+I/flutter (16783):   "provider": "counter",
+I/flutter (16783):   "newValue": "1"
+I/flutter (16783): }
+```
+
+[providerobserver]: https://pub.dev/documentation/riverpod/latest/riverpod/ProviderObserver-class.html

@@ -1,0 +1,33 @@
+---
+title: StateNotifierProvider
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import todos from "!!raw-loader!/i18n/tr/docusaurus-plugin-content-docs/current/providers/state_notifier_provider/todos.dart";
+import todosConsumer from "!!raw-loader!/i18n/tr/docusaurus-plugin-content-docs/current/providers/state_notifier_provider/todos_consumer.dart";
+import { trimSnippet } from "../../../../../src/components/CodeSnippet";
+
+`StateNotifierProvider`, bir [StateNotifier]'i (Riverpod'un yeniden ihraç ettiği [state_notifier] paketinden) dinlemek ve göstermek için kullanılan bir provider'dır.  
+`StateNotifierProvider` ve [StateNotifier] birlikte, kullanıcı etkileşimlerine tepki olarak değişebilecek durumu yönetmek için Riverpod'un önerilen çözümüdür.
+
+Genellikle şunlar için kullanılır:
+
+- zamanla değişebilen **değişmez** bir durumu özel olaylara tepki olarak göstermek.
+- bir durumu değiştirmek için mantığı (iş mantığı olarak da bilinir) tek bir yerde merkezileştirerek zamanla bakım yeteneğini artırmak.
+
+Bir kullanım örneği olarak, `StateNotifierProvider` kullanarak bir yapılacaklar listesi uygulayabiliriz. 
+Bunu yapmak, kullanıcı etkileşimlerinde kullanıcı arayüzünün yapılacaklar listesini değiştirmesine izin vermek için `addTodo` gibi yöntemler sunmamıza olanak tanır:
+
+<CodeBlock>{trimSnippet(todos)}</CodeBlock>
+
+Artık bir `StateNotifierProvider` tanımladığımıza göre, 
+kullanıcı arayüzümüzde `todos` listesi ile etkileşim kurmak için kullanabiliriz:
+
+<CodeBlock>{trimSnippet(todosConsumer)}</CodeBlock>
+
+[state_notifier]: https://pub.dev/packages/state_notifier
+[statenotifier]: https://pub.dev/documentation/state_notifier/latest/state_notifier/StateNotifier-class.html
+[provider]: ./provider
+[futureprovider]: ./future_provider
