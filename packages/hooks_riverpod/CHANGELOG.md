@@ -3,6 +3,8 @@
 - **Breaking**: `ChangeNotifierProvider`, `StateProvider` and `StateNotifierProvider`
   are moved out of `package:hooks_riverpod/hooks_riverpod.dart` to
   `package:hooks_riverpod/legacy.dart`.
+- Failing providers are now automatically retried after a delay.
+  The delay can be optionally configured.
 
 ## 3.0.0-dev.3 - 2023-11-27
 

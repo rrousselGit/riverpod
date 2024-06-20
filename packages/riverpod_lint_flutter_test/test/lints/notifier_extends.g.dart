@@ -16,6 +16,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'myNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -84,6 +85,7 @@ final class NoExtendsProvider extends $NotifierProvider<NoExtends, int> {
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'noExtendsProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -152,6 +154,7 @@ final class WrongExtendsProvider extends $NotifierProvider<WrongExtends, int> {
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'wrongExtendsProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -221,6 +224,7 @@ final class _PrivateClassProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'_privateClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -291,6 +295,7 @@ final class GenericsProvider<A extends num, B>
       : _createCb = create,
         super(
           argument: null,
+          retry: null,
           name: r'genericsProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -383,6 +388,7 @@ String _$genericsHash() => r'0a1bf00e0610ccb1fb5615460e1bc4afb2555f69';
 final class GenericsFamily extends Family {
   const GenericsFamily._()
       : super(
+          retry: null,
           name: r'genericsProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -446,6 +452,7 @@ final class NoGenericsProvider<A extends num, B>
       : _createCb = create,
         super(
           argument: null,
+          retry: null,
           name: r'noGenericsProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -538,6 +545,7 @@ String _$noGenericsHash() => r'30d5d20092f43cb17ede1f619773757df7cecb30';
 final class NoGenericsFamily extends Family {
   const NoGenericsFamily._()
       : super(
+          retry: null,
           name: r'noGenericsProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -602,6 +610,7 @@ final class MissingGenericsProvider<A, B>
       : _createCb = create,
         super(
           argument: null,
+          retry: null,
           name: r'missingGenericsProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -696,6 +705,7 @@ String _$missingGenericsHash() => r'b611c76d5fb87fdde78b5fc017912e0569762c23';
 final class MissingGenericsFamily extends Family {
   const MissingGenericsFamily._()
       : super(
+          retry: null,
           name: r'missingGenericsProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -759,6 +769,7 @@ final class WrongOrderProvider<A, B>
       : _createCb = create,
         super(
           argument: null,
+          retry: null,
           name: r'wrongOrderProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -851,6 +862,7 @@ String _$wrongOrderHash() => r'7757670a2f67406ebc96c87edf088deb9cb248a1';
 final class WrongOrderFamily extends Family {
   const WrongOrderFamily._()
       : super(
+          retry: null,
           name: r'wrongOrderProvider',
           dependencies: null,
           allTransitiveDependencies: null,

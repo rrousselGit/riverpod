@@ -25,6 +25,7 @@ final class FunctionalProvider extends $FunctionalProvider<String, String>
       )? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'functionalProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -101,6 +102,7 @@ String _$functionalHash() => r'288107f94c896141a9b3999f606e4ccdf078f15e';
 final class FunctionalFamily extends Family {
   const FunctionalFamily._()
       : super(
+          retry: null,
           name: r'functionalProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -154,6 +156,7 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
       ClassBased Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'classBasedProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -231,6 +234,7 @@ String _$classBasedHash() => r'92b444806ef8a304c6e0dc3d8e2383601e781183';
 final class ClassBasedFamily extends Family {
   const ClassBasedFamily._()
       : super(
+          retry: null,
           name: r'classBasedProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -321,6 +325,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
       )? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'familyProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -397,6 +402,7 @@ String _$familyHash() => r'd70685b83be840bfd9e79c11fb84c905d19d6e10';
 final class FamilyFamily extends Family {
   const FamilyFamily._()
       : super(
+          retry: null,
           name: r'familyProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -452,6 +458,7 @@ final class NotCopiedFunctionalProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'notCopiedFunctionalProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -508,6 +515,7 @@ final class NotCopiedClassBasedProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'notCopiedClassBasedProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -583,6 +591,7 @@ final class NotCopiedFamilyProvider extends $FunctionalProvider<String, String>
       )? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'notCopiedFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -659,6 +668,7 @@ String _$notCopiedFamilyHash() => r'6ef06ce6ebd73b476870bbe1af41c4f3fbe8ddb1';
 final class NotCopiedFamilyFamily extends Family {
   const NotCopiedFamilyFamily._()
       : super(
+          retry: null,
           name: r'notCopiedFamilyProvider',
           dependencies: null,
           allTransitiveDependencies: null,

@@ -17,11 +17,12 @@ final notifierProviderFactory = TestMatrix<NotifierTestFactory>(
       provider: <StateT>(create) => NotifierProvider<Notifier<StateT>, StateT>(
         () => create() as Notifier<StateT>,
       ),
-      value: (create, {name, dependencies}) => ([arg]) {
+      value: (create, {name, dependencies, retry}) => ([arg]) {
         return NotifierProvider<Notifier<Object?>, Object?>(
           () => create(null, arg) as Notifier<Object?>,
           name: name,
           dependencies: dependencies,
+          retry: retry,
         );
       },
     ),
@@ -42,11 +43,12 @@ final notifierProviderFactory = TestMatrix<NotifierTestFactory>(
           () => create() as Notifier<StateT>,
         );
       },
-      value: (create, {name, dependencies}) => ([arg]) {
+      value: (create, {name, dependencies, retry}) => ([arg]) {
         return NotifierProvider.autoDispose<Notifier<Object?>, Object?>(
           () => create(null, arg) as Notifier<Object?>,
           name: name,
           dependencies: dependencies,
+          retry: retry,
         );
       },
     ),
@@ -69,12 +71,13 @@ final notifierProviderFactory = TestMatrix<NotifierTestFactory>(
           () => create() as FamilyNotifier<StateT, Object?>,
         ).call(42);
       },
-      value: (create, {name, dependencies}) => ([arg]) {
+      value: (create, {name, dependencies, retry}) => ([arg]) {
         return NotifierProvider.family<FamilyNotifier<Object?, Object?>,
             Object?, Object?>(
           () => create(null, arg) as FamilyNotifier<Object?, Object?>,
           name: name,
           dependencies: dependencies,
+          retry: retry,
         )(arg);
       },
     ),
@@ -99,12 +102,13 @@ final notifierProviderFactory = TestMatrix<NotifierTestFactory>(
             )
             .call(42);
       },
-      value: (create, {name, dependencies}) => ([arg]) {
+      value: (create, {name, dependencies, retry}) => ([arg]) {
         return NotifierProvider.autoDispose
             .family<FamilyNotifier<Object?, Object?>, Object?, Object?>(
           () => create(null, arg) as FamilyNotifier<Object?, Object?>,
           name: name,
           dependencies: dependencies,
+          retry: retry,
         )(arg);
       },
     ),

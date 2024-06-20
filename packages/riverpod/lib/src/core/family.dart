@@ -15,6 +15,7 @@ typedef FunctionalProviderFactory< //
   required bool isAutoDispose,
   required Family from,
   required ArgT argument,
+  required Retry? retry,
 });
 
 /// A typedef representing the constructor of a [NotifierProvider].
@@ -35,6 +36,7 @@ typedef ClassProviderFactory< //
   required bool isAutoDispose,
   required Family from,
   required ArgT argument,
+  required Retry? retry,
 });
 
 /// A [Create] equivalent used by [Family].
@@ -50,6 +52,7 @@ abstract class Family extends ProviderOrFamily implements _FamilyOverride {
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.isAutoDispose,
+    required super.retry,
   });
 
   @override
@@ -88,6 +91,7 @@ class FunctionalFamily< //
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.isAutoDispose,
+    required super.retry,
   }) : _providerFactory = providerFactory;
 
   final FunctionalProviderFactory<ProviderT, CreatedT, Ref<StateT>, ArgT>
@@ -110,6 +114,7 @@ class FunctionalFamily< //
       argument: argument,
       dependencies: null,
       allTransitiveDependencies: null,
+      retry: retry,
     );
   }
 
@@ -162,6 +167,7 @@ class ClassFamily< //
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.isAutoDispose,
+    required super.retry,
   });
 
   @internal
@@ -177,6 +183,7 @@ class ClassFamily< //
       name: name,
       isAutoDispose: isAutoDispose,
       from: this,
+      retry: retry,
       argument: argument,
       dependencies: null,
       allTransitiveDependencies: null,

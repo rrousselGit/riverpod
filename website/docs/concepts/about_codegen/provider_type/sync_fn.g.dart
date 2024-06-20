@@ -23,6 +23,7 @@ final class ExampleProvider extends $FunctionalProvider<String, String>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'exampleProvider',
           isAutoDispose: true,
           dependencies: null,

@@ -17,6 +17,7 @@ final class UnimplementedScopedProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'unimplementedScopedProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
@@ -91,6 +92,7 @@ final class ScopedProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'scopedProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
@@ -150,6 +152,7 @@ final class RootProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'rootProvider',
           isAutoDispose: true,
           dependencies: null,

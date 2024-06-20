@@ -26,6 +26,7 @@ final class FetchConfigurationProvider extends $FunctionalProvider<
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'fetchConfigurationProvider',
           isAutoDispose: true,
           dependencies: null,

@@ -11,6 +11,7 @@ sealed class ProviderOrFamily implements ProviderListenableOrFamily {
     required this.dependencies,
     required this.allTransitiveDependencies,
     required this.isAutoDispose,
+    required this.retry,
   });
 
   /// The family that this provider/family depends on.
@@ -22,6 +23,17 @@ sealed class ProviderOrFamily implements ProviderListenableOrFamily {
   /// This is picked-up by devtools and [toString] to show better messages.
   /// {@endtemplate}
   final String? name;
+
+  /// {@template riverpod.retry}
+  /// The default retry logic used by providers associated to this container.
+  ///
+  /// The default implementation:
+  /// - has unlimited retries
+  /// - starts with a delay of 200ms
+  /// - doubles the delay on each retry up to 6.4 seconds
+  /// - retries all failures
+  /// {@endtemplate}
+  final Retry? retry;
 
   /// The list of providers that this provider potentially depends on.
   ///

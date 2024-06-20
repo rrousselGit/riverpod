@@ -22,6 +22,7 @@ final class ProviderWithDependencies2Provider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'providerWithDependencies2Provider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[
@@ -102,6 +103,7 @@ final class FamilyWithDependencies2Provider
       })? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'familyWithDependencies2Provider',
           isAutoDispose: true,
           dependencies: null,
@@ -188,6 +190,7 @@ String _$familyWithDependencies2Hash() =>
 final class FamilyWithDependencies2Family extends Family {
   const FamilyWithDependencies2Family._()
       : super(
+          retry: null,
           name: r'familyWithDependencies2Provider',
           dependencies: const <ProviderOrFamily>[
             providerWithDependenciesProvider,
@@ -249,6 +252,7 @@ final class NotifierWithDependenciesProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'notifierWithDependenciesProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[
@@ -340,6 +344,7 @@ final class NotifierFamilyWithDependenciesProvider
       NotifierFamilyWithDependencies Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'notifierFamilyWithDependenciesProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -428,6 +433,7 @@ String _$notifierFamilyWithDependenciesHash() =>
 final class NotifierFamilyWithDependenciesFamily extends Family {
   const NotifierFamilyWithDependenciesFamily._()
       : super(
+          retry: null,
           name: r'notifierFamilyWithDependenciesProvider',
           dependencies: const <ProviderOrFamily>[
             providerWithDependenciesProvider,
@@ -527,6 +533,7 @@ final class _Private2Provider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'_private2Provider',
           isAutoDispose: true,
           dependencies: null,
@@ -586,6 +593,7 @@ final class Public2Provider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'public2Provider',
           isAutoDispose: true,
           dependencies: null,

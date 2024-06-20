@@ -24,6 +24,7 @@ final class StreamExampleProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'streamExampleProvider',
           isAutoDispose: true,
           dependencies: null,

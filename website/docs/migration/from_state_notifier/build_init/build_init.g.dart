@@ -19,6 +19,7 @@ final class CounterNotifierProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'counterNotifierProvider',
           isAutoDispose: true,
           dependencies: null,

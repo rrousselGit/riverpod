@@ -127,6 +127,7 @@ final class CurrentQuestionProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'currentQuestionProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],

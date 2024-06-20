@@ -22,6 +22,7 @@ final class GenericProvider<T extends num>
       : _createCb = create,
         super(
           argument: null,
+          retry: null,
           name: r'genericProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -89,6 +90,7 @@ String _$genericHash() => r'6ee5473ece745b00328c1e048f6967c160343620';
 final class GenericFamily extends Family {
   const GenericFamily._()
       : super(
+          retry: null,
           name: r'genericProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -130,6 +132,7 @@ final class GenericClassProvider<T extends num>
       : _createCb = create,
         super(
           argument: null,
+          retry: null,
           name: r'genericClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -214,6 +217,7 @@ String _$genericClassHash() => r'd3c4acc9cdae12f6c666fbf1f89aee212bb086db';
 final class GenericClassFamily extends Family {
   const GenericClassFamily._()
       : super(
+          retry: null,
           name: r'genericClassProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -283,6 +287,7 @@ final class PublicProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'publicProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -335,6 +340,7 @@ final class _PrivateProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'_privateProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -388,6 +394,7 @@ final class FamilyOrProvider
       )? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'familyOrProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -456,6 +463,7 @@ String _$familyOrHash() => r'1c3217e296b0ce52c07c18769d1fffb95850f482';
 final class FamilyOrFamily extends Family {
   const FamilyOrFamily._()
       : super(
+          retry: null,
           name: r'familyOrProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -523,6 +531,7 @@ final class FamilyProvider
       })? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'familyProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -615,6 +624,7 @@ String _$familyHash() => r'eb6fad35a94d4238b621c2100253ee2c700bee77';
 final class FamilyFamily extends Family {
   const FamilyFamily._()
       : super(
+          retry: null,
           name: r'familyProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -687,6 +697,7 @@ final class PublicClassProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'publicClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -748,6 +759,7 @@ final class _PrivateClassProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'_privateClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -810,6 +822,7 @@ final class FamilyOrClassProvider
       FamilyOrClass Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'familyOrClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -879,6 +892,7 @@ String _$familyOrClassHash() => r'b4882d4e79a03c63005d35eb7a021c9c4373a8d9';
 final class FamilyOrClassFamily extends Family {
   const FamilyOrClassFamily._()
       : super(
+          retry: null,
           name: r'familyOrClassProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -970,6 +984,7 @@ final class FamilyClassProvider
       FamilyClass Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'familyClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -1051,6 +1066,7 @@ String _$familyClassHash() => r'b7e3ca6091f12bbc99972e961acd885e05f42a15';
 final class FamilyClassFamily extends Family {
   const FamilyClassFamily._()
       : super(
+          retry: null,
           name: r'familyClassProvider',
           dependencies: null,
           allTransitiveDependencies: null,

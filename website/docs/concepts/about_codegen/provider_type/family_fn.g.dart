@@ -29,6 +29,7 @@ final class ExampleProvider extends $FunctionalProvider<String, String>
       })? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'exampleProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -114,6 +115,7 @@ String _$exampleHash() => r'9c32e94eea83a436746088de51e6426f251b2190';
 final class ExampleFamily extends Family {
   const ExampleFamily._()
       : super(
+          retry: null,
           name: r'exampleProvider',
           dependencies: null,
           allTransitiveDependencies: null,

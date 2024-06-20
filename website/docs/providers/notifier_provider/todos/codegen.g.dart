@@ -18,6 +18,7 @@ final class TodosProvider extends $NotifierProvider<Todos, List<Todo>> {
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'todosProvider',
           isAutoDispose: true,
           dependencies: null,

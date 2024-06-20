@@ -30,6 +30,7 @@ final class FamilyNotifierProvider //
     required super.argument,
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
+    required super.retry,
   });
 
   final NotifierT Function() _createNotifier;
@@ -59,6 +60,7 @@ final class FamilyNotifierProvider //
       runNotifierBuildOverride: build ?? runNotifierBuildOverride,
       from: from,
       argument: argument,
+      retry: retry,
     );
   }
 
@@ -97,6 +99,7 @@ class NotifierProviderFamily<
     super.name,
     super.dependencies,
     super.isAutoDispose = false,
+    super.retry,
   }) : super(
           providerFactory: FamilyNotifierProvider._,
           allTransitiveDependencies:

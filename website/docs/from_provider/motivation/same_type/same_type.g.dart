@@ -23,6 +23,7 @@ final class ItemsProvider extends $FunctionalProvider<List<Item>, List<Item>>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'itemsProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -83,6 +84,7 @@ final class EvenItemsProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'evenItemsProvider',
           isAutoDispose: true,
           dependencies: null,

@@ -205,6 +205,7 @@ mixin FutureModifierClassElement<
     StackTrace stackTrace, {
     required bool seamless,
   }) {
+    triggerRetry(error);
     onError(AsyncError(error, stackTrace), seamless: seamless);
   }
 }
@@ -422,14 +423,17 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   }) {
     onLoading(AsyncLoading<StateT>(), seamless: seamless);
 
+    void callOnError(Object error, StackTrace stackTrace) {
+      triggerRetry(error);
+      onError(AsyncError(error, stackTrace), seamless: seamless);
+    }
+
     try {
       final sub = _cancelSubscription = listen(
         data: (value) {
           onData(AsyncData(value), seamless: seamless);
         },
-        error: (error, stack) {
-          onError(AsyncError(error, stack), seamless: seamless);
-        },
+        error: callOnError,
         last: (last, sub) {
           assert(_lastFuture == null, 'bad state');
           assert(_lastFutureSub == null, 'bad state');
@@ -447,10 +451,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
         'An async operation is pending but the state for provider.future was not initialized.',
       );
     } catch (error, stackTrace) {
-      onError(
-        AsyncError<StateT>(error, stackTrace),
-        seamless: seamless,
-      );
+      callOnError(error, stackTrace);
     }
   }
 

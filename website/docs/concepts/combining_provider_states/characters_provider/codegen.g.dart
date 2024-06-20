@@ -23,6 +23,7 @@ final class SearchProvider extends $FunctionalProvider<String, String>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'searchProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -85,6 +86,7 @@ final class ConfigsProvider extends $FunctionalProvider<
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'configsProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -140,6 +142,7 @@ final class CharactersProvider extends $FunctionalProvider<
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'charactersProvider',
           isAutoDispose: true,
           dependencies: null,

@@ -21,6 +21,7 @@ final class IntegerProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'integerProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -81,6 +82,7 @@ final class StateNotifierProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'stateNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -143,6 +145,7 @@ final class AsyncStateNotifierProvider extends $FunctionalProvider<
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'asyncStateNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -192,6 +195,7 @@ final class StateNotifierClassProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'stateNotifierClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -269,6 +273,7 @@ final class StateNotifierAsyncProvider extends $FunctionalProvider<
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'stateNotifierAsyncProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -318,6 +323,7 @@ final class SelfNotifierProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'selfNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -379,6 +385,7 @@ final class SyncSelfNotifierProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'syncSelfNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -448,6 +455,7 @@ final class StreamSelfNotifierProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'streamSelfNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -512,6 +520,7 @@ final class StateNotifierClassAsyncProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'stateNotifierClassAsyncProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -581,6 +590,7 @@ final class ChangeNotifierProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'changeNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -636,6 +646,7 @@ final class ChangeNotifierClassProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'changeNotifierClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -710,6 +721,7 @@ final class NotifierProvider extends $FunctionalProvider<MyNotifier, MyNotifier>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'notifierProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -770,6 +782,7 @@ final class AutoDisposeNotifierProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'autoDisposeNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -827,6 +840,7 @@ final class NotifierClassProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'notifierClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -901,6 +915,7 @@ final class AsyncNotifierProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'asyncNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -956,6 +971,7 @@ final class AsyncNotifierClassProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'asyncNotifierClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -1031,6 +1047,7 @@ final class RawNotifierProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'rawNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -1092,6 +1109,7 @@ final class RawFutureNotifierProvider extends $FunctionalProvider<
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'rawFutureNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -1153,6 +1171,7 @@ final class RawStreamNotifierProvider extends $FunctionalProvider<
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'rawStreamNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -1216,6 +1235,7 @@ final class FutureRawNotifierProvider extends $FunctionalProvider<
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'futureRawNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -1271,6 +1291,7 @@ final class StreamRawNotifierProvider extends $FunctionalProvider<
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'streamRawNotifierProvider',
           isAutoDispose: true,
           dependencies: null,

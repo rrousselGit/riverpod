@@ -24,6 +24,7 @@ final class ItemsApiProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'itemsApiProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -76,6 +77,7 @@ final class EvenItemsProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'evenItemsProvider',
           isAutoDispose: true,
           dependencies: null,

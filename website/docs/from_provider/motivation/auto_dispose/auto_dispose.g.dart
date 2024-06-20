@@ -23,6 +23,7 @@ final class DiceRollProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'diceRollProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -82,6 +83,7 @@ final class CachedDiceRollProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'cachedDiceRollProvider',
           isAutoDispose: true,
           dependencies: null,

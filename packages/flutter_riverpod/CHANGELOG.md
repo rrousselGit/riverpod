@@ -9,6 +9,8 @@
 - **Breaking** Some internal utils are no-longer exported.
 - Added support for `Ref/ProviderContainer.invalidate(provider, asReload: true)`
 - Removed deprecated `@ProviderScope.parent`
+- Failing providers are now automatically retried after a delay.
+  The delay can be optionally configured.
 
 ## 3.0.0-dev.3 - 2023-11-27
 

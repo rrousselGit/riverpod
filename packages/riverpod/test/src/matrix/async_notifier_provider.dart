@@ -18,11 +18,12 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
           AsyncNotifierProvider<AsyncNotifier<StateT>, StateT>(
         () => create() as AsyncNotifier<StateT>,
       ),
-      value: (create, {name, dependencies}) => ([arg]) {
+      value: (create, {name, dependencies, retry}) => ([arg]) {
         return AsyncNotifierProvider<AsyncNotifier<Object?>, Object?>(
           () => create(null, arg) as AsyncNotifier<Object?>,
           name: name,
           dependencies: dependencies,
+          retry: retry,
         );
       },
     ),
@@ -44,12 +45,13 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
           () => create() as AsyncNotifier<StateT>,
         );
       },
-      value: (create, {name, dependencies}) => ([arg]) {
+      value: (create, {name, dependencies, retry}) => ([arg]) {
         return AsyncNotifierProvider.autoDispose<AsyncNotifier<Object?>,
             Object?>(
           () => create(null, arg) as AsyncNotifier<Object?>,
           name: name,
           dependencies: dependencies,
+          retry: retry,
         );
       },
     ),
@@ -72,12 +74,13 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
           () => create() as FamilyAsyncNotifier<StateT, Object?>,
         ).call(42);
       },
-      value: (create, {name, dependencies}) => ([arg]) {
+      value: (create, {name, dependencies, retry}) => ([arg]) {
         return AsyncNotifierProvider.family<
             FamilyAsyncNotifier<Object?, Object?>, Object?, Object?>(
           () => create(null, arg) as FamilyAsyncNotifier<Object?, Object?>,
           name: name,
           dependencies: dependencies,
+          retry: retry,
         )(arg);
       },
     ),
@@ -102,12 +105,13 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
             )
             .call(42);
       },
-      value: (create, {name, dependencies}) => ([arg]) {
+      value: (create, {name, dependencies, retry}) => ([arg]) {
         return AsyncNotifierProvider.autoDispose
             .family<FamilyAsyncNotifier<Object?, Object?>, Object?, Object?>(
           () => create(null, arg) as FamilyAsyncNotifier<Object?, Object?>,
           name: name,
           dependencies: dependencies,
+          retry: retry,
         )(arg);
       },
     ),

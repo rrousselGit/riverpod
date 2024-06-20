@@ -21,3 +21,5 @@ scripts:
   generate:
     run: melos exec --depends-on=lint_visitor_generator -- "dart run build_runner build -d" && melos exec --depends-on=build_runner --no-depends-on=lint_visitor_generator -- "dart run build_runner build -d"
     description: Build all generated files for Dart & Flutter packages in this project.
+    exclude:
+      - lint_visitor_generator

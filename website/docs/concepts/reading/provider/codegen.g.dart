@@ -24,6 +24,7 @@ final class RepositoryProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'repositoryProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -83,6 +84,7 @@ final class ValueProvider extends $FunctionalProvider<String, String>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'valueProvider',
           isAutoDispose: true,
           dependencies: null,

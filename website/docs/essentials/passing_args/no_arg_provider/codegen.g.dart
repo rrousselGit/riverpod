@@ -24,6 +24,7 @@ final class ActivityProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'activityProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -71,6 +72,7 @@ final class ActivityNotifier2Provider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'activityNotifier2Provider',
           isAutoDispose: true,
           dependencies: null,

@@ -67,6 +67,7 @@ final class AsyncNotifierProvider< //
     super.name,
     super.dependencies,
     super.isAutoDispose = false,
+    super.retry,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
@@ -86,6 +87,7 @@ final class AsyncNotifierProvider< //
     required super.argument,
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
+    required super.retry,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -114,6 +116,7 @@ final class AsyncNotifierProvider< //
       argument: argument,
       isAutoDispose: isAutoDispose,
       runNotifierBuildOverride: build ?? runNotifierBuildOverride,
+      retry: retry,
     );
   }
 

@@ -21,6 +21,7 @@ final class DepProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'depProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -81,6 +82,7 @@ final class FamilyProvider extends $FunctionalProvider<int, int>
       )? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'familyProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -157,6 +159,7 @@ String _$familyHash() => r'8c228ff14b8c6cf1f3d4d6266232d64b5057c440';
 final class FamilyFamily extends Family {
   const FamilyFamily._()
       : super(
+          retry: null,
           name: r'familyProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -206,6 +209,7 @@ final class Dep2Provider extends $NotifierProvider<Dep2, int> {
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'dep2Provider',
           isAutoDispose: true,
           dependencies: null,
@@ -275,6 +279,7 @@ final class Family2Provider extends $NotifierProvider<Family2, int> {
       Family2 Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'family2Provider',
           isAutoDispose: true,
           dependencies: null,
@@ -352,6 +357,7 @@ String _$family2Hash() => r'ce727b262aae067b0d4f703f03670abb70ad8977';
 final class Family2Family extends Family {
   const Family2Family._()
       : super(
+          retry: null,
           name: r'family2Provider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -437,6 +443,7 @@ final class ProviderProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'providerProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[
@@ -511,6 +518,7 @@ final class Provider2Provider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'provider2Provider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[
@@ -580,6 +588,7 @@ final class Provider3Provider extends $NotifierProvider<Provider3, int> {
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'provider3Provider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[
@@ -664,6 +673,7 @@ final class Provider4Provider extends $NotifierProvider<Provider4, int> {
       Provider4 Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'provider4Provider',
           isAutoDispose: true,
           dependencies: null,
@@ -746,6 +756,7 @@ String _$provider4Hash() => r'1c955214d99695bb694c96374b277aac58e734df';
 final class Provider4Family extends Family {
   const Provider4Family._()
       : super(
+          retry: null,
           name: r'provider4Provider',
           dependencies: const <ProviderOrFamily>[
             depProvider,
@@ -841,6 +852,7 @@ final class TransitiveDependenciesProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'transitiveDependenciesProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[providerProvider],
@@ -919,6 +931,7 @@ final class SmallTransitiveDependencyCountProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'smallTransitiveDependencyCountProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[
@@ -993,6 +1006,7 @@ final class EmptyDependenciesFunctionalProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'emptyDependenciesFunctionalProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
@@ -1051,6 +1065,7 @@ final class EmptyDependenciesClassBasedProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'emptyDependenciesClassBasedProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
@@ -1128,6 +1143,7 @@ final class ProviderWithDependenciesProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'providerWithDependenciesProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[
@@ -1197,6 +1213,7 @@ final class _PrivateDepProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'_privateDepProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -1256,6 +1273,7 @@ final class PublicDepProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'publicDepProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -1315,6 +1333,7 @@ final class DuplicateDependenciesProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'duplicateDependenciesProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[depProvider, dep2Provider],
@@ -1381,6 +1400,7 @@ final class DuplicateDependencies2Provider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'duplicateDependencies2Provider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[
@@ -1452,6 +1472,7 @@ final class TransitiveDuplicateDependenciesProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'transitiveDuplicateDependenciesProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[

@@ -21,6 +21,7 @@ final class CountProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'myCountPod',
           isAutoDispose: true,
           dependencies: null,
@@ -81,6 +82,7 @@ final class CountFutureProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'myCountFuturePod',
           isAutoDispose: true,
           dependencies: null,
@@ -133,6 +135,7 @@ final class CountStreamProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'myCountStreamPod',
           isAutoDispose: true,
           dependencies: null,
@@ -180,6 +183,7 @@ final class CountNotifierProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'myCountNotifierPod',
           isAutoDispose: true,
           dependencies: null,
@@ -249,6 +253,7 @@ final class CountAsyncNotifierProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'myCountAsyncNotifierPod',
           isAutoDispose: true,
           dependencies: null,
@@ -311,6 +316,7 @@ final class CountStreamNotifierProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'myCountStreamNotifierPod',
           isAutoDispose: true,
           dependencies: null,
@@ -378,6 +384,7 @@ final class Count2Provider extends $FunctionalProvider<int, int>
       )? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'myFamilyCount2ProviderFamily',
           isAutoDispose: true,
           dependencies: null,
@@ -454,6 +461,7 @@ String _$count2Hash() => r'6256825480d83bb13acde282cf3c9d9524cc3a6c';
 final class Count2Family extends Family {
   const Count2Family._()
       : super(
+          retry: null,
           name: r'myFamilyCount2ProviderFamily',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -510,6 +518,7 @@ final class CountFuture2Provider
       )? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'myFamilyCountFuture2ProviderFamily',
           isAutoDispose: true,
           dependencies: null,
@@ -578,6 +587,7 @@ String _$countFuture2Hash() => r'096675b70a267f5d7c62ac7d3e7dd231ef529034';
 final class CountFuture2Family extends Family {
   const CountFuture2Family._()
       : super(
+          retry: null,
           name: r'myFamilyCountFuture2ProviderFamily',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -634,6 +644,7 @@ final class CountStream2Provider
       )? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'myFamilyCountStream2ProviderFamily',
           isAutoDispose: true,
           dependencies: null,
@@ -702,6 +713,7 @@ String _$countStream2Hash() => r'051264dd685ebc0a57e454bb676957c93cb4ae20';
 final class CountStream2Family extends Family {
   const CountStream2Family._()
       : super(
+          retry: null,
           name: r'myFamilyCountStream2ProviderFamily',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -753,6 +765,7 @@ final class CountNotifier2Provider
       CountNotifier2 Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'myFamilyCountNotifier2ProviderFamily',
           isAutoDispose: true,
           dependencies: null,
@@ -830,6 +843,7 @@ String _$countNotifier2Hash() => r'ef12bb4f94add336804ae43bcdbcd8e9b0bec420';
 final class CountNotifier2Family extends Family {
   const CountNotifier2Family._()
       : super(
+          retry: null,
           name: r'myFamilyCountNotifier2ProviderFamily',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -912,6 +926,7 @@ final class CountAsyncNotifier2Provider
       CountAsyncNotifier2 Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'myFamilyCountAsyncNotifier2ProviderFamily',
           isAutoDispose: true,
           dependencies: null,
@@ -982,6 +997,7 @@ String _$countAsyncNotifier2Hash() =>
 final class CountAsyncNotifier2Family extends Family {
   const CountAsyncNotifier2Family._()
       : super(
+          retry: null,
           name: r'myFamilyCountAsyncNotifier2ProviderFamily',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -1067,6 +1083,7 @@ final class CountStreamNotifier2Provider
       CountStreamNotifier2 Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'myFamilyCountStreamNotifier2ProviderFamily',
           isAutoDispose: true,
           dependencies: null,
@@ -1137,6 +1154,7 @@ String _$countStreamNotifier2Hash() =>
 final class CountStreamNotifier2Family extends Family {
   const CountStreamNotifier2Family._()
       : super(
+          retry: null,
           name: r'myFamilyCountStreamNotifier2ProviderFamily',
           dependencies: null,
           allTransitiveDependencies: null,

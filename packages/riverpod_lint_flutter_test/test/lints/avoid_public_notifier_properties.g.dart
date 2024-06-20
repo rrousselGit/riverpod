@@ -18,6 +18,7 @@ final class GeneratedNotifierProvider
       GeneratedNotifier Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'generatedNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -95,6 +96,7 @@ String _$generatedNotifierHash() => r'2b7f4fba816b6e8ccd0e8b7d11fcd207bbb79828';
 final class GeneratedNotifierFamily extends Family {
   const GeneratedNotifierFamily._()
       : super(
+          retry: null,
           name: r'generatedNotifierProvider',
           dependencies: null,
           allTransitiveDependencies: null,

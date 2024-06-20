@@ -22,6 +22,7 @@ final class GenericProvider<T extends num>
       : _createCb = create,
         super(
           argument: null,
+          retry: null,
           name: r'genericProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -97,6 +98,7 @@ String _$genericHash() => r'0fda19dd377694315cdffd7414d53f98569c655c';
 final class GenericFamily extends Family {
   const GenericFamily._()
       : super(
+          retry: null,
           name: r'genericProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -148,6 +150,7 @@ final class ComplexGenericProvider<T extends num, Foo extends String?>
       })? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'complexGenericProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -251,6 +254,7 @@ String _$complexGenericHash() => r'a5254e5552cd61bb8d65c018539ff2d8edfd5822';
 final class ComplexGenericFamily extends Family {
   const ComplexGenericFamily._()
       : super(
+          retry: null,
           name: r'complexGenericProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -314,6 +318,7 @@ final class GenericClassProvider<T extends num>
       : _createCb = create,
         super(
           argument: null,
+          retry: null,
           name: r'genericClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -406,6 +411,7 @@ String _$genericClassHash() => r'42ec5a5635796c0d597f0c9dac28ec2f61a486ff';
 final class GenericClassFamily extends Family {
   const GenericClassFamily._()
       : super(
+          retry: null,
           name: r'genericClassProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -474,6 +480,7 @@ final class RawFutureProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'rawFutureProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -535,6 +542,7 @@ final class RawStreamProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'rawStreamProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -591,6 +599,7 @@ final class RawFutureClassProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'rawFutureClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -660,6 +669,7 @@ final class RawStreamClassProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'rawStreamClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -735,6 +745,7 @@ final class RawFamilyFutureProvider
       )? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'rawFamilyFutureProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -812,6 +823,7 @@ String _$rawFamilyFutureHash() => r'485f59512081852e51279658facc015309743864';
 final class RawFamilyFutureFamily extends Family {
   const RawFamilyFutureFamily._()
       : super(
+          retry: null,
           name: r'rawFamilyFutureProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -868,6 +880,7 @@ final class RawFamilyStreamProvider
       )? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'rawFamilyStreamProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -945,6 +958,7 @@ String _$rawFamilyStreamHash() => r'e778e5cfcb8ab381e2412f5c73213aaa03b93012';
 final class RawFamilyStreamFamily extends Family {
   const RawFamilyStreamFamily._()
       : super(
+          retry: null,
           name: r'rawFamilyStreamProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -996,6 +1010,7 @@ final class RawFamilyFutureClassProvider
       RawFamilyFutureClass Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'rawFamilyFutureClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -1074,6 +1089,7 @@ String _$rawFamilyFutureClassHash() =>
 final class RawFamilyFutureClassFamily extends Family {
   const RawFamilyFutureClassFamily._()
       : super(
+          retry: null,
           name: r'rawFamilyFutureClassProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -1158,6 +1174,7 @@ final class RawFamilyStreamClassProvider
       RawFamilyStreamClass Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'rawFamilyStreamClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -1236,6 +1253,7 @@ String _$rawFamilyStreamClassHash() =>
 final class RawFamilyStreamClassFamily extends Family {
   const RawFamilyStreamClassFamily._()
       : super(
+          retry: null,
           name: r'rawFamilyStreamClassProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -1327,6 +1345,7 @@ final class PublicProvider extends $FunctionalProvider<String, String>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'publicProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -1386,6 +1405,7 @@ final class Supports$inNamesProvider extends $FunctionalProvider<String, String>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'supports$inNamesProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -1461,6 +1481,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
       })? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'familyProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -1562,6 +1583,7 @@ String _$familyHash() => r'14d1ee238ca608d547630d0e222ef4c5866e9e61';
 final class FamilyFamily extends Family {
   const FamilyFamily._()
       : super(
+          retry: null,
           name: r'familyProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -1639,6 +1661,7 @@ final class _PrivateProvider extends $FunctionalProvider<String, String>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'_privateProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -1696,6 +1719,7 @@ final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'publicClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -1765,6 +1789,7 @@ final class _PrivateClassProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'_privateClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -1844,6 +1869,7 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
       FamilyClass Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'familyClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -1934,6 +1960,7 @@ String _$familyClassHash() => r'ac5aba6b9cbee66236d6e1fa3d18b9b6ffb2c5f1';
 final class FamilyClassFamily extends Family {
   const FamilyClassFamily._()
       : super(
+          retry: null,
           name: r'familyClassProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -2077,6 +2104,7 @@ final class Supports$InFnNameProvider<And$InT>
       : _createCb = create,
         super(
           argument: null,
+          retry: null,
           name: r'supports$InFnNameProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -2153,6 +2181,7 @@ String _$supports$InFnNameHash() => r'fec3daca655669a46760cc54921f098b9cbaac3d';
 final class Supports$InFnNameFamily extends Family {
   const Supports$InFnNameFamily._()
       : super(
+          retry: null,
           name: r'supports$InFnNameProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -2207,6 +2236,7 @@ final class Supports$InFnNameFamilyProvider<And$InT>
       })? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'supports$InFnNameFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -2318,6 +2348,7 @@ String _$supports$InFnNameFamilyHash() =>
 final class Supports$InFnNameFamilyFamily extends Family {
   const Supports$InFnNameFamilyFamily._()
       : super(
+          retry: null,
           name: r'supports$InFnNameFamilyProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -2386,6 +2417,7 @@ final class Supports$InClassNameProvider<And$InT>
       : _createCb = create,
         super(
           argument: null,
+          retry: null,
           name: r'supports$InClassNameProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -2482,6 +2514,7 @@ String _$supports$InClassNameHash() =>
 final class Supports$InClassNameFamily extends Family {
   const Supports$InClassNameFamily._()
       : super(
+          retry: null,
           name: r'supports$InClassNameProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -2552,6 +2585,7 @@ final class Supports$InClassFamilyNameProvider<And$InT>
       Supports$InClassFamilyName<And$InT> Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'supports$InClassFamilyNameProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -2670,6 +2704,7 @@ String _$supports$InClassFamilyNameHash() =>
 final class Supports$InClassFamilyNameFamily extends Family {
   const Supports$InClassFamilyNameFamily._()
       : super(
+          retry: null,
           name: r'supports$InClassFamilyNameProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -2791,6 +2826,7 @@ final class GeneratedProvider extends $FunctionalProvider<String, String>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'generatedProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -2851,6 +2887,7 @@ final class UnnecessaryCastProvider extends $FunctionalProvider<String, String>
       )? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'unnecessaryCastProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -2927,6 +2964,7 @@ String _$unnecessaryCastHash() => r'282c11ef4f55267c3e6ed70af1a260cd1c2163e6';
 final class UnnecessaryCastFamily extends Family {
   const UnnecessaryCastFamily._()
       : super(
+          retry: null,
           name: r'unnecessaryCastProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -2978,6 +3016,7 @@ final class UnnecessaryCastClassProvider
       UnnecessaryCastClass Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'unnecessaryCastClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -3056,6 +3095,7 @@ String _$unnecessaryCastClassHash() =>
 final class UnnecessaryCastClassFamily extends Family {
   const UnnecessaryCastClassFamily._()
       : super(
+          retry: null,
           name: r'unnecessaryCastClassProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -3148,6 +3188,7 @@ final class ManyDataStreamProvider<T extends Object, S extends Object>
       )? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'manyDataStreamProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -3230,6 +3271,7 @@ String _$manyDataStreamHash() => r'965270e9e187c17b8c78c03ded79136a4073ff04';
 final class ManyDataStreamFamily extends Family {
   const ManyDataStreamFamily._()
       : super(
+          retry: null,
           name: r'manyDataStreamProvider',
           dependencies: null,
           allTransitiveDependencies: null,

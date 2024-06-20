@@ -32,6 +32,8 @@
   issues where an old build of a provider is still performing work.
 - Updated `AsyncValue` documentations to use pattern matching.
 - Added support for `Ref/ProviderContainer.invalidate(provider, asReload: true)`
+- Failing providers are now automatically retried after a delay.
+  The delay can be optionally configured.
 - Fixed a bug when overriding a specific provider of a `family`, combined with `dependencies: [family]`
 
 ## 3.0.0-dev.3 - 2023-11-27

@@ -23,6 +23,7 @@ void main() {
           name: null,
           dependencies: null,
           allTransitiveDependencies: null,
+          retry: null,
           (ref) {
             constantHashBuild();
             return 0;
@@ -36,6 +37,7 @@ void main() {
           argument: null,
           name: null,
           dependencies: null,
+          retry: null,
           allTransitiveDependencies: null,
           (ref) {
             changingHashBuild();

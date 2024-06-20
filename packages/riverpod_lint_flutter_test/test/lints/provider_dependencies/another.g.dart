@@ -21,6 +21,7 @@ final class BProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'bProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -80,6 +81,7 @@ final class AnotherScopedProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'anotherScopedProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
@@ -139,6 +141,7 @@ final class AnotherNonEmptyScopedProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'anotherNonEmptyScopedProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[anotherScopedProvider],

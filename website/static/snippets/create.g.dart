@@ -24,6 +24,7 @@ final class BoredSuggestionProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'boredSuggestionProvider',
           isAutoDispose: true,
           dependencies: null,
