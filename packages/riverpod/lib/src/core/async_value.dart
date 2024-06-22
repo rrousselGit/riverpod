@@ -77,7 +77,7 @@ sealed class AsyncValue<StateT> {
   /// Prefer always using this constructor with the `const` keyword.
   /// {@endtemplate}
   // coverage:ignore-start
-  const factory AsyncValue.loading() = AsyncLoading<StateT>;
+  const factory AsyncValue.loading({num progress}) = AsyncLoading<StateT>;
   // coverage:ignore-end
 
   /// {@template async_value.error_ctor}
@@ -175,6 +175,16 @@ sealed class AsyncValue<StateT> {
   /// Even if [hasValue] is true, it is still possible for [isLoading]/[hasError]
   /// to also be true.
   bool get hasValue;
+
+  /// The current progress of the asynchronous operation.
+  ///
+  /// `null` if [isLoading] is false.
+  /// This value must be between 0 and 1.
+  ///
+  /// When a provider starts an async operation, the progress is set to `0`.
+  /// As the operation progresses, the provider should update the progress.
+  /// This can be done with `AsyncLoading(progress: 0.5)`.
+  num? get progress;
 
   /// The value currently exposed.
   ///
@@ -293,6 +303,7 @@ sealed class AsyncValue<StateT> {
             isLoading: d.isLoading,
             error: d.error,
             stackTrace: d.stackTrace,
+            progress: d.progress,
           );
         } catch (err, stack) {
           return AsyncError._(
@@ -301,6 +312,7 @@ sealed class AsyncValue<StateT> {
             isLoading: d.isLoading,
             value: null,
             hasValue: false,
+            progress: d.progress,
           );
         }
       },
@@ -310,8 +322,9 @@ sealed class AsyncValue<StateT> {
         isLoading: e.isLoading,
         value: null,
         hasValue: false,
+        progress: e.progress,
       ),
-      loading: (l) => AsyncLoading<R>(),
+      loading: (l) => AsyncLoading<R>(progress: progress!),
     );
   }
 
@@ -478,14 +491,14 @@ sealed class AsyncValue<StateT> {
   AsyncValue<StateT> unwrapPrevious() {
     return map(
       data: (d) {
-        if (d.isLoading) return AsyncLoading<StateT>();
+        if (d.isLoading) return AsyncLoading<StateT>(progress: progress!);
         return AsyncData(d.value);
       },
       error: (e) {
-        if (e.isLoading) return AsyncLoading<StateT>();
+        if (e.isLoading) return AsyncLoading<StateT>(progress: progress!);
         return AsyncError(e.error, e.stackTrace);
       },
-      loading: (l) => AsyncLoading<StateT>(),
+      loading: (l) => AsyncLoading<StateT>(progress: progress!),
     );
   }
 
@@ -493,6 +506,7 @@ sealed class AsyncValue<StateT> {
   String toString() {
     final content = [
       if (isLoading && this is! AsyncLoading) 'isLoading: $isLoading',
+      if (progress case final progress?) 'progress: $progress',
       if (hasValue) 'value: $value',
       if (hasError) ...[
         'error: $error',
@@ -511,6 +525,7 @@ sealed class AsyncValue<StateT> {
         other.hasValue == hasValue &&
         other.error == error &&
         other.stackTrace == stackTrace &&
+        other.progress == progress &&
         other.value == value;
   }
 
@@ -522,6 +537,7 @@ sealed class AsyncValue<StateT> {
         value,
         error,
         stackTrace,
+        progress,
       );
 }
 
@@ -534,6 +550,7 @@ final class AsyncData<StateT> extends AsyncValue<StateT> {
           isLoading: false,
           error: null,
           stackTrace: null,
+          progress: null,
         );
 
   const AsyncData._(
@@ -541,6 +558,7 @@ final class AsyncData<StateT> extends AsyncValue<StateT> {
     required this.isLoading,
     required this.error,
     required this.stackTrace,
+    required this.progress,
   }) : super._();
 
   @override
@@ -548,6 +566,9 @@ final class AsyncData<StateT> extends AsyncValue<StateT> {
 
   @override
   bool get hasValue => true;
+
+  @override
+  final num? progress;
 
   @override
   final StateT value;
@@ -587,6 +608,7 @@ final class AsyncData<StateT> extends AsyncValue<StateT> {
       isLoading: isLoading,
       error: error,
       stackTrace: stackTrace,
+      progress: progress,
     );
   }
 }
@@ -594,11 +616,15 @@ final class AsyncData<StateT> extends AsyncValue<StateT> {
 /// {@macro async_value.loading}
 final class AsyncLoading<StateT> extends AsyncValue<StateT> {
   /// {@macro async_value.loading}
-  const AsyncLoading()
+  const AsyncLoading({this.progress = 0})
       : hasValue = false,
         value = null,
         error = null,
         stackTrace = null,
+        assert(
+          progress >= 0 && progress <= 1,
+          'progress must be between 0 and 1',
+        ),
         super._();
 
   const AsyncLoading._({
@@ -606,6 +632,7 @@ final class AsyncLoading<StateT> extends AsyncValue<StateT> {
     required this.value,
     required this.error,
     required this.stackTrace,
+    required this.progress,
   }) : super._();
 
   @override
@@ -616,6 +643,9 @@ final class AsyncLoading<StateT> extends AsyncValue<StateT> {
 
   @override
   final bool hasValue;
+
+  @override
+  final num progress;
 
   @override
   final StateT? value;
@@ -634,6 +664,7 @@ final class AsyncLoading<StateT> extends AsyncValue<StateT> {
       value: value as R?,
       error: error,
       stackTrace: stackTrace,
+      progress: progress,
     );
   }
 
@@ -658,6 +689,7 @@ final class AsyncLoading<StateT> extends AsyncValue<StateT> {
           isLoading: true,
           error: d.error,
           stackTrace: d.stackTrace,
+          progress: progress,
         ),
         error: (e) => AsyncError._(
           e.error,
@@ -665,6 +697,7 @@ final class AsyncLoading<StateT> extends AsyncValue<StateT> {
           value: e.value,
           stackTrace: e.stackTrace,
           hasValue: e.hasValue,
+          progress: progress,
         ),
         loading: (_) => this,
       );
@@ -675,12 +708,14 @@ final class AsyncLoading<StateT> extends AsyncValue<StateT> {
           value: d.value,
           error: d.error,
           stackTrace: d.stackTrace,
+          progress: progress,
         ),
         error: (e) => AsyncLoading._(
           hasValue: e.hasValue,
           value: e.value,
           error: e.error,
           stackTrace: e.stackTrace,
+          progress: progress,
         ),
         loading: (e) => e,
       );
@@ -698,6 +733,7 @@ final class AsyncError<StateT> extends AsyncValue<StateT> {
           isLoading: false,
           hasValue: false,
           value: null,
+          progress: null,
         );
 
   const AsyncError._(
@@ -706,10 +742,14 @@ final class AsyncError<StateT> extends AsyncValue<StateT> {
     required this.value,
     required this.hasValue,
     required this.isLoading,
+    required this.progress,
   }) : super._();
 
   @override
   String get _displayString => 'AsyncError';
+
+  @override
+  final num? progress;
 
   @override
   final bool isLoading;
@@ -735,6 +775,7 @@ final class AsyncError<StateT> extends AsyncValue<StateT> {
       isLoading: isLoading,
       value: value as R?,
       hasValue: hasValue,
+      progress: progress,
     );
   }
 
@@ -758,6 +799,7 @@ final class AsyncError<StateT> extends AsyncValue<StateT> {
       isLoading: isLoading,
       value: previous.value,
       hasValue: previous.hasValue,
+      progress: progress,
     );
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
@@ -7,6 +9,26 @@ import '../utils.dart';
 
 void main() {
   group('FutureProvider', () {
+    test('resets progress to 0 if restarting while the future is pending', () {
+      final container = ProviderContainer.test();
+      late Ref<AsyncValue<int>> ref;
+      final completer = Completer<int>();
+      addTearDown(() => completer.complete(42));
+
+      final provider = FutureProvider<int>((r) {
+        ref = r;
+        return completer.future;
+      });
+
+      expect(container.read(provider), const AsyncValue<int>.loading());
+
+      ref.state = const AsyncValue.loading(progress: .2);
+
+      container.refresh(provider);
+
+      expect(container.read(provider), const AsyncValue<int>.loading());
+    });
+
     group('retry', () {
       test(
         'handles retry',
