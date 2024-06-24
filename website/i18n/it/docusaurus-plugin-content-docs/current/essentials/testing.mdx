@@ -3,7 +3,6 @@ title: Testare i tuoi provider
 ---
 
 import { AutoSnippet, When } from "../../../../../src/components/CodeSnippet";
-import createContainer from "!!raw-loader!/docs/essentials/testing/create_container.dart";
 import unitTest from "!!raw-loader!/docs/essentials/testing/unit_test.dart";
 import widgetTest from "!!raw-loader!/docs/essentials/testing/widget_test.dart";
 import fullWidgetTest from "!!raw-loader!/docs/essentials/testing/full_widget_test.dart";
@@ -42,13 +41,6 @@ I test unitari sono definit usando la funzione `test` da [package:test](https://
 
 La differenza principale con qualsiasi altro test è che creeremo un oggetto
 `ProviderContainer`. Questo oggetto permetterà al nostro test di interagire con i provider
-
-Si consiglia di creare un'utilità di test sia per la creazione che per l'eliminazione 
-di un oggetto `ProviderContainer`:
-
-<AutoSnippet raw={createContainer} />
-
-Successivamente, possiamo definire un `test` utilizzando questa utilità:
 
 <AutoSnippet raw={unitTest} />
 

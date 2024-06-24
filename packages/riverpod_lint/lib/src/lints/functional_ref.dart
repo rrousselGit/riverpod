@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
 import '../riverpod_custom_lint.dart';
+import 'notifier_extends.dart';
 
 class FunctionalRef extends RiverpodLintRule {
   const FunctionalRef() : super(code: _code);
@@ -13,6 +14,7 @@ class FunctionalRef extends RiverpodLintRule {
     name: 'functional_ref',
     problemMessage:
         'Functional providers must receive a ref matching the provider name as their first positional parameter.',
+    errorSeverity: ErrorSeverity.WARNING,
   );
 
   @override
@@ -22,9 +24,6 @@ class FunctionalRef extends RiverpodLintRule {
     CustomLintContext context,
   ) {
     riverpodRegistry(context).addFunctionalProviderDeclaration((declaration) {
-      // Scoped providers don't need a ref
-      if (declaration.needsOverride) return;
-
       final parameters = declaration.node.functionExpression.parameters!;
 
       final refNode = parameters.parameters.firstOrNull;
@@ -53,11 +52,31 @@ class FunctionalRef extends RiverpodLintRule {
       if (refNodeType.beginToken.lexeme != expectedRefName) {
         reporter.atNode(refNodeType, _code);
       }
+
+      final expectedTypeArguments =
+          declaration.node.functionExpression.typeParameters?.typeParameters ??
+              const <TypeParameter>[];
+
+      final currentRefType = refNode.type;
+      if (currentRefType is! NamedType) {
+        reporter.atNode(refNodeType, _code);
+        return;
+      }
+      final actualTypeArguments =
+          currentRefType.typeArguments?.arguments ?? const <TypeAnnotation>[];
+
+      if (!areGenericTypeArgumentsMatching(
+        expectedTypeArguments,
+        actualTypeArguments,
+      )) {
+        reporter.atNode(refNodeType, _code);
+        return;
+      }
     });
   }
 
   @override
-  List<Fix> getFixes() => [FunctionalRefFix()];
+  List<DartFix> getFixes() => [FunctionalRefFix()];
 }
 
 class FunctionalRefFix extends RiverpodFix {
@@ -75,7 +94,11 @@ class FunctionalRefFix extends RiverpodFix {
         return;
       }
 
-      final expectedRefType = refNameFor(declaration);
+      final expectedGenerics = genericsDisplayStringFor(
+        declaration.node.functionExpression.typeParameters,
+      );
+      final expectedRefType = '${refNameFor(declaration)}$expectedGenerics';
+
       final refNode = declaration
           .node.functionExpression.parameters!.parameters.firstOrNull;
       if (refNode == null) {
@@ -94,6 +117,8 @@ class FunctionalRefFix extends RiverpodFix {
         return;
       }
 
+      if (refNode is! SimpleFormalParameter) return;
+
       // No type specified, adding it.
       final changeBuilder = reporter.createChangeBuilder(
         message: 'Type as $expectedRefType',
@@ -106,7 +131,6 @@ class FunctionalRefFix extends RiverpodFix {
           return;
         }
 
-        refNode as SimpleFormalParameter;
         builder.addSimpleReplacement(
           sourceRangeFrom(
             start: refNode.type!.offset,

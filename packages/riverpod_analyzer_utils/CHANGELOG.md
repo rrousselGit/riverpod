@@ -1,3 +1,18 @@
+## Unreleased build
+
+- **Breaking**: Rewrote all RiverpodAst nodes to instead be extensions on `AstNodes`.
+  Too many changes to detail everything. I'm the only one who uses this package anyway.
+  If you're reading this, have a nice day!
+
+## 1.0.0-dev.1 - 2023-11-20
+
+- **Breaking** `LegacyProviderDeclarationElement.providerType` is now nullable.
+- Fix crash when parsing classes with a `ProviderBase` field.
+
+## 1.0.0-dev.0 - 2023-10-30
+
+- Added `GeneratorProviderDeclarationElement.isFamily`
+
 ## 0.5.3 - 2024-05-14
 
 - Correctly set minimum support analyzer version to 6.5.0
@@ -14,16 +29,10 @@
 
 - **Breaking** `LegacyProviderDeclarationElement.providerType` is now nullable.
 - Fix crash when parsing classes with a `ProviderBase` field.
- 
+
 ## 0.4.3 - 2023-10-28
 
-- `GeneratorProviderDeclaration.createdTypeDisplayString` now always
-  return `FutureOr<value>` on asynchronous providers.
-- Fixing typos
-
-## 0.4.2 - 2023-10-21
-
-- Type `provider.node` as `AnnotatedNode`
+- Added `GeneratorProviderDeclarationElement.isFamily`
 
 ## 0.4.1 - 2023-10-06
 

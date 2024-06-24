@@ -158,6 +158,39 @@ You can do so by using the [ProviderContainer] class:
 ```dart
 final repositoryProvider = Provider((ref) => Repository(ref));
 
+class Repository {
+  Repository(this.ref);
+
+  final Ref<Repository> ref;
+}
+```
+L'unica differenza che comporta passare `ref.read` è la scrittura di meno codice, inoltre,
+garantisce che il nostro oggetto non utilizzi mai `ref.watch`.
+:::
+
+:::danger **NON** usare [read] dentro al body di un provider
+
+```dart
+final myProvider = Provider((ref) {
+  // É cattiva pratica chiamare `read` qui.
+  final value = ref.read(anotherProvider);
+});
+```
+Se hai utilizzato [read] come tentativo di evitare rebuilds non volute del tuo oggetto, 
+consulta [Il mio provider si aggiorna troppo spesso, cosa posso fare?](#il-mio-provider-si-aggiorna-troppo-spesso-cosa-posso-fare)
+:::
+
+### Come testare un oggetto che riceve [read] come parametro del suo costruttore?
+
+Se stai usando il pattern descritto in [Posso leggere un provider senza ascoltarlo?](#posso-leggere-un-provider-senza-ascoltarlo), 
+ti starai chiedendo come scrivere dei test per il tuo oggetto.
+
+In questo scenario, considera testare il provider direttamente invece dell'oggetto puro.  
+Puoi fare ciò usando la classe [ProviderContainer]:
+
+```dart
+final repositoryProvider = Provider((ref) => Repository(ref.read));
+
 test('fetches catalog', () async {
   final container = ProviderContainer();
   addTearDown(container.dispose);
