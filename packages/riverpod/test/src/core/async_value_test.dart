@@ -19,17 +19,10 @@ void main() {
   });
 
   group('progress', () {
-    test('defaults to 0 on AsyncLoading', () {
-      expect(const AsyncLoading<int>().progress, 0);
-    });
-
-    test('defaults to null on AsyncData/AsyncError', () {
+    test('defaults to null', () {
+      expect(const AsyncLoading<int>().progress, null);
       expect(const AsyncData(42).progress, null);
       expect(const AsyncError<int>('err', StackTrace.empty).progress, null);
-    });
-
-    test('is non-nullable on AsyncLoading', () {
-      final num progress = const AsyncLoading<int>(progress: .1).progress;
     });
 
     test('asserts is within bounds', () {
@@ -1360,7 +1353,7 @@ void main() {
     );
     expect(
       const AsyncLoading<int>().toString(),
-      'AsyncLoading<int>(progress: 0)',
+      'AsyncLoading<int>()',
     );
     expect(
       const AsyncLoading<int>(progress: .1).toString(),
@@ -1371,7 +1364,7 @@ void main() {
       const AsyncLoading<int>()
           .copyWithPrevious(const AsyncData(42))
           .toString(),
-      'AsyncData<int>(isLoading: true, progress: 0, value: 42)',
+      'AsyncData<int>(isLoading: true, value: 42)',
     );
     expect(
       const AsyncLoading<int>(progress: .1)
@@ -1383,7 +1376,7 @@ void main() {
       const AsyncLoading<int>()
           .copyWithPrevious(const AsyncError(42, StackTrace.empty))
           .toString(),
-      'AsyncError<int>(isLoading: true, progress: 0, error: 42, stackTrace: )',
+      'AsyncError<int>(isLoading: true, error: 42, stackTrace: )',
     );
     expect(
       const AsyncData<int>(42)
@@ -1401,7 +1394,7 @@ void main() {
       const AsyncLoading<int>()
           .copyWithPrevious(const AsyncData(42), isRefresh: false)
           .toString(),
-      'AsyncLoading<int>(progress: 0, value: 42)',
+      'AsyncLoading<int>(value: 42)',
     );
   });
 

@@ -178,12 +178,21 @@ sealed class AsyncValue<StateT> {
 
   /// The current progress of the asynchronous operation.
   ///
-  /// `null` if [isLoading] is false.
   /// This value must be between 0 and 1.
   ///
-  /// When a provider starts an async operation, the progress is set to `0`.
-  /// As the operation progresses, the provider should update the progress.
-  /// This can be done with `AsyncLoading(progress: 0.5)`.
+  /// By default, the progress will always be `null`.
+  /// Providers can set this manually as such:
+  ///
+  /// ```dart
+  /// @riverpod
+  /// Future<Model> example(ExampleRef ref) async {
+  ///   ref.state = AsyncLoading(progress: 0);
+  ///
+  ///   await something();
+  ///
+  ///   ref.state = AsyncLoading(progress: 1);
+  /// }
+  /// ```
   num? get progress;
 
   /// The value currently exposed.
@@ -324,7 +333,7 @@ sealed class AsyncValue<StateT> {
         hasValue: false,
         progress: e.progress,
       ),
-      loading: (l) => AsyncLoading<R>(progress: progress!),
+      loading: (l) => AsyncLoading<R>(progress: progress),
     );
   }
 
@@ -491,14 +500,14 @@ sealed class AsyncValue<StateT> {
   AsyncValue<StateT> unwrapPrevious() {
     return map(
       data: (d) {
-        if (d.isLoading) return AsyncLoading<StateT>(progress: progress!);
+        if (d.isLoading) return AsyncLoading<StateT>(progress: progress);
         return AsyncData(d.value);
       },
       error: (e) {
-        if (e.isLoading) return AsyncLoading<StateT>(progress: progress!);
+        if (e.isLoading) return AsyncLoading<StateT>(progress: progress);
         return AsyncError(e.error, e.stackTrace);
       },
-      loading: (l) => AsyncLoading<StateT>(progress: progress!),
+      loading: (l) => AsyncLoading<StateT>(progress: progress),
     );
   }
 
@@ -616,13 +625,13 @@ final class AsyncData<StateT> extends AsyncValue<StateT> {
 /// {@macro async_value.loading}
 final class AsyncLoading<StateT> extends AsyncValue<StateT> {
   /// {@macro async_value.loading}
-  const AsyncLoading({this.progress = 0})
+  const AsyncLoading({this.progress})
       : hasValue = false,
         value = null,
         error = null,
         stackTrace = null,
         assert(
-          progress >= 0 && progress <= 1,
+          progress == null || (progress >= 0 && progress <= 1),
           'progress must be between 0 and 1',
         ),
         super._();
@@ -645,7 +654,7 @@ final class AsyncLoading<StateT> extends AsyncValue<StateT> {
   final bool hasValue;
 
   @override
-  final num progress;
+  final num? progress;
 
   @override
   final StateT? value;
