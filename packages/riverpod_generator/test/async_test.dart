@@ -5,6 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
 import 'integration/async.dart';
+import 'utils.dart';
 
 void main() {
   test(

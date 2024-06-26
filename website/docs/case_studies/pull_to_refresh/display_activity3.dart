@@ -20,7 +20,7 @@ class ActivityView extends ConsumerWidget {
         // fetched.
         // {@endtemplate}
         /* highlight-start */
-        onRefresh: () => ref.refresh(activityProvider.future),
+        onRefresh: () async => ref.refresh(activityProvider.future),
         /* highlight-end */
         child: ListView(
           children: [

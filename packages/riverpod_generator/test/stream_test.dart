@@ -5,6 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
 import 'integration/stream.dart';
+import 'utils.dart';
 
 void main() {
   test('Creates a StreamProvider<T> if @riverpod is used on a Stream function',

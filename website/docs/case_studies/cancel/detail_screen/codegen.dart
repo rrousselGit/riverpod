@@ -45,7 +45,7 @@ class DetailPageView extends ConsumerWidget {
         title: const Text('Detail page'),
       ),
       body: RefreshIndicator(
-        onRefresh: () => ref.refresh(activityProvider.future),
+        onRefresh: () async => ref.refresh(activityProvider.future),
         child: ListView(
           children: [
             switch (activity) {

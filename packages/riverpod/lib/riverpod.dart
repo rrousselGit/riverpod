@@ -1,4 +1,5 @@
-export 'src/common/synchronous_future.dart' hide SynchronousFuture;
+export 'src/common/synchronous_future.dart'
+    hide SynchronousFuture, FutureOrThen;
 export 'src/core/async_value.dart' hide AsyncTransition;
 export 'src/framework.dart'
     hide

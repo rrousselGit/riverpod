@@ -44,9 +44,11 @@ Future<List<Package>> fetchPackages(
 
   return Future.wait([
     for (final package in searchedPackages)
-      ref.watch(
-        fetchPackageDetailsProvider(packageName: package.package).future,
-      ),
+      Future(() async {
+        return ref.watch(
+          fetchPackageDetailsProvider(packageName: package.package).future,
+        );
+      }),
   ]);
 }
 
@@ -65,7 +67,7 @@ class SearchPage extends HookConsumerWidget {
           SearchBar(controller: searchController),
           Expanded(
             child: RefreshIndicator(
-              onRefresh: () {
+              onRefresh: () async {
                 // disposes the pages previously fetched. Next read will refresh them
                 ref.invalidate(fetchPackagesProvider);
                 // keep showing the progress indicator until the first page is fetched
