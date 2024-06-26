@@ -8,6 +8,11 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
+  group('returns T instead of Future<T> if value is synchronously available',
+      () {
+    throw UnimplementedError();
+  });
+
   group('If disposed before a value could be emitted', () {
     test('resolves values with `sub.read()`', () async {
       final container = ProviderContainer.test();

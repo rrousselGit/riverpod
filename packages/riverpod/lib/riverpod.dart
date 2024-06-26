@@ -1,3 +1,4 @@
+export 'src/common/synchronous_future.dart' hide SynchronousFuture;
 export 'src/core/async_value.dart' hide AsyncTransition;
 export 'src/framework.dart'
     hide
@@ -47,10 +48,8 @@ export 'src/framework.dart'
         describeIdentity,
         CircularDependencyError,
         $AsyncValueProvider;
-
 export 'src/providers/async_notifier.dart'
     hide $AsyncNotifier, $AsyncNotifierProvider, $AsyncNotifierProviderElement;
-
 export 'src/providers/future_provider.dart'
     hide $FutureProviderElement, $FutureProvider;
 export 'src/providers/notifier.dart'

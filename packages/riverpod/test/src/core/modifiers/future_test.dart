@@ -102,5 +102,14 @@ void main() {
         expect(await future, 'Hello');
       });
     });
+
+    group('returns T instead of Future<T> if value is synchronously available',
+        () {
+      throw UnimplementedError();
+    });
+
+    test('add "prefer .sync" lint', () {
+      throw UnimplementedError();
+    });
   });
 }
