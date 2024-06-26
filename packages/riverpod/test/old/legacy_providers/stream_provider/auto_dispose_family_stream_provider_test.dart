@@ -2,6 +2,7 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart' show ProviderElement;
 import 'package:test/test.dart';
 
+import '../../../src/utils.dart' show completionOr;
 import '../../utils.dart';
 
 void main() {
@@ -100,7 +101,7 @@ void main() {
         overrides: [dep.overrideWithValue(42)],
       );
 
-      await expectLater(container.read(provider(10).future), completion(52));
+      await expectLater(container.read(provider(10).future), completionOr(52));
       expect(container.read(provider(10)), const AsyncData(52));
 
       expect(root.getAllProviderElements(), isEmpty);

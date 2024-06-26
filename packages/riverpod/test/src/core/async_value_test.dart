@@ -6,6 +6,8 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
+import '../utils.dart';
+
 void main() {
   test('Can do exhaustive pattern matching', () {
     expect(
@@ -1557,7 +1559,7 @@ void main() {
       () async {
     await expectLater(
       AsyncValue.guard(() => Future.value(42)),
-      completion(const AsyncValue.data(42)),
+      completionOr(const AsyncValue.data(42)),
     );
   });
 
@@ -1567,7 +1569,7 @@ void main() {
 
     await expectLater(
       AsyncValue.guard(() => Future<int>.error(42, stack)),
-      completion(AsyncError<int>(42, stack)),
+      completionOr(AsyncError<int>(42, stack)),
     );
   });
 
@@ -1580,7 +1582,7 @@ void main() {
       AsyncValue.guard(
         () => Future<int>.error(42, stack),
       ),
-      completion(AsyncError<int>(42, stack)),
+      completionOr(AsyncError<int>(42, stack)),
     );
   });
 
@@ -1595,7 +1597,7 @@ void main() {
         () => Future<int>.error(42, stack),
         isInt,
       ),
-      completion(AsyncError<int>(42, stack)),
+      completionOr(AsyncError<int>(42, stack)),
     );
   });
 
@@ -1618,7 +1620,7 @@ void main() {
 
     await expectLater(
       AsyncValue.guard(() => Future<int>.error(42, stack)),
-      completion(AsyncError<int>(42, stack)),
+      completionOr(AsyncError<int>(42, stack)),
     );
   });
 
@@ -1633,7 +1635,7 @@ void main() {
         () => Future<int>.error(42, stack),
         isInt,
       ),
-      completion(AsyncError<int>(42, stack)),
+      completionOr(AsyncError<int>(42, stack)),
     );
   });
 

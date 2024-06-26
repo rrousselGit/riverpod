@@ -8,9 +8,12 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
-  group('returns T instead of Future<T> if value is synchronously available',
+  test('returns T instead of Future<T> if value is synchronously available',
       () {
-    throw UnimplementedError();
+    final container = ProviderContainer.test();
+    final provider = FutureProvider((ref) => 42);
+
+    expect(container.read(provider.selectAsync((d) => d * 2)), 84);
   });
 
   group('If disposed before a value could be emitted', () {
@@ -47,27 +50,41 @@ void main() {
     });
   });
 
-  test('implements ProviderSubscription.read on AsyncData', () async {
-    final container = ProviderContainer.test();
-    final dep = StateProvider((ref) => 0);
-    final provider = FutureProvider((ref) async => ref.watch(dep));
+  group('implements ProviderSubscription.read on AsyncData', () {
+    test('common case', () async {
+      final container = ProviderContainer.test();
+      final dep = StateProvider((ref) => 0);
+      final provider = FutureProvider((ref) async => ref.watch(dep));
 
-    final sub = container.listen(
-      provider.selectAsync((data) => data.isEven),
-      (prev, next) {},
-    );
+      final sub = container.listen(
+        provider.selectAsync((data) => data.isEven),
+        (prev, next) {},
+      );
 
-    expect(await sub.read(), true);
+      expect(await sub.read(), true);
 
-    container.read(dep.notifier).state += 2;
-    await container.read(provider.future);
+      container.read(dep.notifier).state += 2;
+      await container.read(provider.future);
 
-    expect(await sub.read(), true);
+      expect(await sub.read(), true);
 
-    container.read(dep.notifier).state++;
-    await container.read(provider.future);
+      container.read(dep.notifier).state++;
+      await container.read(provider.future);
 
-    expect(await sub.read(), false);
+      expect(await sub.read(), false);
+    });
+
+    test('on T, returns the value directly', () async {
+      final container = ProviderContainer.test();
+      final provider = FutureProvider<int?>((ref) => 42);
+
+      final sub = container.listen(
+        provider.selectAsync((data) => null),
+        (prev, next) {},
+      );
+
+      expect(sub.read(), null);
+    });
   });
 
   test('implements ProviderSubscription.read on AsyncError', () async {
@@ -77,13 +94,13 @@ void main() {
       (ref) => Future.error(ref.watch(dep)),
     );
 
-    final sub = container.listen<Future<bool>>(
+    final sub = container.listen<FutureOr<bool>>(
       provider.selectAsync((data) => data.isEven),
       (prev, next) {
         // workaround to the fact that throwA(2) later in the test
         // will be called _after_ the failing future is reported to the zone,
         // marking the test as failing when the future is in fact caught
-        next.ignore();
+        (next as Future).ignore();
       },
     );
 
@@ -91,7 +108,7 @@ void main() {
 
     container.read(dep.notifier).state += 2;
     // ignore: avoid_types_on_closure_parameters, conflict with implicit_dynamic
-    await container.read(provider.future).catchError((Object? _) => 0);
+    await container.read(provider.future).sync.catchError((Object? _) => 0);
 
     await expectLater(sub.read(), throwsA(2));
   });
@@ -122,7 +139,7 @@ void main() {
   test('handles fireImmediately: true on AsyncLoading', () async {
     final container = ProviderContainer.test();
     final provider = FutureProvider((ref) async => 0);
-    final listener = Listener<Future<bool>>();
+    final listener = Listener<FutureOr<bool>>();
 
     container.listen(
       provider.selectAsync((data) => data.isEven),
@@ -138,25 +155,25 @@ void main() {
 
   test('handles fireImmediately: true on AsyncData', () async {
     final container = ProviderContainer.test();
-    final provider = FutureProvider((ref) => 0);
-    final listener = Listener<Future<bool>>();
+    final provider = FutureProvider<int?>((ref) => 42);
+    final listener = Listener<FutureOr<bool?>>();
 
     container.listen(
-      provider.selectAsync((data) => data.isEven),
+      provider.selectAsync((data) => null),
       listener.call,
       fireImmediately: true,
     );
 
     final result = verify(listener(argThat(isNull), captureAny)).captured.single
-        as Future<bool>;
+        as FutureOr<bool?>;
     verifyNoMoreInteractions(listener);
-    expect(await result, true);
+    expect(result, null);
   });
 
   test('handles fireImmediately: true on AsyncError', () async {
     final container = ProviderContainer.test();
     final provider = FutureProvider<int>((ref) => throw StateError('0'));
-    final listener = Listener<Future<bool>>();
+    final listener = Listener<FutureOr<bool>>();
 
     container.listen(
       provider.selectAsync((data) => data.isEven),
@@ -173,7 +190,7 @@ void main() {
   test('handles fireImmediately: false', () async {
     final container = ProviderContainer.test();
     final provider = FutureProvider((ref) async => 0);
-    final listener = Listener<Future<bool>>();
+    final listener = Listener<FutureOr<bool>>();
 
     container.listen(
       provider.selectAsync((data) => data.isEven),
@@ -215,7 +232,7 @@ void main() {
       (prev, next) {},
     );
 
-    expect(sub.read(), completion(42));
+    expect(sub.read(), completionOr(42));
 
     ref.state = const AsyncLoading<int>()
         .copyWithPrevious(const AsyncValue<int>.data(0));
@@ -225,7 +242,7 @@ void main() {
 
     ref.state = const AsyncData(2);
 
-    // the previous unawaited `completion` should resolve with 2+40
+    // the previous unawaited `completionOr` should resolve with 2+40
   });
 
   test('can watch async selectors', () async {
@@ -344,10 +361,15 @@ void main() {
     test('and resolves with data', () async {
       final container = ProviderContainer.test();
       final provider = FutureProvider((ref) async => 0);
+      final provider2 = FutureProvider((ref) => 0);
 
       expect(
         container.read(provider.selectAsync((data) => data.toString())),
         completion('0'),
+      );
+      expect(
+        container.read(provider2.selectAsync((data) => data.toString())),
+        '0',
       );
     });
 

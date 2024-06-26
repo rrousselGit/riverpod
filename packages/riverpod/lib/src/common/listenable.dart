@@ -48,6 +48,11 @@ class ProxyElementValueListenable<T> extends _ValueListenable<T> {
         _notifyError(value.error, value.stackTrace);
     }
   }
+
+  // ignore: use_setters_to_change_properties, voluntary to mark this as unsafe
+  void unsafeUpdateResultWithoutNotifyingListeners(Result<T>? value) {
+    _result = value;
+  }
 }
 
 class _ValueListenable<T> {

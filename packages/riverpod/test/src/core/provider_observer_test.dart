@@ -354,7 +354,7 @@ void main() {
         );
 
         container.listen(provider, (_, __) {});
-        await container.read(provider.future).catchError((_) {});
+        await container.read(provider.future).sync.catchError((_) {});
 
         verifyInOrder([
           observer.didAddProvider(
@@ -385,7 +385,7 @@ void main() {
         );
 
         container.listen(provider, (_, __) {});
-        await container.read(provider.future).catchError((_) {});
+        await container.read(provider.future).sync.catchError((_) {});
 
         verifyInOrder([
           observer.didAddProvider(

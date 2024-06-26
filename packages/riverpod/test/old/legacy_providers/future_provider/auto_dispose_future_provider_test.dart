@@ -6,6 +6,7 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart' show ProviderElement;
 import 'package:test/test.dart';
 
+import '../../../src/utils.dart' show completionOr;
 import '../../utils.dart';
 
 void main() {
@@ -56,7 +57,7 @@ void main() {
     );
 
     expect(container.read(provider), const AsyncData(42));
-    expect(container.read(provider.future), completion(42));
+    expect(container.read(provider.future), completionOr(42));
 
     expect(root.getAllProviderElements(), isEmpty);
   });
@@ -68,7 +69,7 @@ void main() {
     container.listen(provider, (_, __) {});
 
     expect(container.read(provider), const AsyncData(0));
-    await expectLater(container.read(provider.future), completion(0));
+    await expectLater(container.read(provider.future), completionOr(0));
   });
 
   test('can return an error synchronously, bypassing AsyncLoading', () async {
@@ -99,7 +100,7 @@ void main() {
 
     await expectLater(
       container.read(provider.future),
-      completion(42),
+      completionOr(42),
     );
     expect(
       container.read(provider),
@@ -126,7 +127,7 @@ void main() {
 
     await expectLater(
       container.read(provider.future),
-      completion(21),
+      completionOr(21),
     );
     expect(
       container.read(provider),
@@ -200,7 +201,7 @@ void main() {
       ref.watch(dep);
       return completer.future;
     });
-    final listener = Listener<Future<int>>();
+    final listener = Listener<FutureOr<int>>();
 
     container.listen(provider.future, listener.call, fireImmediately: true);
 
@@ -214,7 +215,7 @@ void main() {
     // No value were emitted, so the future will fail. Catching the error to
     // avoid false positive.
     // ignore: unawaited_futures, avoid_types_on_closure_parameters
-    container.read(provider.future).catchError((Object _) => 0);
+    container.read(provider.future).sync.catchError((Object _) => 0);
   });
 
   group('scoping an override overrides all the associated sub-providers', () {

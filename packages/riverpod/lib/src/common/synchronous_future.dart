@@ -13,6 +13,25 @@ extension FutureOrAsSync<T> on FutureOr<T> {
   }
 }
 
+@internal
+extension FutureOrThen<T> on FutureOr<T> {
+  FutureOr<R> then<R>(
+    R Function(T value) onValue, {
+    Function? onError,
+  }) {
+    final that = this;
+    if (that is Future<T>) {
+      return that.then(onValue, onError: onError);
+    }
+
+    try {
+      return onValue(that);
+    } catch (e, stack) {
+      return Future<T>.error(e, stack).then(onValue, onError: onError);
+    }
+  }
+}
+
 /// -- Forked from Flutter's `SynchronousFuture` --
 
 // Copyright 2014 The Flutter Authors. All rights reserved.

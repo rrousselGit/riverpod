@@ -169,6 +169,6 @@ void main() {
     );
 
     expect(container.read(publicProvider), const AsyncData('test'));
-    expect(container.read(publicProvider.future), completion('test'));
+    expect(container.read(publicProvider.future), completionOr('test'));
   });
 }

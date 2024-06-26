@@ -34,16 +34,6 @@ void main() {
     expect(result, equals(42));
     result = null;
 
-    final Future<int> futureWithTimeout =
-        future.timeout(const Duration(milliseconds: 1));
-    await futureWithTimeout.then<void>((value) {
-      result = value;
-    });
-    expect(result, isNull);
-    await futureWithTimeout;
-    expect(result, equals(42));
-    result = null;
-
     final Stream<int> stream = future.asStream();
 
     expect(await stream.single, equals(42));

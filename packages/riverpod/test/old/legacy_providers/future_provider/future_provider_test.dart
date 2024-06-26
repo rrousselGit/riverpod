@@ -8,6 +8,7 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart' show ProviderElement;
 import 'package:test/test.dart';
 
+import '../../../src/utils.dart' show completionOr;
 import '../../utils.dart';
 
 void main() {
@@ -130,7 +131,7 @@ void main() {
 
     expect(
       container.read(provider.future),
-      completion(42),
+      completionOr(42),
     );
 
     result = completer2.future;
@@ -153,7 +154,7 @@ void main() {
 
       expect(
         container.read(provider.future),
-        completion(42),
+        completionOr(42),
       );
 
       result = completer2.future;
@@ -165,7 +166,7 @@ void main() {
 
       completer2.complete(42);
 
-      await expectLater(container.read(provider.future), completion(42));
+      await expectLater(container.read(provider.future), completionOr(42));
     });
 
     test(
@@ -175,7 +176,7 @@ void main() {
       var count = 0;
       final provider = FutureProvider((ref) => Future.value(count++));
 
-      await expectLater(container.read(provider.future), completion(0));
+      await expectLater(container.read(provider.future), completionOr(0));
       expect(container.read(provider), const AsyncData(0));
 
       expect(
@@ -183,7 +184,7 @@ void main() {
         const AsyncLoading<int>().copyWithPrevious(const AsyncData(0)),
       );
 
-      await expectLater(container.read(provider.future), completion(1));
+      await expectLater(container.read(provider.future), completionOr(1));
       expect(container.read(provider), const AsyncData(1));
 
       container.invalidate(provider);
@@ -192,7 +193,7 @@ void main() {
         container.read(provider),
         const AsyncLoading<int>().copyWithPrevious(const AsyncData(1)),
       );
-      await expectLater(container.read(provider.future), completion(2));
+      await expectLater(container.read(provider.future), completionOr(2));
       expect(container.read(provider), const AsyncData(2));
     });
 
@@ -202,7 +203,7 @@ void main() {
       final dep = StateProvider((ref) => 0);
       final provider = FutureProvider((ref) => Future.value(ref.watch(dep)));
 
-      await expectLater(container.read(provider.future), completion(0));
+      await expectLater(container.read(provider.future), completionOr(0));
       expect(container.read(provider), const AsyncData(0));
 
       container.read(dep.notifier).state++;
@@ -212,7 +213,7 @@ void main() {
             .copyWithPrevious(const AsyncData(0), isRefresh: false),
       );
 
-      await expectLater(container.read(provider.future), completion(1));
+      await expectLater(container.read(provider.future), completionOr(1));
       expect(container.read(provider), const AsyncData(1));
     });
 
@@ -223,7 +224,7 @@ void main() {
       final dep = StateProvider((ref) => 0);
       final provider = FutureProvider((ref) => Future.value(ref.watch(dep)));
 
-      await expectLater(container.read(provider.future), completion(0));
+      await expectLater(container.read(provider.future), completionOr(0));
       expect(container.read(provider), const AsyncData(0));
 
       container.read(dep.notifier).state++;
@@ -233,7 +234,7 @@ void main() {
             .copyWithPrevious(const AsyncData(0), isRefresh: false),
       );
 
-      await expectLater(container.read(provider.future), completion(1));
+      await expectLater(container.read(provider.future), completionOr(1));
       expect(container.read(provider), const AsyncData(1));
     });
   });
@@ -286,7 +287,7 @@ void main() {
     );
 
     expect(container.read(provider), const AsyncData(42));
-    expect(container.read(provider.future), completion(42));
+    expect(container.read(provider.future), completionOr(42));
 
     expect(root.getAllProviderElements(), isEmpty);
   });
@@ -296,7 +297,7 @@ void main() {
     final container = ProviderContainer.test();
 
     expect(container.read(provider), const AsyncData(0));
-    await expectLater(container.read(provider.future), completion(0));
+    await expectLater(container.read(provider.future), completionOr(0));
   });
 
   test('can return an error synchronously, bypassing AsyncLoading', () async {
@@ -376,7 +377,7 @@ void main() {
       ref.watch(dep);
       return completer.future;
     });
-    final listener = Listener<Future<int>>();
+    final listener = Listener<FutureOr<int>>();
 
     container.listen(provider.future, listener.call, fireImmediately: true);
 
@@ -538,7 +539,7 @@ void main() {
       // Regression test for https://github.com/rrousselGit/riverpod/issues/2041
 
       final container = ProviderContainer.test();
-      final onFuture = Listener<Future<int>>();
+      final onFuture = Listener<FutureOr<int>>();
 
       final dep = FutureProvider((ref) => 0);
       final provider = Provider(
@@ -558,7 +559,7 @@ void main() {
 
     test('Regression 2041', () async {
       final container = ProviderContainer.test();
-      final onFuture = Listener<Future<int>>();
+      final onFuture = Listener<FutureOr<int>>();
 
       final testNotifierProvider = FutureProvider.autoDispose<int>((ref) => 0);
       // ProxyProvider is never rebuild directly, but rather indirectly through
@@ -603,7 +604,7 @@ void main() {
       final provider = FutureProvider((_) => completer.future);
       final container = ProviderContainer.test();
       var callCount = 0;
-      final dependent = Provider<Future<int>>((ref) {
+      final dependent = Provider<FutureOr<int>>((ref) {
         callCount++;
         return ref.watch(provider.future);
       });
@@ -619,7 +620,7 @@ void main() {
       await container.pump();
 
       expect(sub.read(), future);
-      await expectLater(future, completion(42));
+      await expectLater(future, completionOr(42));
       expect(callCount, 1);
     });
 
@@ -628,19 +629,19 @@ void main() {
       // a FutureProvider that can rebuild with a new future
       final provider = FutureProvider<int>((ref) => ref.watch(futureProvider));
       var callCount = 0;
-      final dependent = Provider<Future<int>>((ref) {
+      final dependent = Provider<FutureOr<int>>((ref) {
         callCount++;
         return ref.watch(provider.future);
       });
       final container = ProviderContainer.test();
       final futureController = container.read(futureProvider.notifier);
 
-      await expectLater(container.read(dependent), completion(42));
+      await expectLater(container.read(dependent), completionOr(42));
       expect(callCount, 1);
 
       futureController.state = Future.value(21);
 
-      await expectLater(container.read(dependent), completion(21));
+      await expectLater(container.read(dependent), completionOr(21));
       expect(callCount, 2);
     });
   });
@@ -667,12 +668,12 @@ void main() {
 
       final sub = container.listen(dependent, (_, __) {});
 
-      await expectLater(sub.read(), completion(42));
+      await expectLater(sub.read(), completionOr(42));
       expect(callCount, 1);
 
       futureController.state = Future.value(21);
 
-      await expectLater(sub.read(), completion(21));
+      await expectLater(sub.read(), completionOr(21));
       expect(callCount, 2);
     });
 
@@ -697,7 +698,7 @@ void main() {
       await container.pump();
 
       expect(sub.read(), future);
-      await expectLater(future, completion(42));
+      await expectLater(future, completionOr(42));
       expect(callCount, 1);
     });
 
@@ -782,7 +783,7 @@ void main() {
 
       await expectLater(
         container.read(provider.future),
-        completion(42),
+        completionOr(42),
       );
 
       final sub = container.listen(provider, (_, __) {});
@@ -795,7 +796,7 @@ void main() {
 
       await expectLater(
         container.read(provider.future),
-        completion(21),
+        completionOr(21),
       );
       expect(sub.read(), const AsyncValue.data(21));
     });
@@ -810,7 +811,7 @@ void main() {
 
       await expectLater(
         container.read(provider.future),
-        completion(42),
+        completionOr(42),
       );
 
       final sub = container.listen(provider, (_, __) {});
@@ -845,7 +846,7 @@ void main() {
 
       await expectLater(
         future,
-        completion(42),
+        completionOr(42),
       );
 
       final sub = container.listen(provider, (_, __) {});
@@ -884,7 +885,7 @@ void main() {
 
       expect(sub.read(), const AsyncValue<int>.data(42));
 
-      await expectLater(future, completion(42));
+      await expectLater(future, completionOr(42));
     });
 
     test('loading immediately then error', () async {
@@ -941,7 +942,7 @@ void main() {
         listener,
         listener(const AsyncValue.loading(), const AsyncValue.data(42)),
       );
-      await expectLater(future, completion(42));
+      await expectLater(future, completionOr(42));
     });
 
     test('error immediately then different error', () async {
@@ -1031,7 +1032,7 @@ void main() {
 
       await expectLater(
         container.read(provider.future),
-        completion(42),
+        completionOr(42),
       );
       expect(
         sub.read(),

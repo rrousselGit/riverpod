@@ -41,7 +41,7 @@ mixin $AsyncClassModifier<StateT, CreatedT>
   /// {@endtemplate}
   @visibleForTesting
   @protected
-  Future<StateT> get future {
+  FutureOr<StateT> get future {
     final ref = _ref;
     if (ref == null) {
       throw StateError(uninitializedElementError);
@@ -76,7 +76,7 @@ mixin $AsyncClassModifier<StateT, CreatedT>
     FutureOr<StateT> Function(StateT previousState) cb, {
     FutureOr<StateT> Function(Object err, StackTrace stackTrace)? onError,
   }) async {
-    final newState = await future.then(cb, onError: onError);
+    final newState = await future.sync.then(cb, onError: onError);
     state = AsyncData<StateT>(newState);
     return newState;
   }
@@ -134,8 +134,8 @@ base mixin $FutureModifier<StateT> on ProviderBase<AsyncValue<StateT>> {
   ///   return await http.get('${configs.host}/products');
   /// });
   /// ```
-  Refreshable<Future<StateT>> get future {
-    return ProviderElementProxy<AsyncValue<StateT>, Future<StateT>>(
+  Refreshable<FutureOr<StateT>> get future {
+    return ProviderElementProxy<AsyncValue<StateT>, FutureOr<StateT>>(
       this,
       (element) {
         element as FutureModifierElement<StateT>;
@@ -174,7 +174,7 @@ base mixin $FutureModifier<StateT> on ProviderBase<AsyncValue<StateT>> {
   /// });
   /// ```
   /// {@endtemplate}
-  ProviderListenable<Future<Output>> selectAsync<Output>(
+  ProviderListenable<FutureOr<Output>> selectAsync<Output>(
     Output Function(StateT data) selector,
   ) {
     return _AsyncSelector<StateT, Output>(
@@ -229,7 +229,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
 
   /// An observable for [FutureProvider.future].
   @internal
-  final futureNotifier = ProxyElementValueListenable<Future<StateT>>();
+  final futureNotifier = ProxyElementValueListenable<FutureOr<StateT>>();
   Completer<StateT>? _futureCompleter;
   Future<StateT>? _lastFuture;
   CancelAsyncSubscription? _lastFutureSub;
@@ -327,8 +327,11 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
     if (completer != null) {
       completer.complete(value.value);
       _futureCompleter = null;
+      futureNotifier.unsafeUpdateResultWithoutNotifyingListeners(
+        Result.data(value.value),
+      );
     } else {
-      futureNotifier.result = Result.data(Future.value(value.value));
+      futureNotifier.result = Result.data(value.value);
     }
   }
 

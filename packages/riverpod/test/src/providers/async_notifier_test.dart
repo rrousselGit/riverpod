@@ -181,7 +181,7 @@ void main() {
 
         container.listen(provider, (previous, next) {});
 
-        await expectLater(container.read(provider.future), completion(0));
+        await expectLater(container.read(provider.future), completionOr(0));
         expect(container.read(provider), const AsyncData(0));
 
         expect(
@@ -189,7 +189,7 @@ void main() {
           const AsyncLoading<int>().copyWithPrevious(const AsyncData(0)),
         );
 
-        await expectLater(container.read(provider.future), completion(1));
+        await expectLater(container.read(provider.future), completionOr(1));
         expect(container.read(provider), const AsyncData(1));
 
         container.invalidate(provider);
@@ -198,7 +198,7 @@ void main() {
           container.read(provider),
           const AsyncLoading<int>().copyWithPrevious(const AsyncData(1)),
         );
-        await expectLater(container.read(provider.future), completion(2));
+        await expectLater(container.read(provider.future), completionOr(2));
         expect(container.read(provider), const AsyncData(2));
       });
 
@@ -210,7 +210,7 @@ void main() {
 
         final sub = container.listen(provider.notifier, (previous, next) {});
 
-        await expectLater(container.read(provider.future), completion(0));
+        await expectLater(container.read(provider.future), completionOr(0));
         expect(container.read(provider), const AsyncData(0));
 
         sub.read().state = const AsyncLoading<int>();
@@ -233,7 +233,7 @@ void main() {
 
         container.listen(provider, (previous, next) {});
 
-        await expectLater(container.read(provider.future), completion(0));
+        await expectLater(container.read(provider.future), completionOr(0));
         expect(container.read(provider), const AsyncData(0));
 
         container.read(dep.notifier).state++;
@@ -243,7 +243,7 @@ void main() {
               .copyWithPrevious(const AsyncData(0), isRefresh: false),
         );
 
-        await expectLater(container.read(provider.future), completion(1));
+        await expectLater(container.read(provider.future), completionOr(1));
         expect(container.read(provider), const AsyncData(1));
       });
 
@@ -284,7 +284,7 @@ void main() {
 
         container.listen(provider, (previous, next) {});
 
-        await expectLater(container.read(provider.future), completion(0));
+        await expectLater(container.read(provider.future), completionOr(0));
         expect(container.read(provider), const AsyncData(0));
 
         container.read(dep.notifier).state++;
@@ -294,7 +294,7 @@ void main() {
               .copyWithPrevious(const AsyncData(0), isRefresh: false),
         );
 
-        await expectLater(container.read(provider.future), completion(1));
+        await expectLater(container.read(provider.future), completionOr(1));
         expect(container.read(provider), const AsyncData(1));
       });
     });
@@ -434,7 +434,7 @@ void main() {
 
       verifyOnly(listener, listener(null, const AsyncData(0)));
       expect(container.read(provider.notifier).state, const AsyncData(0));
-      await expectLater(container.read(provider.future), completion(0));
+      await expectLater(container.read(provider.future), completionOr(0));
     });
 
     test(
@@ -477,7 +477,7 @@ void main() {
 
       expect(
         container.read(provider.future),
-        completion(21),
+        completionOr(21),
         reason: 'The provider rebuilt while the future was still pending, '
             'so .future should resolve with the next value',
       );
@@ -489,7 +489,7 @@ void main() {
 
       verifyZeroInteractions(listener);
 
-      expect(container.read(provider.future), completion(21));
+      expect(container.read(provider.future), completionOr(21));
       expect(container.read(provider), const AsyncLoading<int>());
 
       completers[1]!.complete(21);
@@ -627,7 +627,7 @@ void main() {
       test('If the notifier is recreated with an error, rethrows the new error',
           () async {
         final container = ProviderContainer.test();
-        final listener = Listener<Future<int>>();
+        final listener = Listener<FutureOr<int>>();
         var body = () => factory.deferredNotifier((ref) => 0);
         final provider = factory.provider<int>(() => body());
 
@@ -635,7 +635,7 @@ void main() {
 
         await expectLater(
           container.read(provider.future),
-          completion(0),
+          completionOr(0),
         );
         verifyZeroInteractions(listener);
 
@@ -663,7 +663,7 @@ void main() {
 
         completer.complete(42);
 
-        await expectLater(future, completion(42));
+        await expectLater(future, completionOr(42));
       });
 
       test(
@@ -704,7 +704,7 @@ void main() {
 
           completer.complete(42);
 
-          await expectLater(future, completion(42));
+          await expectLater(future, completionOr(42));
         },
       );
 
@@ -740,31 +740,31 @@ void main() {
         final provider = factory.simpleTestProvider<int>(
           (ref) => completer.future,
         );
-        final listener = Listener<Future<int>>();
+        final listener = Listener<FutureOr<int>>();
 
         final sub = container.listen(provider.notifier, (previous, next) {});
         container.listen(provider.future, listener.call);
 
-        expect(sub.read().future, completion(21));
+        expect(sub.read().future, completionOr(21));
 
         sub.read().state = const AsyncData(21);
 
         completer.complete(42);
 
-        expect(sub.read().future, completion(42));
+        expect(sub.read().future, completionOr(42));
         final capture =
             verifyOnly(listener, listener(captureAny, captureAny)).captured;
 
         expect(capture.length, 2);
-        expect(capture.first, completion(21));
-        expect(capture.last, completion(42));
+        expect(capture.first, completionOr(21));
+        expect(capture.last, completionOr(42));
       });
 
       test('resolves with the new state when notifier.state is changed',
           () async {
         final container = ProviderContainer.test();
         final provider = factory.simpleTestProvider<int>((ref) => 0);
-        final listener = Listener<Future<int>>();
+        final listener = Listener<FutureOr<int>>();
 
         final sub = container.listen(provider.notifier, (previous, next) {});
         container.listen(
@@ -773,15 +773,15 @@ void main() {
           fireImmediately: true,
         );
 
-        await expectLater(sub.read().future, completion(0));
+        await expectLater(sub.read().future, completionOr(0));
         verifyOnly(
           listener,
-          listener(argThat(equals(null)), argThat(completion(0))),
+          listener(argThat(equals(null)), argThat(completionOr(0))),
         );
 
         sub.read().state = const AsyncData(1);
 
-        await expectLater(sub.read().future, completion(1));
+        await expectLater(sub.read().future, completionOr(1));
       });
 
       test('returns a Future identical to that of .future', () {
@@ -913,15 +913,15 @@ void main() {
 
         await expectLater(
           sub.read().update((prev) => prev + 1),
-          completion(1),
+          completionOr(1),
         );
         await expectLater(
           sub.read().future,
-          completion(1),
+          completionOr(1),
         );
         await expectLater(
           sub.read().update((prev) => prev + 1),
-          completion(2),
+          completionOr(2),
         );
       });
 
@@ -953,7 +953,7 @@ void main() {
               return 21;
             },
           ),
-          completion(21),
+          completionOr(21),
         );
         expect(callCount, 0);
         expect(actualErr, 42);
@@ -972,7 +972,7 @@ void main() {
 
         await expectLater(
           sub.read().update((prev) => prev + 1),
-          completion(2),
+          completionOr(2),
         );
         expect(container.read(provider), const AsyncData(2));
       });
@@ -1091,8 +1091,8 @@ void main() {
       canBeAssignedToProviderListenable<AsyncValue<int>>(provider);
       canBeAssignedToRefreshable<AsyncValue<int>>(provider);
 
-      canBeAssignedToProviderListenable<Future<int>>(provider.future);
-      canBeAssignedToRefreshable<Future<int>>(provider.future);
+      canBeAssignedToProviderListenable<FutureOr<int>>(provider.future);
+      canBeAssignedToRefreshable<FutureOr<int>>(provider.future);
 
       canBeAssignedToProviderListenable<AsyncNotifier<int>>(provider.notifier);
       canBeAssignedToRefreshable<AsyncNotifier<int>>(provider.notifier);
@@ -1110,8 +1110,8 @@ void main() {
       canBeAssignedToProviderListenable<AsyncValue<int>>(autoDispose);
       canBeAssignedToRefreshable<AsyncValue<int>>(autoDispose);
 
-      canBeAssignedToProviderListenable<Future<int>>(autoDispose.future);
-      canBeAssignedToRefreshable<Future<int>>(autoDispose.future);
+      canBeAssignedToProviderListenable<FutureOr<int>>(autoDispose.future);
+      canBeAssignedToRefreshable<FutureOr<int>>(autoDispose.future);
 
       canBeAssignedToProviderListenable<AsyncNotifier<int>>(
         autoDispose.notifier,
@@ -1133,8 +1133,8 @@ void main() {
       canBeAssignedToProviderListenable<AsyncValue<String>>(family(0));
       canBeAssignedToRefreshable<AsyncValue<String>>(family(0));
 
-      canBeAssignedToProviderListenable<Future<String>>(family(0).future);
-      canBeAssignedToRefreshable<Future<String>>(family(0).future);
+      canBeAssignedToProviderListenable<FutureOr<String>>(family(0).future);
+      canBeAssignedToRefreshable<FutureOr<String>>(family(0).future);
 
       canBeAssignedToProviderListenable<FamilyAsyncNotifier<String, int>>(
         family(0).notifier,
@@ -1165,10 +1165,10 @@ void main() {
         autoDisposeFamily(0),
       );
 
-      canBeAssignedToProviderListenable<Future<String>>(
+      canBeAssignedToProviderListenable<FutureOr<String>>(
         autoDisposeFamily(0).future,
       );
-      canBeAssignedToRefreshable<Future<String>>(
+      canBeAssignedToRefreshable<FutureOr<String>>(
         autoDisposeFamily(0).future,
       );
 

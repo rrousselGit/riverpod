@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
@@ -42,7 +44,7 @@ void main() {
           (previous, value) {},
         );
 
-        expect(sub.read(), completion(0));
+        expect(sub.read(), completionOr(0));
         verifyZeroInteractions(onDispose);
 
         await container.pump();
@@ -57,7 +59,7 @@ void main() {
           return 'Hello';
         });
         final container = ProviderContainer.test();
-        final listener = Listener<Future<String>>();
+        final listener = Listener<FutureOr<String>>();
 
         container.listen(
           provider.future,
@@ -82,7 +84,7 @@ void main() {
           () async {
         final provider = FutureProvider((ref) => 'Hello');
         final container = ProviderContainer.test();
-        final listener = Listener<Future<String>>();
+        final listener = Listener<FutureOr<String>>();
 
         final sub = container.listen(
           provider.future,
@@ -103,9 +105,23 @@ void main() {
       });
     });
 
-    group('returns T instead of Future<T> if value is synchronously available',
+    test('returns T instead of Future<T> if value is synchronously available',
         () {
-      throw UnimplementedError();
+      final container = ProviderContainer.test();
+      final provider = FutureProvider((ref) => 42);
+
+      expect(container.read(provider.future), 42);
+    });
+
+    test('after resolving a future, the value is still available synchronously',
+        () async {
+      final container = ProviderContainer.test();
+      final provider = FutureProvider((ref) => Future.value(42));
+
+      expect(container.read(provider.future), isA<Future<int>>());
+      expect(await container.read(provider.future), 42);
+
+      expect(container.read(provider.future), 42);
     });
 
     test('add "prefer .sync" lint', () {
