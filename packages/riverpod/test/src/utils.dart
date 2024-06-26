@@ -5,6 +5,13 @@ import 'package:riverpod/legacy.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart' hide Retry;
 
+Matcher completionOr(Object? matcher) {
+  return anyOf(
+    matcher,
+    completion(matcher),
+  );
+}
+
 List<Object?> captureErrors(List<void Function()> cb) {
   final errors = <Object?>[];
   for (final fn in cb) {

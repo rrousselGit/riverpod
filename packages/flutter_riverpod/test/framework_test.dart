@@ -401,12 +401,12 @@ void main() {
       ),
     );
 
-    await expectLater(ref.read(provider.future), completion(21));
+    await expectLater(ref.read(provider.future), completionOr(21));
 
     future = Future<int>.value(42);
 
     ref.invalidate(provider);
-    await expectLater(ref.read(provider.future), completion(42));
+    await expectLater(ref.read(provider.future), completionOr(42));
   });
 
   testWidgets('ref.refresh forces a provider of nullable type to refresh',

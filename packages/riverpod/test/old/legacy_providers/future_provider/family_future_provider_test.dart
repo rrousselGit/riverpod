@@ -2,6 +2,8 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart' show ProviderElement;
 import 'package:test/test.dart';
 
+import '../../../src/utils.dart';
+
 void main() {
   test('specifies `from` & `argument` for related providers', () {
     final provider = FutureProvider.family<int, int>((ref, _) => 0);
@@ -46,7 +48,7 @@ void main() {
       );
 
       expect(container.read(provider(10)), const AsyncData(52));
-      expect(container.read(provider(10).future), completion(52));
+      expect(container.read(provider(10).future), completionOr(52));
 
       expect(root.getAllProviderElements(), isEmpty);
     });

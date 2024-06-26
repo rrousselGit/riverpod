@@ -43,7 +43,7 @@ void main() {
           final listener = Listener<AsyncValue<int>>();
 
           container.listen(provider, fireImmediately: true, listener.call);
-          await container.read(provider.future).catchError((e) => 0);
+          await container.read(provider.future).sync.catchError((e) => 0);
 
           verifyOnly(
             listener,
@@ -55,7 +55,7 @@ void main() {
           fake.elapse(const Duration(seconds: 1));
           fake.flushMicrotasks();
 
-          await container.read(provider.future).catchError((e) => 0);
+          await container.read(provider.future).sync.catchError((e) => 0);
 
           verifyOnly(
             listener,

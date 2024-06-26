@@ -5,6 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
 import 'integration/stream.dart';
+import 'utils.dart';
 
 void main() {
   test('Creates a StreamProvider<T> if @riverpod is used on a Stream function',
@@ -169,6 +170,6 @@ void main() {
     );
 
     expect(container.read(publicProvider), const AsyncData('test'));
-    expect(container.read(publicProvider.future), completion('test'));
+    expect(container.read(publicProvider.future), completionOr('test'));
   });
 }

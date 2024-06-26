@@ -15,7 +15,7 @@ class ActivityView extends ConsumerWidget {
     return Scaffold(
       appBar: AppBar(title: const Text('Pull to refresh')),
       body: RefreshIndicator(
-        onRefresh: () => ref.refresh(activityProvider.future),
+        onRefresh: () async => ref.refresh(activityProvider.future),
         child: ListView(
           children: [
             switch (activity) {

@@ -15,6 +15,14 @@
 - `Stream/FutureProvider.overrideWithValue` was added back.
 - **Breaking**: `Notifier` and variants are now recreated whenever the provider
   rebuilds. This enables using `Ref.mounted` to check dispose.
+- **Breaking**: `provider.future` and `provider.selectAsync` now return a `FutureOr`.
+- Added a `FutureOr.sync` extension.
+  This enables synchronously awaiting a `FutureOr`, typically used as:
+  ```dart
+  final value = await ref.watch(provider.future).sync;
+  ```
+  Doing so will skip the initial "loading" frame of async providers if their dependency
+  is already available.
 - Added `Ref.listen(..., weak: true)`.
   When specifying `weak: true`, the listener will not cause the provider to be
   initialized. This is useful when wanting to react to changes to a provider,

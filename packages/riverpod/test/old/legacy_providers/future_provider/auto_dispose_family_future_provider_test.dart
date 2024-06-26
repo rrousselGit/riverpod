@@ -3,6 +3,7 @@ import 'package:riverpod/src/framework.dart';
 import 'package:test/test.dart';
 
 import '../../../src/core/provider_container_test.dart';
+import '../../../src/utils.dart' show completionOr;
 import '../../utils.dart';
 
 void main() {
@@ -60,7 +61,7 @@ void main() {
       );
 
       expect(container.read(provider(10)), const AsyncData(52));
-      expect(container.read(provider(10).future), completion(52));
+      expect(container.read(provider(10).future), completionOr(52));
 
       expect(root.getAllProviderElements(), isEmpty);
     });

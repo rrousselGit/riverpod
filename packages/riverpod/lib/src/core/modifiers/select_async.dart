@@ -2,7 +2,8 @@ part of '../../framework.dart';
 
 /// An internal class for `ProviderBase.selectAsync`.
 @sealed
-class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
+class _AsyncSelector<InputT, OutputT>
+    with ProviderListenable<FutureOr<OutputT>> {
   /// An internal class for `ProviderBase.select`.
   _AsyncSelector({
     required this.provider,
@@ -14,7 +15,7 @@ class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
   final ProviderListenable<AsyncValue<InputT>> provider;
 
   /// The future associated to the listened provider
-  final ProviderListenable<Future<InputT>> future;
+  final ProviderListenable<FutureOr<InputT>> future;
 
   /// The selector applied
   final OutputT Function(InputT) selector;
@@ -32,16 +33,17 @@ class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
   }
 
   @override
-  _SelectorSubscription<AsyncValue<InputT>, Future<OutputT>> addListener(
+  _SelectorSubscription<AsyncValue<InputT>, FutureOr<OutputT>> addListener(
     Node node,
-    void Function(Future<OutputT>? previous, Future<OutputT> next) listener, {
+    void Function(FutureOr<OutputT>? previous, FutureOr<OutputT> next)
+        listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
   }) {
     Result<OutputT>? lastSelectedValue;
     Completer<OutputT>? selectedCompleter;
-    Future<OutputT>? selectedFuture;
+    FutureOr<OutputT>? selectedFuture;
 
     void emitData(OutputT data, {required bool callListeners}) {
       final previousFuture = selectedFuture;
@@ -49,8 +51,8 @@ class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
         selectedCompleter!.complete(data);
         selectedCompleter = null;
       } else {
-        selectedFuture = Future.value(data);
-        if (callListeners) listener(previousFuture, selectedFuture!);
+        final next = selectedFuture = data;
+        if (callListeners) listener(previousFuture, next);
       }
     }
 
@@ -77,8 +79,8 @@ class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
         if (selectedFuture == null) {
           // The first time a future is emitted
 
-          selectedCompleter = Completer();
-          selectedFuture = selectedCompleter!.future;
+          final completer = selectedCompleter = Completer();
+          selectedFuture = completer.future;
         }
 
         // We don't notify listeners when the future changes since
@@ -126,7 +128,7 @@ class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
 
           // Error in the provider, it should've already been propagated
           // so no need to pollute the stack
-          selectedFuture!.ignore();
+          if (selectedFuture case final Future<Object?> f) f.ignore();
         },
       );
     }
@@ -141,13 +143,13 @@ class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
     playValue(sub.read(), callListeners: false);
 
     if (fireImmediately) {
-      listener(null, selectedFuture!);
+      listener(null, selectedFuture as FutureOr<OutputT>);
     }
 
     return _SelectorSubscription(
       node,
       sub,
-      () => selectedFuture!,
+      () => selectedFuture as FutureOr<OutputT>,
       onClose: () {
         final completer = selectedCompleter;
         if (completer != null && !completer.isCompleted) {
@@ -161,7 +163,7 @@ class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
   }
 
   @override
-  Future<OutputT> read(Node node) => future.read(node).then(
-        (v) => _select(v).requireState,
-      );
+  FutureOr<OutputT> read(Node node) {
+    return future.read(node).then((v) => _select(v).requireState);
+  }
 }
