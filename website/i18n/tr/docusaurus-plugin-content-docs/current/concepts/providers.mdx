@@ -1,0 +1,197 @@
+---
+title: Provider'lar
+---
+
+Artık [Riverpod]'u kurduğumuza göre, provider'lar hakkında konuşalım.
+
+Provider'lar bir [Riverpod] uygulamasının en önemli parçasıdır.
+Provider, bir durumu kapsülleyen ve bu durumu dinlemeye izin veren bir nesnedir.
+
+
+## Neden provider'ları kullanmalıyım?
+
+Durumun bir kısmını bir provider'a sararak, bu:
+
+- Bu duruma birden fazla konumdan kolay erişim sağlar.
+ Provider'lar, Singleton'lar gibi modellerin tam bir alternatifidir.
+ Hizmet Bulucuları, Bağımlılık Enjeksiyonu veya InheritedWidget'lar.
+
+- Bu durumu başkalarıyla birleştirmeyi kolaylaştırır. Birden fazla nesneyi tek bir nesnede birleştirmede hiç zorlandınız mı?
+ Bu senaryo, basit bir söz dizimi ile doğrudan Provider'ın içinde oluşturulmuştur.
+
+- Performans optimizasyonlarına izin verir.
+ Widget yeniden oluşturma işlemlerinin filtrelenip filtrelenmeyeceği veya önbelleğe alınacağı
+ zorlu durum hesaplamaları; provider'lar yalnızca
+ Durum değişikliğinden nelerin etkilendiğini hesaplayın.
+
+- Uygulamanızın test edilebilirliğini artırır.
+ provider'larla karmaşık "kurulum"/"tearDown" adımlarına ihtiyacınız yoktur.
+ Ek olarak, herhangi bir provider'ın farklı davranmasını sağlamak için geçersiz kılınabilir.
+ Test sırasında çok spesifik davranışları kolayca test etmenize olanak tanır.
+
+- Günlüğe kaydetme veya yenilemek için çekme gibi gelişmiş özelliklerle kolayca entegre olun.
+
+## Provider oluşturma
+
+provider'ların birçok çeşidi vardır, ancak hepsi aynı şekilde çalışır.
+
+En yaygın kullanım, bunları şu şekilde küresel sabitler olarak bildirmektir:
+
+```dart
+final myProvider = Provider((ref) {
+  return MyValue();
+});
+```
+
+:::note NOT
+Provider'ların küresel yönünden korkmayın.
+Provider'lar tamamen değişmezdir. Bir provider'ın bildirilmesi
+bir işlevi bildirmekten farklıdır ve test edilebilir ve bakımı yapılabilir.
+:::
+
+Bu kod pasajı üç bileşenden oluşur:
+
+- 'final myProvider', bir değişkenin bildirimi.
+ Bu değişken gelecekte provider'ımızın durumunu okumak için kullanacağımız değişkendir.
+ Daima değişmez olmalıdır.
+
+- 'Provider', kullanmaya karar verdiğimiz provider.
+ [Provider] tüm provider'lar arasında en temel olanıdır. Asla değişmeyen bir nesneyi ortaya çıkarır.
+ [Provider]'yı [StreamProvider] gibi diğer provider'larla değiştirebiliriz veya
+ [StateNotifierProvider], değerle nasıl etkileşimde bulunulacağını değiştirmek için.
+
+- Paylaşılan durumu yaratan bir işlev. Bu işlev her zaman bir nesne alacaktır
+ parametre olarak 'ref' olarak adlandırılır. Bu nesne diğer provider'ları okumamıza veya
+ Provider'ımızın durumunun bozulacağı bazı işlemler.
+
+provider'a iletilen işlev tarafından oluşturulan nesnenin türü, kullanılan provider'a bağlıdır.
+Örneğin, bir [Provider] işlevi herhangi bir nesneyi oluşturabilir.
+Öte yandan, [StreamProvider] geri çağrısının bir [Stream] döndürmesi bekleniyor.
+
+:::info
+Sınırlama olmadan istediğiniz kadar provider bildirebilirsiniz.
+'Paket:provider'ı kullandığımızdan farklı olarak,
+[Riverpod]'da iki provider'ın aynı "tipte" bir durumu ortaya çıkarmasını sağlayabiliriz:
+
+```dart
+final cityProvider = Provider((ref) => 'London');
+final countryProvider = Provider((ref) => 'England');
+```
+
+Her iki provider'ın da bir 'String' oluşturması sorun değil.
+
+:::
+
+:::caution DİKKAT
+Provider'ların çalışması için Flutter uygulamalarınızın kök dizinine [ProviderScope] eklemeniz gerekir:
+
+```dart
+void main() {
+  runApp(ProviderScope(child: MyApp()));
+}
+```
+
+:::
+
+## Farklı Provider türleri
+
+Farklı kullanım durumları için birden fazla provider türü vardır.
+
+Tüm bu provider'lar mevcut olduğundan, bazen bir tür provider'ın diğerine göre ne zaman kullanılacağını anlamak zordur.
+Widget ağacına sağlamak istediğiniz özelliklere uygun bir provider seçmek için aşağıdaki tabloyu kullanın.
+
+| Provider Türü | Provider oluşturma işlevi | Örnek olay kullanın |
+| ------------------------ | ------------------------------------ | -------------------------------------------------- ------------------ |
+| [Provider] | Herhangi bir türü döndür | Hesaplanmış bir özellik/hizmet sınıfı (filtrelenmiş liste) |
+| [StateProvider] | Herhangi bir türü döndür | Basit bir filtre koşulu/durum nesnesi |
+| [FutureProvider] | Her türden bir Geleceği Dönüştürün | API çağrısının sonucu |
+| [StreamProvider] | Her türden Akışı döndür | Bir API'nin sonuçlarının akışı |
+| [StateNotifierProvider] | StateNotifier'ın bir alt sınıfını döndürür | Bir arayüz dışında değiştirilemeyen karmaşık durum nesnesi |
+| [ChangeNotifierProvider] | ChangeNotifier'ın bir alt sınıfını döndürür | Değişkenlik gerektiren karmaşık durum nesnesi |
+
+:::caution DİKKAT
+Tüm provider'ların kendi amaçları olmasına rağmen, değişken durumla ilgili sorunlar nedeniyle [ChangeNotifierProvider] ölçeklenebilir uygulamalar için önerilmez. 'Package:provider'dan kolay bir geçiş yolu sağlamak için 'flutter_riverpod' paketinde bulunur ve bazı Navigator 2 paketleriyle entegrasyon gibi Flutter'a özgü bazı kullanım durumlarına izin verir
+:::
+
+## State yıkılmadan önce harekete geçmek
+
+Bazı durumlarda provider'ın durumu yok edilebilir veya yeniden oluşturulabilir.
+Bu durumlarda yaygın bir kullanım durumu, işlemden önce bir temizlik gerçekleştirmektir.
+'StreamController'ı kapatmak gibi bir provider'ın durumunu yok etmek.
+
+Bu, 'geri arama'ya iletilen 'ref' nesnesi kullanılarak yapılır.
+tüm provider'lar, [onDispose] yöntemini kullanarak.
+
+Aşağıdaki örnekte bir `StreamController`ı kapatmak için [onDispose] kullanılır:
+
+```dart
+final example = StreamProvider.autoDispose((ref) {
+  final streamController = StreamController<int>();
+
+  ref.onDispose(() {
+    // Bu provider'ın durumu bozulduğunda StreamController'ı kapatır.
+    streamController.close();
+  });
+
+  return streamController.stream;
+});
+```
+
+:::note NOT
+Kullanılan provider'a bağlı olarak temizleme işlemini zaten gerçekleştirebilir.
+Örneğin, [StateNotifierProvider], bir 'StateNotifier'ın 'dispose' yöntemini çağıracaktır.
+:::
+
+## Provider Değiştiriciler
+
+Tüm provider'ın, farklı provider'larına ek işlevsellik eklemenin yerleşik bir yolu vardır.
+
+
+'Ref' nesnesine yeni işlevler ekleyebilir veya provider'ın tüketilme şeklini biraz değiştirebilirler.
+Değiştiriciler, adlandırılmış yapıcılara benzer sözdizimiyle tüm provider'larda kullanılabilir:
+
+
+```dart
+final myAutoDisposeProvider = StateProvider.autoDispose<String>((ref) => 0);
+final myFamilyProvider = Provider.family<String, int>((ref, id) => '$id');
+```
+
+Şu anda iki değiştirici mevcut:
+
+- [`.autoDispose`](/docs/concepts/modifiers/auto_dispose), bu, provider'ın yok etmesine neden olur
+ Artık duyulmadığında durumunu otomatik olarak ayarlar.
+- [`.family`](/docs/concepts/modifiers/family), bu, şuradan bir provider oluşturulmasına olanak tanır:
+ dış parametreler.
+
+:::note NOT
+Bir provider aynı anda birden fazla değiştirici kullanabilir:
+
+```dart
+final userProvider = FutureProvider.autoDispose.family<User, int>((ref, userId) async {
+  return fetchUser(userId);
+});
+```
+
+:::
+
+Bu rehber için bu kadar!
+
+[Bir provider nasıl okunur](/docs/concepts/reading) ile devam edebilirsiniz.
+Alternatif olarak, [provider'lar nasıl birleştirilir](/docs/concepts/combining_providers) konusuna bakabilirsiniz.
+
+[get_it]: http://pub.dev/packages/get_it
+[inheritedwidget]: https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html
+[stream]: https://api.dart.dev/stable/2.8.4/dart-async/Stream-class.html
+[ondispose]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/onDispose.html
+[riverpod]: https://github.com/rrousselgit/riverpod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
+[provider]: /docs/providers/provider
+[streamprovider]: https://pub.dev/documentation/riverpod/latest/riverpod/StreamProvider-class.html
+[futureprovider]: /docs/providers/future_provider
+[stateprovider]: /docs/providers/state_provider
+[statenotifierprovider]: /docs/providers/state_notifier_provider
+[changenotifierprovider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ChangeNotifierProvider-class.html
+
+[providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html

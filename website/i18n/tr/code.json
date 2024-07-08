@@ -1,0 +1,258 @@
+{
+  "theme.NotFound.title": {
+    "message": "Sayfa Bulunamadı",
+    "description": "The title of the 404 page"
+  },
+  "theme.NotFound.p1": {
+    "message": "Aradığınız şeyi bulamadık.",
+    "description": "The first paragraph of the 404 page"
+  },
+  "theme.NotFound.p2": {
+    "message": "Lütfen sizi bu URL'ye yönlendiren site sahibine ulaşın ve bağlantının çalışmadığını bildirin.",
+    "description": "The 2nd paragraph of the 404 page"
+  },
+  "theme.AnnouncementBar.closeButtonAriaLabel": {
+    "message": "Kapat",
+    "description": "The ARIA label for close button of announcement bar"
+  },
+  "theme.blog.paginator.navAriaLabel": {
+    "message": "Blog yazıları listesi sayfalandırma",
+    "description": "The ARIA label for the blog pagination"
+  },
+  "theme.blog.paginator.newerEntries": {
+    "message": "Yeni yazılar",
+    "description": "The label used to navigate to the newer blog posts page (previous page)"
+  },
+  "theme.blog.paginator.olderEntries": {
+    "message": "Eski yazılar",
+    "description": "The label used to navigate to the older blog posts page (next page)"
+  },
+  "theme.blog.post.readingTime.plurals": {
+    "message": "Bir dakikalık okuma|{readingTime} dakikalık okuma",
+    "description": "Pluralized label for \"{readingTime} min read\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.tags.tagsListLabel": {
+    "message": "Etiketler: ",
+    "description": "The label alongside a tag list"
+  },
+  "theme.blog.post.readMore": {
+    "message": "Devamını oku",
+    "description": "The label used in blog post item excerpts to link to full blog posts"
+  },
+  "theme.blog.post.paginator.navAriaLabel": {
+    "message": "Blog yazıları sayfalandırma",
+    "description": "The ARIA label for the blog posts pagination"
+  },
+  "theme.blog.post.paginator.newerPost": {
+    "message": "Daha yeni yazı",
+    "description": "The blog post button label to navigate to the newer/previous post"
+  },
+  "theme.blog.post.paginator.olderPost": {
+    "message": "Daha eski yazı",
+    "description": "The blog post button label to navigate to the older/next post"
+  },
+  "theme.blog.sidebar.navAriaLabel": {
+    "message": "Son blog yazıları gezintisi",
+    "description": "The ARIA label for recent posts in the blog sidebar"
+  },
+  "theme.blog.post.plurals": {
+    "message": "Bir makale|{count} makale",
+    "description": "Pluralized label for \"{count} posts\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.blog.tagTitle": {
+    "message": "{nPosts} etiketli « {tagName} »",
+    "description": "The title of the page for a blog tag"
+  },
+  "theme.tags.tagsPageLink": {
+    "message": "Tüm etiketleri gör",
+    "description": "The label of the link targeting the tag list page"
+  },
+  "theme.CodeBlock.copyButtonAriaLabel": {
+    "message": "Kodu kopyala",
+    "description": "The ARIA label for copy code blocks button"
+  },
+  "theme.CodeBlock.copied": {
+    "message": "Kopyalandı",
+    "description": "The copied button label on code blocks"
+  },
+  "theme.CodeBlock.copy": {
+    "message": "Kopyala",
+    "description": "The copy button label on code blocks"
+  },
+  "theme.tags.tagsPageTitle": {
+    "message": "Etiketler",
+    "description": "The title of the tag list page"
+  },
+  "theme.docs.sidebar.expandButtonTitle": {
+    "message": "Yan menüyü genişlet",
+    "description": "The ARIA label and title attribute for expand button of doc sidebar"
+  },
+  "theme.docs.sidebar.expandButtonAriaLabel": {
+    "message": "Yan menüyü genişlet",
+    "description": "The ARIA label and title attribute for expand button of doc sidebar"
+  },
+  "theme.docs.paginator.navAriaLabel": {
+    "message": "Belgeler sayfalandırma",
+    "description": "The ARIA label for the docs pagination"
+  },
+  "theme.docs.paginator.previous": {
+    "message": "Önceki",
+    "description": "The label used to navigate to the previous doc"
+  },
+  "theme.docs.paginator.next": {
+    "message": "Sonraki",
+    "description": "The label used to navigate to the next doc"
+  },
+  "theme.docs.sidebar.collapseButtonTitle": {
+    "message": "Yan menüyü gizle",
+    "description": "The title attribute for collapse button of doc sidebar"
+  },
+  "theme.docs.sidebar.collapseButtonAriaLabel": {
+    "message": "Yan menüyü gizle",
+    "description": "The title attribute for collapse button of doc sidebar"
+  },
+  "theme.docs.versions.unreleasedVersionLabel": {
+    "message": "Bu, {siteTitle} için yayınlanmamış {versionLabel} sürümünün belgeleridir.",
+    "description": "The label used to tell the user that he's browsing an unreleased doc version"
+  },
+  "theme.docs.versions.unmaintainedVersionLabel": {
+    "message": "Bu, artık aktif olarak bakım yapılmayan {siteTitle} {versionLabel} belgeleridir.",
+    "description": "The label used to tell the user that he's browsing an unmaintained doc version"
+  },
+  "theme.docs.versions.latestVersionSuggestionLabel": {
+    "message": "Son sürüm [{versionLabel}] belgelerini almak için buraya tıklayın: {latestVersionLink}",
+    "description": "The label used to tell the user to check the latest version"
+  },
+  "theme.docs.versions.latestVersionLinkLabel": {
+    "message": "Son sürüm",
+    "description": "The label used for the latest version suggestion link label"
+  },
+  "theme.common.editThisPage": {
+    "message": "Bu sayfayı düzenle",
+    "description": "The link label to edit the current page"
+  },
+  "theme.common.headingLinkTitle": {
+    "message": "Başlığa doğrudan bağlantı",
+    "description": "Title for link to heading"
+  },
+  "theme.lastUpdated.atDate": {
+    "message": "Son güncelleme tarihi: {date}",
+    "description": "The words used to describe on which date a page has been last updated"
+  },
+  "theme.lastUpdated.byUser": {
+    "message": "Son güncelleyen: {user}",
+    "description": "The words used to describe by who the page has been last updated"
+  },
+  "theme.lastUpdated.lastUpdatedAtBy": {
+    "message": "{atDate} tarihinde {byUser} tarafından son güncelleme",
+    "description": "The sentence used to display when a page has been last updated, and by who"
+  },
+  "theme.navbar.mobileSidebarSecondaryMenu.backButtonLabel": {
+    "message": "← Ana menüye dön",
+    "description": "The label of the back button to return to main menu, inside the mobile navbar sidebar secondary menu (notably used to display the docs sidebar)"
+  },
+  "theme.common.skipToMainContent": {
+    "message": "Ana içeriğe atla",
+    "description": "The skip to content label used for accessibility, allowing to rapidly navigate to main content with keyboard tab/enter navigation"
+  },
+  "theme.TOCCollapsible.toggleButtonLabel": {
+    "message": "Bu sayfada",
+    "description": "The label used by the button on the collapsible TOC component"
+  },
+  "theme.SearchPage.documentsFound.plurals": {
+    "message": "Bir belge bulundu|{count} belge bulundu",
+    "description": "Pluralized label for \"{count} documents found\". Use as much plural forms (separated by \"|\") as your language support (see https://www.unicode.org/cldr/cldr-aux/charts/34/supplemental/language_plural_rules.html)"
+  },
+  "theme.SearchPage.existingResultsTitle": {
+    "message": "« {query} » için arama sonuçları",
+    "description": "The search page title for non-empty query"
+  },
+  "theme.SearchPage.emptyResultsTitle": {
+    "message": "Belgeleri ara.",
+    "description": "The search page title for empty query"
+  },
+  "theme.SearchPage.inputPlaceholder": {
+    "message": "Aramanızı buraya yazın",
+    "description": "The placeholder for search page input"
+  },
+  "theme.SearchPage.inputLabel": {
+    "message": "Ara",
+    "description": "The ARIA label for search page input"
+  },
+  "theme.SearchPage.algoliaLabel": {
+    "message": "Algolia ile arama",
+    "description": "The ARIA label for Algolia mention"
+  },
+  "theme.SearchPage.noResultsText": {
+    "message": "Sonuç bulunamadı",
+    "description": "The paragraph for empty search result"
+  },
+  "theme.SearchPage.fetchingNewResults": {
+    "message": "Yeni sonuçlar yükleniyor...",
+    "description": "The paragraph for fetching new search results"
+  },
+  "theme.SearchBar.label": {
+    "message": "Ara",
+    "description": "The ARIA label and placeholder for search button"
+  },
+  "homepage.compile_safe_title": {
+    "message": "Güvenli Derleme"
+  },
+  "homepage.compile_safe_body": {
+    "message": "Artık {ProviderNotFound} veya yükleme durumlarını yönetmeyi unutmak yok. Riverpod kullanarak, kodunuz derlenirse, çalışır."
+  },
+  "homepage.unlimited_provider_title": {
+    "message": "Sınırsız Provider"
+  },
+  "homepage.unlimited_provider_body": {
+    "message": "Riverpod, Provider'dan ilham almıştır ancak aynı türden birden fazla provider'ı desteklemek; asenkron provider'ları beklemek; her yerden provider'lar eklemek gibi bazı önemli sorunları çözer."
+  },
+  "homepage.no_flutter_dependency_title": {
+    "message": "Flutter Bağımlılığı Yok"
+  },
+  "homepage.no_flutter_dependency_body": {
+    "message": "Flutter'a bağımlı olmadan provider oluşturun/paylaşın/test edin. Bu, bir {BuildContext} olmadan provider'ları dinleyebilmeyi içerir."
+  },
+  "home.tagline": {
+    "message": "Reaktif Önbellek ve Veri Bağlama Çerçevesi"
+  },
+  "home.get_started": {
+    "message": "Başlayın"
+  },
+  "home.shared_state_title": {
+    "message": "Durumu her yerden paylaşın"
+  },
+  "home.shared_state_body": {
+    "message": "{main} ve kullanıcı arayüzü dosyalarınız arasında geçiş yapmanıza gerek yok. Paylaşılan durum kodunuzu, ayrı bir pakette veya ihtiyaç duyulan Widget'ın hemen yanında, test yapma yeteneğini kaybetmeden yazın."
+  },
+  "home.recompute_title": {
+    "message": "Durumu ve kullanıcı arayüzünü yalnızca gerektiğinde yeniden hesaplayın"
+  },
+  "home.recompute_body": {
+    "message": "{build} yönteminde listeleri sıralamak ve/veya filtrelemek zorunda kalmayız veya gelişmiş bir önbellekleme mekanizmasına başvurmak zorunda kalmayız.{br}{br} {Provider} ve {families} ile listelerinizi yalnızca gerçekten ihtiyaç duyduğunuzda sıralayabilir veya HTTP istekleri yapabilirsiniz."
+  },
+  "home.safe_read_title": {
+    "message": "Provider'ı güvenli bir şekilde okuyun"
+  },
+  "home.safe_read_body": {
+    "message": "Bir provider'ı okumak hiçbir zaman kötü bir duruma neden olmaz. Bir provider'ı okumak için gerekli kodu yazabiliyorsanız, geçerli bir değer elde edersiniz. {br}{br} Bu, asenkron olarak elde edilen değerler için bile geçerlidir. Provider'ın aksine, Riverpod yükleme ve hata durumlarını temiz bir şekilde yönetmenize izin verir."
+  },
+  "home.devtool_title": {
+    "message": "Durumunuzu geliştirici aracında inceleyin"
+  },
+  "home.devtool_body": {
+    "message": "Riverpod kullanarak, varsayılan olarak, durumunuz Flutter geliştirici aracında görülebilir. Dahası, kapsamlı bir durum inceleme aracı geliştirme aşamasındadır."
+  },
+  "home.create_provider": {
+    "message": "Bir Provider Oluştur"
+  },
+  "home.consume_provider": {
+    "message": "Provider'ı Tüket"
+  },
+  "declare_anywhere_img": {
+    "message": "img/intro/tr/declare_anywhere.png"
+  },
+  "home.async_img": {
+    "message": "img/intro/tr/async.png"
+  }
+}
