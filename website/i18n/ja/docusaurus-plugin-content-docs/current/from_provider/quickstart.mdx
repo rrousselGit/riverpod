@@ -34,7 +34,7 @@ final myNotifierProvider = ChangeNotifierProvider<MyNotifier>((ref) {
 });
 ```
 
-ご覧のとおり、Riverpod は[ChangeNotifierProvider]クラスを公開しており、これは pkg:Provider.
+ご覧のとおり、Riverpod は[ChangeNotifierProvider]クラスを公開しており、これは Provider パッケージ
 からの移行をサポートするためのものです。
 
 このプロバイダは新しいコードを書く際には推奨されず、Riverpod の最適な使用方法ではありませんが、移行を始めるための穏やかで非常に簡単な方法です。
@@ -43,7 +43,7 @@ final myNotifierProvider = ChangeNotifierProvider<MyNotifier>((ref) {
 `ChangeNotifier` をすぐに最新の[Riverpod の provider]に変更する必要はありません。これらには多少のパラダイムシフトが必要な場合があり、最初は難しいかもしれません。
 
 まずは Riverpod に慣れることが重要です。
-pkg:provider の ほとんどすべての Provider には、 pkg:riverpod に厳密に対応するものがあることがすぐにわかるでしょう。
+provider パッケージ の ほとんどすべての Provider には、 riverpod パッケージに厳密に対応するものがあることがすぐにわかるでしょう。
 :::
 
 ## *leaves*で始まる
@@ -75,8 +75,8 @@ _Provider と Riverpod を同時に使用することは完全に可能である
 
 上記で定義した `myNotifierProvider` を考えてみましょう。
 
-内部のコードが pkg:Provider の API に依存している場合、
-次のようにして pkg:Riverpod で ChangeNotifier を利用開始することができます。
+内部のコードが Provider パッケージの API に依存している場合、
+次のようにして Riverpod パッケージで ChangeNotifier を利用開始することができます。
 
 ```dart
 MultiProvider(
@@ -87,7 +87,7 @@ MultiProvider(
 ```
 
 この方法では、最初にルートウィジェットだけを`ConsumerWidget`に変換する必要があります。
-これにより、pkg:Riverpod への移行がさらに容易になります。
+これにより、Riverpod パッケージへの移行がさらに容易になります。
 
 ## 1 つずつプロバイダを移行する
 
@@ -116,7 +116,7 @@ final myNotifierProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
 
 ## `ProxyProvider` の移行
 
-pkg:Provider では、 `ProxyProvider`は他のプロバイダから値を組み合わせるために使用されます。
+Provider パッケージでは、 `ProxyProvider`は他のプロバイダから値を組み合わせるために使用されます。
 そのビルドは他のプロバイダの値に依存し、リアクティブに行われます。
 
 Riverpod では、プロバイダは[デフォルトで構成可能]です。
@@ -135,7 +135,7 @@ Riverpod のプロバイダはグローバルな変数であるため、デフ�
 
 つまり、Riverpod を積極的に初期化することはできませんが、起動フェーズで読み取ってキャッシュすることで、アプリケーションの他の部分で必要なときにウォームアップされ準備が整うようにすることができます。
 
-pkg:Riverpod のプロバイダの積極的初期化に関する完全なガイドは[こちら]にあります。
+Riverpod パッケージのプロバイダの積極的初期化に関する完全なガイドは[こちら]にあります。
 
 ## コード生成
 
