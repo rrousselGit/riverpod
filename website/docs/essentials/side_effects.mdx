@@ -230,7 +230,7 @@ For example, we can disable "auto-dispose" (which we will see later) by writing 
 
 When a `@riverpod` annotation is placed on a class, that class is called
 a "Notifier".  
-The class must extend `_$NotifierName`, where `NotifierName` is class name.
+The class must extend `_$NotifierName`, where `NotifierName` is the class name.
 
 Notifiers are responsible for exposing ways to modify the state of the provider.  
 Public methods on this class are accessible to consumers using `ref.read(yourProvider.notifier).yourMethod()`.
