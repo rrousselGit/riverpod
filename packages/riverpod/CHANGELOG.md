@@ -1,3 +1,7 @@
+## 2.5.2
+
+- Fix documentation invalid use of `Uri.https` in README and website snippet. (thanks to @Luckey-Elijah)
+
 ## 2.5.1 - 2024-03-10
 
 - Improved `Provider(dependencies: [...])` documentation.
