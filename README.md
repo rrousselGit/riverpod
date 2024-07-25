@@ -48,7 +48,7 @@ Long story short:
   @riverpod
   Future<String> boredSuggestion(BoredSuggestionRef ref) async {
     final response = await http.get(
-      Uri.parse('https://boredapi.com/api/activity'),
+      Uri.https('boredapi.com', '/api/activity'),
     );
     final json = jsonDecode(response.body);
     return json['activity']! as String;
