@@ -1,0 +1,312 @@
+---
+title: Hooksについて
+version: 1
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import hookAndConsumer from "!!raw-loader!/docs/concepts/about_hooks/hook_and_consumer.dart";
+import hookConsumer from "!!raw-loader!/docs/concepts/about_hooks/hook_consumer.dart";
+import hookConsumerWidget from "!!raw-loader!/docs/concepts/about_hooks/hook_consumer_widget.dart";
+import { CodeSnippet } from "/src/components/CodeSnippet";
+import { Link } from "/src/components/Link";
+
+このページでは Hooks とは何か、そして Riverpod とどのように関連しているかについて説明します。
+
+"Hooks"は Riverpod から独立し、別のパッケージで提供されるユーティリティです: [flutter_hooks]
+
+[flutter_hooks]は完全に別のパッケージであり、（少なくとも直接的には）
+Riverpod とは何の関係もありませんが、Riverpod と[flutter_hooks]を組み合わせて使用することが一般的です。
+
+## Hooks を使用するべきか
+
+Hooks は強力なツールです、しかし全ての人にとって適しているわけではありません。  
+Riverpod を始めてつかうかたは、Hooks の使用を避けることをお勧めします。
+
+Hooks は便利ではありますが、Riverpod には必須ではありません。  
+Riverpod だからと言って Hooks を使い始めるべきではありません。  
+Hooks を使いたいという理由で Hooks を使い始めるべきです。
+
+Hooks を使うことはトレードオフです。
+Hooks はコードを堅牢かつ再利用可能にするのに役立ちますが、新しいコンセプトを学ぶ必要があるため、  
+最初は混乱するかもしれません。  
+Hooks は Flutter のコアコンセプトではないため、Flutter/Dart で不自然に感じるかもしれません。
+
+## Hooks は何?
+
+Hooks はウィジェット内で使用される関数です。  
+ロジックをより再利用可能(reusable)かつ組み合わせ(composable)可能にするために[StatefulWidget]の代替として設計されています。
+
+Hooks は [React](https://reactjs.org/) から来た概念であり、[flutter_hooks]はその React 実装を Flutter に移植したものです。
+そのため、Hooks は Flutter の中では多少違和感を感じるかもしれません。  
+理想的には、将来 Hooks が解決する問題に対して、Flutter 専用に設計された解決策が出てくることが望まれます。
+
+Riverpod の provider は"global"アプリケーションの状態(State)を管理するためのものですが、Hooks はローカルウィジェットの状態(State)を管理するためのものです。  
+Hooks は通常、[TextEditingController](https://api.flutter.dev/flutter/widgets/TextEditingController-class.html)や[AnimationController](https://api.flutter.dev/flutter/animation/AnimationController-class.html)などのステートフルな UI オブジェクトを扱うために使用されます。  
+また、「ビルダーパターン」の代替としても機能し、[FutureBuilder](https://api.flutter.dev/flutter/widgets/FutureBuilder-class.html)や[TweenAnimatedBuilder](https://api.flutter.dev/flutter/widgets/TweenAnimationBuilder-class.html)などのウィジェットを"ネスト"せずに置き換えることができ、可読性を大幅に向上させます。
+
+一般的に、Hooks は以下のような場合に役立ちます:
+
+- forms
+- animations
+- ユーザーイベントへの反応
+- ...
+
+例えば、ウィジェットが見えない状態から徐々に現れるフェードインアニメーションを手動で実装する場合、Hooks を使用することができます。
+
+[StatefulWidget]を使用する場合、コードは次のようになります:
+
+```dart
+class FadeIn extends StatefulWidget {
+  const FadeIn({Key? key, required this.child}) : super(key: key);
+
+  final Widget child;
+
+  @override
+  State<FadeIn> createState() => _FadeInState();
+}
+
+class _FadeInState extends State<FadeIn> with SingleTickerProviderStateMixin {
+  late final AnimationController animationController = AnimationController(
+    vsync: this,
+    duration: const Duration(seconds: 2),
+  );
+
+  @override
+  void initState() {
+    super.initState();
+    animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    animationController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: animationController,
+      builder: (context, child) {
+        return Opacity(
+          opacity: animationController.value,
+          child: widget.child,
+        );
+      },
+    );
+  }
+}
+```
+
+Hooks を使用すると、同等のコードは次のようになります:
+
+```dart
+class FadeIn extends HookWidget {
+  const FadeIn({Key? key, required this.child}) : super(key: key);
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    // AnimationController を作成します。
+    // このコントローラーはウィジェットがアンマウントされると自動的に破棄されます。
+    final animationController = useAnimationController(
+      duration: const Duration(seconds: 2),
+    );
+
+    // useEffectは initState + didUpdateWidget + disposeに相当します。
+    // useEffectに渡されたコールバックは、Hooksが最初に呼び出されたときに実行されます。
+    // その後、第二引数に渡されたリストが変更されるたびに再度実行されます。
+    // ここでは空のリストが渡されているため、厳密には`initState`と同じです。
+    useEffect(() {
+      // ウィジェットが最初に描画されたときにアニメーションを開始します。
+      animationController.forward();
+      // ここにオプションで"dispose"ロジックを返すことができます。
+      return null;
+    }, const []);
+
+    // アニメーションが更新された時にウィジェットを再ビルドするようにFlutterに指示します。
+    // これはAnimatedBuilderに相当します。
+    useAnimation(animationController);
+
+    return Opacity(
+      opacity: animationController.value,
+      child: child,
+    );
+  }
+}
+```
+
+このコードにはいくつかの興味深い点があります:
+
+- メモリリークはありません。このコードはウィジェットが再ビルドされるたびに新しい `AnimationController` を作成しません。
+  代わりに、ウィジェットがアンマウントされるときにコントローラーが正しく破棄されます。
+
+- 同じウィジェットで Hooks を何度でも使用できます。  
+  そのため、必要に応じて複数の AnimationController を作成することができます:
+
+  ```dart
+  @override
+  Widget build(BuildContext context) {
+    final animationController = useAnimationController(
+      duration: const Duration(seconds: 2),
+    );
+    final anotherController = useAnimationController(
+      duration: const Duration(seconds: 2),
+    );
+
+    ...
+  }
+  ```
+
+これにより、何の悪影響もなく 2 つのコントローラが作成されます。
+
+- このロジックを別の再利用可能な関数にリファクタリングすることができます:
+
+  ```dart
+  double useFadeIn() {
+    final animationController = useAnimationController(
+      duration: const Duration(seconds: 2),
+    );
+    useEffect(() {
+      animationController.forward();
+      return null;
+    }, const []);
+    useAnimation(animationController);
+    return animationController.value;
+  }
+  ```
+
+  [HookWidget]内であれば、この関数をウィジェット内で使用できます:
+
+  ```dart
+  class FadeIn extends HookWidget {
+    const FadeIn({Key? key, required this.child}) : super(key: key);
+
+    final Widget child;
+
+    @override
+    Widget build(BuildContext context) {
+      final fade = useFadeIn();
+
+      return Opacity(opacity: fade, child: child);
+    }
+  }
+  ```
+
+  `useFadeIn`関数は`FadeIn`ウィジェット から完全に独立しています。  
+  完全に異なるウィジェットで`useFadeIn`関数を使用することができます。
+
+## Hooks のルール
+
+Hooks には独自の制約があります:
+
+- [HookWidget]을 확장(extends)하는 위젯의 `build` 메서드 내에서만 사용할 수 있습니다:
+
+  **Good**:
+
+  ```dart
+  class Example extends HookWidget {
+    @override
+    Widget build(BuildContext context) {
+      final controller = useAnimationController();
+      ...
+    }
+  }
+  ```
+
+  **Bad**:
+
+  ```dart
+  // HookWidgetではない場合
+  class Example extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      final controller = useAnimationController();
+      ...
+    }
+  }
+  ```
+
+  **Bad**:
+
+  ```dart
+  class Example extends HookWidget {
+    @override
+    Widget build(BuildContext context) {
+      return ElevatedButton(
+        onPressed: () {
+          // 実際には"build"メソッドの中ではなく、ユーザーインタラクションライフサイクル（ここでは"on pressed"）の中で使っている場合
+          final controller = useAnimationController();
+        },
+        child: Text('click me'),
+      );
+    }
+  }
+  ```
+
+- Hooks は条件付きやループ内で利用できません。
+
+  **Bad**:
+
+  ```dart
+  class Example extends HookWidget {
+    const Example({required this.condition, super.key});
+    final bool condition;
+    @override
+    Widget build(BuildContext context) {
+      if (condition) {
+        // Hooksは "if"や"for" の中で使うべきではありません。
+        final controller = useAnimationController();
+      }
+      ...
+    }
+  }
+  ```
+
+詳しくは [flutter_hooks] を参照してください。
+
+## Hooks と Riverpod
+
+### インストール
+
+Hooks は Riverpod から独立しています。そのため、Hooks を別途インストールする必要があります。
+Hooks を使うには[hooks_riverpod]をインストールするだけでは不十分です。  
+[flutter_hooks] modified 依存関係に追加する必要があります。
+詳しくは[パッケージのインストール](/docs/introduction/getting_started#enabling-riverpod_lint-custom_lint)を参照してください。
+
+### 使用法
+
+場合によっては、Hooks と Riverpod の両方を使用するウィジェットを書く必要があるかもしれません。  
+しかし、すでに気づいてるかもしれませんが Hooks と Riverpod の両方が独自のカスタムウィジェットを提供しています: [HookWidget] と [ConsumerWidget]です。  
+しかし、クラスは一度に一つのスーパークラスしか拡張(extend)できません。
+
+この問題の解決策として、[hooks_riverpod] パッケージを使用することができます。  
+このパッケージは一つのクラスに [HookWidget] と [ConsumerWidget] を組み合わせた [HookConsumerWidget] クラスを提供します。  
+そのため、[HookWidget] の代わりに [HookConsumerWidget] をサブクラス化(subclass)することができます:
+
+<CodeSnippet snippet={hookConsumerWidget}></CodeSnippet>
+
+また、両方のパッケージが提供する"builder"を使用することもできます。  
+例えば、StatelessWidget を使用し続け、HookBuilder と Consumer の両方を使用することができます。
+
+<CodeSnippet snippet={hookAndConsumer}></CodeSnippet>
+
+:::note
+このアプローチは[hooks_riverpod]を使用せずにも機能します。[flutter_riverpod]のみ必要とします。
+:::
+
+このアプローチが気に入った場合、[hooks_riverpod]は 両方のビルダーを 1 つにまとめた[HookConsumer] を提供します:
+
+<CodeSnippet snippet={hookConsumer}></CodeSnippet>
+
+[hookwidget]: https://pub.dev/documentation/flutter_hooks/latest/flutter_hooks/HookWidget-class.html
+[hookconsumer]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/HookConsumer-class.html
+[hookconsumerwidget]: https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/HookConsumerWidget-class.html
+[consumerwidget]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ConsumerWidget-class.html
+[statefulwidget]: https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html
+[riverpod]: https://github.com/rrousselgit/riverpod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
