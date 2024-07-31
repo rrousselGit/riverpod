@@ -134,7 +134,7 @@ Provider には、provider を読み取るためのウィジェット `Consumer`
 Provider<Model>(...);
 ```
 
-Provider는 `Consumer`를 사용하여 provider를 읽을 수 있게합니다:
+provider は`Consumer`を利用して provider を読み取ることができます:
 
 ````dart
 
@@ -204,7 +204,8 @@ class UserIdNotifier extends ChangeNotifier {
 ChangeNotifierProvider<UserIdNotifier>(create: (context) => UserIdNotifier()),
 ```
 
-そこから、`UserIdNotifier` を組み合わせて新しい"stateless"provider（通常は不変の値）を作成するオプションがあります。例えば:
+そこから、`UserIdNotifier` を組み合わせて新しい"stateless"provider（通常は不変の値）を作成するオプションがあります。  
+例えば:
 
 ```dart
 ProxyProvider<UserIdNotifier, String>(

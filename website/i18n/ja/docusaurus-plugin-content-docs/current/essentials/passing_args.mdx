@@ -1,6 +1,6 @@
 ---
 title: リクエストに引数を渡す
-version: 1
+version: 3
 ---
 
 import { Link } from "/src/components/Link";
@@ -15,7 +15,7 @@ import tupleFamily from "!!raw-loader!/docs/essentials/passing_args/raw/tuple_fa
 import consumerTupleFamily from "!!raw-loader!/docs/essentials/passing_args/raw/consumer_tuple_family.dart";
 
 前の記事では、シンプルな*GET* HTTP リクエストを行うための"provider"を定義する方法を見てきました。  
-しかし、HTTP リクエストは外部パラメータを必要なことがよくあります。
+しかし、HTTP リクエストは外部パラメータを必要とすることがよくあります。
 
 例えば、以前は[Bored API](https://boredapi.com/)を使ってユーザーにランダムなアクティビティを提案しました。  
 しかし、ユーザーはアクティビティのタイプをフィルタリングしたいかもしれませんし、価格要件などもあるかもしれません。  
@@ -82,7 +82,7 @@ provider にパラメータを渡すには、アノテーションが付いた�
 />
 
 :::caution
-provider に引数を渡すときは、provider に"autoDispose"を有効にすることが強くお勧めされます。  
+provider に引数を渡すときは、provider に"autoDispose"を有効にすることを強くお勧めします。  
 これを怠るとメモリリークが発生する可能性があります。  
 詳細については[auto_dispose](/docs/essentials/auto_dispose)を参照してください。
 :::

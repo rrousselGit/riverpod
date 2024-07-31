@@ -46,10 +46,10 @@ Provider のドキュメントには[回避策]が説明されていますが、
 
 <AutoSnippet language="dart" {...sameType}></AutoSnippet>
 
-### provider は一度に 1 つの値しか送出しない
+### provider は一度に 1 つの値しか吐き出さない
 
 外部の RESTful API を読み取るとき、最後に読み取った値を表示しながら新しい呼び出しで次の値を読み込むことが一般的です。  
-Riverpod では、AsyncValue の API を介して、前のデータ値と新しいロード中の値の 2 つの値を同時に送出できます:
+Riverpod では、AsyncValue の API を介して、前のデータ値と新しいロード中の値の 2 つの値を同時に吐き出します:
 
 <AutoSnippet language="dart" {...asyncValues}></AutoSnippet>
 
@@ -146,7 +146,7 @@ Riverpod では、プロバイダはデフォルトでテスト内で使用可�
 
 ## Riverpod への移行
 
-概念的には、Riverpod と Provider は非常に似ています。両方のパッケージは似た役割を果たします。  
+概念的には、Riverpod と Provider は非常に似ており、両方のパッケージは似た役割を果たします。  
 両方とも次のことを試みます:
 
 - stateful オブジェクトのキャッシュと破棄

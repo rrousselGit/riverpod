@@ -1,6 +1,6 @@
 ---
 title: 副作用の実行
-version: 1
+version: 2
 ---
 
 import { Link } from "/src/components/Link";
@@ -20,7 +20,7 @@ import renderAddTodo from "/docs/essentials/side_effects/render_add_todo";
 しかし、_POST_ リクエストのような副作用はどうでしょうか？
 
 アプリケーションはしばしば CRUD（作成、読み取り、更新、削除）API を実装します。  
-その際、更新リクエスト（通常は*POST*）はローカルキャッシュも更新して UI に新しい状態を反映させるのが一般的です。
+その際、更新リクエスト（通常は*POST*）はローカルキャッシュも更新して UI に新しい状態を反映させることが一般的です。
 
 問題は、Consumer の中から provider の状態をどう更新するかです。  
 当然、provider は状態を変更する方法を公開していません。  
@@ -258,7 +258,9 @@ UI で状態が変更されたことを知る手段がないため、Notifiers �
 `build`以外のメソッドがない Notifier は、以前見た構文を使用するのと同じです。
 
 [最初の provider/ネットワークリクエストを作成する](/docs/essentials/first_request)
-に示された構文は、UI から変更する方法がない notifiers に対する省略形と考えることができます。:::
+に示された構文は、UI から変更する方法がない notifiers に対する省略形と考えることができます。
+
+:::
 
 構文を見たところで、以前定義した Provider を Notifier に変換する方法を見てみましょう:
 
@@ -282,7 +284,7 @@ notifier のコンストラクタにロジックを入れないでください�
 class MyNotifier extends ... {
   MyNotifier() {
     // ❌ これはしないでください。
-    // これは例外を投げます。
+    // 例外を投げます。
     state = AsyncValue.data(42);
   }
 
@@ -367,7 +369,7 @@ notifier に`addTodo`メソッドを追加することでそれが可能にな�
     invalidateSelf:
       '    // Postリクエストが完了すると、ローカルキャッシュをダーティー(Dirty)と表現することができます。\n    // そうすると、notifierの"build"が非同期で再度呼び出されます、\n    // この時、リスナーに通知が送信されます。',
     future:
-      '    // (オプション）その後、新しいステータスが計算されるまで待つことができます。\n    // これにより、新しい状態が利用可能になるまで、"addTodo "は完了しない。',
+      '    // （オプション）その後、新しいステータスが計算されるまで待つことができます。\n    // これにより、新しい状態が利用可能になるまで、"addTodo "は完了しない。',
   }}
 />
 
@@ -408,7 +410,7 @@ notifier に`addTodo`メソッドを追加することでそれが可能にな�
 :::info
 この例では immutable state を使用しています。  
 必要ではありませんが、immutable state を使用することをお勧めします。  
-詳細は[なぜ不変なのか](/docs/concepts/why_immutability)を参照してください。  
+詳細は[why_immutability](/docs/concepts/why_immutability)を参照してください。  
 代わりに、mutable state を使用する場合は、別の方法を使用できます:
 
 <AutoSnippet

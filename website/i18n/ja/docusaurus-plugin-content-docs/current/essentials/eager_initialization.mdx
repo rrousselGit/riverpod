@@ -1,6 +1,6 @@
 ---
 title: providerの早期初期化
-version: 1
+version: 2
 ---
 
 import { Link } from "/src/components/Link";
@@ -45,19 +45,19 @@ import requireValue from "/docs/essentials/eager_initialization/require_value";
 
 したがって、別のウィジェットがその provider をリッスンしていない限り、`_EagerInitialization` のみが再構築されます。
 
-#### このアプローチを使用して、ローディング状態やエラー state をどのように処理できますか？
+#### このアプローチを使用して、ローディング状態やエラー状態をどのように処理できますか？
 
-`Consumer`で通常処理するのと同じように、ローディング/エラー state を処理できます。  
-`_EagerInitialization`は provider が "loading" state にあるかどうかを確認し、そうであれば `child`の代わりに `CircularProgressIndicator`を返すことができます:
+`Consumer`で通常処理するのと同じように、ローディング/エラー状態を処理できます。  
+`_EagerInitialization`は provider が "loading" 状態にあるかどうかを確認し、そうであれば `child`の代わりに `CircularProgressIndicator`を返すことができます:
 
 <AutoSnippet
   raw={asyncConsumerExample}
   translations={{
-    states: "    // エラーstateとローディングstateを処理します。",
+    states: "    // エラー状態とローディング状態を処理します。",
   }}
 />
 
-#### ローディング/エラー state を処理しましたが、他の Consumers も AsyncValue を受け取ります！すべてのウィジェットでローディング/エラーステートを処理しなくても済む方法はありますか？
+#### ローディング/エラー状態を処理しましたが、他の Consumers も AsyncValue を受け取ります！すべてのウィジェットでローディング/エラー状態を処理しなくても済む方法はありますか？
 
 provider が`AsyncValue`を公開しないようにする代わりに、ウィジェットが`AsyncValue.requireValue`を使用することができます。  
 これにより、パターンマッチングを行わずにデータを読み取ることができます。  
@@ -72,6 +72,6 @@ provider が`AsyncValue`を公開しないようにする代わりに、ウィ�
 />
 
 :::note
-これらの場合（スコープに依存する）にローディング/エラー state を公開しない方法もありますが、一般的にはそれは推奨されません。  
+これらの場合（スコープに依存する）にローディング/エラー状態を公開しない方法もありますが、一般的にはそれは推奨されません。  
 2 つのプロバイダーを作成し、オーバーライドを使用するという複雑さは、手間に見合いません。
 :::

@@ -1,6 +1,6 @@
 ---
 title: リクエストの組み合わせ
-version: 1
+version: 2
 ---
 
 import { Link } from "/src/components/Link";
@@ -144,7 +144,7 @@ provider の最新の state を返す点で`ref.watch`と似ています。
   translations={{
     read: '    // 悪い例です。 ここで "read "を使ってはいけません。',
     read2:
-      '    ref.read(otherProvider); // ここで"read"を使用することは問題ありません。',
+      '    // ここで"read"を使用することは問題ありません。\n    ref.read(otherProvider); ',
   }}
 />
 

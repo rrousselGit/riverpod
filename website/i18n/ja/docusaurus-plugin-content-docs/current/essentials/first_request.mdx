@@ -1,7 +1,7 @@
 ---
 title: 最初のprovider/ネットワークリクエストを作成する
 pagination_prev: introduction/getting_started
-version: 1
+version: 2
 ---
 
 import { Link } from "/src/components/Link";
@@ -71,10 +71,10 @@ provider は非常に強力な関数です。
 
 ### モデルの定義
 
-始める前に、API から受信するデータのモデルを定義する必要があります。　　
+始める前に、API から受信するデータのモデルを定義する必要があります。  
 このモデルは、API のレスポンスを Dart クラスインスタンスに変換するために使用されます。
 
-一般的に、JSON デコードを処理する際には、[Freezed](https://pub.dev/packages/freezed) や [json_serializable](https://pub.dev/packages/json_serializable) などのコード生成器を使用することをおすすめします。　　
+一般的に、JSON デコードを処理する際には、[Freezed](https://pub.dev/packages/freezed) や [json_serializable](https://pub.dev/packages/json_serializable) などのコード生成パッケージを使用することをおすすめします。  
 もちろん、手動で処理することも可能です。
 
 どちらにせよ、最終的には次のようなモデルになります:
@@ -237,7 +237,7 @@ Result myFunction(MyFunctionRef ref) {
 />
 </When>
 
-私たちの場合、API からアクティビティを*GET*したいです。  
+私たちの場合、API からアクティビティを*GET*したいですよね。  
 *GET*は非同期操作であるため、`Future<Activity>`を作成する必要があります。
 
 先に定義した構文を使用して、provider を次のように定義できます:
@@ -274,7 +274,7 @@ provider が最初に読み取られたときにネットワークリクエス�
 
 provider を定義したので、UI 内でこれを使用してアクティビティを表示することができます。
 
-provider と対話するためには、「ref」と呼ばれるオブジェクトが必要です。  
+provider と対話するためには、"ref"と呼ばれるオブジェクトが必要です。  
 これは、provider の定義で見たように、provider は自然に"ref"オブジェクトにアクセスできます。  
 しかし、私たちは provider 内ではなく、ウィジェットにいます。では、どうやって"ref"を取得するのでしょうか？
 
@@ -318,7 +318,7 @@ provider 内で特別なことをすることなく、UI がローディング/�
 
 Riverpod は、同じ結果を達成するための別の方法を提供します:
 `StatelessWidget`/`StatefulWidget`が`Consumer`を返す代わりに、`ConsumerWidget`/`ConsumerStatefulWidget`を定義できます。
-`ConsumerWidget`と ConsumerStatefulWidget`は、`StatelessWidget`/`StatefulWidget`と`Consumer`の融合です。
+`ConsumerWidget`と `ConsumerStatefulWidget`は、`StatelessWidget`/`StatefulWidget`と`Consumer`の融合です。
 これらは元のカウンターパートと同じように動作しますが、"ref"を提供するという利点があります。
 
 前の例を次のように書き換えることができます:
@@ -331,7 +331,7 @@ Riverpod は、同じ結果を達成するための別の方法を提供しま�
       '  // "build"メソッドが追加パラメータ"ref"を受け取ることに注意してください。',
     watch:
       '    // "Consumer"を使用していたように、ウィジェット内で"ref.watch"を使用できます。',
-    render: "    // レンダリングロジックは同じままです",
+    render: "    // レンダリングロジックはそのままです",
   }}
 />
 
@@ -355,8 +355,8 @@ Riverpod は、同じ結果を達成するための別の方法を提供しま�
 ### Flutter_hooks の考慮事項: `HookWidget`と `ConsumerWidget`の組み合わせ
 
 :::caution
-"hooks"についてきいたことがない場合は、このセクションをスキップしてください。  
-[Flutter_hooks](https://pub.dev/packages/flutter_hooks)는は Riverpod とは独立したパッケージですが、よく一緒に使用されます。  
+"hooks"について聞いたことがない場合は、このセクションをスキップしてください。  
+[Flutter_hooks](https://pub.dev/packages/flutter_hooks)は Riverpod とは独立したパッケージですが、よく一緒に使用されます。  
 Riverpod を初めて使用する場合、"hooks"を使用することはお勧めしません。詳細は[about_hooks](/docs/concepts/about_hooks)をご覧ください。  
 :::
 
