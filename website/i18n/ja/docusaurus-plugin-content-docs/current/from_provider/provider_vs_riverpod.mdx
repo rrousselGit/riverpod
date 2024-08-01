@@ -173,7 +173,7 @@ Consumer(
 
 Provider の `Consumer2`、`Consumer3` などは Riverpod には必要なく、欠けていることはありません。
 
-Riverpod では、複数のプロバイダから値を読み取りたい場合は、単に複数の `ref.watch` ステートメントを記述するだけです:
+Riverpod では、複数の provider から値を読み取りたい場合は、単に複数の `ref.watch` ステートメントを記述するだけです:
 
 ```dart
 Consumer(
@@ -292,7 +292,7 @@ ChangeNotifierProxyProvider<UserIdNotifier, UserNotifier>(
 );
 ```
 
-この新しいプロバイダは、単一の `UserNotifier` インスタンスを作成し（再構築されることはありません）、ユーザー ID が変更されるたびに文字列を出力します。
+この新しい provider は、単一の `UserNotifier` インスタンスを作成し（再構築されることはありません）、ユーザー ID が変更されるたびに文字列を出力します。
 
 provider で同じことをするには異なる方法を取ります。
 まず、Riverpod での `UserIdNotifier` の定義は次のようになります:
@@ -343,7 +343,7 @@ final userNotifierProvider = ChangeNotifierProvider<UserNotifier>((ref) {
 このスニペットのコアとなる部分は `ref.listen` 行です。
 この `ref.listen` 関数は provider をリッスンし、provider が変更されるたびに関数を実行するユーティリティです。
 
-その関数の `previous` および `next` パラメータは、プロバイダが変更される前の最後の値と変更後の新しい値に対応します。
+その関数の `previous` および `next` パラメータは、provider が変更される前の最後の値と変更後の新しい値に対応します。
 
 ## Provider のスコープ設定 vs `.family` + `.autoDispose`
 
