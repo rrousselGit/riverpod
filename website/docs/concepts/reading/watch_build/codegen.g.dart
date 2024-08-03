@@ -8,34 +8,134 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$counterHash() => r'9b0db44ecc47057e79891e5ecd92d34b08637679';
+@ProviderFor(TodoList)
+const todoListProvider = TodoListProvider._();
 
-/// See also [counter].
-@ProviderFor(counter)
-final counterProvider = AutoDisposeProvider<int>.internal(
-  counter,
-  name: r'counterProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$counterHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+final class TodoListProvider extends $NotifierProvider<TodoList, List<Todo>> {
+  const TodoListProvider._(
+      {super.runNotifierBuildOverride, TodoList Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'todoListProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
 
-typedef CounterRef = AutoDisposeProviderRef<int>;
+  final TodoList Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$todoListHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<Todo> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<List<Todo>>(value),
+    );
+  }
+
+  @$internal
+  @override
+  TodoList create() => _createCb?.call() ?? TodoList();
+
+  @$internal
+  @override
+  TodoListProvider $copyWithCreate(
+    TodoList Function() create,
+  ) {
+    return TodoListProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  TodoListProvider $copyWithBuild(
+    List<Todo> Function(
+      Ref<List<Todo>>,
+      TodoList,
+    ) build,
+  ) {
+    return TodoListProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<TodoList, List<Todo>> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
+}
+
 String _$todoListHash() => r'77f007cd4f5105330a4c2ab8555ea0d1716945c1';
 
-/// See also [TodoList].
-@ProviderFor(TodoList)
-final todoListProvider =
-    AutoDisposeNotifierProvider<TodoList, List<Todo>>.internal(
-  TodoList.new,
-  name: r'todoListProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$todoListHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$TodoList extends $Notifier<List<Todo>> {
+  List<Todo> build();
+  @$internal
+  @override
+  List<Todo> runBuild() => build();
+}
 
-typedef _$TodoList = AutoDisposeNotifier<List<Todo>>;
+typedef CounterRef = Ref<int>;
+
+@ProviderFor(counter)
+const counterProvider = CounterProvider._();
+
+final class CounterProvider extends $FunctionalProvider<int, int>
+    with $Provider<int, CounterRef> {
+  const CounterProvider._(
+      {int Function(
+        CounterRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'counterProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    CounterRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$counterHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  CounterProvider $copyWithCreate(
+    int Function(
+      CounterRef ref,
+    ) create,
+  ) {
+    return CounterProvider._(create: create);
+  }
+
+  @override
+  int create(CounterRef ref) {
+    final _$cb = _createCb ?? counter;
+    return _$cb(ref);
+  }
+}
+
+String _$counterHash() => r'9b0db44ecc47057e79891e5ecd92d34b08637679';
+
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member

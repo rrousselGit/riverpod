@@ -1,6 +1,34 @@
+import 'package:riverpod/riverpod.dart' as r;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'sync.g.dart';
+
+@riverpod
+List<T> generic<T extends num>(GenericRef<T> ref) {
+  return <Object?>[
+    'Hello world',
+    42,
+    3.14,
+  ].whereType<T>().toList();
+}
+
+@riverpod
+List<T> complexGeneric<T extends num, Foo extends String?>(
+  ComplexGenericRef<T, Foo> ref, {
+  required T param,
+  Foo? otherParam,
+}) {
+  return <T>[];
+}
+
+@riverpod
+class GenericClass<T extends num> extends _$GenericClass<T>
+    with MyMixin<List<T>, List<T>> {
+  @override
+  List<T> build() {
+    return <T>[];
+  }
+}
 
 @riverpod
 Raw<Future<String>> rawFuture(RawFutureRef ref) async {
@@ -78,16 +106,18 @@ String family(
   return '(first: $first, second: $second, third: $third, fourth: $fourth, fifth: $fifth)';
 }
 
-final privateProvider = _privateProvider;
+const privateProvider = _privateProvider;
 
 @riverpod
 String _private(_PrivateRef ref) {
   return 'Hello world';
 }
 
+mixin MyMixin<A, B> on r.NotifierBase<A, B> {}
+
 /// This is some documentation
 @riverpod
-class PublicClass extends _$PublicClass {
+class PublicClass extends _$PublicClass with MyMixin<String, String> {
   PublicClass([this.param]);
 
   final Object? param;
@@ -98,10 +128,10 @@ class PublicClass extends _$PublicClass {
   }
 }
 
-final privateClassProvider = _privateClassProvider;
+const privateClassProvider = _privateClassProvider;
 
 @riverpod
-class _PrivateClass extends _$PrivateClass {
+class _PrivateClass extends _$PrivateClass with MyMixin<String, String> {
   @override
   String build() {
     return 'Hello world';
@@ -110,7 +140,7 @@ class _PrivateClass extends _$PrivateClass {
 
 /// This is some documentation
 @riverpod
-class FamilyClass extends _$FamilyClass {
+class FamilyClass extends _$FamilyClass with MyMixin<String, String> {
   FamilyClass([this.param]);
 
   final Object? param;
@@ -128,9 +158,40 @@ class FamilyClass extends _$FamilyClass {
 }
 
 @riverpod
-class Supports$InClassName extends _$Supports$InClassName {
+String supports$InFnName<And$InT>(Supports$InFnNameRef<And$InT> ref) {
+  return 'Hello world';
+}
+
+const default$value = '';
+
+@riverpod
+String supports$InFnNameFamily<And$InT>(
+  Supports$InFnNameFamilyRef<And$InT> ref,
+  And$InT positional$arg, {
+  required And$InT named$arg,
+  String defaultArg = default$value,
+}) {
+  return 'Hello world';
+}
+
+@riverpod
+class Supports$InClassName<And$InT> extends _$Supports$InClassName<And$InT>
+    with MyMixin<String, String> {
   @override
   String build() {
+    return 'Hello world';
+  }
+}
+
+@riverpod
+class Supports$InClassFamilyName<And$InT>
+    extends _$Supports$InClassFamilyName<And$InT> {
+  @override
+  String build(
+    And$InT positional$arg, {
+    required And$InT named$arg,
+    String defaultArg = default$value,
+  }) {
     return 'Hello world';
   }
 }
@@ -140,7 +201,7 @@ String generated(GeneratedRef ref) {
   return 'Just a simple normal generated provider';
 }
 
-Provider<String> someProvider() => Provider((ref) => 'hello');
+r.Provider<String> someProvider() => r.Provider((ref) => 'hello');
 
 // Regression test for https://github.com/rrousselGit/riverpod/issues/2299
 final _someProvider = someProvider();
@@ -148,3 +209,26 @@ final _someProvider = someProvider();
 // Regression test for https://github.com/rrousselGit/riverpod/issues/2294
 // ignore: unused_element
 final _other = _someProvider;
+
+// Regression test for now casting `as Object?` when not needed
+@riverpod
+String unnecessaryCast(GeneratedRef ref, Object? arg) {
+  return 'Just a simple normal generated provider';
+}
+
+@riverpod
+class UnnecessaryCastClass extends _$UnnecessaryCastClass {
+  @override
+  String build(Object? arg) {
+    return 'Just a simple normal generated provider';
+  }
+}
+
+// Regression test for https://github.com/rrousselGit/riverpod/issues/3249
+class ManyProviderData<T, S> {}
+
+@riverpod
+Stream<List<T>> manyDataStream<T extends Object, S extends Object>(
+  ManyDataStreamRef ref,
+  ManyProviderData<T, S> pData,
+) async* {}

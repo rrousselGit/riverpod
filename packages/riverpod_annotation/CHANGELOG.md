@@ -1,3 +1,30 @@
+## Unreleased build
+
+- **Breaking** various `package:riverpod` objects are no-longer exported.
+  If you wish to use providers by hand, you will have to separately import
+  `package:riverpod/riverpod.dart`.
+- Made `@Riverpod` final
+- Added `@Dependencies([...])`, for lint purposes.
+  This is similar to `@Riverpod(dependencies: [...])`, but is applied on
+  non-provider objects that may use a scoped provider.
+- Added support for `@Riverpod(retry: ...)`
+
+## 3.0.0-dev.3 - 2023-11-27
+
+- `riverpod` upgraded to `3.0.0-dev.3`
+
+## 3.0.0-dev.2 - 2023-11-20
+
+- `riverpod` upgraded to `3.0.0-dev.2`
+
+## 3.0.0-dev.1 - 2023-11-20
+
+- `riverpod` upgraded to `3.0.0-dev.1`
+
+## 3.0.0-dev.0 - 2023-10-29
+
+- `riverpod` upgraded to `3.0.0-dev.0`
+
 ## 2.3.5 - 2024-03-10
 
 - `riverpod` upgraded to `2.5.1`
