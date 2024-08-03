@@ -1,0 +1,203 @@
+---
+title: 開始方法
+pagination_next: essentials/first_request
+version: 5
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import pubspec from "/docs/introduction/getting_started/pubspec";
+import dartHelloWorld from "/docs/introduction/getting_started/dart_hello_world";
+import pubadd from "/docs/introduction/getting_started/pub_add";
+import helloWorld from "/docs/introduction/getting_started/hello_world";
+import dartPubspec from "/docs/introduction/getting_started/dart_pubspec";
+import dartPubadd from "/docs/introduction/getting_started/dart_pub_add";
+import { AutoSnippet, When } from "/src/components/CodeSnippet";
+import { Link } from "/src/components/Link";
+
+## Riverpod をオンラインで試す
+
+Riverpod を体験するために、[Dartpad](https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2)または [Zapp](https://zapp.run/new)でオンラインで試してみてください。
+
+<iframe
+  src="https://zapp.run/edit/zv2060sv306?theme=dark&lazy=false"
+  style={{ width: "100%", border: 0, overflow: "hidden", aspectRatio: "1.5" }}
+></iframe>
+
+## パッケージのインストール{#installing-the-package}
+
+インストールするパッケージが決まったら、以下のように 1 行で依存関係をアプリに追加してください:
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="flutter_riverpod"
+  values={[
+    { label: 'Flutter', value: 'flutter_riverpod', },
+    { label: 'Dart only', value: 'riverpod', },
+  ]}
+>
+<TabItem value="flutter_riverpod">
+
+<AutoSnippet {...pubadd}></AutoSnippet>
+
+</TabItem>
+
+<TabItem value="riverpod">
+
+<AutoSnippet {...dartPubadd}></AutoSnippet>
+
+</TabItem>
+
+</Tabs>
+
+また、pubspec.yaml ファイル内から手動で依存関係を追加することもできます:
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="flutter_riverpod"
+  values={[
+    { label: 'Flutter', value: 'flutter_riverpod', },
+    { label: 'Dart only', value: 'riverpod', },
+  ]}
+>
+<TabItem value="flutter_riverpod">
+
+<AutoSnippet title="pubspec.yaml" language="yaml" {...pubspec}></AutoSnippet>
+
+その後、flutter pub get でパッケージをインストールします。
+
+<When codegen={true}>
+  コードジェネレーターを実行するには{" "}
+  <code>flutter pub run build_runner watch</code>.
+</When>
+
+</TabItem>
+<TabItem value="riverpod">
+
+<AutoSnippet
+  title="pubspec.yaml"
+  language="yaml"
+  {...dartPubspec}
+></AutoSnippet>
+
+その後、dart pub get でパッケージをインストールします。
+
+<When codegen={true}>
+  コードジェネレーターを実行するには <code>dart run build_runner watch</code>.
+</When>
+
+</TabItem>
+</Tabs>
+
+これで、アプリに Riverpod を追加しました！
+
+## riverpod_lint/custom_lint の有効化{#enabling-riverpod_lint-custom_lint}
+
+Riverpod には、より良いコードを書くためのリントルールとカスタムリファクタリングオプションを提供するオプションの [riverpod_lint] パッケージがあります。
+
+このパッケージは前述の手順を実行した場合にはすでにインストールされていますが、有効にするためには別の手順が必要です。
+
+[riverpod_lint] を有効にするには、pubspec.yaml の隣に analysis_options.yaml を追加し、以下を記述します:
+
+<CodeBlock language="yaml" title="analysis_options.yaml">
+  {`analyzer:
+  plugins:
+    - custom_lint`}
+</CodeBlock>
+
+これで、Riverpod を使用する際に誤りがあると IDE に警告が表示されるようになります。
+
+警告とリファクタリングの全リストを見るには、[riverpod_lint]ページを参照してください。
+
+:::note
+これらの警告は `dart analyze` コマンドでは表示されません。
+CI/ターミナルでこれらの警告を確認するには、以下を実行します:
+
+```sh
+dart run custom_lint
+```
+
+:::
+
+## 使用例: Hello world
+
+[Riverpod]をインストールしたので、使用を開始できます。
+
+以下のスニペットは、新しい依存関係を使用して "Hello world" を作成する方法を示しています:
+
+<Tabs
+  groupId="riverpod"
+  defaultValue="flutter_riverpod"
+  values={[
+    { label: "Flutter", value: "flutter_riverpod" },
+    { label: "Dart only", value: "riverpod" },
+  ]}
+>
+<TabItem value="flutter_riverpod">
+
+<AutoSnippet
+  title="lib/main.dart"
+  language="dart"
+  {...helloWorld}
+  translations={{
+    helloWorld:
+      '// "Provider"を作成し、値（ここでは "Hello world"）を保持します。\n// Providerを使用することで、公開される値をモック/オーバーライドすることができます。',
+    ProviderScope:
+      '    // ウィジェットがProviderを読み取るためには、アプリケーション全体を\n    // "ProviderScope" ウィジェットでラップする必要があります。\n    // これでProviderの状態が格納されます。',
+    ConsumerWidget:
+      "// Riverpodが提供するStatelessWidgetの代わりにConsumerWidgetを拡張します。",
+    HookConsumerWidget:
+      "// Riverpodが提供するHookWidgetの代わりにHookConsumerWidgetを拡張します。",
+    hooksCodegen_counter:
+      "    // HookConsumerWidgetの内部でフックを使用できます。",
+  }}
+/>
+
+次に、`flutter run`でアプリケーションを開始します。
+これにより、デバイスに"Hello world"が表示されます。
+
+</TabItem>
+<TabItem value="riverpod">
+
+<AutoSnippet
+  title="lib/main.dart"
+  language="dart"
+  {...dartHelloWorld}
+  translations={{
+    helloWorld:
+      '// "Provider"を作成し、値（ここでは "Hello world"）を保持します。\n// Providerを使用することで、公開される値をモック/オーバーライドすることができます。',
+    container: "  // これはProviderの状態が保存されるオブジェクトです。",
+    value: '  // "container"を使ってProviderを読み取ることができます。',
+  }}
+/>
+
+次に、`dart lib/main.dart`でアプリケーションを開始します。
+これにより、コンソールに"Hello world"が表示されます。
+
+</TabItem>
+</Tabs>
+
+## さらに進む：コードスニペットのインストール
+
+`Flutter`と `VS Code`を使用している場合は、[Flutter Riverpod Snippets](https://marketplace.visualstudio.com/items?itemName=robert-brunhage.flutter-riverpod-snippets)を使用することを検討してください。
+
+`Flutter`と `Android Studio`または`IntelliJ`を使用している場合は、[Flutter Riverpod Snippets](https://plugins.jetbrains.com/plugin/14641-flutter-riverpod-snippets)を使用することを検討してください。
+
+![img](/img/snippets/greetingProvider.gif)
+
+## 次のステップを選択
+
+基本的な概念を学ぶ:
+
+- <Link documentID="concepts/providers" />
+
+クックブックに従う:
+
+- <Link documentID="cookbooks/testing" />
+
+[riverpod]: https://github.com/rrousselgit/riverpod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
+[riverpod_lint]: https://pub.dev/packages/riverpod_lint

@@ -1,0 +1,209 @@
+---
+title: "キャッシュのクリアとstate破棄への反応"
+version: 1
+---
+
+import { Link } from "/src/components/Link";
+import { AutoSnippet, When } from "/src/components/CodeSnippet";
+import onDisposeExample from "/docs/essentials/auto_dispose/on_dispose_example";
+import codegenKeepAlive from "!!raw-loader!/docs/essentials/auto_dispose/codegen_keep_alive.dart";
+import rawAutoDispose from "!!raw-loader!/docs/essentials/auto_dispose/raw_auto_dispose.dart";
+import invalidateExample from "!!raw-loader!/docs/essentials/auto_dispose/invalidate_example.dart";
+import keepAlive from "/docs/essentials/auto_dispose/keep_alive";
+import cacheForExtension from "!!raw-loader!/docs/essentials/auto_dispose/cache_for_extension.dart";
+import cacheForUsage from "/docs/essentials/auto_dispose/cache_for_usage";
+import invalidateFamilyExample from "/docs/essentials/auto_dispose/invalidate_family_example";
+
+これまでに、state を作成、または更新する方法を見てきました。  
+しかし、state が破棄されるタイミングについてはまだ話していません。
+
+Riverpod は state 破棄(disposal)と相互作用する様々な方法を提供します。  
+これは、状態の破棄を遅らせることから破棄に反応することまで多岐にわたります。
+
+## 状態はいつ破棄されるのか、そしてどう変更するのか？
+
+<When codegen={true}>
+
+コード生成を使うことで、デフォルトでは provider がリッスンを停止すると state が破棄されます。  
+これは、リスナーがフレーム全体に対してアクティブなリスナーがないときに発生します。
+
+この動作は`keepAlive: true`を使うことで回避できます。  
+全てのリスナーが削除されたときに state が破棄されることを防ぎます。
+
+<AutoSnippet
+  raw={codegenKeepAlive}
+  translations={{
+    keepAlive:
+      '// stateが自動破棄されることを無効にするため、アノテーションに"keepAlive: true"を指定します。',
+  }}
+/>
+
+</When>
+
+<When codegen={false}>
+
+コード生成を使用しない場合、デフォルトでは provider がリッスンを停止しても state が破棄されません。
+
+この動作を変更し、自動破棄させることもできます。  
+その場合、Riverpod は provider がリスナーを持っているかどうかを追跡します。  
+provider がフルフレームの間リスナーを持っていない場合、state が破棄されます。
+
+自動破棄を有効にするには、provider タイプの横に `.autoDispose`を使用します:
+
+<AutoSnippet
+  raw={rawAutoDispose}
+  translations={{
+    autoDispose:
+      "// 自動破棄を有効にするためにautoDisposeを指定することができます。",
+  }}
+/>
+
+</When>
+
+:::note
+自動破棄を有効/無効にしても、provider が再計算されたときに状態が破棄されるかどうかには影響しません。  
+state は常に provider が再計算されるときに破棄されます。
+:::
+
+:::caution
+provider がパラメータを受け取る場合、自動破棄を有効にすることを推奨します。  
+そうしないと、パラメータの組み合わせごとに state が作成され、メモリリークを引き起こす可能性があります。
+:::
+
+## state 破棄への反応
+
+Riverpod には、state が破棄される方法がいくつかあります:
+
+- provider が使用されなくなり、"auto dispose"モードになっている場合(詳細は後述)。  
+  この場合、provider と関連するすべての state が破棄されます。
+- provider が再計算される場合(`ref.watch`など)。  
+  この場合、以前の state が破棄され、新しい state が作成されます。
+
+どちらの場合も、state が破棄されたときいくつかのロジックを実行したいかもしれません。  
+これは`ref.onDispose`を使用することで実現できます。  
+このメソッドを使用すると、state が破棄されるたびにリスナーを登録できます。
+
+例えば、アクティブな`StreamController`を閉じるためにこのメソッドを使用できます:
+
+<AutoSnippet
+  {...onDisposeExample}
+  translations={{
+    onDispose: "  // stateが破棄されると、streamControllerを閉じます。",
+    todo: "  // TO-DO: StreamControllerに値をプッシュする。",
+  }}
+/>
+
+:::caution
+`ref.onDispose`のコールバックは副作用を引き起こしてはなりません。  
+`onDispose` 内で provider を変更すると予期しない動作を引き起こす可能性があります。
+:::
+
+:::info
+他にも便利なライフサイクルイベントがあります:
+
+- `ref.onCancel`は、provider の最後のリスナーが削除されたときに呼び出されます。
+- `ref.onResume`は、`onCancel`が呼び出された後に新しいリスナーが追加されたときに呼び出されます。
+
+:::
+
+:::info
+`ref.onDispose`は何回でも呼び出すことができます。
+provider 内の各破棄可能なオブジェクトごとに 1 回ずつ呼び出すことができます。  
+この方法だと、何かを破棄し忘れた場合に簡単に見つけることができます。
+:::
+
+## `ref.invalidate`を使うことで provider の破棄を強制する
+
+時々、provider を強制的に破棄したい場合があります。  
+他の provider やウィジェットから`ref.invalidate`を使用して実行できます。
+
+`ref.invalidate`を使用すると、現在の provider の state が破壊されます。  
+次の二つの結果が考えられます:
+
+- provider がリッスンされている場合、新しい state が作成されます。
+- provider がリッスンされていない場合、provider が完全に破棄されます。
+
+<AutoSnippet
+  raw={invalidateExample}
+  translations={{
+    invalidate: "        // タップすると、providerを破棄します。",
+  }}
+/>
+
+:::info
+`ref.invalidateSelf`を使うことで provider が自身を破棄することができます。  
+ただし、この場合、常に新しい state が作成されます。
+:::
+
+:::tip
+パラメータを受け取る provider を無効にしようとする場合、  
+特有のペラメータの組み合わせの provider を無効にするか、  
+全てのペラメータの組み合わせを一度に無効にすることができます:
+
+<AutoSnippet
+  {...invalidateFamilyExample}
+  translations={{
+    invalidateAll:
+      "  // このproviderの全ての組み合わせ可能なパラメータを無効にします。",
+    invalidate: "  // 指定した組み合わせのみを無効にします。",
+  }}
+/>
+:::
+
+## `ref.keepAlive`を使用した細かい破棄制御
+
+前述の通り、自動破棄が有効な場合、provider がフルフレームの間リスナーを持たないと state が破棄されます。
+
+しかし、この動作をより細かく制御したい場合があります。  
+例えば、成功したネットワークリクエストの state を保持し、  
+失敗したリクエストをキャッシュしないようにしたい場合です。
+
+これは、自動破棄を有効にした後で`ref.keepAlive`を使用することで実現できます。  
+これを使用すると、状態が自動的に破棄されるタイミングを決定できます。
+
+<AutoSnippet
+  {...keepAlive}
+  translations={{
+    keepAlive:
+      "  // リクエストが成功した後のみ、providerを生かしておく。\n  // リクエストが失敗した（例外を投げた）場合、providerがリッスンされなくなると、stateは破棄される。",
+    closeLink: "  // `link`を使うことで、自動破棄の動作を元に戻すことができる:",
+  }}
+/>
+
+:::note
+provider が再計算されると、自動破棄が再度有効になります。
+
+`ref.keepAlive`の戻り値を使用して、自動破棄に戻すことも可能です。
+:::
+
+## 例: 特定の時間だけ state を保持する
+
+現在、Riverpod は特定の時間だけ state を保持するための仕組みを提供していません。  
+しかし、これまでに見てきたツールを使用して、そのような機能を簡単に実装して再利用可能にすることができます。
+
+`Timer` + `ref.keepAlive`を使用して、特定の時間だけ状態を保持できます。  
+このロジックを再利用可能にするために、拡張メソッド(extension method)で実装することができます:
+
+<AutoSnippet
+  raw={cacheForExtension}
+  translations={{
+    cacheFor: "/// [duration] の間 providerを維持する。",
+    keepAlive: "    // stateが破壊されるのを防ぐ。",
+    timer: "    // 期間経過後、自動破棄を再度有効にする。",
+    onDispose:
+      "    // オプション：providerが再計算される場合（ref.watch など）、\n    // 保留中のタイマーをキャンセルする.",
+  }}
+/>
+
+次に、以下のように使用できます:
+
+<AutoSnippet
+  {...cacheForUsage}
+  x
+  translations={{
+    cacheFor: "  /// 5分間、stateを維持する",
+  }}
+/>
+
+このロジックは、ニーズに合わせて調整することができます。  
+例えば、`ref.onCancel`/`ref.onResume`を使用して、provider が特定の時間聞かれていなかった場合にのみ状態を破棄するようにすることができます。

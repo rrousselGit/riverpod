@@ -1,0 +1,144 @@
+---
+title: DO/DON'T
+version: 1
+---
+
+import { Link } from "/src/components/Link";
+import { AutoSnippet, When } from "/src/components/CodeSnippet";
+
+コードの保守性を高めるために、以下の Riverpod のベストプラクティスを参照してください。
+
+このリストは網羅的ではなく、変更される可能性があります。  
+提案がある場合はいつでも[issue を開いてください](https://github.com/rrousselGit/riverpod/issues/new?assignees=rrousselGit&labels=documentation%2C+needs+triage&projects=&template=example_request.md&title=)。
+
+このリストの項目には特定の順序はありません。
+
+これらの推奨事項の多くは、[riverpod_lint](https://pub.dev/packages/riverpod_lint)を使用して強制することができます。  
+インストール手順については、[riverpod_lint/custom_lint の有効化](/docs/introduction/getting_started#enabling-riverpod_lint-custom_lint)を参照してください。
+
+## ウィジェットで provider の初期化をしない
+
+providers は自身で初期化するべきです。
+ウィジェットのような外部要因で初期化されるべきではありません。
+
+これを怠ると、競合状態や予期しない動作が発生する可能性があります。
+
+**DON'T**
+
+```dart
+class WidgetState extends State<MyWidget> {
+  @override
+  void initState() {
+    super.initState();
+    // Bad: providerは自分で初期化するべきです
+    ref.read(provider).init();
+  }
+}
+```
+
+**考慮すべきこと**
+
+この問題に対する"万能"な解決策はありません。  
+初期化ロジックが provider 外の要素に依存する場合、ロジックを置くのに適切な場所はボタンの `onPressed` メソッドです。
+
+```dart
+ElevatedButton(
+  onPressed: () {
+    ref.read(provider).init();
+    Navigator.of(context).push(...);
+  },
+  child: Text('Navigate'),
+)
+```
+
+## ローカルウィジェットの状態に provider を使用しない
+
+provider は共通のビジネス状態(state)のために設計されています。  
+ローカルウィジェットの状態(state)、例えば次のようなものには適していません:
+
+- フォームの状態を保持する
+- 現在選択されているアイテム
+- アニメーション
+- 一般に Flutter が"コントローラ"で扱うすべてのもの（例：`TextEditingController`）
+
+ローカルウィジェットの状態を扱う方法を探している場合、代わりに [flutter_hooks](https://pub.dev/packages/flutter_hooks) を使用することをお勧めします。
+
+これが推奨されない理由の一つは state がルート(route)にスコープされることがよくあるためです。
+
+これを怠ると、新しいページが前のページの状態を上書きするため、アプリの戻るボタンが壊れる可能性があります。
+
+## provider の初期化の間に副作用を行わない
+
+provider は一般的に"read"操作を表すために使用されるべきです。  
+フォームの送信などの"write"操作には使用されるべきではありません。
+
+provider をこのような操作に使用すると、副作用がスキップされたり、予期しない動作が発生する可能性があります。
+
+副作用のローディング/エラー状態を処理する方法を知りたい場合は、[副作用](/docs/essentials/side_effects)を参照してください。
+
+**DON'T**:
+
+```dart
+final submitProvider = FutureProvider((ref) async {
+  final formState = ref.watch(formState);
+
+  // Bad: providerは"write"操作に使われるべきでありません。
+  return http.post('https://my-api.com', body: formState.toJson());
+});
+```
+
+## 静的に既知の provider で ref.watch/read/listen（および類似の API）を使用することを推奨
+
+Riverpod はリントルールを有効にすることを強く推奨します(`riverpod_lint`参照)。  
+しかし、lint が効果的であるためには、コードが静的に解析可能な方法で書かれている必要があります。
+
+これを怠ると、バグを見つけるのが難しくなったり、lint で誤検出が発生する可能性があります。
+
+**Do**:
+
+```dart
+final provider = Provider((ref) => 42);
+
+...
+
+// OK providerが静的に既知であるためOK
+ref.watch(provider);
+```
+
+**Don't**:
+
+```dart
+class Example extends ConsumerWidget {
+  Example({required this.provider});
+  final Provider<int> provider;
+
+  @override
+  Widget build(context, ref) {
+    // 静的解析が`provider`が何であるかを知ることができないため悪い例
+    ref.watch(provider);
+  }
+}
+```
+
+## 動的に provider を作成しない
+
+provider はトップレベルの final 変数であるべきです。
+
+**Do**:
+
+```dart
+final provider = Provider<String>((ref) => 'Hello world');
+```
+
+**Don't**:
+
+```dart
+class Example {
+  // サポートされていない操作。メモリリークや予期しない動作の原因となる可能性があります。
+  final provider = Provider<String>((ref) => 'Hello world');
+}
+```
+
+:::info
+provider を静的な final 変数として作成することは許可されていますが、コードジェネレータではサポートされていません。
+:::

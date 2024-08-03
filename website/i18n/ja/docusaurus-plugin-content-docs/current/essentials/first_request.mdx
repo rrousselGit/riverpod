@@ -1,0 +1,385 @@
+---
+title: 最初のprovider/ネットワークリクエストを作成する
+pagination_prev: introduction/getting_started
+version: 2
+---
+
+import { Link } from "/src/components/Link";
+import { AutoSnippet, When } from "/src/components/CodeSnippet";
+import activity from "/docs/essentials/first_request/activity";
+import provider from "/docs/essentials/first_request/provider";
+import consumer from "/docs/essentials/first_request/consumer";
+import consumerWidget from "/docs/essentials/first_request/consumer_widget";
+import consumerStatefulWidget from "/docs/essentials/first_request/consumer_stateful_widget";
+import hookConsumerWidget from "/docs/essentials/first_request/hook_consumer_widget";
+import Legend from "/docs/essentials/first_request/legend/legend";
+
+ネットワークリクエストは、アプリケーションのコアとなる部分です。
+しかし、ネットワークリクエストを行う際には考慮すべき点がたくさんあります:
+
+- リクエストが行われる間、UI はローディング状態をレンダリングする必要があります。
+- エラーは正しく処理されるべきです。
+- リクエストは可能な限りキャッシュされるべきです。
+
+このセクションは、Riverpod がこれらの問題をどのように解決するのかを説明します。
+
+## `ProviderScope` の設定
+
+ネットワークリクエストを開始する前に、アプリケーションのルートに `ProviderScope` が追加されていることを確認してください。
+
+```dart
+void main() {
+  runApp(
+    // Riverpodをインストールするには、このウィジェットを他のすべてのウィジェットの上に追加する必要があります。
+    // このウィジェットは "MyApp" 内ではなく、"runApp" のパラメータとして直接追加する必要があります。
+    ProviderScope(
+      child: MyApp(),
+    ),
+  );
+}
+```
+
+これにより、アプリケーション全体で Riverpod が有効になります。
+
+:::note
+完全なインストール手順（[riverpod_lint](https://pub.dev/packages/riverpod_lint)のインストールやコードジェネレータの実行など）については、
+[開始方法](/docs/introduction/getting_started)をご覧ください。
+:::
+
+## "provider"でネットワークリクエストを実行する
+
+ネットワークリクエストの実行は通常"ビジネスロジック"と呼ばれます。
+Riverpod では、ビジネスロジックは"provider"の内部に配置されます。
+provider は非常に強力な関数です。
+通常の関数のように動作しますが、以下の利点があります:
+
+- キャッシュされる。
+- デフォルトのエラー/ローディング処理を提供する。
+- リスニング可能。
+- データが変更されたときに自動的に再実行される。
+
+これにより、プロバイダーは*GET*ネットワークリクエストに最適です（*POST/etc*リクエストについては、[副次的効果](/docs/essentials/side_effects)をご覧ください）。
+
+例として、退屈なときにランダムなアクティビティを提案するシンプルなアプリケーションを作成しましょう。
+これを行うために、[Bored API](https://boredapi.com/) を使用します。  
+具体的には、`/api/activity`エンドポイントで*GET*リクエストを実行します。  
+これにより JSON オブジェクトが返され、それを Dart クラスインスタンスにパースします。  
+次のステップでは、このアクティビティを UI に表示します。  
+リクエスト中にローディング状態を表示し、エラーを優雅に処理することも確認します。
+
+どうですか？では始めましょう！
+
+### モデルの定義
+
+始める前に、API から受信するデータのモデルを定義する必要があります。  
+このモデルは、API のレスポンスを Dart クラスインスタンスに変換するために使用されます。
+
+一般的に、JSON デコードを処理する際には、[Freezed](https://pub.dev/packages/freezed) や [json_serializable](https://pub.dev/packages/json_serializable) などのコード生成パッケージを使用することをおすすめします。  
+もちろん、手動で処理することも可能です。
+
+どちらにせよ、最終的には次のようなモデルになります:
+
+<AutoSnippet
+  title="activity.dart"
+  {...activity}
+  translations={{
+    activity: "/// `GET /api/activity` エンドポイントのレスポンス",
+    fromJson:
+      "  /// JSONオブジェクトを[Activity]インスタンスに変換することで、\n  /// APIレスポンスの型安全な読み取りが可能になります。",
+    codegen_freezed:
+      "/// `freezed`と `json_serializable`を使って定義されています。",
+  }}
+/>
+
+### provider の作成
+
+モデルができたので、API クエリを開始できます。
+これを行うには、最初の provider を作成する必要があります。
+
+provider を定義する構文は次のようになります:
+
+<When codegen={false}>
+<Legend
+  code={`final name = SomeProvider.someModifier<Result>((ref) {
+  <your logic here>
+});
+`}
+  annotations={[
+    {
+      offset: 6,
+      length: 4,
+      label: "provider変数",
+      description: <>
+
+この変数は provider にアクセスするために使用されます。
+この変数は final でなければならず、"top-level"（グローバル）に宣言されている必要があります。
+
+</>
+    },
+    {
+      offset: 13,
+      length: 12,
+      label: "providerタイプ",
+      description: <>
+
+一般的に `Provider`, `FutureProvider` もしくは `StreamProvider`のいずれかです。  
+使用される provider タイプは、関数の戻り値によって異なります。  
+例えば、`Future<Activity>`を作成するには `FutureProvider<Activity>` が必要です。
+
+この例では、`FutureProvider`が最も適しているでしょう。
+
+:::tip
+"どの provider を選ぶべきか"と考えるのではなく、  
+"何を返したいか"と考えてください。  
+provider タイプは自然に決まるでしょう。  
+:::
+
+</>
+    },
+    {
+      offset: 25,
+      length: 13,
+      label: "修飾子（オプション）",
+      description: <>
+
+通常、provider のタイプの後に "修飾子"が付くことがあります。  
+修飾子はオプションであり、provider の動作を型安全な方法で調整するために使用されます。
+
+現在、2 つの修飾子が使用できます:
+
+- `autoDispose`:provider の使用が停止されたときに自動的にキャッシュをクリアします。
+  [auto_dispose](/docs/essentials/auto_dispose)も参照してください。
+- `family`:provider に引数を渡すことを可能にします。  
+  [passing_args](/docs/essentials/passing_args)も参照してください。
+
+</>
+    },
+    {
+      offset: 48,
+      length: 3,
+      label: "Ref",
+      description: <>
+
+他の provider と対話するために使用されるオブジェクトです。  
+すべての provider は、provider 関数のパラメータまたは Notifier のプロパティとして 1 つ持っています。
+
+</>
+    },
+    {
+      offset: 57,
+      length: 17,
+      label: "provider関数",
+      description: <>
+
+provider のロジックを配置する場所です。  
+この関数は provider が最初に読み取られたときに呼び出されます。  
+その後の読み取りは関数を再度呼び出すのではなく、キャッシュされた値を返します。
+
+</>
+    },
+]}
+/>
+</When>
+
+<When codegen={true}>
+<Legend
+  code={`@riverpod
+Result myFunction(MyFunctionRef ref) {
+  <your logic here>
+}
+`}
+  annotations={[
+    {
+      offset: 0,
+      length: 9,
+      label: "annotation",
+      description: <>
+
+すべての provider には `@riverpod` または `@Riverpod()`の annotation が必要です。  
+この annotation はグローバル関数またはクラスに付けることができます。  
+この annotation を通じて provider を構成することができます。
+
+たとえば, `@Riverpod(keepAlive: true)`と書くことで "auto-dispose"を無効にすることができます(後で説明します)。
+
+</>
+    },
+    {
+      offset: 17,
+      length: 10,
+      label: "関数annotation",
+      description: <>
+
+関数 annotation の名前は、provider との対話方法を決定します。  
+例えば`myFunction`という関数の場合、 `myFunctionProvider` 変数が生成されます。
+
+関数 annotation は、**必ず**最初のパラメーターに`ref`を指定する必要があります。  
+それに加えて、関数は任意の数のパラメーターを持つことができ、ジェネリクスも含めることができます。  
+関数はまた、`Future/Stream`を返すこともできます。
+
+この関数は provider が最初に読み取られたときに呼び出されます。  
+その後の読み取りは関数を再度呼び出すのではなく、キャッシュされた値を返します。
+
+</>
+    },
+    {
+      offset: 28,
+      length: 17,
+      label: "Ref",
+      description: <>
+
+他の provider と対話するために使用されるオブジェクトです。  
+すべての provider が持っています。provider 関数のパラメーターとして、または Notifier のプロパティとして存在します。  
+このオブジェクトのタイプは function/class の名前によって決定されます。
+
+</>
+    },
+]}
+/>
+</When>
+
+私たちの場合、API からアクティビティを*GET*したいですよね。  
+*GET*は非同期操作であるため、`Future<Activity>`を作成する必要があります。
+
+先に定義した構文を使用して、provider を次のように定義できます:
+
+<AutoSnippet
+  title="provider.dart"
+  {...provider}
+  translations={{
+    response:
+      "  // httpパッケージを使用して、Bored APIからランダムなアクティビティを取得します。",
+    json: "  // dart:convertパッケージを使用して、JSONペイロードをMapデータ構造にデコードします。",
+    fromJson: "  // 最終的にMapをActivityインスタンスに変換します。",
+    codegen_note: "// コード生成が機能するために必要です。",
+    codegen_provider:
+      "/// これにより、`activityProvider`という名前のproviderが作成され、\n/// この関数の結果をキャッシュします。",
+  }}
+/>
+
+このスニペットでは、UI がランダムなアクティビティを取得するために使用できる`activityProvider`という provider を定義しました。
+ここで注目すべき点は：
+
+- ネットワークリクエストは、UI が provider を少なくとも一度読み取るまで実行されません。
+- その後の読み取りは、ネットワークリクエストを再実行せず、前回取得したアクティビティを返します。
+- UI がこの provider の使用を停止すると、キャッシュは破棄されます。その後、UI が再度 provider を使用すると、新しいネットワークリクエストが実行されます。
+- エラーをキャッチしませんでした。これは意図的で、provider は自然にエラーを処理します。  
+  ネットワークリクエストや JSON 解析でエラーが発生した場合、エラーは Riverpod によってキャッチされます。 その後、UI は自動的にエラーページを表示するための必要な情報を持つことになります。
+
+:::info
+provider は"lazy"なので"遅延評価"です。provider を定義することは、ネットワークリクエストを実行することではありません。  
+provider が最初に読み取られたときにネットワークリクエストが実行されます。
+:::
+
+### ネットワークリクエストのレスポンスを UI に表示する
+
+provider を定義したので、UI 内でこれを使用してアクティビティを表示することができます。
+
+provider と対話するためには、"ref"と呼ばれるオブジェクトが必要です。  
+これは、provider の定義で見たように、provider は自然に"ref"オブジェクトにアクセスできます。  
+しかし、私たちは provider 内ではなく、ウィジェットにいます。では、どうやって"ref"を取得するのでしょうか？
+
+解決策は、`Consumer`というカスタムウィジェットを使用することです。
+`Consumer`は`Builder`に似たウィジェットですが、"ref"を提供するという追加の利点があります。
+これにより、UI が provider を読み取ることができます。
+次の例は`Consumer`の使用方法を示しています:
+
+<AutoSnippet
+  title="consumer.dart"
+  {...consumer}
+  translations={{
+    note: "///  アプリケーションのホームページ",
+    activity:
+      '        // activityProviderを読み取ります。これにより、ネットワークリクエストが \n        // まだ開始されていない場合は開始されます。\n        // ref.watchを使用することで、このウィジェットはactivityProviderが更新されるたびに \n        // 再構築されます。これは次の場合に発生する可能性があります：:\n        // - レスポンスが"AsyncLoading"から"AsyncData/AsyncError"に変わったとき\n        // - リクエストがリフレッシュされたとき\n        // - 結果がローカルで変更されたとき（副作用を実行した場合など）\n        // ...',
+    states:
+      "          /// ネットワークリクエストは非同期であり、失敗する可能性があるため、 \n          /// エラー状態とローディング状態の両方を処理する必要があります。 \n          /// これにはパターンマッチングを使用できます。\n          /// または、`if (activity.isLoading) { ... } else if (...)`を使用することもできます。",
+  }}
+/>
+
+このスニペットでは、`Consumer`を使用して`activityProvider`を読み取り、アクティビティを表示しました。
+また、ローディング/エラー状態も優雅に処理しました。
+provider 内で特別なことをすることなく、UI がローディング/エラー状態を処理できることに注目してください。
+同時に、ウィジェットが再構築された場合、ネットワークリクエストは正しく再実行されません。
+他のウィジェットも同じ provider にアクセスしてネットワークリクエストを再実行しないようにできます。
+
+:::info
+ウィジェットは好きなように多くの provider をリッスンできます。これを行うには、単に`ref.watch`呼び出しを追加してください。
+:::
+
+:::tip
+リンターをインストールすることを忘れないでください。
+これにより、IDE がリファクタリングオプションを提供し、自動的に Consumer を追加したり、StatelessWidget を ConsumerWidget に変換したりすることができます。  
+インストール手順については、[riverpod_lint/custom_lint の有効化](/docs/introduction/getting_started#enabling-riverpod_lint-custom_lint)をご覧ください。
+:::
+
+## さらに進む: `Consumer` の代わりに `ConsumerWidget`を使用してコードのインデントを削減する
+
+前の例では、provider を読み取るために`Consumer`を使用しました。
+このアプローチに問題はありませんが、追加のインデントがコードの読みやすさを損なう可能性があります。
+
+Riverpod は、同じ結果を達成するための別の方法を提供します:
+`StatelessWidget`/`StatefulWidget`が`Consumer`を返す代わりに、`ConsumerWidget`/`ConsumerStatefulWidget`を定義できます。
+`ConsumerWidget`と `ConsumerStatefulWidget`は、`StatelessWidget`/`StatefulWidget`と`Consumer`の融合です。
+これらは元のカウンターパートと同じように動作しますが、"ref"を提供するという利点があります。
+
+前の例を次のように書き換えることができます:
+
+<AutoSnippet
+  {...consumerWidget}
+  translations={{
+    note: '/// "StatelessWidget"の代わりに"ConsumerWidget"をサブクラス化しました。\n/// これは"StatelessWidget"を作成し、"Consumer"を返すのと同等です。',
+    build:
+      '  // "build"メソッドが追加パラメータ"ref"を受け取ることに注意してください。',
+    watch:
+      '    // "Consumer"を使用していたように、ウィジェット内で"ref.watch"を使用できます。',
+    render: "    // レンダリングロジックはそのままです",
+  }}
+/>
+
+`ConsumerStatefulWidget`の場合は、次のように書きます:
+
+<AutoSnippet
+  {...consumerStatefulWidget}
+  translations={{
+    homeWidget:
+      '// ConsumerStatefulWidgetを拡張します。\n// これは"Consumer"＋"StatefulWidget"と同等です。',
+    homeState:
+      '// "State"の代わりに"ConsumerState"を拡張していることに注意してください。\n// これは"ConsumerWidget"と"StatelessWidget"の関係と同じ原理を使用しています。',
+    listen:
+      '    // 状態ライフサイクルも"ref"にアクセスできます。\n    // これにより、特定のproviderにリスナーを追加して\n    // ダイアログやスナックバーを表示することができます。',
+    todo: "      // TODO snackbar/dialogを表示する。",
+    watch:
+      '    // "ref"はパラメータとして渡されず、"ConsumerState"のプロパティに含まれています。\n    // したがって、"build"内で引き続き"ref.watch"を使用できます。',
+  }}
+/>
+
+### Flutter_hooks の考慮事項: `HookWidget`と `ConsumerWidget`の組み合わせ
+
+:::caution
+"hooks"について聞いたことがない場合は、このセクションをスキップしてください。  
+[Flutter_hooks](https://pub.dev/packages/flutter_hooks)は Riverpod とは独立したパッケージですが、よく一緒に使用されます。  
+Riverpod を初めて使用する場合、"hooks"を使用することはお勧めしません。詳細は[about_hooks](/docs/concepts/about_hooks)をご覧ください。  
+:::
+
+`flutter_hooks`を使用している場合、 `HookWidget`と `ConsumerWidget`をどのように組み合わせるかを疑問に思うかもしれません。  
+結局のところ、どちらも拡張するウィジェットクラスを変更することが関わります。
+
+Riverpod はこの問題への解決策を提供します:  
+`HookConsumerWidget`と `StatefulHookConsumerWidget`です。  
+`ConsumerWidget`と `ConsumerStatefulWidget`が `Consumer`と `StatelessWidget`/`StatefulWidget`の融合であるように、  
+`HookConsumerWidget`と `StatefulHookConsumerWidget`は `Consumer`と `HookWidget`/`HookStatefulWidget`の融合です。  
+これにより、同じウィジェット内で hooks と provider の両方を使用できるようになります。
+
+これを示すために、前の例をもう一度書き直すことができます:
+
+<AutoSnippet
+  {...hookConsumerWidget}
+  translations={{
+    homeWidget:
+      '/// "HookConsumerWidget"をサブクラス化しました。  \n/// これにより "StatelessWidget" + "Consumer" + "HookWidget"が組み合わさります。',
+    build:
+      '  // "build"メソッドに"ref"パラメータが追加されたことに注目してください。 ',
+    useState:
+      '    // ウィジェット内で"useState"などのhooksを使用することができます。',
+    activity: "    // providerプロバイダーも読み取ることができます。",
+  }}
+/>

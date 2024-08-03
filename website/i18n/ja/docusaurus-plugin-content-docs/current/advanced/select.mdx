@@ -1,0 +1,73 @@
+---
+title: パフォーマンスの最適化
+version: 1
+---
+
+import { AutoSnippet } from "/src/components/CodeSnippet";
+import select from "/docs/advanced/select/select";
+import selectAsync from "/docs/advanced/select/select_async";
+
+これまで見てきた内容で、すでに完全に機能するアプリケーションを構築できます。  
+しかし、読み込みのパフォーマンスについて疑問があるかもしれません。
+
+このページでは、コードを最適化するためのいくつかのヒントとコツを紹介します。
+
+:::caution
+最適化を行う前にアプリケーションのベンチマークを行ってください。  
+最適化による複雑さの増加は、わずかな性能向上には見合わないかもしれません。
+:::
+
+## "select"を使ったウィジェット/provider の再ビルドのフィルタリング
+
+デフォルトでは、`ref.watch`を使用すると、オブジェクトのプロパティのいずれかが変更されるたびに、consumer/provider が再ビルドされることに気づいたかもしれません。  
+例えば、`User`を監視して"name"のみを使用している場合でも、"age"が変更されると consumer は引き続き再ビルドされます。
+
+しかし、consumer が一部のプロパティのみを使用している場合、他のプロパティが変更された場合のウィジェットの再ビルドは避けたいでしょう。
+
+これは provider の`select`機能を使用することで実現できます。
+これを行うと、`ref.watch`は全体のオブジェクトではなく、選択されたプロパティのみを返します。  
+そして、consumer/provider は選択されたプロパティが変更された場合にのみ再ビルドされるようになります。
+
+<AutoSnippet
+  {...select}
+  translations={{
+    watch:
+      "    // 次のように書く代わりに:\n    // String name = ref.watch(provider).firstName!;\n    // 以下のように書くことができます:",
+    note: "    // これにより、このウィジェットは'firstName'の変更のみを監視するようになります。",
+  }}
+/>
+
+:::info
+`select`を何度でも呼び出すことができます。  
+必要なプロパティごとに一度呼び出すことができます。
+:::
+
+:::caution
+選択されたプロパティは不変であることが期待されます。  
+`List`を返してそのリストを変更しても、再ビルドはトリガーされません。
+:::
+
+:::caution
+`select`を使用すると、個々の読み取り操作がわずかに遅くなり、コードの複雑さがわずかに増します。  
+"他のプロパティ"がほとんど変更されない場合は、使用する価値がないかもしれません。
+:::
+
+### 非同期プロパティの選択
+
+別の provider を監視している provider を最適化しようとしている場合、その別の provider が非同期である可能性があります。
+
+通常は、値を取得するために `ref.watch(anotherProvider.future)`を使用します。  
+しかし、`select`は`AsyncValue`に適用されるため、待機することはできません。
+
+この目的のために、`selectAsync`を代わりに使用できます。  
+これは非同期コードに特有で、provider から発信されたデータに対して `select` 操作を実行できます。  
+その使用法は`select`と似ていますが、代わりに`Future`を返します:
+
+<AutoSnippet
+  {...selectAsync}
+  translations={{
+    watch:
+      '  // ユーザーが利用可能になるのを待ち、"firstName"プロパティのみを監視する',
+    todo: '  // TODO "firstName"を使用して他のものを取得する',
+  }}
+/>

@@ -1,0 +1,481 @@
+---
+title: 副作用の実行
+version: 2
+---
+
+import { Link } from "/src/components/Link";
+import { AutoSnippet, When } from "/src/components/CodeSnippet";
+import Legend, { colors } from "/docs/essentials/first_request/legend/legend";
+import todoListProvider from "/docs/essentials/side_effects/todo_list_provider";
+import todoListNotifier from "/docs/essentials/side_effects/todo_list_notifier";
+import todoListNotifierAddTodo from "/docs/essentials/side_effects/todo_list_notifier_add_todo";
+import consumerAddTodoCall from "!!raw-loader!/docs/essentials/side_effects/raw/consumer_add_todo_call.dart";
+import restAddTodo from "!!raw-loader!/docs/essentials/side_effects/raw/rest_add_todo.dart";
+import invalidateSelfAddTodo from "!!raw-loader!/docs/essentials/side_effects/raw/invalidate_self_add_todo.dart";
+import manualAddTodo from "!!raw-loader!/docs/essentials/side_effects/raw/manual_add_todo.dart";
+import mutableManualAddTodo from "!!raw-loader!/docs/essentials/side_effects/raw/mutable_manual_add_todo.dart";
+import renderAddTodo from "/docs/essentials/side_effects/render_add_todo";
+
+これまで、データの取得方法（いわゆる*GET* リクエストの実行）についてのみ見てきました。  
+しかし、_POST_ リクエストのような副作用はどうでしょうか？
+
+アプリケーションはしばしば CRUD（作成、読み取り、更新、削除）API を実装します。  
+その際、更新リクエスト（通常は*POST*）はローカルキャッシュも更新して UI に新しい状態を反映させることが一般的です。
+
+問題は、Consumer の中から provider の状態をどう更新するかです。  
+当然、provider は状態を変更する方法を公開していません。  
+これは、状態が制御された方法でのみ変更されるようにし、関心の分離を促進するための設計です。  
+代わりに、provider は状態を変更する方法を明示的に公開する必要があります。
+
+そのために、新しい概念を使用します: Notifiers.  
+この新しい概念を紹介するために、もう少し進んだ例を使用します：ToDo リスト
+
+## Notifier の定義
+
+ここで、これまでに知っていることから始めましょう：シンプルな*GET* リクエストです。
+[最初の provider/ネットワークリクエストを作成する](/docs/essentials/first_request)で見たように、次のように書いて ToDo リストを取得できます:
+
+<AutoSnippet
+  {...todoListProvider}
+  translations={{
+    note: "  // ネットワーク要求をシミュレートします。これは通常、実際のAPIから来るものです。",
+  }}
+/>
+
+今度は、取得した ToDo リストに新しい ToDo を追加する方法を見てみましょう。
+これには、provider が状態を変更するための公開 API を提供するように変更する必要があります。  
+これを行うために、provider を"notifier"に変換します。
+
+Notifiers は Provider の"stateful widget"です。  
+provider を定義するための構文に少し修正が必要です。  
+この新しい構文は次のとおりです:
+
+<When codegen={false}>
+<Legend
+  code={`final name = SomeNotifierProvider.someModifier<MyNotifier, Result>(MyNotifier.new);
+ 
+class MyNotifier extends SomeNotifier<Result> {
+  @override
+  Result build() {
+    <your logic here>
+  }
+
+  <your methods here>
+}`}
+  annotations={[
+    {
+      offset: 6,
+      length: 4,
+      label: "provider変数",
+       description: <>
+
+この変数は provider と対話するために使用されます。
+変数は final で、トップレベル（グローバル）でなければなりません。
+
+</>
+    },
+    {
+      offset: 13,
+      length: 20,
+      label: "provider変数",
+       description: <>
+
+通常 `NotifierProvider`, `AsyncNotifierProvider` または `StreamNotifierProvider` のいずれかです。  
+使用する provider のタイプは、関数の戻り値によって異なります。  
+たとえば、`Future<Activity>`を作成するには、`AsyncNotifierProvider<Activity>`が必要です。
+
+最も頻繁に使用するのは`AsyncNotifierProvider`です。
+
+:::tip
+"どの provider を選ぶべきか"と考えないでください。  
+代わりに"何を返したいのか"を考えてください。  
+provider のタイプは自然に決まります。  
+:::
+
+</>
+    },
+    {
+      offset: 33,
+      length: 13,
+      label: "修飾子（オプション）",
+      description: <>
+
+provider のタイプの後に"修飾子"が表示されることがよくあります。  
+修飾子はオプションであり、型安全な方法で provider の動作を調整するために使用されます。
+
+現在、利用可能な修飾子は 2 つあります:
+
+- `autoDispose`、これにより pProvider が使用されなくなったときにキャッシュが自動的にクリアされます。  
+  [auto_dispose](/docs/essentials/auto_dispose)も参照してください。
+- `family`、これにより引数を provider に渡すことができます。
+  [passing_args](/docs/essentials/passing_args)も参照してください。
+
+</>
+    },
+    {
+      offset: 67,
+      length: 14,
+      label: "Notifierのコンストラクタ",
+      description: <>
+
+"notifier providers"のパラメータは、"notifier"をインスタンス化することを期待される関数です。  
+通常、"constructor tear-off"形式であるべきです。
+
+</>
+    },
+    {
+      offset: 86,
+      length: 16,
+      label: "Notifier",
+      description: <>
+
+`NotifierProvider`が"StatefulWidget"クラスとするなら、この部分は `State` クラスになります。
+
+このクラスは、provider の状態を変更する方法を公開する役割を担っている。  
+このクラスのパブリック・メソッドには、`ref.read(yourProvider.notifier).yourMethod()`を使ってコンシューマからアクセスできます。
+
+:::note
+UI で状態が変更されたことを知る手段がないため、Notifiers には組み込みの`state`以外の公開プロパティがあってはなりません。  
+:::
+
+</>
+    },
+    {
+      offset: 111,
+      length: 12,
+      label: "Notifierタイプ",
+      description: <>
+
+Notifier が拡張する基底クラスは、provider + 修飾子のクラスと一致する必要があります。　　
+いくつかの例を示します:
+
+- <span style={{ color: colors[0] }}>Notifier</span>Provider -> <span style={{ color: colors[0] }}>Notifier</span>
+- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider -> <span style={{ color: colors[0] }}>AsyncNotifier</span>
+- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider.
+  <span style={{ color: colors[1] }}>autoDispose</span> -> <span
+    style={{ color: colors[1] }}
+  >
+    AutoDispose
+  </span>
+  <span style={{ color: colors[0] }}>AsyncNotifier</span>
+- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider.
+  <span style={{ color: colors[1] }}>autoDispose</span>.<span
+    style={{ color: colors[2] }}
+  >
+    family
+  </span> -> <span style={{ color: colors[1] }}>AutoDispose</span>
+  <span style={{ color: colors[2] }}>Family</span>
+  <span style={{ color: colors[0] }}>AsyncNotifier</span>
+
+これを簡単にするために、コードジェネレーターを使用することをお勧めします。これにより、正しいタイプが自動的に推論されます。
+
+</>
+    },
+    {
+      offset: 136,
+      length: 54,
+      label: "buildメソッド",
+      description: <>
+
+全ての Notifier は `build`メソッドをオーバーライドする必要があります。  
+このメソッドは、通常、non-notifier provider でロジックを入れる場所に相当します。
+
+このメソッドは直接呼び出してはいけません。
+
+</>
+    },
+]}
+/>
+</When>
+
+<!-- Some separation for good mesure -->
+
+<When codegen={true}>
+<Legend
+  code={`@riverpod
+class MyNotifier extends _$MyNotifier {
+  @override
+  Result build() {
+    <your logic here>
+  }
+
+  <your methods here>
+}`}
+  annotations={[
+    {
+      offset: 0,
+      length: 9,
+      label: "アノテーション",
+      description: <>
+
+すべての Provider は`@riverpod`または`@Riverpod()`でアノテーションする必要があります。  
+このアノテーションはグローバル関数またはクラスに配置できます。  
+このアノテーションを通して、provider を設定できます。
+
+例えば、 `@Riverpod(keepAlive: true)`と書くことで"auto-dispose"(後で説明)を無効にすることができます。
+
+</>
+    },
+    {
+      offset: 10,
+      length: 16,
+      label: "Notifier",
+       description: <>
+
+クラスに`@riverpod` アノテーションが付けられるとそのクラスは "Notifier"と呼ばれます。  
+そのクラスは `_$NotifierName`を拡張する必要があり、 `NotifierName`はクラス名です。
+
+Notifiers は、provider の状態を変更する方法を公開する責任を負います。  
+このクラスのパブリックメソッドには、`ref.read(yourProvider.notifier).yourMethod()`を使用して consumers がアクセスできます。
+
+:::note
+UI で状態が変更されたことを知る手段がないため、Notifiers には組み込みの state 以外の公開プロパティがあってはなりません。
+:::
+
+</>
+    },
+    {
+      offset: 52,
+      length: 54,
+      label: "buildメソッド",
+      description: <>
+
+全ての notifiers は `build` メソッドをオーバーライドする必要があります。  
+このメソッドは、通常、non-notifier provider でロジックを入れる場所に相当します。
+
+このメソッドは直接呼び出してはいけません。
+
+</>
+    },
+]}
+/>
+</When>
+
+参考までに、この新しい構文を以前見た構文と比較するために[最初の provider/ネットワークリクエストを作成する](/docs/essentials/first_request)
+を確認すると良いでしょう。
+
+:::info
+`build`以外のメソッドがない Notifier は、以前見た構文を使用するのと同じです。
+
+[最初の provider/ネットワークリクエストを作成する](/docs/essentials/first_request)
+に示された構文は、UI から変更する方法がない notifiers に対する省略形と考えることができます。
+
+:::
+
+構文を見たところで、以前定義した Provider を Notifier に変換する方法を見てみましょう:
+
+<AutoSnippet
+  {...todoListNotifier}
+  translations={{
+    build_method:
+      "    // 以前FutureProviderに記述していたロジックがbuildメソッドにあります。",
+  }}
+/>
+
+ウィジェット内で provider を読み取る方法は変更されていません。  
+以前の構文と同様に `ref.watch(todoListProvider)` を使用できます。
+
+:::caution
+notifier のコンストラクタにロジックを入れないでください。  
+`ref` およびその他のプロパティはその時点ではまだ使用できないため、Notifiers にはコンストラクタがないはずです。
+代わりに、ロジックを`build`メソッドに入れてください。
+
+```dart
+class MyNotifier extends ... {
+  MyNotifier() {
+    // ❌ これはしないでください。
+    // 例外を投げます。
+    state = AsyncValue.data(42);
+  }
+
+  @override
+  Result build() {
+    // ✅ 代わりにここにロジックを入れてください。
+    state = AsyncValue.data(42);
+  }
+}
+```
+
+:::
+
+## *POST*リクエストを実行するメソッドの公開
+
+Notifier ができたので、今度は副作用を実行するメソッドを追加できます。  
+その副作用の一つとして、新しい ToDo を*POST*するクライアントを作成することがあります。  
+notifier に`addTodo`メソッドを追加することでそれが可能になります:
+
+<AutoSnippet {...todoListNotifierAddTodo} translations={{}} />
+
+次に、[最初の provider/ネットワークリクエストを作成する](/docs/essentials/first_request)
+で見たのと同じ`Consumer`/`ConsumerWidget`を使用して UI でこのメソッドを呼び出せます:
+
+<AutoSnippet raw={consumerAddTodoCall} translations={{}} />
+
+:::info
+メソッドを呼び出す際に`ref.watch` の代わりに `ref.read`を使用していることに注意してください。  
+技術的には`ref.watch`でも動作しますが、  
+"onPressed"のようなイベントハンドラーでロジックを実行する場合は、`ref.read`を使用することをお勧めします。
+:::
+
+これで、ボタンを押すと*POST*リクエストを行うボタンができました。  
+しかし、現時点では、UI が新しい ToDo リストを反映して更新されることはありません。  
+ローカルキャッシュをサーバーの状態と一致させたいと思います。
+
+これにはいくつかの方法があり、それぞれに利点と欠点があります。
+
+### API レスポンスに合わせてローカルキャッシュを更新する
+
+一般的なバックエンドの慣行は、*POST*リクエストがリソースの新しい状態を返すようにすることです。  
+特に、API は新しい Todo を追加したリストを返します。
+これを行う方法の一つは`state = AsyncData(response)`と記述することです:
+
+<AutoSnippet
+  raw={restAddTodo}
+  translations={{
+    post: "    // POSTリクエストは、新しいアプリケーションの状態と一致するList<Todo>を返します。",
+    decode: "    // API応答をデコードしてList<Todo>に変換します。",
+    newState:
+      "    // 新しい状態と一致するようにローカルキャッシュを更新します。\n    // これにより、すべてのリスナーに通知が送信されます。",
+  }}
+/>
+
+:::tip 利点
+
+- UI は可能な限り最新の状態に保たれます。  
+  他のユーザーが ToDo を追加すると、私たちもそれを見ることができます。
+- サーバーが真実の源です。  
+  このアプローチを使用すると、クライアントは ToDo リストに新しい ToDo をどこに挿入するかを知る必要がありません。
+- ネットワークリクエストは一度だけ必要です。
+
+:::
+
+:::danger 欠点
+
+- このアプローチは、サーバーが特定の方法で実装されている場合にのみ機能します。  
+  サーバーが新しい状態を返さない場合、このアプローチは機能しません。
+- フィルタリング/ソートなどが含まれる場合、またはより複雑な*GET*リクエストの場合、このアプローチは機能しない可能性があります。
+
+:::
+
+### `ref.invalidateSelf()`を使用して provider を更新する
+
+もう一つの方法は、provider が*GET*リクエストを再実行するようにすることです。  
+これは、*POST*リクエスト後に`ref.invalidateSelf()`を呼び出すことで行います:
+
+<AutoSnippet
+  raw={invalidateSelfAddTodo}
+  translations={{
+    post: "    // APIのレスポンスは気にしません。",
+    invalidateSelf:
+      '    // Postリクエストが完了すると、ローカルキャッシュをダーティー(Dirty)と表現することができます。\n    // そうすると、notifierの"build"が非同期で再度呼び出されます、\n    // この時、リスナーに通知が送信されます。',
+    future:
+      '    // （オプション）その後、新しいステータスが計算されるまで待つことができます。\n    // これにより、新しい状態が利用可能になるまで、"addTodo "は完了しない。',
+  }}
+/>
+
+:::tip 利点
+
+- UI は可能な限り最新の状態に保たれます。  
+  他のユーザーが ToDo を追加すると、私たちもそれを見ることができます。
+- サーバーが真実の源です。  
+  このアプローチを使用すると、クライアントは ToDo リストに新しい ToDo をどこに挿入するかを知る必要がありません。
+- このアプローチは、サーバーの実装に関係なく機能します。  
+  フィルタリング/ソートなどが含まれる場合、またはより複雑な*GET*リクエストの場合、特に有用です。
+
+:::
+
+:::danger 欠点
+
+- このアプローチは追加の*GET*リクエストを実行するため、効率が悪い可能性があります。
+
+:::
+
+### ローカルキャッシュを手動で更新する
+
+別の方法は、ローカルキャッシュを手動で更新することです。  
+これには、バックエンドの動作を模倣する作業が含まれます。  
+たとえば、バックエンドが新しい項目を先頭に挿入するのか末尾に挿入するのかを知る必要があります。
+
+<AutoSnippet
+  raw={manualAddTodo}
+  translations={{
+    post: "    // APIのレスポンスは重要ではありません。",
+    previousState:
+      "    // その後、ローカルキャッシュを手動で更新することができます。 \n    // そのためには、以前の状態を取得する必要があります。\n    // 注意: 前の状態がまだロード中またはエラー状態である可能性があります。\n    // これを処理するエレガントな方法は、`this.state`ではなく、`this.state`の代わりに \n    // `this.future`を読み込んで読み込み状態を待たせたり\n    // ステータスがエラー状態の場合、エラーをスローします。",
+    newState:
+      "    // その後、新しい状態オブジェクトを作成して状態を更新することができます。\n    // すると、すべてのリスナーに通知が送信されます。",
+  }}
+/>
+
+:::info
+この例では immutable state を使用しています。  
+必要ではありませんが、immutable state を使用することをお勧めします。  
+詳細は[why_immutability](/docs/concepts/why_immutability)を参照してください。  
+代わりに、mutable state を使用する場合は、別の方法を使用できます:
+
+<AutoSnippet
+  raw={mutableManualAddTodo}
+  translations={{
+    mutable: "    // 以前のToDoリストを変更します。",
+    notify: "    // リスナーに手動で通知を送信します。",
+  }}
+/>
+
+:::
+
+:::tip 利点
+
+- このアプローチはサーバーの実装に関係なく機能します。
+- ネットワークリクエストは 1 回だけ必要です。
+
+:::
+
+:::danger 欠点
+
+- ローカルキャッシュはサーバーの状態と一致しない可能性があります。  
+  もし他のユーザーが ToDo を追加した場合、私たちはそれを見ることができません。
+- このアプローチはバックエンドのロジックを効果的に複製し、実装がより複雑になる可能性があります。
+
+:::
+
+## さらに進む：スピナーの表示とエラーハンドリング
+
+これまで見てきたように、ボタンを押すと*POST*リクエストを行い、リクエストが完了すると UI が更新されて変更を反映します。  
+しかし、現時点では、リクエストが実行されていることを示すものや、失敗した場合の情報はありません。
+
+一つの方法は、`addTodo` が返す Future をローカルウィジェットの状態に保存し、その Future をリッスンしてスピナーやエラーメッセージを表示することです。  
+このシナリオでは [flutter_hooks](https://pub.dev/packages/flutter_hooks)が役立ちますが、  
+もちろん StatefulWidget を代わりに使用することもできます。
+
+次のスニペットは、操作が保留中の間に進行状況インジケーターを表示し、
+失敗した場合にボタンを赤く表示します:
+
+![A button which turns red when the operation failed](/img/essentials/side_effects/spinner.gif)
+
+<AutoSnippet
+  {...renderAddTodo}
+  translations={{
+    raw_pendingAddTodo:
+      "  // 保留中のaddTodo操作。保留中の操作がない場合は null。",
+    raw_listen: "      // 保留中の操作をリッスンし、それに応じてUIを更新する。",
+    raw_compute:
+      "        // エラー状態があるかどうかを計算します。\n        // connectionStateチェックは、操作が再試行されたときに処理するため。",
+    raw_isError:
+      "                // エラーがある場合、ボタンが赤く表示されます。",
+    raw_future: "                // addTodoが返したfutureを変数に保存します。",
+    raw_state: "                // そのfutureをローカルstateに保存します。",
+    raw_progress:
+      "            // 作業が保留中です。インジケータを表示しています。",
+    hooks_pendingAddTodo:
+      "    // 保留中(pending)のaddTodoタスクです。 または、保留中のタスクがない場合はnullです。",
+    hooks_listen: "    // 保留中のタスクを受信し、それに応じてUIを更新します。",
+    hooks_compute:
+      "    // エラー状態があるかどうかを計算します。\n    // 接続状態の確認は、演算の再試行時に処理するため。",
+    hooks_isError:
+      "            // エラーがある場合、ボタンが赤く表示されます。",
+    hooks_future: "            // addTodoが返したfutureを変数に保存します。",
+    hooks_state: "            // そのfutureをローカルstateに保存します。",
+    hooks_progress:
+      "        // 作業が保留中です。インジケータを表示しています。",
+  }}
+/>

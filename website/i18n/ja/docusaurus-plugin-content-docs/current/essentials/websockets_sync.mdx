@@ -1,0 +1,144 @@
+---
+title: Websocketsと同期実行
+version: 1
+---
+
+import { trimSnippet, AutoSnippet, When } from "/src/components/CodeSnippet";
+import syncDefinition from "/docs/essentials/websockets_sync/sync_definition";
+import streamProvider from "/docs/essentials/websockets_sync/stream_provider";
+import syncConsumer from "!!raw-loader!/docs/essentials/websockets_sync/sync_consumer.dart";
+import rawUsage from "!!raw-loader!/docs/essentials/websockets_sync/raw_usage.dart";
+import pipeChangeNotifier from "!!raw-loader!/docs/essentials/websockets_sync/pipe_change_notifier.dart";
+import sharedPipeChangeNotifier from "!!raw-loader!/docs/essentials/websockets_sync/shared_pipe_change_notifier.dart";
+import changeNotifierProvider from "!!raw-loader!/docs/essentials/websockets_sync/change_notifier_provider.dart";
+
+これまで `Future`の作成方法についてのみ説明しました。  
+これは意図的なものであり、`Future` は `Riverpod` アプリケーションの基盤となるべきだからです。  
+しかし、必要に応じて Riverpod は他の形式もサポートしています。
+
+特に、`Future`の代わりに、provider は以下のことができます:
+
+- 同期的にオブジェクトを返すこと（例："Repository"の作成）。
+- `Stream` を返すこと（例：websockets の受信）。
+
+`Future`を返すことと、`Stream`やオブジェクトを返すことは全体的に非常に似ています。  
+このページでは、それらのケースにおける微妙な違いやさまざまなヒントを説明します。
+
+## 同期的にオブジェクトを返すこと
+
+オブジェクトを同期的に作成するには、provider が Future を返さないことを確認してください:
+
+<AutoSnippet {...syncDefinition} translations={{}} />
+
+provider が同期的にオブジェクトを作成する時、オブジェクトの消費(consumed)方法に影響を与えます。  
+特に、同期的な値は”AsyncValue”でラップされません:
+
+<AutoSnippet
+  raw={syncConsumer}
+  translations={{
+    watch: '      // 値が "AsyncValue" でラップされていません。',
+  }}
+/>
+
+この違いの結果として、provider がエラーをスローした場合、値を読み取ろうとするとエラーが再スローされます。  
+代わりに、`ref.listen`を使用すると、“onError”コールバックが呼び出されます。
+
+### Listenable オブジェクトに関する考慮事項
+
+<When codegen={true}>
+
+`ChangeNotifier` や `StateNotifier`などの Listenable オブジェクトはサポートされていません。  
+もし、互換性のためにこれらのオブジェクトのいずれかとやり取りする必要がある場合、その通知メカニズムを Riverpod にパイプ(pipe)することが 1 つの回避策です。
+
+<AutoSnippet
+  raw={pipeChangeNotifier}
+  translations={{
+    provider:
+      "/// 値が変更されるたびにValueNotifierを生成してリスナーを更新するproviderです。",
+    onDispose: "  // providerが破棄された時にnotifierを破棄します。",
+    addListener:
+      "  // ValueNotifierが更新されるたびにproviderのリスナーに通知します。",
+  }}
+/>
+
+:::info
+このようなロジックが何度も必要な場合、ロジックを共有する価値があります。  
+“ref”オブジェクトはコンポーザブルに設計されています。  
+これにより、provider の外で dispose/listening ロジックを抽出することができます:
+
+<AutoSnippet
+  raw={sharedPipeChangeNotifier}
+  translations={{
+    extension:
+      "  // 前述のロジックをRefの拡張に移動することができます。\n  // これにより、provider間でロジックを再利用できるようになります。",
+    return: "    // 使用を少し簡単にするために、notifierを返します。",
+  }}
+/>
+:::
+
+</When>
+
+<When codegen={false}>
+
+コード生成を使わない場合、Riverpod は`ChangeNotifier`と`StateNotifier`をサポートするための"legacy"provider を提供します:  
+それは`ChangeNotifierProvider`と`StateNotifierProvider`です。  
+これらを使用する方法は他の provider と似ています。  
+主な違いは、それらが返されたオブジェクトを自動的に受信し、dispose することです。
+
+これらの provider は新しいビジネスロジックには推奨されません。  
+しかし、Provider パッケージから Riverpod への移行など、レガシーコードとのやり取りには役立つ場合があります。
+
+<AutoSnippet
+  raw={changeNotifierProvider}
+  translations={{
+    provider:
+      '  // ValueNotifierの受信と破棄\n  // すると、ウィジェットはこのproviderを"ref.watch"して更新を受信することができます。',
+  }}
+/>
+
+</When>
+
+## Stream のリッスン
+
+現代のアプリケーションの一般的なユースケースは、Firebase や GraphQL サブスクリプションなどの Websockets とやり取りすることです。  
+これらの API とやり取りする場合、多くの場合、Stream をリッスンします。
+
+そのために、Riverpod は自然に`Stream`オブジェクトをサポートします。  
+`Future`と同様に、オブジェクトは AsyncValue に変換されます
+
+<AutoSnippet
+  {...streamProvider}
+  translations={{
+    provider:
+      "  // 1秒ごとに0から41までの数字を返します。\n  // これはFirestoreやGraphQL等のStreamに置き換えることが可能です。",
+    watch: "    // streamがリッスンされ、AsyncValueに変換されます。",
+    consumer:
+      "    // AsyncValueを使ってロード／エラー状態を処理し、データを表示することができます。",
+  }}
+/>
+
+:::info
+Riverpod は`RX`の`BehaviorSubject`などのカスタム Stream 実装を認識していません。  
+そのため、BehaviorSubject を返しても、作成時に既に利用可能な場合でも、その value がウィジェットに同期的に公開されることはありません。
+:::
+
+## `Stream`や`Future`の`AsyncValue`への変換を無効にする
+
+デフォルトでは、Riverpod は`Stream`や`Future`を`AsyncValue`に変換します。  
+これを無効にすることができますが、これはまれに必要な場合のみです。  
+無効にするには、戻り値の型を `Raw` typedef でラップします。
+
+:::caution
+`AsyncValue`変換を無効にすることは一般的には推奨されません。  
+これを行うのは、確実に必要である場合のみにしてください。
+:::
+
+<AutoSnippet
+  raw={rawUsage}
+  translations={{
+    provider:
+      '  // "Raw"はtypedefです。\n  // 戻り値を"Raw"コンストラクタでラップする必要はありません。',
+    watch:
+      "    // 値はAsyncValueに変換されず、\n    // 作成されたstreamはそのまま返されます。",
+  }}
+/>
