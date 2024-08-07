@@ -1,3 +1,7 @@
+## Unreleased patch
+
+- fix: `dependencies` ignores build options
+
 ## 2.4.2 - 2024-05-14
 
 - Correctly set minimum support analyzer version to 6.5.0
