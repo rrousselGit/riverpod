@@ -55,10 +55,10 @@ ElevatedButton(
 )
 ```
 
-## AVOID using providers for local widget state.
+## AVOID using providers for Ephemeral state.
 
 Providers are designed to be for shared business state.
-They are not meant to be used for local widget state, such as for:
+They are not meant to be used for [Ephemeral state](https://docs.flutter.dev/data-and-backend/state-mgmt/ephemeral-vs-app#ephemeral-state), such as for:
 
 - storing form state
 - currently selected item
