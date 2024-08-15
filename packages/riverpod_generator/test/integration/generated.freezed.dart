@@ -32,6 +32,9 @@ class _$TestCopyWithImpl<$Res, $Val extends Test>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
+
+  /// Create a copy of Test
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -47,6 +50,9 @@ class __$$TestImplCopyWithImpl<$Res>
     implements _$$TestImplCopyWith<$Res> {
   __$$TestImplCopyWithImpl(_$TestImpl _value, $Res Function(_$TestImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of Test
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc

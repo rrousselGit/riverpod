@@ -7,6 +7,30 @@
     "message": "ガイド",
     "description": "The label for category Guides in sidebar Sidebar"
   },
+  "sidebar.Sidebar.category.Introduction": {
+    "message": "はじめに",
+    "description": "The label for category Introduction in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Riverpod for Provider Users": {
+    "message": "Providerユーザー向けのRiverpod",
+    "description": "The label for category Riverpod for Providers Users in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Essentials": {
+    "message": "基本事項",
+    "description": "The label for category Essentials in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Case studies": {
+    "message": "ケーススタディ",
+    "description": "The label for category Case studies in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Advanced topics": {
+    "message": "高度なトピック",
+    "description": "The label for category Advanced topics in sidebar Sidebar"
+  },
+  "sidebar.Sidebar.category.Migration guides": {
+    "message": "移行ガイド",
+    "description": "The label for category Migration guides in sidebar Sidebar"
+  },
   "sidebar.Sidebar.category.Concepts": {
     "message": "コンセプト",
     "description": "The label for category Concepts in sidebar Sidebar"

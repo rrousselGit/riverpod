@@ -1,0 +1,162 @@
+---
+title: FAQ
+version: 1
+---
+
+import { Link } from "/src/components/Link";
+import { AutoSnippet, When } from "/src/components/CodeSnippet";
+
+ここではコミュニティからよく寄せられる質問を紹介します:
+
+## `ref.refresh`と `ref.invalidate`の違いは何ですか？
+
+`ref` には provider を再計算するための 2 つのメソッドがあることに気付いたかもしれませんが、それらの違いについて疑問に思うかもしれません。
+
+実はそれほど複雑ではありません。`ref.refresh` は `invalidate` と `read` を組み合わせたシンタックスシュガーに過ぎません
+
+```dart
+T refresh<T>(provider) {
+  invalidate(provider);
+  return read(provider);
+}
+```
+
+再計算された後の provider の新しい値が気にならない場合は、`invalidate`を使用します。
+新しい値が必要な場合は、代わりに`refresh`を使用します。
+
+:::info
+このロジックはリントルールを通して自動的に適用されます。  
+返された値を使わずに`ref.refresh`を使うと警告が表示されます。
+:::
+
+動作の主な違いは、invalidate した直後に provider を読み込むことで、provider が**即座**に再計算されることです。  
+一方、`invalidate`しても直後に読み込まなければ、更新は後でトリガーされます。
+
+"後で"の更新は一般的には次のフレームの開始時に行われます。
+しかし、現在リッスンされていない provider が invalidate された場合、再度リッスンされるまで更新されません。
+
+## Ref と WidgetRef の間に共通のインターフェースがないのはなぜですか？
+
+Riverpod は意図的に `Ref` と `WidgetRef`を分離しています。  
+これはどちらかに依存するコードを書くことを避けるためです。
+
+一つの問題は、`Ref`と`WidgetRef`が似ているように見えるが微妙な違いがあるということです。  
+両方に依存するコードは、見つけることが難しい点で信頼性に欠けます。
+
+同時に、`WidgetRef`に依存することは`BuildContext`に依存することと同じです。  
+これは事実上、UI レイヤーにロジックを配置することと同じであり、推奨されません。
+
+---
+
+このようなコードは常に`Ref`を使用するようにリファクタリングすべきです。
+
+この問題の解決策は、ロジックを`Notifier`に移動することです(詳細は<Link documentID="essentials/side_effects" />を参照)。  
+そして、そのロジックをその Notifier のメソッドにします。
+
+これにより、ウィジェットがこのロジックを呼び出したい場合、以下のように書けます:
+
+```dart
+ref.read(yourNotifierProvider.notifier).yourMethod();
+```
+
+`yourMethod`は他の provider とのやりとりを行うために、`Notifier`の`Ref`を使用します。
+
+## なぜ StatelessWidget を使う代わりに ConsumerWidget を拡張する必要があるのですか？
+
+これは、`InheritedWidget`の API の制限によるものです。
+
+いくつかの問題があります:
+
+- `InheritedWidget`の"on change"リスナーを実装することはできません。  
+   つまり、`ref.listen`などを`BuildContext`と一緒に使用することはできません。
+
+  `State.didChangeDependencies`が最も近いものですが、信頼性がありません。  
+  　問題は、ウィジェットツリーが GlobalKey を使用する場合(（内部的に一部の Flutter ウィジェットが既にそうしています)、  
+  依存関係が変更されなくてもライフサイクルがトリガーされる可能性があります。
+
+- `InheritedWidget`をリッスンしているウィジェットはリッスンを停止しません。  
+   これは、"テーマ"や"メディアクエリ"などの純粋なメタデータには通常問題ありません。
+
+  ビジネスロジックの場合、これは問題です。  
+  paginated API を表現するために provider を使用するとします。  
+  ページオフセットが変更されたときに、以前に表示されていたページにウィジェットがリッスンし続けるのを望まないでしょう。
+
+- `InheritedWidget`には、ウィジェットがいつリッスンを停止するかを追跡する方法がありません。  
+  Riverpod は provider がリッスンされているかどうかを追跡するために時々依存することがあります。
+
+この機能は、自動破棄メカニズムやプロバイダに引数を渡す機能の両方にとって重要です。  
+これらの機能が Riverpod を非常に強力にしています。
+
+将来的には、これらの問題が解決されるかもしれません。  
+その場合、Riverpod は `Ref`の代わりに `BuildContext`を使用するように移行するでしょう。  
+これにより、`ConsumerWidget` の代わりに `StatelessWidget` を使用できるようになります。  
+しかし、それは次の機会になります!
+
+## なぜ hooks_riverpod は flutter_hooks をエクスポートしないのですか？
+
+これは、適切なバージョン管理の慣行を尊重するためです。
+
+`flutter_hooks`なしで`hooks_riverpod`を使用することはできませんが、
+両方のパッケージは独立してバージョン管理されています。  
+一方で重大な変更が発生することがありますが、他方では発生しないことがあります。
+
+## Riverpod は一部のケースでフィルタの更新に`==`ではなく`identical`を使用するのはなぜですか？
+
+Notifiers はフィルタの更新に`==`ではなく`identical`を使用します。
+
+これは、Riverpod ユーザーが Freezed/built_value などのコードジェネレータを使用して copyWith の実装を行うことが多いためです。  
+これらのパッケージはオブジェクトを比較するために`==`をオーバーライドします。  
+オブジェクトの比較は非常にコストがかかります。  
+"Business logic"モデルには多くのプロパティが含まれる傾向があります。  
+さらに悪いことに、リスト、マップなどのコレクションもあります。
+
+同時に、複雑な"ビジネス"オブジェクトを利用する時、ほとんどの`state = newState`呼び出しは常に通知を発生させます。  
+(そうでなければ setter を呼び出す必要はありません)  
+一般的に、現在の状態と新しい状態が等しい場合に state = newState を呼び出すのは、プリミティブオブジェクト（int、enum、string など）に対してです。  
+これらのオブジェクトは"デフォルトで正規化されています"。このようなオブジェクトが等しい場合、通常は"同一(identical)"であることも意味します。
+
+したがって、Riverpod がフィルタの更新に`identical`を使用するのは、両方の世界にとって良いデフォルトを持つ試みです。  
+オブジェクトのフィルタリングにこだわらず、コードジェネレータがデフォルトで`==`オーバーライドを生成するため、`==`がコストがかかる場合、`identical`を使用することで効率的なリスナ-通知方法を提供します。
+同時に、単純なオブジェクトの場合、`identical`は冗長な通知を正しくフィルタリングします。
+
+最後に、Notifiers の`updateShouldNotify`メソッドをオーバーライドして動作を変更することもできます。
+
+## 全ての provider を一度にリセットする方法はありますか？
+
+いいえ、全ての provider を一度にリセットする方法はありません。
+
+これは意図的に行われており、アンチパターンと見なされます。  
+すべての provider を一度にリセットすると、リセットする意図のない provider もリセットされることがよくあります。
+
+これは一般的にユーザがログアウトする時にアプリケーションの状態をリセットしたい場合に尋ねられます。  
+この機能を望む場合、代わりにユーザの状態に依存するすべてのものを`ref.watch`で"user" provider に設定する必要があります。
+
+その場合、ユーザーがログアウトすると、これに依存するすべての provider が自動的にリセットされますが、その他のものはそのままになります。
+
+## "Cannot use "ref" after the widget was disposed"というエラーが発生しました。何が問題ですか？
+
+おそらく"Bad state: No ProviderScope found"も見たことがあるかもしれませんが、これは同じ問題の古いエラーメッセージです。
+
+このエラーは、ウィジェットがマウントされていない状態で `ref` を使用しようとしたときに発生します。  
+これは一般的に`await`の後に発生します:
+
+```dart
+ElevatedButton(
+  onPressed: () async {
+    await future;
+    ref.read(...); // ここで「Cannot use "ref" after the widget was disposed」というエラーが発生する可能性があります
+  }
+)
+```
+
+解決策は、`BuildContext`と同様に、`ref`を使用する前に`mounted`を確認することです:
+
+```dart
+ElevatedButton(
+  onPressed: () async {
+    await future;
+    if (!context.mounted) return;
+    ref.read(...); // これでエラーは発生しません
+  }
+)
+```

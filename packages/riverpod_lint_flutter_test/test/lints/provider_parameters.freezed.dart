@@ -33,6 +33,9 @@ class _$FreezedExampleCopyWithImpl<$Res, $Val extends FreezedExample>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
+
+  /// Create a copy of FreezedExample
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -49,6 +52,9 @@ class __$$FreezedExampleImplCopyWithImpl<$Res>
   __$$FreezedExampleImplCopyWithImpl(
       _$FreezedExampleImpl _value, $Res Function(_$FreezedExampleImpl) _then)
       : super(_value, _then);
+
+  /// Create a copy of FreezedExample
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc

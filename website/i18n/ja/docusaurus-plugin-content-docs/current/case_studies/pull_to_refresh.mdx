@@ -1,0 +1,140 @@
+---
+title: Pull to refresh
+version: 1
+---
+
+import { Link } from "/src/components/Link";
+import { AutoSnippet, When } from "/src/components/CodeSnippet";
+import activity from "/docs/case_studies/pull_to_refresh/activity";
+import fetchActivity from "/docs/case_studies/pull_to_refresh/fetch_activity";
+import displayActivity from "!!raw-loader!/docs/case_studies/pull_to_refresh/display_activity.dart";
+import displayActivity2 from "!!raw-loader!/docs/case_studies/pull_to_refresh/display_activity2.dart";
+import displayActivity3 from "!!raw-loader!/docs/case_studies/pull_to_refresh/display_activity3.dart";
+import displayActivity4 from "!!raw-loader!/docs/case_studies/pull_to_refresh/display_activity4.dart";
+import fullApp from "/docs/case_studies/pull_to_refresh/full_app";
+
+Riverpod は宣言的な性質のおかげで自然に pull-to-refresh をサポートしています。
+
+一般的に pull-to-refresh は複数の問題を解決する必要があるため複雑になります:
+
+- ページに初めて入った際はスピナーを表示したい。  
+  リフレッシュ中はリフレッシュインジケーターを表示したい。  
+  リフレッシュインジケーターとスピナーの両方を表示してはいけません。
+- リフレッシュが保留中の間、以前のデータ/エラーを表示したい。
+- リフレッシュが行われている間はリフレッシュインジケーターを表示し続ける必要があります。
+
+Riverpod を使用してこの問題を解決する方法を見ていきましょう。
+ここでは、ユーザーにランダムなアクティビティを提案する簡単な例を作成します。  
+そして pull-to-refresh をトリガーすると新しい提案が表示されます:
+
+<img
+  alt="A gif of the previously described application working"
+  src="/img/case_studies/pull_to_refresh/app.gif"
+/>
+
+## アプリケーションのベースを作成する
+
+pull-to-refresh を実装する前、まずリフレッシュする何かが必要です。  
+[Bored API](https://www.boredapi.com/)を使ってユーザーにランダムなアクティビティを提案するシンプルなアプリケーションを作成します。
+
+まず、`Activity` クラスを定義します:
+
+<AutoSnippet {...activity} translations={{}} />
+
+このクラスは堅安全な方法で提案されたアクティビティを表現し、JSON エンコード/デコードを処理します。
+Freezed/json_serializable を使用することは必須ではありませんが、推奨されます。
+
+今、単一のアクティビティを取得するための HTTP GET リクエストを行うプロバイダを定義します:
+
+<AutoSnippet {...fetchActivity} translations={{}} />
+
+この provider を使うことでランダムなアクティビティを表示できます。
+今、ローディング/エラー状態を処理ぜず、アクティビティが利用可能な場合にのみ表示します:
+
+<AutoSnippet
+  raw={displayActivity}
+  translations={{
+    render: "        // アクティビティがあればそれを表示し、なければ待ちます。",
+  }}
+/>
+
+## `RefreshIndicator`の追加
+
+シンプルなアプリケーションができたので、ここに `RefreshIndicator` を追加します。  
+このウィジェットはユーザーが画面を下に引くとリフレッシュインジケーターを表示する公式のマテリアルウィジェットです。
+
+`RefreshIndicator`を使用するにはスクロール可能な表面が必要です。  
+しかし、これまでそういったものはありませんでした。  
+`ListView`/`GridView`/`SingleChildScrollView`/などを使用することでこの問題を解決できます:
+
+<AutoSnippet raw={displayActivity2} translations={{}} />
+
+ユーザーは画面を引き下げることができますが、データはまだリフレッシュされていません。
+
+## リフレッシュロジックの追加
+
+ユーザーが画面を引き下げると、`RefreshIndicator`は `onRefresh` コールバックを呼び出します。  
+このコールバックを使用してデータをリフレッシュできます。  
+ここでは `ref.refresh` を使用して選択した provider をリフレッシュできます。
+
+**注意**: `onRefresh`は `Future`を返すことが期待されており、
+リフレッシュが完了したときにその future が完了することが重要です。
+
+そのような future を取得するには、provider の`.future`プロパティを読み取ることができます。  
+これにより、provider が解決されたときに完了する future が返されます。
+
+`RefreshIndicator`を次のように更新できます:
+
+<AutoSnippet
+  raw={displayActivity3}
+  translations={{
+    onRefresh:
+      '        // "activityProvider.future"をし、その結果を返すことで、\n        // 新しいアクティビティがフェッチされるまでリフレッシュインジケーターを表示し続けます。',
+  }}
+/>
+
+## 初期読み込み中にスピナーを表示し、エラーを処理する。
+
+現時点では、UI はエラー/ローディング状態を処理していません。  
+代わりにデータがロード/リフレッシュされると、データが魔法のように表示されます。
+
+これらを優雅に処理するため変更してみましょう。  
+二つのケースがあります:
+
+- 初期ロード中に、フルスクリーンのスピナーを表示したい。
+- リフレッシュ中にリフレッシュインジケーターと前のデータ/エラーを表示したい。
+
+幸いなことに、Riverpod で非同期 provider をリッスンするとき、Riverpod は必要なすべてを提供する `AsyncValue`を提供します。
+
+この `AsyncValue`は次のように Dart 3.0 のパターンマッチングと組み合わせて使用できます:
+
+<AutoSnippet
+  raw={displayActivity4}
+  translations={{
+    data: "              // いくつかのデータが利用可能な場合、それを表示します。\n              // refresh中もデータは利用可能であることに注意してください。",
+    error: "              // エラーがある場合、エラーメッセージを表示します。",
+    loading:
+      "              // データ/エラーがない場合、ローディング状態になります。",
+  }}
+/>
+
+:::caution
+`valueOrNull`を使用して、現在のようにエラー/ローディング状態で`value`を使用します。
+
+Riverpod 3.0 では、`value`が`valueOrNull`のように動作するように変更される予定です。  
+今は`valueOrNull`を使用し続けましょう。
+:::
+
+:::tip
+パターンマッチングで`:final valueOrNull?`構文を使用していることに注意してください。  
+この構文は、activityProvider が null 不許容の `Activity` を返すためにのみ使用できます。
+
+データが`null`である可能性がある場合、代わりに`AsyncValue(hasData: true, :final valueOrNull)`を使用できます。  
+これにより、データが`null`であるケースを正しく処理できますが、少し余分な文字が必要になります。
+:::
+
+## まとめ: フルアプリケーション
+
+これまでの内容をすべて統合したソースはこちらです:
+
+<AutoSnippet {...fullApp} translations={{}} />

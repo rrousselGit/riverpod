@@ -53,7 +53,7 @@ class MyHomePage extends HookConsumerWidget {
         title: const Text('Riverpod counter example'),
       ),
       body: Center(
-        // HookConsumer is a builder widget that allows you to read providers and utilise hooks.
+        // HookConsumer is a builder widget that allows you to read providers and utilize hooks.
         child: HookConsumer(
           builder: (context, ref, _) {
             final count = ref.watch(counterProvider);

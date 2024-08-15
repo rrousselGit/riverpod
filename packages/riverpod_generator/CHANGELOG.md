@@ -16,6 +16,9 @@
   ```
 
 - Added support for `@Riverpod(retry: ...)`
+## 2.4.3 - 2024-08-15
+
+- `riverpod_analyzer_utils` upgraded to `0.5.4`
 
 ## 2.4.2 - 2024-05-14
 

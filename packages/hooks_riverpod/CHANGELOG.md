@@ -35,7 +35,7 @@ Fix exceptions when using multiple root `ProviderContainers`/`ProviderScopes`.
 - **Breaking**: Removed everything marked as "deprecated"
 - Bumped minimum Dart SDK to >= 3.0.0-dev
 
-## Unreleased patch
+## 2.5.2 - 2024-08-15
 
 - Added mutation pending state to example (thanks to @luketg8)
 
