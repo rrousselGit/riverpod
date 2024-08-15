@@ -21,7 +21,9 @@ mixin _$TagTheme {
   Color get backgroundColor => throw _privateConstructorUsedError;
   BorderRadius get borderRadius => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of TagTheme
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $TagThemeCopyWith<TagTheme> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -48,6 +50,8 @@ class _$TagThemeCopyWithImpl<$Res, $Val extends TagTheme>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of TagTheme
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -100,6 +104,8 @@ class __$$TagThemeImplCopyWithImpl<$Res>
       _$TagThemeImpl _value, $Res Function(_$TagThemeImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of TagTheme
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -169,7 +175,9 @@ class _$TagThemeImpl implements _TagTheme {
   int get hashCode =>
       Object.hash(runtimeType, style, padding, backgroundColor, borderRadius);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of TagTheme
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$TagThemeImplCopyWith<_$TagThemeImpl> get copyWith =>
@@ -191,8 +199,11 @@ abstract class _TagTheme implements TagTheme {
   Color get backgroundColor;
   @override
   BorderRadius get borderRadius;
+
+  /// Create a copy of TagTheme
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$TagThemeImplCopyWith<_$TagThemeImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

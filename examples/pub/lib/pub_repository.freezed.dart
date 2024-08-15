@@ -26,8 +26,12 @@ mixin _$PackageMetricsScore {
   double get popularityScore => throw _privateConstructorUsedError;
   List<String> get tags => throw _privateConstructorUsedError;
 
+  /// Serializes this PackageMetricsScore to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of PackageMetricsScore
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $PackageMetricsScoreCopyWith<PackageMetricsScore> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -56,6 +60,8 @@ class _$PackageMetricsScoreCopyWithImpl<$Res, $Val extends PackageMetricsScore>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of PackageMetricsScore
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -114,6 +120,8 @@ class __$$PackageMetricsScoreImplCopyWithImpl<$Res>
       $Res Function(_$PackageMetricsScoreImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of PackageMetricsScore
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -213,12 +221,14 @@ class _$PackageMetricsScoreImpl
             const DeepCollectionEquality().equals(other._tags, _tags));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, grantedPoints, maxPoints,
       likeCount, popularityScore, const DeepCollectionEquality().hash(_tags));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of PackageMetricsScore
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$PackageMetricsScoreImplCopyWith<_$PackageMetricsScoreImpl> get copyWith =>
@@ -254,8 +264,11 @@ abstract class _PackageMetricsScore implements PackageMetricsScore {
   double get popularityScore;
   @override
   List<String> get tags;
+
+  /// Create a copy of PackageMetricsScore
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$PackageMetricsScoreImplCopyWith<_$PackageMetricsScoreImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -269,8 +282,12 @@ PackageMetricsResponse _$PackageMetricsResponseFromJson(
 mixin _$PackageMetricsResponse {
   PackageMetricsScore get score => throw _privateConstructorUsedError;
 
+  /// Serializes this PackageMetricsResponse to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of PackageMetricsResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $PackageMetricsResponseCopyWith<PackageMetricsResponse> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -297,6 +314,8 @@ class _$PackageMetricsResponseCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of PackageMetricsResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -310,6 +329,8 @@ class _$PackageMetricsResponseCopyWithImpl<$Res,
     ) as $Val);
   }
 
+  /// Create a copy of PackageMetricsResponse
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $PackageMetricsScoreCopyWith<$Res> get score {
@@ -344,6 +365,8 @@ class __$$PackageMetricsResponseImplCopyWithImpl<$Res>
       $Res Function(_$PackageMetricsResponseImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of PackageMetricsResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -392,11 +415,13 @@ class _$PackageMetricsResponseImpl
             (identical(other.score, score) || other.score == score));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, score);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of PackageMetricsResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$PackageMetricsResponseImplCopyWith<_$PackageMetricsResponseImpl>
@@ -420,8 +445,11 @@ abstract class _PackageMetricsResponse implements PackageMetricsResponse {
 
   @override
   PackageMetricsScore get score;
+
+  /// Create a copy of PackageMetricsResponse
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$PackageMetricsResponseImplCopyWith<_$PackageMetricsResponseImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -435,8 +463,12 @@ mixin _$PackageDetails {
   String get version => throw _privateConstructorUsedError;
   Pubspec get pubspec => throw _privateConstructorUsedError;
 
+  /// Serializes this PackageDetails to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of PackageDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $PackageDetailsCopyWith<PackageDetails> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -460,6 +492,8 @@ class _$PackageDetailsCopyWithImpl<$Res, $Val extends PackageDetails>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of PackageDetails
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -498,6 +532,8 @@ class __$$PackageDetailsImplCopyWithImpl<$Res>
       _$PackageDetailsImpl _value, $Res Function(_$PackageDetailsImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of PackageDetails
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -555,11 +591,13 @@ class _$PackageDetailsImpl
             (identical(other.pubspec, pubspec) || other.pubspec == pubspec));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, version, pubspec);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of PackageDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$PackageDetailsImplCopyWith<_$PackageDetailsImpl> get copyWith =>
@@ -586,8 +624,11 @@ abstract class _PackageDetails implements PackageDetails {
   String get version;
   @override
   Pubspec get pubspec;
+
+  /// Create a copy of PackageDetails
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$PackageDetailsImplCopyWith<_$PackageDetailsImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -601,8 +642,12 @@ mixin _$Package {
   String get name => throw _privateConstructorUsedError;
   PackageDetails get latest => throw _privateConstructorUsedError;
 
+  /// Serializes this Package to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of Package
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $PackageCopyWith<Package> get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -626,6 +671,8 @@ class _$PackageCopyWithImpl<$Res, $Val extends Package>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of Package
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -644,6 +691,8 @@ class _$PackageCopyWithImpl<$Res, $Val extends Package>
     ) as $Val);
   }
 
+  /// Create a copy of Package
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $PackageDetailsCopyWith<$Res> get latest {
@@ -674,6 +723,8 @@ class __$$PackageImplCopyWithImpl<$Res>
       _$PackageImpl _value, $Res Function(_$PackageImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of Package
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -729,11 +780,13 @@ class _$PackageImpl with DiagnosticableTreeMixin implements _Package {
             (identical(other.latest, latest) || other.latest == latest));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, name, latest);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Package
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$PackageImplCopyWith<_$PackageImpl> get copyWith =>
@@ -758,8 +811,11 @@ abstract class _Package implements Package {
   String get name;
   @override
   PackageDetails get latest;
+
+  /// Create a copy of Package
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$PackageImplCopyWith<_$PackageImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -773,8 +829,12 @@ mixin _$LikedPackage {
   String get package => throw _privateConstructorUsedError;
   bool get liked => throw _privateConstructorUsedError;
 
+  /// Serializes this LikedPackage to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of LikedPackage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $LikedPackageCopyWith<LikedPackage> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -798,6 +858,8 @@ class _$LikedPackageCopyWithImpl<$Res, $Val extends LikedPackage>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of LikedPackage
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -836,6 +898,8 @@ class __$$LikedPackageImplCopyWithImpl<$Res>
       _$LikedPackageImpl _value, $Res Function(_$LikedPackageImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of LikedPackage
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -891,11 +955,13 @@ class _$LikedPackageImpl with DiagnosticableTreeMixin implements _LikedPackage {
             (identical(other.liked, liked) || other.liked == liked));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, package, liked);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of LikedPackage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$LikedPackageImplCopyWith<_$LikedPackageImpl> get copyWith =>
@@ -921,8 +987,11 @@ abstract class _LikedPackage implements LikedPackage {
   String get package;
   @override
   bool get liked;
+
+  /// Create a copy of LikedPackage
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$LikedPackageImplCopyWith<_$LikedPackageImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -936,8 +1005,12 @@ LikedPackagesResponse _$LikedPackagesResponseFromJson(
 mixin _$LikedPackagesResponse {
   List<LikedPackage> get likedPackages => throw _privateConstructorUsedError;
 
+  /// Serializes this LikedPackagesResponse to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of LikedPackagesResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $LikedPackagesResponseCopyWith<LikedPackagesResponse> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -962,6 +1035,8 @@ class _$LikedPackagesResponseCopyWithImpl<$Res,
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of LikedPackagesResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -997,6 +1072,8 @@ class __$$LikesPackagesResponseImplCopyWithImpl<$Res>
       $Res Function(_$LikesPackagesResponseImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of LikedPackagesResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1052,12 +1129,14 @@ class _$LikesPackagesResponseImpl
                 .equals(other._likedPackages, _likedPackages));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
       runtimeType, const DeepCollectionEquality().hash(_likedPackages));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of LikedPackagesResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$LikesPackagesResponseImplCopyWith<_$LikesPackagesResponseImpl>
@@ -1082,8 +1161,11 @@ abstract class _LikesPackagesResponse implements LikedPackagesResponse {
 
   @override
   List<LikedPackage> get likedPackages;
+
+  /// Create a copy of LikedPackagesResponse
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$LikesPackagesResponseImplCopyWith<_$LikesPackagesResponseImpl>
       get copyWith => throw _privateConstructorUsedError;
 }
@@ -1096,8 +1178,12 @@ PubPackagesResponse _$PubPackagesResponseFromJson(Map<String, dynamic> json) {
 mixin _$PubPackagesResponse {
   List<Package> get packages => throw _privateConstructorUsedError;
 
+  /// Serializes this PubPackagesResponse to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of PubPackagesResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $PubPackagesResponseCopyWith<PubPackagesResponse> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -1121,6 +1207,8 @@ class _$PubPackagesResponseCopyWithImpl<$Res, $Val extends PubPackagesResponse>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of PubPackagesResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1154,6 +1242,8 @@ class __$$PubPackagesResponseImplCopyWithImpl<$Res>
       $Res Function(_$PubPackagesResponseImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of PubPackagesResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1208,12 +1298,14 @@ class _$PubPackagesResponseImpl
             const DeepCollectionEquality().equals(other._packages, _packages));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_packages));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of PubPackagesResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$PubPackagesResponseImplCopyWith<_$PubPackagesResponseImpl> get copyWith =>
@@ -1237,8 +1329,11 @@ abstract class _PubPackagesResponse implements PubPackagesResponse {
 
   @override
   List<Package> get packages;
+
+  /// Create a copy of PubPackagesResponse
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$PubPackagesResponseImplCopyWith<_$PubPackagesResponseImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -1251,8 +1346,12 @@ SearchPackage _$SearchPackageFromJson(Map<String, dynamic> json) {
 mixin _$SearchPackage {
   String get package => throw _privateConstructorUsedError;
 
+  /// Serializes this SearchPackage to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of SearchPackage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $SearchPackageCopyWith<SearchPackage> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -1276,6 +1375,8 @@ class _$SearchPackageCopyWithImpl<$Res, $Val extends SearchPackage>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of SearchPackage
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1309,6 +1410,8 @@ class __$$SearchPackageImplCopyWithImpl<$Res>
       _$SearchPackageImpl _value, $Res Function(_$SearchPackageImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of SearchPackage
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1357,11 +1460,13 @@ class _$SearchPackageImpl
             (identical(other.package, package) || other.package == package));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, package);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of SearchPackage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$SearchPackageImplCopyWith<_$SearchPackageImpl> get copyWith =>
@@ -1383,8 +1488,11 @@ abstract class _SearchPackage implements SearchPackage {
 
   @override
   String get package;
+
+  /// Create a copy of SearchPackage
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$SearchPackageImplCopyWith<_$SearchPackageImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -1397,8 +1505,12 @@ PubSearchResponse _$PubSearchResponseFromJson(Map<String, dynamic> json) {
 mixin _$PubSearchResponse {
   List<SearchPackage> get packages => throw _privateConstructorUsedError;
 
+  /// Serializes this PubSearchResponse to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of PubSearchResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $PubSearchResponseCopyWith<PubSearchResponse> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -1422,6 +1534,8 @@ class _$PubSearchResponseCopyWithImpl<$Res, $Val extends PubSearchResponse>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of PubSearchResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1455,6 +1569,8 @@ class __$$PubSearchResponseImplCopyWithImpl<$Res>
       $Res Function(_$PubSearchResponseImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of PubSearchResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -1509,12 +1625,14 @@ class _$PubSearchResponseImpl
             const DeepCollectionEquality().equals(other._packages, _packages));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_packages));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of PubSearchResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$PubSearchResponseImplCopyWith<_$PubSearchResponseImpl> get copyWith =>
@@ -1538,8 +1656,11 @@ abstract class _PubSearchResponse implements PubSearchResponse {
 
   @override
   List<SearchPackage> get packages;
+
+  /// Create a copy of PubSearchResponse
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$PubSearchResponseImplCopyWith<_$PubSearchResponseImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
