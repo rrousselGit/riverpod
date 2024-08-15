@@ -1,4 +1,4 @@
-## Unreleased patch
+## 2.5.2 - 2024-08-15
 
 - Added mutation pending state to example (thanks to @luketg8)
 
