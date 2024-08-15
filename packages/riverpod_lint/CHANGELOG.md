@@ -1,3 +1,7 @@
+## Unreleased patch
+
+Bump custom_lint
+
 ## 2.3.12 - 2024-05-14
 
 - Correctly set minimum support analyzer version to 6.5.0
@@ -18,7 +22,7 @@
 
 - Fix `async_value_nullable_pattern` false positive when used with generics
   that have non-nullable type constrains.
-- Add migration widget field when convert Stateless-based and 
+- Add migration widget field when convert Stateless-based and
   Stateful-based to each other (thanks to @Kurogoma4D)
 
 ## 2.3.7 - 2023-11-27
