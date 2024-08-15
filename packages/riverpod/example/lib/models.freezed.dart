@@ -23,8 +23,12 @@ mixin _$Configuration {
   String get publicKey => throw _privateConstructorUsedError;
   String get privateKey => throw _privateConstructorUsedError;
 
+  /// Serializes this Configuration to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of Configuration
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ConfigurationCopyWith<Configuration> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -48,6 +52,8 @@ class _$ConfigurationCopyWithImpl<$Res, $Val extends Configuration>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of Configuration
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -86,6 +92,8 @@ class __$$ConfigurationImplCopyWithImpl<$Res>
       _$ConfigurationImpl _value, $Res Function(_$ConfigurationImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of Configuration
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -135,11 +143,13 @@ class _$ConfigurationImpl implements _Configuration {
                 other.privateKey == privateKey));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, publicKey, privateKey);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Configuration
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ConfigurationImplCopyWith<_$ConfigurationImpl> get copyWith =>
@@ -165,8 +175,11 @@ abstract class _Configuration implements Configuration {
   String get publicKey;
   @override
   String get privateKey;
+
+  /// Create a copy of Configuration
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ConfigurationImplCopyWith<_$ConfigurationImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -179,8 +192,12 @@ MarvelResponse _$MarvelResponseFromJson(Map<String, dynamic> json) {
 mixin _$MarvelResponse {
   MarvelData get data => throw _privateConstructorUsedError;
 
+  /// Serializes this MarvelResponse to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of MarvelResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $MarvelResponseCopyWith<MarvelResponse> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -206,6 +223,8 @@ class _$MarvelResponseCopyWithImpl<$Res, $Val extends MarvelResponse>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of MarvelResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -219,6 +238,8 @@ class _$MarvelResponseCopyWithImpl<$Res, $Val extends MarvelResponse>
     ) as $Val);
   }
 
+  /// Create a copy of MarvelResponse
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $MarvelDataCopyWith<$Res> get data {
@@ -250,6 +271,8 @@ class __$$MarvelResponseImplCopyWithImpl<$Res>
       _$MarvelResponseImpl _value, $Res Function(_$MarvelResponseImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of MarvelResponse
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -288,11 +311,13 @@ class _$MarvelResponseImpl implements _MarvelResponse {
             (identical(other.data, data) || other.data == data));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, data);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of MarvelResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$MarvelResponseImplCopyWith<_$MarvelResponseImpl> get copyWith =>
@@ -315,8 +340,11 @@ abstract class _MarvelResponse implements MarvelResponse {
 
   @override
   MarvelData get data;
+
+  /// Create a copy of MarvelResponse
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$MarvelResponseImplCopyWith<_$MarvelResponseImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -329,8 +357,12 @@ MarvelData _$MarvelDataFromJson(Map<String, dynamic> json) {
 mixin _$MarvelData {
   List<Map<String, Object?>> get results => throw _privateConstructorUsedError;
 
+  /// Serializes this MarvelData to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of MarvelData
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $MarvelDataCopyWith<MarvelData> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -354,6 +386,8 @@ class _$MarvelDataCopyWithImpl<$Res, $Val extends MarvelData>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of MarvelData
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -387,6 +421,8 @@ class __$$MarvelDataImplCopyWithImpl<$Res>
       _$MarvelDataImpl _value, $Res Function(_$MarvelDataImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of MarvelData
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -431,12 +467,14 @@ class _$MarvelDataImpl implements _MarvelData {
             const DeepCollectionEquality().equals(other._results, _results));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_results));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of MarvelData
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$MarvelDataImplCopyWith<_$MarvelDataImpl> get copyWith =>
@@ -459,8 +497,11 @@ abstract class _MarvelData implements MarvelData {
 
   @override
   List<Map<String, Object?>> get results;
+
+  /// Create a copy of MarvelData
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$MarvelDataImplCopyWith<_$MarvelDataImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -474,8 +515,12 @@ mixin _$Comic {
   int get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
 
+  /// Serializes this Comic to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of Comic
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $ComicCopyWith<Comic> get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -497,6 +542,8 @@ class _$ComicCopyWithImpl<$Res, $Val extends Comic>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of Comic
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -534,6 +581,8 @@ class __$$ComicImplCopyWithImpl<$Res>
       _$ComicImpl _value, $Res Function(_$ComicImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of Comic
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -580,11 +629,13 @@ class _$ComicImpl implements _Comic {
             (identical(other.title, title) || other.title == title));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, title);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Comic
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ComicImplCopyWith<_$ComicImpl> get copyWith =>
@@ -608,8 +659,11 @@ abstract class _Comic implements Comic {
   int get id;
   @override
   String get title;
+
+  /// Create a copy of Comic
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ComicImplCopyWith<_$ComicImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

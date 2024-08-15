@@ -19,7 +19,9 @@ mixin _$CharacterPagination {
   int get page => throw _privateConstructorUsedError;
   String? get name => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of CharacterPagination
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $CharacterPaginationCopyWith<CharacterPagination> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -43,6 +45,8 @@ class _$CharacterPaginationCopyWithImpl<$Res, $Val extends CharacterPagination>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of CharacterPagination
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -81,6 +85,8 @@ class __$$CharacterPaginationImplCopyWithImpl<$Res>
       $Res Function(_$CharacterPaginationImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of CharacterPagination
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -127,7 +133,9 @@ class _$CharacterPaginationImpl implements _CharacterPagination {
   @override
   int get hashCode => Object.hash(runtimeType, page, name);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of CharacterPagination
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$CharacterPaginationImplCopyWith<_$CharacterPaginationImpl> get copyWith =>
@@ -143,8 +151,11 @@ abstract class _CharacterPagination implements CharacterPagination {
   int get page;
   @override
   String? get name;
+
+  /// Create a copy of CharacterPagination
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$CharacterPaginationImplCopyWith<_$CharacterPaginationImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -154,7 +165,9 @@ mixin _$CharacterOffset {
   int get offset => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
+  /// Create a copy of CharacterOffset
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $CharacterOffsetCopyWith<CharacterOffset> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -178,6 +191,8 @@ class _$CharacterOffsetCopyWithImpl<$Res, $Val extends CharacterOffset>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of CharacterOffset
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -216,6 +231,8 @@ class __$$CharacterOffsetImplCopyWithImpl<$Res>
       _$CharacterOffsetImpl _value, $Res Function(_$CharacterOffsetImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of CharacterOffset
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -263,7 +280,9 @@ class _$CharacterOffsetImpl implements _CharacterOffset {
   @override
   int get hashCode => Object.hash(runtimeType, offset, name);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of CharacterOffset
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$CharacterOffsetImplCopyWith<_$CharacterOffsetImpl> get copyWith =>
@@ -279,8 +298,11 @@ abstract class _CharacterOffset implements CharacterOffset {
   int get offset;
   @override
   String get name;
+
+  /// Create a copy of CharacterOffset
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$CharacterOffsetImplCopyWith<_$CharacterOffsetImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
