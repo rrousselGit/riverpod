@@ -1,4 +1,4 @@
-## Unreleased patch
+## 0.5.4 - 2024-08-15
 
 Bump custom_lint
 
