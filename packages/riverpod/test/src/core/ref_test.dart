@@ -2744,9 +2744,7 @@ void main() {
           if (watching) ref.watch(dep);
         });
 
-        print('a');
         container.read(provider);
-        print('b');
         container.read(provider2);
 
         verifyZeroInteractions(listener);
@@ -2754,16 +2752,12 @@ void main() {
 
         watching = false;
         // remove the dependency provider<>dep
-        print('c');
         container.refresh(provider);
-        print('d');
 
         verifyZeroInteractions(listener2);
 
         // remove the dependency provider2<>dep
-        print('e');
         container.refresh(provider2);
-        print('f');
 
         verifyInOrder([listener(), listener2()]);
         verifyNoMoreInteractions(listener);

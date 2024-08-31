@@ -79,7 +79,6 @@ abstract class ProviderElement<StateT> implements WrappedNode {
   bool get isActive => (_listenerCount - _pausedActiveSubscriptionCount) > 0;
 
   int get _listenerCount => _dependents?.length ?? 0;
-  // (_dependents?.length ?? 0) + _watchDependents.length;
 
   var _pausedActiveSubscriptionCount = 0;
   var _didCancelOnce = false;
@@ -249,13 +248,6 @@ This could mean a few things:
   /// After a provider is initialized, this function takes care of unsubscribing
   /// to dependencies that are no-longer used.
   void _performBuild() {
-    // assert(
-    //   _previousDependencies == null,
-    //   'Bad state: _performBuild was called twice',
-    // );
-    // final previousDependencies = _previousDependencies = _dependencies;
-    // _dependencies = HashMap();
-
     runOnDispose();
     final ref = this.ref = Ref<StateT>._(this);
     final previousStateResult = _stateResult;
@@ -278,16 +270,6 @@ This could mean a few things:
     if (previousSubscriptions != null) {
       _closeSubscriptions(previousSubscriptions);
     }
-
-    // // Unsubscribe to everything that a provider no longer depends on.
-    // for (final sub in previousDependencies.entries) {
-    //   sub.key._onRemoveListener(
-    //     () => sub.key._watchDependents.remove(this),
-    //     weak: false,
-    //     isPaused: !isActive,
-    //   );
-    // }
-    // _previousDependencies = null;
   }
 
   /// Initialize a provider.
@@ -704,20 +686,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     _stateResult = null;
     ref = null;
 
-    final previousSubscriptions = _previousSubscriptions;
-    if (previousSubscriptions != null) {
-      _closeSubscriptions(previousSubscriptions);
-    }
-
-    // // TODO share with _performBuild
-    // for (final sub in _dependencies.entries) {
-    //   sub.key._onRemoveListener(
-    //     () => sub.key._watchDependents.remove(this),
-    //     weak: false,
-    //     isPaused: !sub.key.isActive,
-    //   );
-    // }
-    // _dependencies.clear();
+    if (_previousSubscriptions case final subs?) _closeSubscriptions(subs);
+    if (_dependents case final subs?) _closeSubscriptions(subs);
+    _closeSubscriptions(_weakDependents);
   }
 
   @override

@@ -411,7 +411,6 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
 
   /// Listens to a [Future] and transforms it into an [AsyncValue].
   void _handleAsync(
-    // Stream<T> Function({required void Function(T) fireImmediately}) create,
     CancelAsyncSubscription? Function({
       required void Function(StateT) data,
       required void Function(Object, StackTrace) error,
