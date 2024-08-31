@@ -125,7 +125,7 @@ class ProviderScheduler {
 
       if ((links != null && links.isNotEmpty) ||
           element.container._disposed ||
-          element.isActive) {
+          element.hasListeners) {
         continue;
       }
 

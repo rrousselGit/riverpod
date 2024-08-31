@@ -564,7 +564,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   SubT _onListen<SubT extends ProviderSubscription>(SubT Function() add) {
-    print('listen $origin');
     final wasActive = isActive;
     ref?._onAddListeners?.forEach(runGuarded);
 
@@ -577,12 +576,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   void _onRemoveListener(ProviderSubscription Function() remove) {
-    print('unsub $origin');
     final wasActive = isActive;
 
-    final removedSub = remove();
-    if (removedSub.isPaused && !removedSub.source.weak)
-      ref?._onRemoveListeners?.forEach(runGuarded);
+    remove();
+    ref?._onRemoveListeners?.forEach(runGuarded);
     _mayNeedDispose();
 
     if (wasActive && !isActive) _onCancel();
@@ -593,7 +590,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     // _pausedActiveSubscriptionCount
     if (weak) return;
 
-    print('on pause sub at $origin');
     final wasActive = isActive;
     _pausedActiveSubscriptionCount++;
 
@@ -607,7 +603,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     // _pausedActiveSubscriptionCount
     if (weak) return;
 
-    print('on resume sub at $origin');
     final wasActive = isActive;
     _pausedActiveSubscriptionCount = max(0, _pausedActiveSubscriptionCount - 1);
 
@@ -615,7 +610,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   void _onResume() {
-    print('resume $origin');
     ref?._onResumeListeners?.forEach(runGuarded);
 
     visitAncestors((element) {
@@ -624,7 +618,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   void _onCancel() {
-    print('cancel $origin');
     _didCancelOnce = true;
     ref?._onCancelListeners?.forEach(runGuarded);
 

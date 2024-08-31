@@ -113,9 +113,6 @@ final class _ProviderStateSubscription<StateT>
   @override
   void close() {
     if (!closed) {
-      // if (isPaused) {
-      //   listenedElement._onSubscriptionResume(weak: source.weak);
-      // }
       listenedElement._onRemoveListener(
         () {
           switch (source) {

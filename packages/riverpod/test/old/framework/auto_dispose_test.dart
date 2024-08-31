@@ -96,12 +96,12 @@ Future<void> main() async {
   test('unsub to A then make B sub to A then unsub to B disposes B before A',
       () async {
     final container = ProviderContainer.test();
-    final aDispose = OnDisposeMock();
+    final aDispose = OnDisposeMock('a');
     final a = Provider.autoDispose((ref) {
       ref.onDispose(aDispose.call);
       return 42;
     });
-    final bDispose = OnDisposeMock();
+    final bDispose = OnDisposeMock('b');
     final b = Provider.autoDispose((ref) {
       ref.onDispose(bDispose.call);
       ref.watch(a);
