@@ -106,35 +106,31 @@ final class _ProviderStateSubscription<StateT>
         'called ProviderSubscription.read on a subscription that was closed',
       );
     }
-    listenedElement._mayNeedDispose();
+    listenedElement.mayNeedDispose();
     return listenedElement.readSelf();
   }
 
   @override
   void close() {
     if (!closed) {
-      listenedElement._onRemoveListener(
-        () {
-          switch (source) {
-            case WeakNode():
-              listenedElement._weakDependents.remove(this);
-            case _:
-              listenedElement._dependents?.remove(this);
-          }
-
-          return this;
-        },
-      );
+      listenedElement.onChangeSubscription(() {
+        switch (source) {
+          case WeakNode():
+            listenedElement._weakDependents.remove(this);
+          case _:
+            listenedElement._dependents?.remove(this);
+        }
+      });
     }
 
     super.close();
   }
 
   @override
-  void _onCancel() => listenedElement._onSubscriptionPause(weak: source.weak);
+  void _onCancel() => listenedElement.onSubscriptionPause(weak: source.weak);
 
   @override
-  void _onResume() => listenedElement._onSubscriptionResume(weak: source.weak);
+  void _onResume() => listenedElement.onSubscriptionResume(weak: source.weak);
 }
 
 /// Deals with the internals of synchronously calling the listeners

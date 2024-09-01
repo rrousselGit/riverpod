@@ -81,12 +81,14 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
     // to ensure that "hasListeners" represents the state _before_
     // the listener is added
     return element._onListen(
-      () => _ProviderStateSubscription<StateT>(
-        source,
-        listenedElement: element,
-        listener: (prev, next) => listener(prev as StateT?, next as StateT),
-        onError: onError!,
-      ),
+      () {
+        return _ProviderStateSubscription<StateT>(
+          source,
+          listenedElement: element,
+          listener: (prev, next) => listener(prev as StateT?, next as StateT),
+          onError: onError!,
+        );
+      },
     );
   }
 
@@ -97,7 +99,7 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
     element.flush();
 
     // In case `read` was called on a provider that has no listener
-    element._mayNeedDispose();
+    element.mayNeedDispose();
 
     return element.requireState;
   }

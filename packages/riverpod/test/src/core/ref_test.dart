@@ -963,18 +963,22 @@ void main() {
           expect(buildCount, 1);
         });
 
-        test('closing the subscription updated element.hasListeners', () {
+        test('closing the subscription removes the listener', () {
           final container = ProviderContainer.test();
-          final provider = Provider((ref) => 0);
+          final provider = Provider((ref) => Object());
+          final listener = Listener<Object>();
 
-          final sub =
-              container.listen(provider, weak: true, (previous, value) {});
-
-          expect(container.readProviderElement(provider).hasListeners, true);
-
+          final sub = container.listen(
+            provider,
+            weak: true,
+            listener.call,
+          );
           sub.close();
 
-          expect(container.readProviderElement(provider).hasListeners, false);
+          container.read(provider);
+          container.refresh(provider);
+
+          verifyZeroInteractions(listener);
         });
 
         test('does not count towards the pause mechanism', () async {

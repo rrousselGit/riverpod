@@ -75,7 +75,7 @@ abstract class ProviderElement<StateT> implements WrappedNode {
   /// - it has no listeners
   /// - all of its listeners are "weak" (i.e. created with `listen(weak: true)`)
   ///
-  /// See also [_mayNeedDispose], called when [isActive] may have changed.
+  /// See also [mayNeedDispose], called when [isActive] may have changed.
   bool get isActive => (_listenerCount - _pausedActiveSubscriptionCount) > 0;
 
   int get _listenerCount => _dependents?.length ?? 0;
@@ -87,10 +87,8 @@ abstract class ProviderElement<StateT> implements WrappedNode {
   ///
   /// This maps to listeners added with `listen` and `watch`,
   /// excluding `listen(weak: true)`.
-  bool get hasListeners => _listenerCount > 0 || _weakDependents.isNotEmpty;
+  bool get hasListeners => _listenerCount > 0;
 
-  // var _dependencies = HashMap<ProviderElement, Object>();
-  // HashMap<ProviderElement, Object>? _previousDependencies;
   List<ProviderSubscription>? _previousSubscriptions;
   List<ProviderSubscription>? _subscriptions;
   List<ProviderSubscription>? _dependents;
@@ -101,9 +99,6 @@ abstract class ProviderElement<StateT> implements WrappedNode {
   /// - They do not count towards [ProviderElement.isActive].
   /// - They may be reused between two instances of a [ProviderElement].
   final _weakDependents = <ProviderSubscription>[];
-
-  // /// The element of the providers that depends on this provider.
-  // final _watchDependents = <ProviderElement>[];
 
   bool _mustRecomputeState = false;
   bool _dependencyMayHaveChanged = false;
@@ -374,7 +369,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     _mustRecomputeState = true;
     runOnDispose();
-    _mayNeedDispose();
+    mayNeedDispose();
     container.scheduler.scheduleProviderRefresh(this);
 
     // We don't call this._markDependencyMayHaveChanged here because we voluntarily
@@ -550,66 +545,71 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     ref?._onAddListeners?.forEach(runGuarded);
 
     final sub = add();
-    if (_didCancelOnce && !wasActive && isActive) {
-      _onResume();
-    }
+    if (sub.isPaused) onSubscriptionPause(weak: sub.source.weak);
+
+    if (_didCancelOnce && !wasActive && isActive) _onResume();
 
     return sub;
   }
 
-  void _onRemoveListener(ProviderSubscription Function() remove) {
+  void onChangeSubscription(void Function() apply) {
     final wasActive = isActive;
+    final previousListenerCount = _listenerCount;
+    apply();
 
-    remove();
+    switch ((wasActive: wasActive, isActive: isActive)) {
+      case (wasActive: false, isActive: true) when _didCancelOnce:
+        ref?._onResumeListeners?.forEach(runGuarded);
+        visitAncestors((element) => element.onSubscriptionResume(weak: false));
+
+      case (wasActive: true, isActive: false):
+        _didCancelOnce = true;
+        ref?._onCancelListeners?.forEach(runGuarded);
+        visitAncestors((element) => element.onSubscriptionPause(weak: false));
+
+      default:
+      // No state change, so do nothing
+    }
+
+    if (_listenerCount < previousListenerCount) {
+      _onRemoveListener();
+    } else if (_listenerCount > previousListenerCount) {
+      _onAddListener();
+    }
+  }
+
+  void _onRemoveListener() {
     ref?._onRemoveListeners?.forEach(runGuarded);
-    _mayNeedDispose();
-
-    if (wasActive && !isActive) _onCancel();
+    mayNeedDispose();
   }
 
-  void _onSubscriptionPause({required bool weak}) {
+  void _onAddListener() => ref?._onAddListeners?.forEach(runGuarded);
+
+  void onSubscriptionPause({required bool weak}) {
     // Weak listeners are not counted towards isActive, so we don't want to change
     // _pausedActiveSubscriptionCount
     if (weak) return;
 
-    final wasActive = isActive;
-    _pausedActiveSubscriptionCount++;
-
-    if (wasActive && !isActive) _onCancel();
-  }
-
-  void _onSubscriptionResume({
-    required bool weak,
-  }) {
-    // Weak listeners are not counted towards isActive, so we don't want to change
-    // _pausedActiveSubscriptionCount
-    if (weak) return;
-
-    final wasActive = isActive;
-    _pausedActiveSubscriptionCount = max(0, _pausedActiveSubscriptionCount - 1);
-
-    if (!wasActive && isActive) _onResume();
-  }
-
-  void _onResume() {
-    ref?._onResumeListeners?.forEach(runGuarded);
-
-    visitAncestors((element) {
-      element._onSubscriptionResume(weak: false);
+    onChangeSubscription(() {
+      _pausedActiveSubscriptionCount++;
     });
   }
 
-  void _onCancel() {
-    _didCancelOnce = true;
-    ref?._onCancelListeners?.forEach(runGuarded);
+  void onSubscriptionResume({required bool weak}) {
+    // Weak listeners are not counted towards isActive, so we don't want to change
+    // _pausedActiveSubscriptionCount
+    if (weak) return;
 
-    visitAncestors((element) {
-      element._onSubscriptionPause(weak: false);
+    onChangeSubscription(() {
+      _pausedActiveSubscriptionCount = max(
+        0,
+        _pausedActiveSubscriptionCount - 1,
+      );
     });
   }
 
   /// Life-cycle for when a listener is removed.
-  void _mayNeedDispose() {
+  void mayNeedDispose() {
     if (provider.isAutoDispose) {
       final links = ref?._keepAliveLinks;
 

@@ -162,7 +162,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     late KeepAliveLink link;
     link = KeepAliveLink._(() {
       if (links.remove(link)) {
-        if (links.isEmpty) _element._mayNeedDispose();
+        if (links.isEmpty) _element.mayNeedDispose();
       }
     });
     links.add(link);
@@ -540,7 +540,6 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// ```
   T watch<T>(ProviderListenable<T> listenable) {
     _throwIfInvalidUsage();
-    // if (listenable is! ProviderBase<T>) {
     final sub = _element.listen<T>(
       listenable,
       (prev, value) => invalidateSelf(asReload: true),
@@ -549,30 +548,6 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     );
 
     return sub.read();
-    // }
-
-    // final targetElement = container.readProviderElement(listenable);
-    // _element._dependencies.putIfAbsent(targetElement, () {
-    //   final previousSub = _element._previousDependencies?.remove(targetElement);
-    //   if (previousSub != null) {
-    //     return previousSub;
-    //   }
-
-    //   targetElement
-    //     .._onListen(
-    //       weak: false,
-    //       isPaused: !_element.isActive,
-    //     )
-    //     .._watchDependents.add(_element);
-
-    //   return Object();
-    // });
-
-    // final result = targetElement.readSelf();
-
-    // if (kDebugMode) _debugAssertCanDependOn(listenable);
-
-    // return result;
   }
 
   /// {@template riverpod.listen}

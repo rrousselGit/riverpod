@@ -128,12 +128,14 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
   }) {
+    print('setup selector on ${this.provider}');
     onError ??= Zone.current.handleUncaughtError;
 
     Result<OutputT>? lastSelectedValue;
     final sub = node.listen<InputT>(
       provider,
       (prev, input) {
+        print('change for ${provider}');
         _selectOnChange(
           newState: input,
           lastSelectedValue: lastSelectedValue,
@@ -145,6 +147,8 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
       fireImmediately: false,
       onError: onError,
     );
+
+    print(sub.isPaused);
 
     if (!node.weak) lastSelectedValue = _select(Result.guard(sub.read));
 

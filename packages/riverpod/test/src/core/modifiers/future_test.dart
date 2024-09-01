@@ -17,7 +17,7 @@ void main() {
           (previous, value) {},
         );
 
-        expect(container.readProviderElement(provider).hasListeners, true);
+        expect(container.readProviderElement(provider).hasListeners, false);
 
         sub.close();
 
