@@ -3,6 +3,7 @@ import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import '../models.dart';
 import '../riverpod_generator.dart';
 import '../validation.dart';
+import 'family.dart';
 import 'template.dart';
 
 String providerNameFor(
@@ -33,7 +34,7 @@ String? serializeDependencies(
   }
 
   buffer.writeAll(
-    dependencies.map((e) => providerNameFor(e, options)),
+    dependencies.map((e) => e.providerNameByElementFor(options)),
     ',',
   );
 
@@ -63,7 +64,7 @@ String? serializeAllTransitiveDependencies(
   buffer.write('{');
   buffer.writeAll(
     dependencies
-        .map((e) => providerNameFor(e, options))
+        .map((e) => e.providerNameByElementFor(options))
         .map((e) => '$e, ...?$e.allTransitiveDependencies'),
     ',',
   );
@@ -130,5 +131,22 @@ final $providerName = $providerType<${provider.name}, ${provider.valueTypeDispla
 
 typedef $notifierTypedefName = $notifierBaseType<${provider.valueTypeDisplayString}>;
 ''');
+  }
+}
+
+extension on GeneratorProviderDeclarationElement {
+  String providerNameByElementFor(BuildYamlOptions options) {
+    final e = this;
+    if (e is ClassBasedProviderDeclarationElement) {
+      return e.buildMethod.parameters.isNotEmpty
+          ? providerFamilyNameFor(e, options)
+          : providerNameFor(e, options);
+    }
+    if (e is FunctionalProviderDeclarationElement) {
+      return e.element.parameters.length > 1
+          ? providerFamilyNameFor(e, options)
+          : providerNameFor(e, options);
+    }
+    return providerNameFor(e, options);
   }
 }
