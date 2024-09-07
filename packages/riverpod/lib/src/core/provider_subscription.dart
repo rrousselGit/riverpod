@@ -1,28 +1,21 @@
 part of '../framework.dart';
 
-/// Represents the subscription to a [ProviderListenable]
+/// Represents the subscription to a [ProviderListenable].
+///
+/// This always is implemented with [ProviderSubscriptionOrigin].
+/// This interface exists to remove the redundant type parameters.
 @optionalTypeArgs
-abstract base class ProviderSubscription<StateT> {
-  /// Represents the subscription to a [ProviderListenable]
-  ProviderSubscription(this.source) {
-    final source = this.source;
-    if (source is ProviderElement) {
-      final subs = source._subscriptions ??= [];
-      subs.add(this);
-    }
-  }
-
+sealed class ProviderSubscription<OutT> {
   /// Whether the subscription is closed.
-  bool get closed => _closed;
-  var _closed = false;
-
+  bool get closed;
+  bool get weak;
   bool get isPaused;
 
   /// The object that listens to the associated [ProviderListenable].
   ///
   /// This is typically a [ProviderElement] or a [ProviderContainer],
   /// but may be other values in the future.
-  final Node source;
+  Node get source;
 
   void pause();
   void resume();
@@ -30,20 +23,47 @@ abstract base class ProviderSubscription<StateT> {
   /// Obtain the latest value emitted by the provider.
   ///
   /// This method throws if [closed] is true.
-  StateT read();
+  OutT read();
 
   /// Stops listening to the provider.
   ///
   /// It is safe to call this method multiple times.
+  void close();
+}
+
+@optionalTypeArgs
+sealed class ProviderSubscriptionWithOrigin<OutT, StateT>
+    extends ProviderSubscription<OutT> {
+  ProviderBase<StateT> get origin;
+  ProviderElement<StateT> get _listenedElement;
+
+  void _notify(StateT? prev, StateT next);
+
+  void _notifyError(Object error, StackTrace stackTrace);
+}
+
+@internal
+@optionalTypeArgs
+abstract base class ProviderSubscriptionImpl<OutT, StateT>
+    extends ProviderSubscriptionWithOrigin<OutT, StateT> with _OnPauseMixin {
+  @override
+  bool get isPaused => _isPaused;
+
+  /// Whether the subscription is closed.
+  @override
+  bool get closed => _closed;
+  var _closed = false;
+
+  /// Stops listening to the provider.
+  ///
+  /// It is safe to call this method multiple times.
+  @override
   @mustCallSuper
   void close() {
     if (_closed) return;
     _closed = true;
 
-    final Object listener = source;
-    if (listener is ProviderElement) {
-      listener._subscriptions?.remove(this);
-    }
+    _listenedElement.removeDependentSubscription(this);
   }
 }
 
@@ -54,7 +74,7 @@ mixin _OnPauseMixin {
   @mustCallSuper
   void pause() {
     if (_pauseCount == 0) {
-      _onCancel();
+      onCancel();
     }
     _pauseCount++;
   }
@@ -62,42 +82,110 @@ mixin _OnPauseMixin {
   @mustCallSuper
   void resume() {
     if (_pauseCount == 1) {
-      _onResume();
+      onResume();
     }
     _pauseCount = min(_pauseCount - 1, 0);
   }
 
-  void _onResume();
+  void onResume();
 
-  void _onCancel();
+  void onCancel();
 }
 
-/// When a provider listens to another provider using `listen`
-@optionalTypeArgs
-final class _ProviderStateSubscription<StateT>
-    extends ProviderSubscription<StateT> with _OnPauseMixin {
-  _ProviderStateSubscription(
-    super.source, {
-    required this.listenedElement,
-    required this.listener,
-    required this.onError,
-  }) {
-    switch (source) {
-      case WeakNode():
-        listenedElement._weakDependents.add(this);
-      case _:
-        final dependents = listenedElement._dependents ??= [];
-        dependents.add(this);
+abstract base class DelegatingProviderSubscription<OutT, StateT>
+    extends ProviderSubscriptionImpl<OutT, StateT> {
+  @override
+  ProviderBase<StateT> get origin => innerSubscription.origin;
+
+  @override
+  ProviderElement<StateT> get _listenedElement =>
+      innerSubscription._listenedElement;
+
+  ProviderSubscriptionWithOrigin<Object?, StateT> get innerSubscription;
+
+  @override
+  bool get weak => innerSubscription.weak;
+
+  @override
+  Node get source => innerSubscription.source;
+
+  @override
+  void _notify(StateT? prev, StateT next) {
+    innerSubscription._notify(prev, next);
+  }
+
+  @override
+  void _notifyError(Object error, StackTrace stackTrace) {
+    innerSubscription._notifyError(error, stackTrace);
+  }
+
+  @override
+  void onCancel() {
+    switch (innerSubscription) {
+      case final ProviderSubscriptionImpl<Object?, StateT> sub:
+        sub.onCancel();
     }
   }
 
   @override
-  bool get isPaused => _isPaused;
+  void onResume() {
+    switch (innerSubscription) {
+      case final ProviderSubscriptionImpl<Object?, StateT> sub:
+        sub.onResume();
+    }
+  }
+
+  @override
+  void pause() {
+    innerSubscription.pause();
+    super.pause();
+  }
+
+  @override
+  void resume() {
+    innerSubscription.resume();
+    super.resume();
+  }
+
+  @override
+  void close() {
+    if (_closed) return;
+
+    innerSubscription.close();
+    super.close();
+  }
+}
+
+/// When a provider listens to another provider using `listen`
+@internal
+final class ProviderStateSubscription<StateT>
+    extends ProviderSubscriptionImpl<StateT, StateT> with _OnPauseMixin {
+  ProviderStateSubscription({
+    required this.source,
+    required this.weak,
+    required ProviderElement<StateT> listenedElement,
+    required this.listener,
+    required this.onError,
+  }) : _listenedElement = listenedElement;
+
+  @override
+  ProviderBase<StateT> get origin => _listenedElement.origin;
+
+  @override
+  final Node source;
+  @override
+  final ProviderElement<StateT> _listenedElement;
+  @override
+  final bool weak;
 
   // Why can't this be typed correctly?
   final void Function(Object? prev, Object? state) listener;
-  final ProviderElement<StateT> listenedElement;
   final OnError onError;
+
+  /// Whether an event was sent while this subscription was paused.
+  ///
+  /// This enables re-rending the last missing event when the subscription is resumed.
+  var _missedCalled = false;
 
   @override
   StateT read() {
@@ -106,31 +194,35 @@ final class _ProviderStateSubscription<StateT>
         'called ProviderSubscription.read on a subscription that was closed',
       );
     }
-    listenedElement.mayNeedDispose();
-    return listenedElement.readSelf();
+    _listenedElement.mayNeedDispose();
+    return _listenedElement.readSelf();
   }
 
   @override
-  void close() {
-    if (!closed) {
-      listenedElement.onChangeSubscription(() {
-        switch (source) {
-          case WeakNode():
-            listenedElement._weakDependents.remove(this);
-          case _:
-            listenedElement._dependents?.remove(this);
-        }
-      });
+  void onCancel() => _listenedElement.onSubscriptionPause(this);
+
+  @override
+  void onResume() => _listenedElement.onSubscriptionResume(this);
+
+  @override
+  void _notify(StateT? prev, StateT next) {
+    if (_isPaused) {
+      _missedCalled = true;
+      return;
     }
 
-    super.close();
+    listener(prev, next);
   }
 
   @override
-  void _onCancel() => listenedElement.onSubscriptionPause(weak: source.weak);
+  void _notifyError(Object error, StackTrace stackTrace) {
+    if (_isPaused) {
+      _missedCalled = true;
+      return;
+    }
 
-  @override
-  void _onResume() => listenedElement.onSubscriptionResume(weak: source.weak);
+    onError(error, stackTrace);
+  }
 }
 
 /// Deals with the internals of synchronously calling the listeners

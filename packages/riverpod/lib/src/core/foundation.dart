@@ -173,16 +173,14 @@ String shortHash(Object? object) {
 @immutable
 mixin ProviderListenable<StateT> implements ProviderListenableOrFamily {
   /// Starts listening to this transformer
-  ProviderSubscription<StateT> addListener(
+  ProviderSubscriptionWithOrigin<StateT, Object?> addListener(
     Node source,
     void Function(StateT? previous, StateT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
+    required bool weak,
   });
-
-  /// Obtains the result of this provider expression without adding listener.
-  StateT read(Node node);
 
   /// Partially listen to a provider.
   ///

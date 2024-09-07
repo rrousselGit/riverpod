@@ -51,15 +51,16 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
   final Object? argument;
 
   @override
-  ProviderSubscription<StateT> addListener(
+  ProviderSubscriptionWithOrigin<StateT, StateT> addListener(
     Node source,
     void Function(StateT? previous, StateT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
+    required bool weak,
   }) {
     assert(
-      !fireImmediately || !source.weak,
+      !fireImmediately || !weak,
       'Cannot use fireImmediately with weak listeners',
     );
 
@@ -67,7 +68,7 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
 
     final element = source.readProviderElement(this);
 
-    if (!source.weak) element.flush();
+    if (!weak) element.flush();
 
     if (fireImmediately) {
       _handleFireImmediately(
@@ -77,31 +78,13 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
       );
     }
 
-    // Calling before initializing the subscription,
-    // to ensure that "hasListeners" represents the state _before_
-    // the listener is added
-    return element._onListen(
-      () {
-        return _ProviderStateSubscription<StateT>(
-          source,
-          listenedElement: element,
-          listener: (prev, next) => listener(prev as StateT?, next as StateT),
-          onError: onError!,
-        );
-      },
+    return ProviderStateSubscription<StateT>(
+      source: source,
+      listenedElement: element,
+      weak: weak,
+      listener: (prev, next) => listener(prev as StateT?, next as StateT),
+      onError: onError,
     );
-  }
-
-  @override
-  StateT read(Node node) {
-    final element = node.readProviderElement(this);
-
-    element.flush();
-
-    // In case `read` was called on a provider that has no listener
-    element.mayNeedDispose();
-
-    return element.requireState;
   }
 
   /// An internal method that defines how a provider behaves.

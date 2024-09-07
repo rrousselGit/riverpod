@@ -317,16 +317,10 @@ void main() {
       () async {
     final stateProvider = StateProvider((ref) => 0, name: 'state');
     final notifier0 = Counter();
-    final provider0 = StateNotifierProvider<Counter, int>(
-      (_) => notifier0,
-      name: '0',
-    );
+    final provider0 = StateNotifierProvider<Counter, int>((ref) => notifier0);
 
     final notifier1 = Counter(42);
-    final provider1 = StateNotifierProvider<Counter, int>(
-      (_) => notifier1,
-      name: '1',
-    );
+    final provider1 = StateNotifierProvider<Counter, int>((ref) => notifier1);
 
     var computedBuildCount = 0;
     final computed = Provider((ref) {

@@ -11,10 +11,14 @@ extension $RefArg on Ref<Object?> {
 
 @internal
 class UnmountedRefException implements Exception {
+  UnmountedRefException(this.origin);
+
+  final ProviderBase<Object?> origin;
+
   @override
   String toString() {
     return '''
-Cannot use a Ref after it has been disposed. This typically happens if:
+Cannot use the Ref of $origin after it has been disposed. This typically happens if:
 - A provider rebuilt, but the previous "build" was still pending and is still performing operations.
   You should therefore either use `ref.onDispose` to cancel pending work, or
   check `ref.mounted` after async gaps or anything that could invalidate the provider.
@@ -43,8 +47,8 @@ base class Ref<StateT> {
   List<void Function()>? _onDisposeListeners;
   List<void Function()>? _onResumeListeners;
   List<void Function()>? _onCancelListeners;
-  List<void Function()>? _onAddListeners;
-  List<void Function()>? _onRemoveListeners;
+  List<void Function(ProviderSubscription sub)>? _onAddListeners;
+  List<void Function(ProviderSubscription sub)>? _onRemoveListeners;
   List<OnError>? _onErrorSelfListeners;
 
   bool get mounted => _mounted;
@@ -143,7 +147,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
       !_debugIsRunningSelector,
       'Cannot call ref.listen inside a selector',
     );
-    if (!mounted) throw UnmountedRefException();
+    if (!mounted) throw UnmountedRefException(_element.origin);
   }
 
   /// Requests for the state of a provider to not be disposed when all the
@@ -277,7 +281,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   /// See also:
   /// - [onRemoveListener], for when a listener is removed
-  void onAddListener(void Function() cb) {
+  void onAddListener(void Function(ProviderSubscription sub) cb) {
     _throwIfInvalidUsage();
 
     _onAddListeners ??= [];
@@ -288,7 +292,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   /// See also:
   /// - [onAddListener], for when a listener is added
-  void onRemoveListener(void Function() cb) {
+  void onRemoveListener(void Function(ProviderSubscription sub) cb) {
     _throwIfInvalidUsage();
 
     _onRemoveListeners ??= [];

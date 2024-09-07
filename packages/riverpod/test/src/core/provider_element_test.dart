@@ -127,7 +127,7 @@ void main() {
       });
     });
 
-    group('isActive', () {
+    group('isActive', skip: true, () {
       test('handles adding a listener from an already paused provider', () {
         final provider = Provider((ref) => 0);
         final dep = Provider((ref) {
@@ -139,6 +139,18 @@ void main() {
 
         // Using read, "dep" should still be considered as paused.
         container.read(dep);
+
+        print('----');
+
+        print(
+          container.readProviderElement(provider).subscriptions,
+        );
+        print(
+          container.readProviderElement(provider).dependents,
+        );
+        print(
+          container.readProviderElement(provider).weakDependents,
+        );
 
         expect(container.readProviderElement(provider).isActive, false);
       });

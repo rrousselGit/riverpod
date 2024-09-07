@@ -69,8 +69,11 @@ Future<void> main() async {
     final root = ProviderContainer.test();
     final container = ProviderContainer.test(parent: root);
 
-    final sub =
-        container.listen(provider, listener.call, fireImmediately: true);
+    final sub = container.listen(
+      provider,
+      listener.call,
+      fireImmediately: true,
+    );
 
     verifyOnly(listener, listener(null, 0));
     expect(buildCount, 1);

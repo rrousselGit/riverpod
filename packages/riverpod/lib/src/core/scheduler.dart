@@ -125,7 +125,7 @@ class ProviderScheduler {
 
       if ((links != null && links.isNotEmpty) ||
           element.container._disposed ||
-          element.hasListeners) {
+          element.isActive) {
         continue;
       }
 
@@ -133,7 +133,7 @@ class ProviderScheduler {
         element.container._disposeProvider(element.origin);
       } else {
         // Don't delete the pointer if there are some "weak" listeners active.
-        element.dispose();
+        element.clearState();
       }
     }
   }

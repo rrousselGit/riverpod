@@ -1,22 +1,21 @@
 part of '../framework.dart';
 
-final class _ProxySubscription<StateT> extends ProviderSubscription<StateT> {
+final class _ProxySubscription<OutT, StateT>
+    extends DelegatingProviderSubscription<OutT, StateT> {
   _ProxySubscription(
-    super.source,
+    this.innerSubscription,
     this._removeListeners,
-    this._read, {
-    required this.innerSubscription,
-  });
+    this._read,
+  );
 
   @override
-  bool get isPaused => innerSubscription.isPaused;
+  final ProviderSubscriptionWithOrigin<Object?, StateT> innerSubscription;
 
-  final ProviderSubscription<Object?> innerSubscription;
   final void Function() _removeListeners;
-  final StateT Function() _read;
+  final OutT Function() _read;
 
   @override
-  StateT read() {
+  OutT read() {
     if (closed) {
       throw StateError(
         'called ProviderSubscription.read on a subscription that was closed',
@@ -27,19 +26,11 @@ final class _ProxySubscription<StateT> extends ProviderSubscription<StateT> {
 
   @override
   void close() {
-    if (!closed) {
-      innerSubscription.close();
-      _removeListeners();
-    }
+    if (closed) return;
 
+    _removeListeners();
     super.close();
   }
-
-  @override
-  void pause() => innerSubscription.pause();
-
-  @override
-  void resume() => innerSubscription.resume();
 }
 
 /// An internal utility for reading alternate values of a provider.
@@ -58,8 +49,8 @@ final class _ProxySubscription<StateT> extends ProviderSubscription<StateT> {
 ///
 /// This API is not meant for public consumption.
 @internal
-class ProviderElementProxy<InputT, OutputT>
-    with ProviderListenable<OutputT>, _ProviderRefreshable<OutputT> {
+class ProviderElementProxy<StateT, OutT>
+    with ProviderListenable<OutT>, _ProviderRefreshable<OutT> {
   /// An internal utility for reading alternate values of a provider.
   ///
   /// For example, this is used by [FutureProvider] to differentiate:
@@ -78,31 +69,35 @@ class ProviderElementProxy<InputT, OutputT>
   const ProviderElementProxy(this.provider, this._lense);
 
   @override
-  final ProviderBase<InputT> provider;
-  final ProxyElementValueListenable<OutputT> Function(
-    ProviderElement<InputT> element,
+  final ProviderBase<StateT> provider;
+  final ProxyElementValueListenable<OutT> Function(
+    ProviderElement<StateT> element,
   ) _lense;
 
   @override
-  ProviderSubscription<OutputT> addListener(
+  ProviderSubscriptionWithOrigin<OutT, StateT> addListener(
     Node source,
-    void Function(OutputT? previous, OutputT next) listener, {
+    void Function(OutT? previous, OutT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
+    required bool weak,
   }) {
     final element = source.readProviderElement(provider);
 
+    ; // TODO test weak proxy listener does not break what's said after this.
     // While we don't care about changes to the element, calling _listenElement
     // is necessary to tell the listened element that it is being listened.
     // We do it at the top of the file to trigger a "flush" before adding
     // a listener to the notifier.
     // This avoids the listener from being immediately notified of a new
     // future when adding the listener refreshes the future.
-    final innerSub = source.listen<Object?>(
-      provider,
+    final innerSub = provider.addListener(
+      source,
       (prev, next) {},
       fireImmediately: false,
+      weak: weak,
+      onDependencyMayHaveChanged: onDependencyMayHaveChanged,
       onError: null,
     );
 
@@ -111,9 +106,9 @@ class ProviderElementProxy<InputT, OutputT>
       switch (notifier.result) {
         case null:
           break;
-        case final ResultData<OutputT> data:
+        case final ResultData<OutT> data:
           runBinaryGuarded(listener, null, data.state);
-        case final ResultError<OutputT> error:
+        case final ResultError<OutT> error:
           if (onError != null) {
             runBinaryGuarded(onError, error.error, error.stackTrace);
           }
@@ -126,16 +121,15 @@ class ProviderElementProxy<InputT, OutputT>
       onDependencyMayHaveChanged: onDependencyMayHaveChanged,
     );
 
-    return _ProxySubscription(
-      source,
+    return _ProxySubscription<OutT, StateT>(
+      innerSub,
       removeListener,
       () => read(source),
-      innerSubscription: innerSub,
     );
   }
 
   @override
-  OutputT read(Node node) {
+  OutT read(Node node) {
     final element = node.readProviderElement(provider);
     element.flush();
     element.mayNeedDispose();
@@ -145,8 +139,7 @@ class ProviderElementProxy<InputT, OutputT>
 
   @override
   bool operator ==(Object other) =>
-      other is ProviderElementProxy<InputT, OutputT> &&
-      other.provider == provider;
+      other is ProviderElementProxy<StateT, OutT> && other.provider == provider;
 
   @override
   int get hashCode => provider.hashCode;

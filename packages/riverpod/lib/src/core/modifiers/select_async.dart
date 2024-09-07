@@ -38,6 +38,7 @@ class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
     required void Function(Object error, StackTrace stackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
+    required bool weak,
   }) {
     Result<OutputT>? lastSelectedValue;
     Completer<OutputT>? selectedCompleter;
@@ -131,9 +132,11 @@ class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
       );
     }
 
-    final sub = node.listen<AsyncValue<InputT>>(
-      provider,
+    final sub = provider.addListener(
+      node,
       (prev, input) => playValue(input),
+      weak: weak,
+      onDependencyMayHaveChanged: onDependencyMayHaveChanged,
       onError: onError,
       fireImmediately: false,
     );
@@ -145,23 +148,27 @@ class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
     }
 
     return _SelectorSubscription(
-      node,
-      sub,
+      innerSubscription: sub,
       () => selectedFuture!,
       onClose: () {
         final completer = selectedCompleter;
         if (completer != null && !completer.isCompleted) {
-          read(node).then(
-            completer.complete,
-            onError: completer.completeError,
+          final sub = future.addListener(
+            node,
+            (prev, next) {},
+            weak: weak,
+            onDependencyMayHaveChanged: () {},
+            onError: onError,
+            fireImmediately: false,
           );
+
+          sub
+              .read()
+              .then((v) => _select(v).requireState)
+              .then(completer.complete, onError: completer.completeError)
+              .whenComplete(sub.close);
         }
       },
     );
   }
-
-  @override
-  Future<OutputT> read(Node node) => future.read(node).then(
-        (v) => _select(v).requireState,
-      );
 }

@@ -564,7 +564,7 @@ class ProviderPointerManager {
 /// This will automatically dispose the container at the end of the test.
 /// {@endtemplate}
 @sealed
-class ProviderContainer implements WrappedNode {
+class ProviderContainer implements Node {
   /// {@macro riverpod.provider_container}
   ProviderContainer({
     ProviderContainer? parent,
@@ -725,7 +725,13 @@ class ProviderContainer implements WrappedNode {
   Result read<Result>(
     ProviderListenable<Result> provider,
   ) {
-    return provider.read(this);
+    final sub = listen(provider, (_, __) {});
+
+    try {
+      return sub.read();
+    } finally {
+      sub.close();
+    }
   }
 
   /// {@macro riverpod.exists}
@@ -747,7 +753,6 @@ class ProviderContainer implements WrappedNode {
   }
 
   /// {@macro riverpod.listen}
-  @override
   ProviderSubscription<State> listen<State>(
     ProviderListenable<State> provider,
     void Function(State? previous, State next) listener, {
@@ -755,13 +760,21 @@ class ProviderContainer implements WrappedNode {
     bool weak = false,
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
-    return provider.addListener(
-      weak ? WeakNode(this) : this,
+    final sub = provider.addListener(
+      this,
       listener,
       fireImmediately: fireImmediately,
+      weak: weak,
       onError: onError,
       onDependencyMayHaveChanged: null,
     );
+
+    switch (sub) {
+      case ProviderSubscriptionImpl():
+        sub._listenedElement.addDependentSubscription(sub);
+    }
+
+    return sub;
   }
 
   /// {@macro riverpod.invalidate}

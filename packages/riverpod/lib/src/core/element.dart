@@ -42,7 +42,7 @@ void Function()? debugCanModifyProviders;
 /// {@endtemplate}
 @internal
 @optionalTypeArgs
-abstract class ProviderElement<StateT> implements WrappedNode {
+abstract class ProviderElement<StateT> implements Node {
   /// {@macro riverpod.provider_element_base}
   ProviderElement(this.pointer);
 
@@ -55,8 +55,7 @@ abstract class ProviderElement<StateT> implements WrappedNode {
   var _debugSkipNotifyListenersAsserts = false;
 
   /// The provider associated with this [ProviderElement], before applying overrides.
-  // Not typed as <State> because of https://github.com/rrousselGit/riverpod/issues/1100
-  ProviderBase<Object?> get origin => pointer.origin;
+  ProviderBase<StateT> get origin => pointer.origin as ProviderBase<StateT>;
 
   /// The provider associated with this [ProviderElement], after applying overrides.
   ProviderBase<StateT> get provider;
@@ -78,7 +77,7 @@ abstract class ProviderElement<StateT> implements WrappedNode {
   /// See also [mayNeedDispose], called when [isActive] may have changed.
   bool get isActive => (_listenerCount - _pausedActiveSubscriptionCount) > 0;
 
-  int get _listenerCount => _dependents?.length ?? 0;
+  int get _listenerCount => dependents?.length ?? 0;
 
   var _pausedActiveSubscriptionCount = 0;
   var _didCancelOnce = false;
@@ -86,19 +85,21 @@ abstract class ProviderElement<StateT> implements WrappedNode {
   /// Whether this [ProviderElement] is currently listened to or not.
   ///
   /// This maps to listeners added with `listen` and `watch`,
-  /// excluding `listen(weak: true)`.
-  bool get hasListeners => _listenerCount > 0;
+  /// including `listen(weak: true)`.
+  bool get hasListeners => _listenerCount > 0 || weakDependents.isNotEmpty;
 
-  List<ProviderSubscription>? _previousSubscriptions;
-  List<ProviderSubscription>? _subscriptions;
-  List<ProviderSubscription>? _dependents;
+  @visibleForTesting
+  List<ProviderSubscriptionWithOrigin>? subscriptions;
+  @visibleForTesting
+  List<ProviderSubscriptionWithOrigin>? dependents;
 
   /// "listen(weak: true)" pointing to this provider.
   ///
-  /// Those subscriptions are separate from [ProviderElement._dependents] for a few reasons:
+  /// Those subscriptions are separate from [ProviderElement.dependents] for a few reasons:
   /// - They do not count towards [ProviderElement.isActive].
   /// - They may be reused between two instances of a [ProviderElement].
-  final _weakDependents = <ProviderSubscription>[];
+  @visibleForTesting
+  final weakDependents = <ProviderSubscriptionImpl>[];
 
   bool _mustRecomputeState = false;
   bool _dependencyMayHaveChanged = false;
@@ -259,11 +260,6 @@ This could mean a few things:
       _notifyListeners(_stateResult!, previousStateResult);
 
       if (kDebugMode) _debugSkipNotifyListenersAsserts = false;
-    }
-
-    final previousSubscriptions = _previousSubscriptions;
-    if (previousSubscriptions != null) {
-      _closeSubscriptions(previousSubscriptions);
     }
   }
 
@@ -430,39 +426,32 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       return;
     }
 
-    final listeners = [..._weakDependents, if (!isMount) ...?_dependents];
+    final listeners = [...weakDependents, if (!isMount) ...?dependents];
     switch (newState) {
       case final ResultData<StateT> newState:
         for (var i = 0; i < listeners.length; i++) {
           final listener = listeners[i];
-          if (listener is _ProviderStateSubscription && !listener._isPaused) {
-            Zone.current.runBinaryGuarded(
-              listener.listener,
-              previousState,
-              newState.state,
-            );
-          }
+          if (listener.closed) continue;
+
+          Zone.current.runBinaryGuarded(
+            listener._notify,
+            previousState,
+            newState.state,
+          );
         }
       case final ResultError<StateT> newState:
         for (var i = 0; i < listeners.length; i++) {
           final listener = listeners[i];
-          if (listener is _ProviderStateSubscription<StateT> &&
-              !listener._isPaused) {
-            Zone.current.runBinaryGuarded(
-              listener.onError,
-              newState.error,
-              newState.stackTrace,
-            );
-          }
+          if (listener.closed) continue;
+
+          Zone.current.runBinaryGuarded(
+            listener._notifyError,
+            newState.error,
+            newState.stackTrace,
+          );
         }
       default:
     }
-
-    // if (!isMount) {
-    //   for (var i = 0; i < _watchDependents.length; i++) {
-    //     _watchDependents[i].invalidateSelf(asReload: true);
-    //   }
-    // }
 
     for (final observer in container.observers) {
       if (isMount) {
@@ -514,7 +503,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     return container.readProviderElement(provider);
   }
 
-  @override
   ProviderSubscription<T> listen<T>(
     ProviderListenable<T> listenable,
     void Function(T? previous, T value) listener, {
@@ -527,32 +515,60 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     final ref = this.ref!;
     ref._throwIfInvalidUsage();
 
-    final result = listenable.addListener(
-      weak ? WeakNode(this) : this,
+    final sub = listenable.addListener(
+      this,
       listener,
       fireImmediately: fireImmediately,
       onError: onError,
+      weak: weak,
       onDependencyMayHaveChanged: onDependencyMayHaveChanged,
     );
 
+    switch (sub) {
+      case ProviderSubscriptionImpl():
+        sub._listenedElement.addDependentSubscription(sub);
+    }
+
     if (kDebugMode) ref._debugAssertCanDependOn(listenable);
-
-    return result;
-  }
-
-  SubT _onListen<SubT extends ProviderSubscription>(SubT Function() add) {
-    final wasActive = isActive;
-    ref?._onAddListeners?.forEach(runGuarded);
-
-    final sub = add();
-    if (sub.isPaused) onSubscriptionPause(weak: sub.source.weak);
-
-    if (_didCancelOnce && !wasActive && isActive) _onResume();
 
     return sub;
   }
 
-  void onChangeSubscription(void Function() apply) {
+  void addDependentSubscription(ProviderSubscriptionImpl sub) {
+    _onChangeSubscription(sub, () {
+      if (sub.weak) {
+        weakDependents.add(sub);
+      } else {
+        final dependents = this.dependents ??= [];
+        dependents.add(sub);
+      }
+
+      if (sub.source case final ProviderElement element) {
+        final subs = element.subscriptions ??= [];
+        subs.add(sub);
+      }
+    });
+  }
+
+  void removeDependentSubscription(ProviderSubscription sub) {
+    while (sub.isPaused) {
+      sub.resume();
+    }
+
+    _onChangeSubscription(sub, () {
+      if (sub.weak) {
+        weakDependents.remove(sub);
+      } else {
+        dependents?.remove(sub);
+      }
+
+      if (sub.source case final ProviderElement element) {
+        element.subscriptions?.remove(sub);
+      }
+    });
+  }
+
+  void _onChangeSubscription(ProviderSubscription sub, void Function() apply) {
     final wasActive = isActive;
     final previousListenerCount = _listenerCount;
     apply();
@@ -560,47 +576,48 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     switch ((wasActive: wasActive, isActive: isActive)) {
       case (wasActive: false, isActive: true) when _didCancelOnce:
         ref?._onResumeListeners?.forEach(runGuarded);
-        visitAncestors((element) => element.onSubscriptionResume(weak: false));
+
+      // _subscriptions?.forEach((sub) => sub.resume());
 
       case (wasActive: true, isActive: false):
         _didCancelOnce = true;
         ref?._onCancelListeners?.forEach(runGuarded);
-        visitAncestors((element) => element.onSubscriptionPause(weak: false));
 
+      // _subscriptions?.forEach((sub) => sub.pause());
       default:
       // No state change, so do nothing
     }
 
     if (_listenerCount < previousListenerCount) {
-      _onRemoveListener();
+      if (ref?._onRemoveListeners case final listeners?) {
+        for (final listener in listeners) {
+          runUnaryGuarded(listener, sub);
+        }
+      }
+      mayNeedDispose();
     } else if (_listenerCount > previousListenerCount) {
-      _onAddListener();
+      if (ref?._onAddListeners case final listeners?) {
+        for (final listener in listeners) {
+          runUnaryGuarded(listener, sub);
+        }
+      }
     }
   }
 
-  void _onRemoveListener() {
-    ref?._onRemoveListeners?.forEach(runGuarded);
-    mayNeedDispose();
-  }
-
-  void _onAddListener() => ref?._onAddListeners?.forEach(runGuarded);
-
-  void onSubscriptionPause({required bool weak}) {
+  void onSubscriptionPause(ProviderSubscription sub) {
     // Weak listeners are not counted towards isActive, so we don't want to change
     // _pausedActiveSubscriptionCount
-    if (weak) return;
+    if (sub.weak) return;
 
-    onChangeSubscription(() {
-      _pausedActiveSubscriptionCount++;
-    });
+    _onChangeSubscription(sub, () => _pausedActiveSubscriptionCount++);
   }
 
-  void onSubscriptionResume({required bool weak}) {
+  void onSubscriptionResume(ProviderSubscription sub) {
     // Weak listeners are not counted towards isActive, so we don't want to change
     // _pausedActiveSubscriptionCount
-    if (weak) return;
+    if (sub.weak) return;
 
-    onChangeSubscription(() {
+    _onChangeSubscription(sub, () {
       _pausedActiveSubscriptionCount = max(
         0,
         _pausedActiveSubscriptionCount - 1,
@@ -620,8 +637,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   void _closeSubscriptions(List<ProviderSubscription> subscriptions) {
-    for (var i = 0; i < subscriptions.length; i++) {
-      subscriptions[i].close();
+    final subs = subscriptions.toList();
+    for (var i = 0; i < subs.length; i++) {
+      subs[i].close();
     }
   }
 
@@ -636,13 +654,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     ref._mounted = false;
 
-    final subscriptions = _previousSubscriptions = _subscriptions;
-    _subscriptions = null;
-    if (subscriptions != null) {
-      for (var i = 0; i < subscriptions.length; i++) {
-        subscriptions[i].pause();
-      }
-    }
+    if (subscriptions case final subs?) _closeSubscriptions(subs);
+    subscriptions = null;
 
     ref._onDisposeListeners?.forEach(runGuarded);
 
@@ -658,13 +671,27 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     ref._onRemoveListeners = null;
     ref._onChangeSelfListeners = null;
     ref._onErrorSelfListeners = null;
-    _pausedActiveSubscriptionCount = 0;
     _didCancelOnce = false;
 
     assert(
       ref._keepAliveLinks == null || ref._keepAliveLinks!.isEmpty,
       'Cannot call keepAlive() within onDispose listeners',
     );
+  }
+
+  /// Clears the state of a [ProviderElement].
+  ///
+  /// This is in-between [dispose] and [runOnDispose].
+  /// It is used to clear the state of a provider, without unsubscribing
+  /// [weakDependents].
+  @mustCallSuper
+  void clearState() {
+    runOnDispose();
+    _didMount = false;
+    _stateResult = null;
+    ref = null;
+
+    if (dependents case final subs?) _closeSubscriptions(subs);
   }
 
   /// Release the resources associated to this [ProviderElement].
@@ -676,19 +703,14 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   /// On the other hand, this life-cycle will not be executed when a provider
   /// rebuilds.
   ///
-  /// As opposed to [runOnDispose], this life-cycle is executed only
+  /// As opposed to [runOnDispose], this life-cycle is executed only once
   /// for the lifetime of this element.
   @protected
   @mustCallSuper
   void dispose() {
-    runOnDispose();
-    _didMount = false;
-    _stateResult = null;
-    ref = null;
+    clearState();
 
-    if (_previousSubscriptions case final subs?) _closeSubscriptions(subs);
-    if (_dependents case final subs?) _closeSubscriptions(subs);
-    _closeSubscriptions(_weakDependents);
+    _closeSubscriptions(weakDependents);
   }
 
   @override
@@ -727,24 +749,19 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     required void Function(ProxyElementValueListenable element)
         listenableVisitor,
   }) {
-    // for (var i = 0; i < _watchDependents.length; i++) {
-    //   elementVisitor(_watchDependents[i]);
-    // }
-
-    Iterable<ProviderSubscription> children = _weakDependents;
-    if (_dependents case final dependents?) {
-      children = children.followedBy(dependents);
-    }
-
-    for (final child in children) {
-      switch (child.source) {
-        case final ProviderElement dependent:
-        case WeakNode(inner: final ProviderElement dependent):
-          elementVisitor(dependent);
-        case _:
-          break;
+    void lookup(Iterable<ProviderSubscriptionWithOrigin> children) {
+      for (final child in children) {
+        switch (child.source) {
+          case final ProviderElement dependent:
+            elementVisitor(dependent);
+          case ProviderContainer():
+            break;
+        }
       }
     }
+
+    lookup(weakDependents);
+    if (dependents case final dependents?) lookup(dependents);
   }
 
   /// Visit the [ProviderElement]s that this provider is listening to.
@@ -758,15 +775,11 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   void visitAncestors(
     void Function(ProviderElement element) visitor,
   ) {
-    // _dependencies.keys.forEach(visitor);
-
-    final subscriptions = _subscriptions;
+    final subscriptions = this.subscriptions;
     if (subscriptions != null) {
       for (var i = 0; i < subscriptions.length; i++) {
         final sub = subscriptions[i];
-        if (sub is _ProviderStateSubscription) {
-          visitor(sub.listenedElement);
-        }
+        visitor(sub._listenedElement);
       }
     }
   }

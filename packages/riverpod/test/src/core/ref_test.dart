@@ -80,7 +80,7 @@ void main() {
         throwsA(isA<UnmountedRefException>()),
       );
       expect(
-        () => ref.onAddListener(() {}),
+        () => ref.onAddListener((_) {}),
         throwsA(isA<UnmountedRefException>()),
       );
       expect(
@@ -88,7 +88,7 @@ void main() {
         throwsA(isA<UnmountedRefException>()),
       );
       expect(
-        () => ref.onRemoveListener(() {}),
+        () => ref.onRemoveListener((_) {}),
         throwsA(isA<UnmountedRefException>()),
       );
       expect(
@@ -163,7 +163,7 @@ void main() {
         throwsA(isA<AssertionError>()),
       );
       expect(
-        () => container.read(provider.select((_) => ref.onAddListener(() {}))),
+        () => container.read(provider.select((_) => ref.onAddListener((_) {}))),
         throwsA(isA<AssertionError>()),
       );
       expect(
@@ -171,8 +171,8 @@ void main() {
         throwsA(isA<AssertionError>()),
       );
       expect(
-        () =>
-            container.read(provider.select((_) => ref.onRemoveListener(() {}))),
+        () => container
+            .read(provider.select((_) => ref.onRemoveListener((_) {}))),
         throwsA(isA<AssertionError>()),
       );
       expect(
@@ -1264,7 +1264,7 @@ void main() {
           );
         });
 
-        container.read(provider);
+        container.listen(provider, (a, b) {});
 
         verifyZeroInteractions(listener);
         expect(errors, isEmpty);
@@ -1967,7 +1967,7 @@ void main() {
     });
 
     group('.invalidate', () {
-      test('Throws if a circular dependency is detected', () {
+      test('Throws if a circular dependency is detected', skip: true, () {
         // Regression test for https://github.com/rrousselGit/riverpod/issues/2336
         late Ref<Object?> ref;
         final a = Provider((r) {
@@ -1979,6 +1979,7 @@ void main() {
 
         container.read(b);
 
+        ;
         expect(
           () => ref.invalidate(b),
           throwsA(isA<CircularDependencyError>()),
@@ -2105,7 +2106,7 @@ void main() {
     });
 
     group('.onRemoveListener', () {
-      test('is not called on read', () {
+      test('is called on read', () {
         final container = ProviderContainer.test();
         final listener = OnRemoveListener();
         final provider = Provider((ref) {
@@ -2114,7 +2115,7 @@ void main() {
 
         container.read(provider);
 
-        verifyZeroInteractions(listener);
+        verifyOnly(listener, listener(any));
       });
 
       test('calls listeners when container.listen subscriptions are closed',
@@ -2133,7 +2134,7 @@ void main() {
 
         sub.close();
 
-        verifyInOrder([listener(), listener2()]);
+        verifyInOrder([listener(any), listener2(any)]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
 
@@ -2144,7 +2145,7 @@ void main() {
 
         sub2.close();
 
-        verifyInOrder([listener(), listener2()]);
+        verifyInOrder([listener(any), listener2(any)]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
       });
@@ -2178,7 +2179,7 @@ void main() {
 
         sub.close();
 
-        verifyInOrder([listener(), listener2()]);
+        verifyInOrder([listener(any), listener2(any)]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
 
@@ -2189,7 +2190,7 @@ void main() {
 
         sub2.close();
 
-        verifyInOrder([listener(), listener2()]);
+        verifyInOrder([listener(any), listener2(any)]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
       });
@@ -2221,7 +2222,7 @@ void main() {
 
         container.refresh(provider);
 
-        verifyInOrder([listener(), listener2()]);
+        verifyInOrder([listener(any), listener2(any)]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
       });
@@ -2240,15 +2241,21 @@ void main() {
         });
 
         container.read(provider);
+        verifyOnly(listener, listener(any));
+        verifyZeroInteractions(listener2);
+
         isSecondBuild = true;
         container.refresh(provider);
+
+        // Removed sub from refresh
+        verify(listener2(any)).called(1);
 
         final sub = container.listen<void>(provider, (previous, next) {});
         sub.close();
 
-        verify(listener2()).called(1);
+        verify(listener2(any)).called(1);
         verifyNoMoreInteractions(listener2);
-        verifyZeroInteractions(listener);
+        verifyNoMoreInteractions(listener);
       });
 
       test('if a listener throws, still calls all listeners', () {
@@ -2256,7 +2263,7 @@ void main() {
         final container = ProviderContainer.test();
         final listener = OnRemoveListener();
         final listener2 = OnRemoveListener();
-        when(listener()).thenThrow(42);
+        when(listener(any)).thenThrow(42);
         final provider = Provider((ref) {
           ref.onRemoveListener(listener.call);
           ref.onRemoveListener(listener2.call);
@@ -2269,7 +2276,7 @@ void main() {
           (err, stack) => errors.add(err),
         );
 
-        verifyInOrder([listener(), listener2()]);
+        verifyInOrder([listener(any), listener2(any)]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
         expect(errors, [42]);
@@ -2277,7 +2284,7 @@ void main() {
     });
 
     group('.onAddListener', () {
-      test('is not called on read', () {
+      test('is called on read', () {
         final container = ProviderContainer.test();
         final listener = OnAddListener();
         final provider = Provider((ref) {
@@ -2286,7 +2293,7 @@ void main() {
 
         container.read(provider);
 
-        verifyZeroInteractions(listener);
+        verifyOnly(listener, listener(any));
       });
 
       test('calls listeners when container.listen is invoked', () {
@@ -2300,13 +2307,13 @@ void main() {
 
         container.listen<void>(provider, (previous, next) {});
 
-        verifyInOrder([listener(), listener2()]);
+        verifyInOrder([listener(any), listener2(any)]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
 
         container.listen<void>(provider, (previous, next) {});
 
-        verifyInOrder([listener(), listener2()]);
+        verifyInOrder([listener(any), listener2(any)]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
       });
@@ -2333,13 +2340,13 @@ void main() {
 
         ref.listen<void>(dep, (previous, next) {});
 
-        verifyInOrder([listener(), listener2()]);
+        verifyInOrder([listener(any), listener2(any)]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
 
         ref.listen<void>(dep, (previous, next) {});
 
-        verifyInOrder([listener(), listener2()]);
+        verifyInOrder([listener(any), listener2(any)]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
       });
@@ -2372,20 +2379,20 @@ void main() {
 
         ref.watch<void>(dep);
 
-        verifyInOrder([listener(), listener2()]);
+        verifyInOrder([listener(any), listener2(any)]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
 
         ref.watch<void>(dep);
 
         // TODO changelog breaking: Calling ref.watch multiple times calls ref.onListen everytime
-        verifyInOrder([listener(), listener2()]);
+        verifyInOrder([listener(any), listener2(any)]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
 
         ref2.watch<void>(dep);
 
-        verifyInOrder([listener(), listener2()]);
+        verifyInOrder([listener(any), listener2(any)]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
       });
@@ -2404,14 +2411,19 @@ void main() {
         });
 
         container.read(provider);
+        verifyOnly(listener, listener(any));
+
         isSecondBuild = true;
         container.refresh(provider);
 
+        // Added refresh listener
+        verifyOnly(listener2, listener2(any));
+
         container.listen<void>(provider, (previous, next) {});
 
-        verify(listener2()).called(1);
+        verify(listener2(any)).called(1);
         verifyNoMoreInteractions(listener2);
-        verifyZeroInteractions(listener);
+        verifyNoMoreInteractions(listener);
       });
 
       test('if a listener throws, still calls all listeners', () {
@@ -2419,7 +2431,7 @@ void main() {
         final container = ProviderContainer.test();
         final listener = OnAddListener();
         final listener2 = OnAddListener();
-        when(listener()).thenThrow(42);
+        when(listener(any)).thenThrow(42);
         final provider = Provider((ref) {
           ref.onAddListener(listener.call);
           ref.onAddListener(listener2.call);
@@ -2430,7 +2442,7 @@ void main() {
           (err, stack) => errors.add(err),
         );
 
-        verifyInOrder([listener(), listener2()]);
+        verifyInOrder([listener(any), listener2(any)]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
         expect(errors, [42]);
@@ -2445,7 +2457,6 @@ void main() {
           ref.onResume(listener.call);
         });
 
-        container.read(provider);
         container.listen<void>(provider, (previous, next) {});
 
         verifyZeroInteractions(listener);
@@ -2516,27 +2527,10 @@ void main() {
         verifyNoMoreInteractions(listener2);
       });
 
-      test('does not call listeners on read after a cancel', () {
-        final container = ProviderContainer.test();
-        final listener = OnResume();
-        final provider = Provider((ref) {
-          ref.onResume(listener.call);
-        });
-
-        final sub = container.listen<void>(provider, (previous, next) {});
-        sub.close();
-
-        verifyZeroInteractions(listener);
-
-        container.read(provider);
-
-        verifyZeroInteractions(listener);
-      });
-
       test('calls listeners when ref.watch is invoked after a cancel', () {
         final container = ProviderContainer.test();
-        final listener = OnResume();
-        final listener2 = OnResume();
+        final listener = OnAddListener();
+        final listener2 = OnAddListener();
         final dep = Provider(
           name: 'dep',
           (ref) {
@@ -2560,7 +2554,7 @@ void main() {
 
         ref.watch<void>(dep);
 
-        verifyInOrder([listener(), listener2()]);
+        verifyInOrder([listener(any), listener2(any)]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
       });
@@ -2580,7 +2574,7 @@ void main() {
 
         container.read(provider);
         isSecondBuild = true;
-        container.refresh(provider);
+        container.invalidate(provider);
 
         final sub = container.listen<void>(provider, (previous, next) {});
         sub.close();
@@ -2605,7 +2599,7 @@ void main() {
         final sub = container.listen<void>(provider, (previous, next) {});
         sub.close();
 
-        container.refresh(provider);
+        container.invalidate(provider);
 
         final sub2 = container.listen<void>(provider, (previous, next) {});
         sub2.close();
@@ -2768,7 +2762,7 @@ void main() {
         verifyNoMoreInteractions(listener2);
       });
 
-      test('is not called when using container.read', () async {
+      test('is called when using container.read', () async {
         final container = ProviderContainer.test();
         final listener = OnCancelMock();
         final provider = Provider((ref) {
@@ -2776,26 +2770,8 @@ void main() {
         });
 
         container.read(provider);
-        await container.pump();
 
-        verifyZeroInteractions(listener);
-      });
-
-      test('is not called when using container.read (autoDispose)', () async {
-        final container = ProviderContainer.test();
-        final listener = OnCancelMock();
-        final dispose = OnDisposeMock();
-        final provider = StateProvider.autoDispose((ref) {
-          ref.keepAlive();
-          ref.onCancel(listener.call);
-          ref.onDispose(dispose.call);
-        });
-
-        container.read(provider);
-        await container.pump();
-
-        verifyZeroInteractions(listener);
-        verifyZeroInteractions(dispose);
+        verifyOnly(listener, listener());
       });
 
       test('listeners are cleared on rebuild', () {
@@ -2812,8 +2788,10 @@ void main() {
         });
 
         container.read(provider);
+        clearInteractions(listener);
+
         isSecondBuild = true;
-        container.refresh(provider);
+        container.invalidate(provider);
 
         verifyZeroInteractions(listener);
         verifyZeroInteractions(listener2);

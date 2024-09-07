@@ -53,7 +53,7 @@ void main() {
           (previous, value) {},
         );
 
-        expect(container.readProviderElement(provider).hasListeners, false);
+        expect(container.readProviderElement(provider).hasListeners, true);
 
         sub.close();
 
@@ -77,8 +77,6 @@ void main() {
           weak: true,
           (previous, value) {},
         );
-
-        print(element.hasListeners);
 
         expect(sub.read(), 0);
         verifyZeroInteractions(onDispose);
