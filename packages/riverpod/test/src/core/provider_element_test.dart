@@ -6,6 +6,32 @@ import '../../old/utils.dart';
 
 void main() {
   group('ProviderElement', () {
+    test('Only includes direct subscriptions in subscription lists', () {
+      final container = ProviderContainer.test();
+      final provider = FutureProvider((ref) => 0);
+      final dep = Provider((ref) {
+        ref.watch(provider.future.select((value) => 0));
+      });
+
+      container.read(dep);
+
+      final providerElement = container.readProviderElement(provider);
+      final depElement = container.readProviderElement(dep);
+
+      expect(providerElement.subscriptions, null);
+      expect(
+        providerElement.dependents,
+        [isA<SelectorSubscription<Future<int>, int>>()],
+      );
+      expect(providerElement.weakDependents, isEmpty);
+
+      expect(depElement.subscriptions, [
+        isA<SelectorSubscription<Future<int>, int>>(),
+      ]);
+      expect(depElement.dependents, isEmpty);
+      expect(depElement.weakDependents, isEmpty);
+    });
+
     test(
         'does not throw outdated error when a dependency is flushed while the dependent is building',
         () async {

@@ -32,7 +32,7 @@ class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
   }
 
   @override
-  _SelectorSubscription<AsyncValue<InputT>, Future<OutputT>> addListener(
+  SelectorSubscription<AsyncValue<InputT>, Future<OutputT>> addListener(
     Node node,
     void Function(Future<OutputT>? previous, Future<OutputT> next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
@@ -147,7 +147,7 @@ class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
       listener(null, selectedFuture!);
     }
 
-    return _SelectorSubscription(
+    return SelectorSubscription(
       innerSubscription: sub,
       () => selectedFuture!,
       onClose: () {

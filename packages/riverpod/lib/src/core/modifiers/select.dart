@@ -78,7 +78,7 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
   }
 
   @override
-  _SelectorSubscription<InputT, OutputT> addListener(
+  SelectorSubscription<InputT, OutputT> addListener(
     Node node,
     void Function(OutputT? previous, OutputT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
@@ -116,7 +116,7 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
       );
     }
 
-    return _SelectorSubscription(
+    return SelectorSubscription(
       innerSubscription: sub,
       () {
         // Using ! because since `sub.read` flushes the inner subscription,
@@ -134,9 +134,10 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
   }
 }
 
-final class _SelectorSubscription<InT, OutT>
+@internal
+final class SelectorSubscription<InT, OutT>
     extends DelegatingProviderSubscription<OutT, Object?> {
-  _SelectorSubscription(
+  SelectorSubscription(
     this._read, {
     this.onClose,
     required this.innerSubscription,
