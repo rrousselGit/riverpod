@@ -86,7 +86,7 @@ Riverpod では、この例外は発生しません。
 
 ### 状態の破棄が難しい
 
-`InheritedWidget`은 は、consumer が listen を停止したときに反応できません。  
+`InheritedWidget` は、consumer が listen を停止したときに反応できません。
 このため、Provider は provider の状態を自動的に破棄することができません。  
 Provider では、状態が使用されなくなったときにそれを破棄するために provider をスコープする必要がありますが、
 これはページ間で状態を共有する場合に特に難しくなります。
