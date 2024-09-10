@@ -153,34 +153,7 @@ void main() {
       });
     });
 
-    group('isActive', skip: true, () {
-      test('handles adding a listener from an already paused provider', () {
-        final provider = Provider((ref) => 0);
-        final dep = Provider((ref) {
-          ref.watch(provider);
-        });
-        final container = ProviderContainer.test();
-
-        expect(container.readProviderElement(provider).isActive, false);
-
-        // Using read, "dep" should still be considered as paused.
-        container.read(dep);
-
-        print('----');
-
-        print(
-          container.readProviderElement(provider).subscriptions,
-        );
-        print(
-          container.readProviderElement(provider).dependents,
-        );
-        print(
-          container.readProviderElement(provider).weakDependents,
-        );
-
-        expect(container.readProviderElement(provider).isActive, false);
-      });
-
+    group('isActive', () {
       test('Is paused if all watchers are paused', () {
         final container = ProviderContainer.test();
         final provider = Provider(name: 'foo', (ref) => 0);
@@ -189,10 +162,7 @@ void main() {
 
         final depSub = container.listen(dep, (a, b) {});
         final dep2Sub = container.listen(dep2, (a, b) {});
-
         final element = container.readProviderElement(provider);
-        final depElement = container.readProviderElement(dep);
-        final depElement2 = container.readProviderElement(dep2);
 
         expect(element.isActive, true);
 
@@ -261,7 +231,7 @@ void main() {
 
         expect(container.readProviderElement(provider).isActive, false);
 
-        container.listen(dep, (_, __) {});
+        container.read(dep);
 
         expect(container.readProviderElement(provider).isActive, true);
       });
