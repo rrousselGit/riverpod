@@ -1295,7 +1295,7 @@ void main() {
           );
         });
 
-        container.read(provider);
+        container.listen(provider, (p, n) {});
 
         verifyZeroInteractions(listener);
         expect(errors, isEmpty);
@@ -1324,7 +1324,7 @@ void main() {
           ref.listen(provider, listener.call, onError: errorListener.call);
         });
 
-        container.read(a);
+        container.listen(a, (p, n) {});
 
         verifyZeroInteractions(errorListener);
         verifyZeroInteractions(listener);
@@ -1359,7 +1359,7 @@ void main() {
           );
         });
 
-        container.read(a);
+        container.listen(a, (a, b) {});
 
         verifyZeroInteractions(errorListener);
         verifyZeroInteractions(listener);
@@ -1590,7 +1590,7 @@ void main() {
             );
           });
 
-          container.read(provider);
+          container.listen(provider, (p, n) {});
 
           expect(sub, isNotNull);
           verifyZeroInteractions(listener);
@@ -1644,7 +1644,7 @@ void main() {
             );
           });
 
-          container.read(provider);
+          container.listen(provider, (p, n) {});
 
           expect(sub, isNotNull);
           verifyZeroInteractions(listener);
@@ -2742,8 +2742,8 @@ void main() {
           if (watching) ref.watch(dep);
         });
 
-        container.read(provider);
-        container.read(provider2);
+        container.listen(provider, (p, n) {});
+        container.listen(provider2, (p, n) {});
 
         verifyZeroInteractions(listener);
         verifyZeroInteractions(listener2);

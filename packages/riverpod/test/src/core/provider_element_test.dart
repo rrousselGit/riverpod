@@ -217,7 +217,7 @@ void main() {
 
         expect(container.readProviderElement(provider).isActive, false);
 
-        container.read(dep);
+        container.listen(dep, (p, n) {});
 
         expect(container.readProviderElement(provider).isActive, true);
       });
@@ -231,7 +231,7 @@ void main() {
 
         expect(container.readProviderElement(provider).isActive, false);
 
-        container.read(dep);
+        container.listen(dep, (p, n) {});
 
         expect(container.readProviderElement(provider).isActive, true);
       });
