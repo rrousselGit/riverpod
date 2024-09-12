@@ -42,7 +42,7 @@ void Function()? debugCanModifyProviders;
 /// {@endtemplate}
 @internal
 @optionalTypeArgs
-abstract class ProviderElement<StateT> with _OnPauseMixin implements Node {
+abstract class ProviderElement<StateT> implements Node {
   /// {@macro riverpod.provider_element_base}
   ProviderElement(this.pointer);
 
@@ -75,8 +75,7 @@ abstract class ProviderElement<StateT> with _OnPauseMixin implements Node {
   /// - all of its listeners are "weak" (i.e. created with `listen(weak: true)`)
   ///
   /// See also [mayNeedDispose], called when [isActive] may have changed.
-  bool get isActive =>
-      !_isPaused && (_listenerCount - _pausedActiveSubscriptionCount) > 0;
+  bool get isActive => (_listenerCount - _pausedActiveSubscriptionCount) > 0;
 
   int get _listenerCount => dependents?.length ?? 0;
 
@@ -535,28 +534,20 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     return sub;
   }
 
-  @override
-  void onCancel() {
-    ; // TODO notify ancestors
-
+  void _onCancel() {
     subscriptions?.forEach((sub) {
       switch (sub) {
         case ProviderSubscriptionImpl():
-          if (sub.weak) return;
-          sub._listenedElement.pause();
+          sub._listenedElement.onSubscriptionPause(sub);
       }
     });
   }
 
-  @override
-  void onResume() {
-    ; // TODO notify ancestors
-
+  void _onResume() {
     subscriptions?.forEach((sub) {
       switch (sub) {
         case ProviderSubscriptionImpl():
-          if (sub.weak) return;
-          sub._listenedElement.resume();
+          sub._listenedElement.onSubscriptionResume(sub);
       }
     });
   }
@@ -603,12 +594,12 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     switch ((wasActive: wasActive, isActive: isActive)) {
       case (wasActive: false, isActive: true) when _didCancelOnce:
         ref?._onResumeListeners?.forEach(runGuarded);
-        onResume();
+        _onResume();
 
       case (wasActive: true, isActive: false):
         _didCancelOnce = true;
         ref?._onCancelListeners?.forEach(runGuarded);
-        onCancel();
+        _onCancel();
 
       default:
       // No state change, so do nothing
