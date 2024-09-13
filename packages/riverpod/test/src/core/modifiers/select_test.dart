@@ -53,11 +53,17 @@ void main() {
           (previous, value) {},
         );
 
-        expect(container.readProviderElement(provider).hasListeners, true);
+        expect(
+          container.readProviderElement(provider).weakDependents,
+          isNotEmpty,
+        );
 
         sub.close();
 
-        expect(container.readProviderElement(provider).hasListeners, false);
+        expect(
+          container.readProviderElement(provider).weakDependents,
+          isEmpty,
+        );
       });
 
       test(

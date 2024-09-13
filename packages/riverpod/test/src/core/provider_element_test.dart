@@ -248,18 +248,18 @@ void main() {
       });
     });
 
-    group('hasListeners', () {
-      test('includes weak listeners', () {
+    group('hasNonWeakListeners', () {
+      test('excludes weak listeners', () {
         final provider = Provider((ref) => 0);
         final container = ProviderContainer.test();
 
         final element = container.readProviderElement(provider);
 
-        expect(element.hasListeners, false);
+        expect(element.hasNonWeakListeners, false);
 
         container.listen(provider, weak: true, (_, __) {});
 
-        expect(element.hasListeners, true);
+        expect(element.hasNonWeakListeners, false);
       });
 
       test('includes provider listeners', () async {
@@ -269,11 +269,17 @@ void main() {
         });
         final container = ProviderContainer.test();
 
-        expect(container.readProviderElement(provider).hasListeners, false);
+        expect(
+          container.readProviderElement(provider).hasNonWeakListeners,
+          false,
+        );
 
         container.read(dep);
 
-        expect(container.readProviderElement(provider).hasListeners, true);
+        expect(
+          container.readProviderElement(provider).hasNonWeakListeners,
+          true,
+        );
       });
 
       test('includes provider dependents', () async {
@@ -283,22 +289,34 @@ void main() {
         });
         final container = ProviderContainer.test();
 
-        expect(container.readProviderElement(provider).hasListeners, false);
+        expect(
+          container.readProviderElement(provider).hasNonWeakListeners,
+          false,
+        );
 
         container.read(dep);
 
-        expect(container.readProviderElement(provider).hasListeners, true);
+        expect(
+          container.readProviderElement(provider).hasNonWeakListeners,
+          true,
+        );
       });
 
       test('includes container listeners', () async {
         final provider = Provider((ref) => 0);
         final container = ProviderContainer.test();
 
-        expect(container.readProviderElement(provider).hasListeners, false);
+        expect(
+          container.readProviderElement(provider).hasNonWeakListeners,
+          false,
+        );
 
         container.listen(provider, (_, __) {});
 
-        expect(container.readProviderElement(provider).hasListeners, true);
+        expect(
+          container.readProviderElement(provider).hasNonWeakListeners,
+          true,
+        );
       });
     });
 

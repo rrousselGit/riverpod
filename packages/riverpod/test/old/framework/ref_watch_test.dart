@@ -342,8 +342,8 @@ void main() {
 
     verifyOnly(computedListener, computedListener(null, '0 0'));
     expect(computedBuildCount, 1);
-    expect(provider0Element.hasListeners, true);
-    expect(provider1Element.hasListeners, false);
+    expect(provider0Element.hasNonWeakListeners, true);
+    expect(provider1Element.hasNonWeakListeners, false);
 
     notifier0.increment();
     await container.pump();
@@ -363,8 +363,8 @@ void main() {
 
     verifyOnly(computedListener, computedListener('1 1', '1 43'));
     expect(computedBuildCount, 3);
-    expect(provider1Element.hasListeners, true);
-    expect(provider0Element.hasListeners, true);
+    expect(provider1Element.hasNonWeakListeners, true);
+    expect(provider0Element.hasNonWeakListeners, true);
 
     notifier1.increment();
     await container.pump();
@@ -410,8 +410,8 @@ void main() {
 
     verifyOnly(computedListener, computedListener(null, 0));
     expect(computedBuildCount, 1);
-    expect(provider0Element.hasListeners, true);
-    expect(provider1Element.hasListeners, false);
+    expect(provider0Element.hasNonWeakListeners, true);
+    expect(provider1Element.hasNonWeakListeners, false);
 
     notifier0.increment();
     await container.pump();
@@ -431,8 +431,8 @@ void main() {
 
     expect(computedBuildCount, 3);
     verifyOnly(computedListener, computedListener(1, 43));
-    expect(provider1Element.hasListeners, true);
-    expect(provider0Element.hasListeners, false);
+    expect(provider1Element.hasNonWeakListeners, true);
+    expect(provider0Element.hasNonWeakListeners, false);
 
     notifier1.increment();
     await container.pump();

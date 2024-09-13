@@ -281,8 +281,8 @@ void main() {
     });
 
     expect(buildCount, 1);
-    expect(familyState0.hasListeners, true);
-    expect(familyState1.hasListeners, false);
+    expect(familyState0.hasNonWeakListeners, true);
+    expect(familyState1.hasNonWeakListeners, false);
     expect(find.text('0 0'), findsOneWidget);
 
     notifier0.increment();
@@ -302,8 +302,8 @@ void main() {
 
     expect(buildCount, 3);
     expect(find.text('1 43'), findsOneWidget);
-    expect(familyState1.hasListeners, true);
-    expect(familyState0.hasListeners, true);
+    expect(familyState1.hasNonWeakListeners, true);
+    expect(familyState0.hasNonWeakListeners, true);
 
     notifier1.increment();
     await tester.pump();
@@ -362,8 +362,8 @@ void main() {
     });
 
     expect(buildCount, 1);
-    expect(familyState0.hasListeners, true);
-    expect(familyState1.hasListeners, false);
+    expect(familyState0.hasNonWeakListeners, true);
+    expect(familyState1.hasNonWeakListeners, false);
     expect(find.text('0'), findsOneWidget);
 
     notifier0.increment();
@@ -383,8 +383,8 @@ void main() {
 
     expect(buildCount, 3);
     expect(find.text('43'), findsOneWidget);
-    expect(familyState1.hasListeners, true);
-    expect(familyState0.hasListeners, false);
+    expect(familyState1.hasNonWeakListeners, true);
+    expect(familyState0.hasNonWeakListeners, false);
 
     notifier1.increment();
     await tester.pump();
@@ -550,7 +550,7 @@ void main() {
         .getAllProviderElements()
         .firstWhere((s) => s.provider == provider);
 
-    expect(state.hasListeners, true);
+    expect(state.hasNonWeakListeners, true);
     expect(find.text('0'), findsOneWidget);
 
     await tester.pumpWidget(
@@ -559,7 +559,7 @@ void main() {
       ),
     );
 
-    expect(state.hasListeners, false);
+    expect(state.hasNonWeakListeners, false);
   });
 
   testWidgets('Multiple providers', (tester) async {

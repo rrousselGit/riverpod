@@ -85,8 +85,8 @@ abstract class ProviderElement<StateT> implements Node {
   /// Whether this [ProviderElement] is currently listened to or not.
   ///
   /// This maps to listeners added with `listen` and `watch`,
-  /// including `listen(weak: true)`.
-  bool get hasListeners => _listenerCount > 0 || weakDependents.isNotEmpty;
+  /// excluding `listen(weak: true)`.
+  bool get hasNonWeakListeners => _listenerCount > 0;
 
   @visibleForTesting
   List<ProviderSubscriptionWithOrigin>? subscriptions;

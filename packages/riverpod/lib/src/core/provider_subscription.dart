@@ -92,6 +92,7 @@ mixin _OnPauseMixin {
   void onCancel();
 }
 
+@internal
 abstract base class DelegatingProviderSubscription<OutT, StateT>
     extends ProviderSubscriptionImpl<OutT, StateT> {
   @override

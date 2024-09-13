@@ -125,11 +125,11 @@ class ProviderScheduler {
 
       if ((links != null && links.isNotEmpty) ||
           element.container._disposed ||
-          element.isActive) {
+          element.hasNonWeakListeners) {
         continue;
       }
 
-      if (!element.hasListeners) {
+      if (element.weakDependents.isEmpty) {
         element.container._disposeProvider(element.origin);
       } else {
         // Don't delete the pointer if there are some "weak" listeners active.

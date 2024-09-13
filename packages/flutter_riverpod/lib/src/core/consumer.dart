@@ -493,13 +493,12 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
     final container = ProviderScope.containerOf(this, listen: false);
 
     final sub = _ListenManual(
-      container,
-      container.listen(
+      container.listen<T>(
         provider,
         listener,
         onError: onError,
         fireImmediately: fireImmediately,
-      ),
+      ) as ProviderSubscriptionWithOrigin<T, Object?>,
       this,
     );
     listeners.add(sub);
@@ -511,30 +510,23 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   BuildContext get context => this;
 }
 
-final class _ListenManual<T> extends ProviderSubscription<T> {
-  _ListenManual(super.source, this._subscription, this._element);
+final class _ListenManual<T>
+    // ignore: invalid_use_of_internal_member
+    extends DelegatingProviderSubscription<T, Object?> {
+  _ListenManual(this.innerSubscription, this._element);
 
   @override
-  bool get isPaused => _subscription.isPaused;
-
-  final ProviderSubscription<T> _subscription;
+  final ProviderSubscriptionWithOrigin<T, Object?> innerSubscription;
   final ConsumerStatefulElement _element;
 
   @override
   void close() {
     if (!closed) {
-      _subscription.close();
       _element._manualListeners?.remove(this);
     }
     super.close();
   }
 
   @override
-  T read() => _subscription.read();
-
-  @override
-  void pause() => _subscription.pause();
-
-  @override
-  void resume() => _subscription.resume();
+  T read() => innerSubscription.read();
 }

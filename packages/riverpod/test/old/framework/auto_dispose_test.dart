@@ -101,12 +101,16 @@ Future<void> main() async {
     final container = ProviderContainer.test();
     final aDispose = OnDisposeMock('a');
     final a = Provider.autoDispose((ref) {
-      ref.onDispose(aDispose.call);
+      ref.onDispose(() {
+        aDispose.call();
+      });
       return 42;
     });
     final bDispose = OnDisposeMock('b');
     final b = Provider.autoDispose((ref) {
-      ref.onDispose(bDispose.call);
+      ref.onDispose(() {
+        bDispose.call();
+      });
       ref.watch(a);
       return '42';
     });

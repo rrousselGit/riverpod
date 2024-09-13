@@ -157,11 +157,12 @@ void main() {
         ),
       );
 
-      expect(container.readProviderElement(provider).hasListeners, true);
+      expect(container.readProviderElement(provider).hasNonWeakListeners, true);
 
       await tester.pumpWidget(Container());
 
-      expect(container.readProviderElement(provider).hasListeners, false);
+      expect(
+          container.readProviderElement(provider).hasNonWeakListeners, false);
     });
 
     testWidgets('closes the subscription on provider change', (tester) async {
@@ -180,8 +181,10 @@ void main() {
         ),
       );
 
-      expect(container.readProviderElement(provider(0)).hasListeners, true);
-      expect(container.readProviderElement(provider(1)).hasListeners, false);
+      expect(
+          container.readProviderElement(provider(0)).hasNonWeakListeners, true);
+      expect(container.readProviderElement(provider(1)).hasNonWeakListeners,
+          false);
 
       await tester.pumpWidget(
         UncontrolledProviderScope(
@@ -195,8 +198,10 @@ void main() {
         ),
       );
 
-      expect(container.readProviderElement(provider(0)).hasListeners, false);
-      expect(container.readProviderElement(provider(1)).hasListeners, true);
+      expect(container.readProviderElement(provider(0)).hasNonWeakListeners,
+          false);
+      expect(
+          container.readProviderElement(provider(1)).hasNonWeakListeners, true);
     });
 
     testWidgets('listen to the new provider on provider change',

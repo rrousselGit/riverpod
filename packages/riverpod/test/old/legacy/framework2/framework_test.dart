@@ -269,9 +269,9 @@ void main() {
     );
 
     expect(firstDependents, [computedElement]);
-    expect(firstElement.hasListeners, true);
+    expect(firstElement.hasNonWeakListeners, true);
     expect(secondDependents, [computedElement]);
-    expect(secondElement.hasListeners, true);
+    expect(secondElement.hasNonWeakListeners, true);
 
     container.read(first.notifier).state++;
     expect(sub.read(), 'fallback');
@@ -287,9 +287,9 @@ void main() {
       listenableVisitor: (_) {},
     );
     expect(firstDependents, [computedElement]);
-    expect(firstElement.hasListeners, true);
+    expect(firstElement.hasNonWeakListeners, true);
     expect(secondDependents, <$ProviderElement<Object?>>[]);
-    expect(secondElement.hasListeners, false);
+    expect(secondElement.hasNonWeakListeners, false);
   });
 
   group('overrideWithValue', () {
@@ -328,7 +328,7 @@ void main() {
       listenableVisitor: (_) {},
     );
     expect(firstDependents, {computedElement});
-    expect(firstElement.hasListeners, true);
+    expect(firstElement.hasNonWeakListeners, true);
 
     sub.close();
     await container.pump();
@@ -339,7 +339,7 @@ void main() {
       listenableVisitor: (_) {},
     );
     expect(firstDependents, <$ProviderElement<Object?>>{});
-    expect(firstElement.hasListeners, false);
+    expect(firstElement.hasNonWeakListeners, false);
   });
 
   test(
@@ -429,16 +429,16 @@ void main() {
       final provider = Provider((ref) => ref.watch(first));
       final element = container.readProviderElement(provider);
 
-      expect(element.hasListeners, false);
+      expect(element.hasNonWeakListeners, false);
 
       final sub = container.listen(provider, didChange.call);
 
-      expect(element.hasListeners, true);
+      expect(element.hasNonWeakListeners, true);
 
       sub.close();
       counter.increment();
 
-      expect(element.hasListeners, false);
+      expect(element.hasNonWeakListeners, false);
       verifyZeroInteractions(didChange);
     });
 

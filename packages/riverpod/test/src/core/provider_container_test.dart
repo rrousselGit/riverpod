@@ -2864,18 +2864,21 @@ void main() {
         final container = ProviderContainer.test();
         final provider = StateProvider<int>((ref) => 0);
 
-        expect(container.readProviderElement(provider).hasListeners, false);
+        expect(
+            container.readProviderElement(provider).hasNonWeakListeners, false);
 
         final sub = container.listen<bool>(
           provider.select((count) => count.isEven),
           (prev, isEven) {},
         );
 
-        expect(container.readProviderElement(provider).hasListeners, true);
+        expect(
+            container.readProviderElement(provider).hasNonWeakListeners, true);
 
         sub.close();
 
-        expect(container.readProviderElement(provider).hasListeners, false);
+        expect(
+            container.readProviderElement(provider).hasNonWeakListeners, false);
       });
 
       test('can watch selectors', () async {
