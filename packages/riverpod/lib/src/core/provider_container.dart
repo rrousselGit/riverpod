@@ -487,7 +487,7 @@ class ProviderPointerManager {
     final _familyPointers = familyPointers[family];
     if (_familyPointers == null) return const [];
 
-    return _familyPointers.pointers.values.map((e) => e.element).whereNotNull();
+    return _familyPointers.pointers.values.map((e) => e.element).nonNulls;
   }
 
   /// Remove a provider from this container.
@@ -973,7 +973,7 @@ class ProviderContainer implements Node {
     return _pointerManager
         .listProviderPointers()
         .map((e) => e.element)
-        .whereNotNull()
+        .nonNulls
         .where((e) => e.container == this);
   }
 

@@ -2,8 +2,8 @@ part of '../framework.dart';
 
 /// Represents the subscription to a [ProviderListenable].
 ///
-/// This always is implemented with [ProviderSubscriptionOrigin].
-/// This interface exists to remove the redundant type parameters.
+// This always is implemented with ProviderSubscriptionWithOrigin.
+// This interface exists to remove the redundant type parameters.
 @optionalTypeArgs
 sealed class ProviderSubscription<OutT> {
   /// Whether the subscription is closed.

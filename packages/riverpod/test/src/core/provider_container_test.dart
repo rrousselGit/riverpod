@@ -2443,10 +2443,8 @@ void main() {
       });
 
       test(
-          'if a listener removes another provider.listen, the removed listener is still called',
-          skip: true, () {
-        ; // Breaks because of the "if (!sub.closed)" in notifyListeners
-
+          'if a listener removes another provider.listen, the removed listener is not called',
+          () {
         final provider = StateProvider((ref) => 0);
         final container = ProviderContainer.test();
 
@@ -2470,10 +2468,8 @@ void main() {
 
         container.read(provider.notifier).state++;
 
-        verifyInOrder([
-          listener(0, 1),
-          listener2(0, 1),
-        ]);
+        verifyOnly(listener, listener(0, 1));
+        verifyZeroInteractions(listener2);
 
         container.read(provider.notifier).state++;
 
@@ -2865,7 +2861,9 @@ void main() {
         final provider = StateProvider<int>((ref) => 0);
 
         expect(
-            container.readProviderElement(provider).hasNonWeakListeners, false);
+          container.readProviderElement(provider).hasNonWeakListeners,
+          false,
+        );
 
         final sub = container.listen<bool>(
           provider.select((count) => count.isEven),
@@ -2873,12 +2871,16 @@ void main() {
         );
 
         expect(
-            container.readProviderElement(provider).hasNonWeakListeners, true);
+          container.readProviderElement(provider).hasNonWeakListeners,
+          true,
+        );
 
         sub.close();
 
         expect(
-            container.readProviderElement(provider).hasNonWeakListeners, false);
+          container.readProviderElement(provider).hasNonWeakListeners,
+          false,
+        );
       });
 
       test('can watch selectors', () async {

@@ -491,7 +491,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     _dependencyMayHaveChanged = true;
 
     visitChildren(
-      // TODO skip paused subscriptions
       elementVisitor: (element) => element._markDependencyMayHaveChanged(),
       listenableVisitor: (notifier) =>
           notifier.notifyDependencyMayHaveChanged(),

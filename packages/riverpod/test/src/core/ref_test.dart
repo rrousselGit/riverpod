@@ -1967,7 +1967,7 @@ void main() {
     });
 
     group('.invalidate', () {
-      test('Throws if a circular dependency is detected', skip: true, () {
+      test('Throws if a circular dependency is detected', () {
         // Regression test for https://github.com/rrousselGit/riverpod/issues/2336
         late Ref<Object?> ref;
         final a = Provider((r) {
@@ -1979,7 +1979,6 @@ void main() {
 
         container.read(b);
 
-        ;
         expect(
           () => ref.invalidate(b),
           throwsA(isA<CircularDependencyError>()),

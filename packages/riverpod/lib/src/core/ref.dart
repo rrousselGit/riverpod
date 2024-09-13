@@ -230,10 +230,9 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// {@endtemplate}
   void invalidate(ProviderOrFamily providerOrFamily, {bool asReload = false}) {
     _throwIfInvalidUsage();
+    if (kDebugMode) _debugAssertCanDependOn(providerOrFamily);
 
     container.invalidate(providerOrFamily, asReload: asReload);
-
-    if (kDebugMode) _debugAssertCanDependOn(providerOrFamily);
   }
 
   /// Invokes [invalidate] on itself.

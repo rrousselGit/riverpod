@@ -124,12 +124,11 @@ class ProviderElementProxy<StateT, OutT>
     return _ProxySubscription<OutT, StateT>(
       innerSub,
       removeListener,
-      () => read(source),
+      () => _read(source),
     );
   }
 
-  @override
-  OutT read(Node node) {
+  OutT _read(Node node) {
     final element = node.readProviderElement(provider);
     element.flush();
     element.mayNeedDispose();
