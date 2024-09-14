@@ -24,6 +24,7 @@ final class FilterTypeProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'filterTypeProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -78,6 +79,7 @@ final class TodosProvider extends $NotifierProvider<Todos, List<Todo>> {
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'todosProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -152,6 +154,7 @@ final class FilteredTodoListProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'filteredTodoListProvider',
           isAutoDispose: true,
           dependencies: null,

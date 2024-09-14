@@ -27,6 +27,7 @@ final class FetchPackageDetailsProvider
       })? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'fetchPackageDetailsProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -96,6 +97,7 @@ String _$fetchPackageDetailsHash() =>
 final class FetchPackageDetailsFamily extends Family {
   const FetchPackageDetailsFamily._()
       : super(
+          retry: null,
           name: r'fetchPackageDetailsProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -153,6 +155,7 @@ final class LikedPackagesProvider extends $FunctionalProvider<
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'likedPackagesProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -206,6 +209,7 @@ final class PubRepositoryProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'pubRepositoryProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -277,6 +281,7 @@ final class PackageMetricsProvider
       PackageMetrics Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'packageMetricsProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -351,6 +356,7 @@ String _$packageMetricsHash() => r'67cd25e50357e6e970d432c1d255085a23b856ac';
 final class PackageMetricsFamily extends Family {
   const PackageMetricsFamily._()
       : super(
+          retry: null,
           name: r'packageMetricsProvider',
           dependencies: null,
           allTransitiveDependencies: null,

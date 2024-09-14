@@ -11,7 +11,9 @@ part 'old_lifecycles.g.dart';
 class MyNotifier extends _$MyNotifier {
   @override
   int build() {
+    // {@template period}
     // Just read/write the code here, in one place
+    // {@endtemplate}
     final period = ref.watch(durationProvider);
     final timer = Timer.periodic(period, (t) => update());
     ref.onDispose(timer.cancel);
@@ -21,7 +23,9 @@ class MyNotifier extends _$MyNotifier {
 
   Future<void> update() async {
     await ref.read(repositoryProvider).update(state + 1);
+    // {@template update}
     // `mounted` is no more!
     state++; // This might throw.
+    // {@endtemplate}
   }
 }

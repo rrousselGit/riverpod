@@ -9,6 +9,8 @@
 - **Breaking** Some internal utils are no-longer exported.
 - Added support for `Ref/ProviderContainer.invalidate(provider, asReload: true)`
 - Removed deprecated `@ProviderScope.parent`
+- Failing providers are now automatically retried after a delay.
+  The delay can be optionally configured.
 
 ## 3.0.0-dev.3 - 2023-11-27
 
@@ -38,6 +40,10 @@ Fix exceptions when using multiple root `ProviderContainers`/`ProviderScopes`.
   `AsyncValue` or the associated classes.
 - **Breaking**: Removed everything marked as "deprecated"
 - Bumped minimum Dart SDK to >= 3.0.0-dev
+
+## 2.5.2 - 2024-03-18
+
+- Fixed various typos in the documentation (thanks to @kevalvavaliya)
 
 ## 2.5.1 - 2024-03-10
 

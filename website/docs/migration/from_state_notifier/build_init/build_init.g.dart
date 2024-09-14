@@ -19,6 +19,7 @@ final class CounterNotifierProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'counterNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -68,7 +69,7 @@ final class CounterNotifierProvider
       $NotifierProviderElement(this, pointer);
 }
 
-String _$counterNotifierHash() => r'8d4e4011da15a0ef79af9622336839a0c9e406ab';
+String _$counterNotifierHash() => r'4a971b45b66819f429f205806499527353d1a78e';
 
 abstract class _$CounterNotifier extends $Notifier<int> {
   int build();

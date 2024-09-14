@@ -24,6 +24,7 @@ final class LabelProvider extends $FunctionalProvider<String, String>
       )? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'labelProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -100,6 +101,7 @@ String _$labelHash() => r'20aa8ce0231205540f466f91259732bd86953c64';
 final class LabelFamily extends Family {
   const LabelFamily._()
       : super(
+          retry: null,
           name: r'labelProvider',
           dependencies: null,
           allTransitiveDependencies: null,

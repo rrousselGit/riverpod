@@ -35,6 +35,7 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.isAutoDispose,
+    required super.retry,
   }) : assert(
           from == null || allTransitiveDependencies == null,
           'When from a family, providers cannot specify dependencies.',

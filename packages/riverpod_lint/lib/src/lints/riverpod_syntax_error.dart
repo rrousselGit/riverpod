@@ -1,4 +1,4 @@
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer/source/source_range.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -35,11 +35,11 @@ class RiverpodSyntaxError extends RiverpodLintRule {
 
       if (location == null) return;
 
-      reporter.reportErrorForOffset(
-        _code,
-        location.offset,
-        location.length,
-        [error.message],
+      reporter.atOffset(
+        errorCode: _code,
+        offset: location.offset,
+        length: location.length,
+        arguments: [error.message],
       );
     });
   }

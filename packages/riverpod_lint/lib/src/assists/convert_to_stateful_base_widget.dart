@@ -2,9 +2,8 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/source/source.dart';
 import 'package:analyzer/source/source_range.dart';
-// ignore: implementation_imports, https://github.com/dart-lang/sdk/issues/54480
-import 'package:analyzer/src/generated/source.dart' show Source;
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_dart.dart';
 import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -232,7 +231,7 @@ class $createdStateClassName extends $baseStateName<${widgetClass.name}> {
   }
 }
 
-// Original implemenation in
+// Original implementation in
 // package:analysis_server/lib/src/services/correction/dart/flutter_convert_to_stateful_widget.dart
 class _FieldFinder extends RecursiveAstVisitor<void> {
   Set<FieldElement> fieldsAssignedInConstructors = {};
@@ -261,7 +260,7 @@ class _FieldFinder extends RecursiveAstVisitor<void> {
     if (node.inSetterContext()) {
       final element = node.writeOrReadElement;
       if (element is PropertyAccessorElement) {
-        final field = element.variable;
+        final field = element.variable2;
         if (field is FieldElement) {
           fieldsAssignedInConstructors.add(field);
         }

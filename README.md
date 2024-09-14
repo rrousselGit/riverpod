@@ -22,7 +22,7 @@
 
 ---
 
-A reactive caching and data-binding framework. https://riverpod.dev  
+A reactive caching and data-binding framework. https://riverpod.dev
 Riverpod makes working with asynchronous code a breeze by:
 
 - handling errors/loading states by default. No need to manually catch errors
@@ -37,7 +37,7 @@ Riverpod makes working with asynchronous code a breeze by:
 
 Welcome to [Riverpod] (anagram of [Provider])!
 
-For learning how to use [Riverpod], see its documentation:  
+For learning how to use [Riverpod], see its documentation:
 \>\>\> https://riverpod.dev <<<
 
 Long story short:
@@ -48,7 +48,7 @@ Long story short:
   @riverpod
   Future<String> boredSuggestion(BoredSuggestionRef ref) async {
     final response = await http.get(
-      Uri.https('https://boredapi.com/api/activity'),
+      Uri.https('boredapi.com', '/api/activity'),
     );
     final json = jsonDecode(response.body);
     return json['activity']! as String;
@@ -63,11 +63,11 @@ Long story short:
     Widget build(BuildContext context, WidgetRef ref) {
       final boredSuggestion = ref.watch(boredSuggestionProvider);
       // Perform a switch-case on the result to handle loading/error states
-      return boredSuggestion.when(
-        loading: () => Text('loading'),
-        error: (error, stackTrace) => Text('error: $error'),
-        data: (data) => Text(data),
-      );
+      return switch (boredSuggestion) {
+        AsyncData(:final value) => Text('data: $value'),
+        AsyncError(:final error) => Text('error: $error'),
+        _ => const Text('loading'),
+      };
     }
   }
   ```

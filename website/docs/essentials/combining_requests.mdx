@@ -10,9 +10,9 @@ import notifierRef from "./combining_requests/notifier_ref";
 import watchExample from "./combining_requests/watch_example";
 import watchPlacement from "./combining_requests/watch_placement";
 import listenExample from "./combining_requests/listen_example";
-import readExample from './combining_requests/read_example'
+import readExample from "./combining_requests/read_example";
 
-Up till now, we've only seen cases where requests are independent from each
+Up until now, we've only seen cases where requests are independent of each
 other. But a common use-case is to have to trigger a request based on the
 result of another request.
 
@@ -24,14 +24,14 @@ But this approach has a few downsides:
 - This leaks implementation details.
   Now, your UI needs to know about all the providers that are used
   by your other provider.
-- Whenever the parameter changes, a brand new state will be made.
+- Whenever the parameter changes, a brand new state will be created.
   By passing parameters, there is no way to keep the previous state
   when the parameter changes.
 - It makes combining requests harder.
 - This makes tooling less useful. A devtool wouldn't
   know about the relationship between providers.
 
-To improve this, Riverpod offers a different approach to combine requests.
+To improve this, Riverpod offers a different approach to combining requests.
 
 ## The basics: Obtaining a "ref"
 
@@ -134,7 +134,7 @@ The last option available is `ref.read`.
 It is similar to `ref.watch` in that it returns the current state of a provider.
 But unlike `ref.watch`, it doesn't listen to the provider.
 
-As such, `ref.read` should be only be used in placed where you can't use
+As such, `ref.read` should only be used in places where you can't use
 `ref.watch`, such as inside methods of Notifiers.
 
 <AutoSnippet {...readExample} />

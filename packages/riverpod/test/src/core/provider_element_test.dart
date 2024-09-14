@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
-import '../../old/utils.dart';
+import '../../third_party/fake_async.dart';
+import '../utils.dart';
 
 void main() {
   group('ProviderElement', () {
@@ -30,6 +33,204 @@ void main() {
       ]);
       expect(depElement.dependents, isEmpty);
       expect(depElement.weakDependents, isEmpty);
+    });
+
+    group('retry', () {
+      test('default retry delays from 200ms to 6.4 seconds', () {});
+
+      group('custom retry', () {
+        test(
+          'if returns null, stops retrying',
+          () => fakeAsync((fake) {
+            final container = ProviderContainer.test(retry: (_, __) => null);
+            var buildCount = 0;
+            final provider = Provider((ref) {
+              buildCount++;
+              throw StateError('');
+            });
+
+            container.listen(
+              provider,
+              (prev, next) {},
+              fireImmediately: true,
+              onError: (e, s) {},
+            );
+            expect(buildCount, 1);
+
+            fake.elapse(const Duration(seconds: 100));
+
+            expect(buildCount, 1);
+          }),
+        );
+
+        test(
+          'passes the correct retry count and error',
+          () => fakeAsync((fake) {
+            final retry = RetryMock();
+            when(retry(any, any)).thenReturn(const Duration(milliseconds: 200));
+            final container = ProviderContainer.test(retry: retry.call);
+            final provider = Provider((ref) => throw StateError(''));
+
+            container.listen(
+              provider,
+              (prev, next) {},
+              fireImmediately: true,
+              onError: (e, s) {},
+            );
+
+            verifyOnly(retry, retry(0, isStateError));
+
+            fake.elapse(const Duration(milliseconds: 200));
+
+            verifyOnly(retry, retry(1, isStateError));
+
+            fake.elapse(const Duration(milliseconds: 200));
+
+            verifyOnly(retry, retry(2, isStateError));
+
+            container.invalidate(provider, asReload: true);
+            fake.elapse(const Duration(milliseconds: 50));
+
+            // On reload, resets counter to 0
+            verifyOnly(retry, retry(0, isStateError));
+          }),
+        );
+
+        test(
+          'delays by the duration returned',
+          () => fakeAsync((fake) {
+            final container = ProviderContainer.test(
+              retry: (_, __) => const Duration(milliseconds: 3),
+            );
+            final errorListener = ErrorListener();
+            var msg = '0';
+            final provider = Provider((ref) => throw StateError(msg));
+
+            container.listen(
+              provider,
+              (prev, next) {},
+              fireImmediately: true,
+              onError: errorListener.call,
+            );
+
+            verifyOnly(
+              errorListener,
+              errorListener(
+                argThat(isStateErrorWith(message: '0')),
+                any,
+              ),
+            );
+
+            msg = '1';
+            fake.elapse(const Duration(milliseconds: 1));
+
+            verifyNoMoreInteractions(errorListener);
+
+            fake.elapse(const Duration(milliseconds: 1));
+
+            verifyNoMoreInteractions(errorListener);
+
+            fake.elapse(const Duration(milliseconds: 1));
+
+            verifyOnly(
+              errorListener,
+              errorListener(
+                argThat(isStateErrorWith(message: '1')),
+                any,
+              ),
+            );
+          }),
+        );
+
+        test(
+          'if the retry function throws, stops retrying and report the error',
+          () => fakeAsync((fake) {
+            final errors = <Object>[];
+            runZonedGuarded(
+              () {
+                final container = ProviderContainer.test(
+                  retry: (_, __) => throw StateError('Oops!'),
+                );
+                final errorListener = ErrorListener();
+                final provider = Provider((ref) => throw StateError('msg'));
+
+                container.listen(
+                  provider,
+                  (prev, next) {},
+                  fireImmediately: true,
+                  onError: errorListener.call,
+                );
+
+                verifyOnly(
+                  errorListener,
+                  errorListener(
+                    argThat(isStateErrorWith(message: 'msg')),
+                    any,
+                  ),
+                );
+
+                fake.elapse(const Duration(milliseconds: 1));
+
+                verifyNoMoreInteractions(errorListener);
+              },
+              (e, s) => errors.add(e),
+            );
+
+            expect(
+              errors,
+              equals([isStateErrorWith(message: 'Oops!')]),
+            );
+          }),
+        );
+
+        test(
+            "If the provider specifies retry, uses the provider's "
+            'logic instead of the container one.', () {
+          final retry1 = RetryMock();
+          final retry2 = RetryMock();
+          final container = ProviderContainer.test(
+            retry: retry1.call,
+          );
+
+          final provider = Provider(
+            retry: retry2.call,
+            (ref) => throw StateError(''),
+          );
+
+          container.listen(
+            provider,
+            (prev, next) {},
+            fireImmediately: true,
+            onError: (e, s) {},
+          );
+
+          verifyOnly(retry2, retry2(0, isStateError));
+          verifyNoMoreInteractions(retry1);
+        });
+      });
+
+      test(
+        'disposes of the timer when the element is disposed',
+        () => fakeAsync((fake) {
+          final retry = RetryMock();
+          when(retry(any, any)).thenReturn(const Duration(milliseconds: 200));
+          final container = ProviderContainer.test(retry: retry.call);
+          final provider = Provider((ref) => throw StateError(''));
+
+          container.listen(
+            provider,
+            (prev, next) {},
+            fireImmediately: true,
+            onError: (e, s) {},
+          );
+
+          expect(fake.pendingTimers, hasLength(1));
+
+          container.dispose();
+
+          expect(fake.pendingTimers, isEmpty);
+        }),
+      );
     });
 
     test(

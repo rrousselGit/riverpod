@@ -15,6 +15,7 @@ final class AProvider extends $NotifierProvider<A, int> {
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'aProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -81,6 +82,7 @@ final class A2Provider extends $NotifierProvider<A2, int> {
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'a2Provider',
           isAutoDispose: false,
           dependencies: null,
@@ -149,6 +151,7 @@ final class A3Provider extends $NotifierProvider<A3, int> {
       A3 Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'a3Provider',
           isAutoDispose: true,
           dependencies: null,
@@ -223,6 +226,7 @@ String _$a3Hash() => r'2e21e9af8b67b5412611e0d23b862ead56deb8e1';
 final class A3Family extends Family {
   const A3Family._()
       : super(
+          retry: null,
           name: r'a3Provider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -304,6 +308,7 @@ final class A4Provider extends $NotifierProvider<A4, int> {
       A4 Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'a4Provider',
           isAutoDispose: false,
           dependencies: null,
@@ -378,6 +383,7 @@ String _$a4Hash() => r'cdd9ad09099881cafe06d7b3095a8b06dbe7d876';
 final class A4Family extends Family {
   const A4Family._()
       : super(
+          retry: null,
           name: r'a4Provider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -459,6 +465,7 @@ final class A5Provider extends $AsyncNotifierProvider<A5, int> {
       A5 Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'a5Provider',
           isAutoDispose: true,
           dependencies: null,
@@ -526,6 +533,7 @@ String _$a5Hash() => r'c83634c22b6a9149aa8787e45c3b7cd6c88b5958';
 final class A5Family extends Family {
   const A5Family._()
       : super(
+          retry: null,
           name: r'a5Provider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -608,6 +616,7 @@ final class A6Provider extends $AsyncNotifierProvider<A6, int> {
       A6 Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'a6Provider',
           isAutoDispose: false,
           dependencies: null,
@@ -675,6 +684,7 @@ String _$a6Hash() => r'fe641c72cacf3dd119eb77a34fe8fc71c5c30139';
 final class A6Family extends Family {
   const A6Family._()
       : super(
+          retry: null,
           name: r'a6Provider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -757,6 +767,7 @@ final class A7Provider extends $StreamNotifierProvider<A7, int> {
       A7 Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'a7Provider',
           isAutoDispose: true,
           dependencies: null,
@@ -824,6 +835,7 @@ String _$a7Hash() => r'd3d9ab5090e21987d65522f14ebb70d0058fc56a';
 final class A7Family extends Family {
   const A7Family._()
       : super(
+          retry: null,
           name: r'a7Provider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -906,6 +918,7 @@ final class A8Provider extends $StreamNotifierProvider<A8, int> {
       A8 Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'a8Provider',
           isAutoDispose: false,
           dependencies: null,
@@ -973,6 +986,7 @@ String _$a8Hash() => r'54f4a841a283161bed3d444dcee53bf367958678';
 final class A8Family extends Family {
   const A8Family._()
       : super(
+          retry: null,
           name: r'a8Provider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -1053,6 +1067,7 @@ final class BProvider extends $NotifierProvider<B, int> {
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'bProvider',
           isAutoDispose: false,
           dependencies: null,
@@ -1119,6 +1134,7 @@ final class B2Provider extends $NotifierProvider<B2, int> {
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'b2Provider',
           isAutoDispose: true,
           dependencies: null,

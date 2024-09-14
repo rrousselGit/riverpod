@@ -19,6 +19,7 @@ final class ExampleProvider extends $NotifierProvider<Example, int> {
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'exampleProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -96,6 +97,7 @@ final class ExampleFamilyProvider
       ExampleFamily Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'exampleFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -180,6 +182,7 @@ String _$exampleFamilyHash() => r'37d4a4fd66999562cd92051f91266270d5a1e5ea';
 final class ExampleFamilyFamily extends Family {
   const ExampleFamilyFamily._()
       : super(
+          retry: null,
           name: r'exampleFamilyProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -289,6 +292,7 @@ final class GenericProvider<A, B>
       : _createCb = create,
         super(
           argument: null,
+          retry: null,
           name: r'genericProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -381,6 +385,7 @@ String _$genericHash() => r'0a3792d7b59723aebd92715eef2c74d2f267cbd2';
 final class GenericFamily extends Family {
   const GenericFamily._()
       : super(
+          retry: null,
           name: r'genericProvider',
           dependencies: null,
           allTransitiveDependencies: null,

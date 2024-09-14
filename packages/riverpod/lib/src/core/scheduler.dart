@@ -58,10 +58,16 @@ class ProviderScheduler {
   final _stateToRefresh = <ProviderElement>[];
 
   Completer<void>? _pendingTaskCompleter;
+
+  /// A future that completes when the next task is done.
   Future<void>? get pendingFuture => _pendingTaskCompleter?.future;
 
   void Function()? _cancel;
 
+  /// Schedules a provider to be refreshed.
+  ///
+  /// The refresh will happen at the end of the next event-loop,
+  /// and only if the provider is active.
   void scheduleProviderRefresh(ProviderElement element) {
     _stateToRefresh.add(element);
 
@@ -102,6 +108,9 @@ class ProviderScheduler {
     }
   }
 
+  /// Schedules a provider to be disposed.
+  ///
+  /// The provider will be disposed at the end of the next event-loop,
   void scheduleProviderDispose(ProviderElement element) {
     assert(
       !element.isActive,
@@ -137,6 +146,7 @@ class ProviderScheduler {
     }
   }
 
+  /// Disposes the scheduler.
   void dispose() {
     _disposed = true;
     _pendingTaskCompleter?.complete();

@@ -24,6 +24,7 @@ final class CompletedTodosProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'completedTodosProvider',
           isAutoDispose: true,
           dependencies: null,

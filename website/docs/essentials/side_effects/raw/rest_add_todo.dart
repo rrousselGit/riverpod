@@ -18,21 +18,27 @@ class TodoList extends AsyncNotifier<List<Todo>> {
 
   /* SNIPPET START */
   Future<void> addTodo(Todo todo) async {
+    // {@template post}
     // The POST request will return a List<Todo> matching the new application state
+    // {@endtemplate}
     final response = await http.post(
       Uri.https('your_api.com', '/todos'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode(todo.toJson()),
     );
 
+    // {@template decode}
     // We decode the API response and convert it to a List<Todo>
+    // {@endtemplate}
     List<Todo> newTodos = (jsonDecode(response.body) as List)
         .cast<Map<String, Object?>>()
         .map(Todo.fromJson)
         .toList();
 
+    // {@template newState}
     // We update the local cache to match the new state.
     // This will notify all listeners.
+    // {@endtemplate}
     state = AsyncData(newTodos);
   }
 /* SNIPPET END */

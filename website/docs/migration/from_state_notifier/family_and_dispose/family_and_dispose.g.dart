@@ -24,6 +24,7 @@ final class TaskTrackerProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'taskTrackerProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -80,6 +81,7 @@ final class BugsEncounteredNotifierProvider
       BugsEncounteredNotifier Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'bugsEncounteredNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -152,6 +154,7 @@ String _$bugsEncounteredNotifierHash() =>
 final class BugsEncounteredNotifierFamily extends Family {
   const BugsEncounteredNotifierFamily._()
       : super(
+          retry: null,
           name: r'bugsEncounteredNotifierProvider',
           dependencies: null,
           allTransitiveDependencies: null,

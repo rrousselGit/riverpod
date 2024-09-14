@@ -234,6 +234,9 @@ class ProviderDirectory implements _PointerBase {
   }
 }
 
+@internal
+typedef Retry = Duration? Function(int retryCount, Object error);
+
 /// An object responsible for storing the a O(1) access to providers,
 /// while also enabling the "scoping" of providers and ensuring all [ProviderContainer]s
 /// are in sync.
@@ -570,9 +573,11 @@ class ProviderContainer implements Node {
     ProviderContainer? parent,
     List<Override> overrides = const [],
     List<ProviderObserver>? observers,
+    Retry? retry,
   })  : _debugOverridesLength = overrides.length,
         depth = parent == null ? 0 : parent.depth + 1,
         _parent = parent,
+        retry = retry ?? parent?.retry,
         observers = [
           ...?observers,
           if (parent != null) ...parent.observers,
@@ -648,11 +653,13 @@ class ProviderContainer implements Node {
     ProviderContainer? parent,
     List<Override> overrides = const [],
     List<ProviderObserver>? observers,
+    Retry? retry,
   }) {
     final container = ProviderContainer(
       parent: parent,
       overrides: overrides,
       observers: observers,
+      retry: retry,
     );
     test.addTearDown(container.dispose);
 
@@ -664,6 +671,9 @@ class ProviderContainer implements Node {
   /// The object that handles when providers are refreshed and disposed.
   @internal
   late final ProviderScheduler scheduler = ProviderScheduler();
+
+  /// {@macro riverpod.retry}
+  final Retry? retry;
 
   /// How deep this [ProviderContainer] is in the graph of containers.
   ///

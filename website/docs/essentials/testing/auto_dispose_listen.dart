@@ -12,8 +12,10 @@ void main() {
     final subscription = container.listen<String>(provider, (_, __) {});
 
     expect(
+      // {@template read}
       // Equivalent to `container.read(provider)`
       // But the provider will not be disposed unless "subscription" is disposed.
+      // {@endtemplate}
       subscription.read(),
       'Some value',
     );

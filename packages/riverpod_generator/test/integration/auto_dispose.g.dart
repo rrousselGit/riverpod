@@ -21,6 +21,7 @@ final class KeepAliveProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'keepAliveProvider',
           isAutoDispose: false,
           dependencies: null,
@@ -80,6 +81,7 @@ final class NotKeepAliveProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'notKeepAliveProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -139,6 +141,7 @@ final class DefaultKeepAliveProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'defaultKeepAliveProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -199,6 +202,7 @@ final class KeepAliveFamilyProvider extends $FunctionalProvider<int, int>
       )? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'keepAliveFamilyProvider',
           isAutoDispose: false,
           dependencies: null,
@@ -275,6 +279,7 @@ String _$keepAliveFamilyHash() => r'80d684923a104e2488ec281097bf9b5b04b4fa5a';
 final class KeepAliveFamilyFamily extends Family {
   const KeepAliveFamilyFamily._()
       : super(
+          retry: null,
           name: r'keepAliveFamilyProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -330,6 +335,7 @@ final class NotKeepAliveFamilyProvider extends $FunctionalProvider<int, int>
       )? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'notKeepAliveFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -407,6 +413,7 @@ String _$notKeepAliveFamilyHash() =>
 final class NotKeepAliveFamilyFamily extends Family {
   const NotKeepAliveFamilyFamily._()
       : super(
+          retry: null,
           name: r'notKeepAliveFamilyProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -462,6 +469,7 @@ final class DefaultKeepAliveFamilyProvider extends $FunctionalProvider<int, int>
       )? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'defaultKeepAliveFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -540,6 +548,7 @@ String _$defaultKeepAliveFamilyHash() =>
 final class DefaultKeepAliveFamilyFamily extends Family {
   const DefaultKeepAliveFamilyFamily._()
       : super(
+          retry: null,
           name: r'defaultKeepAliveFamilyProvider',
           dependencies: null,
           allTransitiveDependencies: null,

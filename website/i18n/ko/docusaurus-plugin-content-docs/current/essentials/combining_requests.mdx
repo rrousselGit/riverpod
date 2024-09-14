@@ -1,10 +1,10 @@
 ---
 title: 요청 결합하기
-version: 1
+version: 2
 ---
 
-import { Link } from "../../../../../src/components/Link";
-import { AutoSnippet } from "../../../../../src/components/CodeSnippet";
+import { Link } from "/src/components/Link";
+import { AutoSnippet } from "/src/components/CodeSnippet";
 import functionalRef from "/docs/essentials/combining_requests/functional_ref";
 import notifierRef from "/docs/essentials/combining_requests/notifier_ref";
 import watchExample from "/docs/essentials/combining_requests/watch_example";
@@ -39,11 +39,21 @@ import readExample from '/docs/essentials/combining_requests/read_example'
 
 함수형 provider의 경우, `Ref`는 provider의 함수에 매개변수로 전달됩니다:
 
-<AutoSnippet {...functionalRef} />
+<AutoSnippet 
+  {...functionalRef} 
+  translations={{
+    provider: "  // \"Ref\"를 사용하여 다른 providers를 읽을 수 있습니다.",
+  }}
+/>
 
 클래스 변형에서 `Ref`는 Notifier 클래스의 속성입니다:
 
-<AutoSnippet {...notifierRef} />
+<AutoSnippet 
+  {...notifierRef} 
+  translations={{
+    watch: "    // \"Ref\"를 사용하여 다른 providers를 읽을 수 있습니다.",
+  }}
+/>
 
 ## ref를 사용하여 provider를 읽습니다.
 
@@ -65,7 +75,15 @@ import readExample from '/docs/essentials/combining_requests/read_example'
 예를 들어 사용자의 위치를 수신하는 provider를 정의할 수 있습니다.
 그런 다음 이 위치를 사용하여 사용자 근처의 레스토랑 목록을 가져올 수 있습니다.
 
-<AutoSnippet {...watchExample} />
+<AutoSnippet 
+  {...watchExample} 
+  translations={{
+    provider: "  // TO-DO: 현재 위치를 가져오는 스트림을 반환합니다.",
+    watch: "  // \"ref.watch\"를 사용하여 최신 위치를 가져옵니다.\n  // provider 뒤에 \".future\"를 지정하면 코드가 적어도 하나의 위치를 사용할 수 있을 때까지 기다립니다.",
+    get: "  // 이제 해당 위치를 기반으로 네트워크 요청을 할 수 있습니다.\n  // 예를 들어 Google 지도 API를 사용할 수 있습니다:",
+    jsonDecode: "  // JSON에서 레스토랑 이름 가져오기",
+  }}
+/>
 
 :::info
 수신 중인 provider가 변경되어 요청이 다시 계산되면 새 요청이 완료될 때까지 이전 상태가 유지됩니다.  
@@ -87,7 +105,11 @@ import readExample from '/docs/essentials/combining_requests/read_example'
 이는 provider의 빌드 단계에서 실행되지 않을 가능성이 있는 모든 코드를 의미합니다. 
 여기에는 "listener" 콜백(callbacks)이나 Notifier의 메서드가 포함됩니다:
 
-<AutoSnippet {...watchPlacement} />
+<AutoSnippet 
+  {...watchPlacement} 
+  translations={{
+  }}
+/>
 :::
 
 ## `ref.listen`/`listenSelf` 메소드
@@ -102,7 +124,11 @@ import readExample from '/docs/essentials/combining_requests/read_example'
 
 `ref.watch` 예제를 다시 작성하여 `ref.listen`을 대신 사용할 수 있습니다.
 
-<AutoSnippet {...listenExample} />
+<AutoSnippet 
+  {...listenExample} 
+  translations={{
+  }}
+/>
 
 :::info
 provider의 빌드 단계에서 `ref.listen`을 사용하는 것은 전적으로 안전합니다.
@@ -115,11 +141,17 @@ provider가 어떻게든 다시 계산되면 이전 리스너가 제거됩니다
 
 마지막으로 사용할 수 있는 옵션은 `ref.read`입니다.
 이 옵션은 provider의 현재 상태를 반환한다는 점에서 `ref.watch`와 유사합니다.
-하지만 `ref.watch`와 달리 공급자를 수신(listen)하지 않습니다.
+하지만 `ref.watch`와 달리 provider를 수신(listen)하지 않습니다.
 
 따라서 `ref.read`는 Notifier의 메서드 내부와 같이 `ref.watch`를 사용할 수 없는 곳에서만 사용해야 합니다.
 
-<AutoSnippet {...readExample} />
+<AutoSnippet 
+  {...readExample} 
+  translations={{
+    read: "    // Bad! 반응형이 아니므로 여기서는 'read'를 사용하지 마십시오.",
+    read2: "    ref.read(otherProvider); // 여기서 '읽기'를 사용해도 괜찮습니다.",
+  }}
+/>
 
 :::caution
 provider에서 `ref.read`를 사용할 때는 주의하세요. provider를 수신(listen)하지 않으므로, 해당 provider가 수신(listen)하지 않으면 상태(state)를 파괴(destroy할 수 있습니다.

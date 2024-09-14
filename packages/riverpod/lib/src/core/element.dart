@@ -46,6 +46,12 @@ abstract class ProviderElement<StateT> implements Node {
   /// {@macro riverpod.provider_element_base}
   ProviderElement(this.pointer);
 
+  static Duration? _defaultRetry(int retryCount, Object error) {
+    return Duration(
+      milliseconds: math.min(200 * (retryCount + 1), 6400),
+    );
+  }
+
   static ProviderElement? _debugCurrentlyBuildingElement;
 
   /// The last result of [ProviderBase.debugGetCreateSourceHash].
@@ -104,6 +110,9 @@ abstract class ProviderElement<StateT> implements Node {
   bool _mustRecomputeState = false;
   bool _dependencyMayHaveChanged = false;
   bool _didChangeDependency = false;
+
+  var _retryCount = 0;
+  Timer? _pendingRetryTimer;
 
   /// Whether the assert that prevents [requireState] from returning
   /// if the state was not set before is enabled.
@@ -315,6 +324,8 @@ This could mean a few things:
   /// Invokes [create] and handles errors.
   @internal
   void buildState(Ref<StateT> ref) {
+    if (_didChangeDependency) _retryCount = 0;
+
     ProviderElement? debugPreviouslyBuildingElement;
     final previousDidChangeDependency = _didChangeDependency;
     _didChangeDependency = false;
@@ -330,6 +341,7 @@ This could mean a few things:
       if (kDebugMode) _debugDidSetState = true;
 
       _stateResult = Result.error(err, stack);
+      triggerRetry(err);
     } finally {
       _didBuild = true;
       if (kDebugMode) {
@@ -341,6 +353,27 @@ This could mean a few things:
         'Bad state, the provider did not initialize. Did "create" forget to set the state?',
       );
     }
+  }
+
+  @protected
+  void triggerRetry(Object error) {
+    // Don't start retry if the provider was disposed
+    if (ref == null) return;
+
+    final retry = origin.retry ?? container.retry ?? _defaultRetry;
+
+    // Capture exceptions. On error, stop retrying if the retry
+    // function failed
+    runGuarded(() {
+      final duration = retry(_retryCount, error);
+      if (duration == null) return;
+
+      _pendingRetryTimer = Timer(duration, () {
+        _pendingRetryTimer = null;
+        _retryCount++;
+        invalidateSelf(asReload: false);
+      });
+    });
   }
 
   void _debugAssertNotificationAllowed() {
@@ -630,7 +663,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     if (sub.weak) return;
 
     _onChangeSubscription(sub, () {
-      _pausedActiveSubscriptionCount = max(
+      _pausedActiveSubscriptionCount = math.max(
         0,
         _pausedActiveSubscriptionCount - 1,
       );
@@ -665,6 +698,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     if (ref == null || !ref._mounted) return;
 
     ref._mounted = false;
+
+    _pendingRetryTimer?.cancel();
+    _pendingRetryTimer = null;
 
     if (subscriptions case final subs?) _closeSubscriptions(subs);
     subscriptions = null;

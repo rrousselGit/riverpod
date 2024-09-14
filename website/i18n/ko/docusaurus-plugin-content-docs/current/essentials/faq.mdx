@@ -1,9 +1,10 @@
 ---
 title: 자주 묻는 질문(FAQ)
+version: 1
 ---
 
-import { Link } from "../../../../../src/components/Link";
-import { AutoSnippet, When } from "../../../../../src/components/CodeSnippet";
+import { Link } from "/src/components/Link";
+import { AutoSnippet, When } from "/src/components/CodeSnippet";
 
 다음은 커뮤니티에서 자주 묻는 질문입니다:
 
@@ -21,14 +22,14 @@ T refresh<T>(provider) {
 ```
 
 provider를 다시 계산한 후 새 값을 신경 쓰지 않는다면 `invalidate`를 사용면 됩니다.
-그 경우 대신 `refresh`를 사용하십시오.
+신경 쓰는 경우에는 대신 `refresh`를 사용하십시오.
 
 :::info
 이 로직은 린트 규칙을 통해 자동으로 적용됩니다.  
 반환된 값을 사용하지 않고 `ref.refresh`를 사용하려고 하면 경고가 표시됩니다.
 :::
 
-동작의 주요 차이점은 무효화(invalidating) 직후에 공급자를 읽으면 공급자가 **즉시(immediately)** 재계산(recomputes)한다는 것입니다.  
+동작의 주요 차이점은 무효화(invalidating) 직후에 provider를 읽으면 provider가 **즉시(immediately)** 재계산(recomputes)한다는 것입니다.  
 반면, `invalidate`를 호출하고 바로 읽지 않으면 업데이트가 _나중에(later)_ 트리거됩니다.
 
 이 "나중에(later)" 업데이트는 일반적으로 다음 프레임이 시작될 때 이루어집니다.
@@ -79,7 +80,7 @@ ref.read(yourNotifierProvider.notifier).yourMethod();
   페이지 오프셋이 변경되면 위젯이 이전에 표시된 페이지를 계속 수신하고 싶지 않을 것입니다.
 
 - `InheritedWidget`은 위젯이 언제 청취(listening)를 중단하는지 추적할 수 있는 방법이 없습니다.
-  Riverpod은 때때로 공급자가 수신 대기 중인지 여부를 추적하는 데 의존합니다.
+  Riverpod은 때때로 provider가 수신 대기 중인지 여부를 추적하는 데 의존합니다.
 
 이 기능은 자동 폐기 메커니즘(auto dispose mechanism)과 provider에게 인수를 전달하는 기능 모두에 매우 중요합니다.  
 이러한 기능들이 Riverpod를 강력하게 만드는 원동력입니다.
@@ -113,7 +114,6 @@ Notifiers는 `==` 대신 `identical`을 사용하여 업데이트를 필터링�
 객체 필터링에 크게 신경 쓰지 않고 코드 생성기가 기본적으로 `==` 오버라이드를 생성하기 때문에 `==`가 비쌀 수 있는 복잡한 객체의 경우, `identical`을 사용하면 리스너에게 효율적으로 알림을 제공할 수 있습니다.
 동시에 단순한 객체의 경우 `identical`은 중복 알림을 올바르게 필터링합니다.
 
-Last but not least, you can change this behavior by overriding the method `updateShouldNotify` on Notifiers.
 마지막으로, Notifiers에서 `updateShouldNotify` 메서드를 재정의하여 이 동작을 변경할 수 있습니다.
 
 ## 모든 providers를 한 번에 재설정(reset)하는 방법이 있나요?
@@ -139,7 +139,7 @@ Last but not least, you can change this behavior by overriding the method `updat
 ElevatedButton(
   onPressed: () async {
     await future;
-    ref.read(...); // May throw "Cannot use "ref" after the widget was disposed"
+    ref.read(...); // "위젯이 폐기된 후 "ref"를 사용할 수 없습니다." 를 throw할 수 있습니다.
   }
 )
 ```
@@ -151,7 +151,7 @@ ElevatedButton(
   onPressed: () async {
     await future;
     if (!context.mounted) return;
-    ref.read(...); // No longer throws
+    ref.read(...); // 더 이상 throw하지 않음
   }
 )
 ```

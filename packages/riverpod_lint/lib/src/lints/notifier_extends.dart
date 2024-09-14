@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
@@ -67,14 +67,14 @@ class NotifierExtends extends RiverpodLintRule {
 
       if (extendsClause == null) {
         // No ref parameter, underlining the function name
-        reporter.reportErrorForToken(_code, declaration.name);
+        reporter.atToken(declaration.name, _code);
         return;
       }
 
       final expectedClassName = _generatedClassName(declaration);
       if (extendsClause.superclass.name2.lexeme != expectedClassName) {
         // No type specified. Underlining the ref name
-        reporter.reportErrorForNode(_code, extendsClause.superclass);
+        reporter.atNode(extendsClause.superclass, _code);
         return;
       }
 
@@ -89,7 +89,7 @@ class NotifierExtends extends RiverpodLintRule {
         actualTypeArguments,
       )) {
         // No type specified. Underlining the ref name
-        reporter.reportErrorForNode(_code, extendsClause.superclass);
+        reporter.atNode(extendsClause.superclass, _code);
         return;
       }
     });

@@ -2,6 +2,7 @@ export 'src/core/async_value.dart' hide AsyncTransition;
 export 'src/framework.dart'
     hide
         ProviderScheduler,
+        Retry,
         debugCanModifyProviders,
         Vsync,
         $ValueProvider,

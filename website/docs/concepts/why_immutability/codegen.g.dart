@@ -19,6 +19,7 @@ final class ThemeNotifierProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'themeNotifierProvider',
           isAutoDispose: true,
           dependencies: null,

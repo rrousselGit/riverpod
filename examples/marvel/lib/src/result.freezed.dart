@@ -71,6 +71,9 @@ class _$ResultCopyWithImpl<T, $Res, $Val extends Result<T>>
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
+
+  /// Create a copy of Result
+  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
@@ -90,6 +93,8 @@ class __$$ResultDataImplCopyWithImpl<T, $Res>
       _$ResultDataImpl<T> _value, $Res Function(_$ResultDataImpl<T>) _then)
       : super(_value, _then);
 
+  /// Create a copy of Result
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -129,7 +134,9 @@ class _$ResultDataImpl<T> extends _ResultData<T> {
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(value));
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Result
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ResultDataImplCopyWith<T, _$ResultDataImpl<T>> get copyWith =>
@@ -203,7 +210,10 @@ abstract class _ResultData<T> extends Result<T> {
   _ResultData._() : super._();
 
   T get value;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of Result
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ResultDataImplCopyWith<T, _$ResultDataImpl<T>> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -225,6 +235,8 @@ class __$$ResultErrorImplCopyWithImpl<T, $Res>
       _$ResultErrorImpl<T> _value, $Res Function(_$ResultErrorImpl<T>) _then)
       : super(_value, _then);
 
+  /// Create a copy of Result
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -270,7 +282,9 @@ class _$ResultErrorImpl<T> extends _ResultError<T> {
   int get hashCode => Object.hash(
       runtimeType, const DeepCollectionEquality().hash(error), stackTrace);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of Result
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$ResultErrorImplCopyWith<T, _$ResultErrorImpl<T>> get copyWith =>
@@ -347,7 +361,10 @@ abstract class _ResultError<T> extends Result<T> {
 
   Object get error;
   StackTrace? get stackTrace;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of Result
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ResultErrorImplCopyWith<T, _$ResultErrorImpl<T>> get copyWith =>
       throw _privateConstructorUsedError;
 }

@@ -1,0 +1,200 @@
+---
+title: クイックスタート
+version: 1
+---
+
+このセクションは、[Provider]パッケージに慣れている人が Riverpod について学ぶためのものです。
+
+まずは、短い[開始方法]の記事を読み、[sandbox]の例を試して Riverpod の機能を確認してください。それが気に入ったら、移行を検討する価値があります。
+
+実際に、Provider から Riverpod への移行は非常に簡単です。
+
+移行は基本的にいくつかのステップで構成されており、段階的に行うことができます。
+
+## `ChangeNotifierProvider`から始める
+
+Riverpod に移行する間、ChangeNotifier を使用し続け、最新の機能をすぐに使用しないことも可能です。
+
+以下のようにするのが良いでしょう:
+
+```dart
+// もしこのようなコードがあったら...
+class MyNotifier extends ChangeNotifier {
+  int state = 0;
+
+  void increment() {
+    state++;
+    notifyListeners();
+  }
+}
+
+// ...このように追加するだけです！
+final myNotifierProvider = ChangeNotifierProvider<MyNotifier>((ref) {
+  return MyNotifier();
+});
+```
+
+ご覧のとおり、Riverpod は[ChangeNotifierProvider]クラスを公開しており、これは Provider パッケージ
+からの移行をサポートするためのものです。
+
+この provider は新しいコードを書く際には推奨されず、Riverpod の最適な使用方法ではありませんが、移行を始めるための穏やかで非常に簡単な方法です。
+
+:::tip
+`ChangeNotifier` をすぐに最新の[Riverpod の provider]に変更する必要はありません。これらには多少のパラダイムシフトが必要な場合があり、最初は難しいかもしれません。
+
+まずは Riverpod に慣れることが重要です。
+Provider パッケージ の ほとんどすべての provider には、 riverpod パッケージに厳密に対応するものがあることがすぐにわかるでしょう。
+:::
+
+## *葉*から始める
+
+依存関係のない provider から始めます。つまり、依存関係ツリーの葉から始めます。
+すべての葉を移行したら、次に葉に依存する provider に移行します。
+
+言い換えれば、最初は ProxyProvider の移行を避け、その依存関係がすべて移行された後に取り組みます。
+
+これにより、移行プロセスが促進され、簡素化されるとともに、エラーを最小限に抑える、もしくは追跡することができます。
+
+## Riverpod と Provider は共存できる
+
+_Provider と Riverpod を同時に使用することは完全に可能であることを覚えておいてください。_
+
+実際、インポートエイリアスを使用することで、両方の API を同時に使用できます。
+これは可読性にも優れており、API の使用に曖昧さが生じることもありません。
+
+これを行う場合、コードベース内の各 Provider インポートに対してインポートエイリアスを使用することを検討してください。
+
+:::info
+インポートエイリアスを効果的に実装するための完全なガイドが近日公開予定です。
+:::
+
+## `Consumer`をすぐに使用する必要はありません
+
+[Riverpod's `Consumer` APIs]をすぐに使用する必要はないことを覚えておいてください。
+移行を始めたばかりの場合は、前述の[ChangeNotifierProvider] から始めるのが良いでしょう。
+
+上記で定義した `myNotifierProvider` を考えてみましょう。
+
+内部のコードが Provider パッケージの API に依存している場合、
+次のようにして Riverpod パッケージで ChangeNotifier を利用開始することができます。
+
+```dart
+MultiProvider(
+  providers: [
+    ChangeNotifierProvider.value(value: ref.watch(myNotifierProvider.notifier)),
+  ]
+)
+```
+
+この方法では、最初にルートウィジェットだけを`ConsumerWidget`に変換する必要があります。
+これにより、Riverpod パッケージへの移行がさらに容易になります。
+
+## 1 つずつ provider を移行する
+
+既存のアプリがある場合、すべての provider を一度に移行しようとしないでください！
+
+長期的にはアプリケーション全体を Riverpod に移行することを目指すべきですが、**無理をしないように**しましょう。
+1 つの provider ずつ移行します。
+
+上記の例を考えてみましょう。`myNotifierProvider`を完全に Riverpod に移行するには、次のように記述します:
+
+```dart
+class MyNotifier extends Notifier<int> {
+  @override
+  int build() => 0;
+
+  void increment() => state++;
+}
+
+final myNotifierProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
+```
+
+.. そして、その provider を消費する方法も変更する必要があります。
+つまり、この provider に対して `context.watch` の代わりに `ref.watch` を記述します。
+
+この操作には時間がかかることがあり、いくつかのエラーが発生する可能性があるため、一度にこれをすべて行うのは避けましょう。
+
+## `ProxyProvider` の移行
+
+Provider パッケージでは、 `ProxyProvider`は他の provider から値を組み合わせるために使用されます。
+そのビルドは他の provider の値に依存し、リアクティブに行われます。
+
+Riverpod では、provider は[デフォルトで構成可能]です。
+そのため、`ProxyProvider`を移行する際には、他の provider に対する直接的な依存関係を宣言したい場合は`ref.watch`を記述するだけです。
+
+何かあれば、Riverpod を使用して値を組み合わせることは簡単で直感的に感じるはずです。  
+そのため、移行はコードを大幅に簡素化するはずです。
+
+さらに、2 つ以上の provider を組み合わせることに関する煩わしいことはありません.
+もう 1 つ`ref.watch`を追加するだけで OK です。
+
+## 積極的初期化
+
+Riverpod の provider はグローバルな変数であるため、デフォルトで[遅延初期化]されます。
+
+起動時にウォームアップデータや便利なサービスを初期化する必要がある場合、最適な方法は以前に`MultiProvider`を使用していた場所で最初に provider を読み取ることです。
+
+つまり、Riverpod を積極的に初期化することはできませんが、起動フェーズで読み取ってキャッシュすることで、アプリケーションの他の部分で必要なときにウォームアップされ準備が整うようにすることができます。
+
+Riverpod パッケージの provider の積極的初期化に関する完全なガイドは[こちら]にあります。
+
+## コード生成
+
+Riverpod を将来にわたって堅牢に使用するためには[コード生成]が推奨されます。
+メタプログラミングが可能になった場合、コード生成が Riverpod のデフォルトになる可能性があります。
+
+残念ながら、`@riverpod`は`ChangeNotifierProvider`のコードを生成することはできません。
+これを克服するために、以下のユーティリティ拡張メソッドを使用できます：
+
+```dart
+extension ChangeNotifierWithCodeGenExtension on Ref {
+  T listenAndDisposeChangeNotifier<T extends ChangeNotifier>(T notifier) {
+    notifier.addListener(notifyListeners);
+    onDispose(() => notifier.removeListener(notifyListeners));
+    onDispose(notifier.dispose);
+    return notifier;
+  }
+}
+```
+
+そして、次のコード生成構文を使用して`ChangeNotifier`を公開できます：
+
+```dart
+// ignore_for_file: unsupported_provider_value
+@riverpod
+MyNotifier example(ExampleRef ref) {
+  return ref.listenAndDisposeChangeNotifier(MyNotifier());
+}
+```
+
+"ベース"の移行が完了したら、`ChangeNotifier`を`Notifier`に変更して、仮の拡張を排除できます。
+前述の例を取り上げると、完全に移行された Notifier は次のようになります：
+
+```dart
+@riverpod
+class MyNotifier extends _$MyNotifier {
+  @override
+  int build() => 0;
+
+  void increment() => state++;
+}
+```
+
+これが完了し、コードベースに`ChangeNotifierProvider`がもう存在しないことを確認したら、一時的な拡張を完全に削除できます。
+
+コード生成は推奨されますが、*必須*ではありません。
+この移行を行うと同時に、コード生成の構文に移行するのが多すぎると感じる場合は、移行は一度にせず段階的に行いましょう。
+
+このガイドに従えば、後でさらに一歩進んでコード生成に移行することが可能です。
+
+[開始方法]: /docs/introduction/getting_started
+[sandbox]: https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2
+[provider]: https://pub.dev/packages/provider
+[ChangeNotifierProvider]: /docs/providers/change_notifier_provider
+[コード生成]: /docs/concepts/about_code_generation
+[Riverpod の provider]: /docs/providers/notifier_provider
+[デフォルトで構成可能]: /docs/from_provider/motivation#combining-providers-is-hard-and-error-prone
+[前述の通り]: /docs/from_provider/quickstart#start-with-changenotifierprovider
+[Riverpod's `Consumer` APIs]: /docs/concepts/reading
+[遅延初期化]: /docs/concepts/provider_lifecycles
+[こちら]: /docs/essentials/eager_initialization

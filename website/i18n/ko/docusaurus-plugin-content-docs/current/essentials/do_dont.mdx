@@ -1,9 +1,10 @@
 ---
 title: 권장사항(DO/DON'T)
+version: 1
 ---
 
-import { Link } from "../../../../../src/components/Link";
-import { AutoSnippet, When } from "../../../../../src/components/CodeSnippet";
+import { Link } from "/src/components/Link";
+import { AutoSnippet, When } from "/src/components/CodeSnippet";
 
 코드의 유지보수성을 높이기 위해 Riverpod를 사용할 때 따라야 할 모범 사례 목록은 다음과 같습니다.
 
@@ -17,7 +18,7 @@ import { AutoSnippet, When } from "../../../../../src/components/CodeSnippet";
 
 ## AVOID 위젯에서 provider를 초기화하지 마세요
 
-Providers는 스스로 초기화해야 합니다.  
+providers는 스스로 초기화해야 합니다.  
 위젯과 같은 외부 요소에 의해 초기화되어서는 안 됩니다.
 
 그렇게 하지 않으면 경합 상태(race conditions) 및 예기치 않은 동작(unexpected behaviors)이 발생할 수 있습니다.
@@ -80,7 +81,7 @@ provider는 일반적으로 "read" 작업을 나타내는 데 사용해야 합�
 final submitProvider = FutureProvider((ref) async {
   final formState = ref.watch(formState);
 
-  // Bad: 공급자는 'write' 작업에 사용해서는 안 됩니다.
+  // Bad: providers는 'write' 작업에 사용해서는 안 됩니다.
   return http.post('https://my-api.com', body: formState.toJson());
 });
 ```
@@ -120,7 +121,7 @@ class Example extends ConsumerWidget {
 
 ## AVOID 동적으로 providers 생성하지 않기
 
-공급자는 최상위 레벨(top-level)의 final 변수만 사용해야 합니다.
+providers는 최상위 레벨(top-level)의 final 변수만 사용해야 합니다.
 
 **Do**:
 

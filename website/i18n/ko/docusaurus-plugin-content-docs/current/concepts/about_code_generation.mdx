@@ -1,6 +1,6 @@
 ---
 title: 코드 생성(Code generation)에 대한 정보
-version: 1
+version: 2
 ---
 
 import Tabs from "@theme/Tabs";
@@ -8,8 +8,8 @@ import TabItem from "@theme/TabItem";
 import CodeBlock from "@theme/CodeBlock";
 import fetchUser from "!!raw-loader!/docs/concepts/about_codegen/main.dart";
 import rawFetchUser from "!!raw-loader!/docs/concepts/about_codegen/raw.dart";
-import { Link } from "../../../../../src/components/Link";
-import { trimSnippet, CodeSnippet } from "../../../../../src/components/CodeSnippet";
+import { Link } from "/src/components/Link";
+import { trimSnippet, CodeSnippet } from "/src/components/CodeSnippet";
 import syncFn from "!!raw-loader!/docs/concepts/about_codegen/provider_type/sync_fn.dart";
 import syncClass from "!!raw-loader!/docs/concepts/about_codegen/provider_type/sync_class.dart";
 import asyncFnFuture from "!!raw-loader!/docs/concepts/about_codegen/provider_type/async_fn_future.dart";
@@ -187,7 +187,6 @@ Riverpod의 코드 생성을 사용하려면, <Link documentID="introduction/get
 ### 자동폐기(autoDispose) 활성화/비활성화:
 
 코드 생성을 사용할때, provider는 기본적으로 autoDispose가 활성화됩니다.
-코드 생성을 사용할 때 공급자는 기본적으로 자동 폐기됩니다. 
 즉, 연결(ref.watch/ref.listen)된 리스너가 없을 때 자동으로 폐기됩니다.
 이 기본 설정은 Riverpod의 철학에 더 잘 부합합니다. 
 코드 생성하지 않는 버전을 사용하면, `package:provider`에서 마이그레이션하는 사용자를 위해 자동폐기(autoDispose) 기능이 기본적으로 꺼져 있었습니다.

@@ -24,6 +24,7 @@ final class UserProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'userProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -75,6 +76,7 @@ final class ExampleProvider extends $FunctionalProvider<Object?, Object?>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'exampleProvider',
           isAutoDispose: true,
           dependencies: null,

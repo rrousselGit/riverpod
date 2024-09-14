@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -29,19 +29,19 @@ class FunctionalRef extends RiverpodLintRule {
       final refNode = parameters.parameters.firstOrNull;
       if (refNode == null) {
         // No ref parameter, underlining the function name
-        reporter.reportErrorForToken(_code, declaration.name);
+        reporter.atToken(declaration.name, _code);
         return;
       }
 
       if (!refNode.isExplicitlyTyped) {
         // No type specified. Underlining the ref name
-        reporter.reportErrorForToken(_code, refNode.name!);
+        reporter.atToken(refNode.name!, _code);
         return;
       }
 
       if (refNode is! SimpleFormalParameter) {
         // Users likely forgot to specify "ref" and the provider has other parameters
-        reporter.reportErrorForToken(_code, refNode.name!);
+        reporter.atToken(refNode.name!, _code);
         return;
       }
 
@@ -50,7 +50,7 @@ class FunctionalRef extends RiverpodLintRule {
 
       final expectedRefName = refNameFor(declaration);
       if (refNodeType.beginToken.lexeme != expectedRefName) {
-        reporter.reportErrorForNode(_code, refNodeType);
+        reporter.atNode(refNodeType, _code);
       }
 
       final expectedTypeArguments =
@@ -59,7 +59,7 @@ class FunctionalRef extends RiverpodLintRule {
 
       final currentRefType = refNode.type;
       if (currentRefType is! NamedType) {
-        reporter.reportErrorForNode(_code, refNodeType);
+        reporter.atNode(refNodeType, _code);
         return;
       }
       final actualTypeArguments =
@@ -69,7 +69,7 @@ class FunctionalRef extends RiverpodLintRule {
         expectedTypeArguments,
         actualTypeArguments,
       )) {
-        reporter.reportErrorForNode(_code, refNodeType);
+        reporter.atNode(refNodeType, _code);
         return;
       }
     });

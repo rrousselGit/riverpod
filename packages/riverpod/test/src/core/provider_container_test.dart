@@ -1164,6 +1164,23 @@ void main() {
       });
     });
 
+    group('retry', () {
+      test('inherits retry from parent if arg is null', () {
+        Duration? rootRetry(int count, Object error) => Duration.zero;
+        Duration? subRetry(int count, Object error) => Duration.zero;
+
+        final root = ProviderContainer.test(retry: rootRetry);
+        final container = ProviderContainer.test(parent: root);
+        final container2 = ProviderContainer.test(
+          parent: root,
+          retry: subRetry,
+        );
+
+        expect(container.retry, root.retry);
+        expect(container2.retry, subRetry);
+      });
+    });
+
     test(
         'Reading a provider with deps does not mount those deps if unused by the provider',
         () {

@@ -23,6 +23,7 @@ final class HelloWorldProvider extends $FunctionalProvider<String, String>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'helloWorldProvider',
           isAutoDispose: true,
           dependencies: null,

@@ -9,7 +9,7 @@ module.exports = {
   trailingSlash: false,
   i18n: {
     defaultLocale: "en",
-    locales: ["en", "fr", "ko", "ja", "es", "bn", "de", "it", "ru", "zh-Hans"],
+    locales: ["en", "fr", "ko", "ja", "es", "bn", "de", "it", "ru", "tr", "zh-Hans"],
   },
   themeConfig: {
     algolia: {
@@ -84,7 +84,7 @@ module.exports = {
             },
             {
               label: "Stack Overflow",
-              href: "https://stackoverflow.com/questions/tagged/flutter",
+              href: "https://stackoverflow.com/questions/tagged/riverpod",
             },
             {
               label: "Twitter",
@@ -96,7 +96,7 @@ module.exports = {
             },
             {
               label: "Contributing guide",
-              href: "https://github.com/rrousselGit/riverpod/blob/rework-flow/CONTRIBUTING.md",
+              href: "https://github.com/rrousselGit/riverpod/blob/master/CONTRIBUTING.md",
             },
           ],
         },

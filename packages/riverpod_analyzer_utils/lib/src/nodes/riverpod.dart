@@ -3,7 +3,7 @@ part of '../nodes.dart';
 extension RiverpodAnnotatedAnnotatedNodeOfX on AnnotatedNode {
   RiverpodAnnotation? get riverpod {
     return upsert('RiverpodAnnotationAnnotatedNodeX', () {
-      return metadata.map((e) => e.riverpod).whereNotNull().firstOrNull;
+      return metadata.map((e) => e.riverpod).nonNulls.firstOrNull;
     });
   }
 }
@@ -32,12 +32,24 @@ extension RiverpodAnnotatedAnnotatedNodeX on Annotation {
         (e) => e.expression.providerDependencyList,
       );
 
+      final AstNode? retryNode = arguments?.named('retry')?.expression;
+      if (retryNode is! SimpleIdentifier?) {
+        errorReporter(
+          RiverpodAnalysisError(
+            'The "retry" argument must be a variable.',
+            targetNode: retryNode,
+            code: RiverpodAnalysisErrorCode.invalidRetryArgument,
+          ),
+        );
+      }
+
       return RiverpodAnnotation._(
         node: this,
         element: riverpodAnnotationElement,
         keepAliveNode: arguments?.named('keepAlive'),
         dependenciesNode: dependenciesNode,
         dependencyList: dependencyList,
+        retryNode: retryNode as SimpleIdentifier?,
       );
     });
   }
@@ -50,6 +62,7 @@ final class RiverpodAnnotation {
     required this.keepAliveNode,
     required this.dependenciesNode,
     required this.dependencyList,
+    required this.retryNode,
   });
 
   final Annotation node;
@@ -57,6 +70,7 @@ final class RiverpodAnnotation {
   final NamedExpression? keepAliveNode;
   final NamedExpression? dependenciesNode;
   final ProviderDependencyList? dependencyList;
+  final SimpleIdentifier? retryNode;
 }
 
 final class RiverpodAnnotationElement {
@@ -105,7 +119,7 @@ final class RiverpodAnnotationElement {
   }
 
   static RiverpodAnnotationElement? _of(Element element) {
-    return element.metadata.map(_parse).whereNotNull().firstOrNull;
+    return element.metadata.map(_parse).nonNulls.firstOrNull;
   }
 
   final bool keepAlive;

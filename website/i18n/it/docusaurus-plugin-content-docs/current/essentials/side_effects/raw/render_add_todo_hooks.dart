@@ -42,7 +42,7 @@ class Example extends HookConsumerWidget {
         ElevatedButton(
           style: ButtonStyle(
             // Se c'è stato un errore mostriamo il bottone in rosso
-            backgroundColor: MaterialStateProperty.all(
+            backgroundColor: WidgetStatePropertyAll(
               isErrored ? Colors.red : null,
             ),
           ),

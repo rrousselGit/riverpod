@@ -21,6 +21,7 @@ final class SimpleProvider extends $FunctionalProvider<String, String>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'simpleProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -80,6 +81,7 @@ final class Simple2Provider extends $FunctionalProvider<String, String>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'simple2Provider',
           isAutoDispose: true,
           dependencies: null,
@@ -134,6 +136,7 @@ final class SimpleClassProvider extends $NotifierProvider<SimpleClass, String> {
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'simpleClassProvider',
           isAutoDispose: true,
           dependencies: null,

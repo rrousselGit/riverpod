@@ -263,12 +263,14 @@ class $builderName {
     ${provider.createdT} Function(${provider.refT} ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
   }) {
     return ${provider.providerName}Family<${provider.genericsUsage}, ArgT>(
       create,
       name: name,
       ${_isAutoDisposeParam(disposeType)}
       dependencies: dependencies,
+      retry: retry,
     );
   }
 
@@ -297,12 +299,14 @@ class $builderName {
     ${provider.createdT} Function(${provider.refT} ref) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
   }) {
     return ${provider.providerName}<${provider.genericsUsage}>(
       create,
       name: name,
       ${_isAutoDisposeParam(disposeType)}
       dependencies: dependencies,
+      retry: retry,
     );
   }
 
@@ -401,12 +405,14 @@ class $builderName {
     NotifierT Function() create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
   }) {
     return $providerName${provider.genericsUsage}$ctor(
       create,
       name: name,
       ${_isAutoDisposeParam(disposeType)}
       dependencies: dependencies,
+      retry: retry,
     );
   }
 

@@ -1,0 +1,154 @@
+---
+title: リクエストの組み合わせ
+version: 2
+---
+
+import { Link } from "/src/components/Link";
+import { AutoSnippet } from "/src/components/CodeSnippet";
+import functionalRef from "/docs/essentials/combining_requests/functional_ref";
+import notifierRef from "/docs/essentials/combining_requests/notifier_ref";
+import watchExample from "/docs/essentials/combining_requests/watch_example";
+import watchPlacement from "/docs/essentials/combining_requests/watch_placement";
+import listenExample from "/docs/essentials/combining_requests/listen_example";
+import readExample from "/docs/essentials/combining_requests/read_example";
+
+これまで、リクエストが互いに独立している場合だけを見てきました。  
+しかし、一般的なユースケースとして、あるリクエストの結果に基づいて別のリクエストをトリガーする必要がある場合があります。
+
+このため、[リクエストに引数を渡す](/docs/essentials/passing_args)メカニズムを使用して、provider の結果を別の provider へのパラメータとして渡すことができます。
+
+しかしこのアプローチはいくつか欠点があります:
+
+- 実装の詳細が漏れることになります。  
+  UI が他の provider によって使用されるすべての provider を知っている必要があります。
+- パラメータが変更されるたびに新しい state が作成されます。  
+  パラメータを渡すことで、パラメータが変更したときに前の state を維持する方法がありません。
+- リクエストの組み合わせが難しくなります。
+- 開発ツールは provider 間の関係を知らないため、ツールの有用性が低くなります。
+
+これを向上させるため、Riverpod はリクエストの組み合わせに異なるアプローチを提供します。
+
+## 基本: “ref” の取得
+
+リクエストを組み合わせる全ての方法は 1 つの共通点があります:  
+それらはすべて`Ref`オブジェクトに基づいています。
+
+`Ref` オブジェクトは、すべての provider がアクセスできるオブジェクトです。  
+これにより、さまざまなライフサイクルリスナーにアクセスできるだけでなく、provider を組み合わせるさまざまなメソッドも提供します。
+
+`Ref` を取得できる場所は、provider のタイプによって異なります。
+
+機能的な provider では、`Ref` は provider の関数のパラメータとして渡されます:
+
+<AutoSnippet
+  {...functionalRef}
+  translations={{
+    provider: '  // "Ref "は、他のproviderを読むために使うことができます。',
+  }}
+/>
+
+クラスの種類では、`Ref` は Notifier クラスのプロパティです:
+
+<AutoSnippet
+  {...notifierRef}
+  translations={{
+    watch: '    //  "Ref "は、他のproviderを読むために使うことができます。',
+  }}
+/>
+
+## ref を使用して provider を読む
+
+## `ref.watch` メソッド
+
+`Ref` を取得したので、これを使用してリクエストを組み合わせることができます。  
+主な方法は `ref.watch` を使用することです。  
+一般的に、他のオプション以上に`ref.watch` を使用することを推奨します,  
+これが一般的にメンテナンスを簡単にします。
+
+`ref.watch` は provider を受け取り、最新の state を返します。  
+そして、監視された provider が変更されるたびに、provider は無効になり、次のフレームまたは次の読み取りで再構築されます。
+
+`ref.watch`を使うことで、ロジックが"リアクティブ"かつ"宣言的"になります。  
+つまり、必要に応じてロジックが自動的に再計算されるようになります。  
+また、更新メカニズムが"on change"のような副作用に依存しないことを意味します。  
+これは StatelessWidgets が動作する方法と似ています。
+
+例えば、ユーザーの位置情報を監視する provider を定義し、  
+その位置情報を使用してユーザーの近くのレストランのリストを取得することができます。
+
+<AutoSnippet
+  {...watchExample}
+  translations={{
+    provider: "  // TO-DO: 現在位置を取得するstreamを返す",
+    watch:
+      '  // 現在位置を取得するため"ref.watch"を使用する。\n  // providerの後に".future "を指定することで、コードは少なくとも1つの場所が利用可能になるまで待ちます。',
+    get: "  // 現在位置に基づいてネットワークリクエストを作成することができました。\n  // 例えばGoogle Map APIを使用することもできます。:",
+    jsonDecode: "  // JSONからレストラン名を取得する。",
+  }}
+/>
+
+:::info
+監視された provider が変更され、リクエストが再計算されると、新しいリクエストが完了されるまで以前の状態が保持されます。  
+同時に、リクエストが保留中の間、"isLoading"と"isReloading"フラグがセットされます。
+
+これにより、UI は前の状態や読み込みインジケーター、またはその両方を表示することができます。
+:::
+
+:::info
+`ref.watch(locationProvider)` ではなく、`ref.watch(locationProvider.future)` を使用したことに注目してください。  
+これは、locationProvider が非同期であるためです。そのため、初期値が利用可能になるのを待ちます。
+
+もし `.future` を省略すると、`locationProvider` の現在の状態のスナップショットである `AsyncValue` を受け取ります。  
+しかし、まだ場所が利用できない場合は、何もできません。  
+:::
+
+:::caution
+"命令型"に実行されるコード内で `ref.watch` を呼び出すことは悪いプラクティスとされています。  
+これは、provider のビルド段階で実行されない可能性があるコードを意味します。  
+これには、"listener"コールバックや Notifier のメソッドが含まれます:
+
+<AutoSnippet {...watchPlacement} translations={{}} />
+:::
+
+## `ref.listen`/`listenSelf` メソッド
+
+`ref.listen` メソッドは `ref.watch`の代替手段です。  
+これは、従来の"listen"/"addListener"メソッドに似ています。  
+provider とコールバックを受け取り、provider の内容が変更されるたびにそのコールバックを呼び出します。
+
+`ref.listen` から `ref.watch`にリファクタリングすることが一般的に推奨されます。  
+後者は命令形であるため、エラーが発生しやすいためです。  
+しかし、`ref.listen`は大きなリファクタリングを行わず、迅速にロジックの追加することに役立つことがあります。
+
+`ref.watch` の例を `ref.listen` を使用して書き換えることができます。
+
+<AutoSnippet {...listenExample} translations={{}} />
+
+:::info
+provider のビルド段階で'`ref.listen`を使用することは安全です。  
+provider が再計算されると、以前のリスナーは削除されます。
+
+代わりに、`ref.listen`の戻り値を使用して、望むときにリスナーを手動で削除することもできます。
+:::
+
+## `ref.read` メソッド
+
+最後のオプションは `ref.read` です。  
+provider の最新の state を返す点で`ref.watch`と似ています。
+しかし、`ref.watch`とは異なり、provider をリッスンしません。
+
+そのため、`ref.read`は Notifiers のメソッド内、`ref.watch`を使用できない場所でのみ使用する必要があります。
+
+<AutoSnippet
+  {...readExample}
+  translations={{
+    read: '    // 悪い例です。 ここで "read "を使ってはいけません。',
+    read2:
+      '    // ここで"read"を使用することは問題ありません。\n    ref.read(otherProvider); ',
+  }}
+/>
+
+:::caution
+provider を監視しないため、`ref.read` を provider で使用する際には注意が必要です。  
+リスナーがいない場合、provider は state を破棄する可能性があります。
+:::

@@ -22,6 +22,8 @@
   When specifying `weak: true`, the listener will not cause the provider to be
   initialized. This is useful when wanting to react to changes to a provider,
   but not trigger a network request if not necessary.
+- `AsyncValue` now has an optional `progress` field.
+  This can be set by providers to allow the UI to show a custom progress logic.
 - An error is now thrown when trying to override a provider twice in the same
   `ProviderContainer`.
 - Disposing a `ProviderContainer` now disposes of all of its sub `ProviderContainers` too.
@@ -37,6 +39,8 @@
   issues where an old build of a provider is still performing work.
 - Updated `AsyncValue` documentations to use pattern matching.
 - Added support for `Ref/ProviderContainer.invalidate(provider, asReload: true)`
+- Failing providers are now automatically retried after a delay.
+  The delay can be optionally configured.
 - Fixed a bug when overriding a specific provider of a `family`, combined with `dependencies: [family]`
 
 ## 3.0.0-dev.3 - 2023-11-27

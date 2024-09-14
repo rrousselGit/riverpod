@@ -39,6 +39,7 @@ class FamilyTemplate extends Template {
 ${provider.doc} final class ${provider.familyTypeName} extends Family {
   const ${provider.familyTypeName}._()
       : super(
+        retry: ${provider.annotation.retryNode?.name ?? 'null'},
         name: r'${provider.providerName(options)}',
         dependencies: ${provider.dependencies(options)},
         allTransitiveDependencies: ${provider.allTransitiveDependencies(allTransitiveDependencies)},

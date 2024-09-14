@@ -42,6 +42,18 @@ Various lints had their severity changed:
 
 - `riverpod` upgraded to `3.0.0-dev.0`
 
+## 2.3.13 - 2024-08-15
+
+Bump custom_lint
+
+## 2.3.12 - 2024-05-14
+
+- Correctly set minimum support analyzer version to 6.5.0
+
+## 2.3.11 - 2024-05-14 (retracted)
+
+- Support analyzer 6.5.0
+
 ## 2.3.10 - 2024-03-10
 
 - `riverpod` upgraded to `2.5.1`

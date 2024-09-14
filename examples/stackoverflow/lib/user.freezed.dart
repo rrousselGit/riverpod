@@ -27,8 +27,12 @@ mixin _$User {
   String get profileImage => throw _privateConstructorUsedError;
   String get link => throw _privateConstructorUsedError;
 
+  /// Serializes this User to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of User
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $UserCopyWith<User> get copyWith => throw _privateConstructorUsedError;
 }
 
@@ -58,6 +62,8 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of User
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -96,6 +102,8 @@ class _$UserCopyWithImpl<$Res, $Val extends User>
     ) as $Val);
   }
 
+  /// Create a copy of User
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
   $BadgeCountCopyWith<$Res>? get badgeCounts {
@@ -135,6 +143,8 @@ class __$$UserImplCopyWithImpl<$Res>
   __$$UserImplCopyWithImpl(_$UserImpl _value, $Res Function(_$UserImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of User
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -224,12 +234,14 @@ class _$UserImpl implements _User {
             (identical(other.link, link) || other.link == link));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, reputation, userId, badgeCounts,
       displayName, profileImage, link);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of User
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$UserImplCopyWith<_$UserImpl> get copyWith =>
@@ -266,8 +278,11 @@ abstract class _User implements User {
   String get profileImage;
   @override
   String get link;
+
+  /// Create a copy of User
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$UserImplCopyWith<_$UserImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -282,8 +297,12 @@ mixin _$BadgeCount {
   int get silver => throw _privateConstructorUsedError;
   int get gold => throw _privateConstructorUsedError;
 
+  /// Serializes this BadgeCount to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-  @JsonKey(ignore: true)
+
+  /// Create a copy of BadgeCount
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   $BadgeCountCopyWith<BadgeCount> get copyWith =>
       throw _privateConstructorUsedError;
 }
@@ -307,6 +326,8 @@ class _$BadgeCountCopyWithImpl<$Res, $Val extends BadgeCount>
   // ignore: unused_field
   final $Res Function($Val) _then;
 
+  /// Create a copy of BadgeCount
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -350,6 +371,8 @@ class __$$BadgeCountImplCopyWithImpl<$Res>
       _$BadgeCountImpl _value, $Res Function(_$BadgeCountImpl) _then)
       : super(_value, _then);
 
+  /// Create a copy of BadgeCount
+  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
@@ -405,11 +428,13 @@ class _$BadgeCountImpl implements _BadgeCount {
             (identical(other.gold, gold) || other.gold == gold));
   }
 
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, bronze, silver, gold);
 
-  @JsonKey(ignore: true)
+  /// Create a copy of BadgeCount
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
   _$$BadgeCountImplCopyWith<_$BadgeCountImpl> get copyWith =>
@@ -438,8 +463,11 @@ abstract class _BadgeCount implements BadgeCount {
   int get silver;
   @override
   int get gold;
+
+  /// Create a copy of BadgeCount
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(ignore: true)
+  @JsonKey(includeFromJson: false, includeToJson: false)
   _$$BadgeCountImplCopyWith<_$BadgeCountImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

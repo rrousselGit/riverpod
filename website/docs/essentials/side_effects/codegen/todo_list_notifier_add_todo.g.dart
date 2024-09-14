@@ -19,6 +19,7 @@ final class TodoListProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'todoListProvider',
           isAutoDispose: true,
           dependencies: null,

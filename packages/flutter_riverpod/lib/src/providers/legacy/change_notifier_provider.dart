@@ -1,7 +1,6 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 // ignore: implementation_imports
 import 'package:riverpod/src/internals.dart';
@@ -88,6 +87,7 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     super.name,
     super.dependencies,
     super.isAutoDispose = false,
+    super.retry,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
@@ -105,6 +105,7 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     required super.isAutoDispose,
     super.from,
     super.argument,
+    super.retry,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -228,6 +229,7 @@ class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
     super.name,
     super.dependencies,
     super.isAutoDispose = false,
+    super.retry,
   }) : super(
           providerFactory: ChangeNotifierProvider.internal,
           allTransitiveDependencies:

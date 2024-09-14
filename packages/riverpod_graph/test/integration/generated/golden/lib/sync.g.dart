@@ -25,6 +25,7 @@ final class PublicProvider extends $FunctionalProvider<String, String>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'publicProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -88,6 +89,7 @@ final class Supports$inNamesProvider extends $FunctionalProvider<String, String>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'supports$inNamesProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -163,6 +165,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
       })? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'familyProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -264,6 +267,7 @@ String _$familyHash() => r'ebf082969854dcc358b9870a2e5e9b922423e59b';
 final class FamilyFamily extends Family {
   const FamilyFamily._()
       : super(
+          retry: null,
           name: r'familyProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -341,6 +345,7 @@ final class _PrivateProvider extends $FunctionalProvider<String, String>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'_privateProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -398,6 +403,7 @@ final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'publicClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -467,6 +473,7 @@ final class _PrivateClassProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'_privateClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -546,6 +553,7 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
       FamilyClass Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'familyClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -636,6 +644,7 @@ String _$familyClassHash() => r'721bdd2f1ca0d7cee1a0ae476d7bfe93f9ce6875';
 final class FamilyClassFamily extends Family {
   const FamilyClassFamily._()
       : super(
+          retry: null,
           name: r'familyClassProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -777,6 +786,7 @@ final class Supports$InClassNameProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'supports$InClassNameProvider',
           isAutoDispose: true,
           dependencies: null,

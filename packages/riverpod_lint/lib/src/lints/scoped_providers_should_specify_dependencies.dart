@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
@@ -70,7 +70,7 @@ class ScopedProvidersShouldSpecifyDependencies extends RiverpodLintRule {
       // We can only know statically if a provider is scoped on generator providers
       if (provider is! GeneratorProviderDeclarationElement) continue;
       if (!provider.isScoped) {
-        reporter.reportErrorForNode(code, override.node);
+        reporter.atNode(override.node, code);
       }
     }
   }

@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
-import 'package:riverpod/riverpod.dart';
-import 'package:test/test.dart';
+import 'package:riverpod/src/internals.dart';
+import 'package:test/test.dart' hide Retry;
 
 List<Object?> captureErrors(List<void Function()> cb) {
   final errors = <Object?>[];
@@ -128,6 +128,21 @@ class OverrideWithBuildMock<NotifierT, StateT, CreatedT> extends Mock {
   }
 }
 
+class RetryMock extends Mock {
+  RetryMock([Retry? retry]) {
+    if (retry != null) {
+      when(call(any, any)).thenAnswer(
+        (i) => retry(
+          i.positionalArguments[0] as int,
+          i.positionalArguments[1] as Object,
+        ),
+      );
+    }
+  }
+
+  Duration? call(int? retryCount, Object? error);
+}
+
 class OnBuildMock extends Mock {
   void call();
 }
@@ -183,6 +198,16 @@ class Listener<T> extends Mock {
 }
 
 final isAssertionError = isA<AssertionError>();
+
+Matcher isStateErrorWith({String? message}) {
+  var matcher = isA<StateError>();
+
+  if (message != null) {
+    matcher = matcher.having((e) => e.message, 'message', message);
+  }
+
+  return matcher;
+}
 
 class ErrorListener extends Mock {
   void call(Object? error, StackTrace? stackTrace);

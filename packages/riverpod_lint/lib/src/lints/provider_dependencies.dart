@@ -1,6 +1,6 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/diagnostic/diagnostic.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_dart.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
@@ -275,11 +275,11 @@ class ProviderDependencies extends RiverpodLintRule {
       late final unit = list.node.thisOrAncestorOfType<CompilationUnit>();
       late final source = unit?.declaredElement?.source;
 
-      reporter.reportErrorForNode(
-        _code,
+      reporter.atNode(
         list.target,
-        [message.toString()],
-        [
+        _code,
+        arguments: [message.toString()],
+        contextMessages: [
           for (final dependency in missingDependencies)
             if (source != null)
               _MyDiagnostic(
@@ -289,7 +289,7 @@ class ProviderDependencies extends RiverpodLintRule {
                 length: dependency.node.length,
               ),
         ],
-        _Data(usedDependencies: usedDependencies, list: list),
+        data: _Data(usedDependencies: usedDependencies, list: list),
       );
     });
   }

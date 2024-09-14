@@ -14,7 +14,7 @@ _$QuestionsResponseImpl _$$QuestionsResponseImplFromJson(
       items: (json['items'] as List<dynamic>)
           .map((e) => Question.fromJson(e as Map<String, dynamic>))
           .toList(),
-      total: json['total'] as int,
+      total: (json['total'] as num).toInt(),
     );
 
 Map<String, dynamic> _$$QuestionsResponseImplToJson(
@@ -27,17 +27,17 @@ Map<String, dynamic> _$$QuestionsResponseImplToJson(
 _$QuestionImpl _$$QuestionImplFromJson(Map<String, dynamic> json) =>
     _$QuestionImpl(
       tags: (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
-      viewCount: json['view_count'] as int,
-      score: json['score'] as int,
-      bountyAmount: json['bounty_amount'] as int?,
-      acceptedAnswerId: json['accepted_answer_id'] as int?,
+      viewCount: (json['view_count'] as num).toInt(),
+      score: (json['score'] as num).toInt(),
+      bountyAmount: (json['bounty_amount'] as num?)?.toInt(),
+      acceptedAnswerId: (json['accepted_answer_id'] as num?)?.toInt(),
       owner: User.fromJson((json['owner'] as Map<String, dynamic>).map(
         (k, e) => MapEntry(k, e as Object),
       )),
-      answerCount: json['answer_count'] as int,
-      creationDate:
-          const TimestampParser().fromJson(json['creation_date'] as int),
-      questionId: json['question_id'] as int,
+      answerCount: (json['answer_count'] as num).toInt(),
+      creationDate: const TimestampParser()
+          .fromJson((json['creation_date'] as num).toInt()),
+      questionId: (json['question_id'] as num).toInt(),
       link: json['link'] as String,
       title: json['title'] as String,
       body: json['body'] as String,
@@ -127,6 +127,7 @@ final class CurrentQuestionProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'currentQuestionProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],

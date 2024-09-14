@@ -1,0 +1,203 @@
+---
+title: リクエストに引数を渡す
+version: 3
+---
+
+import { Link } from "/src/components/Link";
+import { AutoSnippet, When } from "/src/components/CodeSnippet";
+import noArgProvider from "/docs/essentials/passing_args/no_arg_provider";
+import family from "/docs/essentials/passing_args/family";
+import consumerProvider from "!!raw-loader!/docs/essentials/passing_args/raw/consumer_provider.dart";
+import consumerFamily from "!!raw-loader!/docs/essentials/passing_args/raw/consumer_family.dart";
+import consumerListFamily from "!!raw-loader!/docs/essentials/passing_args/raw/consumer_list_family.dart";
+import multipleConsumerFamily from "!!raw-loader!/docs/essentials/passing_args/raw/multiple_consumer_family.dart";
+import tupleFamily from "!!raw-loader!/docs/essentials/passing_args/raw/tuple_family.dart";
+import consumerTupleFamily from "!!raw-loader!/docs/essentials/passing_args/raw/consumer_tuple_family.dart";
+
+前の記事では、シンプルな*GET* HTTP リクエストを行うための"provider"を定義する方法を見てきました。  
+しかし、HTTP リクエストは外部パラメータを必要とすることがよくあります。
+
+例えば、以前は[Bored API](https://boredapi.com/)を使ってユーザーにランダムなアクティビティを提案しました。  
+しかし、ユーザーはアクティビティのタイプをフィルタリングしたいかもしれませんし、価格要件などもあるかもしれません。  
+これらのパラメータは事前にはわかりません。  
+そのため、これらのパラメータを UI から provider に渡す方法が必要です。
+
+## provider を引数を受け取るように更新する
+
+以前、provider を次のように定義しました:
+
+<AutoSnippet
+  {...noArgProvider}
+  translations={{
+    functional: '// "関数型" provider',
+    fetchActivity:
+      "  // TODO: アクティビティをフェッチするためにネットワークリクエストを実行する。",
+    notifier: '// または "notifier"',
+    fetchActivity2:
+      "    // TODO: アクティビティをフェッチするためにネットワークリクエストを実行する。",
+  }}
+/>
+
+<When codegen={false}>
+コード生成に依存しない場合、引数を渡すためにproviderの定義方法を少し変更する必要があります。  
+これは"family"と呼ばれる"修飾子"を使用して行います。
+
+簡単に言うと、provider の型の後に .family を追加し、引数の型に対応する追加の型パラメータを追加する必要があります。  
+例えば、定義したいアクティビティの種類に対応する `String` 引数を受け取るように provider を更新することができます:
+
+</When>
+
+<When codegen={true}>
+
+provider にパラメータを渡すには、アノテーションが付いた関数自体にパラメータを追加するだけです。  
+例えば、定義したいアクティビティの種類に対応する `String` 引数を受け取るように provider を更新することができます:
+
+</When>
+
+<AutoSnippet
+  {...family}
+  translations={{
+    todo: "    // TODO: ネットワークリクエストを実行してアクティビティを取得します。",
+    raw_family:
+      '    // ".family"修飾子を使用します。\n    // "String"部分の型は引数の型になります。\n    // providerは "ref "に加えて、アクティビティタイプという追加の引数を受け取るようになります。',
+    raw_family_todo:
+      '  // TODO: "activityType "を使用してアクティビティをフェッチするためにネットワークリクエストを実行する。',
+    raw_activityProvider2:
+      '// ここでも、notifierには".family "修飾子を使い、引数には "String "型を指定します。',
+    raw_ActivityNotifier:
+      '// notifierに ".family"を使用した場合、 notifier サブクラスも変更する必要があります。:',
+    raw_build:
+      "  /// Familyで定義した引数はbuildメソッドに渡され、this.argでアクセスできます。",
+    raw_args: '    // 引数は "this.arg "でも指定できます。',
+    codegen_activityType:
+      "  // providerに引数を追加することができます。\n  // パラメータの型は何でも構いません。",
+    codegen_get:
+      '  // 引数 "activityType "を使ってURLを作ることができる。\n  // このポイントは "https://boredapi.com/api/activity?type=<activityType>"を指しています。',
+    codegen_query:
+      '      // クエリパラメータを手動でエンコードする必要はなく、 "Uri" クラスが行ってくれます。',
+    codegen_build:
+      "  /// Notifier 引数はbuildメソッドで指定します。\n  /// 引数は好きなだけ増やすことができ、optional/名前付き引数にすることも可能です。",
+    codegen_argument: '    // 引数は "this.<argumentName>" でも指定できます。',
+  }}
+/>
+
+:::caution
+provider に引数を渡すときは、provider に"autoDispose"を有効にすることを強くお勧めします。  
+これを怠るとメモリリークが発生する可能性があります。  
+詳細については[auto_dispose](/docs/essentials/auto_dispose)を参照してください。
+:::
+
+## 引数を渡すために UI を更新する
+
+以前は、ウィジェットが次のように provider を消費(consumed)していました:
+
+<AutoSnippet raw={consumerProvider} translations={{}} />
+
+しかし、provider が引数を受け取るため、それを消費(consume)するための構文が少し異なります。  
+provider は今や要求されたパラメータを使用して呼び出す必要がある関数です。  
+UI を更新して、ハードコードされたアクティビティタイプを渡すことができます:
+
+<AutoSnippet
+  raw={consumerFamily}
+  translations={{
+    provider:
+      "      // providerは、アクティビティタイプを期待する関数となります。\n      // 今回は単純に、定数の文字列を渡しましょう。",
+  }}
+/>
+
+<When codegen={true}>
+
+provider に渡されるパラメータは、アノテーション付き関数のパラメータ（“ref” パラメータを除く）に対応します。
+
+</When>
+
+:::info
+同じ provider に異なる引数で同時にリッスンすることは可能です。  
+例えば、UI は"recreational"と"cooking"の両方のアクティビティを表示することができます:
+
+<AutoSnippet
+  raw={multipleConsumerFamily}
+  translations={{
+    render:
+      "        // 両方のアクティビティを表示できます。\n        // 両方のリクエストは並行して行われ、正しくキャッシュされる。",
+  }}
+/>
+
+<When codegen={false}>
+
+この修飾子が"family"と呼ばれる理由は、provider にパラメータを渡すことで、provider が同じロジックを持つ状態のグループに変わるためです。
+
+</When>
+:::
+
+## キャッシングの考慮事項とパラメータの制限
+
+provider にパラメータを渡す場合、計算は引き続きキャッシュされます。  
+違いは、計算がパラメータごとにキャッシュされることです。
+
+これは、同じ provider を同じパラメータで消費(consume)する 2 つのウィジェットがある場合、ネットワークリクエストは 1 つだけ行われることを意味します。  
+しかし、異なるパラメータで同じ provider を消費する 2 つのウィジェットがある場合、2 つのネットワークリクエストが行われます。
+
+これを実現するために、Riverpod はパラメータの == 演算子に依存しています。  
+したがって、provider に渡されるパラメータが一貫した等価性を持つことが重要です。
+
+:::caution
+一般的なミスは、provider のパラメータとして `==` をオーバーライドしない新しいオブジェクトを直接インスタンス化することです。
+例えば、次のように List を渡したくなるかもしれません:
+
+<AutoSnippet
+  raw={consumerListFamily}
+  translations={{
+    providers:
+      "    // 代わりに文字列リストを許可するようにactivityProviderを更新することができます。\n    // その後、監視呼び出しから直接そのリストを作成することができます。",
+  }}
+/>
+
+このコードの問題は、['recreational', 'cooking'] == ['recreational', 'cooking'] が false であることです。  
+そのため、Riverpod は 2 つのパラメータが異なると見なし、新しいネットワークリクエストを試みます。  
+これは、無限ループのネットワークリクエストを引き起こし、ユーザーに進捗インジケーターが永久に表示される結果となります。
+
+これを修正するには、const リスト (const ['recreational', 'cooking']) を使用するか、  
+== をオーバーライドするカスタムリスト実装を使用できます。
+
+このミスを見つけやすくするために、 [riverpod_lint](https://pub.dev/packages/riverpod_lint)を使用し、  
+[provider_parameters](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint#provider_parameters) lint ルールを有効にすることをお勧めします。  
+そうすると、前述のスニペットには警告が表示されます。  
+インストール手順については [riverpod_lint/custom_lint の有効化](/docs/introduction/getting_started#enabling-riverpod_lint-custom_lint) を参照してください。
+
+:::
+
+<When codegen={false}>
+
+このことを念頭に置いて、provider に複数のパラメータを渡す方法を疑問に思うかもしれません。  
+推奨される解決策は次のいずれかです:
+
+- 任意の数のパラメータを渡すことができるコード生成に切り替える。
+- Dart 3 の records を使用する
+
+Dart 3 のレコードが便利な理由は、自然に `==` をオーバーライドし、便利な構文を持っているからです。  
+例えば、アクティビティタイプと最大価格を両方許可する provider を更新することができます:
+
+<AutoSnippet
+  raw={tupleFamily}
+  translations={{
+    parameters:
+      "// providerに渡したいパラメーターを表すrecordを定義する。\n// typedefの作成は任意ですが、コードをより読みやすくすることができます。",
+    defined:
+      "    // ここでは、新しく定義されたrecordを引数の型として使用します。",
+    query:
+      "        // 最後に、引数を使ってクエリーパラメーターを更新することができます。",
+  }}
+/>
+
+次に、provider このように消費(consume)することができます:
+
+<AutoSnippet
+  raw={consumerTupleFamily}
+  translations={{
+    provider:
+      "      // recordを使用することで、パラメータを渡すことができます。\n      // recordは == をオーバーライドするため、\n      // watch呼び出し内で直接レコードを作成しても問題ありません。",
+  }}
+/>
+
+</When>

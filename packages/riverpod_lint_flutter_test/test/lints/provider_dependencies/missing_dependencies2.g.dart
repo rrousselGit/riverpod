@@ -21,6 +21,7 @@ final class DepProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'depProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
@@ -80,6 +81,7 @@ final class GeneratedScopedProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'generatedScopedProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
@@ -139,6 +141,7 @@ final class GeneratedRootProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'generatedRootProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -200,6 +203,7 @@ final class WatchScopedButNoDependenciesProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'watchScopedButNoDependenciesProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -262,6 +266,7 @@ final class WatchGeneratedScopedButNoDependenciesProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'watchGeneratedScopedButNoDependenciesProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -325,6 +330,7 @@ final class WatchRootButNoDependenciesProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'watchRootButNoDependenciesProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -387,6 +393,7 @@ final class WatchGeneratedRootButNoDependenciesProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'watchGeneratedRootButNoDependenciesProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -450,6 +457,7 @@ final class WatchScopedButEmptyDependenciesProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'watchScopedButEmptyDependenciesProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
@@ -512,6 +520,7 @@ final class WatchGeneratedScopedButEmptyDependenciesProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'watchGeneratedScopedButEmptyDependenciesProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
@@ -575,6 +584,7 @@ final class WatchRootButEmptyDependenciesProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'watchRootButEmptyDependenciesProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
@@ -637,6 +647,7 @@ final class WatchGeneratedRootButEmptyDependenciesProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'watchGeneratedRootButEmptyDependenciesProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
@@ -700,6 +711,7 @@ final class WatchGeneratedScopedAndContainsDependencyProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'watchGeneratedScopedAndContainsDependencyProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[generatedScopedProvider],
@@ -765,6 +777,7 @@ final class ClassWatchGeneratedRootButMissingDependenciesProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'classWatchGeneratedRootButMissingDependenciesProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
@@ -844,6 +857,7 @@ final class Regression2348Provider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'regression2348Provider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[generatedScopedProvider],
@@ -903,6 +917,7 @@ final class Regression2417Provider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'regression2417Provider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[generatedScopedProvider],
@@ -981,6 +996,7 @@ final class FamilyDepProvider extends $FunctionalProvider<int, int>
       )? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'familyDepProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -1059,6 +1075,7 @@ String _$familyDepHash() => r'1c152873ed2b3e88da09d8e1fc53a33635cbe3b3';
 final class FamilyDepFamily extends Family {
   const FamilyDepFamily._()
       : super(
+          retry: null,
           name: r'familyDepProvider',
           dependencies: const <ProviderOrFamily>[depProvider],
           allTransitiveDependencies: const <ProviderOrFamily>[
@@ -1116,6 +1133,7 @@ final class FamilyDep2Provider extends $FunctionalProvider<int, int>
       )? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'familyDep2Provider',
           isAutoDispose: true,
           dependencies: null,
@@ -1196,6 +1214,7 @@ String _$familyDep2Hash() => r'd81e2e56d75dd08a695b834853a3a6cea99ea305';
 final class FamilyDep2Family extends Family {
   const FamilyDep2Family._()
       : super(
+          retry: null,
           name: r'familyDep2Provider',
           dependencies: const <ProviderOrFamily>[familyDepProvider],
           allTransitiveDependencies: const <ProviderOrFamily>[
@@ -1253,6 +1272,7 @@ final class AliasProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'aliasProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -1307,6 +1327,7 @@ final class AliasClassProvider extends $NotifierProvider<AliasClass, int> {
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'aliasClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -1376,6 +1397,7 @@ final class RiverpodDependenciesProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'riverpodDependenciesProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[depProvider],
@@ -1454,6 +1476,7 @@ final class FooProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'fooProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -1513,6 +1536,7 @@ final class CrossFileDependencyProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'crossFileDependencyProvider',
           isAutoDispose: true,
           dependencies: null,

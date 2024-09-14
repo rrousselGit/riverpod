@@ -3,6 +3,8 @@
 - **Breaking**: `ChangeNotifierProvider`, `StateProvider` and `StateNotifierProvider`
   are moved out of `package:hooks_riverpod/hooks_riverpod.dart` to
   `package:hooks_riverpod/legacy.dart`.
+- Failing providers are now automatically retried after a delay.
+  The delay can be optionally configured.
 
 ## 3.0.0-dev.3 - 2023-11-27
 
@@ -32,6 +34,10 @@ Fix exceptions when using multiple root `ProviderContainers`/`ProviderScopes`.
   `AsyncValue` or the associated classes.
 - **Breaking**: Removed everything marked as "deprecated"
 - Bumped minimum Dart SDK to >= 3.0.0-dev
+
+## 2.5.2 - 2024-08-15
+
+- Added mutation pending state to example (thanks to @luketg8)
 
 ## 2.5.1 - 2024-03-10
 

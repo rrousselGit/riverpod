@@ -26,6 +26,7 @@ final class ConfigurationsProvider extends $FunctionalProvider<
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'configurationsProvider',
           isAutoDispose: true,
           dependencies: null,

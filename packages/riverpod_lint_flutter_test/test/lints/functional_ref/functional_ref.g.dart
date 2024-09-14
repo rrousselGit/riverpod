@@ -21,6 +21,7 @@ final class NamelessProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'namelessProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -81,6 +82,7 @@ final class GenericsProvider<A extends num, B>
       : _createCb = create,
         super(
           argument: null,
+          retry: null,
           name: r'genericsProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -157,6 +159,7 @@ String _$genericsHash() => r'b5813cf6a00581bafea48d8ab66f7d5468fff0e4';
 final class GenericsFamily extends Family {
   const GenericsFamily._()
       : super(
+          retry: null,
           name: r'genericsProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -203,6 +206,7 @@ final class NoGenericsProvider<A extends num, B>
       : _createCb = create,
         super(
           argument: null,
+          retry: null,
           name: r'noGenericsProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -279,6 +283,7 @@ String _$noGenericsHash() => r'449264e25990bc14ad811c0940117c8cde4d730a';
 final class NoGenericsFamily extends Family {
   const NoGenericsFamily._()
       : super(
+          retry: null,
           name: r'noGenericsProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -324,6 +329,7 @@ final class MissingGenericsProvider<A, B> extends $FunctionalProvider<int, int>
       : _createCb = create,
         super(
           argument: null,
+          retry: null,
           name: r'missingGenericsProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -400,6 +406,7 @@ String _$missingGenericsHash() => r'7d8bc49e4f1e466260fbf6a61a3f9e62b4aef28f';
 final class MissingGenericsFamily extends Family {
   const MissingGenericsFamily._()
       : super(
+          retry: null,
           name: r'missingGenericsProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -445,6 +452,7 @@ final class WrongOrderProvider<B, A> extends $FunctionalProvider<int, int>
       : _createCb = create,
         super(
           argument: null,
+          retry: null,
           name: r'wrongOrderProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -521,6 +529,7 @@ String _$wrongOrderHash() => r'6732863e85b220c07f82c2d13be15c1e6f08192d';
 final class WrongOrderFamily extends Family {
   const WrongOrderFamily._()
       : super(
+          retry: null,
           name: r'wrongOrderProvider',
           dependencies: null,
           allTransitiveDependencies: null,

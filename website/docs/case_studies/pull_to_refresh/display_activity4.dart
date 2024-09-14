@@ -19,12 +19,18 @@ class ActivityView extends ConsumerWidget {
         child: ListView(
           children: [
             switch (activity) {
+              // {@template data}
               // If some data is available, we display it.
               // Note that data will still be available during a refresh.
+              // {@endtemplate}
               AsyncValue<Activity>(:final value?) => Text(value.activity),
+              // {@template error}
               // An error is available, so we render it.
+              // {@endtemplate}
               AsyncValue(:final error?) => Text('Error: $error'),
+              // {@template loading}
               // No data/error, so we're in loading state.
+              // {@endtemplate}
               _ => const CircularProgressIndicator(),
             },
           ],

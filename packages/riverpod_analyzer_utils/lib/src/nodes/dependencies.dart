@@ -172,7 +172,7 @@ extension on DartObject {
     }
 
     final values =
-        list.map((e) => e.toDependency(from: from)).whereNotNull().toList();
+        list.map((e) => e.toDependency(from: from)).nonNulls.toList();
 
     // If any dependency failed to parse, return null.
     // Errors should already have been reported
@@ -200,7 +200,7 @@ final class AccumulatedDependencyList {
     required this.overrides,
   }) : parent = node.ancestors
             .map((e) => e.accumulatedDependencies)
-            .whereNotNull()
+            .nonNulls
             .firstOrNull;
 
   final AstNode node;
@@ -261,7 +261,7 @@ final class AccumulatedDependencyList {
           // safe to use.
           .where((e) => e.familyArguments == null)
           .map((e) => e.provider?.providerElement)
-          .whereNotNull()
+          .nonNulls
           .toSet();
 
   bool isSafelyAccessibleAfterOverrides(
@@ -391,7 +391,7 @@ extension NamedTypeDependenciesX on NamedType {
 extension DependenciesAnnotatedAnnotatedNodeOfX on AnnotatedNode {
   DependenciesAnnotation? get dependencies {
     return upsert('DependenciesAnnotationAnnotatedNodeX', () {
-      return metadata.map((e) => e.dependencies).whereNotNull().firstOrNull;
+      return metadata.map((e) => e.dependencies).nonNulls.firstOrNull;
     });
   }
 }
@@ -475,7 +475,7 @@ final class DependenciesAnnotationElement {
   }
 
   static DependenciesAnnotationElement? _of(Element element) {
-    return element.metadata.map(_parse).whereNotNull().firstOrNull;
+    return element.metadata.map(_parse).nonNulls.firstOrNull;
   }
 
   final ElementAnnotation element;

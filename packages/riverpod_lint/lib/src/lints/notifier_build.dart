@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
@@ -44,7 +44,7 @@ class NotifierBuild extends RiverpodLintRule {
 
       if (hasBuildMethod) return;
 
-      reporter.reportErrorForToken(_code, node.name);
+      reporter.atToken(node.name, _code);
     });
   }
 

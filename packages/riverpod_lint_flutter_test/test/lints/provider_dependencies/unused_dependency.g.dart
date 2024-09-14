@@ -21,6 +21,7 @@ final class RootProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'rootProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -80,6 +81,7 @@ final class DepProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'depProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
@@ -139,6 +141,7 @@ final class Dep2Provider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'dep2Provider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
@@ -202,6 +205,7 @@ final class ExtraDepProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'extraDepProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[depProvider, dep2Provider],
@@ -267,6 +271,7 @@ final class NoDepProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'noDepProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[depProvider],
@@ -332,6 +337,7 @@ final class DependenciesFirstThenKeepAliveProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'dependenciesFirstThenKeepAliveProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[depProvider],
@@ -396,6 +402,7 @@ final class NoDepNoParamProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'noDepNoParamProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[depProvider],
@@ -459,6 +466,7 @@ final class NoDepWithoutCommaProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'noDepWithoutCommaProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[depProvider],
@@ -522,6 +530,7 @@ final class RootDepProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'rootDepProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[rootProvider],

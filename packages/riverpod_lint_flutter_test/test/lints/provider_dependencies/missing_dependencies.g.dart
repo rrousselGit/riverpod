@@ -21,6 +21,7 @@ final class DepProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'depProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
@@ -80,6 +81,7 @@ final class TransitiveDepProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'transitiveDepProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[depProvider],
@@ -143,6 +145,7 @@ final class Dep2Provider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'dep2Provider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
@@ -203,6 +206,7 @@ final class DepFamilyProvider extends $FunctionalProvider<int, int>
       )? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'depFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -279,6 +283,7 @@ String _$depFamilyHash() => r'c11006a8b9718af9899999b7c49f78cf3423f558';
 final class DepFamilyFamily extends Family {
   const DepFamilyFamily._()
       : super(
+          retry: null,
           name: r'depFamilyProvider',
           dependencies: const <ProviderOrFamily>[],
           allTransitiveDependencies: const <ProviderOrFamily>[],
@@ -341,6 +346,7 @@ final class PlainAnnotationProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'plainAnnotationProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -400,6 +406,7 @@ final class CustomAnnotationProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'customAnnotationProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -461,6 +468,7 @@ final class CustomAnnotationWithTrailingCommaProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'customAnnotationWithTrailingCommaProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -522,6 +530,7 @@ final class ExistingDepProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'existingDepProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
@@ -581,6 +590,7 @@ final class MultipleDepsProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'multipleDepsProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
@@ -648,6 +658,7 @@ final class ProviderWithDartDocProvider extends $FunctionalProvider<int, int>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'providerWithDartDocProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],

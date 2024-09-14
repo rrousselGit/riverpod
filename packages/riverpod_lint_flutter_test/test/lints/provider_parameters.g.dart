@@ -22,6 +22,7 @@ final class GeneratorProvider extends $FunctionalProvider<int, int>
       })? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'generatorProvider',
           isAutoDispose: false,
           dependencies: null,
@@ -98,6 +99,7 @@ String _$generatorHash() => r'e76b8050c3a272ecef1985e4dc7dfe5df3270f2f';
 final class GeneratorFamily extends Family {
   const GeneratorFamily._()
       : super(
+          retry: null,
           name: r'generatorProvider',
           dependencies: null,
           allTransitiveDependencies: null,

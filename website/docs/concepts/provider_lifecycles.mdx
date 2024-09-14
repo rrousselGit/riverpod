@@ -30,7 +30,7 @@ It will stay that way until an **Alive** provider or a [WidgetRef] from the UI r
 
 ### Creating -> Alive
 
-When an **Uninitialized** provider is read, listened to or watched it's state will be created.
+When an **Uninitialized** provider is read, listened to or watched its state will be created.
 
 During creation your provider's build function will be run. 
 Any providers that you read or watch using the `ref` exposed by the callback will be created as needed and their state will be retrieved.
@@ -49,7 +49,7 @@ This is very similar to how flutter widgets work. You only pay for the definitio
 
 When your provider is **Alive**, changes to its state will cause dependent providers and/or the dependent UI to rebuild.
 
-From the other perspective, as a reactive framework, you can watch other providers to have the provider recreate itself whenever one of it's dependencies changes.
+From the other perspective, as a reactive framework, you can watch other providers to have the provider recreate itself whenever one of its dependencies changes.
 
 If you need to have some long-lived state that depends on other state you can use Ref's [listen] method to subscribe for changes on another provider without causing a rebuild of the provider.
 
@@ -78,7 +78,7 @@ There are a few reasons for a provider to be disposed.
 
 - When defined using the `.autoDispose` modifier and no longer being watched by the UI or another provider
 - When the provider is being manually refreshed or invalidated
-- When the provider is being recreated due to one of it's watched dependencies changing
+- When the provider is being recreated due to one of its watched dependencies changing
 
 Refreshing causes the provider to immediately go through the creation process again, whereas invalidating causes the next read / watch of the provider to cause the provider to be rebuilt.
 

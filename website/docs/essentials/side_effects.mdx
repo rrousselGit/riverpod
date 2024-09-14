@@ -35,12 +35,12 @@ To showcase this new concept, let's use a more advanced example: A to-do list.
 ## Defining a Notifier
 
 Let's start with what we already know by this point: A plain simple _GET_ request.
-As saw previously in <Link documentID="essentials/first_request" />, we could
+As we saw previously in <Link documentID="essentials/first_request" />, we could
 fetch a list of todos by writing:
 
 <AutoSnippet {...todoListProvider} />
 
-Now that we've fetch a list of todos, let's see how we can add a new todos.  
+Now that we've fetched a list of todos, let's see how we can add a new todos.  
 For this, we will need to modify our provider such that they expose a public API
 for modifying their state. This is done by converting our provider into what
 we call a "notifier".
@@ -230,7 +230,7 @@ For example, we can disable "auto-dispose" (which we will see later) by writing 
 
 When a `@riverpod` annotation is placed on a class, that class is called
 a "Notifier".  
-The class must extend `_$NotifierName`, where `NotifierName` is class name.
+The class must extend `_$NotifierName`, where `NotifierName` is the class name.
 
 Notifiers are responsible for exposing ways to modify the state of the provider.  
 Public methods on this class are accessible to consumers using `ref.read(yourProvider.notifier).yourMethod()`.

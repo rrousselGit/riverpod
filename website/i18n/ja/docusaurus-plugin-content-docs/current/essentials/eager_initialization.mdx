@@ -1,0 +1,77 @@
+---
+title: providerの早期初期化
+version: 2
+---
+
+import { Link } from "/src/components/Link";
+import { AutoSnippet } from "/src/components/CodeSnippet";
+import consumerExample from "!!raw-loader!/docs/essentials/eager_initialization/consumer_example.dart";
+import asyncConsumerExample from "!!raw-loader!/docs/essentials/eager_initialization/async_consumer_example.dart";
+import requireValue from "/docs/essentials/eager_initialization/require_value";
+
+全ての provider はデフォルトでは遅延初期化されます。  
+これは、provider が初めて使用されるときに初期化されることを意味します。  
+これは、アプリケーションの特定の部分でのみ使用される provider に便利です。
+
+残念ながら、Dart の動作（tree shaking のため）により、provider を早期に初期化する必要があるとフラグを立てる方法はありません。  
+ただし、アプリケーションの root で早期初期化したい provider を強制的に読み取る方法があります。
+
+おすすめのアプローチは、`ProviderScope`の直下に配置された Consumer で provider を単に`watch`することです:
+
+<AutoSnippet
+  raw={consumerExample}
+  translations={{
+    render: "      // TODO: アプリをレンダリングする。",
+    watch:
+      '    // providerをwatchすることで早期初期化する。\n    // "watch"を使うことでproviderが維持され、破棄されません。',
+  }}
+/>
+
+:::note
+初期化用の Consumer を”MyApp”やパブリックウィジェットに配置することを検討してください。  
+これにより、main からロジックを削除し、テストでも同じ動作を使用できるようになります。
+:::
+
+### FAQ
+
+#### provider が変更されたときにアプリケーション全体が再構築されるのではないですか？
+
+いいえ、そうではありません。  
+上記のサンプルでは、早期初期化を行う Consumer が別のウィジェットとして、`child`を返す以外に何もしません。
+
+`MaterialApp`自体をインスタンス化するのではなく、`child`を返すことが重要です。  
+つまり、`_EagerInitialization`が再構築されても、`child`変数は変更されません。  
+そして、ウィジェットが変更されない場合、Flutter はウィジェットを再構築しません。
+
+したがって、別のウィジェットがその provider をリッスンしていない限り、`_EagerInitialization` のみが再構築されます。
+
+#### このアプローチを使用して、ローディング状態やエラー状態をどのように処理できますか？
+
+`Consumer`で通常処理するのと同じように、ローディング/エラー状態を処理できます。  
+`_EagerInitialization`は provider が "loading" 状態にあるかどうかを確認し、そうであれば `child`の代わりに `CircularProgressIndicator`を返すことができます:
+
+<AutoSnippet
+  raw={asyncConsumerExample}
+  translations={{
+    states: "    // エラー状態とローディング状態を処理します。",
+  }}
+/>
+
+#### ローディング/エラー状態を処理しましたが、他の Consumers も AsyncValue を受け取ります！すべてのウィジェットでローディング/エラー状態を処理しなくても済む方法はありますか？
+
+provider が`AsyncValue`を公開しないようにする代わりに、ウィジェットが`AsyncValue.requireValue`を使用することができます。  
+これにより、パターンマッチングを行わずにデータを読み取ることができます。  
+そして、バグが発生した場合は明確なメッセージとともに例外がスローされます。
+
+<AutoSnippet
+  {...requireValue}
+  translations={{
+    provider: "// 早期初期化される provider",
+    note: '    /// providerが正しく早期初期化されれば "requireValue"でデータを直接読み込むことができます。',
+  }}
+/>
+
+:::note
+これらの場合（スコープに依存する）にローディング/エラー状態を公開しない方法もありますが、一般的にはそれは推奨されません。  
+2 つのプロバイダーを作成し、オーバーライドを使用するという複雑さは、手間に見合いません。
+:::

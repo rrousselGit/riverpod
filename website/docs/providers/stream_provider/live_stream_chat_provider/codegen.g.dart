@@ -24,6 +24,7 @@ final class ChatProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'chatProvider',
           isAutoDispose: true,
           dependencies: null,

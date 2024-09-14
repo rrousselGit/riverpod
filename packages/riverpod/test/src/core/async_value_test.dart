@@ -18,21 +18,40 @@ void main() {
     );
   });
 
+  group('progress', () {
+    test('defaults to null', () {
+      expect(const AsyncLoading<int>().progress, null);
+      expect(const AsyncData(42).progress, null);
+      expect(const AsyncError<int>('err', StackTrace.empty).progress, null);
+    });
+
+    test('asserts is within bounds', () {
+      expect(
+        () => AsyncLoading<int>(progress: -0.1),
+        throwsA(isA<AssertionError>()),
+      );
+      expect(
+        () => AsyncLoading<int>(progress: 1.1),
+        throwsA(isA<AssertionError>()),
+      );
+    });
+  });
+
   test('unwrapPrevious', () {
     expect(
-      const AsyncLoading<int>()
+      const AsyncLoading<int>(progress: .1)
           .copyWithPrevious(const AsyncData(42))
           .unwrapPrevious(),
-      const AsyncLoading<int>(),
+      const AsyncLoading<int>(progress: .1),
     );
     expect(
-      const AsyncLoading<int>()
+      const AsyncLoading<int>(progress: .1)
           .copyWithPrevious(const AsyncError(42, StackTrace.empty))
           .unwrapPrevious(),
-      const AsyncLoading<int>(),
+      const AsyncLoading<int>(progress: .1),
     );
     expect(
-      const AsyncLoading<int>()
+      const AsyncLoading<int>(progress: .1)
           .copyWithPrevious(
             const AsyncLoading<int>().copyWithPrevious(
               const AsyncError('err', StackTrace.empty),
@@ -40,12 +59,12 @@ void main() {
             ),
           )
           .unwrapPrevious(),
-      const AsyncLoading<int>(),
+      const AsyncLoading<int>(progress: .1),
     );
 
     expect(
       const AsyncData<int>(42)
-          .copyWithPrevious(const AsyncLoading())
+          .copyWithPrevious(const AsyncLoading(progress: .1))
           .unwrapPrevious(),
       const AsyncData<int>(42),
     );
@@ -79,21 +98,22 @@ void main() {
   group('copyWithPrevious', () {
     group('with seamless: false', () {
       test('with AsyncLoading, is identical to the incoming AsyncLoading', () {
-        final incomingLoading = const AsyncLoading<int>()
+        final incomingLoading = const AsyncLoading<int>(progress: .1)
             .copyWithPrevious(const AsyncData(42), isRefresh: false);
-        final result = const AsyncLoading<int>()
+        final result = const AsyncLoading<int>(progress: .1)
             .copyWithPrevious(incomingLoading, isRefresh: false);
 
         expect(result, same(incomingLoading));
       });
 
       test('with AsyncData, sets value and hasValue', () {
-        final result = const AsyncLoading<int>()
+        final result = const AsyncLoading<int>(progress: .1)
             .copyWithPrevious(const AsyncData(42), isRefresh: false);
 
         expect(result, isA<AsyncLoading<int>>());
         expect(result.hasValue, true);
         expect(result.value, 42);
+        expect(result.progress, .1);
 
         expect(result.hasError, false);
         expect(result.error, null);
@@ -105,12 +125,13 @@ void main() {
           () {
         final error = const AsyncError<int>(Object(), StackTrace.empty)
             .copyWithPrevious(const AsyncData(42));
-        final result =
-            const AsyncLoading<int>().copyWithPrevious(error, isRefresh: false);
+        final result = const AsyncLoading<int>(progress: .1)
+            .copyWithPrevious(error, isRefresh: false);
 
         expect(result, isA<AsyncLoading<int>>());
         expect(result.hasValue, true);
         expect(result.value, 42);
+        expect(result.progress, .1);
 
         expect(result.hasError, true);
         expect(result.error, const Object());
@@ -162,8 +183,10 @@ void main() {
       group('on AsyncData', () {
         test('with AsyncLoading', () {
           expect(
-            const AsyncData<int>(42)
-                .copyWithPrevious(const AsyncLoading<int>(), isRefresh: true),
+            const AsyncData<int>(42).copyWithPrevious(
+              const AsyncLoading<int>(progress: .1),
+              isRefresh: true,
+            ),
             const AsyncData<int>(42),
           );
         });
@@ -188,14 +211,14 @@ void main() {
       group('on AsyncLoading', () {
         test('with AsyncLoading', () {
           expect(
-            const AsyncLoading<int>()
-                .copyWithPrevious(const AsyncLoading<int>()),
-            const AsyncLoading<int>(),
+            const AsyncLoading<int>(progress: .1)
+                .copyWithPrevious(const AsyncLoading<int>(progress: .2)),
+            const AsyncLoading<int>(progress: .1),
           );
         });
 
         test('with AsyncError', () {
-          final value = const AsyncLoading<int>()
+          final value = const AsyncLoading<int>(progress: .1)
               .copyWithPrevious(const AsyncError<int>('err', StackTrace.empty));
 
           expect(value, isA<AsyncError<int>>());
@@ -203,18 +226,20 @@ void main() {
           expect(value.isRefreshing, true);
           expect(value.hasValue, false);
           expect(value.value, null);
+          expect(value.progress, .1);
           expect(value.error, 'err');
           expect(value.stackTrace, StackTrace.empty);
         });
 
         test('with AsyncError containing previous data', () {
-          final value = const AsyncLoading<int>().copyWithPrevious(
+          final value = const AsyncLoading<int>(progress: .1).copyWithPrevious(
             const AsyncError<int>('err', StackTrace.empty)
                 .copyWithPrevious(const AsyncData(42)),
           );
 
           expect(value, isA<AsyncError<int>>());
           expect(value.isLoading, true);
+          expect(value.progress, .1);
           expect(value.isRefreshing, true);
           expect(value.hasValue, true);
           expect(value.value, 42);
@@ -224,13 +249,13 @@ void main() {
 
         test('with refreshing AsyncError containing previous data', () {
           expect(
-            const AsyncLoading<int>().copyWithPrevious(
-              const AsyncLoading<int>().copyWithPrevious(
+            const AsyncLoading<int>(progress: .1).copyWithPrevious(
+              const AsyncLoading<int>(progress: .1).copyWithPrevious(
                 const AsyncError<int>('err', StackTrace.empty)
                     .copyWithPrevious(const AsyncData(42)),
               ),
             ),
-            const AsyncLoading<int>().copyWithPrevious(
+            const AsyncLoading<int>(progress: .1).copyWithPrevious(
               const AsyncError<int>('err', StackTrace.empty)
                   .copyWithPrevious(const AsyncData(42)),
             ),
@@ -238,11 +263,12 @@ void main() {
         });
 
         test('with AsyncData', () {
-          final value =
-              const AsyncLoading<int>().copyWithPrevious(const AsyncData(42));
+          final value = const AsyncLoading<int>(progress: .1)
+              .copyWithPrevious(const AsyncData(42));
 
           expect(value, isA<AsyncData<int>>());
           expect(value.isLoading, true);
+          expect(value.progress, .1);
           expect(value.isRefreshing, true);
           expect(value.hasValue, true);
           expect(value.value, 42);
@@ -251,12 +277,13 @@ void main() {
         });
 
         test('with refreshing AsyncData', () {
-          final value = const AsyncLoading<int>().copyWithPrevious(
+          final value = const AsyncLoading<int>(progress: .1).copyWithPrevious(
             const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)),
           );
 
           expect(value, isA<AsyncData<int>>());
           expect(value.isLoading, true);
+          expect(value.progress, .1);
           expect(value.isRefreshing, true);
           expect(value.hasValue, true);
           expect(value.value, 42);
@@ -412,12 +439,12 @@ void main() {
     );
 
     expect(
-      const AsyncLoading<int>().map(
+      const AsyncLoading<int>(progress: .1).map(
         data: (value) => throw Error(),
         error: (_) => throw Error(),
-        loading: (AsyncLoading<int> loading) => 'loading',
+        loading: (AsyncLoading<int> loading) => 'loading ${loading.progress}',
       ),
-      'loading',
+      'loading 0.1',
     );
   });
 
@@ -442,11 +469,11 @@ void main() {
       );
 
       expect(
-        const AsyncLoading<int>().maybeMap(
-          loading: (AsyncLoading<int> loading) => 'loading',
+        const AsyncLoading<int>(progress: .1).maybeMap(
+          loading: (AsyncLoading<int> loading) => 'loading ${loading.progress}',
           orElse: () => throw Error(),
         ),
-        'loading',
+        'loading 0.1',
       );
     });
 
@@ -509,10 +536,10 @@ void main() {
       );
 
       expect(
-        const AsyncLoading<int>().mapOrNull(
-          loading: (AsyncLoading<int> loading) => 'loading',
+        const AsyncLoading<int>(progress: .1).mapOrNull(
+          loading: (AsyncLoading<int> loading) => 'loading ${loading.progress}',
         ),
-        'loading',
+        'loading 0.1',
       );
     });
 
@@ -1143,6 +1170,14 @@ void main() {
       AsyncLoading<int>(),
     );
     expect(
+      AsyncLoading<int>(progress: .1),
+      AsyncLoading<int>(progress: .1),
+    );
+    expect(
+      AsyncLoading<int>(progress: .1),
+      isNot(AsyncLoading<int>(progress: .2)),
+    );
+    expect(
       AsyncLoading<int>(),
       isNot(AsyncValue<num>.loading()),
     );
@@ -1235,6 +1270,14 @@ void main() {
       AsyncLoading<int>().hashCode,
     );
     expect(
+      AsyncLoading<int>(progress: .1).hashCode,
+      AsyncLoading<int>(progress: .1).hashCode,
+    );
+    expect(
+      AsyncLoading<int>(progress: .1).hashCode,
+      isNot(AsyncLoading<int>(progress: .2).hashCode),
+    );
+    expect(
       AsyncLoading<int>().hashCode,
       isNot(AsyncValue<num>.loading().hashCode),
     );
@@ -1312,12 +1355,22 @@ void main() {
       const AsyncLoading<int>().toString(),
       'AsyncLoading<int>()',
     );
+    expect(
+      const AsyncLoading<int>(progress: .1).toString(),
+      'AsyncLoading<int>(progress: 0.1)',
+    );
 
     expect(
       const AsyncLoading<int>()
           .copyWithPrevious(const AsyncData(42))
           .toString(),
       'AsyncData<int>(isLoading: true, value: 42)',
+    );
+    expect(
+      const AsyncLoading<int>(progress: .1)
+          .copyWithPrevious(const AsyncData(42))
+          .toString(),
+      'AsyncData<int>(isLoading: true, progress: 0.1, value: 42)',
     );
     expect(
       const AsyncLoading<int>()
@@ -1401,30 +1454,31 @@ void main() {
   group('whenData', () {
     test('preserves isLoading/isRefreshing', () {
       expect(
-        const AsyncLoading<int>()
+        const AsyncLoading<int>(progress: .1)
             .copyWithPrevious(const AsyncData(42))
             .whenData((value) => value * 2),
-        const AsyncLoading<int>().copyWithPrevious(const AsyncData(84)),
+        const AsyncLoading<int>(progress: .1)
+            .copyWithPrevious(const AsyncData(84)),
       );
 
       expect(
-        const AsyncLoading<int>()
+        const AsyncLoading<int>(progress: .1)
             .copyWithPrevious(const AsyncData(42))
             .whenData<String>(
               (value) => Error.throwWithStackTrace(84, StackTrace.empty),
             ),
-        const AsyncLoading<String>().copyWithPrevious(
+        const AsyncLoading<String>(progress: .1).copyWithPrevious(
           const AsyncError(84, StackTrace.empty),
         ),
       );
 
       expect(
-        const AsyncLoading<int>()
+        const AsyncLoading<int>(progress: .1)
             .copyWithPrevious(
               const AsyncError(84, StackTrace.empty),
             )
             .whenData<String>((value) => '$value'),
-        const AsyncLoading<String>().copyWithPrevious(
+        const AsyncLoading<String>(progress: .1).copyWithPrevious(
           const AsyncError(84, StackTrace.empty),
         ),
       );
@@ -1436,8 +1490,8 @@ void main() {
         const AsyncData<String>('42'),
       );
       expect(
-        const AsyncLoading<int>().whenData((value) => '$value'),
-        const AsyncLoading<String>(),
+        const AsyncLoading<int>(progress: .1).whenData((value) => '$value'),
+        const AsyncLoading<String>(progress: .1),
       );
       expect(
         const AsyncError<int>(21, StackTrace.empty)

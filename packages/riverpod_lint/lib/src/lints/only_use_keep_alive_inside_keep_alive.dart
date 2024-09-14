@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/error/error.dart';
+import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
@@ -39,7 +39,7 @@ class OnlyUseKeepAliveInsideKeepAlive extends RiverpodLintRule {
       // The enclosing provider is "autoDispose", so it is allowed to use other "autoDispose" providers
       if (provider.providerElement.isAutoDispose) return;
 
-      reporter.reportErrorForNode(_code, node.node);
+      reporter.atNode(node.node, _code);
     });
   }
 }

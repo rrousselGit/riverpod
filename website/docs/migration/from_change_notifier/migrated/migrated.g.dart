@@ -19,6 +19,7 @@ final class MyNotifierProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'myNotifierProvider',
           isAutoDispose: true,
           dependencies: null,

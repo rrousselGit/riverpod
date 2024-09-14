@@ -21,6 +21,7 @@ final class GeneratedProvider extends $FunctionalProvider<_Test, _Test>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'generatedProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -81,6 +82,7 @@ final class GeneratedFamilyProvider extends $FunctionalProvider<_Test, _Test>
       )? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'generatedFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -157,6 +159,7 @@ String _$generatedFamilyHash() => r'ed284f58926c87acc81dab9168882d5d1c2cddf8';
 final class GeneratedFamilyFamily extends Family {
   const GeneratedFamilyFamily._()
       : super(
+          retry: null,
           name: r'generatedFamilyProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -207,6 +210,7 @@ final class GeneratedClassProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'generatedClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -277,6 +281,7 @@ final class GeneratedClassFamilyProvider
       GeneratedClassFamily Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'generatedClassFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -355,6 +360,7 @@ String _$generatedClassFamilyHash() =>
 final class GeneratedClassFamilyFamily extends Family {
   const GeneratedClassFamilyFamily._()
       : super(
+          retry: null,
           name: r'generatedClassFamilyProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -442,6 +448,7 @@ final class $DynamicProvider extends $FunctionalProvider<Object?, Object?>
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'$dynamicProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -502,6 +509,7 @@ final class $DynamicFamilyProvider extends $FunctionalProvider<Object?, Object?>
       )? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'$dynamicFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -578,6 +586,7 @@ String _$$dynamicFamilyHash() => r'b764133af8837b8321b08814892f198d4bc1aa18';
 final class $DynamicFamilyFamily extends Family {
   const $DynamicFamilyFamily._()
       : super(
+          retry: null,
           name: r'$dynamicFamilyProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -628,6 +637,7 @@ final class $DynamicClassProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'$dynamicClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -698,6 +708,7 @@ final class $DynamicClassFamilyProvider
       $DynamicClassFamily Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'$dynamicClassFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -776,6 +787,7 @@ String _$$dynamicClassFamilyHash() =>
 final class $DynamicClassFamilyFamily extends Family {
   const $DynamicClassFamilyFamily._()
       : super(
+          retry: null,
           name: r'$dynamicClassFamilyProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -864,6 +876,7 @@ final class _DynamicProvider extends $FunctionalProvider<Object?, Object?>
       )? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'_dynamicProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -940,6 +953,7 @@ String _$dynamicHash() => r'da9dc07960139fff2cf5fe584dca5c524e4f2308';
 final class _DynamicFamily extends Family {
   const _DynamicFamily._()
       : super(
+          retry: null,
           name: r'_dynamicProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -995,6 +1009,7 @@ final class AliasProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'aliasProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -1057,6 +1072,7 @@ final class AliasFamilyProvider
       )? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'aliasFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -1134,6 +1150,7 @@ String _$aliasFamilyHash() => r'f345937d5750132f629aef41646b119a301f750b';
 final class AliasFamilyFamily extends Family {
   const AliasFamilyFamily._()
       : super(
+          retry: null,
           name: r'aliasFamilyProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -1184,6 +1201,7 @@ final class AliasClassProvider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'aliasClassProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -1254,6 +1272,7 @@ final class AliasClassFamilyProvider
       AliasClassFamily Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'aliasClassFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -1331,6 +1350,7 @@ String _$aliasClassFamilyHash() => r'3f348beb95dae3a9890b4a4d0ce01481316fc66d';
 final class AliasClassFamilyFamily extends Family {
   const AliasClassFamilyFamily._()
       : super(
+          retry: null,
           name: r'aliasClassFamilyProvider',
           dependencies: null,
           allTransitiveDependencies: null,

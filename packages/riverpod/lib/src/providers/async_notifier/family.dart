@@ -45,6 +45,7 @@ class AsyncNotifierProviderFamily< //
     super.name,
     super.dependencies,
     super.isAutoDispose = false,
+    super.retry,
   }) : super(
           providerFactory: FamilyAsyncNotifierProvider._,
           allTransitiveDependencies:
@@ -69,6 +70,7 @@ final class FamilyAsyncNotifierProvider< //
     required super.argument,
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
+    required super.retry,
   });
 
   FamilyAsyncNotifierProvider<NotifierT, StateT, ArgT> _copyWith({
@@ -85,6 +87,7 @@ final class FamilyAsyncNotifierProvider< //
       argument: argument,
       isAutoDispose: isAutoDispose,
       runNotifierBuildOverride: build ?? runNotifierBuildOverride,
+      retry: retry,
     );
   }
 

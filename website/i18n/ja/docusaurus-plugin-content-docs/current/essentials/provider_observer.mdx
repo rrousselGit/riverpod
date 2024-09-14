@@ -1,0 +1,49 @@
+---
+title: ログ記録とエラーレポート
+version: 1
+---
+
+import { Link } from "/src/components/Link";
+import { AutoSnippet, When } from "/src/components/CodeSnippet";
+import providerObserver from "!!raw-loader!/docs/essentials/provider_observer/provider_observer.dart";
+
+Riverpod は provider ツリー内で発生するすべてのイベントを自然に監視する方法を提供します。  
+これは全てのイベントを記録したり、リモートサービスにエラーを報告するために使用できます。
+
+これは`ProviderObserver`クラスを使用し、`ProviderScope`/`ProviderContainer`を渡すことで実現されます。
+
+## ProviderObserver の定義
+
+`ProviderObserver`は拡張すべきクラスです。  
+イベントをリッスン(listen)するために、オーバーライド(override)できるさまざまなメソッドを提供します:
+
+- `didAddProvider`, provider が tree に追加された時に呼び出されます
+- `didUpdateProvider`, provider が更新された時に呼び出されます
+- `didDisposeProvider`, provider が破棄された時に呼び出されます
+- `providerDidFail`, synchronous provider がエラーをスローした時に呼び出されます
+
+<AutoSnippet raw={providerObserver} />
+
+## ProviderObserver の使用
+
+observer を定義したので、これを使用する必要があります。  
+これを行うには、`ProviderScope` または `ProviderContainer`に渡す必要があります:
+
+```dart
+runApp(
+  ProviderScope(
+    observers: [
+      MyObserver(),
+    ],
+    child: MyApp(),
+  )
+);
+```
+
+```dart
+final container = ProviderContainer(
+  observers: [
+    MyObserver(),
+  ],
+);
+```

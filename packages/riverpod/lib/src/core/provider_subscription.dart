@@ -84,7 +84,7 @@ mixin _OnPauseMixin {
     if (_pauseCount == 1) {
       onResume();
     }
-    _pauseCount = min(_pauseCount - 1, 0);
+    _pauseCount = math.min(_pauseCount - 1, 0);
   }
 
   void onResume();

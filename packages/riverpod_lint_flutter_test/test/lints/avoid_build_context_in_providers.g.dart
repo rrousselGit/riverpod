@@ -27,6 +27,7 @@ final class FnProvider extends $FunctionalProvider<int, int>
       })? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'fnProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -112,6 +113,7 @@ String _$fnHash() => r'7b8d0cf179067c80b8553b3232fd886fac83f387';
 final class FnFamily extends Family {
   const FnFamily._()
       : super(
+          retry: null,
           name: r'fnProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -176,6 +178,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
       MyNotifier Function()? create})
       : _createCb = create,
         super(
+          retry: null,
           name: r'myNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
@@ -259,6 +262,7 @@ String _$myNotifierHash() => r'04a0cf33dbda80e3fa80748fe46546b1c968da22';
 final class MyNotifierFamily extends Family {
   const MyNotifierFamily._()
       : super(
+          retry: null,
           name: r'myNotifierProvider',
           dependencies: null,
           allTransitiveDependencies: null,
@@ -368,6 +372,7 @@ final class Regresion2959Provider
         super(
           from: null,
           argument: null,
+          retry: null,
           name: r'regresion2959Provider',
           isAutoDispose: true,
           dependencies: null,
