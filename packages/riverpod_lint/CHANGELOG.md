@@ -1,3 +1,7 @@
+## Unreleased patch
+
+Bump analyzer to ^6.9.0
+
 ## 2.3.13 - 2024-08-15
 
 Bump custom_lint
