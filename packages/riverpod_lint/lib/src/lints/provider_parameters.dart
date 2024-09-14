@@ -51,7 +51,7 @@ class ProviderParameters extends RiverpodLintRule {
               ?.applyRedirectedConstructors();
 
           final operatorEqual =
-              instantiatedObject?.enclosingElement.recursiveGetMethod('==');
+              instantiatedObject?.enclosingElement3.recursiveGetMethod('==');
 
           if (operatorEqual == null) {
             // Doing `provider(new Class())` is bad if the class does not override ==

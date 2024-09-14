@@ -329,7 +329,7 @@ class _ReplacementEditBuilder extends RecursiveAstVisitor<void> {
     }
     final element = node.staticElement;
     if (element is ExecutableElement &&
-        element.enclosingElement == widgetClassElement &&
+        element.enclosingElement3 == widgetClassElement &&
         !elementsToMove.contains(element)) {
       final parent = node.parent;
       if (parent is PrefixedIdentifier) {
