@@ -344,7 +344,6 @@ abstract class _$MyNotifier extends $Notifier<int> {
     BuildContext, {
     BuildContext context2,
   });
-  // expect_lint: avoid_build_context_in_providers
   BuildContext get context1 =>
       _$args.$1; // expect_lint: avoid_build_context_in_providers
   BuildContext get context2 => _$args.context2;
