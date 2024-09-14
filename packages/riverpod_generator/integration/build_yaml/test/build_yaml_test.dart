@@ -1,3 +1,4 @@
+import 'package:build_yaml/dependencies.dart';
 import 'package:build_yaml/main.dart';
 import 'package:test/test.dart';
 
@@ -32,6 +33,27 @@ void main() {
     expect(
       myFamilyCountStreamNotifier2ProviderFamily.name,
       'myFamilyCountStreamNotifier2ProviderFamily',
+    );
+  });
+
+  test('dependencies', () {
+    expect(
+      myFamilyCalc2ProviderFamily.dependencies,
+      unorderedEquals([
+        myCountPod,
+        myCountFuturePod,
+        myCountStreamPod,
+        myCountNotifierPod,
+        myCountAsyncNotifierPod,
+        myCountStreamNotifierPod,
+        // Family
+        myFamilyCount2ProviderFamily,
+        myFamilyCountFuture2ProviderFamily,
+        myFamilyCountStream2ProviderFamily,
+        myFamilyCountNotifier2ProviderFamily,
+        myFamilyCountAsyncNotifier2ProviderFamily,
+        myFamilyCountStreamNotifier2ProviderFamily,
+      ]),
     );
   });
 }

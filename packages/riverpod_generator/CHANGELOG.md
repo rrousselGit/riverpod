@@ -16,6 +16,11 @@
   ```
 
 - Added support for `@Riverpod(retry: ...)`
+
+## Unreleased patch
+
+- `@Riverpod(dependencies: [...])` now respects `build.yaml` options
+
 ## 2.4.3 - 2024-08-15
 
 - `riverpod_analyzer_utils` upgraded to `0.5.4`

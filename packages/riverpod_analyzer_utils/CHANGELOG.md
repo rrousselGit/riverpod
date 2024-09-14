@@ -13,6 +13,10 @@
 
 - Added `GeneratorProviderDeclarationElement.isFamily`
 
+## Unreleased patch
+
+Bumped minimum analyzer to 6.9.0
+
 ## 0.5.4 - 2024-08-15
 
 Bump custom_lint

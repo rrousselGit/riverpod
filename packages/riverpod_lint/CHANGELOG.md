@@ -42,6 +42,10 @@ Various lints had their severity changed:
 
 - `riverpod` upgraded to `3.0.0-dev.0`
 
+## Unreleased patch
+
+Bump analyzer to ^6.9.0
+
 ## 2.3.13 - 2024-08-15
 
 Bump custom_lint
