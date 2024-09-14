@@ -55,7 +55,7 @@ class UnknownScopedUsage extends RiverpodLintRule {
       if (override?.provider == identifier) return;
 
       final enclosingConstructorType = identifier
-          .node.staticParameterElement?.enclosingElement
+          .node.staticParameterElement?.enclosingElement3
           .safeCast<ConstructorElement>()
           ?.returnType;
       // Silence the warning if passed to a widget constructor.

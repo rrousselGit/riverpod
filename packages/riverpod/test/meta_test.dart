@@ -184,7 +184,7 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor<void> {
   }
 
   void _verifyInheritsAnnotations(Element element) {
-    final parent = element.enclosingElement;
+    final parent = element.enclosingElement3;
 
     if (parent is! ClassElement) return;
 
