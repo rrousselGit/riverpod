@@ -5,6 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
 import 'integration/async.dart';
+import 'utils.dart';
 
 void main() {
   test(
@@ -177,6 +178,6 @@ void main() {
     );
 
     expect(container.read(publicProvider), const AsyncData('test'));
-    expect(container.read(publicProvider.future), completion('test'));
+    expect(container.read(publicProvider.future), completionOr('test'));
   });
 }

@@ -8,6 +8,7 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart' show ProviderElement;
 import 'package:test/test.dart';
 
+import '../../../src/utils.dart' show completionOr;
 import '../../utils.dart';
 
 void main() {
@@ -66,7 +67,7 @@ void main() {
         overrides: [dep.overrideWithValue(42)],
       );
 
-      await expectLater(container.read(provider.future), completion(42));
+      await expectLater(container.read(provider.future), completionOr(42));
       expect(container.read(provider), const AsyncData(42));
 
       expect(root.getAllProviderElements(), isEmpty);
@@ -86,7 +87,7 @@ void main() {
 
       await expectLater(
         container.read(provider.future),
-        completion(42),
+        completionOr(42),
       );
       expect(
         container.read(provider),
@@ -111,7 +112,7 @@ void main() {
 
       await expectLater(
         container.read(provider.future),
-        completion(21),
+        completionOr(21),
       );
       expect(
         container.read(provider),
@@ -170,7 +171,7 @@ void main() {
         ref.watch(dep);
         return const Stream<int>.empty();
       });
-      final listener = Listener<Future<int>>();
+      final listener = Listener<FutureOr<int>>();
 
       container.listen(provider.future, listener.call, fireImmediately: true);
 
@@ -184,7 +185,7 @@ void main() {
       // No value were emitted, so the future will fail. Catching the error to
       // avoid false positive.
       unawaited(
-        container.read(provider.future).catchError((Object _) => 0),
+        container.read(provider.future).sync.catchError((Object _) => 0),
       );
     });
 

@@ -8,6 +8,7 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart' show ProviderElement;
 import 'package:test/test.dart';
 
+import '../../../src/utils.dart' show completionOr;
 import '../../utils.dart';
 
 void main() {
@@ -102,7 +103,7 @@ void main() {
       var count = 0;
       final provider = StreamProvider((ref) => Stream.value(count++));
 
-      await expectLater(container.read(provider.future), completion(0));
+      await expectLater(container.read(provider.future), completionOr(0));
       expect(container.read(provider), const AsyncData(0));
 
       expect(
@@ -110,7 +111,7 @@ void main() {
         const AsyncLoading<int>().copyWithPrevious(const AsyncData(0)),
       );
 
-      await expectLater(container.read(provider.future), completion(1));
+      await expectLater(container.read(provider.future), completionOr(1));
       expect(container.read(provider), const AsyncData(1));
 
       container.invalidate(provider);
@@ -119,7 +120,7 @@ void main() {
         container.read(provider),
         const AsyncLoading<int>().copyWithPrevious(const AsyncData(1)),
       );
-      await expectLater(container.read(provider.future), completion(2));
+      await expectLater(container.read(provider.future), completionOr(2));
       expect(container.read(provider), const AsyncData(2));
     });
 
@@ -129,7 +130,7 @@ void main() {
       final dep = StateProvider((ref) => 0);
       final provider = StreamProvider((ref) => Stream.value(ref.watch(dep)));
 
-      await expectLater(container.read(provider.future), completion(0));
+      await expectLater(container.read(provider.future), completionOr(0));
       expect(container.read(provider), const AsyncData(0));
 
       container.read(dep.notifier).state++;
@@ -139,7 +140,7 @@ void main() {
             .copyWithPrevious(const AsyncData(0), isRefresh: false),
       );
 
-      await expectLater(container.read(provider.future), completion(1));
+      await expectLater(container.read(provider.future), completionOr(1));
       expect(container.read(provider), const AsyncData(1));
     });
 
@@ -150,7 +151,7 @@ void main() {
       final dep = StateProvider((ref) => 0);
       final provider = StreamProvider((ref) => Stream.value(ref.watch(dep)));
 
-      await expectLater(container.read(provider.future), completion(0));
+      await expectLater(container.read(provider.future), completionOr(0));
       expect(container.read(provider), const AsyncData(0));
 
       container.read(dep.notifier).state++;
@@ -160,7 +161,7 @@ void main() {
             .copyWithPrevious(const AsyncData(0), isRefresh: false),
       );
 
-      await expectLater(container.read(provider.future), completion(1));
+      await expectLater(container.read(provider.future), completionOr(1));
       expect(container.read(provider), const AsyncData(1));
     });
   });
@@ -219,7 +220,7 @@ void main() {
       overrides: [dep.overrideWithValue(42)],
     );
 
-    await expectLater(container.read(provider.future), completion(42));
+    await expectLater(container.read(provider.future), completionOr(42));
     expect(container.read(provider), const AsyncData(42));
 
     expect(root.getAllProviderElements(), isEmpty);
@@ -237,7 +238,7 @@ void main() {
 
     await expectLater(
       container.read(provider.future),
-      completion(42),
+      completionOr(42),
     );
     expect(
       container.read(provider),
@@ -262,7 +263,7 @@ void main() {
 
     await expectLater(
       container.read(provider.future),
-      completion(21),
+      completionOr(21),
     );
     expect(
       container.read(provider),
@@ -439,7 +440,7 @@ void main() {
       expect(container.read(provider.future), future);
 
       await expectLater(future, throwsA(error));
-      expect(await future.stackTrace, StackTrace.empty);
+      expect(await future.sync.stackTrace, StackTrace.empty);
 
       final error2 = Error();
 
@@ -456,7 +457,7 @@ void main() {
       expect(container.read(provider.future), future);
 
       await expectLater(future, throwsA(error2));
-      expect(await future.stackTrace, StackTrace.empty);
+      expect(await future.sync.stackTrace, StackTrace.empty);
     });
 
     test('supports loading then error then another error', () async {
@@ -477,7 +478,7 @@ void main() {
       expect(container.read(provider.future), future);
 
       await expectLater(future, throwsA(error));
-      expect(await future.stackTrace, StackTrace.empty);
+      expect(await future.sync.stackTrace, StackTrace.empty);
 
       final error2 = Error();
 
@@ -489,7 +490,7 @@ void main() {
       future = container.read(provider.future);
 
       await expectLater(future, throwsA(error2));
-      expect(await future.stackTrace, StackTrace.empty);
+      expect(await future.sync.stackTrace, StackTrace.empty);
     });
 
     test('supports loading then data then loading', () async {
@@ -505,8 +506,8 @@ void main() {
         provider.overrideWithValue(const AsyncValue.data(42)),
       ]);
 
-      expect(container.read(provider.future), future);
-      await expectLater(future, completion(42));
+      expect(container.read(provider.future), 42);
+      await expectLater(future, completionOr(42));
 
       container.updateOverrides([
         provider.overrideWithValue(const AsyncValue.loading()),
@@ -518,8 +519,8 @@ void main() {
         provider.overrideWithValue(const AsyncValue.data(21)),
       ]);
 
-      expect(container.read(provider.future), future);
-      await expectLater(future, completion(21));
+      expect(container.read(provider.future), 21);
+      await expectLater(future, completionOr(21));
     });
 
     test('supports loading then data then another data', () async {
@@ -535,8 +536,8 @@ void main() {
         provider.overrideWithValue(const AsyncValue.data(42)),
       ]);
 
-      expect(container.read(provider.future), future);
-      await expectLater(future, completion(42));
+      expect(container.read(provider.future), 42);
+      await expectLater(future, completionOr(42));
 
       // data without passing by an intermediary loading state
       container.updateOverrides([
@@ -545,7 +546,7 @@ void main() {
 
       future = container.read(provider.future);
 
-      await expectLater(future, completion(21));
+      await expectLater(future, completionOr(21));
     });
   });
 
@@ -614,7 +615,7 @@ void main() {
       ref.watch(dep);
       return const Stream<int>.empty();
     });
-    final listener = Listener<Future<int>>();
+    final listener = Listener<FutureOr<int>>();
 
     container.listen(provider.future, listener.call, fireImmediately: true);
 
@@ -627,7 +628,7 @@ void main() {
 
     // No value were emitted, so the future will fail. Catching the error to
     // avoid false positive.
-    unawaited(container.read(provider.future).catchError((Object _) => 0));
+    unawaited(container.read(provider.future).sync.catchError((Object _) => 0));
   });
 
   group('overrideWithValue(T)', () {
@@ -790,7 +791,7 @@ void main() {
 
         controller.add(42);
 
-        await expectLater(future, completion(42));
+        await expectLater(future, completionOr(42));
 
         await controller.close();
       });
@@ -804,7 +805,7 @@ void main() {
 
         final future = container.read(provider.future);
 
-        await expectLater(future, completion(42));
+        await expectLater(future, completionOr(42));
 
         await controller.close();
       });
@@ -853,7 +854,7 @@ void main() {
           provider.overrideWithValue(const AsyncValue.data(42)),
         ]);
 
-        await expectLater(future, completion(42));
+        await expectLater(future, completionOr(42));
       });
 
       test('read currentValue before after value', () async {
@@ -870,7 +871,7 @@ void main() {
 
         final future = container.read(provider.future);
 
-        await expectLater(future, completion(42));
+        await expectLater(future, completionOr(42));
       });
 
       test('read currentValue before first error', () async {
@@ -919,7 +920,7 @@ void main() {
 
         final future = container.read(provider.future);
 
-        await expectLater(future, completion(42));
+        await expectLater(future, completionOr(42));
       });
     });
   });

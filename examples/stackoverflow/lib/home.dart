@@ -35,7 +35,7 @@ class MyHomePage extends HookConsumerWidget {
             },
             data: (count) {
               return RefreshIndicator(
-                onRefresh: () {
+                onRefresh: () async {
                   ref.invalidate(paginatedQuestionsProvider(0));
                   return ref.read(paginatedQuestionsProvider(0).future);
                 },

@@ -122,15 +122,16 @@ class PackageDetailPage extends HookConsumerWidget {
         loading: () => const Center(child: CircularProgressIndicator()),
         data: (package) {
           return RefreshIndicator(
-            onRefresh: () {
-              return Future.wait([
-                ref.refresh(
-                  packageMetricsProvider(packageName: packageName).future,
-                ),
-                ref.refresh(
-                  fetchPackageDetailsProvider(packageName: packageName).future,
-                ),
-              ]);
+            onRefresh: () async {
+              final a = ref.refresh(
+                packageMetricsProvider(packageName: packageName).future,
+              );
+              final b = ref.refresh(
+                fetchPackageDetailsProvider(packageName: packageName).future,
+              );
+
+              await a;
+              await b;
             },
             child: metrics.when(
               error: (err, stack) => Text('Error $err'),

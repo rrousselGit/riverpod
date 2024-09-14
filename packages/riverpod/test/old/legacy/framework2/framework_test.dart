@@ -7,6 +7,7 @@ import 'package:riverpod/src/internals.dart'
     show $ProviderElement, ProviderElement;
 import 'package:test/test.dart';
 
+import '../../../src/utils.dart' show completionOr;
 import '../../utils.dart';
 
 void main() {
@@ -533,7 +534,7 @@ void main() {
       });
       final container = ProviderContainer.test();
 
-      await expectLater(container.read(provider.future), completion(42));
+      await expectLater(container.read(provider.future), completionOr(42));
 
       expect(callCount, 1);
       await expectLater(
@@ -555,7 +556,7 @@ void main() {
       );
       expect(callCount, 2);
 
-      await expectLater(container.read(provider.future), completion(21));
+      await expectLater(container.read(provider.future), completionOr(21));
       expect(callCount, 2);
     });
 
@@ -577,7 +578,7 @@ void main() {
         const AsyncValue<int>.loading(),
       );
       expect(callCount, 1);
-      await expectLater(container.read(provider.future), completion(42));
+      await expectLater(container.read(provider.future), completionOr(42));
       expect(callCount, 1);
     });
 
@@ -605,7 +606,7 @@ void main() {
       container.refresh(provider);
 
       expect(callCount, 2);
-      await expectLater(container.read(provider.future), completion(21));
+      await expectLater(container.read(provider.future), completionOr(21));
       expect(callCount, 2);
     });
   });
