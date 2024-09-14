@@ -606,16 +606,12 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     if (_listenerCount < previousListenerCount) {
       if (ref?._onRemoveListeners case final listeners?) {
-        for (final listener in listeners) {
-          runUnaryGuarded(listener, sub);
-        }
+        listeners.forEach(runGuarded);
       }
       mayNeedDispose();
     } else if (_listenerCount > previousListenerCount) {
       if (ref?._onAddListeners case final listeners?) {
-        for (final listener in listeners) {
-          runUnaryGuarded(listener, sub);
-        }
+        listeners.forEach(runGuarded);
       }
     }
   }

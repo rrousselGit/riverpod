@@ -85,7 +85,6 @@ class ProviderElementProxy<StateT, OutT>
   }) {
     final element = source.readProviderElement(provider);
 
-    ; // TODO test weak proxy listener does not break what's said after this.
     // While we don't care about changes to the element, calling addListener
     // is necessary to tell the listened element that it is being listened.
     // We do it at the top of the file to trigger a "flush" before adding

@@ -44,31 +44,31 @@ void main() {
 
     final sub = container.listen(provider.future, (prev, value) {});
 
-    verifyOnly(onAddListener, onAddListener(any));
+    verifyOnly(onAddListener, onAddListener());
 
     final sub2 = container.listen(provider.future, (prev, value) {});
 
-    verifyOnly(onAddListener, onAddListener(any));
+    verifyOnly(onAddListener, onAddListener());
 
     sub.close();
 
-    verifyOnly(onRemoveListener, onRemoveListener(any));
+    verifyOnly(onRemoveListener, onRemoveListener());
     verifyZeroInteractions(onCancel);
 
     sub2.close();
 
-    verifyOnly(onRemoveListener, onRemoveListener(any));
+    verifyOnly(onRemoveListener, onRemoveListener());
     verifyZeroInteractions(onResume);
     verifyOnly(onCancel, onCancel());
 
     container.listen(provider.future, (prev, value) {});
 
-    verifyOnly(onAddListener, onAddListener(any));
+    verifyOnly(onAddListener, onAddListener());
     verifyOnly(onResume, onResume());
 
     container.listen(provider.future, (prev, value) {});
 
-    verifyOnly(onAddListener, onAddListener(any));
+    verifyOnly(onAddListener, onAddListener());
     verifyNoMoreInteractions(onCancel);
     verifyNoMoreInteractions(onResume);
     verifyZeroInteractions(onDispose);

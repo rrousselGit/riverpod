@@ -57,11 +57,11 @@ class OnResume extends Mock {
 }
 
 class OnAddListener extends Mock {
-  void call(ProviderSubscription? sub);
+  void call();
 }
 
 class OnRemoveListener extends Mock {
-  void call(ProviderSubscription? sub);
+  void call();
 }
 
 class Listener<T> extends Mock {

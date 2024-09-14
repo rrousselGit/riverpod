@@ -47,8 +47,8 @@ base class Ref<StateT> {
   List<void Function()>? _onDisposeListeners;
   List<void Function()>? _onResumeListeners;
   List<void Function()>? _onCancelListeners;
-  List<void Function(ProviderSubscription sub)>? _onAddListeners;
-  List<void Function(ProviderSubscription sub)>? _onRemoveListeners;
+  List<void Function()>? _onAddListeners;
+  List<void Function()>? _onRemoveListeners;
   List<OnError>? _onErrorSelfListeners;
 
   bool get mounted => _mounted;
@@ -280,7 +280,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   /// See also:
   /// - [onRemoveListener], for when a listener is removed
-  void onAddListener(void Function(ProviderSubscription sub) cb) {
+  void onAddListener(void Function() cb) {
     _throwIfInvalidUsage();
 
     _onAddListeners ??= [];
@@ -291,7 +291,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   /// See also:
   /// - [onAddListener], for when a listener is added
-  void onRemoveListener(void Function(ProviderSubscription sub) cb) {
+  void onRemoveListener(void Function() cb) {
     _throwIfInvalidUsage();
 
     _onRemoveListeners ??= [];
