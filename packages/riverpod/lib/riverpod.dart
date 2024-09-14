@@ -32,7 +32,7 @@ export 'src/framework.dart'
         $FutureModifier,
         ProviderElement,
         ClassBaseX,
-        CancelAsyncSubscription,
+        AsyncSubscription,
         FutureModifierElement,
         RunNotifierBuild,
         $FunctionalProvider,

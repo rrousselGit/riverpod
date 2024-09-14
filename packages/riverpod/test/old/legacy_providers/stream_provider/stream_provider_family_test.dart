@@ -24,6 +24,8 @@ void main() {
           overrides: [provider],
         );
 
+        container.listen(provider(0), (p, n) {});
+
         expect(await container.read(provider(0).future), 0);
         expect(container.read(provider(0)), const AsyncData(0));
         expect(root.getAllProviderElements(), isEmpty);
@@ -48,6 +50,8 @@ void main() {
             provider.overrideWith((ref, value) => Stream.value(42)),
           ],
         );
+
+        container.listen(provider(0), (p, n) {});
 
         expect(await container.read(provider(0).future), 42);
         expect(container.read(provider(0)), const AsyncData(42));
@@ -77,6 +81,8 @@ void main() {
         overrides: [dep.overrideWithValue(42)],
       );
 
+      container.listen(provider(10), (p, n) {});
+
       await expectLater(container.read(provider(10).future), completion(52));
       expect(container.read(provider(10)), const AsyncData(52));
 
@@ -92,6 +98,8 @@ void main() {
           provider.overrideWith((ref, a) => Stream.value('override $a')),
         ],
       );
+
+      container.listen(provider(0), (p, n) {});
 
       expect(container.read(provider(0)), const AsyncValue<String>.loading());
 

@@ -120,7 +120,6 @@ class ProviderScheduler {
     /// and the second time it is traversed, it won't anymore.
     for (var i = 0; i < _stateToDispose.length; i++) {
       final element = _stateToDispose[i];
-
       final links = element.ref?._keepAliveLinks;
 
       if ((links != null && links.isNotEmpty) ||

@@ -186,7 +186,10 @@ final class ProviderStateSubscription<StateT>
   /// Whether an event was sent while this subscription was paused.
   ///
   /// This enables re-rending the last missing event when the subscription is resumed.
-  var _missedCalled = false;
+  ({
+    (StateT?, StateT)? data,
+    (Object, StackTrace)? error,
+  })? _missedCalled;
 
   @override
   StateT read() {
@@ -203,12 +206,27 @@ final class ProviderStateSubscription<StateT>
   void onCancel() => _listenedElement.onSubscriptionPause(this);
 
   @override
-  void onResume() => _listenedElement.onSubscriptionResume(this);
+  void onResume() {
+    _listenedElement.onSubscriptionResume(this);
+    if (_missedCalled?.data case final event?) {
+      final prev = event.$1;
+      final next = event.$2;
+
+      _missedCalled = null;
+      listener(prev, next);
+    } else if (_missedCalled?.error case final event?) {
+      final error = event.$1;
+      final stackTrace = event.$2;
+
+      _missedCalled = null;
+      onError(error, stackTrace);
+    }
+  }
 
   @override
   void _notify(StateT? prev, StateT next) {
     if (_isPaused) {
-      _missedCalled = true;
+      _missedCalled = (data: (prev, next), error: null);
       return;
     }
 
@@ -218,7 +236,7 @@ final class ProviderStateSubscription<StateT>
   @override
   void _notifyError(Object error, StackTrace stackTrace) {
     if (_isPaused) {
-      _missedCalled = true;
+      _missedCalled = (data: null, error: (error, stackTrace));
       return;
     }
 

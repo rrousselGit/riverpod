@@ -533,7 +533,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     return sub;
   }
 
-  void _onCancel() {
+  void onCancel() {
     subscriptions?.forEach((sub) {
       switch (sub) {
         case ProviderSubscriptionImpl():
@@ -542,7 +542,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     });
   }
 
-  void _onResume() {
+  void onResume() {
     subscriptions?.forEach((sub) {
       switch (sub) {
         case ProviderSubscriptionImpl():
@@ -593,12 +593,12 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     switch ((wasActive: wasActive, isActive: isActive)) {
       case (wasActive: false, isActive: true) when _didCancelOnce:
         ref?._onResumeListeners?.forEach(runGuarded);
-        _onResume();
+        onResume();
 
       case (wasActive: true, isActive: false):
         _didCancelOnce = true;
         ref?._onCancelListeners?.forEach(runGuarded);
-        _onCancel();
+        onCancel();
 
       default:
       // No state change, so do nothing

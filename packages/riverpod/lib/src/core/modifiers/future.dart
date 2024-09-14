@@ -2,7 +2,11 @@ part of '../../framework.dart';
 
 /// Internal typedef for cancelling the subscription to an async operation
 @internal
-typedef CancelAsyncSubscription = void Function();
+typedef AsyncSubscription = ({
+  void Function() cancel,
+  void Function()? pause,
+  void Function()? resume,
+});
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
@@ -231,8 +235,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   final futureNotifier = ProxyElementValueListenable<Future<StateT>>();
   Completer<StateT>? _futureCompleter;
   Future<StateT>? _lastFuture;
-  CancelAsyncSubscription? _lastFutureSub;
-  CancelAsyncSubscription? _cancelSubscription;
+  AsyncSubscription? _cancelSubscription;
 
   /// Internal utility for transitioning an [AsyncValue] after a provider refresh.
   ///
@@ -344,16 +347,30 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
       required error,
       required last,
     }) {
-      final rawStream = create();
-      final stream = rawStream.isBroadcast
-          ? rawStream
-          : rawStream.asBroadcastStream(onCancel: (sub) => sub.cancel());
+      final stream = create();
 
-      stream.lastCancelable(last, orElseError: _missingLastValueError);
-
-      final sub = stream.listen(data, onError: error, onDone: done);
-      return sub.cancel;
+      return stream.listenAndTrackLast(
+        last,
+        lastOrElseError: _missingLastValueError,
+        onData: data,
+        onError: error,
+        onDone: done,
+      );
     });
+  }
+
+  @override
+  void onCancel() {
+    super.onCancel();
+
+    _cancelSubscription?.pause?.call();
+  }
+
+  @override
+  void onResume() {
+    super.onResume();
+
+    _cancelSubscription?.resume?.call();
   }
 
   StateError _missingLastValueError() {
@@ -405,17 +422,21 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
 
       last(futureOr, cancel);
 
-      return cancel;
+      return (
+        cancel: cancel,
+        pause: null,
+        resume: null,
+      );
     });
   }
 
   /// Listens to a [Future] and transforms it into an [AsyncValue].
   void _handleAsync(
-    CancelAsyncSubscription? Function({
+    AsyncSubscription? Function({
       required void Function(StateT) data,
       required void Function(Object, StackTrace) error,
       required void Function() done,
-      required void Function(Future<StateT>, CancelAsyncSubscription) last,
+      required void Function(Future<StateT>, void Function()) last,
     }) listen, {
     required bool seamless,
   }) {
@@ -431,13 +452,9 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
         },
         last: (last, sub) {
           assert(_lastFuture == null, 'bad state');
-          assert(_lastFutureSub == null, 'bad state');
           _lastFuture = last;
-          _lastFutureSub = sub;
         },
         done: () {
-          _lastFutureSub?.call();
-          _lastFutureSub = null;
           _lastFuture = null;
         },
       );
@@ -457,10 +474,8 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   @internal
   void runOnDispose() {
     // Stops listening to the previous async operation
-    _lastFutureSub?.call();
-    _lastFutureSub = null;
     _lastFuture = null;
-    _cancelSubscription?.call();
+    _cancelSubscription?.cancel();
     _cancelSubscription = null;
     super.runOnDispose();
   }
@@ -475,23 +490,21 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
 
       final lastFuture = _lastFuture;
       if (lastFuture != null) {
-        // The completer will be completed by the while loop in handleStream
-
         final cancelSubscription = _cancelSubscription;
         if (cancelSubscription != null) {
-          completer.future
+          cancelSubscription.resume?.call();
+          lastFuture
               .then(
                 (_) {},
                 // ignore: avoid_types_on_closure_parameters
                 onError: (Object _) {},
               )
-              .whenComplete(cancelSubscription);
+              .whenComplete(cancelSubscription.cancel);
         }
 
         // Prevent super.dispose from cancelling the subscription on the "last"
         // stream value, so that it can be sent to `provider.future`.
         _lastFuture = null;
-        _lastFutureSub = null;
         _cancelSubscription = null;
       } else {
         // The listened stream completed during a "loading" state.
@@ -519,19 +532,26 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
 }
 
 extension<T> on Stream<T> {
-  void lastCancelable(
-    void Function(Future<T>, CancelAsyncSubscription) last, {
-    required Object Function() orElseError,
+  AsyncSubscription listenAndTrackLast(
+    void Function(Future<T>, void Function()) last, {
+    required Object Function() lastOrElseError,
+    required void Function(T event) onData,
+    required void Function(Object error, StackTrace stackTrace) onError,
+    required void Function() onDone,
   }) {
-    late StreamSubscription<T> subscription;
     final completer = Completer<T>();
 
     Result<T>? result;
+    late StreamSubscription<T> subscription;
     subscription = listen(
-      (event) => result = Result.data(event),
+      (event) {
+        result = Result.data(event);
+        onData(event);
+      },
       // ignore: avoid_types_on_closure_parameters
       onError: (Object error, StackTrace stackTrace) {
         result = Result.error(error, stackTrace);
+        onError(error, stackTrace);
       },
       onDone: () {
         if (result != null) {
@@ -550,13 +570,23 @@ extension<T> on Stream<T> {
           completer.future.ignore();
 
           completer.completeError(
-            orElseError(),
+            lastOrElseError(),
             StackTrace.current,
           );
         }
+
+        onDone();
       },
     );
 
-    last(completer.future, subscription.cancel);
+    final asyncSub = (
+      cancel: subscription.cancel,
+      pause: subscription.pause,
+      resume: subscription.resume
+    );
+
+    last(completer.future, asyncSub.cancel);
+
+    return asyncSub;
   }
 }

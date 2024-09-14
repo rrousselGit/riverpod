@@ -133,14 +133,15 @@ void main() {
             .maybeWhen(data: (d) => d, orElse: () => null);
       });
 
-      expect(callCount, 0);
-      expect(container.read(provider), null);
+      final sub = container.listen(provider, (p, n) {});
+
+      expect(sub.read(), null);
       expect(callCount, 1);
 
       controller.add(42);
 
       expect(callCount, 1);
-      expect(container.read(provider), 42);
+      expect(sub.read(), 42);
       expect(callCount, 2);
     });
 

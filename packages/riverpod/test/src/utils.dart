@@ -20,6 +20,100 @@ List<Object?> captureErrors(List<void Function()> cb) {
 
 class ProviderObserverMock extends Mock implements ProviderObserver {}
 
+class StreamSubscriptionView<T> implements StreamSubscription<T> {
+  StreamSubscriptionView(this.inner);
+
+  final StreamSubscription<T> inner;
+
+  @override
+  Future<E> asFuture<E>([E? futureValue]) => inner.asFuture(futureValue);
+
+  @override
+  Future<void> cancel() => inner.cancel();
+
+  @override
+  bool get isPaused => inner.isPaused;
+
+  @override
+  void onData(void Function(T data)? handleData) => inner.onData(handleData);
+
+  @override
+  void onDone(void Function()? handleDone) => inner.onDone(handleDone);
+
+  @override
+  void onError(Function? handleError) => inner.onError(handleError);
+
+  @override
+  void pause([Future<void>? resumeSignal]) => inner.pause(resumeSignal);
+
+  @override
+  void resume() => inner.resume();
+}
+
+class _DelegatingStreamSubscription<T> extends StreamSubscriptionView<T> {
+  _DelegatingStreamSubscription(
+    super.inner, {
+    this.onSubscriptionPause,
+    this.onSubscriptionResume,
+    this.onSubscriptionCancel,
+  });
+
+  final void Function()? onSubscriptionPause;
+  final void Function()? onSubscriptionResume;
+  final void Function()? onSubscriptionCancel;
+
+  @override
+  Future<void> cancel() {
+    onSubscriptionCancel?.call();
+    return super.cancel();
+  }
+
+  @override
+  void pause([Future<void>? resumeSignal]) {
+    onSubscriptionPause?.call();
+    super.pause(resumeSignal);
+  }
+
+  @override
+  void resume() {
+    onSubscriptionResume?.call();
+    super.resume();
+  }
+}
+
+class DelegatingStream<T> extends StreamView<T> {
+  DelegatingStream(
+    super.stream, {
+    this.onSubscriptionPause,
+    this.onSubscriptionResume,
+    this.onSubscriptionCancel,
+  });
+
+  final void Function()? onSubscriptionPause;
+  final void Function()? onSubscriptionResume;
+  final void Function()? onSubscriptionCancel;
+
+  @override
+  StreamSubscription<T> listen(
+    void Function(T event)? onData, {
+    Function? onError,
+    void Function()? onDone,
+    bool? cancelOnError,
+  }) {
+    return _DelegatingStreamSubscription(
+      super.listen(
+        onData,
+        onError: onError,
+        onDone: onDone,
+        cancelOnError: cancelOnError,
+      ),
+      onSubscriptionPause: onSubscriptionPause,
+      onSubscriptionResume: onSubscriptionResume,
+      onSubscriptionCancel: onSubscriptionCancel,
+    );
+  }
+}
+
 class OverrideWithBuildMock<NotifierT, StateT, CreatedT> extends Mock {
   OverrideWithBuildMock(this.fallback);
 
@@ -47,6 +141,10 @@ class OnCancelMock extends Mock {
 }
 
 class OnResume extends Mock {
+  void call();
+}
+
+class OnPause extends Mock {
   void call();
 }
 
