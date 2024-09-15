@@ -35,6 +35,6 @@ The content of this file looks like this:
 
 Where `public_key` and `private_key` are obtained from https://developer.marvel.com/account
 
-![marvel_account](https://github.com/rrousselGit/riverpod/blob/master/packages/riverpod/example/resources/marvel_portal.png)
+![marvel_account](https://github.com/rrousselGit/riverpod/blob/master/examples/marvel/resources/marvel_portal.png)
 
 [riverpod]: https://github.com/rrousselGit/riverpod
