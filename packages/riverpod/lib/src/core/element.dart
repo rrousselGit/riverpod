@@ -483,7 +483,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
             newState.stackTrace,
           );
         }
-      default:
     }
 
     for (final observer in container.observers) {
