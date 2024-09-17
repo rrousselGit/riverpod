@@ -2,8 +2,10 @@ part of '../../nodes.dart';
 
 @_ast
 extension FunctionalProviderDeclarationX on FunctionDeclaration {
+  static final _cache = Expando<Box<FunctionalProviderDeclaration?>>();
+
   FunctionalProviderDeclaration? get provider {
-    return upsert('FunctionalProviderDeclaration', () {
+    return _cache.upsert(this, () {
       final element = declaredElement;
       if (element == null) return null;
 

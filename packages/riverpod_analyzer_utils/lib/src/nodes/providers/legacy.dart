@@ -49,8 +49,10 @@ final class LegacyProviderDependency {
 
 @_ast
 extension LegacyProviderDeclarationX on VariableDeclaration {
+  static final _cache = Expando<Box<LegacyProviderDeclaration?>>();
+
   LegacyProviderDeclaration? get provider {
-    return upsert('LegacyProviderDeclaration', () {
+    return _cache.upsert(this, () {
       final element = declaredElement;
       if (element == null) return null;
 

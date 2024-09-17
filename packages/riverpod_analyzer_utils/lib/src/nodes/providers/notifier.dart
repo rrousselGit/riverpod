@@ -2,8 +2,10 @@ part of '../../nodes.dart';
 
 @_ast
 extension ClassBasedProviderDeclarationX on ClassDeclaration {
+  static final _cache = Expando<Box<ClassBasedProviderDeclaration?>>();
+
   ClassBasedProviderDeclaration? get provider {
-    return upsert('ClassBasedProviderDeclaration', () {
+    return _cache.upsert(this, () {
       final element = declaredElement;
       if (element == null) return null;
 

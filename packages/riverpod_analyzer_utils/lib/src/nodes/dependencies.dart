@@ -1,8 +1,10 @@
 part of '../nodes.dart';
 
 extension on CollectionElement {
+  static final _cache = Expando<Box<ProviderDependency?>>();
+
   ProviderDependency? get providerDependency {
-    return upsert('ProviderDependency', () {
+    return _cache.upsert(this, () {
       final that = this;
       if (that is! Expression) {
         errorReporter(
@@ -88,8 +90,10 @@ final class ProviderDependency {
 }
 
 extension on Expression {
+  static final _cache = Expando<Box<ProviderDependencyList?>>();
+
   ProviderDependencyList? get providerDependencyList {
-    return upsert('ProviderDependencyList', () {
+    return _cache.upsert(this, () {
       final that = this;
       // explicit null, count as valid value (no dependencies)
       if (that is NullLiteral) {
@@ -296,8 +300,10 @@ extension AccumulatedDependenciesX on AstNode {
 }
 
 extension on InstanceCreationExpression {
+  static final _cache = Expando<Box<AccumulatedDependencyList?>>();
+
   AccumulatedDependencyList? get accumulatedDependencies {
-    return upsert('InstanceCreationExpression#accumulatedDependencies', () {
+    return _cache.upsert(this, () {
       final providerScope = this.providerScope;
       if (providerScope == null) return null;
 
@@ -313,8 +319,10 @@ extension on InstanceCreationExpression {
 }
 
 extension on AnnotatedNode {
+  static final _cache = Expando<Box<AccumulatedDependencyList?>>();
+
   AccumulatedDependencyList? get accumulatedDependencies {
-    return upsert('#AnnotatedNodeAccumulatedDependencies', () {
+    return _cache.upsert(this, () {
       final provider = cast<Declaration>()?.provider;
       // Have State inherit dependencies from its widget
       final state = cast<ClassDeclaration>()?.state;
@@ -347,8 +355,10 @@ class IdentifierDependencies {
 
 @_ast
 extension IdentifierDependenciesX on Identifier {
+  static final _cache = Expando<Box<IdentifierDependencies?>>();
+
   IdentifierDependencies? get identifierDependencies {
-    return upsert('Identifier#identifierDependencies', () {
+    return _cache.upsert(this, () {
       final staticElement = this.staticElement;
       if (staticElement == null) return null;
 
@@ -372,8 +382,10 @@ class NamedTypeDependencies {
 
 @_ast
 extension NamedTypeDependenciesX on NamedType {
+  static final _cache = Expando<Box<NamedTypeDependencies?>>();
+
   NamedTypeDependencies? get typeAnnotationDependencies {
-    return upsert('NamedType#typeAnnotationDependencies', () {
+    return _cache.upsert(this, () {
       final staticElement = type?.element;
       if (staticElement == null) return null;
 
@@ -389,8 +401,10 @@ extension NamedTypeDependenciesX on NamedType {
 }
 
 extension DependenciesAnnotatedAnnotatedNodeOfX on AnnotatedNode {
+  static final _cache = Expando<Box<DependenciesAnnotation?>>();
+
   DependenciesAnnotation? get dependencies {
-    return upsert('DependenciesAnnotationAnnotatedNodeX', () {
+    return _cache.upsert(this, () {
       return metadata.map((e) => e.dependencies).nonNulls.firstOrNull;
     });
   }
@@ -398,8 +412,10 @@ extension DependenciesAnnotatedAnnotatedNodeOfX on AnnotatedNode {
 
 @_ast
 extension DependenciesAnnotatedAnnotatedNodeX on Annotation {
+  static final _cache = Expando<Box<DependenciesAnnotation?>>();
+
   DependenciesAnnotation? get dependencies {
-    return upsert('DependenciesAnnotation', () {
+    return _cache.upsert(this, () {
       final elementAnnotation = this.elementAnnotation;
       final element = this.element;
       if (element == null || elementAnnotation == null) return null;

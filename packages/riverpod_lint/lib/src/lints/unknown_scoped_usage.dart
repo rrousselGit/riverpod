@@ -62,7 +62,10 @@ class UnknownScopedUsage extends RiverpodLintRule {
       if (enclosingConstructorType != null &&
           widgetType.isAssignableFromType(enclosingConstructorType)) return;
 
-      reporter.atNode(identifier.node, code);
+      reporter.atNode(
+        identifier.node,
+        code,
+      );
     });
   }
 }

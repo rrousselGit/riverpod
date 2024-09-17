@@ -2,8 +2,10 @@ part of '../../nodes.dart';
 
 @_ast
 extension ProviderOverrideExpressionX on CollectionElement {
+  static final _cache = Expando<Box<ProviderOverrideExpression?>>();
+
   ProviderOverrideExpression? get providerOverride {
-    return upsert('ProviderOverrideExpression', () {
+    return _cache.upsert(this, () {
       final expression = this;
       if (expression is! Expression) return null;
 
@@ -41,8 +43,10 @@ final class ProviderOverrideExpression {
 
 @_ast
 extension ProviderOverrideListX on Expression {
+  static final _cache = Expando<Box<ProviderOverrideList?>>();
+
   ProviderOverrideList? get overrides {
-    return upsert('ProviderOverrideList', () {
+    return _cache.upsert(this, () {
       final expression = this;
       final type = staticType;
       if (type == null || !type.isDartCoreList) return null;

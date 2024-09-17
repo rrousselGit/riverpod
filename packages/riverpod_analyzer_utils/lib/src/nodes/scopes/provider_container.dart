@@ -3,8 +3,11 @@ part of '../../nodes.dart';
 @_ast
 extension ProviderContainerInstanceCreationExpressionX
     on InstanceCreationExpression {
+  static final _cache =
+      Expando<Box<ProviderContainerInstanceCreationExpression?>>();
+
   ProviderContainerInstanceCreationExpression? get providerContainer {
-    return upsert('ProviderContainerInstanceCreationExpression', () {
+    return _cache.upsert(this, () {
       final createdType = constructorName.type.type;
       if (createdType == null ||
           !providerContainerType.isExactlyType(createdType)) {

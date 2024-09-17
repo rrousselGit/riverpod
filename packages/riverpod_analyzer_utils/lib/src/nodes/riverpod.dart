@@ -1,8 +1,10 @@
 part of '../nodes.dart';
 
 extension RiverpodAnnotatedAnnotatedNodeOfX on AnnotatedNode {
+  static final _cache = Expando<Box<RiverpodAnnotation?>>();
+
   RiverpodAnnotation? get riverpod {
-    return upsert('RiverpodAnnotationAnnotatedNodeX', () {
+    return _cache.upsert(this, () {
       return metadata.map((e) => e.riverpod).nonNulls.firstOrNull;
     });
   }
@@ -10,8 +12,10 @@ extension RiverpodAnnotatedAnnotatedNodeOfX on AnnotatedNode {
 
 @_ast
 extension RiverpodAnnotatedAnnotatedNodeX on Annotation {
+  static final _cache = Expando<Box<RiverpodAnnotation?>>();
+
   RiverpodAnnotation? get riverpod {
-    return upsert('RiverpodAnnotation', () {
+    return _cache.upsert(this, () {
       final elementAnnotation = this.elementAnnotation;
       final element = this.element;
       if (element == null || elementAnnotation == null) return null;

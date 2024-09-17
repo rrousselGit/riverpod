@@ -2,8 +2,10 @@ part of '../nodes.dart';
 
 @_ast
 extension WidgetRefInvocationX on MethodInvocation {
+  static final _cache = Expando<Box<WidgetRefInvocation?>>();
+
   WidgetRefInvocation? get widgetRefInvocation {
-    return upsert('WidgetRefInvocation', () {
+    return _cache.upsert(this, () {
       final targetType = realTarget?.staticType;
       if (targetType == null) return null;
 
