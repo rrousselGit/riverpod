@@ -130,5 +130,23 @@ void main() {
       verifyNoMoreInteractions(onError);
       verifyZeroInteractions(listener);
     });
+
+    test('needs to be called as many times as pause() was called', () {
+      final container = ProviderContainer.test();
+      final provider = Provider((ref) => 0);
+
+      final sub = container.listen(provider, (p, b) {});
+
+      sub.pause();
+      sub.pause();
+      sub.pause();
+
+      sub.resume();
+      expect(sub.isPaused, true);
+      sub.resume();
+      expect(sub.isPaused, true);
+      sub.resume();
+      expect(sub.isPaused, false);
+    });
   });
 }

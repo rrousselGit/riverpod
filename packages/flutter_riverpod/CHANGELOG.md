@@ -1,5 +1,6 @@
 ## Unreleased build
 
+- **Breaking**: When a ConsumerWidgets stops being visible (based off `Visibility`), it now temporarily stops listening to providers.
 - **Breaking**: Removed all `Ref` subclasses (such `FutureProviderRef`).
   Use `Ref` directly instead.
   For `FutureProviderRef.future`, migrate to using an `AsyncNotifier`.

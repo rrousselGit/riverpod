@@ -1,9 +1,34 @@
+// ignore_for_file: invalid_use_of_internal_member
+
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:riverpod/legacy.dart';
+
+class SimpleVisibility extends StatelessWidget {
+  const SimpleVisibility({
+    super.key,
+    required this.visible,
+    required this.child,
+  });
+
+  final bool visible;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return Visibility(
+      visible: visible,
+      maintainState: true,
+      maintainAnimation: true,
+      maintainSize: true,
+      maintainInteractivity: true,
+      child: child,
+    );
+  }
+}
 
 void main() {
   group('_ListenManual', () {
@@ -28,7 +53,6 @@ void main() {
       );
 
       final container = ProviderScope.containerOf(ref.context);
-      // ignore: invalid_use_of_internal_member
       final element = container.readProviderElement(provider);
 
       expect(element.isActive, true);
@@ -40,6 +64,163 @@ void main() {
       sub.resume();
 
       expect(element.isActive, true);
+    });
+  });
+
+  group('Handles Visibility', () {
+    testWidgets(
+        'when adding a listener, initializes pause state based on visibility',
+        (tester) async {
+      final providerForVisible = Provider((ref) => 0);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: Column(
+            children: [
+              Consumer(
+                builder: (c, ref, _) {
+                  ref.listen(providerForVisible, (_, __) {});
+                  ref.watch(providerForVisible);
+                  ref.listenManual(providerForVisible, (_, __) {});
+
+                  return const SizedBox();
+                },
+              ),
+              SimpleVisibility(
+                visible: false,
+                child: Consumer(
+                  builder: (c, ref, _) {
+                    ref.listen(_provider, (_, __) {});
+                    ref.watch(_provider);
+                    ref.listenManual(_provider, (_, __) {});
+
+                    return const SizedBox();
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+
+      final container = ProviderScope.containerOf(
+        tester.element(find.byType(Column)),
+      );
+      final visibleElement = container.readProviderElement(providerForVisible);
+      final hiddenElement = container.readProviderElement(_provider);
+
+      expect(
+        hiddenElement.dependents,
+        everyElement(
+          isA<ProviderSubscription>()
+              .having((e) => e.isPaused, 'isPaused', true),
+        ),
+      );
+      expect(
+        visibleElement.dependents,
+        everyElement(
+          isA<ProviderSubscription>()
+              .having((e) => e.isPaused, 'isPaused', false),
+        ),
+      );
+    });
+
+    testWidgets(
+        'listenManual inside life-cycles before didChangeDependencies '
+        'on non-visible widgets does not paused twice', (tester) async {
+      late ProviderSubscription sub;
+      final widget = CallbackConsumerWidget(
+        initState: (context, ref) {
+          sub = ref.listenManual(_provider, (_, __) {});
+        },
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: SimpleVisibility(visible: false, child: widget),
+        ),
+      );
+
+      sub.resume();
+
+      expect(sub.isPaused, false);
+    });
+
+    testWidgets('when visibility changes, pause/resume listeners',
+        (tester) async {
+      late WidgetRef ref;
+      final widget = Consumer(
+        builder: (c, r, _) {
+          ref = r;
+
+          return const SizedBox();
+        },
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: SimpleVisibility(visible: true, child: widget),
+        ),
+      );
+
+      final sub = ref.listenManual(_provider, (_, __) {});
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: SimpleVisibility(visible: false, child: widget),
+        ),
+      );
+
+      expect(sub.isPaused, true);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: SimpleVisibility(visible: true, child: widget),
+        ),
+      );
+
+      expect(sub.isPaused, false);
+    });
+
+    testWidgets(
+        'when a dependency changes but visibility does not, do not pause/resume listeners',
+        (tester) async {
+      late WidgetRef ref;
+      final widget = Consumer(
+        builder: (context, r, _) {
+          // Subscribe to Theme
+          Theme.of(context);
+          ref = r;
+
+          return const SizedBox();
+        },
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: Theme(
+            data: ThemeData.dark(),
+            child: SimpleVisibility(visible: false, child: widget),
+          ),
+        ),
+      );
+
+      final sub = ref.listenManual(_provider, (_, __) {});
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: Theme(
+            data: ThemeData.light(),
+            child: SimpleVisibility(visible: false, child: widget),
+          ),
+        ),
+      );
+
+      expect(sub.isPaused, true);
+
+      sub.resume();
+
+      expect(sub.isPaused, false);
     });
   });
 
