@@ -73,7 +73,7 @@ int eight(EightRef ref) => 0;
     );
     expect(
       errors[4].targetElement.toString(),
-      'Riverpod Riverpod({bool keepAlive = false, List<Object>? dependencies})',
+      'Riverpod Riverpod({bool keepAlive = false, List<Object>? dependencies, Duration? Function(int, Object)? retry})',
     );
 
     expect(
@@ -88,7 +88,7 @@ int eight(EightRef ref) => 0;
     );
     expect(
       errors[6].targetElement.toString(),
-      'Riverpod Riverpod({bool keepAlive = false, List<Object>? dependencies})',
+      'Riverpod Riverpod({bool keepAlive = false, List<Object>? dependencies, Duration? Function(int, Object)? retry})',
     );
 
     expect(
@@ -103,7 +103,7 @@ int eight(EightRef ref) => 0;
     );
     expect(
       errors[8].targetElement.toString(),
-      'Riverpod Riverpod({bool keepAlive = false, List<Object>? dependencies})',
+      'Riverpod Riverpod({bool keepAlive = false, List<Object>? dependencies, Duration? Function(int, Object)? retry})',
     );
 
     expect(
