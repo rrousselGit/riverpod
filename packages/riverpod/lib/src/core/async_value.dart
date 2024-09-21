@@ -134,6 +134,7 @@ sealed class AsyncValue<StateT> {
   ///     });
   ///   }
   /// }
+  /// ```
   ///
   /// An optional callback can be specified to catch errors only under a certain condition.
   /// In the following example, we catch all exceptions beside FormatExceptions.
