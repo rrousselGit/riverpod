@@ -9,6 +9,32 @@ import '../utils.dart';
 
 void main() {
   group('ProviderElement', () {
+    test('Only includes direct subscriptions in subscription lists', () {
+      final container = ProviderContainer.test();
+      final provider = FutureProvider((ref) => 0);
+      final dep = Provider((ref) {
+        ref.watch(provider.future.select((value) => 0));
+      });
+
+      container.read(dep);
+
+      final providerElement = container.readProviderElement(provider);
+      final depElement = container.readProviderElement(dep);
+
+      expect(providerElement.subscriptions, null);
+      expect(
+        providerElement.dependents,
+        [isA<SelectorSubscription<Future<int>, int>>()],
+      );
+      expect(providerElement.weakDependents, isEmpty);
+
+      expect(depElement.subscriptions, [
+        isA<SelectorSubscription<Future<int>, int>>(),
+      ]);
+      expect(depElement.dependents, isEmpty);
+      expect(depElement.weakDependents, isEmpty);
+    });
+
     group('retry', () {
       test('default retry delays from 200ms to 6.4 seconds', () {});
 
@@ -329,6 +355,47 @@ void main() {
     });
 
     group('isActive', () {
+      test('Is paused if all watchers are paused', () {
+        final container = ProviderContainer.test();
+        final provider = Provider(name: 'foo', (ref) => 0);
+        final dep = Provider(name: 'dep', (ref) => ref.watch(provider));
+        final dep2 = Provider(name: 'dep2', (ref) => ref.watch(provider));
+
+        final depSub = container.listen(dep, (a, b) {});
+        final dep2Sub = container.listen(dep2, (a, b) {});
+        final element = container.readProviderElement(provider);
+
+        expect(element.isActive, true);
+
+        depSub.close();
+
+        expect(element.isActive, true);
+
+        dep2Sub.close();
+
+        expect(element.isActive, false);
+      });
+
+      test('Is paused if all subscriptions are paused', () {
+        final container = ProviderContainer.test();
+        final provider = Provider((ref) => 0);
+
+        final element = container.readProviderElement(provider);
+
+        final sub = container.listen(provider, (_, __) {});
+        final sub2 = container.listen(provider, (_, __) {});
+
+        expect(element.isActive, true);
+
+        sub.pause();
+
+        expect(element.isActive, true);
+
+        sub2.pause();
+
+        expect(element.isActive, false);
+      });
+
       test('rejects weak listeners', () {
         final provider = Provider((ref) => 0);
         final container = ProviderContainer.test();
@@ -351,7 +418,7 @@ void main() {
 
         expect(container.readProviderElement(provider).isActive, false);
 
-        container.read(dep);
+        container.listen(dep, (p, n) {});
 
         expect(container.readProviderElement(provider).isActive, true);
       });
@@ -365,7 +432,7 @@ void main() {
 
         expect(container.readProviderElement(provider).isActive, false);
 
-        container.read(dep);
+        container.listen(dep, (p, n) {});
 
         expect(container.readProviderElement(provider).isActive, true);
       });
@@ -382,18 +449,18 @@ void main() {
       });
     });
 
-    group('hasListeners', () {
-      test('includes weak listeners', () {
+    group('hasNonWeakListeners', () {
+      test('excludes weak listeners', () {
         final provider = Provider((ref) => 0);
         final container = ProviderContainer.test();
 
         final element = container.readProviderElement(provider);
 
-        expect(element.hasListeners, false);
+        expect(element.hasNonWeakListeners, false);
 
         container.listen(provider, weak: true, (_, __) {});
 
-        expect(element.hasListeners, true);
+        expect(element.hasNonWeakListeners, false);
       });
 
       test('includes provider listeners', () async {
@@ -403,11 +470,17 @@ void main() {
         });
         final container = ProviderContainer.test();
 
-        expect(container.readProviderElement(provider).hasListeners, false);
+        expect(
+          container.readProviderElement(provider).hasNonWeakListeners,
+          false,
+        );
 
         container.read(dep);
 
-        expect(container.readProviderElement(provider).hasListeners, true);
+        expect(
+          container.readProviderElement(provider).hasNonWeakListeners,
+          true,
+        );
       });
 
       test('includes provider dependents', () async {
@@ -417,23 +490,51 @@ void main() {
         });
         final container = ProviderContainer.test();
 
-        expect(container.readProviderElement(provider).hasListeners, false);
+        expect(
+          container.readProviderElement(provider).hasNonWeakListeners,
+          false,
+        );
 
         container.read(dep);
 
-        expect(container.readProviderElement(provider).hasListeners, true);
+        expect(
+          container.readProviderElement(provider).hasNonWeakListeners,
+          true,
+        );
       });
 
       test('includes container listeners', () async {
         final provider = Provider((ref) => 0);
         final container = ProviderContainer.test();
 
-        expect(container.readProviderElement(provider).hasListeners, false);
+        expect(
+          container.readProviderElement(provider).hasNonWeakListeners,
+          false,
+        );
 
         container.listen(provider, (_, __) {});
 
-        expect(container.readProviderElement(provider).hasListeners, true);
+        expect(
+          container.readProviderElement(provider).hasNonWeakListeners,
+          true,
+        );
       });
+    });
+
+    test('does not notify listeners twice when using fireImmediately',
+        () async {
+      final container = ProviderContainer.test();
+      final listener = Listener<int>();
+
+      final dep = StateProvider((ref) => 0);
+      final provider = Provider((ref) {
+        ref.watch(dep);
+        return ref.state = 0;
+      });
+
+      container.listen(provider, listener.call, fireImmediately: true);
+
+      verifyOnly(listener, listener(null, 0));
     });
 
     test('does not notify listeners when rebuilding the state', () async {

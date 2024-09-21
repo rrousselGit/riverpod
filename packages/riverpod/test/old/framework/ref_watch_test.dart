@@ -317,16 +317,10 @@ void main() {
       () async {
     final stateProvider = StateProvider((ref) => 0, name: 'state');
     final notifier0 = Counter();
-    final provider0 = StateNotifierProvider<Counter, int>(
-      (_) => notifier0,
-      name: '0',
-    );
+    final provider0 = StateNotifierProvider<Counter, int>((ref) => notifier0);
 
     final notifier1 = Counter(42);
-    final provider1 = StateNotifierProvider<Counter, int>(
-      (_) => notifier1,
-      name: '1',
-    );
+    final provider1 = StateNotifierProvider<Counter, int>((ref) => notifier1);
 
     var computedBuildCount = 0;
     final computed = Provider((ref) {
@@ -348,8 +342,8 @@ void main() {
 
     verifyOnly(computedListener, computedListener(null, '0 0'));
     expect(computedBuildCount, 1);
-    expect(provider0Element.hasListeners, true);
-    expect(provider1Element.hasListeners, false);
+    expect(provider0Element.hasNonWeakListeners, true);
+    expect(provider1Element.hasNonWeakListeners, false);
 
     notifier0.increment();
     await container.pump();
@@ -369,8 +363,8 @@ void main() {
 
     verifyOnly(computedListener, computedListener('1 1', '1 43'));
     expect(computedBuildCount, 3);
-    expect(provider1Element.hasListeners, true);
-    expect(provider0Element.hasListeners, true);
+    expect(provider1Element.hasNonWeakListeners, true);
+    expect(provider0Element.hasNonWeakListeners, true);
 
     notifier1.increment();
     await container.pump();
@@ -416,8 +410,8 @@ void main() {
 
     verifyOnly(computedListener, computedListener(null, 0));
     expect(computedBuildCount, 1);
-    expect(provider0Element.hasListeners, true);
-    expect(provider1Element.hasListeners, false);
+    expect(provider0Element.hasNonWeakListeners, true);
+    expect(provider1Element.hasNonWeakListeners, false);
 
     notifier0.increment();
     await container.pump();
@@ -437,8 +431,8 @@ void main() {
 
     expect(computedBuildCount, 3);
     verifyOnly(computedListener, computedListener(1, 43));
-    expect(provider1Element.hasListeners, true);
-    expect(provider0Element.hasListeners, false);
+    expect(provider1Element.hasNonWeakListeners, true);
+    expect(provider0Element.hasNonWeakListeners, false);
 
     notifier1.increment();
     await container.pump();

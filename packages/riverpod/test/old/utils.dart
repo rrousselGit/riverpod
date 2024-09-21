@@ -36,7 +36,16 @@ class OnBuildMock extends Mock {
 }
 
 class OnDisposeMock extends Mock {
+  OnDisposeMock([this.label]);
+
+  final String? label;
+
   void call();
+
+  @override
+  String toString() {
+    return 'OnDisposeMock($label)';
+  }
 }
 
 class OnCancelMock extends Mock {

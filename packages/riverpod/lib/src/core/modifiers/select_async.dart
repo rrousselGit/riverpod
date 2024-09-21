@@ -32,12 +32,13 @@ class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
   }
 
   @override
-  _SelectorSubscription<AsyncValue<InputT>, Future<OutputT>> addListener(
+  SelectorSubscription<AsyncValue<InputT>, Future<OutputT>> addListener(
     Node node,
     void Function(Future<OutputT>? previous, Future<OutputT> next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
+    required bool weak,
   }) {
     Result<OutputT>? lastSelectedValue;
     Completer<OutputT>? selectedCompleter;
@@ -131,9 +132,11 @@ class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
       );
     }
 
-    final sub = node.listen<AsyncValue<InputT>>(
-      provider,
+    final sub = provider.addListener(
+      node,
       (prev, input) => playValue(input),
+      weak: weak,
+      onDependencyMayHaveChanged: onDependencyMayHaveChanged,
       onError: onError,
       fireImmediately: false,
     );
@@ -144,24 +147,28 @@ class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
       listener(null, selectedFuture!);
     }
 
-    return _SelectorSubscription(
-      node,
-      sub,
+    return SelectorSubscription(
+      innerSubscription: sub,
       () => selectedFuture!,
       onClose: () {
         final completer = selectedCompleter;
         if (completer != null && !completer.isCompleted) {
-          read(node).then(
-            completer.complete,
-            onError: completer.completeError,
+          final sub = future.addListener(
+            node,
+            (prev, next) {},
+            weak: weak,
+            onDependencyMayHaveChanged: () {},
+            onError: onError,
+            fireImmediately: false,
           );
+
+          sub
+              .read()
+              .then((v) => _select(v).requireState)
+              .then(completer.complete, onError: completer.completeError)
+              .whenComplete(sub.close);
         }
       },
     );
   }
-
-  @override
-  Future<OutputT> read(Node node) => future.read(node).then(
-        (v) => _select(v).requireState,
-      );
 }

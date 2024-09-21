@@ -726,11 +726,13 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
 }
 
 class RiverpodAstRegistry {
+  static final _cache = Expando<Box<List<RiverpodAnalysisError>>>();
+
   void run(AstNode node) {
     final previousErrorReporter = errorReporter;
     try {
-      final errors = node.upsert(
-        'RiverpodAstRegistry.errors',
+      final errors = _cache.upsert(
+        node,
         () => <RiverpodAnalysisError>[],
       );
 

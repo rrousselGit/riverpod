@@ -69,6 +69,15 @@ typedef ConsumerBuilder = Widget Function(
 /// }
 /// ```
 ///
+/// ## Performance considerations
+///
+/// To optimize performance by avoiding unnecessary network requests and
+/// pausing unused streams, [Consumer] will temporarily stop listening to
+/// providers when the widget stops being visible.
+///
+/// This is determined using [Visibility.of], and will invoke
+/// [ProviderSubscription.pause] on all currently active subscriptions.
+///
 /// See also:
 ///
 ///  * [ConsumerWidget], a base-class for widgets that wants to listen to providers.
@@ -349,6 +358,9 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   /// The [Element] for a [ConsumerStatefulWidget]
   ConsumerStatefulElement(ConsumerStatefulWidget super.widget);
 
+  @override
+  BuildContext get context => this;
+
   late ProviderContainer _container = ProviderScope.containerOf(this);
   var _dependencies =
       <ProviderListenable<Object?>, ProviderSubscription<Object?>>{};
@@ -356,6 +368,19 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
       _oldDependencies;
   final _listeners = <ProviderSubscription<Object?>>[];
   List<_ListenManual<Object?>>? _manualListeners;
+  bool? _visible;
+
+  Iterable<ProviderSubscription> get _allSubscriptions sync* {
+    yield* _dependencies.values;
+    yield* _listeners;
+    if (_manualListeners != null) {
+      yield* _manualListeners!;
+    }
+  }
+
+  void _applyVisibility(ProviderSubscription sub) {
+    if (_visible == false) sub.pause();
+  }
 
   @override
   void didChangeDependencies() {
@@ -372,6 +397,18 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
 
   @override
   Widget build() {
+    final visible = Visibility.of(context);
+    if (visible != _visible) {
+      _visible = visible;
+      for (final sub in _allSubscriptions) {
+        if (visible) {
+          sub.resume();
+        } else {
+          sub.pause();
+        }
+      }
+    }
+
     try {
       _oldDependencies = _dependencies;
       for (var i = 0; i < _listeners.length; i++) {
@@ -404,10 +441,12 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
         return oldDependency;
       }
 
-      return _container.listen<Res>(
+      final sub = _container.listen<Res>(
         target,
         (_, __) => markNeedsBuild(),
       );
+      _applyVisibility(sub);
+      return sub;
     }).read() as Res;
   }
 
@@ -448,6 +487,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
     // which listen call was preserved between widget rebuild, and we wouldn't
     // want to call the listener on every rebuild.
     final sub = _container.listen<T>(provider, listener, onError: onError);
+    _applyVisibility(sub);
     _listeners.add(sub);
   }
 
@@ -493,39 +533,38 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
     final container = ProviderScope.containerOf(this, listen: false);
 
     final sub = _ListenManual(
-      container,
-      container.listen(
+      container.listen<T>(
         provider,
         listener,
         onError: onError,
         fireImmediately: fireImmediately,
-      ),
+      ) as ProviderSubscriptionWithOrigin<T, Object?>,
       this,
     );
+    _applyVisibility(sub);
     listeners.add(sub);
 
     return sub;
   }
-
-  @override
-  BuildContext get context => this;
 }
 
-final class _ListenManual<T> extends ProviderSubscription<T> {
-  _ListenManual(super.source, this._subscription, this._element);
+final class _ListenManual<T>
+    // ignore: invalid_use_of_internal_member
+    extends DelegatingProviderSubscription<T, Object?> {
+  _ListenManual(this.innerSubscription, this._element);
 
-  final ProviderSubscription<T> _subscription;
+  @override
+  final ProviderSubscriptionWithOrigin<T, Object?> innerSubscription;
   final ConsumerStatefulElement _element;
 
   @override
   void close() {
     if (!closed) {
-      _subscription.close();
       _element._manualListeners?.remove(this);
     }
     super.close();
   }
 
   @override
-  T read() => _subscription.read();
+  T read() => innerSubscription.read();
 }

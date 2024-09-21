@@ -2460,7 +2460,7 @@ void main() {
       });
 
       test(
-          'if a listener removes another provider.listen, the removed listener is still called',
+          'if a listener removes another provider.listen, the removed listener is not called',
           () {
         final provider = StateProvider((ref) => 0);
         final container = ProviderContainer.test();
@@ -2485,47 +2485,8 @@ void main() {
 
         container.read(provider.notifier).state++;
 
-        verifyInOrder([
-          listener(0, 1),
-          listener2(0, 1),
-        ]);
-
-        container.read(provider.notifier).state++;
-
-        verify(listener(1, 2)).called(1);
-        verifyNoMoreInteractions(listener2);
-      });
-
-      test(
-          'if a listener removes another provider.listen, the removed listener is still called (ProviderListenable)',
-          () {
-        final provider = StateProvider((ref) => 0);
-        final container = ProviderContainer.test();
-
-        final listener = Listener<int>();
-        final listener2 = Listener<int>();
-
-        final p = Provider((ref) {
-          ProviderSubscription<int>? a;
-          ref.listen<int>(provider, (prev, value) {
-            listener(prev, value);
-            a?.close();
-            a = null;
-          });
-
-          a = ref.listen<int>(provider, listener2.call);
-        });
-        container.read(p);
-
-        verifyZeroInteractions(listener);
+        verifyOnly(listener, listener(0, 1));
         verifyZeroInteractions(listener2);
-
-        container.read(provider.notifier).state++;
-
-        verifyInOrder([
-          listener(0, 1),
-          listener2(0, 1),
-        ]);
 
         container.read(provider.notifier).state++;
 
@@ -2558,74 +2519,6 @@ void main() {
         container.read(provider.notifier).state++;
 
         verify(listener(1, 2)).called(2);
-      });
-
-      test(
-          'if a listener removes another container.listen, the removed listener is still called (ProviderListenable)',
-          () {
-        final provider = StateProvider((ref) => 0);
-        final container = ProviderContainer.test();
-
-        final listener = Listener<int>();
-        final listener2 = Listener<int>();
-
-        ProviderSubscription<Object?>? a;
-        container.listen<int>(provider, (prev, value) {
-          listener(prev, value);
-          a?.close();
-          a = null;
-        });
-
-        a = container.listen<int>(provider, listener2.call);
-
-        verifyZeroInteractions(listener);
-        verifyZeroInteractions(listener2);
-
-        container.read(provider.notifier).state++;
-
-        verifyInOrder([
-          listener(0, 1),
-          listener2(0, 1),
-        ]);
-
-        container.read(provider.notifier).state++;
-
-        verify(listener(1, 2)).called(1);
-        verifyNoMoreInteractions(listener2);
-      });
-
-      test(
-          'if a listener removes another container.listen, the removed listener is still called',
-          () {
-        final provider = StateProvider((ref) => 0);
-        final container = ProviderContainer.test();
-
-        final listener = Listener<int>();
-        final listener2 = Listener<int>();
-
-        ProviderSubscription<Object?>? a;
-        container.listen<int>(provider, (prev, value) {
-          listener(prev, value);
-          a?.close();
-          a = null;
-        });
-
-        a = container.listen<int>(provider, listener2.call);
-
-        verifyZeroInteractions(listener);
-        verifyZeroInteractions(listener2);
-
-        container.read(provider.notifier).state++;
-
-        verifyInOrder([
-          listener(0, 1),
-          listener2(0, 1),
-        ]);
-
-        container.read(provider.notifier).state++;
-
-        verify(listener(1, 2)).called(1);
-        verifyNoMoreInteractions(listener2);
       });
 
       group('fireImmediately', () {
@@ -2984,18 +2877,27 @@ void main() {
         final container = ProviderContainer.test();
         final provider = StateProvider<int>((ref) => 0);
 
-        expect(container.readProviderElement(provider).hasListeners, false);
+        expect(
+          container.readProviderElement(provider).hasNonWeakListeners,
+          false,
+        );
 
         final sub = container.listen<bool>(
           provider.select((count) => count.isEven),
           (prev, isEven) {},
         );
 
-        expect(container.readProviderElement(provider).hasListeners, true);
+        expect(
+          container.readProviderElement(provider).hasNonWeakListeners,
+          true,
+        );
 
         sub.close();
 
-        expect(container.readProviderElement(provider).hasListeners, false);
+        expect(
+          container.readProviderElement(provider).hasNonWeakListeners,
+          false,
+        );
       });
 
       test('can watch selectors', () async {

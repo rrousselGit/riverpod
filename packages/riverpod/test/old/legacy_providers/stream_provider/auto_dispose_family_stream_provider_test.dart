@@ -27,6 +27,8 @@ void main() {
           overrides: [provider],
         );
 
+        container.listen(provider(0), (p, n) {});
+
         expect(await container.read(provider(0).future), 0);
         expect(container.read(provider(0)), const AsyncData(0));
         expect(root.getAllProviderElements(), isEmpty);
@@ -99,6 +101,8 @@ void main() {
         parent: root,
         overrides: [dep.overrideWithValue(42)],
       );
+
+      container.listen(provider(10), (p, n) {});
 
       await expectLater(container.read(provider(10).future), completion(52));
       expect(container.read(provider(10)), const AsyncData(52));

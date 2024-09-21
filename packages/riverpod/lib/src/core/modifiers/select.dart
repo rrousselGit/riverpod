@@ -1,65 +1,22 @@
 part of '../../framework.dart';
 
-extension on Node {
-  bool get weak => this is WeakNode;
-}
-
 /// An abstraction of both [ProviderContainer] and [$ProviderElement] used by
 /// [ProviderListenable].
 sealed class Node {
-  /// Starts listening to this transformer
-  ProviderSubscription<StateT> listen<StateT>(
-    ProviderListenable<StateT> listenable,
-    void Function(StateT? previous, StateT next) listener, {
-    required void Function(Object error, StackTrace stackTrace)? onError,
-    required bool fireImmediately,
-  });
+  // /// Starts listening to this transformer
+  // ProviderSubscription<StateT> listen<StateT>(
+  //   ProviderListenable<StateT> listenable,
+  //   void Function(StateT? previous, StateT next) listener, {
+  //   required void Function(Object error, StackTrace stackTrace)? onError,
+  //   required bool fireImmediately,
+  //   required bool weak,
+  // });
 
   /// Obtain the [ProviderElement] of a provider, creating it if necessary.
   @internal
   ProviderElement<StateT> readProviderElement<StateT>(
     ProviderBase<StateT> provider,
   );
-}
-
-sealed class WrappedNode implements Node {
-  @override
-  ProviderSubscription<StateT> listen<StateT>(
-    ProviderListenable<StateT> listenable,
-    void Function(StateT? previous, StateT next) listener, {
-    required void Function(Object error, StackTrace stackTrace)? onError,
-    required bool fireImmediately,
-    bool weak = false,
-  });
-}
-
-@internal
-final class WeakNode implements Node {
-  WeakNode(this.inner);
-  final WrappedNode inner;
-
-  @override
-  ProviderSubscription<StateT> listen<StateT>(
-    ProviderListenable<StateT> listenable,
-    void Function(StateT? previous, StateT next) listener, {
-    required void Function(Object error, StackTrace stackTrace)? onError,
-    required bool fireImmediately,
-  }) {
-    return inner.listen(
-      listenable,
-      listener,
-      onError: onError,
-      weak: true,
-      fireImmediately: fireImmediately,
-    );
-  }
-
-  @override
-  ProviderElement<StateT> readProviderElement<StateT>(
-    ProviderBase<StateT> provider,
-  ) {
-    return inner.readProviderElement(provider);
-  }
 }
 
 var _debugIsRunningSelector = false;
@@ -121,18 +78,19 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
   }
 
   @override
-  _SelectorSubscription<InputT, OutputT> addListener(
+  SelectorSubscription<InputT, OutputT> addListener(
     Node node,
     void Function(OutputT? previous, OutputT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
+    required bool weak,
   }) {
     onError ??= Zone.current.handleUncaughtError;
 
     Result<OutputT>? lastSelectedValue;
-    final sub = node.listen<InputT>(
-      provider,
+    final sub = provider.addListener(
+      node,
       (prev, input) {
         _selectOnChange(
           newState: input,
@@ -143,10 +101,12 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
         );
       },
       fireImmediately: false,
+      weak: weak,
+      onDependencyMayHaveChanged: onDependencyMayHaveChanged,
       onError: onError,
     );
 
-    if (!node.weak) lastSelectedValue = _select(Result.guard(sub.read));
+    if (!weak) lastSelectedValue = _select(Result.guard(sub.read));
 
     if (fireImmediately) {
       _handleFireImmediately(
@@ -156,9 +116,8 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
       );
     }
 
-    return _SelectorSubscription(
-      node,
-      sub,
+    return SelectorSubscription(
+      innerSubscription: sub,
       () {
         // Using ! because since `sub.read` flushes the inner subscription,
         // it is guaranteed that `lastSelectedValue` is not null.
@@ -173,46 +132,40 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
       },
     );
   }
-
-  @override
-  OutputT read(Node node) {
-    final input = provider.read(node);
-
-    return _select(Result.data(input)).requireState;
-  }
 }
 
-final class _SelectorSubscription<Input, Output>
-    extends ProviderSubscription<Output> {
-  _SelectorSubscription(
-    super.source,
-    this._internalSub,
+@internal
+final class SelectorSubscription<InT, OutT>
+    extends DelegatingProviderSubscription<OutT, Object?> {
+  SelectorSubscription(
     this._read, {
     this.onClose,
+    required this.innerSubscription,
   });
 
-  final ProviderSubscription<Input> _internalSub;
-  final Output Function() _read;
+  @override
+  final ProviderSubscriptionWithOrigin<InT, Object?> innerSubscription;
+
   final void Function()? onClose;
+  final OutT Function() _read;
 
   @override
   void close() {
-    if (!closed) {
-      onClose?.call();
-      _internalSub.close();
-    }
+    if (closed) return;
+
+    onClose?.call();
     super.close();
   }
 
   @override
-  Output read() {
+  OutT read() {
     if (closed) {
       throw StateError(
         'called ProviderSubscription.read on a subscription that was closed',
       );
     }
     // flushes the provider
-    _internalSub.read();
+    innerSubscription.read();
 
     return _read();
   }

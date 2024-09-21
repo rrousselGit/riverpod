@@ -53,11 +53,17 @@ void main() {
           (previous, value) {},
         );
 
-        expect(container.readProviderElement(provider).hasListeners, true);
+        expect(
+          container.readProviderElement(provider).weakDependents,
+          isNotEmpty,
+        );
 
         sub.close();
 
-        expect(container.readProviderElement(provider).hasListeners, false);
+        expect(
+          container.readProviderElement(provider).weakDependents,
+          isEmpty,
+        );
       });
 
       test(
@@ -151,6 +157,30 @@ void main() {
 
         verifyNoMoreInteractions(listener);
       });
+    });
+  });
+
+  group('_ProviderSelector', () {
+    test('handles pause/resume', () {
+      final container = ProviderContainer.test();
+      final provider = Provider((ref) => 0);
+
+      final element = container.readProviderElement(provider);
+
+      final sub = container.listen(
+        provider.select((value) => null),
+        (previous, next) {},
+      );
+
+      expect(element.isActive, true);
+
+      sub.pause();
+
+      expect(element.isActive, false);
+
+      sub.resume();
+
+      expect(element.isActive, true);
     });
   });
 }

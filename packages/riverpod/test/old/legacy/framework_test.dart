@@ -74,7 +74,7 @@ void main() {
     final container = ProviderContainer.test();
     expect(
       () => container.read(provider),
-      throwsA(isA<StateError>()),
+      throwsA(isA<CircularDependencyError>()),
     );
   });
 

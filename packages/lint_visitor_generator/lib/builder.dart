@@ -43,13 +43,15 @@ class _LintVisitorGenerator extends Generator {
         .expand((extension) {
       final constraint = extension.extendedType;
 
-      return extension.accessors.map(
-        (e) => (
-          constraint: constraint.element!.name!,
-          type: e.returnType.element!.name!,
-          name: e.name,
-        ),
-      );
+      return extension.accessors
+          .map(
+            (e) => (
+              constraint: constraint.element!.name!,
+              type: e.returnType.element!.name!,
+              name: e.name,
+            ),
+          )
+          .where((e) => !e.name.startsWith('_cache'));
     }).toList();
 
     final byConstraint = <({
@@ -146,11 +148,13 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
 }
 
 class RiverpodAstRegistry {
+  static final _cache = Expando<Box<List<RiverpodAnalysisError>>>();
+
   void run(AstNode node) {
     final previousErrorReporter = errorReporter;
     try {
-      final errors = node.upsert(
-        'RiverpodAstRegistry.errors',
+      final errors = _cache.upsert(
+        node,
         () => <RiverpodAnalysisError>[],
       );
 

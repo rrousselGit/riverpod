@@ -11,10 +11,14 @@ extension $RefArg on Ref<Object?> {
 
 @internal
 class UnmountedRefException implements Exception {
+  UnmountedRefException(this.origin);
+
+  final ProviderBase<Object?> origin;
+
   @override
   String toString() {
     return '''
-Cannot use a Ref after it has been disposed. This typically happens if:
+Cannot use the Ref of $origin after it has been disposed. This typically happens if:
 - A provider rebuilt, but the previous "build" was still pending and is still performing operations.
   You should therefore either use `ref.onDispose` to cancel pending work, or
   check `ref.mounted` after async gaps or anything that could invalidate the provider.
@@ -143,7 +147,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
       !_debugIsRunningSelector,
       'Cannot call ref.listen inside a selector',
     );
-    if (!mounted) throw UnmountedRefException();
+    if (!mounted) throw UnmountedRefException(_element.origin);
   }
 
   /// Requests for the state of a provider to not be disposed when all the
@@ -162,7 +166,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     late KeepAliveLink link;
     link = KeepAliveLink._(() {
       if (links.remove(link)) {
-        if (links.isEmpty) _element._mayNeedDispose();
+        if (links.isEmpty) _element.mayNeedDispose();
       }
     });
     links.add(link);
@@ -226,10 +230,9 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// {@endtemplate}
   void invalidate(ProviderOrFamily providerOrFamily, {bool asReload = false}) {
     _throwIfInvalidUsage();
+    if (kDebugMode) _debugAssertCanDependOn(providerOrFamily);
 
     container.invalidate(providerOrFamily, asReload: asReload);
-
-    if (kDebugMode) _debugAssertCanDependOn(providerOrFamily);
   }
 
   /// Invokes [invalidate] on itself.
@@ -540,44 +543,14 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// ```
   T watch<T>(ProviderListenable<T> listenable) {
     _throwIfInvalidUsage();
-    if (listenable is! ProviderBase<T>) {
-      final sub = _element.listen<T>(
-        listenable,
-        (prev, value) => invalidateSelf(asReload: true),
-        onError: (err, stack) => invalidateSelf(asReload: true),
-        onDependencyMayHaveChanged: _element._markDependencyMayHaveChanged,
-      );
+    final sub = _element.listen<T>(
+      listenable,
+      (prev, value) => invalidateSelf(asReload: true),
+      onError: (err, stack) => invalidateSelf(asReload: true),
+      onDependencyMayHaveChanged: _element._markDependencyMayHaveChanged,
+    );
 
-      return sub.read();
-    }
-
-    final element = container.readProviderElement(listenable);
-    _element._dependencies.putIfAbsent(element, () {
-      final previousSub = _element._previousDependencies?.remove(element);
-      if (previousSub != null) {
-        return previousSub;
-      }
-
-      if (kDebugMode) {
-        // Flushing the provider before adding a new dependency
-        // as otherwise this could cause false positives with certain asserts.
-        // It's done only in debug mode since `readSelf` will flush the value
-        // again anyway, and the only value of this flush is to not break asserts.
-        element.flush();
-      }
-
-      element
-        .._onListen()
-        .._watchDependents.add(_element);
-
-      return Object();
-    });
-
-    final result = element.readSelf();
-
-    if (kDebugMode) _debugAssertCanDependOn(listenable);
-
-    return result;
+    return sub.read();
   }
 
   /// {@template riverpod.listen}

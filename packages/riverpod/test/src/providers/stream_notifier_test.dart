@@ -30,6 +30,73 @@ void main() {
   });
 
   streamNotifierProviderFactory.createGroup((factory) {
+    test('closes the StreamSubscription upon disposing the provider', () async {
+      final onCancel = OnCancelMock();
+      final container = ProviderContainer.test();
+      final cancelCompleter = Completer<void>.sync();
+      final provider = factory.simpleTestProvider<int>((ref) {
+        final controller = StreamController<int>();
+        ref.onDispose(() {
+          controller.addError(42);
+          controller.close();
+        });
+
+        return DelegatingStream(
+          controller.stream,
+          onSubscriptionCancel: () {
+            onCancel.call();
+            cancelCompleter.complete();
+          },
+        );
+      });
+
+      container.listen(provider, (previous, next) {});
+      final future = container.read(provider.future);
+
+      container.dispose();
+
+      verifyZeroInteractions(onCancel);
+
+      await expectLater(future, throwsA(42));
+      await cancelCompleter.future;
+
+      verifyOnly(onCancel, onCancel());
+    });
+
+    test('Pauses the Stream when the provider is paused', () {
+      final streamController = StreamController<int>();
+      addTearDown(streamController.close);
+
+      final onSubPause = OnPause();
+      final onSubResume = OnResume();
+
+      final container = ProviderContainer.test();
+
+      final provider = factory.simpleTestProvider(
+        (ref) {
+          return DelegatingStream(
+            streamController.stream,
+            onSubscriptionPause: onSubPause.call,
+            onSubscriptionResume: onSubResume.call,
+          );
+        },
+      );
+
+      final sub = container.listen(provider, (previous, next) {});
+
+      verifyZeroInteractions(onSubPause);
+      verifyZeroInteractions(onSubResume);
+
+      sub.pause();
+
+      verifyOnly(onSubPause, onSubPause());
+      verifyZeroInteractions(onSubResume);
+
+      sub.resume();
+
+      verifyOnly(onSubResume, onSubResume());
+      verifyNoMoreInteractions(onSubPause);
+    });
     group('retry', () {
       test(
         'handles retry',
@@ -65,33 +132,33 @@ void main() {
         }),
       );
 
-      // test(
-      //   'manually setting the state to an error does not cause a retry',
-      //   () => fakeAsync((fake) async {
-      //     final container = ProviderContainer.test();
-      //     var retryCount = 0;
-      //     late Ref<AsyncValue<int>> r;
-      //     final provider = FutureProvider<int>(
-      //       (ref) {
-      //         r = ref;
-      //         return 0;
-      //       },
-      //       retry: (_, __) {
-      //         retryCount++;
-      //         return const Duration(seconds: 1);
-      //       },
-      //     );
-      //     final listener = Listener<AsyncValue<int>>();
+      test(
+        'manually setting the state to an error does not cause a retry',
+        () => fakeAsync((fake) async {
+          final container = ProviderContainer.test();
+          var retryCount = 0;
+          late Ref<AsyncValue<int>> r;
+          final provider = FutureProvider<int>(
+            (ref) {
+              r = ref;
+              return 0;
+            },
+            retry: (_, __) {
+              retryCount++;
+              return const Duration(seconds: 1);
+            },
+          );
+          final listener = Listener<AsyncValue<int>>();
 
-      //     container.listen(provider, fireImmediately: true, listener.call);
+          container.listen(provider, fireImmediately: true, listener.call);
 
-      //     expect(retryCount, 0);
+          expect(retryCount, 0);
 
-      //     r.state = AsyncValue<int>.error(Error(), StackTrace.current);
+          r.state = AsyncValue<int>.error(Error(), StackTrace.current);
 
-      //     expect(retryCount, 0);
-      //   }),
-      // );
+          expect(retryCount, 0);
+        }),
+      );
     });
 
     test('Cannot share a Notifier instance between providers ', () {
@@ -647,29 +714,27 @@ void main() {
         },
       );
 
-      test(
-        'if going back to loading after future resolved, throws StateError',
-        () async {
-          final container = ProviderContainer.test();
-          final completer = Completer<int>.sync();
-          final provider = factory.simpleTestProvider<int>(
-            (ref) => Stream.fromFuture(completer.future),
-          );
+      test('if going back to loading after future resolved, throws StateError',
+          () async {
+        final container = ProviderContainer.test();
+        final completer = Completer<int>.sync();
+        final provider = factory.simpleTestProvider<int>(
+          (ref) => Stream.fromFuture(completer.future),
+        );
 
-          container.read(provider);
+        container.listen(provider, (previous, next) {});
 
-          completer.complete(42);
+        completer.complete(42);
 
-          container.read(provider.notifier).state = const AsyncData(42);
-          container.read(provider.notifier).state = const AsyncLoading<int>();
+        container.read(provider.notifier).state = const AsyncData(42);
+        container.read(provider.notifier).state = const AsyncLoading<int>();
 
-          final future = container.read(provider.future);
+        final future = container.read(provider.future);
 
-          container.dispose();
+        container.dispose();
 
-          await expectLater(future, throwsStateError);
-        },
-      );
+        await expectLater(future, throwsStateError);
+      });
 
       test(
           'resolves with the new state if StreamNotifier.state is modified during loading',

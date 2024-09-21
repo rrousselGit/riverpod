@@ -2,8 +2,10 @@ part of '../../nodes.dart';
 
 @_ast
 extension WidgetX on ClassDeclaration {
+  static final _cache1 = Expando<Box<WidgetDeclaration?>>();
+
   WidgetDeclaration? get widget {
-    return upsert('Widget', () {
+    return _cache1.upsert(this, () {
       final type = extendsClause?.superclass.type;
       if (type == null) return null;
 
@@ -19,8 +21,10 @@ extension WidgetX on ClassDeclaration {
     });
   }
 
+  static final _cache2 = Expando<Box<StateDeclaration?>>();
+
   StateDeclaration? get state {
-    return upsert('State', () {
+    return _cache2.upsert(this, () {
       final type = extendsClause?.superclass.type;
       if (type == null) return null;
 

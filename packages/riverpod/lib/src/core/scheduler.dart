@@ -129,20 +129,19 @@ class ProviderScheduler {
     /// and the second time it is traversed, it won't anymore.
     for (var i = 0; i < _stateToDispose.length; i++) {
       final element = _stateToDispose[i];
-
       final links = element.ref?._keepAliveLinks;
 
       if ((links != null && links.isNotEmpty) ||
           element.container._disposed ||
-          element.isActive) {
+          element.hasNonWeakListeners) {
         continue;
       }
 
-      if (!element.hasListeners) {
+      if (element.weakDependents.isEmpty) {
         element.container._disposeProvider(element.origin);
       } else {
         // Don't delete the pointer if there are some "weak" listeners active.
-        element.dispose();
+        element.clearState();
       }
     }
   }

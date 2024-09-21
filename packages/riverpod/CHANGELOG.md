@@ -15,6 +15,11 @@
 - `Stream/FutureProvider.overrideWithValue` was added back.
 - **Breaking**: `Notifier` and variants are now recreated whenever the provider
   rebuilds. This enables using `Ref.mounted` to check dispose.
+- **Breaking**: `StreamProvider` now pauses its `StreamSubscription` when
+  the provider is not actively listened.
+- **Breaking**: A provider is now considered "paused" if all
+  of its listeners are also paused. So if a provider `A` is watched _only_  by a provider `B`, and `B` is currently unused,
+  then `A` will be paused.
 - Added `Ref.listen(..., weak: true)`.
   When specifying `weak: true`, the listener will not cause the provider to be
   initialized. This is useful when wanting to react to changes to a provider,
@@ -24,6 +29,8 @@
 - An error is now thrown when trying to override a provider twice in the same
   `ProviderContainer`.
 - Disposing a `ProviderContainer` now disposes of all of its sub `ProviderContainers` too.
+- Added `ProviderSubscription.pause()`/`.resume()`.
+  This enables temporarily stopping the subscription to a provider, without it possibly loosing its state when using `autoDispose`.
 - Added `ProviderContainer.test()`. This is a custom constructor for testing
   purpose. It is meant to replace the `createContainer` utility.
 - Added `NotifierProvider.overrideWithBuild`, to override `Notifier.build` without

@@ -2,8 +2,10 @@ part of '../nodes.dart';
 
 @_ast
 extension ProviderListenableExpressionX on Expression {
+  static final _cache = Expando<Box<ProviderListenableExpression?>>();
+
   ProviderListenableExpression? get providerListenable {
-    return upsert('ProviderListenableExpression', () {
+    return _cache.upsert(this, () {
       final returnType = staticType;
       if (returnType == null) return null;
       if (!providerListenableType.isAssignableFromType(returnType)) return null;

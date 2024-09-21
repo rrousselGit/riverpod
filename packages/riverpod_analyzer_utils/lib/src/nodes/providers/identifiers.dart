@@ -2,8 +2,10 @@ part of '../../nodes.dart';
 
 @_ast
 extension ProviderIdentifierX on SimpleIdentifier {
+  static final _cache = Expando<Box<ProviderIdentifier?>>();
+
   ProviderIdentifier? get provider {
-    return upsert('ProviderIdentifier', () {
+    return _cache.upsert(this, () {
       final element = staticElement;
       if (element is! PropertyAccessorElement) return null;
       final variable = element.variable2;

@@ -3,8 +3,11 @@ part of '../../nodes.dart';
 @_ast
 extension ProviderScopeInstanceCreationExpressionX
     on InstanceCreationExpression {
+  static final _cache =
+      Expando<Box<ProviderScopeInstanceCreationExpression?>>();
+
   ProviderScopeInstanceCreationExpression? get providerScope {
-    return upsert('ProviderScopeInstanceCreationExpression', () {
+    return _cache.upsert(this, () {
       final createdType = constructorName.type.type;
       if (createdType == null ||
           !providerScopeType.isExactlyType(createdType)) {

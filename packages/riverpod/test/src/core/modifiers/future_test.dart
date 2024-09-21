@@ -7,7 +7,7 @@ import '../../utils.dart';
 void main() {
   group('provider.future', () {
     group('handles listen(weak: true)', () {
-      test('closing the subscription updated element.hasListeners', () {
+      test('closing the subscription updated element.weakDependents', () {
         final container = ProviderContainer.test();
         final provider = FutureProvider((ref) => 0);
 
@@ -17,11 +17,17 @@ void main() {
           (previous, value) {},
         );
 
-        expect(container.readProviderElement(provider).hasListeners, true);
+        expect(
+          container.readProviderElement(provider).weakDependents,
+          isNotEmpty,
+        );
 
         sub.close();
 
-        expect(container.readProviderElement(provider).hasListeners, false);
+        expect(
+          container.readProviderElement(provider).weakDependents,
+          isEmpty,
+        );
       });
 
       test(
