@@ -29,7 +29,9 @@ class NotifierBuild extends RiverpodLintRule {
           final annotationElement = element.element;
 
           if (annotationElement == null ||
-              annotationElement is! ExecutableElement) return false;
+              annotationElement is! ExecutableElement) {
+            return false;
+          }
 
           return riverpodType.isExactlyType(annotationElement.returnType);
         },
