@@ -1,5 +1,16 @@
-# melos_managed_dependency_overrides: flutter_riverpod,hooks_riverpod,riverpod,riverpod_annotation,riverpod_generator,cosmic_frontmatter
+# melos_managed_dependency_overrides: cosmic_frontmatter,flutter_riverpod,hooks_riverpod,riverpod,riverpod_annotation,riverpod_generator
 dependency_overrides:
+  riverpod_analyzer_utils:
+    path: ../packages/riverpod_analyzer_utils
+  riverpod_lint:
+    path: ../packages/riverpod_lint
+
+  ## Needed due to Flutter not supporting 6.0.0 yet
+  analyzer: ^6.0.0
+  analyzer_plugin: ^0.11.3
+
+  # Hotreloader issue
+  vm_service: ^14.0.0
   flutter_riverpod:
     path: ../packages/flutter_riverpod
   hooks_riverpod:
@@ -10,9 +21,3 @@ dependency_overrides:
     path: ../packages/riverpod_annotation
   riverpod_generator:
     path: ../packages/riverpod_generator
-  riverpod_analyzer_utils:
-    path: ../packages/riverpod_analyzer_utils
-
-  ## Needed due to Flutter not supporting 6.0.0 yet
-  analyzer: ^6.0.0
-  analyzer_plugin: ^0.11.3

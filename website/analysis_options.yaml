@@ -5,7 +5,5 @@ analyzer:
     - i18n/**
   errors:
     todo: ignore
-
-linter:
-  rules:
-    require_trailing_commas: false
+  plugins:
+    - custom_lint

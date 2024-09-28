@@ -76,13 +76,20 @@ void main() {
 
     expect(
       emptyDependenciesFunctionalProvider.allTransitiveDependencies,
-      same(const <ProviderOrFamily>{}),
+      same(const <ProviderOrFamily>[]),
     );
 
     expect(
       emptyDependenciesClassBasedProvider.allTransitiveDependencies,
-      same(const <ProviderOrFamily>{}),
+      same(const <ProviderOrFamily>[]),
     );
+  });
+
+  test(
+      'On families, passes `null` as dependencies/allTransitiveDependencies to the providers',
+      () {
+    expect(provider4Provider(42).dependencies, null);
+    expect(provider4Provider(42).allTransitiveDependencies, null);
   });
 
   test('Caches dependencies', () {
@@ -134,6 +141,41 @@ void main() {
     expect(
       smallTransitiveDependencyCountProvider.allTransitiveDependencies,
       same(smallTransitiveDependencyCountProvider.allTransitiveDependencies),
+    );
+  });
+
+  test('remove duplicate dependencies', () {
+    expect(
+      duplicateDependenciesProvider.dependencies,
+      same(const <ProviderOrFamily>[depProvider, dep2Provider]),
+    );
+    expect(
+      duplicateDependenciesProvider.allTransitiveDependencies,
+      same(const <ProviderOrFamily>[depProvider, dep2Provider]),
+    );
+
+    expect(
+      transitiveDuplicateDependenciesProvider.allTransitiveDependencies,
+      same(const <ProviderOrFamily>{
+        duplicateDependenciesProvider,
+        depProvider,
+        dep2Provider,
+        duplicateDependencies2Provider,
+        familyProvider,
+        family2Provider,
+      }),
+    );
+  });
+
+  test('uses a set or a list based on the length', () {
+    expect(
+      smallTransitiveDependencyCountProvider.allTransitiveDependencies,
+      isA<List<Object?>>(),
+    );
+
+    expect(
+      transitiveDependenciesProvider.allTransitiveDependencies,
+      isA<Set<Object?>>(),
     );
   });
 }

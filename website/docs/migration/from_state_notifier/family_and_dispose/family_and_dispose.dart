@@ -8,6 +8,9 @@ import '../../utils.dart';
 
 part 'family_and_dispose.g.dart';
 
+@riverpod
+TaskTrackerRepo taskTracker(TaskTrackerRef ref) => TaskTrackerRepo();
+
 /* SNIPPET START */
 @riverpod
 class BugsEncounteredNotifier extends _$BugsEncounteredNotifier {
@@ -18,7 +21,9 @@ class BugsEncounteredNotifier extends _$BugsEncounteredNotifier {
 
   Future<void> fix(int amount) async {
     final old = await future;
-    final result = await ref.read(taskTrackerProvider).fix(id: this.featureId, fixed: amount);
+    final result = await ref
+        .read(taskTrackerProvider)
+        .fix(id: this.featureId, fixed: amount);
     state = AsyncData(max(old - result, 0));
   }
 }

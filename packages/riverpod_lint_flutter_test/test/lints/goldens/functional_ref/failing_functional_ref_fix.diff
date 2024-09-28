@@ -1,0 +1,24 @@
+Message: `Add ref parameter`
+Priority: 90
+Diff for file `test/lints/functional_ref/failing_functional_ref.dart:5`:
+```
+@riverpod
+// expect_lint: functional_ref
+- int refless() {
++ int refless(ReflessRef ref) {
+  return 0;
+}
+```
+---
+Message: `Type as IncorrectlyTypedRef`
+Priority: 90
+Diff for file `test/lints/functional_ref/failing_functional_ref.dart:12`:
+```
+int incorrectlyTyped(
+  // expect_lint: functional_ref
+-   int ref,
++   IncorrectlyTypedRef ref,
+) {
+  return 0;
+```
+---

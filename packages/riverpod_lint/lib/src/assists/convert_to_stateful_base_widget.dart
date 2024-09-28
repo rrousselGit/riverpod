@@ -144,11 +144,9 @@ class ConvertToStatefulBaseWidget extends RiverpodAssist {
         case StatefulBaseWidgetType.consumerStatefulWidget:
         case StatefulBaseWidgetType.statefulHookConsumerWidget:
           baseStateName = 'ConsumerState';
-          break;
         case StatefulBaseWidgetType.statefulHookWidget:
         case StatefulBaseWidgetType.statefulWidget:
           baseStateName = 'State';
-          break;
       }
 
       // Split the class into two classes right before the build method
@@ -202,11 +200,9 @@ class $createdStateClassName extends $baseStateName<${widgetClass.name}> {
         case StatefulBaseWidgetType.consumerStatefulWidget:
         case StatefulBaseWidgetType.statefulHookConsumerWidget:
           baseStateName = 'ConsumerState';
-          break;
         case StatefulBaseWidgetType.statefulHookWidget:
         case StatefulBaseWidgetType.statefulWidget:
           baseStateName = 'State';
-          break;
       }
 
       final createStateMethod = widgetClass.members
@@ -235,7 +231,7 @@ class $createdStateClassName extends $baseStateName<${widgetClass.name}> {
   }
 }
 
-// Original implemenation in
+// Original implementation in
 // package:analysis_server/lib/src/services/correction/dart/flutter_convert_to_stateful_widget.dart
 class _FieldFinder extends RecursiveAstVisitor<void> {
   Set<FieldElement> fieldsAssignedInConstructors = {};

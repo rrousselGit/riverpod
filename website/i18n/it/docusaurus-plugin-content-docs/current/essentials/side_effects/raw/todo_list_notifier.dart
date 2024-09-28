@@ -24,14 +24,15 @@ class Todo {
 
 /* SNIPPET START */
 // Ora usiamo AsyncNotifierProvider invece di FutureProvider
-final todoListProvider = AsyncNotifierProvider.autoDispose<TodoList, List<Todo>>(
+final todoListProvider =
+    AsyncNotifierProvider.autoDispose<TodoList, List<Todo>>(
   TodoList.new,
 );
 
 // Usiamo un AsyncNotifier perché la nostra logica è asincrona.
-// Più nello specifico, avremo di AutoDisposeAsyncNotifier
+// Più nello specifico, avremo di AsyncNotifier
 // per fruire del modificatore "autoDispose".
-class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
+class TodoList extends AsyncNotifier<List<Todo>> {
   @override
   Future<List<Todo>> build() async {
     // La logica che in precedenza avevamo nel nostro FutureProvider ora è nel metodo di build.

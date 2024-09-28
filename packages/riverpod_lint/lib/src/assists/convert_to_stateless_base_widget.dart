@@ -106,7 +106,6 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
               ', WidgetRef ref',
             );
           }
-          break;
         case StatelessBaseWidgetType.hookWidget:
         case StatelessBaseWidgetType.statelessWidget:
           // If the build method has a ref, remove it
@@ -118,7 +117,6 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
               ),
             );
           }
-          break;
       }
     });
   }
@@ -258,14 +256,12 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
             parameterRange,
             'BuildContext context, WidgetRef ref',
           );
-          break;
         case StatelessBaseWidgetType.hookWidget:
         case StatelessBaseWidgetType.statelessWidget:
           builder.addSimpleReplacement(
             parameterRange,
             'BuildContext context',
           );
-          break;
       }
     });
   }

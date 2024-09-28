@@ -11,7 +11,7 @@ part 'pipe_change_notifier.g.dart';
 /// whenever the value changes.
 // {@endtemplate}
 @riverpod
-ValueNotifier<int> myListenable(MyListenableRef ref) {
+Raw<ValueNotifier<int>> myListenable(MyListenableRef ref) {
   final notifier = ValueNotifier(0);
 
   // {@template onDispose}

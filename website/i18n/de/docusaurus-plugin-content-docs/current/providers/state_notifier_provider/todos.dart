@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 /* SNIPPET START */
 
@@ -7,8 +7,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 // Wir könnten auch Pakete wie Freezed verwenden, um bei der Implementierung zu helfen.
 @immutable
 class Todo {
-  const Todo(
-      {required this.id, required this.description, required this.completed});
+  const Todo({
+    required this.id,
+    required this.description,
+    required this.completed,
+  });
 
   // Alle variablen in unserer Klasse sollten `final` sein.
   final String id;

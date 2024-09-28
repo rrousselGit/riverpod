@@ -61,18 +61,21 @@ void main() {
         // Vous pouvez l'extraire dans un widget MyApp
         child: MaterialApp(
           home: Scaffold(
-            body: Consumer(builder: (context, ref, _) {
-              final todos = ref.watch(todoListProvider);
-              // La liste des todos est en cours de chargement ou en erreur
-              if (todos.asData == null) {
-                return const CircularProgressIndicator();
-              }
-              return ListView(
-                children: [
-                  for (final todo in todos.asData!.value) TodoItem(todo: todo)
-                ],
-              );
-            }),
+            body: Consumer(
+              builder: (context, ref, _) {
+                final todos = ref.watch(todoListProvider);
+                // La liste des todos est en cours de chargement ou en erreur
+                if (todos.asData == null) {
+                  return const CircularProgressIndicator();
+                }
+                return ListView(
+                  children: [
+                    for (final todo in todos.asData!.value)
+                      TodoItem(todo: todo),
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),

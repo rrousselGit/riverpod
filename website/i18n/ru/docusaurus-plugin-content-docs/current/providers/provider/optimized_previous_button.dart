@@ -1,6 +1,7 @@
 // Провайдер, контролирующий текущую страницу
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 /* SNIPPET START */
 
@@ -20,7 +21,7 @@ class PreviousButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Наблюдаем за нашим провайдером
-    // Наш виджет больше не определяет, можно ли вернуться на 
+    // Наш виджет больше не определяет, можно ли вернуться на
     // предыдущую страницу или нет
 /* highlight-start */
     final canGoToPreviousPage = ref.watch(canGoToPreviousPageProvider);
