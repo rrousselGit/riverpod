@@ -41,6 +41,7 @@ abstract base class $AsyncNotifierProvider< //
     required super.allTransitiveDependencies,
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
+    required super.persist,
     required super.retry,
   });
 }

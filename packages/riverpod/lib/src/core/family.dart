@@ -5,6 +5,7 @@ part of '../framework.dart';
 typedef FunctionalProviderFactory< //
         ProviderT,
         CreatedT,
+        StateT,
         RefT extends Ref<Object?>,
         ArgT>
     = ProviderT Function(
@@ -16,6 +17,7 @@ typedef FunctionalProviderFactory< //
   required Family from,
   required ArgT argument,
   required Retry? retry,
+  required Persist<StateT>? persist,
 });
 
 /// A typedef representing the constructor of a [NotifierProvider].
@@ -24,6 +26,7 @@ typedef ClassProviderFactory< //
         NotifierT,
         ProviderT,
         CreatedT,
+        StateT,
         RefT extends Ref<Object?>,
         ArgT>
     = ProviderT Function(
@@ -37,6 +40,7 @@ typedef ClassProviderFactory< //
   required Family from,
   required ArgT argument,
   required Retry? retry,
+  required Persist<StateT>? persist,
 });
 
 /// A [Create] equivalent used by [Family].
@@ -85,19 +89,23 @@ class FunctionalFamily< //
   /// This API is not meant for public consumption.
   const FunctionalFamily(
     this._createFn, {
-    required FunctionalProviderFactory<ProviderT, CreatedT, Ref<StateT>, ArgT>
+    required FunctionalProviderFactory<ProviderT, CreatedT, StateT, Ref<StateT>,
+            ArgT>
         providerFactory,
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
+    required this.persist,
   }) : _providerFactory = providerFactory;
 
-  final FunctionalProviderFactory<ProviderT, CreatedT, Ref<StateT>, ArgT>
-      _providerFactory;
+  final FunctionalProviderFactory<ProviderT, CreatedT, StateT, Ref<StateT>,
+      ArgT> _providerFactory;
 
   final CreatedT Function(Ref<StateT> ref, ArgT arg) _createFn;
+
+  final Persist<StateT>? persist;
 
   /// {@template family.call}
   /// Create a provider from an external value.
@@ -115,6 +123,7 @@ class FunctionalFamily< //
       dependencies: null,
       allTransitiveDependencies: null,
       retry: retry,
+      persist: persist,
     );
   }
 
@@ -168,11 +177,14 @@ class ClassFamily< //
     required super.allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
+    required this.persist,
   });
 
   @internal
-  final ClassProviderFactory<NotifierT, ProviderT, CreatedT, Ref<StateT>, ArgT>
-      providerFactory;
+  final ClassProviderFactory<NotifierT, ProviderT, CreatedT, StateT,
+      Ref<StateT>, ArgT> providerFactory;
+
+  final Persist<StateT>? persist;
 
   final NotifierT Function() _createFn;
 
@@ -188,6 +200,7 @@ class ClassFamily< //
       dependencies: null,
       allTransitiveDependencies: null,
       runNotifierBuildOverride: null,
+      persist: persist,
     );
   }
 

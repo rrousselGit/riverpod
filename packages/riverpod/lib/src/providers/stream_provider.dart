@@ -94,6 +94,7 @@ base class StreamProvider<StateT>
     super.dependencies,
     super.isAutoDispose = false,
     super.retry,
+    super.persist,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
@@ -112,6 +113,7 @@ base class StreamProvider<StateT>
     required super.argument,
     required super.isAutoDispose,
     required super.retry,
+    required super.persist,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -146,6 +148,7 @@ base class StreamProvider<StateT>
       argument: argument,
       isAutoDispose: isAutoDispose,
       retry: retry,
+      persist: persist,
     );
   }
 }
@@ -239,6 +242,7 @@ class StreamProviderFamily<StateT, ArgT> extends FunctionalFamily<
     super.dependencies,
     super.isAutoDispose = false,
     super.retry,
+    super.persist,
   }) : super(
           providerFactory: StreamProvider<StateT>.internal,
           allTransitiveDependencies:
@@ -254,5 +258,6 @@ class StreamProviderFamily<StateT, ArgT> extends FunctionalFamily<
     required super.allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
+    required super.persist,
   }) : super(providerFactory: StreamProvider<StateT>.internal);
 }

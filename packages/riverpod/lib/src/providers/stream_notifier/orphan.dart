@@ -56,6 +56,7 @@ final class StreamNotifierProvider< //
     super.runNotifierBuildOverride,
     super.isAutoDispose = false,
     super.retry,
+    super.persist,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
@@ -75,6 +76,7 @@ final class StreamNotifierProvider< //
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
     required super.retry,
+    required super.persist,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -103,6 +105,7 @@ final class StreamNotifierProvider< //
       isAutoDispose: isAutoDispose,
       runNotifierBuildOverride: build ?? runNotifierBuildOverride,
       retry: retry,
+      persist: persist,
     );
   }
 

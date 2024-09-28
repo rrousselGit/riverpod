@@ -97,6 +97,7 @@ abstract base class $NotifierProvider //
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
     required super.retry,
+    required super.persist,
   });
 }
 

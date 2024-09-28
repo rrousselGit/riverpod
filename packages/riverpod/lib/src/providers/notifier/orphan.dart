@@ -85,6 +85,7 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
     super.dependencies,
     super.isAutoDispose = false,
     super.retry,
+    super.persist,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
@@ -105,6 +106,7 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
     required super.retry,
+    required super.persist,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -141,6 +143,7 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
       isAutoDispose: isAutoDispose,
       runNotifierBuildOverride: build ?? runNotifierBuildOverride,
       retry: retry,
+      persist: persist,
     );
   }
 

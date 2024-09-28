@@ -15,6 +15,7 @@ abstract base class $FunctionalProvider< //
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.isAutoDispose,
+    required super.persist,
     required super.retry,
   });
 
