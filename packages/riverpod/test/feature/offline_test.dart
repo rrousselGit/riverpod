@@ -4,23 +4,6 @@ import 'package:test/test.dart';
 
 void main() {
   group('Offline', () {
-    test('Legacy providers have type-safe adapters', () {
-      // Using `dynamic` for any types we don't care about
-      final ProviderBase<int> provider = Provider((ref) => 0);
-      Persist<int>? options = provider.persist;
-
-      final FunctionalFamily<int, dynamic, dynamic, dynamic> family =
-          Provider.family<int, dynamic>((ref, _) => 0);
-      options = family.persist;
-
-      final ClassFamily<dynamic, int, dynamic, dynamic, dynamic> classFamily =
-          NotifierProvider.family<FamilyNotifier<int, dynamic>, int, dynamic>(
-        () => throw UnimplementedError(),
-      );
-
-      options = classFamily.persist;
-    });
-
     test('Can destroy the whole cache using a global destroyKey', () {});
 
     test('Can destroy a provider using a provider-specific destroyKey', () {});

@@ -1,1 +1,1 @@
-export 'src/core/persist.dart';
+export 'src/core/persist.dart' hide UnimplementedNotifierPersistError;

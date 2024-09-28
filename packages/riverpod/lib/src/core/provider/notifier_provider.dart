@@ -101,7 +101,6 @@ abstract base class $ClassProvider< //
     required super.allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
-    required super.persist,
     required this.runNotifierBuildOverride,
   });
 

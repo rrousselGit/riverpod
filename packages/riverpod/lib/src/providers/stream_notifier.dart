@@ -4,6 +4,7 @@ import 'package:meta/meta.dart';
 
 import '../builder.dart';
 import '../core/async_value.dart';
+import '../core/persist.dart';
 import '../framework.dart';
 import 'async_notifier.dart';
 import 'future_provider.dart' show FutureProvider;
@@ -43,7 +44,6 @@ abstract base class $StreamNotifierProvider<
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
     required super.retry,
-    required super.persist,
   });
 }
 

@@ -4,6 +4,7 @@ import 'package:meta/meta.dart';
 
 import '../builder.dart';
 import '../core/async_value.dart';
+import '../core/persist.dart';
 import '../framework.dart';
 import 'future_provider.dart' show FutureProvider;
 import 'notifier.dart';
@@ -41,7 +42,6 @@ abstract base class $AsyncNotifierProvider< //
     required super.allTransitiveDependencies,
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
-    required super.persist,
     required super.retry,
   });
 }

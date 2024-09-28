@@ -57,7 +57,6 @@ final class StateProvider<StateT> extends $FunctionalProvider<StateT, StateT>
     super.dependencies,
     super.isAutoDispose = false,
     super.retry,
-    super.persist,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
@@ -76,7 +75,6 @@ final class StateProvider<StateT> extends $FunctionalProvider<StateT, StateT>
     required super.from,
     required super.argument,
     required super.retry,
-    required super.persist,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -112,7 +110,6 @@ final class StateProvider<StateT> extends $FunctionalProvider<StateT, StateT>
       argument: argument,
       isAutoDispose: isAutoDispose,
       retry: retry,
-      persist: persist,
     );
   }
 }
@@ -193,7 +190,6 @@ class StateProviderFamily<StateT, Arg> extends FunctionalFamily< //
     super.dependencies,
     super.isAutoDispose = false,
     super.retry,
-    super.persist,
   }) : super(
           providerFactory: StateProvider.internal,
           allTransitiveDependencies:
@@ -209,6 +205,5 @@ class StateProviderFamily<StateT, Arg> extends FunctionalFamily< //
     required super.allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
-    required super.persist,
   }) : super(providerFactory: StateProvider.internal);
 }

@@ -14,7 +14,6 @@ final class $ValueProvider<StateT> extends ProviderBase<StateT>
           allTransitiveDependencies: null,
           dependencies: null,
           isAutoDispose: false,
-          persist: null,
           retry: null,
         );
 

@@ -16,7 +16,15 @@ part of '../async_notifier.dart';
 /// {@endtemplate}
 ///
 /// {@macro riverpod.async_notifier_provider_modifier}
-abstract class AsyncNotifier<StateT> extends $AsyncNotifier<StateT> {
+abstract class AsyncNotifier<StateT> extends $AsyncNotifier<StateT>
+    implements
+        // When not using code-generation, we always implement PersistAdapter
+        // but throw if unimplemented.
+        // This avoids using from having to subclass either `Notifier` or `OfflineNotifier`
+        // when using offline persistence.
+        // Code-generation handles this better by only implementing PersistAdapter
+        // when offline persistence is used.
+        PersistAdapter<AsyncValue<StateT>, Object?> {
   /// {@template riverpod.async_notifier.build}
   /// Initialize an [AsyncNotifier].
   ///
@@ -36,6 +44,15 @@ abstract class AsyncNotifier<StateT> extends $AsyncNotifier<StateT> {
   @internal
   @override
   FutureOr<StateT> runBuild() => build();
+
+  @override
+  Object? get persistKey => throw UnimplementedNotifierPersistError();
+  @override
+  Object? encode(AsyncValue<StateT> value) =>
+      throw UnimplementedNotifierPersistError();
+  @override
+  AsyncValue<StateT> decode(Object? serialized) =>
+      throw UnimplementedNotifierPersistError();
 }
 
 /// {@template riverpod.async_notifier_provider}
@@ -68,7 +85,6 @@ final class AsyncNotifierProvider< //
     super.dependencies,
     super.isAutoDispose = false,
     super.retry,
-    super.persist,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
@@ -89,7 +105,6 @@ final class AsyncNotifierProvider< //
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
     required super.retry,
-    required super.persist,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -119,7 +134,6 @@ final class AsyncNotifierProvider< //
       isAutoDispose: isAutoDispose,
       runNotifierBuildOverride: build ?? runNotifierBuildOverride,
       retry: retry,
-      persist: persist,
     );
   }
 

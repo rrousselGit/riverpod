@@ -2,6 +2,7 @@ import 'package:meta/meta.dart';
 
 import '../builder.dart';
 import '../common/result.dart';
+import '../core/persist.dart';
 import '../framework.dart';
 import 'async_notifier.dart';
 
@@ -97,7 +98,6 @@ abstract base class $NotifierProvider //
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
     required super.retry,
-    required super.persist,
   });
 }
 

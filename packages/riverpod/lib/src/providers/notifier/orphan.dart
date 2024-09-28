@@ -52,7 +52,15 @@ part of '../notifier.dart';
 /// When using `family`, your notifier type changes.
 /// Instead of extending [Notifier], you should extend [FamilyNotifier].
 /// {@endtemplate}
-abstract class Notifier<StateT> extends $Notifier<StateT> {
+abstract class Notifier<StateT> extends $Notifier<StateT>
+    implements
+        // When not using code-generation, we always implement PersistAdapter
+        // but throw if unimplemented.
+        // This avoids using from having to subclass either `Notifier` or `OfflineNotifier`
+        // when using offline persistence.
+        // Code-generation handles this better by only implementing PersistAdapter
+        // when offline persistence is used.
+        PersistAdapter<StateT, Object?> {
   /// {@template riverpod.notifier.build}
   /// Initialize a [Notifier].
   ///
@@ -71,6 +79,14 @@ abstract class Notifier<StateT> extends $Notifier<StateT> {
   @internal
   @override
   StateT runBuild() => build();
+
+  @override
+  Object? get persistKey => throw UnimplementedNotifierPersistError();
+  @override
+  Object? encode(StateT value) => throw UnimplementedNotifierPersistError();
+  @override
+  StateT decode(Object? serialized) =>
+      throw UnimplementedNotifierPersistError();
 }
 
 final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
@@ -85,7 +101,6 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
     super.dependencies,
     super.isAutoDispose = false,
     super.retry,
-    super.persist,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
@@ -106,7 +121,6 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
     required super.retry,
-    required super.persist,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -143,7 +157,6 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
       isAutoDispose: isAutoDispose,
       runNotifierBuildOverride: build ?? runNotifierBuildOverride,
       retry: retry,
-      persist: persist,
     );
   }
 

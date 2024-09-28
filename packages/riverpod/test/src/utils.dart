@@ -5,53 +5,6 @@ import 'package:riverpod/legacy.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart' hide Retry;
 
-class SimplePersist<T> extends Persist<T> {
-  SimplePersist({this.adapter});
-
-  @override
-  final PersistAdapter<T>? adapter;
-}
-
-class DelegatingPersistAdapter<T>
-    extends PersistAdapterWithPersist<T, SimplePersist<T>> {
-  DelegatingPersistAdapter({
-    required this.decodeCb,
-    required this.encodeCb,
-  });
-
-  final FutureOr<(T,)?> Function(
-    Provider<T> provider,
-    SimplePersist<T>? providerPersist,
-    SimplePersist<T>? containerPersist,
-  ) decodeCb;
-
-  @override
-  FutureOr<(T,)?> decode(
-    Provider<T> provider,
-    SimplePersist<T>? providerPersist,
-    SimplePersist<T>? containerPersist,
-  ) {
-    return decodeCb(provider, providerPersist, containerPersist);
-  }
-
-  final FutureOr<void> Function(
-    Provider<T> provider,
-    SimplePersist<T>? providerPersist,
-    SimplePersist<T>? containerPersist,
-    T value,
-  ) encodeCb;
-
-  @override
-  FutureOr<void> encode(
-    Provider<T> provider,
-    SimplePersist<T>? providerPersist,
-    SimplePersist<T>? containerPersist,
-    T value,
-  ) {
-    return encodeCb(provider, providerPersist, containerPersist, value);
-  }
-}
-
 List<Object?> captureErrors(List<void Function()> cb) {
   final errors = <Object?>[];
   for (final fn in cb) {

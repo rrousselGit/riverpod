@@ -36,7 +36,6 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
     required super.allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
-    required this.persist,
   }) : assert(
           from == null || allTransitiveDependencies == null,
           'When from a family, providers cannot specify dependencies.',
@@ -51,11 +50,6 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
   ///
   /// On generated providers, this will be a record of all arguments.
   final Object? argument;
-
-  /// The options to use when persisting the state of this provider.
-  ///
-  /// If null, [ProviderContainer.persist] will be used.
-  final Persist<StateT>? persist;
 
   @override
   ProviderSubscriptionWithOrigin<StateT, StateT> addListener(

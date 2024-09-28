@@ -4,7 +4,15 @@ part of '../stream_notifier.dart';
 ///
 /// {@macro riverpod.async_notifier_provider_modifier}
 abstract class FamilyStreamNotifier<StateT, ArgT>
-    extends $StreamNotifier<StateT> {
+    extends $StreamNotifier<StateT>
+    implements
+        // When not using code-generation, we always implement PersistAdapter
+        // but throw if unimplemented.
+        // This avoids using from having to subclass either `Notifier` or `OfflineNotifier`
+        // when using offline persistence.
+        // Code-generation handles this better by only implementing PersistAdapter
+        // when offline persistence is used.
+        PersistAdapter<AsyncValue<StateT>, Object?> {
   /// {@template riverpod.notifier.family_arg}
   /// The argument that was passed to this family.
   ///
@@ -25,6 +33,15 @@ abstract class FamilyStreamNotifier<StateT, ArgT>
   @internal
   @override
   Stream<StateT> runBuild() => build(arg);
+
+  @override
+  Object? get persistKey => throw UnimplementedNotifierPersistError();
+  @override
+  Object? encode(AsyncValue<StateT> value) =>
+      throw UnimplementedNotifierPersistError();
+  @override
+  AsyncValue<StateT> decode(Object? serialized) =>
+      throw UnimplementedNotifierPersistError();
 }
 
 final class FamilyStreamNotifierProvider< //
@@ -44,7 +61,6 @@ final class FamilyStreamNotifierProvider< //
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
     required super.retry,
-    required super.persist,
   });
 
   final NotifierT Function() _createNotifier;
@@ -79,7 +95,6 @@ final class FamilyStreamNotifierProvider< //
       from: from,
       argument: argument,
       retry: retry,
-      persist: persist,
     );
   }
 
@@ -121,7 +136,6 @@ class StreamNotifierProviderFamily< //
     super.dependencies,
     super.isAutoDispose = false,
     super.retry,
-    super.persist,
   }) : super(
           providerFactory: FamilyStreamNotifierProvider._,
           allTransitiveDependencies:
