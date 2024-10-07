@@ -57,7 +57,7 @@ abstract class AsyncNotifier<State> extends BuildlessAsyncNotifier<State> {
 abstract class AsyncNotifierProviderRef<T> implements Ref<AsyncValue<T>> {}
 
 /// {@template riverpod.async_notifier_provider}
-/// A provider which creates and listen to an [AsyncNotifier].
+/// A provider which creates and listens to an [AsyncNotifier].
 ///
 /// This is similar to [FutureProvider] but allows to perform side-effects.
 ///

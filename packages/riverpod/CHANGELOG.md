@@ -1,3 +1,7 @@
+## Unreleased fix
+
+- Fixed a typo in the documentation (thanks to @ljbkusters)
+
 ## 2.5.1 - 2024-03-10
 
 - Improved `Provider(dependencies: [...])` documentation.
