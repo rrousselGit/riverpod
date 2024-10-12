@@ -1,3 +1,7 @@
+## Unreleased fix
+
+- Support flutter_hooks 0.21.x
+
 ## 2.5.2 - 2024-08-15
 
 - Added mutation pending state to example (thanks to @luketg8)
