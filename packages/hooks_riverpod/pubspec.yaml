@@ -2,7 +2,7 @@ name: hooks_riverpod
 description: >
   A reactive caching and data-binding framework.
   Riverpod makes working with asynchronous code a breeze.
-version: 2.5.2
+version: 2.5.3
 homepage: https://riverpod.dev
 repository: https://github.com/rrousselGit/riverpod
 issue_tracker: https://github.com/rrousselGit/riverpod/issues
@@ -17,7 +17,7 @@ dependencies:
   collection: ^1.15.0
   flutter:
     sdk: flutter
-  flutter_hooks: '>=0.18.0 <0.21.0'
+  flutter_hooks: '>=0.18.0 <0.22.0'
   flutter_riverpod: 2.5.1
   riverpod: 2.5.1
   state_notifier: ">=0.7.2 <2.0.0"
