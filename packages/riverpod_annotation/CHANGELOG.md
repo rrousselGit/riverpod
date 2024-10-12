@@ -1,3 +1,7 @@
+## 2.5.3 - 2024-10-12
+
+- `riverpod` upgraded to `2.5.3`
+
 ## 2.3.5 - 2024-03-10
 
 - `riverpod` upgraded to `2.5.1`

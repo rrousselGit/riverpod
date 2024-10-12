@@ -1,4 +1,4 @@
-## Unreleased patch
+## 2.4.4 - 2024-10-12
 
 - `@Riverpod(dependencies: [...])` now respects `build.yaml` options
 

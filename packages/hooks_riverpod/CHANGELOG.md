@@ -1,6 +1,6 @@
-## Unreleased fix
+## 2.5.3 - 2024-10-12
 
-- Support flutter_hooks 0.21.x
+- Fixed a typo in the documentation (thanks to @ljbkusters)
 
 ## 2.5.2 - 2024-08-15
 
