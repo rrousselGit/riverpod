@@ -6,21 +6,6 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/common/result.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-// From Riverpod:
-
-final class Riverpod {
-  const Riverpod({this.encodeArgs});
-
-  // TODO to type
-  final FutureOr<Object?> Function(Object? value, Persist persist)? encodeArgs;
-}
-
-abstract class OfflineNotifier<StateT, EncodedT> {
-  Object? get offlineKey;
-  FutureOr<StateT> decode(EncodedT value);
-  FutureOr<EncodedT> encode(StateT value);
-}
-
 // From you:
 
 class MyPersist extends Persist {
@@ -29,40 +14,12 @@ class MyPersist extends Persist {
   final SharedPreferences? sharedPreferences;
 }
 
-abstract class JsonAdapter<T> extends PersistAdapter {
-  FutureOr<T> fromJson(Map<String, Object?> json);
-
-  FutureOr<Map<String, Object?>> toJson(T value);
-}
-
 // Users define:
 
 void main() async {
   final sharedPrefs = await SharedPreferences.getInstance();
   final container = ProviderContainer(
     persist: MyPersist(sharedPreferences: sharedPrefs),
-  );
-
-  // Manual provider:
-  final manualProvider = Provider(
-    (ref) => 42,
-    persist: MyPersist<int>(
-      adapter: JsonAdapter(
-        read: (prefs, key) {
-          final value = prefs.getInt(key);
-          if (value == null) return null;
-          return (value,);
-        },
-        write: (prefs, key, value) async {
-          switch (value) {
-            case ResultData<int>():
-              await prefs.setInt(key, value.state);
-            case ResultError<int>():
-              await prefs.remove(key);
-          }
-        },
-      ),
-    ),
   );
 }
 

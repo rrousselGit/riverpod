@@ -60,7 +60,7 @@ abstract class Notifier<StateT> extends $Notifier<StateT>
         // when using offline persistence.
         // Code-generation handles this better by only implementing PersistAdapter
         // when offline persistence is used.
-        PersistAdapter<StateT, Object?> {
+        PersistAdapter<StateT> {
   /// {@template riverpod.notifier.build}
   /// Initialize a [Notifier].
   ///
@@ -101,6 +101,8 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
     super.dependencies,
     super.isAutoDispose = false,
     super.retry,
+    super.persistOptions,
+    super.shouldPersist,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
@@ -121,6 +123,8 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
     required super.retry,
+    required super.persistOptions,
+    required super.shouldPersist,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -157,6 +161,8 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
       isAutoDispose: isAutoDispose,
       runNotifierBuildOverride: build ?? runNotifierBuildOverride,
       retry: retry,
+      persistOptions: persistOptions,
+      shouldPersist: shouldPersist,
     );
   }
 

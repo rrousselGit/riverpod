@@ -43,6 +43,8 @@ abstract base class $AsyncNotifierProvider< //
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
     required super.retry,
+    required super.persistOptions,
+    required super.shouldPersist,
   });
 }
 

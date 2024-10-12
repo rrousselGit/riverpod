@@ -4,7 +4,7 @@ part of '../notifier.dart';
 ///
 /// {@macro riverpod.notifier_provider_modifier}
 abstract class FamilyNotifier<StateT, ArgT> extends $Notifier<StateT>
-    implements PersistAdapter<StateT, Object?> {
+    implements PersistAdapter<StateT> {
   /// {@macro riverpod.notifier.family_arg}
   late final ArgT arg = ref.$arg as ArgT;
 
@@ -40,6 +40,8 @@ final class FamilyNotifierProvider //
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
     required super.retry,
+    required super.persistOptions,
+    required super.shouldPersist,
   });
 
   final NotifierT Function() _createNotifier;
@@ -70,6 +72,8 @@ final class FamilyNotifierProvider //
       from: from,
       argument: argument,
       retry: retry,
+      persistOptions: persistOptions,
+      shouldPersist: shouldPersist,
     );
   }
 
@@ -109,6 +113,8 @@ class NotifierProviderFamily<
     super.dependencies,
     super.isAutoDispose = false,
     super.retry,
+    super.persistOptions,
+    super.shouldPersist,
   }) : super(
           providerFactory: FamilyNotifierProvider._,
           allTransitiveDependencies:

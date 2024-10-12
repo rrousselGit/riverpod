@@ -39,6 +39,8 @@ typedef ClassProviderFactory< //
   required Family from,
   required ArgT argument,
   required Retry? retry,
+  required Persist? persistOptions,
+  required bool? shouldPersist,
 });
 
 /// A [Create] equivalent used by [Family].
@@ -171,11 +173,19 @@ class ClassFamily< //
     required super.allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
+    required this.persistOptions,
+    required this.shouldPersist,
   });
 
   @internal
   final ClassProviderFactory<NotifierT, ProviderT, CreatedT, StateT,
       Ref<StateT>, ArgT> providerFactory;
+
+  /// {@macro riverpod.persist}
+  final Persist? persistOptions;
+
+  /// {@macro riverpod.should_persist}
+  final bool? shouldPersist;
 
   final NotifierT Function() _createFn;
 
@@ -185,6 +195,8 @@ class ClassFamily< //
       _createFn,
       name: name,
       isAutoDispose: isAutoDispose,
+      persistOptions: persistOptions,
+      shouldPersist: shouldPersist,
       from: this,
       retry: retry,
       argument: argument,

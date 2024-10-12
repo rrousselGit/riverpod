@@ -54,7 +54,6 @@ class _NotifierBuilder extends _Builder {
     required super.genericsUsage,
   });
 
-  // final String? familyBuilderName;
   final bool isFamily;
 }
 
@@ -406,6 +405,8 @@ class $builderName {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
+    Persist? persistOptions,
+    bool? shouldPersist,
   }) {
     return $providerName${provider.genericsUsage}$ctor(
       create,
@@ -413,6 +414,8 @@ class $builderName {
       ${_isAutoDisposeParam(disposeType)}
       dependencies: dependencies,
       retry: retry,
+      persistOptions: persistOptions,
+      shouldPersist: shouldPersist,
     );
   }
 

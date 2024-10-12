@@ -11,7 +11,7 @@ abstract class FamilyAsyncNotifier<StateT, ArgT> extends $AsyncNotifier<StateT>
         // when using offline persistence.
         // Code-generation handles this better by only implementing PersistAdapter
         // when offline persistence is used.
-        PersistAdapter<AsyncValue<StateT>, Object?> {
+        PersistAdapter<AsyncValue<StateT>> {
   /// {@template riverpod.notifier.family_arg}
   /// The argument that was passed to this family.
   ///
@@ -62,6 +62,8 @@ class AsyncNotifierProviderFamily< //
     super.dependencies,
     super.isAutoDispose = false,
     super.retry,
+    super.persistOptions,
+    super.shouldPersist,
   }) : super(
           providerFactory: FamilyAsyncNotifierProvider._,
           allTransitiveDependencies:
@@ -87,6 +89,8 @@ final class FamilyAsyncNotifierProvider< //
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
     required super.retry,
+    required super.persistOptions,
+    required super.shouldPersist,
   });
 
   FamilyAsyncNotifierProvider<NotifierT, StateT, ArgT> _copyWith({
@@ -104,6 +108,8 @@ final class FamilyAsyncNotifierProvider< //
       isAutoDispose: isAutoDispose,
       runNotifierBuildOverride: build ?? runNotifierBuildOverride,
       retry: retry,
+      persistOptions: persistOptions,
+      shouldPersist: shouldPersist,
     );
   }
 

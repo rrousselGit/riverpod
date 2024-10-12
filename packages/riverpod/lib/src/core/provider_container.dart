@@ -239,7 +239,9 @@ typedef Retry = Duration? Function(int retryCount, Object error);
 
 /// Options for interacting with offline persistence.
 @immutable
-abstract class Persist {}
+abstract class Persist {
+  FutureOr<(Object?,)?> read(Object? key);
+}
 
 /// An object responsible for storing the a O(1) access to providers,
 /// while also enabling the "scoping" of providers and ensuring all [ProviderContainer]s
@@ -576,7 +578,7 @@ class ProviderContainer implements Node {
   ProviderContainer({
     ProviderContainer? parent,
     List<Override> overrides = const [],
-    this.persist,
+    this.persistOptions,
     List<ProviderObserver>? observers,
     Retry? retry,
   })  : _debugOverridesLength = overrides.length,
@@ -664,7 +666,7 @@ class ProviderContainer implements Node {
     final container = ProviderContainer(
       parent: parent,
       overrides: overrides,
-      persist: persistOptions,
+      persistOptions: persistOptions,
       observers: observers,
       retry: retry,
     );
@@ -682,8 +684,10 @@ class ProviderContainer implements Node {
   /// {@macro riverpod.retry}
   final Retry? retry;
 
+  /// {@template riverpod.persist}
   /// When using offline persistence, this is the option to use.
-  final Persist? persist;
+  /// {@endtemplate}
+  final Persist? persistOptions;
 
   /// How deep this [ProviderContainer] is in the graph of containers.
   ///

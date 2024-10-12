@@ -102,6 +102,8 @@ abstract base class $ClassProvider< //
     required super.isAutoDispose,
     required super.retry,
     required this.runNotifierBuildOverride,
+    required super.persistOptions,
+    required super.shouldPersist,
   });
 
   Refreshable<NotifierT> get notifier {
@@ -194,6 +196,8 @@ abstract class ClassProviderElement< //
         try {
           handleNotifier(result.state, seamless: seamless);
 
+          if (stateResult == null) _decodeFromCache();
+
           final created =
               provider.runNotifierBuildOverride?.call(ref, result.state) ??
                   result.state.runBuild();
@@ -209,6 +213,45 @@ abstract class ClassProviderElement< //
         );
     }
   }
+
+  void _decodeFromCache() {
+    print('Decode from cache');
+    if (!origin.shouldPersist) return;
+
+    final persist = origin.persistOptions ?? container.persistOptions;
+    if (persist == null) {
+      throw StateError(
+        'The provider $origin asked to be persisted on device, but no Persist found.'
+        ' When using offline persistence, you must provide either ProviderContainer.persistOptions or MyProvider.persistOptions.',
+      );
+    }
+
+    _decode(persist);
+
+    ref!.listenSelf((previous, current) => _encode(persist, current));
+  }
+
+  FutureOr<void> _decode(Persist persist) async {
+    final notifier =
+        classListenable.result?.stateOrNull as PersistAdapter<StateT>?;
+    print('Decode $notifier');
+    if (notifier == null) return;
+
+    try {
+      final key = notifier.persistKey;
+      await persist.read(key).then((encoded) {
+        print('Encoded $encoded');
+        if (encoded == null) return null;
+
+        setStateResult(Result.data(notifier.decode(encoded.$1)));
+        // TODO If decode throws, should we set the state as an error?
+      });
+    } catch (e, s) {
+      Zone.current.handleUncaughtError(e, s);
+    }
+  }
+
+  FutureOr<void> _encode(Persist persist, StateT value) {}
 
   void handleNotifier(NotifierT notifier, {required bool seamless}) {
     // Overridden by FutureModifier mixin

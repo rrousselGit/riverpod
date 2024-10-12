@@ -12,7 +12,7 @@ abstract class FamilyStreamNotifier<StateT, ArgT>
         // when using offline persistence.
         // Code-generation handles this better by only implementing PersistAdapter
         // when offline persistence is used.
-        PersistAdapter<AsyncValue<StateT>, Object?> {
+        PersistAdapter<AsyncValue<StateT>> {
   /// {@template riverpod.notifier.family_arg}
   /// The argument that was passed to this family.
   ///
@@ -61,6 +61,8 @@ final class FamilyStreamNotifierProvider< //
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
     required super.retry,
+    required super.persistOptions,
+    required super.shouldPersist,
   });
 
   final NotifierT Function() _createNotifier;
@@ -95,6 +97,8 @@ final class FamilyStreamNotifierProvider< //
       from: from,
       argument: argument,
       retry: retry,
+      persistOptions: persistOptions,
+      shouldPersist: shouldPersist,
     );
   }
 
@@ -136,6 +140,8 @@ class StreamNotifierProviderFamily< //
     super.dependencies,
     super.isAutoDispose = false,
     super.retry,
+    super.persistOptions,
+    super.shouldPersist,
   }) : super(
           providerFactory: FamilyStreamNotifierProvider._,
           allTransitiveDependencies:

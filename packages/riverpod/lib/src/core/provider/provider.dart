@@ -36,7 +36,14 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
     required super.allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
-  }) : assert(
+    required this.persistOptions,
+    required bool? shouldPersist,
+  })  : shouldPersist = shouldPersist ?? persistOptions != null,
+        assert(
+          persistOptions == null || shouldPersist != true,
+          'Cannot specify persistOptions if shouldPersist is false',
+        ),
+        assert(
           from == null || allTransitiveDependencies == null,
           'When from a family, providers cannot specify dependencies.',
         );
@@ -44,6 +51,17 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
   /// If this provider was created with the `.family` modifier, [from] is the `.family` instance.
   @override
   final Family? from;
+
+  /// {@macro riverpod.persist}
+  ///
+  /// If `null` and [shouldPersist] is `true`, [ProviderContainer.persistOptions] will be used.
+  /// Cannot be set if [shouldPersist] is `false`.
+  final Persist? persistOptions;
+
+  /// Whether to persist the state of this provider.
+  ///
+  /// Defaults to `true` if [persistOptions] is not `null`.
+  final bool shouldPersist;
 
   /// If this provider was created with the `.family` modifier, [argument] is
   /// the variable that was used.

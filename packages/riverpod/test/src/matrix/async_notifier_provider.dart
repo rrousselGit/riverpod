@@ -6,11 +6,24 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
       isAutoDispose: false,
       isFamily: false,
       deferredNotifier: DeferredAsyncNotifier.new,
-      deferredProvider: <StateT>(create, {updateShouldNotify}) {
+      deferredProvider: <StateT>(
+        create, {
+        updateShouldNotify,
+        shouldPersist,
+        persistOptions,
+        persistKey,
+        encode,
+        decode,
+      }) {
         return AsyncNotifierProvider<DeferredAsyncNotifier<StateT>, StateT>(
+          shouldPersist: shouldPersist,
+          persistOptions: persistOptions,
           () => DeferredAsyncNotifier(
             create,
             updateShouldNotify: updateShouldNotify,
+            encode: encode,
+            decode: decode,
+            persistKey: persistKey,
           ),
         );
       },
@@ -31,12 +44,25 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
       isAutoDispose: true,
       isFamily: false,
       deferredNotifier: DeferredAsyncNotifier.new,
-      deferredProvider: <StateT>(create, {updateShouldNotify}) {
+      deferredProvider: <StateT>(
+        create, {
+        updateShouldNotify,
+        shouldPersist,
+        persistOptions,
+        persistKey,
+        encode,
+        decode,
+      }) {
         return AsyncNotifierProvider.autoDispose<DeferredAsyncNotifier<StateT>,
             StateT>(
+          shouldPersist: shouldPersist,
+          persistOptions: persistOptions,
           () => DeferredAsyncNotifier(
             create,
             updateShouldNotify: updateShouldNotify,
+            encode: encode,
+            decode: decode,
+            persistKey: persistKey,
           ),
         );
       },
@@ -59,12 +85,25 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
       isAutoDispose: false,
       isFamily: true,
       deferredNotifier: DeferredFamilyAsyncNotifier.new,
-      deferredProvider: <StateT>(create, {updateShouldNotify}) {
+      deferredProvider: <StateT>(
+        create, {
+        updateShouldNotify,
+        shouldPersist,
+        persistOptions,
+        persistKey,
+        encode,
+        decode,
+      }) {
         return AsyncNotifierProvider.family<DeferredFamilyAsyncNotifier<StateT>,
             StateT, Object?>(
+          shouldPersist: shouldPersist,
+          persistOptions: persistOptions,
           () => DeferredFamilyAsyncNotifier(
             create,
             updateShouldNotify: updateShouldNotify,
+            encode: encode,
+            decode: decode,
+            persistKey: persistKey,
           ),
         ).call(42);
       },
@@ -88,12 +127,25 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
       isAutoDispose: true,
       isFamily: true,
       deferredNotifier: DeferredFamilyAsyncNotifier.new,
-      deferredProvider: <StateT>(create, {updateShouldNotify}) {
+      deferredProvider: <StateT>(
+        create, {
+        updateShouldNotify,
+        shouldPersist,
+        persistOptions,
+        persistKey,
+        encode,
+        decode,
+      }) {
         return AsyncNotifierProvider.family
             .autoDispose<DeferredFamilyAsyncNotifier<StateT>, StateT, Object?>(
+              shouldPersist: shouldPersist,
+              persistOptions: persistOptions,
               () => DeferredFamilyAsyncNotifier(
                 create,
                 updateShouldNotify: updateShouldNotify,
+                encode: encode,
+                decode: decode,
+                persistKey: persistKey,
               ),
             )
             .call(42);
@@ -132,7 +184,13 @@ class DeferredAsyncNotifier<StateT> extends AsyncNotifier<StateT>
   DeferredAsyncNotifier(
     this._create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
-  }) : _updateShouldNotify = updateShouldNotify;
+    Object? Function(AsyncValue<StateT> encoded)? encode,
+    AsyncValue<StateT> Function(Object? serialized)? decode,
+    Object? Function(Object? args)? persistKey,
+  })  : _updateShouldNotify = updateShouldNotify,
+        _encode = encode,
+        _decode = decode,
+        _persistKey = persistKey;
 
   final FutureOr<StateT> Function(Ref<AsyncValue<StateT>> ref) _create;
   final bool Function(
@@ -150,6 +208,31 @@ class DeferredAsyncNotifier<StateT> extends AsyncNotifier<StateT>
   ) =>
       _updateShouldNotify?.call(previousState, newState) ??
       super.updateShouldNotify(previousState, newState);
+
+  final Object? Function(Object? args)? _persistKey;
+  @override
+  Object? get persistKey => switch (_persistKey) {
+        null => super.persistKey,
+        final cb => cb(null),
+      };
+
+  final Object? Function(AsyncValue<StateT> encoded)? _encode;
+  @override
+  Object? encode(AsyncValue<StateT> value) {
+    return switch (_encode) {
+      null => super.encode(value),
+      final cb => cb(value),
+    };
+  }
+
+  final AsyncValue<StateT> Function(Object? serialized)? _decode;
+  @override
+  AsyncValue<StateT> decode(Object? serialized) {
+    return switch (_decode) {
+      null => super.decode(serialized),
+      final cb => cb(serialized),
+    };
+  }
 }
 
 class DeferredFamilyAsyncNotifier<StateT>
@@ -158,7 +241,13 @@ class DeferredFamilyAsyncNotifier<StateT>
   DeferredFamilyAsyncNotifier(
     this._create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
-  }) : _updateShouldNotify = updateShouldNotify;
+    Object? Function(AsyncValue<StateT> encoded)? encode,
+    AsyncValue<StateT> Function(Object? serialized)? decode,
+    Object? Function(Object? args)? persistKey,
+  })  : _updateShouldNotify = updateShouldNotify,
+        _encode = encode,
+        _decode = decode,
+        _persistKey = persistKey;
 
   final FutureOr<StateT> Function(Ref<AsyncValue<StateT>> ref) _create;
 
@@ -177,6 +266,31 @@ class DeferredFamilyAsyncNotifier<StateT>
   ) =>
       _updateShouldNotify?.call(previousState, newState) ??
       super.updateShouldNotify(previousState, newState);
+
+  final Object? Function(Object? args)? _persistKey;
+  @override
+  Object? get persistKey => switch (_persistKey) {
+        null => super.persistKey,
+        final cb => cb(arg),
+      };
+
+  final Object? Function(AsyncValue<StateT> encoded)? _encode;
+  @override
+  Object? encode(AsyncValue<StateT> value) {
+    return switch (_encode) {
+      null => super.encode(value),
+      final cb => cb(value),
+    };
+  }
+
+  final AsyncValue<StateT> Function(Object? serialized)? _decode;
+  @override
+  AsyncValue<StateT> decode(Object? serialized) {
+    return switch (_decode) {
+      null => super.decode(serialized),
+      final cb => cb(serialized),
+    };
+  }
 }
 
 class AsyncNotifierTestFactory extends TestFactory<
@@ -198,6 +312,11 @@ class AsyncNotifierTestFactory extends TestFactory<
       Function<StateT>(
     FutureOr<StateT> Function(Ref<AsyncValue<StateT>> ref) create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
+    bool? shouldPersist,
+    Persist? persistOptions,
+    Object? Function(Object? args)? persistKey,
+    AsyncValue<StateT> Function(Object? encoded)? decode,
+    Object? Function(AsyncValue<StateT> value)? encode,
   }) deferredProvider;
 
   final $AsyncNotifierProvider<$AsyncNotifier<StateT>, StateT> Function<StateT>(
@@ -208,10 +327,20 @@ class AsyncNotifierTestFactory extends TestFactory<
       simpleTestProvider<StateT>(
     FutureOr<StateT> Function(Ref<AsyncValue<StateT>> ref) create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
+    bool? shouldPersist,
+    Persist? persistOptions,
+    Object? Function(Object? args)? persistKey,
+    AsyncValue<StateT> Function(Object? encoded)? decode,
+    Object? Function(AsyncValue<StateT> value)? encode,
   }) {
     return deferredProvider<StateT>(
       (ref) => create(ref),
       updateShouldNotify: updateShouldNotify,
+      shouldPersist: shouldPersist,
+      persistOptions: persistOptions,
+      persistKey: persistKey,
+      decode: decode,
+      encode: encode,
     );
   }
 }

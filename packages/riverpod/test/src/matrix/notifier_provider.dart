@@ -6,11 +6,24 @@ final notifierProviderFactory = TestMatrix<NotifierTestFactory>(
       isAutoDispose: false,
       isFamily: false,
       deferredNotifier: DeferredNotifier.new,
-      deferredProvider: <StateT>(create, {updateShouldNotify}) {
+      deferredProvider: <StateT>(
+        create, {
+        updateShouldNotify,
+        shouldPersist,
+        persistOptions,
+        persistKey,
+        decode,
+        encode,
+      }) {
         return NotifierProvider<DeferredNotifier<StateT>, StateT>(
+          shouldPersist: shouldPersist,
+          persistOptions: persistOptions,
           () => DeferredNotifier(
             create,
             updateShouldNotify: updateShouldNotify,
+            persistKey: persistKey,
+            decode: decode,
+            encode: encode,
           ),
         );
       },
@@ -30,11 +43,24 @@ final notifierProviderFactory = TestMatrix<NotifierTestFactory>(
       isAutoDispose: true,
       isFamily: false,
       deferredNotifier: DeferredNotifier.new,
-      deferredProvider: <StateT>(create, {updateShouldNotify}) {
+      deferredProvider: <StateT>(
+        create, {
+        updateShouldNotify,
+        shouldPersist,
+        persistOptions,
+        persistKey,
+        decode,
+        encode,
+      }) {
         return NotifierProvider.autoDispose<DeferredNotifier<StateT>, StateT>(
+          shouldPersist: shouldPersist,
+          persistOptions: persistOptions,
           () => DeferredNotifier(
             create,
             updateShouldNotify: updateShouldNotify,
+            persistKey: persistKey,
+            decode: decode,
+            encode: encode,
           ),
         );
       },
@@ -56,12 +82,25 @@ final notifierProviderFactory = TestMatrix<NotifierTestFactory>(
       isAutoDispose: false,
       isFamily: true,
       deferredNotifier: DeferredFamilyNotifier.new,
-      deferredProvider: <StateT>(create, {updateShouldNotify}) {
+      deferredProvider: <StateT>(
+        create, {
+        updateShouldNotify,
+        shouldPersist,
+        persistOptions,
+        persistKey,
+        decode,
+        encode,
+      }) {
         return NotifierProvider.family<DeferredFamilyNotifier<StateT>, StateT,
             Object?>(
+          shouldPersist: shouldPersist,
+          persistOptions: persistOptions,
           () => DeferredFamilyNotifier(
             create,
             updateShouldNotify: updateShouldNotify,
+            persistKey: persistKey,
+            decode: decode,
+            encode: encode,
           ),
         ).call(42);
       },
@@ -85,12 +124,25 @@ final notifierProviderFactory = TestMatrix<NotifierTestFactory>(
       isAutoDispose: true,
       isFamily: true,
       deferredNotifier: DeferredFamilyNotifier.new,
-      deferredProvider: <StateT>(create, {updateShouldNotify}) {
+      deferredProvider: <StateT>(
+        create, {
+        updateShouldNotify,
+        shouldPersist,
+        persistOptions,
+        persistKey,
+        decode,
+        encode,
+      }) {
         return NotifierProvider.family
             .autoDispose<DeferredFamilyNotifier<StateT>, StateT, Object?>(
+              shouldPersist: shouldPersist,
+              persistOptions: persistOptions,
               () => DeferredFamilyNotifier(
                 create,
                 updateShouldNotify: updateShouldNotify,
+                persistKey: persistKey,
+                decode: decode,
+                encode: encode,
               ),
             )
             .call(42);
@@ -129,7 +181,13 @@ class DeferredNotifier<StateT> extends Notifier<StateT>
   DeferredNotifier(
     this._create, {
     bool Function(StateT, StateT)? updateShouldNotify,
-  }) : _updateShouldNotify = updateShouldNotify;
+    Object? Function(StateT encoded)? encode,
+    StateT Function(Object? serialized)? decode,
+    Object? Function(Object? args)? persistKey,
+  })  : _updateShouldNotify = updateShouldNotify,
+        _encode = encode,
+        _decode = decode,
+        _persistKey = persistKey;
 
   final StateT Function(Ref<StateT> ref) _create;
   final bool Function(
@@ -144,6 +202,31 @@ class DeferredNotifier<StateT> extends Notifier<StateT>
   bool updateShouldNotify(StateT previousState, StateT newState) =>
       _updateShouldNotify?.call(previousState, newState) ??
       super.updateShouldNotify(previousState, newState);
+
+  final Object? Function(Object? args)? _persistKey;
+  @override
+  Object? get persistKey => switch (_persistKey) {
+        null => super.persistKey,
+        final cb => cb(null),
+      };
+
+  final Object? Function(StateT encoded)? _encode;
+  @override
+  Object? encode(StateT value) {
+    return switch (_encode) {
+      null => super.encode(value),
+      final cb => cb(value),
+    };
+  }
+
+  final StateT Function(Object? serialized)? _decode;
+  @override
+  StateT decode(Object? serialized) {
+    return switch (_decode) {
+      null => super.decode(serialized),
+      final cb => cb(serialized),
+    };
+  }
 }
 
 class DeferredFamilyNotifier<StateT> extends FamilyNotifier<StateT, int>
@@ -151,7 +234,13 @@ class DeferredFamilyNotifier<StateT> extends FamilyNotifier<StateT, int>
   DeferredFamilyNotifier(
     this._create, {
     bool Function(StateT, StateT)? updateShouldNotify,
-  }) : _updateShouldNotify = updateShouldNotify;
+    Object? Function(StateT encoded)? encode,
+    StateT Function(Object? serialized)? decode,
+    Object? Function(Object? args)? persistKey,
+  })  : _updateShouldNotify = updateShouldNotify,
+        _encode = encode,
+        _decode = decode,
+        _persistKey = persistKey;
 
   final StateT Function(Ref<StateT> ref) _create;
 
@@ -170,6 +259,31 @@ class DeferredFamilyNotifier<StateT> extends FamilyNotifier<StateT, int>
   ) =>
       _updateShouldNotify?.call(previousState, newState) ??
       super.updateShouldNotify(previousState, newState);
+
+  final Object? Function(Object? args)? _persistKey;
+  @override
+  Object? get persistKey => switch (_persistKey) {
+        null => super.persistKey,
+        final cb => cb(arg),
+      };
+
+  final Object? Function(StateT encoded)? _encode;
+  @override
+  Object? encode(StateT value) {
+    return switch (_encode) {
+      null => super.encode(value),
+      final cb => cb(value),
+    };
+  }
+
+  final StateT Function(Object? serialized)? _decode;
+  @override
+  StateT decode(Object? serialized) {
+    return switch (_decode) {
+      null => super.decode(serialized),
+      final cb => cb(serialized),
+    };
+  }
 }
 
 class NotifierTestFactory extends TestFactory<
@@ -190,6 +304,11 @@ class NotifierTestFactory extends TestFactory<
   final $NotifierProvider<TestNotifier<StateT>, StateT> Function<StateT>(
     StateT Function(Ref<StateT> ref) create, {
     bool Function(StateT, StateT)? updateShouldNotify,
+    bool? shouldPersist,
+    Persist? persistOptions,
+    Object? Function(Object? args)? persistKey,
+    StateT Function(Object? encoded)? decode,
+    Object? Function(StateT value)? encode,
   }) deferredProvider;
 
   final $NotifierProvider<$Notifier<StateT>, StateT> Function<StateT>(
@@ -199,10 +318,20 @@ class NotifierTestFactory extends TestFactory<
   $NotifierProvider<TestNotifier<StateT>, StateT> simpleTestProvider<StateT>(
     StateT Function(Ref<StateT> ref) create, {
     bool Function(StateT, StateT)? updateShouldNotify,
+    bool? shouldPersist,
+    Persist? persistOptions,
+    Object? Function(Object? args)? persistKey,
+    StateT Function(Object? encoded)? decode,
+    Object? Function(StateT value)? encode,
   }) {
     return deferredProvider<StateT>(
       (ref) => create(ref),
       updateShouldNotify: updateShouldNotify,
+      shouldPersist: shouldPersist,
+      persistOptions: persistOptions,
+      persistKey: persistKey,
+      decode: decode,
+      encode: encode,
     );
   }
 }

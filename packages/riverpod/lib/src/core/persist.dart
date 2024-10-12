@@ -3,7 +3,7 @@ import 'package:meta/meta.dart';
 import '../framework.dart';
 
 /// An interface to enable Riverpod to store the state of providers in a database.
-abstract class PersistAdapter<StateT, EncodedT> {
+abstract class PersistAdapter<StateT> {
   /// A key unique to this provider and parameter combination.
   ///
   /// This key is used to store the state of the provider in a database.
@@ -30,12 +30,12 @@ abstract class PersistAdapter<StateT, EncodedT> {
   /// A JSON-based [Persist] may store a [String] in the DB, while an alternative
   /// implementation rely on a list of bytes or a custom class.
   /// {@endtemplate}
-  StateT decode(EncodedT value);
+  StateT decode(Object? value);
 
   /// Encodes the state of the provider to a value that can be stored in the database.
   ///
   /// {@macro persist.encoded_value}
-  EncodedT encode(StateT value);
+  Object? encode(StateT value);
 }
 
 @internal

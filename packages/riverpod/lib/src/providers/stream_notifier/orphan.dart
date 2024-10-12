@@ -23,7 +23,7 @@ abstract class StreamNotifier<StateT> extends $StreamNotifier<StateT>
         // when using offline persistence.
         // Code-generation handles this better by only implementing PersistAdapter
         // when offline persistence is used.
-        PersistAdapter<AsyncValue<StateT>, Object?> {
+        PersistAdapter<AsyncValue<StateT>> {
   /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
   Stream<StateT> build();
@@ -73,6 +73,8 @@ final class StreamNotifierProvider< //
     super.runNotifierBuildOverride,
     super.isAutoDispose = false,
     super.retry,
+    super.persistOptions,
+    super.shouldPersist,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
@@ -92,6 +94,8 @@ final class StreamNotifierProvider< //
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
     required super.retry,
+    required super.persistOptions,
+    required super.shouldPersist,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -120,6 +124,8 @@ final class StreamNotifierProvider< //
       isAutoDispose: isAutoDispose,
       runNotifierBuildOverride: build ?? runNotifierBuildOverride,
       retry: retry,
+      persistOptions: persistOptions,
+      shouldPersist: shouldPersist,
     );
   }
 
