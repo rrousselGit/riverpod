@@ -1,3 +1,7 @@
+## 2.5.3 - 2024-10-12
+
+- Fixed a typo in the documentation (thanks to @ljbkusters)
+
 ## 2.5.2 - 2024-03-18
 
 - Fixed various typos in the documentation (thanks to @kevalvavaliya)

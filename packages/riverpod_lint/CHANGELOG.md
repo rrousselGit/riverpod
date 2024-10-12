@@ -1,4 +1,4 @@
-## Unreleased patch
+## 2.3.14 - 2024-10-12
 
 Bump analyzer to ^6.9.0
 

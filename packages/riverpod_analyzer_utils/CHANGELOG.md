@@ -1,4 +1,4 @@
-## Unreleased patch
+## 0.5.5 - 2024-10-12
 
 Bumped minimum analyzer to 6.9.0
 

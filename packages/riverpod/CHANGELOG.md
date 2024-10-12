@@ -1,4 +1,4 @@
-## Unreleased fix
+## 2.5.3 - 2024-10-12
 
 - Fixed a typo in the documentation (thanks to @ljbkusters)
 
