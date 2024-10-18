@@ -38,7 +38,7 @@ part 'my_file.g.dart';
 // In this example, riverpod_generator will use this function and generate a matching "fetchProductProvider".
 // The following example would be the equivalent of a "FutureProvider.autoDispose.family"
 @riverpod
-Future<List<Product>> fetchProducts(FetchProductRef ref, {required int page, int limit = 50}) async {
+Future<List<Product>> fetchProducts(Ref ref, {required int page, int limit = 50}) async {
   final dio = Dio();
   final response = await dio.get('https://my-api/products?page=$page&limit=$limit');
   final json = response.data! as List;
@@ -137,7 +137,7 @@ part 'main.g.dart';
 
 // Providers are defined by annotating a function with @riverpod
 @riverpod
-String label(LabelRef ref) => 'Hello world';
+String label(Ref ref) => 'Hello world';
 
 void main() {
   runApp(ProviderScope(child: Home()));
