@@ -68,6 +68,7 @@ class ChangeNotifierProviderBuilder {
   /// ```
   /// {@endtemplate}
   ChangeNotifierProvider<Notifier> call<Notifier extends ChangeNotifier?>(
+    // ignore: deprecated_member_use_from_same_package
     Create<Notifier, ChangeNotifierProviderRef<Notifier>> create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -306,6 +307,7 @@ class ChangeNotifierProviderFamilyBuilder {
   /// {@macro riverpod.family}
   ChangeNotifierProviderFamily<Notifier, Arg>
       call<Notifier extends ChangeNotifier?, Arg>(
+    // ignore: deprecated_member_use_from_same_package
     FamilyCreate<Notifier, ChangeNotifierProviderRef<Notifier>, Arg> create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -331,6 +333,7 @@ class AutoDisposeChangeNotifierProviderBuilder {
   /// {@macro riverpod.autoDispose}
   AutoDisposeChangeNotifierProvider<Notifier>
       call<Notifier extends ChangeNotifier?>(
+    // ignore: deprecated_member_use_from_same_package
     Create<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>> create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -356,6 +359,7 @@ class AutoDisposeChangeNotifierProviderFamilyBuilder {
   /// {@macro riverpod.family}
   AutoDisposeChangeNotifierProviderFamily<Notifier, Arg>
       call<Notifier extends ChangeNotifier?, Arg>(
+    // ignore: deprecated_member_use_from_same_package
     FamilyCreate<Notifier, AutoDisposeChangeNotifierProviderRef<Notifier>, Arg>
         create, {
     String? name,

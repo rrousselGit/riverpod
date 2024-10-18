@@ -3,11 +3,13 @@
 part of '../change_notifier_provider.dart';
 
 /// {@macro riverpod.provider_ref_base}
+@Deprecated('will be removed in 3.0.0. Use Ref instead')
 abstract class ChangeNotifierProviderRef<NotifierT extends ChangeNotifier?>
     implements Ref<NotifierT> {
   /// The [ChangeNotifier] currently exposed by this provider.
   ///
   /// Cannot be accessed while creating the provider.
+  @Deprecated('will be removed in 3.0.0.')
   NotifierT get notifier;
 }
 
@@ -74,7 +76,9 @@ abstract class ChangeNotifierProviderRef<NotifierT extends ChangeNotifier?>
 /// {@endtemplate}
 class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     extends _ChangeNotifierProviderBase<NotifierT>
-    with AlwaysAliveProviderBase<NotifierT> {
+    with
+        // ignore: deprecated_member_use
+        AlwaysAliveProviderBase<NotifierT> {
   /// {@macro riverpod.change_notifier_provider}
   ChangeNotifierProvider(
     this._createFn, {
@@ -106,7 +110,10 @@ class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   /// {@macro riverpod.family}
   static const family = ChangeNotifierProviderFamilyBuilder();
 
-  final NotifierT Function(ChangeNotifierProviderRef<NotifierT> ref) _createFn;
+  final NotifierT Function(
+    // ignore: deprecated_member_use, deprecated_member_use_from_same_package
+    ChangeNotifierProviderRef<NotifierT> ref,
+  ) _createFn;
 
   @override
   NotifierT _create(ChangeNotifierProviderElement<NotifierT> ref) {
@@ -119,6 +126,7 @@ class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   }
 
   @override
+  // ignore: deprecated_member_use, deprecated_member_use_from_same_package
   late final AlwaysAliveRefreshable<NotifierT> notifier =
       _notifier<NotifierT>(this);
 
@@ -157,6 +165,7 @@ class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   /// ```
   /// {@endtemplate}
   Override overrideWith(
+    // ignore: deprecated_member_use, deprecated_member_use_from_same_package
     Create<NotifierT, ChangeNotifierProviderRef<NotifierT>> create,
   ) {
     return ProviderOverride(
@@ -177,7 +186,10 @@ class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
 /// The element of [ChangeNotifierProvider].
 class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
     extends ProviderElementBase<NotifierT>
-    implements ChangeNotifierProviderRef<NotifierT> {
+    // ignore: deprecated_member_use, deprecated_member_use_from_same_package
+    implements
+        // ignore: deprecated_member_use, deprecated_member_use_from_same_package
+        ChangeNotifierProviderRef<NotifierT> {
   ChangeNotifierProviderElement._(
     _ChangeNotifierProviderBase<NotifierT> super._provider,
   );
@@ -242,6 +254,7 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
 // ignore: subtype_of_sealed_class
 /// The [Family] of [ChangeNotifierProvider].
 class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
+    // ignore: deprecated_member_use, deprecated_member_use_from_same_package
     extends FamilyBase<ChangeNotifierProviderRef<NotifierT>, NotifierT, Arg,
         NotifierT, ChangeNotifierProvider<NotifierT>> {
   /// The [Family] of [ChangeNotifierProvider].
@@ -258,6 +271,7 @@ class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
+    // ignore: deprecated_member_use, deprecated_member_use_from_same_package
     NotifierT Function(ChangeNotifierProviderRef<NotifierT> ref, Arg arg)
         create,
   ) {

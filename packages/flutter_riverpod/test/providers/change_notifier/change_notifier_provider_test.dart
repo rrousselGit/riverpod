@@ -1,4 +1,4 @@
-// ignore_for_file: invalid_use_of_internal_member, avoid_types_on_closure_parameters
+// ignore_for_file: invalid_use_of_internal_member, avoid_types_on_closure_parameters, deprecated_member_use_from_same_package, deprecated_member_use
 
 import 'package:flutter/widgets.dart' hide Listener;
 import 'package:flutter_riverpod/src/internals.dart';
@@ -193,7 +193,6 @@ void main() {
       final container = createContainer(
         parent: root,
         overrides: [
-          // ignore: deprecated_member_use
           provider.overrideWithProvider(
             ChangeNotifierProvider((ref) => ValueNotifier(42)),
           ),
@@ -416,7 +415,6 @@ void main() {
     final notifier2 = TestNotifier();
     final container = createContainer(
       overrides: [
-        // ignore: deprecated_member_use
         provider.overrideWithProvider(ChangeNotifierProvider((_) => notifier)),
       ],
     );
@@ -436,7 +434,6 @@ void main() {
     expect(callCount, 1);
 
     container.updateOverrides([
-      // ignore: deprecated_member_use
       provider.overrideWithProvider(ChangeNotifierProvider((_) => notifier2)),
     ]);
 
