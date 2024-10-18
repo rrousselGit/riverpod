@@ -19,6 +19,7 @@ final depProvider = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef DepRef = AutoDisposeProviderRef<int>;
 String _$familyHash() => r'8c228ff14b8c6cf1f3d4d6266232d64b5057c440';
 
@@ -155,6 +156,7 @@ class FamilyProvider extends AutoDisposeProvider<int> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin FamilyRef on AutoDisposeProviderRef<int> {
   /// The parameter `id` of this provider.
   int get id;
@@ -195,6 +197,7 @@ final providerProvider = AutoDisposeProvider<int>.internal(
   },
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef ProviderRef = AutoDisposeProviderRef<int>;
 String _$provider2Hash() => r'70d908579c5e64ce6558b42f433adfb80f4dc79b';
 
@@ -223,6 +226,7 @@ final provider2Provider = AutoDisposeProvider<int>.internal(
   },
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef Provider2Ref = AutoDisposeProviderRef<int>;
 String _$transitiveDependenciesHash() =>
     r'9c81823224bb28a5dc482328c04ce76293370877';
@@ -242,6 +246,7 @@ final transitiveDependenciesProvider = AutoDisposeProvider<int>.internal(
   },
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef TransitiveDependenciesRef = AutoDisposeProviderRef<int>;
 String _$smallTransitiveDependencyCountHash() =>
     r'34689e1ba57e2959975cbf8ebd6c9483f4652a73';
@@ -266,6 +271,7 @@ final smallTransitiveDependencyCountProvider =
   },
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef SmallTransitiveDependencyCountRef = AutoDisposeProviderRef<int>;
 String _$emptyDependenciesFunctionalHash() =>
     r'592bebd079450e2071fb12d68c3ae333d5c28359';
@@ -282,6 +288,7 @@ final emptyDependenciesFunctionalProvider = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef EmptyDependenciesFunctionalRef = AutoDisposeProviderRef<int>;
 String _$providerWithDependenciesHash() =>
     r'beecbe7a41b647ab92367dbcc12055bcd6345af7';
@@ -303,6 +310,7 @@ final providerWithDependenciesProvider = AutoDisposeProvider<int>.internal(
   },
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef ProviderWithDependenciesRef = AutoDisposeProviderRef<int>;
 String _$privateDepHash() => r'f610d91bd39e0dcffe6ff4e74160964a291289d9';
 
@@ -317,6 +325,7 @@ final _privateDepProvider = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef _PrivateDepRef = AutoDisposeProviderRef<int>;
 String _$publicDepHash() => r'bcb69aace017c86c3c4b8eccf59fa22d010834bc';
 
@@ -331,6 +340,7 @@ final publicDepProvider = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef PublicDepRef = AutoDisposeProviderRef<int>;
 String _$dep2Hash() => r'2778537df77f6431148c2ce400724da3e2ab4b94';
 
@@ -472,6 +482,7 @@ class Family2Provider extends AutoDisposeNotifierProviderImpl<Family2, int> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin Family2Ref on AutoDisposeNotifierProviderRef<int> {
   /// The parameter `id` of this provider.
   int get id;
@@ -655,6 +666,7 @@ class Provider4Provider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin Provider4Ref on AutoDisposeNotifierProviderRef<int> {
   /// The parameter `id` of this provider.
   int get id;
@@ -687,4 +699,4 @@ final emptyDependenciesClassBasedProvider =
 
 typedef _$EmptyDependenciesClassBased = AutoDisposeNotifier<int>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

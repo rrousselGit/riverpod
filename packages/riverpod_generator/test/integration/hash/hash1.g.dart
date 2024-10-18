@@ -19,6 +19,7 @@ final simpleProvider = AutoDisposeProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef SimpleRef = AutoDisposeProviderRef<String>;
 String _$simple2Hash() => r'06327442776394c5c9cbb33b048d7a42e709e7fd';
 
@@ -33,6 +34,7 @@ final simple2Provider = AutoDisposeProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef Simple2Ref = AutoDisposeProviderRef<String>;
 String _$simpleClassHash() => r'958123cd6179c5b88da040cfeb71eb3061765277';
 
@@ -50,4 +52,4 @@ final simpleClassProvider =
 
 typedef _$SimpleClass = AutoDisposeNotifier<String>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

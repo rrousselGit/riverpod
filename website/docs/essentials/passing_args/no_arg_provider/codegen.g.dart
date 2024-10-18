@@ -21,6 +21,7 @@ final activityProvider = AutoDisposeFutureProvider<Activity>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef ActivityRef = AutoDisposeFutureProviderRef<Activity>;
 String _$activityNotifier2Hash() => r'280f4d82a186cfb62827f4d7c74f5349bb0a9e4a';
 
@@ -39,4 +40,4 @@ final activityNotifier2Provider =
 
 typedef _$ActivityNotifier2 = AutoDisposeAsyncNotifier<Activity>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

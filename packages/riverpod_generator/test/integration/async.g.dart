@@ -19,6 +19,7 @@ final publicProvider = AutoDisposeFutureProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef PublicRef = AutoDisposeFutureProviderRef<String>;
 String _$privateHash() => r'bc0469a9315de114a0ccd82c7db4980844d0009f';
 
@@ -33,6 +34,7 @@ final _privateProvider = AutoDisposeFutureProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef _PrivateRef = AutoDisposeFutureProviderRef<String>;
 String _$familyOrHash() => r'1c3217e296b0ce52c07c18769d1fffb95850f482';
 
@@ -169,6 +171,7 @@ class FamilyOrProvider extends AutoDisposeFutureProvider<String> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin FamilyOrRef on AutoDisposeFutureProviderRef<String> {
   /// The parameter `first` of this provider.
   int get first;
@@ -341,6 +344,7 @@ class FamilyProvider extends AutoDisposeFutureProvider<String> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin FamilyRef on AutoDisposeFutureProviderRef<String> {
   /// The parameter `first` of this provider.
   int get first;
@@ -534,6 +538,7 @@ class FamilyOrClassProvider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin FamilyOrClassRef on AutoDisposeAsyncNotifierProviderRef<String> {
   /// The parameter `first` of this provider.
   int get first;
@@ -739,6 +744,7 @@ class FamilyClassProvider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin FamilyClassRef on AutoDisposeAsyncNotifierProviderRef<String> {
   /// The parameter `first` of this provider.
   int get first;
@@ -773,4 +779,4 @@ class _FamilyClassProviderElement
   List<String>? get fifth => (origin as FamilyClassProvider).fifth;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

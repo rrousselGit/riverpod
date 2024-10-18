@@ -153,6 +153,7 @@ class RandomProvider extends AutoDisposeProvider<int> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin RandomRef on AutoDisposeProviderRef<int> {
   /// The parameter `seed` of this provider.
   int get seed;
@@ -171,4 +172,4 @@ class _RandomProviderElement extends AutoDisposeProviderElement<int>
   int get max => (origin as RandomProvider).max;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

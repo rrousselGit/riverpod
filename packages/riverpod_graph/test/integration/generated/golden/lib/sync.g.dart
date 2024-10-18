@@ -21,6 +21,7 @@ final publicProvider = AutoDisposeProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef PublicRef = AutoDisposeProviderRef<String>;
 String _$supports$inNamesHash() => r'baacdb7b92917860b02aba1fa7010c7056da4a67';
 
@@ -38,6 +39,7 @@ final supports$inNamesProvider = AutoDisposeProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef Supports$inNamesRef = AutoDisposeProviderRef<String>;
 String _$familyHash() => r'ebf082969854dcc358b9870a2e5e9b922423e59b';
 
@@ -231,6 +233,7 @@ class FamilyProvider extends AutoDisposeProvider<String> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin FamilyRef on AutoDisposeProviderRef<String> {
   /// The parameter `first` of this provider.
   int get first;
@@ -277,6 +280,7 @@ final _privateProvider = AutoDisposeProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef _PrivateRef = AutoDisposeProviderRef<String>;
 String _$publicClassHash() => r'c27eae39f455b986e570abb84f1471de7445ef3b';
 
@@ -513,6 +517,7 @@ class FamilyClassProvider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin FamilyClassRef on AutoDisposeNotifierProviderRef<String> {
   /// The parameter `first` of this provider.
   int get first;
@@ -567,4 +572,4 @@ final supports$InClassNameProvider =
 
 typedef _$Supports$InClassName = AutoDisposeNotifier<String>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

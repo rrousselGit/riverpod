@@ -21,6 +21,7 @@ final numberProvider = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef NumberRef = AutoDisposeProviderRef<int>;
 String _$doubledHash() => r'ddc640c876bdbe49fe72fe1632b5ff48687c9279';
 
@@ -35,6 +36,7 @@ final doubledProvider = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef DoubledRef = AutoDisposeProviderRef<int>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -32,6 +32,7 @@ final providerWithDependencies2Provider = AutoDisposeProvider<int>.internal(
   },
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef ProviderWithDependencies2Ref = AutoDisposeProviderRef<int>;
 String _$familyWithDependencies2Hash() =>
     r'209b9e3ed4e5fad89572268d161fbe64a6ef0e87';
@@ -182,6 +183,7 @@ class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin FamilyWithDependencies2Ref on AutoDisposeProviderRef<int> {
   /// The parameter `id` of this provider.
   int? get id;
@@ -208,6 +210,7 @@ final _private2Provider = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef _Private2Ref = AutoDisposeProviderRef<int>;
 String _$public2Hash() => r'9767255f0182589fe48b29d217dd488b0a13b9d5';
 
@@ -222,6 +225,7 @@ final public2Provider = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef Public2Ref = AutoDisposeProviderRef<int>;
 String _$notifierWithDependenciesHash() =>
     r'becc68e5a54b0cc2b8277a6d54b74edef93bfe89';
@@ -396,6 +400,7 @@ class NotifierFamilyWithDependenciesProvider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin NotifierFamilyWithDependenciesRef on AutoDisposeNotifierProviderRef<int> {
   /// The parameter `id` of this provider.
   int? get id;
@@ -410,4 +415,4 @@ class _NotifierFamilyWithDependenciesProviderElement
   int? get id => (origin as NotifierFamilyWithDependenciesProvider).id;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

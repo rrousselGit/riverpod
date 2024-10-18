@@ -21,6 +21,7 @@ final configProvider = AutoDisposeStreamProvider<Configuration>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef ConfigRef = AutoDisposeStreamProviderRef<Configuration>;
 String _$productsHash() => r'd1f4523880408cf8ee0e68969c40cf87d5c78557';
 
@@ -35,6 +36,7 @@ final productsProvider = AutoDisposeFutureProvider<List<Product>>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef ProductsRef = AutoDisposeFutureProviderRef<List<Product>>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

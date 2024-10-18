@@ -6,7 +6,7 @@ part of 'avoid_build_context_in_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$fnHash() => r'7b8d0cf179067c80b8553b3232fd886fac83f387';
+String _$fnHash() => r'8a726da6104b38a55782e44062757e6771b19de3';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -151,6 +151,7 @@ class FnProvider extends AutoDisposeProvider<int> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin FnRef on AutoDisposeProviderRef<int> {
   /// The parameter `context1` of this provider.
   BuildContext get context1;
@@ -314,6 +315,7 @@ class MyNotifierProvider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin MyNotifierRef on AutoDisposeNotifierProviderRef<int> {
   /// The parameter `context1` of this provider.
   BuildContext get context1;
@@ -333,21 +335,21 @@ class _MyNotifierProviderElement
   BuildContext get context2 => (origin as MyNotifierProvider).context2;
 }
 
-String _$regresion2959Hash() => r'bcf9a829ce75026a78569de680451d157c7d90a2';
+String _$regression2959Hash() => r'e58855125577a855d642da1ef85f35178ad95afd';
 
-/// See also [Regresion2959].
-@ProviderFor(Regresion2959)
-final regresion2959Provider =
-    AutoDisposeNotifierProvider<Regresion2959, void>.internal(
-  Regresion2959.new,
-  name: r'regresion2959Provider',
+/// See also [Regression2959].
+@ProviderFor(Regression2959)
+final regression2959Provider =
+    AutoDisposeNotifierProvider<Regression2959, void>.internal(
+  Regression2959.new,
+  name: r'regression2959Provider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
       ? null
-      : _$regresion2959Hash,
+      : _$regression2959Hash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
 
-typedef _$Regresion2959 = AutoDisposeNotifier<void>;
+typedef _$Regression2959 = AutoDisposeNotifier<void>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

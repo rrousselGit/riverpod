@@ -21,6 +21,7 @@ final otherProvider = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef OtherRef = AutoDisposeProviderRef<int>;
 String _$exampleHash() => r'29f92958e0d0e3f13ac033e92cd2e4072339c7db';
 
@@ -35,6 +36,7 @@ final exampleProvider = AutoDisposeStreamProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef ExampleRef = AutoDisposeStreamProviderRef<int>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

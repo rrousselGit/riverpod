@@ -6,7 +6,7 @@ part of 'convert_functional_provider_to_class_based.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$exampleHash() => r'638d7db2be22eaad0f51ea0b3ae38e0483d43725';
+String _$exampleHash() => r'67898608b444d39a000852f647ca6d3326740c98';
 
 /// Some comment
 ///
@@ -21,8 +21,9 @@ final exampleProvider = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef ExampleRef = AutoDisposeProviderRef<int>;
-String _$exampleFamilyHash() => r'f5547d3d88c42b135db5efea7dfaa542b3db9cc1';
+String _$exampleFamilyHash() => r'70dfc6f4b2d7d251edbc3a66c3ac0f2c56aebf8b';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -180,6 +181,7 @@ class ExampleFamilyProvider extends AutoDisposeProvider<int> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin ExampleFamilyRef on AutoDisposeProviderRef<int> {
   /// The parameter `a` of this provider.
   int get a;
@@ -198,4 +200,4 @@ class _ExampleFamilyProviderElement extends AutoDisposeProviderElement<int>
   String get b => (origin as ExampleFamilyProvider).b;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

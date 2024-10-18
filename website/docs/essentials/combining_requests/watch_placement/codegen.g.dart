@@ -21,6 +21,7 @@ final exampleProvider = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef ExampleRef = AutoDisposeProviderRef<int>;
 String _$myNotifierHash() => r'ad79fdb5b0e72a800fa03efc1e7157f0d1524844';
 
@@ -38,4 +39,4 @@ final myNotifierProvider =
 
 typedef _$MyNotifier = AutoDisposeNotifier<int>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

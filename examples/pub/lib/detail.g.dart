@@ -146,6 +146,7 @@ class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin FetchPackageDetailsRef on AutoDisposeFutureProviderRef<Package> {
   /// The parameter `packageName` of this provider.
   String get packageName;
@@ -174,6 +175,7 @@ final likedPackagesProvider = AutoDisposeFutureProvider<List<String>>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef LikedPackagesRef = AutoDisposeFutureProviderRef<List<String>>;
 String _$pubRepositoryHash() => r'1f4dbfa0911f6467067fab244677acbcb8c7ad4e';
 
@@ -189,6 +191,7 @@ final pubRepositoryProvider = AutoDisposeProvider<PubRepository>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef PubRepositoryRef = AutoDisposeProviderRef<PubRepository>;
 String _$packageMetricsHash() => r'67cd25e50357e6e970d432c1d255085a23b856ac';
 
@@ -356,6 +359,7 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin PackageMetricsRef
     on AutoDisposeAsyncNotifierProviderRef<PackageMetricsScore> {
   /// The parameter `packageName` of this provider.
@@ -371,4 +375,4 @@ class _PackageMetricsProviderElement
   String get packageName => (origin as PackageMetricsProvider).packageName;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

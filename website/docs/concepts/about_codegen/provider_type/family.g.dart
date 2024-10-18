@@ -143,6 +143,7 @@ class ExampleProvider extends AutoDisposeProvider<String> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin ExampleRef on AutoDisposeProviderRef<String> {
   /// The parameter `param` of this provider.
   int get param;
@@ -156,4 +157,4 @@ class _ExampleProviderElement extends AutoDisposeProviderElement<String>
   int get param => (origin as ExampleProvider).param;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

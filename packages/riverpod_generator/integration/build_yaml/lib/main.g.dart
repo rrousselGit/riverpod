@@ -19,6 +19,7 @@ final myCountPod = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef CountRef = AutoDisposeProviderRef<int>;
 String _$countFutureHash() => r'ec7cc31ce1c1a10607f1dcb35dd217acd2877729';
 
@@ -33,6 +34,7 @@ final myCountFuturePod = AutoDisposeFutureProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef CountFutureRef = AutoDisposeFutureProviderRef<int>;
 String _$countStreamHash() => r'1dbe49244ea19e8dbc3af0534429bb323720c07a';
 
@@ -47,6 +49,7 @@ final myCountStreamPod = AutoDisposeStreamProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef CountStreamRef = AutoDisposeStreamProviderRef<int>;
 String _$count2Hash() => r'6256825480d83bb13acde282cf3c9d9524cc3a6c';
 
@@ -183,6 +186,7 @@ class Count2Provider extends AutoDisposeProvider<int> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin Count2Ref on AutoDisposeProviderRef<int> {
   /// The parameter `a` of this provider.
   int get a;
@@ -311,6 +315,7 @@ class CountFuture2Provider extends AutoDisposeFutureProvider<int> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin CountFuture2Ref on AutoDisposeFutureProviderRef<int> {
   /// The parameter `a` of this provider.
   int get a;
@@ -439,6 +444,7 @@ class CountStream2Provider extends AutoDisposeStreamProvider<int> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin CountStream2Ref on AutoDisposeStreamProviderRef<int> {
   /// The parameter `a` of this provider.
   int get a;
@@ -630,6 +636,7 @@ class CountNotifier2Provider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin CountNotifier2Ref on AutoDisposeNotifierProviderRef<int> {
   /// The parameter `a` of this provider.
   int get a;
@@ -775,6 +782,7 @@ class CountAsyncNotifier2Provider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin CountAsyncNotifier2Ref on AutoDisposeAsyncNotifierProviderRef<int> {
   /// The parameter `a` of this provider.
   int get a;
@@ -920,6 +928,7 @@ class CountStreamNotifier2Provider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin CountStreamNotifier2Ref on AutoDisposeStreamNotifierProviderRef<int> {
   /// The parameter `a` of this provider.
   int get a;
@@ -934,4 +943,4 @@ class _CountStreamNotifier2ProviderElement
   int get a => (origin as CountStreamNotifier2Provider).a;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

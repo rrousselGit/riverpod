@@ -19,6 +19,7 @@ final rawFutureProvider = AutoDisposeProvider<Raw<Future<String>>>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef RawFutureRef = AutoDisposeProviderRef<Raw<Future<String>>>;
 String _$rawStreamHash() => r'2b764189753a8b74f47ba557a79416f00ef5cebd';
 
@@ -33,6 +34,7 @@ final rawStreamProvider = AutoDisposeProvider<Raw<Stream<String>>>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef RawStreamRef = AutoDisposeProviderRef<Raw<Stream<String>>>;
 String _$rawFamilyFutureHash() => r'485f59512081852e51279658facc015309743864';
 
@@ -170,6 +172,7 @@ class RawFamilyFutureProvider extends AutoDisposeProvider<Raw<Future<String>>> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin RawFamilyFutureRef on AutoDisposeProviderRef<Raw<Future<String>>> {
   /// The parameter `id` of this provider.
   int get id;
@@ -299,6 +302,7 @@ class RawFamilyStreamProvider extends AutoDisposeProvider<Raw<Stream<String>>> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin RawFamilyStreamRef on AutoDisposeProviderRef<Raw<Stream<String>>> {
   /// The parameter `id` of this provider.
   int get id;
@@ -328,6 +332,7 @@ final publicProvider = AutoDisposeProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef PublicRef = AutoDisposeProviderRef<String>;
 String _$supports$inNamesHash() => r'cbf929802fcbd0aa949ad72743d096fb3ef5f28f';
 
@@ -343,6 +348,7 @@ final supports$inNamesProvider = AutoDisposeProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef Supports$inNamesRef = AutoDisposeProviderRef<String>;
 String _$familyHash() => r'14d1ee238ca608d547630d0e222ef4c5866e9e61';
 
@@ -515,6 +521,7 @@ class FamilyProvider extends AutoDisposeProvider<String> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin FamilyRef on AutoDisposeProviderRef<String> {
   /// The parameter `first` of this provider.
   int get first;
@@ -561,6 +568,7 @@ final _privateProvider = AutoDisposeProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef _PrivateRef = AutoDisposeProviderRef<String>;
 String _$generatedHash() => r'fecbc1d5d9a05fc996b452a57fd1975ff368af91';
 
@@ -575,6 +583,7 @@ final generatedProvider = AutoDisposeProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 typedef GeneratedRef = AutoDisposeProviderRef<String>;
 String _$rawFutureClassHash() => r'bf66f1cdbd99118b8845d206e6a2611b3101f45c';
 
@@ -739,6 +748,7 @@ class RawFamilyFutureClassProvider extends AutoDisposeNotifierProviderImpl<
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin RawFamilyFutureClassRef
     on AutoDisposeNotifierProviderRef<Raw<Future<String>>> {
   /// The parameter `id` of this provider.
@@ -885,6 +895,7 @@ class RawFamilyStreamClassProvider extends AutoDisposeNotifierProviderImpl<
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin RawFamilyStreamClassRef
     on AutoDisposeNotifierProviderRef<Raw<Stream<String>>> {
   /// The parameter `id` of this provider.
@@ -1135,6 +1146,7 @@ class FamilyClassProvider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin FamilyClassRef on AutoDisposeNotifierProviderRef<String> {
   /// The parameter `first` of this provider.
   int get first;
@@ -1187,4 +1199,4 @@ final supports$InClassNameProvider =
 
 typedef _$Supports$InClassName = AutoDisposeNotifier<String>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -8,7 +8,7 @@ part of 'add_listener.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$myNotifierHash() => r'9acd382ed579c545ace755687b155e28eba01d22';
+String _$myNotifierHash() => r'7ff4b7b8f822ca720b55e2d29ed07d7f0b3485e8';
 
 /// See also [MyNotifier].
 @ProviderFor(MyNotifier)
@@ -24,4 +24,4 @@ final myNotifierProvider =
 
 typedef _$MyNotifier = AutoDisposeNotifier<int>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
