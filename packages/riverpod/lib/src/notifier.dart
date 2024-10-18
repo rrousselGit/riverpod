@@ -21,6 +21,20 @@ abstract class NotifierBase<State> {
 
   void _setElement(ProviderElementBase<State> element);
 
+  /// Listens to changes on the value exposed by this provider.
+  ///
+  /// The listener will be called immediately after the provider completes building.
+  ///
+  /// As opposed to [Ref.listen], the listener will be called even if
+  /// [ProviderElementBase.updateShouldNotify] returns false, meaning that the previous
+  /// and new value can potentially be identical.
+  void listenSelf(
+    void Function(State? previous, State next) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  }) {
+    _element.listenSelf(listener, onError: onError);
+  }
+
   /// The value currently exposed by this [Notifier].
   ///
   /// If used inside [Notifier.build], may throw if the notifier is not yet initialized.
