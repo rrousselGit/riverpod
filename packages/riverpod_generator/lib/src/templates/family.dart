@@ -341,6 +341,7 @@ ${parameters.map((e) => 'hash = _SystemHash.combine(hash, ${e.name}.hashCode);')
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 mixin $refNameImpl on $refType<${provider.valueTypeDisplayString}> {
   ${parameters.map((e) {
       return '''
