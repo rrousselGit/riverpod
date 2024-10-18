@@ -2,16 +2,17 @@
 
 import 'dart:async';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'codegen.g.dart';
 
 @riverpod
-int other(OtherRef ref) => 0;
+int other(Ref ref) => 0;
 
 /* SNIPPET START */
 @riverpod
-Stream<int> example(ExampleRef ref) {
+Stream<int> example(Ref ref) {
   final controller = StreamController<int>();
 
   // {@template onDispose}

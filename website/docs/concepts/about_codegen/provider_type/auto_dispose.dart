@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'auto_dispose.g.dart';
@@ -5,8 +6,8 @@ part 'auto_dispose.g.dart';
 /* SNIPPET START */
 // AutoDispose provider (keepAlive is false by default)
 @riverpod
-String example1(Example1Ref ref) => 'foo';
+String example1(Ref ref) => 'foo';
 
 // Non autoDispose provider
 @Riverpod(keepAlive: true)
-String example2(Example2Ref ref) => 'foo';
+String example2(Ref ref) => 'foo';

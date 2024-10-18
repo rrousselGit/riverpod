@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -9,7 +10,7 @@ part 'codegen.g.dart';
 
 /* SNIPPET START */
 @riverpod
-Future<Activity> activity(ActivityRef ref) async {
+Future<Activity> activity(Ref ref) async {
   // {@template didDispose}
   // We capture whether the provider is currently disposed or not.
   // {@endtemplate}

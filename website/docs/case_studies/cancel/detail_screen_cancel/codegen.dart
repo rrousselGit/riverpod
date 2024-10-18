@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../detail_screen/codegen.dart';
@@ -9,7 +10,7 @@ part 'codegen.g.dart';
 
 /* SNIPPET START */
 @riverpod
-Future<Activity> activity(ActivityRef ref) async {
+Future<Activity> activity(Ref ref) async {
   // {@template client}
   // We create an HTTP client using package:http
   // {@endtemplate}

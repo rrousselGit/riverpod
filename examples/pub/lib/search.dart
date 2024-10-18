@@ -17,7 +17,7 @@ const searchPageSize = 10;
 
 @riverpod
 Future<List<Package>> fetchPackages(
-  FetchPackagesRef ref, {
+  Ref ref, {
   required int page,
   String search = '',
 }) async {

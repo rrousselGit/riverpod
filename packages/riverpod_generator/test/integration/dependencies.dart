@@ -1,12 +1,13 @@
+import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'dependencies.g.dart';
 
 @riverpod
-int dep(DepRef ref) => 0;
+int dep(Ref ref) => 0;
 
 @riverpod
-int family(DepRef ref, int id) => 0;
+int family(Ref ref, int id) => 0;
 
 @riverpod
 class Dep2 extends _$Dep2 {
@@ -21,10 +22,10 @@ class Family2 extends _$Family2 {
 }
 
 @Riverpod(dependencies: [dep, family, Dep2, Family2])
-int provider(ProviderRef ref) => 0;
+int provider(Ref ref) => 0;
 
 @Riverpod(dependencies: [dep, family, Dep2, Family2])
-int provider2(Provider2Ref ref) => 0;
+int provider2(Ref ref) => 0;
 
 @Riverpod(dependencies: [dep, family, Dep2, Family2])
 class Provider3 extends _$Provider3 {
@@ -39,13 +40,13 @@ class Provider4 extends _$Provider4 {
 }
 
 @Riverpod(dependencies: [provider])
-int transitiveDependencies(TransitiveDependenciesRef ref) => 0;
+int transitiveDependencies(Ref ref) => 0;
 
 @Riverpod(dependencies: [dep, family, Dep2])
-int smallTransitiveDependencyCount(SmallTransitiveDependencyCountRef ref) => 0;
+int smallTransitiveDependencyCount(Ref ref) => 0;
 
 @Riverpod(dependencies: [])
-int emptyDependenciesFunctional(EmptyDependenciesFunctionalRef ref) => 0;
+int emptyDependenciesFunctional(Ref ref) => 0;
 
 @Riverpod(dependencies: [])
 class EmptyDependenciesClassBased extends _$EmptyDependenciesClassBased {
@@ -54,12 +55,12 @@ class EmptyDependenciesClassBased extends _$EmptyDependenciesClassBased {
 }
 
 @Riverpod(dependencies: [_privateDep, publicDep])
-int providerWithDependencies(ProviderWithDependenciesRef ref) {
+int providerWithDependencies(Ref ref) {
   return 0;
 }
 
 @riverpod
-int _privateDep(_PrivateDepRef ref) => 0;
+int _privateDep(Ref ref) => 0;
 
 @riverpod
-int publicDep(PublicDepRef ref) => 0;
+int publicDep(Ref ref) => 0;

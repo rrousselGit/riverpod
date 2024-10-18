@@ -1,22 +1,23 @@
+import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'stream.g.dart';
 
 @riverpod
-Stream<String> public(PublicRef ref) {
+Stream<String> public(Ref ref) {
   return Stream.value('Hello world');
 }
 
 final privateProvider = _privateProvider;
 
 @riverpod
-Stream<String> _private(_PrivateRef ref) {
+Stream<String> _private(Ref ref) {
   return Stream.value('Hello world');
 }
 
 @riverpod
 Stream<String> family(
-  FamilyRef ref,
+  Ref ref,
   int first, {
   String? second,
   required double third,

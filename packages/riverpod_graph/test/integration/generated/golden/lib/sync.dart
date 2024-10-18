@@ -1,23 +1,24 @@
+import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'sync.g.dart';
 
 /// A public generated provider.
 @riverpod
-String public(PublicRef ref) {
+String public(Ref ref) {
   return 'Hello world';
 }
 
 /// A generated provider with a '$' in its name.
 @riverpod
-String supports$inNames(Supports$inNamesRef ref) {
+String supports$inNames(Ref ref) {
   return ref.watch(publicProvider);
 }
 
 /// A generated family provider.
 @riverpod
 String family(
-  FamilyRef ref,
+  Ref ref,
   int first, {
   String? second,
   required double third,
@@ -32,7 +33,7 @@ String family(
 final AutoDisposeProvider<String> privateProvider = _privateProvider;
 
 @riverpod
-String _private(_PrivateRef ref) {
+String _private(Ref ref) {
   return ref.watch(publicProvider);
 }
 

@@ -59,7 +59,7 @@ implémentée à l'aide de Riverpod.
 // Récupère la liste des packages depuis pub.dev
 @riverpod
 Future<List<Package>> fetchPackages(
-  FetchPackagesRef ref, {
+  Ref ref, {
   required int page,
   String search = '',
 }) async {

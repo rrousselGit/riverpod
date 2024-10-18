@@ -22,7 +22,7 @@ class PageIndex extends _$PageIndex {
 // A provider which computes whether the user is allowed to go to the previous page
 @riverpod
 /* highlight-start */
-bool canGoToPreviousPage(CanGoToPreviousPageRef ref) {
+bool canGoToPreviousPage(Ref ref) {
 /* highlight-end */
   return ref.watch(pageIndexProvider) != 0;
 }

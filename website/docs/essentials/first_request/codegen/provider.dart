@@ -1,6 +1,7 @@
 /* SNIPPET START */
 
 import 'dart:convert';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'activity.dart';
@@ -15,7 +16,7 @@ part 'provider.g.dart';
 /// which will cache the result of this function.
 // {@endtemplate}
 @riverpod
-Future<Activity> activity(ActivityRef ref) async {
+Future<Activity> activity(Ref ref) async {
   // {@template response}
   // Using package:http, we fetch a random activity from the Bored API.
   // {@endtemplate}

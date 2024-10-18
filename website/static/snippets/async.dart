@@ -19,7 +19,7 @@ class Configuration {
 /* SNIPPET START */
 
 @riverpod
-Future<Configuration> configurations(ConfigurationsRef ref) async {
+Future<Configuration> configurations(Ref ref) async {
   final uri = Uri.parse('configs.json');
   final rawJson = await File.fromUri(uri).readAsString();
 

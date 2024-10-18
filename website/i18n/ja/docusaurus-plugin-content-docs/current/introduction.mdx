@@ -51,7 +51,7 @@ Riverpod は Flutter の widget にインスパイアされた、
 // pub.dev からパッケージ一覧を取得する
 @riverpod
 Future<List<Package>> fetchPackages(
-  FetchPackagesRef ref, {
+  Ref ref, {
   required int page,
   String search = '',
 }) async {

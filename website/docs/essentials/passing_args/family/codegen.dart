@@ -1,6 +1,7 @@
 // ignore_for_file: avoid_print
 
 import 'dart:convert';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../first_request/codegen/activity.dart';
@@ -12,7 +13,7 @@ Future<Activity> fetchActivity() => throw UnimplementedError();
 /* SNIPPET START */
 @riverpod
 Future<Activity> activity(
-  ActivityRef ref,
+  Ref ref,
   // {@template codegen_activityType}
   // We can add arguments to the provider.
   // The type of the parameter can be whatever you wish.

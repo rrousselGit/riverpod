@@ -1,14 +1,15 @@
+import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'hash1.g.dart';
 
 @riverpod
-String simple(SimpleRef ref) {
+String simple(Ref ref) {
   return 'Hello world';
 }
 
 @riverpod
-String simple2(Simple2Ref ref) {
+String simple2(Ref ref) {
   return 'Hello world2';
 }
 

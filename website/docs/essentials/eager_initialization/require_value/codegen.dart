@@ -11,7 +11,7 @@ part 'codegen.g.dart';
 // An eagerly initialized provider.
 // {@endtemplate}
 @riverpod
-Future<String> example(ExampleRef ref) async => 'Hello world';
+Future<String> example(Ref ref) async => 'Hello world';
 
 class MyConsumer extends ConsumerWidget {
   @override

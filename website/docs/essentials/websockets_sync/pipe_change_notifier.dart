@@ -1,6 +1,7 @@
 // ignore_for_file: omit_local_variable_types
 
 import 'package:flutter/widgets.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'pipe_change_notifier.g.dart';
@@ -11,7 +12,7 @@ part 'pipe_change_notifier.g.dart';
 /// whenever the value changes.
 // {@endtemplate}
 @riverpod
-ValueNotifier<int> myListenable(MyListenableRef ref) {
+ValueNotifier<int> myListenable(Ref ref) {
   final notifier = ValueNotifier(0);
 
   // {@template onDispose}
