@@ -6,9 +6,7 @@ SourceRange sourceRangeFrom({required int start, required int end}) {
   return SourceRange(start, end - start);
 }
 
-String refNameFor(ProviderDeclaration provider) {
-  return '${provider.name.lexeme.titled}Ref';
-}
+String refNameFor(ProviderDeclaration provider) => 'Ref';
 
 String classNameFor(ProviderDeclaration provider) {
   return provider.name.lexeme.titled;

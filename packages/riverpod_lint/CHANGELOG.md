@@ -1,3 +1,16 @@
+## Unreleased minor
+
+- `functional_ref` and its quick-fix now expect:
+  ```dart
+  @riverpod
+  Model foo(Ref ref) => ..
+  ```
+  Do:
+  ```dart
+  @riverpod
+  Model foo(FooRef ref) => ..
+  ```
+
 ## 2.3.14 - 2024-10-12
 
 Bump analyzer to ^6.9.0

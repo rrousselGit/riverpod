@@ -525,7 +525,7 @@ Functional providers must receive a ref matching the provider name as their firs
 
 ```dart
 @riverpod
-int myProvider(MyProviderRef ref) => 0;
+int myProvider(Ref ref) => 0;
 ```
 
 **Bad**:
@@ -535,7 +535,7 @@ int myProvider(MyProviderRef ref) => 0;
 @riverpod
 int myProvider() => 0;
 
-// The ref parameter is not correctly typed (int -> MyProviderRef)
+// The ref parameter is not correctly typed (int -> Ref)
 @riverpod
 int myProvider(int ref) => 0;
 ```
