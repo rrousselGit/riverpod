@@ -501,7 +501,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
         // reading a family
 
         final familyOverrideRef = _overrideForFamily[provider.from];
-        if (Ref != null) {
+        if (familyOverrideRef != null) {
           // A family was overridden, so we implicitly mount the readers
 
           if (familyOverrideRef.container._stateReaders.containsKey(provider)) {

@@ -57,11 +57,11 @@ part 'foo.g.dart';
 final legacy = Provider<int>((ref) => 0);
 
 @riverpod
-int simple(Ref ref) => 0;
+int simple(SimpleRef ref) => 0;
 
 // Regression test for https://github.com/rrousselGit/riverpod/issues/2194
 @riverpod
-int complex(Ref ref, {int? id, String? another}) => 0;
+int complex(ComplexRef ref, {int? id, String? another}) => 0;
 ''', (resolver) async {
       final result = await resolver.resolveRiverpodAnalysisResult();
 
@@ -99,9 +99,9 @@ final dep = Provider<int>((ref) => 0);
 final family = Provider.family<int, int>((ref, id) => 0);
 
 @Riverpod(keepAlive: true)
-int dep2(Ref ref) => 0;
+int dep2(Dep2Ref ref) => 0;
 @Riverpod(keepAlive: true)
-int family2(Ref ref, int id) => 0;
+int family2(Family2Ref ref, int id) => 0;
 
 final explicitDep = Provider<int>((ref) => 0, dependencies: []);
 final explicitFamily = Provider.family<int, int>((ref, id) => 0, dependencies: []);

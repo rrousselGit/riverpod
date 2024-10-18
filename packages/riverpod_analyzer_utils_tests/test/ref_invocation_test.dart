@@ -19,7 +19,7 @@ import 'file.dart' as alias;
 part 'foo.g.dart';
 
 @Riverpod(keepAlive: true)
-int aliased(Ref ref) {
+int aliased(AliasedRef ref) {
   ref.watch(alias.aProvider);
   return 0;
 }
@@ -124,7 +124,7 @@ part 'foo.g.dart';
 final dep = FutureProvider((ref) => 0);
 
 @Riverpod(keepAlive: true)
-Future<int> dep2(Ref ref) async => 0;
+Future<int> dep2(Dep2Ref ref) async => 0;
 
 @Riverpod(keepAlive: true)
 class Dep3 extends _$Dep3 {
@@ -220,7 +220,7 @@ extension on Ref {
 final dep = FutureProvider((ref) => 0);
 
 @Riverpod(keepAlive: true)
-Future<int> dep2(Ref ref) async => 0;
+Future<int> dep2(Dep2Ref ref) async => 0;
 
 @Riverpod(keepAlive: true)
 class Dep3 extends _$Dep3 {
@@ -240,7 +240,7 @@ final provider = Provider<int>((ref) {
 class _Ref {
   void watch(ProviderBase provider) {}
 }
-void fn(Ref ref) {
+void fn(_Ref ref) {
   ref.watch(dep);
 }
 ''', (resolver) async {
@@ -461,7 +461,7 @@ extension on Ref {
 final family = FutureProvider.family<int, int>((ref, id) => 0);
 
 @Riverpod(keepAlive: true)
-Future<int> family2(Ref ref, {required int id}) async => 0;
+Future<int> family2(Family2Ref ref, {required int id}) async => 0;
 
 @Riverpod(keepAlive: true)
 class Family3 extends _$Family3 {
@@ -481,7 +481,7 @@ final provider = Provider<int>((ref) {
 class _Ref {
   void watch(ProviderBase provider) {}
 }
-void fn(Ref ref) {
+void fn(_Ref ref) {
   ref.watch(family(0));
 }
 ''', (resolver) async {
@@ -589,7 +589,7 @@ extension on Ref {
 final dep = FutureProvider((ref) => 0);
 
 @Riverpod(keepAlive: true)
-Future<int> dep2(Ref ref) async => 0;
+Future<int> dep2(Dep2Ref ref) async => 0;
 
 @Riverpod(keepAlive: true)
 class Dep3 extends _$Dep3 {
@@ -625,7 +625,7 @@ extension<T> on T {
 class _Ref {
   void watch(ProviderBase provider) {}
 }
-void fn(Ref ref) {
+void fn(_Ref ref) {
   ref.watch(dep);
 }
 ''', (resolver) async {

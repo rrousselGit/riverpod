@@ -45,11 +45,11 @@ class Riverpod {
   /// ```dart
   /// // By not specifying "dependencies", we are saying that this provider is never scoped
   /// @riverpod
-  /// Foo root(Ref ref) => Foo();
+  /// Foo root(RootRef ref) => Foo();
   /// // By specifying "dependencies" (even if the list is empty),
   /// // we are saying that this provider is potentially scoped
   /// @Riverpod(dependencies: [])
-  /// Foo scoped(Ref ref) => Foo();
+  /// Foo scoped(ScopedRef ref) => Foo();
   /// ```
   ///
   /// Then if we were to depend on `rootProvider` in a scoped provider, we
@@ -57,14 +57,14 @@ class Riverpod {
   ///
   /// ```dart
   /// @riverpod
-  /// Object? dependent(Ref ref) {
+  /// Object? dependent(DependentRef ref) {
   ///   ref.watch(rootProvider);
   ///   // This provider does not depend on any scoped provider,
   ///   // as such "dependencies" is optional
   /// }
   ///
   /// @Riverpod(dependencies: [])
-  /// Object? dependent(Ref ref) {
+  /// Object? dependent(DependentRef ref) {
   ///   ref.watch(rootProvider);
   ///   // This provider decided to specify "dependencies" anyway, marking
   ///   // "dependentProvider" as possibly scoped.
@@ -73,7 +73,7 @@ class Riverpod {
   /// }
   ///
   /// @Riverpod(dependencies: [root])
-  /// Object? dependent(Ref ref) {
+  /// Object? dependent(DependentRef ref) {
   ///   ref.watch(rootProvider);
   ///   // Including "rootProvider" in "dependencies" is fine too, even though
   ///   // it is not required. It is a no-op.
@@ -84,7 +84,7 @@ class Riverpod {
   ///
   /// ```dart
   /// @Riverpod(dependencies: [scoped])
-  /// Object? dependent(Ref ref) {
+  /// Object? dependent(DependentRef ref) {
   ///   ref.watch(scopedProvider);
   ///   // Since "scopedProvider" specifies "dependencies", any provider that
   ///   // depends on it must also specify "dependencies" and include "scopedProvider".

@@ -58,7 +58,7 @@ part 'foo.g.dart';
 final dep = FutureProvider((ref) => 0);
 
 @Riverpod(keepAlive: true)
-Future<int> dep2(Ref ref) async => 0;
+Future<int> dep2(Dep2Ref ref) async => 0;
 
 @Riverpod(keepAlive: true)
 class Dep3 extends _$Dep3 {
@@ -163,7 +163,7 @@ extension on WidgetRef {
 final dep = FutureProvider((ref) => 0);
 
 @Riverpod(keepAlive: true)
-Future<int> dep2(Ref ref) async => 0;
+Future<int> dep2(Dep2Ref ref) async => 0;
 
 @Riverpod(keepAlive: true)
 class Dep3 extends _$Dep3 {
@@ -188,7 +188,7 @@ class MyWidget extends ConsumerWidget {
 class _Ref {
   void watch(ProviderBase provider) {}
 }
-void fn(Ref ref) {
+void fn(_Ref ref) {
   ref.watch(dep);
 }
 ''', (resolver) async {
@@ -268,7 +268,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 final dep = FutureProvider((ref) => 0);
 final dep2 = FutureProvider((ref) => 0);
 
-void fn(Ref ref) {
+void fn(WidgetRef ref) {
   ref.read(dep);
   ref.read(dep2);
 }
@@ -490,7 +490,7 @@ extension on WidgetRef {
 final family = FutureProvider.family<int, int>((ref, id) => 0);
 
 @Riverpod(keepAlive: true)
-Future<int> family2(Ref ref, {required int id}) async => 0;
+Future<int> family2(Family2Ref ref, {required int id}) async => 0;
 
 @Riverpod(keepAlive: true)
 class Family3 extends _$Family3 {
@@ -514,7 +514,7 @@ class MyWidget extends ConsumerWidget {
 class _Ref {
   void watch(ProviderBase provider) {}
 }
-void fn(Ref ref) {
+void fn(_Ref ref) {
   ref.watch(family(0));
 }
 ''', (resolver) async {
@@ -625,7 +625,7 @@ extension on WidgetRef {
 final dep = FutureProvider((ref) => 0);
 
 @Riverpod(keepAlive: true)
-Future<int> dep2(Ref ref) async => 0;
+Future<int> dep2(Dep2Ref ref) async => 0;
 
 @Riverpod(keepAlive: true)
 class Dep3 extends _$Dep3 {
@@ -666,7 +666,7 @@ extension<T> on T {
 class _Ref {
   void watch(ProviderBase provider) {}
 }
-void fn(Ref ref) {
+void fn(_Ref ref) {
   ref.watch(dep);
 }
 ''', (resolver) async {
