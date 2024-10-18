@@ -5,15 +5,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'unsupported_provider_value.g.dart';
 
 @riverpod
-int integer(IntegerRef ref) => 0;
+int integer(Ref ref) => 0;
 
 @riverpod
 // expect_lint: unsupported_provider_value
-MyStateNotifier stateNotifier(StateNotifierRef ref) => MyStateNotifier();
+MyStateNotifier stateNotifier(Ref ref) => MyStateNotifier();
 
 @riverpod
 // expect_lint: unsupported_provider_value
-Future<MyStateNotifier> asyncStateNotifier(AsyncStateNotifierRef ref) async {
+Future<MyStateNotifier> asyncStateNotifier(Ref ref) async {
   return MyStateNotifier();
 }
 
@@ -25,8 +25,7 @@ class StateNotifierClass extends _$StateNotifierClass {
 
 @riverpod
 // expect_lint: unsupported_provider_value
-Future<MyStateNotifier> stateNotifierAsync(StateNotifierAsyncRef ref) async =>
-    MyStateNotifier();
+Future<MyStateNotifier> stateNotifierAsync(Ref ref) async => MyStateNotifier();
 
 // Regression tests for https://github.com/rrousselGit/riverpod/issues/2302
 @riverpod
@@ -58,7 +57,7 @@ class MyStateNotifier extends StateNotifier<int> {
 
 @riverpod
 // expect_lint: unsupported_provider_value
-MyChangeNotifier changeNotifier(ChangeNotifierRef ref) => MyChangeNotifier();
+MyChangeNotifier changeNotifier(Ref ref) => MyChangeNotifier();
 
 @riverpod
 // expect_lint: unsupported_provider_value
@@ -70,11 +69,11 @@ class MyChangeNotifier extends ChangeNotifier {}
 
 @riverpod
 // expect_lint: unsupported_provider_value
-MyNotifier notifier(NotifierRef ref) => MyNotifier();
+MyNotifier notifier(Ref ref) => MyNotifier();
 
 @riverpod
 // expect_lint: unsupported_provider_value
-MyAutoDisposeNotifier autoDisposeNotifier(AutoDisposeNotifierRef ref) {
+MyAutoDisposeNotifier autoDisposeNotifier(Ref ref) {
   return MyAutoDisposeNotifier();
 }
 
@@ -96,7 +95,7 @@ class MyAutoDisposeNotifier extends AutoDisposeNotifier<int> {
 
 @riverpod
 // expect_lint: unsupported_provider_value
-MyAsyncNotifier asyncNotifier(AsyncNotifierRef ref) => MyAsyncNotifier();
+MyAsyncNotifier asyncNotifier(Ref ref) => MyAsyncNotifier();
 
 @riverpod
 // expect_lint: unsupported_provider_value
@@ -110,32 +109,32 @@ class MyAsyncNotifier extends AsyncNotifier<int> {
 }
 
 @riverpod
-Raw<MyChangeNotifier> rawNotifier(RawNotifierRef ref) => MyChangeNotifier();
+Raw<MyChangeNotifier> rawNotifier(Ref ref) => MyChangeNotifier();
 
 @riverpod
 Raw<Future<MyChangeNotifier>> rawFutureNotifier(
-  RawFutureNotifierRef ref,
+  Ref ref,
 ) async {
   return MyChangeNotifier();
 }
 
 @riverpod
 Raw<Stream<MyChangeNotifier>> rawStreamNotifier(
-  RawStreamNotifierRef ref,
+  Ref ref,
 ) async* {
   yield MyChangeNotifier();
 }
 
 @riverpod
 Future<Raw<MyChangeNotifier>> futureRawNotifier(
-  FutureRawNotifierRef ref,
+  Ref ref,
 ) async {
   return MyChangeNotifier();
 }
 
 @riverpod
 Stream<Raw<MyChangeNotifier>> streamRawNotifier(
-  StreamRawNotifierRef ref,
+  Ref ref,
 ) async* {
   yield MyChangeNotifier();
 }

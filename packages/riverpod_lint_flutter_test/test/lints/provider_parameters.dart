@@ -10,7 +10,7 @@ final legacy = Provider.family<int, Object?>((ref, value) => 0);
 final provider = Provider.family<int, Object?>((ref, value) => 0);
 
 @Riverpod(keepAlive: true)
-int generator(GeneratorRef ref, {Object? value}) => 0;
+int generator(Ref ref, {Object? value}) => 0;
 
 var list = [42];
 final dep = Provider((ref) {

@@ -1,13 +1,14 @@
 // ignore_for_file: unused_element
 
 import 'package:flutter/widgets.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'avoid_build_context_in_providers.g.dart';
 
 @riverpod
 int fn(
-  FnRef ref,
+  Ref ref,
   // expect_lint: avoid_build_context_in_providers
   BuildContext context1, {
   // expect_lint: avoid_build_context_in_providers
@@ -34,7 +35,7 @@ class MyNotifier extends _$MyNotifier {
 }
 
 @riverpod
-class Regresion2959 extends _$Regresion2959 {
+class Regression2959 extends _$Regression2959 {
   @override
   void build() {}
 

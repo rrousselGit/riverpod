@@ -1,3 +1,4 @@
+import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'main.dart';
@@ -20,7 +21,7 @@ part 'dependencies.g.dart';
     CountStreamNotifier2,
   ],
 )
-int calc2(Calc2Ref ref, String id) {
+int calc2(Ref ref, String id) {
   ref.watch(myCountPod);
   ref.watch(myCountFuturePod);
   ref.watch(myCountStreamPod);
