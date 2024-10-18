@@ -162,6 +162,7 @@ class BugsEncounteredNotifierProvider
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin BugsEncounteredNotifierRef on AutoDisposeAsyncNotifierProviderRef<int> {
   /// The parameter `featureId` of this provider.
   String get featureId;

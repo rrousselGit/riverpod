@@ -20,6 +20,7 @@ final reflessProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef ReflessRef = AutoDisposeProviderRef<int>;
 String _$namelessHash() => r'1a2aa61445a64c65301051820b159c5998195606';
 
@@ -35,6 +36,7 @@ final namelessProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef NamelessRef = AutoDisposeProviderRef<int>;
 String _$incorrectlyTypedHash() => r'36b38a6d23ff56629e8d18e1764a957495953ac0';
 
@@ -51,6 +53,7 @@ final incorrectlyTypedProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef IncorrectlyTypedRef = AutoDisposeProviderRef<int>;
 String _$scopedHash() => r'590f1a203323105e732397a2616fbd7dac65f0cc';
 
@@ -69,6 +72,7 @@ final scopedProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef ScopedRef = AutoDisposeProviderRef<int>;
 String _$noRefButArgsHash() => r'462ab15f4053f3e9592557cc8a698fbb2352bd40';
 
@@ -84,6 +88,7 @@ final noRefButArgsProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef NoRefButArgsRef = AutoDisposeProviderRef<int>;
 String _$validHash() => r'f33913278e3b1615927fe05b3e6e1f781da7729a';
 
@@ -99,6 +104,7 @@ final validProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef ValidRef = AutoDisposeProviderRef<int>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

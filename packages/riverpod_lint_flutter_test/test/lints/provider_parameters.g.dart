@@ -142,6 +142,7 @@ class GeneratorProvider extends Provider<int> {
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin GeneratorRef on ProviderRef<int> {
   /// The parameter `value` of this provider.
   Object? get value;

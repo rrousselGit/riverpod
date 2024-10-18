@@ -8,7 +8,7 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$exampleHash() => r'd4d63f5cf1aaec5b7c6a19e6fee18ddf070147ec';
+String _$exampleHash() => r'fed2d2be4787bc4a715efa198a89a297967b54a1';
 
 /// See also [example].
 @ProviderFor(example)
@@ -22,6 +22,7 @@ final exampleProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef ExampleRef = AutoDisposeProviderRef<int>;
 String _$myNotifierHash() => r'ad79fdb5b0e72a800fa03efc1e7157f0d1524844';
 

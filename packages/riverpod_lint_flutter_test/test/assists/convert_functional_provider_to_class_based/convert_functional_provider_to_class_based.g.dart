@@ -22,6 +22,7 @@ final exampleProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef ExampleRef = AutoDisposeProviderRef<int>;
 String _$exampleFamilyHash() => r'70dfc6f4b2d7d251edbc3a66c3ac0f2c56aebf8b';
 
@@ -182,6 +183,7 @@ class ExampleFamilyProvider extends AutoDisposeProvider<int> {
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin ExampleFamilyRef on AutoDisposeProviderRef<int> {
   /// The parameter `a` of this provider.
   int get a;

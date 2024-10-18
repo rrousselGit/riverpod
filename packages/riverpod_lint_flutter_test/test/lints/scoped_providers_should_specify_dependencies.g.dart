@@ -20,6 +20,7 @@ final scopedProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef ScopedRef = AutoDisposeProviderRef<int>;
 String _$unimplementedScopedHash() =>
     r'5f32fc56f4157238612d62ef54038fe92b7cdfe8';
@@ -40,6 +41,7 @@ final unimplementedScopedProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef UnimplementedScopedRef = AutoDisposeProviderRef<int>;
 String _$rootHash() => r'dda8bbb46cb4d7c658597669e3be92e2447dcfb0';
 
@@ -55,6 +57,7 @@ final rootProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef RootRef = AutoDisposeProviderRef<int>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -6,7 +6,7 @@ part of 'auto_dispose.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$keepAliveHash() => r'72dd192676126d487c24c7695a91d59410c62696';
+String _$keepAliveHash() => r'44af50bf7e6dcfddc61a1f32855855b534a7fe4f';
 
 /// See also [keepAlive].
 @ProviderFor(keepAlive)
@@ -20,8 +20,9 @@ final keepAliveProvider = Provider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef KeepAliveRef = ProviderRef<int>;
-String _$notKeepAliveHash() => r'1ccc497d7c651f8e730ec1bcecf271ffe9615d83';
+String _$notKeepAliveHash() => r'e60c952d04ffd7548294908c2e1ef472614c284b';
 
 /// See also [notKeepAlive].
 @ProviderFor(notKeepAlive)
@@ -35,6 +36,7 @@ final notKeepAliveProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef NotKeepAliveRef = AutoDisposeProviderRef<int>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

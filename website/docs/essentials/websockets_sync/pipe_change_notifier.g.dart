@@ -8,7 +8,7 @@ part of 'pipe_change_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$myListenableHash() => r'4cc07df2f47050c4aa761e5467f341ab6c312d09';
+String _$myListenableHash() => r'83341786f6ed7986544648ddf718cf8b03a18af9';
 
 /// A provider which creates a ValueNotifier and update its listeners
 /// whenever the value changes.
@@ -25,6 +25,7 @@ final myListenableProvider = AutoDisposeProvider<ValueNotifier<int>>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef MyListenableRef = AutoDisposeProviderRef<ValueNotifier<int>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

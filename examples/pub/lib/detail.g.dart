@@ -9,7 +9,7 @@ part of 'detail.dart';
 // **************************************************************************
 
 String _$fetchPackageDetailsHash() =>
-    r'e65ba332cb8397cc5a1aca6e656233dff698391a';
+    r'16ad07d6f69412f6d456c6d482f15dc53421df74';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -147,6 +147,7 @@ class FetchPackageDetailsProvider extends AutoDisposeFutureProvider<Package> {
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin FetchPackageDetailsRef on AutoDisposeFutureProviderRef<Package> {
   /// The parameter `packageName` of this provider.
   String get packageName;
@@ -161,7 +162,7 @@ class _FetchPackageDetailsProviderElement
   String get packageName => (origin as FetchPackageDetailsProvider).packageName;
 }
 
-String _$likedPackagesHash() => r'304a4def167e245812638cba776e8d5eb66d8844';
+String _$likedPackagesHash() => r'8debee8d8fa48334d1de21fa9bbf03224265d29d';
 
 /// See also [likedPackages].
 @ProviderFor(likedPackages)
@@ -176,8 +177,9 @@ final likedPackagesProvider = AutoDisposeFutureProvider<List<String>>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef LikedPackagesRef = AutoDisposeFutureProviderRef<List<String>>;
-String _$pubRepositoryHash() => r'1f4dbfa0911f6467067fab244677acbcb8c7ad4e';
+String _$pubRepositoryHash() => r'fd358feb202d2c34ad507ebf0a40bddbebc8ea98';
 
 /// See also [pubRepository].
 @ProviderFor(pubRepository)
@@ -192,6 +194,7 @@ final pubRepositoryProvider = AutoDisposeProvider<PubRepository>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef PubRepositoryRef = AutoDisposeProviderRef<PubRepository>;
 String _$packageMetricsHash() => r'67cd25e50357e6e970d432c1d255085a23b856ac';
 
@@ -360,6 +363,7 @@ class PackageMetricsProvider extends AutoDisposeAsyncNotifierProviderImpl<
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin PackageMetricsRef
     on AutoDisposeAsyncNotifierProviderRef<PackageMetricsScore> {
   /// The parameter `packageName` of this provider.

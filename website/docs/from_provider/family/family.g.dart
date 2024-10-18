@@ -8,7 +8,7 @@ part of 'family.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$randomHash() => r'517b12aad4df7b31f8872b89af74e7880377b2ea';
+String _$randomHash() => r'ab69799dce84746b22880feae0f1db6dea906f6a';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -154,6 +154,7 @@ class RandomProvider extends AutoDisposeProvider<int> {
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin RandomRef on AutoDisposeProviderRef<int> {
   /// The parameter `seed` of this provider.
   int get seed;

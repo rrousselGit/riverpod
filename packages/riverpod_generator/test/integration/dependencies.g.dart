@@ -6,7 +6,7 @@ part of 'dependencies.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$depHash() => r'2213a401e03a1a914579b4a3a7707b783de9efba';
+String _$depHash() => r'1b3ec5231cd2328602151de9ceacdcd102a1d2e2';
 
 /// See also [dep].
 @ProviderFor(dep)
@@ -20,8 +20,9 @@ final depProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef DepRef = AutoDisposeProviderRef<int>;
-String _$familyHash() => r'8c228ff14b8c6cf1f3d4d6266232d64b5057c440';
+String _$familyHash() => r'940eb87eb11206499f73f05791a6266b38cda88a';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -157,6 +158,7 @@ class FamilyProvider extends AutoDisposeProvider<int> {
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin FamilyRef on AutoDisposeProviderRef<int> {
   /// The parameter `id` of this provider.
   int get id;
@@ -170,7 +172,7 @@ class _FamilyProviderElement extends AutoDisposeProviderElement<int>
   int get id => (origin as FamilyProvider).id;
 }
 
-String _$providerHash() => r'6c9184ef4c6a410a2132e1ecc13a2e646e936d37';
+String _$providerHash() => r'1be7ae7ac2100d39b949af50ec50fce48b26cdd1';
 
 /// See also [provider].
 @ProviderFor(provider)
@@ -198,8 +200,9 @@ final providerProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef ProviderRef = AutoDisposeProviderRef<int>;
-String _$provider2Hash() => r'70d908579c5e64ce6558b42f433adfb80f4dc79b';
+String _$provider2Hash() => r'30f81430b57f0116f621a4a309c458fce0536378';
 
 /// See also [provider2].
 @ProviderFor(provider2)
@@ -227,9 +230,10 @@ final provider2Provider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef Provider2Ref = AutoDisposeProviderRef<int>;
 String _$transitiveDependenciesHash() =>
-    r'9c81823224bb28a5dc482328c04ce76293370877';
+    r'909d45403831b521177ec15b1dd78554e261d3be';
 
 /// See also [transitiveDependencies].
 @ProviderFor(transitiveDependencies)
@@ -247,9 +251,10 @@ final transitiveDependenciesProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef TransitiveDependenciesRef = AutoDisposeProviderRef<int>;
 String _$smallTransitiveDependencyCountHash() =>
-    r'34689e1ba57e2959975cbf8ebd6c9483f4652a73';
+    r'f67b369dd99e35a6e6211004b45c87c5ba4ac1c7';
 
 /// See also [smallTransitiveDependencyCount].
 @ProviderFor(smallTransitiveDependencyCount)
@@ -272,9 +277,10 @@ final smallTransitiveDependencyCountProvider =
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef SmallTransitiveDependencyCountRef = AutoDisposeProviderRef<int>;
 String _$emptyDependenciesFunctionalHash() =>
-    r'592bebd079450e2071fb12d68c3ae333d5c28359';
+    r'77289071cab8a10da8f5b7b40932864510a1ee38';
 
 /// See also [emptyDependenciesFunctional].
 @ProviderFor(emptyDependenciesFunctional)
@@ -289,9 +295,10 @@ final emptyDependenciesFunctionalProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef EmptyDependenciesFunctionalRef = AutoDisposeProviderRef<int>;
 String _$providerWithDependenciesHash() =>
-    r'beecbe7a41b647ab92367dbcc12055bcd6345af7';
+    r'7d40c994fc2d4ba9e6a0bb4a3d100f8da874eb5e';
 
 /// See also [providerWithDependencies].
 @ProviderFor(providerWithDependencies)
@@ -311,8 +318,9 @@ final providerWithDependenciesProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef ProviderWithDependenciesRef = AutoDisposeProviderRef<int>;
-String _$privateDepHash() => r'f610d91bd39e0dcffe6ff4e74160964a291289d9';
+String _$privateDepHash() => r'92ff5cc515ecf2455cb04773f1b49f23b17ea2e2';
 
 /// See also [_privateDep].
 @ProviderFor(_privateDep)
@@ -326,8 +334,9 @@ final _privateDepProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _PrivateDepRef = AutoDisposeProviderRef<int>;
-String _$publicDepHash() => r'bcb69aace017c86c3c4b8eccf59fa22d010834bc';
+String _$publicDepHash() => r'a9c461ae174577183ab4c0ff8d8267cc7a64a2c5';
 
 /// See also [publicDep].
 @ProviderFor(publicDep)
@@ -341,6 +350,7 @@ final publicDepProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef PublicDepRef = AutoDisposeProviderRef<int>;
 String _$dep2Hash() => r'2778537df77f6431148c2ce400724da3e2ab4b94';
 
@@ -483,6 +493,7 @@ class Family2Provider extends AutoDisposeNotifierProviderImpl<Family2, int> {
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin Family2Ref on AutoDisposeNotifierProviderRef<int> {
   /// The parameter `id` of this provider.
   int get id;
@@ -667,6 +678,7 @@ class Provider4Provider
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin Provider4Ref on AutoDisposeNotifierProviderRef<int> {
   /// The parameter `id` of this provider.
   int get id;

@@ -8,7 +8,7 @@ part of 'auto_dispose.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$example1Hash() => r'8a5f0865f758792cc8e4f2ca67db334196df6e88';
+String _$example1Hash() => r'6a361ee6f9dd1d0cdbb42f967f6356aa058f7041';
 
 /// See also [example1].
 @ProviderFor(example1)
@@ -22,8 +22,9 @@ final example1Provider = AutoDisposeProvider<String>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef Example1Ref = AutoDisposeProviderRef<String>;
-String _$example2Hash() => r'bc25731d759be185125d12d995d0b89b07d1e271';
+String _$example2Hash() => r'181b89435c06a7284a8978c5ab9f13bb4a3693b0';
 
 /// See also [example2].
 @ProviderFor(example2)
@@ -37,6 +38,7 @@ final example2Provider = Provider<String>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef Example2Ref = ProviderRef<String>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

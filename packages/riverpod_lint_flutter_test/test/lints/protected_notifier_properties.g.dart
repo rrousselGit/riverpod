@@ -180,6 +180,7 @@ class A3Provider extends AutoDisposeNotifierProviderImpl<A3, int> {
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin A3Ref on AutoDisposeNotifierProviderRef<int> {
   /// The parameter `param` of this provider.
   int get param;
@@ -318,6 +319,7 @@ class A4Provider extends NotifierProviderImpl<A4, int> {
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin A4Ref on NotifierProviderRef<int> {
   /// The parameter `param` of this provider.
   int get param;
@@ -455,6 +457,7 @@ class A5Provider extends AutoDisposeAsyncNotifierProviderImpl<A5, int> {
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin A5Ref on AutoDisposeAsyncNotifierProviderRef<int> {
   /// The parameter `param` of this provider.
   int get param;
@@ -593,6 +596,7 @@ class A6Provider extends AsyncNotifierProviderImpl<A6, int> {
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin A6Ref on AsyncNotifierProviderRef<int> {
   /// The parameter `param` of this provider.
   int get param;
@@ -731,6 +735,7 @@ class A7Provider extends AutoDisposeStreamNotifierProviderImpl<A7, int> {
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin A7Ref on AutoDisposeStreamNotifierProviderRef<int> {
   /// The parameter `param` of this provider.
   int get param;
@@ -869,6 +874,7 @@ class A8Provider extends StreamNotifierProviderImpl<A8, int> {
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin A8Ref on StreamNotifierProviderRef<int> {
   /// The parameter `param` of this provider.
   int get param;

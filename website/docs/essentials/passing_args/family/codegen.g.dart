@@ -8,7 +8,7 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$activityHash() => r'cb76e67cd45f1823d3ed497a235be53819ce2eaf';
+String _$activityHash() => r'6c815736c0d2b40a92695adcd78516534d7ac2fc';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -144,6 +144,7 @@ class ActivityProvider extends AutoDisposeFutureProvider<Activity> {
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin ActivityRef on AutoDisposeFutureProviderRef<Activity> {
   /// The parameter `activityType` of this provider.
   String get activityType;
@@ -289,6 +290,7 @@ class ActivityNotifier2Provider
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin ActivityNotifier2Ref on AutoDisposeAsyncNotifierProviderRef<Activity> {
   /// The parameter `activityType` of this provider.
   String get activityType;

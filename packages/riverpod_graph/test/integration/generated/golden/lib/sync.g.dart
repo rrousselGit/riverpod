@@ -6,7 +6,7 @@ part of 'sync.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$publicHash() => r'138be35943899793ab085e711fe3f3d22696a3ba';
+String _$publicHash() => r'94bee36125844f9fe521363bb228632b9f3bfbc7';
 
 /// A public generated provider.
 ///
@@ -22,8 +22,9 @@ final publicProvider = AutoDisposeProvider<String>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef PublicRef = AutoDisposeProviderRef<String>;
-String _$supports$inNamesHash() => r'baacdb7b92917860b02aba1fa7010c7056da4a67';
+String _$supports$inNamesHash() => r'a883450ddca90a227631fe54d1d9ae305bc558d9';
 
 /// A generated provider with a '$' in its name.
 ///
@@ -40,8 +41,9 @@ final supports$inNamesProvider = AutoDisposeProvider<String>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef Supports$inNamesRef = AutoDisposeProviderRef<String>;
-String _$familyHash() => r'ebf082969854dcc358b9870a2e5e9b922423e59b';
+String _$familyHash() => r'062561e0cad8585939dc9adc23de6452be2c9788';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -234,6 +236,7 @@ class FamilyProvider extends AutoDisposeProvider<String> {
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin FamilyRef on AutoDisposeProviderRef<String> {
   /// The parameter `first` of this provider.
   int get first;
@@ -267,7 +270,7 @@ class _FamilyProviderElement extends AutoDisposeProviderElement<String>
   List<String>? get fifth => (origin as FamilyProvider).fifth;
 }
 
-String _$privateHash() => r'9a87ed0765ad8448525fa1290b34760c79e7402b';
+String _$privateHash() => r'4f7b825ffa8a674f01dc8453cb480060a6a7bf5f';
 
 /// See also [_private].
 @ProviderFor(_private)
@@ -281,6 +284,7 @@ final _privateProvider = AutoDisposeProvider<String>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _PrivateRef = AutoDisposeProviderRef<String>;
 String _$publicClassHash() => r'c27eae39f455b986e570abb84f1471de7445ef3b';
 
@@ -518,6 +522,7 @@ class FamilyClassProvider
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin FamilyClassRef on AutoDisposeNotifierProviderRef<String> {
   /// The parameter `first` of this provider.
   int get first;

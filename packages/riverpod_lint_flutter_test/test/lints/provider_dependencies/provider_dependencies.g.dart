@@ -20,6 +20,7 @@ final depProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef DepRef = AutoDisposeProviderRef<int>;
 String _$dep2Hash() => r'97901e825cdcf5b1ac455b0fe8a2111662ce9f13';
 
@@ -35,6 +36,7 @@ final dep2Provider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef Dep2Ref = AutoDisposeProviderRef<int>;
 String _$plainAnnotationHash() =>
     r'6a3d1f1f2e53902af56cd7ce6ceba17358690b70'; ////////////
@@ -52,6 +54,7 @@ final plainAnnotationProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef PlainAnnotationRef = AutoDisposeProviderRef<int>;
 String _$customAnnotationHash() => r'8081bbad2cfbe5bff1ace9aa3be450dd28112488';
 
@@ -68,6 +71,7 @@ final customAnnotationProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef CustomAnnotationRef = AutoDisposeProviderRef<int>;
 String _$customAnnotationWithTrailingCommaHash() =>
     r'709613050eb1db7b4c43cb87855e2c32988141d8';
@@ -86,6 +90,7 @@ final customAnnotationWithTrailingCommaProvider =
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef CustomAnnotationWithTrailingCommaRef = AutoDisposeProviderRef<int>;
 String _$existingDepHash() => r'73e7e1a0d4c2ae07ed03fb248408c3d82fe85554';
 
@@ -101,6 +106,7 @@ final existingDepProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef ExistingDepRef = AutoDisposeProviderRef<int>;
 String _$multipleDepsHash() => r'66de70567c011a294a2c46703dfab8ba7247fd5e';
 
@@ -116,6 +122,7 @@ final multipleDepsProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef MultipleDepsRef = AutoDisposeProviderRef<int>;
 String _$extraDepHash() => r'586c1a0f0ac120f8608c025a6a47fe5282b80320';
 
@@ -136,6 +143,7 @@ final extraDepProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef ExtraDepRef = AutoDisposeProviderRef<int>;
 String _$noDepHash() => r'99022366e7dd3e19464747d1e2f23184691aa134';
 
@@ -154,6 +162,7 @@ final noDepProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef NoDepRef = AutoDisposeProviderRef<int>;
 String _$dependenciesFirstThenKeepAliveHash() =>
     r'b9bd9082ce9a72feea33f9327b26e7b428cadfd3';
@@ -175,6 +184,7 @@ final dependenciesFirstThenKeepAliveProvider =
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef DependenciesFirstThenKeepAliveRef = AutoDisposeProviderRef<int>;
 String _$noDepNoParamHash() => r'ea3e66e28bbfb716adf89cea37a1607c78283e06';
 
@@ -193,6 +203,7 @@ final noDepNoParamProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef NoDepNoParamRef = AutoDisposeProviderRef<int>;
 String _$noDepWithoutCommaHash() => r'a3b07e526b4829ee4ed1848de4ff64c3b05c1a30';
 
@@ -212,6 +223,7 @@ final noDepWithoutCommaProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef NoDepWithoutCommaRef = AutoDisposeProviderRef<int>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

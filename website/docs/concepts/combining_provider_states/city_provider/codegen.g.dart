@@ -8,7 +8,7 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$cityHash() => r'2ccdee096b5d5c1cafa736b3e52b788431b9af38';
+String _$cityHash() => r'6a5023a3aba119f1ecaee6c7db44b3f519e72759';
 
 /// See also [city].
 @ProviderFor(city)
@@ -22,6 +22,7 @@ final cityProvider = AutoDisposeProvider<String>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef CityRef = AutoDisposeProviderRef<String>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -7,7 +7,7 @@ part of 'dependencies2.dart';
 // **************************************************************************
 
 String _$providerWithDependencies2Hash() =>
-    r'90e090d5fa759369dceb59b2d2e219f67ed5f9e0';
+    r'3a6100929120a9cf1ef7f1e0a5e9b8e4d4030ae2';
 
 /// See also [providerWithDependencies2].
 @ProviderFor(providerWithDependencies2)
@@ -33,9 +33,10 @@ final providerWithDependencies2Provider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef ProviderWithDependencies2Ref = AutoDisposeProviderRef<int>;
 String _$familyWithDependencies2Hash() =>
-    r'209b9e3ed4e5fad89572268d161fbe64a6ef0e87';
+    r'd064c06ca5a85a62cbe2b47943e98fc2e858fb03';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -184,6 +185,7 @@ class FamilyWithDependencies2Provider extends AutoDisposeProvider<int> {
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin FamilyWithDependencies2Ref on AutoDisposeProviderRef<int> {
   /// The parameter `id` of this provider.
   int? get id;
@@ -197,7 +199,7 @@ class _FamilyWithDependencies2ProviderElement
   int? get id => (origin as FamilyWithDependencies2Provider).id;
 }
 
-String _$private2Hash() => r'5e0fa14ff40fb444c027ed25150a42362db3ef19';
+String _$private2Hash() => r'e420875c8fbd9bf33eff945f2b7276b585032a38';
 
 /// See also [_private2].
 @ProviderFor(_private2)
@@ -211,8 +213,9 @@ final _private2Provider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _Private2Ref = AutoDisposeProviderRef<int>;
-String _$public2Hash() => r'9767255f0182589fe48b29d217dd488b0a13b9d5';
+String _$public2Hash() => r'20eb4f82e5f25fafc72775e7b86021d70ebb5579';
 
 /// See also [public2].
 @ProviderFor(public2)
@@ -226,6 +229,7 @@ final public2Provider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef Public2Ref = AutoDisposeProviderRef<int>;
 String _$notifierWithDependenciesHash() =>
     r'becc68e5a54b0cc2b8277a6d54b74edef93bfe89';
@@ -401,6 +405,7 @@ class NotifierFamilyWithDependenciesProvider
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin NotifierFamilyWithDependenciesRef on AutoDisposeNotifierProviderRef<int> {
   /// The parameter `id` of this provider.
   int? get id;

@@ -8,7 +8,7 @@ part of 'family_fn.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$exampleHash() => r'99b3ed3d53932bd1354259200ebf08493af9ada2';
+String _$exampleHash() => r'5c55c7f736032d1570f258f5056eb7966c37e8e1';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -156,6 +156,7 @@ class ExampleProvider extends AutoDisposeProvider<String> {
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin ExampleRef on AutoDisposeProviderRef<String> {
   /// The parameter `param1` of this provider.
   int get param1;

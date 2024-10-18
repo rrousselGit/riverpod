@@ -8,7 +8,7 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$streamExampleHash() => r'ca9993b22f6d587b20c041133cacd28d01933074';
+String _$streamExampleHash() => r'5f0e824562e820b85cc0d031a7fcce1d381023a5';
 
 /// See also [streamExample].
 @ProviderFor(streamExample)
@@ -23,6 +23,7 @@ final streamExampleProvider = AutoDisposeStreamProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef StreamExampleRef = AutoDisposeStreamProviderRef<int>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

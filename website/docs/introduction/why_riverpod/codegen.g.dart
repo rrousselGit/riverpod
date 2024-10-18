@@ -8,7 +8,7 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$fetchPackagesHash() => r'eebf7d838a57f493fffebfd2c8d8ab76d3233165';
+String _$fetchPackagesHash() => r'4b2c6ea2cd702ab0f9846ba19c945d2c43161605';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -157,6 +157,7 @@ class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin FetchPackagesRef on AutoDisposeFutureProviderRef<List<Package>> {
   /// The parameter `page` of this provider.
   int get page;

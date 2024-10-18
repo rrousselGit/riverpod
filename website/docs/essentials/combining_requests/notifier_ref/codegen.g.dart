@@ -8,7 +8,7 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$otherHash() => r'b23696171643dfbab23d167ed9b5ab0639e6a86c';
+String _$otherHash() => r'5d27b2b1b1c6bd17ba0844f74ade2088611be371';
 
 /// See also [other].
 @ProviderFor(other)
@@ -22,6 +22,7 @@ final otherProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef OtherRef = AutoDisposeProviderRef<int>;
 String _$exampleHash() => r'893db991b377b8e314e60c429043e5e81f1fd526';
 

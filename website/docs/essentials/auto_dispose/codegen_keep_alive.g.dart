@@ -8,7 +8,7 @@ part of 'codegen_keep_alive.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$exampleHash() => r'78f9426f6cbda80564387a9db8cd02368d890a85';
+String _$exampleHash() => r'd11e74682b7fd8010a0c2815b780a44a15b7a3da';
 
 /// See also [example].
 @ProviderFor(example)
@@ -22,6 +22,7 @@ final exampleProvider = Provider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef ExampleRef = ProviderRef<int>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

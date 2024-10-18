@@ -20,6 +20,7 @@ final integerProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef IntegerRef = AutoDisposeProviderRef<int>;
 String _$stateNotifierHash() => r'2505b564fd3a623976548c715b1623dea507f6d3';
 
@@ -36,6 +37,7 @@ final stateNotifierProvider = AutoDisposeProvider<MyStateNotifier>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef StateNotifierRef = AutoDisposeProviderRef<MyStateNotifier>;
 String _$asyncStateNotifierHash() =>
     r'5c5954eb030f5688abdf881e047c8893c864b1a2';
@@ -54,6 +56,7 @@ final asyncStateNotifierProvider =
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef AsyncStateNotifierRef = AutoDisposeFutureProviderRef<MyStateNotifier>;
 String _$stateNotifierAsyncHash() =>
     r'ce67cf8c6f4bda46835042c17ea01186b5b399a5';
@@ -72,6 +75,7 @@ final stateNotifierAsyncProvider =
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef StateNotifierAsyncRef = AutoDisposeFutureProviderRef<MyStateNotifier>;
 String _$changeNotifierHash() => r'1686043b72e25b3143c5131906924f1393569400';
 
@@ -88,6 +92,7 @@ final changeNotifierProvider = AutoDisposeProvider<MyChangeNotifier>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef ChangeNotifierRef = AutoDisposeProviderRef<MyChangeNotifier>;
 String _$notifierHash() => r'5ad63d9ccd05ab78e7a6ba5c763cacf0b1decb7b';
 
@@ -103,6 +108,7 @@ final notifierProvider = AutoDisposeProvider<MyNotifier>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef NotifierRef = AutoDisposeProviderRef<MyNotifier>;
 String _$autoDisposeNotifierHash() =>
     r'6aecd9dee1e2734c3acf8eab05145418d10656e1';
@@ -121,6 +127,7 @@ final autoDisposeNotifierProvider =
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef AutoDisposeNotifierRef = AutoDisposeProviderRef<MyAutoDisposeNotifier>;
 String _$asyncNotifierHash() => r'8800a97f6bf80a56caf5d968d4b4ab91f7f0a64e';
 
@@ -137,6 +144,7 @@ final asyncNotifierProvider = AutoDisposeProvider<MyAsyncNotifier>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef AsyncNotifierRef = AutoDisposeProviderRef<MyAsyncNotifier>;
 String _$rawNotifierHash() => r'c667d10419c9ce1fdd227e2afd1f3aaf63c3380b';
 
@@ -152,6 +160,7 @@ final rawNotifierProvider = AutoDisposeProvider<Raw<MyChangeNotifier>>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef RawNotifierRef = AutoDisposeProviderRef<Raw<MyChangeNotifier>>;
 String _$rawFutureNotifierHash() => r'ff2744c369ebd96615f19451eae416d7afeef03f';
 
@@ -169,6 +178,7 @@ final rawFutureNotifierProvider =
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef RawFutureNotifierRef
     = AutoDisposeProviderRef<Raw<Future<MyChangeNotifier>>>;
 String _$rawStreamNotifierHash() => r'9a13efb8fbcef6c4388d5a2535b1b0aec6e46a9a';
@@ -187,6 +197,7 @@ final rawStreamNotifierProvider =
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef RawStreamNotifierRef
     = AutoDisposeProviderRef<Raw<Stream<MyChangeNotifier>>>;
 String _$futureRawNotifierHash() => r'87103845bce1f4cae4ad62ae3b7da6ca3539581f';
@@ -205,6 +216,7 @@ final futureRawNotifierProvider =
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef FutureRawNotifierRef
     = AutoDisposeFutureProviderRef<Raw<MyChangeNotifier>>;
 String _$streamRawNotifierHash() => r'1d4abe389b7dfe1381879d8ffb174f6d1d9325e0';
@@ -223,6 +235,7 @@ final streamRawNotifierProvider =
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef StreamRawNotifierRef
     = AutoDisposeStreamProviderRef<Raw<MyChangeNotifier>>;
 String _$stateNotifierClassHash() =>

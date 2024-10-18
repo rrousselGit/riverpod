@@ -8,7 +8,7 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$configsHash() => r'166cbe95e6b49ed7bc78c96041fb14abddbf6911';
+String _$configsHash() => r'6416514dacd408abb24de2bd1404860e6518c564';
 
 /// See also [configs].
 @ProviderFor(configs)
@@ -22,8 +22,9 @@ final configsProvider = AutoDisposeStreamProvider<Configuration>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef ConfigsRef = AutoDisposeStreamProviderRef<Configuration>;
-String _$charactersHash() => r'b1e8e15bbeab60d92fe959d9e1dd4ceba6a31446';
+String _$charactersHash() => r'd2bac558571ceae538d012696be58e2a06e8013f';
 
 /// See also [characters].
 @ProviderFor(characters)
@@ -37,6 +38,7 @@ final charactersProvider = AutoDisposeFutureProvider<List<Character>>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef CharactersRef = AutoDisposeFutureProviderRef<List<Character>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

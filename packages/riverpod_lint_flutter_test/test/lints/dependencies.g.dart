@@ -25,6 +25,7 @@ final unimplementedScopedProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef UnimplementedScopedRef = AutoDisposeProviderRef<int>;
 String _$depHash() => r'578a350a40cda46444ecd9fa3ea2fd7bd0994692';
 
@@ -40,6 +41,7 @@ final depProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef DepRef = AutoDisposeProviderRef<int>;
 String _$generatedScopedHash() => r'f8e5b6926ce13765c83dbb7f8c8458c9c5fe7d69';
 
@@ -56,6 +58,7 @@ final generatedScopedProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef GeneratedScopedRef = AutoDisposeProviderRef<int>;
 String _$generatedRootHash() => r'179253a56503f28bb616c602d8af9ad3b23d438f';
 
@@ -72,6 +75,7 @@ final generatedRootProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef GeneratedRootRef = AutoDisposeProviderRef<int>;
 String _$watchScopedButNoDependenciesHash() =>
     r'e326226fdc19ea7a4430900154c071f5a1a98e40';
@@ -89,6 +93,7 @@ final watchScopedButNoDependenciesProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchScopedButNoDependenciesRef = AutoDisposeProviderRef<int>;
 String _$watchExternalButNoDependenciesHash() =>
     r'2ed9c528aa61dbb5d1cf274d41b527d761c3d522';
@@ -107,6 +112,7 @@ final watchExternalButNoDependenciesProvider =
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchExternalButNoDependenciesRef = AutoDisposeProviderRef<int>;
 String _$watchGeneratedScopedButNoDependenciesHash() =>
     r'2109f8ccbc13632e45f18ccb93bc3059c431eba1';
@@ -125,6 +131,7 @@ final watchGeneratedScopedButNoDependenciesProvider =
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchGeneratedScopedButNoDependenciesRef = AutoDisposeProviderRef<int>;
 String _$watchRootButNoDependenciesHash() =>
     r'cfecc8aeb539e82c46276f9e4dd78c323b4bef12';
@@ -142,6 +149,7 @@ final watchRootButNoDependenciesProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchRootButNoDependenciesRef = AutoDisposeProviderRef<int>;
 String _$watchGeneratedRootButNoDependenciesHash() =>
     r'c839dab901f606c11c78f9c8761931027d3db1d1';
@@ -160,6 +168,7 @@ final watchGeneratedRootButNoDependenciesProvider =
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchGeneratedRootButNoDependenciesRef = AutoDisposeProviderRef<int>;
 String _$watchScopedButEmptyDependenciesHash() =>
     r'a194f52730f635e9c92b3467b33b8c302c93b1ab';
@@ -178,6 +187,7 @@ final watchScopedButEmptyDependenciesProvider =
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchScopedButEmptyDependenciesRef = AutoDisposeProviderRef<int>;
 String _$watchGeneratedScopedButEmptyDependenciesHash() =>
     r'fa4cb564341e7b3f0dd10f70e17381c67859c643';
@@ -196,6 +206,7 @@ final watchGeneratedScopedButEmptyDependenciesProvider =
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchGeneratedScopedButEmptyDependenciesRef
     = AutoDisposeProviderRef<int>;
 String _$watchRootButEmptyDependenciesHash() =>
@@ -214,6 +225,7 @@ final watchRootButEmptyDependenciesProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchRootButEmptyDependenciesRef = AutoDisposeProviderRef<int>;
 String _$watchGeneratedRootButEmptyDependenciesHash() =>
     r'80581ac491e25ae8c6ee7b7f25dff9939f8de37c';
@@ -232,6 +244,7 @@ final watchGeneratedRootButEmptyDependenciesProvider =
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchGeneratedRootButEmptyDependenciesRef = AutoDisposeProviderRef<int>;
 String _$watchScopedButMissingDependenciesHash() =>
     r'c890e4845b1fca73ee02442eb7a203734605173c';
@@ -253,6 +266,7 @@ final watchScopedButMissingDependenciesProvider =
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchScopedButMissingDependenciesRef = AutoDisposeProviderRef<int>;
 String _$watchGeneratedScopedButMissingDependenciesHash() =>
     r'fbbb5f1ea3725a7554dc05073f47a6b9ce5d913d';
@@ -274,6 +288,7 @@ final watchGeneratedScopedButMissingDependenciesProvider =
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchGeneratedScopedButMissingDependenciesRef
     = AutoDisposeProviderRef<int>;
 String _$watchRootButMissingDependenciesHash() =>
@@ -296,6 +311,7 @@ final watchRootButMissingDependenciesProvider =
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchRootButMissingDependenciesRef = AutoDisposeProviderRef<int>;
 String _$watchGeneratedRootButMissingDependenciesHash() =>
     r'10d01aea2b6b0772e98172f410bdbfce85786243';
@@ -317,6 +333,7 @@ final watchGeneratedRootButMissingDependenciesProvider =
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchGeneratedRootButMissingDependenciesRef
     = AutoDisposeProviderRef<int>;
 String _$watchGeneratedScopedAndContainsDependencyHash() =>
@@ -339,6 +356,7 @@ final watchGeneratedScopedAndContainsDependencyProvider =
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchGeneratedScopedAndContainsDependencyRef
     = AutoDisposeProviderRef<int>;
 String _$watchGeneratedRootAndContainsDependencyHash() =>
@@ -361,6 +379,7 @@ final watchGeneratedRootAndContainsDependencyProvider =
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchGeneratedRootAndContainsDependencyRef
     = AutoDisposeProviderRef<int>;
 String _$specifiedDependencyButNeverUsedHash() =>
@@ -385,6 +404,7 @@ final specifiedDependencyButNeverUsedProvider =
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef SpecifiedDependencyButNeverUsedRef = AutoDisposeProviderRef<int>;
 String _$regression2348Hash() => r'6ad005595ee202c8b0188562ed8c4a33d01260e2';
 
@@ -404,6 +424,7 @@ final regression2348Provider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef Regression2348Ref = AutoDisposeProviderRef<int>;
 String _$familyDepHash() => r'ed674a44492b3871b72b4fbc68180ea0839723e5';
 
@@ -547,6 +568,7 @@ class FamilyDepProvider extends AutoDisposeProvider<int> {
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin FamilyDepRef on AutoDisposeProviderRef<int> {
   /// The parameter `p` of this provider.
   int get p;
@@ -682,6 +704,7 @@ class FamilyDep2Provider extends AutoDisposeProvider<int> {
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin FamilyDep2Ref on AutoDisposeProviderRef<int> {
   /// The parameter `p` of this provider.
   int get p;
@@ -709,6 +732,7 @@ final aliasProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef AliasRef = AutoDisposeProviderRef<int>;
 String _$classWatchGeneratedRootButMissingDependenciesHash() =>
     r'e36d7126a86ea9ded6dc66a6f33eabb2724455a9';

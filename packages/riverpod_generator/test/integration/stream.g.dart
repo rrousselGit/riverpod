@@ -6,7 +6,7 @@ part of 'stream.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$publicHash() => r'c5cc0eac434371901cf6ab159a81bba49c58da12';
+String _$publicHash() => r'ed93527425175c4a2475e83a3f44223a2aa604d7';
 
 /// See also [public].
 @ProviderFor(public)
@@ -20,8 +20,9 @@ final publicProvider = AutoDisposeStreamProvider<String>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef PublicRef = AutoDisposeStreamProviderRef<String>;
-String _$privateHash() => r'bbee0c7e27bda81346b5f52c96b23b2e48f83077';
+String _$privateHash() => r'7915ccdd16751e7dc6274bb024d1b273d78dc78b';
 
 /// See also [_private].
 @ProviderFor(_private)
@@ -35,8 +36,9 @@ final _privateProvider = AutoDisposeStreamProvider<String>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _PrivateRef = AutoDisposeStreamProviderRef<String>;
-String _$familyHash() => r'6896fac2f6e3ccd7c38ecaa0d538cbd3577936b2';
+String _$familyHash() => r'ba1df8eab0af0f3f71ae29d23ccb7a491d8e2825';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -217,6 +219,7 @@ class FamilyProvider extends AutoDisposeStreamProvider<String> {
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin FamilyRef on AutoDisposeStreamProviderRef<String> {
   /// The parameter `first` of this provider.
   int get first;
@@ -474,6 +477,7 @@ class FamilyClassProvider
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin FamilyClassRef on AutoDisposeStreamNotifierProviderRef<String> {
   /// The parameter `first` of this provider.
   int get first;

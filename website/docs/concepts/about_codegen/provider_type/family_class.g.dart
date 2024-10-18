@@ -174,6 +174,7 @@ class ExampleProvider extends AutoDisposeNotifierProviderImpl<Example, String> {
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin ExampleRef on AutoDisposeNotifierProviderRef<String> {
   /// The parameter `param1` of this provider.
   int get param1;

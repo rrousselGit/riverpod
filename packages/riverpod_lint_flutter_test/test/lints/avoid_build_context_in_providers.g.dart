@@ -152,6 +152,7 @@ class FnProvider extends AutoDisposeProvider<int> {
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin FnRef on AutoDisposeProviderRef<int> {
   /// The parameter `context1` of this provider.
   BuildContext get context1;
@@ -316,6 +317,7 @@ class MyNotifierProvider
 }
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin MyNotifierRef on AutoDisposeNotifierProviderRef<int> {
   /// The parameter `context1` of this provider.
   BuildContext get context1;

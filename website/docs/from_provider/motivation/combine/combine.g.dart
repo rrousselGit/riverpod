@@ -8,7 +8,7 @@ part of 'combine.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$numberHash() => r'725e25be57b9cc2bd914752f156e26a214596b63';
+String _$numberHash() => r'03ac91d5904c18f04321b140fd263ed6bc85d3c1';
 
 /// See also [number].
 @ProviderFor(number)
@@ -22,8 +22,9 @@ final numberProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef NumberRef = AutoDisposeProviderRef<int>;
-String _$doubledHash() => r'ddc640c876bdbe49fe72fe1632b5ff48687c9279';
+String _$doubledHash() => r'2a7f7fadb89e55d6adcf11aaa21943c66b10df5e';
 
 /// See also [doubled].
 @ProviderFor(doubled)
@@ -37,6 +38,7 @@ final doubledProvider = AutoDisposeProvider<int>.internal(
 );
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef DoubledRef = AutoDisposeProviderRef<int>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
