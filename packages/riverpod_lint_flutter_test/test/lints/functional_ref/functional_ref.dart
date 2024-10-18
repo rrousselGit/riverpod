@@ -1,3 +1,4 @@
+import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'functional_ref.g.dart';
@@ -33,3 +34,6 @@ external int scoped();
 int noRefButArgs({int a = 42}) {
   return 0;
 }
+
+@riverpod
+int valid(Ref ref) => 0;
