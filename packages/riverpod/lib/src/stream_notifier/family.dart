@@ -39,7 +39,10 @@ typedef StreamNotifierFamilyProvider<
 @internal
 class FamilyStreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>,
         T, Arg> extends StreamNotifierProviderBase<NotifierT, T>
-    with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
+    with
+        // ignore: deprecated_member_use_from_same_package
+        AlwaysAliveProviderBase<AsyncValue<T>>,
+        AlwaysAliveAsyncSelector<T> {
   /// {@macro riverpod.streamNotifier}
   FamilyStreamNotifierProviderImpl(
     super._createNotifier, {
@@ -69,10 +72,12 @@ class FamilyStreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>,
   static const autoDispose = AutoDisposeStreamNotifierProviderFamily.new;
 
   @override
+  // ignore: deprecated_member_use_from_same_package
   late final AlwaysAliveRefreshable<NotifierT> notifier =
       _streamNotifier<NotifierT, T>(this);
 
   @override
+  // ignore: deprecated_member_use_from_same_package
   late final AlwaysAliveRefreshable<Future<T>> future = _streamFuture<T>(this);
 
   @override
@@ -91,6 +96,7 @@ class FamilyStreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>,
 /// The [Family] of [StreamNotifierProvider].
 class StreamNotifierProviderFamily<
         NotifierT extends FamilyStreamNotifier<T, Arg>, T, Arg>
+    // ignore: deprecated_member_use_from_same_package
     extends NotifierFamilyBase<StreamNotifierProviderRef<T>, AsyncValue<T>, Arg,
         NotifierT, StreamNotifierFamilyProvider<NotifierT, T, Arg>> {
   /// The [Family] of [StreamNotifierProvider].

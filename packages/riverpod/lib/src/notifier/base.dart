@@ -14,6 +14,7 @@ abstract class BuildlessNotifier<State> extends NotifierBase<State> {
   }
 
   @override
+  // ignore: deprecated_member_use_from_same_package
   NotifierProviderRef<State> get ref => _element;
 }
 
@@ -90,6 +91,7 @@ abstract class Notifier<State> extends BuildlessNotifier<State> {
 }
 
 /// {@macro riverpod.provider_ref_base}
+@Deprecated('will be removed in 3.0.0. Use Ref instead')
 abstract class NotifierProviderRef<T> implements Ref<T> {}
 
 /// {@template riverpod.notifier_provider}
@@ -111,7 +113,10 @@ typedef NotifierProvider<NotifierT extends Notifier<T>, T>
 /// [AutoDisposeNotifierProvider] at the same time.
 @internal
 class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
-    extends NotifierProviderBase<NotifierT, T> with AlwaysAliveProviderBase<T> {
+    extends NotifierProviderBase<NotifierT, T>
+    with
+        // ignore: deprecated_member_use_from_same_package
+        AlwaysAliveProviderBase<T> {
   /// {@macro riverpod.notifier_provider}
   ///
   /// {@macro riverpod.notifier_provider_modifier}
@@ -151,6 +156,7 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
   }
 
   @override
+  // ignore: deprecated_member_use_from_same_package
   late final AlwaysAliveRefreshable<NotifierT> notifier =
       _notifier<NotifierT, T>(this);
 
@@ -180,7 +186,10 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
 
 /// The element of [NotifierProvider].
 class NotifierProviderElement<NotifierT extends NotifierBase<T>, T>
-    extends ProviderElementBase<T> implements NotifierProviderRef<T> {
+    extends ProviderElementBase<T>
+    implements
+        // ignore: deprecated_member_use_from_same_package
+        NotifierProviderRef<T> {
   /// The element of [NotifierProvider].
   @internal
   NotifierProviderElement(NotifierProviderBase<NotifierT, T> super._provider);

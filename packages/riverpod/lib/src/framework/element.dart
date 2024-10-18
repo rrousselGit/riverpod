@@ -22,6 +22,7 @@ abstract class Refreshable<T> implements ProviderListenable<T> {
 }
 
 /// {@macro riverpod.refreshable}
+@Deprecated('Will be removed in 3.0.0. Use Refreshable instead')
 abstract class AlwaysAliveRefreshable<T>
     implements Refreshable<T>, AlwaysAliveProviderListenable<T> {}
 
@@ -77,6 +78,7 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
   bool get hasListeners =>
       (_dependents?.isNotEmpty ?? false) || _providerDependents.isNotEmpty;
 
+  List<KeepAliveLink>? _keepAliveLinks;
   var _dependencies = HashMap<ProviderElementBase<Object?>, Object>();
   HashMap<ProviderElementBase<Object?>, Object>? _previousDependencies;
   List<ProviderSubscription>? _subscriptions;
@@ -263,6 +265,21 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
   // ignore: use_setters_to_change_properties
   void update(ProviderBase<StateT> newProvider) {
     _provider = newProvider;
+  }
+
+  @override
+  KeepAliveLink keepAlive() {
+    final links = _keepAliveLinks ??= [];
+
+    late KeepAliveLink link;
+    link = KeepAliveLink._(() {
+      if (links.remove(link)) {
+        if (links.isEmpty) mayNeedDispose();
+      }
+    });
+    links.add(link);
+
+    return link;
   }
 
   @override

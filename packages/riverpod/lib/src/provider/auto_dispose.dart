@@ -1,6 +1,7 @@
 part of '../provider.dart';
 
 /// {@macro riverpod.provider_ref_base}
+@Deprecated('will be removed in 3.0.0. Use Ref instead')
 abstract class AutoDisposeProviderRef<State> extends ProviderRef<State>
     implements AutoDisposeRef<State> {}
 
@@ -34,6 +35,7 @@ class AutoDisposeProvider<T> extends InternalProvider<T> {
   /// {@macro riverpod.family}
   static const family = AutoDisposeProviderFamily.new;
 
+  // ignore: deprecated_member_use_from_same_package
   final T Function(AutoDisposeProviderRef<T> ref) _createFn;
 
   @override
@@ -46,6 +48,7 @@ class AutoDisposeProvider<T> extends InternalProvider<T> {
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
+    // ignore: deprecated_member_use_from_same_package
     Create<T, AutoDisposeProviderRef<T>> create,
   ) {
     return ProviderOverride(
@@ -65,8 +68,11 @@ class AutoDisposeProvider<T> extends InternalProvider<T> {
 
 /// The element of [AutoDisposeProvider]
 class AutoDisposeProviderElement<T> extends ProviderElement<T>
-    with AutoDisposeProviderElementMixin<T>
-    implements AutoDisposeProviderRef<T> {
+    with
+        AutoDisposeProviderElementMixin<T>
+    implements
+        // ignore: deprecated_member_use_from_same_package
+        AutoDisposeProviderRef<T> {
   /// The [ProviderElementBase] for [Provider]
   @internal
   AutoDisposeProviderElement(AutoDisposeProvider<T> super._provider);
@@ -74,7 +80,12 @@ class AutoDisposeProviderElement<T> extends ProviderElement<T>
 
 /// The [Family] of [AutoDisposeProvider]
 class AutoDisposeProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
-    AutoDisposeProviderRef<R>, R, Arg, R, AutoDisposeProvider<R>> {
+    // ignore: deprecated_member_use_from_same_package
+    AutoDisposeProviderRef<R>,
+    R,
+    Arg,
+    R,
+    AutoDisposeProvider<R>> {
   /// The [Family] of [AutoDisposeProvider]
   AutoDisposeProviderFamily(
     super._createFn, {
@@ -89,6 +100,7 @@ class AutoDisposeProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
+    // ignore: deprecated_member_use_from_same_package
     R Function(AutoDisposeProviderRef<R> ref, Arg arg) create,
   ) {
     return FamilyOverrideImpl<R, Arg, AutoDisposeProvider<R>>(

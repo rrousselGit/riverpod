@@ -368,6 +368,7 @@ class StateProviderBuilder {
   /// ```
   /// {@endtemplate}
   StateProvider<State> call<State>(
+    // ignore: deprecated_member_use_from_same_package
     Create<State, StateProviderRef<State>> create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -605,6 +606,7 @@ class StateProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   StateProviderFamily<State, Arg> call<State, Arg>(
+    // ignore: deprecated_member_use_from_same_package
     FamilyCreate<State, StateProviderRef<State>, Arg> create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -630,6 +632,7 @@ class StateNotifierProviderBuilder {
   /// {@macro riverpod.autoDispose}
   StateNotifierProvider<Notifier, State>
       call<Notifier extends StateNotifier<State>, State>(
+    // ignore: deprecated_member_use_from_same_package
     Create<Notifier, StateNotifierProviderRef<Notifier, State>> create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -660,6 +663,7 @@ class StateNotifierProviderFamilyBuilder {
   /// {@macro riverpod.family}
   StateNotifierProviderFamily<Notifier, State, Arg>
       call<Notifier extends StateNotifier<State>, State, Arg>(
+    // ignore: deprecated_member_use_from_same_package
     FamilyCreate<Notifier, StateNotifierProviderRef<Notifier, State>, Arg>
         create, {
     String? name,
@@ -685,6 +689,7 @@ class ProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   Provider<State> call<State>(
+    // ignore: deprecated_member_use_from_same_package
     Create<State, ProviderRef<State>> create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -714,6 +719,7 @@ class ProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   ProviderFamily<State, Arg> call<State, Arg>(
+    // ignore: deprecated_member_use_from_same_package
     FamilyCreate<State, ProviderRef<State>, Arg> create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -738,6 +744,7 @@ class FutureProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   FutureProvider<State> call<State>(
+    // ignore: deprecated_member_use_from_same_package
     Create<FutureOr<State>, FutureProviderRef<State>> create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -767,6 +774,7 @@ class FutureProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   FutureProviderFamily<State, Arg> call<State, Arg>(
+    // ignore: deprecated_member_use_from_same_package
     FamilyCreate<FutureOr<State>, FutureProviderRef<State>, Arg> create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -791,6 +799,7 @@ class StreamProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   StreamProvider<State> call<State>(
+    // ignore: deprecated_member_use_from_same_package
     Create<Stream<State>, StreamProviderRef<State>> create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -820,6 +829,7 @@ class StreamProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   StreamProviderFamily<State, Arg> call<State, Arg>(
+    // ignore: deprecated_member_use_from_same_package
     FamilyCreate<Stream<State>, StreamProviderRef<State>, Arg> create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -844,6 +854,7 @@ class AutoDisposeStateProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   AutoDisposeStateProvider<State> call<State>(
+    // ignore: deprecated_member_use_from_same_package
     Create<State, AutoDisposeStateProviderRef<State>> create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -868,6 +879,7 @@ class AutoDisposeStateProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   AutoDisposeStateProviderFamily<State, Arg> call<State, Arg>(
+    // ignore: deprecated_member_use_from_same_package
     FamilyCreate<State, AutoDisposeStateProviderRef<State>, Arg> create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -888,6 +900,7 @@ class AutoDisposeStateNotifierProviderBuilder {
   /// {@macro riverpod.autoDispose}
   AutoDisposeStateNotifierProvider<Notifier, State>
       call<Notifier extends StateNotifier<State>, State>(
+    // ignore: deprecated_member_use_from_same_package
     Create<Notifier, AutoDisposeStateNotifierProviderRef<Notifier, State>>
         create, {
     String? name,
@@ -914,6 +927,7 @@ class AutoDisposeStateNotifierProviderFamilyBuilder {
   /// {@macro riverpod.family}
   AutoDisposeStateNotifierProviderFamily<Notifier, State, Arg>
       call<Notifier extends StateNotifier<State>, State, Arg>(
+    // ignore: deprecated_member_use_from_same_package
     FamilyCreate<Notifier, AutoDisposeStateNotifierProviderRef<Notifier, State>,
             Arg>
         create, {
@@ -935,6 +949,7 @@ class AutoDisposeProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   AutoDisposeProvider<State> call<State>(
+    // ignore: deprecated_member_use_from_same_package
     Create<State, AutoDisposeProviderRef<State>> create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -959,6 +974,7 @@ class AutoDisposeProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   AutoDisposeProviderFamily<State, Arg> call<State, Arg>(
+    // ignore: deprecated_member_use_from_same_package
     FamilyCreate<State, AutoDisposeProviderRef<State>, Arg> create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -978,6 +994,7 @@ class AutoDisposeFutureProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   AutoDisposeFutureProvider<State> call<State>(
+    // ignore: deprecated_member_use_from_same_package
     Create<FutureOr<State>, AutoDisposeFutureProviderRef<State>> create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -1002,6 +1019,7 @@ class AutoDisposeFutureProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   AutoDisposeFutureProviderFamily<State, Arg> call<State, Arg>(
+    // ignore: deprecated_member_use_from_same_package
     FamilyCreate<FutureOr<State>, AutoDisposeFutureProviderRef<State>, Arg>
         create, {
     String? name,
@@ -1022,6 +1040,7 @@ class AutoDisposeStreamProviderBuilder {
 
   /// {@macro riverpod.autoDispose}
   AutoDisposeStreamProvider<State> call<State>(
+    // ignore: deprecated_member_use_from_same_package
     Create<Stream<State>, AutoDisposeStreamProviderRef<State>> create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -1046,6 +1065,7 @@ class AutoDisposeStreamProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   AutoDisposeStreamProviderFamily<State, Arg> call<State, Arg>(
+    // ignore: deprecated_member_use_from_same_package
     FamilyCreate<Stream<State>, AutoDisposeStreamProviderRef<State>, Arg>
         create, {
     String? name,

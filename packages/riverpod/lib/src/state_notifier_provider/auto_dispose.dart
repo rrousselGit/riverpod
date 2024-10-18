@@ -1,6 +1,7 @@
 part of '../state_notifier_provider.dart';
 
 /// {@macro riverpod.provider_ref_base}
+@Deprecated('will be removed in 3.0.0. Use Ref instead')
 abstract class AutoDisposeStateNotifierProviderRef<
         NotifierT extends StateNotifier<T>,
         T> extends StateNotifierProviderRef<NotifierT, T>
@@ -38,6 +39,7 @@ class AutoDisposeStateNotifierProvider<NotifierT extends StateNotifier<T>, T>
   static const family = AutoDisposeStateNotifierProviderFamily.new;
 
   final NotifierT Function(
+    // ignore: deprecated_member_use_from_same_package
     AutoDisposeStateNotifierProviderRef<NotifierT, T> ref,
   ) _createFn;
 
@@ -56,6 +58,7 @@ class AutoDisposeStateNotifierProvider<NotifierT extends StateNotifier<T>, T>
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
+    // ignore: deprecated_member_use_from_same_package
     Create<NotifierT, AutoDisposeStateNotifierProviderRef<NotifierT, T>> create,
   ) {
     return ProviderOverride(
@@ -77,8 +80,11 @@ class AutoDisposeStateNotifierProvider<NotifierT extends StateNotifier<T>, T>
 class AutoDisposeStateNotifierProviderElement<
         NotifierT extends StateNotifier<T>,
         T> extends StateNotifierProviderElement<NotifierT, T>
-    with AutoDisposeProviderElementMixin<T>
-    implements AutoDisposeStateNotifierProviderRef<NotifierT, T> {
+    with
+        AutoDisposeProviderElementMixin<T>
+    implements
+        // ignore: deprecated_member_use_from_same_package
+        AutoDisposeStateNotifierProviderRef<NotifierT, T> {
   /// The [ProviderElementBase] for [StateNotifierProvider]
   AutoDisposeStateNotifierProviderElement._(
     AutoDisposeStateNotifierProvider<NotifierT, T> super._provider,
@@ -86,9 +92,9 @@ class AutoDisposeStateNotifierProviderElement<
 }
 
 /// The [Family] of [AutoDisposeStateNotifierProvider].
-class AutoDisposeStateNotifierProviderFamily<NotifierT extends StateNotifier<T>,
-        T, Arg>
+class AutoDisposeStateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T, Arg>
     extends AutoDisposeFamilyBase<
+        // ignore: deprecated_member_use_from_same_package
         AutoDisposeStateNotifierProviderRef<NotifierT, T>,
         T,
         Arg,
@@ -109,6 +115,7 @@ class AutoDisposeStateNotifierProviderFamily<NotifierT extends StateNotifier<T>,
   /// {@macro riverpod.override_with}
   Override overrideWith(
     NotifierT Function(
+      // ignore: deprecated_member_use_from_same_package
       AutoDisposeStateNotifierProviderRef<NotifierT, T> ref,
       Arg arg,
     ) create,

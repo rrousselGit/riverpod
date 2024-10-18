@@ -1,6 +1,7 @@
 part of '../state_notifier_provider.dart';
 
 /// {@macro riverpod.provider_ref_base}
+@Deprecated('will be removed in 3.0.0. Use Ref instead')
 abstract class StateNotifierProviderRef<NotifierT extends StateNotifier<T>, T>
     implements Ref<T> {
   /// The [StateNotifier] currently exposed by this provider.
@@ -75,7 +76,9 @@ abstract class StateNotifierProviderRef<NotifierT extends StateNotifier<T>, T>
 /// {@endtemplate}
 class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
     extends _StateNotifierProviderBase<NotifierT, T>
-    with AlwaysAliveProviderBase<T> {
+    with
+        // ignore: deprecated_member_use_from_same_package
+        AlwaysAliveProviderBase<T> {
   /// {@macro riverpod.statenotifierprovider}
   StateNotifierProvider(
     this._createFn, {
@@ -107,6 +110,7 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
   /// {@macro riverpod.family}
   static const family = StateNotifierProviderFamilyBuilder();
 
+  // ignore: deprecated_member_use_from_same_package
   final NotifierT Function(StateNotifierProviderRef<NotifierT, T> ref)
       _createFn;
 
@@ -121,10 +125,12 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
   }
 
   @override
+  // ignore: deprecated_member_use_from_same_package
   late final AlwaysAliveRefreshable<NotifierT> notifier = _notifier(this);
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
+    // ignore: deprecated_member_use_from_same_package
     Create<NotifierT, StateNotifierProviderRef<NotifierT, T>> create,
   ) {
     return ProviderOverride(
@@ -145,7 +151,9 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
 /// The element of [StateNotifierProvider].
 class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
     extends ProviderElementBase<T>
-    implements StateNotifierProviderRef<NotifierT, T> {
+    implements
+        // ignore: deprecated_member_use_from_same_package
+        StateNotifierProviderRef<NotifierT, T> {
   StateNotifierProviderElement._(
     _StateNotifierProviderBase<NotifierT, T> super._provider,
   );
@@ -207,6 +215,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
 
 /// The [Family] of [StateNotifierProvider].
 class StateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T, Arg>
+    // ignore: deprecated_member_use_from_same_package
     extends FamilyBase<StateNotifierProviderRef<NotifierT, T>, T, Arg,
         NotifierT, StateNotifierProvider<NotifierT, T>> {
   /// The [Family] of [StateNotifierProvider].
@@ -223,6 +232,7 @@ class StateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T, Arg>
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
+    // ignore: deprecated_member_use_from_same_package
     NotifierT Function(StateNotifierProviderRef<NotifierT, T> ref, Arg arg)
         create,
   ) {

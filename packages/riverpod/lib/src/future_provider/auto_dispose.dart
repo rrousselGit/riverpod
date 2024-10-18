@@ -2,6 +2,7 @@ part of '../future_provider.dart';
 
 /// {@macro riverpod.provider_ref_base}
 /// - [FutureProviderRef.state], the value currently exposed by this provider.
+@Deprecated('will be removed in 3.0.0. Use Ref instead')
 abstract class AutoDisposeFutureProviderRef<State>
     extends FutureProviderRef<State>
     implements AutoDisposeRef<AsyncValue<State>> {}
@@ -37,6 +38,7 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
   /// {@macro riverpod.family}
   static const family = AutoDisposeFutureProviderFamily.new;
 
+  // ignore: deprecated_member_use_from_same_package
   final Create<FutureOr<T>, AutoDisposeFutureProviderRef<T>> _createFn;
 
   @override
@@ -53,6 +55,7 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
+    // ignore: deprecated_member_use_from_same_package
     Create<FutureOr<T>, AutoDisposeFutureProviderRef<T>> create,
   ) {
     return ProviderOverride(
@@ -72,8 +75,11 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
 
 /// The [ProviderElementBase] of [AutoDisposeFutureProvider]
 class AutoDisposeFutureProviderElement<T> extends FutureProviderElement<T>
-    with AutoDisposeProviderElementMixin<AsyncValue<T>>
-    implements AutoDisposeFutureProviderRef<T> {
+    with
+        AutoDisposeProviderElementMixin<AsyncValue<T>>
+    implements
+        // ignore: deprecated_member_use_from_same_package
+        AutoDisposeFutureProviderRef<T> {
   /// The [ProviderElementBase] for [FutureProvider]
   @internal
   AutoDisposeFutureProviderElement(
@@ -83,6 +89,7 @@ class AutoDisposeFutureProviderElement<T> extends FutureProviderElement<T>
 
 /// The [Family] of an [AutoDisposeFutureProvider]
 class AutoDisposeFutureProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
+    // ignore: deprecated_member_use_from_same_package
     AutoDisposeFutureProviderRef<R>,
     AsyncValue<R>,
     Arg,
@@ -112,6 +119,7 @@ class AutoDisposeFutureProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
+    // ignore: deprecated_member_use_from_same_package
     FutureOr<R> Function(AutoDisposeFutureProviderRef<R> ref, Arg arg) create,
   ) {
     return FamilyOverrideImpl<AsyncValue<R>, Arg, AutoDisposeFutureProvider<R>>(

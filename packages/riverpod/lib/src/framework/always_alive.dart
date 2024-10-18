@@ -6,6 +6,7 @@ part of '../framework.dart';
 /// both a provider and `provider.select`.
 ///
 /// Do not implement or extend.
+@Deprecated('Will be removed in 3.0.0. Use ProviderListenable instead')
 mixin AlwaysAliveProviderListenable<State> on ProviderListenable<State> {
   @override
   AlwaysAliveProviderListenable<Selected> select<Selected>(
@@ -22,6 +23,7 @@ mixin AlwaysAliveProviderListenable<State> on ProviderListenable<State> {
 ///
 /// This is the default base class for providers, unless a provider was marked
 /// with the `.autoDispose` modifier, like: `Provider.autoDispose(...)`
+@Deprecated('Will be removed in 3.0.0. Use ProviderBase instead')
 mixin AlwaysAliveProviderBase<State> on ProviderBase<State>
     implements
         AlwaysAliveProviderListenable<State>,

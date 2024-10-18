@@ -190,7 +190,9 @@ class _SelectorSubscription<Input, Output>
 
 class _AlwaysAliveProviderSelector<Input, Output>
     extends _ProviderSelector<Input, Output>
-    with AlwaysAliveProviderListenable<Output> {
+    with
+        // ignore: deprecated_member_use_from_same_package
+        AlwaysAliveProviderListenable<Output> {
   /// An internal class for `ProviderBase.select`.
   _AlwaysAliveProviderSelector({
     required super.provider,

@@ -46,14 +46,18 @@ mixin AsyncSelector<Input> on ProviderListenable<AsyncValue<Input>> {
   }
 }
 
+// ignore: deprecated_member_use_from_same_package
 /// Adds [selectAsync] to [AlwaysAliveProviderListenable]
 @internal
 mixin AlwaysAliveAsyncSelector<Input>
+    // ignore: deprecated_member_use_from_same_package
     on AlwaysAliveProviderListenable<AsyncValue<Input>> {
   /// The future that [selectAsync] will query
+  // ignore: deprecated_member_use_from_same_package
   AlwaysAliveRefreshable<Future<Input>> get future;
 
   /// {@macro riverpod.async_select}
+  // ignore: deprecated_member_use_from_same_package
   AlwaysAliveProviderListenable<Future<Output>> selectAsync<Output>(
     Output Function(Input data) selector,
   ) {
@@ -67,7 +71,9 @@ mixin AlwaysAliveAsyncSelector<Input>
 
 class _AlwaysAliveAsyncSelector<Input, Output>
     extends _AsyncSelector<Input, Output>
-    with AlwaysAliveProviderListenable<Future<Output>> {
+    with
+        // ignore: deprecated_member_use_from_same_package
+        AlwaysAliveProviderListenable<Future<Output>> {
   _AlwaysAliveAsyncSelector({
     required super.provider,
     required super.future,
