@@ -14,15 +14,22 @@ class LoadingScreen extends StatelessWidget {
 }
 
 /* SNIPPET START */
-// We'd like to obtain an instance of shared preferences synchronously in a provider
-final countProvider = StateProvider<int>((ref) {
-  final preferences = ref.watch(sharedPreferencesProvider);
-  final currentValue = preferences.getInt('count') ?? 0;
-  ref.listenSelf((prev, curr) {
-    preferences.setInt('count', curr);
-  });
-  return currentValue;
-});
+final countProvider = NotifierProvider<CountNotifier, int>(CountNotifier.new);
+
+class CountNotifier extends Notifier<int> {
+  @override
+  int build() {
+    // We'd like to obtain an instance of shared preferences synchronously in a provider
+    final preferences = ref.watch(sharedPreferencesProvider);
+    final currentValue = preferences.getInt('count') ?? 0;
+    listenSelf((prev, next) {
+      preferences.setInt('count', next);
+    });
+    return currentValue;
+  }
+
+  void increment() => state++;
+}
 
 // We don't have an actual instance of SharedPreferences, and we can't get one except asynchronously
 final sharedPreferencesProvider =
