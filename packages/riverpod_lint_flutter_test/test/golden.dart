@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:test/test.dart';
 import 'package:path/path.dart';
+import 'package:pubspec_parse/pubspec_parse.dart';
 import 'package:custom_lint_core/custom_lint_core.dart';
 import 'package:analyzer_plugin/protocol/protocol_generated.dart';
 import 'package:analyzer/dart/analysis/results.dart';
@@ -23,6 +25,8 @@ File writeToTemporaryFile(String content) {
   return file;
 }
 
+const _cursor = '<>';
+
 class OffsetHelper {
   OffsetHelper._(this._content);
 
@@ -43,7 +47,7 @@ class OffsetHelper {
       throw ArgumentError('String does not contain any cursors: $string');
     }
 
-    final stringWithoutCursors = string.replaceAll('<>', '');
+    final stringWithoutCursors = string.replaceAll(_cursor, '');
 
     final start = _content.indexOf(stringWithoutCursors);
     if (start == -1) {
@@ -67,12 +71,13 @@ class OffsetHelper {
   Future<Iterable<PrioritizedSourceChange>> runAssist(
     RiverpodAssist assist,
     ResolvedUnitResult result,
-    String content,
-  ) async {
-    final cursors = rangesForString(content).toList();
-
+    Iterable<SourceRange> cursorRanges, {
+    Pubspec? pubspec,
+  }) async {
     return Future.wait(
-      cursors.map((range) => assist.testRun(result, range)),
+      cursorRanges.map(
+        (range) => assist.testRun(result, range, pubspec: pubspec),
+      ),
     ).then((value) => value.expand((e) => e));
   }
 
@@ -86,7 +91,52 @@ class OffsetHelper {
           mappedContent.substring(offset);
     }
 
-    print(mappedContent);
+    final lines = LineSplitter.split(mappedContent).toList();
+
+    final codes = [];
+
+    StringBuffer? buffer;
+
+    void openBuffer() {
+      buffer ??= StringBuffer("helper.rangesForString('''\n");
+    }
+
+    void closeBuffer() {
+      if (buffer == null) return;
+
+      buffer!.write("''')");
+      codes.add(buffer.toString());
+      buffer = null;
+    }
+
+    // Print all lines with <> in them and one line before and after.
+    for (final (index, line) in lines.indexed) {
+      if (line.trim().isEmpty) continue;
+
+      final hasCursor = line.contains(_cursor);
+      late final hadCursor = index >= 1 && lines[index - 1].contains(_cursor);
+      late final willHaveCursor =
+          index + 1 < lines.length && lines[index + 1].contains(_cursor);
+
+      if (hasCursor || hadCursor || willHaveCursor) {
+        openBuffer();
+        buffer!.writeln(line);
+      } else {
+        closeBuffer();
+      }
+    }
+
+    if (buffer != null) closeBuffer();
+
+    if (codes.length == 1) {
+      print('  final cursors = ${codes.single};');
+    } else {
+      print('  final cursors = [');
+      for (final code in codes) {
+        print('    ...$code,');
+      }
+      print('  ];');
+    }
   }
 }
 

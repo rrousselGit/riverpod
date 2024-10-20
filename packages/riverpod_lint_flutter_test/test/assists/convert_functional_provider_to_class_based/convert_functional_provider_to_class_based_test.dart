@@ -1,5 +1,4 @@
 import 'package:riverpod_lint/src/assists/functional_to_class_based_provider.dart';
-import 'package:analyzer/source/source_range.dart';
 
 import '../../golden.dart';
 
@@ -12,14 +11,16 @@ void main() {
     (result, helper) async {
       final assist = FunctionalToClassBasedProvider();
 
-      return [
-        ...await assist.testRun(result, const SourceRange(145, 0)),
-        ...await assist.testRun(result, const SourceRange(148, 0)),
-        ...await assist.testRun(result, const SourceRange(156, 0)),
-        ...await assist.testRun(result, const SourceRange(167, 0)),
-        ...await assist.testRun(result, const SourceRange(180, 0)),
-        ...await assist.testRun(result, const SourceRange(224, 0)),
-      ];
+      final cursors = helper.rangesForString('''
+@rive<>rpo<>d
+int ex<>ample(R<>ef ref) =><> 0;
+
+/// Some comment
+@riverpod
+int exampleF<>amily(Ref ref, {required int a, String b = '42'}) {
+''');
+
+      return helper.runAssist(assist, result, cursors);
     },
   );
 }
