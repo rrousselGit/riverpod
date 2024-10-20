@@ -10,7 +10,7 @@ void main() {
     'Verify that @riverpod classes extend the generated typedef',
     'lints/notifier_extends/notifier_extends.diff',
     sourcePath: 'test/lints/notifier_extends/notifier_extends.dart',
-    (result) async {
+    (result, helper) async {
       final lint = NotifierExtends();
       final fix = lint.getFixes().single as DartFix;
 

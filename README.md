@@ -46,7 +46,7 @@ Long story short:
 
   ```dart
   @riverpod
-  Future<String> boredSuggestion(BoredSuggestionRef ref) async {
+  Future<String> boredSuggestion(Ref ref) async {
     final response = await http.get(
       Uri.https('boredapi.com', '/api/activity'),
     );

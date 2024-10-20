@@ -66,6 +66,9 @@ final $providerName = $providerType<${provider.valueTypeDisplayString}>.internal
   allTransitiveDependencies: ${serializeAllTransitiveDependencies(provider.providerElement.annotation, options)},
 );
 
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef $refName = ${providerType}Ref<${provider.valueTypeDisplayString}>;
 ''');
   }

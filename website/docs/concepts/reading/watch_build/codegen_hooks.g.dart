@@ -8,7 +8,7 @@ part of 'codegen_hooks.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$counterHash() => r'9b0db44ecc47057e79891e5ecd92d34b08637679';
+String _$counterHash() => r'784ece48cb20fcfdec1553774ecfbd381d1e081f';
 
 /// See also [counter].
 @ProviderFor(counter)
@@ -21,6 +21,8 @@ final counterProvider = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef CounterRef = AutoDisposeProviderRef<int>;
 String _$todoListHash() => r'77f007cd4f5105330a4c2ab8555ea0d1716945c1';
 
@@ -38,4 +40,4 @@ final todoListProvider =
 
 typedef _$TodoList = AutoDisposeNotifier<List<Todo>>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -1,6 +1,7 @@
 part of '../stream_provider.dart';
 
 /// {@macro riverpod.provider_ref_base}
+@Deprecated('will be removed in 3.0.0. Use Ref instead')
 abstract class AutoDisposeStreamProviderRef<State>
     extends StreamProviderRef<State>
     implements AutoDisposeRef<AsyncValue<State>> {}
@@ -36,6 +37,7 @@ class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
   /// {@macro riverpod.family}
   static const family = AutoDisposeStreamProviderFamily.new;
 
+  // ignore: deprecated_member_use_from_same_package
   final Stream<T> Function(AutoDisposeStreamProviderRef<T> ref) _createFn;
 
   @override
@@ -58,6 +60,7 @@ class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
+    // ignore: deprecated_member_use_from_same_package
     Create<Stream<T>, AutoDisposeStreamProviderRef<T>> create,
   ) {
     return ProviderOverride(
@@ -77,8 +80,11 @@ class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
 
 /// The element of [AutoDisposeStreamProvider].
 class AutoDisposeStreamProviderElement<T> extends StreamProviderElement<T>
-    with AutoDisposeProviderElementMixin<AsyncValue<T>>
-    implements AutoDisposeStreamProviderRef<T> {
+    with
+        AutoDisposeProviderElementMixin<AsyncValue<T>>
+    implements
+        // ignore: deprecated_member_use_from_same_package
+        AutoDisposeStreamProviderRef<T> {
   /// The [ProviderElementBase] for [StreamProvider]
   AutoDisposeStreamProviderElement(
     AutoDisposeStreamProvider<T> super._provider,
@@ -87,6 +93,7 @@ class AutoDisposeStreamProviderElement<T> extends StreamProviderElement<T>
 
 /// The [Family] of [AutoDisposeStreamProvider].
 class AutoDisposeStreamProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
+    // ignore: deprecated_member_use_from_same_package
     AutoDisposeStreamProviderRef<R>,
     AsyncValue<R>,
     Arg,
@@ -106,6 +113,7 @@ class AutoDisposeStreamProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
+    // ignore: deprecated_member_use_from_same_package
     Stream<R> Function(AutoDisposeStreamProviderRef<R> ref, Arg arg) create,
   ) {
     return FamilyOverrideImpl<AsyncValue<R>, Arg, AutoDisposeStreamProvider<R>>(

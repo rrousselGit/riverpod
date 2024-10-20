@@ -3,6 +3,7 @@
 part of '../change_notifier_provider.dart';
 
 /// {@macro riverpod.provider_ref_base}
+@Deprecated('will be removed in 3.0.0, use Ref instead')
 abstract class AutoDisposeChangeNotifierProviderRef<
         NotifierT extends ChangeNotifier?>
     extends ChangeNotifierProviderRef<NotifierT>
@@ -40,16 +41,23 @@ class AutoDisposeChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   /// {@macro riverpod.family}
   static const family = AutoDisposeChangeNotifierProviderFamily.new;
 
-  final NotifierT Function(AutoDisposeChangeNotifierProviderRef<NotifierT> ref)
-      _createFn;
+  final NotifierT Function(
+    // ignore: deprecated_member_use_from_same_package
+    AutoDisposeChangeNotifierProviderRef<NotifierT> ref,
+  ) _createFn;
 
   @override
-  NotifierT _create(AutoDisposeChangeNotifierProviderElement<NotifierT> ref) {
+  NotifierT _create(
+    // ignore: deprecated_member_use_from_same_package
+    AutoDisposeChangeNotifierProviderElement<NotifierT> ref,
+  ) {
     return _createFn(ref);
   }
 
   @override
+  // ignore: deprecated_member_use_from_same_package
   AutoDisposeChangeNotifierProviderElement<NotifierT> createElement() {
+    // ignore: deprecated_member_use_from_same_package
     return AutoDisposeChangeNotifierProviderElement<NotifierT>._(this);
   }
 
@@ -58,6 +66,7 @@ class AutoDisposeChangeNotifierProvider<NotifierT extends ChangeNotifier?>
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
+    // ignore: deprecated_member_use_from_same_package
     Create<NotifierT, AutoDisposeChangeNotifierProviderRef<NotifierT>> create,
   ) {
     return ProviderOverride(
@@ -76,12 +85,14 @@ class AutoDisposeChangeNotifierProvider<NotifierT extends ChangeNotifier?>
 }
 
 /// The element of [AutoDisposeChangeNotifierProvider].
+@Deprecated('will be removed in 3.0.0, use Ref instead')
 class AutoDisposeChangeNotifierProviderElement<
         NotifierT extends ChangeNotifier?>
     extends ChangeNotifierProviderElement<NotifierT>
     with AutoDisposeProviderElementMixin<NotifierT>
     implements AutoDisposeChangeNotifierProviderRef<NotifierT> {
   /// The [ProviderElementBase] for [ChangeNotifier]
+  @Deprecated('will be removed in 3.0.0, use Ref instead')
   AutoDisposeChangeNotifierProviderElement._(
     AutoDisposeChangeNotifierProvider<NotifierT> super._provider,
   ) : super._();
@@ -89,9 +100,9 @@ class AutoDisposeChangeNotifierProviderElement<
 
 // ignore: subtype_of_sealed_class
 /// The [Family] of [AutoDisposeChangeNotifierProvider].
-class AutoDisposeChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?,
-        Arg>
+class AutoDisposeChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
     extends AutoDisposeFamilyBase<
+        // ignore: deprecated_member_use_from_same_package
         AutoDisposeChangeNotifierProviderRef<NotifierT>,
         NotifierT,
         Arg,
@@ -112,6 +123,7 @@ class AutoDisposeChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?,
   /// {@macro riverpod.override_with}
   Override overrideWith(
     NotifierT Function(
+      // ignore: deprecated_member_use_from_same_package
       AutoDisposeChangeNotifierProviderRef<NotifierT> ref,
       Arg arg,
     ) create,

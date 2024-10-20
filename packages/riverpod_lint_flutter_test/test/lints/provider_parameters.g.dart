@@ -6,7 +6,7 @@ part of 'provider_parameters.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$generatorHash() => r'e76b8050c3a272ecef1985e4dc7dfe5df3270f2f';
+String _$generatorHash() => r'd7d1733f8884b6702f363ddb178ae57797d0034f';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -141,6 +141,8 @@ class GeneratorProvider extends Provider<int> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin GeneratorRef on ProviderRef<int> {
   /// The parameter `value` of this provider.
   Object? get value;
@@ -153,4 +155,4 @@ class _GeneratorProviderElement extends ProviderElement<int> with GeneratorRef {
   Object? get value => (origin as GeneratorProvider).value;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

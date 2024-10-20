@@ -2,6 +2,7 @@ part of '../provider.dart';
 
 /// {@macro riverpod.provider_ref_base}
 /// - [state], the value currently exposed by this provider.
+@Deprecated('will be removed in 3.0.0. Use Ref instead')
 abstract class ProviderRef<State> implements Ref<State> {
   /// Obtains the state currently exposed by this provider.
   ///
@@ -17,7 +18,9 @@ abstract class ProviderRef<State> implements Ref<State> {
 /// {@macro riverpod.provider}
 @sealed
 class Provider<State> extends InternalProvider<State>
-    with AlwaysAliveProviderBase<State> {
+    with
+        // ignore: deprecated_member_use_from_same_package
+        AlwaysAliveProviderBase<State> {
   /// {@macro riverpod.provider}
   Provider(
     this._createFn, {
@@ -49,6 +52,7 @@ class Provider<State> extends InternalProvider<State>
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeProviderBuilder();
 
+  // ignore: deprecated_member_use_from_same_package
   final Create<State, ProviderRef<State>> _createFn;
 
   @override
@@ -92,6 +96,7 @@ class Provider<State> extends InternalProvider<State>
   /// ```
   /// {@endtemplate}
   Override overrideWith(
+    // ignore: deprecated_member_use_from_same_package
     Create<State, ProviderRef<State>> create,
   ) {
     return ProviderOverride(
@@ -320,7 +325,9 @@ class Provider<State> extends InternalProvider<State>
 /// - [Provider.family], to allow providers to create a value from external parameters.
 /// {@endtemplate}
 class ProviderElement<State> extends ProviderElementBase<State>
-    implements ProviderRef<State> {
+    implements
+        // ignore: deprecated_member_use_from_same_package
+        ProviderRef<State> {
   /// A [ProviderElementBase] for [Provider]
   @internal
   ProviderElement(super._provider);
@@ -346,6 +353,7 @@ class ProviderElement<State> extends ProviderElementBase<State>
 
 /// The [Family] of [Provider]
 class ProviderFamily<R, Arg>
+    // ignore: deprecated_member_use_from_same_package
     extends FamilyBase<ProviderRef<R>, R, Arg, R, Provider<R>> {
   /// The [Family] of [ProviderFamily]
   ProviderFamily(
@@ -371,6 +379,7 @@ class ProviderFamily<R, Arg>
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
+    // ignore: deprecated_member_use_from_same_package
     R Function(ProviderRef<R> ref, Arg arg) create,
   ) {
     return FamilyOverrideImpl<R, Arg, Provider<R>>(

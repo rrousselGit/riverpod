@@ -6,7 +6,7 @@ part of 'hash1.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$simpleHash() => r'ff9f7451526aef5b3af6646814631a502ad76a5f';
+String _$simpleHash() => r'f916b37e39d654e9acfc9c2bd7a244902197b306';
 
 /// See also [simple].
 @ProviderFor(simple)
@@ -19,8 +19,10 @@ final simpleProvider = AutoDisposeProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef SimpleRef = AutoDisposeProviderRef<String>;
-String _$simple2Hash() => r'06327442776394c5c9cbb33b048d7a42e709e7fd';
+String _$simple2Hash() => r'a60a8496fc391f5adf7ad45a12d0723f14f3127c';
 
 /// See also [simple2].
 @ProviderFor(simple2)
@@ -33,6 +35,8 @@ final simple2Provider = AutoDisposeProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef Simple2Ref = AutoDisposeProviderRef<String>;
 String _$simpleClassHash() => r'958123cd6179c5b88da040cfeb71eb3061765277';
 
@@ -50,4 +54,4 @@ final simpleClassProvider =
 
 typedef _$SimpleClass = AutoDisposeNotifier<String>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

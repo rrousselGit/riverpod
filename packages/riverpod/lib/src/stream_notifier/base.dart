@@ -16,6 +16,7 @@ abstract class BuildlessStreamNotifier<State> extends AsyncNotifierBase<State> {
   }
 
   @override
+  // ignore: deprecated_member_use_from_same_package
   StreamNotifierProviderRef<State> get ref => _element;
 }
 
@@ -45,6 +46,7 @@ abstract class StreamNotifier<State> extends BuildlessStreamNotifier<State> {
 }
 
 /// {@macro riverpod.provider_ref_base}
+@Deprecated('will be removed in 3.0.0. Use Ref instead')
 abstract class StreamNotifierProviderRef<T> implements Ref<AsyncValue<T>> {}
 
 /// {@macro riverpod.streamNotifier}
@@ -60,7 +62,10 @@ typedef StreamNotifierProvider<NotifierT extends StreamNotifier<T>, T>
 @internal
 class StreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
     extends StreamNotifierProviderBase<NotifierT, T>
-    with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
+    with
+        // ignore: deprecated_member_use_from_same_package
+        AlwaysAliveProviderBase<AsyncValue<T>>,
+        AlwaysAliveAsyncSelector<T> {
   /// {@macro riverpod.streamNotifier}
   StreamNotifierProviderImpl(
     super._createNotifier, {
@@ -93,10 +98,12 @@ class StreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
   static const family = StreamNotifierProviderFamilyBuilder();
 
   @override
+  // ignore: deprecated_member_use_from_same_package
   late final AlwaysAliveRefreshable<NotifierT> notifier =
       _streamNotifier<NotifierT, T>(this);
 
   @override
+  // ignore: deprecated_member_use_from_same_package
   late final AlwaysAliveRefreshable<Future<T>> future = _streamFuture<T>(this);
 
   @override
@@ -132,7 +139,9 @@ class StreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
 /// The element of [StreamNotifierProvider].
 class StreamNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     extends AsyncNotifierProviderElementBase<NotifierT, T>
-    implements StreamNotifierProviderRef<T> {
+    implements
+        // ignore: deprecated_member_use_from_same_package
+        StreamNotifierProviderRef<T> {
   /// The element of [StreamNotifierProvider].
   @internal
   StreamNotifierProviderElement(

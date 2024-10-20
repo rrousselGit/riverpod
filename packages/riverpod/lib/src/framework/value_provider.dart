@@ -6,7 +6,9 @@ part of '../framework.dart';
 @sealed
 @internal
 class ValueProvider<State> extends ProviderBase<State>
-    with AlwaysAliveProviderBase<State> {
+    with
+        // ignore: deprecated_member_use_from_same_package
+        AlwaysAliveProviderBase<State> {
   /// Creates a [ValueProvider].
   ValueProvider(this._value)
       : super(

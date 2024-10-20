@@ -8,7 +8,7 @@ part of 'async_fn_stream.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$exampleHash() => r'8a2b19776fb9bbb1631f898bd6446b57b102dd9d';
+String _$exampleHash() => r'f7f90ac5fbf939c0259a549b8e01a559b0d95ff1';
 
 /// See also [example].
 @ProviderFor(example)
@@ -21,6 +21,8 @@ final exampleProvider = AutoDisposeStreamProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef ExampleRef = AutoDisposeStreamProviderRef<String>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

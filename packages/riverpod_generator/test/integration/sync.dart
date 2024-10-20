@@ -1,14 +1,15 @@
+import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'sync.g.dart';
 
 @riverpod
-Raw<Future<String>> rawFuture(RawFutureRef ref) async {
+Raw<Future<String>> rawFuture(Ref ref) async {
   return 'Hello world';
 }
 
 @riverpod
-Raw<Stream<String>> rawStream(RawStreamRef ref) async* {
+Raw<Stream<String>> rawStream(Ref ref) async* {
   yield 'Hello world';
 }
 
@@ -29,12 +30,12 @@ class RawStreamClass extends _$RawStreamClass {
 }
 
 @riverpod
-Raw<Future<String>> rawFamilyFuture(RawFamilyFutureRef ref, int id) async {
+Raw<Future<String>> rawFamilyFuture(Ref ref, int id) async {
   return 'Hello world';
 }
 
 @riverpod
-Raw<Stream<String>> rawFamilyStream(RawFamilyStreamRef ref, int id) async* {
+Raw<Stream<String>> rawFamilyStream(Ref ref, int id) async* {
   yield 'Hello world';
 }
 
@@ -56,19 +57,19 @@ class RawFamilyStreamClass extends _$RawFamilyStreamClass {
 
 /// This is some documentation
 @riverpod
-String public(PublicRef ref) {
+String public(Ref ref) {
   return 'Hello world';
 }
 
 @riverpod
-String supports$inNames(Supports$inNamesRef ref) {
+String supports$inNames(Ref ref) {
   return 'Hello world';
 }
 
 /// This is some documentation
 @riverpod
 String family(
-  FamilyRef ref,
+  Ref ref,
   int first, {
   String? second,
   required double third,
@@ -81,7 +82,7 @@ String family(
 final privateProvider = _privateProvider;
 
 @riverpod
-String _private(_PrivateRef ref) {
+String _private(Ref ref) {
   return 'Hello world';
 }
 
@@ -136,7 +137,7 @@ class Supports$InClassName extends _$Supports$InClassName {
 }
 
 @riverpod
-String generated(GeneratedRef ref) {
+String generated(Ref ref) {
   return 'Just a simple normal generated provider';
 }
 

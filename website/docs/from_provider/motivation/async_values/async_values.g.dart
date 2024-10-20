@@ -8,7 +8,7 @@ part of 'async_values.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$itemsApiHash() => r'b32ccb7b85305e361d8ed752cbe11d9524c96190';
+String _$itemsApiHash() => r'fa5a8f7e93ac048d9bd5dfc1744749995cf154af';
 
 /// See also [itemsApi].
 @ProviderFor(itemsApi)
@@ -21,8 +21,10 @@ final itemsApiProvider = AutoDisposeFutureProvider<List<Item>>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef ItemsApiRef = AutoDisposeFutureProviderRef<List<Item>>;
-String _$evenItemsHash() => r'55ae98f9b6108203dfc4a139f1ade9fbd8ba8ddd';
+String _$evenItemsHash() => r'22297e33c5f55ff99fb49747c203be595a28fabf';
 
 /// See also [evenItems].
 @ProviderFor(evenItems)
@@ -35,6 +37,8 @@ final evenItemsProvider = AutoDisposeProvider<List<Item>>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef EvenItemsRef = AutoDisposeProviderRef<List<Item>>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

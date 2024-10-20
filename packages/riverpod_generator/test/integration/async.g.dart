@@ -6,7 +6,7 @@ part of 'async.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$publicHash() => r'9d99b79c013da13926d4ad89c72ebca4fc1cc257';
+String _$publicHash() => r'19bceccf795e4c3a26ad1e613fd6f41aad949e2b';
 
 /// See also [public].
 @ProviderFor(public)
@@ -19,8 +19,10 @@ final publicProvider = AutoDisposeFutureProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef PublicRef = AutoDisposeFutureProviderRef<String>;
-String _$privateHash() => r'bc0469a9315de114a0ccd82c7db4980844d0009f';
+String _$privateHash() => r'7f0d1ff55a21e520b8471bbabc4649b5336221d4';
 
 /// See also [_private].
 @ProviderFor(_private)
@@ -33,8 +35,10 @@ final _privateProvider = AutoDisposeFutureProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _PrivateRef = AutoDisposeFutureProviderRef<String>;
-String _$familyOrHash() => r'1c3217e296b0ce52c07c18769d1fffb95850f482';
+String _$familyOrHash() => r'97cce80a626e228202fa30b87c07ae8319b48023';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -169,6 +173,8 @@ class FamilyOrProvider extends AutoDisposeFutureProvider<String> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin FamilyOrRef on AutoDisposeFutureProviderRef<String> {
   /// The parameter `first` of this provider.
   int get first;
@@ -182,7 +188,7 @@ class _FamilyOrProviderElement extends AutoDisposeFutureProviderElement<String>
   int get first => (origin as FamilyOrProvider).first;
 }
 
-String _$familyHash() => r'eb6fad35a94d4238b621c2100253ee2c700bee77';
+String _$familyHash() => r'1da6c928ee85a03729a1c147f33e018521bb9c89';
 
 /// See also [family].
 @ProviderFor(family)
@@ -341,6 +347,8 @@ class FamilyProvider extends AutoDisposeFutureProvider<String> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin FamilyRef on AutoDisposeFutureProviderRef<String> {
   /// The parameter `first` of this provider.
   int get first;
@@ -534,6 +542,8 @@ class FamilyOrClassProvider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin FamilyOrClassRef on AutoDisposeAsyncNotifierProviderRef<String> {
   /// The parameter `first` of this provider.
   int get first;
@@ -739,6 +749,8 @@ class FamilyClassProvider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin FamilyClassRef on AutoDisposeAsyncNotifierProviderRef<String> {
   /// The parameter `first` of this provider.
   int get first;
@@ -773,4 +785,4 @@ class _FamilyClassProviderElement
   List<String>? get fifth => (origin as FamilyClassProvider).fifth;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

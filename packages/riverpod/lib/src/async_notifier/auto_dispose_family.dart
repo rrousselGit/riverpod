@@ -85,6 +85,7 @@ class AutoDisposeFamilyAsyncNotifierProviderImpl<
 class AutoDisposeAsyncNotifierProviderFamily<
         NotifierT extends AutoDisposeFamilyAsyncNotifier<T, Arg>, T, Arg>
     extends AutoDisposeNotifierFamilyBase<
+        // ignore: deprecated_member_use_from_same_package
         AutoDisposeAsyncNotifierProviderRef<T>,
         AsyncValue<T>,
         Arg,

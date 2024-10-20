@@ -6,7 +6,7 @@ part of 'sync.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$rawFutureHash() => r'5203a56065b768023770326281618e3229ccb530';
+String _$rawFutureHash() => r'9d397f4c0a578a2741610f9ca6f17438ee8e5a34';
 
 /// See also [rawFuture].
 @ProviderFor(rawFuture)
@@ -19,8 +19,10 @@ final rawFutureProvider = AutoDisposeProvider<Raw<Future<String>>>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef RawFutureRef = AutoDisposeProviderRef<Raw<Future<String>>>;
-String _$rawStreamHash() => r'2b764189753a8b74f47ba557a79416f00ef5cebd';
+String _$rawStreamHash() => r'c7d6cd22f1f325827c866c3ec757d08315fd9858';
 
 /// See also [rawStream].
 @ProviderFor(rawStream)
@@ -33,8 +35,10 @@ final rawStreamProvider = AutoDisposeProvider<Raw<Stream<String>>>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef RawStreamRef = AutoDisposeProviderRef<Raw<Stream<String>>>;
-String _$rawFamilyFutureHash() => r'485f59512081852e51279658facc015309743864';
+String _$rawFamilyFutureHash() => r'0ac70d7a2133691f1a9a38cedaeeb6b3bc667ade';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -170,6 +174,8 @@ class RawFamilyFutureProvider extends AutoDisposeProvider<Raw<Future<String>>> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin RawFamilyFutureRef on AutoDisposeProviderRef<Raw<Future<String>>> {
   /// The parameter `id` of this provider.
   int get id;
@@ -184,7 +190,7 @@ class _RawFamilyFutureProviderElement
   int get id => (origin as RawFamilyFutureProvider).id;
 }
 
-String _$rawFamilyStreamHash() => r'e778e5cfcb8ab381e2412f5c73213aaa03b93012';
+String _$rawFamilyStreamHash() => r'6eacfa3a3576d884099c08c298751a3d395271be';
 
 /// See also [rawFamilyStream].
 @ProviderFor(rawFamilyStream)
@@ -299,6 +305,8 @@ class RawFamilyStreamProvider extends AutoDisposeProvider<Raw<Stream<String>>> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin RawFamilyStreamRef on AutoDisposeProviderRef<Raw<Stream<String>>> {
   /// The parameter `id` of this provider.
   int get id;
@@ -313,7 +321,7 @@ class _RawFamilyStreamProviderElement
   int get id => (origin as RawFamilyStreamProvider).id;
 }
 
-String _$publicHash() => r'138be35943899793ab085e711fe3f3d22696a3ba';
+String _$publicHash() => r'94bee36125844f9fe521363bb228632b9f3bfbc7';
 
 /// This is some documentation
 ///
@@ -328,8 +336,10 @@ final publicProvider = AutoDisposeProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef PublicRef = AutoDisposeProviderRef<String>;
-String _$supports$inNamesHash() => r'cbf929802fcbd0aa949ad72743d096fb3ef5f28f';
+String _$supports$inNamesHash() => r'8da1f9329f302ce75e38d03c96595de3260b4d2d';
 
 /// See also [supports$inNames].
 @ProviderFor(supports$inNames)
@@ -343,8 +353,10 @@ final supports$inNamesProvider = AutoDisposeProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef Supports$inNamesRef = AutoDisposeProviderRef<String>;
-String _$familyHash() => r'14d1ee238ca608d547630d0e222ef4c5866e9e61';
+String _$familyHash() => r'f58149448f80f10ec054f2f8a6f37bae61e38f49';
 
 /// This is some documentation
 ///
@@ -515,6 +527,8 @@ class FamilyProvider extends AutoDisposeProvider<String> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin FamilyRef on AutoDisposeProviderRef<String> {
   /// The parameter `first` of this provider.
   int get first;
@@ -548,7 +562,7 @@ class _FamilyProviderElement extends AutoDisposeProviderElement<String>
   List<String>? get fifth => (origin as FamilyProvider).fifth;
 }
 
-String _$privateHash() => r'519561bc7e88e394d7f75ca2102a5c0acc832c66';
+String _$privateHash() => r'834affaed42662bf46ce7f6203ac2495e1e8974b';
 
 /// See also [_private].
 @ProviderFor(_private)
@@ -561,8 +575,10 @@ final _privateProvider = AutoDisposeProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef _PrivateRef = AutoDisposeProviderRef<String>;
-String _$generatedHash() => r'fecbc1d5d9a05fc996b452a57fd1975ff368af91';
+String _$generatedHash() => r'24bfb5df4dc529258ab568372e90a1cbfc2d8c24';
 
 /// See also [generated].
 @ProviderFor(generated)
@@ -575,6 +591,8 @@ final generatedProvider = AutoDisposeProvider<String>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef GeneratedRef = AutoDisposeProviderRef<String>;
 String _$rawFutureClassHash() => r'bf66f1cdbd99118b8845d206e6a2611b3101f45c';
 
@@ -739,6 +757,8 @@ class RawFamilyFutureClassProvider extends AutoDisposeNotifierProviderImpl<
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin RawFamilyFutureClassRef
     on AutoDisposeNotifierProviderRef<Raw<Future<String>>> {
   /// The parameter `id` of this provider.
@@ -885,6 +905,8 @@ class RawFamilyStreamClassProvider extends AutoDisposeNotifierProviderImpl<
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin RawFamilyStreamClassRef
     on AutoDisposeNotifierProviderRef<Raw<Stream<String>>> {
   /// The parameter `id` of this provider.
@@ -1135,6 +1157,8 @@ class FamilyClassProvider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin FamilyClassRef on AutoDisposeNotifierProviderRef<String> {
   /// The parameter `first` of this provider.
   int get first;
@@ -1187,4 +1211,4 @@ final supports$InClassNameProvider =
 
 typedef _$Supports$InClassName = AutoDisposeNotifier<String>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -1,5 +1,6 @@
 // ignore_for_file: unused_field
 
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'another.dart' as import_alias;
 
@@ -9,49 +10,49 @@ part 'dependencies.g.dart';
 external int unimplementedScoped();
 
 @Riverpod(dependencies: [])
-int dep(DepRef ref) => 0;
+int dep(Ref ref) => 0;
 
 final scoped = Provider((ref) => 0, dependencies: []);
 
 @Riverpod(dependencies: [])
-int generatedScoped(GeneratedScopedRef ref) => 0;
+int generatedScoped(Ref ref) => 0;
 
 final root = Provider((ref) => 0);
 
 @riverpod
-int generatedRoot(GeneratedRootRef ref) => 0;
+int generatedRoot(Ref ref) => 0;
 
 // dep no "dependencies"
 
 @riverpod
-int watchScopedButNoDependencies(WatchScopedButNoDependenciesRef ref) {
+int watchScopedButNoDependencies(Ref ref) {
   // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(scoped);
 }
 
 // expect_lint: provider_dependencies
 @riverpod
-int watchExternalButNoDependencies(WatchExternalButNoDependenciesRef ref) {
+int watchExternalButNoDependencies(Ref ref) {
   return ref.watch(unimplementedScopedProvider);
 }
 
 // expect_lint: provider_dependencies
 @riverpod
 int watchGeneratedScopedButNoDependencies(
-  WatchGeneratedScopedButNoDependenciesRef ref,
+  Ref ref,
 ) {
   return ref.watch(generatedScopedProvider);
 }
 
 @riverpod
-int watchRootButNoDependencies(WatchRootButNoDependenciesRef ref) {
+int watchRootButNoDependencies(Ref ref) {
   // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(root);
 }
 
 @riverpod
 int watchGeneratedRootButNoDependencies(
-  WatchGeneratedRootButNoDependenciesRef ref,
+  Ref ref,
 ) {
   return ref.watch(generatedRootProvider);
 }
@@ -59,7 +60,7 @@ int watchGeneratedRootButNoDependencies(
 // Check "dependencies" specified but missing dependency
 
 @Riverpod(dependencies: [])
-int watchScopedButEmptyDependencies(WatchScopedButEmptyDependenciesRef ref) {
+int watchScopedButEmptyDependencies(Ref ref) {
   // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(scoped);
 }
@@ -67,20 +68,20 @@ int watchScopedButEmptyDependencies(WatchScopedButEmptyDependenciesRef ref) {
 // expect_lint: provider_dependencies
 @Riverpod(dependencies: [])
 int watchGeneratedScopedButEmptyDependencies(
-  WatchGeneratedScopedButEmptyDependenciesRef ref,
+  Ref ref,
 ) {
   return ref.watch(generatedScopedProvider);
 }
 
 @Riverpod(dependencies: [])
-int watchRootButEmptyDependencies(WatchRootButEmptyDependenciesRef ref) {
+int watchRootButEmptyDependencies(Ref ref) {
   // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(root);
 }
 
 @Riverpod(dependencies: [])
 int watchGeneratedRootButEmptyDependencies(
-  WatchGeneratedRootButEmptyDependenciesRef ref,
+  Ref ref,
 ) {
   return ref.watch(generatedRootProvider);
 }
@@ -89,7 +90,7 @@ int watchGeneratedRootButEmptyDependencies(
 
 @Riverpod(dependencies: [dep])
 int watchScopedButMissingDependencies(
-  WatchScopedButMissingDependenciesRef ref,
+  Ref ref,
 ) {
   ref.watch(depProvider);
   // expect_lint: avoid_manual_providers_as_generated_provider_dependency
@@ -99,14 +100,14 @@ int watchScopedButMissingDependencies(
 // expect_lint: provider_dependencies
 @Riverpod(dependencies: [dep])
 int watchGeneratedScopedButMissingDependencies(
-  WatchGeneratedScopedButMissingDependenciesRef ref,
+  Ref ref,
 ) {
   ref.watch(depProvider);
   return ref.watch(generatedScopedProvider);
 }
 
 @Riverpod(dependencies: [dep])
-int watchRootButMissingDependencies(WatchRootButMissingDependenciesRef ref) {
+int watchRootButMissingDependencies(Ref ref) {
   ref.watch(depProvider);
   // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(root);
@@ -114,7 +115,7 @@ int watchRootButMissingDependencies(WatchRootButMissingDependenciesRef ref) {
 
 @Riverpod(dependencies: [dep])
 int watchGeneratedRootButMissingDependencies(
-  WatchGeneratedRootButMissingDependenciesRef ref,
+  Ref ref,
 ) {
   ref.watch(depProvider);
   return ref.watch(generatedRootProvider);
@@ -124,7 +125,7 @@ int watchGeneratedRootButMissingDependencies(
 
 @Riverpod(dependencies: [generatedScoped])
 int watchGeneratedScopedAndContainsDependency(
-  WatchGeneratedScopedAndContainsDependencyRef ref,
+  Ref ref,
 ) {
   return ref.watch(generatedScopedProvider);
 }
@@ -135,7 +136,7 @@ int watchGeneratedScopedAndContainsDependency(
   generatedRoot,
 ])
 int watchGeneratedRootAndContainsDependency(
-  WatchGeneratedRootAndContainsDependencyRef ref,
+  Ref ref,
 ) {
   return ref.watch(generatedRootProvider);
 }
@@ -147,7 +148,7 @@ int watchGeneratedRootAndContainsDependency(
   // expect_lint: provider_dependencies
   generatedRoot,
 ])
-int specifiedDependencyButNeverUsed(SpecifiedDependencyButNeverUsedRef ref) {
+int specifiedDependencyButNeverUsed(Ref ref) {
   ref.watch(depProvider);
   return 0;
 }
@@ -174,7 +175,7 @@ class ClassWatchGeneratedScopedButMissingDependencies
 }
 
 @Riverpod(dependencies: [generatedScoped])
-int regression2348(Regression2348Ref ref) {
+int regression2348(Ref ref) {
   ref..watch(generatedScopedProvider);
   return 0;
 }
@@ -191,20 +192,20 @@ class Regression2417 extends _$Regression2417 {
 
 // Regression for https://github.com/rrousselGit/riverpod/issues/2909
 @Riverpod(dependencies: [dep])
-int familyDep(FamilyDepRef ref, int p) {
+int familyDep(Ref ref, int p) {
   final test = ref.watch(depProvider);
   return test * p;
 }
 
 @Riverpod(dependencies: [familyDep])
-int familyDep2(FamilyDep2Ref ref, int p) {
+int familyDep2(Ref ref, int p) {
   final test = ref.watch(familyDepProvider(0));
   return test * p;
 }
 
 // Regression test for https://github.com/rrousselGit/riverpod/issues/2935
 @riverpod
-int alias(AliasRef ref) {
+int alias(Ref ref) {
   // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   ref.watch(import_alias.aProvider);
   ref.watch(import_alias.bProvider);

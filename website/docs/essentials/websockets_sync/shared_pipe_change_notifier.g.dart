@@ -8,7 +8,7 @@ part of 'shared_pipe_change_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$myListenableHash() => r'7096094cd24ed50dbabb9fb9ab64b340176c04bf';
+String _$myListenableHash() => r'291bdd4fa77ef8b268c050be5ecb94d848e32292';
 
 /// See also [myListenable].
 @ProviderFor(myListenable)
@@ -21,8 +21,10 @@ final myListenableProvider = AutoDisposeProvider<ValueNotifier<int>>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef MyListenableRef = AutoDisposeProviderRef<ValueNotifier<int>>;
-String _$anotherListenableHash() => r'38bfe5dbf5f148819b3671ad69d15c8e05264c23';
+String _$anotherListenableHash() => r'd967ed586ddcb57a4dc1cca3c380a299c5affc5d';
 
 /// See also [anotherListenable].
 @ProviderFor(anotherListenable)
@@ -37,6 +39,8 @@ final anotherListenableProvider =
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef AnotherListenableRef = AutoDisposeProviderRef<ValueNotifier<int>>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

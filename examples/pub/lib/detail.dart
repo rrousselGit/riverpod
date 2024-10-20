@@ -23,7 +23,7 @@ extension CancelTokenX on Ref {
 
 @riverpod
 Future<Package> fetchPackageDetails(
-  FetchPackageDetailsRef ref, {
+  Ref ref, {
   required String packageName,
 }) async {
   final cancelToken = ref.cancelToken();
@@ -34,7 +34,7 @@ Future<Package> fetchPackageDetails(
 }
 
 @riverpod
-Future<List<String>> likedPackages(LikedPackagesRef ref) async {
+Future<List<String>> likedPackages(Ref ref) async {
   final cancelToken = ref.cancelToken();
 
   return ref
@@ -43,7 +43,7 @@ Future<List<String>> likedPackages(LikedPackagesRef ref) async {
 }
 
 @riverpod
-PubRepository pubRepository(PubRepositoryRef ref) => PubRepository();
+PubRepository pubRepository(Ref ref) => PubRepository();
 
 /// A provider that fetches the likes count, popularity score and pub points
 /// for a given package.

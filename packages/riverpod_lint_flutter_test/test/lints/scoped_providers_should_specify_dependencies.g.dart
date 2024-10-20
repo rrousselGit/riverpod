@@ -6,7 +6,7 @@ part of 'scoped_providers_should_specify_dependencies.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$scopedHash() => r'bbf25968b1186d2dd63d10545364453712d491cf';
+String _$scopedHash() => r'5a271e9b23e18517694454448b922a6c9d03781e';
 
 /// See also [scoped].
 @ProviderFor(scoped)
@@ -19,6 +19,8 @@ final scopedProvider = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef ScopedRef = AutoDisposeProviderRef<int>;
 String _$unimplementedScopedHash() =>
     r'5f32fc56f4157238612d62ef54038fe92b7cdfe8';
@@ -38,8 +40,10 @@ final unimplementedScopedProvider = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef UnimplementedScopedRef = AutoDisposeProviderRef<int>;
-String _$rootHash() => r'1cd85d73316aad02169ff0f5e7af5cf1423410ff';
+String _$rootHash() => r'dda8bbb46cb4d7c658597669e3be92e2447dcfb0';
 
 /// See also [root].
 @ProviderFor(root)
@@ -52,6 +56,8 @@ final rootProvider = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef RootRef = AutoDisposeProviderRef<int>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

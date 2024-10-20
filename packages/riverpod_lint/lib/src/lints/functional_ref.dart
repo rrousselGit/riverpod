@@ -1,8 +1,11 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
+import 'package:analyzer_plugin/utilities/change_builder/change_builder_dart.dart';
 import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:meta/meta.dart';
 
 import '../riverpod_custom_lint.dart';
 
@@ -57,7 +60,7 @@ class FunctionalRef extends RiverpodLintRule {
   }
 
   @override
-  List<Fix> getFixes() => [FunctionalRefFix()];
+  List<RiverpodFix> getFixes() => [FunctionalRefFix()];
 }
 
 class FunctionalRefFix extends RiverpodFix {
@@ -75,7 +78,6 @@ class FunctionalRefFix extends RiverpodFix {
         return;
       }
 
-      final expectedRefType = refNameFor(declaration);
       final refNode = declaration
           .node.functionExpression.parameters!.parameters.firstOrNull;
       if (refNode == null) {
@@ -86,9 +88,11 @@ class FunctionalRefFix extends RiverpodFix {
         );
 
         changeBuilder.addDartFileEdit((builder) {
+          final ref = builder.importRef();
+
           builder.addSimpleInsertion(
             declaration.node.functionExpression.parameters!.leftParenthesis.end,
-            '$expectedRefType ref',
+            '$ref ref',
           );
         });
         return;
@@ -96,25 +100,76 @@ class FunctionalRefFix extends RiverpodFix {
 
       // No type specified, adding it.
       final changeBuilder = reporter.createChangeBuilder(
-        message: 'Type as $expectedRefType',
+        message: 'Type as Ref',
         priority: 90,
       );
 
       changeBuilder.addDartFileEdit((builder) {
+        final ref = builder.importRef();
+
         if (!refNode.isExplicitlyTyped) {
-          builder.addSimpleInsertion(refNode.name!.offset, '$expectedRefType ');
+          builder.addSimpleInsertion(refNode.name!.offset, '$ref ');
           return;
         }
 
-        refNode as SimpleFormalParameter;
+        final type = typeAnnotationFor(refNode);
         builder.addSimpleReplacement(
           sourceRangeFrom(
-            start: refNode.type!.offset,
+            start: type.offset,
             end: refNode.name!.offset,
           ),
-          '$expectedRefType ',
+          '$ref ',
         );
       });
     });
   }
+}
+
+extension LibraryForNode on AstNode {
+  LibraryElement get library => (root as CompilationUnit).library;
+}
+
+extension ImportFix on DartFileEditBuilder {
+  @useResult
+  String importRef() {
+    return _importWithPrefix('Ref');
+  }
+
+  String _importWithPrefix(String name) {
+    final hooksRiverpodUri =
+        Uri(scheme: 'package', path: 'hooks_riverpod/hooks_riverpod.dart');
+    final flutterRiverpodUri =
+        Uri(scheme: 'package', path: 'flutter_riverpod/flutter_riverpod.dart');
+    final riverpodUri = Uri(scheme: 'package', path: 'riverpod/riverpod.dart');
+
+    if (importsLibrary(hooksRiverpodUri)) {
+      return _buildImport(hooksRiverpodUri, name);
+    }
+
+    if (importsLibrary(flutterRiverpodUri)) {
+      return _buildImport(flutterRiverpodUri, name);
+    }
+
+    return _buildImport(riverpodUri, name);
+  }
+
+  String _buildImport(Uri uri, String name) {
+    final import = importLibraryElement(uri);
+
+    final prefix = import.prefix;
+    if (prefix != null) return '$prefix.$name';
+
+    return name;
+  }
+}
+
+TypeAnnotation typeAnnotationFor(FormalParameter param) {
+  if (param is DefaultFormalParameter) {
+    return typeAnnotationFor(param.parameter);
+  }
+  if (param is SimpleFormalParameter) {
+    return param.type!;
+  }
+
+  throw UnimplementedError('Unknown parameter type: $param');
 }

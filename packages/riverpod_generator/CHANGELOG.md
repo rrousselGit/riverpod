@@ -1,3 +1,17 @@
+## Unreleased 2.6.0
+
+- Deprecated the generated `Ref` subclasses.
+  Instead of:
+  ```dart
+  @riverpod
+  Model foo(FooRef ref) => ..
+  ```
+  Do:
+  ```dart
+  @riverpod
+  Model foo(Ref ref) => ..
+  ```
+
 ## 2.4.4 - 2024-10-12
 
 - `@Riverpod(dependencies: [...])` now respects `build.yaml` options

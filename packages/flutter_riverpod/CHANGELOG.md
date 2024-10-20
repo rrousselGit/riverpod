@@ -1,3 +1,12 @@
+## Unreleased minor
+
+- Deprecated all `Ref` subclasses. Instead, use `Ref` itself.
+- Deprecated `Ref`'s type argument. Use `Ref` without its generic parameter instead.
+- Deprecated any `Ref` member that used `Ref`'s generic (such as `Ref.state` or `Ref.listenSelf`).
+  Instead, use a `Notifier`.
+- Added `Notifier.listenSelf`, as a replacement to `Ref.listenSelf`.
+- `Ref.watch` and other methods now accept auto-dispose providers too.
+
 ## 2.5.3 - 2024-10-12
 
 - Fixed a typo in the documentation (thanks to @ljbkusters)

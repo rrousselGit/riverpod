@@ -24,8 +24,10 @@ final unimplementedScopedProvider = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef UnimplementedScopedRef = AutoDisposeProviderRef<int>;
-String _$depHash() => r'749c4d696d29c72686cabcabd6fa7855f5cbf4db';
+String _$depHash() => r'578a350a40cda46444ecd9fa3ea2fd7bd0994692';
 
 /// See also [dep].
 @ProviderFor(dep)
@@ -38,8 +40,10 @@ final depProvider = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef DepRef = AutoDisposeProviderRef<int>;
-String _$generatedScopedHash() => r'2eefb4cc872ddccfeb862142fd5f7e6d8bd82159';
+String _$generatedScopedHash() => r'f8e5b6926ce13765c83dbb7f8c8458c9c5fe7d69';
 
 /// See also [generatedScoped].
 @ProviderFor(generatedScoped)
@@ -53,8 +57,10 @@ final generatedScopedProvider = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef GeneratedScopedRef = AutoDisposeProviderRef<int>;
-String _$generatedRootHash() => r'080e3393566db0f44add3607e28a5a2980948704';
+String _$generatedRootHash() => r'179253a56503f28bb616c602d8af9ad3b23d438f';
 
 /// See also [generatedRoot].
 @ProviderFor(generatedRoot)
@@ -68,9 +74,11 @@ final generatedRootProvider = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef GeneratedRootRef = AutoDisposeProviderRef<int>;
 String _$watchScopedButNoDependenciesHash() =>
-    r'3ec52c4ab2ea2b3204b7aa049d1756c01c014ff0';
+    r'e326226fdc19ea7a4430900154c071f5a1a98e40';
 
 /// See also [watchScopedButNoDependencies].
 @ProviderFor(watchScopedButNoDependencies)
@@ -84,9 +92,11 @@ final watchScopedButNoDependenciesProvider = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchScopedButNoDependenciesRef = AutoDisposeProviderRef<int>;
 String _$watchExternalButNoDependenciesHash() =>
-    r'bbe1ed12645a261e2030222549308d378f5f368c';
+    r'2ed9c528aa61dbb5d1cf274d41b527d761c3d522';
 
 /// See also [watchExternalButNoDependencies].
 @ProviderFor(watchExternalButNoDependencies)
@@ -101,9 +111,11 @@ final watchExternalButNoDependenciesProvider =
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchExternalButNoDependenciesRef = AutoDisposeProviderRef<int>;
 String _$watchGeneratedScopedButNoDependenciesHash() =>
-    r'2a4aba824078fe2c999260b4138939dee96c4fba';
+    r'2109f8ccbc13632e45f18ccb93bc3059c431eba1';
 
 /// See also [watchGeneratedScopedButNoDependencies].
 @ProviderFor(watchGeneratedScopedButNoDependencies)
@@ -118,9 +130,11 @@ final watchGeneratedScopedButNoDependenciesProvider =
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchGeneratedScopedButNoDependenciesRef = AutoDisposeProviderRef<int>;
 String _$watchRootButNoDependenciesHash() =>
-    r'037187e333a5bd5d11d00147d179640b8a0f18dd';
+    r'cfecc8aeb539e82c46276f9e4dd78c323b4bef12';
 
 /// See also [watchRootButNoDependencies].
 @ProviderFor(watchRootButNoDependencies)
@@ -134,9 +148,11 @@ final watchRootButNoDependenciesProvider = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchRootButNoDependenciesRef = AutoDisposeProviderRef<int>;
 String _$watchGeneratedRootButNoDependenciesHash() =>
-    r'ecf43cc257376d2828638ce937813d2b72b46967';
+    r'c839dab901f606c11c78f9c8761931027d3db1d1';
 
 /// See also [watchGeneratedRootButNoDependencies].
 @ProviderFor(watchGeneratedRootButNoDependencies)
@@ -151,9 +167,11 @@ final watchGeneratedRootButNoDependenciesProvider =
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchGeneratedRootButNoDependenciesRef = AutoDisposeProviderRef<int>;
 String _$watchScopedButEmptyDependenciesHash() =>
-    r'6b7526eb9dfd70c8249c71efffc60d612ca92f16';
+    r'a194f52730f635e9c92b3467b33b8c302c93b1ab';
 
 /// See also [watchScopedButEmptyDependencies].
 @ProviderFor(watchScopedButEmptyDependencies)
@@ -168,9 +186,11 @@ final watchScopedButEmptyDependenciesProvider =
   allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchScopedButEmptyDependenciesRef = AutoDisposeProviderRef<int>;
 String _$watchGeneratedScopedButEmptyDependenciesHash() =>
-    r'5dc6791ab2f661a378de3e8335943a48e8305435';
+    r'fa4cb564341e7b3f0dd10f70e17381c67859c643';
 
 /// See also [watchGeneratedScopedButEmptyDependencies].
 @ProviderFor(watchGeneratedScopedButEmptyDependencies)
@@ -185,10 +205,12 @@ final watchGeneratedScopedButEmptyDependenciesProvider =
   allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchGeneratedScopedButEmptyDependenciesRef
     = AutoDisposeProviderRef<int>;
 String _$watchRootButEmptyDependenciesHash() =>
-    r'c95800f6aec446737168ac8dc3e6edcaeeed3bc0';
+    r'8669a421efcd8caadc0d070f0c88043668610bbb';
 
 /// See also [watchRootButEmptyDependencies].
 @ProviderFor(watchRootButEmptyDependencies)
@@ -202,9 +224,11 @@ final watchRootButEmptyDependenciesProvider = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchRootButEmptyDependenciesRef = AutoDisposeProviderRef<int>;
 String _$watchGeneratedRootButEmptyDependenciesHash() =>
-    r'9fb97c1fa207a18870cd23c682305dcef413a706';
+    r'80581ac491e25ae8c6ee7b7f25dff9939f8de37c';
 
 /// See also [watchGeneratedRootButEmptyDependencies].
 @ProviderFor(watchGeneratedRootButEmptyDependencies)
@@ -219,9 +243,11 @@ final watchGeneratedRootButEmptyDependenciesProvider =
   allTransitiveDependencies: const <ProviderOrFamily>{},
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchGeneratedRootButEmptyDependenciesRef = AutoDisposeProviderRef<int>;
 String _$watchScopedButMissingDependenciesHash() =>
-    r'9bc337d57438161120d179de48443ed4be4c5b65';
+    r'c890e4845b1fca73ee02442eb7a203734605173c';
 
 /// See also [watchScopedButMissingDependencies].
 @ProviderFor(watchScopedButMissingDependencies)
@@ -239,9 +265,11 @@ final watchScopedButMissingDependenciesProvider =
   },
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchScopedButMissingDependenciesRef = AutoDisposeProviderRef<int>;
 String _$watchGeneratedScopedButMissingDependenciesHash() =>
-    r'be4cf146ec2bebf4c92f6acd73e1dee60e689c20';
+    r'fbbb5f1ea3725a7554dc05073f47a6b9ce5d913d';
 
 /// See also [watchGeneratedScopedButMissingDependencies].
 @ProviderFor(watchGeneratedScopedButMissingDependencies)
@@ -259,10 +287,12 @@ final watchGeneratedScopedButMissingDependenciesProvider =
   },
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchGeneratedScopedButMissingDependenciesRef
     = AutoDisposeProviderRef<int>;
 String _$watchRootButMissingDependenciesHash() =>
-    r'aa6ca4efaba18ad3d2132439f1bb26773cceb170';
+    r'cc9c5e6c3a1c34e291a63c429fb031e0cc701499';
 
 /// See also [watchRootButMissingDependencies].
 @ProviderFor(watchRootButMissingDependencies)
@@ -280,9 +310,11 @@ final watchRootButMissingDependenciesProvider =
   },
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchRootButMissingDependenciesRef = AutoDisposeProviderRef<int>;
 String _$watchGeneratedRootButMissingDependenciesHash() =>
-    r'eda2f1b9c3aaf26cd152108104b8bbb71774c906';
+    r'10d01aea2b6b0772e98172f410bdbfce85786243';
 
 /// See also [watchGeneratedRootButMissingDependencies].
 @ProviderFor(watchGeneratedRootButMissingDependencies)
@@ -300,10 +332,12 @@ final watchGeneratedRootButMissingDependenciesProvider =
   },
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchGeneratedRootButMissingDependenciesRef
     = AutoDisposeProviderRef<int>;
 String _$watchGeneratedScopedAndContainsDependencyHash() =>
-    r'320592737e763091c1229a79ae07fe961e7aab72';
+    r'948e75e097500b33ee2fdbd3dc9fdecafa5f3d10';
 
 /// See also [watchGeneratedScopedAndContainsDependency].
 @ProviderFor(watchGeneratedScopedAndContainsDependency)
@@ -321,10 +355,12 @@ final watchGeneratedScopedAndContainsDependencyProvider =
   },
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchGeneratedScopedAndContainsDependencyRef
     = AutoDisposeProviderRef<int>;
 String _$watchGeneratedRootAndContainsDependencyHash() =>
-    r'5bb8cc73e375ce8c5dbd03d5ca3c16fb2d5b199f';
+    r'780392b647f1606186ee0f70c81dd5b03f506284';
 
 /// See also [watchGeneratedRootAndContainsDependency].
 @ProviderFor(watchGeneratedRootAndContainsDependency)
@@ -342,10 +378,12 @@ final watchGeneratedRootAndContainsDependencyProvider =
   },
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef WatchGeneratedRootAndContainsDependencyRef
     = AutoDisposeProviderRef<int>;
 String _$specifiedDependencyButNeverUsedHash() =>
-    r'b0254ee8c3a0360ec249686083f430b12f3b4940';
+    r'cca97d259bcacbff290f0d459e0de3a9b5b6a510';
 
 /// See also [specifiedDependencyButNeverUsed].
 @ProviderFor(specifiedDependencyButNeverUsed)
@@ -365,8 +403,10 @@ final specifiedDependencyButNeverUsedProvider =
   },
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef SpecifiedDependencyButNeverUsedRef = AutoDisposeProviderRef<int>;
-String _$regression2348Hash() => r'72fbbe420e9835c9843c28b7c9375ca3d99ca4b7';
+String _$regression2348Hash() => r'6ad005595ee202c8b0188562ed8c4a33d01260e2';
 
 /// See also [regression2348].
 @ProviderFor(regression2348)
@@ -383,8 +423,10 @@ final regression2348Provider = AutoDisposeProvider<int>.internal(
   },
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef Regression2348Ref = AutoDisposeProviderRef<int>;
-String _$familyDepHash() => r'1c152873ed2b3e88da09d8e1fc53a33635cbe3b3';
+String _$familyDepHash() => r'ed674a44492b3871b72b4fbc68180ea0839723e5';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -525,6 +567,8 @@ class FamilyDepProvider extends AutoDisposeProvider<int> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin FamilyDepRef on AutoDisposeProviderRef<int> {
   /// The parameter `p` of this provider.
   int get p;
@@ -538,7 +582,7 @@ class _FamilyDepProviderElement extends AutoDisposeProviderElement<int>
   int get p => (origin as FamilyDepProvider).p;
 }
 
-String _$familyDep2Hash() => r'd81e2e56d75dd08a695b834853a3a6cea99ea305';
+String _$familyDep2Hash() => r'ee9c96f7a1d65e1b66c29aa8d8c030146995504c';
 
 /// See also [familyDep2].
 @ProviderFor(familyDep2)
@@ -659,6 +703,8 @@ class FamilyDep2Provider extends AutoDisposeProvider<int> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin FamilyDep2Ref on AutoDisposeProviderRef<int> {
   /// The parameter `p` of this provider.
   int get p;
@@ -672,7 +718,7 @@ class _FamilyDep2ProviderElement extends AutoDisposeProviderElement<int>
   int get p => (origin as FamilyDep2Provider).p;
 }
 
-String _$aliasHash() => r'871c6c7ab22e4bbed2dc46917daf42e7fc1b9d88';
+String _$aliasHash() => r'b410585ad56c66160898a05647e09e1a606aa9d2';
 
 /// See also [alias].
 @ProviderFor(alias)
@@ -685,6 +731,8 @@ final aliasProvider = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef AliasRef = AutoDisposeProviderRef<int>;
 String _$classWatchGeneratedRootButMissingDependenciesHash() =>
     r'e36d7126a86ea9ded6dc66a6f33eabb2724455a9';
@@ -759,4 +807,4 @@ final aliasClassProvider =
 
 typedef _$AliasClass = AutoDisposeNotifier<int>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

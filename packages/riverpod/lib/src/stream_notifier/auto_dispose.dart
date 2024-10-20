@@ -17,6 +17,7 @@ abstract class BuildlessAutoDisposeStreamNotifier<State>
   }
 
   @override
+  // ignore: deprecated_member_use_from_same_package
   AutoDisposeStreamNotifierProviderRef<State> get ref => _element;
 }
 
@@ -29,6 +30,7 @@ abstract class AutoDisposeStreamNotifier<State>
 }
 
 /// {@macro riverpod.provider_ref_base}
+@Deprecated('will be removed in 3.0.0. Use Ref instead')
 abstract class AutoDisposeStreamNotifierProviderRef<T>
     implements StreamNotifierProviderRef<T>, AutoDisposeRef<AsyncValue<T>> {}
 
@@ -115,8 +117,11 @@ class AutoDisposeStreamNotifierProviderImpl<
 class AutoDisposeStreamNotifierProviderElement<
         NotifierT extends AsyncNotifierBase<T>,
         T> extends StreamNotifierProviderElement<NotifierT, T>
-    with AutoDisposeProviderElementMixin<AsyncValue<T>>
-    implements AutoDisposeStreamNotifierProviderRef<T> {
+    with
+        AutoDisposeProviderElementMixin<AsyncValue<T>>
+    implements
+        // ignore: deprecated_member_use_from_same_package
+        AutoDisposeStreamNotifierProviderRef<T> {
   /// The [ProviderElementBase] for [StreamNotifierProvider]
   @internal
   AutoDisposeStreamNotifierProviderElement(super._provider);

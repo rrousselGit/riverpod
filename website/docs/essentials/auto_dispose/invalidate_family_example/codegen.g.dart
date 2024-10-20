@@ -8,7 +8,7 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$labelHash() => r'20aa8ce0231205540f466f91259732bd86953c64';
+String _$labelHash() => r'c53d17dd111313633bd7ca6d6cf6b48dded58ca5';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -143,6 +143,8 @@ class LabelProvider extends AutoDisposeProvider<String> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin LabelRef on AutoDisposeProviderRef<String> {
   /// The parameter `userName` of this provider.
   String get userName;
@@ -156,4 +158,4 @@ class _LabelProviderElement extends AutoDisposeProviderElement<String>
   String get userName => (origin as LabelProvider).userName;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -16,6 +16,7 @@ abstract class BuildlessAsyncNotifier<State> extends AsyncNotifierBase<State> {
   }
 
   @override
+  // ignore: deprecated_member_use_from_same_package
   AsyncNotifierProviderRef<State> get ref => _element;
 }
 
@@ -54,6 +55,7 @@ abstract class AsyncNotifier<State> extends BuildlessAsyncNotifier<State> {
 }
 
 /// {@macro riverpod.provider_ref_base}
+@Deprecated('will be removed in 3.0.0. Use Ref instead')
 abstract class AsyncNotifierProviderRef<T> implements Ref<AsyncValue<T>> {}
 
 /// {@template riverpod.async_notifier_provider}
@@ -87,7 +89,10 @@ typedef AsyncNotifierProvider<NotifierT extends AsyncNotifier<T>, T>
 @internal
 class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
     extends AsyncNotifierProviderBase<NotifierT, T>
-    with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
+    with
+        // ignore: deprecated_member_use_from_same_package
+        AlwaysAliveProviderBase<AsyncValue<T>>,
+        AlwaysAliveAsyncSelector<T> {
   /// {@macro riverpod.async_notifier_provider}
   ///
   /// {@macro riverpod.async_notifier_provider_modifier}
@@ -122,10 +127,12 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
   static const family = AsyncNotifierProviderFamilyBuilder();
 
   @override
+  // ignore: deprecated_member_use_from_same_package
   late final AlwaysAliveRefreshable<NotifierT> notifier =
       _asyncNotifier<NotifierT, T>(this);
 
   @override
+  // ignore: deprecated_member_use_from_same_package
   late final AlwaysAliveRefreshable<Future<T>> future = _asyncFuture<T>(this);
 
   @override
@@ -511,7 +518,9 @@ abstract class AsyncNotifierProviderElementBase<
 /// The element of [AsyncNotifierProvider].
 class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     extends AsyncNotifierProviderElementBase<NotifierT, T>
-    implements AsyncNotifierProviderRef<T> {
+    implements
+        // ignore: deprecated_member_use_from_same_package
+        AsyncNotifierProviderRef<T> {
   /// The element of [AsyncNotifierProvider].
   @internal
   AsyncNotifierProviderElement(

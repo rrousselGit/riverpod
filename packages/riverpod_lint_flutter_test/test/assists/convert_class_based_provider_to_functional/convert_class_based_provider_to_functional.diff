@@ -8,7 +8,7 @@ Diff for file `test/assists/convert_class_based_provider_to_functional/convert_c
 -   @override
 -   int build() => 0;
 - }
-+ int example(ExampleRef ref) => 0;
++ int example(Ref ref) => 0;
 
 /// Some comment
 ```
@@ -23,7 +23,7 @@ Diff for file `test/assists/convert_class_based_provider_to_functional/convert_c
 -   @override
 -   int build() => 0;
 - }
-+ int example(ExampleRef ref) => 0;
++ int example(Ref ref) => 0;
 
 /// Some comment
 ```
@@ -38,7 +38,7 @@ Diff for file `test/assists/convert_class_based_provider_to_functional/convert_c
 -   @override
 -   int build() => 0;
 - }
-+ int example(ExampleRef ref) => 0;
++ int example(Ref ref) => 0;
 
 /// Some comment
 ```
@@ -55,7 +55,7 @@ Diff for file `test/assists/convert_class_based_provider_to_functional/convert_c
 -     // Hello world
 -     return 0;
 -   }
-+ int exampleFamily(ExampleFamilyRef ref, {required int a, String b = '42'}) {
++ int exampleFamily(Ref ref, {required int a, String b = '42'}) {
 +     // Hello world
 +     return 0;
 +   }

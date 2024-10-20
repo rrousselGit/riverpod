@@ -1,5 +1,6 @@
 // ignore_for_file: use_key_in_widget_constructors, omit_local_variable_types, avoid_unused_constructor_parameters
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'main.g.dart';
@@ -16,7 +17,7 @@ final http = Http();
 
 /* SNIPPET START */
 @riverpod
-Future<User> fetchUser(FetchUserRef ref, {required int userId}) async {
+Future<User> fetchUser(Ref ref, {required int userId}) async {
   final json = await http.get('api/user/$userId');
   return User.fromJson(json);
 }

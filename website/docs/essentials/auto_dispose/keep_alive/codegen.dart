@@ -1,5 +1,6 @@
 // ignore_for_file: unused_local_variable
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -7,7 +8,7 @@ part 'codegen.g.dart';
 
 /* SNIPPET START */
 @riverpod
-Future<String> example(ExampleRef ref) async {
+Future<String> example(Ref ref) async {
   final response = await http.get(Uri.parse('https://example.com'));
   // {@template keepAlive}
   // We keep the provider alive only after the request has successfully completed.

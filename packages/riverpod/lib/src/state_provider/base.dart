@@ -2,6 +2,7 @@ part of '../state_provider.dart';
 
 /// {@macro riverpod.provider_ref_base}
 /// - [controller], the [StateController] currently exposed by this provider.
+@Deprecated('will be removed in 3.0.0. Use Ref instead')
 abstract class StateProviderRef<State> implements Ref<State> {
   /// The [StateController] currently exposed by this provider.
   ///
@@ -43,7 +44,9 @@ abstract class StateProviderRef<State> implements Ref<State> {
 /// ```
 /// {@endtemplate}
 class StateProvider<T> extends _StateProviderBase<T>
-    with AlwaysAliveProviderBase<T> {
+    with
+        // ignore: deprecated_member_use_from_same_package
+        AlwaysAliveProviderBase<T> {
   /// {@macro riverpod.stateprovider}
   StateProvider(
     this._createFn, {
@@ -75,6 +78,7 @@ class StateProvider<T> extends _StateProviderBase<T>
   /// {@macro riverpod.family}
   static const family = StateProviderFamilyBuilder();
 
+  // ignore: deprecated_member_use_from_same_package
   final T Function(StateProviderRef<T> ref) _createFn;
 
   @override
@@ -84,6 +88,7 @@ class StateProvider<T> extends _StateProviderBase<T>
   StateProviderElement<T> createElement() => StateProviderElement._(this);
 
   @override
+  // ignore: deprecated_member_use_from_same_package
   late final AlwaysAliveRefreshable<StateController<T>> notifier =
       _notifier(this);
 
@@ -96,6 +101,7 @@ class StateProvider<T> extends _StateProviderBase<T>
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
+    // ignore: deprecated_member_use_from_same_package
     Create<T, StateProviderRef<T>> create,
   ) {
     return ProviderOverride(
@@ -115,7 +121,9 @@ class StateProvider<T> extends _StateProviderBase<T>
 
 /// The element of [StateProvider].
 class StateProviderElement<T> extends ProviderElementBase<T>
-    implements StateProviderRef<T> {
+    implements
+        // ignore: deprecated_member_use_from_same_package
+        StateProviderRef<T> {
   StateProviderElement._(_StateProviderBase<T> super._provider);
 
   @override
@@ -175,6 +183,7 @@ class StateProviderElement<T> extends ProviderElementBase<T>
 
 /// The [Family] of [StateProvider].
 class StateProviderFamily<R, Arg>
+    // ignore: deprecated_member_use_from_same_package
     extends FamilyBase<StateProviderRef<R>, R, Arg, R, StateProvider<R>> {
   /// The [Family] of [StateProvider].
   StateProviderFamily(
@@ -190,6 +199,7 @@ class StateProviderFamily<R, Arg>
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
+    // ignore: deprecated_member_use_from_same_package
     R Function(StateProviderRef<R> ref, Arg arg) create,
   ) {
     return FamilyOverrideImpl<R, Arg, StateProvider<R>>(

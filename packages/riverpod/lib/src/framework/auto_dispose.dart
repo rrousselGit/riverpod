@@ -3,9 +3,9 @@ part of '../framework.dart';
 /// A mixin that adds auto dispose support to a [ProviderElementBase].
 @internal
 mixin AutoDisposeProviderElementMixin<State> on ProviderElementBase<State>
-    implements AutoDisposeRef<State> {
-  List<KeepAliveLink>? _keepAliveLinks;
-
+    implements
+        // ignore: deprecated_member_use_from_same_package
+        AutoDisposeRef<State> {
   bool _maintainState = false;
   @Deprecated('Use `keepAlive()` instead')
   @override
@@ -14,21 +14,6 @@ mixin AutoDisposeProviderElementMixin<State> on ProviderElementBase<State>
   set maintainState(bool value) {
     _maintainState = value;
     if (!value) mayNeedDispose();
-  }
-
-  @override
-  KeepAliveLink keepAlive() {
-    final links = _keepAliveLinks ??= [];
-
-    late KeepAliveLink link;
-    link = KeepAliveLink._(() {
-      if (links.remove(link)) {
-        if (links.isEmpty) mayNeedDispose();
-      }
-    });
-    links.add(link);
-
-    return link;
   }
 
   @override

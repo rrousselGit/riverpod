@@ -179,6 +179,8 @@ class A3Provider extends AutoDisposeNotifierProviderImpl<A3, int> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin A3Ref on AutoDisposeNotifierProviderRef<int> {
   /// The parameter `param` of this provider.
   int get param;
@@ -316,6 +318,8 @@ class A4Provider extends NotifierProviderImpl<A4, int> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin A4Ref on NotifierProviderRef<int> {
   /// The parameter `param` of this provider.
   int get param;
@@ -452,6 +456,8 @@ class A5Provider extends AutoDisposeAsyncNotifierProviderImpl<A5, int> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin A5Ref on AutoDisposeAsyncNotifierProviderRef<int> {
   /// The parameter `param` of this provider.
   int get param;
@@ -589,6 +595,8 @@ class A6Provider extends AsyncNotifierProviderImpl<A6, int> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin A6Ref on AsyncNotifierProviderRef<int> {
   /// The parameter `param` of this provider.
   int get param;
@@ -726,6 +734,8 @@ class A7Provider extends AutoDisposeStreamNotifierProviderImpl<A7, int> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin A7Ref on AutoDisposeStreamNotifierProviderRef<int> {
   /// The parameter `param` of this provider.
   int get param;
@@ -863,6 +873,8 @@ class A8Provider extends StreamNotifierProviderImpl<A8, int> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin A8Ref on StreamNotifierProviderRef<int> {
   /// The parameter `param` of this provider.
   int get param;
@@ -905,4 +917,4 @@ final b2Provider = AutoDisposeNotifierProvider<B2, int>.internal(
 
 typedef _$B2 = AutoDisposeNotifier<int>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

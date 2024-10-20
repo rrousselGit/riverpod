@@ -6,7 +6,7 @@ part of 'dependencies.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$calc2Hash() => r'0972ac060d49cb3f08f9192af9cea0611a6b4616';
+String _$calc2Hash() => r'ae1d601ff7cdda569255e8014bd5d8d1c178b3eb';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -180,6 +180,8 @@ class Calc2Provider extends AutoDisposeProvider<int> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin Calc2Ref on AutoDisposeProviderRef<int> {
   /// The parameter `id` of this provider.
   String get id;
@@ -193,4 +195,4 @@ class _Calc2ProviderElement extends AutoDisposeProviderElement<int>
   String get id => (origin as Calc2Provider).id;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

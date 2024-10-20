@@ -30,7 +30,10 @@ typedef NotifierFamilyProvider<NotifierT extends FamilyNotifier<T, Arg>, T, Arg>
 @visibleForTesting
 @internal
 class FamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>, T, Arg>
-    extends NotifierProviderBase<NotifierT, T> with AlwaysAliveProviderBase<T> {
+    extends NotifierProviderBase<NotifierT, T>
+    with
+        // ignore: deprecated_member_use_from_same_package
+        AlwaysAliveProviderBase<T> {
   /// {@macro riverpod.notifier}
   FamilyNotifierProviderImpl(
     super._createNotifier, {
@@ -64,6 +67,7 @@ class FamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>, T, Arg>
   // static const family = NotifierProviderFamilyBuilder();
 
   @override
+  // ignore: deprecated_member_use_from_same_package
   late final AlwaysAliveRefreshable<NotifierT> notifier =
       _notifier<NotifierT, T>(this);
 
@@ -82,6 +86,7 @@ class FamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>, T, Arg>
 
 /// The [Family] of [NotifierProvider].
 class NotifierProviderFamily<NotifierT extends FamilyNotifier<T, Arg>, T, Arg>
+    // ignore: deprecated_member_use_from_same_package
     extends NotifierFamilyBase<NotifierProviderRef<T>, T, Arg, NotifierT,
         NotifierFamilyProvider<NotifierT, T, Arg>> {
   /// The [Family] of [NotifierProvider].

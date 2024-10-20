@@ -24,7 +24,7 @@ class Activity with _$Activity {
 }
 
 @riverpod
-Future<Activity> activity(ActivityRef ref) async {
+Future<Activity> activity(Ref ref) async {
   final response = await http.get(
     Uri.https('www.boredapi.com', '/api/activity'),
   );

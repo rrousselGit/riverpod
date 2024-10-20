@@ -9,7 +9,7 @@ part of 'codegen.dart';
 // **************************************************************************
 
 String _$fetchConfigurationHash() =>
-    r'6c0f062e6f20baf883c4282856f1197fbe633d89';
+    r'f18dd06ced5e58734c6fd925e5614c34e94d1b9e';
 
 /// See also [fetchConfiguration].
 @ProviderFor(fetchConfiguration)
@@ -24,6 +24,8 @@ final fetchConfigurationProvider =
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef FetchConfigurationRef = AutoDisposeFutureProviderRef<Configuration>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

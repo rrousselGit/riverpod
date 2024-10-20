@@ -8,7 +8,7 @@ void main() {
     'Verify that @riverpod classes has the build method',
     'lints/notifier_build/fix/notifier_build.diff',
     sourcePath: 'test/lints/notifier_build/fix/notifier_build.dart',
-    (result) async {
+    (result, helper) async {
       const lint = NotifierBuild();
       final fix = lint.getFixes().single;
 

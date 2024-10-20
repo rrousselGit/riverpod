@@ -2,13 +2,14 @@
 
 import 'dart:async';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'codegen.g.dart';
 
 /* SNIPPET START */
 @riverpod
-Stream<int> example(ExampleRef ref) {
+Stream<int> example(Ref ref) {
   final streamController = StreamController<int>();
 
   ref.onDispose(() {
@@ -18,4 +19,3 @@ Stream<int> example(ExampleRef ref) {
 
   return streamController.stream;
 }
-

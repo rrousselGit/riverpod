@@ -1,5 +1,6 @@
 // ignore_for_file: omit_local_variable_types, avoid_types_on_closure_parameters, avoid_print
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'codegen.g.dart';
@@ -16,7 +17,7 @@ abstract class Todo {
 /* SNIPPET START */
 
 @riverpod
-FilterType filterType(FilterTypeRef ref) {
+FilterType filterType(Ref ref) {
   return FilterType.none;
 }
 
@@ -29,7 +30,7 @@ class Todos extends _$Todos {
 }
 
 @riverpod
-List<Todo> filteredTodoList(FilteredTodoListRef ref) {
+List<Todo> filteredTodoList(Ref ref) {
   // obtains both the filter and the list of todos
   final FilterType filter = ref.watch(filterTypeProvider);
   final List<Todo> todos = ref.watch(todosProvider);

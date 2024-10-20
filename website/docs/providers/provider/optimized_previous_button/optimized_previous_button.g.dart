@@ -9,7 +9,7 @@ part of 'optimized_previous_button.dart';
 // **************************************************************************
 
 String _$canGoToPreviousPageHash() =>
-    r'801fe8182a37cd21ae83bdfccbe36c125b4d14fb';
+    r'1cb9c497aa7e5e8ee03c5711f079c2b68a4c28c5';
 
 /// See also [canGoToPreviousPage].
 @ProviderFor(canGoToPreviousPage)
@@ -23,6 +23,8 @@ final canGoToPreviousPageProvider = AutoDisposeProvider<bool>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef CanGoToPreviousPageRef = AutoDisposeProviderRef<bool>;
 String _$pageIndexHash() => r'59307ecf23b5b2432833da5ad6b312bf36435d0e';
 
@@ -39,4 +41,4 @@ final pageIndexProvider = AutoDisposeNotifierProvider<PageIndex, int>.internal(
 
 typedef _$PageIndex = AutoDisposeNotifier<int>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

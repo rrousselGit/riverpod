@@ -1,27 +1,28 @@
+import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'async.g.dart';
 
 @riverpod
-FutureOr<String> public(PublicRef ref) {
+FutureOr<String> public(Ref ref) {
   return 'Hello world';
 }
 
 final privateProvider = _privateProvider;
 
 @riverpod
-Future<String> _private(_PrivateRef ref) async {
+Future<String> _private(Ref ref) async {
   return 'Hello world';
 }
 
 @riverpod
-FutureOr<String> familyOr(FamilyOrRef ref, int first) {
+FutureOr<String> familyOr(Ref ref, int first) {
   return '(first: $first)';
 }
 
 @riverpod
 Future<String> family(
-  FamilyRef ref,
+  Ref ref,
   int first, {
   String? second,
   required double third,

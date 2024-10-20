@@ -2,6 +2,7 @@ part of '../state_provider.dart';
 
 /// {@macro riverpod.provider_ref_base}
 /// - [controller], the [StateController] currently exposed by this provider.
+@Deprecated('will be removed in 3.0.0. Use Ref instead')
 abstract class AutoDisposeStateProviderRef<State>
     extends StateProviderRef<State> implements AutoDisposeRef<State> {}
 
@@ -35,6 +36,7 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
   /// {@macro riverpod.family}
   static const family = AutoDisposeStateProviderFamily.new;
 
+  // ignore: deprecated_member_use_from_same_package
   final T Function(AutoDisposeStateProviderRef<T> ref) _createFn;
 
   @override
@@ -57,6 +59,7 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
+    // ignore: deprecated_member_use_from_same_package
     Create<T, AutoDisposeStateProviderRef<T>> create,
   ) {
     return ProviderOverride(
@@ -76,8 +79,11 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
 
 /// The element of [StateProvider].
 class AutoDisposeStateProviderElement<T> extends StateProviderElement<T>
-    with AutoDisposeProviderElementMixin<T>
-    implements AutoDisposeStateProviderRef<T> {
+    with
+        AutoDisposeProviderElementMixin<T>
+    implements
+        // ignore: deprecated_member_use_from_same_package
+        AutoDisposeStateProviderRef<T> {
   /// The [ProviderElementBase] for [StateProvider]
   AutoDisposeStateProviderElement._(AutoDisposeStateProvider<T> super._provider)
       : super._();
@@ -85,7 +91,12 @@ class AutoDisposeStateProviderElement<T> extends StateProviderElement<T>
 
 /// The [Family] of [StateProvider].
 class AutoDisposeStateProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
-    AutoDisposeStateProviderRef<R>, R, Arg, R, AutoDisposeStateProvider<R>> {
+    // ignore: deprecated_member_use_from_same_package
+    AutoDisposeStateProviderRef<R>,
+    R,
+    Arg,
+    R,
+    AutoDisposeStateProvider<R>> {
   /// The [Family] of [StateProvider].
   AutoDisposeStateProviderFamily(
     super._createFn, {
@@ -100,6 +111,7 @@ class AutoDisposeStateProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
+    // ignore: deprecated_member_use_from_same_package
     R Function(AutoDisposeStateProviderRef<R> ref, Arg arg) create,
   ) {
     return FamilyOverrideImpl<R, Arg, AutoDisposeStateProvider<R>>(

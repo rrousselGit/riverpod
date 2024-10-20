@@ -1,0 +1,5 @@
+import: "../../analysis_options.yaml"
+
+analyzer:
+  errors:
+    deprecated_member_use_from_same_package: false

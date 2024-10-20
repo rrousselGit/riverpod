@@ -1,15 +1,16 @@
 // ignore_for_file: unused_local_variable
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'codegen.g.dart';
 
 @riverpod
-int other(OtherRef ref) => 0;
+int other(Ref ref) => 0;
 
 /* SNIPPET START */
 @riverpod
-int example(ExampleRef ref) {
+int example(Ref ref) {
   // {@template provider}
   // "Ref" can be used here to read other providers
   // {@endtemplate}

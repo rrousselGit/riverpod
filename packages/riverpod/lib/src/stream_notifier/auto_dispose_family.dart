@@ -80,6 +80,7 @@ class AutoDisposeFamilyStreamNotifierProviderImpl<
 class AutoDisposeStreamNotifierProviderFamily<
         NotifierT extends AutoDisposeFamilyStreamNotifier<T, Arg>, T, Arg>
     extends AutoDisposeNotifierFamilyBase<
+        // ignore: deprecated_member_use_from_same_package
         AutoDisposeStreamNotifierProviderRef<T>,
         AsyncValue<T>,
         Arg,

@@ -8,7 +8,7 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$activityHash() => r'304864a6b8051925061a2bba397574ec45b94d08';
+String _$activityHash() => r'ac82ab2c8ff5c059f8f9abebed0a5c1fb6dc66c8';
 
 /// See also [activity].
 @ProviderFor(activity)
@@ -21,6 +21,8 @@ final activityProvider = AutoDisposeFutureProvider<Activity>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef ActivityRef = AutoDisposeFutureProviderRef<Activity>;
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

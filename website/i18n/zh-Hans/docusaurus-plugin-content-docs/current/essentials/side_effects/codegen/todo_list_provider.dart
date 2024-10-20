@@ -14,7 +14,7 @@ class Todo with _$Todo {
 }
 
 @riverpod
-Future<List<Todo>> todoList(TodoListRef ref) async {
+Future<List<Todo>> todoList(Ref ref) async {
   // 模拟一个网络请求。这通常来自真实的 API
   return [
     Todo(description: 'Learn Flutter', completed: true),

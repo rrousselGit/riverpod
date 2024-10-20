@@ -10,7 +10,8 @@ part of '../framework.dart';
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
 /// {@endtemplate}
 @optionalTypeArgs
-abstract class Ref<State extends Object?> {
+abstract class Ref<
+    @Deprecated('Will be removed in 3.0') State extends Object?> {
   /// The [ProviderContainer] that this provider is associated with.
   ProviderContainer get container;
 
@@ -44,17 +45,19 @@ abstract class Ref<State extends Object?> {
   T refresh<T>(Refreshable<T> provider);
 
   /// {@template riverpod.invalidate}
-  /// Invalidates the state of the provider, causing it to refresh.
+  /// Invalidates the state of the provider, destroying the state immediately
+  /// and causing the provider to rebuild at some point in the future.
   ///
-  /// As opposed to [refresh], the refresh is not immediate and is instead
-  /// delayed to the next read or next frame.
+  /// As opposed to [refresh], the rebuild is not immediate and is instead
+  /// delayed by an undefined amount of time.
+  /// Typically, the rebuild happens at the next tick of the event loop.
+  /// But if a provider is not listened to, the rebuild may be delayed until
+  /// the provider is listened to again.
   ///
-  /// Calling [invalidate] multiple times will refresh the provider only
-  /// once.
+  /// Calling [invalidate] multiple times will cause a single recomputation of the state.
   ///
-  /// Calling [invalidate] will cause the provider to be disposed immediately.
-  ///
-  /// If used on a provider which is not initialized, this method will have no effect.
+  /// If used on a provider which is not initialized or disposed,
+  /// this method will have no effect.
   /// {@endtemplate}
   void invalidate(ProviderOrFamily provider);
 
@@ -82,6 +85,7 @@ abstract class Ref<State extends Object?> {
   /// As opposed to [listen], the listener will be called even if
   /// [ProviderElementBase.updateShouldNotify] returns false, meaning that the previous
   /// and new value can potentially be identical.
+  @Deprecated('Will be removed in 3.0. Use Notifier.listenSelf instead')
   void listenSelf(
     void Function(State? previous, State next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
@@ -114,7 +118,7 @@ abstract class Ref<State extends Object?> {
   /// (and [onCancel] was triggered).
   ///
   /// See also:
-  /// - [AutoDisposeRef.keepAlive], which can be combined with [onCancel] for
+  /// - [keepAlive], which can be combined with [onCancel] for
   ///   advanced manipulation on when the provider should get disposed.
   /// - [Provider.autoDispose], a modifier which tell a provider that it should
   ///   destroy its state when no longer listened to.
@@ -133,7 +137,7 @@ abstract class Ref<State extends Object?> {
   /// is removed, a new listener is immediately added.
   ///
   /// See also:
-  /// - [AutoDisposeRef.keepAlive], which can be combined with [onCancel] for
+  /// - [keepAlive], which can be combined with [onCancel] for
   ///   advanced manipulation on when the provider should get disposed.
   /// - [Provider.autoDispose], a modifier which tell a provider that it should
   ///   destroy its state when no longer listened to.
@@ -310,7 +314,26 @@ abstract class Ref<State extends Object?> {
   /// - if multiple widgets depends on `sortedTodosProvider` the list will be
   ///   sorted only once.
   /// - if nothing is listening to `sortedTodosProvider`, then no sort is performed.
-  T watch<T>(AlwaysAliveProviderListenable<T> provider);
+  T watch<T>(ProviderListenable<T> provider);
+
+  /// Requests for the state of a provider to not be disposed when all the
+  /// listeners of the provider are removed.
+  ///
+  /// Returns an object which allows cancelling this operation, therefore
+  /// allowing the provider to dispose itself when all listeners are removed.
+  ///
+  /// If [keepAlive] is invoked multiple times, all [KeepAliveLink] will have
+  /// to be closed for the provider to dispose itself when all listeners are removed.
+  ///
+  /// **Note**:
+  /// This is only useful if your provider is using "auto dispose".
+  /// If your provider is not using "auto dispose", then this method has no effect.
+  ///
+  /// **Note**:
+  /// A provider that is kept alive may still be paused.
+  /// If a provider is not listened, regardless of whether it is kept alive or not,
+  /// the provider won't rebuild when using [watch] until it is listened to again.
+  KeepAliveLink keepAlive();
 
   /// {@template riverpod.listen}
   /// Listen to a provider and call [listener] whenever its value changes.
@@ -332,7 +355,7 @@ abstract class Ref<State extends Object?> {
   /// Instead the listener will receive an [AsyncError].
   /// {@endtemplate}
   ProviderSubscription<T> listen<T>(
-    AlwaysAliveProviderListenable<T> provider,
+    ProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
     bool fireImmediately,
@@ -345,6 +368,7 @@ abstract class Ref<State extends Object?> {
 /// The difference with [Ref] is that it has an extra
 /// [keepAlive] function to help determine if the state can be destroyed
 ///  or not.
+@Deprecated('Will be removed in 3.0. Use Ref instead')
 abstract class AutoDisposeRef<State> extends Ref<State> {
   /// Whether to destroy the state of the provider when all listeners are removed or not.
   ///
@@ -357,29 +381,4 @@ abstract class AutoDisposeRef<State> extends Ref<State> {
 
   @Deprecated('use keepAlive() instead')
   set maintainState(bool value);
-
-  /// Requests for the state of a provider to not be disposed when all the
-  /// listeners of the provider are removed.
-  ///
-  /// Returns an object which allows cancelling this operation, therefore
-  /// allowing the provider to dispose itself when all listeners are removed.
-  ///
-  /// If [keepAlive] is invoked multiple times, all [KeepAliveLink] will have
-  /// to be closed for the provider to dispose itself when all listeners are removed.
-  KeepAliveLink keepAlive();
-
-  @override
-  T watch<T>(
-    // can read both auto-dispose and non-auto-dispose providers
-    ProviderListenable<T> provider,
-  );
-
-  @override
-  ProviderSubscription<T> listen<T>(
-    // overridden to allow AutoDisposeProviderBase
-    ProviderListenable<T> provider,
-    void Function(T? previous, T next) listener, {
-    bool fireImmediately,
-    void Function(Object error, StackTrace stackTrace)? onError,
-  });
 }

@@ -2,6 +2,7 @@ part of '../future_provider.dart';
 
 /// {@macro riverpod.provider_ref_base}
 /// - [state], the value currently exposed by this provider.
+@Deprecated('will be removed in 3.0.0. Use Ref instead')
 abstract class FutureProviderRef<State> implements Ref<AsyncValue<State>> {
   /// Obtains the state currently exposed by this provider.
   ///
@@ -24,7 +25,10 @@ abstract class FutureProviderRef<State> implements Ref<AsyncValue<State>> {
 
 /// {@macro riverpod.future_provider}
 class FutureProvider<T> extends _FutureProviderBase<T>
-    with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
+    with
+        // ignore: deprecated_member_use_from_same_package
+        AlwaysAliveProviderBase<AsyncValue<T>>,
+        AlwaysAliveAsyncSelector<T> {
   /// {@macro riverpod.future_provider}
   FutureProvider(
     this._createFn, {
@@ -56,9 +60,11 @@ class FutureProvider<T> extends _FutureProviderBase<T>
   /// {@macro riverpod.family}
   static const family = FutureProviderFamilyBuilder();
 
+  // ignore: deprecated_member_use_from_same_package
   final Create<FutureOr<T>, FutureProviderRef<T>> _createFn;
 
   @override
+  // ignore: deprecated_member_use_from_same_package
   late final AlwaysAliveRefreshable<Future<T>> future = _future(this);
 
   @override
@@ -68,6 +74,7 @@ class FutureProvider<T> extends _FutureProviderBase<T>
   FutureProviderElement<T> createElement() => FutureProviderElement(this);
 
   /// {@macro riverpod.override_with}
+  // ignore: deprecated_member_use_from_same_package
   Override overrideWith(Create<FutureOr<T>, FutureProviderRef<T>> create) {
     return ProviderOverride(
       origin: this,
@@ -86,8 +93,11 @@ class FutureProvider<T> extends _FutureProviderBase<T>
 
 /// The element of a [FutureProvider]
 class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
-    with FutureHandlerProviderElementMixin<T>
-    implements FutureProviderRef<T> {
+    with
+        FutureHandlerProviderElementMixin<T>
+    implements
+        // ignore: deprecated_member_use_from_same_package
+        FutureProviderRef<T> {
   /// The element of a [FutureProvider]
   @internal
   // ignore: library_private_types_in_public_api
@@ -111,6 +121,7 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
 }
 
 /// The [Family] of a [FutureProvider]
+// ignore: deprecated_member_use_from_same_package
 class FutureProviderFamily<R, Arg> extends FamilyBase<FutureProviderRef<R>,
     AsyncValue<R>, Arg, FutureOr<R>, FutureProvider<R>> {
   /// The [Family] of a [FutureProvider]
@@ -137,6 +148,7 @@ class FutureProviderFamily<R, Arg> extends FamilyBase<FutureProviderRef<R>,
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
+    // ignore: deprecated_member_use_from_same_package
     FutureOr<R> Function(FutureProviderRef<R> ref, Arg arg) create,
   ) {
     return FamilyOverrideImpl<AsyncValue<R>, Arg, FutureProvider<R>>(

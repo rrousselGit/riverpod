@@ -8,7 +8,7 @@ part of 'family_fn.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$exampleHash() => r'99b3ed3d53932bd1354259200ebf08493af9ada2';
+String _$exampleHash() => r'5c55c7f736032d1570f258f5056eb7966c37e8e1';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -155,6 +155,8 @@ class ExampleProvider extends AutoDisposeProvider<String> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin ExampleRef on AutoDisposeProviderRef<String> {
   /// The parameter `param1` of this provider.
   int get param1;
@@ -173,4 +175,4 @@ class _ExampleProviderElement extends AutoDisposeProviderElement<String>
   String get param2 => (origin as ExampleProvider).param2;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

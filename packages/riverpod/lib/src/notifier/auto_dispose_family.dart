@@ -80,6 +80,7 @@ class AutoDisposeFamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>,
 /// The [Family] of [NotifierProvider].
 class AutoDisposeNotifierProviderFamily<
         NotifierT extends AutoDisposeFamilyNotifier<T, Arg>, T, Arg>
+    // ignore: deprecated_member_use_from_same_package
     extends AutoDisposeNotifierFamilyBase<AutoDisposeNotifierProviderRef<T>, T,
         Arg, NotifierT, AutoDisposeFamilyNotifierProvider<NotifierT, T, Arg>> {
   /// The [Family] of [AutoDisposeNotifierProvider].

@@ -17,6 +17,7 @@ abstract class BuildlessAutoDisposeAsyncNotifier<State>
   }
 
   @override
+  // ignore: deprecated_member_use_from_same_package
   AutoDisposeAsyncNotifierProviderRef<State> get ref => _element;
 }
 
@@ -31,8 +32,12 @@ abstract class AutoDisposeAsyncNotifier<State>
 }
 
 /// {@macro riverpod.provider_ref_base}
+@Deprecated('will be removed in 3.0.0. Use Ref instead')
 abstract class AutoDisposeAsyncNotifierProviderRef<T>
-    implements AsyncNotifierProviderRef<T>, AutoDisposeRef<AsyncValue<T>> {}
+    implements
+        AsyncNotifierProviderRef<T>,
+        // ignore: deprecated_member_use_from_same_package
+        AutoDisposeRef<AsyncValue<T>> {}
 
 /// {@macro riverpod.async_notifier_provider}
 ///
@@ -118,8 +123,11 @@ class AutoDisposeAsyncNotifierProviderImpl<
 class AutoDisposeAsyncNotifierProviderElement<
         NotifierT extends AsyncNotifierBase<T>,
         T> extends AsyncNotifierProviderElement<NotifierT, T>
-    with AutoDisposeProviderElementMixin<AsyncValue<T>>
-    implements AutoDisposeAsyncNotifierProviderRef<T> {
+    with
+        AutoDisposeProviderElementMixin<AsyncValue<T>>
+    implements
+        // ignore: deprecated_member_use_from_same_package
+        AutoDisposeAsyncNotifierProviderRef<T> {
   /// The [ProviderElementBase] for [AsyncNotifierProvider]
   @internal
   AutoDisposeAsyncNotifierProviderElement(super._provider) : super();

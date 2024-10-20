@@ -199,11 +199,11 @@ Consider the following providers:
 ```dart
 // A non-scoped provider
 @riverpod
-int root(RootRef ref) => 0;
+int root(Ref ref) => 0;
 
 // A possibly scoped provider
 @Riverpod(dependencies: [])
-int scoped(ScopedRef ref) => 0;
+int scoped(Ref ref) => 0;
 ```
 
 **Good**:
@@ -211,21 +211,21 @@ int scoped(ScopedRef ref) => 0;
 ```dart
 // No dependencies used, no need to specify "dependencies"
 @riverpod
-int example(ExampleRef ref) => 0;
+int example(Ref ref) => 0;
 
 // We can specify an empty "dependencies" list if we wish to.
 // This marks the provider as "scoped".
 @Riverpod(dependencies: [])
-int example(ExampleRef ref) => 0;
+int example(Ref ref) => 0;
 
 @riverpod
-void example(ExampleRef ref) {
+void example(Ref ref) {
   // rootProvider is not scoped, no need to specify it as "dependencies"
   ref.watch(rootProvider);
 }
 
 @Riverpod(dependencies: [scoped])
-void example(ExampleRef ref) {
+void example(Ref ref) {
   // scopedProvider is scoped and as such specifying "dependencies" is required.
   ref.watch(scopedProvider);
 }
@@ -236,16 +236,16 @@ void example(ExampleRef ref) {
 ```dart
 // scopedProvider isn't used and should therefore not be listed
 @Riverpod(dependencies: [scoped])
-int example(ExampleRef ref) => 0;
+int example(Ref ref) => 0;
 
 @Riverpod(dependencies: [])
-void example(ExampleRef ref) {
+void example(Ref ref) {
   // scopedProvider is used but not present in the list of dependencies
   ref.watch(scopedProvider);
 }
 
 @Riverpod(dependencies: [root])
-void example(ExampleRef ref) {
+void example(Ref ref) {
   // rootProvider is not a scoped provider. As such it shouldn't be listed in "dependencies"
   ref.watch(rootProvider);
 }
@@ -260,10 +260,10 @@ Consider the following providers:
 
 ```dart
 @Riverpod(dependencies: [])
-int scoped(ScopedRef ref) => 0;
+int scoped(Ref ref) => 0;
 
 @riverpod
-int root(RootRef ref) => 0;
+int root(Ref ref) => 0;
 ```
 
 (Providers defined without `riverpod_generator` are not supported)
@@ -328,10 +328,10 @@ Failing to do so would break the [provider_dependencies](#provider_dependencies-
 
 ```dart
 @riverpod
-int dep(DepRef ref) => 0;
+int dep(Ref ref) => 0;
 
 @riverpod
-void example(ExampleRef ref) {
+void example(Ref ref) {
   /// Generated providers can depend on other generated providers
   ref.watch(depProvider);
 }
@@ -343,7 +343,7 @@ void example(ExampleRef ref) {
 final depProvider = Provider((ref) => 0);
 
 @riverpod
-void example(ExampleRef ref) {
+void example(Ref ref) {
   // Generated providers should not depend on non-generated providers
   ref.watch(depProvider);
 }
@@ -357,7 +357,7 @@ Providers should not interact with `BuildContext`.
 
 ```dart
 @riverpod
-int fn(FnRef ref) => 0;
+int fn(Ref ref) => 0;
 
 @riverpod
 class MyNotifier extends _$MyNotifier {
@@ -371,7 +371,7 @@ class MyNotifier extends _$MyNotifier {
 
 ```dart
 // Providers should not receive a BuildContext as a parameter.
-int fn(FnRef ref, BuildContext context) => 0;
+int fn(Ref ref, BuildContext context) => 0;
 
 @riverpod
 class MyNotifier extends _$MyNotifier {
@@ -484,7 +484,7 @@ In that scenario, you may explicitly wrap the value in `Raw`:
 
 ```dart
 @riverpod
-int integer(IntegerRef ref) => 0;
+int integer(Ref ref) => 0;
 
 @riverpod
 class IntegerNotifier extends _$IntegerNotifier {
@@ -495,7 +495,7 @@ class IntegerNotifier extends _$IntegerNotifier {
 // By using "Raw", we can explicitly return a ChangeNotifier in a provider
 // without triggering `unsupported_provider_value`.
 @riverpod
-Raw<GoRouter> myRouter(MyRouterRef ref) {
+Raw<GoRouter> myRouter(Ref ref) {
   final router = GoRouter(...);
   // Riverpod won't dispose the ChangeNotifier for you in this case. Don't forget
   // to do it on your own!
@@ -510,7 +510,7 @@ Raw<GoRouter> myRouter(MyRouterRef ref) {
 // KO: riverpod_generator does not support creating StateNotifier/ChangeNotifiers/...
 // Instead annotate a class with @riverpod.
 @riverpod
-MyStateNotifier stateNotifier(StateNotifierRef ref) => MyStateNotifier();
+MyStateNotifier stateNotifier(Ref ref) => MyStateNotifier();
 
 class MyStateNotifier extends StateNotifier<int> {
   MyStateNotifier(): super(0);
@@ -525,7 +525,7 @@ Functional providers must receive a ref matching the provider name as their firs
 
 ```dart
 @riverpod
-int myProvider(MyProviderRef ref) => 0;
+int myProvider(Ref ref) => 0;
 ```
 
 **Bad**:
@@ -535,7 +535,7 @@ int myProvider(MyProviderRef ref) => 0;
 @riverpod
 int myProvider() => 0;
 
-// The ref parameter is not correctly typed (int -> MyProviderRef)
+// The ref parameter is not correctly typed (int -> Ref)
 @riverpod
 int myProvider(int ref) => 0;
 ```

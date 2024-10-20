@@ -1,19 +1,20 @@
+import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'main.g.dart';
 
 @riverpod
-int count(CountRef ref) {
+int count(Ref ref) {
   return 1;
 }
 
 @riverpod
-FutureOr<int> countFuture(CountFutureRef ref) {
+FutureOr<int> countFuture(Ref ref) {
   return 1;
 }
 
 @riverpod
-Stream<int> countStream(CountStreamRef ref) {
+Stream<int> countStream(Ref ref) {
   return Stream.value(1);
 }
 
@@ -42,17 +43,17 @@ class CountStreamNotifier extends _$CountStreamNotifier {
 }
 
 @riverpod
-int count2(Count2Ref ref, int a) {
+int count2(Ref ref, int a) {
   return 1;
 }
 
 @riverpod
-FutureOr<int> countFuture2(CountFuture2Ref ref, int a) {
+FutureOr<int> countFuture2(Ref ref, int a) {
   return 1;
 }
 
 @riverpod
-Stream<int> countStream2(CountStream2Ref ref, int a) {
+Stream<int> countStream2(Ref ref, int a) {
   return Stream.value(1);
 }
 

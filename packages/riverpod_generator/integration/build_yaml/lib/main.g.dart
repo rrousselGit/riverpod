@@ -6,7 +6,7 @@ part of 'main.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$countHash() => r'4c7e72b275767a60ece5e8662ab1e28f73cf7e44';
+String _$countHash() => r'a31bb5cbb0ddb2466df2cc62a306709ea24fae12';
 
 /// See also [count].
 @ProviderFor(count)
@@ -19,8 +19,10 @@ final myCountPod = AutoDisposeProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef CountRef = AutoDisposeProviderRef<int>;
-String _$countFutureHash() => r'ec7cc31ce1c1a10607f1dcb35dd217acd2877729';
+String _$countFutureHash() => r'c292214b486fdd9ec98a61e277812f29fc4b5802';
 
 /// See also [countFuture].
 @ProviderFor(countFuture)
@@ -33,8 +35,10 @@ final myCountFuturePod = AutoDisposeFutureProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef CountFutureRef = AutoDisposeFutureProviderRef<int>;
-String _$countStreamHash() => r'1dbe49244ea19e8dbc3af0534429bb323720c07a';
+String _$countStreamHash() => r'472c06085fb994619f54de368f047b7cc8466872';
 
 /// See also [countStream].
 @ProviderFor(countStream)
@@ -47,8 +51,10 @@ final myCountStreamPod = AutoDisposeStreamProvider<int>.internal(
   allTransitiveDependencies: null,
 );
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 typedef CountStreamRef = AutoDisposeStreamProviderRef<int>;
-String _$count2Hash() => r'6256825480d83bb13acde282cf3c9d9524cc3a6c';
+String _$count2Hash() => r'4146ae486161f9d444b4d80ec846199b13eeaae2';
 
 /// Copied from Dart SDK
 class _SystemHash {
@@ -183,6 +189,8 @@ class Count2Provider extends AutoDisposeProvider<int> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin Count2Ref on AutoDisposeProviderRef<int> {
   /// The parameter `a` of this provider.
   int get a;
@@ -196,7 +204,7 @@ class _Count2ProviderElement extends AutoDisposeProviderElement<int>
   int get a => (origin as Count2Provider).a;
 }
 
-String _$countFuture2Hash() => r'096675b70a267f5d7c62ac7d3e7dd231ef529034';
+String _$countFuture2Hash() => r'6acaa58de0116853fd831efb4ac1a8047205f12b';
 
 /// See also [countFuture2].
 @ProviderFor(countFuture2)
@@ -311,6 +319,8 @@ class CountFuture2Provider extends AutoDisposeFutureProvider<int> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin CountFuture2Ref on AutoDisposeFutureProviderRef<int> {
   /// The parameter `a` of this provider.
   int get a;
@@ -324,7 +334,7 @@ class _CountFuture2ProviderElement extends AutoDisposeFutureProviderElement<int>
   int get a => (origin as CountFuture2Provider).a;
 }
 
-String _$countStream2Hash() => r'051264dd685ebc0a57e454bb676957c93cb4ae20';
+String _$countStream2Hash() => r'96c9a0935240f1727986800c1fe6dea974b9accc';
 
 /// See also [countStream2].
 @ProviderFor(countStream2)
@@ -439,6 +449,8 @@ class CountStream2Provider extends AutoDisposeStreamProvider<int> {
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin CountStream2Ref on AutoDisposeStreamProviderRef<int> {
   /// The parameter `a` of this provider.
   int get a;
@@ -630,6 +642,8 @@ class CountNotifier2Provider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin CountNotifier2Ref on AutoDisposeNotifierProviderRef<int> {
   /// The parameter `a` of this provider.
   int get a;
@@ -775,6 +789,8 @@ class CountAsyncNotifier2Provider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin CountAsyncNotifier2Ref on AutoDisposeAsyncNotifierProviderRef<int> {
   /// The parameter `a` of this provider.
   int get a;
@@ -920,6 +936,8 @@ class CountStreamNotifier2Provider
   }
 }
 
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
 mixin CountStreamNotifier2Ref on AutoDisposeStreamNotifierProviderRef<int> {
   /// The parameter `a` of this provider.
   int get a;
@@ -934,4 +952,4 @@ class _CountStreamNotifier2ProviderElement
   int get a => (origin as CountStreamNotifier2Provider).a;
 }
 // ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

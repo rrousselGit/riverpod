@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../first_request/codegen/activity.dart';
 
@@ -13,7 +14,7 @@ FutureOr<Activity> fetchActivity() => throw UnimplementedError();
 // A "functional" provider
 // {@endtemplate}
 @riverpod
-Future<Activity> activity(ActivityRef ref) async {
+Future<Activity> activity(Ref ref) async {
   // {@template fetchActivity}
   // TODO: perform a network request to fetch an activity
   // {@endtemplate}

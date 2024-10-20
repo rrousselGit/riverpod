@@ -1,6 +1,5 @@
 // ignore_for_file: deprecated_member_use_from_same_package
 
-import 'package:expect_error/expect_error.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
@@ -8,8 +7,6 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 Future<void> main() async {
-  final library = await Library.parseFromStacktrace();
-
   test(
       'When a non-overridden autoDispose provider is disposed '
       'and the associated ProviderContainer has a child ProviderContainer which overrides said provider, '
@@ -253,92 +250,6 @@ Future<void> main() async {
     Provider((ref) {
       ref.read(
         autoDispose.select((value) => value),
-      );
-    });
-  });
-
-  group(
-      'emits compilation error when passing an autoDispose provider to a non-autoDispose provider',
-      () {
-    test('to ref.watch', () {
-      expect(
-        library.withCode(
-          '''
-import 'package:riverpod/riverpod.dart';
-
-final autoDispose = Provider.autoDispose<int>((ref) => 0);
-
-final alwaysAlive = Provider((ref) {
-  // expect-error: ARGUMENT_TYPE_NOT_ASSIGNABLE
-  ref.watch(autoDispose);
-});
-''',
-        ),
-        compiles,
-      );
-    });
-
-    test('to ref.watch when using selectors', () {
-      expect(
-        library.withCode(
-          '''
-import 'package:riverpod/riverpod.dart';
-
-final autoDispose = Provider.autoDispose<int>((ref) => 0);
-
-final alwaysAlive = Provider((ref) {
-  ref.watch(
-    // expect-error: ARGUMENT_TYPE_NOT_ASSIGNABLE
-    autoDispose
-      .select((value) => value),
-  );
-});
-''',
-        ),
-        compiles,
-      );
-    });
-
-    test('to ref.listen', () {
-      expect(
-        library.withCode(
-          '''
-import 'package:riverpod/riverpod.dart';
-
-final autoDispose = Provider.autoDispose<int>((ref) => 0);
-
-final alwaysAlive = Provider((ref) {
-  ref.listen<int>(
-    // expect-error: ARGUMENT_TYPE_NOT_ASSIGNABLE
-    autoDispose,
-    (prev, value) {},
-  );
-});
-''',
-        ),
-        compiles,
-      );
-    });
-
-    test('to ref.listen when using selectors', () {
-      expect(
-        library.withCode(
-          '''
-import 'package:riverpod/riverpod.dart';
-
-final autoDispose = Provider.autoDispose<int>((ref) => 0);
-
-final alwaysAlive = Provider((ref) {
-  ref.listen<int>(
-    // expect-error: ARGUMENT_TYPE_NOT_ASSIGNABLE
-    autoDispose
-      .select((value) => value),
-    (prev, value) {},
-  );
-});
-''',
-        ),
-        compiles,
       );
     });
   });

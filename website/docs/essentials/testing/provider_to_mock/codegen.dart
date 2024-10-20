@@ -1,3 +1,4 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'codegen.g.dart';
@@ -7,5 +8,5 @@ part 'codegen.g.dart';
 // An eagerly initialized provider.
 // {@endtemplate}
 @riverpod
-Future<String> example(ExampleRef ref) async => 'Hello world';
+Future<String> example(Ref ref) async => 'Hello world';
 /* SNIPPET END */

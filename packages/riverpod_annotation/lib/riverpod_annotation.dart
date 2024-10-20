@@ -18,9 +18,11 @@ export 'package:riverpod/src/internals.dart'
         // Provider
         Provider,
         ProviderFamily,
+        // ignore: deprecated_member_use
         ProviderRef,
         AutoDisposeProvider,
         AutoDisposeProviderFamily,
+        // ignore: deprecated_member_use
         AutoDisposeProviderRef,
         ProviderElement,
         AutoDisposeProviderElement,
@@ -28,9 +30,11 @@ export 'package:riverpod/src/internals.dart'
         // FutureProvider
         FutureProvider,
         FutureProviderFamily,
+        // ignore: deprecated_member_use
         FutureProviderRef,
         AutoDisposeFutureProvider,
         AutoDisposeFutureProviderFamily,
+        // ignore: deprecated_member_use
         AutoDisposeFutureProviderRef,
         FutureProviderElement,
         AutoDisposeFutureProviderElement,
@@ -38,9 +42,11 @@ export 'package:riverpod/src/internals.dart'
         // StreamProvider
         StreamProvider,
         StreamProviderFamily,
+        // ignore: deprecated_member_use
         StreamProviderRef,
         AutoDisposeStreamProvider,
         AutoDisposeStreamProviderFamily,
+        // ignore: deprecated_member_use
         AutoDisposeStreamProviderRef,
         StreamProviderElement,
         AutoDisposeStreamProviderElement,
@@ -66,8 +72,10 @@ export 'package:riverpod/src/internals.dart'
         // ignore: invalid_use_of_internal_member
         BuildlessAutoDisposeNotifier,
         NotifierProvider,
+        // ignore: deprecated_member_use
         NotifierProviderRef,
         AutoDisposeNotifierProvider,
+        // ignore: deprecated_member_use
         AutoDisposeNotifierProviderRef,
 
         // AsyncNotifier
@@ -84,8 +92,10 @@ export 'package:riverpod/src/internals.dart'
         // ignore: invalid_use_of_internal_member
         BuildlessAutoDisposeAsyncNotifier,
         AsyncNotifierProvider,
+        // ignore: deprecated_member_use
         AsyncNotifierProviderRef,
         AutoDisposeAsyncNotifierProvider,
+        // ignore: deprecated_member_use
         AutoDisposeAsyncNotifierProviderRef,
 
         // StreamNotifier
@@ -102,8 +112,10 @@ export 'package:riverpod/src/internals.dart'
         // ignore: invalid_use_of_internal_member
         BuildlessAutoDisposeStreamNotifier,
         StreamNotifierProvider,
+        // ignore: deprecated_member_use
         StreamNotifierProviderRef,
         AutoDisposeStreamNotifierProvider,
+        // ignore: deprecated_member_use
         AutoDisposeStreamNotifierProviderRef;
 
 export 'src/riverpod_annotation.dart';

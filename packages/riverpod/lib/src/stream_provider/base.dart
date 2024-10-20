@@ -2,6 +2,7 @@ part of '../stream_provider.dart';
 
 /// {@macro riverpod.provider_ref_base}
 /// - [StreamProviderRef.state], the value currently exposed by this provider.
+@Deprecated('will be removed in 3.0.0. Use Ref instead')
 abstract class StreamProviderRef<State> implements Ref<AsyncValue<State>> {
   /// Obtains the state currently exposed by this provider.
   ///
@@ -71,7 +72,10 @@ abstract class StreamProviderRef<State> implements Ref<AsyncValue<State>> {
 /// - [StreamProvider.autoDispose], to destroy the state of a [StreamProvider] when no longer needed.
 /// {@endtemplate}
 class StreamProvider<T> extends _StreamProviderBase<T>
-    with AlwaysAliveProviderBase<AsyncValue<T>>, AlwaysAliveAsyncSelector<T> {
+    with
+        // ignore: deprecated_member_use_from_same_package
+        AlwaysAliveProviderBase<AsyncValue<T>>,
+        AlwaysAliveAsyncSelector<T> {
   /// {@macro riverpod.stream_provider}
   StreamProvider(
     this._createFn, {
@@ -103,9 +107,11 @@ class StreamProvider<T> extends _StreamProviderBase<T>
   /// {@macro riverpod.family}
   static const family = StreamProviderFamilyBuilder();
 
+  // ignore: deprecated_member_use_from_same_package
   final Stream<T> Function(StreamProviderRef<T> ref) _createFn;
 
   @override
+  // ignore: deprecated_member_use_from_same_package
   late final AlwaysAliveRefreshable<Future<T>> future = _future(this);
 
   @Deprecated(
@@ -123,6 +129,7 @@ class StreamProvider<T> extends _StreamProviderBase<T>
 
   /// {@macro riverpod.override_with}
   @mustBeOverridden
+  // ignore: deprecated_member_use_from_same_package
   Override overrideWith(Create<Stream<T>, StreamProviderRef<T>> create) {
     return ProviderOverride(
       origin: this,
@@ -141,8 +148,11 @@ class StreamProvider<T> extends _StreamProviderBase<T>
 
 /// The element of [StreamProvider].
 class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
-    with FutureHandlerProviderElementMixin<T>
-    implements StreamProviderRef<T> {
+    with
+        FutureHandlerProviderElementMixin<T>
+    implements
+        // ignore: deprecated_member_use_from_same_package
+        StreamProviderRef<T> {
   /// The element of [StreamProvider].
   @internal
   // ignore: library_private_types_in_public_api
@@ -206,6 +216,7 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
 }
 
 /// The [Family] of [StreamProvider].
+// ignore: deprecated_member_use_from_same_package
 class StreamProviderFamily<R, Arg> extends FamilyBase<StreamProviderRef<R>,
     AsyncValue<R>, Arg, Stream<R>, StreamProvider<R>> {
   /// The [Family] of [StreamProvider].
@@ -222,6 +233,7 @@ class StreamProviderFamily<R, Arg> extends FamilyBase<StreamProviderRef<R>,
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
+    // ignore: deprecated_member_use_from_same_package
     Stream<R> Function(StreamProviderRef<R> ref, Arg arg) create,
   ) {
     return FamilyOverrideImpl<AsyncValue<R>, Arg, StreamProvider<R>>(
