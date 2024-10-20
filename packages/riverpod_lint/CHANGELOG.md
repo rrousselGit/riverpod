@@ -1,4 +1,4 @@
-## Unreleased minor
+## 2.4.0 - 2024-10-20
 
 - `functional_ref` and its quick-fix now expect:
   ```dart

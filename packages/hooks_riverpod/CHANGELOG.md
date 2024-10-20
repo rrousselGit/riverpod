@@ -1,4 +1,4 @@
-## Unreleased minor
+## 2.6.0 - 2024-10-20
 
 - Deprecated all `Ref` subclasses. Instead, use `Ref` itself.
 - Deprecated `Ref`'s type argument. Use `Ref` without its generic parameter instead.
