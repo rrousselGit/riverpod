@@ -8,7 +8,7 @@ void main() {
     'Verify that @riverpod functions have a Ref',
     'lints/functional_ref/fix/functional_ref.diff',
     sourcePath: 'test/lints/functional_ref/functional_ref.dart',
-    (result) async {
+    (result, helper) async {
       const lint = FunctionalRef();
       final fix = lint.getFixes().single;
 
@@ -26,7 +26,7 @@ void main() {
     'The Ref fix should add imports',
     'lints/functional_ref/fix/auto_import.diff',
     sourcePath: 'test/lints/functional_ref/fix/auto_import.dart',
-    (result) async {
+    (result, helper) async {
       const lint = FunctionalRef();
       final fix = lint.getFixes().single;
 
@@ -44,7 +44,7 @@ void main() {
     'Supports prefixes',
     'lints/functional_ref/fix/use_prefix.diff',
     sourcePath: 'test/lints/functional_ref/fix/use_prefix.dart',
-    (result) async {
+    (result, helper) async {
       const lint = FunctionalRef();
       final fix = lint.getFixes().single;
 

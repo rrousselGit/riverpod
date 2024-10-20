@@ -9,7 +9,7 @@ void main() {
     'assists/convert_class_based_provider_to_functional/convert_class_based_provider_to_functional.diff',
     sourcePath:
         'test/assists/convert_class_based_provider_to_functional/convert_class_based_provider_to_functional.dart',
-    (result) async {
+    (result, helper) async {
       final assist = ClassBasedToFunctionalProvider();
 
       return [

@@ -10,7 +10,7 @@ void main() {
     'Wrap with consumer',
     'assists/wrap_widget/wrap_with_consumer.diff',
     sourcePath: 'test/assists/wrap_widget/wrap_widget.dart',
-    (result) async {
+    (result, helper) async {
       final assist = WrapWithConsumer();
 
       var changes = [
@@ -37,7 +37,7 @@ void main() {
     'Wrap with ProviderScope',
     'assists/wrap_widget/wrap_with_provider_scope.diff',
     sourcePath: 'test/assists/wrap_widget/wrap_widget.dart',
-    (result) async {
+    (result, helper) async {
       final assist = WrapWithProviderScope();
 
       final changes = [

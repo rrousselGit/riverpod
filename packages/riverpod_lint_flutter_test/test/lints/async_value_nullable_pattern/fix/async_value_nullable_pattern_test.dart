@@ -9,7 +9,7 @@ void main() {
     'lints/async_value_nullable_pattern/fix/async_value_nullable_pattern.diff',
     sourcePath:
         'test/lints/async_value_nullable_pattern/fix/async_value_nullable_pattern.dart',
-    (result) async {
+    (result, helper) async {
       const lint = AsyncValueNullablePattern();
       final fix = lint.getFixes().single;
 

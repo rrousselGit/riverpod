@@ -176,7 +176,7 @@ void _runGoldenTest(
     description,
     goldenFilePath,
     sourcePath: 'test/assists/convert_to_widget/convert_to_widget.dart',
-    (result) async {
+    (result, helper) async {
       final changes = [
         // Stateless
         ...await assist.testRun(result, const SourceRange(163, 0),

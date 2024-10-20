@@ -9,7 +9,7 @@ void main() {
     'Verify that @riverpod classes extend the generated typedef',
     'lints/provider_dependencies/provider_dependencies.diff',
     sourcePath: 'test/lints/provider_dependencies/provider_dependencies.dart',
-    (result) async {
+    (result, helper) async {
       const lint = ProviderDependencies();
       final fix = lint.getFixes().single;
 
