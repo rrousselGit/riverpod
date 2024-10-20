@@ -1,4 +1,3 @@
-import 'package:analyzer/source/source_range.dart';
 import 'package:pubspec_parse/pubspec_parse.dart';
 import 'package:riverpod_lint/src/assists/convert_to_stateful_base_widget.dart';
 import 'package:riverpod_lint/src/assists/convert_to_stateless_base_widget.dart';

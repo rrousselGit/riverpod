@@ -111,7 +111,7 @@ class OffsetHelper {
 
     // Print all lines with <> in them and one line before and after.
     for (final (index, line) in lines.indexed) {
-      if (line.trim().isEmpty) continue;
+      if (buffer == null && line.trim().isEmpty) continue;
 
       final hasCursor = line.contains(_cursor);
       late final hadCursor = index >= 1 && lines[index - 1].contains(_cursor);
