@@ -14,6 +14,7 @@ export 'package:riverpod/src/internals.dart'
         ProviderOverride,
         // ignore: invalid_use_of_internal_member, used by families for overrideWith
         FamilyOverride,
+        Ref,
 
         // Provider
         Provider,

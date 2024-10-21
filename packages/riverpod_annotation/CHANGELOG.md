@@ -1,3 +1,7 @@
+## Unreleased fix
+
+- Export Ref type (thanks to @koji-1009)
+
 ## 2.6.0 - 2024-10-20
 
 - `riverpod` upgraded to `2.6.0`
