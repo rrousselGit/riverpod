@@ -45,10 +45,14 @@ class ProviderParameters extends RiverpodLintRule {
           final instantiatedObject = value.constructorName.staticElement
               ?.applyRedirectedConstructors();
 
-          final operatorEqual =
-              instantiatedObject?.enclosingElement.recursiveGetMethod('==');
+          final operatorEqual = instantiatedObject
+              // ignore: deprecated_member_use, necessary to support older versions of analyzer
+              ?.enclosingElement
+              .recursiveGetMethod('==');
 
-          final isEqualFromObjectMethod = operatorEqual?.enclosingElement
+          final isEqualFromObjectMethod = operatorEqual
+              // ignore: deprecated_member_use, necessary to support older versions of analyzer
+              ?.enclosingElement
               .safeCast<ClassElement>()
               ?.thisType
               .isDartCoreObject;
