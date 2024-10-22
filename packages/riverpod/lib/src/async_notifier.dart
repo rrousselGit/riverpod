@@ -33,6 +33,15 @@ abstract class AsyncNotifierBase<State> {
 
   void _setElement(ProviderElementBase<AsyncValue<State>> element);
 
+  /// {@macro notifier.listen}
+  void listenSelf(
+    void Function(AsyncValue<State>? previous, AsyncValue<State> next)
+        listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  }) {
+    _element.listenSelf(listener, onError: onError);
+  }
+
   /// The value currently exposed by this [AsyncNotifier].
   ///
   /// Defaults to [AsyncLoading] inside the [AsyncNotifier.build] method.

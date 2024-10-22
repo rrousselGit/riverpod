@@ -1,3 +1,7 @@
+## Unreleased 2.6.1
+
+- Added `AsyncNotifier.listenSelf`. It was mistakenly absent from the 2.6.0 release
+
 ## 2.6.0 - 2024-10-20
 
 - Deprecated all `Ref` subclasses. Instead, use `Ref` itself.
