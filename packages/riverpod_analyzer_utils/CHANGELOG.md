@@ -1,3 +1,8 @@
+## Unreleased patch
+
+- Support analyzer >=6.7.0 <7.0.0
+  This should make it compatible with Flutter's stable channel.
+
 ## 0.5.5 - 2024-10-12
 
 Bumped minimum analyzer to 6.9.0
@@ -22,7 +27,7 @@ Bump custom_lint
 
 - **Breaking** `LegacyProviderDeclarationElement.providerType` is now nullable.
 - Fix crash when parsing classes with a `ProviderBase` field.
- 
+
 ## 0.4.3 - 2023-10-28
 
 - `GeneratorProviderDeclaration.createdTypeDisplayString` now always

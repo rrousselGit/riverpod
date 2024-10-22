@@ -1,3 +1,8 @@
+## Unreleased 2.6.1
+
+- Support analyzer >=6.7.0 <7.0.0
+  This should make it compatible with Flutter's stable channel.
+
 ## 2.4.0 - 2024-10-20
 
 - `functional_ref` and its quick-fix now expect:
