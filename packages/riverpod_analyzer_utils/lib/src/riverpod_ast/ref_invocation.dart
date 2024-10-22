@@ -21,7 +21,7 @@ abstract class RefInvocation extends RiverpodAst
     final functionOwner = function.staticElement
         .cast<MethodElement>()
         ?.declaration
-        .enclosingElement3;
+        .enclosingElement;
 
     if (functionOwner == null ||
         // Since Ref is sealed, checking that the function is from the package:riverpod
