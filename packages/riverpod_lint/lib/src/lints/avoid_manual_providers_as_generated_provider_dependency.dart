@@ -30,7 +30,7 @@ class AvoidManualProvidersAsGeneratedProviderDependency
       if (dependencyElement is! GeneratorProviderDeclarationElement) {
         reporter.atNode(
           dependency.provider.provider ?? dependency.provider.node,
-          code,
+          _code,
         );
       }
     }

@@ -37,25 +37,29 @@ class ProviderParameters extends RiverpodLintRule {
 
         if (value is TypedLiteral && !value.isConst) {
           // Non-const literals always return a new instance and don't override ==
-          reporter.atNode(value, code);
+          reporter.atNode(value, _code);
         } else if (value is FunctionExpression) {
           // provider(() => 42) is bad because a new function will always be created
-          reporter.atNode(value, code);
+          reporter.atNode(value, _code);
         } else if (value is InstanceCreationExpression && !value.isConst) {
           final instantiatedObject = value.constructorName.staticElement
               ?.applyRedirectedConstructors();
 
-          final operatorEqual =
-              instantiatedObject?.enclosingElement3.recursiveGetMethod('==');
+          final operatorEqual = instantiatedObject
+              // ignore: deprecated_member_use, necessary to support older versions of analyzer
+              ?.enclosingElement
+              .recursiveGetMethod('==');
 
-          final isEqualFromObjectMethod = operatorEqual?.enclosingElement3
+          final isEqualFromObjectMethod = operatorEqual
+              // ignore: deprecated_member_use, necessary to support older versions of analyzer
+              ?.enclosingElement
               .safeCast<ClassElement>()
               ?.thisType
               .isDartCoreObject;
 
           if (operatorEqual == null || (isEqualFromObjectMethod ?? true)) {
             // Doing `provider(new Class())` is bad if the class does not override ==
-            reporter.atNode(value, code);
+            reporter.atNode(value, _code);
           }
         }
       }

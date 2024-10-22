@@ -14,5 +14,5 @@ dependency_overrides:
     path: ../packages/riverpod_analyzer_utils
 
   ## Needed due to Flutter not supporting 6.0.0 yet
-  analyzer: ^6.0.0
+  analyzer: ^6.7.0
   analyzer_plugin: ^0.11.3

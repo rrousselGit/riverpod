@@ -26,7 +26,8 @@ abstract class WidgetRefInvocation extends RiverpodAst
     final functionOwner = function.staticElement
         .cast<MethodElement>()
         ?.declaration
-        .enclosingElement3;
+        // ignore: deprecated_member_use, necessary to support older versions of analyzer
+        .enclosingElement;
 
     if (functionOwner == null ||
         // Since Ref is sealed, checking that the function is from the package:riverpod

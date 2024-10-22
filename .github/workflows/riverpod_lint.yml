@@ -26,6 +26,7 @@ jobs:
       matrix:
         channel:
           - master
+          - stable
         package_path:
           - packages/riverpod_analyzer_utils
           - packages/riverpod_analyzer_utils_tests
