@@ -411,6 +411,49 @@ final provider = Provider<int>((ref) {
     );
   });
 
+  testSource('Decodes nested ref.read invocations with family providers',
+      runGenerator: true, source: '''
+import 'package:riverpod/riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'foo.g.dart';
+
+final dep = FutureProvider((ref) => 0);
+final dep2 = FutureProvider.family((ref, int arg) => 0);
+
+final provider = Provider<int>((ref) {
+  ref.read(dep2(ref.read(dep)));
+
+  return 0;
+});
+''', (resolver) async {
+    final result = await resolver.resolveRiverpodAnalysisResult();
+
+    expect(result.refReadInvocations, hasLength(2));
+    expect(result.refInvocations, result.refReadInvocations);
+
+    expect(
+      result.refReadInvocations[0].node.toSource(),
+      'ref.read(dep2(ref.read(dep)))',
+    );
+    expect(result.refReadInvocations[0].function.toSource(), 'read');
+    expect(
+      result.refReadInvocations[0].provider.providerElement,
+      same(
+        result.legacyProviderDeclarations.findByName('dep2').providerElement,
+      ),
+    );
+
+    expect(result.refReadInvocations[1].node.toSource(), 'ref.read(dep)');
+    expect(result.refReadInvocations[1].function.toSource(), 'read');
+    expect(
+      result.refReadInvocations[1].provider.providerElement,
+      same(
+        result.legacyProviderDeclarations.findByName('dep').providerElement,
+      ),
+    );
+  });
+
   testSource('Decodes unknown ref usages', source: '''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';

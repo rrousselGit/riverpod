@@ -14,7 +14,7 @@ void main() {
       final fix = lint.getFixes().single;
 
       final errors = await lint.testRun(result);
-      expect(errors, hasLength(10));
+      expect(errors, hasLength(11));
 
       final changes = await Future.wait([
         for (final error in errors) fix.testRun(result, error, errors),
