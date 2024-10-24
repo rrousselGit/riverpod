@@ -9,6 +9,9 @@ int dep(Ref ref) => 0;
 @Riverpod(dependencies: [])
 int dep2(Ref ref) => 0;
 
+@Riverpod(dependencies: [])
+int dep3(Ref ref, int parameter) => 0;
+
 ////////////
 
 // expect_lint: provider_dependencies
@@ -67,6 +70,18 @@ int multipleDeps(Ref ref) {
 )
 int extraDep(Ref ref) {
   ref.watch(dep2Provider);
+  return 0;
+}
+
+@Riverpod(
+  keepAlive: false,
+  // expect_lint: provider_dependencies
+  dependencies: [
+    dep3,
+  ],
+)
+int onFamilyDep(Ref ref) {
+  ref.read(dep3Provider(ref.read(dep2Provider)));
   return 0;
 }
 
