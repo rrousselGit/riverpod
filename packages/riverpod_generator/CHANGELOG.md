@@ -1,3 +1,7 @@
+## 2.6.2 - 2024-10-27
+
+- `riverpod_analyzer_utils` upgraded to `0.5.7`
+
 ## 2.6.1 - 2024-10-22
 
 - Support analyzer >=6.7.0 <7.0.0

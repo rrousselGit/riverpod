@@ -1,6 +1,6 @@
 name: riverpod_generator
 description: A code generator for Riverpod. This both simplifies the syntax empowers it, such as allowing stateful hot-reload.
-version: 2.6.1
+version: 2.6.2
 repository: https://github.com/rrousselGit/riverpod
 issue_tracker: https://github.com/rrousselGit/riverpod/issues
 funding:
@@ -17,7 +17,7 @@ dependencies:
   crypto: ^3.0.2
   meta: ^1.7.0
   path: ^1.8.0
-  riverpod_analyzer_utils: 0.5.6
+  riverpod_analyzer_utils: 0.5.7
   riverpod_annotation: 2.6.1
   source_gen: ^1.2.0
 
