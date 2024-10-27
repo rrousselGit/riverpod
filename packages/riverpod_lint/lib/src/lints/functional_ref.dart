@@ -80,7 +80,7 @@ class FunctionalRefFix extends RiverpodFix {
 
       final refNode = declaration
           .node.functionExpression.parameters!.parameters.firstOrNull;
-      if (refNode == null) {
+      if (refNode == null || refNode.isNamed) {
         // No ref parameter, adding one
         final changeBuilder = reporter.createChangeBuilder(
           message: 'Add ref parameter',
@@ -90,9 +90,14 @@ class FunctionalRefFix extends RiverpodFix {
         changeBuilder.addDartFileEdit((builder) {
           final ref = builder.importRef();
 
+          var toInsert = '$ref ref';
+          if (refNode != null) {
+            toInsert = '$toInsert, ';
+          }
+
           builder.addSimpleInsertion(
             declaration.node.functionExpression.parameters!.leftParenthesis.end,
-            '$ref ref',
+            toInsert,
           );
         });
         return;
@@ -135,6 +140,7 @@ extension ImportFix on DartFileEditBuilder {
     return _importWithPrefix('Ref');
   }
 
+  @useResult
   String _importWithPrefix(String name) {
     final hooksRiverpodUri =
         Uri(scheme: 'package', path: 'hooks_riverpod/hooks_riverpod.dart');
