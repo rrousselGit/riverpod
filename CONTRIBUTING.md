@@ -35,7 +35,7 @@ You do not need to spend a lot of time making that issue. The important is:
 Making an issue is important to discuss what needs to be done.  
 You wouldn't want to spend tens of hours working on something, only to
 have your PR rejected because we disagree on the direction taken.
-An discussion may slow down the work initially, but it can save you from a lot
+A discussion may slow down the work initially, but it can save you from a lot
 of frustration.
 
 ## Documentation work
