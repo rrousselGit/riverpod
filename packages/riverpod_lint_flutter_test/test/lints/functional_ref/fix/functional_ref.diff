@@ -34,14 +34,14 @@ int incorrectlyTyped(
   return 0;
 ```
 ---
-Message: `Type as Ref`
+Message: `Add ref parameter`
 Priority: 90
 Diff for file `test/lints/functional_ref/functional_ref.dart:34`:
 ```
 @riverpod
 // expect_lint: functional_ref
 - int noRefButArgs({int a = 42}) {
-+ int noRefButArgs({Ref a = 42}) {
++ int noRefButArgs(Ref ref, {int a = 42}) {
   return 0;
 }
 ```

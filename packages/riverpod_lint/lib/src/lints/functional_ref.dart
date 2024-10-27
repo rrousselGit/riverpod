@@ -1,6 +1,9 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/error/error.dart' hide LintCode;
+import 'package:analyzer/error/error.dart'
+    hide
+        // ignore: undefined_hidden_name, necessary to support lower analyzer version
+        LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_dart.dart';
 import 'package:collection/collection.dart';
@@ -80,7 +83,7 @@ class FunctionalRefFix extends RiverpodFix {
 
       final refNode = declaration
           .node.functionExpression.parameters!.parameters.firstOrNull;
-      if (refNode == null) {
+      if (refNode == null || refNode.isNamed) {
         // No ref parameter, adding one
         final changeBuilder = reporter.createChangeBuilder(
           message: 'Add ref parameter',
@@ -90,9 +93,14 @@ class FunctionalRefFix extends RiverpodFix {
         changeBuilder.addDartFileEdit((builder) {
           final ref = builder.importRef();
 
+          var toInsert = '$ref ref';
+          if (refNode != null) {
+            toInsert = '$toInsert, ';
+          }
+
           builder.addSimpleInsertion(
             declaration.node.functionExpression.parameters!.leftParenthesis.end,
-            '$ref ref',
+            toInsert,
           );
         });
         return;
@@ -135,6 +143,7 @@ extension ImportFix on DartFileEditBuilder {
     return _importWithPrefix('Ref');
   }
 
+  @useResult
   String _importWithPrefix(String name) {
     final hooksRiverpodUri =
         Uri(scheme: 'package', path: 'hooks_riverpod/hooks_riverpod.dart');
