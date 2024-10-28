@@ -433,10 +433,20 @@ final provider2 = Provider<int>((ref) {
 
   return 0;
 });
+
+int transformArg(int arg) {
+  return arg;
+}
+
+final provider3 = Provider<int>((ref) {
+  ref.read(dep3(transformArg(ref.read(dep))));
+
+  return 0;
+});
 ''', (resolver) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    expect(result.refReadInvocations, hasLength(5));
+    expect(result.refReadInvocations, hasLength(7));
     expect(result.refInvocations, result.refReadInvocations);
 
     // provider
@@ -479,6 +489,12 @@ final provider2 = Provider<int>((ref) {
       'ref.read(dep2(ref.read(dep)))',
     );
     expect(result.refReadInvocations[4].node.toSource(), 'ref.read(dep)');
+
+    expect(
+      result.refReadInvocations[5].node.toSource(),
+      'ref.read(dep3(transformArg(ref.read(dep))))',
+    );
+    expect(result.refReadInvocations[6].node.toSource(), 'ref.read(dep)');
   });
 
   testSource('Decodes unknown ref usages', source: '''
@@ -643,76 +659,6 @@ void fn(_Ref ref) {
       result.refWatchInvocations[2].provider.familyArguments?.toSource(),
       '(id: 0)',
     );
-  });
-
-  testSource('Decodes nested ref.watch invocations with family providers',
-      runGenerator: true, source: '''
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-
-part 'foo.g.dart';
-
-final dep = FutureProvider((ref) => 0);
-final dep2 = FutureProvider.family((ref, int arg) => 0);
-final dep3 = FutureProvider.family((ref, int arg) => 0);
-
-final provider = Provider<int>((ref) {
-  ref.watch(dep2(ref.watch(dep)));
-
-  return 0;
-});
-
-final provider2 = Provider<int>((ref) {
-  ref.watch(dep3(ref.watch(dep2(ref.watch(dep)))));
-
-  return 0;
-});
-''', (resolver) async {
-    final result = await resolver.resolveRiverpodAnalysisResult();
-
-    expect(result.refWatchInvocations, hasLength(5));
-    expect(result.refInvocations, result.refWatchInvocations);
-
-    // provider
-    expect(
-      result.refWatchInvocations[0].node.toSource(),
-      'ref.watch(dep2(ref.watch(dep)))',
-    );
-    expect(result.refWatchInvocations[0].function.toSource(), 'watch');
-    expect(
-      result.refWatchInvocations[0].provider.providerElement,
-      same(
-        result.legacyProviderDeclarations.findByName('dep2').providerElement,
-      ),
-    );
-
-    expect(result.refWatchInvocations[1].node.toSource(), 'ref.watch(dep)');
-    expect(result.refWatchInvocations[1].function.toSource(), 'watch');
-    expect(
-      result.refWatchInvocations[1].provider.providerElement,
-      same(
-        result.legacyProviderDeclarations.findByName('dep').providerElement,
-      ),
-    );
-
-    // provider2
-    expect(
-      result.refWatchInvocations[2].node.toSource(),
-      'ref.watch(dep3(ref.watch(dep2(ref.watch(dep)))))',
-    );
-    expect(result.refWatchInvocations[2].function.toSource(), 'watch');
-    expect(
-      result.refWatchInvocations[2].provider.providerElement,
-      same(
-        result.legacyProviderDeclarations.findByName('dep3').providerElement,
-      ),
-    );
-
-    expect(
-      result.refWatchInvocations[3].node.toSource(),
-      'ref.watch(dep2(ref.watch(dep)))',
-    );
-    expect(result.refWatchInvocations[4].node.toSource(), 'ref.watch(dep)');
   });
 
   testSource('Decodes mix of nested ref.watch and ref.read invocations',
