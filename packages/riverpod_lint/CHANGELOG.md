@@ -14,11 +14,6 @@
   @riverpod
   Model foo(Ref ref) => ..
   ```
-  Do:
-  ```dart
-  @riverpod
-  Model foo(FooRef ref) => ..
-  ```
 
 ## 2.3.14 - 2024-10-12
 
