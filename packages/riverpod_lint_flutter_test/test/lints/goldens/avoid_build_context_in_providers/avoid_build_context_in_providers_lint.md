@@ -1,7 +1,7 @@
 code: avoid_build_context_in_providers
 severity: Severity.info
 message: Passing BuildContext to providers indicates mixing UI with the business logic.
-test/lints/avoid_build_context_in_providers.dart:13:3
+test/lints/avoid_build_context_in_providers.dart:12:3
 
 ```dart
   Ref ref,
@@ -16,7 +16,7 @@ test/lints/avoid_build_context_in_providers.dart:13:3
 code: avoid_build_context_in_providers
 severity: Severity.info
 message: Passing BuildContext to providers indicates mixing UI with the business logic.
-test/lints/avoid_build_context_in_providers.dart:15:3
+test/lints/avoid_build_context_in_providers.dart:14:3
 
 ```dart
   BuildContext context1, {
@@ -31,7 +31,7 @@ test/lints/avoid_build_context_in_providers.dart:15:3
 code: avoid_build_context_in_providers
 severity: Severity.info
 message: Passing BuildContext to providers indicates mixing UI with the business logic.
-test/lints/avoid_build_context_in_providers.dart:23:5
+test/lints/avoid_build_context_in_providers.dart:22:5
 
 ```dart
   int build(
@@ -46,7 +46,7 @@ test/lints/avoid_build_context_in_providers.dart:23:5
 code: avoid_build_context_in_providers
 severity: Severity.info
 message: Passing BuildContext to providers indicates mixing UI with the business logic.
-test/lints/avoid_build_context_in_providers.dart:25:5
+test/lints/avoid_build_context_in_providers.dart:24:5
 
 ```dart
     BuildContext context1, {
@@ -61,7 +61,7 @@ test/lints/avoid_build_context_in_providers.dart:25:5
 code: avoid_build_context_in_providers
 severity: Severity.info
 message: Passing BuildContext to providers indicates mixing UI with the business logic.
-test/lints/avoid_build_context_in_providers.dart:31:5
+test/lints/avoid_build_context_in_providers.dart:30:5
 
 ```dart
   void event(
@@ -76,7 +76,7 @@ test/lints/avoid_build_context_in_providers.dart:31:5
 code: avoid_build_context_in_providers
 severity: Severity.info
 message: Passing BuildContext to providers indicates mixing UI with the business logic.
-test/lints/avoid_build_context_in_providers.dart:33:5
+test/lints/avoid_build_context_in_providers.dart:32:5
 
 ```dart
     BuildContext context3, {

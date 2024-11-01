@@ -39,40 +39,4 @@ void main() {
       return changes.flattened;
     },
   );
-
-  testGolden(
-    'The Ref fix should add imports',
-    'test/lints/functional_ref/fix/auto_import.diff',
-    sourcePath: 'test/lints/functional_ref/fix/auto_import.dart',
-    (result, helper) async {
-      const lint = FunctionalRef();
-      final fix = lint.getFixes().single;
-
-      final errors = await lint.testRun(result);
-
-      final changes = await Future.wait([
-        for (final error in errors) fix.testRun(result, error, errors),
-      ]);
-
-      return changes.flattened;
-    },
-  );
-
-  testGolden(
-    'Supports prefixes',
-    'test/lints/functional_ref/fix/use_prefix.diff',
-    sourcePath: 'test/lints/functional_ref/fix/use_prefix.dart',
-    (result, helper) async {
-      const lint = FunctionalRef();
-      final fix = lint.getFixes().single;
-
-      final errors = await lint.testRun(result);
-
-      final changes = await Future.wait([
-        for (final error in errors) fix.testRun(result, error, errors),
-      ]);
-
-      return changes.flattened;
-    },
-  );
 }

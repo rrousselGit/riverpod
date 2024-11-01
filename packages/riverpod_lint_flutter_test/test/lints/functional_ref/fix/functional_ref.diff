@@ -1,6 +1,6 @@
 Message: `Type as Ref`
 Priority: 90
-Diff for file `test/lints/functional_ref/functional_ref.dart:10`:
+Diff for file `test/lints/functional_ref/functional_ref.dart:8`:
 ```
 int nameless(
   // expect_lint: functional_ref
@@ -12,7 +12,7 @@ int nameless(
 ---
 Message: `Type as Ref`
 Priority: 90
-Diff for file `test/lints/functional_ref/functional_ref.dart:20`:
+Diff for file `test/lints/functional_ref/functional_ref.dart:18`:
 ```
 @riverpod
 int valid(Ref ref) => 0;

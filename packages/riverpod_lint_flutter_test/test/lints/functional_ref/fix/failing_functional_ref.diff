@@ -1,6 +1,6 @@
 Message: `Add ref parameter`
 Priority: 90
-Diff for file `test/lints/functional_ref/failing_functional_ref.dart:6`:
+Diff for file `test/lints/functional_ref/failing_functional_ref.dart:5`:
 ```
 @riverpod
 // expect_lint: functional_ref
@@ -12,7 +12,7 @@ Diff for file `test/lints/functional_ref/failing_functional_ref.dart:6`:
 ---
 Message: `Type as Ref`
 Priority: 90
-Diff for file `test/lints/functional_ref/failing_functional_ref.dart:13`:
+Diff for file `test/lints/functional_ref/failing_functional_ref.dart:12`:
 ```
 int incorrectlyTyped(
   // expect_lint: functional_ref
@@ -24,7 +24,7 @@ int incorrectlyTyped(
 ---
 Message: `Add ref parameter`
 Priority: 90
-Diff for file `test/lints/functional_ref/failing_functional_ref.dart:21`:
+Diff for file `test/lints/functional_ref/failing_functional_ref.dart:20`:
 ```
 @riverpod
 // expect_lint: functional_ref

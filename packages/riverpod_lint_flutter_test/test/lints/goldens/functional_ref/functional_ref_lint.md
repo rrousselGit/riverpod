@@ -1,7 +1,7 @@
 code: functional_ref
 severity: Severity.warning
 message: Functional providers must receive a ref matching the provider name as their first positional parameter.
-test/lints/functional_ref/functional_ref.dart:10:3
+test/lints/functional_ref/functional_ref.dart:8:3
 
 ```dart
 int nameless(
@@ -16,7 +16,7 @@ int nameless(
 code: functional_ref
 severity: Severity.warning
 message: Functional providers must receive a ref matching the provider name as their first positional parameter.
-test/lints/functional_ref/functional_ref.dart:16:32
+test/lints/functional_ref/functional_ref.dart:14:32
 
 ```dart
 
