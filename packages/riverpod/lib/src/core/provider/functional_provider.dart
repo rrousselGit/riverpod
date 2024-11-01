@@ -23,7 +23,7 @@ abstract base class $FunctionalProvider< //
   /// This is an implementation detail of Riverpod and should not be used.
   @visibleForOverriding
   $FunctionalProvider<StateT, CreatedT> $copyWithCreate(
-    Create<CreatedT, Ref<StateT>> create,
+    Create<CreatedT> create,
   );
 
   /// {@template riverpod.override_with}
@@ -60,7 +60,7 @@ abstract base class $FunctionalProvider< //
   /// );
   /// ```
   /// {@endtemplate}
-  Override overrideWith(Create<CreatedT, Ref<StateT>> create) {
+  Override overrideWith(Create<CreatedT> create) {
     return $ProviderOverride(
       origin: this,
       providerOverride: $copyWithCreate(create),

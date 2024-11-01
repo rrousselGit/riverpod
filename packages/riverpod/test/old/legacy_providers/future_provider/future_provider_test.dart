@@ -30,10 +30,8 @@ void main() {
     final autoDispose = FutureProvider.autoDispose<int>((ref) => 0);
     final container = ProviderContainer.test(
       overrides: [
-        provider.overrideWith((Ref<AsyncValue<int>> ref) => 42),
-        autoDispose.overrideWith(
-          (Ref<AsyncValue<int>> ref) => 84,
-        ),
+        provider.overrideWith((ref) => 42),
+        autoDispose.overrideWith((ref) => 84),
       ],
     );
 
@@ -86,12 +84,8 @@ void main() {
     );
     final container = ProviderContainer.test(
       overrides: [
-        family.overrideWith(
-          (Ref<AsyncValue<String>> ref, int arg) => '42 $arg',
-        ),
-        autoDisposeFamily.overrideWith(
-          (Ref<AsyncValue<String>> ref, int arg) => '84 $arg',
-        ),
+        family.overrideWith((ref, int arg) => '42 $arg'),
+        autoDisposeFamily.overrideWith((ref, int arg) => '84 $arg'),
       ],
     );
 
@@ -241,7 +235,7 @@ void main() {
   test('can read and set current AsyncValue', () {
     final container = ProviderContainer.test();
     final listener = Listener<AsyncValue<int>>();
-    late Ref<AsyncValue<int>> ref;
+    late Ref ref;
     final provider = FutureProvider<int>((r) {
       ref = r;
       return 0;

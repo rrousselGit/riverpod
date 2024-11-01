@@ -349,7 +349,7 @@ void main() {
 
       test('supports asReload', () async {
         final container = ProviderContainer.test();
-        late Ref<AsyncValue<int>> ref;
+        late Ref ref;
         final provider = FutureProvider<int>((r) async {
           ref = r;
           return 0;
@@ -601,7 +601,7 @@ void main() {
         final listener = Listener<int>();
         final listener2 = Listener<int>();
 
-        late Ref<int> ref;
+        late Ref ref;
         final provider = Provider<int>((r) {
           ref = r;
           ref.listenSelf(listener.call);
@@ -826,7 +826,7 @@ void main() {
       test('does not invoke value listeners if paused', () {
         final container = ProviderContainer.test();
         final listener = Listener<int>();
-        late Ref<int> ref;
+        late Ref ref;
         final provider = Provider<int>((r) {
           ref = r;
           return 0;
@@ -1156,7 +1156,7 @@ void main() {
       test('cannot listen itself', () {
         final container = ProviderContainer.test();
         final listener = Listener<int>();
-        late Ref<int> ref;
+        late Ref ref;
         late Provider<int> provider;
         provider = Provider<int>((r) {
           ref = r;
@@ -1856,7 +1856,7 @@ void main() {
         final listener = Listener<int>();
         final selfListener = Listener<int>();
         final container = ProviderContainer.test(observers: [observer]);
-        late Ref<int> ref;
+        late Ref ref;
         final provider = Provider<int>((r) {
           ref = r;
           ref.listenSelf(selfListener.call);
@@ -2957,7 +2957,7 @@ void main() {
     group('mounted', () {
       test('stays false on older refs while new refs are building', () {
         final container = ProviderContainer.test();
-        late Ref<int> ref;
+        late Ref ref;
         final provider = Provider<int>((r) {
           ref = r;
           return 0;

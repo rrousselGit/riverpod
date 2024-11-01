@@ -149,7 +149,7 @@ final class StateNotifierProvider< //
   @visibleForOverriding
   @override
   StateNotifierProvider<NotifierT, StateT> $copyWithCreate(
-    Create<NotifierT, Ref<StateT>> create,
+    Create<NotifierT> create,
   ) {
     return StateNotifierProvider<NotifierT, StateT>.internal(
       create,

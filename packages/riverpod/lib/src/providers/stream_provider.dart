@@ -13,8 +13,8 @@ import 'provider.dart' show Provider;
 /// Implementation detail of `riverpod_generator`.
 /// Do not use, as this may be removed at any time.
 @internal
-base mixin $StreamProvider<StateT, RefT> on ProviderBase<AsyncValue<StateT>> {
-  Stream<StateT> create(RefT ref);
+base mixin $StreamProvider<StateT> on ProviderBase<AsyncValue<StateT>> {
+  Stream<StateT> create(Ref ref);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(AsyncValue<StateT> value) {
@@ -85,7 +85,7 @@ base class StreamProvider<StateT>
     extends $FunctionalProvider<AsyncValue<StateT>, Stream<StateT>>
     with
         $FutureModifier<StateT>,
-        $StreamProvider<StateT, Ref<AsyncValue<StateT>>>,
+        $StreamProvider<StateT>,
         LegacyProviderMixin<AsyncValue<StateT>> {
   /// {@macro riverpod.stream_provider}
   StreamProvider(
@@ -120,10 +120,10 @@ base class StreamProvider<StateT>
   /// {@macro riverpod.family}
   static const family = StreamProviderFamilyBuilder();
 
-  final Create<Stream<StateT>, Ref<AsyncValue<StateT>>> _create;
+  final Create<Stream<StateT>> _create;
 
   @override
-  Stream<StateT> create(Ref<AsyncValue<StateT>> ref) => _create(ref);
+  Stream<StateT> create(Ref ref) => _create(ref);
 
   @internal
   @override
@@ -135,7 +135,7 @@ base class StreamProvider<StateT>
   @visibleForOverriding
   @override
   $FunctionalProvider<AsyncValue<StateT>, Stream<StateT>> $copyWithCreate(
-    Create<Stream<StateT>, Ref<AsyncValue<StateT>>> create,
+    Create<Stream<StateT>> create,
   ) {
     return StreamProvider<StateT>.internal(
       create,
@@ -158,7 +158,7 @@ class $StreamProviderElement<StateT> extends ProviderElement<AsyncValue<StateT>>
   $StreamProviderElement(this.provider, super.pointer);
 
   @override
-  final $StreamProvider<StateT, Ref<AsyncValue<StateT>>> provider;
+  final $StreamProvider<StateT> provider;
 
   final _streamNotifier = ProxyElementValueListenable<Stream<StateT>>();
   final StreamController<StateT> _streamController =

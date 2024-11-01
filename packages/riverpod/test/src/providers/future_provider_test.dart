@@ -11,7 +11,7 @@ void main() {
   group('FutureProvider', () {
     test('resets progress to 0 if restarting while the future is pending', () {
       final container = ProviderContainer.test();
-      late Ref<AsyncValue<int>> ref;
+      late Ref ref;
       final completer = Completer<int>();
       addTearDown(() => completer.complete(42));
 
@@ -69,7 +69,7 @@ void main() {
         () => fakeAsync((fake) async {
           final container = ProviderContainer.test();
           var retryCount = 0;
-          late Ref<AsyncValue<int>> r;
+          late Ref r;
           final provider = FutureProvider<int>(
             (ref) {
               r = ref;

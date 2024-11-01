@@ -84,7 +84,7 @@ abstract class $Notifier<StateT> extends NotifierBase<StateT, StateT> {
 /// Do not use.
 abstract base class $NotifierProvider //
     <NotifierT extends $Notifier<StateT>, StateT>
-    extends $ClassProvider<NotifierT, StateT, StateT, Ref<StateT>> {
+    extends $ClassProvider<NotifierT, StateT, StateT> {
   /// An internal base class for [Notifier].
   ///
   /// Not meant for public consumption.

@@ -38,12 +38,8 @@ void main() {
 
     final container = ProviderContainer.test(
       overrides: [
-        provider.overrideWith(
-          (Ref<ValueNotifier<int>> ref) => ValueNotifier(42),
-        ),
-        autoDispose.overrideWith(
-          (Ref<ValueNotifier<int>> ref) => ValueNotifier(84),
-        ),
+        provider.overrideWith((ref) => ValueNotifier(42)),
+        autoDispose.overrideWith((ref) => ValueNotifier(84)),
       ],
     );
 

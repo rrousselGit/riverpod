@@ -22,8 +22,6 @@ class ProviderTemplate extends Template {
   late final _generics = provider.generics();
   late final _genericsDefinition = provider.genericsDefinition();
 
-  late final _refType = provider.refWithGenerics;
-
   @override
   void run(StringBuffer buffer) {
     final provider = this.provider;
@@ -41,15 +39,15 @@ class ProviderTemplate extends Template {
           case SupportedCreatedType.future:
             modifiers = [
               '\$FutureModifier<$valueType>',
-              '\$FutureProvider<$valueType, $_refType>',
+              '\$FutureProvider<$valueType>',
             ];
           case SupportedCreatedType.stream:
             modifiers = [
               '\$FutureModifier<$valueType>',
-              '\$StreamProvider<$valueType, $_refType>',
+              '\$StreamProvider<$valueType>',
             ];
           case SupportedCreatedType.value:
-            modifiers = ['\$Provider<$valueType, $_refType>'];
+            modifiers = ['\$Provider<$valueType>'];
         }
 
         final mixins = modifiers.isEmpty ? '' : ' with ${modifiers.join(', ')}';
@@ -270,7 +268,7 @@ ${provider.doc} final class $name$_genericsDefinition
   void _writeFunctionalCreate(StringBuffer buffer) {
     buffer.write('''
   @override
-  ${provider.createdTypeDisplayString} create(${provider.refImplName}$_generics ref) {
+  ${provider.createdTypeDisplayString} create(Ref ref) {
     final _\$cb = _createCb ?? ${provider.name}$_generics;
 ''');
 

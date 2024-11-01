@@ -198,7 +198,7 @@ void main() {
 
   test('handles multiple AsyncLoading at once then data', () async {
     final container = ProviderContainer.test();
-    late Ref<AsyncValue<int>> ref;
+    late Ref ref;
     final provider = FutureProvider<int>((r) {
       ref = r;
       final completer = Completer<int>();

@@ -24,11 +24,10 @@ This means that you tried to either:
 
 /// The prototype of `Notifier.build` overrides.
 @internal
-typedef RunNotifierBuild< //
-        NotifierT,
-        CreatedT,
-        RefT extends Ref<Object?>>
-    = CreatedT Function(RefT ref, NotifierT notifier);
+typedef RunNotifierBuild<NotifierT, CreatedT> = CreatedT Function(
+  Ref ref,
+  NotifierT notifier,
+);
 
 /// A base class for all "notifiers".
 ///
@@ -105,8 +104,7 @@ abstract base class $ClassProvider< //
         StateT,
         CreatedT>,
     StateT,
-    CreatedT,
-    RefT extends Ref<StateT>> extends ProviderBase<StateT> {
+    CreatedT> extends ProviderBase<StateT> {
   const $ClassProvider({
     required super.name,
     required super.from,
@@ -128,19 +126,19 @@ abstract base class $ClassProvider< //
   }
 
   @internal
-  final RunNotifierBuild<NotifierT, CreatedT, RefT>? runNotifierBuildOverride;
+  final RunNotifierBuild<NotifierT, CreatedT>? runNotifierBuildOverride;
 
   @internal
   NotifierT create();
 
   @visibleForOverriding
-  $ClassProvider<NotifierT, StateT, CreatedT, RefT> $copyWithCreate(
+  $ClassProvider<NotifierT, StateT, CreatedT> $copyWithCreate(
     NotifierT Function() create,
   );
 
   @visibleForOverriding
-  $ClassProvider<NotifierT, StateT, CreatedT, RefT> $copyWithBuild(
-    RunNotifierBuild<NotifierT, CreatedT, RefT> build,
+  $ClassProvider<NotifierT, StateT, CreatedT> $copyWithBuild(
+    RunNotifierBuild<NotifierT, CreatedT> build,
   );
 
   /// {@macro riverpod.override_with}
@@ -155,7 +153,7 @@ abstract base class $ClassProvider< //
   /// Hello world
   /// {@endtemplate}
   Override overrideWithBuild(
-    RunNotifierBuild<NotifierT, CreatedT, RefT> build,
+    RunNotifierBuild<NotifierT, CreatedT> build,
   ) {
     return $ProviderOverride(
       origin: this,
@@ -181,7 +179,7 @@ abstract class ClassProviderElement< //
   ClassProviderElement(super.pointer);
 
   @override
-  $ClassProvider<NotifierT, StateT, CreatedT, Ref<StateT>> get provider;
+  $ClassProvider<NotifierT, StateT, CreatedT> get provider;
 
   final classListenable = ProxyElementValueListenable<NotifierT>();
 

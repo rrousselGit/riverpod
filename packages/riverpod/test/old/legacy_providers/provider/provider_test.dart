@@ -15,10 +15,8 @@ void main() {
       final autoDispose = Provider.autoDispose<int>((ref) => 0);
       final container = ProviderContainer.test(
         overrides: [
-          provider.overrideWith((Ref<int> ref) => 42),
-          autoDispose.overrideWith(
-            (Ref<int> ref) => 84,
-          ),
+          provider.overrideWith((ref) => 42),
+          autoDispose.overrideWith((ref) => 84),
         ],
       );
 
@@ -33,10 +31,8 @@ void main() {
       );
       final container = ProviderContainer.test(
         overrides: [
-          family.overrideWith((Ref<String> ref, int arg) => '42 $arg'),
-          autoDisposeFamily.overrideWith(
-            (Ref<String> ref, int arg) => '84 $arg',
-          ),
+          family.overrideWith((ref, int arg) => '42 $arg'),
+          autoDisposeFamily.overrideWith((ref, int arg) => '84 $arg'),
         ],
       );
 
@@ -78,7 +74,7 @@ void main() {
       test('can read and change current value', () {
         final container = ProviderContainer.test();
         final listener = Listener<int>();
-        late Ref<int> ref;
+        late Ref ref;
         final provider = Provider<int>((r) {
           ref = r;
           return 0;
@@ -151,7 +147,7 @@ void main() {
         () async {
       final container = ProviderContainer.test();
       final listener = Listener<int>();
-      late Ref<int> ref;
+      late Ref ref;
       final provider = Provider<int>((r) {
         ref = r;
         return 0;

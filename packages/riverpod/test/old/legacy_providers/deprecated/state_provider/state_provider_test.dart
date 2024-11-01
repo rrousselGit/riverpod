@@ -18,8 +18,8 @@ void main() {
     );
     final container = ProviderContainer.test(
       overrides: [
-        provider.overrideWith((Ref<int> ref) => 42),
-        autoDispose.overrideWith((Ref<int> ref) => 84),
+        provider.overrideWith((ref) => 42),
+        autoDispose.overrideWith((ref) => 84),
       ],
     );
 
@@ -34,12 +34,8 @@ void main() {
     );
     final container = ProviderContainer.test(
       overrides: [
-        family.overrideWith(
-          (Ref<String> ref, int arg) => '42 $arg',
-        ),
-        autoDisposeFamily.overrideWith(
-          (Ref<String> ref, int arg) => '84 $arg',
-        ),
+        family.overrideWith((ref, int arg) => '42 $arg'),
+        autoDisposeFamily.overrideWith((ref, int arg) => '84 $arg'),
       ],
     );
 

@@ -39,12 +39,8 @@ void main() {
     );
     final container = ProviderContainer.test(
       overrides: [
-        provider.overrideWith(
-          (Ref<int> ref) => TestNotifier(42),
-        ),
-        autoDispose.overrideWith(
-          (Ref<int> ref) => TestNotifier(84),
-        ),
+        provider.overrideWith((ref) => TestNotifier(42)),
+        autoDispose.overrideWith((ref) => TestNotifier(84)),
       ],
     );
 
@@ -62,15 +58,9 @@ void main() {
     );
     final container = ProviderContainer.test(
       overrides: [
-        family.overrideWith(
-          (Ref<int> ref, int arg) => TestNotifier(42 + arg),
-        ),
+        family.overrideWith((ref, int arg) => TestNotifier(42 + arg)),
         autoDisposeFamily.overrideWith(
-          (
-            Ref<int> ref,
-            int arg,
-          ) =>
-              TestNotifier(84 + arg),
+          (ref, int arg) => TestNotifier(84 + arg),
         ),
       ],
     );

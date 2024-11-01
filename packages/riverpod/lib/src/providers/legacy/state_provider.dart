@@ -98,9 +98,7 @@ final class StateProvider<StateT> extends $FunctionalProvider<StateT, StateT>
   @mustBeOverridden
   @visibleForOverriding
   @override
-  StateProvider<StateT> $copyWithCreate(
-    Create<StateT, Ref<StateT>> create,
-  ) {
+  StateProvider<StateT> $copyWithCreate(Create<StateT> create) {
     return StateProvider<StateT>.internal(
       create,
       name: name,

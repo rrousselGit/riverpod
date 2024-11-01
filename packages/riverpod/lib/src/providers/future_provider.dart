@@ -12,8 +12,8 @@ import 'stream_provider.dart' show StreamProvider;
 /// Implementation detail of `riverpod_generator`.
 /// Do not use, as this may be removed at any time.
 @internal
-base mixin $FutureProvider<StateT, RefT> on ProviderBase<AsyncValue<StateT>> {
-  FutureOr<StateT> create(RefT ref);
+base mixin $FutureProvider<StateT> on ProviderBase<AsyncValue<StateT>> {
+  FutureOr<StateT> create(Ref ref);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(AsyncValue<StateT> value) {
@@ -96,7 +96,7 @@ final class FutureProvider<StateT>
     extends $FunctionalProvider<AsyncValue<StateT>, FutureOr<StateT>>
     with
         $FutureModifier<StateT>,
-        $FutureProvider<StateT, Ref<AsyncValue<StateT>>>,
+        $FutureProvider<StateT>,
         LegacyProviderMixin<AsyncValue<StateT>> {
   /// {@macro riverpod.future_provider}
   FutureProvider(
@@ -131,10 +131,10 @@ final class FutureProvider<StateT>
   /// {@macro riverpod.family}
   static const family = FutureProviderFamilyBuilder();
 
-  final Create<FutureOr<StateT>, Ref<AsyncValue<StateT>>> _create;
+  final Create<FutureOr<StateT>> _create;
 
   @override
-  FutureOr<StateT> create(Ref<AsyncValue<StateT>> ref) => this._create(ref);
+  FutureOr<StateT> create(Ref ref) => this._create(ref);
 
   @internal
   @override
@@ -146,7 +146,7 @@ final class FutureProvider<StateT>
   @visibleForOverriding
   @override
   FutureProvider<StateT> $copyWithCreate(
-    Create<FutureOr<StateT>, Ref<AsyncValue<StateT>>> create,
+    Create<FutureOr<StateT>> create,
   ) {
     return FutureProvider<StateT>.internal(
       create,
@@ -171,7 +171,7 @@ class $FutureProviderElement<StateT> extends ProviderElement<AsyncValue<StateT>>
   $FutureProviderElement(this.provider, super.pointer);
 
   @override
-  final $FutureProvider<StateT, Ref<AsyncValue<StateT>>> provider;
+  final $FutureProvider<StateT> provider;
 
   @override
   void create(

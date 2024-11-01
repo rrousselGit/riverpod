@@ -158,7 +158,7 @@ class FamilyClass extends _$FamilyClass with MyMixin<String, String> {
 }
 
 @riverpod
-String supports$InFnName<And$InT>(Supports$InFnNameRef<And$InT> ref) {
+String supports$InFnName<And$InT>(Ref ref) {
   return 'Hello world';
 }
 
@@ -166,7 +166,7 @@ const default$value = '';
 
 @riverpod
 String supports$InFnNameFamily<And$InT>(
-  Supports$InFnNameFamilyRef<And$InT> ref,
+  Ref ref,
   And$InT positional$arg, {
   required And$InT named$arg,
   String defaultArg = default$value,

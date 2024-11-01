@@ -12,7 +12,7 @@ void main() {
   test('can read and set current AsyncValue', () {
     final container = ProviderContainer.test();
     final listener = Listener<AsyncValue<int>>();
-    late Ref<AsyncValue<int>> ref;
+    late Ref ref;
     final provider = FutureProvider.autoDispose<int>((r) {
       ref = r;
       return 0;

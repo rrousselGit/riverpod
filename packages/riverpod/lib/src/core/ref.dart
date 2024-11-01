@@ -64,14 +64,12 @@ base class Ref<@Deprecated('Will be removed in 3.0') StateT> {
   /// - on asynchronous providers, this will return an [AsyncLoading].
   ///
   /// Will throw if the provider threw during creation.
-  @Deprecated('foo')
   StateT get state {
     _throwIfInvalidUsage();
 
     return _element.readSelf();
   }
 
-  @Deprecated('foo')
   set state(StateT newState) {
     _throwIfInvalidUsage();
 
@@ -607,7 +605,6 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// As opposed to [listen], the listener will be called even if
   /// [ProviderElement.updateShouldNotify] returns false, meaning that the previous
   /// and new value can potentially be identical.
-  @Deprecated('foo')
   void listenSelf(
     void Function(StateT? previous, StateT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,

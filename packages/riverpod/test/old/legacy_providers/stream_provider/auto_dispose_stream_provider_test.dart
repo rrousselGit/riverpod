@@ -15,7 +15,7 @@ void main() {
     test('can read and set current AsyncValue', () async {
       final container = ProviderContainer.test();
       final listener = Listener<AsyncValue<int>>();
-      late Ref<AsyncValue<int>> ref;
+      late Ref ref;
       final provider = StreamProvider.autoDispose<int>((r) {
         ref = r;
         return Stream.value(0);

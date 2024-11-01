@@ -185,7 +185,7 @@ class DeferredFamilyStreamNotifier<StateT>
 }
 
 class StreamNotifierTestFactory extends TestFactory<
-    ProviderFactory<$StreamNotifier<Object?>, ProviderBase<Object?>, void>> {
+    ProviderFactory<$StreamNotifier<Object?>, ProviderBase<Object?>>> {
   StreamNotifierTestFactory({
     required super.isAutoDispose,
     required super.isFamily,

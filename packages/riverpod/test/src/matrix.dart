@@ -31,9 +31,9 @@ class TestFactory<T> {
   final bool isFamily;
 }
 
-typedef ProviderFactory<BaseT, ProviderT, RefT>
-    = ProviderT Function([Object? arg]) Function(
-  BaseT Function(RefT ref, Object? arg) create, {
+typedef ProviderFactory<BaseT, ProviderT> = ProviderT Function([Object? arg])
+    Function(
+  BaseT Function(Ref ref, Object? arg) create, {
   String? name,
   Iterable<ProviderOrFamily>? dependencies,
   Retry? retry,
@@ -57,8 +57,7 @@ extension $Modifiers on ProviderBase<Object?> {
   }
 }
 
-final providerFactory =
-    <ProviderFactory<Object?, Provider<Object?>, Ref<Object?>>>[
+final providerFactory = <ProviderFactory<Object?, Provider<Object?>>>[
   (create, {name, dependencies, retry}) => ([arg]) {
         return Provider<Object?>(
           (ref) => create(ref, arg),
@@ -94,7 +93,7 @@ final providerFactory =
 ];
 
 final futureProviderFactories =
-    <ProviderFactory<FutureOr<Object?>, FutureProvider<Object?>, Ref<Object?>>>[
+    <ProviderFactory<FutureOr<Object?>, FutureProvider<Object?>>>[
   (create, {name, dependencies, retry}) => ([arg]) {
         return FutureProvider<Object?>(
           (ref) => create(ref, arg),
@@ -130,7 +129,7 @@ final futureProviderFactories =
 ];
 
 final streamProviderFactories =
-    <ProviderFactory<Stream<Object?>, StreamProvider<Object?>, Ref<Object?>>>[
+    <ProviderFactory<Stream<Object?>, StreamProvider<Object?>>>[
   (create, {name, dependencies, retry}) => ([arg]) {
         return StreamProvider<Object?>(
           (ref) => create(ref, arg),
@@ -166,7 +165,7 @@ final streamProviderFactories =
 ];
 
 final asyncProviderFactory =
-    <ProviderFactory<Object?, ProviderBase<AsyncValue<Object?>>, Ref<Object?>>>[
+    <ProviderFactory<Object?, ProviderBase<AsyncValue<Object?>>>>[
   for (final factory in futureProviderFactories)
     (create, {name, dependencies, retry}) => factory(
           (ref, arg) async => create(ref, arg),

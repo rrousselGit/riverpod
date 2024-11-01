@@ -3,7 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'async.g.dart';
 
 @riverpod
-Future<List<T>> generic<T extends num>(Ref<T> ref) async {
+Future<List<T>> generic<T extends num>(Ref ref) async {
   return <T>[];
 }
 

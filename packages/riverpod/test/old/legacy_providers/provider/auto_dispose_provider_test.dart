@@ -12,7 +12,7 @@ void main() {
       test('can read and change current value', () {
         final container = ProviderContainer.test();
         final listener = Listener<int>();
-        late Ref<int> ref;
+        late Ref ref;
         final provider = Provider.autoDispose<int>((r) {
           ref = r;
           return 0;
@@ -98,7 +98,7 @@ void main() {
         () async {
       final container = ProviderContainer.test();
       final listener = Listener<int>();
-      late Ref<int> ref;
+      late Ref ref;
       final provider = Provider.autoDispose<int>((r) {
         ref = r;
         return 0;

@@ -26,11 +26,11 @@ void main() {
     );
     final container = ProviderContainer.test(
       overrides: [
-        provider.overrideWith((Ref<AsyncValue<int>> ref) {
+        provider.overrideWith((ref) {
           ref.state = const AsyncData(42);
           return Stream.value(43);
         }),
-        autoDispose.overrideWith((Ref<AsyncValue<int>> ref) {
+        autoDispose.overrideWith((ref) {
           ref.state = const AsyncData(84);
           return Stream.value(85);
         }),
@@ -55,13 +55,13 @@ void main() {
     final container = ProviderContainer.test(
       overrides: [
         family.overrideWith(
-          (Ref<AsyncValue<String>> ref, int arg) {
+          (ref, int arg) {
             ref.state = AsyncData('42 $arg');
             return Stream.value('43 $arg');
           },
         ),
         autoDisposeFamily.overrideWith(
-          (Ref<AsyncValue<String>> ref, int arg) {
+          (ref, int arg) {
             ref.state = AsyncData('84 $arg');
             return Stream.value('85 $arg');
           },
@@ -174,7 +174,7 @@ void main() {
   test('can read and set current AsyncValue', () async {
     final container = ProviderContainer.test();
     final listener = Listener<AsyncValue<int>>();
-    late Ref<AsyncValue<int>> ref;
+    late Ref ref;
     final provider = StreamProvider<int>((r) {
       ref = r;
       return Stream.value(0);

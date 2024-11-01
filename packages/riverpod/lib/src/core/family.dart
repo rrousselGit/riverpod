@@ -5,10 +5,9 @@ part of '../framework.dart';
 typedef FunctionalProviderFactory< //
         ProviderT,
         CreatedT,
-        RefT extends Ref<Object?>,
         ArgT>
     = ProviderT Function(
-  Create<CreatedT, RefT> create, {
+  Create<CreatedT> create, {
   required String? name,
   required List<ProviderOrFamily>? dependencies,
   required List<ProviderOrFamily>? allTransitiveDependencies,
@@ -24,15 +23,13 @@ typedef ClassProviderFactory< //
         NotifierT,
         ProviderT,
         CreatedT,
-        RefT extends Ref<Object?>,
         ArgT>
     = ProviderT Function(
   NotifierT Function() create, {
   required String? name,
   required Iterable<ProviderOrFamily>? dependencies,
   required Iterable<ProviderOrFamily>? allTransitiveDependencies,
-  required RunNotifierBuild<NotifierT, CreatedT, RefT>?
-      runNotifierBuildOverride,
+  required RunNotifierBuild<NotifierT, CreatedT>? runNotifierBuildOverride,
   required bool isAutoDispose,
   required Family from,
   required ArgT argument,
@@ -41,8 +38,7 @@ typedef ClassProviderFactory< //
 
 /// A [Create] equivalent used by [Family].
 @internal
-typedef FamilyCreate<CreatedT, RefT extends Ref<Object?>, ArgT> = CreatedT
-    Function(RefT ref, ArgT arg);
+typedef FamilyCreate<CreatedT, ArgT> = CreatedT Function(Ref ref, ArgT arg);
 
 /// A base class for all families
 abstract class Family extends ProviderOrFamily implements _FamilyOverride {
@@ -85,7 +81,7 @@ class FunctionalFamily< //
   /// This API is not meant for public consumption.
   const FunctionalFamily(
     this._createFn, {
-    required FunctionalProviderFactory<ProviderT, CreatedT, Ref<StateT>, ArgT>
+    required FunctionalProviderFactory<ProviderT, CreatedT, ArgT>
         providerFactory,
     required super.name,
     required super.dependencies,
@@ -94,10 +90,9 @@ class FunctionalFamily< //
     required super.retry,
   }) : _providerFactory = providerFactory;
 
-  final FunctionalProviderFactory<ProviderT, CreatedT, Ref<StateT>, ArgT>
-      _providerFactory;
+  final FunctionalProviderFactory<ProviderT, CreatedT, ArgT> _providerFactory;
 
-  final CreatedT Function(Ref<StateT> ref, ArgT arg) _createFn;
+  final CreatedT Function(Ref ref, ArgT arg) _createFn;
 
   /// {@template family.call}
   /// Create a provider from an external value.
@@ -123,7 +118,7 @@ class FunctionalFamily< //
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    CreatedT Function(Ref<StateT> ref, ArgT arg) create,
+    CreatedT Function(Ref ref, ArgT arg) create,
   ) {
     return $FamilyOverride(
       from: this,
@@ -148,14 +143,14 @@ class FunctionalFamily< //
 /// This API is not meant for public consumption.
 @internal
 class ClassFamily< //
-    NotifierT extends NotifierBase< //
+        NotifierT extends NotifierBase< //
+            StateT,
+            CreatedT>,
         StateT,
-        CreatedT>,
-    StateT,
-    ArgT,
-    CreatedT,
-    ProviderT extends $ClassProvider<NotifierT, StateT, CreatedT,
-        Ref<StateT>>> extends Family {
+        ArgT,
+        CreatedT,
+        ProviderT extends $ClassProvider<NotifierT, StateT, CreatedT>>
+    extends Family {
   /// A base implementation for [Family], used by the various providers to
   /// help them define a [Family].
   ///
@@ -171,7 +166,7 @@ class ClassFamily< //
   });
 
   @internal
-  final ClassProviderFactory<NotifierT, ProviderT, CreatedT, Ref<StateT>, ArgT>
+  final ClassProviderFactory<NotifierT, ProviderT, CreatedT, ArgT>
       providerFactory;
 
   final NotifierT Function() _createFn;
@@ -208,7 +203,7 @@ class ClassFamily< //
 
   /// {@macro riverpod.override_with}
   Override overrideWithBuild(
-    RunNotifierBuild<NotifierT, CreatedT, Ref<StateT>> build,
+    RunNotifierBuild<NotifierT, CreatedT> build,
   ) {
     return $FamilyOverride(
       from: this,

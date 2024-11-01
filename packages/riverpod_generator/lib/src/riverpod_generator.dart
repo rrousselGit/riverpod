@@ -16,7 +16,6 @@ import 'templates/notifier.dart';
 import 'templates/parameters.dart';
 import 'templates/provider.dart';
 import 'templates/provider_variable.dart';
-import 'templates/ref.dart';
 import 'type.dart';
 
 String providerDocFor(Element element) {
@@ -209,7 +208,6 @@ class _RiverpodGeneratorVisitor {
   void visitFunctionalProviderDeclaration(
     FunctionalProviderDeclaration provider,
   ) {
-    RefTemplate(provider).run(buffer);
     visitGeneratorProviderDeclaration(provider);
   }
 }
@@ -229,10 +227,6 @@ extension ProviderElementNames on GeneratorProviderDeclarationElement {
   }
 
   String get providerTypeName => '${name.titled}Provider';
-  String get refImplName => switch (this) {
-        ClassBasedProviderDeclarationElement() => 'Ref',
-        FunctionalProviderDeclarationElement() => '${name.titled}Ref'
-      };
 
   String get familyTypeName => '${name.titled}Family';
 
@@ -285,7 +279,6 @@ extension ProviderNames on GeneratorProviderDeclaration {
   }
 
   String get providerTypeName => providerElement.providerTypeName;
-  String get refImplName => providerElement.refImplName;
 
   String get familyTypeName => providerElement.familyTypeName;
 
@@ -355,13 +348,6 @@ extension ProviderNames on GeneratorProviderDeclaration {
   String genericsDefinition() =>
       _genericDefinitionDisplayString(typeParameters);
 
-  String get refWithGenerics {
-    return switch (this) {
-      FunctionalProviderDeclaration() => '$refImplName${generics()}',
-      ClassBasedProviderDeclaration() => 'Ref<$exposedTypeDisplayString>',
-    };
-  }
-
   String notifierBuildType({
     bool withGenericDefinition = false,
     bool withArguments = false,
@@ -377,7 +363,7 @@ extension ProviderNames on GeneratorProviderDeclaration {
           )
         : '';
 
-    return '$createdTypeDisplayString Function$genericsDefinition($refWithGenerics, $notifierType, $parameters)';
+    return '$createdTypeDisplayString Function$genericsDefinition(Ref, $notifierType, $parameters)';
   }
 
   String createType({
@@ -398,8 +384,7 @@ extension ProviderNames on GeneratorProviderDeclaration {
               )
             : '';
 
-        final refType = '${provider.refImplName}$generics';
-        return '${provider.createdTypeDisplayString} Function$genericsDefinition($refType ref, $params)';
+        return '${provider.createdTypeDisplayString} Function$genericsDefinition(Ref ref, $params)';
       case ClassBasedProviderDeclaration():
         return '${provider.name}$generics Function$genericsDefinition()';
     }
