@@ -1,7 +1,7 @@
 code: functional_ref
 severity: Severity.warning
 message: Functional providers must receive a ref matching the provider name as their first positional parameter.
-test/lints/functional_ref/functional_ref.dart:8:3
+test/lints/functional_ref/functional_ref.dart:10:3
 
 ```dart
 int nameless(
@@ -16,40 +16,12 @@ int nameless(
 code: functional_ref
 severity: Severity.warning
 message: Functional providers must receive a ref matching the provider name as their first positional parameter.
-test/lints/functional_ref/functional_ref.dart:18:34
+test/lints/functional_ref/functional_ref.dart:16:32
 
 ```dart
-@riverpod
-// expect_lint: functional_ref
-int noGenerics<A extends num, B>(>>>NoGenericsRef<<< ref) => 0;
 
 @riverpod
-```
-
-=======
-
-code: functional_ref
-severity: Severity.warning
-message: Functional providers must receive a ref matching the provider name as their first positional parameter.
-test/lints/functional_ref/functional_ref.dart:22:27
-
-```dart
-@riverpod
-// expect_lint: functional_ref
-int missingGenerics<A, B>(>>>MissingGenericsRef<<< ref) => 0;
+int generics<A extends num, B>(>>>Ref<<< ref) => 0;
 
 @riverpod
-```
-
-=======
-
-code: functional_ref
-severity: Severity.warning
-message: Functional providers must receive a ref matching the provider name as their first positional parameter.
-test/lints/functional_ref/functional_ref.dart:26:22
-
-```dart
-@riverpod
-// expect_lint: functional_ref
-int wrongOrder<B, A>(>>>WrongOrderRef<<< ref) => 0;
 ```

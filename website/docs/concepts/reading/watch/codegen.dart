@@ -16,7 +16,7 @@ abstract class Todo {
 /* SNIPPET START */
 
 @riverpod
-FilterType filterType(FilterTypeRef ref) {
+FilterType filterType(Ref ref) {
   return FilterType.none;
 }
 
@@ -29,7 +29,7 @@ class Todos extends _$Todos {
 }
 
 @riverpod
-List<Todo> filteredTodoList(FilteredTodoListRef ref) {
+List<Todo> filteredTodoList(Ref ref) {
   // obtains both the filter and the list of todos
   final FilterType filter = ref.watch(filterTypeProvider);
   final List<Todo> todos = ref.watch(todosProvider);

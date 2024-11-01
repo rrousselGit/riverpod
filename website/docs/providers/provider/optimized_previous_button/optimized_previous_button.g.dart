@@ -136,7 +136,7 @@ final class CanGoToPreviousPageProvider extends $FunctionalProvider<bool, bool>
 }
 
 String _$canGoToPreviousPageHash() =>
-    r'801fe8182a37cd21ae83bdfccbe36c125b4d14fb';
+    r'1cb9c497aa7e5e8ee03c5711f079c2b68a4c28c5';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

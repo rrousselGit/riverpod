@@ -96,7 +96,7 @@ final class LabelProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$labelHash() => r'20aa8ce0231205540f466f91259732bd86953c64';
+String _$labelHash() => r'c53d17dd111313633bd7ca6d6cf6b48dded58ca5';
 
 final class LabelFamily extends Family {
   const LabelFamily._()
@@ -141,4 +141,4 @@ final class LabelFamily extends Family {
   }
 }
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

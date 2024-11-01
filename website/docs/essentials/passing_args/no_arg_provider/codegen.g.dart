@@ -59,7 +59,7 @@ final class ActivityProvider
   }
 }
 
-String _$activityHash() => r'2f9496c5d70de9314c67e5c48ac44d8b149bc471';
+String _$activityHash() => r'7b532e70a92d6bc198900ca61f0e714c5484c34d';
 
 @ProviderFor(ActivityNotifier2)
 const activityNotifier2Provider = ActivityNotifier2Provider._();
@@ -124,4 +124,4 @@ abstract class _$ActivityNotifier2 extends $AsyncNotifier<Activity> {
 }
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -59,7 +59,7 @@ final class ActivityProvider
   }
 }
 
-String _$activityHash() => r'ef908e3b46693862f082769663b14d5369d6e155';
+String _$activityHash() => r'dd7d10807315da17e775b99e8e03f5d9634fc822';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

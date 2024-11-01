@@ -6,13 +6,13 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'unused_dependency.g.dart';
 
 @riverpod
-int root(RootRef ref) => 0;
+int root(Ref ref) => 0;
 
 @Riverpod(dependencies: [])
-int dep(DepRef ref) => 0;
+int dep(Ref ref) => 0;
 
 @Riverpod(dependencies: [])
-int dep2(Dep2Ref ref) => 0;
+int dep2(Ref ref) => 0;
 
 ////////////
 
@@ -24,7 +24,7 @@ int dep2(Dep2Ref ref) => 0;
     dep2,
   ],
 )
-int extraDep(ExtraDepRef ref) {
+int extraDep(Ref ref) {
   ref.watch(dep2Provider);
   return 0;
 }
@@ -36,7 +36,7 @@ int extraDep(ExtraDepRef ref) {
     dep,
   ],
 )
-int noDep(NoDepRef ref) {
+int noDep(Ref ref) {
   return 0;
 }
 
@@ -47,7 +47,7 @@ int noDep(NoDepRef ref) {
   ],
   keepAlive: false,
 )
-int dependenciesFirstThenKeepAlive(DependenciesFirstThenKeepAliveRef ref) {
+int dependenciesFirstThenKeepAlive(Ref ref) {
   return 0;
 }
 
@@ -57,13 +57,13 @@ int dependenciesFirstThenKeepAlive(DependenciesFirstThenKeepAliveRef ref) {
     dep,
   ],
 )
-int noDepNoParam(NoDepNoParamRef ref) {
+int noDepNoParam(Ref ref) {
   return 0;
 }
 
 // expect_lint: provider_dependencies
 @Riverpod(keepAlive: false, dependencies: [dep])
-int noDepWithoutComma(NoDepWithoutCommaRef ref) {
+int noDepWithoutComma(Ref ref) {
   return 0;
 }
 
@@ -74,7 +74,7 @@ int noDepWithoutComma(NoDepWithoutCommaRef ref) {
     root,
   ],
 )
-int rootDep(RootDepRef ref) => 0;
+int rootDep(Ref ref) => 0;
 
 // expect_lint: provider_dependencies
 @Dependencies([dep])

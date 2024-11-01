@@ -4,6 +4,6 @@ part 'async_fn_stream.g.dart';
 
 /* SNIPPET START */
 @riverpod
-Stream<String> example(ExampleRef ref) async* {
+Stream<String> example(Ref ref) async* {
   yield 'foo';
 }

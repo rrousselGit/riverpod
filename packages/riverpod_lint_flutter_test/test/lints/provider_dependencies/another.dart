@@ -6,13 +6,13 @@ part 'another.g.dart';
 final aProvider = Provider<int>((ref) => 0);
 
 @riverpod
-int b(BRef ref) => 0;
+int b(Ref ref) => 0;
 
 @Riverpod(dependencies: [])
-int anotherScoped(AnotherScopedRef ref) => 0;
+int anotherScoped(Ref ref) => 0;
 
 @Riverpod(dependencies: [anotherScoped])
-int anotherNonEmptyScoped(AnotherNonEmptyScopedRef ref) {
+int anotherNonEmptyScoped(Ref ref) {
   ref.watch(anotherScopedProvider);
   return 0;
 }

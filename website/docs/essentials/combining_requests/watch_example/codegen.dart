@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -14,7 +15,7 @@ const someStream = Stream<({double longitude, double latitude})>.empty();
 
 /* SNIPPET START */
 @riverpod
-Stream<({double longitude, double latitude})> location(LocationRef ref) {
+Stream<({double longitude, double latitude})> location(Ref ref) {
   // {@template provider}
   // TO-DO: Return a stream which obtains the current location
   // {@endtemplate}
@@ -22,7 +23,7 @@ Stream<({double longitude, double latitude})> location(LocationRef ref) {
 }
 
 @riverpod
-Future<List<String>> restaurantsNearMe(RestaurantsNearMeRef ref) async {
+Future<List<String>> restaurantsNearMe(Ref ref) async {
   // {@template watch}
   // We use "ref.watch" to obtain the latest location.
   // By specifying that ".future" after the provider, our code will wait

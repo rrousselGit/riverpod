@@ -162,7 +162,7 @@ extension ChangeNotifierWithCodeGenExtension on Ref {
 ```dart
 // ignore_for_file: unsupported_provider_value
 @riverpod
-MyNotifier example(ExampleRef ref) {
+MyNotifier example(Ref ref) {
   return ref.listenAndDisposeChangeNotifier(MyNotifier());
 }
 ```

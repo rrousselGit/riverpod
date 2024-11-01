@@ -64,7 +64,7 @@ final class SimpleProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$simpleHash() => r'ff9f7451526aef5b3af6646814631a502ad76a5f';
+String _$simpleHash() => r'f916b37e39d654e9acfc9c2bd7a244902197b306';
 
 typedef Simple2Ref = Ref<String>;
 
@@ -124,7 +124,7 @@ final class Simple2Provider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$simple2Hash() => r'06327442776394c5c9cbb33b048d7a42e709e7fd';
+String _$simple2Hash() => r'a60a8496fc391f5adf7ad45a12d0723f14f3127c';
 
 @ProviderFor(SimpleClass)
 const simpleClassProvider = SimpleClassProvider._();
@@ -196,4 +196,4 @@ abstract class _$SimpleClass extends $Notifier<String> {
 }
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

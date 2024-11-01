@@ -43,7 +43,9 @@ class UnknownScopedUsage extends RiverpodLintRule {
       // then it's fine.
       // This is to reject cases like `ref.watch(something(provider))`.
       if (refInvocation?.listenable.provider == identifier ||
-          widgetRefInvocation?.listenable.provider == identifier) return;
+          widgetRefInvocation?.listenable.provider == identifier) {
+        return;
+      }
 
       // .parent is used because providers count as overrides.
       // We don't want to count "provider" as an override, and want to focus
@@ -60,7 +62,9 @@ class UnknownScopedUsage extends RiverpodLintRule {
           ?.returnType;
       // Silence the warning if passed to a widget constructor.
       if (enclosingConstructorType != null &&
-          widgetType.isAssignableFromType(enclosingConstructorType)) return;
+          widgetType.isAssignableFromType(enclosingConstructorType)) {
+        return;
+      }
 
       reporter.atNode(
         identifier.node,

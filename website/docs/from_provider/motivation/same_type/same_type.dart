@@ -8,12 +8,12 @@ part 'same_type.g.dart';
 /* SNIPPET START */
 
 @riverpod
-List<Item> items(ItemsRef ref) {
+List<Item> items(Ref ref) {
   return []; // ...
 }
 
 @riverpod
-List<Item> evenItems(EvenItemsRef ref) {
+List<Item> evenItems(Ref ref) {
   final items = ref.watch(itemsProvider);
   return [...items.whereIndexed((index, element) => index.isEven)];
 }

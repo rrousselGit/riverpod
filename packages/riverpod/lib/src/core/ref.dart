@@ -37,7 +37,8 @@ Cannot use the Ref of $origin after it has been disposed. This typically happens
 /// - [read] and [watch], two methods that allow a provider to consume other providers.
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
 /// {@endtemplate}
-base class Ref<StateT> {
+@optionalTypeArgs
+base class Ref<@Deprecated('Will be removed in 3.0') StateT> {
   /// {@macro riverpod.provider_ref_base}
   Ref._(this._element);
 
@@ -63,12 +64,14 @@ base class Ref<StateT> {
   /// - on asynchronous providers, this will return an [AsyncLoading].
   ///
   /// Will throw if the provider threw during creation.
+  @Deprecated('foo')
   StateT get state {
     _throwIfInvalidUsage();
 
     return _element.readSelf();
   }
 
+  @Deprecated('foo')
   set state(StateT newState) {
     _throwIfInvalidUsage();
 
@@ -210,10 +213,14 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   }
 
   /// {@template riverpod.invalidate}
-  /// Invalidates the state of the provider, causing it to refresh.
+  /// Invalidates the state of the provider, destroying the state immediately
+  /// and causing the provider to rebuild at some point in the future.
   ///
-  /// As opposed to [refresh], the refresh is not immediate and is instead
-  /// delayed to the next read or next frame.
+  /// As opposed to [refresh], the rebuild is not immediate and is instead
+  /// delayed by an undefined amount of time.
+  /// Typically, the rebuild happens at the next tick of the event loop.
+  /// But if a provider is not listened to, the rebuild may be delayed until
+  /// the provider is listened to again.
   ///
   /// Calling [invalidate] multiple times will refresh the provider only
   /// once.
@@ -600,6 +607,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// As opposed to [listen], the listener will be called even if
   /// [ProviderElement.updateShouldNotify] returns false, meaning that the previous
   /// and new value can potentially be identical.
+  @Deprecated('foo')
   void listenSelf(
     void Function(StateT? previous, StateT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,

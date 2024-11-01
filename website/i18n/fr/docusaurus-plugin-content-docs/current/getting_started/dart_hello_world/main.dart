@@ -9,7 +9,7 @@ part 'main.g.dart';
 // We create a "provider", which will store a value (here "Hello world").
 // By using a provider, this allows us to mock/override the value exposed.
 @riverpod
-String helloWorld(HelloWorldRef ref) {
+String helloWorld(Ref ref) {
   return 'Hello world';
 }
 

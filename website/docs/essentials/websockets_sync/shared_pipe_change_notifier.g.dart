@@ -68,7 +68,7 @@ final class MyListenableProvider extends $FunctionalProvider<
   }
 }
 
-String _$myListenableHash() => r'90f4227ef5442f978d742115663e5f0869622a27';
+String _$myListenableHash() => r'a28ce39430582e0d7be5f8303a31477569153193';
 
 typedef AnotherListenableRef = Ref<Raw<ValueNotifier<int>>>;
 
@@ -130,7 +130,7 @@ final class AnotherListenableProvider extends $FunctionalProvider<
   }
 }
 
-String _$anotherListenableHash() => r'50dd36b21e07c50818944ec49f9e68d21fcae876';
+String _$anotherListenableHash() => r'49aab48c26d8596262c3d89e0190baeaf9d7ac4a';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

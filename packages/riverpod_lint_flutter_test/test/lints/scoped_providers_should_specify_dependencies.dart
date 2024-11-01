@@ -15,10 +15,10 @@ class UnimplementedScoped extends _$UnimplementedScoped {
 }
 
 @Riverpod(dependencies: [])
-int scoped(ScopedRef ref) => 0;
+int scoped(Ref ref) => 0;
 
 @riverpod
-int root(RootRef ref) => 0;
+int root(Ref ref) => 0;
 
 // A fake runApp to check that we lint only on the official Flutter's runApp
 void runApp(Widget widget) {}

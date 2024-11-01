@@ -65,6 +65,20 @@ abstract class NotifierBase<StateT, CreatedT> {
     return ref;
   }
 
+  /// Listens to changes on the value exposed by this provider.
+  ///
+  /// The listener will be called immediately after the provider completes building.
+  ///
+  /// As opposed to [Ref.listen], the listener will be called even if
+  /// [updateShouldNotify] returns false, meaning that the previous
+  /// and new value can potentially be identical.
+  void listenSelf(
+    void Function(StateT? previous, StateT next) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  }) {
+    ref.listenSelf(listener, onError: onError);
+  }
+
   @visibleForTesting
   @protected
   StateT get state => ref.state;

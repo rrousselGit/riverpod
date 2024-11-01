@@ -66,7 +66,7 @@ final class AnotherProvider extends $FunctionalProvider<MyValue, MyValue>
   }
 }
 
-String _$anotherHash() => r'bb412edc55657c14eace37792cd18e5254604a36';
+String _$anotherHash() => r'07629e5ae4a53bcd316b91c07d7558edbdea9317';
 
 typedef MyRef = Ref<MyValue>;
 
@@ -126,7 +126,7 @@ final class MyProvider extends $FunctionalProvider<MyValue, MyValue>
   }
 }
 
-String _$myHash() => r'2712c772be4dbaabd4c99fd803f927a7e9938b21';
+String _$myHash() => r'816efc8816269dabd0944c434946903db197fe0b';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

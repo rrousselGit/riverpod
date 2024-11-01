@@ -64,7 +64,7 @@ final class CountProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$countHash() => r'4c7e72b275767a60ece5e8662ab1e28f73cf7e44';
+String _$countHash() => r'a31bb5cbb0ddb2466df2cc62a306709ea24fae12';
 
 typedef CountFutureRef = Ref<AsyncValue<int>>;
 
@@ -117,7 +117,7 @@ final class CountFutureProvider
   }
 }
 
-String _$countFutureHash() => r'ec7cc31ce1c1a10607f1dcb35dd217acd2877729';
+String _$countFutureHash() => r'c292214b486fdd9ec98a61e277812f29fc4b5802';
 
 typedef CountStreamRef = Ref<AsyncValue<int>>;
 
@@ -170,7 +170,7 @@ final class CountStreamProvider
   }
 }
 
-String _$countStreamHash() => r'1dbe49244ea19e8dbc3af0534429bb323720c07a';
+String _$countStreamHash() => r'472c06085fb994619f54de368f047b7cc8466872';
 
 @ProviderFor(CountNotifier)
 const myCountNotifierPod = CountNotifierProvider._();
@@ -456,7 +456,7 @@ final class Count2Provider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$count2Hash() => r'6256825480d83bb13acde282cf3c9d9524cc3a6c';
+String _$count2Hash() => r'4146ae486161f9d444b4d80ec846199b13eeaae2';
 
 final class Count2Family extends Family {
   const Count2Family._()
@@ -582,7 +582,7 @@ final class CountFuture2Provider
   }
 }
 
-String _$countFuture2Hash() => r'096675b70a267f5d7c62ac7d3e7dd231ef529034';
+String _$countFuture2Hash() => r'6acaa58de0116853fd831efb4ac1a8047205f12b';
 
 final class CountFuture2Family extends Family {
   const CountFuture2Family._()
@@ -708,7 +708,7 @@ final class CountStream2Provider
   }
 }
 
-String _$countStream2Hash() => r'051264dd685ebc0a57e454bb676957c93cb4ae20';
+String _$countStream2Hash() => r'96c9a0935240f1727986800c1fe6dea974b9accc';
 
 final class CountStream2Family extends Family {
   const CountStream2Family._()
@@ -1228,4 +1228,4 @@ abstract class _$CountStreamNotifier2 extends $StreamNotifier<int> {
 }
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

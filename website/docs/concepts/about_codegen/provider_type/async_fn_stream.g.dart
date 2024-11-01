@@ -59,7 +59,7 @@ final class ExampleProvider
   }
 }
 
-String _$exampleHash() => r'8a2b19776fb9bbb1631f898bd6446b57b102dd9d';
+String _$exampleHash() => r'f7f90ac5fbf939c0259a549b8e01a559b0d95ff1';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

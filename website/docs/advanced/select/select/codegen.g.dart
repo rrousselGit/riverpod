@@ -66,7 +66,7 @@ final class ExampleProvider extends $FunctionalProvider<User, User>
   }
 }
 
-String _$exampleHash() => r'72881c6147d44adb957180debefe7696d93107f0';
+String _$exampleHash() => r'c9865d4390aad5b8480addcbb73dbd225c8417b8';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

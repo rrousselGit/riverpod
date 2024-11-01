@@ -93,7 +93,7 @@ final class GenericProvider<T extends num>
   }
 }
 
-String _$genericHash() => r'0fda19dd377694315cdffd7414d53f98569c655c';
+String _$genericHash() => r'4a2a38e246fc4ef25c46d93477010b66de01ff30';
 
 final class GenericFamily extends Family {
   const GenericFamily._()
@@ -249,7 +249,7 @@ final class ComplexGenericProvider<T extends num, Foo extends String?>
   }
 }
 
-String _$complexGenericHash() => r'a5254e5552cd61bb8d65c018539ff2d8edfd5822';
+String _$complexGenericHash() => r'bc3433c913396a238e833722a2dc3a78bdf844a4';
 
 final class ComplexGenericFamily extends Family {
   const ComplexGenericFamily._()
@@ -524,7 +524,7 @@ final class RawFutureProvider
   }
 }
 
-String _$rawFutureHash() => r'5203a56065b768023770326281618e3229ccb530';
+String _$rawFutureHash() => r'9d397f4c0a578a2741610f9ca6f17438ee8e5a34';
 
 typedef RawStreamRef = Ref<Raw<Stream<String>>>;
 
@@ -586,7 +586,7 @@ final class RawStreamProvider
   }
 }
 
-String _$rawStreamHash() => r'2b764189753a8b74f47ba557a79416f00ef5cebd';
+String _$rawStreamHash() => r'c7d6cd22f1f325827c866c3ec757d08315fd9858';
 
 @ProviderFor(RawFutureClass)
 const rawFutureClassProvider = RawFutureClassProvider._();
@@ -818,7 +818,7 @@ final class RawFamilyFutureProvider
   }
 }
 
-String _$rawFamilyFutureHash() => r'485f59512081852e51279658facc015309743864';
+String _$rawFamilyFutureHash() => r'0ac70d7a2133691f1a9a38cedaeeb6b3bc667ade';
 
 final class RawFamilyFutureFamily extends Family {
   const RawFamilyFutureFamily._()
@@ -953,7 +953,7 @@ final class RawFamilyStreamProvider
   }
 }
 
-String _$rawFamilyStreamHash() => r'e778e5cfcb8ab381e2412f5c73213aaa03b93012';
+String _$rawFamilyStreamHash() => r'6eacfa3a3576d884099c08c298751a3d395271be';
 
 final class RawFamilyStreamFamily extends Family {
   const RawFamilyStreamFamily._()
@@ -1388,7 +1388,7 @@ final class PublicProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$publicHash() => r'138be35943899793ab085e711fe3f3d22696a3ba';
+String _$publicHash() => r'94bee36125844f9fe521363bb228632b9f3bfbc7';
 
 typedef Supports$inNamesRef = Ref<String>;
 
@@ -1448,7 +1448,7 @@ final class Supports$inNamesProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$supports$inNamesHash() => r'cbf929802fcbd0aa949ad72743d096fb3ef5f28f';
+String _$supports$inNamesHash() => r'8da1f9329f302ce75e38d03c96595de3260b4d2d';
 
 /// This is some documentation
 typedef FamilyRef = Ref<String>;
@@ -1577,7 +1577,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$familyHash() => r'14d1ee238ca608d547630d0e222ef4c5866e9e61';
+String _$familyHash() => r'f58149448f80f10ec054f2f8a6f37bae61e38f49';
 
 /// This is some documentation
 final class FamilyFamily extends Family {
@@ -1704,7 +1704,7 @@ final class _PrivateProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$privateHash() => r'519561bc7e88e394d7f75ca2102a5c0acc832c66';
+String _$privateHash() => r'834affaed42662bf46ce7f6203ac2495e1e8974b';
 
 /// This is some documentation
 @ProviderFor(PublicClass)
@@ -2869,7 +2869,7 @@ final class GeneratedProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$generatedHash() => r'fecbc1d5d9a05fc996b452a57fd1975ff368af91';
+String _$generatedHash() => r'24bfb5df4dc529258ab568372e90a1cbfc2d8c24';
 
 typedef UnnecessaryCastRef = Ref<String>;
 
@@ -3312,4 +3312,4 @@ final class ManyDataStreamFamily extends Family {
   }
 }
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -62,7 +62,7 @@ final class ConfigProvider extends $FunctionalProvider<
   }
 }
 
-String _$configHash() => r'3021d1a8aac384e99d5d22714ffe6e868954888b';
+String _$configHash() => r'66f48a02bf939463649f0e7ad34137265e5c8b66';
 
 typedef ProductsRef = Ref<AsyncValue<List<Product>>>;
 
@@ -118,7 +118,7 @@ final class ProductsProvider extends $FunctionalProvider<
   }
 }
 
-String _$productsHash() => r'd1f4523880408cf8ee0e68969c40cf87d5c78557';
+String _$productsHash() => r'1915c65cef29cadc8b0adadd6ecddf753586974b';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

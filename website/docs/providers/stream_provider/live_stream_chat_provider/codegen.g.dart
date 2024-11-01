@@ -60,7 +60,7 @@ final class ChatProvider
   }
 }
 
-String _$chatHash() => r'db1302132f90e854fe2f5da9d97d89c9a3c8b858';
+String _$chatHash() => r'bad093d5344471463a1e71688281924642f3a58c';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -64,7 +64,7 @@ final class DepProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$depHash() => r'749c4d696d29c72686cabcabd6fa7855f5cbf4db';
+String _$depHash() => r'578a350a40cda46444ecd9fa3ea2fd7bd0994692';
 
 typedef TransitiveDepRef = Ref<int>;
 
@@ -128,7 +128,7 @@ final class TransitiveDepProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$transitiveDepHash() => r'3718ab2a36c91fb776740c6aeafc49db08bbffd5';
+String _$transitiveDepHash() => r'cedc000b7d16447684dff970ddea659cca24cdf6';
 
 typedef Dep2Ref = Ref<int>;
 
@@ -188,7 +188,7 @@ final class Dep2Provider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$dep2Hash() => r'13cd909366c79168e3d9cd95f529ddbcee6de7dc';
+String _$dep2Hash() => r'97901e825cdcf5b1ac455b0fe8a2111662ce9f13';
 
 typedef DepFamilyRef = Ref<int>;
 
@@ -278,7 +278,7 @@ final class DepFamilyProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$depFamilyHash() => r'c11006a8b9718af9899999b7c49f78cf3423f558';
+String _$depFamilyHash() => r'6cca68b98693e352e9b801b1fc441d438fc72525';
 
 final class DepFamilyFamily extends Family {
   const DepFamilyFamily._()
@@ -389,7 +389,7 @@ final class PlainAnnotationProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$plainAnnotationHash() => r'ceeb01dfcbd115f3676c8e38ce35a03cff16246b';
+String _$plainAnnotationHash() => r'6a3d1f1f2e53902af56cd7ce6ceba17358690b70';
 
 typedef CustomAnnotationRef = Ref<int>;
 
@@ -449,7 +449,7 @@ final class CustomAnnotationProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$customAnnotationHash() => r'04faed9b424be360e594870f91c4ef4689f05672';
+String _$customAnnotationHash() => r'8081bbad2cfbe5bff1ace9aa3be450dd28112488';
 
 typedef CustomAnnotationWithTrailingCommaRef = Ref<int>;
 
@@ -513,7 +513,7 @@ final class CustomAnnotationWithTrailingCommaProvider
 }
 
 String _$customAnnotationWithTrailingCommaHash() =>
-    r'b5c62d769dfc53d6d77e8fde9e0eb7d8a0ab9d18';
+    r'709613050eb1db7b4c43cb87855e2c32988141d8';
 
 typedef ExistingDepRef = Ref<int>;
 
@@ -573,7 +573,7 @@ final class ExistingDepProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$existingDepHash() => r'8d7866d1af7e350d7c792e43a542cd47b130b239';
+String _$existingDepHash() => r'73e7e1a0d4c2ae07ed03fb248408c3d82fe85554';
 
 typedef MultipleDepsRef = Ref<int>;
 
@@ -633,7 +633,7 @@ final class MultipleDepsProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$multipleDepsHash() => r'9d08791636a0435ba115062a453d0d9e530ecf71';
+String _$multipleDepsHash() => r'66de70567c011a294a2c46703dfab8ba7247fd5e';
 
 /// Random doc to test that identifiers in docs don't trigger the lint.
 /// [dep], [DepWidget], [depProvider]
@@ -702,7 +702,7 @@ final class ProviderWithDartDocProvider extends $FunctionalProvider<int, int>
 }
 
 String _$providerWithDartDocHash() =>
-    r'6aeff1697c1ec37f475319a4100e01c0e56369ae';
+    r'aeb5735ad2dbe1d0b41a529828f9bb2c915071b6';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

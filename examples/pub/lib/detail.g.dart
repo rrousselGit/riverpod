@@ -92,7 +92,7 @@ final class FetchPackageDetailsProvider
 }
 
 String _$fetchPackageDetailsHash() =>
-    r'e65ba332cb8397cc5a1aca6e656233dff698391a';
+    r'16ad07d6f69412f6d456c6d482f15dc53421df74';
 
 final class FetchPackageDetailsFamily extends Family {
   const FetchPackageDetailsFamily._()
@@ -191,7 +191,7 @@ final class LikedPackagesProvider extends $FunctionalProvider<
   }
 }
 
-String _$likedPackagesHash() => r'304a4def167e245812638cba776e8d5eb66d8844';
+String _$likedPackagesHash() => r'8debee8d8fa48334d1de21fa9bbf03224265d29d';
 
 typedef PubRepositoryRef = Ref<PubRepository>;
 
@@ -252,7 +252,7 @@ final class PubRepositoryProvider
   }
 }
 
-String _$pubRepositoryHash() => r'1f4dbfa0911f6467067fab244677acbcb8c7ad4e';
+String _$pubRepositoryHash() => r'fd358feb202d2c34ad507ebf0a40bddbebc8ea98';
 
 /// A provider that fetches the likes count, popularity score and pub points
 /// for a given package.
@@ -437,4 +437,4 @@ abstract class _$PackageMetrics extends $AsyncNotifier<PackageMetricsScore> {
 }
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

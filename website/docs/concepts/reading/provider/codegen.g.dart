@@ -67,7 +67,7 @@ final class RepositoryProvider
   }
 }
 
-String _$repositoryHash() => r'c6dc3b5b727028966b5b850b27ffc7294b485273';
+String _$repositoryHash() => r'6f859a9d70c3112139aaf826ee2bd541a4c001cb';
 
 typedef ValueRef = Ref<String>;
 
@@ -127,7 +127,7 @@ final class ValueProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$valueHash() => r'8c26f7aaa911af815cff9e513a18e4d8dcc6d1df';
+String _$valueHash() => r'fcb38a2d2c3755f3691e73cd163e8c895d1af4b5';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

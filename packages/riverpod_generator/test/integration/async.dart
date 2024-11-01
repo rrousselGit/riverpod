@@ -3,7 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'async.g.dart';
 
 @riverpod
-Future<List<T>> generic<T extends num>(GenericRef<T> ref) async {
+Future<List<T>> generic<T extends num>(Ref<T> ref) async {
   return <T>[];
 }
 
@@ -16,25 +16,25 @@ class GenericClass<T extends num> extends _$GenericClass<T> {
 }
 
 @riverpod
-FutureOr<String> public(PublicRef ref) {
+FutureOr<String> public(Ref ref) {
   return 'Hello world';
 }
 
 const privateProvider = _privateProvider;
 
 @riverpod
-Future<String> _private(_PrivateRef ref) async {
+Future<String> _private(Ref ref) async {
   return 'Hello world';
 }
 
 @riverpod
-FutureOr<String> familyOr(FamilyOrRef ref, int first) {
+FutureOr<String> familyOr(Ref ref, int first) {
   return '(first: $first)';
 }
 
 @riverpod
 Future<String> family(
-  FamilyRef ref,
+  Ref ref,
   int first, {
   String? second,
   required double third,

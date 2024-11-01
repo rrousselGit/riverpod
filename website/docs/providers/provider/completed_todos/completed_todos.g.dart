@@ -67,7 +67,7 @@ final class CompletedTodosProvider
   }
 }
 
-String _$completedTodosHash() => r'855706c09268f428696b3b382ae1605818361b83';
+String _$completedTodosHash() => r'0a6a67db7f22556b2cd64236815fdd4d2e72a72b';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

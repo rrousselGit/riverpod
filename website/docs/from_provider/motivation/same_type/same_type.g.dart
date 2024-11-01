@@ -66,7 +66,7 @@ final class ItemsProvider extends $FunctionalProvider<List<Item>, List<Item>>
   }
 }
 
-String _$itemsHash() => r'f0a8fa6874f4868db9ead31e82c75d976f9d2033';
+String _$itemsHash() => r'8dafed1afc3fc52651c24445640d8b57ff080f66';
 
 typedef EvenItemsRef = Ref<List<Item>>;
 
@@ -127,7 +127,7 @@ final class EvenItemsProvider
   }
 }
 
-String _$evenItemsHash() => r'82b4525e91604745f2b4664531b32d4aff5717d4';
+String _$evenItemsHash() => r'83ef608e2e1ec6926495f7a4dd4bac3e6b1f16e1';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

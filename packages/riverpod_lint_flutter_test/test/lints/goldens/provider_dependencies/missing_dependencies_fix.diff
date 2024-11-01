@@ -42,7 +42,7 @@ Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:77`:
 // expect_lint: provider_dependencies
 - @riverpod
 + @Riverpod(dependencies: [dep])
-int plainAnnotation(PlainAnnotationRef ref) {
+int plainAnnotation(Ref ref) {
   ref.watch(depProvider);
 ```
 ---
@@ -54,7 +54,7 @@ Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:84`:
 // expect_lint: provider_dependencies
 - @Riverpod(keepAlive: false)
 + @Riverpod(keepAlive: false, dependencies: [dep])
-int customAnnotation(CustomAnnotationRef ref) {
+int customAnnotation(Ref ref) {
   ref.watch(depProvider);
 ```
 ---
@@ -79,7 +79,7 @@ Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:104`:
 -   dependencies: [],
 +   dependencies: [dep],
 )
-int existingDep(ExistingDepRef ref) {
+int existingDep(Ref ref) {
 ```
 ---
 Message: `Update "dependencies"`
@@ -91,7 +91,7 @@ Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:114`:
 -   dependencies: [],
 +   dependencies: [dep, dep2],
 )
-int multipleDeps(MultipleDepsRef ref) {
+int multipleDeps(Ref ref) {
 ```
 ---
 Message: `Specify "dependencies"`

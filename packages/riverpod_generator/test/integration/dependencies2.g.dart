@@ -84,7 +84,7 @@ final class ProviderWithDependencies2Provider
 }
 
 String _$providerWithDependencies2Hash() =>
-    r'90e090d5fa759369dceb59b2d2e219f67ed5f9e0';
+    r'3a6100929120a9cf1ef7f1e0a5e9b8e4d4030ae2';
 
 typedef FamilyWithDependencies2Ref = Ref<int>;
 
@@ -185,7 +185,7 @@ final class FamilyWithDependencies2Provider
 }
 
 String _$familyWithDependencies2Hash() =>
-    r'209b9e3ed4e5fad89572268d161fbe64a6ef0e87';
+    r'd064c06ca5a85a62cbe2b47943e98fc2e858fb03';
 
 final class FamilyWithDependencies2Family extends Family {
   const FamilyWithDependencies2Family._()
@@ -576,7 +576,7 @@ final class _Private2Provider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$private2Hash() => r'5e0fa14ff40fb444c027ed25150a42362db3ef19';
+String _$private2Hash() => r'e420875c8fbd9bf33eff945f2b7276b585032a38';
 
 typedef Public2Ref = Ref<int>;
 
@@ -636,7 +636,7 @@ final class Public2Provider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$public2Hash() => r'9767255f0182589fe48b29d217dd488b0a13b9d5';
+String _$public2Hash() => r'20eb4f82e5f25fafc72775e7b86021d70ebb5579';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

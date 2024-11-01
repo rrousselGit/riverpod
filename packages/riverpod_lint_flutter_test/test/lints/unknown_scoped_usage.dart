@@ -5,10 +5,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'unknown_scoped_usage.g.dart';
 
 @Riverpod(dependencies: [])
-int scoped(ScopedRef ref) => 0;
+int scoped(Ref ref) => 0;
 
 @riverpod
-int root(RootRef ref) => 0;
+int root(Ref ref) => 0;
 
 @Dependencies([scoped])
 void fn(WidgetRef widgetRef, Ref<int> ref) {

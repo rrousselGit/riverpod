@@ -127,4 +127,4 @@ final class RootProvider extends $FunctionalProvider<int, int>
 String _$rootHash() => r'1cd85d73316aad02169ff0f5e7af5cf1423410ff';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

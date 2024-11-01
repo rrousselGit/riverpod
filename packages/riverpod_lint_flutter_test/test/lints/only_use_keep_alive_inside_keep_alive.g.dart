@@ -327,4 +327,4 @@ final class FnProvider extends $FunctionalProvider<int, int>
 String _$fnHash() => r'9e89e9bead8aa30a86f31bd16f4106c4b38e8f2b';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

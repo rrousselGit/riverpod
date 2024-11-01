@@ -64,7 +64,7 @@ final class DepProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$depHash() => r'2213a401e03a1a914579b4a3a7707b783de9efba';
+String _$depHash() => r'1b3ec5231cd2328602151de9ceacdcd102a1d2e2';
 
 typedef FamilyRef = Ref<int>;
 
@@ -154,7 +154,7 @@ final class FamilyProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$familyHash() => r'8c228ff14b8c6cf1f3d4d6266232d64b5057c440';
+String _$familyHash() => r'940eb87eb11206499f73f05791a6266b38cda88a';
 
 final class FamilyFamily extends Family {
   const FamilyFamily._()
@@ -501,7 +501,7 @@ final class ProviderProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$providerHash() => r'6c9184ef4c6a410a2132e1ecc13a2e646e936d37';
+String _$providerHash() => r'1be7ae7ac2100d39b949af50ec50fce48b26cdd1';
 
 typedef Provider2Ref = Ref<int>;
 
@@ -576,7 +576,7 @@ final class Provider2Provider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$provider2Hash() => r'70d908579c5e64ce6558b42f433adfb80f4dc79b';
+String _$provider2Hash() => r'30f81430b57f0116f621a4a309c458fce0536378';
 
 @ProviderFor(Provider3)
 const provider3Provider = Provider3Provider._();
@@ -912,7 +912,7 @@ final class TransitiveDependenciesProvider extends $FunctionalProvider<int, int>
 }
 
 String _$transitiveDependenciesHash() =>
-    r'9c81823224bb28a5dc482328c04ce76293370877';
+    r'909d45403831b521177ec15b1dd78554e261d3be';
 
 typedef SmallTransitiveDependencyCountRef = Ref<int>;
 
@@ -987,7 +987,7 @@ final class SmallTransitiveDependencyCountProvider
 }
 
 String _$smallTransitiveDependencyCountHash() =>
-    r'34689e1ba57e2959975cbf8ebd6c9483f4652a73';
+    r'f67b369dd99e35a6e6211004b45c87c5ba4ac1c7';
 
 typedef EmptyDependenciesFunctionalRef = Ref<int>;
 
@@ -1050,7 +1050,7 @@ final class EmptyDependenciesFunctionalProvider
 }
 
 String _$emptyDependenciesFunctionalHash() =>
-    r'592bebd079450e2071fb12d68c3ae333d5c28359';
+    r'77289071cab8a10da8f5b7b40932864510a1ee38';
 
 @ProviderFor(EmptyDependenciesClassBased)
 const emptyDependenciesClassBasedProvider =
@@ -1196,7 +1196,7 @@ final class ProviderWithDependenciesProvider
 }
 
 String _$providerWithDependenciesHash() =>
-    r'beecbe7a41b647ab92367dbcc12055bcd6345af7';
+    r'7d40c994fc2d4ba9e6a0bb4a3d100f8da874eb5e';
 
 typedef _PrivateDepRef = Ref<int>;
 
@@ -1256,7 +1256,7 @@ final class _PrivateDepProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$privateDepHash() => r'f610d91bd39e0dcffe6ff4e74160964a291289d9';
+String _$privateDepHash() => r'92ff5cc515ecf2455cb04773f1b49f23b17ea2e2';
 
 typedef PublicDepRef = Ref<int>;
 
@@ -1316,7 +1316,7 @@ final class PublicDepProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$publicDepHash() => r'bcb69aace017c86c3c4b8eccf59fa22d010834bc';
+String _$publicDepHash() => r'a9c461ae174577183ab4c0ff8d8267cc7a64a2c5';
 
 typedef DuplicateDependenciesRef = Ref<int>;
 
@@ -1383,7 +1383,7 @@ final class DuplicateDependenciesProvider extends $FunctionalProvider<int, int>
 }
 
 String _$duplicateDependenciesHash() =>
-    r'8e4c4b40d7500e97e8490874d48cc960c64af712';
+    r'ad48ecca57899ee55c69793c84a01235d6a49834';
 
 typedef DuplicateDependencies2Ref = Ref<int>;
 
@@ -1453,7 +1453,7 @@ final class DuplicateDependencies2Provider extends $FunctionalProvider<int, int>
 }
 
 String _$duplicateDependencies2Hash() =>
-    r'43a4ff16a760fc697426a5b1ebc1f8882c816cfb';
+    r'6e065325922dc36f408f85998cf2d7ba7a80ba56';
 
 typedef TransitiveDuplicateDependenciesRef = Ref<int>;
 
@@ -1537,7 +1537,7 @@ final class TransitiveDuplicateDependenciesProvider
 }
 
 String _$transitiveDuplicateDependenciesHash() =>
-    r'aba44b6c1cf82eea782ad260f2e95d9f771f12ac';
+    r'be6a85098fc66be440b6b201f58a6ce1c526caf6';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

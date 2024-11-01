@@ -66,7 +66,7 @@ final class MyProvider extends $FunctionalProvider<MyValue, MyValue>
   }
 }
 
-String _$myHash() => r'0810ee24cae78c131d00773ac20d254c83eefab7';
+String _$myHash() => r'abf4b86b981ed95db3f391483b0a1497c33e98b8';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

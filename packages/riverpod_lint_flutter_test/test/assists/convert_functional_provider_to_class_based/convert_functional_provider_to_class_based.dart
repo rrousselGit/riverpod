@@ -4,11 +4,11 @@ part 'convert_functional_provider_to_class_based.g.dart';
 
 /// Some comment
 @riverpod
-int example(ExampleRef ref) => 0;
+int example(Ref ref) => 0;
 
 /// Some comment
 @riverpod
-int exampleFamily(ExampleFamilyRef ref, {required int a, String b = '42'}) {
+int exampleFamily(Ref ref, {required int a, String b = '42'}) {
   // Hello world
   return 0;
 }

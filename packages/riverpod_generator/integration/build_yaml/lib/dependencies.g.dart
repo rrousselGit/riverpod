@@ -110,7 +110,7 @@ final class Calc2Provider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$calc2Hash() => r'0972ac060d49cb3f08f9192af9cea0611a6b4616';
+String _$calc2Hash() => r'ae1d601ff7cdda569255e8014bd5d8d1c178b3eb';
 
 final class Calc2Family extends Family {
   const Calc2Family._()
@@ -181,4 +181,4 @@ final class Calc2Family extends Family {
   }
 }
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

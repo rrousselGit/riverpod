@@ -66,7 +66,7 @@ final class OtherProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$otherHash() => r'b23696171643dfbab23d167ed9b5ab0639e6a86c';
+String _$otherHash() => r'5d27b2b1b1c6bd17ba0844f74ade2088611be371';
 
 typedef ExampleRef = Ref<AsyncValue<int>>;
 
@@ -119,7 +119,7 @@ final class ExampleProvider
   }
 }
 
-String _$exampleHash() => r'29f92958e0d0e3f13ac033e92cd2e4072339c7db';
+String _$exampleHash() => r'012c40f45aaeb96633a857d1407f04d25255f32f';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -94,7 +94,7 @@ final class GeneratorProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$generatorHash() => r'e76b8050c3a272ecef1985e4dc7dfe5df3270f2f';
+String _$generatorHash() => r'd7d1733f8884b6702f363ddb178ae57797d0034f';
 
 final class GeneratorFamily extends Family {
   const GeneratorFamily._()
@@ -139,4 +139,4 @@ final class GeneratorFamily extends Family {
   }
 }
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

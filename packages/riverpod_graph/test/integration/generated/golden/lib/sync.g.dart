@@ -68,7 +68,7 @@ final class PublicProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$publicHash() => r'138be35943899793ab085e711fe3f3d22696a3ba';
+String _$publicHash() => r'94bee36125844f9fe521363bb228632b9f3bfbc7';
 
 /// A generated provider with a '$' in its name.
 typedef Supports$inNamesRef = Ref<String>;
@@ -132,7 +132,7 @@ final class Supports$inNamesProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$supports$inNamesHash() => r'baacdb7b92917860b02aba1fa7010c7056da4a67';
+String _$supports$inNamesHash() => r'a883450ddca90a227631fe54d1d9ae305bc558d9';
 
 /// A generated family provider.
 typedef FamilyRef = Ref<String>;
@@ -261,7 +261,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$familyHash() => r'ebf082969854dcc358b9870a2e5e9b922423e59b';
+String _$familyHash() => r'062561e0cad8585939dc9adc23de6452be2c9788';
 
 /// A generated family provider.
 final class FamilyFamily extends Family {
@@ -388,7 +388,7 @@ final class _PrivateProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$privateHash() => r'9a87ed0765ad8448525fa1290b34760c79e7402b';
+String _$privateHash() => r'4f7b825ffa8a674f01dc8453cb480060a6a7bf5f';
 
 /// A generated public provider from a class
 @ProviderFor(PublicClass)
@@ -847,4 +847,4 @@ abstract class _$Supports$InClassName extends $Notifier<String> {
 }
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -63,7 +63,7 @@ final class LocationProvider extends $FunctionalProvider<
   }
 }
 
-String _$locationHash() => r'22e666f1e1ce04ce03d8f8d5652e25b54c1d1af3';
+String _$locationHash() => r'39328e5d0ec2b97acec14f1aba6c8db3f24f46a8';
 
 typedef RestaurantsNearMeRef = Ref<AsyncValue<List<String>>>;
 
@@ -119,7 +119,7 @@ final class RestaurantsNearMeProvider extends $FunctionalProvider<
   }
 }
 
-String _$restaurantsNearMeHash() => r'dd49cc1e6f16abb34dd15286d171e322c06b93b8';
+String _$restaurantsNearMeHash() => r'f577a4362db45208cd34f499d73f39f284807d13';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -80,7 +80,7 @@ final class MyListenableProvider extends $FunctionalProvider<
   }
 }
 
-String _$myListenableHash() => r'c80799a0224092668fca44187b98ccfcd2b33ae1';
+String _$myListenableHash() => r'11b973997ad9787b8f775746d7a87211df2cb6bb';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

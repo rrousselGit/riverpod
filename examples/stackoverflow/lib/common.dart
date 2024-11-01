@@ -18,7 +18,7 @@ final client = Provider((ref) => Dio());
   // this provider.
   dependencies: [],
 )
-ThemeData theme(ThemeRef ref) {
+ThemeData theme(Ref ref) {
   throw UnimplementedError();
 }
 

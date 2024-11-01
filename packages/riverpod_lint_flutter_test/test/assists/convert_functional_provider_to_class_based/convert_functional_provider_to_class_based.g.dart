@@ -68,7 +68,7 @@ final class ExampleProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$exampleHash() => r'638d7db2be22eaad0f51ea0b3ae38e0483d43725';
+String _$exampleHash() => r'67898608b444d39a000852f647ca6d3326740c98';
 
 /// Some comment
 typedef ExampleFamilyRef = Ref<int>;
@@ -176,7 +176,7 @@ final class ExampleFamilyProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$exampleFamilyHash() => r'f5547d3d88c42b135db5efea7dfaa542b3db9cc1';
+String _$exampleFamilyHash() => r'70dfc6f4b2d7d251edbc3a66c3ac0f2c56aebf8b';
 
 /// Some comment
 final class ExampleFamilyFamily extends Family {
@@ -233,4 +233,4 @@ final class ExampleFamilyFamily extends Family {
   }
 }
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

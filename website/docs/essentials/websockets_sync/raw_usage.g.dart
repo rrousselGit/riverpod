@@ -67,7 +67,7 @@ final class RawStreamProvider
   }
 }
 
-String _$rawStreamHash() => r'7e7c2e8f4f08d33a4d86d60449e143c419ca4822';
+String _$rawStreamHash() => r'9ce48e3afce64329958af139c77f5e271e0bf04f';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

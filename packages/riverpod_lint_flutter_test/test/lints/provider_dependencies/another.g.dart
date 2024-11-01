@@ -64,7 +64,7 @@ final class BProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$bHash() => r'52593050701642f22b31c590f20c003dc2ee1579';
+String _$bHash() => r'31624e9aa10c9cd7941c9626e841c6df3468723b';
 
 typedef AnotherScopedRef = Ref<int>;
 
@@ -124,7 +124,7 @@ final class AnotherScopedProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$anotherScopedHash() => r'409a070806b566d16d98f18c99bf6243d481887f';
+String _$anotherScopedHash() => r'edf3ccffb7c3ce1b1e4ffdd4009aeed4fa38c3f8';
 
 typedef AnotherNonEmptyScopedRef = Ref<int>;
 
@@ -189,7 +189,7 @@ final class AnotherNonEmptyScopedProvider extends $FunctionalProvider<int, int>
 }
 
 String _$anotherNonEmptyScopedHash() =>
-    r'cc21d248e644c853e4647ad60ca72cb42b82475f';
+    r'56da5331e55d74e8e10ff710d20618f217394a69';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

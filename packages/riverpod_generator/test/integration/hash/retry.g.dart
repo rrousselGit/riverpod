@@ -64,7 +64,7 @@ final class AProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$aHash() => r'3500a02140f277a66793d8118c15e09150ae67cd';
+String _$aHash() => r'83a9516d10f85dc72ca773837e042bfc6e36c1f1';
 
 typedef BRef = Ref<String>;
 
@@ -154,7 +154,7 @@ final class BProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$bHash() => r'0af37d2fa472b9730e1aa01841787d964b9f193b';
+String _$bHash() => r'95798a157250c86a901bca5701b487f508f8a5a4';
 
 final class BFamily extends Family {
   const BFamily._()
@@ -199,4 +199,4 @@ final class BFamily extends Family {
   }
 }
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

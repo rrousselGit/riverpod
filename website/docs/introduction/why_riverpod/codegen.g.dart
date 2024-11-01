@@ -106,7 +106,7 @@ final class FetchPackagesProvider extends $FunctionalProvider<
   }
 }
 
-String _$fetchPackagesHash() => r'eebf7d838a57f493fffebfd2c8d8ab76d3233165';
+String _$fetchPackagesHash() => r'4b2c6ea2cd702ab0f9846ba19c945d2c43161605';
 
 final class FetchPackagesFamily extends Family {
   const FetchPackagesFamily._()
@@ -161,4 +161,4 @@ final class FetchPackagesFamily extends Family {
   }
 }
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

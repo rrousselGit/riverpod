@@ -10,10 +10,10 @@ final dio = Dio();
 /* SNIPPET START */
 
 @riverpod
-Stream<Configuration> config(ConfigRef ref) => Stream.value(Configuration());
+Stream<Configuration> config(Ref ref) => Stream.value(Configuration());
 
 @riverpod
-Future<List<Product>> products(ProductsRef ref) async {
+Future<List<Product>> products(Ref ref) async {
   // Will cause productsProvider to re-fetch the products if anything in the
   // configurations changes
   final configs = await ref.watch(configProvider.future);

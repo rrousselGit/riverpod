@@ -122,7 +122,7 @@ final class ConfigsProvider extends $FunctionalProvider<
   }
 }
 
-String _$configsHash() => r'166cbe95e6b49ed7bc78c96041fb14abddbf6911';
+String _$configsHash() => r'6416514dacd408abb24de2bd1404860e6518c564';
 
 typedef CharactersRef = Ref<AsyncValue<List<Character>>>;
 
@@ -178,7 +178,7 @@ final class CharactersProvider extends $FunctionalProvider<
   }
 }
 
-String _$charactersHash() => r'b1e8e15bbeab60d92fe959d9e1dd4ceba6a31446';
+String _$charactersHash() => r'd2bac558571ceae538d012696be58e2a06e8013f';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

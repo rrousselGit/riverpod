@@ -24,7 +24,7 @@ class TodoList extends _$TodoList {
 /* SNIPPET START */
 
 @riverpod
-int counter(CounterRef ref) => 0;
+int counter(Ref ref) => 0;
 
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});

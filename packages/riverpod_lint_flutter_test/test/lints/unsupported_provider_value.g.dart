@@ -64,7 +64,7 @@ final class IntegerProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$integerHash() => r'a8ce0296e677f64c8b9d1893eed85598c096765e';
+String _$integerHash() => r'8ad63bb35c89ffcf2ef281d7c39539760afff303';
 
 typedef StateNotifierRef = Ref<MyStateNotifier>;
 
@@ -125,7 +125,7 @@ final class StateNotifierProvider
   }
 }
 
-String _$stateNotifierHash() => r'5d517187bf927e19246ffbcc279d59e15df8ef30';
+String _$stateNotifierHash() => r'2505b564fd3a623976548c715b1623dea507f6d3';
 
 typedef AsyncStateNotifierRef = Ref<AsyncValue<MyStateNotifier>>;
 
@@ -182,7 +182,7 @@ final class AsyncStateNotifierProvider extends $FunctionalProvider<
 }
 
 String _$asyncStateNotifierHash() =>
-    r'66442390f13e38cd9594f841a7610ab0f632db81';
+    r'5c5954eb030f5688abdf881e047c8893c864b1a2';
 
 @ProviderFor(StateNotifierClass)
 const stateNotifierClassProvider = StateNotifierClassProvider._();
@@ -310,7 +310,7 @@ final class StateNotifierAsyncProvider extends $FunctionalProvider<
 }
 
 String _$stateNotifierAsyncHash() =>
-    r'9a9b1986076dfdfa4490cc109f1bd0f112a7455c';
+    r'ce67cf8c6f4bda46835042c17ea01186b5b399a5';
 
 @ProviderFor(SelfNotifier)
 const selfNotifierProvider = SelfNotifierProvider._();
@@ -633,7 +633,7 @@ final class ChangeNotifierProvider
   }
 }
 
-String _$changeNotifierHash() => r'6325328c129773979364c3cfd628f8f696bbaf66';
+String _$changeNotifierHash() => r'1686043b72e25b3143c5131906924f1393569400';
 
 @ProviderFor(ChangeNotifierClass)
 const changeNotifierClassProvider = ChangeNotifierClassProvider._();
@@ -764,7 +764,7 @@ final class NotifierProvider extends $FunctionalProvider<MyNotifier, MyNotifier>
   }
 }
 
-String _$notifierHash() => r'2f323c78400044790faaf61912fc98c6153942f6';
+String _$notifierHash() => r'5ad63d9ccd05ab78e7a6ba5c763cacf0b1decb7b';
 
 typedef AutoDisposeNotifierRef = Ref<MyAutoDisposeNotifier>;
 
@@ -827,7 +827,7 @@ final class AutoDisposeNotifierProvider
 }
 
 String _$autoDisposeNotifierHash() =>
-    r'620df0fc11c887f01e125454afe8de553cfea6d0';
+    r'6aecd9dee1e2734c3acf8eab05145418d10656e1';
 
 @ProviderFor(NotifierClass)
 const notifierClassProvider = NotifierClassProvider._();
@@ -958,7 +958,7 @@ final class AsyncNotifierProvider
   }
 }
 
-String _$asyncNotifierHash() => r'c90348efac71d241468236924f6c6bc80ae0d0e0';
+String _$asyncNotifierHash() => r'8800a97f6bf80a56caf5d968d4b4ab91f7f0a64e';
 
 @ProviderFor(AsyncNotifierClass)
 const asyncNotifierClassProvider = AsyncNotifierClassProvider._();
@@ -1091,7 +1091,7 @@ final class RawNotifierProvider
   }
 }
 
-String _$rawNotifierHash() => r'c01adc70a8e08258bf5d13024aa8e9b86359a2b2';
+String _$rawNotifierHash() => r'c667d10419c9ce1fdd227e2afd1f3aaf63c3380b';
 
 typedef RawFutureNotifierRef = Ref<Raw<Future<MyChangeNotifier>>>;
 
@@ -1153,7 +1153,7 @@ final class RawFutureNotifierProvider extends $FunctionalProvider<
   }
 }
 
-String _$rawFutureNotifierHash() => r'883253dbf7ade868c44b288ec3da02be64dcfb20';
+String _$rawFutureNotifierHash() => r'ff2744c369ebd96615f19451eae416d7afeef03f';
 
 typedef RawStreamNotifierRef = Ref<Raw<Stream<MyChangeNotifier>>>;
 
@@ -1215,7 +1215,7 @@ final class RawStreamNotifierProvider extends $FunctionalProvider<
   }
 }
 
-String _$rawStreamNotifierHash() => r'f22f6a906e275c6245365bf029e2dc217cf3a301';
+String _$rawStreamNotifierHash() => r'9a13efb8fbcef6c4388d5a2535b1b0aec6e46a9a';
 
 typedef FutureRawNotifierRef = Ref<AsyncValue<Raw<MyChangeNotifier>>>;
 
@@ -1271,7 +1271,7 @@ final class FutureRawNotifierProvider extends $FunctionalProvider<
   }
 }
 
-String _$futureRawNotifierHash() => r'd70ca757ff2539fc698ff924c135ee5e88a98018';
+String _$futureRawNotifierHash() => r'87103845bce1f4cae4ad62ae3b7da6ca3539581f';
 
 typedef StreamRawNotifierRef = Ref<AsyncValue<Raw<MyChangeNotifier>>>;
 
@@ -1327,7 +1327,7 @@ final class StreamRawNotifierProvider extends $FunctionalProvider<
   }
 }
 
-String _$streamRawNotifierHash() => r'b1075c37ef3e8a83dfb9a3d469b76bd4855c336f';
+String _$streamRawNotifierHash() => r'1d4abe389b7dfe1381879d8ffb174f6d1d9325e0';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

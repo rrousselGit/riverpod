@@ -7,7 +7,7 @@ part 'completed_todos.g.dart';
 /* SNIPPET START */
 
 @riverpod
-List<Todo> completedTodos(CompletedTodosRef ref) {
+List<Todo> completedTodos(Ref ref) {
   final todos = ref.watch(todosProvider);
 
   // we return only the completed todos

@@ -333,7 +333,9 @@ extension on AnnotatedNode {
           // Always initialize root declarations,
           // to handle cases where a method in a class has @Dependencies
           // but the class itself does not.
-          this is! CompilationUnitMember) return null;
+          this is! CompilationUnitMember) {
+        return null;
+      }
 
       return AccumulatedDependencyList._(
         node: this,

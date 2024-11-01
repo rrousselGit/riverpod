@@ -1,0 +1,100 @@
+Message: `Type as Ref`
+Priority: 90
+Diff for file `test/lints/functional_ref/fix/auto_import.dart:2`:
+```
+// ignore_for_file: deprecated_member_use_from_same_package
+- import 'package:riverpod_annotation/riverpod_annotation.dart';
+- 
+- part 'auto_import.g.dart';
+- 
+- // No riverpod imported. Should add it automatically
+- @riverpod
+- // expect_lint: functional_ref
+- int example(ExampleRef ref) => 0;
++ import 'package:riverpod/riverpod.dart';
++ import 'package:riverpod_annotation/riverpod_annotation.dart';
++ 
++ part 'auto_import.g.dart';
++ 
++ // No riverpod imported. Should add it automatically
++ @riverpod
++ // expect_lint: functional_ref
++ int example(Ref ref) => 0;
+
+@riverpod
+```
+---
+Message: `Add ref parameter`
+Priority: 90
+Diff for file `test/lints/functional_ref/fix/auto_import.dart:2`:
+```
+// ignore_for_file: deprecated_member_use_from_same_package
+- import 'package:riverpod_annotation/riverpod_annotation.dart';
+- 
+- part 'auto_import.g.dart';
+- 
+- // No riverpod imported. Should add it automatically
+- @riverpod
+- // expect_lint: functional_ref
+- int example(ExampleRef ref) => 0;
+- 
+- @riverpod
+- // expect_lint: functional_ref
+- int empty() => 0;
++ import 'package:riverpod/riverpod.dart';
++ import 'package:riverpod_annotation/riverpod_annotation.dart';
++ 
++ part 'auto_import.g.dart';
++ 
++ // No riverpod imported. Should add it automatically
++ @riverpod
++ // expect_lint: functional_ref
++ int example(ExampleRef ref) => 0;
++ 
++ @riverpod
++ // expect_lint: functional_ref
++ int empty(Ref ref) => 0;
+
+@riverpod
+```
+---
+Message: `Type as Ref`
+Priority: 90
+Diff for file `test/lints/functional_ref/fix/auto_import.dart:2`:
+```
+// ignore_for_file: deprecated_member_use_from_same_package
+- import 'package:riverpod_annotation/riverpod_annotation.dart';
+- 
+- part 'auto_import.g.dart';
+- 
+- // No riverpod imported. Should add it automatically
+- @riverpod
+- // expect_lint: functional_ref
+- int example(ExampleRef ref) => 0;
+- 
+- @riverpod
+- // expect_lint: functional_ref
+- int empty() => 0;
+- 
+- @riverpod
+- // expect_lint: functional_ref
+- int untyped(ref) => 0;
++ import 'package:riverpod/riverpod.dart';
++ import 'package:riverpod_annotation/riverpod_annotation.dart';
++ 
++ part 'auto_import.g.dart';
++ 
++ // No riverpod imported. Should add it automatically
++ @riverpod
++ // expect_lint: functional_ref
++ int example(ExampleRef ref) => 0;
++ 
++ @riverpod
++ // expect_lint: functional_ref
++ int empty() => 0;
++ 
++ @riverpod
++ // expect_lint: functional_ref
++ int untyped(Ref ref) => 0;
+```
+---

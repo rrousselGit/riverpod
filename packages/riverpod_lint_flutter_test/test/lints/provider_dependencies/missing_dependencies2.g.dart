@@ -64,7 +64,7 @@ final class DepProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$depHash() => r'749c4d696d29c72686cabcabd6fa7855f5cbf4db';
+String _$depHash() => r'578a350a40cda46444ecd9fa3ea2fd7bd0994692';
 
 typedef GeneratedScopedRef = Ref<int>;
 
@@ -124,7 +124,7 @@ final class GeneratedScopedProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$generatedScopedHash() => r'2eefb4cc872ddccfeb862142fd5f7e6d8bd82159';
+String _$generatedScopedHash() => r'f8e5b6926ce13765c83dbb7f8c8458c9c5fe7d69';
 
 typedef GeneratedRootRef = Ref<int>;
 
@@ -184,7 +184,7 @@ final class GeneratedRootProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$generatedRootHash() => r'080e3393566db0f44add3607e28a5a2980948704';
+String _$generatedRootHash() => r'179253a56503f28bb616c602d8af9ad3b23d438f';
 
 typedef WatchScopedButNoDependenciesRef = Ref<int>;
 
@@ -247,7 +247,70 @@ final class WatchScopedButNoDependenciesProvider
 }
 
 String _$watchScopedButNoDependenciesHash() =>
-    r'3ec52c4ab2ea2b3204b7aa049d1756c01c014ff0';
+    r'e326226fdc19ea7a4430900154c071f5a1a98e40';
+
+typedef WatchExternalButNoDependenciesRef = Ref<int>;
+
+@ProviderFor(watchExternalButNoDependencies)
+const watchExternalButNoDependenciesProvider =
+    WatchExternalButNoDependenciesProvider._();
+
+final class WatchExternalButNoDependenciesProvider
+    extends $FunctionalProvider<int, int>
+    with $Provider<int, WatchExternalButNoDependenciesRef> {
+  const WatchExternalButNoDependenciesProvider._(
+      {int Function(
+        WatchExternalButNoDependenciesRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'watchExternalButNoDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    WatchExternalButNoDependenciesRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$watchExternalButNoDependenciesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  WatchExternalButNoDependenciesProvider $copyWithCreate(
+    int Function(
+      WatchExternalButNoDependenciesRef ref,
+    ) create,
+  ) {
+    return WatchExternalButNoDependenciesProvider._(create: create);
+  }
+
+  @override
+  int create(WatchExternalButNoDependenciesRef ref) {
+    final _$cb = _createCb ?? watchExternalButNoDependencies;
+    return _$cb(ref);
+  }
+}
+
+String _$watchExternalButNoDependenciesHash() =>
+    r'2ed9c528aa61dbb5d1cf274d41b527d761c3d522';
 
 typedef WatchGeneratedScopedButNoDependenciesRef = Ref<int>;
 
@@ -311,7 +374,7 @@ final class WatchGeneratedScopedButNoDependenciesProvider
 }
 
 String _$watchGeneratedScopedButNoDependenciesHash() =>
-    r'2a4aba824078fe2c999260b4138939dee96c4fba';
+    r'2109f8ccbc13632e45f18ccb93bc3059c431eba1';
 
 typedef WatchRootButNoDependenciesRef = Ref<int>;
 
@@ -374,7 +437,7 @@ final class WatchRootButNoDependenciesProvider
 }
 
 String _$watchRootButNoDependenciesHash() =>
-    r'037187e333a5bd5d11d00147d179640b8a0f18dd';
+    r'cfecc8aeb539e82c46276f9e4dd78c323b4bef12';
 
 typedef WatchGeneratedRootButNoDependenciesRef = Ref<int>;
 
@@ -438,7 +501,7 @@ final class WatchGeneratedRootButNoDependenciesProvider
 }
 
 String _$watchGeneratedRootButNoDependenciesHash() =>
-    r'ecf43cc257376d2828638ce937813d2b72b46967';
+    r'c839dab901f606c11c78f9c8761931027d3db1d1';
 
 typedef WatchScopedButEmptyDependenciesRef = Ref<int>;
 
@@ -501,7 +564,7 @@ final class WatchScopedButEmptyDependenciesProvider
 }
 
 String _$watchScopedButEmptyDependenciesHash() =>
-    r'6b7526eb9dfd70c8249c71efffc60d612ca92f16';
+    r'a194f52730f635e9c92b3467b33b8c302c93b1ab';
 
 typedef WatchGeneratedScopedButEmptyDependenciesRef = Ref<int>;
 
@@ -565,7 +628,7 @@ final class WatchGeneratedScopedButEmptyDependenciesProvider
 }
 
 String _$watchGeneratedScopedButEmptyDependenciesHash() =>
-    r'5dc6791ab2f661a378de3e8335943a48e8305435';
+    r'fa4cb564341e7b3f0dd10f70e17381c67859c643';
 
 typedef WatchRootButEmptyDependenciesRef = Ref<int>;
 
@@ -628,7 +691,7 @@ final class WatchRootButEmptyDependenciesProvider
 }
 
 String _$watchRootButEmptyDependenciesHash() =>
-    r'c95800f6aec446737168ac8dc3e6edcaeeed3bc0';
+    r'8669a421efcd8caadc0d070f0c88043668610bbb';
 
 typedef WatchGeneratedRootButEmptyDependenciesRef = Ref<int>;
 
@@ -692,7 +755,281 @@ final class WatchGeneratedRootButEmptyDependenciesProvider
 }
 
 String _$watchGeneratedRootButEmptyDependenciesHash() =>
-    r'9fb97c1fa207a18870cd23c682305dcef413a706';
+    r'80581ac491e25ae8c6ee7b7f25dff9939f8de37c';
+
+typedef WatchScopedButMissingDependenciesRef = Ref<int>;
+
+@ProviderFor(watchScopedButMissingDependencies)
+const watchScopedButMissingDependenciesProvider =
+    WatchScopedButMissingDependenciesProvider._();
+
+final class WatchScopedButMissingDependenciesProvider
+    extends $FunctionalProvider<int, int>
+    with $Provider<int, WatchScopedButMissingDependenciesRef> {
+  const WatchScopedButMissingDependenciesProvider._(
+      {int Function(
+        WatchScopedButMissingDependenciesRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'watchScopedButMissingDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[depProvider],
+          allTransitiveDependencies: const <ProviderOrFamily>[
+            WatchScopedButMissingDependenciesProvider
+                .$allTransitiveDependencies0,
+          ],
+        );
+
+  static const $allTransitiveDependencies0 = depProvider;
+
+  final int Function(
+    WatchScopedButMissingDependenciesRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() =>
+      _$watchScopedButMissingDependenciesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  WatchScopedButMissingDependenciesProvider $copyWithCreate(
+    int Function(
+      WatchScopedButMissingDependenciesRef ref,
+    ) create,
+  ) {
+    return WatchScopedButMissingDependenciesProvider._(create: create);
+  }
+
+  @override
+  int create(WatchScopedButMissingDependenciesRef ref) {
+    final _$cb = _createCb ?? watchScopedButMissingDependencies;
+    return _$cb(ref);
+  }
+}
+
+String _$watchScopedButMissingDependenciesHash() =>
+    r'c890e4845b1fca73ee02442eb7a203734605173c';
+
+typedef WatchGeneratedScopedButMissingDependenciesRef = Ref<int>;
+
+@ProviderFor(watchGeneratedScopedButMissingDependencies)
+const watchGeneratedScopedButMissingDependenciesProvider =
+    WatchGeneratedScopedButMissingDependenciesProvider._();
+
+final class WatchGeneratedScopedButMissingDependenciesProvider
+    extends $FunctionalProvider<int, int>
+    with $Provider<int, WatchGeneratedScopedButMissingDependenciesRef> {
+  const WatchGeneratedScopedButMissingDependenciesProvider._(
+      {int Function(
+        WatchGeneratedScopedButMissingDependenciesRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'watchGeneratedScopedButMissingDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[depProvider],
+          allTransitiveDependencies: const <ProviderOrFamily>[
+            WatchGeneratedScopedButMissingDependenciesProvider
+                .$allTransitiveDependencies0,
+          ],
+        );
+
+  static const $allTransitiveDependencies0 = depProvider;
+
+  final int Function(
+    WatchGeneratedScopedButMissingDependenciesRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() =>
+      _$watchGeneratedScopedButMissingDependenciesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  WatchGeneratedScopedButMissingDependenciesProvider $copyWithCreate(
+    int Function(
+      WatchGeneratedScopedButMissingDependenciesRef ref,
+    ) create,
+  ) {
+    return WatchGeneratedScopedButMissingDependenciesProvider._(create: create);
+  }
+
+  @override
+  int create(WatchGeneratedScopedButMissingDependenciesRef ref) {
+    final _$cb = _createCb ?? watchGeneratedScopedButMissingDependencies;
+    return _$cb(ref);
+  }
+}
+
+String _$watchGeneratedScopedButMissingDependenciesHash() =>
+    r'fbbb5f1ea3725a7554dc05073f47a6b9ce5d913d';
+
+typedef WatchRootButMissingDependenciesRef = Ref<int>;
+
+@ProviderFor(watchRootButMissingDependencies)
+const watchRootButMissingDependenciesProvider =
+    WatchRootButMissingDependenciesProvider._();
+
+final class WatchRootButMissingDependenciesProvider
+    extends $FunctionalProvider<int, int>
+    with $Provider<int, WatchRootButMissingDependenciesRef> {
+  const WatchRootButMissingDependenciesProvider._(
+      {int Function(
+        WatchRootButMissingDependenciesRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'watchRootButMissingDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[depProvider],
+          allTransitiveDependencies: const <ProviderOrFamily>[
+            WatchRootButMissingDependenciesProvider.$allTransitiveDependencies0,
+          ],
+        );
+
+  static const $allTransitiveDependencies0 = depProvider;
+
+  final int Function(
+    WatchRootButMissingDependenciesRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$watchRootButMissingDependenciesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  WatchRootButMissingDependenciesProvider $copyWithCreate(
+    int Function(
+      WatchRootButMissingDependenciesRef ref,
+    ) create,
+  ) {
+    return WatchRootButMissingDependenciesProvider._(create: create);
+  }
+
+  @override
+  int create(WatchRootButMissingDependenciesRef ref) {
+    final _$cb = _createCb ?? watchRootButMissingDependencies;
+    return _$cb(ref);
+  }
+}
+
+String _$watchRootButMissingDependenciesHash() =>
+    r'cc9c5e6c3a1c34e291a63c429fb031e0cc701499';
+
+typedef WatchGeneratedRootButMissingDependenciesRef = Ref<int>;
+
+@ProviderFor(watchGeneratedRootButMissingDependencies)
+const watchGeneratedRootButMissingDependenciesProvider =
+    WatchGeneratedRootButMissingDependenciesProvider._();
+
+final class WatchGeneratedRootButMissingDependenciesProvider
+    extends $FunctionalProvider<int, int>
+    with $Provider<int, WatchGeneratedRootButMissingDependenciesRef> {
+  const WatchGeneratedRootButMissingDependenciesProvider._(
+      {int Function(
+        WatchGeneratedRootButMissingDependenciesRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'watchGeneratedRootButMissingDependenciesProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[depProvider],
+          allTransitiveDependencies: const <ProviderOrFamily>[
+            WatchGeneratedRootButMissingDependenciesProvider
+                .$allTransitiveDependencies0,
+          ],
+        );
+
+  static const $allTransitiveDependencies0 = depProvider;
+
+  final int Function(
+    WatchGeneratedRootButMissingDependenciesRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() =>
+      _$watchGeneratedRootButMissingDependenciesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  WatchGeneratedRootButMissingDependenciesProvider $copyWithCreate(
+    int Function(
+      WatchGeneratedRootButMissingDependenciesRef ref,
+    ) create,
+  ) {
+    return WatchGeneratedRootButMissingDependenciesProvider._(create: create);
+  }
+
+  @override
+  int create(WatchGeneratedRootButMissingDependenciesRef ref) {
+    final _$cb = _createCb ?? watchGeneratedRootButMissingDependencies;
+    return _$cb(ref);
+  }
+}
+
+String _$watchGeneratedRootButMissingDependenciesHash() =>
+    r'10d01aea2b6b0772e98172f410bdbfce85786243';
 
 typedef WatchGeneratedScopedAndContainsDependencyRef = Ref<int>;
 
@@ -761,7 +1098,148 @@ final class WatchGeneratedScopedAndContainsDependencyProvider
 }
 
 String _$watchGeneratedScopedAndContainsDependencyHash() =>
-    r'320592737e763091c1229a79ae07fe961e7aab72';
+    r'948e75e097500b33ee2fdbd3dc9fdecafa5f3d10';
+
+typedef WatchGeneratedRootAndContainsDependencyRef = Ref<int>;
+
+@ProviderFor(watchGeneratedRootAndContainsDependency)
+const watchGeneratedRootAndContainsDependencyProvider =
+    WatchGeneratedRootAndContainsDependencyProvider._();
+
+final class WatchGeneratedRootAndContainsDependencyProvider
+    extends $FunctionalProvider<int, int>
+    with $Provider<int, WatchGeneratedRootAndContainsDependencyRef> {
+  const WatchGeneratedRootAndContainsDependencyProvider._(
+      {int Function(
+        WatchGeneratedRootAndContainsDependencyRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'watchGeneratedRootAndContainsDependencyProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[generatedRootProvider],
+          allTransitiveDependencies: const <ProviderOrFamily>[
+            WatchGeneratedRootAndContainsDependencyProvider
+                .$allTransitiveDependencies0,
+          ],
+        );
+
+  static const $allTransitiveDependencies0 = generatedRootProvider;
+
+  final int Function(
+    WatchGeneratedRootAndContainsDependencyRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() =>
+      _$watchGeneratedRootAndContainsDependencyHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  WatchGeneratedRootAndContainsDependencyProvider $copyWithCreate(
+    int Function(
+      WatchGeneratedRootAndContainsDependencyRef ref,
+    ) create,
+  ) {
+    return WatchGeneratedRootAndContainsDependencyProvider._(create: create);
+  }
+
+  @override
+  int create(WatchGeneratedRootAndContainsDependencyRef ref) {
+    final _$cb = _createCb ?? watchGeneratedRootAndContainsDependency;
+    return _$cb(ref);
+  }
+}
+
+String _$watchGeneratedRootAndContainsDependencyHash() =>
+    r'780392b647f1606186ee0f70c81dd5b03f506284';
+
+typedef SpecifiedDependencyButNeverUsedRef = Ref<int>;
+
+@ProviderFor(specifiedDependencyButNeverUsed)
+const specifiedDependencyButNeverUsedProvider =
+    SpecifiedDependencyButNeverUsedProvider._();
+
+final class SpecifiedDependencyButNeverUsedProvider
+    extends $FunctionalProvider<int, int>
+    with $Provider<int, SpecifiedDependencyButNeverUsedRef> {
+  const SpecifiedDependencyButNeverUsedProvider._(
+      {int Function(
+        SpecifiedDependencyButNeverUsedRef ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'specifiedDependencyButNeverUsedProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[
+            depProvider,
+            generatedRootProvider
+          ],
+          allTransitiveDependencies: const <ProviderOrFamily>[
+            SpecifiedDependencyButNeverUsedProvider.$allTransitiveDependencies0,
+            SpecifiedDependencyButNeverUsedProvider.$allTransitiveDependencies1,
+          ],
+        );
+
+  static const $allTransitiveDependencies0 = depProvider;
+  static const $allTransitiveDependencies1 = generatedRootProvider;
+
+  final int Function(
+    SpecifiedDependencyButNeverUsedRef ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$specifiedDependencyButNeverUsedHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  SpecifiedDependencyButNeverUsedProvider $copyWithCreate(
+    int Function(
+      SpecifiedDependencyButNeverUsedRef ref,
+    ) create,
+  ) {
+    return SpecifiedDependencyButNeverUsedProvider._(create: create);
+  }
+
+  @override
+  int create(SpecifiedDependencyButNeverUsedRef ref) {
+    final _$cb = _createCb ?? specifiedDependencyButNeverUsed;
+    return _$cb(ref);
+  }
+}
+
+String _$specifiedDependencyButNeverUsedHash() =>
+    r'cca97d259bcacbff290f0d459e0de3a9b5b6a510';
 
 @ProviderFor(ClassWatchGeneratedRootButMissingDependencies)
 const classWatchGeneratedRootButMissingDependenciesProvider =
@@ -904,7 +1382,7 @@ final class Regression2348Provider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$regression2348Hash() => r'72fbbe420e9835c9843c28b7c9375ca3d99ca4b7';
+String _$regression2348Hash() => r'6ad005595ee202c8b0188562ed8c4a33d01260e2';
 
 @ProviderFor(Regression2417)
 const regression2417Provider = Regression2417Provider._();
@@ -1070,7 +1548,7 @@ final class FamilyDepProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$familyDepHash() => r'1c152873ed2b3e88da09d8e1fc53a33635cbe3b3';
+String _$familyDepHash() => r'ed674a44492b3871b72b4fbc68180ea0839723e5';
 
 final class FamilyDepFamily extends Family {
   const FamilyDepFamily._()
@@ -1209,7 +1687,7 @@ final class FamilyDep2Provider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$familyDep2Hash() => r'd81e2e56d75dd08a695b834853a3a6cea99ea305';
+String _$familyDep2Hash() => r'ee9c96f7a1d65e1b66c29aa8d8c030146995504c';
 
 final class FamilyDep2Family extends Family {
   const FamilyDep2Family._()
@@ -1315,7 +1793,7 @@ final class AliasProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$aliasHash() => r'871c6c7ab22e4bbed2dc46917daf42e7fc1b9d88';
+String _$aliasHash() => r'b410585ad56c66160898a05647e09e1a606aa9d2';
 
 @ProviderFor(AliasClass)
 const aliasClassProvider = AliasClassProvider._();
@@ -1583,4 +2061,4 @@ String _$crossFileDependencyHash() =>
     r'9ca6b69de674377c6906fb835cbe04d01851d088';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

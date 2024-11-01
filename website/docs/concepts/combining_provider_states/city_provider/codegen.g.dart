@@ -66,7 +66,7 @@ final class CityProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$cityHash() => r'2ccdee096b5d5c1cafa736b3e52b788431b9af38';
+String _$cityHash() => r'6a5023a3aba119f1ecaee6c7db44b3f519e72759';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

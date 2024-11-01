@@ -9,7 +9,7 @@ part 'codegen.g.dart';
 
 /* SNIPPET START */
 @riverpod
-Future<Activity> activity(ActivityRef ref) async {
+Future<Activity> activity(Ref ref) async {
   // {@template didDispose}
   // We capture whether the provider is currently disposed or not.
   // {@endtemplate}

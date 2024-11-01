@@ -59,7 +59,7 @@ final class TodoListProvider
   }
 }
 
-String _$todoListHash() => r'26b30307668c8feefa7cbe3c400b73e6edccbc39';
+String _$todoListHash() => r'79ea254a2b6239c9fbcc2b5e6f075a3e5b72598e';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

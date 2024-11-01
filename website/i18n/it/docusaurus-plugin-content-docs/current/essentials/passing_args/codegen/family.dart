@@ -10,7 +10,7 @@ part 'family.g.dart';
 /* SNIPPET START */
 @riverpod
 Future<Activity> activity(
-  ActivityRef ref,
+  Ref ref,
   // Possiamo aggiungere argomenti al provider
   // Il tipo del parametro può essere qualsiasi cosa tu voglia.
   String activityType,

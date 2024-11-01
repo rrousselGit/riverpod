@@ -72,7 +72,7 @@ final class FunctionalProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$functionalHash() => r'1198a9a7842513019f6a8cd1b32e72217a00ee8f';
+String _$functionalHash() => r'52eddcd28b005800da9cf6c22df77f2f040bfb34';
 
 /// Hello world
 // Foo
@@ -245,7 +245,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$familyHash() => r'339f0a8e0733a30bbb2220ce7ff6b9de7abe6022';
+String _$familyHash() => r'5164f4ea1f2d6c741e5c600c48a1b2ac2be7a1eb';
 
 /// Hello world
 // Foo
@@ -470,4 +470,4 @@ abstract class _$ClassFamilyBased extends $Notifier<String> {
 }
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -110,7 +110,7 @@ final class ExampleProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$exampleHash() => r'9c32e94eea83a436746088de51e6426f251b2190';
+String _$exampleHash() => r'5795b1f6c6f075de18d0e9789a3a52040c144f0c';
 
 final class ExampleFamily extends Family {
   const ExampleFamily._()
@@ -165,4 +165,4 @@ final class ExampleFamily extends Family {
   }
 }
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

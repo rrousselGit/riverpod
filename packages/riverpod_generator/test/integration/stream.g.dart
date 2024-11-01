@@ -85,7 +85,7 @@ final class GenericProvider<T extends num>
   }
 }
 
-String _$genericHash() => r'c1122edf55163d47de8d871ed5d15e0a7edddc05';
+String _$genericHash() => r'eaaf15c08df1aba30b6d6e70d67622d669df977f';
 
 final class GenericFamily extends Family {
   const GenericFamily._()
@@ -322,7 +322,7 @@ final class PublicProvider
   }
 }
 
-String _$publicHash() => r'c5cc0eac434371901cf6ab159a81bba49c58da12';
+String _$publicHash() => r'ed93527425175c4a2475e83a3f44223a2aa604d7';
 
 typedef _PrivateRef = Ref<AsyncValue<String>>;
 
@@ -375,7 +375,7 @@ final class _PrivateProvider
   }
 }
 
-String _$privateHash() => r'bbee0c7e27bda81346b5f52c96b23b2e48f83077';
+String _$privateHash() => r'7915ccdd16751e7dc6274bb024d1b273d78dc78b';
 
 typedef FamilyRef = Ref<AsyncValue<String>>;
 
@@ -493,7 +493,7 @@ final class FamilyProvider
   }
 }
 
-String _$familyHash() => r'6896fac2f6e3ccd7c38ecaa0d538cbd3577936b2';
+String _$familyHash() => r'ba1df8eab0af0f3f71ae29d23ccb7a491d8e2825';
 
 final class FamilyFamily extends Family {
   const FamilyFamily._()
@@ -913,4 +913,4 @@ abstract class _$FamilyClass extends $StreamNotifier<String> {
 }
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

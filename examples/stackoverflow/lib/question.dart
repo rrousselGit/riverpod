@@ -124,7 +124,7 @@ final questionThemeProvider = Provider<QuestionTheme>((ref) {
 /// This is an optional step. Since scoping is a fairly advanced mechanism,
 /// it's entirely fine to simply pass the [Question] to [QuestionItem] directly.
 @Riverpod(dependencies: [])
-AsyncValue<Question> currentQuestion(CurrentQuestionRef ref) {
+AsyncValue<Question> currentQuestion(Ref ref) {
   throw UnimplementedError();
 }
 

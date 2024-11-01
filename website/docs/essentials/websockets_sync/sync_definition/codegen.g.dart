@@ -67,7 +67,7 @@ final class SynchronousExampleProvider extends $FunctionalProvider<int, int>
 }
 
 String _$synchronousExampleHash() =>
-    r'98df96e07d554683041f668c06b36f183ff534c1';
+    r'a12577c395d5a639fdad88b28309f378a64bd2a7';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

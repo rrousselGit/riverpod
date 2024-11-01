@@ -1,4 +1,4 @@
-// ignore_for_file: invalid_use_of_internal_member, avoid_types_on_closure_parameters
+// ignore_for_file: invalid_use_of_internal_member, avoid_types_on_closure_parameters, deprecated_member_use_from_same_package, deprecated_member_use
 
 import 'dart:async';
 
