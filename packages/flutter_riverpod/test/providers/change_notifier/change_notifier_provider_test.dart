@@ -57,12 +57,9 @@ void main() {
     );
     final container = ProviderContainer.test(
       overrides: [
-        family.overrideWith(
-          (Ref<ValueNotifier<String>> ref, int arg) => ValueNotifier('42 $arg'),
-        ),
-        autoDisposeFamily.overrideWith(
-          (Ref<ValueNotifier<String>> ref, int arg) => ValueNotifier('84 $arg'),
-        ),
+        family.overrideWith((ref, int arg) => ValueNotifier('42 $arg')),
+        autoDisposeFamily
+            .overrideWith((ref, int arg) => ValueNotifier('84 $arg')),
       ],
     );
 
@@ -100,7 +97,7 @@ void main() {
   test('can read and set current ChangeNotifier', () async {
     final container = ProviderContainer.test();
     final listener = Listener<ValueNotifier<int>>();
-    late Ref<ValueNotifier<int>> ref;
+    late Ref ref;
     final provider = ChangeNotifierProvider<ValueNotifier<int>>((r) {
       ref = r;
       return ValueNotifier(0);

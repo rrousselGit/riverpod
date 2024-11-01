@@ -444,7 +444,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 final dep = FutureProvider((ref) => 0);
 final dep2 = FutureProvider((ref) => 0);
 
-void fn(Ref<int> ref) {
+void fn(Ref ref) {
   ref.read(dep);
   ref.read(dep2);
 }

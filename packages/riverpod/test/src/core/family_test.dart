@@ -25,7 +25,7 @@ void main() {
 
         container.read(provider);
 
-        final [ref as Ref<int>, notifier as TestNotifier<int>] = verify(
+        final [ref as Ref, notifier as TestNotifier<int>] = verify(
           overrideWithBuild.call(captureAny, captureAny),
         ).captured;
 
@@ -61,7 +61,7 @@ void main() {
 
         container.read(provider(0));
 
-        final [ref as Ref<int>, notifier as TestNotifier<int>] = verify(
+        final [ref as Ref, notifier as TestNotifier<int>] = verify(
           overrideWithBuild.call(captureAny, captureAny),
         ).captured;
 

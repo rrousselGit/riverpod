@@ -134,7 +134,7 @@ class DeferredAsyncNotifier<StateT> extends AsyncNotifier<StateT>
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
   }) : _updateShouldNotify = updateShouldNotify;
 
-  final FutureOr<StateT> Function(Ref<AsyncValue<StateT>> ref) _create;
+  final FutureOr<StateT> Function(Ref ref) _create;
   final bool Function(
     AsyncValue<StateT> previousState,
     AsyncValue<StateT> newState,
@@ -160,7 +160,7 @@ class DeferredFamilyAsyncNotifier<StateT>
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
   }) : _updateShouldNotify = updateShouldNotify;
 
-  final FutureOr<StateT> Function(Ref<AsyncValue<StateT>> ref) _create;
+  final FutureOr<StateT> Function(Ref ref) _create;
 
   final bool Function(
     AsyncValue<StateT> previousState,
@@ -191,12 +191,12 @@ class AsyncNotifierTestFactory extends TestFactory<
   });
 
   final TestAsyncNotifier<StateT> Function<StateT>(
-    FutureOr<StateT> Function(Ref<AsyncValue<StateT>> ref) create,
+    FutureOr<StateT> Function(Ref ref) create,
   ) deferredNotifier;
 
   final $AsyncNotifierProvider<TestAsyncNotifier<StateT>, StateT>
       Function<StateT>(
-    FutureOr<StateT> Function(Ref<AsyncValue<StateT>> ref) create, {
+    FutureOr<StateT> Function(Ref ref) create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
   }) deferredProvider;
 
@@ -206,7 +206,7 @@ class AsyncNotifierTestFactory extends TestFactory<
 
   $AsyncNotifierProvider<TestAsyncNotifier<StateT>, StateT>
       simpleTestProvider<StateT>(
-    FutureOr<StateT> Function(Ref<AsyncValue<StateT>> ref) create, {
+    FutureOr<StateT> Function(Ref ref) create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
   }) {
     return deferredProvider<StateT>(

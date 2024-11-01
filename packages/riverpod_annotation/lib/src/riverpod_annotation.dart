@@ -203,7 +203,7 @@ class MissingScopeException implements Exception {
   MissingScopeException(this.ref);
 
   /// The [Ref] that threw the exception
-  final Ref<Object?> ref;
+  final Ref ref;
 
   @override
   String toString() {

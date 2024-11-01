@@ -6,7 +6,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'shared_pipe_change_notifier.g.dart';
 
 /* SNIPPET START */
-extension on Ref<Object?> {
+extension on Ref {
   // {@template extension}
   // We can move the previous logic to a Ref extension.
   // This enables reusing the logic between providers

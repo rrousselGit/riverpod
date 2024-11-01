@@ -33,7 +33,7 @@ class TestFactory<T> {
 
 typedef ProviderFactory<BaseT, ProviderT> = ProviderT Function([Object? arg])
     Function(
-  BaseT Function(Ref ref, Object? arg) create, {
+  BaseT Function(Ref? ref, Object? arg) create, {
   String? name,
   Iterable<ProviderOrFamily>? dependencies,
   Retry? retry,

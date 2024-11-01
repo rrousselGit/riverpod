@@ -1,7 +1,7 @@
 part of '../framework.dart';
 
 @internal
-extension $RefArg on Ref<Object?> {
+extension $RefArg on Ref {
   // Implementation detail, do not use
   Object? get $arg => _element.origin.argument;
 
@@ -412,7 +412,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// class MyService {
   ///   MyService(this.ref);
   ///
-  ///   final Ref<MyService> ref;
+  ///   final Ref ref;
   ///
   ///   Future<User> fetchUser() {
   ///     // We read the current configurations, but do not care about

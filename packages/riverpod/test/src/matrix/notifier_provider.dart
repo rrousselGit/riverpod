@@ -131,7 +131,7 @@ class DeferredNotifier<StateT> extends Notifier<StateT>
     bool Function(StateT, StateT)? updateShouldNotify,
   }) : _updateShouldNotify = updateShouldNotify;
 
-  final StateT Function(Ref<StateT> ref) _create;
+  final StateT Function(Ref ref) _create;
   final bool Function(
     StateT previousState,
     StateT newState,
@@ -153,7 +153,7 @@ class DeferredFamilyNotifier<StateT> extends FamilyNotifier<StateT, int>
     bool Function(StateT, StateT)? updateShouldNotify,
   }) : _updateShouldNotify = updateShouldNotify;
 
-  final StateT Function(Ref<StateT> ref) _create;
+  final StateT Function(Ref ref) _create;
 
   final bool Function(
     StateT previousState,
@@ -184,11 +184,11 @@ class NotifierTestFactory extends TestFactory<
   });
 
   final TestNotifier<StateT> Function<StateT>(
-    StateT Function(Ref<StateT> ref) create,
+    StateT Function(Ref ref) create,
   ) deferredNotifier;
 
   final $NotifierProvider<TestNotifier<StateT>, StateT> Function<StateT>(
-    StateT Function(Ref<StateT> ref) create, {
+    StateT Function(Ref ref) create, {
     bool Function(StateT, StateT)? updateShouldNotify,
   }) deferredProvider;
 
@@ -197,7 +197,7 @@ class NotifierTestFactory extends TestFactory<
   ) provider;
 
   $NotifierProvider<TestNotifier<StateT>, StateT> simpleTestProvider<StateT>(
-    StateT Function(Ref<StateT> ref) create, {
+    StateT Function(Ref ref) create, {
     bool Function(StateT, StateT)? updateShouldNotify,
   }) {
     return deferredProvider<StateT>(

@@ -54,10 +54,10 @@ typedef RunNotifierBuild<NotifierT, CreatedT> = CreatedT Function(
 /// }
 /// ```
 abstract class NotifierBase<StateT, CreatedT> {
-  Ref<StateT>? _ref;
+  Ref? _ref;
 
   @protected
-  Ref<StateT> get ref {
+  Ref get ref {
     final ref = _ref;
     if (ref == null) throw StateError(uninitializedElementError);
 
@@ -75,12 +75,15 @@ abstract class NotifierBase<StateT, CreatedT> {
     void Function(StateT? previous, StateT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
-    ref.listenSelf(listener, onError: onError);
+    ref.listenSelf(
+      (prev, next) => listener(prev as StateT?, next as StateT),
+      onError: onError,
+    );
   }
 
   @visibleForTesting
   @protected
-  StateT get state => ref.state;
+  StateT get state => ref.state as StateT;
 
   @visibleForTesting
   @protected
@@ -94,7 +97,8 @@ abstract class NotifierBase<StateT, CreatedT> {
 
 @internal
 extension ClassBaseX<StateT, CreatedT> on NotifierBase<StateT, CreatedT> {
-  ProviderElement<StateT>? get element => _ref?._element;
+  ProviderElement<StateT>? get element =>
+      _ref?._element as ProviderElement<StateT>?;
 }
 
 /// Implementation detail of `riverpod_generator`.
@@ -186,7 +190,7 @@ abstract class ClassProviderElement< //
   @mustCallSuper
   @override
   void create(
-    Ref<StateT> ref, {
+    Ref ref, {
     required bool didChangeDependency,
   }) {
     final seamless = !didChangeDependency;

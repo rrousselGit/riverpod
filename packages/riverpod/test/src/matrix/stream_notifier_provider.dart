@@ -139,7 +139,7 @@ class DeferredStreamNotifier<StateT> extends StreamNotifier<StateT>
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
   }) : _updateShouldNotify = updateShouldNotify;
 
-  final Stream<StateT> Function(Ref<AsyncValue<StateT>> ref) _create;
+  final Stream<StateT> Function(Ref ref) _create;
   final bool Function(
     AsyncValue<StateT> previousState,
     AsyncValue<StateT> newState,
@@ -165,7 +165,7 @@ class DeferredFamilyStreamNotifier<StateT>
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
   }) : _updateShouldNotify = updateShouldNotify;
 
-  final Stream<StateT> Function(Ref<AsyncValue<StateT>> ref) _create;
+  final Stream<StateT> Function(Ref ref) _create;
 
   final bool Function(
     AsyncValue<StateT> previousState,
@@ -196,12 +196,12 @@ class StreamNotifierTestFactory extends TestFactory<
   });
 
   final TestStreamNotifier<StateT> Function<StateT>(
-    Stream<StateT> Function(Ref<AsyncValue<StateT>> ref) create,
+    Stream<StateT> Function(Ref ref) create,
   ) deferredNotifier;
 
   final $StreamNotifierProvider<TestStreamNotifier<StateT>, StateT>
       Function<StateT>(
-    Stream<StateT> Function(Ref<AsyncValue<StateT>> ref) create, {
+    Stream<StateT> Function(Ref ref) create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
     Retry? retry,
   }) deferredProvider;
@@ -213,7 +213,7 @@ class StreamNotifierTestFactory extends TestFactory<
 
   $StreamNotifierProvider<TestStreamNotifier<StateT>, StateT>
       simpleTestProvider<StateT>(
-    Stream<StateT> Function(Ref<AsyncValue<StateT>> ref) create, {
+    Stream<StateT> Function(Ref ref) create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
   }) {
     return deferredProvider<StateT>(

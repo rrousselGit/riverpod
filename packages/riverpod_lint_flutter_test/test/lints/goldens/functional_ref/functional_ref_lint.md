@@ -21,7 +21,7 @@ test/lints/functional_ref/functional_ref.dart:14:32
 ```dart
 
 @riverpod
-int generics<A extends num, B>(>>>Ref<<< ref) => 0;
+int generics<A extends num, B>(>>>Ref ref) => 0;
 
 @riverpod
 ```

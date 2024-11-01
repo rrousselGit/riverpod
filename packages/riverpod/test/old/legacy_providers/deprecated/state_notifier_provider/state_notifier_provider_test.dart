@@ -108,7 +108,7 @@ void main() {
   test('can read and set current StateNotifier', () async {
     final container = ProviderContainer.test();
     final listener = Listener<int>();
-    late Ref<int> ref;
+    late Ref ref;
     final provider = StateNotifierProvider<Counter, int>((r) {
       ref = r;
       return Counter();

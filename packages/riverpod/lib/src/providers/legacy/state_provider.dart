@@ -83,7 +83,7 @@ final class StateProvider<StateT> extends $FunctionalProvider<StateT, StateT>
   /// {@macro riverpod.family}
   static const family = StateProviderFamilyBuilder();
 
-  final StateT Function(Ref<StateT> ref) _createFn;
+  final StateT Function(Ref ref) _createFn;
 
   Refreshable<StateController<StateT>> get notifier => _notifier(this);
 
@@ -127,7 +127,7 @@ class StateProviderElement<T> extends ProviderElement<T> {
 
   @override
   void create(
-    Ref<T> ref, {
+    Ref ref, {
     required bool didChangeDependency,
   }) {
     final initialState = provider._createFn(ref);

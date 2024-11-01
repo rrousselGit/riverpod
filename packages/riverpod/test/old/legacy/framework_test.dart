@@ -186,7 +186,7 @@ void main() {
     var callCount = 0;
     final onDispose = OnDisposeMock();
     final error = Error();
-    late Ref<Object?> reference;
+    late Ref reference;
     final provider = Provider((ref) {
       reference = ref;
       callCount++;

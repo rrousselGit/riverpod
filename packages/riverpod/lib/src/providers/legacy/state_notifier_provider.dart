@@ -118,7 +118,7 @@ final class StateNotifierProvider< //
   /// {@macro riverpod.family}
   static const family = StateNotifierProviderFamilyBuilder();
 
-  final NotifierT Function(Ref<StateT> ref) _create;
+  final NotifierT Function(Ref ref) _create;
 
   /// Obtains the [StateNotifier] associated with this provider, without listening
   /// to state changes.
@@ -177,7 +177,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
   void Function()? _removeListener;
 
   @override
-  void create(Ref<StateT> ref, {required bool didChangeDependency}) {
+  void create(Ref ref, {required bool didChangeDependency}) {
     final notifier = _notifierNotifier.result = Result.guard(
       () => provider._create(ref),
     );

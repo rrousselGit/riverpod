@@ -166,7 +166,7 @@ class $StreamProviderElement<StateT> extends ProviderElement<AsyncValue<StateT>>
 
   @override
   void create(
-    Ref<AsyncValue<StateT>> ref, {
+    Ref ref, {
     required bool didChangeDependency,
   }) {
     asyncTransition(AsyncLoading<StateT>(), seamless: !didChangeDependency);

@@ -175,7 +175,7 @@ class $FutureProviderElement<StateT> extends ProviderElement<AsyncValue<StateT>>
 
   @override
   void create(
-    Ref<AsyncValue<StateT>> ref, {
+    Ref ref, {
     required bool didChangeDependency,
   }) {
     handleFuture(
