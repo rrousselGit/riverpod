@@ -64,7 +64,7 @@ final class KeepAliveProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$keepAliveHash() => r'756ceaba79af550d4498a93ec30118f989cd5bb4';
+String _$keepAliveHash() => r'095b2cb2261b9d79721aa6552b8aaf0d8a7bb7ee';
 
 @ProviderFor(KeepAliveClass)
 const keepAliveClassProvider = KeepAliveClassProvider._();
@@ -194,7 +194,7 @@ final class AutoDisposeProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$autoDisposeHash() => r'd46d894171aed556a8b4deafeda4de6b9465f632';
+String _$autoDisposeHash() => r'1ace7b4b2957ecf77b683b868e91a2614fc77d03';
 
 @ProviderFor(AutoDisposeClass)
 const autoDisposeClassProvider = AutoDisposeClassProvider._();
@@ -324,7 +324,7 @@ final class FnProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$fnHash() => r'9e89e9bead8aa30a86f31bd16f4106c4b38e8f2b';
+String _$fnHash() => r'e96b0302f7492f5aecedd46f6edeeea456839d01';
 
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

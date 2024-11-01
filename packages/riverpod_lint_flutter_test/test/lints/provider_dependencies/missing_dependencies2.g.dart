@@ -249,69 +249,6 @@ final class WatchScopedButNoDependenciesProvider
 String _$watchScopedButNoDependenciesHash() =>
     r'e326226fdc19ea7a4430900154c071f5a1a98e40';
 
-typedef WatchExternalButNoDependenciesRef = Ref<int>;
-
-@ProviderFor(watchExternalButNoDependencies)
-const watchExternalButNoDependenciesProvider =
-    WatchExternalButNoDependenciesProvider._();
-
-final class WatchExternalButNoDependenciesProvider
-    extends $FunctionalProvider<int, int>
-    with $Provider<int, WatchExternalButNoDependenciesRef> {
-  const WatchExternalButNoDependenciesProvider._(
-      {int Function(
-        WatchExternalButNoDependenciesRef ref,
-      )? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'watchExternalButNoDependenciesProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
-        );
-
-  final int Function(
-    WatchExternalButNoDependenciesRef ref,
-  )? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$watchExternalButNoDependenciesHash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  WatchExternalButNoDependenciesProvider $copyWithCreate(
-    int Function(
-      WatchExternalButNoDependenciesRef ref,
-    ) create,
-  ) {
-    return WatchExternalButNoDependenciesProvider._(create: create);
-  }
-
-  @override
-  int create(WatchExternalButNoDependenciesRef ref) {
-    final _$cb = _createCb ?? watchExternalButNoDependencies;
-    return _$cb(ref);
-  }
-}
-
-String _$watchExternalButNoDependenciesHash() =>
-    r'2ed9c528aa61dbb5d1cf274d41b527d761c3d522';
-
 typedef WatchGeneratedScopedButNoDependenciesRef = Ref<int>;
 
 @ProviderFor(watchGeneratedScopedButNoDependencies)
@@ -1997,7 +1934,7 @@ final class FooProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$fooHash() => r'f9ce60fe868c2c54aa282702554861a13e8871cd';
+String _$fooHash() => r'a390b7b969bb0eec183426bfc85bec32750e9475';
 
 typedef CrossFileDependencyRef = Ref<int>;
 
@@ -2058,7 +1995,7 @@ final class CrossFileDependencyProvider extends $FunctionalProvider<int, int>
 }
 
 String _$crossFileDependencyHash() =>
-    r'9ca6b69de674377c6906fb835cbe04d01851d088';
+    r'3ab740fe1903f2c126412df43ee34eed87a6f4fe';
 
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

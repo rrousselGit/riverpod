@@ -64,7 +64,7 @@ final class ScopedProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$scopedHash() => r'bbf25968b1186d2dd63d10545364453712d491cf';
+String _$scopedHash() => r'5a271e9b23e18517694454448b922a6c9d03781e';
 
 typedef RootRef = Ref<int>;
 
@@ -124,7 +124,7 @@ final class RootProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$rootHash() => r'1cd85d73316aad02169ff0f5e7af5cf1423410ff';
+String _$rootHash() => r'dda8bbb46cb4d7c658597669e3be92e2447dcfb0';
 
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
