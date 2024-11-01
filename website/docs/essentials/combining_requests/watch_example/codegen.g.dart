@@ -8,8 +8,6 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef LocationRef = Ref<AsyncValue<({double longitude, double latitude})>>;
-
 @ProviderFor(location)
 const locationProvider = LocationProvider._();
 
@@ -18,10 +16,10 @@ final class LocationProvider extends $FunctionalProvider<
         Stream<({double longitude, double latitude})>>
     with
         $FutureModifier<({double longitude, double latitude})>,
-        $StreamProvider<({double longitude, double latitude}), LocationRef> {
+        $StreamProvider<({double longitude, double latitude})> {
   const LocationProvider._(
       {Stream<({double longitude, double latitude})> Function(
-        LocationRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -35,7 +33,7 @@ final class LocationProvider extends $FunctionalProvider<
         );
 
   final Stream<({double longitude, double latitude})> Function(
-    LocationRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -50,14 +48,14 @@ final class LocationProvider extends $FunctionalProvider<
   @override
   LocationProvider $copyWithCreate(
     Stream<({double longitude, double latitude})> Function(
-      LocationRef ref,
+      Ref ref,
     ) create,
   ) {
     return LocationProvider._(create: create);
   }
 
   @override
-  Stream<({double longitude, double latitude})> create(LocationRef ref) {
+  Stream<({double longitude, double latitude})> create(Ref ref) {
     final _$cb = _createCb ?? location;
     return _$cb(ref);
   }
@@ -65,19 +63,15 @@ final class LocationProvider extends $FunctionalProvider<
 
 String _$locationHash() => r'39328e5d0ec2b97acec14f1aba6c8db3f24f46a8';
 
-typedef RestaurantsNearMeRef = Ref<AsyncValue<List<String>>>;
-
 @ProviderFor(restaurantsNearMe)
 const restaurantsNearMeProvider = RestaurantsNearMeProvider._();
 
 final class RestaurantsNearMeProvider extends $FunctionalProvider<
         AsyncValue<List<String>>, FutureOr<List<String>>>
-    with
-        $FutureModifier<List<String>>,
-        $FutureProvider<List<String>, RestaurantsNearMeRef> {
+    with $FutureModifier<List<String>>, $FutureProvider<List<String>> {
   const RestaurantsNearMeProvider._(
       {FutureOr<List<String>> Function(
-        RestaurantsNearMeRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -91,7 +85,7 @@ final class RestaurantsNearMeProvider extends $FunctionalProvider<
         );
 
   final FutureOr<List<String>> Function(
-    RestaurantsNearMeRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -106,14 +100,14 @@ final class RestaurantsNearMeProvider extends $FunctionalProvider<
   @override
   RestaurantsNearMeProvider $copyWithCreate(
     FutureOr<List<String>> Function(
-      RestaurantsNearMeRef ref,
+      Ref ref,
     ) create,
   ) {
     return RestaurantsNearMeProvider._(create: create);
   }
 
   @override
-  FutureOr<List<String>> create(RestaurantsNearMeRef ref) {
+  FutureOr<List<String>> create(Ref ref) {
     final _$cb = _createCb ?? restaurantsNearMe;
     return _$cb(ref);
   }

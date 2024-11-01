@@ -6,8 +6,6 @@ part of 'annotated.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef FunctionalRef = Ref<String>;
-
 @ProviderFor(functional)
 @Deprecated('Deprecation message')
 @visibleForTesting
@@ -15,12 +13,12 @@ typedef FunctionalRef = Ref<String>;
 const functionalProvider = FunctionalFamily._();
 
 final class FunctionalProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, FunctionalRef> {
+    with $Provider<String> {
   const FunctionalProvider._(
       {required FunctionalFamily super.from,
       required int super.argument,
       String Function(
-        FunctionalRef ref,
+        Ref ref,
         @Deprecated('field') int id,
       )? create})
       : _createCb = create,
@@ -33,7 +31,7 @@ final class FunctionalProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    FunctionalRef ref,
+    Ref ref,
     @Deprecated('field') int id,
   )? _createCb;
 
@@ -63,7 +61,7 @@ final class FunctionalProvider extends $FunctionalProvider<String, String>
   @override
   FunctionalProvider $copyWithCreate(
     String Function(
-      FunctionalRef ref,
+      Ref ref,
     ) create,
   ) {
     return FunctionalProvider._(
@@ -77,7 +75,7 @@ final class FunctionalProvider extends $FunctionalProvider<String, String>
   }
 
   @override
-  String create(FunctionalRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? functional;
     final argument = this.argument as int;
     return _$cb(
@@ -97,7 +95,7 @@ final class FunctionalProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$functionalHash() => r'288107f94c896141a9b3999f606e4ccdf078f15e';
+String _$functionalHash() => r'ba8606cd0526e2dde0f775eb8f4c9d8b5b6fdf2c';
 
 final class FunctionalFamily extends Family {
   const FunctionalFamily._()
@@ -123,7 +121,7 @@ final class FunctionalFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     String Function(
-      FunctionalRef ref,
+      Ref ref,
       int args,
     ) create,
   ) {
@@ -202,7 +200,7 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
   @override
   ClassBasedProvider $copyWithBuild(
     String Function(
-      Ref<String>,
+      Ref,
       ClassBased,
     ) build,
   ) {
@@ -274,7 +272,7 @@ final class ClassBasedFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    String Function(Ref<String> ref, ClassBased notifier, int argument) build,
+    String Function(Ref ref, ClassBased notifier, int argument) build,
   ) {
     return $FamilyOverride(
       from: this,
@@ -306,8 +304,6 @@ abstract class _$ClassBased extends $Notifier<String> {
       );
 }
 
-typedef FamilyRef = Ref<String>;
-
 @ProviderFor(family)
 @Deprecated('Deprecation message')
 @visibleForTesting
@@ -315,12 +311,12 @@ typedef FamilyRef = Ref<String>;
 const familyProvider = FamilyFamily._();
 
 final class FamilyProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, FamilyRef> {
+    with $Provider<String> {
   const FamilyProvider._(
       {required FamilyFamily super.from,
       required int super.argument,
       String Function(
-        FamilyRef ref,
+        Ref ref,
         int id,
       )? create})
       : _createCb = create,
@@ -333,7 +329,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    FamilyRef ref,
+    Ref ref,
     int id,
   )? _createCb;
 
@@ -363,7 +359,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
   @override
   FamilyProvider $copyWithCreate(
     String Function(
-      FamilyRef ref,
+      Ref ref,
     ) create,
   ) {
     return FamilyProvider._(
@@ -377,7 +373,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
   }
 
   @override
-  String create(FamilyRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? family;
     final argument = this.argument as int;
     return _$cb(
@@ -397,7 +393,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$familyHash() => r'd70685b83be840bfd9e79c11fb84c905d19d6e10';
+String _$familyHash() => r'14b97009aec20a0332208f8a60bc177b44c9d1d4';
 
 final class FamilyFamily extends Family {
   const FamilyFamily._()
@@ -423,7 +419,7 @@ final class FamilyFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     String Function(
-      FamilyRef ref,
+      Ref ref,
       int args,
     ) create,
   ) {
@@ -442,17 +438,14 @@ final class FamilyFamily extends Family {
   }
 }
 
-typedef NotCopiedFunctionalRef = Ref<String>;
-
 @ProviderFor(notCopiedFunctional)
 const notCopiedFunctionalProvider = NotCopiedFunctionalProvider._();
 
 final class NotCopiedFunctionalProvider
-    extends $FunctionalProvider<String, String>
-    with $Provider<String, NotCopiedFunctionalRef> {
+    extends $FunctionalProvider<String, String> with $Provider<String> {
   const NotCopiedFunctionalProvider._(
       {String Function(
-        NotCopiedFunctionalRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -466,7 +459,7 @@ final class NotCopiedFunctionalProvider
         );
 
   final String Function(
-    NotCopiedFunctionalRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -488,21 +481,21 @@ final class NotCopiedFunctionalProvider
   @override
   NotCopiedFunctionalProvider $copyWithCreate(
     String Function(
-      NotCopiedFunctionalRef ref,
+      Ref ref,
     ) create,
   ) {
     return NotCopiedFunctionalProvider._(create: create);
   }
 
   @override
-  String create(NotCopiedFunctionalRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? notCopiedFunctional;
     return _$cb(ref);
   }
 }
 
 String _$notCopiedFunctionalHash() =>
-    r'30587ee9ceb75d5c8562015ad4a67ec0b107c1f6';
+    r'7b2cd9abef57493eebc1c05b1d2b4e2743ddbea2';
 
 @ProviderFor(NotCopiedClassBased)
 const notCopiedClassBasedProvider = NotCopiedClassBasedProvider._();
@@ -551,7 +544,7 @@ final class NotCopiedClassBasedProvider
   @override
   NotCopiedClassBasedProvider $copyWithBuild(
     String Function(
-      Ref<String>,
+      Ref,
       NotCopiedClassBased,
     ) build,
   ) {
@@ -575,18 +568,16 @@ abstract class _$NotCopiedClassBased extends $Notifier<String> {
   String runBuild() => build();
 }
 
-typedef NotCopiedFamilyRef = Ref<String>;
-
 @ProviderFor(notCopiedFamily)
 const notCopiedFamilyProvider = NotCopiedFamilyFamily._();
 
 final class NotCopiedFamilyProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, NotCopiedFamilyRef> {
+    with $Provider<String> {
   const NotCopiedFamilyProvider._(
       {required NotCopiedFamilyFamily super.from,
       required int super.argument,
       String Function(
-        NotCopiedFamilyRef ref,
+        Ref ref,
         int id,
       )? create})
       : _createCb = create,
@@ -599,7 +590,7 @@ final class NotCopiedFamilyProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    NotCopiedFamilyRef ref,
+    Ref ref,
     int id,
   )? _createCb;
 
@@ -629,7 +620,7 @@ final class NotCopiedFamilyProvider extends $FunctionalProvider<String, String>
   @override
   NotCopiedFamilyProvider $copyWithCreate(
     String Function(
-      NotCopiedFamilyRef ref,
+      Ref ref,
     ) create,
   ) {
     return NotCopiedFamilyProvider._(
@@ -643,7 +634,7 @@ final class NotCopiedFamilyProvider extends $FunctionalProvider<String, String>
   }
 
   @override
-  String create(NotCopiedFamilyRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? notCopiedFamily;
     final argument = this.argument as int;
     return _$cb(
@@ -663,7 +654,7 @@ final class NotCopiedFamilyProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$notCopiedFamilyHash() => r'6ef06ce6ebd73b476870bbe1af41c4f3fbe8ddb1';
+String _$notCopiedFamilyHash() => r'ea652776532e2bf993a249b25b5254fc3dfff4b9';
 
 final class NotCopiedFamilyFamily extends Family {
   const NotCopiedFamilyFamily._()
@@ -689,7 +680,7 @@ final class NotCopiedFamilyFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     String Function(
-      NotCopiedFamilyRef ref,
+      Ref ref,
       int args,
     ) create,
   ) {

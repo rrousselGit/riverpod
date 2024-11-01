@@ -8,16 +8,14 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef CityRef = Ref<String>;
-
 @ProviderFor(city)
 const cityProvider = CityProvider._();
 
 final class CityProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, CityRef> {
+    with $Provider<String> {
   const CityProvider._(
       {String Function(
-        CityRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -31,7 +29,7 @@ final class CityProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    CityRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -53,14 +51,14 @@ final class CityProvider extends $FunctionalProvider<String, String>
   @override
   CityProvider $copyWithCreate(
     String Function(
-      CityRef ref,
+      Ref ref,
     ) create,
   ) {
     return CityProvider._(create: create);
   }
 
   @override
-  String create(CityRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? city;
     return _$cb(ref);
   }
@@ -68,17 +66,15 @@ final class CityProvider extends $FunctionalProvider<String, String>
 
 String _$cityHash() => r'6a5023a3aba119f1ecaee6c7db44b3f519e72759';
 
-typedef WeatherRef = Ref<AsyncValue<Weather>>;
-
 @ProviderFor(weather)
 const weatherProvider = WeatherProvider._();
 
 final class WeatherProvider
     extends $FunctionalProvider<AsyncValue<Weather>, FutureOr<Weather>>
-    with $FutureModifier<Weather>, $FutureProvider<Weather, WeatherRef> {
+    with $FutureModifier<Weather>, $FutureProvider<Weather> {
   const WeatherProvider._(
       {FutureOr<Weather> Function(
-        WeatherRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -92,7 +88,7 @@ final class WeatherProvider
         );
 
   final FutureOr<Weather> Function(
-    WeatherRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -106,14 +102,14 @@ final class WeatherProvider
   @override
   WeatherProvider $copyWithCreate(
     FutureOr<Weather> Function(
-      WeatherRef ref,
+      Ref ref,
     ) create,
   ) {
     return WeatherProvider._(create: create);
   }
 
   @override
-  FutureOr<Weather> create(WeatherRef ref) {
+  FutureOr<Weather> create(Ref ref) {
     final _$cb = _createCb ?? weather;
     return _$cb(ref);
   }

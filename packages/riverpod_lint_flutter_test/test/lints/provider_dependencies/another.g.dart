@@ -6,16 +6,14 @@ part of 'another.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef BRef = Ref<int>;
-
 @ProviderFor(b)
 const bProvider = BProvider._();
 
 final class BProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, BRef> {
+    with $Provider<int> {
   const BProvider._(
       {int Function(
-        BRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -29,7 +27,7 @@ final class BProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    BRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -51,14 +49,14 @@ final class BProvider extends $FunctionalProvider<int, int>
   @override
   BProvider $copyWithCreate(
     int Function(
-      BRef ref,
+      Ref ref,
     ) create,
   ) {
     return BProvider._(create: create);
   }
 
   @override
-  int create(BRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? b;
     return _$cb(ref);
   }
@@ -66,16 +64,14 @@ final class BProvider extends $FunctionalProvider<int, int>
 
 String _$bHash() => r'31624e9aa10c9cd7941c9626e841c6df3468723b';
 
-typedef AnotherScopedRef = Ref<int>;
-
 @ProviderFor(anotherScoped)
 const anotherScopedProvider = AnotherScopedProvider._();
 
 final class AnotherScopedProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, AnotherScopedRef> {
+    with $Provider<int> {
   const AnotherScopedProvider._(
       {int Function(
-        AnotherScopedRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -89,7 +85,7 @@ final class AnotherScopedProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    AnotherScopedRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -111,14 +107,14 @@ final class AnotherScopedProvider extends $FunctionalProvider<int, int>
   @override
   AnotherScopedProvider $copyWithCreate(
     int Function(
-      AnotherScopedRef ref,
+      Ref ref,
     ) create,
   ) {
     return AnotherScopedProvider._(create: create);
   }
 
   @override
-  int create(AnotherScopedRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? anotherScoped;
     return _$cb(ref);
   }
@@ -126,16 +122,14 @@ final class AnotherScopedProvider extends $FunctionalProvider<int, int>
 
 String _$anotherScopedHash() => r'edf3ccffb7c3ce1b1e4ffdd4009aeed4fa38c3f8';
 
-typedef AnotherNonEmptyScopedRef = Ref<int>;
-
 @ProviderFor(anotherNonEmptyScoped)
 const anotherNonEmptyScopedProvider = AnotherNonEmptyScopedProvider._();
 
 final class AnotherNonEmptyScopedProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, AnotherNonEmptyScopedRef> {
+    with $Provider<int> {
   const AnotherNonEmptyScopedProvider._(
       {int Function(
-        AnotherNonEmptyScopedRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -153,7 +147,7 @@ final class AnotherNonEmptyScopedProvider extends $FunctionalProvider<int, int>
   static const $allTransitiveDependencies0 = anotherScopedProvider;
 
   final int Function(
-    AnotherNonEmptyScopedRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -175,14 +169,14 @@ final class AnotherNonEmptyScopedProvider extends $FunctionalProvider<int, int>
   @override
   AnotherNonEmptyScopedProvider $copyWithCreate(
     int Function(
-      AnotherNonEmptyScopedRef ref,
+      Ref ref,
     ) create,
   ) {
     return AnotherNonEmptyScopedProvider._(create: create);
   }
 
   @override
-  int create(AnotherNonEmptyScopedRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? anotherNonEmptyScoped;
     return _$cb(ref);
   }

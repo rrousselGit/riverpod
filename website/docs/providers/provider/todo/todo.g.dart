@@ -54,7 +54,7 @@ final class TodosProvider extends $NotifierProvider<Todos, List<Todo>> {
   @override
   TodosProvider $copyWithBuild(
     List<Todo> Function(
-      Ref<List<Todo>>,
+      Ref,
       Todos,
     ) build,
   ) {

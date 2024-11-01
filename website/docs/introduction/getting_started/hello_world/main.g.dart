@@ -8,16 +8,14 @@ part of 'main.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef HelloWorldRef = Ref<String>;
-
 @ProviderFor(helloWorld)
 const helloWorldProvider = HelloWorldProvider._();
 
 final class HelloWorldProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, HelloWorldRef> {
+    with $Provider<String> {
   const HelloWorldProvider._(
       {String Function(
-        HelloWorldRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -31,7 +29,7 @@ final class HelloWorldProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    HelloWorldRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -53,14 +51,14 @@ final class HelloWorldProvider extends $FunctionalProvider<String, String>
   @override
   HelloWorldProvider $copyWithCreate(
     String Function(
-      HelloWorldRef ref,
+      Ref ref,
     ) create,
   ) {
     return HelloWorldProvider._(create: create);
   }
 
   @override
-  String create(HelloWorldRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? helloWorld;
     return _$cb(ref);
   }

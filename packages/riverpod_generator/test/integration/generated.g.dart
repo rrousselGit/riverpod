@@ -6,16 +6,14 @@ part of 'generated.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef GeneratedRef = Ref<_Test>;
-
 @ProviderFor(generated)
 const generatedProvider = GeneratedProvider._();
 
 final class GeneratedProvider extends $FunctionalProvider<_Test, _Test>
-    with $Provider<_Test, GeneratedRef> {
+    with $Provider<_Test> {
   const GeneratedProvider._(
       {_Test Function(
-        GeneratedRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -29,7 +27,7 @@ final class GeneratedProvider extends $FunctionalProvider<_Test, _Test>
         );
 
   final _Test Function(
-    GeneratedRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -51,14 +49,14 @@ final class GeneratedProvider extends $FunctionalProvider<_Test, _Test>
   @override
   GeneratedProvider $copyWithCreate(
     _Test Function(
-      GeneratedRef ref,
+      Ref ref,
     ) create,
   ) {
     return GeneratedProvider._(create: create);
   }
 
   @override
-  _Test create(GeneratedRef ref) {
+  _Test create(Ref ref) {
     final _$cb = _createCb ?? generated;
     return _$cb(ref);
   }
@@ -66,18 +64,16 @@ final class GeneratedProvider extends $FunctionalProvider<_Test, _Test>
 
 String _$generatedHash() => r'0332eb232658688654514ff241ff380edbf4dbf6';
 
-typedef GeneratedFamilyRef = Ref<_Test>;
-
 @ProviderFor(generatedFamily)
 const generatedFamilyProvider = GeneratedFamilyFamily._();
 
 final class GeneratedFamilyProvider extends $FunctionalProvider<_Test, _Test>
-    with $Provider<_Test, GeneratedFamilyRef> {
+    with $Provider<_Test> {
   const GeneratedFamilyProvider._(
       {required GeneratedFamilyFamily super.from,
       required _Test super.argument,
       _Test Function(
-        GeneratedFamilyRef ref,
+        Ref ref,
         _Test test,
       )? create})
       : _createCb = create,
@@ -90,7 +86,7 @@ final class GeneratedFamilyProvider extends $FunctionalProvider<_Test, _Test>
         );
 
   final _Test Function(
-    GeneratedFamilyRef ref,
+    Ref ref,
     _Test test,
   )? _createCb;
 
@@ -120,7 +116,7 @@ final class GeneratedFamilyProvider extends $FunctionalProvider<_Test, _Test>
   @override
   GeneratedFamilyProvider $copyWithCreate(
     _Test Function(
-      GeneratedFamilyRef ref,
+      Ref ref,
     ) create,
   ) {
     return GeneratedFamilyProvider._(
@@ -134,7 +130,7 @@ final class GeneratedFamilyProvider extends $FunctionalProvider<_Test, _Test>
   }
 
   @override
-  _Test create(GeneratedFamilyRef ref) {
+  _Test create(Ref ref) {
     final _$cb = _createCb ?? generatedFamily;
     final argument = this.argument as _Test;
     return _$cb(
@@ -180,7 +176,7 @@ final class GeneratedFamilyFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     _Test Function(
-      GeneratedFamilyRef ref,
+      Ref ref,
       _Test args,
     ) create,
   ) {
@@ -246,7 +242,7 @@ final class GeneratedClassProvider
   @override
   GeneratedClassProvider $copyWithBuild(
     _Test Function(
-      Ref<_Test>,
+      Ref,
       GeneratedClass,
     ) build,
   ) {
@@ -327,7 +323,7 @@ final class GeneratedClassFamilyProvider
   @override
   GeneratedClassFamilyProvider $copyWithBuild(
     _Test Function(
-      Ref<_Test>,
+      Ref,
       GeneratedClassFamily,
     ) build,
   ) {
@@ -400,8 +396,7 @@ final class GeneratedClassFamilyFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    _Test Function(
-            Ref<_Test> ref, GeneratedClassFamily notifier, _Test argument)
+    _Test Function(Ref ref, GeneratedClassFamily notifier, _Test argument)
         build,
   ) {
     return $FamilyOverride(
@@ -433,16 +428,14 @@ abstract class _$GeneratedClassFamily extends $Notifier<_Test> {
       );
 }
 
-typedef $DynamicRef = Ref<Object?>;
-
 @ProviderFor($dynamic)
 const $dynamicProvider = $DynamicProvider._();
 
 final class $DynamicProvider extends $FunctionalProvider<Object?, Object?>
-    with $Provider<Object?, $DynamicRef> {
+    with $Provider<Object?> {
   const $DynamicProvider._(
       {Object? Function(
-        $DynamicRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -456,7 +449,7 @@ final class $DynamicProvider extends $FunctionalProvider<Object?, Object?>
         );
 
   final Object? Function(
-    $DynamicRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -478,14 +471,14 @@ final class $DynamicProvider extends $FunctionalProvider<Object?, Object?>
   @override
   $DynamicProvider $copyWithCreate(
     Object? Function(
-      $DynamicRef ref,
+      Ref ref,
     ) create,
   ) {
     return $DynamicProvider._(create: create);
   }
 
   @override
-  Object? create($DynamicRef ref) {
+  Object? create(Ref ref) {
     final _$cb = _createCb ?? $dynamic;
     return _$cb(ref);
   }
@@ -493,18 +486,16 @@ final class $DynamicProvider extends $FunctionalProvider<Object?, Object?>
 
 String _$$dynamicHash() => r'17c8e140446da2e3c026ebb51c4b074d2894b7ff';
 
-typedef $DynamicFamilyRef = Ref<Object?>;
-
 @ProviderFor($dynamicFamily)
 const $dynamicFamilyProvider = $DynamicFamilyFamily._();
 
 final class $DynamicFamilyProvider extends $FunctionalProvider<Object?, Object?>
-    with $Provider<Object?, $DynamicFamilyRef> {
+    with $Provider<Object?> {
   const $DynamicFamilyProvider._(
       {required $DynamicFamilyFamily super.from,
       required dynamic super.argument,
       Object? Function(
-        $DynamicFamilyRef ref,
+        Ref ref,
         dynamic test,
       )? create})
       : _createCb = create,
@@ -517,7 +508,7 @@ final class $DynamicFamilyProvider extends $FunctionalProvider<Object?, Object?>
         );
 
   final Object? Function(
-    $DynamicFamilyRef ref,
+    Ref ref,
     dynamic test,
   )? _createCb;
 
@@ -547,7 +538,7 @@ final class $DynamicFamilyProvider extends $FunctionalProvider<Object?, Object?>
   @override
   $DynamicFamilyProvider $copyWithCreate(
     Object? Function(
-      $DynamicFamilyRef ref,
+      Ref ref,
     ) create,
   ) {
     return $DynamicFamilyProvider._(
@@ -561,7 +552,7 @@ final class $DynamicFamilyProvider extends $FunctionalProvider<Object?, Object?>
   }
 
   @override
-  Object? create($DynamicFamilyRef ref) {
+  Object? create(Ref ref) {
     final _$cb = _createCb ?? $dynamicFamily;
     final argument = this.argument as dynamic;
     return _$cb(
@@ -607,7 +598,7 @@ final class $DynamicFamilyFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     Object? Function(
-      $DynamicFamilyRef ref,
+      Ref ref,
       dynamic args,
     ) create,
   ) {
@@ -673,7 +664,7 @@ final class $DynamicClassProvider
   @override
   $DynamicClassProvider $copyWithBuild(
     Object? Function(
-      Ref<Object?>,
+      Ref,
       $DynamicClass,
     ) build,
   ) {
@@ -754,7 +745,7 @@ final class $DynamicClassFamilyProvider
   @override
   $DynamicClassFamilyProvider $copyWithBuild(
     Object? Function(
-      Ref<Object?>,
+      Ref,
       $DynamicClassFamily,
     ) build,
   ) {
@@ -827,8 +818,7 @@ final class $DynamicClassFamilyFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    Object? Function(
-            Ref<Object?> ref, $DynamicClassFamily notifier, dynamic argument)
+    Object? Function(Ref ref, $DynamicClassFamily notifier, dynamic argument)
         build,
   ) {
     return $FamilyOverride(
@@ -860,18 +850,16 @@ abstract class _$$DynamicClassFamily extends $Notifier<Object?> {
       );
 }
 
-typedef _DynamicRef = Ref<Object?>;
-
 @ProviderFor(_dynamic)
 const _dynamicProvider = _DynamicFamily._();
 
 final class _DynamicProvider extends $FunctionalProvider<Object?, Object?>
-    with $Provider<Object?, _DynamicRef> {
+    with $Provider<Object?> {
   const _DynamicProvider._(
       {required _DynamicFamily super.from,
       required dynamic super.argument,
       Object? Function(
-        _DynamicRef ref,
+        Ref ref,
         dynamic test,
       )? create})
       : _createCb = create,
@@ -884,7 +872,7 @@ final class _DynamicProvider extends $FunctionalProvider<Object?, Object?>
         );
 
   final Object? Function(
-    _DynamicRef ref,
+    Ref ref,
     dynamic test,
   )? _createCb;
 
@@ -914,7 +902,7 @@ final class _DynamicProvider extends $FunctionalProvider<Object?, Object?>
   @override
   _DynamicProvider $copyWithCreate(
     Object? Function(
-      _DynamicRef ref,
+      Ref ref,
     ) create,
   ) {
     return _DynamicProvider._(
@@ -928,7 +916,7 @@ final class _DynamicProvider extends $FunctionalProvider<Object?, Object?>
   }
 
   @override
-  Object? create(_DynamicRef ref) {
+  Object? create(Ref ref) {
     final _$cb = _createCb ?? _dynamic;
     final argument = this.argument as dynamic;
     return _$cb(
@@ -948,7 +936,7 @@ final class _DynamicProvider extends $FunctionalProvider<Object?, Object?>
   }
 }
 
-String _$dynamicHash() => r'da9dc07960139fff2cf5fe584dca5c524e4f2308';
+String _$dynamicHash() => r'e08bd08481e4ea0d3da2ab7c38f940c34e96ba7f';
 
 final class _DynamicFamily extends Family {
   const _DynamicFamily._()
@@ -974,7 +962,7 @@ final class _DynamicFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     Object? Function(
-      _DynamicRef ref,
+      Ref ref,
       dynamic args,
     ) create,
   ) {
@@ -993,17 +981,15 @@ final class _DynamicFamily extends Family {
   }
 }
 
-typedef AliasRef = Ref<AsyncValue<int>>;
-
 @ProviderFor(alias)
 const aliasProvider = AliasProvider._();
 
 final class AliasProvider
     extends $FunctionalProvider<AsyncValue<int>, AsyncValue<int>>
-    with $Provider<AsyncValue<int>, AliasRef> {
+    with $Provider<AsyncValue<int>> {
   const AliasProvider._(
       {AsyncValue<int> Function(
-        AliasRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -1017,7 +1003,7 @@ final class AliasProvider
         );
 
   final AsyncValue<int> Function(
-    AliasRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -1039,34 +1025,32 @@ final class AliasProvider
   @override
   AliasProvider $copyWithCreate(
     AsyncValue<int> Function(
-      AliasRef ref,
+      Ref ref,
     ) create,
   ) {
     return AliasProvider._(create: create);
   }
 
   @override
-  AsyncValue<int> create(AliasRef ref) {
+  AsyncValue<int> create(Ref ref) {
     final _$cb = _createCb ?? alias;
     return _$cb(ref);
   }
 }
 
-String _$aliasHash() => r'ed56b34397f397d33434be16d3a6bab96d24c45b';
-
-typedef AliasFamilyRef = Ref<AsyncValue<int>>;
+String _$aliasHash() => r'3feb548aa9a314142b5c5e3c9c7664a316a10d11';
 
 @ProviderFor(aliasFamily)
 const aliasFamilyProvider = AliasFamilyFamily._();
 
 final class AliasFamilyProvider
     extends $FunctionalProvider<AsyncValue<int>, AsyncValue<int>>
-    with $Provider<AsyncValue<int>, AliasFamilyRef> {
+    with $Provider<AsyncValue<int>> {
   const AliasFamilyProvider._(
       {required AliasFamilyFamily super.from,
       required AsyncValue<int> super.argument,
       AsyncValue<int> Function(
-        AliasFamilyRef ref,
+        Ref ref,
         AsyncValue<int> test,
       )? create})
       : _createCb = create,
@@ -1079,7 +1063,7 @@ final class AliasFamilyProvider
         );
 
   final AsyncValue<int> Function(
-    AliasFamilyRef ref,
+    Ref ref,
     AsyncValue<int> test,
   )? _createCb;
 
@@ -1109,7 +1093,7 @@ final class AliasFamilyProvider
   @override
   AliasFamilyProvider $copyWithCreate(
     AsyncValue<int> Function(
-      AliasFamilyRef ref,
+      Ref ref,
     ) create,
   ) {
     return AliasFamilyProvider._(
@@ -1123,7 +1107,7 @@ final class AliasFamilyProvider
   }
 
   @override
-  AsyncValue<int> create(AliasFamilyRef ref) {
+  AsyncValue<int> create(Ref ref) {
     final _$cb = _createCb ?? aliasFamily;
     final argument = this.argument as AsyncValue<int>;
     return _$cb(
@@ -1143,7 +1127,7 @@ final class AliasFamilyProvider
   }
 }
 
-String _$aliasFamilyHash() => r'21f22a6042a649e2de33b829bb85ea54eb6983a2';
+String _$aliasFamilyHash() => r'6afe0afc21cfd2f0f26862e9d8c1095eca5f6e42';
 
 final class AliasFamilyFamily extends Family {
   const AliasFamilyFamily._()
@@ -1169,7 +1153,7 @@ final class AliasFamilyFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     AsyncValue<int> Function(
-      AliasFamilyRef ref,
+      Ref ref,
       AsyncValue<int> args,
     ) create,
   ) {
@@ -1235,7 +1219,7 @@ final class AliasClassProvider
   @override
   AliasClassProvider $copyWithBuild(
     AsyncValue<int> Function(
-      Ref<AsyncValue<int>>,
+      Ref,
       AliasClass,
     ) build,
   ) {
@@ -1316,7 +1300,7 @@ final class AliasClassFamilyProvider
   @override
   AliasClassFamilyProvider $copyWithBuild(
     AsyncValue<int> Function(
-      Ref<AsyncValue<int>>,
+      Ref,
       AliasClassFamily,
     ) build,
   ) {
@@ -1388,8 +1372,8 @@ final class AliasClassFamilyFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    AsyncValue<int> Function(Ref<AsyncValue<int>> ref,
-            AliasClassFamily notifier, AsyncValue<int> argument)
+    AsyncValue<int> Function(
+            Ref ref, AliasClassFamily notifier, AsyncValue<int> argument)
         build,
   ) {
     return $FamilyOverride(

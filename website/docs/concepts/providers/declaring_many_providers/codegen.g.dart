@@ -8,16 +8,14 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef CityRef = Ref<String>;
-
 @ProviderFor(city)
 const cityProvider = CityProvider._();
 
 final class CityProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, CityRef> {
+    with $Provider<String> {
   const CityProvider._(
       {String Function(
-        CityRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -31,7 +29,7 @@ final class CityProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    CityRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -53,14 +51,14 @@ final class CityProvider extends $FunctionalProvider<String, String>
   @override
   CityProvider $copyWithCreate(
     String Function(
-      CityRef ref,
+      Ref ref,
     ) create,
   ) {
     return CityProvider._(create: create);
   }
 
   @override
-  String create(CityRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? city;
     return _$cb(ref);
   }
@@ -68,16 +66,14 @@ final class CityProvider extends $FunctionalProvider<String, String>
 
 String _$cityHash() => r'6a5023a3aba119f1ecaee6c7db44b3f519e72759';
 
-typedef CountryRef = Ref<String>;
-
 @ProviderFor(country)
 const countryProvider = CountryProvider._();
 
 final class CountryProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, CountryRef> {
+    with $Provider<String> {
   const CountryProvider._(
       {String Function(
-        CountryRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -91,7 +87,7 @@ final class CountryProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    CountryRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -113,14 +109,14 @@ final class CountryProvider extends $FunctionalProvider<String, String>
   @override
   CountryProvider $copyWithCreate(
     String Function(
-      CountryRef ref,
+      Ref ref,
     ) create,
   ) {
     return CountryProvider._(create: create);
   }
 
   @override
-  String create(CountryRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? country;
     return _$cb(ref);
   }

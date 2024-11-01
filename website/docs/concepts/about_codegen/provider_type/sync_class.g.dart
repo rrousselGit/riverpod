@@ -54,7 +54,7 @@ final class ExampleProvider extends $NotifierProvider<Example, String> {
   @override
   ExampleProvider $copyWithBuild(
     String Function(
-      Ref<String>,
+      Ref,
       Example,
     ) build,
   ) {

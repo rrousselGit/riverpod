@@ -11,11 +11,6 @@ part of 'provider.dart';
 /// This will create a provider named `activityProvider`
 /// which will cache the result of this function.
 // {@endtemplate}
-typedef ActivityRef = Ref<AsyncValue<Activity>>;
-
-/// This will create a provider named `activityProvider`
-/// which will cache the result of this function.
-// {@endtemplate}
 @ProviderFor(activity)
 const activityProvider = ActivityProvider._();
 
@@ -24,13 +19,13 @@ const activityProvider = ActivityProvider._();
 // {@endtemplate}
 final class ActivityProvider
     extends $FunctionalProvider<AsyncValue<Activity>, FutureOr<Activity>>
-    with $FutureModifier<Activity>, $FutureProvider<Activity, ActivityRef> {
+    with $FutureModifier<Activity>, $FutureProvider<Activity> {
   /// This will create a provider named `activityProvider`
   /// which will cache the result of this function.
 // {@endtemplate}
   const ActivityProvider._(
       {FutureOr<Activity> Function(
-        ActivityRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -44,7 +39,7 @@ final class ActivityProvider
         );
 
   final FutureOr<Activity> Function(
-    ActivityRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -58,14 +53,14 @@ final class ActivityProvider
   @override
   ActivityProvider $copyWithCreate(
     FutureOr<Activity> Function(
-      ActivityRef ref,
+      Ref ref,
     ) create,
   ) {
     return ActivityProvider._(create: create);
   }
 
   @override
-  FutureOr<Activity> create(ActivityRef ref) {
+  FutureOr<Activity> create(Ref ref) {
     final _$cb = _createCb ?? activity;
     return _$cb(ref);
   }

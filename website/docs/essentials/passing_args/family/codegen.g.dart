@@ -8,19 +8,17 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef ActivityRef = Ref<AsyncValue<Activity>>;
-
 @ProviderFor(activity)
 const activityProvider = ActivityFamily._();
 
 final class ActivityProvider
     extends $FunctionalProvider<AsyncValue<Activity>, FutureOr<Activity>>
-    with $FutureModifier<Activity>, $FutureProvider<Activity, ActivityRef> {
+    with $FutureModifier<Activity>, $FutureProvider<Activity> {
   const ActivityProvider._(
       {required ActivityFamily super.from,
       required String super.argument,
       FutureOr<Activity> Function(
-        ActivityRef ref,
+        Ref ref,
         String activityType,
       )? create})
       : _createCb = create,
@@ -33,7 +31,7 @@ final class ActivityProvider
         );
 
   final FutureOr<Activity> Function(
-    ActivityRef ref,
+    Ref ref,
     String activityType,
   )? _createCb;
 
@@ -55,7 +53,7 @@ final class ActivityProvider
   @override
   ActivityProvider $copyWithCreate(
     FutureOr<Activity> Function(
-      ActivityRef ref,
+      Ref ref,
     ) create,
   ) {
     return ActivityProvider._(
@@ -69,7 +67,7 @@ final class ActivityProvider
   }
 
   @override
-  FutureOr<Activity> create(ActivityRef ref) {
+  FutureOr<Activity> create(Ref ref) {
     final _$cb = _createCb ?? activity;
     final argument = this.argument as String;
     return _$cb(
@@ -115,7 +113,7 @@ final class ActivityFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     FutureOr<Activity> Function(
-      ActivityRef ref,
+      Ref ref,
       String args,
     ) create,
   ) {
@@ -184,7 +182,7 @@ final class ActivityNotifier2Provider
   @override
   ActivityNotifier2Provider $copyWithBuild(
     FutureOr<Activity> Function(
-      Ref<AsyncValue<Activity>>,
+      Ref,
       ActivityNotifier2,
     ) build,
   ) {
@@ -256,8 +254,8 @@ final class ActivityNotifier2Family extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    FutureOr<Activity> Function(Ref<AsyncValue<Activity>> ref,
-            ActivityNotifier2 notifier, String argument)
+    FutureOr<Activity> Function(
+            Ref ref, ActivityNotifier2 notifier, String argument)
         build,
   ) {
     return $FamilyOverride(

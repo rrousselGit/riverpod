@@ -8,17 +8,15 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef RepositoryRef = Ref<Repository>;
-
 @ProviderFor(repository)
 const repositoryProvider = RepositoryProvider._();
 
 final class RepositoryProvider
     extends $FunctionalProvider<Repository, Repository>
-    with $Provider<Repository, RepositoryRef> {
+    with $Provider<Repository> {
   const RepositoryProvider._(
       {Repository Function(
-        RepositoryRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -32,7 +30,7 @@ final class RepositoryProvider
         );
 
   final Repository Function(
-    RepositoryRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -54,20 +52,20 @@ final class RepositoryProvider
   @override
   RepositoryProvider $copyWithCreate(
     Repository Function(
-      RepositoryRef ref,
+      Ref ref,
     ) create,
   ) {
     return RepositoryProvider._(create: create);
   }
 
   @override
-  Repository create(RepositoryRef ref) {
+  Repository create(Ref ref) {
     final _$cb = _createCb ?? repository;
     return _$cb(ref);
   }
 }
 
-String _$repositoryHash() => r'c6dc3b5b727028966b5b850b27ffc7294b485273';
+String _$repositoryHash() => r'6f859a9d70c3112139aaf826ee2bd541a4c001cb';
 
 @ProviderFor(Counter)
 const counterProvider = CounterProvider._();
@@ -115,7 +113,7 @@ final class CounterProvider extends $NotifierProvider<Counter, int> {
   @override
   CounterProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       Counter,
     ) build,
   ) {

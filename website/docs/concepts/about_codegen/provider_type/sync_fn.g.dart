@@ -8,16 +8,14 @@ part of 'sync_fn.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef ExampleRef = Ref<String>;
-
 @ProviderFor(example)
 const exampleProvider = ExampleProvider._();
 
 final class ExampleProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, ExampleRef> {
+    with $Provider<String> {
   const ExampleProvider._(
       {String Function(
-        ExampleRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -31,7 +29,7 @@ final class ExampleProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    ExampleRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -53,14 +51,14 @@ final class ExampleProvider extends $FunctionalProvider<String, String>
   @override
   ExampleProvider $copyWithCreate(
     String Function(
-      ExampleRef ref,
+      Ref ref,
     ) create,
   ) {
     return ExampleProvider._(create: create);
   }
 
   @override
-  String create(ExampleRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? example;
     return _$cb(ref);
   }

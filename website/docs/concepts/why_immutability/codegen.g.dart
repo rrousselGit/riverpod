@@ -55,7 +55,7 @@ final class ThemeNotifierProvider
   @override
   ThemeNotifierProvider $copyWithBuild(
     ThemeSettings Function(
-      Ref<ThemeSettings>,
+      Ref,
       ThemeNotifier,
     ) build,
   ) {

@@ -6,16 +6,14 @@ part of 'unknown_scoped_usage.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef ScopedRef = Ref<int>;
-
 @ProviderFor(scoped)
 const scopedProvider = ScopedProvider._();
 
 final class ScopedProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, ScopedRef> {
+    with $Provider<int> {
   const ScopedProvider._(
       {int Function(
-        ScopedRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -29,7 +27,7 @@ final class ScopedProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    ScopedRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -51,14 +49,14 @@ final class ScopedProvider extends $FunctionalProvider<int, int>
   @override
   ScopedProvider $copyWithCreate(
     int Function(
-      ScopedRef ref,
+      Ref ref,
     ) create,
   ) {
     return ScopedProvider._(create: create);
   }
 
   @override
-  int create(ScopedRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? scoped;
     return _$cb(ref);
   }
@@ -66,16 +64,14 @@ final class ScopedProvider extends $FunctionalProvider<int, int>
 
 String _$scopedHash() => r'5a271e9b23e18517694454448b922a6c9d03781e';
 
-typedef RootRef = Ref<int>;
-
 @ProviderFor(root)
 const rootProvider = RootProvider._();
 
 final class RootProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, RootRef> {
+    with $Provider<int> {
   const RootProvider._(
       {int Function(
-        RootRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -89,7 +85,7 @@ final class RootProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    RootRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -111,14 +107,14 @@ final class RootProvider extends $FunctionalProvider<int, int>
   @override
   RootProvider $copyWithCreate(
     int Function(
-      RootRef ref,
+      Ref ref,
     ) create,
   ) {
     return RootProvider._(create: create);
   }
 
   @override
-  int create(RootRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? root;
     return _$cb(ref);
   }

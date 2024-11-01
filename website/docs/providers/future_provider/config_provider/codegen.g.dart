@@ -8,19 +8,15 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef FetchConfigurationRef = Ref<AsyncValue<Configuration>>;
-
 @ProviderFor(fetchConfiguration)
 const fetchConfigurationProvider = FetchConfigurationProvider._();
 
 final class FetchConfigurationProvider extends $FunctionalProvider<
         AsyncValue<Configuration>, FutureOr<Configuration>>
-    with
-        $FutureModifier<Configuration>,
-        $FutureProvider<Configuration, FetchConfigurationRef> {
+    with $FutureModifier<Configuration>, $FutureProvider<Configuration> {
   const FetchConfigurationProvider._(
       {FutureOr<Configuration> Function(
-        FetchConfigurationRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -34,7 +30,7 @@ final class FetchConfigurationProvider extends $FunctionalProvider<
         );
 
   final FutureOr<Configuration> Function(
-    FetchConfigurationRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -49,14 +45,14 @@ final class FetchConfigurationProvider extends $FunctionalProvider<
   @override
   FetchConfigurationProvider $copyWithCreate(
     FutureOr<Configuration> Function(
-      FetchConfigurationRef ref,
+      Ref ref,
     ) create,
   ) {
     return FetchConfigurationProvider._(create: create);
   }
 
   @override
-  FutureOr<Configuration> create(FetchConfigurationRef ref) {
+  FutureOr<Configuration> create(Ref ref) {
     final _$cb = _createCb ?? fetchConfiguration;
     return _$cb(ref);
   }

@@ -8,17 +8,15 @@ part of 'async_values.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef ItemsApiRef = Ref<AsyncValue<List<Item>>>;
-
 @ProviderFor(itemsApi)
 const itemsApiProvider = ItemsApiProvider._();
 
 final class ItemsApiProvider
     extends $FunctionalProvider<AsyncValue<List<Item>>, FutureOr<List<Item>>>
-    with $FutureModifier<List<Item>>, $FutureProvider<List<Item>, ItemsApiRef> {
+    with $FutureModifier<List<Item>>, $FutureProvider<List<Item>> {
   const ItemsApiProvider._(
       {FutureOr<List<Item>> Function(
-        ItemsApiRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -32,7 +30,7 @@ final class ItemsApiProvider
         );
 
   final FutureOr<List<Item>> Function(
-    ItemsApiRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -46,14 +44,14 @@ final class ItemsApiProvider
   @override
   ItemsApiProvider $copyWithCreate(
     FutureOr<List<Item>> Function(
-      ItemsApiRef ref,
+      Ref ref,
     ) create,
   ) {
     return ItemsApiProvider._(create: create);
   }
 
   @override
-  FutureOr<List<Item>> create(ItemsApiRef ref) {
+  FutureOr<List<Item>> create(Ref ref) {
     final _$cb = _createCb ?? itemsApi;
     return _$cb(ref);
   }
@@ -61,17 +59,15 @@ final class ItemsApiProvider
 
 String _$itemsApiHash() => r'fa5a8f7e93ac048d9bd5dfc1744749995cf154af';
 
-typedef EvenItemsRef = Ref<List<Item>>;
-
 @ProviderFor(evenItems)
 const evenItemsProvider = EvenItemsProvider._();
 
 final class EvenItemsProvider
     extends $FunctionalProvider<List<Item>, List<Item>>
-    with $Provider<List<Item>, EvenItemsRef> {
+    with $Provider<List<Item>> {
   const EvenItemsProvider._(
       {List<Item> Function(
-        EvenItemsRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -85,7 +81,7 @@ final class EvenItemsProvider
         );
 
   final List<Item> Function(
-    EvenItemsRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -107,14 +103,14 @@ final class EvenItemsProvider
   @override
   EvenItemsProvider $copyWithCreate(
     List<Item> Function(
-      EvenItemsRef ref,
+      Ref ref,
     ) create,
   ) {
     return EvenItemsProvider._(create: create);
   }
 
   @override
-  List<Item> create(EvenItemsRef ref) {
+  List<Item> create(Ref ref) {
     final _$cb = _createCb ?? evenItems;
     return _$cb(ref);
   }

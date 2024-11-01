@@ -8,13 +8,11 @@ part of 'family.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef RandomRef = Ref<int>;
-
 @ProviderFor(random)
 const randomProvider = RandomFamily._();
 
 final class RandomProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, RandomRef> {
+    with $Provider<int> {
   const RandomProvider._(
       {required RandomFamily super.from,
       required ({
@@ -23,7 +21,7 @@ final class RandomProvider extends $FunctionalProvider<int, int>
       })
           super.argument,
       int Function(
-        RandomRef ref, {
+        Ref ref, {
         required int seed,
         required int max,
       })? create})
@@ -37,7 +35,7 @@ final class RandomProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    RandomRef ref, {
+    Ref ref, {
     required int seed,
     required int max,
   })? _createCb;
@@ -68,7 +66,7 @@ final class RandomProvider extends $FunctionalProvider<int, int>
   @override
   RandomProvider $copyWithCreate(
     int Function(
-      RandomRef ref,
+      Ref ref,
     ) create,
   ) {
     return RandomProvider._(
@@ -86,7 +84,7 @@ final class RandomProvider extends $FunctionalProvider<int, int>
   }
 
   @override
-  int create(RandomRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? random;
     final argument = this.argument as ({
       int seed,
@@ -140,7 +138,7 @@ final class RandomFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     int Function(
-      RandomRef ref,
+      Ref ref,
       ({
         int seed,
         int max,

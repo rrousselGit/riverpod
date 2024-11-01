@@ -8,17 +8,15 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef ActivityRef = Ref<AsyncValue<Activity>>;
-
 @ProviderFor(activity)
 const activityProvider = ActivityProvider._();
 
 final class ActivityProvider
     extends $FunctionalProvider<AsyncValue<Activity>, FutureOr<Activity>>
-    with $FutureModifier<Activity>, $FutureProvider<Activity, ActivityRef> {
+    with $FutureModifier<Activity>, $FutureProvider<Activity> {
   const ActivityProvider._(
       {FutureOr<Activity> Function(
-        ActivityRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -32,7 +30,7 @@ final class ActivityProvider
         );
 
   final FutureOr<Activity> Function(
-    ActivityRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -46,14 +44,14 @@ final class ActivityProvider
   @override
   ActivityProvider $copyWithCreate(
     FutureOr<Activity> Function(
-      ActivityRef ref,
+      Ref ref,
     ) create,
   ) {
     return ActivityProvider._(create: create);
   }
 
   @override
-  FutureOr<Activity> create(ActivityRef ref) {
+  FutureOr<Activity> create(Ref ref) {
     final _$cb = _createCb ?? activity;
     return _$cb(ref);
   }

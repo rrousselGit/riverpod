@@ -7,19 +7,16 @@ part of 'convert_functional_provider_to_class_based.dart';
 // **************************************************************************
 
 /// Some comment
-typedef ExampleRef = Ref<int>;
-
-/// Some comment
 @ProviderFor(example)
 const exampleProvider = ExampleProvider._();
 
 /// Some comment
 final class ExampleProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, ExampleRef> {
+    with $Provider<int> {
   /// Some comment
   const ExampleProvider._(
       {int Function(
-        ExampleRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -33,7 +30,7 @@ final class ExampleProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    ExampleRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -55,14 +52,14 @@ final class ExampleProvider extends $FunctionalProvider<int, int>
   @override
   ExampleProvider $copyWithCreate(
     int Function(
-      ExampleRef ref,
+      Ref ref,
     ) create,
   ) {
     return ExampleProvider._(create: create);
   }
 
   @override
-  int create(ExampleRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? example;
     return _$cb(ref);
   }
@@ -71,15 +68,12 @@ final class ExampleProvider extends $FunctionalProvider<int, int>
 String _$exampleHash() => r'67898608b444d39a000852f647ca6d3326740c98';
 
 /// Some comment
-typedef ExampleFamilyRef = Ref<int>;
-
-/// Some comment
 @ProviderFor(exampleFamily)
 const exampleFamilyProvider = ExampleFamilyFamily._();
 
 /// Some comment
 final class ExampleFamilyProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, ExampleFamilyRef> {
+    with $Provider<int> {
   /// Some comment
   const ExampleFamilyProvider._(
       {required ExampleFamilyFamily super.from,
@@ -89,7 +83,7 @@ final class ExampleFamilyProvider extends $FunctionalProvider<int, int>
       })
           super.argument,
       int Function(
-        ExampleFamilyRef ref, {
+        Ref ref, {
         required int a,
         String b,
       })? create})
@@ -103,7 +97,7 @@ final class ExampleFamilyProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    ExampleFamilyRef ref, {
+    Ref ref, {
     required int a,
     String b,
   })? _createCb;
@@ -134,7 +128,7 @@ final class ExampleFamilyProvider extends $FunctionalProvider<int, int>
   @override
   ExampleFamilyProvider $copyWithCreate(
     int Function(
-      ExampleFamilyRef ref,
+      Ref ref,
     ) create,
   ) {
     return ExampleFamilyProvider._(
@@ -152,7 +146,7 @@ final class ExampleFamilyProvider extends $FunctionalProvider<int, int>
   }
 
   @override
-  int create(ExampleFamilyRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? exampleFamily;
     final argument = this.argument as ({
       int a,
@@ -208,7 +202,7 @@ final class ExampleFamilyFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     int Function(
-      ExampleFamilyRef ref,
+      Ref ref,
       ({
         int a,
         String b,

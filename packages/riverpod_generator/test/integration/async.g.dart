@@ -6,18 +6,16 @@ part of 'async.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef GenericRef<T extends num> = Ref<AsyncValue<List<T>>>;
-
 @ProviderFor(generic)
 const genericProvider = GenericFamily._();
 
 final class GenericProvider<T extends num>
     extends $FunctionalProvider<AsyncValue<List<T>>, FutureOr<List<T>>>
-    with $FutureModifier<List<T>>, $FutureProvider<List<T>, GenericRef<T>> {
+    with $FutureModifier<List<T>>, $FutureProvider<List<T>> {
   const GenericProvider._(
       {required GenericFamily super.from,
       FutureOr<List<T>> Function(
-        GenericRef<T> ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -30,7 +28,7 @@ final class GenericProvider<T extends num>
         );
 
   final FutureOr<List<T>> Function(
-    GenericRef<T> ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -38,7 +36,7 @@ final class GenericProvider<T extends num>
 
   GenericProvider<T> _copyWithCreate(
     FutureOr<List<T>> Function<T extends num>(
-      GenericRef<T> ref,
+      Ref ref,
     ) create,
   ) {
     return GenericProvider<T>._(
@@ -60,14 +58,14 @@ final class GenericProvider<T extends num>
   @override
   GenericProvider<T> $copyWithCreate(
     FutureOr<List<T>> Function(
-      GenericRef<T> ref,
+      Ref ref,
     ) create,
   ) {
     return GenericProvider<T>._(from: from! as GenericFamily, create: create);
   }
 
   @override
-  FutureOr<List<T>> create(GenericRef<T> ref) {
+  FutureOr<List<T>> create(Ref ref) {
     final _$cb = _createCb ?? generic<T>;
     return _$cb(ref);
   }
@@ -85,7 +83,7 @@ final class GenericProvider<T extends num>
   }
 }
 
-String _$genericHash() => r'5fb4a4ebeb69c6841722c3a021554648db095009';
+String _$genericHash() => r'b7413a59722e9d62ae99c8a7ee0b4a24417fc3b4';
 
 final class GenericFamily extends Family {
   const GenericFamily._()
@@ -107,7 +105,7 @@ final class GenericFamily extends Family {
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    FutureOr<List<T>> Function<T extends num>(GenericRef<T> ref) create,
+    FutureOr<List<T>> Function<T extends num>(Ref ref) create,
   ) {
     return $FamilyOverride(
       from: this,
@@ -153,7 +151,7 @@ final class GenericClassProvider<T extends num>
 
   GenericClassProvider<T> _copyWithBuild(
     FutureOr<List<T>> Function<T extends num>(
-      Ref<AsyncValue<List<T>>>,
+      Ref,
       GenericClass<T>,
     ) build,
   ) {
@@ -185,7 +183,7 @@ final class GenericClassProvider<T extends num>
   @override
   GenericClassProvider<T> $copyWithBuild(
     FutureOr<List<T>> Function(
-      Ref<AsyncValue<List<T>>>,
+      Ref,
       GenericClass<T>,
     ) build,
   ) {
@@ -249,8 +247,7 @@ final class GenericClassFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    FutureOr<List<T>> Function<T extends num>(
-            Ref<AsyncValue<List<T>>> ref, GenericClass<T> notifier)
+    FutureOr<List<T>> Function<T extends num>(Ref ref, GenericClass<T> notifier)
         build,
   ) {
     return $FamilyOverride(
@@ -271,17 +268,15 @@ abstract class _$GenericClass<T extends num> extends $AsyncNotifier<List<T>> {
   FutureOr<List<T>> runBuild() => build();
 }
 
-typedef PublicRef = Ref<AsyncValue<String>>;
-
 @ProviderFor(public)
 const publicProvider = PublicProvider._();
 
 final class PublicProvider
     extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>>
-    with $FutureModifier<String>, $FutureProvider<String, PublicRef> {
+    with $FutureModifier<String>, $FutureProvider<String> {
   const PublicProvider._(
       {FutureOr<String> Function(
-        PublicRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -295,7 +290,7 @@ final class PublicProvider
         );
 
   final FutureOr<String> Function(
-    PublicRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -309,14 +304,14 @@ final class PublicProvider
   @override
   PublicProvider $copyWithCreate(
     FutureOr<String> Function(
-      PublicRef ref,
+      Ref ref,
     ) create,
   ) {
     return PublicProvider._(create: create);
   }
 
   @override
-  FutureOr<String> create(PublicRef ref) {
+  FutureOr<String> create(Ref ref) {
     final _$cb = _createCb ?? public;
     return _$cb(ref);
   }
@@ -324,17 +319,15 @@ final class PublicProvider
 
 String _$publicHash() => r'19bceccf795e4c3a26ad1e613fd6f41aad949e2b';
 
-typedef _PrivateRef = Ref<AsyncValue<String>>;
-
 @ProviderFor(_private)
 const _privateProvider = _PrivateProvider._();
 
 final class _PrivateProvider
     extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>>
-    with $FutureModifier<String>, $FutureProvider<String, _PrivateRef> {
+    with $FutureModifier<String>, $FutureProvider<String> {
   const _PrivateProvider._(
       {FutureOr<String> Function(
-        _PrivateRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -348,7 +341,7 @@ final class _PrivateProvider
         );
 
   final FutureOr<String> Function(
-    _PrivateRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -362,14 +355,14 @@ final class _PrivateProvider
   @override
   _PrivateProvider $copyWithCreate(
     FutureOr<String> Function(
-      _PrivateRef ref,
+      Ref ref,
     ) create,
   ) {
     return _PrivateProvider._(create: create);
   }
 
   @override
-  FutureOr<String> create(_PrivateRef ref) {
+  FutureOr<String> create(Ref ref) {
     final _$cb = _createCb ?? _private;
     return _$cb(ref);
   }
@@ -377,19 +370,17 @@ final class _PrivateProvider
 
 String _$privateHash() => r'7f0d1ff55a21e520b8471bbabc4649b5336221d4';
 
-typedef FamilyOrRef = Ref<AsyncValue<String>>;
-
 @ProviderFor(familyOr)
 const familyOrProvider = FamilyOrFamily._();
 
 final class FamilyOrProvider
     extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>>
-    with $FutureModifier<String>, $FutureProvider<String, FamilyOrRef> {
+    with $FutureModifier<String>, $FutureProvider<String> {
   const FamilyOrProvider._(
       {required FamilyOrFamily super.from,
       required int super.argument,
       FutureOr<String> Function(
-        FamilyOrRef ref,
+        Ref ref,
         int first,
       )? create})
       : _createCb = create,
@@ -402,7 +393,7 @@ final class FamilyOrProvider
         );
 
   final FutureOr<String> Function(
-    FamilyOrRef ref,
+    Ref ref,
     int first,
   )? _createCb;
 
@@ -424,7 +415,7 @@ final class FamilyOrProvider
   @override
   FamilyOrProvider $copyWithCreate(
     FutureOr<String> Function(
-      FamilyOrRef ref,
+      Ref ref,
     ) create,
   ) {
     return FamilyOrProvider._(
@@ -438,7 +429,7 @@ final class FamilyOrProvider
   }
 
   @override
-  FutureOr<String> create(FamilyOrRef ref) {
+  FutureOr<String> create(Ref ref) {
     final _$cb = _createCb ?? familyOr;
     final argument = this.argument as int;
     return _$cb(
@@ -484,7 +475,7 @@ final class FamilyOrFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     FutureOr<String> Function(
-      FamilyOrRef ref,
+      Ref ref,
       int args,
     ) create,
   ) {
@@ -503,14 +494,12 @@ final class FamilyOrFamily extends Family {
   }
 }
 
-typedef FamilyRef = Ref<AsyncValue<String>>;
-
 @ProviderFor(family)
 const familyProvider = FamilyFamily._();
 
 final class FamilyProvider
     extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>>
-    with $FutureModifier<String>, $FutureProvider<String, FamilyRef> {
+    with $FutureModifier<String>, $FutureProvider<String> {
   const FamilyProvider._(
       {required FamilyFamily super.from,
       required (
@@ -522,7 +511,7 @@ final class FamilyProvider
       })
           super.argument,
       FutureOr<String> Function(
-        FamilyRef ref,
+        Ref ref,
         int first, {
         String? second,
         required double third,
@@ -539,7 +528,7 @@ final class FamilyProvider
         );
 
   final FutureOr<String> Function(
-    FamilyRef ref,
+    Ref ref,
     int first, {
     String? second,
     required double third,
@@ -565,7 +554,7 @@ final class FamilyProvider
   @override
   FamilyProvider $copyWithCreate(
     FutureOr<String> Function(
-      FamilyRef ref,
+      Ref ref,
     ) create,
   ) {
     return FamilyProvider._(
@@ -589,7 +578,7 @@ final class FamilyProvider
   }
 
   @override
-  FutureOr<String> create(FamilyRef ref) {
+  FutureOr<String> create(Ref ref) {
     final _$cb = _createCb ?? family;
     final argument = this.argument as (
       int, {
@@ -655,7 +644,7 @@ final class FamilyFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     FutureOr<String> Function(
-      FamilyRef ref,
+      Ref ref,
       (
         int, {
         String? second,
@@ -725,7 +714,7 @@ final class PublicClassProvider
   @override
   PublicClassProvider $copyWithBuild(
     FutureOr<String> Function(
-      Ref<AsyncValue<String>>,
+      Ref,
       PublicClass,
     ) build,
   ) {
@@ -787,7 +776,7 @@ final class _PrivateClassProvider
   @override
   _PrivateClassProvider $copyWithBuild(
     FutureOr<String> Function(
-      Ref<AsyncValue<String>>,
+      Ref,
       _PrivateClass,
     ) build,
   ) {
@@ -860,7 +849,7 @@ final class FamilyOrClassProvider
   @override
   FamilyOrClassProvider $copyWithBuild(
     FutureOr<String> Function(
-      Ref<AsyncValue<String>>,
+      Ref,
       FamilyOrClass,
     ) build,
   ) {
@@ -932,8 +921,7 @@ final class FamilyOrClassFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    FutureOr<String> Function(
-            Ref<AsyncValue<String>> ref, FamilyOrClass notifier, int argument)
+    FutureOr<String> Function(Ref ref, FamilyOrClass notifier, int argument)
         build,
   ) {
     return $FamilyOverride(
@@ -1028,7 +1016,7 @@ final class FamilyClassProvider
   @override
   FamilyClassProvider $copyWithBuild(
     FutureOr<String> Function(
-      Ref<AsyncValue<String>>,
+      Ref,
       FamilyClass,
     ) build,
   ) {
@@ -1129,7 +1117,7 @@ final class FamilyClassFamily extends Family {
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     FutureOr<String> Function(
-            Ref<AsyncValue<String>> ref,
+            Ref ref,
             FamilyClass notifier,
             (
               int, {

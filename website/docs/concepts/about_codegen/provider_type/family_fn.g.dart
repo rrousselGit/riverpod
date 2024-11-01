@@ -8,13 +8,11 @@ part of 'family_fn.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef ExampleRef = Ref<String>;
-
 @ProviderFor(example)
 const exampleProvider = ExampleFamily._();
 
 final class ExampleProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, ExampleRef> {
+    with $Provider<String> {
   const ExampleProvider._(
       {required ExampleFamily super.from,
       required (
@@ -23,7 +21,7 @@ final class ExampleProvider extends $FunctionalProvider<String, String>
       })
           super.argument,
       String Function(
-        ExampleRef ref,
+        Ref ref,
         int param1, {
         String param2,
       })? create})
@@ -37,7 +35,7 @@ final class ExampleProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    ExampleRef ref,
+    Ref ref,
     int param1, {
     String param2,
   })? _createCb;
@@ -68,7 +66,7 @@ final class ExampleProvider extends $FunctionalProvider<String, String>
   @override
   ExampleProvider $copyWithCreate(
     String Function(
-      ExampleRef ref,
+      Ref ref,
     ) create,
   ) {
     return ExampleProvider._(
@@ -86,7 +84,7 @@ final class ExampleProvider extends $FunctionalProvider<String, String>
   }
 
   @override
-  String create(ExampleRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? example;
     final argument = this.argument as (
       int, {
@@ -140,7 +138,7 @@ final class ExampleFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     String Function(
-      ExampleRef ref,
+      Ref ref,
       (
         int, {
         String param2,

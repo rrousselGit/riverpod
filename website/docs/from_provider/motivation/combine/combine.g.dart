@@ -8,16 +8,14 @@ part of 'combine.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef NumberRef = Ref<int>;
-
 @ProviderFor(number)
 const numberProvider = NumberProvider._();
 
 final class NumberProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, NumberRef> {
+    with $Provider<int> {
   const NumberProvider._(
       {int Function(
-        NumberRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -31,7 +29,7 @@ final class NumberProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    NumberRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -53,14 +51,14 @@ final class NumberProvider extends $FunctionalProvider<int, int>
   @override
   NumberProvider $copyWithCreate(
     int Function(
-      NumberRef ref,
+      Ref ref,
     ) create,
   ) {
     return NumberProvider._(create: create);
   }
 
   @override
-  int create(NumberRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? number;
     return _$cb(ref);
   }
@@ -68,16 +66,14 @@ final class NumberProvider extends $FunctionalProvider<int, int>
 
 String _$numberHash() => r'03ac91d5904c18f04321b140fd263ed6bc85d3c1';
 
-typedef DoubledRef = Ref<int>;
-
 @ProviderFor(doubled)
 const doubledProvider = DoubledProvider._();
 
 final class DoubledProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, DoubledRef> {
+    with $Provider<int> {
   const DoubledProvider._(
       {int Function(
-        DoubledRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -91,7 +87,7 @@ final class DoubledProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    DoubledRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -113,14 +109,14 @@ final class DoubledProvider extends $FunctionalProvider<int, int>
   @override
   DoubledProvider $copyWithCreate(
     int Function(
-      DoubledRef ref,
+      Ref ref,
     ) create,
   ) {
     return DoubledProvider._(create: create);
   }
 
   @override
-  int create(DoubledRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? doubled;
     return _$cb(ref);
   }

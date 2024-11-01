@@ -8,17 +8,15 @@ part of 'shared_pipe_change_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef MyListenableRef = Ref<Raw<ValueNotifier<int>>>;
-
 @ProviderFor(myListenable)
 const myListenableProvider = MyListenableProvider._();
 
 final class MyListenableProvider extends $FunctionalProvider<
-        Raw<ValueNotifier<int>>, Raw<ValueNotifier<int>>>
-    with $Provider<Raw<ValueNotifier<int>>, MyListenableRef> {
+    Raw<ValueNotifier<int>>,
+    Raw<ValueNotifier<int>>> with $Provider<Raw<ValueNotifier<int>>> {
   const MyListenableProvider._(
       {Raw<ValueNotifier<int>> Function(
-        MyListenableRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -32,7 +30,7 @@ final class MyListenableProvider extends $FunctionalProvider<
         );
 
   final Raw<ValueNotifier<int>> Function(
-    MyListenableRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -55,14 +53,14 @@ final class MyListenableProvider extends $FunctionalProvider<
   @override
   MyListenableProvider $copyWithCreate(
     Raw<ValueNotifier<int>> Function(
-      MyListenableRef ref,
+      Ref ref,
     ) create,
   ) {
     return MyListenableProvider._(create: create);
   }
 
   @override
-  Raw<ValueNotifier<int>> create(MyListenableRef ref) {
+  Raw<ValueNotifier<int>> create(Ref ref) {
     final _$cb = _createCb ?? myListenable;
     return _$cb(ref);
   }
@@ -70,17 +68,15 @@ final class MyListenableProvider extends $FunctionalProvider<
 
 String _$myListenableHash() => r'a28ce39430582e0d7be5f8303a31477569153193';
 
-typedef AnotherListenableRef = Ref<Raw<ValueNotifier<int>>>;
-
 @ProviderFor(anotherListenable)
 const anotherListenableProvider = AnotherListenableProvider._();
 
 final class AnotherListenableProvider extends $FunctionalProvider<
-        Raw<ValueNotifier<int>>, Raw<ValueNotifier<int>>>
-    with $Provider<Raw<ValueNotifier<int>>, AnotherListenableRef> {
+    Raw<ValueNotifier<int>>,
+    Raw<ValueNotifier<int>>> with $Provider<Raw<ValueNotifier<int>>> {
   const AnotherListenableProvider._(
       {Raw<ValueNotifier<int>> Function(
-        AnotherListenableRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -94,7 +90,7 @@ final class AnotherListenableProvider extends $FunctionalProvider<
         );
 
   final Raw<ValueNotifier<int>> Function(
-    AnotherListenableRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -117,14 +113,14 @@ final class AnotherListenableProvider extends $FunctionalProvider<
   @override
   AnotherListenableProvider $copyWithCreate(
     Raw<ValueNotifier<int>> Function(
-      AnotherListenableRef ref,
+      Ref ref,
     ) create,
   ) {
     return AnotherListenableProvider._(create: create);
   }
 
   @override
-  Raw<ValueNotifier<int>> create(AnotherListenableRef ref) {
+  Raw<ValueNotifier<int>> create(Ref ref) {
     final _$cb = _createCb ?? anotherListenable;
     return _$cb(ref);
   }

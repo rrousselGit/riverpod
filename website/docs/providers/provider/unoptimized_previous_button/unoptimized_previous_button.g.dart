@@ -54,7 +54,7 @@ final class PageIndexProvider extends $NotifierProvider<PageIndex, int> {
   @override
   PageIndexProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       PageIndex,
     ) build,
   ) {

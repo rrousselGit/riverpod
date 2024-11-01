@@ -64,7 +64,7 @@ final class AsyncTodosProvider
   @override
   AsyncTodosProvider $copyWithBuild(
     FutureOr<List<Todo>> Function(
-      Ref<AsyncValue<List<Todo>>>,
+      Ref,
       AsyncTodos,
     ) build,
   ) {

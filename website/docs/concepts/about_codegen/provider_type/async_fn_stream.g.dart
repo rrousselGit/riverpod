@@ -8,17 +8,15 @@ part of 'async_fn_stream.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef ExampleRef = Ref<AsyncValue<String>>;
-
 @ProviderFor(example)
 const exampleProvider = ExampleProvider._();
 
 final class ExampleProvider
     extends $FunctionalProvider<AsyncValue<String>, Stream<String>>
-    with $FutureModifier<String>, $StreamProvider<String, ExampleRef> {
+    with $FutureModifier<String>, $StreamProvider<String> {
   const ExampleProvider._(
       {Stream<String> Function(
-        ExampleRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -32,7 +30,7 @@ final class ExampleProvider
         );
 
   final Stream<String> Function(
-    ExampleRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -46,14 +44,14 @@ final class ExampleProvider
   @override
   ExampleProvider $copyWithCreate(
     Stream<String> Function(
-      ExampleRef ref,
+      Ref ref,
     ) create,
   ) {
     return ExampleProvider._(create: create);
   }
 
   @override
-  Stream<String> create(ExampleRef ref) {
+  Stream<String> create(Ref ref) {
     final _$cb = _createCb ?? example;
     return _$cb(ref);
   }

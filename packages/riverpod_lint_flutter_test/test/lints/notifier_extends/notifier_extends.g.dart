@@ -52,7 +52,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
   @override
   MyNotifierProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       MyNotifier,
     ) build,
   ) {
@@ -122,7 +122,7 @@ final class _PrivateClassProvider
   @override
   _PrivateClassProvider $copyWithBuild(
     String Function(
-      Ref<String>,
+      Ref,
       _PrivateClass,
     ) build,
   ) {
@@ -178,7 +178,7 @@ final class GenericsProvider<A extends num, B>
 
   GenericsProvider<A, B> _copyWithBuild(
     int Function<A extends num, B>(
-      Ref<int>,
+      Ref,
       Generics<A, B>,
     ) build,
   ) {
@@ -218,7 +218,7 @@ final class GenericsProvider<A extends num, B>
   @override
   GenericsProvider<A, B> $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       Generics<A, B>,
     ) build,
   ) {
@@ -282,7 +282,7 @@ final class GenericsFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function<A extends num, B>(Ref<int> ref, Generics<A, B> notifier) build,
+    int Function<A extends num, B>(Ref ref, Generics<A, B> notifier) build,
   ) {
     return $FamilyOverride(
       from: this,
@@ -335,7 +335,7 @@ final class NoGenericsProvider<A extends num, B>
 
   NoGenericsProvider<A, B> _copyWithBuild(
     int Function<A extends num, B>(
-      Ref<int>,
+      Ref,
       NoGenerics<A, B>,
     ) build,
   ) {
@@ -375,7 +375,7 @@ final class NoGenericsProvider<A extends num, B>
   @override
   NoGenericsProvider<A, B> $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       NoGenerics<A, B>,
     ) build,
   ) {
@@ -439,8 +439,7 @@ final class NoGenericsFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function<A extends num, B>(Ref<int> ref, NoGenerics<A, B> notifier)
-        build,
+    int Function<A extends num, B>(Ref ref, NoGenerics<A, B> notifier) build,
   ) {
     return $FamilyOverride(
       from: this,
@@ -493,7 +492,7 @@ final class MissingGenericsProvider<A, B>
 
   MissingGenericsProvider<A, B> _copyWithBuild(
     int Function<A, B>(
-      Ref<int>,
+      Ref,
       MissingGenerics<A, B>,
     ) build,
   ) {
@@ -535,7 +534,7 @@ final class MissingGenericsProvider<A, B>
   @override
   MissingGenericsProvider<A, B> $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       MissingGenerics<A, B>,
     ) build,
   ) {
@@ -599,7 +598,7 @@ final class MissingGenericsFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function<A, B>(Ref<int> ref, MissingGenerics<A, B> notifier) build,
+    int Function<A, B>(Ref ref, MissingGenerics<A, B> notifier) build,
   ) {
     return $FamilyOverride(
       from: this,
@@ -652,7 +651,7 @@ final class WrongOrderProvider<A, B>
 
   WrongOrderProvider<A, B> _copyWithBuild(
     int Function<A, B>(
-      Ref<int>,
+      Ref,
       WrongOrder<A, B>,
     ) build,
   ) {
@@ -692,7 +691,7 @@ final class WrongOrderProvider<A, B>
   @override
   WrongOrderProvider<A, B> $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       WrongOrder<A, B>,
     ) build,
   ) {
@@ -756,7 +755,7 @@ final class WrongOrderFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function<A, B>(Ref<int> ref, WrongOrder<A, B> notifier) build,
+    int Function<A, B>(Ref ref, WrongOrder<A, B> notifier) build,
   ) {
     return $FamilyOverride(
       from: this,

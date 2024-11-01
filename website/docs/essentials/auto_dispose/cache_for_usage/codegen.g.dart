@@ -8,17 +8,15 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef ExampleRef = Ref<AsyncValue<Object>>;
-
 @ProviderFor(example)
 const exampleProvider = ExampleProvider._();
 
 final class ExampleProvider
     extends $FunctionalProvider<AsyncValue<Object>, FutureOr<Object>>
-    with $FutureModifier<Object>, $FutureProvider<Object, ExampleRef> {
+    with $FutureModifier<Object>, $FutureProvider<Object> {
   const ExampleProvider._(
       {FutureOr<Object> Function(
-        ExampleRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -32,7 +30,7 @@ final class ExampleProvider
         );
 
   final FutureOr<Object> Function(
-    ExampleRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -46,14 +44,14 @@ final class ExampleProvider
   @override
   ExampleProvider $copyWithCreate(
     FutureOr<Object> Function(
-      ExampleRef ref,
+      Ref ref,
     ) create,
   ) {
     return ExampleProvider._(create: create);
   }
 
   @override
-  FutureOr<Object> create(ExampleRef ref) {
+  FutureOr<Object> create(Ref ref) {
     final _$cb = _createCb ?? example;
     return _$cb(ref);
   }

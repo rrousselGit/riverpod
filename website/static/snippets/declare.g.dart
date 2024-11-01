@@ -54,7 +54,7 @@ final class CountProvider extends $NotifierProvider<Count, int> {
   @override
   CountProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       Count,
     ) build,
   ) {

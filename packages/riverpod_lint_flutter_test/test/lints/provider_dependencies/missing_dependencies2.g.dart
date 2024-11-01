@@ -6,16 +6,14 @@ part of 'missing_dependencies2.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef DepRef = Ref<int>;
-
 @ProviderFor(dep)
 const depProvider = DepProvider._();
 
 final class DepProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, DepRef> {
+    with $Provider<int> {
   const DepProvider._(
       {int Function(
-        DepRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -29,7 +27,7 @@ final class DepProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    DepRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -51,14 +49,14 @@ final class DepProvider extends $FunctionalProvider<int, int>
   @override
   DepProvider $copyWithCreate(
     int Function(
-      DepRef ref,
+      Ref ref,
     ) create,
   ) {
     return DepProvider._(create: create);
   }
 
   @override
-  int create(DepRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? dep;
     return _$cb(ref);
   }
@@ -66,16 +64,14 @@ final class DepProvider extends $FunctionalProvider<int, int>
 
 String _$depHash() => r'578a350a40cda46444ecd9fa3ea2fd7bd0994692';
 
-typedef GeneratedScopedRef = Ref<int>;
-
 @ProviderFor(generatedScoped)
 const generatedScopedProvider = GeneratedScopedProvider._();
 
 final class GeneratedScopedProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, GeneratedScopedRef> {
+    with $Provider<int> {
   const GeneratedScopedProvider._(
       {int Function(
-        GeneratedScopedRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -89,7 +85,7 @@ final class GeneratedScopedProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    GeneratedScopedRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -111,14 +107,14 @@ final class GeneratedScopedProvider extends $FunctionalProvider<int, int>
   @override
   GeneratedScopedProvider $copyWithCreate(
     int Function(
-      GeneratedScopedRef ref,
+      Ref ref,
     ) create,
   ) {
     return GeneratedScopedProvider._(create: create);
   }
 
   @override
-  int create(GeneratedScopedRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? generatedScoped;
     return _$cb(ref);
   }
@@ -126,16 +122,14 @@ final class GeneratedScopedProvider extends $FunctionalProvider<int, int>
 
 String _$generatedScopedHash() => r'f8e5b6926ce13765c83dbb7f8c8458c9c5fe7d69';
 
-typedef GeneratedRootRef = Ref<int>;
-
 @ProviderFor(generatedRoot)
 const generatedRootProvider = GeneratedRootProvider._();
 
 final class GeneratedRootProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, GeneratedRootRef> {
+    with $Provider<int> {
   const GeneratedRootProvider._(
       {int Function(
-        GeneratedRootRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -149,7 +143,7 @@ final class GeneratedRootProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    GeneratedRootRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -171,14 +165,14 @@ final class GeneratedRootProvider extends $FunctionalProvider<int, int>
   @override
   GeneratedRootProvider $copyWithCreate(
     int Function(
-      GeneratedRootRef ref,
+      Ref ref,
     ) create,
   ) {
     return GeneratedRootProvider._(create: create);
   }
 
   @override
-  int create(GeneratedRootRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? generatedRoot;
     return _$cb(ref);
   }
@@ -186,18 +180,15 @@ final class GeneratedRootProvider extends $FunctionalProvider<int, int>
 
 String _$generatedRootHash() => r'179253a56503f28bb616c602d8af9ad3b23d438f';
 
-typedef WatchScopedButNoDependenciesRef = Ref<int>;
-
 @ProviderFor(watchScopedButNoDependencies)
 const watchScopedButNoDependenciesProvider =
     WatchScopedButNoDependenciesProvider._();
 
 final class WatchScopedButNoDependenciesProvider
-    extends $FunctionalProvider<int, int>
-    with $Provider<int, WatchScopedButNoDependenciesRef> {
+    extends $FunctionalProvider<int, int> with $Provider<int> {
   const WatchScopedButNoDependenciesProvider._(
       {int Function(
-        WatchScopedButNoDependenciesRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -211,7 +202,7 @@ final class WatchScopedButNoDependenciesProvider
         );
 
   final int Function(
-    WatchScopedButNoDependenciesRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -233,14 +224,14 @@ final class WatchScopedButNoDependenciesProvider
   @override
   WatchScopedButNoDependenciesProvider $copyWithCreate(
     int Function(
-      WatchScopedButNoDependenciesRef ref,
+      Ref ref,
     ) create,
   ) {
     return WatchScopedButNoDependenciesProvider._(create: create);
   }
 
   @override
-  int create(WatchScopedButNoDependenciesRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? watchScopedButNoDependencies;
     return _$cb(ref);
   }
@@ -249,18 +240,15 @@ final class WatchScopedButNoDependenciesProvider
 String _$watchScopedButNoDependenciesHash() =>
     r'e326226fdc19ea7a4430900154c071f5a1a98e40';
 
-typedef WatchGeneratedScopedButNoDependenciesRef = Ref<int>;
-
 @ProviderFor(watchGeneratedScopedButNoDependencies)
 const watchGeneratedScopedButNoDependenciesProvider =
     WatchGeneratedScopedButNoDependenciesProvider._();
 
 final class WatchGeneratedScopedButNoDependenciesProvider
-    extends $FunctionalProvider<int, int>
-    with $Provider<int, WatchGeneratedScopedButNoDependenciesRef> {
+    extends $FunctionalProvider<int, int> with $Provider<int> {
   const WatchGeneratedScopedButNoDependenciesProvider._(
       {int Function(
-        WatchGeneratedScopedButNoDependenciesRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -274,7 +262,7 @@ final class WatchGeneratedScopedButNoDependenciesProvider
         );
 
   final int Function(
-    WatchGeneratedScopedButNoDependenciesRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -297,14 +285,14 @@ final class WatchGeneratedScopedButNoDependenciesProvider
   @override
   WatchGeneratedScopedButNoDependenciesProvider $copyWithCreate(
     int Function(
-      WatchGeneratedScopedButNoDependenciesRef ref,
+      Ref ref,
     ) create,
   ) {
     return WatchGeneratedScopedButNoDependenciesProvider._(create: create);
   }
 
   @override
-  int create(WatchGeneratedScopedButNoDependenciesRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? watchGeneratedScopedButNoDependencies;
     return _$cb(ref);
   }
@@ -313,18 +301,15 @@ final class WatchGeneratedScopedButNoDependenciesProvider
 String _$watchGeneratedScopedButNoDependenciesHash() =>
     r'2109f8ccbc13632e45f18ccb93bc3059c431eba1';
 
-typedef WatchRootButNoDependenciesRef = Ref<int>;
-
 @ProviderFor(watchRootButNoDependencies)
 const watchRootButNoDependenciesProvider =
     WatchRootButNoDependenciesProvider._();
 
 final class WatchRootButNoDependenciesProvider
-    extends $FunctionalProvider<int, int>
-    with $Provider<int, WatchRootButNoDependenciesRef> {
+    extends $FunctionalProvider<int, int> with $Provider<int> {
   const WatchRootButNoDependenciesProvider._(
       {int Function(
-        WatchRootButNoDependenciesRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -338,7 +323,7 @@ final class WatchRootButNoDependenciesProvider
         );
 
   final int Function(
-    WatchRootButNoDependenciesRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -360,14 +345,14 @@ final class WatchRootButNoDependenciesProvider
   @override
   WatchRootButNoDependenciesProvider $copyWithCreate(
     int Function(
-      WatchRootButNoDependenciesRef ref,
+      Ref ref,
     ) create,
   ) {
     return WatchRootButNoDependenciesProvider._(create: create);
   }
 
   @override
-  int create(WatchRootButNoDependenciesRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? watchRootButNoDependencies;
     return _$cb(ref);
   }
@@ -376,18 +361,15 @@ final class WatchRootButNoDependenciesProvider
 String _$watchRootButNoDependenciesHash() =>
     r'cfecc8aeb539e82c46276f9e4dd78c323b4bef12';
 
-typedef WatchGeneratedRootButNoDependenciesRef = Ref<int>;
-
 @ProviderFor(watchGeneratedRootButNoDependencies)
 const watchGeneratedRootButNoDependenciesProvider =
     WatchGeneratedRootButNoDependenciesProvider._();
 
 final class WatchGeneratedRootButNoDependenciesProvider
-    extends $FunctionalProvider<int, int>
-    with $Provider<int, WatchGeneratedRootButNoDependenciesRef> {
+    extends $FunctionalProvider<int, int> with $Provider<int> {
   const WatchGeneratedRootButNoDependenciesProvider._(
       {int Function(
-        WatchGeneratedRootButNoDependenciesRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -401,7 +383,7 @@ final class WatchGeneratedRootButNoDependenciesProvider
         );
 
   final int Function(
-    WatchGeneratedRootButNoDependenciesRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -424,14 +406,14 @@ final class WatchGeneratedRootButNoDependenciesProvider
   @override
   WatchGeneratedRootButNoDependenciesProvider $copyWithCreate(
     int Function(
-      WatchGeneratedRootButNoDependenciesRef ref,
+      Ref ref,
     ) create,
   ) {
     return WatchGeneratedRootButNoDependenciesProvider._(create: create);
   }
 
   @override
-  int create(WatchGeneratedRootButNoDependenciesRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? watchGeneratedRootButNoDependencies;
     return _$cb(ref);
   }
@@ -440,18 +422,15 @@ final class WatchGeneratedRootButNoDependenciesProvider
 String _$watchGeneratedRootButNoDependenciesHash() =>
     r'c839dab901f606c11c78f9c8761931027d3db1d1';
 
-typedef WatchScopedButEmptyDependenciesRef = Ref<int>;
-
 @ProviderFor(watchScopedButEmptyDependencies)
 const watchScopedButEmptyDependenciesProvider =
     WatchScopedButEmptyDependenciesProvider._();
 
 final class WatchScopedButEmptyDependenciesProvider
-    extends $FunctionalProvider<int, int>
-    with $Provider<int, WatchScopedButEmptyDependenciesRef> {
+    extends $FunctionalProvider<int, int> with $Provider<int> {
   const WatchScopedButEmptyDependenciesProvider._(
       {int Function(
-        WatchScopedButEmptyDependenciesRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -465,7 +444,7 @@ final class WatchScopedButEmptyDependenciesProvider
         );
 
   final int Function(
-    WatchScopedButEmptyDependenciesRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -487,14 +466,14 @@ final class WatchScopedButEmptyDependenciesProvider
   @override
   WatchScopedButEmptyDependenciesProvider $copyWithCreate(
     int Function(
-      WatchScopedButEmptyDependenciesRef ref,
+      Ref ref,
     ) create,
   ) {
     return WatchScopedButEmptyDependenciesProvider._(create: create);
   }
 
   @override
-  int create(WatchScopedButEmptyDependenciesRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? watchScopedButEmptyDependencies;
     return _$cb(ref);
   }
@@ -503,18 +482,15 @@ final class WatchScopedButEmptyDependenciesProvider
 String _$watchScopedButEmptyDependenciesHash() =>
     r'a194f52730f635e9c92b3467b33b8c302c93b1ab';
 
-typedef WatchGeneratedScopedButEmptyDependenciesRef = Ref<int>;
-
 @ProviderFor(watchGeneratedScopedButEmptyDependencies)
 const watchGeneratedScopedButEmptyDependenciesProvider =
     WatchGeneratedScopedButEmptyDependenciesProvider._();
 
 final class WatchGeneratedScopedButEmptyDependenciesProvider
-    extends $FunctionalProvider<int, int>
-    with $Provider<int, WatchGeneratedScopedButEmptyDependenciesRef> {
+    extends $FunctionalProvider<int, int> with $Provider<int> {
   const WatchGeneratedScopedButEmptyDependenciesProvider._(
       {int Function(
-        WatchGeneratedScopedButEmptyDependenciesRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -528,7 +504,7 @@ final class WatchGeneratedScopedButEmptyDependenciesProvider
         );
 
   final int Function(
-    WatchGeneratedScopedButEmptyDependenciesRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -551,14 +527,14 @@ final class WatchGeneratedScopedButEmptyDependenciesProvider
   @override
   WatchGeneratedScopedButEmptyDependenciesProvider $copyWithCreate(
     int Function(
-      WatchGeneratedScopedButEmptyDependenciesRef ref,
+      Ref ref,
     ) create,
   ) {
     return WatchGeneratedScopedButEmptyDependenciesProvider._(create: create);
   }
 
   @override
-  int create(WatchGeneratedScopedButEmptyDependenciesRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? watchGeneratedScopedButEmptyDependencies;
     return _$cb(ref);
   }
@@ -567,18 +543,15 @@ final class WatchGeneratedScopedButEmptyDependenciesProvider
 String _$watchGeneratedScopedButEmptyDependenciesHash() =>
     r'fa4cb564341e7b3f0dd10f70e17381c67859c643';
 
-typedef WatchRootButEmptyDependenciesRef = Ref<int>;
-
 @ProviderFor(watchRootButEmptyDependencies)
 const watchRootButEmptyDependenciesProvider =
     WatchRootButEmptyDependenciesProvider._();
 
 final class WatchRootButEmptyDependenciesProvider
-    extends $FunctionalProvider<int, int>
-    with $Provider<int, WatchRootButEmptyDependenciesRef> {
+    extends $FunctionalProvider<int, int> with $Provider<int> {
   const WatchRootButEmptyDependenciesProvider._(
       {int Function(
-        WatchRootButEmptyDependenciesRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -592,7 +565,7 @@ final class WatchRootButEmptyDependenciesProvider
         );
 
   final int Function(
-    WatchRootButEmptyDependenciesRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -614,14 +587,14 @@ final class WatchRootButEmptyDependenciesProvider
   @override
   WatchRootButEmptyDependenciesProvider $copyWithCreate(
     int Function(
-      WatchRootButEmptyDependenciesRef ref,
+      Ref ref,
     ) create,
   ) {
     return WatchRootButEmptyDependenciesProvider._(create: create);
   }
 
   @override
-  int create(WatchRootButEmptyDependenciesRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? watchRootButEmptyDependencies;
     return _$cb(ref);
   }
@@ -630,18 +603,15 @@ final class WatchRootButEmptyDependenciesProvider
 String _$watchRootButEmptyDependenciesHash() =>
     r'8669a421efcd8caadc0d070f0c88043668610bbb';
 
-typedef WatchGeneratedRootButEmptyDependenciesRef = Ref<int>;
-
 @ProviderFor(watchGeneratedRootButEmptyDependencies)
 const watchGeneratedRootButEmptyDependenciesProvider =
     WatchGeneratedRootButEmptyDependenciesProvider._();
 
 final class WatchGeneratedRootButEmptyDependenciesProvider
-    extends $FunctionalProvider<int, int>
-    with $Provider<int, WatchGeneratedRootButEmptyDependenciesRef> {
+    extends $FunctionalProvider<int, int> with $Provider<int> {
   const WatchGeneratedRootButEmptyDependenciesProvider._(
       {int Function(
-        WatchGeneratedRootButEmptyDependenciesRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -655,7 +625,7 @@ final class WatchGeneratedRootButEmptyDependenciesProvider
         );
 
   final int Function(
-    WatchGeneratedRootButEmptyDependenciesRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -678,14 +648,14 @@ final class WatchGeneratedRootButEmptyDependenciesProvider
   @override
   WatchGeneratedRootButEmptyDependenciesProvider $copyWithCreate(
     int Function(
-      WatchGeneratedRootButEmptyDependenciesRef ref,
+      Ref ref,
     ) create,
   ) {
     return WatchGeneratedRootButEmptyDependenciesProvider._(create: create);
   }
 
   @override
-  int create(WatchGeneratedRootButEmptyDependenciesRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? watchGeneratedRootButEmptyDependencies;
     return _$cb(ref);
   }
@@ -694,18 +664,15 @@ final class WatchGeneratedRootButEmptyDependenciesProvider
 String _$watchGeneratedRootButEmptyDependenciesHash() =>
     r'80581ac491e25ae8c6ee7b7f25dff9939f8de37c';
 
-typedef WatchScopedButMissingDependenciesRef = Ref<int>;
-
 @ProviderFor(watchScopedButMissingDependencies)
 const watchScopedButMissingDependenciesProvider =
     WatchScopedButMissingDependenciesProvider._();
 
 final class WatchScopedButMissingDependenciesProvider
-    extends $FunctionalProvider<int, int>
-    with $Provider<int, WatchScopedButMissingDependenciesRef> {
+    extends $FunctionalProvider<int, int> with $Provider<int> {
   const WatchScopedButMissingDependenciesProvider._(
       {int Function(
-        WatchScopedButMissingDependenciesRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -724,7 +691,7 @@ final class WatchScopedButMissingDependenciesProvider
   static const $allTransitiveDependencies0 = depProvider;
 
   final int Function(
-    WatchScopedButMissingDependenciesRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -747,14 +714,14 @@ final class WatchScopedButMissingDependenciesProvider
   @override
   WatchScopedButMissingDependenciesProvider $copyWithCreate(
     int Function(
-      WatchScopedButMissingDependenciesRef ref,
+      Ref ref,
     ) create,
   ) {
     return WatchScopedButMissingDependenciesProvider._(create: create);
   }
 
   @override
-  int create(WatchScopedButMissingDependenciesRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? watchScopedButMissingDependencies;
     return _$cb(ref);
   }
@@ -763,18 +730,15 @@ final class WatchScopedButMissingDependenciesProvider
 String _$watchScopedButMissingDependenciesHash() =>
     r'c890e4845b1fca73ee02442eb7a203734605173c';
 
-typedef WatchGeneratedScopedButMissingDependenciesRef = Ref<int>;
-
 @ProviderFor(watchGeneratedScopedButMissingDependencies)
 const watchGeneratedScopedButMissingDependenciesProvider =
     WatchGeneratedScopedButMissingDependenciesProvider._();
 
 final class WatchGeneratedScopedButMissingDependenciesProvider
-    extends $FunctionalProvider<int, int>
-    with $Provider<int, WatchGeneratedScopedButMissingDependenciesRef> {
+    extends $FunctionalProvider<int, int> with $Provider<int> {
   const WatchGeneratedScopedButMissingDependenciesProvider._(
       {int Function(
-        WatchGeneratedScopedButMissingDependenciesRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -793,7 +757,7 @@ final class WatchGeneratedScopedButMissingDependenciesProvider
   static const $allTransitiveDependencies0 = depProvider;
 
   final int Function(
-    WatchGeneratedScopedButMissingDependenciesRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -816,14 +780,14 @@ final class WatchGeneratedScopedButMissingDependenciesProvider
   @override
   WatchGeneratedScopedButMissingDependenciesProvider $copyWithCreate(
     int Function(
-      WatchGeneratedScopedButMissingDependenciesRef ref,
+      Ref ref,
     ) create,
   ) {
     return WatchGeneratedScopedButMissingDependenciesProvider._(create: create);
   }
 
   @override
-  int create(WatchGeneratedScopedButMissingDependenciesRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? watchGeneratedScopedButMissingDependencies;
     return _$cb(ref);
   }
@@ -832,18 +796,15 @@ final class WatchGeneratedScopedButMissingDependenciesProvider
 String _$watchGeneratedScopedButMissingDependenciesHash() =>
     r'fbbb5f1ea3725a7554dc05073f47a6b9ce5d913d';
 
-typedef WatchRootButMissingDependenciesRef = Ref<int>;
-
 @ProviderFor(watchRootButMissingDependencies)
 const watchRootButMissingDependenciesProvider =
     WatchRootButMissingDependenciesProvider._();
 
 final class WatchRootButMissingDependenciesProvider
-    extends $FunctionalProvider<int, int>
-    with $Provider<int, WatchRootButMissingDependenciesRef> {
+    extends $FunctionalProvider<int, int> with $Provider<int> {
   const WatchRootButMissingDependenciesProvider._(
       {int Function(
-        WatchRootButMissingDependenciesRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -861,7 +822,7 @@ final class WatchRootButMissingDependenciesProvider
   static const $allTransitiveDependencies0 = depProvider;
 
   final int Function(
-    WatchRootButMissingDependenciesRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -883,14 +844,14 @@ final class WatchRootButMissingDependenciesProvider
   @override
   WatchRootButMissingDependenciesProvider $copyWithCreate(
     int Function(
-      WatchRootButMissingDependenciesRef ref,
+      Ref ref,
     ) create,
   ) {
     return WatchRootButMissingDependenciesProvider._(create: create);
   }
 
   @override
-  int create(WatchRootButMissingDependenciesRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? watchRootButMissingDependencies;
     return _$cb(ref);
   }
@@ -899,18 +860,15 @@ final class WatchRootButMissingDependenciesProvider
 String _$watchRootButMissingDependenciesHash() =>
     r'cc9c5e6c3a1c34e291a63c429fb031e0cc701499';
 
-typedef WatchGeneratedRootButMissingDependenciesRef = Ref<int>;
-
 @ProviderFor(watchGeneratedRootButMissingDependencies)
 const watchGeneratedRootButMissingDependenciesProvider =
     WatchGeneratedRootButMissingDependenciesProvider._();
 
 final class WatchGeneratedRootButMissingDependenciesProvider
-    extends $FunctionalProvider<int, int>
-    with $Provider<int, WatchGeneratedRootButMissingDependenciesRef> {
+    extends $FunctionalProvider<int, int> with $Provider<int> {
   const WatchGeneratedRootButMissingDependenciesProvider._(
       {int Function(
-        WatchGeneratedRootButMissingDependenciesRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -929,7 +887,7 @@ final class WatchGeneratedRootButMissingDependenciesProvider
   static const $allTransitiveDependencies0 = depProvider;
 
   final int Function(
-    WatchGeneratedRootButMissingDependenciesRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -952,14 +910,14 @@ final class WatchGeneratedRootButMissingDependenciesProvider
   @override
   WatchGeneratedRootButMissingDependenciesProvider $copyWithCreate(
     int Function(
-      WatchGeneratedRootButMissingDependenciesRef ref,
+      Ref ref,
     ) create,
   ) {
     return WatchGeneratedRootButMissingDependenciesProvider._(create: create);
   }
 
   @override
-  int create(WatchGeneratedRootButMissingDependenciesRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? watchGeneratedRootButMissingDependencies;
     return _$cb(ref);
   }
@@ -968,18 +926,15 @@ final class WatchGeneratedRootButMissingDependenciesProvider
 String _$watchGeneratedRootButMissingDependenciesHash() =>
     r'10d01aea2b6b0772e98172f410bdbfce85786243';
 
-typedef WatchGeneratedScopedAndContainsDependencyRef = Ref<int>;
-
 @ProviderFor(watchGeneratedScopedAndContainsDependency)
 const watchGeneratedScopedAndContainsDependencyProvider =
     WatchGeneratedScopedAndContainsDependencyProvider._();
 
 final class WatchGeneratedScopedAndContainsDependencyProvider
-    extends $FunctionalProvider<int, int>
-    with $Provider<int, WatchGeneratedScopedAndContainsDependencyRef> {
+    extends $FunctionalProvider<int, int> with $Provider<int> {
   const WatchGeneratedScopedAndContainsDependencyProvider._(
       {int Function(
-        WatchGeneratedScopedAndContainsDependencyRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -998,7 +953,7 @@ final class WatchGeneratedScopedAndContainsDependencyProvider
   static const $allTransitiveDependencies0 = generatedScopedProvider;
 
   final int Function(
-    WatchGeneratedScopedAndContainsDependencyRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -1021,14 +976,14 @@ final class WatchGeneratedScopedAndContainsDependencyProvider
   @override
   WatchGeneratedScopedAndContainsDependencyProvider $copyWithCreate(
     int Function(
-      WatchGeneratedScopedAndContainsDependencyRef ref,
+      Ref ref,
     ) create,
   ) {
     return WatchGeneratedScopedAndContainsDependencyProvider._(create: create);
   }
 
   @override
-  int create(WatchGeneratedScopedAndContainsDependencyRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? watchGeneratedScopedAndContainsDependency;
     return _$cb(ref);
   }
@@ -1037,18 +992,15 @@ final class WatchGeneratedScopedAndContainsDependencyProvider
 String _$watchGeneratedScopedAndContainsDependencyHash() =>
     r'948e75e097500b33ee2fdbd3dc9fdecafa5f3d10';
 
-typedef WatchGeneratedRootAndContainsDependencyRef = Ref<int>;
-
 @ProviderFor(watchGeneratedRootAndContainsDependency)
 const watchGeneratedRootAndContainsDependencyProvider =
     WatchGeneratedRootAndContainsDependencyProvider._();
 
 final class WatchGeneratedRootAndContainsDependencyProvider
-    extends $FunctionalProvider<int, int>
-    with $Provider<int, WatchGeneratedRootAndContainsDependencyRef> {
+    extends $FunctionalProvider<int, int> with $Provider<int> {
   const WatchGeneratedRootAndContainsDependencyProvider._(
       {int Function(
-        WatchGeneratedRootAndContainsDependencyRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -1067,7 +1019,7 @@ final class WatchGeneratedRootAndContainsDependencyProvider
   static const $allTransitiveDependencies0 = generatedRootProvider;
 
   final int Function(
-    WatchGeneratedRootAndContainsDependencyRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -1090,14 +1042,14 @@ final class WatchGeneratedRootAndContainsDependencyProvider
   @override
   WatchGeneratedRootAndContainsDependencyProvider $copyWithCreate(
     int Function(
-      WatchGeneratedRootAndContainsDependencyRef ref,
+      Ref ref,
     ) create,
   ) {
     return WatchGeneratedRootAndContainsDependencyProvider._(create: create);
   }
 
   @override
-  int create(WatchGeneratedRootAndContainsDependencyRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? watchGeneratedRootAndContainsDependency;
     return _$cb(ref);
   }
@@ -1106,18 +1058,15 @@ final class WatchGeneratedRootAndContainsDependencyProvider
 String _$watchGeneratedRootAndContainsDependencyHash() =>
     r'780392b647f1606186ee0f70c81dd5b03f506284';
 
-typedef SpecifiedDependencyButNeverUsedRef = Ref<int>;
-
 @ProviderFor(specifiedDependencyButNeverUsed)
 const specifiedDependencyButNeverUsedProvider =
     SpecifiedDependencyButNeverUsedProvider._();
 
 final class SpecifiedDependencyButNeverUsedProvider
-    extends $FunctionalProvider<int, int>
-    with $Provider<int, SpecifiedDependencyButNeverUsedRef> {
+    extends $FunctionalProvider<int, int> with $Provider<int> {
   const SpecifiedDependencyButNeverUsedProvider._(
       {int Function(
-        SpecifiedDependencyButNeverUsedRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -1140,7 +1089,7 @@ final class SpecifiedDependencyButNeverUsedProvider
   static const $allTransitiveDependencies1 = generatedRootProvider;
 
   final int Function(
-    SpecifiedDependencyButNeverUsedRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -1162,14 +1111,14 @@ final class SpecifiedDependencyButNeverUsedProvider
   @override
   SpecifiedDependencyButNeverUsedProvider $copyWithCreate(
     int Function(
-      SpecifiedDependencyButNeverUsedRef ref,
+      Ref ref,
     ) create,
   ) {
     return SpecifiedDependencyButNeverUsedProvider._(create: create);
   }
 
   @override
-  int create(SpecifiedDependencyButNeverUsedRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? specifiedDependencyButNeverUsed;
     return _$cb(ref);
   }
@@ -1231,7 +1180,7 @@ final class ClassWatchGeneratedRootButMissingDependenciesProvider
   @override
   ClassWatchGeneratedRootButMissingDependenciesProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       ClassWatchGeneratedRootButMissingDependencies,
     ) build,
   ) {
@@ -1257,16 +1206,14 @@ abstract class _$ClassWatchGeneratedRootButMissingDependencies
   int runBuild() => build();
 }
 
-typedef Regression2348Ref = Ref<int>;
-
 @ProviderFor(regression2348)
 const regression2348Provider = Regression2348Provider._();
 
 final class Regression2348Provider extends $FunctionalProvider<int, int>
-    with $Provider<int, Regression2348Ref> {
+    with $Provider<int> {
   const Regression2348Provider._(
       {int Function(
-        Regression2348Ref ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -1284,7 +1231,7 @@ final class Regression2348Provider extends $FunctionalProvider<int, int>
   static const $allTransitiveDependencies0 = generatedScopedProvider;
 
   final int Function(
-    Regression2348Ref ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -1306,14 +1253,14 @@ final class Regression2348Provider extends $FunctionalProvider<int, int>
   @override
   Regression2348Provider $copyWithCreate(
     int Function(
-      Regression2348Ref ref,
+      Ref ref,
     ) create,
   ) {
     return Regression2348Provider._(create: create);
   }
 
   @override
-  int create(Regression2348Ref ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? regression2348;
     return _$cb(ref);
   }
@@ -1372,7 +1319,7 @@ final class Regression2417Provider
   @override
   Regression2417Provider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       Regression2417,
     ) build,
   ) {
@@ -1395,18 +1342,16 @@ abstract class _$Regression2417 extends $Notifier<int> {
   int runBuild() => build();
 }
 
-typedef FamilyDepRef = Ref<int>;
-
 @ProviderFor(familyDep)
 const familyDepProvider = FamilyDepFamily._();
 
 final class FamilyDepProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, FamilyDepRef> {
+    with $Provider<int> {
   const FamilyDepProvider._(
       {required FamilyDepFamily super.from,
       required int super.argument,
       int Function(
-        FamilyDepRef ref,
+        Ref ref,
         int p,
       )? create})
       : _createCb = create,
@@ -1421,7 +1366,7 @@ final class FamilyDepProvider extends $FunctionalProvider<int, int>
   static const $allTransitiveDependencies0 = depProvider;
 
   final int Function(
-    FamilyDepRef ref,
+    Ref ref,
     int p,
   )? _createCb;
 
@@ -1451,7 +1396,7 @@ final class FamilyDepProvider extends $FunctionalProvider<int, int>
   @override
   FamilyDepProvider $copyWithCreate(
     int Function(
-      FamilyDepRef ref,
+      Ref ref,
     ) create,
   ) {
     return FamilyDepProvider._(
@@ -1465,7 +1410,7 @@ final class FamilyDepProvider extends $FunctionalProvider<int, int>
   }
 
   @override
-  int create(FamilyDepRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? familyDep;
     final argument = this.argument as int;
     return _$cb(
@@ -1513,7 +1458,7 @@ final class FamilyDepFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     int Function(
-      FamilyDepRef ref,
+      Ref ref,
       int args,
     ) create,
   ) {
@@ -1532,18 +1477,16 @@ final class FamilyDepFamily extends Family {
   }
 }
 
-typedef FamilyDep2Ref = Ref<int>;
-
 @ProviderFor(familyDep2)
 const familyDep2Provider = FamilyDep2Family._();
 
 final class FamilyDep2Provider extends $FunctionalProvider<int, int>
-    with $Provider<int, FamilyDep2Ref> {
+    with $Provider<int> {
   const FamilyDep2Provider._(
       {required FamilyDep2Family super.from,
       required int super.argument,
       int Function(
-        FamilyDep2Ref ref,
+        Ref ref,
         int p,
       )? create})
       : _createCb = create,
@@ -1560,7 +1503,7 @@ final class FamilyDep2Provider extends $FunctionalProvider<int, int>
       FamilyDepProvider.$allTransitiveDependencies0;
 
   final int Function(
-    FamilyDep2Ref ref,
+    Ref ref,
     int p,
   )? _createCb;
 
@@ -1590,7 +1533,7 @@ final class FamilyDep2Provider extends $FunctionalProvider<int, int>
   @override
   FamilyDep2Provider $copyWithCreate(
     int Function(
-      FamilyDep2Ref ref,
+      Ref ref,
     ) create,
   ) {
     return FamilyDep2Provider._(
@@ -1604,7 +1547,7 @@ final class FamilyDep2Provider extends $FunctionalProvider<int, int>
   }
 
   @override
-  int create(FamilyDep2Ref ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? familyDep2;
     final argument = this.argument as int;
     return _$cb(
@@ -1653,7 +1596,7 @@ final class FamilyDep2Family extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     int Function(
-      FamilyDep2Ref ref,
+      Ref ref,
       int args,
     ) create,
   ) {
@@ -1672,16 +1615,14 @@ final class FamilyDep2Family extends Family {
   }
 }
 
-typedef AliasRef = Ref<int>;
-
 @ProviderFor(alias)
 const aliasProvider = AliasProvider._();
 
 final class AliasProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, AliasRef> {
+    with $Provider<int> {
   const AliasProvider._(
       {int Function(
-        AliasRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -1695,7 +1636,7 @@ final class AliasProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    AliasRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -1717,14 +1658,14 @@ final class AliasProvider extends $FunctionalProvider<int, int>
   @override
   AliasProvider $copyWithCreate(
     int Function(
-      AliasRef ref,
+      Ref ref,
     ) create,
   ) {
     return AliasProvider._(create: create);
   }
 
   @override
-  int create(AliasRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? alias;
     return _$cb(ref);
   }
@@ -1778,7 +1719,7 @@ final class AliasClassProvider extends $NotifierProvider<AliasClass, int> {
   @override
   AliasClassProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       AliasClass,
     ) build,
   ) {
@@ -1852,7 +1793,7 @@ final class RiverpodDependenciesProvider
   @override
   RiverpodDependenciesProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       RiverpodDependencies,
     ) build,
   ) {
@@ -1876,16 +1817,14 @@ abstract class _$RiverpodDependencies extends $Notifier<int> {
   int runBuild() => build();
 }
 
-typedef FooRef = Ref<int>;
-
 @ProviderFor(foo)
 const fooProvider = FooProvider._();
 
 final class FooProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, FooRef> {
+    with $Provider<int> {
   const FooProvider._(
       {int Function(
-        FooRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -1899,7 +1838,7 @@ final class FooProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    FooRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -1921,14 +1860,14 @@ final class FooProvider extends $FunctionalProvider<int, int>
   @override
   FooProvider $copyWithCreate(
     int Function(
-      FooRef ref,
+      Ref ref,
     ) create,
   ) {
     return FooProvider._(create: create);
   }
 
   @override
-  int create(FooRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? foo;
     return _$cb(ref);
   }
@@ -1936,16 +1875,14 @@ final class FooProvider extends $FunctionalProvider<int, int>
 
 String _$fooHash() => r'a390b7b969bb0eec183426bfc85bec32750e9475';
 
-typedef CrossFileDependencyRef = Ref<int>;
-
 @ProviderFor(crossFileDependency)
 const crossFileDependencyProvider = CrossFileDependencyProvider._();
 
 final class CrossFileDependencyProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, CrossFileDependencyRef> {
+    with $Provider<int> {
   const CrossFileDependencyProvider._(
       {int Function(
-        CrossFileDependencyRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -1959,7 +1896,7 @@ final class CrossFileDependencyProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    CrossFileDependencyRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -1981,14 +1918,14 @@ final class CrossFileDependencyProvider extends $FunctionalProvider<int, int>
   @override
   CrossFileDependencyProvider $copyWithCreate(
     int Function(
-      CrossFileDependencyRef ref,
+      Ref ref,
     ) create,
   ) {
     return CrossFileDependencyProvider._(create: create);
   }
 
   @override
-  int create(CrossFileDependencyRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? crossFileDependency;
     return _$cb(ref);
   }

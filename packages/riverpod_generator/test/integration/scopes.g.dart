@@ -52,7 +52,7 @@ final class ScopedClassProvider extends $NotifierProvider<ScopedClass, int> {
   @override
   ScopedClassProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       ScopedClass,
     ) build,
   ) {
@@ -133,7 +133,7 @@ final class ScopedClassFamilyProvider
   @override
   ScopedClassFamilyProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       ScopedClassFamily,
     ) build,
   ) {
@@ -205,7 +205,7 @@ final class ScopedClassFamilyFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function(Ref<int> ref, ScopedClassFamily notifier, int argument) build,
+    int Function(Ref ref, ScopedClassFamily notifier, int argument) build,
   ) {
     return $FamilyOverride(
       from: this,

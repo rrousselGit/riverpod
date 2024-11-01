@@ -8,17 +8,15 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef RepositoryRef = Ref<Repository>;
-
 @ProviderFor(repository)
 const repositoryProvider = RepositoryProvider._();
 
 final class RepositoryProvider
     extends $FunctionalProvider<Repository, Repository>
-    with $Provider<Repository, RepositoryRef> {
+    with $Provider<Repository> {
   const RepositoryProvider._(
       {Repository Function(
-        RepositoryRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -32,7 +30,7 @@ final class RepositoryProvider
         );
 
   final Repository Function(
-    RepositoryRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -54,14 +52,14 @@ final class RepositoryProvider
   @override
   RepositoryProvider $copyWithCreate(
     Repository Function(
-      RepositoryRef ref,
+      Ref ref,
     ) create,
   ) {
     return RepositoryProvider._(create: create);
   }
 
   @override
-  Repository create(RepositoryRef ref) {
+  Repository create(Ref ref) {
     final _$cb = _createCb ?? repository;
     return _$cb(ref);
   }
@@ -69,16 +67,14 @@ final class RepositoryProvider
 
 String _$repositoryHash() => r'6f859a9d70c3112139aaf826ee2bd541a4c001cb';
 
-typedef ValueRef = Ref<String>;
-
 @ProviderFor(value)
 const valueProvider = ValueProvider._();
 
 final class ValueProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, ValueRef> {
+    with $Provider<String> {
   const ValueProvider._(
       {String Function(
-        ValueRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -92,7 +88,7 @@ final class ValueProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    ValueRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -114,14 +110,14 @@ final class ValueProvider extends $FunctionalProvider<String, String>
   @override
   ValueProvider $copyWithCreate(
     String Function(
-      ValueRef ref,
+      Ref ref,
     ) create,
   ) {
     return ValueProvider._(create: create);
   }
 
   @override
-  String create(ValueRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? value;
     return _$cb(ref);
   }

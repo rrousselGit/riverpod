@@ -8,16 +8,14 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef MyRef = Ref<MyValue>;
-
 @ProviderFor(my)
 const myProvider = MyProvider._();
 
 final class MyProvider extends $FunctionalProvider<MyValue, MyValue>
-    with $Provider<MyValue, MyRef> {
+    with $Provider<MyValue> {
   const MyProvider._(
       {MyValue Function(
-        MyRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -31,7 +29,7 @@ final class MyProvider extends $FunctionalProvider<MyValue, MyValue>
         );
 
   final MyValue Function(
-    MyRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -53,14 +51,14 @@ final class MyProvider extends $FunctionalProvider<MyValue, MyValue>
   @override
   MyProvider $copyWithCreate(
     MyValue Function(
-      MyRef ref,
+      Ref ref,
     ) create,
   ) {
     return MyProvider._(create: create);
   }
 
   @override
-  MyValue create(MyRef ref) {
+  MyValue create(Ref ref) {
     final _$cb = _createCb ?? my;
     return _$cb(ref);
   }

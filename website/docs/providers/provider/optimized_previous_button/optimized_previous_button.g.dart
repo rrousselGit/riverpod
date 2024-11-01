@@ -54,7 +54,7 @@ final class PageIndexProvider extends $NotifierProvider<PageIndex, int> {
   @override
   PageIndexProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       PageIndex,
     ) build,
   ) {
@@ -77,16 +77,14 @@ abstract class _$PageIndex extends $Notifier<int> {
   int runBuild() => build();
 }
 
-typedef CanGoToPreviousPageRef = Ref<bool>;
-
 @ProviderFor(canGoToPreviousPage)
 const canGoToPreviousPageProvider = CanGoToPreviousPageProvider._();
 
 final class CanGoToPreviousPageProvider extends $FunctionalProvider<bool, bool>
-    with $Provider<bool, CanGoToPreviousPageRef> {
+    with $Provider<bool> {
   const CanGoToPreviousPageProvider._(
       {bool Function(
-        CanGoToPreviousPageRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -100,7 +98,7 @@ final class CanGoToPreviousPageProvider extends $FunctionalProvider<bool, bool>
         );
 
   final bool Function(
-    CanGoToPreviousPageRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -122,14 +120,14 @@ final class CanGoToPreviousPageProvider extends $FunctionalProvider<bool, bool>
   @override
   CanGoToPreviousPageProvider $copyWithCreate(
     bool Function(
-      CanGoToPreviousPageRef ref,
+      Ref ref,
     ) create,
   ) {
     return CanGoToPreviousPageProvider._(create: create);
   }
 
   @override
-  bool create(CanGoToPreviousPageRef ref) {
+  bool create(Ref ref) {
     final _$cb = _createCb ?? canGoToPreviousPage;
     return _$cb(ref);
   }

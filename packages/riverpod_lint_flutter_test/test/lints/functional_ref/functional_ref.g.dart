@@ -6,16 +6,14 @@ part of 'functional_ref.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef NamelessRef = Ref<int>;
-
 @ProviderFor(nameless)
 const namelessProvider = NamelessProvider._();
 
 final class NamelessProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, NamelessRef> {
+    with $Provider<int> {
   const NamelessProvider._(
       {int Function(
-        NamelessRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -29,7 +27,7 @@ final class NamelessProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    NamelessRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -51,14 +49,14 @@ final class NamelessProvider extends $FunctionalProvider<int, int>
   @override
   NamelessProvider $copyWithCreate(
     int Function(
-      NamelessRef ref,
+      Ref ref,
     ) create,
   ) {
     return NamelessProvider._(create: create);
   }
 
   @override
-  int create(NamelessRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? nameless;
     return _$cb(ref);
   }
@@ -66,18 +64,15 @@ final class NamelessProvider extends $FunctionalProvider<int, int>
 
 String _$namelessHash() => r'1a2aa61445a64c65301051820b159c5998195606';
 
-typedef GenericsRef<A extends num, B> = Ref<int>;
-
 @ProviderFor(generics)
 const genericsProvider = GenericsFamily._();
 
 final class GenericsProvider<A extends num, B>
-    extends $FunctionalProvider<int, int>
-    with $Provider<int, GenericsRef<A, B>> {
+    extends $FunctionalProvider<int, int> with $Provider<int> {
   const GenericsProvider._(
       {required GenericsFamily super.from,
       int Function(
-        GenericsRef<A, B> ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -90,7 +85,7 @@ final class GenericsProvider<A extends num, B>
         );
 
   final int Function(
-    GenericsRef<A, B> ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -98,7 +93,7 @@ final class GenericsProvider<A extends num, B>
 
   GenericsProvider<A, B> _copyWithCreate(
     int Function<A extends num, B>(
-      GenericsRef<A, B> ref,
+      Ref ref,
     ) create,
   ) {
     return GenericsProvider<A, B>._(
@@ -128,7 +123,7 @@ final class GenericsProvider<A extends num, B>
   @override
   GenericsProvider<A, B> $copyWithCreate(
     int Function(
-      GenericsRef<A, B> ref,
+      Ref ref,
     ) create,
   ) {
     return GenericsProvider<A, B>._(
@@ -136,7 +131,7 @@ final class GenericsProvider<A extends num, B>
   }
 
   @override
-  int create(GenericsRef<A, B> ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? generics<A, B>;
     return _$cb(ref);
   }
@@ -177,7 +172,7 @@ final class GenericsFamily extends Family {
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    int Function<A extends num, B>(GenericsRef<A, B> ref) create,
+    int Function<A extends num, B>(Ref ref) create,
   ) {
     return $FamilyOverride(
       from: this,
@@ -190,16 +185,14 @@ final class GenericsFamily extends Family {
   }
 }
 
-typedef ValidRef = Ref<int>;
-
 @ProviderFor(valid)
 const validProvider = ValidProvider._();
 
 final class ValidProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, ValidRef> {
+    with $Provider<int> {
   const ValidProvider._(
       {int Function(
-        ValidRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -213,7 +206,7 @@ final class ValidProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    ValidRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -235,14 +228,14 @@ final class ValidProvider extends $FunctionalProvider<int, int>
   @override
   ValidProvider $copyWithCreate(
     int Function(
-      ValidRef ref,
+      Ref ref,
     ) create,
   ) {
     return ValidProvider._(create: create);
   }
 
   @override
-  int create(ValidRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? valid;
     return _$cb(ref);
   }

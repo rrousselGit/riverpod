@@ -55,7 +55,7 @@ final class CounterNotifierProvider
   @override
   CounterNotifierProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       CounterNotifier,
     ) build,
   ) {

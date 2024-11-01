@@ -8,17 +8,15 @@ part of 'todo_list_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef TodoListRef = Ref<AsyncValue<List<Todo>>>;
-
 @ProviderFor(todoList)
 const todoListProvider = TodoListProvider._();
 
 final class TodoListProvider
     extends $FunctionalProvider<AsyncValue<List<Todo>>, FutureOr<List<Todo>>>
-    with $FutureModifier<List<Todo>>, $FutureProvider<List<Todo>, TodoListRef> {
+    with $FutureModifier<List<Todo>>, $FutureProvider<List<Todo>> {
   const TodoListProvider._(
       {FutureOr<List<Todo>> Function(
-        TodoListRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -32,7 +30,7 @@ final class TodoListProvider
         );
 
   final FutureOr<List<Todo>> Function(
-    TodoListRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -46,14 +44,14 @@ final class TodoListProvider
   @override
   TodoListProvider $copyWithCreate(
     FutureOr<List<Todo>> Function(
-      TodoListRef ref,
+      Ref ref,
     ) create,
   ) {
     return TodoListProvider._(create: create);
   }
 
   @override
-  FutureOr<List<Todo>> create(TodoListRef ref) {
+  FutureOr<List<Todo>> create(Ref ref) {
     final _$cb = _createCb ?? todoList;
     return _$cb(ref);
   }

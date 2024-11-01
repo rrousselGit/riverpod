@@ -8,16 +8,14 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef AnotherRef = Ref<MyValue>;
-
 @ProviderFor(another)
 const anotherProvider = AnotherProvider._();
 
 final class AnotherProvider extends $FunctionalProvider<MyValue, MyValue>
-    with $Provider<MyValue, AnotherRef> {
+    with $Provider<MyValue> {
   const AnotherProvider._(
       {MyValue Function(
-        AnotherRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -31,7 +29,7 @@ final class AnotherProvider extends $FunctionalProvider<MyValue, MyValue>
         );
 
   final MyValue Function(
-    AnotherRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -53,14 +51,14 @@ final class AnotherProvider extends $FunctionalProvider<MyValue, MyValue>
   @override
   AnotherProvider $copyWithCreate(
     MyValue Function(
-      AnotherRef ref,
+      Ref ref,
     ) create,
   ) {
     return AnotherProvider._(create: create);
   }
 
   @override
-  MyValue create(AnotherRef ref) {
+  MyValue create(Ref ref) {
     final _$cb = _createCb ?? another;
     return _$cb(ref);
   }
@@ -68,16 +66,14 @@ final class AnotherProvider extends $FunctionalProvider<MyValue, MyValue>
 
 String _$anotherHash() => r'07629e5ae4a53bcd316b91c07d7558edbdea9317';
 
-typedef MyRef = Ref<MyValue>;
-
 @ProviderFor(my)
 const myProvider = MyProvider._();
 
 final class MyProvider extends $FunctionalProvider<MyValue, MyValue>
-    with $Provider<MyValue, MyRef> {
+    with $Provider<MyValue> {
   const MyProvider._(
       {MyValue Function(
-        MyRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -91,7 +87,7 @@ final class MyProvider extends $FunctionalProvider<MyValue, MyValue>
         );
 
   final MyValue Function(
-    MyRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -113,14 +109,14 @@ final class MyProvider extends $FunctionalProvider<MyValue, MyValue>
   @override
   MyProvider $copyWithCreate(
     MyValue Function(
-      MyRef ref,
+      Ref ref,
     ) create,
   ) {
     return MyProvider._(create: create);
   }
 
   @override
-  MyValue create(MyRef ref) {
+  MyValue create(Ref ref) {
     final _$cb = _createCb ?? my;
     return _$cb(ref);
   }

@@ -6,18 +6,16 @@ part of 'provider_parameters.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef GeneratorRef = Ref<int>;
-
 @ProviderFor(generator)
 const generatorProvider = GeneratorFamily._();
 
 final class GeneratorProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, GeneratorRef> {
+    with $Provider<int> {
   const GeneratorProvider._(
       {required GeneratorFamily super.from,
       required Object? super.argument,
       int Function(
-        GeneratorRef ref, {
+        Ref ref, {
         Object? value,
       })? create})
       : _createCb = create,
@@ -30,7 +28,7 @@ final class GeneratorProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    GeneratorRef ref, {
+    Ref ref, {
     Object? value,
   })? _createCb;
 
@@ -60,7 +58,7 @@ final class GeneratorProvider extends $FunctionalProvider<int, int>
   @override
   GeneratorProvider $copyWithCreate(
     int Function(
-      GeneratorRef ref,
+      Ref ref,
     ) create,
   ) {
     return GeneratorProvider._(
@@ -74,7 +72,7 @@ final class GeneratorProvider extends $FunctionalProvider<int, int>
   }
 
   @override
-  int create(GeneratorRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? generator;
     final argument = this.argument;
     return _$cb(
@@ -120,7 +118,7 @@ final class GeneratorFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     int Function(
-      GeneratorRef ref,
+      Ref ref,
       Object? args,
     ) create,
   ) {

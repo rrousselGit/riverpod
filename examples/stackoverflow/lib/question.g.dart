@@ -75,20 +75,6 @@ Map<String, dynamic> _$$QuestionImplToJson(_$QuestionImpl instance) =>
 ///
 /// This is an optional step. Since scoping is a fairly advanced mechanism,
 /// it's entirely fine to simply pass the [Question] to [QuestionItem] directly.
-typedef CurrentQuestionRef = Ref<AsyncValue<Question>>;
-
-/// A scoped provider, exposing the current question used by [QuestionItem].
-///
-/// This is used as a performance optimization to pass a [Question] to
-/// [QuestionItem], while still instantiating [QuestionItem] using the `const`
-/// keyword.
-///
-/// This allows [QuestionItem] to rebuild less often.
-/// By doing so, even when using [QuestionItem] in a [ListView], even if new
-/// questions are obtained, previously rendered [QuestionItem]s won't rebuild.
-///
-/// This is an optional step. Since scoping is a fairly advanced mechanism,
-/// it's entirely fine to simply pass the [Question] to [QuestionItem] directly.
 @ProviderFor(currentQuestion)
 const currentQuestionProvider = CurrentQuestionProvider._();
 
@@ -106,7 +92,7 @@ const currentQuestionProvider = CurrentQuestionProvider._();
 /// it's entirely fine to simply pass the [Question] to [QuestionItem] directly.
 final class CurrentQuestionProvider
     extends $FunctionalProvider<AsyncValue<Question>, AsyncValue<Question>>
-    with $Provider<AsyncValue<Question>, CurrentQuestionRef> {
+    with $Provider<AsyncValue<Question>> {
   /// A scoped provider, exposing the current question used by [QuestionItem].
   ///
   /// This is used as a performance optimization to pass a [Question] to
@@ -121,7 +107,7 @@ final class CurrentQuestionProvider
   /// it's entirely fine to simply pass the [Question] to [QuestionItem] directly.
   const CurrentQuestionProvider._(
       {AsyncValue<Question> Function(
-        CurrentQuestionRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -135,7 +121,7 @@ final class CurrentQuestionProvider
         );
 
   final AsyncValue<Question> Function(
-    CurrentQuestionRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -158,20 +144,20 @@ final class CurrentQuestionProvider
   @override
   CurrentQuestionProvider $copyWithCreate(
     AsyncValue<Question> Function(
-      CurrentQuestionRef ref,
+      Ref ref,
     ) create,
   ) {
     return CurrentQuestionProvider._(create: create);
   }
 
   @override
-  AsyncValue<Question> create(CurrentQuestionRef ref) {
+  AsyncValue<Question> create(Ref ref) {
     final _$cb = _createCb ?? currentQuestion;
     return _$cb(ref);
   }
 }
 
-String _$currentQuestionHash() => r'2179e068c1d64674dc292a1a027e9e338284c57f';
+String _$currentQuestionHash() => r'e9359841a5b980cd7b8c79a0b56cb98878190861';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

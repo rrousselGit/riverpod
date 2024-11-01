@@ -46,7 +46,7 @@ final class ExampleProvider extends $StreamNotifierProvider<Example, String> {
   @override
   ExampleProvider $copyWithBuild(
     Stream<String> Function(
-      Ref<AsyncValue<String>>,
+      Ref,
       Example,
     ) build,
   ) {

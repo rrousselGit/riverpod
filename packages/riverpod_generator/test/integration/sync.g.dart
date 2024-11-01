@@ -6,18 +6,15 @@ part of 'sync.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef GenericRef<T extends num> = Ref<List<T>>;
-
 @ProviderFor(generic)
 const genericProvider = GenericFamily._();
 
 final class GenericProvider<T extends num>
-    extends $FunctionalProvider<List<T>, List<T>>
-    with $Provider<List<T>, GenericRef<T>> {
+    extends $FunctionalProvider<List<T>, List<T>> with $Provider<List<T>> {
   const GenericProvider._(
       {required GenericFamily super.from,
       List<T> Function(
-        GenericRef<T> ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -30,7 +27,7 @@ final class GenericProvider<T extends num>
         );
 
   final List<T> Function(
-    GenericRef<T> ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -38,7 +35,7 @@ final class GenericProvider<T extends num>
 
   GenericProvider<T> _copyWithCreate(
     List<T> Function<T extends num>(
-      GenericRef<T> ref,
+      Ref ref,
     ) create,
   ) {
     return GenericProvider<T>._(
@@ -68,14 +65,14 @@ final class GenericProvider<T extends num>
   @override
   GenericProvider<T> $copyWithCreate(
     List<T> Function(
-      GenericRef<T> ref,
+      Ref ref,
     ) create,
   ) {
     return GenericProvider<T>._(from: from! as GenericFamily, create: create);
   }
 
   @override
-  List<T> create(GenericRef<T> ref) {
+  List<T> create(Ref ref) {
     final _$cb = _createCb ?? generic<T>;
     return _$cb(ref);
   }
@@ -115,7 +112,7 @@ final class GenericFamily extends Family {
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    List<T> Function<T extends num>(GenericRef<T> ref) create,
+    List<T> Function<T extends num>(Ref ref) create,
   ) {
     return $FamilyOverride(
       from: this,
@@ -128,14 +125,11 @@ final class GenericFamily extends Family {
   }
 }
 
-typedef ComplexGenericRef<T extends num, Foo extends String?> = Ref<List<T>>;
-
 @ProviderFor(complexGeneric)
 const complexGenericProvider = ComplexGenericFamily._();
 
 final class ComplexGenericProvider<T extends num, Foo extends String?>
-    extends $FunctionalProvider<List<T>, List<T>>
-    with $Provider<List<T>, ComplexGenericRef<T, Foo>> {
+    extends $FunctionalProvider<List<T>, List<T>> with $Provider<List<T>> {
   const ComplexGenericProvider._(
       {required ComplexGenericFamily super.from,
       required ({
@@ -144,7 +138,7 @@ final class ComplexGenericProvider<T extends num, Foo extends String?>
       })
           super.argument,
       List<T> Function(
-        ComplexGenericRef<T, Foo> ref, {
+        Ref ref, {
         required T param,
         Foo? otherParam,
       })? create})
@@ -158,7 +152,7 @@ final class ComplexGenericProvider<T extends num, Foo extends String?>
         );
 
   final List<T> Function(
-    ComplexGenericRef<T, Foo> ref, {
+    Ref ref, {
     required T param,
     Foo? otherParam,
   })? _createCb;
@@ -168,7 +162,7 @@ final class ComplexGenericProvider<T extends num, Foo extends String?>
 
   ComplexGenericProvider<T, Foo> _copyWithCreate(
     List<T> Function<T extends num, Foo extends String?>(
-      ComplexGenericRef<T, Foo> ref, {
+      Ref ref, {
       required T param,
       Foo? otherParam,
     }) create,
@@ -205,7 +199,7 @@ final class ComplexGenericProvider<T extends num, Foo extends String?>
   @override
   ComplexGenericProvider<T, Foo> $copyWithCreate(
     List<T> Function(
-      ComplexGenericRef<T, Foo> ref,
+      Ref ref,
     ) create,
   ) {
     return ComplexGenericProvider<T, Foo>._(
@@ -223,7 +217,7 @@ final class ComplexGenericProvider<T extends num, Foo extends String?>
   }
 
   @override
-  List<T> create(ComplexGenericRef<T, Foo> ref) {
+  List<T> create(Ref ref) {
     final _$cb = _createCb ?? complexGeneric<T, Foo>;
     final argument = this.argument as ({
       T param,
@@ -279,7 +273,7 @@ final class ComplexGenericFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     List<T> Function<T extends num, Foo extends String?>(
-      ComplexGenericRef<T, Foo> ref,
+      Ref ref,
       ({
         T param,
         Foo? otherParam,
@@ -339,7 +333,7 @@ final class GenericClassProvider<T extends num>
 
   GenericClassProvider<T> _copyWithBuild(
     List<T> Function<T extends num>(
-      Ref<List<T>>,
+      Ref,
       GenericClass<T>,
     ) build,
   ) {
@@ -379,7 +373,7 @@ final class GenericClassProvider<T extends num>
   @override
   GenericClassProvider<T> $copyWithBuild(
     List<T> Function(
-      Ref<List<T>>,
+      Ref,
       GenericClass<T>,
     ) build,
   ) {
@@ -443,8 +437,7 @@ final class GenericClassFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    List<T> Function<T extends num>(Ref<List<T>> ref, GenericClass<T> notifier)
-        build,
+    List<T> Function<T extends num>(Ref ref, GenericClass<T> notifier) build,
   ) {
     return $FamilyOverride(
       from: this,
@@ -464,17 +457,15 @@ abstract class _$GenericClass<T extends num> extends $Notifier<List<T>> {
   List<T> runBuild() => build();
 }
 
-typedef RawFutureRef = Ref<Raw<Future<String>>>;
-
 @ProviderFor(rawFuture)
 const rawFutureProvider = RawFutureProvider._();
 
 final class RawFutureProvider
     extends $FunctionalProvider<Raw<Future<String>>, Raw<Future<String>>>
-    with $Provider<Raw<Future<String>>, RawFutureRef> {
+    with $Provider<Raw<Future<String>>> {
   const RawFutureProvider._(
       {Raw<Future<String>> Function(
-        RawFutureRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -488,7 +479,7 @@ final class RawFutureProvider
         );
 
   final Raw<Future<String>> Function(
-    RawFutureRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -511,14 +502,14 @@ final class RawFutureProvider
   @override
   RawFutureProvider $copyWithCreate(
     Raw<Future<String>> Function(
-      RawFutureRef ref,
+      Ref ref,
     ) create,
   ) {
     return RawFutureProvider._(create: create);
   }
 
   @override
-  Raw<Future<String>> create(RawFutureRef ref) {
+  Raw<Future<String>> create(Ref ref) {
     final _$cb = _createCb ?? rawFuture;
     return _$cb(ref);
   }
@@ -526,17 +517,15 @@ final class RawFutureProvider
 
 String _$rawFutureHash() => r'9d397f4c0a578a2741610f9ca6f17438ee8e5a34';
 
-typedef RawStreamRef = Ref<Raw<Stream<String>>>;
-
 @ProviderFor(rawStream)
 const rawStreamProvider = RawStreamProvider._();
 
 final class RawStreamProvider
     extends $FunctionalProvider<Raw<Stream<String>>, Raw<Stream<String>>>
-    with $Provider<Raw<Stream<String>>, RawStreamRef> {
+    with $Provider<Raw<Stream<String>>> {
   const RawStreamProvider._(
       {Raw<Stream<String>> Function(
-        RawStreamRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -550,7 +539,7 @@ final class RawStreamProvider
         );
 
   final Raw<Stream<String>> Function(
-    RawStreamRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -573,14 +562,14 @@ final class RawStreamProvider
   @override
   RawStreamProvider $copyWithCreate(
     Raw<Stream<String>> Function(
-      RawStreamRef ref,
+      Ref ref,
     ) create,
   ) {
     return RawStreamProvider._(create: create);
   }
 
   @override
-  Raw<Stream<String>> create(RawStreamRef ref) {
+  Raw<Stream<String>> create(Ref ref) {
     final _$cb = _createCb ?? rawStream;
     return _$cb(ref);
   }
@@ -635,7 +624,7 @@ final class RawFutureClassProvider
   @override
   RawFutureClassProvider $copyWithBuild(
     Raw<Future<String>> Function(
-      Ref<Raw<Future<String>>>,
+      Ref,
       RawFutureClass,
     ) build,
   ) {
@@ -705,7 +694,7 @@ final class RawStreamClassProvider
   @override
   RawStreamClassProvider $copyWithBuild(
     Raw<Stream<String>> Function(
-      Ref<Raw<Stream<String>>>,
+      Ref,
       RawStreamClass,
     ) build,
   ) {
@@ -728,19 +717,17 @@ abstract class _$RawStreamClass extends $Notifier<Raw<Stream<String>>> {
   Raw<Stream<String>> runBuild() => build();
 }
 
-typedef RawFamilyFutureRef = Ref<Raw<Future<String>>>;
-
 @ProviderFor(rawFamilyFuture)
 const rawFamilyFutureProvider = RawFamilyFutureFamily._();
 
 final class RawFamilyFutureProvider
     extends $FunctionalProvider<Raw<Future<String>>, Raw<Future<String>>>
-    with $Provider<Raw<Future<String>>, RawFamilyFutureRef> {
+    with $Provider<Raw<Future<String>>> {
   const RawFamilyFutureProvider._(
       {required RawFamilyFutureFamily super.from,
       required int super.argument,
       Raw<Future<String>> Function(
-        RawFamilyFutureRef ref,
+        Ref ref,
         int id,
       )? create})
       : _createCb = create,
@@ -753,7 +740,7 @@ final class RawFamilyFutureProvider
         );
 
   final Raw<Future<String>> Function(
-    RawFamilyFutureRef ref,
+    Ref ref,
     int id,
   )? _createCb;
 
@@ -784,7 +771,7 @@ final class RawFamilyFutureProvider
   @override
   RawFamilyFutureProvider $copyWithCreate(
     Raw<Future<String>> Function(
-      RawFamilyFutureRef ref,
+      Ref ref,
     ) create,
   ) {
     return RawFamilyFutureProvider._(
@@ -798,7 +785,7 @@ final class RawFamilyFutureProvider
   }
 
   @override
-  Raw<Future<String>> create(RawFamilyFutureRef ref) {
+  Raw<Future<String>> create(Ref ref) {
     final _$cb = _createCb ?? rawFamilyFuture;
     final argument = this.argument as int;
     return _$cb(
@@ -844,7 +831,7 @@ final class RawFamilyFutureFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     Raw<Future<String>> Function(
-      RawFamilyFutureRef ref,
+      Ref ref,
       int args,
     ) create,
   ) {
@@ -863,19 +850,17 @@ final class RawFamilyFutureFamily extends Family {
   }
 }
 
-typedef RawFamilyStreamRef = Ref<Raw<Stream<String>>>;
-
 @ProviderFor(rawFamilyStream)
 const rawFamilyStreamProvider = RawFamilyStreamFamily._();
 
 final class RawFamilyStreamProvider
     extends $FunctionalProvider<Raw<Stream<String>>, Raw<Stream<String>>>
-    with $Provider<Raw<Stream<String>>, RawFamilyStreamRef> {
+    with $Provider<Raw<Stream<String>>> {
   const RawFamilyStreamProvider._(
       {required RawFamilyStreamFamily super.from,
       required int super.argument,
       Raw<Stream<String>> Function(
-        RawFamilyStreamRef ref,
+        Ref ref,
         int id,
       )? create})
       : _createCb = create,
@@ -888,7 +873,7 @@ final class RawFamilyStreamProvider
         );
 
   final Raw<Stream<String>> Function(
-    RawFamilyStreamRef ref,
+    Ref ref,
     int id,
   )? _createCb;
 
@@ -919,7 +904,7 @@ final class RawFamilyStreamProvider
   @override
   RawFamilyStreamProvider $copyWithCreate(
     Raw<Stream<String>> Function(
-      RawFamilyStreamRef ref,
+      Ref ref,
     ) create,
   ) {
     return RawFamilyStreamProvider._(
@@ -933,7 +918,7 @@ final class RawFamilyStreamProvider
   }
 
   @override
-  Raw<Stream<String>> create(RawFamilyStreamRef ref) {
+  Raw<Stream<String>> create(Ref ref) {
     final _$cb = _createCb ?? rawFamilyStream;
     final argument = this.argument as int;
     return _$cb(
@@ -979,7 +964,7 @@ final class RawFamilyStreamFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     Raw<Stream<String>> Function(
-      RawFamilyStreamRef ref,
+      Ref ref,
       int args,
     ) create,
   ) {
@@ -1056,7 +1041,7 @@ final class RawFamilyFutureClassProvider
   @override
   RawFamilyFutureClassProvider $copyWithBuild(
     Raw<Future<String>> Function(
-      Ref<Raw<Future<String>>>,
+      Ref,
       RawFamilyFutureClass,
     ) build,
   ) {
@@ -1129,8 +1114,8 @@ final class RawFamilyFutureClassFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    Raw<Future<String>> Function(Ref<Raw<Future<String>>> ref,
-            RawFamilyFutureClass notifier, int argument)
+    Raw<Future<String>> Function(
+            Ref ref, RawFamilyFutureClass notifier, int argument)
         build,
   ) {
     return $FamilyOverride(
@@ -1220,7 +1205,7 @@ final class RawFamilyStreamClassProvider
   @override
   RawFamilyStreamClassProvider $copyWithBuild(
     Raw<Stream<String>> Function(
-      Ref<Raw<Stream<String>>>,
+      Ref,
       RawFamilyStreamClass,
     ) build,
   ) {
@@ -1293,8 +1278,8 @@ final class RawFamilyStreamClassFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    Raw<Stream<String>> Function(Ref<Raw<Stream<String>>> ref,
-            RawFamilyStreamClass notifier, int argument)
+    Raw<Stream<String>> Function(
+            Ref ref, RawFamilyStreamClass notifier, int argument)
         build,
   ) {
     return $FamilyOverride(
@@ -1327,19 +1312,16 @@ abstract class _$RawFamilyStreamClass extends $Notifier<Raw<Stream<String>>> {
 }
 
 /// This is some documentation
-typedef PublicRef = Ref<String>;
-
-/// This is some documentation
 @ProviderFor(public)
 const publicProvider = PublicProvider._();
 
 /// This is some documentation
 final class PublicProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, PublicRef> {
+    with $Provider<String> {
   /// This is some documentation
   const PublicProvider._(
       {String Function(
-        PublicRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -1353,7 +1335,7 @@ final class PublicProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    PublicRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -1375,14 +1357,14 @@ final class PublicProvider extends $FunctionalProvider<String, String>
   @override
   PublicProvider $copyWithCreate(
     String Function(
-      PublicRef ref,
+      Ref ref,
     ) create,
   ) {
     return PublicProvider._(create: create);
   }
 
   @override
-  String create(PublicRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? public;
     return _$cb(ref);
   }
@@ -1390,16 +1372,14 @@ final class PublicProvider extends $FunctionalProvider<String, String>
 
 String _$publicHash() => r'94bee36125844f9fe521363bb228632b9f3bfbc7';
 
-typedef Supports$inNamesRef = Ref<String>;
-
 @ProviderFor(supports$inNames)
 const supports$inNamesProvider = Supports$inNamesProvider._();
 
 final class Supports$inNamesProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, Supports$inNamesRef> {
+    with $Provider<String> {
   const Supports$inNamesProvider._(
       {String Function(
-        Supports$inNamesRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -1413,7 +1393,7 @@ final class Supports$inNamesProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    Supports$inNamesRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -1435,14 +1415,14 @@ final class Supports$inNamesProvider extends $FunctionalProvider<String, String>
   @override
   Supports$inNamesProvider $copyWithCreate(
     String Function(
-      Supports$inNamesRef ref,
+      Ref ref,
     ) create,
   ) {
     return Supports$inNamesProvider._(create: create);
   }
 
   @override
-  String create(Supports$inNamesRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? supports$inNames;
     return _$cb(ref);
   }
@@ -1451,15 +1431,12 @@ final class Supports$inNamesProvider extends $FunctionalProvider<String, String>
 String _$supports$inNamesHash() => r'8da1f9329f302ce75e38d03c96595de3260b4d2d';
 
 /// This is some documentation
-typedef FamilyRef = Ref<String>;
-
-/// This is some documentation
 @ProviderFor(family)
 const familyProvider = FamilyFamily._();
 
 /// This is some documentation
 final class FamilyProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, FamilyRef> {
+    with $Provider<String> {
   /// This is some documentation
   const FamilyProvider._(
       {required FamilyFamily super.from,
@@ -1472,7 +1449,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
       })
           super.argument,
       String Function(
-        FamilyRef ref,
+        Ref ref,
         int first, {
         String? second,
         required double third,
@@ -1489,7 +1466,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    FamilyRef ref,
+    Ref ref,
     int first, {
     String? second,
     required double third,
@@ -1523,7 +1500,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
   @override
   FamilyProvider $copyWithCreate(
     String Function(
-      FamilyRef ref,
+      Ref ref,
     ) create,
   ) {
     return FamilyProvider._(
@@ -1547,7 +1524,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
   }
 
   @override
-  String create(FamilyRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? family;
     final argument = this.argument as (
       int, {
@@ -1615,7 +1592,7 @@ final class FamilyFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     String Function(
-      FamilyRef ref,
+      Ref ref,
       (
         int, {
         String? second,
@@ -1646,16 +1623,14 @@ final class FamilyFamily extends Family {
   }
 }
 
-typedef _PrivateRef = Ref<String>;
-
 @ProviderFor(_private)
 const _privateProvider = _PrivateProvider._();
 
 final class _PrivateProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, _PrivateRef> {
+    with $Provider<String> {
   const _PrivateProvider._(
       {String Function(
-        _PrivateRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -1669,7 +1644,7 @@ final class _PrivateProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    _PrivateRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -1691,14 +1666,14 @@ final class _PrivateProvider extends $FunctionalProvider<String, String>
   @override
   _PrivateProvider $copyWithCreate(
     String Function(
-      _PrivateRef ref,
+      Ref ref,
     ) create,
   ) {
     return _PrivateProvider._(create: create);
   }
 
   @override
-  String create(_PrivateRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? _private;
     return _$cb(ref);
   }
@@ -1755,7 +1730,7 @@ final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
   @override
   PublicClassProvider $copyWithBuild(
     String Function(
-      Ref<String>,
+      Ref,
       PublicClass,
     ) build,
   ) {
@@ -1825,7 +1800,7 @@ final class _PrivateClassProvider
   @override
   _PrivateClassProvider $copyWithBuild(
     String Function(
-      Ref<String>,
+      Ref,
       _PrivateClass,
     ) build,
   ) {
@@ -1921,7 +1896,7 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
   @override
   FamilyClassProvider $copyWithBuild(
     String Function(
-      Ref<String>,
+      Ref,
       FamilyClass,
     ) build,
   ) {
@@ -2024,7 +1999,7 @@ final class FamilyClassFamily extends Family {
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     String Function(
-            Ref<String> ref,
+            Ref ref,
             FamilyClass notifier,
             (
               int, {
@@ -2088,18 +2063,15 @@ abstract class _$FamilyClass extends $Notifier<String> {
       );
 }
 
-typedef Supports$InFnNameRef<And$InT> = Ref<String>;
-
 @ProviderFor(supports$InFnName)
 const supports$InFnNameProvider = Supports$InFnNameFamily._();
 
 final class Supports$InFnNameProvider<And$InT>
-    extends $FunctionalProvider<String, String>
-    with $Provider<String, Supports$InFnNameRef<And$InT>> {
+    extends $FunctionalProvider<String, String> with $Provider<String> {
   const Supports$InFnNameProvider._(
       {required Supports$InFnNameFamily super.from,
       String Function(
-        Supports$InFnNameRef<And$InT> ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -2112,7 +2084,7 @@ final class Supports$InFnNameProvider<And$InT>
         );
 
   final String Function(
-    Supports$InFnNameRef<And$InT> ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -2120,7 +2092,7 @@ final class Supports$InFnNameProvider<And$InT>
 
   Supports$InFnNameProvider<And$InT> _copyWithCreate(
     String Function<And$InT>(
-      Supports$InFnNameRef<And$InT> ref,
+      Ref ref,
     ) create,
   ) {
     return Supports$InFnNameProvider<And$InT>._(
@@ -2150,7 +2122,7 @@ final class Supports$InFnNameProvider<And$InT>
   @override
   Supports$InFnNameProvider<And$InT> $copyWithCreate(
     String Function(
-      Supports$InFnNameRef<And$InT> ref,
+      Ref ref,
     ) create,
   ) {
     return Supports$InFnNameProvider<And$InT>._(
@@ -2158,7 +2130,7 @@ final class Supports$InFnNameProvider<And$InT>
   }
 
   @override
-  String create(Supports$InFnNameRef<And$InT> ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? supports$InFnName<And$InT>;
     return _$cb(ref);
   }
@@ -2176,7 +2148,7 @@ final class Supports$InFnNameProvider<And$InT>
   }
 }
 
-String _$supports$InFnNameHash() => r'fec3daca655669a46760cc54921f098b9cbaac3d';
+String _$supports$InFnNameHash() => r'09636911da6a98293c260aad55b89bea5296136b';
 
 final class Supports$InFnNameFamily extends Family {
   const Supports$InFnNameFamily._()
@@ -2199,7 +2171,7 @@ final class Supports$InFnNameFamily extends Family {
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    String Function<And$InT>(Supports$InFnNameRef<And$InT> ref) create,
+    String Function<And$InT>(Ref ref) create,
   ) {
     return $FamilyOverride(
       from: this,
@@ -2212,14 +2184,11 @@ final class Supports$InFnNameFamily extends Family {
   }
 }
 
-typedef Supports$InFnNameFamilyRef<And$InT> = Ref<String>;
-
 @ProviderFor(supports$InFnNameFamily)
 const supports$InFnNameFamilyProvider = Supports$InFnNameFamilyFamily._();
 
 final class Supports$InFnNameFamilyProvider<And$InT>
-    extends $FunctionalProvider<String, String>
-    with $Provider<String, Supports$InFnNameFamilyRef<And$InT>> {
+    extends $FunctionalProvider<String, String> with $Provider<String> {
   const Supports$InFnNameFamilyProvider._(
       {required Supports$InFnNameFamilyFamily super.from,
       required (
@@ -2229,7 +2198,7 @@ final class Supports$InFnNameFamilyProvider<And$InT>
       })
           super.argument,
       String Function(
-        Supports$InFnNameFamilyRef<And$InT> ref,
+        Ref ref,
         And$InT positional$arg, {
         required And$InT named$arg,
         String defaultArg,
@@ -2244,7 +2213,7 @@ final class Supports$InFnNameFamilyProvider<And$InT>
         );
 
   final String Function(
-    Supports$InFnNameFamilyRef<And$InT> ref,
+    Ref ref,
     And$InT positional$arg, {
     required And$InT named$arg,
     String defaultArg,
@@ -2255,7 +2224,7 @@ final class Supports$InFnNameFamilyProvider<And$InT>
 
   Supports$InFnNameFamilyProvider<And$InT> _copyWithCreate(
     String Function<And$InT>(
-      Supports$InFnNameFamilyRef<And$InT> ref,
+      Ref ref,
       And$InT positional$arg, {
       required And$InT named$arg,
       String defaultArg,
@@ -2294,7 +2263,7 @@ final class Supports$InFnNameFamilyProvider<And$InT>
   @override
   Supports$InFnNameFamilyProvider<And$InT> $copyWithCreate(
     String Function(
-      Supports$InFnNameFamilyRef<And$InT> ref,
+      Ref ref,
     ) create,
   ) {
     return Supports$InFnNameFamilyProvider<And$InT>._(
@@ -2314,7 +2283,7 @@ final class Supports$InFnNameFamilyProvider<And$InT>
   }
 
   @override
-  String create(Supports$InFnNameFamilyRef<And$InT> ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? supports$InFnNameFamily<And$InT>;
     final argument = this.argument as (
       And$InT, {
@@ -2343,7 +2312,7 @@ final class Supports$InFnNameFamilyProvider<And$InT>
 }
 
 String _$supports$InFnNameFamilyHash() =>
-    r'1daa434fa2ad9ff37deade29ba3ca8155833df1b';
+    r'3124634e8535d4db655d6384b0827f0f195a75ef';
 
 final class Supports$InFnNameFamilyFamily extends Family {
   const Supports$InFnNameFamilyFamily._()
@@ -2375,7 +2344,7 @@ final class Supports$InFnNameFamilyFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     String Function<And$InT>(
-      Supports$InFnNameFamilyRef<And$InT> ref,
+      Ref ref,
       (
         And$InT, {
         And$InT named$arg,
@@ -2438,7 +2407,7 @@ final class Supports$InClassNameProvider<And$InT>
 
   Supports$InClassNameProvider<And$InT> _copyWithBuild(
     String Function<And$InT>(
-      Ref<String>,
+      Ref,
       Supports$InClassName<And$InT>,
     ) build,
   ) {
@@ -2480,7 +2449,7 @@ final class Supports$InClassNameProvider<And$InT>
   @override
   Supports$InClassNameProvider<And$InT> $copyWithBuild(
     String Function(
-      Ref<String>,
+      Ref,
       Supports$InClassName<And$InT>,
     ) build,
   ) {
@@ -2546,8 +2515,7 @@ final class Supports$InClassNameFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    String Function<And$InT>(
-            Ref<String> ref, Supports$InClassName<And$InT> notifier)
+    String Function<And$InT>(Ref ref, Supports$InClassName<And$InT> notifier)
         build,
   ) {
     return $FamilyOverride(
@@ -2612,7 +2580,7 @@ final class Supports$InClassFamilyNameProvider<And$InT>
 
   Supports$InClassFamilyNameProvider<And$InT> _copyWithBuild(
     String Function<And$InT>(
-      Ref<String>,
+      Ref,
       Supports$InClassFamilyName<And$InT>,
     ) build,
   ) {
@@ -2665,7 +2633,7 @@ final class Supports$InClassFamilyNameProvider<And$InT>
   @override
   Supports$InClassFamilyNameProvider<And$InT> $copyWithBuild(
     String Function(
-      Ref<String>,
+      Ref,
       Supports$InClassFamilyName<And$InT>,
     ) build,
   ) {
@@ -2759,7 +2727,7 @@ final class Supports$InClassFamilyNameFamily extends Family {
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     String Function<And$InT>(
-            Ref<String> ref,
+            Ref ref,
             Supports$InClassFamilyName<And$InT> notifier,
             (
               And$InT, {
@@ -2811,16 +2779,14 @@ abstract class _$Supports$InClassFamilyName<And$InT> extends $Notifier<String> {
       );
 }
 
-typedef GeneratedRef = Ref<String>;
-
 @ProviderFor(generated)
 const generatedProvider = GeneratedProvider._();
 
 final class GeneratedProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, GeneratedRef> {
+    with $Provider<String> {
   const GeneratedProvider._(
       {String Function(
-        GeneratedRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -2834,7 +2800,7 @@ final class GeneratedProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    GeneratedRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -2856,14 +2822,14 @@ final class GeneratedProvider extends $FunctionalProvider<String, String>
   @override
   GeneratedProvider $copyWithCreate(
     String Function(
-      GeneratedRef ref,
+      Ref ref,
     ) create,
   ) {
     return GeneratedProvider._(create: create);
   }
 
   @override
-  String create(GeneratedRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? generated;
     return _$cb(ref);
   }
@@ -2871,18 +2837,16 @@ final class GeneratedProvider extends $FunctionalProvider<String, String>
 
 String _$generatedHash() => r'24bfb5df4dc529258ab568372e90a1cbfc2d8c24';
 
-typedef UnnecessaryCastRef = Ref<String>;
-
 @ProviderFor(unnecessaryCast)
 const unnecessaryCastProvider = UnnecessaryCastFamily._();
 
 final class UnnecessaryCastProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, UnnecessaryCastRef> {
+    with $Provider<String> {
   const UnnecessaryCastProvider._(
       {required UnnecessaryCastFamily super.from,
       required Object? super.argument,
       String Function(
-        UnnecessaryCastRef ref,
+        Ref ref,
         Object? arg,
       )? create})
       : _createCb = create,
@@ -2895,7 +2859,7 @@ final class UnnecessaryCastProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    UnnecessaryCastRef ref,
+    Ref ref,
     Object? arg,
   )? _createCb;
 
@@ -2925,7 +2889,7 @@ final class UnnecessaryCastProvider extends $FunctionalProvider<String, String>
   @override
   UnnecessaryCastProvider $copyWithCreate(
     String Function(
-      UnnecessaryCastRef ref,
+      Ref ref,
     ) create,
   ) {
     return UnnecessaryCastProvider._(
@@ -2939,7 +2903,7 @@ final class UnnecessaryCastProvider extends $FunctionalProvider<String, String>
   }
 
   @override
-  String create(UnnecessaryCastRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? unnecessaryCast;
     final argument = this.argument;
     return _$cb(
@@ -2959,7 +2923,7 @@ final class UnnecessaryCastProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$unnecessaryCastHash() => r'282c11ef4f55267c3e6ed70af1a260cd1c2163e6';
+String _$unnecessaryCastHash() => r'c64330124f4b03a3e6757e787f62966a32bf83ad';
 
 final class UnnecessaryCastFamily extends Family {
   const UnnecessaryCastFamily._()
@@ -2985,7 +2949,7 @@ final class UnnecessaryCastFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     String Function(
-      UnnecessaryCastRef ref,
+      Ref ref,
       Object? args,
     ) create,
   ) {
@@ -3062,7 +3026,7 @@ final class UnnecessaryCastClassProvider
   @override
   UnnecessaryCastClassProvider $copyWithBuild(
     String Function(
-      Ref<String>,
+      Ref,
       UnnecessaryCastClass,
     ) build,
   ) {
@@ -3135,8 +3099,7 @@ final class UnnecessaryCastClassFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    String Function(
-            Ref<String> ref, UnnecessaryCastClass notifier, Object? argument)
+    String Function(Ref ref, UnnecessaryCastClass notifier, Object? argument)
         build,
   ) {
     return $FamilyOverride(
@@ -3168,22 +3131,17 @@ abstract class _$UnnecessaryCastClass extends $Notifier<String> {
       );
 }
 
-typedef ManyDataStreamRef<T extends Object, S extends Object>
-    = Ref<AsyncValue<List<T>>>;
-
 @ProviderFor(manyDataStream)
 const manyDataStreamProvider = ManyDataStreamFamily._();
 
 final class ManyDataStreamProvider<T extends Object, S extends Object>
     extends $FunctionalProvider<AsyncValue<List<T>>, Stream<List<T>>>
-    with
-        $FutureModifier<List<T>>,
-        $StreamProvider<List<T>, ManyDataStreamRef<T, S>> {
+    with $FutureModifier<List<T>>, $StreamProvider<List<T>> {
   const ManyDataStreamProvider._(
       {required ManyDataStreamFamily super.from,
       required ManyProviderData<T, S> super.argument,
       Stream<List<T>> Function(
-        ManyDataStreamRef<T, S> ref,
+        Ref ref,
         ManyProviderData<T, S> pData,
       )? create})
       : _createCb = create,
@@ -3196,7 +3154,7 @@ final class ManyDataStreamProvider<T extends Object, S extends Object>
         );
 
   final Stream<List<T>> Function(
-    ManyDataStreamRef<T, S> ref,
+    Ref ref,
     ManyProviderData<T, S> pData,
   )? _createCb;
 
@@ -3205,7 +3163,7 @@ final class ManyDataStreamProvider<T extends Object, S extends Object>
 
   ManyDataStreamProvider<T, S> _copyWithCreate(
     Stream<List<T>> Function<T extends Object, S extends Object>(
-      ManyDataStreamRef<T, S> ref,
+      Ref ref,
       ManyProviderData<T, S> pData,
     ) create,
   ) {
@@ -3230,7 +3188,7 @@ final class ManyDataStreamProvider<T extends Object, S extends Object>
   @override
   ManyDataStreamProvider<T, S> $copyWithCreate(
     Stream<List<T>> Function(
-      ManyDataStreamRef<T, S> ref,
+      Ref ref,
     ) create,
   ) {
     return ManyDataStreamProvider<T, S>._(
@@ -3244,7 +3202,7 @@ final class ManyDataStreamProvider<T extends Object, S extends Object>
   }
 
   @override
-  Stream<List<T>> create(ManyDataStreamRef<T, S> ref) {
+  Stream<List<T>> create(Ref ref) {
     final _$cb = _createCb ?? manyDataStream<T, S>;
     final argument = this.argument as ManyProviderData<T, S>;
     return _$cb(
@@ -3266,7 +3224,7 @@ final class ManyDataStreamProvider<T extends Object, S extends Object>
   }
 }
 
-String _$manyDataStreamHash() => r'965270e9e187c17b8c78c03ded79136a4073ff04';
+String _$manyDataStreamHash() => r'5f389757cba176868a47b89b14b1f96afe20d728';
 
 final class ManyDataStreamFamily extends Family {
   const ManyDataStreamFamily._()
@@ -3292,7 +3250,7 @@ final class ManyDataStreamFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     Stream<List<T>> Function<T extends Object, S extends Object>(
-      ManyDataStreamRef<T, S> ref,
+      Ref ref,
       ManyProviderData<T, S> args,
     ) create,
   ) {

@@ -47,7 +47,7 @@ final class MyNotifierProvider
   @override
   MyNotifierProvider $copyWithBuild(
     FutureOr<List<Todo>> Function(
-      Ref<AsyncValue<List<Todo>>>,
+      Ref,
       MyNotifier,
     ) build,
   ) {

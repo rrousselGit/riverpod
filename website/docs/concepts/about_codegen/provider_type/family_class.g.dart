@@ -72,7 +72,7 @@ final class ExampleProvider extends $NotifierProvider<Example, String> {
   @override
   ExampleProvider $copyWithBuild(
     String Function(
-      Ref<String>,
+      Ref,
       Example,
     ) build,
   ) {
@@ -158,7 +158,7 @@ final class ExampleFamily extends Family {
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     String Function(
-            Ref<String> ref,
+            Ref ref,
             Example notifier,
             (
               int, {

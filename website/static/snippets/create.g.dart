@@ -8,17 +8,15 @@ part of 'create.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef BoredSuggestionRef = Ref<AsyncValue<String>>;
-
 @ProviderFor(boredSuggestion)
 const boredSuggestionProvider = BoredSuggestionProvider._();
 
 final class BoredSuggestionProvider
     extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>>
-    with $FutureModifier<String>, $FutureProvider<String, BoredSuggestionRef> {
+    with $FutureModifier<String>, $FutureProvider<String> {
   const BoredSuggestionProvider._(
       {FutureOr<String> Function(
-        BoredSuggestionRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -32,7 +30,7 @@ final class BoredSuggestionProvider
         );
 
   final FutureOr<String> Function(
-    BoredSuggestionRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -46,14 +44,14 @@ final class BoredSuggestionProvider
   @override
   BoredSuggestionProvider $copyWithCreate(
     FutureOr<String> Function(
-      BoredSuggestionRef ref,
+      Ref ref,
     ) create,
   ) {
     return BoredSuggestionProvider._(create: create);
   }
 
   @override
-  FutureOr<String> create(BoredSuggestionRef ref) {
+  FutureOr<String> create(Ref ref) {
     final _$cb = _createCb ?? boredSuggestion;
     return _$cb(ref);
   }

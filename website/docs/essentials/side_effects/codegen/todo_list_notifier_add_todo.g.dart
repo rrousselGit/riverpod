@@ -47,7 +47,7 @@ final class TodoListProvider
   @override
   TodoListProvider $copyWithBuild(
     FutureOr<List<Todo>> Function(
-      Ref<AsyncValue<List<Todo>>>,
+      Ref,
       TodoList,
     ) build,
   ) {

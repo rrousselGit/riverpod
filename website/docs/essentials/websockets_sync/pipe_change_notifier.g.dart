@@ -11,11 +11,6 @@ part of 'pipe_change_notifier.dart';
 /// A provider which creates a ValueNotifier and update its listeners
 /// whenever the value changes.
 // {@endtemplate}
-typedef MyListenableRef = Ref<Raw<ValueNotifier<int>>>;
-
-/// A provider which creates a ValueNotifier and update its listeners
-/// whenever the value changes.
-// {@endtemplate}
 @ProviderFor(myListenable)
 const myListenableProvider = MyListenableProvider._();
 
@@ -23,14 +18,14 @@ const myListenableProvider = MyListenableProvider._();
 /// whenever the value changes.
 // {@endtemplate}
 final class MyListenableProvider extends $FunctionalProvider<
-        Raw<ValueNotifier<int>>, Raw<ValueNotifier<int>>>
-    with $Provider<Raw<ValueNotifier<int>>, MyListenableRef> {
+    Raw<ValueNotifier<int>>,
+    Raw<ValueNotifier<int>>> with $Provider<Raw<ValueNotifier<int>>> {
   /// A provider which creates a ValueNotifier and update its listeners
   /// whenever the value changes.
 // {@endtemplate}
   const MyListenableProvider._(
       {Raw<ValueNotifier<int>> Function(
-        MyListenableRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -44,7 +39,7 @@ final class MyListenableProvider extends $FunctionalProvider<
         );
 
   final Raw<ValueNotifier<int>> Function(
-    MyListenableRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -67,14 +62,14 @@ final class MyListenableProvider extends $FunctionalProvider<
   @override
   MyListenableProvider $copyWithCreate(
     Raw<ValueNotifier<int>> Function(
-      MyListenableRef ref,
+      Ref ref,
     ) create,
   ) {
     return MyListenableProvider._(create: create);
   }
 
   @override
-  Raw<ValueNotifier<int>> create(MyListenableRef ref) {
+  Raw<ValueNotifier<int>> create(Ref ref) {
     final _$cb = _createCb ?? myListenable;
     return _$cb(ref);
   }

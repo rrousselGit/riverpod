@@ -8,17 +8,15 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef ChatRef = Ref<AsyncValue<List<String>>>;
-
 @ProviderFor(chat)
 const chatProvider = ChatProvider._();
 
 final class ChatProvider
     extends $FunctionalProvider<AsyncValue<List<String>>, Stream<List<String>>>
-    with $FutureModifier<List<String>>, $StreamProvider<List<String>, ChatRef> {
+    with $FutureModifier<List<String>>, $StreamProvider<List<String>> {
   const ChatProvider._(
       {Stream<List<String>> Function(
-        ChatRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -32,7 +30,7 @@ final class ChatProvider
         );
 
   final Stream<List<String>> Function(
-    ChatRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -47,14 +45,14 @@ final class ChatProvider
   @override
   ChatProvider $copyWithCreate(
     Stream<List<String>> Function(
-      ChatRef ref,
+      Ref ref,
     ) create,
   ) {
     return ChatProvider._(create: create);
   }
 
   @override
-  Stream<List<String>> create(ChatRef ref) {
+  Stream<List<String>> create(Ref ref) {
     final _$cb = _createCb ?? chat;
     return _$cb(ref);
   }

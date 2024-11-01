@@ -54,7 +54,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
   @override
   MyNotifierProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       MyNotifier,
     ) build,
   ) {

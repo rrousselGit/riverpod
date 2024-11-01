@@ -8,16 +8,14 @@ part of 'combine.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef TodosRef = Ref<List<Todo>>;
-
 @ProviderFor(todos)
 const todosProvider = TodosProvider._();
 
 final class TodosProvider extends $FunctionalProvider<List<Todo>, List<Todo>>
-    with $Provider<List<Todo>, TodosRef> {
+    with $Provider<List<Todo>> {
   const TodosProvider._(
       {List<Todo> Function(
-        TodosRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -31,7 +29,7 @@ final class TodosProvider extends $FunctionalProvider<List<Todo>, List<Todo>>
         );
 
   final List<Todo> Function(
-    TodosRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -53,31 +51,29 @@ final class TodosProvider extends $FunctionalProvider<List<Todo>, List<Todo>>
   @override
   TodosProvider $copyWithCreate(
     List<Todo> Function(
-      TodosRef ref,
+      Ref ref,
     ) create,
   ) {
     return TodosProvider._(create: create);
   }
 
   @override
-  List<Todo> create(TodosRef ref) {
+  List<Todo> create(Ref ref) {
     final _$cb = _createCb ?? todos;
     return _$cb(ref);
   }
 }
 
-String _$todosHash() => r'146df519c4c2f843a867e4c6f5983259194f34fc';
-
-typedef FilterRef = Ref<Filter>;
+String _$todosHash() => r'ed255140669430745a7779b542a1209dc182ce0c';
 
 @ProviderFor(filter)
 const filterProvider = FilterProvider._();
 
 final class FilterProvider extends $FunctionalProvider<Filter, Filter>
-    with $Provider<Filter, FilterRef> {
+    with $Provider<Filter> {
   const FilterProvider._(
       {Filter Function(
-        FilterRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -91,7 +87,7 @@ final class FilterProvider extends $FunctionalProvider<Filter, Filter>
         );
 
   final Filter Function(
-    FilterRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -113,32 +109,30 @@ final class FilterProvider extends $FunctionalProvider<Filter, Filter>
   @override
   FilterProvider $copyWithCreate(
     Filter Function(
-      FilterRef ref,
+      Ref ref,
     ) create,
   ) {
     return FilterProvider._(create: create);
   }
 
   @override
-  Filter create(FilterRef ref) {
+  Filter create(Ref ref) {
     final _$cb = _createCb ?? filter;
     return _$cb(ref);
   }
 }
 
-String _$filterHash() => r'db6b594dad9378c59a08eaee9a1208065cb916eb';
-
-typedef FilteredTodosRef = Ref<List<Todo>>;
+String _$filterHash() => r'38c5f61dc2d4b44e9be37bb724487d265cc0a645';
 
 @ProviderFor(filteredTodos)
 const filteredTodosProvider = FilteredTodosProvider._();
 
 final class FilteredTodosProvider
     extends $FunctionalProvider<List<Todo>, List<Todo>>
-    with $Provider<List<Todo>, FilteredTodosRef> {
+    with $Provider<List<Todo>> {
   const FilteredTodosProvider._(
       {List<Todo> Function(
-        FilteredTodosRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -152,7 +146,7 @@ final class FilteredTodosProvider
         );
 
   final List<Todo> Function(
-    FilteredTodosRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -174,14 +168,14 @@ final class FilteredTodosProvider
   @override
   FilteredTodosProvider $copyWithCreate(
     List<Todo> Function(
-      FilteredTodosRef ref,
+      Ref ref,
     ) create,
   ) {
     return FilteredTodosProvider._(create: create);
   }
 
   @override
-  List<Todo> create(FilteredTodosRef ref) {
+  List<Todo> create(Ref ref) {
     final _$cb = _createCb ?? filteredTodos;
     return _$cb(ref);
   }

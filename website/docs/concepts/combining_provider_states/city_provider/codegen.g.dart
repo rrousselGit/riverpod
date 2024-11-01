@@ -8,16 +8,14 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef CityRef = Ref<String>;
-
 @ProviderFor(city)
 const cityProvider = CityProvider._();
 
 final class CityProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, CityRef> {
+    with $Provider<String> {
   const CityProvider._(
       {String Function(
-        CityRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -31,7 +29,7 @@ final class CityProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    CityRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -53,14 +51,14 @@ final class CityProvider extends $FunctionalProvider<String, String>
   @override
   CityProvider $copyWithCreate(
     String Function(
-      CityRef ref,
+      Ref ref,
     ) create,
   ) {
     return CityProvider._(create: create);
   }
 
   @override
-  String create(CityRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? city;
     return _$cb(ref);
   }

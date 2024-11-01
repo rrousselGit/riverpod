@@ -8,17 +8,15 @@ part of 'family_and_dispose.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef TaskTrackerRef = Ref<TaskTrackerRepo>;
-
 @ProviderFor(taskTracker)
 const taskTrackerProvider = TaskTrackerProvider._();
 
 final class TaskTrackerProvider
     extends $FunctionalProvider<TaskTrackerRepo, TaskTrackerRepo>
-    with $Provider<TaskTrackerRepo, TaskTrackerRef> {
+    with $Provider<TaskTrackerRepo> {
   const TaskTrackerProvider._(
       {TaskTrackerRepo Function(
-        TaskTrackerRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -32,7 +30,7 @@ final class TaskTrackerProvider
         );
 
   final TaskTrackerRepo Function(
-    TaskTrackerRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -54,20 +52,20 @@ final class TaskTrackerProvider
   @override
   TaskTrackerProvider $copyWithCreate(
     TaskTrackerRepo Function(
-      TaskTrackerRef ref,
+      Ref ref,
     ) create,
   ) {
     return TaskTrackerProvider._(create: create);
   }
 
   @override
-  TaskTrackerRepo create(TaskTrackerRef ref) {
+  TaskTrackerRepo create(Ref ref) {
     final _$cb = _createCb ?? taskTracker;
     return _$cb(ref);
   }
 }
 
-String _$taskTrackerHash() => r'd78149146c3a07b78e7dc1d03fa60ed1941c3702';
+String _$taskTrackerHash() => r'004d4554b37d841c6f668e298067dd39611a453a';
 
 @ProviderFor(BugsEncounteredNotifier)
 const bugsEncounteredNotifierProvider = BugsEncounteredNotifierFamily._();
@@ -120,7 +118,7 @@ final class BugsEncounteredNotifierProvider
   @override
   BugsEncounteredNotifierProvider $copyWithBuild(
     FutureOr<int> Function(
-      Ref<AsyncValue<int>>,
+      Ref,
       BugsEncounteredNotifier,
     ) build,
   ) {
@@ -194,8 +192,8 @@ final class BugsEncounteredNotifierFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    FutureOr<int> Function(Ref<AsyncValue<int>> ref,
-            BugsEncounteredNotifier notifier, String argument)
+    FutureOr<int> Function(
+            Ref ref, BugsEncounteredNotifier notifier, String argument)
         build,
   ) {
     return $FamilyOverride(

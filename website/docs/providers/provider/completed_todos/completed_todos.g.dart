@@ -8,17 +8,15 @@ part of 'completed_todos.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef CompletedTodosRef = Ref<List<Todo>>;
-
 @ProviderFor(completedTodos)
 const completedTodosProvider = CompletedTodosProvider._();
 
 final class CompletedTodosProvider
     extends $FunctionalProvider<List<Todo>, List<Todo>>
-    with $Provider<List<Todo>, CompletedTodosRef> {
+    with $Provider<List<Todo>> {
   const CompletedTodosProvider._(
       {List<Todo> Function(
-        CompletedTodosRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -32,7 +30,7 @@ final class CompletedTodosProvider
         );
 
   final List<Todo> Function(
-    CompletedTodosRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -54,14 +52,14 @@ final class CompletedTodosProvider
   @override
   CompletedTodosProvider $copyWithCreate(
     List<Todo> Function(
-      CompletedTodosRef ref,
+      Ref ref,
     ) create,
   ) {
     return CompletedTodosProvider._(create: create);
   }
 
   @override
-  List<Todo> create(CompletedTodosRef ref) {
+  List<Todo> create(Ref ref) {
     final _$cb = _createCb ?? completedTodos;
     return _$cb(ref);
   }

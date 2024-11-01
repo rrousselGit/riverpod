@@ -8,18 +8,16 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef LabelRef = Ref<String>;
-
 @ProviderFor(label)
 const labelProvider = LabelFamily._();
 
 final class LabelProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, LabelRef> {
+    with $Provider<String> {
   const LabelProvider._(
       {required LabelFamily super.from,
       required String super.argument,
       String Function(
-        LabelRef ref,
+        Ref ref,
         String userName,
       )? create})
       : _createCb = create,
@@ -32,7 +30,7 @@ final class LabelProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    LabelRef ref,
+    Ref ref,
     String userName,
   )? _createCb;
 
@@ -62,7 +60,7 @@ final class LabelProvider extends $FunctionalProvider<String, String>
   @override
   LabelProvider $copyWithCreate(
     String Function(
-      LabelRef ref,
+      Ref ref,
     ) create,
   ) {
     return LabelProvider._(
@@ -76,7 +74,7 @@ final class LabelProvider extends $FunctionalProvider<String, String>
   }
 
   @override
-  String create(LabelRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? label;
     final argument = this.argument as String;
     return _$cb(
@@ -122,7 +120,7 @@ final class LabelFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     String Function(
-      LabelRef ref,
+      Ref ref,
       String args,
     ) create,
   ) {

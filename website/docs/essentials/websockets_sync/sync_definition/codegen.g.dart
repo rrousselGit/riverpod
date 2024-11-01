@@ -8,16 +8,14 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef SynchronousExampleRef = Ref<int>;
-
 @ProviderFor(synchronousExample)
 const synchronousExampleProvider = SynchronousExampleProvider._();
 
 final class SynchronousExampleProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, SynchronousExampleRef> {
+    with $Provider<int> {
   const SynchronousExampleProvider._(
       {int Function(
-        SynchronousExampleRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -31,7 +29,7 @@ final class SynchronousExampleProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    SynchronousExampleRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -53,14 +51,14 @@ final class SynchronousExampleProvider extends $FunctionalProvider<int, int>
   @override
   SynchronousExampleProvider $copyWithCreate(
     int Function(
-      SynchronousExampleRef ref,
+      Ref ref,
     ) create,
   ) {
     return SynchronousExampleProvider._(create: create);
   }
 
   @override
-  int create(SynchronousExampleRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? synchronousExample;
     return _$cb(ref);
   }

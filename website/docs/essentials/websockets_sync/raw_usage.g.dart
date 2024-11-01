@@ -8,17 +8,15 @@ part of 'raw_usage.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef RawStreamRef = Ref<Raw<Stream<int>>>;
-
 @ProviderFor(rawStream)
 const rawStreamProvider = RawStreamProvider._();
 
 final class RawStreamProvider
     extends $FunctionalProvider<Raw<Stream<int>>, Raw<Stream<int>>>
-    with $Provider<Raw<Stream<int>>, RawStreamRef> {
+    with $Provider<Raw<Stream<int>>> {
   const RawStreamProvider._(
       {Raw<Stream<int>> Function(
-        RawStreamRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -32,7 +30,7 @@ final class RawStreamProvider
         );
 
   final Raw<Stream<int>> Function(
-    RawStreamRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -54,14 +52,14 @@ final class RawStreamProvider
   @override
   RawStreamProvider $copyWithCreate(
     Raw<Stream<int>> Function(
-      RawStreamRef ref,
+      Ref ref,
     ) create,
   ) {
     return RawStreamProvider._(create: create);
   }
 
   @override
-  Raw<Stream<int>> create(RawStreamRef ref) {
+  Raw<Stream<int>> create(Ref ref) {
     final _$cb = _createCb ?? rawStream;
     return _$cb(ref);
   }

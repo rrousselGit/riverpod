@@ -6,13 +6,11 @@ part of 'avoid_build_context_in_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef FnRef = Ref<int>;
-
 @ProviderFor(fn)
 const fnProvider = FnFamily._();
 
 final class FnProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, FnRef> {
+    with $Provider<int> {
   const FnProvider._(
       {required FnFamily super.from,
       required (
@@ -21,7 +19,7 @@ final class FnProvider extends $FunctionalProvider<int, int>
       })
           super.argument,
       int Function(
-        FnRef ref,
+        Ref ref,
         BuildContext context1, {
         required BuildContext context2,
       })? create})
@@ -35,7 +33,7 @@ final class FnProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    FnRef ref,
+    Ref ref,
     BuildContext context1, {
     required BuildContext context2,
   })? _createCb;
@@ -66,7 +64,7 @@ final class FnProvider extends $FunctionalProvider<int, int>
   @override
   FnProvider $copyWithCreate(
     int Function(
-      FnRef ref,
+      Ref ref,
     ) create,
   ) {
     return FnProvider._(
@@ -84,7 +82,7 @@ final class FnProvider extends $FunctionalProvider<int, int>
   }
 
   @override
-  int create(FnRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? fn;
     final argument = this.argument as (
       BuildContext, {
@@ -138,7 +136,7 @@ final class FnFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     int Function(
-      FnRef ref,
+      Ref ref,
       (
         BuildContext, {
         BuildContext context2,
@@ -227,7 +225,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
   @override
   MyNotifierProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       MyNotifier,
     ) build,
   ) {
@@ -313,7 +311,7 @@ final class MyNotifierFamily extends Family {
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     int Function(
-            Ref<int> ref,
+            Ref ref,
             MyNotifier notifier,
             (
               BuildContext, {
@@ -407,7 +405,7 @@ final class Regression2959Provider
   @override
   Regression2959Provider $copyWithBuild(
     void Function(
-      Ref<void>,
+      Ref,
       Regression2959,
     ) build,
   ) {

@@ -8,19 +8,15 @@ part of 'async.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef ConfigurationsRef = Ref<AsyncValue<Configuration>>;
-
 @ProviderFor(configurations)
 const configurationsProvider = ConfigurationsProvider._();
 
 final class ConfigurationsProvider extends $FunctionalProvider<
         AsyncValue<Configuration>, FutureOr<Configuration>>
-    with
-        $FutureModifier<Configuration>,
-        $FutureProvider<Configuration, ConfigurationsRef> {
+    with $FutureModifier<Configuration>, $FutureProvider<Configuration> {
   const ConfigurationsProvider._(
       {FutureOr<Configuration> Function(
-        ConfigurationsRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -34,7 +30,7 @@ final class ConfigurationsProvider extends $FunctionalProvider<
         );
 
   final FutureOr<Configuration> Function(
-    ConfigurationsRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -49,14 +45,14 @@ final class ConfigurationsProvider extends $FunctionalProvider<
   @override
   ConfigurationsProvider $copyWithCreate(
     FutureOr<Configuration> Function(
-      ConfigurationsRef ref,
+      Ref ref,
     ) create,
   ) {
     return ConfigurationsProvider._(create: create);
   }
 
   @override
-  FutureOr<Configuration> create(ConfigurationsRef ref) {
+  FutureOr<Configuration> create(Ref ref) {
     final _$cb = _createCb ?? configurations;
     return _$cb(ref);
   }

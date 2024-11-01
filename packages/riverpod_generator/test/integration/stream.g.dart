@@ -6,18 +6,16 @@ part of 'stream.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef GenericRef<T extends num> = Ref<AsyncValue<List<T>>>;
-
 @ProviderFor(generic)
 const genericProvider = GenericFamily._();
 
 final class GenericProvider<T extends num>
     extends $FunctionalProvider<AsyncValue<List<T>>, Stream<List<T>>>
-    with $FutureModifier<List<T>>, $StreamProvider<List<T>, GenericRef<T>> {
+    with $FutureModifier<List<T>>, $StreamProvider<List<T>> {
   const GenericProvider._(
       {required GenericFamily super.from,
       Stream<List<T>> Function(
-        GenericRef<T> ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -30,7 +28,7 @@ final class GenericProvider<T extends num>
         );
 
   final Stream<List<T>> Function(
-    GenericRef<T> ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -38,7 +36,7 @@ final class GenericProvider<T extends num>
 
   GenericProvider<T> _copyWithCreate(
     Stream<List<T>> Function<T extends num>(
-      GenericRef<T> ref,
+      Ref ref,
     ) create,
   ) {
     return GenericProvider<T>._(
@@ -60,14 +58,14 @@ final class GenericProvider<T extends num>
   @override
   GenericProvider<T> $copyWithCreate(
     Stream<List<T>> Function(
-      GenericRef<T> ref,
+      Ref ref,
     ) create,
   ) {
     return GenericProvider<T>._(from: from! as GenericFamily, create: create);
   }
 
   @override
-  Stream<List<T>> create(GenericRef<T> ref) {
+  Stream<List<T>> create(Ref ref) {
     final _$cb = _createCb ?? generic<T>;
     return _$cb(ref);
   }
@@ -107,7 +105,7 @@ final class GenericFamily extends Family {
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    Stream<List<T>> Function<T extends num>(GenericRef<T> ref) create,
+    Stream<List<T>> Function<T extends num>(Ref ref) create,
   ) {
     return $FamilyOverride(
       from: this,
@@ -153,7 +151,7 @@ final class GenericClassProvider<T extends num>
 
   GenericClassProvider<T> _copyWithBuild(
     Stream<List<T>> Function<T extends num>(
-      Ref<AsyncValue<List<T>>>,
+      Ref,
       GenericClass<T>,
     ) build,
   ) {
@@ -185,7 +183,7 @@ final class GenericClassProvider<T extends num>
   @override
   GenericClassProvider<T> $copyWithBuild(
     Stream<List<T>> Function(
-      Ref<AsyncValue<List<T>>>,
+      Ref,
       GenericClass<T>,
     ) build,
   ) {
@@ -249,8 +247,7 @@ final class GenericClassFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    Stream<List<T>> Function<T extends num>(
-            Ref<AsyncValue<List<T>>> ref, GenericClass<T> notifier)
+    Stream<List<T>> Function<T extends num>(Ref ref, GenericClass<T> notifier)
         build,
   ) {
     return $FamilyOverride(
@@ -271,17 +268,15 @@ abstract class _$GenericClass<T extends num> extends $StreamNotifier<List<T>> {
   Stream<List<T>> runBuild() => build();
 }
 
-typedef PublicRef = Ref<AsyncValue<String>>;
-
 @ProviderFor(public)
 const publicProvider = PublicProvider._();
 
 final class PublicProvider
     extends $FunctionalProvider<AsyncValue<String>, Stream<String>>
-    with $FutureModifier<String>, $StreamProvider<String, PublicRef> {
+    with $FutureModifier<String>, $StreamProvider<String> {
   const PublicProvider._(
       {Stream<String> Function(
-        PublicRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -295,7 +290,7 @@ final class PublicProvider
         );
 
   final Stream<String> Function(
-    PublicRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -309,14 +304,14 @@ final class PublicProvider
   @override
   PublicProvider $copyWithCreate(
     Stream<String> Function(
-      PublicRef ref,
+      Ref ref,
     ) create,
   ) {
     return PublicProvider._(create: create);
   }
 
   @override
-  Stream<String> create(PublicRef ref) {
+  Stream<String> create(Ref ref) {
     final _$cb = _createCb ?? public;
     return _$cb(ref);
   }
@@ -324,17 +319,15 @@ final class PublicProvider
 
 String _$publicHash() => r'ed93527425175c4a2475e83a3f44223a2aa604d7';
 
-typedef _PrivateRef = Ref<AsyncValue<String>>;
-
 @ProviderFor(_private)
 const _privateProvider = _PrivateProvider._();
 
 final class _PrivateProvider
     extends $FunctionalProvider<AsyncValue<String>, Stream<String>>
-    with $FutureModifier<String>, $StreamProvider<String, _PrivateRef> {
+    with $FutureModifier<String>, $StreamProvider<String> {
   const _PrivateProvider._(
       {Stream<String> Function(
-        _PrivateRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -348,7 +341,7 @@ final class _PrivateProvider
         );
 
   final Stream<String> Function(
-    _PrivateRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -362,14 +355,14 @@ final class _PrivateProvider
   @override
   _PrivateProvider $copyWithCreate(
     Stream<String> Function(
-      _PrivateRef ref,
+      Ref ref,
     ) create,
   ) {
     return _PrivateProvider._(create: create);
   }
 
   @override
-  Stream<String> create(_PrivateRef ref) {
+  Stream<String> create(Ref ref) {
     final _$cb = _createCb ?? _private;
     return _$cb(ref);
   }
@@ -377,14 +370,12 @@ final class _PrivateProvider
 
 String _$privateHash() => r'7915ccdd16751e7dc6274bb024d1b273d78dc78b';
 
-typedef FamilyRef = Ref<AsyncValue<String>>;
-
 @ProviderFor(family)
 const familyProvider = FamilyFamily._();
 
 final class FamilyProvider
     extends $FunctionalProvider<AsyncValue<String>, Stream<String>>
-    with $FutureModifier<String>, $StreamProvider<String, FamilyRef> {
+    with $FutureModifier<String>, $StreamProvider<String> {
   const FamilyProvider._(
       {required FamilyFamily super.from,
       required (
@@ -396,7 +387,7 @@ final class FamilyProvider
       })
           super.argument,
       Stream<String> Function(
-        FamilyRef ref,
+        Ref ref,
         int first, {
         String? second,
         required double third,
@@ -413,7 +404,7 @@ final class FamilyProvider
         );
 
   final Stream<String> Function(
-    FamilyRef ref,
+    Ref ref,
     int first, {
     String? second,
     required double third,
@@ -439,7 +430,7 @@ final class FamilyProvider
   @override
   FamilyProvider $copyWithCreate(
     Stream<String> Function(
-      FamilyRef ref,
+      Ref ref,
     ) create,
   ) {
     return FamilyProvider._(
@@ -463,7 +454,7 @@ final class FamilyProvider
   }
 
   @override
-  Stream<String> create(FamilyRef ref) {
+  Stream<String> create(Ref ref) {
     final _$cb = _createCb ?? family;
     final argument = this.argument as (
       int, {
@@ -529,7 +520,7 @@ final class FamilyFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     Stream<String> Function(
-      FamilyRef ref,
+      Ref ref,
       (
         int, {
         String? second,
@@ -599,7 +590,7 @@ final class PublicClassProvider
   @override
   PublicClassProvider $copyWithBuild(
     Stream<String> Function(
-      Ref<AsyncValue<String>>,
+      Ref,
       PublicClass,
     ) build,
   ) {
@@ -661,7 +652,7 @@ final class _PrivateClassProvider
   @override
   _PrivateClassProvider $copyWithBuild(
     Stream<String> Function(
-      Ref<AsyncValue<String>>,
+      Ref,
       _PrivateClass,
     ) build,
   ) {
@@ -747,7 +738,7 @@ final class FamilyClassProvider
   @override
   FamilyClassProvider $copyWithBuild(
     Stream<String> Function(
-      Ref<AsyncValue<String>>,
+      Ref,
       FamilyClass,
     ) build,
   ) {
@@ -848,7 +839,7 @@ final class FamilyClassFamily extends Family {
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     Stream<String> Function(
-            Ref<AsyncValue<String>> ref,
+            Ref ref,
             FamilyClass notifier,
             (
               int, {

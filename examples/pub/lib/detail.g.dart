@@ -8,21 +8,17 @@ part of 'detail.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef FetchPackageDetailsRef = Ref<AsyncValue<Package>>;
-
 @ProviderFor(fetchPackageDetails)
 const fetchPackageDetailsProvider = FetchPackageDetailsFamily._();
 
 final class FetchPackageDetailsProvider
     extends $FunctionalProvider<AsyncValue<Package>, FutureOr<Package>>
-    with
-        $FutureModifier<Package>,
-        $FutureProvider<Package, FetchPackageDetailsRef> {
+    with $FutureModifier<Package>, $FutureProvider<Package> {
   const FetchPackageDetailsProvider._(
       {required FetchPackageDetailsFamily super.from,
       required String super.argument,
       FutureOr<Package> Function(
-        FetchPackageDetailsRef ref, {
+        Ref ref, {
         required String packageName,
       })? create})
       : _createCb = create,
@@ -35,7 +31,7 @@ final class FetchPackageDetailsProvider
         );
 
   final FutureOr<Package> Function(
-    FetchPackageDetailsRef ref, {
+    Ref ref, {
     required String packageName,
   })? _createCb;
 
@@ -57,7 +53,7 @@ final class FetchPackageDetailsProvider
   @override
   FetchPackageDetailsProvider $copyWithCreate(
     FutureOr<Package> Function(
-      FetchPackageDetailsRef ref,
+      Ref ref,
     ) create,
   ) {
     return FetchPackageDetailsProvider._(
@@ -71,7 +67,7 @@ final class FetchPackageDetailsProvider
   }
 
   @override
-  FutureOr<Package> create(FetchPackageDetailsRef ref) {
+  FutureOr<Package> create(Ref ref) {
     final _$cb = _createCb ?? fetchPackageDetails;
     final argument = this.argument as String;
     return _$cb(
@@ -118,7 +114,7 @@ final class FetchPackageDetailsFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     FutureOr<Package> Function(
-      FetchPackageDetailsRef ref,
+      Ref ref,
       String args,
     ) create,
   ) {
@@ -137,19 +133,15 @@ final class FetchPackageDetailsFamily extends Family {
   }
 }
 
-typedef LikedPackagesRef = Ref<AsyncValue<List<String>>>;
-
 @ProviderFor(likedPackages)
 const likedPackagesProvider = LikedPackagesProvider._();
 
 final class LikedPackagesProvider extends $FunctionalProvider<
         AsyncValue<List<String>>, FutureOr<List<String>>>
-    with
-        $FutureModifier<List<String>>,
-        $FutureProvider<List<String>, LikedPackagesRef> {
+    with $FutureModifier<List<String>>, $FutureProvider<List<String>> {
   const LikedPackagesProvider._(
       {FutureOr<List<String>> Function(
-        LikedPackagesRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -163,7 +155,7 @@ final class LikedPackagesProvider extends $FunctionalProvider<
         );
 
   final FutureOr<List<String>> Function(
-    LikedPackagesRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -178,14 +170,14 @@ final class LikedPackagesProvider extends $FunctionalProvider<
   @override
   LikedPackagesProvider $copyWithCreate(
     FutureOr<List<String>> Function(
-      LikedPackagesRef ref,
+      Ref ref,
     ) create,
   ) {
     return LikedPackagesProvider._(create: create);
   }
 
   @override
-  FutureOr<List<String>> create(LikedPackagesRef ref) {
+  FutureOr<List<String>> create(Ref ref) {
     final _$cb = _createCb ?? likedPackages;
     return _$cb(ref);
   }
@@ -193,17 +185,15 @@ final class LikedPackagesProvider extends $FunctionalProvider<
 
 String _$likedPackagesHash() => r'8debee8d8fa48334d1de21fa9bbf03224265d29d';
 
-typedef PubRepositoryRef = Ref<PubRepository>;
-
 @ProviderFor(pubRepository)
 const pubRepositoryProvider = PubRepositoryProvider._();
 
 final class PubRepositoryProvider
     extends $FunctionalProvider<PubRepository, PubRepository>
-    with $Provider<PubRepository, PubRepositoryRef> {
+    with $Provider<PubRepository> {
   const PubRepositoryProvider._(
       {PubRepository Function(
-        PubRepositoryRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -217,7 +207,7 @@ final class PubRepositoryProvider
         );
 
   final PubRepository Function(
-    PubRepositoryRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -239,14 +229,14 @@ final class PubRepositoryProvider
   @override
   PubRepositoryProvider $copyWithCreate(
     PubRepository Function(
-      PubRepositoryRef ref,
+      Ref ref,
     ) create,
   ) {
     return PubRepositoryProvider._(create: create);
   }
 
   @override
-  PubRepository create(PubRepositoryRef ref) {
+  PubRepository create(Ref ref) {
     final _$cb = _createCb ?? pubRepository;
     return _$cb(ref);
   }
@@ -319,7 +309,7 @@ final class PackageMetricsProvider
   @override
   PackageMetricsProvider $copyWithBuild(
     FutureOr<PackageMetricsScore> Function(
-      Ref<AsyncValue<PackageMetricsScore>>,
+      Ref,
       PackageMetrics,
     ) build,
   ) {
@@ -402,9 +392,7 @@ final class PackageMetricsFamily extends Family {
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     FutureOr<PackageMetricsScore> Function(
-            Ref<AsyncValue<PackageMetricsScore>> ref,
-            PackageMetrics notifier,
-            String argument)
+            Ref ref, PackageMetrics notifier, String argument)
         build,
   ) {
     return $FamilyOverride(

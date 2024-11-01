@@ -8,16 +8,12 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef FetchPackagesRef = Ref<AsyncValue<List<Package>>>;
-
 @ProviderFor(fetchPackages)
 const fetchPackagesProvider = FetchPackagesFamily._();
 
 final class FetchPackagesProvider extends $FunctionalProvider<
         AsyncValue<List<Package>>, FutureOr<List<Package>>>
-    with
-        $FutureModifier<List<Package>>,
-        $FutureProvider<List<Package>, FetchPackagesRef> {
+    with $FutureModifier<List<Package>>, $FutureProvider<List<Package>> {
   const FetchPackagesProvider._(
       {required FetchPackagesFamily super.from,
       required ({
@@ -26,7 +22,7 @@ final class FetchPackagesProvider extends $FunctionalProvider<
       })
           super.argument,
       FutureOr<List<Package>> Function(
-        FetchPackagesRef ref, {
+        Ref ref, {
         required int page,
         String search,
       })? create})
@@ -40,7 +36,7 @@ final class FetchPackagesProvider extends $FunctionalProvider<
         );
 
   final FutureOr<List<Package>> Function(
-    FetchPackagesRef ref, {
+    Ref ref, {
     required int page,
     String search,
   })? _createCb;
@@ -64,7 +60,7 @@ final class FetchPackagesProvider extends $FunctionalProvider<
   @override
   FetchPackagesProvider $copyWithCreate(
     FutureOr<List<Package>> Function(
-      FetchPackagesRef ref,
+      Ref ref,
     ) create,
   ) {
     return FetchPackagesProvider._(
@@ -82,7 +78,7 @@ final class FetchPackagesProvider extends $FunctionalProvider<
   }
 
   @override
-  FutureOr<List<Package>> create(FetchPackagesRef ref) {
+  FutureOr<List<Package>> create(Ref ref) {
     final _$cb = _createCb ?? fetchPackages;
     final argument = this.argument as ({
       int page,
@@ -136,7 +132,7 @@ final class FetchPackagesFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     FutureOr<List<Package>> Function(
-      FetchPackagesRef ref,
+      Ref ref,
       ({
         int page,
         String search,

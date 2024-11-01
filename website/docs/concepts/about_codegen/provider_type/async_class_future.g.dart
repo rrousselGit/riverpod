@@ -46,7 +46,7 @@ final class ExampleProvider extends $AsyncNotifierProvider<Example, String> {
   @override
   ExampleProvider $copyWithBuild(
     FutureOr<String> Function(
-      Ref<AsyncValue<String>>,
+      Ref,
       Example,
     ) build,
   ) {

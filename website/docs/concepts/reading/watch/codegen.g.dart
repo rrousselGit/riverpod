@@ -8,17 +8,15 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef FilterTypeRef = Ref<FilterType>;
-
 @ProviderFor(filterType)
 const filterTypeProvider = FilterTypeProvider._();
 
 final class FilterTypeProvider
     extends $FunctionalProvider<FilterType, FilterType>
-    with $Provider<FilterType, FilterTypeRef> {
+    with $Provider<FilterType> {
   const FilterTypeProvider._(
       {FilterType Function(
-        FilterTypeRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -32,7 +30,7 @@ final class FilterTypeProvider
         );
 
   final FilterType Function(
-    FilterTypeRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -54,14 +52,14 @@ final class FilterTypeProvider
   @override
   FilterTypeProvider $copyWithCreate(
     FilterType Function(
-      FilterTypeRef ref,
+      Ref ref,
     ) create,
   ) {
     return FilterTypeProvider._(create: create);
   }
 
   @override
-  FilterType create(FilterTypeRef ref) {
+  FilterType create(Ref ref) {
     final _$cb = _createCb ?? filterType;
     return _$cb(ref);
   }
@@ -115,7 +113,7 @@ final class TodosProvider extends $NotifierProvider<Todos, List<Todo>> {
   @override
   TodosProvider $copyWithBuild(
     List<Todo> Function(
-      Ref<List<Todo>>,
+      Ref,
       Todos,
     ) build,
   ) {
@@ -138,17 +136,15 @@ abstract class _$Todos extends $Notifier<List<Todo>> {
   List<Todo> runBuild() => build();
 }
 
-typedef FilteredTodoListRef = Ref<List<Todo>>;
-
 @ProviderFor(filteredTodoList)
 const filteredTodoListProvider = FilteredTodoListProvider._();
 
 final class FilteredTodoListProvider
     extends $FunctionalProvider<List<Todo>, List<Todo>>
-    with $Provider<List<Todo>, FilteredTodoListRef> {
+    with $Provider<List<Todo>> {
   const FilteredTodoListProvider._(
       {List<Todo> Function(
-        FilteredTodoListRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -162,7 +158,7 @@ final class FilteredTodoListProvider
         );
 
   final List<Todo> Function(
-    FilteredTodoListRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -184,14 +180,14 @@ final class FilteredTodoListProvider
   @override
   FilteredTodoListProvider $copyWithCreate(
     List<Todo> Function(
-      FilteredTodoListRef ref,
+      Ref ref,
     ) create,
   ) {
     return FilteredTodoListProvider._(create: create);
   }
 
   @override
-  List<Todo> create(FilteredTodoListRef ref) {
+  List<Todo> create(Ref ref) {
     final _$cb = _createCb ?? filteredTodoList;
     return _$cb(ref);
   }

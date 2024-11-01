@@ -54,7 +54,7 @@ final class TodoListProvider extends $NotifierProvider<TodoList, List<Todo>> {
   @override
   TodoListProvider $copyWithBuild(
     List<Todo> Function(
-      Ref<List<Todo>>,
+      Ref,
       TodoList,
     ) build,
   ) {

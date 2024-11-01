@@ -8,16 +8,14 @@ part of 'auto_dispose.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef Example1Ref = Ref<String>;
-
 @ProviderFor(example1)
 const example1Provider = Example1Provider._();
 
 final class Example1Provider extends $FunctionalProvider<String, String>
-    with $Provider<String, Example1Ref> {
+    with $Provider<String> {
   const Example1Provider._(
       {String Function(
-        Example1Ref ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -31,7 +29,7 @@ final class Example1Provider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    Example1Ref ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -53,14 +51,14 @@ final class Example1Provider extends $FunctionalProvider<String, String>
   @override
   Example1Provider $copyWithCreate(
     String Function(
-      Example1Ref ref,
+      Ref ref,
     ) create,
   ) {
     return Example1Provider._(create: create);
   }
 
   @override
-  String create(Example1Ref ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? example1;
     return _$cb(ref);
   }
@@ -68,16 +66,14 @@ final class Example1Provider extends $FunctionalProvider<String, String>
 
 String _$example1Hash() => r'6a361ee6f9dd1d0cdbb42f967f6356aa058f7041';
 
-typedef Example2Ref = Ref<String>;
-
 @ProviderFor(example2)
 const example2Provider = Example2Provider._();
 
 final class Example2Provider extends $FunctionalProvider<String, String>
-    with $Provider<String, Example2Ref> {
+    with $Provider<String> {
   const Example2Provider._(
       {String Function(
-        Example2Ref ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -91,7 +87,7 @@ final class Example2Provider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    Example2Ref ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -113,14 +109,14 @@ final class Example2Provider extends $FunctionalProvider<String, String>
   @override
   Example2Provider $copyWithCreate(
     String Function(
-      Example2Ref ref,
+      Ref ref,
     ) create,
   ) {
     return Example2Provider._(create: create);
   }
 
   @override
-  String create(Example2Ref ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? example2;
     return _$cb(ref);
   }

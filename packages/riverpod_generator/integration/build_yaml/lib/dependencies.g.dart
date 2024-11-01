@@ -6,18 +6,16 @@ part of 'dependencies.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef Calc2Ref = Ref<int>;
-
 @ProviderFor(calc2)
 const myFamilyCalc2ProviderFamily = Calc2Family._();
 
 final class Calc2Provider extends $FunctionalProvider<int, int>
-    with $Provider<int, Calc2Ref> {
+    with $Provider<int> {
   const Calc2Provider._(
       {required Calc2Family super.from,
       required String super.argument,
       int Function(
-        Calc2Ref ref,
+        Ref ref,
         String id,
       )? create})
       : _createCb = create,
@@ -46,7 +44,7 @@ final class Calc2Provider extends $FunctionalProvider<int, int>
       myFamilyCountStreamNotifier2ProviderFamily;
 
   final int Function(
-    Calc2Ref ref,
+    Ref ref,
     String id,
   )? _createCb;
 
@@ -76,7 +74,7 @@ final class Calc2Provider extends $FunctionalProvider<int, int>
   @override
   Calc2Provider $copyWithCreate(
     int Function(
-      Calc2Ref ref,
+      Ref ref,
     ) create,
   ) {
     return Calc2Provider._(
@@ -90,7 +88,7 @@ final class Calc2Provider extends $FunctionalProvider<int, int>
   }
 
   @override
-  int create(Calc2Ref ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? calc2;
     final argument = this.argument as String;
     return _$cb(
@@ -162,7 +160,7 @@ final class Calc2Family extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     int Function(
-      Calc2Ref ref,
+      Ref ref,
       String args,
     ) create,
   ) {
