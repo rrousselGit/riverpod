@@ -212,7 +212,7 @@ final _other = _someProvider;
 
 // Regression test for now casting `as Object?` when not needed
 @riverpod
-String unnecessaryCast(GeneratedRef ref, Object? arg) {
+String unnecessaryCast(Ref ref, Object? arg) {
   return 'Just a simple normal generated provider';
 }
 
@@ -229,6 +229,6 @@ class ManyProviderData<T, S> {}
 
 @riverpod
 Stream<List<T>> manyDataStream<T extends Object, S extends Object>(
-  ManyDataStreamRef ref,
+  Ref ref,
   ManyProviderData<T, S> pData,
 ) async* {}

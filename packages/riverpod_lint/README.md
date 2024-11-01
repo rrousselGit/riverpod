@@ -633,10 +633,10 @@ to behave as a `keepAlive`, even though it isn't marked as such.
 
 ```dart
 @riverpod
-int nonKeepAlive(NonKeepAliveRef ref) => 0;
+int nonKeepAlive(Ref ref) => 0;
 
 @Riverpod(keepAlive: true)
-int fn(FnRef ref) {
+int fn(Ref ref) {
   // `keepAlive` providers should only depend on keepAlive providers.
   ref.watch(nonKeepAliveProvider);
 }

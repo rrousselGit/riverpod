@@ -36,7 +36,7 @@ import 'file.dart' as alias;
 part 'foo.g.dart';
 
 @Riverpod(keepAlive: true)
-int aliased(AliasedRef ref) {
+int aliased(Ref ref) {
   ref.watch(alias.aProvider);
   return 0;
 }
@@ -99,7 +99,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'foo.g.dart';
 
 @riverpod
-int generated(GeneratedRef ref) => 0;
+int generated(Ref ref) => 0;
 
 @riverpod
 class MyNotifier extends _$MyNotifier {

@@ -13,27 +13,27 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 const deps = <ProviderOrFamily>[];
 
 @Riverpod(dependencies: deps)
-int first(FirstRef ref) => 0;
+int first(Ref ref) => 0;
 
 @Riverpod(dependencies: )
-int second(SecondRef ref) => 0;
+int second(Ref ref) => 0;
 
 @Riverpod(dependencies: [gibberish])
-int forth(ForthRef ref) => 0;
+int forth(Ref ref) => 0;
 
 @Riverpod(dependencies: [if (true) forth])
-int fifth(FifthRef ref) => 0;
+int fifth(Ref ref) => 0;
 
 @Riverpod(dependencies: [int])
-int sixth(SixthRef ref) => 0;
+int sixth(Ref ref) => 0;
 
 void fn() {}
 
 @Riverpod(dependencies: [fn])
-int seven(SevenRef ref) => 0;
+int seven(Ref ref) => 0;
 
 @Riverpod(dependencies: ['foo'])
-int eight(EightRef ref) => 0;
+int eight(Ref ref) => 0;
 ''', (resolver, unit, units) async {
     final errors = collectErrors(() {
       for (final d in unit.declarations) {
@@ -117,13 +117,13 @@ int eight(EightRef ref) => 0;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 @riverpod
-int dependency(DependencyRef ref) => 0;
+int dependency(Ref ref) => 0;
 
 @Riverpod(dependencies: [dependency])
-int fn(FnRef ref) => 0;
+int fn(Ref ref) => 0;
 
 @Riverpod(dependencies: [dependency])
-int fn2(FnRef ref) => 0;
+int fn2(Ref ref) => 0;
 ''', (resolver, unit, units) async {
     final dependency = unit.declarations.findByName('dependency').riverpod;
 
@@ -148,13 +148,13 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 int unrelated() => 0;
 
 @riverpod
-int variable(VariableRef ref) => 0;
+int variable(Ref ref) => 0;
 
 @Riverpod()
-int constructor(ConstructorRef ref) => 0;
+int constructor(Ref ref) => 0;
 
 @Riverpod(keepAlive: false, dependencies: null)
-int explicit(ExplicitRef ref) => 0;
+int explicit(Ref ref) => 0;
 
 @Riverpod(keepAlive: true, dependencies: [variable])
 int constructor2(Constructor2Ref ref) => 0;

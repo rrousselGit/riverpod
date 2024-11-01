@@ -16,7 +16,7 @@ part 'foo.g.dart';
 
 // Let's define some providers
 @riverpod
-int a(ARef ref) => 0;
+int a(Ref ref) => 0;
 
 @riverpod
 class B extends _$B {

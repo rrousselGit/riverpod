@@ -55,12 +55,12 @@ final class Riverpod {
   /// ```dart
   /// // By not specifying "dependencies", we are saying that this provider is never scoped
   /// @riverpod
-  /// Foo root(RootRef ref) => Foo();
+  /// Foo root(Ref ref) => Foo();
   ///
   /// // By specifying "dependencies" (even if the list is empty),
   /// // we are saying that this provider is potentially scoped
   /// @Riverpod(dependencies: [])
-  /// Foo scoped(ScopedRef ref) => Foo();
+  /// Foo scoped(Ref ref) => Foo();
   ///
   /// // Alternatively, notifiers with an abstract build method are also considered scoped
   /// @riverpod
@@ -75,14 +75,14 @@ final class Riverpod {
   ///
   /// ```dart
   /// @riverpod
-  /// Object? dependent(DependentRef ref) {
+  /// Object? dependent(Ref ref) {
   ///   ref.watch(rootProvider);
   ///   // This provider does not depend on any scoped provider,
   ///   // as such "dependencies" is optional
   /// }
   ///
   /// @Riverpod(dependencies: [])
-  /// Object? dependent(DependentRef ref) {
+  /// Object? dependent(Ref ref) {
   ///   ref.watch(rootProvider);
   ///   // This provider decided to specify "dependencies" anyway, marking
   ///   // "dependentProvider" as possibly scoped.
@@ -91,7 +91,7 @@ final class Riverpod {
   /// }
   ///
   /// @Riverpod(dependencies: [root])
-  /// Object? dependent(DependentRef ref) {
+  /// Object? dependent(Ref ref) {
   ///   ref.watch(rootProvider);
   ///   // Including "rootProvider" in "dependencies" is fine too, even though
   ///   // it is not required. It is a no-op.
@@ -102,7 +102,7 @@ final class Riverpod {
   ///
   /// ```dart
   /// @Riverpod(dependencies: [scoped])
-  /// Object? dependent(DependentRef ref) {
+  /// Object? dependent(Ref ref) {
   ///   ref.watch(scopedProvider);
   ///   // Since "scopedProvider" specifies "dependencies", any provider that
   ///   // depends on it must also specify "dependencies" and include "scopedProvider".
@@ -232,7 +232,7 @@ class MissingScopeException implements Exception {
 /// Consider the following scoped provider:
 /// ```dart
 /// @Riverpod(dependencies: [])
-/// String selectedBookID(SelectedBookIDRef ref)  => throw UnimplementedError();
+/// String selectedBookID(Ref ref)  => throw UnimplementedError();
 /// ```
 ///
 /// Since this provider is scoped, we should specify `@Dependencies` on any object

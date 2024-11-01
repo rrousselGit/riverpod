@@ -20,7 +20,7 @@ typedef ConsumerBuilder = Widget Function(
 ///
 /// ```dart
 /// @riverpod
-/// Future<User> fetchUser(FetchUserRef ref) async {
+/// Future<User> fetchUser(Ref ref) async {
 ///   // ...
 /// }
 /// ```

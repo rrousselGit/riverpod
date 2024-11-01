@@ -186,7 +186,7 @@ sealed class AsyncValue<StateT> {
   ///
   /// ```dart
   /// @riverpod
-  /// Future<Model> example(ExampleRef ref) async {
+  /// Future<Model> example(Ref ref) async {
   ///   ref.state = AsyncLoading(progress: 0);
   ///
   ///   await something();

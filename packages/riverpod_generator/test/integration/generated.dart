@@ -50,16 +50,16 @@ class $DynamicClassFamily extends _$$DynamicClassFamily {
 const dynamicProvider = _dynamicProvider;
 
 @riverpod
-_dynamic(_DynamicRef ref, test) => 0;
+_dynamic(Ref ref, test) => 0;
 
 @riverpod
-AsyncValue<int> alias(AliasRef ref) {
+AsyncValue<int> alias(Ref ref) {
   return const AsyncData(42);
 }
 
 @riverpod
 AsyncValue<int> aliasFamily(
-  AliasFamilyRef ref,
+  Ref ref,
   AsyncValue<int> test,
 ) {
   return const AsyncData(42);

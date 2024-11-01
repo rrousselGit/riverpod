@@ -6,7 +6,7 @@
 
   ```dart
   @riverpod
-  String example(ExampleRef ref, int arg, {required int anotherArg}) {...}
+  String example(Ref ref, int arg, {required int anotherArg}) {...}
   // ...
   exampleProvider.overrideWith(
     (ref, ({int arg, int anotherArg}) args) {
