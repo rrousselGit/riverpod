@@ -149,7 +149,6 @@ class _RiverpodGeneratorVisitor {
   List<String>? _computeAllTransitiveDependencies(
     GeneratorProviderDeclaration provider,
   ) {
-    // TODO throw if a dependency is not accessible in the current library.
     final dependencies = provider.annotation.dependencyList?.values;
     if (dependencies == null) return null;
 

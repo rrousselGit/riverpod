@@ -126,9 +126,6 @@ abstract class TestNotifier<StateT> implements $Notifier<StateT> {
   set state(StateT value);
 
   @override
-  Ref<StateT> get ref;
-
-  @override
   void listenSelf(
     void Function(StateT? previous, StateT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
@@ -149,7 +146,7 @@ class DeferredNotifier<StateT> extends Notifier<StateT>
   )? _updateShouldNotify;
 
   @override
-  Ref<StateT> get ref;
+  Ref get ref;
 
   @override
   void listenSelf(

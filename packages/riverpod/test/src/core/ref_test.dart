@@ -43,19 +43,10 @@ void main() {
       });
 
       container.read(provider);
-
       container.read(dep.notifier).state++;
 
       final another = Provider((ref) => 0);
 
-      expect(
-        () => ref.state,
-        throwsA(isA<UnmountedRefException>()),
-      );
-      expect(
-        () => ref.state = 42,
-        throwsA(isA<UnmountedRefException>()),
-      );
       expect(
         () => ref.watch(another),
         throwsA(isA<UnmountedRefException>()),
@@ -131,14 +122,6 @@ void main() {
 
       final another = Provider((ref) => 0);
 
-      expect(
-        () => container.read(provider.select((_) => ref.state)),
-        throwsA(isA<AssertionError>()),
-      );
-      expect(
-        () => container.read(provider.select((_) => ref.state = 42)),
-        throwsA(isA<AssertionError>()),
-      );
       expect(
         () => container.read(provider.select((_) => ref.watch(another))),
         throwsA(isA<AssertionError>()),
@@ -589,7 +572,7 @@ void main() {
         final provider =
             NotifierProvider.autoDispose<DeferredNotifier<void>, void>(
           () => DeferredNotifier<void>((ref, self) {
-            ref.listenSelf((previous, next) {});
+            self.listenSelf((previous, next) {});
           }),
         );
 
@@ -1181,17 +1164,17 @@ void main() {
       test('cannot listen itself', () {
         final container = ProviderContainer.test();
         final listener = Listener<int>();
-        late Ref ref;
-        late Provider<int> provider;
-        provider = Provider<int>((r) {
-          ref = r;
-          ref.listen(provider, (previous, next) {});
-          return 0;
-        });
+        late NotifierProvider<Notifier<int>, int> provider;
+        provider = NotifierProvider<Notifier<int>, int>(
+          () => DeferredNotifier((ref, self) {
+            ref.listen(provider, (previous, next) {});
+            return 0;
+          }),
+        );
 
         expect(() => container.read(provider), throwsA(isAssertionError));
 
-        ref.state = 42;
+        container.read(provider.notifier).state = 42;
 
         verifyZeroInteractions(listener);
       });
@@ -2415,7 +2398,6 @@ void main() {
 
         ref.watch<void>(dep);
 
-        // TODO changelog breaking: Calling ref.watch multiple times calls ref.onListen everytime
         verifyInOrder([listener(), listener2()]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);

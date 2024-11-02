@@ -6,8 +6,9 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
       isAutoDispose: false,
       isFamily: false,
       deferredNotifier: DeferredAsyncNotifier.new,
-      deferredProvider: <StateT>(create, {updateShouldNotify}) {
+      deferredProvider: <StateT>(create, {updateShouldNotify, retry}) {
         return AsyncNotifierProvider<DeferredAsyncNotifier<StateT>, StateT>(
+          retry: retry,
           () => DeferredAsyncNotifier(
             create,
             updateShouldNotify: updateShouldNotify,
@@ -31,9 +32,10 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
       isAutoDispose: true,
       isFamily: false,
       deferredNotifier: DeferredAsyncNotifier.new,
-      deferredProvider: <StateT>(create, {updateShouldNotify}) {
+      deferredProvider: <StateT>(create, {updateShouldNotify, retry}) {
         return AsyncNotifierProvider.autoDispose<DeferredAsyncNotifier<StateT>,
             StateT>(
+          retry: retry,
           () => DeferredAsyncNotifier(
             create,
             updateShouldNotify: updateShouldNotify,
@@ -59,9 +61,10 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
       isAutoDispose: false,
       isFamily: true,
       deferredNotifier: DeferredFamilyAsyncNotifier.new,
-      deferredProvider: <StateT>(create, {updateShouldNotify}) {
+      deferredProvider: <StateT>(create, {updateShouldNotify, retry}) {
         return AsyncNotifierProvider.family<DeferredFamilyAsyncNotifier<StateT>,
             StateT, Object?>(
+          retry: retry,
           () => DeferredFamilyAsyncNotifier(
             create,
             updateShouldNotify: updateShouldNotify,
@@ -88,9 +91,10 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
       isAutoDispose: true,
       isFamily: true,
       deferredNotifier: DeferredFamilyAsyncNotifier.new,
-      deferredProvider: <StateT>(create, {updateShouldNotify}) {
+      deferredProvider: <StateT>(create, {updateShouldNotify, retry}) {
         return AsyncNotifierProvider.family
             .autoDispose<DeferredFamilyAsyncNotifier<StateT>, StateT, Object?>(
+              retry: retry,
               () => DeferredFamilyAsyncNotifier(
                 create,
                 updateShouldNotify: updateShouldNotify,
@@ -198,6 +202,7 @@ class AsyncNotifierTestFactory extends TestFactory<
       Function<StateT>(
     FutureOr<StateT> Function(Ref ref, $AsyncNotifier<StateT> self) create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
+    Retry? retry,
   }) deferredProvider;
 
   final $AsyncNotifierProvider<$AsyncNotifier<StateT>, StateT> Function<StateT>(
@@ -208,10 +213,12 @@ class AsyncNotifierTestFactory extends TestFactory<
       simpleTestProvider<StateT>(
     FutureOr<StateT> Function(Ref ref, $AsyncNotifier<StateT> self) create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
+    Retry? retry,
   }) {
     return deferredProvider<StateT>(
       (ref, self) => create(ref, self),
       updateShouldNotify: updateShouldNotify,
+      retry: retry,
     );
   }
 }

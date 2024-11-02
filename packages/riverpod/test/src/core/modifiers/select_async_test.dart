@@ -5,6 +5,7 @@ import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
+import '../../matrix.dart';
 import '../../utils.dart';
 
 void main() {
@@ -198,14 +199,14 @@ void main() {
 
   test('handles multiple AsyncLoading at once then data', () async {
     final container = ProviderContainer.test();
-    late Ref ref;
-    final provider = FutureProvider<int>((r) {
-      ref = r;
-      final completer = Completer<int>();
-      ref.onDispose(() => completer.complete(84));
+    final provider = AsyncNotifierProvider<AsyncNotifier<int>, int>(
+      () => DeferredAsyncNotifier((ref, self) {
+        final completer = Completer<int>();
+        ref.onDispose(() => completer.complete(84));
 
-      return completer.future;
-    });
+        return completer.future;
+      }),
+    );
 
     final sub = container.listen(
       provider.selectAsync((data) => data + 40),
@@ -214,13 +215,13 @@ void main() {
 
     expect(sub.read(), completion(42));
 
-    ref.state = const AsyncLoading<int>()
+    final notifier = container.read(provider.notifier);
+    notifier.state = const AsyncLoading<int>()
         .copyWithPrevious(const AsyncValue<int>.data(0));
-    ref.state = const AsyncLoading<int>()
+    notifier.state = const AsyncLoading<int>()
         .copyWithPrevious(const AsyncError<int>('err', StackTrace.empty));
-    ref.state = const AsyncLoading<int>();
-
-    ref.state = const AsyncData(2);
+    notifier.state = const AsyncLoading<int>();
+    notifier.state = const AsyncData(2);
 
     // the previous unawaited `completion` should resolve with 2+40
   });

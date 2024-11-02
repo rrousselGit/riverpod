@@ -17,6 +17,7 @@
   rebuilds. This enables using `Ref.mounted` to check dispose.
 - **Breaking**: `StreamProvider` now pauses its `StreamSubscription` when
   the provider is not actively listened.
+- **Breaking**: Calling ref.watch multiple times calls ref.onListen every-times.
 - **Breaking**: A provider is now considered "paused" if all
   of its listeners are also paused. So if a provider `A` is watched _only_ by a provider `B`, and `B` is currently unused,
   then `A` will be paused.

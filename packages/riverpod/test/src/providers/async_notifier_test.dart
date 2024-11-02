@@ -10,6 +10,7 @@ import 'package:riverpod/src/framework.dart' show UnmountedRefException;
 import 'package:riverpod/src/providers/async_notifier.dart' show $AsyncNotifier;
 import 'package:test/test.dart';
 
+import '../../third_party/fake_async.dart';
 import '../matrix.dart';
 import '../utils.dart';
 
@@ -40,6 +41,124 @@ void main() {
         expect(provider().allTransitiveDependencies, null);
       });
     }
+
+    group('retry', () {
+      test(
+        'handles retry',
+        () => fakeAsync((fake) async {
+          final container = ProviderContainer.test();
+          var err = Exception('foo');
+          final stack = StackTrace.current;
+          final provider = factory.simpleTestProvider<int>(
+            (ref, self) => Error.throwWithStackTrace(err, stack),
+            retry: (_, __) => const Duration(seconds: 1),
+          );
+          final listener = Listener<AsyncValue<int>>();
+
+          container.listen(provider, fireImmediately: true, listener.call);
+          await container.read(provider.future).catchError((e) => 0);
+
+          verifyOnly(
+            listener,
+            listener(any, AsyncValue<int>.error(err, stack)),
+          );
+
+          err = Exception('bar');
+
+          fake.elapse(const Duration(seconds: 1));
+          fake.flushMicrotasks();
+
+          await container.read(provider.future).catchError((e) => 0);
+
+          verifyOnly(
+            listener,
+            listener(any, AsyncValue<int>.error(err, stack)),
+          );
+        }),
+      );
+
+      test(
+        'manually setting the state to an error does not cause a retry',
+        () => fakeAsync((fake) async {
+          final container = ProviderContainer.test();
+          var retryCount = 0;
+          final provider = factory.simpleTestProvider<int>(
+            (ref, self) => 0,
+            retry: (_, __) {
+              retryCount++;
+              return const Duration(seconds: 1);
+            },
+          );
+          final listener = Listener<AsyncValue<int>>();
+
+          container.listen(provider, fireImmediately: true, listener.call);
+
+          expect(retryCount, 0);
+
+          container.read(provider.notifier).state = AsyncValue<int>.error(
+            Error(),
+            StackTrace.current,
+          );
+
+          expect(retryCount, 0);
+        }),
+      );
+    });
+
+    test('resets progress to 0 if restarting while the future is pending', () {
+      final container = ProviderContainer.test();
+      final completer = Completer<int>();
+      addTearDown(() => completer.complete(42));
+
+      final provider = factory.simpleTestProvider((ref, self) {
+        return completer.future;
+      });
+
+      expect(container.read(provider), const AsyncValue<int>.loading());
+
+      container.read(provider.notifier).state =
+          const AsyncValue<int>.loading(progress: .2);
+
+      container.refresh(provider);
+
+      expect(container.read(provider), const AsyncValue<int>.loading());
+    });
+
+    test('Does not skip return value if ref.state was set', () async {
+      final provider = factory.simpleTestProvider<int>((ref, self) async {
+        await Future<void>.value();
+        self.state = const AsyncData(1);
+        await Future<void>.value();
+        self.state = const AsyncData(2);
+        await Future<void>.value();
+        return 3;
+      });
+      final container = ProviderContainer.test();
+      final listener = Listener<AsyncValue<int>>();
+      // Completer used for the sole purpose of being able to await `provider.future`
+      // Since `provider` emits `AsyncData` before the future completes, then
+      // `provider.future` completes early.
+      // As such, awaiting `provider.future` isn't enough to fully await the FutureProvider
+      final completer = Completer<void>();
+
+      container.listen<AsyncValue<int>>(
+        provider,
+        (prev, next) {
+          if (next.value == 3) completer.complete();
+          listener(prev, next);
+        },
+        fireImmediately: true,
+      );
+
+      await completer.future;
+
+      verifyInOrder([
+        listener(null, const AsyncLoading<int>()),
+        listener(const AsyncLoading<int>(), const AsyncData(1)),
+        listener(const AsyncData(1), const AsyncData(2)),
+        listener(const AsyncData(2), const AsyncData(3)),
+      ]);
+    });
 
     test('Cannot share a Notifier instance between providers ', () {
       final container = ProviderContainer.test();

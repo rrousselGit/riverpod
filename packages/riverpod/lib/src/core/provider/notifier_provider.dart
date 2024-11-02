@@ -54,15 +54,9 @@ typedef RunNotifierBuild<NotifierT, CreatedT> = CreatedT Function(
 /// }
 /// ```
 abstract class NotifierBase<StateT, CreatedT> {
-  Ref<StateT>? _ref;
-
+  _Ref<StateT>? _ref;
   @protected
-  Ref<StateT> get ref {
-    final ref = _ref;
-    if (ref == null) throw StateError(uninitializedElementError);
-
-    return ref;
-  }
+  Ref get ref => $ref;
 
   /// Listens to changes on the value exposed by this provider.
   ///
@@ -76,19 +70,16 @@ abstract class NotifierBase<StateT, CreatedT> {
     void Function(StateT? previous, StateT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
-    ref.listenSelf(
-      (prev, next) => listener(prev, next),
-      onError: onError,
-    );
+    $ref.listenSelf(listener, onError: onError);
   }
 
   @visibleForTesting
   @protected
-  StateT get state => ref.state;
+  StateT get state => $ref.state;
 
   @visibleForTesting
   @protected
-  set state(StateT newState) => ref.state = newState;
+  set state(StateT newState) => $ref.state = newState;
 
   CreatedT runBuild();
 
@@ -99,6 +90,15 @@ abstract class NotifierBase<StateT, CreatedT> {
 @internal
 extension ClassBaseX<StateT, CreatedT> on NotifierBase<StateT, CreatedT> {
   ProviderElement<StateT>? get element => _ref?._element;
+
+  @internal
+  // ignore: library_private_types_in_public_api, not public
+  _Ref<StateT> get $ref {
+    final ref = _ref;
+    if (ref == null) throw StateError(uninitializedElementError);
+
+    return ref;
+  }
 }
 
 /// Implementation detail of `riverpod_generator`.
@@ -190,7 +190,8 @@ abstract class ClassProviderElement< //
   @mustCallSuper
   @override
   void create(
-    Ref<StateT> ref, {
+    // ignore: library_private_types_in_public_api, not public
+    _Ref<StateT> ref, {
     required bool didChangeDependency,
   }) {
     final seamless = !didChangeDependency;

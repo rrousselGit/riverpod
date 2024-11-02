@@ -12,65 +12,51 @@ import '../../utils.dart';
 
 void main() {
   test('supports overrideWith', () {
-    final provider = StreamProvider<int>(
-      (ref) {
-        ref.state = const AsyncData(0);
-        return Stream.value(1);
-      },
-    );
+    final provider = StreamProvider<int>((ref) => Stream.value(1));
     final autoDispose = StreamProvider.autoDispose<int>(
-      (ref) {
-        ref.state = const AsyncData(0);
-        return Stream.value(1);
-      },
+      (ref) => Stream.value(1),
     );
     final container = ProviderContainer.test(
       overrides: [
-        provider.overrideWith((ref) {
-          ref.state = const AsyncData(42);
-          return Stream.value(43);
-        }),
-        autoDispose.overrideWith((ref) {
-          ref.state = const AsyncData(84);
-          return Stream.value(85);
-        }),
+        provider.overrideWith((ref) => Stream.value(42)),
+        autoDispose.overrideWith((ref) => Stream.value(84)),
       ],
     );
 
-    expect(container.read(provider).value, 42);
-    expect(container.read(autoDispose).value, 84);
+    expect(
+      container.listen(provider.future, (a, b) {}).read(),
+      completion(42),
+    );
+    expect(
+      container.listen(autoDispose.future, (a, b) {}).read(),
+      completion(84),
+    );
   });
 
   test('supports family overrideWith', () {
     final family = StreamProvider.family<String, int>((ref, arg) {
-      ref.state = AsyncData('0 $arg');
-      return Stream.value('1 $arg');
+      return Stream.value('0 $arg');
     });
     final autoDisposeFamily = StreamProvider.autoDispose.family<String, int>(
-      (ref, arg) {
-        ref.state = AsyncData('0 $arg');
-        return Stream.value('1 $arg');
-      },
+      (ref, arg) => Stream.value('0 $arg'),
     );
     final container = ProviderContainer.test(
       overrides: [
-        family.overrideWith(
-          (ref, int arg) {
-            ref.state = AsyncData('42 $arg');
-            return Stream.value('43 $arg');
-          },
-        ),
+        family.overrideWith((ref, int arg) => Stream.value('42 $arg')),
         autoDisposeFamily.overrideWith(
-          (ref, int arg) {
-            ref.state = AsyncData('84 $arg');
-            return Stream.value('85 $arg');
-          },
+          (ref, int arg) => Stream.value('84 $arg'),
         ),
       ],
     );
 
-    expect(container.read(family(10)).value, '42 10');
-    expect(container.read(autoDisposeFamily(10)).value, '84 10');
+    expect(
+      container.listen(family(10).future, (a, b) {}).read(),
+      completion('42 10'),
+    );
+    expect(
+      container.listen(autoDisposeFamily(10).future, (a, b) {}).read(),
+      completion('84 10'),
+    );
   });
 
   group('When going back to AsyncLoading', () {
@@ -148,45 +134,6 @@ void main() {
       await expectLater(container.read(provider.future), completion(1));
       expect(container.read(provider), const AsyncData(1));
     });
-  });
-
-  test('can read and set current AsyncValue', () async {
-    final container = ProviderContainer.test();
-    final listener = Listener<AsyncValue<int>>();
-    late Ref ref;
-    final provider = StreamProvider<int>((r) {
-      ref = r;
-      return Stream.value(0);
-    });
-
-    container.listen(provider, listener.call);
-    await container.read(provider.future);
-
-    expect(ref.state, const AsyncData<int>(0));
-    verifyOnly(
-      listener,
-      listener(
-        const AsyncLoading(),
-        const AsyncData(0),
-      ),
-    );
-
-    ref.state = const AsyncLoading<int>();
-
-    expect(
-      ref.state,
-      const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(0), isRefresh: false),
-    );
-
-    verifyOnly(
-      listener,
-      listener(
-        const AsyncData(0),
-        const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncData(0), isRefresh: false),
-      ),
-    );
   });
 
   test('can be auto-scoped', () async {

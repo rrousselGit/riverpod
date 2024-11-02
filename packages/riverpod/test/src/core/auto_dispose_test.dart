@@ -95,8 +95,6 @@ void main() {
       expect(container.pointerManager.readPointer(provider(0)), isNull);
     });
 
-    // TODO test recursive dispose does not remove pointers in unrelated containers
-
     test(
         'When a non-overridden autoDispose provider is disposed '
         'and the associated ProviderContainer has a child ProviderContainer which overrides said provider, '

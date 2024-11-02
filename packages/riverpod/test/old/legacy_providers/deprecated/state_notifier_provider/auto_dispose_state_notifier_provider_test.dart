@@ -7,21 +7,6 @@ import 'package:test/test.dart';
 import '../../../utils.dart';
 
 void main() {
-  test('can read and set current StateNotifier', () async {
-    final container = ProviderContainer.test();
-    final listener = Listener<int>();
-    late Ref ref;
-    final provider = StateNotifierProvider.autoDispose<Counter, int>((r) {
-      ref = r;
-      return Counter();
-    });
-
-    container.listen(provider, listener.call);
-
-    verifyZeroInteractions(listener);
-    expect(ref.state, 0);
-  });
-
   test('can be auto-scoped', () async {
     final dep = Provider(
       (ref) => 0,

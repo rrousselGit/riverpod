@@ -136,14 +136,14 @@ void main() {
           final container = ProviderContainer.test();
           var retryCount = 0;
           late Ref r;
-          final provider = FutureProvider<int>(
-            (ref) {
-              r = ref;
-              return 0;
-            },
+          final provider = factory.simpleTestProvider<int>(
             retry: (_, __) {
               retryCount++;
               return const Duration(seconds: 1);
+            },
+            (ref, self) {
+              self.state = const AsyncValue<int>.data(0);
+              return const Stream.empty();
             },
           );
           final listener = Listener<AsyncValue<int>>();
@@ -152,7 +152,10 @@ void main() {
 
           expect(retryCount, 0);
 
-          r.state = AsyncValue<int>.error(Error(), StackTrace.current);
+          container.read(provider.notifier).state = AsyncValue<int>.error(
+            Error(),
+            StackTrace.current,
+          );
 
           expect(retryCount, 0);
         }),

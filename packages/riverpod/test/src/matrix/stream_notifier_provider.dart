@@ -221,10 +221,12 @@ class StreamNotifierTestFactory extends TestFactory<
       simpleTestProvider<StateT>(
     Stream<StateT> Function(Ref ref, $StreamNotifier<StateT> self) create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
+    Retry? retry,
   }) {
     return deferredProvider<StateT>(
       (ref, self) => create(ref, self),
       updateShouldNotify: updateShouldNotify,
+      retry: retry,
     );
   }
 }
