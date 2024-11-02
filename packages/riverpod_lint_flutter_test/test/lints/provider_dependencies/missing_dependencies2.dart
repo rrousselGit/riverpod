@@ -1,4 +1,4 @@
-// ignore_for_file: unused_field, avoid_manual_providers_as_generated_provider_dependency
+// ignore_for_file: unused_field
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -199,6 +199,7 @@ int alias(Ref ref) {
 // Regression test for https://github.com/rrousselGit/riverpod/issues/2935
 @riverpod
 class AliasClass extends _$AliasClass {
+  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   late final int _a = ref.read(import_alias.aProvider);
   late final int _b = ref.read(import_alias.bProvider);
 
