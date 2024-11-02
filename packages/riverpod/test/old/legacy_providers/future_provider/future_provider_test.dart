@@ -93,27 +93,6 @@ void main() {
     expect(container.read(autoDisposeFamily(10)).value, '84 10');
   });
 
-  test('Emits AsyncLoading before the create function is executed', () async {
-    final container = ProviderContainer.test();
-    late AsyncValue<int> state;
-    final provider = FutureProvider<int>((ref) {
-      state = ref.state;
-      return 0;
-    });
-
-    container.read(provider);
-
-    expect(state, const AsyncLoading<int>());
-
-    await container.read(provider.future);
-    container.refresh(provider);
-
-    expect(
-      state,
-      const AsyncLoading<int>().copyWithPrevious(const AsyncData<int>(0)),
-    );
-  });
-
   test('On dispose, .future resolves with the future returned itself',
       () async {
     final container = ProviderContainer.test();

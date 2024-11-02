@@ -139,14 +139,17 @@ class DeferredStreamNotifier<StateT> extends StreamNotifier<StateT>
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
   }) : _updateShouldNotify = updateShouldNotify;
 
-  final Stream<StateT> Function(Ref ref) _create;
+  final Stream<StateT> Function(
+    Ref ref,
+    DeferredStreamNotifier<StateT> self,
+  ) _create;
   final bool Function(
     AsyncValue<StateT> previousState,
     AsyncValue<StateT> newState,
   )? _updateShouldNotify;
 
   @override
-  Stream<StateT> build() => _create(ref);
+  Stream<StateT> build() => _create(ref, this);
 
   @override
   bool updateShouldNotify(
@@ -165,7 +168,10 @@ class DeferredFamilyStreamNotifier<StateT>
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
   }) : _updateShouldNotify = updateShouldNotify;
 
-  final Stream<StateT> Function(Ref ref) _create;
+  final Stream<StateT> Function(
+    Ref ref,
+    DeferredFamilyStreamNotifier<StateT> self,
+  ) _create;
 
   final bool Function(
     AsyncValue<StateT> previousState,
@@ -173,7 +179,7 @@ class DeferredFamilyStreamNotifier<StateT>
   )? _updateShouldNotify;
 
   @override
-  Stream<StateT> build(int arg) => _create(ref);
+  Stream<StateT> build(int arg) => _create(ref, this);
 
   @override
   bool updateShouldNotify(
@@ -196,12 +202,12 @@ class StreamNotifierTestFactory extends TestFactory<
   });
 
   final TestStreamNotifier<StateT> Function<StateT>(
-    Stream<StateT> Function(Ref ref) create,
+    Stream<StateT> Function(Ref ref, $StreamNotifier<StateT> self) create,
   ) deferredNotifier;
 
   final $StreamNotifierProvider<TestStreamNotifier<StateT>, StateT>
       Function<StateT>(
-    Stream<StateT> Function(Ref ref) create, {
+    Stream<StateT> Function(Ref ref, $StreamNotifier<StateT> self) create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
     Retry? retry,
   }) deferredProvider;
@@ -213,11 +219,11 @@ class StreamNotifierTestFactory extends TestFactory<
 
   $StreamNotifierProvider<TestStreamNotifier<StateT>, StateT>
       simpleTestProvider<StateT>(
-    Stream<StateT> Function(Ref ref) create, {
+    Stream<StateT> Function(Ref ref, $StreamNotifier<StateT> self) create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
   }) {
     return deferredProvider<StateT>(
-      (ref) => create(ref),
+      (ref, self) => create(ref, self),
       updateShouldNotify: updateShouldNotify,
     );
   }

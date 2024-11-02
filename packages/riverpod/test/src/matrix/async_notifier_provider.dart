@@ -134,14 +134,14 @@ class DeferredAsyncNotifier<StateT> extends AsyncNotifier<StateT>
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
   }) : _updateShouldNotify = updateShouldNotify;
 
-  final FutureOr<StateT> Function(Ref ref) _create;
+  final FutureOr<StateT> Function(Ref ref, $AsyncNotifier<StateT> self) _create;
   final bool Function(
     AsyncValue<StateT> previousState,
     AsyncValue<StateT> newState,
   )? _updateShouldNotify;
 
   @override
-  FutureOr<StateT> build() => _create(ref);
+  FutureOr<StateT> build() => _create(ref, this);
 
   @override
   bool updateShouldNotify(
@@ -160,7 +160,7 @@ class DeferredFamilyAsyncNotifier<StateT>
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
   }) : _updateShouldNotify = updateShouldNotify;
 
-  final FutureOr<StateT> Function(Ref ref) _create;
+  final FutureOr<StateT> Function(Ref ref, $AsyncNotifier<StateT> self) _create;
 
   final bool Function(
     AsyncValue<StateT> previousState,
@@ -168,7 +168,7 @@ class DeferredFamilyAsyncNotifier<StateT>
   )? _updateShouldNotify;
 
   @override
-  FutureOr<StateT> build(int arg) => _create(ref);
+  FutureOr<StateT> build(int arg) => _create(ref, this);
 
   @override
   bool updateShouldNotify(
@@ -191,12 +191,12 @@ class AsyncNotifierTestFactory extends TestFactory<
   });
 
   final TestAsyncNotifier<StateT> Function<StateT>(
-    FutureOr<StateT> Function(Ref ref) create,
+    FutureOr<StateT> Function(Ref ref, $AsyncNotifier<StateT> self) create,
   ) deferredNotifier;
 
   final $AsyncNotifierProvider<TestAsyncNotifier<StateT>, StateT>
       Function<StateT>(
-    FutureOr<StateT> Function(Ref ref) create, {
+    FutureOr<StateT> Function(Ref ref, $AsyncNotifier<StateT> self) create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
   }) deferredProvider;
 
@@ -206,11 +206,11 @@ class AsyncNotifierTestFactory extends TestFactory<
 
   $AsyncNotifierProvider<TestAsyncNotifier<StateT>, StateT>
       simpleTestProvider<StateT>(
-    FutureOr<StateT> Function(Ref ref) create, {
+    FutureOr<StateT> Function(Ref ref, $AsyncNotifier<StateT> self) create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
   }) {
     return deferredProvider<StateT>(
-      (ref) => create(ref),
+      (ref, self) => create(ref, self),
       updateShouldNotify: updateShouldNotify,
     );
   }

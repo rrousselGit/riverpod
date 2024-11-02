@@ -60,23 +60,6 @@ void main() {
     verifyNoMoreInteractions(listener);
   });
 
-  test('ref.listenSelf listens to state changes', () {
-    final listener = Listener<int>();
-    final container = ProviderContainer.test();
-    final provider = StateProvider<int>((ref) {
-      ref.listenSelf(listener.call);
-      return 0;
-    });
-
-    final notifier = container.read(provider.notifier);
-
-    verifyOnly(listener, listener(null, 0));
-
-    notifier.state++;
-
-    verifyOnly(listener, listener(0, 1));
-  });
-
   test('supports .name', () {
     expect(
       StateProvider((ref) => 0).name,

@@ -72,7 +72,7 @@ abstract class ProviderElement<StateT> implements Node {
   /// The [ProviderContainer] that owns this [ProviderElement].
   ProviderContainer get container => pointer.targetContainer;
 
-  Ref? ref;
+  Ref<StateT>? ref;
 
   /// Whether this [ProviderElement] is actively in use.
   ///
@@ -282,7 +282,7 @@ This could mean a few things:
   /// - [didChangeDependency] can be used to differentiate a rebuild caused
   ///   by [Ref.watch] from one caused by [Ref.refresh]/[Ref.invalidate].
   @visibleForOverriding
-  void create(Ref ref, {required bool didChangeDependency});
+  void create(Ref<StateT> ref, {required bool didChangeDependency});
 
   /// A utility for re-initializing a provider when needed.
   ///
@@ -323,7 +323,7 @@ This could mean a few things:
 
   /// Invokes [create] and handles errors.
   @internal
-  void buildState(Ref ref) {
+  void buildState(Ref<StateT> ref) {
     if (_didChangeDependency) _retryCount = 0;
 
     ProviderElement? debugPreviouslyBuildingElement;

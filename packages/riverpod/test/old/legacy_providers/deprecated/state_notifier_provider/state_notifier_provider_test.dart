@@ -16,7 +16,9 @@ void main() {
       onDispose: () => throw StateError('called'),
     );
     final container = ProviderContainer.test();
-    final provider = StateNotifierProvider((_) => notifier);
+    final provider = StateNotifierProvider<DelegateNotifier, int>(
+      (_) => notifier,
+    );
 
     container.read(provider);
 
@@ -86,23 +88,6 @@ void main() {
     container.refresh(provider);
 
     verifyNoMoreInteractions(listener);
-  });
-
-  test('ref.listenSelf listens to state changes', () {
-    final listener = Listener<int>();
-    final container = ProviderContainer.test();
-    final provider = StateNotifierProvider<StateController<int>, int>((ref) {
-      ref.listenSelf(listener.call);
-      return StateController(0);
-    });
-
-    final notifier = container.read(provider.notifier);
-
-    verifyOnly(listener, listener(null, 0));
-
-    notifier.state++;
-
-    verifyOnly(listener, listener(0, 1));
   });
 
   test('can read and set current StateNotifier', () async {

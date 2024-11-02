@@ -67,23 +67,6 @@ void main() {
     expect(container.read(autoDisposeFamily(10)).value, '84 10');
   });
 
-  test('ref.listenSelf listens to state changes', () {
-    final listener = Listener<ValueNotifier<int>>();
-    final container = ProviderContainer.test();
-    final provider = ChangeNotifierProvider<ValueNotifier<int>>((ref) {
-      ref.listenSelf(listener.call);
-      return ValueNotifier(0);
-    });
-
-    final notifier = container.read(provider);
-
-    verifyOnly(listener, listener(null, notifier));
-
-    container.read(provider.notifier).value++;
-
-    verifyOnly(listener, listener(notifier, notifier));
-  });
-
   test('support null ChangeNotifier', () {
     final container = ProviderContainer.test();
     final provider = ChangeNotifierProvider<ValueNotifier<int>?>((ref) => null);

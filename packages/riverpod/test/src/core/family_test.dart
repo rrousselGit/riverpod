@@ -9,7 +9,7 @@ void main() {
   group('ClassProvider', () {
     notifierProviderFactory.createGroup((factory) {
       test('overrideWithBuild', () {
-        final provider = factory.simpleTestProvider((ref) => 0);
+        final provider = factory.simpleTestProvider((ref, _) => 0);
         final overrideWithBuild =
             OverrideWithBuildMock<TestNotifier<int>, int, int>(-1);
 
@@ -42,7 +42,7 @@ void main() {
       if (!factory.isFamily) return;
 
       test('overrideWithBuild', () {
-        final provider = factory.simpleTestProvider((ref) => 0).from!;
+        final provider = factory.simpleTestProvider((ref, _) => 0).from!;
         provider as NotifierProviderFamily<DeferredFamilyNotifier<int>, int,
             Object?>;
 

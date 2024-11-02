@@ -6,6 +6,7 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart';
 import 'package:test/test.dart';
 
+import '../matrix.dart';
 import '../utils.dart';
 
 final refMethodsThatDependOnProviders =
@@ -584,9 +585,13 @@ void main() {
     group('listenSelf', () {
       test('does not break autoDispose', () async {
         final container = ProviderContainer.test();
-        final provider = Provider.autoDispose((ref) {
-          ref.listenSelf((previous, next) {});
-        });
+
+        final provider =
+            NotifierProvider.autoDispose<DeferredNotifier<void>, void>(
+          () => DeferredNotifier<void>((ref, self) {
+            ref.listenSelf((previous, next) {});
+          }),
+        );
 
         container.read(provider);
         expect(container.getAllProviderElements(), [anything]);
@@ -601,14 +606,14 @@ void main() {
         final listener = Listener<int>();
         final listener2 = Listener<int>();
 
-        late Ref ref;
-        final provider = Provider<int>((r) {
-          ref = r;
-          ref.listenSelf(listener.call);
-          ref.listenSelf(listener2.call);
+        final provider = NotifierProvider<DeferredNotifier<int>, int>(
+          () => DeferredNotifier<int>((ref, self) {
+            self.listenSelf(listener.call);
+            self.listenSelf(listener2.call);
 
-          return 0;
-        });
+            return 0;
+          }),
+        );
 
         container.read(provider);
 
@@ -619,7 +624,7 @@ void main() {
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
 
-        ref.state = 42;
+        container.read(provider.notifier).state = 42;
 
         verifyInOrder([
           listener(0, 42),
@@ -634,12 +639,15 @@ void main() {
         final listener = Listener<int>();
         final listener2 = Listener<int>();
         var result = 0;
-        final provider = Provider<int>((ref) {
-          ref.listenSelf(listener.call);
-          ref.listenSelf(listener2.call);
 
-          return result;
-        });
+        final provider = NotifierProvider<DeferredNotifier<int>, int>(
+          () => DeferredNotifier<int>((ref, self) {
+            self.listenSelf(listener.call);
+            self.listenSelf(listener2.call);
+
+            return result;
+          }),
+        );
 
         container.read(provider);
 
@@ -665,12 +673,15 @@ void main() {
         final container = ProviderContainer.test();
         final listener = Listener<int>();
         final listener2 = Listener<int>();
-        final provider = Provider<int>((ref) {
-          ref.listenSelf(listener.call);
-          ref.listenSelf(listener2.call);
 
-          return 0;
-        });
+        final provider = NotifierProvider<DeferredNotifier<int>, int>(
+          () => DeferredNotifier<int>((ref, self) {
+            self.listenSelf(listener.call);
+            self.listenSelf(listener2.call);
+
+            return 0;
+          }),
+        );
 
         container.read(provider);
 
@@ -696,15 +707,18 @@ void main() {
         final listener = Listener<int>();
         final listener2 = Listener<int>();
         var result = 0;
-        final provider = Provider<int>((ref) {
-          if (result == 0) {
-            ref.listenSelf(listener.call);
-          } else {
-            ref.listenSelf(listener2.call);
-          }
 
-          return result;
-        });
+        final provider = NotifierProvider<DeferredNotifier<int>, int>(
+          () => DeferredNotifier<int>((ref, self) {
+            if (result == 0) {
+              self.listenSelf(listener.call);
+            } else {
+              self.listenSelf(listener2.call);
+            }
+
+            return result;
+          }),
+        );
 
         container.read(provider);
 
@@ -726,12 +740,15 @@ void main() {
         final errorListener = ErrorListener();
         final errorListener2 = ErrorListener();
         var error = 42;
-        final provider = Provider<int>((ref) {
-          ref.listenSelf(listener.call, onError: errorListener.call);
-          ref.listenSelf((prev, next) {}, onError: errorListener2.call);
 
-          Error.throwWithStackTrace(error, StackTrace.empty);
-        });
+        final provider = NotifierProvider<DeferredNotifier<int>, int>(
+          () => DeferredNotifier<int>((ref, self) {
+            self.listenSelf(listener.call, onError: errorListener.call);
+            self.listenSelf((prev, next) {}, onError: errorListener2.call);
+
+            Error.throwWithStackTrace(error, StackTrace.empty);
+          }),
+        );
 
         expect(() => container.read(provider), throwsA(42));
 
@@ -761,13 +778,18 @@ void main() {
         final errorListener = ErrorListener();
         final errorListener2 = ErrorListener();
         Exception? error;
-        final provider = Provider<int>((ref) {
-          ref.listenSelf((prev, next) {}, onError: errorListener.call);
 
-          if (error != null) Error.throwWithStackTrace(error, StackTrace.empty);
+        final provider = NotifierProvider<DeferredNotifier<int>, int>(
+          () => DeferredNotifier<int>((ref, self) {
+            self.listenSelf((prev, next) {}, onError: errorListener.call);
 
-          return 0;
-        });
+            if (error != null) {
+              Error.throwWithStackTrace(error, StackTrace.empty);
+            }
+
+            return 0;
+          }),
+        );
 
         container.listen(
           provider,
@@ -794,10 +816,13 @@ void main() {
         final listener = Listener<int>();
         final listener2 = Listener<int>();
         var result = 0;
-        final provider = Provider<int>((ref) {
-          ref.listenSelf(listener.call);
-          return result;
-        });
+
+        final provider = NotifierProvider<DeferredNotifier<int>, int>(
+          () => DeferredNotifier<int>((ref, self) {
+            self.listenSelf(listener.call);
+            return result;
+          }),
+        );
 
         container.listen(provider, listener2.call, fireImmediately: true);
 
@@ -1856,12 +1881,12 @@ void main() {
         final listener = Listener<int>();
         final selfListener = Listener<int>();
         final container = ProviderContainer.test(observers: [observer]);
-        late Ref ref;
-        final provider = Provider<int>((r) {
-          ref = r;
-          ref.listenSelf(selfListener.call);
-          return 0;
-        });
+        final provider = NotifierProvider<DeferredNotifier<int>, int>(
+          () => DeferredNotifier<int>((ref, self) {
+            self.listenSelf(selfListener.call);
+            return 0;
+          }),
+        );
 
         container.listen(provider, listener.call, fireImmediately: true);
 
@@ -1869,7 +1894,7 @@ void main() {
         verifyOnly(listener, listener(null, 0));
         verifyOnly(selfListener, selfListener(null, 0));
 
-        ref.notifyListeners();
+        container.read(provider.notifier).ref.notifyListeners();
 
         verifyOnly(listener, listener(0, 0));
         verifyOnly(selfListener, selfListener(0, 0));
@@ -1886,11 +1911,14 @@ void main() {
         final selfListener = Listener<int>();
         final listener = Listener<int>();
         final container = ProviderContainer.test(observers: [observer]);
-        final provider = Provider<int>((ref) {
-          ref.listenSelf(selfListener.call);
-          ref.notifyListeners();
-          return 0;
-        });
+
+        final provider = NotifierProvider<DeferredNotifier<int>, int>(
+          () => DeferredNotifier<int>((ref, self) {
+            self.listenSelf(selfListener.call);
+            ref.notifyListeners();
+            return 0;
+          }),
+        );
 
         container.listen(provider, listener.call, fireImmediately: true);
 
@@ -1910,13 +1938,16 @@ void main() {
         const firstValue = 'first';
         const secondValue = 'second';
         var result = firstValue;
-        final provider = Provider<Object>((ref) {
-          ref.listenSelf(selfListener.call);
-          if (callNotifyListeners) {
-            ref.notifyListeners();
-          }
-          return result;
-        });
+
+        final provider = NotifierProvider<DeferredNotifier<Object>, Object>(
+          () => DeferredNotifier<Object>((ref, self) {
+            self.listenSelf(selfListener.call);
+            if (callNotifyListeners) {
+              ref.notifyListeners();
+            }
+            return result;
+          }),
+        );
 
         container.listen(provider, listener.call, fireImmediately: true);
 

@@ -22,7 +22,7 @@ void main() {
 
       expect(container.read(provider), const AsyncValue<int>.loading());
 
-      ref.state = const AsyncValue.loading(progress: .2);
+      ref.state = const AsyncValue<int>.loading(progress: .2);
 
       container.refresh(provider);
 
