@@ -389,9 +389,9 @@ void main() {
     test(
         'converts StreamNotifier.build into an AsyncData if the future completes',
         () async {
-      final provider = factory.simpleTestProvider((ref, self) => Stream.value(
-            0,
-          ));
+      final provider = factory.simpleTestProvider(
+        (ref, self) => Stream.value(0),
+      );
       final container = ProviderContainer.test();
       final listener = Listener<AsyncValue<int>>();
 

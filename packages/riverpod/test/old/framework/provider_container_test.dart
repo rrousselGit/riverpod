@@ -2,6 +2,7 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
+import '../../src/matrix.dart';
 import '../utils.dart';
 
 void main() {
@@ -144,10 +145,12 @@ void main() {
         () async {
       final dep = StateProvider((ref) => 0);
       final provider = Provider((ref) => ref.watch(dep));
-      final another = StateProvider<int>((ref) {
-        ref.listen(provider, (prev, value) => ref.state++);
-        return 0;
-      });
+      final another = NotifierProvider<Notifier<int>, int>(
+        () => DeferredNotifier((ref, self) {
+          ref.listen(provider, (prev, value) => self.state++);
+          return 0;
+        }),
+      );
       final container = ProviderContainer.test();
 
       expect(container.read(another), 0);
@@ -162,10 +165,12 @@ void main() {
         () async {
       final dep = StateProvider((ref) => 0);
       final provider = Provider((ref) => ref.watch(dep));
-      final another = StateProvider<int>((ref) {
-        ref.listen(provider, (prev, value) => ref.state++);
-        return 0;
-      });
+      final another = NotifierProvider<Notifier<int>, int>(
+        () => DeferredNotifier((ref, self) {
+          ref.listen(provider, (prev, value) => self.state++);
+          return 0;
+        }),
+      );
       final container = ProviderContainer.test();
 
       expect(container.read(another), 0);

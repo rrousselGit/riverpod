@@ -107,11 +107,13 @@ void main() {
   });
 
   test('can specify name', () {
-    final provider = StateNotifierProvider.autoDispose(
+    final provider = StateNotifierProvider.autoDispose<TestNotifier, int>(
       (_) => TestNotifier(),
       name: 'example',
     );
-    final provider2 = StateNotifierProvider.autoDispose((_) => TestNotifier());
+    final provider2 = StateNotifierProvider.autoDispose<TestNotifier, int>(
+      (_) => TestNotifier(),
+    );
 
     expect(provider.name, 'example');
     expect(provider2.name, isNull);
