@@ -19,7 +19,7 @@ class TagTheme with _$TagTheme {
 }
 
 @Riverpod(dependencies: [theme])
-TagTheme tagTheme(TagThemeRef ref) {
+TagTheme tagTheme(Ref ref) {
   final theme = ref.watch(themeProvider);
 
   return TagTheme(

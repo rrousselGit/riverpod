@@ -6,10 +6,11 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart';
 import 'package:test/test.dart';
 
+import '../matrix.dart';
 import '../utils.dart';
 
 final refMethodsThatDependOnProviders =
-    <String, void Function(Ref<Object?> ref, ProviderBase<Object?>)>{
+    <String, void Function(Ref ref, ProviderBase<Object?>)>{
   'watch': (ref, p) => ref.watch(p),
   'read': (ref, p) => ref.read(p),
   'listen': (ref, p) => ref.listen(p, (prev, next) {}),
@@ -18,13 +19,13 @@ final refMethodsThatDependOnProviders =
   'exists': (ref, p) => ref.exists(p),
 };
 final refMethodsThatDependOnListenables =
-    <String, void Function(Ref<Object?> ref, ProviderListenable<Object?>)>{
+    <String, void Function(Ref ref, ProviderListenable<Object?>)>{
   'watch': (ref, p) => ref.watch(p),
   'read': (ref, p) => ref.read(p),
   'listen': (ref, p) => ref.listen(p, (prev, next) {}),
 };
 final refMethodsThatDependOnProviderOrFamilies =
-    <String, void Function(Ref<Object?> ref, ProviderOrFamily)>{
+    <String, void Function(Ref ref, ProviderOrFamily)>{
   'invalidate': (ref, p) => ref.invalidate(p),
 };
 
@@ -32,7 +33,7 @@ void main() {
   group('Ref', () {
     test('asserts that a lifecycle cannot be used after a ref is unmounted',
         () {
-      late Ref<Object?> ref;
+      late Ref ref;
       final container = ProviderContainer.test();
       final dep = StateProvider((ref) => 0);
       final provider = Provider<Object?>((r) {
@@ -42,19 +43,10 @@ void main() {
       });
 
       container.read(provider);
-
       container.read(dep.notifier).state++;
 
       final another = Provider((ref) => 0);
 
-      expect(
-        () => ref.state,
-        throwsA(isA<UnmountedRefException>()),
-      );
-      expect(
-        () => ref.state = 42,
-        throwsA(isA<UnmountedRefException>()),
-      );
       expect(
         () => ref.watch(another),
         throwsA(isA<UnmountedRefException>()),
@@ -115,7 +107,7 @@ void main() {
     });
 
     test('asserts that a lifecycle cannot be used inside selectors', () {
-      late Ref<Object?> ref;
+      late Ref ref;
       final container = ProviderContainer.test();
       final dep = StateProvider((ref) => 0);
       final provider = Provider<Object?>((r) {
@@ -130,14 +122,6 @@ void main() {
 
       final another = Provider((ref) => 0);
 
-      expect(
-        () => container.read(provider.select((_) => ref.state)),
-        throwsA(isA<AssertionError>()),
-      );
-      expect(
-        () => container.read(provider.select((_) => ref.state = 42)),
-        throwsA(isA<AssertionError>()),
-      );
       expect(
         () => container.read(provider.select((_) => ref.watch(another))),
         throwsA(isA<AssertionError>()),
@@ -201,7 +185,7 @@ void main() {
 
     group('invalidate', () {
       test('can disposes of the element if not used anymore', () async {
-        late Ref<Object?> ref;
+        late Ref ref;
         final dep = Provider((r) {
           ref = r;
           return 0;
@@ -228,7 +212,7 @@ void main() {
           () async {
         final container = ProviderContainer.test();
         final provider = FutureProvider<int>((r) async => 0);
-        late Ref<Object?> ref;
+        late Ref ref;
         final dep = Provider((r) {
           ref = r;
           return 0;
@@ -247,7 +231,7 @@ void main() {
       test('supports asReload', () async {
         final container = ProviderContainer.test();
         final provider = FutureProvider<int>((r) async => 0);
-        late Ref<Object?> ref;
+        late Ref ref;
         final dep = Provider((r) {
           ref = r;
           return 0;
@@ -270,7 +254,7 @@ void main() {
       test('calls dispose immediately', () {
         final container = ProviderContainer.test();
         final listener = OnDisposeMock();
-        late Ref<Object?> ref;
+        late Ref ref;
         final provider = Provider((r) {
           ref = r;
           ref.onDispose(listener.call);
@@ -288,7 +272,7 @@ void main() {
         final container = ProviderContainer.test();
         final listener = Listener<int>();
         var result = 0;
-        late Ref<Object?> ref;
+        late Ref ref;
         final provider = Provider((r) {
           ref = r;
           return result;
@@ -311,7 +295,7 @@ void main() {
         final container = ProviderContainer.test();
         final listener = Listener<int>();
         final dep = StateProvider((ref) => 0);
-        late Ref<Object?> ref;
+        late Ref ref;
         final provider = Provider((r) {
           ref = r;
           return ref.watch(dep);
@@ -331,7 +315,7 @@ void main() {
       });
 
       test('can disposes of the element if not used anymore', () async {
-        late Ref<Object?> ref;
+        late Ref ref;
         final provider = Provider.autoDispose((r) {
           ref = r;
           r.keepAlive();
@@ -349,7 +333,7 @@ void main() {
 
       test('supports asReload', () async {
         final container = ProviderContainer.test();
-        late Ref<AsyncValue<int>> ref;
+        late Ref ref;
         final provider = FutureProvider<int>((r) async {
           ref = r;
           return 0;
@@ -584,9 +568,13 @@ void main() {
     group('listenSelf', () {
       test('does not break autoDispose', () async {
         final container = ProviderContainer.test();
-        final provider = Provider.autoDispose((ref) {
-          ref.listenSelf((previous, next) {});
-        });
+
+        final provider =
+            NotifierProvider.autoDispose<DeferredNotifier<void>, void>(
+          () => DeferredNotifier<void>((ref, self) {
+            self.listenSelf((previous, next) {});
+          }),
+        );
 
         container.read(provider);
         expect(container.getAllProviderElements(), [anything]);
@@ -601,14 +589,14 @@ void main() {
         final listener = Listener<int>();
         final listener2 = Listener<int>();
 
-        late Ref<int> ref;
-        final provider = Provider<int>((r) {
-          ref = r;
-          ref.listenSelf(listener.call);
-          ref.listenSelf(listener2.call);
+        final provider = NotifierProvider<DeferredNotifier<int>, int>(
+          () => DeferredNotifier<int>((ref, self) {
+            self.listenSelf(listener.call);
+            self.listenSelf(listener2.call);
 
-          return 0;
-        });
+            return 0;
+          }),
+        );
 
         container.read(provider);
 
@@ -619,7 +607,7 @@ void main() {
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
 
-        ref.state = 42;
+        container.read(provider.notifier).state = 42;
 
         verifyInOrder([
           listener(0, 42),
@@ -634,12 +622,15 @@ void main() {
         final listener = Listener<int>();
         final listener2 = Listener<int>();
         var result = 0;
-        final provider = Provider<int>((ref) {
-          ref.listenSelf(listener.call);
-          ref.listenSelf(listener2.call);
 
-          return result;
-        });
+        final provider = NotifierProvider<DeferredNotifier<int>, int>(
+          () => DeferredNotifier<int>((ref, self) {
+            self.listenSelf(listener.call);
+            self.listenSelf(listener2.call);
+
+            return result;
+          }),
+        );
 
         container.read(provider);
 
@@ -665,12 +656,15 @@ void main() {
         final container = ProviderContainer.test();
         final listener = Listener<int>();
         final listener2 = Listener<int>();
-        final provider = Provider<int>((ref) {
-          ref.listenSelf(listener.call);
-          ref.listenSelf(listener2.call);
 
-          return 0;
-        });
+        final provider = NotifierProvider<DeferredNotifier<int>, int>(
+          () => DeferredNotifier<int>((ref, self) {
+            self.listenSelf(listener.call);
+            self.listenSelf(listener2.call);
+
+            return 0;
+          }),
+        );
 
         container.read(provider);
 
@@ -696,15 +690,18 @@ void main() {
         final listener = Listener<int>();
         final listener2 = Listener<int>();
         var result = 0;
-        final provider = Provider<int>((ref) {
-          if (result == 0) {
-            ref.listenSelf(listener.call);
-          } else {
-            ref.listenSelf(listener2.call);
-          }
 
-          return result;
-        });
+        final provider = NotifierProvider<DeferredNotifier<int>, int>(
+          () => DeferredNotifier<int>((ref, self) {
+            if (result == 0) {
+              self.listenSelf(listener.call);
+            } else {
+              self.listenSelf(listener2.call);
+            }
+
+            return result;
+          }),
+        );
 
         container.read(provider);
 
@@ -726,12 +723,15 @@ void main() {
         final errorListener = ErrorListener();
         final errorListener2 = ErrorListener();
         var error = 42;
-        final provider = Provider<int>((ref) {
-          ref.listenSelf(listener.call, onError: errorListener.call);
-          ref.listenSelf((prev, next) {}, onError: errorListener2.call);
 
-          Error.throwWithStackTrace(error, StackTrace.empty);
-        });
+        final provider = NotifierProvider<DeferredNotifier<int>, int>(
+          () => DeferredNotifier<int>((ref, self) {
+            self.listenSelf(listener.call, onError: errorListener.call);
+            self.listenSelf((prev, next) {}, onError: errorListener2.call);
+
+            Error.throwWithStackTrace(error, StackTrace.empty);
+          }),
+        );
 
         expect(() => container.read(provider), throwsA(42));
 
@@ -761,13 +761,18 @@ void main() {
         final errorListener = ErrorListener();
         final errorListener2 = ErrorListener();
         Exception? error;
-        final provider = Provider<int>((ref) {
-          ref.listenSelf((prev, next) {}, onError: errorListener.call);
 
-          if (error != null) Error.throwWithStackTrace(error, StackTrace.empty);
+        final provider = NotifierProvider<DeferredNotifier<int>, int>(
+          () => DeferredNotifier<int>((ref, self) {
+            self.listenSelf((prev, next) {}, onError: errorListener.call);
 
-          return 0;
-        });
+            if (error != null) {
+              Error.throwWithStackTrace(error, StackTrace.empty);
+            }
+
+            return 0;
+          }),
+        );
 
         container.listen(
           provider,
@@ -794,10 +799,13 @@ void main() {
         final listener = Listener<int>();
         final listener2 = Listener<int>();
         var result = 0;
-        final provider = Provider<int>((ref) {
-          ref.listenSelf(listener.call);
-          return result;
-        });
+
+        final provider = NotifierProvider<DeferredNotifier<int>, int>(
+          () => DeferredNotifier<int>((ref, self) {
+            self.listenSelf(listener.call);
+            return result;
+          }),
+        );
 
         container.listen(provider, listener2.call, fireImmediately: true);
 
@@ -826,7 +834,7 @@ void main() {
       test('does not invoke value listeners if paused', () {
         final container = ProviderContainer.test();
         final listener = Listener<int>();
-        late Ref<int> ref;
+        late Ref ref;
         final provider = Provider<int>((r) {
           ref = r;
           return 0;
@@ -845,7 +853,7 @@ void main() {
       test('does not invoke error listeners if paused', () {
         final container = ProviderContainer.test();
         final listener = ErrorListener();
-        late Ref<void> ref;
+        late Ref ref;
         var throws = false;
         final provider = Provider<void>((r) {
           ref = r;
@@ -1156,17 +1164,17 @@ void main() {
       test('cannot listen itself', () {
         final container = ProviderContainer.test();
         final listener = Listener<int>();
-        late Ref<int> ref;
-        late Provider<int> provider;
-        provider = Provider<int>((r) {
-          ref = r;
-          ref.listen(provider, (previous, next) {});
-          return 0;
-        });
+        late NotifierProvider<Notifier<int>, int> provider;
+        provider = NotifierProvider<Notifier<int>, int>(
+          () => DeferredNotifier((ref, self) {
+            ref.listen(provider, (previous, next) {});
+            return 0;
+          }),
+        );
 
         expect(() => container.read(provider), throwsA(isAssertionError));
 
-        ref.state = 42;
+        container.read(provider.notifier).state = 42;
 
         verifyZeroInteractions(listener);
       });
@@ -1802,7 +1810,7 @@ void main() {
           'the provider will not be disposed.', () async {
         final container = ProviderContainer.test();
         late KeepAliveLink a;
-        late Ref<Object?> ref;
+        late Ref ref;
 
         final provider = Provider.autoDispose<void>((r) {
           ref = r;
@@ -1834,7 +1842,7 @@ void main() {
       test('refreshes a provider and return the new state', () {
         var value = 0;
         final state = Provider((ref) => value);
-        late Ref<Object?> ref;
+        late Ref ref;
         final provider = Provider((r) {
           ref = r;
         });
@@ -1856,12 +1864,12 @@ void main() {
         final listener = Listener<int>();
         final selfListener = Listener<int>();
         final container = ProviderContainer.test(observers: [observer]);
-        late Ref<int> ref;
-        final provider = Provider<int>((r) {
-          ref = r;
-          ref.listenSelf(selfListener.call);
-          return 0;
-        });
+        final provider = NotifierProvider<DeferredNotifier<int>, int>(
+          () => DeferredNotifier<int>((ref, self) {
+            self.listenSelf(selfListener.call);
+            return 0;
+          }),
+        );
 
         container.listen(provider, listener.call, fireImmediately: true);
 
@@ -1869,7 +1877,7 @@ void main() {
         verifyOnly(listener, listener(null, 0));
         verifyOnly(selfListener, selfListener(null, 0));
 
-        ref.notifyListeners();
+        container.read(provider.notifier).ref.notifyListeners();
 
         verifyOnly(listener, listener(0, 0));
         verifyOnly(selfListener, selfListener(0, 0));
@@ -1886,11 +1894,14 @@ void main() {
         final selfListener = Listener<int>();
         final listener = Listener<int>();
         final container = ProviderContainer.test(observers: [observer]);
-        final provider = Provider<int>((ref) {
-          ref.listenSelf(selfListener.call);
-          ref.notifyListeners();
-          return 0;
-        });
+
+        final provider = NotifierProvider<DeferredNotifier<int>, int>(
+          () => DeferredNotifier<int>((ref, self) {
+            self.listenSelf(selfListener.call);
+            ref.notifyListeners();
+            return 0;
+          }),
+        );
 
         container.listen(provider, listener.call, fireImmediately: true);
 
@@ -1910,13 +1921,16 @@ void main() {
         const firstValue = 'first';
         const secondValue = 'second';
         var result = firstValue;
-        final provider = Provider<Object>((ref) {
-          ref.listenSelf(selfListener.call);
-          if (callNotifyListeners) {
-            ref.notifyListeners();
-          }
-          return result;
-        });
+
+        final provider = NotifierProvider<DeferredNotifier<Object>, Object>(
+          () => DeferredNotifier<Object>((ref, self) {
+            self.listenSelf(selfListener.call);
+            if (callNotifyListeners) {
+              ref.notifyListeners();
+            }
+            return result;
+          }),
+        );
 
         container.listen(provider, listener.call, fireImmediately: true);
 
@@ -1949,7 +1963,7 @@ void main() {
     group('.refresh', () {
       test('Throws if a circular dependency is detected', () {
         // Regression test for https://github.com/rrousselGit/riverpod/issues/2336
-        late Ref<Object?> ref;
+        late Ref ref;
         final a = Provider((r) {
           ref = r;
           return 0;
@@ -1969,7 +1983,7 @@ void main() {
     group('.invalidate', () {
       test('Throws if a circular dependency is detected', () {
         // Regression test for https://github.com/rrousselGit/riverpod/issues/2336
-        late Ref<Object?> ref;
+        late Ref ref;
         final a = Provider((r) {
           ref = r;
           return 0;
@@ -1986,7 +2000,7 @@ void main() {
       });
 
       test('Circular dependency ignores families', () {
-        late Ref<Object?> ref;
+        late Ref ref;
         final a = Provider((r) {
           ref = r;
           return 0;
@@ -2007,7 +2021,7 @@ void main() {
         final listener = Listener<int>();
         var result = 0;
         final provider = Provider((r) => result);
-        late Ref<Object?> ref;
+        late Ref ref;
         final another = Provider((r) {
           ref = r;
         });
@@ -2036,7 +2050,7 @@ void main() {
           var result = 0;
           final unrelated = Provider((ref) => result);
           final provider = Provider.family<String, int>((r, i) => '$result-$i');
-          late Ref<Object?> ref;
+          late Ref ref;
           final another = Provider((r) {
             ref = r;
           });
@@ -2072,7 +2086,7 @@ void main() {
             (r, i) => result,
             dependencies: const [],
           );
-          late Ref<Object?> ref;
+          late Ref ref;
           final another = Provider((r) => ref = r, dependencies: [provider]);
 
           final listener = Listener<int>();
@@ -2160,7 +2174,7 @@ void main() {
             ref.onRemoveListener(listener2.call);
           },
         );
-        late Ref<Object?> ref;
+        late Ref ref;
         final provider = Provider(
           name: 'provider',
           (r) {
@@ -2205,7 +2219,7 @@ void main() {
             ref.onRemoveListener(listener2.call);
           },
         );
-        late Ref<Object?> ref;
+        late Ref ref;
         final provider = Provider(
           name: 'provider',
           (r) => ref = r,
@@ -2328,7 +2342,7 @@ void main() {
             ref.onAddListener(listener2.call);
           },
         );
-        late Ref<Object?> ref;
+        late Ref ref;
         final provider = Provider(
           name: 'provider',
           (r) => ref = r,
@@ -2361,12 +2375,12 @@ void main() {
             ref.onAddListener(listener2.call);
           },
         );
-        late Ref<Object?> ref;
+        late Ref ref;
         final provider = Provider(
           name: 'provider',
           (r) => ref = r,
         );
-        late Ref<Object?> ref2;
+        late Ref ref2;
         final provider2 = Provider(
           name: 'provider',
           (r) => ref2 = r,
@@ -2384,7 +2398,6 @@ void main() {
 
         ref.watch<void>(dep);
 
-        // TODO changelog breaking: Calling ref.watch multiple times calls ref.onListen everytime
         verifyInOrder([listener(), listener2()]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
@@ -2500,7 +2513,7 @@ void main() {
             ref.onResume(listener2.call);
           },
         );
-        late Ref<Object?> ref;
+        late Ref ref;
         final provider = Provider(
           name: 'provider',
           (r) => ref = r,
@@ -2537,7 +2550,7 @@ void main() {
             ref.onAddListener(listener2.call);
           },
         );
-        late Ref<Object?> ref;
+        late Ref ref;
         final provider = Provider(
           name: 'provider',
           (r) => ref = r,
@@ -2702,7 +2715,7 @@ void main() {
           ref.onCancel(listener.call);
           ref.onCancel(listener2.call);
         });
-        late Ref<Object?> ref;
+        late Ref ref;
         final provider = Provider((r) {
           ref = r;
         });
@@ -2957,7 +2970,7 @@ void main() {
     group('mounted', () {
       test('stays false on older refs while new refs are building', () {
         final container = ProviderContainer.test();
-        late Ref<int> ref;
+        late Ref ref;
         final provider = Provider<int>((r) {
           ref = r;
           return 0;
@@ -2975,7 +2988,7 @@ void main() {
       test('is false during onDispose caused by ref.watch', () {
         final container = ProviderContainer.test();
         bool? mounted;
-        late Ref<Object?> ref;
+        late Ref ref;
         final dep = StateProvider((ref) => 0);
         final provider = Provider((r) {
           ref = r;
@@ -2994,7 +3007,7 @@ void main() {
       test('is false during onDispose caused by container dispose', () {
         final container = ProviderContainer.test();
         bool? mounted;
-        late Ref<Object?> ref;
+        late Ref ref;
         final dep = StateProvider((ref) => 0);
         final provider = Provider((r) {
           ref = r;
@@ -3013,7 +3026,7 @@ void main() {
       test('is false in between rebuilds', () {
         final container = ProviderContainer.test();
         final dep = StateProvider((ref) => 0);
-        late Ref<Object?> ref;
+        late Ref ref;
         final provider = Provider((r) {
           ref = r;
           ref.watch(dep);

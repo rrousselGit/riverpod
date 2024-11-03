@@ -5,7 +5,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'codegen.g.dart';
 
 @riverpod
-int other(OtherRef ref) => 0;
+int other(Ref ref) => 0;
 
 /* SNIPPET START */
 @riverpod

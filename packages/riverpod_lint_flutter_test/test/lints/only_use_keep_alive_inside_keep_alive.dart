@@ -3,7 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'only_use_keep_alive_inside_keep_alive.g.dart';
 
 @Riverpod(keepAlive: true)
-int keepAlive(KeepAliveRef ref) => 42;
+int keepAlive(Ref ref) => 42;
 
 @Riverpod(keepAlive: true)
 class KeepAliveClass extends _$KeepAliveClass {
@@ -11,7 +11,7 @@ class KeepAliveClass extends _$KeepAliveClass {
 }
 
 @riverpod
-int autoDispose(AutoDisposeRef ref) => 42;
+int autoDispose(Ref ref) => 42;
 
 @riverpod
 class AutoDisposeClass extends _$AutoDisposeClass {
@@ -19,7 +19,7 @@ class AutoDisposeClass extends _$AutoDisposeClass {
 }
 
 @Riverpod(keepAlive: true)
-int fn(FnRef ref) {
+int fn(Ref ref) {
   ref.watch(keepAliveProvider);
   ref.watch(keepAliveClassProvider);
 

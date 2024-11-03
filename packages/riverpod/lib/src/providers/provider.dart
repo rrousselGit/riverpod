@@ -9,13 +9,13 @@ import 'stream_provider.dart' show StreamProvider;
 /// Implementation detail of `riverpod_generator`.
 /// Do not use, as this may be removed at any time.
 @internal
-base mixin $Provider<StateT, RefT> on ProviderBase<StateT> {
-  StateT create(RefT ref);
+base mixin $Provider<StateT> on ProviderBase<StateT> {
+  StateT create(Ref ref);
 }
 
 /// {@macro riverpod.provider}
 base class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
-    with $Provider<StateT, Ref<StateT>>, LegacyProviderMixin<StateT> {
+    with $Provider<StateT>, LegacyProviderMixin<StateT> {
   /// {@macro riverpod.provider}
   Provider(
     this._create, {
@@ -49,10 +49,10 @@ base class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
   /// {@macro riverpod.family}
   static const family = ProviderFamilyBuilder();
 
-  final Create<StateT, Ref<StateT>> _create;
+  final Create<StateT> _create;
 
   @override
-  StateT create(Ref<StateT> ref) => _create(ref);
+  StateT create(Ref ref) => _create(ref);
 
   @internal
   @override
@@ -63,9 +63,7 @@ base class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
   @mustBeOverridden
   @visibleForOverriding
   @override
-  Provider<StateT> $copyWithCreate(
-    Create<StateT, Ref<StateT>> create,
-  ) {
+  Provider<StateT> $copyWithCreate(Create<StateT> create) {
     return Provider<StateT>.internal(
       create,
       from: from,
@@ -348,10 +346,10 @@ class $ProviderElement<StateT> extends ProviderElement<StateT> {
   $ProviderElement(this.provider, super.pointer);
 
   @override
-  final $Provider<StateT, Ref<StateT>> provider;
+  final $Provider<StateT> provider;
 
   @override
-  void create(Ref<StateT> ref, {required bool didChangeDependency}) {
+  void create(Ref ref, {required bool didChangeDependency}) {
     setStateResult(ResultData(provider.create(ref)));
   }
 

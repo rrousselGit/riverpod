@@ -51,7 +51,7 @@ final class AProvider extends $NotifierProvider<A, int> {
   @override
   AProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       A,
     ) build,
   ) {
@@ -118,7 +118,7 @@ final class A2Provider extends $NotifierProvider<A2, int> {
   @override
   A2Provider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       A2,
     ) build,
   ) {
@@ -195,7 +195,7 @@ final class A3Provider extends $NotifierProvider<A3, int> {
   @override
   A3Provider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       A3,
     ) build,
   ) {
@@ -266,7 +266,7 @@ final class A3Family extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function(Ref<int> ref, A3 notifier, int argument) build,
+    int Function(Ref ref, A3 notifier, int argument) build,
   ) {
     return $FamilyOverride(
       from: this,
@@ -352,7 +352,7 @@ final class A4Provider extends $NotifierProvider<A4, int> {
   @override
   A4Provider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       A4,
     ) build,
   ) {
@@ -423,7 +423,7 @@ final class A4Family extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function(Ref<int> ref, A4 notifier, int argument) build,
+    int Function(Ref ref, A4 notifier, int argument) build,
   ) {
     return $FamilyOverride(
       from: this,
@@ -501,7 +501,7 @@ final class A5Provider extends $AsyncNotifierProvider<A5, int> {
   @override
   A5Provider $copyWithBuild(
     FutureOr<int> Function(
-      Ref<AsyncValue<int>>,
+      Ref,
       A5,
     ) build,
   ) {
@@ -573,8 +573,7 @@ final class A5Family extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    FutureOr<int> Function(Ref<AsyncValue<int>> ref, A5 notifier, int argument)
-        build,
+    FutureOr<int> Function(Ref ref, A5 notifier, int argument) build,
   ) {
     return $FamilyOverride(
       from: this,
@@ -652,7 +651,7 @@ final class A6Provider extends $AsyncNotifierProvider<A6, int> {
   @override
   A6Provider $copyWithBuild(
     FutureOr<int> Function(
-      Ref<AsyncValue<int>>,
+      Ref,
       A6,
     ) build,
   ) {
@@ -724,8 +723,7 @@ final class A6Family extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    FutureOr<int> Function(Ref<AsyncValue<int>> ref, A6 notifier, int argument)
-        build,
+    FutureOr<int> Function(Ref ref, A6 notifier, int argument) build,
   ) {
     return $FamilyOverride(
       from: this,
@@ -803,7 +801,7 @@ final class A7Provider extends $StreamNotifierProvider<A7, int> {
   @override
   A7Provider $copyWithBuild(
     Stream<int> Function(
-      Ref<AsyncValue<int>>,
+      Ref,
       A7,
     ) build,
   ) {
@@ -875,8 +873,7 @@ final class A7Family extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    Stream<int> Function(Ref<AsyncValue<int>> ref, A7 notifier, int argument)
-        build,
+    Stream<int> Function(Ref ref, A7 notifier, int argument) build,
   ) {
     return $FamilyOverride(
       from: this,
@@ -954,7 +951,7 @@ final class A8Provider extends $StreamNotifierProvider<A8, int> {
   @override
   A8Provider $copyWithBuild(
     Stream<int> Function(
-      Ref<AsyncValue<int>>,
+      Ref,
       A8,
     ) build,
   ) {
@@ -1026,8 +1023,7 @@ final class A8Family extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    Stream<int> Function(Ref<AsyncValue<int>> ref, A8 notifier, int argument)
-        build,
+    Stream<int> Function(Ref ref, A8 notifier, int argument) build,
   ) {
     return $FamilyOverride(
       from: this,
@@ -1103,7 +1099,7 @@ final class BProvider extends $NotifierProvider<B, int> {
   @override
   BProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       B,
     ) build,
   ) {
@@ -1170,7 +1166,7 @@ final class B2Provider extends $NotifierProvider<B2, int> {
   @override
   B2Provider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       B2,
     ) build,
   ) {
@@ -1193,4 +1189,4 @@ abstract class _$B2 extends $Notifier<int> {
 }
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

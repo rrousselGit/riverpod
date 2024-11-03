@@ -8,16 +8,14 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef CityRef = Ref<String>;
-
 @ProviderFor(city)
 const cityProvider = CityProvider._();
 
 final class CityProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, CityRef> {
+    with $Provider<String> {
   const CityProvider._(
       {String Function(
-        CityRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -31,7 +29,7 @@ final class CityProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    CityRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -53,31 +51,29 @@ final class CityProvider extends $FunctionalProvider<String, String>
   @override
   CityProvider $copyWithCreate(
     String Function(
-      CityRef ref,
+      Ref ref,
     ) create,
   ) {
     return CityProvider._(create: create);
   }
 
   @override
-  String create(CityRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? city;
     return _$cb(ref);
   }
 }
 
-String _$cityHash() => r'2ccdee096b5d5c1cafa736b3e52b788431b9af38';
-
-typedef CountryRef = Ref<String>;
+String _$cityHash() => r'6a5023a3aba119f1ecaee6c7db44b3f519e72759';
 
 @ProviderFor(country)
 const countryProvider = CountryProvider._();
 
 final class CountryProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, CountryRef> {
+    with $Provider<String> {
   const CountryProvider._(
       {String Function(
-        CountryRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -91,7 +87,7 @@ final class CountryProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    CountryRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -113,20 +109,20 @@ final class CountryProvider extends $FunctionalProvider<String, String>
   @override
   CountryProvider $copyWithCreate(
     String Function(
-      CountryRef ref,
+      Ref ref,
     ) create,
   ) {
     return CountryProvider._(create: create);
   }
 
   @override
-  String create(CountryRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? country;
     return _$cb(ref);
   }
 }
 
-String _$countryHash() => r'd1513349c3bc0c99763cb4fb29eb012f2351bc4c';
+String _$countryHash() => r'9fabd1cffe35f15a0a03339193da2d646c260137';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

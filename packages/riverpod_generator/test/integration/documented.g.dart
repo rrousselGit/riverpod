@@ -8,22 +8,18 @@ part of 'documented.dart';
 
 /// Hello world
 // Foo
-typedef FunctionalRef = Ref<String>;
-
-/// Hello world
-// Foo
 @ProviderFor(functional)
 const functionalProvider = FunctionalProvider._();
 
 /// Hello world
 // Foo
 final class FunctionalProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, FunctionalRef> {
+    with $Provider<String> {
   /// Hello world
 // Foo
   const FunctionalProvider._(
       {String Function(
-        FunctionalRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -37,7 +33,7 @@ final class FunctionalProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    FunctionalRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -59,20 +55,20 @@ final class FunctionalProvider extends $FunctionalProvider<String, String>
   @override
   FunctionalProvider $copyWithCreate(
     String Function(
-      FunctionalRef ref,
+      Ref ref,
     ) create,
   ) {
     return FunctionalProvider._(create: create);
   }
 
   @override
-  String create(FunctionalRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? functional;
     return _$cb(ref);
   }
 }
 
-String _$functionalHash() => r'1198a9a7842513019f6a8cd1b32e72217a00ee8f';
+String _$functionalHash() => r'52eddcd28b005800da9cf6c22df77f2f040bfb34';
 
 /// Hello world
 // Foo
@@ -126,7 +122,7 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
   @override
   ClassBasedProvider $copyWithBuild(
     String Function(
-      Ref<String>,
+      Ref,
       ClassBased,
     ) build,
   ) {
@@ -151,24 +147,20 @@ abstract class _$ClassBased extends $Notifier<String> {
 
 /// Hello world
 // Foo
-typedef FamilyRef = Ref<String>;
-
-/// Hello world
-// Foo
 @ProviderFor(family)
 const familyProvider = FamilyFamily._();
 
 /// Hello world
 // Foo
 final class FamilyProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, FamilyRef> {
+    with $Provider<String> {
   /// Hello world
 // Foo
   const FamilyProvider._(
       {required FamilyFamily super.from,
       required int super.argument,
       String Function(
-        FamilyRef ref,
+        Ref ref,
         int id,
       )? create})
       : _createCb = create,
@@ -181,7 +173,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    FamilyRef ref,
+    Ref ref,
     int id,
   )? _createCb;
 
@@ -211,7 +203,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
   @override
   FamilyProvider $copyWithCreate(
     String Function(
-      FamilyRef ref,
+      Ref ref,
     ) create,
   ) {
     return FamilyProvider._(
@@ -225,7 +217,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
   }
 
   @override
-  String create(FamilyRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? family;
     final argument = this.argument as int;
     return _$cb(
@@ -245,7 +237,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$familyHash() => r'339f0a8e0733a30bbb2220ce7ff6b9de7abe6022';
+String _$familyHash() => r'5164f4ea1f2d6c741e5c600c48a1b2ac2be7a1eb';
 
 /// Hello world
 // Foo
@@ -275,7 +267,7 @@ final class FamilyFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     String Function(
-      FamilyRef ref,
+      Ref ref,
       int args,
     ) create,
   ) {
@@ -358,7 +350,7 @@ final class ClassFamilyBasedProvider
   @override
   ClassFamilyBasedProvider $copyWithBuild(
     String Function(
-      Ref<String>,
+      Ref,
       ClassFamilyBased,
     ) build,
   ) {
@@ -434,8 +426,7 @@ final class ClassFamilyBasedFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    String Function(Ref<String> ref, ClassFamilyBased notifier, int argument)
-        build,
+    String Function(Ref ref, ClassFamilyBased notifier, int argument) build,
   ) {
     return $FamilyOverride(
       from: this,
@@ -470,4 +461,4 @@ abstract class _$ClassFamilyBased extends $Notifier<String> {
 }
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

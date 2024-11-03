@@ -8,12 +8,12 @@ class Repository {
 }
 
 @riverpod
-Repository repository(RepositoryRef ref) => Repository();
+Repository repository(Ref ref) => Repository();
 
 /* SNIPPET START */
 
 @riverpod
-String value(ValueRef ref) {
+String value(Ref ref) {
   // use ref to obtain other providers
   final repository = ref.watch(repositoryProvider);
   return repository.get();

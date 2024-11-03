@@ -2,26 +2,25 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_riverpod/legacy.dart';
 
 void main() {
   runApp(const ProviderScope(child: RandomNumberApp()));
 }
 
-// State notifier for generating a random number exposed by a state notifier
+// Notifier for generating a random number exposed by a state notifier
 // provider
-class RandomNumberGenerator extends StateNotifier<int> {
-  RandomNumberGenerator() : super(Random().nextInt(9999));
+class RandomNumberGenerator extends Notifier<int> {
+  @override
+  int build() => Random().nextInt(9999);
 
   void generate() {
     state = Random().nextInt(9999);
   }
 }
 
-// State notifier provider holding the state
-final randomNumberProvider = StateNotifierProvider(
-  (ref) => RandomNumberGenerator(),
-);
+// Notifier provider holding the state
+final randomNumberProvider =
+    NotifierProvider<RandomNumberGenerator, int>(RandomNumberGenerator.new);
 
 class RandomNumberApp extends StatelessWidget {
   const RandomNumberApp({super.key});

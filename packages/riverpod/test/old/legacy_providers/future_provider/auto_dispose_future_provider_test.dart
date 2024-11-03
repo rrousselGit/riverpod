@@ -9,37 +9,6 @@ import 'package:test/test.dart';
 import '../../utils.dart';
 
 void main() {
-  test('can read and set current AsyncValue', () {
-    final container = ProviderContainer.test();
-    final listener = Listener<AsyncValue<int>>();
-    late Ref<AsyncValue<int>> ref;
-    final provider = FutureProvider.autoDispose<int>((r) {
-      ref = r;
-      return 0;
-    });
-
-    container.listen(provider, listener.call);
-
-    expect(ref.state, const AsyncData(0));
-    verifyZeroInteractions(listener);
-
-    ref.state = const AsyncLoading<int>();
-
-    expect(
-      ref.state,
-      const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(0), isRefresh: false),
-    );
-    verifyOnly(
-      listener,
-      listener(
-        const AsyncData(0),
-        const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncData(0), isRefresh: false),
-      ),
-    );
-  });
-
   test('can be auto-scoped', () async {
     final dep = Provider(
       (ref) => 0,

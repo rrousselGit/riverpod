@@ -8,7 +8,7 @@ part 'codegen.g.dart';
 /* SNIPPET START */
 
 @riverpod
-void another(AnotherRef ref) {
+void another(Ref ref) {
   ref.listen<int>(counterProvider, (int? previousCount, int newCount) {
     print('The counter changed $newCount');
   });

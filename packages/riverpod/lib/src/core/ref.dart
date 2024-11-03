@@ -1,7 +1,7 @@
 part of '../framework.dart';
 
 @internal
-extension $RefArg on Ref<Object?> {
+extension $RefArg on Ref {
   // Implementation detail, do not use
   Object? get $arg => _element.origin.argument;
 
@@ -37,43 +37,18 @@ Cannot use the Ref of $origin after it has been disposed. This typically happens
 /// - [read] and [watch], two methods that allow a provider to consume other providers.
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
 /// {@endtemplate}
-base class Ref<StateT> {
-  /// {@macro riverpod.provider_ref_base}
-  Ref._(this._element);
-
-  final ProviderElement<StateT> _element;
+@optionalTypeArgs
+sealed class Ref {
+  ProviderElement<Object?> get _element;
   List<KeepAliveLink>? _keepAliveLinks;
-  List<void Function(StateT?, StateT)>? _onChangeSelfListeners;
   List<void Function()>? _onDisposeListeners;
   List<void Function()>? _onResumeListeners;
   List<void Function()>? _onCancelListeners;
   List<void Function()>? _onAddListeners;
   List<void Function()>? _onRemoveListeners;
-  List<OnError>? _onErrorSelfListeners;
 
   bool get mounted => _mounted;
   var _mounted = true;
-
-  /// Obtains the state currently exposed by this provider.
-  ///
-  /// Mutating this property will notify the provider listeners.
-  ///
-  /// If called before a value was set, there are two possible scenarios:
-  /// - on synchronous providers, this will throw a [StateError].
-  /// - on asynchronous providers, this will return an [AsyncLoading].
-  ///
-  /// Will throw if the provider threw during creation.
-  StateT get state {
-    _throwIfInvalidUsage();
-
-    return _element.readSelf();
-  }
-
-  set state(StateT newState) {
-    _throwIfInvalidUsage();
-
-    _element.setStateResult(ResultData(newState));
-  }
 
   /// The [ProviderContainer] that this provider is associated with.
   ProviderContainer get container => _element.container;
@@ -210,10 +185,14 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   }
 
   /// {@template riverpod.invalidate}
-  /// Invalidates the state of the provider, causing it to refresh.
+  /// Invalidates the state of the provider, destroying the state immediately
+  /// and causing the provider to rebuild at some point in the future.
   ///
-  /// As opposed to [refresh], the refresh is not immediate and is instead
-  /// delayed to the next read or next frame.
+  /// As opposed to [refresh], the rebuild is not immediate and is instead
+  /// delayed by an undefined amount of time.
+  /// Typically, the rebuild happens at the next tick of the event loop.
+  /// But if a provider is not listened to, the rebuild may be delayed until
+  /// the provider is listened to again.
   ///
   /// Calling [invalidate] multiple times will refresh the provider only
   /// once.
@@ -407,7 +386,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// class MyService {
   ///   MyService(this.ref);
   ///
-  ///   final Ref<MyService> ref;
+  ///   final Ref ref;
   ///
   ///   Future<User> fetchUser() {
   ///     // We read the current configurations, but do not care about
@@ -591,6 +570,38 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
       onError: onError,
       fireImmediately: fireImmediately,
     );
+  }
+}
+
+class _Ref<StateT> extends Ref {
+  /// {@macro riverpod.provider_ref_base}
+  _Ref(this._element);
+
+  @override
+  final ProviderElement<StateT> _element;
+
+  List<void Function(StateT?, StateT)>? _onChangeSelfListeners;
+  List<OnError>? _onErrorSelfListeners;
+
+  /// Obtains the state currently exposed by this provider.
+  ///
+  /// Mutating this property will notify the provider listeners.
+  ///
+  /// If called before a value was set, there are two possible scenarios:
+  /// - on synchronous providers, this will throw a [StateError].
+  /// - on asynchronous providers, this will return an [AsyncLoading].
+  ///
+  /// Will throw if the provider threw during creation.
+  StateT get state {
+    _throwIfInvalidUsage();
+
+    return _element.readSelf();
+  }
+
+  set state(StateT newState) {
+    _throwIfInvalidUsage();
+
+    _element.setStateResult(ResultData(newState));
   }
 
   /// Listens to changes on the value exposed by this provider.

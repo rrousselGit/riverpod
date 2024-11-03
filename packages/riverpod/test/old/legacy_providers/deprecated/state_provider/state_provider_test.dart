@@ -18,8 +18,8 @@ void main() {
     );
     final container = ProviderContainer.test(
       overrides: [
-        provider.overrideWith((Ref<int> ref) => 42),
-        autoDispose.overrideWith((Ref<int> ref) => 84),
+        provider.overrideWith((ref) => 42),
+        autoDispose.overrideWith((ref) => 84),
       ],
     );
 
@@ -34,12 +34,8 @@ void main() {
     );
     final container = ProviderContainer.test(
       overrides: [
-        family.overrideWith(
-          (Ref<String> ref, int arg) => '42 $arg',
-        ),
-        autoDisposeFamily.overrideWith(
-          (Ref<String> ref, int arg) => '84 $arg',
-        ),
+        family.overrideWith((ref, int arg) => '42 $arg'),
+        autoDisposeFamily.overrideWith((ref, int arg) => '84 $arg'),
       ],
     );
 
@@ -62,23 +58,6 @@ void main() {
     container.refresh(provider);
 
     verifyNoMoreInteractions(listener);
-  });
-
-  test('ref.listenSelf listens to state changes', () {
-    final listener = Listener<int>();
-    final container = ProviderContainer.test();
-    final provider = StateProvider<int>((ref) {
-      ref.listenSelf(listener.call);
-      return 0;
-    });
-
-    final notifier = container.read(provider.notifier);
-
-    verifyOnly(listener, listener(null, 0));
-
-    notifier.state++;
-
-    verifyOnly(listener, listener(0, 1));
   });
 
   test('supports .name', () {

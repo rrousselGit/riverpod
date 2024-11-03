@@ -5,11 +5,12 @@ final notifierProviderFactory = TestMatrix<NotifierTestFactory>(
     'NotifierProvider': NotifierTestFactory(
       isAutoDispose: false,
       isFamily: false,
-      deferredNotifier: DeferredNotifier.new,
+      deferredNotifier: <T>(create) =>
+          DeferredNotifier<T>((ref, self) => create(ref, self)),
       deferredProvider: <StateT>(create, {updateShouldNotify}) {
         return NotifierProvider<DeferredNotifier<StateT>, StateT>(
           () => DeferredNotifier(
-            create,
+            (ref, self) => create(ref, self),
             updateShouldNotify: updateShouldNotify,
           ),
         );
@@ -29,11 +30,12 @@ final notifierProviderFactory = TestMatrix<NotifierTestFactory>(
     'NotifierProvider.autoDispose': NotifierTestFactory(
       isAutoDispose: true,
       isFamily: false,
-      deferredNotifier: DeferredNotifier.new,
+      deferredNotifier: <T>(create) =>
+          DeferredNotifier<T>((ref, self) => create(ref, self)),
       deferredProvider: <StateT>(create, {updateShouldNotify}) {
         return NotifierProvider.autoDispose<DeferredNotifier<StateT>, StateT>(
           () => DeferredNotifier(
-            create,
+            (ref, self) => create(ref, self),
             updateShouldNotify: updateShouldNotify,
           ),
         );
@@ -122,6 +124,12 @@ abstract class TestNotifier<StateT> implements $Notifier<StateT> {
 
   @override
   set state(StateT value);
+
+  @override
+  void listenSelf(
+    void Function(StateT? previous, StateT next) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  });
 }
 
 class DeferredNotifier<StateT> extends Notifier<StateT>
@@ -131,14 +139,23 @@ class DeferredNotifier<StateT> extends Notifier<StateT>
     bool Function(StateT, StateT)? updateShouldNotify,
   }) : _updateShouldNotify = updateShouldNotify;
 
-  final StateT Function(Ref<StateT> ref) _create;
+  final StateT Function(Ref ref, DeferredNotifier<StateT> self) _create;
   final bool Function(
     StateT previousState,
     StateT newState,
   )? _updateShouldNotify;
 
   @override
-  StateT build() => _create(ref);
+  Ref get ref;
+
+  @override
+  void listenSelf(
+    void Function(StateT? previous, StateT next) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  });
+
+  @override
+  StateT build() => _create(ref, this);
 
   @override
   bool updateShouldNotify(StateT previousState, StateT newState) =>
@@ -153,7 +170,7 @@ class DeferredFamilyNotifier<StateT> extends FamilyNotifier<StateT, int>
     bool Function(StateT, StateT)? updateShouldNotify,
   }) : _updateShouldNotify = updateShouldNotify;
 
-  final StateT Function(Ref<StateT> ref) _create;
+  final StateT Function(Ref ref, DeferredFamilyNotifier<StateT> self) _create;
 
   final bool Function(
     StateT previousState,
@@ -161,7 +178,7 @@ class DeferredFamilyNotifier<StateT> extends FamilyNotifier<StateT, int>
   )? _updateShouldNotify;
 
   @override
-  StateT build(int arg) => _create(ref);
+  StateT build(int arg) => _create(ref, this);
 
   @override
   bool updateShouldNotify(
@@ -173,7 +190,7 @@ class DeferredFamilyNotifier<StateT> extends FamilyNotifier<StateT, int>
 }
 
 class NotifierTestFactory extends TestFactory<
-    ProviderFactory<$Notifier<Object?>, ProviderBase<Object?>, void>> {
+    ProviderFactory<$Notifier<Object?>, ProviderBase<Object?>>> {
   NotifierTestFactory({
     required super.isAutoDispose,
     required super.isFamily,
@@ -184,11 +201,11 @@ class NotifierTestFactory extends TestFactory<
   });
 
   final TestNotifier<StateT> Function<StateT>(
-    StateT Function(Ref<StateT> ref) create,
+    StateT Function(Ref ref, $Notifier<StateT> self) create,
   ) deferredNotifier;
 
   final $NotifierProvider<TestNotifier<StateT>, StateT> Function<StateT>(
-    StateT Function(Ref<StateT> ref) create, {
+    StateT Function(Ref ref, $Notifier<StateT> self) create, {
     bool Function(StateT, StateT)? updateShouldNotify,
   }) deferredProvider;
 
@@ -197,11 +214,11 @@ class NotifierTestFactory extends TestFactory<
   ) provider;
 
   $NotifierProvider<TestNotifier<StateT>, StateT> simpleTestProvider<StateT>(
-    StateT Function(Ref<StateT> ref) create, {
+    StateT Function(Ref ref, $Notifier<StateT> self) create, {
     bool Function(StateT, StateT)? updateShouldNotify,
   }) {
     return deferredProvider<StateT>(
-      (ref) => create(ref),
+      (ref, self) => create(ref, self),
       updateShouldNotify: updateShouldNotify,
     );
   }

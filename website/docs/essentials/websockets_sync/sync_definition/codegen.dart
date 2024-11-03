@@ -4,7 +4,7 @@ part 'codegen.g.dart';
 
 /* SNIPPET START */
 @riverpod
-int synchronousExample(SynchronousExampleRef ref) {
+int synchronousExample(Ref ref) {
   return 0;
 }
 /* SNIPPET END */

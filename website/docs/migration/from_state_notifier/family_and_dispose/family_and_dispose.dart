@@ -9,7 +9,7 @@ import '../../utils.dart';
 part 'family_and_dispose.g.dart';
 
 @riverpod
-TaskTrackerRepo taskTracker(TaskTrackerRef ref) => TaskTrackerRepo();
+TaskTrackerRepo taskTracker(Ref ref) => TaskTrackerRepo();
 
 /* SNIPPET START */
 @riverpod

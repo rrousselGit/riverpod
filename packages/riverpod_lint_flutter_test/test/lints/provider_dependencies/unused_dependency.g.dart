@@ -6,16 +6,14 @@ part of 'unused_dependency.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef RootRef = Ref<int>;
-
 @ProviderFor(root)
 const rootProvider = RootProvider._();
 
 final class RootProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, RootRef> {
+    with $Provider<int> {
   const RootProvider._(
       {int Function(
-        RootRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -29,7 +27,7 @@ final class RootProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    RootRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -51,31 +49,29 @@ final class RootProvider extends $FunctionalProvider<int, int>
   @override
   RootProvider $copyWithCreate(
     int Function(
-      RootRef ref,
+      Ref ref,
     ) create,
   ) {
     return RootProvider._(create: create);
   }
 
   @override
-  int create(RootRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? root;
     return _$cb(ref);
   }
 }
 
-String _$rootHash() => r'1cd85d73316aad02169ff0f5e7af5cf1423410ff';
-
-typedef DepRef = Ref<int>;
+String _$rootHash() => r'dda8bbb46cb4d7c658597669e3be92e2447dcfb0';
 
 @ProviderFor(dep)
 const depProvider = DepProvider._();
 
 final class DepProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, DepRef> {
+    with $Provider<int> {
   const DepProvider._(
       {int Function(
-        DepRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -89,7 +85,7 @@ final class DepProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    DepRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -111,31 +107,29 @@ final class DepProvider extends $FunctionalProvider<int, int>
   @override
   DepProvider $copyWithCreate(
     int Function(
-      DepRef ref,
+      Ref ref,
     ) create,
   ) {
     return DepProvider._(create: create);
   }
 
   @override
-  int create(DepRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? dep;
     return _$cb(ref);
   }
 }
 
-String _$depHash() => r'749c4d696d29c72686cabcabd6fa7855f5cbf4db';
-
-typedef Dep2Ref = Ref<int>;
+String _$depHash() => r'578a350a40cda46444ecd9fa3ea2fd7bd0994692';
 
 @ProviderFor(dep2)
 const dep2Provider = Dep2Provider._();
 
 final class Dep2Provider extends $FunctionalProvider<int, int>
-    with $Provider<int, Dep2Ref> {
+    with $Provider<int> {
   const Dep2Provider._(
       {int Function(
-        Dep2Ref ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -149,7 +143,7 @@ final class Dep2Provider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    Dep2Ref ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -171,23 +165,20 @@ final class Dep2Provider extends $FunctionalProvider<int, int>
   @override
   Dep2Provider $copyWithCreate(
     int Function(
-      Dep2Ref ref,
+      Ref ref,
     ) create,
   ) {
     return Dep2Provider._(create: create);
   }
 
   @override
-  int create(Dep2Ref ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? dep2;
     return _$cb(ref);
   }
 }
 
-String _$dep2Hash() => r'13cd909366c79168e3d9cd95f529ddbcee6de7dc';
-
-////////////
-typedef ExtraDepRef = Ref<int>;
+String _$dep2Hash() => r'97901e825cdcf5b1ac455b0fe8a2111662ce9f13';
 
 ////////////
 @ProviderFor(extraDep)
@@ -195,11 +186,11 @@ const extraDepProvider = ExtraDepProvider._();
 
 ////////////
 final class ExtraDepProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, ExtraDepRef> {
+    with $Provider<int> {
   ////////////
   const ExtraDepProvider._(
       {int Function(
-        ExtraDepRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -219,7 +210,7 @@ final class ExtraDepProvider extends $FunctionalProvider<int, int>
   static const $allTransitiveDependencies1 = dep2Provider;
 
   final int Function(
-    ExtraDepRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -241,31 +232,29 @@ final class ExtraDepProvider extends $FunctionalProvider<int, int>
   @override
   ExtraDepProvider $copyWithCreate(
     int Function(
-      ExtraDepRef ref,
+      Ref ref,
     ) create,
   ) {
     return ExtraDepProvider._(create: create);
   }
 
   @override
-  int create(ExtraDepRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? extraDep;
     return _$cb(ref);
   }
 }
 
-String _$extraDepHash() => r'038d9c819b5d91eb1f7166194d8e646f17ea24d7';
-
-typedef NoDepRef = Ref<int>;
+String _$extraDepHash() => r'586c1a0f0ac120f8608c025a6a47fe5282b80320';
 
 @ProviderFor(noDep)
 const noDepProvider = NoDepProvider._();
 
 final class NoDepProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, NoDepRef> {
+    with $Provider<int> {
   const NoDepProvider._(
       {int Function(
-        NoDepRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -283,7 +272,7 @@ final class NoDepProvider extends $FunctionalProvider<int, int>
   static const $allTransitiveDependencies0 = depProvider;
 
   final int Function(
-    NoDepRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -305,33 +294,30 @@ final class NoDepProvider extends $FunctionalProvider<int, int>
   @override
   NoDepProvider $copyWithCreate(
     int Function(
-      NoDepRef ref,
+      Ref ref,
     ) create,
   ) {
     return NoDepProvider._(create: create);
   }
 
   @override
-  int create(NoDepRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? noDep;
     return _$cb(ref);
   }
 }
 
-String _$noDepHash() => r'38d78ded1eba491968c0200cc0b51969fcf3ec9a';
-
-typedef DependenciesFirstThenKeepAliveRef = Ref<int>;
+String _$noDepHash() => r'99022366e7dd3e19464747d1e2f23184691aa134';
 
 @ProviderFor(dependenciesFirstThenKeepAlive)
 const dependenciesFirstThenKeepAliveProvider =
     DependenciesFirstThenKeepAliveProvider._();
 
 final class DependenciesFirstThenKeepAliveProvider
-    extends $FunctionalProvider<int, int>
-    with $Provider<int, DependenciesFirstThenKeepAliveRef> {
+    extends $FunctionalProvider<int, int> with $Provider<int> {
   const DependenciesFirstThenKeepAliveProvider._(
       {int Function(
-        DependenciesFirstThenKeepAliveRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -349,7 +335,7 @@ final class DependenciesFirstThenKeepAliveProvider
   static const $allTransitiveDependencies0 = depProvider;
 
   final int Function(
-    DependenciesFirstThenKeepAliveRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -371,32 +357,30 @@ final class DependenciesFirstThenKeepAliveProvider
   @override
   DependenciesFirstThenKeepAliveProvider $copyWithCreate(
     int Function(
-      DependenciesFirstThenKeepAliveRef ref,
+      Ref ref,
     ) create,
   ) {
     return DependenciesFirstThenKeepAliveProvider._(create: create);
   }
 
   @override
-  int create(DependenciesFirstThenKeepAliveRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? dependenciesFirstThenKeepAlive;
     return _$cb(ref);
   }
 }
 
 String _$dependenciesFirstThenKeepAliveHash() =>
-    r'15604dafd167408515dfb4e846fab0af46e7e566';
-
-typedef NoDepNoParamRef = Ref<int>;
+    r'b9bd9082ce9a72feea33f9327b26e7b428cadfd3';
 
 @ProviderFor(noDepNoParam)
 const noDepNoParamProvider = NoDepNoParamProvider._();
 
 final class NoDepNoParamProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, NoDepNoParamRef> {
+    with $Provider<int> {
   const NoDepNoParamProvider._(
       {int Function(
-        NoDepNoParamRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -414,7 +398,7 @@ final class NoDepNoParamProvider extends $FunctionalProvider<int, int>
   static const $allTransitiveDependencies0 = depProvider;
 
   final int Function(
-    NoDepNoParamRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -436,31 +420,29 @@ final class NoDepNoParamProvider extends $FunctionalProvider<int, int>
   @override
   NoDepNoParamProvider $copyWithCreate(
     int Function(
-      NoDepNoParamRef ref,
+      Ref ref,
     ) create,
   ) {
     return NoDepNoParamProvider._(create: create);
   }
 
   @override
-  int create(NoDepNoParamRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? noDepNoParam;
     return _$cb(ref);
   }
 }
 
-String _$noDepNoParamHash() => r'fe52f15a4d98159beafe8b9a177073f6b6cbae6d';
-
-typedef NoDepWithoutCommaRef = Ref<int>;
+String _$noDepNoParamHash() => r'ea3e66e28bbfb716adf89cea37a1607c78283e06';
 
 @ProviderFor(noDepWithoutComma)
 const noDepWithoutCommaProvider = NoDepWithoutCommaProvider._();
 
 final class NoDepWithoutCommaProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, NoDepWithoutCommaRef> {
+    with $Provider<int> {
   const NoDepWithoutCommaProvider._(
       {int Function(
-        NoDepWithoutCommaRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -478,7 +460,7 @@ final class NoDepWithoutCommaProvider extends $FunctionalProvider<int, int>
   static const $allTransitiveDependencies0 = depProvider;
 
   final int Function(
-    NoDepWithoutCommaRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -500,31 +482,29 @@ final class NoDepWithoutCommaProvider extends $FunctionalProvider<int, int>
   @override
   NoDepWithoutCommaProvider $copyWithCreate(
     int Function(
-      NoDepWithoutCommaRef ref,
+      Ref ref,
     ) create,
   ) {
     return NoDepWithoutCommaProvider._(create: create);
   }
 
   @override
-  int create(NoDepWithoutCommaRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? noDepWithoutComma;
     return _$cb(ref);
   }
 }
 
-String _$noDepWithoutCommaHash() => r'59d5a7874da40605b1b187766ebb4927d2eaae81';
-
-typedef RootDepRef = Ref<int>;
+String _$noDepWithoutCommaHash() => r'a3b07e526b4829ee4ed1848de4ff64c3b05c1a30';
 
 @ProviderFor(rootDep)
 const rootDepProvider = RootDepProvider._();
 
 final class RootDepProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, RootDepRef> {
+    with $Provider<int> {
   const RootDepProvider._(
       {int Function(
-        RootDepRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -542,7 +522,7 @@ final class RootDepProvider extends $FunctionalProvider<int, int>
   static const $allTransitiveDependencies0 = rootProvider;
 
   final int Function(
-    RootDepRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -564,20 +544,20 @@ final class RootDepProvider extends $FunctionalProvider<int, int>
   @override
   RootDepProvider $copyWithCreate(
     int Function(
-      RootDepRef ref,
+      Ref ref,
     ) create,
   ) {
     return RootDepProvider._(create: create);
   }
 
   @override
-  int create(RootDepRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? rootDep;
     return _$cb(ref);
   }
 }
 
-String _$rootDepHash() => r'a57728bf865d5a9a73f40f08b038946418cdcf52';
+String _$rootDepHash() => r'c406dc7e58c18bc46ed722a81208bc13fe62654a';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

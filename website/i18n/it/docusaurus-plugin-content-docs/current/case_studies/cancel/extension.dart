@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 
 /* SNIPPET START */
-extension DebounceAndCancelExtension on Ref<Object?> {
+extension DebounceAndCancelExtension on Ref {
   /// Aspetta per la [duration] (di default a 500ms) e poi ritorna un [http.Client]
   /// con il quale possiamo effettuare una richiesta.
   ///

@@ -20,7 +20,8 @@ dependencies:
   test: ^1.0.0
 
 dev_dependencies:
-  analyzer: ^6.3.0
+  analyzer: ^6.7.0
+  expect_error: ^1.0.0
   mockito: ^5.0.0
   path: ^1.9.0
   trotter: ^2.0.0-dev.1

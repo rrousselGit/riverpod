@@ -5,6 +5,6 @@ part 'codegen.g.dart';
 /* SNIPPET START */
 
 @riverpod
-String city(CityRef ref) => 'London';
+String city(Ref ref) => 'London';
 @riverpod
-String country(CountryRef ref) => 'England';
+String country(Ref ref) => 'England';

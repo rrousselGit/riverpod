@@ -8,19 +8,15 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef FetchConfigurationRef = Ref<AsyncValue<Configuration>>;
-
 @ProviderFor(fetchConfiguration)
 const fetchConfigurationProvider = FetchConfigurationProvider._();
 
 final class FetchConfigurationProvider extends $FunctionalProvider<
         AsyncValue<Configuration>, FutureOr<Configuration>>
-    with
-        $FutureModifier<Configuration>,
-        $FutureProvider<Configuration, FetchConfigurationRef> {
+    with $FutureModifier<Configuration>, $FutureProvider<Configuration> {
   const FetchConfigurationProvider._(
       {FutureOr<Configuration> Function(
-        FetchConfigurationRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -34,7 +30,7 @@ final class FetchConfigurationProvider extends $FunctionalProvider<
         );
 
   final FutureOr<Configuration> Function(
-    FetchConfigurationRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -49,21 +45,21 @@ final class FetchConfigurationProvider extends $FunctionalProvider<
   @override
   FetchConfigurationProvider $copyWithCreate(
     FutureOr<Configuration> Function(
-      FetchConfigurationRef ref,
+      Ref ref,
     ) create,
   ) {
     return FetchConfigurationProvider._(create: create);
   }
 
   @override
-  FutureOr<Configuration> create(FetchConfigurationRef ref) {
+  FutureOr<Configuration> create(Ref ref) {
     final _$cb = _createCb ?? fetchConfiguration;
     return _$cb(ref);
   }
 }
 
 String _$fetchConfigurationHash() =>
-    r'6c0f062e6f20baf883c4282856f1197fbe633d89';
+    r'f18dd06ced5e58734c6fd925e5614c34e94d1b9e';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

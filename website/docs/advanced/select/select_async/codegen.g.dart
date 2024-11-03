@@ -8,17 +8,15 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef UserRef = Ref<AsyncValue<User>>;
-
 @ProviderFor(user)
 const userProvider = UserProvider._();
 
 final class UserProvider
     extends $FunctionalProvider<AsyncValue<User>, FutureOr<User>>
-    with $FutureModifier<User>, $FutureProvider<User, UserRef> {
+    with $FutureModifier<User>, $FutureProvider<User> {
   const UserProvider._(
       {FutureOr<User> Function(
-        UserRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -32,7 +30,7 @@ final class UserProvider
         );
 
   final FutureOr<User> Function(
-    UserRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -46,31 +44,29 @@ final class UserProvider
   @override
   UserProvider $copyWithCreate(
     FutureOr<User> Function(
-      UserRef ref,
+      Ref ref,
     ) create,
   ) {
     return UserProvider._(create: create);
   }
 
   @override
-  FutureOr<User> create(UserRef ref) {
+  FutureOr<User> create(Ref ref) {
     final _$cb = _createCb ?? user;
     return _$cb(ref);
   }
 }
 
-String _$userHash() => r'19a4464690c31301e47fd7bd5bf6ea475c1a73eb';
-
-typedef ExampleRef = Ref<Object?>;
+String _$userHash() => r'b83ca110a6fae2341d1bfca73fb3d89c4d12723d';
 
 @ProviderFor(example)
 const exampleProvider = ExampleProvider._();
 
 final class ExampleProvider extends $FunctionalProvider<Object?, Object?>
-    with $Provider<Object?, ExampleRef> {
+    with $Provider<Object?> {
   const ExampleProvider._(
       {Object? Function(
-        ExampleRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -84,7 +80,7 @@ final class ExampleProvider extends $FunctionalProvider<Object?, Object?>
         );
 
   final Object? Function(
-    ExampleRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -106,20 +102,20 @@ final class ExampleProvider extends $FunctionalProvider<Object?, Object?>
   @override
   ExampleProvider $copyWithCreate(
     Object? Function(
-      ExampleRef ref,
+      Ref ref,
     ) create,
   ) {
     return ExampleProvider._(create: create);
   }
 
   @override
-  Object? create(ExampleRef ref) {
+  Object? create(Ref ref) {
     final _$cb = _createCb ?? example;
     return _$cb(ref);
   }
 }
 
-String _$exampleHash() => r'1fccbdbec0e3585bc9d3a5709ac88a8919dd78fa';
+String _$exampleHash() => r'05abb7bf29fe43807cb1a31a17eb23c821529a69';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

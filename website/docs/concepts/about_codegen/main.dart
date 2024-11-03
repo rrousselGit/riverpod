@@ -16,7 +16,7 @@ final http = Http();
 
 /* SNIPPET START */
 @riverpod
-Future<User> fetchUser(FetchUserRef ref, {required int userId}) async {
+Future<User> fetchUser(Ref ref, {required int userId}) async {
   final json = await http.get('api/user/$userId');
   return User.fromJson(json);
 }

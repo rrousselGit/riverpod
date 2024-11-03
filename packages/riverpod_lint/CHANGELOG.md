@@ -42,7 +42,24 @@ Various lints had their severity changed:
 
 - `riverpod` upgraded to `3.0.0-dev.0`
 
-## Unreleased patch
+## 2.6.2 - 2024-10-27
+
+- Support latest custom_lint
+
+## 2.6.1 - 2024-10-22
+
+- Support analyzer >=6.7.0 <7.0.0
+  This should make it compatible with Flutter's stable channel.
+
+## 2.4.0 - 2024-10-20
+
+- `functional_ref` and its quick-fix now expect:
+  ```dart
+  @riverpod
+  Model foo(Ref ref) => ..
+  ```
+
+## 2.3.14 - 2024-10-12
 
 Bump analyzer to ^6.9.0
 

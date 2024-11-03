@@ -15,15 +15,15 @@ enum Filter {
 }
 
 @riverpod
-List<Todo> todos(TodosRef ref) => [];
+List<Todo> todos(Ref ref) => [];
 
 @riverpod
-Filter filter(FilterRef ref) => Filter.all;
+Filter filter(Ref ref) => Filter.all;
 
 /* SNIPPET START */
 
 @riverpod
-List<Todo> filteredTodos(FilteredTodosRef ref) {
+List<Todo> filteredTodos(Ref ref) {
   // Providers can consume other providers using the "ref" object.
   // With ref.watch, providers will automatically update if the watched values changes.
   final List<Todo> todos = ref.watch(todosProvider);

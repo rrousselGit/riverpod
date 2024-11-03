@@ -10,7 +10,7 @@ part 'async_values.g.dart';
 /* SNIPPET START */
 
 @riverpod
-Future<List<Item>> itemsApi(ItemsApiRef ref) async {
+Future<List<Item>> itemsApi(Ref ref) async {
   final client = Dio();
   final result = await client.get<List<dynamic>>('your-favorite-api');
   final parsed = [...result.data!.map((e) => Item.fromJson(e as Json))];
@@ -18,7 +18,7 @@ Future<List<Item>> itemsApi(ItemsApiRef ref) async {
 }
 
 @riverpod
-List<Item> evenItems(EvenItemsRef ref) {
+List<Item> evenItems(Ref ref) {
   final asyncValue = ref.watch(itemsApiProvider);
   if (asyncValue.isReloading) return [];
   if (asyncValue.hasError) return const [Item(id: -1)];

@@ -8,16 +8,14 @@ part of 'old_lifecycles_final.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef DurationRef = Ref<Duration>;
-
 @ProviderFor(duration)
 const durationProvider = DurationProvider._();
 
 final class DurationProvider extends $FunctionalProvider<Duration, Duration>
-    with $Provider<Duration, DurationRef> {
+    with $Provider<Duration> {
   const DurationProvider._(
       {Duration Function(
-        DurationRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -31,7 +29,7 @@ final class DurationProvider extends $FunctionalProvider<Duration, Duration>
         );
 
   final Duration Function(
-    DurationRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -53,31 +51,29 @@ final class DurationProvider extends $FunctionalProvider<Duration, Duration>
   @override
   DurationProvider $copyWithCreate(
     Duration Function(
-      DurationRef ref,
+      Ref ref,
     ) create,
   ) {
     return DurationProvider._(create: create);
   }
 
   @override
-  Duration create(DurationRef ref) {
+  Duration create(Ref ref) {
     final _$cb = _createCb ?? duration;
     return _$cb(ref);
   }
 }
 
-String _$durationHash() => r'be282a34a01007c6f3e04447579609199306aecc';
-
-typedef RepositoryRef = Ref<_MyRepo>;
+String _$durationHash() => r'997cacfb78da8107053428dfc5515497354b50c6';
 
 @ProviderFor(repository)
 const repositoryProvider = RepositoryProvider._();
 
 final class RepositoryProvider extends $FunctionalProvider<_MyRepo, _MyRepo>
-    with $Provider<_MyRepo, RepositoryRef> {
+    with $Provider<_MyRepo> {
   const RepositoryProvider._(
       {_MyRepo Function(
-        RepositoryRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -91,7 +87,7 @@ final class RepositoryProvider extends $FunctionalProvider<_MyRepo, _MyRepo>
         );
 
   final _MyRepo Function(
-    RepositoryRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -113,20 +109,20 @@ final class RepositoryProvider extends $FunctionalProvider<_MyRepo, _MyRepo>
   @override
   RepositoryProvider $copyWithCreate(
     _MyRepo Function(
-      RepositoryRef ref,
+      Ref ref,
     ) create,
   ) {
     return RepositoryProvider._(create: create);
   }
 
   @override
-  _MyRepo create(RepositoryRef ref) {
+  _MyRepo create(Ref ref) {
     final _$cb = _createCb ?? repository;
     return _$cb(ref);
   }
 }
 
-String _$repositoryHash() => r'80732dff4b7c3731f85f4c5ae72c820ae349c7fe';
+String _$repositoryHash() => r'8c1b035ba722660550674e92444db7b6f25ac2a3';
 
 @ProviderFor(MyNotifier)
 const myNotifierProvider = MyNotifierProvider._();
@@ -174,7 +170,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
   @override
   MyNotifierProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       MyNotifier,
     ) build,
   ) {
@@ -198,4 +194,4 @@ abstract class _$MyNotifier extends $Notifier<int> {
 }
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

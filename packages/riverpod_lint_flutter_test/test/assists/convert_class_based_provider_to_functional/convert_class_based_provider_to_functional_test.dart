@@ -1,5 +1,4 @@
 import 'package:riverpod_lint/src/assists/class_based_to_functional_provider.dart';
-import 'package:analyzer/source/source_range.dart';
 
 import '../../test_lint.dart';
 
@@ -9,19 +8,24 @@ void main() {
     'test/assists/goldens/convert_class_based_provider_to_functional/convert_class_based_provider_to_functional.diff',
     sourcePath:
         'test/assists/convert_class_based_provider_to_functional/convert_class_based_provider_to_functional.dart',
-    (result) async {
+    (result, helper) async {
       final assist = ClassBasedToFunctionalProvider();
 
-      return [
-        ...await assist.testRun(result, const SourceRange(145, 0)),
-        ...await assist.testRun(result, const SourceRange(149, 0)),
-        ...await assist.testRun(result, const SourceRange(156, 0)),
-        ...await assist.testRun(result, const SourceRange(165, 0)),
-        ...await assist.testRun(result, const SourceRange(174, 0)),
-        ...await assist.testRun(result, const SourceRange(190, 0)),
-        ...await assist.testRun(result, const SourceRange(258, 0)),
-        ...await assist.testRun(result, const SourceRange(412, 0)),
-      ];
+      final cursors = helper.rangesForString(r'''
+@rive<>rpod<>
+class <>Example e<>xtends _$<>Example {
+  @ove<>rride
+  int build() => 0;
+}
+
+/// Some comment
+@riverpod
+class Exampl<>eFamily extends _$ExampleFamily {
+''');
+
+      final cursors2 = helper.rangesForString('class Gen<>eric');
+
+      return helper.runAssist(assist, result, [...cursors, ...cursors2]);
     },
   );
 }

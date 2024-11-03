@@ -1,4 +1,4 @@
-// ignore_for_file: unused_field, avoid_manual_providers_as_generated_provider_dependency
+// ignore_for_file: unused_field
 
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -9,76 +9,143 @@ import 'another.dart';
 part 'missing_dependencies2.g.dart';
 
 @Riverpod(dependencies: [])
-int dep(DepRef ref) => 0;
+int dep(Ref ref) => 0;
 
 final scoped = Provider((ref) => 0, dependencies: []);
 
 @Riverpod(dependencies: [])
-int generatedScoped(GeneratedScopedRef ref) => 0;
+int generatedScoped(Ref ref) => 0;
 
 final root = Provider((ref) => 0);
 
 @riverpod
-int generatedRoot(GeneratedRootRef ref) => 0;
+int generatedRoot(Ref ref) => 0;
 
 // dep no "dependencies"
 @riverpod
-int watchScopedButNoDependencies(WatchScopedButNoDependenciesRef ref) {
+int watchScopedButNoDependencies(Ref ref) {
+  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(scoped);
 }
 
 // expect_lint: provider_dependencies
 @riverpod
 int watchGeneratedScopedButNoDependencies(
-  WatchGeneratedScopedButNoDependenciesRef ref,
+  Ref ref,
 ) {
   return ref.watch(generatedScopedProvider);
 }
 
 @riverpod
-int watchRootButNoDependencies(WatchRootButNoDependenciesRef ref) {
+int watchRootButNoDependencies(Ref ref) {
+  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(root);
 }
 
 @riverpod
 int watchGeneratedRootButNoDependencies(
-  WatchGeneratedRootButNoDependenciesRef ref,
+  Ref ref,
 ) {
   return ref.watch(generatedRootProvider);
 }
 
 // Check "dependencies" specified but missing dependency
 @Riverpod(dependencies: [])
-int watchScopedButEmptyDependencies(WatchScopedButEmptyDependenciesRef ref) {
+int watchScopedButEmptyDependencies(Ref ref) {
+  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(scoped);
 }
 
 // expect_lint: provider_dependencies
 @Riverpod(dependencies: [])
 int watchGeneratedScopedButEmptyDependencies(
-  WatchGeneratedScopedButEmptyDependenciesRef ref,
+  Ref ref,
 ) {
   return ref.watch(generatedScopedProvider);
 }
 
 @Riverpod(dependencies: [])
-int watchRootButEmptyDependencies(WatchRootButEmptyDependenciesRef ref) {
+int watchRootButEmptyDependencies(Ref ref) {
+  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(root);
 }
 
 @Riverpod(dependencies: [])
 int watchGeneratedRootButEmptyDependencies(
-  WatchGeneratedRootButEmptyDependenciesRef ref,
+  Ref ref,
 ) {
+  return ref.watch(generatedRootProvider);
+}
+
+// Check "dependencies" specified but missing dependency
+
+@Riverpod(dependencies: [dep])
+int watchScopedButMissingDependencies(
+  Ref ref,
+) {
+  ref.watch(depProvider);
+  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
+  return ref.watch(scoped);
+}
+
+// expect_lint: provider_dependencies
+@Riverpod(dependencies: [dep])
+int watchGeneratedScopedButMissingDependencies(
+  Ref ref,
+) {
+  ref.watch(depProvider);
+  return ref.watch(generatedScopedProvider);
+}
+
+@Riverpod(dependencies: [dep])
+int watchRootButMissingDependencies(Ref ref) {
+  ref.watch(depProvider);
+  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
+  return ref.watch(root);
+}
+
+@Riverpod(dependencies: [dep])
+int watchGeneratedRootButMissingDependencies(
+  Ref ref,
+) {
+  ref.watch(depProvider);
   return ref.watch(generatedRootProvider);
 }
 
 // Check "dependencies" specified and contains dependency
 @Riverpod(dependencies: [generatedScoped])
 int watchGeneratedScopedAndContainsDependency(
-  WatchGeneratedScopedAndContainsDependencyRef ref,
+  Ref ref,
 ) {
   return ref.watch(generatedScopedProvider);
+}
+
+@Riverpod(
+  dependencies:
+      // The dependency is redundant because it is not a scoped provider
+      // expect_lint: provider_dependencies
+      [
+    generatedRoot,
+  ],
+)
+int watchGeneratedRootAndContainsDependency(
+  Ref ref,
+) {
+  return ref.watch(generatedRootProvider);
+}
+
+// A dependency is specified but never used
+
+@Riverpod(dependencies:
+    // generatedRoot is extra
+    // expect_lint: provider_dependencies
+    [
+  dep,
+  generatedRoot,
+])
+int specifiedDependencyButNeverUsed(Ref ref) {
+  ref.watch(depProvider);
+  return 0;
 }
 
 // Works with classes too
@@ -92,7 +159,7 @@ class ClassWatchGeneratedRootButMissingDependencies
 }
 
 @Riverpod(dependencies: [generatedScoped])
-int regression2348(Regression2348Ref ref) {
+int regression2348(Ref ref) {
   ref..watch(generatedScopedProvider);
   return 0;
 }
@@ -109,20 +176,21 @@ class Regression2417 extends _$Regression2417 {
 
 // Regression for https://github.com/rrousselGit/riverpod/issues/2909
 @Riverpod(dependencies: [dep])
-int familyDep(FamilyDepRef ref, int p) {
+int familyDep(Ref ref, int p) {
   final test = ref.watch(depProvider);
   return test * p;
 }
 
 @Riverpod(dependencies: [familyDep])
-int familyDep2(FamilyDep2Ref ref, int p) {
+int familyDep2(Ref ref, int p) {
   final test = ref.watch(familyDepProvider(0));
   return test * p;
 }
 
 // Regression test for https://github.com/rrousselGit/riverpod/issues/2935
 @riverpod
-int alias(AliasRef ref) {
+int alias(Ref ref) {
+  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   ref.watch(import_alias.aProvider);
   ref.watch(import_alias.bProvider);
   return 0;
@@ -131,6 +199,7 @@ int alias(AliasRef ref) {
 // Regression test for https://github.com/rrousselGit/riverpod/issues/2935
 @riverpod
 class AliasClass extends _$AliasClass {
+  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   late final int _a = ref.read(import_alias.aProvider);
   late final int _b = ref.read(import_alias.bProvider);
 
@@ -193,7 +262,7 @@ void fn3() => fn();
 
 // expect_lint: provider_dependencies
 @riverpod
-int foo(FooRef ref) {
+int foo(Ref ref) {
   fn();
   return 0;
 }
@@ -270,7 +339,7 @@ class _Stateful3State extends State<FindStateFromClassList> {
 
 // expect_lint: provider_dependencies
 @riverpod
-int crossFileDependency(CrossFileDependencyRef ref) {
+int crossFileDependency(Ref ref) {
   ref.watch(anotherNonEmptyScopedProvider);
   return 0;
 }

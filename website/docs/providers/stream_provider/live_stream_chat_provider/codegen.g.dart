@@ -8,17 +8,15 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef ChatRef = Ref<AsyncValue<List<String>>>;
-
 @ProviderFor(chat)
 const chatProvider = ChatProvider._();
 
 final class ChatProvider
     extends $FunctionalProvider<AsyncValue<List<String>>, Stream<List<String>>>
-    with $FutureModifier<List<String>>, $StreamProvider<List<String>, ChatRef> {
+    with $FutureModifier<List<String>>, $StreamProvider<List<String>> {
   const ChatProvider._(
       {Stream<List<String>> Function(
-        ChatRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -32,7 +30,7 @@ final class ChatProvider
         );
 
   final Stream<List<String>> Function(
-    ChatRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -47,20 +45,20 @@ final class ChatProvider
   @override
   ChatProvider $copyWithCreate(
     Stream<List<String>> Function(
-      ChatRef ref,
+      Ref ref,
     ) create,
   ) {
     return ChatProvider._(create: create);
   }
 
   @override
-  Stream<List<String>> create(ChatRef ref) {
+  Stream<List<String>> create(Ref ref) {
     final _$cb = _createCb ?? chat;
     return _$cb(ref);
   }
 }
 
-String _$chatHash() => r'db1302132f90e854fe2f5da9d97d89c9a3c8b858';
+String _$chatHash() => r'bad093d5344471463a1e71688281924642f3a58c';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

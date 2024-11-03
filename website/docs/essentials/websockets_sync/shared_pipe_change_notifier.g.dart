@@ -8,17 +8,15 @@ part of 'shared_pipe_change_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef MyListenableRef = Ref<Raw<ValueNotifier<int>>>;
-
 @ProviderFor(myListenable)
 const myListenableProvider = MyListenableProvider._();
 
 final class MyListenableProvider extends $FunctionalProvider<
-        Raw<ValueNotifier<int>>, Raw<ValueNotifier<int>>>
-    with $Provider<Raw<ValueNotifier<int>>, MyListenableRef> {
+    Raw<ValueNotifier<int>>,
+    Raw<ValueNotifier<int>>> with $Provider<Raw<ValueNotifier<int>>> {
   const MyListenableProvider._(
       {Raw<ValueNotifier<int>> Function(
-        MyListenableRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -32,7 +30,7 @@ final class MyListenableProvider extends $FunctionalProvider<
         );
 
   final Raw<ValueNotifier<int>> Function(
-    MyListenableRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -55,32 +53,30 @@ final class MyListenableProvider extends $FunctionalProvider<
   @override
   MyListenableProvider $copyWithCreate(
     Raw<ValueNotifier<int>> Function(
-      MyListenableRef ref,
+      Ref ref,
     ) create,
   ) {
     return MyListenableProvider._(create: create);
   }
 
   @override
-  Raw<ValueNotifier<int>> create(MyListenableRef ref) {
+  Raw<ValueNotifier<int>> create(Ref ref) {
     final _$cb = _createCb ?? myListenable;
     return _$cb(ref);
   }
 }
 
-String _$myListenableHash() => r'90f4227ef5442f978d742115663e5f0869622a27';
-
-typedef AnotherListenableRef = Ref<Raw<ValueNotifier<int>>>;
+String _$myListenableHash() => r'a28ce39430582e0d7be5f8303a31477569153193';
 
 @ProviderFor(anotherListenable)
 const anotherListenableProvider = AnotherListenableProvider._();
 
 final class AnotherListenableProvider extends $FunctionalProvider<
-        Raw<ValueNotifier<int>>, Raw<ValueNotifier<int>>>
-    with $Provider<Raw<ValueNotifier<int>>, AnotherListenableRef> {
+    Raw<ValueNotifier<int>>,
+    Raw<ValueNotifier<int>>> with $Provider<Raw<ValueNotifier<int>>> {
   const AnotherListenableProvider._(
       {Raw<ValueNotifier<int>> Function(
-        AnotherListenableRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -94,7 +90,7 @@ final class AnotherListenableProvider extends $FunctionalProvider<
         );
 
   final Raw<ValueNotifier<int>> Function(
-    AnotherListenableRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -117,20 +113,20 @@ final class AnotherListenableProvider extends $FunctionalProvider<
   @override
   AnotherListenableProvider $copyWithCreate(
     Raw<ValueNotifier<int>> Function(
-      AnotherListenableRef ref,
+      Ref ref,
     ) create,
   ) {
     return AnotherListenableProvider._(create: create);
   }
 
   @override
-  Raw<ValueNotifier<int>> create(AnotherListenableRef ref) {
+  Raw<ValueNotifier<int>> create(Ref ref) {
     final _$cb = _createCb ?? anotherListenable;
     return _$cb(ref);
   }
 }
 
-String _$anotherListenableHash() => r'50dd36b21e07c50818944ec49f9e68d21fcae876';
+String _$anotherListenableHash() => r'49aab48c26d8596262c3d89e0190baeaf9d7ac4a';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -8,13 +8,11 @@ part of 'family.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef RandomRef = Ref<int>;
-
 @ProviderFor(random)
 const randomProvider = RandomFamily._();
 
 final class RandomProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, RandomRef> {
+    with $Provider<int> {
   const RandomProvider._(
       {required RandomFamily super.from,
       required ({
@@ -23,7 +21,7 @@ final class RandomProvider extends $FunctionalProvider<int, int>
       })
           super.argument,
       int Function(
-        RandomRef ref, {
+        Ref ref, {
         required int seed,
         required int max,
       })? create})
@@ -37,7 +35,7 @@ final class RandomProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    RandomRef ref, {
+    Ref ref, {
     required int seed,
     required int max,
   })? _createCb;
@@ -68,7 +66,7 @@ final class RandomProvider extends $FunctionalProvider<int, int>
   @override
   RandomProvider $copyWithCreate(
     int Function(
-      RandomRef ref,
+      Ref ref,
     ) create,
   ) {
     return RandomProvider._(
@@ -86,7 +84,7 @@ final class RandomProvider extends $FunctionalProvider<int, int>
   }
 
   @override
-  int create(RandomRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? random;
     final argument = this.argument as ({
       int seed,
@@ -110,7 +108,7 @@ final class RandomProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$randomHash() => r'517b12aad4df7b31f8872b89af74e7880377b2ea';
+String _$randomHash() => r'ab69799dce84746b22880feae0f1db6dea906f6a';
 
 final class RandomFamily extends Family {
   const RandomFamily._()
@@ -140,7 +138,7 @@ final class RandomFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     int Function(
-      RandomRef ref,
+      Ref ref,
       ({
         int seed,
         int max,
@@ -165,4 +163,4 @@ final class RandomFamily extends Family {
   }
 }
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

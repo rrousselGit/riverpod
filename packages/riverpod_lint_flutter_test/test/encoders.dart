@@ -13,12 +13,12 @@ import 'package:test/test.dart';
 import 'golden.dart';
 
 Matcher matchesPrioritizedSourceChangesGolden(
-  String fileName, {
+  File file, {
   required String source,
   required String sourcePath,
 }) {
   return matchersGoldenFile<Iterable<PrioritizedSourceChange>>(
-    File(fileName),
+    file,
     isEmpty: (value) => value.isEmpty,
     encode: (changes) {
       return encodePrioritizedSourceChanges(

@@ -161,7 +161,7 @@ final repositoryProvider = Provider((ref) => Repository(ref));
 class Repository {
   Repository(this.ref);
 
-  final Ref<Repository> ref;
+  final Ref ref;
 }
 ```
 L'unica differenza che comporta passare `ref.read` è la scrittura di meno codice, inoltre,

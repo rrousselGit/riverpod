@@ -52,7 +52,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
   @override
   MyNotifierProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       MyNotifier,
     ) build,
   ) {
@@ -69,144 +69,6 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
 String _$myNotifierHash() => r'58f5439a3b1036ba7804f63a5a6ebe0114125039';
 
 abstract class _$MyNotifier extends $Notifier<int> {
-  int build();
-  @$internal
-  @override
-  int runBuild() => build();
-}
-
-@ProviderFor(NoExtends)
-const noExtendsProvider = NoExtendsProvider._();
-
-final class NoExtendsProvider extends $NotifierProvider<NoExtends, int> {
-  const NoExtendsProvider._(
-      {super.runNotifierBuildOverride, NoExtends Function()? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'noExtendsProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
-        );
-
-  final NoExtends Function()? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$noExtendsHash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @$internal
-  @override
-  NoExtends create() => _createCb?.call() ?? NoExtends();
-
-  @$internal
-  @override
-  NoExtendsProvider $copyWithCreate(
-    NoExtends Function() create,
-  ) {
-    return NoExtendsProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  NoExtendsProvider $copyWithBuild(
-    int Function(
-      Ref<int>,
-      NoExtends,
-    ) build,
-  ) {
-    return NoExtendsProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<NoExtends, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
-}
-
-String _$noExtendsHash() => r'3f1276999a9a6d3676c628c25ed853cbefb21ce9';
-
-abstract class _$NoExtends extends $Notifier<int> {
-  int build();
-  @$internal
-  @override
-  int runBuild() => build();
-}
-
-@ProviderFor(WrongExtends)
-const wrongExtendsProvider = WrongExtendsProvider._();
-
-final class WrongExtendsProvider extends $NotifierProvider<WrongExtends, int> {
-  const WrongExtendsProvider._(
-      {super.runNotifierBuildOverride, WrongExtends Function()? create})
-      : _createCb = create,
-        super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'wrongExtendsProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          allTransitiveDependencies: null,
-        );
-
-  final WrongExtends Function()? _createCb;
-
-  @override
-  String debugGetCreateSourceHash() => _$wrongExtendsHash();
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @$internal
-  @override
-  WrongExtends create() => _createCb?.call() ?? WrongExtends();
-
-  @$internal
-  @override
-  WrongExtendsProvider $copyWithCreate(
-    WrongExtends Function() create,
-  ) {
-    return WrongExtendsProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  WrongExtendsProvider $copyWithBuild(
-    int Function(
-      Ref<int>,
-      WrongExtends,
-    ) build,
-  ) {
-    return WrongExtendsProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<WrongExtends, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
-}
-
-String _$wrongExtendsHash() => r'6479055793af10a34e225373a67f7eaac4d7c0de';
-
-abstract class _$WrongExtends extends $Notifier<int> {
   int build();
   @$internal
   @override
@@ -260,7 +122,7 @@ final class _PrivateClassProvider
   @override
   _PrivateClassProvider $copyWithBuild(
     String Function(
-      Ref<String>,
+      Ref,
       _PrivateClass,
     ) build,
   ) {
@@ -316,7 +178,7 @@ final class GenericsProvider<A extends num, B>
 
   GenericsProvider<A, B> _copyWithBuild(
     int Function<A extends num, B>(
-      Ref<int>,
+      Ref,
       Generics<A, B>,
     ) build,
   ) {
@@ -356,7 +218,7 @@ final class GenericsProvider<A extends num, B>
   @override
   GenericsProvider<A, B> $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       Generics<A, B>,
     ) build,
   ) {
@@ -420,7 +282,7 @@ final class GenericsFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function<A extends num, B>(Ref<int> ref, Generics<A, B> notifier) build,
+    int Function<A extends num, B>(Ref ref, Generics<A, B> notifier) build,
   ) {
     return $FamilyOverride(
       from: this,
@@ -473,7 +335,7 @@ final class NoGenericsProvider<A extends num, B>
 
   NoGenericsProvider<A, B> _copyWithBuild(
     int Function<A extends num, B>(
-      Ref<int>,
+      Ref,
       NoGenerics<A, B>,
     ) build,
   ) {
@@ -513,7 +375,7 @@ final class NoGenericsProvider<A extends num, B>
   @override
   NoGenericsProvider<A, B> $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       NoGenerics<A, B>,
     ) build,
   ) {
@@ -577,8 +439,7 @@ final class NoGenericsFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function<A extends num, B>(Ref<int> ref, NoGenerics<A, B> notifier)
-        build,
+    int Function<A extends num, B>(Ref ref, NoGenerics<A, B> notifier) build,
   ) {
     return $FamilyOverride(
       from: this,
@@ -631,7 +492,7 @@ final class MissingGenericsProvider<A, B>
 
   MissingGenericsProvider<A, B> _copyWithBuild(
     int Function<A, B>(
-      Ref<int>,
+      Ref,
       MissingGenerics<A, B>,
     ) build,
   ) {
@@ -673,7 +534,7 @@ final class MissingGenericsProvider<A, B>
   @override
   MissingGenericsProvider<A, B> $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       MissingGenerics<A, B>,
     ) build,
   ) {
@@ -737,7 +598,7 @@ final class MissingGenericsFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function<A, B>(Ref<int> ref, MissingGenerics<A, B> notifier) build,
+    int Function<A, B>(Ref ref, MissingGenerics<A, B> notifier) build,
   ) {
     return $FamilyOverride(
       from: this,
@@ -790,7 +651,7 @@ final class WrongOrderProvider<A, B>
 
   WrongOrderProvider<A, B> _copyWithBuild(
     int Function<A, B>(
-      Ref<int>,
+      Ref,
       WrongOrder<A, B>,
     ) build,
   ) {
@@ -830,7 +691,7 @@ final class WrongOrderProvider<A, B>
   @override
   WrongOrderProvider<A, B> $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       WrongOrder<A, B>,
     ) build,
   ) {
@@ -894,7 +755,7 @@ final class WrongOrderFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function<A, B>(Ref<int> ref, WrongOrder<A, B> notifier) build,
+    int Function<A, B>(Ref ref, WrongOrder<A, B> notifier) build,
   ) {
     return $FamilyOverride(
       from: this,
@@ -915,4 +776,4 @@ abstract class _$WrongOrder<A, B> extends $Notifier<int> {
 }
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -49,7 +49,7 @@ final class FamilyNotifierProvider //
 
   FamilyNotifierProvider<NotifierT, StateT, ArgT> _copyWith({
     NotifierT Function()? create,
-    RunNotifierBuild<NotifierT, StateT, Ref<StateT>>? build,
+    RunNotifierBuild<NotifierT, StateT>? build,
   }) {
     return FamilyNotifierProvider._(
       create ?? _createNotifier,
@@ -68,7 +68,7 @@ final class FamilyNotifierProvider //
   @mustBeOverridden
   @visibleForOverriding
   FamilyNotifierProvider<NotifierT, StateT, ArgT> $copyWithBuild(
-    RunNotifierBuild<NotifierT, StateT, Ref<StateT>> build,
+    RunNotifierBuild<NotifierT, StateT> build,
   ) {
     return _copyWith(build: build);
   }

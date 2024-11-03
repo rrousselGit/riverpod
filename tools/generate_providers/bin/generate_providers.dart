@@ -39,11 +39,9 @@ class _FunctionalBuilder extends _Builder {
     required super.genericsDefinition,
     required super.genericsUsage,
     required this.createdT,
-    required this.refT,
   });
 
   final String createdT;
-  final String refT;
 }
 
 class _NotifierBuilder extends _Builder {
@@ -95,7 +93,6 @@ Future<void> main(List<String> args) async {
             genericsUsage: 'StateT',
             genericsDefinition: 'StateT',
             createdT: 'StateT',
-            refT: 'Ref<StateT>',
           ),
           _FunctionalBuilder(
             'StateNotifierProvider',
@@ -103,28 +100,24 @@ Future<void> main(List<String> args) async {
             genericsDefinition:
                 'NotifierT extends StateNotifier<StateT>, StateT',
             createdT: 'NotifierT',
-            refT: 'Ref<StateT>',
           ),
           _FunctionalBuilder(
             'Provider',
             genericsUsage: 'StateT',
             genericsDefinition: 'StateT',
             createdT: 'StateT',
-            refT: 'Ref<StateT>',
           ),
           _FunctionalBuilder(
             'FutureProvider',
             genericsUsage: 'StateT',
             genericsDefinition: 'StateT',
             createdT: 'FutureOr<StateT>',
-            refT: 'Ref<AsyncValue<StateT>>',
           ),
           _FunctionalBuilder(
             'StreamProvider',
             genericsUsage: 'StateT',
             genericsDefinition: 'StateT',
             createdT: 'Stream<StateT>',
-            refT: 'Ref<AsyncValue<StateT>>',
           ),
           _NotifierBuilder(
             'NotifierProvider',
@@ -190,7 +183,6 @@ import 'internals.dart';
             genericsUsage: 'NotifierT',
             genericsDefinition: 'NotifierT extends ChangeNotifier?',
             createdT: 'NotifierT',
-            refT: 'Ref<NotifierT>',
           ),
         ],
         kinds: _ProviderKind.values,
@@ -260,7 +252,7 @@ class $builderName {
 
   $familyDoc
   ${provider.providerName}Family<${provider.genericsUsage}, ArgT> call<${provider.genericsDefinition}, ArgT>(
-    ${provider.createdT} Function(${provider.refT} ref, ArgT param) create, {
+    ${provider.createdT} Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
@@ -296,7 +288,7 @@ class $builderName {
 
   $familyDoc
   ${provider.providerName}<${provider.genericsUsage}> call<${provider.genericsDefinition}>(
-    ${provider.createdT} Function(${provider.refT} ref) create, {
+    ${provider.createdT} Function(Ref ref) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,

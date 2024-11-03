@@ -13,7 +13,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
 
 @riverpod
-int a(ARef ref) => 0;
+int a(Ref ref) => 0;
 
 @riverpod
 class B extends _$B {
@@ -22,7 +22,7 @@ class B extends _$B {
 }
 
 @riverpod
-int c(CRef ref, int arg) => 0;
+int c(Ref ref, int arg) => 0;
 
 @riverpod
 class D extends _$D {

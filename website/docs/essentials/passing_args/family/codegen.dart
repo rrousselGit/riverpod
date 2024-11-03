@@ -12,7 +12,7 @@ Future<Activity> fetchActivity() => throw UnimplementedError();
 /* SNIPPET START */
 @riverpod
 Future<Activity> activity(
-  ActivityRef ref,
+  Ref ref,
   // {@template codegen_activityType}
   // We can add arguments to the provider.
   // The type of the parameter can be whatever you wish.

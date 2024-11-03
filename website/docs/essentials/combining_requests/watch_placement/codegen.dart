@@ -6,11 +6,11 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'codegen.g.dart';
 
 @riverpod
-int other(OtherRef ref) => 0;
+int other(Ref ref) => 0;
 
 /* SNIPPET START */
 @riverpod
-int example(ExampleRef ref) {
+int example(Ref ref) {
   ref.watch(otherProvider); // Good!
   ref.onDispose(() => ref.watch(otherProvider)); // Bad!
 

@@ -6,16 +6,14 @@ part of 'split.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef Counter2Ref = Ref<int>;
-
 @ProviderFor(counter2)
 const counter2Provider = Counter2Provider._();
 
 final class Counter2Provider extends $FunctionalProvider<int, int>
-    with $Provider<int, Counter2Ref> {
+    with $Provider<int> {
   const Counter2Provider._(
       {int Function(
-        Counter2Ref ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -29,7 +27,7 @@ final class Counter2Provider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    Counter2Ref ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -51,31 +49,29 @@ final class Counter2Provider extends $FunctionalProvider<int, int>
   @override
   Counter2Provider $copyWithCreate(
     int Function(
-      Counter2Ref ref,
+      Ref ref,
     ) create,
   ) {
     return Counter2Provider._(create: create);
   }
 
   @override
-  int create(Counter2Ref ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? counter2;
     return _$cb(ref);
   }
 }
 
-String _$counter2Hash() => r'9328919066a683f85226fc59201bb7c54f107a7d';
-
-typedef CounterRef = Ref<int>;
+String _$counter2Hash() => r'ab7bef7da79217c780c76761a5ae0c0172ca097e';
 
 @ProviderFor(counter)
 const counterProvider = CounterProvider._();
 
 final class CounterProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, CounterRef> {
+    with $Provider<int> {
   const CounterProvider._(
       {int Function(
-        CounterRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -89,7 +85,7 @@ final class CounterProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    CounterRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -111,20 +107,20 @@ final class CounterProvider extends $FunctionalProvider<int, int>
   @override
   CounterProvider $copyWithCreate(
     int Function(
-      CounterRef ref,
+      Ref ref,
     ) create,
   ) {
     return CounterProvider._(create: create);
   }
 
   @override
-  int create(CounterRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? counter;
     return _$cb(ref);
   }
 }
 
-String _$counterHash() => r'9b0db44ecc47057e79891e5ecd92d34b08637679';
+String _$counterHash() => r'784ece48cb20fcfdec1553774ecfbd381d1e081f';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

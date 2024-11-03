@@ -12,12 +12,6 @@ part of 'common.dart';
 ///
 /// This is unimplemented by default, and will be overridden inside [MaterialApp]
 /// with the current theme obtained using a [BuildContext].
-typedef ThemeRef = Ref<ThemeData>;
-
-/// A Provider that exposes the current theme.
-///
-/// This is unimplemented by default, and will be overridden inside [MaterialApp]
-/// with the current theme obtained using a [BuildContext].
 @ProviderFor(theme)
 const themeProvider = ThemeProvider._();
 
@@ -26,14 +20,14 @@ const themeProvider = ThemeProvider._();
 /// This is unimplemented by default, and will be overridden inside [MaterialApp]
 /// with the current theme obtained using a [BuildContext].
 final class ThemeProvider extends $FunctionalProvider<ThemeData, ThemeData>
-    with $Provider<ThemeData, ThemeRef> {
+    with $Provider<ThemeData> {
   /// A Provider that exposes the current theme.
   ///
   /// This is unimplemented by default, and will be overridden inside [MaterialApp]
   /// with the current theme obtained using a [BuildContext].
   const ThemeProvider._(
       {ThemeData Function(
-        ThemeRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -47,7 +41,7 @@ final class ThemeProvider extends $FunctionalProvider<ThemeData, ThemeData>
         );
 
   final ThemeData Function(
-    ThemeRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -69,20 +63,20 @@ final class ThemeProvider extends $FunctionalProvider<ThemeData, ThemeData>
   @override
   ThemeProvider $copyWithCreate(
     ThemeData Function(
-      ThemeRef ref,
+      Ref ref,
     ) create,
   ) {
     return ThemeProvider._(create: create);
   }
 
   @override
-  ThemeData create(ThemeRef ref) {
+  ThemeData create(Ref ref) {
     final _$cb = _createCb ?? theme;
     return _$cb(ref);
   }
 }
 
-String _$themeHash() => r'ff39eda97684261eefc24ddb24e41172880644cd';
+String _$themeHash() => r'0fea6438c8bee8be98515c10e8e67c2e75c6af46';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

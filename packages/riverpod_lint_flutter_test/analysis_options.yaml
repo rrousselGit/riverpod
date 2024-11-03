@@ -3,8 +3,10 @@ analyzer:
     - custom_lint
   exclude:
     # Files with errors on purpose
-    - test/lints/notifier_extends.g.dart
-    - test/lints/functional_ref.g.dart
+    - test/lints/notifier_extends/notifier_extends.g.dart
+    - test/lints/functional_ref/functional_ref.g.dart
+    - test/lints/functional_ref/fix/auto_import.g.dart
+    - test/lints/functional_ref/fix/use_prefix.g.dart
 
 custom_lint:
   debug: true

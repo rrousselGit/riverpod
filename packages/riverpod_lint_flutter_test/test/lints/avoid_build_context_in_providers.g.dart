@@ -6,13 +6,11 @@ part of 'avoid_build_context_in_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef FnRef = Ref<int>;
-
 @ProviderFor(fn)
 const fnProvider = FnFamily._();
 
 final class FnProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, FnRef> {
+    with $Provider<int> {
   const FnProvider._(
       {required FnFamily super.from,
       required (
@@ -21,7 +19,7 @@ final class FnProvider extends $FunctionalProvider<int, int>
       })
           super.argument,
       int Function(
-        FnRef ref,
+        Ref ref,
         BuildContext context1, {
         required BuildContext context2,
       })? create})
@@ -35,7 +33,7 @@ final class FnProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    FnRef ref,
+    Ref ref,
     BuildContext context1, {
     required BuildContext context2,
   })? _createCb;
@@ -66,7 +64,7 @@ final class FnProvider extends $FunctionalProvider<int, int>
   @override
   FnProvider $copyWithCreate(
     int Function(
-      FnRef ref,
+      Ref ref,
     ) create,
   ) {
     return FnProvider._(
@@ -84,7 +82,7 @@ final class FnProvider extends $FunctionalProvider<int, int>
   }
 
   @override
-  int create(FnRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? fn;
     final argument = this.argument as (
       BuildContext, {
@@ -108,7 +106,7 @@ final class FnProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$fnHash() => r'7b8d0cf179067c80b8553b3232fd886fac83f387';
+String _$fnHash() => r'8a726da6104b38a55782e44062757e6771b19de3';
 
 final class FnFamily extends Family {
   const FnFamily._()
@@ -138,7 +136,7 @@ final class FnFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     int Function(
-      FnRef ref,
+      Ref ref,
       (
         BuildContext, {
         BuildContext context2,
@@ -227,7 +225,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
   @override
   MyNotifierProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       MyNotifier,
     ) build,
   ) {
@@ -313,7 +311,7 @@ final class MyNotifierFamily extends Family {
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     int Function(
-            Ref<int> ref,
+            Ref ref,
             MyNotifier notifier,
             (
               BuildContext, {
@@ -360,28 +358,28 @@ abstract class _$MyNotifier extends $Notifier<int> {
       );
 }
 
-@ProviderFor(Regresion2959)
-const regresion2959Provider = Regresion2959Provider._();
+@ProviderFor(Regression2959)
+const regression2959Provider = Regression2959Provider._();
 
-final class Regresion2959Provider
-    extends $NotifierProvider<Regresion2959, void> {
-  const Regresion2959Provider._(
-      {super.runNotifierBuildOverride, Regresion2959 Function()? create})
+final class Regression2959Provider
+    extends $NotifierProvider<Regression2959, void> {
+  const Regression2959Provider._(
+      {super.runNotifierBuildOverride, Regression2959 Function()? create})
       : _createCb = create,
         super(
           from: null,
           argument: null,
           retry: null,
-          name: r'regresion2959Provider',
+          name: r'regression2959Provider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
 
-  final Regresion2959 Function()? _createCb;
+  final Regression2959 Function()? _createCb;
 
   @override
-  String debugGetCreateSourceHash() => _$regresion2959Hash();
+  String debugGetCreateSourceHash() => _$regression2959Hash();
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(void value) {
@@ -393,37 +391,37 @@ final class Regresion2959Provider
 
   @$internal
   @override
-  Regresion2959 create() => _createCb?.call() ?? Regresion2959();
+  Regression2959 create() => _createCb?.call() ?? Regression2959();
 
   @$internal
   @override
-  Regresion2959Provider $copyWithCreate(
-    Regresion2959 Function() create,
+  Regression2959Provider $copyWithCreate(
+    Regression2959 Function() create,
   ) {
-    return Regresion2959Provider._(create: create);
+    return Regression2959Provider._(create: create);
   }
 
   @$internal
   @override
-  Regresion2959Provider $copyWithBuild(
+  Regression2959Provider $copyWithBuild(
     void Function(
-      Ref<void>,
-      Regresion2959,
+      Ref,
+      Regression2959,
     ) build,
   ) {
-    return Regresion2959Provider._(runNotifierBuildOverride: build);
+    return Regression2959Provider._(runNotifierBuildOverride: build);
   }
 
   @$internal
   @override
-  $NotifierProviderElement<Regresion2959, void> $createElement(
+  $NotifierProviderElement<Regression2959, void> $createElement(
           $ProviderPointer pointer) =>
       $NotifierProviderElement(this, pointer);
 }
 
-String _$regresion2959Hash() => r'bcf9a829ce75026a78569de680451d157c7d90a2';
+String _$regression2959Hash() => r'e58855125577a855d642da1ef85f35178ad95afd';
 
-abstract class _$Regresion2959 extends $Notifier<void> {
+abstract class _$Regression2959 extends $Notifier<void> {
   void build();
   @$internal
   @override
@@ -431,4 +429,4 @@ abstract class _$Regresion2959 extends $Notifier<void> {
 }
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

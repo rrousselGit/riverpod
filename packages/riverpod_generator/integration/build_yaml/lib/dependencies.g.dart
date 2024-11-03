@@ -6,18 +6,16 @@ part of 'dependencies.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef Calc2Ref = Ref<int>;
-
 @ProviderFor(calc2)
 const myFamilyCalc2ProviderFamily = Calc2Family._();
 
 final class Calc2Provider extends $FunctionalProvider<int, int>
-    with $Provider<int, Calc2Ref> {
+    with $Provider<int> {
   const Calc2Provider._(
       {required Calc2Family super.from,
       required String super.argument,
       int Function(
-        Calc2Ref ref,
+        Ref ref,
         String id,
       )? create})
       : _createCb = create,
@@ -46,7 +44,7 @@ final class Calc2Provider extends $FunctionalProvider<int, int>
       myFamilyCountStreamNotifier2ProviderFamily;
 
   final int Function(
-    Calc2Ref ref,
+    Ref ref,
     String id,
   )? _createCb;
 
@@ -76,7 +74,7 @@ final class Calc2Provider extends $FunctionalProvider<int, int>
   @override
   Calc2Provider $copyWithCreate(
     int Function(
-      Calc2Ref ref,
+      Ref ref,
     ) create,
   ) {
     return Calc2Provider._(
@@ -90,7 +88,7 @@ final class Calc2Provider extends $FunctionalProvider<int, int>
   }
 
   @override
-  int create(Calc2Ref ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? calc2;
     final argument = this.argument as String;
     return _$cb(
@@ -110,7 +108,7 @@ final class Calc2Provider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$calc2Hash() => r'0972ac060d49cb3f08f9192af9cea0611a6b4616';
+String _$calc2Hash() => r'ae1d601ff7cdda569255e8014bd5d8d1c178b3eb';
 
 final class Calc2Family extends Family {
   const Calc2Family._()
@@ -162,7 +160,7 @@ final class Calc2Family extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     int Function(
-      Calc2Ref ref,
+      Ref ref,
       String args,
     ) create,
   ) {
@@ -181,4 +179,4 @@ final class Calc2Family extends Family {
   }
 }
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

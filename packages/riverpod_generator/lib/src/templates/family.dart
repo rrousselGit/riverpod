@@ -93,9 +93,9 @@ ${provider.doc} final class ${provider.familyTypeName} extends Family {
   }) {
     final createType = switch (provider) {
       FunctionalProviderDeclaration(parameters: [_, ...]) =>
-        '${provider.createdTypeDisplayString} Function$_genericsDefinition(${provider.refWithGenerics} ref, $_argumentRecordType args,)',
+        '${provider.createdTypeDisplayString} Function$_genericsDefinition(Ref ref, $_argumentRecordType args,)',
       FunctionalProviderDeclaration(parameters: []) =>
-        '${provider.createdTypeDisplayString} Function$_genericsDefinition(${provider.refWithGenerics} ref)',
+        '${provider.createdTypeDisplayString} Function$_genericsDefinition(Ref ref)',
       ClassBasedProviderDeclaration(parameters: [_, ...]) =>
         '$_notifierType Function$_genericsDefinition($_argumentRecordType args,)',
       ClassBasedProviderDeclaration() =>
@@ -172,7 +172,7 @@ Override overrideWith($createType create,) {
   }) {
     final runNotifierBuildType = '''
 ${provider.createdTypeDisplayString} Function$_genericsDefinition(
-  ${provider.refWithGenerics} ref,
+  Ref ref,
   $_notifierType notifier
   ${switch (provider.parameters) {
       [] => '',

@@ -12,7 +12,7 @@ FutureOr<Activity> fetchActivity() => throw UnimplementedError();
 /* SNIPPET START */
 // Un provider "funzionale"
 @riverpod
-Future<Activity> activity(ActivityRef ref) async {
+Future<Activity> activity(Ref ref) async {
   // TODO: eseguire una richiesta di rete per ottenere un'attività.
   return fetchActivity();
 }

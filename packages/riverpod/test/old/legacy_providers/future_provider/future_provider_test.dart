@@ -30,53 +30,13 @@ void main() {
     final autoDispose = FutureProvider.autoDispose<int>((ref) => 0);
     final container = ProviderContainer.test(
       overrides: [
-        provider.overrideWith((Ref<AsyncValue<int>> ref) => 42),
-        autoDispose.overrideWith(
-          (Ref<AsyncValue<int>> ref) => 84,
-        ),
+        provider.overrideWith((ref) => 42),
+        autoDispose.overrideWith((ref) => 84),
       ],
     );
 
     expect(container.read(provider).value, 42);
     expect(container.read(autoDispose).value, 84);
-  });
-
-  test('Does not skip return value if ref.state was set', () async {
-    final provider = FutureProvider<int>((ref) async {
-      await Future<void>.value();
-      ref.state = const AsyncData(1);
-      await Future<void>.value();
-      ref.state = const AsyncData(2);
-      await Future<void>.value();
-      return 3;
-    });
-    final container = ProviderContainer.test();
-    final listener = Listener<AsyncValue<int>>();
-    // Completer used for the sole purpose of being able to await `provider.future`
-    // Since `provider` emits `AsyncData` before the future completes, then
-    // `provider.future` completes early.
-    // As such, awaiting `provider.future` isn't enough to fully await the FutureProvider
-    final completer = Completer<void>();
-
-    container.listen<AsyncValue<int>>(
-      provider,
-      (prev, next) {
-        if (next.value == 3) {
-          completer.complete();
-        }
-        listener(prev, next);
-      },
-      fireImmediately: true,
-    );
-
-    await completer.future;
-
-    verifyInOrder([
-      listener(null, const AsyncLoading<int>()),
-      listener(const AsyncLoading<int>(), const AsyncData(1)),
-      listener(const AsyncData(1), const AsyncData(2)),
-      listener(const AsyncData(2), const AsyncData(3)),
-    ]);
   });
 
   test('supports family overrideWith', () {
@@ -86,38 +46,13 @@ void main() {
     );
     final container = ProviderContainer.test(
       overrides: [
-        family.overrideWith(
-          (Ref<AsyncValue<String>> ref, int arg) => '42 $arg',
-        ),
-        autoDisposeFamily.overrideWith(
-          (Ref<AsyncValue<String>> ref, int arg) => '84 $arg',
-        ),
+        family.overrideWith((ref, int arg) => '42 $arg'),
+        autoDisposeFamily.overrideWith((ref, int arg) => '84 $arg'),
       ],
     );
 
     expect(container.read(family(10)).value, '42 10');
     expect(container.read(autoDisposeFamily(10)).value, '84 10');
-  });
-
-  test('Emits AsyncLoading before the create function is executed', () async {
-    final container = ProviderContainer.test();
-    late AsyncValue<int> state;
-    final provider = FutureProvider<int>((ref) {
-      state = ref.state;
-      return 0;
-    });
-
-    container.read(provider);
-
-    expect(state, const AsyncLoading<int>());
-
-    await container.read(provider.future);
-    container.refresh(provider);
-
-    expect(
-      state,
-      const AsyncLoading<int>().copyWithPrevious(const AsyncData<int>(0)),
-    );
   });
 
   test('On dispose, .future resolves with the future returned itself',
@@ -236,38 +171,6 @@ void main() {
       await expectLater(container.read(provider.future), completion(1));
       expect(container.read(provider), const AsyncData(1));
     });
-  });
-
-  test('can read and set current AsyncValue', () {
-    final container = ProviderContainer.test();
-    final listener = Listener<AsyncValue<int>>();
-    late Ref<AsyncValue<int>> ref;
-    final provider = FutureProvider<int>((r) {
-      ref = r;
-      return 0;
-    });
-
-    container.listen(provider, listener.call);
-
-    expect(ref.state, const AsyncData(0));
-    verifyZeroInteractions(listener);
-
-    ref.state = const AsyncLoading<int>();
-
-    expect(
-      ref.state,
-      const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(0), isRefresh: false),
-    );
-
-    verifyOnly(
-      listener,
-      listener(
-        const AsyncData(0),
-        const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncData(0), isRefresh: false),
-      ),
-    );
   });
 
   test('can be auto-scoped', () async {

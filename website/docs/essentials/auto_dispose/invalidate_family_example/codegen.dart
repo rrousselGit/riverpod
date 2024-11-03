@@ -9,7 +9,7 @@ late WidgetRef ref;
 
 /* SNIPPET START */
 @riverpod
-String label(LabelRef ref, String userName) {
+String label(Ref ref, String userName) {
   return 'Hello $userName';
 }
 

@@ -8,17 +8,15 @@ part of 'create.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef BoredSuggestionRef = Ref<AsyncValue<String>>;
-
 @ProviderFor(boredSuggestion)
 const boredSuggestionProvider = BoredSuggestionProvider._();
 
 final class BoredSuggestionProvider
     extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>>
-    with $FutureModifier<String>, $FutureProvider<String, BoredSuggestionRef> {
+    with $FutureModifier<String>, $FutureProvider<String> {
   const BoredSuggestionProvider._(
       {FutureOr<String> Function(
-        BoredSuggestionRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -32,7 +30,7 @@ final class BoredSuggestionProvider
         );
 
   final FutureOr<String> Function(
-    BoredSuggestionRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -46,20 +44,20 @@ final class BoredSuggestionProvider
   @override
   BoredSuggestionProvider $copyWithCreate(
     FutureOr<String> Function(
-      BoredSuggestionRef ref,
+      Ref ref,
     ) create,
   ) {
     return BoredSuggestionProvider._(create: create);
   }
 
   @override
-  FutureOr<String> create(BoredSuggestionRef ref) {
+  FutureOr<String> create(Ref ref) {
     final _$cb = _createCb ?? boredSuggestion;
     return _$cb(ref);
   }
 }
 
-String _$boredSuggestionHash() => r'6cceb7a902c8fe2477eae0dff97d10644a848ea0';
+String _$boredSuggestionHash() => r'ea7579b20dd2a5f45fd9d9ea09fcbd3608330d24';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

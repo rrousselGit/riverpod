@@ -8,6 +8,6 @@ part 'codegen_keep_alive.g.dart';
 // the automatic state destruction
 // {@endtemplate}
 @Riverpod(keepAlive: true)
-int example(ExampleRef ref) {
+int example(Ref ref) {
   return 0;
 }

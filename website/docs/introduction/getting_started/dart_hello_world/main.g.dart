@@ -8,16 +8,14 @@ part of 'main.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef HelloWorldRef = Ref<String>;
-
 @ProviderFor(helloWorld)
 const helloWorldProvider = HelloWorldProvider._();
 
 final class HelloWorldProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, HelloWorldRef> {
+    with $Provider<String> {
   const HelloWorldProvider._(
       {String Function(
-        HelloWorldRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -31,7 +29,7 @@ final class HelloWorldProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    HelloWorldRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -53,20 +51,20 @@ final class HelloWorldProvider extends $FunctionalProvider<String, String>
   @override
   HelloWorldProvider $copyWithCreate(
     String Function(
-      HelloWorldRef ref,
+      Ref ref,
     ) create,
   ) {
     return HelloWorldProvider._(create: create);
   }
 
   @override
-  String create(HelloWorldRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? helloWorld;
     return _$cb(ref);
   }
 }
 
-String _$helloWorldHash() => r'8bbe6cff2b7b1f4e1f7be3d1820da793259f7bfc';
+String _$helloWorldHash() => r'9abaa5ab530c55186861f2debdaa218aceacb7eb';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

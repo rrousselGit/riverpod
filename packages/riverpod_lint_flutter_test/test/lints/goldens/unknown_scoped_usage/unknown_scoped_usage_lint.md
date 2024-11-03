@@ -4,7 +4,7 @@ message: A provider was used, but could not find the associated `ref`.
 test/lints/unknown_scoped_usage.dart:16:3
 
 ```dart
-void fn(WidgetRef widgetRef, Ref<int> ref) {
+void fn(WidgetRef widgetRef, Ref ref) {
   // expect_lint: unknown_scoped_usage
   >>>scopedProvider<<<;
   rootProvider;

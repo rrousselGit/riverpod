@@ -6,7 +6,7 @@
 
   ```dart
   @riverpod
-  String example(ExampleRef ref, int arg, {required int anotherArg}) {...}
+  String example(Ref ref, int arg, {required int anotherArg}) {...}
   // ...
   exampleProvider.overrideWith(
     (ref, ({int arg, int anotherArg}) args) {
@@ -17,7 +17,30 @@
 
 - Added support for `@Riverpod(retry: ...)`
 
-## Unreleased patch
+## 2.6.2 - 2024-10-27
+
+- `riverpod_analyzer_utils` upgraded to `0.5.7`
+
+## 2.6.1 - 2024-10-22
+
+- Support analyzer >=6.7.0 <7.0.0
+  This should make it compatible with Flutter's stable channel.
+
+## 2.6.0 - 2024-10-20
+
+- Deprecated the generated `Ref` subclasses.
+  Instead of:
+  ```dart
+  @riverpod
+  Model foo(FooRef ref) => ..
+  ```
+  Do:
+  ```dart
+  @riverpod
+  Model foo(Ref ref) => ..
+  ```
+
+## 2.4.4 - 2024-10-12
 
 - `@Riverpod(dependencies: [...])` now respects `build.yaml` options
 

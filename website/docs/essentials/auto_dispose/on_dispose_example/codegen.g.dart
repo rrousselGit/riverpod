@@ -8,16 +8,14 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef OtherRef = Ref<int>;
-
 @ProviderFor(other)
 const otherProvider = OtherProvider._();
 
 final class OtherProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, OtherRef> {
+    with $Provider<int> {
   const OtherProvider._(
       {int Function(
-        OtherRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -31,7 +29,7 @@ final class OtherProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    OtherRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -53,32 +51,30 @@ final class OtherProvider extends $FunctionalProvider<int, int>
   @override
   OtherProvider $copyWithCreate(
     int Function(
-      OtherRef ref,
+      Ref ref,
     ) create,
   ) {
     return OtherProvider._(create: create);
   }
 
   @override
-  int create(OtherRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? other;
     return _$cb(ref);
   }
 }
 
-String _$otherHash() => r'b23696171643dfbab23d167ed9b5ab0639e6a86c';
-
-typedef ExampleRef = Ref<AsyncValue<int>>;
+String _$otherHash() => r'5d27b2b1b1c6bd17ba0844f74ade2088611be371';
 
 @ProviderFor(example)
 const exampleProvider = ExampleProvider._();
 
 final class ExampleProvider
     extends $FunctionalProvider<AsyncValue<int>, Stream<int>>
-    with $FutureModifier<int>, $StreamProvider<int, ExampleRef> {
+    with $FutureModifier<int>, $StreamProvider<int> {
   const ExampleProvider._(
       {Stream<int> Function(
-        ExampleRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -92,7 +88,7 @@ final class ExampleProvider
         );
 
   final Stream<int> Function(
-    ExampleRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -106,20 +102,20 @@ final class ExampleProvider
   @override
   ExampleProvider $copyWithCreate(
     Stream<int> Function(
-      ExampleRef ref,
+      Ref ref,
     ) create,
   ) {
     return ExampleProvider._(create: create);
   }
 
   @override
-  Stream<int> create(ExampleRef ref) {
+  Stream<int> create(Ref ref) {
     final _$cb = _createCb ?? example;
     return _$cb(ref);
   }
 }
 
-String _$exampleHash() => r'29f92958e0d0e3f13ac033e92cd2e4072339c7db';
+String _$exampleHash() => r'012c40f45aaeb96633a857d1407f04d25255f32f';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

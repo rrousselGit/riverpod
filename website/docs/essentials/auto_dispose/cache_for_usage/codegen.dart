@@ -9,7 +9,7 @@ part 'codegen.g.dart';
 
 /* SNIPPET START */
 @riverpod
-Future<Object> example(ExampleRef ref) async {
+Future<Object> example(Ref ref) async {
   // {@template cacheFor}
   /// Keeps the state alive for 5 minutes
   // {@endtemplate}

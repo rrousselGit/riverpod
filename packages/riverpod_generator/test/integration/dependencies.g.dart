@@ -6,16 +6,14 @@ part of 'dependencies.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef DepRef = Ref<int>;
-
 @ProviderFor(dep)
 const depProvider = DepProvider._();
 
 final class DepProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, DepRef> {
+    with $Provider<int> {
   const DepProvider._(
       {int Function(
-        DepRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -29,7 +27,7 @@ final class DepProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    DepRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -51,33 +49,31 @@ final class DepProvider extends $FunctionalProvider<int, int>
   @override
   DepProvider $copyWithCreate(
     int Function(
-      DepRef ref,
+      Ref ref,
     ) create,
   ) {
     return DepProvider._(create: create);
   }
 
   @override
-  int create(DepRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? dep;
     return _$cb(ref);
   }
 }
 
-String _$depHash() => r'2213a401e03a1a914579b4a3a7707b783de9efba';
-
-typedef FamilyRef = Ref<int>;
+String _$depHash() => r'1b3ec5231cd2328602151de9ceacdcd102a1d2e2';
 
 @ProviderFor(family)
 const familyProvider = FamilyFamily._();
 
 final class FamilyProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, FamilyRef> {
+    with $Provider<int> {
   const FamilyProvider._(
       {required FamilyFamily super.from,
       required int super.argument,
       int Function(
-        FamilyRef ref,
+        Ref ref,
         int id,
       )? create})
       : _createCb = create,
@@ -90,7 +86,7 @@ final class FamilyProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    FamilyRef ref,
+    Ref ref,
     int id,
   )? _createCb;
 
@@ -120,7 +116,7 @@ final class FamilyProvider extends $FunctionalProvider<int, int>
   @override
   FamilyProvider $copyWithCreate(
     int Function(
-      FamilyRef ref,
+      Ref ref,
     ) create,
   ) {
     return FamilyProvider._(
@@ -134,7 +130,7 @@ final class FamilyProvider extends $FunctionalProvider<int, int>
   }
 
   @override
-  int create(FamilyRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? family;
     final argument = this.argument as int;
     return _$cb(
@@ -154,7 +150,7 @@ final class FamilyProvider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$familyHash() => r'8c228ff14b8c6cf1f3d4d6266232d64b5057c440';
+String _$familyHash() => r'940eb87eb11206499f73f05791a6266b38cda88a';
 
 final class FamilyFamily extends Family {
   const FamilyFamily._()
@@ -180,7 +176,7 @@ final class FamilyFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     int Function(
-      FamilyRef ref,
+      Ref ref,
       int args,
     ) create,
   ) {
@@ -245,7 +241,7 @@ final class Dep2Provider extends $NotifierProvider<Dep2, int> {
   @override
   Dep2Provider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       Dep2,
     ) build,
   ) {
@@ -325,7 +321,7 @@ final class Family2Provider extends $NotifierProvider<Family2, int> {
   @override
   Family2Provider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       Family2,
     ) build,
   ) {
@@ -397,7 +393,7 @@ final class Family2Family extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function(Ref<int> ref, Family2 notifier, int argument) build,
+    int Function(Ref ref, Family2 notifier, int argument) build,
   ) {
     return $FamilyOverride(
       from: this,
@@ -428,16 +424,14 @@ abstract class _$Family2 extends $Notifier<int> {
       );
 }
 
-typedef ProviderRef = Ref<int>;
-
 @ProviderFor(provider)
 const providerProvider = ProviderProvider._();
 
 final class ProviderProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, ProviderRef> {
+    with $Provider<int> {
   const ProviderProvider._(
       {int Function(
-        ProviderRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -466,7 +460,7 @@ final class ProviderProvider extends $FunctionalProvider<int, int>
   static const $allTransitiveDependencies3 = family2Provider;
 
   final int Function(
-    ProviderRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -488,31 +482,29 @@ final class ProviderProvider extends $FunctionalProvider<int, int>
   @override
   ProviderProvider $copyWithCreate(
     int Function(
-      ProviderRef ref,
+      Ref ref,
     ) create,
   ) {
     return ProviderProvider._(create: create);
   }
 
   @override
-  int create(ProviderRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? provider;
     return _$cb(ref);
   }
 }
 
-String _$providerHash() => r'6c9184ef4c6a410a2132e1ecc13a2e646e936d37';
-
-typedef Provider2Ref = Ref<int>;
+String _$providerHash() => r'1be7ae7ac2100d39b949af50ec50fce48b26cdd1';
 
 @ProviderFor(provider2)
 const provider2Provider = Provider2Provider._();
 
 final class Provider2Provider extends $FunctionalProvider<int, int>
-    with $Provider<int, Provider2Ref> {
+    with $Provider<int> {
   const Provider2Provider._(
       {int Function(
-        Provider2Ref ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -541,7 +533,7 @@ final class Provider2Provider extends $FunctionalProvider<int, int>
   static const $allTransitiveDependencies3 = family2Provider;
 
   final int Function(
-    Provider2Ref ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -563,20 +555,20 @@ final class Provider2Provider extends $FunctionalProvider<int, int>
   @override
   Provider2Provider $copyWithCreate(
     int Function(
-      Provider2Ref ref,
+      Ref ref,
     ) create,
   ) {
     return Provider2Provider._(create: create);
   }
 
   @override
-  int create(Provider2Ref ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? provider2;
     return _$cb(ref);
   }
 }
 
-String _$provider2Hash() => r'70d908579c5e64ce6558b42f433adfb80f4dc79b';
+String _$provider2Hash() => r'30f81430b57f0116f621a4a309c458fce0536378';
 
 @ProviderFor(Provider3)
 const provider3Provider = Provider3Provider._();
@@ -639,7 +631,7 @@ final class Provider3Provider extends $NotifierProvider<Provider3, int> {
   @override
   Provider3Provider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       Provider3,
     ) build,
   ) {
@@ -724,7 +716,7 @@ final class Provider4Provider extends $NotifierProvider<Provider4, int> {
   @override
   Provider4Provider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       Provider4,
     ) build,
   ) {
@@ -806,7 +798,7 @@ final class Provider4Family extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function(Ref<int> ref, Provider4 notifier, int argument) build,
+    int Function(Ref ref, Provider4 notifier, int argument) build,
   ) {
     return $FamilyOverride(
       from: this,
@@ -837,16 +829,14 @@ abstract class _$Provider4 extends $Notifier<int> {
       );
 }
 
-typedef TransitiveDependenciesRef = Ref<int>;
-
 @ProviderFor(transitiveDependencies)
 const transitiveDependenciesProvider = TransitiveDependenciesProvider._();
 
 final class TransitiveDependenciesProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, TransitiveDependenciesRef> {
+    with $Provider<int> {
   const TransitiveDependenciesProvider._(
       {int Function(
-        TransitiveDependenciesRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -876,7 +866,7 @@ final class TransitiveDependenciesProvider extends $FunctionalProvider<int, int>
       ProviderProvider.$allTransitiveDependencies3;
 
   final int Function(
-    TransitiveDependenciesRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -898,34 +888,31 @@ final class TransitiveDependenciesProvider extends $FunctionalProvider<int, int>
   @override
   TransitiveDependenciesProvider $copyWithCreate(
     int Function(
-      TransitiveDependenciesRef ref,
+      Ref ref,
     ) create,
   ) {
     return TransitiveDependenciesProvider._(create: create);
   }
 
   @override
-  int create(TransitiveDependenciesRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? transitiveDependencies;
     return _$cb(ref);
   }
 }
 
 String _$transitiveDependenciesHash() =>
-    r'9c81823224bb28a5dc482328c04ce76293370877';
-
-typedef SmallTransitiveDependencyCountRef = Ref<int>;
+    r'909d45403831b521177ec15b1dd78554e261d3be';
 
 @ProviderFor(smallTransitiveDependencyCount)
 const smallTransitiveDependencyCountProvider =
     SmallTransitiveDependencyCountProvider._();
 
 final class SmallTransitiveDependencyCountProvider
-    extends $FunctionalProvider<int, int>
-    with $Provider<int, SmallTransitiveDependencyCountRef> {
+    extends $FunctionalProvider<int, int> with $Provider<int> {
   const SmallTransitiveDependencyCountProvider._(
       {int Function(
-        SmallTransitiveDependencyCountRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -951,7 +938,7 @@ final class SmallTransitiveDependencyCountProvider
   static const $allTransitiveDependencies2 = dep2Provider;
 
   final int Function(
-    SmallTransitiveDependencyCountRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -973,34 +960,31 @@ final class SmallTransitiveDependencyCountProvider
   @override
   SmallTransitiveDependencyCountProvider $copyWithCreate(
     int Function(
-      SmallTransitiveDependencyCountRef ref,
+      Ref ref,
     ) create,
   ) {
     return SmallTransitiveDependencyCountProvider._(create: create);
   }
 
   @override
-  int create(SmallTransitiveDependencyCountRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? smallTransitiveDependencyCount;
     return _$cb(ref);
   }
 }
 
 String _$smallTransitiveDependencyCountHash() =>
-    r'34689e1ba57e2959975cbf8ebd6c9483f4652a73';
-
-typedef EmptyDependenciesFunctionalRef = Ref<int>;
+    r'f67b369dd99e35a6e6211004b45c87c5ba4ac1c7';
 
 @ProviderFor(emptyDependenciesFunctional)
 const emptyDependenciesFunctionalProvider =
     EmptyDependenciesFunctionalProvider._();
 
 final class EmptyDependenciesFunctionalProvider
-    extends $FunctionalProvider<int, int>
-    with $Provider<int, EmptyDependenciesFunctionalRef> {
+    extends $FunctionalProvider<int, int> with $Provider<int> {
   const EmptyDependenciesFunctionalProvider._(
       {int Function(
-        EmptyDependenciesFunctionalRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -1014,7 +998,7 @@ final class EmptyDependenciesFunctionalProvider
         );
 
   final int Function(
-    EmptyDependenciesFunctionalRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -1036,21 +1020,21 @@ final class EmptyDependenciesFunctionalProvider
   @override
   EmptyDependenciesFunctionalProvider $copyWithCreate(
     int Function(
-      EmptyDependenciesFunctionalRef ref,
+      Ref ref,
     ) create,
   ) {
     return EmptyDependenciesFunctionalProvider._(create: create);
   }
 
   @override
-  int create(EmptyDependenciesFunctionalRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? emptyDependenciesFunctional;
     return _$cb(ref);
   }
 }
 
 String _$emptyDependenciesFunctionalHash() =>
-    r'592bebd079450e2071fb12d68c3ae333d5c28359';
+    r'77289071cab8a10da8f5b7b40932864510a1ee38';
 
 @ProviderFor(EmptyDependenciesClassBased)
 const emptyDependenciesClassBasedProvider =
@@ -1102,7 +1086,7 @@ final class EmptyDependenciesClassBasedProvider
   @override
   EmptyDependenciesClassBasedProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       EmptyDependenciesClassBased,
     ) build,
   ) {
@@ -1127,17 +1111,14 @@ abstract class _$EmptyDependenciesClassBased extends $Notifier<int> {
   int runBuild() => build();
 }
 
-typedef ProviderWithDependenciesRef = Ref<int>;
-
 @ProviderFor(providerWithDependencies)
 const providerWithDependenciesProvider = ProviderWithDependenciesProvider._();
 
 final class ProviderWithDependenciesProvider
-    extends $FunctionalProvider<int, int>
-    with $Provider<int, ProviderWithDependenciesRef> {
+    extends $FunctionalProvider<int, int> with $Provider<int> {
   const ProviderWithDependenciesProvider._(
       {int Function(
-        ProviderWithDependenciesRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -1160,7 +1141,7 @@ final class ProviderWithDependenciesProvider
   static const $allTransitiveDependencies1 = publicDepProvider;
 
   final int Function(
-    ProviderWithDependenciesRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -1182,32 +1163,30 @@ final class ProviderWithDependenciesProvider
   @override
   ProviderWithDependenciesProvider $copyWithCreate(
     int Function(
-      ProviderWithDependenciesRef ref,
+      Ref ref,
     ) create,
   ) {
     return ProviderWithDependenciesProvider._(create: create);
   }
 
   @override
-  int create(ProviderWithDependenciesRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? providerWithDependencies;
     return _$cb(ref);
   }
 }
 
 String _$providerWithDependenciesHash() =>
-    r'beecbe7a41b647ab92367dbcc12055bcd6345af7';
-
-typedef _PrivateDepRef = Ref<int>;
+    r'7d40c994fc2d4ba9e6a0bb4a3d100f8da874eb5e';
 
 @ProviderFor(_privateDep)
 const _privateDepProvider = _PrivateDepProvider._();
 
 final class _PrivateDepProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, _PrivateDepRef> {
+    with $Provider<int> {
   const _PrivateDepProvider._(
       {int Function(
-        _PrivateDepRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -1221,7 +1200,7 @@ final class _PrivateDepProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    _PrivateDepRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -1243,31 +1222,29 @@ final class _PrivateDepProvider extends $FunctionalProvider<int, int>
   @override
   _PrivateDepProvider $copyWithCreate(
     int Function(
-      _PrivateDepRef ref,
+      Ref ref,
     ) create,
   ) {
     return _PrivateDepProvider._(create: create);
   }
 
   @override
-  int create(_PrivateDepRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? _privateDep;
     return _$cb(ref);
   }
 }
 
-String _$privateDepHash() => r'f610d91bd39e0dcffe6ff4e74160964a291289d9';
-
-typedef PublicDepRef = Ref<int>;
+String _$privateDepHash() => r'92ff5cc515ecf2455cb04773f1b49f23b17ea2e2';
 
 @ProviderFor(publicDep)
 const publicDepProvider = PublicDepProvider._();
 
 final class PublicDepProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, PublicDepRef> {
+    with $Provider<int> {
   const PublicDepProvider._(
       {int Function(
-        PublicDepRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -1281,7 +1258,7 @@ final class PublicDepProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    PublicDepRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -1303,31 +1280,29 @@ final class PublicDepProvider extends $FunctionalProvider<int, int>
   @override
   PublicDepProvider $copyWithCreate(
     int Function(
-      PublicDepRef ref,
+      Ref ref,
     ) create,
   ) {
     return PublicDepProvider._(create: create);
   }
 
   @override
-  int create(PublicDepRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? publicDep;
     return _$cb(ref);
   }
 }
 
-String _$publicDepHash() => r'bcb69aace017c86c3c4b8eccf59fa22d010834bc';
-
-typedef DuplicateDependenciesRef = Ref<int>;
+String _$publicDepHash() => r'a9c461ae174577183ab4c0ff8d8267cc7a64a2c5';
 
 @ProviderFor(duplicateDependencies)
 const duplicateDependenciesProvider = DuplicateDependenciesProvider._();
 
 final class DuplicateDependenciesProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, DuplicateDependenciesRef> {
+    with $Provider<int> {
   const DuplicateDependenciesProvider._(
       {int Function(
-        DuplicateDependenciesRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -1347,7 +1322,7 @@ final class DuplicateDependenciesProvider extends $FunctionalProvider<int, int>
   static const $allTransitiveDependencies1 = dep2Provider;
 
   final int Function(
-    DuplicateDependenciesRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -1369,32 +1344,30 @@ final class DuplicateDependenciesProvider extends $FunctionalProvider<int, int>
   @override
   DuplicateDependenciesProvider $copyWithCreate(
     int Function(
-      DuplicateDependenciesRef ref,
+      Ref ref,
     ) create,
   ) {
     return DuplicateDependenciesProvider._(create: create);
   }
 
   @override
-  int create(DuplicateDependenciesRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? duplicateDependencies;
     return _$cb(ref);
   }
 }
 
 String _$duplicateDependenciesHash() =>
-    r'8e4c4b40d7500e97e8490874d48cc960c64af712';
-
-typedef DuplicateDependencies2Ref = Ref<int>;
+    r'ad48ecca57899ee55c69793c84a01235d6a49834';
 
 @ProviderFor(duplicateDependencies2)
 const duplicateDependencies2Provider = DuplicateDependencies2Provider._();
 
 final class DuplicateDependencies2Provider extends $FunctionalProvider<int, int>
-    with $Provider<int, DuplicateDependencies2Ref> {
+    with $Provider<int> {
   const DuplicateDependencies2Provider._(
       {int Function(
-        DuplicateDependencies2Ref ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -1417,7 +1390,7 @@ final class DuplicateDependencies2Provider extends $FunctionalProvider<int, int>
   static const $allTransitiveDependencies1 = family2Provider;
 
   final int Function(
-    DuplicateDependencies2Ref ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -1439,34 +1412,31 @@ final class DuplicateDependencies2Provider extends $FunctionalProvider<int, int>
   @override
   DuplicateDependencies2Provider $copyWithCreate(
     int Function(
-      DuplicateDependencies2Ref ref,
+      Ref ref,
     ) create,
   ) {
     return DuplicateDependencies2Provider._(create: create);
   }
 
   @override
-  int create(DuplicateDependencies2Ref ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? duplicateDependencies2;
     return _$cb(ref);
   }
 }
 
 String _$duplicateDependencies2Hash() =>
-    r'43a4ff16a760fc697426a5b1ebc1f8882c816cfb';
-
-typedef TransitiveDuplicateDependenciesRef = Ref<int>;
+    r'6e065325922dc36f408f85998cf2d7ba7a80ba56';
 
 @ProviderFor(transitiveDuplicateDependencies)
 const transitiveDuplicateDependenciesProvider =
     TransitiveDuplicateDependenciesProvider._();
 
 final class TransitiveDuplicateDependenciesProvider
-    extends $FunctionalProvider<int, int>
-    with $Provider<int, TransitiveDuplicateDependenciesRef> {
+    extends $FunctionalProvider<int, int> with $Provider<int> {
   const TransitiveDuplicateDependenciesProvider._(
       {int Function(
-        TransitiveDuplicateDependenciesRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -1501,7 +1471,7 @@ final class TransitiveDuplicateDependenciesProvider
       DuplicateDependencies2Provider.$allTransitiveDependencies1;
 
   final int Function(
-    TransitiveDuplicateDependenciesRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -1523,21 +1493,21 @@ final class TransitiveDuplicateDependenciesProvider
   @override
   TransitiveDuplicateDependenciesProvider $copyWithCreate(
     int Function(
-      TransitiveDuplicateDependenciesRef ref,
+      Ref ref,
     ) create,
   ) {
     return TransitiveDuplicateDependenciesProvider._(create: create);
   }
 
   @override
-  int create(TransitiveDuplicateDependenciesRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? transitiveDuplicateDependencies;
     return _$cb(ref);
   }
 }
 
 String _$transitiveDuplicateDependenciesHash() =>
-    r'aba44b6c1cf82eea782ad260f2e95d9f771f12ac';
+    r'be6a85098fc66be440b6b201f58a6ce1c526caf6';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

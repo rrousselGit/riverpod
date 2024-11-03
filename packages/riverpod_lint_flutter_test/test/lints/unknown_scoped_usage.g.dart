@@ -6,16 +6,14 @@ part of 'unknown_scoped_usage.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef ScopedRef = Ref<int>;
-
 @ProviderFor(scoped)
 const scopedProvider = ScopedProvider._();
 
 final class ScopedProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, ScopedRef> {
+    with $Provider<int> {
   const ScopedProvider._(
       {int Function(
-        ScopedRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -29,7 +27,7 @@ final class ScopedProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    ScopedRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -51,31 +49,29 @@ final class ScopedProvider extends $FunctionalProvider<int, int>
   @override
   ScopedProvider $copyWithCreate(
     int Function(
-      ScopedRef ref,
+      Ref ref,
     ) create,
   ) {
     return ScopedProvider._(create: create);
   }
 
   @override
-  int create(ScopedRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? scoped;
     return _$cb(ref);
   }
 }
 
-String _$scopedHash() => r'bbf25968b1186d2dd63d10545364453712d491cf';
-
-typedef RootRef = Ref<int>;
+String _$scopedHash() => r'5a271e9b23e18517694454448b922a6c9d03781e';
 
 @ProviderFor(root)
 const rootProvider = RootProvider._();
 
 final class RootProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, RootRef> {
+    with $Provider<int> {
   const RootProvider._(
       {int Function(
-        RootRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -89,7 +85,7 @@ final class RootProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    RootRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -111,20 +107,20 @@ final class RootProvider extends $FunctionalProvider<int, int>
   @override
   RootProvider $copyWithCreate(
     int Function(
-      RootRef ref,
+      Ref ref,
     ) create,
   ) {
     return RootProvider._(create: create);
   }
 
   @override
-  int create(RootRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? root;
     return _$cb(ref);
   }
 }
 
-String _$rootHash() => r'1cd85d73316aad02169ff0f5e7af5cf1423410ff';
+String _$rootHash() => r'dda8bbb46cb4d7c658597669e3be92e2447dcfb0';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

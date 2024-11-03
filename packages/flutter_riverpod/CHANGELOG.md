@@ -42,6 +42,23 @@ Fix exceptions when using multiple root `ProviderContainers`/`ProviderScopes`.
 - **Breaking**: Removed everything marked as "deprecated"
 - Bumped minimum Dart SDK to >= 3.0.0-dev
 
+## 2.6.1 - 2024-10-22
+
+- Added `AsyncNotifier.listenSelf`. It was mistakenly absent from the 2.6.0 release
+
+## 2.6.0 - 2024-10-20
+
+- Deprecated all `Ref` subclasses. Instead, use `Ref` itself.
+- Deprecated `Ref`'s type argument. Use `Ref` without its generic parameter instead.
+- Deprecated any `Ref` member that used `Ref`'s generic (such as `Ref.state` or `Ref.listenSelf`).
+  Instead, use a `Notifier`.
+- Added `Notifier.listenSelf`, as a replacement to `Ref.listenSelf`.
+- `Ref.watch` and other methods now accept auto-dispose providers too.
+
+## 2.5.3 - 2024-10-12
+
+- Fixed a typo in the documentation (thanks to @ljbkusters)
+
 ## 2.5.2 - 2024-03-18
 
 - Fixed various typos in the documentation (thanks to @kevalvavaliya)

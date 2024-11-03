@@ -8,17 +8,15 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef ActivityRef = Ref<AsyncValue<Activity>>;
-
 @ProviderFor(activity)
 const activityProvider = ActivityProvider._();
 
 final class ActivityProvider
     extends $FunctionalProvider<AsyncValue<Activity>, FutureOr<Activity>>
-    with $FutureModifier<Activity>, $FutureProvider<Activity, ActivityRef> {
+    with $FutureModifier<Activity>, $FutureProvider<Activity> {
   const ActivityProvider._(
       {FutureOr<Activity> Function(
-        ActivityRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -32,7 +30,7 @@ final class ActivityProvider
         );
 
   final FutureOr<Activity> Function(
-    ActivityRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -46,20 +44,20 @@ final class ActivityProvider
   @override
   ActivityProvider $copyWithCreate(
     FutureOr<Activity> Function(
-      ActivityRef ref,
+      Ref ref,
     ) create,
   ) {
     return ActivityProvider._(create: create);
   }
 
   @override
-  FutureOr<Activity> create(ActivityRef ref) {
+  FutureOr<Activity> create(Ref ref) {
     final _$cb = _createCb ?? activity;
     return _$cb(ref);
   }
 }
 
-String _$activityHash() => r'f045dd6e89fde6bbe12a89f243290d289a3e692d';
+String _$activityHash() => r'c1d2d6dca725a8b75b31c73630a5641dba0bec2b';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

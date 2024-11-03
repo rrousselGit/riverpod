@@ -6,17 +6,14 @@ part of 'dependencies2.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef ProviderWithDependencies2Ref = Ref<int>;
-
 @ProviderFor(providerWithDependencies2)
 const providerWithDependencies2Provider = ProviderWithDependencies2Provider._();
 
 final class ProviderWithDependencies2Provider
-    extends $FunctionalProvider<int, int>
-    with $Provider<int, ProviderWithDependencies2Ref> {
+    extends $FunctionalProvider<int, int> with $Provider<int> {
   const ProviderWithDependencies2Provider._(
       {int Function(
-        ProviderWithDependencies2Ref ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -48,7 +45,7 @@ final class ProviderWithDependencies2Provider
   static const $allTransitiveDependencies4 = public2Provider;
 
   final int Function(
-    ProviderWithDependencies2Ref ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -70,35 +67,32 @@ final class ProviderWithDependencies2Provider
   @override
   ProviderWithDependencies2Provider $copyWithCreate(
     int Function(
-      ProviderWithDependencies2Ref ref,
+      Ref ref,
     ) create,
   ) {
     return ProviderWithDependencies2Provider._(create: create);
   }
 
   @override
-  int create(ProviderWithDependencies2Ref ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? providerWithDependencies2;
     return _$cb(ref);
   }
 }
 
 String _$providerWithDependencies2Hash() =>
-    r'90e090d5fa759369dceb59b2d2e219f67ed5f9e0';
-
-typedef FamilyWithDependencies2Ref = Ref<int>;
+    r'3a6100929120a9cf1ef7f1e0a5e9b8e4d4030ae2';
 
 @ProviderFor(familyWithDependencies2)
 const familyWithDependencies2Provider = FamilyWithDependencies2Family._();
 
 final class FamilyWithDependencies2Provider
-    extends $FunctionalProvider<int, int>
-    with $Provider<int, FamilyWithDependencies2Ref> {
+    extends $FunctionalProvider<int, int> with $Provider<int> {
   const FamilyWithDependencies2Provider._(
       {required FamilyWithDependencies2Family super.from,
       required int? super.argument,
       int Function(
-        FamilyWithDependencies2Ref ref, {
+        Ref ref, {
         int? id,
       })? create})
       : _createCb = create,
@@ -119,7 +113,7 @@ final class FamilyWithDependencies2Provider
   static const $allTransitiveDependencies4 = public2Provider;
 
   final int Function(
-    FamilyWithDependencies2Ref ref, {
+    Ref ref, {
     int? id,
   })? _createCb;
 
@@ -149,7 +143,7 @@ final class FamilyWithDependencies2Provider
   @override
   FamilyWithDependencies2Provider $copyWithCreate(
     int Function(
-      FamilyWithDependencies2Ref ref,
+      Ref ref,
     ) create,
   ) {
     return FamilyWithDependencies2Provider._(
@@ -163,7 +157,7 @@ final class FamilyWithDependencies2Provider
   }
 
   @override
-  int create(FamilyWithDependencies2Ref ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? familyWithDependencies2;
     final argument = this.argument as int?;
     return _$cb(
@@ -185,7 +179,7 @@ final class FamilyWithDependencies2Provider
 }
 
 String _$familyWithDependencies2Hash() =>
-    r'209b9e3ed4e5fad89572268d161fbe64a6ef0e87';
+    r'd064c06ca5a85a62cbe2b47943e98fc2e858fb03';
 
 final class FamilyWithDependencies2Family extends Family {
   const FamilyWithDependencies2Family._()
@@ -221,7 +215,7 @@ final class FamilyWithDependencies2Family extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     int Function(
-      FamilyWithDependencies2Ref ref,
+      Ref ref,
       int? args,
     ) create,
   ) {
@@ -307,7 +301,7 @@ final class NotifierWithDependenciesProvider
   @override
   NotifierWithDependenciesProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       NotifierWithDependencies,
     ) build,
   ) {
@@ -399,7 +393,7 @@ final class NotifierFamilyWithDependenciesProvider
   @override
   NotifierFamilyWithDependenciesProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       NotifierFamilyWithDependencies,
     ) build,
   ) {
@@ -484,8 +478,8 @@ final class NotifierFamilyWithDependenciesFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function(Ref<int> ref, NotifierFamilyWithDependencies notifier,
-            int? argument)
+    int Function(
+            Ref ref, NotifierFamilyWithDependencies notifier, int? argument)
         build,
   ) {
     return $FamilyOverride(
@@ -518,16 +512,14 @@ abstract class _$NotifierFamilyWithDependencies extends $Notifier<int> {
       );
 }
 
-typedef _Private2Ref = Ref<int>;
-
 @ProviderFor(_private2)
 const _private2Provider = _Private2Provider._();
 
 final class _Private2Provider extends $FunctionalProvider<int, int>
-    with $Provider<int, _Private2Ref> {
+    with $Provider<int> {
   const _Private2Provider._(
       {int Function(
-        _Private2Ref ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -541,7 +533,7 @@ final class _Private2Provider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    _Private2Ref ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -563,31 +555,29 @@ final class _Private2Provider extends $FunctionalProvider<int, int>
   @override
   _Private2Provider $copyWithCreate(
     int Function(
-      _Private2Ref ref,
+      Ref ref,
     ) create,
   ) {
     return _Private2Provider._(create: create);
   }
 
   @override
-  int create(_Private2Ref ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? _private2;
     return _$cb(ref);
   }
 }
 
-String _$private2Hash() => r'5e0fa14ff40fb444c027ed25150a42362db3ef19';
-
-typedef Public2Ref = Ref<int>;
+String _$private2Hash() => r'e420875c8fbd9bf33eff945f2b7276b585032a38';
 
 @ProviderFor(public2)
 const public2Provider = Public2Provider._();
 
 final class Public2Provider extends $FunctionalProvider<int, int>
-    with $Provider<int, Public2Ref> {
+    with $Provider<int> {
   const Public2Provider._(
       {int Function(
-        Public2Ref ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -601,7 +591,7 @@ final class Public2Provider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    Public2Ref ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -623,20 +613,20 @@ final class Public2Provider extends $FunctionalProvider<int, int>
   @override
   Public2Provider $copyWithCreate(
     int Function(
-      Public2Ref ref,
+      Ref ref,
     ) create,
   ) {
     return Public2Provider._(create: create);
   }
 
   @override
-  int create(Public2Ref ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? public2;
     return _$cb(ref);
   }
 }
 
-String _$public2Hash() => r'9767255f0182589fe48b29d217dd488b0a13b9d5';
+String _$public2Hash() => r'20eb4f82e5f25fafc72775e7b86021d70ebb5579';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

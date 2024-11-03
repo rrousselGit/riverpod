@@ -8,16 +8,14 @@ part of 'sync_fn.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef ExampleRef = Ref<String>;
-
 @ProviderFor(example)
 const exampleProvider = ExampleProvider._();
 
 final class ExampleProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, ExampleRef> {
+    with $Provider<String> {
   const ExampleProvider._(
       {String Function(
-        ExampleRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -31,7 +29,7 @@ final class ExampleProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    ExampleRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -53,20 +51,20 @@ final class ExampleProvider extends $FunctionalProvider<String, String>
   @override
   ExampleProvider $copyWithCreate(
     String Function(
-      ExampleRef ref,
+      Ref ref,
     ) create,
   ) {
     return ExampleProvider._(create: create);
   }
 
   @override
-  String create(ExampleRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? example;
     return _$cb(ref);
   }
 }
 
-String _$exampleHash() => r'dd4e9043c704a42a3fc025e7fef9515f659fc78a';
+String _$exampleHash() => r'e75fe2037fef7a3f80e04fa007fe64d719dba2fd';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

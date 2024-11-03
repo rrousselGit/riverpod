@@ -13,7 +13,16 @@
 
 - Added `GeneratorProviderDeclarationElement.isFamily`
 
-## Unreleased patch
+## 0.5.7 - 2024-10-27
+
+- Support latest custom_lint
+
+## 0.5.6 - 2024-10-22
+
+- Support analyzer >=6.7.0 <7.0.0
+  This should make it compatible with Flutter's stable channel.
+
+## 0.5.5 - 2024-10-12
 
 Bumped minimum analyzer to 6.9.0
 

@@ -504,7 +504,7 @@ void main() {
       final root = ProviderContainer.test();
       final container = ProviderContainer.test(parent: root);
       var callCount = 0;
-      late Ref<Object?> providerReference;
+      late Ref providerReference;
       var result = 0;
       final provider = Provider((ref) {
         callCount++;

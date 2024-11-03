@@ -3,33 +3,33 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'auto_dispose.g.dart';
 
 @Riverpod(keepAlive: true)
-int keepAlive(KeepAliveRef ref) {
+int keepAlive(Ref ref) {
   return 0;
 }
 
 @Riverpod(keepAlive: false)
-int notKeepAlive(NotKeepAliveRef ref) {
+int notKeepAlive(Ref ref) {
   ref.keepAlive();
   return 0;
 }
 
 @riverpod
-int defaultKeepAlive(DefaultKeepAliveRef ref) {
+int defaultKeepAlive(Ref ref) {
   return 0;
 }
 
 @Riverpod(keepAlive: true)
-int keepAliveFamily(KeepAliveFamilyRef ref, int a) {
+int keepAliveFamily(Ref ref, int a) {
   return 0;
 }
 
 @Riverpod(keepAlive: false)
-int notKeepAliveFamily(NotKeepAliveFamilyRef ref, int a) {
+int notKeepAliveFamily(Ref ref, int a) {
   ref.keepAlive();
   return 0;
 }
 
 @riverpod
-int defaultKeepAliveFamily(DefaultKeepAliveFamilyRef ref, int a) {
+int defaultKeepAliveFamily(Ref ref, int a) {
   return 0;
 }

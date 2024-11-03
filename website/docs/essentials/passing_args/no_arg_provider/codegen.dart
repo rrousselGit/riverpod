@@ -13,7 +13,7 @@ FutureOr<Activity> fetchActivity() => throw UnimplementedError();
 // A "functional" provider
 // {@endtemplate}
 @riverpod
-Future<Activity> activity(ActivityRef ref) async {
+Future<Activity> activity(Ref ref) async {
   // {@template fetchActivity}
   // TODO: perform a network request to fetch an activity
   // {@endtemplate}

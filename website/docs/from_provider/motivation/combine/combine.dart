@@ -7,12 +7,12 @@ part 'combine.g.dart';
 /* SNIPPET START */
 
 @riverpod
-int number(NumberRef ref) {
+int number(Ref ref) {
   return Random().nextInt(10);
 }
 
 @riverpod
-int doubled(DoubledRef ref) {
+int doubled(Ref ref) {
   final number = ref.watch(numberProvider);
 
   return number * 2;
