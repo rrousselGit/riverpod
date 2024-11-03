@@ -9,7 +9,7 @@ part 'codegen.g.dart';
 
 /* SNIPPET START */
 @riverpod
-Future<Activity> activity(ActivityRef ref) async {
+Future<Activity> activity(Ref ref) async {
   // {@template client}
   // We obtain an HTTP client using the extension we created earlier.
   // {@endtemplate}

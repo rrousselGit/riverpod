@@ -2,7 +2,5 @@
 dependency_overrides:
   riverpod_analyzer_utils:
     path: ../riverpod_analyzer_utils
-  # necessary due to outdated mockito dependency
-  analyzer: ^6.0.0
   riverpod:
     path: ../riverpod

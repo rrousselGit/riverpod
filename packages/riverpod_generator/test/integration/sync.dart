@@ -1,10 +1,10 @@
-import 'package:riverpod/riverpod.dart' as r;
+import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'sync.g.dart';
 
 @riverpod
-List<T> generic<T extends num>(GenericRef<T> ref) {
+List<T> generic<T extends num>(Ref ref) {
   return <Object?>[
     'Hello world',
     42,
@@ -14,7 +14,7 @@ List<T> generic<T extends num>(GenericRef<T> ref) {
 
 @riverpod
 List<T> complexGeneric<T extends num, Foo extends String?>(
-  ComplexGenericRef<T, Foo> ref, {
+  Ref ref, {
   required T param,
   Foo? otherParam,
 }) {
@@ -31,12 +31,12 @@ class GenericClass<T extends num> extends _$GenericClass<T>
 }
 
 @riverpod
-Raw<Future<String>> rawFuture(RawFutureRef ref) async {
+Raw<Future<String>> rawFuture(Ref ref) async {
   return 'Hello world';
 }
 
 @riverpod
-Raw<Stream<String>> rawStream(RawStreamRef ref) async* {
+Raw<Stream<String>> rawStream(Ref ref) async* {
   yield 'Hello world';
 }
 
@@ -57,12 +57,12 @@ class RawStreamClass extends _$RawStreamClass {
 }
 
 @riverpod
-Raw<Future<String>> rawFamilyFuture(RawFamilyFutureRef ref, int id) async {
+Raw<Future<String>> rawFamilyFuture(Ref ref, int id) async {
   return 'Hello world';
 }
 
 @riverpod
-Raw<Stream<String>> rawFamilyStream(RawFamilyStreamRef ref, int id) async* {
+Raw<Stream<String>> rawFamilyStream(Ref ref, int id) async* {
   yield 'Hello world';
 }
 
@@ -84,19 +84,19 @@ class RawFamilyStreamClass extends _$RawFamilyStreamClass {
 
 /// This is some documentation
 @riverpod
-String public(PublicRef ref) {
+String public(Ref ref) {
   return 'Hello world';
 }
 
 @riverpod
-String supports$inNames(Supports$inNamesRef ref) {
+String supports$inNames(Ref ref) {
   return 'Hello world';
 }
 
 /// This is some documentation
 @riverpod
 String family(
-  FamilyRef ref,
+  Ref ref,
   int first, {
   String? second,
   required double third,
@@ -109,11 +109,11 @@ String family(
 const privateProvider = _privateProvider;
 
 @riverpod
-String _private(_PrivateRef ref) {
+String _private(Ref ref) {
   return 'Hello world';
 }
 
-mixin MyMixin<A, B> on r.NotifierBase<A, B> {}
+mixin MyMixin<A, B> on NotifierBase<A, B> {}
 
 /// This is some documentation
 @riverpod
@@ -158,7 +158,7 @@ class FamilyClass extends _$FamilyClass with MyMixin<String, String> {
 }
 
 @riverpod
-String supports$InFnName<And$InT>(Supports$InFnNameRef<And$InT> ref) {
+String supports$InFnName<And$InT>(Ref ref) {
   return 'Hello world';
 }
 
@@ -166,7 +166,7 @@ const default$value = '';
 
 @riverpod
 String supports$InFnNameFamily<And$InT>(
-  Supports$InFnNameFamilyRef<And$InT> ref,
+  Ref ref,
   And$InT positional$arg, {
   required And$InT named$arg,
   String defaultArg = default$value,
@@ -197,11 +197,11 @@ class Supports$InClassFamilyName<And$InT>
 }
 
 @riverpod
-String generated(GeneratedRef ref) {
+String generated(Ref ref) {
   return 'Just a simple normal generated provider';
 }
 
-r.Provider<String> someProvider() => r.Provider((ref) => 'hello');
+Provider<String> someProvider() => Provider((ref) => 'hello');
 
 // Regression test for https://github.com/rrousselGit/riverpod/issues/2299
 final _someProvider = someProvider();
@@ -212,7 +212,7 @@ final _other = _someProvider;
 
 // Regression test for now casting `as Object?` when not needed
 @riverpod
-String unnecessaryCast(GeneratedRef ref, Object? arg) {
+String unnecessaryCast(Ref ref, Object? arg) {
   return 'Just a simple normal generated provider';
 }
 
@@ -229,6 +229,6 @@ class ManyProviderData<T, S> {}
 
 @riverpod
 Stream<List<T>> manyDataStream<T extends Object, S extends Object>(
-  ManyDataStreamRef ref,
+  Ref ref,
   ManyProviderData<T, S> pData,
 ) async* {}

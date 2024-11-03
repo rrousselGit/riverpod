@@ -16,7 +16,9 @@ void main() {
       onDispose: () => throw StateError('called'),
     );
     final container = ProviderContainer.test();
-    final provider = StateNotifierProvider((_) => notifier);
+    final provider = StateNotifierProvider<DelegateNotifier, int>(
+      (_) => notifier,
+    );
 
     container.read(provider);
 
@@ -39,12 +41,8 @@ void main() {
     );
     final container = ProviderContainer.test(
       overrides: [
-        provider.overrideWith(
-          (Ref<int> ref) => TestNotifier(42),
-        ),
-        autoDispose.overrideWith(
-          (Ref<int> ref) => TestNotifier(84),
-        ),
+        provider.overrideWith((ref) => TestNotifier(42)),
+        autoDispose.overrideWith((ref) => TestNotifier(84)),
       ],
     );
 
@@ -62,15 +60,9 @@ void main() {
     );
     final container = ProviderContainer.test(
       overrides: [
-        family.overrideWith(
-          (Ref<int> ref, int arg) => TestNotifier(42 + arg),
-        ),
+        family.overrideWith((ref, int arg) => TestNotifier(42 + arg)),
         autoDisposeFamily.overrideWith(
-          (
-            Ref<int> ref,
-            int arg,
-          ) =>
-              TestNotifier(84 + arg),
+          (ref, int arg) => TestNotifier(84 + arg),
         ),
       ],
     );
@@ -96,38 +88,6 @@ void main() {
     container.refresh(provider);
 
     verifyNoMoreInteractions(listener);
-  });
-
-  test('ref.listenSelf listens to state changes', () {
-    final listener = Listener<int>();
-    final container = ProviderContainer.test();
-    final provider = StateNotifierProvider<StateController<int>, int>((ref) {
-      ref.listenSelf(listener.call);
-      return StateController(0);
-    });
-
-    final notifier = container.read(provider.notifier);
-
-    verifyOnly(listener, listener(null, 0));
-
-    notifier.state++;
-
-    verifyOnly(listener, listener(0, 1));
-  });
-
-  test('can read and set current StateNotifier', () async {
-    final container = ProviderContainer.test();
-    final listener = Listener<int>();
-    late Ref<int> ref;
-    final provider = StateNotifierProvider<Counter, int>((r) {
-      ref = r;
-      return Counter();
-    });
-
-    container.listen(provider, listener.call);
-
-    verifyZeroInteractions(listener);
-    expect(ref.state, 0);
   });
 
   test('can be auto-scoped', () async {

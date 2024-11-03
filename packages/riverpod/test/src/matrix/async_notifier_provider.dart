@@ -9,6 +9,7 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
       deferredProvider: <StateT>(
         create, {
         updateShouldNotify,
+        retry,
         shouldPersist,
         persistOptions,
         persistKey,
@@ -16,6 +17,7 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
         decode,
       }) {
         return AsyncNotifierProvider<DeferredAsyncNotifier<StateT>, StateT>(
+          retry: retry,
           shouldPersist: shouldPersist,
           persistOptions: persistOptions,
           () => DeferredAsyncNotifier(
@@ -47,6 +49,7 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
       deferredProvider: <StateT>(
         create, {
         updateShouldNotify,
+        retry,
         shouldPersist,
         persistOptions,
         persistKey,
@@ -55,6 +58,7 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
       }) {
         return AsyncNotifierProvider.autoDispose<DeferredAsyncNotifier<StateT>,
             StateT>(
+          retry: retry,
           shouldPersist: shouldPersist,
           persistOptions: persistOptions,
           () => DeferredAsyncNotifier(
@@ -88,6 +92,7 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
       deferredProvider: <StateT>(
         create, {
         updateShouldNotify,
+        retry,
         shouldPersist,
         persistOptions,
         persistKey,
@@ -96,6 +101,7 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
       }) {
         return AsyncNotifierProvider.family<DeferredFamilyAsyncNotifier<StateT>,
             StateT, Object?>(
+          retry: retry,
           shouldPersist: shouldPersist,
           persistOptions: persistOptions,
           () => DeferredFamilyAsyncNotifier(
@@ -130,6 +136,7 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
       deferredProvider: <StateT>(
         create, {
         updateShouldNotify,
+        retry,
         shouldPersist,
         persistOptions,
         persistKey,
@@ -138,6 +145,7 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
       }) {
         return AsyncNotifierProvider.family
             .autoDispose<DeferredFamilyAsyncNotifier<StateT>, StateT, Object?>(
+              retry: retry,
               shouldPersist: shouldPersist,
               persistOptions: persistOptions,
               () => DeferredFamilyAsyncNotifier(
@@ -192,14 +200,14 @@ class DeferredAsyncNotifier<StateT> extends AsyncNotifier<StateT>
         _decode = decode,
         _persistKey = persistKey;
 
-  final FutureOr<StateT> Function(Ref<AsyncValue<StateT>> ref) _create;
+  final FutureOr<StateT> Function(Ref ref, $AsyncNotifier<StateT> self) _create;
   final bool Function(
     AsyncValue<StateT> previousState,
     AsyncValue<StateT> newState,
   )? _updateShouldNotify;
 
   @override
-  FutureOr<StateT> build() => _create(ref);
+  FutureOr<StateT> build() => _create(ref, this);
 
   @override
   bool updateShouldNotify(
@@ -249,7 +257,7 @@ class DeferredFamilyAsyncNotifier<StateT>
         _decode = decode,
         _persistKey = persistKey;
 
-  final FutureOr<StateT> Function(Ref<AsyncValue<StateT>> ref) _create;
+  final FutureOr<StateT> Function(Ref ref, $AsyncNotifier<StateT> self) _create;
 
   final bool Function(
     AsyncValue<StateT> previousState,
@@ -257,7 +265,7 @@ class DeferredFamilyAsyncNotifier<StateT>
   )? _updateShouldNotify;
 
   @override
-  FutureOr<StateT> build(int arg) => _create(ref);
+  FutureOr<StateT> build(int arg) => _create(ref, this);
 
   @override
   bool updateShouldNotify(
@@ -294,7 +302,7 @@ class DeferredFamilyAsyncNotifier<StateT>
 }
 
 class AsyncNotifierTestFactory extends TestFactory<
-    ProviderFactory<$AsyncNotifier<Object?>, ProviderBase<Object?>, void>> {
+    ProviderFactory<$AsyncNotifier<Object?>, ProviderBase<Object?>>> {
   AsyncNotifierTestFactory({
     required super.isAutoDispose,
     required super.isFamily,
@@ -305,18 +313,19 @@ class AsyncNotifierTestFactory extends TestFactory<
   });
 
   final TestAsyncNotifier<StateT> Function<StateT>(
-    FutureOr<StateT> Function(Ref<AsyncValue<StateT>> ref) create,
+    FutureOr<StateT> Function(Ref ref, $AsyncNotifier<StateT> self) create,
   ) deferredNotifier;
 
   final $AsyncNotifierProvider<TestAsyncNotifier<StateT>, StateT>
       Function<StateT>(
-    FutureOr<StateT> Function(Ref<AsyncValue<StateT>> ref) create, {
+    FutureOr<StateT> Function(Ref ref, $AsyncNotifier<StateT> self) create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
     bool? shouldPersist,
     Persist? persistOptions,
     Object? Function(Object? args)? persistKey,
     AsyncValue<StateT> Function(Object? encoded)? decode,
     Object? Function(AsyncValue<StateT> value)? encode,
+    Retry? retry,
   }) deferredProvider;
 
   final $AsyncNotifierProvider<$AsyncNotifier<StateT>, StateT> Function<StateT>(
@@ -325,22 +334,24 @@ class AsyncNotifierTestFactory extends TestFactory<
 
   $AsyncNotifierProvider<TestAsyncNotifier<StateT>, StateT>
       simpleTestProvider<StateT>(
-    FutureOr<StateT> Function(Ref<AsyncValue<StateT>> ref) create, {
+    FutureOr<StateT> Function(Ref ref, $AsyncNotifier<StateT> self) create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
     bool? shouldPersist,
     Persist? persistOptions,
     Object? Function(Object? args)? persistKey,
     AsyncValue<StateT> Function(Object? encoded)? decode,
     Object? Function(AsyncValue<StateT> value)? encode,
+    Retry? retry,
   }) {
     return deferredProvider<StateT>(
-      (ref) => create(ref),
+      (ref, self) => create(ref, self),
       updateShouldNotify: updateShouldNotify,
       shouldPersist: shouldPersist,
       persistOptions: persistOptions,
       persistKey: persistKey,
       decode: decode,
       encode: encode,
+      retry: retry,
     );
   }
 }

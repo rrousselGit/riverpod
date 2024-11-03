@@ -8,16 +8,14 @@ part of 'auto_dispose.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef DiceRollRef = Ref<int>;
-
 @ProviderFor(diceRoll)
 const diceRollProvider = DiceRollProvider._();
 
 final class DiceRollProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, DiceRollRef> {
+    with $Provider<int> {
   const DiceRollProvider._(
       {int Function(
-        DiceRollRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -31,7 +29,7 @@ final class DiceRollProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    DiceRollRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -53,31 +51,29 @@ final class DiceRollProvider extends $FunctionalProvider<int, int>
   @override
   DiceRollProvider $copyWithCreate(
     int Function(
-      DiceRollRef ref,
+      Ref ref,
     ) create,
   ) {
     return DiceRollProvider._(create: create);
   }
 
   @override
-  int create(DiceRollRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? diceRoll;
     return _$cb(ref);
   }
 }
 
-String _$diceRollHash() => r'dfd5ac8b74351a0076da9d131c10277f53ff11b9';
-
-typedef CachedDiceRollRef = Ref<int>;
+String _$diceRollHash() => r'58d43e5143bb64e855939d55a3be3ee81d66c518';
 
 @ProviderFor(cachedDiceRoll)
 const cachedDiceRollProvider = CachedDiceRollProvider._();
 
 final class CachedDiceRollProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, CachedDiceRollRef> {
+    with $Provider<int> {
   const CachedDiceRollProvider._(
       {int Function(
-        CachedDiceRollRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -91,7 +87,7 @@ final class CachedDiceRollProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    CachedDiceRollRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -113,20 +109,20 @@ final class CachedDiceRollProvider extends $FunctionalProvider<int, int>
   @override
   CachedDiceRollProvider $copyWithCreate(
     int Function(
-      CachedDiceRollRef ref,
+      Ref ref,
     ) create,
   ) {
     return CachedDiceRollProvider._(create: create);
   }
 
   @override
-  int create(CachedDiceRollRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? cachedDiceRoll;
     return _$cb(ref);
   }
 }
 
-String _$cachedDiceRollHash() => r'fc31fcb804f10360d75362e56329976343ee7abb';
+String _$cachedDiceRollHash() => r'eaf5bb809278298f16e2eda8972b1876921f66f5';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

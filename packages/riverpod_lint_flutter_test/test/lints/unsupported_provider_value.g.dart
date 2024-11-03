@@ -6,16 +6,14 @@ part of 'unsupported_provider_value.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef IntegerRef = Ref<int>;
-
 @ProviderFor(integer)
 const integerProvider = IntegerProvider._();
 
 final class IntegerProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, IntegerRef> {
+    with $Provider<int> {
   const IntegerProvider._(
       {int Function(
-        IntegerRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -29,7 +27,7 @@ final class IntegerProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    IntegerRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -51,32 +49,30 @@ final class IntegerProvider extends $FunctionalProvider<int, int>
   @override
   IntegerProvider $copyWithCreate(
     int Function(
-      IntegerRef ref,
+      Ref ref,
     ) create,
   ) {
     return IntegerProvider._(create: create);
   }
 
   @override
-  int create(IntegerRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? integer;
     return _$cb(ref);
   }
 }
 
-String _$integerHash() => r'a8ce0296e677f64c8b9d1893eed85598c096765e';
-
-typedef StateNotifierRef = Ref<MyStateNotifier>;
+String _$integerHash() => r'8ad63bb35c89ffcf2ef281d7c39539760afff303';
 
 @ProviderFor(stateNotifier)
 const stateNotifierProvider = StateNotifierProvider._();
 
 final class StateNotifierProvider
     extends $FunctionalProvider<MyStateNotifier, MyStateNotifier>
-    with $Provider<MyStateNotifier, StateNotifierRef> {
+    with $Provider<MyStateNotifier> {
   const StateNotifierProvider._(
       {MyStateNotifier Function(
-        StateNotifierRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -90,7 +86,7 @@ final class StateNotifierProvider
         );
 
   final MyStateNotifier Function(
-    StateNotifierRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -112,34 +108,30 @@ final class StateNotifierProvider
   @override
   StateNotifierProvider $copyWithCreate(
     MyStateNotifier Function(
-      StateNotifierRef ref,
+      Ref ref,
     ) create,
   ) {
     return StateNotifierProvider._(create: create);
   }
 
   @override
-  MyStateNotifier create(StateNotifierRef ref) {
+  MyStateNotifier create(Ref ref) {
     final _$cb = _createCb ?? stateNotifier;
     return _$cb(ref);
   }
 }
 
-String _$stateNotifierHash() => r'5d517187bf927e19246ffbcc279d59e15df8ef30';
-
-typedef AsyncStateNotifierRef = Ref<AsyncValue<MyStateNotifier>>;
+String _$stateNotifierHash() => r'2505b564fd3a623976548c715b1623dea507f6d3';
 
 @ProviderFor(asyncStateNotifier)
 const asyncStateNotifierProvider = AsyncStateNotifierProvider._();
 
 final class AsyncStateNotifierProvider extends $FunctionalProvider<
         AsyncValue<MyStateNotifier>, FutureOr<MyStateNotifier>>
-    with
-        $FutureModifier<MyStateNotifier>,
-        $FutureProvider<MyStateNotifier, AsyncStateNotifierRef> {
+    with $FutureModifier<MyStateNotifier>, $FutureProvider<MyStateNotifier> {
   const AsyncStateNotifierProvider._(
       {FutureOr<MyStateNotifier> Function(
-        AsyncStateNotifierRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -153,7 +145,7 @@ final class AsyncStateNotifierProvider extends $FunctionalProvider<
         );
 
   final FutureOr<MyStateNotifier> Function(
-    AsyncStateNotifierRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -168,21 +160,21 @@ final class AsyncStateNotifierProvider extends $FunctionalProvider<
   @override
   AsyncStateNotifierProvider $copyWithCreate(
     FutureOr<MyStateNotifier> Function(
-      AsyncStateNotifierRef ref,
+      Ref ref,
     ) create,
   ) {
     return AsyncStateNotifierProvider._(create: create);
   }
 
   @override
-  FutureOr<MyStateNotifier> create(AsyncStateNotifierRef ref) {
+  FutureOr<MyStateNotifier> create(Ref ref) {
     final _$cb = _createCb ?? asyncStateNotifier;
     return _$cb(ref);
   }
 }
 
 String _$asyncStateNotifierHash() =>
-    r'66442390f13e38cd9594f841a7610ab0f632db81';
+    r'5c5954eb030f5688abdf881e047c8893c864b1a2';
 
 @ProviderFor(StateNotifierClass)
 const stateNotifierClassProvider = StateNotifierClassProvider._();
@@ -231,7 +223,7 @@ final class StateNotifierClassProvider
   @override
   StateNotifierClassProvider $copyWithBuild(
     MyStateNotifier Function(
-      Ref<MyStateNotifier>,
+      Ref,
       StateNotifierClass,
     ) build,
   ) {
@@ -255,19 +247,15 @@ abstract class _$StateNotifierClass extends $Notifier<MyStateNotifier> {
   MyStateNotifier runBuild() => build();
 }
 
-typedef StateNotifierAsyncRef = Ref<AsyncValue<MyStateNotifier>>;
-
 @ProviderFor(stateNotifierAsync)
 const stateNotifierAsyncProvider = StateNotifierAsyncProvider._();
 
 final class StateNotifierAsyncProvider extends $FunctionalProvider<
         AsyncValue<MyStateNotifier>, FutureOr<MyStateNotifier>>
-    with
-        $FutureModifier<MyStateNotifier>,
-        $FutureProvider<MyStateNotifier, StateNotifierAsyncRef> {
+    with $FutureModifier<MyStateNotifier>, $FutureProvider<MyStateNotifier> {
   const StateNotifierAsyncProvider._(
       {FutureOr<MyStateNotifier> Function(
-        StateNotifierAsyncRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -281,7 +269,7 @@ final class StateNotifierAsyncProvider extends $FunctionalProvider<
         );
 
   final FutureOr<MyStateNotifier> Function(
-    StateNotifierAsyncRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -296,21 +284,21 @@ final class StateNotifierAsyncProvider extends $FunctionalProvider<
   @override
   StateNotifierAsyncProvider $copyWithCreate(
     FutureOr<MyStateNotifier> Function(
-      StateNotifierAsyncRef ref,
+      Ref ref,
     ) create,
   ) {
     return StateNotifierAsyncProvider._(create: create);
   }
 
   @override
-  FutureOr<MyStateNotifier> create(StateNotifierAsyncRef ref) {
+  FutureOr<MyStateNotifier> create(Ref ref) {
     final _$cb = _createCb ?? stateNotifierAsync;
     return _$cb(ref);
   }
 }
 
 String _$stateNotifierAsyncHash() =>
-    r'9a9b1986076dfdfa4490cc109f1bd0f112a7455c';
+    r'ce67cf8c6f4bda46835042c17ea01186b5b399a5';
 
 @ProviderFor(SelfNotifier)
 const selfNotifierProvider = SelfNotifierProvider._();
@@ -351,7 +339,7 @@ final class SelfNotifierProvider
   @override
   SelfNotifierProvider $copyWithBuild(
     FutureOr<SelfNotifier> Function(
-      Ref<AsyncValue<SelfNotifier>>,
+      Ref,
       SelfNotifier,
     ) build,
   ) {
@@ -421,7 +409,7 @@ final class SyncSelfNotifierProvider
   @override
   SyncSelfNotifierProvider $copyWithBuild(
     SyncSelfNotifier Function(
-      Ref<SyncSelfNotifier>,
+      Ref,
       SyncSelfNotifier,
     ) build,
   ) {
@@ -483,7 +471,7 @@ final class StreamSelfNotifierProvider
   @override
   StreamSelfNotifierProvider $copyWithBuild(
     Stream<StreamSelfNotifier> Function(
-      Ref<AsyncValue<StreamSelfNotifier>>,
+      Ref,
       StreamSelfNotifier,
     ) build,
   ) {
@@ -549,7 +537,7 @@ final class StateNotifierClassAsyncProvider
   @override
   StateNotifierClassAsyncProvider $copyWithBuild(
     FutureOr<MyStateNotifier> Function(
-      Ref<AsyncValue<MyStateNotifier>>,
+      Ref,
       StateNotifierClassAsync,
     ) build,
   ) {
@@ -574,17 +562,15 @@ abstract class _$StateNotifierClassAsync
   FutureOr<MyStateNotifier> runBuild() => build();
 }
 
-typedef ChangeNotifierRef = Ref<MyChangeNotifier>;
-
 @ProviderFor(changeNotifier)
 const changeNotifierProvider = ChangeNotifierProvider._();
 
 final class ChangeNotifierProvider
     extends $FunctionalProvider<MyChangeNotifier, MyChangeNotifier>
-    with $Provider<MyChangeNotifier, ChangeNotifierRef> {
+    with $Provider<MyChangeNotifier> {
   const ChangeNotifierProvider._(
       {MyChangeNotifier Function(
-        ChangeNotifierRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -598,7 +584,7 @@ final class ChangeNotifierProvider
         );
 
   final MyChangeNotifier Function(
-    ChangeNotifierRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -620,20 +606,20 @@ final class ChangeNotifierProvider
   @override
   ChangeNotifierProvider $copyWithCreate(
     MyChangeNotifier Function(
-      ChangeNotifierRef ref,
+      Ref ref,
     ) create,
   ) {
     return ChangeNotifierProvider._(create: create);
   }
 
   @override
-  MyChangeNotifier create(ChangeNotifierRef ref) {
+  MyChangeNotifier create(Ref ref) {
     final _$cb = _createCb ?? changeNotifier;
     return _$cb(ref);
   }
 }
 
-String _$changeNotifierHash() => r'6325328c129773979364c3cfd628f8f696bbaf66';
+String _$changeNotifierHash() => r'1686043b72e25b3143c5131906924f1393569400';
 
 @ProviderFor(ChangeNotifierClass)
 const changeNotifierClassProvider = ChangeNotifierClassProvider._();
@@ -682,7 +668,7 @@ final class ChangeNotifierClassProvider
   @override
   ChangeNotifierClassProvider $copyWithBuild(
     MyChangeNotifier Function(
-      Ref<MyChangeNotifier>,
+      Ref,
       ChangeNotifierClass,
     ) build,
   ) {
@@ -706,16 +692,14 @@ abstract class _$ChangeNotifierClass extends $Notifier<MyChangeNotifier> {
   MyChangeNotifier runBuild() => build();
 }
 
-typedef NotifierRef = Ref<MyNotifier>;
-
 @ProviderFor(notifier)
 const notifierProvider = NotifierProvider._();
 
 final class NotifierProvider extends $FunctionalProvider<MyNotifier, MyNotifier>
-    with $Provider<MyNotifier, NotifierRef> {
+    with $Provider<MyNotifier> {
   const NotifierProvider._(
       {MyNotifier Function(
-        NotifierRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -729,7 +713,7 @@ final class NotifierProvider extends $FunctionalProvider<MyNotifier, MyNotifier>
         );
 
   final MyNotifier Function(
-    NotifierRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -751,32 +735,30 @@ final class NotifierProvider extends $FunctionalProvider<MyNotifier, MyNotifier>
   @override
   NotifierProvider $copyWithCreate(
     MyNotifier Function(
-      NotifierRef ref,
+      Ref ref,
     ) create,
   ) {
     return NotifierProvider._(create: create);
   }
 
   @override
-  MyNotifier create(NotifierRef ref) {
+  MyNotifier create(Ref ref) {
     final _$cb = _createCb ?? notifier;
     return _$cb(ref);
   }
 }
 
-String _$notifierHash() => r'2f323c78400044790faaf61912fc98c6153942f6';
-
-typedef AutoDisposeNotifierRef = Ref<MyAutoDisposeNotifier>;
+String _$notifierHash() => r'5ad63d9ccd05ab78e7a6ba5c763cacf0b1decb7b';
 
 @ProviderFor(autoDisposeNotifier)
 const autoDisposeNotifierProvider = AutoDisposeNotifierProvider._();
 
 final class AutoDisposeNotifierProvider
     extends $FunctionalProvider<MyAutoDisposeNotifier, MyAutoDisposeNotifier>
-    with $Provider<MyAutoDisposeNotifier, AutoDisposeNotifierRef> {
+    with $Provider<MyAutoDisposeNotifier> {
   const AutoDisposeNotifierProvider._(
       {MyAutoDisposeNotifier Function(
-        AutoDisposeNotifierRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -790,7 +772,7 @@ final class AutoDisposeNotifierProvider
         );
 
   final MyAutoDisposeNotifier Function(
-    AutoDisposeNotifierRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -813,21 +795,21 @@ final class AutoDisposeNotifierProvider
   @override
   AutoDisposeNotifierProvider $copyWithCreate(
     MyAutoDisposeNotifier Function(
-      AutoDisposeNotifierRef ref,
+      Ref ref,
     ) create,
   ) {
     return AutoDisposeNotifierProvider._(create: create);
   }
 
   @override
-  MyAutoDisposeNotifier create(AutoDisposeNotifierRef ref) {
+  MyAutoDisposeNotifier create(Ref ref) {
     final _$cb = _createCb ?? autoDisposeNotifier;
     return _$cb(ref);
   }
 }
 
 String _$autoDisposeNotifierHash() =>
-    r'620df0fc11c887f01e125454afe8de553cfea6d0';
+    r'6aecd9dee1e2734c3acf8eab05145418d10656e1';
 
 @ProviderFor(NotifierClass)
 const notifierClassProvider = NotifierClassProvider._();
@@ -876,7 +858,7 @@ final class NotifierClassProvider
   @override
   NotifierClassProvider $copyWithBuild(
     MyNotifier Function(
-      Ref<MyNotifier>,
+      Ref,
       NotifierClass,
     ) build,
   ) {
@@ -899,17 +881,15 @@ abstract class _$NotifierClass extends $Notifier<MyNotifier> {
   MyNotifier runBuild() => build();
 }
 
-typedef AsyncNotifierRef = Ref<MyAsyncNotifier>;
-
 @ProviderFor(asyncNotifier)
 const asyncNotifierProvider = AsyncNotifierProvider._();
 
 final class AsyncNotifierProvider
     extends $FunctionalProvider<MyAsyncNotifier, MyAsyncNotifier>
-    with $Provider<MyAsyncNotifier, AsyncNotifierRef> {
+    with $Provider<MyAsyncNotifier> {
   const AsyncNotifierProvider._(
       {MyAsyncNotifier Function(
-        AsyncNotifierRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -923,7 +903,7 @@ final class AsyncNotifierProvider
         );
 
   final MyAsyncNotifier Function(
-    AsyncNotifierRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -945,20 +925,20 @@ final class AsyncNotifierProvider
   @override
   AsyncNotifierProvider $copyWithCreate(
     MyAsyncNotifier Function(
-      AsyncNotifierRef ref,
+      Ref ref,
     ) create,
   ) {
     return AsyncNotifierProvider._(create: create);
   }
 
   @override
-  MyAsyncNotifier create(AsyncNotifierRef ref) {
+  MyAsyncNotifier create(Ref ref) {
     final _$cb = _createCb ?? asyncNotifier;
     return _$cb(ref);
   }
 }
 
-String _$asyncNotifierHash() => r'c90348efac71d241468236924f6c6bc80ae0d0e0';
+String _$asyncNotifierHash() => r'8800a97f6bf80a56caf5d968d4b4ab91f7f0a64e';
 
 @ProviderFor(AsyncNotifierClass)
 const asyncNotifierClassProvider = AsyncNotifierClassProvider._();
@@ -1007,7 +987,7 @@ final class AsyncNotifierClassProvider
   @override
   AsyncNotifierClassProvider $copyWithBuild(
     MyAsyncNotifier Function(
-      Ref<MyAsyncNotifier>,
+      Ref,
       AsyncNotifierClass,
     ) build,
   ) {
@@ -1031,17 +1011,15 @@ abstract class _$AsyncNotifierClass extends $Notifier<MyAsyncNotifier> {
   MyAsyncNotifier runBuild() => build();
 }
 
-typedef RawNotifierRef = Ref<Raw<MyChangeNotifier>>;
-
 @ProviderFor(rawNotifier)
 const rawNotifierProvider = RawNotifierProvider._();
 
 final class RawNotifierProvider
     extends $FunctionalProvider<Raw<MyChangeNotifier>, Raw<MyChangeNotifier>>
-    with $Provider<Raw<MyChangeNotifier>, RawNotifierRef> {
+    with $Provider<Raw<MyChangeNotifier>> {
   const RawNotifierProvider._(
       {Raw<MyChangeNotifier> Function(
-        RawNotifierRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -1055,7 +1033,7 @@ final class RawNotifierProvider
         );
 
   final Raw<MyChangeNotifier> Function(
-    RawNotifierRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -1078,32 +1056,30 @@ final class RawNotifierProvider
   @override
   RawNotifierProvider $copyWithCreate(
     Raw<MyChangeNotifier> Function(
-      RawNotifierRef ref,
+      Ref ref,
     ) create,
   ) {
     return RawNotifierProvider._(create: create);
   }
 
   @override
-  Raw<MyChangeNotifier> create(RawNotifierRef ref) {
+  Raw<MyChangeNotifier> create(Ref ref) {
     final _$cb = _createCb ?? rawNotifier;
     return _$cb(ref);
   }
 }
 
-String _$rawNotifierHash() => r'c01adc70a8e08258bf5d13024aa8e9b86359a2b2';
-
-typedef RawFutureNotifierRef = Ref<Raw<Future<MyChangeNotifier>>>;
+String _$rawNotifierHash() => r'c667d10419c9ce1fdd227e2afd1f3aaf63c3380b';
 
 @ProviderFor(rawFutureNotifier)
 const rawFutureNotifierProvider = RawFutureNotifierProvider._();
 
 final class RawFutureNotifierProvider extends $FunctionalProvider<
         Raw<Future<MyChangeNotifier>>, Raw<Future<MyChangeNotifier>>>
-    with $Provider<Raw<Future<MyChangeNotifier>>, RawFutureNotifierRef> {
+    with $Provider<Raw<Future<MyChangeNotifier>>> {
   const RawFutureNotifierProvider._(
       {Raw<Future<MyChangeNotifier>> Function(
-        RawFutureNotifierRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -1117,7 +1093,7 @@ final class RawFutureNotifierProvider extends $FunctionalProvider<
         );
 
   final Raw<Future<MyChangeNotifier>> Function(
-    RawFutureNotifierRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -1140,32 +1116,30 @@ final class RawFutureNotifierProvider extends $FunctionalProvider<
   @override
   RawFutureNotifierProvider $copyWithCreate(
     Raw<Future<MyChangeNotifier>> Function(
-      RawFutureNotifierRef ref,
+      Ref ref,
     ) create,
   ) {
     return RawFutureNotifierProvider._(create: create);
   }
 
   @override
-  Raw<Future<MyChangeNotifier>> create(RawFutureNotifierRef ref) {
+  Raw<Future<MyChangeNotifier>> create(Ref ref) {
     final _$cb = _createCb ?? rawFutureNotifier;
     return _$cb(ref);
   }
 }
 
-String _$rawFutureNotifierHash() => r'883253dbf7ade868c44b288ec3da02be64dcfb20';
-
-typedef RawStreamNotifierRef = Ref<Raw<Stream<MyChangeNotifier>>>;
+String _$rawFutureNotifierHash() => r'ff2744c369ebd96615f19451eae416d7afeef03f';
 
 @ProviderFor(rawStreamNotifier)
 const rawStreamNotifierProvider = RawStreamNotifierProvider._();
 
 final class RawStreamNotifierProvider extends $FunctionalProvider<
         Raw<Stream<MyChangeNotifier>>, Raw<Stream<MyChangeNotifier>>>
-    with $Provider<Raw<Stream<MyChangeNotifier>>, RawStreamNotifierRef> {
+    with $Provider<Raw<Stream<MyChangeNotifier>>> {
   const RawStreamNotifierProvider._(
       {Raw<Stream<MyChangeNotifier>> Function(
-        RawStreamNotifierRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -1179,7 +1153,7 @@ final class RawStreamNotifierProvider extends $FunctionalProvider<
         );
 
   final Raw<Stream<MyChangeNotifier>> Function(
-    RawStreamNotifierRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -1202,22 +1176,20 @@ final class RawStreamNotifierProvider extends $FunctionalProvider<
   @override
   RawStreamNotifierProvider $copyWithCreate(
     Raw<Stream<MyChangeNotifier>> Function(
-      RawStreamNotifierRef ref,
+      Ref ref,
     ) create,
   ) {
     return RawStreamNotifierProvider._(create: create);
   }
 
   @override
-  Raw<Stream<MyChangeNotifier>> create(RawStreamNotifierRef ref) {
+  Raw<Stream<MyChangeNotifier>> create(Ref ref) {
     final _$cb = _createCb ?? rawStreamNotifier;
     return _$cb(ref);
   }
 }
 
-String _$rawStreamNotifierHash() => r'f22f6a906e275c6245365bf029e2dc217cf3a301';
-
-typedef FutureRawNotifierRef = Ref<AsyncValue<Raw<MyChangeNotifier>>>;
+String _$rawStreamNotifierHash() => r'9a13efb8fbcef6c4388d5a2535b1b0aec6e46a9a';
 
 @ProviderFor(futureRawNotifier)
 const futureRawNotifierProvider = FutureRawNotifierProvider._();
@@ -1226,10 +1198,10 @@ final class FutureRawNotifierProvider extends $FunctionalProvider<
         AsyncValue<Raw<MyChangeNotifier>>, FutureOr<Raw<MyChangeNotifier>>>
     with
         $FutureModifier<Raw<MyChangeNotifier>>,
-        $FutureProvider<Raw<MyChangeNotifier>, FutureRawNotifierRef> {
+        $FutureProvider<Raw<MyChangeNotifier>> {
   const FutureRawNotifierProvider._(
       {FutureOr<Raw<MyChangeNotifier>> Function(
-        FutureRawNotifierRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -1243,7 +1215,7 @@ final class FutureRawNotifierProvider extends $FunctionalProvider<
         );
 
   final FutureOr<Raw<MyChangeNotifier>> Function(
-    FutureRawNotifierRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -1258,22 +1230,20 @@ final class FutureRawNotifierProvider extends $FunctionalProvider<
   @override
   FutureRawNotifierProvider $copyWithCreate(
     FutureOr<Raw<MyChangeNotifier>> Function(
-      FutureRawNotifierRef ref,
+      Ref ref,
     ) create,
   ) {
     return FutureRawNotifierProvider._(create: create);
   }
 
   @override
-  FutureOr<Raw<MyChangeNotifier>> create(FutureRawNotifierRef ref) {
+  FutureOr<Raw<MyChangeNotifier>> create(Ref ref) {
     final _$cb = _createCb ?? futureRawNotifier;
     return _$cb(ref);
   }
 }
 
-String _$futureRawNotifierHash() => r'd70ca757ff2539fc698ff924c135ee5e88a98018';
-
-typedef StreamRawNotifierRef = Ref<AsyncValue<Raw<MyChangeNotifier>>>;
+String _$futureRawNotifierHash() => r'87103845bce1f4cae4ad62ae3b7da6ca3539581f';
 
 @ProviderFor(streamRawNotifier)
 const streamRawNotifierProvider = StreamRawNotifierProvider._();
@@ -1282,10 +1252,10 @@ final class StreamRawNotifierProvider extends $FunctionalProvider<
         AsyncValue<Raw<MyChangeNotifier>>, Stream<Raw<MyChangeNotifier>>>
     with
         $FutureModifier<Raw<MyChangeNotifier>>,
-        $StreamProvider<Raw<MyChangeNotifier>, StreamRawNotifierRef> {
+        $StreamProvider<Raw<MyChangeNotifier>> {
   const StreamRawNotifierProvider._(
       {Stream<Raw<MyChangeNotifier>> Function(
-        StreamRawNotifierRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -1299,7 +1269,7 @@ final class StreamRawNotifierProvider extends $FunctionalProvider<
         );
 
   final Stream<Raw<MyChangeNotifier>> Function(
-    StreamRawNotifierRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -1314,20 +1284,20 @@ final class StreamRawNotifierProvider extends $FunctionalProvider<
   @override
   StreamRawNotifierProvider $copyWithCreate(
     Stream<Raw<MyChangeNotifier>> Function(
-      StreamRawNotifierRef ref,
+      Ref ref,
     ) create,
   ) {
     return StreamRawNotifierProvider._(create: create);
   }
 
   @override
-  Stream<Raw<MyChangeNotifier>> create(StreamRawNotifierRef ref) {
+  Stream<Raw<MyChangeNotifier>> create(Ref ref) {
     final _$cb = _createCb ?? streamRawNotifier;
     return _$cb(ref);
   }
 }
 
-String _$streamRawNotifierHash() => r'b1075c37ef3e8a83dfb9a3d469b76bd4855c336f';
+String _$streamRawNotifierHash() => r'1d4abe389b7dfe1381879d8ffb174f6d1d9325e0';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

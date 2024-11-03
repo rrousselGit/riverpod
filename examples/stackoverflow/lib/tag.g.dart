@@ -8,16 +8,14 @@ part of 'tag.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef TagThemeRef = Ref<TagTheme>;
-
 @ProviderFor(tagTheme)
 const tagThemeProvider = TagThemeProvider._();
 
 final class TagThemeProvider extends $FunctionalProvider<TagTheme, TagTheme>
-    with $Provider<TagTheme, TagThemeRef> {
+    with $Provider<TagTheme> {
   const TagThemeProvider._(
       {TagTheme Function(
-        TagThemeRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -35,7 +33,7 @@ final class TagThemeProvider extends $FunctionalProvider<TagTheme, TagTheme>
   static const $allTransitiveDependencies0 = themeProvider;
 
   final TagTheme Function(
-    TagThemeRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -57,20 +55,20 @@ final class TagThemeProvider extends $FunctionalProvider<TagTheme, TagTheme>
   @override
   TagThemeProvider $copyWithCreate(
     TagTheme Function(
-      TagThemeRef ref,
+      Ref ref,
     ) create,
   ) {
     return TagThemeProvider._(create: create);
   }
 
   @override
-  TagTheme create(TagThemeRef ref) {
+  TagTheme create(Ref ref) {
     final _$cb = _createCb ?? tagTheme;
     return _$cb(ref);
   }
 }
 
-String _$tagThemeHash() => r'bf5d051ea43e2f60d370096bb756aa81f21e9d68';
+String _$tagThemeHash() => r'ccf06d5f6b009c601edd44f88bf4f853708c38df';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

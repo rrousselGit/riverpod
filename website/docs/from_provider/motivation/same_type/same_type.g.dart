@@ -8,16 +8,14 @@ part of 'same_type.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef ItemsRef = Ref<List<Item>>;
-
 @ProviderFor(items)
 const itemsProvider = ItemsProvider._();
 
 final class ItemsProvider extends $FunctionalProvider<List<Item>, List<Item>>
-    with $Provider<List<Item>, ItemsRef> {
+    with $Provider<List<Item>> {
   const ItemsProvider._(
       {List<Item> Function(
-        ItemsRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -31,7 +29,7 @@ final class ItemsProvider extends $FunctionalProvider<List<Item>, List<Item>>
         );
 
   final List<Item> Function(
-    ItemsRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -53,32 +51,30 @@ final class ItemsProvider extends $FunctionalProvider<List<Item>, List<Item>>
   @override
   ItemsProvider $copyWithCreate(
     List<Item> Function(
-      ItemsRef ref,
+      Ref ref,
     ) create,
   ) {
     return ItemsProvider._(create: create);
   }
 
   @override
-  List<Item> create(ItemsRef ref) {
+  List<Item> create(Ref ref) {
     final _$cb = _createCb ?? items;
     return _$cb(ref);
   }
 }
 
-String _$itemsHash() => r'f0a8fa6874f4868db9ead31e82c75d976f9d2033';
-
-typedef EvenItemsRef = Ref<List<Item>>;
+String _$itemsHash() => r'8dafed1afc3fc52651c24445640d8b57ff080f66';
 
 @ProviderFor(evenItems)
 const evenItemsProvider = EvenItemsProvider._();
 
 final class EvenItemsProvider
     extends $FunctionalProvider<List<Item>, List<Item>>
-    with $Provider<List<Item>, EvenItemsRef> {
+    with $Provider<List<Item>> {
   const EvenItemsProvider._(
       {List<Item> Function(
-        EvenItemsRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -92,7 +88,7 @@ final class EvenItemsProvider
         );
 
   final List<Item> Function(
-    EvenItemsRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -114,20 +110,20 @@ final class EvenItemsProvider
   @override
   EvenItemsProvider $copyWithCreate(
     List<Item> Function(
-      EvenItemsRef ref,
+      Ref ref,
     ) create,
   ) {
     return EvenItemsProvider._(create: create);
   }
 
   @override
-  List<Item> create(EvenItemsRef ref) {
+  List<Item> create(Ref ref) {
     final _$cb = _createCb ?? evenItems;
     return _$cb(ref);
   }
 }
 
-String _$evenItemsHash() => r'82b4525e91604745f2b4664531b32d4aff5717d4';
+String _$evenItemsHash() => r'83ef608e2e1ec6926495f7a4dd4bac3e6b1f16e1';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -51,7 +51,7 @@ contextMessages:
 
   ```dart
   @riverpod
-  int plainAnnotation(PlainAnnotationRef ref) {
+  int plainAnnotation(Ref ref) {
     ref.watch(>>>depProvider<<<);
     return 0;
   }
@@ -63,7 +63,7 @@ test/lints/provider_dependencies/missing_dependencies.dart:77:1
 
 // expect_lint: provider_dependencies
 >>>@riverpod<<<
-int plainAnnotation(PlainAnnotationRef ref) {
+int plainAnnotation(Ref ref) {
   ref.watch(depProvider);
 ```
 
@@ -77,7 +77,7 @@ contextMessages:
 
   ```dart
   @Riverpod(keepAlive: false)
-  int customAnnotation(CustomAnnotationRef ref) {
+  int customAnnotation(Ref ref) {
     ref.watch(>>>depProvider<<<);
     return 0;
   }
@@ -89,7 +89,7 @@ test/lints/provider_dependencies/missing_dependencies.dart:84:1
 
 // expect_lint: provider_dependencies
 >>>@Riverpod(keepAlive: false)<<<
-int customAnnotation(CustomAnnotationRef ref) {
+int customAnnotation(Ref ref) {
   ref.watch(depProvider);
 ```
 
@@ -102,7 +102,7 @@ contextMessages:
   test/lints/provider_dependencies/missing_dependencies.dart:97:13
 
   ```dart
-    CustomAnnotationWithTrailingCommaRef ref,
+    Ref ref,
   ) {
     ref.watch(>>>depProvider<<<);
     return 0;
@@ -118,7 +118,7 @@ test/lints/provider_dependencies/missing_dependencies.dart:91:1
   keepAlive: false,
 )<<<
 int customAnnotationWithTrailingComma(
-  CustomAnnotationWithTrailingCommaRef ref,
+  Ref ref,
 ```
 
 =======
@@ -131,7 +131,7 @@ contextMessages:
 
   ```dart
   )
-  int existingDep(ExistingDepRef ref) {
+  int existingDep(Ref ref) {
     ref.watch(>>>depProvider<<<);
     return 0;
   }
@@ -144,7 +144,7 @@ test/lints/provider_dependencies/missing_dependencies.dart:104:17
   // expect_lint: provider_dependencies
   dependencies: >>>[]<<<,
 )
-int existingDep(ExistingDepRef ref) {
+int existingDep(Ref ref) {
 ```
 
 =======
@@ -157,7 +157,7 @@ contextMessages:
 
   ```dart
   )
-  int multipleDeps(MultipleDepsRef ref) {
+  int multipleDeps(Ref ref) {
     ref.watch(>>>depProvider<<<);
     ref.watch(dep2Provider);
     return 0;
@@ -167,7 +167,7 @@ contextMessages:
   test/lints/provider_dependencies/missing_dependencies.dart:118:13
 
   ```dart
-  int multipleDeps(MultipleDepsRef ref) {
+  int multipleDeps(Ref ref) {
     ref.watch(depProvider);
     ref.watch(>>>dep2Provider<<<);
     return 0;
@@ -181,7 +181,7 @@ test/lints/provider_dependencies/missing_dependencies.dart:114:17
   // expect_lint: provider_dependencies
   dependencies: >>>[]<<<,
 )
-int multipleDeps(MultipleDepsRef ref) {
+int multipleDeps(Ref ref) {
 ```
 
 =======

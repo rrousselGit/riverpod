@@ -1,5 +1,8 @@
 import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/error/error.dart' hide LintCode;
+import 'package:analyzer/error/error.dart'
+    hide
+        // ignore: undefined_hidden_name, necessary to support lower analyzer version
+        LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
@@ -30,7 +33,9 @@ class NotifierBuild extends RiverpodLintRule {
           final annotationElement = element.element;
 
           if (annotationElement == null ||
-              annotationElement is! ExecutableElement) return false;
+              annotationElement is! ExecutableElement) {
+            return false;
+          }
 
           return riverpodType.isExactlyType(annotationElement.returnType);
         },

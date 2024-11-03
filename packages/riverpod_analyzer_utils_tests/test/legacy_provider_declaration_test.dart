@@ -56,11 +56,11 @@ part 'foo.g.dart';
 final legacy = Provider<int>((ref) => 0);
 
 @riverpod
-int simple(SimpleRef ref) => 0;
+int simple(Ref ref) => 0;
 
 // Regression test for https://github.com/rrousselGit/riverpod/issues/2194
 @riverpod
-int complex(ComplexRef ref, {int? id, String? another}) => 0;
+int complex(Ref ref, {int? id, String? another}) => 0;
 ''', (resolver, unit, units) async {
       final result = await resolver.resolveRiverpodAnalysisResult();
 

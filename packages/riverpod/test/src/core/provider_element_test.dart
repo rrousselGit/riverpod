@@ -5,6 +5,7 @@ import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
 import '../../third_party/fake_async.dart';
+import '../matrix.dart';
 import '../utils.dart';
 
 void main() {
@@ -527,10 +528,12 @@ void main() {
       final listener = Listener<int>();
 
       final dep = StateProvider((ref) => 0);
-      final provider = Provider((ref) {
-        ref.watch(dep);
-        return ref.state = 0;
-      });
+      final provider = NotifierProvider<DeferredNotifier<int>, int>(
+        () => DeferredNotifier((ref, self) {
+          ref.watch(dep);
+          return self.state = 0;
+        }),
+      );
 
       container.listen(provider, listener.call, fireImmediately: true);
 
@@ -542,10 +545,12 @@ void main() {
       final listener = Listener<int>();
 
       final dep = StateProvider((ref) => 0);
-      final provider = Provider((ref) {
-        ref.watch(dep);
-        return ref.state = 0;
-      });
+      final provider = NotifierProvider<DeferredNotifier<int>, int>(
+        () => DeferredNotifier((ref, self) {
+          ref.watch(dep);
+          return self.state = 0;
+        }),
+      );
 
       container.listen(provider, listener.call, fireImmediately: true);
 

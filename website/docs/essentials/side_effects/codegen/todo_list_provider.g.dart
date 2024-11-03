@@ -8,17 +8,15 @@ part of 'todo_list_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef TodoListRef = Ref<AsyncValue<List<Todo>>>;
-
 @ProviderFor(todoList)
 const todoListProvider = TodoListProvider._();
 
 final class TodoListProvider
     extends $FunctionalProvider<AsyncValue<List<Todo>>, FutureOr<List<Todo>>>
-    with $FutureModifier<List<Todo>>, $FutureProvider<List<Todo>, TodoListRef> {
+    with $FutureModifier<List<Todo>>, $FutureProvider<List<Todo>> {
   const TodoListProvider._(
       {FutureOr<List<Todo>> Function(
-        TodoListRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -32,7 +30,7 @@ final class TodoListProvider
         );
 
   final FutureOr<List<Todo>> Function(
-    TodoListRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -46,20 +44,20 @@ final class TodoListProvider
   @override
   TodoListProvider $copyWithCreate(
     FutureOr<List<Todo>> Function(
-      TodoListRef ref,
+      Ref ref,
     ) create,
   ) {
     return TodoListProvider._(create: create);
   }
 
   @override
-  FutureOr<List<Todo>> create(TodoListRef ref) {
+  FutureOr<List<Todo>> create(Ref ref) {
     final _$cb = _createCb ?? todoList;
     return _$cb(ref);
   }
 }
 
-String _$todoListHash() => r'26b30307668c8feefa7cbe3c400b73e6edccbc39';
+String _$todoListHash() => r'79ea254a2b6239c9fbcc2b5e6f075a3e5b72598e';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

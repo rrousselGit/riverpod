@@ -6,16 +6,14 @@ part of 'hash1.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef SimpleRef = Ref<String>;
-
 @ProviderFor(simple)
 const simpleProvider = SimpleProvider._();
 
 final class SimpleProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, SimpleRef> {
+    with $Provider<String> {
   const SimpleProvider._(
       {String Function(
-        SimpleRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -29,7 +27,7 @@ final class SimpleProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    SimpleRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -51,31 +49,29 @@ final class SimpleProvider extends $FunctionalProvider<String, String>
   @override
   SimpleProvider $copyWithCreate(
     String Function(
-      SimpleRef ref,
+      Ref ref,
     ) create,
   ) {
     return SimpleProvider._(create: create);
   }
 
   @override
-  String create(SimpleRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? simple;
     return _$cb(ref);
   }
 }
 
-String _$simpleHash() => r'ff9f7451526aef5b3af6646814631a502ad76a5f';
-
-typedef Simple2Ref = Ref<String>;
+String _$simpleHash() => r'f916b37e39d654e9acfc9c2bd7a244902197b306';
 
 @ProviderFor(simple2)
 const simple2Provider = Simple2Provider._();
 
 final class Simple2Provider extends $FunctionalProvider<String, String>
-    with $Provider<String, Simple2Ref> {
+    with $Provider<String> {
   const Simple2Provider._(
       {String Function(
-        Simple2Ref ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -89,7 +85,7 @@ final class Simple2Provider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    Simple2Ref ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -111,20 +107,20 @@ final class Simple2Provider extends $FunctionalProvider<String, String>
   @override
   Simple2Provider $copyWithCreate(
     String Function(
-      Simple2Ref ref,
+      Ref ref,
     ) create,
   ) {
     return Simple2Provider._(create: create);
   }
 
   @override
-  String create(Simple2Ref ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? simple2;
     return _$cb(ref);
   }
 }
 
-String _$simple2Hash() => r'06327442776394c5c9cbb33b048d7a42e709e7fd';
+String _$simple2Hash() => r'a60a8496fc391f5adf7ad45a12d0723f14f3127c';
 
 @ProviderFor(SimpleClass)
 const simpleClassProvider = SimpleClassProvider._();
@@ -172,7 +168,7 @@ final class SimpleClassProvider extends $NotifierProvider<SimpleClass, String> {
   @override
   SimpleClassProvider $copyWithBuild(
     String Function(
-      Ref<String>,
+      Ref,
       SimpleClass,
     ) build,
   ) {
@@ -196,4 +192,4 @@ abstract class _$SimpleClass extends $Notifier<String> {
 }
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

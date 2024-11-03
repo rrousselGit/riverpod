@@ -10,7 +10,7 @@ part 'auto_dispose.g.dart';
 // With code gen, .autoDispose is the default
 // {@endtemplate}
 @riverpod
-int diceRoll(DiceRollRef ref) {
+int diceRoll(Ref ref) {
   // {@template dice}
   // Since this provider is .autoDispose, un-listening to it will dispose
   // its current exposed state.
@@ -22,7 +22,7 @@ int diceRoll(DiceRollRef ref) {
 }
 
 @riverpod
-int cachedDiceRoll(CachedDiceRollRef ref) {
+int cachedDiceRoll(Ref ref) {
   final coin = Random().nextInt(10);
   if (coin > 5) throw Exception('Way too large.');
   // {@template keepAlive}

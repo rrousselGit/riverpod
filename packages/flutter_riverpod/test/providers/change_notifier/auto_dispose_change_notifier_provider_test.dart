@@ -1,11 +1,8 @@
-// ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: invalid_use_of_internal_member, deprecated_member_use_from_same_package
 
 import 'package:flutter/widgets.dart' hide Listener;
 import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
-
-import '../../utils.dart';
 
 void main() {
   group('ChangeNotifierProvider.autoDispose', () {
@@ -19,22 +16,6 @@ void main() {
       expect(container.read(provider.notifier), null);
 
       container.dispose();
-    });
-
-    test('can read and set current ChangeNotifier', () async {
-      final container = ProviderContainer.test();
-      final listener = Listener<ValueNotifier<int>>();
-      late Ref<ValueNotifier<int>> ref;
-      final provider =
-          ChangeNotifierProvider.autoDispose<ValueNotifier<int>>((r) {
-        ref = r;
-        return ValueNotifier(0);
-      });
-
-      container.listen(provider, listener.call);
-
-      verifyZeroInteractions(listener);
-      expect(ref.state.value, 0);
     });
 
     test('can refresh .notifier', () async {

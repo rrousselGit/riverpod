@@ -8,19 +8,17 @@ part of 'main.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef FetchUserRef = Ref<AsyncValue<User>>;
-
 @ProviderFor(fetchUser)
 const fetchUserProvider = FetchUserFamily._();
 
 final class FetchUserProvider
     extends $FunctionalProvider<AsyncValue<User>, FutureOr<User>>
-    with $FutureModifier<User>, $FutureProvider<User, FetchUserRef> {
+    with $FutureModifier<User>, $FutureProvider<User> {
   const FetchUserProvider._(
       {required FetchUserFamily super.from,
       required int super.argument,
       FutureOr<User> Function(
-        FetchUserRef ref, {
+        Ref ref, {
         required int userId,
       })? create})
       : _createCb = create,
@@ -33,7 +31,7 @@ final class FetchUserProvider
         );
 
   final FutureOr<User> Function(
-    FetchUserRef ref, {
+    Ref ref, {
     required int userId,
   })? _createCb;
 
@@ -55,7 +53,7 @@ final class FetchUserProvider
   @override
   FetchUserProvider $copyWithCreate(
     FutureOr<User> Function(
-      FetchUserRef ref,
+      Ref ref,
     ) create,
   ) {
     return FetchUserProvider._(
@@ -69,7 +67,7 @@ final class FetchUserProvider
   }
 
   @override
-  FutureOr<User> create(FetchUserRef ref) {
+  FutureOr<User> create(Ref ref) {
     final _$cb = _createCb ?? fetchUser;
     final argument = this.argument as int;
     return _$cb(
@@ -89,7 +87,7 @@ final class FetchUserProvider
   }
 }
 
-String _$fetchUserHash() => r'ff427bbb4130a8a6994fa623ae70997f7b0f6bdb';
+String _$fetchUserHash() => r'0ea61464a124f8af2cf15b830a1a012d4272eb47';
 
 final class FetchUserFamily extends Family {
   const FetchUserFamily._()
@@ -115,7 +113,7 @@ final class FetchUserFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     FutureOr<User> Function(
-      FetchUserRef ref,
+      Ref ref,
       int args,
     ) create,
   ) {
@@ -134,4 +132,4 @@ final class FetchUserFamily extends Family {
   }
 }
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

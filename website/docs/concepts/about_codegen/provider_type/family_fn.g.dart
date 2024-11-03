@@ -8,13 +8,11 @@ part of 'family_fn.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef ExampleRef = Ref<String>;
-
 @ProviderFor(example)
 const exampleProvider = ExampleFamily._();
 
 final class ExampleProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, ExampleRef> {
+    with $Provider<String> {
   const ExampleProvider._(
       {required ExampleFamily super.from,
       required (
@@ -23,7 +21,7 @@ final class ExampleProvider extends $FunctionalProvider<String, String>
       })
           super.argument,
       String Function(
-        ExampleRef ref,
+        Ref ref,
         int param1, {
         String param2,
       })? create})
@@ -37,7 +35,7 @@ final class ExampleProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    ExampleRef ref,
+    Ref ref,
     int param1, {
     String param2,
   })? _createCb;
@@ -68,7 +66,7 @@ final class ExampleProvider extends $FunctionalProvider<String, String>
   @override
   ExampleProvider $copyWithCreate(
     String Function(
-      ExampleRef ref,
+      Ref ref,
     ) create,
   ) {
     return ExampleProvider._(
@@ -86,7 +84,7 @@ final class ExampleProvider extends $FunctionalProvider<String, String>
   }
 
   @override
-  String create(ExampleRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? example;
     final argument = this.argument as (
       int, {
@@ -110,7 +108,7 @@ final class ExampleProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$exampleHash() => r'9c32e94eea83a436746088de51e6426f251b2190';
+String _$exampleHash() => r'5795b1f6c6f075de18d0e9789a3a52040c144f0c';
 
 final class ExampleFamily extends Family {
   const ExampleFamily._()
@@ -140,7 +138,7 @@ final class ExampleFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     String Function(
-      ExampleRef ref,
+      Ref ref,
       (
         int, {
         String param2,
@@ -165,4 +163,4 @@ final class ExampleFamily extends Family {
   }
 }
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

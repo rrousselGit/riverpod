@@ -11,12 +11,12 @@ enum Filter {
 }
 
 @riverpod
-Filter filter(FilterRef ref) => Filter.none;
+Filter filter(Ref ref) => Filter.none;
 
 /* SNIPPET START */
 
 @riverpod
-List<Todo> filteredTodoList(FilteredTodoListRef ref) {
+List<Todo> filteredTodoList(Ref ref) {
   final filter = ref.watch(filterProvider);
   final todos = ref.watch(todoListProvider);
 

@@ -10,7 +10,7 @@ Diff for file `test/lints/provider_dependencies/unused_dependency.dart:22`:
 -   ],
 +   dependencies: [dep2],
 )
-int extraDep(ExtraDepRef ref) {
+int extraDep(Ref ref) {
 ```
 ---
 Message: `Remove "dependencies"`
@@ -25,7 +25,7 @@ Diff for file `test/lints/provider_dependencies/unused_dependency.dart:34`:
 -   ],
 - )
 + )
-int noDep(NoDepRef ref) {
+int noDep(Ref ref) {
   return 0;
 ```
 ---
@@ -41,7 +41,7 @@ Diff for file `test/lints/provider_dependencies/unused_dependency.dart:45`:
 -   keepAlive: false,
 +   keepAlive: false,
 )
-int dependenciesFirstThenKeepAlive(DependenciesFirstThenKeepAliveRef ref) {
+int dependenciesFirstThenKeepAlive(Ref ref) {
 ```
 ---
 Message: `Remove "dependencies"`
@@ -57,7 +57,7 @@ Diff for file `test/lints/provider_dependencies/unused_dependency.dart:54`:
 -   ],
 - )
 + @riverpod
-int noDepNoParam(NoDepNoParamRef ref) {
+int noDepNoParam(Ref ref) {
   return 0;
 ```
 ---
@@ -69,7 +69,7 @@ Diff for file `test/lints/provider_dependencies/unused_dependency.dart:65`:
 // expect_lint: provider_dependencies
 - @Riverpod(keepAlive: false, dependencies: [dep])
 + @Riverpod(keepAlive: false)
-int noDepWithoutComma(NoDepWithoutCommaRef ref) {
+int noDepWithoutComma(Ref ref) {
   return 0;
 ```
 ---
@@ -85,7 +85,7 @@ Diff for file `test/lints/provider_dependencies/unused_dependency.dart:72`:
 -   ],
 - )
 + )
-int rootDep(RootDepRef ref) => 0;
+int rootDep(Ref ref) => 0;
 
 ```
 ---

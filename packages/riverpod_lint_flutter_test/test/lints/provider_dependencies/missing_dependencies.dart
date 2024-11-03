@@ -5,16 +5,16 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'missing_dependencies.g.dart';
 
 @Riverpod(dependencies: [])
-int dep(DepRef ref) => 0;
+int dep(Ref ref) => 0;
 
 @Riverpod(dependencies: [dep])
-int transitiveDep(TransitiveDepRef ref) => ref.watch(depProvider);
+int transitiveDep(Ref ref) => ref.watch(depProvider);
 
 @Riverpod(dependencies: [])
-int dep2(Dep2Ref ref) => 0;
+int dep2(Ref ref) => 0;
 
 @Riverpod(dependencies: [])
-int depFamily(DepFamilyRef ref, int id) => 0;
+int depFamily(Ref ref, int id) => 0;
 
 // expect_lint: provider_dependencies
 @Dependencies([dep])
@@ -75,14 +75,14 @@ class DepFamily extends StatelessWidget {
 
 // expect_lint: provider_dependencies
 @riverpod
-int plainAnnotation(PlainAnnotationRef ref) {
+int plainAnnotation(Ref ref) {
   ref.watch(depProvider);
   return 0;
 }
 
 // expect_lint: provider_dependencies
 @Riverpod(keepAlive: false)
-int customAnnotation(CustomAnnotationRef ref) {
+int customAnnotation(Ref ref) {
   ref.watch(depProvider);
   return 0;
 }
@@ -92,7 +92,7 @@ int customAnnotation(CustomAnnotationRef ref) {
   keepAlive: false,
 )
 int customAnnotationWithTrailingComma(
-  CustomAnnotationWithTrailingCommaRef ref,
+  Ref ref,
 ) {
   ref.watch(depProvider);
   return 0;
@@ -103,7 +103,7 @@ int customAnnotationWithTrailingComma(
   // expect_lint: provider_dependencies
   dependencies: [],
 )
-int existingDep(ExistingDepRef ref) {
+int existingDep(Ref ref) {
   ref.watch(depProvider);
   return 0;
 }
@@ -113,7 +113,7 @@ int existingDep(ExistingDepRef ref) {
   // expect_lint: provider_dependencies
   dependencies: [],
 )
-int multipleDeps(MultipleDepsRef ref) {
+int multipleDeps(Ref ref) {
   ref.watch(depProvider);
   ref.watch(dep2Provider);
   return 0;
@@ -277,4 +277,4 @@ class _NotFoundWidgetState extends ConsumerState<ConsumerStatefulWidget> {
 /// Random doc to test that identifiers in docs don't trigger the lint.
 /// [dep], [DepWidget], [depProvider]
 @Riverpod(dependencies: [])
-int providerWithDartDoc(ProviderWithDartDocRef ref) => 0;
+int providerWithDartDoc(Ref ref) => 0;

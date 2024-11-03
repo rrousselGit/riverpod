@@ -202,8 +202,8 @@ class DeferredStreamNotifier<StateT> extends StreamNotifier<StateT>
         _persistKey = persistKey;
 
   final Stream<StateT> Function(
-    Ref<AsyncValue<StateT>> ref,
-    TestStreamNotifier<StateT>,
+    Ref ref,
+    DeferredStreamNotifier<StateT> self,
   ) _create;
   final bool Function(
     AsyncValue<StateT> previousState,
@@ -262,8 +262,8 @@ class DeferredFamilyStreamNotifier<StateT>
         _persistKey = persistKey;
 
   final Stream<StateT> Function(
-    Ref<AsyncValue<StateT>> ref,
-    TestStreamNotifier<StateT>,
+    Ref ref,
+    DeferredFamilyStreamNotifier<StateT> self,
   ) _create;
 
   final bool Function(
@@ -309,7 +309,7 @@ class DeferredFamilyStreamNotifier<StateT>
 }
 
 class StreamNotifierTestFactory extends TestFactory<
-    ProviderFactory<$StreamNotifier<Object?>, ProviderBase<Object?>, void>> {
+    ProviderFactory<$StreamNotifier<Object?>, ProviderBase<Object?>>> {
   StreamNotifierTestFactory({
     required super.isAutoDispose,
     required super.isFamily,
@@ -320,18 +320,12 @@ class StreamNotifierTestFactory extends TestFactory<
   });
 
   final TestStreamNotifier<StateT> Function<StateT>(
-    Stream<StateT> Function(
-      Ref<AsyncValue<StateT>> ref,
-      TestStreamNotifier<StateT> notifier,
-    ) create,
+    Stream<StateT> Function(Ref ref, $StreamNotifier<StateT> self) create,
   ) deferredNotifier;
 
   final $StreamNotifierProvider<TestStreamNotifier<StateT>, StateT>
       Function<StateT>(
-    Stream<StateT> Function(
-      Ref<AsyncValue<StateT>> ref,
-      TestStreamNotifier<StateT> notifier,
-    ) create, {
+    Stream<StateT> Function(Ref ref, $StreamNotifier<StateT> self) create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
     Retry? retry,
     bool? shouldPersist,
@@ -348,20 +342,19 @@ class StreamNotifierTestFactory extends TestFactory<
 
   $StreamNotifierProvider<TestStreamNotifier<StateT>, StateT>
       simpleTestProvider<StateT>(
-    Stream<StateT> Function(
-      Ref<AsyncValue<StateT>> ref,
-      TestStreamNotifier<StateT> notifier,
-    ) create, {
+    Stream<StateT> Function(Ref ref, $StreamNotifier<StateT> self) create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
     bool? shouldPersist,
     Persist? persistOptions,
     Object? Function(Object? args)? persistKey,
     AsyncValue<StateT> Function(Object? encoded)? decode,
     Object? Function(AsyncValue<StateT> value)? encode,
+    Retry? retry,
   }) {
     return deferredProvider<StateT>(
-      create,
+      (ref, self) => create(ref, self),
       updateShouldNotify: updateShouldNotify,
+      retry: retry,
       shouldPersist: shouldPersist,
       persistOptions: persistOptions,
       persistKey: persistKey,

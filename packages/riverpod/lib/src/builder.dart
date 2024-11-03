@@ -229,7 +229,7 @@ class StateProviderFamilyBuilder {
   ///   ```
   /// {@endtemplate}
   StateProviderFamily<StateT, ArgT> call<StateT, ArgT>(
-    StateT Function(Ref<StateT> ref, ArgT param) create, {
+    StateT Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
@@ -301,7 +301,7 @@ class AutoDisposeStateProviderBuilder {
 
   /// {@macro riverpod.family}
   StateProvider<StateT> call<StateT>(
-    StateT Function(Ref<StateT> ref) create, {
+    StateT Function(Ref ref) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
@@ -326,7 +326,7 @@ class AutoDisposeStateProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   StateProviderFamily<StateT, ArgT> call<StateT, ArgT>(
-    StateT Function(Ref<StateT> ref, ArgT param) create, {
+    StateT Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
@@ -348,7 +348,7 @@ class StateNotifierProviderFamilyBuilder {
   /// {@macro riverpod.family}
   StateNotifierProviderFamily<NotifierT, StateT, ArgT>
       call<NotifierT extends StateNotifier<StateT>, StateT, ArgT>(
-    NotifierT Function(Ref<StateT> ref, ArgT param) create, {
+    NotifierT Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
@@ -373,7 +373,7 @@ class AutoDisposeStateNotifierProviderBuilder {
   /// {@macro riverpod.family}
   StateNotifierProvider<NotifierT, StateT>
       call<NotifierT extends StateNotifier<StateT>, StateT>(
-    NotifierT Function(Ref<StateT> ref) create, {
+    NotifierT Function(Ref ref) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
@@ -399,7 +399,7 @@ class AutoDisposeStateNotifierProviderFamilyBuilder {
   /// {@macro riverpod.family}
   StateNotifierProviderFamily<NotifierT, StateT, ArgT>
       call<NotifierT extends StateNotifier<StateT>, StateT, ArgT>(
-    NotifierT Function(Ref<StateT> ref, ArgT param) create, {
+    NotifierT Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
@@ -420,7 +420,7 @@ class ProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   ProviderFamily<StateT, ArgT> call<StateT, ArgT>(
-    StateT Function(Ref<StateT> ref, ArgT param) create, {
+    StateT Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
@@ -444,7 +444,7 @@ class AutoDisposeProviderBuilder {
 
   /// {@macro riverpod.family}
   Provider<StateT> call<StateT>(
-    StateT Function(Ref<StateT> ref) create, {
+    StateT Function(Ref ref) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
@@ -469,7 +469,7 @@ class AutoDisposeProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   ProviderFamily<StateT, ArgT> call<StateT, ArgT>(
-    StateT Function(Ref<StateT> ref, ArgT param) create, {
+    StateT Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
@@ -490,7 +490,7 @@ class FutureProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   FutureProviderFamily<StateT, ArgT> call<StateT, ArgT>(
-    FutureOr<StateT> Function(Ref<AsyncValue<StateT>> ref, ArgT param) create, {
+    FutureOr<StateT> Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
@@ -514,7 +514,7 @@ class AutoDisposeFutureProviderBuilder {
 
   /// {@macro riverpod.family}
   FutureProvider<StateT> call<StateT>(
-    FutureOr<StateT> Function(Ref<AsyncValue<StateT>> ref) create, {
+    FutureOr<StateT> Function(Ref ref) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
@@ -539,7 +539,7 @@ class AutoDisposeFutureProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   FutureProviderFamily<StateT, ArgT> call<StateT, ArgT>(
-    FutureOr<StateT> Function(Ref<AsyncValue<StateT>> ref, ArgT param) create, {
+    FutureOr<StateT> Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
@@ -560,7 +560,7 @@ class StreamProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   StreamProviderFamily<StateT, ArgT> call<StateT, ArgT>(
-    Stream<StateT> Function(Ref<AsyncValue<StateT>> ref, ArgT param) create, {
+    Stream<StateT> Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
@@ -584,7 +584,7 @@ class AutoDisposeStreamProviderBuilder {
 
   /// {@macro riverpod.family}
   StreamProvider<StateT> call<StateT>(
-    Stream<StateT> Function(Ref<AsyncValue<StateT>> ref) create, {
+    Stream<StateT> Function(Ref ref) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
@@ -609,7 +609,7 @@ class AutoDisposeStreamProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   StreamProviderFamily<StateT, ArgT> call<StateT, ArgT>(
-    Stream<StateT> Function(Ref<AsyncValue<StateT>> ref, ArgT param) create, {
+    Stream<StateT> Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,

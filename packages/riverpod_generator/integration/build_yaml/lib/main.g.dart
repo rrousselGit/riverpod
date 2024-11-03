@@ -6,16 +6,14 @@ part of 'main.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef CountRef = Ref<int>;
-
 @ProviderFor(count)
 const myCountPod = CountProvider._();
 
 final class CountProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, CountRef> {
+    with $Provider<int> {
   const CountProvider._(
       {int Function(
-        CountRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -29,7 +27,7 @@ final class CountProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    CountRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -51,32 +49,30 @@ final class CountProvider extends $FunctionalProvider<int, int>
   @override
   CountProvider $copyWithCreate(
     int Function(
-      CountRef ref,
+      Ref ref,
     ) create,
   ) {
     return CountProvider._(create: create);
   }
 
   @override
-  int create(CountRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? count;
     return _$cb(ref);
   }
 }
 
-String _$countHash() => r'4c7e72b275767a60ece5e8662ab1e28f73cf7e44';
-
-typedef CountFutureRef = Ref<AsyncValue<int>>;
+String _$countHash() => r'a31bb5cbb0ddb2466df2cc62a306709ea24fae12';
 
 @ProviderFor(countFuture)
 const myCountFuturePod = CountFutureProvider._();
 
 final class CountFutureProvider
     extends $FunctionalProvider<AsyncValue<int>, FutureOr<int>>
-    with $FutureModifier<int>, $FutureProvider<int, CountFutureRef> {
+    with $FutureModifier<int>, $FutureProvider<int> {
   const CountFutureProvider._(
       {FutureOr<int> Function(
-        CountFutureRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -90,7 +86,7 @@ final class CountFutureProvider
         );
 
   final FutureOr<int> Function(
-    CountFutureRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -104,32 +100,30 @@ final class CountFutureProvider
   @override
   CountFutureProvider $copyWithCreate(
     FutureOr<int> Function(
-      CountFutureRef ref,
+      Ref ref,
     ) create,
   ) {
     return CountFutureProvider._(create: create);
   }
 
   @override
-  FutureOr<int> create(CountFutureRef ref) {
+  FutureOr<int> create(Ref ref) {
     final _$cb = _createCb ?? countFuture;
     return _$cb(ref);
   }
 }
 
-String _$countFutureHash() => r'ec7cc31ce1c1a10607f1dcb35dd217acd2877729';
-
-typedef CountStreamRef = Ref<AsyncValue<int>>;
+String _$countFutureHash() => r'c292214b486fdd9ec98a61e277812f29fc4b5802';
 
 @ProviderFor(countStream)
 const myCountStreamPod = CountStreamProvider._();
 
 final class CountStreamProvider
     extends $FunctionalProvider<AsyncValue<int>, Stream<int>>
-    with $FutureModifier<int>, $StreamProvider<int, CountStreamRef> {
+    with $FutureModifier<int>, $StreamProvider<int> {
   const CountStreamProvider._(
       {Stream<int> Function(
-        CountStreamRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -143,7 +137,7 @@ final class CountStreamProvider
         );
 
   final Stream<int> Function(
-    CountStreamRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -157,20 +151,20 @@ final class CountStreamProvider
   @override
   CountStreamProvider $copyWithCreate(
     Stream<int> Function(
-      CountStreamRef ref,
+      Ref ref,
     ) create,
   ) {
     return CountStreamProvider._(create: create);
   }
 
   @override
-  Stream<int> create(CountStreamRef ref) {
+  Stream<int> create(Ref ref) {
     final _$cb = _createCb ?? countStream;
     return _$cb(ref);
   }
 }
 
-String _$countStreamHash() => r'1dbe49244ea19e8dbc3af0534429bb323720c07a';
+String _$countStreamHash() => r'472c06085fb994619f54de368f047b7cc8466872';
 
 @ProviderFor(CountNotifier)
 const myCountNotifierPod = CountNotifierProvider._();
@@ -219,7 +213,7 @@ final class CountNotifierProvider
   @override
   CountNotifierProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       CountNotifier,
     ) build,
   ) {
@@ -281,7 +275,7 @@ final class CountAsyncNotifierProvider
   @override
   CountAsyncNotifierProvider $copyWithBuild(
     FutureOr<int> Function(
-      Ref<AsyncValue<int>>,
+      Ref,
       CountAsyncNotifier,
     ) build,
   ) {
@@ -344,7 +338,7 @@ final class CountStreamNotifierProvider
   @override
   CountStreamNotifierProvider $copyWithBuild(
     Stream<int> Function(
-      Ref<AsyncValue<int>>,
+      Ref,
       CountStreamNotifier,
     ) build,
   ) {
@@ -368,18 +362,16 @@ abstract class _$CountStreamNotifier extends $StreamNotifier<int> {
   Stream<int> runBuild() => build();
 }
 
-typedef Count2Ref = Ref<int>;
-
 @ProviderFor(count2)
 const myFamilyCount2ProviderFamily = Count2Family._();
 
 final class Count2Provider extends $FunctionalProvider<int, int>
-    with $Provider<int, Count2Ref> {
+    with $Provider<int> {
   const Count2Provider._(
       {required Count2Family super.from,
       required int super.argument,
       int Function(
-        Count2Ref ref,
+        Ref ref,
         int a,
       )? create})
       : _createCb = create,
@@ -392,7 +384,7 @@ final class Count2Provider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    Count2Ref ref,
+    Ref ref,
     int a,
   )? _createCb;
 
@@ -422,7 +414,7 @@ final class Count2Provider extends $FunctionalProvider<int, int>
   @override
   Count2Provider $copyWithCreate(
     int Function(
-      Count2Ref ref,
+      Ref ref,
     ) create,
   ) {
     return Count2Provider._(
@@ -436,7 +428,7 @@ final class Count2Provider extends $FunctionalProvider<int, int>
   }
 
   @override
-  int create(Count2Ref ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? count2;
     final argument = this.argument as int;
     return _$cb(
@@ -456,7 +448,7 @@ final class Count2Provider extends $FunctionalProvider<int, int>
   }
 }
 
-String _$count2Hash() => r'6256825480d83bb13acde282cf3c9d9524cc3a6c';
+String _$count2Hash() => r'4146ae486161f9d444b4d80ec846199b13eeaae2';
 
 final class Count2Family extends Family {
   const Count2Family._()
@@ -482,7 +474,7 @@ final class Count2Family extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     int Function(
-      Count2Ref ref,
+      Ref ref,
       int args,
     ) create,
   ) {
@@ -501,19 +493,17 @@ final class Count2Family extends Family {
   }
 }
 
-typedef CountFuture2Ref = Ref<AsyncValue<int>>;
-
 @ProviderFor(countFuture2)
 const myFamilyCountFuture2ProviderFamily = CountFuture2Family._();
 
 final class CountFuture2Provider
     extends $FunctionalProvider<AsyncValue<int>, FutureOr<int>>
-    with $FutureModifier<int>, $FutureProvider<int, CountFuture2Ref> {
+    with $FutureModifier<int>, $FutureProvider<int> {
   const CountFuture2Provider._(
       {required CountFuture2Family super.from,
       required int super.argument,
       FutureOr<int> Function(
-        CountFuture2Ref ref,
+        Ref ref,
         int a,
       )? create})
       : _createCb = create,
@@ -526,7 +516,7 @@ final class CountFuture2Provider
         );
 
   final FutureOr<int> Function(
-    CountFuture2Ref ref,
+    Ref ref,
     int a,
   )? _createCb;
 
@@ -548,7 +538,7 @@ final class CountFuture2Provider
   @override
   CountFuture2Provider $copyWithCreate(
     FutureOr<int> Function(
-      CountFuture2Ref ref,
+      Ref ref,
     ) create,
   ) {
     return CountFuture2Provider._(
@@ -562,7 +552,7 @@ final class CountFuture2Provider
   }
 
   @override
-  FutureOr<int> create(CountFuture2Ref ref) {
+  FutureOr<int> create(Ref ref) {
     final _$cb = _createCb ?? countFuture2;
     final argument = this.argument as int;
     return _$cb(
@@ -582,7 +572,7 @@ final class CountFuture2Provider
   }
 }
 
-String _$countFuture2Hash() => r'096675b70a267f5d7c62ac7d3e7dd231ef529034';
+String _$countFuture2Hash() => r'6acaa58de0116853fd831efb4ac1a8047205f12b';
 
 final class CountFuture2Family extends Family {
   const CountFuture2Family._()
@@ -608,7 +598,7 @@ final class CountFuture2Family extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     FutureOr<int> Function(
-      CountFuture2Ref ref,
+      Ref ref,
       int args,
     ) create,
   ) {
@@ -627,19 +617,17 @@ final class CountFuture2Family extends Family {
   }
 }
 
-typedef CountStream2Ref = Ref<AsyncValue<int>>;
-
 @ProviderFor(countStream2)
 const myFamilyCountStream2ProviderFamily = CountStream2Family._();
 
 final class CountStream2Provider
     extends $FunctionalProvider<AsyncValue<int>, Stream<int>>
-    with $FutureModifier<int>, $StreamProvider<int, CountStream2Ref> {
+    with $FutureModifier<int>, $StreamProvider<int> {
   const CountStream2Provider._(
       {required CountStream2Family super.from,
       required int super.argument,
       Stream<int> Function(
-        CountStream2Ref ref,
+        Ref ref,
         int a,
       )? create})
       : _createCb = create,
@@ -652,7 +640,7 @@ final class CountStream2Provider
         );
 
   final Stream<int> Function(
-    CountStream2Ref ref,
+    Ref ref,
     int a,
   )? _createCb;
 
@@ -674,7 +662,7 @@ final class CountStream2Provider
   @override
   CountStream2Provider $copyWithCreate(
     Stream<int> Function(
-      CountStream2Ref ref,
+      Ref ref,
     ) create,
   ) {
     return CountStream2Provider._(
@@ -688,7 +676,7 @@ final class CountStream2Provider
   }
 
   @override
-  Stream<int> create(CountStream2Ref ref) {
+  Stream<int> create(Ref ref) {
     final _$cb = _createCb ?? countStream2;
     final argument = this.argument as int;
     return _$cb(
@@ -708,7 +696,7 @@ final class CountStream2Provider
   }
 }
 
-String _$countStream2Hash() => r'051264dd685ebc0a57e454bb676957c93cb4ae20';
+String _$countStream2Hash() => r'96c9a0935240f1727986800c1fe6dea974b9accc';
 
 final class CountStream2Family extends Family {
   const CountStream2Family._()
@@ -734,7 +722,7 @@ final class CountStream2Family extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     Stream<int> Function(
-      CountStream2Ref ref,
+      Ref ref,
       int args,
     ) create,
   ) {
@@ -811,7 +799,7 @@ final class CountNotifier2Provider
   @override
   CountNotifier2Provider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       CountNotifier2,
     ) build,
   ) {
@@ -883,7 +871,7 @@ final class CountNotifier2Family extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function(Ref<int> ref, CountNotifier2 notifier, int argument) build,
+    int Function(Ref ref, CountNotifier2 notifier, int argument) build,
   ) {
     return $FamilyOverride(
       from: this,
@@ -964,7 +952,7 @@ final class CountAsyncNotifier2Provider
   @override
   CountAsyncNotifier2Provider $copyWithBuild(
     FutureOr<int> Function(
-      Ref<AsyncValue<int>>,
+      Ref,
       CountAsyncNotifier2,
     ) build,
   ) {
@@ -1037,8 +1025,7 @@ final class CountAsyncNotifier2Family extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    FutureOr<int> Function(Ref<AsyncValue<int>> ref,
-            CountAsyncNotifier2 notifier, int argument)
+    FutureOr<int> Function(Ref ref, CountAsyncNotifier2 notifier, int argument)
         build,
   ) {
     return $FamilyOverride(
@@ -1121,7 +1108,7 @@ final class CountStreamNotifier2Provider
   @override
   CountStreamNotifier2Provider $copyWithBuild(
     Stream<int> Function(
-      Ref<AsyncValue<int>>,
+      Ref,
       CountStreamNotifier2,
     ) build,
   ) {
@@ -1194,8 +1181,7 @@ final class CountStreamNotifier2Family extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    Stream<int> Function(Ref<AsyncValue<int>> ref,
-            CountStreamNotifier2 notifier, int argument)
+    Stream<int> Function(Ref ref, CountStreamNotifier2 notifier, int argument)
         build,
   ) {
     return $FamilyOverride(
@@ -1228,4 +1214,4 @@ abstract class _$CountStreamNotifier2 extends $StreamNotifier<int> {
 }
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

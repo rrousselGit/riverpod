@@ -4,6 +4,6 @@ part 'async_fn_future.g.dart';
 
 /* SNIPPET START */
 @riverpod
-Future<String> example(ExampleRef ref) async {
+Future<String> example(Ref ref) async {
   return Future.value('foo');
 }

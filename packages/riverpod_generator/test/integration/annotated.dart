@@ -7,8 +7,7 @@ part 'annotated.g.dart';
 @Deprecated('Deprecation message')
 @visibleForTesting
 @protected
-String functional(FunctionalRef ref, @Deprecated('field') int id) =>
-    'functional';
+String functional(Ref ref, @Deprecated('field') int id) => 'functional';
 
 @riverpod
 @Deprecated('Deprecation message')
@@ -23,11 +22,11 @@ class ClassBased extends _$ClassBased {
 @Deprecated('Deprecation message')
 @visibleForTesting
 @protected
-String family(FamilyRef ref, int id) => 'family $id';
+String family(Ref ref, int id) => 'family $id';
 
 @riverpod
 @doNotStore
-String notCopiedFunctional(NotCopiedFunctionalRef ref) => 'notCopiedFunctional';
+String notCopiedFunctional(Ref ref) => 'notCopiedFunctional';
 
 @riverpod
 @doNotStore
@@ -38,4 +37,4 @@ class NotCopiedClassBased extends _$NotCopiedClassBased {
 
 @riverpod
 @doNotStore
-String notCopiedFamily(NotCopiedFamilyRef ref, int id) => 'notCopiedFamily $id';
+String notCopiedFamily(Ref ref, int id) => 'notCopiedFamily $id';

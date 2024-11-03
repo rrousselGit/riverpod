@@ -3,7 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'stream.g.dart';
 
 @riverpod
-Stream<List<T>> generic<T extends num>(GenericRef<T> ref) async* {
+Stream<List<T>> generic<T extends num>(Ref ref) async* {
   yield <T>[];
 }
 
@@ -16,20 +16,20 @@ class GenericClass<T extends num> extends _$GenericClass<T> {
 }
 
 @riverpod
-Stream<String> public(PublicRef ref) {
+Stream<String> public(Ref ref) {
   return Stream.value('Hello world');
 }
 
 const privateProvider = _privateProvider;
 
 @riverpod
-Stream<String> _private(_PrivateRef ref) {
+Stream<String> _private(Ref ref) {
   return Stream.value('Hello world');
 }
 
 @riverpod
 Stream<String> family(
-  FamilyRef ref,
+  Ref ref,
   int first, {
   String? second,
   required double third,

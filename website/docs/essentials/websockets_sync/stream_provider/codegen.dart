@@ -8,7 +8,7 @@ part 'codegen.g.dart';
 
 /* SNIPPET START */
 @riverpod
-Stream<int> streamExample(StreamExampleRef ref) async* {
+Stream<int> streamExample(Ref ref) async* {
   // {@template provider}
   // Every 1 second, yield a number from 0 to 41.
   // This could be replaced with a Stream from Firestore or GraphQL or anything else.

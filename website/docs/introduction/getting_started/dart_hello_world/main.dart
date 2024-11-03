@@ -11,7 +11,7 @@ part 'main.g.dart';
 // By using a provider, this allows us to mock/override the value exposed.
 // {@endtemplate}
 @riverpod
-String helloWorld(HelloWorldRef ref) {
+String helloWorld(Ref ref) {
   return 'Hello world';
 }
 

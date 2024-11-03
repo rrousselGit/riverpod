@@ -2,24 +2,24 @@ code: provider_dependencies
 severity: Severity.warning
 contextMessages:
   message: generatedScoped
-  test/lints/provider_dependencies/missing_dependencies2.dart:35:20
+  test/lints/provider_dependencies/missing_dependencies2.dart:36:20
 
   ```dart
-    WatchGeneratedScopedButNoDependenciesRef ref,
+    Ref ref,
   ) {
     return ref.watch(>>>generatedScopedProvider<<<);
   }
   
   ```
 message: Missing dependencies: generatedScoped
-test/lints/provider_dependencies/missing_dependencies2.dart:31:1
+test/lints/provider_dependencies/missing_dependencies2.dart:32:1
 
 ```dart
 
 // expect_lint: provider_dependencies
 >>>@riverpod<<<
 int watchGeneratedScopedButNoDependencies(
-  WatchGeneratedScopedButNoDependenciesRef ref,
+  Ref ref,
 ```
 
 =======
@@ -28,24 +28,85 @@ code: provider_dependencies
 severity: Severity.warning
 contextMessages:
   message: generatedScoped
-  test/lints/provider_dependencies/missing_dependencies2.dart:61:20
+  test/lints/provider_dependencies/missing_dependencies2.dart:64:20
 
   ```dart
-    WatchGeneratedScopedButEmptyDependenciesRef ref,
+    Ref ref,
   ) {
     return ref.watch(>>>generatedScopedProvider<<<);
   }
   
   ```
 message: Missing dependencies: generatedScoped
-test/lints/provider_dependencies/missing_dependencies2.dart:57:25
+test/lints/provider_dependencies/missing_dependencies2.dart:60:25
 
 ```dart
 
 // expect_lint: provider_dependencies
 @Riverpod(dependencies: >>>[]<<<)
 int watchGeneratedScopedButEmptyDependencies(
-  WatchGeneratedScopedButEmptyDependenciesRef ref,
+  Ref ref,
+```
+
+=======
+
+code: provider_dependencies
+severity: Severity.warning
+contextMessages:
+  message: generatedScoped
+  test/lints/provider_dependencies/missing_dependencies2.dart:97:20
+
+  ```dart
+  ) {
+    ref.watch(depProvider);
+    return ref.watch(>>>generatedScopedProvider<<<);
+  }
+  
+  ```
+message: Missing dependencies: generatedScoped
+test/lints/provider_dependencies/missing_dependencies2.dart:92:25
+
+```dart
+
+// expect_lint: provider_dependencies
+@Riverpod(dependencies: >>>[dep]<<<)
+int watchGeneratedScopedButMissingDependencies(
+  Ref ref,
+```
+
+=======
+
+code: provider_dependencies
+severity: Severity.warning
+message: Unused dependencies: generatedRoot
+test/lints/provider_dependencies/missing_dependencies2.dart:127:7
+
+```dart
+      // The dependency is redundant because it is not a scoped provider
+      // expect_lint: provider_dependencies
+      >>>[
+    generatedRoot,
+  ]<<<,
+)
+int watchGeneratedRootAndContainsDependency(
+```
+
+=======
+
+code: provider_dependencies
+severity: Severity.warning
+message: Unused dependencies: generatedRoot
+test/lints/provider_dependencies/missing_dependencies2.dart:142:5
+
+```dart
+    // generatedRoot is extra
+    // expect_lint: provider_dependencies
+    >>>[
+  dep,
+  generatedRoot,
+]<<<)
+int specifiedDependencyButNeverUsed(Ref ref) {
+  ref.watch(depProvider);
 ```
 
 =======
@@ -53,7 +114,7 @@ int watchGeneratedScopedButEmptyDependencies(
 code: provider_dependencies
 severity: Severity.warning
 message: Unused dependencies: dep
-test/lints/provider_dependencies/missing_dependencies2.dart:155:17
+test/lints/provider_dependencies/missing_dependencies2.dart:224:17
 
 ```dart
 class MemberDependencies {
@@ -69,7 +130,7 @@ code: provider_dependencies
 severity: Severity.warning
 contextMessages:
   message: dep
-  test/lints/provider_dependencies/missing_dependencies2.dart:165:15
+  test/lints/provider_dependencies/missing_dependencies2.dart:234:15
 
   ```dart
     @Dependencies([])
@@ -79,7 +140,7 @@ contextMessages:
     }
   ```
 message: Missing dependencies: dep
-test/lints/provider_dependencies/missing_dependencies2.dart:163:17
+test/lints/provider_dependencies/missing_dependencies2.dart:232:17
 
 ```dart
 class CanUpdateMultipleDependenciesAtOnce {
@@ -95,7 +156,7 @@ code: provider_dependencies
 severity: Severity.warning
 contextMessages:
   message: dep
-  test/lints/provider_dependencies/missing_dependencies2.dart:165:15
+  test/lints/provider_dependencies/missing_dependencies2.dart:234:15
 
   ```dart
     @Dependencies([])
@@ -105,7 +166,7 @@ contextMessages:
     }
   ```
 message: Missing dependencies: dep
-test/lints/provider_dependencies/missing_dependencies2.dart:160:15
+test/lints/provider_dependencies/missing_dependencies2.dart:229:15
 
 ```dart
 
@@ -120,7 +181,7 @@ class CanUpdateMultipleDependenciesAtOnce {
 code: provider_dependencies
 severity: Severity.warning
 message: Unused dependencies: dep
-test/lints/provider_dependencies/missing_dependencies2.dart:183:15
+test/lints/provider_dependencies/missing_dependencies2.dart:252:15
 
 ```dart
 // Handle identifiers with dependencies
@@ -136,7 +197,7 @@ code: provider_dependencies
 severity: Severity.warning
 contextMessages:
   message: dep
-  test/lints/provider_dependencies/missing_dependencies2.dart:188:3
+  test/lints/provider_dependencies/missing_dependencies2.dart:257:3
 
   ```dart
   // expect_lint: provider_dependencies
@@ -146,7 +207,7 @@ contextMessages:
   
   ```
 message: Missing dependencies: dep
-test/lints/provider_dependencies/missing_dependencies2.dart:187:1
+test/lints/provider_dependencies/missing_dependencies2.dart:256:1
 
 ```dart
 
@@ -164,23 +225,23 @@ code: provider_dependencies
 severity: Severity.warning
 contextMessages:
   message: dep
-  test/lints/provider_dependencies/missing_dependencies2.dart:197:3
+  test/lints/provider_dependencies/missing_dependencies2.dart:266:3
 
   ```dart
   @riverpod
-  int foo(FooRef ref) {
+  int foo(Ref ref) {
     >>>fn<<<();
     return 0;
   }
   ```
 message: Missing dependencies: dep
-test/lints/provider_dependencies/missing_dependencies2.dart:195:1
+test/lints/provider_dependencies/missing_dependencies2.dart:264:1
 
 ```dart
 
 // expect_lint: provider_dependencies
 >>>@riverpod<<<
-int foo(FooRef ref) {
+int foo(Ref ref) {
   fn();
 ```
 
@@ -190,7 +251,7 @@ code: provider_dependencies
 severity: Severity.warning
 contextMessages:
   message: dep
-  test/lints/provider_dependencies/missing_dependencies2.dart:215:12
+  test/lints/provider_dependencies/missing_dependencies2.dart:284:12
 
   ```dart
     @override
@@ -200,7 +261,7 @@ contextMessages:
   }
   ```
 message: Missing dependencies: dep
-test/lints/provider_dependencies/missing_dependencies2.dart:212:1
+test/lints/provider_dependencies/missing_dependencies2.dart:281:1
 
 ```dart
 
@@ -221,7 +282,7 @@ code: provider_dependencies
 severity: Severity.warning
 contextMessages:
   message: dep
-  test/lints/provider_dependencies/missing_dependencies2.dart:254:12
+  test/lints/provider_dependencies/missing_dependencies2.dart:323:12
 
   ```dart
     @override
@@ -231,7 +292,7 @@ contextMessages:
   }
   ```
 message: Missing dependencies: dep
-test/lints/provider_dependencies/missing_dependencies2.dart:243:15
+test/lints/provider_dependencies/missing_dependencies2.dart:312:15
 
 ```dart
 
@@ -247,7 +308,7 @@ code: provider_dependencies
 severity: Severity.warning
 contextMessages:
   message: dep
-  test/lints/provider_dependencies/missing_dependencies2.dart:268:41
+  test/lints/provider_dependencies/missing_dependencies2.dart:337:41
 
   ```dart
   class _Stateful3State extends State<FindStateFromClassList> {
@@ -257,7 +318,7 @@ contextMessages:
   
   ```
 message: Missing dependencies: dep
-test/lints/provider_dependencies/missing_dependencies2.dart:259:1
+test/lints/provider_dependencies/missing_dependencies2.dart:328:1
 
 ```dart
 
@@ -278,22 +339,22 @@ code: provider_dependencies
 severity: Severity.warning
 contextMessages:
   message: anotherNonEmptyScoped
-  test/lints/provider_dependencies/missing_dependencies2.dart:274:13
+  test/lints/provider_dependencies/missing_dependencies2.dart:343:13
 
   ```dart
   @riverpod
-  int crossFileDependency(CrossFileDependencyRef ref) {
+  int crossFileDependency(Ref ref) {
     ref.watch(>>>anotherNonEmptyScopedProvider<<<);
     return 0;
   }
   ```
 message: Missing dependencies: anotherNonEmptyScoped
-test/lints/provider_dependencies/missing_dependencies2.dart:272:1
+test/lints/provider_dependencies/missing_dependencies2.dart:341:1
 
 ```dart
 
 // expect_lint: provider_dependencies
 >>>@riverpod<<<
-int crossFileDependency(CrossFileDependencyRef ref) {
+int crossFileDependency(Ref ref) {
   ref.watch(anotherNonEmptyScopedProvider);
 ```

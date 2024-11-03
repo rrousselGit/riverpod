@@ -7,6 +7,6 @@ class MyValue {}
 /* SNIPPET START */
 
 @riverpod
-MyValue my(MyRef ref) {
+MyValue my(Ref ref) {
   return MyValue();
 }

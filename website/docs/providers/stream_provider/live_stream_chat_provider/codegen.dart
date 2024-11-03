@@ -9,7 +9,7 @@ part 'codegen.g.dart';
 /* SNIPPET START */
 
 @riverpod
-Stream<List<String>> chat(ChatRef ref) async* {
+Stream<List<String>> chat(Ref ref) async* {
   // Connect to an API using sockets, and decode the output
   final socket = await Socket.connect('my-api', 4242);
   ref.onDispose(socket.close);

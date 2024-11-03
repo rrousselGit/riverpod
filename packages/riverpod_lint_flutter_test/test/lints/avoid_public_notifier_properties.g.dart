@@ -64,7 +64,7 @@ final class GeneratedNotifierProvider
   @override
   GeneratedNotifierProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       GeneratedNotifier,
     ) build,
   ) {
@@ -136,7 +136,7 @@ final class GeneratedNotifierFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function(Ref<int> ref, GeneratedNotifier notifier, int argument) build,
+    int Function(Ref ref, GeneratedNotifier notifier, int argument) build,
   ) {
     return $FamilyOverride(
       from: this,
@@ -168,4 +168,4 @@ abstract class _$GeneratedNotifier extends $Notifier<int> {
 }
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -112,7 +112,7 @@ final class StreamNotifierProvider< //
 
   StreamNotifierProvider<NotifierT, StateT> _copyWith({
     NotifierT Function()? create,
-    RunNotifierBuild<NotifierT, Stream<StateT>, Ref<AsyncValue<StateT>>>? build,
+    RunNotifierBuild<NotifierT, Stream<StateT>>? build,
   }) {
     return StreamNotifierProvider<NotifierT, StateT>.internal(
       create ?? _createNotifier,
@@ -141,7 +141,7 @@ final class StreamNotifierProvider< //
   @visibleForOverriding
   @override
   StreamNotifierProvider<NotifierT, StateT> $copyWithBuild(
-    RunNotifierBuild<NotifierT, Stream<StateT>, Ref<AsyncValue<StateT>>>? build,
+    RunNotifierBuild<NotifierT, Stream<StateT>>? build,
   ) {
     return _copyWith(build: build);
   }

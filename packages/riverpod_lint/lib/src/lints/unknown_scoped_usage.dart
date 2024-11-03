@@ -1,6 +1,9 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
-import 'package:analyzer/error/error.dart' hide LintCode;
+import 'package:analyzer/error/error.dart'
+    hide
+        // ignore: undefined_hidden_name, necessary to support broad analyzer versions
+        LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
@@ -43,7 +46,9 @@ class UnknownScopedUsage extends RiverpodLintRule {
       // then it's fine.
       // This is to reject cases like `ref.watch(something(provider))`.
       if (refInvocation?.listenable.provider == identifier ||
-          widgetRefInvocation?.listenable.provider == identifier) return;
+          widgetRefInvocation?.listenable.provider == identifier) {
+        return;
+      }
 
       // .parent is used because providers count as overrides.
       // We don't want to count "provider" as an override, and want to focus
@@ -55,12 +60,17 @@ class UnknownScopedUsage extends RiverpodLintRule {
       if (override?.provider == identifier) return;
 
       final enclosingConstructorType = identifier
-          .node.staticParameterElement?.enclosingElement3
+          .node
+          .staticParameterElement
+          // ignore: deprecated_member_use, required to support lower versions of analyzer
+          ?.enclosingElement
           .safeCast<ConstructorElement>()
           ?.returnType;
       // Silence the warning if passed to a widget constructor.
       if (enclosingConstructorType != null &&
-          widgetType.isAssignableFromType(enclosingConstructorType)) return;
+          widgetType.isAssignableFromType(enclosingConstructorType)) {
+        return;
+      }
 
       reporter.atNode(
         identifier.node,

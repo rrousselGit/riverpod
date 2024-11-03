@@ -9,7 +9,7 @@ class User {
 }
 
 @riverpod
-FutureOr<User> user(UserRef ref) {
+FutureOr<User> user(Ref ref) {
   return User()
     ..firstName = 'John'
     ..lastName = 'Doe';
@@ -17,7 +17,7 @@ FutureOr<User> user(UserRef ref) {
 
 /* SNIPPET START */
 @riverpod
-Object? example(ExampleRef ref) async {
+Object? example(Ref ref) async {
   // {@template watch}
   // Wait for a user to be available, and listen to only the "firstName" property
   // {@endtemplate}

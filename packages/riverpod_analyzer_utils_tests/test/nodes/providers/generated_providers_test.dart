@@ -9,7 +9,7 @@ void main() {
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 @riverpod
-T generic<T>(GenericRef ref) => throw UnimplementedError();
+T generic<T>(Ref ref) => throw UnimplementedError();
 
 @riverpod
 class GenericClass<T> extends _$GenericClass<T> {
@@ -18,7 +18,7 @@ class GenericClass<T> extends _$GenericClass<T> {
 }
 
 @riverpod
-int value(ValueRef ref) => throw UnimplementedError();
+int value(Ref ref) => throw UnimplementedError();
 
 @riverpod
 class ValueClass extends _$ValueClass {
@@ -27,7 +27,7 @@ class ValueClass extends _$ValueClass {
 }
 
 @riverpod
-int parametrized(ParametrizedRef ref, int id) => throw UnimplementedError();
+int parametrized(Ref ref, int id) => throw UnimplementedError();
 
 @riverpod
 class ParametrizedClass extends _$ParametrizedClass {
@@ -57,13 +57,13 @@ class ParametrizedClass extends _$ParametrizedClass {
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 @riverpod
-Raw<Future<int>> value(ValueRef ref) async => 0;
+Raw<Future<int>> value(Ref ref) async => 0;
 
 @riverpod
-Future<int> value2(Value2Ref ref) async => 0;
+Future<int> value2(Ref ref) async => 0;
 
 @riverpod
-Future<Raw<int>> value3(Value3Ref ref) async => 0;
+Future<Raw<int>> value3(Ref ref) async => 0;
 ''', (resolver, unit, units) async {
     final value =
         unit.declarations.findByName<FunctionDeclaration>('value').provider!;
@@ -110,7 +110,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 int scoped() => 0;
 
 @riverpod
-int plain(PlainRef ref) => 0;
+int plain(Ref ref) => 0;
 ''', (resolver, unit, units) async {
     final scoped =
         unit.declarations.findByName<FunctionDeclaration>('scoped').provider!;
@@ -127,10 +127,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'foo.g.dart';
 
 @riverpod
-int first(FirstRef ref) => 0;
+int first(Ref ref) => 0;
 
 @Riverpod()
-int second(SecondRef ref) => 0;
+int second(Ref ref) => 0;
 
 @riverpod
 class Counter extends _$Counter {
@@ -159,13 +159,13 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'foo.g.dart';
 
 @riverpod
-int autoDispose(AutoDisposeRef ref) => 0;
+int autoDispose(Ref ref) => 0;
 
 @Riverpod(keepAlive: false)
-int autoDispose2(AutoDisposeRef ref) => 0;
+int autoDispose2(Ref ref) => 0;
 
 @Riverpod(keepAlive: true)
-int keepAlive(KeepAliveRef ref) => 0;
+int keepAlive(Ref ref) => 0;
 
 @riverpod
 class AutoDisposeNotifierTest extends _$AutoDisposeNotifierTest {
@@ -245,7 +245,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'foo.g.dart';
 
 @riverpod
-int root(RootRef ref) => 0;
+int root(Ref ref) => 0;
 
 @riverpod
 class RootNotifier extends _$RootNotifier {
@@ -254,7 +254,7 @@ class RootNotifier extends _$RootNotifier {
 }
 
 @Riverpod(dependencies: [])
-int empty(EmptyRef ref) => 0;
+int empty(Ref ref) => 0;
 
 @Riverpod(dependencies: [])
 class EmptyNotifier extends _$EmptyNotifier {
@@ -263,7 +263,7 @@ class EmptyNotifier extends _$EmptyNotifier {
 }
 
 @Riverpod(dependencies: [empty, EmptyNotifier])
-int providerDependency(ProviderDependencyRef ref) => 0;
+int providerDependency(Ref ref) => 0;
 
 @Riverpod(dependencies: [empty, EmptyNotifier])
 class ProviderDependencyNotifier extends _$ProviderDependencyNotifier {
@@ -272,7 +272,7 @@ class ProviderDependencyNotifier extends _$ProviderDependencyNotifier {
 }
 
 @Riverpod(dependencies: [providerDependency, ProviderDependencyNotifier])
-int nestedDependency(NestedDependencyRef ref) => 0;
+int nestedDependency(Ref ref) => 0;
 
 @Riverpod(dependencies: [providerDependency, ProviderDependencyNotifier])
 class NestedDependencyNotifier extends _$NestedDependencyNotifier {
@@ -281,7 +281,7 @@ class NestedDependencyNotifier extends _$NestedDependencyNotifier {
 }
 
 @Riverpod(dependencies: [empty, EmptyNotifier])
-int family(NestedDependencyRef ref) => 0;
+int family(Ref ref) => 0;
 
 @Riverpod(dependencies: [empty, EmptyNotifier])
 class FamilyClass extends _$FamilyClass {

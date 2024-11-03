@@ -14,7 +14,7 @@ class BugsEncounteredNotifier extends StateNotifier<AsyncValue<int>> {
     required this.featureId,
   }) : super(const AsyncData(99));
   final String featureId;
-  final Ref<AsyncValue<int>> ref;
+  final Ref ref;
 
   Future<void> fix(int amount) async {
     state = await AsyncValue.guard(() async {

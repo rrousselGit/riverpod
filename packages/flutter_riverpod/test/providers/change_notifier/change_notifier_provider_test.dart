@@ -1,11 +1,10 @@
-// ignore_for_file: invalid_use_of_internal_member, avoid_types_on_closure_parameters
+// ignore_for_file: invalid_use_of_internal_member, avoid_types_on_closure_parameters, deprecated_member_use_from_same_package, deprecated_member_use
 
 import 'dart:async';
 
 import 'package:flutter/widgets.dart' hide Listener;
 import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:mockito/mockito.dart';
 
 import '../../utils.dart';
 
@@ -38,12 +37,8 @@ void main() {
 
     final container = ProviderContainer.test(
       overrides: [
-        provider.overrideWith(
-          (Ref<ValueNotifier<int>> ref) => ValueNotifier(42),
-        ),
-        autoDispose.overrideWith(
-          (Ref<ValueNotifier<int>> ref) => ValueNotifier(84),
-        ),
+        provider.overrideWith((ref) => ValueNotifier(42)),
+        autoDispose.overrideWith((ref) => ValueNotifier(84)),
       ],
     );
 
@@ -61,34 +56,14 @@ void main() {
     );
     final container = ProviderContainer.test(
       overrides: [
-        family.overrideWith(
-          (Ref<ValueNotifier<String>> ref, int arg) => ValueNotifier('42 $arg'),
-        ),
-        autoDisposeFamily.overrideWith(
-          (Ref<ValueNotifier<String>> ref, int arg) => ValueNotifier('84 $arg'),
-        ),
+        family.overrideWith((ref, int arg) => ValueNotifier('42 $arg')),
+        autoDisposeFamily
+            .overrideWith((ref, int arg) => ValueNotifier('84 $arg')),
       ],
     );
 
     expect(container.read(family(10)).value, '42 10');
     expect(container.read(autoDisposeFamily(10)).value, '84 10');
-  });
-
-  test('ref.listenSelf listens to state changes', () {
-    final listener = Listener<ValueNotifier<int>>();
-    final container = ProviderContainer.test();
-    final provider = ChangeNotifierProvider<ValueNotifier<int>>((ref) {
-      ref.listenSelf(listener.call);
-      return ValueNotifier(0);
-    });
-
-    final notifier = container.read(provider);
-
-    verifyOnly(listener, listener(null, notifier));
-
-    container.read(provider.notifier).value++;
-
-    verifyOnly(listener, listener(notifier, notifier));
   });
 
   test('support null ChangeNotifier', () {
@@ -99,21 +74,6 @@ void main() {
     expect(container.read(provider.notifier), null);
 
     container.dispose();
-  });
-
-  test('can read and set current ChangeNotifier', () async {
-    final container = ProviderContainer.test();
-    final listener = Listener<ValueNotifier<int>>();
-    late Ref<ValueNotifier<int>> ref;
-    final provider = ChangeNotifierProvider<ValueNotifier<int>>((r) {
-      ref = r;
-      return ValueNotifier(0);
-    });
-
-    container.listen(provider, listener.call);
-
-    verifyZeroInteractions(listener);
-    expect(ref.state.value, 0);
   });
 
   test('can refresh .notifier', () async {

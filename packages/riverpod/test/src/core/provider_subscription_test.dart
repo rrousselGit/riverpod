@@ -68,7 +68,7 @@ void main() {
         () async {
       final container = ProviderContainer.test();
       final provider = NotifierProvider<DeferredNotifier<int>, int>(
-        () => DeferredNotifier((ref) => 0),
+        () => DeferredNotifier((ref, _) => 0),
       );
       final listener = Listener<int>();
 

@@ -119,7 +119,7 @@ class OverrideWithBuildMock<NotifierT, StateT, CreatedT> extends Mock {
 
   final CreatedT fallback;
 
-  CreatedT call(Ref<StateT>? ref, NotifierT? value) {
+  CreatedT call(Ref? ref, NotifierT? value) {
     return super.noSuchMethod(
       Invocation.method(#call, [ref, value]),
       returnValue: fallback,

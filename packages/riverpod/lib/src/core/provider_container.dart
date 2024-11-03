@@ -295,8 +295,6 @@ class ProviderPointerManager {
           (e) {
             if (e.key.allTransitiveDependencies == null) return e;
 
-            // TODO don't fork a family if no family(42) is overridden
-
             return MapEntry(e.key, ProviderDirectory.from(e.value));
           },
         ),

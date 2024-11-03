@@ -45,7 +45,7 @@ part 'foo.g.dart';
 Never throws() => throw UnimplementedError();
 
 @riverpod
-int a(ARef ref) => throws();
+int a(Ref ref) => throws();
 
 @riverpod
 class B extends _$B {
@@ -54,7 +54,7 @@ class B extends _$B {
 }
 
 @riverpod
-int c(CRef ref, int arg) => throws();
+int c(Ref ref, int arg) => throws();
 
 @riverpod
 class D extends _$D {

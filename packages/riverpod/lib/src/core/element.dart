@@ -72,7 +72,8 @@ abstract class ProviderElement<StateT> implements Node {
   /// The [ProviderContainer] that owns this [ProviderElement].
   ProviderContainer get container => pointer.targetContainer;
 
-  Ref<StateT>? ref;
+  // ignore: library_private_types_in_public_api, not public
+  _Ref<StateT>? ref;
 
   /// Whether this [ProviderElement] is actively in use.
   ///
@@ -229,7 +230,7 @@ This could mean a few things:
       _debugCurrentCreateHash = provider.debugGetCreateSourceHash();
     }
 
-    final ref = this.ref = Ref<StateT>._(this);
+    final ref = this.ref = _Ref(this);
     buildState(ref);
 
     _notifyListeners(
@@ -254,7 +255,7 @@ This could mean a few things:
   /// to dependencies that are no-longer used.
   void _performBuild() {
     runOnDispose();
-    final ref = this.ref = Ref<StateT>._(this);
+    final ref = this.ref = _Ref(this);
     final previousStateResult = _stateResult;
 
     if (kDebugMode) _debugDidSetState = false;
@@ -282,7 +283,11 @@ This could mean a few things:
   /// - [didChangeDependency] can be used to differentiate a rebuild caused
   ///   by [Ref.watch] from one caused by [Ref.refresh]/[Ref.invalidate].
   @visibleForOverriding
-  void create(Ref<StateT> ref, {required bool didChangeDependency});
+  void create(
+    // ignore: library_private_types_in_public_api, not public
+    _Ref<StateT> ref, {
+    required bool didChangeDependency,
+  });
 
   /// A utility for re-initializing a provider when needed.
   ///
@@ -323,7 +328,10 @@ This could mean a few things:
 
   /// Invokes [create] and handles errors.
   @internal
-  void buildState(Ref<StateT> ref) {
+  void buildState(
+    // ignore: library_private_types_in_public_api, not public
+    _Ref<StateT> ref,
+  ) {
     if (_didChangeDependency) _retryCount = 0;
 
     ProviderElement? debugPreviouslyBuildingElement;

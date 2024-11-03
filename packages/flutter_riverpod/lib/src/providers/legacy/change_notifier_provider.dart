@@ -131,7 +131,7 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   /// has changes.
   Refreshable<NotifierT> get notifier => _notifier<NotifierT>(this);
 
-  final NotifierT Function(Ref<NotifierT> ref) _createFn;
+  final NotifierT Function(Ref ref) _createFn;
 
   @internal
   @override
@@ -145,7 +145,7 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   @visibleForOverriding
   @override
   ChangeNotifierProvider<NotifierT> $copyWithCreate(
-    Create<NotifierT, Ref<NotifierT>> create,
+    Create<NotifierT> create,
   ) {
     return ChangeNotifierProvider<NotifierT>.internal(
       create,
@@ -172,7 +172,7 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
   void Function()? _removeListener;
 
   @override
-  void create(Ref<NotifierT> ref, {required bool didChangeDependency}) {
+  void create(Ref ref, {required bool didChangeDependency}) {
     final notifierResult = _notifierNotifier.result = Result.guard(
       () => provider._createFn(ref),
     );
@@ -238,7 +238,7 @@ class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
 
   @override
   Override overrideWith(
-    NotifierT Function(Ref<NotifierT> ref, Arg arg) create,
+    NotifierT Function(Ref ref, Arg arg) create,
   ) {
     return $FamilyOverride(
       from: this,

@@ -8,17 +8,15 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef StreamExampleRef = Ref<AsyncValue<int>>;
-
 @ProviderFor(streamExample)
 const streamExampleProvider = StreamExampleProvider._();
 
 final class StreamExampleProvider
     extends $FunctionalProvider<AsyncValue<int>, Stream<int>>
-    with $FutureModifier<int>, $StreamProvider<int, StreamExampleRef> {
+    with $FutureModifier<int>, $StreamProvider<int> {
   const StreamExampleProvider._(
       {Stream<int> Function(
-        StreamExampleRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -32,7 +30,7 @@ final class StreamExampleProvider
         );
 
   final Stream<int> Function(
-    StreamExampleRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -46,20 +44,20 @@ final class StreamExampleProvider
   @override
   StreamExampleProvider $copyWithCreate(
     Stream<int> Function(
-      StreamExampleRef ref,
+      Ref ref,
     ) create,
   ) {
     return StreamExampleProvider._(create: create);
   }
 
   @override
-  Stream<int> create(StreamExampleRef ref) {
+  Stream<int> create(Ref ref) {
     final _$cb = _createCb ?? streamExample;
     return _$cb(ref);
   }
 }
 
-String _$streamExampleHash() => r'ca9993b22f6d587b20c041133cacd28d01933074';
+String _$streamExampleHash() => r'5f0e824562e820b85cc0d031a7fcce1d381023a5';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -125,8 +125,7 @@ final class AsyncNotifierProvider< //
 
   AsyncNotifierProvider<NotifierT, StateT> _copyWith({
     NotifierT Function()? create,
-    RunNotifierBuild<NotifierT, FutureOr<StateT>, Ref<AsyncValue<StateT>>>?
-        build,
+    RunNotifierBuild<NotifierT, FutureOr<StateT>>? build,
   }) {
     return AsyncNotifierProvider<NotifierT, StateT>.internal(
       create ?? _createNotifier,
@@ -155,8 +154,7 @@ final class AsyncNotifierProvider< //
   @visibleForOverriding
   @override
   AsyncNotifierProvider<NotifierT, StateT> $copyWithBuild(
-    RunNotifierBuild<NotifierT, FutureOr<StateT>, Ref<AsyncValue<StateT>>>?
-        build,
+    RunNotifierBuild<NotifierT, FutureOr<StateT>>? build,
   ) {
     return _copyWith(build: build);
   }

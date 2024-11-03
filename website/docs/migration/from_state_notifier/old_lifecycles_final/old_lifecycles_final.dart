@@ -6,11 +6,11 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'old_lifecycles_final.g.dart';
 
 @riverpod
-Duration duration(DurationRef ref) => const Duration(seconds: 1);
+Duration duration(Ref ref) => const Duration(seconds: 1);
 
 @riverpod
 // ignore: library_private_types_in_public_api
-_MyRepo repository(RepositoryRef ref) => _MyRepo();
+_MyRepo repository(Ref ref) => _MyRepo();
 
 class _MyRepo {
   Future<void> update(int i, {CancelToken? token}) async {}

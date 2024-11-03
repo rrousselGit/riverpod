@@ -11,7 +11,7 @@ test/lints/provider_dependencies/unused_dependency.dart:22:17
     dep2,
   ]<<<,
 )
-int extraDep(ExtraDepRef ref) {
+int extraDep(Ref ref) {
 ```
 
 =======
@@ -28,7 +28,7 @@ test/lints/provider_dependencies/unused_dependency.dart:35:17
     dep,
   ]<<<,
 )
-int noDep(NoDepRef ref) {
+int noDep(Ref ref) {
 ```
 
 =======
@@ -62,7 +62,7 @@ test/lints/provider_dependencies/unused_dependency.dart:56:17
     dep,
   ]<<<,
 )
-int noDepNoParam(NoDepNoParamRef ref) {
+int noDepNoParam(Ref ref) {
 ```
 
 =======
@@ -76,7 +76,7 @@ test/lints/provider_dependencies/unused_dependency.dart:65:43
 
 // expect_lint: provider_dependencies
 @Riverpod(keepAlive: false, dependencies: >>>[dep]<<<)
-int noDepWithoutComma(NoDepWithoutCommaRef ref) {
+int noDepWithoutComma(Ref ref) {
   return 0;
 ```
 
@@ -94,7 +94,7 @@ test/lints/provider_dependencies/unused_dependency.dart:73:17
     root,
   ]<<<,
 )
-int rootDep(RootDepRef ref) => 0;
+int rootDep(Ref ref) => 0;
 ```
 
 =======

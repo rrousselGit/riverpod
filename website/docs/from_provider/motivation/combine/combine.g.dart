@@ -8,16 +8,14 @@ part of 'combine.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef NumberRef = Ref<int>;
-
 @ProviderFor(number)
 const numberProvider = NumberProvider._();
 
 final class NumberProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, NumberRef> {
+    with $Provider<int> {
   const NumberProvider._(
       {int Function(
-        NumberRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -31,7 +29,7 @@ final class NumberProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    NumberRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -53,31 +51,29 @@ final class NumberProvider extends $FunctionalProvider<int, int>
   @override
   NumberProvider $copyWithCreate(
     int Function(
-      NumberRef ref,
+      Ref ref,
     ) create,
   ) {
     return NumberProvider._(create: create);
   }
 
   @override
-  int create(NumberRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? number;
     return _$cb(ref);
   }
 }
 
-String _$numberHash() => r'725e25be57b9cc2bd914752f156e26a214596b63';
-
-typedef DoubledRef = Ref<int>;
+String _$numberHash() => r'03ac91d5904c18f04321b140fd263ed6bc85d3c1';
 
 @ProviderFor(doubled)
 const doubledProvider = DoubledProvider._();
 
 final class DoubledProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, DoubledRef> {
+    with $Provider<int> {
   const DoubledProvider._(
       {int Function(
-        DoubledRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -91,7 +87,7 @@ final class DoubledProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    DoubledRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -113,20 +109,20 @@ final class DoubledProvider extends $FunctionalProvider<int, int>
   @override
   DoubledProvider $copyWithCreate(
     int Function(
-      DoubledRef ref,
+      Ref ref,
     ) create,
   ) {
     return DoubledProvider._(create: create);
   }
 
   @override
-  int create(DoubledRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? doubled;
     return _$cb(ref);
   }
 }
 
-String _$doubledHash() => r'ddc640c876bdbe49fe72fe1632b5ff48687c9279';
+String _$doubledHash() => r'2a7f7fadb89e55d6adcf11aaa21943c66b10df5e';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

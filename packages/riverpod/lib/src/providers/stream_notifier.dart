@@ -29,8 +29,7 @@ abstract base class $StreamNotifierProvider<
     extends $ClassProvider< //
         NotifierT,
         AsyncValue<StateT>,
-        Stream<StateT>,
-        Ref<AsyncValue<StateT>>> //
+        Stream<StateT>> //
     with
         $FutureModifier<StateT> {
   /// Implementation detail of `riverpod_generator`.

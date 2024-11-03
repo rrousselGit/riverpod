@@ -8,19 +8,15 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef ConfigRef = Ref<AsyncValue<Configuration>>;
-
 @ProviderFor(config)
 const configProvider = ConfigProvider._();
 
 final class ConfigProvider extends $FunctionalProvider<
         AsyncValue<Configuration>, Stream<Configuration>>
-    with
-        $FutureModifier<Configuration>,
-        $StreamProvider<Configuration, ConfigRef> {
+    with $FutureModifier<Configuration>, $StreamProvider<Configuration> {
   const ConfigProvider._(
       {Stream<Configuration> Function(
-        ConfigRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -34,7 +30,7 @@ final class ConfigProvider extends $FunctionalProvider<
         );
 
   final Stream<Configuration> Function(
-    ConfigRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -49,34 +45,30 @@ final class ConfigProvider extends $FunctionalProvider<
   @override
   ConfigProvider $copyWithCreate(
     Stream<Configuration> Function(
-      ConfigRef ref,
+      Ref ref,
     ) create,
   ) {
     return ConfigProvider._(create: create);
   }
 
   @override
-  Stream<Configuration> create(ConfigRef ref) {
+  Stream<Configuration> create(Ref ref) {
     final _$cb = _createCb ?? config;
     return _$cb(ref);
   }
 }
 
-String _$configHash() => r'3021d1a8aac384e99d5d22714ffe6e868954888b';
-
-typedef ProductsRef = Ref<AsyncValue<List<Product>>>;
+String _$configHash() => r'66f48a02bf939463649f0e7ad34137265e5c8b66';
 
 @ProviderFor(products)
 const productsProvider = ProductsProvider._();
 
 final class ProductsProvider extends $FunctionalProvider<
         AsyncValue<List<Product>>, FutureOr<List<Product>>>
-    with
-        $FutureModifier<List<Product>>,
-        $FutureProvider<List<Product>, ProductsRef> {
+    with $FutureModifier<List<Product>>, $FutureProvider<List<Product>> {
   const ProductsProvider._(
       {FutureOr<List<Product>> Function(
-        ProductsRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -90,7 +82,7 @@ final class ProductsProvider extends $FunctionalProvider<
         );
 
   final FutureOr<List<Product>> Function(
-    ProductsRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -105,20 +97,20 @@ final class ProductsProvider extends $FunctionalProvider<
   @override
   ProductsProvider $copyWithCreate(
     FutureOr<List<Product>> Function(
-      ProductsRef ref,
+      Ref ref,
     ) create,
   ) {
     return ProductsProvider._(create: create);
   }
 
   @override
-  FutureOr<List<Product>> create(ProductsRef ref) {
+  FutureOr<List<Product>> create(Ref ref) {
     final _$cb = _createCb ?? products;
     return _$cb(ref);
   }
 }
 
-String _$productsHash() => r'd1f4523880408cf8ee0e68969c40cf87d5c78557';
+String _$productsHash() => r'1915c65cef29cadc8b0adadd6ecddf753586974b';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

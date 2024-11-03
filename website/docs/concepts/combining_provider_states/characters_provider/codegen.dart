@@ -11,15 +11,15 @@ final dio = Dio();
 
 // The current search filter
 @riverpod
-String search(SearchRef ref) => '';
+String search(Ref ref) => '';
 
 @riverpod
-Stream<Configuration> configs(ConfigsRef ref) {
+Stream<Configuration> configs(Ref ref) {
   return Stream.value(Configuration());
 }
 
 @riverpod
-Future<List<Character>> characters(CharactersRef ref) async {
+Future<List<Character>> characters(Ref ref) async {
   final search = ref.watch(searchProvider);
   final configs = await ref.watch(configsProvider.future);
   final response = await dio.get<List<Map<String, dynamic>>>(

@@ -7,7 +7,7 @@ import 'package:riverpod/riverpod.dart';
 class MyNotifier extends Notifier<int> {
   @override
   int build() {
-    ref.listenSelf((_, next) => debugPrint('$next'));
+    listenSelf((_, next) => debugPrint('$next'));
     return 0;
   }
 

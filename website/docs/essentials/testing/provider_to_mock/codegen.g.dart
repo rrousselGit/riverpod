@@ -8,17 +8,15 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef ExampleRef = Ref<AsyncValue<String>>;
-
 @ProviderFor(example)
 const exampleProvider = ExampleProvider._();
 
 final class ExampleProvider
     extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>>
-    with $FutureModifier<String>, $FutureProvider<String, ExampleRef> {
+    with $FutureModifier<String>, $FutureProvider<String> {
   const ExampleProvider._(
       {FutureOr<String> Function(
-        ExampleRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -32,7 +30,7 @@ final class ExampleProvider
         );
 
   final FutureOr<String> Function(
-    ExampleRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -46,20 +44,20 @@ final class ExampleProvider
   @override
   ExampleProvider $copyWithCreate(
     FutureOr<String> Function(
-      ExampleRef ref,
+      Ref ref,
     ) create,
   ) {
     return ExampleProvider._(create: create);
   }
 
   @override
-  FutureOr<String> create(ExampleRef ref) {
+  FutureOr<String> create(Ref ref) {
     final _$cb = _createCb ?? example;
     return _$cb(ref);
   }
 }
 
-String _$exampleHash() => r'd421d08db0ee9d10af5521159561135d8c5fa57c';
+String _$exampleHash() => r'8768b72378809f5cb6ae94b65493cbb49bd23b77';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

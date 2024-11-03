@@ -11,7 +11,7 @@ FutureOr<Activity> fetchActivity() => throw UnimplementedError();
 /* SNIPPET START */
 // “函数型”提供者程序
 @riverpod
-Future<Activity> activity(ActivityRef ref) async {
+Future<Activity> activity(Ref ref) async {
   // TODO: 执行网络请求以获取活动
   return fetchActivity();
 }

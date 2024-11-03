@@ -6,16 +6,14 @@ part of 'another.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef BRef = Ref<int>;
-
 @ProviderFor(b)
 const bProvider = BProvider._();
 
 final class BProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, BRef> {
+    with $Provider<int> {
   const BProvider._(
       {int Function(
-        BRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -29,7 +27,7 @@ final class BProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    BRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -51,31 +49,29 @@ final class BProvider extends $FunctionalProvider<int, int>
   @override
   BProvider $copyWithCreate(
     int Function(
-      BRef ref,
+      Ref ref,
     ) create,
   ) {
     return BProvider._(create: create);
   }
 
   @override
-  int create(BRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? b;
     return _$cb(ref);
   }
 }
 
-String _$bHash() => r'52593050701642f22b31c590f20c003dc2ee1579';
-
-typedef AnotherScopedRef = Ref<int>;
+String _$bHash() => r'31624e9aa10c9cd7941c9626e841c6df3468723b';
 
 @ProviderFor(anotherScoped)
 const anotherScopedProvider = AnotherScopedProvider._();
 
 final class AnotherScopedProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, AnotherScopedRef> {
+    with $Provider<int> {
   const AnotherScopedProvider._(
       {int Function(
-        AnotherScopedRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -89,7 +85,7 @@ final class AnotherScopedProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    AnotherScopedRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -111,31 +107,29 @@ final class AnotherScopedProvider extends $FunctionalProvider<int, int>
   @override
   AnotherScopedProvider $copyWithCreate(
     int Function(
-      AnotherScopedRef ref,
+      Ref ref,
     ) create,
   ) {
     return AnotherScopedProvider._(create: create);
   }
 
   @override
-  int create(AnotherScopedRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? anotherScoped;
     return _$cb(ref);
   }
 }
 
-String _$anotherScopedHash() => r'409a070806b566d16d98f18c99bf6243d481887f';
-
-typedef AnotherNonEmptyScopedRef = Ref<int>;
+String _$anotherScopedHash() => r'edf3ccffb7c3ce1b1e4ffdd4009aeed4fa38c3f8';
 
 @ProviderFor(anotherNonEmptyScoped)
 const anotherNonEmptyScopedProvider = AnotherNonEmptyScopedProvider._();
 
 final class AnotherNonEmptyScopedProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, AnotherNonEmptyScopedRef> {
+    with $Provider<int> {
   const AnotherNonEmptyScopedProvider._(
       {int Function(
-        AnotherNonEmptyScopedRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -153,7 +147,7 @@ final class AnotherNonEmptyScopedProvider extends $FunctionalProvider<int, int>
   static const $allTransitiveDependencies0 = anotherScopedProvider;
 
   final int Function(
-    AnotherNonEmptyScopedRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -175,21 +169,21 @@ final class AnotherNonEmptyScopedProvider extends $FunctionalProvider<int, int>
   @override
   AnotherNonEmptyScopedProvider $copyWithCreate(
     int Function(
-      AnotherNonEmptyScopedRef ref,
+      Ref ref,
     ) create,
   ) {
     return AnotherNonEmptyScopedProvider._(create: create);
   }
 
   @override
-  int create(AnotherNonEmptyScopedRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? anotherNonEmptyScoped;
     return _$cb(ref);
   }
 }
 
 String _$anotherNonEmptyScopedHash() =>
-    r'cc21d248e644c853e4647ad60ca72cb42b82475f';
+    r'56da5331e55d74e8e10ff710d20618f217394a69';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

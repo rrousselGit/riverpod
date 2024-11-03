@@ -6,16 +6,14 @@ part of 'retry.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef ARef = Ref<String>;
-
 @ProviderFor(a)
 const aProvider = AProvider._();
 
 final class AProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, ARef> {
+    with $Provider<String> {
   const AProvider._(
       {String Function(
-        ARef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -29,7 +27,7 @@ final class AProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    ARef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -51,33 +49,31 @@ final class AProvider extends $FunctionalProvider<String, String>
   @override
   AProvider $copyWithCreate(
     String Function(
-      ARef ref,
+      Ref ref,
     ) create,
   ) {
     return AProvider._(create: create);
   }
 
   @override
-  String create(ARef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? a;
     return _$cb(ref);
   }
 }
 
-String _$aHash() => r'3500a02140f277a66793d8118c15e09150ae67cd';
-
-typedef BRef = Ref<String>;
+String _$aHash() => r'83a9516d10f85dc72ca773837e042bfc6e36c1f1';
 
 @ProviderFor(b)
 const bProvider = BFamily._();
 
 final class BProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, BRef> {
+    with $Provider<String> {
   const BProvider._(
       {required BFamily super.from,
       required int super.argument,
       String Function(
-        BRef ref,
+        Ref ref,
         int arg,
       )? create})
       : _createCb = create,
@@ -90,7 +86,7 @@ final class BProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    BRef ref,
+    Ref ref,
     int arg,
   )? _createCb;
 
@@ -120,7 +116,7 @@ final class BProvider extends $FunctionalProvider<String, String>
   @override
   BProvider $copyWithCreate(
     String Function(
-      BRef ref,
+      Ref ref,
     ) create,
   ) {
     return BProvider._(
@@ -134,7 +130,7 @@ final class BProvider extends $FunctionalProvider<String, String>
   }
 
   @override
-  String create(BRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? b;
     final argument = this.argument as int;
     return _$cb(
@@ -154,7 +150,7 @@ final class BProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$bHash() => r'0af37d2fa472b9730e1aa01841787d964b9f193b';
+String _$bHash() => r'95798a157250c86a901bca5701b487f508f8a5a4';
 
 final class BFamily extends Family {
   const BFamily._()
@@ -180,7 +176,7 @@ final class BFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     String Function(
-      BRef ref,
+      Ref ref,
       int args,
     ) create,
   ) {
@@ -199,4 +195,4 @@ final class BFamily extends Family {
   }
 }
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

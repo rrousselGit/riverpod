@@ -8,16 +8,14 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef SearchRef = Ref<String>;
-
 @ProviderFor(search)
 const searchProvider = SearchProvider._();
 
 final class SearchProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, SearchRef> {
+    with $Provider<String> {
   const SearchProvider._(
       {String Function(
-        SearchRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -31,7 +29,7 @@ final class SearchProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    SearchRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -53,34 +51,30 @@ final class SearchProvider extends $FunctionalProvider<String, String>
   @override
   SearchProvider $copyWithCreate(
     String Function(
-      SearchRef ref,
+      Ref ref,
     ) create,
   ) {
     return SearchProvider._(create: create);
   }
 
   @override
-  String create(SearchRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? search;
     return _$cb(ref);
   }
 }
 
-String _$searchHash() => r'a093687a671a5d5481789cf3e401a09f96f8896d';
-
-typedef ConfigsRef = Ref<AsyncValue<Configuration>>;
+String _$searchHash() => r'bc08d7ad4026615f3c0e4824c6b943f315cf18be';
 
 @ProviderFor(configs)
 const configsProvider = ConfigsProvider._();
 
 final class ConfigsProvider extends $FunctionalProvider<
         AsyncValue<Configuration>, Stream<Configuration>>
-    with
-        $FutureModifier<Configuration>,
-        $StreamProvider<Configuration, ConfigsRef> {
+    with $FutureModifier<Configuration>, $StreamProvider<Configuration> {
   const ConfigsProvider._(
       {Stream<Configuration> Function(
-        ConfigsRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -94,7 +88,7 @@ final class ConfigsProvider extends $FunctionalProvider<
         );
 
   final Stream<Configuration> Function(
-    ConfigsRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -109,34 +103,30 @@ final class ConfigsProvider extends $FunctionalProvider<
   @override
   ConfigsProvider $copyWithCreate(
     Stream<Configuration> Function(
-      ConfigsRef ref,
+      Ref ref,
     ) create,
   ) {
     return ConfigsProvider._(create: create);
   }
 
   @override
-  Stream<Configuration> create(ConfigsRef ref) {
+  Stream<Configuration> create(Ref ref) {
     final _$cb = _createCb ?? configs;
     return _$cb(ref);
   }
 }
 
-String _$configsHash() => r'166cbe95e6b49ed7bc78c96041fb14abddbf6911';
-
-typedef CharactersRef = Ref<AsyncValue<List<Character>>>;
+String _$configsHash() => r'6416514dacd408abb24de2bd1404860e6518c564';
 
 @ProviderFor(characters)
 const charactersProvider = CharactersProvider._();
 
 final class CharactersProvider extends $FunctionalProvider<
         AsyncValue<List<Character>>, FutureOr<List<Character>>>
-    with
-        $FutureModifier<List<Character>>,
-        $FutureProvider<List<Character>, CharactersRef> {
+    with $FutureModifier<List<Character>>, $FutureProvider<List<Character>> {
   const CharactersProvider._(
       {FutureOr<List<Character>> Function(
-        CharactersRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -150,7 +140,7 @@ final class CharactersProvider extends $FunctionalProvider<
         );
 
   final FutureOr<List<Character>> Function(
-    CharactersRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -165,20 +155,20 @@ final class CharactersProvider extends $FunctionalProvider<
   @override
   CharactersProvider $copyWithCreate(
     FutureOr<List<Character>> Function(
-      CharactersRef ref,
+      Ref ref,
     ) create,
   ) {
     return CharactersProvider._(create: create);
   }
 
   @override
-  FutureOr<List<Character>> create(CharactersRef ref) {
+  FutureOr<List<Character>> create(Ref ref) {
     final _$cb = _createCb ?? characters;
     return _$cb(ref);
   }
 }
 
-String _$charactersHash() => r'b1e8e15bbeab60d92fe959d9e1dd4ceba6a31446';
+String _$charactersHash() => r'd2bac558571ceae538d012696be58e2a06e8013f';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -55,7 +55,7 @@ final class ExampleProvider extends $NotifierProvider<Example, int> {
   @override
   ExampleProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       Example,
     ) build,
   ) {
@@ -146,7 +146,7 @@ final class ExampleFamilyProvider
   @override
   ExampleFamilyProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       ExampleFamily,
     ) build,
   ) {
@@ -234,7 +234,7 @@ final class ExampleFamilyFamily extends Family {
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     int Function(
-            Ref<int> ref,
+            Ref ref,
             ExampleFamily notifier,
             ({
               int a,
@@ -313,7 +313,7 @@ final class GenericProvider<A, B>
 
   GenericProvider<A, B> _copyWithBuild(
     int Function<A, B>(
-      Ref<int>,
+      Ref,
       Generic<A, B>,
     ) build,
   ) {
@@ -353,7 +353,7 @@ final class GenericProvider<A, B>
   @override
   GenericProvider<A, B> $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       Generic<A, B>,
     ) build,
   ) {
@@ -416,7 +416,7 @@ final class GenericFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function<A, B>(Ref<int> ref, Generic<A, B> notifier) build,
+    int Function<A, B>(Ref ref, Generic<A, B> notifier) build,
   ) {
     return $FamilyOverride(
       from: this,
@@ -437,4 +437,4 @@ abstract class _$Generic<A, B> extends $Notifier<int> {
 }
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

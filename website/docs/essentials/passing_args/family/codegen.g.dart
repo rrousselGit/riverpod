@@ -8,19 +8,17 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef ActivityRef = Ref<AsyncValue<Activity>>;
-
 @ProviderFor(activity)
 const activityProvider = ActivityFamily._();
 
 final class ActivityProvider
     extends $FunctionalProvider<AsyncValue<Activity>, FutureOr<Activity>>
-    with $FutureModifier<Activity>, $FutureProvider<Activity, ActivityRef> {
+    with $FutureModifier<Activity>, $FutureProvider<Activity> {
   const ActivityProvider._(
       {required ActivityFamily super.from,
       required String super.argument,
       FutureOr<Activity> Function(
-        ActivityRef ref,
+        Ref ref,
         String activityType,
       )? create})
       : _createCb = create,
@@ -33,7 +31,7 @@ final class ActivityProvider
         );
 
   final FutureOr<Activity> Function(
-    ActivityRef ref,
+    Ref ref,
     String activityType,
   )? _createCb;
 
@@ -55,7 +53,7 @@ final class ActivityProvider
   @override
   ActivityProvider $copyWithCreate(
     FutureOr<Activity> Function(
-      ActivityRef ref,
+      Ref ref,
     ) create,
   ) {
     return ActivityProvider._(
@@ -69,7 +67,7 @@ final class ActivityProvider
   }
 
   @override
-  FutureOr<Activity> create(ActivityRef ref) {
+  FutureOr<Activity> create(Ref ref) {
     final _$cb = _createCb ?? activity;
     final argument = this.argument as String;
     return _$cb(
@@ -89,7 +87,7 @@ final class ActivityProvider
   }
 }
 
-String _$activityHash() => r'cb76e67cd45f1823d3ed497a235be53819ce2eaf';
+String _$activityHash() => r'6c815736c0d2b40a92695adcd78516534d7ac2fc';
 
 final class ActivityFamily extends Family {
   const ActivityFamily._()
@@ -115,7 +113,7 @@ final class ActivityFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     FutureOr<Activity> Function(
-      ActivityRef ref,
+      Ref ref,
       String args,
     ) create,
   ) {
@@ -184,7 +182,7 @@ final class ActivityNotifier2Provider
   @override
   ActivityNotifier2Provider $copyWithBuild(
     FutureOr<Activity> Function(
-      Ref<AsyncValue<Activity>>,
+      Ref,
       ActivityNotifier2,
     ) build,
   ) {
@@ -256,8 +254,8 @@ final class ActivityNotifier2Family extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    FutureOr<Activity> Function(Ref<AsyncValue<Activity>> ref,
-            ActivityNotifier2 notifier, String argument)
+    FutureOr<Activity> Function(
+            Ref ref, ActivityNotifier2 notifier, String argument)
         build,
   ) {
     return $FamilyOverride(
@@ -290,4 +288,4 @@ abstract class _$ActivityNotifier2 extends $AsyncNotifier<Activity> {
 }
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

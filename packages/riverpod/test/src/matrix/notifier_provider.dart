@@ -19,7 +19,7 @@ final notifierProviderFactory = TestMatrix<NotifierTestFactory>(
           shouldPersist: shouldPersist,
           persistOptions: persistOptions,
           () => DeferredNotifier(
-            create,
+            (ref, self) => create(ref, self),
             updateShouldNotify: updateShouldNotify,
             persistKey: persistKey,
             decode: decode,
@@ -56,7 +56,7 @@ final notifierProviderFactory = TestMatrix<NotifierTestFactory>(
           shouldPersist: shouldPersist,
           persistOptions: persistOptions,
           () => DeferredNotifier(
-            create,
+            (ref, self) => create(ref, self),
             updateShouldNotify: updateShouldNotify,
             persistKey: persistKey,
             decode: decode,
@@ -174,6 +174,12 @@ abstract class TestNotifier<StateT> implements $Notifier<StateT> {
 
   @override
   set state(StateT value);
+
+  @override
+  void listenSelf(
+    void Function(StateT? previous, StateT next) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  });
 }
 
 class DeferredNotifier<StateT> extends Notifier<StateT>
@@ -189,14 +195,23 @@ class DeferredNotifier<StateT> extends Notifier<StateT>
         _decode = decode,
         _persistKey = persistKey;
 
-  final StateT Function(Ref<StateT> ref) _create;
+  final StateT Function(Ref ref, DeferredNotifier<StateT> self) _create;
   final bool Function(
     StateT previousState,
     StateT newState,
   )? _updateShouldNotify;
 
   @override
-  StateT build() => _create(ref);
+  Ref get ref;
+
+  @override
+  void listenSelf(
+    void Function(StateT? previous, StateT next) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  });
+
+  @override
+  StateT build() => _create(ref, this);
 
   @override
   bool updateShouldNotify(StateT previousState, StateT newState) =>
@@ -242,7 +257,7 @@ class DeferredFamilyNotifier<StateT> extends FamilyNotifier<StateT, int>
         _decode = decode,
         _persistKey = persistKey;
 
-  final StateT Function(Ref<StateT> ref) _create;
+  final StateT Function(Ref ref, DeferredFamilyNotifier<StateT> self) _create;
 
   final bool Function(
     StateT previousState,
@@ -250,7 +265,7 @@ class DeferredFamilyNotifier<StateT> extends FamilyNotifier<StateT, int>
   )? _updateShouldNotify;
 
   @override
-  StateT build(int arg) => _create(ref);
+  StateT build(int arg) => _create(ref, this);
 
   @override
   bool updateShouldNotify(
@@ -287,7 +302,7 @@ class DeferredFamilyNotifier<StateT> extends FamilyNotifier<StateT, int>
 }
 
 class NotifierTestFactory extends TestFactory<
-    ProviderFactory<$Notifier<Object?>, ProviderBase<Object?>, void>> {
+    ProviderFactory<$Notifier<Object?>, ProviderBase<Object?>>> {
   NotifierTestFactory({
     required super.isAutoDispose,
     required super.isFamily,
@@ -298,11 +313,11 @@ class NotifierTestFactory extends TestFactory<
   });
 
   final TestNotifier<StateT> Function<StateT>(
-    StateT Function(Ref<StateT> ref) create,
+    StateT Function(Ref ref, $Notifier<StateT> self) create,
   ) deferredNotifier;
 
   final $NotifierProvider<TestNotifier<StateT>, StateT> Function<StateT>(
-    StateT Function(Ref<StateT> ref) create, {
+    StateT Function(Ref ref, $Notifier<StateT> self) create, {
     bool Function(StateT, StateT)? updateShouldNotify,
     bool? shouldPersist,
     Persist? persistOptions,
@@ -316,7 +331,7 @@ class NotifierTestFactory extends TestFactory<
   ) provider;
 
   $NotifierProvider<TestNotifier<StateT>, StateT> simpleTestProvider<StateT>(
-    StateT Function(Ref<StateT> ref) create, {
+    StateT Function(Ref ref, $Notifier<StateT> self) create, {
     bool Function(StateT, StateT)? updateShouldNotify,
     bool? shouldPersist,
     Persist? persistOptions,
@@ -325,7 +340,7 @@ class NotifierTestFactory extends TestFactory<
     Object? Function(StateT value)? encode,
   }) {
     return deferredProvider<StateT>(
-      (ref) => create(ref),
+      (ref, self) => create(ref, self),
       updateShouldNotify: updateShouldNotify,
       shouldPersist: shouldPersist,
       persistOptions: persistOptions,

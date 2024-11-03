@@ -12,7 +12,7 @@ class User {
 }
 
 @riverpod
-User example(ExampleRef ref) => User()
+User example(Ref ref) => User()
   ..firstName = 'John'
   ..lastName = 'Doe';
 

@@ -4,6 +4,6 @@ part 'sync_fn.g.dart';
 
 /* SNIPPET START */
 @riverpod
-String example(ExampleRef ref) {
+String example(Ref ref) {
   return 'foo';
 }

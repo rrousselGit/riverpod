@@ -25,12 +25,6 @@ void main() async {
     expect(doc, '/// Hello world\n// Foo\n');
   });
 
-  test('Doc on generated ref', () async {
-    final doc = topLevelDeclarations.findNamed('FamilyRef').doc;
-
-    expect(doc, '/// Hello world\n// Foo\n');
-  });
-
   test('Doc on generated family', () async {
     final family =
         topLevelDeclarations.findNamed('FamilyFamily') as ClassDeclaration;

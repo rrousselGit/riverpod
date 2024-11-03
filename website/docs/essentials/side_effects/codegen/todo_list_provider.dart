@@ -14,7 +14,7 @@ class Todo with _$Todo {
 
 /* SNIPPET START */
 @riverpod
-Future<List<Todo>> todoList(TodoListRef ref) async {
+Future<List<Todo>> todoList(Ref ref) async {
   // {@template note}
   // Simulate a network request. This would normally come from a real API
   // {@endtemplate}

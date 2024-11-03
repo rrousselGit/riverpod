@@ -63,7 +63,9 @@ final class ProviderOrFamilyExpression {
     final returnType = expression.staticType;
     if (returnType == null) return null;
     if (!providerBaseType.isAssignableFromType(returnType) &&
-        !familyType.isAssignableFromType(returnType)) return null;
+        !familyType.isAssignableFromType(returnType)) {
+      return null;
+    }
 
     final parseResult = _parsesProviderExpression(expression);
     if (parseResult == null) return null;

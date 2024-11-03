@@ -12,45 +12,6 @@ import '../../utils.dart';
 
 void main() {
   group('StreamProvider.autoDispose', () {
-    test('can read and set current AsyncValue', () async {
-      final container = ProviderContainer.test();
-      final listener = Listener<AsyncValue<int>>();
-      late Ref<AsyncValue<int>> ref;
-      final provider = StreamProvider.autoDispose<int>((r) {
-        ref = r;
-        return Stream.value(0);
-      });
-
-      container.listen(provider, listener.call);
-
-      await container.read(provider.future);
-      expect(ref.state, const AsyncData<int>(0));
-      verifyOnly(
-        listener,
-        listener(
-          const AsyncLoading(),
-          const AsyncData(0),
-        ),
-      );
-
-      ref.state = const AsyncLoading<int>();
-
-      expect(
-        ref.state,
-        const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncData(0), isRefresh: false),
-      );
-
-      verifyOnly(
-        listener,
-        listener(
-          const AsyncData(0),
-          const AsyncLoading<int>()
-              .copyWithPrevious(const AsyncData(0), isRefresh: false),
-        ),
-      );
-    });
-
     test('can be auto-scoped', () async {
       final dep = Provider(
         (ref) => 0,

@@ -24,11 +24,10 @@ This means that you tried to either:
 
 /// The prototype of `Notifier.build` overrides.
 @internal
-typedef RunNotifierBuild< //
-        NotifierT,
-        CreatedT,
-        RefT extends Ref<Object?>>
-    = CreatedT Function(RefT ref, NotifierT notifier);
+typedef RunNotifierBuild<NotifierT, CreatedT> = CreatedT Function(
+  Ref ref,
+  NotifierT notifier,
+);
 
 /// A base class for all "notifiers".
 ///
@@ -55,23 +54,32 @@ typedef RunNotifierBuild< //
 /// }
 /// ```
 abstract class NotifierBase<StateT, CreatedT> {
-  Ref<StateT>? _ref;
-
+  _Ref<StateT>? _ref;
   @protected
-  Ref<StateT> get ref {
-    final ref = _ref;
-    if (ref == null) throw StateError(uninitializedElementError);
+  Ref get ref => $ref;
 
-    return ref;
+  /// Listens to changes on the value exposed by this provider.
+  ///
+  /// The listener will be called immediately after the provider completes building.
+  ///
+  /// As opposed to [Ref.listen], the listener will be called even if
+  /// [updateShouldNotify] returns false, meaning that the previous
+  /// and new value can potentially be identical.
+  @protected
+  void listenSelf(
+    void Function(StateT? previous, StateT next) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  }) {
+    $ref.listenSelf(listener, onError: onError);
   }
 
   @visibleForTesting
   @protected
-  StateT get state => ref.state;
+  StateT get state => $ref.state;
 
   @visibleForTesting
   @protected
-  set state(StateT newState) => ref.state = newState;
+  set state(StateT newState) => $ref.state = newState;
 
   CreatedT runBuild();
 
@@ -82,6 +90,15 @@ abstract class NotifierBase<StateT, CreatedT> {
 @internal
 extension ClassBaseX<StateT, CreatedT> on NotifierBase<StateT, CreatedT> {
   ProviderElement<StateT>? get element => _ref?._element;
+
+  @internal
+  // ignore: library_private_types_in_public_api, not public
+  _Ref<StateT> get $ref {
+    final ref = _ref;
+    if (ref == null) throw StateError(uninitializedElementError);
+
+    return ref;
+  }
 }
 
 /// Implementation detail of `riverpod_generator`.
@@ -91,8 +108,7 @@ abstract base class $ClassProvider< //
         StateT,
         CreatedT>,
     StateT,
-    CreatedT,
-    RefT extends Ref<StateT>> extends ProviderBase<StateT> {
+    CreatedT> extends ProviderBase<StateT> {
   const $ClassProvider({
     required super.name,
     required super.from,
@@ -116,19 +132,19 @@ abstract base class $ClassProvider< //
   }
 
   @internal
-  final RunNotifierBuild<NotifierT, CreatedT, RefT>? runNotifierBuildOverride;
+  final RunNotifierBuild<NotifierT, CreatedT>? runNotifierBuildOverride;
 
   @internal
   NotifierT create();
 
   @visibleForOverriding
-  $ClassProvider<NotifierT, StateT, CreatedT, RefT> $copyWithCreate(
+  $ClassProvider<NotifierT, StateT, CreatedT> $copyWithCreate(
     NotifierT Function() create,
   );
 
   @visibleForOverriding
-  $ClassProvider<NotifierT, StateT, CreatedT, RefT> $copyWithBuild(
-    RunNotifierBuild<NotifierT, CreatedT, RefT> build,
+  $ClassProvider<NotifierT, StateT, CreatedT> $copyWithBuild(
+    RunNotifierBuild<NotifierT, CreatedT> build,
   );
 
   /// {@macro riverpod.override_with}
@@ -143,7 +159,7 @@ abstract base class $ClassProvider< //
   /// Hello world
   /// {@endtemplate}
   Override overrideWithBuild(
-    RunNotifierBuild<NotifierT, CreatedT, RefT> build,
+    RunNotifierBuild<NotifierT, CreatedT> build,
   ) {
     return $ProviderOverride(
       origin: this,
@@ -169,14 +185,15 @@ abstract class ClassProviderElement< //
   ClassProviderElement(super.pointer);
 
   @override
-  $ClassProvider<NotifierT, StateT, CreatedT, Ref<StateT>> get provider;
+  $ClassProvider<NotifierT, StateT, CreatedT> get provider;
 
   final classListenable = ProxyElementValueListenable<NotifierT>();
 
   @mustCallSuper
   @override
   void create(
-    Ref<StateT> ref, {
+    // ignore: library_private_types_in_public_api, not public
+    _Ref<StateT> ref, {
     required bool didChangeDependency,
   }) {
     final seamless = !didChangeDependency;

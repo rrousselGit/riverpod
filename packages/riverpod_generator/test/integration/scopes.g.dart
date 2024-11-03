@@ -52,7 +52,7 @@ final class ScopedClassProvider extends $NotifierProvider<ScopedClass, int> {
   @override
   ScopedClassProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       ScopedClass,
     ) build,
   ) {
@@ -133,7 +133,7 @@ final class ScopedClassFamilyProvider
   @override
   ScopedClassFamilyProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       ScopedClassFamily,
     ) build,
   ) {
@@ -205,7 +205,7 @@ final class ScopedClassFamilyFamily extends Family {
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function(Ref<int> ref, ScopedClassFamily notifier, int argument) build,
+    int Function(Ref ref, ScopedClassFamily notifier, int argument) build,
   ) {
     return $FamilyOverride(
       from: this,
@@ -238,4 +238,4 @@ abstract class _$ScopedClassFamily extends $Notifier<int> {
 }
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

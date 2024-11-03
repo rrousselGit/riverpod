@@ -15,7 +15,7 @@ part 'provider.g.dart';
 /// which will cache the result of this function.
 // {@endtemplate}
 @riverpod
-Future<Activity> activity(ActivityRef ref) async {
+Future<Activity> activity(Ref ref) async {
   // {@template response}
   // Using package:http, we fetch a random activity from the Bored API.
   // {@endtemplate}

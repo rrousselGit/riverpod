@@ -149,7 +149,7 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
 
   NotifierProvider<NotifierT, StateT> _copyWith({
     NotifierT Function()? create,
-    RunNotifierBuild<NotifierT, StateT, Ref<StateT>>? build,
+    RunNotifierBuild<NotifierT, StateT>? build,
   }) {
     return NotifierProvider<NotifierT, StateT>.internal(
       create ?? _createNotifier,
@@ -170,7 +170,7 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
   @visibleForOverriding
   @override
   NotifierProvider<NotifierT, StateT> $copyWithBuild(
-    RunNotifierBuild<NotifierT, StateT, Ref<StateT>>? build,
+    RunNotifierBuild<NotifierT, StateT>? build,
   ) {
     return _copyWith(build: build);
   }

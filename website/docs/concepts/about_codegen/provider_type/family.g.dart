@@ -8,18 +8,16 @@ part of 'family.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef ExampleRef = Ref<String>;
-
 @ProviderFor(example)
 const exampleProvider = ExampleFamily._();
 
 final class ExampleProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, ExampleRef> {
+    with $Provider<String> {
   const ExampleProvider._(
       {required ExampleFamily super.from,
       required int super.argument,
       String Function(
-        ExampleRef ref,
+        Ref ref,
         int param,
       )? create})
       : _createCb = create,
@@ -32,7 +30,7 @@ final class ExampleProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    ExampleRef ref,
+    Ref ref,
     int param,
   )? _createCb;
 
@@ -62,7 +60,7 @@ final class ExampleProvider extends $FunctionalProvider<String, String>
   @override
   ExampleProvider $copyWithCreate(
     String Function(
-      ExampleRef ref,
+      Ref ref,
     ) create,
   ) {
     return ExampleProvider._(
@@ -76,7 +74,7 @@ final class ExampleProvider extends $FunctionalProvider<String, String>
   }
 
   @override
-  String create(ExampleRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? example;
     final argument = this.argument as int;
     return _$cb(
@@ -96,7 +94,7 @@ final class ExampleProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$exampleHash() => r'c4f5a651a55bcf34b0c92d98d77436844cbdc097';
+String _$exampleHash() => r'7cd87bca029ed938b0e314a14fdfaa2875bd3079';
 
 final class ExampleFamily extends Family {
   const ExampleFamily._()
@@ -122,7 +120,7 @@ final class ExampleFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     String Function(
-      ExampleRef ref,
+      Ref ref,
       int args,
     ) create,
   ) {
@@ -141,4 +139,4 @@ final class ExampleFamily extends Family {
   }
 }
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

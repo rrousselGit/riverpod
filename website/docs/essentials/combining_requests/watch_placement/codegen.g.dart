@@ -8,16 +8,14 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef OtherRef = Ref<int>;
-
 @ProviderFor(other)
 const otherProvider = OtherProvider._();
 
 final class OtherProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, OtherRef> {
+    with $Provider<int> {
   const OtherProvider._(
       {int Function(
-        OtherRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -31,7 +29,7 @@ final class OtherProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    OtherRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -53,31 +51,29 @@ final class OtherProvider extends $FunctionalProvider<int, int>
   @override
   OtherProvider $copyWithCreate(
     int Function(
-      OtherRef ref,
+      Ref ref,
     ) create,
   ) {
     return OtherProvider._(create: create);
   }
 
   @override
-  int create(OtherRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? other;
     return _$cb(ref);
   }
 }
 
-String _$otherHash() => r'b23696171643dfbab23d167ed9b5ab0639e6a86c';
-
-typedef ExampleRef = Ref<int>;
+String _$otherHash() => r'5d27b2b1b1c6bd17ba0844f74ade2088611be371';
 
 @ProviderFor(example)
 const exampleProvider = ExampleProvider._();
 
 final class ExampleProvider extends $FunctionalProvider<int, int>
-    with $Provider<int, ExampleRef> {
+    with $Provider<int> {
   const ExampleProvider._(
       {int Function(
-        ExampleRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -91,7 +87,7 @@ final class ExampleProvider extends $FunctionalProvider<int, int>
         );
 
   final int Function(
-    ExampleRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -113,20 +109,20 @@ final class ExampleProvider extends $FunctionalProvider<int, int>
   @override
   ExampleProvider $copyWithCreate(
     int Function(
-      ExampleRef ref,
+      Ref ref,
     ) create,
   ) {
     return ExampleProvider._(create: create);
   }
 
   @override
-  int create(ExampleRef ref) {
+  int create(Ref ref) {
     final _$cb = _createCb ?? example;
     return _$cb(ref);
   }
 }
 
-String _$exampleHash() => r'd4d63f5cf1aaec5b7c6a19e6fee18ddf070147ec';
+String _$exampleHash() => r'fed2d2be4787bc4a715efa198a89a297967b54a1';
 
 @ProviderFor(MyNotifier)
 const myNotifierProvider = MyNotifierProvider._();
@@ -174,7 +170,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
   @override
   MyNotifierProvider $copyWithBuild(
     int Function(
-      Ref<int>,
+      Ref,
       MyNotifier,
     ) build,
   ) {
@@ -198,4 +194,4 @@ abstract class _$MyNotifier extends $Notifier<int> {
 }
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

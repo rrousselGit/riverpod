@@ -166,7 +166,7 @@ final repositoryProvider = Provider((ref) => Repository(ref));
 class Repository {
   Repository(this.ref);
 
-  final Ref<Repository> ref;
+  final Ref ref;
 }
 ```
 Sin embargo, pasar `ref.read` da como resultado un código un poco menos verboso 

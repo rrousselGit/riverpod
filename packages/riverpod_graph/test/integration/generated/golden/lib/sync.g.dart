@@ -7,19 +7,16 @@ part of 'sync.dart';
 // **************************************************************************
 
 /// A public generated provider.
-typedef PublicRef = Ref<String>;
-
-/// A public generated provider.
 @ProviderFor(public)
 const publicProvider = PublicProvider._();
 
 /// A public generated provider.
 final class PublicProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, PublicRef> {
+    with $Provider<String> {
   /// A public generated provider.
   const PublicProvider._(
       {String Function(
-        PublicRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -33,7 +30,7 @@ final class PublicProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    PublicRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -55,23 +52,20 @@ final class PublicProvider extends $FunctionalProvider<String, String>
   @override
   PublicProvider $copyWithCreate(
     String Function(
-      PublicRef ref,
+      Ref ref,
     ) create,
   ) {
     return PublicProvider._(create: create);
   }
 
   @override
-  String create(PublicRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? public;
     return _$cb(ref);
   }
 }
 
-String _$publicHash() => r'138be35943899793ab085e711fe3f3d22696a3ba';
-
-/// A generated provider with a '$' in its name.
-typedef Supports$inNamesRef = Ref<String>;
+String _$publicHash() => r'94bee36125844f9fe521363bb228632b9f3bfbc7';
 
 /// A generated provider with a '$' in its name.
 @ProviderFor(supports$inNames)
@@ -79,11 +73,11 @@ const supports$inNamesProvider = Supports$inNamesProvider._();
 
 /// A generated provider with a '$' in its name.
 final class Supports$inNamesProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, Supports$inNamesRef> {
+    with $Provider<String> {
   /// A generated provider with a '$' in its name.
   const Supports$inNamesProvider._(
       {String Function(
-        Supports$inNamesRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -97,7 +91,7 @@ final class Supports$inNamesProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    Supports$inNamesRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -119,23 +113,20 @@ final class Supports$inNamesProvider extends $FunctionalProvider<String, String>
   @override
   Supports$inNamesProvider $copyWithCreate(
     String Function(
-      Supports$inNamesRef ref,
+      Ref ref,
     ) create,
   ) {
     return Supports$inNamesProvider._(create: create);
   }
 
   @override
-  String create(Supports$inNamesRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? supports$inNames;
     return _$cb(ref);
   }
 }
 
-String _$supports$inNamesHash() => r'baacdb7b92917860b02aba1fa7010c7056da4a67';
-
-/// A generated family provider.
-typedef FamilyRef = Ref<String>;
+String _$supports$inNamesHash() => r'a883450ddca90a227631fe54d1d9ae305bc558d9';
 
 /// A generated family provider.
 @ProviderFor(family)
@@ -143,7 +134,7 @@ const familyProvider = FamilyFamily._();
 
 /// A generated family provider.
 final class FamilyProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, FamilyRef> {
+    with $Provider<String> {
   /// A generated family provider.
   const FamilyProvider._(
       {required FamilyFamily super.from,
@@ -156,7 +147,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
       })
           super.argument,
       String Function(
-        FamilyRef ref,
+        Ref ref,
         int first, {
         String? second,
         required double third,
@@ -173,7 +164,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    FamilyRef ref,
+    Ref ref,
     int first, {
     String? second,
     required double third,
@@ -207,7 +198,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
   @override
   FamilyProvider $copyWithCreate(
     String Function(
-      FamilyRef ref,
+      Ref ref,
     ) create,
   ) {
     return FamilyProvider._(
@@ -231,7 +222,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
   }
 
   @override
-  String create(FamilyRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? family;
     final argument = this.argument as (
       int, {
@@ -261,7 +252,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$familyHash() => r'ebf082969854dcc358b9870a2e5e9b922423e59b';
+String _$familyHash() => r'062561e0cad8585939dc9adc23de6452be2c9788';
 
 /// A generated family provider.
 final class FamilyFamily extends Family {
@@ -299,7 +290,7 @@ final class FamilyFamily extends Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(
     String Function(
-      FamilyRef ref,
+      Ref ref,
       (
         int, {
         String? second,
@@ -330,16 +321,14 @@ final class FamilyFamily extends Family {
   }
 }
 
-typedef _PrivateRef = Ref<String>;
-
 @ProviderFor(_private)
 const _privateProvider = _PrivateProvider._();
 
 final class _PrivateProvider extends $FunctionalProvider<String, String>
-    with $Provider<String, _PrivateRef> {
+    with $Provider<String> {
   const _PrivateProvider._(
       {String Function(
-        _PrivateRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -353,7 +342,7 @@ final class _PrivateProvider extends $FunctionalProvider<String, String>
         );
 
   final String Function(
-    _PrivateRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -375,20 +364,20 @@ final class _PrivateProvider extends $FunctionalProvider<String, String>
   @override
   _PrivateProvider $copyWithCreate(
     String Function(
-      _PrivateRef ref,
+      Ref ref,
     ) create,
   ) {
     return _PrivateProvider._(create: create);
   }
 
   @override
-  String create(_PrivateRef ref) {
+  String create(Ref ref) {
     final _$cb = _createCb ?? _private;
     return _$cb(ref);
   }
 }
 
-String _$privateHash() => r'9a87ed0765ad8448525fa1290b34760c79e7402b';
+String _$privateHash() => r'4f7b825ffa8a674f01dc8453cb480060a6a7bf5f';
 
 /// A generated public provider from a class
 @ProviderFor(PublicClass)
@@ -439,7 +428,7 @@ final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
   @override
   PublicClassProvider $copyWithBuild(
     String Function(
-      Ref<String>,
+      Ref,
       PublicClass,
     ) build,
   ) {
@@ -509,7 +498,7 @@ final class _PrivateClassProvider
   @override
   _PrivateClassProvider $copyWithBuild(
     String Function(
-      Ref<String>,
+      Ref,
       _PrivateClass,
     ) build,
   ) {
@@ -605,7 +594,7 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
   @override
   FamilyClassProvider $copyWithBuild(
     String Function(
-      Ref<String>,
+      Ref,
       FamilyClass,
     ) build,
   ) {
@@ -708,7 +697,7 @@ final class FamilyClassFamily extends Family {
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
     String Function(
-            Ref<String> ref,
+            Ref ref,
             FamilyClass notifier,
             (
               int, {
@@ -822,7 +811,7 @@ final class Supports$InClassNameProvider
   @override
   Supports$InClassNameProvider $copyWithBuild(
     String Function(
-      Ref<String>,
+      Ref,
       Supports$InClassName,
     ) build,
   ) {
@@ -847,4 +836,4 @@ abstract class _$Supports$InClassName extends $Notifier<String> {
 }
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -4,7 +4,7 @@ message: Passing BuildContext to providers indicates mixing UI with the business
 test/lints/avoid_build_context_in_providers.dart:12:3
 
 ```dart
-  FnRef ref,
+  Ref ref,
   // expect_lint: avoid_build_context_in_providers
   >>>BuildContext context1<<<, {
   // expect_lint: avoid_build_context_in_providers

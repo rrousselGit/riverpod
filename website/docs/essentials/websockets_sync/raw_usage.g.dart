@@ -8,17 +8,15 @@ part of 'raw_usage.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-typedef RawStreamRef = Ref<Raw<Stream<int>>>;
-
 @ProviderFor(rawStream)
 const rawStreamProvider = RawStreamProvider._();
 
 final class RawStreamProvider
     extends $FunctionalProvider<Raw<Stream<int>>, Raw<Stream<int>>>
-    with $Provider<Raw<Stream<int>>, RawStreamRef> {
+    with $Provider<Raw<Stream<int>>> {
   const RawStreamProvider._(
       {Raw<Stream<int>> Function(
-        RawStreamRef ref,
+        Ref ref,
       )? create})
       : _createCb = create,
         super(
@@ -32,7 +30,7 @@ final class RawStreamProvider
         );
 
   final Raw<Stream<int>> Function(
-    RawStreamRef ref,
+    Ref ref,
   )? _createCb;
 
   @override
@@ -54,20 +52,20 @@ final class RawStreamProvider
   @override
   RawStreamProvider $copyWithCreate(
     Raw<Stream<int>> Function(
-      RawStreamRef ref,
+      Ref ref,
     ) create,
   ) {
     return RawStreamProvider._(create: create);
   }
 
   @override
-  Raw<Stream<int>> create(RawStreamRef ref) {
+  Raw<Stream<int>> create(Ref ref) {
     final _$cb = _createCb ?? rawStream;
     return _$cb(ref);
   }
 }
 
-String _$rawStreamHash() => r'7e7c2e8f4f08d33a4d86d60449e143c419ca4822';
+String _$rawStreamHash() => r'9ce48e3afce64329958af139c77f5e271e0bf04f';
 
 // ignore_for_file: type=lint
-// ignore_for_file: deprecated_member_use_from_same_package, unreachable_from_main, invalid_use_of_internal_member
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

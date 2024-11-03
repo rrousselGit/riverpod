@@ -5,7 +5,7 @@ part 'documented.g.dart';
 /// Hello world
 // Foo
 @riverpod
-String functional(FunctionalRef ref) => 'functional';
+String functional(Ref ref) => 'functional';
 
 /// Hello world
 // Foo
@@ -19,7 +19,7 @@ class ClassBased extends _$ClassBased {
 // Foo
 @riverpod
 String family(
-  FamilyRef ref,
+  Ref ref,
 
   /// Hello Id
   int id,

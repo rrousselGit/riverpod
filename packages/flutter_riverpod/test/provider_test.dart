@@ -290,7 +290,7 @@ void main() {
     final provider = Provider((_) => 42);
 
     // These check the type safety
-    Ref<Object?>? ref;
+    Ref? ref;
 
     final Provider<int> provider1 = Provider<int>((r) {
       final first = r.watch(provider);

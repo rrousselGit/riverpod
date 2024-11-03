@@ -8,7 +8,7 @@ part 'raw_usage.g.dart';
 
 /* SNIPPET START */
 @riverpod
-Raw<Stream<int>> rawStream(RawStreamRef ref) {
+Raw<Stream<int>> rawStream(Ref ref) {
   // {@template provider}
   // "Raw" is a typedef. No need to wrap the return
   // value in a "Raw" constructor.

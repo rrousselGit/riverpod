@@ -8,7 +8,7 @@ part 'codegen.g.dart';
 
 /* SNIPPET START */
 @riverpod
-Stream<int> example(ExampleRef ref) {
+Stream<int> example(Ref ref) {
   final streamController = StreamController<int>();
 
   ref.onDispose(() {
