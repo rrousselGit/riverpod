@@ -1,30 +1,6 @@
-Message: `Extend _$NoExtends`
-Priority: 90
-Diff for file `test/lints/notifier_extends.dart:15`:
-```
-@riverpod
-// expect_lint: notifier_extends
-- class NoExtends {
-+ class NoExtends extends _$NoExtends {
-  int build() => 0;
-}
-```
----
-Message: `Extend _$WrongExtends`
-Priority: 90
-Diff for file `test/lints/notifier_extends.dart:21`:
-```
-@riverpod
-// expect_lint: notifier_extends
-- class WrongExtends extends AsyncNotifier<int> {
-+ class WrongExtends extends _$WrongExtends {
-  int build() => 0;
-}
-```
----
 Message: `Extend _$NoGenerics<A, B>`
 Priority: 90
-Diff for file `test/lints/notifier_extends.dart:39`:
+Diff for file `test/lints/notifier_extends/notifier_extends.dart:26`:
 ```
 @riverpod
 // expect_lint: notifier_extends
@@ -36,7 +12,7 @@ Diff for file `test/lints/notifier_extends.dart:39`:
 ---
 Message: `Extend _$MissingGenerics<A, B>`
 Priority: 90
-Diff for file `test/lints/notifier_extends.dart:45`:
+Diff for file `test/lints/notifier_extends/notifier_extends.dart:32`:
 ```
 @riverpod
 // expect_lint: notifier_extends
@@ -48,7 +24,7 @@ Diff for file `test/lints/notifier_extends.dart:45`:
 ---
 Message: `Extend _$WrongOrder<A, B>`
 Priority: 90
-Diff for file `test/lints/notifier_extends.dart:51`:
+Diff for file `test/lints/notifier_extends/notifier_extends.dart:38`:
 ```
 @riverpod
 // expect_lint: notifier_extends

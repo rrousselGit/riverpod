@@ -10,11 +10,3 @@ int nameless(
   return 0;
 ```
 ---
-Message: `Type as Ref`
-Priority: 90
-Diff for file `test/lints/functional_ref/functional_ref.dart:18`:
-```
-@riverpod
-int valid(Ref ref) => 0;
-```
----
