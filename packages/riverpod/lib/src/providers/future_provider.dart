@@ -175,12 +175,14 @@ class $FutureProviderElement<StateT> extends ProviderElement<AsyncValue<StateT>>
 
   @override
   void create(
-    Ref ref, {
+    $Ref<AsyncValue<StateT>> ref, {
     required bool didChangeDependency,
+    required bool isMount,
   }) {
     handleFuture(
       () => provider.create(ref),
       seamless: !didChangeDependency,
+      isMount: isMount,
     );
   }
 

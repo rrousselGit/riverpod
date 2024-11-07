@@ -573,9 +573,10 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   }
 }
 
-class _Ref<StateT> extends Ref {
+@internal
+class $Ref<StateT> extends Ref {
   /// {@macro riverpod.provider_ref_base}
-  _Ref(this._element);
+  $Ref(this._element);
 
   @override
   final ProviderElement<StateT> _element;

@@ -177,7 +177,11 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
   void Function()? _removeListener;
 
   @override
-  void create(Ref ref, {required bool didChangeDependency}) {
+  void create(
+    Ref ref, {
+    required bool didChangeDependency,
+    required bool isMount,
+  }) {
     final notifier = _notifierNotifier.result = Result.guard(
       () => provider._create(ref),
     );

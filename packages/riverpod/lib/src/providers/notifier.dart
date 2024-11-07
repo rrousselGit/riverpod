@@ -133,6 +133,7 @@ class $NotifierProviderElement< //
   void handleValue(
     StateT created, {
     required bool seamless,
+    required bool isMount,
   }) {
     setStateResult(ResultData(created));
   }

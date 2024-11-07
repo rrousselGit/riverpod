@@ -743,6 +743,21 @@ void main() {
     });
 
     group('AsyncNotifier.future', () {
+      test('can be used inside Notifier.build', () async {
+        final provider = factory.simpleTestProvider<int>((ref, self) {
+          return self.future;
+        });
+        final container = ProviderContainer.test();
+
+        final sub = container.listen(provider.notifier, (previous, next) {});
+
+        expect(sub.read().future, completion(42));
+
+        container.read(provider.notifier).state = AsyncData(42);
+
+        expect(sub.read().future, completion(42));
+      });
+
       test('If the notifier is recreated with an error, rethrows the new error',
           () async {
         final container = ProviderContainer.test();

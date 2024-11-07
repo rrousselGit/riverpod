@@ -4,6 +4,7 @@ export 'src/framework.dart'
         ProviderScheduler,
         Retry,
         debugCanModifyProviders,
+        $Ref,
         Vsync,
         $ValueProvider,
         FamilyCreate,

@@ -128,6 +128,7 @@ class StateProviderElement<T> extends ProviderElement<T> {
   @override
   void create(
     Ref ref, {
+    required bool isMount,
     required bool didChangeDependency,
   }) {
     final initialState = provider._createFn(ref);

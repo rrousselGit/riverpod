@@ -73,7 +73,7 @@ abstract class ProviderElement<StateT> implements Node {
   ProviderContainer get container => pointer.targetContainer;
 
   // ignore: library_private_types_in_public_api, not public
-  _Ref<StateT>? ref;
+  $Ref<StateT>? ref;
 
   /// Whether this [ProviderElement] is actively in use.
   ///
@@ -230,8 +230,8 @@ This could mean a few things:
       _debugCurrentCreateHash = provider.debugGetCreateSourceHash();
     }
 
-    final ref = this.ref = _Ref(this);
-    buildState(ref);
+    final ref = this.ref = $Ref(this);
+    buildState(ref, isMount: true);
 
     _notifyListeners(
       _stateResult!,
@@ -253,14 +253,14 @@ This could mean a few things:
   ///
   /// After a provider is initialized, this function takes care of unsubscribing
   /// to dependencies that are no-longer used.
-  void _performBuild() {
+  void _performRebuild() {
     runOnDispose();
-    final ref = this.ref = _Ref(this);
+    final ref = this.ref = $Ref(this);
     final previousStateResult = _stateResult;
 
     if (kDebugMode) _debugDidSetState = false;
 
-    buildState(ref);
+    buildState(ref, isMount: false);
 
     if (!identical(_stateResult, previousStateResult)) {
       // Asserts would otherwise prevent a provider rebuild from updating
@@ -285,8 +285,9 @@ This could mean a few things:
   @visibleForOverriding
   void create(
     // ignore: library_private_types_in_public_api, not public
-    _Ref<StateT> ref, {
+    $Ref<StateT> ref, {
     required bool didChangeDependency,
+    required bool isMount,
   });
 
   /// A utility for re-initializing a provider when needed.
@@ -308,7 +309,7 @@ This could mean a few things:
     _maybeRebuildDependencies();
     if (_mustRecomputeState) {
       _mustRecomputeState = false;
-      _performBuild();
+      _performRebuild();
     }
   }
 
@@ -326,12 +327,16 @@ This could mean a few things:
     );
   }
 
+  // Hook for async provider to init state with AsyncLoading
+  void initState({required bool didChangeDependency}) {}
+
   /// Invokes [create] and handles errors.
   @internal
   void buildState(
     // ignore: library_private_types_in_public_api, not public
-    _Ref<StateT> ref,
-  ) {
+    $Ref<StateT> ref, {
+    required bool isMount,
+  }) {
     if (_didChangeDependency) _retryCount = 0;
 
     ProviderElement? debugPreviouslyBuildingElement;
@@ -343,8 +348,13 @@ This could mean a few things:
     }
 
     _didBuild = false;
+    initState(didChangeDependency: previousDidChangeDependency);
     try {
-      create(ref, didChangeDependency: previousDidChangeDependency);
+      create(
+        ref,
+        didChangeDependency: previousDidChangeDependency,
+        isMount: isMount,
+      );
     } catch (err, stack) {
       if (kDebugMode) _debugDidSetState = true;
 

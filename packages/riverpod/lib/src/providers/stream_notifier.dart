@@ -72,7 +72,12 @@ class $StreamNotifierProviderElement< //
   void handleValue(
     Stream<StateT> created, {
     required bool seamless,
+    required bool isMount,
   }) {
-    handleStream(() => created, seamless: seamless);
+    handleStream(
+      () => created,
+      seamless: seamless,
+      isMount: isMount,
+    );
   }
 }

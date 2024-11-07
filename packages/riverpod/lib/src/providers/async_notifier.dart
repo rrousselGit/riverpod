@@ -71,10 +71,12 @@ class $AsyncNotifierProviderElement< //
   void handleValue(
     FutureOr<StateT> created, {
     required bool seamless,
+    required bool isMount,
   }) {
     handleFuture(
       () => created,
       seamless: seamless,
+      isMount: isMount,
     );
   }
 }

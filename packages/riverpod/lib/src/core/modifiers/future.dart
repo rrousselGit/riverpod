@@ -199,11 +199,6 @@ mixin FutureModifierClassElement<
         FutureModifierElement<StateT>,
         ClassProviderElement<NotifierT, AsyncValue<StateT>, CreatedT> {
   @override
-  void handleNotifier(Object? notifier, {required bool seamless}) {
-    asyncTransition(AsyncLoading<StateT>(), seamless: seamless);
-  }
-
-  @override
   void handleError(
     Object error,
     StackTrace stackTrace, {
@@ -237,6 +232,11 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   Completer<StateT>? _futureCompleter;
   Future<StateT>? _lastFuture;
   AsyncSubscription? _cancelSubscription;
+
+  @override
+  void initState({required bool didChangeDependency}) {
+    onLoading(AsyncLoading<StateT>(), seamless: !didChangeDependency);
+  }
 
   /// Internal utility for transitioning an [AsyncValue] after a provider refresh.
   ///
@@ -341,8 +341,9 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   void handleStream(
     Stream<StateT> Function() create, {
     required bool seamless,
+    required bool isMount,
   }) {
-    _handleAsync(seamless: seamless, ({
+    _handleAsync(seamless: seamless, isMount: isMount, ({
       required data,
       required done,
       required error,
@@ -387,8 +388,9 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   void handleFuture(
     FutureOr<StateT> Function() create, {
     required bool seamless,
+    required bool isMount,
   }) {
-    _handleAsync(seamless: seamless, ({
+    _handleAsync(seamless: seamless, isMount: isMount, ({
       required data,
       required done,
       required error,
@@ -440,9 +442,8 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
       required void Function(Future<StateT>, void Function()) last,
     }) listen, {
     required bool seamless,
+    required bool isMount,
   }) {
-    onLoading(AsyncLoading<StateT>(), seamless: seamless);
-
     void callOnError(Object error, StackTrace stackTrace) {
       triggerRetry(error);
       onError(AsyncError(error, stackTrace), seamless: seamless);

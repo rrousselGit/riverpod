@@ -54,7 +54,7 @@ typedef RunNotifierBuild<NotifierT, CreatedT> = CreatedT Function(
 /// }
 /// ```
 abstract class NotifierBase<StateT, CreatedT> {
-  _Ref<StateT>? _ref;
+  $Ref<StateT>? _ref;
   @protected
   Ref get ref => $ref;
 
@@ -93,7 +93,7 @@ extension ClassBaseX<StateT, CreatedT> on NotifierBase<StateT, CreatedT> {
 
   @internal
   // ignore: library_private_types_in_public_api, not public
-  _Ref<StateT> get $ref {
+  $Ref<StateT> get $ref {
     final ref = _ref;
     if (ref == null) throw StateError(uninitializedElementError);
 
@@ -193,8 +193,9 @@ abstract class ClassProviderElement< //
   @override
   void create(
     // ignore: library_private_types_in_public_api, not public
-    _Ref<StateT> ref, {
+    $Ref<StateT> ref, {
     required bool didChangeDependency,
+    required bool isMount,
   }) {
     final seamless = !didChangeDependency;
 
@@ -211,14 +212,16 @@ abstract class ClassProviderElement< //
     switch (result) {
       case ResultData():
         try {
-          handleNotifier(result.state, seamless: seamless);
-
-          if (stateResult == null) _decodeFromCache();
+          if (isMount) _decodeFromCache();
 
           final created =
               provider.runNotifierBuildOverride?.call(ref, result.state) ??
                   result.state.runBuild();
-          handleValue(created, seamless: seamless);
+          handleValue(
+            created,
+            seamless: seamless,
+            isMount: isMount,
+          );
         } catch (err, stack) {
           handleError(err, stack, seamless: seamless);
         }
@@ -232,7 +235,6 @@ abstract class ClassProviderElement< //
   }
 
   void _decodeFromCache() {
-    print('Decode from cache');
     if (!origin.shouldPersist) return;
 
     final persist = origin.persistOptions ?? container.persistOptions;
@@ -251,14 +253,14 @@ abstract class ClassProviderElement< //
   FutureOr<void> _decode(Persist persist) async {
     final notifier =
         classListenable.result?.stateOrNull as PersistAdapter<StateT>?;
-    print('Decode $notifier');
     if (notifier == null) return;
 
     try {
       final key = notifier.persistKey;
+      final initialResult = stateResult;
       await persist.read(key).then((encoded) {
-        print('Encoded $encoded');
-        if (encoded == null) return null;
+        if (!identical(initialResult, stateResult)) return;
+        if (encoded == null) return;
 
         setStateResult(Result.data(notifier.decode(encoded.$1)));
         // TODO If decode throws, should we set the state as an error?
@@ -270,11 +272,11 @@ abstract class ClassProviderElement< //
 
   FutureOr<void> _encode(Persist persist, StateT value) {}
 
-  void handleNotifier(NotifierT notifier, {required bool seamless}) {
-    // Overridden by FutureModifier mixin
-  }
-
-  void handleValue(CreatedT created, {required bool seamless});
+  void handleValue(
+    CreatedT created, {
+    required bool seamless,
+    required bool isMount,
+  });
   void handleError(
     Object error,
     StackTrace stackTrace, {
