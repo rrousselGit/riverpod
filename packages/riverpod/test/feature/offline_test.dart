@@ -136,18 +136,6 @@ class DelegatingPersist extends Persist {
 void main() {
   group('Offline', () {
     matrix.createGroup((factory) {
-      test('Can destroy the whole cache using a global destroyKey', () {});
-
-      test(
-        'Can destroy a provider using a provider-specific destroyKey',
-        () {},
-      );
-
-      test(
-        'If a provider has a destroyKey, it still respects the global one',
-        () {},
-      );
-
       test(
         'When a provider is overridden, keep using the default implementation for persistence',
         () {},
@@ -261,17 +249,51 @@ void main() {
         expect(container.read(provider).valueOf, 0);
       });
 
-      test('Can specify a destroyKey on a provider', () {});
+      group('destroyKey', () {
+        test('Can specify a destroyKey on a provider', () {});
 
-      test(
-        'Initializing a provider with a destroyKey throws if the provider did not opt-in to offline',
-        () {},
-      );
+        test(
+          'Initializing a provider with a destroyKey throws if the provider did not opt-in to offline',
+          () {},
+        );
 
-      test(
-        'AsyncValue has a field to know if the value is from the DB or not',
-        () {},
-      );
+        test('Can destroy the whole cache using a global destroyKey', () {});
+
+        test(
+          'Can destroy a provider using a provider-specific destroyKey',
+          () {},
+        );
+
+        test(
+          'If a provider has a destroyKey, it still respects the global one',
+          () {},
+        );
+      });
+
+      if (factory.isAsync) {
+        group('AsyncValue.isFromCache', () {
+          test('is "true" if the value was read from the cache', () {
+            final completer = Completer<(int,)>();
+            completer.complete((999,));
+            final provider = factory.simpleProvider(
+              (ref, self) => completer.future,
+              persistOptions: DelegatingPersist(
+                read: (_) => (42,),
+              ),
+              persistKey: (args) => 'key',
+              decode: (value) => value! as int,
+            );
+            final container = ProviderContainer.test();
+
+            final sub = container.listen(provider, (a, b) {});
+
+            expect(
+              (container.read(provider)! as AsyncValue<Object?>).isFromCache,
+              true,
+            );
+          });
+        });
+      }
 
       test('Notifiers have a way to await the DB reads', () {});
       test('Notifiers have a way to await the DB writes', () {});

@@ -165,6 +165,11 @@ sealed class AsyncValue<StateT> {
     }
   }
 
+  /// Whether the value was obtained using Riverpod's offline-persistence feature.
+  ///
+  /// When [isFromCache] is true, [isLoading] should also be true.
+  bool get isFromCache;
+
   /// Whether some new value is currently asynchronously loading.
   ///
   /// Even if [isLoading] is true, it is still possible for [hasValue]/[hasError]
@@ -314,6 +319,7 @@ sealed class AsyncValue<StateT> {
             error: d.error,
             stackTrace: d.stackTrace,
             progress: d.progress,
+            isFromCache: d.isFromCache,
           );
         } catch (err, stack) {
           return AsyncError._(
@@ -561,6 +567,7 @@ final class AsyncData<StateT> extends AsyncValue<StateT> {
           error: null,
           stackTrace: null,
           progress: null,
+          isFromCache: false,
         );
 
   const AsyncData._(
@@ -569,6 +576,7 @@ final class AsyncData<StateT> extends AsyncValue<StateT> {
     required this.error,
     required this.stackTrace,
     required this.progress,
+    required this.isFromCache,
   }) : super._();
 
   @override
@@ -576,6 +584,9 @@ final class AsyncData<StateT> extends AsyncValue<StateT> {
 
   @override
   bool get hasValue => true;
+
+  @override
+  final bool isFromCache;
 
   @override
   final num? progress;
@@ -619,6 +630,7 @@ final class AsyncData<StateT> extends AsyncValue<StateT> {
       error: error,
       stackTrace: stackTrace,
       progress: progress,
+      isFromCache: isFromCache,
     );
   }
 }
@@ -631,6 +643,7 @@ final class AsyncLoading<StateT> extends AsyncValue<StateT> {
         value = null,
         error = null,
         stackTrace = null,
+        isFromCache = false,
         assert(
           progress == null || (progress >= 0 && progress <= 1),
           'progress must be between 0 and 1',
@@ -643,10 +656,14 @@ final class AsyncLoading<StateT> extends AsyncValue<StateT> {
     required this.error,
     required this.stackTrace,
     required this.progress,
+    required this.isFromCache,
   }) : super._();
 
   @override
   bool get isLoading => true;
+
+  @override
+  final bool isFromCache;
 
   @override
   String get _displayString => 'AsyncLoading';
@@ -675,6 +692,7 @@ final class AsyncLoading<StateT> extends AsyncValue<StateT> {
       error: error,
       stackTrace: stackTrace,
       progress: progress,
+      isFromCache: isFromCache,
     );
   }
 
@@ -700,6 +718,7 @@ final class AsyncLoading<StateT> extends AsyncValue<StateT> {
           error: d.error,
           stackTrace: d.stackTrace,
           progress: progress,
+          isFromCache: isFromCache,
         ),
         error: (e) => AsyncError._(
           e.error,
@@ -716,6 +735,7 @@ final class AsyncLoading<StateT> extends AsyncValue<StateT> {
         data: (d) => AsyncLoading._(
           hasValue: true,
           value: d.value,
+          isFromCache: d.isFromCache,
           error: d.error,
           stackTrace: d.stackTrace,
           progress: progress,
@@ -723,6 +743,7 @@ final class AsyncLoading<StateT> extends AsyncValue<StateT> {
         error: (e) => AsyncLoading._(
           hasValue: e.hasValue,
           value: e.value,
+          isFromCache: e.isFromCache,
           error: e.error,
           stackTrace: e.stackTrace,
           progress: progress,
@@ -757,6 +778,9 @@ final class AsyncError<StateT> extends AsyncValue<StateT> {
 
   @override
   String get _displayString => 'AsyncError';
+
+  @override
+  bool get isFromCache => false;
 
   @override
   final num? progress;
