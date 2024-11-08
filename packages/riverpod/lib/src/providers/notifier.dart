@@ -85,7 +85,7 @@ abstract class $Notifier<StateT> extends NotifierBase<StateT, StateT> {
 /// Do not use.
 abstract base class $NotifierProvider //
     <NotifierT extends $Notifier<StateT>, StateT>
-    extends $ClassProvider<NotifierT, StateT, StateT> {
+    extends $ClassProvider<NotifierT, StateT, StateT, StateT> {
   /// An internal base class for [Notifier].
   ///
   /// Not meant for public consumption.
@@ -112,6 +112,7 @@ class $NotifierProviderElement< //
     extends ClassProviderElement< //
         NotifierT,
         StateT,
+        StateT,
         StateT> {
   /// An implementation detail of `riverpod_generator`.
   /// Do not use.
@@ -136,5 +137,13 @@ class $NotifierProviderElement< //
     required bool isMount,
   }) {
     setStateResult(ResultData(created));
+  }
+
+  @override
+  void callDecode(
+    PersistAdapter<StateT> adapter,
+    Object? encoded,
+  ) {
+    setStateResult(Result.data(adapter.decode(encoded)));
   }
 }

@@ -11,7 +11,7 @@ abstract class FamilyAsyncNotifier<StateT, ArgT> extends $AsyncNotifier<StateT>
         // when using offline persistence.
         // Code-generation handles this better by only implementing PersistAdapter
         // when offline persistence is used.
-        PersistAdapter<AsyncValue<StateT>> {
+        PersistAdapter<StateT> {
   /// {@template riverpod.notifier.family_arg}
   /// The argument that was passed to this family.
   ///
@@ -36,10 +36,9 @@ abstract class FamilyAsyncNotifier<StateT, ArgT> extends $AsyncNotifier<StateT>
   @override
   Object? get persistKey => throw UnimplementedNotifierPersistError();
   @override
-  Object? encode(AsyncValue<StateT> value) =>
-      throw UnimplementedNotifierPersistError();
+  Object? encode(StateT value) => throw UnimplementedNotifierPersistError();
   @override
-  AsyncValue<StateT> decode(Object? serialized) =>
+  StateT decode(Object? serialized) =>
       throw UnimplementedNotifierPersistError();
 }
 
@@ -51,6 +50,7 @@ class AsyncNotifierProviderFamily< //
     extends ClassFamily< //
         NotifierT,
         AsyncValue<StateT>,
+        StateT,
         ArgT,
         FutureOr<StateT>,
         FamilyAsyncNotifierProvider<NotifierT, StateT, ArgT>> {

@@ -1,8 +1,6 @@
 import 'dart:async';
 
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/common/tenable.dart';
-import 'package:riverpod/src/framework.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
@@ -66,8 +64,8 @@ extension on TestFactory<Object?> {
         shouldPersist: shouldPersist,
         persistOptions: persistOptions,
         persistKey: persistKey,
-        decode: decode == null ? null : (encoded) => AsyncData(decode(encoded)),
-        encode: (value) => value.requireValue,
+        decode: decode,
+        encode: (value) => value,
         (ref, self) => create(ref, self),
       ),
       streamNotifier: (factory) {
@@ -75,9 +73,8 @@ extension on TestFactory<Object?> {
           shouldPersist: shouldPersist,
           persistOptions: persistOptions,
           persistKey: persistKey,
-          decode:
-              decode == null ? null : (encoded) => AsyncData(decode(encoded)),
-          encode: (value) => value.requireValue,
+          decode: decode,
+          encode: (value) => value,
           (ref, self) {
             final futureOR = create(ref, self);
 

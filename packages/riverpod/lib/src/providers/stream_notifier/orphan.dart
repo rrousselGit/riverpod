@@ -23,7 +23,7 @@ abstract class StreamNotifier<StateT> extends $StreamNotifier<StateT>
         // when using offline persistence.
         // Code-generation handles this better by only implementing PersistAdapter
         // when offline persistence is used.
-        PersistAdapter<AsyncValue<StateT>> {
+        PersistAdapter<StateT> {
   /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
   Stream<StateT> build();
@@ -35,10 +35,9 @@ abstract class StreamNotifier<StateT> extends $StreamNotifier<StateT>
   @override
   Object? get persistKey => throw UnimplementedNotifierPersistError();
   @override
-  Object? encode(AsyncValue<StateT> value) =>
-      throw UnimplementedNotifierPersistError();
+  Object? encode(StateT value) => throw UnimplementedNotifierPersistError();
   @override
-  AsyncValue<StateT> decode(Object? serialized) =>
+  StateT decode(Object? serialized) =>
       throw UnimplementedNotifierPersistError();
 }
 

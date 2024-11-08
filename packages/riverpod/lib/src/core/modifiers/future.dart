@@ -197,7 +197,7 @@ mixin FutureModifierClassElement<
         CreatedT>
     on
         FutureModifierElement<StateT>,
-        ClassProviderElement<NotifierT, AsyncValue<StateT>, CreatedT> {
+        ClassProviderElement<NotifierT, AsyncValue<StateT>, StateT, CreatedT> {
   @override
   void handleError(
     Object error,

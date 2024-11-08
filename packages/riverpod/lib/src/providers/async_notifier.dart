@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 
 import '../builder.dart';
+import '../common/result.dart';
 import '../core/async_value.dart';
 import '../core/persist.dart';
 import '../framework.dart';
@@ -28,6 +29,7 @@ abstract base class $AsyncNotifierProvider< //
     extends $ClassProvider< //
         NotifierT,
         AsyncValue<StateT>,
+        StateT,
         FutureOr<StateT>> //
     with
         $FutureModifier<StateT> {
@@ -56,6 +58,7 @@ class $AsyncNotifierProviderElement< //
     extends ClassProviderElement< //
         NotifierT,
         AsyncValue<StateT>,
+        StateT,
         FutureOr<StateT>> //
     with
         FutureModifierElement<StateT>,
@@ -78,5 +81,13 @@ class $AsyncNotifierProviderElement< //
       seamless: seamless,
       isMount: isMount,
     );
+  }
+
+  @override
+  void callDecode(
+    PersistAdapter<StateT> adapter,
+    Object? encoded,
+  ) {
+    setStateResult(Result.data(AsyncData(adapter.decode(encoded))));
   }
 }

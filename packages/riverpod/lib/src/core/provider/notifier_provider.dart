@@ -108,6 +108,7 @@ abstract base class $ClassProvider< //
         StateT,
         CreatedT>,
     StateT,
+    RawStateT,
     CreatedT> extends ProviderBase<StateT> {
   const $ClassProvider({
     required super.name,
@@ -125,9 +126,9 @@ abstract base class $ClassProvider< //
   Refreshable<NotifierT> get notifier {
     return ProviderElementProxy<StateT, NotifierT>(
       this,
-      (element) =>
-          (element as ClassProviderElement<NotifierT, StateT, CreatedT>)
-              .classListenable,
+      (element) => (element
+              as ClassProviderElement<NotifierT, StateT, RawStateT, CreatedT>)
+          .classListenable,
     );
   }
 
@@ -138,12 +139,12 @@ abstract base class $ClassProvider< //
   NotifierT create();
 
   @visibleForOverriding
-  $ClassProvider<NotifierT, StateT, CreatedT> $copyWithCreate(
+  $ClassProvider<NotifierT, StateT, RawStateT, CreatedT> $copyWithCreate(
     NotifierT Function() create,
   );
 
   @visibleForOverriding
-  $ClassProvider<NotifierT, StateT, CreatedT> $copyWithBuild(
+  $ClassProvider<NotifierT, StateT, RawStateT, CreatedT> $copyWithBuild(
     RunNotifierBuild<NotifierT, CreatedT> build,
   );
 
@@ -171,6 +172,7 @@ abstract base class $ClassProvider< //
   ClassProviderElement< //
       NotifierT,
       StateT,
+      RawStateT,
       CreatedT> $createElement($ProviderPointer pointer);
 }
 
@@ -180,12 +182,13 @@ abstract class ClassProviderElement< //
             StateT,
             CreatedT>,
         StateT,
+        RawStateT,
         CreatedT> //
     extends ProviderElement<StateT> {
   ClassProviderElement(super.pointer);
 
   @override
-  $ClassProvider<NotifierT, StateT, CreatedT> get provider;
+  $ClassProvider<NotifierT, StateT, RawStateT, CreatedT> get provider;
 
   final classListenable = ProxyElementValueListenable<NotifierT>();
 
@@ -250,19 +253,21 @@ abstract class ClassProviderElement< //
     ref!.listenSelf((previous, current) => _encode(persist, current));
   }
 
+  void callDecode(PersistAdapter<RawStateT> adapter, Object? encoded);
+
   FutureOr<void> _decode(Persist persist) async {
-    final notifier =
-        classListenable.result?.stateOrNull as PersistAdapter<StateT>?;
-    if (notifier == null) return;
+    final adapter =
+        classListenable.result?.stateOrNull as PersistAdapter<RawStateT>?;
+    if (adapter == null) return;
 
     try {
-      final key = notifier.persistKey;
+      final key = adapter.persistKey;
       final initialResult = stateResult;
       await persist.read(key).then((encoded) {
         if (!identical(initialResult, stateResult)) return;
         if (encoded == null) return;
 
-        setStateResult(Result.data(notifier.decode(encoded.$1)));
+        callDecode(adapter, encoded.$1);
         // TODO If decode throws, should we set the state as an error?
       });
     } catch (e, s) {
