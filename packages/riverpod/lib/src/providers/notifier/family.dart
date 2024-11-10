@@ -3,8 +3,7 @@ part of '../notifier.dart';
 /// {@macro riverpod.notifier}
 ///
 /// {@macro riverpod.notifier_provider_modifier}
-abstract class FamilyNotifier<StateT, ArgT> extends $Notifier<StateT>
-    implements PersistAdapter<StateT> {
+abstract class FamilyNotifier<StateT, ArgT> extends $Notifier<StateT> {
   /// {@macro riverpod.notifier.family_arg}
   late final ArgT arg = ref.$arg as ArgT;
 
@@ -15,14 +14,6 @@ abstract class FamilyNotifier<StateT, ArgT> extends $Notifier<StateT>
   @internal
   @override
   StateT runBuild() => build(arg);
-
-  @override
-  Object? get persistKey => throw UnimplementedNotifierPersistError();
-  @override
-  Object? encode(StateT value) => throw UnimplementedNotifierPersistError();
-  @override
-  StateT decode(Object? serialized) =>
-      throw UnimplementedNotifierPersistError();
 }
 
 final class FamilyNotifierProvider //

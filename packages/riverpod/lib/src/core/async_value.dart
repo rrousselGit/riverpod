@@ -528,6 +528,7 @@ sealed class AsyncValue<StateT> {
         'error: $error',
         'stackTrace: $stackTrace',
       ],
+      if (isFromCache) 'isFromCache: $isFromCache',
     ].join(', ');
 
     return '$_displayString<$StateT>($content)';
@@ -542,6 +543,7 @@ sealed class AsyncValue<StateT> {
         other.error == error &&
         other.stackTrace == stackTrace &&
         other.progress == progress &&
+        other.isFromCache == isFromCache &&
         other.value == value;
   }
 
@@ -554,20 +556,23 @@ sealed class AsyncValue<StateT> {
         error,
         stackTrace,
         progress,
+        isFromCache,
       );
 }
 
 /// {@macro async_value.data}
 final class AsyncData<StateT> extends AsyncValue<StateT> {
   /// {@macro async_value.data}
-  const AsyncData(StateT value)
-      : this._(
+  const AsyncData(
+    StateT value, {
+    @internal bool isFromCache = false,
+  }) : this._(
           value,
           isLoading: false,
+          isFromCache: isFromCache,
           error: null,
           stackTrace: null,
           progress: null,
-          isFromCache: false,
         );
 
   const AsyncData._(
@@ -718,7 +723,7 @@ final class AsyncLoading<StateT> extends AsyncValue<StateT> {
           error: d.error,
           stackTrace: d.stackTrace,
           progress: progress,
-          isFromCache: isFromCache,
+          isFromCache: d.isFromCache,
         ),
         error: (e) => AsyncError._(
           e.error,

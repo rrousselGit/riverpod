@@ -15,15 +15,7 @@ part of '../stream_notifier.dart';
 /// When using `family`, your notifier type changes. Instead of extending
 /// [StreamNotifier], you should extend [FamilyStreamNotifier].
 /// {@endtemplate}
-abstract class StreamNotifier<StateT> extends $StreamNotifier<StateT>
-    implements
-        // When not using code-generation, we always implement PersistAdapter
-        // but throw if unimplemented.
-        // This avoids using from having to subclass either `Notifier` or `OfflineNotifier`
-        // when using offline persistence.
-        // Code-generation handles this better by only implementing PersistAdapter
-        // when offline persistence is used.
-        PersistAdapter<StateT> {
+abstract class StreamNotifier<StateT> extends $StreamNotifier<StateT> {
   /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
   Stream<StateT> build();
@@ -31,14 +23,6 @@ abstract class StreamNotifier<StateT> extends $StreamNotifier<StateT>
   @internal
   @override
   Stream<StateT> runBuild() => build();
-
-  @override
-  Object? get persistKey => throw UnimplementedNotifierPersistError();
-  @override
-  Object? encode(StateT value) => throw UnimplementedNotifierPersistError();
-  @override
-  StateT decode(Object? serialized) =>
-      throw UnimplementedNotifierPersistError();
 }
 
 /// {@template riverpod.async_notifier_provider}

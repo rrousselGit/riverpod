@@ -250,7 +250,7 @@ abstract class ClassProviderElement< //
 
     _decode(persist);
 
-    ref!.listenSelf((previous, current) => _encode(persist, current));
+    ref!.listenSelf((previous, current) => _callEncode(persist));
   }
 
   void callDecode(PersistAdapter<RawStateT> adapter, Object? encoded);
@@ -275,7 +275,13 @@ abstract class ClassProviderElement< //
     }
   }
 
-  FutureOr<void> _encode(Persist persist, StateT value) {}
+  void _callEncode(Persist persist) {
+    final adapter =
+        classListenable.result?.stateOrNull as PersistAdapter<RawStateT>?;
+    if (adapter == null) return;
+
+    adapter.encode(persist);
+  }
 
   void handleValue(
     CreatedT created, {

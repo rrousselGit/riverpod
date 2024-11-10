@@ -16,15 +16,7 @@ part of '../async_notifier.dart';
 /// {@endtemplate}
 ///
 /// {@macro riverpod.async_notifier_provider_modifier}
-abstract class AsyncNotifier<StateT> extends $AsyncNotifier<StateT>
-    implements
-        // When not using code-generation, we always implement PersistAdapter
-        // but throw if unimplemented.
-        // This avoids using from having to subclass either `Notifier` or `OfflineNotifier`
-        // when using offline persistence.
-        // Code-generation handles this better by only implementing PersistAdapter
-        // when offline persistence is used.
-        PersistAdapter<StateT> {
+abstract class AsyncNotifier<StateT> extends $AsyncNotifier<StateT> {
   /// {@template riverpod.async_notifier.build}
   /// Initialize an [AsyncNotifier].
   ///
@@ -44,14 +36,6 @@ abstract class AsyncNotifier<StateT> extends $AsyncNotifier<StateT>
   @internal
   @override
   FutureOr<StateT> runBuild() => build();
-
-  @override
-  Object? get persistKey => throw UnimplementedNotifierPersistError();
-  @override
-  Object? encode(StateT value) => throw UnimplementedNotifierPersistError();
-  @override
-  StateT decode(Object? serialized) =>
-      throw UnimplementedNotifierPersistError();
 }
 
 /// {@template riverpod.async_notifier_provider}

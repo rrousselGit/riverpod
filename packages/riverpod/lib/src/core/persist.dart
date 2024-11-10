@@ -35,7 +35,7 @@ abstract class PersistAdapter<StateT> {
   /// Encodes the state of the provider to a value that can be stored in the database.
   ///
   /// {@macro persist.encoded_value}
-  Object? encode(StateT value);
+  void encode(Persist persist);
 }
 
 @internal

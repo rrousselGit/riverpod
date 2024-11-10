@@ -1,10 +1,12 @@
 import 'dart:async';
 
+import 'package:mockito/mockito.dart';
 import 'package:riverpod/src/common/tenable.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
 import '../src/matrix.dart';
+import '../src/utils.dart';
 
 final matrix = TestMatrix<TestFactory<Object?>>({
   ...asyncNotifierProviderFactory.values,
@@ -57,7 +59,7 @@ extension on TestFactory<Object?> {
     Persist? persistOptions,
     Object? Function(Object? args)? persistKey,
     Object? Function(Object? encoded)? decode,
-    Object? Function(Object? value)? encode,
+    void Function(Persist persist, Object? value)? encode,
   }) {
     return when(
       asyncNotifier: (factory) => factory.simpleTestProvider<Object?>(
@@ -65,7 +67,9 @@ extension on TestFactory<Object?> {
         persistOptions: persistOptions,
         persistKey: persistKey,
         decode: decode,
-        encode: (value) => value,
+        encode: encode == null
+            ? (p, v) {}
+            : (persist, value) => encode(persist, value.valueOf),
         (ref, self) => create(ref, self),
       ),
       streamNotifier: (factory) {
@@ -74,7 +78,9 @@ extension on TestFactory<Object?> {
           persistOptions: persistOptions,
           persistKey: persistKey,
           decode: decode,
-          encode: (value) => value,
+          encode: encode == null
+              ? (p, v) {}
+              : (persist, value) => encode(persist, value.valueOf),
           (ref, self) {
             final futureOR = create(ref, self);
 
@@ -97,9 +103,17 @@ extension on TestFactory<Object?> {
         persistOptions: persistOptions,
         persistKey: persistKey,
         decode: decode,
-        encode: encode,
+        encode: encode ?? (p, v) {},
         (ref, self) => create(ref, self),
       ),
+    );
+  }
+
+  Object? valueFor(Object? value) {
+    return when(
+      asyncNotifier: (_) => AsyncValue.data(value),
+      streamNotifier: (_) => AsyncValue.data(value),
+      notifier: (_) => value,
     );
   }
 }
@@ -180,32 +194,10 @@ void main() {
         expect(value, 21);
       });
 
-      if (factory.isAsync) {
-        test('Adapters support asynchronously emitting values from the DB',
+      group('decode', () {
+        test('Rebuilding a provider does not re-initialize the value from DB',
             () async {
-          final provider = factory.simpleProvider(
-            (ref, self) => self.future,
-            persistOptions: DelegatingPersist(
-              read: (_) => Future(() => (21,)),
-            ),
-            persistKey: (args) => 'key',
-            decode: (value) => value! as int,
-          );
-          final container = ProviderContainer.test();
-
-          container.listen(provider, (a, b) {});
-
-          expect(container.read(provider), const AsyncValue<Object?>.loading());
-
-          expect(await container.read(provider.future!), 21);
-        });
-      }
-
-      if (factory.isAutoDispose) {
-        test(
-            'If a provider is fully disposed, remounting it restores value from DB',
-            () async {
-          var value = 0;
+          var value = 42;
           final provider = factory.simpleProvider(
             (ref, self) => self.valueOf,
             persistOptions: DelegatingPersist(
@@ -216,34 +208,138 @@ void main() {
           );
           final container = ProviderContainer.test();
 
-          container.read(provider);
-          await container.pump();
+          final sub = container.listen(provider, (a, b) {});
 
-          value = 42;
+          value = 21;
+          container.refresh(provider);
 
           expect(container.read(provider).valueOf, 42);
         });
-      }
 
-      test('If a provider sets a value before an asynchronous adapter, it wins',
-          () async {
-        final completer = Completer<(int,)>();
-        final provider = factory.simpleProvider(
-          (ref, self) => 0,
-          persistOptions: DelegatingPersist(
-            read: (_) => completer.future,
-          ),
-          persistKey: (args) => 'key',
-          decode: (value) => value! as int,
-        );
-        final container = ProviderContainer.test();
+        if (factory.isAsync) {
+          test(
+              'Rebuilding a provider that is still in AsyncLoading() aborts the DB decoding',
+              () async {
+            final value = Completer<int>();
+            final completer = Completer<(int,)>();
+            final provider = factory.simpleProvider(
+              (ref, self) => value.future,
+              persistOptions: DelegatingPersist(
+                read: (_) => completer.future,
+              ),
+              persistKey: (args) => 'key',
+              decode: (value) => value! as int,
+            );
+            final container = ProviderContainer.test();
 
-        final sub = container.listen(provider, (a, b) {});
-        completer.complete((42,));
+            final sub = container.listen(provider, (a, b) {});
 
-        await container.pump();
+            container.refresh(provider);
+            completer.complete((42,));
 
-        expect(container.read(provider).valueOf, 0);
+            expect(container.read(provider.future!), completion(21));
+
+            value.complete(21);
+          });
+        }
+
+        if (factory.isAsync) {
+          test('Adapters support asynchronously emitting values from the DB',
+              () async {
+            final provider = factory.simpleProvider(
+              (ref, self) => self.future,
+              persistOptions: DelegatingPersist(
+                read: (_) => Future(() => (21,)),
+              ),
+              persistKey: (args) => 'key',
+              decode: (value) => value! as int,
+            );
+            final container = ProviderContainer.test();
+
+            container.listen(provider, (a, b) {});
+
+            expect(
+                container.read(provider), const AsyncValue<Object?>.loading());
+
+            expect(await container.read(provider.future!), 21);
+          });
+        }
+
+        if (factory.isAutoDispose) {
+          test(
+              'If a provider is fully disposed, remounting it restores value from DB',
+              () async {
+            var value = 0;
+            final provider = factory.simpleProvider(
+              (ref, self) => self.valueOf,
+              persistOptions: DelegatingPersist(
+                read: (_) => (value,),
+              ),
+              persistKey: (args) => 'key',
+              decode: (value) => value! as int,
+            );
+            final container = ProviderContainer.test();
+
+            container.read(provider);
+            await container.pump();
+
+            value = 42;
+
+            expect(container.read(provider).valueOf, 42);
+          });
+        }
+
+        test(
+            'If a provider sets a value before an asynchronous adapter, it wins',
+            () async {
+          final completer = Completer<(int,)>();
+          final provider = factory.simpleProvider(
+            (ref, self) => 0,
+            persistOptions: DelegatingPersist(
+              read: (_) => completer.future,
+            ),
+            persistKey: (args) => 'key',
+            decode: (value) => value! as int,
+          );
+          final container = ProviderContainer.test();
+
+          final sub = container.listen(provider, (a, b) {});
+          completer.complete((42,));
+
+          await container.pump();
+
+          expect(container.read(provider).valueOf, 0);
+        });
+      });
+
+      group('encode', () {
+        test('When a provider emits any update, notify the DB adapter',
+            () async {
+          final completer = Completer<(int,)>();
+          final encode = Encode<Object?>();
+          final provider = factory.simpleProvider(
+            (ref, self) => completer.future,
+            persistOptions: DelegatingPersist(
+              read: (_) => (42,),
+            ),
+            persistKey: (args) => 'key',
+            decode: (value) => 0,
+            encode: encode.call,
+          );
+          final container = ProviderContainer.test();
+
+          final sub = container.listen(provider, (a, b) {});
+
+          verifyZeroInteractions(encode);
+
+          completer.complete((42,));
+
+          verifyOnly(encode, encode(any, 42));
+
+          container.read(provider.notifier!).state = factory.valueFor(21);
+
+          verifyOnly(encode, encode(any, 21));
+        });
       });
 
       group('destroyKey', () {
@@ -289,64 +385,27 @@ void main() {
               true,
             );
           });
-        });
-      }
 
-      test('Notifiers have a way to await the DB reads', () {});
-      test('Notifiers have a way to await the DB writes', () {});
+          test('is false if manually set or returned from `create`', () {
+            final provider = factory.simpleProvider(
+              (ref, self) => 42,
+            );
+            final container = ProviderContainer.test();
 
-      test('When a provider emits an update, notify the DB adapter', () {});
+            final sub = container.listen(provider, (a, b) {});
 
-      test(
-        'When creating a $ProviderContainer, notify the DB adapter of the list of opted-in providers',
-        () {},
-      );
+            expect(
+              (container.read(provider)! as AsyncValue<Object?>).isFromCache,
+              false,
+            );
 
-      test('Rebuilding a provider does not re-initialize the value from DB',
-          () async {
-        var value = 42;
-        final provider = factory.simpleProvider(
-          (ref, self) => self.valueOf,
-          persistOptions: DelegatingPersist(
-            read: (_) => (value,),
-          ),
-          persistKey: (args) => 'key',
-          decode: (value) => value! as int,
-        );
-        final container = ProviderContainer.test();
+            container.read(provider.notifier!).state = const AsyncData(21);
 
-        final sub = container.listen(provider, (a, b) {});
-
-        value = 21;
-        container.refresh(provider);
-
-        expect(container.read(provider).valueOf, 42);
-      });
-
-      if (factory.isAsync) {
-        test(
-            'Rebuilding a provider that is still in AsyncLoading() aborts the DB decoding',
-            () async {
-          final value = Completer<int>();
-          final completer = Completer<(int,)>();
-          final provider = factory.simpleProvider(
-            (ref, self) => value.future,
-            persistOptions: DelegatingPersist(
-              read: (_) => completer.future,
-            ),
-            persistKey: (args) => 'key',
-            decode: (value) => value! as int,
-          );
-          final container = ProviderContainer.test();
-
-          final sub = container.listen(provider, (a, b) {});
-
-          container.refresh(provider);
-          completer.complete((42,));
-
-          expect(container.read(provider.future!), completion(21));
-
-          value.complete(21);
+            expect(
+              (container.read(provider)! as AsyncValue<Object?>).isFromCache,
+              false,
+            );
+          });
         });
       }
 
@@ -391,4 +450,8 @@ void main() {
       test('Verify that unused Model methods are tree-shaken away', () {});
     });
   });
+}
+
+class Encode<T> with Mock {
+  void call(Persist? persist, T? value);
 }

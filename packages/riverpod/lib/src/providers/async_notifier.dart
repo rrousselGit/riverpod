@@ -88,6 +88,10 @@ class $AsyncNotifierProviderElement< //
     PersistAdapter<StateT> adapter,
     Object? encoded,
   ) {
-    setStateResult(Result.data(AsyncData(adapter.decode(encoded))));
+    setStateResult(
+      Result.data(
+        AsyncData(adapter.decode(encoded), isFromCache: true),
+      ),
+    );
   }
 }

@@ -107,8 +107,10 @@ void main() {
       });
 
       test('with AsyncData, sets value and hasValue', () {
-        final result = const AsyncLoading<int>(progress: .1)
-            .copyWithPrevious(const AsyncData(42), isRefresh: false);
+        final result = const AsyncLoading<int>(progress: .1).copyWithPrevious(
+          const AsyncData(42, isFromCache: true),
+          isRefresh: false,
+        );
 
         expect(result, isA<AsyncLoading<int>>());
         expect(result.hasValue, true);
@@ -118,6 +120,7 @@ void main() {
         expect(result.hasError, false);
         expect(result.error, null);
         expect(result.stackTrace, null);
+        expect(result.isFromCache, true);
       });
 
       test(
@@ -229,6 +232,7 @@ void main() {
           expect(value.progress, .1);
           expect(value.error, 'err');
           expect(value.stackTrace, StackTrace.empty);
+          expect(value.isFromCache, false);
         });
 
         test('with AsyncError containing previous data', () {
@@ -245,6 +249,7 @@ void main() {
           expect(value.value, 42);
           expect(value.error, 'err');
           expect(value.stackTrace, StackTrace.empty);
+          expect(value.isFromCache, false);
         });
 
         test('with refreshing AsyncError containing previous data', () {
@@ -264,7 +269,7 @@ void main() {
 
         test('with AsyncData', () {
           final value = const AsyncLoading<int>(progress: .1)
-              .copyWithPrevious(const AsyncData(42));
+              .copyWithPrevious(const AsyncData(42, isFromCache: true));
 
           expect(value, isA<AsyncData<int>>());
           expect(value.isLoading, true);
@@ -274,11 +279,13 @@ void main() {
           expect(value.value, 42);
           expect(value.error, null);
           expect(value.stackTrace, null);
+          expect(value.isFromCache, true);
         });
 
         test('with refreshing AsyncData', () {
           final value = const AsyncLoading<int>(progress: .1).copyWithPrevious(
-            const AsyncLoading<int>().copyWithPrevious(const AsyncData(42)),
+            const AsyncLoading<int>()
+                .copyWithPrevious(const AsyncData(42, isFromCache: true)),
           );
 
           expect(value, isA<AsyncData<int>>());
@@ -289,6 +296,7 @@ void main() {
           expect(value.value, 42);
           expect(value.error, null);
           expect(value.stackTrace, null);
+          expect(value.isFromCache, true);
         });
       });
     });
@@ -1202,6 +1210,15 @@ void main() {
       ),
       reason: 'runtimeType should be checked',
     );
+
+    expect(
+      const AsyncData<int>(42, isFromCache: true),
+      const AsyncData<int>(42, isFromCache: true),
+    );
+    expect(
+      const AsyncData<int>(42, isFromCache: true),
+      isNot(const AsyncData<int>(42, isFromCache: false)),
+    );
   });
 
   test('hashCode', () {
@@ -1305,6 +1322,15 @@ void main() {
       ),
       reason: 'runtimeType should be checked',
     );
+
+    expect(
+      const AsyncData<int>(42, isFromCache: true).hashCode,
+      const AsyncData<int>(42, isFromCache: true).hashCode,
+    );
+    expect(
+      const AsyncData<int>(42, isFromCache: true).hashCode,
+      isNot(const AsyncData<int>(42, isFromCache: false).hashCode),
+    );
   });
 
   test('requireValue', () {
@@ -1395,6 +1421,11 @@ void main() {
           .copyWithPrevious(const AsyncData(42), isRefresh: false)
           .toString(),
       'AsyncLoading<int>(value: 42)',
+    );
+
+    expect(
+      const AsyncData<int>(42, isFromCache: true).toString(),
+      'AsyncData<int>(value: 42, isFromCache: true)',
     );
   });
 
