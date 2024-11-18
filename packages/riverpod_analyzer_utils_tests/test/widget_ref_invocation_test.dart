@@ -6,19 +6,21 @@ import 'analyzer_test_utils.dart';
 // ignore: invalid_use_of_internal_member
 extension on RiverpodAnalysisResult {
   List<WidgetRefWatchInvocation> get widgetRefWatchInvocations {
-    return widgetRefInvocations.cast();
+    return widgetRefInvocations.whereType<WidgetRefWatchInvocation>().toList();
   }
 
   List<WidgetRefReadInvocation> get widgetRefReadInvocations {
-    return widgetRefInvocations.cast();
+    return widgetRefInvocations.whereType<WidgetRefReadInvocation>().toList();
   }
 
   List<WidgetRefListenInvocation> get widgetRefListenInvocations {
-    return widgetRefInvocations.cast();
+    return widgetRefInvocations.whereType<WidgetRefListenInvocation>().toList();
   }
 
   List<WidgetRefListenManualInvocation> get widgetRefListenManualInvocations {
-    return widgetRefInvocations.cast();
+    return widgetRefInvocations
+        .whereType<WidgetRefListenManualInvocation>()
+        .toList();
   }
 }
 
@@ -687,7 +689,7 @@ class MyWidget extends ConsumerWidget {
     );
     expect(result.widgetRefWatchInvocations[0].function.toSource(), 'watch');
     expect(
-      result.widgetRefWatchInvocations[0].listenable.provider?.node.toSource(),
+      result.widgetRefWatchInvocations[0].listenable.node.toSource(),
       'family(ref.read(family2Provider(id: 0)))',
     );
     expect(
@@ -708,20 +710,20 @@ class MyWidget extends ConsumerWidget {
 
     // ref.watch(family2Provider(ref.watch(family(id: 0)));
     expect(
-      result.widgetRefWatchInvocations[1].node.toSource(),
+      result.widgetRefWatchInvocations[2].node.toSource(),
       'ref.watch(family2Provider(ref.watch(family(id: 0))))',
     );
-    expect(result.widgetRefWatchInvocations[1].function.toSource(), 'watch');
+    expect(result.widgetRefWatchInvocations[2].function.toSource(), 'watch');
     expect(
-      result.widgetRefWatchInvocations[1].listenable.provider?.node.toSource(),
+      result.widgetRefWatchInvocations[2].listenable.node.toSource(),
       'family2Provider(ref.watch(family(id: 0)))',
     );
     expect(
-      result.widgetRefWatchInvocations[1].listenable.provider?.node.toSource(),
+      result.widgetRefWatchInvocations[2].listenable.provider?.node.toSource(),
       'family2Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[1].listenable.provider?.providerElement,
+      result.widgetRefWatchInvocations[2].listenable.provider?.providerElement,
       same(
         result.functionalProviderDeclarations
             .findByName('family2')
@@ -729,7 +731,7 @@ class MyWidget extends ConsumerWidget {
       ),
     );
     expect(
-      result.widgetRefWatchInvocations[1].listenable.familyArguments
+      result.widgetRefWatchInvocations[2].listenable.familyArguments
           ?.toSource(),
       '(ref.watch(family(id: 0)))',
     );
