@@ -652,6 +652,89 @@ void fn(_Ref ref) {
     );
   });
 
+  testSource('Decodes nested ref.watch invocations with family providers',
+      runGenerator: true, source: '''
+import 'package:riverpod/riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter/material.dart';
+
+part 'foo.g.dart';
+
+final family = FutureProvider.family<int, int>((ref, id) => 0);
+
+@Riverpod(keepAlive: true)
+Future<int> family2(Family2Ref ref, {required int id}) async => 0;
+
+class MyWidget extends ConsumerWidget {
+  const MyWidget({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    ref.watch(family(ref.read(family2Provider(id: 0))));
+    ref.watch(family2Provider(ref.watch(family(id: 0))));
+    return Container();
+  }
+}
+''', (resolver, unit, units) async {
+    final result = await resolver.resolveRiverpodAnalysisResult();
+
+    expect(result.widgetRefWatchInvocations, hasLength(3));
+
+    expect(
+      result.widgetRefWatchInvocations[0].node.toSource(),
+      'ref.watch(family(ref.read(family2Provider(id: 0))))',
+    );
+    expect(result.widgetRefWatchInvocations[0].function.toSource(), 'watch');
+    expect(
+      result.widgetRefWatchInvocations[0].listenable.provider?.node.toSource(),
+      'family(ref.read(family2Provider(id: 0)))',
+    );
+    expect(
+      result.widgetRefWatchInvocations[0].listenable.provider?.node.toSource(),
+      'family',
+    );
+    expect(
+      result.widgetRefWatchInvocations[0].listenable.provider?.providerElement,
+      same(
+        result.legacyProviderDeclarations.findByName('family').providerElement,
+      ),
+    );
+    expect(
+      result.widgetRefWatchInvocations[0].listenable.familyArguments
+          ?.toSource(),
+      '(ref.read(family2Provider(id: 0)))',
+    );
+
+    // ref.watch(family2Provider(ref.watch(family(id: 0)));
+    expect(
+      result.widgetRefWatchInvocations[1].node.toSource(),
+      'ref.watch(family2Provider(ref.watch(family(id: 0))))',
+    );
+    expect(result.widgetRefWatchInvocations[1].function.toSource(), 'watch');
+    expect(
+      result.widgetRefWatchInvocations[1].listenable.provider?.node.toSource(),
+      'family2Provider(ref.watch(family(id: 0)))',
+    );
+    expect(
+      result.widgetRefWatchInvocations[1].listenable.provider?.node.toSource(),
+      'family2Provider',
+    );
+    expect(
+      result.widgetRefWatchInvocations[1].listenable.provider?.providerElement,
+      same(
+        result.functionalProviderDeclarations
+            .findByName('family2')
+            .providerElement,
+      ),
+    );
+    expect(
+      result.widgetRefWatchInvocations[1].listenable.familyArguments
+          ?.toSource(),
+      '(ref.watch(family(id: 0)))',
+    );
+  });
+
   testSource('Decodes provider.query ref.watch usages',
       timeout: const Timeout.factor(4), runGenerator: true, source: r'''
 import 'package:riverpod/riverpod.dart';
