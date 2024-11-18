@@ -110,6 +110,12 @@ mixin _ParseRefInvocationMixin on RecursiveAstVisitor<void> {
     final refInvocation = RefInvocation._parse(node, superCall: superCall);
     if (refInvocation != null) {
       visitRefInvocation(refInvocation);
+
+      for (final argument in refInvocation.node.argumentList.arguments
+          .whereType<InvocationExpression>()) {
+        argument.accept(this);
+      }
+
       // Don't call super as RefInvocation should already be recursive
       return;
     }
@@ -118,6 +124,11 @@ mixin _ParseRefInvocationMixin on RecursiveAstVisitor<void> {
         WidgetRefInvocation._parse(node, superCall: superCall);
     if (widgetRefInvocation != null) {
       visitWidgetRefInvocation(widgetRefInvocation);
+
+      for (final argument in widgetRefInvocation.node.argumentList.arguments
+          .whereType<InvocationExpression>()) {
+        argument.accept(this);
+      }
       // Don't call super as WidgetRefInvocation should already be recursive
       return;
     }
