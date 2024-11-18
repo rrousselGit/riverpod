@@ -11,6 +11,9 @@ analyzer:
     included_file_warning: ignore
     # false positive when using Freezed
     invalid_annotation_target: ignore
+    # I prefer specifying a parameter on a widget even if they are unused (such as Key)
+    # for the sake of consistency.
+    unused_element_parameter: false
 
 linter:
   rules:
