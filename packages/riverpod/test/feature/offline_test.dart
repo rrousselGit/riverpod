@@ -61,15 +61,17 @@ extension on TestFactory<Object?> {
     Object? Function(Object? encoded)? decode,
     void Function(Persist persist, Object? value)? encode,
   }) {
+    decode ??= (value) => value;
+    persistKey ??= (args) => 'key';
+    encode ??= (_, value) {};
+
     return when(
       asyncNotifier: (factory) => factory.simpleTestProvider<Object?>(
         shouldPersist: shouldPersist,
         persistOptions: persistOptions,
         persistKey: persistKey,
         decode: decode,
-        encode: encode == null
-            ? (p, v) {}
-            : (persist, value) => encode(persist, value.valueOf),
+        encode: encode,
         (ref, self) => create(ref, self),
       ),
       streamNotifier: (factory) {
@@ -78,9 +80,7 @@ extension on TestFactory<Object?> {
           persistOptions: persistOptions,
           persistKey: persistKey,
           decode: decode,
-          encode: encode == null
-              ? (p, v) {}
-              : (persist, value) => encode(persist, value.valueOf),
+          encode: encode,
           (ref, self) {
             final futureOR = create(ref, self);
 
@@ -103,7 +103,7 @@ extension on TestFactory<Object?> {
         persistOptions: persistOptions,
         persistKey: persistKey,
         decode: decode,
-        encode: encode ?? (p, v) {},
+        encode: encode,
         (ref, self) => create(ref, self),
       ),
     );
@@ -135,13 +135,13 @@ extension on Object? {
 }
 
 class DelegatingPersist extends Persist {
-  DelegatingPersist({FutureOr<(Object?,)?> Function(Object? key)? read})
+  DelegatingPersist({required FutureOr<(Object?,)?> Function(Object? key) read})
       : _read = read;
 
-  final FutureOr<(Object?,)?> Function(Object? key)? _read;
+  final FutureOr<(Object?,)?> Function(Object? key) _read;
 
   @override
-  FutureOr<(Object?,)?> read(Object? key) => _read!(key);
+  FutureOr<(Object?,)?> read(Object? key) => _read(key);
 }
 
 void main() {
@@ -184,8 +184,6 @@ void main() {
           persistOptions: DelegatingPersist(
             read: (_) => (21,),
           ),
-          persistKey: (args) => 'key',
-          decode: (value) => value! as int,
         );
         final container = ProviderContainer.test();
 
@@ -203,8 +201,6 @@ void main() {
             persistOptions: DelegatingPersist(
               read: (_) => (value,),
             ),
-            persistKey: (args) => 'key',
-            decode: (value) => value! as int,
           );
           final container = ProviderContainer.test();
 
@@ -227,8 +223,6 @@ void main() {
               persistOptions: DelegatingPersist(
                 read: (_) => completer.future,
               ),
-              persistKey: (args) => 'key',
-              decode: (value) => value! as int,
             );
             final container = ProviderContainer.test();
 
@@ -251,8 +245,6 @@ void main() {
               persistOptions: DelegatingPersist(
                 read: (_) => Future(() => (21,)),
               ),
-              persistKey: (args) => 'key',
-              decode: (value) => value! as int,
             );
             final container = ProviderContainer.test();
 
@@ -275,8 +267,6 @@ void main() {
               persistOptions: DelegatingPersist(
                 read: (_) => (value,),
               ),
-              persistKey: (args) => 'key',
-              decode: (value) => value! as int,
             );
             final container = ProviderContainer.test();
 
@@ -298,8 +288,6 @@ void main() {
             persistOptions: DelegatingPersist(
               read: (_) => completer.future,
             ),
-            persistKey: (args) => 'key',
-            decode: (value) => value! as int,
           );
           final container = ProviderContainer.test();
 
@@ -315,31 +303,50 @@ void main() {
       group('encode', () {
         test('When a provider emits any update, notify the DB adapter',
             () async {
-          final completer = Completer<(int,)>();
           final encode = Encode<Object?>();
           final provider = factory.simpleProvider(
-            (ref, self) => completer.future,
+            (ref, self) => 0,
             persistOptions: DelegatingPersist(
               read: (_) => (42,),
             ),
-            persistKey: (args) => 'key',
-            decode: (value) => 0,
             encode: encode.call,
           );
           final container = ProviderContainer.test();
 
           final sub = container.listen(provider, (a, b) {});
 
-          verifyZeroInteractions(encode);
-
-          completer.complete((42,));
-
-          verifyOnly(encode, encode(any, 42));
+          verifyOnly(encode, encode(any, 0));
 
           container.read(provider.notifier!).state = factory.valueFor(21);
 
           verifyOnly(encode, encode(any, 21));
         });
+
+        if (factory.isAsync) {
+          test('decode resolution does not call encode', () async {
+            final encode = Encode<Object?>();
+            final decodeCompleter = Completer<(int,)>();
+            final resultCompleter = Completer<(int,)>();
+            final provider = factory.simpleProvider(
+              (ref, self) => resultCompleter.future,
+              persistOptions: DelegatingPersist(
+                read: (_) => decodeCompleter.future,
+              ),
+              encode: encode.call,
+            );
+            final container = ProviderContainer.test();
+
+            final sub = container.listen(provider, (a, b) {});
+
+            verifyZeroInteractions(encode);
+
+            resultCompleter.complete((21,));
+
+            verifyZeroInteractions(encode);
+
+            decodeCompleter.complete((42,));
+          });
+        }
       });
 
       group('destroyKey', () {
@@ -373,8 +380,6 @@ void main() {
               persistOptions: DelegatingPersist(
                 read: (_) => (42,),
               ),
-              persistKey: (args) => 'key',
-              decode: (value) => value! as int,
             );
             final container = ProviderContainer.test();
 

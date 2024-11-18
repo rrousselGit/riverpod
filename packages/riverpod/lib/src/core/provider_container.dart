@@ -237,12 +237,6 @@ class ProviderDirectory implements _PointerBase {
 @internal
 typedef Retry = Duration? Function(int retryCount, Object error);
 
-/// Options for interacting with offline persistence.
-@immutable
-abstract class Persist {
-  FutureOr<(Object?,)?> read(Object? key);
-}
-
 /// An object responsible for storing the a O(1) access to providers,
 /// while also enabling the "scoping" of providers and ensuring all [ProviderContainer]s
 /// are in sync.
