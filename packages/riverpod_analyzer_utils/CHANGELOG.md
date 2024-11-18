@@ -1,4 +1,4 @@
-## Unreleased fix
+## 0.5.8 - 2024-11-18
 
 - Fixed analyzer to correctly detect nested RefInvocations when used as parameters (e.g., ref.watch(provider(ref.watch(...)))). This improves the accuracy of the analyzer's error detection for complex provider compositions. (thanks to @josh-burton)
 
