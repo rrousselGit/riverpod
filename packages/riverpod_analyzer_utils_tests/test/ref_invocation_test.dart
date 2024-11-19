@@ -6,15 +6,15 @@ import 'analyzer_test_utils.dart';
 // ignore: invalid_use_of_internal_member
 extension on RiverpodAnalysisResult {
   List<RefWatchInvocation> get refWatchInvocations {
-    return refInvocations.cast();
+    return refInvocations.whereType<RefWatchInvocation>().toList();
   }
 
   List<RefListenInvocation> get refListenInvocations {
-    return refInvocations.cast();
+    return refInvocations.whereType<RefListenInvocation>().toList();
   }
 
   List<RefReadInvocation> get refReadInvocations {
-    return refInvocations.cast();
+    return refInvocations.whereType<RefReadInvocation>().toList();
   }
 }
 
@@ -436,8 +436,93 @@ final provider = Provider<int>((ref) {
     );
   });
 
-  testSource('Decodes unknown ref usages',
-      timeout: const Timeout.factor(4), source: '''
+  testSource('Decodes nested ref.read invocations with family providers',
+      runGenerator: true, source: '''
+import 'package:riverpod/riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'foo.g.dart';
+
+final dep = FutureProvider((ref) => 0);
+final dep2 = FutureProvider.family((ref, int arg) => 0);
+final dep3 = FutureProvider.family((ref, int arg) => 0);
+
+final provider = Provider<int>((ref) {
+  ref.read(dep2(ref.read(dep)));
+
+  return 0;
+});
+
+final provider2 = Provider<int>((ref) {
+  ref.read(dep3(ref.read(dep2(ref.read(dep)))));
+
+  return 0;
+});
+
+int transformArg(int arg) {
+  return arg;
+}
+
+final provider3 = Provider<int>((ref) {
+  ref.read(dep3(transformArg(ref.read(dep))));
+
+  return 0;
+});
+''', (resolver, unit, units) async {
+    final result = await resolver.resolveRiverpodAnalysisResult();
+
+    expect(result.refReadInvocations, hasLength(7));
+    expect(result.refInvocations, result.refReadInvocations);
+
+    // provider
+    expect(result.refReadInvocations[0].node.toSource(), 'ref.read(dep)');
+    expect(result.refReadInvocations[0].function.toSource(), 'read');
+    expect(
+      result.refReadInvocations[0].listenable.provider?.providerElement,
+      same(
+        result.legacyProviderDeclarations.findByName('dep').providerElement,
+      ),
+    );
+
+    expect(
+      result.refReadInvocations[1].node.toSource(),
+      'ref.read(dep2(ref.read(dep)))',
+    );
+    expect(result.refReadInvocations[1].function.toSource(), 'read');
+    expect(
+      result.refReadInvocations[1].listenable.provider?.providerElement,
+      same(
+        result.legacyProviderDeclarations.findByName('dep2').providerElement,
+      ),
+    );
+
+    // provider2
+    expect(result.refReadInvocations[2].node.toSource(), 'ref.read(dep)');
+    expect(
+      result.refReadInvocations[3].node.toSource(),
+      'ref.read(dep2(ref.read(dep)))',
+    );
+    expect(
+      result.refReadInvocations[4].node.toSource(),
+      'ref.read(dep3(ref.read(dep2(ref.read(dep)))))',
+    );
+    expect(result.refReadInvocations[4].function.toSource(), 'read');
+    expect(
+      result.refReadInvocations[4].listenable.provider?.providerElement,
+      same(
+        result.legacyProviderDeclarations.findByName('dep3').providerElement,
+      ),
+    );
+
+    // provider3
+    expect(result.refReadInvocations[5].node.toSource(), 'ref.read(dep)');
+    expect(
+      result.refReadInvocations[6].node.toSource(),
+      'ref.read(dep3(transformArg(ref.read(dep))))',
+    );
+  });
+
+  testSource('Decodes unknown ref usages', source: '''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -589,6 +674,53 @@ void fn(_Ref ref) {
     expect(
       result.refWatchInvocations[2].listenable.familyArguments?.toSource(),
       '(id: 0)',
+    );
+  });
+
+  testSource('Decodes mix of nested ref.watch and ref.read invocations',
+      runGenerator: true, source: '''
+import 'package:riverpod/riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'foo.g.dart';
+
+final dep = FutureProvider((ref) => 0);
+final dep2 = FutureProvider.family((ref, int arg) => 0);
+
+final provider = Provider<int>((ref) {
+  ref.watch(dep2(ref.read(dep)));
+
+  return 0;
+});
+''', (resolver, unit, units) async {
+    final result = await resolver.resolveRiverpodAnalysisResult();
+
+    expect(result.refWatchInvocations, hasLength(1));
+    expect(result.refReadInvocations, hasLength(1));
+    expect(
+      result.refInvocations,
+      [...result.refReadInvocations, ...result.refWatchInvocations],
+    );
+
+    expect(
+      result.refWatchInvocations[0].node.toSource(),
+      'ref.watch(dep2(ref.read(dep)))',
+    );
+    expect(result.refWatchInvocations[0].function.toSource(), 'watch');
+    expect(
+      result.refWatchInvocations[0].listenable.provider?.providerElement,
+      same(
+        result.legacyProviderDeclarations.findByName('dep2').providerElement,
+      ),
+    );
+
+    expect(result.refReadInvocations[0].node.toSource(), 'ref.read(dep)');
+    expect(result.refReadInvocations[0].function.toSource(), 'read');
+    expect(
+      result.refReadInvocations[0].listenable.provider?.providerElement,
+      same(
+        result.legacyProviderDeclarations.findByName('dep').providerElement,
+      ),
     );
   });
 
