@@ -205,7 +205,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///   Using [asReload] will disable this behavior and count as a
   ///   "hard refresh".
   ///
-  /// If used on a provider which is not initialized, this method will have no effect.
+  /// If used on a provider which is not initialized or disposed, this method will have no effect.
   /// {@endtemplate}
   void invalidate(ProviderOrFamily providerOrFamily, {bool asReload = false}) {
     _throwIfInvalidUsage();

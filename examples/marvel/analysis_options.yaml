@@ -6,3 +6,6 @@ analyzer:
   errors:
     # Some assets are voluntarily gitignored
     asset_does_not_exist: ignore
+    # I prefer specifying a parameter on a widget even if they are unused (such as Key)
+    # for the sake of consistency.
+    unused_element_parameter: false
