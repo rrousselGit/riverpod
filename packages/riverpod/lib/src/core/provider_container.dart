@@ -241,6 +241,7 @@ typedef Retry = Duration? Function(int retryCount, Object error);
 @immutable
 abstract class Persist {
   FutureOr<(Object?,)?> read(Object? key);
+  FutureOr<void> write(Object? key, Object? value);
 }
 
 /// An object responsible for storing the a O(1) access to providers,

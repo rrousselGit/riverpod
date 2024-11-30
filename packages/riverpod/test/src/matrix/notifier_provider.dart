@@ -183,7 +183,7 @@ abstract class TestNotifier<StateT> implements $Notifier<StateT> {
 }
 
 class DeferredNotifier<StateT> extends Notifier<StateT>
-    implements TestNotifier<StateT>, PersistAdapter<StateT> {
+    implements TestNotifier<StateT>, NotifierEncoder<StateT> {
   DeferredNotifier(
     this._create, {
     bool Function(StateT, StateT)? updateShouldNotify,
@@ -245,7 +245,7 @@ class DeferredNotifier<StateT> extends Notifier<StateT>
 }
 
 class DeferredFamilyNotifier<StateT> extends FamilyNotifier<StateT, int>
-    implements TestNotifier<StateT>, PersistAdapter<StateT> {
+    implements TestNotifier<StateT>, NotifierEncoder<StateT> {
   DeferredFamilyNotifier(
     this._create, {
     bool Function(StateT, StateT)? updateShouldNotify,

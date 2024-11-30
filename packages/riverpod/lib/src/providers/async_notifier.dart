@@ -85,7 +85,7 @@ class $AsyncNotifierProviderElement< //
 
   @override
   void callDecode(
-    PersistAdapter<StateT> adapter,
+    NotifierEncoder<StateT, Object?> adapter,
     Object? encoded,
   ) {
     setStateResult(

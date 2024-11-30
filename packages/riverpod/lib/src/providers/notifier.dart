@@ -141,7 +141,7 @@ class $NotifierProviderElement< //
 
   @override
   void callDecode(
-    PersistAdapter<StateT> adapter,
+    NotifierEncoder<StateT> adapter,
     Object? encoded,
   ) {
     setStateResult(Result.data(adapter.decode(encoded)));

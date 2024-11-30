@@ -240,7 +240,17 @@ abstract class ClassProviderElement< //
   void _decodeFromCache() {
     if (!origin.shouldPersist) return;
 
-    final persist = origin.persistOptions ?? container.persistOptions;
+    _decode();
+
+    ref!.listenSelf((previous, current) => _callEncode());
+  }
+
+  (NotifierEncoder<RawStateT, Object?>, Persist)? _requestPersist() {
+    final adapter = classListenable.result?.stateOrNull
+        as NotifierEncoder<RawStateT, Persist>?;
+    if (adapter == null) return null;
+
+    final persist = adapter.optionsFor(container, provider);
     if (persist == null) {
       throw StateError(
         'The provider $origin asked to be persisted on device, but no Persist found.'
@@ -248,17 +258,16 @@ abstract class ClassProviderElement< //
       );
     }
 
-    _decode(persist);
-
-    ref!.listenSelf((previous, current) => _callEncode(persist));
+    return (adapter, persist);
   }
 
-  void callDecode(PersistAdapter<RawStateT> adapter, Object? encoded);
+  void callDecode(NotifierEncoder<RawStateT, Object?> adapter, Object? encoded);
+  Object? callEncode(NotifierEncoder<RawStateT, Object?> adapter);
 
-  FutureOr<void> _decode(Persist persist) async {
-    final adapter =
-        classListenable.result?.stateOrNull as PersistAdapter<RawStateT>?;
-    if (adapter == null) return;
+  FutureOr<void> _decode() async {
+    final offline = _requestPersist();
+    if (offline == null) return;
+    final (adapter, persist) = offline;
 
     try {
       final key = adapter.persistKey;
@@ -275,12 +284,17 @@ abstract class ClassProviderElement< //
     }
   }
 
-  void _callEncode(Persist persist) {
-    final adapter =
-        classListenable.result?.stateOrNull as PersistAdapter<RawStateT>?;
-    if (adapter == null) return;
+  Future<void> _callEncode() async {
+    final offline = _requestPersist();
+    if (offline == null) return;
+    final (adapter, persist) = offline;
 
-    adapter.encode(persist);
+    try {
+      final key = adapter.persistKey;
+      await persist.write(key, callEncode(adapter));
+    } catch (e, s) {
+      Zone.current.handleUncaughtError(e, s);
+    }
   }
 
   void handleValue(

@@ -189,7 +189,7 @@ abstract class TestStreamNotifier<StateT> implements $StreamNotifier<StateT> {
 }
 
 class DeferredStreamNotifier<StateT> extends StreamNotifier<StateT>
-    implements TestStreamNotifier<StateT>, PersistAdapter<StateT> {
+    implements TestStreamNotifier<StateT>, NotifierEncoder<StateT> {
   DeferredStreamNotifier(
     this._create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
@@ -249,7 +249,7 @@ class DeferredStreamNotifier<StateT> extends StreamNotifier<StateT>
 
 class DeferredFamilyStreamNotifier<StateT>
     extends FamilyStreamNotifier<StateT, int>
-    implements TestStreamNotifier<StateT>, PersistAdapter<StateT> {
+    implements TestStreamNotifier<StateT>, NotifierEncoder<StateT> {
   DeferredFamilyStreamNotifier(
     this._create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,

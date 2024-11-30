@@ -188,7 +188,7 @@ abstract class TestAsyncNotifier<StateT> implements $AsyncNotifier<StateT> {
 }
 
 class DeferredAsyncNotifier<StateT> extends AsyncNotifier<StateT>
-    implements TestAsyncNotifier<StateT>, PersistAdapter<StateT> {
+    implements TestAsyncNotifier<StateT>, NotifierEncoder<StateT, Object?> {
   DeferredAsyncNotifier(
     this._create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
@@ -245,7 +245,7 @@ class DeferredAsyncNotifier<StateT> extends AsyncNotifier<StateT>
 
 class DeferredFamilyAsyncNotifier<StateT>
     extends FamilyAsyncNotifier<StateT, int>
-    implements TestAsyncNotifier<StateT>, PersistAdapter<StateT> {
+    implements TestAsyncNotifier<StateT>, NotifierEncoder<StateT> {
   DeferredFamilyAsyncNotifier(
     this._create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,

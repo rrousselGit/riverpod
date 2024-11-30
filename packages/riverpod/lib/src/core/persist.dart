@@ -3,7 +3,11 @@ import 'package:meta/meta.dart';
 import '../framework.dart';
 
 /// An interface to enable Riverpod to store the state of providers in a database.
-abstract class PersistAdapter<StateT> {
+///
+/// Should not be implemented. Instead use `with`.
+@optionalTypeArgs
+mixin NotifierEncoder<StateT, PersistT extends Persist>
+    on NotifierBase<StateT, Object?> {
   /// A key unique to this provider and parameter combination.
   ///
   /// This key is used to store the state of the provider in a database.
@@ -35,7 +39,33 @@ abstract class PersistAdapter<StateT> {
   /// Encodes the state of the provider to a value that can be stored in the database.
   ///
   /// {@macro persist.encoded_value}
-  void encode(Persist persist);
+  Object? encode();
+
+  /// Extracts the [Persist] options from a provider/container in a type-safe way.
+  ///
+  /// This should returns the provider's option over the container's option.
+  /// Throws an error if the provider specifies a [Persist] option but
+  /// the option doesn't implement [PersistT].
+  ///
+  /// Returns `null` is no matching option is found.
+  PersistT? optionsFor(
+    ProviderContainer container,
+    ProviderBase<Object?> provider,
+  ) {
+    switch ((provider.persistOptions, container.persistOptions)) {
+      case (final PersistT options, _):
+      case (_, final PersistT options):
+        return options;
+      case (!= null, _):
+        throw StateError(
+          'The provider specified a Persist option, '
+          'but the option does not implement $PersistT. '
+          'Please make sure to use a Persist option that implements $PersistT.',
+        );
+      case _:
+        return null;
+    }
+  }
 }
 
 @internal
