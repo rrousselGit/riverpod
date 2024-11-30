@@ -188,7 +188,7 @@ abstract class TestAsyncNotifier<StateT> implements $AsyncNotifier<StateT> {
 }
 
 class DeferredAsyncNotifier<StateT> extends AsyncNotifier<StateT>
-    implements TestAsyncNotifier<StateT>, NotifierEncoder<StateT, Object?> {
+    implements TestAsyncNotifier<StateT>, NotifierEncoder<StateT> {
   DeferredAsyncNotifier(
     this._create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
