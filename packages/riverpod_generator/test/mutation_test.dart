@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
@@ -49,7 +50,10 @@ void main() {
     await expectLater(future2, throwsA(isStateError));
     verifyInOrder([
       listener(any, isMutationBase<int>(state: isPendingMutationState())),
-      listener(any, isMutationBase<int>(state: isErrorMutationState(42))),
+      listener(
+        any,
+        isMutationBase<int>(state: isErrorMutationState(isStateError)),
+      ),
     ]);
     verifyNoMoreInteractions(listener);
   });
