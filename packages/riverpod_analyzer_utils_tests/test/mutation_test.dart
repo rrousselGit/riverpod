@@ -57,4 +57,42 @@ class SyncNotifier<T> extends _$SyncNotifier<T> {
       ),
     );
   });
+
+  testSource('rejects abstract/static mutations', source: r'''
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+@riverpod
+class Abstract extends _$Abstract {
+  @override
+  int build() => 0;
+
+  @mutation
+  Future<int> a();
+
+  @mutation
+  static Future<int> b() async => 42;
+}
+''', (resolver, unit, units) async {
+    final result =
+        await resolver.resolveRiverpodAnalysisResult(ignoreErrors: true);
+
+    expect(result.errors, hasLength(2));
+
+    expect(
+      result.errors,
+      everyElement(
+        isA<RiverpodAnalysisError>()
+            .having((e) => e.targetNode, 'node', isNotNull)
+            .having((e) => e.targetElement, 'element', isNotNull)
+            .having(
+              (e) => e.code,
+              'code',
+              anyOf(
+                RiverpodAnalysisErrorCode.mutationIsAbstract,
+                RiverpodAnalysisErrorCode.mutationIsStatic,
+              ),
+            ),
+      ),
+    );
+  });
 }

@@ -144,6 +144,29 @@ extension MutationMethodDeclarationX on MethodDeclaration {
       final mutationElement = MutationElement._parse(element);
       if (mutationElement == null) return null;
 
+      if (isStatic) {
+        errorReporter(
+          RiverpodAnalysisError(
+            'Mutations cannot be static.',
+            targetNode: this,
+            targetElement: element,
+            code: RiverpodAnalysisErrorCode.mutationIsStatic,
+          ),
+        );
+        return null;
+      }
+      if (isAbstract) {
+        errorReporter(
+          RiverpodAnalysisError(
+            'Mutations cannot be abstract.',
+            targetNode: this,
+            targetElement: element,
+            code: RiverpodAnalysisErrorCode.mutationIsAbstract,
+          ),
+        );
+        return null;
+      }
+
       final expectedReturnType = thisOrAncestorOfType<ClassDeclaration>()!
           .members
           .whereType<MethodDeclaration>()

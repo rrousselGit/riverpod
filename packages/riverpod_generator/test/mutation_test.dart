@@ -9,12 +9,6 @@ import 'integration/mutation.dart';
 import 'mock.dart';
 
 void main() {
-// Error:
-// - Mutation returns a non-FutureOr<T> type
-// - mutation is not on a notifier method
-// mutation is static
-// mutation is abstract
-
   test('Can listen a mutation', () async {
     final container = ProviderContainer.test();
     final listener = ListenerMock<Simple$Delegated>();
