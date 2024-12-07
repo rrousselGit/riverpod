@@ -4,10 +4,10 @@ import '../../builder.dart';
 import '../../internals.dart';
 import 'state_controller.dart';
 
-ProviderElementProxy<StateT, StateController<StateT>> _notifier<StateT>(
+ProviderElementProxy<StateController<StateT>, StateT> _notifier<StateT>(
   StateProvider<StateT> that,
 ) {
-  return ProviderElementProxy<StateT, StateController<StateT>>(
+  return ProviderElementProxy<StateController<StateT>, StateT>(
     that,
     (element) {
       return (element as StateProviderElement<StateT>)._controllerNotifier;

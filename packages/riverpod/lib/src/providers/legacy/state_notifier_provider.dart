@@ -4,11 +4,11 @@ import 'package:state_notifier/state_notifier.dart';
 import '../../builder.dart';
 import '../../internals.dart';
 
-ProviderElementProxy<StateT, NotifierT>
+ProviderElementProxy<NotifierT, StateT>
     _notifier<NotifierT extends StateNotifier<StateT>, StateT>(
   StateNotifierProvider<NotifierT, StateT> that,
 ) {
-  return ProviderElementProxy<StateT, NotifierT>(
+  return ProviderElementProxy<NotifierT, StateT>(
     that,
     (element) {
       return (element as StateNotifierProviderElement<NotifierT, StateT>)

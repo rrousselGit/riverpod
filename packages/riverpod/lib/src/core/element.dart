@@ -18,8 +18,9 @@ part of '../framework.dart';
 /// {@endtemplate}
 sealed class Refreshable<StateT> implements ProviderListenable<StateT> {}
 
-mixin _ProviderRefreshable<StateT> implements Refreshable<StateT> {
-  ProviderBase<Object?> get provider;
+mixin _ProviderRefreshable<OutT, OriginT>
+    implements Refreshable<OutT>, ProviderListenableWithOrigin<OutT, OriginT> {
+  ProviderBase<OriginT> get provider;
 }
 
 /// A debug utility used by `flutter_riverpod`/`hooks_riverpod` to check
@@ -137,7 +138,6 @@ abstract class ProviderElement<StateT> implements Node {
   ///
   /// This is not meant for public consumption. Instead, public API should use
   /// [readSelf].
-  @internal
   Result<StateT>? get stateResult => _stateResult;
 
   /// Returns the currently exposed by a provider
@@ -156,7 +156,6 @@ abstract class ProviderElement<StateT> implements Node {
   ///
   /// This API is not meant for public consumption. Instead if a [Ref] needs
   /// to expose a way to update the state, the practice is to expose a getter/setter.
-  @internal
   void setStateResult(Result<StateT> newState) {
     if (kDebugMode) _debugDidSetState = true;
 
@@ -175,7 +174,6 @@ abstract class ProviderElement<StateT> implements Node {
   ///
   /// This is not meant for public consumption. Instead, public API should use
   /// [readSelf].
-  @internal
   StateT get requireState {
     const uninitializedError = '''
 Tried to read the state of an uninitialized provider.
@@ -204,7 +202,6 @@ This could mean a few things:
 
   /// Called when a provider is rebuilt. Used for providers to not notify their
   /// listeners if the exposed value did not change.
-  @internal
   bool updateShouldNotify(StateT previous, StateT next);
 
   /* /STATE */
@@ -225,7 +222,7 @@ This could mean a few things:
   }
 
   /// Called the first time a provider is obtained.
-  void _mount() {
+  void mount() {
     if (kDebugMode) {
       _debugCurrentCreateHash = provider.debugGetCreateSourceHash();
     }
@@ -298,11 +295,10 @@ This could mean a few things:
   ///
   /// This is not meant for public consumption. Public API should hide
   /// [flush] from users, such that they don't need to care about invoking this function.
-  @internal
   void flush() {
     if (!_didMount) {
       _didMount = true;
-      _mount();
+      mount();
     }
 
     _maybeRebuildDependencies();
@@ -475,7 +471,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
           if (listener.closed) continue;
 
           Zone.current.runBinaryGuarded(
-            listener._notify,
+            listener._onOriginData,
             previousState,
             newState.state,
           );
@@ -486,7 +482,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
           if (listener.closed) continue;
 
           Zone.current.runBinaryGuarded(
-            listener._notifyError,
+            listener._onOriginError,
             newState.error,
             newState.stackTrace,
           );
@@ -564,7 +560,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     );
 
     switch (sub) {
-      case ProviderSubscriptionImpl():
+      case final ProviderSubscriptionImpl<Object?, Object?> sub:
         sub._listenedElement.addDependentSubscription(sub);
     }
 

@@ -778,7 +778,7 @@ class ProviderContainer implements Node {
     );
 
     switch (sub) {
-      case ProviderSubscriptionImpl():
+      case final ProviderSubscriptionImpl<Object?, Object?> sub:
         sub._listenedElement.addDependentSubscription(sub);
     }
 
@@ -804,16 +804,12 @@ class ProviderContainer implements Node {
 
   /// {@macro riverpod.refresh}
   StateT refresh<StateT>(Refreshable<StateT> refreshable) {
-    ProviderBase<Object?> providerToRefresh;
-
-    switch (refreshable) {
-      case ProviderBase<StateT>():
-        providerToRefresh = refreshable;
-      case _ProviderRefreshable<StateT>(:final provider):
-        providerToRefresh = provider;
-    }
-
+    final providerToRefresh = switch (refreshable) {
+      ProviderBase<StateT>() => refreshable,
+      _ProviderRefreshable<Object?, Object?>(:final provider) => provider
+    };
     invalidate(providerToRefresh);
+
     return read(refreshable);
   }
 
@@ -977,6 +973,7 @@ class ProviderContainer implements Node {
   void dispose() => _dispose(updateChildren: true);
 
   /// Traverse the [ProviderElement]s associated with this [ProviderContainer].
+  @internal
   Iterable<ProviderElement> getAllProviderElements() {
     return _pointerManager
         .listProviderPointers()
@@ -990,6 +987,7 @@ class ProviderContainer implements Node {
   /// This is fairly expensive and should be avoided as much as possible.
   /// If you do not need for providers to be sorted, consider using [getAllProviderElements]
   /// instead, which returns an unsorted list and is significantly faster.
+  @internal
   Iterable<ProviderElement> getAllProviderElementsInOrder() sync* {
     final visitedNodes = HashSet<ProviderElement>();
     final queue = DoubleLinkedQueue<ProviderElement>();

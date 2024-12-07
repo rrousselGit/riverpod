@@ -51,6 +51,8 @@ class ProxyElementValueListenable<T> extends _ValueListenable<T> {
 }
 
 class _ValueListenable<T> {
+  void Function()? onCancel;
+
   int _count = 0;
   // The _listeners is intentionally set to a fixed-length _GrowableList instead
   // of const [].
@@ -93,7 +95,6 @@ class _ValueListenable<T> {
   /// [_notifyListeners]; and similarly, by overriding [_removeListener], checking
   /// if [hasListeners] is false after calling `super.removeListener()`, and if
   /// so, stopping that same work.
-  @protected
   bool get hasListeners {
     return _count > 0;
   }
@@ -218,6 +219,9 @@ class _ValueListenable<T> {
         break;
       }
     }
+
+    final onCancel = this.onCancel;
+    if (!hasListeners && onCancel != null) onCancel();
   }
 
   /// Discards any resources used by the object. After this is called, the

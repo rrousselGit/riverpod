@@ -125,6 +125,44 @@ final class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
   final TypeAnnotation? valueTypeNode;
   @override
   final SourcedType exposedTypeNode;
+
+  late final List<Mutation> mutations = node.members
+      .whereType<MethodDeclaration>()
+      .map((e) => e.mutation)
+      .nonNulls
+      .toList();
+}
+
+extension MutationMethodDeclarationX on MethodDeclaration {
+  static final _cache = _Cache<Mutation?>();
+
+  Mutation? get mutation {
+    return _cache(this, () {
+      final element = declaredElement;
+      if (element == null) return null;
+
+      final mutationElement = MutationElement._parse(element);
+      if (mutationElement == null) return null;
+
+      final mutation = Mutation._(
+        node: this,
+        element: mutationElement,
+      );
+
+      return mutation;
+    });
+  }
+}
+
+final class Mutation {
+  Mutation._({
+    required this.node,
+    required this.element,
+  });
+
+  String get name => node.name.lexeme;
+  final MethodDeclaration node;
+  final MutationElement element;
 }
 
 class ClassBasedProviderDeclarationElement
@@ -184,4 +222,28 @@ class ClassBasedProviderDeclarationElement
   final RiverpodAnnotationElement annotation;
 
   final ExecutableElement buildMethod;
+}
+
+class MutationElement {
+  MutationElement._({
+    required this.name,
+    required this.method,
+  });
+
+  static final _cache = _Cache<MutationElement?>();
+
+  static MutationElement? _parse(ExecutableElement element) {
+    return _cache(element, () {
+      final annotation = MutationAnnotationElement._of(element);
+      if (annotation == null) return null;
+
+      return MutationElement._(
+        name: element.name,
+        method: element,
+      );
+    });
+  }
+
+  final String name;
+  final ExecutableElement method;
 }

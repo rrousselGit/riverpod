@@ -176,6 +176,29 @@ String shortHash(Object? object) {
   return object.hashCode.toUnsigned(20).toRadixString(16).padLeft(5, '0');
 }
 
+@internal
+mixin ProviderListenableWithOrigin<OutT, OriginT> on ProviderListenable<OutT> {
+  @override
+  ProviderSubscriptionWithOrigin<OutT, OriginT> addListener(
+    Node source,
+    void Function(OutT? previous, OutT next) listener, {
+    required void Function(Object error, StackTrace stackTrace)? onError,
+    required void Function()? onDependencyMayHaveChanged,
+    required bool fireImmediately,
+    required bool weak,
+  });
+
+  @override
+  ProviderListenable<Selected> select<Selected>(
+    Selected Function(OutT value) selector,
+  ) {
+    return _ProviderSelector<OutT, Selected, OriginT>(
+      provider: this,
+      selector: selector,
+    );
+  }
+}
+
 /// A base class for all providers, used to consume a provider.
 ///
 /// It is used by [ProviderContainer.listen] and `ref.watch` to listen to
@@ -185,7 +208,7 @@ String shortHash(Object? object) {
 @immutable
 mixin ProviderListenable<StateT> implements ProviderListenableOrFamily {
   /// Starts listening to this transformer
-  ProviderSubscriptionWithOrigin<StateT, Object?> addListener(
+  ProviderSubscription<StateT> addListener(
     Node source,
     void Function(StateT? previous, StateT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
@@ -261,10 +284,5 @@ mixin ProviderListenable<StateT> implements ProviderListenableOrFamily {
   /// changed instead of whenever the age changes.
   ProviderListenable<Selected> select<Selected>(
     Selected Function(StateT value) selector,
-  ) {
-    return _ProviderSelector<StateT, Selected>(
-      provider: this,
-      selector: selector,
-    );
-  }
+  );
 }
