@@ -108,7 +108,11 @@ final class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
     required this.createdTypeNode,
     required this.exposedTypeNode,
     required this.valueTypeNode,
-  });
+  }) : mutations = node.members
+            .whereType<MethodDeclaration>()
+            .map((e) => e.mutation)
+            .nonNulls
+            .toList();
 
   @override
   final Token name;
@@ -126,11 +130,7 @@ final class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
   @override
   final SourcedType exposedTypeNode;
 
-  late final List<Mutation> mutations = node.members
-      .whereType<MethodDeclaration>()
-      .map((e) => e.mutation)
-      .nonNulls
-      .toList();
+  final List<Mutation> mutations;
 }
 
 extension MutationMethodDeclarationX on MethodDeclaration {
@@ -143,6 +143,44 @@ extension MutationMethodDeclarationX on MethodDeclaration {
 
       final mutationElement = MutationElement._parse(element);
       if (mutationElement == null) return null;
+
+      final expectedReturnType = thisOrAncestorOfType<ClassDeclaration>()!
+          .members
+          .whereType<MethodDeclaration>()
+          .firstWhereOrNull((e) => e.name.lexeme == 'build')
+          ?.returnType;
+      if (expectedReturnType == null) return null;
+
+      final expectedValueType = _getValueType(
+        expectedReturnType,
+        element.library,
+      );
+      if (expectedValueType == null) return null;
+
+      final expectedType =
+          element.library.typeProvider.futureOrElement.instantiate(
+        typeArguments: [expectedValueType.type!],
+        nullabilitySuffix: NullabilitySuffix.none,
+      );
+
+      final actualType = element.returnType;
+
+      final isAssignable = element.library.typeSystem.isAssignableTo(
+        actualType,
+        expectedType,
+        strictCasts: true,
+      );
+      if (!isAssignable) {
+        errorReporter(
+          RiverpodAnalysisError(
+            'The return type of mutations must match the type returned by the "build" method.',
+            targetNode: this,
+            targetElement: element,
+            code: RiverpodAnalysisErrorCode.mutationReturnTypeMismatch,
+          ),
+        );
+        return null;
+      }
 
       final mutation = Mutation._(
         node: this,
