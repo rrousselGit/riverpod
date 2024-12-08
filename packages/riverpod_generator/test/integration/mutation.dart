@@ -73,6 +73,19 @@ class GenericMut extends _$GenericMut {
       (await future) + value.ceil();
 }
 
+@riverpod
+class FailingCtor extends _$FailingCtor {
+  FailingCtor() {
+    throw StateError('err');
+  }
+
+  @override
+  int build() => 0;
+
+  @mutation
+  Future<int> increment([int inc = 1]) async => state + inc;
+}
+
 // final mut = ref.watch(aProvider(arg).increment);
 // mut(2);
 

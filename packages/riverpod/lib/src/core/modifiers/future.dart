@@ -292,12 +292,11 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
     asyncTransition(value, seamless: seamless);
 
     for (final observer in container.observers) {
-      runQuaternaryGuarded(
+      runTernaryGuarded(
         observer.providerDidFail,
-        provider,
+        _currentObserverContext(),
         value.error,
         value.stackTrace,
-        container,
       );
     }
 

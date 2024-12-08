@@ -21,5 +21,5 @@ const riverpodType = TypeChecker.fromName(
 /// Matches with the `Mutation` annotation from riverpod_annotation.
 const mutationType = TypeChecker.fromName(
   'Mutation',
-  packageName: 'riverpod_annotation',
+  packageName: 'riverpod',
 );

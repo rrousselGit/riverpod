@@ -230,6 +230,24 @@ void main() {
     expect(container.read(simpleProvider), 2);
   });
 
+  test('If notifier constructor throws, the mutation immediately throws',
+      () async {
+    final observer = ObserverMock();
+    final container = ProviderContainer.test(observers: [observer]);
+
+    final sub = container.listen(failingCtorProvider.increment, (a, b) {});
+
+    expect(sub.read(), isMutationBase<int>(state: isIdleMutationState()));
+
+    expect(() => sub.read().call(2), throwsStateError);
+
+    expect(
+      sub.read(),
+      isMutationBase<int>(state: isIdleMutationState()),
+    );
+    verifyNever(observer.mutationError(any, any, any, any));
+  });
+
   group('reset', () {
     test('Supports calling reset while pending', () async {
       final container = ProviderContainer.test();
@@ -262,6 +280,233 @@ void main() {
       expect(
         sub.read(),
         isMutationBase<int>(state: isIdleMutationState()),
+      );
+    });
+  });
+
+  group('Integration with ProviderObserver', () {
+    test('handles generic methods', () async {
+      final observer = ObserverMock();
+      final container = ProviderContainer.test(
+        observers: [observer],
+      );
+
+      container.listen(genericMutProvider, (a, b) {});
+      container.listen(genericMutProvider.increment, (a, b) {});
+      await container.read(genericMutProvider.future);
+
+      clearInteractions(observer);
+
+      await container.read(genericMutProvider.increment).call<double>(42);
+
+      verify(
+        observer.didUpdateProvider(
+          argThat(
+            isProviderObserverContext(
+              genericMutProvider,
+              container,
+              mutation: isMutationContext(
+                isInvocation(
+                  memberName: #increment,
+                  positionalArguments: [42.0],
+                  kind: InvocationKind.method,
+                  typeArguments: [double],
+                ),
+              ),
+            ),
+          ),
+          const AsyncData<int>(0),
+          const AsyncData<int>(42),
+        ),
+      );
+    });
+
+    test('sends current mutation to didUpdateProvider', () async {
+      final observer = ObserverMock();
+      final container = ProviderContainer.test(
+        observers: [observer],
+      );
+
+      final sub = container.listen(simpleProvider.notifier, (a, b) {});
+      container.listen(simpleProvider.delegated, (a, b) {});
+
+      clearInteractions(observer);
+
+      Future<int> fn() async {
+        sub.read().state = 1;
+        return 42;
+      }
+
+      await container.read(simpleProvider.delegated).call(fn);
+
+      verifyInOrder([
+        observer.didUpdateProvider(
+          argThat(
+            isProviderObserverContext(
+              simpleProvider,
+              container,
+              mutation: isMutationContext(
+                isInvocation(
+                  memberName: #delegated,
+                  positionalArguments: [fn],
+                  kind: InvocationKind.method,
+                  typeArguments: isEmpty,
+                ),
+              ),
+            ),
+          ),
+          0,
+          1,
+        ),
+        observer.didUpdateProvider(
+          argThat(
+            isProviderObserverContext(
+              simpleProvider,
+              container,
+              mutation: isMutationContext(
+                isInvocation(
+                  memberName: #delegated,
+                  positionalArguments: [fn],
+                  kind: InvocationKind.method,
+                  typeArguments: isEmpty,
+                ),
+              ),
+            ),
+          ),
+          1,
+          42,
+        ),
+      ]);
+    });
+
+    test('handles mutationStart/Pending/Success/Error/Reset', () async {
+      final observer = ObserverMock();
+      final container = ProviderContainer.test(
+        observers: [observer],
+      );
+
+      container.listen(simpleProvider, (a, b) {});
+      clearInteractions(observer);
+
+      final sub = container.listen(simpleProvider.delegated, (a, b) {});
+      verifyNoMoreInteractions(observer);
+
+      Future<int> fn() async => 42;
+      final stack = StackTrace.current;
+      final err = StateError('foo');
+      Future<int> fn2() async => Error.throwWithStackTrace(err, stack);
+
+      final future = sub.read().call(fn);
+      verifyOnly(
+        observer,
+        observer.mutationStart(
+          argThat(
+            isProviderObserverContext(
+              simpleProvider,
+              container,
+              mutation: isNotNull,
+            ),
+          ),
+          argThat(
+            isMutationContext(
+              isInvocation(
+                memberName: #delegated,
+                positionalArguments: [fn],
+                kind: InvocationKind.method,
+                typeArguments: isEmpty,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await future;
+
+      verify(
+        observer.mutationSuccess(
+          argThat(
+            isProviderObserverContext(
+              simpleProvider,
+              container,
+              mutation: isNotNull,
+            ),
+          ),
+          argThat(
+            isMutationContext(
+              isInvocation(
+                memberName: #delegated,
+                positionalArguments: [fn],
+                kind: InvocationKind.method,
+                typeArguments: isEmpty,
+              ),
+            ),
+          ),
+          42,
+        ),
+      );
+
+      final future2 = sub.read().call(fn2);
+
+      verify(
+        observer.mutationStart(
+          argThat(
+            isProviderObserverContext(
+              simpleProvider,
+              container,
+              mutation: isNotNull,
+            ),
+          ),
+          argThat(
+            isMutationContext(
+              isInvocation(
+                memberName: #delegated,
+                positionalArguments: [fn2],
+                kind: InvocationKind.method,
+                typeArguments: isEmpty,
+              ),
+            ),
+          ),
+        ),
+      );
+
+      await expectLater(future2, throwsA(isStateError));
+
+      verify(
+        observer.mutationError(
+          argThat(
+            isProviderObserverContext(
+              simpleProvider,
+              container,
+              mutation: isNotNull,
+            ),
+          ),
+          argThat(
+            isMutationContext(
+              isInvocation(
+                memberName: #delegated,
+                positionalArguments: [fn2],
+                kind: InvocationKind.method,
+                typeArguments: isEmpty,
+              ),
+            ),
+          ),
+          err,
+          stack,
+        ),
+      );
+
+      sub.read().reset();
+
+      verify(
+        observer.mutationReset(
+          argThat(
+            isProviderObserverContext(
+              simpleProvider,
+              container,
+              mutation: isNull,
+            ),
+          ),
+        ),
       );
     });
   });

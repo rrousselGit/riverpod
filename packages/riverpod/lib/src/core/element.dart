@@ -416,6 +416,17 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     );
   }
 
+  MutationContext? _currentMutationContext() =>
+      Zone.current[mutationZoneKey] as MutationContext?;
+
+  ProviderObserverContext _currentObserverContext() {
+    return ProviderObserverContext(
+      origin,
+      container,
+      mutation: _currentMutationContext(),
+    );
+  }
+
   void _notifyListeners(
     Result<StateT> newState,
     Result<StateT>? previousStateResult, {
@@ -491,31 +502,28 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     for (final observer in container.observers) {
       if (isMount) {
-        runTernaryGuarded(
+        runBinaryGuarded(
           observer.didAddProvider,
-          origin,
+          _currentObserverContext(),
           newState.stateOrNull,
-          container,
         );
       } else {
-        runQuaternaryGuarded(
+        runTernaryGuarded(
           observer.didUpdateProvider,
-          origin,
+          _currentObserverContext(),
           previousState,
           newState.stateOrNull,
-          container,
         );
       }
     }
 
     for (final observer in container.observers) {
       if (newState is ResultError<StateT>) {
-        runQuaternaryGuarded(
+        runTernaryGuarded(
           observer.providerDidFail,
-          origin,
+          _currentObserverContext(),
           newState.error,
           newState.stackTrace,
-          container,
         );
       }
     }
@@ -711,7 +719,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     ref._onDisposeListeners?.forEach(runGuarded);
 
     for (final observer in container.observers) {
-      runBinaryGuarded(observer.didDisposeProvider, origin, container);
+      runUnaryGuarded(observer.didDisposeProvider, _currentObserverContext());
     }
 
     ref._keepAliveLinks = null;

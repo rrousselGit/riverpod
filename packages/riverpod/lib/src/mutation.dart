@@ -2,8 +2,14 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 import 'package:meta/meta_meta.dart';
-import 'package:riverpod/src/internals.dart';
-import 'riverpod_annotation.dart';
+
+import 'internals.dart';
+
+// Mutation code. This should be in riverpod_annotation, but has to be here
+// for the sake of ProviderObserver.
+
+@internal
+const mutationZoneKey = #_mutation;
 
 /// {@template mutation}
 /// Declares a method of a notifier as a "mutation".
@@ -37,9 +43,8 @@ import 'riverpod_annotation.dart';
 /// ## How to define a mutation
 ///
 /// To define a mutation, we must first define a [Notifier].
-/// See [riverpod] for more information about defining notifiers. TL;DR,
-/// We need to define a class annotation by [riverpod], and that defines a `build`
-/// method:
+/// For that, we need to define a class annotation by `@riverpod`, and that defines
+/// a `build` method:
 ///
 /// ```dart
 /// @riverpod
@@ -413,30 +418,76 @@ abstract class _MutationBase<
     if (state is IdleMutationState<ValueT>) return;
 
     listenable.result = ResultData(copyWith(IdleMutationState<ValueT>._()));
+
+    final context = ProviderObserverContext(element.origin, element.container);
+
+    _notifyObserver((obs) => obs.mutationReset(context));
+  }
+
+  void _notifyObserver(void Function(ProviderObserver obs) cb) {
+    for (final observer in element.container.observers) {
+      runUnaryGuarded(cb, observer);
+    }
+  }
+
+  void _setState(MutationContext? mutationContext, MutationT mutation) {
+    listenable.result = Result.data(mutation);
+
+    final obsContext = ProviderObserverContext(
+      element.origin,
+      element.container,
+      mutation: mutationContext,
+    );
+
+    switch (mutation.state) {
+      case ErrorMutationState(:final error, :final stackTrace):
+        _notifyObserver(
+          (obs) => obs.mutationError(
+            obsContext,
+            mutationContext!,
+            error,
+            stackTrace,
+          ),
+        );
+
+      case SuccessMutationState(:final value):
+        _notifyObserver(
+          (obs) => obs.mutationSuccess(obsContext, mutationContext!, value),
+        );
+
+      case PendingMutationState():
+        _notifyObserver(
+          (obs) => obs.mutationStart(obsContext, mutationContext!),
+        );
+
+      default:
+    }
   }
 
   @protected
   Future<ValueT> mutateAsync(
+    Invocation invocation,
     FutureOr<ValueT> Function(ClassT clazz) cb,
-  ) async {
+  ) {
     element.flush();
+    final notifier = element.classListenable.value;
+    final mutationContext = MutationContext(invocation, notifier);
 
-    // ! is safe because of the flush() above
-    switch (element.classListenable.result!) {
-      case ResultError(:final error):
-        final stack = StackTrace.current;
-        listenable.result = Result.error(error, stack);
-        Error.throwWithStackTrace(error, stack);
-      case ResultData(:final state):
+    return runZoned(
+      zoneValues: {mutationZoneKey: mutationContext},
+      () async {
+        // ! is safe because of the flush() above
         final key = Object();
         try {
-          listenable.result = Result.data(
+          _setState(
+            mutationContext,
             copyWith(PendingMutationState<ValueT>._(), key: key),
           );
 
-          final result = await cb(state);
+          final result = await cb(notifier);
           if (key == _currentKey) {
-            listenable.result = Result.data(
+            _setState(
+              mutationContext,
               copyWith(SuccessMutationState<ValueT>._(result)),
             );
           }
@@ -445,14 +496,16 @@ abstract class _MutationBase<
           return result;
         } catch (err, stack) {
           if (key == _currentKey) {
-            listenable.result = Result.data(
+            _setState(
+              mutationContext,
               copyWith(ErrorMutationState<ValueT>._(err, stack)),
             );
           }
 
           rethrow;
         }
-    }
+      },
+    );
   }
 
   @override

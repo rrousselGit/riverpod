@@ -139,6 +139,23 @@ class _$SimpleElement extends $NotifierProviderElement<Simple, int> {
 }
 
 sealed class Simple$Increment extends MutationBase<int> {
+  /// Starts the mutation.
+  ///
+  /// This will first set the state to [PendingMutationState], then
+  /// will call [Simple.increment] with the provided parameters.
+  ///
+  /// After the method completes, the mutation state will be updated to either
+  /// [SuccessMutationState] or [ErrorMutationState] based on if the method
+  /// threw or not.
+  ///
+  /// Lastly, if the method completes without throwing, the Notifier's state
+  /// will be updated with the new value.
+  ///
+  /// **Note**:
+  /// If the notifier threw in its constructor, the mutation won't start
+  /// and [call] will throw.
+  /// This should generally never happen though, as Notifiers are not supposed
+  /// to have logic in their constructors.
   Future<int> call([int inc = 1]);
 }
 
@@ -156,9 +173,15 @@ final class _$Simple$Increment
 
   @override
   Future<int> call([int inc = 1]) {
-    return mutateAsync(($notifier) => $notifier.increment(
-          inc,
-        ));
+    return mutateAsync(
+      Invocation.method(
+        #increment,
+        [inc],
+      ),
+      ($notifier) => $notifier.increment(
+        inc,
+      ),
+    );
   }
 
   @override
@@ -167,6 +190,23 @@ final class _$Simple$Increment
 }
 
 sealed class Simple$IncrementOr extends MutationBase<int> {
+  /// Starts the mutation.
+  ///
+  /// This will first set the state to [PendingMutationState], then
+  /// will call [Simple.incrementOr] with the provided parameters.
+  ///
+  /// After the method completes, the mutation state will be updated to either
+  /// [SuccessMutationState] or [ErrorMutationState] based on if the method
+  /// threw or not.
+  ///
+  /// Lastly, if the method completes without throwing, the Notifier's state
+  /// will be updated with the new value.
+  ///
+  /// **Note**:
+  /// If the notifier threw in its constructor, the mutation won't start
+  /// and [call] will throw.
+  /// This should generally never happen though, as Notifiers are not supposed
+  /// to have logic in their constructors.
   Future<int> call();
 }
 
@@ -184,7 +224,13 @@ final class _$Simple$IncrementOr
 
   @override
   Future<int> call() {
-    return mutateAsync(($notifier) => $notifier.incrementOr());
+    return mutateAsync(
+      Invocation.method(
+        #incrementOr,
+        [],
+      ),
+      ($notifier) => $notifier.incrementOr(),
+    );
   }
 
   @override
@@ -193,6 +239,23 @@ final class _$Simple$IncrementOr
 }
 
 sealed class Simple$Delegated extends MutationBase<int> {
+  /// Starts the mutation.
+  ///
+  /// This will first set the state to [PendingMutationState], then
+  /// will call [Simple.delegated] with the provided parameters.
+  ///
+  /// After the method completes, the mutation state will be updated to either
+  /// [SuccessMutationState] or [ErrorMutationState] based on if the method
+  /// threw or not.
+  ///
+  /// Lastly, if the method completes without throwing, the Notifier's state
+  /// will be updated with the new value.
+  ///
+  /// **Note**:
+  /// If the notifier threw in its constructor, the mutation won't start
+  /// and [call] will throw.
+  /// This should generally never happen though, as Notifiers are not supposed
+  /// to have logic in their constructors.
   Future<int> call(Future<int> Function() fn);
 }
 
@@ -210,9 +273,15 @@ final class _$Simple$Delegated
 
   @override
   Future<int> call(Future<int> Function() fn) {
-    return mutateAsync(($notifier) => $notifier.delegated(
-          fn,
-        ));
+    return mutateAsync(
+      Invocation.method(
+        #delegated,
+        [fn],
+      ),
+      ($notifier) => $notifier.delegated(
+        fn,
+      ),
+    );
   }
 
   @override
@@ -432,6 +501,23 @@ class _$SimpleFamilyElement
 }
 
 sealed class SimpleFamily$Increment extends MutationBase<int> {
+  /// Starts the mutation.
+  ///
+  /// This will first set the state to [PendingMutationState], then
+  /// will call [SimpleFamily.increment] with the provided parameters.
+  ///
+  /// After the method completes, the mutation state will be updated to either
+  /// [SuccessMutationState] or [ErrorMutationState] based on if the method
+  /// threw or not.
+  ///
+  /// Lastly, if the method completes without throwing, the Notifier's state
+  /// will be updated with the new value.
+  ///
+  /// **Note**:
+  /// If the notifier threw in its constructor, the mutation won't start
+  /// and [call] will throw.
+  /// This should generally never happen though, as Notifiers are not supposed
+  /// to have logic in their constructors.
   Future<int> call([int inc = 1]);
 }
 
@@ -449,9 +535,15 @@ final class _$SimpleFamily$Increment
 
   @override
   Future<int> call([int inc = 1]) {
-    return mutateAsync(($notifier) => $notifier.increment(
-          inc,
-        ));
+    return mutateAsync(
+      Invocation.method(
+        #increment,
+        [inc],
+      ),
+      ($notifier) => $notifier.increment(
+        inc,
+      ),
+    );
   }
 
   @override
@@ -460,6 +552,23 @@ final class _$SimpleFamily$Increment
 }
 
 sealed class SimpleFamily$IncrementOr extends MutationBase<int> {
+  /// Starts the mutation.
+  ///
+  /// This will first set the state to [PendingMutationState], then
+  /// will call [SimpleFamily.incrementOr] with the provided parameters.
+  ///
+  /// After the method completes, the mutation state will be updated to either
+  /// [SuccessMutationState] or [ErrorMutationState] based on if the method
+  /// threw or not.
+  ///
+  /// Lastly, if the method completes without throwing, the Notifier's state
+  /// will be updated with the new value.
+  ///
+  /// **Note**:
+  /// If the notifier threw in its constructor, the mutation won't start
+  /// and [call] will throw.
+  /// This should generally never happen though, as Notifiers are not supposed
+  /// to have logic in their constructors.
   Future<int> call();
 }
 
@@ -477,7 +586,13 @@ final class _$SimpleFamily$IncrementOr
 
   @override
   Future<int> call() {
-    return mutateAsync(($notifier) => $notifier.incrementOr());
+    return mutateAsync(
+      Invocation.method(
+        #incrementOr,
+        [],
+      ),
+      ($notifier) => $notifier.incrementOr(),
+    );
   }
 
   @override
@@ -599,6 +714,23 @@ class _$SimpleAsyncElement
 }
 
 sealed class SimpleAsync$Increment extends MutationBase<int> {
+  /// Starts the mutation.
+  ///
+  /// This will first set the state to [PendingMutationState], then
+  /// will call [SimpleAsync.increment] with the provided parameters.
+  ///
+  /// After the method completes, the mutation state will be updated to either
+  /// [SuccessMutationState] or [ErrorMutationState] based on if the method
+  /// threw or not.
+  ///
+  /// Lastly, if the method completes without throwing, the Notifier's state
+  /// will be updated with the new value.
+  ///
+  /// **Note**:
+  /// If the notifier threw in its constructor, the mutation won't start
+  /// and [call] will throw.
+  /// This should generally never happen though, as Notifiers are not supposed
+  /// to have logic in their constructors.
   Future<int> call([int inc = 1]);
 }
 
@@ -616,9 +748,15 @@ final class _$SimpleAsync$Increment
 
   @override
   Future<int> call([int inc = 1]) {
-    return mutateAsync(($notifier) => $notifier.increment(
-          inc,
-        ));
+    return mutateAsync(
+      Invocation.method(
+        #increment,
+        [inc],
+      ),
+      ($notifier) => $notifier.increment(
+        inc,
+      ),
+    );
   }
 
   @override
@@ -627,6 +765,23 @@ final class _$SimpleAsync$Increment
 }
 
 sealed class SimpleAsync$Delegated extends MutationBase<int> {
+  /// Starts the mutation.
+  ///
+  /// This will first set the state to [PendingMutationState], then
+  /// will call [SimpleAsync.delegated] with the provided parameters.
+  ///
+  /// After the method completes, the mutation state will be updated to either
+  /// [SuccessMutationState] or [ErrorMutationState] based on if the method
+  /// threw or not.
+  ///
+  /// Lastly, if the method completes without throwing, the Notifier's state
+  /// will be updated with the new value.
+  ///
+  /// **Note**:
+  /// If the notifier threw in its constructor, the mutation won't start
+  /// and [call] will throw.
+  /// This should generally never happen though, as Notifiers are not supposed
+  /// to have logic in their constructors.
   Future<int> call(Future<int> Function() fn);
 }
 
@@ -644,9 +799,15 @@ final class _$SimpleAsync$Delegated
 
   @override
   Future<int> call(Future<int> Function() fn) {
-    return mutateAsync(($notifier) => $notifier.delegated(
-          fn,
-        ));
+    return mutateAsync(
+      Invocation.method(
+        #delegated,
+        [fn],
+      ),
+      ($notifier) => $notifier.delegated(
+        fn,
+      ),
+    );
   }
 
   @override
@@ -844,6 +1005,23 @@ class _$SimpleAsync2Element
 }
 
 sealed class SimpleAsync2$Increment extends MutationBase<int> {
+  /// Starts the mutation.
+  ///
+  /// This will first set the state to [PendingMutationState], then
+  /// will call [SimpleAsync2.increment] with the provided parameters.
+  ///
+  /// After the method completes, the mutation state will be updated to either
+  /// [SuccessMutationState] or [ErrorMutationState] based on if the method
+  /// threw or not.
+  ///
+  /// Lastly, if the method completes without throwing, the Notifier's state
+  /// will be updated with the new value.
+  ///
+  /// **Note**:
+  /// If the notifier threw in its constructor, the mutation won't start
+  /// and [call] will throw.
+  /// This should generally never happen though, as Notifiers are not supposed
+  /// to have logic in their constructors.
   Future<int> call();
 }
 
@@ -861,7 +1039,13 @@ final class _$SimpleAsync2$Increment
 
   @override
   Future<int> call() {
-    return mutateAsync(($notifier) => $notifier.increment());
+    return mutateAsync(
+      Invocation.method(
+        #increment,
+        [],
+      ),
+      ($notifier) => $notifier.increment(),
+    );
   }
 
   @override
@@ -1053,6 +1237,23 @@ class _$GenericElement<T extends num>
 }
 
 sealed class Generic$Increment extends MutationBase<int> {
+  /// Starts the mutation.
+  ///
+  /// This will first set the state to [PendingMutationState], then
+  /// will call [Generic.increment] with the provided parameters.
+  ///
+  /// After the method completes, the mutation state will be updated to either
+  /// [SuccessMutationState] or [ErrorMutationState] based on if the method
+  /// threw or not.
+  ///
+  /// Lastly, if the method completes without throwing, the Notifier's state
+  /// will be updated with the new value.
+  ///
+  /// **Note**:
+  /// If the notifier threw in its constructor, the mutation won't start
+  /// and [call] will throw.
+  /// This should generally never happen though, as Notifiers are not supposed
+  /// to have logic in their constructors.
   Future<int> call();
 }
 
@@ -1070,7 +1271,13 @@ final class _$Generic$Increment
 
   @override
   Future<int> call() {
-    return mutateAsync(($notifier) => $notifier.increment());
+    return mutateAsync(
+      Invocation.method(
+        #increment,
+        [],
+      ),
+      ($notifier) => $notifier.increment(),
+    );
   }
 
   @override
@@ -1176,6 +1383,23 @@ class _$GenericMutElement
 }
 
 sealed class GenericMut$Increment extends MutationBase<int> {
+  /// Starts the mutation.
+  ///
+  /// This will first set the state to [PendingMutationState], then
+  /// will call [GenericMut.increment] with the provided parameters.
+  ///
+  /// After the method completes, the mutation state will be updated to either
+  /// [SuccessMutationState] or [ErrorMutationState] based on if the method
+  /// threw or not.
+  ///
+  /// Lastly, if the method completes without throwing, the Notifier's state
+  /// will be updated with the new value.
+  ///
+  /// **Note**:
+  /// If the notifier threw in its constructor, the mutation won't start
+  /// and [call] will throw.
+  /// This should generally never happen though, as Notifiers are not supposed
+  /// to have logic in their constructors.
   Future<int> call<T extends num>(T value);
 }
 
@@ -1193,14 +1417,176 @@ final class _$GenericMut$Increment
 
   @override
   Future<int> call<T extends num>(T value) {
-    return mutateAsync(($notifier) => $notifier.increment<T>(
-          value,
-        ));
+    return mutateAsync(
+      Invocation.genericMethod(
+        #increment,
+        [T],
+        [value],
+      ),
+      ($notifier) => $notifier.increment<T>(
+        value,
+      ),
+    );
   }
 
   @override
   _$GenericMut$Increment copyWith(MutationState<int> state, {Object? key}) =>
       _$GenericMut$Increment(element, state: state, key: key);
+}
+
+@ProviderFor(FailingCtor)
+const failingCtorProvider = FailingCtorProvider._();
+
+final class FailingCtorProvider extends $NotifierProvider<FailingCtor, int> {
+  const FailingCtorProvider._(
+      {super.runNotifierBuildOverride, FailingCtor Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'failingCtorProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final FailingCtor Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$failingCtorHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  FailingCtor create() => _createCb?.call() ?? FailingCtor();
+
+  @$internal
+  @override
+  FailingCtorProvider $copyWithCreate(
+    FailingCtor Function() create,
+  ) {
+    return FailingCtorProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  FailingCtorProvider $copyWithBuild(
+    int Function(
+      Ref,
+      FailingCtor,
+    ) build,
+  ) {
+    return FailingCtorProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  _$FailingCtorElement $createElement($ProviderPointer pointer) =>
+      _$FailingCtorElement(this, pointer);
+
+  ProviderListenable<FailingCtor$Increment> get increment =>
+      LazyProxyListenable<FailingCtor$Increment, int>(
+        this,
+        (element) {
+          element as _$FailingCtorElement;
+
+          return element._$increment;
+        },
+      );
+}
+
+String _$failingCtorHash() => r'6cdef257a2d783fa5a606b411be0d23744766cdc';
+
+abstract class _$FailingCtor extends $Notifier<int> {
+  int build();
+  @$internal
+  @override
+  int runBuild() => build();
+}
+
+class _$FailingCtorElement extends $NotifierProviderElement<FailingCtor, int> {
+  _$FailingCtorElement(super.provider, super.pointer) {
+    _$increment.result = Result.data(_$FailingCtor$Increment(this));
+  }
+  final _$increment = ProxyElementValueListenable<_$FailingCtor$Increment>();
+  @override
+  void mount() {
+    super.mount();
+    _$increment.result!.stateOrNull!.reset();
+  }
+
+  @override
+  void visitChildren({
+    required void Function(ProviderElement element) elementVisitor,
+    required void Function(ProxyElementValueListenable element)
+        listenableVisitor,
+  }) {
+    super.visitChildren(
+      elementVisitor: elementVisitor,
+      listenableVisitor: listenableVisitor,
+    );
+
+    listenableVisitor(_$increment);
+  }
+}
+
+sealed class FailingCtor$Increment extends MutationBase<int> {
+  /// Starts the mutation.
+  ///
+  /// This will first set the state to [PendingMutationState], then
+  /// will call [FailingCtor.increment] with the provided parameters.
+  ///
+  /// After the method completes, the mutation state will be updated to either
+  /// [SuccessMutationState] or [ErrorMutationState] based on if the method
+  /// threw or not.
+  ///
+  /// Lastly, if the method completes without throwing, the Notifier's state
+  /// will be updated with the new value.
+  ///
+  /// **Note**:
+  /// If the notifier threw in its constructor, the mutation won't start
+  /// and [call] will throw.
+  /// This should generally never happen though, as Notifiers are not supposed
+  /// to have logic in their constructors.
+  Future<int> call([int inc = 1]);
+}
+
+final class _$FailingCtor$Increment
+    extends $SyncMutationBase<int, _$FailingCtor$Increment, FailingCtor>
+    implements FailingCtor$Increment {
+  _$FailingCtor$Increment(this.element, {super.state, super.key});
+
+  @override
+  final _$FailingCtorElement element;
+
+  @override
+  ProxyElementValueListenable<_$FailingCtor$Increment> get listenable =>
+      element._$increment;
+
+  @override
+  Future<int> call([int inc = 1]) {
+    return mutateAsync(
+      Invocation.method(
+        #increment,
+        [inc],
+      ),
+      ($notifier) => $notifier.increment(
+        inc,
+      ),
+    );
+  }
+
+  @override
+  _$FailingCtor$Increment copyWith(MutationState<int> state, {Object? key}) =>
+      _$FailingCtor$Increment(element, state: state, key: key);
 }
 
 // ignore_for_file: type=lint

@@ -1860,7 +1860,7 @@ void main() {
 
     group('.notifyListeners', () {
       test('If called after initialization, notify listeners', () {
-        final observer = ProviderObserverMock();
+        final observer = ObserverMock();
         final listener = Listener<int>();
         final selfListener = Listener<int>();
         final container = ProviderContainer.test(observers: [observer]);
@@ -1873,7 +1873,13 @@ void main() {
 
         container.listen(provider, listener.call, fireImmediately: true);
 
-        verifyOnly(observer, observer.didAddProvider(provider, 0, container));
+        verifyOnly(
+          observer,
+          observer.didAddProvider(
+            argThat(isProviderObserverContext(provider, container)),
+            0,
+          ),
+        );
         verifyOnly(listener, listener(null, 0));
         verifyOnly(selfListener, selfListener(null, 0));
 
@@ -1883,14 +1889,18 @@ void main() {
         verifyOnly(selfListener, selfListener(0, 0));
         verifyOnly(
           observer,
-          observer.didUpdateProvider(provider, 0, 0, container),
+          observer.didUpdateProvider(
+            argThat(isProviderObserverContext(provider, container)),
+            0,
+            0,
+          ),
         );
       });
 
       test(
           'can be invoked during first initialization, and does not notify listeners',
           () {
-        final observer = ProviderObserverMock();
+        final observer = ObserverMock();
         final selfListener = Listener<int>();
         final listener = Listener<int>();
         final container = ProviderContainer.test(observers: [observer]);
@@ -1905,7 +1915,13 @@ void main() {
 
         container.listen(provider, listener.call, fireImmediately: true);
 
-        verifyOnly(observer, observer.didAddProvider(provider, 0, container));
+        verifyOnly(
+          observer,
+          observer.didAddProvider(
+            argThat(isProviderObserverContext(provider, container)),
+            0,
+          ),
+        );
         verifyOnly(listener, listener(null, 0));
         verifyOnly(selfListener, selfListener(null, 0));
       });
@@ -1913,7 +1929,7 @@ void main() {
       test(
           'can be invoked during a re-initialization, and does not notify listeners',
           () {
-        final observer = ProviderObserverMock();
+        final observer = ObserverMock();
         final listener = Listener<Object>();
         final selfListener = Listener<Object>();
         final container = ProviderContainer.test(observers: [observer]);
@@ -1936,7 +1952,10 @@ void main() {
 
         verifyOnly(
           observer,
-          observer.didAddProvider(provider, firstValue, container),
+          observer.didAddProvider(
+            argThat(isProviderObserverContext(provider, container)),
+            firstValue,
+          ),
         );
         verifyOnly(selfListener, selfListener(null, firstValue));
         verifyOnly(listener, listener(null, firstValue));
@@ -1947,13 +1966,16 @@ void main() {
 
         verifyOnly(selfListener, selfListener(firstValue, secondValue));
         verifyOnly(listener, listener(firstValue, secondValue));
-        verify(observer.didDisposeProvider(provider, container));
+        verify(
+          observer.didDisposeProvider(
+            argThat(isProviderObserverContext(provider, container)),
+          ),
+        );
         verify(
           observer.didUpdateProvider(
-            provider,
+            argThat(isProviderObserverContext(provider, container)),
             firstValue,
             secondValue,
-            container,
           ),
         ).called(1);
         verifyNoMoreInteractions(observer);
