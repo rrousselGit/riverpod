@@ -58,6 +58,13 @@ export 'package:riverpod/src/internals.dart'
         $NotifierProviderElement,
         $Notifier;
 
+// ignore: invalid_export_of_internal_element, used by the generator.
+export 'package:riverpod/src/mutation.dart'
+    show $SyncMutationBase, $AsyncMutationBase;
+// Separate export to avoid silencing valid @internal issues
+export 'package:riverpod/src/mutation.dart'
+    hide $SyncMutationBase, $AsyncMutationBase;
+
 export 'src/riverpod_annotation.dart';
 
 /// An implementation detail of `riverpod_generator`.

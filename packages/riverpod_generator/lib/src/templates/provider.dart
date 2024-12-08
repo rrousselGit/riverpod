@@ -3,6 +3,7 @@ import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import '../models.dart';
 import '../riverpod_generator.dart';
 import '../type.dart';
+import 'element.dart';
 import 'parameters.dart';
 import 'template.dart';
 
@@ -162,9 +163,9 @@ ${provider.doc} final class $name$_genericsDefinition
         buffer.writeln('''
   @\$internal
   @override
-  ${provider.elementName}<${provider.valueTypeDisplayString}> \$createElement(
+  ${provider.internalElementName}<${provider.valueTypeDisplayString}> \$createElement(
     \$ProviderPointer pointer
-  ) => ${provider.elementName}(this, pointer);
+  ) => ${provider.internalElementName}(this, pointer);
 
   @override
   ${provider.providerTypeName}$_generics \$copyWithCreate(
@@ -179,7 +180,7 @@ ${provider.doc} final class $name$_genericsDefinition
 
         _writeFunctionalCreate(buffer);
 
-      case ClassBasedProviderDeclaration():
+      case ClassBasedProviderDeclaration(:final mutations):
         final notifierType = '${provider.name}$_generics';
 
         buffer.writeln('''
@@ -208,16 +209,52 @@ ${provider.doc} final class $name$_genericsDefinition
       runNotifierBuildOverride: build
     );
   }
-
-  @\$internal
-  @override
-  ${provider.elementName}<$notifierType, ${provider.valueTypeDisplayString}> \$createElement(
-    \$ProviderPointer pointer
-  ) => ${provider.elementName}(this, pointer);
 ''');
+
+        _classCreateElement(mutations, buffer, notifierType);
+
+        for (final mutation in mutations) {
+          buffer.writeln('''
+  ProviderListenable<${mutation.generatedMutationInterfaceName}> get ${mutation.name}
+    => LazyProxyListenable<${mutation.generatedMutationInterfaceName}, ${provider.exposedTypeDisplayString}>(
+      this,
+      (element) {
+        element as ${provider.generatedElementName}$_generics;
+
+        return element.${mutation.elementFieldName};
+      },
+    );
+        ''');
+        }
     }
 
     _writeEqual(buffer);
+  }
+
+  void _classCreateElement(
+    List<Mutation> mutations,
+    StringBuffer buffer,
+    String notifierType,
+  ) {
+    if (mutations.isEmpty) {
+      buffer.writeln('''
+  @\$internal
+  @override
+  ${provider.internalElementName}<$notifierType, ${provider.valueTypeDisplayString}> \$createElement(
+    \$ProviderPointer pointer
+  ) => ${provider.internalElementName}(this, pointer);
+''');
+
+      return;
+    }
+
+    buffer.writeln('''
+  @\$internal
+  @override
+  ${provider.generatedElementName}$_generics \$createElement(
+    \$ProviderPointer pointer
+  ) => ${provider.generatedElementName}(this, pointer);
+''');
   }
 
   void _writeOverrideWithValue(StringBuffer buffer) {

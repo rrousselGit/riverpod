@@ -10,6 +10,7 @@ import 'package:test/test.dart' as test;
 import 'common/env.dart';
 import 'common/pragma.dart';
 import 'internals.dart';
+import 'mutation.dart';
 
 part 'core/modifiers/select_async.dart';
 part 'core/provider/provider.dart';

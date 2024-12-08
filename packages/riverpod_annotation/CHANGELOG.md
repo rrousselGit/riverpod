@@ -3,6 +3,9 @@
 - **Breaking** various `package:riverpod` objects are no-longer exported.
   If you wish to use providers by hand, you will have to separately import
   `package:riverpod/riverpod.dart`.
+- Added `@mutation` support.
+  Mutations are a way to enable your UI to easily listen to the status of side-effects.
+  See the documentation of `@mutation` for further information.
 - Made `@Riverpod` final
 - Added `@Dependencies([...])`, for lint purposes.
   This is similar to `@Riverpod(dependencies: [...])`, but is applied on

@@ -138,8 +138,10 @@ base mixin $FutureModifier<StateT> on ProviderBase<AsyncValue<StateT>> {
   ///   return await http.get('${configs.host}/products');
   /// });
   /// ```
-  Refreshable<Future<StateT>> get future {
-    return ProviderElementProxy<AsyncValue<StateT>, Future<StateT>>(
+  Refreshable<Future<StateT>> get future => _future;
+
+  _ProviderRefreshable<Future<StateT>, AsyncValue<StateT>> get _future {
+    return ProviderElementProxy<Future<StateT>, AsyncValue<StateT>>(
       this,
       (element) {
         element as FutureModifierElement<StateT>;
@@ -181,10 +183,10 @@ base mixin $FutureModifier<StateT> on ProviderBase<AsyncValue<StateT>> {
   ProviderListenable<Future<Output>> selectAsync<Output>(
     Output Function(StateT data) selector,
   ) {
-    return _AsyncSelector<StateT, Output>(
+    return _AsyncSelector<StateT, Output, AsyncValue<StateT>>(
       selector: selector,
       provider: this,
-      future: future,
+      future: _future,
     );
   }
 }
@@ -290,12 +292,11 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
     asyncTransition(value, seamless: seamless);
 
     for (final observer in container.observers) {
-      runQuaternaryGuarded(
+      runTernaryGuarded(
         observer.providerDidFail,
-        provider,
+        _currentObserverContext(),
         value.error,
         value.stackTrace,
-        container,
       );
     }
 

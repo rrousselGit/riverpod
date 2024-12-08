@@ -14,7 +14,7 @@
     }
   )
   ```
-
+- Added support for mutations. See also `@mutation` for further information.
 - Added support for `@Riverpod(retry: ...)`
 
 ## 2.6.3 - 2024-11-18

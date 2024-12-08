@@ -17,13 +17,15 @@ typedef Create<CreatedT> = CreatedT Function(Ref ref);
 
 /// A callback used to catches errors
 @internal
-typedef OnError = void Function(Object, StackTrace);
+typedef OnError = void Function(Object error, StackTrace stackTrace);
 
 /// A base class for _all_ providers.
 @immutable
 // Marked as "base" because linters/generators rely on fields on const provider instances.
 abstract base class ProviderBase<StateT> extends ProviderOrFamily
-    with ProviderListenable<StateT>
+    with
+        ProviderListenable<StateT>,
+        ProviderListenableWithOrigin<StateT, StateT>
     implements Refreshable<StateT>, _ProviderOverride {
   /// A base class for _all_ providers.
   const ProviderBase({
@@ -81,7 +83,7 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
       source: source,
       listenedElement: element,
       weak: weak,
-      listener: (prev, next) => listener(prev as StateT?, next as StateT),
+      listener: listener,
       onError: onError,
     );
   }

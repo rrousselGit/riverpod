@@ -23,7 +23,10 @@ var _debugIsRunningSelector = false;
 
 /// An internal class for `ProviderBase.select`.
 @sealed
-class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
+class _ProviderSelector<InputT, OutputT, OriginT>
+    with
+        ProviderListenable<OutputT>,
+        ProviderListenableWithOrigin<OutputT, OriginT> {
   /// An internal class for `ProviderBase.select`.
   _ProviderSelector({
     required this.provider,
@@ -31,7 +34,7 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
   });
 
   /// The provider that was selected
-  final ProviderListenable<InputT> provider;
+  final ProviderListenableWithOrigin<InputT, OriginT> provider;
 
   /// The selector applied
   final OutputT Function(InputT) selector;
@@ -78,7 +81,7 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
   }
 
   @override
-  SelectorSubscription<InputT, OutputT> addListener(
+  ProviderSubscriptionWithOrigin<OutputT, OriginT> addListener(
     Node node,
     void Function(OutputT? previous, OutputT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
@@ -116,9 +119,12 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
       );
     }
 
-    return SelectorSubscription(
+    return ProviderSubscriptionView<OutputT, OriginT>(
       innerSubscription: sub,
-      () {
+      read: () {
+        // flushes the provider
+        sub.read();
+
         // Using ! because since `sub.read` flushes the inner subscription,
         // it is guaranteed that `lastSelectedValue` is not null.
         return switch (lastSelectedValue!) {
@@ -131,42 +137,5 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
         };
       },
     );
-  }
-}
-
-@internal
-final class SelectorSubscription<InT, OutT>
-    extends DelegatingProviderSubscription<OutT, Object?> {
-  SelectorSubscription(
-    this._read, {
-    this.onClose,
-    required this.innerSubscription,
-  });
-
-  @override
-  final ProviderSubscriptionWithOrigin<InT, Object?> innerSubscription;
-
-  final void Function()? onClose;
-  final OutT Function() _read;
-
-  @override
-  void close() {
-    if (closed) return;
-
-    onClose?.call();
-    super.close();
-  }
-
-  @override
-  OutT read() {
-    if (closed) {
-      throw StateError(
-        'called ProviderSubscription.read on a subscription that was closed',
-      );
-    }
-    // flushes the provider
-    innerSubscription.read();
-
-    return _read();
   }
 }

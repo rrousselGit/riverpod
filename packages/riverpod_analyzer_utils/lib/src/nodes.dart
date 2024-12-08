@@ -9,6 +9,7 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:collection/collection.dart';
 import 'package:crypto/crypto.dart';
@@ -34,7 +35,7 @@ part 'nodes/providers/identifiers.dart';
 
 part 'nodes/provider_for.dart';
 part 'nodes/provider_or_family.dart';
-part 'nodes/riverpod.dart';
+part 'nodes/annotation.dart';
 part 'nodes/provider_listenable.dart';
 part 'nodes/ref_invocation.dart';
 part 'nodes/widget_ref_invocation.dart';

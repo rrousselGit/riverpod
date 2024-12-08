@@ -25,12 +25,12 @@ void main() {
       expect(providerElement.subscriptions, null);
       expect(
         providerElement.dependents,
-        [isA<SelectorSubscription<Future<int>, int>>()],
+        [isA<ProviderSubscription<int>>()],
       );
       expect(providerElement.weakDependents, isEmpty);
 
       expect(depElement.subscriptions, [
-        isA<SelectorSubscription<Future<int>, int>>(),
+        isA<ProviderSubscription<int>>(),
       ]);
       expect(depElement.dependents, isEmpty);
       expect(depElement.weakDependents, isEmpty);

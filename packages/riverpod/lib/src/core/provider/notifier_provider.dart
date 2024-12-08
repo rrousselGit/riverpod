@@ -121,7 +121,7 @@ abstract base class $ClassProvider< //
   });
 
   Refreshable<NotifierT> get notifier {
-    return ProviderElementProxy<StateT, NotifierT>(
+    return ProviderElementProxy<NotifierT, StateT>(
       this,
       (element) =>
           (element as ClassProviderElement<NotifierT, StateT, CreatedT>)

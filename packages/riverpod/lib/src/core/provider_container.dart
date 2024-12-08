@@ -778,7 +778,7 @@ class ProviderContainer implements Node {
     );
 
     switch (sub) {
-      case ProviderSubscriptionImpl():
+      case final ProviderSubscriptionImpl<Object?, Object?> sub:
         sub._listenedElement.addDependentSubscription(sub);
     }
 
@@ -804,16 +804,12 @@ class ProviderContainer implements Node {
 
   /// {@macro riverpod.refresh}
   StateT refresh<StateT>(Refreshable<StateT> refreshable) {
-    ProviderBase<Object?> providerToRefresh;
-
-    switch (refreshable) {
-      case ProviderBase<StateT>():
-        providerToRefresh = refreshable;
-      case _ProviderRefreshable<StateT>(:final provider):
-        providerToRefresh = provider;
-    }
-
+    final providerToRefresh = switch (refreshable) {
+      ProviderBase<StateT>() => refreshable,
+      _ProviderRefreshable<Object?, Object?>(:final provider) => provider
+    };
     invalidate(providerToRefresh);
+
     return read(refreshable);
   }
 
@@ -977,6 +973,7 @@ class ProviderContainer implements Node {
   void dispose() => _dispose(updateChildren: true);
 
   /// Traverse the [ProviderElement]s associated with this [ProviderContainer].
+  @internal
   Iterable<ProviderElement> getAllProviderElements() {
     return _pointerManager
         .listProviderPointers()
@@ -990,6 +987,7 @@ class ProviderContainer implements Node {
   /// This is fairly expensive and should be avoided as much as possible.
   /// If you do not need for providers to be sorted, consider using [getAllProviderElements]
   /// instead, which returns an unsorted list and is significantly faster.
+  @internal
   Iterable<ProviderElement> getAllProviderElementsInOrder() sync* {
     final visitedNodes = HashSet<ProviderElement>();
     final queue = DoubleLinkedQueue<ProviderElement>();
@@ -1064,6 +1062,44 @@ extension ProviderContainerTest on ProviderContainer {
   ProviderPointerManager get pointerManager => _pointerManager;
 }
 
+/// Information about the pending mutation, when [ProviderObserver] emits
+/// an event while a mutation is in progress.
+class MutationContext {
+  @internal
+  MutationContext(this.invocation, this.notifier);
+
+  /// Information about the method invoked by the mutation, and its arguments.
+  final Invocation invocation;
+
+  /// The notifier that triggered the mutation.
+  final NotifierBase<Object?, Object?> notifier;
+}
+
+/// Information about the [ProviderObserver] event.
+class ProviderObserverContext {
+  @internal
+  ProviderObserverContext(
+    this.provider,
+    this.container, {
+    this.mutation,
+  });
+
+  /// The provider that triggered the event.
+  final ProviderBase<Object?> provider;
+
+  /// The container that owns [provider]'s state.
+  final ProviderContainer container;
+
+  /// The pending mutation while the observer was called.
+  ///
+  /// Pretty much all observer events may be triggered by a mutation under some
+  /// conditions.
+  /// For example, if a mutation refreshes another provider, then
+  /// [ProviderObserver.didDisposeProvider] will contain the mutation that
+  /// disposed the provider.
+  final MutationContext? mutation;
+}
+
 /// An object that listens to the changes of a [ProviderContainer].
 ///
 /// This can be used for logging or making devtools.
@@ -1077,35 +1113,92 @@ abstract class ProviderObserver {
   ///
   /// [value] will be `null` if the provider threw during initialization.
   void didAddProvider(
-    ProviderBase<Object?> provider,
+    ProviderObserverContext context,
     Object? value,
-    ProviderContainer container,
   ) {}
 
   /// A provider emitted an error, be it by throwing during initialization
   /// or by having a [Future]/[Stream] emit an error
   void providerDidFail(
-    ProviderBase<Object?> provider,
+    ProviderObserverContext context,
     Object error,
     StackTrace stackTrace,
-    ProviderContainer container,
   ) {}
 
   /// Called by providers when they emit a notification.
   ///
   /// - [newValue] will be `null` if the provider threw during initialization.
   /// - [previousValue] will be `null` if the previous build threw during initialization.
+  ///
+  /// If the change is caused by a "mutation", [mutation] will be the invocation
+  /// that caused the state change.
+  /// This includes when a mutation manually calls `state=`:
+  ///
+  /// ```dart
+  /// @riverpod
+  /// class Example extends _$Example {
+  ///   @override
+  ///   int count() => 0;
+  ///
+  ///   @mutation
+  ///   int increment() {
+  ///     state++; // This will trigger `didUpdateProvider` and "mutation" will be `#increment`
+  ///
+  ///     // ...
+  ///   }
+  /// }
+  /// ```
   void didUpdateProvider(
-    ProviderBase<Object?> provider,
+    ProviderObserverContext context,
     Object? previousValue,
     Object? newValue,
-    ProviderContainer container,
   ) {}
 
   /// A provider was disposed
-  void didDisposeProvider(
-    ProviderBase<Object?> provider,
-    ProviderContainer container,
+  void didDisposeProvider(ProviderObserverContext context) {}
+
+  /// A mutation was reset.
+  ///
+  /// This includes both manual calls to [MutationBase.reset] and automatic
+  /// resets.
+  ///
+  /// {@macro auto_reset}
+  void mutationReset(ProviderObserverContext context) {}
+
+  /// A mutation was started.
+  ///
+  /// {@template obs_mutation_arg}
+  /// [mutation] is strictly the same as [ProviderObserverContext.mutation].
+  /// It is provided as a convenience, as this life-cycle is guaranteed
+  /// to have a non-null [ProviderObserverContext.mutation].
+  /// {@endtemplate}
+  void mutationStart(
+    ProviderObserverContext context,
+    MutationContext mutation,
+  ) {}
+
+  /// A mutation failed.
+  ///
+  /// [error] is the error thrown by the mutation.
+  /// [stackTrace] is the stack trace of the error.
+  ///
+  /// {@macro obs_mutation_arg}
+  void mutationError(
+    ProviderObserverContext context,
+    MutationContext mutation,
+    Object error,
+    StackTrace stackTrace,
+  ) {}
+
+  /// A mutation succeeded.
+  ///
+  /// [result] is the value returned by the mutation.
+  ///
+  /// {@macro obs_mutation_arg}
+  void mutationSuccess(
+    ProviderObserverContext context,
+    MutationContext mutation,
+    Object? result,
   ) {}
 }
 

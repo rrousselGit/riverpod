@@ -367,7 +367,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   Map<ProviderListenable<Object?>, ProviderSubscription<Object?>>?
       _oldDependencies;
   final _listeners = <ProviderSubscription<Object?>>[];
-  List<_ListenManual<Object?>>? _manualListeners;
+  List<ProviderSubscription<Object?>>? _manualListeners;
   bool? _visible;
 
   Iterable<ProviderSubscription> get _allSubscriptions sync* {
@@ -532,39 +532,24 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
     // be used inside initState.
     final container = ProviderScope.containerOf(this, listen: false);
 
-    final sub = _ListenManual(
-      container.listen<T>(
-        provider,
-        listener,
-        onError: onError,
-        fireImmediately: fireImmediately,
-      ) as ProviderSubscriptionWithOrigin<T, Object?>,
-      this,
+    final innerSubscription = container.listen<T>(
+      provider,
+      listener,
+      onError: onError,
+      fireImmediately: fireImmediately,
+      // ignore: invalid_use_of_internal_member, from riverpod
+    ) as ProviderSubscriptionWithOrigin<T, Object?>;
+
+    // ignore: invalid_use_of_internal_member, from riverpod
+    late final ProviderSubscriptionView<T, Object?> sub;
+    sub = ProviderSubscriptionView<T, Object?>(
+      innerSubscription: innerSubscription,
+      onClose: () => _manualListeners?.remove(sub),
+      read: innerSubscription.read,
     );
     _applyVisibility(sub);
     listeners.add(sub);
 
     return sub;
   }
-}
-
-final class _ListenManual<T>
-    // ignore: invalid_use_of_internal_member
-    extends DelegatingProviderSubscription<T, Object?> {
-  _ListenManual(this.innerSubscription, this._element);
-
-  @override
-  final ProviderSubscriptionWithOrigin<T, Object?> innerSubscription;
-  final ConsumerStatefulElement _element;
-
-  @override
-  void close() {
-    if (!closed) {
-      _element._manualListeners?.remove(this);
-    }
-    super.close();
-  }
-
-  @override
-  T read() => innerSubscription.read();
 }
