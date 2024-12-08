@@ -1,5 +1,8 @@
 ## Unreleased build
 
+- **Breaking**: ProviderObserver methods have been updated to take a `ProviderObserverContext` parameter.
+  This replaces the old `provider`+`container` parameters, and contains extra
+  information.
 - **Breaking**: It is now a runtime exception to "scope" a provider
   that is not specifying `dependencies`.
 - **Breaking**: Removed all `Ref` subclasses (such `FutureProviderRef`).
@@ -21,6 +24,9 @@
 - **Breaking**: A provider is now considered "paused" if all
   of its listeners are also paused. So if a provider `A` is watched _only_ by a provider `B`, and `B` is currently unused,
   then `A` will be paused.
+- Added methods to `ProviderObserver` for listening to "mutations".
+  Mutations are a new code-generation-only feature. See riverpod_generator's changelog
+  for more information.
 - Added `Ref.listen(..., weak: true)`.
   When specifying `weak: true`, the listener will not cause the provider to be
   initialized. This is useful when wanting to react to changes to a provider,
