@@ -20,6 +20,20 @@ class MyApp extends StatelessWidget {
   }
 }
 
+class MyWidget extends StatefulWidget {
+  const MyWidget({super.key});
+
+  @override
+  State<MyWidget> createState() => _MyWidgetState();
+}
+
+class _MyWidgetState extends State<MyWidget> {
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}
+
 /// Providers are declared globally and specify how to create a state
 final counterProvider = StateProvider((ref) => 0);
 

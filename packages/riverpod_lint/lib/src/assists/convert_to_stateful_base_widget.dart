@@ -8,6 +8,7 @@ import 'package:analyzer_plugin/utilities/change_builder/change_builder_dart.dar
 import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
+import '../imports.dart';
 import '../riverpod_custom_lint.dart';
 import 'convert_to_widget_utils.dart';
 
@@ -72,7 +73,7 @@ class ConvertToStatefulBaseWidget extends RiverpodAssist {
     ExtendsClause node,
   ) {
     final changeBuilder = reporter.createChangeBuilder(
-      message: 'Convert to ${targetWidget.widgetName}',
+      message: 'Convert to ${targetWidget.widgetAssistName}',
       priority: targetWidget.priority,
     );
 
@@ -80,7 +81,7 @@ class ConvertToStatefulBaseWidget extends RiverpodAssist {
       // Change the extended base class
       builder.addSimpleReplacement(
         node.superclass.sourceRange,
-        targetWidget.widgetName,
+        targetWidget.widgetName(builder),
       );
 
       final widgetClass = node.thisOrAncestorOfType<ClassDeclaration>();
@@ -143,10 +144,10 @@ class ConvertToStatefulBaseWidget extends RiverpodAssist {
       switch (targetWidget) {
         case StatefulBaseWidgetType.consumerStatefulWidget:
         case StatefulBaseWidgetType.statefulHookConsumerWidget:
-          baseStateName = 'ConsumerState';
+          baseStateName = builder.importConsumerState();
         case StatefulBaseWidgetType.statefulHookWidget:
         case StatefulBaseWidgetType.statefulWidget:
-          baseStateName = 'State';
+          baseStateName = builder.importState();
       }
 
       // Split the class into two classes right before the build method
@@ -178,7 +179,7 @@ class $createdStateClassName extends $baseStateName<${widgetClass.name}> {
     required int priorityAdjustment,
   }) {
     final changeBuilder = reporter.createChangeBuilder(
-      message: 'Convert to ${targetWidget.widgetName}',
+      message: 'Convert to ${targetWidget.widgetAssistName}',
       priority: targetWidget.priority + priorityAdjustment,
     );
 
@@ -186,7 +187,7 @@ class $createdStateClassName extends $baseStateName<${widgetClass.name}> {
       // Change the extended base class
       builder.addSimpleReplacement(
         node.superclass.sourceRange,
-        targetWidget.widgetName,
+        targetWidget.widgetName(builder),
       );
 
       final widgetClass = node.thisOrAncestorOfType<ClassDeclaration>();
@@ -199,10 +200,10 @@ class $createdStateClassName extends $baseStateName<${widgetClass.name}> {
       switch (targetWidget) {
         case StatefulBaseWidgetType.consumerStatefulWidget:
         case StatefulBaseWidgetType.statefulHookConsumerWidget:
-          baseStateName = 'ConsumerState';
+          baseStateName = builder.importConsumerState();
         case StatefulBaseWidgetType.statefulHookWidget:
         case StatefulBaseWidgetType.statefulWidget:
-          baseStateName = 'State';
+          baseStateName = builder.importState();
       }
 
       final createStateMethod = widgetClass.members
