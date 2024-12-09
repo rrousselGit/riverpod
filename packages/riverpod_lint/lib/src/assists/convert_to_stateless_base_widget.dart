@@ -131,7 +131,7 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
     required int priorityAdjustment,
   }) {
     final changeBuilder = reporter.createChangeBuilder(
-      message: 'Convert to ${targetWidget.widgetName}',
+      message: 'Convert to ${targetWidget.assistName}',
       priority: targetWidget.priority + priorityAdjustment,
     );
 
