@@ -6,7 +6,7 @@ final exampleProvider =
   return ExampleNotifier();
 });
 
-class ExampleNotifier extends AutoDisposeStreamNotifier<String> {
+class ExampleNotifier extends StreamNotifier<String> {
   @override
   Stream<String> build() async* {
     yield 'foo';

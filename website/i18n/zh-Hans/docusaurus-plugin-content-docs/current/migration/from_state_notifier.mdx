@@ -142,14 +142,14 @@ Here, it's easy to see `AsyncNotifer` as a `FutureProvider` with methods.
 
 <!---
 `AsyncNotifer` comes with a set of utilities and getters that `StateNotifier` doesn't have, such as e.g.
-[`future`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/future.html)
-and [`update`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/update.html).
+[`future`](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier/future.html)
+and [`update`](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier/update.html).
 This enables us to write much simpler logic when handling asynchronous mutations and side-effects.
 See also <Link documentID="essentials/side_effects" />.
 -->
 `AsyncNotifer` 附带了一组 `StateNotifier` 没有的实用程序和 getter，例如
-[`future`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/future.html)
-和 [`update`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/update.html)。
+[`future`](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier/future.html)
+和 [`update`](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier/update.html)。
 这使我们能够在处理异步突变和副作用时编写更简单的逻辑。
 另请参阅<Link documentID="essentials/side_effects" />。
 :::tip
@@ -203,14 +203,14 @@ Another important difference is how families and auto dispose is handled with th
 
 <!---
 `Notifier`, has its own `.family` and `.autoDispose` counterparts, such as `FamilyNotifier`
-and `AutoDisposeNotifier`.  
+and `Notifier`.  
 As always, such modifications can be combined (aka `AutoDisposeFamilyNotifier`).  
-`AsyncNotifer` has its asynchronous equivalent, too (e.g. `AutoDisposeFamilyAsyncNotifier`).
+`AsyncNotifer` has its asynchronous equivalent, too (e.g. `FamilyAsyncNotifier`).
 -->
 `Notifier`，有其自己的 `.family` 和 `.autoDispose` 对应项，
-例如 `FamilyNotifier` 和 `AutoDisposeNotifier`。  
+例如 `FamilyNotifier` 和 `Notifier`。  
 与往常一样，此类修改可以组合使用（又名 `AutoDisposeFamilyNotifier`）。  
-`AsyncNotifer` 也有其异步等效项（例如 `AutoDisposeFamilyAsyncNotifier`）。
+`AsyncNotifer` 也有其异步等效项（例如 `FamilyAsyncNotifier`）。
 
 <!---
 Modifications are explicitly stated inside the class; any parameters are directly injected in the

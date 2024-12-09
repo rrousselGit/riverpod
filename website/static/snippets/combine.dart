@@ -1,6 +1,5 @@
 // ignore_for_file: omit_local_variable_types
 
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'combine.g.dart';
@@ -15,8 +14,11 @@ enum Filter {
   uncompleted,
 }
 
-final todosProvider = StateProvider<List<Todo>>((ref) => []);
-final filterProvider = StateProvider<Filter>((ref) => Filter.all);
+@riverpod
+List<Todo> todos(Ref ref) => [];
+
+@riverpod
+Filter filter(Ref ref) => Filter.all;
 
 /* SNIPPET START */
 

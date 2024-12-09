@@ -27,9 +27,8 @@ final activityProvider2 = AsyncNotifierProvider.autoDispose
 
 // 当将 ".family" 与通知者程序一起使用时，我们需要更改通知者程序子类：
 // AsyncNotifier -> FamilyAsyncNotifier
-// AutoDisposeAsyncNotifier -> AutoDisposeFamilyAsyncNotifier
-class ActivityNotifier
-    extends AutoDisposeFamilyAsyncNotifier<Activity, String> {
+// AsyncNotifier -> FamilyAsyncNotifier
+class ActivityNotifier extends FamilyAsyncNotifier<Activity, String> {
   /// Family 参数传递给构建方法并可通过 this.arg 访问
   @override
   Future<Activity> build(String activityType) async {
