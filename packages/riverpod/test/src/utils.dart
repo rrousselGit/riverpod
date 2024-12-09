@@ -8,6 +8,8 @@ import 'package:test/test.dart' hide Retry;
 export '../old/utils.dart'
     show ObserverMock, isProviderObserverContext, isMutationContext;
 
+typedef RemoveListener = void Function();
+
 List<Object?> captureErrors(List<void Function()> cb) {
   final errors = <Object?>[];
   for (final fn in cb) {

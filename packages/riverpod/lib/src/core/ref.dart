@@ -257,24 +257,32 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
 
   /// A life-cycle for whenever a new listener is added to the provider.
   ///
+  /// Returns a function which can be called to remove the listener.
+  ///
   /// See also:
   /// - [onRemoveListener], for when a listener is removed
-  void onAddListener(void Function() cb) {
+  RemoveListener onAddListener(void Function() cb) {
     _throwIfInvalidUsage();
 
-    _onAddListeners ??= [];
-    _onAddListeners!.add(cb);
+    final list = _onAddListeners ??= [];
+    list.add(cb);
+
+    return () => list.remove(cb);
   }
 
   /// A life-cycle for whenever a listener is removed from the provider.
   ///
+  /// Returns a function which can be called to remove the listener.
+  ///
   /// See also:
   /// - [onAddListener], for when a listener is added
-  void onRemoveListener(void Function() cb) {
+  RemoveListener onRemoveListener(void Function() cb) {
     _throwIfInvalidUsage();
 
-    _onRemoveListeners ??= [];
-    _onRemoveListeners!.add(cb);
+    final list = _onRemoveListeners ??= [];
+    list.add(cb);
+
+    return () => list.remove(cb);
   }
 
   /// Add a listener to perform an operation when the last listener of the provider
@@ -287,6 +295,8 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// _will_ get paused/dispose. It is possible that after the last listener
   /// is removed, a new listener is immediately added.
   ///
+  /// Returns a function which can be called to remove the listener.
+  ///
   /// See also:
   /// - [keepAlive], which can be combined with [onCancel] for
   ///   advanced manipulation on when the provider should get disposed.
@@ -294,15 +304,19 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///   destroy its state when no longer listened to.
   /// - [onDispose], a life-cycle for when a provider is disposed.
   /// - [onResume], a life-cycle for when the provider is listened to again.
-  void onCancel(void Function() cb) {
+  RemoveListener onCancel(void Function() cb) {
     _throwIfInvalidUsage();
 
-    _onCancelListeners ??= [];
-    _onCancelListeners!.add(cb);
+    final list = _onCancelListeners ??= [];
+    list.add(cb);
+
+    return () => list.remove(cb);
   }
 
   /// A life-cycle for when a provider is listened again after it was paused
   /// (and [onCancel] was triggered).
+  ///
+  /// Returns a function which can be called to remove the listener.
   ///
   /// See also:
   /// - [keepAlive], which can be combined with [onCancel] for
@@ -311,11 +325,13 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///   destroy its state when no longer listened to.
   /// - [onDispose], a life-cycle for when a provider is disposed.
   /// - [onCancel], a life-cycle for when all listeners of a provider are removed.
-  void onResume(void Function() cb) {
+  RemoveListener onResume(void Function() cb) {
     _throwIfInvalidUsage();
 
-    _onResumeListeners ??= [];
-    _onResumeListeners!.add(cb);
+    final list = _onResumeListeners ??= [];
+    list.add(cb);
+
+    return () => list.remove(cb);
   }
 
   /// Adds a listener to perform an operation right before the provider is destroyed.
@@ -357,6 +373,8 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///   if an exception happens before [onDispose] is called, then
   ///   some of your objects may not be disposed.
   ///
+  /// Returns a function which can be called to remove the listener.
+  ///
   /// See also:
   ///
   /// - [Provider.autoDispose], a modifier which tell a provider that it should
@@ -364,11 +382,13 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// - [ProviderContainer.dispose], to destroy all providers associated with
   ///   a [ProviderContainer] at once.
   /// - [onCancel], a life-cycle for when all listeners of a provider are removed.
-  void onDispose(void Function() listener) {
+  RemoveListener onDispose(void Function() listener) {
     _throwIfInvalidUsage();
 
-    _onDisposeListeners ??= [];
-    _onDisposeListeners!.add(listener);
+    final list = _onDisposeListeners ??= [];
+    list.add(listener);
+
+    return () => list.remove(listener);
   }
 
   /// Read the state associated with a provider, without listening to that provider.
@@ -611,7 +631,7 @@ class _Ref<StateT> extends Ref {
   /// As opposed to [listen], the listener will be called even if
   /// [ProviderElement.updateShouldNotify] returns false, meaning that the previous
   /// and new value can potentially be identical.
-  void listenSelf(
+  RemoveListener listenSelf(
     void Function(StateT? previous, StateT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
@@ -622,6 +642,11 @@ class _Ref<StateT> extends Ref {
       _onErrorSelfListeners ??= [];
       _onErrorSelfListeners!.add(onError);
     }
+
+    return () {
+      _onChangeSelfListeners?.remove(listener);
+      _onErrorSelfListeners?.remove(onError);
+    };
   }
 }
 

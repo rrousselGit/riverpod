@@ -6,6 +6,7 @@ import 'dart:math' as math;
 
 import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
+import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart' as test;
 import 'common/env.dart';
 import 'common/pragma.dart';
@@ -27,5 +28,4 @@ part 'core/modifiers/select.dart';
 part 'core/scheduler.dart';
 part 'core/override_with_value.dart';
 part 'core/override.dart';
-part 'core/devtool.dart';
 part 'core/modifiers/future.dart';
