@@ -351,24 +351,6 @@ void main() {
       });
     });
 
-    test("can't use ref inside onDispose", () {
-      final provider2 = Provider((ref) => 0);
-      final provider = Provider((ref) {
-        ref.onDispose(() {
-          ref.watch(provider2);
-        });
-        return ref;
-      });
-      final container = ProviderContainer.test();
-
-      container.read(provider);
-
-      final errors = <Object>[];
-      runZonedGuarded(container.dispose, (err, _) => errors.add(err));
-
-      expect(errors, [isA<UnmountedRefException>()]);
-    });
-
     group(
         'asserts that a provider cannot depend on a provider that is not in its dependencies:',
         () {
@@ -2141,6 +2123,23 @@ void main() {
     });
 
     group('.onRemoveListener', () {
+      test('returns a way to unregister the listener', () {
+        final container = ProviderContainer.test();
+        final listener = OnRemoveListener();
+        late RemoveListener remove;
+        final provider = Provider((ref) {
+          remove = ref.onRemoveListener(listener.call);
+        });
+
+        final sub = container.listen<void>(provider, (previous, next) {});
+
+        remove();
+
+        sub.close();
+
+        verifyZeroInteractions(listener);
+      });
+
       test('is called on read', () {
         final container = ProviderContainer.test();
         final listener = OnRemoveListener();
@@ -2319,6 +2318,24 @@ void main() {
     });
 
     group('.onAddListener', () {
+      test('returns a way to unregister the listener', () {
+        final container = ProviderContainer.test();
+        final listener = OnAddListener();
+        late RemoveListener remove;
+        final provider = Provider((ref) {
+          remove = ref.onAddListener(listener.call);
+        });
+
+        container.listen<void>(provider, (previous, next) {});
+        clearInteractions(listener);
+
+        remove();
+
+        container.listen<void>(provider, (previous, next) {});
+
+        verifyZeroInteractions(listener);
+      });
+
       test('is called on read', () {
         final container = ProviderContainer.test();
         final listener = OnAddListener();
@@ -2484,6 +2501,24 @@ void main() {
     });
 
     group('.onResume', () {
+      test('returns a way to unregister the listener', () {
+        final container = ProviderContainer.test();
+        final listener = OnResume();
+        late RemoveListener remove;
+        final provider = Provider((ref) {
+          remove = ref.onResume(listener.call);
+        });
+
+        final sub = container.listen<void>(provider, (previous, next) {});
+
+        remove();
+
+        sub.pause();
+        sub.resume();
+
+        verifyZeroInteractions(listener);
+      });
+
       test('is not called on initial subscription', () {
         final container = ProviderContainer.test();
         final listener = OnResume();
@@ -2675,6 +2710,23 @@ void main() {
     });
 
     group('.onCancel', () {
+      test('returns a way to unregister the listener', () {
+        final container = ProviderContainer.test();
+        final listener = OnCancelMock();
+        late RemoveListener remove;
+        final provider = Provider((ref) {
+          remove = ref.onCancel(listener.call);
+        });
+
+        final sub = container.listen<void>(provider, (previous, next) {});
+
+        remove();
+
+        sub.close();
+
+        verifyZeroInteractions(listener);
+      });
+
       test(
         'is called when dependent is invalidated and was the only listener',
         // TODO deal with now that we have onPause
@@ -2871,6 +2923,42 @@ void main() {
     });
 
     group('.onDispose', () {
+      test('returns a way to unregister the listener', () async {
+        final container = ProviderContainer.test();
+        final listener = OnDisposeMock();
+        late RemoveListener remove;
+        final provider = Provider.autoDispose((ref) {
+          remove = ref.onDispose(listener.call);
+        });
+
+        final sub = container.listen<void>(provider, (previous, next) {});
+
+        remove();
+
+        sub.close();
+        await container.pump();
+
+        verifyZeroInteractions(listener);
+      });
+
+      test("can't use ref inside onDispose", () {
+        final provider2 = Provider((ref) => 0);
+        final provider = Provider((ref) {
+          ref.onDispose(() {
+            ref.watch(provider2);
+          });
+          return ref;
+        });
+        final container = ProviderContainer.test();
+
+        container.read(provider);
+
+        final errors = <Object>[];
+        runZonedGuarded(container.dispose, (err, _) => errors.add(err));
+
+        expect(errors, [isA<UnmountedRefException>()]);
+      });
+
       test(
           'calls all the listeners in order when the ProviderContainer is disposed',
           () {

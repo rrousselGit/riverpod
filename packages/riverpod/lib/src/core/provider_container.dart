@@ -636,7 +636,6 @@ class ProviderContainer implements Node {
     // This ensures that if an error is thrown, the parent & global state
     // are not affected.
     parent?._children.add(this);
-    if (kDebugMode) DebugRiverpodDevtoolBiding.addContainer(this);
   }
 
   /// An automatically disposed [ProviderContainer].
@@ -953,10 +952,6 @@ class ProviderContainer implements Node {
 
     for (final element in getAllProviderElementsInOrder().toList().reversed) {
       element.dispose();
-    }
-
-    if (kDebugMode) {
-      DebugRiverpodDevtoolBiding.removeContainer(this);
     }
   }
 

@@ -22,7 +22,6 @@ export 'src/framework.dart'
         ProviderElementProxy,
         OnError,
         ProviderContainerTest,
-        DebugRiverpodDevtoolBiding,
         TransitiveFamilyOverride,
         TransitiveProviderOverride,
         $ProviderPointer,

@@ -435,18 +435,54 @@ void main() {
       expect(container.read(provider.notifier).state, 0);
     });
 
-    test('supports listenSelf((State? prev, State next) {})', () {
-      final listener = Listener<int>();
-      final onError = ErrorListener();
-      final provider = factory.simpleTestProvider<int>((ref, self) {
-        self.listenSelf(listener.call, onError: onError.call);
-        Error.throwWithStackTrace(42, StackTrace.empty);
+    group('listenSelf', () {
+      test('can remove the data listener', () async {
+        final container = ProviderContainer.test();
+        final listener = Listener<int>();
+        late final RemoveListener remove;
+        final provider = factory.simpleTestProvider<int>((ref, self) {
+          remove = self.listenSelf(listener.call);
+          return 0;
+        });
+
+        container.listen(provider.notifier, (previous, next) {});
+        clearInteractions(listener);
+
+        remove();
+
+        container.read(provider.notifier).state = 42;
+
+        verifyZeroInteractions(listener);
       });
-      final container = ProviderContainer.test();
 
-      expect(() => container.read(provider), throwsA(42));
+      test('can remove the error listener', () async {
+        final container = ProviderContainer.test();
+        final listener = ErrorListener();
+        final provider = factory.simpleTestProvider<int>((ref, self) {
+          final remove = self.listenSelf((a, b) {}, onError: listener.call);
+          remove();
 
-      verifyOnly(onError, onError(42, StackTrace.empty));
+          throw StateError('');
+        });
+
+        container.listen(provider.notifier, (previous, next) {});
+
+        verifyZeroInteractions(listener);
+      });
+
+      test('supports listenSelf((State? prev, State next) {})', () {
+        final listener = Listener<int>();
+        final onError = ErrorListener();
+        final provider = factory.simpleTestProvider<int>((ref, self) {
+          self.listenSelf(listener.call, onError: onError.call);
+          Error.throwWithStackTrace(42, StackTrace.empty);
+        });
+        final container = ProviderContainer.test();
+
+        expect(() => container.read(provider), throwsA(42));
+
+        verifyOnly(onError, onError(42, StackTrace.empty));
+      });
     });
 
     test('filters state update by identical by default', () {

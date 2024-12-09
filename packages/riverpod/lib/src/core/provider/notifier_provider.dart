@@ -65,12 +65,14 @@ abstract class NotifierBase<StateT, CreatedT> {
   /// As opposed to [Ref.listen], the listener will be called even if
   /// [updateShouldNotify] returns false, meaning that the previous
   /// and new value can potentially be identical.
+  ///
+  /// Returns a function which can be called to remove the listener.
   @protected
-  void listenSelf(
+  RemoveListener listenSelf(
     void Function(StateT? previous, StateT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
-    $ref.listenSelf(listener, onError: onError);
+    return $ref.listenSelf(listener, onError: onError);
   }
 
   @visibleForTesting
