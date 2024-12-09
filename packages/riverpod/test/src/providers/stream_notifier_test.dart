@@ -48,7 +48,6 @@ void main() {
 
       container.listen(provider, (previous, next) {});
       final future = container.read(provider.future);
-      print('tesr ${future.hashCode}');
 
       container.dispose();
 
