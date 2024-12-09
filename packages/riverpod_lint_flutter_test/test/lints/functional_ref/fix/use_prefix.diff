@@ -1,0 +1,34 @@
+Message: `Type as Ref`
+Priority: 90
+Diff for file `test/lints/functional_ref/fix/use_prefix.dart:11`:
+```
+@riverpod
+// expect_lint: functional_ref
+- int example(ExampleRef ref) => 0;
++ int example(prefix.Ref ref) => 0;
+
+@riverpod
+```
+---
+Message: `Add ref parameter`
+Priority: 90
+Diff for file `test/lints/functional_ref/fix/use_prefix.dart:15`:
+```
+@riverpod
+// expect_lint: functional_ref
+- int empty() => 0;
++ int empty(prefix.Ref ref) => 0;
+
+@riverpod
+```
+---
+Message: `Type as Ref`
+Priority: 90
+Diff for file `test/lints/functional_ref/fix/use_prefix.dart:19`:
+```
+@riverpod
+// expect_lint: functional_ref
+- int untyped(ref) => 0;
++ int untyped(prefix.Ref ref) => 0;
+```
+---
