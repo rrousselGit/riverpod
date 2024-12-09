@@ -1181,5 +1181,247 @@ abstract class _$FamilyClass extends $AsyncNotifier<String> {
       );
 }
 
+@ProviderFor(Regression3490)
+const regression3490Provider = Regression3490Family._();
+
+final class Regression3490Provider<Model, Sort, Cursor>
+    extends $NotifierProvider<Regression3490<Model, Sort, Cursor>, void> {
+  const Regression3490Provider._(
+      {required Regression3490Family super.from,
+      required ({
+        String type,
+        Regression3490Cb<Model, Sort, Cursor> getData,
+        String? parentId,
+      })
+          super.argument,
+      super.runNotifierBuildOverride,
+      Regression3490<Model, Sort, Cursor> Function()? create})
+      : _createCb = create,
+        super(
+          retry: null,
+          name: r'regression3490Provider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final Regression3490<Model, Sort, Cursor> Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$regression3490Hash();
+
+  Regression3490Provider<Model, Sort, Cursor> _copyWithCreate(
+    Regression3490<Model, Sort, Cursor> Function<Model, Sort, Cursor>() create,
+  ) {
+    return Regression3490Provider<Model, Sort, Cursor>._(
+        argument: argument as ({
+          String type,
+          Regression3490Cb<Model, Sort, Cursor> getData,
+          String? parentId,
+        }),
+        from: from! as Regression3490Family,
+        create: create<Model, Sort, Cursor>);
+  }
+
+  Regression3490Provider<Model, Sort, Cursor> _copyWithBuild(
+    void Function<Model, Sort, Cursor>(
+      Ref,
+      Regression3490<Model, Sort, Cursor>,
+    ) build,
+  ) {
+    return Regression3490Provider<Model, Sort, Cursor>._(
+        argument: argument as ({
+          String type,
+          Regression3490Cb<Model, Sort, Cursor> getData,
+          String? parentId,
+        }),
+        from: from! as Regression3490Family,
+        runNotifierBuildOverride: build<Model, Sort, Cursor>);
+  }
+
+  @override
+  String toString() {
+    return r'regression3490Provider'
+        '<${Model}, ${Sort}, ${Cursor}>'
+        '$argument';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(void value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<void>(value),
+    );
+  }
+
+  @$internal
+  @override
+  Regression3490<Model, Sort, Cursor> create() =>
+      _createCb?.call() ?? Regression3490<Model, Sort, Cursor>();
+
+  @$internal
+  @override
+  Regression3490Provider<Model, Sort, Cursor> $copyWithCreate(
+    Regression3490<Model, Sort, Cursor> Function() create,
+  ) {
+    return Regression3490Provider<Model, Sort, Cursor>._(
+        argument: argument as ({
+          String type,
+          Regression3490Cb<Model, Sort, Cursor> getData,
+          String? parentId,
+        }),
+        from: from! as Regression3490Family,
+        create: create);
+  }
+
+  @$internal
+  @override
+  Regression3490Provider<Model, Sort, Cursor> $copyWithBuild(
+    void Function(
+      Ref,
+      Regression3490<Model, Sort, Cursor>,
+    ) build,
+  ) {
+    return Regression3490Provider<Model, Sort, Cursor>._(
+        argument: argument as ({
+          String type,
+          Regression3490Cb<Model, Sort, Cursor> getData,
+          String? parentId,
+        }),
+        from: from! as Regression3490Family,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<Regression3490<Model, Sort, Cursor>, void>
+      $createElement($ProviderPointer pointer) =>
+          $NotifierProviderElement(this, pointer);
+
+  @override
+  bool operator ==(Object other) {
+    return other is Regression3490Provider &&
+        other.runtimeType == runtimeType &&
+        other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, argument);
+  }
+}
+
+String _$regression3490Hash() => r'9d5d48cbde589961d0cdac395f68111ec17b194a';
+
+final class Regression3490Family extends Family {
+  const Regression3490Family._()
+      : super(
+          retry: null,
+          name: r'regression3490Provider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  Regression3490Provider<Model, Sort, Cursor> call<Model, Sort, Cursor>({
+    required String type,
+    required Regression3490Cb<Model, Sort, Cursor> getData,
+    String? parentId,
+  }) =>
+      Regression3490Provider<Model, Sort, Cursor>._(argument: (
+        type: type,
+        getData: getData,
+        parentId: parentId,
+      ), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$regression3490Hash();
+
+  @override
+  String toString() => r'regression3490Provider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    Regression3490<Model, Sort, Cursor> Function<Model, Sort, Cursor>(
+      ({
+        String type,
+        Regression3490Cb<Model, Sort, Cursor> getData,
+        String? parentId,
+      }) args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as Regression3490Provider;
+
+        return provider._copyWithCreate(<Model, Sort, Cursor>() {
+          final argument = provider.argument as ({
+            String type,
+            Regression3490Cb<Model, Sort, Cursor> getData,
+            String? parentId,
+          });
+
+          return create(argument);
+        }).$createElement(pointer);
+      },
+    );
+  }
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    void Function<Model, Sort, Cursor>(
+            Ref ref,
+            Regression3490<Model, Sort, Cursor> notifier,
+            ({
+              String type,
+              Regression3490Cb<Model, Sort, Cursor> getData,
+              String? parentId,
+            }) argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as Regression3490Provider;
+
+        return provider._copyWithBuild(<Model, Sort, Cursor>(ref, notifier) {
+          final argument = provider.argument as ({
+            String type,
+            Regression3490Cb<Model, Sort, Cursor> getData,
+            String? parentId,
+          });
+
+          return build(ref, notifier, argument);
+        }).$createElement(pointer);
+      },
+    );
+  }
+}
+
+abstract class _$Regression3490<Model, Sort, Cursor> extends $Notifier<void> {
+  late final _$args = ref.$arg as ({
+    String type,
+    Regression3490Cb<Model, Sort, Cursor> getData,
+    String? parentId,
+  });
+  String get type => _$args.type;
+  Regression3490Cb<Model, Sort, Cursor> get getData => _$args.getData;
+  String? get parentId => _$args.parentId;
+
+  void build({
+    required String type,
+    required Regression3490Cb<Model, Sort, Cursor> getData,
+    String? parentId,
+  });
+  @$internal
+  @override
+  void runBuild() => build(
+        type: _$args.type,
+        getData: _$args.getData,
+        parentId: _$args.parentId,
+      );
+}
+
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
