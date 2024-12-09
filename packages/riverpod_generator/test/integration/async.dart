@@ -92,3 +92,21 @@ class FamilyClass extends _$FamilyClass {
     return '(first: $first, second: $second, third: $third, fourth: $fourth, fifth: $fifth)';
   }
 }
+
+// Regression test for https://github.com/rrousselGit/riverpod/issues/3490
+typedef Regression3490Cb<Model, Sort, Cursor> = Future<(int, Cursor)> Function({
+  Map<String, dynamic> filters,
+  Sort? sort,
+  Cursor? cursor,
+});
+
+@riverpod
+class Regression3490<Model, Sort, Cursor>
+    extends _$Regression3490<Model, Sort, Cursor> {
+  @override
+  void build({
+    required String type,
+    required Regression3490Cb<Model, Sort, Cursor> getData,
+    String? parentId,
+  }) {}
+}
