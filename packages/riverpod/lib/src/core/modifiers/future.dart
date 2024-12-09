@@ -534,58 +534,15 @@ extension<T> on Stream<T> {
     required void Function(Object error, StackTrace stackTrace) onError,
     required void Function() onDone,
   }) {
-    // final completer = Completer<T>();
-
-    Result<T>? result;
     late StreamSubscription<T> subscription;
-    subscription = listen(
-      (event) {
-        result = Result.data(event);
-        onData(event);
-      },
-      // ignore: avoid_types_on_closure_parameters
-      onError: (Object error, StackTrace stackTrace) {
-        result = Result.error(error, stackTrace);
-        onError(error, stackTrace);
-      },
-      onDone: onDone,
-    );
+    subscription = listen(onData, onError: onError, onDone: onDone);
 
     final asyncSub = (
       cancel: subscription.cancel,
       pause: subscription.pause,
       resume: subscription.resume,
-      abort: () {
-        // print('abort $result');
-        // if (result != null) {
-        //   switch (result!) {
-        //     case ResultData(:final state):
-        //       completer.complete(state);
-        //     case ResultError(:final error, :final stackTrace):
-        //       completer.future.ignore();
-        //       completer.completeError(error, stackTrace);
-        //   }
-        // } else {
-        //   // The error happens after the associated provider is disposed.
-        //   // As such, it's normally never read. Reporting this error as uncaught
-        //   // would cause too many false-positives. And the edge-cases that
-        //   // do reach this error will throw anyway
-        //   completer.future.ignore();
-
-        //   completer.completeError(
-        //     lastOrElseError(),
-        //     StackTrace.current,
-        //   );
-        // }
-
-        return subscription.cancel();
-      },
+      abort: subscription.cancel,
     );
-
-    // print('f ${completer.future.hashCode}');
-    // print('f2 ${completer.future.hashCode}');
-
-    // last(completer.future);
 
     return asyncSub;
   }
