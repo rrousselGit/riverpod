@@ -33,7 +33,6 @@ void main() {
     test('closes the StreamSubscription upon disposing the provider', () async {
       final onCancel = OnCancelMock();
       final container = ProviderContainer.test();
-      final cancelCompleter = Completer<void>.sync();
       final provider = factory.simpleTestProvider<int>((ref, _) {
         final controller = StreamController<int>();
         ref.onDispose(() {
@@ -43,24 +42,19 @@ void main() {
 
         return DelegatingStream(
           controller.stream,
-          onSubscriptionCancel: () {
-            onCancel.call();
-            cancelCompleter.complete();
-          },
+          onSubscriptionCancel: onCancel.call,
         );
       });
 
       container.listen(provider, (previous, next) {});
       final future = container.read(provider.future);
+      print('tesr ${future.hashCode}');
 
       container.dispose();
 
-      verifyZeroInteractions(onCancel);
-
-      await expectLater(future, throwsA(42));
-      await cancelCompleter.future;
-
       verifyOnly(onCancel, onCancel());
+
+      await expectLater(future, throwsStateError);
     });
 
     test('Pauses the Stream when the provider is paused', () {
@@ -690,59 +684,36 @@ void main() {
           () async {
         final container = ProviderContainer.test();
         final completer = Completer<int>.sync();
+        addTearDown(() => completer.complete(42));
         final provider = factory.simpleTestProvider<int>(
           (ref, _) => Stream.fromFuture(completer.future),
         );
 
         final future = container.read(provider.future);
+        expect(future, throwsA(isStateError));
+
         container.dispose();
-
-        completer.complete(42);
-
-        await expectLater(future, completion(42));
       });
 
       test(
-          'when disposed during loading, resolves with the error of StreamNotifier.build',
-          () async {
+          'going data > loading while the future is still pending. '
+          'Resolves with error', () async {
         final container = ProviderContainer.test();
         final completer = Completer<int>.sync();
+        addTearDown(() => completer.complete(42));
         final provider = factory.simpleTestProvider<int>(
           (ref, _) => Stream.fromFuture(completer.future),
         );
 
+        container.read(provider);
+        container.read(provider.notifier).state = const AsyncData(42);
+        container.read(provider.notifier).state = const AsyncLoading<int>();
+
         final future = container.read(provider.future);
+        expect(future, throwsA(isStateError));
 
         container.dispose();
-
-        completer.completeError(42);
-
-        await expectLater(future, throwsA(42));
       });
-
-      test(
-        'going data > loading while the future is still pending. '
-        'Resolves with last future result',
-        () async {
-          final container = ProviderContainer.test();
-          final completer = Completer<int>.sync();
-          final provider = factory.simpleTestProvider<int>(
-            (ref, _) => Stream.fromFuture(completer.future),
-          );
-
-          container.read(provider);
-          container.read(provider.notifier).state = const AsyncData(42);
-          container.read(provider.notifier).state = const AsyncLoading<int>();
-
-          final future = container.read(provider.future);
-
-          container.dispose();
-
-          completer.complete(42);
-
-          await expectLater(future, completion(42));
-        },
-      );
 
       test('if going back to loading after future resolved, throws StateError',
           () async {

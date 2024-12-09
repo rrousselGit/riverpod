@@ -3,9 +3,13 @@ part of '../../framework.dart';
 /// Internal typedef for cancelling the subscription to an async operation
 @internal
 typedef AsyncSubscription = ({
+  /// The provider was disposed, but may rebuild later
   void Function() cancel,
   void Function()? pause,
   void Function()? resume,
+
+  /// The provider was disposed
+  void Function()? abort,
 });
 
 /// Implementation detail of `riverpod_generator`.
@@ -422,10 +426,13 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
         },
       );
 
-      last(futureOr, cancel);
+      last(futureOr);
 
       return (
         cancel: cancel,
+        // We don't call `cancel` here to let `provider.future` resolve with
+        // the last value emitted by the future.
+        abort: null,
         pause: null,
         resume: null,
       );
@@ -438,7 +445,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
       required void Function(StateT) data,
       required void Function(Object, StackTrace) error,
       required void Function() done,
-      required void Function(Future<StateT>, void Function()) last,
+      required void Function(Future<StateT>) last,
     }) listen, {
     required bool seamless,
   }) {
@@ -450,22 +457,18 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
     }
 
     try {
-      final sub = _cancelSubscription = listen(
+      _cancelSubscription = listen(
         data: (value) {
           onData(AsyncData(value), seamless: seamless);
         },
         error: callOnError,
-        last: (last, sub) {
+        last: (last) {
           assert(_lastFuture == null, 'bad state');
           _lastFuture = last;
         },
         done: () {
           _lastFuture = null;
         },
-      );
-      assert(
-        sub == null || _lastFuture != null,
-        'An async operation is pending but the state for provider.future was not initialized.',
       );
     } catch (error, stackTrace) {
       callOnError(error, stackTrace);
@@ -492,17 +495,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
 
       final lastFuture = _lastFuture;
       if (lastFuture != null) {
-        final cancelSubscription = _cancelSubscription;
-        if (cancelSubscription != null) {
-          cancelSubscription.resume?.call();
-          lastFuture
-              .then(
-                (_) {},
-                // ignore: avoid_types_on_closure_parameters
-                onError: (Object _) {},
-              )
-              .whenComplete(cancelSubscription.cancel);
-        }
+        _cancelSubscription?.abort?.call();
 
         // Prevent super.dispose from cancelling the subscription on the "last"
         // stream value, so that it can be sent to `provider.future`.
@@ -535,13 +528,13 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
 
 extension<T> on Stream<T> {
   AsyncSubscription listenAndTrackLast(
-    void Function(Future<T>, void Function()) last, {
+    void Function(Future<T>) last, {
     required Object Function() lastOrElseError,
     required void Function(T event) onData,
     required void Function(Object error, StackTrace stackTrace) onError,
     required void Function() onDone,
   }) {
-    final completer = Completer<T>();
+    // final completer = Completer<T>();
 
     Result<T>? result;
     late StreamSubscription<T> subscription;
@@ -555,39 +548,44 @@ extension<T> on Stream<T> {
         result = Result.error(error, stackTrace);
         onError(error, stackTrace);
       },
-      onDone: () {
-        if (result != null) {
-          switch (result!) {
-            case ResultData(:final state):
-              completer.complete(state);
-            case ResultError(:final error, :final stackTrace):
-              completer.future.ignore();
-              completer.completeError(error, stackTrace);
-          }
-        } else {
-          // The error happens after the associated provider is disposed.
-          // As such, it's normally never read. Reporting this error as uncaught
-          // would cause too many false-positives. And the edge-cases that
-          // do reach this error will throw anyway
-          completer.future.ignore();
-
-          completer.completeError(
-            lastOrElseError(),
-            StackTrace.current,
-          );
-        }
-
-        onDone();
-      },
+      onDone: onDone,
     );
 
     final asyncSub = (
       cancel: subscription.cancel,
       pause: subscription.pause,
-      resume: subscription.resume
+      resume: subscription.resume,
+      abort: () {
+        // print('abort $result');
+        // if (result != null) {
+        //   switch (result!) {
+        //     case ResultData(:final state):
+        //       completer.complete(state);
+        //     case ResultError(:final error, :final stackTrace):
+        //       completer.future.ignore();
+        //       completer.completeError(error, stackTrace);
+        //   }
+        // } else {
+        //   // The error happens after the associated provider is disposed.
+        //   // As such, it's normally never read. Reporting this error as uncaught
+        //   // would cause too many false-positives. And the edge-cases that
+        //   // do reach this error will throw anyway
+        //   completer.future.ignore();
+
+        //   completer.completeError(
+        //     lastOrElseError(),
+        //     StackTrace.current,
+        //   );
+        // }
+
+        return subscription.cancel();
+      },
     );
 
-    last(completer.future, asyncSub.cancel);
+    // print('f ${completer.future.hashCode}');
+    // print('f2 ${completer.future.hashCode}');
+
+    // last(completer.future);
 
     return asyncSub;
   }
