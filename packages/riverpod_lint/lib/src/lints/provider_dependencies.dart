@@ -10,6 +10,7 @@ import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
+import '../imports.dart';
 import '../object_utils.dart';
 import '../riverpod_custom_lint.dart';
 
@@ -356,9 +357,10 @@ class _ProviderDependenciesFix extends RiverpodFix {
         if (riverpodAnnotation case final riverpod?) {
           _riverpodSpecifyDependencies(builder, riverpod, newDependencies);
         } else {
+          final dep = builder.importDependenciesClass();
           builder.addSimpleInsertion(
             data.list.node.offset,
-            '@Dependencies($newDependencies)\n',
+            '@$dep($newDependencies)\n',
           );
         }
       });
@@ -383,9 +385,10 @@ class _ProviderDependenciesFix extends RiverpodFix {
           '[$dependencies]',
         );
       } else {
+        final dep = builder.importDependenciesClass();
         builder.addSimpleReplacement(
           data.list.dependencies!.node.sourceRange,
-          '@Dependencies($newDependencies)',
+          '@$dep($newDependencies)',
         );
       }
     });
@@ -396,12 +399,13 @@ class _ProviderDependenciesFix extends RiverpodFix {
     RiverpodAnnotation riverpod,
   ) {
     if (riverpod.keepAliveNode == null) {
+      final _riverpod = builder.importRiverpod();
       // Only "dependencies" is specified in the annotation.
       // So instead of @Riverpod(dependencies: []) -> @Riverpod(),
       // we can do @Riverpod(dependencies: []) -> @riverpod
       builder.addSimpleReplacement(
         riverpod.node.sourceRange,
-        '@riverpod',
+        '@$_riverpod',
       );
       return;
     }
@@ -423,10 +427,11 @@ class _ProviderDependenciesFix extends RiverpodFix {
   ) {
     final annotationArguments = riverpod.node.arguments;
     if (annotationArguments == null) {
+      final _riverpod = builder.importRiverpodClass();
       // No argument list found. We are using the @riverpod annotation.
       builder.addSimpleReplacement(
         riverpod.node.sourceRange,
-        '@Riverpod(dependencies: $newDependencies)',
+        '@$_riverpod(dependencies: $newDependencies)',
       );
     } else {
       // Argument list found, we are using the @Riverpod() annotation
