@@ -2,9 +2,9 @@ import 'package:analyzer_plugin/utilities/change_builder/change_builder_dart.dar
 import 'package:meta/meta.dart';
 
 extension ImportFix on DartFileEditBuilder {
-  // riverpod
+  // hybrid
   @useResult
-  String importRef() => _importRiverpod('Ref');
+  String importRef() => _importHybridRiverpod('Ref');
 
   // flutter_riverpod
   @useResult
@@ -64,10 +64,14 @@ extension ImportFix on DartFileEditBuilder {
   }
 
   @useResult
-  String _importRiverpod(String name) {
+  String _importHybridRiverpod(String name) {
     return _importWithPrefix(name, [
       Uri(scheme: 'package', path: 'hooks_riverpod/hooks_riverpod.dart'),
       Uri(scheme: 'package', path: 'flutter_riverpod/flutter_riverpod.dart'),
+      Uri(
+        scheme: 'package',
+        path: 'riverpod_annotation/riverpod_annotation.dart',
+      ),
       Uri(scheme: 'package', path: 'riverpod/riverpod.dart'),
     ]);
   }
