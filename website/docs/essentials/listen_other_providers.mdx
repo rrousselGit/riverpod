@@ -1,0 +1,125 @@
+---
+title: listen other providers
+version: 1
+---
+
+import { Link } from "/src/components/Link";
+import { AutoSnippet, When } from "/src/components/CodeSnippet";
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+void main() {
+  runApp(const ProviderScope(child: MyApp()));
+}
+
+final minutesProvider = NotifierProvider<MinutesNotifer, int>(() {
+  return MinutesNotifer();
+});
+
+final secondProvider = NotifierProvider<SecondsNotifer, int>(() {
+  return SecondsNotifer();
+});
+
+class MinutesNotifer extends Notifier<int> {
+  @override
+  int build() {
+    ref.listen(secondProvider, (prev, next) {
+      if (prev == 59 && next == 0) {
+        increment();
+      }
+    });
+    return 0;
+  }
+
+  void increment() {
+    var nextState = state;
+    nextState = nextState + 1;
+    if (nextState == 60) {
+      nextState = 0;
+    }
+    state = nextState;
+  }
+}
+
+class SecondsNotifer extends Notifier<int> {
+  @override
+  int build() {
+    return 0;
+  }
+
+  void increment() {
+    var nextState = state;
+    nextState = nextState + 1;
+    if (nextState == 60) {
+      nextState = 0;
+    }
+    state = nextState;
+  }
+
+  int value() {
+    return state;
+  }
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: 'Flutter Demo',
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        useMaterial3: true,
+      ),
+      home: const MyHomePage(),
+    );
+  }
+}
+
+class MyHomePage extends ConsumerWidget {
+  const MyHomePage({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    var secondsNotifer = ref.watch(secondProvider.notifier);
+    var nbMinutes = ref.watch(minutesProvider);
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('The manual Clock'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            const Text(
+              'press the button to add seconds to the clock:',
+            ),
+            Text(
+              '${ref.watch(secondProvider)}',
+              style: Theme.of(context).textTheme.headlineMedium,
+            ),
+            if (nbMinutes != 0)
+              const Text(
+                'number of minutes:',
+              ),
+            if (nbMinutes != 0)
+              Text(
+                '$nbMinutes',
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: secondsNotifer.increment,
+        tooltip: 'Increment',
+        child: const Icon(Icons.add),
+      ),
+    );
+  }
+}
+```
