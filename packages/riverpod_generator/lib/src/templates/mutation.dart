@@ -67,7 +67,7 @@ final class ${mutation.generatedMutationImplName}
   }
 
   @override
-  ${mutation.generatedMutationImplName} copyWith(MutationState<int> state, {Object? key}) => ${mutation.generatedMutationImplName}(element, state: state, key: key);
+  ${mutation.generatedMutationImplName} copyWith(MutationState<${provider.valueTypeDisplayString}> state, {Object? key}) => ${mutation.generatedMutationImplName}(element, state: state, key: key);
 }
 ''');
   }
