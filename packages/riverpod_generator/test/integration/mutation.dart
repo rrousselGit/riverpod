@@ -86,6 +86,17 @@ class FailingCtor extends _$FailingCtor {
   Future<int> increment([int inc = 1]) async => state + inc;
 }
 
+@riverpod
+class Typed extends _$Typed {
+  @override
+  String build() => 'typed';
+
+  @mutation
+  Future<String> mutate(String one,
+          {required String two, required String three}) async =>
+      '$one $two $three';
+}
+
 // final mut = ref.watch(aProvider(arg).increment);
 // mut(2);
 
