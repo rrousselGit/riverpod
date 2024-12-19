@@ -25,6 +25,13 @@ export 'package:riverpod/src/internals.dart'
         $RefArg,
         $ProviderPointer,
 
+        // Mutation/Listenables
+        ProviderListenable,
+        LazyProxyListenable,
+        ProviderElement,
+        ProxyElementValueListenable,
+        Result,
+
         // Provider
         $Provider,
         $ProviderElement,

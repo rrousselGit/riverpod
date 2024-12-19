@@ -1589,5 +1589,160 @@ final class _$FailingCtor$Increment
       _$FailingCtor$Increment(element, state: state, key: key);
 }
 
+@ProviderFor(Typed)
+const typedProvider = TypedProvider._();
+
+final class TypedProvider extends $NotifierProvider<Typed, String> {
+  const TypedProvider._(
+      {super.runNotifierBuildOverride, Typed Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'typedProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final Typed Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$typedHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
+  @$internal
+  @override
+  Typed create() => _createCb?.call() ?? Typed();
+
+  @$internal
+  @override
+  TypedProvider $copyWithCreate(
+    Typed Function() create,
+  ) {
+    return TypedProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  TypedProvider $copyWithBuild(
+    String Function(
+      Ref,
+      Typed,
+    ) build,
+  ) {
+    return TypedProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  _$TypedElement $createElement($ProviderPointer pointer) =>
+      _$TypedElement(this, pointer);
+
+  ProviderListenable<Typed$Mutate> get mutate =>
+      LazyProxyListenable<Typed$Mutate, String>(
+        this,
+        (element) {
+          element as _$TypedElement;
+
+          return element._$mutate;
+        },
+      );
+}
+
+String _$typedHash() => r'1f53e16796771d14fcdfec41d2b9f5eb70d875a7';
+
+abstract class _$Typed extends $Notifier<String> {
+  String build();
+  @$internal
+  @override
+  String runBuild() => build();
+}
+
+class _$TypedElement extends $NotifierProviderElement<Typed, String> {
+  _$TypedElement(super.provider, super.pointer) {
+    _$mutate.result = Result.data(_$Typed$Mutate(this));
+  }
+  final _$mutate = ProxyElementValueListenable<_$Typed$Mutate>();
+  @override
+  void mount() {
+    super.mount();
+    _$mutate.result!.stateOrNull!.reset();
+  }
+
+  @override
+  void visitChildren({
+    required void Function(ProviderElement element) elementVisitor,
+    required void Function(ProxyElementValueListenable element)
+        listenableVisitor,
+  }) {
+    super.visitChildren(
+      elementVisitor: elementVisitor,
+      listenableVisitor: listenableVisitor,
+    );
+
+    listenableVisitor(_$mutate);
+  }
+}
+
+sealed class Typed$Mutate extends MutationBase<String> {
+  /// Starts the mutation.
+  ///
+  /// This will first set the state to [PendingMutationState], then
+  /// will call [Typed.mutate] with the provided parameters.
+  ///
+  /// After the method completes, the mutation state will be updated to either
+  /// [SuccessMutationState] or [ErrorMutationState] based on if the method
+  /// threw or not.
+  ///
+  /// Lastly, if the method completes without throwing, the Notifier's state
+  /// will be updated with the new value.
+  ///
+  /// **Note**:
+  /// If the notifier threw in its constructor, the mutation won't start
+  /// and [call] will throw.
+  /// This should generally never happen though, as Notifiers are not supposed
+  /// to have logic in their constructors.
+  Future<String> call(String one, {required String two, required String three});
+}
+
+final class _$Typed$Mutate
+    extends $SyncMutationBase<String, _$Typed$Mutate, Typed>
+    implements Typed$Mutate {
+  _$Typed$Mutate(this.element, {super.state, super.key});
+
+  @override
+  final _$TypedElement element;
+
+  @override
+  ProxyElementValueListenable<_$Typed$Mutate> get listenable =>
+      element._$mutate;
+
+  @override
+  Future<String> call(String one,
+      {required String two, required String three}) {
+    return mutateAsync(
+      Invocation.method(#mutate, [one], {#two: two, #three: three}),
+      ($notifier) => $notifier.mutate(
+        one,
+        two: two,
+        three: three,
+      ),
+    );
+  }
+
+  @override
+  _$Typed$Mutate copyWith(MutationState<String> state, {Object? key}) =>
+      _$Typed$Mutate(element, state: state, key: key);
+}
+
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

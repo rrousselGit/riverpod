@@ -248,6 +248,19 @@ void main() {
     verifyNever(observer.mutationError(any, any, any, any));
   });
 
+  test('Typed providers and named parameters', () async {
+    final container = ProviderContainer.test();
+
+    final sub = container.listen(typedProvider.mutate, (a, b) {});
+
+    await sub.read().call('five', two: 'six', three: 'seven');
+
+    expect(
+      sub.read(),
+      isMutationBase<String>(state: isSuccessMutationState('five six seven')),
+    );
+  });
+
   group('reset', () {
     test('Supports calling reset while pending', () async {
       final container = ProviderContainer.test();
