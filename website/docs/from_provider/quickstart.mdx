@@ -33,7 +33,7 @@ class MyNotifier extends ChangeNotifier {
 }
 
 // ... just add this!
-final myNotifierProvider = ChangeNotifierProvider<MyNotifier>((ref) {
+final myNotifierProvider = ChangeNotifierProvider<MyNotifier>(create: (ref) {
   return MyNotifier();
 });
 ```
