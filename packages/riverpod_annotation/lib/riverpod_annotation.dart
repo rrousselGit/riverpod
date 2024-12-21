@@ -27,7 +27,7 @@ export 'package:riverpod/src/internals.dart'
 
         // Mutation/Listenables
         ProviderListenable,
-        LazyProxyListenable,
+        $LazyProxyListenable,
         ProviderElement,
         ProxyElementValueListenable,
         Result,

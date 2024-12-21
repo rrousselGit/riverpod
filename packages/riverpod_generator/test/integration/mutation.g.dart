@@ -65,7 +65,7 @@ final class SimpleProvider extends $NotifierProvider<Simple, int> {
       _$SimpleElement(this, pointer);
 
   ProviderListenable<Simple$Increment> get increment =>
-      LazyProxyListenable<Simple$Increment, int>(
+      $LazyProxyListenable<Simple$Increment, int>(
         this,
         (element) {
           element as _$SimpleElement;
@@ -75,7 +75,7 @@ final class SimpleProvider extends $NotifierProvider<Simple, int> {
       );
 
   ProviderListenable<Simple$IncrementOr> get incrementOr =>
-      LazyProxyListenable<Simple$IncrementOr, int>(
+      $LazyProxyListenable<Simple$IncrementOr, int>(
         this,
         (element) {
           element as _$SimpleElement;
@@ -85,7 +85,7 @@ final class SimpleProvider extends $NotifierProvider<Simple, int> {
       );
 
   ProviderListenable<Simple$Delegated> get delegated =>
-      LazyProxyListenable<Simple$Delegated, int>(
+      $LazyProxyListenable<Simple$Delegated, int>(
         this,
         (element) {
           element as _$SimpleElement;
@@ -362,7 +362,7 @@ final class SimpleFamilyProvider extends $NotifierProvider<SimpleFamily, int> {
       _$SimpleFamilyElement(this, pointer);
 
   ProviderListenable<SimpleFamily$Increment> get increment =>
-      LazyProxyListenable<SimpleFamily$Increment, int>(
+      $LazyProxyListenable<SimpleFamily$Increment, int>(
         this,
         (element) {
           element as _$SimpleFamilyElement;
@@ -372,7 +372,7 @@ final class SimpleFamilyProvider extends $NotifierProvider<SimpleFamily, int> {
       );
 
   ProviderListenable<SimpleFamily$IncrementOr> get incrementOr =>
-      LazyProxyListenable<SimpleFamily$IncrementOr, int>(
+      $LazyProxyListenable<SimpleFamily$IncrementOr, int>(
         this,
         (element) {
           element as _$SimpleFamilyElement;
@@ -653,7 +653,7 @@ final class SimpleAsyncProvider
       _$SimpleAsyncElement(this, pointer);
 
   ProviderListenable<SimpleAsync$Increment> get increment =>
-      LazyProxyListenable<SimpleAsync$Increment, AsyncValue<int>>(
+      $LazyProxyListenable<SimpleAsync$Increment, AsyncValue<int>>(
         this,
         (element) {
           element as _$SimpleAsyncElement;
@@ -663,7 +663,7 @@ final class SimpleAsyncProvider
       );
 
   ProviderListenable<SimpleAsync$Delegated> get delegated =>
-      LazyProxyListenable<SimpleAsync$Delegated, AsyncValue<int>>(
+      $LazyProxyListenable<SimpleAsync$Delegated, AsyncValue<int>>(
         this,
         (element) {
           element as _$SimpleAsyncElement;
@@ -881,7 +881,7 @@ final class SimpleAsync2Provider
       _$SimpleAsync2Element(this, pointer);
 
   ProviderListenable<SimpleAsync2$Increment> get increment =>
-      LazyProxyListenable<SimpleAsync2$Increment, AsyncValue<int>>(
+      $LazyProxyListenable<SimpleAsync2$Increment, AsyncValue<int>>(
         this,
         (element) {
           element as _$SimpleAsync2Element;
@@ -1131,7 +1131,7 @@ final class GenericProvider<T extends num>
       _$GenericElement(this, pointer);
 
   ProviderListenable<Generic$Increment> get increment =>
-      LazyProxyListenable<Generic$Increment, AsyncValue<int>>(
+      $LazyProxyListenable<Generic$Increment, AsyncValue<int>>(
         this,
         (element) {
           element as _$GenericElement<T>;
@@ -1336,7 +1336,7 @@ final class GenericMutProvider extends $AsyncNotifierProvider<GenericMut, int> {
       _$GenericMutElement(this, pointer);
 
   ProviderListenable<GenericMut$Increment> get increment =>
-      LazyProxyListenable<GenericMut$Increment, AsyncValue<int>>(
+      $LazyProxyListenable<GenericMut$Increment, AsyncValue<int>>(
         this,
         (element) {
           element as _$GenericMutElement;
@@ -1493,7 +1493,7 @@ final class FailingCtorProvider extends $NotifierProvider<FailingCtor, int> {
       _$FailingCtorElement(this, pointer);
 
   ProviderListenable<FailingCtor$Increment> get increment =>
-      LazyProxyListenable<FailingCtor$Increment, int>(
+      $LazyProxyListenable<FailingCtor$Increment, int>(
         this,
         (element) {
           element as _$FailingCtorElement;
@@ -1648,7 +1648,7 @@ final class TypedProvider extends $NotifierProvider<Typed, String> {
       _$TypedElement(this, pointer);
 
   ProviderListenable<Typed$Mutate> get mutate =>
-      LazyProxyListenable<Typed$Mutate, String>(
+      $LazyProxyListenable<Typed$Mutate, String>(
         this,
         (element) {
           element as _$TypedElement;
