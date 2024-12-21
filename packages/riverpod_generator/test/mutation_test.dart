@@ -253,6 +253,8 @@ void main() {
 
     final sub = container.listen(typedProvider.mutate, (a, b) {});
 
+    expect(container.read(typedProvider), 'typed');
+
     await sub.read().call('five', two: 'six', three: 'seven');
 
     expect(
