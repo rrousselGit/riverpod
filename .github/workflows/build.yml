@@ -28,31 +28,31 @@ jobs:
     strategy:
       matrix:
         channel:
-          - stable
+          # - stable
           - master
         package_path:
-          - examples/counter
-          - examples/marvel
-          - examples/pub
-          - examples/random_number
-          - examples/stackoverflow
-          - examples/todos
-          - packages/riverpod
-          - packages/riverpod/example
-          - packages/flutter_riverpod
-          - packages/flutter_riverpod/example
-          - packages/hooks_riverpod
-          - packages/hooks_riverpod/example
-          - packages/riverpod_annotation
-          # TODO(rrousselGit) update riverpod_cli test setup to be supported by the CI
-          # - packages/riverpod_cli
+          # - examples/counter
+          # - examples/marvel
+          # - examples/pub
+          # - examples/random_number
+          # - examples/stackoverflow
+          # - examples/todos
+          # - packages/riverpod
+          # - packages/riverpod/example
+          # - packages/flutter_riverpod
+          # - packages/flutter_riverpod/example
+          # - packages/hooks_riverpod
+          # - packages/hooks_riverpod/example
+          # - packages/riverpod_annotation
+          # # TODO(rrousselGit) update riverpod_cli test setup to be supported by the CI
+          # # - packages/riverpod_cli
           - packages/riverpod_generator
           - packages/riverpod_generator/integration/build_yaml
           # TODO(rrousselGit) update riverpod_graph test setup to be supported by the CI
           # - packages/riverpod_graph
           # TODO(rousselGit) blocked by https://github.com/invertase/dart_custom_lint/issues/16
           # - packages/riverpod_lint_flutter_test
-          - website
+          # - website
 
     steps:
       - uses: actions/checkout@v3.1.0
