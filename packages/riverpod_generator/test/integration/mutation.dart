@@ -1,4 +1,3 @@
-import 'package:riverpod/src/internals.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'mutation.g.dart';
@@ -92,69 +91,10 @@ class Typed extends _$Typed {
   String build() => 'typed';
 
   @mutation
-  Future<String> mutate(String one,
-          {required String two, required String three}) async =>
+  Future<String> mutate(
+    String one, {
+    required String two,
+    required String three,
+  }) async =>
       '$one $two $three';
 }
-
-// final mut = ref.watch(aProvider(arg).increment);
-// mut(2);
-
-// class User {
-//   final String id;
-// }
-
-// class UserSub extends User {}
-
-// class IList<T> extends List<T> {}
-
-// @Repository(retry: retry)
-// class Users extends _$Users {
-//   @riverpod
-//   FutureOr<User> byId(String id) => User();
-
-//   @riverpod
-//   Future<List<User>> home() async => [];
-
-//   @riverpod
-//   Future<List<User>> search(String search) async => [];
-
-//   @riverpod
-//   Future<IList<User>> search(String search) async => [];
-
-//   @riverpod
-//   Future<List<UserSub>> search(String search) async => [];
-
-//   @riverpod
-//   Stream<List<User>> socketSearch(String search) async => [];
-
-//   @mutation
-//   Future<User> addUser(User user) async {
-//     return user;
-//   }
-// }
-
-// abstract class Repository<KeyT, StateT> {
-//   Map<KeyT, AsyncValue<StateT>> _all;
-
-//   KeyT key(StateT state);
-
-//   void build(Ref ref);
-// }
-
-// abstract class _$Users extends Repository<String, User> {
-//   // User has a .id, so we automatically pick it up as the key
-//   @override
-//   String key(User user) => user.id;
-
-//   @override
-//   void build(ref) {
-//     observe(providerOrFamily, onAdd: (provider, key, value) {
-//       ref.mutate((state) => state.add(value));
-//     }, onUpdate);
-//   }
-// }
-
-// // ref.watch(usersProvider.byId('123'));
-// // ref.watch(usersProvider.home);
-// // ref.watch(usersProvider.search('john'));
