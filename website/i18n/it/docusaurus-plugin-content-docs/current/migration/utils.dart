@@ -1,23 +1,23 @@
 import 'dart:math' as math;
 
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-final randomProvider = Provider<int>((ref) {
+part 'utils.g.dart';
+
+@riverpod
+int random(Ref ref) {
   return math.Random().nextInt(6);
-});
+}
 
-final taskTrackerProvider = Provider<TaskTrackerRepo>((ref) {
-  return TaskTrackerRepo();
-});
+@riverpod
+TaskTrackerRepo taskTracker(Ref ref) => TaskTrackerRepo();
 
 class TaskTrackerRepo {
   Future<int> fix({required String id, required int fixed}) async => 0;
 }
 
-final durationProvider = Provider<Duration>((ref) {
-  return Duration.zero;
-});
+@riverpod
+Duration duration(Ref ref) => Duration.zero;
 
-final availableWaterProvider = Provider<int>((ref) {
-  return 40;
-});
+@riverpod
+int availableWater(Ref ref) => 40;

@@ -17,6 +17,9 @@ analyzer:
 
 linter:
   rules:
+    # Not an issue if using dartfmt
+    no_adjacent_strings_in_list: false
+
     # False positive for custom enum-like classes (such as Flutter's "Colors")
     avoid_classes_with_only_static_members: false
 
@@ -25,9 +28,6 @@ linter:
 
     # Low value and lacks a quick fix
     combinators_ordering: false
-    
-    # Low value and high cost to change on all files
-    eol_at_end_of_file: false
 
     # Conflicts with unused variables
     no_leading_underscores_for_local_identifiers: false
@@ -87,6 +87,3 @@ linter:
 
     # conflicts with `prefer_relative_imports`
     always_use_package_imports: false
-
-    # Disabled for now until we have NNBD as it otherwise conflicts with `missing_return`
-    no_default_cases: false
