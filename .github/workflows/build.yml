@@ -82,6 +82,15 @@ jobs:
         run: dart format --set-exit-if-changed .
         if: matrix.package_path != 'website' && matrix.channel == 'master'
 
+      - name: Check
+        run: ls -la .
+
+      - name: Check2
+        run: |
+          if test -d "integration/build_yaml"; then
+            flutter pub get integration/build_yaml
+          fi
+
       - name: Analyze
         run: flutter analyze
         if: matrix.channel == 'master'
