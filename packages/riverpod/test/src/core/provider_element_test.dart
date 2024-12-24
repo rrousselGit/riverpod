@@ -37,7 +37,11 @@ void main() {
     });
 
     group('retry', () {
-      test('default retry delays from 200ms to 6.4 seconds', () {});
+      test(
+        skip: 'unimplemented',
+        'default retry delays from 200ms to 6.4 seconds',
+        () {},
+      );
 
       group('custom retry', () {
         test(
