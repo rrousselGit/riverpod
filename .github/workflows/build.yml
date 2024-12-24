@@ -67,11 +67,8 @@ jobs:
         run: echo "PUB_CACHE="$HOME/.pub-cache"" >> $GITHUB_ENV
       - name: Install dependencies
         run: flutter pub get
-      - name: Install dependencies (integration/buid.yaml)
-        run: |
-          if test -d "integration/build_yaml"; then
-            flutter pub get integration/build_yaml
-          fi
+      - if: matrix.package_path != 'packages/riverpod_generator'
+        run: rm -rf integration
       - name: Install dependencies (website/third-party)
         run: |
           if test -d "third-party"; then
