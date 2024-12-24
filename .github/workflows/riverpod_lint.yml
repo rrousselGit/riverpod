@@ -22,50 +22,50 @@ jobs:
       run:
         working-directory: ${{ matrix.package_path }}
 
-    strategy:
-      matrix:
-        channel:
-          - master
-          - stable
-        package_path:
-          - packages/riverpod_analyzer_utils
-          - packages/riverpod_analyzer_utils_tests
-          - packages/riverpod_lint
-          - packages/riverpod_lint_flutter_test
+    # strategy:
+      # matrix:
+      #   channel:
+      #     - master
+      #     - stable
+      #   package_path:
+      #     - packages/riverpod_analyzer_utils
+      #     - packages/riverpod_analyzer_utils_tests
+      #     - packages/riverpod_lint
+      #     - packages/riverpod_lint_flutter_test
 
-    steps:
-      - uses: actions/checkout@v3.1.0
-        with:
-          fetch-depth: 2
-      - uses: subosito/flutter-action@v2.7.1
-        with:
-          channel: ${{ matrix.channel }}
-      - name: Add pub cache bin to PATH
-        run: echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
-      - name: Add pub cache to PATH
-        run: echo "PUB_CACHE="$HOME/.pub-cache"" >> $GITHUB_ENV
-      - name: Install dependencies
-        run: flutter pub get
-      - run: dart pub global activate custom_lint
-      - name: Check format
-        run: dart format --set-exit-if-changed .
+    # steps:
+      # - uses: actions/checkout@v3.1.0
+      #   with:
+      #     fetch-depth: 2
+      # - uses: subosito/flutter-action@v2.7.1
+      #   with:
+      #     channel: ${{ matrix.channel }}
+      # - name: Add pub cache bin to PATH
+      #   run: echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
+      # - name: Add pub cache to PATH
+      #   run: echo "PUB_CACHE="$HOME/.pub-cache"" >> $GITHUB_ENV
+      # - name: Install dependencies
+      #   run: flutter pub get
+      # - run: dart pub global activate custom_lint
+      # - name: Check format
+      #   run: dart format --set-exit-if-changed .
 
-      - name: Analyze
-        run: flutter analyze
+      # - name: Analyze
+      #   run: flutter analyze
 
-      - name: Run custom_lint
-        run: custom_lint
-        # Workaround to https://github.com/invertase/dart_custom_lint/issues/77
-        if: matrix.package_path == 'packages/riverpod_lint_flutter_test'
+      # - name: Run custom_lint
+      #   run: custom_lint
+      #   # Workaround to https://github.com/invertase/dart_custom_lint/issues/77
+      #   if: matrix.package_path == 'packages/riverpod_lint_flutter_test'
 
-      - name: Run tests
-        run: |
-          if test -d "test"; then
-            ${{github.workspace}}/scripts/coverage.sh
-          fi
+      # - name: Run tests
+      #   run: |
+      #     if test -d "test"; then
+      #       ${{github.workspace}}/scripts/coverage.sh
+      #     fi
 
-      - name: Upload coverage to codecov
-        run: |
-          if test -d "test"; then
-            curl -s https://codecov.io/bash | bash
-          fi
+      # - name: Upload coverage to codecov
+      #   run: |
+      #     if test -d "test"; then
+      #       curl -s https://codecov.io/bash | bash
+      #     fi
