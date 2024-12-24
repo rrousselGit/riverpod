@@ -39,17 +39,17 @@ class _ProviderSelector<InputT, OutputT, OriginT>
   /// The selector applied
   final OutputT Function(InputT) selector;
 
-  Result<OutputT> _select(Result<InputT> value) {
+  $Result<OutputT> _select($Result<InputT> value) {
     if (kDebugMode) _debugIsRunningSelector = true;
 
     try {
       return switch (value) {
-        ResultData(:final state) => Result.data(selector(state)),
+        ResultData(:final state) => $Result.data(selector(state)),
         ResultError(:final error, :final stackTrace) =>
-          Result.error(error, stackTrace),
+          $Result.error(error, stackTrace),
       };
     } catch (err, stack) {
-      return Result.error(err, stack);
+      return $Result.error(err, stack);
     } finally {
       if (kDebugMode) _debugIsRunningSelector = false;
     }
@@ -57,12 +57,12 @@ class _ProviderSelector<InputT, OutputT, OriginT>
 
   void _selectOnChange({
     required InputT newState,
-    required Result<OutputT>? lastSelectedValue,
+    required $Result<OutputT>? lastSelectedValue,
     required void Function(Object error, StackTrace stackTrace) onError,
     required void Function(OutputT? prev, OutputT next) listener,
-    required void Function(Result<OutputT> newState) onChange,
+    required void Function($Result<OutputT> newState) onChange,
   }) {
-    final newSelectedValue = _select(Result.data(newState));
+    final newSelectedValue = _select($Result.data(newState));
     if (lastSelectedValue == null ||
         !lastSelectedValue.hasState ||
         !newSelectedValue.hasState ||
@@ -91,7 +91,7 @@ class _ProviderSelector<InputT, OutputT, OriginT>
   }) {
     onError ??= Zone.current.handleUncaughtError;
 
-    Result<OutputT>? lastSelectedValue;
+    $Result<OutputT>? lastSelectedValue;
     final sub = provider.addListener(
       node,
       (prev, input) {
@@ -109,7 +109,7 @@ class _ProviderSelector<InputT, OutputT, OriginT>
       onError: onError,
     );
 
-    if (!weak) lastSelectedValue = _select(Result.guard(sub.read));
+    if (!weak) lastSelectedValue = _select($Result.guard(sub.read));
 
     if (fireImmediately) {
       _handleFireImmediately(

@@ -56,7 +56,7 @@ final class ${mutation.generatedMutationImplName}
   final ${provider.generatedElementName} element;
 
   @override
-  ProxyElementValueListenable<${mutation.generatedMutationImplName}> get listenable => element.${mutation.elementFieldName};
+  \$ElementLense<${mutation.generatedMutationImplName}> get listenable => element.${mutation.elementFieldName};
 
   @override
   Future<${provider.valueTypeDisplayString}> call${mutation.node.typeParameters.genericDefinitionDisplayString()}${mutation.node.parameters} {

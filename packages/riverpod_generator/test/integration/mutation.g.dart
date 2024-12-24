@@ -106,13 +106,13 @@ abstract class _$Simple extends $Notifier<int> {
 
 class _$SimpleElement extends $NotifierProviderElement<Simple, int> {
   _$SimpleElement(super.provider, super.pointer) {
-    _$increment.result = Result.data(_$Simple$Increment(this));
-    _$incrementOr.result = Result.data(_$Simple$IncrementOr(this));
-    _$delegated.result = Result.data(_$Simple$Delegated(this));
+    _$increment.result = $Result.data(_$Simple$Increment(this));
+    _$incrementOr.result = $Result.data(_$Simple$IncrementOr(this));
+    _$delegated.result = $Result.data(_$Simple$Delegated(this));
   }
-  final _$increment = ProxyElementValueListenable<_$Simple$Increment>();
-  final _$incrementOr = ProxyElementValueListenable<_$Simple$IncrementOr>();
-  final _$delegated = ProxyElementValueListenable<_$Simple$Delegated>();
+  final _$increment = $ElementLense<_$Simple$Increment>();
+  final _$incrementOr = $ElementLense<_$Simple$IncrementOr>();
+  final _$delegated = $ElementLense<_$Simple$Delegated>();
   @override
   void mount() {
     super.mount();
@@ -124,8 +124,7 @@ class _$SimpleElement extends $NotifierProviderElement<Simple, int> {
   @override
   void visitChildren({
     required void Function(ProviderElement element) elementVisitor,
-    required void Function(ProxyElementValueListenable element)
-        listenableVisitor,
+    required void Function($ElementLense element) listenableVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,
@@ -168,8 +167,7 @@ final class _$Simple$Increment
   final _$SimpleElement element;
 
   @override
-  ProxyElementValueListenable<_$Simple$Increment> get listenable =>
-      element._$increment;
+  $ElementLense<_$Simple$Increment> get listenable => element._$increment;
 
   @override
   Future<int> call([int inc = 1]) {
@@ -219,8 +217,7 @@ final class _$Simple$IncrementOr
   final _$SimpleElement element;
 
   @override
-  ProxyElementValueListenable<_$Simple$IncrementOr> get listenable =>
-      element._$incrementOr;
+  $ElementLense<_$Simple$IncrementOr> get listenable => element._$incrementOr;
 
   @override
   Future<int> call() {
@@ -268,8 +265,7 @@ final class _$Simple$Delegated
   final _$SimpleElement element;
 
   @override
-  ProxyElementValueListenable<_$Simple$Delegated> get listenable =>
-      element._$delegated;
+  $ElementLense<_$Simple$Delegated> get listenable => element._$delegated;
 
   @override
   Future<int> call(Future<int> Function() fn) {
@@ -471,12 +467,11 @@ abstract class _$SimpleFamily extends $Notifier<int> {
 class _$SimpleFamilyElement
     extends $NotifierProviderElement<SimpleFamily, int> {
   _$SimpleFamilyElement(super.provider, super.pointer) {
-    _$increment.result = Result.data(_$SimpleFamily$Increment(this));
-    _$incrementOr.result = Result.data(_$SimpleFamily$IncrementOr(this));
+    _$increment.result = $Result.data(_$SimpleFamily$Increment(this));
+    _$incrementOr.result = $Result.data(_$SimpleFamily$IncrementOr(this));
   }
-  final _$increment = ProxyElementValueListenable<_$SimpleFamily$Increment>();
-  final _$incrementOr =
-      ProxyElementValueListenable<_$SimpleFamily$IncrementOr>();
+  final _$increment = $ElementLense<_$SimpleFamily$Increment>();
+  final _$incrementOr = $ElementLense<_$SimpleFamily$IncrementOr>();
   @override
   void mount() {
     super.mount();
@@ -487,8 +482,7 @@ class _$SimpleFamilyElement
   @override
   void visitChildren({
     required void Function(ProviderElement element) elementVisitor,
-    required void Function(ProxyElementValueListenable element)
-        listenableVisitor,
+    required void Function($ElementLense element) listenableVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,
@@ -530,8 +524,7 @@ final class _$SimpleFamily$Increment
   final _$SimpleFamilyElement element;
 
   @override
-  ProxyElementValueListenable<_$SimpleFamily$Increment> get listenable =>
-      element._$increment;
+  $ElementLense<_$SimpleFamily$Increment> get listenable => element._$increment;
 
   @override
   Future<int> call([int inc = 1]) {
@@ -581,7 +574,7 @@ final class _$SimpleFamily$IncrementOr
   final _$SimpleFamilyElement element;
 
   @override
-  ProxyElementValueListenable<_$SimpleFamily$IncrementOr> get listenable =>
+  $ElementLense<_$SimpleFamily$IncrementOr> get listenable =>
       element._$incrementOr;
 
   @override
@@ -685,11 +678,11 @@ abstract class _$SimpleAsync extends $AsyncNotifier<int> {
 class _$SimpleAsyncElement
     extends $AsyncNotifierProviderElement<SimpleAsync, int> {
   _$SimpleAsyncElement(super.provider, super.pointer) {
-    _$increment.result = Result.data(_$SimpleAsync$Increment(this));
-    _$delegated.result = Result.data(_$SimpleAsync$Delegated(this));
+    _$increment.result = $Result.data(_$SimpleAsync$Increment(this));
+    _$delegated.result = $Result.data(_$SimpleAsync$Delegated(this));
   }
-  final _$increment = ProxyElementValueListenable<_$SimpleAsync$Increment>();
-  final _$delegated = ProxyElementValueListenable<_$SimpleAsync$Delegated>();
+  final _$increment = $ElementLense<_$SimpleAsync$Increment>();
+  final _$delegated = $ElementLense<_$SimpleAsync$Delegated>();
   @override
   void mount() {
     super.mount();
@@ -700,8 +693,7 @@ class _$SimpleAsyncElement
   @override
   void visitChildren({
     required void Function(ProviderElement element) elementVisitor,
-    required void Function(ProxyElementValueListenable element)
-        listenableVisitor,
+    required void Function($ElementLense element) listenableVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,
@@ -743,8 +735,7 @@ final class _$SimpleAsync$Increment
   final _$SimpleAsyncElement element;
 
   @override
-  ProxyElementValueListenable<_$SimpleAsync$Increment> get listenable =>
-      element._$increment;
+  $ElementLense<_$SimpleAsync$Increment> get listenable => element._$increment;
 
   @override
   Future<int> call([int inc = 1]) {
@@ -794,8 +785,7 @@ final class _$SimpleAsync$Delegated
   final _$SimpleAsyncElement element;
 
   @override
-  ProxyElementValueListenable<_$SimpleAsync$Delegated> get listenable =>
-      element._$delegated;
+  $ElementLense<_$SimpleAsync$Delegated> get listenable => element._$delegated;
 
   @override
   Future<int> call(Future<int> Function() fn) {
@@ -980,9 +970,9 @@ abstract class _$SimpleAsync2 extends $StreamNotifier<int> {
 class _$SimpleAsync2Element
     extends $StreamNotifierProviderElement<SimpleAsync2, int> {
   _$SimpleAsync2Element(super.provider, super.pointer) {
-    _$increment.result = Result.data(_$SimpleAsync2$Increment(this));
+    _$increment.result = $Result.data(_$SimpleAsync2$Increment(this));
   }
-  final _$increment = ProxyElementValueListenable<_$SimpleAsync2$Increment>();
+  final _$increment = $ElementLense<_$SimpleAsync2$Increment>();
   @override
   void mount() {
     super.mount();
@@ -992,8 +982,7 @@ class _$SimpleAsync2Element
   @override
   void visitChildren({
     required void Function(ProviderElement element) elementVisitor,
-    required void Function(ProxyElementValueListenable element)
-        listenableVisitor,
+    required void Function($ElementLense element) listenableVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,
@@ -1034,8 +1023,7 @@ final class _$SimpleAsync2$Increment
   final _$SimpleAsync2Element element;
 
   @override
-  ProxyElementValueListenable<_$SimpleAsync2$Increment> get listenable =>
-      element._$increment;
+  $ElementLense<_$SimpleAsync2$Increment> get listenable => element._$increment;
 
   @override
   Future<int> call() {
@@ -1212,9 +1200,9 @@ abstract class _$Generic<T extends num> extends $AsyncNotifier<int> {
 class _$GenericElement<T extends num>
     extends $AsyncNotifierProviderElement<Generic<T>, int> {
   _$GenericElement(super.provider, super.pointer) {
-    _$increment.result = Result.data(_$Generic$Increment(this));
+    _$increment.result = $Result.data(_$Generic$Increment(this));
   }
-  final _$increment = ProxyElementValueListenable<_$Generic$Increment>();
+  final _$increment = $ElementLense<_$Generic$Increment>();
   @override
   void mount() {
     super.mount();
@@ -1224,8 +1212,7 @@ class _$GenericElement<T extends num>
   @override
   void visitChildren({
     required void Function(ProviderElement element) elementVisitor,
-    required void Function(ProxyElementValueListenable element)
-        listenableVisitor,
+    required void Function($ElementLense element) listenableVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,
@@ -1266,8 +1253,7 @@ final class _$Generic$Increment
   final _$GenericElement element;
 
   @override
-  ProxyElementValueListenable<_$Generic$Increment> get listenable =>
-      element._$increment;
+  $ElementLense<_$Generic$Increment> get listenable => element._$increment;
 
   @override
   Future<int> call() {
@@ -1358,9 +1344,9 @@ abstract class _$GenericMut extends $AsyncNotifier<int> {
 class _$GenericMutElement
     extends $AsyncNotifierProviderElement<GenericMut, int> {
   _$GenericMutElement(super.provider, super.pointer) {
-    _$increment.result = Result.data(_$GenericMut$Increment(this));
+    _$increment.result = $Result.data(_$GenericMut$Increment(this));
   }
-  final _$increment = ProxyElementValueListenable<_$GenericMut$Increment>();
+  final _$increment = $ElementLense<_$GenericMut$Increment>();
   @override
   void mount() {
     super.mount();
@@ -1370,8 +1356,7 @@ class _$GenericMutElement
   @override
   void visitChildren({
     required void Function(ProviderElement element) elementVisitor,
-    required void Function(ProxyElementValueListenable element)
-        listenableVisitor,
+    required void Function($ElementLense element) listenableVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,
@@ -1412,8 +1397,7 @@ final class _$GenericMut$Increment
   final _$GenericMutElement element;
 
   @override
-  ProxyElementValueListenable<_$GenericMut$Increment> get listenable =>
-      element._$increment;
+  $ElementLense<_$GenericMut$Increment> get listenable => element._$increment;
 
   @override
   Future<int> call<T extends num>(T value) {
@@ -1514,9 +1498,9 @@ abstract class _$FailingCtor extends $Notifier<int> {
 
 class _$FailingCtorElement extends $NotifierProviderElement<FailingCtor, int> {
   _$FailingCtorElement(super.provider, super.pointer) {
-    _$increment.result = Result.data(_$FailingCtor$Increment(this));
+    _$increment.result = $Result.data(_$FailingCtor$Increment(this));
   }
-  final _$increment = ProxyElementValueListenable<_$FailingCtor$Increment>();
+  final _$increment = $ElementLense<_$FailingCtor$Increment>();
   @override
   void mount() {
     super.mount();
@@ -1526,8 +1510,7 @@ class _$FailingCtorElement extends $NotifierProviderElement<FailingCtor, int> {
   @override
   void visitChildren({
     required void Function(ProviderElement element) elementVisitor,
-    required void Function(ProxyElementValueListenable element)
-        listenableVisitor,
+    required void Function($ElementLense element) listenableVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,
@@ -1568,8 +1551,7 @@ final class _$FailingCtor$Increment
   final _$FailingCtorElement element;
 
   @override
-  ProxyElementValueListenable<_$FailingCtor$Increment> get listenable =>
-      element._$increment;
+  $ElementLense<_$FailingCtor$Increment> get listenable => element._$increment;
 
   @override
   Future<int> call([int inc = 1]) {
@@ -1669,9 +1651,9 @@ abstract class _$Typed extends $Notifier<String> {
 
 class _$TypedElement extends $NotifierProviderElement<Typed, String> {
   _$TypedElement(super.provider, super.pointer) {
-    _$mutate.result = Result.data(_$Typed$Mutate(this));
+    _$mutate.result = $Result.data(_$Typed$Mutate(this));
   }
-  final _$mutate = ProxyElementValueListenable<_$Typed$Mutate>();
+  final _$mutate = $ElementLense<_$Typed$Mutate>();
   @override
   void mount() {
     super.mount();
@@ -1681,8 +1663,7 @@ class _$TypedElement extends $NotifierProviderElement<Typed, String> {
   @override
   void visitChildren({
     required void Function(ProviderElement element) elementVisitor,
-    required void Function(ProxyElementValueListenable element)
-        listenableVisitor,
+    required void Function($ElementLense element) listenableVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,
@@ -1723,8 +1704,7 @@ final class _$Typed$Mutate
   final _$TypedElement element;
 
   @override
-  ProxyElementValueListenable<_$Typed$Mutate> get listenable =>
-      element._$mutate;
+  $ElementLense<_$Typed$Mutate> get listenable => element._$mutate;
 
   @override
   Future<String> call(String one,

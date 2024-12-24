@@ -29,8 +29,8 @@ export 'package:riverpod/src/internals.dart'
         ProviderListenable,
         $LazyProxyListenable,
         ProviderElement,
-        ProxyElementValueListenable,
-        Result,
+        $ElementLense,
+        $Result,
 
         // Provider
         $Provider,

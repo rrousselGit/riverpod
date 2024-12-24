@@ -187,7 +187,7 @@ abstract class ClassProviderElement< //
   @override
   $ClassProvider<NotifierT, StateT, CreatedT> get provider;
 
-  final classListenable = ProxyElementValueListenable<NotifierT>();
+  final classListenable = $ElementLense<NotifierT>();
 
   @mustCallSuper
   @override
@@ -198,7 +198,7 @@ abstract class ClassProviderElement< //
   }) {
     final seamless = !didChangeDependency;
 
-    final result = classListenable.result = Result.guard(() {
+    final result = classListenable.result = $Result.guard(() {
       final notifier = provider.create();
       if (notifier._ref != null) {
         throw StateError(alreadyInitializedError);
@@ -250,8 +250,7 @@ abstract class ClassProviderElement< //
   @override
   void visitChildren({
     required void Function(ProviderElement element) elementVisitor,
-    required void Function(ProxyElementValueListenable element)
-        listenableVisitor,
+    required void Function($ElementLense element) listenableVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,

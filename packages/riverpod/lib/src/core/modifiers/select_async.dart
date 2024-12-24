@@ -22,13 +22,13 @@ class _AsyncSelector<InputT, OutputT, OriginT>
   /// The selector applied
   final OutputT Function(InputT) selector;
 
-  Result<OutputT> _select(InputT value) {
+  $Result<OutputT> _select(InputT value) {
     if (kDebugMode) _debugIsRunningSelector = true;
 
     try {
-      return Result.data(selector(value));
+      return $Result.data(selector(value));
     } catch (err, stack) {
-      return Result.error(err, stack);
+      return $Result.error(err, stack);
     } finally {
       if (kDebugMode) _debugIsRunningSelector = false;
     }
@@ -43,7 +43,7 @@ class _AsyncSelector<InputT, OutputT, OriginT>
     required bool fireImmediately,
     required bool weak,
   }) {
-    Result<OutputT>? lastSelectedValue;
+    $Result<OutputT>? lastSelectedValue;
     Completer<OutputT>? selectedCompleter;
     Future<OutputT>? selectedFuture;
 

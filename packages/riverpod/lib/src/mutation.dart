@@ -363,7 +363,7 @@ abstract class $SyncMutationBase<
 
   @override
   void setData(StateT value) {
-    element.setStateResult(Result.data(value));
+    element.setStateResult($Result.data(value));
   }
 }
 
@@ -377,7 +377,7 @@ abstract class $AsyncMutationBase<
 
   @override
   void setData(StateT value) {
-    element.setStateResult(Result.data(AsyncData(value)));
+    element.setStateResult($Result.data(AsyncData(value)));
   }
 }
 
@@ -397,7 +397,7 @@ abstract class _MutationBase<
   final Object? key;
 
   ClassProviderElement<ClassT, StateT, Object?> get element;
-  ProxyElementValueListenable<MutationT> get listenable;
+  $ElementLense<MutationT> get listenable;
 
   Object? get _currentKey => listenable.result?.stateOrNull?.key;
 
@@ -431,7 +431,7 @@ abstract class _MutationBase<
   }
 
   void _setState(MutationContext? mutationContext, MutationT mutation) {
-    listenable.result = Result.data(mutation);
+    listenable.result = $Result.data(mutation);
 
     final obsContext = ProviderObserverContext(
       element.origin,

@@ -126,7 +126,7 @@ abstract class ProviderElement<StateT> implements Node {
   var _didMount = false;
 
   /* STATE */
-  Result<StateT>? _stateResult;
+  $Result<StateT>? _stateResult;
 
   /// The current state of the provider.
   ///
@@ -138,7 +138,7 @@ abstract class ProviderElement<StateT> implements Node {
   ///
   /// This is not meant for public consumption. Instead, public API should use
   /// [readSelf].
-  Result<StateT>? get stateResult => _stateResult;
+  $Result<StateT>? get stateResult => _stateResult;
 
   /// Returns the currently exposed by a provider
   ///
@@ -156,7 +156,7 @@ abstract class ProviderElement<StateT> implements Node {
   ///
   /// This API is not meant for public consumption. Instead if a [Ref] needs
   /// to expose a way to update the state, the practice is to expose a getter/setter.
-  void setStateResult(Result<StateT> newState) {
+  void setStateResult($Result<StateT> newState) {
     if (kDebugMode) _debugDidSetState = true;
 
     final previousResult = stateResult;
@@ -344,7 +344,7 @@ This could mean a few things:
     } catch (err, stack) {
       if (kDebugMode) _debugDidSetState = true;
 
-      _stateResult = Result.error(err, stack);
+      _stateResult = $Result.error(err, stack);
       triggerRetry(err);
     } finally {
       _didBuild = true;
@@ -428,8 +428,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   void _notifyListeners(
-    Result<StateT> newState,
-    Result<StateT>? previousStateResult, {
+    $Result<StateT> newState,
+    $Result<StateT>? previousStateResult, {
     bool checkUpdateShouldNotify = true,
     bool isMount = false,
   }) {
@@ -805,8 +805,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   /// [Ref.listen] multiple times to an element, it may be visited multiple times.
   void visitChildren({
     required void Function(ProviderElement element) elementVisitor,
-    required void Function(ProxyElementValueListenable element)
-        listenableVisitor,
+    required void Function($ElementLense element) listenableVisitor,
   }) {
     void lookup(Iterable<ProviderSubscriptionWithOrigin> children) {
       for (final child in children) {

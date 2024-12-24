@@ -42,17 +42,17 @@ class ${provider.generatedElementName}$_genericsDefinition extends ${provider.in
   void _constructorBody(StringBuffer buffer) {
     for (final mutation in provider.mutations) {
       buffer.writeln(
-        '    ${mutation.elementFieldName}.result = Result.data(${mutation.generatedMutationImplName}(this));',
+        '    ${mutation.elementFieldName}.result = \$Result.data(${mutation.generatedMutationImplName}(this));',
       );
     }
   }
 
   void _overrideVisitChildren(StringBuffer buffer) {
-    buffer.writeln('''
+    buffer.writeln(r'''
   @override
   void visitChildren({
     required void Function(ProviderElement element) elementVisitor,
-    required void Function(ProxyElementValueListenable element)
+    required void Function($ElementLense element)
         listenableVisitor,
   }) {
     super.visitChildren(
@@ -73,7 +73,7 @@ class ${provider.generatedElementName}$_genericsDefinition extends ${provider.in
   void _fields(StringBuffer buffer) {
     for (final mutation in provider.mutations) {
       buffer.writeln(
-        '  final ${mutation.elementFieldName} = ProxyElementValueListenable<${mutation.generatedMutationImplName}>();',
+        '  final ${mutation.elementFieldName} = \$ElementLense<${mutation.generatedMutationImplName}>();',
       );
     }
   }

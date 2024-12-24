@@ -5,7 +5,7 @@ class $LazyProxyListenable<OutT, OriginT>
   $LazyProxyListenable(this.provider, this._lense);
 
   final ProviderBase<OriginT> provider;
-  final ProxyElementValueListenable<OutT> Function(
+  final $ElementLense<OutT> Function(
     ProviderElement<OriginT> element,
   ) _lense;
 
@@ -100,7 +100,7 @@ class ProviderElementProxy<OutT, OriginT>
 
   @override
   final ProviderBase<OriginT> provider;
-  final ProxyElementValueListenable<OutT> Function(
+  final $ElementLense<OutT> Function(
     ProviderElement<OriginT> element,
   ) _lense;
 
