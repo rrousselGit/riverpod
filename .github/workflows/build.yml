@@ -88,7 +88,7 @@ jobs:
       - name: Check2
         run: |
           if test -d "integration/build_yaml"; then
-            flutter pub get integration/build_yaml
+            ls -la
           fi
 
       - name: Analyze
