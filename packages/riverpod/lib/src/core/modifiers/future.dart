@@ -239,7 +239,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
 
   /// An observable for [FutureProvider.future].
   @internal
-  final futureNotifier = ProxyElementValueListenable<Future<StateT>>();
+  final futureNotifier = $ElementLense<Future<StateT>>();
   Completer<StateT>? _futureCompleter;
   Future<StateT>? _lastFuture;
   AsyncSubscription? _cancelSubscription;
@@ -270,7 +270,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
 
   @override
   @protected
-  void setStateResult(Result<AsyncValue<StateT>> newState) {
+  void setStateResult($Result<AsyncValue<StateT>> newState) {
     newState.requireState.map(
       loading: onLoading,
       error: onError,
@@ -314,7 +314,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
         );
       _futureCompleter = null;
     } else {
-      futureNotifier.result = Result.data(
+      futureNotifier.result = $Result.data(
         Future.error(
           value.error,
           value.stackTrace,
@@ -336,7 +336,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
       completer.complete(value.value);
       _futureCompleter = null;
     } else {
-      futureNotifier.result = Result.data(Future.value(value.value));
+      futureNotifier.result = $Result.data(Future.value(value.value));
     }
   }
 
@@ -515,8 +515,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   @override
   void visitChildren({
     required void Function(ProviderElement element) elementVisitor,
-    required void Function(ProxyElementValueListenable element)
-        listenableVisitor,
+    required void Function($ElementLense element) listenableVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,

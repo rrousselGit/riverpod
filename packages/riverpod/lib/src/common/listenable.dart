@@ -19,7 +19,7 @@ class _Listener<T> {
 /// to subsets of the state exposed by a provider.
 @internal
 @optionalTypeArgs
-class ProxyElementValueListenable<T> extends _ValueListenable<T> {
+class $ElementLense<T> extends _ValueListenable<T> {
   /// Directly obtain the value exposed, gratefully handling cases where
   /// [result] is null or in error state.
   T get value {
@@ -33,9 +33,9 @@ class ProxyElementValueListenable<T> extends _ValueListenable<T> {
   /// The state associated with this notifier.
   ///
   /// Modifying this property will notify listeners.
-  Result<T>? get result => _result;
-  Result<T>? _result;
-  set result(Result<T>? value) {
+  $Result<T>? get result => _result;
+  $Result<T>? _result;
+  set result($Result<T>? value) {
     final previous = _result;
     _result = value;
 

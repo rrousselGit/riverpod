@@ -369,7 +369,7 @@ final class ProviderStateSubscription<StateT>
 /// Deals with the internals of synchronously calling the listeners
 /// when using `fireImmediately: true`
 void _handleFireImmediately<StateT>(
-  Result<StateT> currentState, {
+  $Result<StateT> currentState, {
   required void Function(StateT? previous, StateT current) listener,
   required void Function(Object error, StackTrace stackTrace) onError,
 }) {

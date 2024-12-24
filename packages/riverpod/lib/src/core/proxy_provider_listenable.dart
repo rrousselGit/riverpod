@@ -1,11 +1,11 @@
 part of '../framework.dart';
 
-class LazyProxyListenable<OutT, OriginT>
+class $LazyProxyListenable<OutT, OriginT>
     with ProviderListenable<OutT>, ProviderListenableWithOrigin<OutT, OriginT> {
-  LazyProxyListenable(this.provider, this._lense);
+  $LazyProxyListenable(this.provider, this._lense);
 
   final ProviderBase<OriginT> provider;
-  final ProxyElementValueListenable<OutT> Function(
+  final $ElementLense<OutT> Function(
     ProviderElement<OriginT> element,
   ) _lense;
 
@@ -100,7 +100,7 @@ class ProviderElementProxy<OutT, OriginT>
 
   @override
   final ProviderBase<OriginT> provider;
-  final ProxyElementValueListenable<OutT> Function(
+  final $ElementLense<OutT> Function(
     ProviderElement<OriginT> element,
   ) _lense;
 

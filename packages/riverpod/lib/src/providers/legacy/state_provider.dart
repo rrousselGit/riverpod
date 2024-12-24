@@ -119,9 +119,9 @@ class StateProviderElement<T> extends ProviderElement<T> {
   @override
   final StateProvider<T> provider;
 
-  final _controllerNotifier = ProxyElementValueListenable<StateController<T>>();
+  final _controllerNotifier = $ElementLense<StateController<T>>();
 
-  final _stateNotifier = ProxyElementValueListenable<StateController<T>>();
+  final _stateNotifier = $ElementLense<StateController<T>>();
 
   void Function()? _removeListener;
 
@@ -133,7 +133,7 @@ class StateProviderElement<T> extends ProviderElement<T> {
     final initialState = provider._createFn(ref);
 
     final controller = StateController(initialState);
-    _controllerNotifier.result = Result.data(controller);
+    _controllerNotifier.result = $Result.data(controller);
 
     _removeListener = controller.addListener(
       fireImmediately: true,
@@ -163,8 +163,7 @@ class StateProviderElement<T> extends ProviderElement<T> {
   @override
   void visitChildren({
     required void Function(ProviderElement element) elementVisitor,
-    required void Function(ProxyElementValueListenable element)
-        listenableVisitor,
+    required void Function($ElementLense element) listenableVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,

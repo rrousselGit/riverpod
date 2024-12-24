@@ -172,13 +172,13 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
   @override
   final StateNotifierProvider<NotifierT, StateT> provider;
 
-  final _notifierNotifier = ProxyElementValueListenable<NotifierT>();
+  final _notifierNotifier = $ElementLense<NotifierT>();
 
   void Function()? _removeListener;
 
   @override
   void create(Ref ref, {required bool didChangeDependency}) {
-    final notifier = _notifierNotifier.result = Result.guard(
+    final notifier = _notifierNotifier.result = $Result.guard(
       () => provider._create(ref),
     );
 
@@ -212,8 +212,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
   @override
   void visitChildren({
     required void Function(ProviderElement element) elementVisitor,
-    required void Function(ProxyElementValueListenable element)
-        listenableVisitor,
+    required void Function($ElementLense element) listenableVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,

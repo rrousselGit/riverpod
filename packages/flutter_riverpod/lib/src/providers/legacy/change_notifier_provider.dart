@@ -167,13 +167,13 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
   @override
   final ChangeNotifierProvider<NotifierT> provider;
 
-  final _notifierNotifier = ProxyElementValueListenable<NotifierT>();
+  final _notifierNotifier = $ElementLense<NotifierT>();
 
   void Function()? _removeListener;
 
   @override
   void create(Ref ref, {required bool didChangeDependency}) {
-    final notifierResult = _notifierNotifier.result = Result.guard(
+    final notifierResult = _notifierNotifier.result = $Result.guard(
       () => provider._createFn(ref),
     );
 
@@ -208,8 +208,7 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
   @override
   void visitChildren({
     required void Function(ProviderElement element) elementVisitor,
-    required void Function(ProxyElementValueListenable element)
-        listenableVisitor,
+    required void Function($ElementLense element) listenableVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,

@@ -56,7 +56,7 @@ final class ${mutation.generatedMutationImplName}
   final ${provider.generatedElementName} element;
 
   @override
-  ProxyElementValueListenable<${mutation.generatedMutationImplName}> get listenable => element.${mutation.elementFieldName};
+  \$ElementLense<${mutation.generatedMutationImplName}> get listenable => element.${mutation.elementFieldName};
 
   @override
   Future<${provider.valueTypeDisplayString}> call${mutation.node.typeParameters.genericDefinitionDisplayString()}${mutation.node.parameters} {
@@ -67,7 +67,7 @@ final class ${mutation.generatedMutationImplName}
   }
 
   @override
-  ${mutation.generatedMutationImplName} copyWith(MutationState<int> state, {Object? key}) => ${mutation.generatedMutationImplName}(element, state: state, key: key);
+  ${mutation.generatedMutationImplName} copyWith(MutationState<${provider.valueTypeDisplayString}> state, {Object? key}) => ${mutation.generatedMutationImplName}(element, state: state, key: key);
 }
 ''');
   }
@@ -81,7 +81,7 @@ final class ${mutation.generatedMutationImplName}
     Map<String, String>? named = Map<String, String>.fromEntries(
       mutation.node.parameters?.parameters
               .where((e) => e.isNamed)
-              .map((e) => MapEntry(e.name!.lexeme, e.name!.lexeme)) ??
+              .map((e) => MapEntry('#${e.name!.lexeme}', e.name!.lexeme)) ??
           const [],
     );
 
