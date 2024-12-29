@@ -38,9 +38,39 @@ void main() {
 
     group('retry', () {
       test(
-        skip: 'unimplemented',
         'default retry delays from 200ms to 6.4 seconds',
-        () {},
+        () => fakeAsync((fake) async {
+          final container = ProviderContainer.test();
+          var buildCount = 0;
+          final provider = Provider((ref) {
+            buildCount++;
+            throw StateError('');
+          });
+
+          container.listen(
+            provider,
+            (prev, next) {},
+            fireImmediately: true,
+            onError: (e, s) {},
+          );
+
+          const times = [
+            200,
+            400,
+            800,
+            1600,
+            3200,
+            6400,
+          ];
+
+          for (final (index, time) in times.indexed) {
+            fake.elapse(Duration(milliseconds: time - 10));
+            expect(buildCount, index + 1, reason: 'expect retry time of $time');
+
+            fake.elapse(const Duration(milliseconds: 10));
+            expect(buildCount, index + 2);
+          }
+        }),
       );
 
       group('custom retry', () {

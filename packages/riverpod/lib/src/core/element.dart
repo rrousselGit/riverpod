@@ -49,7 +49,7 @@ abstract class ProviderElement<StateT> implements Node {
 
   static Duration? _defaultRetry(int retryCount, Object error) {
     return Duration(
-      milliseconds: math.min(200 * (retryCount + 1), 6400),
+      milliseconds: math.min(200 * math.pow(2, retryCount).toInt(), 6400),
     );
   }
 
