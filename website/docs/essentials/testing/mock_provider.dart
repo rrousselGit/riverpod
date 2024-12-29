@@ -3,7 +3,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'create_container.dart';
 import 'full_widget_test.dart';
 import 'provider_to_mock/raw.dart';
 
@@ -16,7 +15,7 @@ void main() {
     // {@template container}
     // In unit tests, by reusing our previous "createContainer" utility.
     // {@endtemplate}
-    final container = createContainer(
+    final container = ProviderContainer.test(
       // {@template providers}
       // We can specify a list of providers to mock:
       // {@endtemplate}

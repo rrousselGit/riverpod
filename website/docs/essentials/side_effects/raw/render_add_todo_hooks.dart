@@ -73,7 +73,7 @@ class Example extends HookConsumerWidget {
         if (snapshot.connectionState == ConnectionState.waiting) ...[
           const SizedBox(width: 8),
           const CircularProgressIndicator(),
-        ]
+        ],
       ],
     );
   }

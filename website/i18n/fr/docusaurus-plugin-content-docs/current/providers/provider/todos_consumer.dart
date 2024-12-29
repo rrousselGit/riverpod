@@ -12,6 +12,6 @@ Widget build() {
     // TODO afficher les todos en utilisant un ListView/GridView/... /* SKIP */
     return Container();
     /* SKIP END */
-  });
+  },);
 /* SNIPPET END */
 }

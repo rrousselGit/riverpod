@@ -1,6 +1,7 @@
 // ignore_for_file: omit_local_variable_types
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 enum FilterType {
   none,
@@ -12,13 +13,14 @@ abstract class Todo {
 }
 
 class TodoList extends StateNotifier<List<Todo>> {
-  TodoList(): super([]);
+  TodoList() : super([]);
 }
 
 /* SNIPPET START */
 
 final filterTypeProvider = StateProvider<FilterType>((ref) => FilterType.none);
-final todosProvider = StateNotifierProvider<TodoList, List<Todo>>((ref) => TodoList());
+final todosProvider =
+    StateNotifierProvider<TodoList, List<Todo>>((ref) => TodoList());
 
 final filteredTodoListProvider = Provider((ref) {
   // フィルタの種類と Todo リストを取得、監視する

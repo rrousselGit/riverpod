@@ -3,15 +3,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:riverpod/riverpod.dart';
 
-import 'create_container.dart';
-
 final provider = FutureProvider((_) async => 42);
 
 void main() {
   test('Some description', () async {
     // Create a ProviderContainer for this test.
     // DO NOT share ProviderContainers between tests.
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     /* SNIPPET START */
     // {@template note}

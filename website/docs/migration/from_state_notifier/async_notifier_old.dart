@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print, avoid_unused_constructor_parameters
 
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 class Todo {
