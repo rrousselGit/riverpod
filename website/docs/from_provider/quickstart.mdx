@@ -52,6 +52,11 @@ Take your time, as it is important to get yourself familiar with Riverpod first;
 you'll quickly find out that *almost* all Providers from pkg:provider have a strict equivalent in pkg:riverpod.
 :::
 
+:::tip
+If your code requires a `create` parameter, ensure that you are using a `ChangeNotifierProvider` from the *Provider* package, not the *Riverpod* package.
+Double-check the import prefixes in your code to verify the correct package is being referenced.
+:::
+
 ## Starts with *leaves*
 
 Start with Providers that do not depend on anything else, i.e. start with the *leaves* in your dependency tree.  
