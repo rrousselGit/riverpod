@@ -61,7 +61,7 @@ class AddProviderScope extends DartFix {
     List<AnalysisError> others,
   ) {
     context.registry.addMethodInvocation((node) {
-      // The method is not impacte by this analysis error
+      // The method is not impacted by this analysis error
       if (!node.sourceRange.intersects(analysisError.sourceRange)) return;
 
       final changeBuilder = reporter.createChangeBuilder(
