@@ -1,4 +1,4 @@
-## Unreleased patch
+## 2.6.4 - 2025-01-08
 
 Support latest analyzer
 
