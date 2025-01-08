@@ -2727,34 +2727,6 @@ void main() {
         verifyZeroInteractions(listener);
       });
 
-      test(
-        'is called when dependent is invalidated and was the only listener',
-        // TODO deal with now that we have onPause
-        skip: 'Waiting for "clear dependencies after FutureProvider rebuilds"',
-        () async {
-          //
-          final container = ProviderContainer.test();
-          final onCancel = OnCancelMock();
-          final dep = StateProvider((ref) {
-            ref.onCancel(onCancel.call);
-            return 0;
-          });
-          final provider = Provider.autoDispose((ref) => ref.watch(dep));
-
-          container.read(provider);
-
-          verifyZeroInteractions(onCancel);
-
-          container.read(dep.notifier).state++;
-
-          verify(onCancel()).called(1);
-
-          await container.pump();
-
-          verifyNoMoreInteractions(onCancel);
-        },
-      );
-
       test('is called when all container listeners are removed', () {
         final container = ProviderContainer.test();
         final listener = OnCancelMock();
