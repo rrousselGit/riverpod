@@ -683,10 +683,7 @@ class _ProviderName {
 /// Returns the name of the provider.
 _ProviderName _displayNameForProvider(VariableElement provider) {
   final providerName = provider.name;
-  final enclosingElementName = provider
-      // ignore: deprecated_member_use, necessary to support older versions of analyzer
-      .enclosingElement
-      ?.displayName;
+  final enclosingElementName = provider.enclosingElement3?.displayName;
   return _ProviderName(
     providerName: providerName,
     enclosingElementName: enclosingElementName ?? '',

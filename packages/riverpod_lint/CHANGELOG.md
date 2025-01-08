@@ -1,3 +1,7 @@
+## Unreleased patch
+
+Support latest analyzer
+
 ## 2.6.3 - 2024-11-18
 
 - provider_dependencies now correctly detects nested ref invocations where a dependency is used as a parameter of another dependency (thanks to @josh-burton)
