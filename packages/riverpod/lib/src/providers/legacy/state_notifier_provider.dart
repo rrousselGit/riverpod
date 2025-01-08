@@ -177,7 +177,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
   void Function()? _removeListener;
 
   @override
-  void create(Ref ref, {required bool didChangeDependency}) {
+  WhenComplete create(Ref ref, {required bool didChangeDependency}) {
     final notifier = _notifierNotifier.result = $Result.guard(
       () => provider._create(ref),
     );
@@ -186,6 +186,8 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
       (newState) => setStateResult(ResultData(newState)),
       fireImmediately: true,
     );
+
+    return null;
   }
 
   @override

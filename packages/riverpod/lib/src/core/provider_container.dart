@@ -936,6 +936,7 @@ class ProviderContainer implements Node {
     required bool updateChildren,
   }) {
     if (_disposed) return;
+    _disposed = true;
 
     // We dispose children before disposing "this"
     // This is important to dispose providers from leaves to roots.
@@ -945,7 +946,6 @@ class ProviderContainer implements Node {
       child._dispose(updateChildren: false);
     }
 
-    _disposed = true;
     if (updateChildren) _parent?._children.remove(this);
 
     if (_root == null) scheduler.dispose();

@@ -2812,13 +2812,15 @@ void main() {
         verifyNoMoreInteractions(listener2);
       });
 
-      test('is called when all provider dependencies are removed', () {
+      test('is called when all provider dependencies are removed', () async {
         final container = ProviderContainer.test();
         final listener = OnCancelMock();
         final listener2 = OnCancelMock();
+        final resume = OnResume();
         final dep = Provider(name: 'dep', (ref) {
           ref.onCancel(listener.call);
           ref.onCancel(listener2.call);
+          ref.onResume(resume.call);
         });
         var watching = true;
         final provider = Provider(name: 'provider', (ref) {
@@ -2831,21 +2833,22 @@ void main() {
         container.listen(provider, (p, n) {});
         container.listen(provider2, (p, n) {});
 
+        watching = false;
+        // remove the dependency provider<>dep
+        container.invalidate(provider);
+        await container.pump();
+
         verifyZeroInteractions(listener);
         verifyZeroInteractions(listener2);
 
-        watching = false;
-        // remove the dependency provider<>dep
-        container.refresh(provider);
-
-        verifyZeroInteractions(listener2);
-
         // remove the dependency provider2<>dep
-        container.refresh(provider2);
+        container.invalidate(provider2);
+        await container.pump();
 
         verifyInOrder([listener(), listener2()]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
+        verifyZeroInteractions(resume);
       });
 
       test('is called when using container.read', () async {

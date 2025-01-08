@@ -10,6 +10,56 @@ import '../utils.dart';
 
 void main() {
   group('ProviderElement', () {
+    test(
+        'pauses old subscriptions upon invalidation until the completion of the new computation',
+        () async {
+      final container = ProviderContainer.test();
+      final depProvider = Provider.family<int, String>((ref, _) => 0);
+      final futureP = FutureProvider<Ref>(Future.value);
+      final streamP = StreamProvider<Ref>(Stream.value);
+      final p = Provider<Ref>((ref) => ref);
+
+      final depP = container.readProviderElement(depProvider('p'));
+      final depF = container.readProviderElement(depProvider('f'));
+      final depS = container.readProviderElement(depProvider('s'));
+
+      container.listen(p, (a, b) {}).read().watch(depProvider('p'));
+      (await container.listen(futureP.future, (a, b) {}).read())
+          .watch(depProvider('f'));
+      (await container.listen(streamP.future, (a, b) {}).read())
+          .watch(depProvider('s'));
+
+      container.invalidate(p);
+      container.invalidate(futureP);
+      container.invalidate(streamP);
+
+      expect(depP.hasNonWeakListeners, true);
+      expect(depF.hasNonWeakListeners, true);
+      expect(depS.hasNonWeakListeners, true);
+      expect(depP.isActive, false);
+      expect(depF.isActive, false);
+      expect(depS.isActive, false);
+
+      await container.pump();
+
+      expect(depP.hasNonWeakListeners, false);
+      expect(depF.hasNonWeakListeners, true);
+      expect(depS.hasNonWeakListeners, true);
+      expect(depP.isActive, false);
+      expect(depF.isActive, false);
+      expect(depS.isActive, false);
+
+      await container.read(streamP.future);
+      await container.read(futureP.future);
+
+      expect(depP.hasNonWeakListeners, false);
+      expect(depF.hasNonWeakListeners, false);
+      expect(depS.hasNonWeakListeners, false);
+      expect(depP.isActive, false);
+      expect(depF.isActive, false);
+      expect(depS.isActive, false);
+    });
+
     test('Only includes direct subscriptions in subscription lists', () {
       final container = ProviderContainer.test();
       final provider = FutureProvider((ref) => 0);

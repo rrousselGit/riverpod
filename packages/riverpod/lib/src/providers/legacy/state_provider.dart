@@ -126,7 +126,7 @@ class StateProviderElement<T> extends ProviderElement<T> {
   void Function()? _removeListener;
 
   @override
-  void create(
+  WhenComplete create(
     Ref ref, {
     required bool didChangeDependency,
   }) {
@@ -142,6 +142,8 @@ class StateProviderElement<T> extends ProviderElement<T> {
         setStateResult(ResultData(state));
       },
     );
+
+    return null;
   }
 
   @override

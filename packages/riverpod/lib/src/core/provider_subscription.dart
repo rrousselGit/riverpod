@@ -89,6 +89,7 @@ abstract base class ProviderSubscriptionImpl<OutT, OriginT>
   @override
   void onResume() {
     _listenedElement.onSubscriptionResume(this);
+    if (closed) return;
     if (_missedCalled?.data case final event?) {
       final prev = event.$1;
       final next = event.$2;
@@ -105,6 +106,7 @@ abstract base class ProviderSubscriptionImpl<OutT, OriginT>
   }
 
   void _notifyData(OutT? prev, OutT next) {
+    assert(!closed, 'cannot notify after close');
     if (isPaused) {
       _missedCalled = (data: (prev, next), error: null);
       return;
@@ -114,6 +116,7 @@ abstract base class ProviderSubscriptionImpl<OutT, OriginT>
   }
 
   void _notifyError(Object error, StackTrace stackTrace) {
+    assert(!closed, 'cannot notify after close');
     if (isPaused) {
       _missedCalled = (data: null, error: (error, stackTrace));
       return;
@@ -352,7 +355,9 @@ final class ProviderStateSubscription<StateT>
   final bool weak;
 
   // Why can't this be typed correctly?
+  @override
   final void Function(StateT? prev, StateT next) _listener;
+  @override
   final OnError _errorListener;
 
   @override
