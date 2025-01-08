@@ -26,7 +26,7 @@
   then `A` will be paused.
 - **Breaking**: When an asynchronous provider rebuilds, it doesn't immediately stops
   listening to its previous providers. Instead, those subscriptions are removed when the rebuild completes.  
-  This impacts how "auto-dispose" behaves.
+  This impacts how "auto-dispose" behaves. See https://github.com/rrousselGit/riverpod/issues/1253
 - Fix `StreamProvider` not cancelling the `StreamSubscription` if the stream is never emitted any value.
 - All `Ref` life-cycles (such as `Ref.onDispose`) and `Notifier.listenSelf`
   now return a function to remove the listener.
