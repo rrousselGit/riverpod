@@ -5,10 +5,6 @@ dependency_overrides:
   riverpod_lint:
     path: ../packages/riverpod_lint
 
-  ## Needed due to Flutter not supporting 6.0.0 yet
-  analyzer: ^6.0.0
-  analyzer_plugin: ^0.11.3
-
   # Hotreloader issue
   vm_service: ^14.0.0
   flutter_riverpod:
@@ -21,3 +17,6 @@ dependency_overrides:
     path: ../packages/riverpod_annotation
   riverpod_generator:
     path: ../packages/riverpod_generator
+
+  # For flutter_test
+  test_api: ^0.7.4
