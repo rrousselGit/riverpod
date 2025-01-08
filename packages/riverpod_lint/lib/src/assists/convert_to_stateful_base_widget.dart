@@ -288,10 +288,7 @@ class _ReplacementEditBuilder extends RecursiveAstVisitor<void> {
     }
     final element = node.staticElement;
     if (element is ExecutableElement &&
-        element
-                // ignore: deprecated_member_use, necessary to support older versions of analyzer
-                .enclosingElement ==
-            widgetClassElement &&
+        element.enclosingElement3 == widgetClassElement &&
         !elementsToMove.contains(element)) {
       final offset = node.offset;
       final qualifier =

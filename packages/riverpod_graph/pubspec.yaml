@@ -11,7 +11,7 @@ environment:
   sdk: ">=3.0.0<4.0.0"
 
 dependencies:
-  analyzer: ^6.7.0
+  analyzer: ^7.0.0
   args: ^2.4.0
   collection: ^1.0.0
   path: ^1.8.2

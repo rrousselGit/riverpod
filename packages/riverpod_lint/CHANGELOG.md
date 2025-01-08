@@ -44,6 +44,10 @@ Various lints had their severity changed:
 
 - `riverpod` upgraded to `3.0.0-dev.0`
 
+## 2.6.4 - 2025-01-08
+
+Support latest analyzer
+
 ## 2.6.3 - 2024-11-18
 
 - provider_dependencies now correctly detects nested ref invocations where a dependency is used as a parameter of another dependency (thanks to @josh-burton)
