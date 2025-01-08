@@ -1,3 +1,7 @@
+## Unreleased patch
+
+Support latest analyzer
+
 ## 2.6.3 - 2024-11-18
 
 - `riverpod_analyzer_utils` upgraded to `0.5.8`
