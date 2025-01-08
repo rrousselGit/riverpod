@@ -8,6 +8,7 @@ export 'src/framework.dart'
         $ValueProvider,
         FamilyCreate,
         FunctionalFamily,
+        WhenComplete,
         $FamilyOverride,
         ClassFamily,
         SetupFamilyOverride,

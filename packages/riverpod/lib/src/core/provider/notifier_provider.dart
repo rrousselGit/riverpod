@@ -191,7 +191,7 @@ abstract class ClassProviderElement< //
 
   @mustCallSuper
   @override
-  void create(
+  WhenComplete create(
     // ignore: library_private_types_in_public_api, not public
     _Ref<StateT> ref, {
     required bool didChangeDependency,
@@ -227,6 +227,8 @@ abstract class ClassProviderElement< //
           seamless: seamless,
         );
     }
+
+    return null;
   }
 
   void handleNotifier(NotifierT notifier, {required bool seamless}) {

@@ -18,8 +18,8 @@ void main() {
       final dep = StreamProvider<int>((ref) => controller.stream);
 
       container.listen(dep, (p, n) {});
-      final ref = container.read(provider);
-      final future = ref.watch(dep.selectAsync((data) => data * 2));
+      final ref = container.listen(provider, (a, b) {});
+      final future = ref.read().watch(dep.selectAsync((data) => data * 2));
 
       container.invalidate(provider);
       controller.add(21);
@@ -35,8 +35,8 @@ void main() {
       final dep = StreamProvider<int>((ref) => controller.stream);
 
       container.listen(dep, (p, n) {});
-      final ref = container.read(provider);
-      final future = ref.watch(dep.selectAsync((data) => data * 2));
+      final ref = container.listen(provider, (a, b) {});
+      final future = ref.read().watch(dep.selectAsync((data) => data * 2));
 
       container.invalidate(provider);
       controller.addError('err');

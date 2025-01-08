@@ -24,6 +24,9 @@
 - **Breaking**: A provider is now considered "paused" if all
   of its listeners are also paused. So if a provider `A` is watched _only_ by a provider `B`, and `B` is currently unused,
   then `A` will be paused.
+- **Breaking**: When an asynchronous provider rebuilds, it doesn't immediately stops
+  listening to its previous providers. Instead, those subscriptions are removed when the rebuild completes.  
+  This impacts how "auto-dispose" behaves.
 - Fix `StreamProvider` not cancelling the `StreamSubscription` if the stream is never emitted any value.
 - All `Ref` life-cycles (such as `Ref.onDispose`) and `Notifier.listenSelf`
   now return a function to remove the listener.

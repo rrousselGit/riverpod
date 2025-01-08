@@ -30,6 +30,9 @@ mixin _ProviderRefreshable<OutT, OriginT>
 @internal
 void Function()? debugCanModifyProviders;
 
+@internal
+typedef WhenComplete = void Function(void Function() cb)?;
+
 /// {@template riverpod.provider_element_base}
 /// An internal class that handles the state of a provider.
 ///
@@ -96,6 +99,7 @@ abstract class ProviderElement<StateT> implements Node {
   /// excluding `listen(weak: true)`.
   bool get hasNonWeakListeners => _listenerCount > 0;
 
+  List<ProviderSubscriptionWithOrigin>? _inactiveSubscriptions;
   @visibleForTesting
   List<ProviderSubscriptionWithOrigin>? subscriptions;
   @visibleForTesting
@@ -280,7 +284,7 @@ This could mean a few things:
   /// - [didChangeDependency] can be used to differentiate a rebuild caused
   ///   by [Ref.watch] from one caused by [Ref.refresh]/[Ref.invalidate].
   @visibleForOverriding
-  void create(
+  WhenComplete create(
     // ignore: library_private_types_in_public_api, not public
     _Ref<StateT> ref, {
     required bool didChangeDependency,
@@ -340,7 +344,13 @@ This could mean a few things:
 
     _didBuild = false;
     try {
-      create(ref, didChangeDependency: previousDidChangeDependency);
+      final whenComplete = create(
+            ref,
+            didChangeDependency: previousDidChangeDependency,
+          ) ??
+          (cb) => cb();
+
+      whenComplete(_didCompleteInitialization);
     } catch (err, stack) {
       if (kDebugMode) _debugDidSetState = true;
 
@@ -612,11 +622,16 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   void removeDependentSubscription(ProviderSubscription sub) {
-    while (sub.isPaused) {
-      sub.resume();
-    }
-
     _onChangeSubscription(sub, () {
+      // If the subscription is paused, internally resume it to decrement any
+      // associated state.
+      // We don't want to call onResume though.
+      _notifyResumeListeners = false;
+      while (sub.isPaused) {
+        sub.resume();
+      }
+      _notifyResumeListeners = true;
+
       if (sub.weak) {
         weakDependents.remove(sub);
       } else {
@@ -629,6 +644,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     });
   }
 
+  var _notifyResumeListeners = true;
   void _onChangeSubscription(ProviderSubscription sub, void Function() apply) {
     final wasActive = isActive;
     final previousListenerCount = _listenerCount;
@@ -636,7 +652,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     switch ((wasActive: wasActive, isActive: isActive)) {
       case (wasActive: false, isActive: true) when _didCancelOnce:
-        ref?._onResumeListeners?.forEach(runGuarded);
+        if (_notifyResumeListeners) {
+          ref?._onResumeListeners?.forEach(runGuarded);
+        }
         onResume();
 
       case (wasActive: true, isActive: false):
@@ -681,6 +699,16 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     });
   }
 
+  /// A life-cycle called by subclasses of [ProviderElement] when
+  /// their provider's `build` method completes.
+  void _didCompleteInitialization() {
+    // Close inactive subscriptions
+    if (_inactiveSubscriptions case final subs?) {
+      _closeSubscriptions(subs);
+      _inactiveSubscriptions = null;
+    }
+  }
+
   /// Life-cycle for when a listener is removed.
   void mayNeedDispose() {
     if (provider.isAutoDispose) {
@@ -699,6 +727,12 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
   }
 
+  void _pauseSubscriptions(List<ProviderSubscription> subscriptions) {
+    for (var i = 0; i < subscriptions.length; i++) {
+      subscriptions[i].pause();
+    }
+  }
+
   /// Executes the [Ref.onDispose] listeners previously registered, then clear
   /// the list of listeners.
   @protected
@@ -713,7 +747,12 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     _pendingRetryTimer?.cancel();
     _pendingRetryTimer = null;
 
-    if (subscriptions case final subs?) _closeSubscriptions(subs);
+    // Pause current subscriptions and queue them to be deleted upon the completion
+    // of the next rebuild.
+    if (subscriptions case final subs?) {
+      (_inactiveSubscriptions ??= []).addAll(subs);
+      _pauseSubscriptions(subs);
+    }
     subscriptions = null;
 
     ref._onDisposeListeners?.forEach(runGuarded);
@@ -750,7 +789,14 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     _stateResult = null;
     ref = null;
 
-    if (dependents case final subs?) _closeSubscriptions(subs);
+    if (dependents case final subs?) {
+      _closeSubscriptions(subs);
+      dependents = null;
+    }
+    if (_inactiveSubscriptions case final subs?) {
+      _closeSubscriptions(subs);
+      _inactiveSubscriptions = null;
+    }
   }
 
   /// Release the resources associated to this [ProviderElement].

@@ -172,7 +172,7 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
   void Function()? _removeListener;
 
   @override
-  void create(Ref ref, {required bool didChangeDependency}) {
+  WhenComplete create(Ref ref, {required bool didChangeDependency}) {
     final notifierResult = _notifierNotifier.result = $Result.guard(
       () => provider._createFn(ref),
     );
@@ -186,6 +186,8 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
       notifier.addListener(listener);
       _removeListener = () => notifier.removeListener(listener);
     }
+
+    return null;
   }
 
   @override

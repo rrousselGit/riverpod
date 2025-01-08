@@ -343,11 +343,11 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   /// Listens to a [Stream] and convert it into an [AsyncValue].
   @preferInline
   @internal
-  void handleStream(
+  WhenComplete handleStream(
     Stream<StateT> Function() create, {
     required bool seamless,
   }) {
-    _handleAsync(seamless: seamless, ({
+    return _handleAsync(seamless: seamless, ({
       required data,
       required done,
       required error,
@@ -389,11 +389,11 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   /// Listens to a [Future] and convert it into an [AsyncValue].
   @preferInline
   @internal
-  void handleFuture(
+  WhenComplete handleFuture(
     FutureOr<StateT> Function() create, {
     required bool seamless,
   }) {
-    _handleAsync(seamless: seamless, ({
+    return _handleAsync(seamless: seamless, ({
       required data,
       required done,
       required error,
@@ -440,7 +440,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   }
 
   /// Listens to a [Future] and transforms it into an [AsyncValue].
-  void _handleAsync(
+  WhenComplete _handleAsync(
     AsyncSubscription? Function({
       required void Function(StateT) data,
       required void Function(Object, StackTrace) error,
@@ -456,6 +456,9 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
       onError(AsyncError(error, stackTrace), seamless: seamless);
     }
 
+    void Function()? onDone;
+    var isDone = false;
+
     try {
       _cancelSubscription = listen(
         data: (value) {
@@ -468,11 +471,19 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
         },
         done: () {
           _lastFuture = null;
+          isDone = true;
+          onDone?.call();
         },
       );
     } catch (error, stackTrace) {
       callOnError(error, stackTrace);
     }
+
+    return (onDoneCb) {
+      onDone = onDoneCb;
+      // Handle synchronous completion
+      if (isDone) onDoneCb();
+    };
   }
 
   @override
