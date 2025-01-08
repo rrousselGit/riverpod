@@ -120,7 +120,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   void _throwIfInvalidUsage() {
     assert(
       !_debugIsRunningSelector,
-      'Cannot call ref.listen inside a selector',
+      'Cannot call ref.<methods> inside a selector',
     );
     if (!mounted) throw UnmountedRefException(_element.origin);
   }
