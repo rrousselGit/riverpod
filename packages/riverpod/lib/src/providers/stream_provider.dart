@@ -160,19 +160,19 @@ class $StreamProviderElement<StateT> extends ProviderElement<AsyncValue<StateT>>
   @override
   final $StreamProvider<StateT> provider;
 
-  final _streamNotifier = ProxyElementValueListenable<Stream<StateT>>();
+  final _streamNotifier = $ElementLense<Stream<StateT>>();
   final StreamController<StateT> _streamController =
       StreamController<StateT>.broadcast();
 
   @override
-  void create(
-    $Ref<AsyncValue<StateT>> ref, {
+  WhenComplete create(
+    Ref ref, {
     required bool didChangeDependency,
     required bool isMount,
   }) {
-    _streamNotifier.result ??= Result.data(_streamController.stream);
+    _streamNotifier.result ??= $Result.data(_streamController.stream);
 
-    handleStream(
+    return handleStream(
       () => provider.create(ref),
       seamless: !didChangeDependency,
       isMount: isMount,
@@ -191,8 +191,7 @@ class $StreamProviderElement<StateT> extends ProviderElement<AsyncValue<StateT>>
   @override
   void visitChildren({
     required void Function(ProviderElement element) elementVisitor,
-    required void Function(ProxyElementValueListenable element)
-        listenableVisitor,
+    required void Function($ElementLense element) listenableVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,

@@ -34,7 +34,7 @@ void main() {
       ],
     );
 
-    final result = container.read(publicProvider.future);
+    final result = container.listen(publicProvider.future, (a, b) {}).read();
     expect(await result, 'Hello world');
   });
 
@@ -54,11 +54,15 @@ void main() {
     );
 
     expect(
-      await container.read(familyProvider(42, third: .42).future),
+      await container
+          .listen(familyProvider(42, third: .42).future, (a, b) {})
+          .read(),
       'Hello world 42 null 0.42 true null',
     );
     expect(
-      await container.read(familyProvider(21, third: .21).future),
+      await container
+          .listen(familyProvider(21, third: .21).future, (a, b) {})
+          .read(),
       'Override',
     );
   });

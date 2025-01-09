@@ -90,7 +90,7 @@ class $StreamNotifierProviderElement< //
     Object? encoded,
   ) {
     setStateResult(
-      Result.data(
+      $Result.data(
         AsyncData(adapter.decode(encoded), isFromCache: true),
       ),
     );

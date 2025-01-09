@@ -1,4 +1,4 @@
-library framework;
+library;
 
 import 'dart:async';
 import 'dart:collection';
@@ -6,14 +6,15 @@ import 'dart:math' as math;
 
 import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
+import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart' as test;
 
 import './common/tenable.dart';
 import 'common/env.dart';
 import 'common/pragma.dart';
 import 'internals.dart';
+import 'mutation.dart';
 
-part 'core/devtool.dart';
 part 'core/element.dart';
 part 'core/family.dart';
 part 'core/foundation.dart';

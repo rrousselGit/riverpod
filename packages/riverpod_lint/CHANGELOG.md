@@ -1,5 +1,7 @@
 ## Unreleased build
 
+- All lints/assists now automatically add the relevant imports when
+  updating code.
 - Updated `provider_dependencies` to support `@Dependencies`
 - added `riverpod_syntax_error`, for reporting errors when the generator would throw.
 - added `avoid_keep_alive_dependency_inside_auto_dispose`
@@ -41,6 +43,10 @@ Various lints had their severity changed:
 ## 3.0.0-dev.0 - 2023-10-29
 
 - `riverpod` upgraded to `3.0.0-dev.0`
+
+## 2.6.4 - 2025-01-08
+
+Support latest analyzer
 
 ## 2.6.3 - 2024-11-18
 

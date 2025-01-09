@@ -81,11 +81,6 @@ TypeMatcher<ProviderDirectory> isProviderDirectory({
 }
 
 void main() {
-  tearDown(() {
-    // Verifies that there is no container leak.
-    expect(DebugRiverpodDevtoolBiding.containers, isEmpty);
-  });
-
   group('ProviderPointerManager', () {
     group('findDeepestTransitiveDependencyProviderContainer', () {
       final transitiveDependency = Provider(
@@ -1025,13 +1020,6 @@ void main() {
         );
       });
 
-      test('registers itself in the container list', () {
-        final container = ProviderContainer();
-        addTearDown(container.dispose);
-
-        expect(DebugRiverpodDevtoolBiding.containers, [container]);
-      });
-
       test('throws if "parent" is disposed', () {
         final root = ProviderContainer();
         root.dispose();
@@ -1045,11 +1033,6 @@ void main() {
           root.children,
           isEmpty,
           reason: 'Invalid containers should not be added as children',
-        );
-        expect(
-          DebugRiverpodDevtoolBiding.containers,
-          isEmpty,
-          reason: 'Invalid containers should not be added to the global list',
         );
       });
 
@@ -1810,17 +1793,6 @@ void main() {
         container.dispose();
 
         expect(callCount, 0);
-      });
-
-      test('unregister itself from the container list', () {
-        final container = ProviderContainer();
-        addTearDown(container.dispose);
-
-        expect(DebugRiverpodDevtoolBiding.containers, [container]);
-
-        container.dispose();
-
-        expect(DebugRiverpodDevtoolBiding.containers, isEmpty);
       });
 
       test('Disposes its children first', () {

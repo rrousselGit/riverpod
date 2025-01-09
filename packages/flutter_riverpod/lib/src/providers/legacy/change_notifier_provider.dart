@@ -1,6 +1,7 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 // ignore: implementation_imports
 import 'package:riverpod/src/internals.dart';
@@ -167,13 +168,13 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
   @override
   final ChangeNotifierProvider<NotifierT> provider;
 
-  final _notifierNotifier = ProxyElementValueListenable<NotifierT>();
+  final _notifierNotifier = $ElementLense<NotifierT>();
 
   void Function()? _removeListener;
 
   @override
-  void create(Ref ref, {required bool didChangeDependency}) {
-    final notifierResult = _notifierNotifier.result = Result.guard(
+  WhenComplete create(Ref ref, {required bool didChangeDependency}) {
+    final notifierResult = _notifierNotifier.result = $Result.guard(
       () => provider._createFn(ref),
     );
 
@@ -186,6 +187,8 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
       notifier.addListener(listener);
       _removeListener = () => notifier.removeListener(listener);
     }
+
+    return null;
   }
 
   @override
@@ -208,8 +211,7 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
   @override
   void visitChildren({
     required void Function(ProviderElement element) elementVisitor,
-    required void Function(ProxyElementValueListenable element)
-        listenableVisitor,
+    required void Function($ElementLense element) listenableVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,

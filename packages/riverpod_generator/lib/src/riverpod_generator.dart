@@ -10,8 +10,10 @@ import 'package:source_gen/source_gen.dart';
 
 import 'models.dart';
 import 'parse_generator.dart';
+import 'templates/element.dart';
 import 'templates/family.dart';
 import 'templates/hash.dart';
+import 'templates/mutation.dart';
 import 'templates/notifier.dart';
 import 'templates/parameters.dart';
 import 'templates/provider.dart';
@@ -202,6 +204,10 @@ class _RiverpodGeneratorVisitor {
   ) {
     visitGeneratorProviderDeclaration(provider);
     NotifierTemplate(provider).run(buffer);
+    ElementTemplate(provider).run(buffer);
+    for (final mutation in provider.mutations) {
+      MutationTemplate(mutation, provider).run(buffer);
+    }
   }
 
   void visitFunctionalProviderDeclaration(
@@ -343,9 +349,9 @@ extension ProviderNames on GeneratorProviderDeclaration {
         final ClassBasedProviderDeclaration p => p.node.typeParameters
       };
 
-  String generics() => _genericUsageDisplayString(typeParameters);
+  String generics() => typeParameters.genericUsageDisplayString();
   String genericsDefinition() =>
-      _genericDefinitionDisplayString(typeParameters);
+      typeParameters.genericDefinitionDisplayString();
 
   String notifierBuildType({
     bool withGenericDefinition = false,
@@ -389,7 +395,9 @@ extension ProviderNames on GeneratorProviderDeclaration {
     }
   }
 
-  String get elementName => switch (this) {
+  String get generatedElementName => '_\$${providerElement.name.public}Element';
+
+  String get internalElementName => switch (this) {
         ClassBasedProviderDeclaration() => switch (createdType) {
             SupportedCreatedType.future => r'$AsyncNotifierProviderElement',
             SupportedCreatedType.stream => r'$StreamNotifierProviderElement',
@@ -417,16 +425,18 @@ extension ProviderNames on GeneratorProviderDeclaration {
   }
 }
 
-String _genericDefinitionDisplayString(TypeParameterList? typeParameters) {
-  return typeParameters?.toSource() ?? '';
-}
-
-String _genericUsageDisplayString(TypeParameterList? typeParameterList) {
-  if (typeParameterList == null) {
-    return '';
+extension TypeX on TypeParameterList? {
+  String genericDefinitionDisplayString() {
+    return this?.toSource() ?? '';
   }
 
-  return '<${typeParameterList.typeParameters.map((e) => e.name.lexeme).join(', ')}>';
+  String genericUsageDisplayString() {
+    if (this == null) {
+      return '';
+    }
+
+    return '<${this!.typeParameters.map((e) => e.name.lexeme).join(', ')}>';
+  }
 }
 
 extension ParameterDoc on AstNode {

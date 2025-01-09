@@ -21,10 +21,7 @@ ClassElement? _findStateFromReturnType(ClassElement node) {
 }
 
 ClassElement? _findStateWithMatchingGeneric(ClassElement node) {
-  for (final clazz in node
-      // ignore: deprecated_member_use, required to support lower versions of analyzer
-      .enclosingElement
-      .classes) {
+  for (final clazz in node.enclosingElement3.classes) {
     final type = clazz.supertype;
     if (type != null && isState(type) && _findStateWidget(clazz) == node) {
       return clazz;

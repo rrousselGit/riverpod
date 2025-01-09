@@ -19,7 +19,7 @@ class _Listener<T> {
 /// to subsets of the state exposed by a provider.
 @internal
 @optionalTypeArgs
-class ProxyElementValueListenable<T> extends _ValueListenable<T> {
+class $ElementLense<T> extends _ValueListenable<T> {
   /// Directly obtain the value exposed, gratefully handling cases where
   /// [result] is null or in error state.
   T get value {
@@ -33,9 +33,9 @@ class ProxyElementValueListenable<T> extends _ValueListenable<T> {
   /// The state associated with this notifier.
   ///
   /// Modifying this property will notify listeners.
-  Result<T>? get result => _result;
-  Result<T>? _result;
-  set result(Result<T>? value) {
+  $Result<T>? get result => _result;
+  $Result<T>? _result;
+  set result($Result<T>? value) {
     final previous = _result;
     _result = value;
 
@@ -51,6 +51,8 @@ class ProxyElementValueListenable<T> extends _ValueListenable<T> {
 }
 
 class _ValueListenable<T> {
+  void Function()? onCancel;
+
   int _count = 0;
   // The _listeners is intentionally set to a fixed-length _GrowableList instead
   // of const [].
@@ -93,7 +95,6 @@ class _ValueListenable<T> {
   /// [_notifyListeners]; and similarly, by overriding [_removeListener], checking
   /// if [hasListeners] is false after calling `super.removeListener()`, and if
   /// so, stopping that same work.
-  @protected
   bool get hasListeners {
     return _count > 0;
   }
@@ -218,6 +219,9 @@ class _ValueListenable<T> {
         break;
       }
     }
+
+    final onCancel = this.onCancel;
+    if (!hasListeners && onCancel != null) onCancel();
   }
 
   /// Discards any resources used by the object. After this is called, the

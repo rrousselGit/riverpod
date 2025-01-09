@@ -5,6 +5,11 @@ import 'package:riverpod/legacy.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart' hide Retry;
 
+export '../old/utils.dart'
+    show ObserverMock, isProviderObserverContext, isMutationContext;
+
+typedef RemoveListener = void Function();
+
 List<Object?> captureErrors(List<void Function()> cb) {
   final errors = <Object?>[];
   for (final fn in cb) {
@@ -17,8 +22,6 @@ List<Object?> captureErrors(List<void Function()> cb) {
   }
   return errors;
 }
-
-class ProviderObserverMock extends Mock implements ProviderObserver {}
 
 class StreamSubscriptionView<T> implements StreamSubscription<T> {
   StreamSubscriptionView(this.inner);
@@ -248,66 +251,4 @@ List<Object> errorsOf(void Function() cb) {
   final errors = <Object>[];
   runZonedGuarded(cb, (err, _) => errors.add(err));
   return [...errors];
-}
-
-class ObserverMock extends Mock implements ProviderObserver {
-  ObserverMock([this.label]);
-
-  final String? label;
-
-  @override
-  String toString() {
-    return label ?? super.toString();
-  }
-
-  @override
-  void didDisposeProvider(
-    ProviderBase<Object?>? provider,
-    ProviderContainer? container,
-  ) {
-    super.noSuchMethod(
-      Invocation.method(#didDisposeProvider, [provider, container]),
-    );
-  }
-
-  @override
-  void providerDidFail(
-    ProviderBase<Object?>? provider,
-    Object? error,
-    Object? stackTrace,
-    Object? container,
-  ) {
-    super.noSuchMethod(
-      Invocation.method(
-        #providerDidFail,
-        [provider, error, stackTrace, container],
-      ),
-    );
-  }
-
-  @override
-  void didAddProvider(
-    ProviderBase<Object?>? provider,
-    Object? value,
-    ProviderContainer? container,
-  ) {
-    super.noSuchMethod(
-      Invocation.method(#didAddProvider, [provider, value, container]),
-    );
-  }
-
-  @override
-  void didUpdateProvider(
-    ProviderBase<Object?>? provider,
-    Object? previousValue,
-    Object? newValue,
-    ProviderContainer? container,
-  ) {
-    super.noSuchMethod(
-      Invocation.method(
-        #didUpdateProvider,
-        [provider, previousValue, newValue, container],
-      ),
-    );
-  }
 }

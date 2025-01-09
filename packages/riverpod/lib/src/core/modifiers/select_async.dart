@@ -2,7 +2,10 @@ part of '../../framework.dart';
 
 /// An internal class for `ProviderBase.selectAsync`.
 @sealed
-class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
+class _AsyncSelector<InputT, OutputT, OriginT>
+    with
+        ProviderListenable<Future<OutputT>>,
+        ProviderListenableWithOrigin<Future<OutputT>, OriginT> {
   /// An internal class for `ProviderBase.select`.
   _AsyncSelector({
     required this.provider,
@@ -11,28 +14,28 @@ class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
   });
 
   /// The provider that was selected
-  final ProviderListenable<AsyncValue<InputT>> provider;
+  final ProviderListenableWithOrigin<AsyncValue<InputT>, OriginT> provider;
 
   /// The future associated to the listened provider
-  final ProviderListenable<Future<InputT>> future;
+  final ProviderListenableWithOrigin<Future<InputT>, OriginT> future;
 
   /// The selector applied
   final OutputT Function(InputT) selector;
 
-  Result<OutputT> _select(InputT value) {
+  $Result<OutputT> _select(InputT value) {
     if (kDebugMode) _debugIsRunningSelector = true;
 
     try {
-      return Result.data(selector(value));
+      return $Result.data(selector(value));
     } catch (err, stack) {
-      return Result.error(err, stack);
+      return $Result.error(err, stack);
     } finally {
       if (kDebugMode) _debugIsRunningSelector = false;
     }
   }
 
   @override
-  SelectorSubscription<AsyncValue<InputT>, Future<OutputT>> addListener(
+  ProviderSubscriptionWithOrigin<Future<OutputT>, OriginT> addListener(
     Node node,
     void Function(Future<OutputT>? previous, Future<OutputT> next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
@@ -40,7 +43,7 @@ class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
     required bool fireImmediately,
     required bool weak,
   }) {
-    Result<OutputT>? lastSelectedValue;
+    $Result<OutputT>? lastSelectedValue;
     Completer<OutputT>? selectedCompleter;
     Future<OutputT>? selectedFuture;
 
@@ -147,9 +150,13 @@ class _AsyncSelector<InputT, OutputT> with ProviderListenable<Future<OutputT>> {
       listener(null, selectedFuture!);
     }
 
-    return SelectorSubscription(
+    return ProviderSubscriptionView<Future<OutputT>, OriginT>(
       innerSubscription: sub,
-      () => selectedFuture!,
+      read: () {
+        // Flush
+        sub.read();
+        return selectedFuture!;
+      },
       onClose: () {
         final completer = selectedCompleter;
         if (completer != null && !completer.isCompleted) {

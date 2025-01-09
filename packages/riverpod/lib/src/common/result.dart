@@ -3,24 +3,24 @@ import 'package:meta/meta.dart';
 /// A T|Error union type.
 @immutable
 @internal
-sealed class Result<State> {
+sealed class $Result<State> {
   /// The data case
   // coverage:ignore-start
-  factory Result.data(State state) = ResultData;
+  factory $Result.data(State state) = ResultData;
   // coverage:ignore-end
 
   /// The error case
   // coverage:ignore-start
-  factory Result.error(Object error, StackTrace stackTrace) = ResultError;
+  factory $Result.error(Object error, StackTrace stackTrace) = ResultError;
   // coverage:ignore-end
 
   /// Automatically catches errors into a [ResultError] and convert successful
   /// values into a [ResultData].
-  static Result<State> guard<State>(State Function() cb) {
+  static $Result<State> guard<State>(State Function() cb) {
     try {
-      return Result.data(cb());
+      return $Result.data(cb());
     } catch (err, stack) {
-      return Result.error(err, stack);
+      return $Result.error(err, stack);
     }
   }
 
@@ -36,7 +36,7 @@ sealed class Result<State> {
 
 /// The data case
 @internal
-class ResultData<State> implements Result<State> {
+class ResultData<State> implements $Result<State> {
   /// The data case
   ResultData(this.state);
 
@@ -64,7 +64,7 @@ class ResultData<State> implements Result<State> {
 
 /// The error case
 @internal
-class ResultError<State> implements Result<State> {
+class ResultError<State> implements $Result<State> {
   /// The error case
   ResultError(this.error, this.stackTrace);
 

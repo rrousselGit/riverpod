@@ -3,9 +3,13 @@ part of '../../framework.dart';
 /// Internal typedef for cancelling the subscription to an async operation
 @internal
 typedef AsyncSubscription = ({
+  /// The provider was disposed, but may rebuild later
   void Function() cancel,
   void Function()? pause,
   void Function()? resume,
+
+  /// The provider was disposed
+  void Function()? abort,
 });
 
 /// Implementation detail of `riverpod_generator`.
@@ -138,8 +142,10 @@ base mixin $FutureModifier<StateT> on ProviderBase<AsyncValue<StateT>> {
   ///   return await http.get('${configs.host}/products');
   /// });
   /// ```
-  Refreshable<Future<StateT>> get future {
-    return ProviderElementProxy<AsyncValue<StateT>, Future<StateT>>(
+  Refreshable<Future<StateT>> get future => _future;
+
+  _ProviderRefreshable<Future<StateT>, AsyncValue<StateT>> get _future {
+    return ProviderElementProxy<Future<StateT>, AsyncValue<StateT>>(
       this,
       (element) {
         element as FutureModifierElement<StateT>;
@@ -181,10 +187,10 @@ base mixin $FutureModifier<StateT> on ProviderBase<AsyncValue<StateT>> {
   ProviderListenable<Future<Output>> selectAsync<Output>(
     Output Function(StateT data) selector,
   ) {
-    return _AsyncSelector<StateT, Output>(
+    return _AsyncSelector<StateT, Output, AsyncValue<StateT>>(
       selector: selector,
       provider: this,
-      future: future,
+      future: _future,
     );
   }
 }
@@ -228,7 +234,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
 
   /// An observable for [FutureProvider.future].
   @internal
-  final futureNotifier = ProxyElementValueListenable<Future<StateT>>();
+  final futureNotifier = $ElementLense<Future<StateT>>();
   Completer<StateT>? _futureCompleter;
   Future<StateT>? _lastFuture;
   AsyncSubscription? _cancelSubscription;
@@ -264,7 +270,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
 
   @override
   @protected
-  void setStateResult(Result<AsyncValue<StateT>> newState) {
+  void setStateResult($Result<AsyncValue<StateT>> newState) {
     newState.requireState.map(
       loading: onLoading,
       error: onError,
@@ -290,12 +296,11 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
     asyncTransition(value, seamless: seamless);
 
     for (final observer in container.observers) {
-      runQuaternaryGuarded(
+      runTernaryGuarded(
         observer.providerDidFail,
-        provider,
+        _currentObserverContext(),
         value.error,
         value.stackTrace,
-        container,
       );
     }
 
@@ -309,7 +314,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
         );
       _futureCompleter = null;
     } else {
-      futureNotifier.result = Result.data(
+      futureNotifier.result = $Result.data(
         Future.error(
           value.error,
           value.stackTrace,
@@ -331,19 +336,19 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
       completer.complete(value.value);
       _futureCompleter = null;
     } else {
-      futureNotifier.result = Result.data(Future.value(value.value));
+      futureNotifier.result = $Result.data(Future.value(value.value));
     }
   }
 
   /// Listens to a [Stream] and convert it into an [AsyncValue].
   @preferInline
   @internal
-  void handleStream(
+  WhenComplete handleStream(
     Stream<StateT> Function() create, {
     required bool seamless,
     required bool isMount,
   }) {
-    _handleAsync(seamless: seamless, isMount: isMount, ({
+    return _handleAsync(seamless: seamless, isMount: isMount, ({
       required data,
       required done,
       required error,
@@ -385,12 +390,12 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   /// Listens to a [Future] and convert it into an [AsyncValue].
   @preferInline
   @internal
-  void handleFuture(
+  WhenComplete handleFuture(
     FutureOr<StateT> Function() create, {
     required bool seamless,
     required bool isMount,
   }) {
-    _handleAsync(seamless: seamless, isMount: isMount, ({
+    return _handleAsync(seamless: seamless, isMount: isMount, ({
       required data,
       required done,
       required error,
@@ -423,10 +428,13 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
         },
       );
 
-      last(futureOr, cancel);
+      last(futureOr);
 
       return (
         cancel: cancel,
+        // We don't call `cancel` here to let `provider.future` resolve with
+        // the last value emitted by the future.
+        abort: null,
         pause: null,
         resume: null,
       );
@@ -434,12 +442,12 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   }
 
   /// Listens to a [Future] and transforms it into an [AsyncValue].
-  void _handleAsync(
+  WhenComplete _handleAsync(
     AsyncSubscription? Function({
       required void Function(StateT) data,
       required void Function(Object, StackTrace) error,
       required void Function() done,
-      required void Function(Future<StateT>, void Function()) last,
+      required void Function(Future<StateT>) last,
     }) listen, {
     required bool seamless,
     required bool isMount,
@@ -449,27 +457,34 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
       onError(AsyncError(error, stackTrace), seamless: seamless);
     }
 
+    void Function()? onDone;
+    var isDone = false;
+
     try {
-      final sub = _cancelSubscription = listen(
+      _cancelSubscription = listen(
         data: (value) {
           onData(AsyncData(value), seamless: seamless);
         },
         error: callOnError,
-        last: (last, sub) {
+        last: (last) {
           assert(_lastFuture == null, 'bad state');
           _lastFuture = last;
         },
         done: () {
           _lastFuture = null;
+          isDone = true;
+          onDone?.call();
         },
-      );
-      assert(
-        sub == null || _lastFuture != null,
-        'An async operation is pending but the state for provider.future was not initialized.',
       );
     } catch (error, stackTrace) {
       callOnError(error, stackTrace);
     }
+
+    return (onDoneCb) {
+      onDone = onDoneCb;
+      // Handle synchronous completion
+      if (isDone) onDoneCb();
+    };
   }
 
   @override
@@ -492,17 +507,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
 
       final lastFuture = _lastFuture;
       if (lastFuture != null) {
-        final cancelSubscription = _cancelSubscription;
-        if (cancelSubscription != null) {
-          cancelSubscription.resume?.call();
-          lastFuture
-              .then(
-                (_) {},
-                // ignore: avoid_types_on_closure_parameters
-                onError: (Object _) {},
-              )
-              .whenComplete(cancelSubscription.cancel);
-        }
+        _cancelSubscription?.abort?.call();
 
         // Prevent super.dispose from cancelling the subscription on the "last"
         // stream value, so that it can be sent to `provider.future`.
@@ -522,8 +527,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   @override
   void visitChildren({
     required void Function(ProviderElement element) elementVisitor,
-    required void Function(ProxyElementValueListenable element)
-        listenableVisitor,
+    required void Function($ElementLense element) listenableVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,
@@ -535,59 +539,21 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
 
 extension<T> on Stream<T> {
   AsyncSubscription listenAndTrackLast(
-    void Function(Future<T>, void Function()) last, {
+    void Function(Future<T>) last, {
     required Object Function() lastOrElseError,
     required void Function(T event) onData,
     required void Function(Object error, StackTrace stackTrace) onError,
     required void Function() onDone,
   }) {
-    final completer = Completer<T>();
-
-    Result<T>? result;
     late StreamSubscription<T> subscription;
-    subscription = listen(
-      (event) {
-        result = Result.data(event);
-        onData(event);
-      },
-      // ignore: avoid_types_on_closure_parameters
-      onError: (Object error, StackTrace stackTrace) {
-        result = Result.error(error, stackTrace);
-        onError(error, stackTrace);
-      },
-      onDone: () {
-        if (result != null) {
-          switch (result!) {
-            case ResultData(:final state):
-              completer.complete(state);
-            case ResultError(:final error, :final stackTrace):
-              completer.future.ignore();
-              completer.completeError(error, stackTrace);
-          }
-        } else {
-          // The error happens after the associated provider is disposed.
-          // As such, it's normally never read. Reporting this error as uncaught
-          // would cause too many false-positives. And the edge-cases that
-          // do reach this error will throw anyway
-          completer.future.ignore();
-
-          completer.completeError(
-            lastOrElseError(),
-            StackTrace.current,
-          );
-        }
-
-        onDone();
-      },
-    );
+    subscription = listen(onData, onError: onError, onDone: onDone);
 
     final asyncSub = (
       cancel: subscription.cancel,
       pause: subscription.pause,
-      resume: subscription.resume
+      resume: subscription.resume,
+      abort: subscription.cancel,
     );
-
-    last(completer.future, asyncSub.cancel);
 
     return asyncSub;
   }

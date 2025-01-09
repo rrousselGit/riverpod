@@ -53,10 +53,8 @@ class ProviderParameters extends RiverpodLintRule {
           final instantiatedObject = value.constructorName.staticElement
               ?.applyRedirectedConstructors();
 
-          final operatorEqual = instantiatedObject
-              // ignore: deprecated_member_use, necessary to support older versions of analyzer
-              ?.enclosingElement
-              .recursiveGetMethod('==');
+          final operatorEqual =
+              instantiatedObject?.enclosingElement3.recursiveGetMethod('==');
 
           if (operatorEqual == null) {
             // Doing `provider(new Class())` is bad if the class does not override ==

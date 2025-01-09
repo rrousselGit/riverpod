@@ -9,6 +9,7 @@ import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
+import '../imports.dart';
 import '../riverpod_custom_lint.dart';
 import 'scoped_providers_should_specify_dependencies.dart';
 
@@ -63,7 +64,7 @@ class AddProviderScope extends DartFix {
     List<AnalysisError> others,
   ) {
     context.registry.addMethodInvocation((node) {
-      // The method is not impacte by this analysis error
+      // The method is not impacted by this analysis error
       if (!node.sourceRange.intersects(analysisError.sourceRange)) return;
 
       final changeBuilder = reporter.createChangeBuilder(
@@ -72,12 +73,13 @@ class AddProviderScope extends DartFix {
       );
 
       changeBuilder.addDartFileEdit((builder) {
+        final providerScope = builder.importProviderScope();
         final firstArgument = node.argumentList.arguments.firstOrNull;
         if (firstArgument == null) return;
 
         builder.addSimpleInsertion(
           firstArgument.offset,
-          'ProviderScope(child: ',
+          '$providerScope(child: ',
         );
         builder.addSimpleInsertion(firstArgument.end, ')');
       });

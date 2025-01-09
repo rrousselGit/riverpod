@@ -144,6 +144,6 @@ class $NotifierProviderElement< //
     NotifierEncoder<StateT> adapter,
     Object? encoded,
   ) {
-    setStateResult(Result.data(adapter.decode(encoded)));
+    setStateResult($Result.data(adapter.decode(encoded)));
   }
 }

@@ -23,7 +23,10 @@ var _debugIsRunningSelector = false;
 
 /// An internal class for `ProviderBase.select`.
 @sealed
-class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
+class _ProviderSelector<InputT, OutputT, OriginT>
+    with
+        ProviderListenable<OutputT>,
+        ProviderListenableWithOrigin<OutputT, OriginT> {
   /// An internal class for `ProviderBase.select`.
   _ProviderSelector({
     required this.provider,
@@ -31,22 +34,22 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
   });
 
   /// The provider that was selected
-  final ProviderListenable<InputT> provider;
+  final ProviderListenableWithOrigin<InputT, OriginT> provider;
 
   /// The selector applied
   final OutputT Function(InputT) selector;
 
-  Result<OutputT> _select(Result<InputT> value) {
+  $Result<OutputT> _select($Result<InputT> value) {
     if (kDebugMode) _debugIsRunningSelector = true;
 
     try {
       return switch (value) {
-        ResultData(:final state) => Result.data(selector(state)),
+        ResultData(:final state) => $Result.data(selector(state)),
         ResultError(:final error, :final stackTrace) =>
-          Result.error(error, stackTrace),
+          $Result.error(error, stackTrace),
       };
     } catch (err, stack) {
-      return Result.error(err, stack);
+      return $Result.error(err, stack);
     } finally {
       if (kDebugMode) _debugIsRunningSelector = false;
     }
@@ -54,12 +57,12 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
 
   void _selectOnChange({
     required InputT newState,
-    required Result<OutputT>? lastSelectedValue,
+    required $Result<OutputT>? lastSelectedValue,
     required void Function(Object error, StackTrace stackTrace) onError,
     required void Function(OutputT? prev, OutputT next) listener,
-    required void Function(Result<OutputT> newState) onChange,
+    required void Function($Result<OutputT> newState) onChange,
   }) {
-    final newSelectedValue = _select(Result.data(newState));
+    final newSelectedValue = _select($Result.data(newState));
     if (lastSelectedValue == null ||
         !lastSelectedValue.hasState ||
         !newSelectedValue.hasState ||
@@ -78,7 +81,7 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
   }
 
   @override
-  SelectorSubscription<InputT, OutputT> addListener(
+  ProviderSubscriptionWithOrigin<OutputT, OriginT> addListener(
     Node node,
     void Function(OutputT? previous, OutputT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
@@ -88,7 +91,7 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
   }) {
     onError ??= Zone.current.handleUncaughtError;
 
-    Result<OutputT>? lastSelectedValue;
+    $Result<OutputT>? lastSelectedValue;
     final sub = provider.addListener(
       node,
       (prev, input) {
@@ -106,7 +109,7 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
       onError: onError,
     );
 
-    if (!weak) lastSelectedValue = _select(Result.guard(sub.read));
+    if (!weak) lastSelectedValue = _select($Result.guard(sub.read));
 
     if (fireImmediately) {
       _handleFireImmediately(
@@ -116,9 +119,12 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
       );
     }
 
-    return SelectorSubscription(
+    return ProviderSubscriptionView<OutputT, OriginT>(
       innerSubscription: sub,
-      () {
+      read: () {
+        // flushes the provider
+        sub.read();
+
         // Using ! because since `sub.read` flushes the inner subscription,
         // it is guaranteed that `lastSelectedValue` is not null.
         return switch (lastSelectedValue!) {
@@ -131,42 +137,5 @@ class _ProviderSelector<InputT, OutputT> with ProviderListenable<OutputT> {
         };
       },
     );
-  }
-}
-
-@internal
-final class SelectorSubscription<InT, OutT>
-    extends DelegatingProviderSubscription<OutT, Object?> {
-  SelectorSubscription(
-    this._read, {
-    this.onClose,
-    required this.innerSubscription,
-  });
-
-  @override
-  final ProviderSubscriptionWithOrigin<InT, Object?> innerSubscription;
-
-  final void Function()? onClose;
-  final OutT Function() _read;
-
-  @override
-  void close() {
-    if (closed) return;
-
-    onClose?.call();
-    super.close();
-  }
-
-  @override
-  OutT read() {
-    if (closed) {
-      throw StateError(
-        'called ProviderSubscription.read on a subscription that was closed',
-      );
-    }
-    // flushes the provider
-    innerSubscription.read();
-
-    return _read();
   }
 }

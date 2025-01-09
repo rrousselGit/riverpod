@@ -349,12 +349,14 @@ class $ProviderElement<StateT> extends ProviderElement<StateT> {
   final $Provider<StateT> provider;
 
   @override
-  void create(
+  WhenComplete create(
     Ref ref, {
     required bool didChangeDependency,
     required bool isMount,
   }) {
     setStateResult(ResultData(provider.create(ref)));
+
+    return null;
   }
 
   @override

@@ -3,6 +3,7 @@
 - **Breaking**: Rewrote all RiverpodAst nodes to instead be extensions on `AstNodes`.
   Too many changes to detail everything. I'm the only one who uses this package anyway.
   If you're reading this, have a nice day!
+- Added support for parsing `@mutation`
 
 ## 1.0.0-dev.1 - 2023-11-20
 
@@ -12,6 +13,14 @@
 ## 1.0.0-dev.0 - 2023-10-30
 
 - Added `GeneratorProviderDeclarationElement.isFamily`
+
+## 0.5.9 - 2025-01-08
+
+Support latest analyzer
+
+## 0.5.8 - 2024-11-18
+
+- Fixed analyzer to correctly detect nested RefInvocations when used as parameters (e.g., ref.watch(provider(ref.watch(...)))). This improves the accuracy of the analyzer's error detection for complex provider compositions. (thanks to @josh-burton)
 
 ## 0.5.7 - 2024-10-27
 

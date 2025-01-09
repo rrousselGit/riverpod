@@ -65,12 +65,14 @@ abstract class NotifierBase<StateT, CreatedT> {
   /// As opposed to [Ref.listen], the listener will be called even if
   /// [updateShouldNotify] returns false, meaning that the previous
   /// and new value can potentially be identical.
+  ///
+  /// Returns a function which can be called to remove the listener.
   @protected
-  void listenSelf(
+  RemoveListener listenSelf(
     void Function(StateT? previous, StateT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
-    $ref.listenSelf(listener, onError: onError);
+    return $ref.listenSelf(listener, onError: onError);
   }
 
   @visibleForTesting
@@ -124,7 +126,7 @@ abstract base class $ClassProvider< //
   });
 
   Refreshable<NotifierT> get notifier {
-    return ProviderElementProxy<StateT, NotifierT>(
+    return ProviderElementProxy<NotifierT, StateT>(
       this,
       (element) => (element
               as ClassProviderElement<NotifierT, StateT, RawStateT, CreatedT>)
@@ -190,11 +192,11 @@ abstract class ClassProviderElement< //
   @override
   $ClassProvider<NotifierT, StateT, RawStateT, CreatedT> get provider;
 
-  final classListenable = ProxyElementValueListenable<NotifierT>();
+  final classListenable = $ElementLense<NotifierT>();
 
   @mustCallSuper
   @override
-  void create(
+  WhenComplete create(
     // ignore: library_private_types_in_public_api, not public
     $Ref<StateT> ref, {
     required bool didChangeDependency,
@@ -202,7 +204,7 @@ abstract class ClassProviderElement< //
   }) {
     final seamless = !didChangeDependency;
 
-    final result = classListenable.result = Result.guard(() {
+    final result = classListenable.result = $Result.guard(() {
       final notifier = provider.create();
       if (notifier._ref != null) {
         throw StateError(alreadyInitializedError);
@@ -235,6 +237,8 @@ abstract class ClassProviderElement< //
           seamless: seamless,
         );
     }
+
+    return null;
   }
 
   void _decodeFromCache() {
@@ -318,8 +322,7 @@ abstract class ClassProviderElement< //
   @override
   void visitChildren({
     required void Function(ProviderElement element) elementVisitor,
-    required void Function(ProxyElementValueListenable element)
-        listenableVisitor,
+    required void Function($ElementLense element) listenableVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,

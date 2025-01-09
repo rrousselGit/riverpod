@@ -4,11 +4,11 @@ import 'package:state_notifier/state_notifier.dart';
 import '../../builder.dart';
 import '../../internals.dart';
 
-ProviderElementProxy<StateT, NotifierT>
+ProviderElementProxy<NotifierT, StateT>
     _notifier<NotifierT extends StateNotifier<StateT>, StateT>(
   StateNotifierProvider<NotifierT, StateT> that,
 ) {
-  return ProviderElementProxy<StateT, NotifierT>(
+  return ProviderElementProxy<NotifierT, StateT>(
     that,
     (element) {
       return (element as StateNotifierProviderElement<NotifierT, StateT>)
@@ -172,17 +172,17 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
   @override
   final StateNotifierProvider<NotifierT, StateT> provider;
 
-  final _notifierNotifier = ProxyElementValueListenable<NotifierT>();
+  final _notifierNotifier = $ElementLense<NotifierT>();
 
   void Function()? _removeListener;
 
   @override
-  void create(
+  WhenComplete create(
     Ref ref, {
     required bool didChangeDependency,
     required bool isMount,
   }) {
-    final notifier = _notifierNotifier.result = Result.guard(
+    final notifier = _notifierNotifier.result = $Result.guard(
       () => provider._create(ref),
     );
 
@@ -190,6 +190,8 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
       (newState) => setStateResult(ResultData(newState)),
       fireImmediately: true,
     );
+
+    return null;
   }
 
   @override
@@ -216,8 +218,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
   @override
   void visitChildren({
     required void Function(ProviderElement element) elementVisitor,
-    required void Function(ProxyElementValueListenable element)
-        listenableVisitor,
+    required void Function($ElementLense element) listenableVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,

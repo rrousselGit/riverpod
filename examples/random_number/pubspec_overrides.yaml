@@ -12,3 +12,6 @@ dependency_overrides:
     path: ../../packages/riverpod_generator
   riverpod_lint:
     path: ../../packages/riverpod_lint
+
+  # For flutter_test
+  test_api: ^0.7.4

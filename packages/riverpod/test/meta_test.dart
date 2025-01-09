@@ -184,8 +184,7 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor<void> {
   }
 
   void _verifyInheritsAnnotations(Element element) {
-    // ignore: deprecated_member_use, needed to support older SDK
-    final parent = element.enclosingElement;
+    final parent = element.enclosingElement3;
 
     if (parent is! ClassElement) return;
 

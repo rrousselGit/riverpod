@@ -8,6 +8,7 @@ import 'package:analyzer/error/listener.dart';
 import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
+import '../imports.dart';
 import '../riverpod_custom_lint.dart';
 
 class FunctionalRef extends RiverpodLintRule {
@@ -87,7 +88,8 @@ class FunctionalRefFix extends RiverpodFix {
         );
 
         changeBuilder.addDartFileEdit((builder) {
-          var toInsert = 'Ref ref';
+          final ref = builder.importRef();
+          var toInsert = '$ref ref';
           if (refNode != null) {
             toInsert = '$toInsert, ';
           }
@@ -109,8 +111,9 @@ class FunctionalRefFix extends RiverpodFix {
       );
 
       changeBuilder.addDartFileEdit((builder) {
+        final ref = builder.importRef();
         if (!refNode.isExplicitlyTyped) {
-          builder.addSimpleInsertion(refNode.name!.offset, 'Ref ');
+          builder.addSimpleInsertion(refNode.name!.offset, '$ref ');
           return;
         }
 
@@ -120,7 +123,7 @@ class FunctionalRefFix extends RiverpodFix {
             start: type.offset,
             end: refNode.name!.offset,
           ),
-          'Ref ',
+          '$ref ',
         );
       });
     });

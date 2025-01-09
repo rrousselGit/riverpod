@@ -108,7 +108,11 @@ final class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
     required this.createdTypeNode,
     required this.exposedTypeNode,
     required this.valueTypeNode,
-  });
+  }) : mutations = node.members
+            .whereType<MethodDeclaration>()
+            .map((e) => e.mutation)
+            .nonNulls
+            .toList();
 
   @override
   final Token name;
@@ -125,6 +129,101 @@ final class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
   final TypeAnnotation? valueTypeNode;
   @override
   final SourcedType exposedTypeNode;
+
+  final List<Mutation> mutations;
+}
+
+extension MutationMethodDeclarationX on MethodDeclaration {
+  static final _cache = _Cache<Mutation?>();
+
+  Mutation? get mutation {
+    return _cache(this, () {
+      final element = declaredElement;
+      if (element == null) return null;
+
+      final mutationElement = MutationElement._parse(element);
+      if (mutationElement == null) return null;
+
+      if (isStatic) {
+        errorReporter(
+          RiverpodAnalysisError(
+            'Mutations cannot be static.',
+            targetNode: this,
+            targetElement: element,
+            code: RiverpodAnalysisErrorCode.mutationIsStatic,
+          ),
+        );
+        return null;
+      }
+      if (isAbstract) {
+        errorReporter(
+          RiverpodAnalysisError(
+            'Mutations cannot be abstract.',
+            targetNode: this,
+            targetElement: element,
+            code: RiverpodAnalysisErrorCode.mutationIsAbstract,
+          ),
+        );
+        return null;
+      }
+
+      final expectedReturnType = thisOrAncestorOfType<ClassDeclaration>()!
+          .members
+          .whereType<MethodDeclaration>()
+          .firstWhereOrNull((e) => e.name.lexeme == 'build')
+          ?.returnType;
+      if (expectedReturnType == null) return null;
+
+      final expectedValueType = _getValueType(
+        expectedReturnType,
+        element.library,
+      );
+      if (expectedValueType == null) return null;
+
+      final expectedType =
+          element.library.typeProvider.futureOrElement.instantiate(
+        typeArguments: [expectedValueType.type!],
+        nullabilitySuffix: NullabilitySuffix.none,
+      );
+
+      final actualType = element.returnType;
+
+      final isAssignable = element.library.typeSystem.isAssignableTo(
+        actualType,
+        expectedType,
+        strictCasts: true,
+      );
+      if (!isAssignable) {
+        errorReporter(
+          RiverpodAnalysisError(
+            'The return type of mutations must match the type returned by the "build" method.',
+            targetNode: this,
+            targetElement: element,
+            code: RiverpodAnalysisErrorCode.mutationReturnTypeMismatch,
+          ),
+        );
+        return null;
+      }
+
+      final mutation = Mutation._(
+        node: this,
+        element: mutationElement,
+      );
+
+      return mutation;
+    });
+  }
+}
+
+final class Mutation {
+  Mutation._({
+    required this.node,
+    required this.element,
+  });
+
+  String get name => node.name.lexeme;
+  final MethodDeclaration node;
+  final MutationElement element;
 }
 
 class ClassBasedProviderDeclarationElement
@@ -184,4 +283,28 @@ class ClassBasedProviderDeclarationElement
   final RiverpodAnnotationElement annotation;
 
   final ExecutableElement buildMethod;
+}
+
+class MutationElement {
+  MutationElement._({
+    required this.name,
+    required this.method,
+  });
+
+  static final _cache = _Cache<MutationElement?>();
+
+  static MutationElement? _parse(ExecutableElement element) {
+    return _cache(element, () {
+      final annotation = MutationAnnotationElement._of(element);
+      if (annotation == null) return null;
+
+      return MutationElement._(
+        name: element.name,
+        method: element,
+      );
+    });
+  }
+
+  final String name;
+  final ExecutableElement method;
 }
