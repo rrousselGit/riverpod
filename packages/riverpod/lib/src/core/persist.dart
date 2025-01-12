@@ -6,8 +6,7 @@ import '../framework.dart';
 ///
 /// Should not be implemented. Instead use `with`.
 @optionalTypeArgs
-mixin NotifierEncoder<StateT, PersistT extends Persist>
-    on NotifierBase<StateT, Object?> {
+mixin NotifierEncoder<ValueT, PersistT extends Persist<Object?, ValueT>> {
   /// A key unique to this provider and parameter combination.
   ///
   /// This key is used to store the state of the provider in a database.
@@ -34,7 +33,7 @@ mixin NotifierEncoder<StateT, PersistT extends Persist>
   /// A JSON-based [Persist] may store a [String] in the DB, while an alternative
   /// implementation rely on a list of bytes or a custom class.
   /// {@endtemplate}
-  StateT decode(Object? value);
+  ValueT decode(Object? value);
 
   /// Encodes the state of the provider to a value that can be stored in the database.
   ///

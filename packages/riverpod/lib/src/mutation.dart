@@ -396,7 +396,7 @@ abstract class _MutationBase<
   final MutationState<ValueT> state;
   final Object? key;
 
-  ClassProviderElement<ClassT, StateT, Object?> get element;
+  ClassProviderElement<ClassT, StateT, ValueT, Object?> get element;
   $ElementLense<MutationT> get listenable;
 
   Object? get _currentKey => listenable.result?.stateOrNull?.key;

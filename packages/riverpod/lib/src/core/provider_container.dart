@@ -239,9 +239,9 @@ typedef Retry = Duration? Function(int retryCount, Object error);
 
 /// Options for interacting with offline persistence.
 @immutable
-abstract class Persist {
-  FutureOr<(Object?,)?> read(Object? key);
-  FutureOr<void> write(Object? key, Object? value);
+abstract class Persist<EncodedT, DecodedT> {
+  FutureOr<(DecodedT,)?> read(Object? key);
+  FutureOr<void> write(Object? key, EncodedT value);
 }
 
 /// An object responsible for storing the a O(1) access to providers,

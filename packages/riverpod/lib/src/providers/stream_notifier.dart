@@ -86,7 +86,7 @@ class $StreamNotifierProviderElement< //
 
   @override
   void callDecode(
-    NotifierEncoder<StateT> adapter,
+    NotifierEncoder<StateT, Persist<Object?, StateT>> adapter,
     Object? encoded,
   ) {
     setStateResult(

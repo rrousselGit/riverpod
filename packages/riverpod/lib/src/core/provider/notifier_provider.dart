@@ -110,7 +110,7 @@ abstract base class $ClassProvider< //
         StateT,
         CreatedT>,
     StateT,
-    RawStateT,
+    ValueT,
     CreatedT> extends ProviderBase<StateT> {
   const $ClassProvider({
     required super.name,
@@ -128,9 +128,9 @@ abstract base class $ClassProvider< //
   Refreshable<NotifierT> get notifier {
     return ProviderElementProxy<NotifierT, StateT>(
       this,
-      (element) => (element
-              as ClassProviderElement<NotifierT, StateT, RawStateT, CreatedT>)
-          .classListenable,
+      (element) =>
+          (element as ClassProviderElement<NotifierT, StateT, ValueT, CreatedT>)
+              .classListenable,
     );
   }
 
@@ -141,12 +141,12 @@ abstract base class $ClassProvider< //
   NotifierT create();
 
   @visibleForOverriding
-  $ClassProvider<NotifierT, StateT, RawStateT, CreatedT> $copyWithCreate(
+  $ClassProvider<NotifierT, StateT, ValueT, CreatedT> $copyWithCreate(
     NotifierT Function() create,
   );
 
   @visibleForOverriding
-  $ClassProvider<NotifierT, StateT, RawStateT, CreatedT> $copyWithBuild(
+  $ClassProvider<NotifierT, StateT, ValueT, CreatedT> $copyWithBuild(
     RunNotifierBuild<NotifierT, CreatedT> build,
   );
 
@@ -174,7 +174,7 @@ abstract base class $ClassProvider< //
   ClassProviderElement< //
       NotifierT,
       StateT,
-      RawStateT,
+      ValueT,
       CreatedT> $createElement($ProviderPointer pointer);
 }
 
@@ -184,13 +184,13 @@ abstract class ClassProviderElement< //
             StateT,
             CreatedT>,
         StateT,
-        RawStateT,
+        ValueT,
         CreatedT> //
     extends ProviderElement<StateT> {
   ClassProviderElement(super.pointer);
 
   @override
-  $ClassProvider<NotifierT, StateT, RawStateT, CreatedT> get provider;
+  $ClassProvider<NotifierT, StateT, ValueT, CreatedT> get provider;
 
   final classListenable = $ElementLense<NotifierT>();
 
@@ -249,9 +249,10 @@ abstract class ClassProviderElement< //
     ref!.listenSelf((previous, current) => _callEncode());
   }
 
-  (NotifierEncoder<RawStateT, Object?>, Persist)? _requestPersist() {
+  (NotifierEncoder<ValueT, Persist<Object?, ValueT>>, Persist<Object?, ValueT>)?
+      _requestPersist() {
     final adapter = classListenable.result?.stateOrNull
-        as NotifierEncoder<RawStateT, Persist>?;
+        as NotifierEncoder<ValueT, Persist<Object?, ValueT>>?;
     if (adapter == null) return null;
 
     final persist = adapter.optionsFor(container, provider);
@@ -265,8 +266,8 @@ abstract class ClassProviderElement< //
     return (adapter, persist);
   }
 
-  void callDecode(NotifierEncoder<RawStateT, Object?> adapter, Object? encoded);
-  Object? callEncode(NotifierEncoder<RawStateT, Object?> adapter);
+  void callDecode(NotifierEncoder<ValueT, Persist<Object?, ValueT>> adapter,
+      Object? encoded);
 
   FutureOr<void> _decode() async {
     final offline = _requestPersist();
@@ -295,7 +296,7 @@ abstract class ClassProviderElement< //
 
     try {
       final key = adapter.persistKey;
-      await persist.write(key, callEncode(adapter));
+      await persist.write(key, adapter.encode());
     } catch (e, s) {
       Zone.current.handleUncaughtError(e, s);
     }
