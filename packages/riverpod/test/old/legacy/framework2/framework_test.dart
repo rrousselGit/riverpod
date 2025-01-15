@@ -259,15 +259,9 @@ void main() {
 
     expect(sub.read(), '0');
     var firstDependents = <ProviderElement>[];
-    firstElement.visitChildren(
-      elementVisitor: firstDependents.add,
-      listenableVisitor: (_) {},
-    );
+    firstElement.visitChildren(firstDependents.add);
     var secondDependents = <ProviderElement>[];
-    secondElement.visitChildren(
-      elementVisitor: secondDependents.add,
-      listenableVisitor: (_) {},
-    );
+    secondElement.visitChildren(secondDependents.add);
 
     expect(firstDependents, [computedElement]);
     expect(firstElement.hasNonWeakListeners, true);
@@ -278,15 +272,9 @@ void main() {
     expect(sub.read(), 'fallback');
 
     firstDependents = <ProviderElement>[];
-    firstElement.visitChildren(
-      elementVisitor: firstDependents.add,
-      listenableVisitor: (_) {},
-    );
+    firstElement.visitChildren(firstDependents.add);
     secondDependents = <ProviderElement>[];
-    secondElement.visitChildren(
-      elementVisitor: secondDependents.add,
-      listenableVisitor: (_) {},
-    );
+    secondElement.visitChildren(secondDependents.add);
     expect(firstDependents, [computedElement]);
     expect(firstElement.hasNonWeakListeners, true);
     expect(secondDependents, <$ProviderElement<Object?>>[]);
@@ -324,10 +312,7 @@ void main() {
 
     expect(sub.read(), 0);
     var firstDependents = <ProviderElement>[];
-    firstElement.visitChildren(
-      elementVisitor: firstDependents.add,
-      listenableVisitor: (_) {},
-    );
+    firstElement.visitChildren(firstDependents.add);
     expect(firstDependents, {computedElement});
     expect(firstElement.hasNonWeakListeners, true);
 
@@ -335,10 +320,7 @@ void main() {
     await container.pump();
 
     firstDependents = <ProviderElement>[];
-    firstElement.visitChildren(
-      elementVisitor: firstDependents.add,
-      listenableVisitor: (_) {},
-    );
+    firstElement.visitChildren(firstDependents.add);
     expect(firstDependents, <$ProviderElement<Object?>>{});
     expect(firstElement.hasNonWeakListeners, false);
   });

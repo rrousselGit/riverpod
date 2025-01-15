@@ -43,6 +43,8 @@ class _AsyncSelector<InputT, OutputT, OriginT>
     required bool fireImmediately,
     required bool weak,
   }) {
+    late final ProviderSubscriptionView<Future<OutputT>, OriginT> providerSub;
+
     $Result<OutputT>? lastSelectedValue;
     Completer<OutputT>? selectedCompleter;
     Future<OutputT>? selectedFuture;
@@ -54,7 +56,9 @@ class _AsyncSelector<InputT, OutputT, OriginT>
         selectedCompleter = null;
       } else {
         selectedFuture = Future.value(data);
-        if (callListeners) listener(previousFuture, selectedFuture!);
+        if (callListeners) {
+          providerSub._notifyData(previousFuture, selectedFuture!);
+        }
       }
     }
 
@@ -69,7 +73,9 @@ class _AsyncSelector<InputT, OutputT, OriginT>
         selectedCompleter = null;
       } else {
         selectedFuture = Future.error(err, stack);
-        if (callListeners) listener(previousFuture, selectedFuture!);
+        if (callListeners) {
+          providerSub._notifyData(previousFuture, selectedFuture!);
+        }
       }
     }
 
@@ -150,8 +156,10 @@ class _AsyncSelector<InputT, OutputT, OriginT>
       listener(null, selectedFuture!);
     }
 
-    return ProviderSubscriptionView<Future<OutputT>, OriginT>(
+    return providerSub = ProviderSubscriptionView<Future<OutputT>, OriginT>(
       innerSubscription: sub,
+      listener: listener,
+      onError: onError,
       read: () {
         // Flush
         sub.read();

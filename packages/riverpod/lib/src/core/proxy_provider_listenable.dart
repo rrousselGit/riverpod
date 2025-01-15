@@ -144,15 +144,18 @@ class ProviderElementProxy<OutT, OriginT>
       }
     }
 
+    late ProviderSubscriptionView<OutT, OriginT> sub;
     final removeListener = notifier.addListener(
-      listener,
+      (prev, next) => sub._notifyData(prev, next),
       onError: onError,
       onDependencyMayHaveChanged: onDependencyMayHaveChanged,
     );
 
-    return ProviderSubscriptionView<OutT, OriginT>(
+    return sub = ProviderSubscriptionView<OutT, OriginT>(
       innerSubscription: innerSub,
       onClose: removeListener,
+      listener: listener,
+      onError: onError,
       read: () {
         final element = source.readProviderElement(provider);
         element.flush();

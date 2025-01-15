@@ -261,7 +261,15 @@ This could mean a few things:
 
     if (kDebugMode) _debugDidSetState = false;
 
+    visitListenables((listenable) {
+      listenable.lockNotification();
+    });
+
     buildState(ref, isMount: false);
+
+    visitListenables((listenable) {
+      listenable.unlockNotification();
+    });
 
     if (!identical(_stateResult, previousStateResult)) {
       // Asserts would otherwise prevent a provider rebuild from updating
@@ -426,11 +434,13 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     // do not want to set the _dependencyMayHaveChanged flag to true.
     // Since the dependency is known to have changed, there is no reason to try
     // and "flush" it, as it will already get rebuilt.
-    visitChildren(
-      elementVisitor: (element) => element._markDependencyMayHaveChanged(),
-      listenableVisitor: (notifier) =>
-          notifier.notifyDependencyMayHaveChanged(),
-    );
+    visitChildren((element) {
+      element._markDependencyMayHaveChanged();
+      element.visitListenables(
+        (notifier) => notifier.notifyDependencyMayHaveChanged(),
+      );
+    });
+    visitListenables((notifier) => notifier.notifyDependencyMayHaveChanged());
   }
 
   MutationContext? _currentMutationContext() =>
@@ -552,10 +562,14 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     _dependencyMayHaveChanged = true;
 
     visitChildren(
-      elementVisitor: (element) => element._markDependencyMayHaveChanged(),
-      listenableVisitor: (notifier) =>
-          notifier.notifyDependencyMayHaveChanged(),
+      (element) {
+        element._markDependencyMayHaveChanged();
+        element.visitListenables(
+          (notifier) => notifier.notifyDependencyMayHaveChanged(),
+        );
+      },
     );
+    visitListenables((notifier) => notifier.notifyDependencyMayHaveChanged());
   }
 
   @override
@@ -823,6 +837,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     clearState();
 
     _closeSubscriptions(weakDependents);
+
+    visitListenables((notifier) {
+      notifier.dispose();
+    });
   }
 
   @override
@@ -856,10 +874,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   /// This method does not guarantee that a dependency is visited only once.
   /// If a provider both [Ref.watch] and [Ref.listen] an element, or if a provider
   /// [Ref.listen] multiple times to an element, it may be visited multiple times.
-  void visitChildren({
-    required void Function(ProviderElement element) elementVisitor,
-    required void Function($ElementLense element) listenableVisitor,
-  }) {
+  void visitChildren(
+    void Function(ProviderElement element) elementVisitor,
+  ) {
     void lookup(Iterable<ProviderSubscriptionWithOrigin> children) {
       for (final child in children) {
         switch (child.source) {
@@ -874,6 +891,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     lookup(weakDependents);
     if (dependents case final dependents?) lookup(dependents);
   }
+
+  void visitListenables(
+    void Function($ElementLense element) listenableVisitor,
+  ) {}
 
   /// Visit the [ProviderElement]s that this provider is listening to.
   ///

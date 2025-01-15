@@ -91,6 +91,7 @@ class _ProviderSelector<InputT, OutputT, OriginT>
   }) {
     onError ??= Zone.current.handleUncaughtError;
 
+    late final ProviderSubscriptionView<OutputT, OriginT> providerSub;
     $Result<OutputT>? lastSelectedValue;
     final sub = provider.addListener(
       node,
@@ -98,8 +99,8 @@ class _ProviderSelector<InputT, OutputT, OriginT>
         _selectOnChange(
           newState: input,
           lastSelectedValue: lastSelectedValue,
-          listener: listener,
-          onError: onError!,
+          listener: providerSub._notifyData,
+          onError: providerSub._notifyError,
           onChange: (newState) => lastSelectedValue = newState,
         );
       },
@@ -111,16 +112,10 @@ class _ProviderSelector<InputT, OutputT, OriginT>
 
     if (!weak) lastSelectedValue = _select($Result.guard(sub.read));
 
-    if (fireImmediately) {
-      _handleFireImmediately(
-        lastSelectedValue!,
-        listener: listener,
-        onError: onError,
-      );
-    }
-
-    return ProviderSubscriptionView<OutputT, OriginT>(
+    providerSub = ProviderSubscriptionView<OutputT, OriginT>(
       innerSubscription: sub,
+      listener: listener,
+      onError: onError,
       read: () {
         // flushes the provider
         sub.read();
@@ -137,5 +132,15 @@ class _ProviderSelector<InputT, OutputT, OriginT>
         };
       },
     );
+
+    if (fireImmediately) {
+      _handleFireImmediately(
+        lastSelectedValue!,
+        listener: providerSub._notifyData,
+        onError: providerSub._notifyError,
+      );
+    }
+
+    return providerSub;
   }
 }

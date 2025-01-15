@@ -184,27 +184,22 @@ base class ProviderSubscriptionView<OutT, OriginT>
     required this.innerSubscription,
     required OutT Function() read,
     void Function()? onClose,
+    required void Function(OutT? prev, OutT next) listener,
+    required OnError? onError,
   })  : _read = read,
-        _onClose = onClose;
+        _onClose = onClose,
+        _listener = listener,
+        _errorListener = onError ?? Zone.current.handleUncaughtError;
 
   final ProviderSubscriptionWithOrigin<Object?, OriginT> innerSubscription;
   final OutT Function() _read;
   final void Function()? _onClose;
 
   @override
-  OnError get _errorListener {
-    return switch (innerSubscription) {
-      final ProviderSubscriptionImpl<Object?, OriginT> sub =>
-        sub._errorListener,
-    };
-  }
+  final OnError _errorListener;
 
   @override
-  void Function(OutT? prev, OutT next) get _listener {
-    return switch (innerSubscription) {
-      final ProviderSubscriptionImpl<Object?, OriginT> sub => sub._listener,
-    };
-  }
+  final void Function(OutT? prev, OutT next) _listener;
 
   @override
   ProviderBase<OriginT> get origin => innerSubscription.origin;

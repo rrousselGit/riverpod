@@ -462,20 +462,25 @@ void main() {
     test('Regression 2041', () async {
       final container = ProviderContainer.test();
 
-      final testNotifierProvider = FutureProvider.autoDispose<int>((ref) => 0);
+      final testNotifierProvider =
+          FutureProvider.autoDispose<int>((ref) => 0, name: 'testNotifier');
       // ProxyProvider is never rebuild directly, but rather indirectly through
       // testNotifierProvider. This means the scheduler does not naturally cover it.
       // Then testProvider is the one to trigger the rebuild by listening to it.
       final proxyProvider = FutureProvider.autoDispose<int>(
         (ref) => ref.watch(testNotifierProvider.future),
+        name: 'proxy',
       );
 
       var buildCount = 0;
       final testProvider = FutureProvider.autoDispose<int>(
         (ref) async {
           buildCount++;
-          return (await ref.watch(proxyProvider.future)) + 2;
+          final res = (await ref.watch(proxyProvider.future)) + 2;
+
+          return res;
         },
+        name: 'test',
       );
 
       container.listen<AsyncValue<void>>(

@@ -42,6 +42,30 @@ void main() {
       });
     }
 
+    test('locks .future notification during build', () async {
+      final container = ProviderContainer.test();
+      FutureOr<int> Function(Ref ref, $AsyncNotifier<int> self) build =
+          (ref, self) => 0;
+      final provider = factory.simpleTestProvider<int>(
+        (ref, self) => build(ref, self),
+      );
+      final futureListener = Listener<Future<int>>();
+
+      container.listen(provider.future, futureListener.call);
+
+      build = (ref, self) {
+        self.state = const AsyncData(42);
+        self.state = const AsyncData(21);
+        return 84;
+      };
+      container.invalidate(provider);
+      await container.pump();
+
+      final result = verify(futureListener(captureAny, captureAny))..called(1);
+      await expectLater(result.captured.first, completion(0));
+      await expectLater(result.captured.last, completion(84));
+    });
+
     group('retry', () {
       test(
         'handles retry',

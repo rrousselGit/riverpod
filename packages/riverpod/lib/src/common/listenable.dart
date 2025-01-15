@@ -70,6 +70,12 @@ class _ValueListenable<T> {
   int _reentrantlyRemovedListeners = 0;
   bool _debugDisposed = false;
 
+  /// The accumulated skipped notification while it was locked by [lockNotification].
+  ({
+    ({T? prev, T next})? data,
+    ({Object error, StackTrace stack})? error,
+  })? _skippedNotification;
+
   static bool debugAssertNotDisposed(_ValueListenable<Object?> notifier) {
     assert(
       !notifier._debugDisposed,
@@ -97,6 +103,24 @@ class _ValueListenable<T> {
   /// so, stopping that same work.
   bool get hasListeners {
     return _count > 0;
+  }
+
+  void lockNotification() {
+    assert(_skippedNotification == null, '');
+    _skippedNotification = (data: null, error: null);
+  }
+
+  void unlockNotification() {
+    final notification = _skippedNotification;
+    if (notification != null) {
+      _skippedNotification = null;
+
+      if (notification.data case final data?) {
+        _notifyValue(data.prev, data.next);
+      } else if (notification.error case final error?) {
+        _notifyError(error.error, error.stack);
+      }
+    }
   }
 
   /// Register a closure to be called when the object changes.
@@ -235,9 +259,11 @@ class _ValueListenable<T> {
   /// listeners or not immediately before disposal.
   @mustCallSuper
   void dispose() {
+    assert(!_debugDisposed, '');
     if (kDebugMode) _debugDisposed = true;
     _listeners = _emptyListeners();
     _count = 0;
+    lockNotification();
   }
 
   /// Call all the registered listeners.
@@ -330,10 +356,32 @@ class _ValueListenable<T> {
   }
 
   void _notifyValue(T? prev, T next) {
+    if (_skippedNotification != null) {
+      _skippedNotification = (
+        error: null,
+        data: (
+          prev: _skippedNotification?.data?.prev ?? prev,
+          next: next,
+        ),
+      );
+      return;
+    }
+
     _notifyListeners((listener) => listener.onValue(prev, next));
   }
 
   void _notifyError(Object err, StackTrace stack) {
+    if (_skippedNotification != null) {
+      _skippedNotification = (
+        error: (
+          error: err,
+          stack: stack,
+        ),
+        data: null,
+      );
+      return;
+    }
+
     _notifyListeners((listener) => listener.onError?.call(err, stack));
   }
 

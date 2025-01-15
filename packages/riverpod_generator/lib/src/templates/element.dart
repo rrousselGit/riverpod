@@ -50,15 +50,10 @@ class ${provider.generatedElementName}$_genericsDefinition extends ${provider.in
   void _overrideVisitChildren(StringBuffer buffer) {
     buffer.writeln(r'''
   @override
-  void visitChildren({
-    required void Function(ProviderElement element) elementVisitor,
-    required void Function($ElementLense element)
-        listenableVisitor,
-  }) {
-    super.visitChildren(
-      elementVisitor: elementVisitor,
-      listenableVisitor: listenableVisitor,
-    );
+  void visitListenables(
+    void Function($ElementLense element) listenableVisitor,
+  ) {
+    super.visitListenables(listenableVisitor);
 ''');
 
     for (final mutation in provider.mutations) {

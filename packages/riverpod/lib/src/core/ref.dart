@@ -99,17 +99,11 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     }
 
     final queue = Queue<ProviderElement>();
-    _element.visitChildren(
-      elementVisitor: queue.add,
-      listenableVisitor: (_) {},
-    );
+    _element.visitChildren(queue.add);
 
     while (queue.isNotEmpty) {
       final current = queue.removeFirst();
-      current.visitChildren(
-        elementVisitor: queue.add,
-        listenableVisitor: (_) {},
-      );
+      current.visitChildren(queue.add);
 
       if (current.origin == dependency) {
         throw CircularDependencyError._();
@@ -122,7 +116,9 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
       !_debugIsRunningSelector,
       'Cannot call ref.<methods> inside a selector',
     );
-    if (!mounted) throw UnmountedRefException(_element.origin);
+    if (!mounted) {
+      throw UnmountedRefException(_element.origin);
+    }
   }
 
   /// Requests for the state of a provider to not be disposed when all the
@@ -542,7 +538,8 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// ```
   T watch<T>(ProviderListenable<T> listenable) {
     _throwIfInvalidUsage();
-    final sub = _element.listen<T>(
+    late ProviderSubscription<T> sub;
+    sub = _element.listen<T>(
       listenable,
       (prev, value) => invalidateSelf(asReload: true),
       onError: (err, stack) => invalidateSelf(asReload: true),

@@ -1036,23 +1036,19 @@ class ProviderContainer implements Node {
       // were already visited before.
       // If a child does not have all of its ancestors visited, when those
       // ancestors will be visited, they will retry visiting this child.
-      element.visitChildren(
-        elementVisitor: (dependent) {
-          if (dependent.container == this) {
-            // All the parents of a node must have been visited before a node is visited
-            var areAllAncestorsAlreadyVisited = true;
-            dependent.visitAncestors((e) {
-              if (e.container == this && !visitedNodes.contains(e)) {
-                areAllAncestorsAlreadyVisited = false;
-              }
-            });
+      element.visitChildren((dependent) {
+        if (dependent.container == this) {
+          // All the parents of a node must have been visited before a node is visited
+          var areAllAncestorsAlreadyVisited = true;
+          dependent.visitAncestors((e) {
+            if (e.container == this && !visitedNodes.contains(e)) {
+              areAllAncestorsAlreadyVisited = false;
+            }
+          });
 
-            if (areAllAncestorsAlreadyVisited) queue.add(dependent);
-          }
-        },
-        // We only care about Elements here, so let's ignore notifiers
-        listenableVisitor: (_) {},
-      );
+          if (areAllAncestorsAlreadyVisited) queue.add(dependent);
+        }
+      });
     }
   }
 
