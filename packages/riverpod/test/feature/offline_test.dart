@@ -59,11 +59,11 @@ extension on TestFactory<Object?> {
     Persist? persistOptions,
     Object? Function(Object? args)? persistKey,
     Object? Function(Object? encoded)? decode,
-    void Function(Persist persist, Object? value)? encode,
+    Object? Function(Object? value)? encode,
   }) {
     decode ??= (value) => value;
     persistKey ??= (args) => 'key';
-    encode ??= (_, value) {};
+    encode ??= (value) {};
 
     return when(
       asyncNotifier: (factory) => factory.simpleTestProvider<Object?>(
@@ -134,14 +134,21 @@ extension on Object? {
   }
 }
 
-class DelegatingPersist extends Persist {
-  DelegatingPersist({required FutureOr<(Object?,)?> Function(Object? key) read})
-      : _read = read;
+class DelegatingPersist<EncodedT, DecodedT>
+    extends Persist<EncodedT, DecodedT> {
+  DelegatingPersist({
+    required FutureOr<(DecodedT,)?> Function(Object? key) read,
+    FutureOr<void> Function(Object? key, EncodedT value)? write,
+  })  : _read = read,
+        _write = write ?? ((_, __) {});
 
-  final FutureOr<(Object?,)?> Function(Object? key) _read;
-
+  final FutureOr<(DecodedT,)?> Function(Object? key) _read;
   @override
-  FutureOr<(Object?,)?> read(Object? key) => _read(key);
+  FutureOr<(DecodedT,)?> read(Object? key) => _read(key);
+
+  final FutureOr<void> Function(Object? key, EncodedT value) _write;
+  @override
+  FutureOr<void> write(Object? key, EncodedT value) => _write(key, value);
 }
 
 void main() {
@@ -163,8 +170,10 @@ void main() {
       );
 
       test('shouldPersist defaults to true if persistOptions is set', () {});
-      test('shouldPersist defaults to false if persistOptions is missing',
-          () {});
+      test(
+        'shouldPersist defaults to false if persistOptions is missing',
+        () {},
+      );
 
       test('throws if two providers have the same persistKey', () {});
 
@@ -251,7 +260,9 @@ void main() {
             container.listen(provider, (a, b) {});
 
             expect(
-                container.read(provider), const AsyncValue<Object?>.loading());
+              container.read(provider),
+              const AsyncValue<Object?>.loading(),
+            );
 
             expect(await container.read(provider.future!), 21);
           });
@@ -315,11 +326,11 @@ void main() {
 
           final sub = container.listen(provider, (a, b) {});
 
-          verifyOnly(encode, encode(any, 0));
+          verifyOnly(encode, encode(0));
 
           container.read(provider.notifier!).state = factory.valueFor(21);
 
-          verifyOnly(encode, encode(any, 21));
+          verifyOnly(encode, encode(21));
         });
 
         if (factory.isAsync) {
@@ -458,5 +469,5 @@ void main() {
 }
 
 class Encode<T> with Mock {
-  void call(Persist? persist, T? value);
+  Object? call(T? value);
 }

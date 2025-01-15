@@ -461,7 +461,6 @@ void main() {
 
     test('Regression 2041', () async {
       final container = ProviderContainer.test();
-      final onFuture = Listener<Future<int>>();
 
       final testNotifierProvider = FutureProvider.autoDispose<int>((ref) => 0);
       // ProxyProvider is never rebuild directly, but rather indirectly through
@@ -489,16 +488,19 @@ void main() {
         fireImmediately: true,
       );
 
+      print('a');
       container.invalidate(testNotifierProvider);
+      print('b');
       container.invalidate(testProvider);
+      print('c');
 
-      verifyZeroInteractions(onFuture);
       expect(buildCount, 1);
 
       await container.pump();
-      verifyZeroInteractions(onFuture);
+      print('d');
 
       expect(buildCount, 2);
+      print('d');
     });
 
     test('does not update dependents when the future completes', () async {

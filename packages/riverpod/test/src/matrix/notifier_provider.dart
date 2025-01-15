@@ -183,11 +183,12 @@ abstract class TestNotifier<StateT> implements $Notifier<StateT> {
 }
 
 class DeferredNotifier<StateT> extends Notifier<StateT>
-    implements TestNotifier<StateT>, NotifierEncoder<StateT> {
+    with NotifierEncoder<StateT, Persist<Object?, StateT>>
+    implements TestNotifier<StateT> {
   DeferredNotifier(
     this._create, {
     bool Function(StateT, StateT)? updateShouldNotify,
-    void Function(Persist persist, StateT encoded)? encode,
+    Object? Function(StateT encoded)? encode,
     StateT Function(Object? serialized)? decode,
     Object? Function(Object? args)? persistKey,
   })  : _updateShouldNotify = updateShouldNotify,
@@ -225,12 +226,12 @@ class DeferredNotifier<StateT> extends Notifier<StateT>
         final cb => cb(null),
       };
 
-  final void Function(Persist persist, StateT encoded)? _encode;
+  final Object? Function(StateT encoded)? _encode;
   @override
-  void encode(Persist persist) {
+  Object? encode() {
     return switch (_encode) {
       null => throw UnimplementedError(),
-      final cb => cb(persist, state),
+      final cb => cb(state),
     };
   }
 
@@ -245,11 +246,12 @@ class DeferredNotifier<StateT> extends Notifier<StateT>
 }
 
 class DeferredFamilyNotifier<StateT> extends FamilyNotifier<StateT, int>
-    implements TestNotifier<StateT>, NotifierEncoder<StateT> {
+    with NotifierEncoder<StateT, Persist<Object?, StateT>>
+    implements TestNotifier<StateT> {
   DeferredFamilyNotifier(
     this._create, {
     bool Function(StateT, StateT)? updateShouldNotify,
-    void Function(Persist persist, StateT value)? encode,
+    Object? Function(StateT value)? encode,
     StateT Function(Object? serialized)? decode,
     Object? Function(Object? args)? persistKey,
   })  : _updateShouldNotify = updateShouldNotify,
@@ -282,12 +284,12 @@ class DeferredFamilyNotifier<StateT> extends FamilyNotifier<StateT, int>
         final cb => cb(arg),
       };
 
-  final void Function(Persist persist, StateT encoded)? _encode;
+  final Object? Function(StateT encoded)? _encode;
   @override
-  void encode(Persist persist) {
+  Object? encode() {
     return switch (_encode) {
       null => throw UnimplementedError(),
-      final cb => cb(persist, state),
+      final cb => cb(state),
     };
   }
 
@@ -323,7 +325,7 @@ class NotifierTestFactory extends TestFactory<
     Persist? persistOptions,
     Object? Function(Object? args)? persistKey,
     StateT Function(Object? encoded)? decode,
-    void Function(Persist persist, StateT value)? encode,
+    Object? Function(StateT value)? encode,
   }) deferredProvider;
 
   final $NotifierProvider<$Notifier<StateT>, StateT> Function<StateT>(
@@ -337,7 +339,7 @@ class NotifierTestFactory extends TestFactory<
     Persist? persistOptions,
     Object? Function(Object? args)? persistKey,
     StateT Function(Object? encoded)? decode,
-    void Function(Persist persist, StateT value)? encode,
+    Object? Function(StateT value)? encode,
   }) {
     return deferredProvider<StateT>(
       (ref, self) => create(ref, self),

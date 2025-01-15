@@ -189,11 +189,12 @@ abstract class TestStreamNotifier<StateT> implements $StreamNotifier<StateT> {
 }
 
 class DeferredStreamNotifier<StateT> extends StreamNotifier<StateT>
-    implements TestStreamNotifier<StateT>, NotifierEncoder<StateT> {
+    with NotifierEncoder<StateT, Persist<Object?, StateT>>
+    implements TestStreamNotifier<StateT> {
   DeferredStreamNotifier(
     this._create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
-    void Function(Persist persist, AsyncValue<StateT> value)? encode,
+    Object? Function(AsyncValue<StateT> value)? encode,
     StateT Function(Object? serialized)? decode,
     Object? Function(Object? args)? persistKey,
   })  : _updateShouldNotify = updateShouldNotify,
@@ -228,12 +229,12 @@ class DeferredStreamNotifier<StateT> extends StreamNotifier<StateT>
         final cb => cb(null),
       };
 
-  final void Function(Persist persist, AsyncValue<StateT> value)? _encode;
+  final Object? Function(AsyncValue<StateT> value)? _encode;
   @override
-  void encode(Persist persist) {
+  Object? encode() {
     return switch (_encode) {
       null => throw UnimplementedError(),
-      final cb => cb(persist, state),
+      final cb => cb(state),
     };
   }
 
@@ -249,11 +250,12 @@ class DeferredStreamNotifier<StateT> extends StreamNotifier<StateT>
 
 class DeferredFamilyStreamNotifier<StateT>
     extends FamilyStreamNotifier<StateT, int>
-    implements TestStreamNotifier<StateT>, NotifierEncoder<StateT> {
+    with NotifierEncoder<StateT, Persist<Object?, StateT>>
+    implements TestStreamNotifier<StateT> {
   DeferredFamilyStreamNotifier(
     this._create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
-    void Function(Persist persist, AsyncValue<StateT> value)? encode,
+    Object? Function(AsyncValue<StateT> value)? encode,
     StateT Function(Object? serialized)? decode,
     Object? Function(Object? args)? persistKey,
   })  : _updateShouldNotify = updateShouldNotify,
@@ -289,12 +291,12 @@ class DeferredFamilyStreamNotifier<StateT>
         final cb => cb(arg),
       };
 
-  final void Function(Persist persist, AsyncValue<StateT> value)? _encode;
+  final Object? Function(AsyncValue<StateT> value)? _encode;
   @override
-  void encode(Persist persist) {
+  Object? encode() {
     return switch (_encode) {
       null => throw UnimplementedError(),
-      final cb => cb(persist, state),
+      final cb => cb(state),
     };
   }
 
@@ -332,7 +334,7 @@ class StreamNotifierTestFactory extends TestFactory<
     Persist? persistOptions,
     Object? Function(Object? args)? persistKey,
     StateT Function(Object? encoded)? decode,
-    void Function(Persist persist, AsyncValue<StateT> value)? encode,
+    Object? Function(AsyncValue<StateT> value)? encode,
   }) deferredProvider;
 
   final $StreamNotifierProvider<$StreamNotifier<StateT>, StateT>
@@ -348,7 +350,7 @@ class StreamNotifierTestFactory extends TestFactory<
     Persist? persistOptions,
     Object? Function(Object? args)? persistKey,
     StateT Function(Object? encoded)? decode,
-    void Function(Persist persist, AsyncValue<StateT> value)? encode,
+    Object? Function(AsyncValue<StateT> value)? encode,
     Retry? retry,
   }) {
     return deferredProvider<StateT>(
