@@ -544,6 +544,8 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
     late final ProviderSubscriptionView<T, Object?> sub;
     sub = ProviderSubscriptionView<T, Object?>(
       innerSubscription: innerSubscription,
+      listener: (prev, next) {},
+      onError: (error, stackTrace) {},
       onClose: () => _manualListeners?.remove(sub),
       read: innerSubscription.read,
     );

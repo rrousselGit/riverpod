@@ -386,10 +386,7 @@ void main() {
 
         final children = <ProviderElement>[];
 
-        container.readProviderElement(provider).visitChildren(
-              elementVisitor: children.add,
-              listenableVisitor: (_) {},
-            );
+        container.readProviderElement(provider).visitChildren(children.add);
         expect(
           children,
           unorderedMatches(<Object>[
@@ -420,10 +417,7 @@ void main() {
 
         final children = <ProviderElement>[];
 
-        container.readProviderElement(provider).visitChildren(
-              elementVisitor: children.add,
-              listenableVisitor: (_) {},
-            );
+        container.readProviderElement(provider).visitChildren(children.add);
 
         expect(
           children,
