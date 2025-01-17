@@ -1,7 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart' hide Listener;
-import 'package:flutter_riverpod/flutter_riverpod.dart' hide ErrorListener;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -154,7 +155,7 @@ void main() {
 
   group('WidgetRef.listen', () {
     testWidgets('expose previous and new value on change', (tester) async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final dep = StateNotifierProvider<StateController<int>, int>(
         (ref) => StateController(0),
       );
@@ -180,7 +181,7 @@ void main() {
     testWidgets(
         'when using selectors, `previous` is the latest notification instead of latest event',
         (tester) async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final dep = StateNotifierProvider<StateController<int>, int>(
         (ref) => StateController(0),
       );

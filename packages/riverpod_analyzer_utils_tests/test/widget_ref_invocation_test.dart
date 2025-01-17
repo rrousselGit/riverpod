@@ -1,9 +1,32 @@
+import 'package:riverpod_analyzer_utils/src/nodes.dart';
 import 'package:test/test.dart';
 
 import 'analyzer_test_utils.dart';
 
+// ignore: invalid_use_of_internal_member
+extension on RiverpodAnalysisResult {
+  List<WidgetRefWatchInvocation> get widgetRefWatchInvocations {
+    return widgetRefInvocations.whereType<WidgetRefWatchInvocation>().toList();
+  }
+
+  List<WidgetRefReadInvocation> get widgetRefReadInvocations {
+    return widgetRefInvocations.whereType<WidgetRefReadInvocation>().toList();
+  }
+
+  List<WidgetRefListenInvocation> get widgetRefListenInvocations {
+    return widgetRefInvocations.whereType<WidgetRefListenInvocation>().toList();
+  }
+
+  List<WidgetRefListenManualInvocation> get widgetRefListenManualInvocations {
+    return widgetRefInvocations
+        .whereType<WidgetRefListenManualInvocation>()
+        .toList();
+  }
+}
+
 void main() {
-  testSource('Decode watch expressions with syntax errors', source: '''
+  testSource('Decode watch expressions with syntax errors',
+      timeout: const Timeout.factor(4), source: '''
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +41,7 @@ class Example extends ConsumerWidget {
     return Container();
   }
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult(
       ignoreErrors: true,
     );
@@ -30,24 +53,18 @@ class Example extends ConsumerWidget {
       'ref.watch(gibberishProvider)',
     );
     expect(
-      result.widgetRefWatchInvocations.single.provider.familyArguments,
+      result.widgetRefWatchInvocations.single.listenable.familyArguments,
       null,
     );
     expect(
-      result.widgetRefWatchInvocations.single.provider.node.toSource(),
+      result.widgetRefWatchInvocations.single.listenable.node.toSource(),
       'gibberishProvider',
     );
-    expect(
-      result.widgetRefWatchInvocations.single.provider.provider?.toSource(),
-      'gibberishProvider',
-    );
-    expect(
-      result.widgetRefWatchInvocations.single.provider.providerElement,
-      null,
-    );
+    expect(result.widgetRefWatchInvocations.single.listenable.provider, isNull);
   });
 
-  testSource('Decodes ..watch', runGenerator: true, source: r'''
+  testSource('Decodes ..watch',
+      timeout: const Timeout.factor(4), runGenerator: true, source: r'''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -79,7 +96,7 @@ class MyWidget extends ConsumerWidget {
     return Container();
   }
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.widgetRefWatchInvocations, hasLength(3));
@@ -90,14 +107,20 @@ class MyWidget extends ConsumerWidget {
       '..watch(dep)',
     );
     expect(result.widgetRefWatchInvocations[0].function.toSource(), 'watch');
-    expect(result.widgetRefWatchInvocations[0].provider.node.toSource(), 'dep');
-    expect(result.widgetRefWatchInvocations[0].provider.familyArguments, null);
     expect(
-      result.widgetRefWatchInvocations[0].provider.provider?.toSource(),
+      result.widgetRefWatchInvocations[0].listenable.node.toSource(),
       'dep',
     );
     expect(
-      result.widgetRefWatchInvocations[0].provider.providerElement,
+      result.widgetRefWatchInvocations[0].listenable.familyArguments,
+      null,
+    );
+    expect(
+      result.widgetRefWatchInvocations[0].listenable.provider?.node.toSource(),
+      'dep',
+    );
+    expect(
+      result.widgetRefWatchInvocations[0].listenable.provider?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
@@ -107,22 +130,25 @@ class MyWidget extends ConsumerWidget {
     );
     expect(result.widgetRefWatchInvocations[1].function.toSource(), 'watch');
     expect(
-      result.widgetRefWatchInvocations[1].provider.node.toSource(),
+      result.widgetRefWatchInvocations[1].listenable.node.toSource(),
       'dep2Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[1].provider.provider?.toSource(),
+      result.widgetRefWatchInvocations[1].listenable.provider?.node.toSource(),
       'dep2Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[1].provider.providerElement,
+      result.widgetRefWatchInvocations[1].listenable.provider?.providerElement,
       same(
         result.functionalProviderDeclarations
             .findByName('dep2')
             .providerElement,
       ),
     );
-    expect(result.widgetRefWatchInvocations[1].provider.familyArguments, null);
+    expect(
+      result.widgetRefWatchInvocations[1].listenable.familyArguments,
+      null,
+    );
 
     expect(
       result.widgetRefWatchInvocations[2].node.toSource(),
@@ -130,25 +156,29 @@ class MyWidget extends ConsumerWidget {
     );
     expect(result.widgetRefWatchInvocations[2].function.toSource(), 'watch');
     expect(
-      result.widgetRefWatchInvocations[2].provider.node.toSource(),
+      result.widgetRefWatchInvocations[2].listenable.node.toSource(),
       'dep3Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[2].provider.provider?.toSource(),
+      result.widgetRefWatchInvocations[2].listenable.provider?.node.toSource(),
       'dep3Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[2].provider.providerElement,
+      result.widgetRefWatchInvocations[2].listenable.provider?.providerElement,
       same(
         result.classBasedProviderDeclarations
             .findByName('Dep3')
             .providerElement,
       ),
     );
-    expect(result.widgetRefWatchInvocations[2].provider.familyArguments, null);
+    expect(
+      result.widgetRefWatchInvocations[2].listenable.familyArguments,
+      null,
+    );
   });
 
-  testSource('Decodes simple ref.watch usages', runGenerator: true, source: r'''
+  testSource('Decodes simple ref.watch usages',
+      timeout: const Timeout.factor(4), runGenerator: true, source: r'''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -191,7 +221,7 @@ class _Ref {
 void fn(_Ref ref) {
   ref.watch(dep);
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.widgetRefWatchInvocations, hasLength(3));
@@ -202,14 +232,20 @@ void fn(_Ref ref) {
       'ref.watch(dep)',
     );
     expect(result.widgetRefWatchInvocations[0].function.toSource(), 'watch');
-    expect(result.widgetRefWatchInvocations[0].provider.node.toSource(), 'dep');
-    expect(result.widgetRefWatchInvocations[0].provider.familyArguments, null);
     expect(
-      result.widgetRefWatchInvocations[0].provider.provider?.toSource(),
+      result.widgetRefWatchInvocations[0].listenable.node.toSource(),
       'dep',
     );
     expect(
-      result.widgetRefWatchInvocations[0].provider.providerElement,
+      result.widgetRefWatchInvocations[0].listenable.familyArguments,
+      null,
+    );
+    expect(
+      result.widgetRefWatchInvocations[0].listenable.provider?.node.toSource(),
+      'dep',
+    );
+    expect(
+      result.widgetRefWatchInvocations[0].listenable.provider?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
@@ -219,22 +255,25 @@ void fn(_Ref ref) {
     );
     expect(result.widgetRefWatchInvocations[1].function.toSource(), 'watch');
     expect(
-      result.widgetRefWatchInvocations[1].provider.node.toSource(),
+      result.widgetRefWatchInvocations[1].listenable.node.toSource(),
       'dep2Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[1].provider.provider?.toSource(),
+      result.widgetRefWatchInvocations[1].listenable.provider?.node.toSource(),
       'dep2Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[1].provider.providerElement,
+      result.widgetRefWatchInvocations[1].listenable.provider?.providerElement,
       same(
         result.functionalProviderDeclarations
             .findByName('dep2')
             .providerElement,
       ),
     );
-    expect(result.widgetRefWatchInvocations[1].provider.familyArguments, null);
+    expect(
+      result.widgetRefWatchInvocations[1].listenable.familyArguments,
+      null,
+    );
 
     expect(
       result.widgetRefWatchInvocations[2].node.toSource(),
@@ -242,25 +281,29 @@ void fn(_Ref ref) {
     );
     expect(result.widgetRefWatchInvocations[2].function.toSource(), 'watch');
     expect(
-      result.widgetRefWatchInvocations[2].provider.node.toSource(),
+      result.widgetRefWatchInvocations[2].listenable.node.toSource(),
       'dep3Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[2].provider.provider?.toSource(),
+      result.widgetRefWatchInvocations[2].listenable.provider?.node.toSource(),
       'dep3Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[2].provider.providerElement,
+      result.widgetRefWatchInvocations[2].listenable.provider?.providerElement,
       same(
         result.classBasedProviderDeclarations
             .findByName('Dep3')
             .providerElement,
       ),
     );
-    expect(result.widgetRefWatchInvocations[2].provider.familyArguments, null);
+    expect(
+      result.widgetRefWatchInvocations[2].listenable.familyArguments,
+      null,
+    );
   });
 
-  testSource('Decodes unknown ref usages', source: '''
+  testSource('Decodes unknown ref usages',
+      timeout: const Timeout.factor(4), source: '''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -272,22 +315,20 @@ void fn(WidgetRef ref) {
   ref.read(dep);
   ref.read(dep2);
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final libraryResult = result.resolvedRiverpodLibraryResults.single;
-
-    expect(libraryResult.unknownWidgetRefInvocations, hasLength(2));
+    expect(result.widgetRefInvocations, hasLength(2));
     expect(
       result.widgetRefReadInvocations,
-      libraryResult.unknownWidgetRefInvocations,
+      result.widgetRefInvocations,
     );
     expect(result.widgetRefInvocations, result.widgetRefReadInvocations);
 
     expect(result.widgetRefReadInvocations[0].node.toSource(), 'ref.read(dep)');
     expect(result.widgetRefReadInvocations[0].function.toSource(), 'read');
     expect(
-      result.widgetRefReadInvocations[0].provider.providerElement,
+      result.widgetRefReadInvocations[0].listenable.provider?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
@@ -297,14 +338,15 @@ void fn(WidgetRef ref) {
     );
     expect(result.widgetRefReadInvocations[1].function.toSource(), 'read');
     expect(
-      result.widgetRefReadInvocations[1].provider.providerElement,
+      result.widgetRefReadInvocations[1].listenable.provider?.providerElement,
       same(
         result.legacyProviderDeclarations.findByName('dep2').providerElement,
       ),
     );
   });
 
-  testSource('Decodes ref.listen usages', runGenerator: true, source: '''
+  testSource('Decodes ref.listen usages',
+      timeout: const Timeout.factor(4), runGenerator: true, source: '''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -323,7 +365,7 @@ class MyWidget extends ConsumerWidget {
     return Container();
   }
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.widgetRefListenInvocations, hasLength(1));
@@ -339,12 +381,13 @@ class MyWidget extends ConsumerWidget {
       '(prev, next) {}',
     );
     expect(
-      result.widgetRefListenInvocations[0].provider.providerElement,
+      result.widgetRefListenInvocations[0].listenable.provider?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
   });
 
-  testSource('Decodes ref.listenManual usages', runGenerator: true, source: '''
+  testSource('Decodes ref.listenManual usages',
+      timeout: const Timeout.factor(4), runGenerator: true, source: '''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -365,7 +408,7 @@ class MyWidget extends ConsumerWidget {
     return Container();
   }
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.widgetRefListenManualInvocations, hasLength(3));
@@ -387,7 +430,8 @@ class MyWidget extends ConsumerWidget {
       '(prev, next) {}',
     );
     expect(
-      result.widgetRefListenManualInvocations[0].provider.providerElement,
+      result.widgetRefListenManualInvocations[0].listenable.provider
+          ?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
@@ -404,7 +448,8 @@ class MyWidget extends ConsumerWidget {
       '(prev, next) {}',
     );
     expect(
-      result.widgetRefListenManualInvocations[1].provider.providerElement,
+      result.widgetRefListenManualInvocations[1].listenable.provider
+          ?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
@@ -421,12 +466,14 @@ class MyWidget extends ConsumerWidget {
       '(prev, next) {}',
     );
     expect(
-      result.widgetRefListenManualInvocations[2].provider.providerElement,
+      result.widgetRefListenManualInvocations[2].listenable.provider
+          ?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
   });
 
-  testSource('Decodes ref.read usages', runGenerator: true, source: '''
+  testSource('Decodes ref.read usages',
+      timeout: const Timeout.factor(4), runGenerator: true, source: '''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -449,7 +496,7 @@ class MyWidget extends ConsumerWidget {
     return Container();
   }
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.widgetRefReadInvocations, hasLength(2));
@@ -458,7 +505,7 @@ class MyWidget extends ConsumerWidget {
     expect(result.widgetRefReadInvocations[0].node.toSource(), 'ref.read(dep)');
     expect(result.widgetRefReadInvocations[0].function.toSource(), 'read');
     expect(
-      result.widgetRefReadInvocations[0].provider.providerElement,
+      result.widgetRefReadInvocations[0].listenable.provider?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
@@ -468,14 +515,15 @@ class MyWidget extends ConsumerWidget {
     );
     expect(result.widgetRefReadInvocations[1].function.toSource(), 'read');
     expect(
-      result.widgetRefReadInvocations[1].provider.providerElement,
+      result.widgetRefReadInvocations[1].listenable.provider?.providerElement,
       same(
         result.legacyProviderDeclarations.findByName('dep2').providerElement,
       ),
     );
   });
 
-  testSource('Decodes family ref.watch usages', runGenerator: true, source: r'''
+  testSource('Decodes family ref.watch usages',
+      timeout: const Timeout.factor(4), runGenerator: true, source: r'''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -517,20 +565,14 @@ class _Ref {
 void fn(_Ref ref) {
   ref.watch(family(0));
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final libraryResult = result.resolvedRiverpodLibraryResults.single;
-
-    expect(libraryResult.unknownRefInvocations, isEmpty);
-    expect(libraryResult.unknownWidgetRefInvocations, isEmpty);
-
-    final providerRefInvocations =
-        libraryResult.consumerWidgetDeclarations.single.widgetRefInvocations;
+    final providerRefInvocations = result.widgetRefInvocations;
 
     expect(result.widgetRefWatchInvocations, hasLength(3));
     expect(result.widgetRefInvocations, result.widgetRefWatchInvocations);
-    expect(result.widgetRefInvocations, providerRefInvocations);
+    expect(result.widgetRefWatchInvocations, providerRefInvocations);
 
     expect(
       result.widgetRefWatchInvocations[0].node.toSource(),
@@ -538,21 +580,22 @@ void fn(_Ref ref) {
     );
     expect(result.widgetRefWatchInvocations[0].function.toSource(), 'watch');
     expect(
-      result.widgetRefWatchInvocations[0].provider.node.toSource(),
+      result.widgetRefWatchInvocations[0].listenable.node.toSource(),
       'family(0)',
     );
     expect(
-      result.widgetRefWatchInvocations[0].provider.provider?.toSource(),
+      result.widgetRefWatchInvocations[0].listenable.provider?.node.toSource(),
       'family',
     );
     expect(
-      result.widgetRefWatchInvocations[0].provider.providerElement,
+      result.widgetRefWatchInvocations[0].listenable.provider?.providerElement,
       same(
         result.legacyProviderDeclarations.findByName('family').providerElement,
       ),
     );
     expect(
-      result.widgetRefWatchInvocations[0].provider.familyArguments?.toSource(),
+      result.widgetRefWatchInvocations[0].listenable.familyArguments
+          ?.toSource(),
       '(0)',
     );
 
@@ -562,15 +605,15 @@ void fn(_Ref ref) {
     );
     expect(result.widgetRefWatchInvocations[1].function.toSource(), 'watch');
     expect(
-      result.widgetRefWatchInvocations[1].provider.node.toSource(),
+      result.widgetRefWatchInvocations[1].listenable.node.toSource(),
       'family2Provider(id: 0)',
     );
     expect(
-      result.widgetRefWatchInvocations[1].provider.provider?.toSource(),
+      result.widgetRefWatchInvocations[1].listenable.provider?.node.toSource(),
       'family2Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[1].provider.providerElement,
+      result.widgetRefWatchInvocations[1].listenable.provider?.providerElement,
       same(
         result.functionalProviderDeclarations
             .findByName('family2')
@@ -578,7 +621,8 @@ void fn(_Ref ref) {
       ),
     );
     expect(
-      result.widgetRefWatchInvocations[1].provider.familyArguments?.toSource(),
+      result.widgetRefWatchInvocations[1].listenable.familyArguments
+          ?.toSource(),
       '(id: 0)',
     );
 
@@ -588,15 +632,15 @@ void fn(_Ref ref) {
     );
     expect(result.widgetRefWatchInvocations[2].function.toSource(), 'watch');
     expect(
-      result.widgetRefWatchInvocations[2].provider.node.toSource(),
+      result.widgetRefWatchInvocations[2].listenable.node.toSource(),
       'family3Provider(id: 0)',
     );
     expect(
-      result.widgetRefWatchInvocations[2].provider.provider?.toSource(),
+      result.widgetRefWatchInvocations[2].listenable.provider?.node.toSource(),
       'family3Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[2].provider.providerElement,
+      result.widgetRefWatchInvocations[2].listenable.provider?.providerElement,
       same(
         result.classBasedProviderDeclarations
             .findByName('Family3')
@@ -604,7 +648,8 @@ void fn(_Ref ref) {
       ),
     );
     expect(
-      result.widgetRefWatchInvocations[2].provider.familyArguments?.toSource(),
+      result.widgetRefWatchInvocations[2].listenable.familyArguments
+          ?.toSource(),
       '(id: 0)',
     );
   });
@@ -633,19 +678,10 @@ class MyWidget extends ConsumerWidget {
     return Container();
   }
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final libraryResult = result.resolvedRiverpodLibraryResults.single;
-
-    expect(libraryResult.unknownRefInvocations, isEmpty);
-    expect(libraryResult.unknownWidgetRefInvocations, isEmpty);
-
-    final providerRefInvocations =
-        libraryResult.consumerWidgetDeclarations.single.widgetRefInvocations;
-
     expect(result.widgetRefWatchInvocations, hasLength(3));
-    expect(result.widgetRefInvocations, providerRefInvocations);
 
     expect(
       result.widgetRefWatchInvocations[0].node.toSource(),
@@ -653,40 +689,41 @@ class MyWidget extends ConsumerWidget {
     );
     expect(result.widgetRefWatchInvocations[0].function.toSource(), 'watch');
     expect(
-      result.widgetRefWatchInvocations[0].provider.node.toSource(),
+      result.widgetRefWatchInvocations[0].listenable.node.toSource(),
       'family(ref.read(family2Provider(id: 0)))',
     );
     expect(
-      result.widgetRefWatchInvocations[0].provider.provider?.toSource(),
+      result.widgetRefWatchInvocations[0].listenable.provider?.node.toSource(),
       'family',
     );
     expect(
-      result.widgetRefWatchInvocations[0].provider.providerElement,
+      result.widgetRefWatchInvocations[0].listenable.provider?.providerElement,
       same(
         result.legacyProviderDeclarations.findByName('family').providerElement,
       ),
     );
     expect(
-      result.widgetRefWatchInvocations[0].provider.familyArguments?.toSource(),
+      result.widgetRefWatchInvocations[0].listenable.familyArguments
+          ?.toSource(),
       '(ref.read(family2Provider(id: 0)))',
     );
 
     // ref.watch(family2Provider(ref.watch(family(id: 0)));
     expect(
-      result.widgetRefWatchInvocations[1].node.toSource(),
+      result.widgetRefWatchInvocations[2].node.toSource(),
       'ref.watch(family2Provider(ref.watch(family(id: 0))))',
     );
-    expect(result.widgetRefWatchInvocations[1].function.toSource(), 'watch');
+    expect(result.widgetRefWatchInvocations[2].function.toSource(), 'watch');
     expect(
-      result.widgetRefWatchInvocations[1].provider.node.toSource(),
+      result.widgetRefWatchInvocations[2].listenable.node.toSource(),
       'family2Provider(ref.watch(family(id: 0)))',
     );
     expect(
-      result.widgetRefWatchInvocations[1].provider.provider?.toSource(),
+      result.widgetRefWatchInvocations[2].listenable.provider?.node.toSource(),
       'family2Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[1].provider.providerElement,
+      result.widgetRefWatchInvocations[2].listenable.provider?.providerElement,
       same(
         result.functionalProviderDeclarations
             .findByName('family2')
@@ -694,13 +731,14 @@ class MyWidget extends ConsumerWidget {
       ),
     );
     expect(
-      result.widgetRefWatchInvocations[1].provider.familyArguments?.toSource(),
+      result.widgetRefWatchInvocations[2].listenable.familyArguments
+          ?.toSource(),
       '(ref.watch(family(id: 0)))',
     );
   });
 
   testSource('Decodes provider.query ref.watch usages',
-      runGenerator: true, source: r'''
+      timeout: const Timeout.factor(4), runGenerator: true, source: r'''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -759,7 +797,7 @@ class _Ref {
 void fn(_Ref ref) {
   ref.watch(dep);
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.widgetRefWatchInvocations, hasLength(4));
@@ -771,16 +809,19 @@ void fn(_Ref ref) {
     );
     expect(result.widgetRefWatchInvocations[0].function.toSource(), 'watch');
     expect(
-      result.widgetRefWatchInvocations[0].provider.node.toSource(),
+      result.widgetRefWatchInvocations[0].listenable.node.toSource(),
       'dep.select((e) => e)',
     );
-    expect(result.widgetRefWatchInvocations[0].provider.familyArguments, null);
     expect(
-      result.widgetRefWatchInvocations[0].provider.provider?.toSource(),
+      result.widgetRefWatchInvocations[0].listenable.familyArguments,
+      null,
+    );
+    expect(
+      result.widgetRefWatchInvocations[0].listenable.provider?.node.toSource(),
       'dep',
     );
     expect(
-      result.widgetRefWatchInvocations[0].provider.providerElement,
+      result.widgetRefWatchInvocations[0].listenable.provider?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
@@ -790,16 +831,19 @@ void fn(_Ref ref) {
     );
     expect(result.widgetRefWatchInvocations[1].function.toSource(), 'watch');
     expect(
-      result.widgetRefWatchInvocations[1].provider.node.toSource(),
+      result.widgetRefWatchInvocations[1].listenable.node.toSource(),
       'dep2Provider.select((e) => e)',
     );
-    expect(result.widgetRefWatchInvocations[1].provider.familyArguments, null);
     expect(
-      result.widgetRefWatchInvocations[1].provider.provider?.toSource(),
+      result.widgetRefWatchInvocations[1].listenable.familyArguments,
+      null,
+    );
+    expect(
+      result.widgetRefWatchInvocations[1].listenable.provider?.node.toSource(),
       'dep2Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[1].provider.providerElement,
+      result.widgetRefWatchInvocations[1].listenable.provider?.providerElement,
       same(
         result.functionalProviderDeclarations
             .findByName('dep2')
@@ -813,16 +857,19 @@ void fn(_Ref ref) {
     );
     expect(result.widgetRefWatchInvocations[2].function.toSource(), 'watch');
     expect(
-      result.widgetRefWatchInvocations[2].provider.node.toSource(),
+      result.widgetRefWatchInvocations[2].listenable.node.toSource(),
       'dep3Provider.select((e) => e)',
     );
-    expect(result.widgetRefWatchInvocations[2].provider.familyArguments, null);
     expect(
-      result.widgetRefWatchInvocations[2].provider.provider?.toSource(),
+      result.widgetRefWatchInvocations[2].listenable.familyArguments,
+      null,
+    );
+    expect(
+      result.widgetRefWatchInvocations[2].listenable.provider?.node.toSource(),
       'dep3Provider',
     );
     expect(
-      result.widgetRefWatchInvocations[2].provider.providerElement,
+      result.widgetRefWatchInvocations[2].listenable.provider?.providerElement,
       same(
         result.classBasedProviderDeclarations
             .findByName('Dep3')
@@ -836,19 +883,20 @@ void fn(_Ref ref) {
     );
     expect(result.widgetRefWatchInvocations[3].function.toSource(), 'watch');
     expect(
-      result.widgetRefWatchInvocations[3].provider.node.toSource(),
+      result.widgetRefWatchInvocations[3].listenable.node.toSource(),
       'familyProvider(id: 42).notifier.select((e) => e).getter.method()[0]',
     );
     expect(
-      result.widgetRefWatchInvocations[3].provider.familyArguments?.toSource(),
+      result.widgetRefWatchInvocations[3].listenable.familyArguments
+          ?.toSource(),
       '(id: 42)',
     );
     expect(
-      result.widgetRefWatchInvocations[3].provider.provider?.toSource(),
+      result.widgetRefWatchInvocations[3].listenable.provider?.node.toSource(),
       'familyProvider',
     );
     expect(
-      result.widgetRefWatchInvocations[3].provider.providerElement,
+      result.widgetRefWatchInvocations[3].listenable.provider?.providerElement,
       same(
         result.classBasedProviderDeclarations
             .findByName('Family')

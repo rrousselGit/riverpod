@@ -1,7 +1,6 @@
 // ignore_for_file: omit_local_variable_types
 
 import 'package:flutter/widgets.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'shared_pipe_change_notifier.g.dart';
@@ -23,11 +22,11 @@ extension on Ref {
 }
 
 @riverpod
-ValueNotifier<int> myListenable(Ref ref) {
+Raw<ValueNotifier<int>> myListenable(Ref ref) {
   return ref.disposeAndListenChangeNotifier(ValueNotifier(0));
 }
 
 @riverpod
-ValueNotifier<int> anotherListenable(Ref ref) {
+Raw<ValueNotifier<int>> anotherListenable(Ref ref) {
   return ref.disposeAndListenChangeNotifier(ValueNotifier(42));
 }

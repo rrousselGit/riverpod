@@ -8,21 +8,56 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+@ProviderFor(example)
+const exampleProvider = ExampleProvider._();
+
+final class ExampleProvider
+    extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>>
+    with $FutureModifier<String>, $FutureProvider<String> {
+  const ExampleProvider._(
+      {FutureOr<String> Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'exampleProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final FutureOr<String> Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$exampleHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
+
+  @override
+  ExampleProvider $copyWithCreate(
+    FutureOr<String> Function(
+      Ref ref,
+    ) create,
+  ) {
+    return ExampleProvider._(create: create);
+  }
+
+  @override
+  FutureOr<String> create(Ref ref) {
+    final _$cb = _createCb ?? example;
+    return _$cb(ref);
+  }
+}
+
 String _$exampleHash() => r'47fbbb04e2e5aef4d37c361939a7df40ef05e851';
 
-/// See also [example].
-@ProviderFor(example)
-final exampleProvider = AutoDisposeFutureProvider<String>.internal(
-  example,
-  name: r'exampleProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$exampleHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ExampleRef = AutoDisposeFutureProviderRef<String>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -10,7 +10,7 @@ class Example extends _$Example {
     int param1, {
     String param2 = 'foo',
   }) {
-    return 'Hello $param1 & param2';
+    return 'Hello $param1 & $param2';
   }
 
   // Add methods to mutate the state

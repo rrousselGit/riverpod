@@ -8,37 +8,121 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+@ProviderFor(another)
+const anotherProvider = AnotherProvider._();
+
+final class AnotherProvider extends $FunctionalProvider<MyValue, MyValue>
+    with $Provider<MyValue> {
+  const AnotherProvider._(
+      {MyValue Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'anotherProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final MyValue Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$anotherHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(MyValue value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<MyValue>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<MyValue> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  AnotherProvider $copyWithCreate(
+    MyValue Function(
+      Ref ref,
+    ) create,
+  ) {
+    return AnotherProvider._(create: create);
+  }
+
+  @override
+  MyValue create(Ref ref) {
+    final _$cb = _createCb ?? another;
+    return _$cb(ref);
+  }
+}
+
 String _$anotherHash() => r'07629e5ae4a53bcd316b91c07d7558edbdea9317';
 
-/// See also [another].
-@ProviderFor(another)
-final anotherProvider = AutoDisposeProvider<MyValue>.internal(
-  another,
-  name: r'anotherProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$anotherHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(my)
+const myProvider = MyProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef AnotherRef = AutoDisposeProviderRef<MyValue>;
+final class MyProvider extends $FunctionalProvider<MyValue, MyValue>
+    with $Provider<MyValue> {
+  const MyProvider._(
+      {MyValue Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'myProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final MyValue Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$myHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(MyValue value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<MyValue>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<MyValue> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  MyProvider $copyWithCreate(
+    MyValue Function(
+      Ref ref,
+    ) create,
+  ) {
+    return MyProvider._(create: create);
+  }
+
+  @override
+  MyValue create(Ref ref) {
+    final _$cb = _createCb ?? my;
+    return _$cb(ref);
+  }
+}
+
 String _$myHash() => r'816efc8816269dabd0944c434946903db197fe0b';
 
-/// See also [my].
-@ProviderFor(my)
-final myProvider = AutoDisposeProvider<MyValue>.internal(
-  my,
-  name: r'myProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$myHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef MyRef = AutoDisposeProviderRef<MyValue>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

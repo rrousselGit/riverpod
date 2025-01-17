@@ -4,8 +4,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import '../../utils.dart';
-
 void main() {
   group('ChangeNotifierProvider.family', () {
     test('specifies `from` and `argument` for related providers', () {
@@ -18,7 +16,7 @@ void main() {
     });
 
     test('support null ChangeNotifier', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final provider = ChangeNotifierProvider.family<ValueNotifier<int>?, int>(
         (ref, _) => null,
       );
@@ -33,16 +31,18 @@ void main() {
       test('when passing the provider itself', () async {
         final provider = ChangeNotifierProvider.family<ValueNotifier<int>, int>(
           (ref, _) => ValueNotifier(0),
+          dependencies: const [],
         );
-        final root = createContainer();
-        final container = createContainer(parent: root, overrides: [provider]);
+        final root = ProviderContainer.test();
+        final container =
+            ProviderContainer.test(parent: root, overrides: [provider]);
 
         expect(container.read(provider(0).notifier).value, 0);
         expect(container.read(provider(0)).value, 0);
         expect(
           container.getAllProviderElementsInOrder(),
           unorderedEquals(<Object?>[
-            isA<ProviderElementBase<Object?>>()
+            isA<ProviderElement>()
                 .having((e) => e.origin, 'origin', provider(0)),
           ]),
         );
@@ -51,13 +51,13 @@ void main() {
     });
 
     test('ChangeNotifier can be auto-scoped', () async {
-      final dep = Provider((ref) => 0);
+      final dep = Provider((ref) => 0, dependencies: const []);
       final provider = ChangeNotifierProvider.family<ValueNotifier<int>, int>(
         (ref, i) => ValueNotifier(ref.watch(dep) + i),
         dependencies: [dep],
       );
-      final root = createContainer();
-      final container = createContainer(
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(
         parent: root,
         overrides: [dep.overrideWithValue(42)],
       );
@@ -68,17 +68,16 @@ void main() {
       expect(root.getAllProviderElements(), isEmpty);
     });
 
-    test('when using provider.overrideWithProvider', () async {
+    test('when using provider.overrideWith', () async {
       final provider = ChangeNotifierProvider.family<ValueNotifier<int>, int>(
         (ref, _) => ValueNotifier(0),
+        dependencies: const [],
       );
-      final root = createContainer();
-      final container = createContainer(
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(
         parent: root,
         overrides: [
-          provider.overrideWithProvider(
-            (value) => ChangeNotifierProvider((ref) => ValueNotifier(42)),
-          ),
+          provider.overrideWith((ref, value) => ValueNotifier(42)),
         ],
       );
 
@@ -88,8 +87,7 @@ void main() {
       expect(
         container.getAllProviderElementsInOrder(),
         unorderedEquals(<Object?>[
-          isA<ProviderElementBase<Object?>>()
-              .having((e) => e.origin, 'origin', provider(0)),
+          isA<ProviderElement>().having((e) => e.origin, 'origin', provider(0)),
         ]),
       );
     });
@@ -99,12 +97,9 @@ void main() {
           ChangeNotifierProvider.family<ValueNotifier<int>, int>((ref, value) {
         return ValueNotifier(value);
       });
-      final container = createContainer(
+      final container = ProviderContainer.test(
         overrides: [
-          provider.overrideWithProvider(
-            (value) =>
-                ChangeNotifierProvider((ref) => ValueNotifier(value * 2)),
-          ),
+          provider.overrideWith((ref, value) => ValueNotifier(value * 2)),
         ],
       );
 
