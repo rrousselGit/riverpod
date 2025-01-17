@@ -76,7 +76,7 @@ module.exports = {
           items: [
             {
               label: "Discord",
-              href: "https://discord.gg/Bbumvej",
+              href: "https://discord.com/invite/riverpod-765557403865186374",
             },
             {
               label: "GitHub",
