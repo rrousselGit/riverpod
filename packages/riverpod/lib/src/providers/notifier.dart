@@ -99,7 +99,6 @@ abstract base class $NotifierProvider //
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
     required super.retry,
-    required super.persistOptions,
   });
 }
 
@@ -140,17 +139,14 @@ class $NotifierProviderElement< //
   }
 
   @override
-  void callDecode(
-    NotifierEncoder<StateT, Persist<Object?, StateT>> adapter,
-    Object? encoded,
-  ) {
+  void callDecode(NotifierEncoder<StateT, Object?> adapter, Object? encoded) {
     setStateResult($Result.data(adapter.decode(encoded)));
   }
 
   @override
   Future<void> callEncode(
-    Persist<Object?, StateT> persist,
-    NotifierEncoder<StateT, Persist<Object?, StateT>> adapter,
+    Persist persist,
+    NotifierEncoder<StateT, Object?> adapter,
   ) async {
     return persist.write(adapter.persistKey, adapter.encode());
   }

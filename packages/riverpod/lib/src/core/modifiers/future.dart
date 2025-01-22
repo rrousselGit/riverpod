@@ -229,8 +229,8 @@ mixin FutureModifierClassElement<
 
   @override
   Future<void> callEncode(
-    Persist<Object?, StateT> persist,
-    NotifierEncoder<StateT, Persist<Object?, StateT>> adapter,
+    Persist persist,
+    NotifierEncoder<StateT, Object?> adapter,
   ) async {
     switch (stateResult?.stateOrNull) {
       case null:

@@ -6,8 +6,7 @@ import '../framework.dart';
 ///
 /// Should not be implemented. Instead use `with`.
 @optionalTypeArgs
-mixin NotifierEncoder<ValueT, PersistT extends Persist<Object?, ValueT>>
-    on $Value<ValueT> {
+mixin NotifierEncoder<DecodedT, EncodedT> on $Value<DecodedT> {
   /// A key unique to this provider and parameter combination.
   ///
   /// This key is used to store the state of the provider in a database.
@@ -47,36 +46,38 @@ mixin NotifierEncoder<ValueT, PersistT extends Persist<Object?, ValueT>>
   /// A JSON-based [Persist] may store a [String] in the DB, while an alternative
   /// implementation rely on a list of bytes or a custom class.
   /// {@endtemplate}
-  ValueT decode(Object? value);
+  DecodedT decode(Object? value);
 
   /// Encodes the state of the provider to a value that can be stored in the database.
   ///
   /// {@macro persist.encoded_value}
   Object? encode();
 
-  /// Extracts the [Persist] options from a provider/container in a type-safe way.
+  /// Returns the [Persist] object used to interact with the database.
   ///
-  /// This should returns the provider's option over the container's option.
-  /// Throws an error if the provider specifies a [Persist] option but
-  /// the option doesn't implement [PersistT].
+  /// By default, this returns [ProviderContainer.persist] and will throw
+  /// if [ProviderContainer.persist] is incompatible with how this provider
+  /// is encoded.
   ///
-  /// Returns `null` is no matching option is found.
-  PersistT? optionsFor(
-    ProviderContainer container,
-    ProviderBase<Object?> provider,
-  ) {
-    switch ((provider.persistOptions, container.persistOptions)) {
-      case (final PersistT options, _):
-      case (_, final PersistT options):
-        return options;
-      case (!= null, _):
-        throw StateError(
-          'The provider specified a Persist option, '
-          'but the option does not implement $PersistT. '
-          'Please make sure to use a Persist option that implements $PersistT.',
-        );
-      case _:
-        return null;
-    }
+  /// Notifiers can override this method to provide a custom [Persist] object.
+  Persist<EncodedT> get persist {
+    return switch ((this as NotifierBase).ref.container.persist) {
+      final Persist<EncodedT> persist? => persist,
+      Persist() => throw StateError('''
+The notifier `$this` is expected to be encoded into a value of type `$EncodedT`,
+but the default Persist option is not compatible with this type.
+
+To fix, either:
+- Change your ProviderContainer.persist to be compatible with persisting `$EncodedT`.
+- Override the `persist` getter in your notifier to return a Persist instance.
+'''),
+      null => throw StateError('''
+The notifier `$this` opted-in to offline persistence, but no Persist option was provided on ProviderContainer.
+
+To fix, either:
+- Provide a ProviderContainer.persist value.
+- Override the `persist` getter in your notifier to return a Persist instance.
+'''),
+    };
   }
 }

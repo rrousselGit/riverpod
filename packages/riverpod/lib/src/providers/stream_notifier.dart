@@ -44,7 +44,6 @@ abstract base class $StreamNotifierProvider<
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
     required super.retry,
-    required super.persistOptions,
   });
 }
 

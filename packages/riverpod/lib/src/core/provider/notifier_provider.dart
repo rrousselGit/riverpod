@@ -84,6 +84,7 @@ abstract class NotifierBase<StateT> {
   bool updateShouldNotify(StateT previous, StateT next);
 }
 
+@internal
 abstract class $Value<ValueT> {}
 
 @internal
@@ -126,7 +127,6 @@ abstract base class $ClassProvider< //
     required super.isAutoDispose,
     required super.retry,
     required this.runNotifierBuildOverride,
-    required super.persistOptions,
   });
 
   Refreshable<NotifierT> get notifier {
@@ -255,38 +255,19 @@ abstract class ClassProviderElement< //
     ref!.listenSelf((previous, current) => _callEncode(adapter));
   }
 
-  NotifierEncoder<ValueT, Persist<Object?, ValueT>>? _adapter() {
+  NotifierEncoder<ValueT, Object?>? _adapter() {
     final Object? notifier = classListenable.result?.stateOrNull;
 
     switch (notifier) {
-      case NotifierEncoder<ValueT, Persist<Object?, ValueT>>():
+      case NotifierEncoder<ValueT, Object?>():
         return notifier;
       default:
-        if (origin.persistOptions != null) {
-          throw StateError('''
-The provider `$origin` asked to be persisted on device, but the notifier `$notifier` does not implement NotifierEncoder.
-
-When using offline persistence, notifiers must implement NotifierEncoder.
-''');
-        }
         return null;
     }
   }
 
-  Persist<Object?, ValueT>? _requestPersist(
-    NotifierEncoder<ValueT, Persist<Object?, ValueT>> adapter,
-  ) {
-    final persist = adapter.optionsFor(container, provider);
-    if (persist == null) {
-      Zone.current.handleUncaughtError(
-        StateError(
-          'The provider `$origin` asked to be persisted on device, but no Persist found.'
-          ' When using offline persistence, you must provide either ProviderContainer.persistOptions or MyProvider.persistOptions.',
-        ),
-        StackTrace.current,
-      );
-      return null;
-    }
+  Persist? _requestPersist(NotifierEncoder<ValueT, Object?> adapter) {
+    final persist = adapter.persist;
 
     if (kDebugMode) _debugAssertNoDuplicateKey(adapter.persistKey);
 
@@ -322,12 +303,12 @@ to a different value.
   }
 
   void callDecode(
-    NotifierEncoder<ValueT, Persist<Object?, ValueT>> adapter,
+    NotifierEncoder<ValueT, Object?> adapter,
     Object? encoded,
   );
 
   FutureOr<void> _decode(
-    NotifierEncoder<ValueT, Persist<Object?, ValueT>> adapter,
+    NotifierEncoder<ValueT, Object?> adapter,
   ) async {
     final offline = _requestPersist(adapter);
     if (offline == null) return;
@@ -349,12 +330,12 @@ to a different value.
   }
 
   Future<void> callEncode(
-    Persist<Object?, ValueT> persist,
-    NotifierEncoder<ValueT, Persist<Object?, ValueT>> adapter,
+    Persist persist,
+    NotifierEncoder<ValueT, Object?> adapter,
   );
 
   Future<void> _callEncode(
-    NotifierEncoder<ValueT, Persist<Object?, ValueT>> adapter,
+    NotifierEncoder<ValueT, Object?> adapter,
   ) async {
     final offline = _requestPersist(adapter);
     if (offline == null) return;

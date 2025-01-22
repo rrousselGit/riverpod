@@ -635,8 +635,6 @@ class AutoDisposeNotifierProviderBuilder {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
-    Persist? persistOptions,
-    bool? shouldPersist,
   }) {
     return NotifierProvider<NotifierT, StateT>(
       create,
@@ -644,7 +642,6 @@ class AutoDisposeNotifierProviderBuilder {
       isAutoDispose: true,
       dependencies: dependencies,
       retry: retry,
-      persistOptions: persistOptions,
     );
   }
 
@@ -664,15 +661,12 @@ class NotifierProviderFamilyBuilder {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
-    Persist? persistOptions,
-    bool? shouldPersist,
   }) {
     return NotifierProviderFamily<NotifierT, StateT, ArgT>.internal(
       create,
       name: name,
       dependencies: dependencies,
       retry: retry,
-      persistOptions: persistOptions,
     );
   }
 
@@ -692,8 +686,6 @@ class AutoDisposeNotifierProviderFamilyBuilder {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
-    Persist? persistOptions,
-    bool? shouldPersist,
   }) {
     return NotifierProviderFamily<NotifierT, StateT, ArgT>.internal(
       create,
@@ -701,7 +693,6 @@ class AutoDisposeNotifierProviderFamilyBuilder {
       isAutoDispose: true,
       dependencies: dependencies,
       retry: retry,
-      persistOptions: persistOptions,
     );
   }
 }
@@ -717,8 +708,6 @@ class AutoDisposeStreamNotifierProviderBuilder {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
-    Persist? persistOptions,
-    bool? shouldPersist,
   }) {
     return StreamNotifierProvider<NotifierT, StateT>(
       create,
@@ -726,7 +715,6 @@ class AutoDisposeStreamNotifierProviderBuilder {
       isAutoDispose: true,
       dependencies: dependencies,
       retry: retry,
-      persistOptions: persistOptions,
     );
   }
 
@@ -746,15 +734,12 @@ class StreamNotifierProviderFamilyBuilder {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
-    Persist? persistOptions,
-    bool? shouldPersist,
   }) {
     return StreamNotifierProviderFamily<NotifierT, StateT, ArgT>.internal(
       create,
       name: name,
       dependencies: dependencies,
       retry: retry,
-      persistOptions: persistOptions,
     );
   }
 
@@ -774,8 +759,6 @@ class AutoDisposeStreamNotifierProviderFamilyBuilder {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
-    Persist? persistOptions,
-    bool? shouldPersist,
   }) {
     return StreamNotifierProviderFamily<NotifierT, StateT, ArgT>.internal(
       create,
@@ -783,7 +766,6 @@ class AutoDisposeStreamNotifierProviderFamilyBuilder {
       isAutoDispose: true,
       dependencies: dependencies,
       retry: retry,
-      persistOptions: persistOptions,
     );
   }
 }
@@ -799,8 +781,6 @@ class AutoDisposeAsyncNotifierProviderBuilder {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
-    Persist? persistOptions,
-    bool? shouldPersist,
   }) {
     return AsyncNotifierProvider<NotifierT, StateT>(
       create,
@@ -808,7 +788,6 @@ class AutoDisposeAsyncNotifierProviderBuilder {
       isAutoDispose: true,
       dependencies: dependencies,
       retry: retry,
-      persistOptions: persistOptions,
     );
   }
 
@@ -828,15 +807,12 @@ class AsyncNotifierProviderFamilyBuilder {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
-    Persist? persistOptions,
-    bool? shouldPersist,
   }) {
     return AsyncNotifierProviderFamily<NotifierT, StateT, ArgT>.internal(
       create,
       name: name,
       dependencies: dependencies,
       retry: retry,
-      persistOptions: persistOptions,
     );
   }
 
@@ -856,8 +832,6 @@ class AutoDisposeAsyncNotifierProviderFamilyBuilder {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
-    Persist? persistOptions,
-    bool? shouldPersist,
   }) {
     return AsyncNotifierProviderFamily<NotifierT, StateT, ArgT>.internal(
       create,
@@ -865,7 +839,6 @@ class AutoDisposeAsyncNotifierProviderFamilyBuilder {
       isAutoDispose: true,
       dependencies: dependencies,
       retry: retry,
-      persistOptions: persistOptions,
     );
   }
 }

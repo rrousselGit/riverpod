@@ -200,8 +200,7 @@ class Listener<T> extends Mock {
   void call(T? previous, T? next);
 }
 
-class PersistMock<EncodedT, DecodedT> extends Mock
-    implements Persist<EncodedT, DecodedT> {}
+class PersistMock<EncodedT> extends Mock implements Persist<EncodedT> {}
 
 final isAssertionError = isA<AssertionError>();
 

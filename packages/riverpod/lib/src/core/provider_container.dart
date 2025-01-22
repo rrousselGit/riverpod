@@ -239,8 +239,8 @@ typedef Retry = Duration? Function(int retryCount, Object error);
 
 /// Options for interacting with offline persistence.
 @optionalTypeArgs
-abstract class Persist<EncodedT extends Object?, DecodedT extends Object?> {
-  FutureOr<(DecodedT,)?> read(Object? key);
+abstract class Persist<EncodedT extends Object?> {
+  FutureOr<(EncodedT,)?> read(Object? key);
   FutureOr<void> write(Object? key, EncodedT value);
   FutureOr<void> delete(Object? key);
 }
@@ -578,7 +578,7 @@ class ProviderContainer implements Node {
   ProviderContainer({
     ProviderContainer? parent,
     List<Override> overrides = const [],
-    this.persistOptions,
+    this.persist,
     List<ProviderObserver>? observers,
     Retry? retry,
   })  : _debugOverridesLength = overrides.length,
@@ -658,14 +658,14 @@ class ProviderContainer implements Node {
   factory ProviderContainer.test({
     ProviderContainer? parent,
     List<Override> overrides = const [],
-    Persist? persistOptions,
+    Persist? persist,
     List<ProviderObserver>? observers,
     Retry? retry,
   }) {
     final container = ProviderContainer(
       parent: parent,
       overrides: overrides,
-      persistOptions: persistOptions,
+      persist: persist,
       observers: observers,
       retry: retry,
     );
@@ -686,7 +686,7 @@ class ProviderContainer implements Node {
   /// {@template riverpod.persist}
   /// When using offline persistence, this is the option to use.
   /// {@endtemplate}
-  final Persist? persistOptions;
+  final Persist? persist;
 
   /// How deep this [ProviderContainer] is in the graph of containers.
   ///

@@ -16,50 +16,20 @@ void main() {
       final provider = NotifierProvider<$matrix.DeferredNotifier<int>, int>(
         () => $matrix.DeferredNotifier<int>((ref, self) => 0),
       );
-      final persist = PersistMock<Object?, Object?>();
-      final container = ProviderContainer.test(persistOptions: persist);
+      final persist = PersistMock<Object?>();
+      final container = ProviderContainer.test(persist: persist);
 
       expect(container.read(provider).valueOf, 0);
 
       verifyZeroInteractions(persist);
     });
 
-    test(
-        'Throws if a notifier does not implement NotifierEncoder yet persist is specified on the provider',
-        () {
-      final provider = NotifierProvider<$matrix.DeferredNotifier<int>, int>(
-        () => $matrix.DeferredNotifier<int>((ref, self) => 0),
-        persistOptions: DelegatingPersist(read: (_) => (42,)),
-      );
-      final persist = PersistMock<Object?, Object?>();
-      final container = ProviderContainer.test();
-
-      final errors = <Object>[];
-      runZonedGuarded(
-        () => container.read(provider),
-        (e, s) => errors.add(e),
-      );
-
-      expect(errors, [
-        isStateError.having(
-          (e) => e.message,
-          'message',
-          contains('NotifierEncoder'),
-        ),
-      ]);
-    });
-
     matrix.createGroup((factory) {
-      test(
-        'When a provider is overridden, keep using the default implementation for persistence',
-        () {},
-      );
-
       test('Persist if the notifier implements NotifierEncoder', () {
-        final persist = PersistMock<Object?, Object?>();
+        final persist = PersistMock<Object?>();
         final provider = factory.simpleProvider(
           (ref, self) => 0,
-          persistOptions: persist,
+          persist: persist,
         );
         final container = ProviderContainer.test();
 
@@ -73,7 +43,7 @@ void main() {
 
       test('throws if two providers have the same persistKey', () {
         final container = ProviderContainer.test(
-          persistOptions: DelegatingPersist(read: (_) => (42,)),
+          persist: DelegatingPersist(read: (_) => (42,)),
         );
         final a = factory.simpleProvider(
           (ref, self) => 0,
@@ -112,7 +82,7 @@ void main() {
       test('Reports decoding/encoding errors to the zone', () async {
         final provider = factory.simpleProvider(
           (ref, self) => 0,
-          persistOptions: DelegatingPersist(
+          persist: DelegatingPersist(
             read: (_) => throw StateError('read'),
             write: (_, __) => throw StateError('write'),
             delete: (_) => throw StateError('delete'),
@@ -159,7 +129,7 @@ void main() {
           (ref, self) => self.state.valueOf,
         );
         final container = ProviderContainer.test(
-          persistOptions: DelegatingPersist(
+          persist: DelegatingPersist(
             read: (_) => (42,),
           ),
         );
@@ -172,7 +142,7 @@ void main() {
       test('Providers can specify their adapter', () async {
         final provider = factory.simpleProvider(
           (ref, self) => self.state.valueOf,
-          persistOptions: DelegatingPersist(
+          persist: DelegatingPersist(
             read: (_) => (42,),
           ),
         );
@@ -187,7 +157,7 @@ void main() {
         Object? value;
         final provider = factory.simpleProvider(
           (ref, self) => value = self.valueOf,
-          persistOptions: DelegatingPersist(
+          persist: DelegatingPersist(
             read: (_) => (21,),
           ),
         );
@@ -204,7 +174,7 @@ void main() {
           var value = 42;
           final provider = factory.simpleProvider(
             (ref, self) => self.valueOf,
-            persistOptions: DelegatingPersist(
+            persist: DelegatingPersist(
               read: (_) => (value,),
             ),
           );
@@ -226,7 +196,7 @@ void main() {
             final completer = Completer<(int,)>();
             final provider = factory.simpleProvider(
               (ref, self) => value.future,
-              persistOptions: DelegatingPersist(
+              persist: DelegatingPersist(
                 read: (_) => completer.future,
               ),
             );
@@ -248,7 +218,7 @@ void main() {
               () async {
             final provider = factory.simpleProvider(
               (ref, self) => self.future,
-              persistOptions: DelegatingPersist(
+              persist: DelegatingPersist(
                 read: (_) => Future(() => (21,)),
               ),
             );
@@ -272,7 +242,7 @@ void main() {
             var value = 0;
             final provider = factory.simpleProvider(
               (ref, self) => self.valueOf,
-              persistOptions: DelegatingPersist(
+              persist: DelegatingPersist(
                 read: (_) => (value,),
               ),
             );
@@ -293,7 +263,7 @@ void main() {
           final completer = Completer<(int,)>();
           final provider = factory.simpleProvider(
             (ref, self) => 0,
-            persistOptions: DelegatingPersist(
+            persist: DelegatingPersist(
               read: (_) => completer.future,
             ),
           );
@@ -311,13 +281,13 @@ void main() {
       group('encode', () {
         test('When a provider emits any update, notify the DB adapter',
             () async {
-          final persist = PersistMock<Object?, Object?>();
+          final persist = PersistMock<Object?>();
           when(persist.read(any)).thenReturn((42,));
           final encode = Encode<Object?>();
           when(encode.call(any)).thenAnswer((i) => i.positionalArguments.first);
           final provider = factory.simpleProvider(
             (ref, self) => 0,
-            persistOptions: persist,
+            persist: persist,
             encode: encode.call,
           );
           final container = ProviderContainer.test();
@@ -339,7 +309,7 @@ void main() {
             final completer = Completer<(int,)>();
             final provider = factory.simpleProvider(
               (ref, self) => 0,
-              persistOptions: DelegatingPersist(
+              persist: DelegatingPersist(
                 read: (_) => (42,),
               ),
               encode: encode.call,
@@ -364,7 +334,7 @@ void main() {
             final delete = Delete();
             final provider = factory.simpleProvider(
               (ref, self) => 0,
-              persistOptions: DelegatingPersist(
+              persist: DelegatingPersist(
                 read: (_) => (42,),
                 delete: delete.call,
               ),
@@ -391,7 +361,7 @@ void main() {
             final resultCompleter = Completer<(int,)>();
             final provider = factory.simpleProvider(
               (ref, self) => resultCompleter.future,
-              persistOptions: DelegatingPersist(
+              persist: DelegatingPersist(
                 read: (_) => decodeCompleter.future,
               ),
               encode: encode.call,
@@ -418,7 +388,7 @@ void main() {
             completer.complete((999,));
             final provider = factory.simpleProvider(
               (ref, self) => completer.future,
-              persistOptions: DelegatingPersist(
+              persist: DelegatingPersist(
                 read: (_) => (42,),
               ),
             );
@@ -437,7 +407,7 @@ void main() {
               (ref, self) => 42,
             );
             final container = ProviderContainer.test(
-              persistOptions: DelegatingPersist(read: (_) => (42,)),
+              persist: DelegatingPersist(read: (_) => (42,)),
             );
 
             final sub = container.listen(provider, (a, b) {});
@@ -536,7 +506,7 @@ extension on TestFactory<Object?> {
 
   ProviderBase<Object?> simpleProvider(
     FutureOr<Object?> Function(Ref, NotifierBase<Object?> notifier) create, {
-    Persist? persistOptions,
+    Persist? persist,
     Object Function(Object? args)? persistKey,
     Object? Function(Object? encoded)? decode,
     Object? Function(Object? value)? encode,
@@ -559,6 +529,7 @@ extension on TestFactory<Object?> {
               persistKey: persistKey,
               decode: decode,
               encode: encode,
+              persist: persist,
             );
 
         DeferredAsyncNotifier<Object?> notifierCreate() =>
@@ -567,6 +538,7 @@ extension on TestFactory<Object?> {
               persistKey: persistKey,
               decode: decode,
               encode: encode,
+              persist: persist,
             );
 
         switch ((
@@ -575,21 +547,18 @@ extension on TestFactory<Object?> {
         )) {
           case (family: false, autoDispose: false):
             return AsyncNotifierProvider<DeferredAsyncNotifier<Object?>,
-                Object?>(persistOptions: persistOptions, notifierCreate);
+                Object?>(notifierCreate);
           case (family: false, autoDispose: true):
             return AsyncNotifierProvider.autoDispose<
-                DeferredAsyncNotifier<Object?>,
-                Object?>(persistOptions: persistOptions, notifierCreate);
+                DeferredAsyncNotifier<Object?>, Object?>(notifierCreate);
           case (family: true, autoDispose: false):
             return AsyncNotifierProvider.family<
                 DeferredFamilyAsyncNotifier<Object?>, Object?, Object?>(
-              persistOptions: persistOptions,
               familyNotifierCreate,
             )(0);
           case (family: true, autoDispose: true):
             return AsyncNotifierProvider.autoDispose
                 .family<DeferredFamilyAsyncNotifier<Object?>, Object?, Object?>(
-              persistOptions: persistOptions,
               familyNotifierCreate,
             )(0);
         }
@@ -620,6 +589,7 @@ extension on TestFactory<Object?> {
               persistKey: persistKey,
               decode: decode,
               encode: encode,
+              persist: persist,
             );
 
         DeferredStreamNotifier<Object?> notifierCreate() =>
@@ -628,6 +598,7 @@ extension on TestFactory<Object?> {
               persistKey: persistKey,
               decode: decode,
               encode: encode,
+              persist: persist,
             );
 
         switch ((
@@ -636,21 +607,18 @@ extension on TestFactory<Object?> {
         )) {
           case (family: false, autoDispose: false):
             return StreamNotifierProvider<DeferredStreamNotifier<Object?>,
-                Object?>(persistOptions: persistOptions, notifierCreate);
+                Object?>(notifierCreate);
           case (family: false, autoDispose: true):
             return StreamNotifierProvider.autoDispose<
-                DeferredStreamNotifier<Object?>,
-                Object?>(persistOptions: persistOptions, notifierCreate);
+                DeferredStreamNotifier<Object?>, Object?>(notifierCreate);
           case (family: true, autoDispose: false):
             return StreamNotifierProvider.family<
                 DeferredFamilyStreamNotifier<Object?>, Object?, Object?>(
-              persistOptions: persistOptions,
               familyNotifierCreate,
             )(0);
           case (family: true, autoDispose: true):
             return StreamNotifierProvider.autoDispose.family<
                 DeferredFamilyStreamNotifier<Object?>, Object?, Object?>(
-              persistOptions: persistOptions,
               familyNotifierCreate,
             )(0);
         }
@@ -662,6 +630,7 @@ extension on TestFactory<Object?> {
               persistKey: persistKey,
               decode: decode,
               encode: encode,
+              persist: persist,
             );
 
         DeferredNotifier<Object?> notifierCreate() => DeferredNotifier(
@@ -669,6 +638,7 @@ extension on TestFactory<Object?> {
               persistKey: persistKey,
               decode: decode,
               encode: encode,
+              persist: persist,
             );
 
         switch ((
@@ -677,20 +647,19 @@ extension on TestFactory<Object?> {
         )) {
           case (family: false, autoDispose: false):
             return NotifierProvider<DeferredNotifier<Object?>, Object?>(
-                persistOptions: persistOptions, notifierCreate);
+              notifierCreate,
+            );
           case (family: false, autoDispose: true):
             return NotifierProvider.autoDispose<DeferredNotifier<Object?>,
-                Object?>(persistOptions: persistOptions, notifierCreate);
+                Object?>(notifierCreate);
           case (family: true, autoDispose: false):
             return NotifierProvider.family<DeferredFamilyNotifier<Object?>,
                 Object?, Object?>(
-              persistOptions: persistOptions,
               familyNotifierCreate,
             )(0);
           case (family: true, autoDispose: true):
             return NotifierProvider.autoDispose
                 .family<DeferredFamilyNotifier<Object?>, Object?, Object?>(
-              persistOptions: persistOptions,
               familyNotifierCreate,
             )(0);
         }
@@ -723,19 +692,18 @@ extension on Object? {
   }
 }
 
-class DelegatingPersist<EncodedT, DecodedT>
-    extends Persist<EncodedT, DecodedT> {
+class DelegatingPersist<EncodedT> extends Persist<EncodedT> {
   DelegatingPersist({
-    required FutureOr<(DecodedT,)?> Function(Object? key) read,
+    required FutureOr<(EncodedT,)?> Function(Object? key) read,
     FutureOr<void> Function(Object? key, EncodedT value)? write,
     FutureOr<void> Function(Object? key)? delete,
   })  : _read = read,
         _write = write ?? ((_, __) {}),
         _delete = delete ?? ((_) => throw UnimplementedError());
 
-  final FutureOr<(DecodedT,)?> Function(Object? key) _read;
+  final FutureOr<(EncodedT,)?> Function(Object? key) _read;
   @override
-  FutureOr<(DecodedT,)?> read(Object? key) => _read(key);
+  FutureOr<(EncodedT,)?> read(Object? key) => _read(key);
 
   final FutureOr<void> Function(Object? key, EncodedT value) _write;
   @override
@@ -749,7 +717,7 @@ class DelegatingPersist<EncodedT, DecodedT>
 // ---------- //
 
 class DeferredAsyncNotifier<StateT> extends AsyncNotifier<StateT>
-    with NotifierEncoder<StateT, Persist<Object?, StateT>>
+    with NotifierEncoder<StateT, Object?>
     implements TestAsyncNotifier<StateT> {
   DeferredAsyncNotifier(
     this._create, {
@@ -757,9 +725,11 @@ class DeferredAsyncNotifier<StateT> extends AsyncNotifier<StateT>
     Object? Function(AsyncValue<StateT> state)? encode,
     StateT Function(Object? serialized)? decode,
     Object Function(Object? args)? persistKey,
+    Persist<Object?>? persist,
   })  : _updateShouldNotify = updateShouldNotify,
         _encode = encode,
         _decode = decode,
+        _persist = persist,
         _persistKey = persistKey;
 
   final FutureOr<StateT> Function(Ref ref, $AsyncNotifier<StateT> self) _create;
@@ -803,11 +773,15 @@ class DeferredAsyncNotifier<StateT> extends AsyncNotifier<StateT>
       final cb => cb(serialized),
     };
   }
+
+  final Persist<Object?>? _persist;
+  @override
+  Persist<Object?> get persist => _persist ?? super.persist;
 }
 
 class DeferredFamilyAsyncNotifier<StateT>
     extends FamilyAsyncNotifier<StateT, int>
-    with NotifierEncoder<StateT, Persist<Object?, StateT>>
+    with NotifierEncoder<StateT, Object?>
     implements TestAsyncNotifier<StateT> {
   DeferredFamilyAsyncNotifier(
     this._create, {
@@ -815,9 +789,11 @@ class DeferredFamilyAsyncNotifier<StateT>
     Object? Function(AsyncValue<StateT> state)? encode,
     StateT Function(Object? serialized)? decode,
     Object Function(Object? args)? persistKey,
+    Persist<Object?>? persist,
   })  : _updateShouldNotify = updateShouldNotify,
         _encode = encode,
         _decode = decode,
+        _persist = persist,
         _persistKey = persistKey;
 
   final FutureOr<StateT> Function(Ref ref, $AsyncNotifier<StateT> self) _create;
@@ -862,10 +838,14 @@ class DeferredFamilyAsyncNotifier<StateT>
       final cb => cb(serialized),
     };
   }
+
+  final Persist<Object?>? _persist;
+  @override
+  Persist<Object?> get persist => _persist ?? super.persist;
 }
 
 class DeferredNotifier<StateT> extends Notifier<StateT>
-    with NotifierEncoder<StateT, Persist<Object?, StateT>>
+    with NotifierEncoder<StateT, Object?>
     implements TestNotifier<StateT> {
   DeferredNotifier(
     this._create, {
@@ -873,9 +853,11 @@ class DeferredNotifier<StateT> extends Notifier<StateT>
     Object? Function(StateT encoded)? encode,
     StateT Function(Object? serialized)? decode,
     Object Function(Object? args)? persistKey,
+    Persist<Object?>? persist,
   })  : _updateShouldNotify = updateShouldNotify,
         _encode = encode,
         _decode = decode,
+        _persist = persist,
         _persistKey = persistKey;
 
   final StateT Function(Ref ref, DeferredNotifier<StateT> self) _create;
@@ -925,10 +907,14 @@ class DeferredNotifier<StateT> extends Notifier<StateT>
       final cb => cb(serialized),
     };
   }
+
+  final Persist<Object?>? _persist;
+  @override
+  Persist<Object?> get persist => _persist ?? super.persist;
 }
 
 class DeferredFamilyNotifier<StateT> extends FamilyNotifier<StateT, int>
-    with NotifierEncoder<StateT, Persist<Object?, StateT>>
+    with NotifierEncoder<StateT, Object?>
     implements TestNotifier<StateT> {
   DeferredFamilyNotifier(
     this._create, {
@@ -936,9 +922,11 @@ class DeferredFamilyNotifier<StateT> extends FamilyNotifier<StateT, int>
     Object? Function(StateT value)? encode,
     StateT Function(Object? serialized)? decode,
     Object Function(Object? args)? persistKey,
+    Persist<Object?>? persist,
   })  : _updateShouldNotify = updateShouldNotify,
         _encode = encode,
         _decode = decode,
+        _persist = persist,
         _persistKey = persistKey;
 
   final StateT Function(Ref ref, DeferredFamilyNotifier<StateT> self) _create;
@@ -983,10 +971,14 @@ class DeferredFamilyNotifier<StateT> extends FamilyNotifier<StateT, int>
       final cb => cb(serialized),
     };
   }
+
+  final Persist<Object?>? _persist;
+  @override
+  Persist<Object?> get persist => _persist ?? super.persist;
 }
 
 class DeferredStreamNotifier<StateT> extends StreamNotifier<StateT>
-    with NotifierEncoder<StateT, Persist<Object?, StateT>>
+    with NotifierEncoder<StateT, Object?>
     implements TestStreamNotifier<StateT> {
   DeferredStreamNotifier(
     this._create, {
@@ -994,9 +986,11 @@ class DeferredStreamNotifier<StateT> extends StreamNotifier<StateT>
     Object? Function(StateT value)? encode,
     StateT Function(Object? serialized)? decode,
     Object Function(Object? args)? persistKey,
+    Persist<Object?>? persist,
   })  : _updateShouldNotify = updateShouldNotify,
         _encode = encode,
         _decode = decode,
+        _persist = persist,
         _persistKey = persistKey;
 
   final Stream<StateT> Function(
@@ -1043,11 +1037,15 @@ class DeferredStreamNotifier<StateT> extends StreamNotifier<StateT>
       final cb => cb(serialized),
     };
   }
+
+  final Persist<Object?>? _persist;
+  @override
+  Persist<Object?> get persist => _persist ?? super.persist;
 }
 
 class DeferredFamilyStreamNotifier<StateT>
     extends FamilyStreamNotifier<StateT, int>
-    with NotifierEncoder<StateT, Persist<Object?, StateT>>
+    with NotifierEncoder<StateT, Object?>
     implements TestStreamNotifier<StateT> {
   DeferredFamilyStreamNotifier(
     this._create, {
@@ -1055,9 +1053,11 @@ class DeferredFamilyStreamNotifier<StateT>
     Object? Function(StateT value)? encode,
     StateT Function(Object? serialized)? decode,
     Object Function(Object? args)? persistKey,
+    Persist<Object?>? persist,
   })  : _updateShouldNotify = updateShouldNotify,
         _encode = encode,
         _decode = decode,
+        _persist = persist,
         _persistKey = persistKey;
 
   final Stream<StateT> Function(
@@ -1105,4 +1105,8 @@ class DeferredFamilyStreamNotifier<StateT>
       final cb => cb(serialized),
     };
   }
+
+  final Persist<Object?>? _persist;
+  @override
+  Persist<Object?> get persist => _persist ?? super.persist;
 }

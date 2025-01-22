@@ -397,7 +397,7 @@ class $builderName {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
-    Persist? persistOptions,
+    Persist? persist,
     bool? shouldPersist,
   }) {
     return $providerName${provider.genericsUsage}$ctor(
@@ -406,7 +406,7 @@ class $builderName {
       ${_isAutoDisposeParam(disposeType)}
       dependencies: dependencies,
       retry: retry,
-      persistOptions: persistOptions,
+      persist: persist,
       shouldPersist: shouldPersist,
     );
   }

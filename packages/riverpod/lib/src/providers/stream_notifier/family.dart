@@ -44,7 +44,6 @@ final class FamilyStreamNotifierProvider< //
     required super.isAutoDispose,
     required super.runNotifierBuildOverride,
     required super.retry,
-    required super.persistOptions,
   });
 
   final NotifierT Function() _createNotifier;
@@ -78,7 +77,6 @@ final class FamilyStreamNotifierProvider< //
       from: from,
       argument: argument,
       retry: retry,
-      persistOptions: persistOptions,
     );
   }
 
@@ -121,7 +119,6 @@ class StreamNotifierProviderFamily< //
     super.dependencies,
     super.isAutoDispose = false,
     super.retry,
-    super.persistOptions,
   }) : super(
           providerFactory: FamilyStreamNotifierProvider._,
           allTransitiveDependencies:
