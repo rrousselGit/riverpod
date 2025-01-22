@@ -16,7 +16,6 @@ final class $ValueProvider<StateT> extends ProviderBase<StateT>
           isAutoDispose: false,
           retry: null,
           persistOptions: null,
-          shouldPersist: false,
         );
 
   final StateT _value;

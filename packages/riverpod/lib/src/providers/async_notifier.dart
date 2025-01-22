@@ -3,9 +3,7 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 
 import '../builder.dart';
-import '../common/result.dart';
 import '../core/async_value.dart';
-import '../core/persist.dart';
 import '../framework.dart';
 import 'future_provider.dart' show FutureProvider;
 import 'notifier.dart';
@@ -15,11 +13,12 @@ part 'async_notifier/family.dart';
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
-abstract class $AsyncNotifier<StateT> extends NotifierBase< //
+abstract class $AsyncNotifier<StateT> extends $RunnableNotifierBase< //
         AsyncValue<StateT>,
-        FutureOr<StateT>> //
+        FutureOr<StateT>,
+        StateT> //
     with
-        $AsyncClassModifier<StateT, FutureOr<StateT>> {}
+        $AsyncClassModifier<StateT, FutureOr<StateT>, StateT> {}
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
@@ -45,7 +44,6 @@ abstract base class $AsyncNotifierProvider< //
     required super.runNotifierBuildOverride,
     required super.retry,
     required super.persistOptions,
-    required super.shouldPersist,
   });
 }
 
@@ -80,18 +78,6 @@ class $AsyncNotifierProviderElement< //
       () => created,
       seamless: seamless,
       isMount: isMount,
-    );
-  }
-
-  @override
-  void callDecode(
-    NotifierEncoder<StateT, Object?> adapter,
-    Object? encoded,
-  ) {
-    setStateResult(
-      $Result.data(
-        AsyncData(adapter.decode(encoded), isFromCache: true),
-      ),
     );
   }
 }

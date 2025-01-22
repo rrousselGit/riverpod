@@ -16,10 +16,7 @@ abstract base class $FunctionalProvider< //
     required super.allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
-  }) : super(
-          persistOptions: null,
-          shouldPersist: false,
-        );
+  }) : super(persistOptions: null);
 
   /// Clone a provider with a different initialization method.
   ///

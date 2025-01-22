@@ -238,10 +238,10 @@ class ProviderDirectory implements _PointerBase {
 typedef Retry = Duration? Function(int retryCount, Object error);
 
 /// Options for interacting with offline persistence.
-@immutable
 abstract class Persist<EncodedT, DecodedT> {
   FutureOr<(DecodedT,)?> read(Object? key);
   FutureOr<void> write(Object? key, EncodedT value);
+  FutureOr<void> delete(Object? key);
 }
 
 /// An object responsible for storing the a O(1) access to providers,
@@ -1078,7 +1078,7 @@ class MutationContext {
   final Invocation invocation;
 
   /// The notifier that triggered the mutation.
-  final NotifierBase<Object?, Object?> notifier;
+  final NotifierBase<Object?> notifier;
 }
 
 /// Information about the [ProviderObserver] event.

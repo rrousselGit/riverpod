@@ -11,7 +11,8 @@ part 'notifier/family.dart';
 
 /// A base class for [$Notifier].
 /// Not meant for public consumption.
-abstract class $Notifier<StateT> extends NotifierBase<StateT, StateT> {
+abstract class $Notifier<StateT>
+    extends $RunnableNotifierBase<StateT, StateT, StateT> {
   /// The value currently exposed by this [Notifier].
   ///
   /// If used inside [Notifier.build], may throw if the notifier is not yet initialized.
@@ -99,7 +100,6 @@ abstract base class $NotifierProvider //
     required super.runNotifierBuildOverride,
     required super.retry,
     required super.persistOptions,
-    required super.shouldPersist,
   });
 }
 
@@ -145,5 +145,13 @@ class $NotifierProviderElement< //
     Object? encoded,
   ) {
     setStateResult($Result.data(adapter.decode(encoded)));
+  }
+
+  @override
+  Future<void> callEncode(
+    Persist<Object?, StateT> persist,
+    NotifierEncoder<StateT, Persist<Object?, StateT>> adapter,
+  ) async {
+    return persist.write(adapter.persistKey, adapter.encode());
   }
 }

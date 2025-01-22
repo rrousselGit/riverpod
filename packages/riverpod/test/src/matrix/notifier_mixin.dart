@@ -5,13 +5,7 @@ import 'dart:async';
 
 import 'package:riverpod/riverpod.dart';
 
-mixin MyMixin<A, B> on NotifierBase<A, B> {
-  @override
-  // ignore: unnecessary_overrides
-  B runBuild() {
-    return super.runBuild();
-  }
-}
+mixin MyMixin<A, B> on NotifierBase<A> {}
 
 class Sync extends Notifier<int> with MyMixin<int, int> {
   @override
@@ -23,26 +17,24 @@ class SyncFamily extends FamilyNotifier<int, int> with MyMixin<int, int> {
   int build(int arg) => 42;
 }
 
-class Async extends AsyncNotifier<int>
-    with MyMixin<AsyncValue<int>, FutureOr<int>> {
+class Async extends AsyncNotifier<int> with MyMixin<AsyncValue<int>, int> {
   @override
   FutureOr<int> build() => Future.value(42);
 }
 
 class AsyncFamily extends FamilyAsyncNotifier<int, int>
-    with MyMixin<AsyncValue<int>, FutureOr<int>> {
+    with MyMixin<AsyncValue<int>, int> {
   @override
   FutureOr<int> build(int arg) => Future.value(42);
 }
 
-class StreamN extends StreamNotifier<int>
-    with MyMixin<AsyncValue<int>, Stream<int>> {
+class StreamN extends StreamNotifier<int> with MyMixin<AsyncValue<int>, int> {
   @override
   Stream<int> build() => Stream.value(42);
 }
 
 class StreamFamily extends FamilyStreamNotifier<int, int>
-    with MyMixin<AsyncValue<int>, Stream<int>> {
+    with MyMixin<AsyncValue<int>, int> {
   @override
   Stream<int> build(int arg) => Stream.value(42);
 }

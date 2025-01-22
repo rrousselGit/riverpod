@@ -31,9 +31,6 @@ typedef RunNotifierBuild<NotifierT, CreatedT> = CreatedT Function(
 
 /// A base class for all "notifiers".
 ///
-/// - [StateT] is the type of [state].
-/// - [CreatedT] is the type of the value returned by the notifier's `build` method.
-///
 /// This is a good interface to target for writing mixins for Notifiers.
 ///
 /// To perform logic before/after the `build` method of a notifier, you can override
@@ -53,7 +50,7 @@ typedef RunNotifierBuild<NotifierT, CreatedT> = CreatedT Function(
 ///   }
 /// }
 /// ```
-abstract class NotifierBase<StateT, CreatedT> {
+abstract class NotifierBase<StateT> {
   $Ref<StateT>? _ref;
   @protected
   Ref get ref => $ref;
@@ -83,14 +80,21 @@ abstract class NotifierBase<StateT, CreatedT> {
   @protected
   set state(StateT newState) => $ref.state = newState;
 
-  CreatedT runBuild();
-
   @visibleForOverriding
   bool updateShouldNotify(StateT previous, StateT next);
 }
 
+abstract class $Value<ValueT> {}
+
 @internal
-extension ClassBaseX<StateT, CreatedT> on NotifierBase<StateT, CreatedT> {
+abstract class $RunnableNotifierBase<StateT, CreatedT, ValueT>
+    extends NotifierBase<StateT> implements $Value<ValueT> {
+  @internal
+  CreatedT runBuild();
+}
+
+@internal
+extension ClassBaseX<StateT> on NotifierBase<StateT> {
   ProviderElement<StateT>? get element => _ref?._element;
 
   @internal
@@ -106,9 +110,10 @@ extension ClassBaseX<StateT, CreatedT> on NotifierBase<StateT, CreatedT> {
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
 abstract base class $ClassProvider< //
-    NotifierT extends NotifierBase< //
+    NotifierT extends $RunnableNotifierBase< //
         StateT,
-        CreatedT>,
+        CreatedT,
+        ValueT>,
     StateT,
     ValueT,
     CreatedT> extends ProviderBase<StateT> {
@@ -122,7 +127,6 @@ abstract base class $ClassProvider< //
     required super.retry,
     required this.runNotifierBuildOverride,
     required super.persistOptions,
-    required super.shouldPersist,
   });
 
   Refreshable<NotifierT> get notifier {
@@ -180,9 +184,10 @@ abstract base class $ClassProvider< //
 
 @internal
 abstract class ClassProviderElement< //
-        NotifierT extends NotifierBase< //
+        NotifierT extends $RunnableNotifierBase< //
             StateT,
-            CreatedT>,
+            CreatedT,
+            ValueT>,
         StateT,
         ValueT,
         CreatedT> //
@@ -242,37 +247,93 @@ abstract class ClassProviderElement< //
   }
 
   void _decodeFromCache() {
-    if (!origin.shouldPersist) return;
+    final adapter = _adapter();
+    if (adapter == null) return;
 
-    _decode();
+    _decode(adapter);
 
-    ref!.listenSelf((previous, current) => _callEncode());
+    ref!.listenSelf((previous, current) => _callEncode(adapter));
   }
 
-  (NotifierEncoder<ValueT, Persist<Object?, ValueT>>, Persist<Object?, ValueT>)?
-      _requestPersist() {
-    final adapter = classListenable.result?.stateOrNull
-        as NotifierEncoder<ValueT, Persist<Object?, ValueT>>?;
-    if (adapter == null) return null;
+  NotifierEncoder<ValueT, Persist<Object?, ValueT>>? _adapter() {
+    final Object? notifier = classListenable.result?.stateOrNull;
 
+    switch (notifier) {
+      case NotifierEncoder<ValueT, Persist<Object?, ValueT>>():
+        return notifier;
+      case NotifierEncoder():
+        Zone.current.handleUncaughtError(
+          StateError(
+            'The notifier `$notifier` implemented `$origin` asked to be persisted on device, but no Persist found.'
+            ' When using offline persistence, you must provide either ProviderContainer.persistOptions or MyProvider.persistOptions.',
+          ),
+          StackTrace.current,
+        );
+        return null;
+      default:
+        return null;
+    }
+  }
+
+  Persist<Object?, ValueT>? _requestPersist(
+    NotifierEncoder<ValueT, Persist<Object?, ValueT>> adapter,
+  ) {
     final persist = adapter.optionsFor(container, provider);
     if (persist == null) {
-      throw StateError(
-        'The provider $origin asked to be persisted on device, but no Persist found.'
-        ' When using offline persistence, you must provide either ProviderContainer.persistOptions or MyProvider.persistOptions.',
+      Zone.current.handleUncaughtError(
+        StateError(
+          'The provider `$origin` asked to be persisted on device, but no Persist found.'
+          ' When using offline persistence, you must provide either ProviderContainer.persistOptions or MyProvider.persistOptions.',
+        ),
+        StackTrace.current,
       );
+      return null;
     }
 
-    return (adapter, persist);
+    if (kDebugMode) _debugAssertNoDuplicateKey(adapter.persistKey);
+
+    return persist;
   }
 
-  void callDecode(NotifierEncoder<ValueT, Persist<Object?, ValueT>> adapter,
-      Object? encoded);
+  void _debugAssertNoDuplicateKey(Object? key) {
+    if (kDebugMode) {
+      for (final element in container.getAllProviderElements()) {
+        if (element == this) continue;
+        if (element is! ClassProviderElement) continue;
 
-  FutureOr<void> _decode() async {
-    final offline = _requestPersist();
+        final otherKey = element._adapter()?.persistKey;
+
+        if (otherKey == key) {
+          Zone.current.handleUncaughtError(
+            AssertionError('''
+Duplicate `persistKey` found:
+- `$key` from `$origin`
+- `$key` from `${element.origin}`
+
+This means that two different providers are opted-in for offline persistence,
+but both use the same `persistKey`.
+
+Keys should be unique. To fix, change the `persistKey` of one of the providers
+to a different value.
+'''),
+            StackTrace.current,
+          );
+        }
+      }
+    }
+  }
+
+  void callDecode(
+    NotifierEncoder<ValueT, Persist<Object?, ValueT>> adapter,
+    Object? encoded,
+  );
+
+  FutureOr<void> _decode(
+    NotifierEncoder<ValueT, Persist<Object?, ValueT>> adapter,
+  ) async {
+    final offline = _requestPersist(adapter);
     if (offline == null) return;
-    final (adapter, persist) = offline;
+    final persist = offline;
 
     try {
       final key = adapter.persistKey;
@@ -289,14 +350,20 @@ abstract class ClassProviderElement< //
     }
   }
 
-  Future<void> _callEncode() async {
-    final offline = _requestPersist();
+  Future<void> callEncode(
+    Persist<Object?, ValueT> persist,
+    NotifierEncoder<ValueT, Persist<Object?, ValueT>> adapter,
+  );
+
+  Future<void> _callEncode(
+    NotifierEncoder<ValueT, Persist<Object?, ValueT>> adapter,
+  ) async {
+    final offline = _requestPersist(adapter);
     if (offline == null) return;
-    final (adapter, persist) = offline;
+    final persist = offline;
 
     try {
-      final key = adapter.persistKey;
-      await persist.write(key, adapter.encode());
+      await callEncode(persist, adapter);
     } catch (e, s) {
       Zone.current.handleUncaughtError(e, s);
     }

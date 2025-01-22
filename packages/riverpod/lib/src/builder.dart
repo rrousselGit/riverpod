@@ -645,7 +645,6 @@ class AutoDisposeNotifierProviderBuilder {
       dependencies: dependencies,
       retry: retry,
       persistOptions: persistOptions,
-      shouldPersist: shouldPersist,
     );
   }
 
@@ -674,7 +673,6 @@ class NotifierProviderFamilyBuilder {
       dependencies: dependencies,
       retry: retry,
       persistOptions: persistOptions,
-      shouldPersist: shouldPersist,
     );
   }
 
@@ -704,7 +702,6 @@ class AutoDisposeNotifierProviderFamilyBuilder {
       dependencies: dependencies,
       retry: retry,
       persistOptions: persistOptions,
-      shouldPersist: shouldPersist,
     );
   }
 }
@@ -730,7 +727,6 @@ class AutoDisposeStreamNotifierProviderBuilder {
       dependencies: dependencies,
       retry: retry,
       persistOptions: persistOptions,
-      shouldPersist: shouldPersist,
     );
   }
 
@@ -759,7 +755,6 @@ class StreamNotifierProviderFamilyBuilder {
       dependencies: dependencies,
       retry: retry,
       persistOptions: persistOptions,
-      shouldPersist: shouldPersist,
     );
   }
 
@@ -789,7 +784,6 @@ class AutoDisposeStreamNotifierProviderFamilyBuilder {
       dependencies: dependencies,
       retry: retry,
       persistOptions: persistOptions,
-      shouldPersist: shouldPersist,
     );
   }
 }
@@ -815,7 +809,6 @@ class AutoDisposeAsyncNotifierProviderBuilder {
       dependencies: dependencies,
       retry: retry,
       persistOptions: persistOptions,
-      shouldPersist: shouldPersist,
     );
   }
 
@@ -844,7 +837,6 @@ class AsyncNotifierProviderFamilyBuilder {
       dependencies: dependencies,
       retry: retry,
       persistOptions: persistOptions,
-      shouldPersist: shouldPersist,
     );
   }
 
@@ -874,7 +866,6 @@ class AutoDisposeAsyncNotifierProviderFamilyBuilder {
       dependencies: dependencies,
       retry: retry,
       persistOptions: persistOptions,
-      shouldPersist: shouldPersist,
     );
   }
 }

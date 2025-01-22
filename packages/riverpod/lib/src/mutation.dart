@@ -357,7 +357,7 @@ abstract class MutationBase<ResultT> {
 abstract class $SyncMutationBase<
         StateT,
         MutationT extends $SyncMutationBase<StateT, MutationT, ClassT>,
-        ClassT extends NotifierBase<StateT, Object?>>
+        ClassT extends $RunnableNotifierBase<StateT, Object?, StateT>>
     extends _MutationBase<StateT, StateT, MutationT, ClassT> {
   $SyncMutationBase({super.state, super.key});
 
@@ -371,7 +371,8 @@ abstract class $SyncMutationBase<
 abstract class $AsyncMutationBase<
         StateT,
         MutationT extends $AsyncMutationBase<StateT, MutationT, ClassT>,
-        ClassT extends NotifierBase<AsyncValue<StateT>, Object?>>
+        ClassT extends $RunnableNotifierBase<AsyncValue<StateT>, Object?,
+            StateT>>
     extends _MutationBase<StateT, AsyncValue<StateT>, MutationT, ClassT> {
   $AsyncMutationBase({super.state, super.key});
 
@@ -385,7 +386,7 @@ abstract class _MutationBase<
         ValueT,
         StateT,
         MutationT extends _MutationBase<ValueT, StateT, MutationT, ClassT>,
-        ClassT extends NotifierBase<StateT, Object?>>
+        ClassT extends $RunnableNotifierBase<StateT, Object?, ValueT>>
     implements MutationBase<ValueT> {
   _MutationBase({MutationState<ValueT>? state, this.key})
       : state = state ?? IdleMutationState<ValueT>._() {

@@ -6,26 +6,12 @@ final streamNotifierProviderFactory = TestMatrix<StreamNotifierTestFactory>(
       isAutoDispose: false,
       isFamily: false,
       deferredNotifier: DeferredStreamNotifier.new,
-      deferredProvider: <StateT>(
-        create, {
-        updateShouldNotify,
-        retry,
-        shouldPersist,
-        persistOptions,
-        persistKey,
-        encode,
-        decode,
-      }) {
+      deferredProvider: <StateT>(create, {updateShouldNotify, retry}) {
         return StreamNotifierProvider<DeferredStreamNotifier<StateT>, StateT>(
           retry: retry,
-          shouldPersist: shouldPersist,
-          persistOptions: persistOptions,
           () => DeferredStreamNotifier(
             create,
             updateShouldNotify: updateShouldNotify,
-            encode: encode,
-            decode: decode,
-            persistKey: persistKey,
           ),
         );
       },
@@ -46,27 +32,13 @@ final streamNotifierProviderFactory = TestMatrix<StreamNotifierTestFactory>(
       isAutoDispose: true,
       isFamily: false,
       deferredNotifier: DeferredStreamNotifier.new,
-      deferredProvider: <StateT>(
-        create, {
-        updateShouldNotify,
-        retry,
-        shouldPersist,
-        persistOptions,
-        persistKey,
-        encode,
-        decode,
-      }) {
+      deferredProvider: <StateT>(create, {updateShouldNotify, retry}) {
         return StreamNotifierProvider.autoDispose<
             DeferredStreamNotifier<StateT>, StateT>(
           retry: retry,
-          shouldPersist: shouldPersist,
-          persistOptions: persistOptions,
           () => DeferredStreamNotifier(
             create,
             updateShouldNotify: updateShouldNotify,
-            encode: encode,
-            decode: decode,
-            persistKey: persistKey,
           ),
         );
       },
@@ -90,27 +62,13 @@ final streamNotifierProviderFactory = TestMatrix<StreamNotifierTestFactory>(
       isAutoDispose: false,
       isFamily: true,
       deferredNotifier: DeferredFamilyStreamNotifier.new,
-      deferredProvider: <StateT>(
-        create, {
-        updateShouldNotify,
-        retry,
-        shouldPersist,
-        persistOptions,
-        persistKey,
-        encode,
-        decode,
-      }) {
+      deferredProvider: <StateT>(create, {updateShouldNotify, retry}) {
         return StreamNotifierProvider.family<
             DeferredFamilyStreamNotifier<StateT>, StateT, Object?>(
           retry: retry,
-          shouldPersist: shouldPersist,
-          persistOptions: persistOptions,
           () => DeferredFamilyStreamNotifier(
             create,
             updateShouldNotify: updateShouldNotify,
-            encode: encode,
-            persistKey: persistKey,
-            decode: decode,
           ),
         ).call(42);
       },
@@ -134,27 +92,13 @@ final streamNotifierProviderFactory = TestMatrix<StreamNotifierTestFactory>(
       isAutoDispose: true,
       isFamily: true,
       deferredNotifier: DeferredFamilyStreamNotifier.new,
-      deferredProvider: <StateT>(
-        create, {
-        updateShouldNotify,
-        retry,
-        shouldPersist,
-        persistOptions,
-        persistKey,
-        encode,
-        decode,
-      }) {
+      deferredProvider: <StateT>(create, {updateShouldNotify, retry}) {
         return StreamNotifierProvider.family
             .autoDispose<DeferredFamilyStreamNotifier<StateT>, StateT, Object?>(
-              shouldPersist: shouldPersist,
               retry: retry,
-              persistOptions: persistOptions,
               () => DeferredFamilyStreamNotifier(
                 create,
                 updateShouldNotify: updateShouldNotify,
-                encode: encode,
-                decode: decode,
-                persistKey: persistKey,
               ),
             )
             .call(42);
@@ -189,18 +133,11 @@ abstract class TestStreamNotifier<StateT> implements $StreamNotifier<StateT> {
 }
 
 class DeferredStreamNotifier<StateT> extends StreamNotifier<StateT>
-    with NotifierEncoder<StateT, Persist<Object?, StateT>>
     implements TestStreamNotifier<StateT> {
   DeferredStreamNotifier(
     this._create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
-    Object? Function(AsyncValue<StateT> value)? encode,
-    StateT Function(Object? serialized)? decode,
-    Object? Function(Object? args)? persistKey,
-  })  : _updateShouldNotify = updateShouldNotify,
-        _encode = encode,
-        _decode = decode,
-        _persistKey = persistKey;
+  }) : _updateShouldNotify = updateShouldNotify;
 
   final Stream<StateT> Function(
     Ref ref,
@@ -221,47 +158,15 @@ class DeferredStreamNotifier<StateT> extends StreamNotifier<StateT>
   ) =>
       _updateShouldNotify?.call(previousState, newState) ??
       super.updateShouldNotify(previousState, newState);
-
-  final Object? Function(Object? args)? _persistKey;
-  @override
-  Object? get persistKey => switch (_persistKey) {
-        null => throw UnimplementedError(),
-        final cb => cb(null),
-      };
-
-  final Object? Function(AsyncValue<StateT> value)? _encode;
-  @override
-  Object? encode() {
-    return switch (_encode) {
-      null => throw UnimplementedError(),
-      final cb => cb(state),
-    };
-  }
-
-  final StateT Function(Object? serialized)? _decode;
-  @override
-  StateT decode(Object? serialized) {
-    return switch (_decode) {
-      null => throw UnimplementedError(),
-      final cb => cb(serialized),
-    };
-  }
 }
 
 class DeferredFamilyStreamNotifier<StateT>
     extends FamilyStreamNotifier<StateT, int>
-    with NotifierEncoder<StateT, Persist<Object?, StateT>>
     implements TestStreamNotifier<StateT> {
   DeferredFamilyStreamNotifier(
     this._create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
-    Object? Function(AsyncValue<StateT> value)? encode,
-    StateT Function(Object? serialized)? decode,
-    Object? Function(Object? args)? persistKey,
-  })  : _updateShouldNotify = updateShouldNotify,
-        _encode = encode,
-        _decode = decode,
-        _persistKey = persistKey;
+  }) : _updateShouldNotify = updateShouldNotify;
 
   final Stream<StateT> Function(
     Ref ref,
@@ -283,31 +188,6 @@ class DeferredFamilyStreamNotifier<StateT>
   ) =>
       _updateShouldNotify?.call(previousState, newState) ??
       super.updateShouldNotify(previousState, newState);
-
-  final Object? Function(Object? args)? _persistKey;
-  @override
-  Object? get persistKey => switch (_persistKey) {
-        null => throw UnimplementedError(),
-        final cb => cb(arg),
-      };
-
-  final Object? Function(AsyncValue<StateT> value)? _encode;
-  @override
-  Object? encode() {
-    return switch (_encode) {
-      null => throw UnimplementedError(),
-      final cb => cb(state),
-    };
-  }
-
-  final StateT Function(Object? serialized)? _decode;
-  @override
-  StateT decode(Object? serialized) {
-    return switch (_decode) {
-      null => throw UnimplementedError(),
-      final cb => cb(serialized),
-    };
-  }
 }
 
 class StreamNotifierTestFactory extends TestFactory<
@@ -330,11 +210,6 @@ class StreamNotifierTestFactory extends TestFactory<
     Stream<StateT> Function(Ref ref, $StreamNotifier<StateT> self) create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
     Retry? retry,
-    bool? shouldPersist,
-    Persist? persistOptions,
-    Object? Function(Object? args)? persistKey,
-    StateT Function(Object? encoded)? decode,
-    Object? Function(AsyncValue<StateT> value)? encode,
   }) deferredProvider;
 
   final $StreamNotifierProvider<$StreamNotifier<StateT>, StateT>
@@ -346,22 +221,12 @@ class StreamNotifierTestFactory extends TestFactory<
       simpleTestProvider<StateT>(
     Stream<StateT> Function(Ref ref, $StreamNotifier<StateT> self) create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
-    bool? shouldPersist,
-    Persist? persistOptions,
-    Object? Function(Object? args)? persistKey,
-    StateT Function(Object? encoded)? decode,
-    Object? Function(AsyncValue<StateT> value)? encode,
     Retry? retry,
   }) {
     return deferredProvider<StateT>(
       (ref, self) => create(ref, self),
       updateShouldNotify: updateShouldNotify,
       retry: retry,
-      shouldPersist: shouldPersist,
-      persistOptions: persistOptions,
-      persistKey: persistKey,
-      decode: decode,
-      encode: encode,
     );
   }
 }

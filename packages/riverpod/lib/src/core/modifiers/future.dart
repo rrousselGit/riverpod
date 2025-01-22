@@ -14,8 +14,8 @@ typedef AsyncSubscription = ({
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
-mixin $AsyncClassModifier<StateT, CreatedT>
-    on NotifierBase<AsyncValue<StateT>, CreatedT> {
+mixin $AsyncClassModifier<StateT, CreatedT, ValueT>
+    on $RunnableNotifierBase<AsyncValue<StateT>, CreatedT, ValueT> {
   /// The value currently exposed by this [AsyncNotifier].
   ///
   /// Defaults to [AsyncLoading] inside the [AsyncNotifier.build] method.
@@ -196,9 +196,10 @@ base mixin $FutureModifier<StateT> on ProviderBase<AsyncValue<StateT>> {
 }
 
 mixin FutureModifierClassElement<
-        NotifierT extends NotifierBase< //
+        NotifierT extends $RunnableNotifierBase< //
             AsyncValue<StateT>,
-            CreatedT>,
+            CreatedT,
+            StateT>,
         StateT,
         CreatedT>
     on
@@ -212,6 +213,34 @@ mixin FutureModifierClassElement<
   }) {
     triggerRetry(error);
     onError(AsyncError(error, stackTrace), seamless: seamless);
+  }
+
+  @override
+  void callDecode(
+    NotifierEncoder<StateT, Object?> adapter,
+    Object? encoded,
+  ) {
+    setStateResult(
+      $Result.data(
+        AsyncData(adapter.decode(encoded), isFromCache: true),
+      ),
+    );
+  }
+
+  @override
+  Future<void> callEncode(
+    Persist<Object?, StateT> persist,
+    NotifierEncoder<StateT, Persist<Object?, StateT>> adapter,
+  ) async {
+    switch (stateResult?.stateOrNull) {
+      case null:
+      case AsyncLoading():
+        return;
+      case AsyncError():
+        return persist.delete(adapter.persistKey);
+      case AsyncData():
+        return persist.write(adapter.persistKey, adapter.encode());
+    }
   }
 }
 
