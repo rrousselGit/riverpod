@@ -261,16 +261,14 @@ abstract class ClassProviderElement< //
     switch (notifier) {
       case NotifierEncoder<ValueT, Persist<Object?, ValueT>>():
         return notifier;
-      case NotifierEncoder():
-        Zone.current.handleUncaughtError(
-          StateError(
-            'The notifier `$notifier` implemented `$origin` asked to be persisted on device, but no Persist found.'
-            ' When using offline persistence, you must provide either ProviderContainer.persistOptions or MyProvider.persistOptions.',
-          ),
-          StackTrace.current,
-        );
-        return null;
       default:
+        if (origin.persistOptions != null) {
+          throw StateError('''
+The provider `$origin` asked to be persisted on device, but the notifier `$notifier` does not implement NotifierEncoder.
+
+When using offline persistence, notifiers must implement NotifierEncoder.
+''');
+        }
         return null;
     }
   }

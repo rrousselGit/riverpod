@@ -6,15 +6,15 @@ import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
 import '../src/matrix.dart';
-import '../src/matrix.dart' as _matrix;
+import '../src/matrix.dart' as $matrix;
 import '../src/utils.dart';
 
 void main() {
   group('Offline', () {
     test('Does not persist if the notifier does not implement NotifierEncoder',
         () {
-      final provider = NotifierProvider<_matrix.DeferredNotifier<int>, int>(
-        () => _matrix.DeferredNotifier<int>((ref, self) => 0),
+      final provider = NotifierProvider<$matrix.DeferredNotifier<int>, int>(
+        () => $matrix.DeferredNotifier<int>((ref, self) => 0),
       );
       final persist = PersistMock<Object?, Object?>();
       final container = ProviderContainer.test(persistOptions: persist);
@@ -27,8 +27,8 @@ void main() {
     test(
         'Throws if a notifier does not implement NotifierEncoder yet persist is specified on the provider',
         () {
-      final provider = NotifierProvider<_matrix.DeferredNotifier<int>, int>(
-        () => _matrix.DeferredNotifier<int>((ref, self) => 0),
+      final provider = NotifierProvider<$matrix.DeferredNotifier<int>, int>(
+        () => $matrix.DeferredNotifier<int>((ref, self) => 0),
         persistOptions: DelegatingPersist(read: (_) => (42,)),
       );
       final persist = PersistMock<Object?, Object?>();
@@ -40,17 +40,13 @@ void main() {
         (e, s) => errors.add(e),
       );
 
-      expect(errors, hasLength(2), reason: 'One for encode, one for decode');
-      expect(
-        errors,
-        everyElement(
-          isStateError.having(
-            (e) => e.message,
-            'message',
-            contains('NotifierEncoder'),
-          ),
+      expect(errors, [
+        isStateError.having(
+          (e) => e.message,
+          'message',
+          contains('NotifierEncoder'),
         ),
-      );
+      ]);
     });
 
     matrix.createGroup((factory) {
@@ -415,27 +411,6 @@ void main() {
         }
       });
 
-      group('destroyKey', () {
-        test('Can specify a destroyKey on a provider', () {});
-
-        test(
-          'Initializing a provider with a destroyKey throws if the provider did not opt-in to offline',
-          () {},
-        );
-
-        test('Can destroy the whole cache using a global destroyKey', () {});
-
-        test(
-          'Can destroy a provider using a provider-specific destroyKey',
-          () {},
-        );
-
-        test(
-          'If a provider has a destroyKey, it still respects the global one',
-          () {},
-        );
-      });
-
       if (factory.isAsync) {
         group('AsyncValue.isFromCache', () {
           test('is "true" if the value was read from the cache', () {
@@ -483,42 +458,26 @@ void main() {
       }
 
       test('ProviderScope throws if `offline` changes on update', () {});
+      group('destroyKey', () {
+        test('Can specify a destroyKey on a provider', () {});
 
-      test(
-        'ProviderScope throws if `offline` is specified but not adapter',
-        () {},
-      );
+        test(
+          'Initializing a provider with a destroyKey throws if the provider did not opt-in to offline',
+          () {},
+        );
 
-      test(
-        "Scoped providers opted-in to offline use their container's adapter",
-        () {},
-      );
+        test('Can destroy the whole cache using a global destroyKey', () {});
 
-      test(
-        'overrideWithValue does not ask adapters for initializations',
-        () {},
-      );
+        test(
+          'Can destroy a provider using a provider-specific destroyKey',
+          () {},
+        );
 
-      test('overrideWith does ask adapters for initializations', () {});
-
-      test('Supports Map<Model, Model2>', () {});
-
-      test('Primitive types do not need specific encoding methods', () {});
-
-      test('$ProviderContainer can dump the DB state', () {});
-
-      test(
-        'Families can opt-in to offline, as long as their arguments are supported by the adapter',
-        () {},
-      );
-
-      test('Supports generics providers', () {});
-
-      test(
-        'Verify that unused Model static members are tree-shaken away',
-        () {},
-      );
-      test('Verify that unused Model methods are tree-shaken away', () {});
+        test(
+          'If a provider has a destroyKey, it still respects the global one',
+          () {},
+        );
+      });
     });
   });
 }
