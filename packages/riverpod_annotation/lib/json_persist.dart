@@ -1,5 +1,5 @@
 import 'persist.dart';
 
-class JsonPersist implements RiverpodPersistAnnotation {
+class JsonPersist implements RiverpodPersist {
   const JsonPersist();
 }

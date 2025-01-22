@@ -19,7 +19,7 @@
 ///
 /// It is the role of this annotation to generate the mixin mentioned mixin.
 /// {@endtemplate}
-class RiverpodPersistAnnotation {
+class RiverpodPersist {
   /// {@macro riverpod_persist_annotation}
-  const RiverpodPersistAnnotation();
+  const RiverpodPersist();
 }

@@ -493,19 +493,14 @@ void main() {
         fireImmediately: true,
       );
 
-      print('a');
       container.invalidate(testNotifierProvider);
-      print('b');
       container.invalidate(testProvider);
-      print('c');
 
       expect(buildCount, 1);
 
       await container.pump();
-      print('d');
 
       expect(buildCount, 2);
-      print('d');
     });
 
     test('does not update dependents when the future completes', () async {
