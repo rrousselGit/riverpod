@@ -29,8 +29,8 @@ class User with _$User {
   factory User.empty() => const User(id: '');
 
   /// Whether the user is unauthenticated.
-  bool get isUnuthenticated => this == User.empty();
+  bool get isUnauthenticated => this == User.empty();
 
   /// Whether the user is authenticated.
-  bool get isAuthenticated => !isUnuthenticated;
+  bool get isAuthenticated => !isUnauthenticated;
 }
