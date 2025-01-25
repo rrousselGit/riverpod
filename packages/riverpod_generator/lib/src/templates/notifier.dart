@@ -75,9 +75,9 @@ abstract class $notifierBaseName$genericsDefinition extends $baseClass {
     required bool didChangeDependency,
   }) {
     ${buildVar}build($paramsPassThrough);
-    final ref = this.ref as \$Ref<${provider.valueTypeDisplayString}>;
-    final element = ref.element as \$ClassProviderElement<NotifierBase<${provider.valueTypeDisplayString}>,
-          ${provider.valueTypeDisplayString}, Object?, Object?>;
+    final ref = this.ref as \$Ref<${provider.exposedTypeDisplayString}>;
+    final element = ref.element as \$ClassProviderElement<NotifierBase<${provider.exposedTypeDisplayString}>,
+          ${provider.exposedTypeDisplayString}, Object?, Object?>;
     element.handleValue(
       $buildVarUsage,
       seamless: !didChangeDependency,

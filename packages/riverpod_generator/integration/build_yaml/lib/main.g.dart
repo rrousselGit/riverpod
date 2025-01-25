@@ -314,9 +314,9 @@ abstract class _$CountAsyncNotifier extends $AsyncNotifier<int> {
     required bool didChangeDependency,
   }) {
     final created = build();
-    final ref = this.ref as $Ref<int>;
-    final element = ref.element
-        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(
       created,
       seamless: !didChangeDependency,
@@ -390,9 +390,9 @@ abstract class _$CountStreamNotifier extends $StreamNotifier<int> {
     required bool didChangeDependency,
   }) {
     final created = build();
-    final ref = this.ref as $Ref<int>;
-    final element = ref.element
-        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(
       created,
       seamless: !didChangeDependency,
@@ -1111,9 +1111,9 @@ abstract class _$CountAsyncNotifier2 extends $AsyncNotifier<int> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<int>;
-    final element = ref.element
-        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(
       created,
       seamless: !didChangeDependency,
@@ -1280,9 +1280,9 @@ abstract class _$CountStreamNotifier2 extends $StreamNotifier<int> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<int>;
-    final element = ref.element
-        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(
       created,
       seamless: !didChangeDependency,

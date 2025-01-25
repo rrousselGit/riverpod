@@ -270,9 +270,12 @@ abstract class _$GenericClass<T extends num> extends $AsyncNotifier<List<T>> {
     required bool didChangeDependency,
   }) {
     final created = build();
-    final ref = this.ref as $Ref<List<T>>;
-    final element = ref.element as $ClassProviderElement<NotifierBase<List<T>>,
-        List<T>, Object?, Object?>;
+    final ref = this.ref as $Ref<AsyncValue<List<T>>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<List<T>>>,
+        AsyncValue<List<T>>,
+        Object?,
+        Object?>;
     element.handleValue(
       created,
       seamless: !didChangeDependency,
@@ -752,9 +755,9 @@ abstract class _$PublicClass extends $AsyncNotifier<String> {
     required bool didChangeDependency,
   }) {
     final created = build();
-    final ref = this.ref as $Ref<String>;
-    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
-        String, Object?, Object?>;
+    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
     element.handleValue(
       created,
       seamless: !didChangeDependency,
@@ -827,9 +830,9 @@ abstract class _$PrivateClass extends $AsyncNotifier<String> {
     required bool didChangeDependency,
   }) {
     final created = build();
-    final ref = this.ref as $Ref<String>;
-    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
-        String, Object?, Object?>;
+    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
     element.handleValue(
       created,
       seamless: !didChangeDependency,
@@ -994,9 +997,9 @@ abstract class _$FamilyOrClass extends $AsyncNotifier<String> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<String>;
-    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
-        String, Object?, Object?>;
+    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
     element.handleValue(
       created,
       seamless: !didChangeDependency,
@@ -1235,9 +1238,9 @@ abstract class _$FamilyClass extends $AsyncNotifier<String> {
       fourth: _$args.fourth,
       fifth: _$args.fifth,
     );
-    final ref = this.ref as $Ref<String>;
-    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
-        String, Object?, Object?>;
+    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
     element.handleValue(
       created,
       seamless: !didChangeDependency,

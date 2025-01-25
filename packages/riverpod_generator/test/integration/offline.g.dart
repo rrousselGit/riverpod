@@ -248,10 +248,10 @@ abstract class _$JsonBase extends $AsyncNotifier<Map<String, List<int>>> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<Map<String, List<int>>>;
+    final ref = this.ref as $Ref<AsyncValue<Map<String, List<int>>>>;
     final element = ref.element as $ClassProviderElement<
-        NotifierBase<Map<String, List<int>>>,
-        Map<String, List<int>>,
+        NotifierBase<AsyncValue<Map<String, List<int>>>>,
+        AsyncValue<Map<String, List<int>>>,
         Object?,
         Object?>;
     element.handleValue(
