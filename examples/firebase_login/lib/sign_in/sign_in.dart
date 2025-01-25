@@ -45,9 +45,9 @@ class SignInPage extends ConsumerWidget {
               ),
               child: const Text('Do not have an account? Register'),
             ),
-            state.maybeWhen(
-              failure: (message) => Text(
-                message,
+            state.maybeMap(
+              failure: (failure) => Text(
+                failure.message,
                 style: const TextStyle(color: Colors.red),
                 textAlign: TextAlign.center,
               ),
@@ -172,6 +172,9 @@ class SignInStateNotifier extends StateNotifier<SignInState> {
 
 extension SignInStateExtension on SignInState {
   bool get isFormSubmitting {
-    return maybeWhen(loading: () => true, orElse: () => false);
+    return switch (this) {
+      SignInState.loading => true,
+      _ => false,
+    };
   }
 }

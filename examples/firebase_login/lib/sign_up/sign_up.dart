@@ -11,6 +11,8 @@ class SignUpPage extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(signUpProvider);
+
     ref.listen<SignUpState>(signUpProvider, (previous, next) {
       next.maybeWhen(
         success: () => Navigator.pop(context),
@@ -32,6 +34,14 @@ class SignUpPage extends ConsumerWidget {
             TextButton(
               onPressed: () => Navigator.pop(context),
               child: const Text('Already have an account? Sign in'),
+            ),
+            state.maybeMap(
+              failure: (failure) => Text(
+                failure.message,
+                style: const TextStyle(color: Colors.red),
+                textAlign: TextAlign.center,
+              ),
+              orElse: () => const SizedBox.shrink(),
             ),
           ],
         ),
@@ -140,6 +150,9 @@ class SignUpStateNotifier extends StateNotifier<SignUpState> {
 
 extension SignUpStateExtension on SignUpState {
   bool get isFormSubmitting {
-    return maybeWhen(loading: () => true, orElse: () => false);
+    return switch (this) {
+      SignUpState.loading => true,
+      _ => false,
+    };
   }
 }
