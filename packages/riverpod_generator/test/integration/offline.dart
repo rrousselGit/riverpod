@@ -13,7 +13,7 @@ class MyAnnotation implements RiverpodPersist {
 @MyAnnotation()
 class CustomAnnotation extends _$CustomAnnotation {
   @override
-  String build() => 'CustomAnnotation';
+  String build() => stateOrNull ?? '';
 }
 
 abstract class _$CustomAnnotation extends _$CustomAnnotationBase

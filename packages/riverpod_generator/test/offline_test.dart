@@ -1,3 +1,4 @@
+import 'package:riverpod/persist.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
@@ -5,9 +6,10 @@ import 'integration/offline.dart';
 
 void main() {
   test('Custom annotation', () {
-    final container = ProviderContainer.test();
+    final persist = Persist<String, String>.inMemory();
+    persist.write('CustomAnnotation', '21', const PersistOptions());
+    final container = ProviderContainer.test(persist: persist);
 
-    final customAnnotation = container.read(customAnnotationProvider);
-    a a;
+    expect(container.read(customAnnotationProvider), '21');
   });
 }
