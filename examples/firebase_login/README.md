@@ -1,16 +1,21 @@
-# firebase_login
+# Firebase Login
 
 Example flutter app built with Riverpod that demonstrates authentication with Firebase.
 
+<img src="./samples/demo.gif" alt="demo" width="320">
+<img src="./samples/error.png" alt="error" width="320">
+<img src="./samples/signup.png" alt="signup" width="320">
+
+## Features
+
+- Sign up with Email and Password
+- Sign in with Email and Password
+- Sign in with Google
+- Error handling
+
 ## Getting Started
 
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. Generate the native folders first by running `flutter create --platforms=android,ios,web,windows,macos .`
+2. Create your firebase project, and enable email/password authentication and google.
+3. Use [FlutterFire CLI](https://firebase.google.com/docs/flutter/setup?platform=ios) to connect the app with the firebase project.
+4. Run the app.
