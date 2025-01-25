@@ -108,7 +108,7 @@ abstract base class $NotifierProvider //
 class $NotifierProviderElement< //
         NotifierT extends $Notifier<StateT>,
         StateT> //
-    extends ClassProviderElement< //
+    extends $ClassProviderElement< //
         NotifierT,
         StateT,
         StateT,

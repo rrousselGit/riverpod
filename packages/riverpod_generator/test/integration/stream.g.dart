@@ -265,7 +265,20 @@ abstract class _$GenericClass<T extends num> extends $StreamNotifier<List<T>> {
   Stream<List<T>> build();
   @$internal
   @override
-  Stream<List<T>> runBuild() => build();
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  }) {
+    final created = build();
+    final ref = this.ref as $Ref<List<T>>;
+    final element = ref.element as $ClassProviderElement<NotifierBase<List<T>>,
+        List<T>, Object?, Object?>;
+    element.handleValue(
+      created,
+      seamless: !didChangeDependency,
+      isFirstBuild: isFirstBuild,
+    );
+  }
 }
 
 @ProviderFor(public)
@@ -610,7 +623,20 @@ abstract class _$PublicClass extends $StreamNotifier<String> {
   Stream<String> build();
   @$internal
   @override
-  Stream<String> runBuild() => build();
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  }) {
+    final created = build();
+    final ref = this.ref as $Ref<String>;
+    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
+        String, Object?, Object?>;
+    element.handleValue(
+      created,
+      seamless: !didChangeDependency,
+      isFirstBuild: isFirstBuild,
+    );
+  }
 }
 
 @ProviderFor(_PrivateClass)
@@ -672,7 +698,20 @@ abstract class _$PrivateClass extends $StreamNotifier<String> {
   Stream<String> build();
   @$internal
   @override
-  Stream<String> runBuild() => build();
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  }) {
+    final created = build();
+    final ref = this.ref as $Ref<String>;
+    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
+        String, Object?, Object?>;
+    element.handleValue(
+      created,
+      seamless: !didChangeDependency,
+      isFirstBuild: isFirstBuild,
+    );
+  }
 }
 
 @ProviderFor(FamilyClass)
@@ -894,13 +933,26 @@ abstract class _$FamilyClass extends $StreamNotifier<String> {
   });
   @$internal
   @override
-  Stream<String> runBuild() => build(
-        _$args.$1,
-        second: _$args.second,
-        third: _$args.third,
-        fourth: _$args.fourth,
-        fifth: _$args.fifth,
-      );
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  }) {
+    final created = build(
+      _$args.$1,
+      second: _$args.second,
+      third: _$args.third,
+      fourth: _$args.fourth,
+      fifth: _$args.fifth,
+    );
+    final ref = this.ref as $Ref<String>;
+    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
+        String, Object?, Object?>;
+    element.handleValue(
+      created,
+      seamless: !didChangeDependency,
+      isFirstBuild: isFirstBuild,
+    );
+  }
 }
 
 // ignore_for_file: type=lint

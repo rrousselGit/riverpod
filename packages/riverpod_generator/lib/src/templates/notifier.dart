@@ -61,10 +61,29 @@ abstract class $notifierBaseName$genericsDefinition extends $baseClass {
 
     _writeBuild(buffer);
 
+    final buildVar =
+        provider.valueTypeDisplayString == 'void' ? '' : 'final created = ';
+
+    final buildVarUsage =
+        provider.valueTypeDisplayString == 'void' ? 'null' : 'created';
+
     buffer.writeln('''
   @\$internal
   @override
-  ${provider.createdTypeDisplayString} runBuild() => build($paramsPassThrough);
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  }) {
+    ${buildVar}build($paramsPassThrough);
+    final ref = this.ref as \$Ref<${provider.valueTypeDisplayString}>;
+    final element = ref.element as \$ClassProviderElement<NotifierBase<${provider.valueTypeDisplayString}>,
+          ${provider.valueTypeDisplayString}, Object?, Object?>;
+    element.handleValue(
+      $buildVarUsage,
+      seamless: !didChangeDependency,
+      isFirstBuild: isFirstBuild,
+    );
+  }
 }
 ''');
   }

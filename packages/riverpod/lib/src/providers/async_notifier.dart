@@ -50,7 +50,7 @@ abstract base class $AsyncNotifierProvider< //
 class $AsyncNotifierProviderElement< //
         NotifierT extends $AsyncNotifier<StateT>,
         StateT> //
-    extends ClassProviderElement< //
+    extends $ClassProviderElement< //
         NotifierT,
         AsyncValue<StateT>,
         StateT,

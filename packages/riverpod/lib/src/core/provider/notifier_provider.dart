@@ -95,8 +95,8 @@ mixin $Value<ValueT> {}
 
 @internal
 extension ClassBaseX<StateT> on NotifierBase<StateT> {
-  ClassProviderElement<NotifierBase<StateT>, StateT, Object?, Object?>?
-      element() => _ref?._element as ClassProviderElement<NotifierBase<StateT>,
+  $ClassProviderElement<NotifierBase<StateT>, StateT, Object?, Object?>?
+      element() => _ref?.element as $ClassProviderElement<NotifierBase<StateT>,
           StateT, Object?, Object?>?;
 
   @internal
@@ -130,9 +130,9 @@ abstract base class $ClassProvider< //
   Refreshable<NotifierT> get notifier {
     return ProviderElementProxy<NotifierT, StateT>(
       this,
-      (element) =>
-          (element as ClassProviderElement<NotifierT, StateT, ValueT, CreatedT>)
-              .classListenable,
+      (element) => (element
+              as $ClassProviderElement<NotifierT, StateT, ValueT, CreatedT>)
+          .classListenable,
     );
   }
 
@@ -173,7 +173,7 @@ abstract base class $ClassProvider< //
   }
 
   @override
-  ClassProviderElement< //
+  $ClassProviderElement< //
       NotifierT,
       StateT,
       ValueT,
@@ -181,13 +181,13 @@ abstract base class $ClassProvider< //
 }
 
 @internal
-abstract class ClassProviderElement< //
+abstract class $ClassProviderElement< //
         NotifierT extends NotifierBase<StateT>,
         StateT,
         ValueT,
         CreatedT> //
     extends ProviderElement<StateT> {
-  ClassProviderElement(super.pointer);
+  $ClassProviderElement(super.pointer);
 
   @override
   $ClassProvider<NotifierT, StateT, ValueT, CreatedT> get provider;
@@ -278,7 +278,7 @@ abstract class ClassProviderElement< //
     if (kDebugMode) {
       for (final element in container.getAllProviderElements()) {
         if (element == this) continue;
-        if (element is! ClassProviderElement) continue;
+        if (element is! $ClassProviderElement) continue;
 
         final otherKey = element._adapter()?.persistKey;
 

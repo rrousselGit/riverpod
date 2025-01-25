@@ -199,7 +199,7 @@ mixin FutureModifierClassElement<
         NotifierT extends NotifierBase<AsyncValue<StateT>>, StateT, CreatedT>
     on
         FutureModifierElement<StateT>,
-        ClassProviderElement<NotifierT, AsyncValue<StateT>, StateT, CreatedT> {
+        $ClassProviderElement<NotifierT, AsyncValue<StateT>, StateT, CreatedT> {
   @override
   void handleError(
     Object error,

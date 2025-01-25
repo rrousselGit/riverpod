@@ -188,7 +188,20 @@ abstract class _$SimpleClass extends $Notifier<String> {
   String build();
   @$internal
   @override
-  String runBuild() => build();
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  }) {
+    final created = build();
+    final ref = this.ref as $Ref<String>;
+    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
+        String, Object?, Object?>;
+    element.handleValue(
+      created,
+      seamless: !didChangeDependency,
+      isFirstBuild: isFirstBuild,
+    );
+  }
 }
 
 // ignore_for_file: type=lint

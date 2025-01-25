@@ -72,7 +72,20 @@ abstract class _$ScopedClass extends $Notifier<int> {
   int build() => throw MissingScopeException(ref);
   @$internal
   @override
-  int runBuild() => build();
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  }) {
+    final created = build();
+    final ref = this.ref as $Ref<int>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    element.handleValue(
+      created,
+      seamless: !didChangeDependency,
+      isFirstBuild: isFirstBuild,
+    );
+  }
 }
 
 @ProviderFor(ScopedClassFamily)
@@ -232,9 +245,22 @@ abstract class _$ScopedClassFamily extends $Notifier<int> {
       throw MissingScopeException(ref);
   @$internal
   @override
-  int runBuild() => build(
-        _$args,
-      );
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  }) {
+    final created = build(
+      _$args,
+    );
+    final ref = this.ref as $Ref<int>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    element.handleValue(
+      created,
+      seamless: !didChangeDependency,
+      isFirstBuild: isFirstBuild,
+    );
+  }
 }
 
 // ignore_for_file: type=lint

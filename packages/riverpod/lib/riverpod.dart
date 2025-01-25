@@ -47,7 +47,7 @@ export 'src/framework.dart'
         ProviderSubscriptionView,
         $ClassProvider,
         LegacyProviderMixin,
-        ClassProviderElement,
+        $ClassProviderElement,
         alreadyInitializedError,
         uninitializedElementError,
         shortHash,

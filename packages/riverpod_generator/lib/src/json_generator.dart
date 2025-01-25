@@ -105,7 +105,7 @@ class JsonGenerator extends ParserGenerator<JsonPersist> {
       '''
 abstract class $notifierClass$genericsDefinition
     extends $baseClass
-    with NotifierEncoder<${provider.valueTypeDisplayString}, String> {
+    with NotifierEncoder<String, ${provider.valueTypeDisplayString}, String> {
   @override
   String get persistKey $key
 

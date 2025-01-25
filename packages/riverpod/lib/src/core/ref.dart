@@ -595,6 +595,8 @@ class $Ref<StateT> extends Ref {
   /// {@macro riverpod.provider_ref_base}
   $Ref(this._element);
 
+  ProviderElement<StateT> get element => _element;
+
   @override
   final ProviderElement<StateT> _element;
 

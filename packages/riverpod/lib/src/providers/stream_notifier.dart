@@ -49,7 +49,7 @@ abstract base class $StreamNotifierProvider<
 class $StreamNotifierProviderElement< //
         NotifierT extends $StreamNotifier<StateT>,
         StateT> //
-    extends ClassProviderElement< //
+    extends $ClassProviderElement< //
         NotifierT,
         AsyncValue<StateT>,
         StateT,

@@ -101,7 +101,20 @@ abstract class _$Simple extends $Notifier<int> {
   int build();
   @$internal
   @override
-  int runBuild() => build();
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  }) {
+    final created = build();
+    final ref = this.ref as $Ref<int>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    element.handleValue(
+      created,
+      seamless: !didChangeDependency,
+      isFirstBuild: isFirstBuild,
+    );
+  }
 }
 
 class _$SimpleElement extends $NotifierProviderElement<Simple, int> {
@@ -455,9 +468,22 @@ abstract class _$SimpleFamily extends $Notifier<int> {
   );
   @$internal
   @override
-  int runBuild() => build(
-        _$args,
-      );
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  }) {
+    final created = build(
+      _$args,
+    );
+    final ref = this.ref as $Ref<int>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    element.handleValue(
+      created,
+      seamless: !didChangeDependency,
+      isFirstBuild: isFirstBuild,
+    );
+  }
 }
 
 class _$SimpleFamilyElement
@@ -664,7 +690,20 @@ abstract class _$SimpleAsync extends $AsyncNotifier<int> {
   FutureOr<int> build();
   @$internal
   @override
-  FutureOr<int> runBuild() => build();
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  }) {
+    final created = build();
+    final ref = this.ref as $Ref<int>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    element.handleValue(
+      created,
+      seamless: !didChangeDependency,
+      isFirstBuild: isFirstBuild,
+    );
+  }
 }
 
 class _$SimpleAsyncElement
@@ -950,9 +989,22 @@ abstract class _$SimpleAsync2 extends $StreamNotifier<int> {
   );
   @$internal
   @override
-  Stream<int> runBuild() => build(
-        _$args,
-      );
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  }) {
+    final created = build(
+      _$args,
+    );
+    final ref = this.ref as $Ref<int>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    element.handleValue(
+      created,
+      seamless: !didChangeDependency,
+      isFirstBuild: isFirstBuild,
+    );
+  }
 }
 
 class _$SimpleAsync2Element
@@ -1178,7 +1230,20 @@ abstract class _$Generic<T extends num> extends $AsyncNotifier<int> {
   FutureOr<int> build();
   @$internal
   @override
-  FutureOr<int> runBuild() => build();
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  }) {
+    final created = build();
+    final ref = this.ref as $Ref<int>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    element.handleValue(
+      created,
+      seamless: !didChangeDependency,
+      isFirstBuild: isFirstBuild,
+    );
+  }
 }
 
 class _$GenericElement<T extends num>
@@ -1318,7 +1383,20 @@ abstract class _$GenericMut extends $AsyncNotifier<int> {
   FutureOr<int> build();
   @$internal
   @override
-  FutureOr<int> runBuild() => build();
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  }) {
+    final created = build();
+    final ref = this.ref as $Ref<int>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    element.handleValue(
+      created,
+      seamless: !didChangeDependency,
+      isFirstBuild: isFirstBuild,
+    );
+  }
 }
 
 class _$GenericMutElement
@@ -1469,7 +1547,20 @@ abstract class _$FailingCtor extends $Notifier<int> {
   int build();
   @$internal
   @override
-  int runBuild() => build();
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  }) {
+    final created = build();
+    final ref = this.ref as $Ref<int>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    element.handleValue(
+      created,
+      seamless: !didChangeDependency,
+      isFirstBuild: isFirstBuild,
+    );
+  }
 }
 
 class _$FailingCtorElement extends $NotifierProviderElement<FailingCtor, int> {
@@ -1618,7 +1709,20 @@ abstract class _$Typed extends $Notifier<String> {
   String build();
   @$internal
   @override
-  String runBuild() => build();
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  }) {
+    final created = build();
+    final ref = this.ref as $Ref<String>;
+    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
+        String, Object?, Object?>;
+    element.handleValue(
+      created,
+      seamless: !didChangeDependency,
+      isFirstBuild: isFirstBuild,
+    );
+  }
 }
 
 class _$TypedElement extends $NotifierProviderElement<Typed, String> {

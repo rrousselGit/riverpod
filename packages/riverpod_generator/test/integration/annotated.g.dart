@@ -299,9 +299,22 @@ abstract class _$ClassBased extends $Notifier<String> {
   );
   @$internal
   @override
-  String runBuild() => build(
-        _$args,
-      );
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  }) {
+    final created = build(
+      _$args,
+    );
+    final ref = this.ref as $Ref<String>;
+    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
+        String, Object?, Object?>;
+    element.handleValue(
+      created,
+      seamless: !didChangeDependency,
+      isFirstBuild: isFirstBuild,
+    );
+  }
 }
 
 @ProviderFor(family)
@@ -565,7 +578,20 @@ abstract class _$NotCopiedClassBased extends $Notifier<String> {
   String build();
   @$internal
   @override
-  String runBuild() => build();
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  }) {
+    final created = build();
+    final ref = this.ref as $Ref<String>;
+    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
+        String, Object?, Object?>;
+    element.handleValue(
+      created,
+      seamless: !didChangeDependency,
+      isFirstBuild: isFirstBuild,
+    );
+  }
 }
 
 @ProviderFor(notCopiedFamily)

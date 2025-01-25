@@ -17,7 +17,7 @@ class CustomAnnotation extends _$CustomAnnotation {
 }
 
 abstract class _$CustomAnnotation extends _$CustomAnnotationBase
-    with NotifierEncoder<String, Object?> {
+    with NotifierEncoder<String, String, Object?> {
   @override
   Object get persistKey => 'CustomAnnotation';
 

@@ -74,7 +74,20 @@ abstract class _$CustomAnnotationBase extends $Notifier<String> {
   String build();
   @$internal
   @override
-  String runBuild() => build();
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  }) {
+    final created = build();
+    final ref = this.ref as $Ref<String>;
+    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
+        String, Object?, Object?>;
+    element.handleValue(
+      created,
+      seamless: !didChangeDependency,
+      isFirstBuild: isFirstBuild,
+    );
+  }
 }
 
 @ProviderFor(Json)
@@ -155,7 +168,7 @@ final class JsonProvider
   }
 }
 
-String _$jsonHash() => r'e60e1db39aa569f9a430708a1010905632717ace';
+String _$jsonHash() => r'bce99d50cc06dc6862ce4667ec45374508675300';
 
 final class JsonFamily extends Family {
   const JsonFamily._()
@@ -228,9 +241,25 @@ abstract class _$JsonBase extends $AsyncNotifier<Map<String, List<int>>> {
   );
   @$internal
   @override
-  FutureOr<Map<String, List<int>>> runBuild() => build(
-        _$args,
-      );
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  }) {
+    final created = build(
+      _$args,
+    );
+    final ref = this.ref as $Ref<Map<String, List<int>>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<Map<String, List<int>>>,
+        Map<String, List<int>>,
+        Object?,
+        Object?>;
+    element.handleValue(
+      created,
+      seamless: !didChangeDependency,
+      isFirstBuild: isFirstBuild,
+    );
+  }
 }
 
 // ignore_for_file: type=lint
@@ -241,7 +270,7 @@ abstract class _$JsonBase extends $AsyncNotifier<Map<String, List<int>>> {
 // **************************************************************************
 
 abstract class _$Json extends _$JsonBase
-    with NotifierEncoder<Map<String, List<int>>, String> {
+    with NotifierEncoder<String, Map<String, List<int>>, String> {
   @override
   String get persistKey {
     final args = arg;
