@@ -45,7 +45,7 @@ void main() {
 
     test('returns null on unknown keys', () async {
       await expectLater(
-        persist.read('key', const PersistOptions()),
+        persist.read('key'),
         completion(null),
       );
     });
@@ -53,70 +53,20 @@ void main() {
     test('returns the value if it exists', () async {
       await persist.write('key', 'value', const PersistOptions());
 
-      await expectLater(
-        persist.read('key', const PersistOptions()),
-        completion(('value',)),
+      expect(
+        await persist.read('key'),
+        isA<PersistedData<String>>().having((e) => e.data, 'data', 'value'),
       );
     });
 
     test('returns null after a delete', () async {
       await persist.write('key', 'value', const PersistOptions());
-      await persist.delete('key', const PersistOptions());
+      await persist.delete('key');
 
       await expectLater(
-        persist.read('key', const PersistOptions()),
+        persist.read('key'),
         completion(null),
       );
-    });
-
-    test('returns null if the destroyKey changed', () async {
-      await persist.write(
-        'key',
-        'value',
-        const PersistOptions(destroyKey: 'a'),
-      );
-
-      await expectLater(
-        persist.read('key', const PersistOptions(destroyKey: 'b')),
-        completion(null),
-      );
-    });
-
-    test('returns null if the cache time expired', () async {
-      return fakeAsync((async) async {
-        await persist.write('key', 'value', const PersistOptions());
-
-        async.elapse(const Duration(hours: 47));
-
-        await expectLater(
-          persist.read('key', const PersistOptions()),
-          completion(('value',)),
-        );
-
-        async.elapse(const Duration(hours: 2));
-
-        await expectLater(
-          persist.read('key', const PersistOptions()),
-          completion(null),
-        );
-      });
-    });
-
-    test('handles "forever" cacheTime', () async {
-      return fakeAsync((async) async {
-        await persist.write(
-          'key',
-          'value',
-          const PersistOptions(cacheTime: PersistCacheTime.unsafe_forever),
-        );
-
-        async.elapse(const Duration(days: 365 * 10));
-
-        await expectLater(
-          persist.read('key', const PersistOptions()),
-          completion(('value',)),
-        );
-      });
     });
   });
 }

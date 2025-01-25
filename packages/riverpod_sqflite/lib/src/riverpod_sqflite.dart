@@ -72,7 +72,7 @@ CREATE TABLE IF NOT EXISTS $_tableName(
   int _currentTimestamp() => clock.now().toUtc().millisecondsSinceEpoch;
 
   @override
-  Future<(String,)?> read(String key) async {
+  Future<PersistedData<String>?> read(String key) async {
     return _db.transaction((transaction) async {
       final result = await transaction.query(
         _tableName,
@@ -82,27 +82,7 @@ CREATE TABLE IF NOT EXISTS $_tableName(
       );
       if (result.isEmpty) return null;
 
-      final value = _Row.fromMap(result.single);
-
-      if (options.destroyKey != value.destroyKey) {
-        await transaction.delete(
-          _tableName,
-          where: 'key = ?',
-          whereArgs: [key],
-        );
-        return null;
-      }
-
-      if (value.expireAt != null && value.expireAt! < _currentTimestamp()) {
-        await transaction.delete(
-          _tableName,
-          where: 'key = ?',
-          whereArgs: [key],
-        );
-        return null;
-      }
-
-      return (value.json,);
+      return _Row.fromMap(result.single).toPersistedData();
     });
   }
 
@@ -132,21 +112,31 @@ CREATE TABLE IF NOT EXISTS $_tableName(
 class _Row {
   final String key;
   final String json;
-  final int? expireAt;
+  final DateTime? expireAt;
   final String? destroyKey;
 
   _Row.fromMap(Map<String, Object?> map)
       : key = map['key']! as String,
         json = map['json']! as String,
-        expireAt = map['expireAt'] as int?,
+        expireAt = map['expireAt'] == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(map['expireAt']! as int),
         destroyKey = map['destroyKey'] as String?;
 
   Map<String, Object?> toMap() {
     return {
       'key': key,
       'json': json,
-      if (expireAt != null) 'expireAt': expireAt,
+      if (expireAt != null) 'expireAt': expireAt?.millisecondsSinceEpoch,
       if (destroyKey != null) 'destroyKey': destroyKey,
     };
+  }
+
+  PersistedData<String> toPersistedData() {
+    return PersistedData(
+      json,
+      destroyKey: destroyKey,
+      expireAt: expireAt,
+    );
   }
 }

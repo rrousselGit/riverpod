@@ -22,7 +22,7 @@ Future<void> main() async {
   await persist.write(
     key,
     'foo',
-    PersistOptions(cacheTime: PersistCacheTime.unsafe_forever),
+    const PersistOptions(cacheTime: PersistCacheTime.unsafe_forever),
   );
 
   print('heree');
