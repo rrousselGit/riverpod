@@ -4,6 +4,7 @@
 import 'dart:async';
 
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/framework.dart';
 
 mixin MyMixin<A, B> on NotifierBase<A> {}
 

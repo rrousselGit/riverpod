@@ -14,7 +14,9 @@ part 'async_notifier/family.dart';
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
 abstract class $AsyncNotifier<StateT> extends NotifierBase<AsyncValue<StateT>>
-    with $AsyncClassModifier<StateT, FutureOr<StateT>, StateT> {}
+    with
+        $AsyncClassModifier<StateT, FutureOr<StateT>, StateT>,
+        $Value<StateT> {}
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.

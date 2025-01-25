@@ -91,7 +91,7 @@ abstract class NotifierBase<StateT> {
 }
 
 @internal
-abstract class $Value<ValueT> {}
+mixin $Value<ValueT> {}
 
 @internal
 extension ClassBaseX<StateT> on NotifierBase<StateT> {
@@ -320,6 +320,20 @@ to a different value.
       await persist.read(key).then((data) {
         if (!identical(initialResult, stateResult)) return;
         if (data == null) return;
+
+        final options = adapter.persistOptions;
+        if (data.destroyKey != options.destroyKey) {
+          persist.delete(key);
+          return;
+        }
+
+        if (data.expireAt case final expireAt?) {
+          final now = clock.now();
+          if (expireAt.isBefore(now)) {
+            persist.delete(key);
+            return;
+          }
+        }
 
         callDecode(adapter, data.data);
         // TODO If decode throws, should we set the state as an error?

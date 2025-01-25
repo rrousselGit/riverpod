@@ -17,14 +17,25 @@ class PersistOptions {
 
 @immutable
 class PersistedData<T> {
-  const PersistedData({required this.data, this.destroyKey, this.expireAt});
+  const PersistedData(this.data, {this.destroyKey, this.expireAt});
 
   final T data;
   final String? destroyKey;
   final DateTime? expireAt;
+
+  @override
+  bool operator ==(Object other) {
+    return other is PersistedData<T> &&
+        other.data == data &&
+        other.destroyKey == destroyKey &&
+        other.expireAt == expireAt;
+  }
+
+  @override
+  int get hashCode => Object.hash(data, destroyKey, expireAt);
 }
 
-abstract class Persist<KeyT, EncodedT extends Object?> {
+abstract class Persist<KeyT extends Object?, EncodedT extends Object?> {
   factory Persist.inMemory() = _InMemoryPersist<KeyT, EncodedT>;
 
   FutureOr<PersistedData<EncodedT>?> read(KeyT key);
@@ -43,7 +54,7 @@ class _InMemoryPersist<KeyT, EncodedT> implements Persist<KeyT, EncodedT> {
   @override
   FutureOr<void> write(KeyT key, EncodedT value, PersistOptions options) {
     state[key] = PersistedData(
-      data: value,
+      value,
       expireAt: switch (options.cacheTime) {
         ForeverPersistCacheTime() => null,
         DurationPersistCacheTime(:final duration) =>
