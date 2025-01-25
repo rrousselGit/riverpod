@@ -13,12 +13,8 @@ part 'async_notifier/family.dart';
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
-abstract class $AsyncNotifier<StateT> extends $RunnableNotifierBase< //
-        AsyncValue<StateT>,
-        FutureOr<StateT>,
-        StateT> //
-    with
-        $AsyncClassModifier<StateT, FutureOr<StateT>, StateT> {}
+abstract class $AsyncNotifier<StateT> extends NotifierBase<AsyncValue<StateT>>
+    with $AsyncClassModifier<StateT, FutureOr<StateT>, StateT> {}
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
@@ -71,12 +67,12 @@ class $AsyncNotifierProviderElement< //
   void handleValue(
     FutureOr<StateT> created, {
     required bool seamless,
-    required bool isMount,
+    required bool isFirstBuild,
   }) {
     handleFuture(
       () => created,
       seamless: seamless,
-      isMount: isMount,
+      isFirstBuild: isFirstBuild,
     );
   }
 }

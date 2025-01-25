@@ -352,7 +352,7 @@ class $ProviderElement<StateT> extends ProviderElement<StateT> {
   WhenComplete create(
     Ref ref, {
     required bool didChangeDependency,
-    required bool isMount,
+    required bool isFirstBuild,
   }) {
     setStateResult(ResultData(provider.create(ref)));
 

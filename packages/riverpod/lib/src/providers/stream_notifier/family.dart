@@ -24,7 +24,17 @@ abstract class FamilyStreamNotifier<StateT, ArgT>
 
   @internal
   @override
-  Stream<StateT> runBuild() => build(arg);
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  }) {
+    final created = build(arg);
+    element()!.handleValue(
+      created,
+      seamless: !didChangeDependency,
+      isFirstBuild: isFirstBuild,
+    );
+  }
 }
 
 final class FamilyStreamNotifierProvider< //
@@ -62,10 +72,7 @@ final class FamilyStreamNotifierProvider< //
 
   FamilyStreamNotifierProvider<NotifierT, StateT, ArgT> _copyWith({
     NotifierT Function()? create,
-    RunNotifierBuild< //
-            NotifierT,
-            Stream<StateT>>?
-        build,
+    RunNotifierBuild<NotifierT, Stream<StateT>>? build,
   }) {
     return FamilyStreamNotifierProvider._(
       create ?? _createNotifier,

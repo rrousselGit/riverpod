@@ -128,7 +128,7 @@ class StateProviderElement<T> extends ProviderElement<T> {
   @override
   WhenComplete create(
     Ref ref, {
-    required bool isMount,
+    required bool isFirstBuild,
     required bool didChangeDependency,
   }) {
     final initialState = provider._createFn(ref);

@@ -143,10 +143,7 @@ class FunctionalFamily< //
 /// This API is not meant for public consumption.
 @internal
 class ClassFamily< //
-        NotifierT extends $RunnableNotifierBase< //
-            StateT,
-            CreatedT,
-            ValueT>,
+        NotifierT extends NotifierBase<StateT>,
         StateT,
         ValueT,
         ArgT,

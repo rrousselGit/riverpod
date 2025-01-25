@@ -13,7 +13,9 @@ class NotifierTemplate extends Template {
 
   @override
   void run(StringBuffer buffer) {
-    final notifierBaseName = '_\$${provider.name.lexeme.public}';
+    final notifierBaseName = provider.isPersisted
+        ? '_\$${provider.name.lexeme.public}Base'
+        : '_\$${provider.name.lexeme.public}';
     final genericsDefinition = provider.genericsDefinition();
 
     final baseClass = switch (provider.createdType) {

@@ -176,7 +176,7 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
   WhenComplete create(
     Ref ref, {
     required bool didChangeDependency,
-    required bool isMount,
+    required bool isFirstBuild,
   }) {
     final notifierResult = _notifierNotifier.result = $Result.guard(
       () => provider._createFn(ref),

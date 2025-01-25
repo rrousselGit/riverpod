@@ -200,7 +200,15 @@ class Listener<T> extends Mock {
   void call(T? previous, T? next);
 }
 
-class PersistMock<EncodedT> extends Mock implements Persist<EncodedT> {}
+class PersistMock<KeyT, EncodedT> extends Mock
+    implements Persist<KeyT, EncodedT> {
+  @override
+  FutureOr<PersistedData<EncodedT>?> read(KeyT? key);
+  @override
+  FutureOr<void> write(KeyT? key, EncodedT? value, PersistOptions? options);
+  @override
+  FutureOr<void> delete(KeyT? key);
+}
 
 final isAssertionError = isA<AssertionError>();
 

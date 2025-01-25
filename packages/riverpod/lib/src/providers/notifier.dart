@@ -11,8 +11,7 @@ part 'notifier/family.dart';
 
 /// A base class for [$Notifier].
 /// Not meant for public consumption.
-abstract class $Notifier<StateT>
-    extends $RunnableNotifierBase<StateT, StateT, StateT> {
+abstract class $Notifier<StateT> extends NotifierBase<StateT> {
   /// The value currently exposed by this [Notifier].
   ///
   /// If used inside [Notifier.build], may throw if the notifier is not yet initialized.
@@ -42,7 +41,7 @@ abstract class $Notifier<StateT>
   @protected
   @visibleForTesting
   StateT? get stateOrNull {
-    final element = this.element;
+    final element = this.element();
     if (element == null) throw StateError(uninitializedElementError);
 
     element.flush();
@@ -133,21 +132,28 @@ class $NotifierProviderElement< //
   void handleValue(
     StateT created, {
     required bool seamless,
-    required bool isMount,
+    required bool isFirstBuild,
   }) {
     setStateResult(ResultData(created));
   }
 
   @override
-  void callDecode(NotifierEncoder<StateT, Object?> adapter, Object? encoded) {
+  void callDecode(
+    NotifierEncoder<Object?, StateT, Object?> adapter,
+    Object? encoded,
+  ) {
     setStateResult($Result.data(adapter.decode(encoded)));
   }
 
   @override
   Future<void> callEncode(
     Persist persist,
-    NotifierEncoder<StateT, Object?> adapter,
+    NotifierEncoder<Object?, StateT, Object?> adapter,
   ) async {
-    return persist.write(adapter.persistKey, adapter.encode());
+    return persist.write(
+      adapter.persistKey,
+      adapter.encode(),
+      adapter.persistOptions,
+    );
   }
 }

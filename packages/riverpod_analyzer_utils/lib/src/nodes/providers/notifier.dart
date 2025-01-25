@@ -81,6 +81,10 @@ extension ClassBasedProviderDeclarationX on ClassDeclaration {
         return null;
       }
 
+      final hasPersistAnnotation = metadata.any((e) {
+        return e.annotationOfType(riverpodPersistType, exact: false) != null;
+      });
+
       final valueTypeNode = _getValueType(createdTypeNode, element.library);
       final classBasedProviderDeclaration = ClassBasedProviderDeclaration._(
         name: name,
@@ -91,6 +95,7 @@ extension ClassBasedProviderDeclarationX on ClassDeclaration {
         createdTypeNode: createdTypeNode,
         exposedTypeNode: exposedTypeNode,
         valueTypeNode: valueTypeNode,
+        isPersisted: hasPersistAnnotation,
       );
 
       return classBasedProviderDeclaration;
@@ -108,6 +113,7 @@ final class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
     required this.createdTypeNode,
     required this.exposedTypeNode,
     required this.valueTypeNode,
+    required this.isPersisted,
   }) : mutations = node.members
             .whereType<MethodDeclaration>()
             .map((e) => e.mutation)
@@ -129,8 +135,8 @@ final class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
   final TypeAnnotation? valueTypeNode;
   @override
   final SourcedType exposedTypeNode;
-
   final List<Mutation> mutations;
+  final bool isPersisted;
 }
 
 extension MutationMethodDeclarationX on MethodDeclaration {

@@ -180,7 +180,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
   WhenComplete create(
     Ref ref, {
     required bool didChangeDependency,
-    required bool isMount,
+    required bool isFirstBuild,
   }) {
     final notifier = _notifierNotifier.result = $Result.guard(
       () => provider._create(ref),

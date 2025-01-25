@@ -6,28 +6,29 @@ part of 'offline.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-@ProviderFor(Offline)
+@ProviderFor(CustomAnnotation)
 @MyAnnotation()
-const offlineProvider = OfflineProvider._();
+const customAnnotationProvider = CustomAnnotationProvider._();
 
-final class OfflineProvider extends $NotifierProvider<Offline, String> {
-  const OfflineProvider._(
-      {super.runNotifierBuildOverride, Offline Function()? create})
+final class CustomAnnotationProvider
+    extends $NotifierProvider<CustomAnnotation, String> {
+  const CustomAnnotationProvider._(
+      {super.runNotifierBuildOverride, CustomAnnotation Function()? create})
       : _createCb = create,
         super(
           from: null,
           argument: null,
           retry: null,
-          name: r'offlineProvider',
+          name: r'customAnnotationProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
 
-  final Offline Function()? _createCb;
+  final CustomAnnotation Function()? _createCb;
 
   @override
-  String debugGetCreateSourceHash() => _$offlineHash();
+  String debugGetCreateSourceHash() => _$customAnnotationHash();
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
@@ -39,42 +40,223 @@ final class OfflineProvider extends $NotifierProvider<Offline, String> {
 
   @$internal
   @override
-  Offline create() => _createCb?.call() ?? Offline();
+  CustomAnnotation create() => _createCb?.call() ?? CustomAnnotation();
 
   @$internal
   @override
-  OfflineProvider $copyWithCreate(
-    Offline Function() create,
+  CustomAnnotationProvider $copyWithCreate(
+    CustomAnnotation Function() create,
   ) {
-    return OfflineProvider._(create: create);
+    return CustomAnnotationProvider._(create: create);
   }
 
   @$internal
   @override
-  OfflineProvider $copyWithBuild(
+  CustomAnnotationProvider $copyWithBuild(
     String Function(
       Ref,
-      Offline,
+      CustomAnnotation,
     ) build,
   ) {
-    return OfflineProvider._(runNotifierBuildOverride: build);
+    return CustomAnnotationProvider._(runNotifierBuildOverride: build);
   }
 
   @$internal
   @override
-  $NotifierProviderElement<Offline, String> $createElement(
+  $NotifierProviderElement<CustomAnnotation, String> $createElement(
           $ProviderPointer pointer) =>
       $NotifierProviderElement(this, pointer);
 }
 
-String _$offlineHash() => r'c146ef72dec4f58874cf0b61357bfe4d87e44a1a';
+String _$customAnnotationHash() => r'85fb763c60c735b97b24fdcbae8a2882cf5be8b8';
 
-abstract class _$Offline extends $Notifier<String> {
+abstract class _$CustomAnnotationBase extends $Notifier<String> {
   String build();
   @$internal
   @override
   String runBuild() => build();
 }
 
+@ProviderFor(Json)
+@JsonPersist()
+const jsonProvider = JsonFamily._();
+
+final class JsonProvider
+    extends $AsyncNotifierProvider<Json, Map<String, List<int>>> {
+  const JsonProvider._(
+      {required JsonFamily super.from,
+      required String super.argument,
+      super.runNotifierBuildOverride,
+      Json Function()? create})
+      : _createCb = create,
+        super(
+          retry: null,
+          name: r'jsonProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final Json Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$jsonHash();
+
+  @override
+  String toString() {
+    return r'jsonProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  Json create() => _createCb?.call() ?? Json();
+
+  @$internal
+  @override
+  JsonProvider $copyWithCreate(
+    Json Function() create,
+  ) {
+    return JsonProvider._(
+        argument: argument as String,
+        from: from! as JsonFamily,
+        create: create);
+  }
+
+  @$internal
+  @override
+  JsonProvider $copyWithBuild(
+    FutureOr<Map<String, List<int>>> Function(
+      Ref,
+      Json,
+    ) build,
+  ) {
+    return JsonProvider._(
+        argument: argument as String,
+        from: from! as JsonFamily,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $AsyncNotifierProviderElement<Json, Map<String, List<int>>> $createElement(
+          $ProviderPointer pointer) =>
+      $AsyncNotifierProviderElement(this, pointer);
+
+  @override
+  bool operator ==(Object other) {
+    return other is JsonProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$jsonHash() => r'e60e1db39aa569f9a430708a1010905632717ace';
+
+final class JsonFamily extends Family {
+  const JsonFamily._()
+      : super(
+          retry: null,
+          name: r'jsonProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  JsonProvider call(
+    String arg,
+  ) =>
+      JsonProvider._(argument: arg, from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$jsonHash();
+
+  @override
+  String toString() => r'jsonProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    Json Function(
+      String args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as JsonProvider;
+
+        final argument = provider.argument as String;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .$createElement(pointer);
+      },
+    );
+  }
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    FutureOr<Map<String, List<int>>> Function(
+            Ref ref, Json notifier, String argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as JsonProvider;
+
+        final argument = provider.argument as String;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .$createElement(pointer);
+      },
+    );
+  }
+}
+
+abstract class _$JsonBase extends $AsyncNotifier<Map<String, List<int>>> {
+  late final _$args = ref.$arg as String;
+  String get arg => _$args;
+
+  FutureOr<Map<String, List<int>>> build(
+    String arg,
+  );
+  @$internal
+  @override
+  FutureOr<Map<String, List<int>>> runBuild() => build(
+        _$args,
+      );
+}
+
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
+// **************************************************************************
+// JsonGenerator
+// **************************************************************************
+
+abstract class _$Json extends _$JsonBase
+    with NotifierEncoder<Map<String, List<int>>, String> {
+  @override
+  String get persistKey {
+    final args = arg;
+    return 'Json($args)';
+  }
+
+  @override
+  String encode() {
+    return $jsonCodex.encode(state.requireValue);
+  }
+
+  @override
+  Map<String, List<int>> decode(String value) {
+    final e = $jsonCodex.decode(value);
+    return (e as Map).map((k, v) =>
+        MapEntry(e as String, (e as List).map((e) => e as int).toList()));
+  }
+}

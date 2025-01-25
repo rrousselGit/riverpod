@@ -82,21 +82,22 @@ abstract class NotifierBase<StateT> {
 
   @visibleForOverriding
   bool updateShouldNotify(StateT previous, StateT next);
+
+  @internal
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  });
 }
 
 @internal
 abstract class $Value<ValueT> {}
 
 @internal
-abstract class $RunnableNotifierBase<StateT, CreatedT, ValueT>
-    extends NotifierBase<StateT> implements $Value<ValueT> {
-  @internal
-  CreatedT runBuild();
-}
-
-@internal
 extension ClassBaseX<StateT> on NotifierBase<StateT> {
-  ProviderElement<StateT>? get element => _ref?._element;
+  ClassProviderElement<NotifierBase<StateT>, StateT, Object?, Object?>?
+      element() => _ref?._element as ClassProviderElement<NotifierBase<StateT>,
+          StateT, Object?, Object?>?;
 
   @internal
   // ignore: library_private_types_in_public_api, not public
@@ -111,10 +112,7 @@ extension ClassBaseX<StateT> on NotifierBase<StateT> {
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
 abstract base class $ClassProvider< //
-    NotifierT extends $RunnableNotifierBase< //
-        StateT,
-        CreatedT,
-        ValueT>,
+    NotifierT extends NotifierBase<StateT>,
     StateT,
     ValueT,
     CreatedT> extends ProviderBase<StateT> {
@@ -184,10 +182,7 @@ abstract base class $ClassProvider< //
 
 @internal
 abstract class ClassProviderElement< //
-        NotifierT extends $RunnableNotifierBase< //
-            StateT,
-            CreatedT,
-            ValueT>,
+        NotifierT extends NotifierBase<StateT>,
         StateT,
         ValueT,
         CreatedT> //
@@ -205,7 +200,7 @@ abstract class ClassProviderElement< //
     // ignore: library_private_types_in_public_api, not public
     $Ref<StateT> ref, {
     required bool didChangeDependency,
-    required bool isMount,
+    required bool isFirstBuild,
   }) {
     final seamless = !didChangeDependency;
 
@@ -222,16 +217,21 @@ abstract class ClassProviderElement< //
     switch (result) {
       case ResultData():
         try {
-          if (isMount) _decodeFromCache();
+          if (isFirstBuild) _decodeFromCache();
 
-          final created =
-              provider.runNotifierBuildOverride?.call(ref, result.state) ??
-                  result.state.runBuild();
-          handleValue(
-            created,
-            seamless: seamless,
-            isMount: isMount,
-          );
+          if (provider.runNotifierBuildOverride case final override?) {
+            final created = override(ref, result.state);
+            handleValue(
+              created,
+              seamless: seamless,
+              isFirstBuild: isFirstBuild,
+            );
+          } else {
+            result.state.runBuild(
+              isFirstBuild: isFirstBuild,
+              didChangeDependency: didChangeDependency,
+            );
+          }
         } catch (err, stack) {
           handleError(err, stack, seamless: seamless);
         }
@@ -255,18 +255,18 @@ abstract class ClassProviderElement< //
     ref!.listenSelf((previous, current) => _callEncode(adapter));
   }
 
-  NotifierEncoder<ValueT, Object?>? _adapter() {
+  NotifierEncoder<Object?, ValueT, Object?>? _adapter() {
     final Object? notifier = classListenable.result?.stateOrNull;
 
     switch (notifier) {
-      case NotifierEncoder<ValueT, Object?>():
+      case NotifierEncoder<Object?, ValueT, Object?>():
         return notifier;
       default:
         return null;
     }
   }
 
-  Persist? _requestPersist(NotifierEncoder<ValueT, Object?> adapter) {
+  Persist? _requestPersist(NotifierEncoder<Object?, ValueT, Object?> adapter) {
     final persist = adapter.persist;
 
     if (kDebugMode) _debugAssertNoDuplicateKey(adapter.persistKey);
@@ -303,12 +303,12 @@ to a different value.
   }
 
   void callDecode(
-    NotifierEncoder<ValueT, Object?> adapter,
+    NotifierEncoder<Object?, ValueT, Object?> adapter,
     Object? encoded,
   );
 
   FutureOr<void> _decode(
-    NotifierEncoder<ValueT, Object?> adapter,
+    NotifierEncoder<Object?, ValueT, Object?> adapter,
   ) async {
     final offline = _requestPersist(adapter);
     if (offline == null) return;
@@ -317,11 +317,11 @@ to a different value.
     try {
       final key = adapter.persistKey;
       final initialResult = stateResult;
-      await persist.read(key).then((encoded) {
+      await persist.read(key).then((data) {
         if (!identical(initialResult, stateResult)) return;
-        if (encoded == null) return;
+        if (data == null) return;
 
-        callDecode(adapter, encoded.$1);
+        callDecode(adapter, data.data);
         // TODO If decode throws, should we set the state as an error?
       });
     } catch (e, s) {
@@ -331,11 +331,11 @@ to a different value.
 
   Future<void> callEncode(
     Persist persist,
-    NotifierEncoder<ValueT, Object?> adapter,
+    NotifierEncoder<Object?, ValueT, Object?> adapter,
   );
 
   Future<void> _callEncode(
-    NotifierEncoder<ValueT, Object?> adapter,
+    NotifierEncoder<Object?, ValueT, Object?> adapter,
   ) async {
     final offline = _requestPersist(adapter);
     if (offline == null) return;
@@ -351,7 +351,7 @@ to a different value.
   void handleValue(
     CreatedT created, {
     required bool seamless,
-    required bool isMount,
+    required bool isFirstBuild,
   });
   void handleError(
     Object error,

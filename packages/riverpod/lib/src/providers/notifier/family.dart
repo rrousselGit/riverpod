@@ -13,7 +13,17 @@ abstract class FamilyNotifier<StateT, ArgT> extends $Notifier<StateT> {
 
   @internal
   @override
-  StateT runBuild() => build(arg);
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  }) {
+    final created = build(arg);
+    element()!.handleValue(
+      created,
+      seamless: !didChangeDependency,
+      isFirstBuild: isFirstBuild,
+    );
+  }
 }
 
 final class FamilyNotifierProvider //

@@ -14,12 +14,8 @@ part 'stream_notifier/orphan.dart';
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
-abstract class $StreamNotifier<StateT> extends $RunnableNotifierBase< //
-        AsyncValue<StateT>,
-        Stream<StateT>,
-        StateT> //
-    with
-        $AsyncClassModifier<StateT, Stream<StateT>, StateT> {}
+abstract class $StreamNotifier<StateT> extends NotifierBase<AsyncValue<StateT>>
+    with $AsyncClassModifier<StateT, Stream<StateT>, StateT> {}
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
@@ -72,12 +68,12 @@ class $StreamNotifierProviderElement< //
   void handleValue(
     Stream<StateT> created, {
     required bool seamless,
-    required bool isMount,
+    required bool isFirstBuild,
   }) {
     handleStream(
       () => created,
       seamless: seamless,
-      isMount: isMount,
+      isFirstBuild: isFirstBuild,
     );
   }
 }

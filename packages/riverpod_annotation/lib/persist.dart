@@ -1,23 +1,13 @@
 /// {@template riverpod_persist_annotation}
 /// An interface to mark annotations as "used to enable persistence for a provider".
 ///
-/// This avoids having to write:
+/// This tells Riverpod that a separate code-generator wants to modify Notifiers
+/// to add persistence capabilities.
 ///
-/// ```dart
-/// @Riverpod(persist: true)
-/// @MyCustomAnnotation()
-/// ```
-/// when you can write:
-/// ```dart
-/// @riverpod
-/// @MyCustomAnnotation()
-/// ```
-///
-/// **Note**: When this annotation is used, Riverpod will expect that a
-/// mixin of the name `_${providerName}Persist` is available in the same file.
-/// That mixin will be expected to implement the `PersistAdapter` interface.
-///
-/// It is the role of this annotation to generate the mixin mentioned mixin.
+/// **Note**: When this annotation is used, Riverpod will no-longer
+/// generate a `_$MyNotifier`. Instead it will generate a `_$MyNotifierBase`
+/// and then expect the third-party generator to generate a `_$MyNotifier`
+/// that extends `_$MyNotifierBase`.
 /// {@endtemplate}
 class RiverpodPersist {
   /// {@macro riverpod_persist_annotation}

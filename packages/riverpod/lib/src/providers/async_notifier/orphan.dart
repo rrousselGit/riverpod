@@ -35,7 +35,17 @@ abstract class AsyncNotifier<StateT> extends $AsyncNotifier<StateT> {
 
   @internal
   @override
-  FutureOr<StateT> runBuild() => build();
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  }) {
+    final created = build();
+    element()!.handleValue(
+      created,
+      seamless: !didChangeDependency,
+      isFirstBuild: isFirstBuild,
+    );
+  }
 }
 
 /// {@template riverpod.async_notifier_provider}

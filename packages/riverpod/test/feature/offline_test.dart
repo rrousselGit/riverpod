@@ -8,6 +8,7 @@ import 'package:test/test.dart';
 import '../src/matrix.dart';
 import '../src/matrix.dart' as $matrix;
 import '../src/utils.dart';
+import '../third_party/fake_async.dart';
 
 void main() {
   group('Offline', () {
@@ -16,7 +17,7 @@ void main() {
       final provider = NotifierProvider<$matrix.DeferredNotifier<int>, int>(
         () => $matrix.DeferredNotifier<int>((ref, self) => 0),
       );
-      final persist = PersistMock<Object?>();
+      final persist = PersistMock<String, Object?>();
       final container = ProviderContainer.test(persist: persist);
 
       expect(container.read(provider).valueOf, 0);
@@ -26,17 +27,19 @@ void main() {
 
     matrix.createGroup((factory) {
       test('Persist if the notifier implements NotifierEncoder', () {
-        final persist = PersistMock<Object?>();
+        final persist = PersistMock<String, Object?>();
+        const op = PersistOptions(destroyKey: 'b');
         final provider = factory.simpleProvider(
           (ref, self) => 0,
           persist: persist,
+          persistOptions: op,
         );
         final container = ProviderContainer.test();
 
         container.read(provider);
 
         verify(persist.read('key')).called(1);
-        verify(persist.write('key', 0)).called(1);
+        verify(persist.write('key', 0, op)).called(1);
 
         verifyNoMoreInteractions(persist);
       });
@@ -83,9 +86,9 @@ void main() {
         final provider = factory.simpleProvider(
           (ref, self) => 0,
           persist: DelegatingPersist(
-            read: (_) => throw StateError('read'),
-            write: (_, __) => throw StateError('write'),
-            delete: (_) => throw StateError('delete'),
+            read: (_, __) => throw StateError('read'),
+            write: (_, __, ___) => throw StateError('write'),
+            delete: (_, __) => throw StateError('delete'),
           ),
         );
         final container = ProviderContainer.test();
@@ -130,7 +133,7 @@ void main() {
         );
         final container = ProviderContainer.test(
           persist: DelegatingPersist(
-            read: (_) => (42,),
+            read: (_, __) => (42,),
           ),
         );
 
@@ -143,7 +146,7 @@ void main() {
         final provider = factory.simpleProvider(
           (ref, self) => self.state.valueOf,
           persist: DelegatingPersist(
-            read: (_) => (42,),
+            read: (_, __) => (42,),
           ),
         );
         final container = ProviderContainer.test();
@@ -158,7 +161,7 @@ void main() {
         final provider = factory.simpleProvider(
           (ref, self) => value = self.valueOf,
           persist: DelegatingPersist(
-            read: (_) => (21,),
+            read: (_, __) => (21,),
           ),
         );
         final container = ProviderContainer.test();
@@ -175,7 +178,7 @@ void main() {
           final provider = factory.simpleProvider(
             (ref, self) => self.valueOf,
             persist: DelegatingPersist(
-              read: (_) => (value,),
+              read: (_, __) => (value,),
             ),
           );
           final container = ProviderContainer.test();
@@ -197,7 +200,7 @@ void main() {
             final provider = factory.simpleProvider(
               (ref, self) => value.future,
               persist: DelegatingPersist(
-                read: (_) => completer.future,
+                read: (_, __) => completer.future,
               ),
             );
             final container = ProviderContainer.test();
@@ -219,7 +222,7 @@ void main() {
             final provider = factory.simpleProvider(
               (ref, self) => self.future,
               persist: DelegatingPersist(
-                read: (_) => Future(() => (21,)),
+                read: (_, __) => Future(() => (21,)),
               ),
             );
             final container = ProviderContainer.test();
@@ -243,7 +246,7 @@ void main() {
             final provider = factory.simpleProvider(
               (ref, self) => self.valueOf,
               persist: DelegatingPersist(
-                read: (_) => (value,),
+                read: (_, __) => (value,),
               ),
             );
             final container = ProviderContainer.test();
@@ -264,7 +267,7 @@ void main() {
           final provider = factory.simpleProvider(
             (ref, self) => 0,
             persist: DelegatingPersist(
-              read: (_) => completer.future,
+              read: (_, __) => completer.future,
             ),
           );
           final container = ProviderContainer.test();
@@ -281,13 +284,15 @@ void main() {
       group('encode', () {
         test('When a provider emits any update, notify the DB adapter',
             () async {
-          final persist = PersistMock<Object?>();
-          when(persist.read(any)).thenReturn((42,));
+          final persist = PersistMock<String, Object?>();
+          when(persist.read(any, any)).thenReturn((42,));
           final encode = Encode<Object?>();
+          const op = PersistOptions(destroyKey: 'a');
           when(encode.call(any)).thenAnswer((i) => i.positionalArguments.first);
           final provider = factory.simpleProvider(
             (ref, self) => 0,
             persist: persist,
+            persistOptions: op,
             encode: encode.call,
           );
           final container = ProviderContainer.test();
@@ -295,12 +300,12 @@ void main() {
           final sub = container.listen(provider, (a, b) {});
 
           verifyOnly(encode, encode(0));
-          verify(persist.write('key', 0)).called(1);
+          verify(persist.write('key', 0, op)).called(1);
 
           container.read(provider.notifier!).state = factory.valueFor(21);
 
           verifyOnly(encode, encode(21));
-          verify(persist.write('key', 21)).called(1);
+          verify(persist.write('key', 21, op)).called(1);
         });
 
         if (factory.isAsync) {
@@ -310,7 +315,7 @@ void main() {
             final provider = factory.simpleProvider(
               (ref, self) => 0,
               persist: DelegatingPersist(
-                read: (_) => (42,),
+                read: (_, __) => (42,),
               ),
               encode: encode.call,
             );
@@ -332,12 +337,14 @@ void main() {
             final encode = Encode<Object?>();
             final completer = Completer<(int,)>();
             final delete = Delete();
+            const op = PersistOptions(destroyKey: 'a');
             final provider = factory.simpleProvider(
               (ref, self) => 0,
               persist: DelegatingPersist(
-                read: (_) => (42,),
+                read: (_, __) => (42,),
                 delete: delete.call,
               ),
+              persistOptions: op,
               encode: encode.call,
             );
             final container = ProviderContainer.test();
@@ -350,7 +357,7 @@ void main() {
                 const AsyncError<int>(42, StackTrace.empty);
 
             verifyZeroInteractions(encode);
-            verifyOnly(delete, delete('key'));
+            verifyOnly(delete, delete('key', op));
 
             completer.complete((21,));
           });
@@ -362,7 +369,7 @@ void main() {
             final provider = factory.simpleProvider(
               (ref, self) => resultCompleter.future,
               persist: DelegatingPersist(
-                read: (_) => decodeCompleter.future,
+                read: (_, __) => decodeCompleter.future,
               ),
               encode: encode.call,
             );
@@ -389,7 +396,7 @@ void main() {
             final provider = factory.simpleProvider(
               (ref, self) => completer.future,
               persist: DelegatingPersist(
-                read: (_) => (42,),
+                read: (_, __) => (42,),
               ),
             );
             final container = ProviderContainer.test();
@@ -407,7 +414,7 @@ void main() {
               (ref, self) => 42,
             );
             final container = ProviderContainer.test(
-              persist: DelegatingPersist(read: (_) => (42,)),
+              persist: DelegatingPersist(read: (_, __) => (42,)),
             );
 
             final sub = container.listen(provider, (a, b) {});
@@ -426,27 +433,70 @@ void main() {
           });
         });
       }
+    });
+  });
 
-      test('ProviderScope throws if `offline` changes on update', () {});
-      group('destroyKey', () {
-        test('Can specify a destroyKey on a provider', () {});
+  test('returns null if the destroyKey changed', () {
+    final persist = Persist<String, String>.inMemory();
 
-        test(
-          'Initializing a provider with a destroyKey throws if the provider did not opt-in to offline',
-          () {},
+    persist.write('key', 'value', const PersistOptions(destroyKey: 'a'));
+
+    expect(persist.read('key', const PersistOptions(destroyKey: 'b')), null);
+  });
+
+  test('returns null if the cache time expired', () {
+    return fakeAsync((async) {
+      final persist = Persist<String, String>.inMemory();
+
+      persist.write('key', 'value', const PersistOptions());
+
+      async.elapse(const Duration(hours: 47));
+
+      expect(persist.read('key', const PersistOptions()), ('value',));
+
+      async.elapse(const Duration(days: 3));
+
+      expect(persist.read('key', const PersistOptions()), null);
+    });
+  });
+
+  group('InMemoryPersist', () {
+    test('returns null on unknown keys', () {
+      final persist = Persist<String, String>.inMemory();
+
+      expect(persist.read('unknown'), null);
+    });
+
+    test('returns the value if it exists', () {
+      final persist = Persist<String, String>.inMemory();
+
+      persist.write('key', 'value', const PersistOptions());
+
+      expect(persist.read('key'), ('value',));
+    });
+
+    test('returns null after a delete', () {
+      final persist = Persist<String, String>.inMemory();
+
+      persist.write('key', 'value', const PersistOptions());
+      persist.delete('key');
+
+      expect(persist.read('key'), null);
+    });
+
+    test('handles "forever" cacheTime', () {
+      return fakeAsync((async) {
+        final persist = Persist<String, String>.inMemory();
+
+        persist.write(
+          'key',
+          'value',
+          const PersistOptions(cacheTime: PersistCacheTime.unsafe_forever),
         );
 
-        test('Can destroy the whole cache using a global destroyKey', () {});
+        async.elapse(const Duration(days: 365 * 10));
 
-        test(
-          'Can destroy a provider using a provider-specific destroyKey',
-          () {},
-        );
-
-        test(
-          'If a provider has a destroyKey, it still respects the global one',
-          () {},
-        );
+        expect(persist.read('key'), ('value',));
       });
     });
   });
@@ -456,8 +506,8 @@ class Encode<T> with Mock {
   Object? call(T? value);
 }
 
-class Delete with Mock {
-  void call(Object? key);
+class Delete<KeyT> with Mock {
+  void call(KeyT? key, PersistOptions options);
 }
 
 final matrix = TestMatrix<TestFactory<Object?>>({
@@ -510,6 +560,7 @@ extension on TestFactory<Object?> {
     Object Function(Object? args)? persistKey,
     Object? Function(Object? encoded)? decode,
     Object? Function(Object? value)? encode,
+    PersistOptions persistOptions = const PersistOptions(),
   }) {
     decode ??= (value) => value;
     persistKey ??= (args) => 'key';
@@ -530,6 +581,7 @@ extension on TestFactory<Object?> {
               decode: decode,
               encode: encode,
               persist: persist,
+              persistOptions: persistOptions,
             );
 
         DeferredAsyncNotifier<Object?> notifierCreate() =>
@@ -539,6 +591,7 @@ extension on TestFactory<Object?> {
               decode: decode,
               encode: encode,
               persist: persist,
+              persistOptions: persistOptions,
             );
 
         switch ((
@@ -590,6 +643,7 @@ extension on TestFactory<Object?> {
               decode: decode,
               encode: encode,
               persist: persist,
+              persistOptions: persistOptions,
             );
 
         DeferredStreamNotifier<Object?> notifierCreate() =>
@@ -599,6 +653,7 @@ extension on TestFactory<Object?> {
               decode: decode,
               encode: encode,
               persist: persist,
+              persistOptions: persistOptions,
             );
 
         switch ((
@@ -631,6 +686,7 @@ extension on TestFactory<Object?> {
               decode: decode,
               encode: encode,
               persist: persist,
+              persistOptions: persistOptions,
             );
 
         DeferredNotifier<Object?> notifierCreate() => DeferredNotifier(
@@ -639,6 +695,7 @@ extension on TestFactory<Object?> {
               decode: decode,
               encode: encode,
               persist: persist,
+              persistOptions: persistOptions,
             );
 
         switch ((
@@ -692,32 +749,41 @@ extension on Object? {
   }
 }
 
-class DelegatingPersist<EncodedT> extends Persist<EncodedT> {
+class DelegatingPersist<KeyT, EncodedT> implements Persist<KeyT, EncodedT> {
   DelegatingPersist({
-    required FutureOr<(EncodedT,)?> Function(Object? key) read,
-    FutureOr<void> Function(Object? key, EncodedT value)? write,
-    FutureOr<void> Function(Object? key)? delete,
+    required FutureOr<PersistedData<EncodedT>?> Function(KeyT key) read,
+    FutureOr<void> Function(
+      KeyT key,
+      EncodedT value,
+      PersistOptions options,
+    )? write,
+    FutureOr<void> Function(KeyT key)? delete,
   })  : _read = read,
-        _write = write ?? ((_, __) {}),
+        _write = write ?? ((_, __, ___) {}),
         _delete = delete ?? ((_) => throw UnimplementedError());
 
-  final FutureOr<(EncodedT,)?> Function(Object? key) _read;
+  final FutureOr<PersistedData<EncodedT>?> Function(KeyT key) _read;
   @override
-  FutureOr<(EncodedT,)?> read(Object? key) => _read(key);
+  FutureOr<PersistedData<EncodedT>?> read(KeyT key) => _read(key);
 
-  final FutureOr<void> Function(Object? key, EncodedT value) _write;
+  final FutureOr<void> Function(
+    KeyT key,
+    EncodedT value,
+    PersistOptions options,
+  ) _write;
   @override
-  FutureOr<void> write(Object? key, EncodedT value) => _write(key, value);
+  FutureOr<void> write(KeyT key, EncodedT value, PersistOptions options) =>
+      _write(key, value, options);
 
-  final FutureOr<void> Function(Object? key) _delete;
+  final FutureOr<void> Function(KeyT key) _delete;
   @override
-  FutureOr<void> delete(Object? key) => _delete(key);
+  FutureOr<void> delete(KeyT key) => _delete(key);
 }
 
 // ---------- //
 
 class DeferredAsyncNotifier<StateT> extends AsyncNotifier<StateT>
-    with NotifierEncoder<StateT, Object?>
+    with NotifierEncoder<Object?, StateT, Object?>
     implements TestAsyncNotifier<StateT> {
   DeferredAsyncNotifier(
     this._create, {
@@ -725,7 +791,8 @@ class DeferredAsyncNotifier<StateT> extends AsyncNotifier<StateT>
     Object? Function(AsyncValue<StateT> state)? encode,
     StateT Function(Object? serialized)? decode,
     Object Function(Object? args)? persistKey,
-    Persist<Object?>? persist,
+    Persist<Object?, Object?>? persist,
+    this.persistOptions = const PersistOptions(),
   })  : _updateShouldNotify = updateShouldNotify,
         _encode = encode,
         _decode = decode,
@@ -774,14 +841,17 @@ class DeferredAsyncNotifier<StateT> extends AsyncNotifier<StateT>
     };
   }
 
-  final Persist<Object?>? _persist;
+  final Persist<Object?, Object?>? _persist;
   @override
-  Persist<Object?> get persist => _persist ?? super.persist;
+  Persist<Object?, Object?> get persist => _persist ?? super.persist;
+
+  @override
+  final PersistOptions persistOptions;
 }
 
 class DeferredFamilyAsyncNotifier<StateT>
     extends FamilyAsyncNotifier<StateT, int>
-    with NotifierEncoder<StateT, Object?>
+    with NotifierEncoder<Object?, StateT, Object?>
     implements TestAsyncNotifier<StateT> {
   DeferredFamilyAsyncNotifier(
     this._create, {
@@ -789,7 +859,8 @@ class DeferredFamilyAsyncNotifier<StateT>
     Object? Function(AsyncValue<StateT> state)? encode,
     StateT Function(Object? serialized)? decode,
     Object Function(Object? args)? persistKey,
-    Persist<Object?>? persist,
+    Persist<Object?, Object?>? persist,
+    this.persistOptions = const PersistOptions(),
   })  : _updateShouldNotify = updateShouldNotify,
         _encode = encode,
         _decode = decode,
@@ -839,13 +910,16 @@ class DeferredFamilyAsyncNotifier<StateT>
     };
   }
 
-  final Persist<Object?>? _persist;
+  final Persist<Object?, Object?>? _persist;
   @override
-  Persist<Object?> get persist => _persist ?? super.persist;
+  Persist<Object?, Object?> get persist => _persist ?? super.persist;
+
+  @override
+  final PersistOptions persistOptions;
 }
 
 class DeferredNotifier<StateT> extends Notifier<StateT>
-    with NotifierEncoder<StateT, Object?>
+    with NotifierEncoder<Object?, StateT, Object?>
     implements TestNotifier<StateT> {
   DeferredNotifier(
     this._create, {
@@ -853,7 +927,8 @@ class DeferredNotifier<StateT> extends Notifier<StateT>
     Object? Function(StateT encoded)? encode,
     StateT Function(Object? serialized)? decode,
     Object Function(Object? args)? persistKey,
-    Persist<Object?>? persist,
+    Persist<Object?, Object?>? persist,
+    this.persistOptions = const PersistOptions(),
   })  : _updateShouldNotify = updateShouldNotify,
         _encode = encode,
         _decode = decode,
@@ -908,13 +983,16 @@ class DeferredNotifier<StateT> extends Notifier<StateT>
     };
   }
 
-  final Persist<Object?>? _persist;
+  final Persist<Object?, Object?>? _persist;
   @override
-  Persist<Object?> get persist => _persist ?? super.persist;
+  Persist<Object?, Object?> get persist => _persist ?? super.persist;
+
+  @override
+  final PersistOptions persistOptions;
 }
 
 class DeferredFamilyNotifier<StateT> extends FamilyNotifier<StateT, int>
-    with NotifierEncoder<StateT, Object?>
+    with NotifierEncoder<Object?, StateT, Object?>
     implements TestNotifier<StateT> {
   DeferredFamilyNotifier(
     this._create, {
@@ -922,7 +1000,8 @@ class DeferredFamilyNotifier<StateT> extends FamilyNotifier<StateT, int>
     Object? Function(StateT value)? encode,
     StateT Function(Object? serialized)? decode,
     Object Function(Object? args)? persistKey,
-    Persist<Object?>? persist,
+    Persist<Object?, Object?>? persist,
+    this.persistOptions = const PersistOptions(),
   })  : _updateShouldNotify = updateShouldNotify,
         _encode = encode,
         _decode = decode,
@@ -972,13 +1051,16 @@ class DeferredFamilyNotifier<StateT> extends FamilyNotifier<StateT, int>
     };
   }
 
-  final Persist<Object?>? _persist;
+  final Persist<Object?, Object?>? _persist;
   @override
-  Persist<Object?> get persist => _persist ?? super.persist;
+  Persist<Object?, Object?> get persist => _persist ?? super.persist;
+
+  @override
+  final PersistOptions persistOptions;
 }
 
 class DeferredStreamNotifier<StateT> extends StreamNotifier<StateT>
-    with NotifierEncoder<StateT, Object?>
+    with NotifierEncoder<Object?, StateT, Object?>
     implements TestStreamNotifier<StateT> {
   DeferredStreamNotifier(
     this._create, {
@@ -986,7 +1068,8 @@ class DeferredStreamNotifier<StateT> extends StreamNotifier<StateT>
     Object? Function(StateT value)? encode,
     StateT Function(Object? serialized)? decode,
     Object Function(Object? args)? persistKey,
-    Persist<Object?>? persist,
+    Persist<Object?, Object?>? persist,
+    this.persistOptions = const PersistOptions(),
   })  : _updateShouldNotify = updateShouldNotify,
         _encode = encode,
         _decode = decode,
@@ -1038,14 +1121,17 @@ class DeferredStreamNotifier<StateT> extends StreamNotifier<StateT>
     };
   }
 
-  final Persist<Object?>? _persist;
+  final Persist<Object?, Object?>? _persist;
   @override
-  Persist<Object?> get persist => _persist ?? super.persist;
+  Persist<Object?, Object?> get persist => _persist ?? super.persist;
+
+  @override
+  final PersistOptions persistOptions;
 }
 
 class DeferredFamilyStreamNotifier<StateT>
     extends FamilyStreamNotifier<StateT, int>
-    with NotifierEncoder<StateT, Object?>
+    with NotifierEncoder<Object?, StateT, Object?>
     implements TestStreamNotifier<StateT> {
   DeferredFamilyStreamNotifier(
     this._create, {
@@ -1053,7 +1139,8 @@ class DeferredFamilyStreamNotifier<StateT>
     Object? Function(StateT value)? encode,
     StateT Function(Object? serialized)? decode,
     Object Function(Object? args)? persistKey,
-    Persist<Object?>? persist,
+    Persist<Object?, Object?>? persist,
+    this.persistOptions = const PersistOptions(),
   })  : _updateShouldNotify = updateShouldNotify,
         _encode = encode,
         _decode = decode,
@@ -1106,7 +1193,10 @@ class DeferredFamilyStreamNotifier<StateT>
     };
   }
 
-  final Persist<Object?>? _persist;
+  final Persist<Object?, Object?>? _persist;
   @override
-  Persist<Object?> get persist => _persist ?? super.persist;
+  Persist<Object?, Object?> get persist => _persist ?? super.persist;
+
+  @override
+  final PersistOptions persistOptions;
 }

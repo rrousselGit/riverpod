@@ -177,12 +177,12 @@ class $FutureProviderElement<StateT> extends ProviderElement<AsyncValue<StateT>>
   WhenComplete create(
     Ref ref, {
     required bool didChangeDependency,
-    required bool isMount,
+    required bool isFirstBuild,
   }) {
     return handleFuture(
       () => provider.create(ref),
       seamless: !didChangeDependency,
-      isMount: isMount,
+      isFirstBuild: isFirstBuild,
     );
   }
 

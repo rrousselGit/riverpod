@@ -237,14 +237,6 @@ class ProviderDirectory implements _PointerBase {
 @internal
 typedef Retry = Duration? Function(int retryCount, Object error);
 
-/// Options for interacting with offline persistence.
-@optionalTypeArgs
-abstract class Persist<EncodedT extends Object?> {
-  FutureOr<(EncodedT,)?> read(Object? key);
-  FutureOr<void> write(Object? key, EncodedT value);
-  FutureOr<void> delete(Object? key);
-}
-
 /// An object responsible for storing the a O(1) access to providers,
 /// while also enabling the "scoping" of providers and ensuring all [ProviderContainer]s
 /// are in sync.

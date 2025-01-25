@@ -1,0 +1,23 @@
+name: example
+description: "A new Flutter project."
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.6.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod:
+  path: ^1.9.0
+  riverpod:
+  riverpod_sqflite:
+  sqflite: ^2.4.1
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true

@@ -15,7 +15,7 @@ typedef AsyncSubscription = ({
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
 mixin $AsyncClassModifier<StateT, CreatedT, ValueT>
-    on $RunnableNotifierBase<AsyncValue<StateT>, CreatedT, ValueT> {
+    on NotifierBase<AsyncValue<StateT>> {
   /// The value currently exposed by this [AsyncNotifier].
   ///
   /// Defaults to [AsyncLoading] inside the [AsyncNotifier.build] method.
@@ -196,12 +196,7 @@ base mixin $FutureModifier<StateT> on ProviderBase<AsyncValue<StateT>> {
 }
 
 mixin FutureModifierClassElement<
-        NotifierT extends $RunnableNotifierBase< //
-            AsyncValue<StateT>,
-            CreatedT,
-            StateT>,
-        StateT,
-        CreatedT>
+        NotifierT extends NotifierBase<AsyncValue<StateT>>, StateT, CreatedT>
     on
         FutureModifierElement<StateT>,
         ClassProviderElement<NotifierT, AsyncValue<StateT>, StateT, CreatedT> {
@@ -217,7 +212,7 @@ mixin FutureModifierClassElement<
 
   @override
   void callDecode(
-    NotifierEncoder<StateT, Object?> adapter,
+    NotifierEncoder<Object?, StateT, Object?> adapter,
     Object? encoded,
   ) {
     setStateResult(
@@ -230,7 +225,7 @@ mixin FutureModifierClassElement<
   @override
   Future<void> callEncode(
     Persist persist,
-    NotifierEncoder<StateT, Object?> adapter,
+    NotifierEncoder<Object?, StateT, Object?> adapter,
   ) async {
     switch (stateResult?.stateOrNull) {
       case null:
@@ -239,7 +234,11 @@ mixin FutureModifierClassElement<
       case AsyncError():
         return persist.delete(adapter.persistKey);
       case AsyncData():
-        return persist.write(adapter.persistKey, adapter.encode());
+        return persist.write(
+          adapter.persistKey,
+          adapter.encode(),
+          adapter.persistOptions,
+        );
     }
   }
 }
@@ -375,9 +374,9 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   WhenComplete handleStream(
     Stream<StateT> Function() create, {
     required bool seamless,
-    required bool isMount,
+    required bool isFirstBuild,
   }) {
-    return _handleAsync(seamless: seamless, isMount: isMount, ({
+    return _handleAsync(seamless: seamless, isFirstBuild: isFirstBuild, ({
       required data,
       required done,
       required error,
@@ -422,9 +421,9 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   WhenComplete handleFuture(
     FutureOr<StateT> Function() create, {
     required bool seamless,
-    required bool isMount,
+    required bool isFirstBuild,
   }) {
-    return _handleAsync(seamless: seamless, isMount: isMount, ({
+    return _handleAsync(seamless: seamless, isFirstBuild: isFirstBuild, ({
       required data,
       required done,
       required error,
@@ -479,7 +478,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
       required void Function(Future<StateT>) last,
     }) listen, {
     required bool seamless,
-    required bool isMount,
+    required bool isFirstBuild,
   }) {
     void callOnError(Object error, StackTrace stackTrace) {
       triggerRetry(error);

@@ -232,12 +232,12 @@ This could mean a few things:
     }
 
     final ref = this.ref = $Ref(this);
-    buildState(ref, isMount: true);
+    buildState(ref, isFirstBuild: true);
 
     _notifyListeners(
       _stateResult!,
       null,
-      isMount: true,
+      isFirstBuild: true,
       checkUpdateShouldNotify: false,
     );
   }
@@ -265,7 +265,7 @@ This could mean a few things:
       listenable.lockNotification();
     });
 
-    buildState(ref, isMount: false);
+    buildState(ref, isFirstBuild: false);
 
     visitListenables((listenable) {
       listenable.unlockNotification();
@@ -296,7 +296,7 @@ This could mean a few things:
     // ignore: library_private_types_in_public_api, not public
     $Ref<StateT> ref, {
     required bool didChangeDependency,
-    required bool isMount,
+    required bool isFirstBuild,
   });
 
   /// A utility for re-initializing a provider when needed.
@@ -343,7 +343,7 @@ This could mean a few things:
   void buildState(
     // ignore: library_private_types_in_public_api, not public
     $Ref<StateT> ref, {
-    required bool isMount,
+    required bool isFirstBuild,
   }) {
     if (_didChangeDependency) _retryCount = 0;
 
@@ -361,7 +361,7 @@ This could mean a few things:
       final whenComplete = create(
             ref,
             didChangeDependency: previousDidChangeDependency,
-            isMount: isMount,
+            isFirstBuild: isFirstBuild,
           ) ??
           (cb) => cb();
 
@@ -458,9 +458,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     $Result<StateT> newState,
     $Result<StateT>? previousStateResult, {
     bool checkUpdateShouldNotify = true,
-    bool isMount = false,
+    bool isFirstBuild = false,
   }) {
-    if (kDebugMode && !isMount) _debugAssertNotificationAllowed();
+    if (kDebugMode && !isFirstBuild) _debugAssertNotificationAllowed();
 
     final previousState = previousStateResult?.stateOrNull;
 
@@ -501,7 +501,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       return;
     }
 
-    final listeners = [...weakDependents, if (!isMount) ...?dependents];
+    final listeners = [...weakDependents, if (!isFirstBuild) ...?dependents];
     switch (newState) {
       case final ResultData<StateT> newState:
         for (var i = 0; i < listeners.length; i++) {
@@ -528,7 +528,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
 
     for (final observer in container.observers) {
-      if (isMount) {
+      if (isFirstBuild) {
         runBinaryGuarded(
           observer.didAddProvider,
           _currentObserverContext(),

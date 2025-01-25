@@ -70,7 +70,17 @@ abstract class Notifier<StateT> extends $Notifier<StateT> {
 
   @internal
   @override
-  StateT runBuild() => build();
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  }) {
+    final created = build();
+    element()!.handleValue(
+      created,
+      seamless: !didChangeDependency,
+      isFirstBuild: isFirstBuild,
+    );
+  }
 }
 
 final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>

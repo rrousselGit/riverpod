@@ -22,7 +22,17 @@ abstract class StreamNotifier<StateT> extends $StreamNotifier<StateT> {
 
   @internal
   @override
-  Stream<StateT> runBuild() => build();
+  void runBuild({
+    required bool isFirstBuild,
+    required bool didChangeDependency,
+  }) {
+    final created = build();
+    element()!.handleValue(
+      created,
+      seamless: !didChangeDependency,
+      isFirstBuild: isFirstBuild,
+    );
+  }
 }
 
 /// {@template riverpod.async_notifier_provider}
