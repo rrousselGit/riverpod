@@ -5,6 +5,7 @@ Example flutter app built with Riverpod that demonstrates authentication with Fi
 <img src="./samples/demo.gif" alt="demo" width="320">
 <img src="./samples/error.png" alt="error" width="320">
 <img src="./samples/signup.png" alt="signup" width="320">
+<img src="./samples/home.png" alt="home" width="320">
 
 ## Features
 
