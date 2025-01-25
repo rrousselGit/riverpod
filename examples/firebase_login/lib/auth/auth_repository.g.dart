@@ -1,16 +1,17 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'auth_providers.dart';
+part of 'auth_repository.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$firebaseAuthHash() => r'8f84097cccd00af817397c1715c5f537399ba780';
+String _$firebaseAuthHash() => r'073d2de7c8941748647f37dbb00de1c08ef8758b';
 
 /// See also [firebaseAuth].
 @ProviderFor(firebaseAuth)
-final firebaseAuthProvider = AutoDisposeProvider<FirebaseAuth>.internal(
+final firebaseAuthProvider =
+    AutoDisposeProvider<firebase_auth.FirebaseAuth>.internal(
   firebaseAuth,
   name: r'firebaseAuthProvider',
   debugGetCreateSourceHash:
@@ -21,7 +22,7 @@ final firebaseAuthProvider = AutoDisposeProvider<FirebaseAuth>.internal(
 
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
-typedef FirebaseAuthRef = AutoDisposeProviderRef<FirebaseAuth>;
+typedef FirebaseAuthRef = AutoDisposeProviderRef<firebase_auth.FirebaseAuth>;
 String _$googleSignInHash() => r'0b3da4c5bf629e3f7401a2a78c79cccd40689ce1';
 
 /// See also [googleSignIn].
@@ -38,7 +39,7 @@ final googleSignInProvider = AutoDisposeProvider<GoogleSignIn>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef GoogleSignInRef = AutoDisposeProviderRef<GoogleSignIn>;
-String _$authRepositoryHash() => r'cbd309d943019793e71dd690ecd07db6465f909d';
+String _$authRepositoryHash() => r'e962172aeebc941ae9bb814668c8a82aa4a94225';
 
 /// See also [authRepository].
 @ProviderFor(authRepository)

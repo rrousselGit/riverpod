@@ -1,7 +1,11 @@
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
-import 'package:firebase_login/features/auth/data/models/user.dart';
+import 'package:firebase_login/auth/user.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+part 'auth_repository.g.dart';
 
 /// {@template sign_up_with_email_and_password_failure}
 /// Thrown during the sign-up process if a failure occurs.
@@ -180,7 +184,7 @@ class AuthRepository {
 
   /// Stream of [User] that notifies about changes to the user's
   /// authentication state (such as sign-in or sign-out)
-  /// 
+  ///
   /// Emits empty user, if the user is unauthenticated.
   Stream<User> get user {
     return _firebaseAuth.authStateChanges().map((firebaseUser) {
@@ -279,4 +283,19 @@ extension on firebase_auth.User {
   User get toUser {
     return User(id: uid, email: email, name: displayName, photo: photoURL);
   }
+}
+
+@riverpod
+firebase_auth.FirebaseAuth firebaseAuth(Ref ref) =>
+    firebase_auth.FirebaseAuth.instance;
+
+@riverpod
+GoogleSignIn googleSignIn(Ref ref) => GoogleSignIn();
+
+@riverpod
+AuthRepository authRepository(Ref ref) {
+  return AuthRepository(
+    firebaseAuth: ref.read<firebase_auth.FirebaseAuth>(firebaseAuthProvider),
+    googleSignIn: ref.read<GoogleSignIn>(googleSignInProvider),
+  );
 }
