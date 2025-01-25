@@ -77,6 +77,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
       spacing: 16,
       children: [
         TextFormField(
+          key: const Key('email_textFormField'),
           controller: _emailController,
           decoration: const InputDecoration(
             labelText: 'Email address',
@@ -84,6 +85,7 @@ class _SignUpFormState extends ConsumerState<SignUpForm> {
           ),
         ),
         TextFormField(
+          key: const Key('password_textFormField'),
           controller: _passwordController,
           obscureText: true,
           decoration: const InputDecoration(

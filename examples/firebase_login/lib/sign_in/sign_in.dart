@@ -29,6 +29,7 @@ class SignInPage extends ConsumerWidget {
           children: [
             const SignInForm(),
             ElevatedButton(
+              key: const Key('signInWithGoogle_elevatedButton'),
               onPressed: state.isFormSubmitting
                   ? null
                   : stateNotifier.signInWithGoogle,
@@ -87,6 +88,7 @@ class _SignInFormState extends ConsumerState<SignInForm> {
       spacing: 16,
       children: [
         TextFormField(
+          key: const Key('email_textFormField'),
           controller: _emailController,
           decoration: const InputDecoration(
             labelText: 'Email address',
@@ -94,6 +96,7 @@ class _SignInFormState extends ConsumerState<SignInForm> {
           ),
         ),
         TextFormField(
+          key: const Key('password_textFormField'),
           controller: _passwordController,
           obscureText: true,
           decoration: const InputDecoration(
@@ -102,6 +105,7 @@ class _SignInFormState extends ConsumerState<SignInForm> {
           ),
         ),
         ElevatedButton(
+          key: const Key('signInWithEmailAndPassword_elevatedButton'),
           onPressed: state.isFormSubmitting
               ? null
               : () => stateNotifier.signInWithEmailAndPassword(
