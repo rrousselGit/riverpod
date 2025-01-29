@@ -121,22 +121,12 @@ class $NotifierProviderElement< //
   final $NotifierProvider<NotifierT, StateT> provider;
 
   @override
-  void handleError(
-    Object error,
-    StackTrace stackTrace, {
-    required bool seamless,
-  }) {
-    setStateResult(ResultError<StateT>(error, stackTrace));
-  }
+  void handleError(Ref ref, Object error, StackTrace stackTrace) =>
+      setStateResult(ResultError<StateT>(error, stackTrace));
 
   @override
-  void handleValue(
-    StateT created, {
-    required bool seamless,
-    required bool isFirstBuild,
-  }) {
-    setStateResult(ResultData(created));
-  }
+  void handleValue(Ref ref, StateT created) =>
+      setStateResult(ResultData(created));
 
   @override
   void callDecode(

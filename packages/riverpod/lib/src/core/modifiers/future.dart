@@ -201,13 +201,9 @@ mixin FutureModifierClassElement<
         FutureModifierElement<StateT>,
         $ClassProviderElement<NotifierT, AsyncValue<StateT>, StateT, CreatedT> {
   @override
-  void handleError(
-    Object error,
-    StackTrace stackTrace, {
-    required bool seamless,
-  }) {
+  void handleError(Ref ref, Object error, StackTrace stackTrace) {
     triggerRetry(error);
-    onError(AsyncError(error, stackTrace), seamless: seamless);
+    onError(AsyncError(error, stackTrace), seamless: !ref.isReload);
   }
 
   @override
@@ -268,8 +264,8 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   AsyncSubscription? _cancelSubscription;
 
   @override
-  void initState({required bool didChangeDependency}) {
-    onLoading(AsyncLoading<StateT>(), seamless: !didChangeDependency);
+  void initState(Ref ref) {
+    onLoading(AsyncLoading<StateT>(), seamless: !ref.isReload);
   }
 
   /// Internal utility for transitioning an [AsyncValue] after a provider refresh.
@@ -371,12 +367,8 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   /// Listens to a [Stream] and convert it into an [AsyncValue].
   @preferInline
   @internal
-  WhenComplete handleStream(
-    Stream<StateT> Function() create, {
-    required bool seamless,
-    required bool isFirstBuild,
-  }) {
-    return _handleAsync(seamless: seamless, isFirstBuild: isFirstBuild, ({
+  WhenComplete handleStream(Ref ref, Stream<StateT> Function() create) {
+    return _handleAsync(ref, ({
       required data,
       required done,
       required error,
@@ -419,11 +411,10 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   @preferInline
   @internal
   WhenComplete handleFuture(
-    FutureOr<StateT> Function() create, {
-    required bool seamless,
-    required bool isFirstBuild,
-  }) {
-    return _handleAsync(seamless: seamless, isFirstBuild: isFirstBuild, ({
+    Ref ref,
+    FutureOr<StateT> Function() create,
+  ) {
+    return _handleAsync(ref, ({
       required data,
       required done,
       required error,
@@ -471,18 +462,17 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
 
   /// Listens to a [Future] and transforms it into an [AsyncValue].
   WhenComplete _handleAsync(
+    Ref ref,
     AsyncSubscription? Function({
       required void Function(StateT) data,
       required void Function(Object, StackTrace) error,
       required void Function() done,
       required void Function(Future<StateT>) last,
-    }) listen, {
-    required bool seamless,
-    required bool isFirstBuild,
-  }) {
+    }) listen,
+  ) {
     void callOnError(Object error, StackTrace stackTrace) {
       triggerRetry(error);
-      onError(AsyncError(error, stackTrace), seamless: seamless);
+      onError(AsyncError(error, stackTrace), seamless: !ref.isReload);
     }
 
     void Function()? onDone;
@@ -491,7 +481,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
     try {
       _cancelSubscription = listen(
         data: (value) {
-          onData(AsyncData(value), seamless: seamless);
+          onData(AsyncData(value), seamless: !ref.isReload);
         },
         error: callOnError,
         last: (last) {

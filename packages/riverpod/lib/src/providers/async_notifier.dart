@@ -66,15 +66,7 @@ class $AsyncNotifierProviderElement< //
   final $AsyncNotifierProvider<NotifierT, StateT> provider;
 
   @override
-  void handleValue(
-    FutureOr<StateT> created, {
-    required bool seamless,
-    required bool isFirstBuild,
-  }) {
-    handleFuture(
-      () => created,
-      seamless: seamless,
-      isFirstBuild: isFirstBuild,
-    );
+  void handleValue(Ref ref, FutureOr<StateT> created) {
+    handleFuture(ref, () => created);
   }
 }

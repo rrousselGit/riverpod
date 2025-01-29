@@ -231,8 +231,8 @@ This could mean a few things:
       _debugCurrentCreateHash = provider.debugGetCreateSourceHash();
     }
 
-    final ref = this.ref = $Ref(this);
-    buildState(ref, isFirstBuild: true);
+    final ref = this.ref = $Ref(this, isFirstBuild: true, isReload: false);
+    buildState(ref);
 
     _notifyListeners(
       _stateResult!,
@@ -256,7 +256,11 @@ This could mean a few things:
   /// to dependencies that are no-longer used.
   void _performRebuild() {
     runOnDispose();
-    final ref = this.ref = $Ref(this);
+    final ref = this.ref = $Ref(
+      this,
+      isFirstBuild: false,
+      isReload: _didChangeDependency,
+    );
     final previousStateResult = _stateResult;
 
     if (kDebugMode) _debugDidSetState = false;
@@ -265,7 +269,7 @@ This could mean a few things:
       listenable.lockNotification();
     });
 
-    buildState(ref, isFirstBuild: false);
+    buildState(ref);
 
     visitListenables((listenable) {
       listenable.unlockNotification();
@@ -288,16 +292,11 @@ This could mean a few things:
   ///
   /// Exceptions within this function will be caught and set the provider in error
   /// state. Then, reading this provider will rethrow the thrown exception.
-  ///
-  /// - [didChangeDependency] can be used to differentiate a rebuild caused
-  ///   by [Ref.watch] from one caused by [Ref.refresh]/[Ref.invalidate].
   @visibleForOverriding
   WhenComplete create(
     // ignore: library_private_types_in_public_api, not public
-    $Ref<StateT> ref, {
-    required bool didChangeDependency,
-    required bool isFirstBuild,
-  });
+    $Ref<StateT> ref,
+  );
 
   /// A utility for re-initializing a provider when needed.
   ///
@@ -336,19 +335,17 @@ This could mean a few things:
   }
 
   // Hook for async provider to init state with AsyncLoading
-  void initState({required bool didChangeDependency}) {}
+  void initState(Ref ref) {}
 
   /// Invokes [create] and handles errors.
   @internal
   void buildState(
     // ignore: library_private_types_in_public_api, not public
-    $Ref<StateT> ref, {
-    required bool isFirstBuild,
-  }) {
+    $Ref<StateT> ref,
+  ) {
     if (_didChangeDependency) _retryCount = 0;
 
     ProviderElement? debugPreviouslyBuildingElement;
-    final previousDidChangeDependency = _didChangeDependency;
     _didChangeDependency = false;
     if (kDebugMode) {
       debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
@@ -356,14 +353,9 @@ This could mean a few things:
     }
 
     _didBuild = false;
-    initState(didChangeDependency: previousDidChangeDependency);
+    initState(ref);
     try {
-      final whenComplete = create(
-            ref,
-            didChangeDependency: previousDidChangeDependency,
-            isFirstBuild: isFirstBuild,
-          ) ??
-          (cb) => cb();
+      final whenComplete = create(ref) ?? (cb) => cb();
 
       whenComplete(_didCompleteInitialization);
     } catch (err, stack) {

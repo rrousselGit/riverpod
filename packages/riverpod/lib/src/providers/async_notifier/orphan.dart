@@ -35,16 +35,9 @@ abstract class AsyncNotifier<StateT> extends $AsyncNotifier<StateT> {
 
   @internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build();
-    element()!.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element()!.handleValue(ref, created);
   }
 }
 

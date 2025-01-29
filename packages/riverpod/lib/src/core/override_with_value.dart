@@ -72,11 +72,7 @@ class _ValueProviderElement<StateT> extends ProviderElement<StateT> {
   void _setValue(StateT value) => setStateResult(ResultData(value));
 
   @override
-  WhenComplete create(
-    Ref ref, {
-    required bool didChangeDependency,
-    required bool isFirstBuild,
-  }) {
+  WhenComplete create(Ref ref) {
     _setValue(provider._value);
 
     return null;

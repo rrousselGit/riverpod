@@ -24,16 +24,9 @@ abstract class FamilyAsyncNotifier<StateT, ArgT>
 
   @internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build(arg);
-    element()!.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element()!.handleValue(ref, created);
   }
 }
 

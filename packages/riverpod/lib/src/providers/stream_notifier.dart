@@ -65,15 +65,7 @@ class $StreamNotifierProviderElement< //
   final $StreamNotifierProvider<NotifierT, StateT> provider;
 
   @override
-  void handleValue(
-    Stream<StateT> created, {
-    required bool seamless,
-    required bool isFirstBuild,
-  }) {
-    handleStream(
-      () => created,
-      seamless: seamless,
-      isFirstBuild: isFirstBuild,
-    );
+  void handleValue(Ref ref, Stream<StateT> created) {
+    handleStream(ref, () => created);
   }
 }

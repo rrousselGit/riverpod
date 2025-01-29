@@ -126,11 +126,7 @@ class StateProviderElement<T> extends ProviderElement<T> {
   void Function()? _removeListener;
 
   @override
-  WhenComplete create(
-    Ref ref, {
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  WhenComplete create(Ref ref) {
     final initialState = provider._createFn(ref);
 
     final controller = StateController(initialState);

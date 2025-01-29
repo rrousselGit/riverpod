@@ -84,10 +84,7 @@ abstract class NotifierBase<StateT> {
   bool updateShouldNotify(StateT previous, StateT next);
 
   @internal
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  });
+  void runBuild();
 }
 
 @internal
@@ -198,12 +195,8 @@ abstract class $ClassProviderElement< //
   @override
   WhenComplete create(
     // ignore: library_private_types_in_public_api, not public
-    $Ref<StateT> ref, {
-    required bool didChangeDependency,
-    required bool isFirstBuild,
-  }) {
-    final seamless = !didChangeDependency;
-
+    $Ref<StateT> ref,
+  ) {
     final result = classListenable.result = $Result.guard(() {
       final notifier = provider.create();
       if (notifier._ref != null) {
@@ -217,30 +210,19 @@ abstract class $ClassProviderElement< //
     switch (result) {
       case ResultData():
         try {
-          if (isFirstBuild) _decodeFromCache();
+          if (ref.isFirstBuild) _decodeFromCache();
 
           if (provider.runNotifierBuildOverride case final override?) {
             final created = override(ref, result.state);
-            handleValue(
-              created,
-              seamless: seamless,
-              isFirstBuild: isFirstBuild,
-            );
+            handleValue(ref, created);
           } else {
-            result.state.runBuild(
-              isFirstBuild: isFirstBuild,
-              didChangeDependency: didChangeDependency,
-            );
+            result.state.runBuild();
           }
         } catch (err, stack) {
-          handleError(err, stack, seamless: seamless);
+          handleError(ref, err, stack);
         }
       case ResultError():
-        handleError(
-          result.error,
-          result.stackTrace,
-          seamless: seamless,
-        );
+        handleError(ref, result.error, result.stackTrace);
     }
 
     return null;
@@ -362,16 +344,8 @@ to a different value.
     }
   }
 
-  void handleValue(
-    CreatedT created, {
-    required bool seamless,
-    required bool isFirstBuild,
-  });
-  void handleError(
-    Object error,
-    StackTrace stackTrace, {
-    required bool seamless,
-  });
+  void handleValue(Ref ref, CreatedT created);
+  void handleError(Ref ref, Object error, StackTrace stackTrace);
 
   @override
   bool updateShouldNotify(StateT previous, StateT next) {
