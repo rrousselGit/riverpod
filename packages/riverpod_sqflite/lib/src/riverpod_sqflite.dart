@@ -110,11 +110,6 @@ CREATE TABLE IF NOT EXISTS $_tableName(
 }
 
 class _Row {
-  final String key;
-  final String json;
-  final DateTime? expireAt;
-  final String? destroyKey;
-
   _Row.fromMap(Map<String, Object?> map)
       : key = map['key']! as String,
         json = map['json']! as String,
@@ -122,6 +117,11 @@ class _Row {
             ? null
             : DateTime.fromMillisecondsSinceEpoch(map['expireAt']! as int),
         destroyKey = map['destroyKey'] as String?;
+
+  final String key;
+  final String json;
+  final DateTime? expireAt;
+  final String? destroyKey;
 
   Map<String, Object?> toMap() {
     return {

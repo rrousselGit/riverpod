@@ -59,8 +59,10 @@ final notifierProviderFactory = TestMatrix<NotifierTestFactory>(
       deferredProvider: <StateT>(create, {updateShouldNotify}) {
         return NotifierProvider.family<DeferredFamilyNotifier<StateT>, StateT,
             Object?>(
-          () => DeferredFamilyNotifier(create,
-              updateShouldNotify: updateShouldNotify),
+          () => DeferredFamilyNotifier(
+            create,
+            updateShouldNotify: updateShouldNotify,
+          ),
         ).call(42);
       },
       provider: <StateT>(create) {

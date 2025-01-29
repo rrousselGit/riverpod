@@ -1217,7 +1217,7 @@ void main() {
     );
     expect(
       const AsyncData<int>(42, isFromCache: true),
-      isNot(const AsyncData<int>(42, isFromCache: false)),
+      isNot(const AsyncData<int>(42)),
     );
   });
 
@@ -1329,7 +1329,7 @@ void main() {
     );
     expect(
       const AsyncData<int>(42, isFromCache: true).hashCode,
-      isNot(const AsyncData<int>(42, isFromCache: false).hashCode),
+      isNot(const AsyncData<int>(42).hashCode),
     );
   });
 

@@ -4,6 +4,7 @@ import 'package:clock/clock.dart';
 import 'package:meta/meta.dart';
 
 import '../framework.dart';
+import 'async_value.dart';
 
 class PersistOptions {
   const PersistOptions({
@@ -170,7 +171,11 @@ mixin NotifierEncoder<KeyT, DecodedT, EncodedT> on $Value<DecodedT> {
   ///
   /// Notifiers can override this method to provide a custom [Persist] object.
   Persist<KeyT, EncodedT> get persist {
-    return switch ((this as NotifierBase).ref.container.persist) {
+    return switch ((this as NotifierBase)
+        // ignore: invalid_use_of_protected_member
+        .ref
+        .container
+        .persist) {
       final Persist<KeyT, EncodedT> persist? => persist,
       Persist() => throw StateError('''
 The notifier `$this` is expected to be encoded into a value of type `$EncodedT`,

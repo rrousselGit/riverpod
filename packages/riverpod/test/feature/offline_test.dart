@@ -602,9 +602,11 @@ extension on TestFactory<Object?> {
     encode ??= (value) => value;
 
     final e = encode;
+    // ignore: parameter_assignments
     encode = (value) => e(value.valueOf);
 
     final d = decode;
+    // ignore: parameter_assignments
     decode = (value) => d(value.valueOf);
 
     return when(

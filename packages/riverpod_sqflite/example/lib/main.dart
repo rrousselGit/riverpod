@@ -7,26 +7,11 @@ import 'package:sqflite/sqflite.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  print('a');
 
-  final database = await openDatabase(
-    join(await getDatabasesPath(), 'riverpod.db'),
-  );
-  print('b');
-
+  // Initialize Riverpod with the Sqflite implementation
   final persist = await JsonSqFlitePersist.open(
     join(await getDatabasesPath(), 'riverpod.db'),
   );
-
-  const key = 'infinite';
-  await persist.write(
-    key,
-    'foo',
-    const PersistOptions(cacheTime: PersistCacheTime.unsafe_forever),
-  );
-
-  print('heree');
-  print(await persist.read(key));
 }
 
 class MyApp extends StatelessWidget {
