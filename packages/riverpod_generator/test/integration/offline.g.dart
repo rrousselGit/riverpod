@@ -68,25 +68,18 @@ final class CustomAnnotationProvider
       $NotifierProviderElement(this, pointer);
 }
 
-String _$customAnnotationHash() => r'85fb763c60c735b97b24fdcbae8a2882cf5be8b8';
+String _$customAnnotationHash() => r'f552810fe369694d4aedc142454395b150c3a681';
 
 abstract class _$CustomAnnotationBase extends $Notifier<String> {
   String build();
   @$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<String>;
     final element = ref.element as $ClassProviderElement<NotifierBase<String>,
         String, Object?, Object?>;
-    element.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, created);
   }
 }
 
@@ -241,10 +234,7 @@ abstract class _$JsonBase extends $AsyncNotifier<Map<String, List<int>>> {
   );
   @$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build(
       _$args,
     );
@@ -254,11 +244,7 @@ abstract class _$JsonBase extends $AsyncNotifier<Map<String, List<int>>> {
         AsyncValue<Map<String, List<int>>>,
         Object?,
         Object?>;
-    element.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, created);
   }
 }
 

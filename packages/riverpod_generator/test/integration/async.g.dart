@@ -265,10 +265,7 @@ abstract class _$GenericClass<T extends num> extends $AsyncNotifier<List<T>> {
   FutureOr<List<T>> build();
   @$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<List<T>>>;
     final element = ref.element as $ClassProviderElement<
@@ -276,11 +273,7 @@ abstract class _$GenericClass<T extends num> extends $AsyncNotifier<List<T>> {
         AsyncValue<List<T>>,
         Object?,
         Object?>;
-    element.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, created);
   }
 }
 
@@ -750,19 +743,12 @@ abstract class _$PublicClass extends $AsyncNotifier<String> {
   FutureOr<String> build();
   @$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<String>>;
     final element = ref.element as $ClassProviderElement<
         NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
-    element.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, created);
   }
 }
 
@@ -825,19 +811,12 @@ abstract class _$PrivateClass extends $AsyncNotifier<String> {
   FutureOr<String> build();
   @$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<String>>;
     final element = ref.element as $ClassProviderElement<
         NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
-    element.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, created);
   }
 }
 
@@ -990,21 +969,14 @@ abstract class _$FamilyOrClass extends $AsyncNotifier<String> {
   );
   @$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build(
       _$args,
     );
     final ref = this.ref as $Ref<AsyncValue<String>>;
     final element = ref.element as $ClassProviderElement<
         NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
-    element.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, created);
   }
 }
 
@@ -1227,10 +1199,7 @@ abstract class _$FamilyClass extends $AsyncNotifier<String> {
   });
   @$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build(
       _$args.$1,
       second: _$args.second,
@@ -1241,11 +1210,7 @@ abstract class _$FamilyClass extends $AsyncNotifier<String> {
     final ref = this.ref as $Ref<AsyncValue<String>>;
     final element = ref.element as $ClassProviderElement<
         NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
-    element.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, created);
   }
 }
 
@@ -1484,10 +1449,7 @@ abstract class _$Regression3490<Model, Sort, Cursor> extends $Notifier<void> {
   });
   @$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     build(
       type: _$args.type,
       getData: _$args.getData,
@@ -1496,11 +1458,7 @@ abstract class _$Regression3490<Model, Sort, Cursor> extends $Notifier<void> {
     final ref = this.ref as $Ref<void>;
     final element = ref.element
         as $ClassProviderElement<NotifierBase<void>, void, Object?, Object?>;
-    element.handleValue(
-      null,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, null);
   }
 }
 

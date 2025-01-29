@@ -142,19 +142,12 @@ abstract class _$ClassBased extends $Notifier<String> {
   String build();
   @$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<String>;
     final element = ref.element as $ClassProviderElement<NotifierBase<String>,
         String, Object?, Object?>;
-    element.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, created);
   }
 }
 
@@ -468,21 +461,14 @@ abstract class _$ClassFamilyBased extends $Notifier<String> {
   );
   @$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build(
       _$args,
     );
     final ref = this.ref as $Ref<String>;
     final element = ref.element as $ClassProviderElement<NotifierBase<String>,
         String, Object?, Object?>;
-    element.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, created);
   }
 }
 

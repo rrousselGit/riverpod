@@ -265,10 +265,7 @@ abstract class _$GenericClass<T extends num> extends $StreamNotifier<List<T>> {
   Stream<List<T>> build();
   @$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<List<T>>>;
     final element = ref.element as $ClassProviderElement<
@@ -276,11 +273,7 @@ abstract class _$GenericClass<T extends num> extends $StreamNotifier<List<T>> {
         AsyncValue<List<T>>,
         Object?,
         Object?>;
-    element.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, created);
   }
 }
 
@@ -626,19 +619,12 @@ abstract class _$PublicClass extends $StreamNotifier<String> {
   Stream<String> build();
   @$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<String>>;
     final element = ref.element as $ClassProviderElement<
         NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
-    element.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, created);
   }
 }
 
@@ -701,19 +687,12 @@ abstract class _$PrivateClass extends $StreamNotifier<String> {
   Stream<String> build();
   @$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<String>>;
     final element = ref.element as $ClassProviderElement<
         NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
-    element.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, created);
   }
 }
 
@@ -936,10 +915,7 @@ abstract class _$FamilyClass extends $StreamNotifier<String> {
   });
   @$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build(
       _$args.$1,
       second: _$args.second,
@@ -950,11 +926,7 @@ abstract class _$FamilyClass extends $StreamNotifier<String> {
     final ref = this.ref as $Ref<AsyncValue<String>>;
     final element = ref.element as $ClassProviderElement<
         NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
-    element.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, created);
   }
 }
 

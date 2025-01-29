@@ -454,19 +454,12 @@ abstract class _$GenericClass<T extends num> extends $Notifier<List<T>> {
   List<T> build();
   @$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<List<T>>;
     final element = ref.element as $ClassProviderElement<NotifierBase<List<T>>,
         List<T>, Object?, Object?>;
-    element.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, created);
   }
 }
 
@@ -657,10 +650,7 @@ abstract class _$RawFutureClass extends $Notifier<Raw<Future<String>>> {
   Raw<Future<String>> build();
   @$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<Raw<Future<String>>>;
     final element = ref.element as $ClassProviderElement<
@@ -668,11 +658,7 @@ abstract class _$RawFutureClass extends $Notifier<Raw<Future<String>>> {
         Raw<Future<String>>,
         Object?,
         Object?>;
-    element.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, created);
   }
 }
 
@@ -743,10 +729,7 @@ abstract class _$RawStreamClass extends $Notifier<Raw<Stream<String>>> {
   Raw<Stream<String>> build();
   @$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<Raw<Stream<String>>>;
     final element = ref.element as $ClassProviderElement<
@@ -754,11 +737,7 @@ abstract class _$RawStreamClass extends $Notifier<Raw<Stream<String>>> {
         Raw<Stream<String>>,
         Object?,
         Object?>;
-    element.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, created);
   }
 }
 
@@ -1187,10 +1166,7 @@ abstract class _$RawFamilyFutureClass extends $Notifier<Raw<Future<String>>> {
   );
   @$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build(
       _$args,
     );
@@ -1200,11 +1176,7 @@ abstract class _$RawFamilyFutureClass extends $Notifier<Raw<Future<String>>> {
         Raw<Future<String>>,
         Object?,
         Object?>;
-    element.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, created);
   }
 }
 
@@ -1367,10 +1339,7 @@ abstract class _$RawFamilyStreamClass extends $Notifier<Raw<Stream<String>>> {
   );
   @$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build(
       _$args,
     );
@@ -1380,11 +1349,7 @@ abstract class _$RawFamilyStreamClass extends $Notifier<Raw<Stream<String>>> {
         Raw<Stream<String>>,
         Object?,
         Object?>;
-    element.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, created);
   }
 }
 
@@ -1827,19 +1792,12 @@ abstract class _$PublicClass extends $Notifier<String> {
   String build();
   @$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<String>;
     final element = ref.element as $ClassProviderElement<NotifierBase<String>,
         String, Object?, Object?>;
-    element.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, created);
   }
 }
 
@@ -1910,19 +1868,12 @@ abstract class _$PrivateClass extends $Notifier<String> {
   String build();
   @$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<String>;
     final element = ref.element as $ClassProviderElement<NotifierBase<String>,
         String, Object?, Object?>;
-    element.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, created);
   }
 }
 
@@ -2157,10 +2108,7 @@ abstract class _$FamilyClass extends $Notifier<String> {
   });
   @$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build(
       _$args.$1,
       second: _$args.second,
@@ -2171,11 +2119,7 @@ abstract class _$FamilyClass extends $Notifier<String> {
     final ref = this.ref as $Ref<String>;
     final element = ref.element as $ClassProviderElement<NotifierBase<String>,
         String, Object?, Object?>;
-    element.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, created);
   }
 }
 
@@ -2649,19 +2593,12 @@ abstract class _$Supports$InClassName<And$InT> extends $Notifier<String> {
   String build();
   @$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<String>;
     final element = ref.element as $ClassProviderElement<NotifierBase<String>,
         String, Object?, Object?>;
-    element.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, created);
   }
 }
 
@@ -2901,10 +2838,7 @@ abstract class _$Supports$InClassFamilyName<And$InT> extends $Notifier<String> {
   });
   @$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build(
       _$args.$1,
       named$arg: _$args.named$arg,
@@ -2913,11 +2847,7 @@ abstract class _$Supports$InClassFamilyName<And$InT> extends $Notifier<String> {
     final ref = this.ref as $Ref<String>;
     final element = ref.element as $ClassProviderElement<NotifierBase<String>,
         String, Object?, Object?>;
-    element.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, created);
   }
 }
 
@@ -3268,21 +3198,14 @@ abstract class _$UnnecessaryCastClass extends $Notifier<String> {
   );
   @$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     final created = build(
       _$args,
     );
     final ref = this.ref as $Ref<String>;
     final element = ref.element as $ClassProviderElement<NotifierBase<String>,
         String, Object?, Object?>;
-    element.handleValue(
-      created,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, created);
   }
 }
 
