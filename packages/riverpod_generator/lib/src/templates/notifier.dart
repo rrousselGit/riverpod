@@ -70,19 +70,12 @@ abstract class $notifierBaseName$genericsDefinition extends $baseClass {
     buffer.writeln('''
   @\$internal
   @override
-  void runBuild({
-    required bool isFirstBuild,
-    required bool didChangeDependency,
-  }) {
+  void runBuild() {
     ${buildVar}build($paramsPassThrough);
     final ref = this.ref as \$Ref<${provider.exposedTypeDisplayString}>;
     final element = ref.element as \$ClassProviderElement<NotifierBase<${provider.exposedTypeDisplayString}>,
           ${provider.exposedTypeDisplayString}, Object?, Object?>;
-    element.handleValue(
-      $buildVarUsage,
-      seamless: !didChangeDependency,
-      isFirstBuild: isFirstBuild,
-    );
+    element.handleValue(ref, $buildVarUsage);
   }
 }
 ''');
