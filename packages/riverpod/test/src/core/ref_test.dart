@@ -548,6 +548,59 @@ void main() {
     });
 
     group('listenSelf', () {
+      test('fires on initial value', () async {
+        final container = ProviderContainer.test();
+        final listener = Listener<int>();
+        final provider = NotifierProvider<DeferredNotifier<int>, int>(
+          () => DeferredNotifier<int>((ref, self) {
+            self.listenSelf(listener.call);
+            return 0;
+          }),
+        );
+
+        container.read(provider);
+
+        verifyOnly(listener, listener(null, 0));
+      });
+
+      test('fires on initial value (async)', () async {
+        final container = ProviderContainer.test();
+        final listener = Listener<AsyncValue<int>>();
+        final provider = AsyncNotifierProvider<DeferredAsyncNotifier<int>, int>(
+          () => DeferredAsyncNotifier<int>((ref, self) {
+            self.listenSelf(listener.call);
+            return 0;
+          }),
+        );
+
+        container.listen(provider, (prev, next) {});
+
+        verifyOnly(
+          listener,
+          listener(const AsyncLoading(), const AsyncData(0)),
+        );
+      });
+
+      test('fires on initial value (stream)', () async {
+        final container = ProviderContainer.test();
+        final listener = Listener<AsyncValue<int>>();
+        final provider =
+            StreamNotifierProvider<DeferredStreamNotifier<int>, int>(
+          () => DeferredStreamNotifier<int>((ref, self) {
+            self.listenSelf(listener.call);
+            self.state = const AsyncData(0);
+            return Stream.value(1);
+          }),
+        );
+
+        container.listen(provider, (prev, next) {});
+
+        verifyOnly(
+          listener,
+          listener(const AsyncLoading(), const AsyncData(0)),
+        );
+      });
+
       test('does not break autoDispose', () async {
         final container = ProviderContainer.test();
 
@@ -809,7 +862,7 @@ void main() {
         verifyNoMoreInteractions(listener2);
       });
 
-      test('listeners are not allowed to modify the state', () {});
+      test(skip: true, 'listeners are not allowed to modify the state', () {});
     });
 
     group('listen', () {

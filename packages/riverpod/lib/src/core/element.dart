@@ -232,11 +232,13 @@ This could mean a few things:
     }
 
     final ref = this.ref = $Ref(this, isFirstBuild: true, isReload: false);
+    final initialState = _stateResult;
+
     buildState(ref);
 
     _notifyListeners(
       _stateResult!,
-      null,
+      initialState,
       isFirstBuild: true,
       checkUpdateShouldNotify: false,
     );

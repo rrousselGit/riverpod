@@ -570,7 +570,6 @@ class ProviderContainer implements Node {
   ProviderContainer({
     ProviderContainer? parent,
     List<Override> overrides = const [],
-    this.persist,
     List<ProviderObserver>? observers,
     Retry? retry,
   })  : _debugOverridesLength = overrides.length,
@@ -650,14 +649,12 @@ class ProviderContainer implements Node {
   factory ProviderContainer.test({
     ProviderContainer? parent,
     List<Override> overrides = const [],
-    Persist? persist,
     List<ProviderObserver>? observers,
     Retry? retry,
   }) {
     final container = ProviderContainer(
       parent: parent,
       overrides: overrides,
-      persist: persist,
       observers: observers,
       retry: retry,
     );
@@ -674,11 +671,6 @@ class ProviderContainer implements Node {
 
   /// {@macro riverpod.retry}
   final Retry? retry;
-
-  /// {@template riverpod.persist}
-  /// When using offline persistence, this is the option to use.
-  /// {@endtemplate}
-  final Persist? persist;
 
   /// How deep this [ProviderContainer] is in the graph of containers.
   ///

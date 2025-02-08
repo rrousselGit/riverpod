@@ -6,25 +6,11 @@ import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
 import '../src/matrix.dart';
-import '../src/matrix.dart' as $matrix;
 import '../src/utils.dart';
 import '../third_party/fake_async.dart';
 
 void main() {
   group('Offline', () {
-    test('Does not persist if the notifier does not implement NotifierEncoder',
-        () {
-      final provider = NotifierProvider<$matrix.DeferredNotifier<int>, int>(
-        () => $matrix.DeferredNotifier<int>((ref, self) => 0),
-      );
-      final persist = PersistMock<String, Object?>();
-      final container = ProviderContainer.test(persist: persist);
-
-      expect(container.read(provider).valueOf, 0);
-
-      verifyZeroInteractions(persist);
-    });
-
     matrix.createGroup((factory) {
       test('Persist if the notifier implements NotifierEncoder', () {
         final persist = PersistMock<String, Object?>();
@@ -48,7 +34,7 @@ void main() {
           'Calls delete if the destroyKey returned by Persist.read '
           'is different from the option one', () {
         final persist = PersistMock<String, Object?>();
-        final container = ProviderContainer.test(persist: persist);
+        final container = ProviderContainer.test();
         when(persist.read(any)).thenReturn(
           const PersistedData(42, destroyKey: 'a'),
         );
@@ -56,6 +42,7 @@ void main() {
         final provider = factory.simpleProvider(
           (ref, self) => self.stateOrNull.valueOf,
           persistOptions: const PersistOptions(destroyKey: 'b'),
+          persist: persist,
         );
 
         expect(container.read(provider).valueOf, null);
@@ -66,12 +53,13 @@ void main() {
       test('handles "forever" cacheTime', () {
         return fakeAsync((async) {
           final persist = Persist.inMemory();
-          final container = ProviderContainer.test(persist: persist);
-          final container2 = ProviderContainer.test(persist: persist);
+          final container = ProviderContainer.test();
+          final container2 = ProviderContainer.test();
 
           var value = 42;
           final provider = factory.simpleProvider(
             (ref, self) => self.stateOrNull.valueOf ?? value,
+            persist: persist,
             persistOptions: const PersistOptions(
               cacheTime: PersistCacheTime.unsafe_forever,
             ),
@@ -89,7 +77,7 @@ void main() {
       test('Calls delete if expireAt has expired', () {
         return fakeAsync((async) {
           final persist = PersistMock<String, Object?>();
-          final container = ProviderContainer.test(persist: persist);
+          final container = ProviderContainer.test();
           when(persist.read(any)).thenReturn(
             PersistedData(42, expireAt: DateTime.now()),
           );
@@ -98,6 +86,7 @@ void main() {
 
           final provider = factory.simpleProvider(
             (ref, self) => self.stateOrNull.valueOf,
+            persist: persist,
           );
 
           expect(container.read(provider).valueOf, null);
@@ -107,16 +96,16 @@ void main() {
       });
 
       test('throws if two providers have the same persistKey', () {
-        final container = ProviderContainer.test(
-          persist: DelegatingPersist(read: (_) => const PersistedData(42)),
-        );
+        final container = ProviderContainer.test();
         final a = factory.simpleProvider(
           (ref, self) => 0,
           persistKey: (_) => 'myKey',
+          persist: DelegatingPersist(read: (_) => const PersistedData(42)),
         );
         final b = factory.simpleProvider(
           (ref, self) => 0,
           persistKey: (_) => 'myKey',
+          persist: DelegatingPersist(read: (_) => const PersistedData(42)),
         );
 
         container.read(a);
@@ -127,7 +116,7 @@ void main() {
           (e, s) => errors.add(e),
         );
 
-        expect(errors, hasLength(2), reason: 'One for encode, one for decode');
+        expect(errors, hasLength(1));
         expect(
           errors,
           everyElement(
@@ -187,21 +176,6 @@ void main() {
             isA<StateError>().having((e) => e.message, 'message', 'delete'),
           );
         }
-      });
-
-      test('Can specify an adapter on $ProviderContainer', () async {
-        final provider = factory.simpleProvider(
-          (ref, self) => self.state.valueOf,
-        );
-        final container = ProviderContainer.test(
-          persist: DelegatingPersist(
-            read: (_) => const PersistedData(42),
-          ),
-        );
-
-        final sub = container.listen(provider, (a, b) {});
-
-        expect(container.read(provider).valueOf, 42);
       });
 
       test('Providers can specify their adapter', () async {
@@ -297,7 +271,6 @@ void main() {
               container.read(provider),
               const AsyncValue<Object?>.loading(),
             );
-
             expect(await container.read(provider.future!), 21);
           });
         }
@@ -474,10 +447,9 @@ void main() {
           test('is false if manually set or returned from `create`', () {
             final provider = factory.simpleProvider(
               (ref, self) => 42,
-            );
-            final container = ProviderContainer.test(
               persist: DelegatingPersist(read: (_) => const PersistedData(42)),
             );
+            final container = ProviderContainer.test();
 
             final sub = container.listen(provider, (a, b) {});
 
@@ -590,8 +562,8 @@ extension on TestFactory<Object?> {
   }
 
   ProviderBase<Object?> simpleProvider(
-    FutureOr<Object?> Function(Ref, NotifierBase<Object?> notifier) create, {
-    Persist? persist,
+    FutureOr<Object?> Function(Ref, NotifierBase<Object?> notifier) createCb, {
+    required Persist persist,
     Object Function(Object? args)? persistKey,
     Object? Function(Object? encoded)? decode,
     Object? Function(Object? value)? encode,
@@ -600,6 +572,25 @@ extension on TestFactory<Object?> {
     decode ??= (value) => value;
     persistKey ??= (args) => 'key';
     encode ??= (value) => value;
+
+    FutureOr<Object?> create(
+      Ref ref,
+      $Value<Object?, Object?> self, {
+      Object? Function()? args,
+    }) {
+      self.persist<Persist, Object?, Object?>(
+        persist,
+        persistKey!(args?.call()),
+        encode: encode!,
+        decode: decode!,
+        options: persistOptions,
+      );
+      return createCb(ref, self);
+    }
+
+    FutureOr<Object?> familyCreate(Ref ref, $Value<Object?, Object?> self) {
+      return create(ref, self, args: () => (self as dynamic).arg);
+    }
 
     final e = encode;
     // ignore: parameter_assignments
@@ -612,24 +603,9 @@ extension on TestFactory<Object?> {
     return when(
       asyncNotifier: (factory) {
         DeferredFamilyAsyncNotifier<Object?> familyNotifierCreate() =>
-            DeferredFamilyAsyncNotifier(
-              create,
-              persistKey: persistKey,
-              decode: decode,
-              encode: encode,
-              persist: persist,
-              persistOptions: persistOptions,
-            );
-
+            DeferredFamilyAsyncNotifier(familyCreate);
         DeferredAsyncNotifier<Object?> notifierCreate() =>
-            DeferredAsyncNotifier(
-              create,
-              persistKey: persistKey,
-              decode: decode,
-              encode: encode,
-              persist: persist,
-              persistOptions: persistOptions,
-            );
+            DeferredAsyncNotifier(create);
 
         switch ((
           family: factory.isFamily,
@@ -656,9 +632,10 @@ extension on TestFactory<Object?> {
       streamNotifier: (factory) {
         Stream<Object?> handle(
           Ref ref,
-          NotifierBase<AsyncValue<Object?>> self,
+          $Value<AsyncValue<Object?>, Object?> self,
         ) {
-          final futureOR = create(ref, self);
+          final futureOR =
+              factory.isFamily ? familyCreate(ref, self) : create(ref, self);
 
           final controller = StreamController<void>();
           ref.onDispose(controller.close);
@@ -674,24 +651,9 @@ extension on TestFactory<Object?> {
         }
 
         DeferredFamilyStreamNotifier<Object?> familyNotifierCreate() =>
-            DeferredFamilyStreamNotifier(
-              handle,
-              persistKey: persistKey,
-              decode: decode,
-              encode: encode,
-              persist: persist,
-              persistOptions: persistOptions,
-            );
-
+            DeferredFamilyStreamNotifier(handle);
         DeferredStreamNotifier<Object?> notifierCreate() =>
-            DeferredStreamNotifier(
-              handle,
-              persistKey: persistKey,
-              decode: decode,
-              encode: encode,
-              persist: persist,
-              persistOptions: persistOptions,
-            );
+            DeferredStreamNotifier(handle);
 
         switch ((
           family: factory.isFamily,
@@ -717,23 +679,8 @@ extension on TestFactory<Object?> {
       },
       notifier: (factory) {
         DeferredFamilyNotifier<Object?> familyNotifierCreate() =>
-            DeferredFamilyNotifier(
-              create,
-              persistKey: persistKey,
-              decode: decode,
-              encode: encode,
-              persist: persist,
-              persistOptions: persistOptions,
-            );
-
-        DeferredNotifier<Object?> notifierCreate() => DeferredNotifier(
-              create,
-              persistKey: persistKey,
-              decode: decode,
-              encode: encode,
-              persist: persist,
-              persistOptions: persistOptions,
-            );
+            DeferredFamilyNotifier(familyCreate);
+        DeferredNotifier<Object?> notifierCreate() => DeferredNotifier(create);
 
         switch ((
           family: factory.isFamily,
@@ -815,425 +762,4 @@ class DelegatingPersist<KeyT, EncodedT> implements Persist<KeyT, EncodedT> {
   final FutureOr<void> Function(KeyT key) _delete;
   @override
   FutureOr<void> delete(KeyT key) => _delete(key);
-}
-
-// ---------- //
-
-class DeferredAsyncNotifier<StateT> extends AsyncNotifier<StateT>
-    with NotifierEncoder<Object?, StateT, Object?>
-    implements TestAsyncNotifier<StateT> {
-  DeferredAsyncNotifier(
-    this._create, {
-    bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
-    Object? Function(AsyncValue<StateT> state)? encode,
-    StateT Function(Object? serialized)? decode,
-    Object Function(Object? args)? persistKey,
-    Persist<Object?, Object?>? persist,
-    this.persistOptions = const PersistOptions(),
-  })  : _updateShouldNotify = updateShouldNotify,
-        _encode = encode,
-        _decode = decode,
-        _persist = persist,
-        _persistKey = persistKey;
-
-  final FutureOr<StateT> Function(Ref ref, $AsyncNotifier<StateT> self) _create;
-  final bool Function(
-    AsyncValue<StateT> previousState,
-    AsyncValue<StateT> newState,
-  )? _updateShouldNotify;
-
-  @override
-  FutureOr<StateT> build() => _create(ref, this);
-
-  @override
-  bool updateShouldNotify(
-    AsyncValue<StateT> previousState,
-    AsyncValue<StateT> newState,
-  ) =>
-      _updateShouldNotify?.call(previousState, newState) ??
-      super.updateShouldNotify(previousState, newState);
-
-  final Object Function(Object? args)? _persistKey;
-  @override
-  Object get persistKey => switch (_persistKey) {
-        null => throw UnimplementedError(),
-        final cb => cb(null),
-      };
-
-  final Object? Function(AsyncValue<StateT> encoded)? _encode;
-  @override
-  Object? encode() {
-    return switch (_encode) {
-      null => throw UnimplementedError(),
-      final cb => cb(state),
-    };
-  }
-
-  final StateT Function(Object? serialized)? _decode;
-  @override
-  StateT decode(Object? serialized) {
-    return switch (_decode) {
-      null => throw UnimplementedError(),
-      final cb => cb(serialized),
-    };
-  }
-
-  final Persist<Object?, Object?>? _persist;
-  @override
-  Persist<Object?, Object?> get persist => _persist ?? super.persist;
-
-  @override
-  final PersistOptions persistOptions;
-}
-
-class DeferredFamilyAsyncNotifier<StateT>
-    extends FamilyAsyncNotifier<StateT, int>
-    with NotifierEncoder<Object?, StateT, Object?>
-    implements TestAsyncNotifier<StateT> {
-  DeferredFamilyAsyncNotifier(
-    this._create, {
-    bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
-    Object? Function(AsyncValue<StateT> state)? encode,
-    StateT Function(Object? serialized)? decode,
-    Object Function(Object? args)? persistKey,
-    Persist<Object?, Object?>? persist,
-    this.persistOptions = const PersistOptions(),
-  })  : _updateShouldNotify = updateShouldNotify,
-        _encode = encode,
-        _decode = decode,
-        _persist = persist,
-        _persistKey = persistKey;
-
-  final FutureOr<StateT> Function(Ref ref, $AsyncNotifier<StateT> self) _create;
-
-  final bool Function(
-    AsyncValue<StateT> previousState,
-    AsyncValue<StateT> newState,
-  )? _updateShouldNotify;
-
-  @override
-  FutureOr<StateT> build(int arg) => _create(ref, this);
-
-  @override
-  bool updateShouldNotify(
-    AsyncValue<StateT> previousState,
-    AsyncValue<StateT> newState,
-  ) =>
-      _updateShouldNotify?.call(previousState, newState) ??
-      super.updateShouldNotify(previousState, newState);
-
-  final Object Function(Object? args)? _persistKey;
-  @override
-  Object get persistKey => switch (_persistKey) {
-        null => throw UnimplementedError(),
-        final cb => cb(arg),
-      };
-
-  final Object? Function(AsyncValue<StateT> encoded)? _encode;
-  @override
-  Object? encode() {
-    return switch (_encode) {
-      null => throw UnimplementedError(),
-      final cb => cb(state),
-    };
-  }
-
-  final StateT Function(Object? serialized)? _decode;
-  @override
-  StateT decode(Object? serialized) {
-    return switch (_decode) {
-      null => throw UnimplementedError(),
-      final cb => cb(serialized),
-    };
-  }
-
-  final Persist<Object?, Object?>? _persist;
-  @override
-  Persist<Object?, Object?> get persist => _persist ?? super.persist;
-
-  @override
-  final PersistOptions persistOptions;
-}
-
-class DeferredNotifier<StateT> extends Notifier<StateT>
-    with NotifierEncoder<Object?, StateT, Object?>
-    implements TestNotifier<StateT> {
-  DeferredNotifier(
-    this._create, {
-    bool Function(StateT, StateT)? updateShouldNotify,
-    Object? Function(StateT encoded)? encode,
-    StateT Function(Object? serialized)? decode,
-    Object Function(Object? args)? persistKey,
-    Persist<Object?, Object?>? persist,
-    this.persistOptions = const PersistOptions(),
-  })  : _updateShouldNotify = updateShouldNotify,
-        _encode = encode,
-        _decode = decode,
-        _persist = persist,
-        _persistKey = persistKey;
-
-  final StateT Function(Ref ref, DeferredNotifier<StateT> self) _create;
-  final bool Function(
-    StateT previousState,
-    StateT newState,
-  )? _updateShouldNotify;
-
-  @override
-  Ref get ref;
-
-  @override
-  RemoveListener listenSelf(
-    void Function(StateT? previous, StateT next) listener, {
-    void Function(Object error, StackTrace stackTrace)? onError,
-  });
-
-  @override
-  StateT build() => _create(ref, this);
-
-  @override
-  bool updateShouldNotify(StateT previousState, StateT newState) =>
-      _updateShouldNotify?.call(previousState, newState) ??
-      super.updateShouldNotify(previousState, newState);
-
-  final Object Function(Object? args)? _persistKey;
-  @override
-  Object get persistKey => switch (_persistKey) {
-        null => throw UnimplementedError(),
-        final cb => cb(null),
-      };
-
-  final Object? Function(StateT encoded)? _encode;
-  @override
-  Object? encode() {
-    return switch (_encode) {
-      null => throw UnimplementedError(),
-      final cb => cb(state),
-    };
-  }
-
-  final StateT Function(Object? serialized)? _decode;
-  @override
-  StateT decode(Object? serialized) {
-    return switch (_decode) {
-      null => throw UnimplementedError(),
-      final cb => cb(serialized),
-    };
-  }
-
-  final Persist<Object?, Object?>? _persist;
-  @override
-  Persist<Object?, Object?> get persist => _persist ?? super.persist;
-
-  @override
-  final PersistOptions persistOptions;
-}
-
-class DeferredFamilyNotifier<StateT> extends FamilyNotifier<StateT, int>
-    with NotifierEncoder<Object?, StateT, Object?>
-    implements TestNotifier<StateT> {
-  DeferredFamilyNotifier(
-    this._create, {
-    bool Function(StateT, StateT)? updateShouldNotify,
-    Object? Function(StateT value)? encode,
-    StateT Function(Object? serialized)? decode,
-    Object Function(Object? args)? persistKey,
-    Persist<Object?, Object?>? persist,
-    this.persistOptions = const PersistOptions(),
-  })  : _updateShouldNotify = updateShouldNotify,
-        _encode = encode,
-        _decode = decode,
-        _persist = persist,
-        _persistKey = persistKey;
-
-  final StateT Function(Ref ref, DeferredFamilyNotifier<StateT> self) _create;
-
-  final bool Function(
-    StateT previousState,
-    StateT newState,
-  )? _updateShouldNotify;
-
-  @override
-  StateT build(int arg) => _create(ref, this);
-
-  @override
-  bool updateShouldNotify(
-    StateT previousState,
-    StateT newState,
-  ) =>
-      _updateShouldNotify?.call(previousState, newState) ??
-      super.updateShouldNotify(previousState, newState);
-
-  final Object Function(Object? args)? _persistKey;
-  @override
-  Object get persistKey => switch (_persistKey) {
-        null => throw UnimplementedError(),
-        final cb => cb(arg),
-      };
-
-  final Object? Function(StateT encoded)? _encode;
-  @override
-  Object? encode() {
-    return switch (_encode) {
-      null => throw UnimplementedError(),
-      final cb => cb(state),
-    };
-  }
-
-  final StateT Function(Object? serialized)? _decode;
-  @override
-  StateT decode(Object? serialized) {
-    return switch (_decode) {
-      null => throw UnimplementedError(),
-      final cb => cb(serialized),
-    };
-  }
-
-  final Persist<Object?, Object?>? _persist;
-  @override
-  Persist<Object?, Object?> get persist => _persist ?? super.persist;
-
-  @override
-  final PersistOptions persistOptions;
-}
-
-class DeferredStreamNotifier<StateT> extends StreamNotifier<StateT>
-    with NotifierEncoder<Object?, StateT, Object?>
-    implements TestStreamNotifier<StateT> {
-  DeferredStreamNotifier(
-    this._create, {
-    bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
-    Object? Function(StateT value)? encode,
-    StateT Function(Object? serialized)? decode,
-    Object Function(Object? args)? persistKey,
-    Persist<Object?, Object?>? persist,
-    this.persistOptions = const PersistOptions(),
-  })  : _updateShouldNotify = updateShouldNotify,
-        _encode = encode,
-        _decode = decode,
-        _persist = persist,
-        _persistKey = persistKey;
-
-  final Stream<StateT> Function(
-    Ref ref,
-    DeferredStreamNotifier<StateT> self,
-  ) _create;
-  final bool Function(
-    AsyncValue<StateT> previousState,
-    AsyncValue<StateT> newState,
-  )? _updateShouldNotify;
-
-  @override
-  Stream<StateT> build() => _create(ref, this);
-
-  @override
-  bool updateShouldNotify(
-    AsyncValue<StateT> previousState,
-    AsyncValue<StateT> newState,
-  ) =>
-      _updateShouldNotify?.call(previousState, newState) ??
-      super.updateShouldNotify(previousState, newState);
-
-  final Object Function(Object? args)? _persistKey;
-  @override
-  Object get persistKey => switch (_persistKey) {
-        null => throw UnimplementedError(),
-        final cb => cb(null),
-      };
-
-  final Object? Function(StateT value)? _encode;
-  @override
-  Object? encode() {
-    return switch (_encode) {
-      null => throw UnimplementedError(),
-      final cb => cb(state.requireValue),
-    };
-  }
-
-  final StateT Function(Object? serialized)? _decode;
-  @override
-  StateT decode(Object? serialized) {
-    return switch (_decode) {
-      null => throw UnimplementedError(),
-      final cb => cb(serialized),
-    };
-  }
-
-  final Persist<Object?, Object?>? _persist;
-  @override
-  Persist<Object?, Object?> get persist => _persist ?? super.persist;
-
-  @override
-  final PersistOptions persistOptions;
-}
-
-class DeferredFamilyStreamNotifier<StateT>
-    extends FamilyStreamNotifier<StateT, int>
-    with NotifierEncoder<Object?, StateT, Object?>
-    implements TestStreamNotifier<StateT> {
-  DeferredFamilyStreamNotifier(
-    this._create, {
-    bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
-    Object? Function(StateT value)? encode,
-    StateT Function(Object? serialized)? decode,
-    Object Function(Object? args)? persistKey,
-    Persist<Object?, Object?>? persist,
-    this.persistOptions = const PersistOptions(),
-  })  : _updateShouldNotify = updateShouldNotify,
-        _encode = encode,
-        _decode = decode,
-        _persist = persist,
-        _persistKey = persistKey;
-
-  final Stream<StateT> Function(
-    Ref ref,
-    DeferredFamilyStreamNotifier<StateT> self,
-  ) _create;
-
-  final bool Function(
-    AsyncValue<StateT> previousState,
-    AsyncValue<StateT> newState,
-  )? _updateShouldNotify;
-
-  @override
-  Stream<StateT> build(int arg) => _create(ref, this);
-
-  @override
-  bool updateShouldNotify(
-    AsyncValue<StateT> previousState,
-    AsyncValue<StateT> newState,
-  ) =>
-      _updateShouldNotify?.call(previousState, newState) ??
-      super.updateShouldNotify(previousState, newState);
-
-  final Object Function(Object? args)? _persistKey;
-  @override
-  Object get persistKey => switch (_persistKey) {
-        null => throw UnimplementedError(),
-        final cb => cb(arg),
-      };
-
-  final Object? Function(StateT value)? _encode;
-  @override
-  Object? encode() {
-    return switch (_encode) {
-      null => throw UnimplementedError(),
-      final cb => cb(state.requireValue),
-    };
-  }
-
-  final StateT Function(Object? serialized)? _decode;
-  @override
-  StateT decode(Object? serialized) {
-    return switch (_decode) {
-      null => throw UnimplementedError(),
-      final cb => cb(serialized),
-    };
-  }
-
-  final Persist<Object?, Object?>? _persist;
-  @override
-  Persist<Object?, Object?> get persist => _persist ?? super.persist;
-
-  @override
-  final PersistOptions persistOptions;
 }

@@ -205,38 +205,6 @@ mixin FutureModifierClassElement<
     triggerRetry(error);
     onError(AsyncError(error, stackTrace), seamless: !ref.isReload);
   }
-
-  @override
-  void callDecode(
-    NotifierEncoder<Object?, StateT, Object?> adapter,
-    Object? encoded,
-  ) {
-    setStateResult(
-      $Result.data(
-        AsyncData(adapter.decode(encoded), isFromCache: true),
-      ),
-    );
-  }
-
-  @override
-  Future<void> callEncode(
-    Persist persist,
-    NotifierEncoder<Object?, StateT, Object?> adapter,
-  ) async {
-    switch (stateResult?.stateOrNull) {
-      case null:
-      case AsyncLoading():
-        return;
-      case AsyncError():
-        return persist.delete(adapter.persistKey);
-      case AsyncData():
-        return persist.write(
-          adapter.persistKey,
-          adapter.encode(),
-          adapter.persistOptions,
-        );
-    }
-  }
 }
 
 /// Mixin to help implement logic for listening to [Future]s/[Stream]s and setup
@@ -266,6 +234,12 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   @override
   void initState(Ref ref) {
     onLoading(AsyncLoading<StateT>(), seamless: !ref.isReload);
+  }
+
+  @override
+  void mount() {
+    _stateResult = ResultData(AsyncLoading<StateT>());
+    super.mount();
   }
 
   /// Internal utility for transitioning an [AsyncValue] after a provider refresh.

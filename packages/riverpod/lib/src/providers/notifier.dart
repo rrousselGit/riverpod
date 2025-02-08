@@ -2,7 +2,6 @@ import 'package:meta/meta.dart';
 
 import '../builder.dart';
 import '../common/result.dart';
-import '../core/persist.dart';
 import '../framework.dart';
 import 'async_notifier.dart';
 
@@ -12,7 +11,7 @@ part 'notifier/family.dart';
 /// A base class for [$Notifier].
 /// Not meant for public consumption.
 abstract class $Notifier<StateT> extends NotifierBase<StateT>
-    with $Value<StateT> {
+    with SyncPersistable<StateT> {
   /// The value currently exposed by this [Notifier].
   ///
   /// If used inside [Notifier.build], may throw if the notifier is not yet initialized.
@@ -127,24 +126,4 @@ class $NotifierProviderElement< //
   @override
   void handleValue(Ref ref, StateT created) =>
       setStateResult(ResultData(created));
-
-  @override
-  void callDecode(
-    NotifierEncoder<Object?, StateT, Object?> adapter,
-    Object? encoded,
-  ) {
-    setStateResult($Result.data(adapter.decode(encoded)));
-  }
-
-  @override
-  Future<void> callEncode(
-    Persist persist,
-    NotifierEncoder<Object?, StateT, Object?> adapter,
-  ) async {
-    return persist.write(
-      adapter.persistKey,
-      adapter.encode(),
-      adapter.persistOptions,
-    );
-  }
 }

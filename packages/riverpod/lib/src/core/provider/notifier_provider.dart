@@ -87,8 +87,202 @@ abstract class NotifierBase<StateT> {
   void runBuild();
 }
 
+mixin SyncPersistable<StateT> implements $Value<StateT, StateT> {
+  @override
+  (Object?,)? _debugKey;
+
+  StateT _valueToState(StateT value) => value;
+
+  FutureOr<void> _callEncode<KeyT, EncodedT>(
+    Persist<KeyT, EncodedT> persist,
+    KeyT key,
+    EncodedT Function(StateT state) encode,
+    PersistOptions options,
+  ) {
+    return persist.write(key, encode(state), options);
+  }
+
+  @override
+  void persist<PersistT extends Persist<KeyT, EncodedT>, KeyT, EncodedT>(
+    PersistT persist,
+    KeyT key, {
+    PersistOptions options = const PersistOptions(),
+    required EncodedT Function(StateT state) encode,
+    required StateT Function(EncodedT encoded) decode,
+  }) {
+    return _persist<PersistT, KeyT, EncodedT, StateT, StateT>(
+      this,
+      persist,
+      key,
+      encode: encode,
+      decode: decode,
+      options: options,
+      valueToState: _valueToState,
+      callEncode: _callEncode,
+    );
+  }
+}
+
+void _persist<PersistT extends Persist<KeyT, EncodedT>, KeyT, EncodedT, ValueT,
+    StateT>(
+  $Value<StateT, ValueT> self,
+  PersistT persist,
+  KeyT key, {
+  PersistOptions options = const PersistOptions(),
+  required EncodedT Function(ValueT state) encode,
+  required ValueT Function(EncodedT encoded) decode,
+  required StateT Function(ValueT value) valueToState,
+  required FutureOr<void> Function(
+    PersistT persist,
+    KeyT key,
+    EncodedT Function(ValueT state) encode,
+    PersistOptions options,
+  ) callEncode,
+}) {
+  _debugAssertNoDuplicateKey(key, self);
+
+  var didChange = false;
+  self.listenSelf((prev, next) async {
+    didChange = true;
+
+    try {
+      callEncode(
+        persist,
+        key,
+        encode,
+        options,
+      );
+    } finally {
+      didChange = false;
+    }
+  });
+
+  if (self.ref.isFirstBuild) {
+    try {
+      // Let's read the Database
+      persist.read(key).then((value) {
+        // The state was initialized during the decoding, abort
+        if (didChange) return;
+        // Nothing to decode
+        if (value == null) return;
+
+        // New destroy key, so let's clear the cache.
+        if (value.destroyKey != options.destroyKey) {
+          persist.delete(key);
+          return;
+        }
+
+        if (value.expireAt case final expireAt?) {
+          final now = clock.now();
+          if (expireAt.isBefore(now)) {
+            persist.delete(key);
+            return;
+          }
+        }
+
+        final decoded = decode(value.data);
+        self.state = valueToState(decoded);
+      });
+    } catch (err, stack) {
+      // Don't block the provider if decoding failed
+      Zone.current.handleUncaughtError(err, stack);
+    }
+  }
+}
+
 @internal
-mixin $Value<ValueT> {}
+mixin AsyncPersistable<StateT> implements $Value<AsyncValue<StateT>, StateT> {
+  @override
+  (Object?,)? _debugKey;
+
+  AsyncValue<StateT> _valueToState(StateT value) =>
+      AsyncData(value, isFromCache: true);
+
+  FutureOr<void> _callEncode<KeyT, EncodedT>(
+    Persist<KeyT, EncodedT> persist,
+    KeyT key,
+    EncodedT Function(StateT state) encode,
+    PersistOptions options,
+  ) {
+    switch (state) {
+      case AsyncLoading():
+        return null;
+      case AsyncError():
+        return persist.delete(key);
+      case AsyncData(:final value):
+        return persist.write(key, encode(value), options);
+    }
+  }
+
+  @override
+  void persist<PersistT extends Persist<KeyT, EncodedT>, KeyT, EncodedT>(
+    PersistT persist,
+    KeyT key, {
+    PersistOptions options = const PersistOptions(),
+    required EncodedT Function(StateT state) encode,
+    required StateT Function(EncodedT encoded) decode,
+  }) {
+    return _persist<PersistT, KeyT, EncodedT, StateT, AsyncValue<StateT>>(
+      this,
+      persist,
+      key,
+      encode: encode,
+      decode: decode,
+      options: options,
+      valueToState: _valueToState,
+      callEncode: _callEncode,
+    );
+  }
+}
+
+@internal
+mixin $Value<StateT, ValueT> on NotifierBase<StateT> {
+  abstract (Object?,)? _debugKey;
+
+  void persist<PersistT extends Persist<KeyT, EncodedT>, KeyT, EncodedT>(
+    PersistT persist,
+    KeyT key, {
+    PersistOptions options = const PersistOptions(),
+    required EncodedT Function(ValueT state) encode,
+    required ValueT Function(EncodedT encoded) decode,
+  });
+}
+
+void _debugAssertNoDuplicateKey<ValueT, StateT>(
+  Object? key,
+  $Value<ValueT, StateT> self,
+) {
+  if (kDebugMode) {
+    self._debugKey = (key,);
+
+    for (final element in self.ref.container.getAllProviderElements()) {
+      if (element == self.element()) continue;
+      if (element is! $ClassProviderElement) continue;
+
+      final notifier = element.classListenable.result?.stateOrNull;
+      if (notifier is! $Value) continue;
+
+      final otherKey = notifier._debugKey;
+
+      if (otherKey == self._debugKey) {
+        Zone.current.handleUncaughtError(
+          AssertionError('''
+Duplicate `persistKey` found:
+- `$key` from `${self.element()?.origin}`
+- `$key` from `${element.origin}`
+
+This means that two different providers are opted-in for offline persistence,
+but both use the same `persistKey`.
+
+Keys should be unique. To fix, change the `persistKey` of one of the providers
+to a different value.
+'''),
+          StackTrace.current,
+        );
+      }
+    }
+  }
+}
 
 @internal
 extension ClassBaseX<StateT> on NotifierBase<StateT> {
@@ -210,8 +404,6 @@ abstract class $ClassProviderElement< //
     switch (result) {
       case ResultData():
         try {
-          if (ref.isFirstBuild) _decodeFromCache();
-
           if (provider.runNotifierBuildOverride case final override?) {
             final created = override(ref, result.state);
             handleValue(ref, created);
@@ -226,122 +418,6 @@ abstract class $ClassProviderElement< //
     }
 
     return null;
-  }
-
-  void _decodeFromCache() {
-    final adapter = _adapter();
-    if (adapter == null) return;
-
-    _decode(adapter);
-
-    ref!.listenSelf((previous, current) => _callEncode(adapter));
-  }
-
-  NotifierEncoder<Object?, ValueT, Object?>? _adapter() {
-    final Object? notifier = classListenable.result?.stateOrNull;
-
-    switch (notifier) {
-      case NotifierEncoder<Object?, ValueT, Object?>():
-        return notifier;
-      default:
-        return null;
-    }
-  }
-
-  Persist? _requestPersist(NotifierEncoder<Object?, ValueT, Object?> adapter) {
-    final persist = adapter.persist;
-
-    if (kDebugMode) _debugAssertNoDuplicateKey(adapter.persistKey);
-
-    return persist;
-  }
-
-  void _debugAssertNoDuplicateKey(Object? key) {
-    if (kDebugMode) {
-      for (final element in container.getAllProviderElements()) {
-        if (element == this) continue;
-        if (element is! $ClassProviderElement) continue;
-
-        final otherKey = element._adapter()?.persistKey;
-
-        if (otherKey == key) {
-          Zone.current.handleUncaughtError(
-            AssertionError('''
-Duplicate `persistKey` found:
-- `$key` from `$origin`
-- `$key` from `${element.origin}`
-
-This means that two different providers are opted-in for offline persistence,
-but both use the same `persistKey`.
-
-Keys should be unique. To fix, change the `persistKey` of one of the providers
-to a different value.
-'''),
-            StackTrace.current,
-          );
-        }
-      }
-    }
-  }
-
-  void callDecode(
-    NotifierEncoder<Object?, ValueT, Object?> adapter,
-    Object? encoded,
-  );
-
-  FutureOr<void> _decode(
-    NotifierEncoder<Object?, ValueT, Object?> adapter,
-  ) async {
-    final offline = _requestPersist(adapter);
-    if (offline == null) return;
-    final persist = offline;
-
-    try {
-      final key = adapter.persistKey;
-      final initialResult = stateResult;
-      await persist.read(key).then((data) {
-        if (!identical(initialResult, stateResult)) return;
-        if (data == null) return;
-
-        final options = adapter.persistOptions;
-        if (data.destroyKey != options.destroyKey) {
-          persist.delete(key);
-          return;
-        }
-
-        if (data.expireAt case final expireAt?) {
-          final now = clock.now();
-          if (expireAt.isBefore(now)) {
-            persist.delete(key);
-            return;
-          }
-        }
-
-        callDecode(adapter, data.data);
-        // TODO If decode throws, should we set the state as an error?
-      });
-    } catch (e, s) {
-      Zone.current.handleUncaughtError(e, s);
-    }
-  }
-
-  Future<void> callEncode(
-    Persist persist,
-    NotifierEncoder<Object?, ValueT, Object?> adapter,
-  );
-
-  Future<void> _callEncode(
-    NotifierEncoder<Object?, ValueT, Object?> adapter,
-  ) async {
-    final offline = _requestPersist(adapter);
-    if (offline == null) return;
-    final persist = offline;
-
-    try {
-      await callEncode(persist, adapter);
-    } catch (e, s) {
-      Zone.current.handleUncaughtError(e, s);
-    }
   }
 
   void handleValue(Ref ref, CreatedT created);
