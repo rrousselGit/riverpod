@@ -6,12 +6,66 @@ part of 'offline.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+@ProviderFor(storage)
+const storageProvider = StorageProvider._();
+
+final class StorageProvider extends $FunctionalProvider<
+        AsyncValue<Storage<String, String>>, FutureOr<Storage<String, String>>>
+    with
+        $FutureModifier<Storage<String, String>>,
+        $FutureProvider<Storage<String, String>> {
+  const StorageProvider._(
+      {FutureOr<Storage<String, String>> Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'storageProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final FutureOr<Storage<String, String>> Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$storageHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<Storage<String, String>> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
+
+  @override
+  StorageProvider $copyWithCreate(
+    FutureOr<Storage<String, String>> Function(
+      Ref ref,
+    ) create,
+  ) {
+    return StorageProvider._(create: create);
+  }
+
+  @override
+  FutureOr<Storage<String, String>> create(Ref ref) {
+    final _$cb = _createCb ?? storage;
+    return _$cb(ref);
+  }
+}
+
+String _$storageHash() => r'1feb3def45be8bc9cc695a7282b6d29e5c212b60';
+
 @ProviderFor(CustomAnnotation)
 @MyAnnotation()
 const customAnnotationProvider = CustomAnnotationProvider._();
 
 final class CustomAnnotationProvider
-    extends $NotifierProvider<CustomAnnotation, String> {
+    extends $AsyncNotifierProvider<CustomAnnotation, String> {
   const CustomAnnotationProvider._(
       {super.runNotifierBuildOverride, CustomAnnotation Function()? create})
       : _createCb = create,
@@ -30,14 +84,6 @@ final class CustomAnnotationProvider
   @override
   String debugGetCreateSourceHash() => _$customAnnotationHash();
 
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(String value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<String>(value),
-    );
-  }
-
   @$internal
   @override
   CustomAnnotation create() => _createCb?.call() ?? CustomAnnotation();
@@ -53,7 +99,7 @@ final class CustomAnnotationProvider
   @$internal
   @override
   CustomAnnotationProvider $copyWithBuild(
-    String Function(
+    FutureOr<String> Function(
       Ref,
       CustomAnnotation,
     ) build,
@@ -63,22 +109,22 @@ final class CustomAnnotationProvider
 
   @$internal
   @override
-  $NotifierProviderElement<CustomAnnotation, String> $createElement(
+  $AsyncNotifierProviderElement<CustomAnnotation, String> $createElement(
           $ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
+      $AsyncNotifierProviderElement(this, pointer);
 }
 
-String _$customAnnotationHash() => r'f552810fe369694d4aedc142454395b150c3a681';
+String _$customAnnotationHash() => r'abdbe1ad35942aef6e4017f7ebcbfcc7fc6bb986';
 
-abstract class _$CustomAnnotationBase extends $Notifier<String> {
-  String build();
+abstract class _$CustomAnnotationBase extends $AsyncNotifier<String> {
+  FutureOr<String> build();
   @$internal
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<String>;
-    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
-        String, Object?, Object?>;
+    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -161,7 +207,7 @@ final class JsonProvider
   }
 }
 
-String _$jsonHash() => r'bce99d50cc06dc6862ce4667ec45374508675300';
+String _$jsonHash() => r'fb36d984214529f587e141faf4aae78f2a39474c';
 
 final class JsonFamily extends Family {
   const JsonFamily._()
@@ -256,22 +302,29 @@ abstract class _$JsonBase extends $AsyncNotifier<Map<String, List<int>>> {
 // **************************************************************************
 
 abstract class _$Json extends _$JsonBase
-    with NotifierEncoder<String, Map<String, List<int>>, String> {
+    with Persistable<Map<String, List<int>>, String, String> {
   @override
-  String get persistKey {
+  void persist({
+    String? key,
+    required FutureOr<Storage<String, String>> storage,
+    String Function(Map<String, List<int>> state)? encode,
+    Map<String, List<int>> Function(String encoded)? decode,
+    PersistOptions options = const PersistOptions(),
+  }) {
     final args = arg;
-    return 'Json($args)';
-  }
+    final resolvedKey = 'Json($args)';
 
-  @override
-  String encode() {
-    return $jsonCodex.encode(state.requireValue);
-  }
-
-  @override
-  Map<String, List<int>> decode(String value) {
-    final e = $jsonCodex.decode(value);
-    return (e as Map).map((k, v) =>
-        MapEntry(e as String, (e as List).map((e) => e as int).toList()));
+    super.persist(
+      key: resolvedKey,
+      storage: storage,
+      encode: encode ?? (value) => $jsonCodex.encode(state.requireValue),
+      decode: decode ??
+          (encoded) {
+            final e = $jsonCodex.decode(encoded);
+            return (e as Map).map((k, v) => MapEntry(
+                e as String, (e as List).map((e) => e as int).toList()));
+          },
+      options: options,
+    );
   }
 }

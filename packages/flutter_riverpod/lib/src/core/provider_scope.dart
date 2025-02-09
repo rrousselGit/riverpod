@@ -76,7 +76,6 @@ class ProviderScope extends StatefulWidget {
     this.overrides = const [],
     this.observers,
     this.retry,
-    this.persist,
     required this.child,
   });
 
@@ -102,8 +101,6 @@ class ProviderScope extends StatefulWidget {
 
     return scope.container;
   }
-
-  final Persist? persist;
 
   /// The default retry logic used by providers associated to this container.
   ///
@@ -160,7 +157,6 @@ final class ProviderScopeState extends State<ProviderScope> {
 
     container = ProviderContainer(
       parent: parent,
-      persist: widget.persist,
       overrides: widget.overrides,
       observers: widget.observers,
       retry: widget.retry,

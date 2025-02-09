@@ -496,7 +496,10 @@ void main() {
 
         verifyOnly(
           listener,
-          listener(null, const AsyncError<int>(42, StackTrace.empty)),
+          listener(
+            const AsyncLoading(),
+            const AsyncError<int>(42, StackTrace.empty),
+          ),
         );
         verifyZeroInteractions(onError);
 

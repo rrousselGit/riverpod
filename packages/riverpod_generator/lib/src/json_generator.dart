@@ -63,13 +63,12 @@ class JsonGenerator extends ParserGenerator<JsonPersist> {
       SupportedCreatedType.value => 'state',
     };
 
-    final key = !provider.providerElement.isFamily
-        ? '=> ${provider.name};'
+    final resolvedKey = !provider.providerElement.isFamily
+        ? 'final resolvedKey = ${provider.name};'
         : '''
-  {
     final args = ${provider.argumentToRecord()};
-    return '${provider.name}(\$args)';
-  }''';
+    final resolvedKey = '${provider.name}(\$args)';
+''';
 
     String decode(DartType type) {
       var result = type.switchPrimitiveType(
@@ -103,21 +102,28 @@ class JsonGenerator extends ParserGenerator<JsonPersist> {
 
     buffer.writeln(
       '''
-abstract class $notifierClass$genericsDefinition
-    extends $baseClass
-    with NotifierEncoder<String, ${provider.valueTypeDisplayString}, String> {
+abstract class $notifierClass$genericsDefinition extends $baseClass
+    with Persistable<${provider.valueTypeDisplayString}, String, String> {
   @override
-  String get persistKey $key
+  void persist({
+    String? key,
+    required FutureOr<Storage<String, String>> storage,
+    String Function(${provider.valueTypeDisplayString} state)? encode,
+    ${provider.valueTypeDisplayString} Function(String encoded)? decode,
+    PersistOptions options = const PersistOptions(),
+  }) {
+    $resolvedKey
 
-  @override
-  String encode() {
-    return \$jsonCodex.encode($valueString);
-  }
-
-  @override
-  ${provider.valueTypeDisplayString} decode(String value) {
-    final e = \$jsonCodex.decode(value);
-    return $decoded;
+    super.persist(
+      key: resolvedKey,
+      storage: storage,
+      encode: encode ?? (value) => \$jsonCodex.encode($valueString),
+      decode: decode ?? (encoded) {
+        final e = \$jsonCodex.decode(encoded);
+        return $decoded;
+      },
+      options: options,
+    );
   }
 }''',
     );

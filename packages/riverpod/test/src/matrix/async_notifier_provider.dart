@@ -132,6 +132,7 @@ abstract class TestAsyncNotifier<StateT> implements $AsyncNotifier<StateT> {
 }
 
 class DeferredAsyncNotifier<StateT> extends AsyncNotifier<StateT>
+    with Persistable<StateT, Object?, Object?>
     implements TestAsyncNotifier<StateT> {
   DeferredAsyncNotifier(
     this._create, {
@@ -158,6 +159,7 @@ class DeferredAsyncNotifier<StateT> extends AsyncNotifier<StateT>
 
 class DeferredFamilyAsyncNotifier<StateT>
     extends FamilyAsyncNotifier<StateT, int>
+    with Persistable<StateT, Object?, Object?>
     implements TestAsyncNotifier<StateT> {
   DeferredFamilyAsyncNotifier(
     this._create, {

@@ -5,11 +5,21 @@ import 'package:test/test.dart';
 import 'integration/offline.dart';
 
 void main() {
-  test('Custom annotation', () {
-    final persist = Persist<String, String>.inMemory();
+  test('Custom annotation', () async {
+    final container = ProviderContainer.test();
+    final persist = await container
+        .listen(
+          storageProvider.future,
+          (a, b) {},
+        )
+        .read();
     persist.write('CustomAnnotation', '21', const PersistOptions());
-    final container = ProviderContainer.test(persist: persist);
 
-    expect(container.read(customAnnotationProvider), '21');
+    expect(
+      await container
+          .listen(customAnnotationProvider.future, (prev, next) {})
+          .read(),
+      '21',
+    );
   });
 }

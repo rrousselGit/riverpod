@@ -13,53 +13,53 @@ void main() {
   group('Offline', () {
     matrix.createGroup((factory) {
       test('Persist if the notifier implements NotifierEncoder', () {
-        final persist = PersistMock<String, Object?>();
+        final storage = StorageMock<String, Object?>();
         const op = PersistOptions(destroyKey: 'b');
         final provider = factory.simpleProvider(
           (ref, self) => 0,
-          persist: persist,
+          storage: storage,
           persistOptions: op,
         );
         final container = ProviderContainer.test();
 
         container.read(provider);
 
-        verify(persist.read('key')).called(1);
-        verify(persist.write('key', 0, op)).called(1);
+        verify(storage.read('key')).called(1);
+        verify(storage.write('key', 0, op)).called(1);
 
-        verifyNoMoreInteractions(persist);
+        verifyNoMoreInteractions(storage);
       });
 
       test(
           'Calls delete if the destroyKey returned by Persist.read '
           'is different from the option one', () {
-        final persist = PersistMock<String, Object?>();
+        final storage = StorageMock<String, Object?>();
         final container = ProviderContainer.test();
-        when(persist.read(any)).thenReturn(
+        when(storage.read(any)).thenReturn(
           const PersistedData(42, destroyKey: 'a'),
         );
 
         final provider = factory.simpleProvider(
           (ref, self) => self.stateOrNull.valueOf,
           persistOptions: const PersistOptions(destroyKey: 'b'),
-          persist: persist,
+          storage: storage,
         );
 
         expect(container.read(provider).valueOf, null);
 
-        verify(persist.delete('key')).called(1);
+        verify(storage.delete('key')).called(1);
       });
 
       test('handles "forever" cacheTime', () {
         return fakeAsync((async) {
-          final persist = Persist.inMemory();
+          final storage = Storage.inMemory();
           final container = ProviderContainer.test();
           final container2 = ProviderContainer.test();
 
           var value = 42;
           final provider = factory.simpleProvider(
             (ref, self) => self.stateOrNull.valueOf ?? value,
-            persist: persist,
+            storage: storage,
             persistOptions: const PersistOptions(
               cacheTime: PersistCacheTime.unsafe_forever,
             ),
@@ -76,9 +76,9 @@ void main() {
 
       test('Calls delete if expireAt has expired', () {
         return fakeAsync((async) {
-          final persist = PersistMock<String, Object?>();
+          final storage = StorageMock<String, Object?>();
           final container = ProviderContainer.test();
-          when(persist.read(any)).thenReturn(
+          when(storage.read(any)).thenReturn(
             PersistedData(42, expireAt: DateTime.now()),
           );
 
@@ -86,12 +86,12 @@ void main() {
 
           final provider = factory.simpleProvider(
             (ref, self) => self.stateOrNull.valueOf,
-            persist: persist,
+            storage: storage,
           );
 
           expect(container.read(provider).valueOf, null);
 
-          verify(persist.delete('key')).called(1);
+          verify(storage.delete('key')).called(1);
         });
       });
 
@@ -100,12 +100,12 @@ void main() {
         final a = factory.simpleProvider(
           (ref, self) => 0,
           persistKey: (_) => 'myKey',
-          persist: DelegatingPersist(read: (_) => const PersistedData(42)),
+          storage: DelegatingStorage(read: (_) => const PersistedData(42)),
         );
         final b = factory.simpleProvider(
           (ref, self) => 0,
           persistKey: (_) => 'myKey',
-          persist: DelegatingPersist(read: (_) => const PersistedData(42)),
+          storage: DelegatingStorage(read: (_) => const PersistedData(42)),
         );
 
         container.read(a);
@@ -133,10 +133,34 @@ void main() {
         );
       });
 
+      if (factory.isAsync) {
+        test('supports async storage', () async {
+          final provider = factory.simpleProvider(
+            (ref, self) {
+              final persistable = self as Persistable;
+
+              persistable.persist(
+                key: 'key',
+                storage: Future.value(
+                  DelegatingStorage(
+                    read: (_) => Future.value(const PersistedData(42)),
+                  ),
+                ),
+                encode: (value) => value,
+                decode: (encoded) => encoded,
+              );
+
+              return self.future;
+            },
+            autoPersist: false,
+          );
+        });
+      }
+
       test('Reports decoding/encoding errors to the zone', () async {
         final provider = factory.simpleProvider(
           (ref, self) => 0,
-          persist: DelegatingPersist(
+          storage: DelegatingStorage(
             read: (_) => throw StateError('read'),
             write: (_, __, ___) => throw StateError('write'),
             delete: (_) => throw StateError('delete'),
@@ -181,7 +205,7 @@ void main() {
       test('Providers can specify their adapter', () async {
         final provider = factory.simpleProvider(
           (ref, self) => self.state.valueOf,
-          persist: DelegatingPersist(
+          storage: DelegatingStorage(
             read: (_) => const PersistedData(42),
           ),
         );
@@ -196,7 +220,7 @@ void main() {
         Object? value;
         final provider = factory.simpleProvider(
           (ref, self) => value = self.valueOf,
-          persist: DelegatingPersist(
+          storage: DelegatingStorage(
             read: (_) => const PersistedData(21),
           ),
         );
@@ -213,7 +237,7 @@ void main() {
           var value = 42;
           final provider = factory.simpleProvider(
             (ref, self) => self.valueOf,
-            persist: DelegatingPersist(
+            storage: DelegatingStorage(
               read: (_) => PersistedData(
                 value,
               ),
@@ -237,7 +261,7 @@ void main() {
             final completer = Completer<(int,)>();
             final provider = factory.simpleProvider(
               (ref, self) => value.future,
-              persist: DelegatingPersist(
+              storage: DelegatingStorage(
                 read: (_) => PersistedData(completer.future),
               ),
             );
@@ -259,7 +283,7 @@ void main() {
               () async {
             final provider = factory.simpleProvider(
               (ref, self) => self.future,
-              persist: DelegatingPersist(
+              storage: DelegatingStorage(
                 read: (_) => Future(() => const PersistedData(21)),
               ),
             );
@@ -282,7 +306,7 @@ void main() {
             var value = 0;
             final provider = factory.simpleProvider(
               (ref, self) => self.valueOf,
-              persist: DelegatingPersist(
+              storage: DelegatingStorage(
                 read: (_) => PersistedData(value),
               ),
             );
@@ -303,7 +327,7 @@ void main() {
           final completer = Completer<(int,)>();
           final provider = factory.simpleProvider(
             (ref, self) => 0,
-            persist: DelegatingPersist(
+            storage: DelegatingStorage(
               read: (_) => PersistedData(completer.future),
             ),
           );
@@ -321,14 +345,14 @@ void main() {
       group('encode', () {
         test('When a provider emits any update, notify the DB adapter',
             () async {
-          final persist = PersistMock<String, Object?>();
-          when(persist.read(any)).thenReturn(const PersistedData(42));
+          final storage = StorageMock<String, Object?>();
+          when(storage.read(any)).thenReturn(const PersistedData(42));
           final encode = Encode<Object?>();
           const op = PersistOptions(destroyKey: 'a');
           when(encode.call(any)).thenAnswer((i) => i.positionalArguments.first);
           final provider = factory.simpleProvider(
             (ref, self) => 0,
-            persist: persist,
+            storage: storage,
             persistOptions: op,
             encode: encode.call,
           );
@@ -337,12 +361,12 @@ void main() {
           final sub = container.listen(provider, (a, b) {});
 
           verifyOnly(encode, encode(0));
-          verify(persist.write('key', 0, op)).called(1);
+          verify(storage.write('key', 0, op)).called(1);
 
           container.read(provider.notifier!).state = factory.valueFor(21);
 
           verifyOnly(encode, encode(21));
-          verify(persist.write('key', 21, op)).called(1);
+          verify(storage.write('key', 21, op)).called(1);
         });
 
         if (factory.isAsync) {
@@ -351,7 +375,7 @@ void main() {
             final completer = Completer<(int,)>();
             final provider = factory.simpleProvider(
               (ref, self) => 0,
-              persist: DelegatingPersist(
+              storage: DelegatingStorage(
                 read: (_) => const PersistedData(42),
               ),
               encode: encode.call,
@@ -376,7 +400,7 @@ void main() {
             final delete = Delete<Object?>();
             final provider = factory.simpleProvider(
               (ref, self) => 0,
-              persist: DelegatingPersist(
+              storage: DelegatingStorage(
                 read: (_) => const PersistedData(42),
                 delete: delete.call,
               ),
@@ -403,7 +427,7 @@ void main() {
             final resultCompleter = Completer<PersistedData<int>>();
             final provider = factory.simpleProvider(
               (ref, self) => resultCompleter.future,
-              persist: DelegatingPersist(
+              storage: DelegatingStorage(
                 read: (_) => decodeCompleter.future,
               ),
               encode: encode.call,
@@ -430,7 +454,7 @@ void main() {
             completer.complete((999,));
             final provider = factory.simpleProvider(
               (ref, self) => completer.future,
-              persist: DelegatingPersist(
+              storage: DelegatingStorage(
                 read: (_) => const PersistedData(42),
               ),
             );
@@ -447,7 +471,7 @@ void main() {
           test('is false if manually set or returned from `create`', () {
             final provider = factory.simpleProvider(
               (ref, self) => 42,
-              persist: DelegatingPersist(read: (_) => const PersistedData(42)),
+              storage: DelegatingStorage(read: (_) => const PersistedData(42)),
             );
             final container = ProviderContainer.test();
 
@@ -472,13 +496,13 @@ void main() {
 
   group('InMemoryPersist', () {
     test('returns null on unknown keys', () {
-      final persist = Persist<String, String>.inMemory();
+      final persist = Storage<String, String>.inMemory();
 
       expect(persist.read('unknown'), null);
     });
 
     test('returns the value if it exists', () {
-      final persist = Persist<String, String>.inMemory();
+      final persist = Storage<String, String>.inMemory();
 
       persist.write('key', 'value', const PersistOptions());
 
@@ -489,7 +513,7 @@ void main() {
     });
 
     test('returns null after a delete', () {
-      final persist = Persist<String, String>.inMemory();
+      final persist = Storage<String, String>.inMemory();
 
       persist.write('key', 'value', const PersistOptions());
       persist.delete('key');
@@ -563,32 +587,39 @@ extension on TestFactory<Object?> {
 
   ProviderBase<Object?> simpleProvider(
     FutureOr<Object?> Function(Ref, NotifierBase<Object?> notifier) createCb, {
-    required Persist persist,
+    Storage? storage,
     Object Function(Object? args)? persistKey,
     Object? Function(Object? encoded)? decode,
     Object? Function(Object? value)? encode,
     PersistOptions persistOptions = const PersistOptions(),
+    bool autoPersist = true,
   }) {
+    assert(
+      !autoPersist || storage != null,
+      'If autoPersist is true, storage must be provided',
+    );
     decode ??= (value) => value;
     persistKey ??= (args) => 'key';
     encode ??= (value) => value;
 
     FutureOr<Object?> create(
       Ref ref,
-      $Value<Object?, Object?> self, {
+      NotifierBase<Object?> self, {
       Object? Function()? args,
     }) {
-      self.persist<Persist, Object?, Object?>(
-        persist,
-        persistKey!(args?.call()),
-        encode: encode!,
-        decode: decode!,
-        options: persistOptions,
-      );
+      if (autoPersist) {
+        (self as Persistable<Object?, Object?, Object?>).persist(
+          storage: storage!,
+          key: persistKey!(args?.call()),
+          encode: encode!,
+          decode: decode!,
+          options: persistOptions,
+        );
+      }
       return createCb(ref, self);
     }
 
-    FutureOr<Object?> familyCreate(Ref ref, $Value<Object?, Object?> self) {
+    FutureOr<Object?> familyCreate(Ref ref, NotifierBase<Object?> self) {
       return create(ref, self, args: () => (self as dynamic).arg);
     }
 
@@ -632,7 +663,7 @@ extension on TestFactory<Object?> {
       streamNotifier: (factory) {
         Stream<Object?> handle(
           Ref ref,
-          $Value<AsyncValue<Object?>, Object?> self,
+          NotifierBase<Object?> self,
         ) {
           final futureOR =
               factory.isFamily ? familyCreate(ref, self) : create(ref, self);
@@ -733,8 +764,8 @@ extension on Object? {
   }
 }
 
-class DelegatingPersist<KeyT, EncodedT> implements Persist<KeyT, EncodedT> {
-  DelegatingPersist({
+class DelegatingStorage<KeyT, EncodedT> implements Storage<KeyT, EncodedT> {
+  DelegatingStorage({
     required FutureOr<PersistedData<EncodedT>?> Function(KeyT key) read,
     FutureOr<void> Function(
       KeyT key,

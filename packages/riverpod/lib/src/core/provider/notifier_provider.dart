@@ -29,6 +29,25 @@ typedef RunNotifierBuild<NotifierT, CreatedT> = CreatedT Function(
   NotifierT notifier,
 );
 
+@internal
+abstract class $Value<ValueT> {
+  Ref get ref;
+  (Object?,)? _debugKey;
+
+  void _setStateFromValue(ValueT value);
+
+  FutureOr<void> _callEncode<KeyT, EncodedT>(
+    FutureOr<Storage<KeyT, EncodedT>> storage,
+    KeyT key,
+    EncodedT Function(ValueT state) encode,
+    PersistOptions options,
+  );
+
+  void Function() _listenSelfFromValue(
+    void Function() listener,
+  );
+}
+
 /// A base class for all "notifiers".
 ///
 /// This is a good interface to target for writing mixins for Notifiers.
@@ -50,7 +69,7 @@ typedef RunNotifierBuild<NotifierT, CreatedT> = CreatedT Function(
 ///   }
 /// }
 /// ```
-abstract class NotifierBase<StateT> {
+mixin NotifierBase<StateT> {
   $Ref<StateT>? _ref;
   @protected
   Ref get ref => $ref;
@@ -87,188 +106,83 @@ abstract class NotifierBase<StateT> {
   void runBuild();
 }
 
-mixin SyncPersistable<StateT> implements $Value<StateT, StateT> {
+@internal
+abstract class $AsyncNotifierBase<ValueT> extends $Value<ValueT>
+    with NotifierBase<AsyncValue<ValueT>> {
   @override
-  (Object?,)? _debugKey;
+  void _setStateFromValue(ValueT value) {
+    state = AsyncData(value, isFromCache: true);
+  }
 
-  StateT _valueToState(StateT value) => value;
+  @override
+  void Function() _listenSelfFromValue(void Function() listener) =>
+      listenSelf((previous, next) => listener());
 
+  @override
   FutureOr<void> _callEncode<KeyT, EncodedT>(
-    Persist<KeyT, EncodedT> persist,
-    KeyT key,
-    EncodedT Function(StateT state) encode,
-    PersistOptions options,
-  ) {
-    return persist.write(key, encode(state), options);
-  }
-
-  @override
-  void persist<PersistT extends Persist<KeyT, EncodedT>, KeyT, EncodedT>(
-    PersistT persist,
-    KeyT key, {
-    PersistOptions options = const PersistOptions(),
-    required EncodedT Function(StateT state) encode,
-    required StateT Function(EncodedT encoded) decode,
-  }) {
-    return _persist<PersistT, KeyT, EncodedT, StateT, StateT>(
-      this,
-      persist,
-      key,
-      encode: encode,
-      decode: decode,
-      options: options,
-      valueToState: _valueToState,
-      callEncode: _callEncode,
-    );
-  }
-}
-
-void _persist<PersistT extends Persist<KeyT, EncodedT>, KeyT, EncodedT, ValueT,
-    StateT>(
-  $Value<StateT, ValueT> self,
-  PersistT persist,
-  KeyT key, {
-  PersistOptions options = const PersistOptions(),
-  required EncodedT Function(ValueT state) encode,
-  required ValueT Function(EncodedT encoded) decode,
-  required StateT Function(ValueT value) valueToState,
-  required FutureOr<void> Function(
-    PersistT persist,
+    FutureOr<Storage<KeyT, EncodedT>> storage,
     KeyT key,
     EncodedT Function(ValueT state) encode,
-    PersistOptions options,
-  ) callEncode,
-}) {
-  _debugAssertNoDuplicateKey(key, self);
-
-  var didChange = false;
-  self.listenSelf((prev, next) async {
-    didChange = true;
-
-    try {
-      callEncode(
-        persist,
-        key,
-        encode,
-        options,
-      );
-    } finally {
-      didChange = false;
-    }
-  });
-
-  if (self.ref.isFirstBuild) {
-    try {
-      // Let's read the Database
-      persist.read(key).then((value) {
-        // The state was initialized during the decoding, abort
-        if (didChange) return;
-        // Nothing to decode
-        if (value == null) return;
-
-        // New destroy key, so let's clear the cache.
-        if (value.destroyKey != options.destroyKey) {
-          persist.delete(key);
-          return;
-        }
-
-        if (value.expireAt case final expireAt?) {
-          final now = clock.now();
-          if (expireAt.isBefore(now)) {
-            persist.delete(key);
-            return;
-          }
-        }
-
-        final decoded = decode(value.data);
-        self.state = valueToState(decoded);
-      });
-    } catch (err, stack) {
-      // Don't block the provider if decoding failed
-      Zone.current.handleUncaughtError(err, stack);
-    }
-  }
-}
-
-@internal
-mixin AsyncPersistable<StateT> implements $Value<AsyncValue<StateT>, StateT> {
-  @override
-  (Object?,)? _debugKey;
-
-  AsyncValue<StateT> _valueToState(StateT value) =>
-      AsyncData(value, isFromCache: true);
-
-  FutureOr<void> _callEncode<KeyT, EncodedT>(
-    Persist<KeyT, EncodedT> persist,
-    KeyT key,
-    EncodedT Function(StateT state) encode,
     PersistOptions options,
   ) {
     switch (state) {
       case AsyncLoading():
         return null;
       case AsyncError():
-        return persist.delete(key);
+        return storage.then((storage) => storage.delete(key));
       case AsyncData(:final value):
-        return persist.write(key, encode(value), options);
+        return storage
+            .then((storage) => storage.write(key, encode(value), options));
     }
-  }
-
-  @override
-  void persist<PersistT extends Persist<KeyT, EncodedT>, KeyT, EncodedT>(
-    PersistT persist,
-    KeyT key, {
-    PersistOptions options = const PersistOptions(),
-    required EncodedT Function(StateT state) encode,
-    required StateT Function(EncodedT encoded) decode,
-  }) {
-    return _persist<PersistT, KeyT, EncodedT, StateT, AsyncValue<StateT>>(
-      this,
-      persist,
-      key,
-      encode: encode,
-      decode: decode,
-      options: options,
-      valueToState: _valueToState,
-      callEncode: _callEncode,
-    );
   }
 }
 
 @internal
-mixin $Value<StateT, ValueT> on NotifierBase<StateT> {
-  abstract (Object?,)? _debugKey;
+abstract class $SyncNotifierBase<StateT> extends $Value<StateT>
+    with NotifierBase<StateT> {
+  @override
+  void _setStateFromValue(StateT value) => state = value;
 
-  void persist<PersistT extends Persist<KeyT, EncodedT>, KeyT, EncodedT>(
-    PersistT persist,
-    KeyT key, {
-    PersistOptions options = const PersistOptions(),
-    required EncodedT Function(ValueT state) encode,
-    required ValueT Function(EncodedT encoded) decode,
-  });
+  @override
+  void Function() _listenSelfFromValue(void Function() listener) =>
+      listenSelf((previous, next) => listener());
+
+  @override
+  FutureOr<void> _callEncode<KeyT, EncodedT>(
+    FutureOr<Storage<KeyT, EncodedT>> storage,
+    KeyT key,
+    EncodedT Function(StateT state) encode,
+    PersistOptions options,
+  ) {
+    return storage
+        .then((storage) => storage.write(key, encode(state), options));
+  }
 }
 
-void _debugAssertNoDuplicateKey<ValueT, StateT>(
-  Object? key,
-  $Value<ValueT, StateT> self,
-) {
-  if (kDebugMode) {
-    self._debugKey = (key,);
+mixin Persistable<ValueT, KeyT, EncodedT> on $Value<ValueT> {
+  void _debugAssertNoDuplicateKey(
+    Object? key,
+    $Value<Object?> self,
+  ) {
+    if (kDebugMode) {
+      final selfElement = (self as NotifierBase).element();
 
-    for (final element in self.ref.container.getAllProviderElements()) {
-      if (element == self.element()) continue;
-      if (element is! $ClassProviderElement) continue;
+      self._debugKey = (key,);
 
-      final notifier = element.classListenable.result?.stateOrNull;
-      if (notifier is! $Value) continue;
+      for (final element in self.ref.container.getAllProviderElements()) {
+        if (element == selfElement) continue;
+        if (element is! $ClassProviderElement) continue;
 
-      final otherKey = notifier._debugKey;
+        final Object? notifier = element.classListenable.result?.stateOrNull;
+        if (notifier is! $Value) continue;
 
-      if (otherKey == self._debugKey) {
-        Zone.current.handleUncaughtError(
-          AssertionError('''
+        final otherKey = notifier._debugKey;
+
+        if (otherKey == self._debugKey) {
+          Zone.current.handleUncaughtError(
+            AssertionError('''
 Duplicate `persistKey` found:
-- `$key` from `${self.element()?.origin}`
+- `$key` from `${selfElement?.origin}`
 - `$key` from `${element.origin}`
 
 This means that two different providers are opted-in for offline persistence,
@@ -277,8 +191,67 @@ but both use the same `persistKey`.
 Keys should be unique. To fix, change the `persistKey` of one of the providers
 to a different value.
 '''),
-          StackTrace.current,
+            StackTrace.current,
+          );
+        }
+      }
+    }
+  }
+
+  FutureOr<void> persist({
+    required KeyT key,
+    required FutureOr<Storage<KeyT, EncodedT>> storage,
+    required EncodedT Function(ValueT state) encode,
+    required ValueT Function(EncodedT encoded) decode,
+    PersistOptions options = const PersistOptions(),
+  }) {
+    _debugAssertNoDuplicateKey(key, this);
+
+    var didChange = false;
+    _listenSelfFromValue(() async {
+      didChange = true;
+
+      try {
+        _callEncode(
+          storage,
+          key,
+          encode,
+          options,
         );
+      } finally {
+        didChange = false;
+      }
+    });
+
+    if (ref.isFirstBuild) {
+      try {
+        // Let's read the Database
+        return storage.then(
+          (storage) => storage.read(key).then((value) {
+            // The state was initialized during the decoding, abort
+            if (didChange) return null;
+            // Nothing to decode
+            if (value == null) return null;
+
+            // New destroy key, so let's clear the cache.
+            if (value.destroyKey != options.destroyKey) {
+              return storage.delete(key);
+            }
+
+            if (value.expireAt case final expireAt?) {
+              final now = clock.now();
+              if (expireAt.isBefore(now)) {
+                return storage.delete(key);
+              }
+            }
+
+            final decoded = decode(value.data);
+            _setStateFromValue(decoded);
+          }),
+        );
+      } catch (err, stack) {
+        // Don't block the provider if decoding failed
+        Zone.current.handleUncaughtError(err, stack);
       }
     }
   }

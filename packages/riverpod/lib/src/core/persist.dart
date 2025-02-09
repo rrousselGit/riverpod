@@ -33,15 +33,15 @@ class PersistedData<T> {
   int get hashCode => Object.hash(data, destroyKey, expireAt);
 }
 
-abstract class Persist<KeyT extends Object?, EncodedT extends Object?> {
-  factory Persist.inMemory() = _InMemoryPersist<KeyT, EncodedT>;
+abstract class Storage<KeyT extends Object?, EncodedT extends Object?> {
+  factory Storage.inMemory() = _InMemoryPersist<KeyT, EncodedT>;
 
   FutureOr<PersistedData<EncodedT>?> read(KeyT key);
   FutureOr<void> write(KeyT key, EncodedT value, PersistOptions options);
   FutureOr<void> delete(KeyT key);
 }
 
-class _InMemoryPersist<KeyT, EncodedT> implements Persist<KeyT, EncodedT> {
+class _InMemoryPersist<KeyT, EncodedT> implements Storage<KeyT, EncodedT> {
   final Map<KeyT, PersistedData<EncodedT>> state = {};
 
   DateTime _currentTimestamp() => clock.now().toUtc();
