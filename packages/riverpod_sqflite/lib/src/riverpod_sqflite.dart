@@ -12,7 +12,7 @@ extension Db on JsonSqFlitePersist {
   Database get db => _db;
 }
 
-class JsonSqFlitePersist implements Persist<String, String> {
+class JsonSqFlitePersist implements Storage<String, String> {
   JsonSqFlitePersist._(this._db);
 
   static String get _tableName => 'states';

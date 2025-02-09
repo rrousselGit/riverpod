@@ -35,4 +35,4 @@ class MyNotifier extends AsyncNotifier<List<Todo>> {
 }
 
 final myNotifierProvider =
-    AsyncNotifierProvider.autoDispose<MyNotifier, int>(MyNotifier.new);
+    AsyncNotifierProvider.autoDispose<MyNotifier, List<Todo>>(MyNotifier.new);
