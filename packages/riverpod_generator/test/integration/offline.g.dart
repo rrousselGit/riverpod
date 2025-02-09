@@ -294,6 +294,150 @@ abstract class _$JsonBase extends $AsyncNotifier<Map<String, List<int>>> {
   }
 }
 
+@ProviderFor(Json2)
+@JsonPersist()
+const json2Provider = Json2Provider._();
+
+final class Json2Provider
+    extends $AsyncNotifierProvider<Json2, Map<String, List<int>>> {
+  const Json2Provider._(
+      {super.runNotifierBuildOverride, Json2 Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'json2Provider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final Json2 Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$json2Hash();
+
+  @$internal
+  @override
+  Json2 create() => _createCb?.call() ?? Json2();
+
+  @$internal
+  @override
+  Json2Provider $copyWithCreate(
+    Json2 Function() create,
+  ) {
+    return Json2Provider._(create: create);
+  }
+
+  @$internal
+  @override
+  Json2Provider $copyWithBuild(
+    FutureOr<Map<String, List<int>>> Function(
+      Ref,
+      Json2,
+    ) build,
+  ) {
+    return Json2Provider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $AsyncNotifierProviderElement<Json2, Map<String, List<int>>> $createElement(
+          $ProviderPointer pointer) =>
+      $AsyncNotifierProviderElement(this, pointer);
+}
+
+String _$json2Hash() => r'3e263438daf3363cc46613c80645526c1f756796';
+
+abstract class _$Json2Base extends $AsyncNotifier<Map<String, List<int>>> {
+  FutureOr<Map<String, List<int>>> build();
+  @$internal
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<Map<String, List<int>>>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<Map<String, List<int>>>>,
+        AsyncValue<Map<String, List<int>>>,
+        Object?,
+        Object?>;
+    element.handleValue(ref, created);
+  }
+}
+
+@ProviderFor(CustomJson)
+@JsonPersist()
+const customJsonProvider = CustomJsonProvider._();
+
+final class CustomJsonProvider
+    extends $AsyncNotifierProvider<CustomJson, Map<String, Bar>> {
+  const CustomJsonProvider._(
+      {super.runNotifierBuildOverride, CustomJson Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'customJsonProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final CustomJson Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$customJsonHash();
+
+  @$internal
+  @override
+  CustomJson create() => _createCb?.call() ?? CustomJson();
+
+  @$internal
+  @override
+  CustomJsonProvider $copyWithCreate(
+    CustomJson Function() create,
+  ) {
+    return CustomJsonProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  CustomJsonProvider $copyWithBuild(
+    FutureOr<Map<String, Bar>> Function(
+      Ref,
+      CustomJson,
+    ) build,
+  ) {
+    return CustomJsonProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $AsyncNotifierProviderElement<CustomJson, Map<String, Bar>> $createElement(
+          $ProviderPointer pointer) =>
+      $AsyncNotifierProviderElement(this, pointer);
+}
+
+String _$customJsonHash() => r'641edf92aae1f74ac7cc41db82c6a7dc88d24eb7';
+
+abstract class _$CustomJsonBase extends $AsyncNotifier<Map<String, Bar>> {
+  FutureOr<Map<String, Bar>> build();
+  @$internal
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<Map<String, Bar>>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<Map<String, Bar>>>,
+        AsyncValue<Map<String, Bar>>,
+        Object?,
+        Object?>;
+    element.handleValue(ref, created);
+  }
+}
+
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
 
@@ -304,17 +448,17 @@ abstract class _$JsonBase extends $AsyncNotifier<Map<String, List<int>>> {
 abstract class _$Json extends _$JsonBase
     with Persistable<Map<String, List<int>>, String, String> {
   @override
-  void persist({
+  FutureOr<void> persist({
     String? key,
     required FutureOr<Storage<String, String>> storage,
     String Function(Map<String, List<int>> state)? encode,
     Map<String, List<int>> Function(String encoded)? decode,
-    PersistOptions options = const PersistOptions(),
+    StorageOptions options = const StorageOptions(),
   }) {
     final args = arg;
     final resolvedKey = 'Json($args)';
 
-    super.persist(
+    return super.persist(
       key: resolvedKey,
       storage: storage,
       encode: encode ?? (value) => $jsonCodex.encode(state.requireValue),
@@ -322,7 +466,61 @@ abstract class _$Json extends _$JsonBase
           (encoded) {
             final e = $jsonCodex.decode(encoded);
             return (e as Map).map((k, v) => MapEntry(
-                e as String, (e as List).map((e) => e as int).toList()));
+                k as String, (v as List).map((e) => e as int).toList()));
+          },
+      options: options,
+    );
+  }
+}
+
+abstract class _$Json2 extends _$Json2Base
+    with Persistable<Map<String, List<int>>, String, String> {
+  @override
+  FutureOr<void> persist({
+    String? key,
+    required FutureOr<Storage<String, String>> storage,
+    String Function(Map<String, List<int>> state)? encode,
+    Map<String, List<int>> Function(String encoded)? decode,
+    StorageOptions options = const StorageOptions(),
+  }) {
+    final resolvedKey = "Json2";
+
+    return super.persist(
+      key: resolvedKey,
+      storage: storage,
+      encode: encode ?? (value) => $jsonCodex.encode(state.requireValue),
+      decode: decode ??
+          (encoded) {
+            final e = $jsonCodex.decode(encoded);
+            return (e as Map).map((k, v) => MapEntry(
+                k as String, (v as List).map((e) => e as int).toList()));
+          },
+      options: options,
+    );
+  }
+}
+
+abstract class _$CustomJson extends _$CustomJsonBase
+    with Persistable<Map<String, Bar>, String, String> {
+  @override
+  FutureOr<void> persist({
+    String? key,
+    required FutureOr<Storage<String, String>> storage,
+    String Function(Map<String, Bar> state)? encode,
+    Map<String, Bar> Function(String encoded)? decode,
+    StorageOptions options = const StorageOptions(),
+  }) {
+    final resolvedKey = "CustomJson";
+
+    return super.persist(
+      key: resolvedKey,
+      storage: storage,
+      encode: encode ?? (value) => $jsonCodex.encode(state.requireValue),
+      decode: decode ??
+          (encoded) {
+            final e = $jsonCodex.decode(encoded);
+            return (e as Map).map((k, v) =>
+                MapEntry(k as String, Bar.fromJson(v as Map<String, Object?>)));
           },
       options: options,
     );

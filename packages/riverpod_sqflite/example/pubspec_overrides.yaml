@@ -6,3 +6,9 @@ dependency_overrides:
     path: ../../flutter_riverpod
   riverpod_sqflite:
     path: ..
+  riverpod_analyzer_utils:
+    path: ../../riverpod_analyzer_utils
+  riverpod_annotation:
+    path: ../../riverpod_annotation
+  riverpod_generator:
+    path: ../../riverpod_generator

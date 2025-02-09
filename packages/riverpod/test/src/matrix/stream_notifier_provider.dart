@@ -153,6 +153,15 @@ class DeferredStreamNotifier<StateT> extends StreamNotifier<StateT>
   Stream<StateT> build() => _create(ref, this);
 
   @override
+  RemoveListener listenSelf(
+    void Function(AsyncValue<StateT>? previous, AsyncValue<StateT> next)
+        listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  }) {
+    return super.listenSelf(listener, onError: onError);
+  }
+
+  @override
   bool updateShouldNotify(
     AsyncValue<StateT> previousState,
     AsyncValue<StateT> newState,

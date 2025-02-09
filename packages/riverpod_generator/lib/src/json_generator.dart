@@ -64,57 +64,57 @@ class JsonGenerator extends ParserGenerator<JsonPersist> {
     };
 
     final resolvedKey = !provider.providerElement.isFamily
-        ? 'final resolvedKey = ${provider.name};'
+        ? 'final resolvedKey = "${provider.name}";'
         : '''
     final args = ${provider.argumentToRecord()};
     final resolvedKey = '${provider.name}(\$args)';
 ''';
 
-    String decode(DartType type) {
+    String decode(DartType type, String name) {
       var result = type.switchPrimitiveType(
-        boolean: () => 'e as bool',
-        integer: () => 'e as int',
-        double: () => 'e as double',
-        number: () => 'e as num',
-        string: () => 'e as String',
+        boolean: () => '$name as bool',
+        integer: () => '$name as int',
+        double: () => '$name as double',
+        number: () => '$name as num',
+        string: () => '$name as String',
         array: (item) {
-          return '(e as List).map((e) => ${decode(item)}).toList()';
+          return '($name as List).map((e) => ${decode(item, 'e')}).toList()';
         },
         set: (item) {
-          return '(e as List).map((e) => ${decode(item)}).toSet()';
+          return '($name as List).map((e) => ${decode(item, 'e')}).toSet()';
         },
         map: (key, value) {
-          return '(e as Map).map((k, v) => MapEntry(${decode(key)}, ${decode(value)}))';
+          return '($name as Map).map((k, v) => MapEntry(${decode(key, 'k')}, ${decode(value, 'v')}))';
         },
         object: () {
-          return '${type.getDisplayString()}.fromJson(e)';
+          return '${type.getDisplayString()}.fromJson($name as Map<String, Object?>)';
         },
       );
 
       if (type.nullabilitySuffix == NullabilitySuffix.question) {
-        result = 'e == null ? null : $result';
+        result = '$name == null ? null : $result';
       }
 
       return result;
     }
 
-    final decoded = decode(provider.valueTypeNode!.type!);
+    final decoded = decode(provider.valueTypeNode!.type!, 'e');
 
     buffer.writeln(
       '''
 abstract class $notifierClass$genericsDefinition extends $baseClass
     with Persistable<${provider.valueTypeDisplayString}, String, String> {
   @override
-  void persist({
+  FutureOr<void> persist({
     String? key,
     required FutureOr<Storage<String, String>> storage,
     String Function(${provider.valueTypeDisplayString} state)? encode,
     ${provider.valueTypeDisplayString} Function(String encoded)? decode,
-    PersistOptions options = const PersistOptions(),
+    StorageOptions options = const StorageOptions(),
   }) {
     $resolvedKey
 
-    super.persist(
+    return super.persist(
       key: resolvedKey,
       storage: storage,
       encode: encode ?? (value) => \$jsonCodex.encode($valueString),

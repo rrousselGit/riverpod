@@ -205,7 +205,7 @@ class StorageMock<KeyT, EncodedT> extends Mock
   @override
   FutureOr<PersistedData<EncodedT>?> read(KeyT? key);
   @override
-  FutureOr<void> write(KeyT? key, EncodedT? value, PersistOptions? options);
+  FutureOr<void> write(KeyT? key, EncodedT? value, StorageOptions? options);
   @override
   FutureOr<void> delete(KeyT? key);
 }

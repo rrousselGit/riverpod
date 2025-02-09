@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_unused_constructor_parameters
+
 import 'package:riverpod/persist.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/experimental/json_persist.dart';
@@ -33,7 +35,7 @@ abstract class _$CustomAnnotation extends _$CustomAnnotationBase
     required FutureOr<Storage<Object, String>> storage,
     String Function(String state)? encode,
     String Function(String encoded)? decode,
-    PersistOptions options = const PersistOptions(),
+    StorageOptions options = const StorageOptions(),
   }) {
     return super.persist(
       key: key ?? 'CustomAnnotation',
@@ -54,4 +56,34 @@ class Json extends _$Json {
 
     return {};
   }
+}
+
+@riverpod
+@JsonPersist()
+class Json2 extends _$Json2 {
+  @override
+  Future<Map<String, List<int>>> build() async {
+    persist(storage: ref.watch(storageProvider.future));
+
+    return {};
+  }
+}
+
+@riverpod
+@JsonPersist()
+class CustomJson extends _$CustomJson {
+  @override
+  Future<Map<String, Bar>> build() async {
+    await persist(storage: ref.watch(storageProvider.future));
+
+    return state.value ?? {};
+  }
+}
+
+class Bar {
+  const Bar(this.value);
+  Bar.fromJson(Map<String, dynamic> json) : value = json['value'] as int;
+
+  final int value;
+  Map<String, dynamic> toJson() => {'value': value};
 }

@@ -40,7 +40,7 @@ abstract class $Value<ValueT> {
     FutureOr<Storage<KeyT, EncodedT>> storage,
     KeyT key,
     EncodedT Function(ValueT state) encode,
-    PersistOptions options,
+    StorageOptions options,
   );
 
   void Function() _listenSelfFromValue(
@@ -123,7 +123,7 @@ abstract class $AsyncNotifierBase<ValueT> extends $Value<ValueT>
     FutureOr<Storage<KeyT, EncodedT>> storage,
     KeyT key,
     EncodedT Function(ValueT state) encode,
-    PersistOptions options,
+    StorageOptions options,
   ) {
     switch (state) {
       case AsyncLoading():
@@ -152,7 +152,7 @@ abstract class $SyncNotifierBase<StateT> extends $Value<StateT>
     FutureOr<Storage<KeyT, EncodedT>> storage,
     KeyT key,
     EncodedT Function(StateT state) encode,
-    PersistOptions options,
+    StorageOptions options,
   ) {
     return storage
         .then((storage) => storage.write(key, encode(state), options));
@@ -203,7 +203,7 @@ to a different value.
     required FutureOr<Storage<KeyT, EncodedT>> storage,
     required EncodedT Function(ValueT state) encode,
     required ValueT Function(EncodedT encoded) decode,
-    PersistOptions options = const PersistOptions(),
+    StorageOptions options = const StorageOptions(),
   }) {
     _debugAssertNoDuplicateKey(key, this);
 

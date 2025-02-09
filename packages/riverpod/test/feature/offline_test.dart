@@ -14,7 +14,7 @@ void main() {
     matrix.createGroup((factory) {
       test('Persist if the notifier implements NotifierEncoder', () {
         final storage = StorageMock<String, Object?>();
-        const op = PersistOptions(destroyKey: 'b');
+        const op = StorageOptions(destroyKey: 'b');
         final provider = factory.simpleProvider(
           (ref, self) => 0,
           storage: storage,
@@ -41,7 +41,7 @@ void main() {
 
         final provider = factory.simpleProvider(
           (ref, self) => self.stateOrNull.valueOf,
-          persistOptions: const PersistOptions(destroyKey: 'b'),
+          persistOptions: const StorageOptions(destroyKey: 'b'),
           storage: storage,
         );
 
@@ -60,8 +60,8 @@ void main() {
           final provider = factory.simpleProvider(
             (ref, self) => self.stateOrNull.valueOf ?? value,
             storage: storage,
-            persistOptions: const PersistOptions(
-              cacheTime: PersistCacheTime.unsafe_forever,
+            persistOptions: const StorageOptions(
+              cacheTime: StorageCacheTime.unsafe_forever,
             ),
           );
 
@@ -348,7 +348,7 @@ void main() {
           final storage = StorageMock<String, Object?>();
           when(storage.read(any)).thenReturn(const PersistedData(42));
           final encode = Encode<Object?>();
-          const op = PersistOptions(destroyKey: 'a');
+          const op = StorageOptions(destroyKey: 'a');
           when(encode.call(any)).thenAnswer((i) => i.positionalArguments.first);
           final provider = factory.simpleProvider(
             (ref, self) => 0,
@@ -504,7 +504,7 @@ void main() {
     test('returns the value if it exists', () {
       final persist = Storage<String, String>.inMemory();
 
-      persist.write('key', 'value', const PersistOptions());
+      persist.write('key', 'value', const StorageOptions());
 
       expect(
         persist.read('key'),
@@ -515,7 +515,7 @@ void main() {
     test('returns null after a delete', () {
       final persist = Storage<String, String>.inMemory();
 
-      persist.write('key', 'value', const PersistOptions());
+      persist.write('key', 'value', const StorageOptions());
       persist.delete('key');
 
       expect(persist.read('key'), null);
@@ -591,7 +591,7 @@ extension on TestFactory<Object?> {
     Object Function(Object? args)? persistKey,
     Object? Function(Object? encoded)? decode,
     Object? Function(Object? value)? encode,
-    PersistOptions persistOptions = const PersistOptions(),
+    StorageOptions persistOptions = const StorageOptions(),
     bool autoPersist = true,
   }) {
     assert(
@@ -770,7 +770,7 @@ class DelegatingStorage<KeyT, EncodedT> implements Storage<KeyT, EncodedT> {
     FutureOr<void> Function(
       KeyT key,
       EncodedT value,
-      PersistOptions options,
+      StorageOptions options,
     )? write,
     FutureOr<void> Function(KeyT key)? delete,
   })  : _read = read,
@@ -784,10 +784,10 @@ class DelegatingStorage<KeyT, EncodedT> implements Storage<KeyT, EncodedT> {
   final FutureOr<void> Function(
     KeyT key,
     EncodedT value,
-    PersistOptions options,
+    StorageOptions options,
   ) _write;
   @override
-  FutureOr<void> write(KeyT key, EncodedT value, PersistOptions options) =>
+  FutureOr<void> write(KeyT key, EncodedT value, StorageOptions options) =>
       _write(key, value, options);
 
   final FutureOr<void> Function(KeyT key) _delete;

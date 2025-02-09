@@ -16,25 +16,25 @@ void sqfliteTestInit() {
 void main() {
   sqfliteTestInit();
 
-  late JsonSqFlitePersist persist;
+  late JsonSqFliteStorage persist;
   setUp(() async {
-    persist = await JsonSqFlitePersist.open(inMemoryDatabasePath);
+    persist = await JsonSqFliteStorage.open(inMemoryDatabasePath);
     addTearDown(persist.close);
   });
 
-  group('JsonSqFlitePersist', () {
+  group('JsonSqFliteStorage', () {
     test('Clears expired keys on creation', () async {
       return fakeAsync((async) async {
-        await persist.write('expired', 'value', const PersistOptions());
+        await persist.write('expired', 'value', const StorageOptions());
         await persist.write(
           'maintained',
           'value',
-          const PersistOptions(cacheTime: PersistCacheTime(Duration(days: 3))),
+          const StorageOptions(cacheTime: StorageCacheTime(Duration(days: 3))),
         );
 
         async.elapse(const Duration(days: 3));
 
-        final persist2 = await JsonSqFlitePersist.open(inMemoryDatabasePath);
+        final persist2 = await JsonSqFliteStorage.open(inMemoryDatabasePath);
         addTearDown(persist2.close);
 
         final result = await persist.db.query(persist.tableName);
@@ -51,7 +51,7 @@ void main() {
     });
 
     test('returns the value if it exists', () async {
-      await persist.write('key', 'value', const PersistOptions());
+      await persist.write('key', 'value', const StorageOptions());
 
       expect(
         await persist.read('key'),
@@ -60,7 +60,7 @@ void main() {
     });
 
     test('returns null after a delete', () async {
-      await persist.write('key', 'value', const PersistOptions());
+      await persist.write('key', 'value', const StorageOptions());
       await persist.delete('key');
 
       await expectLater(

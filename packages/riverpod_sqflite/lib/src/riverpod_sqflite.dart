@@ -7,17 +7,29 @@ import 'package:riverpod/src/core/persist.dart';
 import 'package:sqflite/sqflite.dart';
 
 @internal
-extension Db on JsonSqFlitePersist {
-  String get tableName => JsonSqFlitePersist._tableName;
+extension Db on JsonSqFliteStorage {
+  String get tableName => JsonSqFliteStorage._tableName;
   Database get db => _db;
 }
 
-class JsonSqFlitePersist implements Storage<String, String> {
-  JsonSqFlitePersist._(this._db);
+/// A storage that stores data in SQLite using JSON.
+///
+/// Only JSON serializable is supported.
+/// This is generally used in combination `riverpod_annotation's` `JsonPersist`.
+class JsonSqFliteStorage implements Storage<String, String> {
+  JsonSqFliteStorage._(this._db);
 
-  static String get _tableName => 'states';
+  static String get _tableName => 'riverpod';
 
-  static Future<JsonSqFlitePersist> open(
+  /// Opens a database at the specified [path].
+  ///
+  /// This will create a table named `riverpod` if it does not exist,
+  /// and will delete any expired data present.
+  ///
+  /// [open] relies on the `clock` package to obtain the current time, for the
+  /// purpose of determining if a key has expired.
+  /// This enables your tests to mock the current type.
+  static Future<JsonSqFliteStorage> open(
     String path,
   ) async {
     final db = await openDatabase(
@@ -33,13 +45,16 @@ CREATE TABLE IF NOT EXISTS $_tableName(
 ) WITHOUT ROWID''');
       },
     );
-    final instance = JsonSqFlitePersist._(db);
+    final instance = JsonSqFliteStorage._(db);
     await instance._init();
     return instance;
   }
 
   final Database _db;
 
+  /// Closes the database.
+  ///
+  /// This makes the object unusable.
   Future<void> close() => _db.close();
 
   Future<void> _init() async {
@@ -90,7 +105,7 @@ CREATE TABLE IF NOT EXISTS $_tableName(
   Future<void> write(
     String key,
     String value,
-    PersistOptions options,
+    StorageOptions options,
   ) async {
     await _db.insert(
       _tableName,
