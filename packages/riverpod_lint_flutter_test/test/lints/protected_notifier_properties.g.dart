@@ -70,7 +70,13 @@ abstract class _$A extends $Notifier<int> {
   int build();
   @$internal
   @override
-  int runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<int>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(A2)
@@ -137,7 +143,13 @@ abstract class _$A2 extends $Notifier<int> {
   int build();
   @$internal
   @override
-  int runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<int>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(A3)
@@ -292,9 +304,15 @@ abstract class _$A3 extends $Notifier<int> {
   );
   @$internal
   @override
-  int runBuild() => build(
-        _$args,
-      );
+  void runBuild() {
+    final created = build(
+      _$args,
+    );
+    final ref = this.ref as $Ref<int>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(A4)
@@ -449,9 +467,15 @@ abstract class _$A4 extends $Notifier<int> {
   );
   @$internal
   @override
-  int runBuild() => build(
-        _$args,
-      );
+  void runBuild() {
+    final created = build(
+      _$args,
+    );
+    final ref = this.ref as $Ref<int>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(A5)
@@ -599,9 +623,15 @@ abstract class _$A5 extends $AsyncNotifier<int> {
   );
   @$internal
   @override
-  FutureOr<int> runBuild() => build(
-        _$args,
-      );
+  void runBuild() {
+    final created = build(
+      _$args,
+    );
+    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(A6)
@@ -749,9 +779,15 @@ abstract class _$A6 extends $AsyncNotifier<int> {
   );
   @$internal
   @override
-  FutureOr<int> runBuild() => build(
-        _$args,
-      );
+  void runBuild() {
+    final created = build(
+      _$args,
+    );
+    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(A7)
@@ -899,9 +935,15 @@ abstract class _$A7 extends $StreamNotifier<int> {
   );
   @$internal
   @override
-  Stream<int> runBuild() => build(
-        _$args,
-      );
+  void runBuild() {
+    final created = build(
+      _$args,
+    );
+    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(A8)
@@ -1049,9 +1091,15 @@ abstract class _$A8 extends $StreamNotifier<int> {
   );
   @$internal
   @override
-  Stream<int> runBuild() => build(
-        _$args,
-      );
+  void runBuild() {
+    final created = build(
+      _$args,
+    );
+    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(B)
@@ -1118,7 +1166,13 @@ abstract class _$B extends $Notifier<int> {
   int build();
   @$internal
   @override
-  int runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<int>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(B2)
@@ -1185,7 +1239,13 @@ abstract class _$B2 extends $Notifier<int> {
   int build();
   @$internal
   @override
-  int runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<int>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 // ignore_for_file: type=lint

@@ -419,9 +419,18 @@ abstract class _$PackageMetrics extends $AsyncNotifier<PackageMetricsScore> {
   });
   @$internal
   @override
-  FutureOr<PackageMetricsScore> runBuild() => build(
-        packageName: _$args,
-      );
+  void runBuild() {
+    final created = build(
+      packageName: _$args,
+    );
+    final ref = this.ref as $Ref<AsyncValue<PackageMetricsScore>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<PackageMetricsScore>>,
+        AsyncValue<PackageMetricsScore>,
+        Object?,
+        Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 // ignore_for_file: type=lint

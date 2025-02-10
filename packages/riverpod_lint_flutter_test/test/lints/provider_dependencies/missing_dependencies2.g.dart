@@ -1203,7 +1203,13 @@ abstract class _$ClassWatchGeneratedRootButMissingDependencies
   int build();
   @$internal
   @override
-  int runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<int>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(regression2348)
@@ -1339,7 +1345,13 @@ abstract class _$Regression2417 extends $Notifier<int> {
   int build();
   @$internal
   @override
-  int runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<int>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(familyDep)
@@ -1739,7 +1751,13 @@ abstract class _$AliasClass extends $Notifier<int> {
   int build();
   @$internal
   @override
-  int runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<int>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(RiverpodDependencies)
@@ -1814,7 +1832,13 @@ abstract class _$RiverpodDependencies extends $Notifier<int> {
   int build();
   @$internal
   @override
-  int runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<int>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(foo)

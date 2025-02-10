@@ -74,7 +74,13 @@ abstract class _$UnimplementedScoped extends $Notifier<int> {
   int build() => throw MissingScopeException(ref);
   @$internal
   @override
-  int runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<int>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(scoped)
