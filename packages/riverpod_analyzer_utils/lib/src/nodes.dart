@@ -1,4 +1,5 @@
-library;
+// ignore: unnecessary_library_name, used by the generator
+library nodes;
 
 import 'dart:async';
 import 'dart:convert';
