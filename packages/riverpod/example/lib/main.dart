@@ -11,7 +11,7 @@
 ///
 ///  This showcases how to use `riverpod` without Flutter.
 ///  It also shows how a provider can depend on another provider asynchronously loaded.
-library main;
+library;
 
 import 'dart:convert';
 import 'dart:io';

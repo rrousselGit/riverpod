@@ -200,6 +200,16 @@ class Listener<T> extends Mock {
   void call(T? previous, T? next);
 }
 
+class StorageMock<KeyT, EncodedT> extends Mock
+    implements Storage<KeyT, EncodedT> {
+  @override
+  FutureOr<PersistedData<EncodedT>?> read(KeyT? key);
+  @override
+  FutureOr<void> write(KeyT? key, EncodedT? value, StorageOptions? options);
+  @override
+  FutureOr<void> delete(KeyT? key);
+}
+
 final isAssertionError = isA<AssertionError>();
 
 Matcher isStateErrorWith({String? message}) {

@@ -29,10 +29,26 @@ typedef RunNotifierBuild<NotifierT, CreatedT> = CreatedT Function(
   NotifierT notifier,
 );
 
+@internal
+abstract class $Value<ValueT> {
+  Ref get ref;
+  (Object?,)? _debugKey;
+
+  void _setStateFromValue(ValueT value);
+
+  FutureOr<void> _callEncode<KeyT, EncodedT>(
+    FutureOr<Storage<KeyT, EncodedT>> storage,
+    KeyT key,
+    EncodedT Function(ValueT state) encode,
+    StorageOptions options,
+  );
+
+  void Function() _listenSelfFromValue(
+    void Function() listener,
+  );
+}
+
 /// A base class for all "notifiers".
-///
-/// - [StateT] is the type of [state].
-/// - [CreatedT] is the type of the value returned by the notifier's `build` method.
 ///
 /// This is a good interface to target for writing mixins for Notifiers.
 ///
@@ -53,8 +69,8 @@ typedef RunNotifierBuild<NotifierT, CreatedT> = CreatedT Function(
 ///   }
 /// }
 /// ```
-abstract class NotifierBase<StateT, CreatedT> {
-  _Ref<StateT>? _ref;
+mixin NotifierBase<StateT> {
+  $Ref<StateT>? _ref;
   @protected
   Ref get ref => $ref;
 
@@ -83,19 +99,173 @@ abstract class NotifierBase<StateT, CreatedT> {
   @protected
   set state(StateT newState) => $ref.state = newState;
 
-  CreatedT runBuild();
-
   @visibleForOverriding
   bool updateShouldNotify(StateT previous, StateT next);
+
+  @internal
+  void runBuild();
 }
 
 @internal
-extension ClassBaseX<StateT, CreatedT> on NotifierBase<StateT, CreatedT> {
-  ProviderElement<StateT>? get element => _ref?._element;
+abstract class $AsyncNotifierBase<ValueT> extends $Value<ValueT>
+    with NotifierBase<AsyncValue<ValueT>> {
+  @override
+  void _setStateFromValue(ValueT value) {
+    state = AsyncData(value, isFromCache: true);
+  }
+
+  @override
+  void Function() _listenSelfFromValue(void Function() listener) =>
+      listenSelf((previous, next) => listener());
+
+  @override
+  FutureOr<void> _callEncode<KeyT, EncodedT>(
+    FutureOr<Storage<KeyT, EncodedT>> storage,
+    KeyT key,
+    EncodedT Function(ValueT state) encode,
+    StorageOptions options,
+  ) {
+    switch (state) {
+      case AsyncLoading():
+        return null;
+      case AsyncError():
+        return storage.then((storage) => storage.delete(key));
+      case AsyncData(:final value):
+        return storage
+            .then((storage) => storage.write(key, encode(value), options));
+    }
+  }
+}
+
+@internal
+abstract class $SyncNotifierBase<StateT> extends $Value<StateT>
+    with NotifierBase<StateT> {
+  @override
+  void _setStateFromValue(StateT value) => state = value;
+
+  @override
+  void Function() _listenSelfFromValue(void Function() listener) =>
+      listenSelf((previous, next) => listener());
+
+  @override
+  FutureOr<void> _callEncode<KeyT, EncodedT>(
+    FutureOr<Storage<KeyT, EncodedT>> storage,
+    KeyT key,
+    EncodedT Function(StateT state) encode,
+    StorageOptions options,
+  ) {
+    return storage
+        .then((storage) => storage.write(key, encode(state), options));
+  }
+}
+
+mixin Persistable<ValueT, KeyT, EncodedT> on $Value<ValueT> {
+  void _debugAssertNoDuplicateKey(
+    Object? key,
+    $Value<Object?> self,
+  ) {
+    if (kDebugMode) {
+      final selfElement = (self as NotifierBase).element();
+
+      self._debugKey = (key,);
+
+      for (final element in self.ref.container.getAllProviderElements()) {
+        if (element == selfElement) continue;
+        if (element is! $ClassProviderElement) continue;
+
+        final Object? notifier = element.classListenable.result?.stateOrNull;
+        if (notifier is! $Value) continue;
+
+        final otherKey = notifier._debugKey;
+
+        if (otherKey == self._debugKey) {
+          Zone.current.handleUncaughtError(
+            AssertionError('''
+Duplicate `persistKey` found:
+- `$key` from `${selfElement?.origin}`
+- `$key` from `${element.origin}`
+
+This means that two different providers are opted-in for offline persistence,
+but both use the same `persistKey`.
+
+Keys should be unique. To fix, change the `persistKey` of one of the providers
+to a different value.
+'''),
+            StackTrace.current,
+          );
+        }
+      }
+    }
+  }
+
+  FutureOr<void> persist({
+    required KeyT key,
+    required FutureOr<Storage<KeyT, EncodedT>> storage,
+    required EncodedT Function(ValueT state) encode,
+    required ValueT Function(EncodedT encoded) decode,
+    StorageOptions options = const StorageOptions(),
+  }) {
+    _debugAssertNoDuplicateKey(key, this);
+
+    var didChange = false;
+    _listenSelfFromValue(() async {
+      didChange = true;
+
+      try {
+        _callEncode(
+          storage,
+          key,
+          encode,
+          options,
+        );
+      } finally {
+        didChange = false;
+      }
+    });
+
+    if (ref.isFirstBuild) {
+      try {
+        // Let's read the Database
+        return storage.then(
+          (storage) => storage.read(key).then((value) {
+            // The state was initialized during the decoding, abort
+            if (didChange) return null;
+            // Nothing to decode
+            if (value == null) return null;
+
+            // New destroy key, so let's clear the cache.
+            if (value.destroyKey != options.destroyKey) {
+              return storage.delete(key);
+            }
+
+            if (value.expireAt case final expireAt?) {
+              final now = clock.now();
+              if (expireAt.isBefore(now)) {
+                return storage.delete(key);
+              }
+            }
+
+            final decoded = decode(value.data);
+            _setStateFromValue(decoded);
+          }),
+        );
+      } catch (err, stack) {
+        // Don't block the provider if decoding failed
+        Zone.current.handleUncaughtError(err, stack);
+      }
+    }
+  }
+}
+
+@internal
+extension ClassBaseX<StateT> on NotifierBase<StateT> {
+  $ClassProviderElement<NotifierBase<StateT>, StateT, Object?, Object?>?
+      element() => _ref?.element as $ClassProviderElement<NotifierBase<StateT>,
+          StateT, Object?, Object?>?;
 
   @internal
   // ignore: library_private_types_in_public_api, not public
-  _Ref<StateT> get $ref {
+  $Ref<StateT> get $ref {
     final ref = _ref;
     if (ref == null) throw StateError(uninitializedElementError);
 
@@ -106,10 +276,9 @@ extension ClassBaseX<StateT, CreatedT> on NotifierBase<StateT, CreatedT> {
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
 abstract base class $ClassProvider< //
-    NotifierT extends NotifierBase< //
-        StateT,
-        CreatedT>,
+    NotifierT extends NotifierBase<StateT>,
     StateT,
+    ValueT,
     CreatedT> extends ProviderBase<StateT> {
   const $ClassProvider({
     required super.name,
@@ -125,9 +294,9 @@ abstract base class $ClassProvider< //
   Refreshable<NotifierT> get notifier {
     return ProviderElementProxy<NotifierT, StateT>(
       this,
-      (element) =>
-          (element as ClassProviderElement<NotifierT, StateT, CreatedT>)
-              .classListenable,
+      (element) => (element
+              as $ClassProviderElement<NotifierT, StateT, ValueT, CreatedT>)
+          .classListenable,
     );
   }
 
@@ -138,12 +307,12 @@ abstract base class $ClassProvider< //
   NotifierT create();
 
   @visibleForOverriding
-  $ClassProvider<NotifierT, StateT, CreatedT> $copyWithCreate(
+  $ClassProvider<NotifierT, StateT, ValueT, CreatedT> $copyWithCreate(
     NotifierT Function() create,
   );
 
   @visibleForOverriding
-  $ClassProvider<NotifierT, StateT, CreatedT> $copyWithBuild(
+  $ClassProvider<NotifierT, StateT, ValueT, CreatedT> $copyWithBuild(
     RunNotifierBuild<NotifierT, CreatedT> build,
   );
 
@@ -168,24 +337,24 @@ abstract base class $ClassProvider< //
   }
 
   @override
-  ClassProviderElement< //
+  $ClassProviderElement< //
       NotifierT,
       StateT,
+      ValueT,
       CreatedT> $createElement($ProviderPointer pointer);
 }
 
 @internal
-abstract class ClassProviderElement< //
-        NotifierT extends NotifierBase< //
-            StateT,
-            CreatedT>,
+abstract class $ClassProviderElement< //
+        NotifierT extends NotifierBase<StateT>,
         StateT,
+        ValueT,
         CreatedT> //
     extends ProviderElement<StateT> {
-  ClassProviderElement(super.pointer);
+  $ClassProviderElement(super.pointer);
 
   @override
-  $ClassProvider<NotifierT, StateT, CreatedT> get provider;
+  $ClassProvider<NotifierT, StateT, ValueT, CreatedT> get provider;
 
   final classListenable = $ElementLense<NotifierT>();
 
@@ -193,11 +362,8 @@ abstract class ClassProviderElement< //
   @override
   WhenComplete create(
     // ignore: library_private_types_in_public_api, not public
-    _Ref<StateT> ref, {
-    required bool didChangeDependency,
-  }) {
-    final seamless = !didChangeDependency;
-
+    $Ref<StateT> ref,
+  ) {
     final result = classListenable.result = $Result.guard(() {
       final notifier = provider.create();
       if (notifier._ref != null) {
@@ -211,36 +377,24 @@ abstract class ClassProviderElement< //
     switch (result) {
       case ResultData():
         try {
-          handleNotifier(result.state, seamless: seamless);
-
-          final created =
-              provider.runNotifierBuildOverride?.call(ref, result.state) ??
-                  result.state.runBuild();
-          handleValue(created, seamless: seamless);
+          if (provider.runNotifierBuildOverride case final override?) {
+            final created = override(ref, result.state);
+            handleValue(ref, created);
+          } else {
+            result.state.runBuild();
+          }
         } catch (err, stack) {
-          handleError(err, stack, seamless: seamless);
+          handleError(ref, err, stack);
         }
       case ResultError():
-        handleError(
-          result.error,
-          result.stackTrace,
-          seamless: seamless,
-        );
+        handleError(ref, result.error, result.stackTrace);
     }
 
     return null;
   }
 
-  void handleNotifier(NotifierT notifier, {required bool seamless}) {
-    // Overridden by FutureModifier mixin
-  }
-
-  void handleValue(CreatedT created, {required bool seamless});
-  void handleError(
-    Object error,
-    StackTrace stackTrace, {
-    required bool seamless,
-  });
+  void handleValue(Ref ref, CreatedT created);
+  void handleError(Ref ref, Object error, StackTrace stackTrace);
 
   @override
   bool updateShouldNotify(StateT previous, StateT next) {

@@ -1,3 +1,4 @@
+// ignore: unnecessary_library_name, used by the generator
 library nodes;
 
 import 'dart:async';
@@ -13,6 +14,7 @@ import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:collection/collection.dart';
 import 'package:crypto/crypto.dart';
+import 'package:custom_lint_core/custom_lint_core.dart';
 import 'package:meta/meta.dart';
 
 import '../riverpod_analyzer_utils.dart';

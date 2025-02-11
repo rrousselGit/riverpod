@@ -1,4 +1,4 @@
-// ignore_for_file: omit_local_variable_types, unused_local_variable
+// ignore_for_file: omit_local_variable_types, unused_local_variable //
 
 import 'package:riverpod/riverpod.dart' show ProviderBase, ProviderContainer;
 import 'package:test/test.dart';
@@ -34,7 +34,7 @@ void main() {
     final notifier = container.read(publicClassProvider.notifier);
     expect(notifier.param, 'Hello world');
 
-    // ignore: invalid_use_of_protected_member
+    // ignore: invalid_use_of_protected_member //
     expect(notifier.ref, isNotNull);
     expect(notifier.state, isNotNull);
   });
@@ -56,7 +56,7 @@ void main() {
     expect(notifier.fourth, true);
     expect(notifier.fifth, null);
 
-    // ignore: invalid_use_of_protected_member
+    // ignore: invalid_use_of_protected_member //
     expect(notifier.ref, isNotNull);
     expect(notifier.state, isNotNull);
   });
@@ -106,7 +106,7 @@ void main() {
       fourth: false,
       fifth: ['x42'],
     );
-    // ignore: invalid_use_of_internal_member
+    // ignore: invalid_use_of_internal_member //
     final ProviderBase<String> futureProvider = provider;
 
     final String result = container.read(

@@ -10,7 +10,7 @@ part 'notifier/family.dart';
 
 /// A base class for [$Notifier].
 /// Not meant for public consumption.
-abstract class $Notifier<StateT> extends NotifierBase<StateT, StateT> {
+abstract class $Notifier<StateT> extends $SyncNotifierBase<StateT> {
   /// The value currently exposed by this [Notifier].
   ///
   /// If used inside [Notifier.build], may throw if the notifier is not yet initialized.
@@ -40,7 +40,7 @@ abstract class $Notifier<StateT> extends NotifierBase<StateT, StateT> {
   @protected
   @visibleForTesting
   StateT? get stateOrNull {
-    final element = this.element;
+    final element = this.element();
     if (element == null) throw StateError(uninitializedElementError);
 
     element.flush();
@@ -84,7 +84,7 @@ abstract class $Notifier<StateT> extends NotifierBase<StateT, StateT> {
 /// Do not use.
 abstract base class $NotifierProvider //
     <NotifierT extends $Notifier<StateT>, StateT>
-    extends $ClassProvider<NotifierT, StateT, StateT> {
+    extends $ClassProvider<NotifierT, StateT, StateT, StateT> {
   /// An internal base class for [Notifier].
   ///
   /// Not meant for public consumption.
@@ -106,8 +106,9 @@ abstract base class $NotifierProvider //
 class $NotifierProviderElement< //
         NotifierT extends $Notifier<StateT>,
         StateT> //
-    extends ClassProviderElement< //
+    extends $ClassProviderElement< //
         NotifierT,
+        StateT,
         StateT,
         StateT> {
   /// An implementation detail of `riverpod_generator`.
@@ -118,19 +119,10 @@ class $NotifierProviderElement< //
   final $NotifierProvider<NotifierT, StateT> provider;
 
   @override
-  void handleError(
-    Object error,
-    StackTrace stackTrace, {
-    required bool seamless,
-  }) {
-    setStateResult(ResultError<StateT>(error, stackTrace));
-  }
+  void handleError(Ref ref, Object error, StackTrace stackTrace) =>
+      setStateResult(ResultError<StateT>(error, stackTrace));
 
   @override
-  void handleValue(
-    StateT created, {
-    required bool seamless,
-  }) {
-    setStateResult(ResultData(created));
-  }
+  void handleValue(Ref ref, StateT created) =>
+      setStateResult(ResultData(created));
 }

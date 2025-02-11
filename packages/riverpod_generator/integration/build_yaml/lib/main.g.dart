@@ -233,7 +233,13 @@ abstract class _$CountNotifier extends $Notifier<int> {
   int build();
   @$internal
   @override
-  int runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<int>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(CountAsyncNotifier)
@@ -296,7 +302,13 @@ abstract class _$CountAsyncNotifier extends $AsyncNotifier<int> {
   FutureOr<int> build();
   @$internal
   @override
-  FutureOr<int> runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(CountStreamNotifier)
@@ -359,7 +371,13 @@ abstract class _$CountStreamNotifier extends $StreamNotifier<int> {
   Stream<int> build();
   @$internal
   @override
-  Stream<int> runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(count2)
@@ -897,9 +915,15 @@ abstract class _$CountNotifier2 extends $Notifier<int> {
   );
   @$internal
   @override
-  int runBuild() => build(
-        _$args,
-      );
+  void runBuild() {
+    final created = build(
+      _$args,
+    );
+    final ref = this.ref as $Ref<int>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(CountAsyncNotifier2)
@@ -1052,9 +1076,15 @@ abstract class _$CountAsyncNotifier2 extends $AsyncNotifier<int> {
   );
   @$internal
   @override
-  FutureOr<int> runBuild() => build(
-        _$args,
-      );
+  void runBuild() {
+    final created = build(
+      _$args,
+    );
+    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(CountStreamNotifier2)
@@ -1208,9 +1238,15 @@ abstract class _$CountStreamNotifier2 extends $StreamNotifier<int> {
   );
   @$internal
   @override
-  Stream<int> runBuild() => build(
-        _$args,
-      );
+  void runBuild() {
+    final created = build(
+      _$args,
+    );
+    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 // ignore_for_file: type=lint

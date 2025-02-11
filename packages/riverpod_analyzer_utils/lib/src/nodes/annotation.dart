@@ -10,20 +10,30 @@ extension RiverpodAnnotatedAnnotatedNodeOfX on AnnotatedNode {
   }
 }
 
+extension AnnotationOf on Annotation {
+  ElementAnnotation? annotationOfType(TypeChecker type, {required bool exact}) {
+    final elementAnnotation = this.elementAnnotation;
+    final element = this.element;
+    if (element == null || elementAnnotation == null) return null;
+    if (element is! ExecutableElement) return null;
+
+    if ((exact && !type.isExactlyType(element.returnType)) ||
+        (!exact && !type.isAssignableFromType(element.returnType))) {
+      return null;
+    }
+
+    return elementAnnotation;
+  }
+}
+
 @_ast
 extension RiverpodAnnotatedAnnotatedNodeX on Annotation {
   static final _cache = Expando<Box<RiverpodAnnotation?>>();
 
   RiverpodAnnotation? get riverpod {
     return _cache.upsert(this, () {
-      final elementAnnotation = this.elementAnnotation;
-      final element = this.element;
-      if (element == null || elementAnnotation == null) return null;
-      if (element is! ExecutableElement ||
-          !riverpodType.isExactlyType(element.returnType)) {
-        // The annotation is not an @Riverpod
-        return null;
-      }
+      final elementAnnotation = annotationOfType(riverpodType, exact: true);
+      if (elementAnnotation == null) return null;
 
       final riverpodAnnotationElement = RiverpodAnnotationElement._parse(
         elementAnnotation,
@@ -147,14 +157,8 @@ extension MutationAnnotationX on Annotation {
 
   MutationAnnotation? get mutation {
     return _cache.upsert(this, () {
-      final elementAnnotation = this.elementAnnotation;
-      final element = this.element;
-      if (element == null || elementAnnotation == null) return null;
-      if (element is! ExecutableElement ||
-          !mutationType.isExactlyType(element.returnType)) {
-        // The annotation is not an @Mutation
-        return null;
-      }
+      final elementAnnotation = annotationOfType(mutationType, exact: true);
+      if (elementAnnotation == null) return null;
 
       final mutationAnnotationElement = MutationAnnotationElement._parse(
         elementAnnotation,

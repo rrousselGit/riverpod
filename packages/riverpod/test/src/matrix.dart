@@ -41,7 +41,7 @@ typedef ProviderFactory<BaseT, ProviderT> = ProviderT Function([Object? arg])
 });
 
 extension $Modifiers on ProviderBase<Object?> {
-  Refreshable<Object?>? get notifier {
+  Refreshable<NotifierBase<Object?>>? get notifier {
     final that = this;
     return switch (that) {
       $ClassProvider() => that.notifier,

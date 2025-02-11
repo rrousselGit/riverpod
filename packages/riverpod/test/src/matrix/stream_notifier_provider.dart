@@ -133,6 +133,7 @@ abstract class TestStreamNotifier<StateT> implements $StreamNotifier<StateT> {
 }
 
 class DeferredStreamNotifier<StateT> extends StreamNotifier<StateT>
+    with Persistable<StateT, Object?, Object?>
     implements TestStreamNotifier<StateT> {
   DeferredStreamNotifier(
     this._create, {
@@ -152,6 +153,15 @@ class DeferredStreamNotifier<StateT> extends StreamNotifier<StateT>
   Stream<StateT> build() => _create(ref, this);
 
   @override
+  RemoveListener listenSelf(
+    void Function(AsyncValue<StateT>? previous, AsyncValue<StateT> next)
+        listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  }) {
+    return super.listenSelf(listener, onError: onError);
+  }
+
+  @override
   bool updateShouldNotify(
     AsyncValue<StateT> previousState,
     AsyncValue<StateT> newState,
@@ -162,6 +172,7 @@ class DeferredStreamNotifier<StateT> extends StreamNotifier<StateT>
 
 class DeferredFamilyStreamNotifier<StateT>
     extends FamilyStreamNotifier<StateT, int>
+    with Persistable<StateT, Object?, Object?>
     implements TestStreamNotifier<StateT> {
   DeferredFamilyStreamNotifier(
     this._create, {

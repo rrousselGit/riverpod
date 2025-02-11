@@ -14,8 +14,8 @@ typedef AsyncSubscription = ({
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
-mixin $AsyncClassModifier<StateT, CreatedT>
-    on NotifierBase<AsyncValue<StateT>, CreatedT> {
+mixin $AsyncClassModifier<StateT, CreatedT, ValueT>
+    on NotifierBase<AsyncValue<StateT>> {
   /// The value currently exposed by this [AsyncNotifier].
   ///
   /// Defaults to [AsyncLoading] inside the [AsyncNotifier.build] method.
@@ -196,27 +196,14 @@ base mixin $FutureModifier<StateT> on ProviderBase<AsyncValue<StateT>> {
 }
 
 mixin FutureModifierClassElement<
-        NotifierT extends NotifierBase< //
-            AsyncValue<StateT>,
-            CreatedT>,
-        StateT,
-        CreatedT>
+        NotifierT extends NotifierBase<AsyncValue<StateT>>, StateT, CreatedT>
     on
         FutureModifierElement<StateT>,
-        ClassProviderElement<NotifierT, AsyncValue<StateT>, CreatedT> {
+        $ClassProviderElement<NotifierT, AsyncValue<StateT>, StateT, CreatedT> {
   @override
-  void handleNotifier(Object? notifier, {required bool seamless}) {
-    asyncTransition(AsyncLoading<StateT>(), seamless: seamless);
-  }
-
-  @override
-  void handleError(
-    Object error,
-    StackTrace stackTrace, {
-    required bool seamless,
-  }) {
+  void handleError(Ref ref, Object error, StackTrace stackTrace) {
     triggerRetry(error);
-    onError(AsyncError(error, stackTrace), seamless: seamless);
+    onError(AsyncError(error, stackTrace), seamless: !ref.isReload);
   }
 }
 
@@ -243,6 +230,17 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   Completer<StateT>? _futureCompleter;
   Future<StateT>? _lastFuture;
   AsyncSubscription? _cancelSubscription;
+
+  @override
+  void initState(Ref ref) {
+    onLoading(AsyncLoading<StateT>(), seamless: !ref.isReload);
+  }
+
+  @override
+  void mount() {
+    _stateResult = ResultData(AsyncLoading<StateT>());
+    super.mount();
+  }
 
   /// Internal utility for transitioning an [AsyncValue] after a provider refresh.
   ///
@@ -343,11 +341,8 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   /// Listens to a [Stream] and convert it into an [AsyncValue].
   @preferInline
   @internal
-  WhenComplete handleStream(
-    Stream<StateT> Function() create, {
-    required bool seamless,
-  }) {
-    return _handleAsync(seamless: seamless, ({
+  WhenComplete handleStream(Ref ref, Stream<StateT> Function() create) {
+    return _handleAsync(ref, ({
       required data,
       required done,
       required error,
@@ -390,10 +385,10 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   @preferInline
   @internal
   WhenComplete handleFuture(
-    FutureOr<StateT> Function() create, {
-    required bool seamless,
-  }) {
-    return _handleAsync(seamless: seamless, ({
+    Ref ref,
+    FutureOr<StateT> Function() create,
+  ) {
+    return _handleAsync(ref, ({
       required data,
       required done,
       required error,
@@ -441,19 +436,17 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
 
   /// Listens to a [Future] and transforms it into an [AsyncValue].
   WhenComplete _handleAsync(
+    Ref ref,
     AsyncSubscription? Function({
       required void Function(StateT) data,
       required void Function(Object, StackTrace) error,
       required void Function() done,
       required void Function(Future<StateT>) last,
-    }) listen, {
-    required bool seamless,
-  }) {
-    onLoading(AsyncLoading<StateT>(), seamless: seamless);
-
+    }) listen,
+  ) {
     void callOnError(Object error, StackTrace stackTrace) {
       triggerRetry(error);
-      onError(AsyncError(error, stackTrace), seamless: seamless);
+      onError(AsyncError(error, stackTrace), seamless: !ref.isReload);
     }
 
     void Function()? onDone;
@@ -462,7 +455,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
     try {
       _cancelSubscription = listen(
         data: (value) {
-          onData(AsyncData(value), seamless: seamless);
+          onData(AsyncData(value), seamless: !ref.isReload);
         },
         error: callOnError,
         last: (last) {

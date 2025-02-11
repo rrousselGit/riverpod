@@ -18,6 +18,9 @@ analyzer:
 
 linter:
   rules:
+    # Maybe later. Too many to fix right now.
+    document_ignores: false
+
     # Not an issue if using dartfmt
     no_adjacent_strings_in_list: false
 

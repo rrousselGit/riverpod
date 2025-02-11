@@ -265,7 +265,16 @@ abstract class _$GenericClass<T extends num> extends $AsyncNotifier<List<T>> {
   FutureOr<List<T>> build();
   @$internal
   @override
-  FutureOr<List<T>> runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<List<T>>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<List<T>>>,
+        AsyncValue<List<T>>,
+        Object?,
+        Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(public)
@@ -734,7 +743,13 @@ abstract class _$PublicClass extends $AsyncNotifier<String> {
   FutureOr<String> build();
   @$internal
   @override
-  FutureOr<String> runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(_PrivateClass)
@@ -796,7 +811,13 @@ abstract class _$PrivateClass extends $AsyncNotifier<String> {
   FutureOr<String> build();
   @$internal
   @override
-  FutureOr<String> runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(FamilyOrClass)
@@ -948,9 +969,15 @@ abstract class _$FamilyOrClass extends $AsyncNotifier<String> {
   );
   @$internal
   @override
-  FutureOr<String> runBuild() => build(
-        _$args,
-      );
+  void runBuild() {
+    final created = build(
+      _$args,
+    );
+    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(FamilyClass)
@@ -1172,13 +1199,19 @@ abstract class _$FamilyClass extends $AsyncNotifier<String> {
   });
   @$internal
   @override
-  FutureOr<String> runBuild() => build(
-        _$args.$1,
-        second: _$args.second,
-        third: _$args.third,
-        fourth: _$args.fourth,
-        fifth: _$args.fifth,
-      );
+  void runBuild() {
+    final created = build(
+      _$args.$1,
+      second: _$args.second,
+      third: _$args.third,
+      fourth: _$args.fourth,
+      fifth: _$args.fifth,
+    );
+    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(Regression3490)
@@ -1416,11 +1449,17 @@ abstract class _$Regression3490<Model, Sort, Cursor> extends $Notifier<void> {
   });
   @$internal
   @override
-  void runBuild() => build(
-        type: _$args.type,
-        getData: _$args.getData,
-        parentId: _$args.parentId,
-      );
+  void runBuild() {
+    build(
+      type: _$args.type,
+      getData: _$args.getData,
+      parentId: _$args.parentId,
+    );
+    final ref = this.ref as $Ref<void>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<void>, void, Object?, Object?>;
+    element.handleValue(ref, null);
+  }
 }
 
 // ignore_for_file: type=lint

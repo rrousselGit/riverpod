@@ -77,7 +77,7 @@ abstract class ProviderElement<StateT> implements Node {
   ProviderContainer get container => pointer.targetContainer;
 
   // ignore: library_private_types_in_public_api, not public
-  _Ref<StateT>? ref;
+  $Ref<StateT>? ref;
 
   /// Whether this [ProviderElement] is actively in use.
   ///
@@ -231,13 +231,15 @@ This could mean a few things:
       _debugCurrentCreateHash = provider.debugGetCreateSourceHash();
     }
 
-    final ref = this.ref = _Ref(this);
+    final ref = this.ref = $Ref(this, isFirstBuild: true, isReload: false);
+    final initialState = _stateResult;
+
     buildState(ref);
 
     _notifyListeners(
       _stateResult!,
-      null,
-      isMount: true,
+      initialState,
+      isFirstBuild: true,
       checkUpdateShouldNotify: false,
     );
   }
@@ -254,9 +256,13 @@ This could mean a few things:
   ///
   /// After a provider is initialized, this function takes care of unsubscribing
   /// to dependencies that are no-longer used.
-  void _performBuild() {
+  void _performRebuild() {
     runOnDispose();
-    final ref = this.ref = _Ref(this);
+    final ref = this.ref = $Ref(
+      this,
+      isFirstBuild: false,
+      isReload: _didChangeDependency,
+    );
     final previousStateResult = _stateResult;
 
     if (kDebugMode) _debugDidSetState = false;
@@ -288,15 +294,11 @@ This could mean a few things:
   ///
   /// Exceptions within this function will be caught and set the provider in error
   /// state. Then, reading this provider will rethrow the thrown exception.
-  ///
-  /// - [didChangeDependency] can be used to differentiate a rebuild caused
-  ///   by [Ref.watch] from one caused by [Ref.refresh]/[Ref.invalidate].
   @visibleForOverriding
   WhenComplete create(
     // ignore: library_private_types_in_public_api, not public
-    _Ref<StateT> ref, {
-    required bool didChangeDependency,
-  });
+    $Ref<StateT> ref,
+  );
 
   /// A utility for re-initializing a provider when needed.
   ///
@@ -316,7 +318,7 @@ This could mean a few things:
     _maybeRebuildDependencies();
     if (_mustRecomputeState) {
       _mustRecomputeState = false;
-      _performBuild();
+      _performRebuild();
     }
   }
 
@@ -334,16 +336,18 @@ This could mean a few things:
     );
   }
 
+  // Hook for async provider to init state with AsyncLoading
+  void initState(Ref ref) {}
+
   /// Invokes [create] and handles errors.
   @internal
   void buildState(
     // ignore: library_private_types_in_public_api, not public
-    _Ref<StateT> ref,
+    $Ref<StateT> ref,
   ) {
     if (_didChangeDependency) _retryCount = 0;
 
     ProviderElement? debugPreviouslyBuildingElement;
-    final previousDidChangeDependency = _didChangeDependency;
     _didChangeDependency = false;
     if (kDebugMode) {
       debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
@@ -351,12 +355,9 @@ This could mean a few things:
     }
 
     _didBuild = false;
+    initState(ref);
     try {
-      final whenComplete = create(
-            ref,
-            didChangeDependency: previousDidChangeDependency,
-          ) ??
-          (cb) => cb();
+      final whenComplete = create(ref) ?? (cb) => cb();
 
       whenComplete(_didCompleteInitialization);
     } catch (err, stack) {
@@ -451,9 +452,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     $Result<StateT> newState,
     $Result<StateT>? previousStateResult, {
     bool checkUpdateShouldNotify = true,
-    bool isMount = false,
+    bool isFirstBuild = false,
   }) {
-    if (kDebugMode && !isMount) _debugAssertNotificationAllowed();
+    if (kDebugMode && !isFirstBuild) _debugAssertNotificationAllowed();
 
     final previousState = previousStateResult?.stateOrNull;
 
@@ -494,7 +495,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       return;
     }
 
-    final listeners = [...weakDependents, if (!isMount) ...?dependents];
+    final listeners = [...weakDependents, if (!isFirstBuild) ...?dependents];
     switch (newState) {
       case final ResultData<StateT> newState:
         for (var i = 0; i < listeners.length; i++) {
@@ -521,7 +522,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
 
     for (final observer in container.observers) {
-      if (isMount) {
+      if (isFirstBuild) {
         runBinaryGuarded(
           observer.didAddProvider,
           _currentObserverContext(),

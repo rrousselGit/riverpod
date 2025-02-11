@@ -461,7 +461,6 @@ void main() {
 
     test('Regression 2041', () async {
       final container = ProviderContainer.test();
-      final onFuture = Listener<Future<int>>();
 
       final testNotifierProvider =
           FutureProvider.autoDispose<int>((ref) => 0, name: 'testNotifier');
@@ -497,11 +496,9 @@ void main() {
       container.invalidate(testNotifierProvider);
       container.invalidate(testProvider);
 
-      verifyZeroInteractions(onFuture);
       expect(buildCount, 1);
 
       await container.pump();
-      verifyZeroInteractions(onFuture);
 
       expect(buildCount, 2);
     });

@@ -102,3 +102,20 @@ class _TenableFromFuture<T> extends Tenable<T> {
     );
   }
 }
+
+extension OrX<T> on FutureOr<T> {
+  FutureOr<R> then<R>(
+    FutureOr<R> Function(T value) cb,
+  ) {
+    final that = this;
+    if (that is Future<T>) {
+      return that.then(cb);
+    } else {
+      try {
+        return cb(that);
+      } catch (err) {
+        return Future.error(err);
+      }
+    }
+  }
+}

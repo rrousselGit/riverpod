@@ -13,7 +13,10 @@ abstract class FamilyNotifier<StateT, ArgT> extends $Notifier<StateT> {
 
   @internal
   @override
-  StateT runBuild() => build(arg);
+  void runBuild() {
+    final created = build(arg);
+    element()!.handleValue(ref, created);
+  }
 }
 
 final class FamilyNotifierProvider //
@@ -88,6 +91,7 @@ class NotifierProviderFamily<
         NotifierT extends FamilyNotifier<StateT, ArgT>, StateT, ArgT>
     extends ClassFamily< //
         NotifierT,
+        StateT,
         StateT,
         ArgT,
         StateT,
