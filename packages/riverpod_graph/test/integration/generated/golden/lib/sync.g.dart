@@ -448,7 +448,13 @@ abstract class _$PublicClass extends $Notifier<String> {
   String build();
   @$internal
   @override
-  String runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<String>;
+    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
+        String, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(_PrivateClass)
@@ -518,7 +524,13 @@ abstract class _$PrivateClass extends $Notifier<String> {
   String build();
   @$internal
   @override
-  String runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<String>;
+    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
+        String, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// A generated family provider from a class.
@@ -752,13 +764,19 @@ abstract class _$FamilyClass extends $Notifier<String> {
   });
   @$internal
   @override
-  String runBuild() => build(
-        _$args.$1,
-        second: _$args.second,
-        third: _$args.third,
-        forth: _$args.forth,
-        fifth: _$args.fifth,
-      );
+  void runBuild() {
+    final created = build(
+      _$args.$1,
+      second: _$args.second,
+      third: _$args.third,
+      forth: _$args.forth,
+      fifth: _$args.fifth,
+    );
+    final ref = this.ref as $Ref<String>;
+    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
+        String, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// A generated provider from a class with a '$' in its name.
@@ -832,7 +850,13 @@ abstract class _$Supports$InClassName extends $Notifier<String> {
   String build();
   @$internal
   @override
-  String runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<String>;
+    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
+        String, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 // ignore_for_file: type=lint

@@ -1063,7 +1063,7 @@ class MutationContext {
   final Invocation invocation;
 
   /// The notifier that triggered the mutation.
-  final NotifierBase<Object?, Object?> notifier;
+  final NotifierBase<Object?> notifier;
 }
 
 /// Information about the [ProviderObserver] event.

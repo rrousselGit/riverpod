@@ -352,10 +352,16 @@ abstract class _$MyNotifier extends $Notifier<int> {
   });
   @$internal
   @override
-  int runBuild() => build(
-        _$args.$1,
-        context2: _$args.context2,
-      );
+  void runBuild() {
+    final created = build(
+      _$args.$1,
+      context2: _$args.context2,
+    );
+    final ref = this.ref as $Ref<int>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(Regression2959)
@@ -425,7 +431,13 @@ abstract class _$Regression2959 extends $Notifier<void> {
   void build();
   @$internal
   @override
-  void runBuild() => build();
+  void runBuild() {
+    build();
+    final ref = this.ref as $Ref<void>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<void>, void, Object?, Object?>;
+    element.handleValue(ref, null);
+  }
 }
 
 // ignore_for_file: type=lint

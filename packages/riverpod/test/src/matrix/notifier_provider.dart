@@ -5,8 +5,7 @@ final notifierProviderFactory = TestMatrix<NotifierTestFactory>(
     'NotifierProvider': NotifierTestFactory(
       isAutoDispose: false,
       isFamily: false,
-      deferredNotifier: <T>(create) =>
-          DeferredNotifier<T>((ref, self) => create(ref, self)),
+      deferredNotifier: DeferredNotifier.new,
       deferredProvider: <StateT>(create, {updateShouldNotify}) {
         return NotifierProvider<DeferredNotifier<StateT>, StateT>(
           () => DeferredNotifier(
@@ -30,8 +29,7 @@ final notifierProviderFactory = TestMatrix<NotifierTestFactory>(
     'NotifierProvider.autoDispose': NotifierTestFactory(
       isAutoDispose: true,
       isFamily: false,
-      deferredNotifier: <T>(create) =>
-          DeferredNotifier<T>((ref, self) => create(ref, self)),
+      deferredNotifier: DeferredNotifier.new,
       deferredProvider: <StateT>(create, {updateShouldNotify}) {
         return NotifierProvider.autoDispose<DeferredNotifier<StateT>, StateT>(
           () => DeferredNotifier(
@@ -133,6 +131,7 @@ abstract class TestNotifier<StateT> implements $Notifier<StateT> {
 }
 
 class DeferredNotifier<StateT> extends Notifier<StateT>
+    with Persistable<StateT, Object?, Object?>
     implements TestNotifier<StateT> {
   DeferredNotifier(
     this._create, {
@@ -164,6 +163,7 @@ class DeferredNotifier<StateT> extends Notifier<StateT>
 }
 
 class DeferredFamilyNotifier<StateT> extends FamilyNotifier<StateT, int>
+    with Persistable<StateT, Object?, Object?>
     implements TestNotifier<StateT> {
   DeferredFamilyNotifier(
     this._create, {

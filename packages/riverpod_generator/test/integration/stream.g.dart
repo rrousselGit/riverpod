@@ -265,7 +265,16 @@ abstract class _$GenericClass<T extends num> extends $StreamNotifier<List<T>> {
   Stream<List<T>> build();
   @$internal
   @override
-  Stream<List<T>> runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<List<T>>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<List<T>>>,
+        AsyncValue<List<T>>,
+        Object?,
+        Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(public)
@@ -610,7 +619,13 @@ abstract class _$PublicClass extends $StreamNotifier<String> {
   Stream<String> build();
   @$internal
   @override
-  Stream<String> runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(_PrivateClass)
@@ -672,7 +687,13 @@ abstract class _$PrivateClass extends $StreamNotifier<String> {
   Stream<String> build();
   @$internal
   @override
-  Stream<String> runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(FamilyClass)
@@ -894,13 +915,19 @@ abstract class _$FamilyClass extends $StreamNotifier<String> {
   });
   @$internal
   @override
-  Stream<String> runBuild() => build(
-        _$args.$1,
-        second: _$args.second,
-        third: _$args.third,
-        fourth: _$args.fourth,
-        fifth: _$args.fifth,
-      );
+  void runBuild() {
+    final created = build(
+      _$args.$1,
+      second: _$args.second,
+      third: _$args.third,
+      fourth: _$args.fourth,
+      fifth: _$args.fifth,
+    );
+    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 // ignore_for_file: type=lint

@@ -244,7 +244,13 @@ abstract class _$StateNotifierClass extends $Notifier<MyStateNotifier> {
   MyStateNotifier build();
   @$internal
   @override
-  MyStateNotifier runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<MyStateNotifier>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<MyStateNotifier>, MyStateNotifier, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(stateNotifierAsync)
@@ -359,7 +365,16 @@ abstract class _$SelfNotifier extends $AsyncNotifier<SelfNotifier> {
   FutureOr<SelfNotifier> build();
   @$internal
   @override
-  FutureOr<SelfNotifier> runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<SelfNotifier>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<SelfNotifier>>,
+        AsyncValue<SelfNotifier>,
+        Object?,
+        Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(SyncSelfNotifier)
@@ -429,7 +444,13 @@ abstract class _$SyncSelfNotifier extends $Notifier<SyncSelfNotifier> {
   SyncSelfNotifier build();
   @$internal
   @override
-  SyncSelfNotifier runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<SyncSelfNotifier>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<SyncSelfNotifier>, SyncSelfNotifier, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(StreamSelfNotifier)
@@ -493,7 +514,16 @@ abstract class _$StreamSelfNotifier
   Stream<StreamSelfNotifier> build();
   @$internal
   @override
-  Stream<StreamSelfNotifier> runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<StreamSelfNotifier>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<StreamSelfNotifier>>,
+        AsyncValue<StreamSelfNotifier>,
+        Object?,
+        Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(StateNotifierClassAsync)
@@ -559,7 +589,16 @@ abstract class _$StateNotifierClassAsync
   FutureOr<MyStateNotifier> build();
   @$internal
   @override
-  FutureOr<MyStateNotifier> runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<MyStateNotifier>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<MyStateNotifier>>,
+        AsyncValue<MyStateNotifier>,
+        Object?,
+        Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(changeNotifier)
@@ -689,7 +728,13 @@ abstract class _$ChangeNotifierClass extends $Notifier<MyChangeNotifier> {
   MyChangeNotifier build();
   @$internal
   @override
-  MyChangeNotifier runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<MyChangeNotifier>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<MyChangeNotifier>, MyChangeNotifier, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(notifier)
@@ -878,7 +923,13 @@ abstract class _$NotifierClass extends $Notifier<MyNotifier> {
   MyNotifier build();
   @$internal
   @override
-  MyNotifier runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<MyNotifier>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<MyNotifier>, MyNotifier, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(asyncNotifier)
@@ -1008,7 +1059,13 @@ abstract class _$AsyncNotifierClass extends $Notifier<MyAsyncNotifier> {
   MyAsyncNotifier build();
   @$internal
   @override
-  MyAsyncNotifier runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<MyAsyncNotifier>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<MyAsyncNotifier>, MyAsyncNotifier, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(rawNotifier)

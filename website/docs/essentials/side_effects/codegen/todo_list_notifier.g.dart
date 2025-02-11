@@ -82,7 +82,16 @@ abstract class _$TodoList extends $AsyncNotifier<List<Todo>> {
   FutureOr<List<Todo>> build();
   @$internal
   @override
-  FutureOr<List<Todo>> runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<List<Todo>>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<List<Todo>>>,
+        AsyncValue<List<Todo>>,
+        Object?,
+        Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 // ignore_for_file: type=lint

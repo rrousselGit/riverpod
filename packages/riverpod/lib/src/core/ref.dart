@@ -39,6 +39,11 @@ Cannot use the Ref of $origin after it has been disposed. This typically happens
 /// {@endtemplate}
 @optionalTypeArgs
 sealed class Ref {
+  Ref._({
+    required this.isFirstBuild,
+    required this.isReload,
+  });
+
   ProviderElement<Object?> get _element;
   List<KeepAliveLink>? _keepAliveLinks;
   List<void Function()>? _onDisposeListeners;
@@ -46,6 +51,10 @@ sealed class Ref {
   List<void Function()>? _onCancelListeners;
   List<void Function()>? _onAddListeners;
   List<void Function()>? _onRemoveListeners;
+
+  final bool isFirstBuild;
+  bool get isRefresh => !isFirstBuild && !isReload;
+  final bool isReload;
 
   bool get mounted => _mounted;
   var _mounted = true;
@@ -590,9 +599,16 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   }
 }
 
-class _Ref<StateT> extends Ref {
+@internal
+class $Ref<StateT> extends Ref {
   /// {@macro riverpod.provider_ref_base}
-  _Ref(this._element);
+  $Ref(
+    this._element, {
+    required super.isFirstBuild,
+    required super.isReload,
+  }) : super._();
+
+  ProviderElement<StateT> get element => _element;
 
   @override
   final ProviderElement<StateT> _element;

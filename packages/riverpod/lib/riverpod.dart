@@ -1,9 +1,14 @@
 export 'src/core/async_value.dart' hide AsyncTransition;
 export 'src/framework.dart'
     hide
+        $SyncNotifierBase,
+        $AsyncNotifierBase,
+        $Value,
+        NotifierBase,
         ProviderScheduler,
         Retry,
         debugCanModifyProviders,
+        $Ref,
         Vsync,
         $ValueProvider,
         FamilyCreate,
@@ -44,7 +49,7 @@ export 'src/framework.dart'
         ProviderSubscriptionView,
         $ClassProvider,
         LegacyProviderMixin,
-        ClassProviderElement,
+        $ClassProviderElement,
         alreadyInitializedError,
         uninitializedElementError,
         shortHash,

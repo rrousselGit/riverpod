@@ -162,9 +162,15 @@ abstract class _$GeneratedNotifier extends $Notifier<int> {
   );
   @$internal
   @override
-  int runBuild() => build(
-        _$args,
-      );
+  void runBuild() {
+    final created = build(
+      _$args,
+    );
+    final ref = this.ref as $Ref<int>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 // ignore_for_file: type=lint

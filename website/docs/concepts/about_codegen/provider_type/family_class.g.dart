@@ -198,10 +198,16 @@ abstract class _$Example extends $Notifier<String> {
   });
   @$internal
   @override
-  String runBuild() => build(
-        _$args.$1,
-        param2: _$args.param2,
-      );
+  void runBuild() {
+    final created = build(
+      _$args.$1,
+      param2: _$args.param2,
+    );
+    final ref = this.ref as $Ref<String>;
+    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
+        String, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 // ignore_for_file: type=lint

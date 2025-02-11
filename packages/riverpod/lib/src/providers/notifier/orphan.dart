@@ -70,7 +70,10 @@ abstract class Notifier<StateT> extends $Notifier<StateT> {
 
   @internal
   @override
-  StateT runBuild() => build();
+  void runBuild() {
+    final created = build();
+    element()!.handleValue(ref, created);
+  }
 }
 
 final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>

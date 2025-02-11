@@ -10,7 +10,7 @@ environment:
   sdk: ">=3.0.0<4.0.0"
 
 dependencies:
-  analyzer: ^7.0.0
+  analyzer: ^7.3.0
   collection: ^1.16.0
   crypto: ^3.0.2
   custom_lint_core: ^0.7.1

@@ -165,16 +165,12 @@ class $StreamProviderElement<StateT> extends ProviderElement<AsyncValue<StateT>>
       StreamController<StateT>.broadcast();
 
   @override
-  WhenComplete create(
-    Ref ref, {
-    required bool didChangeDependency,
-  }) {
-    asyncTransition(AsyncLoading<StateT>(), seamless: !didChangeDependency);
+  WhenComplete create(Ref ref) {
     _streamNotifier.result ??= $Result.data(_streamController.stream);
 
     return handleStream(
+      ref,
       () => provider.create(ref),
-      seamless: !didChangeDependency,
     );
   }
 

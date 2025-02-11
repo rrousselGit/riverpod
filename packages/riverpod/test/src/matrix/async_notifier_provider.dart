@@ -132,13 +132,15 @@ abstract class TestAsyncNotifier<StateT> implements $AsyncNotifier<StateT> {
 }
 
 class DeferredAsyncNotifier<StateT> extends AsyncNotifier<StateT>
+    with Persistable<StateT, Object?, Object?>
     implements TestAsyncNotifier<StateT> {
   DeferredAsyncNotifier(
     this._create, {
     bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
   }) : _updateShouldNotify = updateShouldNotify;
 
-  final FutureOr<StateT> Function(Ref ref, $AsyncNotifier<StateT> self) _create;
+  final FutureOr<StateT> Function(Ref ref, DeferredAsyncNotifier<StateT> self)
+      _create;
   final bool Function(
     AsyncValue<StateT> previousState,
     AsyncValue<StateT> newState,
@@ -146,6 +148,15 @@ class DeferredAsyncNotifier<StateT> extends AsyncNotifier<StateT>
 
   @override
   FutureOr<StateT> build() => _create(ref, this);
+
+  @override
+  RemoveListener listenSelf(
+    void Function(AsyncValue<StateT>? previous, AsyncValue<StateT> next)
+        listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  }) {
+    return super.listenSelf(listener, onError: onError);
+  }
 
   @override
   bool updateShouldNotify(
@@ -158,6 +169,7 @@ class DeferredAsyncNotifier<StateT> extends AsyncNotifier<StateT>
 
 class DeferredFamilyAsyncNotifier<StateT>
     extends FamilyAsyncNotifier<StateT, int>
+    with Persistable<StateT, Object?, Object?>
     implements TestAsyncNotifier<StateT> {
   DeferredFamilyAsyncNotifier(
     this._create, {

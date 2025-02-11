@@ -418,14 +418,8 @@ extension DependenciesAnnotatedAnnotatedNodeX on Annotation {
 
   DependenciesAnnotation? get dependencies {
     return _cache.upsert(this, () {
-      final elementAnnotation = this.elementAnnotation;
-      final element = this.element;
-      if (element == null || elementAnnotation == null) return null;
-      if (element is! ExecutableElement ||
-          !dependenciesType.isExactlyType(element.returnType)) {
-        // The annotation is not an @Dependencies
-        return null;
-      }
+      final elementAnnotation = annotationOfType(dependenciesType, exact: true);
+      if (elementAnnotation == null) return null;
 
       final dependenciesElement = DependenciesAnnotationElement._parse(
         elementAnnotation,

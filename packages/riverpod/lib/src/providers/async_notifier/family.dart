@@ -24,7 +24,10 @@ abstract class FamilyAsyncNotifier<StateT, ArgT>
 
   @internal
   @override
-  FutureOr<StateT> runBuild() => build(arg);
+  void runBuild() {
+    final created = build(arg);
+    element()!.handleValue(ref, created);
+  }
 }
 
 /// The [Family] of [AsyncNotifierProvider].
@@ -35,6 +38,7 @@ class AsyncNotifierProviderFamily< //
     extends ClassFamily< //
         NotifierT,
         AsyncValue<StateT>,
+        StateT,
         ArgT,
         FutureOr<StateT>,
         FamilyAsyncNotifierProvider<NotifierT, StateT, ArgT>> {

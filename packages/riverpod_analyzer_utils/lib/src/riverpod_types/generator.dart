@@ -23,3 +23,15 @@ const mutationType = TypeChecker.fromName(
   'Mutation',
   packageName: 'riverpod',
 );
+
+/// Matches with the `RiverpodPersist` annotation from riverpod_annotation.
+const riverpodPersistType = TypeChecker.fromName(
+  'RiverpodPersist',
+  packageName: 'riverpod_annotation',
+);
+
+/// Matches with the `JsonPersist` annotation from riverpod_annotation.
+const jsonPersistType = TypeChecker.fromName(
+  'JsonPersist',
+  packageName: 'riverpod_annotation',
+);
