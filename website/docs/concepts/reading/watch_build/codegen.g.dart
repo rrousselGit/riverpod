@@ -74,7 +74,13 @@ abstract class _$TodoList extends $Notifier<List<Todo>> {
   List<Todo> build();
   @$internal
   @override
-  List<Todo> runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<List<Todo>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<List<Todo>>, List<Todo>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 @ProviderFor(counter)

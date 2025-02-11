@@ -118,7 +118,16 @@ abstract class _$ActivityNotifier2 extends $AsyncNotifier<Activity> {
   FutureOr<Activity> build();
   @$internal
   @override
-  FutureOr<Activity> runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<Activity>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<Activity>>,
+        AsyncValue<Activity>,
+        Object?,
+        Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 // ignore_for_file: type=lint

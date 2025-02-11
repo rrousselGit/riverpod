@@ -66,7 +66,13 @@ abstract class _$Example extends $StreamNotifier<String> {
   Stream<String> build();
   @$internal
   @override
-  Stream<String> runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 // ignore_for_file: type=lint

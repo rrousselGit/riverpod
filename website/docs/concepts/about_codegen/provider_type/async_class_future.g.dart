@@ -66,7 +66,13 @@ abstract class _$Example extends $AsyncNotifier<String> {
   FutureOr<String> build();
   @$internal
   @override
-  FutureOr<String> runBuild() => build();
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 // ignore_for_file: type=lint

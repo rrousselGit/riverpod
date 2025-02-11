@@ -220,9 +220,15 @@ abstract class _$BugsEncounteredNotifier extends $AsyncNotifier<int> {
   );
   @$internal
   @override
-  FutureOr<int> runBuild() => build(
-        _$args,
-      );
+  void runBuild() {
+    final created = build(
+      _$args,
+    );
+    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 // ignore_for_file: type=lint
