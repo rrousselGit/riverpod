@@ -9,7 +9,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_riverpod: ^2.6.1
-  dio: ^5.7.0
+  dio: ^5.8.0
 
   cupertino_icons: ^1.0.8
 
