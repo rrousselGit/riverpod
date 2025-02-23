@@ -10,7 +10,7 @@ import 'provider.dart';
 
 // {@template note}
 /// We subclassed "ConsumerWidget" instead of "StatelessWidget".
-/// This is equivalent to making a "StatelessWidget" and retuning "Consumer".
+/// This is equivalent to making a "StatelessWidget" and returning "Consumer".
 // {@endtemplate}
 class Home extends ConsumerWidget {
   const Home({super.key});
