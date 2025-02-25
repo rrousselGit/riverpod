@@ -59,24 +59,22 @@ const mutationZoneKey = #_mutation;
 /// Once we have defined a notifier, we can add a mutation to it.
 /// To do so, we define a method in the notifier class and annotate it with [Mutation]:
 ///
-/// **Note**:
-/// That method **must** return a [Future] that resolves with a value of the same
-/// type as the notifier's state.
-/// In our above example, the state of our notifier is `List<Todo>`, so the mutation
-/// must return a `Future<List<Todo>>`.
-///
 /// ```dart
 /// @riverpod
 /// class TodoListNotifier extends $ExampleNotifier {
 ///   /* ... */
 ///
 ///   @mutation
-///   Future<List<Todo>> addTodo(Todo todo) async {
+///   Future<Todo> addTodo(String task) async {
+///     final todo = Todo(task);
 ///     /* to-do: Make an HTTP post request to notify the server about the added todo */
 ///
 ///     // Mutations are expected to return the new state for our notifier.
 ///     // Riverpod will then assign this value to `this.state`
-///     return [...await future, todo];
+///     state = AsyncData([...await future, todo]);
+///
+///     // We return the new todo, so that the UI can display it.
+///     return todo;
 ///   }
 /// }
 /// ```
@@ -115,7 +113,7 @@ const mutationZoneKey = #_mutation;
 ///
 /// return ElevatedButton(
 ///   // Pressing the button will call `TodoListNotifier.addTodo`
-///   onPressed: () => addTodo(Todo('Buy milk')),
+///   onPressed: () => addTodo('Buy milk'),
 /// );
 /// ```
 ///
@@ -142,7 +140,7 @@ const mutationZoneKey = #_mutation;
 ///   case ErrorMutationState(:final error):
 ///     print('The mutation has failed with $error');
 ///   case SuccessMutationState(:final value):
-///     print('The mutation has succeeded, and the new state is $value');
+///     print('The mutation has succeeded, and $value was returned');
 /// }
 /// ```
 ///
@@ -229,7 +227,7 @@ const mutationZoneKey = #_mutation;
 ///     return ElevatedButton(
 ///       onPressed: addTodo.state is PendingMutationState
 ///         ? null  // If the mutation is in progress, disable the button
-///         : () => addTodo(Todo('Buy milk')), // Otherwise enable the button
+///         : () => addTodo('Buy milk'), // Otherwise enable the button
 ///     );
 ///   }
 /// }
@@ -355,54 +353,88 @@ abstract class MutationBase<ResultT> {
 
 @internal
 abstract class $SyncMutationBase<
-        StateT,
-        MutationT extends $SyncMutationBase<StateT, MutationT, ClassT>,
-        ClassT extends NotifierBase<StateT>>
-    extends _MutationBase<StateT, StateT, MutationT, ClassT> {
+        ResultT,
+        MutationT extends $SyncMutationBase<ResultT, MutationT, ClassT>,
+        ClassT extends NotifierBase<Object?>>
+    extends _MutationBase<ResultT, MutationT, ClassT> {
   $SyncMutationBase({super.state, super.key});
 
-  @override
-  void setData(StateT value) {
-    element.setStateResult($Result.data(value));
+  @protected
+  ResultT mutate(
+    Invocation invocation,
+    ResultT Function(ClassT clazz) cb,
+  ) {
+    return _run(invocation, (_, notifier) => cb(notifier));
   }
 }
 
 @internal
 abstract class $AsyncMutationBase<
-        StateT,
-        MutationT extends $AsyncMutationBase<StateT, MutationT, ClassT>,
-        ClassT extends NotifierBase<AsyncValue<StateT>>>
-    extends _MutationBase<StateT, AsyncValue<StateT>, MutationT, ClassT> {
+        ResultT,
+        MutationT extends $AsyncMutationBase<ResultT, MutationT, ClassT>,
+        ClassT extends NotifierBase<Object?>>
+    extends _MutationBase<ResultT, MutationT, ClassT> {
   $AsyncMutationBase({super.state, super.key});
 
-  @override
-  void setData(StateT value) {
-    element.setStateResult($Result.data(AsyncData(value)));
+  @protected
+  Future<ResultT> mutate(
+    Invocation invocation,
+    FutureOr<ResultT> Function(ClassT clazz) cb,
+  ) {
+    return _run(
+      invocation,
+      (mutationContext, notifier) async {
+        // ! is safe because of the flush() above
+        final key = Object();
+        try {
+          _setState(
+            mutationContext,
+            copyWith(PendingMutationState<ResultT>._(), key: key),
+          );
+
+          final result = await cb(notifier);
+          if (key == _currentKey) {
+            _setState(
+              mutationContext,
+              copyWith(SuccessMutationState<ResultT>._(result)),
+            );
+          }
+
+          return result;
+        } catch (err, stack) {
+          if (key == _currentKey) {
+            _setState(
+              mutationContext,
+              copyWith(ErrorMutationState<ResultT>._(err, stack)),
+            );
+          }
+
+          rethrow;
+        }
+      },
+    );
   }
 }
 
 abstract class _MutationBase<
-    ValueT,
-    StateT,
-    MutationT extends _MutationBase<ValueT, StateT, MutationT, ClassT>,
-    ClassT extends NotifierBase<StateT>> implements MutationBase<ValueT> {
-  _MutationBase({MutationState<ValueT>? state, this.key})
-      : state = state ?? IdleMutationState<ValueT>._() {
+    ResultT,
+    MutationT extends _MutationBase<ResultT, MutationT, ClassT>,
+    ClassT extends NotifierBase<Object?>> implements MutationBase<ResultT> {
+  _MutationBase({MutationState<ResultT>? state, this.key})
+      : state = state ?? IdleMutationState<ResultT>._() {
     listenable.onCancel = _scheduleAutoReset;
   }
 
   @override
-  final MutationState<ValueT> state;
+  final MutationState<ResultT> state;
   final Object? key;
 
-  $ClassProviderElement<ClassT, StateT, ValueT, Object?> get element;
+  $ClassProviderElement<ClassT, Object?, Object?, Object?> get element;
   $ElementLense<MutationT> get listenable;
 
   Object? get _currentKey => listenable.result?.stateOrNull?.key;
 
-  MutationT copyWith(MutationState<ValueT> state, {Object? key});
-
-  void setData(ValueT value);
+  MutationT copyWith(MutationState<ResultT> state, {Object? key});
 
   void _scheduleAutoReset() {
     Future.microtask(() {
@@ -414,13 +446,27 @@ abstract class _MutationBase<
 
   @override
   void reset() {
-    if (state is IdleMutationState<ValueT>) return;
+    if (state is IdleMutationState<ResultT>) return;
 
-    listenable.result = ResultData(copyWith(IdleMutationState<ValueT>._()));
+    listenable.result = ResultData(copyWith(IdleMutationState<ResultT>._()));
 
     final context = ProviderObserverContext(element.origin, element.container);
 
     _notifyObserver((obs) => obs.mutationReset(context));
+  }
+
+  T _run<T>(
+    Invocation invocation,
+    T Function(MutationContext mutationContext, ClassT notifier) cb,
+  ) {
+    element.flush();
+    final notifier = element.classListenable.value;
+    final mutationContext = MutationContext(invocation, notifier);
+
+    return runZoned(
+      zoneValues: {mutationZoneKey: mutationContext},
+      () => cb(mutationContext, notifier),
+    );
   }
 
   void _notifyObserver(void Function(ProviderObserver obs) cb) {
@@ -461,50 +507,6 @@ abstract class _MutationBase<
 
       default:
     }
-  }
-
-  @protected
-  Future<ValueT> mutateAsync(
-    Invocation invocation,
-    FutureOr<ValueT> Function(ClassT clazz) cb,
-  ) {
-    element.flush();
-    final notifier = element.classListenable.value;
-    final mutationContext = MutationContext(invocation, notifier);
-
-    return runZoned(
-      zoneValues: {mutationZoneKey: mutationContext},
-      () async {
-        // ! is safe because of the flush() above
-        final key = Object();
-        try {
-          _setState(
-            mutationContext,
-            copyWith(PendingMutationState<ValueT>._(), key: key),
-          );
-
-          final result = await cb(notifier);
-          if (key == _currentKey) {
-            _setState(
-              mutationContext,
-              copyWith(SuccessMutationState<ValueT>._(result)),
-            );
-          }
-          setData(result);
-
-          return result;
-        } catch (err, stack) {
-          if (key == _currentKey) {
-            _setState(
-              mutationContext,
-              copyWith(ErrorMutationState<ValueT>._(err, stack)),
-            );
-          }
-
-          rethrow;
-        }
-      },
-    );
   }
 
   @override

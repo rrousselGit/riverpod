@@ -18,7 +18,6 @@ import 'templates/notifier.dart';
 import 'templates/parameters.dart';
 import 'templates/provider.dart';
 import 'templates/provider_variable.dart';
-import 'type.dart';
 
 String providerDocFor(Element element) {
   return element.documentationComment == null

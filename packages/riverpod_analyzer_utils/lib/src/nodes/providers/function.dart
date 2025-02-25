@@ -34,7 +34,7 @@ extension FunctionalProviderDeclarationX on FunctionDeclaration {
         annotation: riverpod,
         createdTypeNode: createdTypeNode,
         exposedTypeNode: exposedTypeNode,
-        valueTypeNode: _getValueType(createdTypeNode, element.library),
+        valueTypeNode: _getValueType(createdTypeNode),
       );
     });
   }

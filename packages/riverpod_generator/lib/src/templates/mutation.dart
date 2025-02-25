@@ -1,7 +1,7 @@
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
+import 'package:source_gen/source_gen.dart';
 
 import '../riverpod_generator.dart';
-import '../type.dart';
 import 'element.dart';
 import 'parameters.dart';
 import 'template.dart';
@@ -19,14 +19,17 @@ class MutationTemplate extends Template {
         parameter: parameter.name.toString(),
     });
 
-    final mutationBase = switch (provider.createdType) {
+    final mutationBase = switch (mutation.createdType) {
       SupportedCreatedType.future => r'$AsyncMutationBase',
-      SupportedCreatedType.stream => r'$AsyncMutationBase',
+      SupportedCreatedType.stream => throw InvalidGenerationSource(
+          'Stream mutations are not supported',
+          element: mutation.node.declaredElement,
+        ),
       SupportedCreatedType.value => r'$SyncMutationBase',
     };
 
     buffer.writeln('''
-sealed class ${mutation.generatedMutationInterfaceName} extends MutationBase<${provider.valueTypeDisplayString}> {
+sealed class ${mutation.generatedMutationInterfaceName} extends MutationBase<${mutation.valueDisplayType}> {
   /// Starts the mutation.
   /// 
   /// This will first set the state to [PendingMutationState], then
@@ -36,19 +39,16 @@ sealed class ${mutation.generatedMutationInterfaceName} extends MutationBase<${p
   /// [SuccessMutationState] or [ErrorMutationState] based on if the method
   /// threw or not.
   ///
-  /// Lastly, if the method completes without throwing, the Notifier's state
-  /// will be updated with the new value.
-  /// 
   /// **Note**:
   /// If the notifier threw in its constructor, the mutation won't start
   /// and [call] will throw.
   /// This should generally never happen though, as Notifiers are not supposed
   /// to have logic in their constructors.
-  Future<${provider.valueTypeDisplayString}> call${mutation.node.typeParameters.genericDefinitionDisplayString()}${mutation.node.parameters};
+  ${mutation.node.returnType ?? ''} call${mutation.node.typeParameters.genericDefinitionDisplayString()}${mutation.node.parameters};
 }
 
 final class ${mutation.generatedMutationImplName}
-  extends $mutationBase<${provider.valueTypeDisplayString}, ${mutation.generatedMutationImplName}, ${provider.name}>
+  extends $mutationBase<${mutation.valueDisplayType}, ${mutation.generatedMutationImplName}, ${provider.name}>
   implements ${mutation.generatedMutationInterfaceName} {
   ${mutation.generatedMutationImplName}(this.element, {super.state, super.key});
 
@@ -59,15 +59,15 @@ final class ${mutation.generatedMutationImplName}
   \$ElementLense<${mutation.generatedMutationImplName}> get listenable => element.${mutation.elementFieldName};
 
   @override
-  Future<${provider.valueTypeDisplayString}> call${mutation.node.typeParameters.genericDefinitionDisplayString()}${mutation.node.parameters} {
-    return mutateAsync(
+  ${mutation.node.returnType ?? ''} call${mutation.node.typeParameters.genericDefinitionDisplayString()}${mutation.node.parameters} {
+    return mutate(
       ${_mutationInvocation()},
       (\$notifier) => \$notifier.${mutation.name}${mutation.node.typeParameters.genericUsageDisplayString()}($parametersPassThrough),
     );
   }
 
   @override
-  ${mutation.generatedMutationImplName} copyWith(MutationState<${provider.valueTypeDisplayString}> state, {Object? key}) => ${mutation.generatedMutationImplName}(element, state: state, key: key);
+  ${mutation.generatedMutationImplName} copyWith(MutationState<${mutation.valueDisplayType}> state, {Object? key}) => ${mutation.generatedMutationImplName}(element, state: state, key: key);
 }
 ''');
   }

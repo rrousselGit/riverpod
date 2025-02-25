@@ -1,11 +1,9 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
-import 'package:meta/meta.dart';
 
-@internal
-typedef ErrorReporter = void Function(RiverpodAnalysisError);
+typedef RiverpodErrorReporter = void Function(RiverpodAnalysisError);
 
-ErrorReporter errorReporter = (error) {
+RiverpodErrorReporter errorReporter = (error) {
   throw UnsupportedError(
     'RiverpodAnalysisError found but no errorReporter specified: $error',
   );
@@ -19,9 +17,9 @@ enum RiverpodAnalysisErrorCode {
   providerDependencyListParseError,
   providerOrFamilyExpressionParseError,
   invalidRetryArgument,
-  mutationReturnTypeMismatch,
   mutationIsStatic,
   mutationIsAbstract,
+  unsupportedMutationReturnType,
 }
 
 class RiverpodAnalysisError {

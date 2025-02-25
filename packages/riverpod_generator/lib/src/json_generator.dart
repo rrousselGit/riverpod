@@ -11,7 +11,6 @@ import 'package:source_gen/source_gen.dart';
 import 'models.dart';
 import 'parse_generator.dart';
 import 'riverpod_generator.dart';
-import 'type.dart';
 
 @immutable
 class JsonGenerator extends ParserGenerator<JsonPersist> {
