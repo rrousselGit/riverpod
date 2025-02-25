@@ -198,6 +198,8 @@ extension MutationMethodDeclarationX on MethodDeclaration {
             RiverpodAnalysisError(
               'Mutations returning Streams are not supported',
               code: RiverpodAnalysisErrorCode.unsupportedMutationReturnType,
+              targetNode: this,
+              targetElement: element,
             ),
           );
         case SupportedCreatedType.value:
