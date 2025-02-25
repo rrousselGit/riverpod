@@ -22,6 +22,7 @@ enum RiverpodAnalysisErrorCode {
   mutationReturnTypeMismatch,
   mutationIsStatic,
   mutationIsAbstract,
+  unsupportedMutationReturnType,
 }
 
 class RiverpodAnalysisError {

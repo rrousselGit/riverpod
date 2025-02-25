@@ -85,7 +85,7 @@ extension ClassBasedProviderDeclarationX on ClassDeclaration {
         return e.annotationOfType(riverpodPersistType, exact: false) != null;
       });
 
-      final valueTypeNode = _getValueType(createdTypeNode, element.library);
+      final valueTypeNode = _getValueType(createdTypeNode);
       final classBasedProviderDeclaration = ClassBasedProviderDeclaration._(
         name: name,
         node: this,
@@ -180,40 +180,35 @@ extension MutationMethodDeclarationX on MethodDeclaration {
           ?.returnType;
       if (expectedReturnType == null) return null;
 
-      final expectedValueType = _getValueType(
-        expectedReturnType,
-        element.library,
-      );
+      final expectedValueType = _getValueType(expectedReturnType);
       if (expectedValueType == null) return null;
 
-      final expectedType =
-          element.library.typeProvider.futureOrElement.instantiate(
-        typeArguments: [expectedValueType.type!],
-        nullabilitySuffix: NullabilitySuffix.none,
-      );
-
-      final actualType = element.returnType;
-
-      final isAssignable = element.library.typeSystem.isAssignableTo(
-        actualType,
-        expectedType,
-        strictCasts: true,
-      );
-      if (!isAssignable) {
-        errorReporter(
-          RiverpodAnalysisError(
-            'The return type of mutations must match the type returned by the "build" method.',
-            targetNode: this,
-            targetElement: element,
-            code: RiverpodAnalysisErrorCode.mutationReturnTypeMismatch,
-          ),
-        );
-        return null;
+      final returnType = this.returnType;
+      final createdType = SupportedCreatedType.from(returnType);
+      String? valueDisplayString;
+      switch (createdType) {
+        case SupportedCreatedType.future:
+          valueDisplayString = (returnType! as NamedType)
+              .typeArguments
+              ?.arguments
+              .firstOrNull
+              ?.toSource();
+        case SupportedCreatedType.stream:
+          errorReporter(
+            RiverpodAnalysisError(
+              'Mutations returning Streams are not supported',
+              code: RiverpodAnalysisErrorCode.unsupportedMutationReturnType,
+            ),
+          );
+        case SupportedCreatedType.value:
+          valueDisplayString = returnType?.toSource();
       }
 
       final mutation = Mutation._(
         node: this,
         element: mutationElement,
+        createdType: createdType,
+        valueDisplayType: valueDisplayString ?? '',
       );
 
       return mutation;
@@ -225,9 +220,13 @@ final class Mutation {
   Mutation._({
     required this.node,
     required this.element,
+    required this.valueDisplayType,
+    required this.createdType,
   });
 
   String get name => node.name.lexeme;
+  final String valueDisplayType;
+  final SupportedCreatedType createdType;
   final MethodDeclaration node;
   final MutationElement element;
 }

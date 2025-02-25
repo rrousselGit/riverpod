@@ -6,6 +6,431 @@ part of 'mutation.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+@ProviderFor(SyncTodoList)
+const syncTodoListProvider = SyncTodoListProvider._();
+
+final class SyncTodoListProvider
+    extends $NotifierProvider<SyncTodoList, List<Todo>> {
+  const SyncTodoListProvider._(
+      {super.runNotifierBuildOverride, SyncTodoList Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'syncTodoListProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final SyncTodoList Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$syncTodoListHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<Todo> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<List<Todo>>(value),
+    );
+  }
+
+  @$internal
+  @override
+  SyncTodoList create() => _createCb?.call() ?? SyncTodoList();
+
+  @$internal
+  @override
+  SyncTodoListProvider $copyWithCreate(
+    SyncTodoList Function() create,
+  ) {
+    return SyncTodoListProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  SyncTodoListProvider $copyWithBuild(
+    List<Todo> Function(
+      Ref,
+      SyncTodoList,
+    ) build,
+  ) {
+    return SyncTodoListProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  _$SyncTodoListElement $createElement($ProviderPointer pointer) =>
+      _$SyncTodoListElement(this, pointer);
+
+  ProviderListenable<SyncTodoList$AddSync> get addSync =>
+      $LazyProxyListenable<SyncTodoList$AddSync, List<Todo>>(
+        this,
+        (element) {
+          element as _$SyncTodoListElement;
+
+          return element._$addSync;
+        },
+      );
+
+  ProviderListenable<SyncTodoList$AddAsync> get addAsync =>
+      $LazyProxyListenable<SyncTodoList$AddAsync, List<Todo>>(
+        this,
+        (element) {
+          element as _$SyncTodoListElement;
+
+          return element._$addAsync;
+        },
+      );
+}
+
+String _$syncTodoListHash() => r'18d459affe35603d564ac90e05c1978d4e862f40';
+
+abstract class _$SyncTodoList extends $Notifier<List<Todo>> {
+  List<Todo> build();
+  @$internal
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<List<Todo>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<List<Todo>>, List<Todo>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}
+
+class _$SyncTodoListElement
+    extends $NotifierProviderElement<SyncTodoList, List<Todo>> {
+  _$SyncTodoListElement(super.provider, super.pointer) {
+    _$addSync.result = $Result.data(_$SyncTodoList$AddSync(this));
+    _$addAsync.result = $Result.data(_$SyncTodoList$AddAsync(this));
+  }
+  final _$addSync = $ElementLense<_$SyncTodoList$AddSync>();
+  final _$addAsync = $ElementLense<_$SyncTodoList$AddAsync>();
+  @override
+  void mount() {
+    super.mount();
+    _$addSync.result!.stateOrNull!.reset();
+    _$addAsync.result!.stateOrNull!.reset();
+  }
+
+  @override
+  void visitListenables(
+    void Function($ElementLense element) listenableVisitor,
+  ) {
+    super.visitListenables(listenableVisitor);
+
+    listenableVisitor(_$addSync);
+    listenableVisitor(_$addAsync);
+  }
+}
+
+sealed class SyncTodoList$AddSync extends MutationBase<Todo> {
+  /// Starts the mutation.
+  ///
+  /// This will first set the state to [PendingMutationState], then
+  /// will call [SyncTodoList.addSync] with the provided parameters.
+  ///
+  /// After the method completes, the mutation state will be updated to either
+  /// [SuccessMutationState] or [ErrorMutationState] based on if the method
+  /// threw or not.
+  ///
+  /// **Note**:
+  /// If the notifier threw in its constructor, the mutation won't start
+  /// and [call] will throw.
+  /// This should generally never happen though, as Notifiers are not supposed
+  /// to have logic in their constructors.
+  Todo call(Todo todo);
+}
+
+final class _$SyncTodoList$AddSync
+    extends $SyncMutationBase<Todo, _$SyncTodoList$AddSync, SyncTodoList>
+    implements SyncTodoList$AddSync {
+  _$SyncTodoList$AddSync(this.element, {super.state, super.key});
+
+  @override
+  final _$SyncTodoListElement element;
+
+  @override
+  $ElementLense<_$SyncTodoList$AddSync> get listenable => element._$addSync;
+
+  @override
+  Todo call(Todo todo) {
+    return mutate(
+      Invocation.method(
+        #addSync,
+        [todo],
+      ),
+      ($notifier) => $notifier.addSync(
+        todo,
+      ),
+    );
+  }
+
+  @override
+  _$SyncTodoList$AddSync copyWith(MutationState<Todo> state, {Object? key}) =>
+      _$SyncTodoList$AddSync(element, state: state, key: key);
+}
+
+sealed class SyncTodoList$AddAsync extends MutationBase<Todo> {
+  /// Starts the mutation.
+  ///
+  /// This will first set the state to [PendingMutationState], then
+  /// will call [SyncTodoList.addAsync] with the provided parameters.
+  ///
+  /// After the method completes, the mutation state will be updated to either
+  /// [SuccessMutationState] or [ErrorMutationState] based on if the method
+  /// threw or not.
+  ///
+  /// **Note**:
+  /// If the notifier threw in its constructor, the mutation won't start
+  /// and [call] will throw.
+  /// This should generally never happen though, as Notifiers are not supposed
+  /// to have logic in their constructors.
+  Future<Todo> call(Todo todo);
+}
+
+final class _$SyncTodoList$AddAsync
+    extends $AsyncMutationBase<Todo, _$SyncTodoList$AddAsync, SyncTodoList>
+    implements SyncTodoList$AddAsync {
+  _$SyncTodoList$AddAsync(this.element, {super.state, super.key});
+
+  @override
+  final _$SyncTodoListElement element;
+
+  @override
+  $ElementLense<_$SyncTodoList$AddAsync> get listenable => element._$addAsync;
+
+  @override
+  Future<Todo> call(Todo todo) {
+    return mutate(
+      Invocation.method(
+        #addAsync,
+        [todo],
+      ),
+      ($notifier) => $notifier.addAsync(
+        todo,
+      ),
+    );
+  }
+
+  @override
+  _$SyncTodoList$AddAsync copyWith(MutationState<Todo> state, {Object? key}) =>
+      _$SyncTodoList$AddAsync(element, state: state, key: key);
+}
+
+@ProviderFor(AsyncTodoList)
+const asyncTodoListProvider = AsyncTodoListProvider._();
+
+final class AsyncTodoListProvider
+    extends $AsyncNotifierProvider<AsyncTodoList, List<Todo>> {
+  const AsyncTodoListProvider._(
+      {super.runNotifierBuildOverride, AsyncTodoList Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'asyncTodoListProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final AsyncTodoList Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$asyncTodoListHash();
+
+  @$internal
+  @override
+  AsyncTodoList create() => _createCb?.call() ?? AsyncTodoList();
+
+  @$internal
+  @override
+  AsyncTodoListProvider $copyWithCreate(
+    AsyncTodoList Function() create,
+  ) {
+    return AsyncTodoListProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  AsyncTodoListProvider $copyWithBuild(
+    FutureOr<List<Todo>> Function(
+      Ref,
+      AsyncTodoList,
+    ) build,
+  ) {
+    return AsyncTodoListProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  _$AsyncTodoListElement $createElement($ProviderPointer pointer) =>
+      _$AsyncTodoListElement(this, pointer);
+
+  ProviderListenable<AsyncTodoList$AddSync> get addSync =>
+      $LazyProxyListenable<AsyncTodoList$AddSync, AsyncValue<List<Todo>>>(
+        this,
+        (element) {
+          element as _$AsyncTodoListElement;
+
+          return element._$addSync;
+        },
+      );
+
+  ProviderListenable<AsyncTodoList$AddAsync> get addAsync =>
+      $LazyProxyListenable<AsyncTodoList$AddAsync, AsyncValue<List<Todo>>>(
+        this,
+        (element) {
+          element as _$AsyncTodoListElement;
+
+          return element._$addAsync;
+        },
+      );
+}
+
+String _$asyncTodoListHash() => r'73d9aa3b39ad5d0c157510754bfc273a98075d30';
+
+abstract class _$AsyncTodoList extends $AsyncNotifier<List<Todo>> {
+  FutureOr<List<Todo>> build();
+  @$internal
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<List<Todo>>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<List<Todo>>>,
+        AsyncValue<List<Todo>>,
+        Object?,
+        Object?>;
+    element.handleValue(ref, created);
+  }
+}
+
+class _$AsyncTodoListElement
+    extends $AsyncNotifierProviderElement<AsyncTodoList, List<Todo>> {
+  _$AsyncTodoListElement(super.provider, super.pointer) {
+    _$addSync.result = $Result.data(_$AsyncTodoList$AddSync(this));
+    _$addAsync.result = $Result.data(_$AsyncTodoList$AddAsync(this));
+  }
+  final _$addSync = $ElementLense<_$AsyncTodoList$AddSync>();
+  final _$addAsync = $ElementLense<_$AsyncTodoList$AddAsync>();
+  @override
+  void mount() {
+    super.mount();
+    _$addSync.result!.stateOrNull!.reset();
+    _$addAsync.result!.stateOrNull!.reset();
+  }
+
+  @override
+  void visitListenables(
+    void Function($ElementLense element) listenableVisitor,
+  ) {
+    super.visitListenables(listenableVisitor);
+
+    listenableVisitor(_$addSync);
+    listenableVisitor(_$addAsync);
+  }
+}
+
+sealed class AsyncTodoList$AddSync extends MutationBase<Todo> {
+  /// Starts the mutation.
+  ///
+  /// This will first set the state to [PendingMutationState], then
+  /// will call [AsyncTodoList.addSync] with the provided parameters.
+  ///
+  /// After the method completes, the mutation state will be updated to either
+  /// [SuccessMutationState] or [ErrorMutationState] based on if the method
+  /// threw or not.
+  ///
+  /// **Note**:
+  /// If the notifier threw in its constructor, the mutation won't start
+  /// and [call] will throw.
+  /// This should generally never happen though, as Notifiers are not supposed
+  /// to have logic in their constructors.
+  Todo call(Todo todo);
+}
+
+final class _$AsyncTodoList$AddSync
+    extends $SyncMutationBase<Todo, _$AsyncTodoList$AddSync, AsyncTodoList>
+    implements AsyncTodoList$AddSync {
+  _$AsyncTodoList$AddSync(this.element, {super.state, super.key});
+
+  @override
+  final _$AsyncTodoListElement element;
+
+  @override
+  $ElementLense<_$AsyncTodoList$AddSync> get listenable => element._$addSync;
+
+  @override
+  Todo call(Todo todo) {
+    return mutate(
+      Invocation.method(
+        #addSync,
+        [todo],
+      ),
+      ($notifier) => $notifier.addSync(
+        todo,
+      ),
+    );
+  }
+
+  @override
+  _$AsyncTodoList$AddSync copyWith(MutationState<Todo> state, {Object? key}) =>
+      _$AsyncTodoList$AddSync(element, state: state, key: key);
+}
+
+sealed class AsyncTodoList$AddAsync extends MutationBase<Todo> {
+  /// Starts the mutation.
+  ///
+  /// This will first set the state to [PendingMutationState], then
+  /// will call [AsyncTodoList.addAsync] with the provided parameters.
+  ///
+  /// After the method completes, the mutation state will be updated to either
+  /// [SuccessMutationState] or [ErrorMutationState] based on if the method
+  /// threw or not.
+  ///
+  /// **Note**:
+  /// If the notifier threw in its constructor, the mutation won't start
+  /// and [call] will throw.
+  /// This should generally never happen though, as Notifiers are not supposed
+  /// to have logic in their constructors.
+  Future<Todo> call(Todo todo);
+}
+
+final class _$AsyncTodoList$AddAsync
+    extends $AsyncMutationBase<Todo, _$AsyncTodoList$AddAsync, AsyncTodoList>
+    implements AsyncTodoList$AddAsync {
+  _$AsyncTodoList$AddAsync(this.element, {super.state, super.key});
+
+  @override
+  final _$AsyncTodoListElement element;
+
+  @override
+  $ElementLense<_$AsyncTodoList$AddAsync> get listenable => element._$addAsync;
+
+  @override
+  Future<Todo> call(Todo todo) {
+    return mutate(
+      Invocation.method(
+        #addAsync,
+        [todo],
+      ),
+      ($notifier) => $notifier.addAsync(
+        todo,
+      ),
+    );
+  }
+
+  @override
+  _$AsyncTodoList$AddAsync copyWith(MutationState<Todo> state, {Object? key}) =>
+      _$AsyncTodoList$AddAsync(element, state: state, key: key);
+}
+
 @ProviderFor(Simple)
 const simpleProvider = SimpleProvider._();
 
@@ -95,7 +520,7 @@ final class SimpleProvider extends $NotifierProvider<Simple, int> {
       );
 }
 
-String _$simpleHash() => r'c84cd9b6e3b09516b19316b0b21ea5ba5bc08a07';
+String _$simpleHash() => r'bbccebb4e8d2a097b945f6d7ab5e54ac11781c49';
 
 abstract class _$Simple extends $Notifier<int> {
   int build();
@@ -149,9 +574,6 @@ sealed class Simple$Increment extends MutationBase<int> {
   /// [SuccessMutationState] or [ErrorMutationState] based on if the method
   /// threw or not.
   ///
-  /// Lastly, if the method completes without throwing, the Notifier's state
-  /// will be updated with the new value.
-  ///
   /// **Note**:
   /// If the notifier threw in its constructor, the mutation won't start
   /// and [call] will throw.
@@ -161,7 +583,7 @@ sealed class Simple$Increment extends MutationBase<int> {
 }
 
 final class _$Simple$Increment
-    extends $SyncMutationBase<int, _$Simple$Increment, Simple>
+    extends $AsyncMutationBase<int, _$Simple$Increment, Simple>
     implements Simple$Increment {
   _$Simple$Increment(this.element, {super.state, super.key});
 
@@ -173,7 +595,7 @@ final class _$Simple$Increment
 
   @override
   Future<int> call([int inc = 1]) {
-    return mutateAsync(
+    return mutate(
       Invocation.method(
         #increment,
         [inc],
@@ -199,19 +621,16 @@ sealed class Simple$IncrementOr extends MutationBase<int> {
   /// [SuccessMutationState] or [ErrorMutationState] based on if the method
   /// threw or not.
   ///
-  /// Lastly, if the method completes without throwing, the Notifier's state
-  /// will be updated with the new value.
-  ///
   /// **Note**:
   /// If the notifier threw in its constructor, the mutation won't start
   /// and [call] will throw.
   /// This should generally never happen though, as Notifiers are not supposed
   /// to have logic in their constructors.
-  Future<int> call();
+  FutureOr<int> call();
 }
 
 final class _$Simple$IncrementOr
-    extends $SyncMutationBase<int, _$Simple$IncrementOr, Simple>
+    extends $AsyncMutationBase<int, _$Simple$IncrementOr, Simple>
     implements Simple$IncrementOr {
   _$Simple$IncrementOr(this.element, {super.state, super.key});
 
@@ -222,8 +641,8 @@ final class _$Simple$IncrementOr
   $ElementLense<_$Simple$IncrementOr> get listenable => element._$incrementOr;
 
   @override
-  Future<int> call() {
-    return mutateAsync(
+  FutureOr<int> call() {
+    return mutate(
       Invocation.method(
         #incrementOr,
         [],
@@ -247,9 +666,6 @@ sealed class Simple$Delegated extends MutationBase<int> {
   /// [SuccessMutationState] or [ErrorMutationState] based on if the method
   /// threw or not.
   ///
-  /// Lastly, if the method completes without throwing, the Notifier's state
-  /// will be updated with the new value.
-  ///
   /// **Note**:
   /// If the notifier threw in its constructor, the mutation won't start
   /// and [call] will throw.
@@ -259,7 +675,7 @@ sealed class Simple$Delegated extends MutationBase<int> {
 }
 
 final class _$Simple$Delegated
-    extends $SyncMutationBase<int, _$Simple$Delegated, Simple>
+    extends $AsyncMutationBase<int, _$Simple$Delegated, Simple>
     implements Simple$Delegated {
   _$Simple$Delegated(this.element, {super.state, super.key});
 
@@ -271,7 +687,7 @@ final class _$Simple$Delegated
 
   @override
   Future<int> call(Future<int> Function() fn) {
-    return mutateAsync(
+    return mutate(
       Invocation.method(
         #delegated,
         [fn],
@@ -390,7 +806,7 @@ final class SimpleFamilyProvider extends $NotifierProvider<SimpleFamily, int> {
   }
 }
 
-String _$simpleFamilyHash() => r'7f7a9985568e147b78fbcd6ed7691a6677f75aeb';
+String _$simpleFamilyHash() => r'5a1afef2fb83836b8cbdc48fda6975a9149d9f2d';
 
 final class SimpleFamilyFamily extends Family {
   const SimpleFamilyFamily._()
@@ -508,9 +924,6 @@ sealed class SimpleFamily$Increment extends MutationBase<int> {
   /// [SuccessMutationState] or [ErrorMutationState] based on if the method
   /// threw or not.
   ///
-  /// Lastly, if the method completes without throwing, the Notifier's state
-  /// will be updated with the new value.
-  ///
   /// **Note**:
   /// If the notifier threw in its constructor, the mutation won't start
   /// and [call] will throw.
@@ -520,7 +933,7 @@ sealed class SimpleFamily$Increment extends MutationBase<int> {
 }
 
 final class _$SimpleFamily$Increment
-    extends $SyncMutationBase<int, _$SimpleFamily$Increment, SimpleFamily>
+    extends $AsyncMutationBase<int, _$SimpleFamily$Increment, SimpleFamily>
     implements SimpleFamily$Increment {
   _$SimpleFamily$Increment(this.element, {super.state, super.key});
 
@@ -532,7 +945,7 @@ final class _$SimpleFamily$Increment
 
   @override
   Future<int> call([int inc = 1]) {
-    return mutateAsync(
+    return mutate(
       Invocation.method(
         #increment,
         [inc],
@@ -558,19 +971,16 @@ sealed class SimpleFamily$IncrementOr extends MutationBase<int> {
   /// [SuccessMutationState] or [ErrorMutationState] based on if the method
   /// threw or not.
   ///
-  /// Lastly, if the method completes without throwing, the Notifier's state
-  /// will be updated with the new value.
-  ///
   /// **Note**:
   /// If the notifier threw in its constructor, the mutation won't start
   /// and [call] will throw.
   /// This should generally never happen though, as Notifiers are not supposed
   /// to have logic in their constructors.
-  Future<int> call();
+  FutureOr<int> call();
 }
 
 final class _$SimpleFamily$IncrementOr
-    extends $SyncMutationBase<int, _$SimpleFamily$IncrementOr, SimpleFamily>
+    extends $AsyncMutationBase<int, _$SimpleFamily$IncrementOr, SimpleFamily>
     implements SimpleFamily$IncrementOr {
   _$SimpleFamily$IncrementOr(this.element, {super.state, super.key});
 
@@ -582,8 +992,8 @@ final class _$SimpleFamily$IncrementOr
       element._$incrementOr;
 
   @override
-  Future<int> call() {
-    return mutateAsync(
+  FutureOr<int> call() {
+    return mutate(
       Invocation.method(
         #incrementOr,
         [],
@@ -670,7 +1080,7 @@ final class SimpleAsyncProvider
       );
 }
 
-String _$simpleAsyncHash() => r'ed00b8e5170e48855d0b3cddddabd316fef466cf';
+String _$simpleAsyncHash() => r'62dd0ee93e61fa27d139247b9a899630d5d3572c';
 
 abstract class _$SimpleAsync extends $AsyncNotifier<int> {
   FutureOr<int> build();
@@ -721,9 +1131,6 @@ sealed class SimpleAsync$Increment extends MutationBase<int> {
   /// [SuccessMutationState] or [ErrorMutationState] based on if the method
   /// threw or not.
   ///
-  /// Lastly, if the method completes without throwing, the Notifier's state
-  /// will be updated with the new value.
-  ///
   /// **Note**:
   /// If the notifier threw in its constructor, the mutation won't start
   /// and [call] will throw.
@@ -745,7 +1152,7 @@ final class _$SimpleAsync$Increment
 
   @override
   Future<int> call([int inc = 1]) {
-    return mutateAsync(
+    return mutate(
       Invocation.method(
         #increment,
         [inc],
@@ -771,9 +1178,6 @@ sealed class SimpleAsync$Delegated extends MutationBase<int> {
   /// [SuccessMutationState] or [ErrorMutationState] based on if the method
   /// threw or not.
   ///
-  /// Lastly, if the method completes without throwing, the Notifier's state
-  /// will be updated with the new value.
-  ///
   /// **Note**:
   /// If the notifier threw in its constructor, the mutation won't start
   /// and [call] will throw.
@@ -795,7 +1199,7 @@ final class _$SimpleAsync$Delegated
 
   @override
   Future<int> call(Future<int> Function() fn) {
-    return mutateAsync(
+    return mutate(
       Invocation.method(
         #delegated,
         [fn],
@@ -897,7 +1301,7 @@ final class SimpleAsync2Provider
   }
 }
 
-String _$simpleAsync2Hash() => r'7b372f85f3e4f1c2a954402b82a9a7b68bbc1407';
+String _$simpleAsync2Hash() => r'b2268a85a058e6f40c5bbfce8c20c9d285270967';
 
 final class SimpleAsync2Family extends Family {
   const SimpleAsync2Family._()
@@ -1011,9 +1415,6 @@ sealed class SimpleAsync2$Increment extends MutationBase<int> {
   /// [SuccessMutationState] or [ErrorMutationState] based on if the method
   /// threw or not.
   ///
-  /// Lastly, if the method completes without throwing, the Notifier's state
-  /// will be updated with the new value.
-  ///
   /// **Note**:
   /// If the notifier threw in its constructor, the mutation won't start
   /// and [call] will throw.
@@ -1035,7 +1436,7 @@ final class _$SimpleAsync2$Increment
 
   @override
   Future<int> call() {
-    return mutateAsync(
+    return mutate(
       Invocation.method(
         #increment,
         [],
@@ -1149,7 +1550,7 @@ final class GenericProvider<T extends num>
   }
 }
 
-String _$genericHash() => r'4089b4d9b08bfff0256ad67cf35780a6409f7a87';
+String _$genericHash() => r'd5341a17852b21f307e508a4f9d9470c5863aa17';
 
 final class GenericFamily extends Family {
   const GenericFamily._()
@@ -1243,9 +1644,6 @@ sealed class Generic$Increment extends MutationBase<int> {
   /// [SuccessMutationState] or [ErrorMutationState] based on if the method
   /// threw or not.
   ///
-  /// Lastly, if the method completes without throwing, the Notifier's state
-  /// will be updated with the new value.
-  ///
   /// **Note**:
   /// If the notifier threw in its constructor, the mutation won't start
   /// and [call] will throw.
@@ -1267,7 +1665,7 @@ final class _$Generic$Increment
 
   @override
   Future<int> call() {
-    return mutateAsync(
+    return mutate(
       Invocation.method(
         #increment,
         [],
@@ -1342,7 +1740,7 @@ final class GenericMutProvider extends $AsyncNotifierProvider<GenericMut, int> {
       );
 }
 
-String _$genericMutHash() => r'43acfc1b7cf59fb05f31ed4c2d5470422198feb0';
+String _$genericMutHash() => r'1f38b70cf937501fb313ae35c8bf824728bbd8ba';
 
 abstract class _$GenericMut extends $AsyncNotifier<int> {
   FutureOr<int> build();
@@ -1389,9 +1787,6 @@ sealed class GenericMut$Increment extends MutationBase<int> {
   /// [SuccessMutationState] or [ErrorMutationState] based on if the method
   /// threw or not.
   ///
-  /// Lastly, if the method completes without throwing, the Notifier's state
-  /// will be updated with the new value.
-  ///
   /// **Note**:
   /// If the notifier threw in its constructor, the mutation won't start
   /// and [call] will throw.
@@ -1413,7 +1808,7 @@ final class _$GenericMut$Increment
 
   @override
   Future<int> call<T extends num>(T value) {
-    return mutateAsync(
+    return mutate(
       Invocation.genericMethod(
         #increment,
         [T],
@@ -1499,7 +1894,7 @@ final class FailingCtorProvider extends $NotifierProvider<FailingCtor, int> {
       );
 }
 
-String _$failingCtorHash() => r'6cdef257a2d783fa5a606b411be0d23744766cdc';
+String _$failingCtorHash() => r'5d80d3b1dba058415cc8cfec17bc14e1f9c83fae';
 
 abstract class _$FailingCtor extends $Notifier<int> {
   int build();
@@ -1545,9 +1940,6 @@ sealed class FailingCtor$Increment extends MutationBase<int> {
   /// [SuccessMutationState] or [ErrorMutationState] based on if the method
   /// threw or not.
   ///
-  /// Lastly, if the method completes without throwing, the Notifier's state
-  /// will be updated with the new value.
-  ///
   /// **Note**:
   /// If the notifier threw in its constructor, the mutation won't start
   /// and [call] will throw.
@@ -1557,7 +1949,7 @@ sealed class FailingCtor$Increment extends MutationBase<int> {
 }
 
 final class _$FailingCtor$Increment
-    extends $SyncMutationBase<int, _$FailingCtor$Increment, FailingCtor>
+    extends $AsyncMutationBase<int, _$FailingCtor$Increment, FailingCtor>
     implements FailingCtor$Increment {
   _$FailingCtor$Increment(this.element, {super.state, super.key});
 
@@ -1569,7 +1961,7 @@ final class _$FailingCtor$Increment
 
   @override
   Future<int> call([int inc = 1]) {
-    return mutateAsync(
+    return mutate(
       Invocation.method(
         #increment,
         [inc],
@@ -1700,9 +2092,6 @@ sealed class Typed$Mutate extends MutationBase<String> {
   /// [SuccessMutationState] or [ErrorMutationState] based on if the method
   /// threw or not.
   ///
-  /// Lastly, if the method completes without throwing, the Notifier's state
-  /// will be updated with the new value.
-  ///
   /// **Note**:
   /// If the notifier threw in its constructor, the mutation won't start
   /// and [call] will throw.
@@ -1712,7 +2101,7 @@ sealed class Typed$Mutate extends MutationBase<String> {
 }
 
 final class _$Typed$Mutate
-    extends $SyncMutationBase<String, _$Typed$Mutate, Typed>
+    extends $AsyncMutationBase<String, _$Typed$Mutate, Typed>
     implements Typed$Mutate {
   _$Typed$Mutate(this.element, {super.state, super.key});
 
@@ -1725,7 +2114,7 @@ final class _$Typed$Mutate
   @override
   Future<String> call(String one,
       {required String two, required String three}) {
-    return mutateAsync(
+    return mutate(
       Invocation.method(#mutate, [one], {#two: two, #three: three}),
       ($notifier) => $notifier.mutate(
         one,

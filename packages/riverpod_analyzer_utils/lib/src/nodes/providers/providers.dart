@@ -26,6 +26,26 @@ extension GeneratorProviderDeclarationX on Declaration {
   }
 }
 
+enum SupportedCreatedType {
+  future,
+  stream,
+  value;
+
+  static SupportedCreatedType from(TypeAnnotation? type) {
+    final dartType = type?.type;
+    switch (dartType) {
+      case != null
+          when !dartType.isRaw &&
+              (dartType.isDartAsyncFutureOr || dartType.isDartAsyncFuture):
+        return SupportedCreatedType.future;
+      case != null when !dartType.isRaw && dartType.isDartAsyncStream:
+        return SupportedCreatedType.stream;
+      case _:
+        return SupportedCreatedType.value;
+    }
+  }
+}
+
 sealed class GeneratorProviderDeclaration extends ProviderDeclaration {
   @override
   GeneratorProviderDeclarationElement get providerElement;
@@ -48,6 +68,9 @@ sealed class GeneratorProviderDeclaration extends ProviderDeclaration {
   TypeAnnotation? get valueTypeNode;
   SourcedType? get exposedTypeNode;
   TypeAnnotation? get createdTypeNode;
+
+  SupportedCreatedType get createdType =>
+      SupportedCreatedType.from(createdTypeNode);
 
   String computeProviderHash() {
     final bytes = utf8.encode(node.toSource());
@@ -136,21 +159,12 @@ SourcedType? _computeExposedType(
   );
 }
 
-TypeAnnotation? _getValueType(
-  TypeAnnotation? createdType,
-  LibraryElement library,
-) {
-  if (createdType == null) return null;
-  final dartType = createdType.type!;
-  if (dartType.isRaw) return createdType;
-
-  if (dartType.isDartAsyncFuture ||
-      dartType.isDartAsyncFutureOr ||
-      dartType.isDartAsyncStream) {
-    createdType as NamedType;
-
-    return createdType.typeArguments?.arguments.firstOrNull;
+TypeAnnotation? _getValueType(TypeAnnotation? createdType) {
+  switch (SupportedCreatedType.from(createdType)) {
+    case SupportedCreatedType.future:
+    case SupportedCreatedType.stream:
+      return (createdType! as NamedType).typeArguments?.arguments.firstOrNull;
+    case SupportedCreatedType.value:
+      return createdType;
   }
-
-  return createdType;
 }
