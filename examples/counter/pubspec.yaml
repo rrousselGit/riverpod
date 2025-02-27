@@ -16,7 +16,7 @@ dependencies:
   freezed_annotation: ^3.0.0
   hooks_riverpod:
     path: ../../packages/hooks_riverpod
-  json_annotation: ^4.8.0
+  json_annotation: ^4.9.0
   riverpod:
     path: ../../packages/riverpod
   riverpod_annotation:

@@ -2,13 +2,13 @@ name: riverpod_example
 publish_to: "none"
 
 environment:
-  sdk: ">=2.17.0 <4.0.0"
+  sdk: ">=3.7.0 <4.0.0"
 
 dependencies:
   crypto: ^3.0.0
-  dio: ^5.1.1
+  dio: 5.8.0+1
   freezed_annotation: ^3.0.0
-  json_annotation: ^4.6.0
+  json_annotation: ^4.9.0
   riverpod:
     path: ..
 

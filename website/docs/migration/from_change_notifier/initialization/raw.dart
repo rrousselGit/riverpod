@@ -2,6 +2,8 @@
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
+part 'raw.g.dart';
+
 class Todo {
   const Todo(this.id);
   Todo.fromJson(Object obj) : id = 0;
