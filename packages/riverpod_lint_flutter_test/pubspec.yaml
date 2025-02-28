@@ -30,7 +30,7 @@ dev_dependencies:
   analyzer: ^7.0.0
   path: ^1.9.0
   source_span: ^1.10.0
-  analyzer_plugin: ^0.12.0
+  analyzer_plugin: ^0.13.0
 
 dependency_overrides:
   riverpod_generator:
