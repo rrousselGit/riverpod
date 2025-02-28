@@ -82,7 +82,7 @@ final dep = Provider((ref) {
 });
 
 @freezed
-class FreezedExample with _$FreezedExample {
+sealed class FreezedExample with _$FreezedExample {
   factory FreezedExample() = _FreezedExample;
 }
 

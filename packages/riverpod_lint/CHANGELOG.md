@@ -44,6 +44,10 @@ Various lints had their severity changed:
 
 - `riverpod` upgraded to `3.0.0-dev.0`
 
+## 2.6.5 - 2025-02-28
+
+Upgrade dependencies
+
 ## 2.6.4 - 2025-01-08
 
 Support latest analyzer

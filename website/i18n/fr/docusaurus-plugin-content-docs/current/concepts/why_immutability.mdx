@@ -98,7 +98,7 @@ class ThemeNotifier extends StateNotifier<ThemeSettings> {
 }
 
 @freezed
-class ThemeSettings with _$ThemeSettings {
+sealed class ThemeSettings with _$ThemeSettings {
   const factory ThemeSettings({ThemeMode mode, Color primaryColor}) = _ThemeSettings;
 }
 

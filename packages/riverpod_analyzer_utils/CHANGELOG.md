@@ -14,6 +14,10 @@
 
 - Added `GeneratorProviderDeclarationElement.isFamily`
 
+## 0.5.10 - 2025-02-28
+
+Upgrade dependencies
+
 ## 0.5.9 - 2025-01-08
 
 Support latest analyzer

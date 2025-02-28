@@ -201,7 +201,8 @@ import 'internals.dart';
   _generateAll(buffer, matrix);
 
   await file.writeAsString(
-    DartFormatter().format(buffer.toString()),
+    DartFormatter(languageVersion: DartFormatter.latestLanguageVersion)
+        .format(builder.toString()),
   );
 }
 
