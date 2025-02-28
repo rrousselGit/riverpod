@@ -1,4 +1,4 @@
-## Unreleased patch
+## 2.6.5 - 2025-02-28
 
 Upgrade dependencies
 
