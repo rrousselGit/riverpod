@@ -24,7 +24,7 @@ Future<JsonSqFliteStorage> storage(Ref ref) async {
 
 /// A serializable Todo class. We're using Freezed for simple serialization.
 @freezed
-class Todo with _$Todo {
+abstract class Todo with _$Todo {
   const factory Todo({
     required int id,
     required String description,

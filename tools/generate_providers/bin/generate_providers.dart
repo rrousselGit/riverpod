@@ -202,7 +202,7 @@ import 'internals.dart';
 
   await file.writeAsString(
     DartFormatter(languageVersion: DartFormatter.latestLanguageVersion)
-        .format(builder.toString()),
+        .format(buffer.toString()),
   );
 }
 
