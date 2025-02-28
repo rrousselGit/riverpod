@@ -110,7 +110,7 @@ class MarvelRepository {
 }
 
 @freezed
-class MarvelListCharactersResponse with _$MarvelListCharactersResponse {
+sealed class MarvelListCharactersResponse with _$MarvelListCharactersResponse {
   factory MarvelListCharactersResponse({
     required int totalCount,
     required List<Character> characters,
@@ -118,7 +118,7 @@ class MarvelListCharactersResponse with _$MarvelListCharactersResponse {
 }
 
 @freezed
-class Character with _$Character {
+sealed class Character with _$Character {
   factory Character({
     required int id,
     required String name,
@@ -130,7 +130,7 @@ class Character with _$Character {
 }
 
 @freezed
-class Thumbnail with _$Thumbnail {
+sealed class Thumbnail with _$Thumbnail {
   factory Thumbnail({
     required String path,
     required String extension,
@@ -145,7 +145,7 @@ class Thumbnail with _$Thumbnail {
 }
 
 @freezed
-class MarvelResponse with _$MarvelResponse {
+sealed class MarvelResponse with _$MarvelResponse {
   factory MarvelResponse(MarvelData data) = _MarvelResponse;
 
   factory MarvelResponse.fromJson(Map<String, Object?> json) =>
@@ -153,7 +153,7 @@ class MarvelResponse with _$MarvelResponse {
 }
 
 @freezed
-class MarvelData with _$MarvelData {
+sealed class MarvelData with _$MarvelData {
   factory MarvelData(
     List<Map<String, Object?>> results,
     int total,

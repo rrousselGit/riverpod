@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,85 +10,50 @@ part of 'tag.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$TagTheme {
-  TextStyle get style => throw _privateConstructorUsedError;
-  EdgeInsets get padding => throw _privateConstructorUsedError;
-  Color get backgroundColor => throw _privateConstructorUsedError;
-  BorderRadius get borderRadius => throw _privateConstructorUsedError;
+  TextStyle get style;
+  EdgeInsets get padding;
+  Color get backgroundColor;
+  BorderRadius get borderRadius;
 
   /// Create a copy of TagTheme
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $TagThemeCopyWith<TagTheme> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $TagThemeCopyWith<$Res> {
-  factory $TagThemeCopyWith(TagTheme value, $Res Function(TagTheme) then) =
-      _$TagThemeCopyWithImpl<$Res, TagTheme>;
-  @useResult
-  $Res call(
-      {TextStyle style,
-      EdgeInsets padding,
-      Color backgroundColor,
-      BorderRadius borderRadius});
-}
-
-/// @nodoc
-class _$TagThemeCopyWithImpl<$Res, $Val extends TagTheme>
-    implements $TagThemeCopyWith<$Res> {
-  _$TagThemeCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of TagTheme
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  $TagThemeCopyWith<TagTheme> get copyWith =>
+      _$TagThemeCopyWithImpl<TagTheme>(this as TagTheme, _$identity);
+
   @override
-  $Res call({
-    Object? style = null,
-    Object? padding = null,
-    Object? backgroundColor = null,
-    Object? borderRadius = null,
-  }) {
-    return _then(_value.copyWith(
-      style: null == style
-          ? _value.style
-          : style // ignore: cast_nullable_to_non_nullable
-              as TextStyle,
-      padding: null == padding
-          ? _value.padding
-          : padding // ignore: cast_nullable_to_non_nullable
-              as EdgeInsets,
-      backgroundColor: null == backgroundColor
-          ? _value.backgroundColor
-          : backgroundColor // ignore: cast_nullable_to_non_nullable
-              as Color,
-      borderRadius: null == borderRadius
-          ? _value.borderRadius
-          : borderRadius // ignore: cast_nullable_to_non_nullable
-              as BorderRadius,
-    ) as $Val);
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is TagTheme &&
+            (identical(other.style, style) || other.style == style) &&
+            (identical(other.padding, padding) || other.padding == padding) &&
+            (identical(other.backgroundColor, backgroundColor) ||
+                other.backgroundColor == backgroundColor) &&
+            (identical(other.borderRadius, borderRadius) ||
+                other.borderRadius == borderRadius));
+  }
+
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, style, padding, backgroundColor, borderRadius);
+
+  @override
+  String toString() {
+    return 'TagTheme(style: $style, padding: $padding, backgroundColor: $backgroundColor, borderRadius: $borderRadius)';
   }
 }
 
 /// @nodoc
-abstract class _$$TagThemeImplCopyWith<$Res>
-    implements $TagThemeCopyWith<$Res> {
-  factory _$$TagThemeImplCopyWith(
-          _$TagThemeImpl value, $Res Function(_$TagThemeImpl) then) =
-      __$$TagThemeImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $TagThemeCopyWith<$Res> {
+  factory $TagThemeCopyWith(TagTheme value, $Res Function(TagTheme) _then) =
+      _$TagThemeCopyWithImpl;
   @useResult
   $Res call(
       {TextStyle style,
@@ -97,12 +63,11 @@ abstract class _$$TagThemeImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$TagThemeImplCopyWithImpl<$Res>
-    extends _$TagThemeCopyWithImpl<$Res, _$TagThemeImpl>
-    implements _$$TagThemeImplCopyWith<$Res> {
-  __$$TagThemeImplCopyWithImpl(
-      _$TagThemeImpl _value, $Res Function(_$TagThemeImpl) _then)
-      : super(_value, _then);
+class _$TagThemeCopyWithImpl<$Res> implements $TagThemeCopyWith<$Res> {
+  _$TagThemeCopyWithImpl(this._self, this._then);
+
+  final TagTheme _self;
+  final $Res Function(TagTheme) _then;
 
   /// Create a copy of TagTheme
   /// with the given fields replaced by the non-null parameter values.
@@ -114,21 +79,21 @@ class __$$TagThemeImplCopyWithImpl<$Res>
     Object? backgroundColor = null,
     Object? borderRadius = null,
   }) {
-    return _then(_$TagThemeImpl(
+    return _then(_self.copyWith(
       style: null == style
-          ? _value.style
+          ? _self.style
           : style // ignore: cast_nullable_to_non_nullable
               as TextStyle,
       padding: null == padding
-          ? _value.padding
+          ? _self.padding
           : padding // ignore: cast_nullable_to_non_nullable
               as EdgeInsets,
       backgroundColor: null == backgroundColor
-          ? _value.backgroundColor
+          ? _self.backgroundColor
           : backgroundColor // ignore: cast_nullable_to_non_nullable
               as Color,
       borderRadius: null == borderRadius
-          ? _value.borderRadius
+          ? _self.borderRadius
           : borderRadius // ignore: cast_nullable_to_non_nullable
               as BorderRadius,
     ));
@@ -137,8 +102,8 @@ class __$$TagThemeImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$TagThemeImpl implements _TagTheme {
-  const _$TagThemeImpl(
+class _TagTheme implements TagTheme {
+  const _TagTheme(
       {required this.style,
       required this.padding,
       required this.backgroundColor,
@@ -153,16 +118,19 @@ class _$TagThemeImpl implements _TagTheme {
   @override
   final BorderRadius borderRadius;
 
+  /// Create a copy of TagTheme
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'TagTheme(style: $style, padding: $padding, backgroundColor: $backgroundColor, borderRadius: $borderRadius)';
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$TagThemeCopyWith<_TagTheme> get copyWith =>
+      __$TagThemeCopyWithImpl<_TagTheme>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$TagThemeImpl &&
+            other is _TagTheme &&
             (identical(other.style, style) || other.style == style) &&
             (identical(other.padding, padding) || other.padding == padding) &&
             (identical(other.backgroundColor, backgroundColor) ||
@@ -175,35 +143,62 @@ class _$TagThemeImpl implements _TagTheme {
   int get hashCode =>
       Object.hash(runtimeType, style, padding, backgroundColor, borderRadius);
 
+  @override
+  String toString() {
+    return 'TagTheme(style: $style, padding: $padding, backgroundColor: $backgroundColor, borderRadius: $borderRadius)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$TagThemeCopyWith<$Res>
+    implements $TagThemeCopyWith<$Res> {
+  factory _$TagThemeCopyWith(_TagTheme value, $Res Function(_TagTheme) _then) =
+      __$TagThemeCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {TextStyle style,
+      EdgeInsets padding,
+      Color backgroundColor,
+      BorderRadius borderRadius});
+}
+
+/// @nodoc
+class __$TagThemeCopyWithImpl<$Res> implements _$TagThemeCopyWith<$Res> {
+  __$TagThemeCopyWithImpl(this._self, this._then);
+
+  final _TagTheme _self;
+  final $Res Function(_TagTheme) _then;
+
   /// Create a copy of TagTheme
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$TagThemeImplCopyWith<_$TagThemeImpl> get copyWith =>
-      __$$TagThemeImplCopyWithImpl<_$TagThemeImpl>(this, _$identity);
+  $Res call({
+    Object? style = null,
+    Object? padding = null,
+    Object? backgroundColor = null,
+    Object? borderRadius = null,
+  }) {
+    return _then(_TagTheme(
+      style: null == style
+          ? _self.style
+          : style // ignore: cast_nullable_to_non_nullable
+              as TextStyle,
+      padding: null == padding
+          ? _self.padding
+          : padding // ignore: cast_nullable_to_non_nullable
+              as EdgeInsets,
+      backgroundColor: null == backgroundColor
+          ? _self.backgroundColor
+          : backgroundColor // ignore: cast_nullable_to_non_nullable
+              as Color,
+      borderRadius: null == borderRadius
+          ? _self.borderRadius
+          : borderRadius // ignore: cast_nullable_to_non_nullable
+              as BorderRadius,
+    ));
+  }
 }
 
-abstract class _TagTheme implements TagTheme {
-  const factory _TagTheme(
-      {required final TextStyle style,
-      required final EdgeInsets padding,
-      required final Color backgroundColor,
-      required final BorderRadius borderRadius}) = _$TagThemeImpl;
-
-  @override
-  TextStyle get style;
-  @override
-  EdgeInsets get padding;
-  @override
-  Color get backgroundColor;
-  @override
-  BorderRadius get borderRadius;
-
-  /// Create a copy of TagTheme
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$TagThemeImplCopyWith<_$TagThemeImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on

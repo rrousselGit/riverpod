@@ -56,7 +56,7 @@ Future<Activity> activity(Ref ref) async {
 }
 
 @freezed
-class Activity with _$Activity {
+sealed class Activity with _$Activity {
   factory Activity({
     required String activity,
     required String type,

@@ -1,6 +1,6 @@
 name: random_number
 description: A new Flutter project.
-publish_to: 'none'
+publish_to: "none"
 
 environment:
   sdk: ">=3.0.0 <4.0.0"
@@ -14,7 +14,7 @@ dependencies:
   mockito: ^5.0.13
 
 dev_dependencies:
-  custom_lint: ^0.7.0
+  custom_lint: ^0.7.5
   flutter_lints: ^1.0.0
   flutter_test:
     sdk: flutter

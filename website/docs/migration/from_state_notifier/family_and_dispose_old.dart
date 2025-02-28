@@ -25,6 +25,6 @@ class BugsEncounteredNotifier extends StateNotifier<AsyncValue<int>> {
 }
 
 final bugsEncounteredNotifierProvider =
-    StateNotifierProvider.family.autoDispose<BugsEncounteredNotifier, int, String>((ref, id) {
+    StateNotifierProvider.family.autoDispose<BugsEncounteredNotifier, AsyncValue<int>, String>((ref, id) {
   return BugsEncounteredNotifier(ref: ref, featureId: id);
 });

@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,123 +10,27 @@ part of 'home.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$CharacterPagination {
-  int get page => throw _privateConstructorUsedError;
-  String? get name => throw _privateConstructorUsedError;
+  int get page;
+  String? get name;
 
   /// Create a copy of CharacterPagination
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $CharacterPaginationCopyWith<CharacterPagination> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $CharacterPaginationCopyWith<$Res> {
-  factory $CharacterPaginationCopyWith(
-          CharacterPagination value, $Res Function(CharacterPagination) then) =
-      _$CharacterPaginationCopyWithImpl<$Res, CharacterPagination>;
-  @useResult
-  $Res call({int page, String? name});
-}
-
-/// @nodoc
-class _$CharacterPaginationCopyWithImpl<$Res, $Val extends CharacterPagination>
-    implements $CharacterPaginationCopyWith<$Res> {
-  _$CharacterPaginationCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of CharacterPagination
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? page = null,
-    Object? name = freezed,
-  }) {
-    return _then(_value.copyWith(
-      page: null == page
-          ? _value.page
-          : page // ignore: cast_nullable_to_non_nullable
-              as int,
-      name: freezed == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$CharacterPaginationImplCopyWith<$Res>
-    implements $CharacterPaginationCopyWith<$Res> {
-  factory _$$CharacterPaginationImplCopyWith(_$CharacterPaginationImpl value,
-          $Res Function(_$CharacterPaginationImpl) then) =
-      __$$CharacterPaginationImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({int page, String? name});
-}
-
-/// @nodoc
-class __$$CharacterPaginationImplCopyWithImpl<$Res>
-    extends _$CharacterPaginationCopyWithImpl<$Res, _$CharacterPaginationImpl>
-    implements _$$CharacterPaginationImplCopyWith<$Res> {
-  __$$CharacterPaginationImplCopyWithImpl(_$CharacterPaginationImpl _value,
-      $Res Function(_$CharacterPaginationImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of CharacterPagination
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? page = null,
-    Object? name = freezed,
-  }) {
-    return _then(_$CharacterPaginationImpl(
-      page: null == page
-          ? _value.page
-          : page // ignore: cast_nullable_to_non_nullable
-              as int,
-      name: freezed == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String?,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$CharacterPaginationImpl implements _CharacterPagination {
-  _$CharacterPaginationImpl({required this.page, this.name});
-
-  @override
-  final int page;
-  @override
-  final String? name;
-
-  @override
-  String toString() {
-    return 'CharacterPagination(page: $page, name: $name)';
-  }
+      _$CharacterPaginationCopyWithImpl<CharacterPagination>(
+          this as CharacterPagination, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$CharacterPaginationImpl &&
+            other is CharacterPagination &&
             (identical(other.page, page) || other.page == page) &&
             (identical(other.name, name) || other.name == name));
   }
@@ -133,103 +38,174 @@ class _$CharacterPaginationImpl implements _CharacterPagination {
   @override
   int get hashCode => Object.hash(runtimeType, page, name);
 
-  /// Create a copy of CharacterPagination
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$CharacterPaginationImplCopyWith<_$CharacterPaginationImpl> get copyWith =>
-      __$$CharacterPaginationImplCopyWithImpl<_$CharacterPaginationImpl>(
-          this, _$identity);
-}
-
-abstract class _CharacterPagination implements CharacterPagination {
-  factory _CharacterPagination({required final int page, final String? name}) =
-      _$CharacterPaginationImpl;
-
-  @override
-  int get page;
-  @override
-  String? get name;
-
-  /// Create a copy of CharacterPagination
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CharacterPaginationImplCopyWith<_$CharacterPaginationImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-mixin _$CharacterOffset {
-  int get offset => throw _privateConstructorUsedError;
-  String get name => throw _privateConstructorUsedError;
-
-  /// Create a copy of CharacterOffset
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $CharacterOffsetCopyWith<CharacterOffset> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $CharacterOffsetCopyWith<$Res> {
-  factory $CharacterOffsetCopyWith(
-          CharacterOffset value, $Res Function(CharacterOffset) then) =
-      _$CharacterOffsetCopyWithImpl<$Res, CharacterOffset>;
-  @useResult
-  $Res call({int offset, String name});
-}
-
-/// @nodoc
-class _$CharacterOffsetCopyWithImpl<$Res, $Val extends CharacterOffset>
-    implements $CharacterOffsetCopyWith<$Res> {
-  _$CharacterOffsetCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of CharacterOffset
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? offset = null,
-    Object? name = null,
-  }) {
-    return _then(_value.copyWith(
-      offset: null == offset
-          ? _value.offset
-          : offset // ignore: cast_nullable_to_non_nullable
-              as int,
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  String toString() {
+    return 'CharacterPagination(page: $page, name: $name)';
   }
 }
 
 /// @nodoc
-abstract class _$$CharacterOffsetImplCopyWith<$Res>
-    implements $CharacterOffsetCopyWith<$Res> {
-  factory _$$CharacterOffsetImplCopyWith(_$CharacterOffsetImpl value,
-          $Res Function(_$CharacterOffsetImpl) then) =
-      __$$CharacterOffsetImplCopyWithImpl<$Res>;
+abstract mixin class $CharacterPaginationCopyWith<$Res> {
+  factory $CharacterPaginationCopyWith(
+          CharacterPagination value, $Res Function(CharacterPagination) _then) =
+      _$CharacterPaginationCopyWithImpl;
+  @useResult
+  $Res call({int page, String? name});
+}
+
+/// @nodoc
+class _$CharacterPaginationCopyWithImpl<$Res>
+    implements $CharacterPaginationCopyWith<$Res> {
+  _$CharacterPaginationCopyWithImpl(this._self, this._then);
+
+  final CharacterPagination _self;
+  final $Res Function(CharacterPagination) _then;
+
+  /// Create a copy of CharacterPagination
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
   @override
+  $Res call({
+    Object? page = null,
+    Object? name = freezed,
+  }) {
+    return _then(_self.copyWith(
+      page: null == page
+          ? _self.page
+          : page // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: freezed == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _CharacterPagination implements CharacterPagination {
+  _CharacterPagination({required this.page, this.name});
+
+  @override
+  final int page;
+  @override
+  final String? name;
+
+  /// Create a copy of CharacterPagination
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$CharacterPaginationCopyWith<_CharacterPagination> get copyWith =>
+      __$CharacterPaginationCopyWithImpl<_CharacterPagination>(
+          this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _CharacterPagination &&
+            (identical(other.page, page) || other.page == page) &&
+            (identical(other.name, name) || other.name == name));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, page, name);
+
+  @override
+  String toString() {
+    return 'CharacterPagination(page: $page, name: $name)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$CharacterPaginationCopyWith<$Res>
+    implements $CharacterPaginationCopyWith<$Res> {
+  factory _$CharacterPaginationCopyWith(_CharacterPagination value,
+          $Res Function(_CharacterPagination) _then) =
+      __$CharacterPaginationCopyWithImpl;
+  @override
+  @useResult
+  $Res call({int page, String? name});
+}
+
+/// @nodoc
+class __$CharacterPaginationCopyWithImpl<$Res>
+    implements _$CharacterPaginationCopyWith<$Res> {
+  __$CharacterPaginationCopyWithImpl(this._self, this._then);
+
+  final _CharacterPagination _self;
+  final $Res Function(_CharacterPagination) _then;
+
+  /// Create a copy of CharacterPagination
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? page = null,
+    Object? name = freezed,
+  }) {
+    return _then(_CharacterPagination(
+      page: null == page
+          ? _self.page
+          : page // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: freezed == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+/// @nodoc
+mixin _$CharacterOffset {
+  int get offset;
+  String get name;
+
+  /// Create a copy of CharacterOffset
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $CharacterOffsetCopyWith<CharacterOffset> get copyWith =>
+      _$CharacterOffsetCopyWithImpl<CharacterOffset>(
+          this as CharacterOffset, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is CharacterOffset &&
+            (identical(other.offset, offset) || other.offset == offset) &&
+            (identical(other.name, name) || other.name == name));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, offset, name);
+
+  @override
+  String toString() {
+    return 'CharacterOffset(offset: $offset, name: $name)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $CharacterOffsetCopyWith<$Res> {
+  factory $CharacterOffsetCopyWith(
+          CharacterOffset value, $Res Function(CharacterOffset) _then) =
+      _$CharacterOffsetCopyWithImpl;
   @useResult
   $Res call({int offset, String name});
 }
 
 /// @nodoc
-class __$$CharacterOffsetImplCopyWithImpl<$Res>
-    extends _$CharacterOffsetCopyWithImpl<$Res, _$CharacterOffsetImpl>
-    implements _$$CharacterOffsetImplCopyWith<$Res> {
-  __$$CharacterOffsetImplCopyWithImpl(
-      _$CharacterOffsetImpl _value, $Res Function(_$CharacterOffsetImpl) _then)
-      : super(_value, _then);
+class _$CharacterOffsetCopyWithImpl<$Res>
+    implements $CharacterOffsetCopyWith<$Res> {
+  _$CharacterOffsetCopyWithImpl(this._self, this._then);
+
+  final CharacterOffset _self;
+  final $Res Function(CharacterOffset) _then;
 
   /// Create a copy of CharacterOffset
   /// with the given fields replaced by the non-null parameter values.
@@ -239,13 +215,13 @@ class __$$CharacterOffsetImplCopyWithImpl<$Res>
     Object? offset = null,
     Object? name = null,
   }) {
-    return _then(_$CharacterOffsetImpl(
+    return _then(_self.copyWith(
       offset: null == offset
-          ? _value.offset
+          ? _self.offset
           : offset // ignore: cast_nullable_to_non_nullable
               as int,
       name: null == name
-          ? _value.name
+          ? _self.name
           : name // ignore: cast_nullable_to_non_nullable
               as String,
     ));
@@ -254,8 +230,8 @@ class __$$CharacterOffsetImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$CharacterOffsetImpl implements _CharacterOffset {
-  _$CharacterOffsetImpl({required this.offset, this.name = ''});
+class _CharacterOffset implements CharacterOffset {
+  _CharacterOffset({required this.offset, this.name = ''});
 
   @override
   final int offset;
@@ -263,16 +239,19 @@ class _$CharacterOffsetImpl implements _CharacterOffset {
   @JsonKey()
   final String name;
 
+  /// Create a copy of CharacterOffset
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString() {
-    return 'CharacterOffset(offset: $offset, name: $name)';
-  }
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$CharacterOffsetCopyWith<_CharacterOffset> get copyWith =>
+      __$CharacterOffsetCopyWithImpl<_CharacterOffset>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$CharacterOffsetImpl &&
+            other is _CharacterOffset &&
             (identical(other.offset, offset) || other.offset == offset) &&
             (identical(other.name, name) || other.name == name));
   }
@@ -280,29 +259,50 @@ class _$CharacterOffsetImpl implements _CharacterOffset {
   @override
   int get hashCode => Object.hash(runtimeType, offset, name);
 
+  @override
+  String toString() {
+    return 'CharacterOffset(offset: $offset, name: $name)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$CharacterOffsetCopyWith<$Res>
+    implements $CharacterOffsetCopyWith<$Res> {
+  factory _$CharacterOffsetCopyWith(
+          _CharacterOffset value, $Res Function(_CharacterOffset) _then) =
+      __$CharacterOffsetCopyWithImpl;
+  @override
+  @useResult
+  $Res call({int offset, String name});
+}
+
+/// @nodoc
+class __$CharacterOffsetCopyWithImpl<$Res>
+    implements _$CharacterOffsetCopyWith<$Res> {
+  __$CharacterOffsetCopyWithImpl(this._self, this._then);
+
+  final _CharacterOffset _self;
+  final $Res Function(_CharacterOffset) _then;
+
   /// Create a copy of CharacterOffset
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$CharacterOffsetImplCopyWith<_$CharacterOffsetImpl> get copyWith =>
-      __$$CharacterOffsetImplCopyWithImpl<_$CharacterOffsetImpl>(
-          this, _$identity);
+  $Res call({
+    Object? offset = null,
+    Object? name = null,
+  }) {
+    return _then(_CharacterOffset(
+      offset: null == offset
+          ? _self.offset
+          : offset // ignore: cast_nullable_to_non_nullable
+              as int,
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
 }
 
-abstract class _CharacterOffset implements CharacterOffset {
-  factory _CharacterOffset({required final int offset, final String name}) =
-      _$CharacterOffsetImpl;
-
-  @override
-  int get offset;
-  @override
-  String get name;
-
-  /// Create a copy of CharacterOffset
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$CharacterOffsetImplCopyWith<_$CharacterOffsetImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on
