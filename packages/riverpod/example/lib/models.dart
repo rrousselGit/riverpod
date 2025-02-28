@@ -30,13 +30,14 @@ class Repository {
 
   Future<List<Comic>> fetchComics() async {
     final timestamp = DateTime.now().millisecondsSinceEpoch;
-    final hash = md5
-        .convert(
-          utf8.encode(
-            '$timestamp${_configuration.privateKey}${_configuration.publicKey}',
-          ),
-        )
-        .toString();
+    final hash =
+        md5
+            .convert(
+              utf8.encode(
+                '$timestamp${_configuration.privateKey}${_configuration.publicKey}',
+              ),
+            )
+            .toString();
 
     final result = await _client.get<Map<String, Object?>>(
       'http://gateway.marvel.com/v1/public/comics',
@@ -73,9 +74,7 @@ class MarvelResponse with _$MarvelResponse {
 
 @freezed
 class MarvelData with _$MarvelData {
-  factory MarvelData(
-    List<Map<String, Object?>> results,
-  ) = _MarvelData;
+  factory MarvelData(List<Map<String, Object?>> results) = _MarvelData;
 
   factory MarvelData.fromJson(Map<String, Object?> json) =>
       _$MarvelDataFromJson(json);
@@ -83,10 +82,7 @@ class MarvelData with _$MarvelData {
 
 @freezed
 class Comic with _$Comic {
-  factory Comic({
-    required int id,
-    required String title,
-  }) = _Comic;
+  factory Comic({required int id, required String title}) = _Comic;
 
   factory Comic.fromJson(Map<String, Object?> json) => _$ComicFromJson(json);
 }
