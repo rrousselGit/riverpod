@@ -171,7 +171,7 @@ const _familyDoc = r'''
 ///     return Repository(host: configurations.host);
 ///   });
 ///   ```
-/// 
+///
 /// ## Usage
 ///
 /// The way families works is by adding an extra parameter to the provider.
@@ -188,7 +188,7 @@ const _familyDoc = r'''
 ///
 /// Then, when using our `messagesFamily` provider, the syntax is slightly modified.
 /// The usual:
-/// 
+///
 /// ```dart
 /// Widget build(BuildContext context, WidgetRef ref) {
 ///   // Error – messagesFamily is not a provider
@@ -230,12 +230,12 @@ const _familyDoc = r'''
 ///
 /// - **PREFER** using `family` in combination with `autoDispose` if the
 ///   parameter passed to providers is a complex object:
-/// 
+///
 ///   ```dart
 ///   final example = Provider.autoDispose.family<Value, ComplexParameter>((ref, param) {
 ///   });
 ///   ```
-/// 
+///
 ///   This ensures that there is no memory leak if the parameter changed and is
 ///   never used again.
 ///
@@ -736,7 +736,8 @@ import 'internals.dart';
   builder.writeAll(generateAll(matrix), '\n');
 
   await file.writeAsString(
-    DartFormatter().format(builder.toString()),
+    DartFormatter(languageVersion: DartFormatter.latestLanguageVersion)
+        .format(builder.toString()),
   );
 }
 

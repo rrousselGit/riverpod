@@ -5,7 +5,7 @@ part 'todo_list_notifier.freezed.dart';
 part 'todo_list_notifier.g.dart';
 
 @freezed
-class Todo with _$Todo {
+sealed class Todo with _$Todo {
   factory Todo({
     required String description,
     @Default(false) bool completed,

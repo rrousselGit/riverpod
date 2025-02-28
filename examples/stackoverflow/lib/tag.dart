@@ -7,7 +7,7 @@ import 'common.dart';
 part 'tag.freezed.dart';
 
 @freezed
-class TagTheme with _$TagTheme {
+sealed class TagTheme with _$TagTheme {
   const factory TagTheme({
     required TextStyle style,
     required EdgeInsets padding,

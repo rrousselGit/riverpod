@@ -11,7 +11,7 @@ part 'models.g.dart';
 ///
 /// This is not needed, but reduce the boilerplate.
 @freezed
-class Configuration with _$Configuration {
+sealed class Configuration with _$Configuration {
   @JsonSerializable(fieldRename: FieldRename.snake)
   factory Configuration({
     required String publicKey,
@@ -65,7 +65,7 @@ class Repository {
 }
 
 @freezed
-class MarvelResponse with _$MarvelResponse {
+sealed class MarvelResponse with _$MarvelResponse {
   factory MarvelResponse(MarvelData data) = _MarvelResponse;
 
   factory MarvelResponse.fromJson(Map<String, Object?> json) =>
@@ -73,7 +73,7 @@ class MarvelResponse with _$MarvelResponse {
 }
 
 @freezed
-class MarvelData with _$MarvelData {
+sealed class MarvelData with _$MarvelData {
   factory MarvelData(List<Map<String, Object?>> results) = _MarvelData;
 
   factory MarvelData.fromJson(Map<String, Object?> json) =>
@@ -81,7 +81,7 @@ class MarvelData with _$MarvelData {
 }
 
 @freezed
-class Comic with _$Comic {
+sealed class Comic with _$Comic {
   factory Comic({required int id, required String title}) = _Comic;
 
   factory Comic.fromJson(Map<String, Object?> json) => _$ComicFromJson(json);

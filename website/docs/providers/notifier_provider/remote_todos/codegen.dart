@@ -18,7 +18,7 @@ final http = Http();
 /* SNIPPET START */
 
 @freezed
-class Todo with _$Todo {
+sealed class Todo with _$Todo {
   factory Todo({
     required String id,
     required String description,

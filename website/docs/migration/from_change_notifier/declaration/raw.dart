@@ -2,7 +2,6 @@
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'raw.g.dart';
 
 class Todo {
   const Todo(this.id);
@@ -32,4 +31,4 @@ class MyNotifier extends AutoDisposeAsyncNotifier<List<Todo>> {
   }
 }
 
-final myNotifierProvider = AsyncNotifierProvider.autoDispose<MyNotifier, int>(MyNotifier.new);
+final myNotifierProvider = AsyncNotifierProvider.autoDispose<MyNotifier, List<Todo>>(MyNotifier.new);

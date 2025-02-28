@@ -15,7 +15,7 @@ part 'question.g.dart';
 part 'question.freezed.dart';
 
 @freezed
-class QuestionsResponse with _$QuestionsResponse {
+sealed class QuestionsResponse with _$QuestionsResponse {
   factory QuestionsResponse({
     required List<Question> items,
     required int total,
@@ -26,7 +26,7 @@ class QuestionsResponse with _$QuestionsResponse {
 }
 
 @freezed
-class Question with _$Question {
+sealed class Question with _$Question {
   @JsonSerializable(fieldRename: FieldRename.snake)
   factory Question({
     required List<String> tags,
@@ -90,7 +90,7 @@ final questionsCountProvider = Provider.autoDispose((ref) {
 });
 
 @freezed
-class QuestionTheme with _$QuestionTheme {
+sealed class QuestionTheme with _$QuestionTheme {
   const factory QuestionTheme({
     required TextStyle titleStyle,
     required TextStyle descriptionStyle,
