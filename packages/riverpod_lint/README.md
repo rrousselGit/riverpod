@@ -64,7 +64,6 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [Convert functional `@riverpod` to class variant](#convert-functional-riverpod-to-class-variant)
   - [Convert class `@riverpod` to functional variant](#convert-class-riverpod-to-functional-variant)
 - [Migrations](#migrations)
-  - [missing\_legacy\_import](#missing_legacy_import)
 
 ## Installing riverpod_lint
 
@@ -815,12 +814,5 @@ in your terminal:
 ```sh
 dart run custom_lint --fix
 ```
-
-### missing_legacy_import
-
-As part of Riverpod 3.0, `StateProvider`, `StateNotifierProvider`, `StateNotifier` and `ChangeNotifierProvider` are moved out of `package:riverpod/riverpod.dart` to
-`package:riverpod/legacy.dart`.
-
-This migration will automatically adds the missing import.
 
 [custom_lint]: https://pub.dev/packages/custom_lint

@@ -30,6 +30,9 @@ class AvoidPublicNotifierProperties extends RiverpodLintRule {
       }
 
       for (final member in node.members) {
+        // Skip members if there's an @override annotation
+        if (member.declaredElement?.hasOverride ?? false) continue;
+
         bool isVisibleOutsideTheNotifier(Element? element) {
           return element != null &&
               element.isPublic &&
@@ -43,6 +46,7 @@ class AvoidPublicNotifierProperties extends RiverpodLintRule {
           if (member.isStatic) continue;
 
           for (final variable in member.fields.variables) {
+            if (variable.isFinal) continue;
             if (!isVisibleOutsideTheNotifier(variable.declaredElement)) {
               continue;
             }

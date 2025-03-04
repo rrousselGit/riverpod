@@ -4,6 +4,23 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'avoid_public_notifier_properties.g.dart';
 
+// ignore final fields
+class FinalField extends Notifier<int> {
+  final int field = 0;
+
+  @override
+  int build() => 0;
+}
+
+// Ignore if @override is present
+class Foo extends Notifier<int> {
+  @override
+  int get state;
+
+  @override
+  int build() => 0;
+}
+
 class MyNotifier extends Notifier<int> {
   static int get staticPublicGetter => 0;
 

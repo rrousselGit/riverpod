@@ -104,7 +104,7 @@ void main() {
       second: 'x42',
       third: .42,
       fourth: false,
-      fifth: ['x42'],
+      fifth: const ['x42'],
     );
     // ignore: invalid_use_of_internal_member //
     final ProviderBase<String> futureProvider = provider;
@@ -115,7 +115,7 @@ void main() {
         second: 'x42',
         third: .42,
         fourth: false,
-        fifth: ['x42'],
+        fifth: const ['x42'],
       ),
     );
 

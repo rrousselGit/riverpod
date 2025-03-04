@@ -1,7 +1,9 @@
 import 'package:build_yaml/dependencies.dart';
 import 'package:build_yaml/main.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
+@Dependencies([calc2])
 void main() {
   test('provider names', () {
     expect(myCountPod.name, 'myCountPod');

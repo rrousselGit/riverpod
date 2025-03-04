@@ -3,6 +3,7 @@ import 'package:test/test.dart';
 
 import 'integration/scopes.dart';
 
+@Dependencies([ScopedClass, ScopedClassFamily])
 void main() {
   test('throws UnsupportedError if accessed without an override', () {
     final container = ProviderContainer.test();

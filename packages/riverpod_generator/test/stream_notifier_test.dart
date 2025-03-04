@@ -108,7 +108,7 @@ void main() {
       second: 'x42',
       third: .42,
       fourth: false,
-      fifth: ['x42'],
+      fifth: const ['x42'],
     );
     final ProviderBase<AsyncValue<String>> futureProvider = provider;
 
@@ -120,7 +120,7 @@ void main() {
               second: 'x42',
               third: .42,
               fourth: false,
-              fifth: ['x42'],
+              fifth: const ['x42'],
             ).future,
             (_, __) {},
           )
