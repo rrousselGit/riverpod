@@ -39,11 +39,6 @@ jobs:
           - packages/riverpod_annotation
           - packages/riverpod_generator
           - packages/riverpod_generator/integration/build_yaml
-          # TODO(rrousselGit) update riverpod_graph test setup to be supported by the CI
-          # - packages/riverpod_graph
-          # TODO(rousselGit) blocked by https://github.com/invertase/dart_custom_lint/issues/16
-          # - packages/riverpod_lint_flutter_test
-          # - website
 
     steps:
       - uses: actions/checkout@v3.1.0
