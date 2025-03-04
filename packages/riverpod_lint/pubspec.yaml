@@ -10,6 +10,8 @@ funding:
 environment:
   sdk: ^3.6.0
 
+resolution: workspace
+
 dependencies:
   analyzer: ^7.0.0
   analyzer_plugin: ^0.13.0
@@ -23,7 +25,6 @@ dependencies:
   yaml: ^3.1.1
 
 dev_dependencies:
-  hotreloader: ^3.0.5
   mockito: ^5.0.0
   test: ^1.21.1
   watcher: ^1.0.1

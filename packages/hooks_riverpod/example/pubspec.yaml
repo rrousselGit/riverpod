@@ -7,11 +7,12 @@ environment:
   sdk: ^3.6.0
   flutter: ">=1.17.0"
 
+resolution: workspace
+
 dependencies:
   flutter:
     sdk: flutter
   hooks_riverpod:
-    path: ..
 
 dev_dependencies:
   flutter_test:

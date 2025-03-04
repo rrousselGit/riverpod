@@ -5,6 +5,8 @@ publish_to: "none"
 environment:
   sdk: ^3.6.0
 
+resolution: workspace
+
 dependencies:
   build_runner: ^2.0.6
   cupertino_icons: ^1.0.2
@@ -15,11 +17,9 @@ dependencies:
 
 dev_dependencies:
   custom_lint: ^0.7.5
-  flutter_lints: ^1.0.0
   flutter_test:
     sdk: flutter
   riverpod_lint:
-    path: ../../packages/riverpod_lint
 
 flutter:
   uses-material-design: true

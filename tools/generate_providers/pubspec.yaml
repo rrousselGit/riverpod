@@ -4,6 +4,8 @@ publish_to: "none"
 environment:
   sdk: ^3.6.0
 
+resolution: workspace
+
 dependencies:
   dart_style: ^3.0.0
   trotter: ^2.0.0

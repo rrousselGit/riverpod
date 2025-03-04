@@ -5,6 +5,8 @@ environment:
   sdk: ^3.6.0
   flutter: ">=3.0.0"
 
+resolution: workspace
+
 dependencies:
   riverpod_annotation:
   hooks_riverpod:
@@ -21,8 +23,7 @@ dev_dependencies:
   freezed: ^3.0.2
   json_serializable: ^6.6.1
   riverpod_lint:
-    path: ../riverpod_lint
-  riverpod_generator: ^2.0.0
+  riverpod_generator:
   test: ^1.24.9
   flutter_test:
     sdk: flutter
@@ -31,15 +32,3 @@ dev_dependencies:
   path: ^1.9.0
   source_span: ^1.10.0
   analyzer_plugin: ^0.13.0
-
-dependency_overrides:
-  riverpod_generator:
-    path: ../riverpod_generator
-  riverpod:
-    path: ../riverpod
-  flutter_riverpod:
-    path: ../flutter_riverpod
-  hooks_riverpod:
-    path: ../hooks_riverpod
-  riverpod_annotation:
-    path: ../riverpod_annotation

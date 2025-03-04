@@ -9,6 +9,8 @@ funding:
 environment:
   sdk: ^3.6.0
 
+resolution: workspace
+
 dependencies:
   meta: ^1.7.0
   riverpod: 3.0.0-dev.3

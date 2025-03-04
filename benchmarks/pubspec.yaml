@@ -6,6 +6,8 @@ version: 1.0.0+1
 environment:
   sdk: ^3.6.0
 
+resolution: workspace
+
 dependencies:
   flutter:
     sdk: flutter
@@ -14,11 +16,3 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-dependency_overrides:
-  flutter_riverpod:
-    path: ../packages/flutter_riverpod
-  hooks_riverpod:
-    path: ../packages/hooks_riverpod
-  riverpod:
-    path: ../packages/riverpod

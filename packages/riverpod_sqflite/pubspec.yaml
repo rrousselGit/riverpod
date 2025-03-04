@@ -2,7 +2,9 @@ name: riverpod_sqflite
 description: An adapter to connect riverpod_sqflite with Riverpod.
 version: 0.1.0
 environment:
-  sdk: "^3.0.0"
+  sdk: ^3.6.0
+
+resolution: workspace
 
 dependencies:
   clock: ^1.1.1

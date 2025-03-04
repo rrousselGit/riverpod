@@ -5,6 +5,8 @@ publish_to: none
 environment:
   sdk: ^3.6.0
 
+resolution: workspace
+
 dependencies:
   analyzer: ^7.0.0
   collection: ^1.16.0
@@ -22,17 +24,3 @@ dev_dependencies:
   riverpod_analyzer_utils:
   riverpod_generator:
   test: ^1.21.7
-
-dependency_overrides:
-  flutter_riverpod:
-    path: ../flutter_riverpod
-  hooks_riverpod:
-    path: ../hooks_riverpod
-  riverpod:
-    path: ../riverpod
-  riverpod_analyzer_utils:
-    path: ../riverpod_analyzer_utils
-  riverpod_annotation:
-    path: ../riverpod_annotation
-  riverpod_generator:
-    path: ../riverpod_generator

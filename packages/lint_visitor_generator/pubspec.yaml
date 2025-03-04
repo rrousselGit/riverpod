@@ -4,6 +4,8 @@ publish_to: none
 environment:
   sdk: ^3.6.0
 
+resolution: workspace
+
 dependencies:
   analyzer: ^7.0.0
   build: ^2.3.1

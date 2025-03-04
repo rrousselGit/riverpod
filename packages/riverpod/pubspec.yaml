@@ -12,6 +12,8 @@ funding:
 environment:
   sdk: ^3.6.0
 
+resolution: workspace
+
 dependencies:
   clock: ^1.1.1
   collection: ^1.18.0
