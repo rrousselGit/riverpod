@@ -2,7 +2,7 @@ name: riverpod_example
 publish_to: "none"
 
 environment:
-  sdk: ">=3.7.0 <4.0.0"
+  sdk: ^3.6.0
 
 dependencies:
   crypto: ^3.0.0

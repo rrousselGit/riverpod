@@ -2,7 +2,7 @@ name: lint_visitor_generator
 publish_to: none
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ^3.6.0
 
 dependencies:
   analyzer: ^7.0.0

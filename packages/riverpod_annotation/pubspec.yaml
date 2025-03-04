@@ -7,7 +7,7 @@ funding:
   - https://github.com/sponsors/rrousselGit/
 
 environment:
-  sdk: ">=3.0.0<4.0.0"
+  sdk: ^3.6.0
 
 dependencies:
   meta: ^1.7.0
