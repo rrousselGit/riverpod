@@ -11,7 +11,7 @@ resolution: workspace
 dependencies:
   flutter:
     sdk: flutter
-  flutter_hooks: ">=0.16.0-nullsafety.0 <2.0.0"
+  flutter_hooks: ^0.21.0
   hooks_riverpod:
   riverpod:
   uuid: ^4.5.1

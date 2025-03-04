@@ -29,7 +29,8 @@ workspace:
   - packages/riverpod_graph/test/integration/consumer_widget/golden
   - packages/riverpod_graph/test/integration/generated/golden
   - packages/riverpod_lint
-  - packages/riverpod_lint_flutter_test
+  # Custom_lint doesn't handle plugins from workspaces yet
+  # - packages/riverpod_lint_flutter_test
   - packages/riverpod_sqflite/example
   - packages/riverpod_sqflite
   - tools/generate_providers

@@ -19,7 +19,7 @@ dependencies:
   collection: ^1.15.0
   flutter:
     sdk: flutter
-  flutter_hooks: ">=0.18.0 <0.22.0"
+  flutter_hooks: ^0.21.0
   flutter_riverpod: 3.0.0-dev.3
   riverpod: 3.0.0-dev.3
   state_notifier: ">=0.7.2 <2.0.0"
