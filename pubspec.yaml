@@ -4,6 +4,10 @@ publish_to: none
 environment:
   sdk: ^3.6.0
 
+dev_dependencies:
+  custom_lint:
+  riverpod_lint:
+
 workspace:
   - benchmarks
   - examples/counter
