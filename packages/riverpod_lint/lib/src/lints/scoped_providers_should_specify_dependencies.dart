@@ -1,4 +1,8 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/error/error.dart'
+    hide
+        // ignore: undefined_hidden_name, necessary to support broad analyzer versions
+        LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
@@ -38,6 +42,7 @@ class ScopedProvidersShouldSpecifyDependencies extends RiverpodLintRule {
     name: 'scoped_providers_should_specify_dependencies',
     problemMessage:
         'Providers which are overridden in a non-root ProviderContainer/ProviderScope should specify dependencies.',
+    errorSeverity: ErrorSeverity.WARNING,
   );
 
   @override
@@ -46,56 +51,60 @@ class ScopedProvidersShouldSpecifyDependencies extends RiverpodLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    void checkScopedOverrideList(
-      ProviderOverrideList? overrideList,
-    ) {
-      final overrides = overrideList?.overrides;
-      if (overrides == null) return;
+    riverpodRegistry(context)
+      ..addProviderContainerInstanceCreationExpression((node) {
+        handleProviderContainerInstanceCreation(node, reporter);
+      })
+      ..addProviderScopeInstanceCreationExpression((node) {
+        handleProviderScopeInstanceCreation(node, reporter);
+      });
+  }
 
-      for (final override in overrides) {
-        final provider = override.providerElement;
-        // We can only know statically if a provider is scoped on generator providers
-        if (provider is! GeneratorProviderDeclarationElement) continue;
+  void checkScopedOverrideList(
+    ProviderOverrideList? overrideList,
+    ErrorReporter reporter,
+  ) {
+    final overrides = overrideList?.overrides;
+    if (overrides == null) return;
 
-        if (!provider.isScoped) {
-          reporter.atNode(override.expression, _code);
-        }
+    for (final override in overrides) {
+      final provider = override.provider?.providerElement;
+
+      // We can only know statically if a provider is scoped on generator providers
+      if (provider is! GeneratorProviderDeclarationElement) continue;
+      if (!provider.isScoped) {
+        reporter.atNode(override.node, code);
       }
     }
+  }
 
-    riverpodRegistry(context)
-      ..addProviderScopeInstanceCreationExpression((expression) {
-        final isScoped = isProviderScopeScoped(expression);
-        if (!isScoped) return;
+  void handleProviderScopeInstanceCreation(
+    ProviderScopeInstanceCreationExpression expression,
+    ErrorReporter reporter,
+  ) {
+    final isScoped = isProviderScopeScoped(expression);
+    if (!isScoped) return;
 
-        checkScopedOverrideList(expression.overrides);
-      })
-      ..addProviderContainerInstanceCreationExpression((expression) {
-        final hasParent = expression.node.argumentList.arguments
-            .whereType<NamedExpression>()
-            // TODO handle parent:null.
-            // This might be doable by checking that the expression's
-            // static type is non-nullable
-            .any((e) => e.name.label.name == 'parent');
+    checkScopedOverrideList(expression.overrides, reporter);
+  }
 
-        // No parent: parameter found, therefore ProviderContainer is never scoped
-        if (!hasParent) return;
+  void handleProviderContainerInstanceCreation(
+    ProviderContainerInstanceCreationExpression expression,
+    ErrorReporter reporter,
+  ) {
+    // This might be doable by checking that the expression's
+    // static type is non-nullable
+    final hasParent = expression.parent != null;
 
-        checkScopedOverrideList(expression.overrides);
-      });
+    // No parent: parameter found, therefore ProviderContainer is never scoped
+    if (!hasParent) return;
+
+    checkScopedOverrideList(expression.overrides, reporter);
   }
 
   bool isProviderScopeScoped(
     ProviderScopeInstanceCreationExpression expression,
   ) {
-    final hasParentParameter = expression.node.argumentList.arguments
-        .whereType<NamedExpression>()
-        // TODO handle parent:null.
-        // This might be doable by checking that the expression's
-        // static type is non-nullable
-        .any((e) => e.name.label.name == 'parent');
-    if (hasParentParameter) return true;
-
     // in runApp(ProviderScope(..)) the direct parent of the ProviderScope
     // is an ArgumentList.
     final enclosingExpression = expression.node.parent?.parent;

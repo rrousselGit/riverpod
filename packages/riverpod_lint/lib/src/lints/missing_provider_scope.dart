@@ -9,15 +9,18 @@ import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
+import '../imports.dart';
+import '../riverpod_custom_lint.dart';
 import 'scoped_providers_should_specify_dependencies.dart';
 
-class MissingProviderScope extends DartLintRule {
+class MissingProviderScope extends RiverpodLintRule {
   const MissingProviderScope() : super(code: _code);
 
   static const _code = LintCode(
     name: 'missing_provider_scope',
     problemMessage: 'Flutter applications should have a ProviderScope widget '
         'at the top of the widget tree.',
+    errorSeverity: ErrorSeverity.WARNING,
   );
 
   @override
@@ -48,7 +51,7 @@ class MissingProviderScope extends DartLintRule {
   }
 
   @override
-  List<Fix> getFixes() => [AddProviderScope()];
+  List<DartFix> getFixes() => [AddProviderScope()];
 }
 
 class AddProviderScope extends DartFix {
@@ -70,12 +73,13 @@ class AddProviderScope extends DartFix {
       );
 
       changeBuilder.addDartFileEdit((builder) {
+        final providerScope = builder.importProviderScope();
         final firstArgument = node.argumentList.arguments.firstOrNull;
         if (firstArgument == null) return;
 
         builder.addSimpleInsertion(
           firstArgument.offset,
-          'ProviderScope(child: ',
+          '$providerScope(child: ',
         );
         builder.addSimpleInsertion(firstArgument.end, ')');
       });

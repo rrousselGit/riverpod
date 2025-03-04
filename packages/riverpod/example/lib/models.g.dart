@@ -21,24 +21,32 @@ Map<String, dynamic> _$ConfigurationToJson(_Configuration instance) =>
     };
 
 _MarvelResponse _$MarvelResponseFromJson(Map<String, dynamic> json) =>
-    _MarvelResponse(MarvelData.fromJson(json['data'] as Map<String, dynamic>));
+    _MarvelResponse(
+      MarvelData.fromJson(json['data'] as Map<String, dynamic>),
+    );
 
 Map<String, dynamic> _$MarvelResponseToJson(_MarvelResponse instance) =>
-    <String, dynamic>{'data': instance.data};
+    <String, dynamic>{
+      'data': instance.data,
+    };
 
 _MarvelData _$MarvelDataFromJson(Map<String, dynamic> json) => _MarvelData(
-  (json['results'] as List<dynamic>)
-      .map((e) => e as Map<String, dynamic>)
-      .toList(),
-);
+      (json['results'] as List<dynamic>)
+          .map((e) => e as Map<String, dynamic>)
+          .toList(),
+    );
 
 Map<String, dynamic> _$MarvelDataToJson(_MarvelData instance) =>
-    <String, dynamic>{'results': instance.results};
+    <String, dynamic>{
+      'results': instance.results,
+    };
 
-_Comic _$ComicFromJson(Map<String, dynamic> json) =>
-    _Comic(id: (json['id'] as num).toInt(), title: json['title'] as String);
+_Comic _$ComicFromJson(Map<String, dynamic> json) => _Comic(
+      id: (json['id'] as num).toInt(),
+      title: json['title'] as String,
+    );
 
 Map<String, dynamic> _$ComicToJson(_Comic instance) => <String, dynamic>{
-  'id': instance.id,
-  'title': instance.title,
-};
+      'id': instance.id,
+      'title': instance.title,
+    };

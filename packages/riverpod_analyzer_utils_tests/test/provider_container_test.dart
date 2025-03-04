@@ -33,7 +33,7 @@ void main() {
     ],
   );
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     final provider =
@@ -54,49 +54,49 @@ void main() {
     expect(containers[1].overrides!.overrides, hasLength(6));
     expect(
       containers[1].overrides!.node.toSource(),
-      'overrides: [provider.overrideWith((ref) => 0), provider.overrideWithValue(42), provider, family(42), family.overrideWith((ref, id) => 0), family(42).overrideWith((ref) => 0)]',
+      '[provider.overrideWith((ref) => 0), provider.overrideWithValue(42), provider, family(42), family.overrideWith((ref, id) => 0), family(42).overrideWith((ref) => 0)]',
     );
     {
       expect(
-        containers[1].overrides!.overrides![0].providerElement,
+        containers[1].overrides!.overrides![0].provider?.providerElement,
         same(provider.providerElement),
       );
       expect(
-        containers[1].overrides!.overrides![0].expression.toSource(),
+        containers[1].overrides!.overrides![0].node.toSource(),
         'provider.overrideWith((ref) => 0)',
       );
       expect(
-        containers[1].overrides!.overrides![0].provider!.toSource(),
+        containers[1].overrides!.overrides![0].provider!.node.toSource(),
         'provider',
       );
       expect(containers[1].overrides!.overrides![0].familyArguments, null);
     }
     {
       expect(
-        containers[1].overrides!.overrides![1].providerElement,
+        containers[1].overrides!.overrides![1].provider?.providerElement,
         same(provider.providerElement),
       );
       expect(
-        containers[1].overrides!.overrides![1].expression.toSource(),
+        containers[1].overrides!.overrides![1].node.toSource(),
         'provider.overrideWithValue(42)',
       );
       expect(
-        containers[1].overrides!.overrides![1].provider!.toSource(),
+        containers[1].overrides!.overrides![1].provider!.node.toSource(),
         'provider',
       );
       expect(containers[1].overrides!.overrides![1].familyArguments, null);
     }
     {
       expect(
-        containers[1].overrides!.overrides![2].providerElement,
+        containers[1].overrides!.overrides![2].provider?.providerElement,
         same(provider.providerElement),
       );
       expect(
-        containers[1].overrides!.overrides![2].expression.toSource(),
+        containers[1].overrides!.overrides![2].node.toSource(),
         'provider',
       );
       expect(
-        containers[1].overrides!.overrides![2].provider!.toSource(),
+        containers[1].overrides!.overrides![2].provider!.node.toSource(),
         'provider',
       );
       expect(containers[1].overrides!.overrides![2].familyArguments, null);
@@ -104,15 +104,15 @@ void main() {
 
     {
       expect(
-        containers[1].overrides!.overrides![3].providerElement,
+        containers[1].overrides!.overrides![3].provider?.providerElement,
         same(family.providerElement),
       );
       expect(
-        containers[1].overrides!.overrides![3].expression.toSource(),
+        containers[1].overrides!.overrides![3].node.toSource(),
         'family(42)',
       );
       expect(
-        containers[1].overrides!.overrides![3].provider!.toSource(),
+        containers[1].overrides!.overrides![3].provider!.node.toSource(),
         'family',
       );
       expect(
@@ -122,30 +122,30 @@ void main() {
     }
     {
       expect(
-        containers[1].overrides!.overrides![4].providerElement,
+        containers[1].overrides!.overrides![4].provider?.providerElement,
         same(family.providerElement),
       );
       expect(
-        containers[1].overrides!.overrides![4].expression.toSource(),
+        containers[1].overrides!.overrides![4].node.toSource(),
         'family.overrideWith((ref, id) => 0)',
       );
       expect(
-        containers[1].overrides!.overrides![4].provider!.toSource(),
+        containers[1].overrides!.overrides![4].provider!.node.toSource(),
         'family',
       );
       expect(containers[1].overrides!.overrides![4].familyArguments, null);
     }
     {
       expect(
-        containers[1].overrides!.overrides![5].providerElement,
+        containers[1].overrides!.overrides![5].provider?.providerElement,
         same(family.providerElement),
       );
       expect(
-        containers[1].overrides!.overrides![5].expression.toSource(),
+        containers[1].overrides!.overrides![5].node.toSource(),
         'family(42).overrideWith((ref) => 0)',
       );
       expect(
-        containers[1].overrides!.overrides![5].provider!.toSource(),
+        containers[1].overrides!.overrides![5].provider!.node.toSource(),
         'family',
       );
       expect(
@@ -159,7 +159,7 @@ void main() {
       'ProviderContainer(overrides: fn())',
     );
     expect(containers[2].overrides!.overrides, null);
-    expect(containers[2].overrides!.node.toSource(), 'overrides: fn()');
+    expect(containers[2].overrides!.node.toSource(), 'fn()');
 
     expect(
       containers[3].node.toSource(),
@@ -168,13 +168,16 @@ void main() {
     expect(containers[3].overrides?.overrides, hasLength(1));
     expect(
       containers[3].overrides!.node.toSource(),
-      'overrides: [() {return provider;}()]',
+      '[() {return provider;}()]',
     );
     expect(
-      containers[3].overrides?.overrides?.single.expression.toSource(),
+      containers[3].overrides?.overrides?.single.node.toSource(),
       '() {return provider;}()',
     );
-    expect(containers[3].overrides?.overrides?.single.providerElement, null);
+    expect(
+      containers[3].overrides?.overrides?.single.provider?.providerElement,
+      null,
+    );
     expect(containers[3].overrides?.overrides?.single.provider, null);
     expect(containers[3].overrides?.overrides?.single.familyArguments, null);
   });

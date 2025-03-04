@@ -20,7 +20,10 @@ abstract class ParserGenerator<AnnotationT>
   ) async {
     final firstAnnotatedElementFromUniqueSource = <Uri, Element>{};
 
-    for (final annotated in library.annotatedWithExact(typeChecker)) {
+    for (final annotated in library.annotatedWithExact(
+      typeChecker,
+      throwOnUnresolved: false,
+    )) {
       firstAnnotatedElementFromUniqueSource.putIfAbsent(
         annotated.element.source!.uri,
         () => annotated.element,

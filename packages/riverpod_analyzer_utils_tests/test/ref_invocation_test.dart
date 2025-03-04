@@ -1,15 +1,32 @@
-import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
+import 'package:riverpod_analyzer_utils/src/nodes.dart';
 import 'package:test/test.dart';
 
 import 'analyzer_test_utils.dart';
 
+// ignore: invalid_use_of_internal_member
+extension on RiverpodAnalysisResult {
+  List<RefWatchInvocation> get refWatchInvocations {
+    return refInvocations.whereType<RefWatchInvocation>().toList();
+  }
+
+  List<RefListenInvocation> get refListenInvocations {
+    return refInvocations.whereType<RefListenInvocation>().toList();
+  }
+
+  List<RefReadInvocation> get refReadInvocations {
+    return refInvocations.whereType<RefReadInvocation>().toList();
+  }
+}
+
 void main() {
   testSource(
     'Parses import aliases',
+    timeout: const Timeout.factor(4),
     runGenerator: true,
     files: {
       'file.dart': '''
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:riverpod/riverpod.dart';
+
 final aProvider = Provider<int>((ref) => 0);
 ''',
     },
@@ -19,12 +36,12 @@ import 'file.dart' as alias;
 part 'foo.g.dart';
 
 @Riverpod(keepAlive: true)
-int aliased(AliasedRef ref) {
+int aliased(Ref ref) {
   ref.watch(alias.aProvider);
   return 0;
 }
 ''',
-    (resolver) async {
+    (resolver, unit, units) async {
       final result = await resolver.resolveRiverpodAnalysisResult();
 
       expect(result.refWatchInvocations, hasLength(1));
@@ -35,26 +52,27 @@ int aliased(AliasedRef ref) {
       );
 
       expect(
-        result.refWatchInvocations.single.provider.provider?.toSource(),
+        result.refWatchInvocations.single.listenable.provider?.node.toSource(),
         'aProvider',
       );
       expect(
-        result.refWatchInvocations.single.provider.providerPrefix?.toSource(),
+        result.refWatchInvocations.single.listenable.providerPrefix?.toSource(),
         'alias',
       );
     },
   );
 
-  testSource('Decode watch expressions with syntax errors', source: '''
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+  testSource('Decode watch expressions with syntax errors',
+      timeout: const Timeout.factor(4), source: '''
+import 'package:riverpod/riverpod.dart';
 
 @ProviderFor(gibberish)
-final gibberishProvider = Provider((ref) => 0);
+final gibberishProvider = Provider<int>((ref) => 0).select((p) => p);
 
 final dependency = Provider((ref) {
   ref.watch(gibberishProvider);
 });
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult(
       ignoreErrors: true,
     );
@@ -65,24 +83,23 @@ final dependency = Provider((ref) {
       result.refInvocations.single.node.toSource(),
       'ref.watch(gibberishProvider)',
     );
-    expect(result.refWatchInvocations.single.provider.familyArguments, null);
+    expect(result.refWatchInvocations.single.listenable.familyArguments, null);
     expect(
-      result.refWatchInvocations.single.provider.node.toSource(),
+      result.refWatchInvocations.single.listenable.node.toSource(),
       'gibberishProvider',
     );
-    expect(
-      result.refWatchInvocations.single.provider.provider?.toSource(),
-      'gibberishProvider',
-    );
-    expect(result.refWatchInvocations.single.provider.providerElement, null);
+    expect(result.refWatchInvocations.single.listenable.provider, isNull);
   });
 
   testSource('Decodes ref expressions in Notifier methods',
-      runGenerator: true, source: r'''
+      timeout: const Timeout.factor(4), runGenerator: true, source: r'''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'foo.g.dart';
+
+@riverpod
+int generated(Ref ref) => 0;
 
 @riverpod
 class MyNotifier extends _$MyNotifier {
@@ -90,32 +107,31 @@ class MyNotifier extends _$MyNotifier {
   int build() => 0;
 
   void method() {
-    ref.watch(generatedScopedProvider);
+    ref.watch(generatedProvider);
   }
 }
 
-''', (resolver) async {
+''', (resolver, unit, units) async {
 // Regression test for https://github.com/rrousselGit/riverpod/issues/2417
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final notifier = result.classBasedProviderDeclarations.single;
-
     expect(result.refInvocations, hasLength(1));
     expect(
-      result.refWatchInvocations.single.provider.node.toSource(),
-      'generatedScopedProvider',
+      result.refWatchInvocations.single.listenable.node.toSource(),
+      'generatedProvider',
     );
     expect(
-      notifier.refInvocations.single,
+      result.refInvocations.single,
       isA<RefWatchInvocation>().having(
-        (e) => e.provider.node.toSource(),
+        (e) => e.listenable.node.toSource(),
         'provider',
-        'generatedScopedProvider',
+        'generatedProvider',
       ),
     );
   });
 
-  testSource('Decodes ..watch', runGenerator: true, source: r'''
+  testSource('Decodes ..watch',
+      timeout: const Timeout.factor(4), runGenerator: true, source: r'''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -141,7 +157,7 @@ final provider = Provider<int>((ref) {
   return 0;
 });
 
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.refWatchInvocations, hasLength(3));
@@ -152,11 +168,14 @@ final provider = Provider<int>((ref) {
       '..watch(dep)',
     );
     expect(result.refWatchInvocations[0].function.toSource(), 'watch');
-    expect(result.refWatchInvocations[0].provider.node.toSource(), 'dep');
-    expect(result.refWatchInvocations[0].provider.familyArguments, null);
-    expect(result.refWatchInvocations[0].provider.provider?.toSource(), 'dep');
+    expect(result.refWatchInvocations[0].listenable.node.toSource(), 'dep');
+    expect(result.refWatchInvocations[0].listenable.familyArguments, null);
     expect(
-      result.refWatchInvocations[0].provider.providerElement,
+      result.refWatchInvocations[0].listenable.provider?.node.toSource(),
+      'dep',
+    );
+    expect(
+      result.refWatchInvocations[0].listenable.provider?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
@@ -166,22 +185,22 @@ final provider = Provider<int>((ref) {
     );
     expect(result.refWatchInvocations[1].function.toSource(), 'watch');
     expect(
-      result.refWatchInvocations[1].provider.node.toSource(),
+      result.refWatchInvocations[1].listenable.node.toSource(),
       'dep2Provider',
     );
     expect(
-      result.refWatchInvocations[1].provider.provider?.toSource(),
+      result.refWatchInvocations[1].listenable.provider?.node.toSource(),
       'dep2Provider',
     );
     expect(
-      result.refWatchInvocations[1].provider.providerElement,
+      result.refWatchInvocations[1].listenable.provider?.providerElement,
       same(
         result.functionalProviderDeclarations
             .findByName('dep2')
             .providerElement,
       ),
     );
-    expect(result.refWatchInvocations[1].provider.familyArguments, null);
+    expect(result.refWatchInvocations[1].listenable.familyArguments, null);
 
     expect(
       result.refWatchInvocations[2].node.toSource(),
@@ -189,25 +208,26 @@ final provider = Provider<int>((ref) {
     );
     expect(result.refWatchInvocations[2].function.toSource(), 'watch');
     expect(
-      result.refWatchInvocations[2].provider.node.toSource(),
+      result.refWatchInvocations[2].listenable.node.toSource(),
       'dep3Provider',
     );
     expect(
-      result.refWatchInvocations[2].provider.provider?.toSource(),
+      result.refWatchInvocations[2].listenable.provider?.node.toSource(),
       'dep3Provider',
     );
     expect(
-      result.refWatchInvocations[2].provider.providerElement,
+      result.refWatchInvocations[2].listenable.provider?.providerElement,
       same(
         result.classBasedProviderDeclarations
             .findByName('Dep3')
             .providerElement,
       ),
     );
-    expect(result.refWatchInvocations[2].provider.familyArguments, null);
+    expect(result.refWatchInvocations[2].listenable.familyArguments, null);
   });
 
-  testSource('Decodes simple ref.watch usages', runGenerator: true, source: r'''
+  testSource('Decodes simple ref.watch usages',
+      timeout: const Timeout.factor(4), runGenerator: true, source: r'''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -243,7 +263,7 @@ class _Ref {
 void fn(_Ref ref) {
   ref.watch(dep);
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.refWatchInvocations, hasLength(3));
@@ -254,11 +274,14 @@ void fn(_Ref ref) {
       'ref.watch(dep)',
     );
     expect(result.refWatchInvocations[0].function.toSource(), 'watch');
-    expect(result.refWatchInvocations[0].provider.node.toSource(), 'dep');
-    expect(result.refWatchInvocations[0].provider.familyArguments, null);
-    expect(result.refWatchInvocations[0].provider.provider?.toSource(), 'dep');
+    expect(result.refWatchInvocations[0].listenable.node.toSource(), 'dep');
+    expect(result.refWatchInvocations[0].listenable.familyArguments, null);
     expect(
-      result.refWatchInvocations[0].provider.providerElement,
+      result.refWatchInvocations[0].listenable.provider?.node.toSource(),
+      'dep',
+    );
+    expect(
+      result.refWatchInvocations[0].listenable.provider?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
@@ -268,22 +291,22 @@ void fn(_Ref ref) {
     );
     expect(result.refWatchInvocations[1].function.toSource(), 'watch');
     expect(
-      result.refWatchInvocations[1].provider.node.toSource(),
+      result.refWatchInvocations[1].listenable.node.toSource(),
       'dep2Provider',
     );
     expect(
-      result.refWatchInvocations[1].provider.provider?.toSource(),
+      result.refWatchInvocations[1].listenable.provider?.node.toSource(),
       'dep2Provider',
     );
     expect(
-      result.refWatchInvocations[1].provider.providerElement,
+      result.refWatchInvocations[1].listenable.provider?.providerElement,
       same(
         result.functionalProviderDeclarations
             .findByName('dep2')
             .providerElement,
       ),
     );
-    expect(result.refWatchInvocations[1].provider.familyArguments, null);
+    expect(result.refWatchInvocations[1].listenable.familyArguments, null);
 
     expect(
       result.refWatchInvocations[2].node.toSource(),
@@ -291,25 +314,26 @@ void fn(_Ref ref) {
     );
     expect(result.refWatchInvocations[2].function.toSource(), 'watch');
     expect(
-      result.refWatchInvocations[2].provider.node.toSource(),
+      result.refWatchInvocations[2].listenable.node.toSource(),
       'dep3Provider',
     );
     expect(
-      result.refWatchInvocations[2].provider.provider?.toSource(),
+      result.refWatchInvocations[2].listenable.provider?.node.toSource(),
       'dep3Provider',
     );
     expect(
-      result.refWatchInvocations[2].provider.providerElement,
+      result.refWatchInvocations[2].listenable.provider?.providerElement,
       same(
         result.classBasedProviderDeclarations
             .findByName('Dep3')
             .providerElement,
       ),
     );
-    expect(result.refWatchInvocations[2].provider.familyArguments, null);
+    expect(result.refWatchInvocations[2].listenable.familyArguments, null);
   });
 
-  testSource('Decodes ref.listen usages', runGenerator: true, source: '''
+  testSource('Decodes ref.listen usages',
+      timeout: const Timeout.factor(4), runGenerator: true, source: '''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -324,7 +348,7 @@ final provider = Provider<int>((ref) {
 
   return 0;
 });
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.refListenInvocations, hasLength(3));
@@ -340,7 +364,7 @@ final provider = Provider<int>((ref) {
       '(prev, next) {}',
     );
     expect(
-      result.refListenInvocations[0].provider.providerElement,
+      result.refListenInvocations[0].listenable.provider?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
@@ -354,7 +378,7 @@ final provider = Provider<int>((ref) {
       '(prev, next) {}',
     );
     expect(
-      result.refListenInvocations[1].provider.providerElement,
+      result.refListenInvocations[1].listenable.provider?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
@@ -368,12 +392,13 @@ final provider = Provider<int>((ref) {
       '(prev, next) {}',
     );
     expect(
-      result.refListenInvocations[2].provider.providerElement,
+      result.refListenInvocations[2].listenable.provider?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
   });
 
-  testSource('Decodes ref.read usages', runGenerator: true, source: '''
+  testSource('Decodes ref.read usages',
+      timeout: const Timeout.factor(4), runGenerator: true, source: '''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -388,7 +413,7 @@ final provider = Provider<int>((ref) {
 
   return 0;
 });
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.refReadInvocations, hasLength(2));
@@ -397,14 +422,14 @@ final provider = Provider<int>((ref) {
     expect(result.refReadInvocations[0].node.toSource(), 'ref.read(dep)');
     expect(result.refReadInvocations[0].function.toSource(), 'read');
     expect(
-      result.refReadInvocations[0].provider.providerElement,
+      result.refReadInvocations[0].listenable.provider?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
     expect(result.refReadInvocations[1].node.toSource(), 'ref.read(dep2)');
     expect(result.refReadInvocations[1].function.toSource(), 'read');
     expect(
-      result.refReadInvocations[1].provider.providerElement,
+      result.refReadInvocations[1].listenable.provider?.providerElement,
       same(
         result.legacyProviderDeclarations.findByName('dep2').providerElement,
       ),
@@ -443,58 +468,58 @@ final provider3 = Provider<int>((ref) {
 
   return 0;
 });
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.refReadInvocations, hasLength(7));
     expect(result.refInvocations, result.refReadInvocations);
 
     // provider
-    expect(
-      result.refReadInvocations[0].node.toSource(),
-      'ref.read(dep2(ref.read(dep)))',
-    );
+    expect(result.refReadInvocations[0].node.toSource(), 'ref.read(dep)');
     expect(result.refReadInvocations[0].function.toSource(), 'read');
     expect(
-      result.refReadInvocations[0].provider.providerElement,
-      same(
-        result.legacyProviderDeclarations.findByName('dep2').providerElement,
-      ),
-    );
-
-    expect(result.refReadInvocations[1].node.toSource(), 'ref.read(dep)');
-    expect(result.refReadInvocations[1].function.toSource(), 'read');
-    expect(
-      result.refReadInvocations[1].provider.providerElement,
+      result.refReadInvocations[0].listenable.provider?.providerElement,
       same(
         result.legacyProviderDeclarations.findByName('dep').providerElement,
       ),
     );
 
-    // provider2
     expect(
-      result.refReadInvocations[2].node.toSource(),
+      result.refReadInvocations[1].node.toSource(),
+      'ref.read(dep2(ref.read(dep)))',
+    );
+    expect(result.refReadInvocations[1].function.toSource(), 'read');
+    expect(
+      result.refReadInvocations[1].listenable.provider?.providerElement,
+      same(
+        result.legacyProviderDeclarations.findByName('dep2').providerElement,
+      ),
+    );
+
+    // provider2
+    expect(result.refReadInvocations[2].node.toSource(), 'ref.read(dep)');
+    expect(
+      result.refReadInvocations[3].node.toSource(),
+      'ref.read(dep2(ref.read(dep)))',
+    );
+    expect(
+      result.refReadInvocations[4].node.toSource(),
       'ref.read(dep3(ref.read(dep2(ref.read(dep)))))',
     );
-    expect(result.refReadInvocations[2].function.toSource(), 'read');
+    expect(result.refReadInvocations[4].function.toSource(), 'read');
     expect(
-      result.refReadInvocations[2].provider.providerElement,
+      result.refReadInvocations[4].listenable.provider?.providerElement,
       same(
         result.legacyProviderDeclarations.findByName('dep3').providerElement,
       ),
     );
 
+    // provider3
+    expect(result.refReadInvocations[5].node.toSource(), 'ref.read(dep)');
     expect(
-      result.refReadInvocations[3].node.toSource(),
-      'ref.read(dep2(ref.read(dep)))',
-    );
-    expect(result.refReadInvocations[4].node.toSource(), 'ref.read(dep)');
-
-    expect(
-      result.refReadInvocations[5].node.toSource(),
+      result.refReadInvocations[6].node.toSource(),
       'ref.read(dep3(transformArg(ref.read(dep))))',
     );
-    expect(result.refReadInvocations[6].node.toSource(), 'ref.read(dep)');
   });
 
   testSource('Decodes unknown ref usages', source: '''
@@ -504,37 +529,36 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 final dep = FutureProvider((ref) => 0);
 final dep2 = FutureProvider((ref) => 0);
 
-void fn(Ref<int> ref) {
+void fn(Ref ref) {
   ref.read(dep);
   ref.read(dep2);
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final libraryResult = result.resolvedRiverpodLibraryResults.single;
-
-    expect(libraryResult.unknownRefInvocations, hasLength(2));
-    expect(result.refReadInvocations, libraryResult.unknownRefInvocations);
+    expect(result.refInvocations, hasLength(2));
+    expect(result.refReadInvocations, result.refInvocations);
     expect(result.refInvocations, result.refReadInvocations);
 
     expect(result.refReadInvocations[0].node.toSource(), 'ref.read(dep)');
     expect(result.refReadInvocations[0].function.toSource(), 'read');
     expect(
-      result.refReadInvocations[0].provider.providerElement,
+      result.refReadInvocations[0].listenable.provider?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
     expect(result.refReadInvocations[1].node.toSource(), 'ref.read(dep2)');
     expect(result.refReadInvocations[1].function.toSource(), 'read');
     expect(
-      result.refReadInvocations[1].provider.providerElement,
+      result.refReadInvocations[1].listenable.provider?.providerElement,
       same(
         result.legacyProviderDeclarations.findByName('dep2').providerElement,
       ),
     );
   });
 
-  testSource('Decodes family ref.watch usages', runGenerator: true, source: r'''
+  testSource('Decodes family ref.watch usages',
+      timeout: const Timeout.factor(4), runGenerator: true, source: r'''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -570,41 +594,33 @@ class _Ref {
 void fn(_Ref ref) {
   ref.watch(family(0));
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final libraryResult = result.resolvedRiverpodLibraryResults.single;
-
-    expect(libraryResult.unknownRefInvocations, isEmpty);
-    expect(libraryResult.unknownWidgetRefInvocations, isEmpty);
-
-    final providerRefInvocations = libraryResult.legacyProviderDeclarations
-        .where((e) => e.providerElement.name == 'provider')
-        .single
-        .refInvocations
-        .cast<RefWatchInvocation>();
+    final providerRefInvocations =
+        result.refInvocations.cast<RefWatchInvocation>();
 
     expect(providerRefInvocations, hasLength(3));
-    expect(result.refInvocations, providerRefInvocations);
+    expect(result.refWatchInvocations, providerRefInvocations);
 
     expect(
       providerRefInvocations[0].node.toSource(),
       'ref.watch(family(0))',
     );
     expect(providerRefInvocations[0].function.toSource(), 'watch');
-    expect(providerRefInvocations[0].provider.node.toSource(), 'family(0)');
+    expect(providerRefInvocations[0].listenable.node.toSource(), 'family(0)');
     expect(
-      providerRefInvocations[0].provider.provider?.toSource(),
+      providerRefInvocations[0].listenable.provider?.node.toSource(),
       'family',
     );
     expect(
-      providerRefInvocations[0].provider.providerElement,
+      providerRefInvocations[0].listenable.provider?.providerElement,
       same(
         result.legacyProviderDeclarations.findByName('family').providerElement,
       ),
     );
     expect(
-      providerRefInvocations[0].provider.familyArguments?.toSource(),
+      providerRefInvocations[0].listenable.familyArguments?.toSource(),
       '(0)',
     );
 
@@ -614,15 +630,15 @@ void fn(_Ref ref) {
     );
     expect(providerRefInvocations[1].function.toSource(), 'watch');
     expect(
-      providerRefInvocations[1].provider.node.toSource(),
+      providerRefInvocations[1].listenable.node.toSource(),
       'family2Provider(id: 0)',
     );
     expect(
-      providerRefInvocations[1].provider.provider?.toSource(),
+      providerRefInvocations[1].listenable.provider?.node.toSource(),
       'family2Provider',
     );
     expect(
-      providerRefInvocations[1].provider.providerElement,
+      providerRefInvocations[1].listenable.provider?.providerElement,
       same(
         result.functionalProviderDeclarations
             .findByName('family2')
@@ -630,7 +646,7 @@ void fn(_Ref ref) {
       ),
     );
     expect(
-      providerRefInvocations[1].provider.familyArguments?.toSource(),
+      providerRefInvocations[1].listenable.familyArguments?.toSource(),
       '(id: 0)',
     );
 
@@ -640,15 +656,15 @@ void fn(_Ref ref) {
     );
     expect(result.refWatchInvocations[2].function.toSource(), 'watch');
     expect(
-      result.refWatchInvocations[2].provider.node.toSource(),
+      result.refWatchInvocations[2].listenable.node.toSource(),
       'family3Provider(id: 0)',
     );
     expect(
-      result.refWatchInvocations[2].provider.provider?.toSource(),
+      result.refWatchInvocations[2].listenable.provider?.node.toSource(),
       'family3Provider',
     );
     expect(
-      result.refWatchInvocations[2].provider.providerElement,
+      result.refWatchInvocations[2].listenable.provider?.providerElement,
       same(
         result.classBasedProviderDeclarations
             .findByName('Family3')
@@ -656,7 +672,7 @@ void fn(_Ref ref) {
       ),
     );
     expect(
-      result.refWatchInvocations[2].provider.familyArguments?.toSource(),
+      result.refWatchInvocations[2].listenable.familyArguments?.toSource(),
       '(id: 0)',
     );
   });
@@ -676,14 +692,14 @@ final provider = Provider<int>((ref) {
 
   return 0;
 });
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.refWatchInvocations, hasLength(1));
     expect(result.refReadInvocations, hasLength(1));
     expect(
       result.refInvocations,
-      [...result.refWatchInvocations, ...result.refReadInvocations],
+      [...result.refReadInvocations, ...result.refWatchInvocations],
     );
 
     expect(
@@ -692,7 +708,7 @@ final provider = Provider<int>((ref) {
     );
     expect(result.refWatchInvocations[0].function.toSource(), 'watch');
     expect(
-      result.refWatchInvocations[0].provider.providerElement,
+      result.refWatchInvocations[0].listenable.provider?.providerElement,
       same(
         result.legacyProviderDeclarations.findByName('dep2').providerElement,
       ),
@@ -701,7 +717,7 @@ final provider = Provider<int>((ref) {
     expect(result.refReadInvocations[0].node.toSource(), 'ref.read(dep)');
     expect(result.refReadInvocations[0].function.toSource(), 'read');
     expect(
-      result.refReadInvocations[0].provider.providerElement,
+      result.refReadInvocations[0].listenable.provider?.providerElement,
       same(
         result.legacyProviderDeclarations.findByName('dep').providerElement,
       ),
@@ -709,7 +725,7 @@ final provider = Provider<int>((ref) {
   });
 
   testSource('Decodes provider.query ref.watch usages',
-      runGenerator: true, source: r'''
+      timeout: const Timeout.factor(4), runGenerator: true, source: r'''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -761,7 +777,7 @@ class _Ref {
 void fn(_Ref ref) {
   ref.watch(dep);
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
     expect(result.refWatchInvocations, hasLength(4));
@@ -773,13 +789,16 @@ void fn(_Ref ref) {
     );
     expect(result.refWatchInvocations[0].function.toSource(), 'watch');
     expect(
-      result.refWatchInvocations[0].provider.node.toSource(),
+      result.refWatchInvocations[0].listenable.node.toSource(),
       'dep.select((e) => e)',
     );
-    expect(result.refWatchInvocations[0].provider.familyArguments, null);
-    expect(result.refWatchInvocations[0].provider.provider?.toSource(), 'dep');
+    expect(result.refWatchInvocations[0].listenable.familyArguments, null);
     expect(
-      result.refWatchInvocations[0].provider.providerElement,
+      result.refWatchInvocations[0].listenable.provider?.node.toSource(),
+      'dep',
+    );
+    expect(
+      result.refWatchInvocations[0].listenable.provider?.providerElement,
       same(result.legacyProviderDeclarations.findByName('dep').providerElement),
     );
 
@@ -789,16 +808,16 @@ void fn(_Ref ref) {
     );
     expect(result.refWatchInvocations[1].function.toSource(), 'watch');
     expect(
-      result.refWatchInvocations[1].provider.node.toSource(),
+      result.refWatchInvocations[1].listenable.node.toSource(),
       'dep2Provider.select((e) => e)',
     );
-    expect(result.refWatchInvocations[1].provider.familyArguments, null);
+    expect(result.refWatchInvocations[1].listenable.familyArguments, null);
     expect(
-      result.refWatchInvocations[1].provider.provider?.toSource(),
+      result.refWatchInvocations[1].listenable.provider?.node.toSource(),
       'dep2Provider',
     );
     expect(
-      result.refWatchInvocations[1].provider.providerElement,
+      result.refWatchInvocations[1].listenable.provider?.providerElement,
       same(
         result.functionalProviderDeclarations
             .findByName('dep2')
@@ -812,16 +831,16 @@ void fn(_Ref ref) {
     );
     expect(result.refWatchInvocations[2].function.toSource(), 'watch');
     expect(
-      result.refWatchInvocations[2].provider.node.toSource(),
+      result.refWatchInvocations[2].listenable.node.toSource(),
       'dep3Provider.select((e) => e)',
     );
-    expect(result.refWatchInvocations[2].provider.familyArguments, null);
+    expect(result.refWatchInvocations[2].listenable.familyArguments, null);
     expect(
-      result.refWatchInvocations[2].provider.provider?.toSource(),
+      result.refWatchInvocations[2].listenable.provider?.node.toSource(),
       'dep3Provider',
     );
     expect(
-      result.refWatchInvocations[2].provider.providerElement,
+      result.refWatchInvocations[2].listenable.provider?.providerElement,
       same(
         result.classBasedProviderDeclarations
             .findByName('Dep3')
@@ -835,19 +854,19 @@ void fn(_Ref ref) {
     );
     expect(result.refWatchInvocations[3].function.toSource(), 'watch');
     expect(
-      result.refWatchInvocations[3].provider.node.toSource(),
+      result.refWatchInvocations[3].listenable.node.toSource(),
       'familyProvider(id: 42).notifier.select((e) => e).getter.method()[0]',
     );
     expect(
-      result.refWatchInvocations[3].provider.familyArguments?.toSource(),
+      result.refWatchInvocations[3].listenable.familyArguments?.toSource(),
       '(id: 42)',
     );
     expect(
-      result.refWatchInvocations[3].provider.provider?.toSource(),
+      result.refWatchInvocations[3].listenable.provider?.node.toSource(),
       'familyProvider',
     );
     expect(
-      result.refWatchInvocations[3].provider.providerElement,
+      result.refWatchInvocations[3].listenable.provider?.providerElement,
       same(
         result.classBasedProviderDeclarations
             .findByName('Family')

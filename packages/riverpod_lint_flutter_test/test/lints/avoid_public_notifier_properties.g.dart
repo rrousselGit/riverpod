@@ -6,169 +6,172 @@ part of 'avoid_public_notifier_properties.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$generatedNotifierHash() => r'2b7f4fba816b6e8ccd0e8b7d11fcd207bbb79828';
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-abstract class _$GeneratedNotifier extends BuildlessAutoDisposeNotifier<int> {
-  late final int param;
-
-  int build(
-    int param,
-  );
-}
-
-/// See also [GeneratedNotifier].
 @ProviderFor(GeneratedNotifier)
-const generatedNotifierProvider = GeneratedNotifierFamily();
+const generatedNotifierProvider = GeneratedNotifierFamily._();
 
-/// See also [GeneratedNotifier].
-class GeneratedNotifierFamily extends Family<int> {
-  /// See also [GeneratedNotifier].
-  const GeneratedNotifierFamily();
-
-  /// See also [GeneratedNotifier].
-  GeneratedNotifierProvider call(
-    int param,
-  ) {
-    return GeneratedNotifierProvider(
-      param,
-    );
-  }
-
-  @override
-  GeneratedNotifierProvider getProviderOverride(
-    covariant GeneratedNotifierProvider provider,
-  ) {
-    return call(
-      provider.param,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'generatedNotifierProvider';
-}
-
-/// See also [GeneratedNotifier].
-class GeneratedNotifierProvider
-    extends AutoDisposeNotifierProviderImpl<GeneratedNotifier, int> {
-  /// See also [GeneratedNotifier].
-  GeneratedNotifierProvider(
-    int param,
-  ) : this._internal(
-          () => GeneratedNotifier()..param = param,
-          from: generatedNotifierProvider,
+final class GeneratedNotifierProvider
+    extends $NotifierProvider<GeneratedNotifier, int> {
+  const GeneratedNotifierProvider._(
+      {required GeneratedNotifierFamily super.from,
+      required int super.argument,
+      super.runNotifierBuildOverride,
+      GeneratedNotifier Function()? create})
+      : _createCb = create,
+        super(
+          retry: null,
           name: r'generatedNotifierProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$generatedNotifierHash,
-          dependencies: GeneratedNotifierFamily._dependencies,
-          allTransitiveDependencies:
-              GeneratedNotifierFamily._allTransitiveDependencies,
-          param: param,
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  GeneratedNotifierProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.param,
-  }) : super.internal();
-
-  final int param;
+  final GeneratedNotifier Function()? _createCb;
 
   @override
-  int runNotifierBuild(
-    covariant GeneratedNotifier notifier,
-  ) {
-    return notifier.build(
-      param,
-    );
+  String debugGetCreateSourceHash() => _$generatedNotifierHash();
+
+  @override
+  String toString() {
+    return r'generatedNotifierProvider'
+        ''
+        '($argument)';
   }
 
-  @override
-  Override overrideWith(GeneratedNotifier Function() create) {
-    return ProviderOverride(
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
       origin: this,
-      override: GeneratedNotifierProvider._internal(
-        () => create()..param = param,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        param: param,
-      ),
+      providerOverride: $ValueProvider<int>(value),
     );
   }
 
+  @$internal
   @override
-  AutoDisposeNotifierProviderElement<GeneratedNotifier, int> createElement() {
-    return _GeneratedNotifierProviderElement(this);
+  GeneratedNotifier create() => _createCb?.call() ?? GeneratedNotifier();
+
+  @$internal
+  @override
+  GeneratedNotifierProvider $copyWithCreate(
+    GeneratedNotifier Function() create,
+  ) {
+    return GeneratedNotifierProvider._(
+        argument: argument as int,
+        from: from! as GeneratedNotifierFamily,
+        create: create);
   }
+
+  @$internal
+  @override
+  GeneratedNotifierProvider $copyWithBuild(
+    int Function(
+      Ref,
+      GeneratedNotifier,
+    ) build,
+  ) {
+    return GeneratedNotifierProvider._(
+        argument: argument as int,
+        from: from! as GeneratedNotifierFamily,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<GeneratedNotifier, int> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
-    return other is GeneratedNotifierProvider && other.param == param;
+    return other is GeneratedNotifierProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, param.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin GeneratedNotifierRef on AutoDisposeNotifierProviderRef<int> {
-  /// The parameter `param` of this provider.
-  int get param;
-}
+String _$generatedNotifierHash() => r'2b7f4fba816b6e8ccd0e8b7d11fcd207bbb79828';
 
-class _GeneratedNotifierProviderElement
-    extends AutoDisposeNotifierProviderElement<GeneratedNotifier, int>
-    with GeneratedNotifierRef {
-  _GeneratedNotifierProviderElement(super.provider);
+final class GeneratedNotifierFamily extends Family {
+  const GeneratedNotifierFamily._()
+      : super(
+          retry: null,
+          name: r'generatedNotifierProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  GeneratedNotifierProvider call(
+    int param,
+  ) =>
+      GeneratedNotifierProvider._(argument: param, from: this);
 
   @override
-  int get param => (origin as GeneratedNotifierProvider).param;
+  String debugGetCreateSourceHash() => _$generatedNotifierHash();
+
+  @override
+  String toString() => r'generatedNotifierProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    GeneratedNotifier Function(
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as GeneratedNotifierProvider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .$createElement(pointer);
+      },
+    );
+  }
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    int Function(Ref ref, GeneratedNotifier notifier, int argument) build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as GeneratedNotifierProvider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .$createElement(pointer);
+      },
+    );
+  }
 }
+
+abstract class _$GeneratedNotifier extends $Notifier<int> {
+  late final _$args = ref.$arg as int;
+  int get param => _$args;
+
+  int build(
+    int param,
+  );
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      _$args,
+    );
+    final ref = this.ref as $Ref<int>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}
+
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

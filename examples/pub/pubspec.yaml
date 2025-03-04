@@ -3,17 +3,19 @@ description: A new Flutter project.
 publish_to: "none"
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ^3.6.0
   flutter: ">=1.17.0"
+
+resolution: workspace
 
 dependencies:
   dio: ^5.1.1
   flutter:
     sdk: flutter
-  flutter_hooks: ^0.18.0
+  flutter_hooks: ^0.21.0
   flutter_svg: ^1.1.4
   freezed_annotation: ^3.0.0
-  hooks_riverpod: ^2.3.4
+  hooks_riverpod:
   html: ^0.15.0
   json_annotation: ^4.9.0
   pubspec_parse: ^1.2.1
@@ -30,7 +32,6 @@ dev_dependencies:
   mockito: ^5.0.0
   riverpod_generator:
   riverpod_lint:
-    path: ../../packages/riverpod_lint
 
 flutter:
   uses-material-design: true

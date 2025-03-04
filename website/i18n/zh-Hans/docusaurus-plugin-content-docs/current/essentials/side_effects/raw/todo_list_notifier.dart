@@ -31,8 +31,8 @@ final todoListProvider =
 
 // 因为我们的逻辑是异步的，所以我们需要使用 AsyncNotifier。
 // 特别的，由于使用“autoDispose”修饰符，
-// 我们需要 AutoDisposeAsyncNotifier。
-class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
+// 我们需要 AsyncNotifier。
+class TodoList extends AsyncNotifier<List<Todo>> {
   @override
   Future<List<Todo>> build() async {
     // 我们之前在 FutureProvider 中的业务逻辑现在位于 build 方法中。
