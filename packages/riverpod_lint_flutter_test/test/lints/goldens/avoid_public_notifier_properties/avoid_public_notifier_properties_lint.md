@@ -1,7 +1,7 @@
 code: avoid_public_notifier_properties
 severity: Severity.info
 message: Notifiers should not have public properties/getters. Instead, all their public API should be exposed through the `state` property.
-test/lints/avoid_public_notifier_properties.dart:16:3
+test/lints/avoid_public_notifier_properties.dart:33:3
 
 ```dart
 
@@ -16,7 +16,7 @@ test/lints/avoid_public_notifier_properties.dart:16:3
 code: avoid_public_notifier_properties
 severity: Severity.info
 message: Notifiers should not have public properties/getters. Instead, all their public API should be exposed through the `state` property.
-test/lints/avoid_public_notifier_properties.dart:24:3
+test/lints/avoid_public_notifier_properties.dart:41:3
 
 ```dart
 
@@ -31,7 +31,7 @@ test/lints/avoid_public_notifier_properties.dart:24:3
 code: avoid_public_notifier_properties
 severity: Severity.info
 message: Notifiers should not have public properties/getters. Instead, all their public API should be exposed through the `state` property.
-test/lints/avoid_public_notifier_properties.dart:50:3
+test/lints/avoid_public_notifier_properties.dart:67:3
 
 ```dart
 
@@ -46,7 +46,7 @@ test/lints/avoid_public_notifier_properties.dart:50:3
 code: avoid_public_notifier_properties
 severity: Severity.info
 message: Notifiers should not have public properties/getters. Instead, all their public API should be exposed through the `state` property.
-test/lints/avoid_public_notifier_properties.dart:60:3
+test/lints/avoid_public_notifier_properties.dart:77:3
 
 ```dart
 
@@ -61,7 +61,7 @@ test/lints/avoid_public_notifier_properties.dart:60:3
 code: avoid_public_notifier_properties
 severity: Severity.info
 message: Notifiers should not have public properties/getters. Instead, all their public API should be exposed through the `state` property.
-test/lints/avoid_public_notifier_properties.dart:70:3
+test/lints/avoid_public_notifier_properties.dart:87:3
 
 ```dart
 
@@ -76,7 +76,7 @@ test/lints/avoid_public_notifier_properties.dart:70:3
 code: avoid_public_notifier_properties
 severity: Severity.info
 message: Notifiers should not have public properties/getters. Instead, all their public API should be exposed through the `state` property.
-test/lints/avoid_public_notifier_properties.dart:80:3
+test/lints/avoid_public_notifier_properties.dart:97:3
 
 ```dart
 
@@ -91,7 +91,7 @@ test/lints/avoid_public_notifier_properties.dart:80:3
 code: avoid_public_notifier_properties
 severity: Severity.info
 message: Notifiers should not have public properties/getters. Instead, all their public API should be exposed through the `state` property.
-test/lints/avoid_public_notifier_properties.dart:90:3
+test/lints/avoid_public_notifier_properties.dart:107:3
 
 ```dart
 
