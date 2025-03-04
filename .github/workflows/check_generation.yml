@@ -27,11 +27,10 @@ jobs:
         run: echo "PUB_CACHE="$HOME/.pub-cache"" >> $GITHUB_ENV
       - name: Install dependencies
         run: flutter pub get
+      - run: flutter pub get
+        working-directory: packages/riverpod_lint_flutter_test
 
-      - run: dart pub global activate melos
-
-      - run: dart pub run melos bootstrap
-      - run: dart pub run melos run generate
+      - run: ./scripts/generate.sh
 
       - name: check there are no uncommitted changes
         run: git diff --exit-code

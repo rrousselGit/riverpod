@@ -1,4 +1,4 @@
-# melos_managed_dependency_overrides: flutter_riverpod,hooks_riverpod,riverpod,riverpod_annotation,riverpod_generator,riverpod_lint
+# Needed for custom_lint
 dependency_overrides:
   flutter_riverpod:
     path: ../flutter_riverpod
@@ -14,6 +14,3 @@ dependency_overrides:
     path: ../riverpod_generator
   riverpod_lint:
     path: ../riverpod_lint
-
-  # Fix flutter_test conflict for now
-  test_api: ^0.7.4
