@@ -45,7 +45,7 @@ abstract class ProviderBase<StateT> extends ProviderOrFamily
   ProviderBase<Object?> get _override => this;
 
   /// {@template riverpod.create_source_hash}
-  /// A debug-only fucntion for obtaining a hash of the source code of the
+  /// A debug-only function for obtaining a hash of the source code of the
   /// initialization function.
   ///
   /// If after a hot-reload this function returns a different result, the
