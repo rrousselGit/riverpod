@@ -31,6 +31,7 @@ typedef ProviderNotifierCreate<ProviderT, Created, RefT extends Ref> = ProviderT
 typedef FamilyCreate<T, R extends Ref, Arg> = T Function(R ref, Arg arg);
 
 /// A base class for all families
+@optionalTypeArgs
 abstract class Family<
     @Deprecated(
       'The generic parameter will be removed in version 3.0.0. '
