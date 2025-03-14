@@ -103,16 +103,18 @@ class ProviderElementProxy<Input, Output>
 
     final notifier = _lense(element);
     if (fireImmediately) {
-      notifier.result?.when(
-        data: (data) {
-          runBinaryGuarded(listener, null, data);
-        },
-        error: (err, stack) {
+      switch (notifier.result) {
+        case null:
+          break;
+
+        case ResultData<Output>(:final value):
+          runBinaryGuarded(listener, null, value);
+
+        case ResultError<Output>(:final error, :final stackTrace):
           if (onError != null) {
-            runBinaryGuarded(onError, err, stack);
+            runBinaryGuarded(onError, error, stackTrace);
           }
-        },
-      );
+      }
     }
 
     final removeListener = notifier.addListener(

@@ -46,19 +46,17 @@ class _StateReader {
         .._container = container
         ..mount();
 
-      element.getState()!.map<void>(
-        // ignore: avoid_types_on_closure_parameters
-        data: (ResultData<Object?> data) {
+      switch (element.getState()!) {
+        case ResultData<Object?>(:final value):
           for (final observer in container.observers) {
             runTernaryGuarded(
               observer.didAddProvider,
               origin,
-              data.state,
+              value,
               container,
             );
           }
-        },
-        error: (error) {
+        case ResultError<Object?>(:final error, :final stackTrace):
           for (final observer in container.observers) {
             runTernaryGuarded(
               observer.didAddProvider,
@@ -71,13 +69,13 @@ class _StateReader {
             runQuaternaryGuarded(
               observer.providerDidFail,
               origin,
-              error.error,
-              error.stackTrace,
+              error,
+              stackTrace,
               container,
             );
           }
-        },
-      );
+      }
+
       return element;
     } finally {
       if (_circularDependencyLock == origin) {

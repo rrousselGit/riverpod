@@ -37,10 +37,14 @@ class ProxyElementValueNotifier<T> extends _ValueListenable<T> {
   set result(Result<T>? value) {
     final previous = _result;
     _result = value;
-    value?.when(
-      data: (newValue) => _notifyValue(previous?.stateOrNull, newValue),
-      error: _notifyError,
-    );
+    switch (value) {
+      case null:
+        break;
+      case ResultData<T>():
+        _notifyValue(previous?.value, value.value);
+      case ResultError<T>():
+        _notifyError(value.error, value.stackTrace);
+    }
   }
 
   /// Updates the [result] of this [ProxyElementValueNotifier] without invoking listeners.

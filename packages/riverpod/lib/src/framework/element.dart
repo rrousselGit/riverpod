@@ -178,10 +178,11 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
       throw StateError('Tried to read the state of an uninitialized provider');
     }
 
-    return state.when(
-      error: throwErrorWithCombinedStackTrace,
-      data: (data) => data,
-    );
+    return switch (state) {
+      ResultData<StateT>() => state.value,
+      ResultError<StateT>() =>
+        throwErrorWithCombinedStackTrace(state.error, state.stackTrace),
+    };
   }
 
   /// Called when a provider is rebuilt. Used for providers to not notify their
@@ -227,32 +228,30 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
     );
     buildState();
 
-    _state!.map(
-      data: (newState) {
+    switch (_state!) {
+      case ResultData<StateT>(:final value):
         final onChangeSelfListeners = _onChangeSelfListeners;
         if (onChangeSelfListeners != null) {
           for (var i = 0; i < onChangeSelfListeners.length; i++) {
             Zone.current.runBinaryGuarded(
               onChangeSelfListeners[i],
               null,
-              newState.state,
+              value,
             );
           }
         }
-      },
-      error: (newState) {
+      case ResultError<StateT>(:final error, :final stackTrace):
         final onErrorSelfListeners = _onErrorSelfListeners;
         if (onErrorSelfListeners != null) {
           for (var i = 0; i < onErrorSelfListeners.length; i++) {
             Zone.current.runBinaryGuarded(
               onErrorSelfListeners[i],
-              newState.error,
-              newState.stackTrace,
+              error,
+              stackTrace,
             );
           }
         }
-      },
-    );
+    }
   }
 
   // ignore: use_setters_to_change_properties
@@ -491,23 +490,22 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       '',
     );
 
-    final previousState = previousStateResult?.stateOrNull;
+    final previousState = previousStateResult?.value;
 
     // listenSelf listeners do not respect updateShouldNotify
-    newState.map(
-      data: (newState) {
+    switch (newState) {
+      case ResultData<StateT>():
         final onChangeSelfListeners = _onChangeSelfListeners;
         if (onChangeSelfListeners != null) {
           for (var i = 0; i < onChangeSelfListeners.length; i++) {
             Zone.current.runBinaryGuarded(
               onChangeSelfListeners[i],
               previousState,
-              newState.state,
+              newState.value,
             );
           }
         }
-      },
-      error: (newState) {
+      case ResultError<StateT>():
         final onErrorSelfListeners = _onErrorSelfListeners;
         if (onErrorSelfListeners != null) {
           for (var i = 0; i < onErrorSelfListeners.length; i++) {
@@ -518,13 +516,12 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
             );
           }
         }
-      },
-    );
+    }
 
     if (checkUpdateShouldNotify &&
         previousStateResult != null &&
-        previousStateResult.hasState &&
-        newState.hasState &&
+        previousStateResult.hasData &&
+        newState.hasData &&
         !updateShouldNotify(
           previousState as StateT,
           newState.requireState,
@@ -533,8 +530,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
 
     final listeners = _dependents?.toList(growable: false);
-    newState.map(
-      data: (newState) {
+    switch (newState) {
+      case ResultData<StateT>():
         if (listeners != null) {
           for (var i = 0; i < listeners.length; i++) {
             final listener = listeners[i];
@@ -542,13 +539,12 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
               Zone.current.runBinaryGuarded(
                 listener.listener,
                 previousState,
-                newState.state,
+                newState.value,
               );
             }
           }
         }
-      },
-      error: (newState) {
+      case ResultError<StateT>():
         if (listeners != null) {
           for (var i = 0; i < listeners.length; i++) {
             final listener = listeners[i];
@@ -561,8 +557,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
             }
           }
         }
-      },
-    );
+    }
 
     for (var i = 0; i < _providerDependents.length; i++) {
       _providerDependents[i]._markDependencyChanged();
@@ -573,15 +568,16 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         observer.didUpdateProvider,
         origin,
         previousState,
-        newState.stateOrNull,
+        newState.value,
         _container,
       );
     }
 
     for (final observer in _container.observers) {
-      newState.map(
-        data: (_) {},
-        error: (newState) {
+      switch (newState) {
+        case ResultData<StateT>():
+          break;
+        case ResultError<StateT>():
           runQuaternaryGuarded(
             observer.providerDidFail,
             origin,
@@ -589,8 +585,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
             newState.stackTrace,
             _container,
           );
-        },
-      );
+      }
     }
   }
 
