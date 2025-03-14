@@ -1,5 +1,8 @@
 part of '../framework.dart';
 
+/// Transition between [Refreshable] and [Refreshable2].
+sealed class AnyRefreshable<T> {}
+
 /// {@template riverpod.refreshable}
 /// An interface for provider expressions that can be passed to `ref.refresh`
 ///
@@ -16,7 +19,8 @@ part of '../framework.dart';
 /// ref.watch(provider.select((value) => value));
 /// ```
 /// {@endtemplate}
-abstract class Refreshable<T> implements ProviderListenable<T> {
+abstract class Refreshable<T>
+    implements ProviderListenable<T>, AnyRefreshable<T> {
   /// The provider that is being refreshed.
   ProviderBase<Object?> get _origin;
 }

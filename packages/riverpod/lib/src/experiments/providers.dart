@@ -5,12 +5,14 @@ sealed class ProviderListenable2<T>
   Result<T> addListener(ProviderListenableTransformer<T> transformer);
 }
 
+abstract class Refreshable2<T> implements ProviderListenable2<T> {}
+
 abstract class Ref2<StateT> {
   ProviderContainer get container;
 
   @useResult
-  T refresh<T>(Refreshable<T> provider);
-  void invalidate(ProviderOrFamily provider);
+  T refresh<T>(Refreshable2<T> provider);
+  void invalidate(Provider2<Object?> provider);
   void invalidateSelf();
 
   void notifyListeners();
@@ -23,16 +25,17 @@ abstract class Ref2<StateT> {
   void onCancel(void Function() cb);
   void onDispose(void Function() cb);
 
-  T read<T>(ProviderListenable<T> provider);
-  T watch<T>(ProviderListenable<T> provider);
+  T read<T>(ProviderListenable2<T> provider);
+  T watch<T>(ProviderListenable2<T> provider);
   ProviderSubscription<T> listen<T>(
-    ProviderListenable<T> provider,
+    ProviderListenable2<T> provider,
     void Function(T previous, T next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   });
   void listenSelf(
-    void Function(StateT? previous, StateT next) listener, {
+    void Function(StateT previous, StateT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
+    void Function(StateT initial) onInit,
   });
 }
 
@@ -116,9 +119,8 @@ abstract class CustomProvider2<StateT> implements Provider2<StateT> {
   @override
   Result<StateT> addListener(
     ProviderListenableTransformer<StateT> transformer,
-  ) {
-    final element = transformer.container.readProviderElement(this);
-  }
+  ) =>
+      throw UnimplementedError();
 }
 
 abstract class ProviderHandle<StateT> {}
@@ -148,7 +150,8 @@ final class ProviderListenableTransformer<T> {
     ProviderListenable2<T> listenable,
     void Function(T previous, T next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
-  }) {}
+  }) =>
+      throw UnimplementedError();
 }
 
 class _Select<InT, OutT> implements ProviderListenable2<OutT> {
