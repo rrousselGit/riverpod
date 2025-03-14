@@ -1,5 +1,6 @@
-import 'package:riverpod/experiments/group.dart';
-import 'package:riverpod/experiments/providers.dart';
+import 'package:riverpod/experiments/experiments/group.dart';
+import 'package:riverpod/experiments/experiments/mutations.dart';
+import 'package:riverpod/experiments/experiments/providers.dart';
 
 //////
 //////
@@ -34,7 +35,7 @@ class UsersRepo with Group<String, User> {
     return Provider2.sync<User?>(
       group: bind.value.optional,
       (ref) {
-        super.byId(id).watch(ref);
+        ref.watch(super.byId(id));
 
         return null;
       },
@@ -53,7 +54,7 @@ class CurrentUserProvider extends CustomProvider2<User?> {
 
   late final $logout = mutation<void>();
   MutationCall<void> logout() => mutate($logout, (ref) async {
-        ref.state = null;
+        ref.setData(null);
       });
 
   late final $login = mutation<User>();
@@ -61,7 +62,7 @@ class CurrentUserProvider extends CustomProvider2<User?> {
       mutate(
         $login,
         (ref) async {
-          ref.state = User(id: 'id', name: 'name');
+          ref.setData(User(id: 'id', name: 'name'));
         },
       );
 }

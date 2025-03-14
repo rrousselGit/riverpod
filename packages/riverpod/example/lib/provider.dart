@@ -1,4 +1,4 @@
-import 'package:riverpod/experiments/providers.dart';
+import 'package:riverpod/src/experiments/providers.dart';
 
 import 'common.dart';
 

@@ -23,11 +23,15 @@ typedef OnError = void Function(Object, StackTrace);
 @internal
 typedef DebugGetCreateSourceHash = String Function();
 
+/// An interface to help the migration between [ProviderBase] and [Provider2].
+sealed class AnyProvider<StateT>
+    implements AnyProviderListenable<StateT>, ProviderOrFamily {}
+
 /// A base class for _all_ providers.
 @immutable
 abstract class ProviderBase<StateT> extends ProviderOrFamily
     with ProviderListenable<StateT>
-    implements ProviderOverride, Refreshable<StateT> {
+    implements ProviderOverride, Refreshable<StateT>, AnyProvider<StateT> {
   /// A base class for _all_ providers.
   const ProviderBase({
     required super.name,

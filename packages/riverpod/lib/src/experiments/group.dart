@@ -1,8 +1,4 @@
-import 'dart:async';
-
-import 'package:meta/meta.dart';
-
-import 'providers.dart';
+part of '../framework.dart';
 
 class _Group<KeyT, StateT> with Group<KeyT, StateT> {
   _Group(this._keyFor);
@@ -24,6 +20,7 @@ abstract mixin class Group<KeyT, ValueT> {
   ProviderListenable2<ValueT?> byId(KeyT key) => throw UnimplementedError();
 }
 
+@internal
 class GroupBindBuilder<KeyT, StateT> {
   GroupBindBuilder(this._group);
   final Group<KeyT, StateT> _group;

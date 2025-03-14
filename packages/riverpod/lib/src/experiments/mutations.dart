@@ -1,4 +1,4 @@
-part of 'providers.dart';
+part of '../framework.dart';
 
 class ProviderCall<ResultT> {}
 

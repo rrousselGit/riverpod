@@ -1,22 +1,40 @@
-import 'dart:async';
+part of '../framework.dart';
 
-import 'package:meta/meta.dart';
+sealed class ProviderListenable2<T>
+    implements ProviderListenableOrScope<T>, AnyProviderListenable<T> {
+  Result<T> addListener(ProviderListenableTransformer<T> transformer);
+}
 
-export '../riverpod.dart' show AsyncData;
-import '../riverpod.dart' show AsyncData;
-export '../riverpod.dart' show AsyncValue;
-import '../riverpod.dart' show AsyncValue;
-import '../src/framework.dart';
-import '../src/result.dart';
-import 'group.dart';
+abstract class Ref2<StateT> {
+  ProviderContainer get container;
 
-export '../riverpod.dart'
-    show AsyncData, ProviderContainer, AsyncError, AsyncValue, Override;
+  @useResult
+  T refresh<T>(Refreshable<T> provider);
+  void invalidate(ProviderOrFamily provider);
+  void invalidateSelf();
 
-part 'scope.dart';
-part 'mutations.dart';
+  void notifyListeners();
 
-abstract class Ref2<StateT> {}
+  KeepAliveLink keepAlive();
+
+  void onAddListener(void Function() cb);
+  void onRemoveListener(void Function() cb);
+  void onResume(void Function() cb);
+  void onCancel(void Function() cb);
+  void onDispose(void Function() cb);
+
+  T read<T>(ProviderListenable<T> provider);
+  T watch<T>(ProviderListenable<T> provider);
+  ProviderSubscription<T> listen<T>(
+    ProviderListenable<T> provider,
+    void Function(T? previous, T next) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  });
+  void listenSelf(
+    void Function(StateT? previous, StateT next) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  });
+}
 
 extension SyncRefX<StateT> on Ref2<StateT> {
   Result<StateT>? get state => throw UnimplementedError();
@@ -44,7 +62,8 @@ extension Ref2X<T> on Ref2<AsyncValue<T>> {
   Future<T> get future => throw UnimplementedError();
 }
 
-sealed class Provider2<StateT> implements ProviderListenable2<StateT> {
+sealed class Provider2<StateT>
+    implements ProviderListenable2<StateT>, AnyProvider<StateT> {
   static Provider2<AsyncValue<T>> async<T>(
     FutureOr<Event<T>> Function(Ref2<AsyncValue<T>> ref) create, {
     GroupBind<T>? group,
@@ -130,10 +149,6 @@ final class ProviderListenableTransformer<T> {
     void Function(T? previous, T next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
   }) {}
-}
-
-sealed class ProviderListenable2<T> implements ProviderListenableOrScope<T> {
-  Result<T> addListener(ProviderListenableTransformer<T> transformer);
 }
 
 class _Select<InT, OutT> implements ProviderListenable2<OutT> {

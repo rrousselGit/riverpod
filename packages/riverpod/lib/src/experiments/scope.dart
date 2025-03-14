@@ -1,6 +1,4 @@
-part of 'providers.dart';
-
-sealed class ProviderListenableOrScope<T> {}
+part of '../framework.dart';
 
 abstract class ScopeRef {
   T watch<T>(ProviderListenableOrScope<T> provider);
@@ -16,6 +14,8 @@ class _ScopeError extends Error {
         'or override it using ProviderScope(overrides: [scope.overrideWithValue(...)])';
   }
 }
+
+sealed class ProviderListenableOrScope<T> {}
 
 class Scope<T> implements ProviderListenableOrScope<T> {
   factory Scope(T Function(ScopeRef ref) create) => throw UnimplementedError();

@@ -133,6 +133,11 @@ String shortHash(Object? object) {
   return object.hashCode.toUnsigned(20).toRadixString(16).padLeft(5, '0');
 }
 
+/// A temporary interface to help with the migration to [ProviderListenable2].
+///
+/// It is used by functions to support both [ProviderListenable] and [ProviderListenable2].
+sealed class AnyProviderListenable<StateT> {}
+
 /// A base class for all providers, used to consume a provider.
 ///
 /// It is used by [ProviderContainer.listen] and `ref.watch` to listen to
@@ -140,7 +145,8 @@ String shortHash(Object? object) {
 ///
 /// Should override ==/hashCode when possible
 @immutable
-mixin ProviderListenable<State> implements ProviderListenableOrFamily {
+mixin ProviderListenable<State>
+    implements ProviderListenableOrFamily, AnyProviderListenable<State> {
   /// Starts listening to this transformer
   ProviderSubscription<State> addListener(
     Node node,
