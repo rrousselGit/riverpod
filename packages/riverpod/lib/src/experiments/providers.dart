@@ -202,7 +202,7 @@ extension F on ProviderContainer {
   ProviderSubscription<State> listen2<State>(
     ProviderListenableOrScope<State> provider,
     void Function(State? previous, State next) listener, {
-    bool fireImmediately = false,
+    @Deprecated('Will be removed in 3.0.0') bool fireImmediately = false,
     void Function(Object error, StackTrace stackTrace)? onError,
   }) =>
       throw UnimplementedError();

@@ -356,7 +356,7 @@ abstract class Ref<State extends Object?> {
     ProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
-    bool fireImmediately,
+    @Deprecated('Will be removed in 3.0.0') bool fireImmediately,
   });
 }
 

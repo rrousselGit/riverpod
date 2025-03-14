@@ -747,7 +747,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     ProviderListenable<T> listenable,
     void Function(T? previous, T value) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
-    bool fireImmediately = false,
+    @Deprecated('Will be removed in 3.0.0') bool fireImmediately = false,
     // Not part of the public "Ref" API
     void Function()? onDependencyMayHaveChanged,
   }) {

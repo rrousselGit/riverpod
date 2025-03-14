@@ -1,5 +1,8 @@
 part of '../framework.dart';
 
+/// Transition between [AnyProvider] and [ProviderOrFamily].
+sealed class AnyProviderOrFamily {}
+
 /// A common interface shared by [ProviderBase] and [Family]
 @sealed
 abstract class ProviderOrFamily implements ProviderListenableOrFamily {

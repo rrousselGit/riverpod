@@ -8,7 +8,7 @@ abstract class Node {
     ProviderListenable<State> listenable,
     void Function(State? previous, State next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
-    bool fireImmediately = false,
+    @Deprecated('Will be removed in 3.0.0') bool fireImmediately = false,
   });
 
   /// Reads the state of a provider, potentially creating it in the process.

@@ -271,7 +271,7 @@ class ProviderContainer implements Node {
   ProviderSubscription<State> listen<State>(
     ProviderListenable<State> provider,
     void Function(State? previous, State next) listener, {
-    bool fireImmediately = false,
+    @Deprecated('Will be removed in 3.0.0') bool fireImmediately = false,
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
     // TODO test always flushed provider
@@ -285,7 +285,7 @@ class ProviderContainer implements Node {
   }
 
   /// {@macro riverpod.invalidate}
-  void invalidate(ProviderOrFamily provider) {
+  void invalidate(AnyProviderOrFamily provider) {
     if (provider is ProviderBase) {
       final reader = _getOrNull(provider);
 

@@ -99,7 +99,7 @@ abstract class WidgetRef {
     ProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
-    bool fireImmediately,
+    @Deprecated('Will be removed in 3.0.0') bool fireImmediately,
   });
 
   /// Reads a provider without listening to it.
@@ -601,9 +601,6 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
       'ref.listen can only be used within the build method of a ConsumerWidget',
     );
 
-    // We can't implement a fireImmediately flag because we wouldn't know
-    // which listen call was preserved between widget rebuild, and we wouldn't
-    // want to call the listener on every rebuild.
     final sub = _container.listen<T>(provider, listener, onError: onError);
     _listeners.add(sub);
   }
@@ -637,7 +634,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
     ProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
-    bool fireImmediately = false,
+    @Deprecated('Will be removed in 3.0.0') bool fireImmediately = false,
   }) {
     _assertNotDisposed();
     final listeners = _manualListeners ??= [];
