@@ -286,7 +286,7 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
   }
 
   @override
-  void invalidate(ProviderOrFamily provider) {
+  void invalidate(AnyProviderOrFamily provider) {
     assert(_debugAssertCanDependOn(provider), '');
     _container.invalidate(provider);
   }
@@ -677,14 +677,14 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   @override
-  T refresh<T>(Refreshable<T> provider) {
+  T refresh<T>(AnyRefreshable<T> provider) {
     _assertNotOutdated();
     assert(_debugAssertCanDependOn(provider), '');
     return _container.refresh(provider);
   }
 
   @override
-  T read<T>(ProviderListenable<T> provider) {
+  T read<T>(AnyProviderListenable<T> provider) {
     _assertNotOutdated();
     assert(!_debugIsRunningSelector, 'Cannot call ref.read inside a selector');
     assert(_debugAssertCanDependOn(provider), '');
@@ -692,10 +692,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   @override
-  bool exists(ProviderBase<Object?> provider) => _container.exists(provider);
+  bool exists(AnyProvider<Object?> provider) => _container.exists(provider);
 
   @override
-  T watch<T>(ProviderListenable<T> listenable) {
+  T watch<T>(AnyProviderListenable<T> listenable) {
     _assertNotOutdated();
     assert(!_debugIsRunningSelector, 'Cannot call ref.watch inside a selector');
 
@@ -748,7 +748,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
   @override
   ProviderSubscription<T> listen<T>(
-    ProviderListenable<T> listenable,
+    AnyProviderListenable<T> listenable,
     void Function(T? previous, T value) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
     @Deprecated('Will be removed in 3.0.0') bool fireImmediately = false,

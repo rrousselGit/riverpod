@@ -33,12 +33,13 @@ typedef FamilyCreate<T, R extends Ref, Arg> = T Function(R ref, Arg arg);
 /// A base class for all families
 @optionalTypeArgs
 abstract class Family<
-    @Deprecated(
-      'The generic parameter will be removed in version 3.0.0. '
-      'This is to enable riverpod_generator to implement families with generic parameters',
-    )
-    // ignore: deprecated_member_use_from_same_package
-    State> implements FamilyOverride<State>, ProviderOrFamily {
+        @Deprecated(
+          'The generic parameter will be removed in version 3.0.0. '
+          'This is to enable riverpod_generator to implement families with generic parameters',
+        )
+        // ignore: deprecated_member_use_from_same_package
+        State>
+    implements FamilyOverride<State>, ProviderOrFamily, AnyProviderOrFamily {
   /// A base class for all families
   const Family();
 

@@ -507,8 +507,8 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
 
   late ProviderContainer _container = ProviderScope.containerOf(this);
   var _dependencies =
-      <ProviderListenable<Object?>, ProviderSubscription<Object?>>{};
-  Map<ProviderListenable<Object?>, ProviderSubscription<Object?>>?
+      <AnyProviderListenable<Object?>, ProviderSubscription<Object?>>{};
+  Map<AnyProviderListenable<Object?>, ProviderSubscription<Object?>>?
       _oldDependencies;
   final _listeners = <ProviderSubscription<Object?>>[];
   List<_ListenManual<Object?>>? _manualListeners;
@@ -552,7 +552,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   }
 
   @override
-  Res watch<Res>(ProviderListenable<Res> target) {
+  Res watch<Res>(AnyProviderListenable<Res> target) {
     _assertNotDisposed();
     return _dependencies.putIfAbsent(target, () {
       final oldDependency = _oldDependencies?.remove(target);
@@ -591,7 +591,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
 
   @override
   void listen<T>(
-    ProviderListenable<T> provider,
+    AnyProviderListenable<T> provider,
     void Function(T? previous, T value) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
@@ -606,32 +606,32 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   }
 
   @override
-  bool exists(ProviderBase<Object?> provider) {
+  bool exists(AnyProvider<Object?> provider) {
     _assertNotDisposed();
     return ProviderScope.containerOf(this, listen: false).exists(provider);
   }
 
   @override
-  T read<T>(ProviderListenable<T> provider) {
+  T read<T>(AnyProviderListenable<T> provider) {
     _assertNotDisposed();
     return ProviderScope.containerOf(this, listen: false).read(provider);
   }
 
   @override
-  State refresh<State>(Refreshable<State> provider) {
+  State refresh<State>(AnyRefreshable<State> provider) {
     _assertNotDisposed();
     return ProviderScope.containerOf(this, listen: false).refresh(provider);
   }
 
   @override
-  void invalidate(ProviderOrFamily provider) {
+  void invalidate(AnyProviderOrFamily provider) {
     _assertNotDisposed();
     _container.invalidate(provider);
   }
 
   @override
   ProviderSubscription<T> listenManual<T>(
-    ProviderListenable<T> provider,
+    AnyProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
     @Deprecated('Will be removed in 3.0.0') bool fireImmediately = false,

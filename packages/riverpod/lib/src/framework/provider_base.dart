@@ -25,7 +25,7 @@ typedef DebugGetCreateSourceHash = String Function();
 
 /// An interface to help the migration between [ProviderBase] and [Provider2].
 sealed class AnyProvider<StateT>
-    implements AnyProviderListenable<StateT>, ProviderOrFamily {}
+    implements AnyProviderListenable<StateT>, AnyProviderOrFamily {}
 
 /// A base class for _all_ providers.
 @immutable
