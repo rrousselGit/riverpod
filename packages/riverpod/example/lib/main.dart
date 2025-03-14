@@ -11,54 +11,10 @@
 ///
 ///  This showcases how to use `riverpod` without Flutter.
 ///  It also shows how a provider can depend on another provider asynchronously loaded.
-library main;
+library;
 
-import 'dart:convert';
-import 'dart:io';
+import 'dart:async';
+import 'package:riverpod/experiments/providers.dart';
 
-import 'package:riverpod/riverpod.dart';
-
+import 'common.dart';
 import 'models.dart';
-
-/// A Provider that reads a json file and decodes it into a [Configuration].
-final configurationProvider = FutureProvider<Configuration>((_) async {
-  final file =
-      await File.fromUri(Uri.file('configuration.json')) //
-      .readAsString();
-  final map = json.decode(file) as Map<String, Object?>;
-
-  return Configuration.fromJson(map);
-});
-
-/// Creates a [Repository] from [configurationProvider].
-///
-/// This will correctly wait until the configurations are available.
-final repositoryProvider = FutureProvider<Repository>((ref) async {
-  /// Reads the configurations from [configurationProvider]. This is type-safe.
-  final configs = await ref.watch(configurationProvider.future);
-
-  final repository = Repository(configs);
-  // Releases the resources when the provider is destroyed.
-  // This will stop pending HTTP requests.
-  ref.onDispose(repository.dispose);
-
-  return repository;
-});
-
-Future<void> main() async {
-  // Where the state of our providers will be stored.
-  // Avoid making this a global variable, for testability purposes.
-  // If you are using Flutter, you do not need this.
-  final container = ProviderContainer();
-
-  /// Obtains the [Repository]. This will implicitly load [Configuration] too.
-  final repository = await container.read(repositoryProvider.future);
-
-  final comics = await repository.fetchComics();
-  for (final comic in comics) {
-    print(comic.title);
-  }
-
-  /// Disposes the providers associated with [container].
-  container.dispose();
-}
