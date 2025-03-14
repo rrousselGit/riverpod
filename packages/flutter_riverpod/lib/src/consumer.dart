@@ -18,7 +18,7 @@ abstract class WidgetRef {
   /// - [ProviderListenable.select], which allows a widget to filter rebuilds by
   ///   observing only the selected properties.
   /// - [listen], to react to changes on a provider, such as for showing modals.
-  T watch<T>(ProviderListenable<T> provider);
+  T watch<T>(AnyProviderListenable<T> provider);
 
   /// Determines whether a provider is initialized or not.
   ///
@@ -51,7 +51,7 @@ abstract class WidgetRef {
   ///   return Item.fromJson(json);
   /// });
   /// ```
-  bool exists(ProviderBase<Object?> provider);
+  bool exists(AnyProvider<Object?> provider);
 
   /// Listen to a provider and call `listener` whenever its value changes,
   /// without having to take care of removing the listener.
@@ -76,7 +76,7 @@ abstract class WidgetRef {
   ///
   /// This is useful for showing modals or other imperative logic.
   void listen<T>(
-    ProviderListenable<T> provider,
+    AnyProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   });
@@ -96,7 +96,7 @@ abstract class WidgetRef {
   /// When the widget that calls [listenManual] is disposed, the subscription
   /// will be disposed automatically.
   ProviderSubscription<T> listenManual<T>(
-    ProviderListenable<T> provider,
+    AnyProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
     @Deprecated('Will be removed in 3.0.0') bool fireImmediately,
@@ -169,7 +169,7 @@ abstract class WidgetRef {
   /// While more verbose than [read], using [Provider]/`select` is a lot safer.
   /// It does not rely on implementation details on `Model`, and it makes
   /// impossible to have a bug where our UI does not refresh.
-  T read<T>(ProviderListenable<T> provider);
+  T read<T>(AnyProviderListenable<T> provider);
 
   /// Forces a provider to re-evaluate its state immediately, and return the created value.
   ///
@@ -222,7 +222,7 @@ abstract class WidgetRef {
   /// }
   /// ```
   @useResult
-  State refresh<State>(Refreshable<State> provider);
+  State refresh<State>(AnyRefreshable<State> provider);
 
   /// Invalidates the state of the provider, causing it to refresh.
   ///
@@ -235,7 +235,7 @@ abstract class WidgetRef {
   /// Calling [invalidate] will cause the provider to be disposed immediately.
   ///
   /// If used on a provider which is not initialized, this method will have no effect.
-  void invalidate(ProviderOrFamily provider);
+  void invalidate(AnyProviderOrFamily provider);
 }
 
 /// A function that can also listen to providers

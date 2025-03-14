@@ -1,5 +1,38 @@
 part of '../framework.dart';
 
+class ObserverContext {
+  ObserverContext._({
+    required this.provider,
+    required this.container,
+    required this.mutation,
+  });
+
+  final Provider2<Object?> provider;
+  final ProviderContainer container;
+  final MutationCall<Object?>? mutation;
+}
+
+mixin ProviderObserver2 {
+  void didAddProvider(ObserverContext context, Object? value) {}
+  void providerDidFail(
+    ObserverContext context,
+    Object error,
+    StackTrace stackTrace,
+  ) {}
+  void didUpdateProvider(
+    ObserverContext context,
+    Object? previousValue,
+    Object? newValue,
+  ) {}
+  void didDisposeProvider(ObserverContext context) {}
+
+  void didStartMutation(ObserverContext context) {}
+  void didEndMutation(
+    ObserverContext context,
+    MutationState<Object?> result,
+  ) {}
+}
+
 sealed class ProviderListenable2<T>
     implements ProviderListenableOrScope<T>, AnyProviderListenable<T> {
   Result<T> addListener(ProviderListenableTransformer<T> transformer);

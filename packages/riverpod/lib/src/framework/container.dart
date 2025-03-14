@@ -101,6 +101,7 @@ class ProviderContainer implements Node {
     ProviderContainer? parent,
     List<Override> overrides = const [],
     List<ProviderObserver>? observers,
+    List<ProviderObserver2>? observers2,
   })  : _debugOverridesLength = overrides.length,
         depth = parent == null ? 0 : parent.depth + 1,
         _parent = parent,
@@ -206,7 +207,7 @@ class ProviderContainer implements Node {
   /// It could be removed at any time without a major version bump.
   @internal
   @visibleForTesting
-  bool hasStateReaderFor(ProviderListenable<Object?> provider) {
+  bool hasStateReaderFor(AnyProviderListenable<Object?> provider) {
     return _stateReaders.containsKey(provider);
   }
 
@@ -234,13 +235,13 @@ class ProviderContainer implements Node {
   /// }
   /// ```
   Result read<Result>(
-    ProviderListenable<Result> provider,
+    AnyProviderListenable<Result> provider,
   ) {
     return provider.read(this);
   }
 
   /// {@macro riverpod.exists}
-  bool exists(ProviderBase<Object?> provider) {
+  bool exists(AnyProvider<Object?> provider) {
     final element = _getOrNull(provider)?._element;
 
     return element != null;
@@ -269,7 +270,7 @@ class ProviderContainer implements Node {
   /// {@macro riverpod.listen}
   @override
   ProviderSubscription<State> listen<State>(
-    ProviderListenable<State> provider,
+    AnyProviderListenable<State> provider,
     void Function(State? previous, State next) listener, {
     @Deprecated('Will be removed in 3.0.0') bool fireImmediately = false,
     void Function(Object error, StackTrace stackTrace)? onError,
@@ -304,12 +305,12 @@ class ProviderContainer implements Node {
   }
 
   /// {@macro riverpod.refresh}
-  State refresh<State>(Refreshable<State> provider) {
+  State refresh<State>(AnyRefreshable<State> provider) {
     invalidate(provider._origin);
     return read(provider);
   }
 
-  void _disposeProvider(ProviderBase<Object?> provider) {
+  void _disposeProvider(AnyProvider<Object?> provider) {
     final reader = _getOrNull(provider);
     // The provider is already disposed, so we don't need to do anything
     if (reader == null) return;
@@ -415,7 +416,7 @@ class ProviderContainer implements Node {
 
   @override
   ProviderElementBase<State> readProviderElement<State>(
-    ProviderBase<State> provider,
+    AnyProvider<State> provider,
   ) {
     if (_disposed) {
       throw StateError(
@@ -479,7 +480,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
 
   /// Obtains a [_StateReader] for a provider, but do not create it if it does
   /// not exist.
-  _StateReader? _getOrNull(ProviderBase<Object?> provider) {
+  _StateReader? _getOrNull(AnyProvider<Object?> provider) {
     return _stateReaders[provider] ??
 
         /// No need to check "parent". We can directly check "root", because
@@ -490,7 +491,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
 
   /// Create a [_StateReader] for a provider if it does not exist.
   /// If one already exists, returns it.
-  _StateReader _putIfAbsent(ProviderBase<Object?> provider) {
+  _StateReader _putIfAbsent(AnyProvider<Object?> provider) {
     final currentReader = _stateReaders[provider];
     if (currentReader != null) return currentReader;
 
@@ -634,6 +635,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
   }
 
   /// Traverse the [ProviderElementBase]s associated with this [ProviderContainer].
+  @internal
   Iterable<ProviderElementBase> getAllProviderElements() sync* {
     for (final reader in _stateReaders.values) {
       if (reader._element != null && reader.container == this) {
@@ -647,6 +649,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
   /// This is fairly expensive and should be avoided as much as possible.
   /// If you do not need for providers to be sorted, consider using [getAllProviderElements]
   /// instead, which returns an unsorted list and is significantly faster.
+  @internal
   Iterable<ProviderElementBase> getAllProviderElementsInOrder() sync* {
     final visitedNodes = HashSet<ProviderElementBase>();
     final queue = DoubleLinkedQueue<ProviderElementBase>();
