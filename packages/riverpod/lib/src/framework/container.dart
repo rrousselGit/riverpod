@@ -607,7 +607,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
       );
 
       if (_root != null) {
-        _root!._stateReaders[provider] = reader;
+        _root._stateReaders[provider] = reader;
       }
 
       return reader;
