@@ -50,7 +50,10 @@ export 'src/framework.dart'
         Create,
         Node,
         ProviderElementProxy,
-        OnError;
+        OnError,
+        ProviderListenable2,
+        ProviderListenableOrScope,
+        GroupBindBuilder;
 
 export 'src/future_provider.dart';
 
