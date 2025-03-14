@@ -27,7 +27,7 @@ abstract class Ref2<StateT> {
   T watch<T>(ProviderListenable<T> provider);
   ProviderSubscription<T> listen<T>(
     ProviderListenable<T> provider,
-    void Function(T? previous, T next) listener, {
+    void Function(T previous, T next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   });
   void listenSelf(
@@ -146,7 +146,7 @@ final class ProviderListenableTransformer<T> {
 
   ProviderSubscription<T> listen<T>(
     ProviderListenable2<T> listenable,
-    void Function(T? previous, T next) listener, {
+    void Function(T previous, T next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
   }) {}
 }
