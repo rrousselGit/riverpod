@@ -10,8 +10,7 @@ part of '../framework.dart';
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
 /// {@endtemplate}
 @optionalTypeArgs
-abstract class Ref<
-    @Deprecated('Will be removed in 3.0') State extends Object?> {
+abstract class Ref<State extends Object?> {
   /// The [ProviderContainer] that this provider is associated with.
   ProviderContainer get container;
 
@@ -85,7 +84,6 @@ abstract class Ref<
   /// As opposed to [listen], the listener will be called even if
   /// [ProviderElementBase.updateShouldNotify] returns false, meaning that the previous
   /// and new value can potentially be identical.
-  @Deprecated('Will be removed in 3.0. Use Notifier.listenSelf instead')
   void listenSelf(
     void Function(State? previous, State next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
