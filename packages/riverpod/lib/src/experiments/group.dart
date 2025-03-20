@@ -8,16 +8,16 @@ class _Group<KeyT, StateT> with Group<KeyT, StateT> {
   KeyT keyFor(StateT value) => _keyFor(value);
 }
 
-abstract mixin class Group<KeyT, ValueT> {
-  factory Group(KeyT Function(ValueT value) keyFor) = _Group;
+abstract mixin class Group<IdT, ValueT> {
+  factory Group(IdT Function(ValueT value) keyFor) = _Group;
 
-  late final bind = GroupBindBuilder<KeyT, ValueT>(this);
+  late final bind = GroupBindBuilder<IdT, ValueT>(this);
 
-  KeyT keyFor(ValueT value);
+  IdT keyFor(ValueT value);
 
-  late final ProviderListenable2<List<ValueT>> all = throw UnimplementedError();
-  late final ProviderListenable2<List<KeyT>> keys = throw UnimplementedError();
-  ProviderListenable2<ValueT?> byId(KeyT key) => throw UnimplementedError();
+  late final ProviderListenable<List<ValueT>> all = throw UnimplementedError();
+  late final ProviderListenable<List<IdT>> keys = throw UnimplementedError();
+  ProviderListenable<ValueT?> byId(IdT id) => throw UnimplementedError();
 }
 
 @internal

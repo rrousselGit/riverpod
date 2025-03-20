@@ -225,7 +225,7 @@ abstract class Ref<State extends Object?> {
   ///
   /// If possible, avoid using [read] and prefer [watch], which is generally
   /// safer to use.
-  T read<T>(AnyProviderListenable<T> provider);
+  T read<T>(ProviderListenable<T> provider);
 
   /// {@template riverpod.exists}
   /// Determines whether a provider is initialized or not.
@@ -312,7 +312,7 @@ abstract class Ref<State extends Object?> {
   /// - if multiple widgets depends on `sortedTodosProvider` the list will be
   ///   sorted only once.
   /// - if nothing is listening to `sortedTodosProvider`, then no sort is performed.
-  T watch<T>(AnyProviderListenable<T> provider);
+  T watch<T>(ProviderListenable<T> provider);
 
   /// Requests for the state of a provider to not be disposed when all the
   /// listeners of the provider are removed.
@@ -353,10 +353,10 @@ abstract class Ref<State extends Object?> {
   /// Instead the listener will receive an [AsyncError].
   /// {@endtemplate}
   ProviderSubscription<T> listen<T>(
-    AnyProviderListenable<T> provider,
+    ProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
-    @Deprecated('Will be removed in 3.0.0') bool fireImmediately,
+    bool fireImmediately,
   });
 }
 

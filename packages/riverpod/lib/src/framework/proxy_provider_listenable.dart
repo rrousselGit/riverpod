@@ -81,7 +81,7 @@ class ProviderElementProxy<Input, Output>
   ) _lense;
 
   @override
-  ProviderSubscription<Output> addListener(
+  ProviderSubscription<Output> _addListener(
     Node node,
     void Function(Output? previous, Output next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,

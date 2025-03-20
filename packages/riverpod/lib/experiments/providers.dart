@@ -10,11 +10,12 @@ export 'package:riverpod/riverpod.dart'
 export 'package:riverpod/src/internals.dart'
     show
         Ref2,
-        SyncRefX,
-        AsyncRefX,
+        SyncRef2,
+        AsyncRef2,
         Event,
+        ProviderBase2,
         Provider2,
-        CustomProvider2,
-        ProviderHandle,
+        AsyncProvider,
+        SyncProvider,
         ProviderListenableTransformer,
-        ProviderListenable2;
+        ProviderListenable;

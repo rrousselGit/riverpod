@@ -51,9 +51,10 @@ export 'src/framework.dart'
         Node,
         ProviderElementProxy,
         OnError,
-        ProviderListenable2,
         ProviderListenableOrScope,
-        GroupBindBuilder;
+        GroupBindBuilder,
+        AnyX,
+        ObsX;
 
 export 'src/future_provider.dart';
 

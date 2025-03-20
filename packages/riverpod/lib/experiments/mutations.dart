@@ -1,10 +1,10 @@
 export 'package:riverpod/src/internals.dart'
     show
-        ProviderCall,
-        MutationCall,
+        Call,
         Mutation,
         MutationState,
         IdleMutationState,
         PendingMutationState,
         ErrorMutationState,
-        SuccessMutationState;
+        SuccessMutationState,
+        ProviderContainerInvoke;

@@ -83,7 +83,6 @@ class ProviderScope extends StatefulWidget {
     super.key,
     this.overrides = const [],
     this.observers,
-    this.observers2,
     @Deprecated(
       'Will be removed in 3.0.0. See https://github.com/rrousselGit/riverpod/issues/3261#issuecomment-1973514033',
     )
@@ -149,9 +148,7 @@ class ProviderScope extends StatefulWidget {
   final Widget child;
 
   /// The listeners that subscribes to changes on providers stored on this [ProviderScope].
-  final List<ProviderObserver>? observers;
-
-  final List<ProviderObserver2>? observers2;
+  final List<AnyProviderObserver>? observers;
 
   /// Information on how to override a provider/family.
   final List<Override> overrides;
@@ -189,7 +186,6 @@ class ProviderScopeState extends State<ProviderScope> {
       parent: parent,
       overrides: widget.overrides,
       observers: widget.observers,
-      observers2: widget.observers2,
       // TODO How to report to FlutterError?
       // onError: (dynamic error, stack) {
       //   FlutterError.reportError(

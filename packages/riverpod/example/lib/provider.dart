@@ -1,43 +1,72 @@
-import 'package:riverpod/src/experiments/providers.dart';
+import 'dart:async';
+
+import 'package:riverpod/experiments/mutations.dart';
+import 'package:riverpod/experiments/providers.dart';
 
 import 'common.dart';
 
-final prov = Provider2.async<int>((ref) {
+final value = SyncProvider((ref) {
+  return 42;
+});
+final future = AsyncProvider((ref) async {
   return ref.setData(42);
 });
-final syncProv = Provider2.sync((ref) => 42);
+final stream = AsyncProvider((ref) async {
+  ref.emit(Stream.value(42));
+});
+
+class ValueProvider with SyncProvider<int> {
+  @override
+  int build(ref) => 42;
+}
+
+class FutureProvider with AsyncProvider<int> {
+  @override
+  int build(ref) => 42;
+}
+
+class StreamProvider with AsyncProvider<int> {
+  @override
+  int build(ref) => ref.emit(Stream.value(42));
+}
+
+final prov = AsyncProvider<int>((ref) => 42);
+final syncProv = SyncProvider((ref) => 42);
 
 Future<void> provMain() async {
   final container = ProviderContainer();
 
-  final int value = await container.read2(prov.future);
-  AsyncValue<int> value2 = prov.watch(container);
+  final value = await container.read(prov.future);
+  final value2 = container.read(prov);
 
-  final int value3 = container.read2(syncProv);
-  int value4 = syncProv.watch(container);
+  final value3 = container.read(syncProv);
+  final value4 = container.read(syncProv);
 }
 
-class CustomProv extends CustomProvider2<AsyncValue<int>> {
+class CustomProv with AsyncProvider<int> {
   late final $addTodo = mutation<Todo>();
-  MutationCall<Todo> addTodo(String text) => mutate($addTodo, (ref) async {
-        final state = await ref.future;
-        ref.setData(42);
-        return Todo('id');
-      });
+  Call<Future<Todo>> addTodo(String text) => mutate($addTodo, (ref) async {
+    final state = await ref.future;
+    ref.setData(42);
+    return Todo('id');
+  });
 
   @override
-  late final create = async((ref) => ref.setData(42));
+  FutureOr<int> build(AsyncRef2<int> ref) => 42;
 }
 
-Future<void> customProv() async {
+final customProv = CustomProv();
+
+Future<void> customProvMain() async {
   final container = ProviderContainer();
 
-  AsyncValue<int> value = container.read2(CustomProv());
-  MutationState<Todo> addTodo = container.read2(CustomProv().$addTodo);
-  Todo newTodo = await container.invoke(CustomProv().addTodo('text'));
+  final value = container.read(customProv);
+  final addTodo = container.read(customProv.$addTodo);
+  final newTodo = await container.invoke(customProv.addTodo('text'));
+  container.invoke(customProv.$addTodo.reset());
 }
 
-class Test extends CustomProvider2<int> {
+class Test with SyncProvider<int> {
   Test(this.id);
 
   final String id;
@@ -46,24 +75,24 @@ class Test extends CustomProvider2<int> {
   Record get args => (id,);
 
   late final $addTodo = mutation<Todo>(#addTodo);
-  MutationCall<Todo> addTodo(String text) => mutate($addTodo, (ref) async {
-        print(id);
-        int state = ref.state!.value!;
-        ref.setData(42 + state);
-        return Todo('id');
-      });
+  Call<Future<Todo>> addTodo(String text) => mutate($addTodo, (ref) async {
+    print(id);
+    final state = ref.state!.value!;
+    ref.setData(42 + state);
+    return Todo('id');
+  });
 
   @override
-  late final create = sync((ref) {
+  int build(Ref2<int> ref) {
     print(id);
     return 42;
-  });
+  }
 }
 
 Future<void> test() async {
   final container = ProviderContainer();
 
-  int value = container.read2(Test('id'));
-  MutationState<Todo> addTodo = container.read2(Test('id').$addTodo);
-  Todo newTodo = await container.invoke(Test('id').addTodo('text'));
+  final value = container.read(Test('id'));
+  final addTodo = container.read(Test('id').$addTodo);
+  final newTodo = await container.invoke(Test('id').addTodo('text'));
 }

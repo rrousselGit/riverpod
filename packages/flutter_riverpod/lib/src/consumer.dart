@@ -18,7 +18,7 @@ abstract class WidgetRef {
   /// - [ProviderListenable.select], which allows a widget to filter rebuilds by
   ///   observing only the selected properties.
   /// - [listen], to react to changes on a provider, such as for showing modals.
-  T watch<T>(AnyProviderListenable<T> provider);
+  T watch<T>(ProviderListenable<T> provider);
 
   /// Determines whether a provider is initialized or not.
   ///
@@ -76,7 +76,7 @@ abstract class WidgetRef {
   ///
   /// This is useful for showing modals or other imperative logic.
   void listen<T>(
-    AnyProviderListenable<T> provider,
+    ProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   });
@@ -96,10 +96,10 @@ abstract class WidgetRef {
   /// When the widget that calls [listenManual] is disposed, the subscription
   /// will be disposed automatically.
   ProviderSubscription<T> listenManual<T>(
-    AnyProviderListenable<T> provider,
+    ProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
-    @Deprecated('Will be removed in 3.0.0') bool fireImmediately,
+    bool fireImmediately,
   });
 
   /// Reads a provider without listening to it.
@@ -169,7 +169,7 @@ abstract class WidgetRef {
   /// While more verbose than [read], using [Provider]/`select` is a lot safer.
   /// It does not rely on implementation details on `Model`, and it makes
   /// impossible to have a bug where our UI does not refresh.
-  T read<T>(AnyProviderListenable<T> provider);
+  T read<T>(ProviderListenable<T> provider);
 
   /// Forces a provider to re-evaluate its state immediately, and return the created value.
   ///
@@ -507,8 +507,8 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
 
   late ProviderContainer _container = ProviderScope.containerOf(this);
   var _dependencies =
-      <AnyProviderListenable<Object?>, ProviderSubscription<Object?>>{};
-  Map<AnyProviderListenable<Object?>, ProviderSubscription<Object?>>?
+      <ProviderListenable<Object?>, ProviderSubscription<Object?>>{};
+  Map<ProviderListenable<Object?>, ProviderSubscription<Object?>>?
       _oldDependencies;
   final _listeners = <ProviderSubscription<Object?>>[];
   List<_ListenManual<Object?>>? _manualListeners;
@@ -552,7 +552,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   }
 
   @override
-  Res watch<Res>(AnyProviderListenable<Res> target) {
+  Res watch<Res>(ProviderListenable<Res> target) {
     _assertNotDisposed();
     return _dependencies.putIfAbsent(target, () {
       final oldDependency = _oldDependencies?.remove(target);
@@ -591,7 +591,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
 
   @override
   void listen<T>(
-    AnyProviderListenable<T> provider,
+    ProviderListenable<T> provider,
     void Function(T? previous, T value) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
@@ -612,7 +612,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   }
 
   @override
-  T read<T>(AnyProviderListenable<T> provider) {
+  T read<T>(ProviderListenable<T> provider) {
     _assertNotDisposed();
     return ProviderScope.containerOf(this, listen: false).read(provider);
   }
@@ -631,10 +631,10 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
 
   @override
   ProviderSubscription<T> listenManual<T>(
-    AnyProviderListenable<T> provider,
+    ProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
-    @Deprecated('Will be removed in 3.0.0') bool fireImmediately = false,
+    bool fireImmediately = false,
   }) {
     _assertNotDisposed();
     final listeners = _manualListeners ??= [];

@@ -136,11 +136,6 @@ String shortHash(Object? object) {
   return object.hashCode.toUnsigned(20).toRadixString(16).padLeft(5, '0');
 }
 
-/// A temporary interface to help with the migration to [ProviderListenable2].
-///
-/// It is used by functions to support both [ProviderListenable] and [ProviderListenable2].
-sealed class AnyProviderListenable<StateT> {}
-
 /// A base class for all providers, used to consume a provider.
 ///
 /// It is used by [ProviderContainer.listen] and `ref.watch` to listen to
@@ -149,15 +144,24 @@ sealed class AnyProviderListenable<StateT> {}
 /// Should override ==/hashCode when possible
 @immutable
 mixin ProviderListenable<State>
-    implements ProviderListenableOrFamily, AnyProviderListenable<State> {
+    implements ProviderListenableOrFamily, ProviderListenableOrScope<State> {
   /// Starts listening to this transformer
+  @Deprecated('Do not override')
   ProviderSubscription<State> addListener(
     Node node,
     void Function(State? previous, State next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
-  });
+  }) {
+    return _addListener(
+      node,
+      listener,
+      onError: onError,
+      onDependencyMayHaveChanged: onDependencyMayHaveChanged,
+      fireImmediately: fireImmediately,
+    );
+  }
 
   /// Obtains the result of this provider expression without adding listener.
   State read(Node node);
@@ -225,7 +229,7 @@ mixin ProviderListenable<State>
   /// }
   /// ```
   ///
-  /// This will further optimise our widget by rebuilding it only when "isAdult"
+  /// This will further optimize our widget by rebuilding it only when "isAdult"
   /// changed instead of whenever the age changes.
   ProviderListenable<Selected> select<Selected>(
     Selected Function(State value) selector,

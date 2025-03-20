@@ -23,9 +23,52 @@ typedef OnError = void Function(Object, StackTrace);
 @internal
 typedef DebugGetCreateSourceHash = String Function();
 
-/// An interface to help the migration between [ProviderBase] and [Provider2].
+/// An interface to help the migration between [ProviderBase] and [ProviderBase2].
 sealed class AnyProvider<StateT>
-    implements AnyProviderListenable<StateT>, AnyProviderOrFamily {}
+    implements ProviderListenable<StateT>, AnyProviderOrFamily {}
+
+@internal
+extension AnyX on AnyProvider<Object?> {
+  Object? get argument {
+    final that = this;
+    return switch (that) {
+      ProviderBase2() => that.args,
+      ProviderBase() => that.argument,
+    };
+  }
+
+  DebugGetCreateSourceHash? get debugGetCreateSourceHash {
+    final that = this;
+    return switch (that) {
+      ProviderBase2() => null,
+      ProviderBase() => that.debugGetCreateSourceHash,
+    };
+  }
+
+  Family? get from {
+    final that = this;
+    return switch (that) {
+      ProviderBase2() => null,
+      ProviderBase() => that.from,
+    };
+  }
+
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies {
+    final that = this;
+    return switch (that) {
+      ProviderBase2() => null,
+      ProviderBase() => that.allTransitiveDependencies,
+    };
+  }
+
+  Iterable<ProviderOrFamily>? get dependencies {
+    final that = this;
+    return switch (that) {
+      ProviderBase2() => null,
+      ProviderBase() => that.dependencies,
+    };
+  }
+}
 
 /// A base class for _all_ providers.
 @immutable
@@ -70,8 +113,24 @@ abstract class ProviderBase<StateT> extends ProviderOrFamily
   /// On generated providers, this will be a record of all arguments.
   final Object? argument;
 
+  @preferInline
+  static StateT _readImpl<StateT>(AnyProvider<StateT> provider, Node node) {
+    final element = node.readProviderElement(provider);
+
+    element.flush();
+
+    // In case `read` was called on a provider that has no listener
+    element.mayNeedDispose();
+
+    return element.requireState;
+  }
+
   @override
-  ProviderSubscription<StateT> addListener(
+  StateT read(Node node) => _readImpl(this, node);
+
+  @preferInline
+  static ProviderSubscription<StateT> _addListenerImpl<StateT>(
+    AnyProvider<StateT> provider,
     Node node,
     void Function(StateT? previous, StateT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
@@ -80,7 +139,7 @@ abstract class ProviderBase<StateT> extends ProviderOrFamily
   }) {
     onError ??= Zone.current.handleUncaughtError;
 
-    final element = node.readProviderElement(this);
+    final element = node.readProviderElement(provider);
 
     element.flush();
     if (fireImmediately) {
@@ -104,16 +163,21 @@ abstract class ProviderBase<StateT> extends ProviderOrFamily
     );
   }
 
-  @override
-  StateT read(Node node) {
-    final element = node.readProviderElement(this);
-
-    element.flush();
-
-    // In case `read` was called on a provider that has no listener
-    element.mayNeedDispose();
-
-    return element.requireState;
+  ProviderSubscription<StateT> _addListener(
+    Node node,
+    void Function(StateT? previous, StateT next) listener, {
+    required void Function(Object error, StackTrace stackTrace)? onError,
+    required void Function()? onDependencyMayHaveChanged,
+    required bool fireImmediately,
+  }) {
+    return _addListenerImpl(
+      this,
+      node,
+      listener,
+      onError: onError,
+      onDependencyMayHaveChanged: onDependencyMayHaveChanged,
+      fireImmediately: fireImmediately,
+    );
   }
 
   /// An internal method that defines how a provider behaves.

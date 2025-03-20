@@ -1,11 +1,17 @@
 part of '../framework.dart';
 
-class ProviderCall<ResultT> {}
+extension ProviderContainerInvoke on ProviderContainer {
+  T invoke<T>(Call<T> call) => throw UnimplementedError();
+}
 
-class MutationCall<ResultT> implements ProviderCall<Future<ResultT>> {}
+class Call<ResultT> {
+  Mutation<ResultT>? get mutation => throw UnimplementedError();
+}
 
 abstract class Mutation<ResultT>
-    implements ProviderListenable2<MutationState<ResultT>> {}
+    implements ProviderListenable<MutationState<ResultT>> {
+  Call<void> reset() => throw UnimplementedError();
+}
 
 /// The current state of a mutation.
 ///

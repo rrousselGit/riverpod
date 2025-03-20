@@ -1,7 +1,10 @@
 part of '../framework.dart';
 
 /// Transition between [Refreshable] and [Refreshable2].
-sealed class AnyRefreshable<T> {}
+sealed class AnyRefreshable<T> implements ProviderListenable<T> {
+  /// The provider that is being refreshed.
+  AnyProvider<Object?> get _origin;
+}
 
 /// {@template riverpod.refreshable}
 /// An interface for provider expressions that can be passed to `ref.refresh`
@@ -63,12 +66,12 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
 
   /// The provider associated with this [ProviderElementBase], before applying overrides.
   // Not typed as <State> because of https://github.com/rrousselGit/riverpod/issues/1100
-  ProviderBase<Object?> get origin => _origin;
-  late ProviderBase<Object?> _origin;
+  AnyProvider<Object?> get origin => _origin;
+  late AnyProvider<Object?> _origin;
 
   /// The provider associated with this [ProviderElementBase], after applying overrides.
-  ProviderBase<StateT> get provider => _provider;
-  ProviderBase<StateT> _provider;
+  AnyProvider<StateT> get provider => _provider;
+  AnyProvider<StateT> _provider;
 
   /// The [ProviderContainer] that owns this [ProviderElementBase].
   @override
@@ -612,10 +615,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     );
   }
 
-  bool _debugAssertCanDependOn(ProviderListenableOrFamily listenable) {
+  bool _debugAssertCanDependOn(Object? listenable) {
     assert(
       () {
-        if (listenable is! ProviderBase<Object?>) return true;
+        if (listenable is! AnyProvider<Object?>) return true;
 
         ProviderElementBase? listenableElement;
         try {
@@ -627,7 +630,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         }
 
         assert(
-          listenable._origin != origin,
+          switch (listenable) {
+            ProviderBase2<Object?>() => true,
+            ProviderBase<Object?>() => listenable._origin != origin,
+          },
           'A provider cannot depend on itself',
         );
 
@@ -684,7 +690,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   @override
-  T read<T>(AnyProviderListenable<T> provider) {
+  T read<T>(ProviderListenable<T> provider) {
     _assertNotOutdated();
     assert(!_debugIsRunningSelector, 'Cannot call ref.read inside a selector');
     assert(_debugAssertCanDependOn(provider), '');
@@ -695,7 +701,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   bool exists(AnyProvider<Object?> provider) => _container.exists(provider);
 
   @override
-  T watch<T>(AnyProviderListenable<T> listenable) {
+  T watch<T>(ProviderListenable<T> listenable) {
     _assertNotOutdated();
     assert(!_debugIsRunningSelector, 'Cannot call ref.watch inside a selector');
 
@@ -742,16 +748,16 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   @override
-  ProviderElementBase<T> readProviderElement<T>(ProviderBase<T> provider) {
+  ProviderElementBase<T> readProviderElement<T>(AnyProvider<T> provider) {
     return _container.readProviderElement(provider);
   }
 
   @override
   ProviderSubscription<T> listen<T>(
-    AnyProviderListenable<T> listenable,
+    ProviderListenable<T> listenable,
     void Function(T? previous, T value) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
-    @Deprecated('Will be removed in 3.0.0') bool fireImmediately = false,
+    bool fireImmediately = false,
     // Not part of the public "Ref" API
     void Function()? onDependencyMayHaveChanged,
   }) {
@@ -759,7 +765,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     assert(!_debugIsRunningSelector, 'Cannot call ref.read inside a selector');
     assert(_debugAssertCanDependOn(listenable), '');
 
-    return listenable.addListener(
+    return listenable._addListener(
       this,
       listener,
       fireImmediately: fireImmediately,
