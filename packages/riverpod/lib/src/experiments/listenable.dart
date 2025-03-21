@@ -1,7 +1,6 @@
 part of '../framework.dart';
 
 mixin ProviderListenableTransformer<T> implements ProviderListenable<T> {
-  @override
   static ProviderSubscription<T> _transform<T>(
     Node node,
     void Function(T? previous, T next) listener, {

@@ -37,68 +37,24 @@ mixin ProviderObserver2 implements AnyProviderObserver {
   ) {}
 }
 
-abstract class Refreshable2<T> implements ProviderListenable<T> {
-  /// The provider that is being refreshed.
-  ProviderBase2<Object?> get _origin;
-}
-
-abstract class Ref2<StateT> {
-  ProviderContainer get container;
-
-  @useResult
-  T refresh<T>(Refreshable2<T> provider);
-  void invalidate(ProviderBase2<Object?> provider);
-  void invalidateSelf();
-
-  void notifyListeners();
-
-  KeepAliveLink keepAlive();
-
-  void onAddListener(void Function() cb);
-  void onRemoveListener(void Function() cb);
-  void onResume(void Function() cb);
-  void onCancel(void Function() cb);
-  void onDispose(void Function() cb);
-
-  T read<T>(ProviderListenable<T> provider);
-  T watch<T>(ProviderListenable<T> provider);
-  ProviderSubscription<T> listen<T>(
-    ProviderListenable<T> provider,
-    void Function(T previous, T next) listener, {
-    void Function(Object error, StackTrace stackTrace)? onError,
-  });
-  void listenSelf(
-    void Function(StateT previous, StateT next) listener, {
-    void Function(Object error, StackTrace stackTrace)? onError,
-    void Function(StateT initial) onInit,
-  });
-}
-
-abstract class SyncRef2<StateT> extends Ref2<StateT> {
-  Result<StateT>? get state => throw UnimplementedError();
-  Event setData(StateT value) => throw UnimplementedError();
-  Event setError(Object error, StackTrace stackTrace) =>
+abstract class SyncRef<StateT> extends Ref<StateT> {
+  StateT? get state => throw UnimplementedError();
+  void setData(StateT value) => throw UnimplementedError();
+  void setError(Object error, StackTrace stackTrace) =>
       throw UnimplementedError();
   Never returns(StateT value) => throw UnimplementedError();
 }
 
-abstract class AsyncRef2<StateT> extends Ref2<AsyncValue<StateT>> {
+abstract class AsyncRef<StateT> extends Ref<AsyncValue<StateT>> {
   Future<StateT> get future => throw UnimplementedError();
   AsyncValue<StateT> get state => throw UnimplementedError();
 
   void setLoading() => throw UnimplementedError();
-  Event setData(StateT value) => throw UnimplementedError();
-  Event setError(Object error, StackTrace stackTrace) =>
+  void setData(StateT value) => throw UnimplementedError();
+  void setError(Object error, StackTrace stackTrace) =>
       throw UnimplementedError();
   Never emit(Stream<StateT> stream) => throw UnimplementedError();
-  Event get wait => throw UnimplementedError();
   Never returns(StateT value) => throw UnimplementedError();
-}
-
-final class Event {
-  Event._(this._ref);
-  // TODO assert when used that it's from the right Ref
-  final Ref2<Object?> _ref;
 }
 
 abstract class Provider2<StateT> extends ProviderBase2<StateT> {
@@ -107,31 +63,116 @@ abstract class Provider2<StateT> extends ProviderBase2<StateT> {
   @override
   ProviderElementBase<StateT> _createElement() => throw UnimplementedError();
 
-  Event build(SyncRef2<StateT> ref);
-
   @protected
-  Call<R> run<R>(R Function(SyncRef2<StateT> ref) callback) =>
+  Call<R> run<R>(R Function(SyncRef<StateT> ref) callback) =>
       throw UnimplementedError();
   @protected
   Call<Future<R>> mutate<R>(
     Mutation<R> key,
-    FutureOr<R> Function(SyncRef2<StateT> ref) cb,
+    FutureOr<R> Function(SyncRef<StateT> ref) cb,
   ) =>
       throw UnimplementedError();
+}
+
+/// The element of a [FutureProvider]
+class _AsyncProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
+    with
+        FutureHandlerProviderElementMixin<T>,
+        AutoDisposeProviderElementMixin<AsyncValue<T>>
+    implements AsyncRef<T> {
+  _AsyncProviderElement(AsyncProvider<T> super._provider);
+
+  @override
+  Future<T> get future {
+    flush();
+    return futureNotifier.value;
+  }
+
+  @override
+  void create({required bool didChangeDependency}) {
+    final provider = this.provider as AsyncProvider<T>;
+
+    handleFuture(
+      () => provider.build(this),
+      didChangeDependency: didChangeDependency,
+    );
+  }
+
+  @override
+  Never emit(Stream<T> stream) {
+    // TODO: implement emit
+    throw UnimplementedError();
+  }
+
+  @override
+  Never returns(T value) {
+    setData(value);
+    throw Exception('ignore');
+  }
+
+  @override
+  void setData(T value) => setState(AsyncValue.data(value));
+
+  @override
+  void setError(Object error, StackTrace stackTrace) =>
+      setState(AsyncValue.error(error, stackTrace));
+
+  @override
+  void setLoading() => setState(AsyncValue.loading());
+}
+
+class _DelegatedAsyncProvider<StateT> with AsyncProvider<StateT> {
+  _DelegatedAsyncProvider(this._build);
+  final FutureOr<StateT> Function(AsyncRef<StateT> ref) _build;
+
+  @override
+  FutureOr<StateT> build(AsyncRef<StateT> ref) => _build(ref);
+}
+
+ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
+  AsyncProvider<T> that,
+) {
+  return ProviderElementProxy<AsyncValue<T>, Future<T>>(
+    that,
+    (element) {
+      return FutureHandlerProviderElementMixin.futureNotifierOf(
+        element as FutureHandlerProviderElementMixin<T>,
+      );
+    },
+  );
 }
 
 abstract mixin class AsyncProvider<StateT>
     implements ProviderBase2<AsyncValue<StateT>> {
   factory AsyncProvider(
-    FutureOr<StateT> Function(AsyncRef2<StateT> ref) create,
-  ) =>
-      throw UnimplementedError();
+    FutureOr<StateT> Function(AsyncRef<StateT> ref) build,
+  ) = _DelegatedAsyncProvider;
 
   @override
-  ProviderElementBase<AsyncValue<StateT>> _createElement() =>
-      throw UnimplementedError();
-  @override
   Record? get args => null;
+
+  late final ProviderListenable<Future<StateT>> future = _future(this);
+
+  FutureOr<StateT> build(AsyncRef<StateT> ref);
+
+  ProviderListenable<Future<Selected>> selectAsync<Selected>(
+    Selected Function(StateT value) selector,
+  ) {
+    return _AsyncSelector<StateT, Selected>(
+      provider: this,
+      selector: selector,
+      future: future,
+    );
+  }
+
+  @override
+  _AsyncProviderElement<StateT> _createElement() => _AsyncProviderElement(this);
+
+  /*
+   * Implement mixins
+   */
+
+  AnyProvider<Object?> get _origin => this;
 
   @override
   ProviderSubscription<AsyncValue<StateT>> _addListener(
@@ -142,8 +183,14 @@ abstract mixin class AsyncProvider<StateT>
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
   }) {
-    // TODO: implement _addListener
-    throw UnimplementedError();
+    return ProviderBase._addListenerImpl(
+      this,
+      node,
+      listener,
+      onError: onError,
+      onDependencyMayHaveChanged: onDependencyMayHaveChanged,
+      fireImmediately: fireImmediately,
+    );
   }
 
   @override
@@ -155,67 +202,94 @@ abstract mixin class AsyncProvider<StateT>
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
   }) {
-    // TODO: implement addListener
-    throw UnimplementedError();
-  }
-
-  @override
-  Mutation<R> mutation<R>([Symbol? symbol]) {
-    // TODO: implement mutation
-    throw UnimplementedError();
-  }
-
-  ProviderListenable<Future<StateT>> get future => throw UnimplementedError();
-
-  FutureOr<StateT> build(AsyncRef2<StateT> ref);
-
-  @override
-  AsyncValue<StateT> read(Node node) {
-    return ProviderBase._readImpl(this, node);
-  }
-
-  @override
-  ProviderListenable<Selected> select<Selected>(
-    Selected Function(AsyncValue<StateT> value) selector,
-  ) {
-    return _ProviderSelector<AsyncValue<StateT>, Selected>(
-      provider: this,
-      selector: selector,
+    return _addListener(
+      node,
+      listener,
+      onError: onError,
+      onDependencyMayHaveChanged: onDependencyMayHaveChanged,
+      fireImmediately: fireImmediately,
     );
   }
 
+  @override
+  AsyncValue<StateT> read(Node node) => ProviderBase._readImpl(this, node);
+
+  @override
+  Mutation<R> mutation<R>([Symbol? symbol]) => Mutation._(this, symbol);
+
   @protected
-  Call<R> run<R>(R Function(AsyncRef2<StateT> ref) callback) =>
+  Call<R> run<R>(R Function(AsyncRef<StateT> ref) callback) =>
       throw UnimplementedError();
   @protected
   Call<Future<R>> mutate<R>(
     Mutation<R> key,
-    FutureOr<R> Function(AsyncRef2<StateT> ref) cb,
+    FutureOr<R> Function(AsyncRef<StateT> ref) cb,
   ) =>
       throw UnimplementedError();
+}
 
-  ProviderListenable<Future<Selected>> selectAsync<Selected>(
-    Selected Function(StateT value) selector,
-  ) {
-    return _AsyncSelector<StateT, Selected>(
-      provider: this,
-      selector: selector,
-      future: future,
-    );
+class _DelegatedSyncProvider<StateT> with SyncProvider<StateT> {
+  _DelegatedSyncProvider(this._build);
+  final StateT Function(SyncRef<StateT> ref) _build;
+
+  @override
+  StateT build(SyncRef<StateT> ref) => _build(ref);
+}
+
+/// The element of a [FutureProvider]
+class _SyncProviderElement<T> extends ProviderElementBase<T>
+    with AutoDisposeProviderElementMixin<T>
+    implements SyncRef<T> {
+  _SyncProviderElement(SyncProvider<T> super._provider);
+
+  @override
+  T? get state => throw UnimplementedError();
+
+  @override
+  void setData(T value) => setState(value);
+
+  @override
+  void setError(Object error, StackTrace stackTrace) =>
+      throw UnimplementedError();
+
+  @override
+  void create({required bool didChangeDependency}) {
+    final provider = this.provider as SyncProvider<T>;
+
+    final value = provider.build(this);
+    setState(value);
+  }
+
+  @override
+  Never returns(T value) {
+    setData(value);
+    throw Exception('ignore');
+  }
+
+  @override
+  bool updateShouldNotify(T previous, T next) {
+    return previous != next;
   }
 }
 
 abstract mixin class SyncProvider<StateT> implements ProviderBase2<StateT> {
   factory SyncProvider(
-    FutureOr<StateT> Function(SyncRef2<StateT> ref) create,
-  ) =>
-      throw UnimplementedError();
-
-  @override
-  ProviderElementBase<StateT> _createElement() => throw UnimplementedError();
+    StateT Function(SyncRef<StateT> ref) build,
+  ) = _DelegatedSyncProvider;
 
   @override
   Record? get args => null;
+
+  StateT build(SyncRef<StateT> ref);
+
+  @override
+  _SyncProviderElement<StateT> _createElement() => _SyncProviderElement(this);
+
+  /*
+   * Implement mixins
+   */
+
+  AnyProvider<Object?> get _origin => this;
 
   @override
   ProviderSubscription<StateT> _addListener(
@@ -242,60 +316,47 @@ abstract mixin class SyncProvider<StateT> implements ProviderBase2<StateT> {
   }
 
   @override
-  ProviderListenable<Selected> select<Selected>(
-    Selected Function(StateT value) selector,
-  ) {
-    return _ProviderSelector<StateT, Selected>(
-      provider: this,
-      selector: selector,
-    );
-  }
-
-  @override
   StateT read(Node node) => ProviderBase._readImpl(this, node);
 
   @override
-  Mutation<R> mutation<R>([Symbol? symbol]) {
-    // TODO: implement mutation
-    throw UnimplementedError();
-  }
-
-  StateT build(SyncRef2<StateT> ref);
+  Mutation<R> mutation<R>([Symbol? symbol]) => Mutation._(this, symbol);
 
   @protected
-  Call<R> run<R>(R Function(SyncRef2<StateT> ref) callback) =>
+  Call<R> run<R>(R Function(SyncRef<StateT> ref) callback) =>
       throw UnimplementedError();
   @protected
   Call<Future<R>> mutate<R>(
     Mutation<R> key,
-    FutureOr<R> Function(SyncRef2<StateT> ref) cb,
+    FutureOr<R> Function(SyncRef<StateT> ref) cb,
   ) =>
       throw UnimplementedError();
 }
 
+/// A shared interface by all providers.
+///
+/// Do not extend or implement this class. Instead use [AsyncProvider]/[SyncProvider].
 abstract class ProviderBase2<StateT>
     implements
         ProviderListenable<StateT>,
         AnyProvider<StateT>,
-        Refreshable2<StateT> {
+        Refreshable<StateT> {
   ProviderBase2._();
 
   Record? get args => null;
 
   @protected
   Mutation<R> mutation<R>([Symbol? symbol]) {
-    assert(args == null || symbol != null);
     throw UnimplementedError();
   }
 
   ProviderElementBase<StateT> _createElement();
 
   @protected
-  Call<R> run<R>(R Function(Ref2<StateT> ref) callback);
+  Call<R> run<R>(R Function(Ref<StateT> ref) callback);
   @protected
   Call<Future<R>> mutate<R>(
     Mutation<R> key,
-    FutureOr<R> Function(Ref2<StateT> ref) cb,
+    FutureOr<R> Function(Ref<StateT> ref) cb,
   );
 
   @override

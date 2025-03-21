@@ -5,13 +5,13 @@ import 'package:riverpod/experiments/providers.dart';
 
 import 'common.dart';
 
-final value = SyncProvider((ref) {
+final value = SyncProvider<int>((ref) {
   return 42;
 });
-final future = AsyncProvider((ref) async {
-  return ref.setData(42);
+final future = AsyncProvider<int>((ref) async {
+  return 42;
 });
-final stream = AsyncProvider((ref) async {
+final stream = AsyncProvider<int>((ref) async {
   ref.emit(Stream.value(42));
 });
 
@@ -52,7 +52,7 @@ class CustomProv with AsyncProvider<int> {
   });
 
   @override
-  FutureOr<int> build(AsyncRef2<int> ref) => 42;
+  FutureOr<int> build(ref) => 42;
 }
 
 final customProv = CustomProv();
@@ -77,22 +77,28 @@ class Test with SyncProvider<int> {
   late final $addTodo = mutation<Todo>(#addTodo);
   Call<Future<Todo>> addTodo(String text) => mutate($addTodo, (ref) async {
     print(id);
-    final state = ref.state!.value!;
+    final state = ref.state!;
     ref.setData(42 + state);
     return Todo('id');
   });
 
   @override
-  int build(Ref2<int> ref) {
+  int build(ref) {
     print(id);
     return 42;
   }
 }
 
-Future<void> test() async {
+Future<void> testMain() async {
   final container = ProviderContainer();
 
   final value = container.read(Test('id'));
   final addTodo = container.read(Test('id').$addTodo);
   final newTodo = await container.invoke(Test('id').addTodo('text'));
+}
+
+void main() {
+  provMain();
+  customProvMain();
+  testMain();
 }

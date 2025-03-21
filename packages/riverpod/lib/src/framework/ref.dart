@@ -9,8 +9,14 @@ part of '../framework.dart';
 /// - [read] and [watch], two methods that allow a provider to consume other providers.
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
 /// {@endtemplate}
+///
+/// Do not extend or implement this class.
 @optionalTypeArgs
 abstract class Ref<State extends Object?> {
+  /// Internal, do not use.
+  @internal
+  Ref();
+
   /// The [ProviderContainer] that this provider is associated with.
   ProviderContainer get container;
 

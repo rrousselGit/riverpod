@@ -165,7 +165,10 @@ mixin ProviderListenable<State>
 
   /// Obtains the result of this provider expression without adding listener.
   State read(Node node);
+}
 
+/// Adds [select] to [ProviderListenable].
+extension SelectorX<State> on ProviderListenable<State> {
   /// Partially listen to a provider.
   ///
   /// The [select] function allows filtering unwanted rebuilds of a Widget

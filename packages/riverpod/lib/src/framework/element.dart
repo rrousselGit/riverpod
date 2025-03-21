@@ -25,7 +25,7 @@ sealed class AnyRefreshable<T> implements ProviderListenable<T> {
 abstract class Refreshable<T>
     implements ProviderListenable<T>, AnyRefreshable<T> {
   /// The provider that is being refreshed.
-  ProviderBase<Object?> get _origin;
+  AnyProvider<Object?> get _origin;
 }
 
 /// {@macro riverpod.refreshable}

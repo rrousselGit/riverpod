@@ -8,9 +8,72 @@ class Call<ResultT> {
   Mutation<ResultT>? get mutation => throw UnimplementedError();
 }
 
-abstract class Mutation<ResultT>
-    implements ProviderListenable<MutationState<ResultT>> {
+class Mutation<ResultT> implements ProviderListenable<MutationState<ResultT>> {
+  Mutation._(this._origin, this._symbol)
+      : assert(
+          _origin.args == null || _symbol != null,
+          'Either override args, or specify a symbol',
+        );
+
+  final ProviderBase2<Object?> _origin;
+  final Symbol? _symbol;
+
   Call<void> reset() => throw UnimplementedError();
+
+  @override
+  bool operator ==(Object other) {
+    if (_symbol != null) {
+      return other is Mutation<ResultT> &&
+          other._origin == _origin &&
+          other.runtimeType == runtimeType &&
+          other._symbol == _symbol;
+    }
+
+    return super == other;
+  }
+
+  @override
+  int get hashCode {
+    if (_symbol == null) return _symbol.hashCode;
+
+    return super.hashCode;
+  }
+
+  @override
+  ProviderSubscription<MutationState<ResultT>> _addListener(
+    Node node,
+    void Function(
+      MutationState<ResultT>? previous,
+      MutationState<ResultT> next,
+    ) listener, {
+    required void Function(Object error, StackTrace stackTrace)? onError,
+    required void Function()? onDependencyMayHaveChanged,
+    required bool fireImmediately,
+  }) {
+    // TODO: implement _addListener
+    throw UnimplementedError();
+  }
+
+  @override
+  ProviderSubscription<MutationState<ResultT>> addListener(
+    Node node,
+    void Function(
+      MutationState<ResultT>? previous,
+      MutationState<ResultT> next,
+    ) listener, {
+    required void Function(Object error, StackTrace stackTrace)? onError,
+    required void Function()? onDependencyMayHaveChanged,
+    required bool fireImmediately,
+  }) {
+    // TODO: implement addListener
+    throw UnimplementedError();
+  }
+
+  @override
+  MutationState<ResultT> read(Node node) {
+    // TODO: implement read
+    throw UnimplementedError();
+  }
 }
 
 /// The current state of a mutation.

@@ -52,7 +52,6 @@ export 'src/framework.dart'
         ProviderElementProxy,
         OnError,
         ProviderListenableOrScope,
-        GroupBindBuilder,
         AnyX,
         ObsX;
 
