@@ -14,6 +14,5 @@ export 'package:riverpod/src/internals.dart'
         ProviderBase2,
         Provider2,
         AsyncProvider,
-        SyncProvider,
         ProviderListenableTransformer,
         ProviderListenable;

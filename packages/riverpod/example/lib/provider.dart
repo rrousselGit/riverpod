@@ -5,7 +5,7 @@ import 'package:riverpod/experiments/providers.dart';
 
 import 'common.dart';
 
-final value = SyncProvider<int>((ref) {
+final value = Provider2<int>((ref) {
   return 42;
 });
 final future = AsyncProvider<int>((ref) async {
@@ -15,7 +15,7 @@ final stream = AsyncProvider<int>((ref) async {
   ref.emit(Stream.value(42));
 });
 
-class ValueProvider with SyncProvider<int> {
+class ValueProvider with Provider2<int> {
   @override
   int build(ref) => 42;
 }
@@ -31,7 +31,7 @@ class StreamProvider with AsyncProvider<int> {
 }
 
 final prov = AsyncProvider<int>((ref) => 42);
-final syncProv = SyncProvider((ref) => 42);
+final syncProv = Provider2((ref) => 42);
 
 Future<void> provMain() async {
   final container = ProviderContainer();
@@ -66,7 +66,7 @@ Future<void> customProvMain() async {
   container.invoke(customProv.$addTodo.reset());
 }
 
-class Test with SyncProvider<int> {
+class Test with Provider2<int> {
   Test(this.id);
 
   final String id;

@@ -244,6 +244,34 @@ extension SelectorX<State> on ProviderListenable<State> {
   }
 }
 
+@internal
+@optionalTypeArgs
+sealed class ProviderSubscriptionWithOrigin<OutT, StateT>
+    extends ProviderSubscription<OutT> {
+  ProviderSubscriptionWithOrigin(super.source);
+
+  ProviderBase<StateT> get origin;
+  ProviderElement<StateT> get _listenedElement;
+
+  void _onOriginData(StateT? prev, StateT next);
+  void _onOriginError(Object error, StackTrace stackTrace);
+
+  OutT _callRead();
+
+  @override
+  OutT read() {
+    if (closed) {
+      throw StateError(
+        'called ProviderSubscription.read on a subscription that was closed',
+      );
+    }
+    _listenedElement.mayNeedDispose();
+    _listenedElement.flush();
+
+    return _callRead();
+  }
+}
+
 /// Represents the subscription to a [ProviderListenable]
 @optionalTypeArgs
 abstract class ProviderSubscription<State> {
@@ -260,6 +288,7 @@ abstract class ProviderSubscription<State> {
   ///
   /// This is typically a [ProviderElementBase] or a [ProviderContainer],
   /// but may be other values in the future.
+  @internal
   final Node source;
 
   /// Whether the subscription is closed.

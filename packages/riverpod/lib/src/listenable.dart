@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 
+import 'common/env.dart';
 import 'framework.dart' show ProviderElementBase;
 import 'internals.dart' show OnError;
 import 'pragma.dart';
@@ -55,6 +56,8 @@ class ProxyElementValueNotifier<T> extends _ValueListenable<T> {
 }
 
 class _ValueListenable<T> {
+  void Function()? onCancel;
+
   int _count = 0;
   // The _listeners is intentionally set to a fixed-length _GrowableList instead
   // of const [].
@@ -97,7 +100,6 @@ class _ValueListenable<T> {
   /// [_notifyListeners]; and similarly, by overriding [_removeListener], checking
   /// if [hasListeners] is false after calling `super.removeListener()`, and if
   /// so, stopping that same work.
-  @protected
   bool get hasListeners {
     return _count > 0;
   }
@@ -222,6 +224,9 @@ class _ValueListenable<T> {
         break;
       }
     }
+
+    final onCancel = this.onCancel;
+    if (!hasListeners && onCancel != null) onCancel();
   }
 
   /// Discards any resources used by the object. After this is called, the
@@ -235,13 +240,8 @@ class _ValueListenable<T> {
   /// listeners or not immediately before disposal.
   @mustCallSuper
   void dispose() {
-    assert(
-      () {
-        _debugDisposed = true;
-        return true;
-      }(),
-      '',
-    );
+    assert(!_debugDisposed, '');
+    if (kDebugMode) _debugDisposed = true;
     _listeners = _emptyListeners();
     _count = 0;
   }

@@ -1,24 +1,136 @@
 part of '../framework.dart';
 
+class _MutationState<T> {
+  late final listenable = ProxyElementValueNotifier<MutationState<T>>()
+    ..result = Result.data(IdleMutationState<T>._())
+    ..onCancel = _scheduleAutoReset;
+
+  Object? pendingKey;
+
+  void _scheduleAutoReset() {
+    Future.microtask(() {
+      if (listenable.hasListeners) return;
+
+      reset();
+    });
+  }
+
+  void reset() {
+    pendingKey = null;
+    listenable.result = Result.data(IdleMutationState<T>._());
+  }
+}
+
+mixin _MutationElement<T> on ProviderElementBase<T> {
+  static Call<Future<T>> _mutate<T, RefT>(
+    Mutation<T> mutation,
+    FutureOr<T> Function(RefT) mutator,
+  ) {
+    return _run<Future<T>, RefT>(mutation._origin as ProviderBase2<Object?>,
+        (element, ref) async {
+      final state = element.mutations.putIfAbsent(mutation, () {
+        return _MutationState<T>();
+      }) as _MutationState<T>;
+
+      final key = state.pendingKey = Object();
+      try {
+        state.listenable.result = Result.data(PendingMutationState<T>._());
+        final result = await mutator(ref);
+
+        if (state.pendingKey == key) {
+          state.listenable.result =
+              Result.data(SuccessMutationState<T>._(result));
+        }
+
+        return result;
+      } catch (error, stackTrace) {
+        if (state.pendingKey == key) {
+          state.listenable.result = Result<MutationState<T>>.data(
+            ErrorMutationState<T>._(error, stackTrace),
+          );
+        }
+
+        rethrow;
+      }
+    });
+  }
+
+  static Call<T> _run<T, RefT>(
+    ProviderBase2<Object?> origin,
+    T Function(_MutationElement<Object?> element, RefT ref) mutator,
+  ) {
+    return Call<T>._(origin, (container) {
+      final element = container.readProviderElement(origin);
+
+      return mutator(element as _MutationElement, element as RefT);
+    });
+  }
+
+  final mutations = <Mutation<Object?>, _MutationState<Object?>>{};
+
+  @override
+  void visitChildren({
+    required void Function(ProviderElementBase element) elementVisitor,
+    required void Function(ProxyElementValueNotifier element) notifierVisitor,
+  }) {
+    super.visitChildren(
+      elementVisitor: elementVisitor,
+      notifierVisitor: notifierVisitor,
+    );
+    for (final mutation in mutations.values) {
+      notifierVisitor(mutation.listenable);
+    }
+  }
+}
+
 extension ProviderContainerInvoke on ProviderContainer {
-  T invoke<T>(Call<T> call) => throw UnimplementedError();
+  T invoke<T>(Call<T> call) => call._run(this);
 }
 
-class Call<ResultT> {
-  Mutation<ResultT>? get mutation => throw UnimplementedError();
-}
-
-class Mutation<ResultT> implements ProviderListenable<MutationState<ResultT>> {
-  Mutation._(this._origin, this._symbol)
-      : assert(
-          _origin.args == null || _symbol != null,
-          'Either override args, or specify a symbol',
-        );
+final class Call<ResultT> {
+  Call._(this._origin, this._run);
 
   final ProviderBase2<Object?> _origin;
+  final ResultT Function(ProviderContainer container) _run;
+}
+
+final class Mutation<ResultT>
+    extends ProviderElementProxy<Object?, MutationState<ResultT>> {
+  Mutation.__(
+    ProviderBase2<Object?> super._origin,
+    super._lense, {
+    required Symbol? symbol,
+  })  : _symbol = symbol,
+        assert(
+          _origin.args == null || symbol != null,
+          'When args is overridden, you must specify a symbol',
+        );
+
+  factory Mutation._(ProviderBase2<Object?> origin, Symbol? symbol) {
+    late Mutation<ResultT> mut;
+    return mut = Mutation.__(
+      origin,
+      symbol: symbol,
+      (e) {
+        final element = e as _MutationElement<Object?>;
+
+        final state =
+            element.mutations.putIfAbsent(mut, _MutationState<ResultT>.new)
+                as _MutationState<ResultT>;
+
+        return state.listenable;
+      },
+    );
+  }
+
   final Symbol? _symbol;
 
-  Call<void> reset() => throw UnimplementedError();
+  Call<void> reset() => Call._(_origin as ProviderBase2, (container) {
+        final element =
+            container.readProviderElement(_origin) as _MutationElement;
+
+        element.mutations[this]?.reset();
+      });
 
   @override
   bool operator ==(Object other) {
@@ -37,42 +149,6 @@ class Mutation<ResultT> implements ProviderListenable<MutationState<ResultT>> {
     if (_symbol == null) return _symbol.hashCode;
 
     return super.hashCode;
-  }
-
-  @override
-  ProviderSubscription<MutationState<ResultT>> _addListener(
-    Node node,
-    void Function(
-      MutationState<ResultT>? previous,
-      MutationState<ResultT> next,
-    ) listener, {
-    required void Function(Object error, StackTrace stackTrace)? onError,
-    required void Function()? onDependencyMayHaveChanged,
-    required bool fireImmediately,
-  }) {
-    // TODO: implement _addListener
-    throw UnimplementedError();
-  }
-
-  @override
-  ProviderSubscription<MutationState<ResultT>> addListener(
-    Node node,
-    void Function(
-      MutationState<ResultT>? previous,
-      MutationState<ResultT> next,
-    ) listener, {
-    required void Function(Object error, StackTrace stackTrace)? onError,
-    required void Function()? onDependencyMayHaveChanged,
-    required bool fireImmediately,
-  }) {
-    // TODO: implement addListener
-    throw UnimplementedError();
-  }
-
-  @override
-  MutationState<ResultT> read(Node node) {
-    // TODO: implement read
-    throw UnimplementedError();
   }
 }
 
