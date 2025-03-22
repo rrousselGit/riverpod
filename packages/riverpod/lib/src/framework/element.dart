@@ -259,6 +259,36 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
           }
         }
     }
+
+    switch (_state!) {
+      case ResultData<Object?>(:final value):
+        for (final observer in container.observers) {
+          runTernaryGuarded(
+            observer.didAddProvider,
+            origin,
+            value,
+            container,
+          );
+        }
+      case ResultError<Object?>(:final error, :final stackTrace):
+        for (final observer in container.observers) {
+          runTernaryGuarded(
+            observer.didAddProvider,
+            origin,
+            null,
+            container,
+          );
+        }
+        for (final observer in container.observers) {
+          runQuaternaryGuarded(
+            observer.providerDidFail,
+            origin,
+            error,
+            stackTrace,
+            container,
+          );
+        }
+    }
   }
 
   // ignore: use_setters_to_change_properties
@@ -324,6 +354,11 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
   /// [flush] from users, such that they don't need to care about invoking this function.
   @internal
   void flush() {
+    // if (!_mounted) {
+    //   mount();
+    //   return;
+    // }
+
     _maybeRebuildDependencies();
     if (_mustRecomputeState) {
       _mustRecomputeState = false;

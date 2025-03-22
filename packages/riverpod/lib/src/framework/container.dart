@@ -51,36 +51,6 @@ class _StateReader {
         .._container = container
         ..mount();
 
-      switch (element.getState()!) {
-        case ResultData<Object?>(:final value):
-          for (final observer in container.observers) {
-            runTernaryGuarded(
-              observer.didAddProvider,
-              origin,
-              value,
-              container,
-            );
-          }
-        case ResultError<Object?>(:final error, :final stackTrace):
-          for (final observer in container.observers) {
-            runTernaryGuarded(
-              observer.didAddProvider,
-              origin,
-              null,
-              container,
-            );
-          }
-          for (final observer in container.observers) {
-            runQuaternaryGuarded(
-              observer.providerDidFail,
-              origin,
-              error,
-              stackTrace,
-              container,
-            );
-          }
-      }
-
       return element;
     } finally {
       if (_circularDependencyLock == origin) {
