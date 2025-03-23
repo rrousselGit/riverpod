@@ -374,7 +374,6 @@ mixin FutureHandlerProviderElementMixin<T>
 
   /// Listens to a [Future] and transforms it into an [AsyncValue].
   void _handleAsync(
-    // Stream<T> Function({required void Function(T) fireImmediately}) create,
     CancelAsyncSubscription? Function({
       required void Function(T) data,
       required void Function(Object, StackTrace) error,
