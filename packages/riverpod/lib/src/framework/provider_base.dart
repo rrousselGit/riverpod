@@ -163,6 +163,7 @@ abstract class ProviderBase<StateT> extends ProviderOrFamily
     );
   }
 
+  @override
   ProviderSubscription<StateT> _addListener(
     Node node,
     void Function(StateT? previous, StateT next) listener, {

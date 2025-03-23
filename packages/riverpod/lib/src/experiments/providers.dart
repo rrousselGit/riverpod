@@ -158,6 +158,7 @@ abstract mixin class AsyncProvider<StateT>
    * Implement mixins
    */
 
+  @override
   AnyProvider<Object?> get _origin => this;
 
   @override
@@ -281,6 +282,7 @@ abstract mixin class Provider2<StateT> implements ProviderBase2<StateT> {
    * Implement mixins
    */
 
+  @override
   AnyProvider<Object?> get _origin => this;
 
   @override
