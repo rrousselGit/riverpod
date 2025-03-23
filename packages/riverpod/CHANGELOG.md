@@ -1,6 +1,7 @@
-## Unreleased patch
+## Unreleased minor
 
-Upgrade to Dart 3.6.0
+- Upgrade to Dart 3.6.0
+- Marked various APIs as `@internal`
 
 ## 2.6.1 - 2024-10-22
 
