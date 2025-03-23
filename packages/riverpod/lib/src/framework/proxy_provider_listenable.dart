@@ -33,58 +33,6 @@ class _ProxySubscription<T> extends ProviderSubscription<T> {
   }
 }
 
-class $LazyProxyListenable<OutT> with ProviderListenable<OutT> {
-  $LazyProxyListenable(this.provider, this._lense);
-
-  final ProviderBase<Object?> provider;
-  final ProxyElementValueNotifier<OutT> Function(
-    ProviderElementBase<Object?> element,
-  ) _lense;
-
-  @override
-  ProviderSubscription<OutT> addListener(
-    Node node,
-    void Function(OutT? previous, OutT next) listener, {
-    required void Function(Object error, StackTrace stackTrace)? onError,
-    required void Function()? onDependencyMayHaveChanged,
-    required bool fireImmediately,
-  }) {
-    final element = node.readProviderElement(provider);
-
-    final listenable = _lense(element);
-    if (fireImmediately) {
-      switch (listenable.result) {
-        case null:
-          break;
-        case final ResultData<OutT> data:
-          runBinaryGuarded(listener, null, data.state);
-        case final ResultError<OutT> error:
-          if (onError != null) {
-            runBinaryGuarded(onError, error.error, error.stackTrace);
-          }
-      }
-    }
-
-    late final ProviderSubscriptionImpl<OutT, OriginT> sub;
-    final removeListener = listenable.addListener(
-      (a, b) => sub._notifyData(a, b),
-      onError: onError,
-      onDependencyMayHaveChanged: onDependencyMayHaveChanged,
-    );
-
-    return sub = DelegatingProviderSubscription<OutT>(
-      listenedElement: element,
-      source: node,
-      weak: weak,
-      origin: provider,
-      onClose: removeListener,
-      errorListener: onError,
-      listener: listener,
-      read: () => listenable.value,
-    );
-  }
-}
-
 /// An internal utility for reading alternate values of a provider.
 ///
 /// For example, this is used by [FutureProvider] to differentiate:
