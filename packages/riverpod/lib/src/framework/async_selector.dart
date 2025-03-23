@@ -125,7 +125,7 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
   }
 
   @override
-  _SelectorSubscription<AsyncValue<Input>, Future<Output>> addListener(
+  _SelectorSubscription<AsyncValue<Input>, Future<Output>> _addListener(
     Node node,
     void Function(Future<Output>? previous, Future<Output> next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,

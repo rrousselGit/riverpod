@@ -304,7 +304,7 @@ void main() {
   });
 }
 
-List<ProviderBase<Object?>> compute(ProviderContainer container) {
+List<AnyProvider<Object?>> compute(ProviderContainer container) {
   return container
       .getAllProviderElementsInOrder()
       .map((e) => e.provider)

@@ -27,7 +27,7 @@ typedef DebugGetCreateSourceHash = String Function();
 @immutable
 abstract class ProviderBase<StateT> extends ProviderOrFamily
     with ProviderListenable<StateT>
-    implements ProviderOverride, Refreshable<StateT> {
+    implements ProviderOverride, Refreshable<StateT>, AnyProvider<StateT> {
   /// A base class for _all_ providers.
   const ProviderBase({
     required super.name,
@@ -45,7 +45,7 @@ abstract class ProviderBase<StateT> extends ProviderOrFamily
   ProviderBase<Object?> get _override => this;
 
   /// {@template riverpod.create_source_hash}
-  /// A debug-only fucntion for obtaining a hash of the source code of the
+  /// A debug-only function for obtaining a hash of the source code of the
   /// initialization function.
   ///
   /// If after a hot-reload this function returns a different result, the
@@ -66,8 +66,24 @@ abstract class ProviderBase<StateT> extends ProviderOrFamily
   /// On generated providers, this will be a record of all arguments.
   final Object? argument;
 
+  @preferInline
+  static StateT _readImpl<StateT>(AnyProvider<StateT> provider, Node node) {
+    final element = node.readProviderElement(provider);
+
+    element.flush();
+
+    // In case `read` was called on a provider that has no listener
+    element.mayNeedDispose();
+
+    return element.requireState;
+  }
+
   @override
-  ProviderSubscription<StateT> addListener(
+  StateT read(Node node) => _readImpl(this, node);
+
+  @preferInline
+  static ProviderSubscription<StateT> _addListenerImpl<StateT>(
+    AnyProvider<StateT> provider,
     Node node,
     void Function(StateT? previous, StateT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
@@ -76,7 +92,7 @@ abstract class ProviderBase<StateT> extends ProviderOrFamily
   }) {
     onError ??= Zone.current.handleUncaughtError;
 
-    final element = node.readProviderElement(this);
+    final element = node.readProviderElement(provider);
 
     element.flush();
     if (fireImmediately) {
@@ -101,15 +117,21 @@ abstract class ProviderBase<StateT> extends ProviderOrFamily
   }
 
   @override
-  StateT read(Node node) {
-    final element = node.readProviderElement(this);
-
-    element.flush();
-
-    // In case `read` was called on a provider that has no listener
-    element.mayNeedDispose();
-
-    return element.requireState;
+  ProviderSubscription<StateT> _addListener(
+    Node node,
+    void Function(StateT? previous, StateT next) listener, {
+    required void Function(Object error, StackTrace stackTrace)? onError,
+    required void Function()? onDependencyMayHaveChanged,
+    required bool fireImmediately,
+  }) {
+    return _addListenerImpl(
+      this,
+      node,
+      listener,
+      onError: onError,
+      onDependencyMayHaveChanged: onDependencyMayHaveChanged,
+      fireImmediately: fireImmediately,
+    );
   }
 
   /// An internal method that defines how a provider behaves.

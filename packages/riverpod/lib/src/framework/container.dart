@@ -1,6 +1,6 @@
 part of '../framework.dart';
 
-ProviderBase<Object?>? _circularDependencyLock;
+AnyProvider<Object?>? _circularDependencyLock;
 
 class _FamilyOverrideRef {
   _FamilyOverrideRef(this.override, this.container);
@@ -22,8 +22,8 @@ class _StateReader {
     required this.isDynamicallyCreated,
   });
 
-  final ProviderBase<Object?> origin;
-  ProviderBase<Object?> override;
+  final AnyProvider<Object?> origin;
+  AnyProvider<Object?> override;
   final ProviderContainer container;
 
   /// Whether the [_StateReader] was created on first provider read instead of
@@ -40,7 +40,12 @@ class _StateReader {
     }
     _circularDependencyLock ??= origin;
     try {
-      final element = override.createElement()
+      final element = switch (override) {
+        final ProviderBase2<Object?> override => override._createElement(),
+        final ProviderBase<Object?> override => override.createElement(),
+      };
+
+      element
         .._provider = override
         .._origin = origin
         .._container = container
@@ -71,9 +76,9 @@ class _PointerManager {
 
   final ProviderContainer container;
   final _overrideForProvider =
-      HashMap<ProviderBase<Object?>, ProviderBase<Object?>>();
+      HashMap<AnyProvider<Object?>, ProviderBase<Object?>>();
   final _overrideForFamily = HashMap<Family<Object?>, _FamilyOverrideRef>();
-  final Map<ProviderBase<Object?>, _StateReader> _stateReaders;
+  final Map<AnyProvider<Object?>, _StateReader> _stateReaders;
 
   void setupOverrides(List<Override> overrides) {
     for (final override in overrides) {
@@ -166,7 +171,7 @@ class _PointerManager {
 
   @internal
   ProviderElementBase<State> readProviderElement<State>(
-    ProviderBase<Object?> provider,
+    AnyProvider<Object?> provider,
   ) {
     final reader = _putIfAbsent(provider);
 
@@ -181,8 +186,8 @@ class _PointerManager {
           // Check that this containers doesn't have access to an overridden
           // dependency of the targeted provider
           final targetElement = reader.getElement();
-          final visitedDependencies = <ProviderBase<Object?>>{};
-          final queue = Queue<ProviderBase<Object?>>();
+          final visitedDependencies = <AnyProvider<Object?>>{};
+          final queue = Queue<AnyProvider<Object?>>();
           targetElement.visitAncestors((e) => queue.add(e.origin));
 
           while (queue.isNotEmpty) {
@@ -232,7 +237,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
     return _stateReaders.containsKey(provider);
   }
 
-  void _disposeProvider(ProviderBase<Object?> provider) {
+  void _disposeProvider(AnyProvider<Object?> provider) {
     final reader = _getOrNull(provider);
     // The provider is already disposed, so we don't need to do anything
     if (reader == null) return;
@@ -260,7 +265,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
 
   /// Obtains a [_StateReader] for a provider, but do not create it if it does
   /// not exist.
-  _StateReader? _getOrNull(ProviderBase<Object?> provider) {
+  _StateReader? _getOrNull(AnyProvider<Object?> provider) {
     return _stateReaders[provider] ??
 
         /// No need to check "parent". We can directly check "root", because
@@ -271,107 +276,115 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
 
   /// Create a [_StateReader] for a provider if it does not exist.
   /// If one already exists, returns it.
-  _StateReader _putIfAbsent(ProviderBase<Object?> provider) {
+  _StateReader _putIfAbsent(AnyProvider<Object?> provider) {
     final currentReader = _stateReaders[provider];
     if (currentReader != null) return currentReader;
 
     _StateReader getReader() {
-      if (provider.from != null) {
-        // reading a family
+      switch (provider) {
+        case ProviderBase2<Object?>():
+          break;
 
-        final familyOverrideRef = _overrideForFamily[provider.from];
-        if (familyOverrideRef != null) {
-          // A family was overridden, so we implicitly mount the readers
+        case ProviderBase<Object?>():
+          if (provider.from != null) {
+            // reading a family
 
-          if (familyOverrideRef.container._legacyPointerManager._stateReaders
-              .containsKey(provider)) {
-            return familyOverrideRef
-                .container._legacyPointerManager._stateReaders[provider]!;
-          }
+            final familyOverrideRef = _overrideForFamily[provider.from];
+            if (familyOverrideRef != null) {
+              // A family was overridden, so we implicitly mount the readers
 
-          void setupOverride({
-            required ProviderBase<Object?> origin,
-            required ProviderBase<Object?> override,
-          }) {
-            assert(
-              origin == override || override.dependencies == null,
-              'A provider override cannot specify `dependencies`',
-            );
-
-            // setupOverride may be called multiple times on different providers
-            // of the same family (provider vs provider.modifier), so we use ??=
-            // to initialize the providers only once
-            familyOverrideRef.container._legacyPointerManager
-                ._stateReaders[origin] ??= _StateReader(
-              origin: origin,
-              override: override,
-              container: familyOverrideRef.container,
-              isDynamicallyCreated: true,
-            );
-          }
-
-          final providerOverride =
-              familyOverrideRef.override.getProviderOverride(provider);
-
-          setupOverride(origin: provider, override: providerOverride);
-
-          // if setupOverride overrode the provider, it was already initialized
-          // in the code above. Otherwise we initialize it as if it was not overridden
-          return familyOverrideRef
-                  .container._legacyPointerManager._stateReaders[provider] ??
-              _StateReader(
-                origin: provider,
-                override: provider,
-                container: familyOverrideRef.container,
-                isDynamicallyCreated: true,
-              );
-        }
-      }
-
-      final root = container._root;
-      if (root != null) {
-        // On scoped containers, check for implicit override.
-
-        final dependencies = provider.from?.allTransitiveDependencies ??
-            provider.allTransitiveDependencies;
-
-        final containerForDependencyOverride = dependencies
-            ?.map((dep) {
-              // ignore: collection_methods_unrelated_type, ProviderOrFamily can be providers ; which are subclasses of ProviderBase
-              final reader = _stateReaders[dep];
-              if (reader != null) {
-                return reader.container;
+              if (familyOverrideRef
+                  .container._legacyPointerManager._stateReaders
+                  .containsKey(provider)) {
+                return familyOverrideRef
+                    .container._legacyPointerManager._stateReaders[provider]!;
               }
-              final familyOverride = _overrideForFamily[dep];
-              return familyOverride?.container;
-            })
-            .where((container) => container != null)
-            .toList();
 
-        if (containerForDependencyOverride != null &&
-            containerForDependencyOverride.isNotEmpty) {
-          // a dependency of the provider was overridden, so the provider is overridden too
+              void setupOverride({
+                required ProviderBase<Object?> origin,
+                required ProviderBase<Object?> override,
+              }) {
+                assert(
+                  origin == override || override.dependencies == null,
+                  'A provider override cannot specify `dependencies`',
+                );
 
-          final deepestOverrideContainer = containerForDependencyOverride
-              .fold<ProviderContainer>(root, (previous, container) {
-            if (container!.depth > previous.depth) {
-              return container;
+                // setupOverride may be called multiple times on different providers
+                // of the same family (provider vs provider.modifier), so we use ??=
+                // to initialize the providers only once
+                familyOverrideRef.container._legacyPointerManager
+                    ._stateReaders[origin] ??= _StateReader(
+                  origin: origin,
+                  override: override,
+                  container: familyOverrideRef.container,
+                  isDynamicallyCreated: true,
+                );
+              }
+
+              final providerOverride =
+                  familyOverrideRef.override.getProviderOverride(provider);
+
+              setupOverride(origin: provider, override: providerOverride);
+
+              // if setupOverride overrode the provider, it was already initialized
+              // in the code above. Otherwise we initialize it as if it was not overridden
+              return familyOverrideRef.container._legacyPointerManager
+                      ._stateReaders[provider] ??
+                  _StateReader(
+                    origin: provider,
+                    override: provider,
+                    container: familyOverrideRef.container,
+                    isDynamicallyCreated: true,
+                  );
             }
-            return previous;
-          });
+          }
 
-          /// Insert the StateReader in the container that it belongs to,
-          /// and import it locally
-          return deepestOverrideContainer._legacyPointerManager._stateReaders
-              .putIfAbsent(provider, () {
-            return _StateReader(
-              origin: provider,
-              override: provider,
-              container: deepestOverrideContainer,
-              isDynamicallyCreated: true,
-            );
-          });
-        }
+          final root = container._root;
+          if (root != null) {
+            // On scoped containers, check for implicit override.
+
+            final dependencies = provider.from?.allTransitiveDependencies ??
+                provider.allTransitiveDependencies;
+
+            final containerForDependencyOverride = dependencies
+                ?.map((dep) {
+                  // ignore: collection_methods_unrelated_type, ProviderOrFamily can be providers ; which are subclasses of AnyProvider
+                  final reader = _stateReaders[dep];
+                  if (reader != null) {
+                    return reader.container;
+                  }
+                  final familyOverride = _overrideForFamily[dep];
+                  return familyOverride?.container;
+                })
+                .where((container) => container != null)
+                .toList();
+
+            if (containerForDependencyOverride != null &&
+                containerForDependencyOverride.isNotEmpty) {
+              // a dependency of the provider was overridden, so the provider is overridden too
+
+              final deepestOverrideContainer = containerForDependencyOverride
+                  .fold<ProviderContainer>(root, (previous, container) {
+                if (container!.depth > previous.depth) {
+                  return container;
+                }
+                return previous;
+              });
+
+              /// Insert the StateReader in the container that it belongs to,
+              /// and import it locally
+              return deepestOverrideContainer
+                  ._legacyPointerManager._stateReaders
+                  .putIfAbsent(provider, () {
+                return _StateReader(
+                  origin: provider,
+                  override: provider,
+                  container: deepestOverrideContainer,
+                  isDynamicallyCreated: true,
+                );
+              });
+            }
+          }
       }
 
       if (container._root?._legacyPointerManager._stateReaders
@@ -419,7 +432,7 @@ class ProviderContainer implements Node {
   ProviderContainer({
     ProviderContainer? parent,
     List<Override> overrides = const [],
-    List<ProviderObserver>? observers,
+    List<AnyProviderObserver>? observers,
   })  : _debugOverridesLength = overrides.length,
         depth = parent == null ? 0 : parent.depth + 1,
         _parent = parent,
@@ -480,7 +493,7 @@ class ProviderContainer implements Node {
   ///
   /// This list includes the observers of this container and that of its "parent"
   /// too.
-  final List<ProviderObserver> observers;
+  final List<AnyProviderObserver> observers;
 
   late final _PointerManager _legacyPointerManager;
 
@@ -531,13 +544,23 @@ class ProviderContainer implements Node {
   /// }
   /// ```
   Result read<Result>(
-    ProviderListenable<Result> provider,
+    ProviderListenableOrScope<Result> provider,
   ) {
-    return provider.read(this);
+    switch (provider) {
+      case ProviderListenable<Result>():
+        return provider.read(this);
+      case Scope<Result>():
+        final sub = listen(provider, (previous, next) {});
+        try {
+          return sub.read();
+        } finally {
+          sub.close();
+        }
+    }
   }
 
   /// {@macro riverpod.exists}
-  bool exists(ProviderBase<Object?> provider) {
+  bool exists(AnyProvider<Object?> provider) {
     final element = _legacyPointerManager._getOrNull(provider)?._element;
 
     return element != null;
@@ -566,13 +589,13 @@ class ProviderContainer implements Node {
   /// {@macro riverpod.listen}
   @override
   ProviderSubscription<State> listen<State>(
-    ProviderListenable<State> provider,
+    ProviderListenableOrScope<State> provider,
     void Function(State? previous, State next) listener, {
     bool fireImmediately = false,
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
     // TODO test always flushed provider
-    return provider.addListener(
+    return provider._addListener(
       this,
       listener,
       fireImmediately: fireImmediately,
@@ -582,7 +605,7 @@ class ProviderContainer implements Node {
   }
 
   /// {@macro riverpod.invalidate}
-  void invalidate(ProviderOrFamily provider) {
+  void invalidate(AnyProviderOrFamily provider) {
     switch (provider) {
       case Family():
         final familyContainer =
@@ -601,6 +624,7 @@ class ProviderContainer implements Node {
         reader?._element?.invalidateSelf();
       case ProviderOrFamily():
         throw StateError('Unreachable. Did you subclass ProviderOrFamily?');
+      case ProviderBase2():
     }
   }
 
@@ -624,7 +648,7 @@ class ProviderContainer implements Node {
   @internal
   @override
   ProviderElementBase<State> readProviderElement<State>(
-    ProviderBase<State> provider,
+    AnyProvider<State> provider,
   ) {
     if (_disposed) {
       throw StateError(
@@ -730,7 +754,7 @@ class ProviderContainer implements Node {
 /// An object that listens to the changes of a [ProviderContainer].
 ///
 /// This can be used for logging or making devtools.
-abstract class ProviderObserver {
+abstract class ProviderObserver implements AnyProviderObserver {
   /// An object that listens to the changes of a [ProviderContainer].
   ///
   /// This can be used for logging or making devtools.

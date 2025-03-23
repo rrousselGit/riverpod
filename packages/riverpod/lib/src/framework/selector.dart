@@ -19,7 +19,7 @@ abstract class Node {
   /// Do not use this in production code. This is exposed only for testing
   /// and devtools, to be able to test if a provider has listeners or similar.
   ProviderElementBase<State> readProviderElement<State>(
-    ProviderBase<State> provider,
+    AnyProvider<State> provider,
   );
 }
 
@@ -96,7 +96,7 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
   }
 
   @override
-  _SelectorSubscription<Input, Output> addListener(
+  _SelectorSubscription<Input, Output> _addListener(
     Node node,
     void Function(Output? previous, Output next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,

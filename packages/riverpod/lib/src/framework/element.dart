@@ -18,7 +18,7 @@ part of '../framework.dart';
 /// {@endtemplate}
 abstract class Refreshable<T> implements ProviderListenable<T> {
   /// The provider that is being refreshed.
-  ProviderBase<Object?> get _origin;
+  AnyProvider<Object?> get _origin;
 }
 
 /// {@macro riverpod.refreshable}
@@ -60,12 +60,12 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
 
   /// The provider associated with this [ProviderElementBase], before applying overrides.
   // Not typed as <State> because of https://github.com/rrousselGit/riverpod/issues/1100
-  ProviderBase<Object?> get origin => _origin;
-  late ProviderBase<Object?> _origin;
+  AnyProvider<Object?> get origin => _origin;
+  late AnyProvider<Object?> _origin;
 
   /// The provider associated with this [ProviderElementBase], after applying overrides.
-  ProviderBase<StateT> get provider => _provider;
-  ProviderBase<StateT> _provider;
+  AnyProvider<StateT> get provider => _provider;
+  AnyProvider<StateT> _provider;
 
   /// The [ProviderContainer] that owns this [ProviderElementBase].
   @override
@@ -313,7 +313,7 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
   }
 
   @override
-  void invalidate(ProviderOrFamily provider) {
+  void invalidate(AnyProviderOrFamily provider) {
     assert(_debugAssertCanDependOn(provider), '');
     _container.invalidate(provider);
   }
@@ -639,10 +639,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     );
   }
 
-  bool _debugAssertCanDependOn(ProviderListenableOrFamily listenable) {
+  bool _debugAssertCanDependOn(Object? listenable) {
     assert(
       () {
-        if (listenable is! ProviderBase<Object?>) return true;
+        if (listenable is! AnyProvider<Object?>) return true;
 
         ProviderElementBase? listenableElement;
         try {
@@ -654,7 +654,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         }
 
         assert(
-          listenable._origin != origin,
+          switch (listenable) {
+            ProviderBase2<Object?>() => true,
+            ProviderBase<Object?>() => listenable._origin != origin,
+          },
           'A provider cannot depend on itself',
         );
 
@@ -719,7 +722,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   @override
-  bool exists(ProviderBase<Object?> provider) => _container.exists(provider);
+  bool exists(AnyProvider<Object?> provider) => _container.exists(provider);
 
   @override
   T watch<T>(ProviderListenable<T> listenable) {
@@ -769,7 +772,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   @override
-  ProviderElementBase<T> readProviderElement<T>(ProviderBase<T> provider) {
+  ProviderElementBase<T> readProviderElement<T>(AnyProvider<T> provider) {
     return _container.readProviderElement(provider);
   }
 
@@ -786,7 +789,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     assert(!_debugIsRunningSelector, 'Cannot call ref.read inside a selector');
     assert(_debugAssertCanDependOn(listenable), '');
 
-    return listenable.addListener(
+    return listenable._addListener(
       this,
       listener,
       fireImmediately: fireImmediately,

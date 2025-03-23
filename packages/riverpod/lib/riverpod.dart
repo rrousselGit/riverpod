@@ -65,6 +65,9 @@ export 'src/framework.dart'
         Node,
         ProviderElementProxy,
         OnError,
+        ProviderListenableOrScope,
+        AnyX,
+        ObsX,
         ProviderElementBase;
 
 // ignore: invalid_export_of_internal_element, For the sake of backward compatibility. Remove in 3.0

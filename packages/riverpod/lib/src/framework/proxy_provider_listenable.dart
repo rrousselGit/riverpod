@@ -75,13 +75,13 @@ class ProviderElementProxy<Input, Output>
   const ProviderElementProxy(this._origin, this._lense);
 
   @override
-  final ProviderBase<Input> _origin;
+  final AnyProvider<Input> _origin;
   final ProxyElementValueNotifier<Output> Function(
     ProviderElementBase<Input> element,
   ) _lense;
 
   @override
-  ProviderSubscription<Output> addListener(
+  ProviderSubscription<Output> _addListener(
     Node node,
     void Function(Output? previous, Output next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
