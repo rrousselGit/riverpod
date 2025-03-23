@@ -511,6 +511,15 @@ class ProviderContainer implements Node {
   /// a [StateError] when attempting to use them.
   bool _disposed = false;
 
+  /// An internal utility for checking if a [ProviderContainer] has a fast
+  /// path for reading a provider.
+  ///
+  /// This should not be used and is an implementation detail of [ProviderContainer].
+  /// It could be removed at any time without a major version bump.
+  @internal
+  bool hasStateReaderFor(ProviderListenable<Object?> provider) =>
+      _legacyPointerManager.hasStateReaderFor(provider);
+
   /// Awaits for providers to rebuild/be disposed and for listeners to be notified.
   Future<void> pump() async {
     final a = scheduler.pendingFuture;
@@ -521,15 +530,6 @@ class ProviderContainer implements Node {
       if (b != null) b,
     ]);
   }
-
-  /// An internal utility for checking if a [ProviderContainer] has a fast
-  /// path for reading a provider.
-  ///
-  /// This should not be used and is an implementation detail of [ProviderContainer].
-  /// It could be removed at any time without a major version bump.
-  @internal
-  bool hasStateReaderFor(ProviderListenable<Object?> provider) =>
-      _legacyPointerManager.hasStateReaderFor(provider);
 
   /// Reads a provider without listening to it and returns the currently
   /// exposed value.
