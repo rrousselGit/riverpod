@@ -541,13 +541,14 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     // TODO test notifier constructor throws -> .notifier rethrows the error
     // TODO test notifier constructor throws -> .future emits Future.error
     switch (notifierResult) {
-      case ResultData<NotifierT>(:final value):
-        handleFuture(
-          () => provider.runNotifierBuild(value),
-          didChangeDependency: didChangeDependency,
-        );
       case ResultError<NotifierT>(:final error, :final stackTrace):
         onError(AsyncError(error, stackTrace), seamless: !didChangeDependency);
+
+      case ResultData<NotifierT>(value: final notifier):
+        handleFuture(
+          () => provider.runNotifierBuild(notifier),
+          didChangeDependency: didChangeDependency,
+        );
     }
   }
 }
@@ -568,8 +569,9 @@ extension<T> on Stream<T> {
         result = Result.error(error, stackTrace);
       },
       onDone: () {
-        if (result != null) {
-          switch (result!) {
+        final result2 = result;
+        if (result2 != null) {
+          switch (result2) {
             case ResultData(:final value):
               completer.complete(value);
             case ResultError(:final error, :final stackTrace):
