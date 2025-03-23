@@ -403,3 +403,164 @@ abstract class ProviderBase2<StateT>
     );
   }
 }
+
+/// An interface to help the migration between [ProviderBase] and [ProviderBase2].
+sealed class AnyProvider<StateT>
+    implements ProviderListenable<StateT>, AnyProviderOrFamily {}
+
+@internal
+extension AnyX on AnyProvider<Object?> {
+  Object? get argument {
+    final that = this;
+    return switch (that) {
+      ProviderBase2() => that.args,
+      ProviderBase() => that.argument,
+    };
+  }
+
+  DebugGetCreateSourceHash? get debugGetCreateSourceHash {
+    final that = this;
+    return switch (that) {
+      ProviderBase2() => null,
+      ProviderBase() => that.debugGetCreateSourceHash,
+    };
+  }
+
+  Family? get from {
+    final that = this;
+    return switch (that) {
+      ProviderBase2() => null,
+      ProviderBase() => that.from,
+    };
+  }
+
+  Iterable<ProviderOrFamily>? get allTransitiveDependencies {
+    final that = this;
+    return switch (that) {
+      ProviderBase2() => null,
+      ProviderBase() => that.allTransitiveDependencies,
+    };
+  }
+
+  Iterable<AnyProviderOrFamily>? get dependencies {
+    final that = this;
+    return switch (that) {
+      ProviderBase2() => null,
+      ProviderBase() => that.dependencies,
+    };
+  }
+}
+
+/// A shared interface to help transition between [ProviderObserver] and [ProviderObserver2]
+sealed class AnyProviderObserver {}
+
+@internal
+extension ObsX on AnyProviderObserver {
+  void _when(
+    AnyProvider<Object?> provider, {
+    required void Function(ProviderObserver2 obs) newApi,
+    required void Function(ProviderObserver obs, ProviderBase<Object?> p)
+        oldApi,
+  }) {
+    final that = this;
+    switch (that) {
+      case ProviderObserver2():
+        newApi(that);
+      case ProviderObserver() when provider is ProviderBase:
+        oldApi(that, provider);
+      case ProviderObserver():
+        return;
+    }
+  }
+
+  /// A provider was initialized, and the value exposed is [value].
+  ///
+  /// [value] will be `null` if the provider threw during initialization.
+  void didAddProvider(
+    AnyProvider<Object?> provider,
+    Object? value,
+    ProviderContainer container,
+  ) {
+    _when(
+      provider,
+      newApi: (obs) => obs.didAddProvider(
+        ObserverContext._(
+          provider: provider,
+          container: container,
+          mutation: null,
+        ),
+      ),
+      oldApi: (obs, p) => obs.didAddProvider(p, value, container),
+    );
+  }
+
+  /// A provider emitted an error, be it by throwing during initialization
+  /// or by having a [Future]/[Stream] emit an error
+  void providerDidFail(
+    AnyProvider<Object?> provider,
+    Object error,
+    StackTrace stackTrace,
+    ProviderContainer container,
+  ) {
+    _when(
+      provider,
+      newApi: (obs) => obs.providerDidFail(
+        ObserverContext._(
+          provider: provider,
+          container: container,
+          mutation: null,
+        ),
+        error,
+        stackTrace,
+      ),
+      oldApi: (obs, p) => obs.providerDidFail(p, error, stackTrace, container),
+    );
+  }
+
+  /// Called by providers when they emit a notification.
+  ///
+  /// - [newValue] will be `null` if the provider threw during initialization.
+  /// - [previousValue] will be `null` if the previous build threw during initialization.
+  void didUpdateProvider(
+    AnyProvider<Object?> provider,
+    Object? previousValue,
+    Object? newValue,
+    ProviderContainer container,
+  ) {
+    _when(
+      provider,
+      newApi: (obs) => obs.didUpdateProvider(
+        ObserverContext._(
+          provider: provider,
+          container: container,
+          mutation: null,
+        ),
+        previousValue,
+        newValue,
+      ),
+      oldApi: (obs, p) =>
+          obs.didUpdateProvider(p, previousValue, newValue, container),
+    );
+  }
+
+  /// A provider was disposed
+  void didDisposeProvider(
+    AnyProvider<Object?> provider,
+    ProviderContainer container,
+  ) {
+    _when(
+      provider,
+      newApi: (obs) => obs.didDisposeProvider(
+        ObserverContext._(
+          provider: provider,
+          container: container,
+          mutation: null,
+        ),
+      ),
+      oldApi: (obs, p) => obs.didDisposeProvider(p, container),
+    );
+  }
+}
+
+/// Transition between [AnyProvider] and [ProviderOrFamily].
+sealed class AnyProviderOrFamily {}

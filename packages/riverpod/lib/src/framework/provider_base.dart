@@ -23,53 +23,6 @@ typedef OnError = void Function(Object, StackTrace);
 @internal
 typedef DebugGetCreateSourceHash = String Function();
 
-/// An interface to help the migration between [ProviderBase] and [ProviderBase2].
-sealed class AnyProvider<StateT>
-    implements ProviderListenable<StateT>, AnyProviderOrFamily {}
-
-@internal
-extension AnyX on AnyProvider<Object?> {
-  Object? get argument {
-    final that = this;
-    return switch (that) {
-      ProviderBase2() => that.args,
-      ProviderBase() => that.argument,
-    };
-  }
-
-  DebugGetCreateSourceHash? get debugGetCreateSourceHash {
-    final that = this;
-    return switch (that) {
-      ProviderBase2() => null,
-      ProviderBase() => that.debugGetCreateSourceHash,
-    };
-  }
-
-  Family? get from {
-    final that = this;
-    return switch (that) {
-      ProviderBase2() => null,
-      ProviderBase() => that.from,
-    };
-  }
-
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies {
-    final that = this;
-    return switch (that) {
-      ProviderBase2() => null,
-      ProviderBase() => that.allTransitiveDependencies,
-    };
-  }
-
-  Iterable<AnyProviderOrFamily>? get dependencies {
-    final that = this;
-    return switch (that) {
-      ProviderBase2() => null,
-      ProviderBase() => that.dependencies,
-    };
-  }
-}
-
 /// A base class for _all_ providers.
 @immutable
 abstract class ProviderBase<StateT> extends ProviderOrFamily
