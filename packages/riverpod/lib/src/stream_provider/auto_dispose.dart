@@ -43,6 +43,7 @@ class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
   @override
   Stream<T> _create(AutoDisposeStreamProviderElement<T> ref) => _createFn(ref);
 
+  @internal
   @override
   AutoDisposeStreamProviderElement<T> createElement() {
     return AutoDisposeStreamProviderElement(this);
@@ -79,6 +80,7 @@ class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
 }
 
 /// The element of [AutoDisposeStreamProvider].
+@internal
 class AutoDisposeStreamProviderElement<T> extends StreamProviderElement<T>
     with
         AutoDisposeProviderElementMixin<AsyncValue<T>>

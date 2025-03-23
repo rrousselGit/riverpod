@@ -9,9 +9,11 @@
     They may be removed or modified in ways that do not respect Semantic Versioning.
     Use with caution.
 - Added `ProviderListenableTransformer` to easily make custom `ProviderListenable` extensions
+
 ## Unreleased patch
 
-Upgrade to Dart 3.6.0
+- Upgrade to Dart 3.6.0
+- Marked various APIs as `@internal`
 
 ## 2.6.1 - 2024-10-22
 

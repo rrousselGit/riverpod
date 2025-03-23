@@ -106,6 +106,7 @@ class StreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
   // ignore: deprecated_member_use_from_same_package
   late final AlwaysAliveRefreshable<Future<T>> future = _streamFuture<T>(this);
 
+  @internal
   @override
   StreamNotifierProviderElement<NotifierT, T> createElement() {
     return StreamNotifierProviderElement(this);
@@ -137,6 +138,7 @@ class StreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
 }
 
 /// The element of [StreamNotifierProvider].
+@internal
 class StreamNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     extends AsyncNotifierProviderElementBase<NotifierT, T>
     implements

@@ -135,6 +135,7 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
   // ignore: deprecated_member_use_from_same_package
   late final AlwaysAliveRefreshable<Future<T>> future = _asyncFuture<T>(this);
 
+  @internal
   @override
   AsyncNotifierProviderElement<NotifierT, T> createElement() {
     return AsyncNotifierProviderElement(this);
@@ -484,6 +485,7 @@ mixin FutureHandlerProviderElementMixin<T>
 }
 
 /// The element of [AsyncNotifierProvider].
+@internal
 abstract class AsyncNotifierProviderElementBase<
         NotifierT extends AsyncNotifierBase<T>,
         T> extends ProviderElementBase<AsyncValue<T>>
@@ -515,6 +517,7 @@ abstract class AsyncNotifierProviderElementBase<
 }
 
 /// The element of [AsyncNotifierProvider].
+@internal
 class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     extends AsyncNotifierProviderElementBase<NotifierT, T>
     implements

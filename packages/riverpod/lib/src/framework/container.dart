@@ -169,6 +169,7 @@ class _PointerManager {
     );
   }
 
+  @internal
   ProviderElementBase<State> readProviderElement<State>(
     AnyProvider<Object?> provider,
   ) {
