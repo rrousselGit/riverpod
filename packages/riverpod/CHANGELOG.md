@@ -1,3 +1,7 @@
+## Unreleased patch
+
+Upgrade to Dart 3.6.0
+
 ## 2.6.1 - 2024-10-22
 
 - Added `AsyncNotifier.listenSelf`. It was mistakenly absent from the 2.6.0 release

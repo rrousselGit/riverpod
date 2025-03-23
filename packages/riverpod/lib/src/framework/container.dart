@@ -46,38 +46,6 @@ class _StateReader {
         .._container = container
         ..mount();
 
-      element.getState()!.map<void>(
-        // ignore: avoid_types_on_closure_parameters
-        data: (ResultData<Object?> data) {
-          for (final observer in container.observers) {
-            runTernaryGuarded(
-              observer.didAddProvider,
-              origin,
-              data.state,
-              container,
-            );
-          }
-        },
-        error: (error) {
-          for (final observer in container.observers) {
-            runTernaryGuarded(
-              observer.didAddProvider,
-              origin,
-              null,
-              container,
-            );
-          }
-          for (final observer in container.observers) {
-            runQuaternaryGuarded(
-              observer.providerDidFail,
-              origin,
-              error.error,
-              error.stackTrace,
-              container,
-            );
-          }
-        },
-      );
       return element;
     } finally {
       if (_circularDependencyLock == origin) {

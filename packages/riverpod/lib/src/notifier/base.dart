@@ -226,7 +226,7 @@ class NotifierProviderElement<NotifierT extends NotifierBase<T>, T>
 
   @override
   bool updateShouldNotify(T previous, T next) {
-    return _notifierNotifier.result?.stateOrNull
+    return _notifierNotifier.result?.value
             ?.updateShouldNotify(previous, next) ??
         true;
   }

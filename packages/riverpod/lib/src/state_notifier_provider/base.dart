@@ -192,7 +192,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
     _removeListener?.call();
     _removeListener = null;
 
-    final notifier = _notifierNotifier.result?.stateOrNull;
+    final notifier = _notifierNotifier.result?.value;
     if (notifier != null) {
       // TODO test STateNotifier.dispose is guarded
       runGuarded(notifier.dispose);
