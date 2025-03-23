@@ -28,6 +28,7 @@ class ValueProvider<State> extends ProviderBase<State>
   @override
   Set<ProviderOrFamily>? get allTransitiveDependencies => null;
 
+  @internal
   @override
   ValueProviderElement<State> createElement() {
     return ValueProviderElement(this);
@@ -53,7 +54,7 @@ class ValueProviderElement<State> extends ProviderElementBase<State> {
     // `getState` will never be in error/loading state since there is no "create"
     final previousState = getState()! as ResultData<State>;
 
-    if (newValue != previousState.state) {
+    if (newValue != previousState.value) {
       assert(
         () {
           // Asserts would otherwise prevent a provider rebuild from updating

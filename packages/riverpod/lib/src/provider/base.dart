@@ -58,6 +58,7 @@ class Provider<State> extends InternalProvider<State>
   @override
   State _create(ProviderElement<State> ref) => _createFn(ref);
 
+  @internal
   @override
   ProviderElement<State> createElement() => ProviderElement(this);
 
@@ -324,6 +325,7 @@ class Provider<State> extends InternalProvider<State>
 ///   when that provider is no longer listened to.
 /// - [Provider.family], to allow providers to create a value from external parameters.
 /// {@endtemplate}
+@internal
 class ProviderElement<State> extends ProviderElementBase<State>
     implements
         // ignore: deprecated_member_use_from_same_package

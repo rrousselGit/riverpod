@@ -130,7 +130,7 @@ abstract class AsyncNotifierBase<State> {
   /// does not matter. Checking `==` would only hinder performances for no reason.
   ///
   /// See also:
-  /// - [ProviderBase.select] and [AsyncSelector.selectAsync], which are
+  /// - [ProviderListenable.select] and [AsyncSelector.selectAsync], which are
   ///   alternative ways to filter out changes to [state].
   @protected
   bool updateShouldNotify(AsyncValue<State> previous, AsyncValue<State> next) {

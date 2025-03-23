@@ -148,7 +148,7 @@ class ProviderScope extends StatefulWidget {
   final Widget child;
 
   /// The listeners that subscribes to changes on providers stored on this [ProviderScope].
-  final List<ProviderObserver>? observers;
+  final List<AnyProviderObserver>? observers;
 
   /// Information on how to override a provider/family.
   final List<Override> overrides;

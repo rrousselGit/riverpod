@@ -4,8 +4,10 @@ description: A new Flutter project.
 publish_to: "none"
 
 environment:
-  sdk: ">=2.17.0 <3.0.0"
+  sdk: ^3.6.0
   flutter: ">=1.17.0"
+
+resolution: workspace
 
 dependencies:
   cupertino_icons: ^1.0.2
@@ -19,12 +21,6 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-dependency_overrides:
-  flutter_riverpod:
-    path: ../../../../../../packages/flutter_riverpod
-  riverpod:
-    path: ../../../../../../packages/riverpod
 
 flutter:
   uses-material-design: true

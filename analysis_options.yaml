@@ -18,6 +18,9 @@ analyzer:
 
 linter:
   rules:
+    # False positives when creating elements, as they do `Element(this)`.
+    use_to_and_as_if_applicable: false
+
     # False positive for custom enum-like classes (such as Flutter's "Colors")
     avoid_classes_with_only_static_members: false
 

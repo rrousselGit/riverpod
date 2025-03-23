@@ -1,4 +1,4 @@
-// ignore_for_file: omit_local_variable_types, unused_local_variable
+// ignore_for_file: omit_local_variable_types, unused_local_variable, invalid_use_of_internal_member
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';

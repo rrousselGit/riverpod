@@ -3,19 +3,13 @@ import 'package:meta/meta.dart';
 /// A T|Error union type.
 @immutable
 @internal
-abstract class Result<State> {
+sealed class Result<ValueT> {
   /// The data case
-  // coverage:ignore-start
-  factory Result.data(State state) = ResultData;
-  // coverage:ignore-end
+  factory Result.data(ValueT state) = ResultData;
 
   /// The error case
-  // coverage:ignore-start
   factory Result.error(Object error, StackTrace stackTrace) = ResultError;
-  // coverage:ignore-end
 
-  /// Automatically catches errors into a [ResultError] and convert successful
-  /// values into a [ResultData].
   static Result<State> guard<State>(State Function() cb) {
     try {
       return Result.data(cb());
@@ -25,71 +19,54 @@ abstract class Result<State> {
   }
 
   /// Whether this is a [ResultData] or a [ResultError].
-  bool get hasState;
+  bool get hasData;
+  bool get hasError => !hasData;
 
   /// The state if this is a [ResultData], `null` otherwise.
-  State? get stateOrNull;
+  ValueT? get value;
 
   /// The state if this is a [ResultData], throws otherwise.
-  State get requireState;
+  ValueT get requireState;
 
-  // TODO remove when migrating to Dart 3
-  /// Returns the result of calling [data] if this is a [ResultData] or [error]
-  R map<R>({
-    required R Function(ResultData<State> data) data,
-    required R Function(ResultError<State>) error,
-  });
+  /// The error if this is a [ResultError], `null` otherwise.
+  Object? get error;
 
-  // TODO remove when migrating to Dart 3
-  /// Returns the result of calling [data] if this is a [ResultData] or [error]
-  R when<R>({
-    required R Function(State data) data,
-    required R Function(Object error, StackTrace stackTrace) error,
-  });
+  /// The stack trace if this is a [ResultError], `null` otherwise.
+  StackTrace? get stackTrace;
 }
 
 /// The data case
 @internal
 class ResultData<State> implements Result<State> {
   /// The data case
-  ResultData(this.state);
-
-  /// The state
-  final State state;
+  ResultData(this.value);
 
   @override
-  bool get hasState => true;
+  bool get hasData => true;
 
   @override
-  State? get stateOrNull => state;
+  bool get hasError => false;
 
   @override
-  State get requireState => state;
+  Object? get error => null;
 
   @override
-  R map<R>({
-    required R Function(ResultData<State> data) data,
-    required R Function(ResultError<State>) error,
-  }) {
-    return data(this);
-  }
+  StackTrace? get stackTrace => null;
 
   @override
-  R when<R>({
-    required R Function(State data) data,
-    required R Function(Object error, StackTrace stackTrace) error,
-  }) {
-    return data(state);
-  }
+  final State value;
+
+  @override
+  State get requireState => value;
 
   @override
   bool operator ==(Object other) =>
       other is ResultData<State> &&
       other.runtimeType == runtimeType &&
-      other.state == state;
+      other.value == value;
 
   @override
-  int get hashCode => Object.hash(runtimeType, state);
+  int get hashCode => Object.hash(runtimeType, value);
 }
 
 /// The error case
@@ -99,35 +76,24 @@ class ResultError<State> implements Result<State> {
   ResultError(this.error, this.stackTrace);
 
   /// The error
+  @override
   final Object error;
 
   /// The stack trace
+  @override
   final StackTrace stackTrace;
 
   @override
-  bool get hasState => false;
+  bool get hasData => false;
 
   @override
-  State? get stateOrNull => null;
+  bool get hasError => true;
+
+  @override
+  State? get value => null;
 
   @override
   State get requireState => Error.throwWithStackTrace(error, stackTrace);
-
-  @override
-  R map<R>({
-    required R Function(ResultData<State> data) data,
-    required R Function(ResultError<State>) error,
-  }) {
-    return error(this);
-  }
-
-  @override
-  R when<R>({
-    required R Function(State data) data,
-    required R Function(Object error, StackTrace stackTrace) error,
-  }) {
-    return error(this.error, stackTrace);
-  }
 
   @override
   bool operator ==(Object other) =>

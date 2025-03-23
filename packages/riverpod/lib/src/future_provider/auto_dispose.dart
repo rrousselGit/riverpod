@@ -45,6 +45,7 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
   FutureOr<T> _create(AutoDisposeFutureProviderElement<T> ref) =>
       _createFn(ref);
 
+  @internal
   @override
   AutoDisposeFutureProviderElement<T> createElement() {
     return AutoDisposeFutureProviderElement(this);
@@ -74,6 +75,7 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
 }
 
 /// The [ProviderElementBase] of [AutoDisposeFutureProvider]
+@internal
 class AutoDisposeFutureProviderElement<T> extends FutureProviderElement<T>
     with
         AutoDisposeProviderElementMixin<AsyncValue<T>>

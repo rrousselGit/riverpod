@@ -2,7 +2,9 @@ name: generate_providers
 publish_to: "none"
 
 environment:
-  sdk: ">=2.19.0 <4.0.0"
+  sdk: ^3.6.0
+
+resolution: workspace
 
 dependencies:
   dart_style: ^3.0.0

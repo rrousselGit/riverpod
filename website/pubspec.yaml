@@ -2,7 +2,9 @@ name: website_snippets
 publish_to: "none"
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ^3.6.0
+
+resolution: workspace
 
 dependencies:
   collection: ^1.15.0

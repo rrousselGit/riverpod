@@ -80,6 +80,7 @@ class FamilyStreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>,
   // ignore: deprecated_member_use_from_same_package
   late final AlwaysAliveRefreshable<Future<T>> future = _streamFuture<T>(this);
 
+  @internal
   @override
   StreamNotifierProviderElement<NotifierT, T> createElement() {
     return StreamNotifierProviderElement(this);

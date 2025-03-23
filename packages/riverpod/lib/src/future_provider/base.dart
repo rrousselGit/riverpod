@@ -70,6 +70,7 @@ class FutureProvider<T> extends _FutureProviderBase<T>
   @override
   FutureOr<T> _create(FutureProviderElement<T> ref) => _createFn(ref);
 
+  @internal
   @override
   FutureProviderElement<T> createElement() => FutureProviderElement(this);
 
@@ -92,6 +93,7 @@ class FutureProvider<T> extends _FutureProviderBase<T>
 }
 
 /// The element of a [FutureProvider]
+@internal
 class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
     with
         FutureHandlerProviderElementMixin<T>

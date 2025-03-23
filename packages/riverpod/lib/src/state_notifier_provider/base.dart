@@ -119,6 +119,7 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
     return _createFn(ref);
   }
 
+  @internal
   @override
   StateNotifierProviderElement<NotifierT, T> createElement() {
     return StateNotifierProviderElement._(this);
@@ -149,6 +150,7 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
 }
 
 /// The element of [StateNotifierProvider].
+@internal
 class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
     extends ProviderElementBase<T>
     implements
@@ -192,7 +194,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
     _removeListener?.call();
     _removeListener = null;
 
-    final notifier = _notifierNotifier.result?.stateOrNull;
+    final notifier = _notifierNotifier.result?.value;
     if (notifier != null) {
       // TODO test STateNotifier.dispose is guarded
       runGuarded(notifier.dispose);

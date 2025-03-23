@@ -48,6 +48,7 @@ class AutoDisposeStateNotifierProvider<NotifierT extends StateNotifier<T>, T>
     return _createFn(ref);
   }
 
+  @internal
   @override
   AutoDisposeStateNotifierProviderElement<NotifierT, T> createElement() {
     return AutoDisposeStateNotifierProviderElement._(this);
@@ -77,6 +78,7 @@ class AutoDisposeStateNotifierProvider<NotifierT extends StateNotifier<T>, T>
 }
 
 /// The element of [AutoDisposeStateNotifierProvider].
+@internal
 class AutoDisposeStateNotifierProviderElement<
         NotifierT extends StateNotifier<T>,
         T> extends StateNotifierProviderElement<NotifierT, T>
