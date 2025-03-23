@@ -54,3 +54,106 @@ Map<String, dynamic> _$QuestionToJson(_Question instance) => <String, dynamic>{
       'title': instance.title,
       'body': instance.body,
     };
+
+// **************************************************************************
+// RiverpodGenerator
+// **************************************************************************
+
+/// A scoped provider, exposing the current question used by [QuestionItem].
+///
+/// This is used as a performance optimization to pass a [Question] to
+/// [QuestionItem], while still instantiating [QuestionItem] using the `const`
+/// keyword.
+///
+/// This allows [QuestionItem] to rebuild less often.
+/// By doing so, even when using [QuestionItem] in a [ListView], even if new
+/// questions are obtained, previously rendered [QuestionItem]s won't rebuild.
+///
+/// This is an optional step. Since scoping is a fairly advanced mechanism,
+/// it's entirely fine to simply pass the [Question] to [QuestionItem] directly.
+@ProviderFor(currentQuestion)
+const currentQuestionProvider = CurrentQuestionProvider._();
+
+/// A scoped provider, exposing the current question used by [QuestionItem].
+///
+/// This is used as a performance optimization to pass a [Question] to
+/// [QuestionItem], while still instantiating [QuestionItem] using the `const`
+/// keyword.
+///
+/// This allows [QuestionItem] to rebuild less often.
+/// By doing so, even when using [QuestionItem] in a [ListView], even if new
+/// questions are obtained, previously rendered [QuestionItem]s won't rebuild.
+///
+/// This is an optional step. Since scoping is a fairly advanced mechanism,
+/// it's entirely fine to simply pass the [Question] to [QuestionItem] directly.
+final class CurrentQuestionProvider
+    extends $FunctionalProvider<AsyncValue<Question>, AsyncValue<Question>>
+    with $Provider<AsyncValue<Question>> {
+  /// A scoped provider, exposing the current question used by [QuestionItem].
+  ///
+  /// This is used as a performance optimization to pass a [Question] to
+  /// [QuestionItem], while still instantiating [QuestionItem] using the `const`
+  /// keyword.
+  ///
+  /// This allows [QuestionItem] to rebuild less often.
+  /// By doing so, even when using [QuestionItem] in a [ListView], even if new
+  /// questions are obtained, previously rendered [QuestionItem]s won't rebuild.
+  ///
+  /// This is an optional step. Since scoping is a fairly advanced mechanism,
+  /// it's entirely fine to simply pass the [Question] to [QuestionItem] directly.
+  const CurrentQuestionProvider._(
+      {AsyncValue<Question> Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'currentQuestionProvider',
+          isAutoDispose: true,
+          dependencies: const <ProviderOrFamily>[],
+          allTransitiveDependencies: const <ProviderOrFamily>[],
+        );
+
+  final AsyncValue<Question> Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$currentQuestionHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<Question> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<AsyncValue<Question>>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<AsyncValue<Question>> $createElement(
+          $ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  CurrentQuestionProvider $copyWithCreate(
+    AsyncValue<Question> Function(
+      Ref ref,
+    ) create,
+  ) {
+    return CurrentQuestionProvider._(create: create);
+  }
+
+  @override
+  AsyncValue<Question> create(Ref ref) {
+    final _$cb = _createCb ?? currentQuestion;
+    return _$cb(ref);
+  }
+}
+
+String _$currentQuestionHash() => r'e9359841a5b980cd7b8c79a0b56cb98878190861';
+
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

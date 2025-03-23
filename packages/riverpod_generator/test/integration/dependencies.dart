@@ -1,4 +1,4 @@
-import 'package:riverpod/riverpod.dart';
+// ignore_for_file: provider_dependencies
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'dependencies.g.dart';
@@ -64,3 +64,12 @@ int _privateDep(Ref ref) => 0;
 
 @riverpod
 int publicDep(Ref ref) => 0;
+
+@Riverpod(dependencies: [dep, dep, Dep2, Dep2])
+int duplicateDependencies(Ref ref) => 0;
+
+@Riverpod(dependencies: [family, family, Family2, Family2])
+int duplicateDependencies2(Ref ref) => 0;
+
+@Riverpod(dependencies: [duplicateDependencies, duplicateDependencies2])
+int transitiveDuplicateDependencies(Ref ref) => 0;

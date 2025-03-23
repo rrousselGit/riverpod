@@ -6,369 +6,1355 @@ part of 'unsupported_provider_value.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+@ProviderFor(integer)
+const integerProvider = IntegerProvider._();
+
+final class IntegerProvider extends $FunctionalProvider<int, int>
+    with $Provider<int> {
+  const IntegerProvider._(
+      {int Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'integerProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final int Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$integerHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  IntegerProvider $copyWithCreate(
+    int Function(
+      Ref ref,
+    ) create,
+  ) {
+    return IntegerProvider._(create: create);
+  }
+
+  @override
+  int create(Ref ref) {
+    final _$cb = _createCb ?? integer;
+    return _$cb(ref);
+  }
+}
+
 String _$integerHash() => r'8ad63bb35c89ffcf2ef281d7c39539760afff303';
 
-/// See also [integer].
-@ProviderFor(integer)
-final integerProvider = AutoDisposeProvider<int>.internal(
-  integer,
-  name: r'integerProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$integerHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(stateNotifier)
+const stateNotifierProvider = StateNotifierProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef IntegerRef = AutoDisposeProviderRef<int>;
+final class StateNotifierProvider
+    extends $FunctionalProvider<MyStateNotifier, MyStateNotifier>
+    with $Provider<MyStateNotifier> {
+  const StateNotifierProvider._(
+      {MyStateNotifier Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'stateNotifierProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final MyStateNotifier Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$stateNotifierHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(MyStateNotifier value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<MyStateNotifier>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<MyStateNotifier> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  StateNotifierProvider $copyWithCreate(
+    MyStateNotifier Function(
+      Ref ref,
+    ) create,
+  ) {
+    return StateNotifierProvider._(create: create);
+  }
+
+  @override
+  MyStateNotifier create(Ref ref) {
+    final _$cb = _createCb ?? stateNotifier;
+    return _$cb(ref);
+  }
+}
+
 String _$stateNotifierHash() => r'2505b564fd3a623976548c715b1623dea507f6d3';
 
-/// See also [stateNotifier].
-@ProviderFor(stateNotifier)
-final stateNotifierProvider = AutoDisposeProvider<MyStateNotifier>.internal(
-  stateNotifier,
-  name: r'stateNotifierProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$stateNotifierHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(asyncStateNotifier)
+const asyncStateNotifierProvider = AsyncStateNotifierProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef StateNotifierRef = AutoDisposeProviderRef<MyStateNotifier>;
+final class AsyncStateNotifierProvider extends $FunctionalProvider<
+        AsyncValue<MyStateNotifier>, FutureOr<MyStateNotifier>>
+    with $FutureModifier<MyStateNotifier>, $FutureProvider<MyStateNotifier> {
+  const AsyncStateNotifierProvider._(
+      {FutureOr<MyStateNotifier> Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'asyncStateNotifierProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final FutureOr<MyStateNotifier> Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$asyncStateNotifierHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<MyStateNotifier> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
+
+  @override
+  AsyncStateNotifierProvider $copyWithCreate(
+    FutureOr<MyStateNotifier> Function(
+      Ref ref,
+    ) create,
+  ) {
+    return AsyncStateNotifierProvider._(create: create);
+  }
+
+  @override
+  FutureOr<MyStateNotifier> create(Ref ref) {
+    final _$cb = _createCb ?? asyncStateNotifier;
+    return _$cb(ref);
+  }
+}
+
 String _$asyncStateNotifierHash() =>
     r'5c5954eb030f5688abdf881e047c8893c864b1a2';
 
-/// See also [asyncStateNotifier].
-@ProviderFor(asyncStateNotifier)
-final asyncStateNotifierProvider =
-    AutoDisposeFutureProvider<MyStateNotifier>.internal(
-  asyncStateNotifier,
-  name: r'asyncStateNotifierProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$asyncStateNotifierHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(StateNotifierClass)
+const stateNotifierClassProvider = StateNotifierClassProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef AsyncStateNotifierRef = AutoDisposeFutureProviderRef<MyStateNotifier>;
-String _$stateNotifierAsyncHash() =>
-    r'ce67cf8c6f4bda46835042c17ea01186b5b399a5';
+final class StateNotifierClassProvider
+    extends $NotifierProvider<StateNotifierClass, MyStateNotifier> {
+  const StateNotifierClassProvider._(
+      {super.runNotifierBuildOverride, StateNotifierClass Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'stateNotifierClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
 
-/// See also [stateNotifierAsync].
-@ProviderFor(stateNotifierAsync)
-final stateNotifierAsyncProvider =
-    AutoDisposeFutureProvider<MyStateNotifier>.internal(
-  stateNotifierAsync,
-  name: r'stateNotifierAsyncProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$stateNotifierAsyncHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+  final StateNotifierClass Function()? _createCb;
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef StateNotifierAsyncRef = AutoDisposeFutureProviderRef<MyStateNotifier>;
-String _$changeNotifierHash() => r'1686043b72e25b3143c5131906924f1393569400';
+  @override
+  String debugGetCreateSourceHash() => _$stateNotifierClassHash();
 
-/// See also [changeNotifier].
-@ProviderFor(changeNotifier)
-final changeNotifierProvider = AutoDisposeProvider<MyChangeNotifier>.internal(
-  changeNotifier,
-  name: r'changeNotifierProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$changeNotifierHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(MyStateNotifier value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<MyStateNotifier>(value),
+    );
+  }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef ChangeNotifierRef = AutoDisposeProviderRef<MyChangeNotifier>;
-String _$notifierHash() => r'5ad63d9ccd05ab78e7a6ba5c763cacf0b1decb7b';
+  @$internal
+  @override
+  StateNotifierClass create() => _createCb?.call() ?? StateNotifierClass();
 
-/// See also [notifier].
-@ProviderFor(notifier)
-final notifierProvider = AutoDisposeProvider<MyNotifier>.internal(
-  notifier,
-  name: r'notifierProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$notifierHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+  @$internal
+  @override
+  StateNotifierClassProvider $copyWithCreate(
+    StateNotifierClass Function() create,
+  ) {
+    return StateNotifierClassProvider._(create: create);
+  }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef NotifierRef = AutoDisposeProviderRef<MyNotifier>;
-String _$autoDisposeNotifierHash() =>
-    r'6aecd9dee1e2734c3acf8eab05145418d10656e1';
+  @$internal
+  @override
+  StateNotifierClassProvider $copyWithBuild(
+    MyStateNotifier Function(
+      Ref,
+      StateNotifierClass,
+    ) build,
+  ) {
+    return StateNotifierClassProvider._(runNotifierBuildOverride: build);
+  }
 
-/// See also [autoDisposeNotifier].
-@ProviderFor(autoDisposeNotifier)
-final autoDisposeNotifierProvider =
-    AutoDisposeProvider<MyAutoDisposeNotifier>.internal(
-  autoDisposeNotifier,
-  name: r'autoDisposeNotifierProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$autoDisposeNotifierHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+  @$internal
+  @override
+  $NotifierProviderElement<StateNotifierClass, MyStateNotifier> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
+}
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef AutoDisposeNotifierRef = AutoDisposeProviderRef<MyAutoDisposeNotifier>;
-String _$asyncNotifierHash() => r'8800a97f6bf80a56caf5d968d4b4ab91f7f0a64e';
-
-/// See also [asyncNotifier].
-@ProviderFor(asyncNotifier)
-final asyncNotifierProvider = AutoDisposeProvider<MyAsyncNotifier>.internal(
-  asyncNotifier,
-  name: r'asyncNotifierProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$asyncNotifierHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef AsyncNotifierRef = AutoDisposeProviderRef<MyAsyncNotifier>;
-String _$rawNotifierHash() => r'c667d10419c9ce1fdd227e2afd1f3aaf63c3380b';
-
-/// See also [rawNotifier].
-@ProviderFor(rawNotifier)
-final rawNotifierProvider = AutoDisposeProvider<Raw<MyChangeNotifier>>.internal(
-  rawNotifier,
-  name: r'rawNotifierProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$rawNotifierHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef RawNotifierRef = AutoDisposeProviderRef<Raw<MyChangeNotifier>>;
-String _$rawFutureNotifierHash() => r'ff2744c369ebd96615f19451eae416d7afeef03f';
-
-/// See also [rawFutureNotifier].
-@ProviderFor(rawFutureNotifier)
-final rawFutureNotifierProvider =
-    AutoDisposeProvider<Raw<Future<MyChangeNotifier>>>.internal(
-  rawFutureNotifier,
-  name: r'rawFutureNotifierProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$rawFutureNotifierHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef RawFutureNotifierRef
-    = AutoDisposeProviderRef<Raw<Future<MyChangeNotifier>>>;
-String _$rawStreamNotifierHash() => r'9a13efb8fbcef6c4388d5a2535b1b0aec6e46a9a';
-
-/// See also [rawStreamNotifier].
-@ProviderFor(rawStreamNotifier)
-final rawStreamNotifierProvider =
-    AutoDisposeProvider<Raw<Stream<MyChangeNotifier>>>.internal(
-  rawStreamNotifier,
-  name: r'rawStreamNotifierProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$rawStreamNotifierHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef RawStreamNotifierRef
-    = AutoDisposeProviderRef<Raw<Stream<MyChangeNotifier>>>;
-String _$futureRawNotifierHash() => r'87103845bce1f4cae4ad62ae3b7da6ca3539581f';
-
-/// See also [futureRawNotifier].
-@ProviderFor(futureRawNotifier)
-final futureRawNotifierProvider =
-    AutoDisposeFutureProvider<Raw<MyChangeNotifier>>.internal(
-  futureRawNotifier,
-  name: r'futureRawNotifierProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$futureRawNotifierHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef FutureRawNotifierRef
-    = AutoDisposeFutureProviderRef<Raw<MyChangeNotifier>>;
-String _$streamRawNotifierHash() => r'1d4abe389b7dfe1381879d8ffb174f6d1d9325e0';
-
-/// See also [streamRawNotifier].
-@ProviderFor(streamRawNotifier)
-final streamRawNotifierProvider =
-    AutoDisposeStreamProvider<Raw<MyChangeNotifier>>.internal(
-  streamRawNotifier,
-  name: r'streamRawNotifierProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$streamRawNotifierHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef StreamRawNotifierRef
-    = AutoDisposeStreamProviderRef<Raw<MyChangeNotifier>>;
 String _$stateNotifierClassHash() =>
     r'576978be5b8a02c212afe7afbe37c733a49ecbce';
 
-/// See also [StateNotifierClass].
-@ProviderFor(StateNotifierClass)
-final stateNotifierClassProvider =
-    AutoDisposeNotifierProvider<StateNotifierClass, MyStateNotifier>.internal(
-  StateNotifierClass.new,
-  name: r'stateNotifierClassProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$stateNotifierClassHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$StateNotifierClass extends $Notifier<MyStateNotifier> {
+  MyStateNotifier build();
+  @$internal
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<MyStateNotifier>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<MyStateNotifier>, MyStateNotifier, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}
 
-typedef _$StateNotifierClass = AutoDisposeNotifier<MyStateNotifier>;
+@ProviderFor(stateNotifierAsync)
+const stateNotifierAsyncProvider = StateNotifierAsyncProvider._();
+
+final class StateNotifierAsyncProvider extends $FunctionalProvider<
+        AsyncValue<MyStateNotifier>, FutureOr<MyStateNotifier>>
+    with $FutureModifier<MyStateNotifier>, $FutureProvider<MyStateNotifier> {
+  const StateNotifierAsyncProvider._(
+      {FutureOr<MyStateNotifier> Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'stateNotifierAsyncProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final FutureOr<MyStateNotifier> Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$stateNotifierAsyncHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<MyStateNotifier> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
+
+  @override
+  StateNotifierAsyncProvider $copyWithCreate(
+    FutureOr<MyStateNotifier> Function(
+      Ref ref,
+    ) create,
+  ) {
+    return StateNotifierAsyncProvider._(create: create);
+  }
+
+  @override
+  FutureOr<MyStateNotifier> create(Ref ref) {
+    final _$cb = _createCb ?? stateNotifierAsync;
+    return _$cb(ref);
+  }
+}
+
+String _$stateNotifierAsyncHash() =>
+    r'ce67cf8c6f4bda46835042c17ea01186b5b399a5';
+
+@ProviderFor(SelfNotifier)
+const selfNotifierProvider = SelfNotifierProvider._();
+
+final class SelfNotifierProvider
+    extends $AsyncNotifierProvider<SelfNotifier, SelfNotifier> {
+  const SelfNotifierProvider._(
+      {super.runNotifierBuildOverride, SelfNotifier Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'selfNotifierProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final SelfNotifier Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$selfNotifierHash();
+
+  @$internal
+  @override
+  SelfNotifier create() => _createCb?.call() ?? SelfNotifier();
+
+  @$internal
+  @override
+  SelfNotifierProvider $copyWithCreate(
+    SelfNotifier Function() create,
+  ) {
+    return SelfNotifierProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  SelfNotifierProvider $copyWithBuild(
+    FutureOr<SelfNotifier> Function(
+      Ref,
+      SelfNotifier,
+    ) build,
+  ) {
+    return SelfNotifierProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $AsyncNotifierProviderElement<SelfNotifier, SelfNotifier> $createElement(
+          $ProviderPointer pointer) =>
+      $AsyncNotifierProviderElement(this, pointer);
+}
+
 String _$selfNotifierHash() => r'5a857f5c92a9b7a35daa4e527bd333cf3d8d19ac';
 
-/// See also [SelfNotifier].
-@ProviderFor(SelfNotifier)
-final selfNotifierProvider =
-    AutoDisposeAsyncNotifierProvider<SelfNotifier, SelfNotifier>.internal(
-  SelfNotifier.new,
-  name: r'selfNotifierProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$selfNotifierHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$SelfNotifier extends $AsyncNotifier<SelfNotifier> {
+  FutureOr<SelfNotifier> build();
+  @$internal
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<SelfNotifier>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<SelfNotifier>>,
+        AsyncValue<SelfNotifier>,
+        Object?,
+        Object?>;
+    element.handleValue(ref, created);
+  }
+}
 
-typedef _$SelfNotifier = AutoDisposeAsyncNotifier<SelfNotifier>;
+@ProviderFor(SyncSelfNotifier)
+const syncSelfNotifierProvider = SyncSelfNotifierProvider._();
+
+final class SyncSelfNotifierProvider
+    extends $NotifierProvider<SyncSelfNotifier, SyncSelfNotifier> {
+  const SyncSelfNotifierProvider._(
+      {super.runNotifierBuildOverride, SyncSelfNotifier Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'syncSelfNotifierProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final SyncSelfNotifier Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$syncSelfNotifierHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(SyncSelfNotifier value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<SyncSelfNotifier>(value),
+    );
+  }
+
+  @$internal
+  @override
+  SyncSelfNotifier create() => _createCb?.call() ?? SyncSelfNotifier();
+
+  @$internal
+  @override
+  SyncSelfNotifierProvider $copyWithCreate(
+    SyncSelfNotifier Function() create,
+  ) {
+    return SyncSelfNotifierProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  SyncSelfNotifierProvider $copyWithBuild(
+    SyncSelfNotifier Function(
+      Ref,
+      SyncSelfNotifier,
+    ) build,
+  ) {
+    return SyncSelfNotifierProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<SyncSelfNotifier, SyncSelfNotifier> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
+}
+
 String _$syncSelfNotifierHash() => r'4f3a2463cb5693a5c8d7e772b4d7c9774b9ba637';
 
-/// See also [SyncSelfNotifier].
-@ProviderFor(SyncSelfNotifier)
-final syncSelfNotifierProvider =
-    AutoDisposeNotifierProvider<SyncSelfNotifier, SyncSelfNotifier>.internal(
-  SyncSelfNotifier.new,
-  name: r'syncSelfNotifierProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$syncSelfNotifierHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$SyncSelfNotifier extends $Notifier<SyncSelfNotifier> {
+  SyncSelfNotifier build();
+  @$internal
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<SyncSelfNotifier>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<SyncSelfNotifier>, SyncSelfNotifier, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}
 
-typedef _$SyncSelfNotifier = AutoDisposeNotifier<SyncSelfNotifier>;
+@ProviderFor(StreamSelfNotifier)
+const streamSelfNotifierProvider = StreamSelfNotifierProvider._();
+
+final class StreamSelfNotifierProvider
+    extends $StreamNotifierProvider<StreamSelfNotifier, StreamSelfNotifier> {
+  const StreamSelfNotifierProvider._(
+      {super.runNotifierBuildOverride, StreamSelfNotifier Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'streamSelfNotifierProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final StreamSelfNotifier Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$streamSelfNotifierHash();
+
+  @$internal
+  @override
+  StreamSelfNotifier create() => _createCb?.call() ?? StreamSelfNotifier();
+
+  @$internal
+  @override
+  StreamSelfNotifierProvider $copyWithCreate(
+    StreamSelfNotifier Function() create,
+  ) {
+    return StreamSelfNotifierProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  StreamSelfNotifierProvider $copyWithBuild(
+    Stream<StreamSelfNotifier> Function(
+      Ref,
+      StreamSelfNotifier,
+    ) build,
+  ) {
+    return StreamSelfNotifierProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $StreamNotifierProviderElement<StreamSelfNotifier, StreamSelfNotifier>
+      $createElement($ProviderPointer pointer) =>
+          $StreamNotifierProviderElement(this, pointer);
+}
+
 String _$streamSelfNotifierHash() =>
     r'18705475d157d8e592205406c0b884b7213d329e';
 
-/// See also [StreamSelfNotifier].
-@ProviderFor(StreamSelfNotifier)
-final streamSelfNotifierProvider = AutoDisposeStreamNotifierProvider<
-    StreamSelfNotifier, StreamSelfNotifier>.internal(
-  StreamSelfNotifier.new,
-  name: r'streamSelfNotifierProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$streamSelfNotifierHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$StreamSelfNotifier
+    extends $StreamNotifier<StreamSelfNotifier> {
+  Stream<StreamSelfNotifier> build();
+  @$internal
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<StreamSelfNotifier>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<StreamSelfNotifier>>,
+        AsyncValue<StreamSelfNotifier>,
+        Object?,
+        Object?>;
+    element.handleValue(ref, created);
+  }
+}
 
-typedef _$StreamSelfNotifier = AutoDisposeStreamNotifier<StreamSelfNotifier>;
+@ProviderFor(StateNotifierClassAsync)
+const stateNotifierClassAsyncProvider = StateNotifierClassAsyncProvider._();
+
+final class StateNotifierClassAsyncProvider
+    extends $AsyncNotifierProvider<StateNotifierClassAsync, MyStateNotifier> {
+  const StateNotifierClassAsyncProvider._(
+      {super.runNotifierBuildOverride,
+      StateNotifierClassAsync Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'stateNotifierClassAsyncProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final StateNotifierClassAsync Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$stateNotifierClassAsyncHash();
+
+  @$internal
+  @override
+  StateNotifierClassAsync create() =>
+      _createCb?.call() ?? StateNotifierClassAsync();
+
+  @$internal
+  @override
+  StateNotifierClassAsyncProvider $copyWithCreate(
+    StateNotifierClassAsync Function() create,
+  ) {
+    return StateNotifierClassAsyncProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  StateNotifierClassAsyncProvider $copyWithBuild(
+    FutureOr<MyStateNotifier> Function(
+      Ref,
+      StateNotifierClassAsync,
+    ) build,
+  ) {
+    return StateNotifierClassAsyncProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $AsyncNotifierProviderElement<StateNotifierClassAsync, MyStateNotifier>
+      $createElement($ProviderPointer pointer) =>
+          $AsyncNotifierProviderElement(this, pointer);
+}
+
 String _$stateNotifierClassAsyncHash() =>
     r'06c519ed7dbdcd9440365dd2dc3ec12e603b6b7e';
 
-/// See also [StateNotifierClassAsync].
-@ProviderFor(StateNotifierClassAsync)
-final stateNotifierClassAsyncProvider = AutoDisposeAsyncNotifierProvider<
-    StateNotifierClassAsync, MyStateNotifier>.internal(
-  StateNotifierClassAsync.new,
-  name: r'stateNotifierClassAsyncProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$stateNotifierClassAsyncHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$StateNotifierClassAsync
+    extends $AsyncNotifier<MyStateNotifier> {
+  FutureOr<MyStateNotifier> build();
+  @$internal
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<MyStateNotifier>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<MyStateNotifier>>,
+        AsyncValue<MyStateNotifier>,
+        Object?,
+        Object?>;
+    element.handleValue(ref, created);
+  }
+}
 
-typedef _$StateNotifierClassAsync = AutoDisposeAsyncNotifier<MyStateNotifier>;
+@ProviderFor(changeNotifier)
+const changeNotifierProvider = ChangeNotifierProvider._();
+
+final class ChangeNotifierProvider
+    extends $FunctionalProvider<MyChangeNotifier, MyChangeNotifier>
+    with $Provider<MyChangeNotifier> {
+  const ChangeNotifierProvider._(
+      {MyChangeNotifier Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'changeNotifierProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final MyChangeNotifier Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$changeNotifierHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(MyChangeNotifier value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<MyChangeNotifier>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<MyChangeNotifier> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  ChangeNotifierProvider $copyWithCreate(
+    MyChangeNotifier Function(
+      Ref ref,
+    ) create,
+  ) {
+    return ChangeNotifierProvider._(create: create);
+  }
+
+  @override
+  MyChangeNotifier create(Ref ref) {
+    final _$cb = _createCb ?? changeNotifier;
+    return _$cb(ref);
+  }
+}
+
+String _$changeNotifierHash() => r'1686043b72e25b3143c5131906924f1393569400';
+
+@ProviderFor(ChangeNotifierClass)
+const changeNotifierClassProvider = ChangeNotifierClassProvider._();
+
+final class ChangeNotifierClassProvider
+    extends $NotifierProvider<ChangeNotifierClass, MyChangeNotifier> {
+  const ChangeNotifierClassProvider._(
+      {super.runNotifierBuildOverride, ChangeNotifierClass Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'changeNotifierClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final ChangeNotifierClass Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$changeNotifierClassHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(MyChangeNotifier value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<MyChangeNotifier>(value),
+    );
+  }
+
+  @$internal
+  @override
+  ChangeNotifierClass create() => _createCb?.call() ?? ChangeNotifierClass();
+
+  @$internal
+  @override
+  ChangeNotifierClassProvider $copyWithCreate(
+    ChangeNotifierClass Function() create,
+  ) {
+    return ChangeNotifierClassProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  ChangeNotifierClassProvider $copyWithBuild(
+    MyChangeNotifier Function(
+      Ref,
+      ChangeNotifierClass,
+    ) build,
+  ) {
+    return ChangeNotifierClassProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<ChangeNotifierClass, MyChangeNotifier>
+      $createElement($ProviderPointer pointer) =>
+          $NotifierProviderElement(this, pointer);
+}
+
 String _$changeNotifierClassHash() =>
     r'c9716469ce2f8e7a1a6063587ae8733999e51a6e';
 
-/// See also [ChangeNotifierClass].
-@ProviderFor(ChangeNotifierClass)
-final changeNotifierClassProvider =
-    AutoDisposeNotifierProvider<ChangeNotifierClass, MyChangeNotifier>.internal(
-  ChangeNotifierClass.new,
-  name: r'changeNotifierClassProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$changeNotifierClassHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$ChangeNotifierClass extends $Notifier<MyChangeNotifier> {
+  MyChangeNotifier build();
+  @$internal
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<MyChangeNotifier>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<MyChangeNotifier>, MyChangeNotifier, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}
 
-typedef _$ChangeNotifierClass = AutoDisposeNotifier<MyChangeNotifier>;
+@ProviderFor(notifier)
+const notifierProvider = NotifierProvider._();
+
+final class NotifierProvider extends $FunctionalProvider<MyNotifier, MyNotifier>
+    with $Provider<MyNotifier> {
+  const NotifierProvider._(
+      {MyNotifier Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'notifierProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final MyNotifier Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$notifierHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(MyNotifier value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<MyNotifier>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<MyNotifier> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  NotifierProvider $copyWithCreate(
+    MyNotifier Function(
+      Ref ref,
+    ) create,
+  ) {
+    return NotifierProvider._(create: create);
+  }
+
+  @override
+  MyNotifier create(Ref ref) {
+    final _$cb = _createCb ?? notifier;
+    return _$cb(ref);
+  }
+}
+
+String _$notifierHash() => r'5ad63d9ccd05ab78e7a6ba5c763cacf0b1decb7b';
+
+@ProviderFor(autoDisposeNotifier)
+const autoDisposeNotifierProvider = AutoDisposeNotifierProvider._();
+
+final class AutoDisposeNotifierProvider
+    extends $FunctionalProvider<MyAutoDisposeNotifier, MyAutoDisposeNotifier>
+    with $Provider<MyAutoDisposeNotifier> {
+  const AutoDisposeNotifierProvider._(
+      {MyAutoDisposeNotifier Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'autoDisposeNotifierProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final MyAutoDisposeNotifier Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$autoDisposeNotifierHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(MyAutoDisposeNotifier value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<MyAutoDisposeNotifier>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<MyAutoDisposeNotifier> $createElement(
+          $ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  AutoDisposeNotifierProvider $copyWithCreate(
+    MyAutoDisposeNotifier Function(
+      Ref ref,
+    ) create,
+  ) {
+    return AutoDisposeNotifierProvider._(create: create);
+  }
+
+  @override
+  MyAutoDisposeNotifier create(Ref ref) {
+    final _$cb = _createCb ?? autoDisposeNotifier;
+    return _$cb(ref);
+  }
+}
+
+String _$autoDisposeNotifierHash() =>
+    r'6aecd9dee1e2734c3acf8eab05145418d10656e1';
+
+@ProviderFor(NotifierClass)
+const notifierClassProvider = NotifierClassProvider._();
+
+final class NotifierClassProvider
+    extends $NotifierProvider<NotifierClass, MyNotifier> {
+  const NotifierClassProvider._(
+      {super.runNotifierBuildOverride, NotifierClass Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'notifierClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final NotifierClass Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$notifierClassHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(MyNotifier value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<MyNotifier>(value),
+    );
+  }
+
+  @$internal
+  @override
+  NotifierClass create() => _createCb?.call() ?? NotifierClass();
+
+  @$internal
+  @override
+  NotifierClassProvider $copyWithCreate(
+    NotifierClass Function() create,
+  ) {
+    return NotifierClassProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  NotifierClassProvider $copyWithBuild(
+    MyNotifier Function(
+      Ref,
+      NotifierClass,
+    ) build,
+  ) {
+    return NotifierClassProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<NotifierClass, MyNotifier> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
+}
+
 String _$notifierClassHash() => r'e7eefebec2fca4f982582449e7ec14322932b748';
 
-/// See also [NotifierClass].
-@ProviderFor(NotifierClass)
-final notifierClassProvider =
-    AutoDisposeNotifierProvider<NotifierClass, MyNotifier>.internal(
-  NotifierClass.new,
-  name: r'notifierClassProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$notifierClassHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$NotifierClass extends $Notifier<MyNotifier> {
+  MyNotifier build();
+  @$internal
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<MyNotifier>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<MyNotifier>, MyNotifier, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}
 
-typedef _$NotifierClass = AutoDisposeNotifier<MyNotifier>;
+@ProviderFor(asyncNotifier)
+const asyncNotifierProvider = AsyncNotifierProvider._();
+
+final class AsyncNotifierProvider
+    extends $FunctionalProvider<MyAsyncNotifier, MyAsyncNotifier>
+    with $Provider<MyAsyncNotifier> {
+  const AsyncNotifierProvider._(
+      {MyAsyncNotifier Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'asyncNotifierProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final MyAsyncNotifier Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$asyncNotifierHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(MyAsyncNotifier value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<MyAsyncNotifier>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<MyAsyncNotifier> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  AsyncNotifierProvider $copyWithCreate(
+    MyAsyncNotifier Function(
+      Ref ref,
+    ) create,
+  ) {
+    return AsyncNotifierProvider._(create: create);
+  }
+
+  @override
+  MyAsyncNotifier create(Ref ref) {
+    final _$cb = _createCb ?? asyncNotifier;
+    return _$cb(ref);
+  }
+}
+
+String _$asyncNotifierHash() => r'8800a97f6bf80a56caf5d968d4b4ab91f7f0a64e';
+
+@ProviderFor(AsyncNotifierClass)
+const asyncNotifierClassProvider = AsyncNotifierClassProvider._();
+
+final class AsyncNotifierClassProvider
+    extends $NotifierProvider<AsyncNotifierClass, MyAsyncNotifier> {
+  const AsyncNotifierClassProvider._(
+      {super.runNotifierBuildOverride, AsyncNotifierClass Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'asyncNotifierClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final AsyncNotifierClass Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$asyncNotifierClassHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(MyAsyncNotifier value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<MyAsyncNotifier>(value),
+    );
+  }
+
+  @$internal
+  @override
+  AsyncNotifierClass create() => _createCb?.call() ?? AsyncNotifierClass();
+
+  @$internal
+  @override
+  AsyncNotifierClassProvider $copyWithCreate(
+    AsyncNotifierClass Function() create,
+  ) {
+    return AsyncNotifierClassProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  AsyncNotifierClassProvider $copyWithBuild(
+    MyAsyncNotifier Function(
+      Ref,
+      AsyncNotifierClass,
+    ) build,
+  ) {
+    return AsyncNotifierClassProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<AsyncNotifierClass, MyAsyncNotifier> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
+}
+
 String _$asyncNotifierClassHash() =>
     r'815a238752d324b136166c409a39fd3f0db67267';
 
-/// See also [AsyncNotifierClass].
-@ProviderFor(AsyncNotifierClass)
-final asyncNotifierClassProvider =
-    AutoDisposeNotifierProvider<AsyncNotifierClass, MyAsyncNotifier>.internal(
-  AsyncNotifierClass.new,
-  name: r'asyncNotifierClassProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$asyncNotifierClassHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$AsyncNotifierClass extends $Notifier<MyAsyncNotifier> {
+  MyAsyncNotifier build();
+  @$internal
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<MyAsyncNotifier>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<MyAsyncNotifier>, MyAsyncNotifier, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}
 
-typedef _$AsyncNotifierClass = AutoDisposeNotifier<MyAsyncNotifier>;
+@ProviderFor(rawNotifier)
+const rawNotifierProvider = RawNotifierProvider._();
+
+final class RawNotifierProvider
+    extends $FunctionalProvider<Raw<MyChangeNotifier>, Raw<MyChangeNotifier>>
+    with $Provider<Raw<MyChangeNotifier>> {
+  const RawNotifierProvider._(
+      {Raw<MyChangeNotifier> Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'rawNotifierProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final Raw<MyChangeNotifier> Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$rawNotifierHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Raw<MyChangeNotifier> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<Raw<MyChangeNotifier>>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<Raw<MyChangeNotifier>> $createElement(
+          $ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  RawNotifierProvider $copyWithCreate(
+    Raw<MyChangeNotifier> Function(
+      Ref ref,
+    ) create,
+  ) {
+    return RawNotifierProvider._(create: create);
+  }
+
+  @override
+  Raw<MyChangeNotifier> create(Ref ref) {
+    final _$cb = _createCb ?? rawNotifier;
+    return _$cb(ref);
+  }
+}
+
+String _$rawNotifierHash() => r'c667d10419c9ce1fdd227e2afd1f3aaf63c3380b';
+
+@ProviderFor(rawFutureNotifier)
+const rawFutureNotifierProvider = RawFutureNotifierProvider._();
+
+final class RawFutureNotifierProvider extends $FunctionalProvider<
+        Raw<Future<MyChangeNotifier>>, Raw<Future<MyChangeNotifier>>>
+    with $Provider<Raw<Future<MyChangeNotifier>>> {
+  const RawFutureNotifierProvider._(
+      {Raw<Future<MyChangeNotifier>> Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'rawFutureNotifierProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final Raw<Future<MyChangeNotifier>> Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$rawFutureNotifierHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Raw<Future<MyChangeNotifier>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<Raw<Future<MyChangeNotifier>>>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<Raw<Future<MyChangeNotifier>>> $createElement(
+          $ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  RawFutureNotifierProvider $copyWithCreate(
+    Raw<Future<MyChangeNotifier>> Function(
+      Ref ref,
+    ) create,
+  ) {
+    return RawFutureNotifierProvider._(create: create);
+  }
+
+  @override
+  Raw<Future<MyChangeNotifier>> create(Ref ref) {
+    final _$cb = _createCb ?? rawFutureNotifier;
+    return _$cb(ref);
+  }
+}
+
+String _$rawFutureNotifierHash() => r'ff2744c369ebd96615f19451eae416d7afeef03f';
+
+@ProviderFor(rawStreamNotifier)
+const rawStreamNotifierProvider = RawStreamNotifierProvider._();
+
+final class RawStreamNotifierProvider extends $FunctionalProvider<
+        Raw<Stream<MyChangeNotifier>>, Raw<Stream<MyChangeNotifier>>>
+    with $Provider<Raw<Stream<MyChangeNotifier>>> {
+  const RawStreamNotifierProvider._(
+      {Raw<Stream<MyChangeNotifier>> Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'rawStreamNotifierProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final Raw<Stream<MyChangeNotifier>> Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$rawStreamNotifierHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Raw<Stream<MyChangeNotifier>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<Raw<Stream<MyChangeNotifier>>>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<Raw<Stream<MyChangeNotifier>>> $createElement(
+          $ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  RawStreamNotifierProvider $copyWithCreate(
+    Raw<Stream<MyChangeNotifier>> Function(
+      Ref ref,
+    ) create,
+  ) {
+    return RawStreamNotifierProvider._(create: create);
+  }
+
+  @override
+  Raw<Stream<MyChangeNotifier>> create(Ref ref) {
+    final _$cb = _createCb ?? rawStreamNotifier;
+    return _$cb(ref);
+  }
+}
+
+String _$rawStreamNotifierHash() => r'9a13efb8fbcef6c4388d5a2535b1b0aec6e46a9a';
+
+@ProviderFor(futureRawNotifier)
+const futureRawNotifierProvider = FutureRawNotifierProvider._();
+
+final class FutureRawNotifierProvider extends $FunctionalProvider<
+        AsyncValue<Raw<MyChangeNotifier>>, FutureOr<Raw<MyChangeNotifier>>>
+    with
+        $FutureModifier<Raw<MyChangeNotifier>>,
+        $FutureProvider<Raw<MyChangeNotifier>> {
+  const FutureRawNotifierProvider._(
+      {FutureOr<Raw<MyChangeNotifier>> Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'futureRawNotifierProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final FutureOr<Raw<MyChangeNotifier>> Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$futureRawNotifierHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<Raw<MyChangeNotifier>> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
+
+  @override
+  FutureRawNotifierProvider $copyWithCreate(
+    FutureOr<Raw<MyChangeNotifier>> Function(
+      Ref ref,
+    ) create,
+  ) {
+    return FutureRawNotifierProvider._(create: create);
+  }
+
+  @override
+  FutureOr<Raw<MyChangeNotifier>> create(Ref ref) {
+    final _$cb = _createCb ?? futureRawNotifier;
+    return _$cb(ref);
+  }
+}
+
+String _$futureRawNotifierHash() => r'87103845bce1f4cae4ad62ae3b7da6ca3539581f';
+
+@ProviderFor(streamRawNotifier)
+const streamRawNotifierProvider = StreamRawNotifierProvider._();
+
+final class StreamRawNotifierProvider extends $FunctionalProvider<
+        AsyncValue<Raw<MyChangeNotifier>>, Stream<Raw<MyChangeNotifier>>>
+    with
+        $FutureModifier<Raw<MyChangeNotifier>>,
+        $StreamProvider<Raw<MyChangeNotifier>> {
+  const StreamRawNotifierProvider._(
+      {Stream<Raw<MyChangeNotifier>> Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'streamRawNotifierProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final Stream<Raw<MyChangeNotifier>> Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$streamRawNotifierHash();
+
+  @$internal
+  @override
+  $StreamProviderElement<Raw<MyChangeNotifier>> $createElement(
+          $ProviderPointer pointer) =>
+      $StreamProviderElement(this, pointer);
+
+  @override
+  StreamRawNotifierProvider $copyWithCreate(
+    Stream<Raw<MyChangeNotifier>> Function(
+      Ref ref,
+    ) create,
+  ) {
+    return StreamRawNotifierProvider._(create: create);
+  }
+
+  @override
+  Stream<Raw<MyChangeNotifier>> create(Ref ref) {
+    final _$cb = _createCb ?? streamRawNotifier;
+    return _$cb(ref);
+  }
+}
+
+String _$streamRawNotifierHash() => r'1d4abe389b7dfe1381879d8ffb174f6d1d9325e0';
+
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

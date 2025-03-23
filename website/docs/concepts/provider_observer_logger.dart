@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 /* SNIPPET START */
 
@@ -10,14 +11,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 class Logger extends ProviderObserver {
   @override
   void didUpdateProvider(
-    ProviderBase<Object?> provider,
+    ProviderObserverContext context,
     Object? previousValue,
     Object? newValue,
-    ProviderContainer container,
   ) {
     print('''
 {
-  "provider": "${provider.name ?? provider.runtimeType}",
+  "provider": "${context.provider.name ?? context.provider.runtimeType}",
   "newValue": "$newValue"
 }''');
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart' hide Listener;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -7,7 +8,7 @@ import 'utils.dart';
 
 void main() {
   test('auto-dispose notifier when stop listening', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final onDispose = OnDisposeMock();
     final provider = ChangeNotifierProvider.autoDispose((ref) {
       ref.onDispose(onDispose.call);
@@ -30,7 +31,7 @@ void main() {
   });
 
   test('family', () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final provider = ChangeNotifierProvider.autoDispose
         .family<ValueNotifier<int>, int>((ref, value) {
       return ValueNotifier(value);
@@ -69,7 +70,7 @@ void main() {
     final provider = ChangeNotifierProvider.autoDispose((ref) {
       return ref.watch(dep) == 0 ? notifier : notifier2;
     });
-    final container = createContainer();
+    final container = ProviderContainer.test();
     addTearDown(container.dispose);
 
     var callCount = 0;
@@ -137,55 +138,6 @@ void main() {
 
     expect(notifier.mounted, isFalse);
   });
-
-  // test(
-  //     'overrideWithValue listens to the notifier, support notifier change, and does not dispose of the notifier',
-  //     () async {
-  //   final provider = ChangeNotifierProvider.autoDispose((_) => TestNotifier());
-  //   final notifier = TestNotifier();
-  //   final notifier2 = TestNotifier();
-  //   final container = ProviderContainer(overrides: [
-  //     provider.overrideWithValue(notifier),
-  //   ]);
-  //   addTearDown(container.dispose);
-
-  //   var callCount = 0;
-  //   final sub = container.listen(provider, (_, __) => callCount++);
-  //   final notifierSub = container.listen(provider.notifier, (_, __) {});
-
-  //   expect(sub.read(), notifier);
-  //   expect(callCount, 0);
-  //   expect(notifierSub.read(), notifier);
-  //   expect(notifier.hasListeners, true);
-
-  //   notifier.count++;
-
-  //   await container.pump();
-  //   expect(callCount, 1);
-
-  //   container.updateOverrides([
-  //     provider.overrideWithValue(notifier2),
-  //   ]);
-
-  //   await container.pump();
-  //   expect(callCount, 2);
-  //   expect(notifier.hasListeners, false);
-  //   expect(notifier2.hasListeners, true);
-  //   expect(notifier.mounted, true);
-  //   expect(notifierSub.read(), notifier2);
-
-  //   notifier2.count++;
-
-  //   await container.pump();
-  //   expect(callCount, 3);
-
-  //   container.dispose();
-
-  //   expect(callCount, 3);
-  //   expect(notifier2.hasListeners, false);
-  //   expect(notifier2.mounted, true);
-  //   expect(notifier.mounted, true);
-  // });
 }
 
 class OnDisposeMock extends Mock {
@@ -196,7 +148,6 @@ class TestNotifier extends ChangeNotifier {
   bool mounted = true;
 
   @override
-  // ignore: unnecessary_overrides
   bool get hasListeners => super.hasListeners;
 
   int _count = 0;

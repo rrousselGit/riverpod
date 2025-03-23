@@ -5,7 +5,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../first_request/raw/activity.dart';
 
-FutureOr<Activity> fetchActivity(String activityType) => throw UnimplementedError();
+FutureOr<Activity> fetchActivity(String activityType) =>
+    throw UnimplementedError();
 
 /* SNIPPET START */
 final activityProvider = FutureProvider.autoDispose
@@ -24,16 +25,15 @@ final activityProvider = FutureProvider.autoDispose
 // {@template raw_activityProvider2}
 // Again, for notifier we use the ".family" modifier, and specify the argument as type "String".
 // {@endtemplate}
-final activityProvider2 = AsyncNotifierProvider.autoDispose.family<ActivityNotifier, Activity, String>(
+final activityProvider2 = AsyncNotifierProvider.autoDispose
+    .family<ActivityNotifier, Activity, String>(
   ActivityNotifier.new,
 );
 
 // {@template raw_ActivityNotifier}
 // When using ".family" with notifiers, we need to change the notifier subclass:
 // AsyncNotifier -> FamilyAsyncNotifier
-// AutoDisposeAsyncNotifier -> AutoDisposeFamilyAsyncNotifier
-// {@endtemplate}
-class ActivityNotifier extends AutoDisposeFamilyAsyncNotifier<Activity, String> {
+class ActivityNotifier extends FamilyAsyncNotifier<Activity, String> {
   // {@template raw_build}
   /// Family arguments are passed to the build method and accessible with this.arg
   // {@endtemplate}

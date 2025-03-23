@@ -154,54 +154,6 @@ void main() {
     verifyOnly(listener, listener(0, 1));
   });
 
-  testWidgets('ProviderScope can receive a custom parent', (tester) async {
-    final provider = Provider((ref) => 0);
-
-    final container = createContainer(
-      overrides: [provider.overrideWithValue(42)],
-    );
-
-    await tester.pumpWidget(
-      ProviderScope(
-        // ignore: deprecated_member_use_from_same_package
-        parent: container,
-        child: Consumer(
-          builder: (context, ref, _) {
-            return Text(
-              '${ref.watch(provider)}',
-              textDirection: TextDirection.ltr,
-            );
-          },
-        ),
-      ),
-    );
-
-    expect(find.text('42'), findsOneWidget);
-  });
-
-  testWidgets('ProviderScope.parent cannot change', (tester) async {
-    final container = createContainer();
-    final container2 = createContainer();
-
-    await tester.pumpWidget(
-      ProviderScope(
-        // ignore: deprecated_member_use_from_same_package
-        parent: container,
-        child: Container(),
-      ),
-    );
-
-    await tester.pumpWidget(
-      ProviderScope(
-        // ignore: deprecated_member_use_from_same_package
-        parent: container2,
-        child: Container(),
-      ),
-    );
-
-    expect(tester.takeException(), isUnsupportedError);
-  });
-
   testWidgets('ref.read works with providers that returns null',
       (tester) async {
     final nullProvider = Provider((ref) => null);
@@ -241,7 +193,7 @@ void main() {
 
   testWidgets('ref.read obtains the nearest Provider possible', (tester) async {
     late WidgetRef ref;
-    final provider = Provider((watch) => 42);
+    final provider = Provider((watch) => 42, dependencies: const []);
 
     await tester.pumpWidget(
       ProviderScope(
@@ -269,7 +221,7 @@ void main() {
     };
 
     final provider = StateProvider((ref) => 0);
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     // using runZonedGuarded as StateNotifier will emit an handleUncaughtError
     // if a listener threw
@@ -294,7 +246,7 @@ void main() {
 
   testWidgets('ref.watch within a build method can flush providers',
       (tester) async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final dep = StateProvider((ref) => 0);
     final provider = Provider((ref) => ref.watch(dep));
 
@@ -328,8 +280,8 @@ void main() {
 
   testWidgets('UncontrolledProviderScope gracefully handles vsync',
       (tester) async {
-    final container = createContainer();
-    final container2 = createContainer(parent: container);
+    final container = ProviderContainer.test();
+    final container2 = ProviderContainer.test(parent: container);
 
     expect(container.scheduler.flutterVsyncs, isEmpty);
 
@@ -415,7 +367,7 @@ void main() {
   testWidgets(
       'UncontrolledProviderScope gracefully handles debugCanModifyProviders',
       (tester) async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     expect(debugCanModifyProviders, null);
 
@@ -481,29 +433,6 @@ void main() {
     expect(ref.refresh(provider), null);
   });
 
-  // testWidgets('ProviderScope allows specifying a ProviderContainer',
-  //     (tester) async {
-  //   final provider = FutureProvider((ref) async => 42);
-  //   late WidgetRef ref;
-  //   final container = createContainer(overrides: [
-  //     provider.overrideWithValue(const AsyncValue.data(42)),
-  //   ]);
-
-  //   await tester.pumpWidget(
-  //     UncontrolledProviderScope(
-  //       container: container,
-  //       child: Consumer(
-  //         builder: (context, r, _) {
-  //           ref = r;
-  //           return Container();
-  //         },
-  //       ),
-  //     ),
-  //   );
-
-  //   expect(ref.read(provider), const AsyncValue.data(42));
-  // });
-
   testWidgets('AlwaysAliveProviderBase.read(context) inside initState',
       (tester) async {
     final provider = Provider((_) => 42);
@@ -511,7 +440,7 @@ void main() {
 
     await tester.pumpWidget(
       ProviderScope(
-        child: InitState(
+        child: _InitState(
           initState: (context, ref) => result = ref.read(provider),
         ),
       ),
@@ -806,7 +735,7 @@ void main() {
       return 0;
     });
 
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final key = GlobalKey<NavigatorState>();
 
     await tester.pumpWidget(
@@ -831,17 +760,18 @@ void main() {
 
     expect(find.text('1'), findsOneWidget);
 
-    // ignore: unawaited_futures
-    key.currentState!.pushReplacement<void, void>(
-      PageRouteBuilder<void>(
-        pageBuilder: (_, __, ___) {
-          return Consumer(
-            builder: (context, ref, _) {
-              final count = ref.watch(counterProvider);
-              return Text('new $count');
-            },
-          );
-        },
+    unawaited(
+      key.currentState!.pushReplacement<void, void>(
+        PageRouteBuilder<void>(
+          pageBuilder: (_, __, ___) {
+            return Consumer(
+              builder: (context, ref, _) {
+                final count = ref.watch(counterProvider);
+                return Text('new $count');
+              },
+            );
+          },
+        ),
       ),
     );
 
@@ -853,18 +783,16 @@ void main() {
   });
 }
 
-class InitState extends ConsumerStatefulWidget {
-  const InitState({super.key, required this.initState});
+class _InitState extends ConsumerStatefulWidget {
+  const _InitState({required this.initState});
 
-  // ignore: diagnostic_describe_all_properties
   final void Function(BuildContext context, WidgetRef ref) initState;
 
   @override
-  // ignore: library_private_types_in_public_api
   _InitStateState createState() => _InitStateState();
 }
 
-class _InitStateState extends ConsumerState<InitState> {
+class _InitStateState extends ConsumerState<_InitState> {
   @override
   void initState() {
     super.initState();

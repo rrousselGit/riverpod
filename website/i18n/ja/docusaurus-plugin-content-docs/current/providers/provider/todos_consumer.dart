@@ -13,6 +13,6 @@ Consumer(builder: (context, ref, child) {
   // TODO ListView/GridView/... を使って Todo リストを表示する /* SKIP */
   return Container();
   /* SKIP END */
-});
+},);
 /* SNIPPET END */
 }

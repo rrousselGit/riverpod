@@ -1,7 +1,6 @@
 // ignore_for_file: unused_element
 
 import 'package:flutter/widgets.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'avoid_build_context_in_providers.g.dart';

@@ -7,3 +7,6 @@ analyzer:
     - test/lints/functional_ref/functional_ref.g.dart
     - test/lints/functional_ref/fix/auto_import.g.dart
     - test/lints/functional_ref/fix/use_prefix.g.dart
+
+custom_lint:
+  debug: true

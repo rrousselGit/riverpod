@@ -1,9 +1,13 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/error/error.dart'
+    hide
+        // ignore: undefined_hidden_name, necessary to support broad analyzer versions
+        LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
-import '../object_utils.dart';
 import '../riverpod_custom_lint.dart';
 
 class ProviderParameters extends RiverpodLintRule {
@@ -15,6 +19,7 @@ class ProviderParameters extends RiverpodLintRule {
         'Meaning either the values should be cached, or the parameters should override ==',
     url:
         'https://riverpod.dev/docs/concepts/modifiers/family#passing-multiple-parameters-to-a-family',
+    errorSeverity: ErrorSeverity.WARNING,
   );
 
   @override
@@ -23,7 +28,10 @@ class ProviderParameters extends RiverpodLintRule {
     ErrorReporter reporter,
     CustomLintContext context,
   ) {
-    riverpodRegistry(context).addProviderListenableExpression((expression) {
+    context.registry.addExpression((node) {
+      final expression = node.providerListenable;
+      if (expression == null) return;
+
       final arguments = expression.familyArguments;
       if (arguments == null) return;
 
@@ -48,12 +56,7 @@ class ProviderParameters extends RiverpodLintRule {
           final operatorEqual =
               instantiatedObject?.enclosingElement3.recursiveGetMethod('==');
 
-          final isEqualFromObjectMethod = operatorEqual?.enclosingElement3
-              .safeCast<ClassElement>()
-              ?.thisType
-              .isDartCoreObject;
-
-          if (operatorEqual == null || (isEqualFromObjectMethod ?? true)) {
+          if (operatorEqual == null) {
             // Doing `provider(new Class())` is bad if the class does not override ==
             reporter.atNode(value, _code);
           }
@@ -73,6 +76,8 @@ extension on ConstructorElement {
 
 extension on InterfaceElement {
   MethodElement? recursiveGetMethod(String name) {
+    if (thisType.isDartCoreObject) return null;
+
     final thisMethod = getMethod(name);
     if (thisMethod != null) return thisMethod;
 

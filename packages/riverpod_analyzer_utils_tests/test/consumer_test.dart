@@ -19,38 +19,12 @@ class ProviderWidget<T> extends ConsumerWidget {
     return Container();
   }
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final consumerWidget = result.consumerWidgetDeclarations.single;
-    expect(consumerWidget, isA<ConsumerWidgetDeclaration>());
+    final consumerWidget = result.widgetDeclarations.single;
+    expect(consumerWidget, isA<StatelessWidgetDeclaration>());
     expect(consumerWidget.node.name.toString(), 'ProviderWidget');
-    expect(
-      consumerWidget.buildMethod!.toSource(),
-      '@override Widget build(BuildContext context, WidgetRef ref) {ref.watch(provider); return Container();}',
-    );
-
-    expect(consumerWidget.widgetRefInvocations, [
-      isA<WidgetRefWatchInvocation>()
-          .having((e) => e.node.toSource(), 'node', 'ref.watch(provider)')
-          .having(
-            (e) => e.provider,
-            'provider',
-            isA<ProviderListenableExpression>()
-                .having((e) => e.node.toSource(), 'node', 'provider')
-                .having(
-                  (e) => e.providerElement,
-                  'providerElement',
-                  isA<LegacyProviderDeclarationElement>()
-                      .having((e) => e.providerType, 'providerType', null),
-                ),
-          ),
-    ]);
-
-    expect(
-      result.resolvedRiverpodLibraryResults.single.unknownWidgetRefInvocations,
-      isEmpty,
-    );
   });
 
   testSource('Decode ConsumerWidget declarations', source: '''
@@ -68,27 +42,12 @@ class MyConsumerWidget extends ConsumerWidget {
     return Container();
   }
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final consumerWidget = result.consumerWidgetDeclarations.single;
-    expect(consumerWidget, isA<ConsumerWidgetDeclaration>());
+    final consumerWidget = result.widgetDeclarations.single;
+    expect(consumerWidget, isA<StatelessWidgetDeclaration>());
     expect(consumerWidget.node.name.toString(), 'MyConsumerWidget');
-    expect(
-      consumerWidget.buildMethod!.toSource(),
-      '@override Widget build(BuildContext context, WidgetRef ref) {ref.watch(provider); return Container();}',
-    );
-
-    expect(
-      result.resolvedRiverpodLibraryResults.single.unknownWidgetRefInvocations,
-      isEmpty,
-    );
-
-    expect(consumerWidget.widgetRefInvocations, hasLength(1));
-    expect(
-      consumerWidget.widgetRefInvocations.single,
-      isA<WidgetRefInvocation>(),
-    );
   });
 
   testSource('Decode HookConsumerWidgetDeclaration declarations', source: '''
@@ -106,27 +65,12 @@ class MyConsumerWidget extends HookConsumerWidget {
     return Container();
   }
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final consumerWidget = result.hookConsumerWidgetDeclaration.single;
-    expect(consumerWidget, isA<HookConsumerWidgetDeclaration>());
+    final consumerWidget = result.widgetDeclarations.single;
+    expect(consumerWidget, isA<StatelessWidgetDeclaration>());
     expect(consumerWidget.node.name.toString(), 'MyConsumerWidget');
-    expect(
-      consumerWidget.buildMethod!.toSource(),
-      '@override Widget build(BuildContext context, WidgetRef ref) {ref.watch(provider); return Container();}',
-    );
-
-    expect(
-      result.resolvedRiverpodLibraryResults.single.unknownWidgetRefInvocations,
-      isEmpty,
-    );
-
-    expect(consumerWidget.widgetRefInvocations, hasLength(1));
-    expect(
-      consumerWidget.widgetRefInvocations.single,
-      isA<WidgetRefInvocation>(),
-    );
   });
 
   testSource('Decode ConsumerStatefulWidgetDeclarations declarations',
@@ -157,34 +101,19 @@ class MyConsumerState extends ConsumerState<MyConsumerWidget> {
     return Container();
   }
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final consumerWidget = result.consumerStatefulWidgetDeclarations.single;
-    final consumerState = result.consumerStateDeclarations.single;
+    final consumerWidget =
+        result.widgetDeclarations.single as StatefulWidgetDeclaration;
+    final consumerState = result.stateDeclarations.single;
 
-    expect(consumerWidget, isA<ConsumerStatefulWidgetDeclaration>());
     expect(consumerWidget.node.name.toString(), 'MyConsumerWidget');
+    expect(consumerWidget.state, consumerState.element);
 
-    expect(consumerState, isA<ConsumerStateDeclaration>());
     expect(consumerState.node.name.toString(), 'MyConsumerState');
-
-    expect(
-      result.resolvedRiverpodLibraryResults.single.unknownWidgetRefInvocations,
-      isEmpty,
-    );
-
-    expect(consumerState.widgetRefInvocations, hasLength(2));
-    expect(
-      consumerState.widgetRefInvocations[0],
-      isA<WidgetRefInvocation>()
-          .having((e) => e.node.toSource(), 'node', 'ref.watch(provider)'),
-    );
-    expect(
-      consumerState.widgetRefInvocations[1],
-      isA<WidgetRefInvocation>()
-          .having((e) => e.node.toSource(), 'node', 'ref.watch(provider2)'),
-    );
+    expect(consumerState.widget, consumerWidget.element);
+    expect(consumerState.element.widget, consumerWidget.element);
   });
 
   testSource('Decode StatefulHookConsumerWidgetDeclaration declarations',
@@ -211,37 +140,21 @@ class MyConsumerState extends ConsumerState<MyConsumerWidget> {
 
   @override
   Widget build(BuildContext context) {
-    ref.watch(provider2);
     return Container();
   }
 }
-''', (resolver) async {
+''', (resolver, unit, units) async {
     final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final consumerWidget = result.statefulHookConsumerWidgetDeclaration.single;
-    final consumerState = result.consumerStateDeclarations.single;
+    final consumerWidget =
+        result.widgetDeclarations.single as StatefulWidgetDeclaration;
+    final consumerState = result.stateDeclarations.single;
 
-    expect(consumerWidget, isA<StatefulHookConsumerWidgetDeclaration>());
     expect(consumerWidget.node.name.toString(), 'MyConsumerWidget');
+    expect(consumerWidget.state, consumerState.element);
 
-    expect(consumerState, isA<ConsumerStateDeclaration>());
     expect(consumerState.node.name.toString(), 'MyConsumerState');
-
-    expect(
-      result.resolvedRiverpodLibraryResults.single.unknownWidgetRefInvocations,
-      isEmpty,
-    );
-
-    expect(consumerState.widgetRefInvocations, hasLength(2));
-    expect(
-      consumerState.widgetRefInvocations[0],
-      isA<WidgetRefInvocation>()
-          .having((e) => e.node.toSource(), 'node', 'ref.watch(provider)'),
-    );
-    expect(
-      consumerState.widgetRefInvocations[1],
-      isA<WidgetRefInvocation>()
-          .having((e) => e.node.toSource(), 'node', 'ref.watch(provider2)'),
-    );
+    expect(consumerState.widget, consumerWidget.element);
+    expect(consumerState.element.widget, consumerWidget.element);
   });
 }

@@ -1,3 +1,0 @@
-dependency_overrides:
-  # necessary for mockito
-  analyzer: ^7.0.0

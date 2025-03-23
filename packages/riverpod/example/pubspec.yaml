@@ -2,7 +2,9 @@ name: riverpod_example
 publish_to: "none"
 
 environment:
-  sdk: ">=3.7.0 <4.0.0"
+  sdk: ^3.6.0
+
+resolution: workspace
 
 dependencies:
   crypto: ^3.0.0
@@ -10,7 +12,6 @@ dependencies:
   freezed_annotation: ^3.0.0
   json_annotation: ^4.9.0
   riverpod:
-    path: ..
 
 dev_dependencies:
   build_runner: ^2.0.0

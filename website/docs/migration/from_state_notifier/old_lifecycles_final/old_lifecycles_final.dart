@@ -3,13 +3,14 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../utils.dart';
-
 part 'old_lifecycles_final.g.dart';
 
-final repositoryProvider = Provider<_MyRepo>((ref) {
-  return _MyRepo();
-});
+@riverpod
+Duration duration(Ref ref) => const Duration(seconds: 1);
+
+@riverpod
+// ignore: library_private_types_in_public_api
+_MyRepo repository(Ref ref) => _MyRepo();
 
 class _MyRepo {
   Future<void> update(int i, {CancelToken? token}) async {}

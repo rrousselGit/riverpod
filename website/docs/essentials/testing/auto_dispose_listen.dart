@@ -3,13 +3,11 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:riverpod/riverpod.dart';
 
-import 'create_container.dart';
-
 final provider = Provider((_) => 'Hello world');
 
 void main() {
   test('Some description', () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     /* SNIPPET START */
     final subscription = container.listen<String>(provider, (_, __) {});
 

@@ -6,7 +6,7 @@ final exampleProvider =
   ExampleNotifier.new,
 );
 
-class ExampleNotifier extends AutoDisposeAsyncNotifier<String> {
+class ExampleNotifier extends AsyncNotifier<String> {
   @override
   Future<String> build() async {
     return Future.value('foo');

@@ -2,35 +2,36 @@ name: website_snippets
 publish_to: "none"
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ^3.6.0
+
+resolution: workspace
 
 dependencies:
   collection: ^1.15.0
   dio: ^5.0.3
   flutter:
     sdk: flutter
-  flutter_hooks: ^0.18.2
+  flutter_hooks: ^0.21.0
   flutter_riverpod:
-    path: ../packages/flutter_riverpod
   freezed_annotation: ^3.0.0
   hooks_riverpod:
-    path: ../packages/hooks_riverpod
   json_annotation: ^4.9.0
   mockito: ^5.0.0
   riverpod:
-    path: ../packages/riverpod
   riverpod_annotation:
   shared_preferences: ^2.0.15
   test: ^1.24.0
 
 dev_dependencies:
   build_runner:
+  custom_lint: ^0.7.1
   flutter_test:
     sdk: flutter
   freezed: ^3.0.2
   http: ^0.13.5
   json_serializable: ^6.6.1
   riverpod_generator:
+  riverpod_lint:
 
 flutter:
   uses-material-design: true

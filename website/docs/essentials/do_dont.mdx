@@ -1,6 +1,6 @@
 ---
 title: DO/DON'T
-version: 1
+version: 2
 ---
 
 import { Link } from "/src/components/Link";
@@ -60,10 +60,12 @@ ElevatedButton(
 Providers are designed to be for shared business state.
 They are not meant to be used for [Ephemeral state](https://docs.flutter.dev/data-and-backend/state-mgmt/ephemeral-vs-app#ephemeral-state), such as for:
 
-- storing form state
-- currently selected item
-- animations
-- generally everything that Flutter deals with a "controller" (e.g. `TextEditingController`)
+- The currently selected item.
+- Form state/
+  Because leaving and re-entering the form should typically reset the form state.
+  This includes pressing the back button during a multi-page forms.
+- Animations.
+- Generally everything that Flutter deals with a "controller" (e.g. `TextEditingController`)
 
 If you are looking for a way to handle local widget state, consider using
 [flutter_hooks](https://pub.dev/packages/flutter_hooks) instead.
@@ -71,6 +73,22 @@ If you are looking for a way to handle local widget state, consider using
 One reason why this is discouraged is that such state is often scoped to a route.  
 Failing to do so could break your app's back button, due to a new page overriding
 the state of a previous page.
+
+For instance say we were to store the currently selected `book` in a provider:
+
+```dart
+final selectedBookProvider = StateProvider<String?>((ref) => null);
+```
+One challenge we could face is, the navigation history could look like:
+```
+/books
+/books/42
+/books/21
+```
+
+In this scenario, when pressing the back button, we should expect to go back to `/books/42`.
+But if we were to use `selectedBookProvider` to store the selected book,
+the selected ID would not reset to its previous value, and we would keep seeing `/books/21`.
 
 ## DON'T perform side effects during the initialization of a provider
 
