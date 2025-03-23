@@ -134,7 +134,8 @@ class ProviderScheduler {
           element._container._disposed) {
         continue;
       }
-      element._container._disposeProvider(element._origin);
+      element._container._legacyPointerManager
+          ._disposeProvider(element._origin);
     }
   }
 
