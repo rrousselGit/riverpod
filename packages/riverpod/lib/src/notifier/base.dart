@@ -150,6 +150,7 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
   /// {@macro riverpod.family}
   static const family = NotifierProviderFamilyBuilder();
 
+  @internal
   @override
   NotifierProviderElement<NotifierT, T> createElement() {
     return NotifierProviderElement(this);

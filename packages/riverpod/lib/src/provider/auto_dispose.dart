@@ -41,6 +41,7 @@ class AutoDisposeProvider<T> extends InternalProvider<T> {
   @override
   T _create(AutoDisposeProviderElement<T> ref) => _createFn(ref);
 
+  @internal
   @override
   AutoDisposeProviderElement<T> createElement() {
     return AutoDisposeProviderElement(this);

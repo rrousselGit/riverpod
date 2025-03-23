@@ -42,6 +42,7 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
   @override
   T _create(AutoDisposeStateProviderElement<T> ref) => _createFn(ref);
 
+  @internal
   @override
   AutoDisposeStateProviderElement<T> createElement() {
     return AutoDisposeStateProviderElement._(this);

@@ -84,6 +84,7 @@ class StateProvider<T> extends _StateProviderBase<T>
   @override
   T _create(StateProviderElement<T> ref) => _createFn(ref);
 
+  @internal
   @override
   StateProviderElement<T> createElement() => StateProviderElement._(this);
 

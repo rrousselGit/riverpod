@@ -58,6 +58,7 @@ class Provider<State> extends InternalProvider<State>
   @override
   State _create(ProviderElement<State> ref) => _createFn(ref);
 
+  @internal
   @override
   ProviderElement<State> createElement() => ProviderElement(this);
 

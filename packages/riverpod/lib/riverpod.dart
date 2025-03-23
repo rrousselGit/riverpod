@@ -18,7 +18,21 @@ export 'src/async_notifier.dart'
         AutoDisposeFamilyStreamNotifierProviderImpl,
         StreamNotifierProviderBase,
         BuildlessAutoDisposeStreamNotifier,
-        BuildlessStreamNotifier;
+        BuildlessStreamNotifier,
+        AsyncNotifierProviderElement,
+        AsyncNotifierProviderElementBase,
+        StreamNotifierProviderElement,
+        AutoDisposeAsyncNotifierProviderElement,
+        AutoDisposeStreamNotifierProviderElement;
+
+// ignore: invalid_export_of_internal_element, For the sake of backward compatibility. Remove in 3.0
+export 'src/async_notifier.dart'
+    show
+        AsyncNotifierProviderElement,
+        AsyncNotifierProviderElementBase,
+        StreamNotifierProviderElement,
+        AutoDisposeAsyncNotifierProviderElement,
+        AutoDisposeStreamNotifierProviderElement;
 
 export 'src/common.dart' hide AsyncTransition;
 
@@ -50,9 +64,17 @@ export 'src/framework.dart'
         Create,
         Node,
         ProviderElementProxy,
-        OnError;
+        OnError,
+        ProviderElementBase;
 
-export 'src/future_provider.dart';
+// ignore: invalid_export_of_internal_element, For the sake of backward compatibility. Remove in 3.0
+export 'src/framework.dart' show ProviderElementBase;
+
+export 'src/future_provider.dart'
+    hide FutureProviderElement, AutoDisposeFutureProviderElement;
+// ignore: invalid_export_of_internal_element, For the sake of backward compatibility. Remove in 3.0
+export 'src/future_provider.dart'
+    show FutureProviderElement, AutoDisposeFutureProviderElement;
 
 export 'src/notifier.dart'
     hide
@@ -63,10 +85,33 @@ export 'src/notifier.dart'
         FamilyNotifierProviderImpl,
         NotifierProviderImpl,
         BuildlessAutoDisposeNotifier,
-        BuildlessNotifier;
+        BuildlessNotifier,
+        NotifierProviderElement,
+        AutoDisposeNotifierProviderElement;
+// ignore: invalid_export_of_internal_element, For the sake of backward compatibility. Remove in 3.0
+export 'src/notifier.dart'
+    show NotifierProviderElement, AutoDisposeNotifierProviderElement;
 
-export 'src/provider.dart' hide InternalProvider;
+export 'src/provider.dart'
+    hide InternalProvider, ProviderElement, AutoDisposeProviderElement;
+// ignore: invalid_export_of_internal_element, For the sake of backward compatibility. Remove in 3.0
+export 'src/provider.dart' show ProviderElement, AutoDisposeProviderElement;
+
 export 'src/state_controller.dart';
-export 'src/state_notifier_provider.dart';
-export 'src/state_provider.dart';
-export 'src/stream_provider.dart';
+export 'src/state_notifier_provider.dart'
+    hide StateNotifierProviderElement, AutoDisposeStateNotifierProviderElement;
+// ignore: invalid_export_of_internal_element, For the sake of backward compatibility. Remove in 3.0
+export 'src/state_notifier_provider.dart'
+    show StateNotifierProviderElement, AutoDisposeStateNotifierProviderElement;
+
+export 'src/state_provider.dart'
+    hide StateProviderElement, AutoDisposeStateProviderElement;
+// ignore: invalid_export_of_internal_element, For the sake of backward compatibility. Remove in 3.0
+export 'src/state_provider.dart'
+    show StateProviderElement, AutoDisposeStateProviderElement;
+
+export 'src/stream_provider.dart'
+    hide StreamProviderElement, AutoDisposeStreamProviderElement;
+// ignore: invalid_export_of_internal_element, For the sake of backward compatibility. Remove in 3.0
+export 'src/stream_provider.dart'
+    show StreamProviderElement, AutoDisposeStreamProviderElement;

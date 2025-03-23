@@ -45,6 +45,7 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
   FutureOr<T> _create(AutoDisposeFutureProviderElement<T> ref) =>
       _createFn(ref);
 
+  @internal
   @override
   AutoDisposeFutureProviderElement<T> createElement() {
     return AutoDisposeFutureProviderElement(this);

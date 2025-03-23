@@ -71,6 +71,7 @@ class FamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>, T, Arg>
   late final AlwaysAliveRefreshable<NotifierT> notifier =
       _notifier<NotifierT, T>(this);
 
+  @internal
   @override
   NotifierProviderElement<NotifierT, T> createElement() {
     return NotifierProviderElement(this);

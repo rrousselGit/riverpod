@@ -119,6 +119,7 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
     return _createFn(ref);
   }
 
+  @internal
   @override
   StateNotifierProviderElement<NotifierT, T> createElement() {
     return StateNotifierProviderElement._(this);

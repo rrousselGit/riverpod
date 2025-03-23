@@ -135,6 +135,7 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
   // ignore: deprecated_member_use_from_same_package
   late final AlwaysAliveRefreshable<Future<T>> future = _asyncFuture<T>(this);
 
+  @internal
   @override
   AsyncNotifierProviderElement<NotifierT, T> createElement() {
     return AsyncNotifierProviderElement(this);

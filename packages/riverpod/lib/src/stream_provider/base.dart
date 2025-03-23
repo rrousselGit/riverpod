@@ -124,6 +124,7 @@ class StreamProvider<T> extends _StreamProviderBase<T>
   @override
   Stream<T> _create(StreamProviderElement<T> ref) => _createFn(ref);
 
+  @internal
   @override
   StreamProviderElement<T> createElement() => StreamProviderElement(this);
 
