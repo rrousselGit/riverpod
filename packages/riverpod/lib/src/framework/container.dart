@@ -326,51 +326,51 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
                 isDynamicallyCreated: true,
               );
         }
+      }
 
-        final root = container._root;
-        if (root != null) {
-          // On scoped containers, check for implicit override.
+      final root = container._root;
+      if (root != null) {
+        // On scoped containers, check for implicit override.
 
-          final dependencies = provider.from?.allTransitiveDependencies ??
-              provider.allTransitiveDependencies;
+        final dependencies = provider.from?.allTransitiveDependencies ??
+            provider.allTransitiveDependencies;
 
-          final containerForDependencyOverride = dependencies
-              ?.map((dep) {
-                // ignore: collection_methods_unrelated_type, ProviderOrFamily can be providers ; which are subclasses of ProviderBase
-                final reader = _stateReaders[dep];
-                if (reader != null) {
-                  return reader.container;
-                }
-                final familyOverride = _overrideForFamily[dep];
-                return familyOverride?.container;
-              })
-              .where((container) => container != null)
-              .toList();
-
-          if (containerForDependencyOverride != null &&
-              containerForDependencyOverride.isNotEmpty) {
-            // a dependency of the provider was overridden, so the provider is overridden too
-
-            final deepestOverrideContainer = containerForDependencyOverride
-                .fold<ProviderContainer>(root, (previous, container) {
-              if (container!.depth > previous.depth) {
-                return container;
+        final containerForDependencyOverride = dependencies
+            ?.map((dep) {
+              // ignore: collection_methods_unrelated_type, ProviderOrFamily can be providers ; which are subclasses of ProviderBase
+              final reader = _stateReaders[dep];
+              if (reader != null) {
+                return reader.container;
               }
-              return previous;
-            });
+              final familyOverride = _overrideForFamily[dep];
+              return familyOverride?.container;
+            })
+            .where((container) => container != null)
+            .toList();
 
-            /// Insert the StateReader in the container that it belongs to,
-            /// and import it locally
-            return deepestOverrideContainer._legacyPointerManager._stateReaders
-                .putIfAbsent(provider, () {
-              return _StateReader(
-                origin: provider,
-                override: provider,
-                container: deepestOverrideContainer,
-                isDynamicallyCreated: true,
-              );
-            });
-          }
+        if (containerForDependencyOverride != null &&
+            containerForDependencyOverride.isNotEmpty) {
+          // a dependency of the provider was overridden, so the provider is overridden too
+
+          final deepestOverrideContainer = containerForDependencyOverride
+              .fold<ProviderContainer>(root, (previous, container) {
+            if (container!.depth > previous.depth) {
+              return container;
+            }
+            return previous;
+          });
+
+          /// Insert the StateReader in the container that it belongs to,
+          /// and import it locally
+          return deepestOverrideContainer._legacyPointerManager._stateReaders
+              .putIfAbsent(provider, () {
+            return _StateReader(
+              origin: provider,
+              override: provider,
+              container: deepestOverrideContainer,
+              isDynamicallyCreated: true,
+            );
+          });
         }
       }
 
