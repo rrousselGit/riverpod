@@ -147,7 +147,7 @@ final class Mutation<ResultT>
 
   @override
   int get hashCode {
-    if (_symbol == null) return _symbol.hashCode;
+    if (_symbol != null) return _symbol.hashCode;
 
     return super.hashCode;
   }
