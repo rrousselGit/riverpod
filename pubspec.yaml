@@ -1,7 +1,38 @@
-name: melos_root
+name: workspace
 publish_to: none
 
 environment:
-  sdk: ">=2.17.0 <4.0.0"
+  sdk: ^3.6.0
+
 dev_dependencies:
-  melos: ^3.0.0
+  custom_lint:
+  riverpod_lint:
+
+workspace:
+  - benchmarks
+  - examples/counter
+  - examples/marvel
+  - examples/pub
+  - examples/random_number
+  - examples/stackoverflow
+  - examples/todos
+  - packages/flutter_riverpod/example
+  - packages/flutter_riverpod
+  - packages/hooks_riverpod/example
+  - packages/hooks_riverpod
+  - packages/riverpod/example
+  - packages/riverpod
+  - packages/riverpod_analyzer_utils
+  - packages/riverpod_analyzer_utils_tests
+  - packages/riverpod_annotation
+  - packages/riverpod_generator/integration/build_yaml
+  - packages/riverpod_generator
+  - packages/riverpod_graph
+  - packages/riverpod_graph/test/integration/addition/golden
+  - packages/riverpod_graph/test/integration/consumer_widget/golden
+  - packages/riverpod_graph/test/integration/generated/golden
+  - packages/riverpod_lint
+  # Custom_lint doesn't handle plugins from workspaces yet
+  # - packages/riverpod_lint_flutter_test
+  - tools/generate_providers
+  - website
