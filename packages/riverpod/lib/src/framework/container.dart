@@ -78,33 +78,16 @@ class ProviderContainer implements Node {
           ...?observers,
           if (parent != null) ...parent.observers,
         ],
-        _stateReaders = {
-          if (parent != null)
-            for (final entry in parent._stateReaders.entries)
-              if (!entry.value.isDynamicallyCreated) entry.key: entry.value,
-        },
         _root = parent?._root ?? parent {
+    _legacyPointerManager = _PointerManager(
+      container: this,
+      parent: parent?._legacyPointerManager,
+    );
     if (parent != null) {
       parent._children.add(this);
-      _overrideForFamily.addAll(parent._overrideForFamily);
     }
 
-    for (final override in overrides) {
-      if (override is ProviderOverride) {
-        _overrideForProvider[override._origin] = override._override;
-        _stateReaders[override._origin] = _StateReader(
-          origin: override._origin,
-          override: override._override,
-          container: this,
-          isDynamicallyCreated: false,
-        );
-      } else if (override is FamilyOverride) {
-        _overrideForFamily[override.overriddenFamily] = _FamilyOverrideRef(
-          override,
-          this,
-        );
-      }
-    }
+    _legacyPointerManager.setupOverrides(overrides);
   }
 
   final int _debugOverridesLength;
@@ -142,11 +125,6 @@ class ProviderContainer implements Node {
   /// Do not use in production
   List<ProviderContainer> get debugChildren => UnmodifiableListView(_children);
 
-  final _overrideForProvider =
-      HashMap<ProviderBase<Object?>, ProviderBase<Object?>>();
-  final _overrideForFamily = HashMap<Family<Object?>, _FamilyOverrideRef>();
-  final Map<ProviderBase<Object?>, _StateReader> _stateReaders;
-
   /// The list of observers attached to this container.
   ///
   /// Observers can be useful for logging purpose.
@@ -154,6 +132,8 @@ class ProviderContainer implements Node {
   /// This list includes the observers of this container and that of its "parent"
   /// too.
   final List<ProviderObserver> observers;
+
+  late final _PointerManager _legacyPointerManager;
 
   /// A debug utility used by `flutter_riverpod`/`hooks_riverpod` to check
   /// if it is safe to modify a provider.
@@ -175,10 +155,8 @@ class ProviderContainer implements Node {
   /// This should not be used and is an implementation detail of [ProviderContainer].
   /// It could be removed at any time without a major version bump.
   @internal
-  @visibleForTesting
-  bool hasStateReaderFor(ProviderListenable<Object?> provider) {
-    return _stateReaders.containsKey(provider);
-  }
+  bool hasStateReaderFor(ProviderListenable<Object?> provider) =>
+      _legacyPointerManager.hasStateReaderFor(provider);
 
   /// Awaits for providers to rebuild/be disposed and for listeners to be notified.
   Future<void> pump() async {
@@ -211,7 +189,7 @@ class ProviderContainer implements Node {
 
   /// {@macro riverpod.exists}
   bool exists(ProviderBase<Object?> provider) {
-    final element = _getOrNull(provider)?._element;
+    final element = _legacyPointerManager._getOrNull(provider)?._element;
 
     return element != null;
   }
