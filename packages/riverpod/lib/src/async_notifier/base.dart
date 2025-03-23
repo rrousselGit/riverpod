@@ -509,7 +509,7 @@ abstract class AsyncNotifierProviderElementBase<
 
   @override
   bool updateShouldNotify(AsyncValue<T> previous, AsyncValue<T> next) {
-    return _notifierNotifier.result?.stateOrNull
+    return _notifierNotifier.result?.value
             ?.updateShouldNotify(previous, next) ??
         true;
   }
@@ -538,17 +538,16 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     // TODO test notifier constructor throws -> provider emits AsyncError
     // TODO test notifier constructor throws -> .notifier rethrows the error
     // TODO test notifier constructor throws -> .future emits Future.error
-    notifierResult.when(
-      error: (error, stackTrace) {
+    switch (notifierResult) {
+      case ResultError<NotifierT>(:final error, :final stackTrace):
         onError(AsyncError(error, stackTrace), seamless: !didChangeDependency);
-      },
-      data: (notifier) {
+
+      case ResultData<NotifierT>(value: final notifier):
         handleFuture(
           () => provider.runNotifierBuild(notifier),
           didChangeDependency: didChangeDependency,
         );
-      },
-    );
+    }
   }
 }
 
@@ -568,15 +567,16 @@ extension<T> on Stream<T> {
         result = Result.error(error, stackTrace);
       },
       onDone: () {
-        if (result != null) {
-          result!.map(
-            data: (result) => completer.complete(result.state),
-            error: (result) {
+        final result2 = result;
+        if (result2 != null) {
+          switch (result2) {
+            case ResultData(:final value):
+              completer.complete(value);
+            case ResultError(:final error, :final stackTrace):
               // TODO: should this be reported to the zone?
               completer.future.ignore();
-              completer.completeError(result.error, result.stackTrace);
-            },
-          );
+              completer.completeError(error, stackTrace);
+          }
         } else {
           // The error happens after the associated provider is disposed.
           // As such, it's normally never read. Reporting this error as uncaught

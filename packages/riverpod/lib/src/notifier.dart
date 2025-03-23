@@ -69,7 +69,7 @@ abstract class NotifierBase<State> {
   @visibleForTesting
   State? get stateOrNull {
     _element.flush();
-    return _element.getState()?.stateOrNull;
+    return _element.getState()?.value;
   }
 
   @protected
