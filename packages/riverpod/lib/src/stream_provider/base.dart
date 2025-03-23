@@ -124,6 +124,7 @@ class StreamProvider<T> extends _StreamProviderBase<T>
   @override
   Stream<T> _create(StreamProviderElement<T> ref) => _createFn(ref);
 
+  @internal
   @override
   StreamProviderElement<T> createElement() => StreamProviderElement(this);
 
@@ -147,6 +148,7 @@ class StreamProvider<T> extends _StreamProviderBase<T>
 }
 
 /// The element of [StreamProvider].
+@internal
 class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
     with
         FutureHandlerProviderElementMixin<T>

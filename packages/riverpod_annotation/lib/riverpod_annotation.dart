@@ -24,7 +24,9 @@ export 'package:riverpod/src/internals.dart'
         AutoDisposeProviderFamily,
         // ignore: deprecated_member_use
         AutoDisposeProviderRef,
+        // ignore: invalid_use_of_internal_member
         ProviderElement,
+        // ignore: invalid_use_of_internal_member
         AutoDisposeProviderElement,
 
         // FutureProvider
@@ -36,7 +38,9 @@ export 'package:riverpod/src/internals.dart'
         AutoDisposeFutureProviderFamily,
         // ignore: deprecated_member_use
         AutoDisposeFutureProviderRef,
+        // ignore: invalid_use_of_internal_member
         FutureProviderElement,
+        // ignore: invalid_use_of_internal_member
         AutoDisposeFutureProviderElement,
 
         // StreamProvider
@@ -48,7 +52,9 @@ export 'package:riverpod/src/internals.dart'
         AutoDisposeStreamProviderFamily,
         // ignore: deprecated_member_use
         AutoDisposeStreamProviderRef,
+        // ignore: invalid_use_of_internal_member
         StreamProviderElement,
+        // ignore: invalid_use_of_internal_member
         AutoDisposeStreamProviderElement,
 
         // AsyncValue
@@ -61,7 +67,9 @@ export 'package:riverpod/src/internals.dart'
         // Notifier
         Notifier,
         AutoDisposeNotifier,
+        // ignore: invalid_use_of_internal_member
         NotifierProviderElement,
+        // ignore: invalid_use_of_internal_member
         AutoDisposeNotifierProviderElement,
         // ignore: invalid_use_of_internal_member
         NotifierProviderImpl,
@@ -81,7 +89,9 @@ export 'package:riverpod/src/internals.dart'
         // AsyncNotifier
         AsyncNotifier,
         AutoDisposeAsyncNotifier,
+        // ignore: invalid_use_of_internal_member
         AsyncNotifierProviderElement,
+        // ignore: invalid_use_of_internal_member
         AutoDisposeAsyncNotifierProviderElement,
         // ignore: invalid_use_of_internal_member
         AsyncNotifierProviderImpl,
@@ -101,7 +111,9 @@ export 'package:riverpod/src/internals.dart'
         // StreamNotifier
         StreamNotifier,
         AutoDisposeStreamNotifier,
+        // ignore: invalid_use_of_internal_member
         StreamNotifierProviderElement,
+        // ignore: invalid_use_of_internal_member
         AutoDisposeStreamNotifierProviderElement,
         // ignore: invalid_use_of_internal_member
         StreamNotifierProviderImpl,

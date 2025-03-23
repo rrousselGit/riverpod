@@ -84,6 +84,7 @@ class StateProvider<T> extends _StateProviderBase<T>
   @override
   T _create(StateProviderElement<T> ref) => _createFn(ref);
 
+  @internal
   @override
   StateProviderElement<T> createElement() => StateProviderElement._(this);
 
@@ -120,6 +121,7 @@ class StateProvider<T> extends _StateProviderBase<T>
 }
 
 /// The element of [StateProvider].
+@internal
 class StateProviderElement<T> extends ProviderElementBase<T>
     implements
         // ignore: deprecated_member_use_from_same_package

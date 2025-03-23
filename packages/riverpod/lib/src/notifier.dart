@@ -27,7 +27,7 @@ abstract class NotifierBase<State> {
   /// The listener will be called immediately after the provider completes building.
   ///
   /// As opposed to [Ref.listen], the listener will be called even if
-  /// [ProviderElementBase.updateShouldNotify] returns false, meaning that the previous
+  /// [updateShouldNotify] returns false, meaning that the previous
   /// and new value can potentially be identical.
   /// {@endtemplate}
   void listenSelf(

@@ -28,6 +28,7 @@ class ValueProvider<State> extends ProviderBase<State>
   @override
   Set<ProviderOrFamily>? get allTransitiveDependencies => null;
 
+  @internal
   @override
   ValueProviderElement<State> createElement() {
     return ValueProviderElement(this);

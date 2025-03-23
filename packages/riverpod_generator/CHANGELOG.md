@@ -1,3 +1,9 @@
+## Unreleased minor
+
+- Upgrade to Dart 3.6.0
+- Marked various APIs as `@internal`
+
+
 ## 2.6.5 - 2025-02-28
 
 - `riverpod_analyzer_utils` upgraded to `0.5.10`

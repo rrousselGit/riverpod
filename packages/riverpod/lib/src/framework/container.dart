@@ -216,7 +216,7 @@ class ProviderContainer implements Node {
     return element != null;
   }
 
-  /// Executes [ProviderElementBase.debugReassemble] on all the providers.
+  /// Executes hot-reload on all the providers.
   void debugReassemble() {
 // TODO hot-reload handle provider type change
 // TODO hot-reload handle provider response type change
@@ -383,6 +383,7 @@ class ProviderContainer implements Node {
     );
   }
 
+  @internal
   @override
   ProviderElementBase<State> readProviderElement<State>(
     ProviderBase<State> provider,
@@ -604,6 +605,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
   }
 
   /// Traverse the [ProviderElementBase]s associated with this [ProviderContainer].
+  @internal
   Iterable<ProviderElementBase> getAllProviderElements() sync* {
     for (final reader in _stateReaders.values) {
       if (reader._element != null && reader.container == this) {
@@ -617,6 +619,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
   /// This is fairly expensive and should be avoided as much as possible.
   /// If you do not need for providers to be sorted, consider using [getAllProviderElements]
   /// instead, which returns an unsorted list and is significantly faster.
+  @internal
   Iterable<ProviderElementBase> getAllProviderElementsInOrder() sync* {
     final visitedNodes = HashSet<ProviderElementBase>();
     final queue = DoubleLinkedQueue<ProviderElementBase>();

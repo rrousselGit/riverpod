@@ -45,6 +45,7 @@ void Function()? debugCanModifyProviders;
 /// Do not use.
 /// {@endtemplate}
 @optionalTypeArgs
+@internal
 abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
   /// {@macro riverpod.provider_element_base}
   ProviderElementBase(this._provider);
