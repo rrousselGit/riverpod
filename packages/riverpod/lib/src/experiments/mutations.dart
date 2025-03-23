@@ -69,6 +69,9 @@ mixin _MutationElement<T> on ProviderElementBase<T> {
   final mutations = <Mutation<Object?>, _MutationState<Object?>>{};
 
   @override
+  bool get isLazy => true;
+
+  @override
   void visitChildren({
     required void Function(ProviderElementBase element) elementVisitor,
     required void Function(ProxyElementValueNotifier element) notifierVisitor,

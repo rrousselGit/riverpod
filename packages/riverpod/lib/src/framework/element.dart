@@ -113,6 +113,9 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
   bool get mounted => _mounted;
   bool _mounted = false;
 
+  bool get isLazy => false;
+  late var _didCallMount = !isLazy;
+
   /// Whether the assert that prevents [requireState] from returning
   /// if the state was not set before is enabled.
   @visibleForOverriding
@@ -354,10 +357,11 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
   /// [flush] from users, such that they don't need to care about invoking this function.
   @internal
   void flush() {
-    // if (!_mounted) {
-    //   mount();
-    //   return;
-    // }
+    if (!_didCallMount) {
+      _didCallMount = true;
+      mount();
+      return;
+    }
 
     _maybeRebuildDependencies();
     if (_mustRecomputeState) {

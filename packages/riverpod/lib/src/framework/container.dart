@@ -48,8 +48,11 @@ class _StateReader {
       element
         .._provider = override
         .._origin = origin
-        .._container = container
-        ..mount();
+        .._container = container;
+
+      if (!element.isLazy) {
+        element.mount();
+      }
 
       return element;
     } finally {
