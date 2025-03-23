@@ -522,6 +522,15 @@ class ProviderContainer implements Node {
     ]);
   }
 
+  /// An internal utility for checking if a [ProviderContainer] has a fast
+  /// path for reading a provider.
+  ///
+  /// This should not be used and is an implementation detail of [ProviderContainer].
+  /// It could be removed at any time without a major version bump.
+  @internal
+  bool hasStateReaderFor(ProviderListenable<Object?> provider) =>
+      _legacyPointerManager.hasStateReaderFor(provider);
+
   /// Reads a provider without listening to it and returns the currently
   /// exposed value.
   ///
@@ -550,15 +559,6 @@ class ProviderContainer implements Node {
     }
   }
 
-  /// An internal utility for checking if a [ProviderContainer] has a fast
-  /// path for reading a provider.
-  ///
-  /// This should not be used and is an implementation detail of [ProviderContainer].
-  /// It could be removed at any time without a major version bump.
-  @internal
-  bool hasStateReaderFor(ProviderListenable<Object?> provider) =>
-      _legacyPointerManager.hasStateReaderFor(provider);
-
   /// {@macro riverpod.exists}
   bool exists(AnyProvider<Object?> provider) {
     final element = _legacyPointerManager._getOrNull(provider)?._element;
@@ -566,7 +566,7 @@ class ProviderContainer implements Node {
     return element != null;
   }
 
-  /// Executes [ProviderElementBase.debugReassemble] on all the providers.
+  /// Executes hot-reload on all the providers.
   void debugReassemble() {
 // TODO hot-reload handle provider type change
 // TODO hot-reload handle provider response type change
