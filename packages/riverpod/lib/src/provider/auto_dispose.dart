@@ -67,6 +67,7 @@ class AutoDisposeProvider<T> extends InternalProvider<T> {
 }
 
 /// The element of [AutoDisposeProvider]
+@internal
 class AutoDisposeProviderElement<T> extends ProviderElement<T>
     with
         AutoDisposeProviderElementMixin<T>

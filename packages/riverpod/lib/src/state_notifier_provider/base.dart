@@ -149,6 +149,7 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
 }
 
 /// The element of [StateNotifierProvider].
+@internal
 class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
     extends ProviderElementBase<T>
     implements

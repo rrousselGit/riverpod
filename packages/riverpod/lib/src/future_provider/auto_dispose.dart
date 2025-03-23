@@ -74,6 +74,7 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
 }
 
 /// The [ProviderElementBase] of [AutoDisposeFutureProvider]
+@internal
 class AutoDisposeFutureProviderElement<T> extends FutureProviderElement<T>
     with
         AutoDisposeProviderElementMixin<AsyncValue<T>>

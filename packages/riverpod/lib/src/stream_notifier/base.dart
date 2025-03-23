@@ -137,6 +137,7 @@ class StreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
 }
 
 /// The element of [StreamNotifierProvider].
+@internal
 class StreamNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     extends AsyncNotifierProviderElementBase<NotifierT, T>
     implements

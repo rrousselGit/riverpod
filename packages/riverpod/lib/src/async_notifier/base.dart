@@ -485,6 +485,7 @@ mixin FutureHandlerProviderElementMixin<T>
 }
 
 /// The element of [AsyncNotifierProvider].
+@internal
 abstract class AsyncNotifierProviderElementBase<
         NotifierT extends AsyncNotifierBase<T>,
         T> extends ProviderElementBase<AsyncValue<T>>
@@ -516,6 +517,7 @@ abstract class AsyncNotifierProviderElementBase<
 }
 
 /// The element of [AsyncNotifierProvider].
+@internal
 class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     extends AsyncNotifierProviderElementBase<NotifierT, T>
     implements

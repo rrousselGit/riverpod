@@ -78,6 +78,7 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
 }
 
 /// The element of [StateProvider].
+@internal
 class AutoDisposeStateProviderElement<T> extends StateProviderElement<T>
     with
         AutoDisposeProviderElementMixin<T>

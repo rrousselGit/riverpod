@@ -185,6 +185,7 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
 }
 
 /// The element of [NotifierProvider].
+@internal
 class NotifierProviderElement<NotifierT extends NotifierBase<T>, T>
     extends ProviderElementBase<T>
     implements

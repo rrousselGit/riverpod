@@ -83,7 +83,7 @@ abstract class Ref<
   /// The listener will be called immediately after the provider completes building.
   ///
   /// As opposed to [listen], the listener will be called even if
-  /// [ProviderElementBase.updateShouldNotify] returns false, meaning that the previous
+  /// `updateShouldNotify` returns false, meaning that the previous
   /// and new value can potentially be identical.
   @Deprecated('Will be removed in 3.0. Use Notifier.listenSelf instead')
   void listenSelf(

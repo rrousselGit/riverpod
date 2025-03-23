@@ -92,6 +92,7 @@ class FutureProvider<T> extends _FutureProviderBase<T>
 }
 
 /// The element of a [FutureProvider]
+@internal
 class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
     with
         FutureHandlerProviderElementMixin<T>

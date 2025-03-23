@@ -244,6 +244,7 @@ abstract class ProviderSubscription<State> {
   ///
   /// This is typically a [ProviderElementBase] or a [ProviderContainer],
   /// but may be other values in the future.
+  @internal
   final Node source;
 
   /// Whether the subscription is closed.

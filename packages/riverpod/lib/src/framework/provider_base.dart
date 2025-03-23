@@ -114,6 +114,7 @@ abstract class ProviderBase<StateT> extends ProviderOrFamily
 
   /// An internal method that defines how a provider behaves.
   @visibleForOverriding
+  @internal
   ProviderElementBase<StateT> createElement();
 
   @override

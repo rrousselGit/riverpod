@@ -114,6 +114,7 @@ class AutoDisposeStreamNotifierProviderImpl<
 }
 
 /// The element of [AutoDisposeStreamNotifierProvider].
+@internal
 class AutoDisposeStreamNotifierProviderElement<
         NotifierT extends AsyncNotifierBase<T>,
         T> extends StreamNotifierProviderElement<NotifierT, T>

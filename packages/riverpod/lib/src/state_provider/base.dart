@@ -120,6 +120,7 @@ class StateProvider<T> extends _StateProviderBase<T>
 }
 
 /// The element of [StateProvider].
+@internal
 class StateProviderElement<T> extends ProviderElementBase<T>
     implements
         // ignore: deprecated_member_use_from_same_package

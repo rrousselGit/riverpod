@@ -147,6 +147,7 @@ class StreamProvider<T> extends _StreamProviderBase<T>
 }
 
 /// The element of [StreamProvider].
+@internal
 class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
     with
         FutureHandlerProviderElementMixin<T>

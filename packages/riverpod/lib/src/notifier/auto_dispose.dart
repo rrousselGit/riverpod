@@ -112,6 +112,7 @@ class AutoDisposeNotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
 }
 
 /// The element of [AutoDisposeNotifierProvider]
+@internal
 class AutoDisposeNotifierProviderElement<NotifierT extends NotifierBase<T>, T>
     extends NotifierProviderElement<NotifierT, T>
     with

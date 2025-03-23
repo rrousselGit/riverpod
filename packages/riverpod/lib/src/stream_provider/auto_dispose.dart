@@ -79,6 +79,7 @@ class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
 }
 
 /// The element of [AutoDisposeStreamProvider].
+@internal
 class AutoDisposeStreamProviderElement<T> extends StreamProviderElement<T>
     with
         AutoDisposeProviderElementMixin<AsyncValue<T>>
