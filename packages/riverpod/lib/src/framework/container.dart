@@ -50,10 +50,6 @@ class _StateReader {
         .._origin = origin
         .._container = container;
 
-      if (!element.isLazy) {
-        element.mount();
-      }
-
       return element;
     } finally {
       if (_circularDependencyLock == origin) {
