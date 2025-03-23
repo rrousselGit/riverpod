@@ -373,7 +373,6 @@ mixin FutureHandlerProviderElementMixin<T>
 
   /// Listens to a [Future] and transforms it into an [AsyncValue].
   void _handleAsync(
-    // Stream<T> Function({required void Function(T) fireImmediately}) create,
     CancelAsyncSubscription? Function({
       required void Function(T) data,
       required void Function(Object, StackTrace) error,
@@ -509,7 +508,7 @@ abstract class AsyncNotifierProviderElementBase<
 
   @override
   bool updateShouldNotify(AsyncValue<T> previous, AsyncValue<T> next) {
-    return _notifierNotifier.result?.stateOrNull
+    return _notifierNotifier.result?.value
             ?.updateShouldNotify(previous, next) ??
         true;
   }
@@ -538,17 +537,15 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     // TODO test notifier constructor throws -> provider emits AsyncError
     // TODO test notifier constructor throws -> .notifier rethrows the error
     // TODO test notifier constructor throws -> .future emits Future.error
-    notifierResult.when(
-      error: (error, stackTrace) {
-        onError(AsyncError(error, stackTrace), seamless: !didChangeDependency);
-      },
-      data: (notifier) {
+    switch (notifierResult) {
+      case ResultData<NotifierT>(:final value):
         handleFuture(
-          () => provider.runNotifierBuild(notifier),
+          () => provider.runNotifierBuild(value),
           didChangeDependency: didChangeDependency,
         );
-      },
-    );
+      case ResultError<NotifierT>(:final error, :final stackTrace):
+        onError(AsyncError(error, stackTrace), seamless: !didChangeDependency);
+    }
   }
 }
 
@@ -569,14 +566,14 @@ extension<T> on Stream<T> {
       },
       onDone: () {
         if (result != null) {
-          result!.map(
-            data: (result) => completer.complete(result.state),
-            error: (result) {
+          switch (result!) {
+            case ResultData(:final value):
+              completer.complete(value);
+            case ResultError(:final error, :final stackTrace):
               // TODO: should this be reported to the zone?
               completer.future.ignore();
-              completer.completeError(result.error, result.stackTrace);
-            },
-          );
+              completer.completeError(error, stackTrace);
+          }
         } else {
           // The error happens after the associated provider is disposed.
           // As such, it's normally never read. Reporting this error as uncaught

@@ -18,7 +18,7 @@ part of '../framework.dart';
 /// {@endtemplate}
 abstract class Refreshable<T> implements ProviderListenable<T> {
   /// The provider that is being refreshed.
-  ProviderBase<Object?> get _origin;
+  AnyProvider<Object?> get _origin;
 }
 
 /// {@macro riverpod.refreshable}
@@ -45,6 +45,7 @@ void Function()? debugCanModifyProviders;
 /// Do not use.
 /// {@endtemplate}
 @optionalTypeArgs
+@internal
 abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
   /// {@macro riverpod.provider_element_base}
   ProviderElementBase(this._provider);
@@ -59,12 +60,12 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
 
   /// The provider associated with this [ProviderElementBase], before applying overrides.
   // Not typed as <State> because of https://github.com/rrousselGit/riverpod/issues/1100
-  ProviderBase<Object?> get origin => _origin;
-  late ProviderBase<Object?> _origin;
+  AnyProvider<Object?> get origin => _origin;
+  late AnyProvider<Object?> _origin;
 
   /// The provider associated with this [ProviderElementBase], after applying overrides.
-  ProviderBase<StateT> get provider => _provider;
-  ProviderBase<StateT> _provider;
+  AnyProvider<StateT> get provider => _provider;
+  AnyProvider<StateT> _provider;
 
   /// The [ProviderContainer] that owns this [ProviderElementBase].
   @override
@@ -178,10 +179,11 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
       throw StateError('Tried to read the state of an uninitialized provider');
     }
 
-    return state.when(
-      error: throwErrorWithCombinedStackTrace,
-      data: (data) => data,
-    );
+    return switch (state) {
+      ResultData<StateT>() => state.value,
+      ResultError<StateT>() =>
+        throwErrorWithCombinedStackTrace(state.error, state.stackTrace),
+    };
   }
 
   /// Called when a provider is rebuilt. Used for providers to not notify their
@@ -227,32 +229,60 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
     );
     buildState();
 
-    _state!.map(
-      data: (newState) {
+    switch (_state!) {
+      case ResultData<StateT>(:final value):
         final onChangeSelfListeners = _onChangeSelfListeners;
         if (onChangeSelfListeners != null) {
           for (var i = 0; i < onChangeSelfListeners.length; i++) {
             Zone.current.runBinaryGuarded(
               onChangeSelfListeners[i],
               null,
-              newState.state,
+              value,
             );
           }
         }
-      },
-      error: (newState) {
+      case ResultError<StateT>(:final error, :final stackTrace):
         final onErrorSelfListeners = _onErrorSelfListeners;
         if (onErrorSelfListeners != null) {
           for (var i = 0; i < onErrorSelfListeners.length; i++) {
             Zone.current.runBinaryGuarded(
               onErrorSelfListeners[i],
-              newState.error,
-              newState.stackTrace,
+              error,
+              stackTrace,
             );
           }
         }
-      },
-    );
+    }
+
+    switch (_state!) {
+      case ResultData<Object?>(:final value):
+        for (final observer in container.observers) {
+          runTernaryGuarded(
+            observer.didAddProvider,
+            origin,
+            value,
+            container,
+          );
+        }
+      case ResultError<Object?>(:final error, :final stackTrace):
+        for (final observer in container.observers) {
+          runTernaryGuarded(
+            observer.didAddProvider,
+            origin,
+            null,
+            container,
+          );
+        }
+        for (final observer in container.observers) {
+          runQuaternaryGuarded(
+            observer.providerDidFail,
+            origin,
+            error,
+            stackTrace,
+            container,
+          );
+        }
+    }
   }
 
   // ignore: use_setters_to_change_properties
@@ -283,7 +313,7 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
   }
 
   @override
-  void invalidate(ProviderOrFamily provider) {
+  void invalidate(AnyProviderOrFamily provider) {
     assert(_debugAssertCanDependOn(provider), '');
     _container.invalidate(provider);
   }
@@ -491,23 +521,22 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       '',
     );
 
-    final previousState = previousStateResult?.stateOrNull;
+    final previousState = previousStateResult?.value;
 
     // listenSelf listeners do not respect updateShouldNotify
-    newState.map(
-      data: (newState) {
+    switch (newState) {
+      case ResultData<StateT>():
         final onChangeSelfListeners = _onChangeSelfListeners;
         if (onChangeSelfListeners != null) {
           for (var i = 0; i < onChangeSelfListeners.length; i++) {
             Zone.current.runBinaryGuarded(
               onChangeSelfListeners[i],
               previousState,
-              newState.state,
+              newState.value,
             );
           }
         }
-      },
-      error: (newState) {
+      case ResultError<StateT>():
         final onErrorSelfListeners = _onErrorSelfListeners;
         if (onErrorSelfListeners != null) {
           for (var i = 0; i < onErrorSelfListeners.length; i++) {
@@ -518,13 +547,12 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
             );
           }
         }
-      },
-    );
+    }
 
     if (checkUpdateShouldNotify &&
         previousStateResult != null &&
-        previousStateResult.hasState &&
-        newState.hasState &&
+        previousStateResult.hasData &&
+        newState.hasData &&
         !updateShouldNotify(
           previousState as StateT,
           newState.requireState,
@@ -533,8 +561,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
 
     final listeners = _dependents?.toList(growable: false);
-    newState.map(
-      data: (newState) {
+    switch (newState) {
+      case ResultData<StateT>():
         if (listeners != null) {
           for (var i = 0; i < listeners.length; i++) {
             final listener = listeners[i];
@@ -542,13 +570,12 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
               Zone.current.runBinaryGuarded(
                 listener.listener,
                 previousState,
-                newState.state,
+                newState.value,
               );
             }
           }
         }
-      },
-      error: (newState) {
+      case ResultError<StateT>():
         if (listeners != null) {
           for (var i = 0; i < listeners.length; i++) {
             final listener = listeners[i];
@@ -561,8 +588,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
             }
           }
         }
-      },
-    );
+    }
 
     for (var i = 0; i < _providerDependents.length; i++) {
       _providerDependents[i]._markDependencyChanged();
@@ -573,15 +599,16 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         observer.didUpdateProvider,
         origin,
         previousState,
-        newState.stateOrNull,
+        newState.value,
         _container,
       );
     }
 
     for (final observer in _container.observers) {
-      newState.map(
-        data: (_) {},
-        error: (newState) {
+      switch (newState) {
+        case ResultData<StateT>():
+          break;
+        case ResultError<StateT>():
           runQuaternaryGuarded(
             observer.providerDidFail,
             origin,
@@ -589,8 +616,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
             newState.stackTrace,
             _container,
           );
-        },
-      );
+      }
     }
   }
 
@@ -613,10 +639,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     );
   }
 
-  bool _debugAssertCanDependOn(ProviderListenableOrFamily listenable) {
+  bool _debugAssertCanDependOn(Object? listenable) {
     assert(
       () {
-        if (listenable is! ProviderBase<Object?>) return true;
+        if (listenable is! AnyProvider<Object?>) return true;
 
         ProviderElementBase? listenableElement;
         try {
@@ -628,7 +654,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         }
 
         assert(
-          listenable._origin != origin,
+          switch (listenable) {
+            ProviderBase2<Object?>() => true,
+            ProviderBase<Object?>() => listenable._origin != origin,
+          },
           'A provider cannot depend on itself',
         );
 
@@ -693,7 +722,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   @override
-  bool exists(ProviderBase<Object?> provider) => _container.exists(provider);
+  bool exists(AnyProvider<Object?> provider) => _container.exists(provider);
 
   @override
   T watch<T>(ProviderListenable<T> listenable) {
@@ -743,7 +772,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   @override
-  ProviderElementBase<T> readProviderElement<T>(ProviderBase<T> provider) {
+  ProviderElementBase<T> readProviderElement<T>(AnyProvider<T> provider) {
     return _container.readProviderElement(provider);
   }
 
@@ -760,7 +789,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     assert(!_debugIsRunningSelector, 'Cannot call ref.read inside a selector');
     assert(_debugAssertCanDependOn(listenable), '');
 
-    return listenable.addListener(
+    return listenable._addListener(
       this,
       listener,
       fireImmediately: fireImmediately,

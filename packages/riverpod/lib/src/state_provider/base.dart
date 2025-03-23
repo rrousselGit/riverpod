@@ -163,7 +163,7 @@ class StateProviderElement<T> extends ProviderElementBase<T>
     _removeListener?.call();
     _removeListener = null;
 
-    _controllerNotifier.result?.stateOrNull?.dispose();
+    _controllerNotifier.result?.value?.dispose();
     _controllerNotifier.result = null;
   }
 

@@ -53,7 +53,7 @@ class ValueProviderElement<State> extends ProviderElementBase<State> {
     // `getState` will never be in error/loading state since there is no "create"
     final previousState = getState()! as ResultData<State>;
 
-    if (newValue != previousState.state) {
+    if (newValue != previousState.value) {
       assert(
         () {
           // Asserts would otherwise prevent a provider rebuild from updating

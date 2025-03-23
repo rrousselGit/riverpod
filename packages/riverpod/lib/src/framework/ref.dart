@@ -9,9 +9,14 @@ part of '../framework.dart';
 /// - [read] and [watch], two methods that allow a provider to consume other providers.
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
 /// {@endtemplate}
+///
+/// Do not extend or implement this class.
 @optionalTypeArgs
-abstract class Ref<
-    @Deprecated('Will be removed in 3.0') State extends Object?> {
+abstract class Ref<State extends Object?> {
+  /// Internal, do not use.
+  @internal
+  Ref();
+
   /// The [ProviderContainer] that this provider is associated with.
   ProviderContainer get container;
 
@@ -59,7 +64,7 @@ abstract class Ref<
   /// If used on a provider which is not initialized or disposed,
   /// this method will have no effect.
   /// {@endtemplate}
-  void invalidate(ProviderOrFamily provider);
+  void invalidate(AnyProviderOrFamily provider);
 
   /// Notify dependents that this provider has changed.
   ///
@@ -85,7 +90,6 @@ abstract class Ref<
   /// As opposed to [listen], the listener will be called even if
   /// [ProviderElementBase.updateShouldNotify] returns false, meaning that the previous
   /// and new value can potentially be identical.
-  @Deprecated('Will be removed in 3.0. Use Notifier.listenSelf instead')
   void listenSelf(
     void Function(State? previous, State next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
@@ -262,7 +266,7 @@ abstract class Ref<
   /// });
   /// ```
   /// {@endtemplate}
-  bool exists(ProviderBase<Object?> provider);
+  bool exists(AnyProvider<Object?> provider);
 
   /// Obtains the state of a provider and causes the state to be re-evaluated
   /// when that provider emits a new value.

@@ -156,16 +156,14 @@ class StreamNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
       return provider._createNotifier().._setElement(this);
     });
 
-    notifierResult.when(
-      error: (error, stackTrace) {
-        onError(AsyncError(error, stackTrace), seamless: !didChangeDependency);
-      },
-      data: (notifier) {
+    switch (notifierResult) {
+      case ResultData<NotifierT>():
         handleStream(
-          () => provider.runNotifierBuild(notifier),
+          () => provider.runNotifierBuild(notifierResult.value),
           didChangeDependency: didChangeDependency,
         );
-      },
-    );
+      case ResultError<NotifierT>(:final error, :final stackTrace):
+        onError(AsyncError(error, stackTrace), seamless: !didChangeDependency);
+    }
   }
 }

@@ -2,7 +2,8 @@ part of '../framework.dart';
 
 /// A common interface shared by [ProviderBase] and [Family]
 @sealed
-abstract class ProviderOrFamily implements ProviderListenableOrFamily {
+abstract class ProviderOrFamily
+    implements ProviderListenableOrFamily, AnyProviderOrFamily {
   /// A common interface shared by [ProviderBase] and [Family]
   const ProviderOrFamily({
     required this.name,
@@ -140,19 +141,33 @@ String shortHash(Object? object) {
 ///
 /// Should override ==/hashCode when possible
 @immutable
-mixin ProviderListenable<State> implements ProviderListenableOrFamily {
+mixin ProviderListenable<State>
+    implements ProviderListenableOrFamily, ProviderListenableOrScope<State> {
   /// Starts listening to this transformer
+  @Deprecated('Do not override')
   ProviderSubscription<State> addListener(
     Node node,
     void Function(State? previous, State next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
-  });
+  }) {
+    return _addListener(
+      node,
+      listener,
+      onError: onError,
+      onDependencyMayHaveChanged: onDependencyMayHaveChanged,
+      fireImmediately: fireImmediately,
+    );
+  }
 
   /// Obtains the result of this provider expression without adding listener.
   State read(Node node);
+}
 
+/// Adds [select] to [ProviderListenable].
+extension ProviderListenableX<State> on ProviderListenable<State> {
+  /// {@template provider_listenable.select}
   /// Partially listen to a provider.
   ///
   /// The [select] function allows filtering unwanted rebuilds of a Widget
@@ -216,8 +231,9 @@ mixin ProviderListenable<State> implements ProviderListenableOrFamily {
   /// }
   /// ```
   ///
-  /// This will further optimise our widget by rebuilding it only when "isAdult"
+  /// This will further optimize our widget by rebuilding it only when "isAdult"
   /// changed instead of whenever the age changes.
+  /// {@endtemplate}
   ProviderListenable<Selected> select<Selected>(
     Selected Function(State value) selector,
   ) {
@@ -244,6 +260,7 @@ abstract class ProviderSubscription<State> {
   ///
   /// This is typically a [ProviderElementBase] or a [ProviderContainer],
   /// but may be other values in the future.
+  @internal
   final Node source;
 
   /// Whether the subscription is closed.

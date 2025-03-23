@@ -2,6 +2,7 @@ part of '../framework.dart';
 
 /// An abstraction of both [ProviderContainer] and [ProviderElement] used by
 /// [ProviderListenable].
+@internal
 abstract class Node {
   /// Starts listening to a listenable
   ProviderSubscription<State> listen<State>(
@@ -18,7 +19,7 @@ abstract class Node {
   /// Do not use this in production code. This is exposed only for testing
   /// and devtools, to be able to test if a provider has listeners or similar.
   ProviderElementBase<State> readProviderElement<State>(
-    ProviderBase<State> provider,
+    AnyProvider<State> provider,
   );
 }
 
@@ -47,11 +48,11 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
     );
 
     try {
-      return value.map(
-        data: (data) => Result.data(selector(data.state)),
+      return switch (value) {
+        ResultData<Input>() => Result.data(selector(value.value)),
         // TODO test
-        error: (error) => Result.error(error.error, error.stackTrace),
-      );
+        ResultError<Input>() => Result.error(value.error, value.stackTrace),
+      };
     } catch (err, stack) {
       // TODO test
       return Result.error(err, stack);
@@ -74,28 +75,28 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
     required void Function(Result<Output> newState) onChange,
   }) {
     final newSelectedValue = _select(Result.data(newState));
-    if (!lastSelectedValue.hasState ||
-        !newSelectedValue.hasState ||
+    if (!lastSelectedValue.hasData ||
+        !newSelectedValue.hasData ||
         lastSelectedValue.requireState != newSelectedValue.requireState) {
       // TODO test events after selector exception correctly send `previous`s
 
       onChange(newSelectedValue);
       // TODO test handle exception in listener
-      newSelectedValue.map(
-        data: (data) {
+      switch (newSelectedValue) {
+        case ResultData<Output>():
           listener(
             // TODO test from error
-            lastSelectedValue.stateOrNull,
-            data.state,
+            lastSelectedValue.value,
+            newSelectedValue.value,
           );
-        },
-        error: (error) => onError(error.error, error.stackTrace),
-      );
+        case ResultError<Output>():
+          onError(newSelectedValue.error, newSelectedValue.stackTrace);
+      }
     }
   }
 
   @override
-  _SelectorSubscription<Input, Output> addListener(
+  _SelectorSubscription<Input, Output> _addListener(
     Node node,
     void Function(Output? previous, Output next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
@@ -134,13 +135,11 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
       node,
       sub,
       () {
-        return lastSelectedValue.map(
-          data: (data) => data.state,
-          error: (error) => throwErrorWithCombinedStackTrace(
-            error.error,
-            error.stackTrace,
-          ),
-        );
+        return switch (lastSelectedValue) {
+          ResultData(:final value) => value,
+          ResultError(:final error, :final stackTrace) =>
+            throwErrorWithCombinedStackTrace(error, stackTrace),
+        };
       },
     );
   }
