@@ -3,8 +3,10 @@ description: A new Flutter project.
 publish_to: "none"
 
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ^3.6.0
   flutter: ">=1.17.0"
+
+resolution: workspace
 
 dependencies:
   crypto: ^3.0.0
@@ -14,7 +16,7 @@ dependencies:
     sdk: flutter
   flutter_hooks: ^0.18.0
   flutter_portal: ^0.4.0
-  flutter_svg: ^0.21.0+1
+  flutter_svg: ^1.1.4
   freezed_annotation: ^3.0.0
   hooks_riverpod:
     path: ../../packages/hooks_riverpod
@@ -30,14 +32,6 @@ dev_dependencies:
   mockito: ^5.0.0
   riverpod_lint:
     path: ../../packages/riverpod_lint
-
-dependency_overrides:
-  flutter_riverpod:
-    path: ../../packages/flutter_riverpod
-  hooks_riverpod:
-    path: ../../packages/hooks_riverpod
-  riverpod:
-    path: ../../packages/riverpod
 
 flutter:
   uses-material-design: true
