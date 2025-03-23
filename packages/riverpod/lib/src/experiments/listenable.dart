@@ -1,5 +1,47 @@
 part of '../framework.dart';
 
+/// {@template ProviderListenableTransformer}
+/// A mixin for making custom [ProviderListenable]s.
+///
+/// **Note**:
+/// Consider overriding [==]/[hashCode] if it makes sense for your listenable.
+/// If `provider.myListenable == provider.myListenable` is `true`, then
+/// Riverpod will be able to optimize subscriptions when a provider/widget rebuilds.
+///
+/// ## Usage: A custom `when` Listenable
+///
+/// The following implements a `when` listenable as an alternative to `select`:
+///
+/// ```dart
+/// class When<T> with ProviderListenableMixin<T> {
+///   When(this.provider, this.when);
+///   final ProviderListenable<T> provider;
+///   final bool Function(T a, T b) when;
+///
+///   @override
+///   int transform(transformer) {
+///     // Listen to the provider and filter updates based on `when`
+///     final sub = transformer.listen(provider, (previous, value) {
+///       if (previous is! T || when(previous, value)) {
+///         transformer.setData(value);
+///       }
+///     });
+///
+///     return sub.read(); // Return initial value;
+///   }
+/// }
+///
+/// extension<T> on ProviderListenable<T> {
+///    When<T> when(bool Function(T a, T b) when) => When(this, when);
+/// }
+/// ```
+///
+/// Used as:
+///
+/// ```dart
+/// ref.watch(myProvider.when((a, b) => a.value != b.value));
+/// ```
+/// {@endtemplate}
 mixin ProviderListenableTransformer<T> implements ProviderListenable<T> {
   static ProviderSubscription<T> _transform<T>(
     Node node,
@@ -68,6 +110,7 @@ mixin ProviderListenableTransformer<T> implements ProviderListenable<T> {
     );
   }
 
+  /// {@macro ProviderListenableTransformer}
   T transform(ProviderTransformer<T> transformer);
 }
 
@@ -88,9 +131,11 @@ class _TransformerSubscription<T> extends ProviderSubscription<T> {
   }
 
   @override
-  T read() => _transformer.state!.requireState;
+  T read() => _transformer._state!.requireState;
 }
 
+/// An object created using [ProviderListenableTransformer], for transforming
+/// the state of a provider.
 final class ProviderTransformer<T> {
   ProviderTransformer._(
     this._node,
@@ -103,25 +148,46 @@ final class ProviderTransformer<T> {
   final void Function(T? previous, T next)? _listener;
   final void Function(Object error, StackTrace stackTrace)? _onError;
   final void Function()? _onDependencyMayHaveChanged;
-  Result<T>? get state => _state;
+
+  /// The currently exposed state.
+  ///
+  /// Will be null if:
+  /// - No state has been set yet
+  /// - The state is in error state
+  T? get state => _state?.value;
+
+  /// The current error, if any.
+  Object? get error => _state?.error;
+
+  /// The stacktrace for the current error, if any.
+  StackTrace? get stackTrace => _state?.stackTrace;
   Result<T>? _state;
+
   final _onClose = <void Function()>[];
 
-  void setState(Result<T> newState) {
-    switch (newState) {
-      case ResultData<T>():
-        _listener?.call(state?.value, newState.value);
-        _state = newState;
-
-      case ResultError<T>():
-        _onError?.call(newState.error, newState.stackTrace);
-        _state = newState;
-    }
+  /// Updates [state].
+  ///
+  /// Calling this will notify listeners of the new state, and set [error]/[stackTrace]
+  /// to null.
+  void setData(T newState) {
+    _listener?.call(state, newState);
+    _state = ResultData(newState);
   }
 
-  ProviderSubscription<T> listen<T>(
-    ProviderListenable<T> listenable,
-    void Function(T? previous, T next) listener, {
+  /// Sets the listenable in error state.
+  ///
+  /// Calling this will notify the `onError` of listeners, and set [state] to null.
+  void setError(Object error, StackTrace stackTrace) {
+    _onError?.call(error, stackTrace);
+    _state = ResultError(error, stackTrace);
+  }
+
+  /// Listens to another [ProviderListenable].
+  ///
+  /// The returned subscription is automatically closed.
+  ProviderSubscription<InT> listen<InT>(
+    ProviderListenable<InT> listenable,
+    void Function(InT? previous, InT next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
   }) {
     final sub = listenable._addListener(
