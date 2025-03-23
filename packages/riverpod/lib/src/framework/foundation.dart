@@ -163,10 +163,7 @@ mixin ProviderListenable<State>
 
   /// Obtains the result of this provider expression without adding listener.
   State read(Node node);
-}
 
-/// Adds [select] to [ProviderListenable].
-extension ProviderListenableX<State> on ProviderListenable<State> {
   /// {@template provider_listenable.select}
   /// Partially listen to a provider.
   ///

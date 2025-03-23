@@ -219,6 +219,16 @@ abstract mixin class AsyncProvider<StateT>
     FutureOr<R> Function(AsyncRef<StateT> ref) cb,
   ) =>
       _MutationElement._mutate<R, AsyncRef<StateT>>(mutation, cb);
+
+  @override
+  ProviderListenable<Selected> select<Selected>(
+    Selected Function(AsyncValue<StateT> value) selector,
+  ) {
+    return _ProviderSelector(
+      provider: this,
+      selector: selector,
+    );
+  }
 }
 
 class _DelegatedSyncProvider<StateT> with Provider2<StateT> {
@@ -340,6 +350,16 @@ abstract mixin class Provider2<StateT> implements ProviderBase2<StateT> {
     FutureOr<R> Function(SyncRef<StateT> ref) cb,
   ) =>
       _MutationElement._mutate<R, SyncRef<StateT>>(mutation, cb);
+
+  @override
+  ProviderListenable<Selected> select<Selected>(
+    Selected Function(StateT value) selector,
+  ) {
+    return _ProviderSelector(
+      provider: this,
+      selector: selector,
+    );
+  }
 }
 
 /// A shared interface by all providers.

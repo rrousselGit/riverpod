@@ -15,7 +15,7 @@ abstract class WidgetRef {
   ///
   /// See also:
   ///
-  /// - [ProviderListenableX.select], which allows a widget to filter rebuilds by
+  /// - [ProviderListenable.select], which allows a widget to filter rebuilds by
   ///   observing only the selected properties.
   /// - [listen], to react to changes on a provider, such as for showing modals.
   T watch<T>(ProviderListenable<T> provider);
