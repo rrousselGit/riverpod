@@ -406,8 +406,9 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
         isDynamicallyCreated: true,
       );
 
-      if (container._root != null) {
-        container._root!._legacyPointerManager._stateReaders[provider] = reader;
+      final _root = container._root;
+      if (_root != null) {
+        _root._legacyPointerManager._stateReaders[provider] = reader;
       }
 
       return reader;
