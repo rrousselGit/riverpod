@@ -234,20 +234,24 @@ class ProviderContainer implements Node {
 
   /// {@macro riverpod.invalidate}
   void invalidate(ProviderOrFamily provider) {
-    if (provider is ProviderBase) {
-      final reader = _getOrNull(provider);
+    switch (provider) {
+      case Family():
+        final familyContainer =
+            _legacyPointerManager._overrideForFamily[provider]?.container ??
+                _root ??
+                this;
 
-      reader?._element?.invalidateSelf();
-    } else {
-      provider as Family;
+        for (final stateReader
+            in familyContainer._legacyPointerManager._stateReaders.values) {
+          if (stateReader.origin.from != provider) continue;
+          stateReader._element?.invalidateSelf();
+        }
+      case ProviderBase():
+        final reader = _legacyPointerManager._getOrNull(provider);
 
-      final familyContainer =
-          _overrideForFamily[provider]?.container ?? _root ?? this;
-
-      for (final stateReader in familyContainer._stateReaders.values) {
-        if (stateReader.origin.from != provider) continue;
-        stateReader._element?.invalidateSelf();
-      }
+        reader?._element?.invalidateSelf();
+      case ProviderOrFamily():
+        throw StateError('Unreachable. Did you subclass ProviderOrFamily?');
     }
   }
 
