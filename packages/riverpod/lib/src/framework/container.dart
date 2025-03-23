@@ -48,7 +48,8 @@ class _StateReader {
       element
         .._provider = override
         .._origin = origin
-        .._container = container;
+        .._container = container
+        ..mount();
 
       return element;
     } finally {
