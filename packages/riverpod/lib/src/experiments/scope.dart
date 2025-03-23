@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 part of '../framework.dart';
 
 abstract class ScopeRef {
@@ -16,6 +18,7 @@ sealed class ProviderListenableOrScope<T> {
 }
 
 class Scope<T> implements ProviderListenableOrScope<T> {
+  // ignore: avoid_unused_constructor_parameters
   factory Scope(T Function(ScopeRef ref) create) => throw UnimplementedError();
   factory Scope.required() => throw UnimplementedError();
   static Scope<T?> optional<T>() => throw UnimplementedError();

@@ -39,7 +39,12 @@ abstract class Family<
         )
         // ignore: deprecated_member_use_from_same_package
         State>
-    implements FamilyOverride<State>, ProviderOrFamily, AnyProviderOrFamily {
+    implements
+        FamilyOverride<
+            // ignore: deprecated_member_use_from_same_package
+            State>,
+        ProviderOrFamily,
+        AnyProviderOrFamily {
   /// A base class for all families
   const Family();
 

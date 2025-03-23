@@ -1,11 +1,5 @@
 part of '../framework.dart';
 
-/// Transition between [Refreshable] and [Refreshable2].
-sealed class AnyRefreshable<T> implements ProviderListenable<T> {
-  /// The provider that is being refreshed.
-  AnyProvider<Object?> get _origin;
-}
-
 /// {@template riverpod.refreshable}
 /// An interface for provider expressions that can be passed to `ref.refresh`
 ///
@@ -22,8 +16,7 @@ sealed class AnyRefreshable<T> implements ProviderListenable<T> {
 /// ref.watch(provider.select((value) => value));
 /// ```
 /// {@endtemplate}
-abstract class Refreshable<T>
-    implements ProviderListenable<T>, AnyRefreshable<T> {
+abstract class Refreshable<T> implements ProviderListenable<T> {
   /// The provider that is being refreshed.
   AnyProvider<Object?> get _origin;
 }
@@ -52,6 +45,7 @@ void Function()? debugCanModifyProviders;
 /// Do not use.
 /// {@endtemplate}
 @optionalTypeArgs
+@internal
 abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
   /// {@macro riverpod.provider_element_base}
   ProviderElementBase(this._provider);
@@ -722,7 +716,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   @override
-  T refresh<T>(AnyRefreshable<T> provider) {
+  T refresh<T>(Refreshable<T> provider) {
     _assertNotOutdated();
     assert(_debugAssertCanDependOn(provider), '');
     return _container.refresh(provider);

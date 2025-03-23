@@ -350,6 +350,7 @@ final b = Provider((ref) => ref.watch(a), dependencies: [a]);
 
             final containerForDependencyOverride = dependencies
                 ?.map((dep) {
+                  // ignore: collection_methods_unrelated_type, ProviderOrFamily can be providers ; which are subclasses of AnyProvider
                   final reader = _stateReaders[dep];
                   if (reader != null) {
                     return reader.container;
@@ -622,12 +623,14 @@ class ProviderContainer implements Node {
         final reader = _legacyPointerManager._getOrNull(provider);
 
         reader?._element?.invalidateSelf();
+      case ProviderOrFamily():
+        throw StateError('Unreachable. Did you subclass ProviderOrFamily?');
       case ProviderBase2():
     }
   }
 
   /// {@macro riverpod.refresh}
-  State refresh<State>(AnyRefreshable<State> provider) {
+  State refresh<State>(Refreshable<State> provider) {
     invalidate(provider._origin);
     return read(provider);
   }

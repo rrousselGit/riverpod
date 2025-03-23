@@ -53,7 +53,11 @@ export 'src/framework.dart'
         OnError,
         ProviderListenableOrScope,
         AnyX,
-        ObsX;
+        ObsX,
+        ProviderElementBase;
+
+// ignore: invalid_export_of_internal_element, exports that should be private, but can't be removed yet due to breaking changes.
+export 'src/framework.dart' show ProviderElementBase;
 
 export 'src/future_provider.dart';
 

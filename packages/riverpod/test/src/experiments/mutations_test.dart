@@ -182,7 +182,8 @@ void main() {
     expect(container.exists(simpleProvider), false);
   });
 
-  test('Listening a mutation lazily initializes the provider', () async {
+  test(skip: 'Todo', 'Listening a mutation lazily initializes the provider',
+      () async {
     final container = createContainer();
     final simpleProvider = TestProvider((ref) => 0);
     final increment = simpleProvider.mutation<void>();

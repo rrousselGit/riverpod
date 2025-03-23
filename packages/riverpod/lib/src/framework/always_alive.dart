@@ -8,6 +8,8 @@ part of '../framework.dart';
 /// Do not implement or extend.
 @Deprecated('Will be removed in 3.0.0. Use ProviderListenable instead')
 mixin AlwaysAliveProviderListenable<State> on ProviderListenable<State> {
+  /// {@macro provider_listenable.select}
+  // Present for backward compatibility
   AlwaysAliveProviderListenable<Selected> select<Selected>(
     Selected Function(State value) selector,
   ) {
@@ -27,6 +29,7 @@ mixin AlwaysAliveProviderBase<State> on ProviderBase<State>
     implements
         AlwaysAliveProviderListenable<State>,
         AlwaysAliveRefreshable<State> {
+  @override
   AlwaysAliveProviderListenable<Selected> select<Selected>(
     Selected Function(State value) selector,
   ) {

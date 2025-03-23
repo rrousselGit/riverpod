@@ -61,7 +61,7 @@ extension AnyX on AnyProvider<Object?> {
     };
   }
 
-  Iterable<ProviderOrFamily>? get dependencies {
+  Iterable<AnyProviderOrFamily>? get dependencies {
     final that = this;
     return switch (that) {
       ProviderBase2() => null,

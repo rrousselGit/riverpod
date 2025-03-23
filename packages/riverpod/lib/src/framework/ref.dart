@@ -47,7 +47,7 @@ abstract class Ref<State extends Object?> {
   /// to restart a specific provider.
   /// {@endtemplate}
   @useResult
-  T refresh<T>(AnyRefreshable<T> provider);
+  T refresh<T>(Refreshable<T> provider);
 
   /// {@template riverpod.invalidate}
   /// Invalidates the state of the provider, destroying the state immediately

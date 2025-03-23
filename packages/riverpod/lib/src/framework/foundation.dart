@@ -5,7 +5,8 @@ sealed class AnyProviderOrFamily {}
 
 /// A common interface shared by [ProviderBase] and [Family]
 @sealed
-abstract class ProviderOrFamily implements ProviderListenableOrFamily {
+abstract class ProviderOrFamily
+    implements ProviderListenableOrFamily, AnyProviderOrFamily {
   /// A common interface shared by [ProviderBase] and [Family]
   const ProviderOrFamily({
     required this.name,
@@ -169,6 +170,7 @@ mixin ProviderListenable<State>
 
 /// Adds [select] to [ProviderListenable].
 extension ProviderListenableX<State> on ProviderListenable<State> {
+  /// {@template provider_listenable.select}
   /// Partially listen to a provider.
   ///
   /// The [select] function allows filtering unwanted rebuilds of a Widget
@@ -234,6 +236,7 @@ extension ProviderListenableX<State> on ProviderListenable<State> {
   ///
   /// This will further optimize our widget by rebuilding it only when "isAdult"
   /// changed instead of whenever the age changes.
+  /// {@endtemplate}
   ProviderListenable<Selected> select<Selected>(
     Selected Function(State value) selector,
   ) {

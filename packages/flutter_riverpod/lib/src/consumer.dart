@@ -222,7 +222,7 @@ abstract class WidgetRef {
   /// }
   /// ```
   @useResult
-  State refresh<State>(AnyRefreshable<State> provider);
+  State refresh<State>(Refreshable<State> provider);
 
   /// Invalidates the state of the provider, causing it to refresh.
   ///
@@ -618,7 +618,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   }
 
   @override
-  State refresh<State>(AnyRefreshable<State> provider) {
+  State refresh<State>(Refreshable<State> provider) {
     _assertNotDisposed();
     return ProviderScope.containerOf(this, listen: false).refresh(provider);
   }
