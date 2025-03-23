@@ -4,17 +4,6 @@ abstract class ScopeRef {
   T watch<T>(ProviderListenableOrScope<T> provider);
 }
 
-class _ScopeError extends Error {
-  _ScopeError();
-
-  @override
-  String toString() {
-    return 'A Scope was used with no defined behavior. '
-        'Either write Scope((ref) => ...), '
-        'or override it using ProviderScope(overrides: [scope.overrideWithValue(...)])';
-  }
-}
-
 sealed class ProviderListenableOrScope<T> {
   /// Starts listening to this transformer
   ProviderSubscription<T> _addListener(

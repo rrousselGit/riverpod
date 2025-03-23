@@ -15,7 +15,7 @@ abstract class WidgetRef {
   ///
   /// See also:
   ///
-  /// - [ProviderListenable.select], which allows a widget to filter rebuilds by
+  /// - [ProviderListenableX.select], which allows a widget to filter rebuilds by
   ///   observing only the selected properties.
   /// - [listen], to react to changes on a provider, such as for showing modals.
   T watch<T>(ProviderListenable<T> provider);
@@ -86,7 +86,7 @@ abstract class WidgetRef {
   /// As opposed to [listen], [listenManual] is not safe to use within the `build`
   /// method of a widget.
   /// Instead, [listenManual] is designed to be used inside [State.initState] or
-  /// other [State] lifecycles.
+  /// other [State] life-cycles.
   ///
   /// [listenManual] returns a [ProviderSubscription] which can be used to stop
   /// listening to the provider, or to read the current value exposed by
@@ -150,7 +150,7 @@ abstract class WidgetRef {
   ///
   /// While the idea of not rebuilding the widget if unnecessary is good,
   /// this should not be done with [read].
-  /// Relying on [read] for optimisations is very brittle and dependent
+  /// Relying on [read] for optimizations is very brittle and dependent
   /// on an implementation detail.
   ///
   /// **CONSIDER** using [Provider] or `select` for filtering unwanted rebuilds:
@@ -378,7 +378,7 @@ class Consumer extends ConsumerWidget {
   }
 }
 
-/// {@template riverpod.consumerwidget}
+/// {@template riverpod.consumer_widget}
 /// A [StatelessWidget] that can listen to providers.
 ///
 /// Using [ConsumerWidget], this allows the widget tree to listen to changes on
@@ -422,7 +422,7 @@ class Consumer extends ConsumerWidget {
 /// optimizations, see [Consumer].
 /// {@endtemplate}
 abstract class ConsumerWidget extends ConsumerStatefulWidget {
-  /// {@macro riverpod.consumerwidget}
+  /// {@macro riverpod.consumer_widget}
   const ConsumerWidget({super.key});
 
   /// Describes the part of the user interface represented by this widget.

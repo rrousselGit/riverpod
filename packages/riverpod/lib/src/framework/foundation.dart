@@ -168,7 +168,7 @@ mixin ProviderListenable<State>
 }
 
 /// Adds [select] to [ProviderListenable].
-extension SelectorX<State> on ProviderListenable<State> {
+extension ProviderListenableX<State> on ProviderListenable<State> {
   /// Partially listen to a provider.
   ///
   /// The [select] function allows filtering unwanted rebuilds of a Widget
@@ -241,34 +241,6 @@ extension SelectorX<State> on ProviderListenable<State> {
       provider: this,
       selector: selector,
     );
-  }
-}
-
-@internal
-@optionalTypeArgs
-sealed class ProviderSubscriptionWithOrigin<OutT, StateT>
-    extends ProviderSubscription<OutT> {
-  ProviderSubscriptionWithOrigin(super.source);
-
-  ProviderBase<StateT> get origin;
-  ProviderElement<StateT> get _listenedElement;
-
-  void _onOriginData(StateT? prev, StateT next);
-  void _onOriginError(Object error, StackTrace stackTrace);
-
-  OutT _callRead();
-
-  @override
-  OutT read() {
-    if (closed) {
-      throw StateError(
-        'called ProviderSubscription.read on a subscription that was closed',
-      );
-    }
-    _listenedElement.mayNeedDispose();
-    _listenedElement.flush();
-
-    return _callRead();
   }
 }
 

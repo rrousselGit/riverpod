@@ -59,7 +59,7 @@ mixin _MutationElement<T> on ProviderElementBase<T> {
     ProviderBase2<Object?> origin,
     T Function(_MutationElement<Object?> element, RefT ref) mutator,
   ) {
-    return Call<T>._(origin, (container) {
+    return Call<T>._((container) {
       final element = container.readProviderElement(origin);
 
       return mutator(element as _MutationElement, element as RefT);
@@ -91,9 +91,8 @@ extension ProviderContainerInvoke on ProviderContainer {
 }
 
 final class Call<ResultT> {
-  Call._(this._origin, this._run);
+  Call._(this._run);
 
-  final ProviderBase2<Object?> _origin;
   final ResultT Function(ProviderContainer container) _run;
 }
 
@@ -128,7 +127,7 @@ final class Mutation<ResultT>
 
   final Symbol? _symbol;
 
-  Call<void> reset() => Call._(_origin as ProviderBase2, (container) {
+  Call<void> reset() => Call._((container) {
         final element =
             container.readProviderElement(_origin) as _MutationElement;
 
