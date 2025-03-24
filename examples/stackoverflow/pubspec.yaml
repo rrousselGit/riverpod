@@ -12,7 +12,7 @@ dependencies:
   dio: ^5.1.1
   flutter:
     sdk: flutter
-  flutter_hooks: ^0.18.0
+  flutter_hooks: ^0.21.2
   freezed_annotation: ^3.0.0
   hooks_riverpod:
   html: ^0.15.0
