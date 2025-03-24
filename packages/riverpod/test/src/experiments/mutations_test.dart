@@ -24,7 +24,7 @@ void main() {
 
     verifyOnly(
       listener,
-      listener(any, isIdleMutationState()),
+      listener(any, isIdleMutation()),
     );
 
     final future = container.invoke(
@@ -37,14 +37,14 @@ void main() {
 
     verifyOnly(
       listener,
-      listener(any, isPendingMutationState()),
+      listener(any, isPendingMutation()),
     );
 
     expect(await future, 'Result');
 
     verifyOnly(
       listener,
-      listener(any, isSuccessMutationState('Result')),
+      listener(any, isSuccessMutation('Result')),
     );
 
     final future2 = container.invoke(
@@ -53,8 +53,8 @@ void main() {
 
     await expectLater(future2, throwsA(isStateError));
     verifyInOrder([
-      listener(any, isPendingMutationState()),
-      listener(any, isErrorMutationState(isStateError)),
+      listener(any, isPendingMutation()),
+      listener(any, isErrorMutation(isStateError)),
     ]);
     verifyNoMoreInteractions(listener);
   });
@@ -82,14 +82,14 @@ void main() {
       sub.close();
       await null;
 
-      expect(container.read(increment), isSuccessMutationState<void>());
+      expect(container.read(increment), isSuccessMutation<void>());
 
       sub2.close();
       await null;
 
       expect(
         container.read(increment),
-        isIdleMutationState(),
+        isIdleMutation(),
       );
     });
 
@@ -108,7 +108,7 @@ void main() {
 
       expect(
         container.read(increment),
-        isSuccessMutationState<void>(),
+        isSuccessMutation<void>(),
       );
     });
   });
@@ -126,7 +126,7 @@ void main() {
     }));
     container.invalidate(provider);
 
-    expect(sub.read(), isSuccessMutationState());
+    expect(sub.read(), isSuccessMutation());
   });
 
   test('Supports getting called again while pending', () async {
@@ -150,17 +150,17 @@ void main() {
     completer.complete(42);
 
     await future;
-    expect(sub.read(), isPendingMutationState());
+    expect(sub.read(), isPendingMutation());
     expect(container.read(provider), (42));
 
     completer2.completeError(21);
     await expectLater(future2, throwsA(21));
-    expect(sub.read(), isPendingMutationState());
+    expect(sub.read(), isPendingMutation());
     expect(container.read(provider), (42));
 
     completer3.complete(21);
     await future3;
-    expect(sub.read(), isSuccessMutationState());
+    expect(sub.read(), isSuccessMutation());
     expect(container.read(provider), (21));
   });
 
@@ -219,7 +219,7 @@ void main() {
       expect(await future, 42);
       expect(
         sub.read(),
-        isIdleMutationState(),
+        isIdleMutation(),
       );
     });
 
@@ -238,7 +238,7 @@ void main() {
 
       expect(
         sub.read(),
-        isIdleMutationState<int>(),
+        isIdleMutation<int>(),
       );
     });
   });

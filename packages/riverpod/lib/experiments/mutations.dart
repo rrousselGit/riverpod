@@ -3,8 +3,8 @@ export 'package:riverpod/src/internals.dart'
         Call,
         Mutation,
         MutationState,
-        IdleMutationState,
-        PendingMutationState,
-        ErrorMutationState,
-        SuccessMutationState,
+        IdleMutation,
+        PendingMutation,
+        ErrorMutation,
+        SuccessMutation,
         ProviderContainerInvoke;

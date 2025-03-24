@@ -4,7 +4,7 @@ part of '../framework.dart';
 
 class _MutationState<T> {
   late final listenable = ProxyElementValueNotifier<MutationState<T>>()
-    ..result = Result.data(IdleMutationState<T>._())
+    ..result = Result.data(IdleMutation<T>._())
     ..onCancel = _scheduleAutoReset;
 
   Object? pendingKey;
@@ -19,7 +19,7 @@ class _MutationState<T> {
 
   void reset() {
     pendingKey = null;
-    listenable.result = Result.data(IdleMutationState<T>._());
+    listenable.result = Result.data(IdleMutation<T>._());
   }
 }
 
@@ -36,19 +36,18 @@ mixin _MutationElement<T> on ProviderElementBase<T> {
 
       final key = state.pendingKey = Object();
       try {
-        state.listenable.result = Result.data(PendingMutationState<T>._());
+        state.listenable.result = Result.data(PendingMutation<T>._());
         final result = await mutator(ref);
 
         if (state.pendingKey == key) {
-          state.listenable.result =
-              Result.data(SuccessMutationState<T>._(result));
+          state.listenable.result = Result.data(SuccessMutation<T>._(result));
         }
 
         return result;
       } catch (error, stackTrace) {
         if (state.pendingKey == key) {
           state.listenable.result = Result<MutationState<T>>.data(
-            ErrorMutationState<T>._(error, stackTrace),
+            ErrorMutation<T>._(error, stackTrace),
           );
         }
 
@@ -157,10 +156,10 @@ final class Mutation<ResultT>
 ///
 /// {@template mutation_states}
 /// A mutation can be in any of the following states:
-/// - [IdleMutationState]: The mutation is not running. This is the default state.
-/// - [PendingMutationState]: The mutation has been called and is in progress.
-/// - [ErrorMutationState]: The mutation has failed with an error.
-/// - [SuccessMutationState]: The mutation has completed successfully.
+/// - [IdleMutation]: The mutation is not running. This is the default state.
+/// - [PendingMutation]: The mutation has been called and is in progress.
+/// - [ErrorMutation]: The mutation has failed with an error.
+/// - [SuccessMutation]: The mutation has completed successfully.
 /// {@endtemplate}
 sealed class MutationState<ResultT> {
   const MutationState._();
@@ -174,28 +173,28 @@ sealed class MutationState<ResultT> {
 /// {@macro auto_reset}
 ///
 /// {@macro mutation_states}
-final class IdleMutationState<ResultT> extends MutationState<ResultT> {
-  const IdleMutationState._() : super._();
+final class IdleMutation<ResultT> extends MutationState<ResultT> {
+  const IdleMutation._() : super._();
 
   @override
-  String toString() => 'IdleMutationState<$ResultT>()';
+  String toString() => 'IdleMutation<$ResultT>()';
 }
 
 /// The mutation has been called and is in progress.
 ///
 /// {@macro mutation_states}
-final class PendingMutationState<ResultT> extends MutationState<ResultT> {
-  const PendingMutationState._() : super._();
+final class PendingMutation<ResultT> extends MutationState<ResultT> {
+  const PendingMutation._() : super._();
 
   @override
-  String toString() => 'PendingMutationState<$ResultT>()';
+  String toString() => 'PendingMutation<$ResultT>()';
 }
 
 /// The mutation has failed with an error.
 ///
 /// {@macro mutation_states}
-final class ErrorMutationState<ResultT> extends MutationState<ResultT> {
-  ErrorMutationState._(this.error, this.stackTrace) : super._();
+final class ErrorMutation<ResultT> extends MutationState<ResultT> {
+  ErrorMutation._(this.error, this.stackTrace) : super._();
 
   /// The error thrown by the mutation.
   final Object error;
@@ -204,18 +203,18 @@ final class ErrorMutationState<ResultT> extends MutationState<ResultT> {
   final StackTrace stackTrace;
 
   @override
-  String toString() => 'ErrorMutationState<$ResultT>($error, $stackTrace)';
+  String toString() => 'ErrorMutation<$ResultT>($error, $stackTrace)';
 }
 
 /// The mutation has completed successfully.
 ///
 /// {@macro mutation_states}
-final class SuccessMutationState<ResultT> extends MutationState<ResultT> {
-  SuccessMutationState._(this.value) : super._();
+final class SuccessMutation<ResultT> extends MutationState<ResultT> {
+  SuccessMutation._(this.value) : super._();
 
   /// The new state of the notifier after the mutation has completed.
   final ResultT value;
 
   @override
-  String toString() => 'SuccessMutationState<$ResultT>($value)';
+  String toString() => 'SuccessMutation<$ResultT>($value)';
 }
