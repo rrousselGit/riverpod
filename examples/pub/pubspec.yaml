@@ -13,7 +13,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_hooks: ^0.18.0
-  flutter_svg: ^1.1.4
+  flutter_svg: ^2.0.9
   freezed_annotation: ^3.0.0
   hooks_riverpod: ^2.3.4
   html: ^0.15.0
