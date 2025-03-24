@@ -17,7 +17,7 @@ dependencies:
 
 dev_dependencies:
   custom_lint: ^0.7.5
-  flutter_lints: ^1.0.0
+  flutter_lints: ^5.0.0
   flutter_test:
     sdk: flutter
   riverpod_lint:
