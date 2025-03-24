@@ -20,7 +20,7 @@ dependencies:
   json_annotation: ^4.9.0
   pubspec_parse: ^1.2.1
   riverpod_annotation:
-  shimmer: ^2.0.0
+  shimmer: ^3.0.0
 
 dev_dependencies:
   build_runner: ^2.0.0
