@@ -108,7 +108,7 @@ class _AsyncProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
 }
 
 class _DelegatedAsyncProvider<StateT> with AsyncProvider<StateT> {
-  _DelegatedAsyncProvider(this._build);
+  const _DelegatedAsyncProvider(this._build);
   final FutureOr<StateT> Function(AsyncRef<StateT> ref) _build;
 
   @override
@@ -130,14 +130,14 @@ ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
 
 abstract mixin class AsyncProvider<StateT>
     implements ProviderBase2<AsyncValue<StateT>> {
-  factory AsyncProvider(
+  const factory AsyncProvider(
     FutureOr<StateT> Function(AsyncRef<StateT> ref) build,
   ) = _DelegatedAsyncProvider;
 
   @override
   Record? get args => null;
 
-  late final ProviderListenable<Future<StateT>> future = _future(this);
+  ProviderListenable<Future<StateT>> get future => _future(this);
 
   FutureOr<StateT> build(AsyncRef<StateT> ref);
 
