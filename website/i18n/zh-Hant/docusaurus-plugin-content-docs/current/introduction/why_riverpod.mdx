@@ -1,0 +1,125 @@
+---
+title: 為什麼選擇 Riverpod？
+version: 1
+---
+
+import whyRiverpod from "/docs/introduction/why_riverpod";
+import { AutoSnippet } from "@site/src/components/CodeSnippet";
+
+<!---
+## What is Riverpod?
+-->
+## 什麼是 Riverpod？
+
+<!---
+Riverpod (anagram of [Provider](https://pub.dev/packages/provider)) is a reactive
+caching framework for Flutter/Dart.
+-->
+Riverpod（[Provider](https://pub.dev/packages/provider) 的異序詞）是 Flutter/Dart 的反應式快取框架。
+
+<!---
+Using declarative and reactive programming, Riverpod takes care of
+a large part of your application's logic for you. It can perform network-requests
+with built-in error handling and caching, while automatically re-fetching
+data when necessary.
+-->
+Riverpod 使用宣告式和反應式程式設計，為您處理應用程式的大部分邏輯。
+它可以透過內建的錯誤處理和快取來執行網路請求，同時在必要時自動重新獲取資料。
+
+<!---
+## Motivation
+-->
+## 動機
+
+<!---
+Modern applications rarely come with all the information necessary to render
+their User Interface. Instead, the data is often fetched asynchronously
+from a server.
+-->
+現代應用程式很少提供呈現其使用者介面所需的所有資訊。
+相反，資料通常是從伺服器非同步獲取的。
+
+<!---
+The problem is, working with asynchronous code is hard. Although Flutter comes
+with some way to create state variables and refresh the UI on change, it is still
+fairly limited. A number of challenges remain unsolved:
+-->
+問題是，使用非同步程式碼很困難。
+儘管 Flutter 提供了一些建立狀態變數並在更改時重新整理 UI 的方法，但它仍然相當有限。
+許多挑戰仍未解決：
+
+<!---
+- Asynchronous requests need to be cached locally, as it would be unreasonable
+  to re-execute them whenever the UI updates.
+- Since we have a cache, our cache could get out of date if we're not careful.
+- We also need to handle errors and loading states
+-->
+- 非同步請求需要在本地快取，因為每當 UI 更新時就重新執行非同步請求是不合理的。
+- 由於我們有一個快取，如果我們不關心的話，我們的快取可能會過時。
+- 我們還需要處理錯誤和載入狀態。
+
+<!---
+Nailing those problems at scale can be difficult, and they are impacted by a large
+amount of features, such as:
+-->
+大規模解決這些問題可能很困難，並且它們會受到大量功能的影響，例如：
+
+<!---
+- pull to refresh
+- infinite lists / fetch as we scroll
+- search as we type
+- debouncing asynchronous requests
+- cancelling asynchronous requests when no-longer used
+- optimistic UIs
+- offline mode
+- ...
+-->
+- 下拉重新整理
+- 無限列表/上劃載入
+- 鍵入時搜尋
+- 對非同步請求進行去抖動
+- 不再使用非同步請求時取消非同步請求
+- 樂觀 UI （注：主動積極的更新 UI 以實現良好的使用者體驗）
+- 離線模式
+- ……
+
+<!---
+These features can be tricky to implement, but are crucial for a good user experience.  
+Yet few packages try to tackle those problems directly, and a lot of the work
+has to be done manually.
+-->
+這些功能可能很難實現，但對於良好的使用者體驗至關重要。  
+然而，很少有軟體包嘗試直接解決這些問題，而且很多工作必須手動完成。
+
+<!---
+That's where Riverpod comes in.  
+Riverpod tries to solve those problems, by offering a new unique
+way of writing business logic, inspired by Flutter widgets. In
+many ways Riverpod is comparable to widgets, but for state.
+-->
+這就是 Riverpod 的用武之地。  
+Riverpod 試圖透過提供一種新的、獨特的業務邏輯編寫方式來解決這些問題，
+這種方式的靈感來自 Flutter 小部件。
+在許多方面，Riverpod 可以與小部件相媲美，但僅限於狀態管理。
+
+<!---
+Using this new approach, these complex features are mostly done by default. All
+that's left is to focus on your UI.
+-->
+使用這種新方法，這些複雜的功能大多是預設完成的。
+剩下的就是專注於你的 UI。
+
+<!---
+Skeptical? Here's an example. The following snippet is a simplification of the [Pub.dev](https://github.com/rrousselGit/riverpod/tree/master/examples/pub)
+client application implemented using Riverpod.
+-->
+不信？舉個例子。
+以下程式碼片段是使用 Riverpod 實現的 Pub.dev 客戶端應用程式的簡化版本。
+
+<AutoSnippet language="dart" {...whyRiverpod}></AutoSnippet>
+
+<!---
+This snippet is all the business logic you need for a "search as we type" +
+"pull to refresh" + "infinite list", while handling error/loading states.
+-->
+此程式碼片段是在處理錯誤/載入狀態時，“鍵入時搜尋”+“下拉重新整理”+“無限列表”所需的所有業務邏輯。

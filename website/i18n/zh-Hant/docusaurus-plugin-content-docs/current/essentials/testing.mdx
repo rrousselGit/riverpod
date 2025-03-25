@@ -1,0 +1,303 @@
+---
+title: 測試你的提供者程式
+---
+
+import { AutoSnippet, When } from "@site/src/components/CodeSnippet";
+import createContainer from "!!raw-loader!/docs/essentials/testing/create_container.dart";
+import unitTest from "!!raw-loader!/docs/essentials/testing/unit_test.dart";
+import widgetTest from "!!raw-loader!/docs/essentials/testing/widget_test.dart";
+import fullWidgetTest from "!!raw-loader!/docs/essentials/testing/full_widget_test.dart";
+import widgetContainerOf from "!!raw-loader!/docs/essentials/testing/widget_container_of.dart";
+import providerToMock from "/docs/essentials/testing/provider_to_mock";
+import mockProvider from "!!raw-loader!/docs/essentials/testing/mock_provider.dart";
+import autoDisposeListen from "!!raw-loader!/docs/essentials/testing/auto_dispose_listen.dart";
+import listenProvider from "!!raw-loader!/docs/essentials/testing/listen_provider.dart";
+import awaitFuture from "!!raw-loader!/docs/essentials/testing/await_future.dart";
+import notifierMock from "/docs/essentials/testing/notifier_mock";
+
+<!---
+A core part of the Riverpod API is the ability to test your providers in isolation.
+-->
+Riverpod API 的核心部分是能夠單獨測試提供者程式。
+
+<!---
+For a proper test suite, there are a few challenges to overcome:
+-->
+對於一個合適的測試套件，有幾個挑戰需要克服：
+
+<!---
+- Tests should not share state. This means that new tests should
+  not be affected by the previous tests.
+- Tests should give us the ability to mock certain functionalities
+  to achieve the desired state.
+- The test environment should be as close as possible to the real
+  environment.
+-->
+- 測試不應共享狀態。這意味著新測試不應受到先前測試的影響。
+- 測試應該使我們能夠模擬某些功能以達到所需的狀態。
+- 測試環境應儘可能接近真實環境。
+
+<!---
+Fortunately, Riverpod makes it easy to achieve all of these goals.
+-->
+幸運的是，Riverpod 可以輕鬆實現所有這些目標。
+
+<!---
+## Setting up a test
+-->
+## 設定測試
+
+<!---
+When defining a test with Riverpod, there are two main scenarios:
+-->
+使用 Riverpod 定義測試時，主要有兩種情況：
+
+<!---
+- Unit tests, usually with no Flutter dependency.
+  This can be useful for testing the behavior of a provider in isolation.
+- Widget tests, usually with a Flutter dependency.
+  This can be useful for testing the behavior of a widget that uses a provider.
+-->
+- 單元測試，通常沒有 Flutter 依賴。
+  這對於單獨測試提供者程式的行為非常有用。
+- Widget 測試，通常帶有 Flutter 依賴項。
+  這對於測試使用提供者程式的小部件的行為非常有用。
+
+<!---
+### Unit tests
+-->
+### 單元測試
+
+<!---
+Unit tests are defined using the `test` function from [package:test](https://pub.dev/packages/test).
+-->
+單元測試是使用 [package:test](https://pub.dev/packages/test) 中的 `test` 函式定義的。
+
+<!---
+The main difference with any other test is that we will want to create
+a `ProviderContainer` object. This object will enable our test to interact
+with providers.
+-->
+與任何其他測試的主要區別在於，我們想要建立一個 `ProviderContainer` 物件。
+此物件將使我們的測試能夠與提供者程式進行互動。
+
+<!---
+It encouraged to make a testing utility for both creating and disposing
+of a `ProviderContainer` object:
+-->
+建議建立一個測試實用程式來建立和處置物件 `ProviderContainer`：
+
+<AutoSnippet raw={createContainer} />
+
+<!---
+Then, we can define a `test` using this utility:
+-->
+然後，我們可以使用此實用程式定義一個 `test`：
+
+<AutoSnippet raw={unitTest} />
+
+<!---
+Now that we have a ProviderContainer, we can use it to read providers using:
+-->
+現在我們有了 ProviderContainer，我們可以使用它來讀取提供者程式，使用：
+
+<!---
+- `container.read`, to read the current value of a provider.
+- `container.listen`, to listen to a provider and be notified of changes.
+-->
+- `container.read`，以讀取提供者程式的當前值。
+- `container.listen`，以監聽提供者程式並接收更改的通知。
+
+:::caution
+<!---
+Be careful when using `container.read` when providers are automatically disposed.  
+If your provider is not listened to, chances are that its state will get destroyed
+in the middle of your test.
+-->
+在自動處置提供者程式時使用 `container.read` 時要小心。  
+如果您的提供者程式沒有被監聽，其狀態可能會在測試過程中被破壞。
+
+<!---
+In that case, consider using `container.listen`.  
+Its return value enables reading the current value of provider anyway,
+but will also ensure that the provider is not disposed in the middle of your test:
+-->
+在這種情況下，請考慮使用 `container.listen`。  
+無論如何，它的返回值都能讀取提供者程式的當前值，
+同時還能確保提供者程式不會在測試過程中被棄置：
+
+<AutoSnippet raw={autoDisposeListen} />
+:::
+
+<!---
+### Widget tests
+-->
+### 小部件測試
+
+<!---
+Widget tests are defined using the `testWidgets` function from [package:flutter_test](https://pub.dev/packages/flutter_test).
+-->
+小部件測試是使用 [package:flutter_test](https://pub.dev/packages/flutter_test) 中的 `testWidgets` 函式定義的。
+
+<!---
+In this case, the main difference with usual Widget tests is that we must add
+a `ProviderScope` widget at the root of `tester.pumpWidget`:
+-->
+在這種情況下，與通常的 Widget 測試的主要區別在於，
+我們必須新增一個 `ProviderScope` 在 `tester.pumpWidget` 的根元件上：
+
+<AutoSnippet raw={widgetTest} />
+
+<!---
+This is similar to what we do when we enable Riverpod in our Flutter app.
+-->
+這類似於我們在 Flutter 應用程式中啟用 Riverpod 時所做的。
+
+<!---
+Then, we can use `tester` to interact with our widget.
+Alternatively if you want to interact with providers, you can obtain
+a `ProviderContainer`.
+One can be obtained using `ProviderScope.containerOf(buildContext)`.  
+By using `tester`, we can therefore write the following:
+-->
+然後，我們可以用 `tester` 來與我們的小部件進行互動。
+或者，如果要與提供者程式互動，可以獲取 `ProviderContainer`。
+也可以使用 `ProviderScope.containerOf(buildContext)` 獲得一個。  
+因此，透過使用 `tester` ，我們可以編寫以下內容：
+
+<AutoSnippet raw={widgetContainerOf} />
+
+<!---
+We can then use it to read providers. Here's a full example:
+-->
+然後，我們可以使用它來讀取提供者程式。下面是一個完整的示例：
+
+<AutoSnippet raw={fullWidgetTest} />
+
+<!---
+## Mocking providers
+-->
+## 模擬提供者程式
+
+<!---
+So far, we've seen how to set up a test and basic interactions with providers.
+However, in some cases, we may want to mock a provider.
+-->
+到目前為止，我們已經瞭解瞭如何設定測試以及與提供者程式的基本互動。
+但是，在某些情況下，我們可能想要模擬一個提供者程式。
+
+<!---
+The cool part: All providers can be mocked by default, without any additional setup.  
+This is possible by specifying the `overrides` parameter on either
+`ProviderScope` or `ProviderContainer`.
+-->
+很酷的部分：預設情況下可以模擬所有提供者程式，無需任何額外設定。  
+這可以透過在 `ProviderScope` 或 `ProviderContainer` 上指定 `overrides` 引數來實現。
+
+<!---
+Consider the following provider:
+-->
+請考慮以下提供者程式：
+
+<AutoSnippet {...providerToMock} />
+
+<!---
+We can mock it using:
+-->
+我們可以模擬它透過以下方式：
+
+<AutoSnippet raw={mockProvider} />
+
+<!---
+## Spying on changes in a provider
+-->
+## 監視提供者程式中的更改
+
+<!---
+Since we obtained a `ProviderContainer` in our tests, it is possible to
+use it to "listen" to a provider:
+-->
+由於我們在測試中獲得了一個 `ProviderContainer`，因此可以使用它來“監聽”提供者程式：
+
+<AutoSnippet raw={listenProvider} />
+
+<!---
+You can then combine this with packages such as [mockito](https://pub.dev/packages/mockito)
+or [mocktail](https://pub.dev/packages/mocktail) to use their `verify` API.  
+Or more simply, you can add all changes in a list and assert on it.
+-->
+然後，您可以將其與 [mockito](https://pub.dev/packages/mockito)
+或 [mocktail](https://pub.dev/packages/mocktail) 等包結合使用，以使用它們的 `verify` API。  
+或者更簡單地說，您可以在列表中新增所有更改並對其進行斷言。
+
+<!---
+## Awaiting asynchronous providers
+-->
+## 等待非同步提供者程式
+
+<!---
+In Riverpod, it is very common for providers to return a Future/Stream.  
+In that case, chances are that our tests need to await for that asynchronous operation
+to be completed.
+-->
+在 Riverpod 中，提供者程式返回 Future/Stream 是很常見的。  
+在這種情況下，我們的測試可能需要等待非同步操作完成。
+
+<!---
+One way to do so is to read the `.future` of a provider:
+-->
+一種方法是讀取提供者程式的 `.future`： 
+
+<AutoSnippet raw={awaitFuture} />
+
+<!---
+## Mocking Notifiers
+-->
+## 模擬通知者程式
+
+<!---
+It is generally discouraged to mock Notifiers.  
+Instead, you should likely introduce a level of abstraction in the logic of your
+Notifier, such that you can mock that abstraction.
+For instance, rather than mocking a Notifier, you could mock a "repository"
+that the Notifier uses to fetch data from.
+-->
+通常不鼓勵嘲笑通知者程式。  
+相反，您可能應該在通告程式的邏輯中引入一個抽象級別，以便您可以模擬該抽象。
+例如，與其模擬通告程式，不如模擬通告程式用來從中獲取資料的“儲存庫”。
+
+<!---
+If you insist on mocking a Notifier, there is a special consideration
+to create such a mock: Your mock must subclass the original Notifier
+base class: You cannot "implement" Notifier, as this would break the interface.
+-->
+如果您堅持要模擬通告程式，那麼建立這樣的通告程式需要特別注意：
+您的模擬必須對原始通告程式基類進行子類化：
+您不能“實現”通告程式，因為這會破壞介面。
+
+<!---
+As such, when mocking a Notifier, instead of writing the following mockito code:
+-->
+因此，在模擬通告程式時，不要編寫以下模擬程式碼：
+
+```dart
+class MyNotifierMock with Mock implements MyNotifier {}
+```
+
+<!---
+You should instead write:
+-->
+你應該改寫：
+
+<AutoSnippet {...notifierMock} />
+
+<When codegen={true}>
+
+<!---
+For this to work, your mock will have to be placed in the same file as the
+Notifier you are mocking. Otherwise you would not have access to the `_$MyNotifier` class.
+-->
+為此，您的模擬必須與您模擬的通知者程式放在同一個檔案中。
+否則，您將無法訪問該 `_$MyNotifier` 類。
+
+</When>

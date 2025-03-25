@@ -1,0 +1,488 @@
+---
+title: 關於程式碼生成
+version: 1
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import fetchUser from "!!raw-loader!/docs/concepts/about_codegen/main.dart";
+import rawFetchUser from "!!raw-loader!/docs/concepts/about_codegen/raw.dart";
+import { Link } from "@site/src/components/Link";
+import { trimSnippet, CodeSnippet } from "@site/src/components/CodeSnippet";
+import syncFn from "!!raw-loader!/docs/concepts/about_codegen/provider_type/sync_fn.dart";
+import syncClass from "!!raw-loader!/docs/concepts/about_codegen/provider_type/sync_class.dart";
+import asyncFnFuture from "!!raw-loader!/docs/concepts/about_codegen/provider_type/async_fn_future.dart";
+import asyncClassFuture from "!!raw-loader!/docs/concepts/about_codegen/provider_type/async_class_future.dart";
+import asyncFnStream from "!!raw-loader!/docs/concepts/about_codegen/provider_type/async_fn_stream.dart";
+import asyncClassStream from "!!raw-loader!/docs/concepts/about_codegen/provider_type/async_class_stream.dart";
+import familyFn from "!!raw-loader!/docs/concepts/about_codegen/provider_type/family_fn.dart";
+import familyClass from "!!raw-loader!/docs/concepts/about_codegen/provider_type/family_class.dart";
+import provider from "!!raw-loader!/docs/concepts/about_codegen/provider_type/non_code_gen/provider.dart";
+import notifierProvider from "!!raw-loader!/docs/concepts/about_codegen/provider_type/non_code_gen/notifier_provider.dart";
+import futureProvider from "!!raw-loader!/docs/concepts/about_codegen/provider_type/non_code_gen/future_provider.dart";
+import asyncNotifierProvider from "!!raw-loader!/docs/concepts/about_codegen/provider_type/non_code_gen/async_notifier_provider.dart";
+import streamProvider from "!!raw-loader!/docs/concepts/about_codegen/provider_type/non_code_gen/stream_provider.dart";
+import streamNotifierProvider from "!!raw-loader!/docs/concepts/about_codegen/provider_type/non_code_gen/stream_notifier_provider.dart";
+import autoDisposeCodeGen from "!!raw-loader!/docs/concepts/about_codegen/provider_type/auto_dispose.dart";
+import autoDisposeNonCodeGen from "!!raw-loader!/docs/concepts/about_codegen/provider_type/non_code_gen/auto_dispose.dart";
+import familyCodeGen from "!!raw-loader!/docs/concepts/about_codegen/provider_type/family.dart";
+import familyNonCodeGen from "!!raw-loader!/docs/concepts/about_codegen/provider_type/non_code_gen/family.dart";
+const TRANSPARENT_STYLE = { backgroundColor: "transparent" };
+const RED_STYLE = { color: "indianred", fontWeight: "700" };
+const BLUE_STYLE = { color: "rgb(103, 134, 196)", fontWeight: "700" };
+const FONT_16_STYLE = {
+  fontSize: "16px",
+  fontWeight: "700",
+};
+const BLUE_20_STYLE = {
+  color: "rgb(103, 134, 196)",
+  fontSize: "20px",
+  fontWeight: "700",
+};
+const PROVIDER_STYLE = {
+  textAlign: "center",
+  fontWeight: "600",
+  maxWidth: "210px",
+};
+const BEFORE_STYLE = {
+  minWidth: "60px",
+  textAlign: "center",
+  fontWeight: "600",
+  color: "crimson",
+};
+const AFTER_STYLE = {
+  minWidth: "60px",
+  textAlign: "center",
+  fontWeight: "600",
+  color: "rgb(40,180,40)",
+};
+
+<!---
+Code generation is the idea of using a tool to generate code for us.
+In Dart, it comes with the downside of requiring an extra step to "compile"
+an application. Although this problem may be solved in the near future, as the
+Dart team is working on a potential solution to this problem.
+-->
+程式碼生成是使用工具為我們生成程式碼的想法。
+在 Dart 中，它的缺點是需要額外的步驟來“編譯”應用程式。
+儘管這個問題可能在不久的將來得到解決，
+但 Dart 團隊正在研究這個問題的潛在解決方案。
+
+<!---
+In the context of Riverpod, code generation is about slightly changing the syntax
+for defining a "provider". For example, instead of:
+-->
+在 Riverpod 的上下文中，程式碼生成是稍微改變定義 "provider" 的語法。例如，代替：
+
+<CodeBlock language="dart">{trimSnippet(rawFetchUser)}</CodeBlock>
+
+<!---
+Using code generation, we would write:
+-->
+使用程式碼生成，我們可以編寫：
+
+<CodeBlock language="dart">{trimSnippet(fetchUser)}</CodeBlock>
+
+<!---
+When using Riverpod, code generation is completely optional. It is entirely possible
+to use Riverpod without.
+At the same time, Riverpod embraces code generation and recommends using it.
+-->
+使用 Riverpod 時，程式碼生成是完全可選的。
+沒有的話完全可以使用 Riverpod。
+同時，Riverpod 支援程式碼生成並推薦使用它。
+
+<!---
+For information on how to install and use Riverpod's code generator, refer to
+the <Link documentID="introduction/getting_started"/> page. Make sure to enable code generation
+in the documentation's sidebar.
+-->
+有關如何安裝和使用 Riverpod 程式碼生成器的資訊，
+請參閱<Link documentID="introduction/getting_started"/>頁面。
+確保在文件的側欄中啟用程式碼生成。
+
+<!---
+## Should I use code generation?
+-->
+## 我應該使用程式碼生成嗎？​
+
+<!---
+Code generation is optional in Riverpod.
+With that in mind, you may wonder if you should use it or not.
+-->
+Riverpod 中的程式碼生成是可選的。
+考慮到這一點，您可能會想是否應該使用它。
+
+<!---
+The answer is: **Most likely Yes**.  
+Using code generation is the recommended way to use Riverpod. It
+is the more future-proof approach and will allow you to use Riverpod to its full
+potential.  
+At the same time, many applications already use code generation with packages such
+as [Freezed](https://pub.dev/packages/freezed) or [json_serializable](https://pub.dev/packages/json_serializable).
+In that case, your project probably is already set up for code generation, and
+using Riverpod should be simple.
+-->
+答案是：**很可能是的**。  
+使用程式碼生成是使用 Riverpod 的推薦方式。
+這是一種更面向未來的方法，可以讓您充分發揮 Riverpod 的潛力。  
+與此同時，許多應用程式已經使用
+[Freezed](https://pub.dev/packages/freezed) 或 [json_serializable](https://pub.dev/packages/json_serializable)
+等包來生成程式碼。在這種情況下，您的專案可能已經設定為程式碼生成，
+並且使用 Riverpod 應該很簡單。
+
+<!---
+Currently, code generation is optional because `build_runner` is disliked by many.
+But once [Static Metaprogramming](https://github.com/dart-lang/language/issues/1482)
+is available in Dart, `build_runner` will no longer be an issue. At that point,
+the code generation syntax will be the only syntax available in Riverpod.
+-->
+目前，程式碼生成是可選的，因為許多人不喜歡 `build_runner`。
+但是，一旦 Dart 中提供了[靜態超程式設計](https://github.com/dart-lang/language/issues/1482)，
+`build_runner` 將不再是問題。
+屆時，程式碼生成語法將是 Riverpod 中唯一可用的語法。
+
+<!---
+If using `build_runner` is a deal-breaker for you, then and only then you should
+consider not using code generation.
+But keep in mind that you will be missing out on some features, and that
+you will have to migrate to code generation in the future.  
+Although when that happens, Riverpod will provide a migration tool to make
+the transition as smoothly as possible.
+-->
+如果使用 `build_runner` 對您來說是一個破壞性的事情，
+那麼只有那時您才應該考慮不使用程式碼生成。
+但請記住，您將錯過一些功能，並且將來您將不得不遷移到程式碼生成。  
+儘管如此，當這種情況發生時，
+Riverpod 將提供一個遷移工具，以使過渡儘可能順利。
+
+<!---
+## What are the benefits of using code generation?
+-->
+## 使用程式碼生成有什麼好處？​
+
+<!---
+You may be wondering: "If code generation is optional in Riverpod, why use it?"
+-->
+您可能想知道：“如果 Riverpod 中程式碼生成是可選的，為什麼要使用它？”
+
+<!---
+As always with packages: To make your life easier.
+This includes but is not limited to:
+-->
+這和其他包的目的一樣：讓您的生活更輕鬆。這包括但不限於：
+
+<!---
+- better syntax, more readable/flexible, and with a reduced learning curve.
+  - No need to worry about the type of provider. Write your logic,
+    and Riverpod will pick the most suitable provider for you.
+  - The syntax no longer looks like we're defining a "dirty global variable".
+    Instead we are defining a custom function/class.
+  - Passing parameters to providers is now unrestricted. Instead of being limited to
+    using <Link documentID="concepts/modifiers/family"/> and passing a single positional parameter,
+    you can now pass any parameter. This includes named parameters, optional ones,
+    and even default values.
+- **stateful hot-reload** of the code written in Riverpod.
+- better debugging, through the generation of extra metadata that the debugger then picks up.
+- some Riverpod features will be available only with code generation.
+-->
+- 更好的語法，更具可讀性/靈活性，並且學習曲線更短。
+  - 無需擔心提供者程式的型別。寫下您的邏輯，Riverpod 將為您選擇最合適的提供者程式。
+  - 語法看起來不再像我們定義了“骯髒的全域性變數”。相反，我們定義了一個自定義函式/類。
+  - 向提供者程式傳遞引數現在不受限制。
+    您現在可以傳遞任何引數，而不是僅限於使用 `.family` 並傳遞單個位置引數。
+    這包括命名引數、可選引數，甚至預設值。
+- 用 Riverpod 編寫的程式碼的**有狀態熱過載**。
+- 透過生成偵錯程式隨後拾取的額外元資料來更好地進行除錯。
+- 某些 Riverpod 功能僅在程式碼生成時可用。
+
+<!---
+## The Syntax
+-->
+## 語法​
+
+<!---
+### Defining a provider:
+-->
+### 定義提供者程式：​
+
+<!---
+When defining a provider using code generation, it is helpful to keep in mind the following points:
+-->
+使用程式碼生成定義提供者程式時，記住以下幾點會很有幫助：
+
+<!---
+- Providers can be defined either as an annotated <span style={BLUE_STYLE}>function</span> or
+  as an annotated <span style={BLUE_STYLE}>class</span>. They are pretty much the same,
+  but Class-based provider has the advantage of including public methods that enable
+  external objects to modify the state of the provider (side-effects). Functional providers
+  are syntax sugar for writing a Class-based provider with nothing but a `build` method,
+  and as such cannot be modified by the UI.
+- All Dart <span style={RED_STYLE}>async</span> primitives (Future, FutureOr, and Stream) are supported.
+- When a function is marked as <span style={RED_STYLE}>async</span>, the provider automatically handles
+  errors/loading states and exposes an AsyncValue.
+-->
+- 提供者程式可以定義為帶註釋的<span style={BLUE_STYLE}>函式</span>或
+  帶註釋的<span style={BLUE_STYLE}>類</span>。它們幾乎相同，
+  但基於類的提供者程式的優點是包含公共方法，使
+  外部物件能夠修改提供者程式的狀態（副作用）。
+  函式提供者程式是用於編寫基於類的提供者程式的語法糖，只有 `build` 方法，
+  因此不能由 UI 修改。
+- 支援所有 Dart <span style={RED_STYLE}>非同步</span>原語（Future、FutureOr 和 Stream）。
+- 當函式被標記為<span style={RED_STYLE}>async</span>時，
+  提供者程式會自動處理錯誤/載入狀態並公開 AsyncValue。
+
+<table>
+  <colgroup></colgroup>
+  <tr>
+    <th></th>
+    <th style={{ textAlign: "center" }}>
+      <span style={BLUE_20_STYLE}>函式式的</span>
+      <br />
+      （不能使用公共方法執行副作用）
+    </th>
+    <th style={{ textAlign: "center" }}>
+      <span style={BLUE_20_STYLE}>基於類的</span>
+      <br />
+      （可以使用公共方法執行副作用）
+    </th>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td>
+      <span style={FONT_16_STYLE}>
+        <span style={RED_STYLE}>同步的</span>
+      </span>
+    </td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(syncFn)}</CodeBlock>
+    </td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(syncClass)}</CodeBlock>
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td>
+      <span style={FONT_16_STYLE}>
+        <span style={RED_STYLE}>非同步的 - Future</span>
+      </span>
+    </td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(asyncFnFuture)}</CodeBlock>
+    </td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(asyncClassFuture)}</CodeBlock>
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td>
+      <span style={FONT_16_STYLE}>
+        <span style={RED_STYLE}>非同步的 - Stream</span>
+      </span>
+    </td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(asyncFnStream)}</CodeBlock>
+    </td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(asyncClassStream)}</CodeBlock>
+    </td>
+  </tr>
+</table>
+
+<!---
+### Enabling/disable autoDispose:
+-->
+### 啟用/停用自動處置 autoDispose：​
+
+<!---
+When using code generation, providers are autoDispose by default. That means that they will automatically
+dispose of themselves when there are no listeners attached to them (ref.watch/ref.listen).  
+This default setting better aligns with Riverpod's philosophy. Initially with the non-code generation variant,
+autoDispose was off by default to accommodate users migrating from `package:provider`.
+-->
+使用程式碼生成時，提供者程式預設為 autoDispose。
+這意味著當沒有監聽器附加到它們（ref.watch/ref.listen）時，它們會自動處理掉自己。  
+此預設設定更符合 Riverpod 的理念。
+最初沒有使用程式碼生成變體時，預設情況下 autoDispose 處於關閉狀態，
+以適應從 `package:provider` 遷移的使用者。
+
+<!---
+If you want to disable autoDispose, you can do so by passing `keepAlive: true` to the annotation.
+-->
+如果您想停用 autoDispose，可以透過將 `keepAlive: true` 傳遞給註釋來實現。
+
+<CodeBlock language="dart">{trimSnippet(autoDisposeCodeGen)}</CodeBlock>
+
+<!---
+### Passing parameters to a provider (family):
+-->
+### 將引數傳遞給提供者程式（family）：​
+
+<!---
+When using code generation, we no-longer need to rely on the `family` modifier to pass parameters to a provider.
+Instead, the main function of our provider can accept any number of parameters, including named, optional, or default values.  
+Do note however that these parameters should have still have a consistent ==.
+Meaning either the values should be cached, or the parameters should override ==.
+-->
+使用程式碼生成時，我們不再需要依賴 `family` 修飾符將引數傳遞給提供者程式。
+相反，我們的提供者程式的主函式可以接受任意數量的引數，包括命名、可選或預設值。  
+但請注意，這些引數應該仍然具有 == 的一致性。
+這意味著要麼應該快取值，要麼應該覆蓋 == 引數。
+
+<table>
+  <colgroup>
+    <col style={{ minWidth: "400px" }} />
+    <col style={{ minWidth: "400px" }} />
+  </colgroup>
+  <tr>
+    <th style={{ textAlign: "center" }}>
+      <span style={BLUE_20_STYLE}>函式式的</span>
+    </th>
+    <th style={{ textAlign: "center" }}>
+      <span style={BLUE_20_STYLE}>基於類的</span>
+    </th>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(familyFn)}</CodeBlock>
+    </td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(familyClass)}</CodeBlock>
+    </td>
+  </tr>
+</table>
+
+<!---
+## Migrate from non-code-generation variant:
+-->
+## 從非程式碼生成變體遷移：​
+
+<!---
+When using non-code-generation variant, it is necessary to manually determine the type of your provider.
+The following are the corresponding options for transitioning into code-generation variant:
+-->
+使用非程式碼生成變體時，需要手動確定提供者程式的型別。
+以下是轉換為程式碼生成變體的相應選項：
+
+<table>
+  <colgroup></colgroup>
+  <tr>
+    <td style={PROVIDER_STYLE} colspan="2">
+      Provider
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td style={BEFORE_STYLE}>之前</td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(provider)}</CodeBlock>
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td style={AFTER_STYLE}>之後</td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(syncFn)}</CodeBlock>
+    </td>
+  </tr>
+  <colgroup></colgroup>
+  <tr>
+    <td style={PROVIDER_STYLE} colspan="2">
+      NotifierProvider
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td style={BEFORE_STYLE}>之前</td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(notifierProvider)}</CodeBlock>
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td style={AFTER_STYLE}>之後</td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(syncClass)}</CodeBlock>
+    </td>
+  </tr>
+  <colgroup></colgroup>
+  <tr>
+    <td style={PROVIDER_STYLE} colspan="2">
+      FutureProvider
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td style={BEFORE_STYLE}>之前</td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(futureProvider)}</CodeBlock>
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td style={AFTER_STYLE}>之後</td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(asyncFnFuture)}</CodeBlock>
+    </td>
+  </tr>
+  <colgroup></colgroup>
+  <tr>
+    <td style={PROVIDER_STYLE} colspan="2">
+      StreamProvider
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td style={BEFORE_STYLE}>之前</td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(streamProvider)}</CodeBlock>
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td style={AFTER_STYLE}>之後</td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(asyncFnStream)}</CodeBlock>
+    </td>
+  </tr>
+  <colgroup></colgroup>
+  <tr>
+    <td style={PROVIDER_STYLE} colspan="2">
+      AsyncNotifierProvider
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td style={BEFORE_STYLE}>之前</td>
+    <td>
+      <CodeBlock language="dart">
+        {trimSnippet(asyncNotifierProvider)}
+      </CodeBlock>
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td style={AFTER_STYLE}>之後</td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(asyncClassFuture)}</CodeBlock>
+    </td>
+  </tr>
+  <colgroup></colgroup>
+  <tr>
+    <td style={PROVIDER_STYLE} colspan="2">
+      StreamNotifierProvider
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td style={BEFORE_STYLE}>之前</td>
+    <td>
+      <CodeBlock language="dart">
+        {trimSnippet(streamNotifierProvider)}
+      </CodeBlock>
+    </td>
+  </tr>
+  <tr style={TRANSPARENT_STYLE}>
+    <td style={AFTER_STYLE}>之後</td>
+    <td>
+      <CodeBlock language="dart">{trimSnippet(asyncClassStream)}</CodeBlock>
+    </td>
+  </tr>
+</table>
+
+[hookwidget]: https://pub.dev/documentation/flutter_hooks/latest/flutter_hooks/HookWidget-class.html
+[statefulwidget]: https://api.flutter.dev/flutter/widgets/StatefulWidget-class.html
+[riverpod]: https://github.com/rrousselgit/riverpod
+[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
+[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
+[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
+[build]: https://pub.dev/documentation/riverpod/latest/riverpod/Notifier/build.html

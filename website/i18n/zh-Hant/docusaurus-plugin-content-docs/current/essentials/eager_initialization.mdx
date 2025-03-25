@@ -1,0 +1,117 @@
+---
+title: 急切的初始化提供者程式
+version: 1
+---
+
+import { Link } from "@site/src/components/Link";
+import { AutoSnippet } from "@site/src/components/CodeSnippet";
+import consumerExample from "!!raw-loader!/docs/essentials/eager_initialization/consumer_example.dart";
+import asyncConsumerExample from "!!raw-loader!/docs/essentials/eager_initialization/async_consumer_example.dart";
+import requireValue from "/docs/essentials/eager_initialization/require_value";
+
+<!---
+All providers are initialized lazily by default. This means that the provider is only
+initialized when it is first used. This is useful for providers that are only
+used in certain parts of the application.
+-->
+預設情況下，所有提供者程式都以延遲方式初始化。
+這意味著提供者程式僅在首次使用時進行初始化。
+這對於僅在應用程式的某些部分使用的提供者程式很有用。
+
+<!---
+Unfortunately, there is no way to flag a provider as needing to be eagerly initialized due
+to how Dart works (for tree shaking purposes). One solution, however, is to forcibly
+read the providers you want to eagerly initialize at the root of your application.
+-->
+不幸的是，由於 Dart 的工作方式（出於搖樹目的），沒有辦法將提供者程式標記為需要急切初始化。
+但是，一種解決方案是在應用程式的根元件下強制讀取要急切初始化的提供者程式。
+
+<!---
+The recommended approach is to simply "watch" a provider in a Consumer placed right under your `ProviderScope`:
+-->
+推薦的方法是簡單地 "watch" 位於 `ProviderScope` 下方的 Consumer 中的提供者程式：
+
+<AutoSnippet raw={consumerExample} />
+
+:::note
+<!---
+Consider putting the initialization consumer in your "MyApp" or in a public widget.
+This enables your tests to use the same behavior, by removing logic from your main.
+-->
+請考慮將初始化使用者放在 "MyApp" 或公共小部件中。
+這使你的測試能夠使用相同的行為，方法是從你的主資料中刪除邏輯。
+:::
+
+<!---
+### FAQ
+-->
+### 常見疑問
+
+<!---
+#### Won't this rebuild our entire application when the provider changes?
+-->
+#### 當提供者程式更改時，這不會重建我們的整個應用程式嗎？
+
+<!---
+No, this is not the case.
+In the sample given above, the consumer responsible for eagerly initializing
+is a separate widget, which does nothing but return a `child`.
+-->
+不，事實並非如此。
+在上面給出的示例中，負責急切初始化的消費者程式是一個單獨的小部件，它只返回一個 `child` .
+
+<!---
+The key part is that it returns a `child`, rather than instantiating `MaterialApp` itself.
+This means that if `_EagerInitialization` ever rebuilds, the `child` variable
+will not have changed. And when a widget doesn't change, Flutter doesn't rebuild it.
+-->
+關鍵部分是它返回一個 `child` ，而不是例項化 `MaterialApp` 自身。
+這意味著，如果重新生成 `_EagerInitialization`，`child` 變數將不會更改。
+當一個小部件沒有改變時，Flutter 不會重建它。
+
+<!---
+As such, only `_EagerInitialization` will rebuild, unless another widget is also listening to that provider.
+-->
+因此，除非另一個小部件也在監聽該提供者程式，否則只會 `_EagerInitialization` 重新構建。
+
+<!---
+#### Using this approach, how can I handle loading and error states?
+-->
+#### 使用此方法，如何處理載入和錯誤狀態？
+
+<!---
+You can handle loading/error states as you normally would in a `Consumer`.
+Your `_EagerInitialization` could check if a provider is in a "loading" state,
+and if so, return a `CircularProgressIndicator` instead of the `child`:
+-->
+您可以像往常一樣在 `Consumer` 中處理載入/錯誤狀態。
+您可以 `_EagerInitialization` 檢查提供者程式是否處於 "loading" 狀態，
+如果是則返回 `CircularProgressIndicator` 否則返回 `child`：
+
+<AutoSnippet raw={asyncConsumerExample} />
+
+<!---
+#### I've handled loading/error states, but other Consumers still receive an AsyncValue! Is there a way to not have to handle loading/error states in every widget?
+-->
+#### 我已經處理了載入/錯誤狀態，但其他消費者程式仍然收到 AsyncValue！有沒有辦法不必處理每個小部件中的載入/錯誤狀態？
+
+<!---
+Rather than trying to have your provider _not_ expose an `AsyncValue`, you can
+instead have your widgets use `AsyncValue.requireValue`.  
+This will read the data without having to do pattern matching. And in case a bug slips through,
+it will throw an exception with a clear message.
+-->
+與其試圖讓你的提供者程式不公開一個 `AsyncValue` ，不如讓你的小部件使用 `AsyncValue.requireValue`。  
+這將讀取資料，而無需進行模式匹配。如果一個錯誤溜走了，它會丟擲一個異常，並帶有明確的資訊。
+
+<AutoSnippet {...requireValue} />
+
+:::note
+<!---
+Although there are ways to not expose the loading/error states in those cases (relying on scoping),
+it is generally discouraged to do so.  
+The added complexity of making two providers and using overrides is not worth the trouble.
+-->
+儘管有一些方法可以在這些情況下不公開載入/錯誤狀態（依賴於範圍），但通常不建議這樣做。  
+建立兩個提供者程式並使用覆蓋所增加的複雜性不值得麻煩。
+:::

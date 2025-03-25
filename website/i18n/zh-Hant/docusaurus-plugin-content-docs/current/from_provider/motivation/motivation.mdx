@@ -1,0 +1,434 @@
+---
+title: 動機
+---
+
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
+import CodeBlock from "@theme/CodeBlock";
+import sameType from "/docs/from_provider/motivation/same_type";
+import combine from "/docs/from_provider/motivation/combine";
+import asyncValues from "/docs/from_provider/motivation/async_values";
+import autoDispose from "/docs/from_provider/motivation/auto_dispose";
+import override from "/docs/from_provider/motivation/override";
+import sideEffects from "/docs/from_provider/motivation/side_effects";
+import {
+  trimSnippet,
+  AutoSnippet,
+  When,
+} from "@site/src/components/CodeSnippet";
+
+<!---
+This in-depth article is meant to show why Riverpod is even a thing.
+-->
+這篇深入的文章旨在說明為什麼需要 Riverpod 的動機。
+
+<!---
+In particular, this section should answer the following:
+  - Since Provider is widely popular, why would one migrate to Riverpod?
+  - What concrete advantages do I get?
+  - How can I migrate towards Riverpod?
+  - Can I migrate incrementally?
+  - etc.
+-->
+特別是，本節應回答以下問題：
+  - 既然 Provider 廣受歡迎，為什麼要遷移到 Riverpod？
+  - 我能獲得哪些具體優勢？
+  - 如何遷移到 Riverpod？
+  - 我可以增量遷移嗎？
+  - 等等……
+
+<!---
+By the end of this section you should be convinced that Riverpod is to be prefered over Provider. 
+-->
+在本節結束時，您應該確信 Riverpod 優先於 Provider。
+
+<!---
+**Riverpod is indeed a more modern, recommended and reliable approach when compared to Provider**.
+-->
+**與 Provider 相比，Riverpod 確實是一種更現代、更推薦和更可靠的方法。**
+
+<!---
+Riverpod offers better State Management capabilities, better Caching strategies and a simplified Reactivty model.  
+Whereas, Provider is currently lacking in many areas with no way forward.
+-->
+Riverpod 提供更好的狀態管理功能、更好的快取策略和簡化的響應式模型。  
+然而，Provider 目前在許多領域都缺乏，沒有前進的道路。
+
+<!---
+## Provider's Limitations
+-->
+## Provider 的侷限性
+
+<!---
+Provider has fundamental issues due to being restricted by the InheritedWidget API.  
+Inherently, Provider is a "simpler `InheritedWidget`"; 
+Provider is merely an InheritedWidget wrapper, and thus it's limited by it.
+-->
+Provider 存在根本問題是由於受到 InheritedWidget API 的限制。  
+從本質上講，Provider 是一個“更簡單的 `InheritedWidget`”;
+Provider 只是一個 InheritedWidget 包裝器，因此它受到它的限制。
+
+<!---
+Here's a list of known Provider issues.
+-->
+下面是已知的提供者程式問題列表。
+
+<!---
+### Provider can't keep two (or more) providers of the same "type"
+-->
+### 提供者程式不能保留兩個（或多個）相同“型別”的提供者程式
+
+<!---
+Declaring two `Provider<Item>` will result into unreliable behavior: `InheritedWidget`'s API will 
+obtain only *one of the two*: the closest `Provider<Item>` ancestor.  
+While a [workaround] is explained in Provider's 
+documentation, Riverpod simply doesn't have this problem.
+-->
+宣告兩個 `Provider<Item>` 將導致不可靠的行為：
+`InheritedWidget` 的 API 只能獲取*兩者中的一個*：即最接近 `Provider<Item>` 的祖先。  
+雖然 Provider 的文件中解釋了[解決方法]，但 Riverpod 根本沒有這個問題。
+
+<!---
+By removing this limitation, we can freely split logic into tiny pieces, like so:
+-->
+透過消除這個限制，我們可以自由地將邏輯拆分為小塊，如下所示：
+
+<AutoSnippet language="dart" {...sameType}></AutoSnippet>
+
+
+<!---
+### Providers reasonably emit only one value at a time
+-->
+### 提供者程式一次合理地只發出一個值
+
+<!---
+When reading an external RESTful API, it's quite common to show 
+the last read value, while a new call loads the next one.  
+Riverpod allows this behavior via emitting two values at a time (i.e. a previous data value, 
+and an incoming new loading value), via its `AsyncValue`'s APIs:
+-->
+讀取外部 RESTful API 時，通常會顯示上次讀取值，而新呼叫會載入下一個讀取值。  
+Riverpod 透過其 `AsyncValue` 的 API 一次發出兩個值（即一個前一個數據值和一個傳入的新載入值）來允許這種行為：
+
+<AutoSnippet language="dart" {...asyncValues}></AutoSnippet>
+
+<!---
+In the previous snippet, watching `evenItemsProvider` will produce the following effects:
+1. Initially, the request is being made. We obtain an empty list;
+2. Then, say an error occurs. We obtain `[Item(id: -1)]`;
+3. Then, we retry the request with a pull-to-refresh logic (e.g. via `ref.invalidate`);
+4. While we reload the first provider, the second one still exposes `[Item(id: -1)]`;
+5. This time, some parsed data is received correctly: our even items are correctly returned.
+-->
+在前面的程式碼片段中，觀察 `evenItemsProvider` 將產生以下效果：
+1. 最初，正在發出請求。我們得到一個空列表；
+1. 然後，假設發生錯誤。我們獲得 `[Item(id: -1)]`；
+1. 然後，我們使用拉取重新整理邏輯重試請求（例如，透過 `ref.invalidate`）；
+1. 當我們重新載入第一個提供者程式時，第二個提供者程式仍然公開 `[Item(id: -1)]`；
+1. 這一次，一些解析後的資料被正確接收：我們的偶數項被正確返回。
+
+<!---
+With Provider, the above features aren't remotely achievable, and even less easy to workaround.
+-->
+使用 Provider，上述功能無法遠端實現，甚至更難解決。
+
+<!---
+### Combining providers is hard and error prone
+-->
+### 合併提供者程式很困難且容易出錯
+
+<!---
+With Provider we may be tempted to use `context.watch` inside provider's `create`.  
+This would be unreliable, as `didChangeDependencies` may be triggered even if no dependency 
+has changed (e.g. such as when there's a GlobalKey involved in the widget tree).
+-->
+對於 Provider，我們可能很想在 provider 的 `create` 中使用 `context.watch`。  
+這將是不可靠的，因為即使沒有依賴項發生更改（例如，當小部件樹中涉及 GlobalKey 時），
+`didChangeDependencies` 也可能被觸發。
+
+<!---
+Nonetheless, Provider has an ad-hoc solution named `ProxyProvider`, but it's considered tedious and error-prone.
+-->
+儘管如此，Provider 有一個名為 `ProxyProvider` 的臨時解決方案，但它被認為是乏味且容易出錯的。
+
+<!---
+Combining state is a core Riverpod mechanism, as we can combine and cache values reactively with zero overhead 
+with simple yet powerful utilites such as [ref.watch] and [ref.listen]:
+-->
+合併狀態是 Riverpod 的核心機制，因為我們可以使用簡單而強大的方法（如 [ref.watch] 和 [ref.listen]）以零開銷組合和快取值：
+
+<AutoSnippet language="dart" {...combine}></AutoSnippet>
+
+<!---
+Combining values feels natural with Riverpod: dependencies are readable and the APIs remain the same.
+-->
+使用 Riverpod 組合值感覺很自然：依賴項是可讀的，並且 API 保持不變。
+
+
+<!---
+### Lack of safety
+-->
+### 缺乏安全性
+
+<!---
+With Provider, it's common to end-up with a `ProviderNotFoundException` during refactors and / or during large changes.  
+Indeed, this runtime exception *was* one of the main reasons Riverpod was created in the first place.
+-->
+使用 Provider，在重構和/或大型更改期間以 `ProviderNotFoundException` 結束是很常見的。  
+事實上，這個執行時異常*是*最初建立 Riverpod 的主要原因之一。
+
+<!---
+Although it brings much more utility than this, Riverpod simply can't throw this exception.
+-->
+儘管它帶來了比這更多的實用性，但 Riverpod 根本無法丟擲此異常。
+
+<!---
+### Disposing of state is difficult
+-->
+### 處置狀態很困難
+
+<!---
+`InheritedWidget` [can't react when a consumer stops listening to them].  
+This prevents the ability for Provider 
+to automatically destroy its providers' state when they're no-longer used.  
+With Provider, [we have to] rely on scoping providers to dispose the state when it stops being used.  
+But this isn't easy, as it gets tricky when state is shared between pages.
+-->
+`InheritedWidget` [無法對消費者程式停止監聽他們的情況做出反應]。  
+這可以防止提供者程式在不再使用時自動處置其提供者程式的狀態。  
+在使用 Provider 的情況下，[我們必須]依靠作用域提供者程式在停止使用狀態時對其進行處置。  
+但這並不容易，因為當在頁面之間共享狀態時，它會變得棘手。
+
+<!---
+Riverpod solves this with easy-to-understand APIs such as [autodispose] and [keepAlive].  
+These two APIs enable flexible and creative caching strategies (e.g. time-based caching):
+-->
+Riverpod 透過易於理解的 API（如 [autodispose] 和 [keepAlive]）解決了這個問題。  
+這兩個 API 支援靈活且創造性的快取策略（例如基於時間的快取）：
+
+<AutoSnippet language="dart" {...autoDispose}></AutoSnippet>
+
+
+<!---
+Unluckily, there's no way to implement this with a raw `InheritedWidget`, and thus with Provider.
+-->
+不幸的是，沒有辦法用原始 `InheritedWidget` 的來實現這一點，因此沒有辦法用 Provider 來實現。
+
+<!---
+### Lack of a reliable parametrization mechanism
+-->
+### 缺乏可靠的引數化機制
+
+<!---
+Riverpod allows its user to declare "parametrized" Providers with the [.family modifier].  
+Indeed, `.family` is one of Riverpod's most powerful feature and it is core to its innovations, 
+e.g. it enables enormous [simplification of logic]. 
+-->
+Riverpod 允許其使用者使用 [`.family` 修飾符]宣告“引數化”提供者程式。  
+事實上，這是 Riverpod 最強大的功能之一，也是其創新的核心，
+例如，`.family` 它能夠極大地[簡化邏輯]。
+
+<!---
+If we wanted to implement something similar using Provider, we would have to give 
+up easiness of use *and* type-safeness on such parameters. 
+-->
+如果我們想使用 Provider 實現類似的東西，
+我們將不得不放棄這些引數的易用性*和*型別安全性。
+
+<!---
+Furthermore, not being able to implement a similar `.autoDispose` mechanism with Provider 
+inherently prevents any equivalent implementation of `.family`, [as these two features go hand-in-hand].
+-->
+此外，無法使用 Provider 實現類似的 `.autoDispose` 機制
+本身就阻止了 `.family` 的任何等效實現，[因為這兩個功能是齊頭並進的]。
+
+<!---
+Finally, as shown before, [it turns out] that widgets *never* stop to listen to an `InheritedWidget`.  
+This implies significant memory leaks if some provider state is "dynamically mounted", i.e. when using parameters 
+to a build a Provider, which is exactly what `.family` does.  
+Thus, obtaining a `.family` equivalent for Provider is fundamentally impossible at the moment in time.
+-->
+最後，如前所述，[事實證明]，小部件*永遠*不會停止收聽 `InheritedWidget`。  
+這意味著如果某些提供者程式狀態是“動態掛載”的，
+即當使用引數構建提供者程式時，則會出現嚴重的記憶體洩漏，而這正是 `.family` 這樣做的。  
+因此，目前從根本上不可能獲得 Provider 的 `.family` 等價物。
+
+<!---
+### Testing is tedious
+-->
+### 測試很乏味
+
+<!---
+To be able to write a test, you *have to* re-define providers inside each test.
+-->
+為了能夠編寫測試，您*必須*在每個測試中重新定義提供者程式。
+
+<!---
+With Riverpod, providers are ready to use inside tests, by default. Furthermore, Riverpod exposes a 
+handy collection of "overriding" utilites that are crucial when mocking Providers.
+-->
+預設情況下，藉助 Riverpod，提供者程式已準備好在內部測試中使用。
+此外，Riverpod 還公開了一組方便的“覆蓋”的工具，這些實用程式在模擬提供者程式時至關重要。
+
+<!---
+Testing the combined state snippet above would be as simple as the following:
+-->
+測試上面的組合狀態程式碼段非常簡單，如下所示：
+
+<AutoSnippet language="dart" {...override}></AutoSnippet>
+
+<!---
+For more info about testing, see [Testing].
+-->
+有關測試的詳細資訊，請參閱[測試]。
+
+
+<!---
+### Triggering side effects isn't straightforward
+-->
+### 引發副作用並不簡單
+
+<!---
+Since `InheritedWidget` has no `onChange` callback, Provider can't have one.  
+This is problematic for navigation, such as for snackbars, modals, etc. 
+-->
+由於 `InheritedWidget` 沒有 `onChange` 回撥，因此 Provider 也沒有回撥。  
+這對於導航來說是有問題的，例如小吃欄、模態等。
+
+<!---
+Instead, Riverpod simply offers `ref.listen`, which [integrates well with Flutter].
+-->
+相反，Riverpod 只是提供 `ref.listen`，它[與 Flutter 很好地整合在一起]。
+
+<AutoSnippet language="dart" {...sideEffects}></AutoSnippet>
+
+<!---
+## Towards Riverpod
+-->
+## 轉向 Riverpod
+
+<!---
+Conceptually, Riverpod and Provider are fairly similar.
+Both packages fill a similar role. Both try to:
+-->
+從概念上講，Riverpod 和 Provider 非常相似。
+這兩個包都扮演著類似的角色。兩者都嘗試：
+
+<!---
+- cache and dispose some stateful objects;
+- offer a way to mock those objects during tests;
+- offer a way for Widgets to listen to those objects in a simple way.
+-->
+- 快取和處置一些有狀態物件；
+- 提供一種在測試期間模擬這些物件的方法；
+- 為 Widget 提供了一種以簡單的方式監聽這些物件的方法。
+
+<!---
+You can think of Riverpod as what Provider could've been if it continued to mature for a few years.
+-->
+你可以把 Riverpod 想象成 Provider 在幾年內繼續成熟時的樣子。
+
+<!---
+### Why a separate package?
+-->
+### 為什麼要單獨建包？
+
+<!---
+Originally, a major version of Provider was planned to ship, as a way to solve 
+the aforementioned problems.  
+But it was then decided against it, as this would have been 
+"too breaking" and even controversial, because of the new `ConsumerWidget` API.  
+Since Provider is still one of the most used Flutter packages, it was instead decided 
+to create a separate package, and thus Riverpod was created.
+-->
+最初，計劃釋出 Provider 的主要版本，以解決上述問題。  
+但隨後決定反對它，因為由於新的 `ConsumerWidget` API，這將“太麻煩”甚至有爭議。  
+由於 Provider 仍然是最常用的 Flutter 包之一，因此決定建立一個單獨的包，因此建立了 Riverpod。
+
+<!---
+Creating a separate package enabled:
+  - Ease of migration for whoever wants to, by also enabling the temporary use of both approaches, *at the same time*;
+  - Allow folks to stick to Provider if they dislike Riverpod in principle, or if they didn't find it reliable yet;
+  - Experimentation, allowing for Riverpod to search for production-ready solutions to the various Provider's technical limitations.
+-->
+啟用建立單獨的包：
+  - 透過*同時*臨時使用這兩種方法，為任何想要遷移的人提供便利；
+  - 如果人們原則上不喜歡 Riverpod，或者他們覺得它還不可靠，請允許他們堅持使用 Provider；
+  - 實驗，允許 Riverpod 搜尋生產就緒的解決方案，以應對各種提供者程式的技術限制。
+
+<!---
+Indeed, Riverpod is designed to be the spiritual successor of Provider. Hence the name "Riverpod" (which is an anagram of "Provider").
+-->
+事實上，Riverpod 旨在成為 Provider 的精神繼承者。因此得名“Riverpod”（它是“Provider”的字謎，異位詞）。
+
+<!---
+### The breaking change
+-->
+### 破壞性變化
+
+<!---
+The only true downside of Riverpod is that it requires changing the widget type to work:
+-->
+Riverpod 唯一真正的缺點是它需要更改小部件型別才能工作：
+
+<!---
+- Instead of extending `StatelessWidget`, with Riverpod you should extend `ConsumerWidget`.
+- Instead of extending `StatefulWidget`, with Riverpod you should extend `ConsumerStatefulWidget`.
+-->
+- 使用 Riverpod，您應該擴充套件 `ConsumerWidget`，而不是擴充套件 `StatelessWidget`。
+- 使用 Riverpod，您應該擴充套件 `ConsumerStatefulWidget`，而不是擴充套件 `StatefulWidget`。
+
+<!---
+But this inconvenience is fairly minor in the grand scheme of things. And this requirement might, one day, disappear.
+-->
+但這種不便在宏偉的計劃中是相當小的。有朝一日，這種要求可能會消失。
+
+<!---
+### Choosing the right library
+-->
+### 選擇正確的庫
+
+<!---
+You're probably asking yourself: 
+*"So, as a Provider user, should I use Provider or Riverpod?"*.
+-->
+您可能會問自己：*“那麼，作為 Provider 使用者，我應該使用 Provider 還是 Riverpod？”*
+
+<!---
+We want to answer to this question very clearly:
+-->
+我們想非常清楚地回答這個問題：
+
+<!---
+    You probably should be using Riverpod
+-->
+    您可能應該使用 Riverpod
+
+<!---
+Riverpod is overall better designed and could lead to drastic simplifications of your logic.
+-->
+Riverpod 總體上設計得更好，可以大大簡化您的邏輯。
+
+[ref.watch]: /docs/concepts/reading#using-refwatch-to-observe-a-provider
+[ref.listen]: /docs/concepts/reading#using-reflisten-to-react-to-a-provider-change
+[autodispose]: /docs/concepts/modifiers/auto_dispose
+[workaround]: https://pub.dev/packages/provider#can-i-obtain-two-different-providers-using-the-same-type
+[.family modifier]: /docs/concepts/modifiers/family
+[keepAlive]: /docs/concepts/modifiers/auto_dispose#refkeepalive
+[as these two features go hand-in-hand]: /docs/concepts/modifiers/family#prefer-using-autodispose-when-the-parameter-is-not-constant
+[simplification of logic]: /docs/concepts/modifiers/family#usage
+[we have to]: https://github.com/flutter/flutter/issues/128432
+[it turns out]: https://github.com/flutter/flutter/issues/106549
+[can't react when a consumer stops listening to them]: https://github.com/flutter/flutter/issues/106546
+[Testing]: /docs/cookbooks/testing
+[integrates well with Flutter]: /docs/concepts/reading#using-reflisten-to-react-to-a-provider-change
+
+[解決方法]: https://pub.dev/packages/provider#can-i-obtain-two-different-providers-using-the-same-type
+[無法對消費者程式停止監聽他們的情況做出反應]: https://github.com/flutter/flutter/issues/106546
+[我們必須]: https://github.com/flutter/flutter/issues/128432
+[簡化邏輯]: /docs/concepts/modifiers/family#usage
+[`.family` 修飾符]: /docs/concepts/modifiers/family
+[因為這兩個功能是齊頭並進的]: /docs/concepts/modifiers/family#prefer-using-autodispose-when-the-parameter-is-not-constant
+[事實證明]: https://github.com/flutter/flutter/issues/106549
+[測試]: /docs/cookbooks/testing
+[與 Flutter 很好地整合在一起]: /docs/concepts/reading#using-reflisten-to-react-to-a-provider-change
