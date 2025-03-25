@@ -1,0 +1,278 @@
+---
+title: 網路請求的去抖動或取消
+---
+
+import { Link } from "@site/src/components/Link";
+import { AutoSnippet, When } from "@site/src/components/CodeSnippet";
+import homeScreen from "!raw-loader!./cancel/home_screen.dart";
+import extension from "!raw-loader!./cancel/extension.dart";
+import detailScreen from "/docs/case_studies/cancel/detail_screen";
+import detailScreenCancel from "/docs/case_studies/cancel/detail_screen_cancel";
+import detailScreenDebounce from "/docs/case_studies/cancel/detail_screen_debounce";
+import providerWithExtension from "/docs/case_studies/cancel/provider_with_extension";
+
+<!---
+As applications grow in complexity, it's common to have multiple network requests
+in flight at the same time. For example, a user might be typing in a search box
+and triggering a new request for each keystroke. If the user types quickly, the
+application might have many requests in flight at the same time.
+-->
+隨著應用程式變得越來越複雜，同時處理多個網路請求是很常見的。
+例如，使用者可能在搜尋框中鍵入內容併為每次擊鍵觸發新的請求。
+如果使用者打字速度很快，應用程式可能會同時處理許多請求。
+
+<!---
+Alternatively, a user might trigger a request, then navigate to a different page
+before the request completes. In this case, the application might have a request
+in flight that is no longer needed.
+-->
+或者，使用者可能會觸發請求，然後在請求完成之前導航到不同的頁面。
+在這種情況下，應用程式可能有一個不再需要的正在執行的請求。
+
+<!---
+To optimize performance in those situations, there are a few techniques you can
+use:
+-->
+要在這些情況下最佳化效能，您可以使用以下幾種技術：
+
+<!---
+- "Debouncing" requests. This means that you wait until the user has stopped
+  typing for a certain amount of time before sending the request. This ensures
+  that you only send one request for a given input, even if the user types
+  quickly.
+- "Cancelling" requests. This means that you cancel a request if the user
+  navigates away from the page before the request completes. This ensures that
+  you don't waste time processing a response that the user will never see.
+-->
+- “去抖動”請求。這意味著您要等到使用者停止輸入一段時間後再發送請求。
+  這可確保即使使用者鍵入速度很快，您也只會針對給定輸入傳送一個請求。
+- “取消”請求。這意味著如果使用者在請求完成之前離開頁面，您將取消請求。
+  這可確保您不會浪費時間處理使用者永遠不會看到的響應。
+
+<!---
+In Riverpod, both of these techniques are can be implemented in a similar way.
+The key is to use `ref.onDispose` combined with "automatic disposal" or `ref.watch`
+to achieve the desired behavior.
+-->
+在 Riverpod 中，這兩種技術都可以以類似的方式實現。
+關鍵是使用 `ref.onDispose` 方法與“自動處置”或 `ref.watch`
+結合來實現所需的行為。
+
+<!---
+To showcase this, we will make a simple application with two pages:
+-->
+為了展示這一點，我們將製作一個包含兩個頁面的簡單應用程式：
+
+<!---
+- A home screen, with a button which opens a new page
+- A detail page, which displays a random activity from the [Bored API](https://www.boredapi.com/),
+  with the ability to refresh the activity.  
+  See <Link documentID="case_studies/pull_to_refresh" /> for information
+  on how to implement pull-to-refresh.
+-->
+- 主螢幕，帶有開啟新頁面的按鈕
+- 詳細資訊頁面，顯示來自 [Bored API](https://www.boredapi.com/)
+  的隨機活動，並且能夠重新整理活動。
+  有關如何實現下拉重新整理的資訊，
+  請參閱<Link documentID="case_studies/pull_to_refresh" />。
+
+<!---
+We will then implement the following behaviors:
+-->
+然後我們將實現以下行為：
+
+<!---
+- If the user opens the detail page and then navigates back immediately,
+  we will cancel the request for the activity.
+- If the user refreshes the activity multiple times in a row, we will debounce
+  the requests so that we only send one request after the user stops refreshing.
+-->
+- 如果使用者開啟詳細資訊頁面然後立即導航回來，
+  我們將取消該活動的請求。
+- 如果使用者連續多次重新整理活動，我們將對請求進行去抖動，
+  以便在使用者停止重新整理後僅傳送一個請求。
+
+<!---
+## The application
+-->
+## 應用​
+
+<!---
+<img
+  src="/img/case_studies/cancel/app.gif"
+  alt="Gif showcasing the application, opening the detail page and refreshing the activity."
+/>
+-->
+<img
+  src="/img/case_studies/cancel/app.gif"
+  alt="展示應用程式、開啟詳細頁面和重新整理活動的 Gif。"
+/>
+
+<!---
+First, let's create the application, without any debouncing or cancelling.  
+We won't use anything fancy here, and stick to a plain `FloatingActionButton` with
+a `Navigator.push` to open the detail page.
+-->
+首先，讓我們建立應用程式，不進行任何去抖動或取消操作。  
+我們不會在這裡使用任何花哨的東西，而是堅持使用普通的 `FloatingActionButton`
+和 `Navigator.push` 來開啟詳細資訊頁面。
+
+<!---
+First, let's start with defining our home screen. As usual,
+let's not forget to specify a `ProviderScope` at the root of our application.
+-->
+首先，讓我們從定義主螢幕開始。像往常一樣，
+我們不要忘記在應用程式的根元件上指定 `ProviderScope` 。
+
+<AutoSnippet title="lib/src/main.dart" raw={homeScreen} />
+
+<!---
+Then, let's define our detail page.
+To fetch the activity and implement pull-to-refresh, refer
+to the <Link documentID="case_studies/pull_to_refresh" /> case study.
+-->
+然後，讓我們定義我們的詳細資訊頁面。
+要獲取活動並實施下拉重新整理，
+請參閱<Link documentID="case_studies/pull_to_refresh" />應用案例。
+
+<AutoSnippet title="lib/src/detail_screen.dart" {...detailScreen} />
+
+<!---
+## Cancelling requests
+-->
+## 取消請求
+
+<!---
+Now that we have a working application, let's implement the cancellation logic.
+-->
+現在我們有了一個可以執行的應用程式，讓我們實現取消邏輯。
+
+<!---
+To do so, we will use `ref.onDispose` to cancel the request when the user
+navigates away from the page. For this to work, it is important that the
+automatic disposal of providers is enabled.
+-->
+為此，我們將在使用者離開頁面時使用 `ref.onDispose` 取消請求。
+為了使其運作，啟用提供者程式的自動處置非常重要。
+
+<!---
+The exact code needed to cancel the request will depend on the HTTP client.
+In this example, we will use `package:http`, but the same principle applies
+to other clients.
+-->
+取消請求所需的確切程式碼取決於 HTTP 客戶端。
+在此示例中，我們將使用 `package:http` ，
+但相同的原則也適用於其他客戶端。
+
+<!---
+The key here that `ref.onDispose` will be called when the user navigates away.
+That is because our provider is no-longer used, and therefore disposed
+thanks to automatic disposal.  
+We can therefore use this callback to cancel the request. When using `package:http`,
+this can be done by closing our HTTP client.
+-->
+這裡的關鍵點是當用戶離開時將呼叫 `ref.onDispose`。
+這是因為我們的提供者程式不再使用，因此透過自動處置進行了處置。  
+因此，我們可以使用此回撥來取消請求。
+當使用 `package:http` 時，可以透過關閉 HTTP 客戶端來完成。
+
+<AutoSnippet {...detailScreenCancel} />
+
+<!---
+## Debouncing requests
+-->
+## 請求​去抖
+
+<!---
+Now that we have implemented cancellation, let's implement debouncing.  
+At the moment, if the user refreshes the activity multiple times in a row,
+we will send a request for each refresh.
+-->
+現在我們已經實現了取消，讓我們實現去抖動。  
+目前，如果使用者連續多次重新整理活動，
+我們將為每次刷新發送一個請求。
+
+<!---
+Technically speaking, now that we have implemented cancellation, this is not
+a problem. If the user refreshes the activity multiple times in a row,
+the previous request will be cancelled, when a new request is made.
+-->
+從技術上來說，既然我們已經實行了取消，這就不成問題了。
+如果使用者連續多次重新整理活動，
+則當發出新請求時，先前的請求將被取消。
+
+<!---
+However, this is not ideal. We are still sending multiple requests, and
+wasting bandwidth and server resources.  
+What we could instead do is delay our requests until the user stops refreshing
+the activity for a fixed amount of time.
+-->
+然而，這並不理想。我們仍然傳送多個請求，
+浪費頻寬和伺服器資源。  
+相反，我們可以做的是延遲我們的請求，
+直到使用者在固定的時間內停止重新整理活動。
+
+<!---
+The logic here is very similar to the cancellation logic. We will again
+use `ref.onDispose`. However, the idea here is that instead of
+closing an HTTP client, we will rely on `onDispose` to abort the request
+before it starts.  
+We will then arbitrarily wait for 500ms before sending the request.
+Then, if the user refreshes the activity again before the 500ms have elapsed,
+`onDispose` will be invoked, aborting the request.
+-->
+這裡的邏輯和取消邏輯非常相似。
+我們將再次使用 `ref.onDispose`。然而，這裡的想法是，
+我們將依靠 `onDispose` 在請求開始之前中止請求，
+而不是關閉 HTTP 客戶端。  
+然後我們會任意等待 500ms，然後再發送請求。
+然後，如果使用者在 500 毫秒過去之前再次重新整理活動，
+將呼叫 `onDispose` 並中止請求。
+
+:::info
+<!---
+To abort requests, a common practice is to voluntarily throw.  
+It is safe to throw inside providers after the provider has been disposed.
+The exception will naturally be caught by Riverpod and be ignored.
+-->
+要中止請求，常見的做法是主動丟擲。  
+在提供者程式被處置後，將提供者程式內部丟擲異常是安全的。
+該異常自然會被 Riverpod 捕獲並被忽略。
+:::
+
+<AutoSnippet {...detailScreenDebounce} />
+
+<!---
+## Going further: Doing both at once
+-->
+## 更進一步：同時做這兩件事​
+
+<!---
+We now know how to debounce and cancel requests.  
+But currently, if we want to do another request, we need to copy-paste
+the same logic in multiple places. This is not ideal.
+-->
+我們現在知道如何取消和取消請求。  
+但目前，如果我們想做另一個請求，
+我們需要將相同的邏輯複製貼上到多個位置。這並不理想。
+
+<!---
+However, we can go further and implement a reusable utility to do both at once.
+-->
+然而，我們可以更進一步，實現一個可重用的實用程式來同時完成這兩個任務。
+
+<!---
+The idea here is to implement an extension method on `Ref` that will
+handle both cancellation and debouncing in a single method.
+-->
+這裡的想法是在 `Ref` 上實現一個擴充套件方法，
+該方法將在單個方法中處理取消和去抖。
+
+<AutoSnippet raw={extension} />
+
+<!---
+We can then use this extension method in our providers as followed:
+-->
+然後我們可以在我們的提供者程式中使用此擴充套件方法，如下所示：
+
+<AutoSnippet {...providerWithExtension} />

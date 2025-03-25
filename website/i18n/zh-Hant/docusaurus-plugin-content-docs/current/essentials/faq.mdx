@@ -1,0 +1,355 @@
+---
+title: FAQ 常見問題
+---
+
+import { Link } from "@site/src/components/Link";
+import { AutoSnippet, When } from "@site/src/components/CodeSnippet";
+
+<!---
+Here are some commonly asked questions from the community:
+-->
+以下是社群中的一些常見問題：
+
+<!---
+## What is the difference between `ref.refresh` and `ref.invalidate`?
+-->
+## `ref.refresh` 和 `ref.invalidate` 之間有什麼不同？
+
+<!---
+You may have noticed that `ref` has two methods to force a provider to recompute,
+and wonder how they differ.
+-->
+您可能已經注意到 `ref` 有兩種方法可以強制提供者程式重新計算，並且想知道它們有何不同。
+
+<!---
+It's simpler than you think: `ref.refresh` is nothing but syntax sugar for
+`invalidate` + `read`:
+-->
+它比你想象的要簡單： `ref.refresh` 只是 `invalidate` + `read` 的語法糖：
+
+```dart
+T refresh<T>(provider) {
+  invalidate(provider);
+  return read(provider);
+}
+```
+
+<!---
+If you do not care about the new value of a provider after recomputing it,
+then `invalidate` is the way to go.  
+If you do, use `refresh` instead.
+-->
+如果您在重新計算後不關心提供者程式的新值，
+那麼 `invalidate` 就是正確的選擇。  
+如果這樣做，請改用 `refresh`。
+
+:::info
+<!---
+This logic is automatically enforced through lint rules.  
+If you tried to use `ref.refresh` without using the returned value,
+you would get a warning.
+-->
+該邏輯透過 lint 規則自動執行。
+如果您嘗試使用 `ref.refresh` 而不使用返回值，您將收到警告。
+:::
+
+<!---
+The main difference in behavior is by reading the provider right
+after invalidating it, the provider **immediately** recomputes.  
+Whereas if we call `invalidate` but don't read it right after,
+then the update will trigger _later_.
+-->
+行為上的主要區別在於，透過在使提供者程式失效後，
+提供者程式會**立即**重新計算。  
+然而，如果我們呼叫 `invalidate` 但沒有立即讀取它，
+那麼更新將稍後觸發。
+
+<!---
+That "later" update is generally at the start of the next frame.
+Yet, if a provider that is currently not being listened to is invalidated, 
+it will not be updated until it is listened to again.
+-->
+“稍後”更新通常是在下一幀開始時。
+然而，如果當前被未監聽的提供者程式失效，
+則它在再次被監聽之前都不會被更新。
+
+<!---
+## Why is there no shared interface between Ref and WidgetRef?
+-->
+## 為什麼 Ref 和 WidgetRef 之間沒有共享介面？​
+
+<!---
+Riverpod voluntarily dissociates `Ref` and `WidgetRef`.  
+This is done on purpose to avoid writing code which conditionally
+depends on one or the other.
+-->
+Riverpod 自願分離 `Ref` 和 `WidgetRef`。  
+這樣做的目的是為了避免編寫有條件依賴其中之一的程式碼。
+
+<!---
+One issue is that `Ref` and `WidgetRef`, although similar looking,
+have suble differences.  
+Code relying on both would be unreliable in ways that are difficult to spot.
+-->
+一個問題是 `Ref` 和 `WidgetRef` 雖然看起來相似，但存在細微的差異。  
+依賴於兩者的程式碼將變得不可靠，並且難以發現。
+
+<!---
+At the same time, relying on `WidgetRef` is equivalent to relying on `BuildContext`.
+It is effectively putting your logic in the UI layer, which is not recommended.
+-->
+同時，依賴 `WidgetRef` 就相當於依賴 `BuildContext`。
+它實際上將您的邏輯放在 UI 層中，但不建議這樣做。
+
+---
+
+<!---
+Such code should be refactored to **always** use `Ref`.
+-->
+此類程式碼應重構為**始終**使用 `Ref`。
+
+<!---
+The solution to this problem is typically to move your logic
+into a `Notifier` (see <Link documentID="essentials/side_effects" />), 
+and then have your logic be a method of that `Notifier`.
+-->
+此問題的解決方案通常是將您的邏輯移至 `Notifier` 中
+（請參閱 <Link documentID="essentials/side_effects" />），
+然後讓您的邏輯成為該 `Notifier` 的方法。
+
+<!---
+This way, when your widgets want to invoke this logic, they can
+write something along the lines of:
+-->
+這樣，當您的小部件想要呼叫此邏輯時，它們可以編寫如下內容：
+
+```dart
+ref.read(yourNotifierProvider.notifier).yourMethod();
+```
+
+<!---
+`yourMethod` would use the `Notifier`'s `Ref` to interact with other providers.
+-->
+`yourMethod` 將使用 `Notifier` 的 `Ref` 與其他提供者程式互動。
+
+<!---
+## Why do we need to extend ConsumerWidget instead of using the raw StatelessWidget?
+-->
+## 為什麼我們需要擴充套件 ConsumerWidget 而不是使用原始的 StatelessWidget？
+
+<!---
+This is due to an unfortunate limitation in the API of `InheritedWidget`.
+-->
+這是由於 `InheritedWidget` API 中的一個不幸的限制造成的。
+
+<!---
+There are a few problems:
+-->
+有幾個問題：
+
+<!---
+- It is not possible to implement an "on change" listener with `InheritedWidget`.
+  That means that something such as `ref.listen` cannot be used with `BuildContext`.
+
+  `State.didChangeDependencies` is the closest thing to it, but it is not reliable.
+  One issue is that the life-cycle can be triggered even if no dependency changed,
+  especially if your widget tree uses GlobalKeys (and some Flutter widgets already do so internally).
+-->
+- 無法使用 `InheritedWidget` 實現監聽器的“當更改時”。
+  這意味著諸如 `ref.listen` 之類的內容不能與 `BuildContext` 一起使用。
+
+  `State.didChangeDependencies` 是最接近它的東西，但它並不可靠。
+  一個問題是，即使沒有改變依賴關係，生命週期也可能被觸發，
+  特別是如果你的 widget 樹使用 GlobalKeys（並且一些 Flutter widget 已經在內部這樣做了）。
+  
+
+<!---
+- Widgets listening to an `InheritedWidget` never stop listening to it.
+  This is usually fine for pure metadata, such as "theme" or "media query".
+
+  For business logic, this is a problem.
+  Say you use a provider to represent a paginated API.
+  When the page offset changes, you wouldn't want your widget to keep listening
+  to the previously visible pages.
+-->
+- 監聽 `InheritedWidget` 的小部件永遠不會停止監聽它。
+  這通常適用於純元資料，例如 "theme" 或 "media query"。
+
+  對於業務邏輯來說，這是一個問題。
+  假設您使用提供者程式來表示分頁 API。
+  當頁面偏移量發生變化時，您不希望小部件繼續監聽先前可見的頁面。
+
+<!---
+- `InheritedWidget` has no way to track when widgets stop listening to them.
+  Riverpod sometimes relies on tracking whether or not a provider is being listened to.
+-->
+- `InheritedWidget` 無法跟蹤小部件何時停止監聽它們。
+  Riverpod 有時依賴於跟蹤提供者程式是否被監聽。
+
+<!---
+This functionality is crucial for both the auto dispose mechanism and the ability to
+pass arguments to providers.  
+Those features are what make Riverpod so powerful.
+-->
+此功能對於自動處置機制和將引數傳遞給提供者程式的能力至關重要。  
+這些功能使 Riverpod 如此強大。
+
+<!---
+Maybe in a distant future, those issues will be fixed. In that case,
+Riverpod would migrate to using `BuildContext` instead of `Ref`.
+This would enable using `StatelessWidget` instead of `ConsumerWidget`.  
+But that's for another time!
+-->
+也許在遙遠的將來，這些問題將會得到解決。在這種情況下，
+Riverpod 將遷移到使用 `BuildContext` 而不是 `Ref`。
+這將允許使用 `StatelessWidget` 而不是 `ConsumerWidget` 。  
+但那是以後再說了！
+
+<!---
+## Why doesn't hooks_riverpod exports flutter_hooks?
+-->
+## 為什麼 hooks_riverpod 不匯出 flutter_hooks？
+
+<!---
+This is to respect good versioning practices.
+-->
+這是為了尊重良好的版本控制實踐。
+
+<!---
+While you cannot use `hooks_riverpod` without `flutter_hooks`,
+both packages are versioned independently. A breaking change could happen
+in one but not the other.
+-->
+雖然您不能在沒有 `flutter_hooks` 的情況下使用 `hooks_riverpod`，
+但這兩個包都是獨立版本控制的。
+當其中一個可能會發生重大變化時，不會影響另一個。
+
+<!---
+## Why does Riverpod uses `identical` instead of `==` to filter updates in some cases?
+-->
+## 為什麼 Riverpod 在某些情況下使用 `identical` 而不是 `==` 來過濾更新？​
+
+<!---
+Notifiers use `identical` instead of `==` to filter updates.
+-->
+通知者程式使用 `identical` 而不是 `==` 來過濾更新。
+
+<!---
+This is because it is quite common for Riverpod users to also use a code-generator
+such as Freezed/built_value for the sake of a copyWith implementation. Those packages
+override `==` to deeply compare objects. A deep object comparison is quite costly.
+"Business logic" models tend to have lots of properties. Worse, they also have collections
+such as lists, maps, and so on.
+-->
+這是因為 Riverpod 使用者為了實現 copyWith
+而使用 Freezed/built_value 等程式碼生成器是很常見的。
+這些包重寫 `==` 以深入比較物件。深度物件比較的成本相當高。
+“業務邏輯”模型往往具有很多屬性。更糟糕的是，他們還有列表、地圖等集合。
+
+<!---
+At the same time, when using complex "business" objects, most `state = newState` invocations
+always result in a notification (otherwise there is no point in calling the setter). Generally, the main
+case where we call `state = newState` when the current state and new states are equal is
+for primitive objects (ints, enums, strings, but not lists/classes/...).
+These objects are "canonicalized by default". If such objects are equal,
+they generally are also "identical".
+-->
+同時，當使用複雜的“業務”物件時，大多數 `state = newState` 呼叫
+總是會產生通知（否則呼叫 setter 沒有意義）。一般來說，
+噹噹前狀態和新狀態相等時，我們呼叫 `state = newState` 的主要情況
+是對於原始物件（整數、列舉、字串，但不是列表/類/...）。
+這些物件“預設被規範化”。如果這些物件是相等的，
+那麼它們通常也是“相同的（identical）”。
+
+<!---
+Riverpod using `identical` to filter updates is therefore an attempt at having
+a good default for both worlds. For complex objects where we don't really care
+about filtering objects and where `==` may be expensive due to code-generators
+generating an `==` override by default, using `identical` provides an efficient way of notifying listeners.
+At the same time, for simple objects, `identical` does correctly filter redundant notifications.
+-->
+因此，Riverpod 使用 `identical` 來過濾更新是一個兩全其美的預設值嘗試。
+對於複雜物件，我們並不真正關心過濾物件，
+並且由於程式碼生成器預設生成 `==` 覆蓋，因此 `==` 可能會很昂貴，
+使用 `identical` 提供了一種通知監聽器的有效方式。
+同時，對於簡單物件，`identical` 確實正確過濾了冗餘通知。
+
+<!---
+Last but not least, you can change this behavior by overriding the method
+`updateShouldNotify` on Notifiers.
+-->
+最後且同樣重要的一點是，您可以透過重寫通知者程式上的方法 `updateShouldNotify` 來更改此行為。
+
+<!---
+## Is there a way to reset all providers at once?
+-->
+## 有沒有辦法一次性重置所有提供者程式
+
+<!---
+No, there is no way to reset all providers at once.
+-->
+不，沒有辦法立即重置所有提供者程式。
+
+<!---
+This is on purpose, as it is considered an anti-pattern. Resetting all providers
+at once will often reset providers that you did not intend to reset.
+-->
+這是故意的，因為它被認為是反模式。
+立即重置所有提供者程式通常會重置您不打算重置的提供者程式。
+
+<!---
+This is commonly asked by users who want to reset the state of their application
+when the user logs out.  
+If this is what you are after, you should instead have everything dependent on the
+user's state to `ref.watch` the "user" provider.
+-->
+當用戶登出時想要重置應用程式狀態的使用者通常會詢問此問題。  
+如果這就是您所希望的，那麼您應該將所有內容都
+透過 `ref.watch` 依賴於 "user" 提供者程式的使用者狀態。
+
+<!---
+Then, when the user logs out, all providers depending on it would automatically
+be reset but everything else would remain untouched.
+-->
+然後，當用戶登出時，依賴於它的所有提供者程式將自動重置，但其他所有內容都將保持不變。
+
+<!---
+## I have the error "Cannot use "ref" after the widget was disposed", what's wrong?
+-->
+## 我收到錯誤“在處理小部件後無法使用‘ref’”，這是怎麼回事？​
+
+<!---
+You might also see "Bad state: No ProviderScope found", which is an older
+error message of the same issue.
+-->
+您可能還會看到 "Bad state: No ProviderScope found"，這是同一問題的較舊錯誤訊息。
+
+<!---
+This error happens when you try to use `ref` in a widget that is no longer
+mounted. This generally happens after an `await`:
+-->
+當您嘗試在不再安裝的小部件中使用 `ref` 時，會發生此錯誤。這通常發生在 `await` 之後：
+
+```dart
+ElevatedButton(
+  onPressed: () async {
+    await future;
+    ref.read(...); // 可能丟擲 "Cannot use "ref" after the widget was disposed"
+  }
+)
+```
+
+<!---
+The solution is to, like with `BuildContext`, check `mounted` before using `ref`:
+-->
+解決方案是，與 `BuildContext` 一樣，在使用 `ref` 之前檢查 `mounted`：
+
+```dart
+ElevatedButton(
+  onPressed: () async {
+    await future;
+    if (!context.mounted) return;
+    ref.read(...); // 不再丟擲
+  }
+)
+```

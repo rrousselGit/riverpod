@@ -1,0 +1,259 @@
+---
+title: 從 `ChangeNotifier` 遷移
+---
+
+import old from "!!raw-loader!/docs/migration/from_change_notifier/old.dart";
+import declaration from "/docs/migration/from_change_notifier/declaration";
+import initialization from "/docs/migration/from_change_notifier/initialization";
+import migrated from "/docs/migration/from_change_notifier/migrated";
+
+import { Link } from "@site/src/components/Link";
+import { AutoSnippet } from "@site/src/components/CodeSnippet";
+
+
+<!---
+Within Riverpod, `ChangeNotifierProvider` is meant to be used to offer a smooth transition from
+pkg:provider.
+-->
+在 Riverpod 中，`ChangeNotifierProvider` 用於提供從 pkg:provider 的平滑過渡。
+
+<!---
+If you've just started a migration to pkg:riverpod, make sure you read the dedicated guide
+(see <Link documentID="from_provider/quickstart" />).
+This article is meant for folks that already transitioned to riverpod, but want to move away from
+`ChangeNotifier` definetively.
+-->
+如果您剛剛開始遷移到 pkg:riverpod，請務必閱讀專用指南
+（請參閱<Link documentID="from_provider/quickstart" />）。
+本文適用於已經過渡到 Riverpod，但想要徹底放棄 `ChangeNotifier` 的人們。
+
+<!---
+All in all, migrating from `ChangeNotifier` to `AsyncNotifer` requires a
+paradigm shift, but it brings great simplification with the resulting migrated
+code. See also <Link documentID="concepts/why_immutability" />.
+-->
+總而言之，從 `ChangeNotifier` 遷移到 `AsyncNotifer` 需要正規化轉換，
+但它極大地簡化了遷移後的程式碼。
+另請參閱<Link documentID="concepts/why_immutability" />。
+
+<!---
+Take this (faulty) example:
+-->
+以這個（錯誤的）例子為例：
+<AutoSnippet raw={old} />
+
+<!---
+This implementation shows several weak design choices such as:
+- The usage of `isLoading` and `hasError` to handle different asynchronous cases
+- The need to carefully handle requests with tedious `try`/`catch`/`finally` expressions
+- The need to inkove `notifyListeners` at the right times to make this implementation work
+- The presence of inconsistent or possibly undesirable states, e.g. initialization with an empty list
+-->
+該實現顯示了幾個薄弱的設計選擇，例如：
+- 使用 `isLoading` 和 `hasError` 處理不同的非同步情況
+- 需要仔細處理帶有繁瑣的 `try`/`catch`/`finally` 表示式的請求
+- 需要在正確的時間呼叫 `notifyListeners` 才能使此實現發揮作用
+- 存在不一致或可能不需要的狀態，例如使用空列表進行初始化
+
+<!---
+Note how this example has been crafted to show how `ChangeNotifier` can lead to faulty design choices
+for newbie developers; also, another takeaway is that mutable state might be way harder than it
+initially promises.
+-->
+請注意這個示例是如何精心設計的，以向新手開發人員展示 `ChangeNotifier`
+如何導致錯誤的設計方案；此外，另一個要點是可變狀態可能比最初承諾的要困難得多。
+
+<!---
+`Notifier`/`AsyncNotifer`, in combination with immutable state, can lead to better design choices
+and less errors.
+-->
+`Notifier`/`AsyncNotifer` 與不可變狀態相結合，
+可以帶來更好的設計方案和更少的錯誤。
+
+<!---
+Let's see how to migrate the above snippet, one step at a time, towards the newest APIs.
+-->
+讓我們看看如何將上述程式碼片段一步一步遷移到最新的 API。
+
+
+<!---
+## Start your migration
+-->
+## 開始遷移​
+<!---
+First, we should declare the new provider / notifier: this requires some thought process which
+depends on your unique business logic.
+-->
+首先，我們應該宣告新的提供者程式/通知者程式：這需要一些思維過程，這取決於您獨特的業務邏輯。
+
+<!---
+Let's summarize the above requirements:
+- State is represented with `List<Todo>`, which obtained via a network call, with no parameters
+- State should *also* expose info about its `loading`, `error` and `data` state
+- State can be mutated via some exposed methods, thus a function isn't enough
+-->
+我們總結一下上面的要求：
+- 狀態用 `List<Todo>` 表示，透過網路呼叫獲得，不帶引數
+- 狀態還應該公開有關其 `loading`、`error` 和 `data` 狀態的資訊
+- 狀態可以透過一些公開的方法進行改變，因此一個函式是不夠的
+
+:::tip
+<!---
+The above thought process boils down to answering the following questions:
+1. Are some side effects required?
+    - `y`: Use riverpod's class-based API
+    - `n`: Use riverpod's function-based API
+2. Does state need to be loaded asynchronously?
+    - `y`: Let `build` return a `Future<T>`
+    - `n`: Let `build` simply return `T`
+3. Are some parameters required?
+    - `y`: Let `build` (or your function) accept them
+    - `n`: Let `build` (or your function) accept no extra parameters
+-->
+上述思考過程歸結為回答以下問題：
+1. 是否需要一些副作用？
+    - `y`：使用 Riverpod 的基於類的 API
+    - `n`：使用 Riverpod 的基於函式的 API
+1. State 需要非同步載入嗎？
+    - `y`：讓 `build` 返回 `Future<T>`
+    - `n`：讓 `build` 簡單地返回 `T`
+1. 是否需要一些引數？
+    - `y`：讓 `build` （或你的函式）接受它們
+    - `n`：讓 `build` （或你的函式）不接受額外的引數
+:::
+
+:::info
+<!---
+If you're using codegen, the above thought process is enough.  
+There's no need to think about the right class names and their *specific* APIs.  
+`@riverpod` only asks you to write a class with its return type, and you're good to go.
+-->
+如果您使用的是 codegen，上述思考過程就足夠了。  
+無需考慮正確的類名及其*特定*的 API。  
+`@riverpod` 僅要求您編寫一個具有返回型別的類，然後就可以開始了。
+:::
+
+<!---
+Technically, the best fit here is to define a `AutoDisposeAsyncNotifier<List<Todo>>`,
+which meets all the above requirements. Let's write some pseudocode first.
+-->
+從技術上講，這裡最合適的是定義一個 `AutoDisposeAsyncNotifier<List<Todo>>`，
+它滿足上述所有要求。讓我們先寫一些虛擬碼。
+
+<AutoSnippet language="dart" {...declaration}></AutoSnippet>
+
+:::tip
+<!---
+Remember: use snippets in your IDE to get some guidance, or just to speed up your code writing.
+See <Link documentID="introduction/getting_started" hash="going-further-installing-code-snippets" />.
+-->
+請記住：在 IDE 中使用程式碼片段可以獲得一些指導，或者只是為了加快程式碼編寫速度。
+請參閱<Link documentID="introduction/getting_started" hash="going-further-installing-code-snippets" />。
+:::
+
+<!---
+With respect with `ChangeNotifier`'s implementation, we don't need to declare `todos` anymore;
+such variable is `state`, which is implicitly loaded with `build`.
+-->
+考慮到 `ChangeNotifier` 的實現，我們不再需要宣告 `todos`；
+這樣的變數是 `state`，它是用 `build` 隱式載入的。
+
+<!---
+Indeed, riverpod's notifiers can expose *one* entity at a time.
+-->
+事實上，Riverpod 的通知者程式一次可以暴露*一個*實體。
+
+:::tip
+<!---
+Riverpod's API is meant to be granular; nonetheless, when migrating, you can still define a custom
+entity to hold multiple values. Consider using [Dart 3's records](https://dart.dev/language/records)
+to smooth out the migration at first.
+-->
+Riverpod 的 API 是細粒度的；儘管如此，在遷移時，
+您仍然可以定義自定義實體來儲存多個值。首先考慮使用 [Dart 3 的記錄](https://dart.dev/language/records)
+來平滑遷移。
+:::
+
+
+<!---
+### Initialization
+-->
+### 初始化​
+<!---
+Initalizing a notifier is easy: just write initialization logic inside `build`.  
+We can now get rid of the old `_init` function.
+-->
+初始化通知者程式很簡單：只需在 `build` 內編寫初始化邏輯即可。  
+我們現在可以擺脫舊的 `_init` 函式。
+
+<AutoSnippet language="dart" {...initialization}></AutoSnippet>
+
+<!---
+With respect of the old `_init`, the new `build` isn't missing anything: there is no need to
+initialize variables such as `isLoading` or `hasError` anymore.
+-->
+相對於舊的 `_init` ，新的 `build` 沒有丟失任何內容：
+不需要初始化 `isLoading` 或 `hasError`
+
+<!---
+Riverpod will automatically translate any asynchronous provider, via exposing an `AsyncValue<List<Todo>>`
+and handles the intricacies of asynchronous state way better than what two simple boolean flags can do.
+-->
+Riverpod 將透過公開 `AsyncValue<List<Todo>>` 自動轉換任何非同步提供者程式，
+並比兩個簡單的布林標誌更好地處理非同步狀態的複雜性。
+
+<!---
+Indeed, any `AsyncNotifier` effectively makes writing additional `try`/`catch`/`finally` an anti-pattern
+for handling asynchronous state.
+-->
+事實上，任何 `AsyncNotifier` 都會有效地使編寫額外的 `try`/`catch`/`finally` 成為處理非同步狀態的反模式。
+
+
+<!---
+### Mutations and Side Effects
+-->
+### 突變和副作用​
+<!---
+Just like initialization, when performing side effects there's no need to manipulate boolean flags
+such as `hasError`, or to write additional `try`/`catch`/`finally` blocks.
+-->
+就像初始化一樣，執行副作用時，無需操作布林標誌，
+例如 `hasError`，或編寫額外的 `try`/`catch`/`finally`
+
+<!---
+Below, we've cut down all the boilerplate and successfully fully migrated the above example:
+-->
+下面，我們刪除了所有樣板檔案併成功完全遷移了上面的示例：
+<AutoSnippet language="dart" {...migrated} />
+
+:::tip
+<!---
+Syntax and design choices may vary, but in the end we just need to write our request and update
+state afterwards. See <Link documentID="essentials/side_effects" />.
+-->
+語法和設計方案可能會有所不同，但最終我們只需要編寫我們的請求並隨後更新狀態。
+請參閱<Link documentID="essentials/side_effects" />。
+:::
+
+<!---
+## Migration Process Summary
+-->
+## 遷移過程總結
+
+<!---
+Let's review the whole migration process applied above, from a operational point of view.
+-->
+讓我們從操作的角度回顧一下上面應用的整個遷移過程。
+
+<!---
+1. We've moved the initialization, away from a custom method invoked in a constructor, to `build`
+2. We've removed `todos`, `isLoading` and `hasError` properties: internal `state` will suffice
+3. We've removed any `try`-`catch`-`finally` blocks: returning the future is enough
+4. We've applied the same simplification on the side effects (`addTodo`)
+5. We've applied the mutations, via simply reassign `state`
+-->
+1. 我們已將初始化從建構函式中呼叫的自定義方法移至 `build`
+1. 我們刪除了 `todos`、`isLoading` 和 `hasError` 屬性：內部 `state` 就足夠了
+1. 我們已經刪除了所有 `try`-`catch`-`finally` 塊：返回 Future 就足夠了
+1. 我們對副作用應用了相同的簡化（`addTodo`）
+1. 我們已經透過簡單地重新分配 `state` 應用了突變
