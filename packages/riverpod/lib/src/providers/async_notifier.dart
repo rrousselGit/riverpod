@@ -16,11 +16,11 @@ part 'async_notifier/auto_dispose.dart';
 part 'async_notifier/auto_dispose_family.dart';
 part 'async_notifier/orphan.dart';
 part 'async_notifier/family.dart';
-part '../stream_notifier.dart';
-part '../stream_notifier/auto_dispose.dart';
-part '../stream_notifier/auto_dispose_family.dart';
-part '../stream_notifier/base.dart';
-part '../stream_notifier/family.dart';
+part 'stream_notifier.dart';
+part 'stream_notifier/auto_dispose.dart';
+part 'stream_notifier/auto_dispose_family.dart';
+part 'stream_notifier/orphan.dart';
+part 'stream_notifier/family.dart';
 
 /// A base class for [AsyncNotifier].
 ///
