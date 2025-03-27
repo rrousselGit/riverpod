@@ -92,6 +92,11 @@ export 'src/providers/async_notifier.dart'
         StreamNotifierProviderElement,
         AutoDisposeAsyncNotifierProviderElement,
         AutoDisposeStreamNotifierProviderElement;
+// ignore: invalid_export_of_internal_element, For the sake of backward compatibility. Remove in 3.0
+export 'src/providers/stream_provider.dart'
+    show StreamProviderElement, AutoDisposeStreamProviderElement;
+export 'src/providers/stream_provider.dart'
+    hide StreamProviderElement, AutoDisposeStreamProviderElement;
 export 'src/state_controller.dart';
 // ignore: invalid_export_of_internal_element, For the sake of backward compatibility. Remove in 3.0
 export 'src/state_notifier_provider.dart'
@@ -103,8 +108,3 @@ export 'src/state_provider.dart'
     show StateProviderElement, AutoDisposeStateProviderElement;
 export 'src/state_provider.dart'
     hide StateProviderElement, AutoDisposeStateProviderElement;
-// ignore: invalid_export_of_internal_element, For the sake of backward compatibility. Remove in 3.0
-export 'src/stream_provider.dart'
-    show StreamProviderElement, AutoDisposeStreamProviderElement;
-export 'src/stream_provider.dart'
-    hide StreamProviderElement, AutoDisposeStreamProviderElement;

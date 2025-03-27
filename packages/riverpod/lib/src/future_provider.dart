@@ -6,7 +6,7 @@ import 'builder.dart';
 import 'framework.dart';
 import 'provider.dart' show Provider;
 import 'providers/async_notifier.dart';
-import 'stream_provider.dart' show StreamProvider;
+import 'providers/stream_provider.dart' show StreamProvider;
 
 part 'future_provider/auto_dispose.dart';
 part 'future_provider/base.dart';

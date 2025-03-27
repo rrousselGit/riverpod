@@ -10,7 +10,7 @@ import '../common/run_guarded.dart';
 import '../framework.dart';
 import '../future_provider.dart' show FutureProvider;
 import '../notifier.dart';
-import '../stream_provider.dart';
+import 'stream_provider.dart';
 
 part 'async_notifier/auto_dispose.dart';
 part 'async_notifier/auto_dispose_family.dart';

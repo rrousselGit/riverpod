@@ -15,6 +15,6 @@ export 'future_provider.dart';
 export 'notifier.dart';
 export 'provider.dart';
 export 'providers/async_notifier.dart';
+export 'providers/stream_provider.dart';
 export 'state_notifier_provider.dart';
 export 'state_provider.dart';
-export 'stream_provider.dart';
