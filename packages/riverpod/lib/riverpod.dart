@@ -37,21 +37,6 @@ export 'src/framework.dart'
         ObsX,
         ProviderElementBase;
 // ignore: invalid_export_of_internal_element, For the sake of backward compatibility. Remove in 3.0
-export 'src/notifier.dart'
-    show NotifierProviderElement, AutoDisposeNotifierProviderElement;
-export 'src/notifier.dart'
-    hide
-        NotifierBase,
-        NotifierProviderBase,
-        AutoDisposeFamilyNotifierProviderImpl,
-        AutoDisposeNotifierProviderImpl,
-        FamilyNotifierProviderImpl,
-        NotifierProviderImpl,
-        BuildlessAutoDisposeNotifier,
-        BuildlessNotifier,
-        NotifierProviderElement,
-        AutoDisposeNotifierProviderElement;
-// ignore: invalid_export_of_internal_element, For the sake of backward compatibility. Remove in 3.0
 export 'src/providers/async_notifier.dart'
     show
         AsyncNotifierProviderElement,
@@ -88,6 +73,21 @@ export 'src/providers/future_provider.dart'
     show FutureProviderElement, AutoDisposeFutureProviderElement;
 export 'src/providers/future_provider.dart'
     hide FutureProviderElement, AutoDisposeFutureProviderElement;
+// ignore: invalid_export_of_internal_element, For the sake of backward compatibility. Remove in 3.0
+export 'src/providers/notifier.dart'
+    show NotifierProviderElement, AutoDisposeNotifierProviderElement;
+export 'src/providers/notifier.dart'
+    hide
+        NotifierBase,
+        NotifierProviderBase,
+        AutoDisposeFamilyNotifierProviderImpl,
+        AutoDisposeNotifierProviderImpl,
+        FamilyNotifierProviderImpl,
+        NotifierProviderImpl,
+        BuildlessAutoDisposeNotifier,
+        BuildlessNotifier,
+        NotifierProviderElement,
+        AutoDisposeNotifierProviderElement;
 // ignore: invalid_export_of_internal_element, For the sake of backward compatibility. Remove in 3.0
 export 'src/providers/provider.dart'
     show ProviderElement, AutoDisposeProviderElement;

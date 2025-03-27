@@ -8,8 +8,8 @@ import '../common/pragma.dart';
 import '../common/result.dart';
 import '../common/run_guarded.dart';
 import '../framework.dart';
-import '../notifier.dart';
 import 'future_provider.dart' show FutureProvider;
+import 'notifier.dart';
 import 'stream_provider.dart';
 
 part 'async_notifier/auto_dispose.dart';
