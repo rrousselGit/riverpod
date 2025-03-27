@@ -23,7 +23,7 @@ part 'core/provider_container.dart';
 part 'core/family.dart';
 part 'framework/listen.dart';
 part 'framework/foundation.dart';
-part 'framework/proxy_provider_listenable.dart';
+part 'core/proxy_provider_listenable.dart';
 part 'core/ref.dart';
 part 'framework/selector.dart';
 part 'core/scheduler.dart';
