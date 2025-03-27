@@ -18,7 +18,7 @@ part 'framework/always_alive.dart';
 part 'framework/auto_dispose.dart';
 part 'core/modifiers/select_async.dart';
 part 'core/modifiers/select.dart';
-part 'framework/provider_base.dart';
+part 'core/provider/provider.dart';
 part 'core/element.dart';
 part 'core/provider_container.dart';
 part 'core/family.dart';
