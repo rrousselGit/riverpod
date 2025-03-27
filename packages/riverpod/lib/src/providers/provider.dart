@@ -1,9 +1,9 @@
 import 'package:meta/meta.dart';
 
-import 'builder.dart';
-import 'framework.dart';
-import 'providers/stream_provider.dart' show StreamProvider;
-import 'state_notifier_provider.dart' show StateNotifierProvider;
+import '../builder.dart';
+import '../framework.dart';
+import 'stream_provider.dart' show StreamProvider;
+import '../state_notifier_provider.dart' show StateNotifierProvider;
 
 part 'provider/auto_dispose.dart';
 part 'provider/base.dart';
