@@ -34,10 +34,9 @@ export 'src/async_notifier.dart'
         AutoDisposeAsyncNotifierProviderElement,
         AutoDisposeStreamNotifierProviderElement;
 
-export 'src/common.dart' hide AsyncTransition;
-
 export 'src/framework.dart'
     hide
+        AsyncTransition,
         ProviderScheduler,
         debugCanModifyProviders,
         Vsync,
