@@ -1,25 +1,23 @@
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
-import '../../utils.dart';
+import '../../../utils.dart';
 
 void main() {
   test('supports .name', () {
     expect(
-      StateProvider.autoDispose.family<int, int>((ref, id) => 0)(0).name,
+      StateProvider.family<int, int>((ref, id) => 0)(0).name,
       null,
     );
     expect(
-      StateProvider.autoDispose
-          .family<int, int>((ref, id) => 0, name: 'foo')(0)
-          .name,
+      StateProvider.family<int, int>((ref, id) => 0, name: 'foo')(0).name,
       'foo',
     );
   });
 
-  group('StateProvider.autoDispose.family.autoDispose', () {
+  group('StateProvider.family', () {
     test('specifies `from` and `argument` for related providers', () {
-      final provider = StateProvider.autoDispose.family<AsyncValue<int>, int>(
+      final provider = StateProvider.family<AsyncValue<int>, int>(
         (ref, _) => const AsyncValue.data(42),
       );
 
@@ -29,8 +27,7 @@ void main() {
 
     group('scoping an override overrides all the associated subproviders', () {
       test('when passing the provider itself', () async {
-        final provider =
-            StateProvider.autoDispose.family<int, int>((ref, _) => 0);
+        final provider = StateProvider.family<int, int>((ref, _) => 0);
         final root = createContainer();
         final container = createContainer(parent: root, overrides: [provider]);
 
@@ -47,14 +44,13 @@ void main() {
       });
 
       test('when using provider.overrideWithProvider', () async {
-        final provider =
-            StateProvider.autoDispose.family<int, int>((ref, _) => 0);
+        final provider = StateProvider.family<int, int>((ref, _) => 0);
         final root = createContainer();
         final container = createContainer(
           parent: root,
           overrides: [
             provider.overrideWithProvider(
-              (value) => StateProvider.autoDispose((ref) => 42),
+              (value) => StateProvider((ref) => 42),
             ),
           ],
         );
@@ -74,7 +70,7 @@ void main() {
 
     test('can be auto-scoped', () async {
       final dep = Provider((ref) => 0);
-      final provider = StateProvider.autoDispose.family<int, int>(
+      final provider = StateProvider.family<int, int>(
         (ref, i) => ref.watch(dep) + i,
         dependencies: [dep],
       );
@@ -88,6 +84,32 @@ void main() {
       expect(container.read(provider(10).notifier).state, 52);
 
       expect(root.getAllProviderElements(), isEmpty);
+    });
+
+    test('StateProviderFamily', () async {
+      final provider = StateProvider.family<String, int>((ref, a) {
+        return '$a';
+      });
+      final container = createContainer();
+
+      expect(container.read(provider(0)), '0');
+      expect(container.read(provider(1)), '1');
+    });
+
+    test('StateProviderFamily override', () async {
+      final provider = StateProvider.family<String, int>((ref, a) {
+        return '$a';
+      });
+      final container = createContainer(
+        overrides: [
+          provider.overrideWithProvider((a) {
+            return StateProvider((ref) => 'override $a');
+          }),
+        ],
+      );
+
+      expect(container.read(provider(0)), 'override 0');
+      expect(container.read(provider(1)), 'override 1');
     });
   });
 }
