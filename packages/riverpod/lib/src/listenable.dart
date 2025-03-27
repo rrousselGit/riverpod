@@ -1,9 +1,9 @@
 import 'package:meta/meta.dart';
 
 import 'common/env.dart';
+import 'common/pragma.dart';
 import 'framework.dart' show ProviderElementBase;
 import 'internals.dart' show OnError;
-import 'pragma.dart';
 import 'result.dart';
 
 /// Listener for [_ValueListenable]
