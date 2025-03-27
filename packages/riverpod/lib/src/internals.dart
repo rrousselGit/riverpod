@@ -7,13 +7,13 @@ library internals;
 
 export 'async_notifier.dart';
 export 'builder.dart';
+export 'common/result.dart';
 export 'common/stack_trace.dart';
 export 'framework.dart';
 export 'future_provider.dart';
 export 'listenable.dart';
 export 'notifier.dart';
 export 'provider.dart';
-export 'result.dart';
 export 'run_guarded.dart';
 export 'state_notifier_provider.dart';
 export 'state_provider.dart';
