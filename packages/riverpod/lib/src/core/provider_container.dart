@@ -796,44 +796,6 @@ abstract class ProviderObserver implements AnyProviderObserver {
   ) {}
 }
 
-/// An implementation detail for the override mechanism of providers
-@internal
-typedef SetupOverride = void Function({
-  required ProviderBase<Object?> origin,
-  required ProviderBase<Object?> override,
-});
-
-/// An object used by [ProviderContainer] to override the behavior of a provider
-/// for a part of the application.
-///
-/// Do not implement/extend this class.
-///
-/// See also:
-///
-/// - [ProviderContainer], which uses this object.
-/// - `overrideWithValue`, which creates a [ProviderOverride].
-@internal
-class ProviderOverride implements Override {
-  /// Override a provider
-  ProviderOverride({
-    required ProviderBase<Object?> origin,
-    required ProviderBase<Object?> override,
-  })  : _origin = origin,
-        _override = override;
-
-  /// The provider that is overridden.
-  final ProviderBase<Object?> _origin;
-
-  /// The new provider behavior.
-  final ProviderBase<Object?> _override;
-}
-
-/// An object used by [ProviderContainer]/`ProviderScope` to override the behavior
-/// of a provider/family for part of the application.
-///
-/// Do not extend or implement.
-abstract class Override {}
-
 /// An error thrown when a call to [Ref.read]/[Ref.watch]
 /// leads to a provider depending on itself.
 ///
