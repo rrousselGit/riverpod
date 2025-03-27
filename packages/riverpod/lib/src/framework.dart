@@ -20,7 +20,7 @@ part 'framework/async_selector.dart';
 part 'framework/provider_base.dart';
 part 'framework/element.dart';
 part 'framework/container.dart';
-part 'framework/family.dart';
+part 'core/family.dart';
 part 'framework/listen.dart';
 part 'framework/foundation.dart';
 part 'framework/proxy_provider_listenable.dart';
