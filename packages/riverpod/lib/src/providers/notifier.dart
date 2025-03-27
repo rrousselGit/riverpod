@@ -1,15 +1,15 @@
 import 'package:meta/meta.dart';
 
-import 'builder.dart';
-import 'common/listenable.dart';
-import 'common/result.dart';
-import 'framework.dart';
-import 'providers/async_notifier.dart';
-import 'providers/provider.dart';
+import '../builder.dart';
+import '../common/listenable.dart';
+import '../common/result.dart';
+import '../framework.dart';
+import 'async_notifier.dart';
+import 'provider.dart';
 
 part 'notifier/auto_dispose.dart';
 part 'notifier/auto_dispose_family.dart';
-part 'notifier/base.dart';
+part 'notifier/orphan.dart';
 part 'notifier/family.dart';
 
 /// A base class for [NotifierBase].
