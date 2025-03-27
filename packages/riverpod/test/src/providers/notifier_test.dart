@@ -6,7 +6,7 @@ import 'package:riverpod/riverpod.dart' hide ErrorListener;
 import 'package:test/test.dart';
 
 import '../../utils.dart';
-import 'factory.dart';
+import '../matrix/notifier_provider.dart';
 
 void main() {
   for (final factory in matrix()) {

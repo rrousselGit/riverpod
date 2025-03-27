@@ -5,7 +5,7 @@ import 'package:riverpod/riverpod.dart' hide ErrorListener;
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 
-import '../utils.dart';
+import '../../utils.dart';
 
 void main() {
   group('Ref.listenSelf', () {
