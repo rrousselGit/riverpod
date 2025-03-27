@@ -7,11 +7,11 @@ library internals;
 
 export 'async_notifier.dart';
 export 'builder.dart';
+export 'common/listenable.dart';
 export 'common/result.dart';
 export 'common/stack_trace.dart';
 export 'framework.dart';
 export 'future_provider.dart';
-export 'listenable.dart';
 export 'notifier.dart';
 export 'provider.dart';
 export 'run_guarded.dart';

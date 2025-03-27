@@ -3,11 +3,11 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 
 import 'builder.dart';
+import 'common/listenable.dart';
 import 'common/pragma.dart';
 import 'common/result.dart';
 import 'framework.dart';
 import 'future_provider.dart' show FutureProvider;
-import 'listenable.dart';
 import 'notifier.dart';
 import 'run_guarded.dart';
 import 'stream_provider.dart';
