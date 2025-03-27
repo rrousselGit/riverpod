@@ -1,10 +1,10 @@
 import 'package:meta/meta.dart';
 
-import 'common/env.dart';
-import 'common/pragma.dart';
-import 'common/result.dart';
-import 'framework.dart' show ProviderElementBase;
-import 'internals.dart' show OnError;
+import '../framework.dart' show ProviderElementBase;
+import '../internals.dart' show OnError;
+import 'env.dart';
+import 'pragma.dart';
+import 'result.dart';
 
 /// Listener for [_ValueListenable]
 class _Listener<T> {
