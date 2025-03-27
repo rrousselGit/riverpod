@@ -2,5 +2,5 @@
 export 'package:riverpod/riverpod.dart';
 
 export 'src/change_notifier_provider.dart';
-export 'src/core/consumer.dart';
+export 'src/core.dart';
 export 'src/framework.dart' hide ProviderScopeState;

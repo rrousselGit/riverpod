@@ -1,7 +1,4 @@
-import 'package:flutter/widgets.dart';
-import 'package:meta/meta.dart';
-
-import '../internals.dart';
+part of '../core.dart';
 
 /// An object that allows widgets to interact with providers.
 abstract class WidgetRef {
