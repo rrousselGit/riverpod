@@ -151,42 +151,6 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
   }
 }
 
-class _SelectorSubscription<Input, Output>
-    extends ProviderSubscription<Output> {
-  _SelectorSubscription(
-    super.source,
-    this._internalSub,
-    this._read, {
-    this.onClose,
-  });
-
-  final ProviderSubscription<Input> _internalSub;
-  final Output Function() _read;
-  final void Function()? onClose;
-
-  @override
-  void close() {
-    if (!closed) {
-      onClose?.call();
-      _internalSub.close();
-    }
-    super.close();
-  }
-
-  @override
-  Output read() {
-    if (closed) {
-      throw StateError(
-        'called ProviderSubscription.read on a subscription that was closed',
-      );
-    }
-    // flushes the provider
-    _internalSub.read();
-
-    return _read();
-  }
-}
-
 class _AlwaysAliveProviderSelector<Input, Output>
     extends _ProviderSelector<Input, Output>
     with

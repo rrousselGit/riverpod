@@ -1,38 +1,5 @@
 part of '../framework.dart';
 
-class _ProxySubscription<T> extends ProviderSubscription<T> {
-  _ProxySubscription(
-    super.source,
-    this._removeListeners,
-    this._read, {
-    required this.innerSubscription,
-  });
-
-  final ProviderSubscription<Object?> innerSubscription;
-  final RemoveListener _removeListeners;
-  final T Function() _read;
-
-  @override
-  T read() {
-    if (_closed) {
-      throw StateError(
-        'called ProviderSubscription.read on a subscription that was closed',
-      );
-    }
-    return _read();
-  }
-
-  @override
-  void close() {
-    if (!closed) {
-      innerSubscription.close();
-      _removeListeners();
-    }
-
-    super.close();
-  }
-}
-
 /// An internal utility for reading alternate values of a provider.
 ///
 /// For example, this is used by [FutureProvider] to differentiate:

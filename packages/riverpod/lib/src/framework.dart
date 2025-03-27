@@ -30,3 +30,4 @@ part 'experiments/scope.dart';
 part 'framework/always_alive.dart';
 part 'framework/auto_dispose.dart';
 part 'core/override.dart';
+part 'core/provider_subscription.dart';
