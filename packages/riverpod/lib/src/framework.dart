@@ -28,3 +28,4 @@ part 'framework/ref.dart';
 part 'framework/selector.dart';
 part 'framework/scheduler.dart';
 part 'framework/value_provider.dart';
+part 'core/async_value.dart';
