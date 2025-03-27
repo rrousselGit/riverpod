@@ -26,6 +26,6 @@ part 'framework/foundation.dart';
 part 'framework/proxy_provider_listenable.dart';
 part 'core/ref.dart';
 part 'framework/selector.dart';
-part 'framework/scheduler.dart';
+part 'core/scheduler.dart';
 part 'framework/value_provider.dart';
 part 'core/async_value.dart';
