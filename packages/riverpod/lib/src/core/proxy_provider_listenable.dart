@@ -146,3 +146,18 @@ class ProviderElementProxy<Input, Output>
   @override
   int get hashCode => _origin.hashCode;
 }
+
+/// Deals with the internals of synchronously calling the listeners
+/// when using `fireImmediately: true`
+void _handleFireImmediately<StateT>(
+  Result<StateT> currentState, {
+  required void Function(StateT? previous, StateT current) listener,
+  required void Function(Object error, StackTrace stackTrace) onError,
+}) {
+  switch (currentState) {
+    case ResultData():
+      runBinaryGuarded(listener, null, currentState.value);
+    case ResultError():
+      runBinaryGuarded(onError, currentState.error, currentState.stackTrace);
+  }
+}

@@ -1,4 +1,4 @@
-// ignore_for_file: invalid_use_of_internal_member
+// ignore_for_file: invalid_use_of_internal_member, deprecated_member_use_from_same_package
 
 part of '../core.dart';
 
