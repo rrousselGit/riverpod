@@ -16,7 +16,7 @@ part 'experiments/mutations.dart';
 part 'experiments/listenable.dart';
 part 'framework/always_alive.dart';
 part 'framework/auto_dispose.dart';
-part 'framework/async_selector.dart';
+part 'core/modifiers/select_async.dart';
 part 'framework/provider_base.dart';
 part 'core/element.dart';
 part 'core/provider_container.dart';
