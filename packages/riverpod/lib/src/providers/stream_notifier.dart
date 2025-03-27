@@ -1,4 +1,4 @@
-part of 'providers/async_notifier.dart';
+part of 'async_notifier.dart';
 
 ProviderElementProxy<AsyncValue<T>, NotifierT>
     _streamNotifier<NotifierT extends AsyncNotifierBase<T>, T>(
