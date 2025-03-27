@@ -6,7 +6,7 @@
 library internals;
 
 export 'async_notifier.dart';
-export 'builders.dart';
+export 'builder.dart';
 export 'framework.dart';
 export 'future_provider.dart';
 export 'listenable.dart';

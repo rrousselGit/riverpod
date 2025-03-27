@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 
 import 'async_notifier.dart';
-import 'builders.dart';
+import 'builder.dart';
 import 'framework.dart';
 import 'provider.dart' show Provider;
 import 'stream_provider.dart' show StreamProvider;

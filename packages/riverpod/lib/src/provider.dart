@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import 'builders.dart';
+import 'builder.dart';
 import 'framework.dart';
 import 'state_notifier_provider.dart' show StateNotifierProvider;
 import 'stream_provider.dart' show StreamProvider;

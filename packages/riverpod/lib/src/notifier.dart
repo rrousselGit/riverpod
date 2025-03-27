@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
 import 'async_notifier.dart';
-import 'builders.dart';
+import 'builder.dart';
 import 'framework.dart';
 import 'listenable.dart';
 import 'provider.dart';
