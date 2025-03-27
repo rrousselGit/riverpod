@@ -2,14 +2,14 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
-import 'builder.dart';
-import 'framework.dart';
-import 'provider.dart' show Provider;
-import 'providers/async_notifier.dart';
-import 'providers/stream_provider.dart' show StreamProvider;
+import '../builder.dart';
+import '../framework.dart';
+import '../provider.dart' show Provider;
+import 'async_notifier.dart';
+import 'stream_provider.dart' show StreamProvider;
 
 part 'future_provider/auto_dispose.dart';
-part 'future_provider/base.dart';
+part 'future_provider/orphan.dart';
 
 ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
   _FutureProviderBase<T> that,
