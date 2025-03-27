@@ -1,4 +1,4 @@
-part of '../async_notifier.dart';
+part of '../providers/async_notifier.dart';
 
 /// {@macro riverpod.streamNotifier}
 abstract class FamilyStreamNotifier<State, Arg>

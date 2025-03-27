@@ -1,4 +1,4 @@
-part of '../async_notifier.dart';
+part of '../providers/async_notifier.dart';
 
 /// A [StreamNotifier] base class shared between family and non-family notifiers.
 ///
