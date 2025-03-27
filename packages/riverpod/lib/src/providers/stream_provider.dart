@@ -6,9 +6,9 @@ import '../builder.dart';
 import '../common/listenable.dart';
 import '../common/result.dart';
 import '../framework.dart';
-import '../provider.dart' show Provider;
 import 'async_notifier.dart';
 import 'future_provider.dart' show FutureProvider;
+import 'provider.dart' show Provider;
 
 part 'stream_provider/auto_dispose.dart';
 part 'stream_provider/orphan.dart';

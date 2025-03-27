@@ -52,10 +52,6 @@ export 'src/notifier.dart'
         NotifierProviderElement,
         AutoDisposeNotifierProviderElement;
 // ignore: invalid_export_of_internal_element, For the sake of backward compatibility. Remove in 3.0
-export 'src/provider.dart' show ProviderElement, AutoDisposeProviderElement;
-export 'src/provider.dart'
-    hide InternalProvider, ProviderElement, AutoDisposeProviderElement;
-// ignore: invalid_export_of_internal_element, For the sake of backward compatibility. Remove in 3.0
 export 'src/providers/async_notifier.dart'
     show
         AsyncNotifierProviderElement,
@@ -92,6 +88,11 @@ export 'src/providers/future_provider.dart'
     show FutureProviderElement, AutoDisposeFutureProviderElement;
 export 'src/providers/future_provider.dart'
     hide FutureProviderElement, AutoDisposeFutureProviderElement;
+// ignore: invalid_export_of_internal_element, For the sake of backward compatibility. Remove in 3.0
+export 'src/providers/provider.dart'
+    show ProviderElement, AutoDisposeProviderElement;
+export 'src/providers/provider.dart'
+    hide InternalProvider, ProviderElement, AutoDisposeProviderElement;
 // ignore: invalid_export_of_internal_element, For the sake of backward compatibility. Remove in 3.0
 export 'src/providers/stream_provider.dart'
     show StreamProviderElement, AutoDisposeStreamProviderElement;
