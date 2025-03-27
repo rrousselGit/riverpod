@@ -24,7 +24,7 @@ part 'framework/family.dart';
 part 'framework/listen.dart';
 part 'framework/foundation.dart';
 part 'framework/proxy_provider_listenable.dart';
-part 'framework/ref.dart';
+part 'core/ref.dart';
 part 'framework/selector.dart';
 part 'framework/scheduler.dart';
 part 'framework/value_provider.dart';
