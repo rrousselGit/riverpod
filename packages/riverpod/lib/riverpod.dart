@@ -73,6 +73,17 @@ export 'src/providers/future_provider.dart'
     show FutureProviderElement, AutoDisposeFutureProviderElement;
 export 'src/providers/future_provider.dart'
     hide FutureProviderElement, AutoDisposeFutureProviderElement;
+export 'src/providers/legacy/state_controller.dart';
+// ignore: invalid_export_of_internal_element, For the sake of backward compatibility. Remove in 3.0
+export 'src/providers/legacy/state_notifier_provider.dart'
+    show StateNotifierProviderElement, AutoDisposeStateNotifierProviderElement;
+export 'src/providers/legacy/state_notifier_provider.dart'
+    hide StateNotifierProviderElement, AutoDisposeStateNotifierProviderElement;
+// ignore: invalid_export_of_internal_element, For the sake of backward compatibility. Remove in 3.0
+export 'src/providers/legacy/state_provider.dart'
+    show StateProviderElement, AutoDisposeStateProviderElement;
+export 'src/providers/legacy/state_provider.dart'
+    hide StateProviderElement, AutoDisposeStateProviderElement;
 // ignore: invalid_export_of_internal_element, For the sake of backward compatibility. Remove in 3.0
 export 'src/providers/notifier.dart'
     show NotifierProviderElement, AutoDisposeNotifierProviderElement;
@@ -98,14 +109,3 @@ export 'src/providers/stream_provider.dart'
     show StreamProviderElement, AutoDisposeStreamProviderElement;
 export 'src/providers/stream_provider.dart'
     hide StreamProviderElement, AutoDisposeStreamProviderElement;
-export 'src/state_controller.dart';
-// ignore: invalid_export_of_internal_element, For the sake of backward compatibility. Remove in 3.0
-export 'src/state_notifier_provider.dart'
-    show StateNotifierProviderElement, AutoDisposeStateNotifierProviderElement;
-export 'src/state_notifier_provider.dart'
-    hide StateNotifierProviderElement, AutoDisposeStateNotifierProviderElement;
-// ignore: invalid_export_of_internal_element, For the sake of backward compatibility. Remove in 3.0
-export 'src/state_provider.dart'
-    show StateProviderElement, AutoDisposeStateProviderElement;
-export 'src/state_provider.dart'
-    hide StateProviderElement, AutoDisposeStateProviderElement;
