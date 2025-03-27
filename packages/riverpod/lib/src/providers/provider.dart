@@ -1,12 +1,12 @@
 import 'package:meta/meta.dart';
 
-import 'builders.dart';
-import 'framework.dart';
-import 'state_notifier_provider.dart' show StateNotifierProvider;
+import '../builder.dart';
+import '../framework.dart';
+import 'legacy/state_notifier_provider.dart' show StateNotifierProvider;
 import 'stream_provider.dart' show StreamProvider;
 
 part 'provider/auto_dispose.dart';
-part 'provider/base.dart';
+part 'provider/orphan.dart';
 
 /// A base class for [Provider]
 ///

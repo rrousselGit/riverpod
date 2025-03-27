@@ -1,4 +1,4 @@
-import 'package:riverpod/src/result.dart';
+import 'package:riverpod/src/common/result.dart';
 import 'package:test/test.dart';
 
 void main() {

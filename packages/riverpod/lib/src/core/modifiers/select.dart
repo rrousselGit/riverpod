@@ -1,4 +1,4 @@
-part of '../framework.dart';
+part of '../../framework.dart';
 
 /// An abstraction of both [ProviderContainer] and [ProviderElement] used by
 /// [ProviderListenable].

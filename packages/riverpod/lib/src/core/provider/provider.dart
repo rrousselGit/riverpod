@@ -1,4 +1,4 @@
-part of '../framework.dart';
+part of '../../framework.dart';
 
 /// A callback used by providers to create the value exposed.
 ///

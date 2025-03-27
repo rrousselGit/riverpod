@@ -1,10 +1,10 @@
 import 'package:meta/meta.dart';
 
-import 'internals.dart';
+import '../../internals.dart';
 import 'state_controller.dart';
 
 part 'state_provider/auto_dispose.dart';
-part 'state_provider/base.dart';
+part 'state_provider/orphan.dart';
 
 ProviderElementProxy<T, StateController<T>> _notifier<T>(
   _StateProviderBase<T> that,

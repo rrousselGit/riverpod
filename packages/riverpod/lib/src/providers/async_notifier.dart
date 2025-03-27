@@ -2,26 +2,25 @@ import 'dart:async';
 
 import 'package:meta/meta.dart';
 
-import 'builders.dart';
-import 'common.dart';
-import 'framework.dart';
+import '../builder.dart';
+import '../common/listenable.dart';
+import '../common/pragma.dart';
+import '../common/result.dart';
+import '../common/run_guarded.dart';
+import '../framework.dart';
 import 'future_provider.dart' show FutureProvider;
-import 'listenable.dart';
 import 'notifier.dart';
-import 'pragma.dart';
-import 'result.dart';
-import 'run_guarded.dart';
 import 'stream_provider.dart';
 
 part 'async_notifier/auto_dispose.dart';
 part 'async_notifier/auto_dispose_family.dart';
-part 'async_notifier/base.dart';
 part 'async_notifier/family.dart';
+part 'async_notifier/orphan.dart';
 part 'stream_notifier.dart';
 part 'stream_notifier/auto_dispose.dart';
 part 'stream_notifier/auto_dispose_family.dart';
-part 'stream_notifier/base.dart';
 part 'stream_notifier/family.dart';
+part 'stream_notifier/orphan.dart';
 
 /// A base class for [AsyncNotifier].
 ///

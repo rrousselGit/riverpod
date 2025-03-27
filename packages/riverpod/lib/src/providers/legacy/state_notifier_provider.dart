@@ -1,10 +1,10 @@
 import 'package:meta/meta.dart';
 import 'package:state_notifier/state_notifier.dart';
 
-import 'internals.dart';
+import '../../internals.dart';
 
 part 'state_notifier_provider/auto_dispose.dart';
-part 'state_notifier_provider/base.dart';
+part 'state_notifier_provider/orphan.dart';
 
 ProviderElementProxy<T, NotifierT>
     _notifier<NotifierT extends StateNotifier<T>, T>(

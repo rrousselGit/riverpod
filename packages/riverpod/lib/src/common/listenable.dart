@@ -1,8 +1,8 @@
 import 'package:meta/meta.dart';
 
-import 'common/env.dart';
-import 'framework.dart' show ProviderElementBase;
-import 'internals.dart' show OnError;
+import '../framework.dart' show ProviderElementBase;
+import '../internals.dart' show OnError;
+import 'env.dart';
 import 'pragma.dart';
 import 'result.dart';
 

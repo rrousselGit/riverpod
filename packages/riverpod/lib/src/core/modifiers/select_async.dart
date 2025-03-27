@@ -1,4 +1,4 @@
-part of '../framework.dart';
+part of '../../framework.dart';
 
 /// Adds [selectAsync] to [ProviderListenable]
 @internal
