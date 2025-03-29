@@ -21,7 +21,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   riverpod_lint:
-    path: ../../packages/riverpod_lint
 
 flutter:
   uses-material-design: true

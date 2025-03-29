@@ -13,9 +13,7 @@ dependencies:
     sdk: flutter
   flutter_hooks: ^0.21.2
   hooks_riverpod:
-    path: ../../packages/hooks_riverpod
   riverpod:
-    path: ../../packages/riverpod
   uuid: ^4.5.1
 
 dev_dependencies:
@@ -24,7 +22,6 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   riverpod_lint:
-    path: ../../packages/riverpod_lint
 
 flutter:
   uses-material-design: true

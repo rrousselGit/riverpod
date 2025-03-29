@@ -12,7 +12,6 @@ dependencies:
   freezed_annotation: ^3.0.0
   json_annotation: ^4.9.0
   riverpod:
-    path: ..
 
 dev_dependencies:
   build_runner: ^2.0.0
