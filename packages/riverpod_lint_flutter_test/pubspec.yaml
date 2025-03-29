@@ -20,6 +20,7 @@ dev_dependencies:
   freezed: ^3.0.2
   json_serializable: ^6.6.1
   riverpod_lint:
+    path: ../riverpod_lint
   riverpod_generator: ^2.0.0
   test: ^1.24.9
   flutter_test:
@@ -27,7 +28,12 @@ dev_dependencies:
 
 dependency_overrides:
   riverpod_generator:
+    path: ../riverpod_generator
   riverpod:
+    path: ../riverpod
   flutter_riverpod:
+    path: ../flutter_riverpod
   hooks_riverpod:
+    path: ../hooks_riverpod
   riverpod_annotation:
+    path: ../riverpod_annotation
