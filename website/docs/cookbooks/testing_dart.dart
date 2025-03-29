@@ -14,38 +14,38 @@ abstract class Todo {
 final todoListProvider = FutureProvider<List<Todo>>((ref) => []);
 
 void main() {
-/* SNIPPET START */
+  /* SNIPPET START */
 
-test('override repositoryProvider', () async {
-  final container = ProviderContainer(
-    overrides: [
-      // Override the behavior of repositoryProvider to return
-      // FakeRepository instead of Repository.
-      /* highlight-start */
-      repositoryProvider.overrideWithValue(FakeRepository())
-      /* highlight-end */
-      // We do not have to override `todoListProvider`, it will automatically
-      // use the overridden repositoryProvider
-    ],
-  );
+  test('override repositoryProvider', () async {
+    final container = ProviderContainer(
+      overrides: [
+        // Override the behavior of repositoryProvider to return
+        // FakeRepository instead of Repository.
+        /* highlight-start */
+        repositoryProvider.overrideWithValue(FakeRepository())
+        /* highlight-end */
+        // We do not have to override `todoListProvider`, it will automatically
+        // use the overridden repositoryProvider
+      ],
+    );
 
-  // The first read if the loading state
-  expect(
-    container.read(todoListProvider),
-    const AsyncValue<List<Todo>>.loading(),
-  );
+    // The first read if the loading state
+    expect(
+      container.read(todoListProvider),
+      const AsyncValue<List<Todo>>.loading(),
+    );
 
-  /// Wait for the request to finish
-  await container.read(todoListProvider.future);
+    /// Wait for the request to finish
+    await container.read(todoListProvider.future);
 
-  // Exposes the data fetched
-  expect(container.read(todoListProvider).value, [
-    isA<Todo>()
-        .having((s) => s.id, 'id', '42')
-        .having((s) => s.label, 'label', 'Hello world')
-        .having((s) => s.completed, 'completed', false),
-  ]);
-});
+    // Exposes the data fetched
+    expect(container.read(todoListProvider).requireValue, [
+      isA<Todo>()
+          .having((s) => s.id, 'id', '42')
+          .having((s) => s.label, 'label', 'Hello world')
+          .having((s) => s.completed, 'completed', false),
+    ]);
+  });
 
-/* SNIPPET END */
+  /* SNIPPET END */
 }
