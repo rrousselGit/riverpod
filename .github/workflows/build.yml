@@ -5,6 +5,13 @@ on:
     paths-ignore:
       - "**.md"
       - "**.mdx"
+  push:
+    branches:
+      - master
+      - dev
+    paths-ignore:
+      - "**.md"
+      - "**.mdx"
 
   schedule:
     # runs the CI everyday at 10AM
