@@ -59,6 +59,23 @@ Map<String, dynamic> _$QuestionToJson(_Question instance) => <String, dynamic>{
 // RiverpodGenerator
 // **************************************************************************
 
+String _$questionThemeHash() => r'c66658995d65c988e6db012ab7f9f754eaa0e5ce';
+
+/// See also [questionTheme].
+@ProviderFor(questionTheme)
+final questionThemeProvider = AutoDisposeProvider<QuestionTheme>.internal(
+  questionTheme,
+  name: r'questionThemeProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$questionThemeHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef QuestionThemeRef = AutoDisposeProviderRef<QuestionTheme>;
 String _$currentQuestionHash() => r'e9359841a5b980cd7b8c79a0b56cb98878190861';
 
 /// A scoped provider, exposing the current question used by [QuestionItem].
