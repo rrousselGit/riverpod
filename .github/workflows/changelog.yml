@@ -1,16 +1,15 @@
-name: Check code-generation
+name: Check CHANGELOG.md
 
 on:
-  pull_request:
-    paths-ignore:
-      - "**.md"
   push:
     branches:
       - master
       - dev
+  pull_request:
+  
 
 jobs:
-  check_generation:
+  changelog:
     runs-on: ubuntu-latest
 
     steps:
@@ -25,12 +24,9 @@ jobs:
         run: echo "$HOME/.pub-cache/bin" >> $GITHUB_PATH
       - name: Add pub cache to PATH
         run: echo "PUB_CACHE="$HOME/.pub-cache"" >> $GITHUB_ENV
-      - name: Install dependencies
-        run: flutter pub get
-      - run: flutter pub get
-        working-directory: packages/riverpod_lint_flutter_test
 
-      - run: ./scripts/generate.sh
+      - name: Install "semantic_changelog"
+        run: dart pub global activate -s git https://github.com/rrousselGit/semantic_changelog
 
-      - name: check there are no uncommitted changes
-        run: git diff --exit-code
+      - run: git fetch origin master:refs/remotes/origin/master
+      - run: semantic_changelog check origin/master

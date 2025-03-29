@@ -6,17 +6,18 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 
 import '../screens/home.dart';
 
-const _height = 300.0;
-
 class _SearchTheme {
   const _SearchTheme({
     required this.width,
+    // ignore: unused_element, blocked by https://github.com/dart-lang/linter/issues/3232
+    this.height = 300,
     required this.searchDecoration,
     required this.iconPadding,
     required this.searchMargin,
   });
 
   final double width;
+  final double height;
   final BoxDecoration searchDecoration;
   final EdgeInsets iconPadding;
   final EdgeInsets searchMargin;
@@ -186,7 +187,7 @@ class _SearchHintContainer extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       constraints: BoxConstraints(
-        maxHeight: _height,
+        maxHeight: theme.height,
       ),
       margin: theme.searchMargin,
       child: Material(
@@ -195,7 +196,7 @@ class _SearchHintContainer extends StatelessWidget {
         clipBehavior: Clip.hardEdge,
         child: OverflowBox(
           alignment: Alignment.topLeft,
-          maxHeight: _height,
+          maxHeight: theme.height,
           maxWidth: 300,
           child: child,
         ),
