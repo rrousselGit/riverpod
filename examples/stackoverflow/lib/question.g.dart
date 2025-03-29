@@ -54,3 +54,58 @@ Map<String, dynamic> _$QuestionToJson(_Question instance) => <String, dynamic>{
       'title': instance.title,
       'body': instance.body,
     };
+
+// **************************************************************************
+// RiverpodGenerator
+// **************************************************************************
+
+String _$questionThemeHash() => r'c66658995d65c988e6db012ab7f9f754eaa0e5ce';
+
+/// See also [questionTheme].
+@ProviderFor(questionTheme)
+final questionThemeProvider = AutoDisposeProvider<QuestionTheme>.internal(
+  questionTheme,
+  name: r'questionThemeProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$questionThemeHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef QuestionThemeRef = AutoDisposeProviderRef<QuestionTheme>;
+String _$currentQuestionHash() => r'e9359841a5b980cd7b8c79a0b56cb98878190861';
+
+/// A scoped provider, exposing the current question used by [QuestionItem].
+///
+/// This is used as a performance optimization to pass a [Question] to
+/// [QuestionItem], while still instantiating [QuestionItem] using the `const`
+/// keyword.
+///
+/// This allows [QuestionItem] to rebuild less often.
+/// By doing so, even when using [QuestionItem] in a [ListView], even if new
+/// questions are obtained, previously rendered [QuestionItem]s won't rebuild.
+///
+/// This is an optional step. Since scoping is a fairly advanced mechanism,
+/// it's entirely fine to simply pass the [Question] to [QuestionItem] directly.
+///
+/// Copied from [currentQuestion].
+@ProviderFor(currentQuestion)
+final currentQuestionProvider =
+    AutoDisposeProvider<AsyncValue<Question>>.internal(
+  currentQuestion,
+  name: r'currentQuestionProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$currentQuestionHash,
+  dependencies: const <ProviderOrFamily>[],
+  allTransitiveDependencies: const <ProviderOrFamily>{},
+);
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef CurrentQuestionRef = AutoDisposeProviderRef<AsyncValue<Question>>;
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

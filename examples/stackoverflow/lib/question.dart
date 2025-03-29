@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:html/parser.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'common.dart';
 import 'tag.dart';
@@ -97,7 +98,8 @@ sealed class QuestionTheme with _$QuestionTheme {
   }) = _QuestionTheme;
 }
 
-final questionThemeProvider = Provider<QuestionTheme>((ref) {
+@riverpod
+QuestionTheme questionTheme(Ref ref) {
   return const QuestionTheme(
     titleStyle: TextStyle(
       color: Color(0xFF3ca4ff),
@@ -108,7 +110,7 @@ final questionThemeProvider = Provider<QuestionTheme>((ref) {
       fontSize: 13,
     ),
   );
-});
+}
 
 /// A scoped provider, exposing the current question used by [QuestionItem].
 ///
@@ -122,9 +124,10 @@ final questionThemeProvider = Provider<QuestionTheme>((ref) {
 ///
 /// This is an optional step. Since scoping is a fairly advanced mechanism,
 /// it's entirely fine to simply pass the [Question] to [QuestionItem] directly.
-final currentQuestion = Provider<AsyncValue<Question>>((ref) {
+@Riverpod(dependencies: [])
+AsyncValue<Question> currentQuestion(Ref ref) {
   throw UnimplementedError();
-});
+}
 
 /// A UI widget rendering a [Question].
 ///
@@ -135,7 +138,7 @@ class QuestionItem extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final question = ref.watch(currentQuestion);
+    final question = ref.watch(currentQuestionProvider);
     final questionTheme = ref.watch(questionThemeProvider);
 
     return question.when(
