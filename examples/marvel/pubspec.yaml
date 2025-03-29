@@ -19,7 +19,6 @@ dependencies:
   flutter_svg: ^2.0.9
   freezed_annotation: ^3.0.0
   hooks_riverpod:
-    path: ../../packages/hooks_riverpod
   json_annotation: ^4.9.0
 
 dev_dependencies:
@@ -31,7 +30,6 @@ dev_dependencies:
   json_serializable: ^6.3.1
   mockito: ^5.0.0
   riverpod_lint:
-    path: ../../packages/riverpod_lint
 
 flutter:
   uses-material-design: true

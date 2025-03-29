@@ -13,7 +13,6 @@ dependencies:
   flutter:
     sdk: flutter
   hooks_riverpod:
-    path: ..
 
 dev_dependencies:
   flutter_test:

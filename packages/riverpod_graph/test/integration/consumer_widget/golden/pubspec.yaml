@@ -14,9 +14,7 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_riverpod:
-    path: ../../../../../../packages/flutter_riverpod
   riverpod:
-    path: ../../../../../../packages/riverpod
 
 dev_dependencies:
   flutter_test:
