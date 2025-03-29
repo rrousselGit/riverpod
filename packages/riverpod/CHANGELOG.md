@@ -3,6 +3,8 @@
 - In 3.0.0, `AsyncValue.value` will be removed and `valueOrNull` will be
   renamed to `value`.
   To match this, both are deprecated, and a temporary `AsyncValue.value2` is added.
+- `StateNotifierProvider/StateProvider` and relevant APIs are considered deprecated.
+  To keep using them, import `package:riverpod/legacy.dart'`.
 - Added various experimental features:
   - A new syntax for providers
   - Mutations
