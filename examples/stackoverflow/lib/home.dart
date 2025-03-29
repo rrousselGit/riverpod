@@ -41,7 +41,7 @@ class MyHomePage extends HookConsumerWidget {
                   itemBuilder: (context, index) {
                     return ProviderScope(
                       overrides: [
-                        currentQuestion.overrideWithValue(
+                        currentQuestionProvider.overrideWithValue(
                           ref
                               .watch(paginatedQuestionsProvider(index ~/ 50))
                               .whenData((page) => page.items[index % 50]),
