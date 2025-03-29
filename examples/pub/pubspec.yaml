@@ -15,7 +15,7 @@ dependencies:
   flutter_hooks: ^0.21.2
   flutter_svg: ^2.0.9
   freezed_annotation: ^3.0.0
-  hooks_riverpod: ^2.3.4
+  hooks_riverpod:
   html: ^0.15.0
   json_annotation: ^4.9.0
   pubspec_parse: ^1.2.1
