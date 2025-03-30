@@ -114,10 +114,8 @@ class ProviderScope extends StatefulWidget {
   /// The part of the widget tree that can use Riverpod and has overridden providers.
   final Widget child;
 
-  /// The listeners that subscribe to changes on providers stored on this [ProviderScope].
-  ///
-  /// See [ProviderObserver] for more information.
-  final List<ProviderObserver>? observers;
+  /// The listeners that subscribes to changes on providers stored on this [ProviderScope].
+  final List<AnyProviderObserver>? observers;
 
   /// Information on how to override a provider/family.
   ///

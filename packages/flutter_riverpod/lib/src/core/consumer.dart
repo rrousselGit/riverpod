@@ -80,7 +80,9 @@ typedef ConsumerBuilder = Widget Function(
 ///
 /// See also:
 ///
-///  * [ConsumerWidget], a base-class for widgets that wants to listen to providers.
+/// - [ConsumerWidget], a base-class for widgets that wants to listen to providers.
+/// - [child], a way to optimize the widget tree by passing a child widget that
+///   won't rebuild when the provider changes.
 /// {@endtemplate}
 @sealed
 class Consumer extends ConsumerWidget {
@@ -123,7 +125,13 @@ class Consumer extends ConsumerWidget {
   /// This sample shows how you could use a [Consumer]
   ///
   /// ```dart
-  /// final counterProvider = StateProvider((ref) => 0);
+  /// final counterProvider = NotifierProvider<Counter, int>(Counter.new);
+  /// class Counter extends Notifier<int> {
+  ///   @override
+  ///   int build() => 0;
+  ///
+  ///   void increment() => state++;
+  /// }
   ///
   /// class MyHomePage extends ConsumerWidget {
   ///   MyHomePage({Key? key, required this.title}) : super(key: key);
@@ -164,7 +172,7 @@ class Consumer extends ConsumerWidget {
   ///       ),
   ///       floatingActionButton: FloatingActionButton(
   ///         child: Icon(Icons.plus_one),
-  ///         onPressed: () => ref.read(counterProvider.notifier).state++,
+  ///         onPressed: () => ref.read(counterProvider.notifier).increment(),
   ///       ),
   ///     );
   ///   }
@@ -274,11 +282,10 @@ abstract class ConsumerWidget extends ConsumerStatefulWidget {
 
 class _ConsumerState extends ConsumerState<ConsumerWidget> {
   @override
-  Widget build(BuildContext context) {
-    return widget.build(context, ref);
-  }
+  Widget build(BuildContext context) => widget.build(context, ref);
 }
 
+/// {@template riverpod.consumer_stateful_widget}
 /// A [StatefulWidget] that has a [State] capable of reading providers.
 ///
 /// This is used exactly like a [StatefulWidget], but with a [State] that must
@@ -306,15 +313,16 @@ class _ConsumerState extends ConsumerState<ConsumerWidget> {
 ///   }
 /// }
 /// ```
+/// {@endtemplate}
 abstract class ConsumerStatefulWidget extends StatefulWidget {
-  /// A [StatefulWidget] that can read providers.
+  /// {@macro riverpod.consumer_stateful_widget}
   const ConsumerStatefulWidget({super.key});
 
   @override
   ConsumerState createState();
 
   @override
-  StatefulElement createElement() => ConsumerStatefulElement(this);
+  ConsumerStatefulElement createElement() => ConsumerStatefulElement(this);
 }
 
 /// The [State] for a [ConsumerStatefulWidget].
