@@ -223,6 +223,11 @@ class ProviderScopeState extends State<ProviderScope> {
   }
 
   void _debugAssertParentDidNotChange() {
+    if (widget.parent != null) {
+      // didUpdateWidget already takes care of widget.parent change
+      return;
+    }
+
     final parent = _getParent();
 
     if (parent != _debugParentOwner) {
