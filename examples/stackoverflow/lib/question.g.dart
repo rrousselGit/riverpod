@@ -59,6 +59,65 @@ Map<String, dynamic> _$QuestionToJson(_Question instance) => <String, dynamic>{
 // RiverpodGenerator
 // **************************************************************************
 
+@ProviderFor(questionTheme)
+const questionThemeProvider = QuestionThemeProvider._();
+
+final class QuestionThemeProvider
+    extends $FunctionalProvider<QuestionTheme, QuestionTheme>
+    with $Provider<QuestionTheme> {
+  const QuestionThemeProvider._(
+      {QuestionTheme Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'questionThemeProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final QuestionTheme Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$questionThemeHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(QuestionTheme value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<QuestionTheme>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<QuestionTheme> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  QuestionThemeProvider $copyWithCreate(
+    QuestionTheme Function(
+      Ref ref,
+    ) create,
+  ) {
+    return QuestionThemeProvider._(create: create);
+  }
+
+  @override
+  QuestionTheme create(Ref ref) {
+    final _$cb = _createCb ?? questionTheme;
+    return _$cb(ref);
+  }
+}
+
+String _$questionThemeHash() => r'c66658995d65c988e6db012ab7f9f754eaa0e5ce';
+
 /// A scoped provider, exposing the current question used by [QuestionItem].
 ///
 /// This is used as a performance optimization to pass a [Question] to
