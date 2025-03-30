@@ -32,3 +32,7 @@ part 'core/provider_subscription.dart';
 part 'core/proxy_provider_listenable.dart';
 part 'core/ref.dart';
 part 'core/scheduler.dart';
+part 'experiments/listenable.dart';
+part 'experiments/mutations.dart';
+part 'experiments/providers.dart';
+part 'experiments/scope.dart';
