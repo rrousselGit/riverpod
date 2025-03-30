@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'internals.dart';
 
-/// {@template hooks_riverpod.hookconsumer.hookconsumerwidget}
+/// {@template hooks_riverpod.hook_consumer.hook_consumer_widget}
 /// A widget that can both use hooks and listen to providers.
 ///
 /// If you do not need hooks, you can use [Consumer].
 /// {@endtemplate}
 abstract class HookConsumerWidget extends ConsumerWidget {
-  /// {@macro hooks_riverpod.hookconsumer.hookconsumerwidget}
+  /// {@macro hooks_riverpod.hook_consumer.hook_consumer_widget}
   const HookConsumerWidget({super.key});
 
   @override
@@ -17,14 +17,16 @@ abstract class HookConsumerWidget extends ConsumerWidget {
 }
 
 // ignore: invalid_use_of_visible_for_testing_member
-class _HookConsumerElement extends ConsumerStatefulElement with HookElement {
+class _HookConsumerElement extends
+// ignore: invalid_use_of_internal_member
+    ConsumerStatefulElement with HookElement {
   _HookConsumerElement(HookConsumerWidget super.widget);
 }
 
-/// {@macro hooks_riverpod.hookconsumer.hookconsumerwidget}
+/// {@macro hooks_riverpod.hook_consumer.hook_consumer_widget}
 
 class HookConsumer extends HookConsumerWidget {
-  /// {@macro hooks_riverpod.hookconsumer.hookconsumerwidget}
+  /// {@macro hooks_riverpod.hook_consumer.hook_consumer_widget}
   const HookConsumer({super.key, required this.builder, this.child});
 
   /// A function that builds a widget.
@@ -55,7 +57,9 @@ abstract class StatefulHookConsumerWidget extends ConsumerStatefulWidget {
       _StatefulHookConsumerElement(this);
 }
 
-class _StatefulHookConsumerElement extends ConsumerStatefulElement
+class _StatefulHookConsumerElement extends
+// ignore: invalid_use_of_internal_member
+    ConsumerStatefulElement
     with
 // ignore: invalid_use_of_visible_for_testing_member
         HookElement {
