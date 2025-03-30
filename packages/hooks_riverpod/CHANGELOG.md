@@ -1,5 +1,7 @@
 ## Unreleased minor
 
+- `StateNotifierProvider/StateProvider/ChangeNotifierProvider` and relevant APIs are considered deprecated.
+  To keep using them, import `package:hooks_riverpod/legacy.dart'`.
 - Added various experimental features:
   - A new syntax for providers
   - Mutations
