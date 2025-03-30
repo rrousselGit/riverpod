@@ -6,6 +6,7 @@ import 'dart:collection';
 import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 import 'package:state_notifier/state_notifier.dart';
+import 'package:test/test.dart' as test;
 
 import 'common/env.dart';
 import 'common/pragma.dart';

@@ -452,6 +452,29 @@ class ProviderContainer implements Node {
     _legacyPointerManager.setupOverrides(overrides);
   }
 
+  /// An automatically disposed [ProviderContainer].
+  ///
+  /// This also adds an internal check at the end of tests that verifies
+  /// that all containers were disposed.
+  ///
+  /// This constructor works only inside tests, by relying on `package:test`'s
+  /// `addTearDown`.
+  @visibleForTesting
+  factory ProviderContainer.test({
+    ProviderContainer? parent,
+    List<Override> overrides = const [],
+    List<ProviderObserver>? observers,
+  }) {
+    final container = ProviderContainer(
+      parent: parent,
+      overrides: overrides,
+      observers: observers,
+    );
+    test.addTearDown(container.dispose);
+
+    return container;
+  }
+
   final int _debugOverridesLength;
 
   /// A function that controls the refresh rate of providers.
@@ -749,6 +772,16 @@ class ProviderContainer implements Node {
       );
     }
   }
+}
+
+@internal
+extension ProviderContainerTest on ProviderContainer {
+  bool get disposed => _disposed;
+
+  ProviderContainer? get root => _root;
+  ProviderContainer? get parent => _parent;
+
+  List<ProviderContainer> get children => _children;
 }
 
 /// An object that listens to the changes of a [ProviderContainer].
