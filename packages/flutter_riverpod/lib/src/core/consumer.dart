@@ -175,7 +175,7 @@ class Consumer extends ConsumerWidget {
 }
 
 /// {@template riverpod.consumer_widget}
-/// A [StatelessWidget] that can listen to providers.
+/// The equivalent of a [StatelessWidget] that can listen to providers.
 ///
 /// Using [ConsumerWidget], this allows the widget tree to listen to changes on
 /// provider, so that the UI automatically updates when needed.
@@ -214,8 +214,10 @@ class Consumer extends ConsumerWidget {
 /// }
 /// ```
 ///
-/// For reading providers inside a [StatefulWidget] or for performance
-/// optimizations, see [Consumer].
+/// See also:
+/// - [ConsumerStatefulWidget], for a [StatefulWidget] variant.
+/// - [Consumer], to help reducing the number of rebuilt widgets without making
+///   a new widget.
 /// {@endtemplate}
 abstract class ConsumerWidget extends ConsumerStatefulWidget {
   /// {@macro riverpod.consumer_widget}
@@ -262,8 +264,7 @@ abstract class ConsumerWidget extends ConsumerStatefulWidget {
   Widget build(BuildContext context, WidgetRef ref);
 
   @override
-  // ignore: library_private_types_in_public_api
-  _ConsumerState createState() => _ConsumerState();
+  ConsumerState<ConsumerWidget> createState() => _ConsumerState();
 }
 
 class _ConsumerState extends ConsumerState<ConsumerWidget> {
@@ -305,7 +306,6 @@ abstract class ConsumerStatefulWidget extends StatefulWidget {
   const ConsumerStatefulWidget({super.key});
 
   @override
-  // ignore: no_logic_in_create_state
   ConsumerState createState();
 
   @override

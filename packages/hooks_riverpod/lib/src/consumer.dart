@@ -32,6 +32,7 @@ class HookConsumer extends HookConsumerWidget {
   /// A function that builds a widget.
   ///
   /// Can both listen to providers and use hooks.
+  // ignore: invalid_use_of_internal_member
   final ConsumerBuilder builder;
 
   /// An optional child widget that will be passed to [builder].
