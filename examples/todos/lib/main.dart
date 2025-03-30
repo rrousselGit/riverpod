@@ -11,7 +11,7 @@ final activeFilterKey = UniqueKey();
 final completedFilterKey = UniqueKey();
 final allFilterKey = UniqueKey();
 
-/// Creates a [TodoList] and initialise it with pre-defined values.
+/// Creates a [TodoList] and initialize it with pre-defined values.
 ///
 /// We are using [StateNotifierProvider] here as a `List<Todo>` is a complex
 /// object, with advanced business logic like how to edit a todo.
@@ -36,7 +36,7 @@ final todoListFilter = StateProvider((_) => TodoListFilter.all);
 /// Even multiple widgets try to read the number of uncompleted todos,
 /// the value will be computed only once (until the todo-list changes).
 ///
-/// This will also optimise unneeded rebuilds if the todo-list changes, but the
+/// This will also optimize unneeded rebuilds if the todo-list changes, but the
 /// number of uncompleted todos doesn't (such as when editing a todo).
 final uncompletedTodosCount = Provider<int>((ref) {
   return ref.watch(todoListProvider).where((todo) => !todo.completed).length;
