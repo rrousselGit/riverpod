@@ -1,4 +1,4 @@
-import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/legacy.dart';
 
 /* SNIPPET START */
 final counterProvider = StateProvider<int>((ref) {

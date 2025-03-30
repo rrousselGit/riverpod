@@ -1,3 +1,4 @@
+import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 
 final repositoryProvider = Provider((ref) => Repository());

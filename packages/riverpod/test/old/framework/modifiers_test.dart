@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/legacy.dart';
 import 'package:riverpod/src/builder.dart';
 import 'package:test/test.dart';
 

@@ -22,12 +22,10 @@ ProviderElementProxy<NotifierT, NotifierT>
 }
 
 // ignore: subtype_of_sealed_class
-/// {@template riverpod.changenotifierprovider}
 /// Creates a [ChangeNotifier] and subscribes to it.
 ///
 /// Note: By using Riverpod, [ChangeNotifier] will no longer be O(N^2) for
 /// dispatching notifications, but instead O(N)
-/// {@endtemplate}
 abstract class _ChangeNotifierProviderBase<NotifierT extends ChangeNotifier?>
     extends ProviderBase<NotifierT> {
   const _ChangeNotifierProviderBase({
@@ -241,6 +239,7 @@ class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
 }
 
 /// The element of [ChangeNotifierProvider].
+@internal
 class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
     extends ProviderElementBase<NotifierT>
     // ignore: deprecated_member_use, deprecated_member_use_from_same_package
@@ -431,12 +430,15 @@ class AutoDisposeChangeNotifierProvider<NotifierT extends ChangeNotifier?>
 }
 
 /// The element of [AutoDisposeChangeNotifierProvider].
-@Deprecated('will be removed in 3.0.0, use Ref instead')
+@internal
 class AutoDisposeChangeNotifierProviderElement<
         NotifierT extends ChangeNotifier?>
     extends ChangeNotifierProviderElement<NotifierT>
-    with AutoDisposeProviderElementMixin<NotifierT>
-    implements AutoDisposeChangeNotifierProviderRef<NotifierT> {
+    with
+        AutoDisposeProviderElementMixin<NotifierT>
+    implements
+        // ignore: deprecated_member_use_from_same_package
+        AutoDisposeChangeNotifierProviderRef<NotifierT> {
   /// The [ProviderElementBase] for [ChangeNotifier]
   @Deprecated('will be removed in 3.0.0, use Ref instead')
   AutoDisposeChangeNotifierProviderElement._(

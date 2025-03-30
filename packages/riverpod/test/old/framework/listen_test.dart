@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart' hide ErrorListener;
+import 'package:riverpod/legacy.dart';
 import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 
