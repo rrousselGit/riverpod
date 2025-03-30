@@ -276,8 +276,7 @@ abstract class ConsumerWidget extends ConsumerStatefulWidget {
   Widget build(BuildContext context, WidgetRef ref);
 
   @override
-  // ignore: library_private_types_in_public_api
-  _ConsumerState createState() => _ConsumerState();
+  ConsumerState<ConsumerWidget> createState() => _ConsumerState();
 }
 
 class _ConsumerState extends ConsumerState<ConsumerWidget> {

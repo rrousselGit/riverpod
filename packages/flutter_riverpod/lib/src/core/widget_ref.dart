@@ -34,8 +34,6 @@ part of '../core.dart';
 /// As such, [WidgetRef]s should not leave the widget layer. If you need to
 /// interact with providers outside of the widget layer, consider using
 /// a [Ref] instead.
-///
-///
 /// {@endtemplate}
 abstract class WidgetRef {
   /// The [BuildContext] of the widget associated to this [WidgetRef].
