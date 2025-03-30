@@ -267,14 +267,40 @@ abstract class ConsumerWidget extends ConsumerStatefulWidget {
 
 class _ConsumerState extends ConsumerState<ConsumerWidget> {
   @override
-  Widget build(BuildContext context) {
-    return widget.build(context, ref);
-  }
+  Widget build(BuildContext context) => widget.build(context, ref);
 }
 
-/// A [StatefulWidget] that can read providers.
+/// {@template riverpod.consumer_stateful_widget}
+/// A [StatefulWidget] that has a [State] capable of reading providers.
+///
+/// This is used exactly like a [StatefulWidget], but with a [State] that must
+/// subclass [ConsumerState] :
+///
+/// ```dart
+/// class MyConsumer extends ConsumerStatefulWidget {
+///  const MyConsumer({Key? key}): super(key: key);
+///
+///   @override
+///   ConsumerState<MyConsumer> createState() => _MyConsumerState();
+/// }
+///
+/// class _MyConsumerState extends ConsumerState<MyConsumer> {
+///   @override
+///   void initState() {
+///     // All State life-cycles can be used
+///     super.initState();
+///   }
+///
+///   @override
+///   Widget build(BuildContext context) {
+///     // "ref" is a property of ConsumerState and can be used to read providers
+///     ref.watch(someProvider);
+///   }
+/// }
+/// ```
+/// {@endtemplate}
 abstract class ConsumerStatefulWidget extends StatefulWidget {
-  /// A [StatefulWidget] that can read providers.
+  /// {@macro riverpod.consumer_stateful_widget}
   const ConsumerStatefulWidget({super.key});
 
   @override
@@ -282,13 +308,38 @@ abstract class ConsumerStatefulWidget extends StatefulWidget {
   ConsumerState createState();
 
   @override
-  ConsumerStatefulElement createElement() {
-    return ConsumerStatefulElement(this);
-  }
+  ConsumerStatefulElement createElement() => ConsumerStatefulElement(this);
 }
 
-/// A [State] that has access to a [WidgetRef] through [ref], allowing
-/// it to read providers.
+/// The [State] for a [ConsumerStatefulWidget].
+///
+/// It has all the life-cycles if a normal [State], with the only difference
+/// being that it has a [ref] property.
+///
+/// It must be used in conjunction with a [ConsumerStatefulWidget] :
+///
+/// ```dart
+/// class MyConsumer extends ConsumerStatefulWidget {
+///  const MyConsumer({Key? key}): super(key: key);
+///
+///   @override
+///   ConsumerState<MyConsumer> createState() => _MyConsumerState();
+/// }
+///
+/// class _MyConsumerState extends ConsumerState<MyConsumer> {
+///   @override
+///   void initState() {
+///     // All State life-cycles can be used
+///     super.initState();
+///   }
+///
+///   @override
+///   Widget build(BuildContext context) {
+///     // "ref" is a property of ConsumerState and can be used to read providers
+///     ref.watch(someProvider);
+///   }
+/// }
+/// ```
 abstract class ConsumerState<T extends ConsumerStatefulWidget>
     extends State<T> {
   /// An object that allows widgets to interact with providers.
@@ -296,6 +347,7 @@ abstract class ConsumerState<T extends ConsumerStatefulWidget>
 }
 
 /// The [Element] for a [ConsumerStatefulWidget]
+@internal
 class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   /// The [Element] for a [ConsumerStatefulWidget]
   ConsumerStatefulElement(ConsumerStatefulWidget super.widget);
