@@ -98,7 +98,8 @@ sealed class QuestionTheme with _$QuestionTheme {
   }) = _QuestionTheme;
 }
 
-final questionThemeProvider = Provider<QuestionTheme>((ref) {
+@riverpod
+QuestionTheme questionTheme(Ref ref) {
   return const QuestionTheme(
     titleStyle: TextStyle(
       color: Color(0xFF3ca4ff),
@@ -109,7 +110,7 @@ final questionThemeProvider = Provider<QuestionTheme>((ref) {
       fontSize: 13,
     ),
   );
-});
+}
 
 /// A scoped provider, exposing the current question used by [QuestionItem].
 ///
