@@ -4,7 +4,6 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-
 void main() {
   group('ChangeNotifierProvider.family', () {
     test('specifies `from` and `argument` for related providers', () {

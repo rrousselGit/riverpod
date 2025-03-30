@@ -1,7 +1,6 @@
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
-
 void main() {
   test('specifies `from` & `argument` for related providers', () {
     final provider = FutureProvider.family<int, int>((ref, _) => 0);

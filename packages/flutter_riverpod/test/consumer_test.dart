@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-
 void main() {
   testWidgets('Riverpod test', (tester) async {
     // Regression test for https://github.com/rrousselGit/riverpod/pull/3156

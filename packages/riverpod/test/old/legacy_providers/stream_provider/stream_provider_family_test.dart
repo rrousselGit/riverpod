@@ -1,7 +1,6 @@
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
-
 void main() {
   group('StreamProvider.family', () {
     test('specifies `from` & `argument` for related providers', () {
