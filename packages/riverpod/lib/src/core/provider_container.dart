@@ -433,7 +433,7 @@ class ProviderPointerManager {
     );
   }
 
-  ProviderDirectory? readDirectory(ProviderBase<Object?> provider) {
+  ProviderDirectory? readDirectory(AnyProvider<Object?> provider) {
     final from = provider.from;
 
     if (from == null) {
@@ -443,11 +443,11 @@ class ProviderPointerManager {
     }
   }
 
-  $ProviderPointer? readPointer(ProviderBase<Object?> provider) {
+  $ProviderPointer? readPointer(AnyProvider<Object?> provider) {
     return readDirectory(provider)?.pointers[provider];
   }
 
-  ProviderElement? readElement(ProviderBase<Object?> provider) {
+  ProviderElement? readElement(AnyProvider<Object?> provider) {
     return readPointer(provider)?.element;
   }
 
@@ -742,7 +742,7 @@ class ProviderContainer implements Node {
   }
 
   /// {@macro riverpod.exists}
-  bool exists(ProviderBase<Object?> provider) {
+  bool exists(AnyProvider<Object?> provider) {
     return _pointerManager
             .readDirectory(provider)
             ?.pointers[provider]

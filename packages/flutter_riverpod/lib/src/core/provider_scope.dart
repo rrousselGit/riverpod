@@ -119,8 +119,10 @@ class ProviderScope extends StatefulWidget {
 
   /// Information on how to override a provider/family.
   ///
-  /// This can be used either for:
-  /// - testing, such as to mock a provider
+  /// Overrides are created using methods such as [Provider.overrideWith]/[Provider.overrideWithValue].
+  ///
+  /// This can be used for:
+  /// - testing, by mocking a provider.
   /// - dependency injection, to avoid having to pass a value to many
   ///   widgets in the widget tree.
   /// - performance optimization: By using this to inject values to widgets

@@ -499,7 +499,7 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   }
 
   @override
-  bool exists(ProviderBase<Object?> provider) {
+  bool exists(AnyProvider<Object?> provider) {
     _assertNotDisposed();
     return ProviderScope.containerOf(this, listen: false).exists(provider);
   }
