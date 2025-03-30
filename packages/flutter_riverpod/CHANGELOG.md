@@ -1,5 +1,7 @@
 ## Unreleased minor
 
+- Added a test-only `ProviderContainer.test`.
+  This automatically disposes the `ProviderContainer` after tests end.
 - `StateNotifierProvider/StateProvider/ChangeNotifierProvider` and relevant APIs are considered deprecated.
   To keep using them, import `package:flutter_riverpod/legacy.dart'`.
 - Added various experimental features:

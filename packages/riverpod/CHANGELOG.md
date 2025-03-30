@@ -1,5 +1,7 @@
 ## Unreleased minor
 
+- Added a test-only `ProviderContainer.test`.
+  This automatically disposes the `ProviderContainer` after tests end.
 - In 3.0.0, `AsyncValue.value` will be removed and `valueOrNull` will be
   renamed to `value`.
   To match this, both are deprecated, and a temporary `AsyncValue.value2` is added.
