@@ -155,7 +155,7 @@ void main() {
 
   group('WidgetRef.listen', () {
     testWidgets('expose previous and new value on change', (tester) async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final dep = StateNotifierProvider<StateController<int>, int>(
         (ref) => StateController(0),
       );
@@ -181,7 +181,7 @@ void main() {
     testWidgets(
         'when using selectors, `previous` is the latest notification instead of latest event',
         (tester) async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final dep = StateNotifierProvider<StateController<int>, int>(
         (ref) => StateController(0),
       );

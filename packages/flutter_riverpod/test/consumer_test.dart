@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/src/internals.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'utils.dart';
 
 void main() {
   testWidgets('Riverpod test', (tester) async {
@@ -454,7 +453,7 @@ void main() {
     final provider = StateNotifierProvider<TestNotifier, int>((_) => notifier);
     final computed = Provider((ref) => !ref.watch(provider).isNegative);
     var buildCount = 0;
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     await tester.pumpWidget(
       UncontrolledProviderScope(

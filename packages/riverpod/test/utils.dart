@@ -22,20 +22,6 @@ class Counter extends StateNotifier<int> {
   set state(int value) => super.state = value;
 }
 
-ProviderContainer createContainer({
-  ProviderContainer? parent,
-  List<Override> overrides = const [],
-  List<ProviderObserver>? observers,
-}) {
-  final container = ProviderContainer(
-    parent: parent,
-    overrides: overrides,
-    observers: observers,
-  );
-  addTearDown(container.dispose);
-  return container;
-}
-
 List<Object> errorsOf(void Function() cb) {
   final errors = <Object>[];
   runZonedGuarded(cb, (err, _) => errors.add(err));

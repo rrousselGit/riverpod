@@ -17,7 +17,7 @@ void main() {
       test('Can assign `AsyncLoading<T>` to `AsyncValue<void>`', () {
         // Regression test for https://github.com/rrousselGit/riverpod/issues/2120
         final provider = factory.simpleTestProvider<void>((ref) => 42);
-        final container = createContainer();
+        final container = ProviderContainer.test();
 
         final sub = container.listen(provider.notifier, (prev, next) {});
 
@@ -37,7 +37,7 @@ void main() {
       test('Can assign `AsyncData<T>` to `AsyncValue<void>`', () {
         // Regression test for https://github.com/rrousselGit/riverpod/issues/2120
         final provider = factory.simpleTestProvider<void>((ref) => 42);
-        final container = createContainer();
+        final container = ProviderContainer.test();
 
         final sub = container.listen(provider.notifier, (prev, next) {});
 
@@ -57,7 +57,7 @@ void main() {
       test('Can assign `AsyncError<T>` to `AsyncValue<void>`', () {
         // Regression test for https://github.com/rrousselGit/riverpod/issues/2120
         final provider = factory.simpleTestProvider<void>((ref) => 42);
-        final container = createContainer();
+        final container = ProviderContainer.test();
 
         final sub = container.listen(provider.notifier, (prev, next) {});
 
@@ -80,7 +80,7 @@ void main() {
         test(
             'performs seamless copyWithPrevious if triggered by ref.invalidate/ref.refresh',
             () async {
-          final container = createContainer();
+          final container = ProviderContainer.test();
           var count = 0;
           final provider = factory.simpleTestProvider(
             (ref) => Future.value(count++),
@@ -112,7 +112,7 @@ void main() {
         test(
             'performs seamless:false copyWithPrevious on `state = AsyncLoading()`',
             () async {
-          final container = createContainer();
+          final container = ProviderContainer.test();
           final provider = factory.simpleTestProvider((ref) => Future.value(0));
 
           final sub = container.listen(provider.notifier, (previous, next) {});
@@ -132,7 +132,7 @@ void main() {
         test(
             'performs seamless:false copyWithPrevious if triggered by a dependency change',
             () async {
-          final container = createContainer();
+          final container = ProviderContainer.test();
           final dep = StateProvider((ref) => 0);
           final provider = factory.simpleTestProvider(
             (ref) => Future.value(ref.watch(dep)),
@@ -155,7 +155,7 @@ void main() {
         });
 
         test('performs seamless data > loading > error transition', () async {
-          final container = createContainer();
+          final container = ProviderContainer.test();
           var result = Future.value(42);
           final provider = FutureProvider((ref) => result);
 
@@ -183,7 +183,7 @@ void main() {
         test(
             'performs seamless:false copyWithPrevious if both triggered by a dependency change and ref.refresh',
             () async {
-          final container = createContainer();
+          final container = ProviderContainer.test();
           final dep = StateProvider((ref) => 0);
           final provider = factory.simpleTestProvider(
             (ref) => Future.value(ref.watch(dep)),
@@ -208,7 +208,7 @@ void main() {
 
       test('does not notify listeners when refreshed during loading', () async {
         final provider = factory.simpleTestProvider((ref) => Future.value(0));
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final listener = Listener<AsyncValue<int>>();
 
         container.listen(provider, listener.call, fireImmediately: true);
@@ -232,7 +232,7 @@ void main() {
           ref.listenSelf(listener.call, onError: onError.call);
           Error.throwWithStackTrace(42, StackTrace.empty);
         });
-        final container = createContainer();
+        final container = ProviderContainer.test();
 
         container.listen(provider, (previous, next) {});
 
@@ -258,7 +258,7 @@ void main() {
           'converts AsyncNotifier.build into an AsyncData if the future completes',
           () async {
         final provider = factory.simpleTestProvider((ref) => Future.value(0));
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final listener = Listener<AsyncValue<int>>();
 
         container.listen(provider, listener.call, fireImmediately: true);
@@ -287,7 +287,7 @@ void main() {
         final provider = factory.simpleTestProvider<int>(
           (ref) => Future.error(0, StackTrace.empty),
         );
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final listener = Listener<AsyncValue<int>>();
 
         container.listen(provider, listener.call, fireImmediately: true);
@@ -315,7 +315,7 @@ void main() {
         final provider = factory.testProvider<int>(
           () => Error.throwWithStackTrace(0, StackTrace.empty),
         );
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final listener = Listener<AsyncValue<int>>();
 
         container.listen(provider, listener.call, fireImmediately: true);
@@ -336,7 +336,7 @@ void main() {
           'synchronously emits AsyncData if AsyncNotifier.build emits synchronously',
           () async {
         final provider = factory.simpleTestProvider<int>((ref) => 0);
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final listener = Listener<AsyncValue<int>>();
 
         container.listen(provider, listener.call, fireImmediately: true);
@@ -352,7 +352,7 @@ void main() {
         final provider = factory.simpleTestProvider<int>(
           (ref) => Error.throwWithStackTrace(42, StackTrace.empty),
         );
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final listener = Listener<AsyncValue<int>>();
 
         container.listen(provider, listener.call, fireImmediately: true);
@@ -371,7 +371,7 @@ void main() {
       test(
           'stops listening to the previous future data when the provider rebuilds',
           () async {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final dep = StateProvider((ref) => 0);
         final completers = {
           0: Completer<int>.sync(),
@@ -410,7 +410,7 @@ void main() {
       test(
           'stops listening to the previous future error when the provider rebuilds',
           () async {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final dep = StateProvider((ref) => 0);
         final completers = {
           0: Completer<int>.sync(),
@@ -454,7 +454,7 @@ void main() {
             'when manually modifying the state, the new exposed value contains the previous state when possible',
             () async {
           final provider = factory.simpleTestProvider<int>((ref) => 0);
-          final container = createContainer();
+          final container = ProviderContainer.test();
 
           final sub = container.listen(provider.notifier, (previous, next) {});
 
@@ -499,7 +499,7 @@ void main() {
               return Future.value(ref.watch(dep));
             },
           );
-          final container = createContainer();
+          final container = ProviderContainer.test();
 
           container.listen(provider, (previous, next) {});
           final notifier = container.read(provider.notifier);
@@ -535,7 +535,7 @@ void main() {
               );
             },
           );
-          final container = createContainer();
+          final container = ProviderContainer.test();
 
           container.listen(provider, (previous, next) {});
 
@@ -552,7 +552,7 @@ void main() {
 
         test('notifies listeners when the setter is called', () {
           final provider = factory.simpleTestProvider((ref) => 0);
-          final container = createContainer();
+          final container = ProviderContainer.test();
           final listener = Listener<AsyncValue<int>>();
 
           container.listen(provider, listener.call);
@@ -572,7 +572,7 @@ void main() {
         test(
             'when disposed during loading, resolves with the content of AsyncNotifier.build',
             () async {
-          final container = createContainer();
+          final container = ProviderContainer.test();
           final completer = Completer<int>.sync();
           final provider = factory.simpleTestProvider<int>(
             (ref) => completer.future,
@@ -589,7 +589,7 @@ void main() {
         test(
             'when disposed during loading, resolves with the error of AsyncNotifier.build',
             () async {
-          final container = createContainer();
+          final container = ProviderContainer.test();
           final completer = Completer<int>.sync();
           final provider = factory.simpleTestProvider<int>(
             (ref) => completer.future,
@@ -608,7 +608,7 @@ void main() {
           'going data > loading while the future is still pending. '
           'Resolves with last future result',
           () async {
-            final container = createContainer();
+            final container = ProviderContainer.test();
             final completer = Completer<int>.sync();
             final provider = factory.simpleTestProvider<int>(
               (ref) => completer.future,
@@ -631,7 +631,7 @@ void main() {
         test(
           'if going back to loading after future resolved, throws StateError',
           () async {
-            final container = createContainer();
+            final container = ProviderContainer.test();
             final completer = Completer<int>.sync();
             final provider = factory.simpleTestProvider<int>(
               (ref) => completer.future,
@@ -655,7 +655,7 @@ void main() {
         test(
             'resolves with the new state if AsyncNotifier.state is modified during loading',
             () async {
-          final container = createContainer();
+          final container = ProviderContainer.test();
           final completer = Completer<int>.sync();
           final provider = factory.simpleTestProvider<int>(
             (ref) => completer.future,
@@ -682,7 +682,7 @@ void main() {
 
         test('resolves with the new state when notifier.state is changed',
             () async {
-          final container = createContainer();
+          final container = ProviderContainer.test();
           final provider = factory.simpleTestProvider<int>((ref) => 0);
           final listener = Listener<Future<int>>();
 
@@ -713,7 +713,7 @@ void main() {
               return Future.value(ref.watch(dep));
             },
           );
-          final container = createContainer();
+          final container = ProviderContainer.test();
 
           container.listen(provider.notifier, (previous, next) {});
           final notifier = container.read(provider.notifier);
@@ -732,7 +732,7 @@ void main() {
               return Future.value(ref.watch(dep));
             },
           );
-          final container = createContainer();
+          final container = ProviderContainer.test();
 
           container.listen(provider, (previous, next) {});
           final notifier = container.read(provider.notifier);
@@ -759,7 +759,7 @@ void main() {
             listener();
             return factory.notifier((ref) => ref.watch(dep));
           });
-          final container = createContainer();
+          final container = ProviderContainer.test();
 
           container.listen(provider, (previous, next) {});
           final notifier = container.read(provider.notifier);
@@ -782,7 +782,7 @@ void main() {
           (ref) => Equal(42),
           updateShouldNotify: (a, b) => a != b,
         );
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final listener = Listener<AsyncValue<Equal<int>>>();
 
         container.listen(provider, listener.call);
@@ -808,7 +808,7 @@ void main() {
 
       group('AsyncNotifer.update', () {
         test('passes in the latest state', () async {
-          final container = createContainer();
+          final container = ProviderContainer.test();
           final provider = factory.simpleTestProvider<int>(
             (ref) => 0,
           );
@@ -835,7 +835,7 @@ void main() {
         });
 
         test('can specify onError to handle error scenario', () async {
-          final container = createContainer();
+          final container = ProviderContainer.test();
           final provider = factory.simpleTestProvider<int>(
             (ref) => Error.throwWithStackTrace(42, StackTrace.empty),
           );
@@ -873,7 +873,7 @@ void main() {
         test(
             'executes immediately with current state if a state is avalailable',
             () async {
-          final container = createContainer();
+          final container = ProviderContainer.test();
           final provider = factory.simpleTestProvider<int>((ref) => 1);
 
           final sub = container.listen(provider.notifier, (prev, next) {});
@@ -890,7 +890,7 @@ void main() {
         test(
             'executes immediately with current state if an error is avalailable',
             () async {
-          final container = createContainer();
+          final container = ProviderContainer.test();
           final provider = factory.simpleTestProvider<int>(
             (ref) => Error.throwWithStackTrace(42, StackTrace.empty),
           );
@@ -919,7 +919,7 @@ void main() {
         });
 
         test('awaits the future resolution if in loading state', () async {
-          final container = createContainer();
+          final container = ProviderContainer.test();
           final provider = factory.simpleTestProvider<int>(
             (ref) => Future.value(42),
           );
@@ -946,7 +946,7 @@ void main() {
         AutoDisposeAsyncTestNotifier<int>, int>(
       () => AutoDisposeAsyncTestNotifier((ref) => 0),
     );
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         provider.overrideWith(() => AsyncTestNotifier((ref) => 42)),
         autoDispose.overrideWith(
@@ -968,7 +968,7 @@ void main() {
         .family<AutoDisposeAsyncTestNotifierFamily<int>, int, int>(
       () => AutoDisposeAsyncTestNotifierFamily<int>((ref) => 0),
     );
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         family.overrideWith(
           () => AsyncTestNotifierFamily<int>((ref) => 42),
@@ -992,7 +992,7 @@ void main() {
           return ref.watch(dep);
         }),
       );
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       expect(container.read(provider), const AsyncData(0));
     });

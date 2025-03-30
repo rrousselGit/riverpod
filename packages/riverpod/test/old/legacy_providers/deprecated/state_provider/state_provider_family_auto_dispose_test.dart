@@ -2,8 +2,6 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:test/test.dart';
 
-import '../../../utils.dart';
-
 void main() {
   test('supports .name', () {
     expect(
@@ -32,8 +30,9 @@ void main() {
       test('when passing the provider itself', () async {
         final provider =
             StateProvider.autoDispose.family<int, int>((ref, _) => 0);
-        final root = createContainer();
-        final container = createContainer(parent: root, overrides: [provider]);
+        final root = ProviderContainer.test();
+        final container =
+            ProviderContainer.test(parent: root, overrides: [provider]);
 
         expect(container.read(provider(0).notifier).state, 0);
         expect(container.read(provider(0)), 0);
@@ -50,8 +49,8 @@ void main() {
       test('when using provider.overrideWithProvider', () async {
         final provider =
             StateProvider.autoDispose.family<int, int>((ref, _) => 0);
-        final root = createContainer();
-        final container = createContainer(
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
           parent: root,
           overrides: [
             provider.overrideWithProvider(
@@ -79,8 +78,8 @@ void main() {
         (ref, i) => ref.watch(dep) + i,
         dependencies: [dep],
       );
-      final root = createContainer();
-      final container = createContainer(
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(
         parent: root,
         overrides: [dep.overrideWithValue(42)],
       );

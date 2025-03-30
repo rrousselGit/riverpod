@@ -9,7 +9,7 @@ void main() {
   group('Provider.autoDispose', () {
     group('ref.state', () {
       test('can read and change current value', () {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final listener = Listener<int>();
         late ProviderRef<int> ref;
         final provider = Provider.autoDispose<int>((r) {
@@ -29,7 +29,7 @@ void main() {
       });
 
       test('fails if trying to read the state before it was set', () {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         Object? err;
         final provider = Provider.autoDispose<int>((ref) {
           try {
@@ -48,7 +48,7 @@ void main() {
           'on rebuild, still fails if trying to read the state before was built',
           () {
         final dep = StateProvider((ref) => false);
-        final container = createContainer();
+        final container = ProviderContainer.test();
         Object? err;
         final provider = Provider.autoDispose<int>((ref) {
           if (ref.watch(dep)) {
@@ -71,7 +71,7 @@ void main() {
       });
 
       test('can read the state if the setter was called before', () {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final provider = Provider.autoDispose<int>((ref) {
           // ignore: join_return_with_assignment
           ref.state = 42;
@@ -85,7 +85,7 @@ void main() {
 
     test('can be refreshed', () async {
       var result = 0;
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final provider = Provider.autoDispose((ref) => result);
 
       expect(container.read(provider), 0);
@@ -98,7 +98,7 @@ void main() {
 
     test('does not notify listeners when called ref.state= with == new value',
         () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = Listener<int>();
       late AutoDisposeProviderRef<int> ref;
       final provider = AutoDisposeProvider<int>((r) {
@@ -119,8 +119,9 @@ void main() {
     group('scoping an override overrides all the associated subproviders', () {
       test('when passing the provider itself', () {
         final provider = Provider.autoDispose((ref) => 0);
-        final root = createContainer();
-        final container = createContainer(parent: root, overrides: [provider]);
+        final root = ProviderContainer.test();
+        final container =
+            ProviderContainer.test(parent: root, overrides: [provider]);
 
         expect(container.read(provider), 0);
         expect(container.getAllProviderElements(), [
@@ -132,8 +133,8 @@ void main() {
 
       test('when using provider.overrideWithValue', () {
         final provider = Provider.autoDispose((ref) => 0);
-        final root = createContainer();
-        final container = createContainer(
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
           parent: root,
           overrides: [
             provider.overrideWithValue(42),
@@ -150,8 +151,8 @@ void main() {
 
       test('when using provider.overrideWithProvider', () {
         final provider = Provider.autoDispose((ref) => 0);
-        final root = createContainer();
-        final container = createContainer(
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
           parent: root,
           overrides: [
             // ignore: deprecated_member_use_from_same_package
@@ -173,7 +174,7 @@ void main() {
       final override = Provider.autoDispose<int>((_) {
         return 21;
       });
-      final container = createContainer(
+      final container = ProviderContainer.test(
         overrides: [
           // ignore: deprecated_member_use_from_same_package
           provider.overrideWithProvider(override),
@@ -189,8 +190,8 @@ void main() {
         (ref) => ref.watch(dep),
         dependencies: [dep],
       );
-      final root = createContainer();
-      final container = createContainer(
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(
         parent: root,
         overrides: [dep.overrideWithValue(42)],
       );

@@ -9,7 +9,7 @@ import '../utils.dart';
 
 void main() {
   test('hasListeners', () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final provider = Provider((_) => 42);
 
     expect(container.read(provider), 42);
@@ -34,8 +34,9 @@ void main() {
     final family2 = Provider.family<String, int>((ref, value) {
       return '$value 2';
     });
-    final root = createContainer();
-    final container = createContainer(parent: root, overrides: [family2]);
+    final root = ProviderContainer.test();
+    final container =
+        ProviderContainer.test(parent: root, overrides: [family2]);
 
     expect(container.read(family(0)), '0');
     expect(container.read(family2(0)), '0 2');
@@ -53,7 +54,7 @@ void main() {
   test('changing the override type at a given index throws', () {
     final provider = Provider((ref) => 0);
     final family = Provider.family<int, int>((ref, value) => 0);
-    final container = createContainer(overrides: [family]);
+    final container = ProviderContainer.test(overrides: [family]);
 
     expect(
       () => container.updateOverrides([provider]),
@@ -68,7 +69,7 @@ void main() {
       });
       return ref;
     });
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     container.read(provider);
 
@@ -86,7 +87,7 @@ void main() {
       });
       return ref;
     });
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     container.read(provider);
 
@@ -104,7 +105,7 @@ void main() {
       });
       return ref;
     });
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     container.read(provider);
 
@@ -115,7 +116,7 @@ void main() {
   });
 
   test('disposing an already disposed container is no-op', () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     container.dispose();
     container.dispose();
@@ -124,7 +125,7 @@ void main() {
   test('Owner.read', () {
     final provider = Provider((ref) => 0);
     final provider2 = Provider((ref) => 1);
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     final value1 = container.read(provider);
     final value2 = container.read(provider);
@@ -144,7 +145,7 @@ void main() {
     var callCount = 0;
     final provider = Provider((_) => callCount++);
 
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [provider],
     );
 
@@ -172,7 +173,7 @@ void main() {
       return ref.watch(provider2) + 1;
     });
 
-    final container = createContainer();
+    final container = ProviderContainer.test();
     expect(
       () => container.read(provider),
       throwsA(isA<CircularDependencyError>()),
@@ -192,7 +193,7 @@ void main() {
       return () => ref.watch(provider2) + 1;
     });
 
-    final container = createContainer();
+    final container = ProviderContainer.test();
     expect(
       () => container.read(provider)(),
       throwsA(isA<CircularDependencyError>()),
@@ -200,7 +201,7 @@ void main() {
   });
 
   test('circular dependencies #2', () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     final provider = Provider((ref) => ref);
     final provider1 = Provider((ref) => ref);
@@ -217,7 +218,7 @@ void main() {
   });
 
   test('dispose providers in dependency order (simple)', () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final onDispose1 = OnDisposeMock();
     final onDispose2 = OnDisposeMock();
     final onDispose3 = OnDisposeMock();
@@ -254,7 +255,7 @@ void main() {
   });
 
   test('Ref is unusable after dispose (read/onDispose)', () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     late ProviderElement<Object?> ref;
     final provider = Provider((s) {
       ref = s as ProviderElement;
@@ -281,7 +282,7 @@ void main() {
       ref.onDispose(onDispose.call);
       throw error;
     });
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     expect(() => container.read(provider), throwsA(error));
     expect(callCount, 1);

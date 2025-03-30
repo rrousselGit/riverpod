@@ -13,7 +13,7 @@ void main() {
     final family = Provider.family<int, int>((ref, _) => 0);
     final a = Provider((ref) => 0);
 
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         family.overrideWithProvider(
           (argument) => Provider((ref) => 0, dependencies: [a]),
@@ -30,9 +30,9 @@ void main() {
   test(
       'does not re-initialize a family if read by a child container after the provider was initialized',
       () {
-    final root = createContainer();
+    final root = ProviderContainer.test();
     // the child must be created before the provider is initialized
-    final child = createContainer(parent: root);
+    final child = ProviderContainer.test(parent: root);
 
     var buildCount = 0;
     final provider = Provider.family<int, int>((ref, param) {
@@ -58,10 +58,10 @@ void main() {
       return 42;
     });
 
-    final root = createContainer();
-    final scope = createContainer(parent: root, overrides: [provider]);
+    final root = ProviderContainer.test();
+    final scope = ProviderContainer.test(parent: root, overrides: [provider]);
     // the child must be created before the provider is initialized
-    final child = createContainer(parent: scope);
+    final child = ProviderContainer.test(parent: scope);
 
     expect(scope.read(provider(0)), 42);
 
@@ -76,7 +76,7 @@ void main() {
 
   test('caches the provider per value', () {
     final family = Provider.family<String, int>((ref, a) => '$a');
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     expect(family(42), family(42));
     expect(container.read(family(42)), '42');
@@ -93,7 +93,7 @@ void main() {
     final family = StreamProvider.family<String, int>((ref, a) {
       return controllers[a]!.stream;
     });
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final listener = Listener<AsyncValue<String>>();
     final listener2 = Listener<AsyncValue<String>>();
 
@@ -150,7 +150,7 @@ void main() {
 
   test('family override', () {
     final family = Provider.family<String, int>((ref, a) => 'Hello $a');
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         // Provider overrides always takes over family overrides
         family(84).overrideWithValue('Bonjour 84'),

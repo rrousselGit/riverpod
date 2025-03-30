@@ -8,7 +8,7 @@ import 'utils.dart';
 
 void main() {
   test('auto-dispose notifier when stop listening', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final onDispose = OnDisposeMock();
     final provider = ChangeNotifierProvider.autoDispose((ref) {
       ref.onDispose(onDispose.call);
@@ -31,7 +31,7 @@ void main() {
   });
 
   test('family', () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final provider = ChangeNotifierProvider.autoDispose
         .family<ValueNotifier<int>, int>((ref, value) {
       return ValueNotifier(value);
@@ -70,7 +70,7 @@ void main() {
     final provider = ChangeNotifierProvider.autoDispose((ref) {
       return ref.watch(dep) == 0 ? notifier : notifier2;
     });
-    final container = createContainer();
+    final container = ProviderContainer.test();
     addTearDown(container.dispose);
 
     var callCount = 0;

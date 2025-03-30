@@ -9,8 +9,8 @@ import '../../utils.dart';
 void main() {
   group('Ref.exists', () {
     test('Returns true if available on ancestor container', () {
-      final root = createContainer();
-      final container = createContainer(parent: root);
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(parent: root);
       final provider = Provider((ref) => 0);
 
       root.read(provider);
@@ -20,7 +20,7 @@ void main() {
     });
 
     test('simple use-case', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final provider = Provider((ref) => 0);
       final refProvider = Provider((ref) => ref);
 
@@ -45,7 +45,7 @@ void main() {
       final observer = ProviderObserverMock();
       final listener = Listener<int>();
       final selfListener = Listener<int>();
-      final container = createContainer(observers: [observer]);
+      final container = ProviderContainer.test(observers: [observer]);
       late Ref<int> ref;
       final provider = Provider<int>((r) {
         ref = r;
@@ -75,7 +75,7 @@ void main() {
       final observer = ProviderObserverMock();
       final selfListener = Listener<int>();
       final listener = Listener<int>();
-      final container = createContainer(observers: [observer]);
+      final container = ProviderContainer.test(observers: [observer]);
       final provider = Provider<int>((ref) {
         ref.listenSelf(selfListener.call);
         ref.notifyListeners();
@@ -95,7 +95,7 @@ void main() {
       final observer = ProviderObserverMock();
       final listener = Listener<Object>();
       final selfListener = Listener<Object>();
-      final container = createContainer(observers: [observer]);
+      final container = ProviderContainer.test(observers: [observer]);
       var callNotifyListeners = false;
       const firstValue = 'first';
       const secondValue = 'second';
@@ -145,7 +145,7 @@ void main() {
         return 0;
       });
       final b = Provider(name: 'b', (r) => r.watch(a));
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       container.read(b);
 
@@ -165,7 +165,7 @@ void main() {
         return 0;
       });
       final b = Provider((r) => r.watch(a));
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       container.read(b);
 
@@ -182,7 +182,7 @@ void main() {
         return 0;
       });
       final b = Provider.family<int, int>((r, id) => r.watch(a));
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       container.read(b(0));
 
@@ -193,7 +193,7 @@ void main() {
     });
 
     test('triggers a rebuild on next frame', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = Listener<int>();
       var result = 0;
       final provider = Provider((r) => result);
@@ -219,7 +219,7 @@ void main() {
 
     group('on families', () {
       test('recomputes providers associated with the family', () async {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final listener = Listener<String>();
         final listener2 = Listener<String>();
         final listener3 = Listener<int>();
@@ -265,8 +265,8 @@ void main() {
         final provider = Provider.family<int, int>((r, i) => result);
         final listener = Listener<int>();
         final listener2 = Listener<int>();
-        final root = createContainer();
-        final container = createContainer(
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
           parent: root,
           overrides: [provider, another],
         );
@@ -294,7 +294,7 @@ void main() {
 
   group('ref.invalidateSelf', () {
     test('calls dispose immediately', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnDisposeMock();
       late Ref ref;
       final provider = Provider((r) {
@@ -315,7 +315,7 @@ void main() {
     });
 
     test('triggers a rebuild on next frame', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = Listener<int>();
       var result = 0;
       late Ref ref;
@@ -339,7 +339,7 @@ void main() {
     });
 
     test('merges the rebuild with dependency change rebuild', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = Listener<int>();
       final dep = StateProvider((ref) => 0);
       late Ref ref;
@@ -364,7 +364,7 @@ void main() {
 
   group('ref.onRemoveListener', () {
     test('is not called on read', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnRemoveListener();
       final provider = Provider((ref) {
         ref.onRemoveListener(listener.call);
@@ -376,7 +376,7 @@ void main() {
     });
 
     test('calls listeners when container.listen subscriptions are closed', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnRemoveListener();
       final listener2 = OnRemoveListener();
       final provider = Provider((ref) {
@@ -407,7 +407,7 @@ void main() {
     });
 
     test('calls listeners when ref.listen subscriptions are closed', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnRemoveListener();
       final listener2 = OnRemoveListener();
       final dep = Provider(
@@ -452,7 +452,7 @@ void main() {
     });
 
     test('calls listeners when ref.watch subscriptions are removed', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnRemoveListener();
       final listener2 = OnRemoveListener();
       final dep = Provider(
@@ -484,7 +484,7 @@ void main() {
     });
 
     test('listeners are cleared on rebuild', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnRemoveListener();
       final listener2 = OnRemoveListener();
       var isSecondBuild = false;
@@ -510,7 +510,7 @@ void main() {
 
     test('if a listener throws, still calls all listeners', () {
       final errors = <Object?>[];
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnRemoveListener();
       final listener2 = OnRemoveListener();
       when(listener()).thenThrow(42);
@@ -535,7 +535,7 @@ void main() {
 
   group('ref.onAddListener', () {
     test('is not called on read', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnAddListener();
       final provider = Provider((ref) {
         ref.onAddListener(listener.call);
@@ -547,7 +547,7 @@ void main() {
     });
 
     test('calls listeners when container.listen is invoked', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnAddListener();
       final listener2 = OnAddListener();
       final provider = Provider((ref) {
@@ -569,7 +569,7 @@ void main() {
     });
 
     test('calls listeners when new ref.listen is invoked', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnAddListener();
       final listener2 = OnAddListener();
       final dep = Provider(name: 'dep', (ref) {
@@ -599,7 +599,7 @@ void main() {
     });
 
     test('calls listeners when new ref.watch is invoked', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnAddListener();
       final listener2 = OnAddListener();
       final dep = Provider(
@@ -643,7 +643,7 @@ void main() {
     });
 
     test('listeners are cleared on rebuild', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnAddListener();
       final listener2 = OnAddListener();
       var isSecondBuild = false;
@@ -668,7 +668,7 @@ void main() {
 
     test('if a listener throws, still calls all listeners', () {
       final errors = <Object?>[];
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnAddListener();
       final listener2 = OnAddListener();
       when(listener()).thenThrow(42);
@@ -691,7 +691,7 @@ void main() {
 
   group('ref.onResume', () {
     test('is not called on initial subscription', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnResume();
       final provider = Provider((ref) {
         ref.onResume(listener.call);
@@ -705,7 +705,7 @@ void main() {
 
     test('calls listeners on the first new container.listen after a cancel',
         () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnResume();
       final listener2 = OnResume();
       final provider = Provider((ref) {
@@ -732,7 +732,7 @@ void main() {
     });
 
     test('calls listeners on the first new ref.listen after a cancel', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnResume();
       final listener2 = OnResume();
       final dep = Provider(
@@ -769,7 +769,7 @@ void main() {
     });
 
     test('does not call listeners on read after a cancel', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnResume();
       final provider = Provider((ref) {
         ref.onResume(listener.call);
@@ -786,7 +786,7 @@ void main() {
     });
 
     test('calls listeners when ref.watch is invoked after a cancel', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnResume();
       final listener2 = OnResume();
       final dep = Provider(
@@ -818,7 +818,7 @@ void main() {
     });
 
     test('listeners are cleared on rebuild', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnResume();
       final listener2 = OnResume();
       var isSecondBuild = false;
@@ -848,7 +848,7 @@ void main() {
     });
 
     test('internal resume status is cleared on rebuild', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnResume();
       final provider = Provider((ref) {
         ref.onResume(listener.call);
@@ -871,7 +871,7 @@ void main() {
 
     test('if a listener throws, still calls all listeners', () {
       final errors = <Object?>[];
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnResume();
       final listener2 = OnResume();
       when(listener()).thenThrow(42);
@@ -904,7 +904,7 @@ void main() {
       skip: 'Waiting for "clear dependencies after futureprovider rebuilds"',
       () async {
         //
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final onCancel = OnCancelMock();
         final dep = StateProvider((ref) {
           ref.onCancel(onCancel.call);
@@ -927,7 +927,7 @@ void main() {
     );
 
     test('is called when all container listeners are removed', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnCancelMock();
       final listener2 = OnCancelMock();
       final provider = Provider((ref) {
@@ -953,7 +953,7 @@ void main() {
     });
 
     test('is called when all provider listeners are removed', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnCancelMock();
       final listener2 = OnCancelMock();
       final dep = Provider((ref) {
@@ -984,7 +984,7 @@ void main() {
     });
 
     test('is called when all provider dependencies are removed', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnCancelMock();
       final listener2 = OnCancelMock();
       final dep = Provider((ref) {
@@ -1020,7 +1020,7 @@ void main() {
     });
 
     test('is not called when using container.read', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnCancelMock();
       final provider = Provider((ref) {
         ref.onCancel(listener.call);
@@ -1036,7 +1036,7 @@ void main() {
       'is not called when using container.read (autoDispose)',
       skip: true,
       () async {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final listener = OnCancelMock();
         final dispose = OnDisposeMock();
         final provider = StateProvider.autoDispose((ref) {
@@ -1054,7 +1054,7 @@ void main() {
     );
 
     test('listeners are cleared on rebuild', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnCancelMock();
       final listener2 = OnCancelMock();
       var isSecondBuild = false;
@@ -1087,7 +1087,7 @@ void main() {
 
     test('if a listener throws, still calls all listeners', () {
       final errors = <Object?>[];
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = OnCancelMock();
       final listener2 = OnCancelMock();
       when(listener()).thenThrow(42);
@@ -1117,7 +1117,7 @@ void main() {
       'onDispose is triggered only once if within autoDispose unmount, a dependency changed',
       () async {
     // regression test for https://github.com/rrousselGit/riverpod/issues/1064
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final onDispose = OnDisposeMock();
     final dep = StateProvider((ref) => 0);
     final provider = Provider.autoDispose((ref) {
@@ -1142,7 +1142,7 @@ void main() {
   test(
       'does not throw outdated error when a dependency is flushed while the dependent is building',
       () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final a = StateProvider((ref) => 0);
 
     final dep = Provider<int>((ref) {
@@ -1179,7 +1179,7 @@ void main() {
 
   group('getState', () {
     test('throws on providers that threw', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final provider = Provider((ref) => throw UnimplementedError());
 
       final element = container.readProviderElement(provider);
@@ -1194,7 +1194,7 @@ void main() {
 
   group('readSelf', () {
     test('throws on providers that threw', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final provider = Provider((ref) => throw UnimplementedError());
 
       final element = container.readProviderElement(provider);
@@ -1208,7 +1208,7 @@ void main() {
 
   group('visitChildren', () {
     test('includes ref.watch dependents', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final provider = Provider((ref) => 0);
       final dependent = Provider((ref) {
         ref.watch(provider);
@@ -1237,7 +1237,7 @@ void main() {
     });
 
     test('includes ref.listen dependents', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final provider = Provider((ref) => 0);
       final dependent = Provider((ref) {
         ref.listen(provider, (_, __) {});
@@ -1274,7 +1274,7 @@ void main() {
       final dep = Provider((ref) {
         ref.listen(provider, (prev, value) {});
       });
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       expect(container.readProviderElement(provider).hasListeners, false);
 
@@ -1288,7 +1288,7 @@ void main() {
       final dep = Provider((ref) {
         ref.watch(provider);
       });
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       expect(container.readProviderElement(provider).hasListeners, false);
 
@@ -1299,7 +1299,7 @@ void main() {
 
     test('includes container listeners', () async {
       final provider = Provider((ref) => 0);
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       expect(container.readProviderElement(provider).hasListeners, false);
 
@@ -1310,7 +1310,7 @@ void main() {
   });
 
   test('does not notify listeners when rebuilding the state', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final listener = Listener<int>();
 
     final dep = StateProvider((ref) => 0);

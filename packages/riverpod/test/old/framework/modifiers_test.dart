@@ -11,7 +11,7 @@ void main() {
   group('_ProxySubscription', () {
     group('read', () {
       test('throws if used after close', () {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final provider = FutureProvider((ref) async => 0);
 
         final sub = container.listen(provider.future, (prev, value) {});
@@ -26,7 +26,7 @@ void main() {
   });
 
   test('Listening to a modifier correctly fires ref life-cycles', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final onDispose = OnDisposeMock();
     final onAddListener = OnAddListener();
     final onRemoveListener = OnRemoveListener();

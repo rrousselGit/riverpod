@@ -12,7 +12,7 @@ void main() {
     test('supports overrideWith', () {
       final provider = Provider<int>((ref) => 0);
       final autoDispose = Provider.autoDispose<int>((ref) => 0);
-      final container = createContainer(
+      final container = ProviderContainer.test(
         overrides: [
           provider.overrideWith((ProviderRef<int> ref) => 42),
           autoDispose.overrideWith(
@@ -30,7 +30,7 @@ void main() {
       final autoDisposeFamily = Provider.autoDispose.family<String, int>(
         (ref, arg) => '0 $arg',
       );
-      final container = createContainer(
+      final container = ProviderContainer.test(
         overrides: [
           family.overrideWith((ProviderRef<String> ref, int arg) => '42 $arg'),
           autoDisposeFamily.overrideWith(
@@ -45,7 +45,7 @@ void main() {
 
     test('can be refreshed', () async {
       var result = 0;
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final provider = Provider((ref) => result);
 
       expect(container.read(provider), 0);
@@ -58,7 +58,7 @@ void main() {
 
     group('ref.state', () {
       test('throws on providers that threw', () {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final provider = Provider((ref) => throw UnimplementedError());
 
         expect(
@@ -76,7 +76,7 @@ void main() {
       });
 
       test('can read and change current value', () {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final listener = Listener<int>();
         late ProviderRef<int> ref;
         final provider = Provider<int>((r) {
@@ -96,7 +96,7 @@ void main() {
       });
 
       test('fails if trying to read the state before it was set', () {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         Object? err;
         final provider = Provider<int>((ref) {
           try {
@@ -115,7 +115,7 @@ void main() {
           'on rebuild, still fails if trying to read the state before was built',
           () {
         final dep = StateProvider((ref) => false);
-        final container = createContainer();
+        final container = ProviderContainer.test();
         Object? err;
         final provider = Provider<int>((ref) {
           if (ref.watch(dep)) {
@@ -138,7 +138,7 @@ void main() {
       });
 
       test('can read the state if the setter was called before', () {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final provider = Provider<int>((ref) {
           // ignore: join_return_with_assignment
           ref.state = 42;
@@ -152,7 +152,7 @@ void main() {
 
     test('does not notify listeners when called ref.state= with == new value',
         () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = Listener<int>();
       late ProviderRef<int> ref;
       final provider = Provider<int>((r) {
@@ -173,8 +173,9 @@ void main() {
     group('scoping an override overrides all the associated subproviders', () {
       test('when passing the provider itself', () {
         final provider = Provider((ref) => 0);
-        final root = createContainer();
-        final container = createContainer(parent: root, overrides: [provider]);
+        final root = ProviderContainer.test();
+        final container =
+            ProviderContainer.test(parent: root, overrides: [provider]);
 
         expect(container.read(provider), 0);
         expect(container.getAllProviderElements(), [
@@ -186,8 +187,8 @@ void main() {
 
       test('when using provider.overrideWithValue', () {
         final provider = Provider((ref) => 0);
-        final root = createContainer();
-        final container = createContainer(
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
           parent: root,
           overrides: [provider.overrideWithValue(42)],
         );
@@ -202,8 +203,8 @@ void main() {
 
       test('when using provider.overrideWithProvider', () {
         final provider = Provider((ref) => 0);
-        final root = createContainer();
-        final container = createContainer(
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
           parent: root,
           overrides: [
             // ignore: deprecated_member_use_from_same_package
@@ -223,7 +224,7 @@ void main() {
     group('override', () {
       test('does not notify listeners if updated with the same value', () {
         final provider = Provider((ref) => 0);
-        final container = createContainer(
+        final container = ProviderContainer.test(
           overrides: [provider.overrideWithValue(42)],
         );
         final listener = Listener<int>();
@@ -244,7 +245,7 @@ void main() {
 
       test('notify listeners when value changes', () {
         final provider = Provider((ref) => 0);
-        final container = createContainer(
+        final container = ProviderContainer.test(
           overrides: [provider.overrideWithValue(42)],
         );
         final listener = Listener<int>();
@@ -283,7 +284,7 @@ void main() {
   });
 
   test('dispose', () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final onDispose = OnDisposeMock();
     final provider = Provider((ref) {
       ref.onDispose(onDispose.call);
@@ -300,7 +301,7 @@ void main() {
   });
 
   test('Read creates the value only once', () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     var callCount = 0;
     final provider = Provider((ref) {
       callCount++;
@@ -316,7 +317,7 @@ void main() {
   });
 
   test("rebuild don't notify clients if == doesn't change", () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final counter = Counter();
     final other = StateNotifierProvider<Counter, int>((ref) => counter);
     var buildCount = 0;
@@ -342,7 +343,7 @@ void main() {
   });
 
   test('rebuild notify clients if == did change', () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final counter = Counter();
     final other = StateNotifierProvider<Counter, int>((ref) => counter);
     final provider = Provider((ref) {
@@ -368,8 +369,8 @@ void main() {
       (ref) => ref.watch(dep),
       dependencies: [dep],
     );
-    final root = createContainer();
-    final container = createContainer(
+    final root = ProviderContainer.test();
+    final container = ProviderContainer.test(
       parent: root,
       overrides: [dep.overrideWithValue(42)],
     );

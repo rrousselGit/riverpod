@@ -17,7 +17,7 @@ void main() {
       'Catches circular dependency when dependencies are setup during provider initialization',
       () {
     // regression for #1766
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     final authInterceptorProvider = Provider((ref) => ref);
 
@@ -100,7 +100,7 @@ void main() {
       ref.listen(provider, (prev, value) => ref.controller.state++);
       return 0;
     });
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     expect(container.read(another), 0);
 

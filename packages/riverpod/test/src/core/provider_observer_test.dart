@@ -13,7 +13,7 @@ void main() {
       const observer = ConstObserver();
 
       final provider = Provider((ref) => 0);
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       observer.didAddProvider(provider, 0, container);
       observer.didDisposeProvider(provider, container);
@@ -22,7 +22,7 @@ void main() {
     });
 
     test('ProviderObservers can have const constructors', () {
-      final root = createContainer(
+      final root = ProviderContainer.test(
         observers: [
           const ConstObserver(),
         ],
@@ -36,7 +36,8 @@ void main() {
           () async {
         final observer = ObserverMock();
         final observer2 = ObserverMock();
-        final container = createContainer(observers: [observer, observer2]);
+        final container =
+            ProviderContainer.test(observers: [observer, observer2]);
         final dep = StateProvider((ref) => 0);
         final provider = Provider((ref) {
           if (ref.watch(dep) == 0) {
@@ -80,12 +81,12 @@ void main() {
         final observer2 = ObserverMock('b');
         final observer3 = ObserverMock('c');
 
-        final root = createContainer(observers: [observer]);
-        final mid = createContainer(
+        final root = ProviderContainer.test(observers: [observer]);
+        final mid = ProviderContainer.test(
           parent: root,
           observers: [observer2],
         );
-        final child = createContainer(
+        final child = ProviderContainer.test(
           parent: mid,
           overrides: [provider.overrideWith((ref) => StateController(42))],
           observers: [observer3],
@@ -115,7 +116,7 @@ void main() {
 
       test('handles computed provider update', () async {
         final observer = ObserverMock();
-        final container = createContainer(observers: [observer]);
+        final container = ProviderContainer.test(observers: [observer]);
         final notifier = Counter();
         final provider = StateNotifierProvider<Counter, int>((_) => notifier);
         final computed = Provider((ref) => ref.watch(provider));
@@ -135,7 +136,7 @@ void main() {
 
       test('handles direct provider update', () {
         final observer = ObserverMock();
-        final container = createContainer(observers: [observer]);
+        final container = ProviderContainer.test(observers: [observer]);
         final notifier = Counter();
         final provider = StateNotifierProvider<Counter, int>((_) => notifier);
 
@@ -155,7 +156,7 @@ void main() {
         final observer2 = ObserverMock('b');
         final provider = StateNotifierProvider<Counter, int>((_) => Counter());
         final counter = Counter();
-        final container = createContainer(
+        final container = ProviderContainer.test(
           overrides: [
             provider.overrideWith((ref) => counter),
           ],
@@ -196,7 +197,7 @@ void main() {
         final observer3 = ObserverMock();
         final provider = StateNotifierProvider<Counter, int>((_) => Counter());
         final counter = Counter();
-        final container = createContainer(
+        final container = ProviderContainer.test(
           overrides: [provider.overrideWith((ref) => counter)],
           observers: [observer, observer2, observer3],
         );
@@ -229,7 +230,7 @@ void main() {
         final isNegative = Provider((ref) {
           return ref.watch(provider).isNegative;
         });
-        final container = createContainer(observers: [observer]);
+        final container = ProviderContainer.test(observers: [observer]);
         final isNegativeListener = Listener<bool>();
 
         container.listen(
@@ -291,12 +292,12 @@ void main() {
         final observer2 = ObserverMock('b');
         final observer3 = ObserverMock('c');
 
-        final root = createContainer(observers: [observer]);
-        final mid = createContainer(
+        final root = ProviderContainer.test(observers: [observer]);
+        final mid = ProviderContainer.test(
           parent: root,
           observers: [observer2],
         );
-        final child = createContainer(
+        final child = ProviderContainer.test(
           parent: mid,
           overrides: [
             provider.overrideWith((ref) {
@@ -345,7 +346,7 @@ void main() {
 
       test('is called when FutureProvider emits an error', () async {
         final observer = ObserverMock();
-        final container = createContainer(observers: [observer]);
+        final container = ProviderContainer.test(observers: [observer]);
         final provider = FutureProvider(
           (ref) => Future<void>.error('error', StackTrace.empty),
         );
@@ -376,7 +377,7 @@ void main() {
 
       test('is called when StreamProvider emits an error', () async {
         final observer = ObserverMock();
-        final container = createContainer(observers: [observer]);
+        final container = ProviderContainer.test(observers: [observer]);
         final provider = StreamProvider(
           (ref) => Stream<void>.error('error', StackTrace.empty),
         );
@@ -408,7 +409,8 @@ void main() {
       test('is called on uncaught error during first initialization', () {
         final observer = ObserverMock();
         final observer2 = ObserverMock();
-        final container = createContainer(observers: [observer, observer2]);
+        final container =
+            ProviderContainer.test(observers: [observer, observer2]);
         final provider = Provider((ref) => throw UnimplementedError());
 
         expect(
@@ -438,7 +440,8 @@ void main() {
       test('is called on uncaught error after update ', () async {
         final observer = ObserverMock();
         final observer2 = ObserverMock();
-        final container = createContainer(observers: [observer, observer2]);
+        final container =
+            ProviderContainer.test(observers: [observer, observer2]);
         final dep = StateProvider((ref) => 0);
         final provider = Provider((ref) {
           if (ref.watch(dep) != 0) {
@@ -487,7 +490,7 @@ void main() {
     group('didAddProvider', () {
       test('when throwing during creation, receives `null` as value', () {
         final observer = ObserverMock();
-        final container = createContainer(observers: [observer]);
+        final container = ProviderContainer.test(observers: [observer]);
         final provider = Provider((ref) => throw UnimplementedError());
 
         expect(
@@ -505,12 +508,12 @@ void main() {
         final observer = ObserverMock();
         final observer2 = ObserverMock();
         final observer3 = ObserverMock();
-        final root = createContainer(observers: [observer]);
-        final mid = createContainer(
+        final root = ProviderContainer.test(observers: [observer]);
+        final mid = ProviderContainer.test(
           parent: root,
           observers: [observer2],
         );
-        final child = createContainer(
+        final child = ProviderContainer.test(
           parent: mid,
           overrides: [provider.overrideWithValue(42)],
           observers: [observer3],
@@ -537,7 +540,8 @@ void main() {
         final observer = ObserverMock();
         final observer2 = ObserverMock();
         final provider = Provider((_) => 42);
-        final container = createContainer(observers: [observer, observer2]);
+        final container =
+            ProviderContainer.test(observers: [observer, observer2]);
 
         expect(container.read(provider), 42);
         verifyInOrder([
@@ -563,7 +567,7 @@ void main() {
         when(observer2.didAddProvider(any, any, any)).thenThrow('error2');
         final observer3 = ObserverMock();
         final provider = Provider((_) => 42);
-        final container = createContainer(
+        final container = ProviderContainer.test(
           observers: [observer, observer2, observer3],
         );
 
@@ -590,7 +594,7 @@ void main() {
   group('didDisposeProvider', () {
     test('supports invalidate', () {
       final observer = ObserverMock();
-      final container = createContainer(observers: [observer]);
+      final container = ProviderContainer.test(observers: [observer]);
       final provider = Provider<int>((ref) => 0);
 
       container.read(provider);
@@ -605,7 +609,7 @@ void main() {
 
     test('supports container dispose', () {
       final observer = ObserverMock();
-      final container = createContainer(observers: [observer]);
+      final container = ProviderContainer.test(observers: [observer]);
       final provider = StateNotifierProvider<Counter, int>((ref) => Counter());
 
       container.read(provider);
@@ -622,7 +626,7 @@ void main() {
 
     test('supports auto-dispose', () async {
       final observer = ObserverMock();
-      final container = createContainer(observers: [observer]);
+      final container = ProviderContainer.test(observers: [observer]);
       final provider = StateNotifierProvider.autoDispose<Counter, int>((ref) {
         return Counter();
       });
@@ -652,7 +656,7 @@ void main() {
         return 0;
       });
       final provider2 = Provider((ref) => ref.watch(provider));
-      final container = createContainer(
+      final container = ProviderContainer.test(
         observers: [observer, observer2, observer3],
       );
 

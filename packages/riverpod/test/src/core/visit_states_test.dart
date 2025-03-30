@@ -6,7 +6,6 @@ import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 import 'package:trotter/trotter.dart';
 
-import '../utils.dart';
 
 void main() {
   //  A
@@ -28,7 +27,7 @@ void main() {
 
     final perm = Permutations(3, [a, b, c]);
     for (final permutation in perm()) {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       permutation.forEach(container.read);
       expect(compute(container), [a, b, c]);
     }
@@ -58,7 +57,7 @@ void main() {
 
     final perm = Permutations(4, [a, b, c, d]);
     for (final permutation in perm()) {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       permutation.forEach(container.read);
       expect(
         compute(container),
@@ -81,8 +80,8 @@ void main() {
       return B();
     });
 
-    final parent = createContainer();
-    final container = createContainer(parent: parent, overrides: [b]);
+    final parent = ProviderContainer.test();
+    final container = ProviderContainer.test(parent: parent, overrides: [b]);
     container.read(b);
 
     expect(compute(container), [b]);
@@ -105,11 +104,11 @@ void main() {
       return C();
     });
 
-    final parent = createContainer();
+    final parent = ProviderContainer.test();
 
     final perm = Permutations(2, [b, c]);
     for (final permutation in perm()) {
-      final container = createContainer(
+      final container = ProviderContainer.test(
         parent: parent,
         overrides: permutation,
       );
@@ -171,7 +170,7 @@ void main() {
 
     final perm = Permutations(7, [a, b, c, d, e, f, g]);
     for (final permutation in perm()) {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       permutation.forEach(container.read);
       expect(
         compute(container),
@@ -215,7 +214,7 @@ void main() {
 
     final perm = Permutations(4, [a, b, c, d]);
     for (final permutation in perm()) {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       permutation.forEach(container.read);
       expect(
         compute(container),
@@ -250,7 +249,7 @@ void main() {
 
     final perm = Permutations(4, [a, b, c, d]);
     for (final permutation in perm()) {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       permutation.forEach(container.read);
       expect(
         compute(container),
@@ -290,7 +289,7 @@ void main() {
 
     final perm = Permutations(5, [a, b, c, d, e]);
     for (final permutation in perm()) {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       permutation.forEach(container.read);
       expect(
         compute(container),

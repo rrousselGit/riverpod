@@ -9,20 +9,6 @@ export '../old/utils.dart' show ObserverMock;
 
 typedef RemoveListener = void Function();
 
-ProviderContainer createContainer({
-  ProviderContainer? parent,
-  List<Override> overrides = const [],
-  List<ProviderObserver>? observers,
-}) {
-  final container = ProviderContainer(
-    parent: parent,
-    overrides: overrides,
-    observers: observers,
-  );
-  addTearDown(container.dispose);
-  return container;
-}
-
 List<Object?> captureErrors(List<void Function()> cb) {
   final errors = <Object?>[];
   for (final fn in cb) {

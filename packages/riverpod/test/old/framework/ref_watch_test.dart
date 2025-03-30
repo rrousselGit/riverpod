@@ -18,7 +18,7 @@ class Counter extends StateNotifier<int> {
 
 void main() {
   test('can chain select', () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     var buildCount = 0;
     final dep = StateProvider((ref) => 0);
@@ -55,7 +55,7 @@ void main() {
   });
 
   test('can listen multiple providers at once', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final count = StateProvider((ref) => 0);
     final count2 = StateProvider((ref) => 0);
 
@@ -109,7 +109,7 @@ void main() {
   test('when selector throws, rebuild providers', () {}, skip: true);
 
   test('on provider that threw, exceptions bypass the selector', () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final dep = Provider<int>((ref) {
       throw UnimplementedError();
     });
@@ -126,7 +126,7 @@ void main() {
   test(
       'when rebuilding a provider after an uncaught exception, correctly updates dependents',
       () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final throws = StateProvider((ref) => true);
     final provider = Provider((ref) {
       if (ref.watch(throws)) {
@@ -152,7 +152,7 @@ void main() {
   test(
       'when rebuilding a provider after an uncaught selected exception, correctly updates dependents',
       () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final throws = StateProvider((ref) => true);
     final provider = Provider((ref) {
       if (ref.watch(throws)) {
@@ -180,7 +180,7 @@ void main() {
     final onDispose = OnDisposeMock();
     final dep = StateProvider((ref) => 0);
     final dep2 = StateProvider((ref) => 0);
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final provider = Provider((ref) {
       ref.onDispose(onDispose.call);
       ref.watch(dep);
@@ -208,7 +208,7 @@ void main() {
         ref.watch(dep.select((value) => ref.read(dep)));
       },
     );
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     expect(
       () => container.read(provider),
@@ -223,7 +223,7 @@ void main() {
     final provider = Provider((ref) {
       ref.watch(dep.select((value) => ref.watch(dep)));
     });
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     expect(
       () => container.read(provider),
@@ -243,7 +243,7 @@ void main() {
         }),
       );
     });
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     expect(
       () => container.read(provider),
@@ -254,7 +254,7 @@ void main() {
   test(
       'when selecting a provider, element.visitChildren visits the selected provider',
       () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final selected = StateNotifierProvider<StateController<int>, int>((ref) {
       return StateController(0);
     });
@@ -272,7 +272,7 @@ void main() {
   });
 
   test('can watch selectors', () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final provider = StateNotifierProvider<StateController<int>, int>(
       name: 'provider',
       (ref) => StateController(0),
@@ -335,7 +335,7 @@ void main() {
     });
 
     final computedListener = Listener<String>();
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     container.read(provider0);
     container.read(provider1);
@@ -405,7 +405,7 @@ void main() {
     });
 
     final computedListener = Listener<int>();
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     final provider0Element = container.readProviderElement(provider0);
     final provider1Element = container.readProviderElement(provider1);
@@ -460,7 +460,7 @@ void main() {
     final provider = StateNotifierProvider<Counter, int>((_) {
       return notifier;
     });
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final listener = Listener<String>();
 
     container.listen(computed(provider), listener.call, fireImmediately: true);
@@ -476,7 +476,7 @@ void main() {
   test(
       'multiple ref.watch, when one of them forces re-evaluate, all dependencies are still flushed',
       () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>, int>((_) {
       return notifier;
@@ -521,7 +521,7 @@ void main() {
       secondCallCount++;
       return ref.watch(first).toString();
     });
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     final controller = container.read(state.notifier);
 
@@ -538,7 +538,7 @@ void main() {
   });
 
   test('can call ref.watch asynchronously', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>, int>(
       name: 'provider',
@@ -580,7 +580,7 @@ void main() {
   });
 
   test('the value is cached between multiple listeners', () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>, int>((_) {
       return notifier;
@@ -625,7 +625,7 @@ void main() {
   });
 
   test('Simple Provider flow', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final notifier = Notifier(0);
     final provider = StateNotifierProvider<Notifier<int>, int>((_) {
       return notifier;
