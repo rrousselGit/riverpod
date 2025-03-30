@@ -3,6 +3,7 @@ part of '../core.dart';
 /// A function that can also listen to providers
 ///
 /// See also [Consumer]
+@internal
 typedef ConsumerBuilder = Widget Function(
   BuildContext context,
   WidgetRef ref,
