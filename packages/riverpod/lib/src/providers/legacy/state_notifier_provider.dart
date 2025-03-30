@@ -209,7 +209,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
 
   @override
   NotifierT get notifier => _notifierNotifier.value;
-  final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
+  final _notifierNotifier = $ElementLense<NotifierT>();
 
   void Function()? _removeListener;
 
@@ -252,7 +252,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
   @override
   void visitChildren({
     required void Function(ProviderElementBase element) elementVisitor,
-    required void Function(ProxyElementValueNotifier element) notifierVisitor,
+    required void Function($ElementLense element) notifierVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,

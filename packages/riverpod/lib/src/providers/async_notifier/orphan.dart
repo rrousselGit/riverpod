@@ -188,7 +188,7 @@ mixin FutureHandlerProviderElementMixin<T>
   }
 
   /// An internal function used to obtain the private [futureNotifier] from the mixin
-  static ProxyElementValueNotifier<Future<T>> futureNotifierOf<T>(
+  static $ElementLense<Future<T>> futureNotifierOf<T>(
     FutureHandlerProviderElementMixin<T> handler,
   ) {
     return handler.futureNotifier;
@@ -196,7 +196,7 @@ mixin FutureHandlerProviderElementMixin<T>
 
   /// An observable for [FutureProvider.future].
   @internal
-  final futureNotifier = ProxyElementValueNotifier<Future<T>>();
+  final futureNotifier = $ElementLense<Future<T>>();
   Completer<T>? _futureCompleter;
   Future<T>? _lastFuture;
   CancelAsyncSubscription? _lastFutureSub;
@@ -474,7 +474,7 @@ mixin FutureHandlerProviderElementMixin<T>
   @override
   void visitChildren({
     required void Function(ProviderElementBase element) elementVisitor,
-    required void Function(ProxyElementValueNotifier element) notifierVisitor,
+    required void Function($ElementLense element) notifierVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,
@@ -494,12 +494,12 @@ abstract class AsyncNotifierProviderElementBase<
   @internal
   AsyncNotifierProviderElementBase(super._provider);
 
-  final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
+  final _notifierNotifier = $ElementLense<NotifierT>();
 
   @override
   void visitChildren({
     required void Function(ProviderElementBase element) elementVisitor,
-    required void Function(ProxyElementValueNotifier element) notifierVisitor,
+    required void Function($ElementLense element) notifierVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,

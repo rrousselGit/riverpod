@@ -213,7 +213,7 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   // ignore: library_private_types_in_public_api
   StreamProviderElement(_StreamProviderBase<T> super._provider);
 
-  final _streamNotifier = ProxyElementValueNotifier<Stream<T>>();
+  final _streamNotifier = $ElementLense<Stream<T>>();
   final StreamController<T> _streamController = StreamController<T>.broadcast();
 
   @override
@@ -242,7 +242,7 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   @override
   void visitChildren({
     required void Function(ProviderElementBase element) elementVisitor,
-    required void Function(ProxyElementValueNotifier element) notifierVisitor,
+    required void Function($ElementLense element) notifierVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,

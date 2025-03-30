@@ -3,7 +3,7 @@
 part of '../framework.dart';
 
 class _MutationState<T> {
-  late final listenable = ProxyElementValueNotifier<MutationState<T>>()
+  late final listenable = $ElementLense<MutationState<T>>()
     ..result = $Result.data(IdleMutation<T>._())
     ..onCancel = _scheduleAutoReset;
 
@@ -72,7 +72,7 @@ mixin _MutationElement<T> on ProviderElementBase<T> {
   @override
   void visitChildren({
     required void Function(ProviderElementBase element) elementVisitor,
-    required void Function(ProxyElementValueNotifier element) notifierVisitor,
+    required void Function($ElementLense element) notifierVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,

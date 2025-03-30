@@ -43,7 +43,7 @@ class ProviderElementProxy<Input, Output>
 
   @override
   final AnyProvider<Input> _origin;
-  final ProxyElementValueNotifier<Output> Function(
+  final $ElementLense<Output> Function(
     ProviderElementBase<Input> element,
   ) _lense;
 

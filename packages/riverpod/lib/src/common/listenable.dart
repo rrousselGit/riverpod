@@ -19,7 +19,7 @@ class _Listener<T> {
 /// to subsets of the state exposed by a provider.
 @internal
 @optionalTypeArgs
-class ProxyElementValueNotifier<T> extends _ValueListenable<T> {
+class $ElementLense<T> extends _ValueListenable<T> {
   /// Directly obtain the value exposed, gratefully handling cases where
   /// [result] is null or in error state.
   T get value {
@@ -48,7 +48,7 @@ class ProxyElementValueNotifier<T> extends _ValueListenable<T> {
     }
   }
 
-  /// Updates the [result] of this [ProxyElementValueNotifier] without invoking listeners.
+  /// Updates the [result] of this [$ElementLense] without invoking listeners.
   // ignore: use_setters_to_change_properties, non_constant_identifier_names
   void UNSAFE_setResultWithoutNotifyingListeners($Result<T>? value) {
     _result = value;

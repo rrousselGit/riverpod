@@ -171,9 +171,9 @@ class StateProviderElement<T> extends ProviderElementBase<T>
 
   @override
   StateController<T> get controller => _controllerNotifier.value;
-  final _controllerNotifier = ProxyElementValueNotifier<StateController<T>>();
+  final _controllerNotifier = $ElementLense<StateController<T>>();
 
-  final _stateNotifier = ProxyElementValueNotifier<StateController<T>>();
+  final _stateNotifier = $ElementLense<StateController<T>>();
 
   void Function()? _removeListener;
 
@@ -213,7 +213,7 @@ class StateProviderElement<T> extends ProviderElementBase<T>
   @override
   void visitChildren({
     required void Function(ProviderElementBase element) elementVisitor,
-    required void Function(ProxyElementValueNotifier element) notifierVisitor,
+    required void Function($ElementLense element) notifierVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,
