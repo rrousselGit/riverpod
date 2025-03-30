@@ -183,7 +183,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
     );
 
     _removeListener = notifier.requireState.addListener(
-      (newState) => setStateResult(ResultData(newState)),
+      (newState) => setStateResult($ResultData(newState)),
       fireImmediately: true,
     );
 
@@ -204,7 +204,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
     _removeListener?.call();
     _removeListener = null;
 
-    final notifier = _notifierNotifier.result?.stateOrNull;
+    final notifier = _notifierNotifier.result?.value;
     if (notifier != null) {
       runGuarded(notifier.dispose);
     }

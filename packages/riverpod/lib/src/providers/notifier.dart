@@ -44,7 +44,7 @@ abstract class $Notifier<StateT> extends $SyncNotifierBase<StateT> {
     if (element == null) throw StateError(uninitializedElementError);
 
     element.flush();
-    return element.stateResult?.stateOrNull;
+    return element.stateResult?.value;
   }
 
   /// A method invoked when the state exposed by this [Notifier] changes.
@@ -120,9 +120,9 @@ class $NotifierProviderElement< //
 
   @override
   void handleError(Ref ref, Object error, StackTrace stackTrace) =>
-      setStateResult(ResultError<StateT>(error, stackTrace));
+      setStateResult($ResultError<StateT>(error, stackTrace));
 
   @override
   void handleValue(Ref ref, StateT created) =>
-      setStateResult(ResultData(created));
+      setStateResult($ResultData(created));
 }

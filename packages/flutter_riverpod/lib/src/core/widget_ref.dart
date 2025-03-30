@@ -34,8 +34,6 @@ part of '../core.dart';
 /// As such, [WidgetRef]s should not leave the widget layer. If you need to
 /// interact with providers outside of the widget layer, consider using
 /// a [Ref] instead.
-///
-///
 /// {@endtemplate}
 abstract class WidgetRef {
   /// The [BuildContext] of the widget associated to this [WidgetRef].
@@ -318,7 +316,13 @@ abstract class WidgetRef {
 
   /// Forces a provider to re-evaluate its state immediately, and return the created value.
   ///
-  /// Using [refresh] is strictly identical to using [invalidate] followed by [read] :
+  /// Writing:
+  ///
+  /// ```dart
+  /// final newValue = ref.refresh(provider);
+  /// ```
+  ///
+  /// is strictly identical to doing:
   ///
   /// ```dart
   /// ref.invalidate(provider);
@@ -326,7 +330,7 @@ abstract class WidgetRef {
   /// ```
   ///
   /// If you do not care about the return value of [refresh], use [invalidate] instead.
-  /// Doing so has the benefits of:
+  /// Doing so has the benefit of:
   /// - making the invalidation logic more resilient by avoiding multiple
   ///   refreshes at once.
   /// - possibly avoiding recomputing a provider if it isn't needed immediately.
@@ -335,7 +339,7 @@ abstract class WidgetRef {
   /// to restart a specific provider.
   ///
   /// For example, a pull-to-refresh may be implemented by combining
-  /// [FutureProvider] and a [RefreshIndicator] :
+  /// [FutureProvider] and a [RefreshIndicator]:
   ///
   /// ```dart
   /// final productsProvider = FutureProvider((ref) async {
@@ -381,7 +385,7 @@ abstract class WidgetRef {
   ///
   /// If used on a provider which is not initialized, this method will have no effect.
   void invalidate(
-    AnyProviderOrFamily provider, {
+    ProviderOrFamily provider, {
     bool asReload = false,
   });
 }

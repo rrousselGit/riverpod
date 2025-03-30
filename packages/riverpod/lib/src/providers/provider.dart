@@ -350,7 +350,7 @@ class $ProviderElement<StateT> extends ProviderElement<StateT> {
 
   @override
   WhenComplete create(Ref ref) {
-    setStateResult(ResultData(provider.create(ref)));
+    setStateResult($ResultData(provider.create(ref)));
 
     return null;
   }

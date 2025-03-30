@@ -634,7 +634,7 @@ class $Ref<StateT> extends Ref {
   set state(StateT newState) {
     _throwIfInvalidUsage();
 
-    _element.setStateResult(ResultData(newState));
+    _element.setStateResult($ResultData(newState));
   }
 
   /// Listens to changes on the value exposed by this provider.

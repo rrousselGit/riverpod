@@ -42,9 +42,9 @@ class $ElementLense<T> extends _ValueListenable<T> {
     switch (value) {
       case null:
         break;
-      case ResultData<T>():
-        _notifyValue(previous?.stateOrNull, value.state);
-      case ResultError<T>():
+      case $ResultData<T>():
+        _notifyValue(previous?.value, value.value);
+      case $ResultError<T>():
         _notifyError(value.error, value.stackTrace);
     }
   }

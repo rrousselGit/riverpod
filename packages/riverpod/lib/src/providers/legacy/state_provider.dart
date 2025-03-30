@@ -136,7 +136,7 @@ class StateProviderElement<T> extends ProviderElement<T> {
       fireImmediately: true,
       (state) {
         _stateNotifier.result = _controllerNotifier.result;
-        setStateResult(ResultData(state));
+        setStateResult($ResultData(state));
       },
     );
 
@@ -155,7 +155,7 @@ class StateProviderElement<T> extends ProviderElement<T> {
     _removeListener?.call();
     _removeListener = null;
 
-    _controllerNotifier.result?.stateOrNull?.dispose();
+    _controllerNotifier.result?.value?.dispose();
     _controllerNotifier.result = null;
   }
 

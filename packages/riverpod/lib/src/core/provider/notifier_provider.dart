@@ -173,7 +173,7 @@ mixin Persistable<ValueT, KeyT, EncodedT> on $Value<ValueT> {
         if (element == selfElement) continue;
         if (element is! $ClassProviderElement) continue;
 
-        final Object? notifier = element.classListenable.result?.stateOrNull;
+        final Object? notifier = element.classListenable.result?.value;
         if (notifier is! $Value) continue;
 
         final otherKey = notifier._debugKey;
@@ -375,18 +375,18 @@ abstract class $ClassProviderElement< //
     });
 
     switch (result) {
-      case ResultData():
+      case $ResultData():
         try {
           if (provider.runNotifierBuildOverride case final override?) {
-            final created = override(ref, result.state);
+            final created = override(ref, result.value);
             handleValue(ref, created);
           } else {
-            result.state.runBuild();
+            result.value.runBuild();
           }
         } catch (err, stack) {
           handleError(ref, err, stack);
         }
-      case ResultError():
+      case $ResultError():
         handleError(ref, result.error, result.stackTrace);
     }
 
@@ -398,8 +398,7 @@ abstract class $ClassProviderElement< //
 
   @override
   bool updateShouldNotify(StateT previous, StateT next) {
-    return classListenable.result?.stateOrNull
-            ?.updateShouldNotify(previous, next) ??
+    return classListenable.result?.value?.updateShouldNotify(previous, next) ??
         true;
   }
 

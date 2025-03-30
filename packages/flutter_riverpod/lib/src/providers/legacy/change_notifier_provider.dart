@@ -179,10 +179,10 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
 
     final notifier = notifierResult.requireState;
 
-    setStateResult(ResultData(notifier));
+    setStateResult($ResultData(notifier));
 
     if (notifier != null) {
-      void listener() => setStateResult(ResultData(notifier));
+      void listener() => setStateResult($ResultData(notifier));
       notifier.addListener(listener);
       _removeListener = () => notifier.removeListener(listener);
     }
@@ -200,7 +200,7 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
     _removeListener?.call();
     _removeListener = null;
 
-    final notifier = _notifierNotifier.result?.stateOrNull;
+    final notifier = _notifierNotifier.result?.value;
     if (notifier != null) {
       runGuarded(notifier.dispose);
     }

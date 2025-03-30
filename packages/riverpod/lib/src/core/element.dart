@@ -196,11 +196,11 @@ This could mean a few things:
     if (state == null) throw StateError(uninitializedError);
 
     return switch (state) {
-      ResultError() => throwErrorWithCombinedStackTrace(
+      $ResultError() => throwErrorWithCombinedStackTrace(
           state.error,
           state.stackTrace,
         ),
-      ResultData() => state.state,
+      $ResultData() => state.value,
     };
   }
 
@@ -456,22 +456,22 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }) {
     if (kDebugMode && !isFirstBuild) _debugAssertNotificationAllowed();
 
-    final previousState = previousStateResult?.stateOrNull;
+    final previousState = previousStateResult?.value;
 
     // listenSelf listeners do not respect updateShouldNotify
     switch (newState) {
-      case final ResultData<StateT> newState:
+      case final $ResultData<StateT> newState:
         final onChangeSelfListeners = ref?._onChangeSelfListeners;
         if (onChangeSelfListeners != null) {
           for (var i = 0; i < onChangeSelfListeners.length; i++) {
             Zone.current.runBinaryGuarded(
               onChangeSelfListeners[i],
               previousState,
-              newState.state,
+              newState.value,
             );
           }
         }
-      case final ResultError<StateT> newState:
+      case final $ResultError<StateT> newState:
         final onErrorSelfListeners = ref?._onErrorSelfListeners;
         if (onErrorSelfListeners != null) {
           for (var i = 0; i < onErrorSelfListeners.length; i++) {
@@ -486,8 +486,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     if (checkUpdateShouldNotify &&
         previousStateResult != null &&
-        previousStateResult.hasState &&
-        newState.hasState &&
+        previousStateResult.hasData &&
+        newState.hasData &&
         !updateShouldNotify(
           previousState as StateT,
           newState.requireState,
@@ -497,7 +497,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     final listeners = [...weakDependents, if (!isFirstBuild) ...?dependents];
     switch (newState) {
-      case final ResultData<StateT> newState:
+      case final $ResultData<StateT> newState:
         for (var i = 0; i < listeners.length; i++) {
           final listener = listeners[i];
           if (listener.closed) continue;
@@ -505,10 +505,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
           Zone.current.runBinaryGuarded(
             listener._onOriginData,
             previousState,
-            newState.state,
+            newState.value,
           );
         }
-      case final ResultError<StateT> newState:
+      case final $ResultError<StateT> newState:
         for (var i = 0; i < listeners.length; i++) {
           final listener = listeners[i];
           if (listener.closed) continue;
@@ -526,20 +526,20 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         runBinaryGuarded(
           observer.didAddProvider,
           _currentObserverContext(),
-          newState.stateOrNull,
+          newState.value,
         );
       } else {
         runTernaryGuarded(
           observer.didUpdateProvider,
           _currentObserverContext(),
           previousState,
-          newState.stateOrNull,
+          newState.value,
         );
       }
     }
 
     for (final observer in container.observers) {
-      if (newState is ResultError<StateT>) {
+      if (newState is $ResultError<StateT>) {
         runTernaryGuarded(
           observer.providerDidFail,
           _currentObserverContext(),
@@ -845,8 +845,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       [
         switch (_stateResult) {
           null => 'state: uninitialized',
-          ResultData<StateT>(:final state) => 'state: $state',
-          ResultError<StateT>(:final error, :final stackTrace) =>
+          $ResultData<StateT>(:final value) => 'state: $value',
+          $ResultError<StateT>(:final error, :final stackTrace) =>
             'state: error $error\n$stackTrace',
         },
         if (provider != origin) 'provider: $provider',
