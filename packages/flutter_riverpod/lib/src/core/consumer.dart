@@ -12,131 +12,164 @@ typedef ConsumerBuilder = Widget Function(
 /// {@template riverpod.consumer}
 /// Build a widget tree while listening to providers.
 ///
-/// [Consumer] can be used to listen to providers inside a [StatefulWidget]
-/// or to rebuild as few widgets as possible when a provider updates.
+/// [Consumer]'s main use-case is for reducing the number of rebuilt widgets.
+/// when a provider changes.
 ///
 /// As an example, consider:
 ///
 /// ```dart
-/// final helloWorldProvider = Provider((_) => 'Hello world');
+/// final userProvider = FutureProvider((_) async => /* fetch user */);
 /// ```
 ///
-/// We can then use [Consumer] to listen to `helloWorldProvider` inside a
-/// [StatefulWidget] like so:
+/// Normally, we would use a [ConsumerWidget] as followed:
 ///
 /// ```dart
-/// class Example extends StatefulWidget {
+/// class Example extends ConsumerWidget {
 ///   @override
-///   _ExampleState createState() => _ExampleState();
-/// }
-///
-/// class _ExampleState extends State<Example> {
-///   @override
-///   Widget build(BuildContext context) {
-///     return Consumer(
-///       builder: (context, ref, child) {
-///         final value = ref.watch(helloWorldProvider);
-///         return Text(value); // Hello world
-///       },
-///     );
+///   Widget build(BuildContext context, WidgetRef ref) {
+///     return Scaffold(
+///      appBar: AppBar(title: Text('User')),
+///      body: switch (ref.watch(userProvider) {
+///        AsyncValue(:final value?) => Text(value.name),
+///        AsyncValue(hasError: true) => Text('Error'),
+///        _ => CircularProgressIndicator(),
+///      },
 ///   }
 /// }
 /// ```
 ///
-/// **Note**
-/// You can watch as many providers inside [Consumer] as you want to:
+/// However, this would rebuild the entire `Scaffold` when the user changes.
+/// If we are looking to reduce this, have two options:
+/// - Extract the `body` into a separate [ConsumerWidget]. Then only the `body` will rebuild.
+///   This is the recommended approach, but is a bit more verbose.
+/// - Use [Consumer] to only rebuild the `body` when the user changes.
+///   This is less recommended, but avoids creating a new widget.
 ///
+/// Using [Consumer], the resulting code would look like:
 /// ```dart
-/// Consumer(
-///   builder: (context, ref, child) {
-///     final value = ref.watch(someProvider);
-///     final another = ref.watch(anotherProvider);
-///     ...
-///   },
-/// );
-/// ```
-///
-/// ## Performance optimizations
-///
-/// If your `builder` function contains a subtree that does not depend on the
-/// animation, it is more efficient to build that subtree once instead of
-/// rebuilding it on every provider update.
-///
-/// If you pass the pre-built subtree as the `child` parameter, the
-/// Consumer will pass it back to your builder function so that you
-/// can incorporate it into your build.
-///
-/// Using this pre-built child is entirely optional, but can improve
-/// performance significantly in some cases and is therefore a good practice.
-///
-/// This sample shows how you could use a [Consumer]
-///
-/// ```dart
-/// final counterProvider = StateProvider((ref) => 0);
-///
-/// class MyHomePage extends ConsumerWidget {
-///   MyHomePage({Key? key, required this.title}) : super(key: key);
-///   final String title;
-///
+/// class Example extends StatelessWidget {
 ///   @override
-///   Widget build(BuildContext context, WidgetRef ref) {
+///   Widget build(BuildContext context) {
 ///     return Scaffold(
-///       appBar: AppBar(
-///         title: Text(title)
-///       ),
-///       body: Center(
-///         child: Column(
-///           mainAxisAlignment: MainAxisAlignment.center,
-///           children: <Widget>[
-///             Text('You have pushed the button this many times:'),
-///             Consumer(
-///               builder: (BuildContext context, WidgetRef ref, Widget? child) {
-///                 // This builder will only get called when the counterProvider
-///                 // is updated.
-///                 final count = ref.watch(counterProvider);
-///
-///                 return Row(
-///                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-///                   children: <Widget>[
-///                     Text('$count'),
-///                     child!,
-///                   ],
-///                 );
-///               },
-///               // The child parameter is most helpful if the child is
-///               // expensive to build and does not depend on the value from
-///               // the notifier.
-///               child: Text('Good job!'),
-///             )
-///           ],
-///         ),
-///       ),
-///       floatingActionButton: FloatingActionButton(
-///         child: Icon(Icons.plus_one),
-///         onPressed: () => ref.read(counterProvider.notifier).state++,
-///       ),
-///     );
+///      appBar: AppBar(title: Text('User')),
+///      body: Consumer(
+///        builder: (context, ref, child) {
+///          return switch (ref.watch(userProvider) {
+///            AsyncValue(:final value?) => Text(value.name),
+///            AsyncValue(hasError: true) => Text('Error'),
+///            _ => CircularProgressIndicator(),
+///          };
+///        }),
+///      );
 ///   }
 /// }
 /// ```
 ///
 /// See also:
 ///
-///  * [ConsumerWidget], a base-class for widgets that wants to listen to providers.
+/// - [ConsumerWidget], a base-class for widgets that wants to listen to providers.
+/// - [child], a way to optimize the widget tree by passing a child widget that
+///   won't rebuild when the provider changes.
 /// {@endtemplate}
 @sealed
 class Consumer extends ConsumerWidget {
   /// {@macro riverpod.consumer}
-  const Consumer({super.key, required ConsumerBuilder builder, Widget? child})
-      : _child = child,
-        _builder = builder;
+  const Consumer({super.key, required this.builder, this.child});
 
-  final ConsumerBuilder _builder;
-  final Widget? _child;
+  /// The builder that will be called when the provider is updated.
+  ///
+  /// The `child` parameter will be the same as [child] if specified, or null otherwise.
+  ///
+  /// **Note**
+  /// You can watch as many providers inside [Consumer] as you want to:
+  /// ```dart
+  /// Consumer(
+  ///   builder: (context, ref, child) {
+  ///     final value = ref.watch(someProvider);
+  ///     final another = ref.watch(anotherProvider);
+  ///     ...
+  ///   },
+  /// );
+  /// ```
+  ///
+  /// See also [child].
+  final ConsumerBuilder builder;
+
+  /// The [child] parameter is an optional parameter for the sole purpose of
+  /// further performance optimizations.
+  ///
+  /// If your `builder` function contains a subtree that does not depend on the
+  /// animation, it is more efficient to build that subtree once instead of
+  /// rebuilding it on every provider update.
+  ///
+  /// If you pass the pre-built subtree as the `child` parameter, the
+  /// Consumer will pass it back to your builder function so that you
+  /// can incorporate it into your build.
+  ///
+  /// Using this pre-built child is entirely optional, but can improve
+  /// performance significantly in some cases and is therefore a good practice.
+  ///
+  /// This sample shows how you could use a [Consumer]
+  ///
+  /// ```dart
+  /// final counterProvider = NotifierProvider<Counter, int>(Counter.new);
+  /// class Counter extends Notifier<int> {
+  ///   @override
+  ///   int build() => 0;
+  ///
+  ///   void increment() => state++;
+  /// }
+  ///
+  /// class MyHomePage extends ConsumerWidget {
+  ///   MyHomePage({Key? key, required this.title}) : super(key: key);
+  ///   final String title;
+  ///
+  ///   @override
+  ///   Widget build(BuildContext context, WidgetRef ref) {
+  ///     return Scaffold(
+  ///       appBar: AppBar(
+  ///         title: Text(title)
+  ///       ),
+  ///       body: Center(
+  ///         child: Column(
+  ///           mainAxisAlignment: MainAxisAlignment.center,
+  ///           children: <Widget>[
+  ///             Text('You have pushed the button this many times:'),
+  ///             Consumer(
+  ///               builder: (BuildContext context, WidgetRef ref, Widget? child) {
+  ///                 // This builder will only get called when the counterProvider
+  ///                 // is updated.
+  ///                 final count = ref.watch(counterProvider);
+  ///
+  ///                 return Row(
+  ///                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+  ///                   children: <Widget>[
+  ///                     Text('$count'),
+  ///                     child!,
+  ///                   ],
+  ///                 );
+  ///               },
+  ///               // The child parameter is most helpful if the child is
+  ///               // expensive to build and does not depend on the value from
+  ///               // the notifier.
+  ///               child: Text('Good job!'),
+  ///             )
+  ///           ],
+  ///         ),
+  ///       ),
+  ///       floatingActionButton: FloatingActionButton(
+  ///         child: Icon(Icons.plus_one),
+  ///         onPressed: () => ref.read(counterProvider.notifier).increment(),
+  ///       ),
+  ///     );
+  ///   }
+  /// }
+  /// ```
+  final Widget? child;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return _builder(context, ref, _child);
+    return builder(context, ref, child);
   }
 }
 
