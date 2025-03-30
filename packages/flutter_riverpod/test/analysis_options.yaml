@@ -1,5 +1,10 @@
-import: "../../analysis_options.yaml"
-
+include: ../../../analysis_options.yaml
 analyzer:
   errors:
-    deprecated_member_use_from_same_package: false
+    unused_local_variable: ignore
+
+linter:
+  rules:
+    # Some tests may want to explicitly create an unused variable without type inference,
+    # for the sake of testing that that two types are assignable
+    omit_local_variable_types: false

@@ -23,7 +23,7 @@ class ActivityView extends ConsumerWidget {
               // If some data is available, we display it.
               // Note that data will still be available during a refresh.
               // {@endtemplate}
-              AsyncValue<Activity>(:final valueOrNull?) => Text(valueOrNull.activity),
+              AsyncValue<Activity>(:final value?) => Text(value.activity),
               // {@template error}
               // An error is available, so we render it.
               // {@endtemplate}

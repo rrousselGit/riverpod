@@ -9,381 +9,15 @@
 // generate_providers <riverpod/flutter_riverpod/hooks_riverpod> <path to builder file to update>
 
 import 'dart:async';
+
+import 'package:meta/meta.dart';
 import 'package:state_notifier/state_notifier.dart';
 
 import 'internals.dart';
 
-/// Builds a [AsyncNotifierProvider].
-class AsyncNotifierProviderBuilder {
-  /// Builds a [AsyncNotifierProvider].
-  const AsyncNotifierProviderBuilder();
-
-  /// {@macro riverpod.autoDispose}
-  AsyncNotifierProvider<NotifierT, T>
-      call<NotifierT extends AsyncNotifier<T>, T>(
-    NotifierT Function() create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-  }) {
-    return AsyncNotifierProvider<NotifierT, T>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
-  }
-
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeAsyncNotifierProviderBuilder get autoDispose {
-    return const AutoDisposeAsyncNotifierProviderBuilder();
-  }
-
-  /// {@macro riverpod.family}
-  AsyncNotifierProviderFamilyBuilder get family {
-    return const AsyncNotifierProviderFamilyBuilder();
-  }
-}
-
-/// Builds a [AsyncNotifierProviderFamily].
-class AsyncNotifierProviderFamilyBuilder {
-  /// Builds a [AsyncNotifierProviderFamily].
-  const AsyncNotifierProviderFamilyBuilder();
-
-  /// {@macro riverpod.family}
-  AsyncNotifierProviderFamily<NotifierT, T, Arg>
-      call<NotifierT extends FamilyAsyncNotifier<T, Arg>, T, Arg>(
-    NotifierT Function() create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-  }) {
-    return AsyncNotifierProviderFamily<NotifierT, T, Arg>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
-  }
-
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeAsyncNotifierProviderFamilyBuilder get autoDispose {
-    return const AutoDisposeAsyncNotifierProviderFamilyBuilder();
-  }
-}
-
-/// Builds a [AutoDisposeAsyncNotifierProvider].
-class AutoDisposeAsyncNotifierProviderBuilder {
-  /// Builds a [AutoDisposeAsyncNotifierProvider].
-  const AutoDisposeAsyncNotifierProviderBuilder();
-
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeAsyncNotifierProvider<NotifierT, T>
-      call<NotifierT extends AutoDisposeAsyncNotifier<T>, T>(
-    NotifierT Function() create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-  }) {
-    return AutoDisposeAsyncNotifierProvider<NotifierT, T>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
-  }
-
-  /// {@macro riverpod.family}
-  AutoDisposeAsyncNotifierProviderFamilyBuilder get family {
-    return const AutoDisposeAsyncNotifierProviderFamilyBuilder();
-  }
-}
-
-/// Builds a [AutoDisposeAsyncNotifierProviderFamily].
-class AutoDisposeAsyncNotifierProviderFamilyBuilder {
-  /// Builds a [AutoDisposeAsyncNotifierProviderFamily].
-  const AutoDisposeAsyncNotifierProviderFamilyBuilder();
-
-  /// {@macro riverpod.family}
-  AutoDisposeAsyncNotifierProviderFamily<NotifierT, T, Arg>
-      call<NotifierT extends AutoDisposeFamilyAsyncNotifier<T, Arg>, T, Arg>(
-    NotifierT Function() create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-  }) {
-    return AutoDisposeAsyncNotifierProviderFamily<NotifierT, T, Arg>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
-  }
-}
-
-/// Builds a [NotifierProvider].
-class NotifierProviderBuilder {
-  /// Builds a [NotifierProvider].
-  const NotifierProviderBuilder();
-
-  /// {@macro riverpod.autoDispose}
-  NotifierProvider<NotifierT, State>
-      call<NotifierT extends Notifier<State>, State>(
-    NotifierT Function() create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-  }) {
-    return NotifierProvider<NotifierT, State>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
-  }
-
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeNotifierProviderBuilder get autoDispose {
-    return const AutoDisposeNotifierProviderBuilder();
-  }
-
-  /// {@macro riverpod.family}
-  NotifierProviderFamilyBuilder get family {
-    return const NotifierProviderFamilyBuilder();
-  }
-}
-
-/// Builds a [NotifierProviderFamily].
-class NotifierProviderFamilyBuilder {
-  /// Builds a [NotifierProviderFamily].
-  const NotifierProviderFamilyBuilder();
-
-  /// {@macro riverpod.family}
-  NotifierProviderFamily<NotifierT, State, Arg>
-      call<NotifierT extends FamilyNotifier<State, Arg>, State, Arg>(
-    NotifierT Function() create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-  }) {
-    return NotifierProviderFamily<NotifierT, State, Arg>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
-  }
-
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeNotifierProviderFamilyBuilder get autoDispose {
-    return const AutoDisposeNotifierProviderFamilyBuilder();
-  }
-}
-
-/// Builds a [AutoDisposeNotifierProvider].
-class AutoDisposeNotifierProviderBuilder {
-  /// Builds a [AutoDisposeNotifierProvider].
-  const AutoDisposeNotifierProviderBuilder();
-
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeNotifierProvider<NotifierT, State>
-      call<NotifierT extends AutoDisposeNotifier<State>, State>(
-    NotifierT Function() create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-  }) {
-    return AutoDisposeNotifierProvider<NotifierT, State>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
-  }
-
-  /// {@macro riverpod.family}
-  AutoDisposeNotifierProviderFamilyBuilder get family {
-    return const AutoDisposeNotifierProviderFamilyBuilder();
-  }
-}
-
-/// Builds a [AutoDisposeNotifierProviderFamily].
-class AutoDisposeNotifierProviderFamilyBuilder {
-  /// Builds a [AutoDisposeNotifierProviderFamily].
-  const AutoDisposeNotifierProviderFamilyBuilder();
-
-  /// {@macro riverpod.family}
-  AutoDisposeNotifierProviderFamily<NotifierT, State, Arg>
-      call<NotifierT extends AutoDisposeFamilyNotifier<State, Arg>, State, Arg>(
-    NotifierT Function() create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-  }) {
-    return AutoDisposeNotifierProviderFamily<NotifierT, State, Arg>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
-  }
-}
-
-/// Builds a [StreamNotifierProvider].
-class StreamNotifierProviderBuilder {
-  /// Builds a [StreamNotifierProvider].
-  const StreamNotifierProviderBuilder();
-
-  /// {@macro riverpod.autoDispose}
-  StreamNotifierProvider<NotifierT, T>
-      call<NotifierT extends StreamNotifier<T>, T>(
-    NotifierT Function() create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-  }) {
-    return StreamNotifierProvider<NotifierT, T>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
-  }
-
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeStreamNotifierProviderBuilder get autoDispose {
-    return const AutoDisposeStreamNotifierProviderBuilder();
-  }
-
-  /// {@macro riverpod.family}
-  StreamNotifierProviderFamilyBuilder get family {
-    return const StreamNotifierProviderFamilyBuilder();
-  }
-}
-
-/// Builds a [StreamNotifierProviderFamily].
-class StreamNotifierProviderFamilyBuilder {
-  /// Builds a [StreamNotifierProviderFamily].
-  const StreamNotifierProviderFamilyBuilder();
-
-  /// {@macro riverpod.family}
-  StreamNotifierProviderFamily<NotifierT, T, Arg>
-      call<NotifierT extends FamilyStreamNotifier<T, Arg>, T, Arg>(
-    NotifierT Function() create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-  }) {
-    return StreamNotifierProviderFamily<NotifierT, T, Arg>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
-  }
-
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeStreamNotifierProviderFamilyBuilder get autoDispose {
-    return const AutoDisposeStreamNotifierProviderFamilyBuilder();
-  }
-}
-
-/// Builds a [AutoDisposeStreamNotifierProvider].
-class AutoDisposeStreamNotifierProviderBuilder {
-  /// Builds a [AutoDisposeStreamNotifierProvider].
-  const AutoDisposeStreamNotifierProviderBuilder();
-
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeStreamNotifierProvider<NotifierT, T>
-      call<NotifierT extends AutoDisposeStreamNotifier<T>, T>(
-    NotifierT Function() create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-  }) {
-    return AutoDisposeStreamNotifierProvider<NotifierT, T>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
-  }
-
-  /// {@macro riverpod.family}
-  AutoDisposeStreamNotifierProviderFamilyBuilder get family {
-    return const AutoDisposeStreamNotifierProviderFamilyBuilder();
-  }
-}
-
-/// Builds a [AutoDisposeStreamNotifierProviderFamily].
-class AutoDisposeStreamNotifierProviderFamilyBuilder {
-  /// Builds a [AutoDisposeStreamNotifierProviderFamily].
-  const AutoDisposeStreamNotifierProviderFamilyBuilder();
-
-  /// {@macro riverpod.family}
-  AutoDisposeStreamNotifierProviderFamily<NotifierT, T, Arg>
-      call<NotifierT extends AutoDisposeFamilyStreamNotifier<T, Arg>, T, Arg>(
-    NotifierT Function() create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-  }) {
-    return AutoDisposeStreamNotifierProviderFamily<NotifierT, T, Arg>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
-  }
-}
-
-/// Builds a [StateProvider].
-class StateProviderBuilder {
-  /// Builds a [StateProvider].
-  const StateProviderBuilder();
-
-  /// {@template riverpod.autoDispose}
-  /// Marks the provider as automatically disposed when no longer listened to.
-  ///
-  /// Some typical use-cases:
-  ///
-  /// - Combined with [StreamProvider], this can be used as a mean to keep
-  ///   the connection with Firebase alive only when truly needed (to reduce costs).
-  /// - Automatically reset a form state when leaving the screen.
-  /// - Automatically retry HTTP requests that failed when the user exit and
-  ///   re-enter the screen.
-  /// - Cancel HTTP requests if the user leaves a screen before the request completed.
-  ///
-  /// Marking a provider with `autoDispose` also adds an extra method on `ref`: `keepAlive`.
-  ///
-  /// The `keepAlive` function is used to tell Riverpod that the state of the provider
-  /// should be preserved even if no longer listened to.
-  ///
-  /// A use-case would be to set this flag to `true` after an HTTP request have
-  /// completed:
-  ///
-  /// ```dart
-  /// final myProvider = FutureProvider.autoDispose((ref) async {
-  ///   final response = await httpClient.get(...);
-  ///   ref.keepAlive();
-  ///   return response;
-  /// });
-  /// ```
-  ///
-  /// This way, if the request failed and the UI leaves the screen then re-enters
-  /// it, then the request will be performed again.
-  /// But if the request completed successfully, the state will be preserved
-  /// and re-entering the screen will not trigger a new request.
-  ///
-  /// It can be combined with `ref.onDispose` for more advanced behaviors, such
-  /// as cancelling pending HTTP requests when the user leaves a screen.
-  /// For example, modifying our previous snippet and using `dio`, we would have:
-  ///
-  /// ```diff
-  /// final myProvider = FutureProvider.autoDispose((ref) async {
-  /// + final cancelToken = CancelToken();
-  /// + ref.onDispose(() => cancelToken.cancel());
-  ///
-  /// + final response = await dio.get('path', cancelToken: cancelToken);
-  /// - final response = await dio.get('path');
-  ///   ref.keepAlive();
-  ///   return response;
-  /// });
-  /// ```
-  /// {@endtemplate}
-  StateProvider<State> call<State>(
-    // ignore: deprecated_member_use_from_same_package
-    Create<State, StateProviderRef<State>> create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-  }) {
-    return StateProvider<State>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
-  }
-
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeStateProviderBuilder get autoDispose {
-    return const AutoDisposeStateProviderBuilder();
-  }
+@internal
+class StateProviderFamilyBuilder {
+  const StateProviderFamilyBuilder();
 
   /// {@template riverpod.family}
   /// A group of providers that builds their value from an external parameter.
@@ -594,487 +228,617 @@ class StateProviderBuilder {
   ///   }
   ///   ```
   /// {@endtemplate}
-  StateProviderFamilyBuilder get family {
-    return const StateProviderFamilyBuilder();
-  }
-}
-
-/// Builds a [StateProviderFamily].
-class StateProviderFamilyBuilder {
-  /// Builds a [StateProviderFamily].
-  const StateProviderFamilyBuilder();
-
-  /// {@macro riverpod.family}
-  StateProviderFamily<State, Arg> call<State, Arg>(
-    // ignore: deprecated_member_use_from_same_package
-    FamilyCreate<State, StateProviderRef<State>, Arg> create, {
+  StateProviderFamily<StateT, ArgT> call<StateT, ArgT>(
+    StateT Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
   }) {
-    return StateProviderFamily<State, Arg>(
+    return StateProviderFamily<StateT, ArgT>(
       create,
       name: name,
       dependencies: dependencies,
+      retry: retry,
     );
   }
 
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeStateProviderFamilyBuilder get autoDispose {
-    return const AutoDisposeStateProviderFamilyBuilder();
-  }
+  /// {@template riverpod.autoDispose}
+  /// Marks the provider as automatically disposed when no longer listened to.
+  ///
+  /// Some typical use-cases:
+  ///
+  /// - Combined with [StreamProvider], this can be used as a mean to keep
+  ///   the connection with Firebase alive only when truly needed (to reduce costs).
+  /// - Automatically reset a form state when leaving the screen.
+  /// - Automatically retry HTTP requests that failed when the user exit and
+  ///   re-enter the screen.
+  /// - Cancel HTTP requests if the user leaves a screen before the request completed.
+  ///
+  /// Marking a provider with `autoDispose` also adds an extra method on `ref`: `keepAlive`.
+  ///
+  /// The `keepAlive` function is used to tell Riverpod that the state of the provider
+  /// should be preserved even if no longer listened to.
+  ///
+  /// A use-case would be to set this flag to `true` after an HTTP request have
+  /// completed:
+  ///
+  /// ```dart
+  /// final myProvider = FutureProvider.autoDispose((ref) async {
+  ///   final response = await httpClient.get(...);
+  ///   ref.keepAlive();
+  ///   return response;
+  /// });
+  /// ```
+  ///
+  /// This way, if the request failed and the UI leaves the screen then re-enters
+  /// it, then the request will be performed again.
+  /// But if the request completed successfully, the state will be preserved
+  /// and re-entering the screen will not trigger a new request.
+  ///
+  /// It can be combined with `ref.onDispose` for more advanced behaviors, such
+  /// as cancelling pending HTTP requests when the user leaves a screen.
+  /// For example, modifying our previous snippet and using `dio`, we would have:
+  ///
+  /// ```diff
+  /// final myProvider = FutureProvider.autoDispose((ref) async {
+  /// + final cancelToken = CancelToken();
+  /// + ref.onDispose(() => cancelToken.cancel());
+  ///
+  /// + final response = await dio.get('path', cancelToken: cancelToken);
+  /// - final response = await dio.get('path');
+  ///   ref.keepAlive();
+  ///   return response;
+  /// });
+  /// ```
+  /// {@endtemplate}
+  AutoDisposeStateProviderFamilyBuilder get autoDispose =>
+      const AutoDisposeStateProviderFamilyBuilder();
 }
 
-/// Builds a [StateNotifierProvider].
-class StateNotifierProviderBuilder {
-  /// Builds a [StateNotifierProvider].
-  const StateNotifierProviderBuilder();
-
-  /// {@macro riverpod.autoDispose}
-  StateNotifierProvider<Notifier, State>
-      call<Notifier extends StateNotifier<State>, State>(
-    // ignore: deprecated_member_use_from_same_package
-    Create<Notifier, StateNotifierProviderRef<Notifier, State>> create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-  }) {
-    return StateNotifierProvider<Notifier, State>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
-  }
-
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeStateNotifierProviderBuilder get autoDispose {
-    return const AutoDisposeStateNotifierProviderBuilder();
-  }
-
-  /// {@macro riverpod.family}
-  StateNotifierProviderFamilyBuilder get family {
-    return const StateNotifierProviderFamilyBuilder();
-  }
-}
-
-/// Builds a [StateNotifierProviderFamily].
-class StateNotifierProviderFamilyBuilder {
-  /// Builds a [StateNotifierProviderFamily].
-  const StateNotifierProviderFamilyBuilder();
-
-  /// {@macro riverpod.family}
-  StateNotifierProviderFamily<Notifier, State, Arg>
-      call<Notifier extends StateNotifier<State>, State, Arg>(
-    // ignore: deprecated_member_use_from_same_package
-    FamilyCreate<Notifier, StateNotifierProviderRef<Notifier, State>, Arg>
-        create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-  }) {
-    return StateNotifierProviderFamily<Notifier, State, Arg>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
-  }
-
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeStateNotifierProviderFamilyBuilder get autoDispose {
-    return const AutoDisposeStateNotifierProviderFamilyBuilder();
-  }
-}
-
-/// Builds a [Provider].
-class ProviderBuilder {
-  /// Builds a [Provider].
-  const ProviderBuilder();
-
-  /// {@macro riverpod.autoDispose}
-  Provider<State> call<State>(
-    // ignore: deprecated_member_use_from_same_package
-    Create<State, ProviderRef<State>> create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-  }) {
-    return Provider<State>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
-  }
-
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeProviderBuilder get autoDispose {
-    return const AutoDisposeProviderBuilder();
-  }
-
-  /// {@macro riverpod.family}
-  ProviderFamilyBuilder get family {
-    return const ProviderFamilyBuilder();
-  }
-}
-
-/// Builds a [ProviderFamily].
-class ProviderFamilyBuilder {
-  /// Builds a [ProviderFamily].
-  const ProviderFamilyBuilder();
-
-  /// {@macro riverpod.family}
-  ProviderFamily<State, Arg> call<State, Arg>(
-    // ignore: deprecated_member_use_from_same_package
-    FamilyCreate<State, ProviderRef<State>, Arg> create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-  }) {
-    return ProviderFamily<State, Arg>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
-  }
-
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeProviderFamilyBuilder get autoDispose {
-    return const AutoDisposeProviderFamilyBuilder();
-  }
-}
-
-/// Builds a [FutureProvider].
-class FutureProviderBuilder {
-  /// Builds a [FutureProvider].
-  const FutureProviderBuilder();
-
-  /// {@macro riverpod.autoDispose}
-  FutureProvider<State> call<State>(
-    // ignore: deprecated_member_use_from_same_package
-    Create<FutureOr<State>, FutureProviderRef<State>> create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-  }) {
-    return FutureProvider<State>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
-  }
-
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeFutureProviderBuilder get autoDispose {
-    return const AutoDisposeFutureProviderBuilder();
-  }
-
-  /// {@macro riverpod.family}
-  FutureProviderFamilyBuilder get family {
-    return const FutureProviderFamilyBuilder();
-  }
-}
-
-/// Builds a [FutureProviderFamily].
-class FutureProviderFamilyBuilder {
-  /// Builds a [FutureProviderFamily].
-  const FutureProviderFamilyBuilder();
-
-  /// {@macro riverpod.family}
-  FutureProviderFamily<State, Arg> call<State, Arg>(
-    // ignore: deprecated_member_use_from_same_package
-    FamilyCreate<FutureOr<State>, FutureProviderRef<State>, Arg> create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-  }) {
-    return FutureProviderFamily<State, Arg>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
-  }
-
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeFutureProviderFamilyBuilder get autoDispose {
-    return const AutoDisposeFutureProviderFamilyBuilder();
-  }
-}
-
-/// Builds a [StreamProvider].
-class StreamProviderBuilder {
-  /// Builds a [StreamProvider].
-  const StreamProviderBuilder();
-
-  /// {@macro riverpod.autoDispose}
-  StreamProvider<State> call<State>(
-    // ignore: deprecated_member_use_from_same_package
-    Create<Stream<State>, StreamProviderRef<State>> create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-  }) {
-    return StreamProvider<State>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
-  }
-
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeStreamProviderBuilder get autoDispose {
-    return const AutoDisposeStreamProviderBuilder();
-  }
-
-  /// {@macro riverpod.family}
-  StreamProviderFamilyBuilder get family {
-    return const StreamProviderFamilyBuilder();
-  }
-}
-
-/// Builds a [StreamProviderFamily].
-class StreamProviderFamilyBuilder {
-  /// Builds a [StreamProviderFamily].
-  const StreamProviderFamilyBuilder();
-
-  /// {@macro riverpod.family}
-  StreamProviderFamily<State, Arg> call<State, Arg>(
-    // ignore: deprecated_member_use_from_same_package
-    FamilyCreate<Stream<State>, StreamProviderRef<State>, Arg> create, {
-    String? name,
-    Iterable<ProviderOrFamily>? dependencies,
-  }) {
-    return StreamProviderFamily<State, Arg>(
-      create,
-      name: name,
-      dependencies: dependencies,
-    );
-  }
-
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeStreamProviderFamilyBuilder get autoDispose {
-    return const AutoDisposeStreamProviderFamilyBuilder();
-  }
-}
-
-/// Builds a [AutoDisposeStateProvider].
+@internal
 class AutoDisposeStateProviderBuilder {
-  /// Builds a [AutoDisposeStateProvider].
   const AutoDisposeStateProviderBuilder();
 
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeStateProvider<State> call<State>(
-    // ignore: deprecated_member_use_from_same_package
-    Create<State, AutoDisposeStateProviderRef<State>> create, {
+  /// {@macro riverpod.family}
+  StateProvider<StateT> call<StateT>(
+    StateT Function(Ref ref) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
   }) {
-    return AutoDisposeStateProvider<State>(
+    return StateProvider<StateT>(
       create,
       name: name,
+      isAutoDispose: true,
       dependencies: dependencies,
+      retry: retry,
     );
   }
 
   /// {@macro riverpod.family}
-  AutoDisposeStateProviderFamilyBuilder get family {
-    return const AutoDisposeStateProviderFamilyBuilder();
-  }
+  AutoDisposeStateProviderFamilyBuilder get family =>
+      const AutoDisposeStateProviderFamilyBuilder();
 }
 
-/// Builds a [AutoDisposeStateProviderFamily].
+@internal
 class AutoDisposeStateProviderFamilyBuilder {
-  /// Builds a [AutoDisposeStateProviderFamily].
   const AutoDisposeStateProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
-  AutoDisposeStateProviderFamily<State, Arg> call<State, Arg>(
-    // ignore: deprecated_member_use_from_same_package
-    FamilyCreate<State, AutoDisposeStateProviderRef<State>, Arg> create, {
+  StateProviderFamily<StateT, ArgT> call<StateT, ArgT>(
+    StateT Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
   }) {
-    return AutoDisposeStateProviderFamily<State, Arg>(
+    return StateProviderFamily<StateT, ArgT>(
       create,
       name: name,
+      isAutoDispose: true,
       dependencies: dependencies,
+      retry: retry,
     );
   }
 }
 
-/// Builds a [AutoDisposeStateNotifierProvider].
-class AutoDisposeStateNotifierProviderBuilder {
-  /// Builds a [AutoDisposeStateNotifierProvider].
-  const AutoDisposeStateNotifierProviderBuilder();
+@internal
+class StateNotifierProviderFamilyBuilder {
+  const StateNotifierProviderFamilyBuilder();
 
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeStateNotifierProvider<Notifier, State>
-      call<Notifier extends StateNotifier<State>, State>(
-    // ignore: deprecated_member_use_from_same_package
-    Create<Notifier, AutoDisposeStateNotifierProviderRef<Notifier, State>>
-        create, {
+  /// {@macro riverpod.family}
+  StateNotifierProviderFamily<NotifierT, StateT, ArgT>
+      call<NotifierT extends StateNotifier<StateT>, StateT, ArgT>(
+    NotifierT Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
   }) {
-    return AutoDisposeStateNotifierProvider<Notifier, State>(
+    return StateNotifierProviderFamily<NotifierT, StateT, ArgT>(
       create,
       name: name,
       dependencies: dependencies,
+      retry: retry,
+    );
+  }
+
+  /// {@macro riverpod.autoDispose}
+  AutoDisposeStateNotifierProviderFamilyBuilder get autoDispose =>
+      const AutoDisposeStateNotifierProviderFamilyBuilder();
+}
+
+@internal
+class AutoDisposeStateNotifierProviderBuilder {
+  const AutoDisposeStateNotifierProviderBuilder();
+
+  /// {@macro riverpod.family}
+  StateNotifierProvider<NotifierT, StateT>
+      call<NotifierT extends StateNotifier<StateT>, StateT>(
+    NotifierT Function(Ref ref) create, {
+    String? name,
+    Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
+  }) {
+    return StateNotifierProvider<NotifierT, StateT>(
+      create,
+      name: name,
+      isAutoDispose: true,
+      dependencies: dependencies,
+      retry: retry,
     );
   }
 
   /// {@macro riverpod.family}
-  AutoDisposeStateNotifierProviderFamilyBuilder get family {
-    return const AutoDisposeStateNotifierProviderFamilyBuilder();
-  }
+  AutoDisposeStateNotifierProviderFamilyBuilder get family =>
+      const AutoDisposeStateNotifierProviderFamilyBuilder();
 }
 
-/// Builds a [AutoDisposeStateNotifierProviderFamily].
+@internal
 class AutoDisposeStateNotifierProviderFamilyBuilder {
-  /// Builds a [AutoDisposeStateNotifierProviderFamily].
   const AutoDisposeStateNotifierProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
-  AutoDisposeStateNotifierProviderFamily<Notifier, State, Arg>
-      call<Notifier extends StateNotifier<State>, State, Arg>(
-    // ignore: deprecated_member_use_from_same_package
-    FamilyCreate<Notifier, AutoDisposeStateNotifierProviderRef<Notifier, State>,
-            Arg>
-        create, {
+  StateNotifierProviderFamily<NotifierT, StateT, ArgT>
+      call<NotifierT extends StateNotifier<StateT>, StateT, ArgT>(
+    NotifierT Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
   }) {
-    return AutoDisposeStateNotifierProviderFamily<Notifier, State, Arg>(
+    return StateNotifierProviderFamily<NotifierT, StateT, ArgT>(
       create,
       name: name,
+      isAutoDispose: true,
       dependencies: dependencies,
+      retry: retry,
     );
   }
 }
 
-/// Builds a [AutoDisposeProvider].
-class AutoDisposeProviderBuilder {
-  /// Builds a [AutoDisposeProvider].
-  const AutoDisposeProviderBuilder();
+@internal
+class ProviderFamilyBuilder {
+  const ProviderFamilyBuilder();
 
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeProvider<State> call<State>(
-    // ignore: deprecated_member_use_from_same_package
-    Create<State, AutoDisposeProviderRef<State>> create, {
+  /// {@macro riverpod.family}
+  ProviderFamily<StateT, ArgT> call<StateT, ArgT>(
+    StateT Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
   }) {
-    return AutoDisposeProvider<State>(
+    return ProviderFamily<StateT, ArgT>(
       create,
       name: name,
       dependencies: dependencies,
+      retry: retry,
+    );
+  }
+
+  /// {@macro riverpod.autoDispose}
+  AutoDisposeProviderFamilyBuilder get autoDispose =>
+      const AutoDisposeProviderFamilyBuilder();
+}
+
+@internal
+class AutoDisposeProviderBuilder {
+  const AutoDisposeProviderBuilder();
+
+  /// {@macro riverpod.family}
+  Provider<StateT> call<StateT>(
+    StateT Function(Ref ref) create, {
+    String? name,
+    Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
+  }) {
+    return Provider<StateT>(
+      create,
+      name: name,
+      isAutoDispose: true,
+      dependencies: dependencies,
+      retry: retry,
     );
   }
 
   /// {@macro riverpod.family}
-  AutoDisposeProviderFamilyBuilder get family {
-    return const AutoDisposeProviderFamilyBuilder();
-  }
+  AutoDisposeProviderFamilyBuilder get family =>
+      const AutoDisposeProviderFamilyBuilder();
 }
 
-/// Builds a [AutoDisposeProviderFamily].
+@internal
 class AutoDisposeProviderFamilyBuilder {
-  /// Builds a [AutoDisposeProviderFamily].
   const AutoDisposeProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
-  AutoDisposeProviderFamily<State, Arg> call<State, Arg>(
-    // ignore: deprecated_member_use_from_same_package
-    FamilyCreate<State, AutoDisposeProviderRef<State>, Arg> create, {
+  ProviderFamily<StateT, ArgT> call<StateT, ArgT>(
+    StateT Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
   }) {
-    return AutoDisposeProviderFamily<State, Arg>(
+    return ProviderFamily<StateT, ArgT>(
       create,
       name: name,
+      isAutoDispose: true,
       dependencies: dependencies,
+      retry: retry,
     );
   }
 }
 
-/// Builds a [AutoDisposeFutureProvider].
-class AutoDisposeFutureProviderBuilder {
-  /// Builds a [AutoDisposeFutureProvider].
-  const AutoDisposeFutureProviderBuilder();
+@internal
+class FutureProviderFamilyBuilder {
+  const FutureProviderFamilyBuilder();
 
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeFutureProvider<State> call<State>(
-    // ignore: deprecated_member_use_from_same_package
-    Create<FutureOr<State>, AutoDisposeFutureProviderRef<State>> create, {
+  /// {@macro riverpod.family}
+  FutureProviderFamily<StateT, ArgT> call<StateT, ArgT>(
+    FutureOr<StateT> Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
   }) {
-    return AutoDisposeFutureProvider<State>(
+    return FutureProviderFamily<StateT, ArgT>(
       create,
       name: name,
       dependencies: dependencies,
+      retry: retry,
+    );
+  }
+
+  /// {@macro riverpod.autoDispose}
+  AutoDisposeFutureProviderFamilyBuilder get autoDispose =>
+      const AutoDisposeFutureProviderFamilyBuilder();
+}
+
+@internal
+class AutoDisposeFutureProviderBuilder {
+  const AutoDisposeFutureProviderBuilder();
+
+  /// {@macro riverpod.family}
+  FutureProvider<StateT> call<StateT>(
+    FutureOr<StateT> Function(Ref ref) create, {
+    String? name,
+    Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
+  }) {
+    return FutureProvider<StateT>(
+      create,
+      name: name,
+      isAutoDispose: true,
+      dependencies: dependencies,
+      retry: retry,
     );
   }
 
   /// {@macro riverpod.family}
-  AutoDisposeFutureProviderFamilyBuilder get family {
-    return const AutoDisposeFutureProviderFamilyBuilder();
-  }
+  AutoDisposeFutureProviderFamilyBuilder get family =>
+      const AutoDisposeFutureProviderFamilyBuilder();
 }
 
-/// Builds a [AutoDisposeFutureProviderFamily].
+@internal
 class AutoDisposeFutureProviderFamilyBuilder {
-  /// Builds a [AutoDisposeFutureProviderFamily].
   const AutoDisposeFutureProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
-  AutoDisposeFutureProviderFamily<State, Arg> call<State, Arg>(
-    // ignore: deprecated_member_use_from_same_package
-    FamilyCreate<FutureOr<State>, AutoDisposeFutureProviderRef<State>, Arg>
-        create, {
+  FutureProviderFamily<StateT, ArgT> call<StateT, ArgT>(
+    FutureOr<StateT> Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
   }) {
-    return AutoDisposeFutureProviderFamily<State, Arg>(
+    return FutureProviderFamily<StateT, ArgT>(
       create,
       name: name,
+      isAutoDispose: true,
       dependencies: dependencies,
+      retry: retry,
     );
   }
 }
 
-/// Builds a [AutoDisposeStreamProvider].
-class AutoDisposeStreamProviderBuilder {
-  /// Builds a [AutoDisposeStreamProvider].
-  const AutoDisposeStreamProviderBuilder();
+@internal
+class StreamProviderFamilyBuilder {
+  const StreamProviderFamilyBuilder();
 
-  /// {@macro riverpod.autoDispose}
-  AutoDisposeStreamProvider<State> call<State>(
-    // ignore: deprecated_member_use_from_same_package
-    Create<Stream<State>, AutoDisposeStreamProviderRef<State>> create, {
+  /// {@macro riverpod.family}
+  StreamProviderFamily<StateT, ArgT> call<StateT, ArgT>(
+    Stream<StateT> Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
   }) {
-    return AutoDisposeStreamProvider<State>(
+    return StreamProviderFamily<StateT, ArgT>(
       create,
       name: name,
       dependencies: dependencies,
+      retry: retry,
+    );
+  }
+
+  /// {@macro riverpod.autoDispose}
+  AutoDisposeStreamProviderFamilyBuilder get autoDispose =>
+      const AutoDisposeStreamProviderFamilyBuilder();
+}
+
+@internal
+class AutoDisposeStreamProviderBuilder {
+  const AutoDisposeStreamProviderBuilder();
+
+  /// {@macro riverpod.family}
+  StreamProvider<StateT> call<StateT>(
+    Stream<StateT> Function(Ref ref) create, {
+    String? name,
+    Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
+  }) {
+    return StreamProvider<StateT>(
+      create,
+      name: name,
+      isAutoDispose: true,
+      dependencies: dependencies,
+      retry: retry,
     );
   }
 
   /// {@macro riverpod.family}
-  AutoDisposeStreamProviderFamilyBuilder get family {
-    return const AutoDisposeStreamProviderFamilyBuilder();
-  }
+  AutoDisposeStreamProviderFamilyBuilder get family =>
+      const AutoDisposeStreamProviderFamilyBuilder();
 }
 
-/// Builds a [AutoDisposeStreamProviderFamily].
+@internal
 class AutoDisposeStreamProviderFamilyBuilder {
-  /// Builds a [AutoDisposeStreamProviderFamily].
   const AutoDisposeStreamProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
-  AutoDisposeStreamProviderFamily<State, Arg> call<State, Arg>(
-    // ignore: deprecated_member_use_from_same_package
-    FamilyCreate<Stream<State>, AutoDisposeStreamProviderRef<State>, Arg>
-        create, {
+  StreamProviderFamily<StateT, ArgT> call<StateT, ArgT>(
+    Stream<StateT> Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
   }) {
-    return AutoDisposeStreamProviderFamily<State, Arg>(
+    return StreamProviderFamily<StateT, ArgT>(
+      create,
+      name: name,
+      isAutoDispose: true,
+      dependencies: dependencies,
+      retry: retry,
+    );
+  }
+}
+
+@internal
+class AutoDisposeNotifierProviderBuilder {
+  const AutoDisposeNotifierProviderBuilder();
+
+  /// {@macro riverpod.autoDispose}
+  NotifierProvider<NotifierT, StateT>
+      call<NotifierT extends Notifier<StateT>, StateT>(
+    NotifierT Function() create, {
+    String? name,
+    Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
+  }) {
+    return NotifierProvider<NotifierT, StateT>(
+      create,
+      name: name,
+      isAutoDispose: true,
+      dependencies: dependencies,
+      retry: retry,
+    );
+  }
+
+  /// {@macro riverpod.family}
+  AutoDisposeNotifierProviderFamilyBuilder get family =>
+      const AutoDisposeNotifierProviderFamilyBuilder();
+}
+
+@internal
+class NotifierProviderFamilyBuilder {
+  const NotifierProviderFamilyBuilder();
+
+  /// {@macro riverpod.autoDispose}
+  NotifierProviderFamily<NotifierT, StateT, ArgT>
+      call<NotifierT extends FamilyNotifier<StateT, ArgT>, StateT, ArgT>(
+    NotifierT Function() create, {
+    String? name,
+    Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
+  }) {
+    return NotifierProviderFamily<NotifierT, StateT, ArgT>.internal(
       create,
       name: name,
       dependencies: dependencies,
+      retry: retry,
+    );
+  }
+
+  /// {@macro riverpod.autoDispose}
+  AutoDisposeNotifierProviderFamilyBuilder get autoDispose =>
+      const AutoDisposeNotifierProviderFamilyBuilder();
+}
+
+@internal
+class AutoDisposeNotifierProviderFamilyBuilder {
+  const AutoDisposeNotifierProviderFamilyBuilder();
+
+  /// {@macro riverpod.autoDispose}
+  NotifierProviderFamily<NotifierT, StateT, ArgT>
+      call<NotifierT extends FamilyNotifier<StateT, ArgT>, StateT, ArgT>(
+    NotifierT Function() create, {
+    String? name,
+    Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
+  }) {
+    return NotifierProviderFamily<NotifierT, StateT, ArgT>.internal(
+      create,
+      name: name,
+      isAutoDispose: true,
+      dependencies: dependencies,
+      retry: retry,
+    );
+  }
+}
+
+@internal
+class AutoDisposeStreamNotifierProviderBuilder {
+  const AutoDisposeStreamNotifierProviderBuilder();
+
+  /// {@macro riverpod.autoDispose}
+  StreamNotifierProvider<NotifierT, StateT>
+      call<NotifierT extends StreamNotifier<StateT>, StateT>(
+    NotifierT Function() create, {
+    String? name,
+    Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
+  }) {
+    return StreamNotifierProvider<NotifierT, StateT>(
+      create,
+      name: name,
+      isAutoDispose: true,
+      dependencies: dependencies,
+      retry: retry,
+    );
+  }
+
+  /// {@macro riverpod.family}
+  AutoDisposeStreamNotifierProviderFamilyBuilder get family =>
+      const AutoDisposeStreamNotifierProviderFamilyBuilder();
+}
+
+@internal
+class StreamNotifierProviderFamilyBuilder {
+  const StreamNotifierProviderFamilyBuilder();
+
+  /// {@macro riverpod.autoDispose}
+  StreamNotifierProviderFamily<NotifierT, StateT, ArgT>
+      call<NotifierT extends FamilyStreamNotifier<StateT, ArgT>, StateT, ArgT>(
+    NotifierT Function() create, {
+    String? name,
+    Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
+  }) {
+    return StreamNotifierProviderFamily<NotifierT, StateT, ArgT>.internal(
+      create,
+      name: name,
+      dependencies: dependencies,
+      retry: retry,
+    );
+  }
+
+  /// {@macro riverpod.autoDispose}
+  AutoDisposeStreamNotifierProviderFamilyBuilder get autoDispose =>
+      const AutoDisposeStreamNotifierProviderFamilyBuilder();
+}
+
+@internal
+class AutoDisposeStreamNotifierProviderFamilyBuilder {
+  const AutoDisposeStreamNotifierProviderFamilyBuilder();
+
+  /// {@macro riverpod.autoDispose}
+  StreamNotifierProviderFamily<NotifierT, StateT, ArgT>
+      call<NotifierT extends FamilyStreamNotifier<StateT, ArgT>, StateT, ArgT>(
+    NotifierT Function() create, {
+    String? name,
+    Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
+  }) {
+    return StreamNotifierProviderFamily<NotifierT, StateT, ArgT>.internal(
+      create,
+      name: name,
+      isAutoDispose: true,
+      dependencies: dependencies,
+      retry: retry,
+    );
+  }
+}
+
+@internal
+class AutoDisposeAsyncNotifierProviderBuilder {
+  const AutoDisposeAsyncNotifierProviderBuilder();
+
+  /// {@macro riverpod.autoDispose}
+  AsyncNotifierProvider<NotifierT, StateT>
+      call<NotifierT extends AsyncNotifier<StateT>, StateT>(
+    NotifierT Function() create, {
+    String? name,
+    Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
+  }) {
+    return AsyncNotifierProvider<NotifierT, StateT>(
+      create,
+      name: name,
+      isAutoDispose: true,
+      dependencies: dependencies,
+      retry: retry,
+    );
+  }
+
+  /// {@macro riverpod.family}
+  AutoDisposeAsyncNotifierProviderFamilyBuilder get family =>
+      const AutoDisposeAsyncNotifierProviderFamilyBuilder();
+}
+
+@internal
+class AsyncNotifierProviderFamilyBuilder {
+  const AsyncNotifierProviderFamilyBuilder();
+
+  /// {@macro riverpod.autoDispose}
+  AsyncNotifierProviderFamily<NotifierT, StateT, ArgT>
+      call<NotifierT extends FamilyAsyncNotifier<StateT, ArgT>, StateT, ArgT>(
+    NotifierT Function() create, {
+    String? name,
+    Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
+  }) {
+    return AsyncNotifierProviderFamily<NotifierT, StateT, ArgT>.internal(
+      create,
+      name: name,
+      dependencies: dependencies,
+      retry: retry,
+    );
+  }
+
+  /// {@macro riverpod.autoDispose}
+  AutoDisposeAsyncNotifierProviderFamilyBuilder get autoDispose =>
+      const AutoDisposeAsyncNotifierProviderFamilyBuilder();
+}
+
+@internal
+class AutoDisposeAsyncNotifierProviderFamilyBuilder {
+  const AutoDisposeAsyncNotifierProviderFamilyBuilder();
+
+  /// {@macro riverpod.autoDispose}
+  AsyncNotifierProviderFamily<NotifierT, StateT, ArgT>
+      call<NotifierT extends FamilyAsyncNotifier<StateT, ArgT>, StateT, ArgT>(
+    NotifierT Function() create, {
+    String? name,
+    Iterable<ProviderOrFamily>? dependencies,
+    Retry? retry,
+  }) {
+    return AsyncNotifierProviderFamily<NotifierT, StateT, ArgT>.internal(
+      create,
+      name: name,
+      isAutoDispose: true,
+      dependencies: dependencies,
+      retry: retry,
     );
   }
 }

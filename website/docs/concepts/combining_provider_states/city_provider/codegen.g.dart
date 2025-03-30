@@ -8,21 +8,63 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+@ProviderFor(city)
+const cityProvider = CityProvider._();
+
+final class CityProvider extends $FunctionalProvider<String, String>
+    with $Provider<String> {
+  const CityProvider._(
+      {String Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'cityProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final String Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$cityHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  CityProvider $copyWithCreate(
+    String Function(
+      Ref ref,
+    ) create,
+  ) {
+    return CityProvider._(create: create);
+  }
+
+  @override
+  String create(Ref ref) {
+    final _$cb = _createCb ?? city;
+    return _$cb(ref);
+  }
+}
+
 String _$cityHash() => r'6a5023a3aba119f1ecaee6c7db44b3f519e72759';
 
-/// See also [city].
-@ProviderFor(city)
-final cityProvider = AutoDisposeProvider<String>.internal(
-  city,
-  name: r'cityProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$cityHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef CityRef = AutoDisposeProviderRef<String>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

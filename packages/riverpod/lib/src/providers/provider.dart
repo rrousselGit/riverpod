@@ -1,142 +1,131 @@
 import 'package:meta/meta.dart';
 
 import '../builder.dart';
+import '../common/result.dart';
 import '../framework.dart';
 import 'legacy/state_notifier_provider.dart' show StateNotifierProvider;
 import 'stream_provider.dart' show StreamProvider;
 
-/// A base class for [Provider]
-///
-/// Not meant for public consumption
+/// Implementation detail of `riverpod_generator`.
+/// Do not use, as this may be removed at any time.
 @internal
-abstract class InternalProvider<State> extends ProviderBase<State>
-    with OverrideWithValueMixin<State> {
-  /// A base class for [Provider]
-  ///
-  /// Not meant for public consumption
-  const InternalProvider({
-    required super.name,
-    required super.from,
-    required super.argument,
-    required super.debugGetCreateSourceHash,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-  });
-
-  State _create(covariant ProviderElement<State> ref);
-}
-
-/// {@macro riverpod.provider_ref_base}
-/// - [state], the value currently exposed by this provider.
-@Deprecated('will be removed in 3.0.0. Use Ref instead')
-abstract class ProviderRef<State> implements Ref<State> {
-  /// Obtains the state currently exposed by this provider.
-  ///
-  /// Mutating this property will notify the provider listeners.
-  ///
-  /// Cannot be called while a provider is creating, unless the setter was called first.
-  ///
-  /// Will throw if the provider threw during creation.
-  State get state;
-  set state(State newState);
+base mixin $Provider<StateT> on ProviderBase<StateT> {
+  StateT create(Ref ref);
 }
 
 /// {@macro riverpod.provider}
-@sealed
-class Provider<State> extends InternalProvider<State>
-    with
-        // ignore: deprecated_member_use_from_same_package
-        AlwaysAliveProviderBase<State> {
+base class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
+    with $Provider<StateT>, LegacyProviderMixin<StateT> {
   /// {@macro riverpod.provider}
   Provider(
-    this._createFn, {
+    this._create, {
     super.name,
     super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
+    super.isAutoDispose = false,
+    super.retry,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          from: null,
+          argument: null,
         );
 
   /// An implementation detail of Riverpod
   @internal
-  Provider.internal(
-    this._createFn, {
+  const Provider.internal(
+    this._create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    super.from,
-    super.argument,
+    required super.from,
+    required super.argument,
+    required super.isAutoDispose,
+    required super.retry,
   });
-
-  /// {@macro riverpod.family}
-  static const family = ProviderFamilyBuilder();
 
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeProviderBuilder();
 
-  // ignore: deprecated_member_use_from_same_package
-  final Create<State, ProviderRef<State>> _createFn;
+  /// {@macro riverpod.family}
+  static const family = ProviderFamilyBuilder();
+
+  final Create<StateT> _create;
 
   @override
-  State _create(ProviderElement<State> ref) => _createFn(ref);
+  StateT create(Ref ref) => _create(ref);
 
   @internal
   @override
-  ProviderElement<State> createElement() => ProviderElement(this);
+  $ProviderElement<StateT> $createElement($ProviderPointer pointer) {
+    return $ProviderElement(this, pointer);
+  }
 
-  /// {@template riverpod.override_with}
-  /// Override the provider with a new initialization function.
+  @mustBeOverridden
+  @visibleForOverriding
+  @override
+  Provider<StateT> $copyWithCreate(Create<StateT> create) {
+    return Provider<StateT>.internal(
+      create,
+      from: from,
+      argument: argument,
+      isAutoDispose: isAutoDispose,
+      retry: retry,
+      allTransitiveDependencies: null,
+      dependencies: null,
+      name: null,
+    );
+  }
+
+  /// {@template riverpod.override_with_value}
+  /// Overrides a provider with a value, ejecting the default behavior.
   ///
   /// This will also disable the auto-scoping mechanism, meaning that if the
   /// overridden provider specified `dependencies`, it will have no effect.
   ///
-  /// The override must not specify a `dependencies`.
+  /// The main difference between [overrideWith] and [overrideWithValue] is:
+  /// - [overrideWith] allows you to replace the implementation of a provider.
+  ///   This gives full access to [Ref], and the result will be cached by Riverpod.
+  ///   The override can never change.
+  /// - [overrideWithValue] allows you to replace the result of a provider.
+  ///   If the overridden value ever changes, notifiers will be updated.
   ///
-  /// Some common use-cases are:
-  /// - testing, by replacing a service with a fake implementation, or to reach
-  ///   a very specific state easily.
-  /// - multiple environments, by changing the implementation of a class
-  ///   based on the platform or other parameters.
   ///
-  /// This function should be used in combination with `ProviderScope.overrides`
-  /// or `ProviderContainer.overrides`:
+  /// Alongside the typical use-cases of [overrideWith], [overrideWithValue]
+  /// has is particularly useful for converting `BuildContext` values to providers.
+  ///
+  /// For example, we can make a provider that represents `ThemeData` from Flutter:
   ///
   /// ```dart
-  /// final myService = Provider((ref) => MyService());
+  /// final themeProvider = Provider<ThemeData>((ref) => throw UnimplementedError());
+  /// ```
   ///
-  /// runApp(
-  ///   ProviderScope(
-  ///     overrides: [
-  ///       // Replace the implementation of the provider with a different one
-  ///       myService.overrideWithProvider((ref) {
-  ///         ref.watch('other');
-  ///         return MyFakeService(),
-  ///       })),
-  ///     ],
-  ///     child: MyApp(),
-  ///   ),
+  /// We can then override this provider with the current theme of the app:
+  ///
+  /// ```dart
+  /// MaterialApp(
+  ///   builder: (context, child) {
+  ///     final theme = Theme.of(context);
+  ///
+  ///     return ProviderScope(
+  ///       overrides: [
+  ///         /// We override "themeProvider" with a valid theme instance.
+  ///         /// This allows providers such as "tagThemeProvider" to read the
+  ///         /// current theme, without having a BuildContext.
+  ///         themeProvider.overrideWithValue(theme),
+  ///       ],
+  ///       child: MyApp(),
+  ///     );
+  ///   },
   /// );
   /// ```
+  ///
+  /// The benefit of using [overrideWithValue] over [overrideWith] in this scenario
+  /// is that if the theme ever changes, then `themeProvider` will be updated.
   /// {@endtemplate}
-  Override overrideWith(
-    // ignore: deprecated_member_use_from_same_package
-    Create<State, ProviderRef<State>> create,
-  ) {
-    return ProviderOverride(
+  Override overrideWithValue(StateT value) {
+    return $ProviderOverride(
       origin: this,
-      override: Provider<State>.internal(
-        create,
-        from: from,
-        argument: argument,
-        allTransitiveDependencies: null,
-        dependencies: null,
-        debugGetCreateSourceHash: null,
-        name: null,
-      ),
+      providerOverride: $ValueProvider<StateT>(value),
     );
   }
 }
@@ -352,47 +341,39 @@ class Provider<State> extends InternalProvider<State>
 /// - [Provider.family], to allow providers to create a value from external parameters.
 /// {@endtemplate}
 @internal
-class ProviderElement<State> extends ProviderElementBase<State>
-    implements
-        // ignore: deprecated_member_use_from_same_package
-        ProviderRef<State> {
-  /// A [ProviderElementBase] for [Provider]
-  @internal
-  ProviderElement(super._provider);
+class $ProviderElement<StateT> extends ProviderElement<StateT> {
+  /// A [ProviderElement] for [Provider]
+  $ProviderElement(this.provider, super.pointer);
 
   @override
-  State get state => requireState;
+  final $Provider<StateT> provider;
 
   @override
-  set state(State newState) => setState(newState);
+  WhenComplete create(Ref ref) {
+    setStateResult($ResultData(provider.create(ref)));
 
-  @override
-  void create({required bool didChangeDependency}) {
-    final provider = this.provider as InternalProvider<State>;
-
-    setState(provider._create(this));
+    return null;
   }
 
   @override
-  bool updateShouldNotify(State previous, State next) {
+  bool updateShouldNotify(StateT previous, StateT next) {
     return previous != next;
   }
 }
 
 /// The [Family] of [Provider]
-class ProviderFamily<R, Arg>
-    // ignore: deprecated_member_use_from_same_package
-    extends FamilyBase<ProviderRef<R>, R, Arg, R, Provider<R>> {
-  /// The [Family] of [ProviderFamily]
+class ProviderFamily<StateT, ArgT>
+    extends FunctionalFamily<StateT, ArgT, StateT, Provider<StateT>> {
   ProviderFamily(
     super._createFn, {
     super.name,
     super.dependencies,
+    super.isAutoDispose = false,
+    super.retry,
   }) : super(
           providerFactory: Provider.internal,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
-          debugGetCreateSourceHash: null,
         );
 
   /// An implementation detail of Riverpod
@@ -402,145 +383,7 @@ class ProviderFamily<R, Arg>
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
+    required super.isAutoDispose,
+    required super.retry,
   }) : super(providerFactory: Provider.internal);
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-    // ignore: deprecated_member_use_from_same_package
-    R Function(ProviderRef<R> ref, Arg arg) create,
-  ) {
-    return FamilyOverrideImpl<R, Arg, Provider<R>>(
-      this,
-      (arg) => Provider<R>.internal(
-        (ref) => create(ref, arg),
-        from: from,
-        argument: arg,
-        name: name,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-      ),
-    );
-  }
-}
-
-/// {@macro riverpod.provider_ref_base}
-@Deprecated('will be removed in 3.0.0. Use Ref instead')
-abstract class AutoDisposeProviderRef<State> extends ProviderRef<State>
-    implements AutoDisposeRef<State> {}
-
-/// {@macro riverpod.provider}
-class AutoDisposeProvider<T> extends InternalProvider<T> {
-  /// {@macro riverpod.provider}
-  AutoDisposeProvider(
-    this._createFn, {
-    super.name,
-    super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
-  }) : super(
-          allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-        );
-
-  /// An implementation detail of Riverpod
-  @internal
-  const AutoDisposeProvider.internal(
-    this._createFn, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    super.from,
-    super.argument,
-  });
-
-  /// {@macro riverpod.family}
-  static const family = AutoDisposeProviderFamily.new;
-
-  // ignore: deprecated_member_use_from_same_package
-  final T Function(AutoDisposeProviderRef<T> ref) _createFn;
-
-  @override
-  T _create(AutoDisposeProviderElement<T> ref) => _createFn(ref);
-
-  @internal
-  @override
-  AutoDisposeProviderElement<T> createElement() {
-    return AutoDisposeProviderElement(this);
-  }
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-    // ignore: deprecated_member_use_from_same_package
-    Create<T, AutoDisposeProviderRef<T>> create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      override: AutoDisposeProvider<T>.internal(
-        create,
-        from: from,
-        argument: argument,
-        allTransitiveDependencies: null,
-        dependencies: null,
-        debugGetCreateSourceHash: null,
-        name: null,
-      ),
-    );
-  }
-}
-
-/// The element of [AutoDisposeProvider]
-@internal
-class AutoDisposeProviderElement<T> extends ProviderElement<T>
-    with
-        AutoDisposeProviderElementMixin<T>
-    implements
-        // ignore: deprecated_member_use_from_same_package
-        AutoDisposeProviderRef<T> {
-  /// The [ProviderElementBase] for [Provider]
-  @internal
-  AutoDisposeProviderElement(AutoDisposeProvider<T> super._provider);
-}
-
-/// The [Family] of [AutoDisposeProvider]
-class AutoDisposeProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
-    // ignore: deprecated_member_use_from_same_package
-    AutoDisposeProviderRef<R>,
-    R,
-    Arg,
-    R,
-    AutoDisposeProvider<R>> {
-  /// The [Family] of [AutoDisposeProvider]
-  AutoDisposeProviderFamily(
-    super._createFn, {
-    super.name,
-    super.dependencies,
-  }) : super(
-          providerFactory: AutoDisposeProvider.internal,
-          allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-          debugGetCreateSourceHash: null,
-        );
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-    // ignore: deprecated_member_use_from_same_package
-    R Function(AutoDisposeProviderRef<R> ref, Arg arg) create,
-  ) {
-    return FamilyOverrideImpl<R, Arg, AutoDisposeProvider<R>>(
-      this,
-      (arg) => AutoDisposeProvider<R>.internal(
-        (ref) => create(ref, arg),
-        from: from,
-        argument: arg,
-        name: null,
-        debugGetCreateSourceHash: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-      ),
-    );
-  }
 }

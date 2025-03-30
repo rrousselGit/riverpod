@@ -22,7 +22,8 @@ class TodoListView extends ConsumerWidget {
           CheckboxListTile(
             value: todo.completed,
             // 各 Todo をタップすると、完了ステータスを変更できる
-            onChanged: (value) => ref.read(todosProvider.notifier).toggle(todo.id),
+            onChanged: (value) =>
+                ref.read(todosProvider.notifier).toggle(todo.id),
             title: Text(todo.description),
           ),
       ],

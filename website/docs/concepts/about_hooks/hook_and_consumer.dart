@@ -21,7 +21,7 @@ class Example extends StatelessWidget {
           final value = ref.watch(myProvider);
 
           return Text('Hello $counter $value');
-        });
+        },);
       },
     );
   }

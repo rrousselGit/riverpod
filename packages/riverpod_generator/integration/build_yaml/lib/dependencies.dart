@@ -1,4 +1,3 @@
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'main.dart';
@@ -6,6 +5,7 @@ import 'main.dart';
 part 'dependencies.g.dart';
 
 @Riverpod(
+  // ignore: provider_dependencies
   dependencies: [
     count,
     countFuture,

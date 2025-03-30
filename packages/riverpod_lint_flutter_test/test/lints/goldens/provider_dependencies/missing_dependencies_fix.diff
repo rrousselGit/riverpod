@@ -1,0 +1,161 @@
+Message: `Remove "dependencies"`
+Priority: 100
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:20`:
+```
+
+// expect_lint: provider_dependencies
+- @Dependencies([dep])
++ 
+void depFn() {}
+
+```
+---
+Message: `Remove "dependencies"`
+Priority: 100
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:24`:
+```
+
+// expect_lint: provider_dependencies
+- @Dependencies([depFamily])
++ 
+void depFamilyFn() {}
+
+```
+---
+Message: `Remove "dependencies"`
+Priority: 100
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:40`:
+```
+
+// expect_lint: provider_dependencies
+- @Dependencies([dep])
++ 
+class UnusedDepWidget extends ConsumerWidget {
+  const UnusedDepWidget({super.key});
+```
+---
+Message: `Specify "dependencies"`
+Priority: 100
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:77`:
+```
+
+// expect_lint: provider_dependencies
+- @riverpod
++ @Riverpod(dependencies: [dep])
+int plainAnnotation(Ref ref) {
+  ref.watch(depProvider);
+```
+---
+Message: `Specify "dependencies"`
+Priority: 100
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:84`:
+```
+
+// expect_lint: provider_dependencies
+- @Riverpod(keepAlive: false)
++ @Riverpod(keepAlive: false, dependencies: [dep])
+int customAnnotation(Ref ref) {
+  ref.watch(depProvider);
+```
+---
+Message: `Specify "dependencies"`
+Priority: 100
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:92`:
+```
+// expect_lint: provider_dependencies
+@Riverpod(
+-   keepAlive: false,
++   keepAlive: false, dependencies: [dep],
+)
+int customAnnotationWithTrailingComma(
+```
+---
+Message: `Update "dependencies"`
+Priority: 100
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:104`:
+```
+  keepAlive: false,
+  // expect_lint: provider_dependencies
+-   dependencies: [],
++   dependencies: [dep],
+)
+int existingDep(Ref ref) {
+```
+---
+Message: `Update "dependencies"`
+Priority: 100
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:114`:
+```
+  keepAlive: false,
+  // expect_lint: provider_dependencies
+-   dependencies: [],
++   dependencies: [dep, dep2],
+)
+int multipleDeps(Ref ref) {
+```
+---
+Message: `Specify "dependencies"`
+Priority: 100
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:133`:
+```
+
+// expect_lint: provider_dependencies
+- class AboveScope extends ConsumerWidget {
++ @Dependencies([dep])
++ class AboveScope extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+```
+---
+Message: `Specify "dependencies"`
+Priority: 100
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:146`:
+```
+
+// expect_lint: provider_dependencies
+- class Scope2 extends ConsumerWidget {
++ @Dependencies([dep])
++ class Scope2 extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+```
+---
+Message: `Specify "dependencies"`
+Priority: 100
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:157`:
+```
+
+// expect_lint: provider_dependencies
+- class ConditionalScope extends ConsumerWidget {
++ @Dependencies([dep])
++ class ConditionalScope extends ConsumerWidget {
+  ConditionalScope({super.key, required this.condition});
+  final bool condition;
+```
+---
+Message: `Specify "dependencies"`
+Priority: 100
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:222`:
+```
+
+// expect_lint: provider_dependencies
+- class SupportsMultipleScopes2 extends ConsumerWidget {
++ @Dependencies([depFamily, dep])
++ class SupportsMultipleScopes2 extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+```
+---
+Message: `Specify "dependencies"`
+Priority: 100
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:253`:
+```
+
+// expect_lint: provider_dependencies
+- class IncompleteFamilyOverride extends ConsumerWidget {
++ @Dependencies([depFamily])
++ class IncompleteFamilyOverride extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+```
+---

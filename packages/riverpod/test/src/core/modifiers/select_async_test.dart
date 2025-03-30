@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/legacy.dart';
+import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
+import '../../matrix.dart';
 import '../../utils.dart';
 
 void main() {
@@ -16,8 +17,9 @@ void main() {
       addTearDown(controller.close);
       final dep = StreamProvider<int>((ref) => controller.stream);
 
-      final ref = container.read(provider);
-      final future = ref.watch(dep.selectAsync((data) => data * 2));
+      container.listen(dep, (p, n) {});
+      final ref = container.listen(provider, (a, b) {});
+      final future = ref.read().watch(dep.selectAsync((data) => data * 2));
 
       container.invalidate(provider);
       controller.add(21);
@@ -32,8 +34,9 @@ void main() {
       addTearDown(controller.close);
       final dep = StreamProvider<int>((ref) => controller.stream);
 
-      final ref = container.read(provider);
-      final future = ref.watch(dep.selectAsync((data) => data * 2));
+      container.listen(dep, (p, n) {});
+      final ref = container.listen(provider, (a, b) {});
+      final future = ref.read().watch(dep.selectAsync((data) => data * 2));
 
       container.invalidate(provider);
       controller.addError('err');
@@ -196,14 +199,14 @@ void main() {
 
   test('handles multiple AsyncLoading at once then data', () async {
     final container = ProviderContainer.test();
-    late FutureProviderRef<int> ref;
-    final provider = FutureProvider<int>((r) {
-      ref = r;
-      final completer = Completer<int>();
-      ref.onDispose(() => completer.complete(84));
+    final provider = AsyncNotifierProvider<AsyncNotifier<int>, int>(
+      () => DeferredAsyncNotifier((ref, self) {
+        final completer = Completer<int>();
+        ref.onDispose(() => completer.complete(84));
 
-      return completer.future;
-    });
+        return completer.future;
+      }),
+    );
 
     final sub = container.listen(
       provider.selectAsync((data) => data + 40),
@@ -212,13 +215,13 @@ void main() {
 
     expect(sub.read(), completion(42));
 
-    ref.state = const AsyncLoading<int>()
+    final notifier = container.read(provider.notifier);
+    notifier.state = const AsyncLoading<int>()
         .copyWithPrevious(const AsyncValue<int>.data(0));
-    ref.state = const AsyncLoading<int>()
+    notifier.state = const AsyncLoading<int>()
         .copyWithPrevious(const AsyncError<int>('err', StackTrace.empty));
-    ref.state = const AsyncLoading<int>();
-
-    ref.state = const AsyncData(2);
+    notifier.state = const AsyncLoading<int>();
+    notifier.state = const AsyncData(2);
 
     // the previous unawaited `completion` should resolve with 2+40
   });
@@ -233,7 +236,9 @@ void main() {
       return ref.watch(a.selectAsync((value) => value % 10));
     });
 
-    expect(buildCount, 0);
+    container.listen(a, (p, n) {});
+    container.listen(b, (p, n) {});
+
     expect(container.read(a), const AsyncLoading<int>());
     expect(container.read(b), const AsyncLoading<int>());
     expect(await container.read(b.future), 0);
@@ -289,7 +294,9 @@ void main() {
       return ref.watch(a.selectAsync((value) => value % 10));
     });
 
-    expect(buildCount, 0);
+    container.listen(a, (p, n) {});
+    container.listen(b, (p, n) {});
+
     expect(container.read(b), const AsyncLoading<int>());
     expect(container.read(b), const AsyncLoading<int>());
     expect(await container.read(b.future), 0);
@@ -340,6 +347,8 @@ void main() {
       final container = ProviderContainer.test();
       final provider = FutureProvider((ref) async => 0);
 
+      container.listen(provider, (p, n) {});
+
       expect(
         container.read(provider.selectAsync((data) => data.toString())),
         completion('0'),
@@ -351,6 +360,8 @@ void main() {
       final provider =
           FutureProvider<int>((ref) async => throw StateError('err'));
 
+      container.listen(provider, (p, n) {});
+
       expect(
         container.read(provider.selectAsync((data) => data)),
         throwsStateError,
@@ -360,6 +371,8 @@ void main() {
     test('emits exceptions inside selectors as Future.error', () async {
       final container = ProviderContainer.test();
       final provider = FutureProvider<int>((ref) async => 42);
+
+      container.listen(provider, (p, n) {});
 
       expect(
         container.read(provider.selectAsync((data) => throw StateError('err'))),
