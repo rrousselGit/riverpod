@@ -219,7 +219,7 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   @override
   void create({required bool didChangeDependency}) {
     asyncTransition(AsyncLoading<T>(), seamless: !didChangeDependency);
-    _streamNotifier.result ??= Result.data(_streamController.stream);
+    _streamNotifier.result ??= $Result.data(_streamController.stream);
 
     handleStream(
       () {

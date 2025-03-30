@@ -116,7 +116,7 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
   bool _didBuild = false;
 
   /* STATE */
-  Result<StateT>? _state;
+  $Result<StateT>? _state;
 
   /// Update the exposed value of a provider and notify its listeners.
   ///
@@ -135,7 +135,7 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
       '',
     );
     final previousResult = getState();
-    final result = _state = ResultData(newState);
+    final result = _state = $ResultData(newState);
 
     if (_didBuild) {
       _notifyListeners(result, previousResult);
@@ -151,7 +151,7 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
   /// This is not meant for public consumption. Instead, public API should use
   /// [readSelf].
   @internal
-  Result<StateT>? getState() => _state;
+  $Result<StateT>? getState() => _state;
 
   /// Read the current value of a provider and:
   ///
@@ -180,8 +180,8 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
     }
 
     return switch (state) {
-      ResultData<StateT>() => state.value,
-      ResultError<StateT>() =>
+      $ResultData<StateT>() => state.value,
+      $ResultError<StateT>() =>
         throwErrorWithCombinedStackTrace(state.error, state.stackTrace),
     };
   }
@@ -230,7 +230,7 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
     buildState();
 
     switch (_state!) {
-      case ResultData<StateT>(:final value):
+      case $ResultData<StateT>(:final value):
         final onChangeSelfListeners = _onChangeSelfListeners;
         if (onChangeSelfListeners != null) {
           for (var i = 0; i < onChangeSelfListeners.length; i++) {
@@ -241,7 +241,7 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
             );
           }
         }
-      case ResultError<StateT>(:final error, :final stackTrace):
+      case $ResultError<StateT>(:final error, :final stackTrace):
         final onErrorSelfListeners = _onErrorSelfListeners;
         if (onErrorSelfListeners != null) {
           for (var i = 0; i < onErrorSelfListeners.length; i++) {
@@ -255,7 +255,7 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
     }
 
     switch (_state!) {
-      case ResultData<Object?>(:final value):
+      case $ResultData<Object?>(:final value):
         for (final observer in container.observers) {
           runTernaryGuarded(
             observer.didAddProvider,
@@ -264,7 +264,7 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
             container,
           );
         }
-      case ResultError<Object?>(:final error, :final stackTrace):
+      case $ResultError<Object?>(:final error, :final stackTrace):
         for (final observer in container.observers) {
           runTernaryGuarded(
             observer.didAddProvider,
@@ -462,7 +462,7 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
         }(),
         '',
       );
-      _state = Result.error(err, stack);
+      _state = $Result.error(err, stack);
     } finally {
       _didBuild = true;
       assert(
@@ -497,8 +497,8 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
   }
 
   void _notifyListeners(
-    Result<StateT> newState,
-    Result<StateT>? previousStateResult, {
+    $Result<StateT> newState,
+    $Result<StateT>? previousStateResult, {
     bool checkUpdateShouldNotify = true,
   }) {
     assert(
@@ -525,7 +525,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     // listenSelf listeners do not respect updateShouldNotify
     switch (newState) {
-      case ResultData<StateT>():
+      case $ResultData<StateT>():
         final onChangeSelfListeners = _onChangeSelfListeners;
         if (onChangeSelfListeners != null) {
           for (var i = 0; i < onChangeSelfListeners.length; i++) {
@@ -536,7 +536,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
             );
           }
         }
-      case ResultError<StateT>():
+      case $ResultError<StateT>():
         final onErrorSelfListeners = _onErrorSelfListeners;
         if (onErrorSelfListeners != null) {
           for (var i = 0; i < onErrorSelfListeners.length; i++) {
@@ -562,7 +562,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     final listeners = _dependents?.toList(growable: false);
     switch (newState) {
-      case ResultData<StateT>():
+      case $ResultData<StateT>():
         if (listeners != null) {
           for (var i = 0; i < listeners.length; i++) {
             final listener = listeners[i];
@@ -575,7 +575,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
             }
           }
         }
-      case ResultError<StateT>():
+      case $ResultError<StateT>():
         if (listeners != null) {
           for (var i = 0; i < listeners.length; i++) {
             final listener = listeners[i];
@@ -606,9 +606,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     for (final observer in _container.observers) {
       switch (newState) {
-        case ResultData<StateT>():
+        case $ResultData<StateT>():
           break;
-        case ResultError<StateT>():
+        case $ResultError<StateT>():
           runQuaternaryGuarded(
             observer.providerDidFail,
             origin,

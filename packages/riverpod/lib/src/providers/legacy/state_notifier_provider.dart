@@ -218,7 +218,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
     final provider = this.provider as _StateNotifierProviderBase<NotifierT, T>;
 
     final notifier =
-        _notifierNotifier.result = Result.guard(() => provider._create(this));
+        _notifierNotifier.result = $Result.guard(() => provider._create(this));
 
     _removeListener = notifier
         // TODO test requireState, as ref.read(p) is expected to throw if notifier creation failed

@@ -100,7 +100,7 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
   /// The selector applied
   final Output Function(Input) selector;
 
-  Result<Output> _select(Input value) {
+  $Result<Output> _select(Input value) {
     assert(
       () {
         _debugIsRunningSelector = true;
@@ -110,9 +110,9 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
     );
 
     try {
-      return Result.data(selector(value));
+      return $Result.data(selector(value));
     } catch (err, stack) {
-      return Result.error(err, stack);
+      return $Result.error(err, stack);
     } finally {
       assert(
         () {
@@ -132,7 +132,7 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
   }) {
-    Result<Output>? lastSelectedValue;
+    $Result<Output>? lastSelectedValue;
     Completer<Output>? selectedCompleter;
     Future<Output>? selectedFuture;
 
@@ -189,14 +189,14 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
           final newSelectedValue = _select(value.value);
 
           switch (newSelectedValue) {
-            case ResultData<Output>():
+            case $ResultData<Output>():
               if (newSelectedValue != lastSelectedValue) {
                 emitData(
                   newSelectedValue.value,
                   callListeners: callListeners,
                 );
               }
-            case ResultError<Output>():
+            case $ResultError<Output>():
               emitError(
                 newSelectedValue.error,
                 newSelectedValue.stackTrace,

@@ -202,7 +202,7 @@ class NotifierProviderElement<NotifierT extends NotifierBase<T>, T>
   void create({required bool didChangeDependency}) {
     final provider = this.provider as NotifierProviderBase<NotifierT, T>;
 
-    final notifierResult = _notifierNotifier.result ??= Result.guard(() {
+    final notifierResult = _notifierNotifier.result ??= $Result.guard(() {
       return provider._createNotifier().._setElement(this);
     });
 

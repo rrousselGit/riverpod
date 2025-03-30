@@ -183,7 +183,7 @@ class StateProviderElement<T> extends ProviderElementBase<T>
     final initialState = provider._create(this);
 
     final controller = StateController(initialState);
-    _controllerNotifier.result = Result.data(controller);
+    _controllerNotifier.result = $Result.data(controller);
 
     _removeListener = controller.addListener(
       fireImmediately: true,

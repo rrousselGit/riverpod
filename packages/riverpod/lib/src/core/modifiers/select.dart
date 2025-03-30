@@ -38,7 +38,7 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
   /// The selector applied
   final Output Function(Input) selector;
 
-  Result<Output> _select(Result<Input> value) {
+  $Result<Output> _select($Result<Input> value) {
     assert(
       () {
         _debugIsRunningSelector = true;
@@ -49,13 +49,13 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
 
     try {
       return switch (value) {
-        ResultData<Input>() => Result.data(selector(value.value)),
+        $ResultData<Input>() => $Result.data(selector(value.value)),
         // TODO test
-        ResultError<Input>() => Result.error(value.error, value.stackTrace),
+        $ResultError<Input>() => $Result.error(value.error, value.stackTrace),
       };
     } catch (err, stack) {
       // TODO test
-      return Result.error(err, stack);
+      return $Result.error(err, stack);
     } finally {
       assert(
         () {
@@ -69,12 +69,12 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
 
   void _selectOnChange({
     required Input newState,
-    required Result<Output> lastSelectedValue,
+    required $Result<Output> lastSelectedValue,
     required void Function(Object error, StackTrace stackTrace) onError,
     required void Function(Output? prev, Output next) listener,
-    required void Function(Result<Output> newState) onChange,
+    required void Function($Result<Output> newState) onChange,
   }) {
-    final newSelectedValue = _select(Result.data(newState));
+    final newSelectedValue = _select($Result.data(newState));
     if (!lastSelectedValue.hasData ||
         !newSelectedValue.hasData ||
         lastSelectedValue.requireState != newSelectedValue.requireState) {
@@ -83,13 +83,13 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
       onChange(newSelectedValue);
       // TODO test handle exception in listener
       switch (newSelectedValue) {
-        case ResultData<Output>():
+        case $ResultData<Output>():
           listener(
             // TODO test from error
             lastSelectedValue.value,
             newSelectedValue.value,
           );
-        case ResultError<Output>():
+        case $ResultError<Output>():
           onError(newSelectedValue.error, newSelectedValue.stackTrace);
       }
     }
@@ -105,7 +105,7 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
   }) {
     onError ??= Zone.current.handleUncaughtError;
 
-    late Result<Output> lastSelectedValue;
+    late $Result<Output> lastSelectedValue;
 
     final sub = node.listen<Input>(
       provider,
@@ -121,7 +121,7 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
       onError: onError,
     );
 
-    lastSelectedValue = _select(Result.guard(sub.read));
+    lastSelectedValue = _select($Result.guard(sub.read));
 
     if (fireImmediately) {
       _handleFireImmediately(
@@ -136,8 +136,8 @@ class _ProviderSelector<Input, Output> with ProviderListenable<Output> {
       sub,
       () {
         return switch (lastSelectedValue) {
-          ResultData(:final value) => value,
-          ResultError(:final error, :final stackTrace) =>
+          $ResultData(:final value) => value,
+          $ResultError(:final error, :final stackTrace) =>
             throwErrorWithCombinedStackTrace(error, stackTrace),
         };
       },

@@ -261,7 +261,7 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
     final provider = this.provider as _ChangeNotifierProviderBase<NotifierT>;
 
     final notifierResult =
-        _notifierNotifier.result = Result.guard(() => provider._create(this));
+        _notifierNotifier.result = $Result.guard(() => provider._create(this));
 
     // TODO test requireState, as ref.read(p) is expected to throw if notifier creation failed
     final notifier = notifierResult.requireState;
