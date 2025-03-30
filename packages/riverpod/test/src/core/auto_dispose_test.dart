@@ -39,7 +39,7 @@ void main() {
       expect(element.stateResult, null);
 
       expect(sub.read(), 0);
-      expect(element.stateResult, ResultData(0));
+      expect(element.stateResult, $ResultData(0));
       expect(buildCount, 2);
     });
 

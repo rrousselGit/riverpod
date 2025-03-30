@@ -374,9 +374,9 @@ void _handleFireImmediately<StateT>(
   required void Function(Object error, StackTrace stackTrace) onError,
 }) {
   switch (currentState) {
-    case ResultData():
-      runBinaryGuarded(listener, null, currentState.state);
-    case ResultError():
+    case $ResultData():
+      runBinaryGuarded(listener, null, currentState.value);
+    case $ResultError():
       runBinaryGuarded(onError, currentState.error, currentState.stackTrace);
   }
 }

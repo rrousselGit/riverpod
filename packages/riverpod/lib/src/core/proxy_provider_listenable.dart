@@ -25,9 +25,9 @@ class $LazyProxyListenable<OutT, OriginT>
       switch (listenable.result) {
         case null:
           break;
-        case final ResultData<OutT> data:
-          runBinaryGuarded(listener, null, data.state);
-        case final ResultError<OutT> error:
+        case final $ResultData<OutT> data:
+          runBinaryGuarded(listener, null, data.value);
+        case final $ResultError<OutT> error:
           if (onError != null) {
             runBinaryGuarded(onError, error.error, error.stackTrace);
           }
@@ -135,9 +135,9 @@ class ProviderElementProxy<OutT, OriginT>
       switch (notifier.result) {
         case null:
           break;
-        case final ResultData<OutT> data:
-          runBinaryGuarded(listener, null, data.state);
-        case final ResultError<OutT> error:
+        case final $ResultData<OutT> data:
+          runBinaryGuarded(listener, null, data.value);
+        case final $ResultError<OutT> error:
           if (onError != null) {
             runBinaryGuarded(onError, error.error, error.stackTrace);
           }

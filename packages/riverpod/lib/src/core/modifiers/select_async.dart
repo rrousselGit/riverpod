@@ -105,14 +105,14 @@ class _AsyncSelector<InputT, OutputT, OriginT>
 
           final newSelectedValue = _select(value.value);
           switch (newSelectedValue) {
-            case ResultData():
+            case $ResultData():
               if (newSelectedValue != lastSelectedValue) {
                 emitData(
-                  newSelectedValue.state,
+                  newSelectedValue.value,
                   callListeners: callListeners,
                 );
               }
-            case ResultError():
+            case $ResultError():
               emitError(
                 newSelectedValue.error,
                 newSelectedValue.stackTrace,

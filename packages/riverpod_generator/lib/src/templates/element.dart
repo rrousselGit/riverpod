@@ -81,7 +81,7 @@ class ${provider.generatedElementName}$_genericsDefinition extends ${provider.in
 ''');
     for (final mutation in provider.mutations) {
       buffer.writeln(
-        '    ${mutation.elementFieldName}.result!.stateOrNull!.reset();',
+        '    ${mutation.elementFieldName}.result!.value!.reset();',
       );
     }
     buffer.writeln('''

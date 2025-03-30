@@ -44,8 +44,8 @@ class _ProviderSelector<InputT, OutputT, OriginT>
 
     try {
       return switch (value) {
-        ResultData(:final state) => $Result.data(selector(state)),
-        ResultError(:final error, :final stackTrace) =>
+        $ResultData(:final value) => $Result.data(selector(value)),
+        $ResultError(:final error, :final stackTrace) =>
           $Result.error(error, stackTrace),
       };
     } catch (err, stack) {
@@ -64,17 +64,14 @@ class _ProviderSelector<InputT, OutputT, OriginT>
   }) {
     final newSelectedValue = _select($Result.data(newState));
     if (lastSelectedValue == null ||
-        !lastSelectedValue.hasState ||
-        !newSelectedValue.hasState ||
+        !lastSelectedValue.hasData ||
+        !newSelectedValue.hasData ||
         lastSelectedValue.requireState != newSelectedValue.requireState) {
       onChange(newSelectedValue);
       switch (newSelectedValue) {
-        case ResultData(:final state):
-          listener(
-            lastSelectedValue?.stateOrNull,
-            state,
-          );
-        case ResultError(:final error, :final stackTrace):
+        case $ResultData(:final value):
+          listener(lastSelectedValue?.value, value);
+        case $ResultError(:final error, :final stackTrace):
           onError(error, stackTrace);
       }
     }
@@ -123,8 +120,8 @@ class _ProviderSelector<InputT, OutputT, OriginT>
         // Using ! because since `sub.read` flushes the inner subscription,
         // it is guaranteed that `lastSelectedValue` is not null.
         return switch (lastSelectedValue!) {
-          ResultData(:final state) => state,
-          ResultError(:final error, :final stackTrace) =>
+          $ResultData(:final value) => value,
+          $ResultError(:final error, :final stackTrace) =>
             throwErrorWithCombinedStackTrace(
               error,
               stackTrace,

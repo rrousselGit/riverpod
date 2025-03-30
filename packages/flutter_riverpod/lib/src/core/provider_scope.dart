@@ -115,12 +115,14 @@ class ProviderScope extends StatefulWidget {
   final Widget child;
 
   /// The listeners that subscribes to changes on providers stored on this [ProviderScope].
-  final List<AnyProviderObserver>? observers;
+  final List<ProviderObserver>? observers;
 
   /// Information on how to override a provider/family.
   ///
-  /// This can be used either for:
-  /// - testing, such as to mock a provider
+  /// Overrides are created using methods such as [Provider.overrideWith]/[Provider.overrideWithValue].
+  ///
+  /// This can be used for:
+  /// - testing, by mocking a provider.
   /// - dependency injection, to avoid having to pass a value to many
   ///   widgets in the widget tree.
   /// - performance optimization: By using this to inject values to widgets

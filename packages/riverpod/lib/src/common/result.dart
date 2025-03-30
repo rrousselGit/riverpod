@@ -3,19 +3,13 @@ import 'package:meta/meta.dart';
 /// A T|Error union type.
 @immutable
 @internal
-sealed class $Result<State> {
+sealed class $Result<ValueT> {
   /// The data case
-  // coverage:ignore-start
-  factory $Result.data(State state) = ResultData;
-  // coverage:ignore-end
+  factory $Result.data(ValueT state) = $ResultData;
 
   /// The error case
-  // coverage:ignore-start
-  factory $Result.error(Object error, StackTrace stackTrace) = ResultError;
-  // coverage:ignore-end
+  factory $Result.error(Object error, StackTrace stackTrace) = $ResultError;
 
-  /// Automatically catches errors into a [ResultError] and convert successful
-  /// values into a [ResultData].
   static $Result<State> guard<State>(State Function() cb) {
     try {
       return $Result.data(cb());
@@ -24,68 +18,86 @@ sealed class $Result<State> {
     }
   }
 
-  /// Whether this is a [ResultData] or a [ResultError].
-  bool get hasState;
+  /// Whether this is a [$ResultData] or a [$ResultError].
+  bool get hasData;
+  bool get hasError => !hasData;
 
-  /// The state if this is a [ResultData], `null` otherwise.
-  State? get stateOrNull;
+  /// The state if this is a [$ResultData], `null` otherwise.
+  ValueT? get value;
 
-  /// The state if this is a [ResultData], throws otherwise.
-  State get requireState;
+  /// The state if this is a [$ResultData], throws otherwise.
+  ValueT get requireState;
+
+  /// The error if this is a [$ResultError], `null` otherwise.
+  Object? get error;
+
+  /// The stack trace if this is a [$ResultError], `null` otherwise.
+  StackTrace? get stackTrace;
 }
 
 /// The data case
 @internal
-class ResultData<State> implements $Result<State> {
+class $ResultData<State> implements $Result<State> {
   /// The data case
-  ResultData(this.state);
-
-  /// The state
-  final State state;
+  $ResultData(this.value);
 
   @override
-  bool get hasState => true;
+  bool get hasData => true;
 
   @override
-  State? get stateOrNull => state;
+  bool get hasError => false;
 
   @override
-  State get requireState => state;
+  Object? get error => null;
+
+  @override
+  StackTrace? get stackTrace => null;
+
+  @override
+  final State value;
+
+  @override
+  State get requireState => value;
 
   @override
   bool operator ==(Object other) =>
-      other is ResultData<State> &&
+      other is $ResultData<State> &&
       other.runtimeType == runtimeType &&
-      other.state == state;
+      other.value == value;
 
   @override
-  int get hashCode => Object.hash(runtimeType, state);
+  int get hashCode => Object.hash(runtimeType, value);
 }
 
 /// The error case
 @internal
-class ResultError<State> implements $Result<State> {
+class $ResultError<State> implements $Result<State> {
   /// The error case
-  ResultError(this.error, this.stackTrace);
+  $ResultError(this.error, this.stackTrace);
 
   /// The error
+  @override
   final Object error;
 
   /// The stack trace
+  @override
   final StackTrace stackTrace;
 
   @override
-  bool get hasState => false;
+  bool get hasData => false;
 
   @override
-  State? get stateOrNull => null;
+  bool get hasError => true;
+
+  @override
+  State? get value => null;
 
   @override
   State get requireState => Error.throwWithStackTrace(error, stackTrace);
 
   @override
   bool operator ==(Object other) =>
-      other is ResultError<State> &&
+      other is $ResultError<State> &&
       other.runtimeType == runtimeType &&
       other.stackTrace == stackTrace &&
       other.error == error;

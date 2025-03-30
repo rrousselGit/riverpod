@@ -238,7 +238,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
 
   @override
   void mount() {
-    _stateResult = ResultData(AsyncLoading<StateT>());
+    _stateResult = $ResultData(AsyncLoading<StateT>());
     super.mount();
   }
 
@@ -254,10 +254,10 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
     final previous = stateResult?.requireState;
 
     if (previous == null) {
-      super.setStateResult(ResultData(newState));
+      super.setStateResult($ResultData(newState));
     } else {
       super.setStateResult(
-        ResultData(
+        $ResultData(
           newState
               .cast<StateT>()
               .copyWithPrevious(previous, isRefresh: seamless),
@@ -281,7 +281,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
     asyncTransition(value, seamless: seamless);
     if (_futureCompleter == null) {
       final completer = _futureCompleter = Completer();
-      futureNotifier.result = ResultData(completer.future);
+      futureNotifier.result = $ResultData(completer.future);
     }
   }
 

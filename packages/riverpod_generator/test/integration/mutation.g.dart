@@ -112,8 +112,8 @@ class _$SyncTodoListElement
   @override
   void mount() {
     super.mount();
-    _$addSync.result!.stateOrNull!.reset();
-    _$addAsync.result!.stateOrNull!.reset();
+    _$addSync.result!.value!.reset();
+    _$addAsync.result!.value!.reset();
   }
 
   @override
@@ -322,8 +322,8 @@ class _$AsyncTodoListElement
   @override
   void mount() {
     super.mount();
-    _$addSync.result!.stateOrNull!.reset();
-    _$addAsync.result!.stateOrNull!.reset();
+    _$addSync.result!.value!.reset();
+    _$addAsync.result!.value!.reset();
   }
 
   @override
@@ -547,9 +547,9 @@ class _$SimpleElement extends $NotifierProviderElement<Simple, int> {
   @override
   void mount() {
     super.mount();
-    _$increment.result!.stateOrNull!.reset();
-    _$incrementOr.result!.stateOrNull!.reset();
-    _$delegated.result!.stateOrNull!.reset();
+    _$increment.result!.value!.reset();
+    _$incrementOr.result!.value!.reset();
+    _$delegated.result!.value!.reset();
   }
 
   @override
@@ -899,8 +899,8 @@ class _$SimpleFamilyElement
   @override
   void mount() {
     super.mount();
-    _$increment.result!.stateOrNull!.reset();
-    _$incrementOr.result!.stateOrNull!.reset();
+    _$increment.result!.value!.reset();
+    _$incrementOr.result!.value!.reset();
   }
 
   @override
@@ -1106,8 +1106,8 @@ class _$SimpleAsyncElement
   @override
   void mount() {
     super.mount();
-    _$increment.result!.stateOrNull!.reset();
-    _$delegated.result!.stateOrNull!.reset();
+    _$increment.result!.value!.reset();
+    _$delegated.result!.value!.reset();
   }
 
   @override
@@ -1392,7 +1392,7 @@ class _$SimpleAsync2Element
   @override
   void mount() {
     super.mount();
-    _$increment.result!.stateOrNull!.reset();
+    _$increment.result!.value!.reset();
   }
 
   @override
@@ -1621,7 +1621,7 @@ class _$GenericElement<T extends num>
   @override
   void mount() {
     super.mount();
-    _$increment.result!.stateOrNull!.reset();
+    _$increment.result!.value!.reset();
   }
 
   @override
@@ -1764,7 +1764,7 @@ class _$GenericMutElement
   @override
   void mount() {
     super.mount();
-    _$increment.result!.stateOrNull!.reset();
+    _$increment.result!.value!.reset();
   }
 
   @override
@@ -1917,7 +1917,7 @@ class _$FailingCtorElement extends $NotifierProviderElement<FailingCtor, int> {
   @override
   void mount() {
     super.mount();
-    _$increment.result!.stateOrNull!.reset();
+    _$increment.result!.value!.reset();
   }
 
   @override
@@ -2069,7 +2069,7 @@ class _$TypedElement extends $NotifierProviderElement<Typed, String> {
   @override
   void mount() {
     super.mount();
-    _$mutate.result!.stateOrNull!.reset();
+    _$mutate.result!.value!.reset();
   }
 
   @override

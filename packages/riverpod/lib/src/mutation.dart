@@ -432,7 +432,7 @@ abstract class _MutationBase<
   $ClassProviderElement<ClassT, Object?, Object?, Object?> get element;
   $ElementLense<MutationT> get listenable;
 
-  Object? get _currentKey => listenable.result?.stateOrNull?.key;
+  Object? get _currentKey => listenable.result?.value?.key;
 
   MutationT copyWith(MutationState<ResultT> state, {Object? key});
 
@@ -448,7 +448,7 @@ abstract class _MutationBase<
   void reset() {
     if (state is IdleMutationState<ResultT>) return;
 
-    listenable.result = ResultData(copyWith(IdleMutationState<ResultT>._()));
+    listenable.result = $ResultData(copyWith(IdleMutationState<ResultT>._()));
 
     final context = ProviderObserverContext(element.origin, element.container);
 

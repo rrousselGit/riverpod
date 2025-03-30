@@ -52,9 +52,9 @@ class _ValueProviderElement<StateT> extends ProviderElement<StateT> {
     final newValue = provider._value;
 
     // `getState` will never be in error/loading state since there is no "create"
-    final previousState = stateResult! as ResultData<StateT>;
+    final previousState = stateResult! as $ResultData<StateT>;
 
-    if (newValue != previousState.state) {
+    if (newValue != previousState.value) {
       // Asserts would otherwise prevent a provider rebuild from updating
       // other providers
       if (kDebugMode) _debugSkipNotifyListenersAsserts = true;
@@ -69,7 +69,7 @@ class _ValueProviderElement<StateT> extends ProviderElement<StateT> {
     }
   }
 
-  void _setValue(StateT value) => setStateResult(ResultData(value));
+  void _setValue(StateT value) => setStateResult($ResultData(value));
 
   @override
   WhenComplete create(Ref ref) {
