@@ -1,15 +1,15 @@
 // ignore_for_file: omit_local_variable_types, unused_local_variable
 
+import 'package:riverpod/riverpod.dart' show ProviderContainer;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
 import 'integration/sync.dart';
-import 'utils.dart';
 
 void main() {
   test('Creates a Provider<T> if @riverpod is used on a synchronous function',
       () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     final AutoDisposeNotifierProvider<PublicClass, String> provider =
         publicClassProvider;
@@ -27,7 +27,7 @@ void main() {
   });
 
   test('Supports overriding non-family notifiers', () {
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         publicClassProvider.overrideWith(() => PublicClass('Hello world')),
       ],
@@ -41,7 +41,7 @@ void main() {
   });
 
   test('Supports overriding family notifiers', () {
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         familyClassProvider(42, third: .42)
             .overrideWith(() => FamilyClass('Hello world')),
@@ -64,7 +64,7 @@ void main() {
   test(
       'Creates a NotifierProvider.family<T> if @riverpod is used on a synchronous function with parameters',
       () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     const FamilyClassFamily family = familyClassProvider;
 

@@ -16,7 +16,7 @@ void main() {
         'to .future flushes the provider', () async {
       // Regression test for https://github.com/rrousselGit/riverpod/issues/2041
 
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final onFuture = Listener<Future<int>>();
 
       final dep = FutureProvider((ref) => 0);
@@ -36,7 +36,7 @@ void main() {
     });
 
     test('Regression 2041', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final onFuture = Listener<Future<int>>();
 
       final testNotifierProvider = FutureProvider.autoDispose<int>((ref) => 0);
@@ -78,7 +78,7 @@ void main() {
     });
 
     test('returns the pending future', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       Future<int>? future;
       int? value;
       final provider = FutureProvider<int>((ref) {
@@ -106,7 +106,7 @@ void main() {
     });
 
     test('flushes the provider when reading ref.future', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       var result = Future.value(42);
       late FutureProviderRef<int> ref;
       final provider = FutureProvider<int>((r) {
@@ -131,7 +131,7 @@ void main() {
       return Future.value();
     });
 
-    final container = createContainer();
+    final container = ProviderContainer.test();
     expect(container.read(testProvider), const AsyncLoading<void>());
 
     await container.read(testProvider.future);
@@ -142,7 +142,7 @@ void main() {
   test('supports overrideWith', () {
     final provider = FutureProvider<int>((ref) => 0);
     final autoDispose = FutureProvider.autoDispose<int>((ref) => 0);
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         provider.overrideWith((FutureProviderRef<int> ref) => 42),
         autoDispose.overrideWith(
@@ -164,7 +164,7 @@ void main() {
       await Future<void>.value();
       return 3;
     });
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final listener = Listener<AsyncValue<int>>();
     // Completer used for the sole purpose of being able to await `provider.future`
     // Since `provider` emits `AsyncData` before the future completes, then
@@ -198,7 +198,7 @@ void main() {
     final autoDisposeFamily = FutureProvider.autoDispose.family<String, int>(
       (ref, arg) => '0 $arg',
     );
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         family.overrideWith(
           (FutureProviderRef<String> ref, int arg) => '42 $arg',
@@ -214,7 +214,7 @@ void main() {
   });
 
   test('Emits AsyncLoading before the create function is executed', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     late AsyncValue<int> state;
     final provider = FutureProvider<int>((ref) {
       state = ref.state;
@@ -236,7 +236,7 @@ void main() {
 
   test('On dispose, .future resolves with the future returned itself',
       () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final completer1 = Completer<int>.sync();
     final completer2 = Completer<int>.sync();
     var result = completer1.future;
@@ -259,7 +259,7 @@ void main() {
     test(
         'provider.future resolves with the new data instead of the old future result',
         () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final completer1 = Completer<int>.sync();
       final completer2 = Completer<int>.sync();
       var result = completer1.future;
@@ -285,7 +285,7 @@ void main() {
     test(
         'sets isRefreshing to true if triggered by a ref.invalidate/ref.refresh',
         () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       var count = 0;
       final provider = FutureProvider((ref) => Future.value(count++));
 
@@ -312,7 +312,7 @@ void main() {
 
     test('does not set isRefreshing if triggered by a dependency change',
         () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final dep = StateProvider((ref) => 0);
       final provider = FutureProvider((ref) => Future.value(ref.watch(dep)));
 
@@ -333,7 +333,7 @@ void main() {
     test(
         'does not set isRefreshing if both triggered by a dependency change and ref.refresh',
         () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final dep = StateProvider((ref) => 0);
       final provider = FutureProvider((ref) => Future.value(ref.watch(dep)));
 
@@ -353,7 +353,7 @@ void main() {
   });
 
   test('can read and set current AsyncValue', () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final listener = Listener<AsyncValue<int>>();
     late FutureProviderRef<int> ref;
     final provider = FutureProvider<int>((r) {
@@ -390,8 +390,8 @@ void main() {
       (ref) => ref.watch(dep),
       dependencies: [dep],
     );
-    final root = createContainer();
-    final container = createContainer(
+    final root = ProviderContainer.test();
+    final container = ProviderContainer.test(
       parent: root,
       overrides: [dep.overrideWithValue(42)],
     );
@@ -404,7 +404,7 @@ void main() {
 
   test('can return a value synchronously, bypassing AsyncLoading', () async {
     final provider = FutureProvider((ref) => 0);
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     expect(container.read(provider), const AsyncData(0));
     await expectLater(container.read(provider.future), completion(0));
@@ -412,7 +412,7 @@ void main() {
 
   test('can return an error synchronously, bypassing AsyncLoading', () async {
     final provider = FutureProvider((ref) => throw UnimplementedError());
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     expect(
       container.read(provider),
@@ -428,7 +428,7 @@ void main() {
   test('can refresh .future', () async {
     var future = Future.value(1);
     final provider = FutureProvider((ref) => future);
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     expect(await container.read(provider.future), 1);
 
@@ -440,7 +440,7 @@ void main() {
 
   test('can be refreshed', () async {
     var result = 0;
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final provider = FutureProvider((ref) => Future.value(result));
 
     expect(await container.read(provider.future), 0);
@@ -458,7 +458,7 @@ void main() {
 
   test('does not update dependents if the created stream did not change',
       () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final dep = StateProvider((ref) => 0);
     final completer = Completer<int>();
     final provider = FutureProvider((ref) {
@@ -480,7 +480,7 @@ void main() {
   test(
       '.future does not update dependents if the created future did not change',
       () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final dep = StateProvider((ref) => 0);
     final completer = Completer<int>();
     final provider = FutureProvider((ref) {
@@ -502,8 +502,9 @@ void main() {
   group('scoping an override overrides all the associated subproviders', () {
     test('when passing the provider itself', () async {
       final provider = FutureProvider((ref) async => 0);
-      final root = createContainer();
-      final container = createContainer(parent: root, overrides: [provider]);
+      final root = ProviderContainer.test();
+      final container =
+          ProviderContainer.test(parent: root, overrides: [provider]);
 
       expect(await container.read(provider.future), 0);
       expect(container.read(provider), const AsyncValue.data(0));
@@ -516,8 +517,8 @@ void main() {
 
     // test('when using provider.overrideWithValue', () async {
     //   final provider = FutureProvider((ref) async => 0);
-    //   final root = createContainer();
-    //   final container = createContainer(parent: root, overrides: [
+    //   final root = ProviderContainer.test();
+    //   final container = ProviderContainer.test(parent: root, overrides: [
     //     provider.overrideWithValue(const AsyncValue.data(42)),
     //   ]);
 
@@ -533,8 +534,8 @@ void main() {
 
     test('when using provider.overrideWithProvider', () async {
       final provider = FutureProvider((ref) async => 0);
-      final root = createContainer();
-      final container = createContainer(
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(
         parent: root,
         overrides: [
           // ignore: deprecated_member_use_from_same_package
@@ -558,7 +559,7 @@ void main() {
   //   final error = Error();
   //   final future = FutureProvider<int>((ref) async => 0);
 
-  //   final container = createContainer(overrides: [
+  //   final container = ProviderContainer.test(overrides: [
   //     future.overrideWithValue(AsyncValue.error(error)),
   //   ]);
   //   addTearDown(container.dispose);
@@ -574,7 +575,7 @@ void main() {
   test('throwing inside "create" result in an AsyncValue.error', () {
     // ignore: only_throw_errors
     final provider = FutureProvider<int>((ref) => throw 42);
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     expect(
       container.read(provider),
@@ -598,7 +599,7 @@ void main() {
   test('handle errors', () async {
     // ignore: only_throw_errors
     final provider = FutureProvider<int>((_) async => throw 42);
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     expect(container.read(provider), const AsyncValue<int>.loading());
 
@@ -620,7 +621,7 @@ void main() {
   test('noop if fails after provider dispose', () async {
     // ignore: only_throw_errors
     final provider = FutureProvider<int>((_) async => throw 42);
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     expect(container.read(provider), const AsyncValue<int>.loading());
 
@@ -640,7 +641,7 @@ void main() {
     test('does not update dependents when the future completes', () async {
       final completer = Completer<int>.sync();
       final provider = FutureProvider((_) => completer.future);
-      final container = createContainer();
+      final container = ProviderContainer.test();
       var callCount = 0;
       final dependent = Provider<Future<int>>((ref) {
         callCount++;
@@ -671,7 +672,7 @@ void main() {
         callCount++;
         return ref.watch(provider.future);
       });
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final futureController = container.read(futureProvider.notifier);
 
       await expectLater(container.read(dependent), completion(42));
@@ -700,7 +701,7 @@ void main() {
         callCount++;
         return ref.watch(provider.future);
       });
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       final futureController = container.read(futureProvider.notifier);
 
@@ -718,7 +719,7 @@ void main() {
     test('does not update dependents when the future completes', () async {
       final completer = Completer<int>.sync();
       final provider = FutureProvider.autoDispose((_) => completer.future);
-      final container = createContainer();
+      final container = ProviderContainer.test();
       var callCount = 0;
       final dependent = Provider.autoDispose((ref) {
         callCount++;
@@ -746,7 +747,7 @@ void main() {
         ref.onDispose(() => didDispose = true);
         return Future.value(42);
       });
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final sub = container.listen(provider.future, (_, __) {});
 
       expect(didDispose, false);
@@ -762,7 +763,7 @@ void main() {
   });
 
   test('read', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final completer = Completer<int>.sync();
     final other = FutureProvider((_) => completer.future);
     final simple = Provider((_) => 21);
@@ -789,7 +790,7 @@ void main() {
   });
 
   test('exposes data', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final listener = Listener<AsyncValue<int>>();
     final completer = Completer<int>.sync();
     final provider = FutureProvider((_) => completer.future);
@@ -813,7 +814,7 @@ void main() {
   // group('mock as value', () {
   //   test('value immediately then other value', () async {
   //     final provider = FutureProvider((_) async => 0);
-  //     final container = createContainer(overrides: [
+  //     final container = ProviderContainer.test(overrides: [
   //       provider.overrideWithValue(const AsyncValue.data(42)),
   //     ]);
 
@@ -839,7 +840,7 @@ void main() {
 
   //   test('value immediately then error', () async {
   //     final provider = FutureProvider((_) async => 0);
-  //     final container = createContainer(overrides: [
+  //     final container = ProviderContainer.test(overrides: [
   //       provider.overrideWithValue(const AsyncValue.data(42)),
   //     ]);
 
@@ -868,7 +869,7 @@ void main() {
 
   //   test('value immediately then loading', () async {
   //     final provider = FutureProvider((_) async => 0);
-  //     final container = createContainer(overrides: [
+  //     final container = ProviderContainer.test(overrides: [
   //       provider.overrideWithValue(const AsyncValue.data(42)),
   //     ]);
 
@@ -897,7 +898,7 @@ void main() {
 
   //   test('loading immediately then value', () async {
   //     final provider = FutureProvider((_) async => 0);
-  //     final container = createContainer(overrides: [
+  //     final container = ProviderContainer.test(overrides: [
   //       provider.overrideWithValue(const AsyncValue.loading()),
   //     ]);
 
@@ -918,7 +919,7 @@ void main() {
 
   //   test('loading immediately then error', () async {
   //     final provider = FutureProvider((_) async => 0);
-  //     final container = createContainer(overrides: [
+  //     final container = ProviderContainer.test(overrides: [
   //       provider.overrideWithValue(const AsyncValue.loading()),
   //     ]);
 
@@ -942,7 +943,7 @@ void main() {
 
   //   test('loading immediately then loading', () async {
   //     final provider = FutureProvider((_) async => 0);
-  //     final container = createContainer(overrides: [
+  //     final container = ProviderContainer.test(overrides: [
   //       provider.overrideWithValue(const AsyncValue.loading()),
   //     ]);
   //     final listener = Listener<AsyncValue<int>>();
@@ -973,7 +974,7 @@ void main() {
   //   test('error immediately then different error', () async {
   //     final stackTrace = StackTrace.current;
   //     final provider = FutureProvider((_) async => 0);
-  //     final container = createContainer(overrides: [
+  //     final container = ProviderContainer.test(overrides: [
   //       provider
   //           .overrideWithValue(AsyncValue.error(42, stackTrace: stackTrace)),
   //     ]);
@@ -1002,7 +1003,7 @@ void main() {
   //   test('error immediately then different stacktrace', () async {
   //     final stackTrace = StackTrace.current;
   //     final provider = FutureProvider((_) async => 0);
-  //     final container = createContainer(overrides: [
+  //     final container = ProviderContainer.test(overrides: [
   //       provider
   //           .overrideWithValue(AsyncValue.error(42, stackTrace: stackTrace)),
   //     ]);
@@ -1035,7 +1036,7 @@ void main() {
   //   test('error immediately then data', () async {
   //     final stackTrace = StackTrace.current;
   //     final provider = FutureProvider((_) async => 0);
-  //     final container = createContainer(overrides: [
+  //     final container = ProviderContainer.test(overrides: [
   //       provider
   //           .overrideWithValue(AsyncValue.error(42, stackTrace: stackTrace)),
   //     ]);
@@ -1067,7 +1068,7 @@ void main() {
   //   test('error immediately then loading', () async {
   //     final stackTrace = StackTrace.current;
   //     final provider = FutureProvider((_) async => 0);
-  //     final container = createContainer(overrides: [
+  //     final container = ProviderContainer.test(overrides: [
   //       provider
   //           .overrideWithValue(AsyncValue.error(42, stackTrace: stackTrace)),
   //     ]);

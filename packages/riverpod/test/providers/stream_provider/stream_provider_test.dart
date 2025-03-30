@@ -16,7 +16,7 @@ void main() {
 
   // TODO remove this setup/teardown
   setUp(() {
-    container = createContainer();
+    container = ProviderContainer.test();
     controller = StreamController<int>(sync: true);
   });
   tearDown(() {
@@ -37,7 +37,7 @@ void main() {
         return Stream.value(1);
       },
     );
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         provider.overrideWith((StreamProviderRef<int> ref) {
           ref.state = const AsyncData(42);
@@ -65,7 +65,7 @@ void main() {
         return Stream.value('1 $arg');
       },
     );
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         family.overrideWith(
           (StreamProviderRef<String> ref, int arg) {
@@ -87,7 +87,7 @@ void main() {
   });
 
   test('Emits AsyncLoading before the create function is executed', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     late AsyncValue<int> state;
     final provider = StreamProvider<int>((ref) {
       state = ref.state;
@@ -111,7 +111,7 @@ void main() {
     test(
         'sets isRefreshing to true if triggered by a ref.invalidate/ref.refresh',
         () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       var count = 0;
       final provider = StreamProvider((ref) => Stream.value(count++));
 
@@ -138,7 +138,7 @@ void main() {
 
     test('does not set isRefreshing if triggered by a dependency change',
         () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final dep = StateProvider((ref) => 0);
       final provider = StreamProvider((ref) => Stream.value(ref.watch(dep)));
 
@@ -159,7 +159,7 @@ void main() {
     test(
         'does not set isRefreshing if both triggered by a dependency change and ref.refresh',
         () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final dep = StateProvider((ref) => 0);
       final provider = StreamProvider((ref) => Stream.value(ref.watch(dep)));
 
@@ -179,7 +179,7 @@ void main() {
   });
 
   test('can read and set current AsyncValue', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final listener = Listener<AsyncValue<int>>();
     late StreamProviderRef<int> ref;
     final provider = StreamProvider<int>((r) {
@@ -223,8 +223,8 @@ void main() {
       (ref) => Stream.value(ref.watch(dep)),
       dependencies: [dep],
     );
-    final root = createContainer();
-    final container = createContainer(
+    final root = ProviderContainer.test();
+    final container = ProviderContainer.test(
       parent: root,
       overrides: [dep.overrideWithValue(42)],
     );
@@ -242,7 +242,7 @@ void main() {
       () async {
     final dep = StateProvider((ref) => Stream.value(42));
     final provider = StreamProvider((ref) => ref.watch(dep));
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final listener = Listener<AsyncValue<int>>();
     final controller = StreamController<int>();
     addTearDown(controller.close);
@@ -286,7 +286,7 @@ void main() {
 
   test('can be refreshed', () async {
     var result = 0;
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final provider = StreamProvider((ref) => Stream.value(result));
 
     // ignore: deprecated_member_use_from_same_package
@@ -309,8 +309,9 @@ void main() {
   group('scoping an override overrides all the associated subproviders', () {
     test('when passing the provider itself', () async {
       final provider = StreamProvider((ref) => Stream.value(0));
-      final root = createContainer();
-      final container = createContainer(parent: root, overrides: [provider]);
+      final root = ProviderContainer.test();
+      final container =
+          ProviderContainer.test(parent: root, overrides: [provider]);
 
       // ignore: deprecated_member_use_from_same_package
       expect(await container.read(provider.stream).first, 0);
@@ -328,8 +329,8 @@ void main() {
 
     // test('when using provider.overrideWithValue', () async {
     //   final provider = StreamProvider((ref) => Stream.value(0));
-    //   final root = createContainer();
-    //   final container = createContainer(parent: root, overrides: [
+    //   final root = ProviderContainer.test();
+    //   final container = ProviderContainer.test(parent: root, overrides: [
     //     provider.overrideWithValue(const AsyncValue.data(42)),
     //   ]);
 
@@ -352,8 +353,8 @@ void main() {
 
     test('when using provider.overrideWithProvider', () async {
       final provider = StreamProvider((ref) => Stream.value(0));
-      final root = createContainer();
-      final container = createContainer(
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(
         parent: root,
         overrides: [
           provider
@@ -401,7 +402,7 @@ void main() {
     // test(
     //     'throws StateError if the provider is disposed before a value was emitted',
     //     () async {
-    //   final container = createContainer(overrides: [
+    //   final container = ProviderContainer.test(overrides: [
     //     provider.overrideWithValue(const AsyncLoading()),
     //   ]);
 
@@ -424,7 +425,7 @@ void main() {
     // });
 
     //   test('supports loading then error then loading', () async {
-    //     final container = createContainer(overrides: [
+    //     final container = ProviderContainer.test(overrides: [
     //       provider.overrideWithValue(const AsyncLoading()),
     //     ]);
 
@@ -460,7 +461,7 @@ void main() {
     //   });
 
     //   test('supports loading then error then another error', () async {
-    //     final container = createContainer(overrides: [
+    //     final container = ProviderContainer.test(overrides: [
     //       provider.overrideWithValue(const AsyncLoading()),
     //     ]);
 
@@ -491,7 +492,7 @@ void main() {
     //   });
 
     //   test('supports loading then data then loading', () async {
-    //     final container = createContainer(overrides: [
+    //     final container = ProviderContainer.test(overrides: [
     //       provider.overrideWithValue(const AsyncLoading()),
     //     ]);
 
@@ -519,7 +520,7 @@ void main() {
     //   });
 
     //   test('supports loading then data then another data', () async {
-    //     final container = createContainer(overrides: [
+    //     final container = ProviderContainer.test(overrides: [
     //       provider.overrideWithValue(const AsyncLoading()),
     //     ]);
 
@@ -553,7 +554,7 @@ void main() {
 
   // test('myProvider.stream re-create a new stream when re-entering loading',
   //     () async {
-  //   final container = createContainer(overrides: [
+  //   final container = ProviderContainer.test(overrides: [
   //     provider.overrideWithValue(const AsyncValue.data(42)),
   //   ]);
 
@@ -582,7 +583,7 @@ void main() {
   // });
 
   // test('myProvider.stream works across provider rebuild', () async {
-  //   final container = createContainer(overrides: [
+  //   final container = ProviderContainer.test(overrides: [
   //     provider.overrideWithValue(const AsyncValue.data(42)),
   //   ]);
 
@@ -703,7 +704,7 @@ void main() {
   group('overrideWithValue(T)', () {
     // test('.stream is a broadcast stream', () async {
     //   final provider = StreamProvider((ref) => controller.stream);
-    //   final container = createContainer(overrides: [
+    //   final container = ProviderContainer.test(overrides: [
     //     provider.overrideWithValue(const AsyncValue<int>.data(42)),
     //   ]);
 
@@ -720,7 +721,7 @@ void main() {
 
     // test('.stream queues events when there are no listeners', () async {
     //   final provider = StreamProvider((ref) => controller.stream);
-    //   final container = createContainer(overrides: [
+    //   final container = ProviderContainer.test(overrides: [
     //     provider.overrideWithValue(const AsyncValue<int>.data(42)),
     //   ]);
 
@@ -747,7 +748,7 @@ void main() {
 
     //   test('.stream emits done when the container is disposed', () async {
     //     final provider = StreamProvider.autoDispose((ref) => controller.stream);
-    //     final container = createContainer(overrides: [
+    //     final container = ProviderContainer.test(overrides: [
     //       provider.overrideWithValue(const AsyncValue<int>.data(42)),
     //     ]);
 
@@ -783,7 +784,7 @@ void main() {
     final provider = StreamProvider.family<String, int>((ref, a) {
       return Stream.value('$a');
     });
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     expect(container.read(provider(0)), const AsyncValue<String>.loading());
 
@@ -816,7 +817,7 @@ void main() {
 
   test('subscribe exposes loading synchronously then value on change',
       () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final controller = StreamController<int>(sync: true);
     final provider = StreamProvider((_) => controller.stream);
     final listener = Listener<AsyncValue<int>>();
@@ -843,7 +844,7 @@ void main() {
   });
 
   test('errors', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final controller = StreamController<int>(sync: true);
     final provider = StreamProvider((_) => controller.stream);
     final listener = Listener<AsyncValue<int>>();
@@ -880,7 +881,7 @@ void main() {
   });
 
   test('stops subscription', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final controller = StreamController<int>(sync: true);
     final dispose = OnDisposeMock();
     final provider = StreamProvider((ref) {
@@ -918,7 +919,7 @@ void main() {
       final controller = StreamController<int>(sync: true);
       addTearDown(controller.close);
       final provider = StreamProvider((_) => controller.stream);
-      final container = createContainer();
+      final container = ProviderContainer.test();
       var callCount = 0;
       final dependent = Provider((ref) {
         callCount++;
@@ -942,7 +943,7 @@ void main() {
       final currentStream = StateProvider((ref) => Stream.value(42));
       // a StreamProvider that can rebuild with a new future
       final streamProvider = StreamProvider((ref) => ref.watch(currentStream));
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = Listener<Stream<int>>();
 
       final sub = container.listen(
@@ -973,7 +974,7 @@ void main() {
       final controller = StreamController<int>(sync: true);
       addTearDown(controller.close);
       final provider = StreamProvider.autoDispose((_) => controller.stream);
-      final container = createContainer();
+      final container = ProviderContainer.test();
       var callCount = 0;
       final dependent = Provider.autoDispose((ref) {
         callCount++;
@@ -1001,7 +1002,7 @@ void main() {
         ref.onDispose(() => didDispose = true);
         return controller.stream;
       });
-      final container = createContainer();
+      final container = ProviderContainer.test();
       // ignore: deprecated_member_use_from_same_package
       final sub = container.listen(provider.stream, (_, __) {});
 
@@ -1020,7 +1021,7 @@ void main() {
   group('StreamProvider.future', () {
     group('from StreamProvider', () {
       test('read currentValue before first value', () async {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final controller = StreamController<int>();
         final provider = StreamProvider<int>((_) => controller.stream);
 
@@ -1034,7 +1035,7 @@ void main() {
       });
 
       test('read currentValue before after value', () async {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final controller = StreamController<int>();
         final provider = StreamProvider<int>((_) => controller.stream);
 
@@ -1048,7 +1049,7 @@ void main() {
       });
 
       test('read currentValue before first error', () async {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final controller = StreamController<int>();
         final provider = StreamProvider<int>((_) => controller.stream);
 
@@ -1062,7 +1063,7 @@ void main() {
       });
 
       test('read currentValue before after error', () async {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final controller = StreamController<int>();
         final provider = StreamProvider<int>((_) => controller.stream);
 
@@ -1153,7 +1154,7 @@ void main() {
   group('StreamProvider.stream', () {
     group('from StreamProvider', () {
       test('read currentValue before first value', () async {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final controller = StreamController<int>();
         final provider = StreamProvider<int>((_) => controller.stream);
 
@@ -1168,7 +1169,7 @@ void main() {
       });
 
       test('read currentValue before after value', () async {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final controller = StreamController<int>();
         final provider = StreamProvider<int>((_) => controller.stream);
 
@@ -1183,7 +1184,7 @@ void main() {
       });
 
       test('read currentValue before first error', () async {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final controller = StreamController<int>();
         final provider = StreamProvider<int>((_) => controller.stream);
 
@@ -1198,7 +1199,7 @@ void main() {
       });
 
       test('read currentValue before after error', () async {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final controller = StreamController<int>();
         final provider = StreamProvider<int>((_) => controller.stream);
 

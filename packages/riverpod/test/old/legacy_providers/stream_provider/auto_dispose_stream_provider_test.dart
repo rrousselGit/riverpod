@@ -10,7 +10,7 @@ import '../../utils.dart';
 void main() {
   group('StreamProvider.autoDispose', () {
     test('can read and set current AsyncValue', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = Listener<AsyncValue<int>>();
       late AutoDisposeStreamProviderRef<int> ref;
       final provider = StreamProvider.autoDispose<int>((r) {
@@ -54,8 +54,8 @@ void main() {
         (ref) => Stream.value(ref.watch(dep)),
         dependencies: [dep],
       );
-      final root = createContainer();
-      final container = createContainer(
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(
         parent: root,
         overrides: [dep.overrideWithValue(42)],
       );
@@ -73,7 +73,7 @@ void main() {
         () async {
       final dep = StateProvider((ref) => Stream.value(42));
       final provider = StreamProvider.autoDispose((ref) => ref.watch(dep));
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = Listener<AsyncValue<int>>();
       final controller = StreamController<int>();
       addTearDown(controller.close);
@@ -119,7 +119,7 @@ void main() {
 
     test('can be refreshed', () async {
       var result = 0;
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final provider =
           StreamProvider.autoDispose((ref) => Stream.value(result));
 
@@ -145,7 +145,7 @@ void main() {
 
     test('does not update dependents if the created stream did not change',
         () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final dep = StateProvider((ref) => 0);
       final provider = StreamProvider.autoDispose((ref) {
         ref.watch(dep);
@@ -166,7 +166,7 @@ void main() {
     test(
         '.stream does not update dependents if the created stream did not change',
         () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final dep = StateProvider((ref) => 0);
       final provider = StreamProvider.autoDispose((ref) {
         ref.watch(dep);
@@ -188,7 +188,7 @@ void main() {
     test(
         '.future does not update dependents if the created future did not change',
         () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final dep = StateProvider((ref) => 0);
       final provider = StreamProvider.autoDispose((ref) {
         ref.watch(dep);
@@ -214,8 +214,9 @@ void main() {
     group('scoping an override overrides all the associated subproviders', () {
       test('when passing the provider itself', () async {
         final provider = StreamProvider.autoDispose((ref) => Stream.value(0));
-        final root = createContainer();
-        final container = createContainer(parent: root, overrides: [provider]);
+        final root = ProviderContainer.test();
+        final container =
+            ProviderContainer.test(parent: root, overrides: [provider]);
 
         // ignore: deprecated_member_use_from_same_package
         expect(await container.read(provider.stream).first, 0);
@@ -233,8 +234,8 @@ void main() {
 
       // test('when using provider.overrideWithValue', () async {
       //   final provider = StreamProvider.autoDispose((ref) => Stream.value(0));
-      //   final root = createContainer();
-      //   final container = createContainer(parent: root, overrides: [
+      //   final root = ProviderContainer.test();
+      //   final container = ProviderContainer.test(parent: root, overrides: [
       //     provider.overrideWithValue(const AsyncValue.data(42)),
       //   ]);
 
@@ -257,8 +258,8 @@ void main() {
 
       test('when using provider.overrideWithProvider', () async {
         final provider = StreamProvider.autoDispose((ref) => Stream.value(0));
-        final root = createContainer();
-        final container = createContainer(
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
           parent: root,
           overrides: [
             // ignore: deprecated_member_use_from_same_package
@@ -290,7 +291,7 @@ void main() {
         ref.onDispose(onDispose.call);
         return stream;
       });
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = Listener<AsyncValue<int>>();
 
       final sub =

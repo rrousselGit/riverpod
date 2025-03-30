@@ -16,7 +16,7 @@ void main() {
           'throws if the same Notifier instance is reused in different providers',
           () {
         // Regression test for https://github.com/rrousselGit/riverpod/issues/2617
-        final container = createContainer();
+        final container = ProviderContainer.test();
 
         final notifier = factory.notifier((ref) => 0);
 
@@ -46,7 +46,7 @@ void main() {
               return 0;
             });
           });
-          final container = createContainer();
+          final container = ProviderContainer.test();
 
           final sub = container.listen(
             provider.notifier,
@@ -62,7 +62,7 @@ void main() {
           final provider = factory.simpleTestProvider<int>(
             (ref) => throw Exception('42'),
           );
-          final container = createContainer();
+          final container = ProviderContainer.test();
 
           final sub = container.listen(
             provider.notifier,
@@ -84,7 +84,7 @@ void main() {
               return 0;
             });
           });
-          final container = createContainer();
+          final container = ProviderContainer.test();
 
           final sub = container.listen(
             provider.notifier,
@@ -101,7 +101,7 @@ void main() {
           final provider = factory.simpleTestProvider<int>(
             (ref) => 0,
           );
-          final container = createContainer();
+          final container = ProviderContainer.test();
 
           final sub = container.listen(
             provider.notifier,
@@ -121,7 +121,7 @@ void main() {
           final provider = factory.simpleTestProvider<int>(
             (ref) => 0,
           );
-          final container = createContainer();
+          final container = ProviderContainer.test();
 
           final sub = container.listen(
             provider.notifier,
@@ -142,7 +142,7 @@ void main() {
           'uses notifier.build as initial state and update listeners when state changes',
           () {
         final provider = factory.simpleTestProvider((ref) => 0);
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final listener = Listener<int>();
 
         container.listen(provider, listener.call, fireImmediately: true);
@@ -159,7 +159,7 @@ void main() {
         final provider = factory.simpleTestProvider((ref) {
           return ref.watch(dep);
         });
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final listener = Listener<TestNotifierBase<int>>();
 
         container.listen(
@@ -184,7 +184,7 @@ void main() {
         final provider = factory.simpleTestProvider((ref) {
           return ref.watch(dep);
         });
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final listener = Listener<int>();
 
         container.listen(provider, listener.call, fireImmediately: true);
@@ -206,7 +206,7 @@ void main() {
         final provider = factory.simpleTestProvider<int>((ref) {
           throw StateError('Hey');
         });
-        final container = createContainer();
+        final container = ProviderContainer.test();
 
         expect(
           () => container.read(provider),
@@ -222,7 +222,7 @@ void main() {
         final provider = factory.provider<TestNotifierBase<int>, int>(
           () => Error.throwWithStackTrace(err, stack),
         );
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final listener = ErrorListener();
 
         expect(
@@ -274,7 +274,7 @@ void main() {
 
       test('can read/set the current state within the notifier', () {
         final provider = factory.simpleTestProvider<int>((ref) => 0);
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final listener = Listener<int>();
 
         container.listen(provider, listener.call, fireImmediately: true);
@@ -299,7 +299,7 @@ void main() {
           () {
         final provider = factory
             .simpleTestProvider<int>((ref) => throw UnimplementedError());
-        final container = createContainer();
+        final container = ProviderContainer.test();
 
         final notifier = container.read(provider.notifier);
 
@@ -314,7 +314,7 @@ void main() {
         final provider = factory.simpleTestProvider<int>(
           (ref) => Error.throwWithStackTrace(err, stack),
         );
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final listener = Listener<int>();
         final onError = ErrorListener();
 
@@ -355,7 +355,7 @@ void main() {
         final dep = StateProvider((ref) => 0);
         final provider =
             factory.simpleTestProvider<int>((ref) => ref.watch(dep));
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final listener = Listener<int>();
 
         container.listen(provider, listener.call);
@@ -375,7 +375,7 @@ void main() {
 
       test('supports ref.refresh(provider)', () {
         final provider = factory.simpleTestProvider<int>((ref) => 0);
-        final container = createContainer();
+        final container = ProviderContainer.test();
 
         final notifier = container.read(provider.notifier);
 
@@ -398,7 +398,7 @@ void main() {
           ref.listenSelf(listener.call, onError: onError.call);
           Error.throwWithStackTrace(42, StackTrace.empty);
         });
-        final container = createContainer();
+        final container = ProviderContainer.test();
 
         expect(() => container.read(provider), throwsA(42));
 
@@ -408,7 +408,7 @@ void main() {
       test('filters state update by identical by default', () {
         final provider =
             factory.simpleTestProvider<Equal<int>>((ref) => Equal(42));
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final listener = Listener<Equal<int>>();
 
         container.listen(provider, listener.call);
@@ -433,7 +433,7 @@ void main() {
           (ref) => Equal(42),
           updateShouldNotify: (a, b) => a != b,
         );
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final listener = Listener<Equal<int>>();
 
         container.listen(provider, listener.call);
@@ -466,7 +466,7 @@ void main() {
     if (factory.isAutoDispose) {
       group('autoDispose', () {
         test('keeps state alive if notifier is listened', () async {
-          final container = createContainer();
+          final container = ProviderContainer.test();
           final onDispose = OnDisposeMock();
           final provider = factory.simpleTestProvider<int>((ref) {
             ref.onDispose(onDispose.call);
@@ -500,7 +500,7 @@ void main() {
         NotifierProvider.autoDispose<AutoDisposeTestNotifier<int>, int>(
       () => AutoDisposeTestNotifier((ref) => 0),
     );
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         provider.overrideWith(() => TestNotifier((ref) => 42)),
         autoDispose.overrideWith(
@@ -521,7 +521,7 @@ void main() {
         .family<AutoDisposeTestNotifierFamily<int>, int, int>(
       () => AutoDisposeTestNotifierFamily<int>((ref) => 0),
     );
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         family.overrideWith(
           () => TestNotifierFamily<int>((ref) => 42),

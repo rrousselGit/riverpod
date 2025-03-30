@@ -23,8 +23,8 @@ void main() {
       (ref) => ref.watch(dep),
       dependencies: [dep],
     );
-    final root = createContainer();
-    final container = createContainer(
+    final root = ProviderContainer.test();
+    final container = ProviderContainer.test(
       parent: root,
       overrides: [dep.overrideWithValue(42)],
     );
@@ -37,7 +37,7 @@ void main() {
 
   group('ref.state', () {
     test('can read and change current value', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = Listener<int>();
       late StateProviderRef<int> ref;
       final provider = StateProvider.autoDispose<int>((r) {
@@ -58,7 +58,7 @@ void main() {
     });
 
     test('fails if trying to read the state before it was set', () {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       Object? err;
       final provider = StateProvider.autoDispose<int>((ref) {
         try {
@@ -76,7 +76,7 @@ void main() {
     test('on rebuild, still fails if trying to read the state before was built',
         () {
       final dep = StateProvider((ref) => false);
-      final container = createContainer();
+      final container = ProviderContainer.test();
       Object? err;
       final provider = StateProvider.autoDispose<int>((ref) {
         if (ref.watch(dep)) {
@@ -102,7 +102,7 @@ void main() {
   test('can refresh .notifier', () async {
     var initialValue = 1;
     final provider = StateProvider.autoDispose<int>((ref) => initialValue);
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     container.listen(provider.notifier, (prev, value) {});
 
@@ -117,7 +117,7 @@ void main() {
 
   test('can be refreshed', () async {
     var result = 0;
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final provider = StateProvider.autoDispose<int>((ref) => result);
 
     final notifier = container.read(provider.notifier);
@@ -135,8 +135,9 @@ void main() {
   group('scoping an override overrides all the associated subproviders', () {
     test('when passing the provider itself', () async {
       final provider = StateProvider.autoDispose<int>((ref) => 0);
-      final root = createContainer();
-      final container = createContainer(parent: root, overrides: [provider]);
+      final root = ProviderContainer.test();
+      final container =
+          ProviderContainer.test(parent: root, overrides: [provider]);
 
       expect(container.read(provider.notifier).state, 0);
       expect(container.read(provider), 0);
@@ -152,8 +153,8 @@ void main() {
 
     // test('when using provider.overrideWithValue', () async {
     //   final provider = StateProvider.autoDispose<int>((ref) => 0);
-    //   final root = createContainer();
-    //   final container = createContainer(parent: root, overrides: [
+    //   final root = ProviderContainer.test();
+    //   final container = ProviderContainer.test(parent: root, overrides: [
     //     provider.overrideWithValue(StateController(42)),
     //   ]);
 
@@ -175,8 +176,8 @@ void main() {
 
     test('when using provider.overrideWithProvider', () async {
       final provider = StateProvider.autoDispose<int>((ref) => 0, name: 'true');
-      final root = createContainer();
-      final container = createContainer(
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(
         parent: root,
         overrides: [
           // ignore: deprecated_member_use_from_same_package
@@ -203,7 +204,7 @@ void main() {
     // test('listens to state changes', () {
     //   final override = StateController(42);
     //   final provider = StateProvider.autoDispose((ref) => 0);
-    //   final container = createContainer(overrides: [
+    //   final container = ProviderContainer.test(overrides: [
     //     provider.overrideWithValue(override),
     //   ]);
     //   addTearDown(container.dispose);
@@ -221,7 +222,7 @@ void main() {
     test(
       'properly disposes of the StateController when the provider is disposed',
       () async {
-        final container = createContainer();
+        final container = ProviderContainer.test();
         final provider = StateProvider.autoDispose((ref) => 0);
 
         final notifier = container.read(provider.notifier);

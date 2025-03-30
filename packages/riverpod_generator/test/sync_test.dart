@@ -1,16 +1,16 @@
 // ignore_for_file: omit_local_variable_types, unused_local_variable
 
+import 'package:riverpod/riverpod.dart' show ProviderContainer;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
 import 'integration/sync.dart';
-import 'utils.dart';
 
 void main() {
   // TODO test that the generated providers contain the docs from the annotated element
 
   test('Supports Raw', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     expect(
       container.read(rawFutureProvider),
@@ -66,7 +66,7 @@ void main() {
   });
 
   test('Supports overriding non-family providers', () {
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         publicProvider.overrideWith((ref) => 'Hello world'),
       ],
@@ -77,7 +77,7 @@ void main() {
   });
 
   test('Supports overriding family providers', () {
-    final container = createContainer(
+    final container = ProviderContainer.test(
       overrides: [
         familyProvider(42, third: .42).overrideWith(
           (ref) => 'Hello world ${ref.first} ${ref.second} '
@@ -93,7 +93,7 @@ void main() {
   test(
       'Creates a Provider<T> if @riverpod is used on an stream function wrapped in Raw',
       () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     final AutoDisposeProvider<Stream<String>> provider = rawStreamProvider;
     final Stream<String> result = container.read(rawStreamProvider);
@@ -103,7 +103,7 @@ void main() {
 
   test('Creates a Provider<T> if @riverpod is used on a synchronous function',
       () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     final AutoDisposeProvider<String> provider = publicProvider;
     final String result = container.read(publicProvider);
@@ -122,7 +122,7 @@ void main() {
   test(
       'Creates a Provider.family<T> if @riverpod is used on a synchronous function with parameters',
       () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     const FamilyFamily family = familyProvider;
 

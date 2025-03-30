@@ -14,7 +14,7 @@ void main() {
       (ref) => ref.watch(dep.notifier),
       dependencies: [dep],
     );
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     expect(container.read(provider).state, 0);
   });
@@ -22,16 +22,16 @@ void main() {
   group('scoping mechanism', () {
     test('use the deepest override', () {
       final provider = Provider((ref) => 0);
-      final root = createContainer(
+      final root = ProviderContainer.test(
         overrides: [provider.overrideWithValue(1)],
       );
-      final mid = createContainer(
+      final mid = ProviderContainer.test(
         parent: root,
         overrides: [
           provider.overrideWithValue(42),
         ],
       );
-      final container = createContainer(parent: mid);
+      final container = ProviderContainer.test(parent: mid);
 
       expect(container.read(provider), 42);
 
@@ -46,10 +46,10 @@ void main() {
 
     test('can read both parent and child simultaneously', () async {
       final provider = Provider((ref) => 0);
-      final root = createContainer(
+      final root = ProviderContainer.test(
         overrides: [provider.overrideWithValue(21)],
       );
-      final container = createContainer(
+      final container = ProviderContainer.test(
         parent: root,
         overrides: [provider.overrideWithValue(42)],
       );
@@ -63,10 +63,10 @@ void main() {
     test('updating parent override when there is a child override is no-op',
         () async {
       final provider = Provider((ref) => 0);
-      final root = createContainer(
+      final root = ProviderContainer.test(
         overrides: [provider.overrideWithValue(21)],
       );
-      final container = createContainer(
+      final container = ProviderContainer.test(
         parent: root,
         overrides: [provider.overrideWithValue(42)],
       );
@@ -87,7 +87,7 @@ void main() {
 
     test('supports auto-dispose', () async {
       final provider = Provider.autoDispose((ref) => 0);
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       final sub = container.listen(provider, (_, __) {});
       final element = container.readProviderElement(provider);
@@ -107,10 +107,10 @@ void main() {
 
     test('are disposed on nested containers', () {
       final provider = Provider((ref) => 0);
-      final root = createContainer(
+      final root = ProviderContainer.test(
         overrides: [provider.overrideWithValue(1)],
       );
-      final container = createContainer(
+      final container = ProviderContainer.test(
         parent: root,
         overrides: [
           provider.overrideWithValue(42),
@@ -130,7 +130,7 @@ void main() {
       final provider = Provider<int>((ref) => -1);
       final provider2 = Provider<int>((ref) => -1);
 
-      final container = createContainer(
+      final container = ProviderContainer.test(
         overrides: [
           provider.overrideWithValue(21),
           provider2.overrideWithValue(42),
@@ -161,16 +161,16 @@ void main() {
 
     test('handles parent override update', () {
       final provider = Provider((ref) => 0);
-      final root = createContainer(
+      final root = ProviderContainer.test(
         overrides: [provider.overrideWithValue(1)],
       );
-      final mid = createContainer(
+      final mid = ProviderContainer.test(
         parent: root,
         overrides: [
           provider.overrideWithValue(42),
         ],
       );
-      final container = createContainer(parent: mid);
+      final container = ProviderContainer.test(parent: mid);
       final listener = Listener<int>();
 
       container.listen(provider, listener.call, fireImmediately: true);
@@ -186,8 +186,8 @@ void main() {
 
     test('can be overridden on non-root container', () {
       final provider = Provider((ref) => 0);
-      final root = createContainer();
-      final container = createContainer(
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(
         parent: root,
         overrides: [provider.overrideWithValue(42)],
       );
@@ -201,8 +201,8 @@ void main() {
       final provider2 = Provider((ref) {
         return ref.watch(provider) * 2;
       });
-      final root = createContainer();
-      final container = createContainer(
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(
         parent: root,
         overrides: [
           provider.overrideWithValue(1),
@@ -230,8 +230,9 @@ void main() {
       final provider2 = Provider((ref) {
         return ref.watch(provider) * 2;
       });
-      final root = createContainer();
-      final container = createContainer(parent: root, overrides: [provider2]);
+      final root = ProviderContainer.test();
+      final container =
+          ProviderContainer.test(parent: root, overrides: [provider2]);
 
       container.listen(provider2, listener.call, fireImmediately: true);
 

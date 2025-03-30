@@ -13,9 +13,9 @@ Future<void> main() async {
       'the child container keeps its override', () async {
 // Regression test for https://github.com/rrousselGit/riverpod/issues/1519
 
-    final root = createContainer();
+    final root = ProviderContainer.test();
     final provider = Provider.autoDispose((ref) => 0);
-    final child = createContainer(
+    final child = ProviderContainer.test(
       parent: root,
       overrides: [provider.overrideWithValue(42)],
     );
@@ -36,8 +36,9 @@ Future<void> main() async {
       () async {
     // regression test for https://github.com/rrousselGit/riverpod/issues/1400
     final provider = Provider.autoDispose((ref) => 0);
-    final root = createContainer();
-    final container = createContainer(parent: root, overrides: [provider]);
+    final root = ProviderContainer.test();
+    final container =
+        ProviderContainer.test(parent: root, overrides: [provider]);
 
     container.read(provider);
     container.dispose();
@@ -48,7 +49,7 @@ Future<void> main() async {
   group('ref.keepAlive', () {
     test('Does not cause an infinite loop if aborted directly in the callback',
         () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       var buildCount = 0;
       var disposeCount = 0;
       final provider = Provider.autoDispose<String>((ref) {
@@ -79,7 +80,7 @@ Future<void> main() async {
     });
 
     test('when the provider rebuilds, links are cleared', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final dep = StateProvider((ref) => 0);
       KeepAliveLink? a;
 
@@ -109,7 +110,7 @@ Future<void> main() async {
 
     test('maintains the state of the provider until all links are closed',
         () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       late KeepAliveLink a;
       late KeepAliveLink b;
 
@@ -152,7 +153,7 @@ Future<void> main() async {
     test(
         'when closing KeepAliveLink, does not dispose the provider if it is still being listened to',
         () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       late KeepAliveLink a;
 
       final provider = Provider.autoDispose<void>((ref) {
@@ -181,7 +182,7 @@ Future<void> main() async {
     test(
         'when closing KeepAliveLink, does not dispose the provider maintainState=true',
         () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       late KeepAliveLink a;
       late AutoDisposeRef<Object?> ref;
 
@@ -213,7 +214,7 @@ Future<void> main() async {
     test(
         'when closing the last KeepAliveLink, then immediately adding a new link, '
         'the provider will not be disposed.', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       late KeepAliveLink a;
       late AutoDisposeRef<Object?> ref;
 
@@ -257,7 +258,7 @@ Future<void> main() async {
   test(
       'if a dependency changed, the element is still disposed, '
       'but without calling ref.onDispose again', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final onDispose = OnDisposeMock();
     final dep = StateProvider((ref) => 0);
     final provider = Provider.autoDispose((ref) {
@@ -288,7 +289,7 @@ Future<void> main() async {
   test(
       'when a provider conditionally depends on another provider, rebuilding without the dependency can dispose the dependency',
       () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     var dependencyDisposeCount = 0;
     final dependency = Provider.autoDispose(
       name: 'dependency',
@@ -347,8 +348,8 @@ Future<void> main() async {
       return value;
     });
 
-    final root = createContainer();
-    final container = createContainer(parent: root);
+    final root = ProviderContainer.test();
+    final container = ProviderContainer.test(parent: root);
 
     final sub =
         container.listen(provider, listener.call, fireImmediately: true);
@@ -378,8 +379,9 @@ Future<void> main() async {
       () async {
     final provider = Provider.autoDispose((ref) => 0);
 
-    final root = createContainer();
-    final container = createContainer(parent: root, overrides: [provider]);
+    final root = ProviderContainer.test();
+    final container =
+        ProviderContainer.test(parent: root, overrides: [provider]);
 
     container.read(provider);
     expect(root.getAllProviderElements(), isEmpty);
@@ -401,9 +403,9 @@ Future<void> main() async {
       () async {
     final provider = Provider.autoDispose((ref) => 0);
 
-    final root = createContainer();
-    final mid = createContainer(parent: root, overrides: [provider]);
-    final container = createContainer(parent: mid);
+    final root = ProviderContainer.test();
+    final mid = ProviderContainer.test(parent: root, overrides: [provider]);
+    final container = ProviderContainer.test(parent: mid);
 
     container.read(provider);
     expect(root.getAllProviderElements(), isEmpty);
@@ -428,8 +430,9 @@ Future<void> main() async {
       () async {
     final provider = Provider.autoDispose.family<int, int>((ref, _) => 0);
 
-    final root = createContainer();
-    final container = createContainer(parent: root, overrides: [provider]);
+    final root = ProviderContainer.test();
+    final container =
+        ProviderContainer.test(parent: root, overrides: [provider]);
 
     container.read(provider(0));
     expect(root.getAllProviderElements(), isEmpty);
@@ -451,9 +454,9 @@ Future<void> main() async {
       () async {
     final provider = Provider.autoDispose.family<int, int>((ref, _) => 0);
 
-    final root = createContainer();
-    final mid = createContainer(parent: root, overrides: [provider]);
-    final container = createContainer(parent: mid);
+    final root = ProviderContainer.test();
+    final mid = ProviderContainer.test(parent: root, overrides: [provider]);
+    final container = ProviderContainer.test(parent: mid);
 
     container.read(provider(0));
     expect(root.getAllProviderElements(), isEmpty);
@@ -478,8 +481,8 @@ Future<void> main() async {
     final provider = Provider.autoDispose.family<int, int>((ref, _) => -1);
 
     var constructionCount = 0;
-    final root = createContainer();
-    final container = createContainer(
+    final root = ProviderContainer.test();
+    final container = ProviderContainer.test(
       parent: root,
       overrides: [provider.overrideWith((ref, arg) => ++constructionCount)],
     );
@@ -496,7 +499,7 @@ Future<void> main() async {
   test(
       'can select auto-dispose providers if the selecting provider is auto-dispose too',
       () {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final selected = Provider.autoDispose((ref) => 0);
     final isEven = Provider.autoDispose((ref) {
       return ref.watch(selected.select((c) => c.isEven));
@@ -514,7 +517,7 @@ Future<void> main() async {
       ref.onDispose(onDispose.call);
       ref.maintainState = true;
     });
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     final sub = container.listen<void>(provider, (prev, value) {});
     sub.close();
@@ -543,7 +546,7 @@ Future<void> main() async {
       ref.maintainState = true;
       return value;
     });
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final listener = Listener<int>();
 
     final sub =
@@ -569,7 +572,7 @@ Future<void> main() async {
       maintainState = ref.maintainState;
       return 42;
     });
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     container.listen(provider, (prev, value) {});
 
@@ -578,7 +581,7 @@ Future<void> main() async {
 
   test('unsub to A then make B sub to A then unsub to B disposes B before A',
       () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final aDispose = OnDisposeMock();
     final a = Provider.autoDispose((ref) {
       ref.onDispose(aDispose.call);
@@ -611,7 +614,7 @@ Future<void> main() async {
   });
 
   test('chain', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final onDispose = OnDisposeMock();
     var value = 42;
     final provider = Provider.autoDispose((ref) {
@@ -658,7 +661,7 @@ Future<void> main() async {
   });
 
   test("auto dispose A then auto dispose B doesn't dispose A again", () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final aDispose = OnDisposeMock();
     final a = Provider.autoDispose((ref) {
       ref.onDispose(aDispose.call);
@@ -695,7 +698,7 @@ Future<void> main() async {
 
   test('ProviderContainer was disposed before AutoDisposer handled the dispose',
       () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final onDispose = OnDisposeMock();
     final provider = Provider.autoDispose((ref) {
       ref.onDispose(onDispose.call);
@@ -720,7 +723,7 @@ Future<void> main() async {
   });
 
   test('unsub no-op if another sub is added before event-loop', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final onDispose = OnDisposeMock();
     final provider = Provider.autoDispose((ref) {
       ref.onDispose(onDispose.call);
@@ -749,7 +752,7 @@ Future<void> main() async {
 
   test('no-op if when removing listener if there is still a listener',
       () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final onDispose = OnDisposeMock();
     final provider = Provider.autoDispose((ref) {
       ref.onDispose(onDispose.call);
@@ -780,7 +783,7 @@ Future<void> main() async {
       ref.onDispose(onDispose.call);
       return 42;
     });
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     final sub = container.listen(provider, (_, __) {});
     sub.close();
@@ -797,7 +800,7 @@ Future<void> main() async {
 
   test('providers with only a "listen" as subscribers are kept alive',
       () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     var mounted = true;
     final listened = Provider.autoDispose((ref) {
       ref.onDispose(() => mounted = false);

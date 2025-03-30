@@ -32,7 +32,8 @@ export 'framework.dart'
         ProviderListenableOrScope,
         AnyX,
         ObsX,
-        ProviderElementBase;
+        ProviderElementBase,
+        ProviderContainerTest;
 
 export 'providers/async_notifier.dart'
     hide

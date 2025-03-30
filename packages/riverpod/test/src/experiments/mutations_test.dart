@@ -10,7 +10,7 @@ import 'provider.dart';
 
 void main() {
   test('Can listen a mutation', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final provider = TestProvider((ref) => 0);
     final mutation = provider.mutation<String>();
 
@@ -67,7 +67,7 @@ void main() {
   group('auto reset', () {
     test('Automatically resets the state when all listeners are removed',
         () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final provider = TestProvider((ref) => 0);
       final increment = provider.mutation<void>();
 
@@ -94,7 +94,7 @@ void main() {
     });
 
     test('is cancelled if a listener is added during the delay', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final provider = TestProvider((ref) => 0);
       final increment = provider.mutation<void>();
 
@@ -115,7 +115,7 @@ void main() {
 
   test('Maintains progress even if a provider is when the provider is reset',
       () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final provider = TestProvider((ref) => 0);
     final increment = provider.mutation<void>();
 
@@ -130,7 +130,7 @@ void main() {
   });
 
   test('Supports getting called again while pending', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final provider = TestProvider((ref) => 0);
     final mutation = provider.mutation<void>();
 
@@ -165,7 +165,7 @@ void main() {
   });
 
   test('Listening to a mutation keeps the provider alive', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final simpleProvider = TestProvider((ref) => 0);
     final increment = simpleProvider.mutation<void>();
 
@@ -184,7 +184,7 @@ void main() {
 
   test(skip: 'Todo', 'Listening a mutation lazily initializes the provider',
       () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final simpleProvider = TestProvider((ref) => 0);
     final increment = simpleProvider.mutation<void>();
 
@@ -201,7 +201,7 @@ void main() {
 
   group('reset', () {
     test('Supports calling reset while pending', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final simpleProvider = TestProvider((ref) => 0);
       final increment = simpleProvider.mutation<int>();
 
@@ -224,7 +224,7 @@ void main() {
     });
 
     test('sets the state back to idle', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final simpleProvider = TestProvider((ref) => 0);
       final increment = simpleProvider.mutation<int>();
 
@@ -246,7 +246,7 @@ void main() {
   group('Integration with ProviderObserver', () {
     //   test('handles generic methods', () async {
     //     final observer = ObserverMock();
-    //     final container = createContainer(
+    //     final container = ProviderContainer.test(
     //       observers: [observer],
     //     );
 
@@ -282,7 +282,7 @@ void main() {
 
     //   test('sends current mutation to didUpdateProvider', () async {
     //     final observer = ObserverMock();
-    //     final container = createContainer(
+    //     final container = ProviderContainer.test(
     //       observers: [observer],
     //     );
 
@@ -340,7 +340,7 @@ void main() {
 
     //   test('handles mutationStart/Pending/Success/Error/Reset', () async {
     //     final observer = ObserverMock();
-    //     final container = createContainer(
+    //     final container = ProviderContainer.test(
     //       observers: [observer],
     //     );
 

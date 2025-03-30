@@ -24,8 +24,8 @@ void main() {
         (ref, i) => StateController(ref.watch(dep) + i),
         dependencies: [dep],
       );
-      final root = createContainer();
-      final container = createContainer(
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(
         parent: root,
         overrides: [dep.overrideWithValue(42)],
       );
@@ -43,8 +43,9 @@ void main() {
             StateNotifierProvider.family<StateController<int>, int, int>(
           (ref, _) => controller,
         );
-        final root = createContainer();
-        final container = createContainer(parent: root, overrides: [provider]);
+        final root = ProviderContainer.test();
+        final container =
+            ProviderContainer.test(parent: root, overrides: [provider]);
 
         expect(container.read(provider(0).notifier), controller);
         expect(container.read(provider(0)), 0);
@@ -64,9 +65,9 @@ void main() {
             StateNotifierProvider.family<StateController<int>, int, int>(
           (ref, _) => controller,
         );
-        final root = createContainer();
+        final root = ProviderContainer.test();
         final controllerOverride = StateController(42);
-        final container = createContainer(
+        final container = ProviderContainer.test(
           parent: root,
           overrides: [
             provider.overrideWithProvider(
@@ -121,8 +122,9 @@ void main() {
         final family = StateNotifierProvider.family<Counter, int, String>(
           (ref, id) => Counter(),
         );
-        final root = createContainer();
-        final container = createContainer(parent: root, overrides: [family]);
+        final root = ProviderContainer.test();
+        final container =
+            ProviderContainer.test(parent: root, overrides: [family]);
 
         expect(container.read(family('0')), 0);
         expect(container.read(family('0').notifier), isA<Counter>());
@@ -141,7 +143,7 @@ void main() {
       final notifier2 = TestNotifier(42);
       final provider = StateNotifierProvider.autoDispose
           .family<TestNotifier, int, int>((ref, a) => TestNotifier());
-      final container = createContainer(
+      final container = ProviderContainer.test(
         overrides: [
           provider.overrideWithProvider((a) {
             return StateNotifierProvider.autoDispose<TestNotifier, int>(

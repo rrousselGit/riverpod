@@ -1,8 +1,6 @@
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
-import '../../utils.dart';
-
 void main() {
   group('StreamProvider.family', () {
     test('specifies `from` & `argument` for related providers', () {
@@ -17,8 +15,9 @@ void main() {
       test('when passing the provider itself', () async {
         final provider =
             StreamProvider.family<int, int>((ref, _) => Stream.value(0));
-        final root = createContainer();
-        final container = createContainer(parent: root, overrides: [provider]);
+        final root = ProviderContainer.test();
+        final container =
+            ProviderContainer.test(parent: root, overrides: [provider]);
 
         // ignore: deprecated_member_use_from_same_package
         expect(await container.read(provider(0).stream).first, 0);
@@ -37,8 +36,8 @@ void main() {
       test('when using provider.overrideWithProvider', () async {
         final provider =
             StreamProvider.family<int, int>((ref, _) => Stream.value(0));
-        final root = createContainer();
-        final container = createContainer(
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
           parent: root,
           overrides: [
             provider.overrideWithProvider(
@@ -68,8 +67,8 @@ void main() {
         (ref, i) => Stream.value(ref.watch(dep) + i),
         dependencies: [dep],
       );
-      final root = createContainer();
-      final container = createContainer(
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(
         parent: root,
         overrides: [dep.overrideWithValue(42)],
       );

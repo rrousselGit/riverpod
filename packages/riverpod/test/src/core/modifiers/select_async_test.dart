@@ -10,7 +10,7 @@ import '../../utils.dart';
 void main() {
   group('If disposed before a value could be emitted', () {
     test('resolves values with `sub.read()`', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final controller = StreamController<int>();
       final provider = Provider((ref) => ref);
       addTearDown(controller.close);
@@ -26,7 +26,7 @@ void main() {
     });
 
     test('resolves errors with `sub.read()`', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final controller = StreamController<int>();
       final provider = Provider((ref) => ref);
       addTearDown(controller.close);
@@ -43,7 +43,7 @@ void main() {
   });
 
   test('implements ProviderSubscription.read on AsyncData', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final dep = StateProvider((ref) => 0);
     final provider = FutureProvider((ref) async => ref.watch(dep));
 
@@ -66,7 +66,7 @@ void main() {
   });
 
   test('implements ProviderSubscription.read on AsyncError', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final dep = StateProvider((ref) => 0);
     final provider = FutureProvider<int>(
       (ref) => Future.error(ref.watch(dep)),
@@ -92,7 +92,7 @@ void main() {
   });
 
   test('when selector throws, returns a failing future', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final dep = StateProvider((ref) => 0);
     final provider = FutureProvider((ref) async => ref.watch(dep));
 
@@ -115,7 +115,7 @@ void main() {
   });
 
   test('handles fireImmediately: true on AsyncLoading', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final provider = FutureProvider((ref) async => 0);
     final listener = Listener<Future<bool>>();
 
@@ -132,7 +132,7 @@ void main() {
   });
 
   test('handles fireImmediately: true on AsyncData', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final provider = FutureProvider((ref) => 0);
     final listener = Listener<Future<bool>>();
 
@@ -149,7 +149,7 @@ void main() {
   });
 
   test('handles fireImmediately: true on AsyncError', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final provider = FutureProvider<int>((ref) => throw StateError('0'));
     final listener = Listener<Future<bool>>();
 
@@ -166,7 +166,7 @@ void main() {
   });
 
   test('handles fireImmediately: false', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final provider = FutureProvider((ref) async => 0);
     final listener = Listener<Future<bool>>();
 
@@ -181,7 +181,7 @@ void main() {
   test(
       'catching errors in the future is not necessary if the error is coming from AsyncError',
       () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     final provider = FutureProvider<int>((ref) => throw StateError('err'));
 
     container.listen(
@@ -195,7 +195,7 @@ void main() {
   });
 
   test('handles multiple AsyncLoading at once then data', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     late FutureProviderRef<int> ref;
     final provider = FutureProvider<int>((r) {
       ref = r;
@@ -224,7 +224,7 @@ void main() {
   });
 
   test('can watch async selectors', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     var buildCount = 0;
     final dep = StateProvider((ref) => 0);
     final a = FutureProvider((ref) async => ref.watch(dep));
@@ -280,7 +280,7 @@ void main() {
   });
 
   test('can watch async selectors (autoDispose)', () async {
-    final container = createContainer();
+    final container = ProviderContainer.test();
     var buildCount = 0;
     final dep = StateProvider((ref) => 0);
     final a = FutureProvider.autoDispose((ref) async => ref.watch(dep));
@@ -337,7 +337,7 @@ void main() {
 
   group('Supports ProviderContainer.read', () {
     test('and resolves with data', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final provider = FutureProvider((ref) async => 0);
 
       expect(
@@ -347,7 +347,7 @@ void main() {
     });
 
     test('resolves with error', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final provider =
           FutureProvider<int>((ref) async => throw StateError('err'));
 
@@ -358,7 +358,7 @@ void main() {
     });
 
     test('emits exceptions inside selectors as Future.error', () async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final provider = FutureProvider<int>((ref) async => 42);
 
       expect(
