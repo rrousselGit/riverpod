@@ -434,8 +434,11 @@ class AutoDisposeChangeNotifierProvider<NotifierT extends ChangeNotifier?>
 class AutoDisposeChangeNotifierProviderElement<
         NotifierT extends ChangeNotifier?>
     extends ChangeNotifierProviderElement<NotifierT>
-    with AutoDisposeProviderElementMixin<NotifierT>
-    implements AutoDisposeChangeNotifierProviderRef<NotifierT> {
+    with
+        AutoDisposeProviderElementMixin<NotifierT>
+    implements
+        // ignore: deprecated_member_use_from_same_package
+        AutoDisposeChangeNotifierProviderRef<NotifierT> {
   /// The [ProviderElementBase] for [ChangeNotifier]
   @Deprecated('will be removed in 3.0.0, use Ref instead')
   AutoDisposeChangeNotifierProviderElement._(
