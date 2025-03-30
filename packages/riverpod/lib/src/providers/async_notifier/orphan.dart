@@ -188,7 +188,7 @@ mixin FutureHandlerProviderElementMixin<T>
   }
 
   /// An internal function used to obtain the private [futureNotifier] from the mixin
-  static ProxyElementValueNotifier<Future<T>> futureNotifierOf<T>(
+  static $ElementLense<Future<T>> futureNotifierOf<T>(
     FutureHandlerProviderElementMixin<T> handler,
   ) {
     return handler.futureNotifier;
@@ -196,7 +196,7 @@ mixin FutureHandlerProviderElementMixin<T>
 
   /// An observable for [FutureProvider.future].
   @internal
-  final futureNotifier = ProxyElementValueNotifier<Future<T>>();
+  final futureNotifier = $ElementLense<Future<T>>();
   Completer<T>? _futureCompleter;
   Future<T>? _lastFuture;
   CancelAsyncSubscription? _lastFutureSub;
@@ -229,7 +229,7 @@ mixin FutureHandlerProviderElementMixin<T>
     asyncTransition(value, seamless: seamless);
     if (_futureCompleter == null) {
       final completer = _futureCompleter = Completer();
-      futureNotifier.result = ResultData(completer.future);
+      futureNotifier.result = $ResultData(completer.future);
     }
   }
 
@@ -265,7 +265,7 @@ mixin FutureHandlerProviderElementMixin<T>
       _futureCompleter = null;
       // TODO SynchronousFuture.error
     } else if (mounted) {
-      futureNotifier.result = Result.data(
+      futureNotifier.result = $Result.data(
         // TODO test ignore
         Future.error(
           value.error,
@@ -290,7 +290,7 @@ mixin FutureHandlerProviderElementMixin<T>
       completer.complete(value.value);
       _futureCompleter = null;
     } else if (mounted) {
-      futureNotifier.result = Result.data(Future.value(value.value));
+      futureNotifier.result = $Result.data(Future.value(value.value));
     }
   }
 
@@ -474,7 +474,7 @@ mixin FutureHandlerProviderElementMixin<T>
   @override
   void visitChildren({
     required void Function(ProviderElementBase element) elementVisitor,
-    required void Function(ProxyElementValueNotifier element) notifierVisitor,
+    required void Function($ElementLense element) notifierVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,
@@ -494,12 +494,12 @@ abstract class AsyncNotifierProviderElementBase<
   @internal
   AsyncNotifierProviderElementBase(super._provider);
 
-  final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
+  final _notifierNotifier = $ElementLense<NotifierT>();
 
   @override
   void visitChildren({
     required void Function(ProviderElementBase element) elementVisitor,
-    required void Function(ProxyElementValueNotifier element) notifierVisitor,
+    required void Function($ElementLense element) notifierVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,
@@ -533,7 +533,7 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
   void create({required bool didChangeDependency}) {
     final provider = this.provider as AsyncNotifierProviderBase<NotifierT, T>;
 
-    final notifierResult = _notifierNotifier.result ??= Result.guard(() {
+    final notifierResult = _notifierNotifier.result ??= $Result.guard(() {
       return provider._createNotifier().._setElement(this);
     });
 
@@ -541,10 +541,10 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     // TODO test notifier constructor throws -> .notifier rethrows the error
     // TODO test notifier constructor throws -> .future emits Future.error
     switch (notifierResult) {
-      case ResultError<NotifierT>(:final error, :final stackTrace):
+      case $ResultError<NotifierT>(:final error, :final stackTrace):
         onError(AsyncError(error, stackTrace), seamless: !didChangeDependency);
 
-      case ResultData<NotifierT>(value: final notifier):
+      case $ResultData<NotifierT>(value: final notifier):
         handleFuture(
           () => provider.runNotifierBuild(notifier),
           didChangeDependency: didChangeDependency,
@@ -561,20 +561,20 @@ extension<T> on Stream<T> {
     late StreamSubscription<T> subscription;
     final completer = Completer<T>();
 
-    Result<T>? result;
+    $Result<T>? result;
     subscription = listen(
-      (event) => result = Result.data(event),
+      (event) => result = $Result.data(event),
       // ignore: avoid_types_on_closure_parameters
       onError: (Object error, StackTrace stackTrace) {
-        result = Result.error(error, stackTrace);
+        result = $Result.error(error, stackTrace);
       },
       onDone: () {
         final result2 = result;
         if (result2 != null) {
           switch (result2) {
-            case ResultData(:final value):
+            case $ResultData(:final value):
               completer.complete(value);
-            case ResultError(:final error, :final stackTrace):
+            case $ResultError(:final error, :final stackTrace):
               // TODO: should this be reported to the zone?
               completer.future.ignore();
               completer.completeError(error, stackTrace);

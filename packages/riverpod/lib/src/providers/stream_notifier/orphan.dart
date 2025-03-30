@@ -154,17 +154,17 @@ class StreamNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
   void create({required bool didChangeDependency}) {
     final provider = this.provider as StreamNotifierProviderBase<NotifierT, T>;
 
-    final notifierResult = _notifierNotifier.result ??= Result.guard(() {
+    final notifierResult = _notifierNotifier.result ??= $Result.guard(() {
       return provider._createNotifier().._setElement(this);
     });
 
     switch (notifierResult) {
-      case ResultData<NotifierT>():
+      case $ResultData<NotifierT>():
         handleStream(
           () => provider.runNotifierBuild(notifierResult.value),
           didChangeDependency: didChangeDependency,
         );
-      case ResultError<NotifierT>(:final error, :final stackTrace):
+      case $ResultError<NotifierT>(:final error, :final stackTrace):
         onError(AsyncError(error, stackTrace), seamless: !didChangeDependency);
     }
   }

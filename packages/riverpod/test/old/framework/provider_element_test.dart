@@ -1186,7 +1186,7 @@ void main() {
 
       expect(
         element.getState(),
-        isA<ResultError<Object?>>()
+        isA<$ResultError<Object?>>()
             .having((e) => e.error, 'error', isUnimplementedError),
       );
     });

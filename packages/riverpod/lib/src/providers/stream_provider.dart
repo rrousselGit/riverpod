@@ -213,13 +213,13 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   // ignore: library_private_types_in_public_api
   StreamProviderElement(_StreamProviderBase<T> super._provider);
 
-  final _streamNotifier = ProxyElementValueNotifier<Stream<T>>();
+  final _streamNotifier = $ElementLense<Stream<T>>();
   final StreamController<T> _streamController = StreamController<T>.broadcast();
 
   @override
   void create({required bool didChangeDependency}) {
     asyncTransition(AsyncLoading<T>(), seamless: !didChangeDependency);
-    _streamNotifier.result ??= Result.data(_streamController.stream);
+    _streamNotifier.result ??= $Result.data(_streamController.stream);
 
     handleStream(
       () {
@@ -242,7 +242,7 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   @override
   void visitChildren({
     required void Function(ProviderElementBase element) elementVisitor,
-    required void Function(ProxyElementValueNotifier element) notifierVisitor,
+    required void Function($ElementLense element) notifierVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,

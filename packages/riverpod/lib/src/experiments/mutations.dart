@@ -3,8 +3,8 @@
 part of '../framework.dart';
 
 class _MutationState<T> {
-  late final listenable = ProxyElementValueNotifier<MutationState<T>>()
-    ..result = Result.data(IdleMutation<T>._())
+  late final listenable = $ElementLense<MutationState<T>>()
+    ..result = $Result.data(IdleMutation<T>._())
     ..onCancel = _scheduleAutoReset;
 
   Object? pendingKey;
@@ -19,7 +19,7 @@ class _MutationState<T> {
 
   void reset() {
     pendingKey = null;
-    listenable.result = Result.data(IdleMutation<T>._());
+    listenable.result = $Result.data(IdleMutation<T>._());
   }
 }
 
@@ -36,17 +36,17 @@ mixin _MutationElement<T> on ProviderElementBase<T> {
 
       final key = state.pendingKey = Object();
       try {
-        state.listenable.result = Result.data(PendingMutation<T>._());
+        state.listenable.result = $Result.data(PendingMutation<T>._());
         final result = await mutator(ref);
 
         if (state.pendingKey == key) {
-          state.listenable.result = Result.data(SuccessMutation<T>._(result));
+          state.listenable.result = $Result.data(SuccessMutation<T>._(result));
         }
 
         return result;
       } catch (error, stackTrace) {
         if (state.pendingKey == key) {
-          state.listenable.result = Result<MutationState<T>>.data(
+          state.listenable.result = $Result<MutationState<T>>.data(
             ErrorMutation<T>._(error, stackTrace),
           );
         }
@@ -72,7 +72,7 @@ mixin _MutationElement<T> on ProviderElementBase<T> {
   @override
   void visitChildren({
     required void Function(ProviderElementBase element) elementVisitor,
-    required void Function(ProxyElementValueNotifier element) notifierVisitor,
+    required void Function($ElementLense element) notifierVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,

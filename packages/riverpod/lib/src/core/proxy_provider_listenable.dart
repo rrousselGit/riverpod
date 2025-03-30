@@ -43,7 +43,7 @@ class ProviderElementProxy<Input, Output>
 
   @override
   final AnyProvider<Input> _origin;
-  final ProxyElementValueNotifier<Output> Function(
+  final $ElementLense<Output> Function(
     ProviderElementBase<Input> element,
   ) _lense;
 
@@ -74,10 +74,10 @@ class ProviderElementProxy<Input, Output>
         case null:
           break;
 
-        case ResultData<Output>(:final value):
+        case $ResultData<Output>(:final value):
           runBinaryGuarded(listener, null, value);
 
-        case ResultError<Output>(:final error, :final stackTrace):
+        case $ResultError<Output>(:final error, :final stackTrace):
           if (onError != null) {
             runBinaryGuarded(onError, error, stackTrace);
           }
@@ -117,14 +117,14 @@ class ProviderElementProxy<Input, Output>
 /// Deals with the internals of synchronously calling the listeners
 /// when using `fireImmediately: true`
 void _handleFireImmediately<StateT>(
-  Result<StateT> currentState, {
+  $Result<StateT> currentState, {
   required void Function(StateT? previous, StateT current) listener,
   required void Function(Object error, StackTrace stackTrace) onError,
 }) {
   switch (currentState) {
-    case ResultData():
+    case $ResultData():
       runBinaryGuarded(listener, null, currentState.value);
-    case ResultError():
+    case $ResultError():
       runBinaryGuarded(onError, currentState.error, currentState.stackTrace);
   }
 }

@@ -196,13 +196,13 @@ class NotifierProviderElement<NotifierT extends NotifierBase<T>, T>
   @internal
   NotifierProviderElement(NotifierProviderBase<NotifierT, T> super._provider);
 
-  final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
+  final _notifierNotifier = $ElementLense<NotifierT>();
 
   @override
   void create({required bool didChangeDependency}) {
     final provider = this.provider as NotifierProviderBase<NotifierT, T>;
 
-    final notifierResult = _notifierNotifier.result ??= Result.guard(() {
+    final notifierResult = _notifierNotifier.result ??= $Result.guard(() {
       return provider._createNotifier().._setElement(this);
     });
 
@@ -217,7 +217,7 @@ class NotifierProviderElement<NotifierT extends NotifierBase<T>, T>
   @override
   void visitChildren({
     required void Function(ProviderElementBase element) elementVisitor,
-    required void Function(ProxyElementValueNotifier element) notifierVisitor,
+    required void Function($ElementLense element) notifierVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,

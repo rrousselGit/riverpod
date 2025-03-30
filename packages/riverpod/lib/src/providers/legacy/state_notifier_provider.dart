@@ -209,7 +209,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
 
   @override
   NotifierT get notifier => _notifierNotifier.value;
-  final _notifierNotifier = ProxyElementValueNotifier<NotifierT>();
+  final _notifierNotifier = $ElementLense<NotifierT>();
 
   void Function()? _removeListener;
 
@@ -218,7 +218,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
     final provider = this.provider as _StateNotifierProviderBase<NotifierT, T>;
 
     final notifier =
-        _notifierNotifier.result = Result.guard(() => provider._create(this));
+        _notifierNotifier.result = $Result.guard(() => provider._create(this));
 
     _removeListener = notifier
         // TODO test requireState, as ref.read(p) is expected to throw if notifier creation failed
@@ -252,7 +252,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
   @override
   void visitChildren({
     required void Function(ProviderElementBase element) elementVisitor,
-    required void Function(ProxyElementValueNotifier element) notifierVisitor,
+    required void Function($ElementLense element) notifierVisitor,
   }) {
     super.visitChildren(
       elementVisitor: elementVisitor,

@@ -52,7 +52,7 @@ class ValueProviderElement<State> extends ProviderElementBase<State> {
     final newValue = (provider as ValueProvider<State>)._value;
 
     // `getState` will never be in error/loading state since there is no "create"
-    final previousState = getState()! as ResultData<State>;
+    final previousState = getState()! as $ResultData<State>;
 
     if (newValue != previousState.value) {
       assert(

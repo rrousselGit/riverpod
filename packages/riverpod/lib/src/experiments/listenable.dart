@@ -58,15 +58,15 @@ mixin ProviderListenableTransformer<T> implements ProviderListenable<T> {
       onDependencyMayHaveChanged,
     );
 
-    final result = Result.guard(() => transform(_transformer));
+    final result = $Result.guard(() => transform(_transformer));
 
     _transformer._state = result;
 
     if (fireImmediately) {
       switch (result) {
-        case ResultData<T>():
+        case $ResultData<T>():
           listener(null, result.value);
-        case ResultError<T>():
+        case $ResultError<T>():
           onError?.call(result.error, result.stackTrace);
       }
     }
@@ -161,7 +161,7 @@ final class ProviderTransformer<T> {
 
   /// The stacktrace for the current error, if any.
   StackTrace? get stackTrace => _state?.stackTrace;
-  Result<T>? _state;
+  $Result<T>? _state;
 
   final _onClose = <void Function()>[];
 
@@ -171,7 +171,7 @@ final class ProviderTransformer<T> {
   /// to null.
   void setData(T newState) {
     _listener?.call(state, newState);
-    _state = ResultData(newState);
+    _state = $ResultData(newState);
   }
 
   /// Sets the listenable in error state.
@@ -179,7 +179,7 @@ final class ProviderTransformer<T> {
   /// Calling this will notify the `onError` of listeners, and set [state] to null.
   void setError(Object error, StackTrace stackTrace) {
     _onError?.call(error, stackTrace);
-    _state = ResultError(error, stackTrace);
+    _state = $ResultError(error, stackTrace);
   }
 
   /// Listens to another [ProviderListenable].
