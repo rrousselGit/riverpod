@@ -20,6 +20,7 @@ dev_dependencies:
   build_runner: ^2.3.2
   build_test: ^2.1.5
   freezed: ^3.0.2
+  lints: ^2.0.0
   riverpod_analyzer_utils:
   riverpod_generator:
   test: ^1.21.7

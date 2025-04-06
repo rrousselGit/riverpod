@@ -8,20 +8,72 @@ part of 'async_class_stream.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+@ProviderFor(Example)
+const exampleProvider = ExampleProvider._();
+
+final class ExampleProvider extends $StreamNotifierProvider<Example, String> {
+  const ExampleProvider._(
+      {super.runNotifierBuildOverride, Example Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'exampleProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final Example Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$exampleHash();
+
+  @$internal
+  @override
+  Example create() => _createCb?.call() ?? Example();
+
+  @$internal
+  @override
+  ExampleProvider $copyWithCreate(
+    Example Function() create,
+  ) {
+    return ExampleProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  ExampleProvider $copyWithBuild(
+    Stream<String> Function(
+      Ref,
+      Example,
+    ) build,
+  ) {
+    return ExampleProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $StreamNotifierProviderElement<Example, String> $createElement(
+          $ProviderPointer pointer) =>
+      $StreamNotifierProviderElement(this, pointer);
+}
+
 String _$exampleHash() => r'4bca936132b77a9a804549f086f33571724b4804';
 
-/// See also [Example].
-@ProviderFor(Example)
-final exampleProvider =
-    AutoDisposeStreamNotifierProvider<Example, String>.internal(
-  Example.new,
-  name: r'exampleProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$exampleHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$Example extends $StreamNotifier<String> {
+  Stream<String> build();
+  @$internal
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}
 
-typedef _$Example = AutoDisposeStreamNotifier<String>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -106,7 +106,7 @@ class PackageDetailPage extends HookConsumerWidget {
         ref.watch(fetchPackageDetailsProvider(packageName: packageName));
 
     final likedPackages = ref.watch(likedPackagesProvider);
-    final isLiked = likedPackages.value2?.contains(packageName) ?? false;
+    final isLiked = likedPackages.value?.contains(packageName) ?? false;
 
     final pendingToggleLike = useState<Future<void>?>(null);
     final toggleLikeSnapshot = useFuture(pendingToggleLike.value);

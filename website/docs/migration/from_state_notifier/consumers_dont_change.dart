@@ -28,10 +28,11 @@ class SomeConsumer extends ConsumerWidget {
         Text("You've counted up until $counter, good job!"),
         TextButton(
           /* highlight-start */
-          onPressed: ref.read(counterNotifierProvider.notifier).increment,
+          onPressed: () =>
+              ref.read(counterNotifierProvider.notifier).increment(),
           /* highlight-end */
           child: const Text('Count even more!'),
-        )
+        ),
       ],
     );
   }

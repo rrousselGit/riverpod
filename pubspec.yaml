@@ -20,6 +20,7 @@ workspace:
   - packages/flutter_riverpod
   - packages/hooks_riverpod/example
   - packages/hooks_riverpod
+  - packages/lint_visitor_generator
   - packages/riverpod/example
   - packages/riverpod
   - packages/riverpod_analyzer_utils
@@ -34,5 +35,7 @@ workspace:
   - packages/riverpod_lint
   # Custom_lint doesn't handle plugins from workspaces yet
   # - packages/riverpod_lint_flutter_test
+  - packages/riverpod_sqflite/example
+  - packages/riverpod_sqflite
   - tools/generate_providers
   - website

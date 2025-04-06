@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
+import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 
 class ErrorListener extends Mock {

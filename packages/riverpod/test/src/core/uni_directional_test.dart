@@ -2,104 +2,45 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
+import '../matrix.dart';
 import '../utils.dart';
 
 void main() {
-  late ProviderContainer container;
-  setUp(() {
-    container = ProviderContainer();
-  });
-  tearDown(() {
-    container.dispose();
-  });
-
   test(
-      'Catches circular dependency when dependencies are setup during provider initialization',
+      'Catches sync circular dependency when the dependency is not yet mounted',
       () {
     // regression for #1766
     final container = ProviderContainer.test();
 
-    final authInterceptorProvider = Provider((ref) => ref);
+    final c = Provider((ref) => ref);
 
-    final dioProvider = Provider<int>((ref) {
-      ref.watch(authInterceptorProvider);
+    final a = Provider<int>((ref) {
+      ref.watch(c);
       return 0;
     });
 
-    final accessTokenProvider = Provider<int>((ref) {
-      return ref.watch(dioProvider);
+    final b = Provider<int>((ref) {
+      return ref.watch(a);
     });
 
-    container.read(dioProvider);
-    final interceptor = container.read(authInterceptorProvider);
+    container.read(a);
+    final ref = container.read(c);
 
     expect(
-      () => interceptor.read(accessTokenProvider),
+      () => ref.read(b),
       throwsA(isA<CircularDependencyError>()),
     );
-  });
-
-  group('ProviderContainer.debugVsyncs', () {
-    // test('are called before modifying a provider', () {
-    //   final provider = StateProvider((ref) => 0);
-    //   final container = ProviderContainer();
-    //   final vsync = VsyncMock();
-    //   final vsync2 = VsyncMock();
-
-    //   container.debugVsyncs.addAll([vsync, vsync2]);
-
-    //   final state = container.read(provider);
-
-    //   verifyZeroInteractions(vsync);
-    //   verifyZeroInteractions(vsync2);
-
-    //   state.state++;
-
-    //   verifyOnly(vsync, vsync());
-    //   verifyOnly(vsync2, vsync2());
-    // });
-
-    // test('are not called when flushing a provider', () {
-    //   final dep = StateProvider((ref) => 0);
-    //   final provider = Provider((ref) {
-    //     return ref.watch(dep);
-    //   });
-    //   final container = ProviderContainer();
-    //   final vsync = VsyncMock();
-
-    //   final sub = container.listen(provider, (_) {});
-    //   container.read(dep.notifier).state++;
-
-    //   container.debugVsyncs.add(vsync);
-
-    //   sub.flush();
-
-    //   verifyZeroInteractions(vsync);
-    // });
-
-    // test('are not called when re-creating a provider', () {
-    //   final provider = Provider((ref) => 0);
-    //   final container = ProviderContainer();
-    //   final vsync = VsyncMock();
-
-    //   final sub = container.listen(provider, (_) {});
-    //   container.refresh(provider);
-
-    //   container.debugVsyncs.add(vsync);
-
-    //   sub.flush();
-
-    //   verifyZeroInteractions(vsync);
-    // });
   });
 
   test('rebuilding a provider can modify other providers', () async {
     final dep = StateProvider((ref) => 0);
     final provider = Provider((ref) => ref.watch(dep));
-    final another = StateProvider<int>((ref) {
-      ref.listen(provider, (prev, value) => ref.controller.state++);
-      return 0;
-    });
+    final another = NotifierProvider<Notifier<int>, int>(
+      () => DeferredNotifier((ref, self) {
+        ref.listen(provider, (prev, value) => self.state++);
+        return 0;
+      }),
+    );
     final container = ProviderContainer.test();
 
     expect(container.read(another), 0);
@@ -147,6 +88,45 @@ void main() {
     });
   });
 
+  group('ref.listen cannot end-up in a circular dependency', () {
+    test('direct dependency', () {
+      final provider = Provider((ref) => ref);
+      final provider2 = Provider((ref) => ref);
+      final container = ProviderContainer();
+
+      final ref = container.read(provider);
+      final ref2 = container.read(provider2);
+
+      ref.watch(provider2);
+      expect(
+        () => ref2.listen(provider, (a, b) {}),
+        throwsA(isA<CircularDependencyError>()),
+      );
+    });
+
+    test('indirect dependency', () {
+      final provider = Provider((ref) => ref);
+      final provider2 = Provider((ref) => ref);
+      final provider3 = Provider((ref) => ref);
+      final provider4 = Provider((ref) => ref);
+      final container = ProviderContainer();
+
+      final ref = container.read(provider);
+      final ref2 = container.read(provider2);
+      final ref3 = container.read(provider3);
+      final ref4 = container.read(provider4);
+
+      ref.listen(provider2, (a, b) {});
+      ref2.listen(provider3, (a, b) {});
+      ref3.listen(provider4, (a, b) {});
+
+      expect(
+        () => ref4.listen(provider, (a, b) {}),
+        throwsA(isA<CircularDependencyError>()),
+      );
+    });
+  });
+
   group('ref.read cannot end-up in a circular dependency', () {
     test('direct dependency', () {
       final provider = Provider((ref) => ref);
@@ -186,6 +166,7 @@ void main() {
   });
 
   test("initState can't dirty ancestors", () {
+    final container = ProviderContainer.test();
     final ancestor = StateProvider((_) => 0);
     final child = Provider((ref) {
       ref.watch(ancestor.notifier).state++;
@@ -196,6 +177,7 @@ void main() {
   });
 
   test("initState can't dirty siblings", () {
+    final container = ProviderContainer.test();
     final ancestor = StateProvider((_) => 0, name: 'ancestor');
     final counter = Counter();
     final sibling = StateNotifierProvider<Counter, int>(
@@ -222,6 +204,7 @@ void main() {
   });
 
   test("initState can't mark dirty other provider", () {
+    final container = ProviderContainer.test();
     final provider = StateProvider((ref) => 0);
     final provider2 = Provider((ref) {
       ref.watch(provider.notifier).state = 42;
@@ -234,6 +217,7 @@ void main() {
   });
 
   test("nested initState can't mark dirty other providers", () {
+    final container = ProviderContainer.test();
     final counter = Counter();
     final provider = StateNotifierProvider<Counter, int>((_) => counter);
     final nested = Provider((_) => 0);
@@ -249,6 +233,7 @@ void main() {
   });
 
   test('auto dispose can dirty providers', () async {
+    final container = ProviderContainer.test();
     final counter = Counter();
     final provider = StateNotifierProvider<Counter, int>((_) => counter);
     var didDispose = false;
@@ -273,6 +258,7 @@ void main() {
   });
 
   test("Provider can't dirty anything on create", () {
+    final container = ProviderContainer.test();
     final counter = Counter();
     final provider = StateNotifierProvider<Counter, int>((_) => counter);
     late List<Object> errors;
@@ -291,7 +277,3 @@ void main() {
     expect(errors, isNotEmpty);
   });
 }
-
-// class VsyncMock extends Mock {
-//   void call();
-// }

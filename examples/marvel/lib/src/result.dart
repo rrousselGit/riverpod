@@ -5,9 +5,9 @@ part 'result.freezed.dart';
 @freezed
 sealed class Result<T> with _$Result<T> {
   Result._();
-  factory Result.data(T value) = _ResultData<T>;
+  factory Result.data(T value) = _$ResultData<T>;
   factory Result.error(Object error, [StackTrace? stackTrace]) =
-      _ResultError<T>;
+      _$ResultError<T>;
 
   factory Result.guard(T Function() cb) {
     try {
@@ -27,23 +27,23 @@ sealed class Result<T> with _$Result<T> {
 
   Result<Res> chain<Res>(Res Function(T value) cb) {
     switch (this) {
-      case _ResultData(:final value):
+      case _$ResultData(:final value):
         try {
           return Result.data(cb(value));
         } catch (err, stack) {
           return Result.error(err, stack);
         }
 
-      case _ResultError(:final error):
+      case _$ResultError(:final error):
         return Result.error(error);
     }
   }
 
   T get dataOrThrow {
     switch (this) {
-      case _ResultData(:final value):
+      case _$ResultData(:final value):
         return value;
-      case _ResultError(:final error):
+      case _$ResultError(:final error):
         // ignore: only_throw_errors
         throw error;
     }

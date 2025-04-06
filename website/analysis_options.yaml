@@ -5,9 +5,5 @@ analyzer:
     - i18n/**
   errors:
     todo: ignore
-    # Needed to not update the documentation before a release is made
-    deprecated_member_use: false
-
-linter:
-  rules:
-    require_trailing_commas: false
+  plugins:
+    - custom_lint

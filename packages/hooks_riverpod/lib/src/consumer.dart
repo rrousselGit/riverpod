@@ -5,7 +5,7 @@ import 'internals.dart';
 /// {@template hooks_riverpod.hook_consumer.hook_consumer_widget}
 /// A widget that can both use hooks and listen to providers.
 ///
-/// If you do not need hooks, you can use [Consumer].
+/// If you do not need hooks, you can use [ConsumerWidget] and its variants.
 /// {@endtemplate}
 abstract class HookConsumerWidget extends ConsumerWidget {
   /// {@macro hooks_riverpod.hook_consumer.hook_consumer_widget}
@@ -16,10 +16,8 @@ abstract class HookConsumerWidget extends ConsumerWidget {
   _HookConsumerElement createElement() => _HookConsumerElement(this);
 }
 
-// ignore: invalid_use_of_visible_for_testing_member
-class _HookConsumerElement extends
 // ignore: invalid_use_of_internal_member
-    ConsumerStatefulElement with HookElement {
+class _HookConsumerElement extends ConsumerStatefulElement with HookElement {
   _HookConsumerElement(HookConsumerWidget super.widget);
 }
 
@@ -58,9 +56,8 @@ abstract class StatefulHookConsumerWidget extends ConsumerStatefulWidget {
       _StatefulHookConsumerElement(this);
 }
 
-class _StatefulHookConsumerElement extends
 // ignore: invalid_use_of_internal_member
-    ConsumerStatefulElement
+class _StatefulHookConsumerElement extends ConsumerStatefulElement
     with
 // ignore: invalid_use_of_visible_for_testing_member
         HookElement {

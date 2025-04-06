@@ -60,6 +60,9 @@ abstract class RiverpodLintRule extends DartLintRule with _ParseRiverpod {
     await _setupRiverpod(resolver, context);
     await super.startUp(resolver, context);
   }
+
+  @override
+  List<DartFix> getFixes() => [];
 }
 
 abstract class RiverpodFix extends DartFix with _ParseRiverpod {
@@ -83,11 +86,9 @@ mixin _ParseRiverpod {
     if (context.sharedState.containsKey(_contextKey)) return;
     // Only run the riverpod parsing logic once
     final registry = context.sharedState[_contextKey] = RiverpodAstRegistry();
-
     final unit = await resolver.getResolvedUnitResult();
-    final result = ResolvedRiverpodLibraryResult.from([unit.unit]);
 
-    context.addPostRunCallback(() => registry.run(result));
+    context.addPostRunCallback(() => registry.run(unit.unit));
   }
 
   RiverpodAstRegistry riverpodRegistry(CustomLintContext context) {

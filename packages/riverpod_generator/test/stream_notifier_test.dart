@@ -1,6 +1,6 @@
-// ignore_for_file: omit_local_variable_types, unused_local_variable
+// ignore_for_file: omit_local_variable_types, unused_local_variable //
 
-import 'package:riverpod/riverpod.dart' show ProviderContainer;
+import 'package:riverpod/riverpod.dart' show ProviderBase;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
@@ -12,8 +12,7 @@ void main() {
       () async {
     final container = ProviderContainer.test();
 
-    final AutoDisposeStreamNotifierProvider<PublicClass, String> provider =
-        publicClassProvider;
+    const ProviderBase<AsyncValue<String>> provider = publicClassProvider;
 
     expect(
       await container.listen(publicClassProvider.future, (_, __) {}).read(),
@@ -39,6 +38,7 @@ void main() {
     final notifier = container.read(publicClassProvider.notifier);
     expect(notifier.param, 'Hello world');
 
+    // ignore: invalid_use_of_protected_member //
     expect(notifier.ref, isNotNull);
     expect(notifier.state, isNotNull);
   });
@@ -60,6 +60,7 @@ void main() {
     expect(notifier.fourth, true);
     expect(notifier.fifth, null);
 
+    // ignore: invalid_use_of_protected_member //
     expect(notifier.ref, isNotNull);
     expect(notifier.state, isNotNull);
   });
@@ -92,8 +93,6 @@ void main() {
       familyClassProvider(
         42,
         third: .42,
-        // ignore: avoid_redundant_argument_values
-        fourth: true,
       ),
     );
     expect(
@@ -101,8 +100,6 @@ void main() {
       familyClassProvider(
         42,
         third: .42,
-        // ignore: avoid_redundant_argument_values
-        fourth: true,
       ).hashCode,
     );
 
@@ -111,17 +108,9 @@ void main() {
       second: 'x42',
       third: .42,
       fourth: false,
-      fifth: ['x42'],
+      fifth: const ['x42'],
     );
-    // ignore: invalid_use_of_internal_member
-    final AutoDisposeStreamNotifierProviderImpl<FamilyClass, String>
-        futureProvider = provider;
-
-    expect(provider.first, 42);
-    expect(provider.second, 'x42');
-    expect(provider.third, .42);
-    expect(provider.fourth, false);
-    expect(provider.fifth, ['x42']);
+    final ProviderBase<AsyncValue<String>> futureProvider = provider;
 
     expect(
       await container
@@ -131,7 +120,7 @@ void main() {
               second: 'x42',
               third: .42,
               fourth: false,
-              fifth: ['x42'],
+              fifth: const ['x42'],
             ).future,
             (_, __) {},
           )

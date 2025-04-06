@@ -33,10 +33,10 @@ final todoListProvider =
 
 // {@template autoDispose}
 // We use an AsyncNotifier because our logic is asynchronous.
-// More specifically, we'll need AutoDisposeAsyncNotifier because
+// More specifically, we'll need AsyncNotifier because
 // of the "autoDispose" modifier.
 // {@endtemplate}
-class TodoList extends AutoDisposeAsyncNotifier<List<Todo>> {
+class TodoList extends AsyncNotifier<List<Todo>> {
   @override
   Future<List<Todo>> build() async {
     // {@template build_method}

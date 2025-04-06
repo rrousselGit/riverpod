@@ -37,8 +37,8 @@ class $ResultCopyWith<T, $Res> {
 
 /// @nodoc
 
-class _ResultData<T> extends Result<T> {
-  _ResultData(this.value) : super._();
+class _$ResultData<T> extends Result<T> {
+  _$ResultData(this.value) : super._();
 
   final T value;
 
@@ -46,14 +46,14 @@ class _ResultData<T> extends Result<T> {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$ResultDataCopyWith<T, _ResultData<T>> get copyWith =>
-      __$ResultDataCopyWithImpl<T, _ResultData<T>>(this, _$identity);
+  _$$ResultDataCopyWith<T, _$ResultData<T>> get copyWith =>
+      __$$ResultDataCopyWithImpl<T, _$ResultData<T>>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _ResultData<T> &&
+            other is _$ResultData<T> &&
             const DeepCollectionEquality().equals(other.value, value));
   }
 
@@ -68,22 +68,22 @@ class _ResultData<T> extends Result<T> {
 }
 
 /// @nodoc
-abstract mixin class _$ResultDataCopyWith<T, $Res>
+abstract mixin class _$$ResultDataCopyWith<T, $Res>
     implements $ResultCopyWith<T, $Res> {
-  factory _$ResultDataCopyWith(
-          _ResultData<T> value, $Res Function(_ResultData<T>) _then) =
-      __$ResultDataCopyWithImpl;
+  factory _$$ResultDataCopyWith(
+          _$ResultData<T> value, $Res Function(_$ResultData<T>) _then) =
+      __$$ResultDataCopyWithImpl;
   @useResult
   $Res call({T value});
 }
 
 /// @nodoc
-class __$ResultDataCopyWithImpl<T, $Res>
-    implements _$ResultDataCopyWith<T, $Res> {
-  __$ResultDataCopyWithImpl(this._self, this._then);
+class __$$ResultDataCopyWithImpl<T, $Res>
+    implements _$$ResultDataCopyWith<T, $Res> {
+  __$$ResultDataCopyWithImpl(this._self, this._then);
 
-  final _ResultData<T> _self;
-  final $Res Function(_ResultData<T>) _then;
+  final _$ResultData<T> _self;
+  final $Res Function(_$ResultData<T>) _then;
 
   /// Create a copy of Result
   /// with the given fields replaced by the non-null parameter values.
@@ -91,7 +91,7 @@ class __$ResultDataCopyWithImpl<T, $Res>
   $Res call({
     Object? value = freezed,
   }) {
-    return _then(_ResultData<T>(
+    return _then(_$ResultData<T>(
       freezed == value
           ? _self.value
           : value // ignore: cast_nullable_to_non_nullable
@@ -102,8 +102,8 @@ class __$ResultDataCopyWithImpl<T, $Res>
 
 /// @nodoc
 
-class _ResultError<T> extends Result<T> {
-  _ResultError(this.error, [this.stackTrace]) : super._();
+class _$ResultError<T> extends Result<T> {
+  _$ResultError(this.error, [this.stackTrace]) : super._();
 
   final Object error;
   final StackTrace? stackTrace;
@@ -112,14 +112,14 @@ class _ResultError<T> extends Result<T> {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$ResultErrorCopyWith<T, _ResultError<T>> get copyWith =>
-      __$ResultErrorCopyWithImpl<T, _ResultError<T>>(this, _$identity);
+  _$$ResultErrorCopyWith<T, _$ResultError<T>> get copyWith =>
+      __$$ResultErrorCopyWithImpl<T, _$ResultError<T>>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _ResultError<T> &&
+            other is _$ResultError<T> &&
             const DeepCollectionEquality().equals(other.error, error) &&
             (identical(other.stackTrace, stackTrace) ||
                 other.stackTrace == stackTrace));
@@ -136,22 +136,22 @@ class _ResultError<T> extends Result<T> {
 }
 
 /// @nodoc
-abstract mixin class _$ResultErrorCopyWith<T, $Res>
+abstract mixin class _$$ResultErrorCopyWith<T, $Res>
     implements $ResultCopyWith<T, $Res> {
-  factory _$ResultErrorCopyWith(
-          _ResultError<T> value, $Res Function(_ResultError<T>) _then) =
-      __$ResultErrorCopyWithImpl;
+  factory _$$ResultErrorCopyWith(
+          _$ResultError<T> value, $Res Function(_$ResultError<T>) _then) =
+      __$$ResultErrorCopyWithImpl;
   @useResult
   $Res call({Object error, StackTrace? stackTrace});
 }
 
 /// @nodoc
-class __$ResultErrorCopyWithImpl<T, $Res>
-    implements _$ResultErrorCopyWith<T, $Res> {
-  __$ResultErrorCopyWithImpl(this._self, this._then);
+class __$$ResultErrorCopyWithImpl<T, $Res>
+    implements _$$ResultErrorCopyWith<T, $Res> {
+  __$$ResultErrorCopyWithImpl(this._self, this._then);
 
-  final _ResultError<T> _self;
-  final $Res Function(_ResultError<T>) _then;
+  final _$ResultError<T> _self;
+  final $Res Function(_$ResultError<T>) _then;
 
   /// Create a copy of Result
   /// with the given fields replaced by the non-null parameter values.
@@ -160,7 +160,7 @@ class __$ResultErrorCopyWithImpl<T, $Res>
     Object? error = null,
     Object? stackTrace = freezed,
   }) {
-    return _then(_ResultError<T>(
+    return _then(_$ResultError<T>(
       null == error ? _self.error : error,
       freezed == stackTrace
           ? _self.stackTrace

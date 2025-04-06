@@ -7,6 +7,7 @@ import 'package:analyzer/source/source_range.dart';
 import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
+import '../imports.dart';
 import '../riverpod_custom_lint.dart';
 import 'convert_to_widget_utils.dart';
 
@@ -74,7 +75,7 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
     ExtendsClause node,
   ) {
     final changeBuilder = reporter.createChangeBuilder(
-      message: 'Convert to ${targetWidget.widgetName}',
+      message: 'Convert to ${targetWidget.assistName}',
       priority: targetWidget.priority,
     );
 
@@ -82,7 +83,7 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
       // Change the extended base class
       builder.addSimpleReplacement(
         node.superclass.sourceRange,
-        targetWidget.widgetName,
+        targetWidget.widgetName(builder),
       );
 
       final buildMethod = node
@@ -99,11 +100,13 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
       switch (targetWidget) {
         case StatelessBaseWidgetType.consumerWidget:
         case StatelessBaseWidgetType.hookConsumerWidget:
+          final widgetRef = builder.importWidgetRef();
+
           // If the build method has not a ref, add it
           if (buildParams.parameters.length == 1) {
             builder.addSimpleInsertion(
               buildParams.parameters.last.end,
-              ', WidgetRef ref',
+              ', $widgetRef ref',
             );
           }
         case StatelessBaseWidgetType.hookWidget:
@@ -128,7 +131,7 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
     required int priorityAdjustment,
   }) {
     final changeBuilder = reporter.createChangeBuilder(
-      message: 'Convert to ${targetWidget.widgetName}',
+      message: 'Convert to ${targetWidget.assistName}',
       priority: targetWidget.priority + priorityAdjustment,
     );
 
@@ -136,7 +139,7 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
       // Change the extended base class
       builder.addSimpleReplacement(
         node.superclass.sourceRange,
-        targetWidget.widgetName,
+        targetWidget.widgetName(builder),
       );
 
       final widgetClass = node.thisOrAncestorOfType<ClassDeclaration>();
@@ -252,9 +255,10 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
       switch (targetWidget) {
         case StatelessBaseWidgetType.consumerWidget:
         case StatelessBaseWidgetType.hookConsumerWidget:
+          final widgetRef = builder.importWidgetRef();
           builder.addSimpleReplacement(
             parameterRange,
-            'BuildContext context, WidgetRef ref',
+            'BuildContext context, $widgetRef ref',
           );
         case StatelessBaseWidgetType.hookWidget:
         case StatelessBaseWidgetType.statelessWidget:
@@ -275,7 +279,7 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
   }
 }
 
-// Original implemenation in
+// Original implementation in
 // package:analysis_server/lib/src/services/correction/dart/flutter_convert_to_stateless_widget.dart
 class _FieldFinder extends RecursiveAstVisitor<void> {
   final fieldsAssignedInConstructors = <FieldElement>{};

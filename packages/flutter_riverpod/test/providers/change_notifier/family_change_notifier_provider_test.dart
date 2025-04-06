@@ -31,6 +31,7 @@ void main() {
       test('when passing the provider itself', () async {
         final provider = ChangeNotifierProvider.family<ValueNotifier<int>, int>(
           (ref, _) => ValueNotifier(0),
+          dependencies: const [],
         );
         final root = ProviderContainer.test();
         final container =
@@ -41,7 +42,7 @@ void main() {
         expect(
           container.getAllProviderElementsInOrder(),
           unorderedEquals(<Object?>[
-            isA<ProviderElementBase<Object?>>()
+            isA<ProviderElement>()
                 .having((e) => e.origin, 'origin', provider(0)),
           ]),
         );
@@ -50,7 +51,7 @@ void main() {
     });
 
     test('ChangeNotifier can be auto-scoped', () async {
-      final dep = Provider((ref) => 0);
+      final dep = Provider((ref) => 0, dependencies: const []);
       final provider = ChangeNotifierProvider.family<ValueNotifier<int>, int>(
         (ref, i) => ValueNotifier(ref.watch(dep) + i),
         dependencies: [dep],
@@ -67,17 +68,16 @@ void main() {
       expect(root.getAllProviderElements(), isEmpty);
     });
 
-    test('when using provider.overrideWithProvider', () async {
+    test('when using provider.overrideWith', () async {
       final provider = ChangeNotifierProvider.family<ValueNotifier<int>, int>(
         (ref, _) => ValueNotifier(0),
+        dependencies: const [],
       );
       final root = ProviderContainer.test();
       final container = ProviderContainer.test(
         parent: root,
         overrides: [
-          provider.overrideWithProvider(
-            (value) => ChangeNotifierProvider((ref) => ValueNotifier(42)),
-          ),
+          provider.overrideWith((ref, value) => ValueNotifier(42)),
         ],
       );
 
@@ -87,8 +87,7 @@ void main() {
       expect(
         container.getAllProviderElementsInOrder(),
         unorderedEquals(<Object?>[
-          isA<ProviderElementBase<Object?>>()
-              .having((e) => e.origin, 'origin', provider(0)),
+          isA<ProviderElement>().having((e) => e.origin, 'origin', provider(0)),
         ]),
       );
     });
@@ -100,10 +99,7 @@ void main() {
       });
       final container = ProviderContainer.test(
         overrides: [
-          provider.overrideWithProvider(
-            (value) =>
-                ChangeNotifierProvider((ref) => ValueNotifier(value * 2)),
-          ),
+          provider.overrideWith((ref, value) => ValueNotifier(value * 2)),
         ],
       );
 

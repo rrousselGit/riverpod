@@ -8,20 +8,76 @@ part of 'initialization.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+@ProviderFor(MyNotifier)
+const myNotifierProvider = MyNotifierProvider._();
+
+final class MyNotifierProvider
+    extends $AsyncNotifierProvider<MyNotifier, List<Todo>> {
+  const MyNotifierProvider._(
+      {super.runNotifierBuildOverride, MyNotifier Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'myNotifierProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final MyNotifier Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$myNotifierHash();
+
+  @$internal
+  @override
+  MyNotifier create() => _createCb?.call() ?? MyNotifier();
+
+  @$internal
+  @override
+  MyNotifierProvider $copyWithCreate(
+    MyNotifier Function() create,
+  ) {
+    return MyNotifierProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  MyNotifierProvider $copyWithBuild(
+    FutureOr<List<Todo>> Function(
+      Ref,
+      MyNotifier,
+    ) build,
+  ) {
+    return MyNotifierProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $AsyncNotifierProviderElement<MyNotifier, List<Todo>> $createElement(
+          $ProviderPointer pointer) =>
+      $AsyncNotifierProviderElement(this, pointer);
+}
+
 String _$myNotifierHash() => r'1c67c12443102cf8c43efbf6c630d3028d9847c3';
 
-/// See also [MyNotifier].
-@ProviderFor(MyNotifier)
-final myNotifierProvider =
-    AutoDisposeAsyncNotifierProvider<MyNotifier, List<Todo>>.internal(
-  MyNotifier.new,
-  name: r'myNotifierProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$myNotifierHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$MyNotifier extends $AsyncNotifier<List<Todo>> {
+  FutureOr<List<Todo>> build();
+  @$internal
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<List<Todo>>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<List<Todo>>>,
+        AsyncValue<List<Todo>>,
+        Object?,
+        Object?>;
+    element.handleValue(ref, created);
+  }
+}
 
-typedef _$MyNotifier = AutoDisposeAsyncNotifier<List<Todo>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

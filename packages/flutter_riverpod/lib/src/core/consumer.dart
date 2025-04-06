@@ -19,7 +19,10 @@ typedef ConsumerBuilder = Widget Function(
 /// As an example, consider:
 ///
 /// ```dart
-/// final userProvider = FutureProvider((_) async => /* fetch user */);
+/// @riverpod
+/// Future<User> fetchUser(Ref ref) async {
+///   // ...
+/// }
 /// ```
 ///
 /// Normally, we would use a [ConsumerWidget] as followed:
@@ -65,6 +68,15 @@ typedef ConsumerBuilder = Widget Function(
 ///   }
 /// }
 /// ```
+///
+/// ## Performance considerations
+///
+/// To optimize performance by avoiding unnecessary network requests and
+/// pausing unused streams, [Consumer] will temporarily stop listening to
+/// providers when the widget stops being visible.
+///
+/// This is determined using [Visibility.of], and will invoke
+/// [ProviderSubscription.pause] on all currently active subscriptions.
 ///
 /// See also:
 ///
@@ -264,7 +276,8 @@ abstract class ConsumerWidget extends ConsumerStatefulWidget {
   Widget build(BuildContext context, WidgetRef ref);
 
   @override
-  ConsumerState<ConsumerWidget> createState() => _ConsumerState();
+  // ignore: library_private_types_in_public_api
+  _ConsumerState createState() => _ConsumerState();
 }
 
 class _ConsumerState extends ConsumerState<ConsumerWidget> {
@@ -353,13 +366,29 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   /// The [Element] for a [ConsumerStatefulWidget]
   ConsumerStatefulElement(ConsumerStatefulWidget super.widget);
 
+  @override
+  BuildContext get context => this;
+
   late ProviderContainer _container = ProviderScope.containerOf(this);
   var _dependencies =
       <ProviderListenable<Object?>, ProviderSubscription<Object?>>{};
   Map<ProviderListenable<Object?>, ProviderSubscription<Object?>>?
       _oldDependencies;
   final _listeners = <ProviderSubscription<Object?>>[];
-  List<_ListenManual<Object?>>? _manualListeners;
+  List<ProviderSubscription<Object?>>? _manualListeners;
+  bool? _visible;
+
+  Iterable<ProviderSubscription> get _allSubscriptions sync* {
+    yield* _dependencies.values;
+    yield* _listeners;
+    if (_manualListeners != null) {
+      yield* _manualListeners!;
+    }
+  }
+
+  void _applyVisibility(ProviderSubscription sub) {
+    if (_visible == false) sub.pause();
+  }
 
   @override
   void didChangeDependencies() {
@@ -376,7 +405,18 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
 
   @override
   Widget build() {
-    // TODO disallow didChangeDependencies
+    final visible = Visibility.of(context);
+    if (visible != _visible) {
+      _visible = visible;
+      for (final sub in _allSubscriptions) {
+        if (visible) {
+          sub.resume();
+        } else {
+          sub.pause();
+        }
+      }
+    }
+
     try {
       _oldDependencies = _dependencies;
       for (var i = 0; i < _listeners.length; i++) {
@@ -409,10 +449,12 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
         return oldDependency;
       }
 
-      return _container.listen<Res>(
+      final sub = _container.listen<Res>(
         target,
         (_, __) => markNeedsBuild(),
       );
+      _applyVisibility(sub);
+      return sub;
     }).read() as Res;
   }
 
@@ -449,12 +491,16 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
       'ref.listen can only be used within the build method of a ConsumerWidget',
     );
 
+    // We can't implement a fireImmediately flag because we wouldn't know
+    // which listen call was preserved between widget rebuild, and we wouldn't
+    // want to call the listener on every rebuild.
     final sub = _container.listen<T>(provider, listener, onError: onError);
+    _applyVisibility(sub);
     _listeners.add(sub);
   }
 
   @override
-  bool exists(AnyProvider<Object?> provider) {
+  bool exists(ProviderBase<Object?> provider) {
     _assertNotDisposed();
     return ProviderScope.containerOf(this, listen: false).exists(provider);
   }
@@ -472,9 +518,12 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
   }
 
   @override
-  void invalidate(AnyProviderOrFamily provider) {
+  void invalidate(
+    ProviderOrFamily provider, {
+    bool asReload = false,
+  }) {
     _assertNotDisposed();
-    _container.invalidate(provider);
+    _container.invalidate(provider, asReload: asReload);
   }
 
   @override
@@ -491,41 +540,26 @@ class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
     // be used inside initState.
     final container = ProviderScope.containerOf(this, listen: false);
 
-    final sub = _ListenManual(
-      // TODO somehow pass "this" instead for the devtool's sake
-      container,
-      container.listen(
-        provider,
-        listener,
-        onError: onError,
-        fireImmediately: fireImmediately,
-      ),
-      this,
+    final innerSubscription = container.listen<T>(
+      provider,
+      listener,
+      onError: onError,
+      fireImmediately: fireImmediately,
+      // ignore: invalid_use_of_internal_member, from riverpod
+    ) as ProviderSubscriptionWithOrigin<T, Object?>;
+
+    // ignore: invalid_use_of_internal_member, from riverpod
+    late final ProviderSubscriptionView<T, Object?> sub;
+    sub = ProviderSubscriptionView<T, Object?>(
+      innerSubscription: innerSubscription,
+      listener: (prev, next) {},
+      onError: (error, stackTrace) {},
+      onClose: () => _manualListeners?.remove(sub),
+      read: innerSubscription.read,
     );
+    _applyVisibility(sub);
     listeners.add(sub);
 
     return sub;
   }
-
-  @override
-  BuildContext get context => this;
-}
-
-class _ListenManual<T> extends ProviderSubscription<T> {
-  _ListenManual(super.source, this._subscription, this._element);
-
-  final ProviderSubscription<T> _subscription;
-  final ConsumerStatefulElement _element;
-
-  @override
-  void close() {
-    if (!closed) {
-      _subscription.close();
-      _element._manualListeners?.remove(this);
-    }
-    super.close();
-  }
-
-  @override
-  T read() => _subscription.read();
 }
