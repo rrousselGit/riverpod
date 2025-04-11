@@ -3,6 +3,9 @@
 - Upgrade to Dart 3.6.0
 - Marked various APIs as `@internal`
 
+## Unreleased minor 2025-04-11
+
+- fixed spellingmistake in the intro example `fetchProductProvider` -> `fetchProductsProvider`. (thanks to @NADOOITChristophBa)
 
 ## 2.6.5 - 2025-02-28
 
