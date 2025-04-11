@@ -49,7 +49,7 @@ Future<List<Product>> fetchProducts(Ref ref, {required int page, int limit = 50}
 // Now that we defined a provider, we can then listen to it inside widgets as usual.
 Consumer(
   builder: (context, ref, child) {
-    AsyncValue<List<Product>> products = ref.watch(fetchProductProvider(page: 1));
+    AsyncValue<List<Product>> products = ref.watch(fetchProductsProvider(page: 1));
 
     // Since our provider is async, we need to handle loading/error states
     return products.when(
