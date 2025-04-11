@@ -35,7 +35,7 @@ import 'package:dio/dio.dart';
 part 'my_file.g.dart';
 
 // Using riverpod_generator, we define Providers by annotating functions with @riverpod.
-// In this example, riverpod_generator will use this function and generate a matching "fetchProductProvider".
+// In this example, riverpod_generator will use this function and generate a matching "fetchProductsProvider".
 // The following example would be the equivalent of a "FutureProvider.autoDispose.family"
 @riverpod
 Future<List<Product>> fetchProducts(Ref ref, {required int page, int limit = 50}) async {
