@@ -1,9 +1,74 @@
-// ignore: invalid_export_of_internal_element, those are marked with internal. We export them for backward compatibility
-export 'src/riverpod_internals_export.dart';
-export 'src/riverpod_without_legacy.dart';
+export 'src/core/async_value.dart' hide AsyncTransition;
+export 'src/framework.dart'
+    hide
+        $SyncNotifierBase,
+        $AsyncNotifierBase,
+        $Value,
+        NotifierBase,
+        ProviderScheduler,
+        Retry,
+        debugCanModifyProviders,
+        $Ref,
+        Vsync,
+        $ValueProvider,
+        FamilyCreate,
+        FunctionalFamily,
+        WhenComplete,
+        $FamilyOverride,
+        ClassFamily,
+        SetupFamilyOverride,
+        SetupOverride,
+        $ProviderOverride,
+        ClassProviderFactory,
+        FunctionalProviderFactory,
+        $RefArg,
+        computeAllTransitiveDependencies,
+        Create,
+        Node,
+        ProviderElementProxy,
+        OnError,
+        ProviderContainerTest,
+        TransitiveFamilyOverride,
+        TransitiveProviderOverride,
+        $ProviderPointer,
+        UnmountedRefException,
+        ProviderPointerManager,
+        ProviderDirectory,
+        $AsyncClassModifier,
+        $FutureModifier,
+        ProviderElement,
+        ClassBaseX,
+        AsyncSubscription,
+        FutureModifierElement,
+        RunNotifierBuild,
+        ProviderListenableWithOrigin,
+        $FunctionalProvider,
+        ProviderStateSubscription,
+        ProviderSubscriptionImpl,
+        ProviderSubscriptionWithOrigin,
+        ProviderSubscriptionView,
+        $ClassProvider,
+        LegacyProviderMixin,
+        $ClassProviderElement,
+        alreadyInitializedError,
+        uninitializedElementError,
+        shortHash,
+        describeIdentity,
+        CircularDependencyError,
+        $AsyncValueProvider;
 
-// ignore: directives_ordering, https://github.com/dart-lang/sdk/issues/60427
-@Deprecated(
-  'This is old API. Use `package:riverpod/legacy.dart` if you want to keep using it.',
-)
-export 'legacy.dart';
+export 'src/providers/async_notifier.dart'
+    hide $AsyncNotifier, $AsyncNotifierProvider, $AsyncNotifierProviderElement;
+
+export 'src/providers/future_provider.dart'
+    hide $FutureProviderElement, $FutureProvider;
+export 'src/providers/notifier.dart'
+    hide $Notifier, $NotifierProvider, $NotifierProviderElement;
+export 'src/providers/provider.dart' hide $ProviderElement, $Provider;
+export 'src/providers/stream_notifier.dart'
+    hide
+        $StreamNotifier,
+        $StreamNotifierProvider,
+        $StreamNotifierProviderElement;
+export 'src/providers/stream_provider.dart'
+    hide $StreamProviderElement, $StreamProvider;

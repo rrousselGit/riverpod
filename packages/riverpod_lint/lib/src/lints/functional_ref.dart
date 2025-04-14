@@ -5,11 +5,10 @@ import 'package:analyzer/error/error.dart'
         // ignore: undefined_hidden_name, necessary to support lower analyzer version
         LintCode;
 import 'package:analyzer/error/listener.dart';
-import 'package:analyzer_plugin/utilities/change_builder/change_builder_dart.dart';
 import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
-import 'package:meta/meta.dart';
 
+import '../imports.dart';
 import '../riverpod_custom_lint.dart';
 
 class FunctionalRef extends RiverpodLintRule {
@@ -19,6 +18,7 @@ class FunctionalRef extends RiverpodLintRule {
     name: 'functional_ref',
     problemMessage:
         'Functional providers must receive a ref matching the provider name as their first positional parameter.',
+    errorSeverity: ErrorSeverity.WARNING,
   );
 
   @override
@@ -28,9 +28,6 @@ class FunctionalRef extends RiverpodLintRule {
     CustomLintContext context,
   ) {
     riverpodRegistry(context).addFunctionalProviderDeclaration((declaration) {
-      // Scoped providers don't need a ref
-      if (declaration.needsOverride) return;
-
       final parameters = declaration.node.functionExpression.parameters!;
 
       final refNode = parameters.parameters.firstOrNull;
@@ -92,7 +89,6 @@ class FunctionalRefFix extends RiverpodFix {
 
         changeBuilder.addDartFileEdit((builder) {
           final ref = builder.importRef();
-
           var toInsert = '$ref ref';
           if (refNode != null) {
             toInsert = '$toInsert, ';
@@ -106,6 +102,8 @@ class FunctionalRefFix extends RiverpodFix {
         return;
       }
 
+      if (refNode is! SimpleFormalParameter) return;
+
       // No type specified, adding it.
       final changeBuilder = reporter.createChangeBuilder(
         message: 'Type as Ref',
@@ -114,7 +112,6 @@ class FunctionalRefFix extends RiverpodFix {
 
       changeBuilder.addDartFileEdit((builder) {
         final ref = builder.importRef();
-
         if (!refNode.isExplicitlyTyped) {
           builder.addSimpleInsertion(refNode.name!.offset, '$ref ');
           return;
@@ -135,41 +132,6 @@ class FunctionalRefFix extends RiverpodFix {
 
 extension LibraryForNode on AstNode {
   LibraryElement get library => (root as CompilationUnit).library;
-}
-
-extension ImportFix on DartFileEditBuilder {
-  @useResult
-  String importRef() {
-    return _importWithPrefix('Ref');
-  }
-
-  @useResult
-  String _importWithPrefix(String name) {
-    final hooksRiverpodUri =
-        Uri(scheme: 'package', path: 'hooks_riverpod/hooks_riverpod.dart');
-    final flutterRiverpodUri =
-        Uri(scheme: 'package', path: 'flutter_riverpod/flutter_riverpod.dart');
-    final riverpodUri = Uri(scheme: 'package', path: 'riverpod/riverpod.dart');
-
-    if (importsLibrary(hooksRiverpodUri)) {
-      return _buildImport(hooksRiverpodUri, name);
-    }
-
-    if (importsLibrary(flutterRiverpodUri)) {
-      return _buildImport(flutterRiverpodUri, name);
-    }
-
-    return _buildImport(riverpodUri, name);
-  }
-
-  String _buildImport(Uri uri, String name) {
-    final import = importLibraryElement(uri);
-
-    final prefix = import.prefix;
-    if (prefix != null) return '$prefix.$name';
-
-    return name;
-  }
 }
 
 TypeAnnotation typeAnnotationFor(FormalParameter param) {

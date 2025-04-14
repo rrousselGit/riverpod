@@ -20,7 +20,7 @@ class Home extends StatelessWidget {
         // {@template activity}
         // Read the activityProvider. This will start the network request
         // if it wasn't already started.
-        // By using ref.watch, this widget will rebuild whenever the
+        // By using ref.watch, this widget will rebuild whenever
         // the activityProvider updates. This can happen when:
         // - The response goes from "loading" to "data/error"
         // - The request was refreshed

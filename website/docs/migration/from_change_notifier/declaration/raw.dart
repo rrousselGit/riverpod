@@ -1,7 +1,7 @@
 // ignore_for_file: avoid_print, avoid_unused_constructor_parameters
 
+import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-
 
 class Todo {
   const Todo(this.id);
@@ -18,8 +18,7 @@ class Http {
 final http = Http();
 
 /* SNIPPET START */
-@riverpod
-class MyNotifier extends AutoDisposeAsyncNotifier<List<Todo>> {
+class MyNotifier extends AsyncNotifier<List<Todo>> {
   @override
   FutureOr<List<Todo>> build() {
     // TODO ...
@@ -31,4 +30,5 @@ class MyNotifier extends AutoDisposeAsyncNotifier<List<Todo>> {
   }
 }
 
-final myNotifierProvider = AsyncNotifierProvider.autoDispose<MyNotifier, List<Todo>>(MyNotifier.new);
+final myNotifierProvider =
+    AsyncNotifierProvider.autoDispose<MyNotifier, List<Todo>>(MyNotifier.new);

@@ -1,8 +1,9 @@
 // ignore_for_file: avoid_types_on_closure_parameters
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/legacy.dart';
+import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/internals.dart' show ProviderElement;
 import 'package:test/test.dart';
 
 import '../../../utils.dart';
@@ -17,8 +18,8 @@ void main() {
     );
     final container = ProviderContainer.test(
       overrides: [
-        provider.overrideWith((StateProviderRef<int> ref) => 42),
-        autoDispose.overrideWith((AutoDisposeStateProviderRef<int> ref) => 84),
+        provider.overrideWith((ref) => 42),
+        autoDispose.overrideWith((ref) => 84),
       ],
     );
 
@@ -33,12 +34,8 @@ void main() {
     );
     final container = ProviderContainer.test(
       overrides: [
-        family.overrideWith(
-          (StateProviderRef<String> ref, int arg) => '42 $arg',
-        ),
-        autoDisposeFamily.overrideWith(
-          (AutoDisposeStateProviderRef<String> ref, int arg) => '84 $arg',
-        ),
+        family.overrideWith((ref, int arg) => '42 $arg'),
+        autoDisposeFamily.overrideWith((ref, int arg) => '84 $arg'),
       ],
     );
 
@@ -63,23 +60,6 @@ void main() {
     verifyNoMoreInteractions(listener);
   });
 
-  test('ref.listenSelf listens to state changes', () {
-    final listener = Listener<int>();
-    final container = ProviderContainer.test();
-    final provider = StateProvider<int>((ref) {
-      ref.listenSelf(listener.call);
-      return 0;
-    });
-
-    final notifier = container.read(provider.notifier);
-
-    verifyOnly(listener, listener(null, 0));
-
-    notifier.state++;
-
-    verifyOnly(listener, listener(0, 1));
-  });
-
   test('supports .name', () {
     expect(
       StateProvider((ref) => 0).name,
@@ -91,31 +71,11 @@ void main() {
     );
   });
 
-  test('.state clears listener when autoDisposed', () async {
-    final observer = ObserverMock();
-    final container = ProviderContainer.test(observers: [observer]);
-    final provider = StateProvider.autoDispose((ref) => 0);
-    final listener = Listener<StateController<int>>();
-
-    container.listen(provider.notifier, (previous, next) {});
-
-    // ignore: deprecated_member_use_from_same_package
-    container.read(provider.state);
-    await container.pump();
-
-    verifyZeroInteractions(listener);
-
-    // ignore: deprecated_member_use_from_same_package
-    container.listen(provider.state, listener.call);
-
-    container.read(provider.notifier).state++;
-
-    verify(listener(any, any)).called(1);
-    verify(observer.didUpdateProvider(any, any, any, container)).called(1);
-  });
-
   test('can be auto-scoped', () async {
-    final dep = Provider((ref) => 0);
+    final dep = Provider(
+      (ref) => 0,
+      dependencies: const [],
+    );
     final provider = StateProvider(
       (ref) => ref.watch(dep),
       dependencies: [dep],
@@ -132,70 +92,6 @@ void main() {
     expect(root.getAllProviderElements(), isEmpty);
   });
 
-  group('ref.controller', () {
-    test('can read and change current value', () {
-      final container = ProviderContainer.test();
-      final listener = Listener<int>();
-      late StateProviderRef<int> ref;
-      final provider = StateProvider<int>((r) {
-        ref = r;
-        return 0;
-      });
-
-      container.listen<int>(provider, listener.call);
-      verifyZeroInteractions(listener);
-
-      expect(ref.controller, container.read(provider.notifier));
-
-      ref.controller.state = 42;
-
-      verifyOnly(listener, listener(0, 42));
-
-      expect(ref.controller.state, 42);
-    });
-
-    test('fails if trying to read the state before it was set', () {
-      final container = ProviderContainer.test();
-      Object? err;
-      final provider = StateProvider<int>((ref) {
-        try {
-          ref.controller;
-        } catch (e) {
-          err = e;
-        }
-        return 0;
-      });
-
-      container.read(provider);
-      expect(err, isStateError);
-    });
-
-    test('on rebuild, still fails if trying to read the state before was built',
-        () {
-      final dep = StateProvider((ref) => false);
-      final container = ProviderContainer.test();
-      Object? err;
-      final provider = StateProvider<int>((ref) {
-        if (ref.watch(dep)) {
-          try {
-            ref.controller;
-          } catch (e) {
-            err = e;
-          }
-        }
-        return 0;
-      });
-
-      container.read(provider);
-      expect(err, isNull);
-
-      container.read(dep.notifier).state = true;
-      container.read(provider);
-
-      expect(err, isStateError);
-    });
-  });
-
   test('can refresh .notifier', () async {
     var initialValue = 1;
     final provider = StateProvider<int>((ref) => initialValue);
@@ -210,24 +106,19 @@ void main() {
     expect(container.read(provider), 42);
   });
 
-  test(
-    'can refresh .state',
-    skip: 'TODO',
-    () async {
-      // TODO fix this test
-      var initialValue = 1;
-      final provider = StateProvider<int>((ref) => initialValue);
-      final container = ProviderContainer.test();
+  test('can refresh .state', () async {
+    var initialValue = 1;
+    final provider = StateProvider<int>((ref) => initialValue);
+    final container = ProviderContainer.test();
 
-      expect(container.read(provider), 1);
-      expect(container.read(provider.notifier).state, 1);
+    expect(container.read(provider), 1);
+    expect(container.read(provider.notifier).state, 1);
 
-      initialValue = 42;
+    initialValue = 42;
 
-      expect(container.refresh(provider.notifier).state, 42);
-      expect(container.read(provider), 42);
-    },
-  );
+    expect(container.refresh(provider.notifier).state, 42);
+    expect(container.read(provider), 42);
+  });
 
   test('can be refreshed', () async {
     var result = 0;
@@ -248,10 +139,15 @@ void main() {
 
   group('scoping an override overrides all the associated subproviders', () {
     test('when passing the provider itself', () async {
-      final provider = StateProvider<int>((ref) => 0);
+      final provider = StateProvider<int>(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final root = ProviderContainer.test();
-      final container =
-          ProviderContainer.test(parent: root, overrides: [provider]);
+      final container = ProviderContainer.test(
+        parent: root,
+        overrides: [provider],
+      );
 
       expect(container.read(provider.notifier).state, 0);
       expect(container.read(provider), 0);
@@ -259,43 +155,21 @@ void main() {
       expect(
         container.getAllProviderElements(),
         unorderedEquals(<Object?>[
-          isA<ProviderElementBase<Object?>>()
-              .having((e) => e.origin, 'origin', provider),
+          isA<ProviderElement>().having((e) => e.origin, 'origin', provider),
         ]),
       );
     });
 
-    // test('when using provider.overrideWithValue', () async {
-    //   final provider = StateProvider<int>((ref) => 0);
-    //   final root = ProviderContainer.test();
-    //   final container = ProviderContainer.test(parent: root, overrides: [
-    //     provider.overrideWithValue(StateController(42)),
-    //   ]);
-
-    //   expect(container.read(provider.notifier).state, 42);
-    //   expect(container.read(provider), 42);
-    //   expect(root.getAllProviderElements(), isEmpty);
-    //   expect(
-    //     container.getAllProviderElements(),
-    //     unorderedEquals(<Object?>[
-    //       isA<ProviderElementBase<Object?>>()
-    //           .having((e) => e.origin, 'origin', provider.state),
-    //       isA<ProviderElementBase<Object?>>()
-    //           .having((e) => e.origin, 'origin', provider.notifier),
-    //     ]),
-    //   );
-    // });
-
-    test('when using provider.overrideWithProvider', () async {
-      final provider = StateProvider<int>((ref) => 0);
+    test('when using provider.overrideWith', () async {
+      final provider = StateProvider<int>(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final root = ProviderContainer.test();
       final container = ProviderContainer.test(
         parent: root,
         overrides: [
-          // ignore: deprecated_member_use_from_same_package
-          provider.overrideWithProvider(
-            StateProvider((ref) => 42),
-          ),
+          provider.overrideWith((ref) => 42),
         ],
       );
 
@@ -305,56 +179,13 @@ void main() {
       expect(
         container.getAllProviderElements(),
         unorderedEquals(<Object?>[
-          isA<ProviderElementBase<Object?>>()
-              .having((e) => e.origin, 'origin', provider),
+          isA<ProviderElement>().having((e) => e.origin, 'origin', provider),
         ]),
       );
     });
   });
 
-  // test(
-  //   'overrideWithValue listens to the new StateController and support controller changes',
-  //   () {
-  //     final provider = StateProvider((ref) => 0);
-  //     final container = ProviderContainer.test(overrides: [
-  //       provider.overrideWithValue(StateController(42)),
-  //     ]);
-  //     final listener = Listener<int>();
-
-  //     container.listen<StateController<int>>(
-  //       provider.state,
-  //       (prev, controller) => listener(prev?.state, controller.state),
-  //       fireImmediately: true,
-  //     );
-
-  //     verifyOnly(listener, listener(null, 42));
-
-  //     container.read(provider.notifier).state++;
-
-  //     verifyOnly(listener, listener(43, 43));
-  //   },
-  // );
-
-  group('overrideWithProvider', () {
-    // test('listens to state changes', () {
-    //   final override = StateController(21);
-    //   final provider = StateProvider((ref) => 0);
-    //   final container = ProviderContainer.test(overrides: [
-    //     provider.overrideWithValue(override),
-    //   ]);
-    //   addTearDown(container.dispose);
-    //   final container2 = ProviderContainer(overrides: [
-    //     provider.overrideWithProvider(
-    //       StateProvider((ref) => 42),
-    //     ),
-    //   ]);
-    //   addTearDown(container.dispose);
-
-    //   expect(container.read(provider.notifier), override);
-    //   expect(container.read(provider), 21);
-    //   expect(container2.read(provider), 42);
-    // });
-
+  group('overrideWith', () {
     test(
       'properly disposes of the StateController when the provider is disposed',
       () async {

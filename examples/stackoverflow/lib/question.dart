@@ -133,6 +133,7 @@ AsyncValue<Question> currentQuestion(Ref ref) {
 ///
 /// That question will be obtained through [currentQuestion]. As such, it is
 /// necessary to override that provider before using [QuestionItem].
+@Dependencies([currentQuestion, tagTheme])
 class QuestionItem extends HookConsumerWidget {
   const QuestionItem({super.key});
 
