@@ -473,7 +473,8 @@ mixin FutureHandlerProviderElementMixin<T>
 
   @override
   void visitListenables(
-      void Function($ElementLense element) listenableVisitor) {
+    void Function($ElementLense element) listenableVisitor,
+  ) {
     super.visitListenables(listenableVisitor);
     listenableVisitor(futureNotifier);
   }
@@ -493,7 +494,8 @@ abstract class AsyncNotifierProviderElementBase<
 
   @override
   void visitListenables(
-      void Function($ElementLense element) listenableVisitor) {
+    void Function($ElementLense element) listenableVisitor,
+  ) {
     super.visitListenables(listenableVisitor);
     listenableVisitor(_notifierNotifier);
   }
