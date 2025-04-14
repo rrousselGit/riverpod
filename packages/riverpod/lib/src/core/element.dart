@@ -331,10 +331,8 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
     // do not want to set the _dependencyMayHaveChanged flag to true.
     // Since the dependency is known to have changed, there is no reason to try
     // and "flush" it, as it will already get rebuilt.
-    visitChildren(
-      elementVisitor: (element) => element._markDependencyMayHaveChanged(),
-      notifierVisitor: (notifier) => notifier.notifyDependencyMayHaveChanged(),
-    );
+    visitChildren((element) => element._markDependencyMayHaveChanged());
+    visitListenables((notifier) => notifier.notifyDependencyMayHaveChanged());
   }
 
   /// A utility for re-initializing a provider when needed.
@@ -634,9 +632,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     _dependencyMayHaveChanged = true;
 
     visitChildren(
-      elementVisitor: (element) => element._markDependencyMayHaveChanged(),
-      notifierVisitor: (notifier) => notifier.notifyDependencyMayHaveChanged(),
+      (element) => element._markDependencyMayHaveChanged(),
     );
+    visitListenables((notifier) => notifier.notifyDependencyMayHaveChanged());
   }
 
   bool _debugAssertCanDependOn(Object? listenable) {
@@ -832,10 +830,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   /// This method does not guarantee that a dependency is visited only once.
   /// If a provider both [watch] and [listen] an element, or if a provider
   /// [listen] multiple times to an element, it may be visited multiple times.
-  void visitChildren({
-    required void Function(ProviderElementBase element) elementVisitor,
-    required void Function($ElementLense element) notifierVisitor,
-  }) {
+  void visitChildren(
+    void Function(ProviderElementBase element) elementVisitor,
+  ) {
     for (var i = 0; i < _providerDependents.length; i++) {
       elementVisitor(_providerDependents[i]);
     }
@@ -848,6 +845,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       }
     }
   }
+
+  void visitListenables(
+    void Function($ElementLense element) listenableVisitor,
+  ) {}
 
   /// Visit the [ProviderElementBase]s that this provider is listening to.
   ///

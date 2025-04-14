@@ -211,16 +211,12 @@ class StateProviderElement<T> extends ProviderElementBase<T>
   }
 
   @override
-  void visitChildren({
-    required void Function(ProviderElementBase element) elementVisitor,
-    required void Function($ElementLense element) notifierVisitor,
-  }) {
-    super.visitChildren(
-      elementVisitor: elementVisitor,
-      notifierVisitor: notifierVisitor,
-    );
-    notifierVisitor(_stateNotifier);
-    notifierVisitor(_controllerNotifier);
+  void visitListenables(
+    void Function($ElementLense element) listenableVisitor,
+  ) {
+    super.visitListenables(listenableVisitor);
+    listenableVisitor(_stateNotifier);
+    listenableVisitor(_controllerNotifier);
   }
 }
 

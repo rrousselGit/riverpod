@@ -70,14 +70,10 @@ mixin _MutationElement<T> on ProviderElementBase<T> {
   final mutations = <Mutation<Object?>, _MutationState<Object?>>{};
 
   @override
-  void visitChildren({
-    required void Function(ProviderElementBase element) elementVisitor,
-    required void Function($ElementLense element) notifierVisitor,
-  }) {
-    super.visitChildren(
-      elementVisitor: elementVisitor,
-      notifierVisitor: notifierVisitor,
-    );
+  void visitListenables(
+    void Function($ElementLense element) notifierVisitor,
+  ) {
+    super.visitListenables(notifierVisitor);
     for (final mutation in mutations.values) {
       notifierVisitor(mutation.listenable);
     }

@@ -250,15 +250,11 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
   }
 
   @override
-  void visitChildren({
-    required void Function(ProviderElementBase element) elementVisitor,
-    required void Function($ElementLense element) notifierVisitor,
-  }) {
-    super.visitChildren(
-      elementVisitor: elementVisitor,
-      notifierVisitor: notifierVisitor,
-    );
-    notifierVisitor(_notifierNotifier);
+  void visitListenables(
+    void Function($ElementLense element) listenableVisitor,
+  ) {
+    super.visitListenables(listenableVisitor);
+    listenableVisitor(_notifierNotifier);
   }
 }
 
