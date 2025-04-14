@@ -20,6 +20,7 @@ part 'core/modifiers/select.dart';
 part 'core/modifiers/select_async.dart';
 part 'core/override_with_value.dart';
 part 'core/provider/provider.dart';
+part 'core/provider/functional_provider.dart';
 part 'core/provider_container.dart';
 part 'core/proxy_provider_listenable.dart';
 part 'core/ref.dart';
