@@ -57,6 +57,7 @@ mixin AnyNotifier<StateT> {
   @protected
   Ref<StateT> get ref => $ref;
 
+  /// {@template riverpod.listen_self}
   /// Listens to changes on the value exposed by this provider.
   ///
   /// The listener will be called immediately after the provider completes building.
@@ -66,6 +67,7 @@ mixin AnyNotifier<StateT> {
   /// and new value can potentially be identical.
   ///
   /// Returns a function which can be called to remove the listener.
+  /// {@endtemplate}
   @protected
   void Function() listenSelf(
     void Function(StateT? previous, StateT next) listener, {
@@ -167,7 +169,12 @@ abstract base class $ClassProvider< //
   }
 
   /// {@template riverpod.override_with_build}
-  /// Hello world
+  /// Enables overriding the `build` method of a notifier.
+  ///
+  /// This overrides the `build` method of the notifier, without overriding
+  /// anything else in the notifier.
+  /// This is useful to mock the initialization logic of a notifier inside tests,
+  /// but to keep the rest of the notifier intact.
   /// {@endtemplate}
   Override overrideWithBuild(
     RunNotifierBuild<NotifierT, CreatedT> build,

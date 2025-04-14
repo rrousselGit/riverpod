@@ -83,13 +83,7 @@ abstract class Ref<State extends Object?> {
   /// ```
   void notifyListeners();
 
-  /// Listens to changes on the value exposed by this provider.
-  ///
-  /// The listener will be called immediately after the provider completes building.
-  ///
-  /// As opposed to [listen], the listener will be called even if
-  /// `updateShouldNotify` returns false, meaning that the previous
-  /// and new value can potentially be identical.
+  /// {@macro riverpod.listen_self}
   void Function() listenSelf(
     void Function(State? previous, State next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,

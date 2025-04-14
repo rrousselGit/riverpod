@@ -15,6 +15,8 @@ TL;DR
 
 - Added a test-only `ProviderContainer.test`.
   This automatically disposes the `ProviderContainer` after tests end.
+- Added `AnyNotifier`, an interface that _all_ Notifiers implement. This can be used to implement mixins.
+- `listenSelf` now returns a way to close the subscription.
 
 ### Depreciation notices
 
