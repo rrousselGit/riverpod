@@ -269,6 +269,17 @@ abstract class _$NotifierFamilyWithDependencies
   int build({
     int? id,
   });
+
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      id: id,
+    );
+    final element =
+        ref as $ClassProviderElement<AnyNotifier<int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// See also [NotifierFamilyWithDependencies].

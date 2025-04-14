@@ -205,6 +205,20 @@ abstract class _$PackageMetrics
   FutureOr<PackageMetricsScore> build({
     required String packageName,
   });
+
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      packageName: packageName,
+    );
+    final element = ref as $ClassProviderElement<
+        AnyNotifier<AsyncValue<PackageMetricsScore>>,
+        AsyncValue<PackageMetricsScore>,
+        Object?,
+        Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// A provider that fetches the likes count, popularity score and pub points

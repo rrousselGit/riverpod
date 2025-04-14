@@ -522,6 +522,17 @@ abstract class _$CountNotifier2 extends BuildlessAutoDisposeNotifier<int> {
   int build(
     int a,
   );
+
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      a,
+    );
+    final element =
+        ref as $ClassProviderElement<AnyNotifier<int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// See also [CountNotifier2].
@@ -668,6 +679,17 @@ abstract class _$CountAsyncNotifier2
   FutureOr<int> build(
     int a,
   );
+
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      a,
+    );
+    final element = ref as $ClassProviderElement<AnyNotifier<AsyncValue<int>>,
+        AsyncValue<int>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// See also [CountAsyncNotifier2].
@@ -815,6 +837,17 @@ abstract class _$CountStreamNotifier2
   Stream<int> build(
     int a,
   );
+
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      a,
+    );
+    final element = ref as $ClassProviderElement<AnyNotifier<AsyncValue<int>>,
+        AsyncValue<int>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// See also [CountStreamNotifier2].

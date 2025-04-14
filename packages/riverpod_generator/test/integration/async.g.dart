@@ -421,6 +421,17 @@ abstract class _$FamilyOrClass
   FutureOr<String> build(
     int first,
   );
+
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      first,
+    );
+    final element = ref as $ClassProviderElement<
+        AnyNotifier<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// See also [FamilyOrClass].
@@ -574,6 +585,21 @@ abstract class _$FamilyClass extends BuildlessAutoDisposeAsyncNotifier<String> {
     bool fourth = true,
     List<String>? fifth,
   });
+
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      first,
+      second: second,
+      third: third,
+      fourth: fourth,
+      fifth: fifth,
+    );
+    final element = ref as $ClassProviderElement<
+        AnyNotifier<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// See also [FamilyClass].

@@ -636,6 +636,20 @@ abstract class _$RawFamilyFutureClass
   Raw<Future<String>> build(
     int id,
   );
+
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      id,
+    );
+    final element = ref as $ClassProviderElement<
+        AnyNotifier<Raw<Future<String>>>,
+        Raw<Future<String>>,
+        Object?,
+        Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// See also [RawFamilyFutureClass].
@@ -784,6 +798,20 @@ abstract class _$RawFamilyStreamClass
   Raw<Stream<String>> build(
     int id,
   );
+
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      id,
+    );
+    final element = ref as $ClassProviderElement<
+        AnyNotifier<Raw<Stream<String>>>,
+        Raw<Stream<String>>,
+        Object?,
+        Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// See also [RawFamilyStreamClass].
@@ -970,6 +998,21 @@ abstract class _$FamilyClass extends BuildlessAutoDisposeNotifier<String> {
     bool fourth = true,
     List<String>? fifth,
   });
+
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      first,
+      second: second,
+      third: third,
+      fourth: fourth,
+      fifth: fifth,
+    );
+    final element = ref
+        as $ClassProviderElement<AnyNotifier<String>, String, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// This is some documentation

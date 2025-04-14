@@ -39,6 +39,18 @@ abstract class _$Example extends BuildlessAutoDisposeNotifier<String> {
     int param1, {
     String param2 = 'foo',
   });
+
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      param1,
+      param2: param2,
+    );
+    final element = ref
+        as $ClassProviderElement<AnyNotifier<String>, String, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// See also [Example].
