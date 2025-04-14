@@ -350,13 +350,17 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
     }) {
       final stream = create();
 
-      return stream.listenAndTrackLast(
-        last,
-        lastOrElseError: _missingLastValueError,
-        onData: data,
-        onError: error,
-        onDone: done,
+      late StreamSubscription<StateT> subscription;
+      subscription = stream.listen(data, onError: error, onDone: done);
+
+      final asyncSub = (
+        cancel: subscription.cancel,
+        pause: subscription.pause,
+        resume: subscription.resume,
+        abort: subscription.cancel,
       );
+
+      return asyncSub;
     });
   }
 
@@ -522,27 +526,5 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   ) {
     super.visitListenables(listenableVisitor);
     listenableVisitor(futureNotifier);
-  }
-}
-
-extension<T> on Stream<T> {
-  AsyncSubscription listenAndTrackLast(
-    void Function(Future<T>) last, {
-    required Object Function() lastOrElseError,
-    required void Function(T event) onData,
-    required void Function(Object error, StackTrace stackTrace) onError,
-    required void Function() onDone,
-  }) {
-    late StreamSubscription<T> subscription;
-    subscription = listen(onData, onError: onError, onDone: onDone);
-
-    final asyncSub = (
-      cancel: subscription.cancel,
-      pause: subscription.pause,
-      resume: subscription.resume,
-      abort: subscription.cancel,
-    );
-
-    return asyncSub;
   }
 }
