@@ -43,6 +43,13 @@ abstract class StreamNotifier<State> extends BuildlessStreamNotifier<State> {
   /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
   Stream<State> build();
+
+  @internal
+  @override
+  void runBuild() {
+    final created = build();
+    element()!.handleValue(ref, created);
+  }
 }
 
 /// {@macro riverpod.provider_ref_base}

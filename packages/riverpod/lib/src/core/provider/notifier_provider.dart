@@ -52,6 +52,8 @@ typedef RunNotifierBuild<NotifierT, CreatedT> = CreatedT Function(
 /// ```
 mixin AnyNotifier<StateT> {
   ProviderElementBase<StateT>? _ref;
+
+  /// Documented in subclass
   @protected
   Ref<StateT> get ref => $ref;
 
@@ -72,6 +74,7 @@ mixin AnyNotifier<StateT> {
     return $ref.listenSelf(listener, onError: onError);
   }
 
+  /// Documented in subclass
   @visibleForTesting
   @protected
   StateT get state;
@@ -80,9 +83,11 @@ mixin AnyNotifier<StateT> {
   @protected
   set state(StateT newState);
 
+  /// Documented in subclass
   @visibleForOverriding
   bool updateShouldNotify(StateT previous, StateT next);
 
+  /// Internal, do not use.
   @internal
   void runBuild();
 }
@@ -112,6 +117,7 @@ extension ClassBaseX<StateT> on AnyNotifier<StateT> {
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
+@internal
 abstract base class $ClassProvider< //
     NotifierT extends AnyNotifier<StateT>,
     StateT,

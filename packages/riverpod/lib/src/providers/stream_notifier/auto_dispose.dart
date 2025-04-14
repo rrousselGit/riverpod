@@ -27,6 +27,13 @@ abstract class AutoDisposeStreamNotifier<State>
   /// {@macro riverpod.StreamNotifier.build}
   @visibleForOverriding
   Stream<State> build();
+
+  @internal
+  @override
+  void runBuild() {
+    final created = build();
+    element()!.handleValue(ref, created);
+  }
 }
 
 /// {@macro riverpod.provider_ref_base}

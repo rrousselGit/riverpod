@@ -63,6 +63,17 @@ abstract class _$A3 extends BuildlessAutoDisposeNotifier<int> {
   int build(
     int param,
   );
+
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      param,
+    );
+    final element =
+        ref as $ClassProviderElement<AnyNotifier<int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// See also [A3].
@@ -202,6 +213,17 @@ abstract class _$A4 extends BuildlessNotifier<int> {
   int build(
     int param,
   );
+
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      param,
+    );
+    final element =
+        ref as $ClassProviderElement<AnyNotifier<int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// See also [A4].
@@ -340,6 +362,17 @@ abstract class _$A5 extends BuildlessAutoDisposeAsyncNotifier<int> {
   FutureOr<int> build(
     int param,
   );
+
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      param,
+    );
+    final element = ref as $ClassProviderElement<AnyNotifier<AsyncValue<int>>,
+        AsyncValue<int>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// See also [A5].
@@ -479,6 +512,17 @@ abstract class _$A6 extends BuildlessAsyncNotifier<int> {
   FutureOr<int> build(
     int param,
   );
+
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      param,
+    );
+    final element = ref as $ClassProviderElement<AnyNotifier<AsyncValue<int>>,
+        AsyncValue<int>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// See also [A6].
@@ -618,6 +662,17 @@ abstract class _$A7 extends BuildlessAutoDisposeStreamNotifier<int> {
   Stream<int> build(
     int param,
   );
+
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      param,
+    );
+    final element = ref as $ClassProviderElement<AnyNotifier<AsyncValue<int>>,
+        AsyncValue<int>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// See also [A7].
@@ -757,6 +812,17 @@ abstract class _$A8 extends BuildlessStreamNotifier<int> {
   Stream<int> build(
     int param,
   );
+
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      param,
+    );
+    final element = ref as $ClassProviderElement<AnyNotifier<AsyncValue<int>>,
+        AsyncValue<int>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// See also [A8].

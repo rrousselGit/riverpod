@@ -16,26 +16,10 @@ part 'notifier/family.dart';
 ///
 /// Not meant for public consumption.
 @internal
-abstract class NotifierBase<State> {
+abstract class NotifierBase<State> with AnyNotifier<State> {
   NotifierProviderElement<NotifierBase<State>, State> get _element;
 
   void _setElement(ProviderElementBase<State> element);
-
-  /// {@template notifier.listen}
-  /// Listens to changes on the value exposed by this provider.
-  ///
-  /// The listener will be called immediately after the provider completes building.
-  ///
-  /// As opposed to [Ref.listen], the listener will be called even if
-  /// [updateShouldNotify] returns false, meaning that the previous
-  /// and new value can potentially be identical.
-  /// {@endtemplate}
-  void listenSelf(
-    void Function(State? previous, State next) listener, {
-    void Function(Object error, StackTrace stackTrace)? onError,
-  }) {
-    _element.listenSelf(listener, onError: onError);
-  }
 
   /// The value currently exposed by this [Notifier].
   ///
@@ -48,6 +32,7 @@ abstract class NotifierBase<State> {
   /// dependency has changed) will trigger [Notifier.build] to be re-executed.
   ///
   /// If [Notifier.build] threw, reading [state] will rethrow the exception.
+  @override
   @protected
   @visibleForTesting
   State get state {
@@ -72,6 +57,7 @@ abstract class NotifierBase<State> {
     return _element.getState()?.value;
   }
 
+  @override
   @protected
   @visibleForTesting
   set state(State value) {
@@ -80,6 +66,7 @@ abstract class NotifierBase<State> {
   }
 
   /// The [Ref] from the provider associated with this [Notifier].
+  @override
   @protected
   Ref<State> get ref;
 
@@ -109,6 +96,7 @@ abstract class NotifierBase<State> {
   ///
   /// If you do not want that, you can override this method to perform a deep
   /// comparison of the previous and new values.
+  @override
   @protected
   bool updateShouldNotify(State previous, State next) {
     return !identical(previous, next);

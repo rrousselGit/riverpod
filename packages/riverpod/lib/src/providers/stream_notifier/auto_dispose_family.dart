@@ -15,6 +15,13 @@ abstract class AutoDisposeFamilyStreamNotifier<State, Arg>
   /// {@macro riverpod.StreamNotifier.build}
   @visibleForOverriding
   Stream<State> build(Arg arg);
+
+  @internal
+  @override
+  void runBuild() {
+    final created = build(arg);
+    element()!.handleValue(ref, created);
+  }
 }
 
 /// {@macro riverpod.StreamNotifier}

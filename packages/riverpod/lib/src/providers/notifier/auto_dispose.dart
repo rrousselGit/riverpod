@@ -28,6 +28,13 @@ abstract class AutoDisposeNotifier<State>
   /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
   State build();
+
+  @internal
+  @override
+  void runBuild() {
+    final created = build();
+    element()!.handleValue(ref, created);
+  }
 }
 
 /// {@macro riverpod.provider_ref_base}

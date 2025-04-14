@@ -180,6 +180,18 @@ abstract class _$MyNotifier extends BuildlessAutoDisposeNotifier<int> {
     BuildContext context1, {
     required BuildContext context2,
   });
+
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      context1,
+      context2: context2,
+    );
+    final element =
+        ref as $ClassProviderElement<AnyNotifier<int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// See also [MyNotifier].

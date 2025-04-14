@@ -31,6 +31,8 @@ dependency_overrides:
     path: ../riverpod_generator
   riverpod:
     path: ../riverpod
+  riverpod_analyzer_utils:
+    path: ../riverpod_analyzer_utils
   flutter_riverpod:
     path: ../flutter_riverpod
   hooks_riverpod:
