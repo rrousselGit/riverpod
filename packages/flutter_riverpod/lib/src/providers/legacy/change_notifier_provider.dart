@@ -294,15 +294,11 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
   }
 
   @override
-  void visitChildren({
-    required void Function(ProviderElementBase<Object?> element) elementVisitor,
-    required void Function($ElementLense<Object?> element) notifierVisitor,
-  }) {
-    super.visitChildren(
-      elementVisitor: elementVisitor,
-      notifierVisitor: notifierVisitor,
-    );
-    notifierVisitor(_notifierNotifier);
+  void visitListenables(
+    void Function($ElementLense<Object?> element) listenableVisitor,
+  ) {
+    super.visitListenables(listenableVisitor);
+    listenableVisitor(_notifierNotifier);
   }
 }
 
