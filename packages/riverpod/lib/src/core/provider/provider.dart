@@ -175,48 +175,6 @@ abstract class ProviderBase<StateT> extends ProviderOrFamily
 
 var _debugIsRunningSelector = false;
 
-/// A mixin to add [overrideWithValue] capability to a provider.
-// TODO merge with Provider directy
-mixin OverrideWithValueMixin<State> on ProviderBase<State> {
-  /// {@template riverpod.overrridewithvalue}
-  /// Overrides a provider with a value, ejecting the default behaviour.
-  ///
-  /// This will also disable the auto-scoping mechanism, meaning that if the
-  /// overridden provider specified [dependencies], it will have no effect.
-  ///
-  /// Some common use-cases are:
-  /// - testing, by replacing a service with a fake implementation, or to reach
-  ///   a very specific state easily.
-  /// - multiple environments, by changing the implementation of a class
-  ///   based on the platform or other parameters.
-  ///
-  /// This function should be used in combination with `ProviderScope.overrides`
-  /// or `ProviderContainer.overrides`:
-  ///
-  /// ```dart
-  /// final myService = Provider((ref) => MyService());
-  ///
-  /// runApp(
-  ///   ProviderScope(
-  ///     overrides: [
-  ///       myService.overrideWithValue(
-  ///         // Replace the implementation of MyService with a fake implementation
-  ///         MyFakeService(),
-  ///       ),
-  ///     ],
-  ///     child: MyApp(),
-  ///   ),
-  /// );
-  /// ```
-  /// {@endtemplate}
-  Override overrideWithValue(State value) {
-    return ProviderOverride(
-      origin: this,
-      override: ValueProvider<State>(value),
-    );
-  }
-}
-
 /// A mixin to add `overrideWithProvider` capability to providers.
 extension OverrideWithProviderExtension<State,
     ProviderType extends ProviderBase<State>> on ProviderType {
