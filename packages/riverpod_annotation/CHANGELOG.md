@@ -1,5 +1,6 @@
 ## Unreleased minor
 
+- Updated to match the latest Riverpod version
 - Upgrade to Dart 3.6.0
 - Marked various APIs as `@internal`
 
