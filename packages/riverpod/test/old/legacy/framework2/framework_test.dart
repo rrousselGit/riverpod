@@ -257,13 +257,11 @@ void main() {
     expect(sub.read(), '0');
     var firstDependents = <ProviderElementBase<Object?>>[];
     firstElement.visitChildren(
-      elementVisitor: firstDependents.add,
-      notifierVisitor: (_) {},
+      firstDependents.add,
     );
     var secondDependents = <ProviderElementBase<Object?>>[];
     secondElement.visitChildren(
-      elementVisitor: secondDependents.add,
-      notifierVisitor: (_) {},
+      secondDependents.add,
     );
 
     expect(firstDependents, [computedElement]);
@@ -275,15 +273,9 @@ void main() {
     expect(sub.read(), 'fallback');
 
     firstDependents = <ProviderElementBase<Object?>>[];
-    firstElement.visitChildren(
-      elementVisitor: firstDependents.add,
-      notifierVisitor: (_) {},
-    );
+    firstElement.visitChildren(firstDependents.add);
     secondDependents = <ProviderElementBase<Object?>>[];
-    secondElement.visitChildren(
-      elementVisitor: secondDependents.add,
-      notifierVisitor: (_) {},
-    );
+    secondElement.visitChildren(secondDependents.add);
     expect(firstDependents, [computedElement]);
     expect(firstElement.hasListeners, true);
     expect(secondDependents, <ProviderElement<Object?>>[]);
@@ -321,10 +313,7 @@ void main() {
 
     expect(sub.read(), 0);
     var firstDependents = <ProviderElementBase<Object?>>[];
-    firstElement.visitChildren(
-      elementVisitor: firstDependents.add,
-      notifierVisitor: (_) {},
-    );
+    firstElement.visitChildren(firstDependents.add);
     expect(firstDependents, {computedElement});
     expect(firstElement.hasListeners, true);
 
@@ -332,10 +321,7 @@ void main() {
     await container.pump();
 
     firstDependents = <ProviderElementBase<Object?>>[];
-    firstElement.visitChildren(
-      elementVisitor: firstDependents.add,
-      notifierVisitor: (_) {},
-    );
+    firstElement.visitChildren(firstDependents.add);
     expect(firstDependents, <ProviderElement<Object?>>{});
     expect(firstElement.hasListeners, false);
   });

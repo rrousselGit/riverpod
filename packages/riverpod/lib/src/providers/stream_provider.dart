@@ -240,15 +240,11 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
   }
 
   @override
-  void visitChildren({
-    required void Function(ProviderElementBase element) elementVisitor,
-    required void Function($ElementLense element) notifierVisitor,
-  }) {
-    super.visitChildren(
-      elementVisitor: elementVisitor,
-      notifierVisitor: notifierVisitor,
-    );
-    notifierVisitor(_streamNotifier);
+  void visitListenables(
+    void Function($ElementLense element) listenableVisitor,
+  ) {
+    super.visitListenables(listenableVisitor);
+    listenableVisitor(_streamNotifier);
   }
 
   @override
