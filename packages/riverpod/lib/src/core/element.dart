@@ -797,7 +797,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   @override
-  void listenSelf(
+  void Function() listenSelf(
     void Function(StateT? previous, StateT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
@@ -811,6 +811,13 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       _onErrorSelfListeners ??= [];
       _onErrorSelfListeners!.add(onError);
     }
+
+    return () {
+      _onChangeSelfListeners?.remove(listener);
+      if (onError != null) {
+        _onErrorSelfListeners?.remove(onError);
+      }
+    };
   }
 
   /// Returns the currently exposed by a provider

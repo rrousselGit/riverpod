@@ -53,6 +53,18 @@ abstract class _$ExampleFamily extends BuildlessAutoDisposeNotifier<int> {
     required int a,
     String b = '42',
   });
+
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      a: a,
+      b: b,
+    );
+    final element =
+        ref as $ClassProviderElement<AnyNotifier<int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// Some comment

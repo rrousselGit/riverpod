@@ -35,6 +35,17 @@ abstract class _$GeneratedNotifier extends BuildlessAutoDisposeNotifier<int> {
   int build(
     int param,
   );
+
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      param,
+    );
+    final element =
+        ref as $ClassProviderElement<AnyNotifier<int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// See also [GeneratedNotifier].

@@ -1,5 +1,4 @@
-import 'package:analyzer/dart/element/element.dart';
-import 'package:collection/collection.dart';
+import 'package:analyzer/dart/ast/ast.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../models.dart';
@@ -77,15 +76,10 @@ class FamilyTemplate extends Template {
       }
     }
 
-    final parameters =
-        provider.node.functionExpression.parameters!.parameterElements
-            // ignore: deprecated_member_use, stuck with SDK >=2.x.0 for now
-            .whereNotNull()
-            .skip(1)
-            .toList();
+    final parameters = provider.parameters;
 
     final parametersPassThrough = buildParamInvocationQuery({
-      for (final parameter in parameters) parameter: parameter.name,
+      for (final parameter in parameters) parameter: parameter.name!.lexeme,
     });
 
     return FamilyTemplate._(
@@ -156,17 +150,19 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
       }
     }
 
-    final parameters = provider.buildMethod.parameters!.parameterElements
-        // ignore: deprecated_member_use, stuck with SDK >=2.x.0 for now
-        .whereNotNull()
-        .toList();
+    final parameters = provider.parameters;
     final parameterDefinition = buildParamDefinitionQuery(parameters);
     final cascadePropertyInit =
         parameters.map((e) => '..${e.name} = ${e.name}').join('\n');
 
     final parametersPassThrough = buildParamInvocationQuery({
-      for (final parameter in parameters) parameter: parameter.name,
+      for (final parameter in parameters) parameter: parameter.name!.lexeme,
     });
+
+    final buildVar =
+        provider.valueTypeDisplayString == 'void' ? '' : 'final created = ';
+    final buildVarUsage =
+        provider.valueTypeDisplayString == 'void' ? 'null' : 'created';
 
     return FamilyTemplate._(
       provider,
@@ -182,9 +178,21 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
       parametersPassThrough: parametersPassThrough,
       other: '''
 abstract class $notifierTypedefName extends $notifierBaseType<${provider.valueTypeDisplayString}> {
-  ${parameters.map((e) => 'late final ${e.type} ${e.name};').join('\n')}
+  ${parameters.map((e) => 'late final ${e.declaredElement!.type} ${e.name};').join('\n')}
 
   ${provider.createdTypeDisplayString} build($parameterDefinition);
+
+  @\$internal
+  @override
+  void runBuild() {
+    ${buildVar}build($parametersPassThrough);
+    final element = ref as \$ClassProviderElement<
+      AnyNotifier<${provider.exposedTypeDisplayString}>,
+      ${provider.exposedTypeDisplayString},
+      Object?,
+      Object?>;
+    element.handleValue(ref, $buildVarUsage);
+  }
 }
 ''',
       providerOther: '''
@@ -215,7 +223,7 @@ ${parameters.map((e) => '        ${e.name}: ${e.name},\n').join()}
   }
 
   final GeneratorProviderDeclaration provider;
-  final List<ParameterElement> parameters;
+  final List<FormalParameter> parameters;
   final BuildYamlOptions options;
   final String refType;
   final String elementType;
@@ -315,7 +323,7 @@ class $providerTypeNameImpl extends $providerType$providerGenerics {
     )}
   }) : super.internal();
 
-${parameters.map((e) => 'final ${e.type.getDisplayString()} ${e.name};').join()}
+${parameters.map((e) => 'final ${e.declaredElement!.type.getDisplayString()} ${e.name};').join()}
 
 $providerOther
 
@@ -347,14 +355,14 @@ mixin $refNameImpl on $refType<${provider.valueTypeDisplayString}> {
   ${parameters.map((e) {
       return '''
 /// The parameter `${e.name}` of this provider.
-${e.type} get ${e.name};''';
+${e.declaredElement!.type} get ${e.name};''';
     }).join()}
 }
 
 class $elementNameImpl extends $elementType$providerGenerics with $refNameImpl {
   $elementNameImpl(super.provider);
 
-${parameters.map((e) => '@override ${e.type} get ${e.name} => (origin as $providerTypeNameImpl).${e.name};').join()}
+${parameters.map((e) => '@override ${e.declaredElement!.type} get ${e.name} => (origin as $providerTypeNameImpl).${e.name};').join()}
 }
 ''');
   }

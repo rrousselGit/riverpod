@@ -1,3 +1,8 @@
+// Annotations used by code-generators
+// ignore_for_file: invalid_use_of_internal_member
+
+import 'package:meta/meta.dart' as meta;
+
 export 'dart:async' show FutureOr;
 
 // Annotations used by code-generators
@@ -6,14 +11,14 @@ export 'package:meta/meta.dart' show visibleForOverriding;
 // ignore: invalid_export_of_internal_element
 export 'package:riverpod/src/internals.dart'
     show
+        $ClassProviderElement,
         // General stuff
         Family,
         ProviderOrFamily,
         Override,
-        // ignore: invalid_use_of_internal_member, Used by notifiers for overriding overrideWith
         ProviderOverride,
-        // ignore: invalid_use_of_internal_member, used by families for overrideWith
         FamilyOverride,
+        AnyNotifier,
 
         // Provider
         Provider,
@@ -24,9 +29,7 @@ export 'package:riverpod/src/internals.dart'
         AutoDisposeProviderFamily,
         // ignore: deprecated_member_use
         AutoDisposeProviderRef,
-        // ignore: invalid_use_of_internal_member
         ProviderElement,
-        // ignore: invalid_use_of_internal_member
         AutoDisposeProviderElement,
 
         // FutureProvider
@@ -38,9 +41,7 @@ export 'package:riverpod/src/internals.dart'
         AutoDisposeFutureProviderFamily,
         // ignore: deprecated_member_use
         AutoDisposeFutureProviderRef,
-        // ignore: invalid_use_of_internal_member
         FutureProviderElement,
-        // ignore: invalid_use_of_internal_member
         AutoDisposeFutureProviderElement,
 
         // StreamProvider
@@ -52,9 +53,7 @@ export 'package:riverpod/src/internals.dart'
         AutoDisposeStreamProviderFamily,
         // ignore: deprecated_member_use
         AutoDisposeStreamProviderRef,
-        // ignore: invalid_use_of_internal_member
         StreamProviderElement,
-        // ignore: invalid_use_of_internal_member
         AutoDisposeStreamProviderElement,
 
         // AsyncValue
@@ -67,17 +66,11 @@ export 'package:riverpod/src/internals.dart'
         // Notifier
         Notifier,
         AutoDisposeNotifier,
-        // ignore: invalid_use_of_internal_member
         NotifierProviderElement,
-        // ignore: invalid_use_of_internal_member
         AutoDisposeNotifierProviderElement,
-        // ignore: invalid_use_of_internal_member
         NotifierProviderImpl,
-        // ignore: invalid_use_of_internal_member
         AutoDisposeNotifierProviderImpl,
-        // ignore: invalid_use_of_internal_member
         BuildlessNotifier,
-        // ignore: invalid_use_of_internal_member
         BuildlessAutoDisposeNotifier,
         NotifierProvider,
         // ignore: deprecated_member_use
@@ -89,17 +82,11 @@ export 'package:riverpod/src/internals.dart'
         // AsyncNotifier
         AsyncNotifier,
         AutoDisposeAsyncNotifier,
-        // ignore: invalid_use_of_internal_member
         AsyncNotifierProviderElement,
-        // ignore: invalid_use_of_internal_member
         AutoDisposeAsyncNotifierProviderElement,
-        // ignore: invalid_use_of_internal_member
         AsyncNotifierProviderImpl,
-        // ignore: invalid_use_of_internal_member
         AutoDisposeAsyncNotifierProviderImpl,
-        // ignore: invalid_use_of_internal_member
         BuildlessAsyncNotifier,
-        // ignore: invalid_use_of_internal_member
         BuildlessAutoDisposeAsyncNotifier,
         AsyncNotifierProvider,
         // ignore: deprecated_member_use
@@ -111,17 +98,11 @@ export 'package:riverpod/src/internals.dart'
         // StreamNotifier
         StreamNotifier,
         AutoDisposeStreamNotifier,
-        // ignore: invalid_use_of_internal_member
         StreamNotifierProviderElement,
-        // ignore: invalid_use_of_internal_member
         AutoDisposeStreamNotifierProviderElement,
-        // ignore: invalid_use_of_internal_member
         StreamNotifierProviderImpl,
-        // ignore: invalid_use_of_internal_member
         AutoDisposeStreamNotifierProviderImpl,
-        // ignore: invalid_use_of_internal_member
         BuildlessStreamNotifier,
-        // ignore: invalid_use_of_internal_member
         BuildlessAutoDisposeStreamNotifier,
         StreamNotifierProvider,
         // ignore: deprecated_member_use
@@ -131,3 +112,7 @@ export 'package:riverpod/src/internals.dart'
         AutoDisposeStreamNotifierProviderRef;
 
 export 'src/riverpod_annotation.dart';
+
+/// An implementation detail of `riverpod_generator`.
+/// Do not use.
+const $internal = meta.internal;

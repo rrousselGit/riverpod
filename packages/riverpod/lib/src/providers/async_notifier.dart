@@ -26,20 +26,11 @@ part 'stream_notifier/orphan.dart';
 ///
 /// Not meant for public consumption.
 @internal
-abstract class AsyncNotifierBase<State> {
-  AsyncNotifierProviderElementBase<AsyncNotifierBase<State>, State>
+abstract class AsyncNotifierBase<StateT> with AnyNotifier<AsyncValue<StateT>> {
+  AsyncNotifierProviderElementBase<AsyncNotifierBase<StateT>, StateT>
       get _element;
 
-  void _setElement(ProviderElementBase<AsyncValue<State>> element);
-
-  /// {@macro notifier.listen}
-  void listenSelf(
-    void Function(AsyncValue<State>? previous, AsyncValue<State> next)
-        listener, {
-    void Function(Object error, StackTrace stackTrace)? onError,
-  }) {
-    _element.listenSelf(listener, onError: onError);
-  }
+  void _setElement(ProviderElementBase<AsyncValue<StateT>> element);
 
   /// The value currently exposed by this [AsyncNotifier].
   ///
@@ -51,23 +42,26 @@ abstract class AsyncNotifierBase<State> {
   ///
   /// Reading [state] if the provider is out of date (such as if one of its
   /// dependency has changed) will trigger [AsyncNotifier.build] to be re-executed.
+  @override
   @visibleForTesting
   @protected
-  AsyncValue<State> get state {
+  AsyncValue<StateT> get state {
     _element.flush();
     // ignore: invalid_use_of_protected_member
     return _element.requireState;
   }
 
+  @override
   @visibleForTesting
   @protected
-  set state(AsyncValue<State> newState) {
+  set state(AsyncValue<StateT> newState) {
     _element.state = newState;
   }
 
   /// The [Ref] from the provider associated with this [AsyncNotifier].
+  @override
   @protected
-  Ref<AsyncValue<State>> get ref;
+  Ref<AsyncValue<StateT>> get ref;
 
   /// {@template riverpod.async_notifier.future}
   /// Obtains a [Future] that resolves with the first [state] value that is not
@@ -82,7 +76,7 @@ abstract class AsyncNotifierBase<State> {
   /// {@endtemplate}
   @visibleForTesting
   @protected
-  Future<State> get future {
+  Future<StateT> get future {
     _element.flush();
     return _element.futureNotifier.value;
   }
@@ -103,14 +97,14 @@ abstract class AsyncNotifierBase<State> {
   /// - [AsyncValue.guard], and alternate way to perform asynchronous operations.
   @visibleForTesting
   @protected
-  Future<State> update(
-    FutureOr<State> Function(State) cb, {
-    FutureOr<State> Function(Object err, StackTrace stackTrace)? onError,
+  Future<StateT> update(
+    FutureOr<StateT> Function(StateT) cb, {
+    FutureOr<StateT> Function(Object err, StackTrace stackTrace)? onError,
   }) async {
     // TODO cancel on rebuild?
 
     final newState = await future.then(cb, onError: onError);
-    state = AsyncData<State>(newState);
+    state = AsyncData<StateT>(newState);
     return newState;
   }
 
@@ -131,8 +125,12 @@ abstract class AsyncNotifierBase<State> {
   /// See also:
   /// - [ProviderListenable.select] and [AsyncSelector.selectAsync], which are
   ///   alternative ways to filter out changes to [state].
+  @override
   @protected
-  bool updateShouldNotify(AsyncValue<State> previous, AsyncValue<State> next) {
+  bool updateShouldNotify(
+    AsyncValue<StateT> previous,
+    AsyncValue<StateT> next,
+  ) {
     return FutureHandlerProviderElementMixin.handleUpdateShouldNotify(
       previous,
       next,

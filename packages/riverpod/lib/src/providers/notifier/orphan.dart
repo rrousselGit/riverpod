@@ -88,6 +88,13 @@ abstract class Notifier<State> extends BuildlessNotifier<State> {
   /// {@endtemplate}
   @visibleForOverriding
   State build();
+
+  @internal
+  @override
+  void runBuild() {
+    final created = build();
+    element()!.handleValue(ref, created);
+  }
 }
 
 /// {@macro riverpod.provider_ref_base}

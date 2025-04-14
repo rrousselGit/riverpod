@@ -334,6 +334,21 @@ abstract class _$FamilyClass extends BuildlessAutoDisposeNotifier<String> {
     bool forth = true,
     List<String>? fifth,
   });
+
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      first,
+      second: second,
+      third: third,
+      forth: forth,
+      fifth: fifth,
+    );
+    final element = ref
+        as $ClassProviderElement<AnyNotifier<String>, String, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// A generated family provider from a class.

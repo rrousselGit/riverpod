@@ -16,6 +16,13 @@ abstract class FamilyNotifier<State, Arg> extends BuildlessNotifier<State> {
   /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
   State build(Arg arg);
+
+  @internal
+  @override
+  void runBuild() {
+    final created = build(arg);
+    element()!.handleValue(ref, created);
+  }
 }
 
 /// The provider for [NotifierProviderFamily].

@@ -39,6 +39,17 @@ abstract class _$BugsEncounteredNotifier
   FutureOr<int> build(
     String featureId,
   );
+
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      featureId,
+    );
+    final element = ref as $ClassProviderElement<AnyNotifier<AsyncValue<int>>,
+        AsyncValue<int>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// See also [BugsEncounteredNotifier].

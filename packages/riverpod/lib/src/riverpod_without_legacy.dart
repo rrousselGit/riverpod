@@ -33,7 +33,14 @@ export 'framework.dart'
         AnyX,
         ObsX,
         ProviderElementBase,
-        ProviderContainerTest;
+        ProviderContainerTest,
+        RunNotifierBuild,
+        $AsyncNotifierBase,
+        $ClassProvider,
+        $ClassProviderElement,
+        $FunctionalProvider,
+        $SyncNotifierBase,
+        ClassBaseX;
 
 export 'providers/async_notifier.dart'
     hide

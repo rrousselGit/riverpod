@@ -207,3 +207,17 @@ class _SystemHash {
     }
   }
 }
+
+extension ProviderNames on GeneratorProviderDeclaration {
+  List<FormalParameter> get parameters {
+    final provider = this;
+    switch (provider) {
+      case FunctionalProviderDeclaration():
+        return provider.node.functionExpression.parameters!.parameters
+            .skip(1)
+            .toList();
+      case ClassBasedProviderDeclaration():
+        return provider.buildMethod.parameters!.parameters.toList();
+    }
+  }
+}

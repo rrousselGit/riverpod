@@ -27,6 +27,13 @@ abstract class FamilyAsyncNotifier<State, Arg>
   /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
   FutureOr<State> build(Arg arg);
+
+  @internal
+  @override
+  void runBuild() {
+    final created = build(arg);
+    element()!.handleValue(ref, created);
+  }
 }
 
 /// {@macro riverpod.async_notifier_provider}

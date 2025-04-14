@@ -1,25 +1,34 @@
 ## Unreleased minor
 
+### Previews: New code-gen-free syntax for using providers
+
+An experimental syntax has been added, available by importing `package:riverpod/experimental/...`.
+Anything inside the `riverpod/experimental` is not stable and may change without a major version.
+
+TL;DR
+
+- Unified syntax for defining providers
+- Mutations support
+- Reworked scoping mechanism
+
+### New features:
+
 - Added a test-only `ProviderContainer.test`.
   This automatically disposes the `ProviderContainer` after tests end.
+
+### Depreciation notices
+
 - In 3.0.0, `AsyncValue.value` will be removed and `valueOrNull` will be
   renamed to `value`.
   To match this, both are deprecated, and a temporary `AsyncValue.value2` is added.
 - `StateNotifierProvider/StateProvider` and relevant APIs are considered deprecated.
   To keep using them, import `package:riverpod/legacy.dart'`.
-- Added various experimental features:
-  - A new syntax for providers
-  - Mutations
-  - A revamped scoping mechanism
-    **Warning**:
-    Those features are **experimental**.  
-    They may be removed or modified in ways that do not respect Semantic Versioning.
-    Use with caution.
+
 - Added `ProviderListenableTransformer` to easily make custom `ProviderListenable` extensions
 
-## Unreleased patch
+### Misc
 
-- Upgrade to Dart 3.6.0
+- Upgraded to Dart 3.6.0
 - Marked various APIs as `@internal`
 
 ## 2.6.1 - 2024-10-22

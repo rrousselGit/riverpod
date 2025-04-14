@@ -300,6 +300,21 @@ abstract class _$FamilyClass
     bool fourth = true,
     List<String>? fifth,
   });
+
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      first,
+      second: second,
+      third: third,
+      fourth: fourth,
+      fifth: fifth,
+    );
+    final element = ref as $ClassProviderElement<
+        AnyNotifier<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// See also [FamilyClass].

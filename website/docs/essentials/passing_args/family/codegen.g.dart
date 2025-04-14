@@ -167,6 +167,20 @@ abstract class _$ActivityNotifier2
   FutureOr<Activity> build(
     String activityType,
   );
+
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      activityType,
+    );
+    final element = ref as $ClassProviderElement<
+        AnyNotifier<AsyncValue<Activity>>,
+        AsyncValue<Activity>,
+        Object?,
+        Object?>;
+    element.handleValue(ref, created);
+  }
 }
 
 /// See also [ActivityNotifier2].
