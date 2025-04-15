@@ -24,8 +24,9 @@ abstract class _StateNotifierProviderBase<NotifierT extends StateNotifier<T>, T>
     required super.argument,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-  });
+    required DebugGetCreateSourceHash? debugGetCreateSourceHash,
+    required super.isAutoDispose,
+  }) : _debugGetCreateSourceHash = debugGetCreateSourceHash;
 
   /// Obtains the [StateNotifier] associated with this provider, without listening
   /// to state changes.
@@ -45,6 +46,10 @@ abstract class _StateNotifierProviderBase<NotifierT extends StateNotifier<T>, T>
   ProviderListenable<NotifierT> get notifier;
 
   NotifierT _create(covariant StateNotifierProviderElement<NotifierT, T> ref);
+
+  final DebugGetCreateSourceHash? _debugGetCreateSourceHash;
+  @override
+  String? debugGetCreateSourceHash() => _debugGetCreateSourceHash?.call();
 }
 
 /// {@macro riverpod.provider_ref_base}
@@ -137,6 +142,7 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: false,
         );
 
   /// An implementation detail of Riverpod
@@ -149,6 +155,7 @@ class StateNotifierProvider<NotifierT extends StateNotifier<T>, T>
     required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
+    super.isAutoDispose = false,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -272,6 +279,7 @@ class StateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T, Arg>
           providerFactory: StateNotifierProvider.internal,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: false,
           debugGetCreateSourceHash: null,
         );
 
@@ -317,6 +325,7 @@ class AutoDisposeStateNotifierProvider<NotifierT extends StateNotifier<T>, T>
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: true,
         );
 
   /// An implementation detail of Riverpod
@@ -329,6 +338,7 @@ class AutoDisposeStateNotifierProvider<NotifierT extends StateNotifier<T>, T>
     required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
+    super.isAutoDispose = true,
   });
 
   /// {@macro riverpod.family}
@@ -391,7 +401,7 @@ class AutoDisposeStateNotifierProviderElement<
 
 /// The [Family] of [AutoDisposeStateNotifierProvider].
 class AutoDisposeStateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T, Arg>
-    extends AutoDisposeFamilyBase<
+    extends FamilyBase<
         // ignore: deprecated_member_use_from_same_package
         AutoDisposeStateNotifierProviderRef<NotifierT, T>,
         T,
@@ -408,6 +418,7 @@ class AutoDisposeStateNotifierProviderFamily<NotifierT extends StateNotifier<T>,
           debugGetCreateSourceHash: null,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: true,
         );
 
   /// {@macro riverpod.override_with}

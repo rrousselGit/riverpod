@@ -137,6 +137,7 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: false,
         );
 
   /// An implementation detail of Riverpod
@@ -149,6 +150,7 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
     required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
+    super.isAutoDispose = false,
   });
 
   /// {@macro riverpod.autoDispose}

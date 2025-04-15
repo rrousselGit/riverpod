@@ -43,8 +43,9 @@ abstract class StreamNotifierProviderBase<
     required super.argument,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-  });
+    required super.isAutoDispose,
+    required DebugGetCreateSourceHash? debugGetCreateSourceHash,
+  }) : _debugGetCreateSourceHash = debugGetCreateSourceHash;
 
   /// Obtains the [StreamNotifier] associated with this provider, without listening
   /// to state changes.
@@ -77,4 +78,8 @@ abstract class StreamNotifierProviderBase<
   /// This is an implementation detail for differentiating [StreamNotifier.build]
   /// from [FamilyStreamNotifier.build].
   Stream<T> runNotifierBuild(AsyncNotifierBase<T> notifier);
+
+  final DebugGetCreateSourceHash? _debugGetCreateSourceHash;
+  @override
+  String? debugGetCreateSourceHash() => _debugGetCreateSourceHash?.call();
 }

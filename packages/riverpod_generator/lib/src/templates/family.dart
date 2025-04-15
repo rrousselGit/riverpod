@@ -293,6 +293,9 @@ class $familyName extends Family<${provider.exposedTypeDisplayString}> {
 
   @override
   String? get name => r'$providerName';
+
+  @override
+  bool get isAutoDispose => ${!provider.annotation.element.keepAlive};
 }
 
 $docs

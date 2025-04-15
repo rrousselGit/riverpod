@@ -73,6 +73,7 @@ class AutoDisposeAsyncNotifierProviderImpl<
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: true,
         );
 
   /// An implementation detail of Riverpod
@@ -85,6 +86,7 @@ class AutoDisposeAsyncNotifierProviderImpl<
     required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
+    super.isAutoDispose = true,
   });
 
   /// {@macro riverpod.family}

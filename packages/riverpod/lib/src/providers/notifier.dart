@@ -132,8 +132,9 @@ abstract class NotifierProviderBase<NotifierT extends NotifierBase<T>, T>
     required super.argument,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-  });
+    required DebugGetCreateSourceHash? debugGetCreateSourceHash,
+    required super.isAutoDispose,
+  }) : _debugGetCreateSourceHash = debugGetCreateSourceHash;
 
   /// Obtains the [Notifier] associated with this provider, without listening
   /// to state changes.
@@ -160,4 +161,8 @@ abstract class NotifierProviderBase<NotifierT extends NotifierBase<T>, T>
   /// from [FamilyNotifier.build].
   @visibleForOverriding
   T runNotifierBuild(NotifierBase<T> notifier);
+
+  final DebugGetCreateSourceHash? _debugGetCreateSourceHash;
+  @override
+  String? debugGetCreateSourceHash() => _debugGetCreateSourceHash?.call();
 }

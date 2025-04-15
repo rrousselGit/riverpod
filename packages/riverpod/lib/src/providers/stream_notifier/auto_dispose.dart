@@ -66,6 +66,7 @@ class AutoDisposeStreamNotifierProviderImpl<
           from: null,
           argument: null,
           debugGetCreateSourceHash: null,
+          isAutoDispose: true,
         );
 
   /// An implementation detail of Riverpod
@@ -78,6 +79,7 @@ class AutoDisposeStreamNotifierProviderImpl<
     required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
+    super.isAutoDispose = true,
   });
 
   /// {@macro riverpod.family}

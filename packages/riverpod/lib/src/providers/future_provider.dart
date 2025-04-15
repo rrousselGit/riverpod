@@ -96,8 +96,9 @@ abstract class _FutureProviderBase<T> extends ProviderBase<AsyncValue<T>> {
     required super.name,
     required super.from,
     required super.argument,
-    required super.debugGetCreateSourceHash,
-  });
+    required DebugGetCreateSourceHash? debugGetCreateSourceHash,
+    required super.isAutoDispose,
+  }) : _debugGetCreateSourceHash = debugGetCreateSourceHash;
 
   /// Obtains the [Future] associated with a [FutureProvider].
   ///
@@ -121,6 +122,10 @@ abstract class _FutureProviderBase<T> extends ProviderBase<AsyncValue<T>> {
   Refreshable<Future<T>> get future;
 
   FutureOr<T> _create(covariant FutureProviderElement<T> ref);
+
+  final DebugGetCreateSourceHash? _debugGetCreateSourceHash;
+  @override
+  String? debugGetCreateSourceHash() => _debugGetCreateSourceHash?.call();
 }
 
 /// {@macro riverpod.provider_ref_base}
@@ -163,6 +168,7 @@ class FutureProvider<T> extends _FutureProviderBase<T>
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: false,
         );
 
   /// An implementation detail of Riverpod
@@ -175,6 +181,7 @@ class FutureProvider<T> extends _FutureProviderBase<T>
     required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
+    super.isAutoDispose = false,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -258,6 +265,7 @@ class FutureProviderFamily<R, Arg> extends FamilyBase<FutureProviderRef<R>,
           providerFactory: FutureProvider<R>.internal,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: false,
           debugGetCreateSourceHash: null,
         );
 
@@ -268,8 +276,11 @@ class FutureProviderFamily<R, Arg> extends FamilyBase<FutureProviderRef<R>,
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-  }) : super(providerFactory: FutureProvider<R>.internal);
+  }) : super(
+          providerFactory: FutureProvider<R>.internal,
+          isAutoDispose: false,
+          debugGetCreateSourceHash: null,
+        );
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
@@ -312,6 +323,7 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: true,
         );
 
   /// An implementation detail of Riverpod
@@ -324,6 +336,7 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
     required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
+    super.isAutoDispose = true,
   });
 
   /// {@macro riverpod.family}
@@ -381,7 +394,7 @@ class AutoDisposeFutureProviderElement<T> extends FutureProviderElement<T>
 }
 
 /// The [Family] of an [AutoDisposeFutureProvider]
-class AutoDisposeFutureProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
+class AutoDisposeFutureProviderFamily<R, Arg> extends FamilyBase<
     // ignore: deprecated_member_use_from_same_package
     AutoDisposeFutureProviderRef<R>,
     AsyncValue<R>,
@@ -397,6 +410,7 @@ class AutoDisposeFutureProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
           providerFactory: AutoDisposeFutureProvider.internal,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: true,
           debugGetCreateSourceHash: null,
         );
 
@@ -407,8 +421,11 @@ class AutoDisposeFutureProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-  }) : super(providerFactory: AutoDisposeFutureProvider<R>.internal);
+  }) : super(
+          providerFactory: AutoDisposeFutureProvider<R>.internal,
+          isAutoDispose: true,
+          debugGetCreateSourceHash: null,
+        );
 
   /// {@macro riverpod.override_with}
   Override overrideWith(

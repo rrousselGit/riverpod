@@ -15,7 +15,7 @@ abstract class $FunctionalProvider< //
     required super.argument,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
+    required super.isAutoDispose,
   });
 
   /// Clone a provider with a different initialization method.

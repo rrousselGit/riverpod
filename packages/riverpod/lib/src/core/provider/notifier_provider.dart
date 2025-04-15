@@ -132,7 +132,7 @@ abstract base class $ClassProvider< //
     required super.dependencies,
     required super.allTransitiveDependencies,
     required this.runNotifierBuildOverride,
-    required super.debugGetCreateSourceHash,
+    required super.isAutoDispose,
   });
 
   Refreshable<NotifierT> get notifier {

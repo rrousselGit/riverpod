@@ -21,7 +21,7 @@ typedef OnError = void Function(Object, StackTrace);
 
 /// A typedef for `debugGetCreateSourceHash` parameters.
 @internal
-typedef DebugGetCreateSourceHash = String Function();
+typedef DebugGetCreateSourceHash = String? Function();
 
 /// A base class for _all_ providers.
 @immutable
@@ -33,9 +33,9 @@ abstract class ProviderBase<StateT> extends ProviderOrFamily
     required super.name,
     required this.from,
     required this.argument,
-    required this.debugGetCreateSourceHash,
     required super.dependencies,
     required super.allTransitiveDependencies,
+    required super.isAutoDispose,
   });
 
   @override
@@ -43,18 +43,6 @@ abstract class ProviderBase<StateT> extends ProviderOrFamily
 
   @override
   ProviderBase<Object?> get _override => this;
-
-  /// {@template riverpod.create_source_hash}
-  /// A debug-only function for obtaining a hash of the source code of the
-  /// initialization function.
-  ///
-  /// If after a hot-reload this function returns a different result, the
-  /// provider will be re-executed.
-  ///
-  /// This variable is only set by `riverpod_generator`.
-  /// {@endtemplate}
-  @internal
-  final DebugGetCreateSourceHash? debugGetCreateSourceHash;
 
   /// If this provider was created with the `.family` modifier, [from] is the `.family` instance.
   @override
@@ -179,7 +167,7 @@ var _debugIsRunningSelector = false;
 extension OverrideWithProviderExtension<State,
     ProviderType extends ProviderBase<State>> on ProviderType {
   /// {@template riverpod.overridewithprovider}
-  /// Overrides a provider with a value, ejecting the default behaviour.
+  /// Overrides a provider with a value, ejecting the default behavior.
   ///
   /// This will also disable the auto-scoping mechanism, meaning that if the
   /// overridden provider specified `dependencies`, it will have no effect.

@@ -15,9 +15,9 @@ class ValueProvider<State> extends ProviderBase<State>
           name: null,
           from: null,
           argument: null,
-          debugGetCreateSourceHash: null,
           allTransitiveDependencies: null,
           dependencies: null,
+          isAutoDispose: false,
         );
 
   final State _value;
@@ -33,6 +33,9 @@ class ValueProvider<State> extends ProviderBase<State>
   ValueProviderElement<State> createElement() {
     return ValueProviderElement(this);
   }
+
+  @override
+  String? debugGetCreateSourceHash() => null;
 }
 
 /// The [ProviderElementBase] of a [ValueProvider]

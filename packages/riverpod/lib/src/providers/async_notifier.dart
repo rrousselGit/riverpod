@@ -180,8 +180,9 @@ abstract class AsyncNotifierProviderBase<NotifierT extends AsyncNotifierBase<T>,
     required super.argument,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-  });
+    required DebugGetCreateSourceHash? debugGetCreateSourceHash,
+    required super.isAutoDispose,
+  }) : _debugGetCreateSourceHash = debugGetCreateSourceHash;
 
   /// Obtains the [AsyncNotifier] associated with this provider, without listening
   /// to state changes.
@@ -214,4 +215,8 @@ abstract class AsyncNotifierProviderBase<NotifierT extends AsyncNotifierBase<T>,
   /// This is an implementation detail for differentiating [AsyncNotifier.build]
   /// from [FamilyAsyncNotifier.build].
   FutureOr<T> runNotifierBuild(AsyncNotifierBase<T> notifier);
+
+  final DebugGetCreateSourceHash? _debugGetCreateSourceHash;
+  @override
+  String? debugGetCreateSourceHash() => _debugGetCreateSourceHash?.call();
 }

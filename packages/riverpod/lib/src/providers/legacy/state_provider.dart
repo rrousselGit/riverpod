@@ -32,13 +32,18 @@ abstract class _StateProviderBase<T> extends ProviderBase<T> {
     required super.argument,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-  });
+    required DebugGetCreateSourceHash? debugGetCreateSourceHash,
+    required super.isAutoDispose,
+  }) : _debugGetCreateSourceHash = debugGetCreateSourceHash;
 
   ProviderListenable<StateController<T>> get notifier;
   ProviderListenable<StateController<T>> get state;
 
   T _create(covariant StateProviderElement<T> ref);
+
+  final DebugGetCreateSourceHash? _debugGetCreateSourceHash;
+  @override
+  String? debugGetCreateSourceHash() => _debugGetCreateSourceHash?.call();
 }
 
 /// {@macro riverpod.provider_ref_base}
@@ -99,6 +104,7 @@ class StateProvider<T> extends _StateProviderBase<T>
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: false,
         );
 
   /// An implementation detail of Riverpod
@@ -111,6 +117,7 @@ class StateProvider<T> extends _StateProviderBase<T>
     required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
+    super.isAutoDispose = false,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -234,6 +241,7 @@ class StateProviderFamily<R, Arg>
           debugGetCreateSourceHash: null,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: false,
         );
 
   /// {@macro riverpod.override_with}
@@ -275,6 +283,7 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: true,
         );
 
   /// An implementation detail of Riverpod
@@ -287,6 +296,7 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
     required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
+    super.isAutoDispose = true,
   });
 
   /// {@macro riverpod.family}
@@ -348,7 +358,7 @@ class AutoDisposeStateProviderElement<T> extends StateProviderElement<T>
 }
 
 /// The [Family] of [StateProvider].
-class AutoDisposeStateProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
+class AutoDisposeStateProviderFamily<R, Arg> extends FamilyBase<
     // ignore: deprecated_member_use_from_same_package
     AutoDisposeStateProviderRef<R>,
     R,
@@ -365,6 +375,7 @@ class AutoDisposeStateProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
           debugGetCreateSourceHash: null,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: true,
         );
 
   /// {@macro riverpod.override_with}
