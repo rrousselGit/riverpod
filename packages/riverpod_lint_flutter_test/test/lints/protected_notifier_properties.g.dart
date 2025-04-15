@@ -116,6 +116,9 @@ class A3Family extends Family<int> {
 
   @override
   String? get name => r'a3Provider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [A3].
@@ -266,6 +269,9 @@ class A4Family extends Family<int> {
 
   @override
   String? get name => r'a4Provider';
+
+  @override
+  bool get isAutoDispose => false;
 }
 
 /// See also [A4].
@@ -415,6 +421,9 @@ class A5Family extends Family<AsyncValue<int>> {
 
   @override
   String? get name => r'a5Provider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [A5].
@@ -565,6 +574,9 @@ class A6Family extends Family<AsyncValue<int>> {
 
   @override
   String? get name => r'a6Provider';
+
+  @override
+  bool get isAutoDispose => false;
 }
 
 /// See also [A6].
@@ -715,6 +727,9 @@ class A7Family extends Family<AsyncValue<int>> {
 
   @override
   String? get name => r'a7Provider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [A7].
@@ -865,6 +880,9 @@ class A8Family extends Family<AsyncValue<int>> {
 
   @override
   String? get name => r'a8Provider';
+
+  @override
+  bool get isAutoDispose => false;
 }
 
 /// See also [A8].

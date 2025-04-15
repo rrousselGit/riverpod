@@ -46,7 +46,12 @@ void Function()? debugCanModifyProviders;
 /// {@endtemplate}
 @optionalTypeArgs
 @internal
-abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
+abstract class ProviderElementBase<StateT>
+    implements
+        Ref<StateT>,
+        // ignore: deprecated_member_use_from_same_package
+        AutoDisposeRef<StateT>,
+        Node {
   /// {@macro riverpod.provider_element_base}
   ProviderElementBase(this._provider);
 
@@ -57,6 +62,16 @@ abstract class ProviderElementBase<StateT> implements Ref<StateT>, Node {
   /// Available only in debug mode.
   String? _debugCurrentCreateHash;
   var _debugSkipNotifyListenersAsserts = false;
+
+  bool _maintainState = false;
+  @Deprecated('Use `keepAlive()` instead')
+  @override
+  bool get maintainState => _maintainState;
+  @override
+  set maintainState(bool value) {
+    _maintainState = value;
+    if (!value) mayNeedDispose();
+  }
 
   /// The provider associated with this [ProviderElementBase], before applying overrides.
   // Not typed as <State> because of https://github.com/rrousselGit/riverpod/issues/1100
@@ -924,14 +939,19 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   /// Life-cycle for when a listener is removed.
-  ///
-  /// See also:
-  ///
-  /// - [AutoDisposeProviderElementMixin], which overrides this method to destroy the
-  ///   state of a provider when no longer used.
   @protected
   @visibleForOverriding
-  void mayNeedDispose() {}
+  @mustCallSuper
+  void mayNeedDispose() {
+    if (provider.isAutoDispose) {
+      final links = _keepAliveLinks;
+
+      // ignore: deprecated_member_use_from_same_package
+      if (!maintainState && !hasListeners && (links == null || links.isEmpty)) {
+        _container.scheduler.scheduleProviderDispose(this);
+      }
+    }
+  }
 
   @override
   @mustCallSuper
@@ -953,6 +973,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     if (!_mounted) return;
     _mounted = false;
 
+    _keepAliveLinks?.clear();
     final subscriptions = _subscriptions;
     if (subscriptions != null) {
       while (subscriptions.isNotEmpty) {
@@ -991,6 +1012,11 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     _onChangeSelfListeners = null;
     _onErrorSelfListeners = null;
     _didCancelOnce = false;
+
+    assert(
+      _keepAliveLinks == null || _keepAliveLinks!.isEmpty,
+      'Cannot call keepAlive() within onDispose listeners',
+    );
   }
 
   @override
@@ -1020,42 +1046,5 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   @override
   String toString() {
     return '$runtimeType(provider: $provider, origin: $origin)';
-  }
-}
-
-/// A mixin that adds auto dispose support to a [ProviderElementBase].
-@internal
-mixin AutoDisposeProviderElementMixin<State> on ProviderElementBase<State>
-    implements
-        // ignore: deprecated_member_use_from_same_package
-        AutoDisposeRef<State> {
-  bool _maintainState = false;
-  @Deprecated('Use `keepAlive()` instead')
-  @override
-  bool get maintainState => _maintainState;
-  @override
-  set maintainState(bool value) {
-    _maintainState = value;
-    if (!value) mayNeedDispose();
-  }
-
-  @override
-  void mayNeedDispose() {
-    final links = _keepAliveLinks;
-
-    // ignore: deprecated_member_use_from_same_package
-    if (!maintainState && !hasListeners && (links == null || links.isEmpty)) {
-      _container.scheduler.scheduleProviderDispose(this);
-    }
-  }
-
-  @override
-  void runOnDispose() {
-    _keepAliveLinks?.clear();
-    super.runOnDispose();
-    assert(
-      _keepAliveLinks == null || _keepAliveLinks!.isEmpty,
-      'Cannot call keepAlive() within onDispose listeners',
-    );
   }
 }

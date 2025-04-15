@@ -84,6 +84,7 @@ class StreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
           from: null,
           argument: null,
           debugGetCreateSourceHash: null,
+          isAutoDispose: false,
         );
 
   /// An implementation detail of Riverpod
@@ -96,6 +97,7 @@ class StreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
     required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
+    super.isAutoDispose = false,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -150,7 +152,9 @@ class StreamNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     extends AsyncNotifierProviderElementBase<NotifierT, T>
     implements
         // ignore: deprecated_member_use_from_same_package
-        StreamNotifierProviderRef<T> {
+        StreamNotifierProviderRef<T>,
+        // ignore: deprecated_member_use_from_same_package
+        AutoDisposeStreamNotifierProviderRef<T> {
   /// The element of [StreamNotifierProvider].
   @internal
   StreamNotifierProviderElement(

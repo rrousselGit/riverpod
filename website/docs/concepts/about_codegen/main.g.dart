@@ -71,6 +71,9 @@ class FetchUserFamily extends Family<AsyncValue<User>> {
 
   @override
   String? get name => r'fetchUserProvider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [fetchUser].

@@ -5,6 +5,9 @@ import 'package:riverpod/src/framework.dart';
 class TestProvider<T> with Provider2<T> {
   TestProvider(this._value);
 
+  @override
+  bool get isAutoDispose => true;
+
   final T Function(SyncRef<T> ref) _value;
 
   @override
@@ -27,6 +30,9 @@ class TestProvider<T> with Provider2<T> {
 
 class TestAsyncProvider<T> with AsyncProvider<T> {
   TestAsyncProvider(this._value);
+
+  @override
+  bool get isAutoDispose => true;
 
   final FutureOr<T> Function(AsyncRef<T> ref) _value;
 

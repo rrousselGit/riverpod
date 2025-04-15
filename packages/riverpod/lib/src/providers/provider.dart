@@ -18,10 +18,11 @@ abstract class InternalProvider<StateT, RefT extends Ref<StateT>>
     required super.name,
     required super.from,
     required super.argument,
-    required super.debugGetCreateSourceHash,
     required super.dependencies,
     required super.allTransitiveDependencies,
-  });
+    required super.isAutoDispose,
+    required DebugGetCreateSourceHash? debugGetCreateSourceHash,
+  }) : _debugGetCreateSourceHash = debugGetCreateSourceHash;
 
   StateT _create(covariant ProviderElement<StateT> ref);
 
@@ -77,6 +78,10 @@ abstract class InternalProvider<StateT, RefT extends Ref<StateT>>
       override: ValueProvider<StateT>(value),
     );
   }
+
+  final DebugGetCreateSourceHash? _debugGetCreateSourceHash;
+  @override
+  String? debugGetCreateSourceHash() => _debugGetCreateSourceHash?.call();
 }
 
 /// {@macro riverpod.provider_ref_base}
@@ -114,6 +119,7 @@ class Provider<StateT> extends InternalProvider<
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: false,
         );
 
   /// An implementation detail of Riverpod
@@ -126,6 +132,7 @@ class Provider<StateT> extends InternalProvider<
     required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
+    super.isAutoDispose = false,
   });
 
   /// {@macro riverpod.family}
@@ -398,7 +405,9 @@ class Provider<StateT> extends InternalProvider<
 class ProviderElement<StateT> extends ProviderElementBase<StateT>
     implements
         // ignore: deprecated_member_use_from_same_package
-        ProviderRef<StateT> {
+        ProviderRef<StateT>,
+        // ignore: deprecated_member_use_from_same_package
+        AutoDisposeProviderRef<StateT> {
   /// A [ProviderElementBase] for [Provider]
   @internal
   ProviderElement(super._provider);
@@ -439,6 +448,7 @@ class ProviderFamily<StateT, ArgT>
           providerFactory: Provider.internal,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: false,
           debugGetCreateSourceHash: null,
         );
 
@@ -449,8 +459,11 @@ class ProviderFamily<StateT, ArgT>
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-  }) : super(providerFactory: Provider.internal);
+  }) : super(
+          providerFactory: Provider.internal,
+          isAutoDispose: false,
+          debugGetCreateSourceHash: null,
+        );
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
@@ -493,6 +506,7 @@ class AutoDisposeProvider<StateT> extends InternalProvider<
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: true,
         );
 
   /// An implementation detail of Riverpod
@@ -505,6 +519,7 @@ class AutoDisposeProvider<StateT> extends InternalProvider<
     required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
+    super.isAutoDispose = true,
   });
 
   /// {@macro riverpod.family}
@@ -565,19 +580,10 @@ class AutoDisposeProvider<StateT> extends InternalProvider<
 
 /// The element of [AutoDisposeProvider]
 @internal
-class AutoDisposeProviderElement<T> extends ProviderElement<T>
-    with
-        AutoDisposeProviderElementMixin<T>
-    implements
-        // ignore: deprecated_member_use_from_same_package
-        AutoDisposeProviderRef<T> {
-  /// The [ProviderElementBase] for [Provider]
-  @internal
-  AutoDisposeProviderElement(AutoDisposeProvider<T> super._provider);
-}
+typedef AutoDisposeProviderElement<T> = ProviderElement<T>;
 
 /// The [Family] of [AutoDisposeProvider]
-class AutoDisposeProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
+class AutoDisposeProviderFamily<R, Arg> extends FamilyBase<
     // ignore: deprecated_member_use_from_same_package
     AutoDisposeProviderRef<R>,
     R,
@@ -593,6 +599,7 @@ class AutoDisposeProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
           providerFactory: AutoDisposeProvider.internal,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: true,
           debugGetCreateSourceHash: null,
         );
 

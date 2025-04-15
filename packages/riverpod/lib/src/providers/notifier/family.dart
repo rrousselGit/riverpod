@@ -52,6 +52,7 @@ class FamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>, T, Arg>
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: false,
         );
 
   /// An implementation detail of Riverpod
@@ -64,6 +65,7 @@ class FamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>, T, Arg>
     required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
+    super.isAutoDispose = false,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -106,6 +108,7 @@ class NotifierProviderFamily<NotifierT extends FamilyNotifier<T, Arg>, T, Arg>
           providerFactory: NotifierFamilyProvider.internal,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: false,
           debugGetCreateSourceHash: null,
         );
 
@@ -117,7 +120,10 @@ class NotifierProviderFamily<NotifierT extends FamilyNotifier<T, Arg>, T, Arg>
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.debugGetCreateSourceHash,
-  }) : super(providerFactory: NotifierFamilyProvider.internal);
+    super.isAutoDispose = false,
+  }) : super(
+          providerFactory: NotifierFamilyProvider.internal,
+        );
 
   /// {@macro riverpod.override_with}
   Override overrideWith(NotifierT Function() create) {

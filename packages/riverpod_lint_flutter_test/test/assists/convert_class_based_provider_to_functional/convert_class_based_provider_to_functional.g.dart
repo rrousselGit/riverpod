@@ -118,6 +118,9 @@ class ExampleFamilyFamily extends Family<int> {
 
   @override
   String? get name => r'exampleFamilyProvider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// Some comment

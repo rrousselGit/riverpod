@@ -49,6 +49,7 @@ class AutoDisposeFamilyStreamNotifierProviderImpl<
           from: null,
           argument: null,
           debugGetCreateSourceHash: null,
+          isAutoDispose: true,
         );
 
   /// An implementation detail of Riverpod
@@ -61,6 +62,7 @@ class AutoDisposeFamilyStreamNotifierProviderImpl<
     required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
+    super.isAutoDispose = true,
   });
 
   @override
@@ -87,7 +89,7 @@ class AutoDisposeFamilyStreamNotifierProviderImpl<
 /// The [Family] of [StreamNotifierProvider].
 class AutoDisposeStreamNotifierProviderFamily<
         NotifierT extends AutoDisposeFamilyStreamNotifier<T, Arg>, T, Arg>
-    extends AutoDisposeNotifierFamilyBase<
+    extends NotifierFamilyBase<
         // ignore: deprecated_member_use_from_same_package
         AutoDisposeStreamNotifierProviderRef<T>,
         AsyncValue<T>,
@@ -103,6 +105,7 @@ class AutoDisposeStreamNotifierProviderFamily<
           providerFactory: AutoDisposeFamilyStreamNotifierProvider.internal,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: true,
           debugGetCreateSourceHash: null,
         );
 

@@ -73,6 +73,7 @@ class AutoDisposeAsyncNotifierProviderImpl<
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: true,
         );
 
   /// An implementation detail of Riverpod
@@ -85,6 +86,7 @@ class AutoDisposeAsyncNotifierProviderImpl<
     required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
+    super.isAutoDispose = true,
   });
 
   /// {@macro riverpod.family}
@@ -129,15 +131,6 @@ class AutoDisposeAsyncNotifierProviderImpl<
 
 /// The element of [AutoDisposeAsyncNotifierProvider].
 @internal
-class AutoDisposeAsyncNotifierProviderElement<
-        NotifierT extends AsyncNotifierBase<T>,
-        T> extends AsyncNotifierProviderElement<NotifierT, T>
-    with
-        AutoDisposeProviderElementMixin<AsyncValue<T>>
-    implements
-        // ignore: deprecated_member_use_from_same_package
-        AutoDisposeAsyncNotifierProviderRef<T> {
-  /// The [ProviderElementBase] for [AsyncNotifierProvider]
-  @internal
-  AutoDisposeAsyncNotifierProviderElement(super._provider) : super();
-}
+typedef AutoDisposeAsyncNotifierProviderElement<
+        NotifierT extends AsyncNotifierBase<T>, T>
+    = AsyncNotifierProviderElement<NotifierT, T>;

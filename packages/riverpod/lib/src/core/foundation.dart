@@ -9,6 +9,7 @@ abstract class ProviderOrFamily
     required this.name,
     required this.dependencies,
     required this.allTransitiveDependencies,
+    required this.isAutoDispose,
   });
 
   /// The family that this provider/family depends on.
@@ -85,6 +86,22 @@ abstract class ProviderOrFamily
 
   /// All the dependencies of a provider and their dependencies too.
   final Iterable<ProviderOrFamily>? allTransitiveDependencies;
+
+  /// Whether the state associated to this provider should be disposed
+  /// automatically when the provider stops being listened.
+  final bool isAutoDispose;
+
+  /// A debug-only function for obtaining a hash of the source code of the
+  /// initialization function.
+  ///
+  /// If after a hot-reload this function returns a different result, the
+  /// provider will be re-executed.
+  ///
+  /// This method only returns a non-null value when using `riverpod_generator`.
+  // This is voluntarily not implemented by default, to force all non-generated
+  // providers to apply the LegacyProviderMixin.
+  @internal
+  String? debugGetCreateSourceHash() => null;
 }
 
 /// A shared interface between [ProviderListenable] and [Family].

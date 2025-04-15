@@ -69,6 +69,9 @@ class GeneratorFamily extends Family<int> {
 
   @override
   String? get name => r'generatorProvider';
+
+  @override
+  bool get isAutoDispose => false;
 }
 
 /// See also [generator].

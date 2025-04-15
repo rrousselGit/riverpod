@@ -542,12 +542,14 @@ void main() {
         expect(container.read(unrelated), 42);
         var sub = container.listen(provider, (_, __) {});
 
+        final isUnrelated = isA<ProviderElementBase<Object?>>()
+            .having((e) => e.origin, 'origin', unrelated);
+        final isProvider = isA<ProviderElementBase<int>>()
+            .having((e) => e.origin, 'origin', provider);
+
         expect(
           container.getAllProviderElements(),
-          unorderedMatches(<Matcher>[
-            isA<ProviderElementBase<int>>(),
-            isA<AutoDisposeProviderElementMixin<int>>(),
-          ]),
+          unorderedMatches(<Matcher>[isUnrelated, isProvider]),
         );
 
         sub.close();
@@ -555,17 +557,14 @@ void main() {
 
         expect(
           container.getAllProviderElements(),
-          [isA<ProviderElementBase<int>>()],
+          [isUnrelated],
         );
 
         sub = container.listen(provider, (_, __) {});
 
         expect(
           container.getAllProviderElements(),
-          unorderedMatches(<Matcher>[
-            isA<ProviderElementBase<int>>(),
-            isA<AutoDisposeProviderElementMixin<int>>(),
-          ]),
+          unorderedMatches(<Matcher>[isUnrelated, isProvider]),
         );
       });
     });

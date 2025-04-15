@@ -113,6 +113,9 @@ class FamilyFamily extends Family<AsyncValue<String>> {
 
   @override
   String? get name => r'familyProvider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [family].
@@ -369,6 +372,9 @@ class FamilyClassFamily extends Family<AsyncValue<String>> {
 
   @override
   String? get name => r'familyClassProvider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [FamilyClass].

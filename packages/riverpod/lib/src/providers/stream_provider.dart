@@ -39,8 +39,9 @@ abstract class _StreamProviderBase<T> extends ProviderBase<AsyncValue<T>> {
     required super.name,
     required super.from,
     required super.argument,
-    required super.debugGetCreateSourceHash,
-  });
+    required super.isAutoDispose,
+    required DebugGetCreateSourceHash? debugGetCreateSourceHash,
+  }) : _debugGetCreateSourceHash = debugGetCreateSourceHash;
 
   ProviderListenable<Future<T>> get future;
 
@@ -51,6 +52,10 @@ abstract class _StreamProviderBase<T> extends ProviderBase<AsyncValue<T>> {
   ProviderListenable<Stream<T>> get stream;
 
   Stream<T> _create(covariant StreamProviderElement<T> ref);
+
+  final DebugGetCreateSourceHash? _debugGetCreateSourceHash;
+  @override
+  String? debugGetCreateSourceHash() => _debugGetCreateSourceHash?.call();
 }
 
 /// {@macro riverpod.provider_ref_base}
@@ -140,6 +145,7 @@ class StreamProvider<T> extends _StreamProviderBase<T>
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: false,
         );
 
   /// An implementation detail of Riverpod
@@ -152,7 +158,8 @@ class StreamProvider<T> extends _StreamProviderBase<T>
     required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
-  });
+    super.isAutoDispose = false,
+  }) : super();
 
   /// {@macro riverpod.autoDispose}
   static const autoDispose = AutoDisposeStreamProviderBuilder();
@@ -207,7 +214,9 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
         FutureHandlerProviderElementMixin<T>
     implements
         // ignore: deprecated_member_use_from_same_package
-        StreamProviderRef<T> {
+        StreamProviderRef<T>,
+        // ignore: deprecated_member_use_from_same_package
+        AutoDisposeStreamProviderRef<T> {
   /// The element of [StreamProvider].
   @internal
   // ignore: library_private_types_in_public_api
@@ -277,9 +286,10 @@ class StreamProviderFamily<R, Arg> extends FamilyBase<StreamProviderRef<R>,
     super.dependencies,
   }) : super(
           providerFactory: StreamProvider<R>.internal,
-          debugGetCreateSourceHash: null,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: false,
+          debugGetCreateSourceHash: null,
         );
 
   /// {@macro riverpod.override_with}
@@ -322,6 +332,7 @@ class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: true,
         );
 
   /// An implementation detail of Riverpod
@@ -334,7 +345,8 @@ class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
     required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
-  });
+    super.isAutoDispose = true,
+  }) : super();
 
   /// {@macro riverpod.family}
   static const family = AutoDisposeStreamProviderFamily.new;
@@ -383,20 +395,10 @@ class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
 
 /// The element of [AutoDisposeStreamProvider].
 @internal
-class AutoDisposeStreamProviderElement<T> extends StreamProviderElement<T>
-    with
-        AutoDisposeProviderElementMixin<AsyncValue<T>>
-    implements
-        // ignore: deprecated_member_use_from_same_package
-        AutoDisposeStreamProviderRef<T> {
-  /// The [ProviderElementBase] for [StreamProvider]
-  AutoDisposeStreamProviderElement(
-    AutoDisposeStreamProvider<T> super._provider,
-  );
-}
+typedef AutoDisposeStreamProviderElement<T> = StreamProviderElement<T>;
 
 /// The [Family] of [AutoDisposeStreamProvider].
-class AutoDisposeStreamProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
+class AutoDisposeStreamProviderFamily<R, Arg> extends FamilyBase<
     // ignore: deprecated_member_use_from_same_package
     AutoDisposeStreamProviderRef<R>,
     AsyncValue<R>,
@@ -412,6 +414,7 @@ class AutoDisposeStreamProviderFamily<R, Arg> extends AutoDisposeFamilyBase<
           providerFactory: AutoDisposeStreamProvider.internal,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: true,
           debugGetCreateSourceHash: null,
         );
 

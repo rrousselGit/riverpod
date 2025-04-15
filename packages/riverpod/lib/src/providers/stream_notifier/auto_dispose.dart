@@ -66,6 +66,7 @@ class AutoDisposeStreamNotifierProviderImpl<
           from: null,
           argument: null,
           debugGetCreateSourceHash: null,
+          isAutoDispose: true,
         );
 
   /// An implementation detail of Riverpod
@@ -78,6 +79,7 @@ class AutoDisposeStreamNotifierProviderImpl<
     required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
+    super.isAutoDispose = true,
   });
 
   /// {@macro riverpod.family}
@@ -123,15 +125,6 @@ class AutoDisposeStreamNotifierProviderImpl<
 
 /// The element of [AutoDisposeStreamNotifierProvider].
 @internal
-class AutoDisposeStreamNotifierProviderElement<
-        NotifierT extends AsyncNotifierBase<T>,
-        T> extends StreamNotifierProviderElement<NotifierT, T>
-    with
-        AutoDisposeProviderElementMixin<AsyncValue<T>>
-    implements
-        // ignore: deprecated_member_use_from_same_package
-        AutoDisposeStreamNotifierProviderRef<T> {
-  /// The [ProviderElementBase] for [StreamNotifierProvider]
-  @internal
-  AutoDisposeStreamNotifierProviderElement(super._provider);
-}
+typedef AutoDisposeStreamNotifierProviderElement<
+        NotifierT extends AsyncNotifierBase<T>, T>
+    = StreamNotifierProviderElement<NotifierT, T>;

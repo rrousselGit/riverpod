@@ -72,6 +72,9 @@ class FetchPackageDetailsFamily extends Family<AsyncValue<Package>> {
 
   @override
   String? get name => r'fetchPackageDetailsProvider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [fetchPackageDetails].
@@ -285,6 +288,9 @@ class PackageMetricsFamily extends Family<AsyncValue<PackageMetricsScore>> {
 
   @override
   String? get name => r'packageMetricsProvider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// A provider that fetches the likes count, popularity score and pub points

@@ -34,8 +34,9 @@ abstract class _ChangeNotifierProviderBase<NotifierT extends ChangeNotifier?>
     required super.argument,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-  });
+    required super.isAutoDispose,
+    required DebugGetCreateSourceHash? debugGetCreateSourceHash,
+  }) : _debugGetCreateSourceHash = debugGetCreateSourceHash;
 
   /// Obtains the [ChangeNotifier] associated with this provider, without listening
   /// to state changes.
@@ -55,6 +56,10 @@ abstract class _ChangeNotifierProviderBase<NotifierT extends ChangeNotifier?>
   ProviderListenable<NotifierT> get notifier;
 
   NotifierT _create(covariant ChangeNotifierProviderElement<NotifierT> ref);
+
+  final DebugGetCreateSourceHash? _debugGetCreateSourceHash;
+  @override
+  String? debugGetCreateSourceHash() => _debugGetCreateSourceHash?.call();
 }
 
 /// {@macro riverpod.provider_ref_base}
@@ -145,6 +150,7 @@ class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: false,
         );
 
   /// An implementation detail of Riverpod
@@ -157,6 +163,7 @@ class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
+    super.isAutoDispose = false,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -245,7 +252,9 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
     // ignore: deprecated_member_use, deprecated_member_use_from_same_package
     implements
         // ignore: deprecated_member_use, deprecated_member_use_from_same_package
-        ChangeNotifierProviderRef<NotifierT> {
+        ChangeNotifierProviderRef<NotifierT>,
+        // ignore: deprecated_member_use, deprecated_member_use_from_same_package
+        AutoDisposeChangeNotifierProviderRef<NotifierT> {
   ChangeNotifierProviderElement._(
     _ChangeNotifierProviderBase<NotifierT> super._provider,
   );
@@ -318,6 +327,7 @@ class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
           debugGetCreateSourceHash: null,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: false,
         );
 
   /// {@macro riverpod.override_with}
@@ -364,6 +374,7 @@ class AutoDisposeChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: true,
         );
 
   /// An implementation detail of Riverpod
@@ -376,6 +387,7 @@ class AutoDisposeChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
+    super.isAutoDispose = true,
   });
 
   /// {@macro riverpod.family}
@@ -426,25 +438,14 @@ class AutoDisposeChangeNotifierProvider<NotifierT extends ChangeNotifier?>
 
 /// The element of [AutoDisposeChangeNotifierProvider].
 @internal
-class AutoDisposeChangeNotifierProviderElement<
+typedef AutoDisposeChangeNotifierProviderElement<
         NotifierT extends ChangeNotifier?>
-    extends ChangeNotifierProviderElement<NotifierT>
-    with
-        AutoDisposeProviderElementMixin<NotifierT>
-    implements
-        // ignore: deprecated_member_use_from_same_package
-        AutoDisposeChangeNotifierProviderRef<NotifierT> {
-  /// The [ProviderElementBase] for [ChangeNotifier]
-  @Deprecated('will be removed in 3.0.0, use Ref instead')
-  AutoDisposeChangeNotifierProviderElement._(
-    AutoDisposeChangeNotifierProvider<NotifierT> super._provider,
-  ) : super._();
-}
+    = ChangeNotifierProviderElement<NotifierT>;
 
 // ignore: subtype_of_sealed_class
 /// The [Family] of [AutoDisposeChangeNotifierProvider].
 class AutoDisposeChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
-    extends AutoDisposeFamilyBase<
+    extends FamilyBase<
         // ignore: deprecated_member_use_from_same_package
         AutoDisposeChangeNotifierProviderRef<NotifierT>,
         NotifierT,
@@ -461,6 +462,7 @@ class AutoDisposeChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?,
           debugGetCreateSourceHash: null,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: true,
         );
 
   /// {@macro riverpod.override_with}

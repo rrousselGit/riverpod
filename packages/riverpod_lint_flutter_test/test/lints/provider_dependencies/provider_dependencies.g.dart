@@ -103,6 +103,9 @@ class Dep3Family extends Family<int> {
 
   @override
   String? get name => r'dep3Provider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [dep3].

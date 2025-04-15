@@ -111,6 +111,9 @@ class FamilyWithDependencies2Family extends Family<int> {
 
   @override
   String? get name => r'familyWithDependencies2Provider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [familyWithDependencies2].
@@ -335,6 +338,9 @@ class NotifierFamilyWithDependenciesFamily extends Family<int> {
 
   @override
   String? get name => r'notifierFamilyWithDependenciesProvider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [NotifierFamilyWithDependencies].

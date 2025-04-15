@@ -92,6 +92,9 @@ class BugsEncounteredNotifierFamily extends Family<AsyncValue<int>> {
 
   @override
   String? get name => r'bugsEncounteredNotifierProvider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [BugsEncounteredNotifier].

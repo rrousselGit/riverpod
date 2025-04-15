@@ -113,6 +113,7 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: false,
         );
 
   /// An implementation detail of Riverpod
@@ -125,6 +126,7 @@ class AsyncNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
     required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
+    super.isAutoDispose = false,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -521,7 +523,9 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     extends AsyncNotifierProviderElementBase<NotifierT, T>
     implements
         // ignore: deprecated_member_use_from_same_package
-        AsyncNotifierProviderRef<T> {
+        AsyncNotifierProviderRef<T>,
+        // ignore: deprecated_member_use_from_same_package
+        AutoDisposeAsyncNotifierProviderRef<T> {
   /// The element of [AsyncNotifierProvider].
   @internal
   AsyncNotifierProviderElement(

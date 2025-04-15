@@ -74,6 +74,9 @@ class FetchPackagesFamily extends Family<AsyncValue<List<Package>>> {
 
   @override
   String? get name => r'fetchPackagesProvider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [fetchPackages].

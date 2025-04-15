@@ -61,6 +61,7 @@ class FamilyStreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>,
           from: null,
           argument: null,
           debugGetCreateSourceHash: null,
+          isAutoDispose: false,
         );
 
   /// An implementation detail of Riverpod
@@ -73,6 +74,7 @@ class FamilyStreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>,
     required super.debugGetCreateSourceHash,
     super.from,
     super.argument,
+    super.isAutoDispose = false,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -116,6 +118,7 @@ class StreamNotifierProviderFamily<
           providerFactory: StreamNotifierFamilyProvider.internal,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
+          isAutoDispose: false,
           debugGetCreateSourceHash: null,
         );
 
