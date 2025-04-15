@@ -209,7 +209,9 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<T>, T>
     extends ProviderElementBase<T>
     implements
         // ignore: deprecated_member_use_from_same_package
-        StateNotifierProviderRef<NotifierT, T> {
+        StateNotifierProviderRef<NotifierT, T>,
+        // ignore: deprecated_member_use_from_same_package
+        AutoDisposeStateNotifierProviderRef<NotifierT, T> {
   StateNotifierProviderElement._(
     _StateNotifierProviderBase<NotifierT, T> super._provider,
   );
@@ -385,19 +387,9 @@ class AutoDisposeStateNotifierProvider<NotifierT extends StateNotifier<T>, T>
 
 /// The element of [AutoDisposeStateNotifierProvider].
 @internal
-class AutoDisposeStateNotifierProviderElement<
-        NotifierT extends StateNotifier<T>,
-        T> extends StateNotifierProviderElement<NotifierT, T>
-    with
-        AutoDisposeProviderElementMixin<T>
-    implements
-        // ignore: deprecated_member_use_from_same_package
-        AutoDisposeStateNotifierProviderRef<NotifierT, T> {
-  /// The [ProviderElementBase] for [StateNotifierProvider]
-  AutoDisposeStateNotifierProviderElement._(
-    AutoDisposeStateNotifierProvider<NotifierT, T> super._provider,
-  ) : super._();
-}
+typedef AutoDisposeStateNotifierProviderElement<
+        NotifierT extends StateNotifier<T>, T>
+    = StateNotifierProviderElement<NotifierT, T>;
 
 /// The [Family] of [AutoDisposeStateNotifierProvider].
 class AutoDisposeStateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T, Arg>

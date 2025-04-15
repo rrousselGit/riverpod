@@ -405,7 +405,9 @@ class Provider<StateT> extends InternalProvider<
 class ProviderElement<StateT> extends ProviderElementBase<StateT>
     implements
         // ignore: deprecated_member_use_from_same_package
-        ProviderRef<StateT> {
+        ProviderRef<StateT>,
+        // ignore: deprecated_member_use_from_same_package
+        AutoDisposeProviderRef<StateT> {
   /// A [ProviderElementBase] for [Provider]
   @internal
   ProviderElement(super._provider);
@@ -578,16 +580,7 @@ class AutoDisposeProvider<StateT> extends InternalProvider<
 
 /// The element of [AutoDisposeProvider]
 @internal
-class AutoDisposeProviderElement<T> extends ProviderElement<T>
-    with
-        AutoDisposeProviderElementMixin<T>
-    implements
-        // ignore: deprecated_member_use_from_same_package
-        AutoDisposeProviderRef<T> {
-  /// The [ProviderElementBase] for [Provider]
-  @internal
-  AutoDisposeProviderElement(AutoDisposeProvider<T> super._provider);
-}
+typedef AutoDisposeProviderElement<T> = ProviderElement<T>;
 
 /// The [Family] of [AutoDisposeProvider]
 class AutoDisposeProviderFamily<R, Arg> extends FamilyBase<

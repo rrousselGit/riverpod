@@ -214,7 +214,9 @@ class StreamProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
         FutureHandlerProviderElementMixin<T>
     implements
         // ignore: deprecated_member_use_from_same_package
-        StreamProviderRef<T> {
+        StreamProviderRef<T>,
+        // ignore: deprecated_member_use_from_same_package
+        AutoDisposeStreamProviderRef<T> {
   /// The element of [StreamProvider].
   @internal
   // ignore: library_private_types_in_public_api
@@ -393,17 +395,7 @@ class AutoDisposeStreamProvider<T> extends _StreamProviderBase<T>
 
 /// The element of [AutoDisposeStreamProvider].
 @internal
-class AutoDisposeStreamProviderElement<T> extends StreamProviderElement<T>
-    with
-        AutoDisposeProviderElementMixin<AsyncValue<T>>
-    implements
-        // ignore: deprecated_member_use_from_same_package
-        AutoDisposeStreamProviderRef<T> {
-  /// The [ProviderElementBase] for [StreamProvider]
-  AutoDisposeStreamProviderElement(
-    AutoDisposeStreamProvider<T> super._provider,
-  );
-}
+typedef AutoDisposeStreamProviderElement<T> = StreamProviderElement<T>;
 
 /// The [Family] of [AutoDisposeStreamProvider].
 class AutoDisposeStreamProviderFamily<R, Arg> extends FamilyBase<

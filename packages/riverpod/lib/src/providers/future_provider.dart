@@ -229,7 +229,9 @@ class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
         FutureHandlerProviderElementMixin<T>
     implements
         // ignore: deprecated_member_use_from_same_package
-        FutureProviderRef<T> {
+        FutureProviderRef<T>,
+        // ignore: deprecated_member_use_from_same_package
+        AutoDisposeFutureProviderRef<T> {
   /// The element of a [FutureProvider]
   @internal
   // ignore: library_private_types_in_public_api
@@ -380,18 +382,7 @@ class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
 
 /// The [ProviderElementBase] of [AutoDisposeFutureProvider]
 @internal
-class AutoDisposeFutureProviderElement<T> extends FutureProviderElement<T>
-    with
-        AutoDisposeProviderElementMixin<AsyncValue<T>>
-    implements
-        // ignore: deprecated_member_use_from_same_package
-        AutoDisposeFutureProviderRef<T> {
-  /// The [ProviderElementBase] for [FutureProvider]
-  @internal
-  AutoDisposeFutureProviderElement(
-    AutoDisposeFutureProvider<T> super._provider,
-  ) : super();
-}
+typedef AutoDisposeFutureProviderElement<T> = FutureProviderElement<T>;
 
 /// The [Family] of an [AutoDisposeFutureProvider]
 class AutoDisposeFutureProviderFamily<R, Arg> extends FamilyBase<

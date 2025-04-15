@@ -61,10 +61,7 @@ abstract class AsyncRef<StateT> extends Ref<AsyncValue<StateT>> {
 
 /// The element of a [FutureProvider]
 class _AsyncProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
-    with
-        FutureHandlerProviderElementMixin<T>,
-        AutoDisposeProviderElementMixin<AsyncValue<T>>,
-        _MutationElement<AsyncValue<T>>
+    with FutureHandlerProviderElementMixin<T>, _MutationElement<AsyncValue<T>>
     implements AsyncRef<T> {
   _AsyncProviderElement(AsyncProvider<T> super._provider);
 
@@ -108,8 +105,14 @@ class _AsyncProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
 }
 
 class _DelegatedAsyncProvider<StateT> with AsyncProvider<StateT> {
-  _DelegatedAsyncProvider(this._build);
+  _DelegatedAsyncProvider(
+    this._build, {
+    this.isAutoDispose = false,
+  });
   final FutureOr<StateT> Function(AsyncRef<StateT> ref) _build;
+
+  @override
+  final bool isAutoDispose;
 
   @override
   FutureOr<StateT> build(AsyncRef<StateT> ref) => _build(ref);
@@ -131,8 +134,12 @@ ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
 abstract mixin class AsyncProvider<StateT>
     implements ProviderBase2<AsyncValue<StateT>> {
   factory AsyncProvider(
-    FutureOr<StateT> Function(AsyncRef<StateT> ref) build,
-  ) = _DelegatedAsyncProvider;
+    FutureOr<StateT> Function(AsyncRef<StateT> ref) build, {
+    bool isAutoDispose,
+  }) = _DelegatedAsyncProvider;
+
+  @override
+  bool get isAutoDispose => false;
 
   @override
   Record? get args => null;
@@ -232,7 +239,11 @@ abstract mixin class AsyncProvider<StateT>
 }
 
 class _DelegatedSyncProvider<StateT> with Provider2<StateT> {
-  _DelegatedSyncProvider(this._build);
+  _DelegatedSyncProvider(this._build, {this.isAutoDispose = false});
+
+  @override
+  final bool isAutoDispose;
+
   final StateT Function(SyncRef<StateT> ref) _build;
 
   @override
@@ -241,7 +252,7 @@ class _DelegatedSyncProvider<StateT> with Provider2<StateT> {
 
 /// The element of a [FutureProvider]
 class _SyncProviderElement<T> extends ProviderElementBase<T>
-    with AutoDisposeProviderElementMixin<T>, _MutationElement<T>
+    with _MutationElement<T>
     implements SyncRef<T> {
   _SyncProviderElement(Provider2<T> super._provider);
 
@@ -277,8 +288,12 @@ class _SyncProviderElement<T> extends ProviderElementBase<T>
 
 abstract mixin class Provider2<StateT> implements ProviderBase2<StateT> {
   factory Provider2(
-    StateT Function(SyncRef<StateT> ref) build,
-  ) = _DelegatedSyncProvider;
+    StateT Function(SyncRef<StateT> ref) build, {
+    bool isAutoDispose,
+  }) = _DelegatedSyncProvider;
+
+  @override
+  bool get isAutoDispose => false;
 
   @override
   Record? get args => null;
@@ -426,7 +441,9 @@ abstract class ProviderBase2<StateT>
 
 /// An interface to help the migration between [ProviderBase] and [ProviderBase2].
 sealed class AnyProvider<StateT>
-    implements ProviderListenable<StateT>, AnyProviderOrFamily {}
+    implements ProviderListenable<StateT>, AnyProviderOrFamily {
+  bool get isAutoDispose;
+}
 
 @internal
 extension AnyX on AnyProvider<Object?> {

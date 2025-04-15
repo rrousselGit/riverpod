@@ -252,7 +252,9 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
     // ignore: deprecated_member_use, deprecated_member_use_from_same_package
     implements
         // ignore: deprecated_member_use, deprecated_member_use_from_same_package
-        ChangeNotifierProviderRef<NotifierT> {
+        ChangeNotifierProviderRef<NotifierT>,
+        // ignore: deprecated_member_use, deprecated_member_use_from_same_package
+        AutoDisposeChangeNotifierProviderRef<NotifierT> {
   ChangeNotifierProviderElement._(
     _ChangeNotifierProviderBase<NotifierT> super._provider,
   );
@@ -436,20 +438,9 @@ class AutoDisposeChangeNotifierProvider<NotifierT extends ChangeNotifier?>
 
 /// The element of [AutoDisposeChangeNotifierProvider].
 @internal
-class AutoDisposeChangeNotifierProviderElement<
+typedef AutoDisposeChangeNotifierProviderElement<
         NotifierT extends ChangeNotifier?>
-    extends ChangeNotifierProviderElement<NotifierT>
-    with
-        AutoDisposeProviderElementMixin<NotifierT>
-    implements
-        // ignore: deprecated_member_use_from_same_package
-        AutoDisposeChangeNotifierProviderRef<NotifierT> {
-  /// The [ProviderElementBase] for [ChangeNotifier]
-  @Deprecated('will be removed in 3.0.0, use Ref instead')
-  AutoDisposeChangeNotifierProviderElement._(
-    AutoDisposeChangeNotifierProvider<NotifierT> super._provider,
-  ) : super._();
-}
+    = ChangeNotifierProviderElement<NotifierT>;
 
 // ignore: subtype_of_sealed_class
 /// The [Family] of [AutoDisposeChangeNotifierProvider].

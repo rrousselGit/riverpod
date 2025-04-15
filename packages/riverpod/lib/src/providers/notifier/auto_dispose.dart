@@ -123,14 +123,5 @@ class AutoDisposeNotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
 
 /// The element of [AutoDisposeNotifierProvider]
 @internal
-class AutoDisposeNotifierProviderElement<NotifierT extends NotifierBase<T>, T>
-    extends NotifierProviderElement<NotifierT, T>
-    with
-        AutoDisposeProviderElementMixin<T>
-    implements
-        // ignore: deprecated_member_use_from_same_package
-        AutoDisposeNotifierProviderRef<T> {
-  /// The [ProviderElementBase] for [NotifierProvider]
-  @internal
-  AutoDisposeNotifierProviderElement(super._provider);
-}
+typedef AutoDisposeNotifierProviderElement<NotifierT extends NotifierBase<T>, T>
+    = NotifierProviderElement<NotifierT, T>;

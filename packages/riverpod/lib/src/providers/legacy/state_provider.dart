@@ -173,7 +173,9 @@ class StateProvider<T> extends _StateProviderBase<T>
 class StateProviderElement<T> extends ProviderElementBase<T>
     implements
         // ignore: deprecated_member_use_from_same_package
-        StateProviderRef<T> {
+        StateProviderRef<T>,
+        // ignore: deprecated_member_use_from_same_package
+        AutoDisposeStateProviderRef<T> {
   StateProviderElement._(_StateProviderBase<T> super._provider);
 
   @override
@@ -346,16 +348,7 @@ class AutoDisposeStateProvider<T> extends _StateProviderBase<T> {
 
 /// The element of [StateProvider].
 @internal
-class AutoDisposeStateProviderElement<T> extends StateProviderElement<T>
-    with
-        AutoDisposeProviderElementMixin<T>
-    implements
-        // ignore: deprecated_member_use_from_same_package
-        AutoDisposeStateProviderRef<T> {
-  /// The [ProviderElementBase] for [StateProvider]
-  AutoDisposeStateProviderElement._(AutoDisposeStateProvider<T> super._provider)
-      : super._();
-}
+typedef AutoDisposeStateProviderElement<T> = StateProviderElement<T>;
 
 /// The [Family] of [StateProvider].
 class AutoDisposeStateProviderFamily<R, Arg> extends FamilyBase<

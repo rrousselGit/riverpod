@@ -523,7 +523,9 @@ class AsyncNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
     extends AsyncNotifierProviderElementBase<NotifierT, T>
     implements
         // ignore: deprecated_member_use_from_same_package
-        AsyncNotifierProviderRef<T> {
+        AsyncNotifierProviderRef<T>,
+        // ignore: deprecated_member_use_from_same_package
+        AutoDisposeAsyncNotifierProviderRef<T> {
   /// The element of [AsyncNotifierProvider].
   @internal
   AsyncNotifierProviderElement(

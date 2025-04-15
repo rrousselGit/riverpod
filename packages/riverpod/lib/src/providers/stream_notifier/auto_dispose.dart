@@ -125,15 +125,6 @@ class AutoDisposeStreamNotifierProviderImpl<
 
 /// The element of [AutoDisposeStreamNotifierProvider].
 @internal
-class AutoDisposeStreamNotifierProviderElement<
-        NotifierT extends AsyncNotifierBase<T>,
-        T> extends StreamNotifierProviderElement<NotifierT, T>
-    with
-        AutoDisposeProviderElementMixin<AsyncValue<T>>
-    implements
-        // ignore: deprecated_member_use_from_same_package
-        AutoDisposeStreamNotifierProviderRef<T> {
-  /// The [ProviderElementBase] for [StreamNotifierProvider]
-  @internal
-  AutoDisposeStreamNotifierProviderElement(super._provider);
-}
+typedef AutoDisposeStreamNotifierProviderElement<
+        NotifierT extends AsyncNotifierBase<T>, T>
+    = StreamNotifierProviderElement<NotifierT, T>;

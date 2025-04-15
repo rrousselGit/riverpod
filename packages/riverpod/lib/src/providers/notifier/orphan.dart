@@ -200,7 +200,9 @@ class NotifierProviderElement<NotifierT extends NotifierBase<T>, T>
     extends ProviderElementBase<T>
     implements
         // ignore: deprecated_member_use_from_same_package
-        NotifierProviderRef<T> {
+        NotifierProviderRef<T>,
+        // ignore: deprecated_member_use_from_same_package
+        AutoDisposeNotifierProviderRef<T> {
   /// The element of [NotifierProvider].
   @internal
   NotifierProviderElement(NotifierProviderBase<NotifierT, T> super._provider);
