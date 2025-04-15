@@ -495,6 +495,9 @@ class FamilyDepFamily extends Family<int> {
 
   @override
   String? get name => r'familyDepProvider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [familyDep].
@@ -630,6 +633,9 @@ class FamilyDep2Family extends Family<int> {
 
   @override
   String? get name => r'familyDep2Provider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [familyDep2].

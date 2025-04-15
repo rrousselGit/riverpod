@@ -101,6 +101,9 @@ class RawFamilyFutureFamily extends Family<Raw<Future<String>>> {
 
   @override
   String? get name => r'rawFamilyFutureProvider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [rawFamilyFuture].
@@ -232,6 +235,9 @@ class RawFamilyStreamFamily extends Family<Raw<Stream<String>>> {
 
   @override
   String? get name => r'rawFamilyStreamProvider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [rawFamilyStream].
@@ -418,6 +424,9 @@ class FamilyFamily extends Family<String> {
 
   @override
   String? get name => r'familyProvider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// This is some documentation
@@ -692,6 +701,9 @@ class RawFamilyFutureClassFamily extends Family<Raw<Future<String>>> {
 
   @override
   String? get name => r'rawFamilyFutureClassProvider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [RawFamilyFutureClass].
@@ -854,6 +866,9 @@ class RawFamilyStreamClassFamily extends Family<Raw<Stream<String>>> {
 
   @override
   String? get name => r'rawFamilyStreamClassProvider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [RawFamilyStreamClass].
@@ -1075,6 +1090,9 @@ class FamilyClassFamily extends Family<String> {
 
   @override
   String? get name => r'familyClassProvider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// This is some documentation

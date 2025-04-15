@@ -85,6 +85,9 @@ class FamilyFamily extends Family<int> {
 
   @override
   String? get name => r'familyProvider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [family].
@@ -427,6 +430,9 @@ class Family2Family extends Family<int> {
 
   @override
   String? get name => r'family2Provider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [Family2].
@@ -622,6 +628,9 @@ class Provider4Family extends Family<int> {
 
   @override
   String? get name => r'provider4Provider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [Provider4].

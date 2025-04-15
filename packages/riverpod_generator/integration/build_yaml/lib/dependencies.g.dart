@@ -108,6 +108,9 @@ class Calc2Family extends Family<int> {
 
   @override
   String? get name => r'myFamilyCalc2ProviderFamily';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [calc2].

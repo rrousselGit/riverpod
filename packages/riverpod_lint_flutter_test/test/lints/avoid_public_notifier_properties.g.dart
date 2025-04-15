@@ -88,6 +88,9 @@ class GeneratedNotifierFamily extends Family<int> {
 
   @override
   String? get name => r'generatedNotifierProvider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [GeneratedNotifier].

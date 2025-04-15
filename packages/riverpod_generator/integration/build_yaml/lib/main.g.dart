@@ -117,6 +117,9 @@ class Count2Family extends Family<int> {
 
   @override
   String? get name => r'myFamilyCount2ProviderFamily';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [count2].
@@ -246,6 +249,9 @@ class CountFuture2Family extends Family<AsyncValue<int>> {
 
   @override
   String? get name => r'myFamilyCountFuture2ProviderFamily';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [countFuture2].
@@ -376,6 +382,9 @@ class CountStream2Family extends Family<AsyncValue<int>> {
 
   @override
   String? get name => r'myFamilyCountStream2ProviderFamily';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [countStream2].
@@ -575,6 +584,9 @@ class CountNotifier2Family extends Family<int> {
 
   @override
   String? get name => r'myFamilyCountNotifier2ProviderFamily';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [CountNotifier2].
@@ -732,6 +744,9 @@ class CountAsyncNotifier2Family extends Family<AsyncValue<int>> {
 
   @override
   String? get name => r'myFamilyCountAsyncNotifier2ProviderFamily';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [CountAsyncNotifier2].
@@ -890,6 +905,9 @@ class CountStreamNotifier2Family extends Family<AsyncValue<int>> {
 
   @override
   String? get name => r'myFamilyCountStreamNotifier2ProviderFamily';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [CountStreamNotifier2].

@@ -72,6 +72,9 @@ class FnFamily extends Family<int> {
 
   @override
   String? get name => r'fnProvider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [fn].
@@ -237,6 +240,9 @@ class MyNotifierFamily extends Family<int> {
 
   @override
   String? get name => r'myNotifierProvider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [MyNotifier].

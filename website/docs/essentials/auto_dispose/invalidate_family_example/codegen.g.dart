@@ -71,6 +71,9 @@ class LabelFamily extends Family<String> {
 
   @override
   String? get name => r'labelProvider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [label].

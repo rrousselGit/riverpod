@@ -71,6 +71,9 @@ class ActivityFamily extends Family<AsyncValue<Activity>> {
 
   @override
   String? get name => r'activityProvider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [activity].
@@ -223,6 +226,9 @@ class ActivityNotifier2Family extends Family<AsyncValue<Activity>> {
 
   @override
   String? get name => r'activityNotifier2Provider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [ActivityNotifier2].

@@ -74,6 +74,9 @@ class RandomFamily extends Family<int> {
 
   @override
   String? get name => r'randomProvider';
+
+  @override
+  bool get isAutoDispose => true;
 }
 
 /// See also [random].
