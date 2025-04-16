@@ -53,8 +53,8 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [avoid\_ref\_inside\_state\_dispose](#avoid_ref_inside_state_dispose)
   - [avoid\_keep\_alive\_dependency\_inside\_auto\_dispose (riverpod\_generator only)](#avoid_keep_alive_dependency_inside_auto_dispose-riverpod_generator-only)
   - [notifier\_build (riverpod\_generator only)](#notifier_build-riverpod_generator-only)
-- [riverpod\_syntax\_error (riverpod\_generator only)](#riverpod_syntax_error-riverpod_generator-only)
-  - [async\_value\_nullable\_patttern](#async_value_nullable_patttern)
+  - [riverpod\_syntax\_error (riverpod\_generator only)](#riverpod_syntax_error-riverpod_generator-only)
+  - [async\_value\_nullable\_pattern](#async_value_nullable_pattern)
 - [protected\_notifier\_properties](#protected_notifier_properties)
 - [All assists](#all-assists)
   - [Wrap widgets with a `Consumer`](#wrap-widgets-with-a-consumer)
@@ -664,7 +664,7 @@ class Example extends _$Example {
 class Example extends _$Example {}
 ```
 
-## riverpod_syntax_error (riverpod_generator only)
+### riverpod_syntax_error (riverpod_generator only)
 
 A general purpose lint, for when an exception is detected
 in `riverpod_generator`. This reports the error in the relevant file.
@@ -691,7 +691,7 @@ abstract class Example extends _$Example {
 }
 ```
 
-### async_value_nullable_patttern
+### async_value_nullable_pattern
 
 Warn if the pattern `AsyncValue(:final value?)` is used when the data
 is possibly nullable.

@@ -18,9 +18,9 @@ pkg:provider.
 If you've just started a migration to pkg:riverpod, make sure you read the dedicated guide
 (see <Link documentID="from_provider/quickstart" />).
 This article is meant for folks that already transitioned to riverpod, but want to move away from
-`ChangeNotifier` definetively.
+`ChangeNotifier`.
 
-All in all, migrating from `ChangeNotifier` to `AsyncNotifer` requires a
+All in all, migrating from `ChangeNotifier` to `AsyncNotifier` requires a
 paradigm shift, but it brings great simplification with the resulting migrated
 code. See also <Link documentID="concepts/why_immutability" />.
 
@@ -30,14 +30,14 @@ Take this (faulty) example:
 This implementation shows several weak design choices such as:
 - The usage of `isLoading` and `hasError` to handle different asynchronous cases
 - The need to carefully handle requests with tedious `try`/`catch`/`finally` expressions
-- The need to inkove `notifyListeners` at the right times to make this implementation work
+- The need to invoke `notifyListeners` at the right times to make this implementation work
 - The presence of inconsistent or possibly undesirable states, e.g. initialization with an empty list
 
 Note how this example has been crafted to show how `ChangeNotifier` can lead to faulty design choices
 for newbie developers; also, another takeaway is that mutable state might be way harder than it
 initially promises.
 
-`Notifier`/`AsyncNotifer`, in combination with immutable state, can lead to better design choices
+`Notifier`/`AsyncNotifier`, in combination with immutable state, can lead to better design choices
 and less errors.
 
 Let's see how to migrate the above snippet, one step at a time, towards the newest APIs.
@@ -94,7 +94,7 @@ to smooth out the migration at first.
 
 
 ### Initialization
-Initalizing a notifier is easy: just write initialization logic inside `build`.  
+Initializing a notifier is easy: just write initialization logic inside `build`.
 We can now get rid of the old `_init` function.
 
 <AutoSnippet language="dart" {...initialization}></AutoSnippet>

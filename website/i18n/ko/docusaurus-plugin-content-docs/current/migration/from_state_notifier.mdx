@@ -22,7 +22,7 @@ import obtainNotifierOnTests from "!!raw-loader!/docs/migration/from_state_notif
 import { Link } from "/src/components/Link";
 import { AutoSnippet } from "/src/components/CodeSnippet";
 
-[Riverpod 2.0](https://pub.dev/packages/flutter_riverpod/changelog#200)과 함께 새로운 클래스가 도입되었습니다: `Notifier` / `AsyncNotifer`.  
+[Riverpod 2.0](https://pub.dev/packages/flutter_riverpod/changelog#200)과 함께 새로운 클래스가 도입되었습니다: `Notifier` / `AsyncNotifier`.
 이제 이러한 새로운 API를 위해 `StateNotifier`는 더 이상 사용되지 않습니다.
 
 이 페이지는 더 이상 사용되지 않는 `StateNotifier`에서 새로운 API로 마이그레이션하는 방법을 보여줍니다.
@@ -56,7 +56,7 @@ import { AutoSnippet } from "/src/components/CodeSnippet";
 - `StateNotifier`의 전체 초기화 프로세스는 provider와 생성자 사이에 분할되어 있는 반면, `Notifier`는 이러한 로직을 배치할 수 있는 단일 위치를 예약합니다.
 - `StateNotifier`와는 반대로, `Notifier`의 생성자에는 어떠한 로직도 작성되지 않는 것을 주목하세요.
 
-`Notifier`의 비동기 대응 클래스인 `AsyncNotifer`에서도 비슷한 점을 발견할 수 있습니다.  
+`Notifier`의 비동기 대응 클래스인 `AsyncNotifier`에서도 비슷한 점을 발견할 수 있습니다.
 
 ## 비동기 `StateNotifier` 마이그레이션하기
 
@@ -72,14 +72,14 @@ import { AutoSnippet } from "/src/components/CodeSnippet";
 `AsyncNotifier`는 `Notifier`와 마찬가지로 더 간단하고 통일된 API를 제공합니다.
 여기서 `AsyncNotifier`는 메서드가 있는 `FutureProvider`로 쉽게 볼 수 있습니다.
 
-`AsyncNotifer`에는 `StateNotifier`에는 없는 유틸리티와 게터가 함께 제공됩니다, 
+`AsyncNotifier`에는 `StateNotifier`에는 없는 유틸리티와 게터가 함께 제공됩니다,
 예를 들어 [`future`](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier/future.html) 
 및 [`update`](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier/update.html).
 이를 통해 비동기 변이(mutations)와 부수작업(side-effects)을 처리할 때 훨씬 더 간단한 로직을 작성할 수 있습니다.
 <Link documentID="essentials/side_effects" />를 참고하세요.
 
 :::tip
-`StateNotifier<AsyncValue<T>>`에서 `AsyncNotifer<T>`로 마이그레이션하는 방법은 다음과 같습니다:
+`StateNotifier<AsyncValue<T>>`에서 `AsyncNotifier<T>`로 마이그레이션하는 방법은 다음과 같습니다:
 
 - 초기화 로직을 `build`에 넣기
 - 초기화 또는 부수작업 메서드에서 `catch`/`try` 블록을 제거합니다.
@@ -88,7 +88,7 @@ import { AutoSnippet } from "/src/components/CodeSnippet";
 
 ### 장점
 
-이 몇 가지 예시를 살펴본 후, 이제 `Notifier` 와 `AsyncNotifer`의 주요 장점을 살펴보겠습니다: 
+이 몇 가지 예시를 살펴본 후, 이제 `Notifier` 와 `AsyncNotifier`의 주요 장점을 살펴보겠습니다:
 - 새로운 구문은 특히 비동기 상태의 경우 훨씬 더 간단하고 가독성이 높아질 것입니다.
 - 새로운 API에는 일반적으로 상용구 코드가 줄어들 가능성이 높습니다.
 - 이제 작성하는 provider 타입에 관계없이 구문이 통합되어 코드 생성이 가능해졌습니다.
@@ -102,7 +102,7 @@ import { AutoSnippet } from "/src/components/CodeSnippet";
 
 `Notifier`에는 `FamilyNotifier` 및 `Notifier`와 같은 자체 `.family` 및 `.autoDispose` 대응 항목이 있습니다.  
 항상 그렇듯이, 이러한 수정 사항을 결합할 수 있습니다 (일명 `AutoDisposeFamilyNotifier`).  
-`AsyncNotifer`에는 비동기 버전도 있습니다(예: `FamilyAsyncNotifier`).
+`AsyncNotifier`에는 비동기 버전도 있습니다(예: `FamilyAsyncNotifier`).
 
 수정 사항(Modifications)은 클래스 내부에 명시적으로 지정(stated)됩니다; 
 모든 매개변수는 `build` 메서드에 직접 주입되어 초기화 로직에서 사용할 수 있습니다.  
@@ -190,7 +190,7 @@ import { AutoSnippet } from "/src/components/CodeSnippet";
 ## 변이(Mutations) API는 이전과 동일합니다
 
 지금까지 `StateNotifier`와 새로운 API의 차이점을 살펴보았습니다.  
-대신, `Notifier`, `AsyncNotifer`, `StateNotifier`가 공유하는 한 가지는 상태를 소비하고 변경할 수 있다는 점입니다.
+대신, `Notifier`, `AsyncNotifier`, `StateNotifier`가 공유하는 한 가지는 상태를 소비하고 변경할 수 있다는 점입니다.
 
 Consumers는 동일한 구문으로 이 세 providers로부터 데이터를 얻을 수 있습니다, 
 이는 `StateNotifier`에서 마이그레이션하는 경우에 유용하며, 이는 notifiers 메서드에도 적용됩니다.
@@ -221,7 +221,7 @@ Consumers는 동일한 구문으로 이 세 providers로부터 데이터를 얻�
 이렇게 됩니다:
 <AutoSnippet language="dart" {...addListener}></AutoSnippet>
 
-간단히 말해, `Notifier`/`AsyncNotifer`를 수신하려면 `ref.listen`를 사용하면 됩니다.
+간단히 말해, `Notifier`/`AsyncNotifier`를 수신하려면 `ref.listen`를 사용하면 됩니다.
 <Link documentID="essentials/combining_requests" hash="the-reflistenlistenself-methods" />를 참고하세요
 
 ### 테스트의 `.debugState`에서
@@ -231,10 +231,10 @@ Consumers는 동일한 구문으로 이 세 providers로부터 데이터를 얻�
 
 테스트에서 상태에 액세스하기 위해 `.debugState`를 사용하는 경우 이 접근 방식을 중단해야 합니다.
 
-`Notifier` / `AsyncNotifer`에는 `.debugState`가 없으며, 대신 `.state`, 즉 `@visibleForTesting`을 직접 노출합니다.
+`Notifier` / `AsyncNotifier`에는 `.debugState`가 없으며, 대신 `.state`, 즉 `@visibleForTesting`을 직접 노출합니다.
 
 :::danger
-AVOID 테스트에서 `.state`에 접근하지 마시고, 꼭 접근해야 한다면 `Notifier` / `AsyncNotifer`가 이미 제대로 인스턴스화된 경우에만 접근하세요;
+AVOID 테스트에서 `.state`에 접근하지 마시고, 꼭 접근해야 한다면 `Notifier` / `AsyncNotifier`가 이미 제대로 인스턴스화된 경우에만 접근하세요;
 그러면 테스트 내부에서 `.state`에 자유롭게 접근할 수 있습니다.
 
 실제로 `Notifier` / `AsyncNotifier`는 직접 인스턴스화해서는 안 됩니다; 

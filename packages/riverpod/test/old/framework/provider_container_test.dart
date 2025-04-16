@@ -225,7 +225,7 @@ void main() {
       });
 
       test(
-          'list only elements associated with the container (ignoring inherited and descendent elements)',
+          'list only elements associated with the container (ignoring inherited and descendant elements)',
           () {
         final provider = Provider((ref) => 0);
         final provider2 = Provider(
