@@ -23,11 +23,11 @@ import { AutoSnippet } from "@site/src/components/CodeSnippet";
 
 <!---
 Along with [Riverpod 2.0](https://pub.dev/packages/flutter_riverpod/changelog#200), new classes
-were introduced: `Notifier` / `AsyncNotifer`.  
+were introduced: `Notifier` / `AsyncNotifier`.
 `StateNotifier` is now discouraged in favor of those new APIs.
 -->
 與 [Riverpod 2.0](https://pub.dev/packages/flutter_riverpod/changelog#200)
-一起引入了新類： `Notifier`/`AsyncNotifer`。  
+一起引入了新類： `Notifier`/`AsyncNotifier`。
 現在不鼓勵使用 `StateNotifier`，轉而使用這些新 API。
 
 <!---
@@ -108,9 +108,9 @@ Comparing `Notifier` with `StateNotifier`, one can observe these main difference
 - 請注意，與 `StateNotifier` 不同，沒有任何邏輯被寫入 `Notifier` 的建構函式中
 
 <!---
-Similar conclusions can be made with `AsyncNotifer`, `Notifier`'s asynchronous equivalent.  
+Similar conclusions can be made with `AsyncNotifier`, `Notifier`'s asynchronous equivalent.
 -->
-使用 `AsyncNotifer`、`Notifier` 的非同步等效項可以得出類似的結論。
+使用 `AsyncNotifier`、`Notifier` 的非同步等效項可以得出類似的結論。
 
 <!---
 ## Migrating asynchronous `StateNotifier`s
@@ -134,33 +134,33 @@ Here's the above example, rewritten with the new `AsyncNotifier` APIs:
 <AutoSnippet language="dart" {...asyncNotifier}></AutoSnippet>
 
 <!---
-`AsyncNotifer`, just like `Notifier`, brings a simpler and more uniform API.
-Here, it's easy to see `AsyncNotifer` as a `FutureProvider` with methods.
+`AsyncNotifier`, just like `Notifier`, brings a simpler and more uniform API.
+Here, it's easy to see `AsyncNotifier` as a `FutureProvider` with methods.
 -->
-`AsyncNotifer` 與 `Notifier` 一樣，帶來了更簡單、更統一的 API。
-在這裡，很容易將 `AsyncNotifer` 視為帶有方法的 `FutureProvider`。
+`AsyncNotifier` 與 `Notifier` 一樣，帶來了更簡單、更統一的 API。
+在這裡，很容易將 `AsyncNotifier` 視為帶有方法的 `FutureProvider`。
 
 <!---
-`AsyncNotifer` comes with a set of utilities and getters that `StateNotifier` doesn't have, such as e.g.
+`AsyncNotifier` comes with a set of utilities and getters that `StateNotifier` doesn't have, such as e.g.
 [`future`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/future.html)
 and [`update`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/update.html).
 This enables us to write much simpler logic when handling asynchronous mutations and side-effects.
 See also <Link documentID="essentials/side_effects" />.
 -->
-`AsyncNotifer` 附帶了一組 `StateNotifier` 沒有的實用程式和 getter，例如
+`AsyncNotifier` 附帶了一組 `StateNotifier` 沒有的實用程式和 getter，例如
 [`future`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/future.html)
 和 [`update`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/update.html)。
 這使我們能夠在處理非同步突變和副作用時編寫更簡單的邏輯。
 另請參閱<Link documentID="essentials/side_effects" />。
 :::tip
 <!---
-Migrating from `StateNotifier<AsyncValue<T>>` to a `AsyncNotifer<T>` boils down to:
+Migrating from `StateNotifier<AsyncValue<T>>` to a `AsyncNotifier<T>` boils down to:
 
 - Putting initialization logic into `build`
 - Removing any `catch`/`try` blocks in initialization or in side effects methods
 - Remove any `AsyncValue.guard` from `build`, as it converts `Future`s into `AsyncValue`s
 -->
-從 `StateNotifier<AsyncValue<T>>` 遷移到 `AsyncNotifer<T>` 歸結為：
+從 `StateNotifier<AsyncValue<T>>` 遷移到 `AsyncNotifier<T>` 歸結為：
 
 - 將初始化邏輯放入 `build`
 - 刪除初始化或副作用方法中的任何 `catch`/`try` 塊
@@ -174,13 +174,13 @@ Migrating from `StateNotifier<AsyncValue<T>>` to a `AsyncNotifer<T>` boils down 
 ## 優點​
 
 <!---
-After these few examples, let's now highlight the main advantages of `Notifier` and `AsyncNotifer`: 
+After these few examples, let's now highlight the main advantages of `Notifier` and `AsyncNotifier`:
 - The new syntax should feel way simpler and more readable, especially for asynchronous state
 - New APIs are likely to have less boilerplate code in general
 - Syntax is now unified, no matter the type of provider you're writing, enabling code generation
 (see <Link documentID="concepts/about_code_generation" />)
 -->
-在這幾個示例之後，現在讓我們重點介紹 `Notifier` 和 `AsyncNotifer` 的主要優點：
+在這幾個示例之後，現在讓我們重點介紹 `Notifier` 和 `AsyncNotifier` 的主要優點：
 - 新語法應該感覺更簡單、更具可讀性，特別是對於非同步狀態
 - 一般來說，新 API 的樣板程式碼可能會更少
 - 無論您正在編寫哪種型別的提供者程式，語法現在都是統一的，從而支援程式碼生成
@@ -205,12 +205,12 @@ Another important difference is how families and auto dispose is handled with th
 `Notifier`, has its own `.family` and `.autoDispose` counterparts, such as `FamilyNotifier`
 and `AutoDisposeNotifier`.  
 As always, such modifications can be combined (aka `AutoDisposeFamilyNotifier`).  
-`AsyncNotifer` has its asynchronous equivalent, too (e.g. `AutoDisposeFamilyAsyncNotifier`).
+`AsyncNotifier` has its asynchronous equivalent, too (e.g. `AutoDisposeFamilyAsyncNotifier`).
 -->
 `Notifier`，有其自己的 `.family` 和 `.autoDispose` 對應項，
 例如 `FamilyNotifier` 和 `AutoDisposeNotifier`。  
 與往常一樣，此類修改可以組合使用（又名 `AutoDisposeFamilyNotifier`）。  
-`AsyncNotifer` 也有其非同步等效項（例如 `AutoDisposeFamilyAsyncNotifier`）。
+`AsyncNotifier` 也有其非同步等效項（例如 `AutoDisposeFamilyAsyncNotifier`）。
 
 <!---
 Modifications are explicitly stated inside the class; any parameters are directly injected in the
@@ -350,7 +350,7 @@ property would be misleading on the new notifiers: `mounted` would *almost alway
 
 <!---
 While it would be possible to craft a [custom workaround](https://github.com/rrousselGit/riverpod/issues/1879#issuecomment-1303189191),
-it's recomended to work around this by canceling the asynchronous operation.
+it's recommended to work around this by canceling the asynchronous operation.
 -->
 雖然可以制定[自定義解決方法](https://github.com/rrousselGit/riverpod/issues/1879#issuecomment-1303189191)，
 但建議透過取消非同步操作來解決此問題。
@@ -383,11 +383,11 @@ Therefore, the above example migrates to the following:
 
 <!---
 Up until now we've shown the differences between `StateNotifier` and the new APIs.  
-Instead, one thing `Notifier`, `AsyncNotifer` and `StateNotifier` share is how their states
+Instead, one thing `Notifier`, `AsyncNotifier` and `StateNotifier` share is how their states
 can be consumed and mutated.
 -->
 到目前為止，我們已經展示了 `StateNotifier` 和新 API 之間的差異。  
-相反， `Notifier`、`AsyncNotifer` 和 `StateNotifier` 共享的一件事是
+相反， `Notifier`、`AsyncNotifier` 和 `StateNotifier` 共享的一件事是
 如何使用和改變它們的狀態。
 
 <!---
@@ -441,10 +441,10 @@ Becomes this:
 <AutoSnippet language="dart" {...addListener}></AutoSnippet>
 
 <!---
-In a nutshell: if you want to listen to a `Notifier`/`AsyncNotifer`, just use `ref.listen`.
+In a nutshell: if you want to listen to a `Notifier`/`AsyncNotifier`, just use `ref.listen`.
 See <Link documentID="essentials/combining_requests" hash="the-reflistenlistenself-methods" />.
 -->
-簡而言之：如果你想監聽 `Notifier`/`AsyncNotifer`，只需使用 `ref.listen`。
+簡而言之：如果你想監聽 `Notifier`/`AsyncNotifier`，只需使用 `ref.listen`。
 請參閱<Link documentID="essentials/combining_requests" hash="the-reflistenlistenself-methods" />。
 
 <!---
@@ -466,20 +466,20 @@ approach.
 如果您在測試中使用 `.debugState` 訪問狀態，則您很可能需要放棄這種方法。
 
 <!---
-`Notifier` / `AsyncNotifer` don't have a `.debugState`; instead, they directly expose `.state`,
+`Notifier` / `AsyncNotifier` don't have a `.debugState`; instead, they directly expose `.state`,
 which is `@visibleForTesting`.
 -->
-`Notifier`/`AsyncNotifer` 沒有 `.debugState`；相反，它們直接公開 `.state`，
+`Notifier`/`AsyncNotifier` 沒有 `.debugState`；相反，它們直接公開 `.state`，
 即 `@visibleForTesting` 。
 
 :::danger
 <!---
 AVOID accessing `.state` from tests; if you have to, do it _if and only if_ you had already have
-a `Notifier` / `AsyncNotifer` properly instantied;
+a `Notifier` / `AsyncNotifier` properly instantiated;
 then, you could access `.state` inside tests freely.
 -->
 避免！從測試中訪問 `.state`；如果必須的話，_當且僅當_您已經正確例項化了
-`Notifier`/`AsyncNotifer` 時才執行此操作；
+`Notifier`/`AsyncNotifier` 時才執行此操作；
 然後，您可以在測試中自由訪問 `.state`。
 
 <!---
@@ -541,7 +541,7 @@ Becomes:
 
 <!---
 Even though it costs us a few more LoC, migrating away from `StateProvider` enables us to
-definetively archive `StateNotifier`.
+archive `StateNotifier`.
 -->
 儘管它花費了我們更多的程式碼行數（LoC），但從 `StateProvider`
 遷移使我們能夠明確地歸檔 `StateNotifier` 。

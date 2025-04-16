@@ -77,7 +77,7 @@ void main() {
     expect(whenStack, isNotNull);
   });
 
-  testWidgets("future completes after unmount does't crash", (tester) async {
+  testWidgets("future completes after unmount doesn't crash", (tester) async {
     final completer = Completer<int>();
     final futureProvider = FutureProvider((s) => completer.future);
 
@@ -101,7 +101,7 @@ void main() {
     await Future<void>.value();
   });
 
-  testWidgets("future fails after unmount does't crash", (tester) async {
+  testWidgets("future fails after unmount doesn't crash", (tester) async {
     final completer = Completer<int>();
     final futureProvider = FutureProvider((s) => completer.future);
 

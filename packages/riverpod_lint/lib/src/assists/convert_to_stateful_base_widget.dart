@@ -231,7 +231,7 @@ class $createdStateClassName extends $baseStateName<${widgetClass.name}> {
   }
 }
 
-// Original implemenation in
+// Original implementation in
 // package:analysis_server/lib/src/services/correction/dart/flutter_convert_to_stateful_widget.dart
 class _FieldFinder extends RecursiveAstVisitor<void> {
   Set<FieldElement> fieldsAssignedInConstructors = {};

@@ -275,7 +275,7 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
   }
 }
 
-// Original implemenation in
+// Original implementation in
 // package:analysis_server/lib/src/services/correction/dart/flutter_convert_to_stateless_widget.dart
 class _FieldFinder extends RecursiveAstVisitor<void> {
   final fieldsAssignedInConstructors = <FieldElement>{};

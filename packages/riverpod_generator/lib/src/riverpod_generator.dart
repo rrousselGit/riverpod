@@ -48,7 +48,7 @@ class RiverpodInvalidGenerationSourceError
 
   final AstNode? astNode;
 
-  // TODO overrride toString to render AST nodes.
+  // TODO override toString to render AST nodes.
 }
 
 @immutable

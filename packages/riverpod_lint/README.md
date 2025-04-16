@@ -52,7 +52,7 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [notifier\_extends (riverpod\_generator only)](#notifier_extends-riverpod_generator-only)
   - [avoid\_ref\_inside\_state\_dispose](#avoid_ref_inside_state_dispose)
   - [notifier\_build (riverpod\_generator only)](#notifier_build-riverpod_generator-only)
-  - [async\_value\_nullable\_patttern](#async_value_nullable_patttern)
+  - [async\_value\_nullable\_pattern](#async_value_nullable_pattern)
 - [protected\_notifier\_properties](#protected_notifier_properties)
 - [All assists](#all-assists)
   - [Wrap widgets with a `Consumer`](#wrap-widgets-with-a-consumer)
@@ -611,7 +611,7 @@ class Example extends _$Example {
 class Example extends _$Example {}
 ```
 
-### async_value_nullable_patttern
+### async_value_nullable_pattern
 
 Warn if the pattern `AsyncValue(:final value?)` is used when the data
 is possibly nullable.

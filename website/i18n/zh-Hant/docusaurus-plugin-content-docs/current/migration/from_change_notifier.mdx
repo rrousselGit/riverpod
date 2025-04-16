@@ -21,18 +21,18 @@ pkg:provider.
 If you've just started a migration to pkg:riverpod, make sure you read the dedicated guide
 (see <Link documentID="from_provider/quickstart" />).
 This article is meant for folks that already transitioned to riverpod, but want to move away from
-`ChangeNotifier` definetively.
+`ChangeNotifier`
 -->
 如果您剛剛開始遷移到 pkg:riverpod，請務必閱讀專用指南
 （請參閱<Link documentID="from_provider/quickstart" />）。
 本文適用於已經過渡到 Riverpod，但想要徹底放棄 `ChangeNotifier` 的人們。
 
 <!---
-All in all, migrating from `ChangeNotifier` to `AsyncNotifer` requires a
+All in all, migrating from `ChangeNotifier` to `AsyncNotifier` requires a
 paradigm shift, but it brings great simplification with the resulting migrated
 code. See also <Link documentID="concepts/why_immutability" />.
 -->
-總而言之，從 `ChangeNotifier` 遷移到 `AsyncNotifer` 需要正規化轉換，
+總而言之，從 `ChangeNotifier` 遷移到 `AsyncNotifier` 需要正規化轉換，
 但它極大地簡化了遷移後的程式碼。
 另請參閱<Link documentID="concepts/why_immutability" />。
 
@@ -46,7 +46,7 @@ Take this (faulty) example:
 This implementation shows several weak design choices such as:
 - The usage of `isLoading` and `hasError` to handle different asynchronous cases
 - The need to carefully handle requests with tedious `try`/`catch`/`finally` expressions
-- The need to inkove `notifyListeners` at the right times to make this implementation work
+- The need to invoke `notifyListeners` at the right times to make this implementation work
 - The presence of inconsistent or possibly undesirable states, e.g. initialization with an empty list
 -->
 該實現顯示了幾個薄弱的設計選擇，例如：
@@ -64,10 +64,10 @@ initially promises.
 如何導致錯誤的設計方案；此外，另一個要點是可變狀態可能比最初承諾的要困難得多。
 
 <!---
-`Notifier`/`AsyncNotifer`, in combination with immutable state, can lead to better design choices
+`Notifier`/`AsyncNotifier`, in combination with immutable state, can lead to better design choices
 and less errors.
 -->
-`Notifier`/`AsyncNotifer` 與不可變狀態相結合，
+`Notifier`/`AsyncNotifier` 與不可變狀態相結合，
 可以帶來更好的設計方案和更少的錯誤。
 
 <!---
@@ -180,7 +180,7 @@ Riverpod 的 API 是細粒度的；儘管如此，在遷移時，
 -->
 ### 初始化​
 <!---
-Initalizing a notifier is easy: just write initialization logic inside `build`.  
+Initializing a notifier is easy: just write initialization logic inside `build`.
 We can now get rid of the old `_init` function.
 -->
 初始化通知者程式很簡單：只需在 `build` 內編寫初始化邏輯即可。  

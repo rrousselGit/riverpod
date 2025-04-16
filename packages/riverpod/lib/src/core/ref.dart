@@ -59,7 +59,8 @@ abstract class Ref<State extends Object?> {
   /// But if a provider is not listened to, the rebuild may be delayed until
   /// the provider is listened to again.
   ///
-  /// Calling [invalidate] multiple times will cause a single recomputation of the state.
+  /// Calling [invalidate] multiple times will cause a single recomputation of
+  /// the state.
   ///
   /// If used on a provider which is not initialized or disposed,
   /// this method will have no effect.

@@ -22,11 +22,11 @@ In particular, this section should answer the following:
   - Can I migrate incrementally?
   - etc.
 
-By the end of this section you should be convinced that Riverpod is to be prefered over Provider. 
+By the end of this section you should be convinced that Riverpod is to be preferred over Provider.
 
 **Riverpod is indeed a more modern, recommended and reliable approach when compared to Provider**.
 
-Riverpod offers better State Management capabilities, better Caching strategies and a simplified Reactivty model.  
+Riverpod offers better State Management capabilities, better Caching strategies and a simplified Reactivity model.
 Whereas, Provider is currently lacking in many areas with no way forward.
 
 ## Provider's Limitations
@@ -73,7 +73,7 @@ has changed (e.g. such as when there's a GlobalKey involved in the widget tree).
 Nonetheless, Provider has an ad-hoc solution named `ProxyProvider`, but it's considered tedious and error-prone.
 
 Combining state is a core Riverpod mechanism, as we can combine and cache values reactively with zero overhead 
-with simple yet powerful utilites such as [ref.watch] and [ref.listen]:
+with simple yet powerful utilities such as [ref.watch] and [ref.listen]:
 
 <AutoSnippet language="dart" {...combine}></AutoSnippet>
 
@@ -121,7 +121,7 @@ Thus, obtaining a `.family` equivalent for Provider is fundamentally impossible 
 To be able to write a test, you *have to* re-define providers inside each test.
 
 With Riverpod, providers are ready to use inside tests, by default. Furthermore, Riverpod exposes a 
-handy collection of "overriding" utilites that are crucial when mocking Providers.
+handy collection of "overriding" utilities that are crucial when mocking Providers.
 
 Testing the combined state snippet above would be as simple as the following:
 

@@ -151,7 +151,7 @@ ClassDeclaration? findStateClass(ClassDeclaration widgetClass) {
   });
 }
 
-// Original implemenation in package:analyzer/lib/src/dart/ast/extensions.dart
+// Original implementation in package:analyzer/lib/src/dart/ast/extensions.dart
 extension IdentifierExtension on Identifier {
   Element? get writeOrReadElement {
     return _writeElement(this) ?? staticElement;

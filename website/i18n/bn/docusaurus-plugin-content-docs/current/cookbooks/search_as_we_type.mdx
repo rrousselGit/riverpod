@@ -6,7 +6,7 @@ A real world example could be to use `FutureProvider` to implement a searchbar.
 
 ## Usage example: "Search as we type" searchbar
 
-Implementing a "seach as we type" can seem daunting at first when using
+Implementing a "search as we type" can seem daunting at first when using
 conventional means.  
 There are lots of moving parts, such as:
 
@@ -26,10 +26,10 @@ is to split it into multiple providers:
   the other providers/[family].
 
 The first step would be to store the user input somewhere. For this example,
-we will use `StateProvider` (as the seach state is only a single `String`):
+we will use `StateProvider` (as the search state is only a single `String`):
 
 ```dart
-final seachInputProvider = StateProvider<String>((ref) => '');
+final searchInputProvider = StateProvider<String>((ref) => '');
 ```
 
 We can then connect this provider to a [TextField] by doing:
