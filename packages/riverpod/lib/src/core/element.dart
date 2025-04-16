@@ -958,7 +958,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   void onDispose(void Function() listener) {
     _assertNotOutdated();
     if (!_mounted) {
-      throw StateError('Cannot call onDispose after a provider was dispose');
+      throw StateError('Cannot call onDispose after a provider was disposed');
     }
     _onDisposeListeners ??= [];
     _onDisposeListeners!.add(listener);

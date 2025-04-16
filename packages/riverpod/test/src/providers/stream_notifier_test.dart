@@ -359,11 +359,11 @@ void main() {
           final sub = container.listen(provider.notifier, (previous, next) {});
           await container.read(provider.future);
 
-          // ignore: prefer_const_constructors, not using `const` as we voluntarility break identity to test `identical`
+          // ignore: prefer_const_constructors, not using `const` as we voluntarily break identity to test `identical`
           final newState = AsyncData(84);
-          // ignore: prefer_const_constructors, not using `const` as we voluntarility break identity to test `identical`
+          // ignore: prefer_const_constructors, not using `const` as we voluntarily break identity to test `identical`
           final newLoading = AsyncLoading<int>();
-          // ignore: prefer_const_constructors, not using `const` as we voluntarility break identity to test `identical`
+          // ignore: prefer_const_constructors, not using `const` as we voluntarily break identity to test `identical`
           final newError = AsyncError<int>(84, StackTrace.empty);
 
           sub.read().state = newState;
@@ -721,7 +721,7 @@ void main() {
         );
       });
 
-      group('AsyncNotifer.update', () {
+      group('AsyncNotifier.update', () {
         test('passes in the latest state', () async {
           final container = ProviderContainer.test();
           final provider = factory.simpleTestProvider<int>(

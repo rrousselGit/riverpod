@@ -295,7 +295,7 @@ void main() {
       });
 
       test(
-          'Reading the state inside the notifier rethrows initilization error, if any',
+          'Reading the state inside the notifier rethrows initialization error, if any',
           () {
         final provider = factory
             .simpleTestProvider<int>((ref) => throw UnimplementedError());

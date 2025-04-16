@@ -141,7 +141,7 @@ Riverpod을 *미래에 대비한* 방식으로 사용하려면 [코드 생성]�
 참고로, 메타프로그래밍(metaprogramming)이 보편화되면, 코드 생성 기능이 Riverpod의 기본값이 될 가능성이 높습니다.
 
 안타깝게도 `@riverpod`는 `ChangeNotifierProvider`에 대한 코드를 생성할 수 없습니다.  
-이 문제를 해결하기 위해 다음 유틸리티 확장 메소드(extesion method)를 사용할 수 있습니다:
+이 문제를 해결하기 위해 다음 유틸리티 확장 메소드(extension method)를 사용할 수 있습니다:
 
 ```dart
 extension ChangeNotifierWithCodeGenExtension on Ref {

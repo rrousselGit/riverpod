@@ -30,7 +30,7 @@ Der erste Schritt wäre, die Benutzereingaben irgendwo zu speichern. Für dieses
 werden wir `StateProvider` verwenden (da der Suchstatus nur ein einzelner `String` ist):
 
 ```dart
-final seachInputProvider = StateProvider<String>((ref) => '');
+final searchInputProvider = StateProvider<String>((ref) => '');
 ```
 
 Wir können dann diesen Provider mit einem [TextField] verbinden, indem wir folgendes tun:

@@ -1167,7 +1167,7 @@ void main() {
 
     // schedules `dep` and `dependent` to rebuild
     // Will build `dependent` before `dep` because `dependent` doesn't depend on `dep` yet
-    // And since nothing is watchin `dep` at the moment, then `dependent` will
+    // And since nothing is watching `dep` at the moment, then `dependent` will
     // rebuild before `dep` even though `dep` is its ancestor.
     // This is fine since nothing is listening to `dep` yet, but it should
     // not cause certain assertions to trigger
