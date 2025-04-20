@@ -1146,7 +1146,7 @@ void main() {
       test('executes immediately with current state if a state is available',
           () async {
         final container = ProviderContainer.test();
-        final provider = factory.simpleTestProvider<int>((ref) => 1);
+        final provider = factory.simpleTestProvider<int>((ref, _) => 1);
 
         final sub = container.listen(provider.notifier, (prev, next) {});
 
