@@ -3,7 +3,7 @@
 <a href="https://codecov.io/gh/rrousselgit/riverpod"><img src="https://codecov.io/gh/rrousselgit/riverpod/branch/master/graph/badge.svg" alt="codecov"></a>
 <a href="https://github.com/rrousselgit/riverpod"><img src="https://img.shields.io/github/stars/rrousselgit/riverpod.svg?style=flat&logo=github&colorB=deeppink&label=stars" alt="Star on Github"></a>
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="License: MIT"></a>
-<a href="https://discord.gg/GSt793j6eT"><img src="https://img.shields.io/discord/765557403865186374.svg?logo=discord&color=blue" alt="Discord"></a>
+<a href="https://discord.gg/hUUQkd9v"><img src="https://img.shields.io/discord/765557403865186374.svg?logo=discord&color=blue" alt="Discord"></a>
 
 <p align="center">
 <a href="https://www.netlify.com">
@@ -35,7 +35,7 @@ import 'package:dio/dio.dart';
 part 'my_file.g.dart';
 
 // Using riverpod_generator, we define Providers by annotating functions with @riverpod.
-// In this example, riverpod_generator will use this function and generate a matching "fetchProductsProvider".
+// In this example, riverpod_generator will use this function and generate a matching "fetchProductProvider".
 // The following example would be the equivalent of a "FutureProvider.autoDispose.family"
 @riverpod
 Future<List<Product>> fetchProducts(Ref ref, {required int page, int limit = 50}) async {
@@ -49,7 +49,7 @@ Future<List<Product>> fetchProducts(Ref ref, {required int page, int limit = 50}
 // Now that we defined a provider, we can then listen to it inside widgets as usual.
 Consumer(
   builder: (context, ref, child) {
-    AsyncValue<List<Product>> products = ref.watch(fetchProductsProvider(page: 1));
+    AsyncValue<List<Product>> products = ref.watch(fetchProductProvider(page: 1));
 
     // Since our provider is async, we need to handle loading/error states
     return products.when(
@@ -99,7 +99,7 @@ To install riverpod_generator, edit your `pubspec.yaml` and add the following:
 
 ```yaml
 dependencies:
-  # or flutter_riverpod/hooks_riverpod as per https://riverpod.dev/docs/getting_started
+  # or flutter_riverpod/hooks_riverpod as per https://riverpod.dev/docs/introduction/getting_started
   riverpod:
   # the annotation package containing @riverpod
   riverpod_annotation:

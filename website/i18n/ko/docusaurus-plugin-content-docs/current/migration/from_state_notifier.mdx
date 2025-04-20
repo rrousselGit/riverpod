@@ -73,8 +73,8 @@ import { AutoSnippet } from "/src/components/CodeSnippet";
 여기서 `AsyncNotifier`는 메서드가 있는 `FutureProvider`로 쉽게 볼 수 있습니다.
 
 `AsyncNotifier`에는 `StateNotifier`에는 없는 유틸리티와 게터가 함께 제공됩니다,
-예를 들어 [`future`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/future.html) 
-및 [`update`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/update.html).
+예를 들어 [`future`](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier/future.html) 
+및 [`update`](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier/update.html).
 이를 통해 비동기 변이(mutations)와 부수작업(side-effects)을 처리할 때 훨씬 더 간단한 로직을 작성할 수 있습니다.
 <Link documentID="essentials/side_effects" />를 참고하세요.
 
@@ -100,9 +100,9 @@ import { AutoSnippet } from "/src/components/CodeSnippet";
 
 또 다른 중요한 차이점은 새로운 API로 패밀리 및 자동폐기가 처리되는 방식입니다.
 
-`Notifier`에는 `FamilyNotifier` 및 `AutoDisposeNotifier`와 같은 자체 `.family` 및 `.autoDispose` 대응 항목이 있습니다.  
+`Notifier`에는 `FamilyNotifier` 및 `Notifier`와 같은 자체 `.family` 및 `.autoDispose` 대응 항목이 있습니다.  
 항상 그렇듯이, 이러한 수정 사항을 결합할 수 있습니다 (일명 `AutoDisposeFamilyNotifier`).  
-`AsyncNotifier`에는 비동기 버전도 있습니다(예: `AutoDisposeFamilyAsyncNotifier`).
+`AsyncNotifier`에는 비동기 버전도 있습니다(예: `FamilyAsyncNotifier`).
 
 수정 사항(Modifications)은 클래스 내부에 명시적으로 지정(stated)됩니다; 
 모든 매개변수는 `build` 메서드에 직접 주입되어 초기화 로직에서 사용할 수 있습니다.  

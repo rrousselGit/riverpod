@@ -1,4 +1,8 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/error/error.dart'
+    hide
+        // ignore: undefined_hidden_name, necessary to support broad analyzer versions
+        LintCode;
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
@@ -13,6 +17,7 @@ class AvoidRefInsideStateDispose extends RiverpodLintRule {
   static const _code = LintCode(
     name: 'avoid_ref_inside_state_dispose',
     problemMessage: "Avoid using 'Ref' inside State.dispose.",
+    errorSeverity: ErrorSeverity.WARNING,
   );
 
   @override

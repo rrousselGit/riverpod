@@ -16,15 +16,12 @@ part of '../framework.dart';
 /// ref.watch(provider.select((value) => value));
 /// ```
 /// {@endtemplate}
-abstract class Refreshable<T> implements ProviderListenable<T> {
-  /// The provider that is being refreshed.
-  AnyProvider<Object?> get _origin;
-}
+sealed class Refreshable<StateT> implements ProviderListenable<StateT> {}
 
-/// {@macro riverpod.refreshable}
-@Deprecated('Will be removed in 3.0.0. Use Refreshable instead')
-abstract class AlwaysAliveRefreshable<T>
-    implements Refreshable<T>, AlwaysAliveProviderListenable<T> {}
+mixin _ProviderRefreshable<OutT, OriginT>
+    implements Refreshable<OutT>, ProviderListenableWithOrigin<OutT, OriginT> {
+  ProviderBase<OriginT> get provider;
+}
 
 /// A debug utility used by `flutter_riverpod`/`hooks_riverpod` to check
 /// if it is safe to modify a provider.
@@ -32,6 +29,9 @@ abstract class AlwaysAliveRefreshable<T>
 /// This corresponds to all the widgets that a [Provider] is associated with.
 @internal
 void Function()? debugCanModifyProviders;
+
+@internal
+typedef WhenComplete = void Function(void Function() cb)?;
 
 /// {@template riverpod.provider_element_base}
 /// An internal class that handles the state of a provider.
@@ -44,18 +44,19 @@ void Function()? debugCanModifyProviders;
 /// of providers.
 /// Do not use.
 /// {@endtemplate}
-@optionalTypeArgs
 @internal
-abstract class ProviderElementBase<StateT>
-    implements
-        Ref<StateT>,
-        // ignore: deprecated_member_use_from_same_package
-        AutoDisposeRef<StateT>,
-        Node {
+@optionalTypeArgs
+abstract class ProviderElement<StateT> implements Node {
   /// {@macro riverpod.provider_element_base}
-  ProviderElementBase(this._provider);
+  ProviderElement(this.pointer);
 
-  static ProviderElementBase? _debugCurrentlyBuildingElement;
+  static Duration? _defaultRetry(int retryCount, Object error) {
+    return Duration(
+      milliseconds: math.min(200 * math.pow(2, retryCount).toInt(), 6400),
+    );
+  }
+
+  static ProviderElement? _debugCurrentlyBuildingElement;
 
   /// The last result of [ProviderBase.debugGetCreateSourceHash].
   ///
@@ -63,64 +64,61 @@ abstract class ProviderElementBase<StateT>
   String? _debugCurrentCreateHash;
   var _debugSkipNotifyListenersAsserts = false;
 
-  bool _maintainState = false;
-  @Deprecated('Use `keepAlive()` instead')
-  @override
-  bool get maintainState => _maintainState;
-  @override
-  set maintainState(bool value) {
-    _maintainState = value;
-    if (!value) mayNeedDispose();
-  }
+  /// The provider associated with this [ProviderElement], before applying overrides.
+  ProviderBase<StateT> get origin => pointer.origin as ProviderBase<StateT>;
 
-  /// The provider associated with this [ProviderElementBase], before applying overrides.
-  // Not typed as <State> because of https://github.com/rrousselGit/riverpod/issues/1100
-  AnyProvider<Object?> get origin => _origin;
-  late AnyProvider<Object?> _origin;
+  /// The provider associated with this [ProviderElement], after applying overrides.
+  ProviderBase<StateT> get provider;
 
-  /// The provider associated with this [ProviderElementBase], after applying overrides.
-  AnyProvider<StateT> get provider => _provider;
-  AnyProvider<StateT> _provider;
+  /// The [$ProviderPointer] associated with this [ProviderElement].
+  final $ProviderPointer pointer;
 
-  /// The [ProviderContainer] that owns this [ProviderElementBase].
-  @override
-  ProviderContainer get container => _container;
-  late final ProviderContainer _container;
+  /// The [ProviderContainer] that owns this [ProviderElement].
+  ProviderContainer get container => pointer.targetContainer;
 
-  /// Whether this [ProviderElementBase] is currently listened to or not.
+  // ignore: library_private_types_in_public_api, not public
+  $Ref<StateT>? ref;
+
+  /// Whether this [ProviderElement] is actively in use.
   ///
-  /// This maps to listeners added with [listen].
-  /// See also [mayNeedDispose], called when [hasListeners] may have changed.
-  bool get hasListeners =>
-      (_dependents?.isNotEmpty ?? false) || _providerDependents.isNotEmpty;
+  /// A provider is considered not used if:
+  /// - it has no listeners
+  /// - all of its listeners are "weak" (i.e. created with `listen(weak: true)`)
+  ///
+  /// See also [mayNeedDispose], called when [isActive] may have changed.
+  bool get isActive => (_listenerCount - _pausedActiveSubscriptionCount) > 0;
 
-  List<KeepAliveLink>? _keepAliveLinks;
-  var _dependencies = HashMap<ProviderElementBase<Object?>, Object>();
-  HashMap<ProviderElementBase<Object?>, Object>? _previousDependencies;
-  List<ProviderSubscription>? _subscriptions;
-  List<ProviderSubscription>? _dependents;
+  int get _listenerCount => dependents?.length ?? 0;
 
-  /// The element of the providers that depends on this provider.
-  final _providerDependents = <ProviderElementBase<Object?>>[];
+  var _pausedActiveSubscriptionCount = 0;
+  var _didCancelOnce = false;
 
-  List<void Function()>? _onDisposeListeners;
-  List<void Function()>? _onResumeListeners;
-  List<void Function()>? _onCancelListeners;
-  List<void Function()>? _onAddListeners;
-  List<void Function()>? _onRemoveListeners;
-  List<void Function(StateT?, StateT)>? _onChangeSelfListeners;
-  List<OnError>? _onErrorSelfListeners;
+  /// Whether this [ProviderElement] is currently listened to or not.
+  ///
+  /// This maps to listeners added with `listen` and `watch`,
+  /// excluding `listen(weak: true)`.
+  bool get hasNonWeakListeners => _listenerCount > 0;
+
+  List<ProviderSubscriptionWithOrigin>? _inactiveSubscriptions;
+  @visibleForTesting
+  List<ProviderSubscriptionWithOrigin>? subscriptions;
+  @visibleForTesting
+  List<ProviderSubscriptionWithOrigin>? dependents;
+
+  /// "listen(weak: true)" pointing to this provider.
+  ///
+  /// Those subscriptions are separate from [ProviderElement.dependents] for a few reasons:
+  /// - They do not count towards [ProviderElement.isActive].
+  /// - They may be reused between two instances of a [ProviderElement].
+  @visibleForTesting
+  final weakDependents = <ProviderSubscriptionImpl>[];
 
   bool _mustRecomputeState = false;
   bool _dependencyMayHaveChanged = false;
   bool _didChangeDependency = false;
 
-  var _didCancelOnce = false;
-
-  /// Whether the element was disposed or not
-  @internal
-  bool get mounted => _mounted;
-  bool _mounted = false;
+  var _retryCount = 0;
+  Timer? _pendingRetryTimer;
 
   /// Whether the assert that prevents [requireState] from returning
   /// if the state was not set before is enabled.
@@ -129,34 +127,13 @@ abstract class ProviderElementBase<StateT>
 
   bool _debugDidSetState = false;
   bool _didBuild = false;
+  var _didMount = false;
 
   /* STATE */
-  $Result<StateT>? _state;
+  $Result<StateT>? _stateResult;
 
-  /// Update the exposed value of a provider and notify its listeners.
+  /// The current state of the provider.
   ///
-  /// Listeners will only be notified if [updateShouldNotify]
-  /// returns true.
-  ///
-  /// This API is not meant for public consumption. Instead if a [Ref] needs
-  /// to expose a way to update the state, the practice is to expose a getter/setter.
-  @internal
-  void setState(StateT newState) {
-    assert(
-      () {
-        _debugDidSetState = true;
-        return true;
-      }(),
-      '',
-    );
-    final previousResult = getState();
-    final result = _state = $ResultData(newState);
-
-    if (_didBuild) {
-      _notifyListeners(result, previousResult);
-    }
-  }
-
   /// Obtains the current state, or null if the provider has yet to initialize.
   ///
   /// The returned object will contain error information, if any.
@@ -165,8 +142,34 @@ abstract class ProviderElementBase<StateT>
   ///
   /// This is not meant for public consumption. Instead, public API should use
   /// [readSelf].
-  @internal
-  $Result<StateT>? getState() => _state;
+  $Result<StateT>? get stateResult => _stateResult;
+
+  /// Returns the currently exposed by a provider
+  ///
+  /// May throw if the provider threw when creating the exposed value.
+  StateT readSelf() {
+    flush();
+
+    return requireState;
+  }
+
+  /// Update the exposed value of a provider and notify its listeners.
+  ///
+  /// Listeners will only be notified if [updateShouldNotify]
+  /// returns true.
+  ///
+  /// This API is not meant for public consumption. Instead if a [Ref] needs
+  /// to expose a way to update the state, the practice is to expose a getter/setter.
+  void setStateResult($Result<StateT> newState) {
+    if (kDebugMode) _debugDidSetState = true;
+
+    final previousResult = stateResult;
+    final result = _stateResult = newState;
+
+    if (_didBuild) {
+      _notifyListeners(result, previousResult);
+    }
+  }
 
   /// Read the current value of a provider and:
   ///
@@ -175,35 +178,34 @@ abstract class ProviderElementBase<StateT>
   ///
   /// This is not meant for public consumption. Instead, public API should use
   /// [readSelf].
-  @internal
   StateT get requireState {
-    assert(
-      () {
-        if (debugAssertDidSetStateEnabled && !_debugDidSetState) {
-          throw StateError(
-            'Tried to read the state of an uninitialized provider',
-          );
-        }
-        return true;
-      }(),
-      '',
-    );
+    const uninitializedError = '''
+Tried to read the state of an uninitialized provider.
+This could mean a few things:
+- You have a circular dependency, and your provider end-up depending on itself.
+- You read "ref.state", but no value was set beforehand.
+''';
 
-    final state = getState();
-    if (state == null) {
-      throw StateError('Tried to read the state of an uninitialized provider');
+    if (kDebugMode) {
+      if (debugAssertDidSetStateEnabled && !_debugDidSetState) {
+        throw StateError(uninitializedError);
+      }
     }
 
+    final state = stateResult;
+    if (state == null) throw StateError(uninitializedError);
+
     return switch (state) {
-      $ResultData<StateT>() => state.value,
-      $ResultError<StateT>() =>
-        throwErrorWithCombinedStackTrace(state.error, state.stackTrace),
+      $ResultError() => throwErrorWithCombinedStackTrace(
+          state.error,
+          state.stackTrace,
+        ),
+      $ResultData() => state.value,
     };
   }
 
   /// Called when a provider is rebuilt. Used for providers to not notify their
   /// listeners if the exposed value did not change.
-  @internal
   bool updateShouldNotify(StateT previous, StateT next);
 
   /* /STATE */
@@ -215,156 +217,108 @@ abstract class ProviderElementBase<StateT>
   /// This life-cycle is used to check for change in [ProviderBase.debugGetCreateSourceHash],
   /// and invalidate the provider state on change.
   void debugReassemble() {
-    assert(
-      () {
-        final previousHash = _debugCurrentCreateHash;
-        _debugCurrentCreateHash = provider.debugGetCreateSourceHash?.call();
+    final previousHash = _debugCurrentCreateHash;
+    _debugCurrentCreateHash = provider.debugGetCreateSourceHash();
 
-        if (previousHash != _debugCurrentCreateHash) {
-          invalidateSelf();
-        }
-
-        return true;
-      }(),
-      '',
-    );
+    if (previousHash != _debugCurrentCreateHash) {
+      invalidateSelf(asReload: false);
+    }
   }
 
   /// Called the first time a provider is obtained.
-  @internal
   void mount() {
-    _mounted = true;
-    assert(
-      () {
-        _debugCurrentCreateHash = provider.debugGetCreateSourceHash?.call();
+    if (kDebugMode) {
+      _debugCurrentCreateHash = provider.debugGetCreateSourceHash();
+    }
 
-        return true;
-      }(),
-      '',
+    final ref = this.ref = $Ref(this, isFirstBuild: true, isReload: false);
+    final initialState = _stateResult;
+
+    buildState(ref);
+
+    _notifyListeners(
+      _stateResult!,
+      initialState,
+      isFirstBuild: true,
+      checkUpdateShouldNotify: false,
     );
-    buildState();
-
-    switch (_state!) {
-      case $ResultData<StateT>(:final value):
-        final onChangeSelfListeners = _onChangeSelfListeners;
-        if (onChangeSelfListeners != null) {
-          for (var i = 0; i < onChangeSelfListeners.length; i++) {
-            Zone.current.runBinaryGuarded(
-              onChangeSelfListeners[i],
-              null,
-              value,
-            );
-          }
-        }
-      case $ResultError<StateT>(:final error, :final stackTrace):
-        final onErrorSelfListeners = _onErrorSelfListeners;
-        if (onErrorSelfListeners != null) {
-          for (var i = 0; i < onErrorSelfListeners.length; i++) {
-            Zone.current.runBinaryGuarded(
-              onErrorSelfListeners[i],
-              error,
-              stackTrace,
-            );
-          }
-        }
-    }
-
-    switch (_state!) {
-      case $ResultData<Object?>(:final value):
-        for (final observer in container.observers) {
-          runTernaryGuarded(
-            observer.didAddProvider,
-            origin,
-            value,
-            container,
-          );
-        }
-      case $ResultError<Object?>(:final error, :final stackTrace):
-        for (final observer in container.observers) {
-          runTernaryGuarded(
-            observer.didAddProvider,
-            origin,
-            null,
-            container,
-          );
-        }
-        for (final observer in container.observers) {
-          runQuaternaryGuarded(
-            observer.providerDidFail,
-            origin,
-            error,
-            stackTrace,
-            container,
-          );
-        }
-    }
   }
 
-  // ignore: use_setters_to_change_properties
   /// Called when the override of a provider changes.
   ///
   /// See also:
   /// - `overrideWithValue`, which relies on [update] to handle
   ///   the scenario where the value changed.
-  @internal
-  // ignore: use_setters_to_change_properties
-  void update(ProviderBase<StateT> newProvider) {
-    _provider = newProvider;
-  }
+  @visibleForOverriding
+  void update(ProviderBase<StateT> newProvider) {}
 
-  @override
-  KeepAliveLink keepAlive() {
-    final links = _keepAliveLinks ??= [];
-
-    late KeepAliveLink link;
-    link = KeepAliveLink._(() {
-      if (links.remove(link)) {
-        if (links.isEmpty) mayNeedDispose();
-      }
-    });
-    links.add(link);
-
-    return link;
-  }
-
-  @override
-  void invalidate(AnyProviderOrFamily provider) {
-    assert(_debugAssertCanDependOn(provider), '');
-    _container.invalidate(provider);
-  }
-
-  @override
-  void invalidateSelf() {
-    if (_mustRecomputeState) return;
-
-    _mustRecomputeState = true;
+  /// Initialize a provider and track dependencies used during the initialization.
+  ///
+  /// After a provider is initialized, this function takes care of unsubscribing
+  /// to dependencies that are no-longer used.
+  void _performRebuild() {
     runOnDispose();
-    mayNeedDispose();
-    _container.scheduler.scheduleProviderRefresh(this);
+    final ref = this.ref = $Ref(
+      this,
+      isFirstBuild: false,
+      isReload: _didChangeDependency,
+    );
+    final previousStateResult = _stateResult;
 
-    // We don't call this._markDependencyMayHaveChanged here because we voluntarily
-    // do not want to set the _dependencyMayHaveChanged flag to true.
-    // Since the dependency is known to have changed, there is no reason to try
-    // and "flush" it, as it will already get rebuilt.
-    visitChildren((element) => element._markDependencyMayHaveChanged());
-    visitListenables((notifier) => notifier.notifyDependencyMayHaveChanged());
+    if (kDebugMode) _debugDidSetState = false;
+
+    visitListenables((listenable) {
+      listenable.lockNotification();
+    });
+
+    buildState(ref);
+
+    visitListenables((listenable) {
+      listenable.unlockNotification();
+    });
+
+    if (!identical(_stateResult, previousStateResult)) {
+      // Asserts would otherwise prevent a provider rebuild from updating
+      // other providers
+      if (kDebugMode) _debugSkipNotifyListenersAsserts = true;
+
+      _notifyListeners(_stateResult!, previousStateResult);
+
+      if (kDebugMode) _debugSkipNotifyListenersAsserts = false;
+    }
   }
+
+  /// Initialize a provider.
+  ///
+  /// This function **must** call [setStateResult] or throw (or both).
+  ///
+  /// Exceptions within this function will be caught and set the provider in error
+  /// state. Then, reading this provider will rethrow the thrown exception.
+  @visibleForOverriding
+  WhenComplete create(
+    // ignore: library_private_types_in_public_api, not public
+    $Ref<StateT> ref,
+  );
 
   /// A utility for re-initializing a provider when needed.
   ///
   /// Calling [flush] will only re-initialize the provider if it needs to rerun.
   /// This can involve:
-  /// - a previous call to [invalidateSelf]
-  /// - a dependency of the provider has changed (such as when using [watch]).
+  /// - a previous call to [Ref.invalidateSelf]
+  /// - a dependency of the provider has changed (such as when using [Ref.watch]).
   ///
   /// This is not meant for public consumption. Public API should hide
   /// [flush] from users, such that they don't need to care about invoking this function.
-  @internal
   void flush() {
+    if (!_didMount) {
+      _didMount = true;
+      mount();
+    }
+
     _maybeRebuildDependencies();
     if (_mustRecomputeState) {
       _mustRecomputeState = false;
-      _performBuild();
+      _performRebuild();
     }
   }
 
@@ -382,164 +336,132 @@ abstract class ProviderElementBase<StateT>
     );
   }
 
-  /// Initialize a provider and track dependencies used during the initialization.
-  ///
-  /// After a provider is initialized, this function takes care of unsubscribing
-  /// to dependencies that are no-longer used.
-  void _performBuild() {
-    assert(
-      _previousDependencies == null,
-      'Bad state: _performBuild was called twice',
-    );
-    final previousDependencies = _previousDependencies = _dependencies;
-    _dependencies = HashMap();
-
-    final previousStateResult = _state;
-
-    assert(
-      () {
-        _debugDidSetState = false;
-        return true;
-      }(),
-      '',
-    );
-    buildState();
-
-    if (!identical(_state, previousStateResult)) {
-      assert(
-        () {
-          // Asserts would otherwise prevent a provider rebuild from updating
-          // other providers
-          _debugSkipNotifyListenersAsserts = true;
-          return true;
-        }(),
-        '',
-      );
-      _notifyListeners(_state!, previousStateResult);
-      assert(
-        () {
-          _debugSkipNotifyListenersAsserts = false;
-          return true;
-        }(),
-        '',
-      );
-    }
-
-    // Unsubscribe to everything that a provider no longer depends on.
-    for (final sub in previousDependencies.entries) {
-      sub.key
-        .._providerDependents.remove(this)
-        .._onRemoveListener();
-    }
-    _previousDependencies = null;
-
-    // TODO clear subscriptions only after the provider has been rebuilt
-  }
-
-  /// Initialize a provider.
-  ///
-  /// This function **must** call [setState] or throw (or both).
-  ///
-  /// Exceptions within this function will be caught and set the provider in error
-  /// state. Then, reading this provider will rethrow the thrown exception.
-  ///
-  /// - [didChangeDependency] can be used to differentiate a rebuild caused
-  ///   by [watch] from one caused by [refresh]/[invalidate].
-  @visibleForOverriding
-  void create({required bool didChangeDependency});
+  // Hook for async provider to init state with AsyncLoading
+  void initState(Ref ref) {}
 
   /// Invokes [create] and handles errors.
   @internal
-  void buildState() {
-    ProviderElementBase? debugPreviouslyBuildingElement;
-    final previousDidChangeDependency = _didChangeDependency;
+  void buildState(
+    // ignore: library_private_types_in_public_api, not public
+    $Ref<StateT> ref,
+  ) {
+    if (_didChangeDependency) _retryCount = 0;
+
+    ProviderElement? debugPreviouslyBuildingElement;
     _didChangeDependency = false;
-    assert(
-      () {
-        debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
-        _debugCurrentlyBuildingElement = this;
-        return true;
-      }(),
-      '',
-    );
+    if (kDebugMode) {
+      debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
+      _debugCurrentlyBuildingElement = this;
+    }
+
     _didBuild = false;
+    initState(ref);
     try {
-      // TODO move outside this function?
-      _mounted = true;
-      create(didChangeDependency: previousDidChangeDependency);
+      final whenComplete = create(ref) ?? (cb) => cb();
+
+      whenComplete(_didCompleteInitialization);
     } catch (err, stack) {
-      assert(
-        () {
-          _debugDidSetState = true;
-          return true;
-        }(),
-        '',
-      );
-      _state = $Result.error(err, stack);
+      if (kDebugMode) _debugDidSetState = true;
+
+      _stateResult = $Result.error(err, stack);
+      triggerRetry(err);
     } finally {
       _didBuild = true;
-      assert(
-        () {
-          _debugCurrentlyBuildingElement = debugPreviouslyBuildingElement;
-          return true;
-        }(),
-        '',
-      );
+      if (kDebugMode) {
+        _debugCurrentlyBuildingElement = debugPreviouslyBuildingElement;
+      }
 
       assert(
-        getState() != null,
+        stateResult != null,
         'Bad state, the provider did not initialize. Did "create" forget to set the state?',
       );
     }
   }
 
-  @override
-  void notifyListeners() {
-    final currentResult = getState();
-    // If `notifyListeners` is used during `build`, the result will be null.
-    // Throwing would be unnecessarily inconvenient, so we simply skip it.
-    if (currentResult == null) return;
+  @protected
+  void triggerRetry(Object error) {
+    // Don't start retry if the provider was disposed
+    if (ref == null) return;
 
-    if (_didBuild) {
-      _notifyListeners(
-        currentResult,
-        currentResult,
-        checkUpdateShouldNotify: false,
+    final retry = origin.retry ?? container.retry ?? _defaultRetry;
+
+    // Capture exceptions. On error, stop retrying if the retry
+    // function failed
+    runGuarded(() {
+      final duration = retry(_retryCount, error);
+      if (duration == null) return;
+
+      _pendingRetryTimer = Timer(duration, () {
+        _pendingRetryTimer = null;
+        _retryCount++;
+        invalidateSelf(asReload: false);
+      });
+    });
+  }
+
+  void _debugAssertNotificationAllowed() {
+    if (_debugSkipNotifyListenersAsserts) return;
+
+    assert(
+      _debugCurrentlyBuildingElement == null ||
+          _debugCurrentlyBuildingElement == this,
+      '''
+Providers are not allowed to modify other providers during their initialization.
+
+The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while building.
+''',
+    );
+
+    debugCanModifyProviders?.call();
+  }
+
+  void invalidateSelf({required bool asReload}) {
+    if (asReload) _didChangeDependency = true;
+    if (_mustRecomputeState) return;
+
+    _mustRecomputeState = true;
+    runOnDispose();
+    mayNeedDispose();
+    container.scheduler.scheduleProviderRefresh(this);
+
+    // We don't call this._markDependencyMayHaveChanged here because we voluntarily
+    // do not want to set the _dependencyMayHaveChanged flag to true.
+    // Since the dependency is known to have changed, there is no reason to try
+    // and "flush" it, as it will already get rebuilt.
+    visitChildren((element) {
+      element._markDependencyMayHaveChanged();
+      element.visitListenables(
+        (notifier) => notifier.notifyDependencyMayHaveChanged(),
       );
-    }
+    });
+    visitListenables((notifier) => notifier.notifyDependencyMayHaveChanged());
+  }
+
+  MutationContext? _currentMutationContext() =>
+      Zone.current[mutationZoneKey] as MutationContext?;
+
+  ProviderObserverContext _currentObserverContext() {
+    return ProviderObserverContext(
+      origin,
+      container,
+      mutation: _currentMutationContext(),
+    );
   }
 
   void _notifyListeners(
     $Result<StateT> newState,
     $Result<StateT>? previousStateResult, {
     bool checkUpdateShouldNotify = true,
+    bool isFirstBuild = false,
   }) {
-    assert(
-      () {
-        if (_debugSkipNotifyListenersAsserts) return true;
-
-        assert(
-          _debugCurrentlyBuildingElement == null ||
-              _debugCurrentlyBuildingElement == this,
-          '''
-Providers are not allowed to modify other providers during their initialization.
-
-The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while building.
-''',
-        );
-
-        debugCanModifyProviders?.call();
-        return true;
-      }(),
-      '',
-    );
+    if (kDebugMode && !isFirstBuild) _debugAssertNotificationAllowed();
 
     final previousState = previousStateResult?.value;
 
     // listenSelf listeners do not respect updateShouldNotify
     switch (newState) {
-      case $ResultData<StateT>():
-        final onChangeSelfListeners = _onChangeSelfListeners;
+      case final $ResultData<StateT> newState:
+        final onChangeSelfListeners = ref?._onChangeSelfListeners;
         if (onChangeSelfListeners != null) {
           for (var i = 0; i < onChangeSelfListeners.length; i++) {
             Zone.current.runBinaryGuarded(
@@ -549,8 +471,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
             );
           }
         }
-      case $ResultError<StateT>():
-        final onErrorSelfListeners = _onErrorSelfListeners;
+      case final $ResultError<StateT> newState:
+        final onErrorSelfListeners = ref?._onErrorSelfListeners;
         if (onErrorSelfListeners != null) {
           for (var i = 0; i < onErrorSelfListeners.length; i++) {
             Zone.current.runBinaryGuarded(
@@ -573,72 +495,59 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       return;
     }
 
-    final listeners = _dependents?.toList(growable: false);
+    final listeners = [...weakDependents, if (!isFirstBuild) ...?dependents];
     switch (newState) {
-      case $ResultData<StateT>():
-        if (listeners != null) {
-          for (var i = 0; i < listeners.length; i++) {
-            final listener = listeners[i];
-            if (listener is _ProviderStateSubscription) {
-              Zone.current.runBinaryGuarded(
-                listener.listener,
-                previousState,
-                newState.value,
-              );
-            }
-          }
+      case final $ResultData<StateT> newState:
+        for (var i = 0; i < listeners.length; i++) {
+          final listener = listeners[i];
+          if (listener.closed) continue;
+
+          Zone.current.runBinaryGuarded(
+            listener._onOriginData,
+            previousState,
+            newState.value,
+          );
         }
-      case $ResultError<StateT>():
-        if (listeners != null) {
-          for (var i = 0; i < listeners.length; i++) {
-            final listener = listeners[i];
-            if (listener is _ProviderStateSubscription<StateT>) {
-              Zone.current.runBinaryGuarded(
-                listener.onError,
-                newState.error,
-                newState.stackTrace,
-              );
-            }
-          }
-        }
-    }
+      case final $ResultError<StateT> newState:
+        for (var i = 0; i < listeners.length; i++) {
+          final listener = listeners[i];
+          if (listener.closed) continue;
 
-    for (var i = 0; i < _providerDependents.length; i++) {
-      _providerDependents[i]._markDependencyChanged();
-    }
-
-    for (final observer in _container.observers) {
-      runQuaternaryGuarded(
-        observer.didUpdateProvider,
-        origin,
-        previousState,
-        newState.value,
-        _container,
-      );
-    }
-
-    for (final observer in _container.observers) {
-      switch (newState) {
-        case $ResultData<StateT>():
-          break;
-        case $ResultError<StateT>():
-          runQuaternaryGuarded(
-            observer.providerDidFail,
-            origin,
+          Zone.current.runBinaryGuarded(
+            listener._onOriginError,
             newState.error,
             newState.stackTrace,
-            _container,
           );
+        }
+    }
+
+    for (final observer in container.observers) {
+      if (isFirstBuild) {
+        runBinaryGuarded(
+          observer.didAddProvider,
+          _currentObserverContext(),
+          newState.value,
+        );
+      } else {
+        runTernaryGuarded(
+          observer.didUpdateProvider,
+          _currentObserverContext(),
+          previousState,
+          newState.value,
+        );
       }
     }
-  }
 
-  void _markDependencyChanged() {
-    _didChangeDependency = true;
-    if (_mustRecomputeState) return;
-
-    // will notify children that their dependency may have changed
-    invalidateSelf();
+    for (final observer in container.observers) {
+      if (newState is $ResultError<StateT>) {
+        runTernaryGuarded(
+          observer.providerDidFail,
+          _currentObserverContext(),
+          newState.error,
+          newState.stackTrace,
+        );
+      }
+    }
   }
 
   void _markDependencyMayHaveChanged() {
@@ -647,321 +556,196 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     _dependencyMayHaveChanged = true;
 
     visitChildren(
-      (element) => element._markDependencyMayHaveChanged(),
+      (element) {
+        element._markDependencyMayHaveChanged();
+        element.visitListenables(
+          (notifier) => notifier.notifyDependencyMayHaveChanged(),
+        );
+      },
     );
     visitListenables((notifier) => notifier.notifyDependencyMayHaveChanged());
   }
 
-  bool _debugAssertCanDependOn(Object? listenable) {
-    assert(
-      () {
-        if (listenable is! AnyProvider<Object?>) return true;
-
-        ProviderElementBase? listenableElement;
-        try {
-          // Initializing the provider, to make sure its dependencies are setup.
-          listenableElement = _container.readProviderElement(listenable);
-        } catch (err) {
-          // We don't care whether the provider is in error or not. We're just
-          // checking whether we're not in a circular dependency.
-        }
-
-        assert(
-          switch (listenable) {
-            ProviderBase2<Object?>() => true,
-            ProviderBase<Object?>() => listenable._origin != origin,
-          },
-          'A provider cannot depend on itself',
-        );
-
-        assert(
-          // If the target has a null "dependencies", it should never be scoped.
-          // As such, the current provider's "dependencies" does not need to
-          // include the target in its dependencies.
-          listenable.dependencies == null ||
-              provider != origin ||
-              // Families are allowed to depend on themselves with different parameters.
-              (origin.from != null && listenable.from == origin.from) ||
-              origin.dependencies == null ||
-              origin.dependencies!.contains(listenable.from) ||
-              origin.dependencies!.contains(listenable),
-          'The provider $origin tried to read $listenable, but it specified a '
-          "'dependencies' list yet that list does not contain $listenable.\n\n"
-          "To fix, add $listenable to $origin's 'dependencies' parameter",
-        );
-
-        final queue = Queue<ProviderElementBase>();
-        visitAncestors(queue.add);
-        if (listenableElement != null) {
-          queue.add(listenableElement);
-        }
-
-        while (queue.isNotEmpty) {
-          final current = queue.removeFirst();
-          current.visitAncestors(queue.add);
-
-          if (current.origin == _origin) {
-            throw CircularDependencyError._();
-          }
-        }
-
-        return true;
-      }(),
-      '',
-    );
-    return true;
+  @override
+  ProviderElement<T> readProviderElement<T>(ProviderBase<T> provider) {
+    return container.readProviderElement(provider);
   }
 
-  void _assertNotOutdated() {
-    assert(
-      !_didChangeDependency,
-      'Cannot use ref functions after the dependency of a provider changed but before the provider rebuilt',
-    );
-  }
-
-  @override
-  T refresh<T>(Refreshable<T> provider) {
-    _assertNotOutdated();
-    assert(_debugAssertCanDependOn(provider), '');
-    return _container.refresh(provider);
-  }
-
-  @override
-  T read<T>(ProviderListenable<T> provider) {
-    _assertNotOutdated();
-    assert(!_debugIsRunningSelector, 'Cannot call ref.read inside a selector');
-    assert(_debugAssertCanDependOn(provider), '');
-    return _container.read(provider);
-  }
-
-  @override
-  bool exists(AnyProvider<Object?> provider) => _container.exists(provider);
-
-  @override
-  T watch<T>(ProviderListenable<T> listenable) {
-    _assertNotOutdated();
-    assert(!_debugIsRunningSelector, 'Cannot call ref.watch inside a selector');
-
-    if (listenable is! ProviderBase<T>) {
-      final sub = listen<T>(
-        listenable,
-        (prev, value) => _markDependencyChanged(),
-        onError: (err, stack) => _markDependencyChanged(),
-        onDependencyMayHaveChanged: _markDependencyMayHaveChanged,
-      );
-
-      return sub.read();
-    }
-
-    assert(_debugAssertCanDependOn(listenable), '');
-
-    final element = _container.readProviderElement(listenable);
-    _dependencies.putIfAbsent(element, () {
-      final previousSub = _previousDependencies?.remove(element);
-      if (previousSub != null) {
-        return previousSub;
-      }
-
-      assert(
-        () {
-          // Flushing the provider before adding a new dependency
-          // as otherwise this could cause false positives with certain asserts.
-          // It's done only in debug mode since `readSelf` will flush the value
-          // again anyway, and the only value of this flush is to not break asserts.
-          element.flush();
-          return true;
-        }(),
-        '',
-      );
-
-      element
-        .._onListen()
-        .._providerDependents.add(this);
-
-      return Object();
-    });
-
-    return element.readSelf();
-  }
-
-  @override
-  ProviderElementBase<T> readProviderElement<T>(AnyProvider<T> provider) {
-    return _container.readProviderElement(provider);
-  }
-
-  @override
   ProviderSubscription<T> listen<T>(
     ProviderListenable<T> listenable,
     void Function(T? previous, T value) listener, {
+    bool weak = false,
     void Function(Object error, StackTrace stackTrace)? onError,
     bool fireImmediately = false,
     // Not part of the public "Ref" API
     void Function()? onDependencyMayHaveChanged,
   }) {
-    _assertNotOutdated();
-    assert(!_debugIsRunningSelector, 'Cannot call ref.read inside a selector');
-    assert(_debugAssertCanDependOn(listenable), '');
+    final ref = this.ref!;
+    ref._throwIfInvalidUsage();
 
-    return listenable._addListener(
+    final sub = listenable.addListener(
       this,
       listener,
       fireImmediately: fireImmediately,
       onError: onError,
+      weak: weak,
       onDependencyMayHaveChanged: onDependencyMayHaveChanged,
     );
-  }
 
-  @override
-  void Function() listenSelf(
-    void Function(StateT? previous, StateT next) listener, {
-    void Function(Object error, StackTrace stackTrace)? onError,
-  }) {
-    // TODO do we want to expose a way to close the subscription?
-    // TODO do we want a fireImmediately?
-
-    _onChangeSelfListeners ??= [];
-    _onChangeSelfListeners!.add(listener);
-
-    if (onError != null) {
-      _onErrorSelfListeners ??= [];
-      _onErrorSelfListeners!.add(onError);
+    switch (sub) {
+      case final ProviderSubscriptionImpl<Object?, Object?> sub:
+        sub._listenedElement.addDependentSubscription(sub);
     }
 
-    return () {
-      _onChangeSelfListeners?.remove(listener);
-      if (onError != null) {
-        _onErrorSelfListeners?.remove(onError);
+    if (kDebugMode) ref._debugAssertCanDependOn(listenable);
+
+    return sub;
+  }
+
+  void onCancel() {
+    subscriptions?.forEach((sub) {
+      switch (sub) {
+        case ProviderSubscriptionImpl():
+          sub._listenedElement.onSubscriptionPause(sub);
       }
-    };
+    });
   }
 
-  /// Returns the currently exposed by a provider
-  ///
-  /// May throw if the provider threw when creating the exposed value.
-  StateT readSelf() {
-    flush();
-
-    return requireState;
-  }
-
-  /// Visit the [ProviderElement]s of providers that are listening to this element.
-  ///
-  /// A provider is considered as listening to this element if it either [watch]
-  /// or [listen] this element.
-  ///
-  /// This method does not guarantee that a dependency is visited only once.
-  /// If a provider both [watch] and [listen] an element, or if a provider
-  /// [listen] multiple times to an element, it may be visited multiple times.
-  void visitChildren(
-    void Function(ProviderElementBase element) elementVisitor,
-  ) {
-    for (var i = 0; i < _providerDependents.length; i++) {
-      elementVisitor(_providerDependents[i]);
-    }
-
-    final dependents = _dependents;
-    if (dependents != null) {
-      for (var i = 0; i < dependents.length; i++) {
-        final dependent = dependents[i].source;
-        if (dependent is ProviderElementBase) elementVisitor(dependent);
+  void onResume() {
+    subscriptions?.forEach((sub) {
+      switch (sub) {
+        case ProviderSubscriptionImpl():
+          sub._listenedElement.onSubscriptionResume(sub);
       }
-    }
+    });
   }
 
-  void visitListenables(
-    void Function($ElementLense element) listenableVisitor,
-  ) {}
+  void addDependentSubscription(ProviderSubscriptionImpl sub) {
+    _onChangeSubscription(sub, () {
+      if (sub.weak) {
+        weakDependents.add(sub);
+      } else {
+        final dependents = this.dependents ??= [];
+        dependents.add(sub);
+      }
 
-  /// Visit the [ProviderElementBase]s that this provider is listening to.
-  ///
-  /// A provider is considered as listening to this element if it either [watch]
-  /// or [listen] this element.
-  ///
-  /// This method does not guarantee that a provider is visited only once.
-  /// If this provider both [watch] and [listen] an element, or if it
-  /// [listen] multiple times to an element, that element may be visited multiple times.
-  void visitAncestors(
-    void Function(ProviderElementBase element) visitor,
-  ) {
-    _dependencies.keys.forEach(visitor);
+      if (sub.source case final ProviderElement element) {
+        final subs = element.subscriptions ??= [];
+        subs.add(sub);
+      }
+    });
+  }
 
-    final subscriptions = _subscriptions;
-    if (subscriptions != null) {
-      for (var i = 0; i < subscriptions.length; i++) {
-        final sub = subscriptions[i];
-        if (sub is _ProviderStateSubscription) {
-          visitor(sub.listenedElement);
+  void removeDependentSubscription(ProviderSubscription sub) {
+    _onChangeSubscription(sub, () {
+      // If the subscription is paused, internally resume it to decrement any
+      // associated state.
+      // We don't want to call onResume though.
+      _notifyResumeListeners = false;
+      while (sub.isPaused) {
+        sub.resume();
+      }
+      _notifyResumeListeners = true;
+
+      if (sub.weak) {
+        weakDependents.remove(sub);
+      } else {
+        dependents?.remove(sub);
+      }
+
+      if (sub.source case final ProviderElement element) {
+        element.subscriptions?.remove(sub);
+      }
+    });
+  }
+
+  var _notifyResumeListeners = true;
+  void _onChangeSubscription(ProviderSubscription sub, void Function() apply) {
+    final wasActive = isActive;
+    final previousListenerCount = _listenerCount;
+    apply();
+
+    switch ((wasActive: wasActive, isActive: isActive)) {
+      case (wasActive: false, isActive: true) when _didCancelOnce:
+        if (_notifyResumeListeners) {
+          ref?._onResumeListeners?.forEach(runGuarded);
         }
+        onResume();
+
+      case (wasActive: true, isActive: false):
+        _didCancelOnce = true;
+        ref?._onCancelListeners?.forEach(runGuarded);
+        onCancel();
+
+      default:
+      // No state change, so do nothing
+    }
+
+    if (_listenerCount < previousListenerCount) {
+      if (ref?._onRemoveListeners case final listeners?) {
+        listeners.forEach(runGuarded);
+      }
+      mayNeedDispose();
+    } else if (_listenerCount > previousListenerCount) {
+      if (ref?._onAddListeners case final listeners?) {
+        listeners.forEach(runGuarded);
       }
     }
   }
 
-  /// Release the resources associated to this [ProviderElementBase].
-  ///
-  /// This will be invoked when:
-  /// - the provider is using `autoDispose` and it is no-longer used.
-  /// - the associated [ProviderContainer] is disposed
-  ///
-  /// On the other hand, this life-cycle will not be executed when a provider
-  /// rebuilds.
-  ///
-  /// As opposed to [runOnDispose], this life-cycle is executed only
-  /// for the lifetime of this element.
-  @protected
-  @mustCallSuper
-  void dispose() {
-    runOnDispose();
+  void onSubscriptionPause(ProviderSubscription sub) {
+    // Weak listeners are not counted towards isActive, so we don't want to change
+    // _pausedActiveSubscriptionCount
+    if (sub.weak) return;
 
-    for (final sub in _dependencies.entries) {
-      sub.key._providerDependents.remove(this);
-      sub.key._onRemoveListener();
-    }
-    _dependencies.clear();
-
-    // TODO test invalidateSelf() then dispose() properly unlinks dependencies
-    // TODO test [listen] calls are cleared
+    _onChangeSubscription(sub, () => _pausedActiveSubscriptionCount++);
   }
 
-  void _onListen() {
-    _onAddListeners?.forEach(runGuarded);
-    if (_didCancelOnce && !hasListeners) {
-      _onResumeListeners?.forEach(runGuarded);
-    }
+  void onSubscriptionResume(ProviderSubscription sub) {
+    // Weak listeners are not counted towards isActive, so we don't want to change
+    // _pausedActiveSubscriptionCount
+    if (sub.weak) return;
+
+    _onChangeSubscription(sub, () {
+      _pausedActiveSubscriptionCount = math.max(
+        0,
+        _pausedActiveSubscriptionCount - 1,
+      );
+    });
   }
 
-  void _onRemoveListener() {
-    _onRemoveListeners?.forEach(runGuarded);
-    if (!hasListeners) {
-      _didCancelOnce = true;
-      _onCancelListeners?.forEach(runGuarded);
+  /// A life-cycle called by subclasses of [ProviderElement] when
+  /// their provider's `build` method completes.
+  void _didCompleteInitialization() {
+    // Close inactive subscriptions
+    if (_inactiveSubscriptions case final subs?) {
+      _closeSubscriptions(subs);
+      _inactiveSubscriptions = null;
     }
-    mayNeedDispose();
   }
 
   /// Life-cycle for when a listener is removed.
-  @protected
-  @visibleForOverriding
-  @mustCallSuper
   void mayNeedDispose() {
     if (provider.isAutoDispose) {
-      final links = _keepAliveLinks;
+      final links = ref?._keepAliveLinks;
 
-      // ignore: deprecated_member_use_from_same_package
-      if (!maintainState && !hasListeners && (links == null || links.isEmpty)) {
-        _container.scheduler.scheduleProviderDispose(this);
+      if (!isActive && (links == null || links.isEmpty)) {
+        container.scheduler.scheduleProviderDispose(this);
       }
     }
   }
 
-  @override
-  @mustCallSuper
-  void onDispose(void Function() listener) {
-    _assertNotOutdated();
-    if (!_mounted) {
-      throw StateError('Cannot call onDispose after a provider was disposed');
+  void _closeSubscriptions(List<ProviderSubscription> subscriptions) {
+    final subs = subscriptions.toList();
+    for (var i = 0; i < subs.length; i++) {
+      subs[i].close();
     }
-    _onDisposeListeners ??= [];
-    _onDisposeListeners!.add(listener);
+  }
+
+  void _pauseSubscriptions(List<ProviderSubscription> subscriptions) {
+    for (var i = 0; i < subscriptions.length; i++) {
+      subscriptions[i].pause();
+    }
   }
 
   /// Executes the [Ref.onDispose] listeners previously registered, then clear
@@ -970,81 +754,159 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   @visibleForOverriding
   @mustCallSuper
   void runOnDispose() {
-    if (!_mounted) return;
-    _mounted = false;
+    final ref = this.ref;
+    if (ref == null || !ref._mounted) return;
 
-    _keepAliveLinks?.clear();
-    final subscriptions = _subscriptions;
-    if (subscriptions != null) {
-      while (subscriptions.isNotEmpty) {
-        late int debugPreviousLength;
-        if (kDebugMode) {
-          debugPreviousLength = subscriptions.length;
-        }
+    ref._mounted = false;
 
-        final sub = subscriptions.first;
-        sub.close();
+    _pendingRetryTimer?.cancel();
+    _pendingRetryTimer = null;
 
-        if (kDebugMode) {
-          assert(
-            subscriptions.length < debugPreviousLength,
-            'ProviderSubscription.close did not remove the subscription',
-          );
-        }
-      }
+    // Pause current subscriptions and queue them to be deleted upon the completion
+    // of the next rebuild.
+    if (subscriptions case final subs?) {
+      (_inactiveSubscriptions ??= []).addAll(subs);
+      _pauseSubscriptions(subs);
+    }
+    subscriptions = null;
+
+    ref._onDisposeListeners?.forEach(runGuarded);
+
+    for (final observer in container.observers) {
+      runUnaryGuarded(observer.didDisposeProvider, _currentObserverContext());
     }
 
-    _onDisposeListeners?.forEach(runGuarded);
-
-    for (final observer in _container.observers) {
-      runBinaryGuarded(
-        observer.didDisposeProvider,
-        _origin,
-        _container,
-      );
-    }
-
-    _onDisposeListeners = null;
-    _onCancelListeners = null;
-    _onResumeListeners = null;
-    _onAddListeners = null;
-    _onRemoveListeners = null;
-    _onChangeSelfListeners = null;
-    _onErrorSelfListeners = null;
+    ref._keepAliveLinks = null;
+    ref._onDisposeListeners = null;
+    ref._onCancelListeners = null;
+    ref._onResumeListeners = null;
+    ref._onAddListeners = null;
+    ref._onRemoveListeners = null;
+    ref._onChangeSelfListeners = null;
+    ref._onErrorSelfListeners = null;
     _didCancelOnce = false;
 
     assert(
-      _keepAliveLinks == null || _keepAliveLinks!.isEmpty,
+      ref._keepAliveLinks == null || ref._keepAliveLinks!.isEmpty,
       'Cannot call keepAlive() within onDispose listeners',
     );
   }
 
-  @override
-  void onAddListener(void Function() cb) {
-    _onAddListeners ??= [];
-    _onAddListeners!.add(cb);
+  /// Clears the state of a [ProviderElement].
+  ///
+  /// This is in-between [dispose] and [runOnDispose].
+  /// It is used to clear the state of a provider, without unsubscribing
+  /// [weakDependents].
+  @mustCallSuper
+  void clearState() {
+    runOnDispose();
+    _didMount = false;
+    _stateResult = null;
+    ref = null;
+
+    if (dependents case final subs?) {
+      _closeSubscriptions(subs);
+      dependents = null;
+    }
+    if (_inactiveSubscriptions case final subs?) {
+      _closeSubscriptions(subs);
+      _inactiveSubscriptions = null;
+    }
   }
 
-  @override
-  void onRemoveListener(void Function() cb) {
-    _onRemoveListeners ??= [];
-    _onRemoveListeners!.add(cb);
-  }
+  /// Release the resources associated to this [ProviderElement].
+  ///
+  /// This will be invoked when:
+  /// - the provider is using `autoDispose` and it is no-longer used.
+  /// - the associated [ProviderContainer] is disposed
+  ///
+  /// On the other hand, this life-cycle will not be executed when a provider
+  /// rebuilds.
+  ///
+  /// As opposed to [runOnDispose], this life-cycle is executed only once
+  /// for the lifetime of this element.
+  @protected
+  @mustCallSuper
+  void dispose() {
+    clearState();
 
-  @override
-  void onCancel(void Function() cb) {
-    _onCancelListeners ??= [];
-    _onCancelListeners!.add(cb);
-  }
+    _closeSubscriptions(weakDependents);
 
-  @override
-  void onResume(void Function() cb) {
-    _onResumeListeners ??= [];
-    _onResumeListeners!.add(cb);
+    visitListenables((notifier) {
+      notifier.dispose();
+    });
   }
 
   @override
   String toString() {
-    return '$runtimeType(provider: $provider, origin: $origin)';
+    final buffer = StringBuffer('$runtimeType(');
+
+    buffer.writeAll(
+      [
+        switch (_stateResult) {
+          null => 'state: uninitialized',
+          $ResultData<StateT>(:final value) => 'state: $value',
+          $ResultError<StateT>(:final error, :final stackTrace) =>
+            'state: error $error\n$stackTrace',
+        },
+        if (provider != origin) 'provider: $provider',
+        'origin: $origin',
+      ],
+      ', ',
+    );
+
+    buffer.write(')');
+
+    return buffer.toString();
+  }
+
+  /// Visit the [$ProviderElement]s of providers that are listening to this element.
+  ///
+  /// A provider is considered as listening to this element if it either [Ref.watch]
+  /// or [Ref.listen] this element.
+  ///
+  /// This method does not guarantee that a dependency is visited only once.
+  /// If a provider both [Ref.watch] and [Ref.listen] an element, or if a provider
+  /// [Ref.listen] multiple times to an element, it may be visited multiple times.
+  void visitChildren(
+    void Function(ProviderElement element) elementVisitor,
+  ) {
+    void lookup(Iterable<ProviderSubscriptionWithOrigin> children) {
+      for (final child in children) {
+        switch (child.source) {
+          case final ProviderElement dependent:
+            elementVisitor(dependent);
+          case ProviderContainer():
+            break;
+        }
+      }
+    }
+
+    lookup(weakDependents);
+    if (dependents case final dependents?) lookup(dependents);
+  }
+
+  void visitListenables(
+    void Function($ElementLense element) listenableVisitor,
+  ) {}
+
+  /// Visit the [ProviderElement]s that this provider is listening to.
+  ///
+  /// A provider is considered as listening to this element if it either [Ref.watch]
+  /// or [Ref.listen] this element.
+  ///
+  /// This method does not guarantee that a provider is visited only once.
+  /// If this provider both [Ref.watch] and [Ref.listen] an element, or if it
+  /// [Ref.listen] multiple times to an element, that element may be visited multiple times.
+  void visitAncestors(
+    void Function(ProviderElement element) visitor,
+  ) {
+    final subscriptions = this.subscriptions;
+    if (subscriptions != null) {
+      for (var i = 0; i < subscriptions.length; i++) {
+        final sub = subscriptions[i];
+        visitor(sub._listenedElement);
+      }
+    }
   }
 }

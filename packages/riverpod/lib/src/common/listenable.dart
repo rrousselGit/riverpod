@@ -1,6 +1,6 @@
 import 'package:meta/meta.dart';
 
-import '../framework.dart' show ProviderElementBase;
+import '../framework.dart' show ProviderElement;
 import '../internals.dart' show OnError;
 import 'env.dart';
 import 'pragma.dart';
@@ -15,7 +15,7 @@ class _Listener<T> {
   final void Function()? onDependencyMayHaveChanged;
 }
 
-/// A listenable object used by [ProviderElementBase] as a mean to subscribe
+/// A listenable object used by [ProviderElement] as a mean to subscribe
 /// to subsets of the state exposed by a provider.
 @internal
 @optionalTypeArgs
@@ -38,6 +38,7 @@ class $ElementLense<T> extends _ValueListenable<T> {
   set result($Result<T>? value) {
     final previous = _result;
     _result = value;
+
     switch (value) {
       case null:
         break;
@@ -46,12 +47,6 @@ class $ElementLense<T> extends _ValueListenable<T> {
       case $ResultError<T>():
         _notifyError(value.error, value.stackTrace);
     }
-  }
-
-  /// Updates the [result] of this [$ElementLense] without invoking listeners.
-  // ignore: use_setters_to_change_properties, non_constant_identifier_names
-  void UNSAFE_setResultWithoutNotifyingListeners($Result<T>? value) {
-    _result = value;
   }
 }
 
@@ -74,6 +69,12 @@ class _ValueListenable<T> {
   int _notificationCallStackDepth = 0;
   int _reentrantlyRemovedListeners = 0;
   bool _debugDisposed = false;
+
+  /// The accumulated skipped notification while it was locked by [lockNotification].
+  ({
+    ({T? prev, T next})? data,
+    ({Object error, StackTrace stack})? error,
+  })? _skippedNotification;
 
   static bool debugAssertNotDisposed(_ValueListenable<Object?> notifier) {
     assert(
@@ -102,6 +103,24 @@ class _ValueListenable<T> {
   /// so, stopping that same work.
   bool get hasListeners {
     return _count > 0;
+  }
+
+  void lockNotification() {
+    assert(_skippedNotification == null, '');
+    _skippedNotification = (data: null, error: null);
+  }
+
+  void unlockNotification() {
+    final notification = _skippedNotification;
+    if (notification != null) {
+      _skippedNotification = null;
+
+      if (notification.data case final data?) {
+        _notifyValue(data.prev, data.next);
+      } else if (notification.error case final error?) {
+        _notifyError(error.error, error.stack);
+      }
+    }
   }
 
   /// Register a closure to be called when the object changes.
@@ -244,6 +263,7 @@ class _ValueListenable<T> {
     if (kDebugMode) _debugDisposed = true;
     _listeners = _emptyListeners();
     _count = 0;
+    lockNotification();
   }
 
   /// Call all the registered listeners.
@@ -336,10 +356,32 @@ class _ValueListenable<T> {
   }
 
   void _notifyValue(T? prev, T next) {
+    if (_skippedNotification != null) {
+      _skippedNotification = (
+        error: null,
+        data: (
+          prev: _skippedNotification?.data?.prev ?? prev,
+          next: next,
+        ),
+      );
+      return;
+    }
+
     _notifyListeners((listener) => listener.onValue(prev, next));
   }
 
   void _notifyError(Object err, StackTrace stack) {
+    if (_skippedNotification != null) {
+      _skippedNotification = (
+        error: (
+          error: err,
+          stack: stack,
+        ),
+        data: null,
+      );
+      return;
+    }
+
     _notifyListeners((listener) => listener.onError?.call(err, stack));
   }
 

@@ -1,4 +1,5 @@
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/internals.dart' show ProviderElement;
 import 'package:test/test.dart';
 
 import '../../utils.dart';
@@ -16,21 +17,25 @@ void main() {
 
     group('scoping an override overrides all the associated subproviders', () {
       test('when passing the provider itself', () async {
-        final provider = StreamProvider.autoDispose
-            .family<int, int>((ref, _) => Stream.value(0));
+        final provider = StreamProvider.autoDispose.family<int, int>(
+          (ref, _) => Stream.value(0),
+          dependencies: const [],
+        );
         final root = ProviderContainer.test();
-        final container =
-            ProviderContainer.test(parent: root, overrides: [provider]);
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [provider],
+        );
 
-        // ignore: deprecated_member_use_from_same_package
-        expect(await container.read(provider(0).stream).first, 0);
+        container.listen(provider(0), (p, n) {});
+
         expect(await container.read(provider(0).future), 0);
         expect(container.read(provider(0)), const AsyncData(0));
         expect(root.getAllProviderElements(), isEmpty);
         expect(
           container.getAllProviderElements(),
           unorderedEquals(<Object?>[
-            isA<ProviderElementBase<Object?>>()
+            isA<ProviderElement>()
                 .having((e) => e.origin, 'origin', provider(0)),
           ]),
         );
@@ -56,15 +61,13 @@ void main() {
       );
     });
 
-    test('overrideWithProvider', () async {
+    test('overrideWith', () async {
       final provider = StreamProvider.autoDispose.family<int, int>((ref, a) {
         return Stream.value(a * 2);
       });
       final container = ProviderContainer(
         overrides: [
-          provider.overrideWithProvider((a) {
-            return StreamProvider.autoDispose((ref) => Stream.value(a * 4));
-          }),
+          provider.overrideWith((ref, a) => Stream.value(a * 4)),
         ],
       );
       final listener = Listener<AsyncValue<int>>();
@@ -85,7 +88,10 @@ void main() {
     });
 
     test('can be auto-scoped', () async {
-      final dep = Provider((ref) => 0);
+      final dep = Provider(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final provider = StreamProvider.autoDispose.family<int, int>(
         (ref, i) => Stream.value(ref.watch(dep) + i),
         dependencies: [dep],
@@ -96,8 +102,8 @@ void main() {
         overrides: [dep.overrideWithValue(42)],
       );
 
-      // ignore: deprecated_member_use_from_same_package
-      await expectLater(container.read(provider(10).stream), emits(52));
+      container.listen(provider(10), (p, n) {});
+
       await expectLater(container.read(provider(10).future), completion(52));
       expect(container.read(provider(10)), const AsyncData(52));
 

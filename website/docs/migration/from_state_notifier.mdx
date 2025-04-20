@@ -1,6 +1,6 @@
 ---
 title: From `StateNotifier`
-version: 1
+version: 2
 ---
 
 import buildInit from "./from_state_notifier/build_init";
@@ -21,6 +21,12 @@ import obtainNotifierOnTests from "!!raw-loader!./from_state_notifier/obtain_not
 
 import { Link } from "/src/components/Link";
 import { AutoSnippet } from "/src/components/CodeSnippet";
+
+:::caution
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+:::
 
 Along with [Riverpod 2.0](https://pub.dev/packages/flutter_riverpod/changelog#200), new classes
 were introduced: `Notifier` / `AsyncNotifier`.
@@ -77,8 +83,8 @@ Here's the above example, rewritten with the new `AsyncNotifier` APIs:
 Here, it's easy to see `AsyncNotifier` as a `FutureProvider` with methods.
 
 `AsyncNotifier` comes with a set of utilities and getters that `StateNotifier` doesn't have, such as e.g.
-[`future`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/future.html)
-and [`update`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/update.html).
+[`future`](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier/future.html)
+and [`update`](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier/update.html).
 This enables us to write much simpler logic when handling asynchronous mutations and side-effects.
 See also <Link documentID="essentials/side_effects" />.
 :::tip
@@ -105,9 +111,9 @@ Let's go further down and highlight more differences and similarities.
 Another important difference is how families and auto dispose is handled with the new APIs.
 
 `Notifier`, has its own `.family` and `.autoDispose` counterparts, such as `FamilyNotifier`
-and `AutoDisposeNotifier`.  
+and `Notifier`.  
 As always, such modifications can be combined (aka `AutoDisposeFamilyNotifier`).  
-`AsyncNotifier` has its asynchronous equivalent, too (e.g. `AutoDisposeFamilyAsyncNotifier`).
+`AsyncNotifier` has its asynchronous equivalent, too (e.g. `FamilyAsyncNotifier`).
 
 Modifications are explicitly stated inside the class; any parameters are directly injected in the
 `build` method, so that they're available to the initialization logic.  

@@ -1,19 +1,10 @@
 import 'dart:async';
 
-import 'package:dio/dio.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-import '../../utils.dart';
+import '../old_lifecycles_final/old_lifecycles_final.dart';
 
 part 'old_lifecycles.g.dart';
-
-final repositoryProvider = Provider<_MyRepo>((ref) {
-  return _MyRepo();
-});
-
-class _MyRepo {
-  Future<void> update(int i, {CancelToken? token}) async {}
-}
 
 /* SNIPPET START */
 @riverpod

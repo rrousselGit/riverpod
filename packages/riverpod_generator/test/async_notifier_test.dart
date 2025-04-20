@@ -1,6 +1,5 @@
-// ignore_for_file: omit_local_variable_types, unused_local_variable
-
-import 'package:riverpod/riverpod.dart' show ProviderContainer;
+// ignore_for_file: omit_local_variable_types, unused_local_variable // testing type assignment
+import 'package:riverpod/riverpod.dart' show ProviderBase;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
@@ -12,8 +11,7 @@ void main() {
       () {
     final container = ProviderContainer.test();
 
-    final AutoDisposeAsyncNotifierProvider<PublicClass, String> provider =
-        publicClassProvider;
+    const ProviderBase<AsyncValue<String>> provider = publicClassProvider;
     final AsyncValue<String> result = container.read(publicClassProvider);
 
     expect(result, const AsyncData('Hello world'));
@@ -37,6 +35,7 @@ void main() {
     final notifier = container.read(publicClassProvider.notifier);
     expect(notifier.param, 'Hello world');
 
+    // ignore: invalid_use_of_protected_member, just checking
     expect(notifier.ref, isNotNull);
     expect(notifier.state, isNotNull);
   });
@@ -58,6 +57,7 @@ void main() {
     expect(notifier.fourth, true);
     expect(notifier.fifth, null);
 
+    // ignore: invalid_use_of_protected_member // just checking
     expect(notifier.ref, isNotNull);
     expect(notifier.state, isNotNull);
   });
@@ -90,8 +90,6 @@ void main() {
       familyClassProvider(
         42,
         third: .42,
-        // ignore: avoid_redundant_argument_values
-        fourth: true,
       ),
     );
     expect(
@@ -99,8 +97,6 @@ void main() {
       familyClassProvider(
         42,
         third: .42,
-        // ignore: avoid_redundant_argument_values
-        fourth: true,
       ).hashCode,
     );
 
@@ -111,15 +107,8 @@ void main() {
       fourth: false,
       fifth: const ['x42'],
     );
-    // ignore: invalid_use_of_internal_member
-    final AutoDisposeAsyncNotifierProviderImpl<FamilyClass, String>
-        futureProvider = provider;
-
-    expect(provider.first, 42);
-    expect(provider.second, 'x42');
-    expect(provider.third, .42);
-    expect(provider.fourth, false);
-    expect(provider.fifth, same(const ['x42']));
+    // ignore: invalid_use_of_internal_member // Just checking
+    final ProviderBase<AsyncValue<String>> futureProvider = provider;
 
     final sub = container.listen(
       familyClassProvider(

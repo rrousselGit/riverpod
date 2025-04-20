@@ -4,7 +4,7 @@ repository: https://github.com/rrousselGit/river_pod
 issue_tracker: https://github.com/rrousselGit/riverpod/issues
 funding:
   - https://github.com/sponsors/rrousselGit/
-version: 0.5.10
+version: 1.0.0-dev.1
 
 environment:
   sdk: ^3.6.0
@@ -12,7 +12,7 @@ environment:
 resolution: workspace
 
 dependencies:
-  analyzer: ^7.0.0
+  analyzer: ^7.3.0
   collection: ^1.16.0
   crypto: ^3.0.2
   custom_lint_core: ^0.7.0
@@ -26,4 +26,6 @@ dev_dependencies:
   build_runner: ^2.3.2
   build_test: ^2.1.5
   freezed: ^3.0.2
+  lint_visitor_generator:
+  lints: ^2.0.0
   test: ^1.21.7

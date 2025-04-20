@@ -1,24 +1,4 @@
-part of '../async_notifier.dart';
-
-/// A [StreamNotifier] base class shared between family and non-family notifiers.
-///
-/// Not meant for public consumption outside of riverpod_generator
-@internal
-abstract class BuildlessStreamNotifier<State> extends AsyncNotifierBase<State> {
-  @override
-  late final StreamNotifierProviderElement<AsyncNotifierBase<State>, State>
-      _element;
-
-  @override
-  void _setElement(ProviderElementBase<AsyncValue<State>> element) {
-    _element = element
-        as StreamNotifierProviderElement<AsyncNotifierBase<State>, State>;
-  }
-
-  @override
-  // ignore: deprecated_member_use_from_same_package
-  StreamNotifierProviderRef<State> get ref => _element;
-}
+part of '../stream_notifier.dart';
 
 /// {@template riverpod.streamNotifier}
 /// A variant of [AsyncNotifier] which has [build] creating a [Stream].
@@ -32,17 +12,13 @@ abstract class BuildlessStreamNotifier<State> extends AsyncNotifierBase<State> {
 /// [AsyncNotifier].
 ///
 /// This can be considered as a [StreamProvider] that can mutate its value over time.
-/// When using `autoDispose` or `family`, your notifier type changes.
-/// Instead of extending [StreamNotifier], you should extend either:
-/// - [AutoDisposeStreamNotifier] for `autoDispose`
-/// - [FamilyStreamNotifier] for `family`
-/// - [AutoDisposeFamilyStreamNotifier] for `autoDispose.family`
-///
+/// When using `family`, your notifier type changes. Instead of extending
+/// [StreamNotifier], you should extend [FamilyStreamNotifier].
 /// {@endtemplate}
-abstract class StreamNotifier<State> extends BuildlessStreamNotifier<State> {
+abstract class StreamNotifier<StateT> extends $StreamNotifier<StateT> {
   /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
-  Stream<State> build();
+  Stream<StateT> build();
 
   @internal
   @override
@@ -52,52 +28,56 @@ abstract class StreamNotifier<State> extends BuildlessStreamNotifier<State> {
   }
 }
 
-/// {@macro riverpod.provider_ref_base}
-@Deprecated('will be removed in 3.0.0. Use Ref instead')
-abstract class StreamNotifierProviderRef<T> implements Ref<AsyncValue<T>> {}
-
-/// {@macro riverpod.streamNotifier}
-typedef StreamNotifierProvider<NotifierT extends StreamNotifier<T>, T>
-    = StreamNotifierProviderImpl<NotifierT, T>;
-
-/// The implementation of [StreamNotifierProvider] but with loosened type constraints
-/// that can be shared with [AutoDisposeStreamNotifierProvider].
+/// {@template riverpod.async_notifier_provider}
+/// A provider which creates and listen to an [StreamNotifier].
 ///
-/// This enables tests to execute on both [StreamNotifierProvider] and
-/// [AutoDisposeStreamNotifierProvider] at the same time.
-@visibleForTesting
-@internal
-class StreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
-    extends StreamNotifierProviderBase<NotifierT, T>
-    with
-        // ignore: deprecated_member_use_from_same_package
-        AlwaysAliveProviderBase<AsyncValue<T>>,
-        AlwaysAliveAsyncSelector<T> {
-  /// {@macro riverpod.streamNotifier}
-  StreamNotifierProviderImpl(
-    super._createNotifier, {
+/// This is similar to [FutureProvider] but allows to perform side-effects.
+///
+/// The syntax for using this provider is slightly different from the others
+/// in that the provider's function doesn't receive a "ref" (and in case
+/// of `family`, doesn't receive an argument either).
+/// Instead the ref (and argument) are directly accessible in the associated
+/// [StreamNotifier].
+/// {@endtemplate}
+///
+/// {@template riverpod.async_notifier_provider_modifier}
+/// When using your notifier type changes.
+/// Instead of extending [StreamNotifier], you should extend [FamilyStreamNotifier].
+/// {@endtemplate}
+final class StreamNotifierProvider< //
+        NotifierT extends StreamNotifier<StateT>,
+        StateT> //
+    extends $StreamNotifierProvider<NotifierT, StateT>
+    with LegacyProviderMixin<AsyncValue<StateT>> {
+  /// {@macro riverpod.async_notifier_provider}
+  ///
+  /// {@macro riverpod.async_notifier_provider_modifier}
+  StreamNotifierProvider(
+    this._createNotifier, {
     super.name,
     super.dependencies,
+    super.runNotifierBuildOverride,
+    super.isAutoDispose = false,
+    super.retry,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
-          debugGetCreateSourceHash: null,
-          isAutoDispose: false,
         );
 
   /// An implementation detail of Riverpod
   @internal
-  StreamNotifierProviderImpl.internal(
-    super._createNotifier, {
+  const StreamNotifierProvider.internal(
+    this._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    super.from,
-    super.argument,
-    super.isAutoDispose = false,
+    required super.from,
+    required super.argument,
+    required super.isAutoDispose,
+    required super.runNotifierBuildOverride,
+    required super.retry,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -106,77 +86,52 @@ class StreamNotifierProviderImpl<NotifierT extends AsyncNotifierBase<T>, T>
   /// {@macro riverpod.family}
   static const family = StreamNotifierProviderFamilyBuilder();
 
-  @override
-  // ignore: deprecated_member_use_from_same_package
-  late final AlwaysAliveRefreshable<NotifierT> notifier =
-      _streamNotifier<NotifierT, T>(this);
-
-  @override
-  // ignore: deprecated_member_use_from_same_package
-  late final AlwaysAliveRefreshable<Future<T>> future = _streamFuture<T>(this);
+  final NotifierT Function() _createNotifier;
 
   @internal
   @override
-  StreamNotifierProviderElement<NotifierT, T> createElement() {
-    return StreamNotifierProviderElement(this);
-  }
+  NotifierT create() => _createNotifier();
 
-  @override
-  Stream<T> runNotifierBuild(AsyncNotifierBase<T> notifier) {
-    // Not using "covariant" as riverpod_generator subclasses this with a
-    // different notifier type
-    return (notifier as StreamNotifier<T>).build();
-  }
-
-  /// {@macro riverpod.override_with}
-  @mustBeOverridden
-  Override overrideWith(NotifierT Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: StreamNotifierProviderImpl<NotifierT, T>.internal(
-        create,
-        from: from,
-        argument: argument,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-      ),
+  StreamNotifierProvider<NotifierT, StateT> _copyWith({
+    NotifierT Function()? create,
+    RunNotifierBuild<NotifierT, Stream<StateT>>? build,
+  }) {
+    return StreamNotifierProvider<NotifierT, StateT>.internal(
+      create ?? _createNotifier,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      from: from,
+      argument: argument,
+      isAutoDispose: isAutoDispose,
+      runNotifierBuildOverride: build ?? runNotifierBuildOverride,
+      retry: retry,
     );
   }
-}
 
-/// The element of [StreamNotifierProvider].
-@internal
-class StreamNotifierProviderElement<NotifierT extends AsyncNotifierBase<T>, T>
-    extends AsyncNotifierProviderElementBase<NotifierT, T>
-    implements
-        // ignore: deprecated_member_use_from_same_package
-        StreamNotifierProviderRef<T>,
-        // ignore: deprecated_member_use_from_same_package
-        AutoDisposeStreamNotifierProviderRef<T> {
-  /// The element of [StreamNotifierProvider].
   @internal
-  StreamNotifierProviderElement(
-    StreamNotifierProviderBase<NotifierT, T> super._provider,
-  );
-
   @override
-  void create({required bool didChangeDependency}) {
-    final provider = this.provider as StreamNotifierProviderBase<NotifierT, T>;
+  $StreamNotifierProviderElement<NotifierT, StateT> $createElement(
+    $ProviderPointer pointer,
+  ) {
+    return $StreamNotifierProviderElement(this, pointer);
+  }
 
-    final notifierResult = _notifierNotifier.result ??= $Result.guard(() {
-      return provider._createNotifier().._setElement(this);
-    });
+  @mustBeOverridden
+  @visibleForOverriding
+  @override
+  StreamNotifierProvider<NotifierT, StateT> $copyWithBuild(
+    RunNotifierBuild<NotifierT, Stream<StateT>>? build,
+  ) {
+    return _copyWith(build: build);
+  }
 
-    switch (notifierResult) {
-      case $ResultData<NotifierT>():
-        handleStream(
-          () => provider.runNotifierBuild(notifierResult.value),
-          didChangeDependency: didChangeDependency,
-        );
-      case $ResultError<NotifierT>(:final error, :final stackTrace):
-        onError(AsyncError(error, stackTrace), seamless: !didChangeDependency);
-    }
+  @mustBeOverridden
+  @visibleForOverriding
+  @override
+  StreamNotifierProvider<NotifierT, StateT> $copyWithCreate(
+    NotifierT Function() create,
+  ) {
+    return _copyWith(create: create);
   }
 }

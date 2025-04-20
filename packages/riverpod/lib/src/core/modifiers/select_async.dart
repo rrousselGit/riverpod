@@ -1,89 +1,11 @@
 part of '../../framework.dart';
 
-/// Adds [selectAsync] to [ProviderListenable]
-@internal
-mixin AsyncSelector<Input> on ProviderListenable<AsyncValue<Input>> {
-  /// The future that [selectAsync] will query
-  Refreshable<Future<Input>> get future;
-
-  /// {@template riverpod.async_select}
-  /// A variant of [select] for asynchronous values
-  ///
-  /// [selectAsync] is useful for filtering rebuilds of a provider
-  /// when it depends on asynchronous values, which we want to await.
-  ///
-  /// A common use-case would be to combine [selectAsync] with
-  /// [FutureProvider] to perform an async operation, where that
-  /// async operation depends on the result of another async operation.
-  ///
-  ///
-  /// ```dart
-  /// // A provider which asynchronously loads configurations,
-  /// // which may change over time.
-  /// final configsProvider = StreamProvider<Config>((ref) async {
-  ///   // TO-DO fetch the configurations, such as by using Firebase
-  /// });
-  ///
-  /// // A provider which fetches a list of products based on the configurations
-  /// final productsProvider = FutureProvider<List>((ref) async {
-  ///   // We obtain the host from the configs, while ignoring changes to
-  ///   // other properties. As such, the productsProvider will rebuild only
-  ///   // if the host changes
-  ///   final host = await ref.watch(configsProvider.selectAsync((config) => config.host));
-  ///
-  ///   return http.get('$host/products');
-  /// });
-  /// ```
-  /// {@endtemplate}
-  ProviderListenable<Future<Output>> selectAsync<Output>(
-    Output Function(Input data) selector,
-  ) {
-    return _AlwaysAliveAsyncSelector(
-      selector: selector,
-      provider: this,
-      future: future,
-    );
-  }
-}
-
-// ignore: deprecated_member_use_from_same_package
-/// Adds [selectAsync] to [AlwaysAliveProviderListenable]
-@internal
-mixin AlwaysAliveAsyncSelector<Input>
-    // ignore: deprecated_member_use_from_same_package
-    on AlwaysAliveProviderListenable<AsyncValue<Input>> {
-  /// The future that [selectAsync] will query
-  // ignore: deprecated_member_use_from_same_package
-  AlwaysAliveRefreshable<Future<Input>> get future;
-
-  /// {@macro riverpod.async_select}
-  // ignore: deprecated_member_use_from_same_package
-  AlwaysAliveProviderListenable<Future<Output>> selectAsync<Output>(
-    Output Function(Input data) selector,
-  ) {
-    return _AlwaysAliveAsyncSelector(
-      selector: selector,
-      provider: this,
-      future: future,
-    );
-  }
-}
-
-class _AlwaysAliveAsyncSelector<Input, Output>
-    extends _AsyncSelector<Input, Output>
-    with
-        // ignore: deprecated_member_use_from_same_package
-        AlwaysAliveProviderListenable<Future<Output>> {
-  _AlwaysAliveAsyncSelector({
-    required super.provider,
-    required super.future,
-    required super.selector,
-  });
-}
-
 /// An internal class for `ProviderBase.selectAsync`.
 @sealed
-class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
+class _AsyncSelector<InputT, OutputT, OriginT>
+    with
+        ProviderListenable<Future<OutputT>>,
+        ProviderListenableWithOrigin<Future<OutputT>, OriginT> {
   /// An internal class for `ProviderBase.select`.
   _AsyncSelector({
     required this.provider,
@@ -92,58 +14,51 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
   });
 
   /// The provider that was selected
-  final ProviderListenable<AsyncValue<Input>> provider;
+  final ProviderListenableWithOrigin<AsyncValue<InputT>, OriginT> provider;
 
   /// The future associated to the listened provider
-  final ProviderListenable<Future<Input>> future;
+  final ProviderListenableWithOrigin<Future<InputT>, OriginT> future;
 
   /// The selector applied
-  final Output Function(Input) selector;
+  final OutputT Function(InputT) selector;
 
-  $Result<Output> _select(Input value) {
-    assert(
-      () {
-        _debugIsRunningSelector = true;
-        return true;
-      }(),
-      '',
-    );
+  $Result<OutputT> _select(InputT value) {
+    if (kDebugMode) _debugIsRunningSelector = true;
 
     try {
       return $Result.data(selector(value));
     } catch (err, stack) {
       return $Result.error(err, stack);
     } finally {
-      assert(
-        () {
-          _debugIsRunningSelector = false;
-          return true;
-        }(),
-        '',
-      );
+      if (kDebugMode) _debugIsRunningSelector = false;
     }
   }
 
   @override
-  _SelectorSubscription<AsyncValue<Input>, Future<Output>> _addListener(
+  ProviderSubscriptionWithOrigin<Future<OutputT>, OriginT> addListener(
     Node node,
-    void Function(Future<Output>? previous, Future<Output> next) listener, {
+    void Function(Future<OutputT>? previous, Future<OutputT> next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
+    required bool weak,
   }) {
-    $Result<Output>? lastSelectedValue;
-    Completer<Output>? selectedCompleter;
-    Future<Output>? selectedFuture;
+    late final ProviderSubscriptionView<Future<OutputT>, OriginT> providerSub;
 
-    void emitData(Output data, {required bool callListeners}) {
+    $Result<OutputT>? lastSelectedValue;
+    Completer<OutputT>? selectedCompleter;
+    Future<OutputT>? selectedFuture;
+
+    void emitData(OutputT data, {required bool callListeners}) {
       final previousFuture = selectedFuture;
       if (selectedCompleter != null) {
         selectedCompleter!.complete(data);
         selectedCompleter = null;
       } else {
         selectedFuture = Future.value(data);
-        if (callListeners) listener(previousFuture, selectedFuture!);
+        if (callListeners) {
+          providerSub._notifyData(previousFuture, selectedFuture!);
+        }
       }
     }
 
@@ -158,12 +73,14 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
         selectedCompleter = null;
       } else {
         selectedFuture = Future.error(err, stack);
-        if (callListeners) listener(previousFuture, selectedFuture!);
+        if (callListeners) {
+          providerSub._notifyData(previousFuture, selectedFuture!);
+        }
       }
     }
 
     void playValue(
-      AsyncValue<Input> value, {
+      AsyncValue<InputT> value, {
       bool callListeners = true,
     }) {
       void onLoading(AsyncValue<void> loading) {
@@ -187,16 +104,15 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
           }
 
           final newSelectedValue = _select(value.value);
-
           switch (newSelectedValue) {
-            case $ResultData<Output>():
+            case $ResultData():
               if (newSelectedValue != lastSelectedValue) {
                 emitData(
                   newSelectedValue.value,
                   callListeners: callListeners,
                 );
               }
-            case $ResultError<Output>():
+            case $ResultError():
               emitError(
                 newSelectedValue.error,
                 newSelectedValue.stackTrace,
@@ -225,10 +141,13 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
       );
     }
 
-    final sub = node.listen<AsyncValue<Input>>(
-      provider,
+    final sub = provider.addListener(
+      node,
       (prev, input) => playValue(input),
+      weak: weak,
+      onDependencyMayHaveChanged: onDependencyMayHaveChanged,
       onError: onError,
+      fireImmediately: false,
     );
 
     playValue(sub.read(), callListeners: false);
@@ -237,22 +156,34 @@ class _AsyncSelector<Input, Output> with ProviderListenable<Future<Output>> {
       listener(null, selectedFuture!);
     }
 
-    return _SelectorSubscription(
-      node,
-      sub,
-      () => selectedFuture!,
+    return providerSub = ProviderSubscriptionView<Future<OutputT>, OriginT>(
+      innerSubscription: sub,
+      listener: listener,
+      onError: onError,
+      read: () {
+        // Flush
+        sub.read();
+        return selectedFuture!;
+      },
       onClose: () {
         final completer = selectedCompleter;
         if (completer != null && !completer.isCompleted) {
-          read(node).then(
-            completer.complete,
-            onError: completer.completeError,
+          final sub = future.addListener(
+            node,
+            (prev, next) {},
+            weak: weak,
+            onDependencyMayHaveChanged: () {},
+            onError: onError,
+            fireImmediately: false,
           );
+
+          sub
+              .read()
+              .then((v) => _select(v).requireState)
+              .then(completer.complete, onError: completer.completeError)
+              .whenComplete(sub.close);
         }
       },
     );
   }
-
-  @override
-  Future<Output> read(Node node) => future.read(node).then(selector);
 }

@@ -74,10 +74,13 @@ void main() {
   test('linear across two containers', () {
     final a = Provider<A>((ref) => A());
 
-    final b = Provider<B>((ref) {
-      ref.watch(a);
-      return B();
-    });
+    final b = Provider<B>(
+      (ref) {
+        ref.watch(a);
+        return B();
+      },
+      dependencies: const [],
+    );
 
     final parent = ProviderContainer.test();
     final container = ProviderContainer.test(parent: parent, overrides: [b]);
@@ -93,15 +96,19 @@ void main() {
   test('branching across two containers', () {
     final a = Provider<A>((ref) => A());
 
-    final b = Provider<B>((ref) {
-      return B();
-    });
+    final b = Provider<B>(
+      (ref) => B(),
+      dependencies: const [],
+    );
 
-    final c = Provider<C>((ref) {
-      ref.watch(a);
-      ref.watch(b);
-      return C();
-    });
+    final c = Provider<C>(
+      (ref) {
+        ref.watch(a);
+        ref.watch(b);
+        return C();
+      },
+      dependencies: [b],
+    );
 
     final parent = ProviderContainer.test();
 
@@ -302,7 +309,7 @@ void main() {
   });
 }
 
-List<AnyProvider<Object?>> compute(ProviderContainer container) {
+List<ProviderBase<Object?>> compute(ProviderContainer container) {
   return container
       .getAllProviderElementsInOrder()
       .map((e) => e.provider)

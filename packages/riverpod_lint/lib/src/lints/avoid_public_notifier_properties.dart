@@ -4,7 +4,9 @@ import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
-class AvoidPublicNotifierProperties extends DartLintRule {
+import '../riverpod_custom_lint.dart';
+
+class AvoidPublicNotifierProperties extends RiverpodLintRule {
   const AvoidPublicNotifierProperties() : super(code: _code);
 
   static const _code = LintCode(
@@ -28,6 +30,9 @@ class AvoidPublicNotifierProperties extends DartLintRule {
       }
 
       for (final member in node.members) {
+        // Skip members if there's an @override annotation
+        if (member.declaredElement?.hasOverride ?? false) continue;
+
         bool isVisibleOutsideTheNotifier(Element? element) {
           return element != null &&
               element.isPublic &&
@@ -41,6 +46,7 @@ class AvoidPublicNotifierProperties extends DartLintRule {
           if (member.isStatic) continue;
 
           for (final variable in member.fields.variables) {
+            if (variable.isFinal) continue;
             if (!isVisibleOutsideTheNotifier(variable.declaredElement)) {
               continue;
             }

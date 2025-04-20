@@ -76,8 +76,8 @@ Di seguito l'esempio precedente riscritto con le nuove API `AsyncNotifier`:
 Qui è facile osservare come `AsyncNotifier` sia un `FutureProvider` con dei metodi.
 
 `AsyncNotifier` viene fornito con una serie di utilità e getters che `StateNotifier` non possiede, come
-[`future`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/future.html) e 
-[`update`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/update.html).
+[`future`](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier/future.html) e 
+[`update`](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier/update.html).
 Ciò ci permette di scrivere della logica più semplice quando gestiamo mutazioni asincrone e side-effects.
 Vedere anche <Link documentID="essentials/side_effects" />.
 
@@ -104,9 +104,9 @@ Addentriamoci ed evidenziamo più differenze e somiglianze.
 Un'altra importante differenza è come sono gestite le family e la funzionalità di auto dispose con le nuove API.
 
 `Notifier` ha le sue personali controparti di `.family` e `.autoDispose`, come `FamilyNotifier` 
-e `AutoDisposeNotifier`.
+e `Notifier`.
 Come sempre, queste modifiche possono essere combinate (aka `AutoDisposeFamilyNotifier`).
-`AsyncNotifier` ha le sue controparti asincrone equivalenti, (`AutoDisposeFamilyAsyncNotifier`).
+`AsyncNotifier` ha le sue controparti asincrone equivalenti, (`FamilyAsyncNotifier`).
 
 Questi modificatori sono esplicitamente dichiarati dentro la classe; qualsiasi parametro è iniettato direttamente 
 nel metodo `build` in modo tale da essere disponibile alla logica di inizializzazione.

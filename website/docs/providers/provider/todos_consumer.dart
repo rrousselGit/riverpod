@@ -13,6 +13,6 @@ Consumer(builder: (context, ref, child) {
   // TODO show the todos using a ListView/GridView/.../* SKIP */
   return Container();
   /* SKIP END */
-});
+},);
 /* SNIPPET END */
 }

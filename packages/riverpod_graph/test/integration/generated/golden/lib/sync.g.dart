@@ -6,329 +6,754 @@ part of 'sync.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$publicHash() => r'94bee36125844f9fe521363bb228632b9f3bfbc7';
+/// A public generated provider.
+@ProviderFor(public)
+const publicProvider = PublicProvider._();
 
 /// A public generated provider.
-///
-/// Copied from [public].
-@ProviderFor(public)
-final publicProvider = AutoDisposeProvider<String>.internal(
-  public,
-  name: r'publicProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$publicHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+final class PublicProvider extends $FunctionalProvider<String, String>
+    with $Provider<String> {
+  /// A public generated provider.
+  const PublicProvider._(
+      {String Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'publicProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef PublicRef = AutoDisposeProviderRef<String>;
-String _$supports$inNamesHash() => r'a883450ddca90a227631fe54d1d9ae305bc558d9';
+  final String Function(
+    Ref ref,
+  )? _createCb;
 
-/// A generated provider with a '$' in its name.
-///
-/// Copied from [supports$inNames].
-@ProviderFor(supports$inNames)
-final supports$inNamesProvider = AutoDisposeProvider<String>.internal(
-  supports$inNames,
-  name: r'supports$inNamesProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$supports$inNamesHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+  @override
+  String debugGetCreateSourceHash() => _$publicHash();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef Supports$inNamesRef = AutoDisposeProviderRef<String>;
-String _$familyHash() => r'062561e0cad8585939dc9adc23de6452be2c9788';
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
   }
 
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
+  @$internal
+  @override
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  PublicProvider $copyWithCreate(
+    String Function(
+      Ref ref,
+    ) create,
+  ) {
+    return PublicProvider._(create: create);
+  }
+
+  @override
+  String create(Ref ref) {
+    final _$cb = _createCb ?? public;
+    return _$cb(ref);
   }
 }
 
+String _$publicHash() => r'94bee36125844f9fe521363bb228632b9f3bfbc7';
+
+/// A generated provider with a '$' in its name.
+@ProviderFor(supports$inNames)
+const supports$inNamesProvider = Supports$inNamesProvider._();
+
+/// A generated provider with a '$' in its name.
+final class Supports$inNamesProvider extends $FunctionalProvider<String, String>
+    with $Provider<String> {
+  /// A generated provider with a '$' in its name.
+  const Supports$inNamesProvider._(
+      {String Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'supports$inNamesProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final String Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$supports$inNamesHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  Supports$inNamesProvider $copyWithCreate(
+    String Function(
+      Ref ref,
+    ) create,
+  ) {
+    return Supports$inNamesProvider._(create: create);
+  }
+
+  @override
+  String create(Ref ref) {
+    final _$cb = _createCb ?? supports$inNames;
+    return _$cb(ref);
+  }
+}
+
+String _$supports$inNamesHash() => r'a883450ddca90a227631fe54d1d9ae305bc558d9';
+
 /// A generated family provider.
-///
-/// Copied from [family].
 @ProviderFor(family)
-const familyProvider = FamilyFamily();
+const familyProvider = FamilyFamily._();
 
 /// A generated family provider.
-///
-/// Copied from [family].
-class FamilyFamily extends Family<String> {
+final class FamilyProvider extends $FunctionalProvider<String, String>
+    with $Provider<String> {
   /// A generated family provider.
-  ///
-  /// Copied from [family].
-  const FamilyFamily();
+  const FamilyProvider._(
+      {required FamilyFamily super.from,
+      required (
+        int, {
+        String? second,
+        double third,
+        bool forth,
+        List<String>? fifth,
+      })
+          super.argument,
+      String Function(
+        Ref ref,
+        int first, {
+        String? second,
+        required double third,
+        bool forth,
+        List<String>? fifth,
+      })? create})
+      : _createCb = create,
+        super(
+          retry: null,
+          name: r'familyProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final String Function(
+    Ref ref,
+    int first, {
+    String? second,
+    required double third,
+    bool forth,
+    List<String>? fifth,
+  })? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$familyHash();
+
+  @override
+  String toString() {
+    return r'familyProvider'
+        ''
+        '$argument';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  FamilyProvider $copyWithCreate(
+    String Function(
+      Ref ref,
+    ) create,
+  ) {
+    return FamilyProvider._(
+        argument: argument as (
+          int, {
+          String? second,
+          double third,
+          bool forth,
+          List<String>? fifth,
+        }),
+        from: from! as FamilyFamily,
+        create: (
+          ref,
+          int first, {
+          String? second,
+          required double third,
+          bool forth = true,
+          List<String>? fifth,
+        }) =>
+            create(ref));
+  }
+
+  @override
+  String create(Ref ref) {
+    final _$cb = _createCb ?? family;
+    final argument = this.argument as (
+      int, {
+      String? second,
+      double third,
+      bool forth,
+      List<String>? fifth,
+    });
+    return _$cb(
+      ref,
+      argument.$1,
+      second: argument.second,
+      third: argument.third,
+      forth: argument.forth,
+      fifth: argument.fifth,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is FamilyProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$familyHash() => r'062561e0cad8585939dc9adc23de6452be2c9788';
+
+/// A generated family provider.
+final class FamilyFamily extends Family {
+  const FamilyFamily._()
+      : super(
+          retry: null,
+          name: r'familyProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
 
   /// A generated family provider.
-  ///
-  /// Copied from [family].
   FamilyProvider call(
     int first, {
     String? second,
     required double third,
     bool forth = true,
     List<String>? fifth,
-  }) {
-    return FamilyProvider(
-      first,
-      second: second,
-      third: third,
-      forth: forth,
-      fifth: fifth,
-    );
-  }
+  }) =>
+      FamilyProvider._(argument: (
+        first,
+        second: second,
+        third: third,
+        forth: forth,
+        fifth: fifth,
+      ), from: this);
 
   @override
-  FamilyProvider getProviderOverride(
-    covariant FamilyProvider provider,
+  String debugGetCreateSourceHash() => _$familyHash();
+
+  @override
+  String toString() => r'familyProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    String Function(
+      Ref ref,
+      (
+        int, {
+        String? second,
+        double third,
+        bool forth,
+        List<String>? fifth,
+      }) args,
+    ) create,
   ) {
-    return call(
-      provider.first,
-      second: provider.second,
-      third: provider.third,
-      forth: provider.forth,
-      fifth: provider.fifth,
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as FamilyProvider;
+
+        final argument = provider.argument as (
+          int, {
+          String? second,
+          double third,
+          bool forth,
+          List<String>? fifth,
+        });
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .$createElement(pointer);
+      },
     );
   }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyProvider';
-
-  @override
-  bool get isAutoDispose => true;
 }
 
-/// A generated family provider.
-///
-/// Copied from [family].
-class FamilyProvider extends AutoDisposeProvider<String> {
-  /// A generated family provider.
-  ///
-  /// Copied from [family].
-  FamilyProvider(
+@ProviderFor(_private)
+const _privateProvider = _PrivateProvider._();
+
+final class _PrivateProvider extends $FunctionalProvider<String, String>
+    with $Provider<String> {
+  const _PrivateProvider._(
+      {String Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'_privateProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final String Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$privateHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  _PrivateProvider $copyWithCreate(
+    String Function(
+      Ref ref,
+    ) create,
+  ) {
+    return _PrivateProvider._(create: create);
+  }
+
+  @override
+  String create(Ref ref) {
+    final _$cb = _createCb ?? _private;
+    return _$cb(ref);
+  }
+}
+
+String _$privateHash() => r'4f7b825ffa8a674f01dc8453cb480060a6a7bf5f';
+
+/// A generated public provider from a class
+@ProviderFor(PublicClass)
+const publicClassProvider = PublicClassProvider._();
+
+/// A generated public provider from a class
+final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
+  /// A generated public provider from a class
+  const PublicClassProvider._(
+      {super.runNotifierBuildOverride, PublicClass Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'publicClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final PublicClass Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$publicClassHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
+  @$internal
+  @override
+  PublicClass create() => _createCb?.call() ?? PublicClass();
+
+  @$internal
+  @override
+  PublicClassProvider $copyWithCreate(
+    PublicClass Function() create,
+  ) {
+    return PublicClassProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  PublicClassProvider $copyWithBuild(
+    String Function(
+      Ref,
+      PublicClass,
+    ) build,
+  ) {
+    return PublicClassProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<PublicClass, String> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
+}
+
+String _$publicClassHash() => r'c27eae39f455b986e570abb84f1471de7445ef3b';
+
+abstract class _$PublicClass extends $Notifier<String> {
+  String build();
+  @$internal
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<String>;
+    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
+        String, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}
+
+@ProviderFor(_PrivateClass)
+const _privateClassProvider = _PrivateClassProvider._();
+
+final class _PrivateClassProvider
+    extends $NotifierProvider<_PrivateClass, String> {
+  const _PrivateClassProvider._(
+      {super.runNotifierBuildOverride, _PrivateClass Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'_privateClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final _PrivateClass Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$privateClassHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
+  @$internal
+  @override
+  _PrivateClass create() => _createCb?.call() ?? _PrivateClass();
+
+  @$internal
+  @override
+  _PrivateClassProvider $copyWithCreate(
+    _PrivateClass Function() create,
+  ) {
+    return _PrivateClassProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  _PrivateClassProvider $copyWithBuild(
+    String Function(
+      Ref,
+      _PrivateClass,
+    ) build,
+  ) {
+    return _PrivateClassProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<_PrivateClass, String> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
+}
+
+String _$privateClassHash() => r'3b08af72c6d4f24aed264efcf181572525b75603';
+
+abstract class _$PrivateClass extends $Notifier<String> {
+  String build();
+  @$internal
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<String>;
+    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
+        String, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}
+
+/// A generated family provider from a class.
+@ProviderFor(FamilyClass)
+const familyClassProvider = FamilyClassFamily._();
+
+/// A generated family provider from a class.
+final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
+  /// A generated family provider from a class.
+  const FamilyClassProvider._(
+      {required FamilyClassFamily super.from,
+      required (
+        int, {
+        String? second,
+        double third,
+        bool forth,
+        List<String>? fifth,
+      })
+          super.argument,
+      super.runNotifierBuildOverride,
+      FamilyClass Function()? create})
+      : _createCb = create,
+        super(
+          retry: null,
+          name: r'familyClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final FamilyClass Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$familyClassHash();
+
+  @override
+  String toString() {
+    return r'familyClassProvider'
+        ''
+        '$argument';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
+  @$internal
+  @override
+  FamilyClass create() => _createCb?.call() ?? FamilyClass();
+
+  @$internal
+  @override
+  FamilyClassProvider $copyWithCreate(
+    FamilyClass Function() create,
+  ) {
+    return FamilyClassProvider._(
+        argument: argument as (
+          int, {
+          String? second,
+          double third,
+          bool forth,
+          List<String>? fifth,
+        }),
+        from: from! as FamilyClassFamily,
+        create: create);
+  }
+
+  @$internal
+  @override
+  FamilyClassProvider $copyWithBuild(
+    String Function(
+      Ref,
+      FamilyClass,
+    ) build,
+  ) {
+    return FamilyClassProvider._(
+        argument: argument as (
+          int, {
+          String? second,
+          double third,
+          bool forth,
+          List<String>? fifth,
+        }),
+        from: from! as FamilyClassFamily,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<FamilyClass, String> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
+
+  @override
+  bool operator ==(Object other) {
+    return other is FamilyClassProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$familyClassHash() => r'721bdd2f1ca0d7cee1a0ae476d7bfe93f9ce6875';
+
+/// A generated family provider from a class.
+final class FamilyClassFamily extends Family {
+  const FamilyClassFamily._()
+      : super(
+          retry: null,
+          name: r'familyClassProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  /// A generated family provider from a class.
+  FamilyClassProvider call(
     int first, {
     String? second,
     required double third,
     bool forth = true,
     List<String>? fifth,
-  }) : this._internal(
-          (ref) => family(
-            ref as FamilyRef,
-            first,
-            second: second,
-            third: third,
-            forth: forth,
-            fifth: fifth,
-          ),
-          from: familyProvider,
-          name: r'familyProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$familyHash,
-          dependencies: FamilyFamily._dependencies,
-          allTransitiveDependencies: FamilyFamily._allTransitiveDependencies,
-          first: first,
-          second: second,
-          third: third,
-          forth: forth,
-          fifth: fifth,
-        );
-
-  FamilyProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.first,
-    required this.second,
-    required this.third,
-    required this.forth,
-    required this.fifth,
-  }) : super.internal();
-
-  final int first;
-  final String? second;
-  final double third;
-  final bool forth;
-  final List<String>? fifth;
-
-  @override
-  Override overrideWith(
-    String Function(FamilyRef provider) create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      override: FamilyProvider._internal(
-        (ref) => create(ref as FamilyRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        first: first,
+  }) =>
+      FamilyClassProvider._(argument: (
+        first,
         second: second,
         third: third,
         forth: forth,
         fifth: fifth,
-      ),
+      ), from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$familyClassHash();
+
+  @override
+  String toString() => r'familyClassProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    FamilyClass Function(
+      (
+        int, {
+        String? second,
+        double third,
+        bool forth,
+        List<String>? fifth,
+      }) args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as FamilyClassProvider;
+
+        final argument = provider.argument as (
+          int, {
+          String? second,
+          double third,
+          bool forth,
+          List<String>? fifth,
+        });
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .$createElement(pointer);
+      },
     );
   }
 
-  @override
-  AutoDisposeProviderElement<String> createElement() {
-    return _FamilyProviderElement(this);
-  }
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    String Function(
+            Ref ref,
+            FamilyClass notifier,
+            (
+              int, {
+              String? second,
+              double third,
+              bool forth,
+              List<String>? fifth,
+            }) argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as FamilyClassProvider;
 
-  @override
-  bool operator ==(Object other) {
-    return other is FamilyProvider &&
-        other.first == first &&
-        other.second == second &&
-        other.third == third &&
-        other.forth == forth &&
-        other.fifth == fifth;
-  }
+        final argument = provider.argument as (
+          int, {
+          String? second,
+          double third,
+          bool forth,
+          List<String>? fifth,
+        });
 
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, first.hashCode);
-    hash = _SystemHash.combine(hash, second.hashCode);
-    hash = _SystemHash.combine(hash, third.hashCode);
-    hash = _SystemHash.combine(hash, forth.hashCode);
-    hash = _SystemHash.combine(hash, fifth.hashCode);
-
-    return _SystemHash.finish(hash);
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .$createElement(pointer);
+      },
+    );
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin FamilyRef on AutoDisposeProviderRef<String> {
-  /// The parameter `first` of this provider.
-  int get first;
-
-  /// The parameter `second` of this provider.
-  String? get second;
-
-  /// The parameter `third` of this provider.
-  double get third;
-
-  /// The parameter `forth` of this provider.
-  bool get forth;
-
-  /// The parameter `fifth` of this provider.
-  List<String>? get fifth;
-}
-
-class _FamilyProviderElement extends AutoDisposeProviderElement<String>
-    with FamilyRef {
-  _FamilyProviderElement(super.provider);
-
-  @override
-  int get first => (origin as FamilyProvider).first;
-  @override
-  String? get second => (origin as FamilyProvider).second;
-  @override
-  double get third => (origin as FamilyProvider).third;
-  @override
-  bool get forth => (origin as FamilyProvider).forth;
-  @override
-  List<String>? get fifth => (origin as FamilyProvider).fifth;
-}
-
-String _$privateHash() => r'4f7b825ffa8a674f01dc8453cb480060a6a7bf5f';
-
-/// See also [_private].
-@ProviderFor(_private)
-final _privateProvider = AutoDisposeProvider<String>.internal(
-  _private,
-  name: r'_privateProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$privateHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef _PrivateRef = AutoDisposeProviderRef<String>;
-String _$publicClassHash() => r'c27eae39f455b986e570abb84f1471de7445ef3b';
-
-/// A generated public provider from a class
-///
-/// Copied from [PublicClass].
-@ProviderFor(PublicClass)
-final publicClassProvider =
-    AutoDisposeNotifierProvider<PublicClass, String>.internal(
-  PublicClass.new,
-  name: r'publicClassProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$publicClassHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$PublicClass = AutoDisposeNotifier<String>;
-String _$privateClassHash() => r'3b08af72c6d4f24aed264efcf181572525b75603';
-
-/// See also [_PrivateClass].
-@ProviderFor(_PrivateClass)
-final _privateClassProvider =
-    AutoDisposeNotifierProvider<_PrivateClass, String>.internal(
-  _PrivateClass.new,
-  name: r'_privateClassProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$privateClassHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$PrivateClass = AutoDisposeNotifier<String>;
-String _$familyClassHash() => r'721bdd2f1ca0d7cee1a0ae476d7bfe93f9ce6875';
-
-abstract class _$FamilyClass extends BuildlessAutoDisposeNotifier<String> {
-  late final int first;
-  late final String? second;
-  late final double third;
-  late final bool forth;
-  late final List<String>? fifth;
+abstract class _$FamilyClass extends $Notifier<String> {
+  late final _$args = ref.$arg as (
+    int, {
+    String? second,
+    double third,
+    bool forth,
+    List<String>? fifth,
+  });
+  int get first => _$args.$1;
+  String? get second => _$args.second;
+  double get third => _$args.third;
+  bool get forth => _$args.forth;
+  List<String>? get fifth => _$args.fifth;
 
   String build(
     int first, {
@@ -337,265 +762,102 @@ abstract class _$FamilyClass extends BuildlessAutoDisposeNotifier<String> {
     bool forth = true,
     List<String>? fifth,
   });
-
   @$internal
   @override
   void runBuild() {
     final created = build(
-      first,
-      second: second,
-      third: third,
-      forth: forth,
-      fifth: fifth,
+      _$args.$1,
+      second: _$args.second,
+      third: _$args.third,
+      forth: _$args.forth,
+      fifth: _$args.fifth,
     );
-    final element = ref
-        as $ClassProviderElement<AnyNotifier<String>, String, Object?, Object?>;
+    final ref = this.ref as $Ref<String>;
+    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
+        String, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
 
-/// A generated family provider from a class.
-///
-/// Copied from [FamilyClass].
-@ProviderFor(FamilyClass)
-const familyClassProvider = FamilyClassFamily();
+/// A generated provider from a class with a '$' in its name.
+@ProviderFor(Supports$InClassName)
+const supports$InClassNameProvider = Supports$InClassNameProvider._();
 
-/// A generated family provider from a class.
-///
-/// Copied from [FamilyClass].
-class FamilyClassFamily extends Family<String> {
-  /// A generated family provider from a class.
-  ///
-  /// Copied from [FamilyClass].
-  const FamilyClassFamily();
-
-  /// A generated family provider from a class.
-  ///
-  /// Copied from [FamilyClass].
-  FamilyClassProvider call(
-    int first, {
-    String? second,
-    required double third,
-    bool forth = true,
-    List<String>? fifth,
-  }) {
-    return FamilyClassProvider(
-      first,
-      second: second,
-      third: third,
-      forth: forth,
-      fifth: fifth,
-    );
-  }
-
-  @override
-  FamilyClassProvider getProviderOverride(
-    covariant FamilyClassProvider provider,
-  ) {
-    return call(
-      provider.first,
-      second: provider.second,
-      third: provider.third,
-      forth: provider.forth,
-      fifth: provider.fifth,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyClassProvider';
-
-  @override
-  bool get isAutoDispose => true;
-}
-
-/// A generated family provider from a class.
-///
-/// Copied from [FamilyClass].
-class FamilyClassProvider
-    extends AutoDisposeNotifierProviderImpl<FamilyClass, String> {
-  /// A generated family provider from a class.
-  ///
-  /// Copied from [FamilyClass].
-  FamilyClassProvider(
-    int first, {
-    String? second,
-    required double third,
-    bool forth = true,
-    List<String>? fifth,
-  }) : this._internal(
-          () => FamilyClass()
-            ..first = first
-            ..second = second
-            ..third = third
-            ..forth = forth
-            ..fifth = fifth,
-          from: familyClassProvider,
-          name: r'familyClassProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$familyClassHash,
-          dependencies: FamilyClassFamily._dependencies,
-          allTransitiveDependencies:
-              FamilyClassFamily._allTransitiveDependencies,
-          first: first,
-          second: second,
-          third: third,
-          forth: forth,
-          fifth: fifth,
+/// A generated provider from a class with a '$' in its name.
+final class Supports$InClassNameProvider
+    extends $NotifierProvider<Supports$InClassName, String> {
+  /// A generated provider from a class with a '$' in its name.
+  const Supports$InClassNameProvider._(
+      {super.runNotifierBuildOverride, Supports$InClassName Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'supports$InClassNameProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  FamilyClassProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.first,
-    required this.second,
-    required this.third,
-    required this.forth,
-    required this.fifth,
-  }) : super.internal();
-
-  final int first;
-  final String? second;
-  final double third;
-  final bool forth;
-  final List<String>? fifth;
+  final Supports$InClassName Function()? _createCb;
 
   @override
-  String runNotifierBuild(
-    covariant FamilyClass notifier,
-  ) {
-    return notifier.build(
-      first,
-      second: second,
-      third: third,
-      forth: forth,
-      fifth: fifth,
-    );
-  }
+  String debugGetCreateSourceHash() => _$supports$InClassNameHash();
 
-  @override
-  Override overrideWith(FamilyClass Function() create) {
-    return ProviderOverride(
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
       origin: this,
-      override: FamilyClassProvider._internal(
-        () => create()
-          ..first = first
-          ..second = second
-          ..third = third
-          ..forth = forth
-          ..fifth = fifth,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        first: first,
-        second: second,
-        third: third,
-        forth: forth,
-        fifth: fifth,
-      ),
+      providerOverride: $ValueProvider<String>(value),
     );
   }
 
+  @$internal
   @override
-  AutoDisposeNotifierProviderElement<FamilyClass, String> createElement() {
-    return _FamilyClassProviderElement(this);
+  Supports$InClassName create() => _createCb?.call() ?? Supports$InClassName();
+
+  @$internal
+  @override
+  Supports$InClassNameProvider $copyWithCreate(
+    Supports$InClassName Function() create,
+  ) {
+    return Supports$InClassNameProvider._(create: create);
   }
 
+  @$internal
   @override
-  bool operator ==(Object other) {
-    return other is FamilyClassProvider &&
-        other.first == first &&
-        other.second == second &&
-        other.third == third &&
-        other.forth == forth &&
-        other.fifth == fifth;
+  Supports$InClassNameProvider $copyWithBuild(
+    String Function(
+      Ref,
+      Supports$InClassName,
+    ) build,
+  ) {
+    return Supports$InClassNameProvider._(runNotifierBuildOverride: build);
   }
 
+  @$internal
   @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, first.hashCode);
-    hash = _SystemHash.combine(hash, second.hashCode);
-    hash = _SystemHash.combine(hash, third.hashCode);
-    hash = _SystemHash.combine(hash, forth.hashCode);
-    hash = _SystemHash.combine(hash, fifth.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin FamilyClassRef on AutoDisposeNotifierProviderRef<String> {
-  /// The parameter `first` of this provider.
-  int get first;
-
-  /// The parameter `second` of this provider.
-  String? get second;
-
-  /// The parameter `third` of this provider.
-  double get third;
-
-  /// The parameter `forth` of this provider.
-  bool get forth;
-
-  /// The parameter `fifth` of this provider.
-  List<String>? get fifth;
-}
-
-class _FamilyClassProviderElement
-    extends AutoDisposeNotifierProviderElement<FamilyClass, String>
-    with FamilyClassRef {
-  _FamilyClassProviderElement(super.provider);
-
-  @override
-  int get first => (origin as FamilyClassProvider).first;
-  @override
-  String? get second => (origin as FamilyClassProvider).second;
-  @override
-  double get third => (origin as FamilyClassProvider).third;
-  @override
-  bool get forth => (origin as FamilyClassProvider).forth;
-  @override
-  List<String>? get fifth => (origin as FamilyClassProvider).fifth;
+  $NotifierProviderElement<Supports$InClassName, String> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
 }
 
 String _$supports$InClassNameHash() =>
     r'dd23b01994664e5a2c22ba3a61f3b23d2128861b';
 
-/// A generated provider from a class with a '$' in its name.
-///
-/// Copied from [Supports$InClassName].
-@ProviderFor(Supports$InClassName)
-final supports$InClassNameProvider =
-    AutoDisposeNotifierProvider<Supports$InClassName, String>.internal(
-  Supports$InClassName.new,
-  name: r'supports$InClassNameProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$supports$InClassNameHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$Supports$InClassName extends $Notifier<String> {
+  String build();
+  @$internal
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<String>;
+    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
+        String, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}
 
-typedef _$Supports$InClassName = AutoDisposeNotifier<String>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

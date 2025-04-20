@@ -13,21 +13,20 @@ part of '../../framework.dart';
 /// - [Ref], which exposes the methods to read other providers.
 /// - [Provider], a provider that uses [Create] to expose an immutable value.
 @internal
-typedef Create<T, R extends Ref> = T Function(R ref);
+typedef Create<CreatedT> = CreatedT Function(Ref ref);
 
 /// A callback used to catches errors
 @internal
-typedef OnError = void Function(Object, StackTrace);
-
-/// A typedef for `debugGetCreateSourceHash` parameters.
-@internal
-typedef DebugGetCreateSourceHash = String? Function();
+typedef OnError = void Function(Object error, StackTrace stackTrace);
 
 /// A base class for _all_ providers.
 @immutable
-abstract class ProviderBase<StateT> extends ProviderOrFamily
-    with ProviderListenable<StateT>
-    implements ProviderOverride, Refreshable<StateT>, AnyProvider<StateT> {
+// Marked as "base" because linters/generators rely on fields on const provider instances.
+abstract base class ProviderBase<StateT> extends ProviderOrFamily
+    with
+        ProviderListenable<StateT>,
+        ProviderListenableWithOrigin<StateT, StateT>
+    implements Refreshable<StateT>, _ProviderOverride {
   /// A base class for _all_ providers.
   const ProviderBase({
     required super.name,
@@ -36,17 +35,15 @@ abstract class ProviderBase<StateT> extends ProviderOrFamily
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.isAutoDispose,
-  });
-
-  @override
-  ProviderBase<Object?> get _origin => this;
-
-  @override
-  ProviderBase<Object?> get _override => this;
+    required super.retry,
+  }) : assert(
+          from == null || allTransitiveDependencies == null,
+          'When from a family, providers cannot specify dependencies.',
+        );
 
   /// If this provider was created with the `.family` modifier, [from] is the `.family` instance.
   @override
-  final Family<Object?>? from;
+  final Family? from;
 
   /// If this provider was created with the `.family` modifier, [argument] is
   /// the variable that was used.
@@ -54,80 +51,69 @@ abstract class ProviderBase<StateT> extends ProviderOrFamily
   /// On generated providers, this will be a record of all arguments.
   final Object? argument;
 
-  @preferInline
-  static StateT _readImpl<StateT>(AnyProvider<StateT> provider, Node node) {
-    final element = node.readProviderElement(provider);
-
-    element.flush();
-
-    // In case `read` was called on a provider that has no listener
-    element.mayNeedDispose();
-
-    return element.requireState;
-  }
-
   @override
-  StateT read(Node node) => _readImpl(this, node);
-
-  @preferInline
-  static ProviderSubscription<StateT> _addListenerImpl<StateT>(
-    AnyProvider<StateT> provider,
-    Node node,
+  ProviderSubscriptionWithOrigin<StateT, StateT> addListener(
+    Node source,
     void Function(StateT? previous, StateT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
+    required bool weak,
   }) {
+    assert(
+      !fireImmediately || !weak,
+      'Cannot use fireImmediately with weak listeners',
+    );
+
     onError ??= Zone.current.handleUncaughtError;
 
-    final element = node.readProviderElement(provider);
+    final element = source.readProviderElement(this);
 
-    element.flush();
+    if (!weak) element.flush();
+
     if (fireImmediately) {
       _handleFireImmediately(
-        element.getState()!,
+        element.stateResult!,
         listener: listener,
         onError: onError,
       );
     }
 
-    // Calling before initializing the subscription,
-    // to ensure that "hasListeners" represents the state _before_
-    // the listener is added
-    element._onListen();
-
-    return _ProviderStateSubscription<StateT>(
-      node,
+    return ProviderStateSubscription<StateT>(
+      source: source,
       listenedElement: element,
-      listener: (prev, next) => listener(prev as StateT?, next as StateT),
+      weak: weak,
+      listener: listener,
       onError: onError,
-    );
-  }
-
-  @override
-  ProviderSubscription<StateT> _addListener(
-    Node node,
-    void Function(StateT? previous, StateT next) listener, {
-    required void Function(Object error, StackTrace stackTrace)? onError,
-    required void Function()? onDependencyMayHaveChanged,
-    required bool fireImmediately,
-  }) {
-    return _addListenerImpl(
-      this,
-      node,
-      listener,
-      onError: onError,
-      onDependencyMayHaveChanged: onDependencyMayHaveChanged,
-      fireImmediately: fireImmediately,
     );
   }
 
   /// An internal method that defines how a provider behaves.
-  @internal
-  ProviderElementBase<StateT> createElement();
+  @visibleForOverriding
+  ProviderElement<StateT> $createElement($ProviderPointer pointer);
 
   @override
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
+  String toString() {
+    var leading = '';
+    if (from != null) {
+      leading = '($argument)';
+    }
+
+    String label;
+    if (name case final name?) {
+      label = name;
+    } else {
+      label = describeIdentity(this);
+    }
+
+    return '$label$leading';
+  }
+}
+
+/// A mixin that implements some methods for non-generic providers.
+@internal
+base mixin LegacyProviderMixin<StateT> on ProviderBase<StateT> {
+  @override
   int get hashCode {
     if (from == null) return super.hashCode;
 
@@ -135,7 +121,6 @@ abstract class ProviderBase<StateT> extends ProviderOrFamily
   }
 
   @override
-  // ignore: avoid_equals_and_hash_code_on_mutable_classes
   bool operator ==(Object other) {
     if (from == null) return identical(other, this);
 
@@ -145,70 +130,7 @@ abstract class ProviderBase<StateT> extends ProviderOrFamily
         other.argument == argument;
   }
 
+  @internal
   @override
-  String toString() {
-    var leading = '';
-    if (from != null) {
-      leading = '($argument)';
-    }
-
-    var trailing = '';
-    if (name != null) {
-      trailing = '$name:';
-    }
-
-    return '$trailing${describeIdentity(this)}$leading';
-  }
-}
-
-var _debugIsRunningSelector = false;
-
-/// A mixin to add `overrideWithProvider` capability to providers.
-extension OverrideWithProviderExtension<State,
-    ProviderType extends ProviderBase<State>> on ProviderType {
-  /// {@template riverpod.overridewithprovider}
-  /// Overrides a provider with a value, ejecting the default behavior.
-  ///
-  /// This will also disable the auto-scoping mechanism, meaning that if the
-  /// overridden provider specified `dependencies`, it will have no effect.
-  ///
-  /// The override must not specify a `dependencies`.
-  ///
-  /// Some common use-cases are:
-  /// - testing, by replacing a service with a fake implementation, or to reach
-  ///   a very specific state easily.
-  /// - multiple environments, by changing the implementation of a class
-  ///   based on the platform or other parameters.
-  ///
-  /// This function should be used in combination with `ProviderScope.overrides`
-  /// or `ProviderContainer.overrides`:
-  ///
-  /// ```dart
-  /// final myService = Provider((ref) => MyService());
-  ///
-  /// runApp(
-  ///   ProviderScope(
-  ///     overrides: [
-  ///       myService.overrideWithProvider(
-  ///         // Replace the implementation of the provider with a different one
-  ///         Provider((ref) {
-  ///           ref.watch('other');
-  ///           return MyFakeService(),
-  ///         }),
-  ///       ),
-  ///     ],
-  ///     child: MyApp(),
-  ///   ),
-  /// );
-  /// ```
-  /// {@endtemplate}
-  @Deprecated('Will be removed in 3.0.0. Use overrideWith instead.')
-  Override overrideWithProvider(ProviderType override) {
-    assert(
-      override.dependencies == null,
-      'When using overrideWithProvider, the override cannot specify `dependencies`.',
-    );
-
-    return ProviderOverride(origin: this, override: override);
-  }
+  String? debugGetCreateSourceHash() => null;
 }

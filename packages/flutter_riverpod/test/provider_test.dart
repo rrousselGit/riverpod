@@ -19,14 +19,10 @@ void main() {
 
     Consumer(
       builder: (context, ref, _) {
-        // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-        int providerValue = ref.read(provider);
-        // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-        AsyncValue<int> futureProviderValue = ref.read(futureProvider);
-        // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-        AsyncValue<int> streamProviderValue = ref.read(streamProvider);
-        // ignore: omit_local_variable_types, unused_local_variable, prefer_final_locals
-        ValueNotifier<int> changeNotifierProviderValue =
+        final int providerValue = ref.read(provider);
+        final AsyncValue<int> futureProviderValue = ref.read(futureProvider);
+        final AsyncValue<int> streamProviderValue = ref.read(streamProvider);
+        final ValueNotifier<int> changeNotifierProviderValue =
             ref.read(changeNotifierProvider);
 
         return Container();
@@ -296,7 +292,6 @@ void main() {
     // These check the type safety
     Ref? ref;
 
-    // ignore: omit_local_variable_types
     final Provider<int> provider1 = Provider<int>((r) {
       final first = r.watch(provider);
       ref = r;

@@ -37,4 +37,3 @@ class _EagerInitialization extends ConsumerWidget {
   }
 }
 /* SNIPPET END */
-

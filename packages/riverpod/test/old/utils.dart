@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
+import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
@@ -35,7 +36,16 @@ class OnBuildMock extends Mock {
 }
 
 class OnDisposeMock extends Mock {
+  OnDisposeMock([this.label]);
+
+  final String? label;
+
   void call();
+
+  @override
+  String toString() {
+    return 'OnDisposeMock($label)';
+  }
 }
 
 class OnCancelMock extends Mock {
@@ -172,56 +182,82 @@ class ObserverMock extends Mock implements ProviderObserver {
   }
 
   @override
-  void didDisposeProvider(
-    ProviderBase<Object?>? provider,
-    ProviderContainer? container,
-  ) {
-    super.noSuchMethod(
-      Invocation.method(#didDisposeProvider, [provider, container]),
-    );
-  }
+  void didAddProvider(
+    ProviderObserverContext? context,
+    Object? value,
+  );
 
   @override
   void providerDidFail(
-    ProviderBase<Object?>? provider,
+    ProviderObserverContext? context,
     Object? error,
-    Object? stackTrace,
-    Object? container,
-  ) {
-    super.noSuchMethod(
-      Invocation.method(
-        #providerDidFail,
-        [provider, error, stackTrace, container],
-      ),
-    );
-  }
-
-  @override
-  void didAddProvider(
-    ProviderBase<Object?>? provider,
-    Object? value,
-    ProviderContainer? container,
-  ) {
-    super.noSuchMethod(
-      Invocation.method(#didAddProvider, [provider, value, container]),
-    );
-  }
+    StackTrace? stackTrace,
+  );
 
   @override
   void didUpdateProvider(
-    ProviderBase<Object?>? provider,
+    ProviderObserverContext? context,
     Object? previousValue,
     Object? newValue,
-    ProviderContainer? container,
-  ) {
-    super.noSuchMethod(
-      Invocation.method(
-        #didUpdateProvider,
-        [provider, previousValue, newValue, container],
-      ),
-    );
-  }
+  );
+
+  @override
+  void didDisposeProvider(ProviderObserverContext? context);
+
+  @override
+  void mutationReset(ProviderObserverContext? context);
+
+  @override
+  void mutationStart(
+    ProviderObserverContext? context,
+    MutationContext? mutation,
+  );
+
+  @override
+  void mutationError(
+    ProviderObserverContext? context,
+    MutationContext? mutation,
+    Object? error,
+    StackTrace? stackTrace,
+  );
+
+  @override
+  void mutationSuccess(
+    ProviderObserverContext? context,
+    MutationContext? mutation,
+    Object? result,
+  );
 }
 
 // can subclass ProviderObserver without implementing all life-cycles
 class CustomObserver extends ProviderObserver {}
+
+TypeMatcher<ProviderObserverContext> isProviderObserverContext(
+  Object? provider,
+  Object? container, {
+  Object? mutation,
+}) {
+  var matcher = isA<ProviderObserverContext>();
+
+  matcher = matcher.having((e) => e.provider, 'provider', provider);
+  matcher = matcher.having((e) => e.container, 'container', container);
+  if (mutation != null) {
+    matcher = matcher.having((e) => e.mutation, 'mutation', mutation);
+  }
+
+  return matcher;
+}
+
+TypeMatcher<MutationContext> isMutationContext(
+  Object? invocation, {
+  Object? notifier,
+}) {
+  var matcher = isA<MutationContext>();
+
+  matcher = matcher.having((e) => e.invocation, 'invocation', invocation);
+  if (notifier != null) {
+    matcher = matcher.having((e) => e.notifier, 'notifier', notifier);
+  }
+
+  return matcher;
+}

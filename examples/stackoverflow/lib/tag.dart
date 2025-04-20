@@ -35,6 +35,7 @@ TagTheme tagTheme(Ref ref) {
   );
 }
 
+@Dependencies([tagTheme])
 class Tag extends HookConsumerWidget {
   const Tag({super.key, required this.tag});
 

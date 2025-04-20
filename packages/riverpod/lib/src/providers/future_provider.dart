@@ -3,22 +3,25 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 
 import '../builder.dart';
+import '../core/async_value.dart';
 import '../framework.dart';
 import 'async_notifier.dart';
 import 'provider.dart' show Provider;
 import 'stream_provider.dart' show StreamProvider;
 
-ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
-  _FutureProviderBase<T> that,
-) {
-  return ProviderElementProxy<AsyncValue<T>, Future<T>>(
-    that,
-    (element) {
-      return FutureHandlerProviderElementMixin.futureNotifierOf(
-        element as FutureHandlerProviderElementMixin<T>,
-      );
-    },
-  );
+/// Implementation detail of `riverpod_generator`.
+/// Do not use, as this may be removed at any time.
+@internal
+base mixin $FutureProvider<StateT> on ProviderBase<AsyncValue<StateT>> {
+  FutureOr<StateT> create(Ref ref);
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<StateT> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $AsyncValueProvider<StateT>(value),
+    );
+  }
 }
 
 /// {@template riverpod.future_provider}
@@ -89,99 +92,37 @@ ProviderElementProxy<AsyncValue<T>, Future<T>> _future<T>(
 /// - [FutureProvider.family], to create a [FutureProvider] from external parameters
 /// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no longer needed.
 /// {@endtemplate}
-abstract class _FutureProviderBase<T> extends ProviderBase<AsyncValue<T>> {
-  const _FutureProviderBase({
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.name,
-    required super.from,
-    required super.argument,
-    required DebugGetCreateSourceHash? debugGetCreateSourceHash,
-    required super.isAutoDispose,
-  }) : _debugGetCreateSourceHash = debugGetCreateSourceHash;
-
-  /// Obtains the [Future] associated with a [FutureProvider].
-  ///
-  /// The instance of [Future] obtained may change over time, if the provider
-  /// was recreated (such as when using [Ref.watch]).
-  ///
-  /// This provider allows using `async`/`await` to easily combine
-  /// [FutureProvider] together:
-  ///
-  /// ```dart
-  /// final configsProvider = FutureProvider((ref) async => Configs());
-  ///
-  /// final productsProvider = FutureProvider((ref) async {
-  ///   // Wait for the configurations to resolve
-  ///   final configs = await ref.watch(configsProvider.future);
-  ///
-  ///   // Do something with the result
-  ///   return await http.get('${configs.host}/products');
-  /// });
-  /// ```
-  Refreshable<Future<T>> get future;
-
-  FutureOr<T> _create(covariant FutureProviderElement<T> ref);
-
-  final DebugGetCreateSourceHash? _debugGetCreateSourceHash;
-  @override
-  String? debugGetCreateSourceHash() => _debugGetCreateSourceHash?.call();
-}
-
-/// {@macro riverpod.provider_ref_base}
-/// - [state], the value currently exposed by this provider.
-@Deprecated('will be removed in 3.0.0. Use Ref instead')
-abstract class FutureProviderRef<State> implements Ref<AsyncValue<State>> {
-  /// Obtains the state currently exposed by this provider.
-  ///
-  /// Mutating this property will notify the provider listeners.
-  ///
-  /// Cannot be called while a provider is creating, unless the setter was called first.
-  ///
-  /// Will return [AsyncLoading] if used during the first initialization.
-  /// Subsequent initializations will contain an [AsyncValue] with the previous
-  /// state and [AsyncValueX.isRefreshing]/[AsyncValueX.isReloading] set accordingly.
-  AsyncValue<State> get state;
-  set state(AsyncValue<State> newState);
-
-  /// Obtains the [Future] associated to this provider.
-  ///
-  /// This is equivalent to doing `ref.read(myProvider.future)`.
-  /// See also [FutureProvider.future].
-  Future<State> get future;
-}
-
-/// {@macro riverpod.future_provider}
-class FutureProvider<T> extends _FutureProviderBase<T>
+final class FutureProvider<StateT>
+    extends $FunctionalProvider<AsyncValue<StateT>, FutureOr<StateT>>
     with
-        // ignore: deprecated_member_use_from_same_package
-        AlwaysAliveProviderBase<AsyncValue<T>>,
-        AlwaysAliveAsyncSelector<T> {
+        $FutureModifier<StateT>,
+        $FutureProvider<StateT>,
+        LegacyProviderMixin<AsyncValue<StateT>> {
   /// {@macro riverpod.future_provider}
   FutureProvider(
-    this._createFn, {
+    this._create, {
     super.name,
     super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
+    super.isAutoDispose = false,
+    super.retry,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
-          isAutoDispose: false,
+          from: null,
+          argument: null,
         );
 
   /// An implementation detail of Riverpod
   @internal
   FutureProvider.internal(
-    this._createFn, {
+    this._create, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    super.from,
-    super.argument,
-    super.isAutoDispose = false,
+    required super.from,
+    required super.argument,
+    required super.isAutoDispose,
+    required super.retry,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -190,250 +131,88 @@ class FutureProvider<T> extends _FutureProviderBase<T>
   /// {@macro riverpod.family}
   static const family = FutureProviderFamilyBuilder();
 
-  // ignore: deprecated_member_use_from_same_package
-  final Create<FutureOr<T>, FutureProviderRef<T>> _createFn;
+  final Create<FutureOr<StateT>> _create;
 
   @override
-  // ignore: deprecated_member_use_from_same_package
-  late final AlwaysAliveRefreshable<Future<T>> future = _future(this);
-
-  @override
-  FutureOr<T> _create(FutureProviderElement<T> ref) => _createFn(ref);
+  FutureOr<StateT> create(Ref ref) => _create(ref);
 
   @internal
   @override
-  FutureProviderElement<T> createElement() => FutureProviderElement(this);
+  $FutureProviderElement<StateT> $createElement($ProviderPointer pointer) {
+    return $FutureProviderElement(this, pointer);
+  }
 
-  /// {@macro riverpod.override_with}
-  // ignore: deprecated_member_use_from_same_package
-  Override overrideWith(Create<FutureOr<T>, FutureProviderRef<T>> create) {
-    return ProviderOverride(
-      origin: this,
-      override: FutureProvider.internal(
-        create,
-        from: from,
-        argument: argument,
-        debugGetCreateSourceHash: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        name: null,
-      ),
+  @mustBeOverridden
+  @visibleForOverriding
+  @override
+  FutureProvider<StateT> $copyWithCreate(
+    Create<FutureOr<StateT>> create,
+  ) {
+    return FutureProvider<StateT>.internal(
+      create,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      from: from,
+      argument: argument,
+      isAutoDispose: isAutoDispose,
+      retry: retry,
     );
   }
 }
 
 /// The element of a [FutureProvider]
+/// Implementation detail of `riverpod_generator`. Do not use.
 @internal
-class FutureProviderElement<T> extends ProviderElementBase<AsyncValue<T>>
-    with
-        FutureHandlerProviderElementMixin<T>
-    implements
-        // ignore: deprecated_member_use_from_same_package
-        FutureProviderRef<T>,
-        // ignore: deprecated_member_use_from_same_package
-        AutoDisposeFutureProviderRef<T> {
+class $FutureProviderElement<StateT> extends ProviderElement<AsyncValue<StateT>>
+    with FutureModifierElement<StateT> {
   /// The element of a [FutureProvider]
-  @internal
-  // ignore: library_private_types_in_public_api
-  FutureProviderElement(_FutureProviderBase<T> super._provider);
+  /// Implementation detail of `riverpod_generator`. Do not use.
+  $FutureProviderElement(this.provider, super.pointer);
 
   @override
-  Future<T> get future {
-    flush();
-    return futureNotifier.value;
+  final $FutureProvider<StateT> provider;
+
+  @override
+  WhenComplete create(Ref ref) {
+    return handleFuture(ref, () => provider.create(ref));
   }
 
   @override
-  void create({required bool didChangeDependency}) {
-    final provider = this.provider as _FutureProviderBase<T>;
-
-    handleFuture(
-      () => provider._create(this),
-      didChangeDependency: didChangeDependency,
+  bool updateShouldNotify(
+    AsyncValue<StateT> previous,
+    AsyncValue<StateT> next,
+  ) {
+    return FutureModifierElement.handleUpdateShouldNotify(
+      previous,
+      next,
     );
   }
 }
 
 /// The [Family] of a [FutureProvider]
-// ignore: deprecated_member_use_from_same_package
-class FutureProviderFamily<R, Arg> extends FamilyBase<FutureProviderRef<R>,
-    AsyncValue<R>, Arg, FutureOr<R>, FutureProvider<R>> {
-  /// The [Family] of a [FutureProvider]
+class FutureProviderFamily<StateT, ArgT> extends FunctionalFamily<
+    AsyncValue<StateT>, ArgT, FutureOr<StateT>, FutureProvider<StateT>> {
   FutureProviderFamily(
     super._createFn, {
     super.name,
     super.dependencies,
+    super.isAutoDispose = false,
+    super.retry,
   }) : super(
-          providerFactory: FutureProvider<R>.internal,
+          providerFactory: FutureProvider<StateT>.internal,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
-          isAutoDispose: false,
-          debugGetCreateSourceHash: null,
         );
 
   /// Implementation detail of the code-generator.
   @internal
-  FutureProviderFamily.generator(
+  FutureProviderFamily.internal(
     super._createFn, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-  }) : super(
-          providerFactory: FutureProvider<R>.internal,
-          isAutoDispose: false,
-          debugGetCreateSourceHash: null,
-        );
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-    // ignore: deprecated_member_use_from_same_package
-    FutureOr<R> Function(FutureProviderRef<R> ref, Arg arg) create,
-  ) {
-    return FamilyOverrideImpl<AsyncValue<R>, Arg, FutureProvider<R>>(
-      this,
-      (arg) => FutureProvider<R>.internal(
-        (ref) => create(ref, arg),
-        from: from,
-        argument: arg,
-        debugGetCreateSourceHash: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        name: null,
-      ),
-    );
-  }
-}
-
-/// {@macro riverpod.provider_ref_base}
-/// - [FutureProviderRef.state], the value currently exposed by this provider.
-@Deprecated('will be removed in 3.0.0. Use Ref instead')
-abstract class AutoDisposeFutureProviderRef<State>
-    extends FutureProviderRef<State>
-    implements AutoDisposeRef<AsyncValue<State>> {}
-
-/// {@macro riverpod.future_provider}
-class AutoDisposeFutureProvider<T> extends _FutureProviderBase<T>
-    with AsyncSelector<T> {
-  /// {@macro riverpod.future_provider}
-  AutoDisposeFutureProvider(
-    this._createFn, {
-    super.name,
-    super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
-  }) : super(
-          allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-          isAutoDispose: true,
-        );
-
-  /// An implementation detail of Riverpod
-  @internal
-  AutoDisposeFutureProvider.internal(
-    this._createFn, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    super.from,
-    super.argument,
-    super.isAutoDispose = true,
-  });
-
-  /// {@macro riverpod.family}
-  static const family = AutoDisposeFutureProviderFamily.new;
-
-  // ignore: deprecated_member_use_from_same_package
-  final Create<FutureOr<T>, AutoDisposeFutureProviderRef<T>> _createFn;
-
-  @override
-  FutureOr<T> _create(AutoDisposeFutureProviderElement<T> ref) =>
-      _createFn(ref);
-
-  @internal
-  @override
-  AutoDisposeFutureProviderElement<T> createElement() {
-    return AutoDisposeFutureProviderElement(this);
-  }
-
-  @override
-  late final Refreshable<Future<T>> future = _future(this);
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-    // ignore: deprecated_member_use_from_same_package
-    Create<FutureOr<T>, AutoDisposeFutureProviderRef<T>> create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      override: AutoDisposeFutureProvider.internal(
-        create,
-        from: from,
-        argument: argument,
-        debugGetCreateSourceHash: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        name: null,
-      ),
-    );
-  }
-}
-
-/// The [ProviderElementBase] of [AutoDisposeFutureProvider]
-@internal
-typedef AutoDisposeFutureProviderElement<T> = FutureProviderElement<T>;
-
-/// The [Family] of an [AutoDisposeFutureProvider]
-class AutoDisposeFutureProviderFamily<R, Arg> extends FamilyBase<
-    // ignore: deprecated_member_use_from_same_package
-    AutoDisposeFutureProviderRef<R>,
-    AsyncValue<R>,
-    Arg,
-    FutureOr<R>,
-    AutoDisposeFutureProvider<R>> {
-  /// The [Family] of an [AutoDisposeFutureProvider]
-  AutoDisposeFutureProviderFamily(
-    super._createFn, {
-    super.name,
-    super.dependencies,
-  }) : super(
-          providerFactory: AutoDisposeFutureProvider.internal,
-          allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-          isAutoDispose: true,
-          debugGetCreateSourceHash: null,
-        );
-
-  /// Implementation detail of the code-generator.
-  @internal
-  AutoDisposeFutureProviderFamily.generator(
-    super._createFn, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-  }) : super(
-          providerFactory: AutoDisposeFutureProvider<R>.internal,
-          isAutoDispose: true,
-          debugGetCreateSourceHash: null,
-        );
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-    // ignore: deprecated_member_use_from_same_package
-    FutureOr<R> Function(AutoDisposeFutureProviderRef<R> ref, Arg arg) create,
-  ) {
-    return FamilyOverrideImpl<AsyncValue<R>, Arg, AutoDisposeFutureProvider<R>>(
-      this,
-      (arg) => AutoDisposeFutureProvider<R>.internal(
-        (ref) => create(ref, arg),
-        from: from,
-        argument: arg,
-        debugGetCreateSourceHash: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        name: null,
-      ),
-    );
-  }
+    required super.isAutoDispose,
+    required super.retry,
+  }) : super(providerFactory: FutureProvider<StateT>.internal);
 }

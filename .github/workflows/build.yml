@@ -80,7 +80,7 @@ jobs:
             if grep -q flutter "pubspec.yaml"; then
               flutter test --coverage
             else
-              dart test
+              ${{github.workspace}}/scripts/coverage.sh
             fi
           fi
 

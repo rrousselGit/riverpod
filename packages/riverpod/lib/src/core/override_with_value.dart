@@ -3,14 +3,10 @@ part of '../framework.dart';
 /// A provider that is driven by a value instead of a function.
 ///
 /// This is an implementation detail of `overrideWithValue`.
-@sealed
-@internal
-class ValueProvider<State> extends ProviderBase<State>
-    with
-        // ignore: deprecated_member_use_from_same_package
-        AlwaysAliveProviderBase<State> {
-  /// Creates a [ValueProvider].
-  ValueProvider(this._value)
+final class $ValueProvider<StateT> extends ProviderBase<StateT>
+    with LegacyProviderMixin<StateT> {
+  /// Creates a [$ValueProvider].
+  const $ValueProvider(this._value)
       : super(
           name: null,
           from: null,
@@ -18,9 +14,10 @@ class ValueProvider<State> extends ProviderBase<State>
           allTransitiveDependencies: null,
           dependencies: null,
           isAutoDispose: false,
+          retry: null,
         );
 
-  final State _value;
+  final StateT _value;
 
   @override
   Iterable<ProviderOrFamily>? get dependencies => null;
@@ -30,65 +27,91 @@ class ValueProvider<State> extends ProviderBase<State>
 
   @internal
   @override
-  ValueProviderElement<State> createElement() {
-    return ValueProviderElement(this);
+  // ignore: library_private_types_in_public_api, not public API
+  _ValueProviderElement<StateT> $createElement($ProviderPointer pointer) {
+    return _ValueProviderElement(this, pointer);
   }
-
-  @override
-  String? debugGetCreateSourceHash() => null;
 }
 
-/// The [ProviderElementBase] of a [ValueProvider]
-@sealed
-@internal
-class ValueProviderElement<State> extends ProviderElementBase<State> {
-  /// The [ProviderElementBase] of a [ValueProvider]
-  ValueProviderElement(ValueProvider<State> super._provider);
+/// The [ProviderElement] of a [$ValueProvider]
+class _ValueProviderElement<StateT> extends ProviderElement<StateT> {
+  /// The [ProviderElement] of a [$ValueProvider]
+  _ValueProviderElement(this.provider, super.pointer);
 
   /// A custom listener called when `overrideWithValue` changes
   /// with a different value.
-  void Function(State value)? onChange;
+  void Function(StateT value)? onChange;
 
   @override
-  void update(ProviderBase<State> newProvider) {
+  $ValueProvider<StateT> provider;
+
+  @override
+  void update(covariant $ValueProvider<StateT> newProvider) {
     super.update(newProvider);
-    final newValue = (provider as ValueProvider<State>)._value;
+    provider = newProvider;
+    final newValue = provider._value;
 
     // `getState` will never be in error/loading state since there is no "create"
-    final previousState = getState()! as $ResultData<State>;
+    final previousState = stateResult! as $ResultData<StateT>;
 
     if (newValue != previousState.value) {
-      assert(
-        () {
-          // Asserts would otherwise prevent a provider rebuild from updating
-          // other providers
-          _debugSkipNotifyListenersAsserts = true;
-          return true;
-        }(),
-        '',
-      );
-      setState(newValue);
-      assert(
-        () {
-          // Asserts would otherwise prevent a provider rebuild from updating
-          // other providers
-          _debugSkipNotifyListenersAsserts = false;
-          return true;
-        }(),
-        '',
-      );
+      // Asserts would otherwise prevent a provider rebuild from updating
+      // other providers
+      if (kDebugMode) _debugSkipNotifyListenersAsserts = true;
+
+      _setValue(newValue);
+
+      // Asserts would otherwise prevent a provider rebuild from updating
+      // other providers
+      if (kDebugMode) _debugSkipNotifyListenersAsserts = false;
+
       onChange?.call(newValue);
     }
   }
 
+  void _setValue(StateT value) => setStateResult($ResultData(value));
+
   @override
-  void create({required bool didChangeDependency}) {
-    final provider = this.provider as ValueProvider<State>;
-    setState(provider._value);
+  WhenComplete create(Ref ref) {
+    _setValue(provider._value);
+
+    return null;
   }
 
   @override
-  bool updateShouldNotify(State previous, State next) {
+  bool updateShouldNotify(StateT previous, StateT next) {
     return true;
+  }
+}
+
+@internal
+final class $AsyncValueProvider<StateT>
+    extends $ValueProvider<AsyncValue<StateT>> {
+  const $AsyncValueProvider(super._value);
+
+  @override
+  // ignore: library_private_types_in_public_api, not public API
+  _AsyncValueProviderElement<StateT> $createElement(
+    $ProviderPointer pointer,
+  ) {
+    return _AsyncValueProviderElement(this, pointer);
+  }
+}
+
+class _AsyncValueProviderElement<StateT>
+    extends _ValueProviderElement<AsyncValue<StateT>>
+    with FutureModifierElement<StateT> {
+  _AsyncValueProviderElement(super.provider, super.pointer);
+
+  @override
+  void _setValue(AsyncValue<StateT> value) {
+    switch (value) {
+      case AsyncData():
+        onData(value, seamless: true);
+      case AsyncError():
+        onError(value, seamless: true);
+      case AsyncLoading():
+        onLoading(value, seamless: true);
+    }
   }
 }

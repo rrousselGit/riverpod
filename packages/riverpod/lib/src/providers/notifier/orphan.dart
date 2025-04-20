@@ -1,23 +1,5 @@
 part of '../notifier.dart';
 
-/// A [Notifier] base class shared between family and non-family notifiers.
-///
-/// Not meant for public consumption outside of riverpod_generator
-@internal
-abstract class BuildlessNotifier<State> extends NotifierBase<State> {
-  @override
-  late final NotifierProviderElement<NotifierBase<State>, State> _element;
-
-  @override
-  void _setElement(ProviderElementBase<State> element) {
-    _element = element as NotifierProviderElement<NotifierBase<State>, State>;
-  }
-
-  @override
-  // ignore: deprecated_member_use_from_same_package
-  NotifierProviderRef<State> get ref => _element;
-}
-
 /// {@template riverpod.notifier}
 /// A class which exposes a state that can change over time.
 ///
@@ -67,13 +49,10 @@ abstract class BuildlessNotifier<State> extends NotifierBase<State> {
 /// {@endtemplate}
 ///
 /// {@template riverpod.notifier_provider_modifier}
-/// When using `autoDispose` or `family`, your notifier type changes.
-/// Instead of extending [Notifier], you should extend either:
-/// - [AutoDisposeNotifier] for `autoDispose`
-/// - [FamilyNotifier] for `family`
-/// - [AutoDisposeFamilyNotifier] for `autoDispose.family`
+/// When using `family`, your notifier type changes.
+/// Instead of extending [Notifier], you should extend [FamilyNotifier].
 /// {@endtemplate}
-abstract class Notifier<State> extends BuildlessNotifier<State> {
+abstract class Notifier<StateT> extends $Notifier<StateT> {
   /// {@template riverpod.notifier.build}
   /// Initialize a [Notifier].
   ///
@@ -87,7 +66,7 @@ abstract class Notifier<State> extends BuildlessNotifier<State> {
   /// If this method throws, reading this provider will rethrow the error.
   /// {@endtemplate}
   @visibleForOverriding
-  State build();
+  StateT build();
 
   @internal
   @override
@@ -97,60 +76,38 @@ abstract class Notifier<State> extends BuildlessNotifier<State> {
   }
 }
 
-/// {@macro riverpod.provider_ref_base}
-@Deprecated('will be removed in 3.0.0. Use Ref instead')
-abstract class NotifierProviderRef<T> implements Ref<T> {}
-
-/// {@template riverpod.notifier_provider}
-/// A Provider which exposes a [Notifier] and listens to it.
-///
-/// This is equivalent to a [Provider] that exposes ways to modify its state.
-///
-/// See also [Notifier] for more information.
-/// {@endtemplate}
-///
-/// {@macro riverpod.notifier_provider_modifier}
-typedef NotifierProvider<NotifierT extends Notifier<T>, T>
-    = NotifierProviderImpl<NotifierT, T>;
-
-/// The implementation of [NotifierProvider] but with loosened type constraints
-/// that can be shared with [AutoDisposeNotifierProvider].
-///
-/// This enables tests to execute on both [NotifierProvider] and
-/// [AutoDisposeNotifierProvider] at the same time.
-@internal
-class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
-    extends NotifierProviderBase<NotifierT, T>
-    with
-        // ignore: deprecated_member_use_from_same_package
-        AlwaysAliveProviderBase<T> {
+final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
+    extends $NotifierProvider<NotifierT, StateT>
+    with LegacyProviderMixin<StateT> {
   /// {@macro riverpod.notifier_provider}
   ///
   /// {@macro riverpod.notifier_provider_modifier}
-  NotifierProviderImpl(
-    super._createNotifier, {
+  NotifierProvider(
+    this._createNotifier, {
     super.name,
     super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
+    super.isAutoDispose = false,
+    super.retry,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
-          isAutoDispose: false,
+          from: null,
+          argument: null,
+          runNotifierBuildOverride: null,
         );
 
   /// An implementation detail of Riverpod
   @internal
-  NotifierProviderImpl.internal(
-    super._createNotifier, {
+  NotifierProvider.internal(
+    this._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    super.from,
-    super.argument,
-    super.isAutoDispose = false,
+    required super.from,
+    required super.argument,
+    required super.isAutoDispose,
+    required super.runNotifierBuildOverride,
+    required super.retry,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -159,84 +116,52 @@ class NotifierProviderImpl<NotifierT extends NotifierBase<T>, T>
   /// {@macro riverpod.family}
   static const family = NotifierProviderFamilyBuilder();
 
+  final NotifierT Function() _createNotifier;
+
   @internal
   @override
-  NotifierProviderElement<NotifierT, T> createElement() {
-    return NotifierProviderElement(this);
+  NotifierT create() => _createNotifier();
+
+  @internal
+  @override
+  $NotifierProviderElement<NotifierT, StateT> $createElement(
+    $ProviderPointer pointer,
+  ) {
+    return $NotifierProviderElement(this, pointer);
   }
 
-  @override
-  // ignore: deprecated_member_use_from_same_package
-  late final AlwaysAliveRefreshable<NotifierT> notifier =
-      _notifier<NotifierT, T>(this);
-
-  @override
-  @mustBeOverridden
-  T runNotifierBuild(NotifierBase<T> notifier) {
-    return (notifier as Notifier<T>).build();
-  }
-
-  /// {@macro riverpod.override_with}
-  @mustBeOverridden
-  Override overrideWith(NotifierT Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: NotifierProviderImpl<NotifierT, T>.internal(
-        create,
-        from: from,
-        argument: argument,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-      ),
+  NotifierProvider<NotifierT, StateT> _copyWith({
+    NotifierT Function()? create,
+    RunNotifierBuild<NotifierT, StateT>? build,
+  }) {
+    return NotifierProvider<NotifierT, StateT>.internal(
+      create ?? _createNotifier,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      from: from,
+      argument: argument,
+      isAutoDispose: isAutoDispose,
+      runNotifierBuildOverride: build ?? runNotifierBuildOverride,
+      retry: retry,
     );
   }
-}
 
-/// The element of [NotifierProvider].
-@internal
-class NotifierProviderElement<NotifierT extends NotifierBase<T>, T>
-    extends ProviderElementBase<T>
-    implements
-        // ignore: deprecated_member_use_from_same_package
-        NotifierProviderRef<T>,
-        // ignore: deprecated_member_use_from_same_package
-        AutoDisposeNotifierProviderRef<T> {
-  /// The element of [NotifierProvider].
-  @internal
-  NotifierProviderElement(NotifierProviderBase<NotifierT, T> super._provider);
-
-  final _notifierNotifier = $ElementLense<NotifierT>();
-
+  @mustBeOverridden
+  @visibleForOverriding
   @override
-  void create({required bool didChangeDependency}) {
-    final provider = this.provider as NotifierProviderBase<NotifierT, T>;
-
-    final notifierResult = _notifierNotifier.result ??= $Result.guard(() {
-      return provider._createNotifier().._setElement(this);
-    });
-
-    // If the Notifier failed to create (such as if the constructor has an assert exception),
-    // then we purposefully rethrow the error.
-    // This way, doing `watch(provider)` will rethrow the error.
-    final notifier = notifierResult.requireState;
-
-    setState(provider.runNotifierBuild(notifier));
-  }
-
-  @override
-  void visitListenables(
-    void Function($ElementLense element) listenableVisitor,
+  NotifierProvider<NotifierT, StateT> $copyWithBuild(
+    RunNotifierBuild<NotifierT, StateT>? build,
   ) {
-    super.visitListenables(listenableVisitor);
-    listenableVisitor(_notifierNotifier);
+    return _copyWith(build: build);
   }
 
+  @mustBeOverridden
+  @visibleForOverriding
   @override
-  bool updateShouldNotify(T previous, T next) {
-    return _notifierNotifier.result?.value
-            ?.updateShouldNotify(previous, next) ??
-        true;
+  NotifierProvider<NotifierT, StateT> $copyWithCreate(
+    NotifierT Function() create,
+  ) {
+    return _copyWith(create: create);
   }
 }

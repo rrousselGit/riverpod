@@ -1,27 +1,15 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/legacy.dart';
+import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
 import '../utils.dart';
 
 void main() {
   group('ProviderObserver', () {
-    test('life-cycles do nothing by default', () {
-      const observer = ConstObserver();
-
-      final provider = Provider((ref) => 0);
-      final container = ProviderContainer.test();
-
-      observer.didAddProvider(provider, 0, container);
-      observer.didDisposeProvider(provider, container);
-      observer.didUpdateProvider(provider, 0, 0, container);
-      observer.providerDidFail(provider, 0, StackTrace.empty, container);
-    });
-
-    test('ProviderObservers can have const constructors', () {
+    test('can have const constructors', () {
       final root = ProviderContainer.test(
         observers: [
           const ConstObserver(),
@@ -36,8 +24,9 @@ void main() {
           () async {
         final observer = ObserverMock();
         final observer2 = ObserverMock();
-        final container =
-            ProviderContainer.test(observers: [observer, observer2]);
+        final container = ProviderContainer.test(
+          observers: [observer, observer2],
+        );
         final dep = StateProvider((ref) => 0);
         final provider = Provider((ref) {
           if (ref.watch(dep) == 0) {
@@ -56,19 +45,17 @@ void main() {
 
         verifyInOrder([
           observer.didUpdateProvider(
-            provider,
+            argThat(isProviderObserverContext(provider, container)),
             null,
             0,
-            container,
           ),
           observer2.didUpdateProvider(
-            provider,
+            argThat(isProviderObserverContext(provider, container)),
             null,
             0,
-            container,
           ),
         ]);
-        verifyNever(observer.providerDidFail(any, any, any, any));
+        verifyNever(observer.providerDidFail(any, any, any));
       });
 
       test(
@@ -76,6 +63,7 @@ void main() {
           () {
         final provider = StateNotifierProvider<StateController<int>, int>(
           (ref) => StateController(0),
+          dependencies: const [],
         );
         final observer = ObserverMock('a');
         final observer2 = ObserverMock('b');
@@ -101,13 +89,37 @@ void main() {
 
         expect(child.read(provider.notifier).state++, 42);
 
-        verify(observer.didUpdateProvider(provider, 42, 43, child)).called(1);
-        verify(observer2.didUpdateProvider(provider, 42, 43, child)).called(1);
-        verify(observer3.didUpdateProvider(provider, 42, 43, child)).called(1);
+        verify(
+          observer.didUpdateProvider(
+            argThat(isProviderObserverContext(provider, child)),
+            42,
+            43,
+          ),
+        ).called(1);
+        verify(
+          observer2.didUpdateProvider(
+            argThat(isProviderObserverContext(provider, child)),
+            42,
+            43,
+          ),
+        ).called(1);
+        verify(
+          observer3.didUpdateProvider(
+            argThat(isProviderObserverContext(provider, child)),
+            42,
+            43,
+          ),
+        ).called(1);
 
         mid.read(provider.notifier).state++;
 
-        verify(observer.didUpdateProvider(provider, 0, 1, root)).called(1);
+        verify(
+          observer.didUpdateProvider(
+            argThat(isProviderObserverContext(provider, root)),
+            0,
+            1,
+          ),
+        ).called(1);
 
         verifyNoMoreInteractions(observer3);
         verifyNoMoreInteractions(observer2);
@@ -130,7 +142,11 @@ void main() {
 
         verifyOnly(
           observer,
-          observer.didUpdateProvider(computed, 0, 1, container),
+          observer.didUpdateProvider(
+            argThat(isProviderObserverContext(computed, container)),
+            0,
+            1,
+          ),
         ).called(1);
       });
 
@@ -147,7 +163,11 @@ void main() {
 
         verifyOnly(
           observer,
-          observer.didUpdateProvider(provider, 0, 1, container),
+          observer.didUpdateProvider(
+            argThat(isProviderObserverContext(provider, container)),
+            0,
+            1,
+          ),
         ).called(1);
       });
 
@@ -169,8 +189,14 @@ void main() {
         verify(listener(null, 0)).called(1);
         verifyNoMoreInteractions(listener);
         verifyInOrder([
-          observer.didAddProvider(provider, 0, container),
-          observer2.didAddProvider(provider, 0, container),
+          observer.didAddProvider(
+            argThat(isProviderObserverContext(provider, container)),
+            0,
+          ),
+          observer2.didAddProvider(
+            argThat(isProviderObserverContext(provider, container)),
+            0,
+          ),
         ]);
         verifyNoMoreInteractions(observer);
         verifyNoMoreInteractions(observer2);
@@ -179,8 +205,16 @@ void main() {
 
         verifyInOrder([
           listener(0, 1),
-          observer.didUpdateProvider(provider, 0, 1, container),
-          observer2.didUpdateProvider(provider, 0, 1, container),
+          observer.didUpdateProvider(
+            argThat(isProviderObserverContext(provider, container)),
+            0,
+            1,
+          ),
+          observer2.didUpdateProvider(
+            argThat(isProviderObserverContext(provider, container)),
+            0,
+            1,
+          ),
         ]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(observer);
@@ -189,11 +223,9 @@ void main() {
 
       test('guards didUpdateProviders', () {
         final observer = ObserverMock();
-        when(observer.didUpdateProvider(any, any, any, any))
-            .thenThrow('error1');
+        when(observer.didUpdateProvider(any, any, any)).thenThrow('error1');
         final observer2 = ObserverMock();
-        when(observer2.didUpdateProvider(any, any, any, any))
-            .thenThrow('error2');
+        when(observer2.didUpdateProvider(any, any, any)).thenThrow('error2');
         final observer3 = ObserverMock();
         final provider = StateNotifierProvider<Counter, int>((_) => Counter());
         final counter = Counter();
@@ -213,9 +245,21 @@ void main() {
 
         expect(errors, ['error1', 'error2']);
         verifyInOrder([
-          observer.didUpdateProvider(provider, 0, 1, container),
-          observer2.didUpdateProvider(provider, 0, 1, container),
-          observer3.didUpdateProvider(provider, 0, 1, container),
+          observer.didUpdateProvider(
+            argThat(isProviderObserverContext(provider, container)),
+            0,
+            1,
+          ),
+          observer2.didUpdateProvider(
+            argThat(isProviderObserverContext(provider, container)),
+            0,
+            1,
+          ),
+          observer3.didUpdateProvider(
+            argThat(isProviderObserverContext(provider, container)),
+            0,
+            1,
+          ),
         ]);
         verifyNoMoreInteractions(observer);
         verifyNoMoreInteractions(observer2);
@@ -246,33 +290,34 @@ void main() {
         await container.pump();
 
         verifyInOrder([
-          observer.didDisposeProvider(isNegative, container),
+          observer.didDisposeProvider(
+            argThat(isProviderObserverContext(isNegative, container)),
+          ),
           observer.didUpdateProvider(
-            provider,
+            argThat(isProviderObserverContext(provider, container)),
             0,
             1,
-            container,
           ),
         ]);
         verifyNoMoreInteractions(observer);
 
-        counter.setState(-10);
+        counter.state = -10;
         await container.pump();
 
         verifyInOrder([
-          observer.didDisposeProvider(isNegative, container),
+          observer.didDisposeProvider(
+            argThat(isProviderObserverContext(isNegative, container)),
+          ),
           observer.didUpdateProvider(
-            provider,
+            argThat(isProviderObserverContext(provider, container)),
             1,
             -10,
-            container,
           ),
           isNegativeListener(false, true),
           observer.didUpdateProvider(
-            isNegative,
+            argThat(isProviderObserverContext(isNegative, container)),
             false,
             true,
-            container,
           ),
         ]);
         verifyNoMoreInteractions(isNegativeListener);
@@ -287,6 +332,7 @@ void main() {
         final dep = StateProvider((ref) => 0);
         final provider = StateNotifierProvider<StateController<int>, int>(
           (ref) => StateController(0),
+          dependencies: const [],
         );
         final observer = ObserverMock('a');
         final observer2 = ObserverMock('b');
@@ -323,20 +369,54 @@ void main() {
         await child.pump();
 
         verifyInOrder([
-          observer.didDisposeProvider(provider, child),
-          observer.didUpdateProvider(dep, 0, 1, root),
-          observer.didUpdateProvider(provider, 42, null, child),
-          observer.providerDidFail(provider, 'error', StackTrace.empty, child),
+          observer.didDisposeProvider(
+            argThat(isProviderObserverContext(provider, child)),
+          ),
+          observer.didUpdateProvider(
+            argThat(isProviderObserverContext(dep, root)),
+            0,
+            1,
+          ),
+          observer.didUpdateProvider(
+            argThat(isProviderObserverContext(provider, child)),
+            42,
+            null,
+          ),
+          observer.providerDidFail(
+            argThat(isProviderObserverContext(provider, child)),
+            'error',
+            StackTrace.empty,
+          ),
         ]);
         verifyInOrder([
-          observer2.didDisposeProvider(provider, child),
-          observer2.didUpdateProvider(provider, 42, null, child),
-          observer2.providerDidFail(provider, 'error', StackTrace.empty, child),
+          observer2.didDisposeProvider(
+            argThat(isProviderObserverContext(provider, child)),
+          ),
+          observer2.didUpdateProvider(
+            argThat(isProviderObserverContext(provider, child)),
+            42,
+            null,
+          ),
+          observer2.providerDidFail(
+            argThat(isProviderObserverContext(provider, child)),
+            'error',
+            StackTrace.empty,
+          ),
         ]);
         verifyInOrder([
-          observer3.didDisposeProvider(provider, child),
-          observer3.didUpdateProvider(provider, 42, null, child),
-          observer3.providerDidFail(provider, 'error', StackTrace.empty, child),
+          observer3.didDisposeProvider(
+            argThat(isProviderObserverContext(provider, child)),
+          ),
+          observer3.didUpdateProvider(
+            argThat(isProviderObserverContext(provider, child)),
+            42,
+            null,
+          ),
+          observer3.providerDidFail(
+            argThat(isProviderObserverContext(provider, child)),
+            'error',
+            StackTrace.empty,
+          ),
         ]);
 
         verifyNoMoreInteractions(observer3);
@@ -356,21 +436,18 @@ void main() {
 
         verifyInOrder([
           observer.didAddProvider(
-            provider,
+            argThat(isProviderObserverContext(provider, container)),
             const AsyncLoading<void>(),
-            container,
           ),
           observer.didUpdateProvider(
-            provider,
+            argThat(isProviderObserverContext(provider, container)),
             const AsyncLoading<void>(),
             const AsyncError<void>('error', StackTrace.empty),
-            container,
           ),
           observer.providerDidFail(
-            provider,
+            argThat(isProviderObserverContext(provider, container)),
             'error',
             StackTrace.empty,
-            container,
           ),
         ]);
       });
@@ -387,21 +464,18 @@ void main() {
 
         verifyInOrder([
           observer.didAddProvider(
-            provider,
+            argThat(isProviderObserverContext(provider, container)),
             const AsyncLoading<void>(),
-            container,
           ),
           observer.didUpdateProvider(
-            provider,
+            argThat(isProviderObserverContext(provider, container)),
             const AsyncLoading<void>(),
             const AsyncError<void>('error', StackTrace.empty),
-            container,
           ),
           observer.providerDidFail(
-            provider,
+            argThat(isProviderObserverContext(provider, container)),
             'error',
             StackTrace.empty,
-            container,
           ),
         ]);
       });
@@ -419,19 +493,23 @@ void main() {
         );
 
         verifyInOrder([
-          observer.didAddProvider(provider, null, container),
-          observer2.didAddProvider(provider, null, container),
+          observer.didAddProvider(
+            argThat(isProviderObserverContext(provider, container)),
+            null,
+          ),
+          observer2.didAddProvider(
+            argThat(isProviderObserverContext(provider, container)),
+            null,
+          ),
           observer.providerDidFail(
-            provider,
+            argThat(isProviderObserverContext(provider, container)),
             argThat(isUnimplementedError),
             argThat(isNotNull),
-            container,
           ),
           observer2.providerDidFail(
-            provider,
+            argThat(isProviderObserverContext(provider, container)),
             argThat(isUnimplementedError),
             argThat(isNotNull),
-            container,
           ),
         ]);
         verifyNoMoreInteractions(observer);
@@ -460,28 +538,24 @@ void main() {
 
         verifyInOrder([
           observer.didUpdateProvider(
-            provider,
+            argThat(isProviderObserverContext(provider, container)),
             0,
             null,
-            container,
           ),
           observer2.didUpdateProvider(
-            provider,
+            argThat(isProviderObserverContext(provider, container)),
             0,
             null,
-            container,
           ),
           observer.providerDidFail(
-            provider,
+            argThat(isProviderObserverContext(provider, container)),
             argThat(isUnimplementedError),
             argThat(isNotNull),
-            container,
           ),
           observer2.providerDidFail(
-            provider,
+            argThat(isProviderObserverContext(provider, container)),
             argThat(isUnimplementedError),
             argThat(isNotNull),
-            container,
           ),
         ]);
       });
@@ -498,13 +572,21 @@ void main() {
           throwsUnimplementedError,
         );
 
-        verify(observer.didAddProvider(provider, null, container));
+        verify(
+          observer.didAddProvider(
+            argThat(isProviderObserverContext(provider, container)),
+            null,
+          ),
+        );
       });
 
       test(
           'on scoped ProviderContainer, applies both child and ancestors observers',
           () {
-        final provider = Provider((ref) => 0);
+        final provider = Provider(
+          (ref) => 0,
+          dependencies: const [],
+        );
         final observer = ObserverMock();
         final observer2 = ObserverMock();
         final observer3 = ObserverMock();
@@ -522,14 +604,28 @@ void main() {
         expect(child.read(provider), 42);
 
         verifyInOrder([
-          observer3.didAddProvider(provider, 42, child),
-          observer2.didAddProvider(provider, 42, child),
-          observer.didAddProvider(provider, 42, child),
+          observer3.didAddProvider(
+            argThat(isProviderObserverContext(provider, child)),
+            42,
+          ),
+          observer2.didAddProvider(
+            argThat(isProviderObserverContext(provider, child)),
+            42,
+          ),
+          observer.didAddProvider(
+            argThat(isProviderObserverContext(provider, child)),
+            42,
+          ),
         ]);
 
         expect(mid.read(provider), 0);
 
-        verify(observer.didAddProvider(provider, 0, root)).called(1);
+        verify(
+          observer.didAddProvider(
+            argThat(isProviderObserverContext(provider, root)),
+            0,
+          ),
+        ).called(1);
 
         verifyNoMoreInteractions(observer3);
         verifyNoMoreInteractions(observer2);
@@ -546,14 +642,12 @@ void main() {
         expect(container.read(provider), 42);
         verifyInOrder([
           observer.didAddProvider(
-            provider,
+            argThat(isProviderObserverContext(provider, container)),
             42,
-            container,
           ),
           observer2.didAddProvider(
-            provider,
+            argThat(isProviderObserverContext(provider, container)),
             42,
-            container,
           ),
         ]);
         verifyNoMoreInteractions(observer);
@@ -562,9 +656,9 @@ void main() {
 
       test('guards against exceptions', () {
         final observer = ObserverMock();
-        when(observer.didAddProvider(any, any, any)).thenThrow('error1');
+        when(observer.didAddProvider(any, any)).thenThrow('error1');
         final observer2 = ObserverMock();
-        when(observer2.didAddProvider(any, any, any)).thenThrow('error2');
+        when(observer2.didAddProvider(any, any)).thenThrow('error2');
         final observer3 = ObserverMock();
         final provider = Provider((_) => 42);
         final container = ProviderContainer.test(
@@ -582,9 +676,18 @@ void main() {
         expect(result, 42);
         expect(errors, ['error1', 'error2']);
         verifyInOrder([
-          observer.didAddProvider(provider, 42, container),
-          observer2.didAddProvider(provider, 42, container),
-          observer3.didAddProvider(provider, 42, container),
+          observer.didAddProvider(
+            argThat(isProviderObserverContext(provider, container)),
+            42,
+          ),
+          observer2.didAddProvider(
+            argThat(isProviderObserverContext(provider, container)),
+            42,
+          ),
+          observer3.didAddProvider(
+            argThat(isProviderObserverContext(provider, container)),
+            42,
+          ),
         ]);
         verifyNoMoreInteractions(observer);
       });
@@ -601,7 +704,12 @@ void main() {
       clearInteractions(observer);
 
       container.invalidate(provider);
-      verifyOnly(observer, observer.didDisposeProvider(provider, container));
+      verifyOnly(
+        observer,
+        observer.didDisposeProvider(
+          argThat(isProviderObserverContext(provider, container)),
+        ),
+      );
 
       container.invalidate(provider);
       verifyNoMoreInteractions(observer);
@@ -619,7 +727,9 @@ void main() {
       container.dispose();
 
       verifyInOrder([
-        observer.didDisposeProvider(provider, container),
+        observer.didDisposeProvider(
+          argThat(isProviderObserverContext(provider, container)),
+        ),
       ]);
       verifyNoMoreInteractions(observer);
     });
@@ -639,16 +749,18 @@ void main() {
       await container.pump();
 
       verifyInOrder([
-        observer.didDisposeProvider(provider, container),
+        observer.didDisposeProvider(
+          argThat(isProviderObserverContext(provider, container)),
+        ),
       ]);
       verifyNoMoreInteractions(observer);
     });
 
     test('is guarded', () {
       final observer = ObserverMock();
-      when(observer.didDisposeProvider(any, any)).thenThrow('error1');
+      when(observer.didDisposeProvider(any)).thenThrow('error1');
       final observer2 = ObserverMock();
-      when(observer2.didDisposeProvider(any, any)).thenThrow('error2');
+      when(observer2.didDisposeProvider(any)).thenThrow('error2');
       final observer3 = ObserverMock();
       final onDispose = OnDisposeMock();
       final provider = Provider((ref) {
@@ -672,13 +784,25 @@ void main() {
 
       expect(errors, ['error1', 'error2', 'error1', 'error2']);
       verifyInOrder([
-        observer.didDisposeProvider(provider2, container),
-        observer2.didDisposeProvider(provider2, container),
-        observer3.didDisposeProvider(provider2, container),
+        observer.didDisposeProvider(
+          argThat(isProviderObserverContext(provider2, container)),
+        ),
+        observer2.didDisposeProvider(
+          argThat(isProviderObserverContext(provider2, container)),
+        ),
+        observer3.didDisposeProvider(
+          argThat(isProviderObserverContext(provider2, container)),
+        ),
         onDispose(),
-        observer.didDisposeProvider(provider, container),
-        observer2.didDisposeProvider(provider, container),
-        observer3.didDisposeProvider(provider, container),
+        observer.didDisposeProvider(
+          argThat(isProviderObserverContext(provider, container)),
+        ),
+        observer2.didDisposeProvider(
+          argThat(isProviderObserverContext(provider, container)),
+        ),
+        observer3.didDisposeProvider(
+          argThat(isProviderObserverContext(provider, container)),
+        ),
       ]);
       verifyNoMoreInteractions(onDispose);
       verifyNoMoreInteractions(observer);
@@ -697,8 +821,8 @@ class Counter extends StateNotifier<int> {
 
   void increment() => state++;
 
-  // ignore: use_setters_to_change_properties
-  void setState(int value) => state = value;
+  @override
+  abstract int state;
 }
 
 class ConstObserver extends ProviderObserver {

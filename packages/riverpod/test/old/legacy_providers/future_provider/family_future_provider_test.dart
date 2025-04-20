@@ -1,4 +1,5 @@
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/internals.dart' show ProviderElement;
 import 'package:test/test.dart';
 
 void main() {
@@ -9,24 +10,31 @@ void main() {
     expect(provider(0).argument, 0);
   });
 
-  group('scoping an override overrides all the associated subproviders', () {
+  group('scoping an override overrides all the associated sub-providers', () {
     test('when passing the provider itself', () async {
-      final provider = FutureProvider.family<int, int>((ref, _) async => 0);
+      final provider = FutureProvider.family<int, int>(
+        (ref, _) async => 0,
+        dependencies: const [],
+      );
       final root = ProviderContainer.test();
-      final container =
-          ProviderContainer.test(parent: root, overrides: [provider]);
+      final container = ProviderContainer.test(
+        parent: root,
+        overrides: [provider],
+      );
 
       expect(await container.read(provider(0).future), 0);
       expect(container.read(provider(0)), const AsyncData(0));
       expect(container.getAllProviderElementsInOrder(), [
-        isA<ProviderElementBase<Object?>>()
-            .having((e) => e.origin, 'origin', provider(0)),
+        isA<ProviderElement>().having((e) => e.origin, 'origin', provider(0)),
       ]);
       expect(root.getAllProviderElementsInOrder(), isEmpty);
     });
 
     test('can be auto-scoped', () async {
-      final dep = Provider((ref) => 0);
+      final dep = Provider(
+        (ref) => 0,
+        dependencies: const [],
+      );
       final provider = FutureProvider.family<int, int>(
         (ref, i) => ref.watch(dep) + i,
         dependencies: [dep],
@@ -43,15 +51,16 @@ void main() {
       expect(root.getAllProviderElements(), isEmpty);
     });
 
-    test('when using provider.overrideWithProvider', () async {
-      final provider = FutureProvider.family<int, int>((ref, _) async => 0);
+    test('when using provider.overrideWith', () async {
+      final provider = FutureProvider.family<int, int>(
+        (ref, _) async => 0,
+        dependencies: const [],
+      );
       final root = ProviderContainer.test();
       final container = ProviderContainer.test(
         parent: root,
         overrides: [
-          provider.overrideWithProvider(
-            (value) => FutureProvider((ref) async => 42),
-          ),
+          provider.overrideWith((ref, value) async => 42),
         ],
       );
 
@@ -59,8 +68,7 @@ void main() {
       expect(container.read(provider(0)), const AsyncData(42));
       expect(root.getAllProviderElementsInOrder(), isEmpty);
       expect(container.getAllProviderElementsInOrder(), [
-        isA<ProviderElementBase<Object?>>()
-            .having((e) => e.origin, 'origin', provider(0)),
+        isA<ProviderElement>().having((e) => e.origin, 'origin', provider(0)),
       ]);
     });
   });

@@ -1,0 +1,36 @@
+Message: `Add ref parameter`
+Priority: 90
+Diff for file `test/lints/functional_ref/failing_functional_ref.dart:5`:
+```
+@riverpod
+// expect_lint: functional_ref
+- int refless() {
++ int refless(Ref ref) {
+  return 0;
+}
+```
+---
+Message: `Type as Ref`
+Priority: 90
+Diff for file `test/lints/functional_ref/failing_functional_ref.dart:12`:
+```
+int incorrectlyTyped(
+  // expect_lint: functional_ref
+-   int ref,
++   Ref ref,
+) {
+  return 0;
+```
+---
+Message: `Add ref parameter`
+Priority: 90
+Diff for file `test/lints/functional_ref/failing_functional_ref.dart:20`:
+```
+@riverpod
+// expect_lint: functional_ref
+- int noRefButArgs({int a = 42}) {
++ int noRefButArgs(Ref ref, {int a = 42}) {
+  return 0;
+}
+```
+---

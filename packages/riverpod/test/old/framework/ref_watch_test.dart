@@ -1,6 +1,7 @@
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/legacy.dart';
+import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/internals.dart' show ProviderElement;
 import 'package:test/test.dart';
 
 import '../utils.dart';
@@ -105,8 +106,6 @@ void main() {
     expect(container.read(provider), false);
     expect(buildCount, 2);
   });
-
-  test('when selector throws, rebuild providers', () {}, skip: true);
 
   test('on provider that threw, exceptions bypass the selector', () {
     final container = ProviderContainer.test();
@@ -252,7 +251,7 @@ void main() {
   });
 
   test(
-      'when selecting a provider, element.visitChildren visits the selected provider',
+      'when selecting a provider, element.visitAncestors visits the selected provider',
       () {
     final container = ProviderContainer.test();
     final selected = StateNotifierProvider<StateController<int>, int>((ref) {
@@ -262,10 +261,13 @@ void main() {
       ref.watch(selected.select((value) => null));
     });
 
+    container.read(provider);
+    container.read(selected);
+
     final element = container.readProviderElement(provider);
     final selectedElement = container.readProviderElement(selected);
 
-    final ancestors = <ProviderElementBase<Object?>>[];
+    final ancestors = <ProviderElement>[];
     element.visitAncestors(ancestors.add);
 
     expect(ancestors, [selectedElement]);
@@ -315,16 +317,10 @@ void main() {
       () async {
     final stateProvider = StateProvider((ref) => 0, name: 'state');
     final notifier0 = Counter();
-    final provider0 = StateNotifierProvider<Counter, int>(
-      (_) => notifier0,
-      name: '0',
-    );
+    final provider0 = StateNotifierProvider<Counter, int>((ref) => notifier0);
 
     final notifier1 = Counter(42);
-    final provider1 = StateNotifierProvider<Counter, int>(
-      (_) => notifier1,
-      name: '1',
-    );
+    final provider1 = StateNotifierProvider<Counter, int>((ref) => notifier1);
 
     var computedBuildCount = 0;
     final computed = Provider((ref) {
@@ -346,8 +342,8 @@ void main() {
 
     verifyOnly(computedListener, computedListener(null, '0 0'));
     expect(computedBuildCount, 1);
-    expect(provider0Element.hasListeners, true);
-    expect(provider1Element.hasListeners, false);
+    expect(provider0Element.hasNonWeakListeners, true);
+    expect(provider1Element.hasNonWeakListeners, false);
 
     notifier0.increment();
     await container.pump();
@@ -367,8 +363,8 @@ void main() {
 
     verifyOnly(computedListener, computedListener('1 1', '1 43'));
     expect(computedBuildCount, 3);
-    expect(provider1Element.hasListeners, true);
-    expect(provider0Element.hasListeners, true);
+    expect(provider1Element.hasNonWeakListeners, true);
+    expect(provider0Element.hasNonWeakListeners, true);
 
     notifier1.increment();
     await container.pump();
@@ -414,8 +410,8 @@ void main() {
 
     verifyOnly(computedListener, computedListener(null, 0));
     expect(computedBuildCount, 1);
-    expect(provider0Element.hasListeners, true);
-    expect(provider1Element.hasListeners, false);
+    expect(provider0Element.hasNonWeakListeners, true);
+    expect(provider1Element.hasNonWeakListeners, false);
 
     notifier0.increment();
     await container.pump();
@@ -435,8 +431,8 @@ void main() {
 
     expect(computedBuildCount, 3);
     verifyOnly(computedListener, computedListener(1, 43));
-    expect(provider1Element.hasListeners, true);
-    expect(provider0Element.hasListeners, false);
+    expect(provider1Element.hasNonWeakListeners, true);
+    expect(provider0Element.hasNonWeakListeners, false);
 
     notifier1.increment();
     await container.pump();
@@ -453,7 +449,7 @@ void main() {
 
   test('Provider.family', () async {
     final computed =
-        Provider.family<String, AlwaysAliveProviderBase<int>>((ref, provider) {
+        Provider.family<String, ProviderBase<int>>((ref, provider) {
       return ref.watch(provider).toString();
     });
     final notifier = Counter();

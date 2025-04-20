@@ -6,586 +6,1189 @@ part of 'async.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$publicHash() => r'19bceccf795e4c3a26ad1e613fd6f41aad949e2b';
+@ProviderFor(generic)
+const genericProvider = GenericFamily._();
 
-/// See also [public].
-@ProviderFor(public)
-final publicProvider = AutoDisposeFutureProvider<String>.internal(
-  public,
-  name: r'publicProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$publicHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef PublicRef = AutoDisposeFutureProviderRef<String>;
-String _$privateHash() => r'7f0d1ff55a21e520b8471bbabc4649b5336221d4';
-
-/// See also [_private].
-@ProviderFor(_private)
-final _privateProvider = AutoDisposeFutureProvider<String>.internal(
-  _private,
-  name: r'_privateProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$privateHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef _PrivateRef = AutoDisposeFutureProviderRef<String>;
-String _$familyOrHash() => r'97cce80a626e228202fa30b87c07ae8319b48023';
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-/// See also [familyOr].
-@ProviderFor(familyOr)
-const familyOrProvider = FamilyOrFamily();
-
-/// See also [familyOr].
-class FamilyOrFamily extends Family<AsyncValue<String>> {
-  /// See also [familyOr].
-  const FamilyOrFamily();
-
-  /// See also [familyOr].
-  FamilyOrProvider call(
-    int first,
-  ) {
-    return FamilyOrProvider(
-      first,
-    );
-  }
-
-  @override
-  FamilyOrProvider getProviderOverride(
-    covariant FamilyOrProvider provider,
-  ) {
-    return call(
-      provider.first,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyOrProvider';
-
-  @override
-  bool get isAutoDispose => true;
-}
-
-/// See also [familyOr].
-class FamilyOrProvider extends AutoDisposeFutureProvider<String> {
-  /// See also [familyOr].
-  FamilyOrProvider(
-    int first,
-  ) : this._internal(
-          (ref) => familyOr(
-            ref as FamilyOrRef,
-            first,
-          ),
-          from: familyOrProvider,
-          name: r'familyOrProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$familyOrHash,
-          dependencies: FamilyOrFamily._dependencies,
-          allTransitiveDependencies: FamilyOrFamily._allTransitiveDependencies,
-          first: first,
+final class GenericProvider<T extends num>
+    extends $FunctionalProvider<AsyncValue<List<T>>, FutureOr<List<T>>>
+    with $FutureModifier<List<T>>, $FutureProvider<List<T>> {
+  const GenericProvider._(
+      {required GenericFamily super.from,
+      FutureOr<List<T>> Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          argument: null,
+          retry: null,
+          name: r'genericProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  FamilyOrProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.first,
-  }) : super.internal();
-
-  final int first;
+  final FutureOr<List<T>> Function(
+    Ref ref,
+  )? _createCb;
 
   @override
-  Override overrideWith(
-    FutureOr<String> Function(FamilyOrRef provider) create,
+  String debugGetCreateSourceHash() => _$genericHash();
+
+  GenericProvider<T> _copyWithCreate(
+    FutureOr<List<T>> Function<T extends num>(
+      Ref ref,
+    ) create,
   ) {
-    return ProviderOverride(
-      origin: this,
-      override: FamilyOrProvider._internal(
-        (ref) => create(ref as FamilyOrRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        first: first,
-      ),
-    );
+    return GenericProvider<T>._(
+        from: from! as GenericFamily, create: create<T>);
   }
 
   @override
-  AutoDisposeFutureProviderElement<String> createElement() {
-    return _FamilyOrProviderElement(this);
+  String toString() {
+    return r'genericProvider'
+        '<${T}>'
+        '()';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<List<T>> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
+
+  @override
+  GenericProvider<T> $copyWithCreate(
+    FutureOr<List<T>> Function(
+      Ref ref,
+    ) create,
+  ) {
+    return GenericProvider<T>._(from: from! as GenericFamily, create: create);
+  }
+
+  @override
+  FutureOr<List<T>> create(Ref ref) {
+    final _$cb = _createCb ?? generic<T>;
+    return _$cb(ref);
   }
 
   @override
   bool operator ==(Object other) {
-    return other is FamilyOrProvider && other.first == first;
+    return other is GenericProvider &&
+        other.runtimeType == runtimeType &&
+        other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, first.hashCode);
-
-    return _SystemHash.finish(hash);
+    return Object.hash(runtimeType, argument);
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin FamilyOrRef on AutoDisposeFutureProviderRef<String> {
-  /// The parameter `first` of this provider.
-  int get first;
-}
+String _$genericHash() => r'b7413a59722e9d62ae99c8a7ee0b4a24417fc3b4';
 
-class _FamilyOrProviderElement extends AutoDisposeFutureProviderElement<String>
-    with FamilyOrRef {
-  _FamilyOrProviderElement(super.provider);
+final class GenericFamily extends Family {
+  const GenericFamily._()
+      : super(
+          retry: null,
+          name: r'genericProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  GenericProvider<T> call<T extends num>() => GenericProvider<T>._(from: this);
 
   @override
-  int get first => (origin as FamilyOrProvider).first;
+  String debugGetCreateSourceHash() => _$genericHash();
+
+  @override
+  String toString() => r'genericProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    FutureOr<List<T>> Function<T extends num>(Ref ref) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as GenericProvider;
+
+        return provider._copyWithCreate(create).$createElement(pointer);
+      },
+    );
+  }
+}
+
+@ProviderFor(GenericClass)
+const genericClassProvider = GenericClassFamily._();
+
+final class GenericClassProvider<T extends num>
+    extends $AsyncNotifierProvider<GenericClass<T>, List<T>> {
+  const GenericClassProvider._(
+      {required GenericClassFamily super.from,
+      super.runNotifierBuildOverride,
+      GenericClass<T> Function()? create})
+      : _createCb = create,
+        super(
+          argument: null,
+          retry: null,
+          name: r'genericClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final GenericClass<T> Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$genericClassHash();
+
+  GenericClassProvider<T> _copyWithCreate(
+    GenericClass<T> Function<T extends num>() create,
+  ) {
+    return GenericClassProvider<T>._(
+        from: from! as GenericClassFamily, create: create<T>);
+  }
+
+  GenericClassProvider<T> _copyWithBuild(
+    FutureOr<List<T>> Function<T extends num>(
+      Ref,
+      GenericClass<T>,
+    ) build,
+  ) {
+    return GenericClassProvider<T>._(
+        from: from! as GenericClassFamily, runNotifierBuildOverride: build<T>);
+  }
+
+  @override
+  String toString() {
+    return r'genericClassProvider'
+        '<${T}>'
+        '()';
+  }
+
+  @$internal
+  @override
+  GenericClass<T> create() => _createCb?.call() ?? GenericClass<T>();
+
+  @$internal
+  @override
+  GenericClassProvider<T> $copyWithCreate(
+    GenericClass<T> Function() create,
+  ) {
+    return GenericClassProvider<T>._(
+        from: from! as GenericClassFamily, create: create);
+  }
+
+  @$internal
+  @override
+  GenericClassProvider<T> $copyWithBuild(
+    FutureOr<List<T>> Function(
+      Ref,
+      GenericClass<T>,
+    ) build,
+  ) {
+    return GenericClassProvider<T>._(
+        from: from! as GenericClassFamily, runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $AsyncNotifierProviderElement<GenericClass<T>, List<T>> $createElement(
+          $ProviderPointer pointer) =>
+      $AsyncNotifierProviderElement(this, pointer);
+
+  @override
+  bool operator ==(Object other) {
+    return other is GenericClassProvider &&
+        other.runtimeType == runtimeType &&
+        other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, argument);
+  }
+}
+
+String _$genericClassHash() => r'd3c4acc9cdae12f6c666fbf1f89aee212bb086db';
+
+final class GenericClassFamily extends Family {
+  const GenericClassFamily._()
+      : super(
+          retry: null,
+          name: r'genericClassProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  GenericClassProvider<T> call<T extends num>() =>
+      GenericClassProvider<T>._(from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$genericClassHash();
+
+  @override
+  String toString() => r'genericClassProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    GenericClass<T> Function<T extends num>() create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as GenericClassProvider;
+
+        return provider._copyWithCreate(create).$createElement(pointer);
+      },
+    );
+  }
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    FutureOr<List<T>> Function<T extends num>(Ref ref, GenericClass<T> notifier)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as GenericClassProvider;
+
+        return provider._copyWithBuild(build).$createElement(pointer);
+      },
+    );
+  }
+}
+
+abstract class _$GenericClass<T extends num> extends $AsyncNotifier<List<T>> {
+  FutureOr<List<T>> build();
+  @$internal
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<List<T>>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<List<T>>>,
+        AsyncValue<List<T>>,
+        Object?,
+        Object?>;
+    element.handleValue(ref, created);
+  }
+}
+
+@ProviderFor(public)
+const publicProvider = PublicProvider._();
+
+final class PublicProvider
+    extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>>
+    with $FutureModifier<String>, $FutureProvider<String> {
+  const PublicProvider._(
+      {FutureOr<String> Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'publicProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final FutureOr<String> Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$publicHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
+
+  @override
+  PublicProvider $copyWithCreate(
+    FutureOr<String> Function(
+      Ref ref,
+    ) create,
+  ) {
+    return PublicProvider._(create: create);
+  }
+
+  @override
+  FutureOr<String> create(Ref ref) {
+    final _$cb = _createCb ?? public;
+    return _$cb(ref);
+  }
+}
+
+String _$publicHash() => r'19bceccf795e4c3a26ad1e613fd6f41aad949e2b';
+
+@ProviderFor(_private)
+const _privateProvider = _PrivateProvider._();
+
+final class _PrivateProvider
+    extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>>
+    with $FutureModifier<String>, $FutureProvider<String> {
+  const _PrivateProvider._(
+      {FutureOr<String> Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'_privateProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final FutureOr<String> Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$privateHash();
+
+  @$internal
+  @override
+  $FutureProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
+
+  @override
+  _PrivateProvider $copyWithCreate(
+    FutureOr<String> Function(
+      Ref ref,
+    ) create,
+  ) {
+    return _PrivateProvider._(create: create);
+  }
+
+  @override
+  FutureOr<String> create(Ref ref) {
+    final _$cb = _createCb ?? _private;
+    return _$cb(ref);
+  }
+}
+
+String _$privateHash() => r'7f0d1ff55a21e520b8471bbabc4649b5336221d4';
+
+@ProviderFor(familyOr)
+const familyOrProvider = FamilyOrFamily._();
+
+final class FamilyOrProvider
+    extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>>
+    with $FutureModifier<String>, $FutureProvider<String> {
+  const FamilyOrProvider._(
+      {required FamilyOrFamily super.from,
+      required int super.argument,
+      FutureOr<String> Function(
+        Ref ref,
+        int first,
+      )? create})
+      : _createCb = create,
+        super(
+          retry: null,
+          name: r'familyOrProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final FutureOr<String> Function(
+    Ref ref,
+    int first,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$familyOrHash();
+
+  @override
+  String toString() {
+    return r'familyOrProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
+
+  @override
+  FamilyOrProvider $copyWithCreate(
+    FutureOr<String> Function(
+      Ref ref,
+    ) create,
+  ) {
+    return FamilyOrProvider._(
+        argument: argument as int,
+        from: from! as FamilyOrFamily,
+        create: (
+          ref,
+          int first,
+        ) =>
+            create(ref));
+  }
+
+  @override
+  FutureOr<String> create(Ref ref) {
+    final _$cb = _createCb ?? familyOr;
+    final argument = this.argument as int;
+    return _$cb(
+      ref,
+      argument,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is FamilyOrProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$familyOrHash() => r'97cce80a626e228202fa30b87c07ae8319b48023';
+
+final class FamilyOrFamily extends Family {
+  const FamilyOrFamily._()
+      : super(
+          retry: null,
+          name: r'familyOrProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  FamilyOrProvider call(
+    int first,
+  ) =>
+      FamilyOrProvider._(argument: first, from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$familyOrHash();
+
+  @override
+  String toString() => r'familyOrProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    FutureOr<String> Function(
+      Ref ref,
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as FamilyOrProvider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .$createElement(pointer);
+      },
+    );
+  }
+}
+
+@ProviderFor(family)
+const familyProvider = FamilyFamily._();
+
+final class FamilyProvider
+    extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>>
+    with $FutureModifier<String>, $FutureProvider<String> {
+  const FamilyProvider._(
+      {required FamilyFamily super.from,
+      required (
+        int, {
+        String? second,
+        double third,
+        bool fourth,
+        List<String>? fifth,
+      })
+          super.argument,
+      FutureOr<String> Function(
+        Ref ref,
+        int first, {
+        String? second,
+        required double third,
+        bool fourth,
+        List<String>? fifth,
+      })? create})
+      : _createCb = create,
+        super(
+          retry: null,
+          name: r'familyProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final FutureOr<String> Function(
+    Ref ref,
+    int first, {
+    String? second,
+    required double third,
+    bool fourth,
+    List<String>? fifth,
+  })? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$familyHash();
+
+  @override
+  String toString() {
+    return r'familyProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
+
+  @override
+  FamilyProvider $copyWithCreate(
+    FutureOr<String> Function(
+      Ref ref,
+    ) create,
+  ) {
+    return FamilyProvider._(
+        argument: argument as (
+          int, {
+          String? second,
+          double third,
+          bool fourth,
+          List<String>? fifth,
+        }),
+        from: from! as FamilyFamily,
+        create: (
+          ref,
+          int first, {
+          String? second,
+          required double third,
+          bool fourth = true,
+          List<String>? fifth,
+        }) =>
+            create(ref));
+  }
+
+  @override
+  FutureOr<String> create(Ref ref) {
+    final _$cb = _createCb ?? family;
+    final argument = this.argument as (
+      int, {
+      String? second,
+      double third,
+      bool fourth,
+      List<String>? fifth,
+    });
+    return _$cb(
+      ref,
+      argument.$1,
+      second: argument.second,
+      third: argument.third,
+      fourth: argument.fourth,
+      fifth: argument.fifth,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is FamilyProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$familyHash() => r'1da6c928ee85a03729a1c147f33e018521bb9c89';
 
-/// See also [family].
-@ProviderFor(family)
-const familyProvider = FamilyFamily();
+final class FamilyFamily extends Family {
+  const FamilyFamily._()
+      : super(
+          retry: null,
+          name: r'familyProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
 
-/// See also [family].
-class FamilyFamily extends Family<AsyncValue<String>> {
-  /// See also [family].
-  const FamilyFamily();
-
-  /// See also [family].
   FamilyProvider call(
     int first, {
     String? second,
     required double third,
     bool fourth = true,
     List<String>? fifth,
-  }) {
-    return FamilyProvider(
-      first,
-      second: second,
-      third: third,
-      fourth: fourth,
-      fifth: fifth,
-    );
-  }
+  }) =>
+      FamilyProvider._(argument: (
+        first,
+        second: second,
+        third: third,
+        fourth: fourth,
+        fifth: fifth,
+      ), from: this);
 
   @override
-  FamilyProvider getProviderOverride(
-    covariant FamilyProvider provider,
+  String debugGetCreateSourceHash() => _$familyHash();
+
+  @override
+  String toString() => r'familyProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    FutureOr<String> Function(
+      Ref ref,
+      (
+        int, {
+        String? second,
+        double third,
+        bool fourth,
+        List<String>? fifth,
+      }) args,
+    ) create,
   ) {
-    return call(
-      provider.first,
-      second: provider.second,
-      third: provider.third,
-      fourth: provider.fourth,
-      fifth: provider.fifth,
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as FamilyProvider;
+
+        final argument = provider.argument as (
+          int, {
+          String? second,
+          double third,
+          bool fourth,
+          List<String>? fifth,
+        });
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .$createElement(pointer);
+      },
     );
   }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyProvider';
-
-  @override
-  bool get isAutoDispose => true;
 }
 
-/// See also [family].
-class FamilyProvider extends AutoDisposeFutureProvider<String> {
-  /// See also [family].
-  FamilyProvider(
+@ProviderFor(PublicClass)
+const publicClassProvider = PublicClassProvider._();
+
+final class PublicClassProvider
+    extends $AsyncNotifierProvider<PublicClass, String> {
+  const PublicClassProvider._(
+      {super.runNotifierBuildOverride, PublicClass Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'publicClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final PublicClass Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$publicClassHash();
+
+  @$internal
+  @override
+  PublicClass create() => _createCb?.call() ?? PublicClass();
+
+  @$internal
+  @override
+  PublicClassProvider $copyWithCreate(
+    PublicClass Function() create,
+  ) {
+    return PublicClassProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  PublicClassProvider $copyWithBuild(
+    FutureOr<String> Function(
+      Ref,
+      PublicClass,
+    ) build,
+  ) {
+    return PublicClassProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $AsyncNotifierProviderElement<PublicClass, String> $createElement(
+          $ProviderPointer pointer) =>
+      $AsyncNotifierProviderElement(this, pointer);
+}
+
+String _$publicClassHash() => r'e9bc69e44b72e8ed77d423524c0d74ad460d629d';
+
+abstract class _$PublicClass extends $AsyncNotifier<String> {
+  FutureOr<String> build();
+  @$internal
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}
+
+@ProviderFor(_PrivateClass)
+const _privateClassProvider = _PrivateClassProvider._();
+
+final class _PrivateClassProvider
+    extends $AsyncNotifierProvider<_PrivateClass, String> {
+  const _PrivateClassProvider._(
+      {super.runNotifierBuildOverride, _PrivateClass Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'_privateClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final _PrivateClass Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$privateClassHash();
+
+  @$internal
+  @override
+  _PrivateClass create() => _createCb?.call() ?? _PrivateClass();
+
+  @$internal
+  @override
+  _PrivateClassProvider $copyWithCreate(
+    _PrivateClass Function() create,
+  ) {
+    return _PrivateClassProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  _PrivateClassProvider $copyWithBuild(
+    FutureOr<String> Function(
+      Ref,
+      _PrivateClass,
+    ) build,
+  ) {
+    return _PrivateClassProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $AsyncNotifierProviderElement<_PrivateClass, String> $createElement(
+          $ProviderPointer pointer) =>
+      $AsyncNotifierProviderElement(this, pointer);
+}
+
+String _$privateClassHash() => r'7e69cffe8315999710e4cb6bb3de9f179d3f2f5d';
+
+abstract class _$PrivateClass extends $AsyncNotifier<String> {
+  FutureOr<String> build();
+  @$internal
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}
+
+@ProviderFor(FamilyOrClass)
+const familyOrClassProvider = FamilyOrClassFamily._();
+
+final class FamilyOrClassProvider
+    extends $AsyncNotifierProvider<FamilyOrClass, String> {
+  const FamilyOrClassProvider._(
+      {required FamilyOrClassFamily super.from,
+      required int super.argument,
+      super.runNotifierBuildOverride,
+      FamilyOrClass Function()? create})
+      : _createCb = create,
+        super(
+          retry: null,
+          name: r'familyOrClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final FamilyOrClass Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$familyOrClassHash();
+
+  @override
+  String toString() {
+    return r'familyOrClassProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  FamilyOrClass create() => _createCb?.call() ?? FamilyOrClass();
+
+  @$internal
+  @override
+  FamilyOrClassProvider $copyWithCreate(
+    FamilyOrClass Function() create,
+  ) {
+    return FamilyOrClassProvider._(
+        argument: argument as int,
+        from: from! as FamilyOrClassFamily,
+        create: create);
+  }
+
+  @$internal
+  @override
+  FamilyOrClassProvider $copyWithBuild(
+    FutureOr<String> Function(
+      Ref,
+      FamilyOrClass,
+    ) build,
+  ) {
+    return FamilyOrClassProvider._(
+        argument: argument as int,
+        from: from! as FamilyOrClassFamily,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $AsyncNotifierProviderElement<FamilyOrClass, String> $createElement(
+          $ProviderPointer pointer) =>
+      $AsyncNotifierProviderElement(this, pointer);
+
+  @override
+  bool operator ==(Object other) {
+    return other is FamilyOrClassProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$familyOrClassHash() => r'b4882d4e79a03c63005d35eb7a021c9c4373a8d9';
+
+final class FamilyOrClassFamily extends Family {
+  const FamilyOrClassFamily._()
+      : super(
+          retry: null,
+          name: r'familyOrClassProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  FamilyOrClassProvider call(
+    int first,
+  ) =>
+      FamilyOrClassProvider._(argument: first, from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$familyOrClassHash();
+
+  @override
+  String toString() => r'familyOrClassProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    FamilyOrClass Function(
+      int args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as FamilyOrClassProvider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .$createElement(pointer);
+      },
+    );
+  }
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    FutureOr<String> Function(Ref ref, FamilyOrClass notifier, int argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as FamilyOrClassProvider;
+
+        final argument = provider.argument as int;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .$createElement(pointer);
+      },
+    );
+  }
+}
+
+abstract class _$FamilyOrClass extends $AsyncNotifier<String> {
+  late final _$args = ref.$arg as int;
+  int get first => _$args;
+
+  FutureOr<String> build(
+    int first,
+  );
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      _$args,
+    );
+    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}
+
+@ProviderFor(FamilyClass)
+const familyClassProvider = FamilyClassFamily._();
+
+final class FamilyClassProvider
+    extends $AsyncNotifierProvider<FamilyClass, String> {
+  const FamilyClassProvider._(
+      {required FamilyClassFamily super.from,
+      required (
+        int, {
+        String? second,
+        double third,
+        bool fourth,
+        List<String>? fifth,
+      })
+          super.argument,
+      super.runNotifierBuildOverride,
+      FamilyClass Function()? create})
+      : _createCb = create,
+        super(
+          retry: null,
+          name: r'familyClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final FamilyClass Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$familyClassHash();
+
+  @override
+  String toString() {
+    return r'familyClassProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  FamilyClass create() => _createCb?.call() ?? FamilyClass();
+
+  @$internal
+  @override
+  FamilyClassProvider $copyWithCreate(
+    FamilyClass Function() create,
+  ) {
+    return FamilyClassProvider._(
+        argument: argument as (
+          int, {
+          String? second,
+          double third,
+          bool fourth,
+          List<String>? fifth,
+        }),
+        from: from! as FamilyClassFamily,
+        create: create);
+  }
+
+  @$internal
+  @override
+  FamilyClassProvider $copyWithBuild(
+    FutureOr<String> Function(
+      Ref,
+      FamilyClass,
+    ) build,
+  ) {
+    return FamilyClassProvider._(
+        argument: argument as (
+          int, {
+          String? second,
+          double third,
+          bool fourth,
+          List<String>? fifth,
+        }),
+        from: from! as FamilyClassFamily,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $AsyncNotifierProviderElement<FamilyClass, String> $createElement(
+          $ProviderPointer pointer) =>
+      $AsyncNotifierProviderElement(this, pointer);
+
+  @override
+  bool operator ==(Object other) {
+    return other is FamilyClassProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$familyClassHash() => r'b7e3ca6091f12bbc99972e961acd885e05f42a15';
+
+final class FamilyClassFamily extends Family {
+  const FamilyClassFamily._()
+      : super(
+          retry: null,
+          name: r'familyClassProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  FamilyClassProvider call(
     int first, {
     String? second,
     required double third,
     bool fourth = true,
     List<String>? fifth,
-  }) : this._internal(
-          (ref) => family(
-            ref as FamilyRef,
-            first,
-            second: second,
-            third: third,
-            fourth: fourth,
-            fifth: fifth,
-          ),
-          from: familyProvider,
-          name: r'familyProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$familyHash,
-          dependencies: FamilyFamily._dependencies,
-          allTransitiveDependencies: FamilyFamily._allTransitiveDependencies,
-          first: first,
-          second: second,
-          third: third,
-          fourth: fourth,
-          fifth: fifth,
-        );
-
-  FamilyProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.first,
-    required this.second,
-    required this.third,
-    required this.fourth,
-    required this.fifth,
-  }) : super.internal();
-
-  final int first;
-  final String? second;
-  final double third;
-  final bool fourth;
-  final List<String>? fifth;
-
-  @override
-  Override overrideWith(
-    FutureOr<String> Function(FamilyRef provider) create,
-  ) {
-    return ProviderOverride(
-      origin: this,
-      override: FamilyProvider._internal(
-        (ref) => create(ref as FamilyRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        first: first,
+  }) =>
+      FamilyClassProvider._(argument: (
+        first,
         second: second,
         third: third,
         fourth: fourth,
         fifth: fifth,
-      ),
-    );
-  }
+      ), from: this);
 
   @override
-  AutoDisposeFutureProviderElement<String> createElement() {
-    return _FamilyProviderElement(this);
-  }
+  String debugGetCreateSourceHash() => _$familyClassHash();
 
   @override
-  bool operator ==(Object other) {
-    return other is FamilyProvider &&
-        other.first == first &&
-        other.second == second &&
-        other.third == third &&
-        other.fourth == fourth &&
-        other.fifth == fifth;
-  }
+  String toString() => r'familyClassProvider';
 
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, first.hashCode);
-    hash = _SystemHash.combine(hash, second.hashCode);
-    hash = _SystemHash.combine(hash, third.hashCode);
-    hash = _SystemHash.combine(hash, fourth.hashCode);
-    hash = _SystemHash.combine(hash, fifth.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin FamilyRef on AutoDisposeFutureProviderRef<String> {
-  /// The parameter `first` of this provider.
-  int get first;
-
-  /// The parameter `second` of this provider.
-  String? get second;
-
-  /// The parameter `third` of this provider.
-  double get third;
-
-  /// The parameter `fourth` of this provider.
-  bool get fourth;
-
-  /// The parameter `fifth` of this provider.
-  List<String>? get fifth;
-}
-
-class _FamilyProviderElement extends AutoDisposeFutureProviderElement<String>
-    with FamilyRef {
-  _FamilyProviderElement(super.provider);
-
-  @override
-  int get first => (origin as FamilyProvider).first;
-  @override
-  String? get second => (origin as FamilyProvider).second;
-  @override
-  double get third => (origin as FamilyProvider).third;
-  @override
-  bool get fourth => (origin as FamilyProvider).fourth;
-  @override
-  List<String>? get fifth => (origin as FamilyProvider).fifth;
-}
-
-String _$publicClassHash() => r'e9bc69e44b72e8ed77d423524c0d74ad460d629d';
-
-/// See also [PublicClass].
-@ProviderFor(PublicClass)
-final publicClassProvider =
-    AutoDisposeAsyncNotifierProvider<PublicClass, String>.internal(
-  PublicClass.new,
-  name: r'publicClassProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$publicClassHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$PublicClass = AutoDisposeAsyncNotifier<String>;
-String _$privateClassHash() => r'7e69cffe8315999710e4cb6bb3de9f179d3f2f5d';
-
-/// See also [_PrivateClass].
-@ProviderFor(_PrivateClass)
-final _privateClassProvider =
-    AutoDisposeAsyncNotifierProvider<_PrivateClass, String>.internal(
-  _PrivateClass.new,
-  name: r'_privateClassProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$privateClassHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
-
-typedef _$PrivateClass = AutoDisposeAsyncNotifier<String>;
-String _$familyOrClassHash() => r'b4882d4e79a03c63005d35eb7a021c9c4373a8d9';
-
-abstract class _$FamilyOrClass
-    extends BuildlessAutoDisposeAsyncNotifier<String> {
-  late final int first;
-
-  FutureOr<String> build(
-    int first,
-  );
-
-  @$internal
-  @override
-  void runBuild() {
-    final created = build(
-      first,
-    );
-    final element = ref as $ClassProviderElement<
-        AnyNotifier<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
-    element.handleValue(ref, created);
-  }
-}
-
-/// See also [FamilyOrClass].
-@ProviderFor(FamilyOrClass)
-const familyOrClassProvider = FamilyOrClassFamily();
-
-/// See also [FamilyOrClass].
-class FamilyOrClassFamily extends Family<AsyncValue<String>> {
-  /// See also [FamilyOrClass].
-  const FamilyOrClassFamily();
-
-  /// See also [FamilyOrClass].
-  FamilyOrClassProvider call(
-    int first,
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    FamilyClass Function(
+      (
+        int, {
+        String? second,
+        double third,
+        bool fourth,
+        List<String>? fifth,
+      }) args,
+    ) create,
   ) {
-    return FamilyOrClassProvider(
-      first,
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as FamilyClassProvider;
+
+        final argument = provider.argument as (
+          int, {
+          String? second,
+          double third,
+          bool fourth,
+          List<String>? fifth,
+        });
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .$createElement(pointer);
+      },
     );
   }
 
-  @override
-  FamilyOrClassProvider getProviderOverride(
-    covariant FamilyOrClassProvider provider,
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    FutureOr<String> Function(
+            Ref ref,
+            FamilyClass notifier,
+            (
+              int, {
+              String? second,
+              double third,
+              bool fourth,
+              List<String>? fifth,
+            }) argument)
+        build,
   ) {
-    return call(
-      provider.first,
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as FamilyClassProvider;
+
+        final argument = provider.argument as (
+          int, {
+          String? second,
+          double third,
+          bool fourth,
+          List<String>? fifth,
+        });
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .$createElement(pointer);
+      },
     );
   }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyOrClassProvider';
-
-  @override
-  bool get isAutoDispose => true;
 }
 
-/// See also [FamilyOrClass].
-class FamilyOrClassProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<FamilyOrClass, String> {
-  /// See also [FamilyOrClass].
-  FamilyOrClassProvider(
-    int first,
-  ) : this._internal(
-          () => FamilyOrClass()..first = first,
-          from: familyOrClassProvider,
-          name: r'familyOrClassProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$familyOrClassHash,
-          dependencies: FamilyOrClassFamily._dependencies,
-          allTransitiveDependencies:
-              FamilyOrClassFamily._allTransitiveDependencies,
-          first: first,
-        );
-
-  FamilyOrClassProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.first,
-  }) : super.internal();
-
-  final int first;
-
-  @override
-  FutureOr<String> runNotifierBuild(
-    covariant FamilyOrClass notifier,
-  ) {
-    return notifier.build(
-      first,
-    );
-  }
-
-  @override
-  Override overrideWith(FamilyOrClass Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: FamilyOrClassProvider._internal(
-        () => create()..first = first,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        first: first,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeAsyncNotifierProviderElement<FamilyOrClass, String>
-      createElement() {
-    return _FamilyOrClassProviderElement(this);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is FamilyOrClassProvider && other.first == first;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, first.hashCode);
-
-    return _SystemHash.finish(hash);
-  }
-}
-
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin FamilyOrClassRef on AutoDisposeAsyncNotifierProviderRef<String> {
-  /// The parameter `first` of this provider.
-  int get first;
-}
-
-class _FamilyOrClassProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<FamilyOrClass, String>
-    with FamilyOrClassRef {
-  _FamilyOrClassProviderElement(super.provider);
-
-  @override
-  int get first => (origin as FamilyOrClassProvider).first;
-}
-
-String _$familyClassHash() => r'b7e3ca6091f12bbc99972e961acd885e05f42a15';
-
-abstract class _$FamilyClass extends BuildlessAutoDisposeAsyncNotifier<String> {
-  late final int first;
-  late final String? second;
-  late final double third;
-  late final bool fourth;
-  late final List<String>? fifth;
+abstract class _$FamilyClass extends $AsyncNotifier<String> {
+  late final _$args = ref.$arg as (
+    int, {
+    String? second,
+    double third,
+    bool fourth,
+    List<String>? fifth,
+  });
+  int get first => _$args.$1;
+  String? get second => _$args.second;
+  double get third => _$args.third;
+  bool get fourth => _$args.fourth;
+  List<String>? get fifth => _$args.fifth;
 
   FutureOr<String> build(
     int first, {
@@ -594,233 +1197,270 @@ abstract class _$FamilyClass extends BuildlessAutoDisposeAsyncNotifier<String> {
     bool fourth = true,
     List<String>? fifth,
   });
-
   @$internal
   @override
   void runBuild() {
     final created = build(
-      first,
-      second: second,
-      third: third,
-      fourth: fourth,
-      fifth: fifth,
+      _$args.$1,
+      second: _$args.second,
+      third: _$args.third,
+      fourth: _$args.fourth,
+      fifth: _$args.fifth,
     );
-    final element = ref as $ClassProviderElement<
-        AnyNotifier<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
 
-/// See also [FamilyClass].
-@ProviderFor(FamilyClass)
-const familyClassProvider = FamilyClassFamily();
+@ProviderFor(Regression3490)
+const regression3490Provider = Regression3490Family._();
 
-/// See also [FamilyClass].
-class FamilyClassFamily extends Family<AsyncValue<String>> {
-  /// See also [FamilyClass].
-  const FamilyClassFamily();
-
-  /// See also [FamilyClass].
-  FamilyClassProvider call(
-    int first, {
-    String? second,
-    required double third,
-    bool fourth = true,
-    List<String>? fifth,
-  }) {
-    return FamilyClassProvider(
-      first,
-      second: second,
-      third: third,
-      fourth: fourth,
-      fifth: fifth,
-    );
-  }
-
-  @override
-  FamilyClassProvider getProviderOverride(
-    covariant FamilyClassProvider provider,
-  ) {
-    return call(
-      provider.first,
-      second: provider.second,
-      third: provider.third,
-      fourth: provider.fourth,
-      fifth: provider.fifth,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'familyClassProvider';
-
-  @override
-  bool get isAutoDispose => true;
-}
-
-/// See also [FamilyClass].
-class FamilyClassProvider
-    extends AutoDisposeAsyncNotifierProviderImpl<FamilyClass, String> {
-  /// See also [FamilyClass].
-  FamilyClassProvider(
-    int first, {
-    String? second,
-    required double third,
-    bool fourth = true,
-    List<String>? fifth,
-  }) : this._internal(
-          () => FamilyClass()
-            ..first = first
-            ..second = second
-            ..third = third
-            ..fourth = fourth
-            ..fifth = fifth,
-          from: familyClassProvider,
-          name: r'familyClassProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$familyClassHash,
-          dependencies: FamilyClassFamily._dependencies,
-          allTransitiveDependencies:
-              FamilyClassFamily._allTransitiveDependencies,
-          first: first,
-          second: second,
-          third: third,
-          fourth: fourth,
-          fifth: fifth,
+final class Regression3490Provider<Model, Sort, Cursor>
+    extends $NotifierProvider<Regression3490<Model, Sort, Cursor>, void> {
+  const Regression3490Provider._(
+      {required Regression3490Family super.from,
+      required ({
+        String type,
+        Regression3490Cb<Model, Sort, Cursor> getData,
+        String? parentId,
+      })
+          super.argument,
+      super.runNotifierBuildOverride,
+      Regression3490<Model, Sort, Cursor> Function()? create})
+      : _createCb = create,
+        super(
+          retry: null,
+          name: r'regression3490Provider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  FamilyClassProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.first,
-    required this.second,
-    required this.third,
-    required this.fourth,
-    required this.fifth,
-  }) : super.internal();
-
-  final int first;
-  final String? second;
-  final double third;
-  final bool fourth;
-  final List<String>? fifth;
+  final Regression3490<Model, Sort, Cursor> Function()? _createCb;
 
   @override
-  FutureOr<String> runNotifierBuild(
-    covariant FamilyClass notifier,
+  String debugGetCreateSourceHash() => _$regression3490Hash();
+
+  Regression3490Provider<Model, Sort, Cursor> _copyWithCreate(
+    Regression3490<Model, Sort, Cursor> Function<Model, Sort, Cursor>() create,
   ) {
-    return notifier.build(
-      first,
-      second: second,
-      third: third,
-      fourth: fourth,
-      fifth: fifth,
-    );
+    return Regression3490Provider<Model, Sort, Cursor>._(
+        argument: argument as ({
+          String type,
+          Regression3490Cb<Model, Sort, Cursor> getData,
+          String? parentId,
+        }),
+        from: from! as Regression3490Family,
+        create: create<Model, Sort, Cursor>);
+  }
+
+  Regression3490Provider<Model, Sort, Cursor> _copyWithBuild(
+    void Function<Model, Sort, Cursor>(
+      Ref,
+      Regression3490<Model, Sort, Cursor>,
+    ) build,
+  ) {
+    return Regression3490Provider<Model, Sort, Cursor>._(
+        argument: argument as ({
+          String type,
+          Regression3490Cb<Model, Sort, Cursor> getData,
+          String? parentId,
+        }),
+        from: from! as Regression3490Family,
+        runNotifierBuildOverride: build<Model, Sort, Cursor>);
   }
 
   @override
-  Override overrideWith(FamilyClass Function() create) {
-    return ProviderOverride(
+  String toString() {
+    return r'regression3490Provider'
+        '<${Model}, ${Sort}, ${Cursor}>'
+        '$argument';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(void value) {
+    return $ProviderOverride(
       origin: this,
-      override: FamilyClassProvider._internal(
-        () => create()
-          ..first = first
-          ..second = second
-          ..third = third
-          ..fourth = fourth
-          ..fifth = fifth,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        first: first,
-        second: second,
-        third: third,
-        fourth: fourth,
-        fifth: fifth,
-      ),
+      providerOverride: $ValueProvider<void>(value),
     );
   }
 
+  @$internal
   @override
-  AutoDisposeAsyncNotifierProviderElement<FamilyClass, String> createElement() {
-    return _FamilyClassProviderElement(this);
+  Regression3490<Model, Sort, Cursor> create() =>
+      _createCb?.call() ?? Regression3490<Model, Sort, Cursor>();
+
+  @$internal
+  @override
+  Regression3490Provider<Model, Sort, Cursor> $copyWithCreate(
+    Regression3490<Model, Sort, Cursor> Function() create,
+  ) {
+    return Regression3490Provider<Model, Sort, Cursor>._(
+        argument: argument as ({
+          String type,
+          Regression3490Cb<Model, Sort, Cursor> getData,
+          String? parentId,
+        }),
+        from: from! as Regression3490Family,
+        create: create);
   }
+
+  @$internal
+  @override
+  Regression3490Provider<Model, Sort, Cursor> $copyWithBuild(
+    void Function(
+      Ref,
+      Regression3490<Model, Sort, Cursor>,
+    ) build,
+  ) {
+    return Regression3490Provider<Model, Sort, Cursor>._(
+        argument: argument as ({
+          String type,
+          Regression3490Cb<Model, Sort, Cursor> getData,
+          String? parentId,
+        }),
+        from: from! as Regression3490Family,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<Regression3490<Model, Sort, Cursor>, void>
+      $createElement($ProviderPointer pointer) =>
+          $NotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
-    return other is FamilyClassProvider &&
-        other.first == first &&
-        other.second == second &&
-        other.third == third &&
-        other.fourth == fourth &&
-        other.fifth == fifth;
+    return other is Regression3490Provider &&
+        other.runtimeType == runtimeType &&
+        other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, first.hashCode);
-    hash = _SystemHash.combine(hash, second.hashCode);
-    hash = _SystemHash.combine(hash, third.hashCode);
-    hash = _SystemHash.combine(hash, fourth.hashCode);
-    hash = _SystemHash.combine(hash, fifth.hashCode);
-
-    return _SystemHash.finish(hash);
+    return Object.hash(runtimeType, argument);
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin FamilyClassRef on AutoDisposeAsyncNotifierProviderRef<String> {
-  /// The parameter `first` of this provider.
-  int get first;
+String _$regression3490Hash() => r'9d5d48cbde589961d0cdac395f68111ec17b194a';
 
-  /// The parameter `second` of this provider.
-  String? get second;
+final class Regression3490Family extends Family {
+  const Regression3490Family._()
+      : super(
+          retry: null,
+          name: r'regression3490Provider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
 
-  /// The parameter `third` of this provider.
-  double get third;
+  Regression3490Provider<Model, Sort, Cursor> call<Model, Sort, Cursor>({
+    required String type,
+    required Regression3490Cb<Model, Sort, Cursor> getData,
+    String? parentId,
+  }) =>
+      Regression3490Provider<Model, Sort, Cursor>._(argument: (
+        type: type,
+        getData: getData,
+        parentId: parentId,
+      ), from: this);
 
-  /// The parameter `fourth` of this provider.
-  bool get fourth;
+  @override
+  String debugGetCreateSourceHash() => _$regression3490Hash();
 
-  /// The parameter `fifth` of this provider.
-  List<String>? get fifth;
+  @override
+  String toString() => r'regression3490Provider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    Regression3490<Model, Sort, Cursor> Function<Model, Sort, Cursor>(
+      ({
+        String type,
+        Regression3490Cb<Model, Sort, Cursor> getData,
+        String? parentId,
+      }) args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as Regression3490Provider;
+
+        return provider._copyWithCreate(<Model, Sort, Cursor>() {
+          final argument = provider.argument as ({
+            String type,
+            Regression3490Cb<Model, Sort, Cursor> getData,
+            String? parentId,
+          });
+
+          return create(argument);
+        }).$createElement(pointer);
+      },
+    );
+  }
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    void Function<Model, Sort, Cursor>(
+            Ref ref,
+            Regression3490<Model, Sort, Cursor> notifier,
+            ({
+              String type,
+              Regression3490Cb<Model, Sort, Cursor> getData,
+              String? parentId,
+            }) argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as Regression3490Provider;
+
+        return provider._copyWithBuild(<Model, Sort, Cursor>(ref, notifier) {
+          final argument = provider.argument as ({
+            String type,
+            Regression3490Cb<Model, Sort, Cursor> getData,
+            String? parentId,
+          });
+
+          return build(ref, notifier, argument);
+        }).$createElement(pointer);
+      },
+    );
+  }
 }
 
-class _FamilyClassProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<FamilyClass, String>
-    with FamilyClassRef {
-  _FamilyClassProviderElement(super.provider);
+abstract class _$Regression3490<Model, Sort, Cursor> extends $Notifier<void> {
+  late final _$args = ref.$arg as ({
+    String type,
+    Regression3490Cb<Model, Sort, Cursor> getData,
+    String? parentId,
+  });
+  String get type => _$args.type;
+  Regression3490Cb<Model, Sort, Cursor> get getData => _$args.getData;
+  String? get parentId => _$args.parentId;
 
+  void build({
+    required String type,
+    required Regression3490Cb<Model, Sort, Cursor> getData,
+    String? parentId,
+  });
+  @$internal
   @override
-  int get first => (origin as FamilyClassProvider).first;
-  @override
-  String? get second => (origin as FamilyClassProvider).second;
-  @override
-  double get third => (origin as FamilyClassProvider).third;
-  @override
-  bool get fourth => (origin as FamilyClassProvider).fourth;
-  @override
-  List<String>? get fifth => (origin as FamilyClassProvider).fifth;
+  void runBuild() {
+    build(
+      type: _$args.type,
+      getData: _$args.getData,
+      parentId: _$args.parentId,
+    );
+    final ref = this.ref as $Ref<void>;
+    final element = ref.element
+        as $ClassProviderElement<NotifierBase<void>, void, Object?, Object?>;
+    element.handleValue(ref, null);
+  }
 }
+
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -1,8 +1,10 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/legacy.dart';
+import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/internals.dart'
+    show $ProviderElement, ProviderElement;
 import 'package:test/test.dart';
 
 import '../../utils.dart';
@@ -80,13 +82,13 @@ void main() {
       expect(family2(0).name, 'name');
       expect(
         family2(0).toString(),
-        equalsIgnoringHashCodes('name:Provider<int>#00000(0)'),
+        equalsIgnoringHashCodes('name(0)'),
       );
 
       expect(family2(1).name, 'name');
       expect(
         family2(1).toString(),
-        equalsIgnoringHashCodes('name:Provider<int>#00000(1)'),
+        equalsIgnoringHashCodes('name(1)'),
       );
     });
   });
@@ -131,14 +133,15 @@ void main() {
             .maybeWhen(data: (d) => d, orElse: () => null);
       });
 
-      expect(callCount, 0);
-      expect(container.read(provider), null);
+      final sub = container.listen(provider, (p, n) {});
+
+      expect(sub.read(), null);
       expect(callCount, 1);
 
       controller.add(42);
 
       expect(callCount, 1);
-      expect(container.read(provider), 42);
+      expect(sub.read(), 42);
       expect(callCount, 2);
     });
 
@@ -255,52 +258,48 @@ void main() {
     final sub = container.listen(computed, (_, __) {});
 
     expect(sub.read(), '0');
-    var firstDependents = <ProviderElementBase<Object?>>[];
-    firstElement.visitChildren(
-      firstDependents.add,
-    );
-    var secondDependents = <ProviderElementBase<Object?>>[];
-    secondElement.visitChildren(
-      secondDependents.add,
-    );
+    var firstDependents = <ProviderElement>[];
+    firstElement.visitChildren(firstDependents.add);
+    var secondDependents = <ProviderElement>[];
+    secondElement.visitChildren(secondDependents.add);
 
     expect(firstDependents, [computedElement]);
-    expect(firstElement.hasListeners, true);
+    expect(firstElement.hasNonWeakListeners, true);
     expect(secondDependents, [computedElement]);
-    expect(secondElement.hasListeners, true);
+    expect(secondElement.hasNonWeakListeners, true);
 
     container.read(first.notifier).state++;
     expect(sub.read(), 'fallback');
 
-    firstDependents = <ProviderElementBase<Object?>>[];
+    firstDependents = <ProviderElement>[];
     firstElement.visitChildren(firstDependents.add);
-    secondDependents = <ProviderElementBase<Object?>>[];
+    secondDependents = <ProviderElement>[];
     secondElement.visitChildren(secondDependents.add);
     expect(firstDependents, [computedElement]);
-    expect(firstElement.hasListeners, true);
-    expect(secondDependents, <ProviderElement<Object?>>[]);
-    expect(secondElement.hasListeners, false);
+    expect(firstElement.hasNonWeakListeners, true);
+    expect(secondDependents, <$ProviderElement<Object?>>[]);
+    expect(secondElement.hasNonWeakListeners, false);
   });
 
-  // group('overrideWithValue', () {
-  //   test('synchronously overrides the value', () {
-  //     var callCount = 0;
-  //     final provider = FutureProvider((ref) async {
-  //       callCount++;
-  //       return 0;
-  //     });
-  //     final container = ProviderContainer.test(overrides: [
-  //       provider.overrideWithValue(const AsyncValue.data(42)),
-  //     ]);
+  group('overrideWithValue', () {
+    test('synchronously overrides the value', () {
+      var callCount = 0;
+      final provider = FutureProvider((ref) async {
+        callCount++;
+        return 0;
+      });
+      final container = ProviderContainer.test(
+        overrides: [provider.overrideWithValue(const AsyncValue.data(42))],
+      );
 
-  //     addTearDown(container.dispose);
+      addTearDown(container.dispose);
 
-  //     final sub = container.listen(provider, (_, __) {});
+      final sub = container.listen(provider, (_, __) {});
 
-  //     expect(callCount, 0);
-  //     expect(sub.read(), const AsyncValue.data(42));
-  //   });
-  // });
+      expect(callCount, 0);
+      expect(sub.read(), const AsyncValue.data(42));
+    });
+  });
 
   test('remove dependencies on dispose', () async {
     final first = StateProvider((ref) => 0);
@@ -312,18 +311,18 @@ void main() {
     final sub = container.listen(computed, (_, __) {});
 
     expect(sub.read(), 0);
-    var firstDependents = <ProviderElementBase<Object?>>[];
+    var firstDependents = <ProviderElement>[];
     firstElement.visitChildren(firstDependents.add);
     expect(firstDependents, {computedElement});
-    expect(firstElement.hasListeners, true);
+    expect(firstElement.hasNonWeakListeners, true);
 
     sub.close();
     await container.pump();
 
-    firstDependents = <ProviderElementBase<Object?>>[];
+    firstDependents = <ProviderElement>[];
     firstElement.visitChildren(firstDependents.add);
-    expect(firstDependents, <ProviderElement<Object?>>{});
-    expect(firstElement.hasListeners, false);
+    expect(firstDependents, <$ProviderElement<Object?>>{});
+    expect(firstElement.hasNonWeakListeners, false);
   });
 
   test(
@@ -413,16 +412,16 @@ void main() {
       final provider = Provider((ref) => ref.watch(first));
       final element = container.readProviderElement(provider);
 
-      expect(element.hasListeners, false);
+      expect(element.hasNonWeakListeners, false);
 
       final sub = container.listen(provider, didChange.call);
 
-      expect(element.hasListeners, true);
+      expect(element.hasNonWeakListeners, true);
 
       sub.close();
       counter.increment();
 
-      expect(element.hasListeners, false);
+      expect(element.hasNonWeakListeners, false);
       verifyZeroInteractions(didChange);
     });
 

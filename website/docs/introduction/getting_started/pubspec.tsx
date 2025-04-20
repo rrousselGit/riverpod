@@ -9,7 +9,7 @@ import {
 function plain(riverpod: string) {
   return `name: my_app_name
 environment:
-  sdk: ^3.6.0
+  sdk: ">=3.0.0 <4.0.0"
   flutter: ">=3.0.0"
 
 dependencies:
@@ -26,7 +26,7 @@ dev_dependencies:
 function codegen(riverpod: string) {
   return `name: my_app_name
 environment:
-  sdk: ^3.6.0
+  sdk: ">=3.0.0 <4.0.0"
   flutter: ">=3.0.0"
 
 dependencies:

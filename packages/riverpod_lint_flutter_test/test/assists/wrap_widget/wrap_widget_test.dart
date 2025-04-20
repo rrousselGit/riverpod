@@ -2,12 +2,12 @@ import 'package:test/test.dart';
 import 'package:riverpod_lint/src/assists/wrap_with_consumer.dart';
 import 'package:riverpod_lint/src/assists/wrap_with_provider_scope.dart';
 
-import '../../golden.dart';
+import '../../test_lint.dart';
 
 void main() {
   testGolden(
     'Wrap with consumer',
-    'assists/wrap_widget/wrap_with_consumer.diff',
+    'test/assists/goldens/wrap_widget/wrap_with_consumer.diff',
     sourcePath: 'test/assists/wrap_widget/wrap_widget.dart',
     (result, helper) async {
       final assist = WrapWithConsumer();
@@ -31,7 +31,7 @@ void main() {
 
   testGolden(
     'Wrap with ProviderScope',
-    'assists/wrap_widget/wrap_with_provider_scope.diff',
+    'test/assists/goldens/wrap_widget/wrap_with_provider_scope.diff',
     sourcePath: 'test/assists/wrap_widget/wrap_widget.dart',
     (result, helper) async {
       final assist = WrapWithProviderScope();

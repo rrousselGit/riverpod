@@ -9,7 +9,7 @@ module.exports = {
   trailingSlash: false,
   i18n: {
     defaultLocale: "en",
-    locales: ["en", "fr", "ko", "ja", "es", "bn", "de", "it", "ru", "tr", "zh-Hans", "zh-Hant"],
+    locales: ["en", "fr", "ko", "ja", "es", "bn", "de", "it", "ru", "tr", "zh-Hans"],
   },
   themeConfig: {
     algolia: {
@@ -76,7 +76,7 @@ module.exports = {
           items: [
             {
               label: "Discord",
-              href: "https://discord.gg/GSt793j6eT",
+              href: "https://discord.gg/hUUQkd9v",
             },
             {
               label: "GitHub",

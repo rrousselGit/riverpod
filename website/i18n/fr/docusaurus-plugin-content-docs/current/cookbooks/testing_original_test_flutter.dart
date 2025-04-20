@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 /* SNIPPET START */
@@ -18,13 +19,15 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: Consumer(builder: (context, ref, _) {
-        final counter = ref.watch(counterProvider);
-        return ElevatedButton(
-          onPressed: () => ref.read(counterProvider.notifier).state++,
-          child: Text('$counter'),
-        );
-      }),
+      home: Consumer(
+        builder: (context, ref, _) {
+          final counter = ref.watch(counterProvider);
+          return ElevatedButton(
+            onPressed: () => ref.read(counterProvider.notifier).state++,
+            child: Text('$counter'),
+          );
+        },
+      ),
     );
   }
 }

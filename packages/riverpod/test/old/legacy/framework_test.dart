@@ -1,118 +1,37 @@
-import 'dart:async';
-
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart';
+import 'package:riverpod/src/internals.dart'
+    show CircularDependencyError, ProviderElement;
 import 'package:test/test.dart';
 
 import '../utils.dart';
 
 void main() {
-  test('hasListeners', () {
-    final container = ProviderContainer.test();
-    final provider = Provider((_) => 42);
-
-    expect(container.read(provider), 42);
-
-    final state = container.getAllProviderElements().single;
-
-    expect(state.hasListeners, false);
-
-    final sub = container.listen(provider, (_, __) {});
-
-    expect(state.hasListeners, true);
-
-    sub.close();
-
-    expect(state.hasListeners, false);
-  });
-
   test('test two families one overridden the other not', () {
     final family = Provider.family<String, int>((ref, value) {
       return '$value';
     });
-    final family2 = Provider.family<String, int>((ref, value) {
-      return '$value 2';
-    });
+    final family2 = Provider.family<String, int>(
+      (ref, value) {
+        return '$value 2';
+      },
+      dependencies: const [],
+    );
     final root = ProviderContainer.test();
-    final container =
-        ProviderContainer.test(parent: root, overrides: [family2]);
+    final container = ProviderContainer.test(
+      parent: root,
+      overrides: [family2],
+    );
 
     expect(container.read(family(0)), '0');
     expect(container.read(family2(0)), '0 2');
 
     expect(container.getAllProviderElements(), [
-      isA<ProviderElementBase<Object?>>()
-          .having((e) => e.origin, 'origin', family2(0)),
+      isA<ProviderElement>().having((e) => e.origin, 'origin', family2(0)),
     ]);
     expect(root.getAllProviderElements(), [
-      isA<ProviderElementBase<Object?>>()
-          .having((e) => e.origin, 'origin', family(0)),
+      isA<ProviderElement>().having((e) => e.origin, 'origin', family(0)),
     ]);
-  });
-
-  test('changing the override type at a given index throws', () {
-    final provider = Provider((ref) => 0);
-    final family = Provider.family<int, int>((ref, value) => 0);
-    final container = ProviderContainer.test(overrides: [family]);
-
-    expect(
-      () => container.updateOverrides([provider]),
-      throwsA(isA<AssertionError>()),
-    );
-  });
-
-  test("can't call onDispose inside onDispose", () {
-    final provider = Provider((ref) {
-      ref.onDispose(() {
-        ref.onDispose(() {});
-      });
-      return ref;
-    });
-    final container = ProviderContainer.test();
-
-    container.read(provider);
-
-    final errors = <Object>[];
-    runZonedGuarded(container.dispose, (err, _) => errors.add(err));
-
-    expect(errors, [isStateError]);
-  });
-
-  test("can't call read inside onDispose", () {
-    final provider2 = Provider((ref) => 0);
-    final provider = Provider((ref) {
-      ref.onDispose(() {
-        ref.read(provider2);
-      });
-      return ref;
-    });
-    final container = ProviderContainer.test();
-
-    container.read(provider);
-
-    final errors = <Object>[];
-    runZonedGuarded(container.dispose, (err, _) => errors.add(err));
-
-    expect(errors, [isStateError]);
-  });
-
-  test("can't call watch inside onDispose", () {
-    final provider2 = Provider((ref) => 0);
-    final provider = Provider((ref) {
-      ref.onDispose(() {
-        ref.watch(provider2);
-      });
-      return ref;
-    });
-    final container = ProviderContainer.test();
-
-    container.read(provider);
-
-    final errors = <Object>[];
-    runZonedGuarded(container.dispose, (err, _) => errors.add(err));
-
-    expect(errors, [isStateError]);
   });
 
   test('disposing an already disposed container is no-op', () {
@@ -139,27 +58,6 @@ void main() {
     expect(value21, 1);
   });
 
-  test(
-      "updating overrides / dispose don't compute provider states if not loaded yet",
-      () {
-    var callCount = 0;
-    final provider = Provider((_) => callCount++);
-
-    final container = ProviderContainer.test(
-      overrides: [provider],
-    );
-
-    expect(callCount, 0);
-
-    container.updateOverrides([provider]);
-
-    expect(callCount, 0);
-
-    container.dispose();
-
-    expect(callCount, 0);
-  });
-
   test('circular dependencies (sync)', () {
     late Provider<int> provider;
 
@@ -184,16 +82,46 @@ void main() {
     late Provider<int Function()> provider;
 
     final provider1 = Provider((ref) {
-      return ref.watch(provider)() + 1;
+      return () => ref.watch(provider)() + 1;
     });
     final provider2 = Provider((ref) {
-      return ref.watch(provider1) + 1;
+      return () => ref.watch(provider1)() + 1;
     });
     provider = Provider((ref) {
-      return () => ref.watch(provider2) + 1;
+      return () => ref.watch(provider2)() + 1;
     });
 
     final container = ProviderContainer.test();
+
+    container.read(provider);
+    container.read(provider1);
+    container.read(provider2);
+
+    expect(
+      () => container.read(provider)(),
+      throwsA(isA<CircularDependencyError>()),
+    );
+  });
+
+  test('circular dependencies when dependencies are already mounted', () {
+    late Provider<void Function()> provider;
+
+    final provider1 = Provider((ref) {
+      ref.watch(provider);
+    });
+    final provider2 = Provider((ref) {
+      ref.watch(provider1);
+    });
+    provider = Provider((ref) {
+      return () => ref.watch(provider2);
+    });
+
+    final container = ProviderContainer.test();
+
+    container.read(provider);
+    container.read(provider1);
+    container.read(provider2);
+
     expect(
       () => container.read(provider)(),
       throwsA(isA<CircularDependencyError>()),
@@ -252,23 +180,6 @@ void main() {
     verifyNoMoreInteractions(onDispose1);
     verifyNoMoreInteractions(onDispose2);
     verifyNoMoreInteractions(onDispose3);
-  });
-
-  test('Ref is unusable after dispose (read/onDispose)', () {
-    final container = ProviderContainer.test();
-    late ProviderElement<Object?> ref;
-    final provider = Provider((s) {
-      ref = s as ProviderElement;
-      return 42;
-    });
-    final other = Provider((_) => 42);
-
-    expect(container.read(provider), 42);
-    container.dispose();
-
-    expect(ref.mounted, isFalse);
-    expect(() => ref.onDispose(() {}), throwsStateError);
-    expect(() => ref.read(other), throwsStateError);
   });
 
   test('if a provider threw on creation, onDispose still works', () {

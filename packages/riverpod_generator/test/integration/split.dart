@@ -1,5 +1,4 @@
 // Regression test for https://github.com/rrousselGit/riverpod/issues/2175
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'split2.dart';

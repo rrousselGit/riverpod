@@ -17,12 +17,45 @@ import '../riverpod_annotation.dart';
 /// {@endtemplate}
 @Target({TargetKind.classType, TargetKind.function})
 @sealed
-class Riverpod {
+final class Riverpod {
   /// {@macro riverpod_annotation.provider}
   const Riverpod({
     this.keepAlive = false,
     this.dependencies,
+    this.retry,
+    this.persist,
+    this.destroyKey,
   });
+
+  /// Whether the state of the provider should be stored in a database.
+  ///
+  /// When using a separate annotation for enabling persistence, it is generally
+  /// not necessary to specify this field.
+  final bool? persist;
+
+  /// When [persist] is enabled, this key can be optionally specified to
+  /// clear the previously stored state.
+  ///
+  /// In short, whenever your application releases a new version and the
+  /// [destroyKey] changes, the associated state will be cleared.
+  /// But if the [destroyKey] is unchanged, the state will be preserved.
+  ///
+  /// This is useful when a new version of your application breaks the
+  /// compatibility with the previous state (such as when adding a new required field).
+  /// The alternative is to manually migrate your Database ; which is more
+  /// powerful but more complex.
+  ///
+  /// **Note**: This field is only relevant when [persist] is enabled.
+  final String? destroyKey;
+
+  /// The default retry logic used by providers associated to this container.
+  ///
+  /// The default implementation:
+  /// - has unlimited retries
+  /// - starts with a delay of 200ms
+  /// - doubles the delay on each retry up to 6.4 seconds
+  /// - retries all failures
+  final Duration? Function(int retryCount, Object error)? retry;
 
   /// Whether the state of the provider should be maintained if it is no-longer used.
   ///
@@ -45,11 +78,19 @@ class Riverpod {
   /// ```dart
   /// // By not specifying "dependencies", we are saying that this provider is never scoped
   /// @riverpod
-  /// Foo root(RootRef ref) => Foo();
+  /// Foo root(Ref ref) => Foo();
+  ///
   /// // By specifying "dependencies" (even if the list is empty),
   /// // we are saying that this provider is potentially scoped
   /// @Riverpod(dependencies: [])
-  /// Foo scoped(ScopedRef ref) => Foo();
+  /// Foo scoped(Ref ref) => Foo();
+  ///
+  /// // Alternatively, notifiers with an abstract build method are also considered scoped
+  /// @riverpod
+  /// class MyNotifier extends _$MyNotifier {
+  ///  @override
+  ///  int build();
+  /// }
   /// ```
   ///
   /// Then if we were to depend on `rootProvider` in a scoped provider, we
@@ -57,14 +98,14 @@ class Riverpod {
   ///
   /// ```dart
   /// @riverpod
-  /// Object? dependent(DependentRef ref) {
+  /// Object? dependent(Ref ref) {
   ///   ref.watch(rootProvider);
   ///   // This provider does not depend on any scoped provider,
   ///   // as such "dependencies" is optional
   /// }
   ///
   /// @Riverpod(dependencies: [])
-  /// Object? dependent(DependentRef ref) {
+  /// Object? dependent(Ref ref) {
   ///   ref.watch(rootProvider);
   ///   // This provider decided to specify "dependencies" anyway, marking
   ///   // "dependentProvider" as possibly scoped.
@@ -73,7 +114,7 @@ class Riverpod {
   /// }
   ///
   /// @Riverpod(dependencies: [root])
-  /// Object? dependent(DependentRef ref) {
+  /// Object? dependent(Ref ref) {
   ///   ref.watch(rootProvider);
   ///   // Including "rootProvider" in "dependencies" is fine too, even though
   ///   // it is not required. It is a no-op.
@@ -84,7 +125,7 @@ class Riverpod {
   ///
   /// ```dart
   /// @Riverpod(dependencies: [scoped])
-  /// Object? dependent(DependentRef ref) {
+  /// Object? dependent(Ref ref) {
   ///   ref.watch(scopedProvider);
   ///   // Since "scopedProvider" specifies "dependencies", any provider that
   ///   // depends on it must also specify "dependencies" and include "scopedProvider".
@@ -94,7 +135,19 @@ class Riverpod {
   /// In that scenario, the `dependencies` parameter is required and it must
   /// include `scopedProvider`.
   ///
+  /// **Note**:
+  /// It is not necessary to specify an empty "dependencies" on notifiers with
+  /// an abstract build method:
+  /// ```dart
+  /// @riverpod
+  /// class MyNotifier extends _$MyNotifier {
+  ///   @override
+  ///   int build(); // Valid, marks this notifier as scoped
+  /// }
+  /// ```
+  ///
   /// See also:
+  /// - [Dependencies], for specifying dependencies on non-providers.
   /// - [provider_dependencies](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint#provider_dependencies-riverpod_generator-only)
   ///   and [scoped_providers_should_specify_dependencies](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint#scoped_providers_should_specify_dependencies-generator-only).\
   ///   These are lint rules that will warn about incorrect `dependencies` usages.
@@ -166,3 +219,92 @@ class ProviderFor {
 ///
 /// {@endtemplate}
 typedef Raw<T> = T;
+
+/// An exception thrown when a scoped provider is accessed when not yet overridden.
+class MissingScopeException implements Exception {
+  /// An exception thrown when a scoped provider is accessed when not yet overridden.
+  MissingScopeException(this.ref);
+
+  /// The [Ref] that threw the exception
+  final Ref ref;
+
+  @override
+  String toString() {
+    final element = ref.$element;
+
+    return 'MissingScopeException: The provider ${element.origin} is scoped, '
+        'but was accessed in a place where it is not overridden. '
+        'Either you forgot to override the provider, or you tried to read it outside of where it is defined';
+  }
+}
+
+/// {@template riverpod_annotation.dependencies}
+/// An annotation to be specified on non-provider objects that use scoped providers.
+///
+/// This is equivalent to `@Riverpod(dependencies: [])`, but for non-provider objects.
+/// This is most commonly used on `Consumer`s, but can be used on anything,
+/// including functions.
+///
+/// The sole purpose of this annotation is to notify the linter
+/// that an object uses a scoped provider.
+/// It then enables the linter to warn in case this object is used in a place
+/// where the scoped provider is not overridden.
+///
+/// ## Usage example:
+///
+/// Consider the following scoped provider:
+/// ```dart
+/// @Riverpod(dependencies: [])
+/// String selectedBookID(Ref ref)  => throw UnimplementedError();
+/// ```
+///
+/// Since this provider is scoped, we should specify `@Dependencies` on any object
+/// that uses it.
+/// For instance, a `Consumer`:
+///
+/// ```dart
+/// @Dependencies([selectedBookID])
+/// class BookView extends ConsumerWidget {
+///   @override
+///   Widget build(BuildContext context, WidgetRef ref) {
+///     final selectedBookID = ref.watch(selectedBookIDProvider);
+///     return Text(selectedBookID);
+///   }
+/// }
+/// ```
+///
+/// By doing so, using `BooKView` now requires either:
+/// - overriding `selectedBookIDProvider` in a `ProviderScope` that is an ancestor
+///   of `BookView`:
+///   ```dart
+///   ProviderScope(
+///     overrides: [
+///       selectedBookIDProvider.overrideWithValue('myBookID'),
+///     ],
+///     child: BookView(),
+///   ),
+///   ```
+/// - or using `BookView` in a widget that also specifies `@Dependencies([selectedBookID])`:
+///   ```dart
+///   @Dependencies([selectedBookID])
+///   class MyWidget extends StatelessWidget {
+///     @override
+///     Widget build(BuildContext context) {
+///       return BookView();
+///     }
+///   }
+///   ```
+///
+/// Failing to do so will result in a linter warning.
+///
+/// **Note**: When using a `StatefulWidget` (or variant),
+/// there is no need to specify `@Dependencies` on the `State` class.
+/// Specifying it on the `StatefulWidget` is enough.
+/// {@endtemplate}
+class Dependencies {
+  /// {@macro riverpod_annotation.dependencies}
+  const Dependencies(this.dependencies);
+
+  /// {@macro riverpod_annotation.dependencies}
+  final List<Object> dependencies;
+}

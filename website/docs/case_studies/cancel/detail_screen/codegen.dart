@@ -49,7 +49,7 @@ class DetailPageView extends ConsumerWidget {
         child: ListView(
           children: [
             switch (activity) {
-              AsyncValue(:final valueOrNull?) => Text(valueOrNull.activity),
+              AsyncValue(:final value?) => Text(value.activity),
               AsyncValue(:final error?) => Text('Error: $error'),
               _ => const Center(child: CircularProgressIndicator()),
             },

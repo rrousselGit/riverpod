@@ -1,19 +1,21 @@
 part of '../framework.dart';
 
+/// A shared interface between [ProviderListenable] and [Family].
+abstract class ProviderListenableOrFamily {}
+
 /// A common interface shared by [ProviderBase] and [Family]
-@sealed
-abstract class ProviderOrFamily
-    implements ProviderListenableOrFamily, AnyProviderOrFamily {
+sealed class ProviderOrFamily implements ProviderListenableOrFamily {
   /// A common interface shared by [ProviderBase] and [Family]
   const ProviderOrFamily({
     required this.name,
     required this.dependencies,
     required this.allTransitiveDependencies,
     required this.isAutoDispose,
+    required this.retry,
   });
 
   /// The family that this provider/family depends on.
-  Family<Object?>? get from;
+  Family? get from;
 
   /// {@template riverpod.name}
   /// A custom label for providers.
@@ -21,6 +23,17 @@ abstract class ProviderOrFamily
   /// This is picked-up by devtools and [toString] to show better messages.
   /// {@endtemplate}
   final String? name;
+
+  /// {@template riverpod.retry}
+  /// The default retry logic used by providers associated to this container.
+  ///
+  /// The default implementation:
+  /// - has unlimited retries
+  /// - starts with a delay of 200ms
+  /// - doubles the delay on each retry up to 6.4 seconds
+  /// - retries all failures
+  /// {@endtemplate}
+  final Retry? retry;
 
   /// The list of providers that this provider potentially depends on.
   ///
@@ -101,11 +114,21 @@ abstract class ProviderOrFamily
   // This is voluntarily not implemented by default, to force all non-generated
   // providers to apply the LegacyProviderMixin.
   @internal
-  String? debugGetCreateSourceHash() => null;
+  String? debugGetCreateSourceHash();
 }
 
-/// A shared interface between [ProviderListenable] and [Family].
-abstract class ProviderListenableOrFamily {}
+extension on ProviderListenableOrFamily {
+  ProviderBase<Object?>? get debugListenedProvider {
+    final that = this;
+    return switch (that) {
+      ProviderBase() => that,
+      _ProviderSelector() => that.provider.debugListenedProvider,
+      _AsyncSelector() => that.provider.debugListenedProvider,
+      ProviderElementProxy() => that.provider,
+      _ => null,
+    };
+  }
+}
 
 /// Computes the list of all dependencies of a provider.
 @internal
@@ -141,14 +164,39 @@ Set<ProviderOrFamily>? computeAllTransitiveDependencies(
 ///    distinguish instances of the same class (hash collisions are
 ///    possible, but rare enough that its use in debug output is useful).
 ///  * [Object.runtimeType], the [Type] of an object.
+@internal
 String describeIdentity(Object? object) {
   return '${object.runtimeType}#${shortHash(object)}';
 }
 
 // Copied from Flutter
 /// [Object.hashCode]'s 20 least-significant bits.
+@internal
 String shortHash(Object? object) {
   return object.hashCode.toUnsigned(20).toRadixString(16).padLeft(5, '0');
+}
+
+@internal
+mixin ProviderListenableWithOrigin<OutT, OriginT> on ProviderListenable<OutT> {
+  @override
+  ProviderSubscriptionWithOrigin<OutT, OriginT> addListener(
+    Node source,
+    void Function(OutT? previous, OutT next) listener, {
+    required void Function(Object error, StackTrace stackTrace)? onError,
+    required void Function()? onDependencyMayHaveChanged,
+    required bool fireImmediately,
+    required bool weak,
+  });
+
+  @override
+  ProviderListenable<Selected> select<Selected>(
+    Selected Function(OutT value) selector,
+  ) {
+    return _ProviderSelector<OutT, Selected, OriginT>(
+      provider: this,
+      selector: selector,
+    );
+  }
 }
 
 /// A base class for all providers, used to consume a provider.
@@ -158,30 +206,17 @@ String shortHash(Object? object) {
 ///
 /// Should override ==/hashCode when possible
 @immutable
-mixin ProviderListenable<State>
-    implements ProviderListenableOrFamily, ProviderListenableOrScope<State> {
+mixin ProviderListenable<StateT> implements ProviderListenableOrFamily {
   /// Starts listening to this transformer
-  @Deprecated('Do not override')
-  ProviderSubscription<State> addListener(
-    Node node,
-    void Function(State? previous, State next) listener, {
+  ProviderSubscription<StateT> addListener(
+    Node source,
+    void Function(StateT? previous, StateT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
-  }) {
-    return _addListener(
-      node,
-      listener,
-      onError: onError,
-      onDependencyMayHaveChanged: onDependencyMayHaveChanged,
-      fireImmediately: fireImmediately,
-    );
-  }
+    required bool weak,
+  });
 
-  /// Obtains the result of this provider expression without adding listener.
-  State read(Node node);
-
-  /// {@template provider_listenable.select}
   /// Partially listen to a provider.
   ///
   /// The [select] function allows filtering unwanted rebuilds of a Widget
@@ -247,52 +282,7 @@ mixin ProviderListenable<State>
   ///
   /// This will further optimize our widget by rebuilding it only when "isAdult"
   /// changed instead of whenever the age changes.
-  /// {@endtemplate}
   ProviderListenable<Selected> select<Selected>(
-    Selected Function(State value) selector,
-  ) {
-    return _ProviderSelector<State, Selected>(
-      provider: this,
-      selector: selector,
-    );
-  }
-}
-
-/// A base class for all providers, used to consume a provider.
-///
-/// It is used by [ProviderContainer.listen] and [Ref.watch] to listen to
-/// both a provider and `provider.select`.
-///
-/// Do not implement or extend.
-@Deprecated('Will be removed in 3.0.0. Use ProviderListenable instead')
-mixin AlwaysAliveProviderListenable<State> on ProviderListenable<State> {
-  @override
-  AlwaysAliveProviderListenable<Selected> select<Selected>(
-    Selected Function(State value) selector,
-  ) {
-    return _AlwaysAliveProviderSelector<State, Selected>(
-      provider: this,
-      selector: selector,
-    );
-  }
-}
-
-/// A base class for providers that never dispose themselves.
-///
-/// This is the default base class for providers, unless a provider was marked
-/// with the `.autoDispose` modifier, like: `Provider.autoDispose(...)`
-@Deprecated('Will be removed in 3.0.0. Use ProviderBase instead')
-mixin AlwaysAliveProviderBase<State> on ProviderBase<State>
-    implements
-        AlwaysAliveProviderListenable<State>,
-        AlwaysAliveRefreshable<State> {
-  @override
-  AlwaysAliveProviderListenable<Selected> select<Selected>(
-    Selected Function(State value) selector,
-  ) {
-    return _AlwaysAliveProviderSelector<State, Selected>(
-      provider: this,
-      selector: selector,
-    );
-  }
+    Selected Function(StateT value) selector,
+  );
 }

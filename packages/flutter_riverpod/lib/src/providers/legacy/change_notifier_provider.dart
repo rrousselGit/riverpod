@@ -1,7 +1,6 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 import 'package:flutter/foundation.dart';
-import 'package:flutter/widgets.dart';
 import 'package:meta/meta.dart';
 // ignore: implementation_imports
 import 'package:riverpod/src/internals.dart';
@@ -10,7 +9,7 @@ import '../../builders.dart';
 
 ProviderElementProxy<NotifierT, NotifierT>
     _notifier<NotifierT extends ChangeNotifier?>(
-  _ChangeNotifierProviderBase<NotifierT> that,
+  ChangeNotifierProvider<NotifierT> that,
 ) {
   return ProviderElementProxy<NotifierT, NotifierT>(
     that,
@@ -21,60 +20,6 @@ ProviderElementProxy<NotifierT, NotifierT>
   );
 }
 
-// ignore: subtype_of_sealed_class
-/// Creates a [ChangeNotifier] and subscribes to it.
-///
-/// Note: By using Riverpod, [ChangeNotifier] will no longer be O(N^2) for
-/// dispatching notifications, but instead O(N)
-abstract class _ChangeNotifierProviderBase<NotifierT extends ChangeNotifier?>
-    extends ProviderBase<NotifierT> {
-  const _ChangeNotifierProviderBase({
-    required super.name,
-    required super.from,
-    required super.argument,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.isAutoDispose,
-    required DebugGetCreateSourceHash? debugGetCreateSourceHash,
-  }) : _debugGetCreateSourceHash = debugGetCreateSourceHash;
-
-  /// Obtains the [ChangeNotifier] associated with this provider, without listening
-  /// to state changes.
-  ///
-  /// This is typically used to invoke methods on a [ChangeNotifier]. For example:
-  ///
-  /// ```dart
-  /// Button(
-  ///   onTap: () => ref.read(changeNotifierProvider.notifier).increment(),
-  /// )
-  /// ```
-  ///
-  /// This listenable will notify its notifiers if the [ChangeNotifier] instance
-  /// changes.
-  /// This may happen if the provider is refreshed or one of its dependencies
-  /// has changes.
-  ProviderListenable<NotifierT> get notifier;
-
-  NotifierT _create(covariant ChangeNotifierProviderElement<NotifierT> ref);
-
-  final DebugGetCreateSourceHash? _debugGetCreateSourceHash;
-  @override
-  String? debugGetCreateSourceHash() => _debugGetCreateSourceHash?.call();
-}
-
-/// {@macro riverpod.provider_ref_base}
-@Deprecated('will be removed in 3.0.0. Use Ref instead')
-abstract class ChangeNotifierProviderRef<NotifierT extends ChangeNotifier?>
-    implements Ref<NotifierT> {
-  /// The [ChangeNotifier] currently exposed by this provider.
-  ///
-  /// Cannot be accessed while creating the provider.
-  @Deprecated('will be removed in 3.0.0.')
-  NotifierT get notifier;
-}
-
-// ignore: subtype_of_sealed_class
-/// {@template riverpod.change_notifier_provider}
 /// Creates a [ChangeNotifier] and exposes its current state.
 ///
 /// Combined with [ChangeNotifier], [ChangeNotifierProvider] can be used to manipulate
@@ -133,37 +78,34 @@ abstract class ChangeNotifierProviderRef<NotifierT extends ChangeNotifier?>
 ///   );
 /// }
 /// ```
-/// {@endtemplate}
-class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
-    extends _ChangeNotifierProviderBase<NotifierT>
-    with
-        // ignore: deprecated_member_use
-        AlwaysAliveProviderBase<NotifierT> {
+final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
+    extends $FunctionalProvider<NotifierT, NotifierT>
+    with LegacyProviderMixin<NotifierT> {
   /// {@macro riverpod.change_notifier_provider}
   ChangeNotifierProvider(
     this._createFn, {
     super.name,
     super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
+    super.isAutoDispose = false,
+    super.retry,
   }) : super(
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
-          isAutoDispose: false,
+          from: null,
+          argument: null,
         );
 
   /// An implementation detail of Riverpod
   @internal
-  ChangeNotifierProvider.internal(
+  const ChangeNotifierProvider.internal(
     this._createFn, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
+    required super.isAutoDispose,
     super.from,
     super.argument,
-    super.isAutoDispose = false,
+    super.retry,
   });
 
   /// {@macro riverpod.autoDispose}
@@ -172,116 +114,80 @@ class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   /// {@macro riverpod.family}
   static const family = ChangeNotifierProviderFamilyBuilder();
 
-  final NotifierT Function(
-    // ignore: deprecated_member_use, deprecated_member_use_from_same_package
-    ChangeNotifierProviderRef<NotifierT> ref,
-  ) _createFn;
-
-  @override
-  NotifierT _create(ChangeNotifierProviderElement<NotifierT> ref) {
-    return _createFn(ref);
-  }
-
-  @override
-  ChangeNotifierProviderElement<NotifierT> createElement() {
-    return ChangeNotifierProviderElement<NotifierT>._(this);
-  }
-
-  @override
-  // ignore: deprecated_member_use, deprecated_member_use_from_same_package
-  late final AlwaysAliveRefreshable<NotifierT> notifier =
-      _notifier<NotifierT>(this);
-
-  /// {@template riverpod.override_with}
-  /// Override the provider with a new initialization function.
+  /// Obtains the [ChangeNotifier] associated with this provider, without listening
+  /// to state changes.
   ///
-  /// This will also disable the auto-scoping mechanism, meaning that if the
-  /// overridden provider specified `dependencies`, it will have no effect.
-  ///
-  /// The override must not specify a `dependencies`.
-  ///
-  /// Some common use-cases are:
-  /// - testing, by replacing a service with a fake implementation, or to reach
-  ///   a very specific state easily.
-  /// - multiple environments, by changing the implementation of a class
-  ///   based on the platform or other parameters.
-  ///
-  /// This function should be used in combination with `ProviderScope.overrides`
-  /// or `ProviderContainer.overrides`:
+  /// This is typically used to invoke methods on a [ChangeNotifier]. For example:
   ///
   /// ```dart
-  /// final myService = Provider((ref) => MyService());
-  ///
-  /// runApp(
-  ///   ProviderScope(
-  ///     overrides: [
-  ///       // Replace the implementation of the provider with a different one
-  ///       myService.overrideWithProvider((ref) {
-  ///         ref.watch('other');
-  ///         return MyFakeService(),
-  ///       })),
-  ///     ],
-  ///     child: MyApp(),
-  ///   ),
-  /// );
+  /// Button(
+  ///   onTap: () => ref.read(changeNotifierProvider.notifier).increment(),
+  /// )
   /// ```
-  /// {@endtemplate}
-  Override overrideWith(
-    // ignore: deprecated_member_use, deprecated_member_use_from_same_package
-    Create<NotifierT, ChangeNotifierProviderRef<NotifierT>> create,
+  ///
+  /// This listenable will notify its notifiers if the [ChangeNotifier] instance
+  /// changes.
+  /// This may happen if the provider is refreshed or one of its dependencies
+  /// has changes.
+  Refreshable<NotifierT> get notifier => _notifier<NotifierT>(this);
+
+  final NotifierT Function(Ref ref) _createFn;
+
+  @internal
+  @override
+  ChangeNotifierProviderElement<NotifierT> $createElement(
+    $ProviderPointer pointer,
   ) {
-    return ProviderOverride(
-      origin: this,
-      override: ChangeNotifierProvider<NotifierT>.internal(
-        create,
-        from: from,
-        argument: argument,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-      ),
+    return ChangeNotifierProviderElement<NotifierT>._(this, pointer);
+  }
+
+  @mustBeOverridden
+  @visibleForOverriding
+  @override
+  ChangeNotifierProvider<NotifierT> $copyWithCreate(
+    Create<NotifierT> create,
+  ) {
+    return ChangeNotifierProvider<NotifierT>.internal(
+      create,
+      name: name,
+      dependencies: dependencies,
+      isAutoDispose: isAutoDispose,
+      from: from,
+      argument: argument,
+      allTransitiveDependencies: allTransitiveDependencies,
     );
   }
 }
 
 /// The element of [ChangeNotifierProvider].
-@internal
 class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
-    extends ProviderElementBase<NotifierT>
-    // ignore: deprecated_member_use, deprecated_member_use_from_same_package
-    implements
-        // ignore: deprecated_member_use, deprecated_member_use_from_same_package
-        ChangeNotifierProviderRef<NotifierT>,
-        // ignore: deprecated_member_use, deprecated_member_use_from_same_package
-        AutoDisposeChangeNotifierProviderRef<NotifierT> {
-  ChangeNotifierProviderElement._(
-    _ChangeNotifierProviderBase<NotifierT> super._provider,
-  );
+    extends ProviderElement<NotifierT> {
+  ChangeNotifierProviderElement._(this.provider, super.pointer);
 
   @override
-  NotifierT get notifier => _notifierNotifier.value;
+  final ChangeNotifierProvider<NotifierT> provider;
+
   final _notifierNotifier = $ElementLense<NotifierT>();
 
   void Function()? _removeListener;
 
   @override
-  void create({required bool didChangeDependency}) {
-    final provider = this.provider as _ChangeNotifierProviderBase<NotifierT>;
+  WhenComplete create(Ref ref) {
+    final notifierResult = _notifierNotifier.result = $Result.guard(
+      () => provider._createFn(ref),
+    );
 
-    final notifierResult =
-        _notifierNotifier.result = $Result.guard(() => provider._create(this));
-
-    // TODO test requireState, as ref.read(p) is expected to throw if notifier creation failed
     final notifier = notifierResult.requireState;
 
-    setState(notifier);
+    setStateResult($ResultData(notifier));
 
     if (notifier != null) {
-      void listener() => setState(notifier);
+      void listener() => setStateResult($ResultData(notifier));
       notifier.addListener(listener);
       _removeListener = () => notifier.removeListener(listener);
     }
+
+    return null;
   }
 
   @override
@@ -296,7 +202,6 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
 
     final notifier = _notifierNotifier.result?.value;
     if (notifier != null) {
-      // TODO test ChangeNotifier.dispose is guarded
       runGuarded(notifier.dispose);
     }
     _notifierNotifier.result = null;
@@ -304,187 +209,49 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
 
   @override
   void visitListenables(
-    void Function($ElementLense<Object?> element) listenableVisitor,
+    void Function($ElementLense element) listenableVisitor,
   ) {
     super.visitListenables(listenableVisitor);
     listenableVisitor(_notifierNotifier);
   }
 }
 
-// ignore: subtype_of_sealed_class
 /// The [Family] of [ChangeNotifierProvider].
 class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
-    // ignore: deprecated_member_use, deprecated_member_use_from_same_package
-    extends FamilyBase<ChangeNotifierProviderRef<NotifierT>, NotifierT, Arg,
-        NotifierT, ChangeNotifierProvider<NotifierT>> {
+    extends FunctionalFamily<NotifierT, Arg, NotifierT,
+        ChangeNotifierProvider<NotifierT>> {
   /// The [Family] of [ChangeNotifierProvider].
   ChangeNotifierProviderFamily(
     super._createFn, {
     super.name,
     super.dependencies,
+    super.isAutoDispose = false,
+    super.retry,
   }) : super(
           providerFactory: ChangeNotifierProvider.internal,
-          debugGetCreateSourceHash: null,
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
-          isAutoDispose: false,
         );
 
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-    // ignore: deprecated_member_use, deprecated_member_use_from_same_package
-    NotifierT Function(ChangeNotifierProviderRef<NotifierT> ref, Arg arg)
-        create,
-  ) {
-    return FamilyOverrideImpl<NotifierT, Arg,
-        ChangeNotifierProvider<NotifierT>>(
-      this,
-      (arg) => ChangeNotifierProvider<NotifierT>.internal(
-        (ref) => create(ref, arg),
-        from: from,
-        argument: arg,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-      ),
-    );
-  }
-}
-
-/// {@macro riverpod.provider_ref_base}
-@Deprecated('will be removed in 3.0.0, use Ref instead')
-abstract class AutoDisposeChangeNotifierProviderRef<
-        NotifierT extends ChangeNotifier?>
-    extends ChangeNotifierProviderRef<NotifierT>
-    implements AutoDisposeRef<NotifierT> {}
-
-// ignore: subtype_of_sealed_class
-/// {@macro riverpod.change_notifier_provider}
-class AutoDisposeChangeNotifierProvider<NotifierT extends ChangeNotifier?>
-    extends _ChangeNotifierProviderBase<NotifierT> {
-  /// {@macro riverpod.change_notifier_provider}
-  AutoDisposeChangeNotifierProvider(
-    this._createFn, {
-    super.name,
-    super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
-  }) : super(
-          allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-          isAutoDispose: true,
-        );
-
-  /// An implementation detail of Riverpod
-  @internal
-  AutoDisposeChangeNotifierProvider.internal(
-    this._createFn, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    super.from,
-    super.argument,
-    super.isAutoDispose = true,
-  });
-
-  /// {@macro riverpod.family}
-  static const family = AutoDisposeChangeNotifierProviderFamily.new;
-
-  final NotifierT Function(
-    // ignore: deprecated_member_use_from_same_package
-    AutoDisposeChangeNotifierProviderRef<NotifierT> ref,
-  ) _createFn;
-
   @override
-  NotifierT _create(
-    // ignore: deprecated_member_use_from_same_package
-    AutoDisposeChangeNotifierProviderElement<NotifierT> ref,
-  ) {
-    return _createFn(ref);
-  }
-
-  @override
-  // ignore: deprecated_member_use_from_same_package
-  AutoDisposeChangeNotifierProviderElement<NotifierT> createElement() {
-    // ignore: deprecated_member_use_from_same_package
-    return AutoDisposeChangeNotifierProviderElement<NotifierT>._(this);
-  }
-
-  @override
-  late final Refreshable<NotifierT> notifier = _notifier<NotifierT>(this);
-
-  /// {@macro riverpod.override_with}
   Override overrideWith(
-    // ignore: deprecated_member_use_from_same_package
-    Create<NotifierT, AutoDisposeChangeNotifierProviderRef<NotifierT>> create,
+    NotifierT Function(Ref ref, Arg arg) create,
   ) {
-    return ProviderOverride(
-      origin: this,
-      override: AutoDisposeChangeNotifierProvider<NotifierT>.internal(
-        create,
-        from: from,
-        argument: argument,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-      ),
-    );
-  }
-}
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as ChangeNotifierProvider<NotifierT>;
 
-/// The element of [AutoDisposeChangeNotifierProvider].
-@internal
-typedef AutoDisposeChangeNotifierProviderElement<
-        NotifierT extends ChangeNotifier?>
-    = ChangeNotifierProviderElement<NotifierT>;
-
-// ignore: subtype_of_sealed_class
-/// The [Family] of [AutoDisposeChangeNotifierProvider].
-class AutoDisposeChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
-    extends FamilyBase<
-        // ignore: deprecated_member_use_from_same_package
-        AutoDisposeChangeNotifierProviderRef<NotifierT>,
-        NotifierT,
-        Arg,
-        NotifierT,
-        AutoDisposeChangeNotifierProvider<NotifierT>> {
-  /// The [Family] of [AutoDisposeChangeNotifierProvider].
-  AutoDisposeChangeNotifierProviderFamily(
-    super._createFn, {
-    super.name,
-    super.dependencies,
-  }) : super(
-          providerFactory: AutoDisposeChangeNotifierProvider.internal,
-          debugGetCreateSourceHash: null,
-          allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-          isAutoDispose: true,
-        );
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-    NotifierT Function(
-      // ignore: deprecated_member_use_from_same_package
-      AutoDisposeChangeNotifierProviderRef<NotifierT> ref,
-      Arg arg,
-    ) create,
-  ) {
-    return FamilyOverrideImpl<NotifierT, Arg,
-        AutoDisposeChangeNotifierProvider<NotifierT>>(
-      this,
-      (arg) => AutoDisposeChangeNotifierProvider<NotifierT>.internal(
-        (ref) => create(ref, arg),
-        from: from,
-        argument: arg,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-      ),
+        return ChangeNotifierProvider<NotifierT>.internal(
+          (ref) => create(ref, provider.argument as Arg),
+          from: provider.from,
+          argument: provider.argument,
+          isAutoDispose: provider.isAutoDispose,
+          dependencies: null,
+          allTransitiveDependencies: null,
+          name: null,
+        ).$createElement(pointer);
+      },
     );
   }
 }

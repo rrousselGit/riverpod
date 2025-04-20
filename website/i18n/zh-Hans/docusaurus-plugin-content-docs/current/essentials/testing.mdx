@@ -3,7 +3,6 @@ title: 测试你的提供者程序
 ---
 
 import { AutoSnippet, When } from "@site/src/components/CodeSnippet";
-import createContainer from "!!raw-loader!/docs/essentials/testing/create_container.dart";
 import unitTest from "!!raw-loader!/docs/essentials/testing/unit_test.dart";
 import widgetTest from "!!raw-loader!/docs/essentials/testing/widget_test.dart";
 import fullWidgetTest from "!!raw-loader!/docs/essentials/testing/full_widget_test.dart";
@@ -80,14 +79,6 @@ with providers.
 -->
 与任何其他测试的主要区别在于，我们想要创建一个 `ProviderContainer` 对象。
 此对象将使我们的测试能够与提供者程序进行交互。
-
-<!---
-It encouraged to make a testing utility for both creating and disposing
-of a `ProviderContainer` object:
--->
-建议创建一个测试实用程序来创建和处置对象 `ProviderContainer`：
-
-<AutoSnippet raw={createContainer} />
 
 <!---
 Then, we can define a `test` using this utility:

@@ -1,5 +1,33 @@
 part of '../framework.dart';
 
+@internal
+extension $RefArg on Ref {
+  // Implementation detail, do not use
+  Object? get $arg => _element.origin.argument;
+
+  // Implementation detail, do not use
+  ProviderElement get $element => _element;
+}
+
+@internal
+class UnmountedRefException implements Exception {
+  UnmountedRefException(this.origin);
+
+  final ProviderBase<Object?> origin;
+
+  @override
+  String toString() {
+    return '''
+Cannot use the Ref of $origin after it has been disposed. This typically happens if:
+- A provider rebuilt, but the previous "build" was still pending and is still performing operations.
+  You should therefore either use `ref.onDispose` to cancel pending work, or
+  check `ref.mounted` after async gaps or anything that could invalidate the provider.
+- You tried to use Ref inside `onDispose` or other life-cycles.
+  This is not supported, as the provider is already being disposed.
+''';
+  }
+}
+
 /// {@template riverpod.provider_ref_base}
 /// An object used by providers to interact with other providers and the life-cycles
 /// of the application.
@@ -9,16 +37,122 @@ part of '../framework.dart';
 /// - [read] and [watch], two methods that allow a provider to consume other providers.
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
 /// {@endtemplate}
-///
-/// Do not extend or implement this class.
 @optionalTypeArgs
-abstract class Ref<State extends Object?> {
-  /// Internal, do not use.
-  @internal
-  Ref();
+sealed class Ref {
+  Ref._({
+    required this.isFirstBuild,
+    required this.isReload,
+  });
+
+  ProviderElement<Object?> get _element;
+  List<KeepAliveLink>? _keepAliveLinks;
+  List<void Function()>? _onDisposeListeners;
+  List<void Function()>? _onResumeListeners;
+  List<void Function()>? _onCancelListeners;
+  List<void Function()>? _onAddListeners;
+  List<void Function()>? _onRemoveListeners;
+
+  final bool isFirstBuild;
+  bool get isRefresh => !isFirstBuild && !isReload;
+  final bool isReload;
+
+  bool get mounted => _mounted;
+  var _mounted = true;
 
   /// The [ProviderContainer] that this provider is associated with.
-  ProviderContainer get container;
+  ProviderContainer get container => _element.container;
+
+  void _debugAssertCanDependOn(ProviderListenableOrFamily listenable) {
+    final dependency = switch (listenable) {
+      ProviderOrFamily() => listenable,
+      _ => listenable.debugListenedProvider,
+    };
+
+    if (dependency == null) return;
+
+    final origin = _element.origin;
+    final provider = _element.provider;
+
+    assert(
+      dependency != origin,
+      'A provider cannot depend on itself',
+    );
+
+    final dependencies = origin.from?.dependencies ?? origin.dependencies ?? [];
+    final targetDependencies =
+        dependency.from?.dependencies ?? dependency.dependencies;
+
+    if (
+        // If the target has a null "dependencies", it should never be scoped.
+        !(targetDependencies == null ||
+            // Ignore dependency check if from an override
+            provider != origin ||
+            // Families are allowed to depend on themselves with different parameters.
+            (origin.from != null && dependency.from == origin.from) ||
+            dependencies.contains(dependency.from) ||
+            dependencies.contains(dependency))) {
+      throw StateError('''
+The provider `$origin` depends on `$dependency`, which may be scoped.
+Yet `$dependency` is not part of `$origin`'s `dependencies` list.
+
+To fix, add $dependency to $origin's 'dependencies' parameter.
+This can be done with either:
+
+@Riverpod(dependencies: [<dependency>])
+<your provider>
+
+or:
+
+final <yourProvider> = Provider(dependencies: [<dependency>]);
+''');
+    }
+
+    final queue = Queue<ProviderElement>();
+    _element.visitChildren(queue.add);
+
+    while (queue.isNotEmpty) {
+      final current = queue.removeFirst();
+      current.visitChildren(queue.add);
+
+      if (current.origin == dependency) {
+        throw CircularDependencyError._();
+      }
+    }
+  }
+
+  void _throwIfInvalidUsage() {
+    assert(
+      !_debugIsRunningSelector,
+      'Cannot call ref.<methods> inside a selector',
+    );
+    if (!mounted) {
+      throw UnmountedRefException(_element.origin);
+    }
+  }
+
+  /// Requests for the state of a provider to not be disposed when all the
+  /// listeners of the provider are removed.
+  ///
+  /// Returns an object which allows cancelling this operation, therefore
+  /// allowing the provider to dispose itself when all listeners are removed.
+  ///
+  /// If [keepAlive] is invoked multiple times, all [KeepAliveLink] will have
+  /// to be closed for the provider to dispose itself when all listeners are removed.
+  KeepAliveLink keepAlive() {
+    _throwIfInvalidUsage();
+
+    final links = _keepAliveLinks ??= [];
+
+    late KeepAliveLink link;
+    link = KeepAliveLink._(() {
+      if (links.remove(link)) {
+        if (links.isEmpty) _element.mayNeedDispose();
+      }
+    });
+    links.add(link);
+
+    return link;
+  }
 
   /// {@template riverpod.refresh}
   /// Forces a provider to re-evaluate its state immediately, and return the created value.
@@ -47,7 +181,13 @@ abstract class Ref<State extends Object?> {
   /// to restart a specific provider.
   /// {@endtemplate}
   @useResult
-  T refresh<T>(Refreshable<T> provider);
+  T refresh<T>(Refreshable<T> refreshable) {
+    _throwIfInvalidUsage();
+
+    if (kDebugMode) _debugAssertCanDependOn(refreshable);
+
+    return container.refresh(refreshable);
+  }
 
   /// {@template riverpod.invalidate}
   /// Invalidates the state of the provider, destroying the state immediately
@@ -59,13 +199,34 @@ abstract class Ref<State extends Object?> {
   /// But if a provider is not listened to, the rebuild may be delayed until
   /// the provider is listened to again.
   ///
-  /// Calling [invalidate] multiple times will cause a single recomputation of
-  /// the state.
+  /// Calling [invalidate] multiple times will refresh the provider only
+  /// once.
+  /// Calling [invalidate] will cause the provider to be disposed immediately.
   ///
-  /// If used on a provider which is not initialized or disposed,
-  /// this method will have no effect.
+  /// - [asReload] (false by default) can be optionally passed to tell
+  ///   Riverpod to clear the state before refreshing it.
+  ///   This is only useful for asynchronous providers, as by default,
+  ///   [AsyncValue] keeps a reference on state during loading states.
+  ///   Using [asReload] will disable this behavior and count as a
+  ///   "hard refresh".
+  ///
+  /// If used on a provider which is not initialized or disposed, this method will have no effect.
   /// {@endtemplate}
-  void invalidate(AnyProviderOrFamily provider);
+  void invalidate(ProviderOrFamily providerOrFamily, {bool asReload = false}) {
+    _throwIfInvalidUsage();
+    if (kDebugMode) _debugAssertCanDependOn(providerOrFamily);
+
+    container.invalidate(providerOrFamily, asReload: asReload);
+  }
+
+  /// Invokes [invalidate] on itself.
+  ///
+  /// {@macro riverpod.invalidate}
+  void invalidateSelf({bool asReload = false}) {
+    _throwIfInvalidUsage();
+
+    _element.invalidateSelf(asReload: asReload);
+  }
 
   /// Notify dependents that this provider has changed.
   ///
@@ -82,48 +243,52 @@ abstract class Ref<State extends Object?> {
   ///   }
   /// }
   /// ```
-  void notifyListeners();
+  void notifyListeners() {
+    _throwIfInvalidUsage();
 
-  /// {@macro riverpod.listen_self}
-  void Function() listenSelf(
-    void Function(State? previous, State next) listener, {
-    void Function(Object error, StackTrace stackTrace)? onError,
-  });
+    final currentResult = _element.stateResult;
+    // If `notifyListeners` is used during `build`, the result will be null.
+    // Throwing would be unnecessarily inconvenient, so we simply skip it.
+    if (currentResult == null) return;
 
-  /// Invalidates the state of the provider, causing it to refresh.
-  ///
-  /// The refresh is not immediate and is instead delayed to the next read
-  /// or next frame.
-  ///
-  /// Calling [invalidateSelf] multiple times will refresh the provider only
-  /// once.
-  ///
-  /// Calling [invalidateSelf] will cause the provider to be disposed immediately.
-  void invalidateSelf();
+    if (_element._didBuild) {
+      _element._notifyListeners(
+        currentResult,
+        currentResult,
+        checkUpdateShouldNotify: false,
+      );
+    }
+  }
 
   /// A life-cycle for whenever a new listener is added to the provider.
   ///
+  /// Returns a function which can be called to remove the listener.
+  ///
   /// See also:
   /// - [onRemoveListener], for when a listener is removed
-  void onAddListener(void Function() cb);
+  RemoveListener onAddListener(void Function() cb) {
+    _throwIfInvalidUsage();
+
+    final list = _onAddListeners ??= [];
+    list.add(cb);
+
+    return () => list.remove(cb);
+  }
 
   /// A life-cycle for whenever a listener is removed from the provider.
   ///
-  /// See also:
-  /// - [onAddListener], for when a listener is added
-  void onRemoveListener(void Function() cb);
-
-  /// A life-cycle for when a provider is listened again after it was paused
-  /// (and [onCancel] was triggered).
+  /// Returns a function which can be called to remove the listener.
   ///
   /// See also:
-  /// - [keepAlive], which can be combined with [onCancel] for
-  ///   advanced manipulation on when the provider should get disposed.
-  /// - [Provider.autoDispose], a modifier which tell a provider that it should
-  ///   destroy its state when no longer listened to.
-  /// - [onDispose], a life-cycle for when a provider is disposed.
-  /// - [onCancel], a life-cycle for when all listeners of a provider are removed.
-  void onResume(void Function() cb);
+  /// - [onAddListener], for when a listener is added
+  RemoveListener onRemoveListener(void Function() cb) {
+    _throwIfInvalidUsage();
+
+    final list = _onRemoveListeners ??= [];
+    list.add(cb);
+
+    return () => list.remove(cb);
+  }
 
   /// Add a listener to perform an operation when the last listener of the provider
   /// is removed.
@@ -135,6 +300,8 @@ abstract class Ref<State extends Object?> {
   /// _will_ get paused/dispose. It is possible that after the last listener
   /// is removed, a new listener is immediately added.
   ///
+  /// Returns a function which can be called to remove the listener.
+  ///
   /// See also:
   /// - [keepAlive], which can be combined with [onCancel] for
   ///   advanced manipulation on when the provider should get disposed.
@@ -142,7 +309,35 @@ abstract class Ref<State extends Object?> {
   ///   destroy its state when no longer listened to.
   /// - [onDispose], a life-cycle for when a provider is disposed.
   /// - [onResume], a life-cycle for when the provider is listened to again.
-  void onCancel(void Function() cb);
+  RemoveListener onCancel(void Function() cb) {
+    _throwIfInvalidUsage();
+
+    final list = _onCancelListeners ??= [];
+    list.add(cb);
+
+    return () => list.remove(cb);
+  }
+
+  /// A life-cycle for when a provider is listened again after it was paused
+  /// (and [onCancel] was triggered).
+  ///
+  /// Returns a function which can be called to remove the listener.
+  ///
+  /// See also:
+  /// - [keepAlive], which can be combined with [onCancel] for
+  ///   advanced manipulation on when the provider should get disposed.
+  /// - [Provider.autoDispose], a modifier which tell a provider that it should
+  ///   destroy its state when no longer listened to.
+  /// - [onDispose], a life-cycle for when a provider is disposed.
+  /// - [onCancel], a life-cycle for when all listeners of a provider are removed.
+  RemoveListener onResume(void Function() cb) {
+    _throwIfInvalidUsage();
+
+    final list = _onResumeListeners ??= [];
+    list.add(cb);
+
+    return () => list.remove(cb);
+  }
 
   /// Adds a listener to perform an operation right before the provider is destroyed.
   ///
@@ -183,6 +378,8 @@ abstract class Ref<State extends Object?> {
   ///   if an exception happens before [onDispose] is called, then
   ///   some of your objects may not be disposed.
   ///
+  /// Returns a function which can be called to remove the listener.
+  ///
   /// See also:
   ///
   /// - [Provider.autoDispose], a modifier which tell a provider that it should
@@ -190,7 +387,14 @@ abstract class Ref<State extends Object?> {
   /// - [ProviderContainer.dispose], to destroy all providers associated with
   ///   a [ProviderContainer] at once.
   /// - [onCancel], a life-cycle for when all listeners of a provider are removed.
-  void onDispose(void Function() cb);
+  RemoveListener onDispose(void Function() listener) {
+    _throwIfInvalidUsage();
+
+    final list = _onDisposeListeners ??= [];
+    list.add(listener);
+
+    return () => list.remove(listener);
+  }
 
   /// Read the state associated with a provider, without listening to that provider.
   ///
@@ -226,7 +430,15 @@ abstract class Ref<State extends Object?> {
   ///
   /// If possible, avoid using [read] and prefer [watch], which is generally
   /// safer to use.
-  T read<T>(ProviderListenable<T> provider);
+  T read<T>(ProviderListenable<T> listenable) {
+    _throwIfInvalidUsage();
+
+    final result = container.read(listenable);
+
+    if (kDebugMode) _debugAssertCanDependOn(listenable);
+
+    return result;
+  }
 
   /// {@template riverpod.exists}
   /// Determines whether a provider is initialized or not.
@@ -261,7 +473,15 @@ abstract class Ref<State extends Object?> {
   /// });
   /// ```
   /// {@endtemplate}
-  bool exists(AnyProvider<Object?> provider);
+  bool exists(ProviderBase<Object?> provider) {
+    _throwIfInvalidUsage();
+
+    final result = container.exists(provider);
+
+    if (kDebugMode) _debugAssertCanDependOn(provider);
+
+    return result;
+  }
 
   /// Obtains the state of a provider and causes the state to be re-evaluated
   /// when that provider emits a new value.
@@ -313,26 +533,30 @@ abstract class Ref<State extends Object?> {
   /// - if multiple widgets depends on `sortedTodosProvider` the list will be
   ///   sorted only once.
   /// - if nothing is listening to `sortedTodosProvider`, then no sort is performed.
-  T watch<T>(ProviderListenable<T> provider);
+  ///
+  ///
+  /// **Note**:
+  /// This can be considered as the combination of [listen] and [invalidateSelf] :
+  /// ```dart
+  /// T watch<T>(ProviderListenable<T> provider) {
+  ///    final sub = listen(provider, (previous, next) {
+  ///      invalidateSelf(asReload: true);
+  ///    });
+  ///    return sub.read();
+  /// }
+  /// ```
+  T watch<T>(ProviderListenable<T> listenable) {
+    _throwIfInvalidUsage();
+    late ProviderSubscription<T> sub;
+    sub = _element.listen<T>(
+      listenable,
+      (prev, value) => invalidateSelf(asReload: true),
+      onError: (err, stack) => invalidateSelf(asReload: true),
+      onDependencyMayHaveChanged: _element._markDependencyMayHaveChanged,
+    );
 
-  /// Requests for the state of a provider to not be disposed when all the
-  /// listeners of the provider are removed.
-  ///
-  /// Returns an object which allows cancelling this operation, therefore
-  /// allowing the provider to dispose itself when all listeners are removed.
-  ///
-  /// If [keepAlive] is invoked multiple times, all [KeepAliveLink] will have
-  /// to be closed for the provider to dispose itself when all listeners are removed.
-  ///
-  /// **Note**:
-  /// This is only useful if your provider is using "auto dispose".
-  /// If your provider is not using "auto dispose", then this method has no effect.
-  ///
-  /// **Note**:
-  /// A provider that is kept alive may still be paused.
-  /// If a provider is not listened, regardless of whether it is kept alive or not,
-  /// the provider won't rebuild when using [watch] until it is listened to again.
-  KeepAliveLink keepAlive();
+    return sub.read();
+  }
 
   /// {@template riverpod.listen}
   /// Listen to a provider and call [listener] whenever its value changes.
@@ -352,37 +576,94 @@ abstract class Ref<State extends Object?> {
   /// and emit a valid value out of it. As such, if a
   /// [FutureProvider]/[StreamProvider] fail, [onError] will not be called.
   /// Instead the listener will receive an [AsyncError].
+  ///
+  /// - [weak] (false by default) can be optionally passed to have the listener
+  ///   not cause the provider to be initialized and kept alive.
+  ///   This enables listening to changes on a provider, without causing it to
+  ///   perform any work if it currently isn't used.
   /// {@endtemplate}
   ProviderSubscription<T> listen<T>(
     ProviderListenable<T> provider,
     void Function(T? previous, T next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
-    bool fireImmediately,
-  });
+    bool weak = false,
+    bool fireImmediately = false,
+  }) {
+    return _element.listen(
+      provider,
+      listener,
+      weak: weak,
+      onError: onError,
+      fireImmediately: fireImmediately,
+    );
+  }
 }
 
-/// A [Ref] for providers that are automatically destroyed when
-/// no longer used.
-///
-/// The difference with [Ref] is that it has an extra
-/// [keepAlive] function to help determine if the state can be destroyed
-///  or not.
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-abstract class AutoDisposeRef<State> extends Ref<State> {
-  /// Whether to destroy the state of the provider when all listeners are removed or not.
-  ///
-  /// Can be changed at any time, in which case when setting it to `false`,
-  /// may destroy the provider state if it currently has no listeners.
-  ///
-  /// Defaults to `false`.
-  @Deprecated('use keepAlive() instead')
-  bool get maintainState;
+@internal
+class $Ref<StateT> extends Ref {
+  /// {@macro riverpod.provider_ref_base}
+  $Ref(
+    this._element, {
+    required super.isFirstBuild,
+    required super.isReload,
+  }) : super._();
 
-  @Deprecated('use keepAlive() instead')
-  set maintainState(bool value);
+  ProviderElement<StateT> get element => _element;
+
+  @override
+  final ProviderElement<StateT> _element;
+
+  List<void Function(StateT?, StateT)>? _onChangeSelfListeners;
+  List<OnError>? _onErrorSelfListeners;
+
+  /// Obtains the state currently exposed by this provider.
+  ///
+  /// Mutating this property will notify the provider listeners.
+  ///
+  /// If called before a value was set, there are two possible scenarios:
+  /// - on synchronous providers, this will throw a [StateError].
+  /// - on asynchronous providers, this will return an [AsyncLoading].
+  ///
+  /// Will throw if the provider threw during creation.
+  StateT get state {
+    _throwIfInvalidUsage();
+
+    return _element.readSelf();
+  }
+
+  set state(StateT newState) {
+    _throwIfInvalidUsage();
+
+    _element.setStateResult($ResultData(newState));
+  }
+
+  /// Listens to changes on the value exposed by this provider.
+  ///
+  /// The listener will be called immediately after the provider completes building.
+  ///
+  /// As opposed to [listen], the listener will be called even if
+  /// [ProviderElement.updateShouldNotify] returns false, meaning that the previous
+  /// and new value can potentially be identical.
+  RemoveListener listenSelf(
+    void Function(StateT? previous, StateT next) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  }) {
+    _onChangeSelfListeners ??= [];
+    _onChangeSelfListeners!.add(listener);
+
+    if (onError != null) {
+      _onErrorSelfListeners ??= [];
+      _onErrorSelfListeners!.add(onError);
+    }
+
+    return () {
+      _onChangeSelfListeners?.remove(listener);
+      _onErrorSelfListeners?.remove(onError);
+    };
+  }
 }
 
-/// A object which maintains a provider alive.
+/// A object that maintains a provider alive.
 class KeepAliveLink {
   KeepAliveLink._(this._close);
 

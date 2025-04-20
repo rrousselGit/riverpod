@@ -8,176 +8,153 @@ part of 'search.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$fetchPackagesHash() => r'b52d4beb5d9ac53769d76ccd1d81bb005c66edd5';
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-/// See also [fetchPackages].
 @ProviderFor(fetchPackages)
-const fetchPackagesProvider = FetchPackagesFamily();
+const fetchPackagesProvider = FetchPackagesFamily._();
 
-/// See also [fetchPackages].
-class FetchPackagesFamily extends Family<AsyncValue<List<Package>>> {
-  /// See also [fetchPackages].
-  const FetchPackagesFamily();
-
-  /// See also [fetchPackages].
-  FetchPackagesProvider call({
-    required int page,
-    String search = '',
-  }) {
-    return FetchPackagesProvider(
-      page: page,
-      search: search,
-    );
-  }
-
-  @override
-  FetchPackagesProvider getProviderOverride(
-    covariant FetchPackagesProvider provider,
-  ) {
-    return call(
-      page: provider.page,
-      search: provider.search,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'fetchPackagesProvider';
-
-  @override
-  bool get isAutoDispose => true;
-}
-
-/// See also [fetchPackages].
-class FetchPackagesProvider extends AutoDisposeFutureProvider<List<Package>> {
-  /// See also [fetchPackages].
-  FetchPackagesProvider({
-    required int page,
-    String search = '',
-  }) : this._internal(
-          (ref) => fetchPackages(
-            ref as FetchPackagesRef,
-            page: page,
-            search: search,
-          ),
-          from: fetchPackagesProvider,
+final class FetchPackagesProvider extends $FunctionalProvider<
+        AsyncValue<List<Package>>, FutureOr<List<Package>>>
+    with $FutureModifier<List<Package>>, $FutureProvider<List<Package>> {
+  const FetchPackagesProvider._(
+      {required FetchPackagesFamily super.from,
+      required ({
+        int page,
+        String search,
+      })
+          super.argument,
+      FutureOr<List<Package>> Function(
+        Ref ref, {
+        required int page,
+        String search,
+      })? create})
+      : _createCb = create,
+        super(
+          retry: null,
           name: r'fetchPackagesProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$fetchPackagesHash,
-          dependencies: FetchPackagesFamily._dependencies,
-          allTransitiveDependencies:
-              FetchPackagesFamily._allTransitiveDependencies,
-          page: page,
-          search: search,
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  FetchPackagesProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.page,
-    required this.search,
-  }) : super.internal();
-
-  final int page;
-  final String search;
+  final FutureOr<List<Package>> Function(
+    Ref ref, {
+    required int page,
+    String search,
+  })? _createCb;
 
   @override
-  Override overrideWith(
-    FutureOr<List<Package>> Function(FetchPackagesRef provider) create,
+  String debugGetCreateSourceHash() => _$fetchPackagesHash();
+
+  @override
+  String toString() {
+    return r'fetchPackagesProvider'
+        ''
+        '$argument';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<List<Package>> $createElement(
+          $ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
+
+  @override
+  FetchPackagesProvider $copyWithCreate(
+    FutureOr<List<Package>> Function(
+      Ref ref,
+    ) create,
   ) {
-    return ProviderOverride(
-      origin: this,
-      override: FetchPackagesProvider._internal(
-        (ref) => create(ref as FetchPackagesRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        page: page,
-        search: search,
-      ),
-    );
+    return FetchPackagesProvider._(
+        argument: argument as ({
+          int page,
+          String search,
+        }),
+        from: from! as FetchPackagesFamily,
+        create: (
+          ref, {
+          required int page,
+          String search = '',
+        }) =>
+            create(ref));
   }
 
   @override
-  AutoDisposeFutureProviderElement<List<Package>> createElement() {
-    return _FetchPackagesProviderElement(this);
+  FutureOr<List<Package>> create(Ref ref) {
+    final _$cb = _createCb ?? fetchPackages;
+    final argument = this.argument as ({
+      int page,
+      String search,
+    });
+    return _$cb(
+      ref,
+      page: argument.page,
+      search: argument.search,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is FetchPackagesProvider &&
-        other.page == page &&
-        other.search == search;
+    return other is FetchPackagesProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, page.hashCode);
-    hash = _SystemHash.combine(hash, search.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin FetchPackagesRef on AutoDisposeFutureProviderRef<List<Package>> {
-  /// The parameter `page` of this provider.
-  int get page;
+String _$fetchPackagesHash() => r'b52d4beb5d9ac53769d76ccd1d81bb005c66edd5';
 
-  /// The parameter `search` of this provider.
-  String get search;
-}
+final class FetchPackagesFamily extends Family {
+  const FetchPackagesFamily._()
+      : super(
+          retry: null,
+          name: r'fetchPackagesProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
 
-class _FetchPackagesProviderElement
-    extends AutoDisposeFutureProviderElement<List<Package>>
-    with FetchPackagesRef {
-  _FetchPackagesProviderElement(super.provider);
+  FetchPackagesProvider call({
+    required int page,
+    String search = '',
+  }) =>
+      FetchPackagesProvider._(argument: (
+        page: page,
+        search: search,
+      ), from: this);
 
   @override
-  int get page => (origin as FetchPackagesProvider).page;
+  String debugGetCreateSourceHash() => _$fetchPackagesHash();
+
   @override
-  String get search => (origin as FetchPackagesProvider).search;
+  String toString() => r'fetchPackagesProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    FutureOr<List<Package>> Function(
+      Ref ref,
+      ({
+        int page,
+        String search,
+      }) args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as FetchPackagesProvider;
+
+        final argument = provider.argument as ({
+          int page,
+          String search,
+        });
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .$createElement(pointer);
+      },
+    );
+  }
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

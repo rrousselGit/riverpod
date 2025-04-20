@@ -1,8 +1,32 @@
-## Unreleased minor
+## Unreleased build
 
-- Updated to match the latest Riverpod version
-- Upgrade to Dart 3.6.0
-- Marked various APIs as `@internal`
+- **Breaking** various `package:riverpod` objects are no-longer exported.
+  If you wish to use providers by hand, you will have to separately import
+  `package:riverpod/riverpod.dart`.
+- Added `@mutation` support.
+  Mutations are a way to enable your UI to easily listen to the status of side-effects.
+  See the documentation of `@mutation` for further information.
+- Made `@Riverpod` final
+- Added `@Dependencies([...])`, for lint purposes.
+  This is similar to `@Riverpod(dependencies: [...])`, but is applied on
+  non-provider objects that may use a scoped provider.
+- Added support for `@Riverpod(retry: ...)`
+
+## 3.0.0-dev.3 - 2023-11-27
+
+- `riverpod` upgraded to `3.0.0-dev.3`
+
+## 3.0.0-dev.2 - 2023-11-20
+
+- `riverpod` upgraded to `3.0.0-dev.2`
+
+## 3.0.0-dev.1 - 2023-11-20
+
+- `riverpod` upgraded to `3.0.0-dev.1`
+
+## 3.0.0-dev.0 - 2023-10-29
+
+- `riverpod` upgraded to `3.0.0-dev.0`
 
 ## 2.6.1 - 2024-10-22
 

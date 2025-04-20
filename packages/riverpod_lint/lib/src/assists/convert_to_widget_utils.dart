@@ -1,14 +1,14 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element.dart';
-// ignore: implementation_imports, somehow not exported by analyzer
+import 'package:analyzer_plugin/utilities/change_builder/change_builder_dart.dart';
 import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
+import '../imports.dart';
 import '../object_utils.dart';
 
 enum StatelessBaseWidgetType {
   hookConsumerWidget(
-    widgetName: 'HookConsumerWidget',
     priority: 37,
     typeChecker: TypeChecker.fromName(
       'HookConsumerWidget',
@@ -17,7 +17,6 @@ enum StatelessBaseWidgetType {
     requiredPackage: 'hooks_riverpod',
   ),
   hookWidget(
-    widgetName: 'HookWidget',
     priority: 36,
     typeChecker: TypeChecker.fromName(
       'HookWidget',
@@ -26,7 +25,6 @@ enum StatelessBaseWidgetType {
     requiredPackage: 'flutter_hooks',
   ),
   consumerWidget(
-    widgetName: 'ConsumerWidget',
     priority: 35,
     typeChecker: TypeChecker.fromName(
       'ConsumerWidget',
@@ -34,7 +32,6 @@ enum StatelessBaseWidgetType {
     ),
   ),
   statelessWidget(
-    widgetName: 'StatelessWidget',
     priority: 34,
     typeChecker: TypeChecker.fromName(
       'StatelessWidget',
@@ -44,20 +41,39 @@ enum StatelessBaseWidgetType {
   ;
 
   const StatelessBaseWidgetType({
-    required this.widgetName,
     required this.priority,
     required this.typeChecker,
     this.requiredPackage,
   });
-  final String widgetName;
+
   final int priority;
   final TypeChecker typeChecker;
   final String? requiredPackage;
+
+  String widgetName(DartFileEditBuilder builder) {
+    return switch (this) {
+      StatelessBaseWidgetType.hookConsumerWidget =>
+        builder.importHookConsumerWidget(),
+      StatelessBaseWidgetType.hookWidget => builder.importHookWidget(),
+      StatelessBaseWidgetType.consumerWidget => builder.importConsumerWidget(),
+      StatelessBaseWidgetType.statelessWidget =>
+        builder.importStatelessWidget(),
+    };
+  }
+
+  String get assistName {
+    return switch (this) {
+      StatelessBaseWidgetType.hookConsumerWidget => 'HookConsumerWidget',
+      StatelessBaseWidgetType.hookWidget => 'HookWidget',
+      StatelessBaseWidgetType.consumerWidget => 'ConsumerWidget',
+      StatelessBaseWidgetType.statelessWidget => 'StatelessWidget',
+    };
+  }
 }
 
 enum StatefulBaseWidgetType {
   statefulHookConsumerWidget(
-    widgetName: 'StatefulHookConsumerWidget',
+    widgetAssistName: 'StatefulHookConsumerWidget',
     priority: 33,
     typeChecker: TypeChecker.fromName(
       'StatefulHookConsumerWidget',
@@ -66,7 +82,7 @@ enum StatefulBaseWidgetType {
     requiredPackage: 'hooks_riverpod',
   ),
   statefulHookWidget(
-    widgetName: 'StatefulHookWidget',
+    widgetAssistName: 'StatefulHookWidget',
     priority: 32,
     typeChecker: TypeChecker.fromName(
       'StatefulHookWidget',
@@ -75,7 +91,7 @@ enum StatefulBaseWidgetType {
     requiredPackage: 'flutter_hooks',
   ),
   consumerStatefulWidget(
-    widgetName: 'ConsumerStatefulWidget',
+    widgetAssistName: 'ConsumerStatefulWidget',
     priority: 31,
     typeChecker: TypeChecker.fromName(
       'ConsumerStatefulWidget',
@@ -83,7 +99,7 @@ enum StatefulBaseWidgetType {
     ),
   ),
   statefulWidget(
-    widgetName: 'StatefulWidget',
+    widgetAssistName: 'StatefulWidget',
     priority: 30,
     typeChecker: TypeChecker.fromName(
       'StatefulWidget',
@@ -93,15 +109,28 @@ enum StatefulBaseWidgetType {
   ;
 
   const StatefulBaseWidgetType({
-    required this.widgetName,
+    required this.widgetAssistName,
     required this.priority,
     required this.typeChecker,
     this.requiredPackage,
   });
-  final String widgetName;
+
+  final String widgetAssistName;
   final int priority;
   final TypeChecker typeChecker;
   final String? requiredPackage;
+
+  String widgetName(DartFileEditBuilder builder) {
+    return switch (this) {
+      StatefulBaseWidgetType.statefulHookConsumerWidget =>
+        builder.importStatefulHookConsumerWidget(),
+      StatefulBaseWidgetType.statefulHookWidget =>
+        builder.importStatefulHookWidget(),
+      StatefulBaseWidgetType.consumerStatefulWidget =>
+        builder.importConsumerStatefulWidget(),
+      StatefulBaseWidgetType.statefulWidget => builder.importStatefulWidget(),
+    };
+  }
 }
 
 TypeChecker getStatelessBaseType({

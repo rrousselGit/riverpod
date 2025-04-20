@@ -3,8 +3,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:riverpod/riverpod.dart';
 
-import 'create_container.dart';
-
 final provider = Provider((_) => 42);
 
 /* SNIPPET START */
@@ -14,7 +12,7 @@ void main() {
     // Create a ProviderContainer for this test.
     // DO NOT share ProviderContainers between tests.
     // {@endtemplate}
-    final container = createContainer();
+    final container = ProviderContainer.test();
 
     // {@template useProvider}
     // TODO: use the container to test your application.

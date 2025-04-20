@@ -3,19 +3,13 @@ part of '../notifier.dart';
 /// {@macro riverpod.notifier}
 ///
 /// {@macro riverpod.notifier_provider_modifier}
-abstract class FamilyNotifier<State, Arg> extends BuildlessNotifier<State> {
+abstract class FamilyNotifier<StateT, ArgT> extends $Notifier<StateT> {
   /// {@macro riverpod.notifier.family_arg}
-  late final Arg arg;
-
-  @override
-  void _setElement(ProviderElementBase<State> element) {
-    super._setElement(element);
-    arg = element.origin.argument as Arg;
-  }
+  late final ArgT arg = ref.$arg as ArgT;
 
   /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
-  State build(Arg arg);
+  StateT build(ArgT arg);
 
   @internal
   @override
@@ -25,120 +19,94 @@ abstract class FamilyNotifier<State, Arg> extends BuildlessNotifier<State> {
   }
 }
 
-/// The provider for [NotifierProviderFamily].
-typedef NotifierFamilyProvider<NotifierT extends FamilyNotifier<T, Arg>, T, Arg>
-    = FamilyNotifierProviderImpl<NotifierT, T, Arg>;
-
-/// The implementation of [NotifierFamilyProvider] but with loosened type constraints
-/// that can be shared with [AutoDisposeNotifierProvider].
-///
-/// This enables tests to execute on both [NotifierProvider] and
-/// [AutoDisposeNotifierProvider] at the same time.
-@visibleForTesting
-@internal
-class FamilyNotifierProviderImpl<NotifierT extends NotifierBase<T>, T, Arg>
-    extends NotifierProviderBase<NotifierT, T>
-    with
-        // ignore: deprecated_member_use_from_same_package
-        AlwaysAliveProviderBase<T> {
-  /// {@macro riverpod.notifier}
-  FamilyNotifierProviderImpl(
-    super._createNotifier, {
-    super.name,
-    super.dependencies,
-    @Deprecated('Will be removed in 3.0.0') super.from,
-    @Deprecated('Will be removed in 3.0.0') super.argument,
-    @Deprecated('Will be removed in 3.0.0') super.debugGetCreateSourceHash,
-  }) : super(
-          allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-          isAutoDispose: false,
-        );
-
+final class FamilyNotifierProvider //
+    <NotifierT extends $Notifier<StateT>, StateT, ArgT>
+    extends $NotifierProvider<NotifierT, StateT>
+    with LegacyProviderMixin<StateT> {
   /// An implementation detail of Riverpod
-  @internal
-  FamilyNotifierProviderImpl.internal(
-    super._createNotifier, {
+  const FamilyNotifierProvider._(
+    this._createNotifier, {
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    super.from,
-    super.argument,
-    super.isAutoDispose = false,
+    required super.from,
+    required super.argument,
+    required super.isAutoDispose,
+    required super.runNotifierBuildOverride,
+    required super.retry,
   });
 
-  /// {@macro riverpod.autoDispose}
-  // ignore: prefer_const_declarations
-  static final autoDispose = AutoDisposeNotifierProviderFamily.new;
-
-  // /// {@macro riverpod.family}
-  // static const family = NotifierProviderFamilyBuilder();
-
-  @override
-  // ignore: deprecated_member_use_from_same_package
-  late final AlwaysAliveRefreshable<NotifierT> notifier =
-      _notifier<NotifierT, T>(this);
+  final NotifierT Function() _createNotifier;
 
   @internal
   @override
-  NotifierProviderElement<NotifierT, T> createElement() {
-    return NotifierProviderElement(this);
+  NotifierT create() => _createNotifier();
+
+  @internal
+  @override
+  $NotifierProviderElement<NotifierT, StateT> $createElement(
+    $ProviderPointer pointer,
+  ) {
+    return $NotifierProviderElement(this, pointer);
+  }
+
+  FamilyNotifierProvider<NotifierT, StateT, ArgT> _copyWith({
+    NotifierT Function()? create,
+    RunNotifierBuild<NotifierT, StateT>? build,
+  }) {
+    return FamilyNotifierProvider._(
+      create ?? _createNotifier,
+      name: name,
+      dependencies: dependencies,
+      allTransitiveDependencies: allTransitiveDependencies,
+      isAutoDispose: isAutoDispose,
+      runNotifierBuildOverride: build ?? runNotifierBuildOverride,
+      from: from,
+      argument: argument,
+      retry: retry,
+    );
   }
 
   @override
-  T runNotifierBuild(
-    covariant FamilyNotifier<T, Arg> notifier,
+  @mustBeOverridden
+  @visibleForOverriding
+  FamilyNotifierProvider<NotifierT, StateT, ArgT> $copyWithBuild(
+    RunNotifierBuild<NotifierT, StateT> build,
   ) {
-    return notifier.build(notifier.arg);
+    return _copyWith(build: build);
+  }
+
+  @mustBeOverridden
+  @visibleForOverriding
+  @override
+  FamilyNotifierProvider<NotifierT, StateT, ArgT> $copyWithCreate(
+    NotifierT Function() create,
+  ) {
+    return _copyWith(create: create);
   }
 }
 
 /// The [Family] of [NotifierProvider].
-class NotifierProviderFamily<NotifierT extends FamilyNotifier<T, Arg>, T, Arg>
-    // ignore: deprecated_member_use_from_same_package
-    extends NotifierFamilyBase<NotifierProviderRef<T>, T, Arg, NotifierT,
-        NotifierFamilyProvider<NotifierT, T, Arg>> {
-  /// The [Family] of [NotifierProvider].
-  NotifierProviderFamily(
-    super._createFn, {
-    super.name,
-    super.dependencies,
-  }) : super(
-          providerFactory: NotifierFamilyProvider.internal,
-          allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-          isAutoDispose: false,
-          debugGetCreateSourceHash: null,
-        );
-
-  /// An implementation detail of Riverpod
+class NotifierProviderFamily<
+        NotifierT extends FamilyNotifier<StateT, ArgT>, StateT, ArgT>
+    extends ClassFamily< //
+        NotifierT,
+        StateT,
+        StateT,
+        ArgT,
+        StateT,
+        FamilyNotifierProvider<NotifierT, StateT, ArgT>> {
+  /// The [Family] of [AsyncNotifierProvider].
   @internal
   NotifierProviderFamily.internal(
     super._createFn, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
+    super.name,
+    super.dependencies,
     super.isAutoDispose = false,
+    super.retry,
   }) : super(
-          providerFactory: NotifierFamilyProvider.internal,
+          providerFactory: FamilyNotifierProvider._,
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
         );
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(NotifierT Function() create) {
-    return FamilyOverrideImpl<T, Arg,
-        NotifierFamilyProvider<NotifierT, T, Arg>>(
-      this,
-      (arg) => NotifierFamilyProvider<NotifierT, T, Arg>.internal(
-        create,
-        from: from,
-        argument: arg,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        name: null,
-      ),
-    );
-  }
 }

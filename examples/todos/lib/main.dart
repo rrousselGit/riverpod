@@ -224,7 +224,10 @@ class Title extends StatelessWidget {
 ///
 /// This ensures that when we add/remove/edit todos, only what the
 /// impacted widgets rebuilds, instead of the entire list of items.
-final _currentTodo = Provider<Todo>((ref) => throw UnimplementedError());
+final _currentTodo = Provider<Todo>(
+  dependencies: const [],
+  (ref) => throw UnimplementedError(),
+);
 
 /// The widget that that displays the components of an individual Todo Item
 class TodoItem extends HookConsumerWidget {

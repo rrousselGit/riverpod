@@ -1,46 +1,19 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/legacy.dart';
+import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/internals.dart' show ProviderElement;
 import 'package:test/test.dart';
 
 import '../../utils.dart';
 
 void main() {
-  test('can read and set current AsyncValue', () {
-    final container = ProviderContainer.test();
-    final listener = Listener<AsyncValue<int>>();
-    late AutoDisposeFutureProviderRef<int> ref;
-    final provider = FutureProvider.autoDispose<int>((r) {
-      ref = r;
-      return 0;
-    });
-
-    container.listen(provider, listener.call);
-
-    expect(ref.state, const AsyncData(0));
-    verifyZeroInteractions(listener);
-
-    ref.state = const AsyncLoading<int>();
-
-    expect(
-      ref.state,
-      const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(0), isRefresh: false),
-    );
-    verifyOnly(
-      listener,
-      listener(
-        const AsyncData(0),
-        const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncData(0), isRefresh: false),
-      ),
-    );
-  });
-
   test('can be auto-scoped', () async {
-    final dep = Provider((ref) => 0);
+    final dep = Provider(
+      (ref) => 0,
+      dependencies: const [],
+    );
     final provider = FutureProvider.autoDispose(
       (ref) => ref.watch(dep),
       dependencies: [dep],
@@ -213,48 +186,36 @@ void main() {
     container.read(provider.future).catchError((Object _) => 0);
   });
 
-  group('scoping an override overrides all the associated subproviders', () {
+  group('scoping an override overrides all the associated sub-providers', () {
     test('when passing the provider itself', () async {
-      final provider = FutureProvider.autoDispose((ref) async => 0);
+      final provider = FutureProvider.autoDispose(
+        (ref) async => 0,
+        dependencies: const [],
+      );
       final root = ProviderContainer.test();
-      final container =
-          ProviderContainer.test(parent: root, overrides: [provider]);
+      final container = ProviderContainer.test(
+        parent: root,
+        overrides: [provider],
+      );
 
       expect(await container.read(provider.future), 0);
       expect(container.read(provider), const AsyncValue.data(0));
       expect(root.getAllProviderElementsInOrder(), isEmpty);
       expect(container.getAllProviderElementsInOrder(), [
-        isA<ProviderElementBase<Object?>>()
-            .having((e) => e.origin, 'origin', provider),
+        isA<ProviderElement>().having((e) => e.origin, 'origin', provider),
       ]);
     });
 
-    // test('when using provider.overrideWithValue', () async {
-    //   final provider = FutureProvider.autoDispose((ref) async => 0);
-    //   final root = ProviderContainer.test();
-    //   final container = ProviderContainer.test(parent: root, overrides: [
-    //     provider.overrideWithValue(const AsyncValue.data(42)),
-    //   ]);
-
-    //   expect(await container.read(provider.future), 42);
-    //   expect(container.read(provider), const AsyncValue.data(42));
-    //   expect(root.getAllProviderElementsInOrder(), isEmpty);
-    //   expect(container.getAllProviderElementsInOrder(), [
-    //     isA<ProviderElementBase<Object?>>().having((e) => e.origin, 'origin', provider),
-    //     isA<ProviderElementBase<Object?>>()
-    //         .having((e) => e.origin, 'origin', provider.future)
-    //   ]);
-    // });
-
-    test('when using provider.overrideWithProvider', () async {
-      final provider = FutureProvider.autoDispose((ref) async => 0);
+    test('when using provider.overrideWithValue', () async {
+      final provider = FutureProvider.autoDispose(
+        (ref) async => 0,
+        dependencies: const [],
+      );
       final root = ProviderContainer.test();
       final container = ProviderContainer.test(
         parent: root,
         overrides: [
-          provider
-              // ignore: deprecated_member_use_from_same_package
-              .overrideWithProvider(FutureProvider.autoDispose((ref) => 42)),
+          provider.overrideWithValue(const AsyncValue.data(42)),
         ],
       );
 
@@ -262,8 +223,26 @@ void main() {
       expect(container.read(provider), const AsyncValue.data(42));
       expect(root.getAllProviderElementsInOrder(), isEmpty);
       expect(container.getAllProviderElementsInOrder(), [
-        isA<ProviderElementBase<Object?>>()
-            .having((e) => e.origin, 'origin', provider),
+        isA<ProviderElement>().having((e) => e.origin, 'origin', provider),
+      ]);
+    });
+
+    test('when using provider.overrideWith', () async {
+      final provider = FutureProvider.autoDispose(
+        (ref) async => 0,
+        dependencies: const [],
+      );
+      final root = ProviderContainer.test();
+      final container = ProviderContainer.test(
+        parent: root,
+        overrides: [provider.overrideWith((ref) => 42)],
+      );
+
+      expect(await container.read(provider.future), 42);
+      expect(container.read(provider), const AsyncValue.data(42));
+      expect(root.getAllProviderElementsInOrder(), isEmpty);
+      expect(container.getAllProviderElementsInOrder(), [
+        isA<ProviderElement>().having((e) => e.origin, 'origin', provider),
       ]);
     });
   });

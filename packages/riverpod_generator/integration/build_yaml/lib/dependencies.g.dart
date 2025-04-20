@@ -6,196 +6,177 @@ part of 'dependencies.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$calc2Hash() => r'ae1d601ff7cdda569255e8014bd5d8d1c178b3eb';
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-/// See also [calc2].
 @ProviderFor(calc2)
-const myFamilyCalc2ProviderFamily = Calc2Family();
+const myFamilyCalc2ProviderFamily = Calc2Family._();
 
-/// See also [calc2].
-class Calc2Family extends Family<int> {
-  /// See also [calc2].
-  const Calc2Family();
-
-  /// See also [calc2].
-  Calc2Provider call(
-    String id,
-  ) {
-    return Calc2Provider(
-      id,
-    );
-  }
-
-  @override
-  Calc2Provider getProviderOverride(
-    covariant Calc2Provider provider,
-  ) {
-    return call(
-      provider.id,
-    );
-  }
-
-  static final Iterable<ProviderOrFamily> _dependencies = <ProviderOrFamily>{
-    myCountPod,
-    myCountFuturePod,
-    myCountStreamPod,
-    myCountNotifierPod,
-    myCountAsyncNotifierPod,
-    myCountStreamNotifierPod,
-    myFamilyCount2ProviderFamily,
-    myFamilyCountFuture2ProviderFamily,
-    myFamilyCountStream2ProviderFamily,
-    myFamilyCountNotifier2ProviderFamily,
-    myFamilyCountAsyncNotifier2ProviderFamily,
-    myFamilyCountStreamNotifier2ProviderFamily
-  };
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static final Iterable<ProviderOrFamily> _allTransitiveDependencies =
-      <ProviderOrFamily>{
-    myCountPod,
-    ...?myCountPod.allTransitiveDependencies,
-    myCountFuturePod,
-    ...?myCountFuturePod.allTransitiveDependencies,
-    myCountStreamPod,
-    ...?myCountStreamPod.allTransitiveDependencies,
-    myCountNotifierPod,
-    ...?myCountNotifierPod.allTransitiveDependencies,
-    myCountAsyncNotifierPod,
-    ...?myCountAsyncNotifierPod.allTransitiveDependencies,
-    myCountStreamNotifierPod,
-    ...?myCountStreamNotifierPod.allTransitiveDependencies,
-    myFamilyCount2ProviderFamily,
-    ...?myFamilyCount2ProviderFamily.allTransitiveDependencies,
-    myFamilyCountFuture2ProviderFamily,
-    ...?myFamilyCountFuture2ProviderFamily.allTransitiveDependencies,
-    myFamilyCountStream2ProviderFamily,
-    ...?myFamilyCountStream2ProviderFamily.allTransitiveDependencies,
-    myFamilyCountNotifier2ProviderFamily,
-    ...?myFamilyCountNotifier2ProviderFamily.allTransitiveDependencies,
-    myFamilyCountAsyncNotifier2ProviderFamily,
-    ...?myFamilyCountAsyncNotifier2ProviderFamily.allTransitiveDependencies,
-    myFamilyCountStreamNotifier2ProviderFamily,
-    ...?myFamilyCountStreamNotifier2ProviderFamily.allTransitiveDependencies
-  };
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'myFamilyCalc2ProviderFamily';
-
-  @override
-  bool get isAutoDispose => true;
-}
-
-/// See also [calc2].
-class Calc2Provider extends AutoDisposeProvider<int> {
-  /// See also [calc2].
-  Calc2Provider(
-    String id,
-  ) : this._internal(
-          (ref) => calc2(
-            ref as Calc2Ref,
-            id,
-          ),
-          from: myFamilyCalc2ProviderFamily,
+final class Calc2Provider extends $FunctionalProvider<int, int>
+    with $Provider<int> {
+  const Calc2Provider._(
+      {required Calc2Family super.from,
+      required String super.argument,
+      int Function(
+        Ref ref,
+        String id,
+      )? create})
+      : _createCb = create,
+        super(
+          retry: null,
           name: r'myFamilyCalc2ProviderFamily',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$calc2Hash,
-          dependencies: Calc2Family._dependencies,
-          allTransitiveDependencies: Calc2Family._allTransitiveDependencies,
-          id: id,
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  Calc2Provider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.id,
-  }) : super.internal();
+  static const $allTransitiveDependencies0 = myCountPod;
+  static const $allTransitiveDependencies1 = myCountFuturePod;
+  static const $allTransitiveDependencies2 = myCountStreamPod;
+  static const $allTransitiveDependencies3 = myCountNotifierPod;
+  static const $allTransitiveDependencies4 = myCountAsyncNotifierPod;
+  static const $allTransitiveDependencies5 = myCountStreamNotifierPod;
+  static const $allTransitiveDependencies6 = myFamilyCount2ProviderFamily;
+  static const $allTransitiveDependencies7 = myFamilyCountFuture2ProviderFamily;
+  static const $allTransitiveDependencies8 = myFamilyCountStream2ProviderFamily;
+  static const $allTransitiveDependencies9 =
+      myFamilyCountNotifier2ProviderFamily;
+  static const $allTransitiveDependencies10 =
+      myFamilyCountAsyncNotifier2ProviderFamily;
+  static const $allTransitiveDependencies11 =
+      myFamilyCountStreamNotifier2ProviderFamily;
 
-  final String id;
+  final int Function(
+    Ref ref,
+    String id,
+  )? _createCb;
 
   @override
-  Override overrideWith(
-    int Function(Calc2Ref provider) create,
-  ) {
-    return ProviderOverride(
+  String debugGetCreateSourceHash() => _$calc2Hash();
+
+  @override
+  String toString() {
+    return r'myFamilyCalc2ProviderFamily'
+        ''
+        '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
       origin: this,
-      override: Calc2Provider._internal(
-        (ref) => create(ref as Calc2Ref),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        id: id,
-      ),
+      providerOverride: $ValueProvider<int>(value),
     );
   }
 
+  @$internal
   @override
-  AutoDisposeProviderElement<int> createElement() {
-    return _Calc2ProviderElement(this);
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  Calc2Provider $copyWithCreate(
+    int Function(
+      Ref ref,
+    ) create,
+  ) {
+    return Calc2Provider._(
+        argument: argument as String,
+        from: from! as Calc2Family,
+        create: (
+          ref,
+          String id,
+        ) =>
+            create(ref));
+  }
+
+  @override
+  int create(Ref ref) {
+    final _$cb = _createCb ?? calc2;
+    final argument = this.argument as String;
+    return _$cb(
+      ref,
+      argument,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is Calc2Provider && other.id == id;
+    return other is Calc2Provider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, id.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin Calc2Ref on AutoDisposeProviderRef<int> {
-  /// The parameter `id` of this provider.
-  String get id;
-}
+String _$calc2Hash() => r'ae1d601ff7cdda569255e8014bd5d8d1c178b3eb';
 
-class _Calc2ProviderElement extends AutoDisposeProviderElement<int>
-    with Calc2Ref {
-  _Calc2ProviderElement(super.provider);
+final class Calc2Family extends Family {
+  const Calc2Family._()
+      : super(
+          retry: null,
+          name: r'myFamilyCalc2ProviderFamily',
+          dependencies: const <ProviderOrFamily>[
+            myCountPod,
+            myCountFuturePod,
+            myCountStreamPod,
+            myCountNotifierPod,
+            myCountAsyncNotifierPod,
+            myCountStreamNotifierPod,
+            myFamilyCount2ProviderFamily,
+            myFamilyCountFuture2ProviderFamily,
+            myFamilyCountStream2ProviderFamily,
+            myFamilyCountNotifier2ProviderFamily,
+            myFamilyCountAsyncNotifier2ProviderFamily,
+            myFamilyCountStreamNotifier2ProviderFamily
+          ],
+          allTransitiveDependencies: const <ProviderOrFamily>{
+            Calc2Provider.$allTransitiveDependencies0,
+            Calc2Provider.$allTransitiveDependencies1,
+            Calc2Provider.$allTransitiveDependencies2,
+            Calc2Provider.$allTransitiveDependencies3,
+            Calc2Provider.$allTransitiveDependencies4,
+            Calc2Provider.$allTransitiveDependencies5,
+            Calc2Provider.$allTransitiveDependencies6,
+            Calc2Provider.$allTransitiveDependencies7,
+            Calc2Provider.$allTransitiveDependencies8,
+            Calc2Provider.$allTransitiveDependencies9,
+            Calc2Provider.$allTransitiveDependencies10,
+            Calc2Provider.$allTransitiveDependencies11,
+          },
+          isAutoDispose: true,
+        );
+
+  Calc2Provider call(
+    String id,
+  ) =>
+      Calc2Provider._(argument: id, from: this);
 
   @override
-  String get id => (origin as Calc2Provider).id;
+  String debugGetCreateSourceHash() => _$calc2Hash();
+
+  @override
+  String toString() => r'myFamilyCalc2ProviderFamily';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    int Function(
+      Ref ref,
+      String args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as Calc2Provider;
+
+        final argument = provider.argument as String;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .$createElement(pointer);
+      },
+    );
+  }
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

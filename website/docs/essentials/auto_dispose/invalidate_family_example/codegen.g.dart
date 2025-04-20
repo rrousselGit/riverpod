@@ -8,157 +8,135 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$labelHash() => r'c53d17dd111313633bd7ca6d6cf6b48dded58ca5';
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-/// See also [label].
 @ProviderFor(label)
-const labelProvider = LabelFamily();
+const labelProvider = LabelFamily._();
 
-/// See also [label].
-class LabelFamily extends Family<String> {
-  /// See also [label].
-  const LabelFamily();
-
-  /// See also [label].
-  LabelProvider call(
-    String userName,
-  ) {
-    return LabelProvider(
-      userName,
-    );
-  }
-
-  @override
-  LabelProvider getProviderOverride(
-    covariant LabelProvider provider,
-  ) {
-    return call(
-      provider.userName,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'labelProvider';
-
-  @override
-  bool get isAutoDispose => true;
-}
-
-/// See also [label].
-class LabelProvider extends AutoDisposeProvider<String> {
-  /// See also [label].
-  LabelProvider(
-    String userName,
-  ) : this._internal(
-          (ref) => label(
-            ref as LabelRef,
-            userName,
-          ),
-          from: labelProvider,
+final class LabelProvider extends $FunctionalProvider<String, String>
+    with $Provider<String> {
+  const LabelProvider._(
+      {required LabelFamily super.from,
+      required String super.argument,
+      String Function(
+        Ref ref,
+        String userName,
+      )? create})
+      : _createCb = create,
+        super(
+          retry: null,
           name: r'labelProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$labelHash,
-          dependencies: LabelFamily._dependencies,
-          allTransitiveDependencies: LabelFamily._allTransitiveDependencies,
-          userName: userName,
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  LabelProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.userName,
-  }) : super.internal();
-
-  final String userName;
+  final String Function(
+    Ref ref,
+    String userName,
+  )? _createCb;
 
   @override
-  Override overrideWith(
-    String Function(LabelRef provider) create,
-  ) {
-    return ProviderOverride(
+  String debugGetCreateSourceHash() => _$labelHash();
+
+  @override
+  String toString() {
+    return r'labelProvider'
+        ''
+        '($argument)';
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
       origin: this,
-      override: LabelProvider._internal(
-        (ref) => create(ref as LabelRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        userName: userName,
-      ),
+      providerOverride: $ValueProvider<String>(value),
     );
   }
 
+  @$internal
   @override
-  AutoDisposeProviderElement<String> createElement() {
-    return _LabelProviderElement(this);
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  LabelProvider $copyWithCreate(
+    String Function(
+      Ref ref,
+    ) create,
+  ) {
+    return LabelProvider._(
+        argument: argument as String,
+        from: from! as LabelFamily,
+        create: (
+          ref,
+          String userName,
+        ) =>
+            create(ref));
+  }
+
+  @override
+  String create(Ref ref) {
+    final _$cb = _createCb ?? label;
+    final argument = this.argument as String;
+    return _$cb(
+      ref,
+      argument,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is LabelProvider && other.userName == userName;
+    return other is LabelProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, userName.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin LabelRef on AutoDisposeProviderRef<String> {
-  /// The parameter `userName` of this provider.
-  String get userName;
-}
+String _$labelHash() => r'c53d17dd111313633bd7ca6d6cf6b48dded58ca5';
 
-class _LabelProviderElement extends AutoDisposeProviderElement<String>
-    with LabelRef {
-  _LabelProviderElement(super.provider);
+final class LabelFamily extends Family {
+  const LabelFamily._()
+      : super(
+          retry: null,
+          name: r'labelProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  LabelProvider call(
+    String userName,
+  ) =>
+      LabelProvider._(argument: userName, from: this);
 
   @override
-  String get userName => (origin as LabelProvider).userName;
+  String debugGetCreateSourceHash() => _$labelHash();
+
+  @override
+  String toString() => r'labelProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    String Function(
+      Ref ref,
+      String args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as LabelProvider;
+
+        final argument = provider.argument as String;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .$createElement(pointer);
+      },
+    );
+  }
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

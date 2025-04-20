@@ -142,7 +142,7 @@ abstract class WidgetRef {
   ///   return Item.fromJson(json);
   /// });
   /// ```
-  bool exists(AnyProvider<Object?> provider);
+  bool exists(ProviderBase<Object?> provider);
 
   /// Listen to a provider and call `listener` whenever its value changes,
   /// without having to take care of removing the listener.
@@ -376,6 +376,16 @@ abstract class WidgetRef {
   ///
   /// Calling [invalidate] will cause the provider to be disposed immediately.
   ///
+  /// - [asReload] (false by default) can be optionally passed to tell
+  ///   Riverpod to clear the state before refreshing it.
+  ///   This is only useful for asynchronous providers, as by default,
+  ///   [AsyncValue] keeps a reference on state during loading states.
+  ///   Using [asReload] will disable this behavior and count as a
+  ///   "hard refresh".
+  ///
   /// If used on a provider which is not initialized, this method will have no effect.
-  void invalidate(AnyProviderOrFamily provider);
+  void invalidate(
+    ProviderOrFamily provider, {
+    bool asReload = false,
+  });
 }

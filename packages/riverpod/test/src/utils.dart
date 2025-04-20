@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
+import 'package:riverpod/legacy.dart';
 import 'package:riverpod/src/internals.dart';
-import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart' hide Retry;
 
-export '../old/utils.dart' show ObserverMock;
+export '../old/utils.dart'
+    show ObserverMock, isProviderObserverContext, isMutationContext;
 
 typedef RemoveListener = void Function();
 
@@ -130,6 +131,21 @@ class OverrideWithBuildMock<NotifierT, StateT, CreatedT> extends Mock {
   }
 }
 
+class RetryMock extends Mock {
+  RetryMock([Retry? retry]) {
+    if (retry != null) {
+      when(call(any, any)).thenAnswer(
+        (i) => retry(
+          i.positionalArguments[0] as int,
+          i.positionalArguments[1] as Object,
+        ),
+      );
+    }
+  }
+
+  Duration? call(int? retryCount, Object? error);
+}
+
 class OnBuildMock extends Mock {
   void call();
 }
@@ -182,6 +198,16 @@ typedef VerifyOnly = VerificationResult Function<T>(
 
 class Listener<T> extends Mock {
   void call(T? previous, T? next);
+}
+
+class StorageMock<KeyT, EncodedT> extends Mock
+    implements Storage<KeyT, EncodedT> {
+  @override
+  FutureOr<PersistedData<EncodedT>?> read(KeyT? key);
+  @override
+  FutureOr<void> write(KeyT? key, EncodedT? value, StorageOptions? options);
+  @override
+  FutureOr<void> delete(KeyT? key);
 }
 
 final isAssertionError = isA<AssertionError>();

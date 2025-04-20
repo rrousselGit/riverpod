@@ -1,32 +1,13 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/legacy.dart';
+import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
 import '../utils.dart';
 
 void main() {
-  test('throw if overrideWithProvider returns a provider with dependencies',
-      () {
-    final family = Provider.family<int, int>((ref, _) => 0);
-    final a = Provider((ref) => 0);
-
-    final container = ProviderContainer.test(
-      overrides: [
-        family.overrideWithProvider(
-          (argument) => Provider((ref) => 0, dependencies: [a]),
-        ),
-      ],
-    );
-
-    expect(
-      () => container.read(family(42)),
-      throwsA(isA<AssertionError>()),
-    );
-  });
-
   test(
       'does not re-initialize a family if read by a child container after the provider was initialized',
       () {
@@ -53,10 +34,13 @@ void main() {
       'does not re-initialize a scoped family if read by a child container after the provider was initialized',
       () {
     var buildCount = 0;
-    final provider = Provider.family<int, int>((ref, param) {
-      buildCount++;
-      return 42;
-    });
+    final provider = Provider.family<int, int>(
+      (ref, param) {
+        buildCount++;
+        return 42;
+      },
+      dependencies: const [],
+    );
 
     final root = ProviderContainer.test();
     final scope = ProviderContainer.test(parent: root, overrides: [provider]);
@@ -148,7 +132,7 @@ void main() {
     );
   });
 
-  test('family override', () {
+  test('Can override both the family as a provider of that family', () {
     final family = Provider.family<String, int>((ref, a) => 'Hello $a');
     final container = ProviderContainer.test(
       overrides: [
