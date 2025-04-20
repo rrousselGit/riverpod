@@ -3,15 +3,6 @@ part of '../../framework.dart';
 /// An abstraction of both [ProviderContainer] and [$ProviderElement] used by
 /// [ProviderListenable].
 sealed class Node {
-  // /// Starts listening to this transformer
-  // ProviderSubscription<StateT> listen<StateT>(
-  //   ProviderListenable<StateT> listenable,
-  //   void Function(StateT? previous, StateT next) listener, {
-  //   required void Function(Object error, StackTrace stackTrace)? onError,
-  //   required bool fireImmediately,
-  //   required bool weak,
-  // });
-
   /// Obtain the [ProviderElement] of a provider, creating it if necessary.
   @internal
   ProviderElement<StateT> readProviderElement<StateT>(
