@@ -3,7 +3,6 @@ import 'package:test_process/test_process.dart';
 
 void main() {
   group('mermaid format', () {
-    // TODO(ValentinVignal): Support the generated families.
     test('It should log the structure of the generated project', () async {
       final process = await TestProcess.start(
         'dart',

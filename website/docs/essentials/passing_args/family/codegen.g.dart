@@ -8,301 +8,293 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$activityHash() => r'6c815736c0d2b40a92695adcd78516534d7ac2fc';
-
-/// Copied from Dart SDK
-class _SystemHash {
-  _SystemHash._();
-
-  static int combine(int hash, int value) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + value);
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x0007ffff & hash) << 10));
-    return hash ^ (hash >> 6);
-  }
-
-  static int finish(int hash) {
-    // ignore: parameter_assignments
-    hash = 0x1fffffff & (hash + ((0x03ffffff & hash) << 3));
-    // ignore: parameter_assignments
-    hash = hash ^ (hash >> 11);
-    return 0x1fffffff & (hash + ((0x00003fff & hash) << 15));
-  }
-}
-
-/// See also [activity].
 @ProviderFor(activity)
-const activityProvider = ActivityFamily();
+const activityProvider = ActivityFamily._();
 
-/// See also [activity].
-class ActivityFamily extends Family<AsyncValue<Activity>> {
-  /// See also [activity].
-  const ActivityFamily();
-
-  /// See also [activity].
-  ActivityProvider call(
-    String activityType,
-  ) {
-    return ActivityProvider(
-      activityType,
-    );
-  }
-
-  @override
-  ActivityProvider getProviderOverride(
-    covariant ActivityProvider provider,
-  ) {
-    return call(
-      provider.activityType,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'activityProvider';
-}
-
-/// See also [activity].
-class ActivityProvider extends AutoDisposeFutureProvider<Activity> {
-  /// See also [activity].
-  ActivityProvider(
-    String activityType,
-  ) : this._internal(
-          (ref) => activity(
-            ref as ActivityRef,
-            activityType,
-          ),
-          from: activityProvider,
+final class ActivityProvider
+    extends $FunctionalProvider<AsyncValue<Activity>, FutureOr<Activity>>
+    with $FutureModifier<Activity>, $FutureProvider<Activity> {
+  const ActivityProvider._(
+      {required ActivityFamily super.from,
+      required String super.argument,
+      FutureOr<Activity> Function(
+        Ref ref,
+        String activityType,
+      )? create})
+      : _createCb = create,
+        super(
+          retry: null,
           name: r'activityProvider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$activityHash,
-          dependencies: ActivityFamily._dependencies,
-          allTransitiveDependencies: ActivityFamily._allTransitiveDependencies,
-          activityType: activityType,
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
         );
 
-  ActivityProvider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.activityType,
-  }) : super.internal();
-
-  final String activityType;
+  final FutureOr<Activity> Function(
+    Ref ref,
+    String activityType,
+  )? _createCb;
 
   @override
-  Override overrideWith(
-    FutureOr<Activity> Function(ActivityRef provider) create,
+  String debugGetCreateSourceHash() => _$activityHash();
+
+  @override
+  String toString() {
+    return r'activityProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $FutureProviderElement<Activity> $createElement($ProviderPointer pointer) =>
+      $FutureProviderElement(this, pointer);
+
+  @override
+  ActivityProvider $copyWithCreate(
+    FutureOr<Activity> Function(
+      Ref ref,
+    ) create,
   ) {
-    return ProviderOverride(
-      origin: this,
-      override: ActivityProvider._internal(
-        (ref) => create(ref as ActivityRef),
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        activityType: activityType,
-      ),
-    );
+    return ActivityProvider._(
+        argument: argument as String,
+        from: from! as ActivityFamily,
+        create: (
+          ref,
+          String activityType,
+        ) =>
+            create(ref));
   }
 
   @override
-  AutoDisposeFutureProviderElement<Activity> createElement() {
-    return _ActivityProviderElement(this);
+  FutureOr<Activity> create(Ref ref) {
+    final _$cb = _createCb ?? activity;
+    final argument = this.argument as String;
+    return _$cb(
+      ref,
+      argument,
+    );
   }
 
   @override
   bool operator ==(Object other) {
-    return other is ActivityProvider && other.activityType == activityType;
+    return other is ActivityProvider && other.argument == argument;
   }
 
   @override
   int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, activityType.hashCode);
-
-    return _SystemHash.finish(hash);
+    return argument.hashCode;
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin ActivityRef on AutoDisposeFutureProviderRef<Activity> {
-  /// The parameter `activityType` of this provider.
-  String get activityType;
-}
+String _$activityHash() => r'6c815736c0d2b40a92695adcd78516534d7ac2fc';
 
-class _ActivityProviderElement
-    extends AutoDisposeFutureProviderElement<Activity> with ActivityRef {
-  _ActivityProviderElement(super.provider);
+final class ActivityFamily extends Family {
+  const ActivityFamily._()
+      : super(
+          retry: null,
+          name: r'activityProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  ActivityProvider call(
+    String activityType,
+  ) =>
+      ActivityProvider._(argument: activityType, from: this);
 
   @override
-  String get activityType => (origin as ActivityProvider).activityType;
+  String debugGetCreateSourceHash() => _$activityHash();
+
+  @override
+  String toString() => r'activityProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    FutureOr<Activity> Function(
+      Ref ref,
+      String args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as ActivityProvider;
+
+        final argument = provider.argument as String;
+
+        return provider
+            .$copyWithCreate((ref) => create(ref, argument))
+            .$createElement(pointer);
+      },
+    );
+  }
+}
+
+@ProviderFor(ActivityNotifier2)
+const activityNotifier2Provider = ActivityNotifier2Family._();
+
+final class ActivityNotifier2Provider
+    extends $AsyncNotifierProvider<ActivityNotifier2, Activity> {
+  const ActivityNotifier2Provider._(
+      {required ActivityNotifier2Family super.from,
+      required String super.argument,
+      super.runNotifierBuildOverride,
+      ActivityNotifier2 Function()? create})
+      : _createCb = create,
+        super(
+          retry: null,
+          name: r'activityNotifier2Provider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final ActivityNotifier2 Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$activityNotifier2Hash();
+
+  @override
+  String toString() {
+    return r'activityNotifier2Provider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  ActivityNotifier2 create() => _createCb?.call() ?? ActivityNotifier2();
+
+  @$internal
+  @override
+  ActivityNotifier2Provider $copyWithCreate(
+    ActivityNotifier2 Function() create,
+  ) {
+    return ActivityNotifier2Provider._(
+        argument: argument as String,
+        from: from! as ActivityNotifier2Family,
+        create: create);
+  }
+
+  @$internal
+  @override
+  ActivityNotifier2Provider $copyWithBuild(
+    FutureOr<Activity> Function(
+      Ref,
+      ActivityNotifier2,
+    ) build,
+  ) {
+    return ActivityNotifier2Provider._(
+        argument: argument as String,
+        from: from! as ActivityNotifier2Family,
+        runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $AsyncNotifierProviderElement<ActivityNotifier2, Activity> $createElement(
+          $ProviderPointer pointer) =>
+      $AsyncNotifierProviderElement(this, pointer);
+
+  @override
+  bool operator ==(Object other) {
+    return other is ActivityNotifier2Provider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
 }
 
 String _$activityNotifier2Hash() => r'9e67c655d53a9f98c3b012a0534421385dde0339';
 
-abstract class _$ActivityNotifier2
-    extends BuildlessAutoDisposeAsyncNotifier<Activity> {
-  late final String activityType;
+final class ActivityNotifier2Family extends Family {
+  const ActivityNotifier2Family._()
+      : super(
+          retry: null,
+          name: r'activityNotifier2Provider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  ActivityNotifier2Provider call(
+    String activityType,
+  ) =>
+      ActivityNotifier2Provider._(argument: activityType, from: this);
+
+  @override
+  String debugGetCreateSourceHash() => _$activityNotifier2Hash();
+
+  @override
+  String toString() => r'activityNotifier2Provider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    ActivityNotifier2 Function(
+      String args,
+    ) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as ActivityNotifier2Provider;
+
+        final argument = provider.argument as String;
+
+        return provider
+            .$copyWithCreate(() => create(argument))
+            .$createElement(pointer);
+      },
+    );
+  }
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+    FutureOr<Activity> Function(
+            Ref ref, ActivityNotifier2 notifier, String argument)
+        build,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin as ActivityNotifier2Provider;
+
+        final argument = provider.argument as String;
+
+        return provider
+            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
+            .$createElement(pointer);
+      },
+    );
+  }
+}
+
+abstract class _$ActivityNotifier2 extends $AsyncNotifier<Activity> {
+  late final _$args = ref.$arg as String;
+  String get activityType => _$args;
 
   FutureOr<Activity> build(
     String activityType,
   );
-}
-
-/// See also [ActivityNotifier2].
-@ProviderFor(ActivityNotifier2)
-const activityNotifier2Provider = ActivityNotifier2Family();
-
-/// See also [ActivityNotifier2].
-class ActivityNotifier2Family extends Family<AsyncValue<Activity>> {
-  /// See also [ActivityNotifier2].
-  const ActivityNotifier2Family();
-
-  /// See also [ActivityNotifier2].
-  ActivityNotifier2Provider call(
-    String activityType,
-  ) {
-    return ActivityNotifier2Provider(
-      activityType,
+  @$internal
+  @override
+  void runBuild() {
+    final created = build(
+      _$args,
     );
-  }
-
-  @override
-  ActivityNotifier2Provider getProviderOverride(
-    covariant ActivityNotifier2Provider provider,
-  ) {
-    return call(
-      provider.activityType,
-    );
-  }
-
-  static const Iterable<ProviderOrFamily>? _dependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get dependencies => _dependencies;
-
-  static const Iterable<ProviderOrFamily>? _allTransitiveDependencies = null;
-
-  @override
-  Iterable<ProviderOrFamily>? get allTransitiveDependencies =>
-      _allTransitiveDependencies;
-
-  @override
-  String? get name => r'activityNotifier2Provider';
-}
-
-/// See also [ActivityNotifier2].
-class ActivityNotifier2Provider
-    extends AutoDisposeAsyncNotifierProviderImpl<ActivityNotifier2, Activity> {
-  /// See also [ActivityNotifier2].
-  ActivityNotifier2Provider(
-    String activityType,
-  ) : this._internal(
-          () => ActivityNotifier2()..activityType = activityType,
-          from: activityNotifier2Provider,
-          name: r'activityNotifier2Provider',
-          debugGetCreateSourceHash:
-              const bool.fromEnvironment('dart.vm.product')
-                  ? null
-                  : _$activityNotifier2Hash,
-          dependencies: ActivityNotifier2Family._dependencies,
-          allTransitiveDependencies:
-              ActivityNotifier2Family._allTransitiveDependencies,
-          activityType: activityType,
-        );
-
-  ActivityNotifier2Provider._internal(
-    super._createNotifier, {
-    required super.name,
-    required super.dependencies,
-    required super.allTransitiveDependencies,
-    required super.debugGetCreateSourceHash,
-    required super.from,
-    required this.activityType,
-  }) : super.internal();
-
-  final String activityType;
-
-  @override
-  FutureOr<Activity> runNotifierBuild(
-    covariant ActivityNotifier2 notifier,
-  ) {
-    return notifier.build(
-      activityType,
-    );
-  }
-
-  @override
-  Override overrideWith(ActivityNotifier2 Function() create) {
-    return ProviderOverride(
-      origin: this,
-      override: ActivityNotifier2Provider._internal(
-        () => create()..activityType = activityType,
-        from: from,
-        name: null,
-        dependencies: null,
-        allTransitiveDependencies: null,
-        debugGetCreateSourceHash: null,
-        activityType: activityType,
-      ),
-    );
-  }
-
-  @override
-  AutoDisposeAsyncNotifierProviderElement<ActivityNotifier2, Activity>
-      createElement() {
-    return _ActivityNotifier2ProviderElement(this);
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is ActivityNotifier2Provider &&
-        other.activityType == activityType;
-  }
-
-  @override
-  int get hashCode {
-    var hash = _SystemHash.combine(0, runtimeType.hashCode);
-    hash = _SystemHash.combine(hash, activityType.hashCode);
-
-    return _SystemHash.finish(hash);
+    final ref = this.ref as $Ref<AsyncValue<Activity>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<Activity>>,
+        AsyncValue<Activity>,
+        Object?,
+        Object?>;
+    element.handleValue(ref, created);
   }
 }
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-mixin ActivityNotifier2Ref on AutoDisposeAsyncNotifierProviderRef<Activity> {
-  /// The parameter `activityType` of this provider.
-  String get activityType;
-}
-
-class _ActivityNotifier2ProviderElement
-    extends AutoDisposeAsyncNotifierProviderElement<ActivityNotifier2, Activity>
-    with ActivityNotifier2Ref {
-  _ActivityNotifier2ProviderElement(super.provider);
-
-  @override
-  String get activityType => (origin as ActivityNotifier2Provider).activityType;
-}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

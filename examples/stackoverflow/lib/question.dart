@@ -6,6 +6,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:html/parser.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'common.dart';
 import 'tag.dart';
@@ -15,7 +16,7 @@ part 'question.g.dart';
 part 'question.freezed.dart';
 
 @freezed
-class QuestionsResponse with _$QuestionsResponse {
+sealed class QuestionsResponse with _$QuestionsResponse {
   factory QuestionsResponse({
     required List<Question> items,
     required int total,
@@ -26,7 +27,7 @@ class QuestionsResponse with _$QuestionsResponse {
 }
 
 @freezed
-class Question with _$Question {
+sealed class Question with _$Question {
   @JsonSerializable(fieldRename: FieldRename.snake)
   factory Question({
     required List<String> tags,
@@ -90,14 +91,15 @@ final questionsCountProvider = Provider.autoDispose((ref) {
 });
 
 @freezed
-class QuestionTheme with _$QuestionTheme {
+sealed class QuestionTheme with _$QuestionTheme {
   const factory QuestionTheme({
     required TextStyle titleStyle,
     required TextStyle descriptionStyle,
   }) = _QuestionTheme;
 }
 
-final questionThemeProvider = Provider<QuestionTheme>((ref) {
+@riverpod
+QuestionTheme questionTheme(Ref ref) {
   return const QuestionTheme(
     titleStyle: TextStyle(
       color: Color(0xFF3ca4ff),
@@ -108,7 +110,7 @@ final questionThemeProvider = Provider<QuestionTheme>((ref) {
       fontSize: 13,
     ),
   );
-});
+}
 
 /// A scoped provider, exposing the current question used by [QuestionItem].
 ///
@@ -122,20 +124,22 @@ final questionThemeProvider = Provider<QuestionTheme>((ref) {
 ///
 /// This is an optional step. Since scoping is a fairly advanced mechanism,
 /// it's entirely fine to simply pass the [Question] to [QuestionItem] directly.
-final currentQuestion = Provider<AsyncValue<Question>>((ref) {
+@Riverpod(dependencies: [])
+AsyncValue<Question> currentQuestion(Ref ref) {
   throw UnimplementedError();
-});
+}
 
 /// A UI widget rendering a [Question].
 ///
 /// That question will be obtained through [currentQuestion]. As such, it is
 /// necessary to override that provider before using [QuestionItem].
+@Dependencies([currentQuestion, tagTheme])
 class QuestionItem extends HookConsumerWidget {
   const QuestionItem({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final question = ref.watch(currentQuestion);
+    final question = ref.watch(currentQuestionProvider);
     final questionTheme = ref.watch(questionThemeProvider);
 
     return question.when(

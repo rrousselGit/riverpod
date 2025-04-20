@@ -33,8 +33,7 @@ class ActivityView extends ConsumerWidget {
         child: ListView(
           children: [
             switch (activity) {
-              AsyncValue<Activity>(:final valueOrNull?) =>
-                Text(valueOrNull.activity),
+              AsyncValue<Activity>(:final value?) => Text(value.activity),
               AsyncValue(:final error?) => Text('Error: $error'),
               _ => const CircularProgressIndicator(),
             },
@@ -56,7 +55,7 @@ Future<Activity> activity(Ref ref) async {
 }
 
 @freezed
-class Activity with _$Activity {
+sealed class Activity with _$Activity {
   factory Activity({
     required String activity,
     required String type,

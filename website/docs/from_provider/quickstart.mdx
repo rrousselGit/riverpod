@@ -151,7 +151,7 @@ A full guide about eager initialization of pkg:Riverpod's providers [is availabl
 As a side note, chances are that when metaprogramming will be a thing, codegen will be default for Riverpod.
 
 Unluckily, `@riverpod` can't generate code for `ChangeNotifierProvider`.  
-To overcome this, you can use the following utility extesion method:
+To overcome this, you can use the following utility extension method:
 ```dart
 extension ChangeNotifierWithCodeGenExtension on Ref {
   T listenAndDisposeChangeNotifier<T extends ChangeNotifier>(T notifier) {

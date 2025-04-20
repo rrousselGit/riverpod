@@ -11,7 +11,7 @@ part 'codegen.g.dart';
 
 /* SNIPPET START */
 @freezed
-class Activity with _$Activity {
+sealed class Activity with _$Activity {
   factory Activity({
     required String activity,
     required String type,
@@ -49,7 +49,7 @@ class DetailPageView extends ConsumerWidget {
         child: ListView(
           children: [
             switch (activity) {
-              AsyncValue(:final valueOrNull?) => Text(valueOrNull.activity),
+              AsyncValue(:final value?) => Text(value.activity),
               AsyncValue(:final error?) => Text('Error: $error'),
               _ => const Center(child: CircularProgressIndicator()),
             },

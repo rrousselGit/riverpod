@@ -37,7 +37,7 @@ class ThemeNotifier extends _$ThemeNotifier {
 }
 
 @freezed
-class ThemeSettings with _$ThemeSettings {
+sealed class ThemeSettings with _$ThemeSettings {
   const factory ThemeSettings({
     required ThemeMode mode,
     required Color primaryColor,

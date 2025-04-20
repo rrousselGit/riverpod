@@ -82,7 +82,7 @@ final dep = Provider((ref) {
 });
 
 @freezed
-class FreezedExample with _$FreezedExample {
+sealed class FreezedExample with _$FreezedExample {
   factory FreezedExample() = _FreezedExample;
 }
 
@@ -138,6 +138,8 @@ class MyWidget extends ConsumerWidget {
 
     ref.watch(legacy(ClassThatOverridesEqual()));
     ref.watch(legacy(const ClassThatOverridesEqual()));
+    ref.watch(legacy(IndirectEqual()));
+    ref.watch(legacy(const IndirectEqual()));
     // expect_lint: provider_parameters
     ref.watch(legacy(Bar()));
     ref.watch(legacy(const Bar()));
@@ -164,6 +166,8 @@ class MyWidget extends ConsumerWidget {
 
     ref.watch(generatorProvider(value: ClassThatOverridesEqual()));
     ref.watch(generatorProvider(value: const ClassThatOverridesEqual()));
+    ref.watch(generatorProvider(value: IndirectEqual()));
+    ref.watch(generatorProvider(value: const IndirectEqual()));
 
     // expect_lint: provider_parameters
     ref.watch(generatorProvider(value: Bar()));
@@ -177,4 +181,25 @@ class MyWidget extends ConsumerWidget {
 
     return const Placeholder();
   }
+}
+
+// Regression test for https://github.com/rrousselGit/riverpod/issues/3302
+mixin Equatable {
+  List<Object?> get props;
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        other is Equatable &&
+            runtimeType == other.runtimeType &&
+            props == other.props;
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode ^ Object.hashAll(props);
+}
+
+class IndirectEqual with Equatable {
+  const IndirectEqual();
+  @override
+  List<Object?> get props => const [];
 }

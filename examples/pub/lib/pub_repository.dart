@@ -85,7 +85,7 @@ class PubRepository {
     /// the server caches the response for a long period of time.
     /// For the same of "http polling" showcase, we're separately fetching the likes
     /// count
-    final likesResponsFuture = dio.getUri<Map<String, Object?>>(
+    final likesResponseFuture = dio.getUri<Map<String, Object?>>(
       likesUri,
       cancelToken: cancelToken,
     );
@@ -93,7 +93,7 @@ class PubRepository {
     final metricsResponse =
         PackageMetricsResponse.fromJson((await responseFuture).data!);
     return metricsResponse.score.copyWith(
-      likeCount: (await likesResponsFuture).data!['likes']! as int,
+      likeCount: (await likesResponseFuture).data!['likes']! as int,
     );
   }
 
@@ -150,7 +150,7 @@ class PubRepository {
 const userToken = '';
 
 @freezed
-class PackageMetricsScore with _$PackageMetricsScore {
+sealed class PackageMetricsScore with _$PackageMetricsScore {
   factory PackageMetricsScore({
     required int grantedPoints,
     required int maxPoints,
@@ -164,7 +164,7 @@ class PackageMetricsScore with _$PackageMetricsScore {
 }
 
 @freezed
-class PackageMetricsResponse with _$PackageMetricsResponse {
+sealed class PackageMetricsResponse with _$PackageMetricsResponse {
   factory PackageMetricsResponse({
     required PackageMetricsScore score,
   }) = _PackageMetricsResponse;
@@ -174,7 +174,7 @@ class PackageMetricsResponse with _$PackageMetricsResponse {
 }
 
 @freezed
-class PackageDetails with _$PackageDetails {
+sealed class PackageDetails with _$PackageDetails {
   factory PackageDetails({
     required String version,
     required Pubspec pubspec,
@@ -185,7 +185,7 @@ class PackageDetails with _$PackageDetails {
 }
 
 @freezed
-class Package with _$Package {
+sealed class Package with _$Package {
   factory Package({
     required String name,
     required PackageDetails latest,
@@ -196,7 +196,7 @@ class Package with _$Package {
 }
 
 @freezed
-class LikedPackage with _$LikedPackage {
+sealed class LikedPackage with _$LikedPackage {
   factory LikedPackage({required String package, required bool liked}) =
       _LikedPackage;
 
@@ -205,7 +205,7 @@ class LikedPackage with _$LikedPackage {
 }
 
 @freezed
-class LikedPackagesResponse with _$LikedPackagesResponse {
+sealed class LikedPackagesResponse with _$LikedPackagesResponse {
   factory LikedPackagesResponse({required List<LikedPackage> likedPackages}) =
       _LikesPackagesResponse;
 
@@ -214,7 +214,7 @@ class LikedPackagesResponse with _$LikedPackagesResponse {
 }
 
 @freezed
-class PubPackagesResponse with _$PubPackagesResponse {
+sealed class PubPackagesResponse with _$PubPackagesResponse {
   factory PubPackagesResponse({
     required List<Package> packages,
   }) = _PubPackagesResponse;
@@ -224,7 +224,7 @@ class PubPackagesResponse with _$PubPackagesResponse {
 }
 
 @freezed
-class SearchPackage with _$SearchPackage {
+sealed class SearchPackage with _$SearchPackage {
   factory SearchPackage({required String package}) = _SearchPackage;
 
   factory SearchPackage.fromJson(Map<String, Object?> json) =>
@@ -232,7 +232,7 @@ class SearchPackage with _$SearchPackage {
 }
 
 @freezed
-class PubSearchResponse with _$PubSearchResponse {
+sealed class PubSearchResponse with _$PubSearchResponse {
   factory PubSearchResponse({
     required List<SearchPackage> packages,
   }) = _PubSearchResponse;

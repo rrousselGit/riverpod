@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'family_fn.g.dart';
@@ -10,5 +9,5 @@ String example(
   int param1, {
   String param2 = 'foo',
 }) {
-  return 'Hello $param1 & param2';
+  return 'Hello $param1 & $param2';
 }

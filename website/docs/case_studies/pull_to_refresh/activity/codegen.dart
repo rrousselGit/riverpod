@@ -5,7 +5,7 @@ part 'codegen.freezed.dart';
 
 /* SNIPPET START */
 @freezed
-class Activity with _$Activity {
+sealed class Activity with _$Activity {
   factory Activity({
     required String activity,
     required String type,

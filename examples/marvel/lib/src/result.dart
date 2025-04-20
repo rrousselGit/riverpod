@@ -3,11 +3,11 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'result.freezed.dart';
 
 @freezed
-class Result<T> with _$Result<T> {
+sealed class Result<T> with _$Result<T> {
   Result._();
-  factory Result.data(T value) = _ResultData<T>;
+  factory Result.data(T value) = _$ResultData<T>;
   factory Result.error(Object error, [StackTrace? stackTrace]) =
-      _ResultError<T>;
+      _$ResultError<T>;
 
   factory Result.guard(T Function() cb) {
     try {
@@ -26,25 +26,26 @@ class Result<T> with _$Result<T> {
   }
 
   Result<Res> chain<Res>(Res Function(T value) cb) {
-    return when(
-      data: (value) {
+    switch (this) {
+      case _$ResultData(:final value):
         try {
           return Result.data(cb(value));
         } catch (err, stack) {
           return Result.error(err, stack);
         }
-      },
-      error: Result.error,
-    );
+
+      case _$ResultError(:final error):
+        return Result.error(error);
+    }
   }
 
   T get dataOrThrow {
-    return when(
-      data: (value) => value,
-      error: (err, stack) {
+    switch (this) {
+      case _$ResultData(:final value):
+        return value;
+      case _$ResultError(:final error):
         // ignore: only_throw_errors
-        throw err;
-      },
-    );
+        throw error;
+    }
   }
 }

@@ -2,6 +2,8 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
+
 import 'reading_counter.dart';
 
 /* SNIPPET START */
@@ -16,7 +18,7 @@ class HomeView extends ConsumerWidget {
     ref.listen<int>(counterProvider, (int? previousCount, int newCount) {
       print('The counter changed $newCount');
     });
-    
+
     return Container();
   }
 }

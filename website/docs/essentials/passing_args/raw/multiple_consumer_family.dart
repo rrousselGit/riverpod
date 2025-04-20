@@ -28,8 +28,8 @@ class Example extends ConsumerWidget {
         // {@endtemplate}
         return Column(
           children: [
-            Text(recreational.valueOrNull?.activity ?? ''),
-            Text(cooking.valueOrNull?.activity ?? ''),
+            Text(recreational.value?.activity ?? ''),
+            Text(cooking.value?.activity ?? ''),
           ],
         );
       },

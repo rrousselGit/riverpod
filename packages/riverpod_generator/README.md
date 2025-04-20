@@ -3,7 +3,7 @@
 <a href="https://codecov.io/gh/rrousselgit/riverpod"><img src="https://codecov.io/gh/rrousselgit/riverpod/branch/master/graph/badge.svg" alt="codecov"></a>
 <a href="https://github.com/rrousselgit/riverpod"><img src="https://img.shields.io/github/stars/rrousselgit/riverpod.svg?style=flat&logo=github&colorB=deeppink&label=stars" alt="Star on Github"></a>
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="License: MIT"></a>
-<a href="https://discord.gg/Bbumvej"><img src="https://img.shields.io/discord/765557403865186374.svg?logo=discord&color=blue" alt="Discord"></a>
+<a href="https://discord.gg/hUUQkd9v"><img src="https://img.shields.io/discord/765557403865186374.svg?logo=discord&color=blue" alt="Discord"></a>
 
 <p align="center">
 <a href="https://www.netlify.com">
@@ -86,9 +86,10 @@ over the default Riverpod syntax.
 
 - [Riverpod generator](#riverpod-generator)
 - [Getting started](#getting-started)
-  - [Installing riverpod_generator](#installing-riverpod_generator)
+  - [Installing riverpod\_generator](#installing-riverpod_generator)
   - [Starting the code generator](#starting-the-code-generator)
   - [Defining our first "provider"](#defining-our-first-provider)
+  - [Global configuration](#global-configuration)
 
 # Getting started
 
@@ -98,7 +99,7 @@ To install riverpod_generator, edit your `pubspec.yaml` and add the following:
 
 ```yaml
 dependencies:
-  # or flutter_riverpod/hooks_riverpod as per https://riverpod.dev/docs/getting_started
+  # or flutter_riverpod/hooks_riverpod as per https://riverpod.dev/docs/introduction/getting_started
   riverpod:
   # the annotation package containing @riverpod
   riverpod_annotation:

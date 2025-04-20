@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,219 +10,33 @@ part of 'user.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-User _$UserFromJson(Map<String, dynamic> json) {
-  return _User.fromJson(json);
-}
 
 /// @nodoc
 mixin _$User {
-  int get reputation => throw _privateConstructorUsedError;
-  int get userId => throw _privateConstructorUsedError;
-  BadgeCount? get badgeCounts => throw _privateConstructorUsedError;
-  String get displayName => throw _privateConstructorUsedError;
-  String get profileImage => throw _privateConstructorUsedError;
-  String get link => throw _privateConstructorUsedError;
-
-  /// Serializes this User to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+  int get reputation;
+  int get userId;
+  BadgeCount? get badgeCounts;
+  String get displayName;
+  String get profileImage;
+  String get link;
 
   /// Create a copy of User
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $UserCopyWith<User> get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $UserCopyWith<$Res> {
-  factory $UserCopyWith(User value, $Res Function(User) then) =
-      _$UserCopyWithImpl<$Res, User>;
-  @useResult
-  $Res call(
-      {int reputation,
-      int userId,
-      BadgeCount? badgeCounts,
-      String displayName,
-      String profileImage,
-      String link});
-
-  $BadgeCountCopyWith<$Res>? get badgeCounts;
-}
-
-/// @nodoc
-class _$UserCopyWithImpl<$Res, $Val extends User>
-    implements $UserCopyWith<$Res> {
-  _$UserCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of User
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? reputation = null,
-    Object? userId = null,
-    Object? badgeCounts = freezed,
-    Object? displayName = null,
-    Object? profileImage = null,
-    Object? link = null,
-  }) {
-    return _then(_value.copyWith(
-      reputation: null == reputation
-          ? _value.reputation
-          : reputation // ignore: cast_nullable_to_non_nullable
-              as int,
-      userId: null == userId
-          ? _value.userId
-          : userId // ignore: cast_nullable_to_non_nullable
-              as int,
-      badgeCounts: freezed == badgeCounts
-          ? _value.badgeCounts
-          : badgeCounts // ignore: cast_nullable_to_non_nullable
-              as BadgeCount?,
-      displayName: null == displayName
-          ? _value.displayName
-          : displayName // ignore: cast_nullable_to_non_nullable
-              as String,
-      profileImage: null == profileImage
-          ? _value.profileImage
-          : profileImage // ignore: cast_nullable_to_non_nullable
-              as String,
-      link: null == link
-          ? _value.link
-          : link // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
-  }
+  $UserCopyWith<User> get copyWith =>
+      _$UserCopyWithImpl<User>(this as User, _$identity);
 
-  /// Create a copy of User
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $BadgeCountCopyWith<$Res>? get badgeCounts {
-    if (_value.badgeCounts == null) {
-      return null;
-    }
-
-    return $BadgeCountCopyWith<$Res>(_value.badgeCounts!, (value) {
-      return _then(_value.copyWith(badgeCounts: value) as $Val);
-    });
-  }
-}
-
-/// @nodoc
-abstract class _$$UserImplCopyWith<$Res> implements $UserCopyWith<$Res> {
-  factory _$$UserImplCopyWith(
-          _$UserImpl value, $Res Function(_$UserImpl) then) =
-      __$$UserImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call(
-      {int reputation,
-      int userId,
-      BadgeCount? badgeCounts,
-      String displayName,
-      String profileImage,
-      String link});
-
-  @override
-  $BadgeCountCopyWith<$Res>? get badgeCounts;
-}
-
-/// @nodoc
-class __$$UserImplCopyWithImpl<$Res>
-    extends _$UserCopyWithImpl<$Res, _$UserImpl>
-    implements _$$UserImplCopyWith<$Res> {
-  __$$UserImplCopyWithImpl(_$UserImpl _value, $Res Function(_$UserImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of User
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? reputation = null,
-    Object? userId = null,
-    Object? badgeCounts = freezed,
-    Object? displayName = null,
-    Object? profileImage = null,
-    Object? link = null,
-  }) {
-    return _then(_$UserImpl(
-      reputation: null == reputation
-          ? _value.reputation
-          : reputation // ignore: cast_nullable_to_non_nullable
-              as int,
-      userId: null == userId
-          ? _value.userId
-          : userId // ignore: cast_nullable_to_non_nullable
-              as int,
-      badgeCounts: freezed == badgeCounts
-          ? _value.badgeCounts
-          : badgeCounts // ignore: cast_nullable_to_non_nullable
-              as BadgeCount?,
-      displayName: null == displayName
-          ? _value.displayName
-          : displayName // ignore: cast_nullable_to_non_nullable
-              as String,
-      profileImage: null == profileImage
-          ? _value.profileImage
-          : profileImage // ignore: cast_nullable_to_non_nullable
-              as String,
-      link: null == link
-          ? _value.link
-          : link // ignore: cast_nullable_to_non_nullable
-              as String,
-    ));
-  }
-}
-
-/// @nodoc
-
-@JsonSerializable(fieldRename: FieldRename.snake)
-class _$UserImpl implements _User {
-  _$UserImpl(
-      {required this.reputation,
-      required this.userId,
-      this.badgeCounts,
-      required this.displayName,
-      required this.profileImage,
-      required this.link});
-
-  factory _$UserImpl.fromJson(Map<String, dynamic> json) =>
-      _$$UserImplFromJson(json);
-
-  @override
-  final int reputation;
-  @override
-  final int userId;
-  @override
-  final BadgeCount? badgeCounts;
-  @override
-  final String displayName;
-  @override
-  final String profileImage;
-  @override
-  final String link;
-
-  @override
-  String toString() {
-    return 'User(reputation: $reputation, userId: $userId, badgeCounts: $badgeCounts, displayName: $displayName, profileImage: $profileImage, link: $link)';
-  }
+  /// Serializes this User to a JSON map.
+  Map<String, dynamic> toJson();
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$UserImpl &&
+            other is User &&
             (identical(other.reputation, reputation) ||
                 other.reputation == reputation) &&
             (identical(other.userId, userId) || other.userId == userId) &&
@@ -239,190 +54,260 @@ class _$UserImpl implements _User {
   int get hashCode => Object.hash(runtimeType, reputation, userId, badgeCounts,
       displayName, profileImage, link);
 
+  @override
+  String toString() {
+    return 'User(reputation: $reputation, userId: $userId, badgeCounts: $badgeCounts, displayName: $displayName, profileImage: $profileImage, link: $link)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $UserCopyWith<$Res> {
+  factory $UserCopyWith(User value, $Res Function(User) _then) =
+      _$UserCopyWithImpl;
+  @useResult
+  $Res call(
+      {int reputation,
+      int userId,
+      BadgeCount? badgeCounts,
+      String displayName,
+      String profileImage,
+      String link});
+
+  $BadgeCountCopyWith<$Res>? get badgeCounts;
+}
+
+/// @nodoc
+class _$UserCopyWithImpl<$Res> implements $UserCopyWith<$Res> {
+  _$UserCopyWithImpl(this._self, this._then);
+
+  final User _self;
+  final $Res Function(User) _then;
+
   /// Create a copy of User
   /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? reputation = null,
+    Object? userId = null,
+    Object? badgeCounts = freezed,
+    Object? displayName = null,
+    Object? profileImage = null,
+    Object? link = null,
+  }) {
+    return _then(_self.copyWith(
+      reputation: null == reputation
+          ? _self.reputation
+          : reputation // ignore: cast_nullable_to_non_nullable
+              as int,
+      userId: null == userId
+          ? _self.userId
+          : userId // ignore: cast_nullable_to_non_nullable
+              as int,
+      badgeCounts: freezed == badgeCounts
+          ? _self.badgeCounts
+          : badgeCounts // ignore: cast_nullable_to_non_nullable
+              as BadgeCount?,
+      displayName: null == displayName
+          ? _self.displayName
+          : displayName // ignore: cast_nullable_to_non_nullable
+              as String,
+      profileImage: null == profileImage
+          ? _self.profileImage
+          : profileImage // ignore: cast_nullable_to_non_nullable
+              as String,
+      link: null == link
+          ? _self.link
+          : link // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+
+  /// Create a copy of User
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  _$$UserImplCopyWith<_$UserImpl> get copyWith =>
-      __$$UserImplCopyWithImpl<_$UserImpl>(this, _$identity);
+  $BadgeCountCopyWith<$Res>? get badgeCounts {
+    if (_self.badgeCounts == null) {
+      return null;
+    }
+
+    return $BadgeCountCopyWith<$Res>(_self.badgeCounts!, (value) {
+      return _then(_self.copyWith(badgeCounts: value));
+    });
+  }
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class _User implements User {
+  _User(
+      {required this.reputation,
+      required this.userId,
+      this.badgeCounts,
+      required this.displayName,
+      required this.profileImage,
+      required this.link});
+  factory _User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+
+  @override
+  final int reputation;
+  @override
+  final int userId;
+  @override
+  final BadgeCount? badgeCounts;
+  @override
+  final String displayName;
+  @override
+  final String profileImage;
+  @override
+  final String link;
+
+  /// Create a copy of User
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$UserCopyWith<_User> get copyWith =>
+      __$UserCopyWithImpl<_User>(this, _$identity);
 
   @override
   Map<String, dynamic> toJson() {
-    return _$$UserImplToJson(
+    return _$UserToJson(
       this,
     );
-  }
-}
-
-abstract class _User implements User {
-  factory _User(
-      {required final int reputation,
-      required final int userId,
-      final BadgeCount? badgeCounts,
-      required final String displayName,
-      required final String profileImage,
-      required final String link}) = _$UserImpl;
-
-  factory _User.fromJson(Map<String, dynamic> json) = _$UserImpl.fromJson;
-
-  @override
-  int get reputation;
-  @override
-  int get userId;
-  @override
-  BadgeCount? get badgeCounts;
-  @override
-  String get displayName;
-  @override
-  String get profileImage;
-  @override
-  String get link;
-
-  /// Create a copy of User
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$UserImplCopyWith<_$UserImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-BadgeCount _$BadgeCountFromJson(Map<String, dynamic> json) {
-  return _BadgeCount.fromJson(json);
-}
-
-/// @nodoc
-mixin _$BadgeCount {
-  int get bronze => throw _privateConstructorUsedError;
-  int get silver => throw _privateConstructorUsedError;
-  int get gold => throw _privateConstructorUsedError;
-
-  /// Serializes this BadgeCount to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of BadgeCount
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $BadgeCountCopyWith<BadgeCount> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $BadgeCountCopyWith<$Res> {
-  factory $BadgeCountCopyWith(
-          BadgeCount value, $Res Function(BadgeCount) then) =
-      _$BadgeCountCopyWithImpl<$Res, BadgeCount>;
-  @useResult
-  $Res call({int bronze, int silver, int gold});
-}
-
-/// @nodoc
-class _$BadgeCountCopyWithImpl<$Res, $Val extends BadgeCount>
-    implements $BadgeCountCopyWith<$Res> {
-  _$BadgeCountCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of BadgeCount
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? bronze = null,
-    Object? silver = null,
-    Object? gold = null,
-  }) {
-    return _then(_value.copyWith(
-      bronze: null == bronze
-          ? _value.bronze
-          : bronze // ignore: cast_nullable_to_non_nullable
-              as int,
-      silver: null == silver
-          ? _value.silver
-          : silver // ignore: cast_nullable_to_non_nullable
-              as int,
-      gold: null == gold
-          ? _value.gold
-          : gold // ignore: cast_nullable_to_non_nullable
-              as int,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$BadgeCountImplCopyWith<$Res>
-    implements $BadgeCountCopyWith<$Res> {
-  factory _$$BadgeCountImplCopyWith(
-          _$BadgeCountImpl value, $Res Function(_$BadgeCountImpl) then) =
-      __$$BadgeCountImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({int bronze, int silver, int gold});
-}
-
-/// @nodoc
-class __$$BadgeCountImplCopyWithImpl<$Res>
-    extends _$BadgeCountCopyWithImpl<$Res, _$BadgeCountImpl>
-    implements _$$BadgeCountImplCopyWith<$Res> {
-  __$$BadgeCountImplCopyWithImpl(
-      _$BadgeCountImpl _value, $Res Function(_$BadgeCountImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of BadgeCount
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? bronze = null,
-    Object? silver = null,
-    Object? gold = null,
-  }) {
-    return _then(_$BadgeCountImpl(
-      bronze: null == bronze
-          ? _value.bronze
-          : bronze // ignore: cast_nullable_to_non_nullable
-              as int,
-      silver: null == silver
-          ? _value.silver
-          : silver // ignore: cast_nullable_to_non_nullable
-              as int,
-      gold: null == gold
-          ? _value.gold
-          : gold // ignore: cast_nullable_to_non_nullable
-              as int,
-    ));
-  }
-}
-
-/// @nodoc
-@JsonSerializable()
-class _$BadgeCountImpl implements _BadgeCount {
-  _$BadgeCountImpl(
-      {required this.bronze, required this.silver, required this.gold});
-
-  factory _$BadgeCountImpl.fromJson(Map<String, dynamic> json) =>
-      _$$BadgeCountImplFromJson(json);
-
-  @override
-  final int bronze;
-  @override
-  final int silver;
-  @override
-  final int gold;
-
-  @override
-  String toString() {
-    return 'BadgeCount(bronze: $bronze, silver: $silver, gold: $gold)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$BadgeCountImpl &&
+            other is _User &&
+            (identical(other.reputation, reputation) ||
+                other.reputation == reputation) &&
+            (identical(other.userId, userId) || other.userId == userId) &&
+            (identical(other.badgeCounts, badgeCounts) ||
+                other.badgeCounts == badgeCounts) &&
+            (identical(other.displayName, displayName) ||
+                other.displayName == displayName) &&
+            (identical(other.profileImage, profileImage) ||
+                other.profileImage == profileImage) &&
+            (identical(other.link, link) || other.link == link));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, reputation, userId, badgeCounts,
+      displayName, profileImage, link);
+
+  @override
+  String toString() {
+    return 'User(reputation: $reputation, userId: $userId, badgeCounts: $badgeCounts, displayName: $displayName, profileImage: $profileImage, link: $link)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$UserCopyWith<$Res> implements $UserCopyWith<$Res> {
+  factory _$UserCopyWith(_User value, $Res Function(_User) _then) =
+      __$UserCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {int reputation,
+      int userId,
+      BadgeCount? badgeCounts,
+      String displayName,
+      String profileImage,
+      String link});
+
+  @override
+  $BadgeCountCopyWith<$Res>? get badgeCounts;
+}
+
+/// @nodoc
+class __$UserCopyWithImpl<$Res> implements _$UserCopyWith<$Res> {
+  __$UserCopyWithImpl(this._self, this._then);
+
+  final _User _self;
+  final $Res Function(_User) _then;
+
+  /// Create a copy of User
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? reputation = null,
+    Object? userId = null,
+    Object? badgeCounts = freezed,
+    Object? displayName = null,
+    Object? profileImage = null,
+    Object? link = null,
+  }) {
+    return _then(_User(
+      reputation: null == reputation
+          ? _self.reputation
+          : reputation // ignore: cast_nullable_to_non_nullable
+              as int,
+      userId: null == userId
+          ? _self.userId
+          : userId // ignore: cast_nullable_to_non_nullable
+              as int,
+      badgeCounts: freezed == badgeCounts
+          ? _self.badgeCounts
+          : badgeCounts // ignore: cast_nullable_to_non_nullable
+              as BadgeCount?,
+      displayName: null == displayName
+          ? _self.displayName
+          : displayName // ignore: cast_nullable_to_non_nullable
+              as String,
+      profileImage: null == profileImage
+          ? _self.profileImage
+          : profileImage // ignore: cast_nullable_to_non_nullable
+              as String,
+      link: null == link
+          ? _self.link
+          : link // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+
+  /// Create a copy of User
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $BadgeCountCopyWith<$Res>? get badgeCounts {
+    if (_self.badgeCounts == null) {
+      return null;
+    }
+
+    return $BadgeCountCopyWith<$Res>(_self.badgeCounts!, (value) {
+      return _then(_self.copyWith(badgeCounts: value));
+    });
+  }
+}
+
+/// @nodoc
+mixin _$BadgeCount {
+  int get bronze;
+  int get silver;
+  int get gold;
+
+  /// Create a copy of BadgeCount
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $BadgeCountCopyWith<BadgeCount> get copyWith =>
+      _$BadgeCountCopyWithImpl<BadgeCount>(this as BadgeCount, _$identity);
+
+  /// Serializes this BadgeCount to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is BadgeCount &&
             (identical(other.bronze, bronze) || other.bronze == bronze) &&
             (identical(other.silver, silver) || other.silver == silver) &&
             (identical(other.gold, gold) || other.gold == gold));
@@ -432,42 +317,145 @@ class _$BadgeCountImpl implements _BadgeCount {
   @override
   int get hashCode => Object.hash(runtimeType, bronze, silver, gold);
 
-  /// Create a copy of BadgeCount
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$BadgeCountImplCopyWith<_$BadgeCountImpl> get copyWith =>
-      __$$BadgeCountImplCopyWithImpl<_$BadgeCountImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$BadgeCountImplToJson(
-      this,
-    );
+  String toString() {
+    return 'BadgeCount(bronze: $bronze, silver: $silver, gold: $gold)';
   }
 }
 
-abstract class _BadgeCount implements BadgeCount {
-  factory _BadgeCount(
-      {required final int bronze,
-      required final int silver,
-      required final int gold}) = _$BadgeCountImpl;
+/// @nodoc
+abstract mixin class $BadgeCountCopyWith<$Res> {
+  factory $BadgeCountCopyWith(
+          BadgeCount value, $Res Function(BadgeCount) _then) =
+      _$BadgeCountCopyWithImpl;
+  @useResult
+  $Res call({int bronze, int silver, int gold});
+}
 
-  factory _BadgeCount.fromJson(Map<String, dynamic> json) =
-      _$BadgeCountImpl.fromJson;
+/// @nodoc
+class _$BadgeCountCopyWithImpl<$Res> implements $BadgeCountCopyWith<$Res> {
+  _$BadgeCountCopyWithImpl(this._self, this._then);
+
+  final BadgeCount _self;
+  final $Res Function(BadgeCount) _then;
+
+  /// Create a copy of BadgeCount
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? bronze = null,
+    Object? silver = null,
+    Object? gold = null,
+  }) {
+    return _then(_self.copyWith(
+      bronze: null == bronze
+          ? _self.bronze
+          : bronze // ignore: cast_nullable_to_non_nullable
+              as int,
+      silver: null == silver
+          ? _self.silver
+          : silver // ignore: cast_nullable_to_non_nullable
+              as int,
+      gold: null == gold
+          ? _self.gold
+          : gold // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _BadgeCount implements BadgeCount {
+  _BadgeCount({required this.bronze, required this.silver, required this.gold});
+  factory _BadgeCount.fromJson(Map<String, dynamic> json) =>
+      _$BadgeCountFromJson(json);
 
   @override
-  int get bronze;
+  final int bronze;
   @override
-  int get silver;
+  final int silver;
   @override
-  int get gold;
+  final int gold;
 
   /// Create a copy of BadgeCount
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$BadgeCountImplCopyWith<_$BadgeCountImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  _$BadgeCountCopyWith<_BadgeCount> get copyWith =>
+      __$BadgeCountCopyWithImpl<_BadgeCount>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$BadgeCountToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _BadgeCount &&
+            (identical(other.bronze, bronze) || other.bronze == bronze) &&
+            (identical(other.silver, silver) || other.silver == silver) &&
+            (identical(other.gold, gold) || other.gold == gold));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, bronze, silver, gold);
+
+  @override
+  String toString() {
+    return 'BadgeCount(bronze: $bronze, silver: $silver, gold: $gold)';
+  }
 }
+
+/// @nodoc
+abstract mixin class _$BadgeCountCopyWith<$Res>
+    implements $BadgeCountCopyWith<$Res> {
+  factory _$BadgeCountCopyWith(
+          _BadgeCount value, $Res Function(_BadgeCount) _then) =
+      __$BadgeCountCopyWithImpl;
+  @override
+  @useResult
+  $Res call({int bronze, int silver, int gold});
+}
+
+/// @nodoc
+class __$BadgeCountCopyWithImpl<$Res> implements _$BadgeCountCopyWith<$Res> {
+  __$BadgeCountCopyWithImpl(this._self, this._then);
+
+  final _BadgeCount _self;
+  final $Res Function(_BadgeCount) _then;
+
+  /// Create a copy of BadgeCount
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? bronze = null,
+    Object? silver = null,
+    Object? gold = null,
+  }) {
+    return _then(_BadgeCount(
+      bronze: null == bronze
+          ? _self.bronze
+          : bronze // ignore: cast_nullable_to_non_nullable
+              as int,
+      silver: null == silver
+          ? _self.silver
+          : silver // ignore: cast_nullable_to_non_nullable
+              as int,
+      gold: null == gold
+          ? _self.gold
+          : gold // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+// dart format on

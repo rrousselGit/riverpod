@@ -4,7 +4,6 @@ version: 2
 ---
 
 import { AutoSnippet, When } from "/src/components/CodeSnippet";
-import createContainer from "!!raw-loader!./testing/create_container.dart";
 import unitTest from "!!raw-loader!./testing/unit_test.dart";
 import widgetTest from "!!raw-loader!./testing/widget_test.dart";
 import fullWidgetTest from "!!raw-loader!./testing/full_widget_test.dart";
@@ -47,12 +46,7 @@ The main difference with any other test is that we will want to create
 a `ProviderContainer` object. This object will enable our test to interact
 with providers.
 
-It is encouraged to make a testing utility for both creating and disposing
-of a `ProviderContainer` object:
-
-<AutoSnippet raw={createContainer} />
-
-Then, we can define a `test` using this utility:
+A typical test using `ProviderContainer` will look like:
 
 <AutoSnippet raw={unitTest} />
 

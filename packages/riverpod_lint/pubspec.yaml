@@ -1,6 +1,6 @@
 name: riverpod_lint
 description: Riverpod_lint is a developer tool for users of Riverpod, designed to help stop common issues and simplify repetitive tasks.
-version: 2.6.4
+version: 3.0.0-dev.4
 homepage: https://riverpod.dev
 repository: https://github.com/rrousselGit/river_pod
 issue_tracker: https://github.com/rrousselGit/riverpod/issues
@@ -8,22 +8,23 @@ funding:
   - https://github.com/sponsors/rrousselGit/
 
 environment:
-  sdk: ">=2.17.0 <4.0.0"
+  sdk: ^3.6.0
+
+resolution: workspace
 
 dependencies:
   analyzer: ^7.0.0
-  analyzer_plugin: ^0.12.0
+  analyzer_plugin: ^0.13.0
   collection: ^1.16.0
   custom_lint_builder: ^0.7.0
   meta: ^1.7.0
   path: ^1.8.1
-  riverpod: 2.6.1
-  riverpod_analyzer_utils: 0.5.9
+  riverpod: 3.0.0-dev.3
+  riverpod_analyzer_utils: 1.0.0-dev.1
   source_span: ^1.8.0
   yaml: ^3.1.1
 
 dev_dependencies:
-  hotreloader: ^3.0.5
   mockito: ^5.0.0
   test: ^1.21.1
   watcher: ^1.0.1

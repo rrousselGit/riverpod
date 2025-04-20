@@ -1,5 +1,8 @@
+// ignore_for_file: invalid_use_of_internal_member
+
 import 'package:flutter/material.dart' hide Listener;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
 
@@ -11,7 +14,7 @@ void main() {
       final dep = StateProvider((ref) => 0);
       final provider = Provider((ref) => ref.watch(dep));
 
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final listener = Listener<num>();
 
       await tester.pumpWidget(
@@ -47,7 +50,7 @@ void main() {
     });
 
     testWidgets('can mark parents as dirty during onChange', (tester) async {
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final provider = StateProvider((ref) => 0);
       final onChange = Listener<int>();
 
@@ -79,7 +82,7 @@ void main() {
     testWidgets('calls onChange synchronously if possible', (tester) async {
       final provider = StateProvider((ref) => 0);
       final onChange = Listener<int>();
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       await tester.pumpWidget(
         UncontrolledProviderScope(
@@ -111,7 +114,7 @@ void main() {
       final provider = StateProvider((ref) => 0);
       final isEven = Provider((ref) => ref.watch(provider).isEven);
       final onChange = Listener<bool>();
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       await tester.pumpWidget(
         UncontrolledProviderScope(
@@ -140,7 +143,7 @@ void main() {
     testWidgets('closes the subscription on dispose', (tester) async {
       final provider = StateProvider((ref) => 0);
       final onChange = Listener<int>();
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       await tester.pumpWidget(
         UncontrolledProviderScope(
@@ -154,16 +157,19 @@ void main() {
         ),
       );
 
-      expect(container.readProviderElement(provider).hasListeners, true);
+      expect(container.readProviderElement(provider).hasNonWeakListeners, true);
 
       await tester.pumpWidget(Container());
 
-      expect(container.readProviderElement(provider).hasListeners, false);
+      expect(
+        container.readProviderElement(provider).hasNonWeakListeners,
+        false,
+      );
     });
 
     testWidgets('closes the subscription on provider change', (tester) async {
       final provider = StateProvider.family<int, int>((ref, _) => 0);
-      final container = createContainer();
+      final container = ProviderContainer.test();
 
       await tester.pumpWidget(
         UncontrolledProviderScope(
@@ -177,8 +183,14 @@ void main() {
         ),
       );
 
-      expect(container.readProviderElement(provider(0)).hasListeners, true);
-      expect(container.readProviderElement(provider(1)).hasListeners, false);
+      expect(
+        container.readProviderElement(provider(0)).hasNonWeakListeners,
+        true,
+      );
+      expect(
+        container.readProviderElement(provider(1)).hasNonWeakListeners,
+        false,
+      );
 
       await tester.pumpWidget(
         UncontrolledProviderScope(
@@ -192,14 +204,20 @@ void main() {
         ),
       );
 
-      expect(container.readProviderElement(provider(0)).hasListeners, false);
-      expect(container.readProviderElement(provider(1)).hasListeners, true);
+      expect(
+        container.readProviderElement(provider(0)).hasNonWeakListeners,
+        false,
+      );
+      expect(
+        container.readProviderElement(provider(1)).hasNonWeakListeners,
+        true,
+      );
     });
 
     testWidgets('listen to the new provider on provider change',
         (tester) async {
       final provider = StateProvider.family<int, int>((ref, _) => 0);
-      final container = createContainer();
+      final container = ProviderContainer.test();
       final onChange = Listener<int>();
 
       await tester.pumpWidget(
@@ -239,10 +257,10 @@ void main() {
     testWidgets('supports Changing the ProviderContainer', (tester) async {
       final provider = Provider((ref) => 0);
       final onChange = Listener<int>();
-      final container = createContainer(
+      final container = ProviderContainer.test(
         overrides: [provider.overrideWithValue(0)],
       );
-      final container2 = createContainer(
+      final container2 = ProviderContainer.test(
         overrides: [provider.overrideWithValue(0)],
       );
 
@@ -285,7 +303,7 @@ void main() {
     testWidgets('supports overriding Providers', (tester) async {
       final provider = Provider((ref) => 0);
       final onChange = Listener<int>();
-      final container = createContainer(
+      final container = ProviderContainer.test(
         overrides: [provider.overrideWithValue(42)],
       );
 

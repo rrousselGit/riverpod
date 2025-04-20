@@ -3,7 +3,7 @@
 So you want to contribute? Awesome! Contributions are welcomed.  
 Before we get started on setting up the development environment, check out
 our [Code of conduct](./CODE_OF_CONDUCT.md).  
-You will also want to join our [Discord](https://discord.gg/Bbumvej) to chat.  
+You will also want to join our [Discord](https://discord.gg/GSt793j6eT) to chat.  
 Feel free to ping @rrousselGit there for questions related to contributing.
 
 With that out of the way, the way to contribute may vary depending on what you

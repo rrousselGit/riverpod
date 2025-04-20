@@ -3,7 +3,7 @@
 <a href="https://codecov.io/gh/rrousselgit/riverpod"><img src="https://codecov.io/gh/rrousselgit/riverpod/branch/master/graph/badge.svg" alt="codecov"></a>
 <a href="https://github.com/rrousselgit/riverpod"><img src="https://img.shields.io/github/stars/rrousselgit/riverpod.svg?style=flat&logo=github&colorB=deeppink&label=stars" alt="Star on Github"></a>
 <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-purple.svg" alt="License: MIT"></a>
-<a href="https://discord.gg/Bbumvej"><img src="https://img.shields.io/discord/765557403865186374.svg?logo=discord&color=blue" alt="Discord"></a>
+<a href="https://discord.gg/hUUQkd9v"><img src="https://img.shields.io/discord/765557403865186374.svg?logo=discord&color=blue" alt="Discord"></a>
 
 <p align="center">
 <a href="https://www.netlify.com">
@@ -51,8 +51,10 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [functional\_ref (riverpod\_generator only)](#functional_ref-riverpod_generator-only)
   - [notifier\_extends (riverpod\_generator only)](#notifier_extends-riverpod_generator-only)
   - [avoid\_ref\_inside\_state\_dispose](#avoid_ref_inside_state_dispose)
+  - [avoid\_keep\_alive\_dependency\_inside\_auto\_dispose (riverpod\_generator only)](#avoid_keep_alive_dependency_inside_auto_dispose-riverpod_generator-only)
   - [notifier\_build (riverpod\_generator only)](#notifier_build-riverpod_generator-only)
-  - [async\_value\_nullable\_patttern](#async_value_nullable_patttern)
+  - [riverpod\_syntax\_error (riverpod\_generator only)](#riverpod_syntax_error-riverpod_generator-only)
+  - [async\_value\_nullable\_pattern](#async_value_nullable_pattern)
 - [protected\_notifier\_properties](#protected_notifier_properties)
 - [All assists](#all-assists)
   - [Wrap widgets with a `Consumer`](#wrap-widgets-with-a-consumer)
@@ -61,7 +63,7 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [Convert widget to `ConsumerStatefulWidget`](#convert-widget-to-consumerstatefulwidget)
   - [Convert functional `@riverpod` to class variant](#convert-functional-riverpod-to-class-variant)
   - [Convert class `@riverpod` to functional variant](#convert-class-riverpod-to-functional-variant)
-- [Upcoming content:](#upcoming-content)
+- [Migrations](#migrations)
 
 ## Installing riverpod_lint
 
@@ -229,6 +231,28 @@ void example(Ref ref) {
   // scopedProvider is scoped and as such specifying "dependencies" is required.
   ref.watch(scopedProvider);
 }
+
+// For non-provider objects that use scoped providers, we can use `@Dependencies`
+// for similar purposes.
+@Dependencies([scoped])
+class BookView extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final selectedBookID = ref.watch(scopedProvider);
+    return Text(selectedBookID.toString());
+  }
+}
+
+// Alternatively, widgets specifically can opt to override scoped providers
+// using `ProviderScope`:
+ProviderScope(
+  overrides: [
+    scopedProvider.overrideWithValue(42),
+  ],
+  // Even though BookView uses "scopedProvider", the linter won't complain
+  // as we override the provider.
+  child: BookView(),
+)
 ```
 
 **Bad**:
@@ -248,6 +272,15 @@ void example(Ref ref) {
 void example(Ref ref) {
   // rootProvider is not a scoped provider. As such it shouldn't be listed in "dependencies"
   ref.watch(rootProvider);
+}
+
+class BookView extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // If a function/class uses a scoped provider, they must specify `@Dependencies`
+    final selectedBookID = ref.watch(scopedProvider);
+    return Text(selectedBookID.toString());
+  }
 }
 ```
 
@@ -588,6 +621,26 @@ class _MyWidgetState extends ConsumerState<MyWidget> {
 }
 ```
 
+### avoid_keep_alive_dependency_inside_auto_dispose (riverpod_generator only)
+
+Warn when a `keepAlive` provider tries to use a non-`keepAlive` provider.
+
+This is discouraged because such relationship would cause the non-`keepAlive` provider
+to behave as a `keepAlive`, even though it isn't marked as such.
+
+**Bad**:
+
+```dart
+@riverpod
+int nonKeepAlive(Ref ref) => 0;
+
+@Riverpod(keepAlive: true)
+int fn(Ref ref) {
+  // `keepAlive` providers should only depend on keepAlive providers.
+  ref.watch(nonKeepAliveProvider);
+}
+```
+
 ### notifier_build (riverpod_generator only)
 
 Classes annotated by `@riverpod` must have the `build` method.
@@ -611,7 +664,34 @@ class Example extends _$Example {
 class Example extends _$Example {}
 ```
 
-### async_value_nullable_patttern
+### riverpod_syntax_error (riverpod_generator only)
+
+A general purpose lint, for when an exception is detected
+in `riverpod_generator`. This reports the error in the relevant file.
+
+For example, an error will be shown if a "notifier" is abstract:
+
+**Good**:
+
+```dart
+@riverpod
+class Example extends _$Example {
+  @override
+  int build() => 0;
+}
+```
+
+**Bad**:
+
+```dart
+@riverpod
+abstract class Example extends _$Example {
+  @override
+  int build() => 0;
+}
+```
+
+### async_value_nullable_pattern
 
 Warn if the pattern `AsyncValue(:final value?)` is used when the data
 is possibly nullable.
@@ -722,12 +802,17 @@ class B extends _$B {
 
 ![Convert provider to functional variant sample](https://raw.githubusercontent.com/rrousselGit/riverpod/master/packages/riverpod_lint/resources/convert_to_functional_provider.gif)
 
-## Upcoming content:
+## Migrations
 
-- Warn if a provider's `dependencies` parameter doesn't match the `ref.watch/read/listen` usages.
-- Refactoring to convert AsyncNotifier<>Notifier + autoDispose/family variants
-- Warn if an `AsyncNotifierProvider.autoDispose` doesn't use an `AutoDisposeAsyncNotifier`
+Migrations are a list of warnings with an automatic quick-fix, to help
+upgrading to higher Riverpod versions.
+They are designed to be used only once.
 
-and much more
+As a general rule, it is recommended to apply migration by running the following
+in your terminal:
+
+```sh
+dart run custom_lint --fix
+```
 
 [custom_lint]: https://pub.dev/packages/custom_lint

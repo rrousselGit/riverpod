@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -56,24 +55,27 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
-          repositoryProvider.overrideWithValue(FakeRepository())
+          repositoryProvider.overrideWithValue(FakeRepository()),
         ],
         // Our application, which will read from todoListProvider to display the todo-list.
         // You may extract this into a MyApp widget
         child: MaterialApp(
           home: Scaffold(
-            body: Consumer(builder: (context, ref, _) {
-              final todos = ref.watch(todoListProvider);
-              // The list of todos is loading or in error
-              if (todos.asData == null) {
-                return const CircularProgressIndicator();
-              }
-              return ListView(
-                children: [
-                  for (final todo in todos.asData!.value) TodoItem(todo: todo)
-                ],
-              );
-            }),
+            body: Consumer(
+              builder: (context, ref, _) {
+                final todos = ref.watch(todoListProvider);
+                // The list of todos is loading or in error
+                if (todos.asData == null) {
+                  return const CircularProgressIndicator();
+                }
+                return ListView(
+                  children: [
+                    for (final todo in todos.asData!.value)
+                      TodoItem(todo: todo),
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ),

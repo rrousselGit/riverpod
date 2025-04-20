@@ -25,13 +25,12 @@ class MyApp extends StatelessWidget {
             /// current theme, without having a BuildContext.
             themeProvider.overrideWithValue(theme),
           ],
-          child: ListTileTheme(
-            textColor: const Color(0xFFe7e8eb),
-            child: child!,
+          child: const ListTileTheme(
+            textColor: Color(0xFFe7e8eb),
+            child: MyHomePage(),
           ),
         );
       },
-      home: const MyHomePage(),
     );
   }
 }

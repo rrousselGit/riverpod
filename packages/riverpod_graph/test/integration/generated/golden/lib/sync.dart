@@ -1,4 +1,3 @@
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'sync.g.dart';
@@ -30,7 +29,7 @@ String family(
 }
 
 /// A private generated provider.
-final AutoDisposeProvider<String> privateProvider = _privateProvider;
+const privateProvider = _privateProvider;
 
 @riverpod
 String _private(Ref ref) {
@@ -47,7 +46,7 @@ class PublicClass extends _$PublicClass {
 }
 
 /// A private generate provider from a class.
-final privateClassProvider = _privateClassProvider;
+const privateClassProvider = _privateClassProvider;
 
 @riverpod
 class _PrivateClass extends _$PrivateClass {

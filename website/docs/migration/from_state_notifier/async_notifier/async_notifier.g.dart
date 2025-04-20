@@ -8,22 +8,77 @@ part of 'async_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+@ProviderFor(AsyncTodosNotifier)
+const asyncTodosNotifierProvider = AsyncTodosNotifierProvider._();
+
+final class AsyncTodosNotifierProvider
+    extends $AsyncNotifierProvider<AsyncTodosNotifier, List<Todo>> {
+  const AsyncTodosNotifierProvider._(
+      {super.runNotifierBuildOverride, AsyncTodosNotifier Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'asyncTodosNotifierProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final AsyncTodosNotifier Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$asyncTodosNotifierHash();
+
+  @$internal
+  @override
+  AsyncTodosNotifier create() => _createCb?.call() ?? AsyncTodosNotifier();
+
+  @$internal
+  @override
+  AsyncTodosNotifierProvider $copyWithCreate(
+    AsyncTodosNotifier Function() create,
+  ) {
+    return AsyncTodosNotifierProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  AsyncTodosNotifierProvider $copyWithBuild(
+    FutureOr<List<Todo>> Function(
+      Ref,
+      AsyncTodosNotifier,
+    ) build,
+  ) {
+    return AsyncTodosNotifierProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $AsyncNotifierProviderElement<AsyncTodosNotifier, List<Todo>> $createElement(
+          $ProviderPointer pointer) =>
+      $AsyncNotifierProviderElement(this, pointer);
+}
+
 String _$asyncTodosNotifierHash() =>
     r'10207327c7dee180e9da8beece5bfffedcf86e98';
 
-/// See also [AsyncTodosNotifier].
-@ProviderFor(AsyncTodosNotifier)
-final asyncTodosNotifierProvider =
-    AutoDisposeAsyncNotifierProvider<AsyncTodosNotifier, List<Todo>>.internal(
-  AsyncTodosNotifier.new,
-  name: r'asyncTodosNotifierProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
-      ? null
-      : _$asyncTodosNotifierHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$AsyncTodosNotifier extends $AsyncNotifier<List<Todo>> {
+  FutureOr<List<Todo>> build();
+  @$internal
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<List<Todo>>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<List<Todo>>>,
+        AsyncValue<List<Todo>>,
+        Object?,
+        Object?>;
+    element.handleValue(ref, created);
+  }
+}
 
-typedef _$AsyncTodosNotifier = AutoDisposeAsyncNotifier<List<Todo>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

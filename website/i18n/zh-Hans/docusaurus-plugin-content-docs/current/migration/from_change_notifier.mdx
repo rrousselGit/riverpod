@@ -21,18 +21,18 @@ pkg:provider.
 If you've just started a migration to pkg:riverpod, make sure you read the dedicated guide
 (see <Link documentID="from_provider/quickstart" />).
 This article is meant for folks that already transitioned to riverpod, but want to move away from
-`ChangeNotifier` definetively.
+`ChangeNotifier`.
 -->
 如果您刚刚开始迁移到 pkg:riverpod，请务必阅读专用指南
 （请参阅<Link documentID="from_provider/quickstart" />）。
 本文适用于已经过渡到 Riverpod，但想要彻底放弃 `ChangeNotifier` 的人们。
 
 <!---
-All in all, migrating from `ChangeNotifier` to `AsyncNotifer` requires a
+All in all, migrating from `ChangeNotifier` to `AsyncNotifier` requires a
 paradigm shift, but it brings great simplification with the resulting migrated
 code. See also <Link documentID="concepts/why_immutability" />.
 -->
-总而言之，从 `ChangeNotifier` 迁移到 `AsyncNotifer` 需要范式转换，
+总而言之，从 `ChangeNotifier` 迁移到 `AsyncNotifier` 需要范式转换，
 但它极大地简化了迁移后的代码。
 另请参阅<Link documentID="concepts/why_immutability" />。
 
@@ -46,7 +46,7 @@ Take this (faulty) example:
 This implementation shows several weak design choices such as:
 - The usage of `isLoading` and `hasError` to handle different asynchronous cases
 - The need to carefully handle requests with tedious `try`/`catch`/`finally` expressions
-- The need to inkove `notifyListeners` at the right times to make this implementation work
+- The need to invoke `notifyListeners` at the right times to make this implementation work
 - The presence of inconsistent or possibly undesirable states, e.g. initialization with an empty list
 -->
 该实现显示了几个薄弱的设计选择，例如：
@@ -64,10 +64,10 @@ initially promises.
 如何导致错误的设计方案；此外，另一个要点是可变状态可能比最初承诺的要困难得多。
 
 <!---
-`Notifier`/`AsyncNotifer`, in combination with immutable state, can lead to better design choices
+`Notifier`/`AsyncNotifier`, in combination with immutable state, can lead to better design choices
 and less errors.
 -->
-`Notifier`/`AsyncNotifer` 与不可变状态相结合，
+`Notifier`/`AsyncNotifier` 与不可变状态相结合，
 可以带来更好的设计方案和更少的错误。
 
 <!---
@@ -134,10 +134,10 @@ There's no need to think about the right class names and their *specific* APIs.
 :::
 
 <!---
-Technically, the best fit here is to define a `AutoDisposeAsyncNotifier<List<Todo>>`,
+Technically, the best fit here is to define a `AsyncNotifier<List<Todo>>`,
 which meets all the above requirements. Let's write some pseudocode first.
 -->
-从技术上讲，这里最合适的是定义一个 `AutoDisposeAsyncNotifier<List<Todo>>`，
+从技术上讲，这里最合适的是定义一个 `AsyncNotifier<List<Todo>>`，
 它满足上述所有要求。让我们先写一些伪代码。
 
 <AutoSnippet language="dart" {...declaration}></AutoSnippet>
@@ -180,7 +180,7 @@ Riverpod 的 API 是细粒度的；尽管如此，在迁移时，
 -->
 ### 初始化​
 <!---
-Initalizing a notifier is easy: just write initialization logic inside `build`.  
+Initializing a notifier is easy: just write initialization logic inside `build`.
 We can now get rid of the old `_init` function.
 -->
 初始化通知者程序很简单：只需在 `build` 内编写初始化逻辑即可。  

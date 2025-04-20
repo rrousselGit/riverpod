@@ -8,48 +8,45 @@ part of 'models.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$ConfigurationImpl _$$ConfigurationImplFromJson(Map<String, dynamic> json) =>
-    _$ConfigurationImpl(
+_Configuration _$ConfigurationFromJson(Map<String, dynamic> json) =>
+    _Configuration(
       publicKey: json['public_key'] as String,
       privateKey: json['private_key'] as String,
     );
 
-Map<String, dynamic> _$$ConfigurationImplToJson(_$ConfigurationImpl instance) =>
+Map<String, dynamic> _$ConfigurationToJson(_Configuration instance) =>
     <String, dynamic>{
       'public_key': instance.publicKey,
       'private_key': instance.privateKey,
     };
 
-_$MarvelResponseImpl _$$MarvelResponseImplFromJson(Map<String, dynamic> json) =>
-    _$MarvelResponseImpl(
+_MarvelResponse _$MarvelResponseFromJson(Map<String, dynamic> json) =>
+    _MarvelResponse(
       MarvelData.fromJson(json['data'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$$MarvelResponseImplToJson(
-        _$MarvelResponseImpl instance) =>
+Map<String, dynamic> _$MarvelResponseToJson(_MarvelResponse instance) =>
     <String, dynamic>{
       'data': instance.data,
     };
 
-_$MarvelDataImpl _$$MarvelDataImplFromJson(Map<String, dynamic> json) =>
-    _$MarvelDataImpl(
+_MarvelData _$MarvelDataFromJson(Map<String, dynamic> json) => _MarvelData(
       (json['results'] as List<dynamic>)
           .map((e) => e as Map<String, dynamic>)
           .toList(),
     );
 
-Map<String, dynamic> _$$MarvelDataImplToJson(_$MarvelDataImpl instance) =>
+Map<String, dynamic> _$MarvelDataToJson(_MarvelData instance) =>
     <String, dynamic>{
       'results': instance.results,
     };
 
-_$ComicImpl _$$ComicImplFromJson(Map<String, dynamic> json) => _$ComicImpl(
+_Comic _$ComicFromJson(Map<String, dynamic> json) => _Comic(
       id: (json['id'] as num).toInt(),
       title: json['title'] as String,
     );
 
-Map<String, dynamic> _$$ComicImplToJson(_$ComicImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$ComicToJson(_Comic instance) => <String, dynamic>{
       'id': instance.id,
       'title': instance.title,
     };

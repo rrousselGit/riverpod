@@ -18,6 +18,7 @@ class NotifierBuild extends RiverpodLintRule {
     name: 'notifier_build',
     problemMessage:
         'Classes annotated by `@riverpod` must have the `build` method',
+    errorSeverity: ErrorSeverity.ERROR,
   );
 
   @override
