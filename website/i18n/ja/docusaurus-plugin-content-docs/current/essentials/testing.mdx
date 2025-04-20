@@ -4,7 +4,6 @@ version: 2
 ---
 
 import { AutoSnippet, When } from "/src/components/CodeSnippet";
-import createContainer from "!!raw-loader!/docs/essentials/testing/create_container.dart";
 import unitTest from "!!raw-loader!/docs/essentials/testing/unit_test.dart";
 import widgetTest from "!!raw-loader!/docs/essentials/testing/widget_test.dart";
 import fullWidgetTest from "!!raw-loader!/docs/essentials/testing/full_widget_test.dart";
@@ -43,19 +42,6 @@ Riverpod でテストを定義するとき、大きく 2 つのシナリオが�
 
 他のテストとの主な違いは、`ProviderContainer`オブジェクトを作成する必要があるという点です。  
 このオブジェクトは provider との対話することを可能にします。
-
-`ProviderContainer`オブジェクトの作成と破棄のためのテストユーティリティを作成することが推奨されます:
-
-<AutoSnippet
-  raw={createContainer}
-  translations={{
-    createContainer:
-      "/// [ProviderContainer]を作成し、テスト終了時に自動破棄するテストユーティリティです。",
-    container:
-      "  // ProviderContainerを作成し、オプションでパラメータを指定します。",
-    addTearDown: "  // テスト終了時、containerを破棄します。",
-  }}
-/>
 
 次に、このユーティリティを使用して `test`を定義できます:
 
