@@ -134,7 +134,7 @@ final class FutureProvider<StateT>
   final Create<FutureOr<StateT>> _create;
 
   @override
-  FutureOr<StateT> create(Ref ref) => this._create(ref);
+  FutureOr<StateT> create(Ref ref) => _create(ref);
 
   @internal
   @override
