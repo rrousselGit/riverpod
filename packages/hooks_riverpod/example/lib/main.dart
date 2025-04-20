@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:hooks_riverpod/legacy.dart';
 
 void main() {
   runApp(
@@ -32,7 +33,7 @@ class Counter extends StateNotifier<int> {
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +44,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends HookConsumerWidget {
-  const MyHomePage({Key? key}) : super(key: key);
+  const MyHomePage({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -52,7 +53,7 @@ class MyHomePage extends HookConsumerWidget {
         title: const Text('Riverpod counter example'),
       ),
       body: Center(
-        // HookConsumer is a builder widget that allows you to read providers and utilise hooks.
+        // HookConsumer is a builder widget that allows you to read providers and utilize hooks.
         child: HookConsumer(
           builder: (context, ref, _) {
             final count = ref.watch(counterProvider);

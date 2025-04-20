@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,123 +10,27 @@ part of 'codegen.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
 mixin _$ThemeSettings {
-  ThemeMode get mode => throw _privateConstructorUsedError;
-  Color get primaryColor => throw _privateConstructorUsedError;
+  ThemeMode get mode;
+  Color get primaryColor;
 
   /// Create a copy of ThemeSettings
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $ThemeSettingsCopyWith<ThemeSettings> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $ThemeSettingsCopyWith<$Res> {
-  factory $ThemeSettingsCopyWith(
-          ThemeSettings value, $Res Function(ThemeSettings) then) =
-      _$ThemeSettingsCopyWithImpl<$Res, ThemeSettings>;
-  @useResult
-  $Res call({ThemeMode mode, Color primaryColor});
-}
-
-/// @nodoc
-class _$ThemeSettingsCopyWithImpl<$Res, $Val extends ThemeSettings>
-    implements $ThemeSettingsCopyWith<$Res> {
-  _$ThemeSettingsCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of ThemeSettings
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? mode = null,
-    Object? primaryColor = null,
-  }) {
-    return _then(_value.copyWith(
-      mode: null == mode
-          ? _value.mode
-          : mode // ignore: cast_nullable_to_non_nullable
-              as ThemeMode,
-      primaryColor: null == primaryColor
-          ? _value.primaryColor
-          : primaryColor // ignore: cast_nullable_to_non_nullable
-              as Color,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$ThemeSettingsImplCopyWith<$Res>
-    implements $ThemeSettingsCopyWith<$Res> {
-  factory _$$ThemeSettingsImplCopyWith(
-          _$ThemeSettingsImpl value, $Res Function(_$ThemeSettingsImpl) then) =
-      __$$ThemeSettingsImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({ThemeMode mode, Color primaryColor});
-}
-
-/// @nodoc
-class __$$ThemeSettingsImplCopyWithImpl<$Res>
-    extends _$ThemeSettingsCopyWithImpl<$Res, _$ThemeSettingsImpl>
-    implements _$$ThemeSettingsImplCopyWith<$Res> {
-  __$$ThemeSettingsImplCopyWithImpl(
-      _$ThemeSettingsImpl _value, $Res Function(_$ThemeSettingsImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of ThemeSettings
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? mode = null,
-    Object? primaryColor = null,
-  }) {
-    return _then(_$ThemeSettingsImpl(
-      mode: null == mode
-          ? _value.mode
-          : mode // ignore: cast_nullable_to_non_nullable
-              as ThemeMode,
-      primaryColor: null == primaryColor
-          ? _value.primaryColor
-          : primaryColor // ignore: cast_nullable_to_non_nullable
-              as Color,
-    ));
-  }
-}
-
-/// @nodoc
-
-class _$ThemeSettingsImpl implements _ThemeSettings {
-  const _$ThemeSettingsImpl({required this.mode, required this.primaryColor});
-
-  @override
-  final ThemeMode mode;
-  @override
-  final Color primaryColor;
-
-  @override
-  String toString() {
-    return 'ThemeSettings(mode: $mode, primaryColor: $primaryColor)';
-  }
+      _$ThemeSettingsCopyWithImpl<ThemeSettings>(
+          this as ThemeSettings, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ThemeSettingsImpl &&
+            other is ThemeSettings &&
             (identical(other.mode, mode) || other.mode == mode) &&
             (identical(other.primaryColor, primaryColor) ||
                 other.primaryColor == primaryColor));
@@ -134,29 +39,125 @@ class _$ThemeSettingsImpl implements _ThemeSettings {
   @override
   int get hashCode => Object.hash(runtimeType, mode, primaryColor);
 
+  @override
+  String toString() {
+    return 'ThemeSettings(mode: $mode, primaryColor: $primaryColor)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $ThemeSettingsCopyWith<$Res> {
+  factory $ThemeSettingsCopyWith(
+          ThemeSettings value, $Res Function(ThemeSettings) _then) =
+      _$ThemeSettingsCopyWithImpl;
+  @useResult
+  $Res call({ThemeMode mode, Color primaryColor});
+}
+
+/// @nodoc
+class _$ThemeSettingsCopyWithImpl<$Res>
+    implements $ThemeSettingsCopyWith<$Res> {
+  _$ThemeSettingsCopyWithImpl(this._self, this._then);
+
+  final ThemeSettings _self;
+  final $Res Function(ThemeSettings) _then;
+
   /// Create a copy of ThemeSettings
   /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? mode = null,
+    Object? primaryColor = null,
+  }) {
+    return _then(_self.copyWith(
+      mode: null == mode
+          ? _self.mode
+          : mode // ignore: cast_nullable_to_non_nullable
+              as ThemeMode,
+      primaryColor: null == primaryColor
+          ? _self.primaryColor
+          : primaryColor // ignore: cast_nullable_to_non_nullable
+              as Color,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _ThemeSettings implements ThemeSettings {
+  const _ThemeSettings({required this.mode, required this.primaryColor});
+
+  @override
+  final ThemeMode mode;
+  @override
+  final Color primaryColor;
+
+  /// Create a copy of ThemeSettings
+  /// with the given fields replaced by the non-null parameter values.
+  @override
   @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$ThemeSettingsCopyWith<_ThemeSettings> get copyWith =>
+      __$ThemeSettingsCopyWithImpl<_ThemeSettings>(this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _ThemeSettings &&
+            (identical(other.mode, mode) || other.mode == mode) &&
+            (identical(other.primaryColor, primaryColor) ||
+                other.primaryColor == primaryColor));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, mode, primaryColor);
+
+  @override
+  String toString() {
+    return 'ThemeSettings(mode: $mode, primaryColor: $primaryColor)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$ThemeSettingsCopyWith<$Res>
+    implements $ThemeSettingsCopyWith<$Res> {
+  factory _$ThemeSettingsCopyWith(
+          _ThemeSettings value, $Res Function(_ThemeSettings) _then) =
+      __$ThemeSettingsCopyWithImpl;
+  @override
+  @useResult
+  $Res call({ThemeMode mode, Color primaryColor});
+}
+
+/// @nodoc
+class __$ThemeSettingsCopyWithImpl<$Res>
+    implements _$ThemeSettingsCopyWith<$Res> {
+  __$ThemeSettingsCopyWithImpl(this._self, this._then);
+
+  final _ThemeSettings _self;
+  final $Res Function(_ThemeSettings) _then;
+
+  /// Create a copy of ThemeSettings
+  /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  _$$ThemeSettingsImplCopyWith<_$ThemeSettingsImpl> get copyWith =>
-      __$$ThemeSettingsImplCopyWithImpl<_$ThemeSettingsImpl>(this, _$identity);
+  $Res call({
+    Object? mode = null,
+    Object? primaryColor = null,
+  }) {
+    return _then(_ThemeSettings(
+      mode: null == mode
+          ? _self.mode
+          : mode // ignore: cast_nullable_to_non_nullable
+              as ThemeMode,
+      primaryColor: null == primaryColor
+          ? _self.primaryColor
+          : primaryColor // ignore: cast_nullable_to_non_nullable
+              as Color,
+    ));
+  }
 }
 
-abstract class _ThemeSettings implements ThemeSettings {
-  const factory _ThemeSettings(
-      {required final ThemeMode mode,
-      required final Color primaryColor}) = _$ThemeSettingsImpl;
-
-  @override
-  ThemeMode get mode;
-  @override
-  Color get primaryColor;
-
-  /// Create a copy of ThemeSettings
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$ThemeSettingsImplCopyWith<_$ThemeSettingsImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+// dart format on

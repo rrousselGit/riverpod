@@ -2,7 +2,7 @@
 
 import 'dart:async';
 
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:riverpod/riverpod.dart';
 
 /* SNIPPET START */
 final provider = StreamProvider<int>((ref) {

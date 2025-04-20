@@ -17,7 +17,7 @@ class ActivityView extends ConsumerWidget {
         // {@template render}
         // If we have an activity, display it, otherwise wait
         // {@endtemplate}
-        child: Text(activity.valueOrNull?.activity ?? ''),
+        child: Text(activity.value?.activity ?? ''),
       ),
     );
   }

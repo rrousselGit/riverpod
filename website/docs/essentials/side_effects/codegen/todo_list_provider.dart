@@ -1,4 +1,3 @@
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -6,7 +5,7 @@ part 'todo_list_provider.freezed.dart';
 part 'todo_list_provider.g.dart';
 
 @freezed
-class Todo with _$Todo {
+sealed class Todo with _$Todo {
   factory Todo({
     required String description,
     @Default(false) bool completed,

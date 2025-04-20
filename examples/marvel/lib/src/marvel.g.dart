@@ -6,52 +6,48 @@ part of 'marvel.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$CharacterImpl _$$CharacterImplFromJson(Map<String, dynamic> json) =>
-    _$CharacterImpl(
+_Character _$CharacterFromJson(Map<String, dynamic> json) => _Character(
       id: (json['id'] as num).toInt(),
       name: json['name'] as String,
       thumbnail: Thumbnail.fromJson(json['thumbnail'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$$CharacterImplToJson(_$CharacterImpl instance) =>
+Map<String, dynamic> _$CharacterToJson(_Character instance) =>
     <String, dynamic>{
       'id': instance.id,
       'name': instance.name,
       'thumbnail': instance.thumbnail,
     };
 
-_$ThumbnailImpl _$$ThumbnailImplFromJson(Map<String, dynamic> json) =>
-    _$ThumbnailImpl(
+_Thumbnail _$ThumbnailFromJson(Map<String, dynamic> json) => _Thumbnail(
       path: json['path'] as String,
       extension: json['extension'] as String,
     );
 
-Map<String, dynamic> _$$ThumbnailImplToJson(_$ThumbnailImpl instance) =>
+Map<String, dynamic> _$ThumbnailToJson(_Thumbnail instance) =>
     <String, dynamic>{
       'path': instance.path,
       'extension': instance.extension,
     };
 
-_$MarvelResponseImpl _$$MarvelResponseImplFromJson(Map<String, dynamic> json) =>
-    _$MarvelResponseImpl(
+_MarvelResponse _$MarvelResponseFromJson(Map<String, dynamic> json) =>
+    _MarvelResponse(
       MarvelData.fromJson(json['data'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$$MarvelResponseImplToJson(
-        _$MarvelResponseImpl instance) =>
+Map<String, dynamic> _$MarvelResponseToJson(_MarvelResponse instance) =>
     <String, dynamic>{
       'data': instance.data,
     };
 
-_$MarvelDataImpl _$$MarvelDataImplFromJson(Map<String, dynamic> json) =>
-    _$MarvelDataImpl(
+_MarvelData _$MarvelDataFromJson(Map<String, dynamic> json) => _MarvelData(
       (json['results'] as List<dynamic>)
           .map((e) => e as Map<String, dynamic>)
           .toList(),
       (json['total'] as num).toInt(),
     );
 
-Map<String, dynamic> _$$MarvelDataImplToJson(_$MarvelDataImpl instance) =>
+Map<String, dynamic> _$MarvelDataToJson(_MarvelData instance) =>
     <String, dynamic>{
       'results': instance.results,
       'total': instance.total,

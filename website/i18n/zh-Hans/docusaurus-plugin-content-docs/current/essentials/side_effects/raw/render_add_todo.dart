@@ -68,10 +68,11 @@ class _ExampleState extends ConsumerState<Example> {
             if (snapshot.connectionState == ConnectionState.waiting) ...[
               const SizedBox(width: 8),
               const CircularProgressIndicator(),
-            ]
+            ],
           ],
         );
       },
     );
   }
-} /* SNIPPET END */
+}
+/* SNIPPET END */

@@ -1,6 +1,6 @@
 ---
 title: From `StateNotifier`
-version: 1
+version: 2
 ---
 
 import buildInit from "./from_state_notifier/build_init";
@@ -22,8 +22,14 @@ import obtainNotifierOnTests from "!!raw-loader!./from_state_notifier/obtain_not
 import { Link } from "/src/components/Link";
 import { AutoSnippet } from "/src/components/CodeSnippet";
 
+:::caution
+The content of this page may be outdated.  
+It will be updated in the future, but for now you may want to refer to the content
+in the top of the sidebar instead (introduction/essentials/case-studies/...)
+:::
+
 Along with [Riverpod 2.0](https://pub.dev/packages/flutter_riverpod/changelog#200), new classes
-were introduced: `Notifier` / `AsyncNotifer`.  
+were introduced: `Notifier` / `AsyncNotifier`.
 `StateNotifier` is now discouraged in favor of those new APIs.
 
 This page shows how to migrate from the deprecated `StateNotifier` to the new APIs.
@@ -60,7 +66,7 @@ Comparing `Notifier` with `StateNotifier`, one can observe these main difference
   whereas `Notifier` reserves a single place to place such logic
 - Notice how, as opposed to `StateNotifier`, no logic is ever written into a `Notifier`'s constructor
 
-Similar conclusions can be made with `AsyncNotifer`, `Notifier`'s asynchronous equivalent.  
+Similar conclusions can be made with `AsyncNotifier`, `Notifier`'s asynchronous equivalent.
 
 ## Migrating asynchronous `StateNotifier`s
 
@@ -73,16 +79,16 @@ Here's the above example, rewritten with the new `AsyncNotifier` APIs:
 
 <AutoSnippet language="dart" {...asyncNotifier}></AutoSnippet>
 
-`AsyncNotifer`, just like `Notifier`, brings a simpler and more uniform API.
-Here, it's easy to see `AsyncNotifer` as a `FutureProvider` with methods.
+`AsyncNotifier`, just like `Notifier`, brings a simpler and more uniform API.
+Here, it's easy to see `AsyncNotifier` as a `FutureProvider` with methods.
 
-`AsyncNotifer` comes with a set of utilities and getters that `StateNotifier` doesn't have, such as e.g.
-[`future`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/future.html)
-and [`update`](https://pub.dev/documentation/riverpod/latest/riverpod/AutoDisposeAsyncNotifier/update.html).
+`AsyncNotifier` comes with a set of utilities and getters that `StateNotifier` doesn't have, such as e.g.
+[`future`](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier/future.html)
+and [`update`](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier/update.html).
 This enables us to write much simpler logic when handling asynchronous mutations and side-effects.
 See also <Link documentID="essentials/side_effects" />.
 :::tip
-Migrating from `StateNotifier<AsyncValue<T>>` to a `AsyncNotifer<T>` boils down to:
+Migrating from `StateNotifier<AsyncValue<T>>` to a `AsyncNotifier<T>` boils down to:
 
 - Putting initialization logic into `build`
 - Removing any `catch`/`try` blocks in initialization or in side effects methods
@@ -92,7 +98,7 @@ Migrating from `StateNotifier<AsyncValue<T>>` to a `AsyncNotifer<T>` boils down 
 
 ### Advantages
 
-After these few examples, let's now highlight the main advantages of `Notifier` and `AsyncNotifer`: 
+After these few examples, let's now highlight the main advantages of `Notifier` and `AsyncNotifier`:
 - The new syntax should feel way simpler and more readable, especially for asynchronous state
 - New APIs are likely to have less boilerplate code in general
 - Syntax is now unified, no matter the type of provider you're writing, enabling code generation
@@ -105,9 +111,9 @@ Let's go further down and highlight more differences and similarities.
 Another important difference is how families and auto dispose is handled with the new APIs.
 
 `Notifier`, has its own `.family` and `.autoDispose` counterparts, such as `FamilyNotifier`
-and `AutoDisposeNotifier`.  
+and `Notifier`.  
 As always, such modifications can be combined (aka `AutoDisposeFamilyNotifier`).  
-`AsyncNotifer` has its asynchronous equivalent, too (e.g. `AutoDisposeFamilyAsyncNotifier`).
+`AsyncNotifier` has its asynchronous equivalent, too (e.g. `FamilyAsyncNotifier`).
 
 Modifications are explicitly stated inside the class; any parameters are directly injected in the
 `build` method, so that they're available to the initialization logic.  
@@ -174,7 +180,7 @@ Considering their difference in lifecycle, this makes perfect sense; while possi
 property would be misleading on the new notifiers: `mounted` would *almost always* be `true`.
 
 While it would be possible to craft a [custom workaround](https://github.com/rrousselGit/riverpod/issues/1879#issuecomment-1303189191),
-it's recomended to work around this by canceling the asynchronous operation.
+it's recommended to work around this by canceling the asynchronous operation.
 
 Canceling an operation can be done with a custom [Completer](https://api.flutter.dev/flutter/dart-async/Completer-class.html),
 or any custom derivative.
@@ -189,7 +195,7 @@ Therefore, the above example migrates to the following:
 ## Mutations APIs are the same as before
 
 Up until now we've shown the differences between `StateNotifier` and the new APIs.  
-Instead, one thing `Notifier`, `AsyncNotifer` and `StateNotifier` share is how their states
+Instead, one thing `Notifier`, `AsyncNotifier` and `StateNotifier` share is how their states
 can be consumed and mutated.
 
 Consumers can obtain data from these three providers with the same syntax, which is great in case
@@ -215,7 +221,7 @@ Therefore this:
 Becomes this:
 <AutoSnippet language="dart" {...addListener}></AutoSnippet>
 
-In a nutshell: if you want to listen to a `Notifier`/`AsyncNotifer`, just use `ref.listen`.
+In a nutshell: if you want to listen to a `Notifier`/`AsyncNotifier`, just use `ref.listen`.
 See <Link documentID="essentials/combining_requests" hash="the-reflistenlistenself-methods" />.
 
 ### From `.debugState` in tests
@@ -226,12 +232,12 @@ state access from outside the class when in development mode, for testing purpos
 If you're using `.debugState` to access state in tests, chances are that you need to drop this
 approach.
 
-`Notifier` / `AsyncNotifer` don't have a `.debugState`; instead, they directly expose `.state`,
+`Notifier` / `AsyncNotifier` don't have a `.debugState`; instead, they directly expose `.state`,
 which is `@visibleForTesting`.
 
 :::danger
 AVOID accessing `.state` from tests; if you have to, do it _if and only if_ you had already have
-a `Notifier` / `AsyncNotifer` properly instantied;
+a `Notifier` / `AsyncNotifier` properly instantiated;
 then, you could access `.state` inside tests freely.
 
 Indeed, `Notifier` / `AsyncNotifier` _should not_ be instantiated by hand; instead, they should be
@@ -262,4 +268,4 @@ Becomes:
 <AutoSnippet language="dart" {...fromStateProvider}></AutoSnippet>
 
 Even though it costs us a few more LoC, migrating away from `StateProvider` enables us to
-definetively archive `StateNotifier`.
+archive `StateNotifier`.

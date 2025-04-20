@@ -4,29 +4,20 @@ description: A new Flutter project.
 publish_to: "none"
 
 environment:
-  sdk: ">=2.17.0 <4.0.0"
+  sdk: ^3.6.0
+
+resolution: workspace
 
 dependencies:
   flutter:
     sdk: flutter
   flutter_riverpod:
-    path: ../../flutter_riverpod
   hooks_riverpod:
-    path: ../../hooks_riverpod
   riverpod:
-    path: ../../riverpod
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
-dependency_overrides:
-  flutter_riverpod:
-    path: ../../flutter_riverpod
-  hooks_riverpod:
-    path: ../../hooks_riverpod
-  riverpod:
-    path: ../../riverpod
 
 flutter:
   uses-material-design: true

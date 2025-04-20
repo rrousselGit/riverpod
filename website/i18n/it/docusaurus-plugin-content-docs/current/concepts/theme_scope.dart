@@ -2,6 +2,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/legacy.dart';
 
 /* SNIPPET START */
 
@@ -27,23 +28,24 @@ class Home extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-        body: Column(
-      children: [
-        // This counter will have a primary color of green
-        Theme(
-          data: Theme.of(context).copyWith(primaryColor: Colors.green),
-          child: const CounterDisplay(),
-        ),
-        // This counter will have a primary color of blue
-        const CounterDisplay(),
-        ElevatedButton(
-          onPressed: () {
-            ref.read(counterProvider.notifier).state++;
-          },
-          child: const Text('Increment Count'),
-        ),
-      ],
-    ));
+      body: Column(
+        children: [
+          // This counter will have a primary color of green
+          Theme(
+            data: Theme.of(context).copyWith(primaryColor: Colors.green),
+            child: const CounterDisplay(),
+          ),
+          // This counter will have a primary color of blue
+          const CounterDisplay(),
+          ElevatedButton(
+            onPressed: () {
+              ref.read(counterProvider.notifier).state++;
+            },
+            child: const Text('Increment Count'),
+          ),
+        ],
+      ),
+    );
   }
 }
 

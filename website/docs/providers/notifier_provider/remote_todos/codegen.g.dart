@@ -8,14 +8,13 @@ part of 'codegen.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$TodoImpl _$$TodoImplFromJson(Map<String, dynamic> json) => _$TodoImpl(
+_Todo _$TodoFromJson(Map<String, dynamic> json) => _Todo(
       id: json['id'] as String,
       description: json['description'] as String,
       completed: json['completed'] as bool,
     );
 
-Map<String, dynamic> _$$TodoImplToJson(_$TodoImpl instance) =>
-    <String, dynamic>{
+Map<String, dynamic> _$TodoToJson(_Todo instance) => <String, dynamic>{
       'id': instance.id,
       'description': instance.description,
       'completed': instance.completed,
@@ -25,20 +24,76 @@ Map<String, dynamic> _$$TodoImplToJson(_$TodoImpl instance) =>
 // RiverpodGenerator
 // **************************************************************************
 
+@ProviderFor(AsyncTodos)
+const asyncTodosProvider = AsyncTodosProvider._();
+
+final class AsyncTodosProvider
+    extends $AsyncNotifierProvider<AsyncTodos, List<Todo>> {
+  const AsyncTodosProvider._(
+      {super.runNotifierBuildOverride, AsyncTodos Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'asyncTodosProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final AsyncTodos Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$asyncTodosHash();
+
+  @$internal
+  @override
+  AsyncTodos create() => _createCb?.call() ?? AsyncTodos();
+
+  @$internal
+  @override
+  AsyncTodosProvider $copyWithCreate(
+    AsyncTodos Function() create,
+  ) {
+    return AsyncTodosProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  AsyncTodosProvider $copyWithBuild(
+    FutureOr<List<Todo>> Function(
+      Ref,
+      AsyncTodos,
+    ) build,
+  ) {
+    return AsyncTodosProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $AsyncNotifierProviderElement<AsyncTodos, List<Todo>> $createElement(
+          $ProviderPointer pointer) =>
+      $AsyncNotifierProviderElement(this, pointer);
+}
+
 String _$asyncTodosHash() => r'fd0d7502a1c17b7cedd2350519649dd680fc48cd';
 
-/// See also [AsyncTodos].
-@ProviderFor(AsyncTodos)
-final asyncTodosProvider =
-    AutoDisposeAsyncNotifierProvider<AsyncTodos, List<Todo>>.internal(
-  AsyncTodos.new,
-  name: r'asyncTodosProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$asyncTodosHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$AsyncTodos extends $AsyncNotifier<List<Todo>> {
+  FutureOr<List<Todo>> build();
+  @$internal
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<List<Todo>>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<AsyncValue<List<Todo>>>,
+        AsyncValue<List<Todo>>,
+        Object?,
+        Object?>;
+    element.handleValue(ref, created);
+  }
+}
 
-typedef _$AsyncTodos = AutoDisposeAsyncNotifier<List<Todo>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -28,7 +28,7 @@ class Consumer extends ConsumerWidget {
     // {@endtemplate}
     return switch (value) {
       AsyncValue(:final error?) => Text('Error: $error'),
-      AsyncValue(:final valueOrNull?) => Text('$valueOrNull'),
+      AsyncValue(:final value?) => Text('$value'),
       _ => const CircularProgressIndicator(),
     };
   }

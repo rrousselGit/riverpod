@@ -99,7 +99,7 @@ To install riverpod_generator, edit your `pubspec.yaml` and add the following:
 
 ```yaml
 dependencies:
-  # or flutter_riverpod/hooks_riverpod as per https://riverpod.dev/docs/getting_started
+  # or flutter_riverpod/hooks_riverpod as per https://riverpod.dev/docs/introduction/getting_started
   riverpod:
   # the annotation package containing @riverpod
   riverpod_annotation:

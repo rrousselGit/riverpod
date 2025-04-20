@@ -1,3 +1,9 @@
-export 'src/riverpod_ast.dart' hide ObjectUtils;
-export 'src/riverpod_element.dart';
+export 'src/errors.dart';
+export 'src/nodes.dart'
+    hide
+        parseFirstProviderFor,
+        parseLegacyProviderType,
+        parseProviderFor,
+        CollectionRiverpodAst,
+        RiverpodAnalysisResult;
 export 'src/riverpod_types.dart';

@@ -8,19 +8,80 @@ part of 'todo.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+@ProviderFor(Todos)
+const todosProvider = TodosProvider._();
+
+final class TodosProvider extends $NotifierProvider<Todos, List<Todo>> {
+  const TodosProvider._(
+      {super.runNotifierBuildOverride, Todos Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'todosProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final Todos Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$todosHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<Todo> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<List<Todo>>(value),
+    );
+  }
+
+  @$internal
+  @override
+  Todos create() => _createCb?.call() ?? Todos();
+
+  @$internal
+  @override
+  TodosProvider $copyWithCreate(
+    Todos Function() create,
+  ) {
+    return TodosProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  TodosProvider $copyWithBuild(
+    List<Todo> Function(
+      Ref,
+      Todos,
+    ) build,
+  ) {
+    return TodosProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<Todos, List<Todo>> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
+}
+
 String _$todosHash() => r'4bd25c3c15bfff56ad6e733bd17ecb7284c4ceb2';
 
-/// See also [Todos].
-@ProviderFor(Todos)
-final todosProvider = AutoDisposeNotifierProvider<Todos, List<Todo>>.internal(
-  Todos.new,
-  name: r'todosProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$todosHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$Todos extends $Notifier<List<Todo>> {
+  List<Todo> build();
+  @$internal
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<List<Todo>>;
+    final element = ref.element as $ClassProviderElement<
+        NotifierBase<List<Todo>>, List<Todo>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}
 
-typedef _$Todos = AutoDisposeNotifier<List<Todo>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

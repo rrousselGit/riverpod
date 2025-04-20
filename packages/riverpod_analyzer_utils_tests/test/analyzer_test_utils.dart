@@ -1,14 +1,47 @@
 import 'dart:async';
 
 import 'package:analyzer/dart/analysis/results.dart';
+import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:analyzer/diagnostic/diagnostic.dart';
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
+import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
+import 'package:riverpod_analyzer_utils/src/nodes.dart';
 import 'package:riverpod_generator/src/riverpod_generator.dart';
 import 'package:test/test.dart';
+
+@internal
+extension ObjectX<T> on T? {
+  R? cast<R>() {
+    final that = this;
+    if (that is R) return that;
+    return null;
+  }
+
+  R? let<R>(R? Function(T value)? cb) {
+    if (cb == null) return null;
+    final that = this;
+    if (that != null) return cb(that);
+    return null;
+  }
+}
+
+List<RiverpodAnalysisError> collectErrors(void Function() cb) {
+  final errors = <RiverpodAnalysisError>[];
+  final previousErrorReporter = errorReporter;
+
+  try {
+    errorReporter = errors.add;
+    cb();
+    return errors;
+  } finally {
+    errorReporter = previousErrorReporter;
+  }
+}
 
 int _testNumber = 0;
 
@@ -18,15 +51,21 @@ int _testNumber = 0;
 @isTest
 void testSource(
   String description,
-  Future<void> Function(Resolver resolver) run, {
+  Future<void> Function(
+    Resolver resolver,
+    CompilationUnit unit,
+    List<ResolvedUnitResult> units,
+  ) run, {
   required String source,
   Map<String, String> files = const {},
   bool runGenerator = false,
   Timeout? timeout,
+  Object? skip,
 }) {
   final testId = _testNumber++;
   test(
     description,
+    skip: skip,
     timeout: timeout,
     () async {
       // Giving a unique name to the package to avoid the analyzer cache
@@ -42,20 +81,33 @@ void testSource(
               'library "${entry.key}"; ${entry.value}',
       };
 
+      Future<(List<ResolvedUnitResult>, CompilationUnit)> getUnits(
+        Resolver resolver,
+      ) async {
+        final lib = await resolver.findLibraryByName('foo');
+
+        final ast = await lib!.session.getResolvedLibrary(lib.source.fullName);
+        ast as ResolvedLibraryResult;
+
+        return (
+          ast.units,
+          ast.units.firstWhere((e) => e.path.endsWith('foo.dart')).unit,
+        );
+      }
+
       String? generated;
       if (runGenerator) {
-        final analysisResult = await resolveSources(
+        generated = await resolveSources(
           {
             '$packageName|lib/foo.dart': sourceWithLibrary,
             ...otherSources,
           },
-          (resolver) {
-            return resolver.resolveRiverpodLibraryResult(
-              ignoreErrors: true,
-            );
+          (resolver) async {
+            final (_, unit) = await getUnits(resolver);
+
+            return RiverpodGenerator(const {}).generateForUnit([unit]);
           },
         );
-        generated = RiverpodGenerator(const {}).runGenerator(analysisResult);
       }
 
       await resolveSources({
@@ -67,7 +119,19 @@ void testSource(
         try {
           final originalZone = Zone.current;
           return runZoned(
-            () => run(resolver),
+            () async {
+              final (units, unit) = await getUnits(resolver);
+
+              try {
+                return await run(resolver, unit, units);
+              } finally {
+                collectErrors(() {
+                  for (final unit in units) {
+                    expectRiverpodAstOnlyHasASingleOptionPerNode(unit.unit);
+                  }
+                });
+              }
+            },
             zoneSpecification: ZoneSpecification(
               // Somehow prints are captured inside the callback. Let's restore them
               print: (self, parent, zone, line) => enclosingZone.print(line),
@@ -85,6 +149,33 @@ void testSource(
   );
 }
 
+/// Asserts that no [AstNode] has to Riverpod ast.
+void expectRiverpodAstOnlyHasASingleOptionPerNode(AstNode node) {
+  final result = CollectionRiverpodAst();
+  node.accept(result);
+
+  for (final entry in result.riverpodAst.entries) {
+    expect(
+      entry.value,
+      anyOf(
+        hasLength(0),
+        hasLength(1),
+      ),
+      reason: entry.key,
+    );
+  }
+
+  node.visitChildren(_VisitNode(expectRiverpodAstOnlyHasASingleOptionPerNode));
+}
+
+class _VisitNode extends GeneralizingAstVisitor<void> {
+  _VisitNode(this.cb);
+
+  final void Function(AstNode node) cb;
+  @override
+  void visitNode(AstNode node) => cb(node);
+}
+
 extension MapTake<Key, Value> on Map<Key, Value> {
   Map<Key, Value> take(List<Key> keys) {
     return <Key, Value>{
@@ -97,23 +188,87 @@ extension MapTake<Key, Value> on Map<Key, Value> {
   }
 }
 
+extension TakeList<T extends ProviderDeclaration> on List<T> {
+  Map<String, T> takeAll(List<String> names) {
+    final result = Map.fromEntries(map((e) => MapEntry(e.name.lexeme, e)));
+    return result.take(names);
+  }
+
+  T findByName(String name) {
+    return singleWhere((element) => element.name.lexeme == name);
+  }
+}
+
+extension FindAst<Base extends AstNode> on List<Base> {
+  T findByName<T extends Base>(String name) {
+    for (final node in this) {
+      switch (node) {
+        case TopLevelVariableDeclaration():
+          final variableWithName = node.variables.variables.firstWhereOrNull(
+            (element) => element.name.lexeme == name,
+          );
+
+          if (variableWithName != null) return variableWithName as T;
+
+        case MethodDeclaration():
+          if (node.name.lexeme == name) return node as T;
+
+        case FieldDeclaration():
+          final variableWithName = node.fields.variables.firstWhereOrNull(
+            (element) => element.name.lexeme == name,
+          );
+
+          if (variableWithName != null) return variableWithName as T;
+
+        case NamedCompilationUnitMember():
+          if (node.name.lexeme == name) return node as T;
+
+        default:
+          throw UnsupportedError('Unsupported node ${node.runtimeType}');
+      }
+    }
+
+    throw StateError('No node found with name "$name"');
+  }
+}
+
 extension ResolverX on Resolver {
+  // ignore: invalid_use_of_internal_member
   Future<RiverpodAnalysisResult> resolveRiverpodAnalysisResult({
     String libraryName = 'foo',
     bool ignoreErrors = false,
   }) async {
-    final riverpodAst = await resolveRiverpodLibraryResult(
-      libraryName: libraryName,
+    final library = await requireFindLibraryByName(
+      libraryName,
       ignoreErrors: ignoreErrors,
     );
+    final libraryAst =
+        await library.session.getResolvedLibraryByElement(library);
+    libraryAst as ResolvedLibraryResult;
 
     final result = RiverpodAnalysisResult();
-    riverpodAst.accept(result);
+
+    final errors = <RiverpodAnalysisError>[];
+    final previousErrorReporter = errorReporter;
+    try {
+      if (ignoreErrors) {
+        errorReporter = errors.add;
+      } else {
+        errorReporter = (error) {
+          throw StateError('Unexpected error: $error');
+        };
+      }
+
+      for (final unit in libraryAst.units) {
+        unit.unit.accept(result);
+      }
+    } finally {
+      errorReporter = previousErrorReporter;
+    }
+
+    result.errors.addAll(errors);
 
     if (!ignoreErrors) {
-      final errors = result.resolvedRiverpodLibraryResults
-          .expand((e) => e.errors)
-          .toList();
       if (errors.isNotEmpty) {
         throw StateError(errors.map((e) => '- $e\n').join());
       }
@@ -122,28 +277,7 @@ extension ResolverX on Resolver {
     return result;
   }
 
-  Future<ResolvedRiverpodLibraryResult> resolveRiverpodLibraryResult({
-    String libraryName = 'foo',
-    bool ignoreErrors = false,
-  }) async {
-    final library = await _requireFindLibraryByName(
-      libraryName,
-      ignoreErrors: ignoreErrors,
-    );
-    final libraryAst =
-        await library.session.getResolvedLibraryByElement(library);
-    libraryAst as ResolvedLibraryResult;
-
-    final result = ResolvedRiverpodLibraryResult.from(
-      libraryAst.units.map((e) => e.unit).toList(),
-    );
-
-    expectValidParentChildrenRelationship(result);
-
-    return result;
-  }
-
-  Future<LibraryElement> _requireFindLibraryByName(
+  Future<LibraryElement> requireFindLibraryByName(
     String libraryName, {
     required bool ignoreErrors,
   }) async {
@@ -171,537 +305,5 @@ ${errors.map((e) => '- $e\n').join()}
     }
 
     return library;
-  }
-}
-
-/// Visit all the nodes of the AST and ensure that that all children
-/// have the correct parent.
-void expectValidParentChildrenRelationship(
-  ResolvedRiverpodLibraryResult result,
-) {
-  result.accept(_ParentRiverpodVisitor(null));
-}
-
-class _ParentRiverpodVisitor extends RecursiveRiverpodAstVisitor {
-  _ParentRiverpodVisitor(this.expectedParent);
-
-  final RiverpodAst? expectedParent;
-
-  @override
-  void visitProviderScopeInstanceCreationExpression(
-    ProviderScopeInstanceCreationExpression declaration,
-  ) {
-    expect(
-      declaration.parent,
-      expectedParent,
-      reason:
-          'Node ${declaration.runtimeType} should have $expectedParent as parent',
-    );
-    declaration.visitChildren(_ParentRiverpodVisitor(declaration));
-  }
-
-  @override
-  void visitProviderContainerInstanceCreationExpression(
-    ProviderContainerInstanceCreationExpression declaration,
-  ) {
-    expect(
-      declaration.parent,
-      expectedParent,
-      reason:
-          'Node ${declaration.runtimeType} should have $expectedParent as parent',
-    );
-    declaration.visitChildren(_ParentRiverpodVisitor(declaration));
-  }
-
-  @override
-  void visitConsumerStateDeclaration(ConsumerStateDeclaration declaration) {
-    expect(
-      declaration.parent,
-      expectedParent,
-      reason:
-          'Node ${declaration.runtimeType} should have $expectedParent as parent',
-    );
-    declaration.visitChildren(_ParentRiverpodVisitor(declaration));
-  }
-
-  @override
-  void visitConsumerWidgetDeclaration(ConsumerWidgetDeclaration declaration) {
-    expect(
-      declaration.parent,
-      expectedParent,
-      reason:
-          'Node ${declaration.runtimeType} should have $expectedParent as parent',
-    );
-    declaration.visitChildren(_ParentRiverpodVisitor(declaration));
-  }
-
-  @override
-  void visitLegacyProviderDeclaration(LegacyProviderDeclaration declaration) {
-    expect(
-      declaration.parent,
-      expectedParent,
-      reason:
-          'Node ${declaration.runtimeType} should have $expectedParent as parent',
-    );
-    declaration.visitChildren(_ParentRiverpodVisitor(declaration));
-  }
-
-  @override
-  void visitLegacyProviderDependencies(
-    LegacyProviderDependencies dependencies,
-  ) {
-    expect(
-      dependencies.parent,
-      expectedParent,
-      reason:
-          'Node ${dependencies.runtimeType} should have $expectedParent as parent',
-    );
-    dependencies.visitChildren(_ParentRiverpodVisitor(dependencies));
-  }
-
-  @override
-  void visitLegacyProviderDependency(LegacyProviderDependency dependency) {
-    expect(
-      dependency.parent,
-      expectedParent,
-      reason:
-          'Node ${dependency.runtimeType} should have $expectedParent as parent',
-    );
-    dependency.visitChildren(_ParentRiverpodVisitor(dependency));
-  }
-
-  @override
-  void visitProviderListenableExpression(
-    ProviderListenableExpression expression,
-  ) {
-    expect(
-      expression.parent,
-      expectedParent,
-      reason:
-          'Node ${expression.runtimeType} should have $expectedParent as parent',
-    );
-    expression.visitChildren(_ParentRiverpodVisitor(expression));
-  }
-
-  @override
-  void visitRefListenInvocation(RefListenInvocation invocation) {
-    expect(
-      invocation.parent,
-      expectedParent,
-      reason:
-          'Node ${invocation.runtimeType} should have $expectedParent as parent',
-    );
-    invocation.visitChildren(_ParentRiverpodVisitor(invocation));
-  }
-
-  @override
-  void visitRefReadInvocation(RefReadInvocation invocation) {
-    expect(
-      invocation.parent,
-      expectedParent,
-      reason:
-          'Node ${invocation.runtimeType} should have $expectedParent as parent',
-    );
-    invocation.visitChildren(_ParentRiverpodVisitor(invocation));
-  }
-
-  @override
-  void visitRefWatchInvocation(RefWatchInvocation invocation) {
-    expect(
-      invocation.parent,
-      expectedParent,
-      reason:
-          'Node ${invocation.runtimeType} should have $expectedParent as parent',
-    );
-    invocation.visitChildren(_ParentRiverpodVisitor(invocation));
-  }
-
-  @override
-  void visitResolvedRiverpodUnit(ResolvedRiverpodLibraryResult result) {
-    expect(
-      result.parent,
-      expectedParent,
-      reason:
-          'Node ${result.runtimeType} should have $expectedParent as parent',
-    );
-    result.visitChildren(_ParentRiverpodVisitor(result));
-  }
-
-  @override
-  void visitRiverpodAnnotation(RiverpodAnnotation annotation) {
-    expect(
-      annotation.parent,
-      expectedParent,
-      reason:
-          'Node ${annotation.runtimeType} should have $expectedParent as parent',
-    );
-    annotation.visitChildren(_ParentRiverpodVisitor(annotation));
-  }
-
-  @override
-  void visitRiverpodAnnotationDependency(
-    RiverpodAnnotationDependency dependency,
-  ) {
-    expect(
-      dependency.parent,
-      expectedParent,
-      reason:
-          'Node ${dependency.runtimeType} should have $expectedParent as parent',
-    );
-    dependency.visitChildren(_ParentRiverpodVisitor(dependency));
-  }
-
-  @override
-  void visitRiverpodAnnotationDependencies(
-    RiverpodAnnotationDependencies dependencies,
-  ) {
-    expect(
-      dependencies.parent,
-      expectedParent,
-      reason:
-          'Node ${dependencies.runtimeType} should have $expectedParent as parent',
-    );
-    dependencies.visitChildren(_ParentRiverpodVisitor(dependencies));
-  }
-
-  @override
-  void visitConsumerStatefulWidgetDeclaration(
-    ConsumerStatefulWidgetDeclaration declaration,
-  ) {
-    expect(
-      declaration.parent,
-      expectedParent,
-      reason:
-          'Node ${declaration.runtimeType} should have $expectedParent as parent',
-    );
-    declaration.visitChildren(_ParentRiverpodVisitor(declaration));
-  }
-
-  @override
-  void visitClassBasedProviderDeclaration(
-    ClassBasedProviderDeclaration declaration,
-  ) {
-    expect(
-      declaration.parent,
-      expectedParent,
-      reason:
-          'Node ${declaration.runtimeType} should have $expectedParent as parent',
-    );
-    declaration.visitChildren(_ParentRiverpodVisitor(declaration));
-  }
-
-  @override
-  void visitFunctionalProviderDeclaration(
-    FunctionalProviderDeclaration declaration,
-  ) {
-    expect(
-      declaration.parent,
-      expectedParent,
-      reason:
-          'Node ${declaration.runtimeType} should have $expectedParent as parent',
-    );
-    declaration.visitChildren(_ParentRiverpodVisitor(declaration));
-  }
-
-  @override
-  void visitWidgetRefListenInvocation(WidgetRefListenInvocation invocation) {
-    expect(
-      invocation.parent,
-      expectedParent,
-      reason:
-          'Node ${invocation.runtimeType} should have $expectedParent as parent',
-    );
-    invocation.visitChildren(_ParentRiverpodVisitor(invocation));
-  }
-
-  @override
-  void visitWidgetRefListenManualInvocation(
-    WidgetRefListenManualInvocation invocation,
-  ) {
-    expect(
-      invocation.parent,
-      expectedParent,
-      reason:
-          'Node ${invocation.runtimeType} should have $expectedParent as parent',
-    );
-    invocation.visitChildren(_ParentRiverpodVisitor(invocation));
-  }
-
-  @override
-  void visitWidgetRefReadInvocation(WidgetRefReadInvocation invocation) {
-    expect(
-      invocation.parent,
-      expectedParent,
-      reason:
-          'Node ${invocation.runtimeType} should have $expectedParent as parent',
-    );
-    invocation.visitChildren(_ParentRiverpodVisitor(invocation));
-  }
-
-  @override
-  void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation invocation) {
-    expect(
-      invocation.parent,
-      expectedParent,
-      reason:
-          'Node ${invocation.runtimeType} should have $expectedParent as parent',
-    );
-    invocation.visitChildren(_ParentRiverpodVisitor(invocation));
-  }
-
-  @override
-  void visitHookConsumerWidgetDeclaration(
-    HookConsumerWidgetDeclaration declaration,
-  ) {
-    expect(
-      declaration.parent,
-      expectedParent,
-      reason:
-          'Node ${declaration.runtimeType} should have $expectedParent as parent',
-    );
-    declaration.visitChildren(_ParentRiverpodVisitor(declaration));
-  }
-
-  @override
-  void visitStatefulHookConsumerWidgetDeclaration(
-    StatefulHookConsumerWidgetDeclaration declaration,
-  ) {
-    expect(
-      declaration.parent,
-      expectedParent,
-      reason:
-          'Node ${declaration.runtimeType} should have $expectedParent as parent',
-    );
-    declaration.visitChildren(_ParentRiverpodVisitor(declaration));
-  }
-}
-
-class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
-  final providerContainerInstanceCreationExpressions =
-      <ProviderContainerInstanceCreationExpression>[];
-  @override
-  void visitProviderContainerInstanceCreationExpression(
-    ProviderContainerInstanceCreationExpression expression,
-  ) {
-    super.visitProviderContainerInstanceCreationExpression(expression);
-    providerContainerInstanceCreationExpressions.add(expression);
-  }
-
-  final providerScopeInstanceCreationExpressions =
-      <ProviderScopeInstanceCreationExpression>[];
-  @override
-  void visitProviderScopeInstanceCreationExpression(
-    ProviderScopeInstanceCreationExpression expression,
-  ) {
-    super.visitProviderScopeInstanceCreationExpression(expression);
-    providerScopeInstanceCreationExpressions.add(expression);
-  }
-
-  final consumerStateDeclarations = <ConsumerStateDeclaration>[];
-  @override
-  void visitConsumerStateDeclaration(ConsumerStateDeclaration declaration) {
-    super.visitConsumerStateDeclaration(declaration);
-    consumerStateDeclarations.add(declaration);
-  }
-
-  final consumerWidgetDeclarations = <ConsumerWidgetDeclaration>[];
-  @override
-  void visitConsumerWidgetDeclaration(ConsumerWidgetDeclaration declaration) {
-    super.visitConsumerWidgetDeclaration(declaration);
-    consumerWidgetDeclarations.add(declaration);
-  }
-
-  final hookConsumerWidgetDeclaration = <HookConsumerWidgetDeclaration>[];
-  @override
-  void visitHookConsumerWidgetDeclaration(
-    HookConsumerWidgetDeclaration declaration,
-  ) {
-    super.visitHookConsumerWidgetDeclaration(declaration);
-    hookConsumerWidgetDeclaration.add(declaration);
-  }
-
-  final statefulHookConsumerWidgetDeclaration =
-      <StatefulHookConsumerWidgetDeclaration>[];
-  @override
-  void visitStatefulHookConsumerWidgetDeclaration(
-    StatefulHookConsumerWidgetDeclaration declaration,
-  ) {
-    super.visitStatefulHookConsumerWidgetDeclaration(declaration);
-    statefulHookConsumerWidgetDeclaration.add(declaration);
-  }
-
-  final legacyProviderDeclarations = <LegacyProviderDeclaration>[];
-  @override
-  void visitLegacyProviderDeclaration(LegacyProviderDeclaration declaration) {
-    super.visitLegacyProviderDeclaration(declaration);
-    legacyProviderDeclarations.add(declaration);
-  }
-
-  final legacyProviderDependencies = <LegacyProviderDependencies>[];
-  @override
-  void visitLegacyProviderDependencies(
-    LegacyProviderDependencies dependencies,
-  ) {
-    super.visitLegacyProviderDependencies(dependencies);
-    legacyProviderDependencies.add(dependencies);
-  }
-
-  final legacyProviderDependencyList = <LegacyProviderDependency>[];
-  @override
-  void visitLegacyProviderDependency(LegacyProviderDependency dependency) {
-    super.visitLegacyProviderDependency(dependency);
-    legacyProviderDependencyList.add(dependency);
-  }
-
-  final providerListenableExpressions = <ProviderListenableExpression>[];
-  @override
-  void visitProviderListenableExpression(
-    ProviderListenableExpression expression,
-  ) {
-    super.visitProviderListenableExpression(expression);
-    providerListenableExpressions.add(expression);
-  }
-
-  final refInvocations = <RefInvocation>[];
-  final refListenInvocations = <RefListenInvocation>[];
-  @override
-  void visitRefListenInvocation(RefListenInvocation invocation) {
-    super.visitRefListenInvocation(invocation);
-    refInvocations.add(invocation);
-    refListenInvocations.add(invocation);
-  }
-
-  final refReadInvocations = <RefReadInvocation>[];
-  @override
-  void visitRefReadInvocation(RefReadInvocation invocation) {
-    super.visitRefReadInvocation(invocation);
-    refInvocations.add(invocation);
-    refReadInvocations.add(invocation);
-  }
-
-  final refWatchInvocations = <RefWatchInvocation>[];
-  @override
-  void visitRefWatchInvocation(RefWatchInvocation invocation) {
-    super.visitRefWatchInvocation(invocation);
-    refInvocations.add(invocation);
-    refWatchInvocations.add(invocation);
-  }
-
-  final resolvedRiverpodLibraryResults = <ResolvedRiverpodLibraryResult>[];
-  @override
-  void visitResolvedRiverpodUnit(ResolvedRiverpodLibraryResult result) {
-    super.visitResolvedRiverpodUnit(result);
-    resolvedRiverpodLibraryResults.add(result);
-  }
-
-  final riverpodAnnotations = <RiverpodAnnotation>[];
-  @override
-  void visitRiverpodAnnotation(RiverpodAnnotation annotation) {
-    super.visitRiverpodAnnotation(annotation);
-    riverpodAnnotations.add(annotation);
-  }
-
-  final riverpodAnnotationDependencyList = <RiverpodAnnotationDependency>[];
-  @override
-  void visitRiverpodAnnotationDependency(
-    RiverpodAnnotationDependency dependency,
-  ) {
-    super.visitRiverpodAnnotationDependency(dependency);
-    riverpodAnnotationDependencyList.add(dependency);
-  }
-
-  final riverpodAnnotationDependencies = <RiverpodAnnotationDependencies>[];
-  @override
-  void visitRiverpodAnnotationDependencies(
-    RiverpodAnnotationDependencies dependencies,
-  ) {
-    super.visitRiverpodAnnotationDependencies(dependencies);
-    riverpodAnnotationDependencies.add(dependencies);
-  }
-
-  final consumerStatefulWidgetDeclarations =
-      <ConsumerStatefulWidgetDeclaration>[];
-  @override
-  void visitConsumerStatefulWidgetDeclaration(
-    ConsumerStatefulWidgetDeclaration declaration,
-  ) {
-    super.visitConsumerStatefulWidgetDeclaration(declaration);
-    consumerStatefulWidgetDeclarations.add(declaration);
-  }
-
-  final generatorProviderDeclarations = <GeneratorProviderDeclaration>[];
-  final classBasedProviderDeclarations = <ClassBasedProviderDeclaration>[];
-  @override
-  void visitClassBasedProviderDeclaration(
-    ClassBasedProviderDeclaration declaration,
-  ) {
-    super.visitClassBasedProviderDeclaration(declaration);
-    generatorProviderDeclarations.add(declaration);
-    classBasedProviderDeclarations.add(declaration);
-  }
-
-  final functionalProviderDeclarations = <FunctionalProviderDeclaration>[];
-  @override
-  void visitFunctionalProviderDeclaration(
-    FunctionalProviderDeclaration declaration,
-  ) {
-    super.visitFunctionalProviderDeclaration(declaration);
-    generatorProviderDeclarations.add(declaration);
-    functionalProviderDeclarations.add(declaration);
-  }
-
-  final widgetRefInvocations = <WidgetRefInvocation>[];
-  final widgetRefListenInvocations = <WidgetRefListenInvocation>[];
-  @override
-  void visitWidgetRefListenInvocation(WidgetRefListenInvocation invocation) {
-    super.visitWidgetRefListenInvocation(invocation);
-    widgetRefInvocations.add(invocation);
-    widgetRefListenInvocations.add(invocation);
-  }
-
-  final widgetRefListenManualInvocations = <WidgetRefListenManualInvocation>[];
-  @override
-  void visitWidgetRefListenManualInvocation(
-    WidgetRefListenManualInvocation invocation,
-  ) {
-    super.visitWidgetRefListenManualInvocation(invocation);
-    widgetRefInvocations.add(invocation);
-    widgetRefListenManualInvocations.add(invocation);
-  }
-
-  final widgetRefReadInvocations = <WidgetRefReadInvocation>[];
-  @override
-  void visitWidgetRefReadInvocation(WidgetRefReadInvocation invocation) {
-    super.visitWidgetRefReadInvocation(invocation);
-    widgetRefInvocations.add(invocation);
-    widgetRefReadInvocations.add(invocation);
-  }
-
-  final widgetRefWatchInvocations = <WidgetRefWatchInvocation>[];
-  @override
-  void visitWidgetRefWatchInvocation(WidgetRefWatchInvocation invocation) {
-    super.visitWidgetRefWatchInvocation(invocation);
-    widgetRefInvocations.add(invocation);
-    widgetRefWatchInvocations.add(invocation);
-  }
-}
-
-extension TakeList<T extends ProviderDeclaration> on List<T> {
-  Map<String, T> takeAll(List<String> names) {
-    final result = Map.fromEntries(map((e) => MapEntry(e.name.lexeme, e)));
-    return result.take(names);
-  }
-
-  T findByName(String name) {
-    return singleWhere((element) => element.name.lexeme == name);
-  }
-}
-
-extension LibraryElementX on LibraryElement {
-  Element findElementWithName(String name) {
-    return topLevelElements.singleWhere(
-      (element) => !element.isSynthetic && element.name == name,
-      orElse: () => throw StateError('No element found with name "$name"'),
-    );
   }
 }

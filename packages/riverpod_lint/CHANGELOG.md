@@ -1,3 +1,51 @@
+## Unreleased build
+
+- All lints/assists now automatically add the relevant imports when
+  updating code.
+- Updated `provider_dependencies` to support `@Dependencies`
+- added `riverpod_syntax_error`, for reporting errors when the generator would throw.
+- added `avoid_keep_alive_dependency_inside_auto_dispose`
+- Fix `provider_parameters` for objects using mixins.
+
+- **Breaking**: No-longer exports various providers
+  from `package:riverpod`.
+
+Various lints had their severity changed:
+
+- `avoid_build_context_in_providers` is now an INFO
+- `avoid_ref_inside_state_dispose` is now a WARNING
+- `functional_ref` is now a WARNING
+- `notifier_build` is now an error.
+- `missing_provider_scope` is now a WARNING
+- `provider_dependencies` is now a WARNING
+- `scoped_providers_should_specify_dependencies` is now a WARNING
+- `notifier_extends` is now a WARNING
+- `provider_parameters` is now a WARNING
+
+## 3.0.0-dev.4 - 2023-11-27
+
+- `riverpod` upgraded to `3.0.0-dev.3`
+
+## 3.0.0-dev.3 - 2023-11-20
+
+- `riverpod` upgraded to `3.0.0-dev.2`
+
+## 3.0.0-dev.2 - 2023-11-20
+
+- Fix crash when encountering classes with a `ProviderBase` field.
+
+## 3.0.0-dev.1 - 2023-10-30
+
+- `riverpod_analyzer_utils` upgraded to `1.0.0-dev.0`
+
+## 3.0.0-dev.0 - 2023-10-29
+
+- `riverpod` upgraded to `3.0.0-dev.0`
+
+## 2.6.5 - 2025-02-28
+
+Upgrade dependencies
+
 ## 2.6.4 - 2025-01-08
 
 Support latest analyzer
@@ -68,7 +116,7 @@ Bump custom_lint
 
 ## 2.3.4 - 2023-11-13
 
-- Updated `scoped_providers_should_specify_dependencies` to ignore instances of using pumpWidget in tests (thanks to [lockieRichter](https://github.com/lockieRichter))
+- Updated `scoped_providers_should_specify_dependencies` to ignore instances of using pumpWidget in tests (thanks to @lockieRichter)
 
 ## 2.3.3 - 2023-10-28
 
@@ -85,13 +133,15 @@ Bump custom_lint
 
 ## 2.3.0 - 2023-10-06
 
-- Added `async_value_nullable_patttern` lint, to warn against using `AsyncValue(:final value?)` in pattern match when `value` is possibly nullable.
+- Added `async_value_nullable_pattern` lint, to warn against using `AsyncValue(:final value?)` in pattern match when `value` is possibly nullable.
 - Added `protected_notifier_state` lint, which warns against using the `Notifier.state`
   property of a notifier different than the current one.
   Aka a Notifier "A" should not directly access the `state` if a Notifier "B".
 
 ## 2.2.1 - 2023-10-02
 
+- Updated `functional_ref` and `generator_class_extends` to support providers
+  with generic parameters.
 - Fixed `functional_ref` throwing if a provider specifies arguments but
   incorrectly did not specify a Ref
 
@@ -242,3 +292,5 @@ Fix quick-fix for provider_dependencies
 ## 1.0.0
 
 Initial release
+
+<!-- cSpell:ignoreRegExp @\w+ -->

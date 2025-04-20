@@ -1,3 +1,4 @@
+// dart format width=80
 // coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint
@@ -9,100 +10,71 @@ part of 'pub_repository.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
 
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
-PackageMetricsScore _$PackageMetricsScoreFromJson(Map<String, dynamic> json) {
-  return _PackageMetricsScore.fromJson(json);
-}
-
 /// @nodoc
-mixin _$PackageMetricsScore {
-  int get grantedPoints => throw _privateConstructorUsedError;
-  int get maxPoints => throw _privateConstructorUsedError;
-  int get likeCount => throw _privateConstructorUsedError;
-  double get popularityScore => throw _privateConstructorUsedError;
-  List<String> get tags => throw _privateConstructorUsedError;
-
-  /// Serializes this PackageMetricsScore to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+mixin _$PackageMetricsScore implements DiagnosticableTreeMixin {
+  int get grantedPoints;
+  int get maxPoints;
+  int get likeCount;
+  double get popularityScore;
+  List<String> get tags;
 
   /// Create a copy of PackageMetricsScore
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $PackageMetricsScoreCopyWith<PackageMetricsScore> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $PackageMetricsScoreCopyWith<$Res> {
-  factory $PackageMetricsScoreCopyWith(
-          PackageMetricsScore value, $Res Function(PackageMetricsScore) then) =
-      _$PackageMetricsScoreCopyWithImpl<$Res, PackageMetricsScore>;
-  @useResult
-  $Res call(
-      {int grantedPoints,
-      int maxPoints,
-      int likeCount,
-      double popularityScore,
-      List<String> tags});
-}
-
-/// @nodoc
-class _$PackageMetricsScoreCopyWithImpl<$Res, $Val extends PackageMetricsScore>
-    implements $PackageMetricsScoreCopyWith<$Res> {
-  _$PackageMetricsScoreCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of PackageMetricsScore
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
+  $PackageMetricsScoreCopyWith<PackageMetricsScore> get copyWith =>
+      _$PackageMetricsScoreCopyWithImpl<PackageMetricsScore>(
+          this as PackageMetricsScore, _$identity);
+
+  /// Serializes this PackageMetricsScore to a JSON map.
+  Map<String, dynamic> toJson();
+
   @override
-  $Res call({
-    Object? grantedPoints = null,
-    Object? maxPoints = null,
-    Object? likeCount = null,
-    Object? popularityScore = null,
-    Object? tags = null,
-  }) {
-    return _then(_value.copyWith(
-      grantedPoints: null == grantedPoints
-          ? _value.grantedPoints
-          : grantedPoints // ignore: cast_nullable_to_non_nullable
-              as int,
-      maxPoints: null == maxPoints
-          ? _value.maxPoints
-          : maxPoints // ignore: cast_nullable_to_non_nullable
-              as int,
-      likeCount: null == likeCount
-          ? _value.likeCount
-          : likeCount // ignore: cast_nullable_to_non_nullable
-              as int,
-      popularityScore: null == popularityScore
-          ? _value.popularityScore
-          : popularityScore // ignore: cast_nullable_to_non_nullable
-              as double,
-      tags: null == tags
-          ? _value.tags
-          : tags // ignore: cast_nullable_to_non_nullable
-              as List<String>,
-    ) as $Val);
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties
+      ..add(DiagnosticsProperty('type', 'PackageMetricsScore'))
+      ..add(DiagnosticsProperty('grantedPoints', grantedPoints))
+      ..add(DiagnosticsProperty('maxPoints', maxPoints))
+      ..add(DiagnosticsProperty('likeCount', likeCount))
+      ..add(DiagnosticsProperty('popularityScore', popularityScore))
+      ..add(DiagnosticsProperty('tags', tags));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is PackageMetricsScore &&
+            (identical(other.grantedPoints, grantedPoints) ||
+                other.grantedPoints == grantedPoints) &&
+            (identical(other.maxPoints, maxPoints) ||
+                other.maxPoints == maxPoints) &&
+            (identical(other.likeCount, likeCount) ||
+                other.likeCount == likeCount) &&
+            (identical(other.popularityScore, popularityScore) ||
+                other.popularityScore == popularityScore) &&
+            const DeepCollectionEquality().equals(other.tags, tags));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, grantedPoints, maxPoints,
+      likeCount, popularityScore, const DeepCollectionEquality().hash(tags));
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'PackageMetricsScore(grantedPoints: $grantedPoints, maxPoints: $maxPoints, likeCount: $likeCount, popularityScore: $popularityScore, tags: $tags)';
   }
 }
 
 /// @nodoc
-abstract class _$$PackageMetricsScoreImplCopyWith<$Res>
-    implements $PackageMetricsScoreCopyWith<$Res> {
-  factory _$$PackageMetricsScoreImplCopyWith(_$PackageMetricsScoreImpl value,
-          $Res Function(_$PackageMetricsScoreImpl) then) =
-      __$$PackageMetricsScoreImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $PackageMetricsScoreCopyWith<$Res> {
+  factory $PackageMetricsScoreCopyWith(
+          PackageMetricsScore value, $Res Function(PackageMetricsScore) _then) =
+      _$PackageMetricsScoreCopyWithImpl;
   @useResult
   $Res call(
       {int grantedPoints,
@@ -113,12 +85,12 @@ abstract class _$$PackageMetricsScoreImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$PackageMetricsScoreImplCopyWithImpl<$Res>
-    extends _$PackageMetricsScoreCopyWithImpl<$Res, _$PackageMetricsScoreImpl>
-    implements _$$PackageMetricsScoreImplCopyWith<$Res> {
-  __$$PackageMetricsScoreImplCopyWithImpl(_$PackageMetricsScoreImpl _value,
-      $Res Function(_$PackageMetricsScoreImpl) _then)
-      : super(_value, _then);
+class _$PackageMetricsScoreCopyWithImpl<$Res>
+    implements $PackageMetricsScoreCopyWith<$Res> {
+  _$PackageMetricsScoreCopyWithImpl(this._self, this._then);
+
+  final PackageMetricsScore _self;
+  final $Res Function(PackageMetricsScore) _then;
 
   /// Create a copy of PackageMetricsScore
   /// with the given fields replaced by the non-null parameter values.
@@ -131,25 +103,25 @@ class __$$PackageMetricsScoreImplCopyWithImpl<$Res>
     Object? popularityScore = null,
     Object? tags = null,
   }) {
-    return _then(_$PackageMetricsScoreImpl(
+    return _then(_self.copyWith(
       grantedPoints: null == grantedPoints
-          ? _value.grantedPoints
+          ? _self.grantedPoints
           : grantedPoints // ignore: cast_nullable_to_non_nullable
               as int,
       maxPoints: null == maxPoints
-          ? _value.maxPoints
+          ? _self.maxPoints
           : maxPoints // ignore: cast_nullable_to_non_nullable
               as int,
       likeCount: null == likeCount
-          ? _value.likeCount
+          ? _self.likeCount
           : likeCount // ignore: cast_nullable_to_non_nullable
               as int,
       popularityScore: null == popularityScore
-          ? _value.popularityScore
+          ? _self.popularityScore
           : popularityScore // ignore: cast_nullable_to_non_nullable
               as double,
       tags: null == tags
-          ? _value._tags
+          ? _self.tags
           : tags // ignore: cast_nullable_to_non_nullable
               as List<String>,
     ));
@@ -158,19 +130,18 @@ class __$$PackageMetricsScoreImplCopyWithImpl<$Res>
 
 /// @nodoc
 @JsonSerializable()
-class _$PackageMetricsScoreImpl
+class _PackageMetricsScore
     with DiagnosticableTreeMixin
-    implements _PackageMetricsScore {
-  _$PackageMetricsScoreImpl(
+    implements PackageMetricsScore {
+  _PackageMetricsScore(
       {required this.grantedPoints,
       required this.maxPoints,
       required this.likeCount,
       required this.popularityScore,
       required final List<String> tags})
       : _tags = tags;
-
-  factory _$PackageMetricsScoreImpl.fromJson(Map<String, dynamic> json) =>
-      _$$PackageMetricsScoreImplFromJson(json);
+  factory _PackageMetricsScore.fromJson(Map<String, dynamic> json) =>
+      _$PackageMetricsScoreFromJson(json);
 
   @override
   final int grantedPoints;
@@ -188,14 +159,24 @@ class _$PackageMetricsScoreImpl
     return EqualUnmodifiableListView(_tags);
   }
 
+  /// Create a copy of PackageMetricsScore
+  /// with the given fields replaced by the non-null parameter values.
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'PackageMetricsScore(grantedPoints: $grantedPoints, maxPoints: $maxPoints, likeCount: $likeCount, popularityScore: $popularityScore, tags: $tags)';
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$PackageMetricsScoreCopyWith<_PackageMetricsScore> get copyWith =>
+      __$PackageMetricsScoreCopyWithImpl<_PackageMetricsScore>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$PackageMetricsScoreToJson(
+      this,
+    );
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('type', 'PackageMetricsScore'))
       ..add(DiagnosticsProperty('grantedPoints', grantedPoints))
@@ -209,7 +190,7 @@ class _$PackageMetricsScoreImpl
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$PackageMetricsScoreImpl &&
+            other is _PackageMetricsScore &&
             (identical(other.grantedPoints, grantedPoints) ||
                 other.grantedPoints == grantedPoints) &&
             (identical(other.maxPoints, maxPoints) ||
@@ -226,182 +207,89 @@ class _$PackageMetricsScoreImpl
   int get hashCode => Object.hash(runtimeType, grantedPoints, maxPoints,
       likeCount, popularityScore, const DeepCollectionEquality().hash(_tags));
 
-  /// Create a copy of PackageMetricsScore
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$PackageMetricsScoreImplCopyWith<_$PackageMetricsScoreImpl> get copyWith =>
-      __$$PackageMetricsScoreImplCopyWithImpl<_$PackageMetricsScoreImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$PackageMetricsScoreImplToJson(
-      this,
-    );
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'PackageMetricsScore(grantedPoints: $grantedPoints, maxPoints: $maxPoints, likeCount: $likeCount, popularityScore: $popularityScore, tags: $tags)';
   }
 }
 
-abstract class _PackageMetricsScore implements PackageMetricsScore {
-  factory _PackageMetricsScore(
-      {required final int grantedPoints,
-      required final int maxPoints,
-      required final int likeCount,
-      required final double popularityScore,
-      required final List<String> tags}) = _$PackageMetricsScoreImpl;
+/// @nodoc
+abstract mixin class _$PackageMetricsScoreCopyWith<$Res>
+    implements $PackageMetricsScoreCopyWith<$Res> {
+  factory _$PackageMetricsScoreCopyWith(_PackageMetricsScore value,
+          $Res Function(_PackageMetricsScore) _then) =
+      __$PackageMetricsScoreCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {int grantedPoints,
+      int maxPoints,
+      int likeCount,
+      double popularityScore,
+      List<String> tags});
+}
 
-  factory _PackageMetricsScore.fromJson(Map<String, dynamic> json) =
-      _$PackageMetricsScoreImpl.fromJson;
+/// @nodoc
+class __$PackageMetricsScoreCopyWithImpl<$Res>
+    implements _$PackageMetricsScoreCopyWith<$Res> {
+  __$PackageMetricsScoreCopyWithImpl(this._self, this._then);
 
-  @override
-  int get grantedPoints;
-  @override
-  int get maxPoints;
-  @override
-  int get likeCount;
-  @override
-  double get popularityScore;
-  @override
-  List<String> get tags;
+  final _PackageMetricsScore _self;
+  final $Res Function(_PackageMetricsScore) _then;
 
   /// Create a copy of PackageMetricsScore
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$PackageMetricsScoreImplCopyWith<_$PackageMetricsScoreImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-PackageMetricsResponse _$PackageMetricsResponseFromJson(
-    Map<String, dynamic> json) {
-  return _PackageMetricsResponse.fromJson(json);
-}
-
-/// @nodoc
-mixin _$PackageMetricsResponse {
-  PackageMetricsScore get score => throw _privateConstructorUsedError;
-
-  /// Serializes this PackageMetricsResponse to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of PackageMetricsResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $PackageMetricsResponseCopyWith<PackageMetricsResponse> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $PackageMetricsResponseCopyWith<$Res> {
-  factory $PackageMetricsResponseCopyWith(PackageMetricsResponse value,
-          $Res Function(PackageMetricsResponse) then) =
-      _$PackageMetricsResponseCopyWithImpl<$Res, PackageMetricsResponse>;
-  @useResult
-  $Res call({PackageMetricsScore score});
-
-  $PackageMetricsScoreCopyWith<$Res> get score;
-}
-
-/// @nodoc
-class _$PackageMetricsResponseCopyWithImpl<$Res,
-        $Val extends PackageMetricsResponse>
-    implements $PackageMetricsResponseCopyWith<$Res> {
-  _$PackageMetricsResponseCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of PackageMetricsResponse
-  /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
-  @override
   $Res call({
-    Object? score = null,
+    Object? grantedPoints = null,
+    Object? maxPoints = null,
+    Object? likeCount = null,
+    Object? popularityScore = null,
+    Object? tags = null,
   }) {
-    return _then(_value.copyWith(
-      score: null == score
-          ? _value.score
-          : score // ignore: cast_nullable_to_non_nullable
-              as PackageMetricsScore,
-    ) as $Val);
-  }
-
-  /// Create a copy of PackageMetricsResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $PackageMetricsScoreCopyWith<$Res> get score {
-    return $PackageMetricsScoreCopyWith<$Res>(_value.score, (value) {
-      return _then(_value.copyWith(score: value) as $Val);
-    });
-  }
-}
-
-/// @nodoc
-abstract class _$$PackageMetricsResponseImplCopyWith<$Res>
-    implements $PackageMetricsResponseCopyWith<$Res> {
-  factory _$$PackageMetricsResponseImplCopyWith(
-          _$PackageMetricsResponseImpl value,
-          $Res Function(_$PackageMetricsResponseImpl) then) =
-      __$$PackageMetricsResponseImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({PackageMetricsScore score});
-
-  @override
-  $PackageMetricsScoreCopyWith<$Res> get score;
-}
-
-/// @nodoc
-class __$$PackageMetricsResponseImplCopyWithImpl<$Res>
-    extends _$PackageMetricsResponseCopyWithImpl<$Res,
-        _$PackageMetricsResponseImpl>
-    implements _$$PackageMetricsResponseImplCopyWith<$Res> {
-  __$$PackageMetricsResponseImplCopyWithImpl(
-      _$PackageMetricsResponseImpl _value,
-      $Res Function(_$PackageMetricsResponseImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of PackageMetricsResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? score = null,
-  }) {
-    return _then(_$PackageMetricsResponseImpl(
-      score: null == score
-          ? _value.score
-          : score // ignore: cast_nullable_to_non_nullable
-              as PackageMetricsScore,
+    return _then(_PackageMetricsScore(
+      grantedPoints: null == grantedPoints
+          ? _self.grantedPoints
+          : grantedPoints // ignore: cast_nullable_to_non_nullable
+              as int,
+      maxPoints: null == maxPoints
+          ? _self.maxPoints
+          : maxPoints // ignore: cast_nullable_to_non_nullable
+              as int,
+      likeCount: null == likeCount
+          ? _self.likeCount
+          : likeCount // ignore: cast_nullable_to_non_nullable
+              as int,
+      popularityScore: null == popularityScore
+          ? _self.popularityScore
+          : popularityScore // ignore: cast_nullable_to_non_nullable
+              as double,
+      tags: null == tags
+          ? _self._tags
+          : tags // ignore: cast_nullable_to_non_nullable
+              as List<String>,
     ));
   }
 }
 
 /// @nodoc
-@JsonSerializable()
-class _$PackageMetricsResponseImpl
-    with DiagnosticableTreeMixin
-    implements _PackageMetricsResponse {
-  _$PackageMetricsResponseImpl({required this.score});
+mixin _$PackageMetricsResponse implements DiagnosticableTreeMixin {
+  PackageMetricsScore get score;
 
-  factory _$PackageMetricsResponseImpl.fromJson(Map<String, dynamic> json) =>
-      _$$PackageMetricsResponseImplFromJson(json);
+  /// Create a copy of PackageMetricsResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $PackageMetricsResponseCopyWith<PackageMetricsResponse> get copyWith =>
+      _$PackageMetricsResponseCopyWithImpl<PackageMetricsResponse>(
+          this as PackageMetricsResponse, _$identity);
 
-  @override
-  final PackageMetricsScore score;
-
-  @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'PackageMetricsResponse(score: $score)';
-  }
+  /// Serializes this PackageMetricsResponse to a JSON map.
+  Map<String, dynamic> toJson();
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('type', 'PackageMetricsResponse'))
       ..add(DiagnosticsProperty('score', score));
@@ -411,7 +299,7 @@ class _$PackageMetricsResponseImpl
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$PackageMetricsResponseImpl &&
+            other is PackageMetricsResponse &&
             (identical(other.score, score) || other.score == score));
   }
 
@@ -419,163 +307,176 @@ class _$PackageMetricsResponseImpl
   @override
   int get hashCode => Object.hash(runtimeType, score);
 
-  /// Create a copy of PackageMetricsResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$PackageMetricsResponseImplCopyWith<_$PackageMetricsResponseImpl>
-      get copyWith => __$$PackageMetricsResponseImplCopyWithImpl<
-          _$PackageMetricsResponseImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$PackageMetricsResponseImplToJson(
-      this,
-    );
-  }
-}
-
-abstract class _PackageMetricsResponse implements PackageMetricsResponse {
-  factory _PackageMetricsResponse({required final PackageMetricsScore score}) =
-      _$PackageMetricsResponseImpl;
-
-  factory _PackageMetricsResponse.fromJson(Map<String, dynamic> json) =
-      _$PackageMetricsResponseImpl.fromJson;
-
-  @override
-  PackageMetricsScore get score;
-
-  /// Create a copy of PackageMetricsResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$PackageMetricsResponseImplCopyWith<_$PackageMetricsResponseImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-PackageDetails _$PackageDetailsFromJson(Map<String, dynamic> json) {
-  return _PackageDetails.fromJson(json);
-}
-
-/// @nodoc
-mixin _$PackageDetails {
-  String get version => throw _privateConstructorUsedError;
-  Pubspec get pubspec => throw _privateConstructorUsedError;
-
-  /// Serializes this PackageDetails to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of PackageDetails
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $PackageDetailsCopyWith<PackageDetails> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $PackageDetailsCopyWith<$Res> {
-  factory $PackageDetailsCopyWith(
-          PackageDetails value, $Res Function(PackageDetails) then) =
-      _$PackageDetailsCopyWithImpl<$Res, PackageDetails>;
-  @useResult
-  $Res call({String version, Pubspec pubspec});
-}
-
-/// @nodoc
-class _$PackageDetailsCopyWithImpl<$Res, $Val extends PackageDetails>
-    implements $PackageDetailsCopyWith<$Res> {
-  _$PackageDetailsCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of PackageDetails
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? version = null,
-    Object? pubspec = null,
-  }) {
-    return _then(_value.copyWith(
-      version: null == version
-          ? _value.version
-          : version // ignore: cast_nullable_to_non_nullable
-              as String,
-      pubspec: null == pubspec
-          ? _value.pubspec
-          : pubspec // ignore: cast_nullable_to_non_nullable
-              as Pubspec,
-    ) as $Val);
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'PackageMetricsResponse(score: $score)';
   }
 }
 
 /// @nodoc
-abstract class _$$PackageDetailsImplCopyWith<$Res>
-    implements $PackageDetailsCopyWith<$Res> {
-  factory _$$PackageDetailsImplCopyWith(_$PackageDetailsImpl value,
-          $Res Function(_$PackageDetailsImpl) then) =
-      __$$PackageDetailsImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $PackageMetricsResponseCopyWith<$Res> {
+  factory $PackageMetricsResponseCopyWith(PackageMetricsResponse value,
+          $Res Function(PackageMetricsResponse) _then) =
+      _$PackageMetricsResponseCopyWithImpl;
   @useResult
-  $Res call({String version, Pubspec pubspec});
+  $Res call({PackageMetricsScore score});
+
+  $PackageMetricsScoreCopyWith<$Res> get score;
 }
 
 /// @nodoc
-class __$$PackageDetailsImplCopyWithImpl<$Res>
-    extends _$PackageDetailsCopyWithImpl<$Res, _$PackageDetailsImpl>
-    implements _$$PackageDetailsImplCopyWith<$Res> {
-  __$$PackageDetailsImplCopyWithImpl(
-      _$PackageDetailsImpl _value, $Res Function(_$PackageDetailsImpl) _then)
-      : super(_value, _then);
+class _$PackageMetricsResponseCopyWithImpl<$Res>
+    implements $PackageMetricsResponseCopyWith<$Res> {
+  _$PackageMetricsResponseCopyWithImpl(this._self, this._then);
 
-  /// Create a copy of PackageDetails
+  final PackageMetricsResponse _self;
+  final $Res Function(PackageMetricsResponse) _then;
+
+  /// Create a copy of PackageMetricsResponse
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? version = null,
-    Object? pubspec = null,
+    Object? score = null,
   }) {
-    return _then(_$PackageDetailsImpl(
-      version: null == version
-          ? _value.version
-          : version // ignore: cast_nullable_to_non_nullable
-              as String,
-      pubspec: null == pubspec
-          ? _value.pubspec
-          : pubspec // ignore: cast_nullable_to_non_nullable
-              as Pubspec,
+    return _then(_self.copyWith(
+      score: null == score
+          ? _self.score
+          : score // ignore: cast_nullable_to_non_nullable
+              as PackageMetricsScore,
     ));
+  }
+
+  /// Create a copy of PackageMetricsResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $PackageMetricsScoreCopyWith<$Res> get score {
+    return $PackageMetricsScoreCopyWith<$Res>(_self.score, (value) {
+      return _then(_self.copyWith(score: value));
+    });
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$PackageDetailsImpl
+class _PackageMetricsResponse
     with DiagnosticableTreeMixin
-    implements _PackageDetails {
-  _$PackageDetailsImpl({required this.version, required this.pubspec});
-
-  factory _$PackageDetailsImpl.fromJson(Map<String, dynamic> json) =>
-      _$$PackageDetailsImplFromJson(json);
-
-  @override
-  final String version;
-  @override
-  final Pubspec pubspec;
+    implements PackageMetricsResponse {
+  _PackageMetricsResponse({required this.score});
+  factory _PackageMetricsResponse.fromJson(Map<String, dynamic> json) =>
+      _$PackageMetricsResponseFromJson(json);
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'PackageDetails(version: $version, pubspec: $pubspec)';
+  final PackageMetricsScore score;
+
+  /// Create a copy of PackageMetricsResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$PackageMetricsResponseCopyWith<_PackageMetricsResponse> get copyWith =>
+      __$PackageMetricsResponseCopyWithImpl<_PackageMetricsResponse>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$PackageMetricsResponseToJson(
+      this,
+    );
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'PackageMetricsResponse'))
+      ..add(DiagnosticsProperty('score', score));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _PackageMetricsResponse &&
+            (identical(other.score, score) || other.score == score));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, score);
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'PackageMetricsResponse(score: $score)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$PackageMetricsResponseCopyWith<$Res>
+    implements $PackageMetricsResponseCopyWith<$Res> {
+  factory _$PackageMetricsResponseCopyWith(_PackageMetricsResponse value,
+          $Res Function(_PackageMetricsResponse) _then) =
+      __$PackageMetricsResponseCopyWithImpl;
+  @override
+  @useResult
+  $Res call({PackageMetricsScore score});
+
+  @override
+  $PackageMetricsScoreCopyWith<$Res> get score;
+}
+
+/// @nodoc
+class __$PackageMetricsResponseCopyWithImpl<$Res>
+    implements _$PackageMetricsResponseCopyWith<$Res> {
+  __$PackageMetricsResponseCopyWithImpl(this._self, this._then);
+
+  final _PackageMetricsResponse _self;
+  final $Res Function(_PackageMetricsResponse) _then;
+
+  /// Create a copy of PackageMetricsResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? score = null,
+  }) {
+    return _then(_PackageMetricsResponse(
+      score: null == score
+          ? _self.score
+          : score // ignore: cast_nullable_to_non_nullable
+              as PackageMetricsScore,
+    ));
+  }
+
+  /// Create a copy of PackageMetricsResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $PackageMetricsScoreCopyWith<$Res> get score {
+    return $PackageMetricsScoreCopyWith<$Res>(_self.score, (value) {
+      return _then(_self.copyWith(score: value));
+    });
+  }
+}
+
+/// @nodoc
+mixin _$PackageDetails implements DiagnosticableTreeMixin {
+  String get version;
+  Pubspec get pubspec;
+
+  /// Create a copy of PackageDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $PackageDetailsCopyWith<PackageDetails> get copyWith =>
+      _$PackageDetailsCopyWithImpl<PackageDetails>(
+          this as PackageDetails, _$identity);
+
+  /// Serializes this PackageDetails to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties
       ..add(DiagnosticsProperty('type', 'PackageDetails'))
       ..add(DiagnosticsProperty('version', version))
@@ -586,7 +487,7 @@ class _$PackageDetailsImpl
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$PackageDetailsImpl &&
+            other is PackageDetails &&
             (identical(other.version, version) || other.version == version) &&
             (identical(other.pubspec, pubspec) || other.pubspec == pubspec));
   }
@@ -595,176 +496,161 @@ class _$PackageDetailsImpl
   @override
   int get hashCode => Object.hash(runtimeType, version, pubspec);
 
-  /// Create a copy of PackageDetails
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$PackageDetailsImplCopyWith<_$PackageDetailsImpl> get copyWith =>
-      __$$PackageDetailsImplCopyWithImpl<_$PackageDetailsImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$PackageDetailsImplToJson(
-      this,
-    );
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'PackageDetails(version: $version, pubspec: $pubspec)';
   }
 }
 
-abstract class _PackageDetails implements PackageDetails {
-  factory _PackageDetails(
-      {required final String version,
-      required final Pubspec pubspec}) = _$PackageDetailsImpl;
+/// @nodoc
+abstract mixin class $PackageDetailsCopyWith<$Res> {
+  factory $PackageDetailsCopyWith(
+          PackageDetails value, $Res Function(PackageDetails) _then) =
+      _$PackageDetailsCopyWithImpl;
+  @useResult
+  $Res call({String version, Pubspec pubspec});
+}
 
-  factory _PackageDetails.fromJson(Map<String, dynamic> json) =
-      _$PackageDetailsImpl.fromJson;
+/// @nodoc
+class _$PackageDetailsCopyWithImpl<$Res>
+    implements $PackageDetailsCopyWith<$Res> {
+  _$PackageDetailsCopyWithImpl(this._self, this._then);
 
-  @override
-  String get version;
-  @override
-  Pubspec get pubspec;
+  final PackageDetails _self;
+  final $Res Function(PackageDetails) _then;
 
   /// Create a copy of PackageDetails
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$PackageDetailsImplCopyWith<_$PackageDetailsImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-Package _$PackageFromJson(Map<String, dynamic> json) {
-  return _Package.fromJson(json);
-}
-
-/// @nodoc
-mixin _$Package {
-  String get name => throw _privateConstructorUsedError;
-  PackageDetails get latest => throw _privateConstructorUsedError;
-
-  /// Serializes this Package to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of Package
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $PackageCopyWith<Package> get copyWith => throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $PackageCopyWith<$Res> {
-  factory $PackageCopyWith(Package value, $Res Function(Package) then) =
-      _$PackageCopyWithImpl<$Res, Package>;
-  @useResult
-  $Res call({String name, PackageDetails latest});
-
-  $PackageDetailsCopyWith<$Res> get latest;
-}
-
-/// @nodoc
-class _$PackageCopyWithImpl<$Res, $Val extends Package>
-    implements $PackageCopyWith<$Res> {
-  _$PackageCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of Package
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? name = null,
-    Object? latest = null,
+    Object? version = null,
+    Object? pubspec = null,
   }) {
-    return _then(_value.copyWith(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
+    return _then(_self.copyWith(
+      version: null == version
+          ? _self.version
+          : version // ignore: cast_nullable_to_non_nullable
               as String,
-      latest: null == latest
-          ? _value.latest
-          : latest // ignore: cast_nullable_to_non_nullable
-              as PackageDetails,
-    ) as $Val);
-  }
-
-  /// Create a copy of Package
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @pragma('vm:prefer-inline')
-  $PackageDetailsCopyWith<$Res> get latest {
-    return $PackageDetailsCopyWith<$Res>(_value.latest, (value) {
-      return _then(_value.copyWith(latest: value) as $Val);
-    });
-  }
-}
-
-/// @nodoc
-abstract class _$$PackageImplCopyWith<$Res> implements $PackageCopyWith<$Res> {
-  factory _$$PackageImplCopyWith(
-          _$PackageImpl value, $Res Function(_$PackageImpl) then) =
-      __$$PackageImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({String name, PackageDetails latest});
-
-  @override
-  $PackageDetailsCopyWith<$Res> get latest;
-}
-
-/// @nodoc
-class __$$PackageImplCopyWithImpl<$Res>
-    extends _$PackageCopyWithImpl<$Res, _$PackageImpl>
-    implements _$$PackageImplCopyWith<$Res> {
-  __$$PackageImplCopyWithImpl(
-      _$PackageImpl _value, $Res Function(_$PackageImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of Package
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? name = null,
-    Object? latest = null,
-  }) {
-    return _then(_$PackageImpl(
-      name: null == name
-          ? _value.name
-          : name // ignore: cast_nullable_to_non_nullable
-              as String,
-      latest: null == latest
-          ? _value.latest
-          : latest // ignore: cast_nullable_to_non_nullable
-              as PackageDetails,
+      pubspec: null == pubspec
+          ? _self.pubspec
+          : pubspec // ignore: cast_nullable_to_non_nullable
+              as Pubspec,
     ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$PackageImpl with DiagnosticableTreeMixin implements _Package {
-  _$PackageImpl({required this.name, required this.latest});
-
-  factory _$PackageImpl.fromJson(Map<String, dynamic> json) =>
-      _$$PackageImplFromJson(json);
-
-  @override
-  final String name;
-  @override
-  final PackageDetails latest;
+class _PackageDetails with DiagnosticableTreeMixin implements PackageDetails {
+  _PackageDetails({required this.version, required this.pubspec});
+  factory _PackageDetails.fromJson(Map<String, dynamic> json) =>
+      _$PackageDetailsFromJson(json);
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'Package(name: $name, latest: $latest)';
+  final String version;
+  @override
+  final Pubspec pubspec;
+
+  /// Create a copy of PackageDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$PackageDetailsCopyWith<_PackageDetails> get copyWith =>
+      __$PackageDetailsCopyWithImpl<_PackageDetails>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$PackageDetailsToJson(
+      this,
+    );
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'PackageDetails'))
+      ..add(DiagnosticsProperty('version', version))
+      ..add(DiagnosticsProperty('pubspec', pubspec));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _PackageDetails &&
+            (identical(other.version, version) || other.version == version) &&
+            (identical(other.pubspec, pubspec) || other.pubspec == pubspec));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, version, pubspec);
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'PackageDetails(version: $version, pubspec: $pubspec)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$PackageDetailsCopyWith<$Res>
+    implements $PackageDetailsCopyWith<$Res> {
+  factory _$PackageDetailsCopyWith(
+          _PackageDetails value, $Res Function(_PackageDetails) _then) =
+      __$PackageDetailsCopyWithImpl;
+  @override
+  @useResult
+  $Res call({String version, Pubspec pubspec});
+}
+
+/// @nodoc
+class __$PackageDetailsCopyWithImpl<$Res>
+    implements _$PackageDetailsCopyWith<$Res> {
+  __$PackageDetailsCopyWithImpl(this._self, this._then);
+
+  final _PackageDetails _self;
+  final $Res Function(_PackageDetails) _then;
+
+  /// Create a copy of PackageDetails
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? version = null,
+    Object? pubspec = null,
+  }) {
+    return _then(_PackageDetails(
+      version: null == version
+          ? _self.version
+          : version // ignore: cast_nullable_to_non_nullable
+              as String,
+      pubspec: null == pubspec
+          ? _self.pubspec
+          : pubspec // ignore: cast_nullable_to_non_nullable
+              as Pubspec,
+    ));
+  }
+}
+
+/// @nodoc
+mixin _$Package implements DiagnosticableTreeMixin {
+  String get name;
+  PackageDetails get latest;
+
+  /// Create a copy of Package
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $PackageCopyWith<Package> get copyWith =>
+      _$PackageCopyWithImpl<Package>(this as Package, _$identity);
+
+  /// Serializes this Package to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties
       ..add(DiagnosticsProperty('type', 'Package'))
       ..add(DiagnosticsProperty('name', name))
@@ -775,7 +661,7 @@ class _$PackageImpl with DiagnosticableTreeMixin implements _Package {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$PackageImpl &&
+            other is Package &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.latest, latest) || other.latest == latest));
   }
@@ -784,162 +670,182 @@ class _$PackageImpl with DiagnosticableTreeMixin implements _Package {
   @override
   int get hashCode => Object.hash(runtimeType, name, latest);
 
-  /// Create a copy of Package
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$PackageImplCopyWith<_$PackageImpl> get copyWith =>
-      __$$PackageImplCopyWithImpl<_$PackageImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$PackageImplToJson(
-      this,
-    );
-  }
-}
-
-abstract class _Package implements Package {
-  factory _Package(
-      {required final String name,
-      required final PackageDetails latest}) = _$PackageImpl;
-
-  factory _Package.fromJson(Map<String, dynamic> json) = _$PackageImpl.fromJson;
-
-  @override
-  String get name;
-  @override
-  PackageDetails get latest;
-
-  /// Create a copy of Package
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$PackageImplCopyWith<_$PackageImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-LikedPackage _$LikedPackageFromJson(Map<String, dynamic> json) {
-  return _LikedPackage.fromJson(json);
-}
-
-/// @nodoc
-mixin _$LikedPackage {
-  String get package => throw _privateConstructorUsedError;
-  bool get liked => throw _privateConstructorUsedError;
-
-  /// Serializes this LikedPackage to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of LikedPackage
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $LikedPackageCopyWith<LikedPackage> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $LikedPackageCopyWith<$Res> {
-  factory $LikedPackageCopyWith(
-          LikedPackage value, $Res Function(LikedPackage) then) =
-      _$LikedPackageCopyWithImpl<$Res, LikedPackage>;
-  @useResult
-  $Res call({String package, bool liked});
-}
-
-/// @nodoc
-class _$LikedPackageCopyWithImpl<$Res, $Val extends LikedPackage>
-    implements $LikedPackageCopyWith<$Res> {
-  _$LikedPackageCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of LikedPackage
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? package = null,
-    Object? liked = null,
-  }) {
-    return _then(_value.copyWith(
-      package: null == package
-          ? _value.package
-          : package // ignore: cast_nullable_to_non_nullable
-              as String,
-      liked: null == liked
-          ? _value.liked
-          : liked // ignore: cast_nullable_to_non_nullable
-              as bool,
-    ) as $Val);
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'Package(name: $name, latest: $latest)';
   }
 }
 
 /// @nodoc
-abstract class _$$LikedPackageImplCopyWith<$Res>
-    implements $LikedPackageCopyWith<$Res> {
-  factory _$$LikedPackageImplCopyWith(
-          _$LikedPackageImpl value, $Res Function(_$LikedPackageImpl) then) =
-      __$$LikedPackageImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $PackageCopyWith<$Res> {
+  factory $PackageCopyWith(Package value, $Res Function(Package) _then) =
+      _$PackageCopyWithImpl;
   @useResult
-  $Res call({String package, bool liked});
+  $Res call({String name, PackageDetails latest});
+
+  $PackageDetailsCopyWith<$Res> get latest;
 }
 
 /// @nodoc
-class __$$LikedPackageImplCopyWithImpl<$Res>
-    extends _$LikedPackageCopyWithImpl<$Res, _$LikedPackageImpl>
-    implements _$$LikedPackageImplCopyWith<$Res> {
-  __$$LikedPackageImplCopyWithImpl(
-      _$LikedPackageImpl _value, $Res Function(_$LikedPackageImpl) _then)
-      : super(_value, _then);
+class _$PackageCopyWithImpl<$Res> implements $PackageCopyWith<$Res> {
+  _$PackageCopyWithImpl(this._self, this._then);
 
-  /// Create a copy of LikedPackage
+  final Package _self;
+  final $Res Function(Package) _then;
+
+  /// Create a copy of Package
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? package = null,
-    Object? liked = null,
+    Object? name = null,
+    Object? latest = null,
   }) {
-    return _then(_$LikedPackageImpl(
-      package: null == package
-          ? _value.package
-          : package // ignore: cast_nullable_to_non_nullable
+    return _then(_self.copyWith(
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
               as String,
-      liked: null == liked
-          ? _value.liked
-          : liked // ignore: cast_nullable_to_non_nullable
-              as bool,
+      latest: null == latest
+          ? _self.latest
+          : latest // ignore: cast_nullable_to_non_nullable
+              as PackageDetails,
     ));
+  }
+
+  /// Create a copy of Package
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $PackageDetailsCopyWith<$Res> get latest {
+    return $PackageDetailsCopyWith<$Res>(_self.latest, (value) {
+      return _then(_self.copyWith(latest: value));
+    });
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$LikedPackageImpl with DiagnosticableTreeMixin implements _LikedPackage {
-  _$LikedPackageImpl({required this.package, required this.liked});
-
-  factory _$LikedPackageImpl.fromJson(Map<String, dynamic> json) =>
-      _$$LikedPackageImplFromJson(json);
-
-  @override
-  final String package;
-  @override
-  final bool liked;
+class _Package with DiagnosticableTreeMixin implements Package {
+  _Package({required this.name, required this.latest});
+  factory _Package.fromJson(Map<String, dynamic> json) =>
+      _$PackageFromJson(json);
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'LikedPackage(package: $package, liked: $liked)';
+  final String name;
+  @override
+  final PackageDetails latest;
+
+  /// Create a copy of Package
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$PackageCopyWith<_Package> get copyWith =>
+      __$PackageCopyWithImpl<_Package>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$PackageToJson(
+      this,
+    );
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'Package'))
+      ..add(DiagnosticsProperty('name', name))
+      ..add(DiagnosticsProperty('latest', latest));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _Package &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.latest, latest) || other.latest == latest));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, name, latest);
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'Package(name: $name, latest: $latest)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$PackageCopyWith<$Res> implements $PackageCopyWith<$Res> {
+  factory _$PackageCopyWith(_Package value, $Res Function(_Package) _then) =
+      __$PackageCopyWithImpl;
+  @override
+  @useResult
+  $Res call({String name, PackageDetails latest});
+
+  @override
+  $PackageDetailsCopyWith<$Res> get latest;
+}
+
+/// @nodoc
+class __$PackageCopyWithImpl<$Res> implements _$PackageCopyWith<$Res> {
+  __$PackageCopyWithImpl(this._self, this._then);
+
+  final _Package _self;
+  final $Res Function(_Package) _then;
+
+  /// Create a copy of Package
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? name = null,
+    Object? latest = null,
+  }) {
+    return _then(_Package(
+      name: null == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String,
+      latest: null == latest
+          ? _self.latest
+          : latest // ignore: cast_nullable_to_non_nullable
+              as PackageDetails,
+    ));
+  }
+
+  /// Create a copy of Package
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $PackageDetailsCopyWith<$Res> get latest {
+    return $PackageDetailsCopyWith<$Res>(_self.latest, (value) {
+      return _then(_self.copyWith(latest: value));
+    });
+  }
+}
+
+/// @nodoc
+mixin _$LikedPackage implements DiagnosticableTreeMixin {
+  String get package;
+  bool get liked;
+
+  /// Create a copy of LikedPackage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $LikedPackageCopyWith<LikedPackage> get copyWith =>
+      _$LikedPackageCopyWithImpl<LikedPackage>(
+          this as LikedPackage, _$identity);
+
+  /// Serializes this LikedPackage to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties
       ..add(DiagnosticsProperty('type', 'LikedPackage'))
       ..add(DiagnosticsProperty('package', package))
@@ -950,7 +856,7 @@ class _$LikedPackageImpl with DiagnosticableTreeMixin implements _LikedPackage {
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$LikedPackageImpl &&
+            other is LikedPackage &&
             (identical(other.package, package) || other.package == package) &&
             (identical(other.liked, liked) || other.liked == liked));
   }
@@ -959,41 +865,141 @@ class _$LikedPackageImpl with DiagnosticableTreeMixin implements _LikedPackage {
   @override
   int get hashCode => Object.hash(runtimeType, package, liked);
 
-  /// Create a copy of LikedPackage
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$LikedPackageImplCopyWith<_$LikedPackageImpl> get copyWith =>
-      __$$LikedPackageImplCopyWithImpl<_$LikedPackageImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$LikedPackageImplToJson(
-      this,
-    );
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'LikedPackage(package: $package, liked: $liked)';
   }
 }
 
-abstract class _LikedPackage implements LikedPackage {
-  factory _LikedPackage(
-      {required final String package,
-      required final bool liked}) = _$LikedPackageImpl;
+/// @nodoc
+abstract mixin class $LikedPackageCopyWith<$Res> {
+  factory $LikedPackageCopyWith(
+          LikedPackage value, $Res Function(LikedPackage) _then) =
+      _$LikedPackageCopyWithImpl;
+  @useResult
+  $Res call({String package, bool liked});
+}
 
-  factory _LikedPackage.fromJson(Map<String, dynamic> json) =
-      _$LikedPackageImpl.fromJson;
+/// @nodoc
+class _$LikedPackageCopyWithImpl<$Res> implements $LikedPackageCopyWith<$Res> {
+  _$LikedPackageCopyWithImpl(this._self, this._then);
+
+  final LikedPackage _self;
+  final $Res Function(LikedPackage) _then;
+
+  /// Create a copy of LikedPackage
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? package = null,
+    Object? liked = null,
+  }) {
+    return _then(_self.copyWith(
+      package: null == package
+          ? _self.package
+          : package // ignore: cast_nullable_to_non_nullable
+              as String,
+      liked: null == liked
+          ? _self.liked
+          : liked // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _LikedPackage with DiagnosticableTreeMixin implements LikedPackage {
+  _LikedPackage({required this.package, required this.liked});
+  factory _LikedPackage.fromJson(Map<String, dynamic> json) =>
+      _$LikedPackageFromJson(json);
 
   @override
-  String get package;
+  final String package;
   @override
-  bool get liked;
+  final bool liked;
 
   /// Create a copy of LikedPackage
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$LikedPackageImplCopyWith<_$LikedPackageImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  _$LikedPackageCopyWith<_LikedPackage> get copyWith =>
+      __$LikedPackageCopyWithImpl<_LikedPackage>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$LikedPackageToJson(
+      this,
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties
+      ..add(DiagnosticsProperty('type', 'LikedPackage'))
+      ..add(DiagnosticsProperty('package', package))
+      ..add(DiagnosticsProperty('liked', liked));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _LikedPackage &&
+            (identical(other.package, package) || other.package == package) &&
+            (identical(other.liked, liked) || other.liked == liked));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, package, liked);
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'LikedPackage(package: $package, liked: $liked)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$LikedPackageCopyWith<$Res>
+    implements $LikedPackageCopyWith<$Res> {
+  factory _$LikedPackageCopyWith(
+          _LikedPackage value, $Res Function(_LikedPackage) _then) =
+      __$LikedPackageCopyWithImpl;
+  @override
+  @useResult
+  $Res call({String package, bool liked});
+}
+
+/// @nodoc
+class __$LikedPackageCopyWithImpl<$Res>
+    implements _$LikedPackageCopyWith<$Res> {
+  __$LikedPackageCopyWithImpl(this._self, this._then);
+
+  final _LikedPackage _self;
+  final $Res Function(_LikedPackage) _then;
+
+  /// Create a copy of LikedPackage
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? package = null,
+    Object? liked = null,
+  }) {
+    return _then(_LikedPackage(
+      package: null == package
+          ? _self.package
+          : package // ignore: cast_nullable_to_non_nullable
+              as String,
+      liked: null == liked
+          ? _self.liked
+          : liked // ignore: cast_nullable_to_non_nullable
+              as bool,
+    ));
+  }
 }
 
 LikedPackagesResponse _$LikedPackagesResponseFromJson(
@@ -1002,119 +1008,22 @@ LikedPackagesResponse _$LikedPackagesResponseFromJson(
 }
 
 /// @nodoc
-mixin _$LikedPackagesResponse {
-  List<LikedPackage> get likedPackages => throw _privateConstructorUsedError;
-
-  /// Serializes this LikedPackagesResponse to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
+mixin _$LikedPackagesResponse implements DiagnosticableTreeMixin {
+  List<LikedPackage> get likedPackages;
 
   /// Create a copy of LikedPackagesResponse
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
   $LikedPackagesResponseCopyWith<LikedPackagesResponse> get copyWith =>
-      throw _privateConstructorUsedError;
-}
+      _$LikedPackagesResponseCopyWithImpl<LikedPackagesResponse>(
+          this as LikedPackagesResponse, _$identity);
 
-/// @nodoc
-abstract class $LikedPackagesResponseCopyWith<$Res> {
-  factory $LikedPackagesResponseCopyWith(LikedPackagesResponse value,
-          $Res Function(LikedPackagesResponse) then) =
-      _$LikedPackagesResponseCopyWithImpl<$Res, LikedPackagesResponse>;
-  @useResult
-  $Res call({List<LikedPackage> likedPackages});
-}
-
-/// @nodoc
-class _$LikedPackagesResponseCopyWithImpl<$Res,
-        $Val extends LikedPackagesResponse>
-    implements $LikedPackagesResponseCopyWith<$Res> {
-  _$LikedPackagesResponseCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of LikedPackagesResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? likedPackages = null,
-  }) {
-    return _then(_value.copyWith(
-      likedPackages: null == likedPackages
-          ? _value.likedPackages
-          : likedPackages // ignore: cast_nullable_to_non_nullable
-              as List<LikedPackage>,
-    ) as $Val);
-  }
-}
-
-/// @nodoc
-abstract class _$$LikesPackagesResponseImplCopyWith<$Res>
-    implements $LikedPackagesResponseCopyWith<$Res> {
-  factory _$$LikesPackagesResponseImplCopyWith(
-          _$LikesPackagesResponseImpl value,
-          $Res Function(_$LikesPackagesResponseImpl) then) =
-      __$$LikesPackagesResponseImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({List<LikedPackage> likedPackages});
-}
-
-/// @nodoc
-class __$$LikesPackagesResponseImplCopyWithImpl<$Res>
-    extends _$LikedPackagesResponseCopyWithImpl<$Res,
-        _$LikesPackagesResponseImpl>
-    implements _$$LikesPackagesResponseImplCopyWith<$Res> {
-  __$$LikesPackagesResponseImplCopyWithImpl(_$LikesPackagesResponseImpl _value,
-      $Res Function(_$LikesPackagesResponseImpl) _then)
-      : super(_value, _then);
-
-  /// Create a copy of LikedPackagesResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? likedPackages = null,
-  }) {
-    return _then(_$LikesPackagesResponseImpl(
-      likedPackages: null == likedPackages
-          ? _value._likedPackages
-          : likedPackages // ignore: cast_nullable_to_non_nullable
-              as List<LikedPackage>,
-    ));
-  }
-}
-
-/// @nodoc
-@JsonSerializable()
-class _$LikesPackagesResponseImpl
-    with DiagnosticableTreeMixin
-    implements _LikesPackagesResponse {
-  _$LikesPackagesResponseImpl({required final List<LikedPackage> likedPackages})
-      : _likedPackages = likedPackages;
-
-  factory _$LikesPackagesResponseImpl.fromJson(Map<String, dynamic> json) =>
-      _$$LikesPackagesResponseImplFromJson(json);
-
-  final List<LikedPackage> _likedPackages;
-  @override
-  List<LikedPackage> get likedPackages {
-    if (_likedPackages is EqualUnmodifiableListView) return _likedPackages;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_likedPackages);
-  }
-
-  @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'LikedPackagesResponse(likedPackages: $likedPackages)';
-  }
+  /// Serializes this LikedPackagesResponse to a JSON map.
+  Map<String, dynamic> toJson();
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('type', 'LikedPackagesResponse'))
       ..add(DiagnosticsProperty('likedPackages', likedPackages));
@@ -1124,7 +1033,101 @@ class _$LikesPackagesResponseImpl
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$LikesPackagesResponseImpl &&
+            other is LikedPackagesResponse &&
+            const DeepCollectionEquality()
+                .equals(other.likedPackages, likedPackages));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, const DeepCollectionEquality().hash(likedPackages));
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'LikedPackagesResponse(likedPackages: $likedPackages)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $LikedPackagesResponseCopyWith<$Res> {
+  factory $LikedPackagesResponseCopyWith(LikedPackagesResponse value,
+          $Res Function(LikedPackagesResponse) _then) =
+      _$LikedPackagesResponseCopyWithImpl;
+  @useResult
+  $Res call({List<LikedPackage> likedPackages});
+}
+
+/// @nodoc
+class _$LikedPackagesResponseCopyWithImpl<$Res>
+    implements $LikedPackagesResponseCopyWith<$Res> {
+  _$LikedPackagesResponseCopyWithImpl(this._self, this._then);
+
+  final LikedPackagesResponse _self;
+  final $Res Function(LikedPackagesResponse) _then;
+
+  /// Create a copy of LikedPackagesResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? likedPackages = null,
+  }) {
+    return _then(_self.copyWith(
+      likedPackages: null == likedPackages
+          ? _self.likedPackages
+          : likedPackages // ignore: cast_nullable_to_non_nullable
+              as List<LikedPackage>,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _LikesPackagesResponse
+    with DiagnosticableTreeMixin
+    implements LikedPackagesResponse {
+  _LikesPackagesResponse({required final List<LikedPackage> likedPackages})
+      : _likedPackages = likedPackages;
+  factory _LikesPackagesResponse.fromJson(Map<String, dynamic> json) =>
+      _$LikesPackagesResponseFromJson(json);
+
+  final List<LikedPackage> _likedPackages;
+  @override
+  List<LikedPackage> get likedPackages {
+    if (_likedPackages is EqualUnmodifiableListView) return _likedPackages;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_likedPackages);
+  }
+
+  /// Create a copy of LikedPackagesResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$LikesPackagesResponseCopyWith<_LikesPackagesResponse> get copyWith =>
+      __$LikesPackagesResponseCopyWithImpl<_LikesPackagesResponse>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$LikesPackagesResponseToJson(
+      this,
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties
+      ..add(DiagnosticsProperty('type', 'LikedPackagesResponse'))
+      ..add(DiagnosticsProperty('likedPackages', likedPackages));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _LikesPackagesResponse &&
             const DeepCollectionEquality()
                 .equals(other._likedPackages, _likedPackages));
   }
@@ -1134,157 +1137,64 @@ class _$LikesPackagesResponseImpl
   int get hashCode => Object.hash(
       runtimeType, const DeepCollectionEquality().hash(_likedPackages));
 
-  /// Create a copy of LikedPackagesResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$LikesPackagesResponseImplCopyWith<_$LikesPackagesResponseImpl>
-      get copyWith => __$$LikesPackagesResponseImplCopyWithImpl<
-          _$LikesPackagesResponseImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$LikesPackagesResponseImplToJson(
-      this,
-    );
-  }
-}
-
-abstract class _LikesPackagesResponse implements LikedPackagesResponse {
-  factory _LikesPackagesResponse(
-          {required final List<LikedPackage> likedPackages}) =
-      _$LikesPackagesResponseImpl;
-
-  factory _LikesPackagesResponse.fromJson(Map<String, dynamic> json) =
-      _$LikesPackagesResponseImpl.fromJson;
-
-  @override
-  List<LikedPackage> get likedPackages;
-
-  /// Create a copy of LikedPackagesResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$LikesPackagesResponseImplCopyWith<_$LikesPackagesResponseImpl>
-      get copyWith => throw _privateConstructorUsedError;
-}
-
-PubPackagesResponse _$PubPackagesResponseFromJson(Map<String, dynamic> json) {
-  return _PubPackagesResponse.fromJson(json);
-}
-
-/// @nodoc
-mixin _$PubPackagesResponse {
-  List<Package> get packages => throw _privateConstructorUsedError;
-
-  /// Serializes this PubPackagesResponse to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of PubPackagesResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $PubPackagesResponseCopyWith<PubPackagesResponse> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $PubPackagesResponseCopyWith<$Res> {
-  factory $PubPackagesResponseCopyWith(
-          PubPackagesResponse value, $Res Function(PubPackagesResponse) then) =
-      _$PubPackagesResponseCopyWithImpl<$Res, PubPackagesResponse>;
-  @useResult
-  $Res call({List<Package> packages});
-}
-
-/// @nodoc
-class _$PubPackagesResponseCopyWithImpl<$Res, $Val extends PubPackagesResponse>
-    implements $PubPackagesResponseCopyWith<$Res> {
-  _$PubPackagesResponseCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of PubPackagesResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? packages = null,
-  }) {
-    return _then(_value.copyWith(
-      packages: null == packages
-          ? _value.packages
-          : packages // ignore: cast_nullable_to_non_nullable
-              as List<Package>,
-    ) as $Val);
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'LikedPackagesResponse(likedPackages: $likedPackages)';
   }
 }
 
 /// @nodoc
-abstract class _$$PubPackagesResponseImplCopyWith<$Res>
-    implements $PubPackagesResponseCopyWith<$Res> {
-  factory _$$PubPackagesResponseImplCopyWith(_$PubPackagesResponseImpl value,
-          $Res Function(_$PubPackagesResponseImpl) then) =
-      __$$PubPackagesResponseImplCopyWithImpl<$Res>;
+abstract mixin class _$LikesPackagesResponseCopyWith<$Res>
+    implements $LikedPackagesResponseCopyWith<$Res> {
+  factory _$LikesPackagesResponseCopyWith(_LikesPackagesResponse value,
+          $Res Function(_LikesPackagesResponse) _then) =
+      __$LikesPackagesResponseCopyWithImpl;
   @override
   @useResult
-  $Res call({List<Package> packages});
+  $Res call({List<LikedPackage> likedPackages});
 }
 
 /// @nodoc
-class __$$PubPackagesResponseImplCopyWithImpl<$Res>
-    extends _$PubPackagesResponseCopyWithImpl<$Res, _$PubPackagesResponseImpl>
-    implements _$$PubPackagesResponseImplCopyWith<$Res> {
-  __$$PubPackagesResponseImplCopyWithImpl(_$PubPackagesResponseImpl _value,
-      $Res Function(_$PubPackagesResponseImpl) _then)
-      : super(_value, _then);
+class __$LikesPackagesResponseCopyWithImpl<$Res>
+    implements _$LikesPackagesResponseCopyWith<$Res> {
+  __$LikesPackagesResponseCopyWithImpl(this._self, this._then);
 
-  /// Create a copy of PubPackagesResponse
+  final _LikesPackagesResponse _self;
+  final $Res Function(_LikesPackagesResponse) _then;
+
+  /// Create a copy of LikedPackagesResponse
   /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
   @override
+  @pragma('vm:prefer-inline')
   $Res call({
-    Object? packages = null,
+    Object? likedPackages = null,
   }) {
-    return _then(_$PubPackagesResponseImpl(
-      packages: null == packages
-          ? _value._packages
-          : packages // ignore: cast_nullable_to_non_nullable
-              as List<Package>,
+    return _then(_LikesPackagesResponse(
+      likedPackages: null == likedPackages
+          ? _self._likedPackages
+          : likedPackages // ignore: cast_nullable_to_non_nullable
+              as List<LikedPackage>,
     ));
   }
 }
 
 /// @nodoc
-@JsonSerializable()
-class _$PubPackagesResponseImpl
-    with DiagnosticableTreeMixin
-    implements _PubPackagesResponse {
-  _$PubPackagesResponseImpl({required final List<Package> packages})
-      : _packages = packages;
+mixin _$PubPackagesResponse implements DiagnosticableTreeMixin {
+  List<Package> get packages;
 
-  factory _$PubPackagesResponseImpl.fromJson(Map<String, dynamic> json) =>
-      _$$PubPackagesResponseImplFromJson(json);
+  /// Create a copy of PubPackagesResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $PubPackagesResponseCopyWith<PubPackagesResponse> get copyWith =>
+      _$PubPackagesResponseCopyWithImpl<PubPackagesResponse>(
+          this as PubPackagesResponse, _$identity);
 
-  final List<Package> _packages;
-  @override
-  List<Package> get packages {
-    if (_packages is EqualUnmodifiableListView) return _packages;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_packages);
-  }
-
-  @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'PubPackagesResponse(packages: $packages)';
-  }
+  /// Serializes this PubPackagesResponse to a JSON map.
+  Map<String, dynamic> toJson();
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('type', 'PubPackagesResponse'))
       ..add(DiagnosticsProperty('packages', packages));
@@ -1294,7 +1204,100 @@ class _$PubPackagesResponseImpl
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$PubPackagesResponseImpl &&
+            other is PubPackagesResponse &&
+            const DeepCollectionEquality().equals(other.packages, packages));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(packages));
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'PubPackagesResponse(packages: $packages)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $PubPackagesResponseCopyWith<$Res> {
+  factory $PubPackagesResponseCopyWith(
+          PubPackagesResponse value, $Res Function(PubPackagesResponse) _then) =
+      _$PubPackagesResponseCopyWithImpl;
+  @useResult
+  $Res call({List<Package> packages});
+}
+
+/// @nodoc
+class _$PubPackagesResponseCopyWithImpl<$Res>
+    implements $PubPackagesResponseCopyWith<$Res> {
+  _$PubPackagesResponseCopyWithImpl(this._self, this._then);
+
+  final PubPackagesResponse _self;
+  final $Res Function(PubPackagesResponse) _then;
+
+  /// Create a copy of PubPackagesResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? packages = null,
+  }) {
+    return _then(_self.copyWith(
+      packages: null == packages
+          ? _self.packages
+          : packages // ignore: cast_nullable_to_non_nullable
+              as List<Package>,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _PubPackagesResponse
+    with DiagnosticableTreeMixin
+    implements PubPackagesResponse {
+  _PubPackagesResponse({required final List<Package> packages})
+      : _packages = packages;
+  factory _PubPackagesResponse.fromJson(Map<String, dynamic> json) =>
+      _$PubPackagesResponseFromJson(json);
+
+  final List<Package> _packages;
+  @override
+  List<Package> get packages {
+    if (_packages is EqualUnmodifiableListView) return _packages;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_packages);
+  }
+
+  /// Create a copy of PubPackagesResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$PubPackagesResponseCopyWith<_PubPackagesResponse> get copyWith =>
+      __$PubPackagesResponseCopyWithImpl<_PubPackagesResponse>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$PubPackagesResponseToJson(
+      this,
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties
+      ..add(DiagnosticsProperty('type', 'PubPackagesResponse'))
+      ..add(DiagnosticsProperty('packages', packages));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _PubPackagesResponse &&
             const DeepCollectionEquality().equals(other._packages, _packages));
   }
 
@@ -1303,150 +1306,64 @@ class _$PubPackagesResponseImpl
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_packages));
 
-  /// Create a copy of PubPackagesResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$PubPackagesResponseImplCopyWith<_$PubPackagesResponseImpl> get copyWith =>
-      __$$PubPackagesResponseImplCopyWithImpl<_$PubPackagesResponseImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$PubPackagesResponseImplToJson(
-      this,
-    );
-  }
-}
-
-abstract class _PubPackagesResponse implements PubPackagesResponse {
-  factory _PubPackagesResponse({required final List<Package> packages}) =
-      _$PubPackagesResponseImpl;
-
-  factory _PubPackagesResponse.fromJson(Map<String, dynamic> json) =
-      _$PubPackagesResponseImpl.fromJson;
-
-  @override
-  List<Package> get packages;
-
-  /// Create a copy of PubPackagesResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$PubPackagesResponseImplCopyWith<_$PubPackagesResponseImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-SearchPackage _$SearchPackageFromJson(Map<String, dynamic> json) {
-  return _SearchPackage.fromJson(json);
-}
-
-/// @nodoc
-mixin _$SearchPackage {
-  String get package => throw _privateConstructorUsedError;
-
-  /// Serializes this SearchPackage to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of SearchPackage
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $SearchPackageCopyWith<SearchPackage> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $SearchPackageCopyWith<$Res> {
-  factory $SearchPackageCopyWith(
-          SearchPackage value, $Res Function(SearchPackage) then) =
-      _$SearchPackageCopyWithImpl<$Res, SearchPackage>;
-  @useResult
-  $Res call({String package});
-}
-
-/// @nodoc
-class _$SearchPackageCopyWithImpl<$Res, $Val extends SearchPackage>
-    implements $SearchPackageCopyWith<$Res> {
-  _$SearchPackageCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of SearchPackage
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? package = null,
-  }) {
-    return _then(_value.copyWith(
-      package: null == package
-          ? _value.package
-          : package // ignore: cast_nullable_to_non_nullable
-              as String,
-    ) as $Val);
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'PubPackagesResponse(packages: $packages)';
   }
 }
 
 /// @nodoc
-abstract class _$$SearchPackageImplCopyWith<$Res>
-    implements $SearchPackageCopyWith<$Res> {
-  factory _$$SearchPackageImplCopyWith(
-          _$SearchPackageImpl value, $Res Function(_$SearchPackageImpl) then) =
-      __$$SearchPackageImplCopyWithImpl<$Res>;
+abstract mixin class _$PubPackagesResponseCopyWith<$Res>
+    implements $PubPackagesResponseCopyWith<$Res> {
+  factory _$PubPackagesResponseCopyWith(_PubPackagesResponse value,
+          $Res Function(_PubPackagesResponse) _then) =
+      __$PubPackagesResponseCopyWithImpl;
   @override
   @useResult
-  $Res call({String package});
+  $Res call({List<Package> packages});
 }
 
 /// @nodoc
-class __$$SearchPackageImplCopyWithImpl<$Res>
-    extends _$SearchPackageCopyWithImpl<$Res, _$SearchPackageImpl>
-    implements _$$SearchPackageImplCopyWith<$Res> {
-  __$$SearchPackageImplCopyWithImpl(
-      _$SearchPackageImpl _value, $Res Function(_$SearchPackageImpl) _then)
-      : super(_value, _then);
+class __$PubPackagesResponseCopyWithImpl<$Res>
+    implements _$PubPackagesResponseCopyWith<$Res> {
+  __$PubPackagesResponseCopyWithImpl(this._self, this._then);
 
-  /// Create a copy of SearchPackage
+  final _PubPackagesResponse _self;
+  final $Res Function(_PubPackagesResponse) _then;
+
+  /// Create a copy of PubPackagesResponse
   /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
   @override
+  @pragma('vm:prefer-inline')
   $Res call({
-    Object? package = null,
+    Object? packages = null,
   }) {
-    return _then(_$SearchPackageImpl(
-      package: null == package
-          ? _value.package
-          : package // ignore: cast_nullable_to_non_nullable
-              as String,
+    return _then(_PubPackagesResponse(
+      packages: null == packages
+          ? _self._packages
+          : packages // ignore: cast_nullable_to_non_nullable
+              as List<Package>,
     ));
   }
 }
 
 /// @nodoc
-@JsonSerializable()
-class _$SearchPackageImpl
-    with DiagnosticableTreeMixin
-    implements _SearchPackage {
-  _$SearchPackageImpl({required this.package});
+mixin _$SearchPackage implements DiagnosticableTreeMixin {
+  String get package;
 
-  factory _$SearchPackageImpl.fromJson(Map<String, dynamic> json) =>
-      _$$SearchPackageImplFromJson(json);
+  /// Create a copy of SearchPackage
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $SearchPackageCopyWith<SearchPackage> get copyWith =>
+      _$SearchPackageCopyWithImpl<SearchPackage>(
+          this as SearchPackage, _$identity);
 
-  @override
-  final String package;
-
-  @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'SearchPackage(package: $package)';
-  }
+  /// Serializes this SearchPackage to a JSON map.
+  Map<String, dynamic> toJson();
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
     properties
       ..add(DiagnosticsProperty('type', 'SearchPackage'))
       ..add(DiagnosticsProperty('package', package));
@@ -1456,7 +1373,7 @@ class _$SearchPackageImpl
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$SearchPackageImpl &&
+            other is SearchPackage &&
             (identical(other.package, package) || other.package == package));
   }
 
@@ -1464,154 +1381,147 @@ class _$SearchPackageImpl
   @override
   int get hashCode => Object.hash(runtimeType, package);
 
-  /// Create a copy of SearchPackage
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$SearchPackageImplCopyWith<_$SearchPackageImpl> get copyWith =>
-      __$$SearchPackageImplCopyWithImpl<_$SearchPackageImpl>(this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$SearchPackageImplToJson(
-      this,
-    );
-  }
-}
-
-abstract class _SearchPackage implements SearchPackage {
-  factory _SearchPackage({required final String package}) = _$SearchPackageImpl;
-
-  factory _SearchPackage.fromJson(Map<String, dynamic> json) =
-      _$SearchPackageImpl.fromJson;
-
-  @override
-  String get package;
-
-  /// Create a copy of SearchPackage
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$SearchPackageImplCopyWith<_$SearchPackageImpl> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-PubSearchResponse _$PubSearchResponseFromJson(Map<String, dynamic> json) {
-  return _PubSearchResponse.fromJson(json);
-}
-
-/// @nodoc
-mixin _$PubSearchResponse {
-  List<SearchPackage> get packages => throw _privateConstructorUsedError;
-
-  /// Serializes this PubSearchResponse to a JSON map.
-  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
-
-  /// Create a copy of PubSearchResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $PubSearchResponseCopyWith<PubSearchResponse> get copyWith =>
-      throw _privateConstructorUsedError;
-}
-
-/// @nodoc
-abstract class $PubSearchResponseCopyWith<$Res> {
-  factory $PubSearchResponseCopyWith(
-          PubSearchResponse value, $Res Function(PubSearchResponse) then) =
-      _$PubSearchResponseCopyWithImpl<$Res, PubSearchResponse>;
-  @useResult
-  $Res call({List<SearchPackage> packages});
-}
-
-/// @nodoc
-class _$PubSearchResponseCopyWithImpl<$Res, $Val extends PubSearchResponse>
-    implements $PubSearchResponseCopyWith<$Res> {
-  _$PubSearchResponseCopyWithImpl(this._value, this._then);
-
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
-
-  /// Create a copy of PubSearchResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? packages = null,
-  }) {
-    return _then(_value.copyWith(
-      packages: null == packages
-          ? _value.packages
-          : packages // ignore: cast_nullable_to_non_nullable
-              as List<SearchPackage>,
-    ) as $Val);
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'SearchPackage(package: $package)';
   }
 }
 
 /// @nodoc
-abstract class _$$PubSearchResponseImplCopyWith<$Res>
-    implements $PubSearchResponseCopyWith<$Res> {
-  factory _$$PubSearchResponseImplCopyWith(_$PubSearchResponseImpl value,
-          $Res Function(_$PubSearchResponseImpl) then) =
-      __$$PubSearchResponseImplCopyWithImpl<$Res>;
-  @override
+abstract mixin class $SearchPackageCopyWith<$Res> {
+  factory $SearchPackageCopyWith(
+          SearchPackage value, $Res Function(SearchPackage) _then) =
+      _$SearchPackageCopyWithImpl;
   @useResult
-  $Res call({List<SearchPackage> packages});
+  $Res call({String package});
 }
 
 /// @nodoc
-class __$$PubSearchResponseImplCopyWithImpl<$Res>
-    extends _$PubSearchResponseCopyWithImpl<$Res, _$PubSearchResponseImpl>
-    implements _$$PubSearchResponseImplCopyWith<$Res> {
-  __$$PubSearchResponseImplCopyWithImpl(_$PubSearchResponseImpl _value,
-      $Res Function(_$PubSearchResponseImpl) _then)
-      : super(_value, _then);
+class _$SearchPackageCopyWithImpl<$Res>
+    implements $SearchPackageCopyWith<$Res> {
+  _$SearchPackageCopyWithImpl(this._self, this._then);
 
-  /// Create a copy of PubSearchResponse
+  final SearchPackage _self;
+  final $Res Function(SearchPackage) _then;
+
+  /// Create a copy of SearchPackage
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? packages = null,
+    Object? package = null,
   }) {
-    return _then(_$PubSearchResponseImpl(
-      packages: null == packages
-          ? _value._packages
-          : packages // ignore: cast_nullable_to_non_nullable
-              as List<SearchPackage>,
+    return _then(_self.copyWith(
+      package: null == package
+          ? _self.package
+          : package // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
 
 /// @nodoc
 @JsonSerializable()
-class _$PubSearchResponseImpl
-    with DiagnosticableTreeMixin
-    implements _PubSearchResponse {
-  _$PubSearchResponseImpl({required final List<SearchPackage> packages})
-      : _packages = packages;
-
-  factory _$PubSearchResponseImpl.fromJson(Map<String, dynamic> json) =>
-      _$$PubSearchResponseImplFromJson(json);
-
-  final List<SearchPackage> _packages;
-  @override
-  List<SearchPackage> get packages {
-    if (_packages is EqualUnmodifiableListView) return _packages;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_packages);
-  }
+class _SearchPackage with DiagnosticableTreeMixin implements SearchPackage {
+  _SearchPackage({required this.package});
+  factory _SearchPackage.fromJson(Map<String, dynamic> json) =>
+      _$SearchPackageFromJson(json);
 
   @override
-  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
-    return 'PubSearchResponse(packages: $packages)';
+  final String package;
+
+  /// Create a copy of SearchPackage
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$SearchPackageCopyWith<_SearchPackage> get copyWith =>
+      __$SearchPackageCopyWithImpl<_SearchPackage>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$SearchPackageToJson(
+      this,
+    );
   }
 
   @override
   void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'SearchPackage'))
+      ..add(DiagnosticsProperty('package', package));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _SearchPackage &&
+            (identical(other.package, package) || other.package == package));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, package);
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'SearchPackage(package: $package)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$SearchPackageCopyWith<$Res>
+    implements $SearchPackageCopyWith<$Res> {
+  factory _$SearchPackageCopyWith(
+          _SearchPackage value, $Res Function(_SearchPackage) _then) =
+      __$SearchPackageCopyWithImpl;
+  @override
+  @useResult
+  $Res call({String package});
+}
+
+/// @nodoc
+class __$SearchPackageCopyWithImpl<$Res>
+    implements _$SearchPackageCopyWith<$Res> {
+  __$SearchPackageCopyWithImpl(this._self, this._then);
+
+  final _SearchPackage _self;
+  final $Res Function(_SearchPackage) _then;
+
+  /// Create a copy of SearchPackage
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? package = null,
+  }) {
+    return _then(_SearchPackage(
+      package: null == package
+          ? _self.package
+          : package // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+mixin _$PubSearchResponse implements DiagnosticableTreeMixin {
+  List<SearchPackage> get packages;
+
+  /// Create a copy of PubSearchResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $PubSearchResponseCopyWith<PubSearchResponse> get copyWith =>
+      _$PubSearchResponseCopyWithImpl<PubSearchResponse>(
+          this as PubSearchResponse, _$identity);
+
+  /// Serializes this PubSearchResponse to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties
       ..add(DiagnosticsProperty('type', 'PubSearchResponse'))
       ..add(DiagnosticsProperty('packages', packages));
@@ -1621,7 +1531,99 @@ class _$PubSearchResponseImpl
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$PubSearchResponseImpl &&
+            other is PubSearchResponse &&
+            const DeepCollectionEquality().equals(other.packages, packages));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode =>
+      Object.hash(runtimeType, const DeepCollectionEquality().hash(packages));
+
+  @override
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'PubSearchResponse(packages: $packages)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $PubSearchResponseCopyWith<$Res> {
+  factory $PubSearchResponseCopyWith(
+          PubSearchResponse value, $Res Function(PubSearchResponse) _then) =
+      _$PubSearchResponseCopyWithImpl;
+  @useResult
+  $Res call({List<SearchPackage> packages});
+}
+
+/// @nodoc
+class _$PubSearchResponseCopyWithImpl<$Res>
+    implements $PubSearchResponseCopyWith<$Res> {
+  _$PubSearchResponseCopyWithImpl(this._self, this._then);
+
+  final PubSearchResponse _self;
+  final $Res Function(PubSearchResponse) _then;
+
+  /// Create a copy of PubSearchResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? packages = null,
+  }) {
+    return _then(_self.copyWith(
+      packages: null == packages
+          ? _self.packages
+          : packages // ignore: cast_nullable_to_non_nullable
+              as List<SearchPackage>,
+    ));
+  }
+}
+
+/// @nodoc
+@JsonSerializable()
+class _PubSearchResponse
+    with DiagnosticableTreeMixin
+    implements PubSearchResponse {
+  _PubSearchResponse({required final List<SearchPackage> packages})
+      : _packages = packages;
+  factory _PubSearchResponse.fromJson(Map<String, dynamic> json) =>
+      _$PubSearchResponseFromJson(json);
+
+  final List<SearchPackage> _packages;
+  @override
+  List<SearchPackage> get packages {
+    if (_packages is EqualUnmodifiableListView) return _packages;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_packages);
+  }
+
+  /// Create a copy of PubSearchResponse
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$PubSearchResponseCopyWith<_PubSearchResponse> get copyWith =>
+      __$PubSearchResponseCopyWithImpl<_PubSearchResponse>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$PubSearchResponseToJson(
+      this,
+    );
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties
+      ..add(DiagnosticsProperty('type', 'PubSearchResponse'))
+      ..add(DiagnosticsProperty('packages', packages));
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _PubSearchResponse &&
             const DeepCollectionEquality().equals(other._packages, _packages));
   }
 
@@ -1630,37 +1632,45 @@ class _$PubSearchResponseImpl
   int get hashCode =>
       Object.hash(runtimeType, const DeepCollectionEquality().hash(_packages));
 
-  /// Create a copy of PubSearchResponse
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  @pragma('vm:prefer-inline')
-  _$$PubSearchResponseImplCopyWith<_$PubSearchResponseImpl> get copyWith =>
-      __$$PubSearchResponseImplCopyWithImpl<_$PubSearchResponseImpl>(
-          this, _$identity);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return _$$PubSearchResponseImplToJson(
-      this,
-    );
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
+    return 'PubSearchResponse(packages: $packages)';
   }
 }
 
-abstract class _PubSearchResponse implements PubSearchResponse {
-  factory _PubSearchResponse({required final List<SearchPackage> packages}) =
-      _$PubSearchResponseImpl;
-
-  factory _PubSearchResponse.fromJson(Map<String, dynamic> json) =
-      _$PubSearchResponseImpl.fromJson;
-
+/// @nodoc
+abstract mixin class _$PubSearchResponseCopyWith<$Res>
+    implements $PubSearchResponseCopyWith<$Res> {
+  factory _$PubSearchResponseCopyWith(
+          _PubSearchResponse value, $Res Function(_PubSearchResponse) _then) =
+      __$PubSearchResponseCopyWithImpl;
   @override
-  List<SearchPackage> get packages;
+  @useResult
+  $Res call({List<SearchPackage> packages});
+}
+
+/// @nodoc
+class __$PubSearchResponseCopyWithImpl<$Res>
+    implements _$PubSearchResponseCopyWith<$Res> {
+  __$PubSearchResponseCopyWithImpl(this._self, this._then);
+
+  final _PubSearchResponse _self;
+  final $Res Function(_PubSearchResponse) _then;
 
   /// Create a copy of PubSearchResponse
   /// with the given fields replaced by the non-null parameter values.
   @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$PubSearchResponseImplCopyWith<_$PubSearchResponseImpl> get copyWith =>
-      throw _privateConstructorUsedError;
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? packages = null,
+  }) {
+    return _then(_PubSearchResponse(
+      packages: null == packages
+          ? _self._packages
+          : packages // ignore: cast_nullable_to_non_nullable
+              as List<SearchPackage>,
+    ));
+  }
 }
+
+// dart format on

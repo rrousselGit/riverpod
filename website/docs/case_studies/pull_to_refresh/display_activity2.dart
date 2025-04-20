@@ -19,7 +19,7 @@ class ActivityView extends ConsumerWidget {
         child: ListView(
           children: [
             /* highlight-end */
-            Text(activity.valueOrNull?.activity ?? ''),
+            Text(activity.value?.activity ?? ''),
           ],
         ),
       ),

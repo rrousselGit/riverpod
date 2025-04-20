@@ -6,52 +6,196 @@ part of 'hash1.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+@ProviderFor(simple)
+const simpleProvider = SimpleProvider._();
+
+final class SimpleProvider extends $FunctionalProvider<String, String>
+    with $Provider<String> {
+  const SimpleProvider._(
+      {String Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'simpleProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final String Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$simpleHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  SimpleProvider $copyWithCreate(
+    String Function(
+      Ref ref,
+    ) create,
+  ) {
+    return SimpleProvider._(create: create);
+  }
+
+  @override
+  String create(Ref ref) {
+    final _$cb = _createCb ?? simple;
+    return _$cb(ref);
+  }
+}
+
 String _$simpleHash() => r'f916b37e39d654e9acfc9c2bd7a244902197b306';
 
-/// See also [simple].
-@ProviderFor(simple)
-final simpleProvider = AutoDisposeProvider<String>.internal(
-  simple,
-  name: r'simpleProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$simpleHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(simple2)
+const simple2Provider = Simple2Provider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef SimpleRef = AutoDisposeProviderRef<String>;
+final class Simple2Provider extends $FunctionalProvider<String, String>
+    with $Provider<String> {
+  const Simple2Provider._(
+      {String Function(
+        Ref ref,
+      )? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'simple2Provider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final String Function(
+    Ref ref,
+  )? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$simple2Hash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
+  @$internal
+  @override
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(this, pointer);
+
+  @override
+  Simple2Provider $copyWithCreate(
+    String Function(
+      Ref ref,
+    ) create,
+  ) {
+    return Simple2Provider._(create: create);
+  }
+
+  @override
+  String create(Ref ref) {
+    final _$cb = _createCb ?? simple2;
+    return _$cb(ref);
+  }
+}
+
 String _$simple2Hash() => r'a60a8496fc391f5adf7ad45a12d0723f14f3127c';
 
-/// See also [simple2].
-@ProviderFor(simple2)
-final simple2Provider = AutoDisposeProvider<String>.internal(
-  simple2,
-  name: r'simple2Provider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$simple2Hash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+@ProviderFor(SimpleClass)
+const simpleClassProvider = SimpleClassProvider._();
 
-@Deprecated('Will be removed in 3.0. Use Ref instead')
-// ignore: unused_element
-typedef Simple2Ref = AutoDisposeProviderRef<String>;
+final class SimpleClassProvider extends $NotifierProvider<SimpleClass, String> {
+  const SimpleClassProvider._(
+      {super.runNotifierBuildOverride, SimpleClass Function()? create})
+      : _createCb = create,
+        super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'simpleClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  final SimpleClass Function()? _createCb;
+
+  @override
+  String debugGetCreateSourceHash() => _$simpleClassHash();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
+
+  @$internal
+  @override
+  SimpleClass create() => _createCb?.call() ?? SimpleClass();
+
+  @$internal
+  @override
+  SimpleClassProvider $copyWithCreate(
+    SimpleClass Function() create,
+  ) {
+    return SimpleClassProvider._(create: create);
+  }
+
+  @$internal
+  @override
+  SimpleClassProvider $copyWithBuild(
+    String Function(
+      Ref,
+      SimpleClass,
+    ) build,
+  ) {
+    return SimpleClassProvider._(runNotifierBuildOverride: build);
+  }
+
+  @$internal
+  @override
+  $NotifierProviderElement<SimpleClass, String> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(this, pointer);
+}
+
 String _$simpleClassHash() => r'958123cd6179c5b88da040cfeb71eb3061765277';
 
-/// See also [SimpleClass].
-@ProviderFor(SimpleClass)
-final simpleClassProvider =
-    AutoDisposeNotifierProvider<SimpleClass, String>.internal(
-  SimpleClass.new,
-  name: r'simpleClassProvider',
-  debugGetCreateSourceHash:
-      const bool.fromEnvironment('dart.vm.product') ? null : _$simpleClassHash,
-  dependencies: null,
-  allTransitiveDependencies: null,
-);
+abstract class _$SimpleClass extends $Notifier<String> {
+  String build();
+  @$internal
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<String>;
+    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
+        String, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}
 
-typedef _$SimpleClass = AutoDisposeNotifier<String>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

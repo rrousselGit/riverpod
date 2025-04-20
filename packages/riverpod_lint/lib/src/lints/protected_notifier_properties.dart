@@ -3,7 +3,9 @@ import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
-class ProtectedNotifierProperties extends DartLintRule {
+import '../riverpod_custom_lint.dart';
+
+class ProtectedNotifierProperties extends RiverpodLintRule {
   const ProtectedNotifierProperties() : super(code: _code);
 
   static const _code = LintCode(
@@ -30,18 +32,16 @@ class ProtectedNotifierProperties extends DartLintRule {
         return;
       }
 
-      final enclosingClass = propertyAccess
-          .thisOrAncestorOfType<ClassDeclaration>()
-          ?.declaredElement;
-      if (enclosingClass == null) return;
+      final enclosingClass =
+          propertyAccess.thisOrAncestorOfType<ClassDeclaration>();
+      final enclosingClassElement = enclosingClass?.declaredElement;
+      if (enclosingClass == null || enclosingClassElement == null) return;
 
-      final isAnnotatedWithRiverpod =
-          riverpodType.hasAnnotationOfExact(enclosingClass);
-      if (!isAnnotatedWithRiverpod) return;
+      if (enclosingClass.riverpod == null) return;
 
       final targetType = propertyAccess.target?.staticType;
       if (targetType == null) return;
-      if (targetType == enclosingClass.thisType) return;
+      if (targetType == enclosingClassElement.thisType) return;
       if (!anyNotifierType.isAssignableFromType(targetType)) return;
 
       reporter.atNode(propertyAccess.propertyName, _code);
