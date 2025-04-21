@@ -17,6 +17,7 @@ ProviderElementProxy<NotifierT, StateT>
   );
 }
 
+/// {@template riverpod.state_notifier_provider}
 /// Creates a [StateNotifier] and exposes its current state.
 ///
 /// This provider is used in combination with `package:state_notifier`.
@@ -79,13 +80,14 @@ ProviderElementProxy<NotifierT, StateT>
 ///   );
 /// }
 /// ```
+/// {@endtemplate}
 final class StateNotifierProvider< //
         NotifierT extends StateNotifier<StateT>,
         StateT> //
     extends $FunctionalProvider< //
         StateT,
         NotifierT> with LegacyProviderMixin<StateT> {
-  /// {@macro riverpod.statenotifierprovider}
+  /// {@macro riverpod.state_notifier_provider}
   StateNotifierProvider(
     this._create, {
     super.name,

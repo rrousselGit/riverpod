@@ -4,6 +4,7 @@ import '../builder.dart';
 import '../common/result.dart';
 import '../framework.dart';
 import 'async_notifier.dart';
+import 'provider.dart';
 
 part 'notifier/orphan.dart';
 part 'notifier/family.dart';

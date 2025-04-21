@@ -345,7 +345,7 @@ abstract class MutationBase<ResultT> {
   /// If you remove all `watch`/`listen` calls to a mutation, the mutation
   /// will automatically go-back to its [IdleMutationState].
   ///
-  /// If your mutation is always listened, you may want to call [reset] manually
+  /// If your mutation is always listened, you may want to call [MutationBase.reset] manually
   /// to restore the mutation to its [IdleMutationState].
   /// {@endtemplate}
   void reset();
