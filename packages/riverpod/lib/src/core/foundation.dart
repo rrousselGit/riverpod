@@ -103,8 +103,6 @@ sealed class ProviderOrFamily implements ProviderListenableOrFamily {
   /// Whether the state associated to this provider should be disposed
   /// automatically when the provider stops being listened.
   final bool isAutoDispose;
-
-
 }
 
 extension on ProviderListenableOrFamily {
