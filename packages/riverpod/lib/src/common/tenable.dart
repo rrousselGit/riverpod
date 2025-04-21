@@ -6,7 +6,7 @@ import 'package:meta/meta.dart';
 ///
 /// This is similar to [FutureOr], but can hold errors.
 @internal
-abstract class Tenable<T> {
+sealed class Tenable<T> {
   const Tenable._();
 
   const factory Tenable.value(T value) = _TenableValue<T>;

@@ -31,7 +31,8 @@ abstract class FamilyAsyncNotifier<StateT, ArgT>
 }
 
 /// The [Family] of [AsyncNotifierProvider].
-class AsyncNotifierProviderFamily< //
+/// @nodoc
+final class AsyncNotifierProviderFamily< //
         NotifierT extends FamilyAsyncNotifier<StateT, ArgT>,
         StateT,
         ArgT> //

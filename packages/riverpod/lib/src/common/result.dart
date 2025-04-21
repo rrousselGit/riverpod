@@ -37,7 +37,7 @@ sealed class $Result<ValueT> {
 
 /// The data case
 @internal
-class $ResultData<State> implements $Result<State> {
+final class $ResultData<State> implements $Result<State> {
   /// The data case
   $ResultData(this.value);
 
@@ -71,7 +71,7 @@ class $ResultData<State> implements $Result<State> {
 
 /// The error case
 @internal
-class $ResultError<State> implements $Result<State> {
+final class $ResultError<State> implements $Result<State> {
   /// The error case
   $ResultError(this.error, this.stackTrace);
 

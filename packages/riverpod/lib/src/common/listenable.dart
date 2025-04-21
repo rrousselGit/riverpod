@@ -19,7 +19,7 @@ class _Listener<T> {
 /// to subsets of the state exposed by a provider.
 @internal
 @optionalTypeArgs
-class $ElementLense<T> extends _ValueListenable<T> {
+final class $ElementLense<T> extends _ValueListenable<T> {
   /// Directly obtain the value exposed, gratefully handling cases where
   /// [result] is null or in error state.
   T get value {
@@ -50,7 +50,7 @@ class $ElementLense<T> extends _ValueListenable<T> {
   }
 }
 
-class _ValueListenable<T> {
+final class _ValueListenable<T> {
   void Function()? onCancel;
 
   int _count = 0;

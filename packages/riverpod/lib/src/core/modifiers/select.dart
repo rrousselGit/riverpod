@@ -13,8 +13,7 @@ sealed class Node {
 var _debugIsRunningSelector = false;
 
 /// An internal class for `ProviderBase.select`.
-@sealed
-class _ProviderSelector<InputT, OutputT, OriginT>
+final class _ProviderSelector<InputT, OutputT, OriginT>
     with
         ProviderListenable<OutputT>,
         ProviderListenableWithOrigin<OutputT, OriginT> {
