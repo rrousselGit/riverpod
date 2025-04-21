@@ -29,7 +29,6 @@ typedef ClassProviderFactory< //
   required String? name,
   required Iterable<ProviderOrFamily>? dependencies,
   required Iterable<ProviderOrFamily>? allTransitiveDependencies,
-  required RunNotifierBuild<NotifierT, CreatedT>? runNotifierBuildOverride,
   required bool isAutoDispose,
   required Family from,
   required ArgT argument,
@@ -113,9 +112,6 @@ class FunctionalFamily< //
     );
   }
 
-  @override
-  String? debugGetCreateSourceHash() => null;
-
   /// {@macro riverpod.override_with}
   Override overrideWith(
     CreatedT Function(Ref ref, ArgT arg) create,
@@ -126,7 +122,7 @@ class FunctionalFamily< //
         final provider = pointer.origin as ProviderT;
 
         return provider
-            .$copyWithCreate((ref) => create(ref, provider.argument as ArgT))
+            .$view(create: (ref) => create(ref, provider.argument as ArgT))
             .$createElement(pointer);
       },
     );
@@ -181,12 +177,8 @@ class ClassFamily< //
       argument: argument,
       dependencies: null,
       allTransitiveDependencies: null,
-      runNotifierBuildOverride: null,
     );
   }
-
-  @override
-  String? debugGetCreateSourceHash() => null;
 
   /// {@macro riverpod.override_with}
   Override overrideWith(NotifierT Function() create) {
@@ -195,7 +187,7 @@ class ClassFamily< //
       createElement: (pointer) {
         final provider = pointer.origin as ProviderT;
 
-        return provider.$copyWithCreate(create).$createElement(pointer);
+        return provider.$view(create: create).$createElement(pointer);
       },
     );
   }
@@ -209,7 +201,9 @@ class ClassFamily< //
       createElement: (pointer) {
         final provider = pointer.origin as ProviderT;
 
-        return provider.$copyWithBuild(build).$createElement(pointer);
+        return provider
+            .$view(runNotifierBuildOverride: build)
+            .$createElement(pointer);
       },
     );
   }

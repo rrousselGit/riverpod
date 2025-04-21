@@ -22,10 +22,8 @@ final class CounterProvider extends $NotifierProvider<Counter, int> {
   /// accessible using the generated [counterProvider].
   /// This class is both responsible for initializing the state (through the [build] method)
   /// and exposing ways to modify it (cf [increment]).
-  const CounterProvider._(
-      {super.runNotifierBuildOverride, Counter Function()? create})
-      : _createCb = create,
-        super(
+  const CounterProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -35,10 +33,18 @@ final class CounterProvider extends $NotifierProvider<Counter, int> {
           allTransitiveDependencies: null,
         );
 
-  final Counter Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$counterHash();
+
+  @$internal
+  @override
+  Counter create() => Counter();
+
+  @$internal
+  @override
+  $NotifierProviderElement<Counter, int> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -47,35 +53,6 @@ final class CounterProvider extends $NotifierProvider<Counter, int> {
       providerOverride: $ValueProvider<int>(value),
     );
   }
-
-  @$internal
-  @override
-  Counter create() => _createCb?.call() ?? Counter();
-
-  @$internal
-  @override
-  CounterProvider $copyWithCreate(
-    Counter Function() create,
-  ) {
-    return CounterProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  CounterProvider $copyWithBuild(
-    int Function(
-      Ref,
-      Counter,
-    ) build,
-  ) {
-    return CounterProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<Counter, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 }
 
 String _$counterHash() => r'4243b34530f53accfd9014a9f0e316fe304ada3e';

@@ -14,12 +14,8 @@ const configProvider = ConfigProvider._();
 final class ConfigProvider extends $FunctionalProvider<
         AsyncValue<Configuration>, Stream<Configuration>>
     with $FutureModifier<Configuration>, $StreamProvider<Configuration> {
-  const ConfigProvider._(
-      {Stream<Configuration> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const ConfigProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -29,10 +25,6 @@ final class ConfigProvider extends $FunctionalProvider<
           allTransitiveDependencies: null,
         );
 
-  final Stream<Configuration> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$configHash();
 
@@ -40,21 +32,11 @@ final class ConfigProvider extends $FunctionalProvider<
   @override
   $StreamProviderElement<Configuration> $createElement(
           $ProviderPointer pointer) =>
-      $StreamProviderElement(this, pointer);
-
-  @override
-  ConfigProvider $copyWithCreate(
-    Stream<Configuration> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return ConfigProvider._(create: create);
-  }
+      $StreamProviderElement(pointer);
 
   @override
   Stream<Configuration> create(Ref ref) {
-    final _$cb = _createCb ?? config;
-    return _$cb(ref);
+    return config(ref);
   }
 }
 
@@ -66,12 +48,8 @@ const productsProvider = ProductsProvider._();
 final class ProductsProvider extends $FunctionalProvider<
         AsyncValue<List<Product>>, FutureOr<List<Product>>>
     with $FutureModifier<List<Product>>, $FutureProvider<List<Product>> {
-  const ProductsProvider._(
-      {FutureOr<List<Product>> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const ProductsProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -81,10 +59,6 @@ final class ProductsProvider extends $FunctionalProvider<
           allTransitiveDependencies: null,
         );
 
-  final FutureOr<List<Product>> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$productsHash();
 
@@ -92,21 +66,11 @@ final class ProductsProvider extends $FunctionalProvider<
   @override
   $FutureProviderElement<List<Product>> $createElement(
           $ProviderPointer pointer) =>
-      $FutureProviderElement(this, pointer);
-
-  @override
-  ProductsProvider $copyWithCreate(
-    FutureOr<List<Product>> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return ProductsProvider._(create: create);
-  }
+      $FutureProviderElement(pointer);
 
   @override
   FutureOr<List<Product>> create(Ref ref) {
-    final _$cb = _createCb ?? products;
-    return _$cb(ref);
+    return products(ref);
   }
 }
 

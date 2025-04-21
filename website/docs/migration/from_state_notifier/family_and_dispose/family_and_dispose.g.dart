@@ -14,12 +14,8 @@ const taskTrackerProvider = TaskTrackerProvider._();
 final class TaskTrackerProvider
     extends $FunctionalProvider<TaskTrackerRepo, TaskTrackerRepo>
     with $Provider<TaskTrackerRepo> {
-  const TaskTrackerProvider._(
-      {TaskTrackerRepo Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const TaskTrackerProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -29,12 +25,18 @@ final class TaskTrackerProvider
           allTransitiveDependencies: null,
         );
 
-  final TaskTrackerRepo Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$taskTrackerHash();
+
+  @$internal
+  @override
+  $ProviderElement<TaskTrackerRepo> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  TaskTrackerRepo create(Ref ref) {
+    return taskTracker(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(TaskTrackerRepo value) {
@@ -42,26 +44,6 @@ final class TaskTrackerProvider
       origin: this,
       providerOverride: $ValueProvider<TaskTrackerRepo>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<TaskTrackerRepo> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  TaskTrackerProvider $copyWithCreate(
-    TaskTrackerRepo Function(
-      Ref ref,
-    ) create,
-  ) {
-    return TaskTrackerProvider._(create: create);
-  }
-
-  @override
-  TaskTrackerRepo create(Ref ref) {
-    final _$cb = _createCb ?? taskTracker;
-    return _$cb(ref);
   }
 }
 
@@ -74,19 +56,14 @@ final class BugsEncounteredNotifierProvider
     extends $AsyncNotifierProvider<BugsEncounteredNotifier, int> {
   const BugsEncounteredNotifierProvider._(
       {required BugsEncounteredNotifierFamily super.from,
-      required String super.argument,
-      super.runNotifierBuildOverride,
-      BugsEncounteredNotifier Function()? create})
-      : _createCb = create,
-        super(
+      required String super.argument})
+      : super(
           retry: null,
           name: r'bugsEncounteredNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final BugsEncounteredNotifier Function()? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$bugsEncounteredNotifierHash();
@@ -100,39 +77,13 @@ final class BugsEncounteredNotifierProvider
 
   @$internal
   @override
-  BugsEncounteredNotifier create() =>
-      _createCb?.call() ?? BugsEncounteredNotifier();
-
-  @$internal
-  @override
-  BugsEncounteredNotifierProvider $copyWithCreate(
-    BugsEncounteredNotifier Function() create,
-  ) {
-    return BugsEncounteredNotifierProvider._(
-        argument: argument as String,
-        from: from! as BugsEncounteredNotifierFamily,
-        create: create);
-  }
-
-  @$internal
-  @override
-  BugsEncounteredNotifierProvider $copyWithBuild(
-    FutureOr<int> Function(
-      Ref,
-      BugsEncounteredNotifier,
-    ) build,
-  ) {
-    return BugsEncounteredNotifierProvider._(
-        argument: argument as String,
-        from: from! as BugsEncounteredNotifierFamily,
-        runNotifierBuildOverride: build);
-  }
+  BugsEncounteredNotifier create() => BugsEncounteredNotifier();
 
   @$internal
   @override
   $AsyncNotifierProviderElement<BugsEncounteredNotifier, int> $createElement(
           $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(this, pointer);
+      $AsyncNotifierProviderElement(pointer);
 
   @override
   bool operator ==(Object other) {
@@ -165,50 +116,39 @@ final class BugsEncounteredNotifierFamily extends Family {
       BugsEncounteredNotifierProvider._(argument: featureId, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$bugsEncounteredNotifierHash();
-
-  @override
   String toString() => r'bugsEncounteredNotifierProvider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    BugsEncounteredNotifier Function(
-      String args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as BugsEncounteredNotifierProvider;
-
-        final argument = provider.argument as String;
-
-        return provider
-            .$copyWithCreate(() => create(argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          BugsEncounteredNotifier Function(
+            String args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as BugsEncounteredNotifierProvider;
+            final argument = provider.argument as String;
+            return provider
+                .$view(create: () => create(argument))
+                .$createElement(pointer);
+          });
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    FutureOr<int> Function(
-            Ref ref, BugsEncounteredNotifier notifier, String argument)
-        build,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as BugsEncounteredNotifierProvider;
-
-        final argument = provider.argument as String;
-
-        return provider
-            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          FutureOr<int> Function(
+                  Ref ref, BugsEncounteredNotifier notifier, String argument)
+              build) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as BugsEncounteredNotifierProvider;
+            final argument = provider.argument as String;
+            return provider
+                .$view(
+                    runNotifierBuildOverride: (ref, notifier) =>
+                        build(ref, notifier, argument))
+                .$createElement(pointer);
+          });
 }
 
 abstract class _$BugsEncounteredNotifier extends $AsyncNotifier<int> {

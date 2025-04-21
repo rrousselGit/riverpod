@@ -37,7 +37,6 @@ abstract base class $AsyncNotifierProvider< //
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.isAutoDispose,
-    required super.runNotifierBuildOverride,
     required super.retry,
   });
 }
@@ -58,10 +57,7 @@ class $AsyncNotifierProviderElement< //
         FutureModifierClassElement<NotifierT, StateT, FutureOr<StateT>> {
   /// Implementation detail of `riverpod_generator`.
   /// Do not use.
-  $AsyncNotifierProviderElement(this.provider, super.pointer);
-
-  @override
-  final $AsyncNotifierProvider<NotifierT, StateT> provider;
+  $AsyncNotifierProviderElement(super.pointer);
 
   @override
   void handleValue(Ref ref, FutureOr<StateT> created) {

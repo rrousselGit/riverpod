@@ -65,12 +65,8 @@ const questionThemeProvider = QuestionThemeProvider._();
 final class QuestionThemeProvider
     extends $FunctionalProvider<QuestionTheme, QuestionTheme>
     with $Provider<QuestionTheme> {
-  const QuestionThemeProvider._(
-      {QuestionTheme Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const QuestionThemeProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -80,12 +76,18 @@ final class QuestionThemeProvider
           allTransitiveDependencies: null,
         );
 
-  final QuestionTheme Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$questionThemeHash();
+
+  @$internal
+  @override
+  $ProviderElement<QuestionTheme> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  QuestionTheme create(Ref ref) {
+    return questionTheme(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(QuestionTheme value) {
@@ -93,26 +95,6 @@ final class QuestionThemeProvider
       origin: this,
       providerOverride: $ValueProvider<QuestionTheme>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<QuestionTheme> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  QuestionThemeProvider $copyWithCreate(
-    QuestionTheme Function(
-      Ref ref,
-    ) create,
-  ) {
-    return QuestionThemeProvider._(create: create);
-  }
-
-  @override
-  QuestionTheme create(Ref ref) {
-    final _$cb = _createCb ?? questionTheme;
-    return _$cb(ref);
   }
 }
 
@@ -160,12 +142,8 @@ final class CurrentQuestionProvider
   ///
   /// This is an optional step. Since scoping is a fairly advanced mechanism,
   /// it's entirely fine to simply pass the [Question] to [QuestionItem] directly.
-  const CurrentQuestionProvider._(
-      {AsyncValue<Question> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const CurrentQuestionProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -175,12 +153,19 @@ final class CurrentQuestionProvider
           allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
-  final AsyncValue<Question> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$currentQuestionHash();
+
+  @$internal
+  @override
+  $ProviderElement<AsyncValue<Question>> $createElement(
+          $ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  AsyncValue<Question> create(Ref ref) {
+    return currentQuestion(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(AsyncValue<Question> value) {
@@ -188,27 +173,6 @@ final class CurrentQuestionProvider
       origin: this,
       providerOverride: $ValueProvider<AsyncValue<Question>>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<AsyncValue<Question>> $createElement(
-          $ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  CurrentQuestionProvider $copyWithCreate(
-    AsyncValue<Question> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return CurrentQuestionProvider._(create: create);
-  }
-
-  @override
-  AsyncValue<Question> create(Ref ref) {
-    final _$cb = _createCb ?? currentQuestion;
-    return _$cb(ref);
   }
 }
 

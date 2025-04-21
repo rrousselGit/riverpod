@@ -15,25 +15,14 @@ final class ActivityProvider
     extends $FunctionalProvider<AsyncValue<Activity>, FutureOr<Activity>>
     with $FutureModifier<Activity>, $FutureProvider<Activity> {
   const ActivityProvider._(
-      {required ActivityFamily super.from,
-      required String super.argument,
-      FutureOr<Activity> Function(
-        Ref ref,
-        String activityType,
-      )? create})
-      : _createCb = create,
-        super(
+      {required ActivityFamily super.from, required String super.argument})
+      : super(
           retry: null,
           name: r'activityProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final FutureOr<Activity> Function(
-    Ref ref,
-    String activityType,
-  )? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$activityHash();
@@ -48,29 +37,12 @@ final class ActivityProvider
   @$internal
   @override
   $FutureProviderElement<Activity> $createElement($ProviderPointer pointer) =>
-      $FutureProviderElement(this, pointer);
-
-  @override
-  ActivityProvider $copyWithCreate(
-    FutureOr<Activity> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return ActivityProvider._(
-        argument: argument as String,
-        from: from! as ActivityFamily,
-        create: (
-          ref,
-          String activityType,
-        ) =>
-            create(ref));
-  }
+      $FutureProviderElement(pointer);
 
   @override
   FutureOr<Activity> create(Ref ref) {
-    final _$cb = _createCb ?? activity;
     final argument = this.argument as String;
-    return _$cb(
+    return activity(
       ref,
       argument,
     );
@@ -105,31 +77,23 @@ final class ActivityFamily extends Family {
       ActivityProvider._(argument: activityType, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$activityHash();
-
-  @override
   String toString() => r'activityProvider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    FutureOr<Activity> Function(
-      Ref ref,
-      String args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as ActivityProvider;
-
-        final argument = provider.argument as String;
-
-        return provider
-            .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          FutureOr<Activity> Function(
+            Ref ref,
+            String args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as ActivityProvider;
+            final argument = provider.argument as String;
+            return provider
+                .$view(create: (ref) => create(ref, argument))
+                .$createElement(pointer);
+          });
 }
 
 @ProviderFor(ActivityNotifier2)
@@ -139,19 +103,14 @@ final class ActivityNotifier2Provider
     extends $AsyncNotifierProvider<ActivityNotifier2, Activity> {
   const ActivityNotifier2Provider._(
       {required ActivityNotifier2Family super.from,
-      required String super.argument,
-      super.runNotifierBuildOverride,
-      ActivityNotifier2 Function()? create})
-      : _createCb = create,
-        super(
+      required String super.argument})
+      : super(
           retry: null,
           name: r'activityNotifier2Provider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final ActivityNotifier2 Function()? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$activityNotifier2Hash();
@@ -165,38 +124,13 @@ final class ActivityNotifier2Provider
 
   @$internal
   @override
-  ActivityNotifier2 create() => _createCb?.call() ?? ActivityNotifier2();
-
-  @$internal
-  @override
-  ActivityNotifier2Provider $copyWithCreate(
-    ActivityNotifier2 Function() create,
-  ) {
-    return ActivityNotifier2Provider._(
-        argument: argument as String,
-        from: from! as ActivityNotifier2Family,
-        create: create);
-  }
-
-  @$internal
-  @override
-  ActivityNotifier2Provider $copyWithBuild(
-    FutureOr<Activity> Function(
-      Ref,
-      ActivityNotifier2,
-    ) build,
-  ) {
-    return ActivityNotifier2Provider._(
-        argument: argument as String,
-        from: from! as ActivityNotifier2Family,
-        runNotifierBuildOverride: build);
-  }
+  ActivityNotifier2 create() => ActivityNotifier2();
 
   @$internal
   @override
   $AsyncNotifierProviderElement<ActivityNotifier2, Activity> $createElement(
           $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(this, pointer);
+      $AsyncNotifierProviderElement(pointer);
 
   @override
   bool operator ==(Object other) {
@@ -227,50 +161,39 @@ final class ActivityNotifier2Family extends Family {
       ActivityNotifier2Provider._(argument: activityType, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$activityNotifier2Hash();
-
-  @override
   String toString() => r'activityNotifier2Provider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    ActivityNotifier2 Function(
-      String args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as ActivityNotifier2Provider;
-
-        final argument = provider.argument as String;
-
-        return provider
-            .$copyWithCreate(() => create(argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          ActivityNotifier2 Function(
+            String args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as ActivityNotifier2Provider;
+            final argument = provider.argument as String;
+            return provider
+                .$view(create: () => create(argument))
+                .$createElement(pointer);
+          });
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    FutureOr<Activity> Function(
-            Ref ref, ActivityNotifier2 notifier, String argument)
-        build,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as ActivityNotifier2Provider;
-
-        final argument = provider.argument as String;
-
-        return provider
-            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          FutureOr<Activity> Function(
+                  Ref ref, ActivityNotifier2 notifier, String argument)
+              build) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as ActivityNotifier2Provider;
+            final argument = provider.argument as String;
+            return provider
+                .$view(
+                    runNotifierBuildOverride: (ref, notifier) =>
+                        build(ref, notifier, argument))
+                .$createElement(pointer);
+          });
 }
 
 abstract class _$ActivityNotifier2 extends $AsyncNotifier<Activity> {

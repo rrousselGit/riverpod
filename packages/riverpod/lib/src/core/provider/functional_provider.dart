@@ -18,13 +18,12 @@ abstract base class $FunctionalProvider< //
     required super.retry,
   });
 
-  /// Clone a provider with a different initialization method.
-  ///
-  /// This is an implementation detail of Riverpod and should not be used.
-  @visibleForOverriding
-  $FunctionalProvider<StateT, CreatedT> $copyWithCreate(
-    Create<CreatedT> create,
-  );
+  @internal
+  $FunctionalProvider<StateT, CreatedT> $view({
+    required Create<CreatedT> create,
+  }) {
+    return _FunctionalProviderView.$FunctionalView(this, create);
+  }
 
   /// {@template riverpod.override_with}
   /// Override the provider with a new initialization function.
@@ -63,7 +62,60 @@ abstract base class $FunctionalProvider< //
   Override overrideWith(Create<CreatedT> create) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $copyWithCreate(create),
+      providerOverride: $view(create: create),
     );
   }
+
+  @internal
+  CreatedT create(Ref ref);
+
+  @override
+  $FunctionalProviderElement<StateT, CreatedT> $createElement(
+    $ProviderPointer pointer,
+  );
+}
+
+final class _FunctionalProviderView<StateT, CreatedT> //
+    extends $FunctionalProvider<StateT, CreatedT> {
+  /// Implementation detail of `riverpod_generator`.
+  /// Do not use, as this can be removed at any time.
+  _FunctionalProviderView.$FunctionalView(
+    this._inner,
+    this._createOverride,
+  ) : super(
+          name: _inner.name,
+          from: _inner.from,
+          argument: _inner.argument,
+          dependencies: _inner.dependencies,
+          allTransitiveDependencies: _inner.allTransitiveDependencies,
+          isAutoDispose: _inner.isAutoDispose,
+          retry: _inner.retry,
+        );
+
+  final $FunctionalProvider<StateT, CreatedT> _inner;
+  final Create<CreatedT> _createOverride;
+
+  @override
+  CreatedT create(Ref ref) => _createOverride(ref);
+
+  @override
+  $FunctionalProviderElement<StateT, CreatedT> $createElement(
+    $ProviderPointer pointer,
+  ) {
+    return _inner.$createElement(pointer)..provider = this;
+  }
+
+  @override
+  String? debugGetCreateSourceHash() => _inner.debugGetCreateSourceHash();
+}
+
+abstract class $FunctionalProviderElement<StateT, CreatedT>
+    extends ProviderElement<StateT> {
+  /// Implementation detail of `riverpod_generator`.
+  /// Do not use, as this can be removed at any time.
+  $FunctionalProviderElement(super.pointer)
+      : provider = pointer.origin as $FunctionalProvider<StateT, CreatedT>;
+
+  @override
+  $FunctionalProvider<StateT, CreatedT> provider;
 }

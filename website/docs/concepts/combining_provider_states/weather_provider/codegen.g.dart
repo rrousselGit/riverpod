@@ -13,12 +13,8 @@ const cityProvider = CityProvider._();
 
 final class CityProvider extends $FunctionalProvider<String, String>
     with $Provider<String> {
-  const CityProvider._(
-      {String Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const CityProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -28,12 +24,18 @@ final class CityProvider extends $FunctionalProvider<String, String>
           allTransitiveDependencies: null,
         );
 
-  final String Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$cityHash();
+
+  @$internal
+  @override
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  String create(Ref ref) {
+    return city(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
@@ -41,26 +43,6 @@ final class CityProvider extends $FunctionalProvider<String, String>
       origin: this,
       providerOverride: $ValueProvider<String>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  CityProvider $copyWithCreate(
-    String Function(
-      Ref ref,
-    ) create,
-  ) {
-    return CityProvider._(create: create);
-  }
-
-  @override
-  String create(Ref ref) {
-    final _$cb = _createCb ?? city;
-    return _$cb(ref);
   }
 }
 
@@ -72,12 +54,8 @@ const weatherProvider = WeatherProvider._();
 final class WeatherProvider
     extends $FunctionalProvider<AsyncValue<Weather>, FutureOr<Weather>>
     with $FutureModifier<Weather>, $FutureProvider<Weather> {
-  const WeatherProvider._(
-      {FutureOr<Weather> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const WeatherProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -87,31 +65,17 @@ final class WeatherProvider
           allTransitiveDependencies: null,
         );
 
-  final FutureOr<Weather> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$weatherHash();
 
   @$internal
   @override
   $FutureProviderElement<Weather> $createElement($ProviderPointer pointer) =>
-      $FutureProviderElement(this, pointer);
-
-  @override
-  WeatherProvider $copyWithCreate(
-    FutureOr<Weather> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return WeatherProvider._(create: create);
-  }
+      $FutureProviderElement(pointer);
 
   @override
   FutureOr<Weather> create(Ref ref) {
-    final _$cb = _createCb ?? weather;
-    return _$cb(ref);
+    return weather(ref);
   }
 }
 

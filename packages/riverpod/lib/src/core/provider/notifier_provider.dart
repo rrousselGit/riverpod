@@ -288,7 +288,6 @@ abstract base class $ClassProvider< //
     required super.allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
-    required this.runNotifierBuildOverride,
   });
 
   Refreshable<NotifierT> get notifier {
@@ -301,26 +300,25 @@ abstract base class $ClassProvider< //
   }
 
   @internal
-  final RunNotifierBuild<NotifierT, CreatedT>? runNotifierBuildOverride;
-
-  @internal
   NotifierT create();
 
-  @visibleForOverriding
-  $ClassProvider<NotifierT, StateT, ValueT, CreatedT> $copyWithCreate(
-    NotifierT Function() create,
-  );
-
-  @visibleForOverriding
-  $ClassProvider<NotifierT, StateT, ValueT, CreatedT> $copyWithBuild(
-    RunNotifierBuild<NotifierT, CreatedT> build,
-  );
+  @internal
+  $ClassProvider<NotifierT, StateT, ValueT, CreatedT> $view({
+    NotifierT Function()? create,
+    RunNotifierBuild<NotifierT, CreatedT>? runNotifierBuildOverride,
+  }) {
+    return _ClassProviderView(
+      this,
+      create: create,
+      runNotifierBuildOverride: runNotifierBuildOverride,
+    );
+  }
 
   /// {@macro riverpod.override_with}
   Override overrideWith(NotifierT Function() create) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $copyWithCreate(create),
+      providerOverride: $view(create: create),
     );
   }
 
@@ -332,7 +330,7 @@ abstract base class $ClassProvider< //
   ) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $copyWithBuild(build),
+      providerOverride: $view(runNotifierBuildOverride: build),
     );
   }
 
@@ -344,6 +342,56 @@ abstract base class $ClassProvider< //
       CreatedT> $createElement($ProviderPointer pointer);
 }
 
+final class _ClassProviderView<
+    NotifierT extends NotifierBase<StateT>,
+    StateT,
+    ValueT,
+    CreatedT> extends $ClassProvider<NotifierT, StateT, ValueT, CreatedT> {
+  _ClassProviderView(
+    this._inner, {
+    RunNotifierBuild<NotifierT, CreatedT>? runNotifierBuildOverride,
+    NotifierT Function()? create,
+  })  : _create = create,
+        _runNotifierBuildOverride = runNotifierBuildOverride,
+        assert(
+          create != null || runNotifierBuildOverride != null,
+          'Either `create` or `runNotifierBuildOverride` must be provided.',
+        ),
+        super(
+          name: _inner.name,
+          from: _inner.from,
+          argument: _inner.argument,
+          dependencies: _inner.dependencies,
+          allTransitiveDependencies: _inner.allTransitiveDependencies,
+          retry: _inner.retry,
+          isAutoDispose: _inner.isAutoDispose,
+        );
+
+  final $ClassProvider<NotifierT, StateT, ValueT, CreatedT> _inner;
+
+  final NotifierT Function()? _create;
+  final RunNotifierBuild<NotifierT, CreatedT>? _runNotifierBuildOverride;
+
+  @override
+  NotifierT create() {
+    if (_create != null) return _create();
+
+    return _inner.create();
+  }
+
+  @override
+  $ClassProviderElement<NotifierT, StateT, ValueT, CreatedT> $createElement(
+    $ProviderPointer pointer,
+  ) {
+    return _inner.$createElement(pointer)
+      ..provider = this
+      .._runNotifierBuildOverride = _runNotifierBuildOverride;
+  }
+
+  @override
+  String? debugGetCreateSourceHash() => _inner.debugGetCreateSourceHash();
+}
+
 @internal
 abstract class $ClassProviderElement< //
         NotifierT extends NotifierBase<StateT>,
@@ -351,10 +399,13 @@ abstract class $ClassProviderElement< //
         ValueT,
         CreatedT> //
     extends ProviderElement<StateT> {
-  $ClassProviderElement(super.pointer);
+  $ClassProviderElement(super.pointer)
+      : provider = pointer.origin
+            as $ClassProvider<NotifierT, StateT, ValueT, CreatedT>;
 
   @override
-  $ClassProvider<NotifierT, StateT, ValueT, CreatedT> get provider;
+  $ClassProvider<NotifierT, StateT, ValueT, CreatedT> provider;
+  RunNotifierBuild<NotifierT, CreatedT>? _runNotifierBuildOverride;
 
   final classListenable = $ElementLense<NotifierT>();
 
@@ -377,7 +428,7 @@ abstract class $ClassProviderElement< //
     switch (result) {
       case $ResultData():
         try {
-          if (provider.runNotifierBuildOverride case final override?) {
+          if (_runNotifierBuildOverride case final override?) {
             final created = override(ref, result.value);
             handleValue(ref, created);
           } else {

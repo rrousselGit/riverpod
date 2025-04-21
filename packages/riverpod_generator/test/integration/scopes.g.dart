@@ -10,10 +10,8 @@ part of 'scopes.dart';
 const scopedClassProvider = ScopedClassProvider._();
 
 final class ScopedClassProvider extends $NotifierProvider<ScopedClass, int> {
-  const ScopedClassProvider._(
-      {super.runNotifierBuildOverride, ScopedClass Function()? create})
-      : _createCb = create,
-        super(
+  const ScopedClassProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -23,10 +21,18 @@ final class ScopedClassProvider extends $NotifierProvider<ScopedClass, int> {
           allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
-  final ScopedClass Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$scopedClassHash();
+
+  @$internal
+  @override
+  ScopedClass create() => ScopedClass();
+
+  @$internal
+  @override
+  $NotifierProviderElement<ScopedClass, int> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -35,35 +41,6 @@ final class ScopedClassProvider extends $NotifierProvider<ScopedClass, int> {
       providerOverride: $ValueProvider<int>(value),
     );
   }
-
-  @$internal
-  @override
-  ScopedClass create() => _createCb?.call() ?? ScopedClass();
-
-  @$internal
-  @override
-  ScopedClassProvider $copyWithCreate(
-    ScopedClass Function() create,
-  ) {
-    return ScopedClassProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  ScopedClassProvider $copyWithBuild(
-    int Function(
-      Ref,
-      ScopedClass,
-    ) build,
-  ) {
-    return ScopedClassProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<ScopedClass, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 }
 
 String _$scopedClassHash() => r'113acc46a2e61abfeb61cf4b89a1dc555e915793';
@@ -88,19 +65,14 @@ final class ScopedClassFamilyProvider
     extends $NotifierProvider<ScopedClassFamily, int> {
   const ScopedClassFamilyProvider._(
       {required ScopedClassFamilyFamily super.from,
-      required int super.argument,
-      super.runNotifierBuildOverride,
-      ScopedClassFamily Function()? create})
-      : _createCb = create,
-        super(
+      required int super.argument})
+      : super(
           retry: null,
           name: r'scopedClassFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final ScopedClassFamily Function()? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$scopedClassFamilyHash();
@@ -112,6 +84,16 @@ final class ScopedClassFamilyProvider
         '($argument)';
   }
 
+  @$internal
+  @override
+  ScopedClassFamily create() => ScopedClassFamily();
+
+  @$internal
+  @override
+  $NotifierProviderElement<ScopedClassFamily, int> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
+
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
@@ -119,41 +101,6 @@ final class ScopedClassFamilyProvider
       providerOverride: $ValueProvider<int>(value),
     );
   }
-
-  @$internal
-  @override
-  ScopedClassFamily create() => _createCb?.call() ?? ScopedClassFamily();
-
-  @$internal
-  @override
-  ScopedClassFamilyProvider $copyWithCreate(
-    ScopedClassFamily Function() create,
-  ) {
-    return ScopedClassFamilyProvider._(
-        argument: argument as int,
-        from: from! as ScopedClassFamilyFamily,
-        create: create);
-  }
-
-  @$internal
-  @override
-  ScopedClassFamilyProvider $copyWithBuild(
-    int Function(
-      Ref,
-      ScopedClassFamily,
-    ) build,
-  ) {
-    return ScopedClassFamilyProvider._(
-        argument: argument as int,
-        from: from! as ScopedClassFamilyFamily,
-        runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<ScopedClassFamily, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -184,48 +131,38 @@ final class ScopedClassFamilyFamily extends Family {
       ScopedClassFamilyProvider._(argument: a, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$scopedClassFamilyHash();
-
-  @override
   String toString() => r'scopedClassFamilyProvider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    ScopedClassFamily Function(
-      int args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as ScopedClassFamilyProvider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithCreate(() => create(argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          ScopedClassFamily Function(
+            int args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as ScopedClassFamilyProvider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(create: () => create(argument))
+                .$createElement(pointer);
+          });
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function(Ref ref, ScopedClassFamily notifier, int argument) build,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as ScopedClassFamilyProvider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          int Function(Ref ref, ScopedClassFamily notifier, int argument)
+              build) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as ScopedClassFamilyProvider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(
+                    runNotifierBuildOverride: (ref, notifier) =>
+                        build(ref, notifier, argument))
+                .$createElement(pointer);
+          });
 }
 
 abstract class _$ScopedClassFamily extends $Notifier<int> {

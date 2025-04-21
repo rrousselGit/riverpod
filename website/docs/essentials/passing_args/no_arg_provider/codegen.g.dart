@@ -14,12 +14,8 @@ const activityProvider = ActivityProvider._();
 final class ActivityProvider
     extends $FunctionalProvider<AsyncValue<Activity>, FutureOr<Activity>>
     with $FutureModifier<Activity>, $FutureProvider<Activity> {
-  const ActivityProvider._(
-      {FutureOr<Activity> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const ActivityProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -29,31 +25,17 @@ final class ActivityProvider
           allTransitiveDependencies: null,
         );
 
-  final FutureOr<Activity> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$activityHash();
 
   @$internal
   @override
   $FutureProviderElement<Activity> $createElement($ProviderPointer pointer) =>
-      $FutureProviderElement(this, pointer);
-
-  @override
-  ActivityProvider $copyWithCreate(
-    FutureOr<Activity> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return ActivityProvider._(create: create);
-  }
+      $FutureProviderElement(pointer);
 
   @override
   FutureOr<Activity> create(Ref ref) {
-    final _$cb = _createCb ?? activity;
-    return _$cb(ref);
+    return activity(ref);
   }
 }
 
@@ -64,10 +46,8 @@ const activityNotifier2Provider = ActivityNotifier2Provider._();
 
 final class ActivityNotifier2Provider
     extends $AsyncNotifierProvider<ActivityNotifier2, Activity> {
-  const ActivityNotifier2Provider._(
-      {super.runNotifierBuildOverride, ActivityNotifier2 Function()? create})
-      : _createCb = create,
-        super(
+  const ActivityNotifier2Provider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -77,39 +57,18 @@ final class ActivityNotifier2Provider
           allTransitiveDependencies: null,
         );
 
-  final ActivityNotifier2 Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$activityNotifier2Hash();
 
   @$internal
   @override
-  ActivityNotifier2 create() => _createCb?.call() ?? ActivityNotifier2();
-
-  @$internal
-  @override
-  ActivityNotifier2Provider $copyWithCreate(
-    ActivityNotifier2 Function() create,
-  ) {
-    return ActivityNotifier2Provider._(create: create);
-  }
-
-  @$internal
-  @override
-  ActivityNotifier2Provider $copyWithBuild(
-    FutureOr<Activity> Function(
-      Ref,
-      ActivityNotifier2,
-    ) build,
-  ) {
-    return ActivityNotifier2Provider._(runNotifierBuildOverride: build);
-  }
+  ActivityNotifier2 create() => ActivityNotifier2();
 
   @$internal
   @override
   $AsyncNotifierProviderElement<ActivityNotifier2, Activity> $createElement(
           $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(this, pointer);
+      $AsyncNotifierProviderElement(pointer);
 }
 
 String _$activityNotifier2Hash() => r'280f4d82a186cfb62827f4d7c74f5349bb0a9e4a';

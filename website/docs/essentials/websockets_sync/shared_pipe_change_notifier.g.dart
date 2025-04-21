@@ -14,12 +14,8 @@ const myListenableProvider = MyListenableProvider._();
 final class MyListenableProvider extends $FunctionalProvider<
     Raw<ValueNotifier<int>>,
     Raw<ValueNotifier<int>>> with $Provider<Raw<ValueNotifier<int>>> {
-  const MyListenableProvider._(
-      {Raw<ValueNotifier<int>> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const MyListenableProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -29,12 +25,19 @@ final class MyListenableProvider extends $FunctionalProvider<
           allTransitiveDependencies: null,
         );
 
-  final Raw<ValueNotifier<int>> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$myListenableHash();
+
+  @$internal
+  @override
+  $ProviderElement<Raw<ValueNotifier<int>>> $createElement(
+          $ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  Raw<ValueNotifier<int>> create(Ref ref) {
+    return myListenable(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Raw<ValueNotifier<int>> value) {
@@ -42,27 +45,6 @@ final class MyListenableProvider extends $FunctionalProvider<
       origin: this,
       providerOverride: $ValueProvider<Raw<ValueNotifier<int>>>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<Raw<ValueNotifier<int>>> $createElement(
-          $ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  MyListenableProvider $copyWithCreate(
-    Raw<ValueNotifier<int>> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return MyListenableProvider._(create: create);
-  }
-
-  @override
-  Raw<ValueNotifier<int>> create(Ref ref) {
-    final _$cb = _createCb ?? myListenable;
-    return _$cb(ref);
   }
 }
 
@@ -74,12 +56,8 @@ const anotherListenableProvider = AnotherListenableProvider._();
 final class AnotherListenableProvider extends $FunctionalProvider<
     Raw<ValueNotifier<int>>,
     Raw<ValueNotifier<int>>> with $Provider<Raw<ValueNotifier<int>>> {
-  const AnotherListenableProvider._(
-      {Raw<ValueNotifier<int>> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const AnotherListenableProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -89,12 +67,19 @@ final class AnotherListenableProvider extends $FunctionalProvider<
           allTransitiveDependencies: null,
         );
 
-  final Raw<ValueNotifier<int>> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$anotherListenableHash();
+
+  @$internal
+  @override
+  $ProviderElement<Raw<ValueNotifier<int>>> $createElement(
+          $ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  Raw<ValueNotifier<int>> create(Ref ref) {
+    return anotherListenable(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Raw<ValueNotifier<int>> value) {
@@ -102,27 +87,6 @@ final class AnotherListenableProvider extends $FunctionalProvider<
       origin: this,
       providerOverride: $ValueProvider<Raw<ValueNotifier<int>>>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<Raw<ValueNotifier<int>>> $createElement(
-          $ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  AnotherListenableProvider $copyWithCreate(
-    Raw<ValueNotifier<int>> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return AnotherListenableProvider._(create: create);
-  }
-
-  @override
-  Raw<ValueNotifier<int>> create(Ref ref) {
-    final _$cb = _createCb ?? anotherListenable;
-    return _$cb(ref);
   }
 }
 

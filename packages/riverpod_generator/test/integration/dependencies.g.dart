@@ -11,12 +11,8 @@ const depProvider = DepProvider._();
 
 final class DepProvider extends $FunctionalProvider<int, int>
     with $Provider<int> {
-  const DepProvider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const DepProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -26,12 +22,18 @@ final class DepProvider extends $FunctionalProvider<int, int>
           allTransitiveDependencies: null,
         );
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$depHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return dep(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -39,26 +41,6 @@ final class DepProvider extends $FunctionalProvider<int, int>
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  DepProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return DepProvider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? dep;
-    return _$cb(ref);
   }
 }
 
@@ -70,25 +52,14 @@ const familyProvider = FamilyFamily._();
 final class FamilyProvider extends $FunctionalProvider<int, int>
     with $Provider<int> {
   const FamilyProvider._(
-      {required FamilyFamily super.from,
-      required int super.argument,
-      int Function(
-        Ref ref,
-        int id,
-      )? create})
-      : _createCb = create,
-        super(
+      {required FamilyFamily super.from, required int super.argument})
+      : super(
           retry: null,
           name: r'familyProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final int Function(
-    Ref ref,
-    int id,
-  )? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$familyHash();
@@ -100,42 +71,25 @@ final class FamilyProvider extends $FunctionalProvider<int, int>
         '($argument)';
   }
 
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    final argument = this.argument as int;
+    return family(
+      ref,
+      argument,
+    );
+  }
+
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
       providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  FamilyProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return FamilyProvider._(
-        argument: argument as int,
-        from: from! as FamilyFamily,
-        create: (
-          ref,
-          int id,
-        ) =>
-            create(ref));
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? family;
-    final argument = this.argument as int;
-    return _$cb(
-      ref,
-      argument,
     );
   }
 
@@ -168,41 +122,31 @@ final class FamilyFamily extends Family {
       FamilyProvider._(argument: id, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$familyHash();
-
-  @override
   String toString() => r'familyProvider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    int Function(
-      Ref ref,
-      int args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as FamilyProvider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          int Function(
+            Ref ref,
+            int args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as FamilyProvider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(create: (ref) => create(ref, argument))
+                .$createElement(pointer);
+          });
 }
 
 @ProviderFor(Dep2)
 const dep2Provider = Dep2Provider._();
 
 final class Dep2Provider extends $NotifierProvider<Dep2, int> {
-  const Dep2Provider._(
-      {super.runNotifierBuildOverride, Dep2 Function()? create})
-      : _createCb = create,
-        super(
+  const Dep2Provider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -212,10 +156,18 @@ final class Dep2Provider extends $NotifierProvider<Dep2, int> {
           allTransitiveDependencies: null,
         );
 
-  final Dep2 Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$dep2Hash();
+
+  @$internal
+  @override
+  Dep2 create() => Dep2();
+
+  @$internal
+  @override
+  $NotifierProviderElement<Dep2, int> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -224,35 +176,6 @@ final class Dep2Provider extends $NotifierProvider<Dep2, int> {
       providerOverride: $ValueProvider<int>(value),
     );
   }
-
-  @$internal
-  @override
-  Dep2 create() => _createCb?.call() ?? Dep2();
-
-  @$internal
-  @override
-  Dep2Provider $copyWithCreate(
-    Dep2 Function() create,
-  ) {
-    return Dep2Provider._(create: create);
-  }
-
-  @$internal
-  @override
-  Dep2Provider $copyWithBuild(
-    int Function(
-      Ref,
-      Dep2,
-    ) build,
-  ) {
-    return Dep2Provider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<Dep2, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 }
 
 String _$dep2Hash() => r'2778537df77f6431148c2ce400724da3e2ab4b94';
@@ -275,20 +198,14 @@ const family2Provider = Family2Family._();
 
 final class Family2Provider extends $NotifierProvider<Family2, int> {
   const Family2Provider._(
-      {required Family2Family super.from,
-      required int super.argument,
-      super.runNotifierBuildOverride,
-      Family2 Function()? create})
-      : _createCb = create,
-        super(
+      {required Family2Family super.from, required int super.argument})
+      : super(
           retry: null,
           name: r'family2Provider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final Family2 Function()? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$family2Hash();
@@ -300,6 +217,16 @@ final class Family2Provider extends $NotifierProvider<Family2, int> {
         '($argument)';
   }
 
+  @$internal
+  @override
+  Family2 create() => Family2();
+
+  @$internal
+  @override
+  $NotifierProviderElement<Family2, int> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
+
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
@@ -307,41 +234,6 @@ final class Family2Provider extends $NotifierProvider<Family2, int> {
       providerOverride: $ValueProvider<int>(value),
     );
   }
-
-  @$internal
-  @override
-  Family2 create() => _createCb?.call() ?? Family2();
-
-  @$internal
-  @override
-  Family2Provider $copyWithCreate(
-    Family2 Function() create,
-  ) {
-    return Family2Provider._(
-        argument: argument as int,
-        from: from! as Family2Family,
-        create: create);
-  }
-
-  @$internal
-  @override
-  Family2Provider $copyWithBuild(
-    int Function(
-      Ref,
-      Family2,
-    ) build,
-  ) {
-    return Family2Provider._(
-        argument: argument as int,
-        from: from! as Family2Family,
-        runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<Family2, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -372,48 +264,37 @@ final class Family2Family extends Family {
       Family2Provider._(argument: id, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$family2Hash();
-
-  @override
   String toString() => r'family2Provider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    Family2 Function(
-      int args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as Family2Provider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithCreate(() => create(argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          Family2 Function(
+            int args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as Family2Provider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(create: () => create(argument))
+                .$createElement(pointer);
+          });
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function(Ref ref, Family2 notifier, int argument) build,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as Family2Provider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          int Function(Ref ref, Family2 notifier, int argument) build) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as Family2Provider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(
+                    runNotifierBuildOverride: (ref, notifier) =>
+                        build(ref, notifier, argument))
+                .$createElement(pointer);
+          });
 }
 
 abstract class _$Family2 extends $Notifier<int> {
@@ -441,12 +322,8 @@ const providerProvider = ProviderProvider._();
 
 final class ProviderProvider extends $FunctionalProvider<int, int>
     with $Provider<int> {
-  const ProviderProvider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const ProviderProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -471,12 +348,18 @@ final class ProviderProvider extends $FunctionalProvider<int, int>
   static const $allTransitiveDependencies2 = dep2Provider;
   static const $allTransitiveDependencies3 = family2Provider;
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$providerHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return provider(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -484,26 +367,6 @@ final class ProviderProvider extends $FunctionalProvider<int, int>
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  ProviderProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return ProviderProvider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? provider;
-    return _$cb(ref);
   }
 }
 
@@ -514,12 +377,8 @@ const provider2Provider = Provider2Provider._();
 
 final class Provider2Provider extends $FunctionalProvider<int, int>
     with $Provider<int> {
-  const Provider2Provider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const Provider2Provider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -544,12 +403,18 @@ final class Provider2Provider extends $FunctionalProvider<int, int>
   static const $allTransitiveDependencies2 = dep2Provider;
   static const $allTransitiveDependencies3 = family2Provider;
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$provider2Hash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return provider2(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -557,26 +422,6 @@ final class Provider2Provider extends $FunctionalProvider<int, int>
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  Provider2Provider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return Provider2Provider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? provider2;
-    return _$cb(ref);
   }
 }
 
@@ -586,10 +431,8 @@ String _$provider2Hash() => r'30f81430b57f0116f621a4a309c458fce0536378';
 const provider3Provider = Provider3Provider._();
 
 final class Provider3Provider extends $NotifierProvider<Provider3, int> {
-  const Provider3Provider._(
-      {super.runNotifierBuildOverride, Provider3 Function()? create})
-      : _createCb = create,
-        super(
+  const Provider3Provider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -614,10 +457,18 @@ final class Provider3Provider extends $NotifierProvider<Provider3, int> {
   static const $allTransitiveDependencies2 = dep2Provider;
   static const $allTransitiveDependencies3 = family2Provider;
 
-  final Provider3 Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$provider3Hash();
+
+  @$internal
+  @override
+  Provider3 create() => Provider3();
+
+  @$internal
+  @override
+  $NotifierProviderElement<Provider3, int> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -626,35 +477,6 @@ final class Provider3Provider extends $NotifierProvider<Provider3, int> {
       providerOverride: $ValueProvider<int>(value),
     );
   }
-
-  @$internal
-  @override
-  Provider3 create() => _createCb?.call() ?? Provider3();
-
-  @$internal
-  @override
-  Provider3Provider $copyWithCreate(
-    Provider3 Function() create,
-  ) {
-    return Provider3Provider._(create: create);
-  }
-
-  @$internal
-  @override
-  Provider3Provider $copyWithBuild(
-    int Function(
-      Ref,
-      Provider3,
-    ) build,
-  ) {
-    return Provider3Provider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<Provider3, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 }
 
 String _$provider3Hash() => r'dfdd6dec6cfee543c73d99593ce98d68f4db385c';
@@ -677,12 +499,8 @@ const provider4Provider = Provider4Family._();
 
 final class Provider4Provider extends $NotifierProvider<Provider4, int> {
   const Provider4Provider._(
-      {required Provider4Family super.from,
-      required int super.argument,
-      super.runNotifierBuildOverride,
-      Provider4 Function()? create})
-      : _createCb = create,
-        super(
+      {required Provider4Family super.from, required int super.argument})
+      : super(
           retry: null,
           name: r'provider4Provider',
           isAutoDispose: true,
@@ -695,8 +513,6 @@ final class Provider4Provider extends $NotifierProvider<Provider4, int> {
   static const $allTransitiveDependencies2 = dep2Provider;
   static const $allTransitiveDependencies3 = family2Provider;
 
-  final Provider4 Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$provider4Hash();
 
@@ -707,6 +523,16 @@ final class Provider4Provider extends $NotifierProvider<Provider4, int> {
         '($argument)';
   }
 
+  @$internal
+  @override
+  Provider4 create() => Provider4();
+
+  @$internal
+  @override
+  $NotifierProviderElement<Provider4, int> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
+
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
@@ -714,41 +540,6 @@ final class Provider4Provider extends $NotifierProvider<Provider4, int> {
       providerOverride: $ValueProvider<int>(value),
     );
   }
-
-  @$internal
-  @override
-  Provider4 create() => _createCb?.call() ?? Provider4();
-
-  @$internal
-  @override
-  Provider4Provider $copyWithCreate(
-    Provider4 Function() create,
-  ) {
-    return Provider4Provider._(
-        argument: argument as int,
-        from: from! as Provider4Family,
-        create: create);
-  }
-
-  @$internal
-  @override
-  Provider4Provider $copyWithBuild(
-    int Function(
-      Ref,
-      Provider4,
-    ) build,
-  ) {
-    return Provider4Provider._(
-        argument: argument as int,
-        from: from! as Provider4Family,
-        runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<Provider4, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -789,48 +580,37 @@ final class Provider4Family extends Family {
       Provider4Provider._(argument: id, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$provider4Hash();
-
-  @override
   String toString() => r'provider4Provider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    Provider4 Function(
-      int args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as Provider4Provider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithCreate(() => create(argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          Provider4 Function(
+            int args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as Provider4Provider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(create: () => create(argument))
+                .$createElement(pointer);
+          });
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function(Ref ref, Provider4 notifier, int argument) build,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as Provider4Provider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          int Function(Ref ref, Provider4 notifier, int argument) build) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as Provider4Provider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(
+                    runNotifierBuildOverride: (ref, notifier) =>
+                        build(ref, notifier, argument))
+                .$createElement(pointer);
+          });
 }
 
 abstract class _$Provider4 extends $Notifier<int> {
@@ -858,12 +638,8 @@ const transitiveDependenciesProvider = TransitiveDependenciesProvider._();
 
 final class TransitiveDependenciesProvider extends $FunctionalProvider<int, int>
     with $Provider<int> {
-  const TransitiveDependenciesProvider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const TransitiveDependenciesProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -889,12 +665,18 @@ final class TransitiveDependenciesProvider extends $FunctionalProvider<int, int>
   static const $allTransitiveDependencies4 =
       ProviderProvider.$allTransitiveDependencies3;
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$transitiveDependenciesHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return transitiveDependencies(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -902,26 +684,6 @@ final class TransitiveDependenciesProvider extends $FunctionalProvider<int, int>
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  TransitiveDependenciesProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return TransitiveDependenciesProvider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? transitiveDependencies;
-    return _$cb(ref);
   }
 }
 
@@ -934,12 +696,8 @@ const smallTransitiveDependencyCountProvider =
 
 final class SmallTransitiveDependencyCountProvider
     extends $FunctionalProvider<int, int> with $Provider<int> {
-  const SmallTransitiveDependencyCountProvider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const SmallTransitiveDependencyCountProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -961,12 +719,18 @@ final class SmallTransitiveDependencyCountProvider
   static const $allTransitiveDependencies1 = familyProvider;
   static const $allTransitiveDependencies2 = dep2Provider;
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$smallTransitiveDependencyCountHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return smallTransitiveDependencyCount(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -974,26 +738,6 @@ final class SmallTransitiveDependencyCountProvider
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  SmallTransitiveDependencyCountProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return SmallTransitiveDependencyCountProvider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? smallTransitiveDependencyCount;
-    return _$cb(ref);
   }
 }
 
@@ -1006,12 +750,8 @@ const emptyDependenciesFunctionalProvider =
 
 final class EmptyDependenciesFunctionalProvider
     extends $FunctionalProvider<int, int> with $Provider<int> {
-  const EmptyDependenciesFunctionalProvider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const EmptyDependenciesFunctionalProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -1021,12 +761,18 @@ final class EmptyDependenciesFunctionalProvider
           allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$emptyDependenciesFunctionalHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return emptyDependenciesFunctional(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -1034,26 +780,6 @@ final class EmptyDependenciesFunctionalProvider
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  EmptyDependenciesFunctionalProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return EmptyDependenciesFunctionalProvider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? emptyDependenciesFunctional;
-    return _$cb(ref);
   }
 }
 
@@ -1066,11 +792,8 @@ const emptyDependenciesClassBasedProvider =
 
 final class EmptyDependenciesClassBasedProvider
     extends $NotifierProvider<EmptyDependenciesClassBased, int> {
-  const EmptyDependenciesClassBasedProvider._(
-      {super.runNotifierBuildOverride,
-      EmptyDependenciesClassBased Function()? create})
-      : _createCb = create,
-        super(
+  const EmptyDependenciesClassBasedProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -1080,10 +803,18 @@ final class EmptyDependenciesClassBasedProvider
           allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
-  final EmptyDependenciesClassBased Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$emptyDependenciesClassBasedHash();
+
+  @$internal
+  @override
+  EmptyDependenciesClassBased create() => EmptyDependenciesClassBased();
+
+  @$internal
+  @override
+  $NotifierProviderElement<EmptyDependenciesClassBased, int> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -1092,37 +823,6 @@ final class EmptyDependenciesClassBasedProvider
       providerOverride: $ValueProvider<int>(value),
     );
   }
-
-  @$internal
-  @override
-  EmptyDependenciesClassBased create() =>
-      _createCb?.call() ?? EmptyDependenciesClassBased();
-
-  @$internal
-  @override
-  EmptyDependenciesClassBasedProvider $copyWithCreate(
-    EmptyDependenciesClassBased Function() create,
-  ) {
-    return EmptyDependenciesClassBasedProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  EmptyDependenciesClassBasedProvider $copyWithBuild(
-    int Function(
-      Ref,
-      EmptyDependenciesClassBased,
-    ) build,
-  ) {
-    return EmptyDependenciesClassBasedProvider._(
-        runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<EmptyDependenciesClassBased, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 }
 
 String _$emptyDependenciesClassBasedHash() =>
@@ -1146,12 +846,8 @@ const providerWithDependenciesProvider = ProviderWithDependenciesProvider._();
 
 final class ProviderWithDependenciesProvider
     extends $FunctionalProvider<int, int> with $Provider<int> {
-  const ProviderWithDependenciesProvider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const ProviderWithDependenciesProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -1170,12 +866,18 @@ final class ProviderWithDependenciesProvider
   static const $allTransitiveDependencies0 = _privateDepProvider;
   static const $allTransitiveDependencies1 = publicDepProvider;
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$providerWithDependenciesHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return providerWithDependencies(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -1183,26 +885,6 @@ final class ProviderWithDependenciesProvider
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  ProviderWithDependenciesProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return ProviderWithDependenciesProvider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? providerWithDependencies;
-    return _$cb(ref);
   }
 }
 
@@ -1214,12 +896,8 @@ const _privateDepProvider = _PrivateDepProvider._();
 
 final class _PrivateDepProvider extends $FunctionalProvider<int, int>
     with $Provider<int> {
-  const _PrivateDepProvider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const _PrivateDepProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -1229,12 +907,18 @@ final class _PrivateDepProvider extends $FunctionalProvider<int, int>
           allTransitiveDependencies: null,
         );
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$privateDepHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return _privateDep(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -1242,26 +926,6 @@ final class _PrivateDepProvider extends $FunctionalProvider<int, int>
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  _PrivateDepProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return _PrivateDepProvider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? _privateDep;
-    return _$cb(ref);
   }
 }
 
@@ -1272,12 +936,8 @@ const publicDepProvider = PublicDepProvider._();
 
 final class PublicDepProvider extends $FunctionalProvider<int, int>
     with $Provider<int> {
-  const PublicDepProvider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const PublicDepProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -1287,12 +947,18 @@ final class PublicDepProvider extends $FunctionalProvider<int, int>
           allTransitiveDependencies: null,
         );
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$publicDepHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return publicDep(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -1300,26 +966,6 @@ final class PublicDepProvider extends $FunctionalProvider<int, int>
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  PublicDepProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return PublicDepProvider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? publicDep;
-    return _$cb(ref);
   }
 }
 
@@ -1330,12 +976,8 @@ const duplicateDependenciesProvider = DuplicateDependenciesProvider._();
 
 final class DuplicateDependenciesProvider extends $FunctionalProvider<int, int>
     with $Provider<int> {
-  const DuplicateDependenciesProvider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const DuplicateDependenciesProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -1351,12 +993,18 @@ final class DuplicateDependenciesProvider extends $FunctionalProvider<int, int>
   static const $allTransitiveDependencies0 = depProvider;
   static const $allTransitiveDependencies1 = dep2Provider;
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$duplicateDependenciesHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return duplicateDependencies(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -1364,26 +1012,6 @@ final class DuplicateDependenciesProvider extends $FunctionalProvider<int, int>
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  DuplicateDependenciesProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return DuplicateDependenciesProvider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? duplicateDependencies;
-    return _$cb(ref);
   }
 }
 
@@ -1395,12 +1023,8 @@ const duplicateDependencies2Provider = DuplicateDependencies2Provider._();
 
 final class DuplicateDependencies2Provider extends $FunctionalProvider<int, int>
     with $Provider<int> {
-  const DuplicateDependencies2Provider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const DuplicateDependencies2Provider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -1419,12 +1043,18 @@ final class DuplicateDependencies2Provider extends $FunctionalProvider<int, int>
   static const $allTransitiveDependencies0 = familyProvider;
   static const $allTransitiveDependencies1 = family2Provider;
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$duplicateDependencies2Hash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return duplicateDependencies2(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -1432,26 +1062,6 @@ final class DuplicateDependencies2Provider extends $FunctionalProvider<int, int>
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  DuplicateDependencies2Provider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return DuplicateDependencies2Provider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? duplicateDependencies2;
-    return _$cb(ref);
   }
 }
 
@@ -1464,12 +1074,8 @@ const transitiveDuplicateDependenciesProvider =
 
 final class TransitiveDuplicateDependenciesProvider
     extends $FunctionalProvider<int, int> with $Provider<int> {
-  const TransitiveDuplicateDependenciesProvider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const TransitiveDuplicateDependenciesProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -1500,12 +1106,18 @@ final class TransitiveDuplicateDependenciesProvider
   static const $allTransitiveDependencies5 =
       DuplicateDependencies2Provider.$allTransitiveDependencies1;
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$transitiveDuplicateDependenciesHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return transitiveDuplicateDependencies(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -1513,26 +1125,6 @@ final class TransitiveDuplicateDependenciesProvider
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  TransitiveDuplicateDependenciesProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return TransitiveDuplicateDependenciesProvider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? transitiveDuplicateDependencies;
-    return _$cb(ref);
   }
 }
 

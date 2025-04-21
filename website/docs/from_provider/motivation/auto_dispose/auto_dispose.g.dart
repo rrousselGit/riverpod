@@ -13,12 +13,8 @@ const diceRollProvider = DiceRollProvider._();
 
 final class DiceRollProvider extends $FunctionalProvider<int, int>
     with $Provider<int> {
-  const DiceRollProvider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const DiceRollProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -28,12 +24,18 @@ final class DiceRollProvider extends $FunctionalProvider<int, int>
           allTransitiveDependencies: null,
         );
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$diceRollHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return diceRoll(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -41,26 +43,6 @@ final class DiceRollProvider extends $FunctionalProvider<int, int>
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  DiceRollProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return DiceRollProvider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? diceRoll;
-    return _$cb(ref);
   }
 }
 
@@ -71,12 +53,8 @@ const cachedDiceRollProvider = CachedDiceRollProvider._();
 
 final class CachedDiceRollProvider extends $FunctionalProvider<int, int>
     with $Provider<int> {
-  const CachedDiceRollProvider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const CachedDiceRollProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -86,12 +64,18 @@ final class CachedDiceRollProvider extends $FunctionalProvider<int, int>
           allTransitiveDependencies: null,
         );
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$cachedDiceRollHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return cachedDiceRoll(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -99,26 +83,6 @@ final class CachedDiceRollProvider extends $FunctionalProvider<int, int>
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  CachedDiceRollProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return CachedDiceRollProvider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? cachedDiceRoll;
-    return _$cb(ref);
   }
 }
 

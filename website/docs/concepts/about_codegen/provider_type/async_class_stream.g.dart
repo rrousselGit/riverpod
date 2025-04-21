@@ -12,10 +12,8 @@ part of 'async_class_stream.dart';
 const exampleProvider = ExampleProvider._();
 
 final class ExampleProvider extends $StreamNotifierProvider<Example, String> {
-  const ExampleProvider._(
-      {super.runNotifierBuildOverride, Example Function()? create})
-      : _createCb = create,
-        super(
+  const ExampleProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -25,39 +23,18 @@ final class ExampleProvider extends $StreamNotifierProvider<Example, String> {
           allTransitiveDependencies: null,
         );
 
-  final Example Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$exampleHash();
 
   @$internal
   @override
-  Example create() => _createCb?.call() ?? Example();
-
-  @$internal
-  @override
-  ExampleProvider $copyWithCreate(
-    Example Function() create,
-  ) {
-    return ExampleProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  ExampleProvider $copyWithBuild(
-    Stream<String> Function(
-      Ref,
-      Example,
-    ) build,
-  ) {
-    return ExampleProvider._(runNotifierBuildOverride: build);
-  }
+  Example create() => Example();
 
   @$internal
   @override
   $StreamNotifierProviderElement<Example, String> $createElement(
           $ProviderPointer pointer) =>
-      $StreamNotifierProviderElement(this, pointer);
+      $StreamNotifierProviderElement(pointer);
 }
 
 String _$exampleHash() => r'4bca936132b77a9a804549f086f33571724b4804';

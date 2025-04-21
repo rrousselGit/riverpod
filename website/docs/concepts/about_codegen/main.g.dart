@@ -15,25 +15,14 @@ final class FetchUserProvider
     extends $FunctionalProvider<AsyncValue<User>, FutureOr<User>>
     with $FutureModifier<User>, $FutureProvider<User> {
   const FetchUserProvider._(
-      {required FetchUserFamily super.from,
-      required int super.argument,
-      FutureOr<User> Function(
-        Ref ref, {
-        required int userId,
-      })? create})
-      : _createCb = create,
-        super(
+      {required FetchUserFamily super.from, required int super.argument})
+      : super(
           retry: null,
           name: r'fetchUserProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final FutureOr<User> Function(
-    Ref ref, {
-    required int userId,
-  })? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$fetchUserHash();
@@ -48,29 +37,12 @@ final class FetchUserProvider
   @$internal
   @override
   $FutureProviderElement<User> $createElement($ProviderPointer pointer) =>
-      $FutureProviderElement(this, pointer);
-
-  @override
-  FetchUserProvider $copyWithCreate(
-    FutureOr<User> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return FetchUserProvider._(
-        argument: argument as int,
-        from: from! as FetchUserFamily,
-        create: (
-          ref, {
-          required int userId,
-        }) =>
-            create(ref));
-  }
+      $FutureProviderElement(pointer);
 
   @override
   FutureOr<User> create(Ref ref) {
-    final _$cb = _createCb ?? fetchUser;
     final argument = this.argument as int;
-    return _$cb(
+    return fetchUser(
       ref,
       userId: argument,
     );
@@ -105,31 +77,23 @@ final class FetchUserFamily extends Family {
       FetchUserProvider._(argument: userId, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$fetchUserHash();
-
-  @override
   String toString() => r'fetchUserProvider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    FutureOr<User> Function(
-      Ref ref,
-      int args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as FetchUserProvider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          FutureOr<User> Function(
+            Ref ref,
+            int args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as FetchUserProvider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(create: (ref) => create(ref, argument))
+                .$createElement(pointer);
+          });
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

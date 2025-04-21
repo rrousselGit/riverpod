@@ -13,10 +13,8 @@ const themeNotifierProvider = ThemeNotifierProvider._();
 
 final class ThemeNotifierProvider
     extends $NotifierProvider<ThemeNotifier, ThemeSettings> {
-  const ThemeNotifierProvider._(
-      {super.runNotifierBuildOverride, ThemeNotifier Function()? create})
-      : _createCb = create,
-        super(
+  const ThemeNotifierProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -26,10 +24,18 @@ final class ThemeNotifierProvider
           allTransitiveDependencies: null,
         );
 
-  final ThemeNotifier Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$themeNotifierHash();
+
+  @$internal
+  @override
+  ThemeNotifier create() => ThemeNotifier();
+
+  @$internal
+  @override
+  $NotifierProviderElement<ThemeNotifier, ThemeSettings> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(ThemeSettings value) {
@@ -38,35 +44,6 @@ final class ThemeNotifierProvider
       providerOverride: $ValueProvider<ThemeSettings>(value),
     );
   }
-
-  @$internal
-  @override
-  ThemeNotifier create() => _createCb?.call() ?? ThemeNotifier();
-
-  @$internal
-  @override
-  ThemeNotifierProvider $copyWithCreate(
-    ThemeNotifier Function() create,
-  ) {
-    return ThemeNotifierProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  ThemeNotifierProvider $copyWithBuild(
-    ThemeSettings Function(
-      Ref,
-      ThemeNotifier,
-    ) build,
-  ) {
-    return ThemeNotifierProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<ThemeNotifier, ThemeSettings> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 }
 
 String _$themeNotifierHash() => r'e119d56d9bf8b8d7c19624997f99d116098b45e9';

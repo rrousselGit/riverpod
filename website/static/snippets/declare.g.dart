@@ -12,10 +12,8 @@ part of 'declare.dart';
 const countProvider = CountProvider._();
 
 final class CountProvider extends $NotifierProvider<Count, int> {
-  const CountProvider._(
-      {super.runNotifierBuildOverride, Count Function()? create})
-      : _createCb = create,
-        super(
+  const CountProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -25,10 +23,18 @@ final class CountProvider extends $NotifierProvider<Count, int> {
           allTransitiveDependencies: null,
         );
 
-  final Count Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$countHash();
+
+  @$internal
+  @override
+  Count create() => Count();
+
+  @$internal
+  @override
+  $NotifierProviderElement<Count, int> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -37,35 +43,6 @@ final class CountProvider extends $NotifierProvider<Count, int> {
       providerOverride: $ValueProvider<int>(value),
     );
   }
-
-  @$internal
-  @override
-  Count create() => _createCb?.call() ?? Count();
-
-  @$internal
-  @override
-  CountProvider $copyWithCreate(
-    Count Function() create,
-  ) {
-    return CountProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  CountProvider $copyWithBuild(
-    int Function(
-      Ref,
-      Count,
-    ) build,
-  ) {
-    return CountProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<Count, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 }
 
 String _$countHash() => r'6fc5f8ad4bbd390899dd0d14c7b902407d4413bd';

@@ -14,12 +14,8 @@ const todoListProvider = TodoListProvider._();
 final class TodoListProvider
     extends $FunctionalProvider<AsyncValue<List<Todo>>, FutureOr<List<Todo>>>
     with $FutureModifier<List<Todo>>, $FutureProvider<List<Todo>> {
-  const TodoListProvider._(
-      {FutureOr<List<Todo>> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const TodoListProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -29,31 +25,17 @@ final class TodoListProvider
           allTransitiveDependencies: null,
         );
 
-  final FutureOr<List<Todo>> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$todoListHash();
 
   @$internal
   @override
   $FutureProviderElement<List<Todo>> $createElement($ProviderPointer pointer) =>
-      $FutureProviderElement(this, pointer);
-
-  @override
-  TodoListProvider $copyWithCreate(
-    FutureOr<List<Todo>> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return TodoListProvider._(create: create);
-  }
+      $FutureProviderElement(pointer);
 
   @override
   FutureOr<List<Todo>> create(Ref ref) {
-    final _$cb = _createCb ?? todoList;
-    return _$cb(ref);
+    return todoList(ref);
   }
 }
 

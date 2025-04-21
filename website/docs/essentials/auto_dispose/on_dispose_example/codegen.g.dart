@@ -13,12 +13,8 @@ const otherProvider = OtherProvider._();
 
 final class OtherProvider extends $FunctionalProvider<int, int>
     with $Provider<int> {
-  const OtherProvider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const OtherProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -28,12 +24,18 @@ final class OtherProvider extends $FunctionalProvider<int, int>
           allTransitiveDependencies: null,
         );
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$otherHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return other(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -41,26 +43,6 @@ final class OtherProvider extends $FunctionalProvider<int, int>
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  OtherProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return OtherProvider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? other;
-    return _$cb(ref);
   }
 }
 
@@ -72,12 +54,8 @@ const exampleProvider = ExampleProvider._();
 final class ExampleProvider
     extends $FunctionalProvider<AsyncValue<int>, Stream<int>>
     with $FutureModifier<int>, $StreamProvider<int> {
-  const ExampleProvider._(
-      {Stream<int> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const ExampleProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -87,31 +65,17 @@ final class ExampleProvider
           allTransitiveDependencies: null,
         );
 
-  final Stream<int> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$exampleHash();
 
   @$internal
   @override
   $StreamProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $StreamProviderElement(this, pointer);
-
-  @override
-  ExampleProvider $copyWithCreate(
-    Stream<int> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return ExampleProvider._(create: create);
-  }
+      $StreamProviderElement(pointer);
 
   @override
   Stream<int> create(Ref ref) {
-    final _$cb = _createCb ?? example;
-    return _$cb(ref);
+    return example(ref);
   }
 }
 

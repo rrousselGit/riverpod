@@ -13,12 +13,8 @@ const cityProvider = CityProvider._();
 
 final class CityProvider extends $FunctionalProvider<String, String>
     with $Provider<String> {
-  const CityProvider._(
-      {String Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const CityProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -28,12 +24,18 @@ final class CityProvider extends $FunctionalProvider<String, String>
           allTransitiveDependencies: null,
         );
 
-  final String Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$cityHash();
+
+  @$internal
+  @override
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  String create(Ref ref) {
+    return city(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
@@ -41,26 +43,6 @@ final class CityProvider extends $FunctionalProvider<String, String>
       origin: this,
       providerOverride: $ValueProvider<String>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  CityProvider $copyWithCreate(
-    String Function(
-      Ref ref,
-    ) create,
-  ) {
-    return CityProvider._(create: create);
-  }
-
-  @override
-  String create(Ref ref) {
-    final _$cb = _createCb ?? city;
-    return _$cb(ref);
   }
 }
 
@@ -71,12 +53,8 @@ const countryProvider = CountryProvider._();
 
 final class CountryProvider extends $FunctionalProvider<String, String>
     with $Provider<String> {
-  const CountryProvider._(
-      {String Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const CountryProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -86,12 +64,18 @@ final class CountryProvider extends $FunctionalProvider<String, String>
           allTransitiveDependencies: null,
         );
 
-  final String Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$countryHash();
+
+  @$internal
+  @override
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  String create(Ref ref) {
+    return country(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
@@ -99,26 +83,6 @@ final class CountryProvider extends $FunctionalProvider<String, String>
       origin: this,
       providerOverride: $ValueProvider<String>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  CountryProvider $copyWithCreate(
-    String Function(
-      Ref ref,
-    ) create,
-  ) {
-    return CountryProvider._(create: create);
-  }
-
-  @override
-  String create(Ref ref) {
-    final _$cb = _createCb ?? country;
-    return _$cb(ref);
   }
 }
 

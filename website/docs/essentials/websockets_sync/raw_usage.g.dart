@@ -14,12 +14,8 @@ const rawStreamProvider = RawStreamProvider._();
 final class RawStreamProvider
     extends $FunctionalProvider<Raw<Stream<int>>, Raw<Stream<int>>>
     with $Provider<Raw<Stream<int>>> {
-  const RawStreamProvider._(
-      {Raw<Stream<int>> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const RawStreamProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -29,12 +25,18 @@ final class RawStreamProvider
           allTransitiveDependencies: null,
         );
 
-  final Raw<Stream<int>> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$rawStreamHash();
+
+  @$internal
+  @override
+  $ProviderElement<Raw<Stream<int>>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  Raw<Stream<int>> create(Ref ref) {
+    return rawStream(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Raw<Stream<int>> value) {
@@ -42,26 +44,6 @@ final class RawStreamProvider
       origin: this,
       providerOverride: $ValueProvider<Raw<Stream<int>>>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<Raw<Stream<int>>> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  RawStreamProvider $copyWithCreate(
-    Raw<Stream<int>> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return RawStreamProvider._(create: create);
-  }
-
-  @override
-  Raw<Stream<int>> create(Ref ref) {
-    final _$cb = _createCb ?? rawStream;
-    return _$cb(ref);
   }
 }
 
