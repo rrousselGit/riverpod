@@ -89,6 +89,7 @@ jobs:
           if ! grep -q publish_to "pubspec.yaml"; then
             dart doc --dry-run
           fi
+        if : matrix.channel == 'master'
 
       - name: Upload coverage to codecov
         run: |
