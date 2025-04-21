@@ -28,7 +28,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   freezed: ^3.0.2
-  http: ^0.13.5
+  http: ^1.3.0
   json_serializable: ^6.6.1
   riverpod_generator:
   riverpod_lint:
