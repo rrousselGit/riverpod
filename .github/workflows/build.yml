@@ -86,7 +86,7 @@ jobs:
 
       - name: Check doc
         run: |
-          if grep -q 'none' "pubspec.yaml"; then
+          if grep -q publish_to "pubspec.yaml"; then
             echo "No documentation check"
           else
             dart doc --dry-run
