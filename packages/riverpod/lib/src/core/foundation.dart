@@ -179,7 +179,7 @@ String shortHash(Object? object) {
 @internal
 mixin ProviderListenableWithOrigin<OutT, OriginT> on ProviderListenable<OutT> {
   @override
-  ProviderSubscriptionWithOrigin<OutT, OriginT> addListener(
+  ProviderSubscriptionWithOrigin<OutT, OriginT> _addListener(
     Node source,
     void Function(OutT? previous, OutT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
@@ -208,7 +208,7 @@ mixin ProviderListenableWithOrigin<OutT, OriginT> on ProviderListenable<OutT> {
 @immutable
 mixin ProviderListenable<StateT> implements ProviderListenableOrFamily {
   /// Starts listening to this transformer
-  ProviderSubscription<StateT> addListener(
+  ProviderSubscription<StateT> _addListener(
     Node source,
     void Function(StateT? previous, StateT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,

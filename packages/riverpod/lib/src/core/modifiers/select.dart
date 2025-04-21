@@ -69,7 +69,7 @@ class _ProviderSelector<InputT, OutputT, OriginT>
   }
 
   @override
-  ProviderSubscriptionWithOrigin<OutputT, OriginT> addListener(
+  ProviderSubscriptionWithOrigin<OutputT, OriginT> _addListener(
     Node node,
     void Function(OutputT? previous, OutputT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
@@ -81,7 +81,7 @@ class _ProviderSelector<InputT, OutputT, OriginT>
 
     late final ProviderSubscriptionView<OutputT, OriginT> providerSub;
     $Result<OutputT>? lastSelectedValue;
-    final sub = provider.addListener(
+    final sub = provider._addListener(
       node,
       (prev, input) {
         _selectOnChange(

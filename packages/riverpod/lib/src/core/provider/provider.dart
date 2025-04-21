@@ -52,7 +52,7 @@ abstract base class ProviderBase<StateT> extends ProviderOrFamily
   final Object? argument;
 
   @override
-  ProviderSubscriptionWithOrigin<StateT, StateT> addListener(
+  ProviderSubscriptionWithOrigin<StateT, StateT> _addListener(
     Node source,
     void Function(StateT? previous, StateT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,

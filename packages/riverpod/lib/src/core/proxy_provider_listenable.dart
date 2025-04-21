@@ -10,7 +10,7 @@ class $LazyProxyListenable<OutT, OriginT>
   ) _lense;
 
   @override
-  ProviderSubscriptionWithOrigin<OutT, OriginT> addListener(
+  ProviderSubscriptionWithOrigin<OutT, OriginT> _addListener(
     Node source,
     void Function(OutT? previous, OutT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
@@ -105,7 +105,7 @@ class ProviderElementProxy<OutT, OriginT>
   ) _lense;
 
   @override
-  ProviderSubscriptionWithOrigin<OutT, OriginT> addListener(
+  ProviderSubscriptionWithOrigin<OutT, OriginT> _addListener(
     Node source,
     void Function(OutT? previous, OutT next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
@@ -121,7 +121,7 @@ class ProviderElementProxy<OutT, OriginT>
     // a listener to the notifier.
     // This avoids the listener from being immediately notified of a new
     // future when adding the listener refreshes the future.
-    final innerSub = provider.addListener(
+    final innerSub = provider._addListener(
       source,
       (prev, next) {},
       fireImmediately: false,

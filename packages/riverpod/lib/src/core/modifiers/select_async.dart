@@ -35,7 +35,7 @@ class _AsyncSelector<InputT, OutputT, OriginT>
   }
 
   @override
-  ProviderSubscriptionWithOrigin<Future<OutputT>, OriginT> addListener(
+  ProviderSubscriptionWithOrigin<Future<OutputT>, OriginT> _addListener(
     Node node,
     void Function(Future<OutputT>? previous, Future<OutputT> next) listener, {
     required void Function(Object error, StackTrace stackTrace)? onError,
@@ -141,7 +141,7 @@ class _AsyncSelector<InputT, OutputT, OriginT>
       );
     }
 
-    final sub = provider.addListener(
+    final sub = provider._addListener(
       node,
       (prev, input) => playValue(input),
       weak: weak,
@@ -168,7 +168,7 @@ class _AsyncSelector<InputT, OutputT, OriginT>
       onClose: () {
         final completer = selectedCompleter;
         if (completer != null && !completer.isCompleted) {
-          final sub = future.addListener(
+          final sub = future._addListener(
             node,
             (prev, next) {},
             weak: weak,

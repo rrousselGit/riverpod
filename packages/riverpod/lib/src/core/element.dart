@@ -583,7 +583,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     final ref = this.ref!;
     ref._throwIfInvalidUsage();
 
-    final sub = listenable.addListener(
+    final sub = listenable._addListener(
       this,
       listener,
       fireImmediately: fireImmediately,

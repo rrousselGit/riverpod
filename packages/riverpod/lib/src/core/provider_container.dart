@@ -767,7 +767,7 @@ class ProviderContainer implements Node {
     bool weak = false,
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
-    final sub = provider.addListener(
+    final sub = provider._addListener(
       this,
       listener,
       fireImmediately: fireImmediately,

@@ -1,5 +1,7 @@
 ## Unreleased build
 
+- **Breaking**: ProviderListenable.addListener is deleted and now internal-only.
+  A simpler alternative will be added in the future.
 - **Breaking**: ProviderObserver methods have been updated to take a `ProviderObserverContext` parameter.
   This replaces the old `provider`+`container` parameters, and contains extra
   information.
