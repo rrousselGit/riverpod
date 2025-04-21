@@ -129,14 +129,6 @@ final class GenericClassProvider<T extends num>
     return cb<T>();
   }
 
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<List<T>> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<List<T>>>(value),
-    );
-  }
-
   @override
   bool operator ==(Object other) {
     return other is GenericClassProvider &&
@@ -524,14 +516,6 @@ final class PublicClassProvider
   $AsyncNotifierProviderElement<PublicClass, String> $createElement(
           $ProviderPointer pointer) =>
       $AsyncNotifierProviderElement(pointer);
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<String> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<String>>(value),
-    );
-  }
 }
 
 String _$publicClassHash() => r'e9bc69e44b72e8ed77d423524c0d74ad460d629d';
@@ -577,14 +561,6 @@ final class _PrivateClassProvider
   $AsyncNotifierProviderElement<_PrivateClass, String> $createElement(
           $ProviderPointer pointer) =>
       $AsyncNotifierProviderElement(pointer);
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<String> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<String>>(value),
-    );
-  }
 }
 
 String _$privateClassHash() => r'7e69cffe8315999710e4cb6bb3de9f179d3f2f5d';
@@ -636,14 +612,6 @@ final class FamilyOrClassProvider
   $AsyncNotifierProviderElement<FamilyOrClass, String> $createElement(
           $ProviderPointer pointer) =>
       $AsyncNotifierProviderElement(pointer);
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<String> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<String>>(value),
-    );
-  }
 
   @override
   bool operator ==(Object other) {
@@ -771,14 +739,6 @@ final class FamilyClassProvider
   $AsyncNotifierProviderElement<FamilyClass, String> $createElement(
           $ProviderPointer pointer) =>
       $AsyncNotifierProviderElement(pointer);
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<String> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<String>>(value),
-    );
-  }
 
   @override
   bool operator ==(Object other) {

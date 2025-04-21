@@ -71,14 +71,6 @@ final class CustomAnnotationProvider
   $AsyncNotifierProviderElement<CustomAnnotation, String> $createElement(
           $ProviderPointer pointer) =>
       $AsyncNotifierProviderElement(pointer);
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<String> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<String>>(value),
-    );
-  }
 }
 
 String _$customAnnotationHash() => r'abdbe1ad35942aef6e4017f7ebcbfcc7fc6bb986';
@@ -131,15 +123,6 @@ final class JsonProvider
   $AsyncNotifierProviderElement<Json, Map<String, List<int>>> $createElement(
           $ProviderPointer pointer) =>
       $AsyncNotifierProviderElement(pointer);
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<Map<String, List<int>>> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride:
-          $ValueProvider<AsyncValue<Map<String, List<int>>>>(value),
-    );
-  }
 
   @override
   bool operator ==(Object other) {
@@ -257,15 +240,6 @@ final class Json2Provider
   $AsyncNotifierProviderElement<Json2, Map<String, List<int>>> $createElement(
           $ProviderPointer pointer) =>
       $AsyncNotifierProviderElement(pointer);
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<Map<String, List<int>>> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride:
-          $ValueProvider<AsyncValue<Map<String, List<int>>>>(value),
-    );
-  }
 }
 
 String _$json2Hash() => r'3e263438daf3363cc46613c80645526c1f756796';
@@ -315,14 +289,6 @@ final class CustomJsonProvider
   $AsyncNotifierProviderElement<CustomJson, Map<String, Bar>> $createElement(
           $ProviderPointer pointer) =>
       $AsyncNotifierProviderElement(pointer);
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<Map<String, Bar>> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<Map<String, Bar>>>(value),
-    );
-  }
 }
 
 String _$customJsonHash() => r'641edf92aae1f74ac7cc41db82c6a7dc88d24eb7';

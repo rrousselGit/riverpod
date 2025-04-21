@@ -129,14 +129,6 @@ final class GenericClassProvider<T extends num>
     return cb<T>();
   }
 
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<List<T>> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<List<T>>>(value),
-    );
-  }
-
   @override
   bool operator ==(Object other) {
     return other is GenericClassProvider &&
@@ -436,14 +428,6 @@ final class PublicClassProvider
   $StreamNotifierProviderElement<PublicClass, String> $createElement(
           $ProviderPointer pointer) =>
       $StreamNotifierProviderElement(pointer);
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<String> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<String>>(value),
-    );
-  }
 }
 
 String _$publicClassHash() => r'b1526943c8ff0aaa20642bf78e744e5833cf9d02';
@@ -489,14 +473,6 @@ final class _PrivateClassProvider
   $StreamNotifierProviderElement<_PrivateClass, String> $createElement(
           $ProviderPointer pointer) =>
       $StreamNotifierProviderElement(pointer);
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<String> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<String>>(value),
-    );
-  }
 }
 
 String _$privateClassHash() => r'8c0d52b7ab79c0546d0c84c011bb3512609e029e';
@@ -556,14 +532,6 @@ final class FamilyClassProvider
   $StreamNotifierProviderElement<FamilyClass, String> $createElement(
           $ProviderPointer pointer) =>
       $StreamNotifierProviderElement(pointer);
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<String> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<String>>(value),
-    );
-  }
 
   @override
   bool operator ==(Object other) {

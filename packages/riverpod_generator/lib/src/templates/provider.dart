@@ -183,10 +183,7 @@ ${provider.doc} final class $name$_genericsDefinition
   }
 
   void _writeOverrideWithValue(StringBuffer buffer) {
-    if (provider.createdType != SupportedCreatedType.value &&
-        provider is FunctionalProviderDeclaration) {
-      return;
-    }
+    if (provider.createdType != SupportedCreatedType.value) return;
 
     buffer.writeln('''
   /// {@macro riverpod.override_with_value}

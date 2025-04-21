@@ -245,14 +245,6 @@ final class AsyncTodoListProvider
           return element._$addAsync;
         },
       );
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<List<Todo>> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<List<Todo>>>(value),
-    );
-  }
 }
 
 String _$asyncTodoListHash() => r'73d9aa3b39ad5d0c157510754bfc273a98075d30';
@@ -953,14 +945,6 @@ final class SimpleAsyncProvider
           return element._$delegated;
         },
       );
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<int> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<int>>(value),
-    );
-  }
 }
 
 String _$simpleAsyncHash() => r'62dd0ee93e61fa27d139247b9a899630d5d3572c';
@@ -1141,14 +1125,6 @@ final class SimpleAsync2Provider
           return element._$increment;
         },
       );
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<int> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<int>>(value),
-    );
-  }
 
   @override
   bool operator ==(Object other) {
@@ -1348,14 +1324,6 @@ final class GenericProvider<T extends num>
     return cb<T>();
   }
 
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<int> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<int>>(value),
-    );
-  }
-
   @override
   bool operator ==(Object other) {
     return other is GenericProvider &&
@@ -1531,14 +1499,6 @@ final class GenericMutProvider extends $AsyncNotifierProvider<GenericMut, int> {
           return element._$increment;
         },
       );
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<int> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<int>>(value),
-    );
-  }
 }
 
 String _$genericMutHash() => r'1f38b70cf937501fb313ae35c8bf824728bbd8ba';
