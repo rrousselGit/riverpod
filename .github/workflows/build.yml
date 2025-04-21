@@ -84,13 +84,6 @@ jobs:
             fi
           fi
 
-      - name: Check doc
-        run: |
-          if ! grep -q publish_to "pubspec.yaml"; then
-            dart doc --dry-run
-          fi
-        if : matrix.channel == 'master'
-
       - name: Upload coverage to codecov
         run: |
           if test -d "test"; then

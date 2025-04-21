@@ -181,7 +181,7 @@ const mutationZoneKey = #_mutation;
 ///
 /// You can check for the [ErrorMutationState] and [SuccessMutationState] to show a snackbar.
 ///
-/// Since showing snackbars is done using `showSnackBar`, which is not a widget,
+/// Since showing snackbar is done using `showSnackBar`, which is not a widget,
 /// we cannot rely on `ref.watch` here.
 /// Instead, we should use `ref.listen` to listen to the mutation state.
 /// This will give us a callback where we can safely show a snackbar.
