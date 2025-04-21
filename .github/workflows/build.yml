@@ -86,10 +86,9 @@ jobs:
 
       - name: Check doc
         run: |
-          if grep -q publish_to "pubspec.yaml"; then
-            echo "No documentation check"
-          else
+          if ! grep -q publish_to "pubspec.yaml"; then
             dart doc --dry-run
+          fi
 
       - name: Upload coverage to codecov
         run: |
