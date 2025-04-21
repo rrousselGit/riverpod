@@ -16,7 +16,7 @@ part of '../core.dart';
 ///
 /// Once we have a [WidgetRef], we can use its various methods to interact with
 /// providers.
-/// The most common use-case is to use [watch] inside the `build` method of our
+/// The most common use-case is to use [WidgetRef.watch] inside the `build` method of our
 /// widgets. This will enable our UI to update whenever the state of a provider
 /// changes:
 ///
