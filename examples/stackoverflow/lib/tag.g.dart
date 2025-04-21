@@ -13,12 +13,8 @@ const tagThemeProvider = TagThemeProvider._();
 
 final class TagThemeProvider extends $FunctionalProvider<TagTheme, TagTheme>
     with $Provider<TagTheme> {
-  const TagThemeProvider._(
-      {TagTheme Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const TagThemeProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -32,12 +28,18 @@ final class TagThemeProvider extends $FunctionalProvider<TagTheme, TagTheme>
 
   static const $allTransitiveDependencies0 = themeProvider;
 
-  final TagTheme Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$tagThemeHash();
+
+  @$internal
+  @override
+  $ProviderElement<TagTheme> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  TagTheme create(Ref ref) {
+    return tagTheme(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(TagTheme value) {
@@ -45,26 +47,6 @@ final class TagThemeProvider extends $FunctionalProvider<TagTheme, TagTheme>
       origin: this,
       providerOverride: $ValueProvider<TagTheme>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<TagTheme> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  TagThemeProvider $copyWithCreate(
-    TagTheme Function(
-      Ref ref,
-    ) create,
-  ) {
-    return TagThemeProvider._(create: create);
-  }
-
-  @override
-  TagTheme create(Ref ref) {
-    final _$cb = _createCb ?? tagTheme;
-    return _$cb(ref);
   }
 }
 

@@ -13,12 +13,8 @@ const searchProvider = SearchProvider._();
 
 final class SearchProvider extends $FunctionalProvider<String, String>
     with $Provider<String> {
-  const SearchProvider._(
-      {String Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const SearchProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -28,12 +24,18 @@ final class SearchProvider extends $FunctionalProvider<String, String>
           allTransitiveDependencies: null,
         );
 
-  final String Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$searchHash();
+
+  @$internal
+  @override
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  String create(Ref ref) {
+    return search(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
@@ -41,26 +43,6 @@ final class SearchProvider extends $FunctionalProvider<String, String>
       origin: this,
       providerOverride: $ValueProvider<String>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  SearchProvider $copyWithCreate(
-    String Function(
-      Ref ref,
-    ) create,
-  ) {
-    return SearchProvider._(create: create);
-  }
-
-  @override
-  String create(Ref ref) {
-    final _$cb = _createCb ?? search;
-    return _$cb(ref);
   }
 }
 
@@ -72,12 +54,8 @@ const configsProvider = ConfigsProvider._();
 final class ConfigsProvider extends $FunctionalProvider<
         AsyncValue<Configuration>, Stream<Configuration>>
     with $FutureModifier<Configuration>, $StreamProvider<Configuration> {
-  const ConfigsProvider._(
-      {Stream<Configuration> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const ConfigsProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -87,10 +65,6 @@ final class ConfigsProvider extends $FunctionalProvider<
           allTransitiveDependencies: null,
         );
 
-  final Stream<Configuration> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$configsHash();
 
@@ -98,21 +72,11 @@ final class ConfigsProvider extends $FunctionalProvider<
   @override
   $StreamProviderElement<Configuration> $createElement(
           $ProviderPointer pointer) =>
-      $StreamProviderElement(this, pointer);
-
-  @override
-  ConfigsProvider $copyWithCreate(
-    Stream<Configuration> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return ConfigsProvider._(create: create);
-  }
+      $StreamProviderElement(pointer);
 
   @override
   Stream<Configuration> create(Ref ref) {
-    final _$cb = _createCb ?? configs;
-    return _$cb(ref);
+    return configs(ref);
   }
 }
 
@@ -124,12 +88,8 @@ const charactersProvider = CharactersProvider._();
 final class CharactersProvider extends $FunctionalProvider<
         AsyncValue<List<Character>>, FutureOr<List<Character>>>
     with $FutureModifier<List<Character>>, $FutureProvider<List<Character>> {
-  const CharactersProvider._(
-      {FutureOr<List<Character>> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const CharactersProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -139,10 +99,6 @@ final class CharactersProvider extends $FunctionalProvider<
           allTransitiveDependencies: null,
         );
 
-  final FutureOr<List<Character>> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$charactersHash();
 
@@ -150,21 +106,11 @@ final class CharactersProvider extends $FunctionalProvider<
   @override
   $FutureProviderElement<List<Character>> $createElement(
           $ProviderPointer pointer) =>
-      $FutureProviderElement(this, pointer);
-
-  @override
-  CharactersProvider $copyWithCreate(
-    FutureOr<List<Character>> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return CharactersProvider._(create: create);
-  }
+      $FutureProviderElement(pointer);
 
   @override
   FutureOr<List<Character>> create(Ref ref) {
-    final _$cb = _createCb ?? characters;
-    return _$cb(ref);
+    return characters(ref);
   }
 }
 

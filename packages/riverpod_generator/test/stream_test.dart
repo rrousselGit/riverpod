@@ -173,10 +173,20 @@ void main() {
     final container = ProviderContainer.test(
       overrides: [
         publicProvider.overrideWithValue(const AsyncData('test')),
+        familyProvider(42, third: .2)
+            .overrideWithValue(const AsyncData('test')),
       ],
     );
 
     expect(container.read(publicProvider), const AsyncData('test'));
     expect(container.read(publicProvider.future), completion('test'));
+    expect(
+      container.read(familyProvider(42, third: .2)),
+      const AsyncData('test'),
+    );
+    expect(
+      container.read(familyProvider(42, third: .2).future),
+      completion('test'),
+    );
   });
 }

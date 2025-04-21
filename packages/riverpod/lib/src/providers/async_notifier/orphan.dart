@@ -76,7 +76,6 @@ final class AsyncNotifierProvider< //
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
-          runNotifierBuildOverride: null,
         );
 
   /// An implementation detail of Riverpod
@@ -89,7 +88,6 @@ final class AsyncNotifierProvider< //
     required super.from,
     required super.argument,
     required super.isAutoDispose,
-    required super.runNotifierBuildOverride,
     required super.retry,
   });
 
@@ -105,46 +103,11 @@ final class AsyncNotifierProvider< //
   @override
   NotifierT create() => _createNotifier();
 
-  AsyncNotifierProvider<NotifierT, StateT> _copyWith({
-    NotifierT Function()? create,
-    RunNotifierBuild<NotifierT, FutureOr<StateT>>? build,
-  }) {
-    return AsyncNotifierProvider<NotifierT, StateT>.internal(
-      create ?? _createNotifier,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      from: from,
-      argument: argument,
-      isAutoDispose: isAutoDispose,
-      runNotifierBuildOverride: build ?? runNotifierBuildOverride,
-      retry: retry,
-    );
-  }
-
   @internal
   @override
   $AsyncNotifierProviderElement<NotifierT, StateT> $createElement(
     $ProviderPointer pointer,
   ) {
-    return $AsyncNotifierProviderElement(this, pointer);
-  }
-
-  @mustBeOverridden
-  @visibleForOverriding
-  @override
-  AsyncNotifierProvider<NotifierT, StateT> $copyWithBuild(
-    RunNotifierBuild<NotifierT, FutureOr<StateT>>? build,
-  ) {
-    return _copyWith(build: build);
-  }
-
-  @mustBeOverridden
-  @visibleForOverriding
-  @override
-  AsyncNotifierProvider<NotifierT, StateT> $copyWithCreate(
-    NotifierT Function() create,
-  ) {
-    return _copyWith(create: create);
+    return $AsyncNotifierProviderElement(pointer);
   }
 }

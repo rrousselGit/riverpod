@@ -18,19 +18,14 @@ final class ExampleProvider extends $NotifierProvider<Example, String> {
         int, {
         String param2,
       })
-          super.argument,
-      super.runNotifierBuildOverride,
-      Example Function()? create})
-      : _createCb = create,
-        super(
+          super.argument})
+      : super(
           retry: null,
           name: r'exampleProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final Example Function()? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$exampleHash();
@@ -42,6 +37,16 @@ final class ExampleProvider extends $NotifierProvider<Example, String> {
         '$argument';
   }
 
+  @$internal
+  @override
+  Example create() => Example();
+
+  @$internal
+  @override
+  $NotifierProviderElement<Example, String> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
+
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
     return $ProviderOverride(
@@ -49,47 +54,6 @@ final class ExampleProvider extends $NotifierProvider<Example, String> {
       providerOverride: $ValueProvider<String>(value),
     );
   }
-
-  @$internal
-  @override
-  Example create() => _createCb?.call() ?? Example();
-
-  @$internal
-  @override
-  ExampleProvider $copyWithCreate(
-    Example Function() create,
-  ) {
-    return ExampleProvider._(
-        argument: argument as (
-          int, {
-          String param2,
-        }),
-        from: from! as ExampleFamily,
-        create: create);
-  }
-
-  @$internal
-  @override
-  ExampleProvider $copyWithBuild(
-    String Function(
-      Ref,
-      Example,
-    ) build,
-  ) {
-    return ExampleProvider._(
-        argument: argument as (
-          int, {
-          String param2,
-        }),
-        from: from! as ExampleFamily,
-        runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<Example, String> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -124,64 +88,53 @@ final class ExampleFamily extends Family {
       ), from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$exampleHash();
-
-  @override
   String toString() => r'exampleProvider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    Example Function(
-      (
-        int, {
-        String param2,
-      }) args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as ExampleProvider;
-
-        final argument = provider.argument as (
-          int, {
-          String param2,
-        });
-
-        return provider
-            .$copyWithCreate(() => create(argument))
-            .$createElement(pointer);
-      },
-    );
-  }
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-    String Function(
-            Ref ref,
-            Example notifier,
+          Example Function(
             (
               int, {
               String param2,
-            }) argument)
-        build,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as ExampleProvider;
+            }) args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as ExampleProvider;
+            final argument = provider.argument as (
+              int, {
+              String param2,
+            });
+            return provider
+                .$view(create: () => create(argument))
+                .$createElement(pointer);
+          });
 
-        final argument = provider.argument as (
-          int, {
-          String param2,
-        });
-
-        return provider
-            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+          String Function(
+                  Ref ref,
+                  Example notifier,
+                  (
+                    int, {
+                    String param2,
+                  }) argument)
+              build) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as ExampleProvider;
+            final argument = provider.argument as (
+              int, {
+              String param2,
+            });
+            return provider
+                .$view(
+                    runNotifierBuildOverride: (ref, notifier) =>
+                        build(ref, notifier, argument))
+                .$createElement(pointer);
+          });
 }
 
 abstract class _$Example extends $Notifier<String> {

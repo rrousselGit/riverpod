@@ -14,12 +14,8 @@ const repositoryProvider = RepositoryProvider._();
 final class RepositoryProvider
     extends $FunctionalProvider<Repository, Repository>
     with $Provider<Repository> {
-  const RepositoryProvider._(
-      {Repository Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const RepositoryProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -29,12 +25,18 @@ final class RepositoryProvider
           allTransitiveDependencies: null,
         );
 
-  final Repository Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$repositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<Repository> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  Repository create(Ref ref) {
+    return repository(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Repository value) {
@@ -42,26 +44,6 @@ final class RepositoryProvider
       origin: this,
       providerOverride: $ValueProvider<Repository>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<Repository> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  RepositoryProvider $copyWithCreate(
-    Repository Function(
-      Ref ref,
-    ) create,
-  ) {
-    return RepositoryProvider._(create: create);
-  }
-
-  @override
-  Repository create(Ref ref) {
-    final _$cb = _createCb ?? repository;
-    return _$cb(ref);
   }
 }
 
@@ -72,12 +54,8 @@ const valueProvider = ValueProvider._();
 
 final class ValueProvider extends $FunctionalProvider<String, String>
     with $Provider<String> {
-  const ValueProvider._(
-      {String Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const ValueProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -87,12 +65,18 @@ final class ValueProvider extends $FunctionalProvider<String, String>
           allTransitiveDependencies: null,
         );
 
-  final String Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$valueHash();
+
+  @$internal
+  @override
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  String create(Ref ref) {
+    return value(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
@@ -100,26 +84,6 @@ final class ValueProvider extends $FunctionalProvider<String, String>
       origin: this,
       providerOverride: $ValueProvider<String>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  ValueProvider $copyWithCreate(
-    String Function(
-      Ref ref,
-    ) create,
-  ) {
-    return ValueProvider._(create: create);
-  }
-
-  @override
-  String create(Ref ref) {
-    final _$cb = _createCb ?? value;
-    return _$cb(ref);
   }
 }
 

@@ -26,7 +26,7 @@ class ElementTemplate extends Template {
 
     buffer.write('''
 class ${provider.generatedElementName}$_genericsDefinition extends ${provider.internalElementName}<${provider.name}$_generics, ${provider.valueTypeDisplayString}> {
-  ${provider.generatedElementName}(super.provider, super.pointer) {
+  ${provider.generatedElementName}(super.pointer) {
 ''');
 
     _constructorBody(buffer);

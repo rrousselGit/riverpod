@@ -12,14 +12,8 @@ const myFamilyCalc2ProviderFamily = Calc2Family._();
 final class Calc2Provider extends $FunctionalProvider<int, int>
     with $Provider<int> {
   const Calc2Provider._(
-      {required Calc2Family super.from,
-      required String super.argument,
-      int Function(
-        Ref ref,
-        String id,
-      )? create})
-      : _createCb = create,
-        super(
+      {required Calc2Family super.from, required String super.argument})
+      : super(
           retry: null,
           name: r'myFamilyCalc2ProviderFamily',
           isAutoDispose: true,
@@ -43,11 +37,6 @@ final class Calc2Provider extends $FunctionalProvider<int, int>
   static const $allTransitiveDependencies11 =
       myFamilyCountStreamNotifier2ProviderFamily;
 
-  final int Function(
-    Ref ref,
-    String id,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$calc2Hash();
 
@@ -58,42 +47,25 @@ final class Calc2Provider extends $FunctionalProvider<int, int>
         '($argument)';
   }
 
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    final argument = this.argument as String;
+    return calc2(
+      ref,
+      argument,
+    );
+  }
+
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
       providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  Calc2Provider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return Calc2Provider._(
-        argument: argument as String,
-        from: from! as Calc2Family,
-        create: (
-          ref,
-          String id,
-        ) =>
-            create(ref));
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? calc2;
-    final argument = this.argument as String;
-    return _$cb(
-      ref,
-      argument,
     );
   }
 
@@ -152,31 +124,23 @@ final class Calc2Family extends Family {
       Calc2Provider._(argument: id, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$calc2Hash();
-
-  @override
   String toString() => r'myFamilyCalc2ProviderFamily';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    int Function(
-      Ref ref,
-      String args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as Calc2Provider;
-
-        final argument = provider.argument as String;
-
-        return provider
-            .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          int Function(
+            Ref ref,
+            String args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as Calc2Provider;
+            final argument = provider.argument as String;
+            return provider
+                .$view(create: (ref) => create(ref, argument))
+                .$createElement(pointer);
+          });
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

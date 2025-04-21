@@ -11,12 +11,8 @@ const keepAliveProvider = KeepAliveProvider._();
 
 final class KeepAliveProvider extends $FunctionalProvider<int, int>
     with $Provider<int> {
-  const KeepAliveProvider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const KeepAliveProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -26,12 +22,18 @@ final class KeepAliveProvider extends $FunctionalProvider<int, int>
           allTransitiveDependencies: null,
         );
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$keepAliveHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return keepAlive(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -39,26 +41,6 @@ final class KeepAliveProvider extends $FunctionalProvider<int, int>
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  KeepAliveProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return KeepAliveProvider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? keepAlive;
-    return _$cb(ref);
   }
 }
 
@@ -69,10 +51,8 @@ const keepAliveClassProvider = KeepAliveClassProvider._();
 
 final class KeepAliveClassProvider
     extends $NotifierProvider<KeepAliveClass, int> {
-  const KeepAliveClassProvider._(
-      {super.runNotifierBuildOverride, KeepAliveClass Function()? create})
-      : _createCb = create,
-        super(
+  const KeepAliveClassProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -82,10 +62,18 @@ final class KeepAliveClassProvider
           allTransitiveDependencies: null,
         );
 
-  final KeepAliveClass Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$keepAliveClassHash();
+
+  @$internal
+  @override
+  KeepAliveClass create() => KeepAliveClass();
+
+  @$internal
+  @override
+  $NotifierProviderElement<KeepAliveClass, int> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -94,35 +82,6 @@ final class KeepAliveClassProvider
       providerOverride: $ValueProvider<int>(value),
     );
   }
-
-  @$internal
-  @override
-  KeepAliveClass create() => _createCb?.call() ?? KeepAliveClass();
-
-  @$internal
-  @override
-  KeepAliveClassProvider $copyWithCreate(
-    KeepAliveClass Function() create,
-  ) {
-    return KeepAliveClassProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  KeepAliveClassProvider $copyWithBuild(
-    int Function(
-      Ref,
-      KeepAliveClass,
-    ) build,
-  ) {
-    return KeepAliveClassProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<KeepAliveClass, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 }
 
 String _$keepAliveClassHash() => r'e2fffa4d14837dfef71f6a2cc230b826b82541ea';
@@ -145,12 +104,8 @@ const autoDisposeProvider = AutoDisposeProvider._();
 
 final class AutoDisposeProvider extends $FunctionalProvider<int, int>
     with $Provider<int> {
-  const AutoDisposeProvider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const AutoDisposeProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -160,12 +115,18 @@ final class AutoDisposeProvider extends $FunctionalProvider<int, int>
           allTransitiveDependencies: null,
         );
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$autoDisposeHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return autoDispose(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -173,26 +134,6 @@ final class AutoDisposeProvider extends $FunctionalProvider<int, int>
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  AutoDisposeProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return AutoDisposeProvider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? autoDispose;
-    return _$cb(ref);
   }
 }
 
@@ -203,10 +144,8 @@ const autoDisposeClassProvider = AutoDisposeClassProvider._();
 
 final class AutoDisposeClassProvider
     extends $NotifierProvider<AutoDisposeClass, int> {
-  const AutoDisposeClassProvider._(
-      {super.runNotifierBuildOverride, AutoDisposeClass Function()? create})
-      : _createCb = create,
-        super(
+  const AutoDisposeClassProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -216,10 +155,18 @@ final class AutoDisposeClassProvider
           allTransitiveDependencies: null,
         );
 
-  final AutoDisposeClass Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$autoDisposeClassHash();
+
+  @$internal
+  @override
+  AutoDisposeClass create() => AutoDisposeClass();
+
+  @$internal
+  @override
+  $NotifierProviderElement<AutoDisposeClass, int> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -228,35 +175,6 @@ final class AutoDisposeClassProvider
       providerOverride: $ValueProvider<int>(value),
     );
   }
-
-  @$internal
-  @override
-  AutoDisposeClass create() => _createCb?.call() ?? AutoDisposeClass();
-
-  @$internal
-  @override
-  AutoDisposeClassProvider $copyWithCreate(
-    AutoDisposeClass Function() create,
-  ) {
-    return AutoDisposeClassProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  AutoDisposeClassProvider $copyWithBuild(
-    int Function(
-      Ref,
-      AutoDisposeClass,
-    ) build,
-  ) {
-    return AutoDisposeClassProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<AutoDisposeClass, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 }
 
 String _$autoDisposeClassHash() => r'5127ab94f7ab4ccf90deb3fca90d7a3c3c4c83f5';
@@ -279,12 +197,8 @@ const fnProvider = FnProvider._();
 
 final class FnProvider extends $FunctionalProvider<int, int>
     with $Provider<int> {
-  const FnProvider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const FnProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -294,12 +208,18 @@ final class FnProvider extends $FunctionalProvider<int, int>
           allTransitiveDependencies: null,
         );
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$fnHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return fn(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -307,26 +227,6 @@ final class FnProvider extends $FunctionalProvider<int, int>
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  FnProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return FnProvider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? fn;
-    return _$cb(ref);
   }
 }
 

@@ -14,12 +14,8 @@ const chatProvider = ChatProvider._();
 final class ChatProvider
     extends $FunctionalProvider<AsyncValue<List<String>>, Stream<List<String>>>
     with $FutureModifier<List<String>>, $StreamProvider<List<String>> {
-  const ChatProvider._(
-      {Stream<List<String>> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const ChatProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -29,10 +25,6 @@ final class ChatProvider
           allTransitiveDependencies: null,
         );
 
-  final Stream<List<String>> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$chatHash();
 
@@ -40,21 +32,11 @@ final class ChatProvider
   @override
   $StreamProviderElement<List<String>> $createElement(
           $ProviderPointer pointer) =>
-      $StreamProviderElement(this, pointer);
-
-  @override
-  ChatProvider $copyWithCreate(
-    Stream<List<String>> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return ChatProvider._(create: create);
-  }
+      $StreamProviderElement(pointer);
 
   @override
   Stream<List<String>> create(Ref ref) {
-    final _$cb = _createCb ?? chat;
-    return _$cb(ref);
+    return chat(ref);
   }
 }
 

@@ -12,10 +12,8 @@ part of 'unoptimized_previous_button.dart';
 const pageIndexProvider = PageIndexProvider._();
 
 final class PageIndexProvider extends $NotifierProvider<PageIndex, int> {
-  const PageIndexProvider._(
-      {super.runNotifierBuildOverride, PageIndex Function()? create})
-      : _createCb = create,
-        super(
+  const PageIndexProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -25,10 +23,18 @@ final class PageIndexProvider extends $NotifierProvider<PageIndex, int> {
           allTransitiveDependencies: null,
         );
 
-  final PageIndex Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$pageIndexHash();
+
+  @$internal
+  @override
+  PageIndex create() => PageIndex();
+
+  @$internal
+  @override
+  $NotifierProviderElement<PageIndex, int> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -37,35 +43,6 @@ final class PageIndexProvider extends $NotifierProvider<PageIndex, int> {
       providerOverride: $ValueProvider<int>(value),
     );
   }
-
-  @$internal
-  @override
-  PageIndex create() => _createCb?.call() ?? PageIndex();
-
-  @$internal
-  @override
-  PageIndexProvider $copyWithCreate(
-    PageIndex Function() create,
-  ) {
-    return PageIndexProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  PageIndexProvider $copyWithBuild(
-    int Function(
-      Ref,
-      PageIndex,
-    ) build,
-  ) {
-    return PageIndexProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<PageIndex, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 }
 
 String _$pageIndexHash() => r'59307ecf23b5b2432833da5ad6b312bf36435d0e';

@@ -17,12 +17,8 @@ final class LocationProvider extends $FunctionalProvider<
     with
         $FutureModifier<({double longitude, double latitude})>,
         $StreamProvider<({double longitude, double latitude})> {
-  const LocationProvider._(
-      {Stream<({double longitude, double latitude})> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const LocationProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -32,10 +28,6 @@ final class LocationProvider extends $FunctionalProvider<
           allTransitiveDependencies: null,
         );
 
-  final Stream<({double longitude, double latitude})> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$locationHash();
 
@@ -43,21 +35,11 @@ final class LocationProvider extends $FunctionalProvider<
   @override
   $StreamProviderElement<({double longitude, double latitude})> $createElement(
           $ProviderPointer pointer) =>
-      $StreamProviderElement(this, pointer);
-
-  @override
-  LocationProvider $copyWithCreate(
-    Stream<({double longitude, double latitude})> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return LocationProvider._(create: create);
-  }
+      $StreamProviderElement(pointer);
 
   @override
   Stream<({double longitude, double latitude})> create(Ref ref) {
-    final _$cb = _createCb ?? location;
-    return _$cb(ref);
+    return location(ref);
   }
 }
 
@@ -69,12 +51,8 @@ const restaurantsNearMeProvider = RestaurantsNearMeProvider._();
 final class RestaurantsNearMeProvider extends $FunctionalProvider<
         AsyncValue<List<String>>, FutureOr<List<String>>>
     with $FutureModifier<List<String>>, $FutureProvider<List<String>> {
-  const RestaurantsNearMeProvider._(
-      {FutureOr<List<String>> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const RestaurantsNearMeProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -84,10 +62,6 @@ final class RestaurantsNearMeProvider extends $FunctionalProvider<
           allTransitiveDependencies: null,
         );
 
-  final FutureOr<List<String>> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$restaurantsNearMeHash();
 
@@ -95,21 +69,11 @@ final class RestaurantsNearMeProvider extends $FunctionalProvider<
   @override
   $FutureProviderElement<List<String>> $createElement(
           $ProviderPointer pointer) =>
-      $FutureProviderElement(this, pointer);
-
-  @override
-  RestaurantsNearMeProvider $copyWithCreate(
-    FutureOr<List<String>> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return RestaurantsNearMeProvider._(create: create);
-  }
+      $FutureProviderElement(pointer);
 
   @override
   FutureOr<List<String>> create(Ref ref) {
-    final _$cb = _createCb ?? restaurantsNearMe;
-    return _$cb(ref);
+    return restaurantsNearMe(ref);
   }
 }
 

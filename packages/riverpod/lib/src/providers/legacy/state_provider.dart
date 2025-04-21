@@ -84,6 +84,8 @@ final class StateProvider<StateT> extends $FunctionalProvider<StateT, StateT>
   static const family = StateProviderFamilyBuilder();
 
   final StateT Function(Ref ref) _createFn;
+  @override
+  StateT create(Ref ref) => _createFn(ref);
 
   Refreshable<StateController<StateT>> get notifier => _notifier(this);
 
@@ -92,32 +94,13 @@ final class StateProvider<StateT> extends $FunctionalProvider<StateT, StateT>
   StateProviderElement<StateT> $createElement(
     $ProviderPointer pointer,
   ) {
-    return StateProviderElement._(this, pointer);
-  }
-
-  @mustBeOverridden
-  @visibleForOverriding
-  @override
-  StateProvider<StateT> $copyWithCreate(Create<StateT> create) {
-    return StateProvider<StateT>.internal(
-      create,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      from: from,
-      argument: argument,
-      isAutoDispose: isAutoDispose,
-      retry: retry,
-    );
+    return StateProviderElement._(pointer);
   }
 }
 
 /// The element of [StateProvider].
-class StateProviderElement<T> extends ProviderElement<T> {
-  StateProviderElement._(this.provider, super.pointer);
-
-  @override
-  final StateProvider<T> provider;
+class StateProviderElement<T> extends $FunctionalProviderElement<T, T> {
+  StateProviderElement._(super.pointer);
 
   final _controllerNotifier = $ElementLense<StateController<T>>();
 
@@ -126,8 +109,8 @@ class StateProviderElement<T> extends ProviderElement<T> {
   void Function()? _removeListener;
 
   @override
-  WhenComplete create(Ref ref) {
-    final initialState = provider._createFn(ref);
+  WhenComplete create($Ref<T> ref) {
+    final initialState = provider.create(ref);
 
     final controller = StateController(initialState);
     _controllerNotifier.result = $Result.data(controller);

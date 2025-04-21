@@ -32,12 +32,8 @@ const activityProvider = ActivityProvider._();
 final class ActivityProvider
     extends $FunctionalProvider<AsyncValue<Activity>, FutureOr<Activity>>
     with $FutureModifier<Activity>, $FutureProvider<Activity> {
-  const ActivityProvider._(
-      {FutureOr<Activity> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const ActivityProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -47,31 +43,17 @@ final class ActivityProvider
           allTransitiveDependencies: null,
         );
 
-  final FutureOr<Activity> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$activityHash();
 
   @$internal
   @override
   $FutureProviderElement<Activity> $createElement($ProviderPointer pointer) =>
-      $FutureProviderElement(this, pointer);
-
-  @override
-  ActivityProvider $copyWithCreate(
-    FutureOr<Activity> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return ActivityProvider._(create: create);
-  }
+      $FutureProviderElement(pointer);
 
   @override
   FutureOr<Activity> create(Ref ref) {
-    final _$cb = _createCb ?? activity;
-    return _$cb(ref);
+    return activity(ref);
   }
 }
 

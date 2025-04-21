@@ -14,12 +14,8 @@ const configurationsProvider = ConfigurationsProvider._();
 final class ConfigurationsProvider extends $FunctionalProvider<
         AsyncValue<Configuration>, FutureOr<Configuration>>
     with $FutureModifier<Configuration>, $FutureProvider<Configuration> {
-  const ConfigurationsProvider._(
-      {FutureOr<Configuration> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const ConfigurationsProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -29,10 +25,6 @@ final class ConfigurationsProvider extends $FunctionalProvider<
           allTransitiveDependencies: null,
         );
 
-  final FutureOr<Configuration> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$configurationsHash();
 
@@ -40,21 +32,11 @@ final class ConfigurationsProvider extends $FunctionalProvider<
   @override
   $FutureProviderElement<Configuration> $createElement(
           $ProviderPointer pointer) =>
-      $FutureProviderElement(this, pointer);
-
-  @override
-  ConfigurationsProvider $copyWithCreate(
-    FutureOr<Configuration> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return ConfigurationsProvider._(create: create);
-  }
+      $FutureProviderElement(pointer);
 
   @override
   FutureOr<Configuration> create(Ref ref) {
-    final _$cb = _createCb ?? configurations;
-    return _$cb(ref);
+    return configurations(ref);
   }
 }
 

@@ -13,9 +13,8 @@ import 'provider.dart' show Provider;
 /// Implementation detail of `riverpod_generator`.
 /// Do not use, as this may be removed at any time.
 @internal
-base mixin $StreamProvider<StateT> on ProviderBase<AsyncValue<StateT>> {
-  Stream<StateT> create(Ref ref);
-
+base mixin $StreamProvider<StateT>
+    on $FunctionalProvider<AsyncValue<StateT>, Stream<StateT>> {
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(AsyncValue<StateT> value) {
     return $ProviderOverride(
@@ -122,43 +121,24 @@ base class StreamProvider<StateT>
 
   final Create<Stream<StateT>> _create;
 
+  @internal
   @override
   Stream<StateT> create(Ref ref) => _create(ref);
 
   @internal
   @override
   $StreamProviderElement<StateT> $createElement($ProviderPointer pointer) {
-    return $StreamProviderElement(this, pointer);
-  }
-
-  @mustBeOverridden
-  @visibleForOverriding
-  @override
-  $FunctionalProvider<AsyncValue<StateT>, Stream<StateT>> $copyWithCreate(
-    Create<Stream<StateT>> create,
-  ) {
-    return StreamProvider<StateT>.internal(
-      create,
-      name: name,
-      dependencies: null,
-      allTransitiveDependencies: null,
-      from: from,
-      argument: argument,
-      isAutoDispose: isAutoDispose,
-      retry: retry,
-    );
+    return $StreamProviderElement(pointer);
   }
 }
 
 /// The element of [StreamProvider].
 @internal
-class $StreamProviderElement<StateT> extends ProviderElement<AsyncValue<StateT>>
+class $StreamProviderElement<StateT>
+    extends $FunctionalProviderElement<AsyncValue<StateT>, Stream<StateT>>
     with FutureModifierElement<StateT> {
   /// The element of [StreamProvider].
-  $StreamProviderElement(this.provider, super.pointer);
-
-  @override
-  final $StreamProvider<StateT> provider;
+  $StreamProviderElement(super.pointer);
 
   final _streamNotifier = $ElementLense<Stream<StateT>>();
   final StreamController<StateT> _streamController =
@@ -168,10 +148,7 @@ class $StreamProviderElement<StateT> extends ProviderElement<AsyncValue<StateT>>
   WhenComplete create(Ref ref) {
     _streamNotifier.result ??= $Result.data(_streamController.stream);
 
-    return handleStream(
-      ref,
-      () => provider.create(ref),
-    );
+    return handleStream(ref, () => provider.create(ref));
   }
 
   @override

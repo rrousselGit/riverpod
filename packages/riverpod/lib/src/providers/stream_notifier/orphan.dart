@@ -56,7 +56,6 @@ final class StreamNotifierProvider< //
     this._createNotifier, {
     super.name,
     super.dependencies,
-    super.runNotifierBuildOverride,
     super.isAutoDispose = false,
     super.retry,
   }) : super(
@@ -76,7 +75,6 @@ final class StreamNotifierProvider< //
     required super.from,
     required super.argument,
     required super.isAutoDispose,
-    required super.runNotifierBuildOverride,
     required super.retry,
   });
 
@@ -92,46 +90,11 @@ final class StreamNotifierProvider< //
   @override
   NotifierT create() => _createNotifier();
 
-  StreamNotifierProvider<NotifierT, StateT> _copyWith({
-    NotifierT Function()? create,
-    RunNotifierBuild<NotifierT, Stream<StateT>>? build,
-  }) {
-    return StreamNotifierProvider<NotifierT, StateT>.internal(
-      create ?? _createNotifier,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      from: from,
-      argument: argument,
-      isAutoDispose: isAutoDispose,
-      runNotifierBuildOverride: build ?? runNotifierBuildOverride,
-      retry: retry,
-    );
-  }
-
   @internal
   @override
   $StreamNotifierProviderElement<NotifierT, StateT> $createElement(
     $ProviderPointer pointer,
   ) {
-    return $StreamNotifierProviderElement(this, pointer);
-  }
-
-  @mustBeOverridden
-  @visibleForOverriding
-  @override
-  StreamNotifierProvider<NotifierT, StateT> $copyWithBuild(
-    RunNotifierBuild<NotifierT, Stream<StateT>>? build,
-  ) {
-    return _copyWith(build: build);
-  }
-
-  @mustBeOverridden
-  @visibleForOverriding
-  @override
-  StreamNotifierProvider<NotifierT, StateT> $copyWithCreate(
-    NotifierT Function() create,
-  ) {
-    return _copyWith(create: create);
+    return $StreamNotifierProviderElement(pointer);
   }
 }

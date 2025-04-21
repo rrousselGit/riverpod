@@ -16,24 +16,14 @@ final class FetchPackageDetailsProvider
     with $FutureModifier<Package>, $FutureProvider<Package> {
   const FetchPackageDetailsProvider._(
       {required FetchPackageDetailsFamily super.from,
-      required String super.argument,
-      FutureOr<Package> Function(
-        Ref ref, {
-        required String packageName,
-      })? create})
-      : _createCb = create,
-        super(
+      required String super.argument})
+      : super(
           retry: null,
           name: r'fetchPackageDetailsProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final FutureOr<Package> Function(
-    Ref ref, {
-    required String packageName,
-  })? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$fetchPackageDetailsHash();
@@ -48,29 +38,12 @@ final class FetchPackageDetailsProvider
   @$internal
   @override
   $FutureProviderElement<Package> $createElement($ProviderPointer pointer) =>
-      $FutureProviderElement(this, pointer);
-
-  @override
-  FetchPackageDetailsProvider $copyWithCreate(
-    FutureOr<Package> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return FetchPackageDetailsProvider._(
-        argument: argument as String,
-        from: from! as FetchPackageDetailsFamily,
-        create: (
-          ref, {
-          required String packageName,
-        }) =>
-            create(ref));
-  }
+      $FutureProviderElement(pointer);
 
   @override
   FutureOr<Package> create(Ref ref) {
-    final _$cb = _createCb ?? fetchPackageDetails;
     final argument = this.argument as String;
-    return _$cb(
+    return fetchPackageDetails(
       ref,
       packageName: argument,
     );
@@ -106,31 +79,23 @@ final class FetchPackageDetailsFamily extends Family {
       FetchPackageDetailsProvider._(argument: packageName, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$fetchPackageDetailsHash();
-
-  @override
   String toString() => r'fetchPackageDetailsProvider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    FutureOr<Package> Function(
-      Ref ref,
-      String args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as FetchPackageDetailsProvider;
-
-        final argument = provider.argument as String;
-
-        return provider
-            .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          FutureOr<Package> Function(
+            Ref ref,
+            String args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as FetchPackageDetailsProvider;
+            final argument = provider.argument as String;
+            return provider
+                .$view(create: (ref) => create(ref, argument))
+                .$createElement(pointer);
+          });
 }
 
 @ProviderFor(likedPackages)
@@ -139,12 +104,8 @@ const likedPackagesProvider = LikedPackagesProvider._();
 final class LikedPackagesProvider extends $FunctionalProvider<
         AsyncValue<List<String>>, FutureOr<List<String>>>
     with $FutureModifier<List<String>>, $FutureProvider<List<String>> {
-  const LikedPackagesProvider._(
-      {FutureOr<List<String>> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const LikedPackagesProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -154,10 +115,6 @@ final class LikedPackagesProvider extends $FunctionalProvider<
           allTransitiveDependencies: null,
         );
 
-  final FutureOr<List<String>> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$likedPackagesHash();
 
@@ -165,21 +122,11 @@ final class LikedPackagesProvider extends $FunctionalProvider<
   @override
   $FutureProviderElement<List<String>> $createElement(
           $ProviderPointer pointer) =>
-      $FutureProviderElement(this, pointer);
-
-  @override
-  LikedPackagesProvider $copyWithCreate(
-    FutureOr<List<String>> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return LikedPackagesProvider._(create: create);
-  }
+      $FutureProviderElement(pointer);
 
   @override
   FutureOr<List<String>> create(Ref ref) {
-    final _$cb = _createCb ?? likedPackages;
-    return _$cb(ref);
+    return likedPackages(ref);
   }
 }
 
@@ -191,12 +138,8 @@ const pubRepositoryProvider = PubRepositoryProvider._();
 final class PubRepositoryProvider
     extends $FunctionalProvider<PubRepository, PubRepository>
     with $Provider<PubRepository> {
-  const PubRepositoryProvider._(
-      {PubRepository Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const PubRepositoryProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -206,12 +149,18 @@ final class PubRepositoryProvider
           allTransitiveDependencies: null,
         );
 
-  final PubRepository Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$pubRepositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<PubRepository> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  PubRepository create(Ref ref) {
+    return pubRepository(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(PubRepository value) {
@@ -219,26 +168,6 @@ final class PubRepositoryProvider
       origin: this,
       providerOverride: $ValueProvider<PubRepository>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<PubRepository> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  PubRepositoryProvider $copyWithCreate(
-    PubRepository Function(
-      Ref ref,
-    ) create,
-  ) {
-    return PubRepositoryProvider._(create: create);
-  }
-
-  @override
-  PubRepository create(Ref ref) {
-    final _$cb = _createCb ?? pubRepository;
-    return _$cb(ref);
   }
 }
 
@@ -266,19 +195,14 @@ final class PackageMetricsProvider
   /// is logged-in.
   const PackageMetricsProvider._(
       {required PackageMetricsFamily super.from,
-      required String super.argument,
-      super.runNotifierBuildOverride,
-      PackageMetrics Function()? create})
-      : _createCb = create,
-        super(
+      required String super.argument})
+      : super(
           retry: null,
           name: r'packageMetricsProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final PackageMetrics Function()? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$packageMetricsHash();
@@ -292,38 +216,13 @@ final class PackageMetricsProvider
 
   @$internal
   @override
-  PackageMetrics create() => _createCb?.call() ?? PackageMetrics();
-
-  @$internal
-  @override
-  PackageMetricsProvider $copyWithCreate(
-    PackageMetrics Function() create,
-  ) {
-    return PackageMetricsProvider._(
-        argument: argument as String,
-        from: from! as PackageMetricsFamily,
-        create: create);
-  }
-
-  @$internal
-  @override
-  PackageMetricsProvider $copyWithBuild(
-    FutureOr<PackageMetricsScore> Function(
-      Ref,
-      PackageMetrics,
-    ) build,
-  ) {
-    return PackageMetricsProvider._(
-        argument: argument as String,
-        from: from! as PackageMetricsFamily,
-        runNotifierBuildOverride: build);
-  }
+  PackageMetrics create() => PackageMetrics();
 
   @$internal
   @override
   $AsyncNotifierProviderElement<PackageMetrics, PackageMetricsScore>
       $createElement($ProviderPointer pointer) =>
-          $AsyncNotifierProviderElement(this, pointer);
+          $AsyncNotifierProviderElement(pointer);
 
   @override
   bool operator ==(Object other) {
@@ -364,50 +263,39 @@ final class PackageMetricsFamily extends Family {
       PackageMetricsProvider._(argument: packageName, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$packageMetricsHash();
-
-  @override
   String toString() => r'packageMetricsProvider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    PackageMetrics Function(
-      String args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as PackageMetricsProvider;
-
-        final argument = provider.argument as String;
-
-        return provider
-            .$copyWithCreate(() => create(argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          PackageMetrics Function(
+            String args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as PackageMetricsProvider;
+            final argument = provider.argument as String;
+            return provider
+                .$view(create: () => create(argument))
+                .$createElement(pointer);
+          });
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    FutureOr<PackageMetricsScore> Function(
-            Ref ref, PackageMetrics notifier, String argument)
-        build,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as PackageMetricsProvider;
-
-        final argument = provider.argument as String;
-
-        return provider
-            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          FutureOr<PackageMetricsScore> Function(
+                  Ref ref, PackageMetrics notifier, String argument)
+              build) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as PackageMetricsProvider;
+            final argument = provider.argument as String;
+            return provider
+                .$view(
+                    runNotifierBuildOverride: (ref, notifier) =>
+                        build(ref, notifier, argument))
+                .$createElement(pointer);
+          });
 }
 
 abstract class _$PackageMetrics extends $AsyncNotifier<PackageMetricsScore> {

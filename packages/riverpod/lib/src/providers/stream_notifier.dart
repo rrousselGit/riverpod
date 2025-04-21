@@ -38,7 +38,6 @@ abstract base class $StreamNotifierProvider<
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.isAutoDispose,
-    required super.runNotifierBuildOverride,
     required super.retry,
   });
 }
@@ -59,10 +58,7 @@ class $StreamNotifierProviderElement< //
         FutureModifierClassElement<NotifierT, StateT, Stream<StateT>> {
   /// Implementation detail of `riverpod_generator`.
   /// Do not use.
-  $StreamNotifierProviderElement(this.provider, super.pointer);
-
-  @override
-  final $StreamNotifierProvider<NotifierT, StateT> provider;
+  $StreamNotifierProviderElement(super.pointer);
 
   @override
   void handleValue(Ref ref, Stream<StateT> created) {

@@ -14,12 +14,8 @@ const exampleProvider = ExampleProvider._();
 final class ExampleProvider
     extends $FunctionalProvider<AsyncValue<Object>, FutureOr<Object>>
     with $FutureModifier<Object>, $FutureProvider<Object> {
-  const ExampleProvider._(
-      {FutureOr<Object> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const ExampleProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -29,31 +25,17 @@ final class ExampleProvider
           allTransitiveDependencies: null,
         );
 
-  final FutureOr<Object> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$exampleHash();
 
   @$internal
   @override
   $FutureProviderElement<Object> $createElement($ProviderPointer pointer) =>
-      $FutureProviderElement(this, pointer);
-
-  @override
-  ExampleProvider $copyWithCreate(
-    FutureOr<Object> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return ExampleProvider._(create: create);
-  }
+      $FutureProviderElement(pointer);
 
   @override
   FutureOr<Object> create(Ref ref) {
-    final _$cb = _createCb ?? example;
-    return _$cb(ref);
+    return example(ref);
   }
 }
 

@@ -11,12 +11,8 @@ const simpleProvider = SimpleProvider._();
 
 final class SimpleProvider extends $FunctionalProvider<String, String>
     with $Provider<String> {
-  const SimpleProvider._(
-      {String Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const SimpleProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -26,12 +22,18 @@ final class SimpleProvider extends $FunctionalProvider<String, String>
           allTransitiveDependencies: null,
         );
 
-  final String Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$simpleHash();
+
+  @$internal
+  @override
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  String create(Ref ref) {
+    return simple(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
@@ -39,26 +41,6 @@ final class SimpleProvider extends $FunctionalProvider<String, String>
       origin: this,
       providerOverride: $ValueProvider<String>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  SimpleProvider $copyWithCreate(
-    String Function(
-      Ref ref,
-    ) create,
-  ) {
-    return SimpleProvider._(create: create);
-  }
-
-  @override
-  String create(Ref ref) {
-    final _$cb = _createCb ?? simple;
-    return _$cb(ref);
   }
 }
 
@@ -69,12 +51,8 @@ const simple2Provider = Simple2Provider._();
 
 final class Simple2Provider extends $FunctionalProvider<String, String>
     with $Provider<String> {
-  const Simple2Provider._(
-      {String Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const Simple2Provider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -84,12 +62,18 @@ final class Simple2Provider extends $FunctionalProvider<String, String>
           allTransitiveDependencies: null,
         );
 
-  final String Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$simple2Hash();
+
+  @$internal
+  @override
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  String create(Ref ref) {
+    return simple2(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
@@ -97,26 +81,6 @@ final class Simple2Provider extends $FunctionalProvider<String, String>
       origin: this,
       providerOverride: $ValueProvider<String>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  Simple2Provider $copyWithCreate(
-    String Function(
-      Ref ref,
-    ) create,
-  ) {
-    return Simple2Provider._(create: create);
-  }
-
-  @override
-  String create(Ref ref) {
-    final _$cb = _createCb ?? simple2;
-    return _$cb(ref);
   }
 }
 
@@ -126,10 +90,8 @@ String _$simple2Hash() => r'a60a8496fc391f5adf7ad45a12d0723f14f3127c';
 const simpleClassProvider = SimpleClassProvider._();
 
 final class SimpleClassProvider extends $NotifierProvider<SimpleClass, String> {
-  const SimpleClassProvider._(
-      {super.runNotifierBuildOverride, SimpleClass Function()? create})
-      : _createCb = create,
-        super(
+  const SimpleClassProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -139,10 +101,18 @@ final class SimpleClassProvider extends $NotifierProvider<SimpleClass, String> {
           allTransitiveDependencies: null,
         );
 
-  final SimpleClass Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$simpleClassHash();
+
+  @$internal
+  @override
+  SimpleClass create() => SimpleClass();
+
+  @$internal
+  @override
+  $NotifierProviderElement<SimpleClass, String> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
@@ -151,35 +121,6 @@ final class SimpleClassProvider extends $NotifierProvider<SimpleClass, String> {
       providerOverride: $ValueProvider<String>(value),
     );
   }
-
-  @$internal
-  @override
-  SimpleClass create() => _createCb?.call() ?? SimpleClass();
-
-  @$internal
-  @override
-  SimpleClassProvider $copyWithCreate(
-    SimpleClass Function() create,
-  ) {
-    return SimpleClassProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  SimpleClassProvider $copyWithBuild(
-    String Function(
-      Ref,
-      SimpleClass,
-    ) build,
-  ) {
-    return SimpleClassProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<SimpleClass, String> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 }
 
 String _$simpleClassHash() => r'958123cd6179c5b88da040cfeb71eb3061765277';

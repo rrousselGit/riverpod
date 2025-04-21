@@ -30,12 +30,8 @@ final class StorageProvider extends $FunctionalProvider<
     with
         $FutureModifier<JsonSqFliteStorage>,
         $FutureProvider<JsonSqFliteStorage> {
-  const StorageProvider._(
-      {FutureOr<JsonSqFliteStorage> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const StorageProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -45,10 +41,6 @@ final class StorageProvider extends $FunctionalProvider<
           allTransitiveDependencies: null,
         );
 
-  final FutureOr<JsonSqFliteStorage> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$storageHash();
 
@@ -56,21 +48,11 @@ final class StorageProvider extends $FunctionalProvider<
   @override
   $FutureProviderElement<JsonSqFliteStorage> $createElement(
           $ProviderPointer pointer) =>
-      $FutureProviderElement(this, pointer);
-
-  @override
-  StorageProvider $copyWithCreate(
-    FutureOr<JsonSqFliteStorage> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return StorageProvider._(create: create);
-  }
+      $FutureProviderElement(pointer);
 
   @override
   FutureOr<JsonSqFliteStorage> create(Ref ref) {
-    final _$cb = _createCb ?? storage;
-    return _$cb(ref);
+    return storage(ref);
   }
 }
 
@@ -82,10 +64,8 @@ const todosNotifierProvider = TodosNotifierProvider._();
 
 final class TodosNotifierProvider
     extends $AsyncNotifierProvider<TodosNotifier, List<Todo>> {
-  const TodosNotifierProvider._(
-      {super.runNotifierBuildOverride, TodosNotifier Function()? create})
-      : _createCb = create,
-        super(
+  const TodosNotifierProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -95,39 +75,18 @@ final class TodosNotifierProvider
           allTransitiveDependencies: null,
         );
 
-  final TodosNotifier Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$todosNotifierHash();
 
   @$internal
   @override
-  TodosNotifier create() => _createCb?.call() ?? TodosNotifier();
-
-  @$internal
-  @override
-  TodosNotifierProvider $copyWithCreate(
-    TodosNotifier Function() create,
-  ) {
-    return TodosNotifierProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  TodosNotifierProvider $copyWithBuild(
-    FutureOr<List<Todo>> Function(
-      Ref,
-      TodosNotifier,
-    ) build,
-  ) {
-    return TodosNotifierProvider._(runNotifierBuildOverride: build);
-  }
+  TodosNotifier create() => TodosNotifier();
 
   @$internal
   @override
   $AsyncNotifierProviderElement<TodosNotifier, List<Todo>> $createElement(
           $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(this, pointer);
+      $AsyncNotifierProviderElement(pointer);
 }
 
 String _$todosNotifierHash() => r'f7c580875a00ab559ff61cbd0f6986fe1fd515e6';

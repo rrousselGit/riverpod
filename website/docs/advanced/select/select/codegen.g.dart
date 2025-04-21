@@ -13,12 +13,8 @@ const exampleProvider = ExampleProvider._();
 
 final class ExampleProvider extends $FunctionalProvider<User, User>
     with $Provider<User> {
-  const ExampleProvider._(
-      {User Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const ExampleProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -28,12 +24,18 @@ final class ExampleProvider extends $FunctionalProvider<User, User>
           allTransitiveDependencies: null,
         );
 
-  final User Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$exampleHash();
+
+  @$internal
+  @override
+  $ProviderElement<User> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  User create(Ref ref) {
+    return example(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(User value) {
@@ -41,26 +43,6 @@ final class ExampleProvider extends $FunctionalProvider<User, User>
       origin: this,
       providerOverride: $ValueProvider<User>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<User> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  ExampleProvider $copyWithCreate(
-    User Function(
-      Ref ref,
-    ) create,
-  ) {
-    return ExampleProvider._(create: create);
-  }
-
-  @override
-  User create(Ref ref) {
-    final _$cb = _createCb ?? example;
-    return _$cb(ref);
   }
 }
 

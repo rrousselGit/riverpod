@@ -95,7 +95,6 @@ abstract base class $NotifierProvider //
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.isAutoDispose,
-    required super.runNotifierBuildOverride,
     required super.retry,
   });
 }
@@ -113,10 +112,7 @@ class $NotifierProviderElement< //
         StateT> {
   /// An implementation detail of `riverpod_generator`.
   /// Do not use.
-  $NotifierProviderElement(this.provider, super.pointer);
-
-  @override
-  final $NotifierProvider<NotifierT, StateT> provider;
+  $NotifierProviderElement(super.pointer);
 
   @override
   void handleError(Ref ref, Object error, StackTrace stackTrace) =>

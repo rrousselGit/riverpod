@@ -13,12 +13,8 @@ const todosProvider = TodosProvider._();
 
 final class TodosProvider extends $FunctionalProvider<List<Todo>, List<Todo>>
     with $Provider<List<Todo>> {
-  const TodosProvider._(
-      {List<Todo> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const TodosProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -28,12 +24,18 @@ final class TodosProvider extends $FunctionalProvider<List<Todo>, List<Todo>>
           allTransitiveDependencies: null,
         );
 
-  final List<Todo> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$todosHash();
+
+  @$internal
+  @override
+  $ProviderElement<List<Todo>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  List<Todo> create(Ref ref) {
+    return todos(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(List<Todo> value) {
@@ -41,26 +43,6 @@ final class TodosProvider extends $FunctionalProvider<List<Todo>, List<Todo>>
       origin: this,
       providerOverride: $ValueProvider<List<Todo>>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<List<Todo>> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  TodosProvider $copyWithCreate(
-    List<Todo> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return TodosProvider._(create: create);
-  }
-
-  @override
-  List<Todo> create(Ref ref) {
-    final _$cb = _createCb ?? todos;
-    return _$cb(ref);
   }
 }
 
@@ -71,12 +53,8 @@ const filterProvider = FilterProvider._();
 
 final class FilterProvider extends $FunctionalProvider<Filter, Filter>
     with $Provider<Filter> {
-  const FilterProvider._(
-      {Filter Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const FilterProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -86,12 +64,18 @@ final class FilterProvider extends $FunctionalProvider<Filter, Filter>
           allTransitiveDependencies: null,
         );
 
-  final Filter Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$filterHash();
+
+  @$internal
+  @override
+  $ProviderElement<Filter> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  Filter create(Ref ref) {
+    return filter(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Filter value) {
@@ -99,26 +83,6 @@ final class FilterProvider extends $FunctionalProvider<Filter, Filter>
       origin: this,
       providerOverride: $ValueProvider<Filter>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<Filter> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  FilterProvider $copyWithCreate(
-    Filter Function(
-      Ref ref,
-    ) create,
-  ) {
-    return FilterProvider._(create: create);
-  }
-
-  @override
-  Filter create(Ref ref) {
-    final _$cb = _createCb ?? filter;
-    return _$cb(ref);
   }
 }
 
@@ -130,12 +94,8 @@ const filteredTodosProvider = FilteredTodosProvider._();
 final class FilteredTodosProvider
     extends $FunctionalProvider<List<Todo>, List<Todo>>
     with $Provider<List<Todo>> {
-  const FilteredTodosProvider._(
-      {List<Todo> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const FilteredTodosProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -145,12 +105,18 @@ final class FilteredTodosProvider
           allTransitiveDependencies: null,
         );
 
-  final List<Todo> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$filteredTodosHash();
+
+  @$internal
+  @override
+  $ProviderElement<List<Todo>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  List<Todo> create(Ref ref) {
+    return filteredTodos(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(List<Todo> value) {
@@ -158,26 +124,6 @@ final class FilteredTodosProvider
       origin: this,
       providerOverride: $ValueProvider<List<Todo>>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<List<Todo>> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  FilteredTodosProvider $copyWithCreate(
-    List<Todo> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return FilteredTodosProvider._(create: create);
-  }
-
-  @override
-  List<Todo> create(Ref ref) {
-    final _$cb = _createCb ?? filteredTodos;
-    return _$cb(ref);
   }
 }
 

@@ -11,12 +11,8 @@ const keepAliveProvider = KeepAliveProvider._();
 
 final class KeepAliveProvider extends $FunctionalProvider<int, int>
     with $Provider<int> {
-  const KeepAliveProvider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const KeepAliveProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -26,12 +22,18 @@ final class KeepAliveProvider extends $FunctionalProvider<int, int>
           allTransitiveDependencies: null,
         );
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$keepAliveHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return keepAlive(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -39,26 +41,6 @@ final class KeepAliveProvider extends $FunctionalProvider<int, int>
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  KeepAliveProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return KeepAliveProvider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? keepAlive;
-    return _$cb(ref);
   }
 }
 
@@ -69,12 +51,8 @@ const notKeepAliveProvider = NotKeepAliveProvider._();
 
 final class NotKeepAliveProvider extends $FunctionalProvider<int, int>
     with $Provider<int> {
-  const NotKeepAliveProvider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const NotKeepAliveProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -84,12 +62,18 @@ final class NotKeepAliveProvider extends $FunctionalProvider<int, int>
           allTransitiveDependencies: null,
         );
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$notKeepAliveHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return notKeepAlive(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -97,26 +81,6 @@ final class NotKeepAliveProvider extends $FunctionalProvider<int, int>
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  NotKeepAliveProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return NotKeepAliveProvider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? notKeepAlive;
-    return _$cb(ref);
   }
 }
 
@@ -127,12 +91,8 @@ const defaultKeepAliveProvider = DefaultKeepAliveProvider._();
 
 final class DefaultKeepAliveProvider extends $FunctionalProvider<int, int>
     with $Provider<int> {
-  const DefaultKeepAliveProvider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const DefaultKeepAliveProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -142,12 +102,18 @@ final class DefaultKeepAliveProvider extends $FunctionalProvider<int, int>
           allTransitiveDependencies: null,
         );
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$defaultKeepAliveHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return defaultKeepAlive(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -155,26 +121,6 @@ final class DefaultKeepAliveProvider extends $FunctionalProvider<int, int>
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  DefaultKeepAliveProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return DefaultKeepAliveProvider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? defaultKeepAlive;
-    return _$cb(ref);
   }
 }
 
@@ -186,25 +132,14 @@ const keepAliveFamilyProvider = KeepAliveFamilyFamily._();
 final class KeepAliveFamilyProvider extends $FunctionalProvider<int, int>
     with $Provider<int> {
   const KeepAliveFamilyProvider._(
-      {required KeepAliveFamilyFamily super.from,
-      required int super.argument,
-      int Function(
-        Ref ref,
-        int a,
-      )? create})
-      : _createCb = create,
-        super(
+      {required KeepAliveFamilyFamily super.from, required int super.argument})
+      : super(
           retry: null,
           name: r'keepAliveFamilyProvider',
           isAutoDispose: false,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final int Function(
-    Ref ref,
-    int a,
-  )? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$keepAliveFamilyHash();
@@ -216,42 +151,25 @@ final class KeepAliveFamilyProvider extends $FunctionalProvider<int, int>
         '($argument)';
   }
 
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    final argument = this.argument as int;
+    return keepAliveFamily(
+      ref,
+      argument,
+    );
+  }
+
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
       providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  KeepAliveFamilyProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return KeepAliveFamilyProvider._(
-        argument: argument as int,
-        from: from! as KeepAliveFamilyFamily,
-        create: (
-          ref,
-          int a,
-        ) =>
-            create(ref));
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? keepAliveFamily;
-    final argument = this.argument as int;
-    return _$cb(
-      ref,
-      argument,
     );
   }
 
@@ -284,31 +202,23 @@ final class KeepAliveFamilyFamily extends Family {
       KeepAliveFamilyProvider._(argument: a, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$keepAliveFamilyHash();
-
-  @override
   String toString() => r'keepAliveFamilyProvider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    int Function(
-      Ref ref,
-      int args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as KeepAliveFamilyProvider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          int Function(
+            Ref ref,
+            int args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as KeepAliveFamilyProvider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(create: (ref) => create(ref, argument))
+                .$createElement(pointer);
+          });
 }
 
 @ProviderFor(notKeepAliveFamily)
@@ -318,24 +228,14 @@ final class NotKeepAliveFamilyProvider extends $FunctionalProvider<int, int>
     with $Provider<int> {
   const NotKeepAliveFamilyProvider._(
       {required NotKeepAliveFamilyFamily super.from,
-      required int super.argument,
-      int Function(
-        Ref ref,
-        int a,
-      )? create})
-      : _createCb = create,
-        super(
+      required int super.argument})
+      : super(
           retry: null,
           name: r'notKeepAliveFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final int Function(
-    Ref ref,
-    int a,
-  )? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$notKeepAliveFamilyHash();
@@ -347,42 +247,25 @@ final class NotKeepAliveFamilyProvider extends $FunctionalProvider<int, int>
         '($argument)';
   }
 
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    final argument = this.argument as int;
+    return notKeepAliveFamily(
+      ref,
+      argument,
+    );
+  }
+
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
       providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  NotKeepAliveFamilyProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return NotKeepAliveFamilyProvider._(
-        argument: argument as int,
-        from: from! as NotKeepAliveFamilyFamily,
-        create: (
-          ref,
-          int a,
-        ) =>
-            create(ref));
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? notKeepAliveFamily;
-    final argument = this.argument as int;
-    return _$cb(
-      ref,
-      argument,
     );
   }
 
@@ -416,31 +299,23 @@ final class NotKeepAliveFamilyFamily extends Family {
       NotKeepAliveFamilyProvider._(argument: a, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$notKeepAliveFamilyHash();
-
-  @override
   String toString() => r'notKeepAliveFamilyProvider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    int Function(
-      Ref ref,
-      int args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as NotKeepAliveFamilyProvider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          int Function(
+            Ref ref,
+            int args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as NotKeepAliveFamilyProvider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(create: (ref) => create(ref, argument))
+                .$createElement(pointer);
+          });
 }
 
 @ProviderFor(defaultKeepAliveFamily)
@@ -450,24 +325,14 @@ final class DefaultKeepAliveFamilyProvider extends $FunctionalProvider<int, int>
     with $Provider<int> {
   const DefaultKeepAliveFamilyProvider._(
       {required DefaultKeepAliveFamilyFamily super.from,
-      required int super.argument,
-      int Function(
-        Ref ref,
-        int a,
-      )? create})
-      : _createCb = create,
-        super(
+      required int super.argument})
+      : super(
           retry: null,
           name: r'defaultKeepAliveFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final int Function(
-    Ref ref,
-    int a,
-  )? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$defaultKeepAliveFamilyHash();
@@ -479,42 +344,25 @@ final class DefaultKeepAliveFamilyProvider extends $FunctionalProvider<int, int>
         '($argument)';
   }
 
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    final argument = this.argument as int;
+    return defaultKeepAliveFamily(
+      ref,
+      argument,
+    );
+  }
+
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
       providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  DefaultKeepAliveFamilyProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return DefaultKeepAliveFamilyProvider._(
-        argument: argument as int,
-        from: from! as DefaultKeepAliveFamilyFamily,
-        create: (
-          ref,
-          int a,
-        ) =>
-            create(ref));
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? defaultKeepAliveFamily;
-    final argument = this.argument as int;
-    return _$cb(
-      ref,
-      argument,
     );
   }
 
@@ -549,31 +397,23 @@ final class DefaultKeepAliveFamilyFamily extends Family {
       DefaultKeepAliveFamilyProvider._(argument: a, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$defaultKeepAliveFamilyHash();
-
-  @override
   String toString() => r'defaultKeepAliveFamilyProvider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    int Function(
-      Ref ref,
-      int args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as DefaultKeepAliveFamilyProvider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          int Function(
+            Ref ref,
+            int args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as DefaultKeepAliveFamilyProvider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(create: (ref) => create(ref, argument))
+                .$createElement(pointer);
+          });
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

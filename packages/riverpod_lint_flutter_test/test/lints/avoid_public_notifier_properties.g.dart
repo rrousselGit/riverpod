@@ -13,19 +13,14 @@ final class GeneratedNotifierProvider
     extends $NotifierProvider<GeneratedNotifier, int> {
   const GeneratedNotifierProvider._(
       {required GeneratedNotifierFamily super.from,
-      required int super.argument,
-      super.runNotifierBuildOverride,
-      GeneratedNotifier Function()? create})
-      : _createCb = create,
-        super(
+      required int super.argument})
+      : super(
           retry: null,
           name: r'generatedNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final GeneratedNotifier Function()? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$generatedNotifierHash();
@@ -37,6 +32,16 @@ final class GeneratedNotifierProvider
         '($argument)';
   }
 
+  @$internal
+  @override
+  GeneratedNotifier create() => GeneratedNotifier();
+
+  @$internal
+  @override
+  $NotifierProviderElement<GeneratedNotifier, int> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
+
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
@@ -44,41 +49,6 @@ final class GeneratedNotifierProvider
       providerOverride: $ValueProvider<int>(value),
     );
   }
-
-  @$internal
-  @override
-  GeneratedNotifier create() => _createCb?.call() ?? GeneratedNotifier();
-
-  @$internal
-  @override
-  GeneratedNotifierProvider $copyWithCreate(
-    GeneratedNotifier Function() create,
-  ) {
-    return GeneratedNotifierProvider._(
-        argument: argument as int,
-        from: from! as GeneratedNotifierFamily,
-        create: create);
-  }
-
-  @$internal
-  @override
-  GeneratedNotifierProvider $copyWithBuild(
-    int Function(
-      Ref,
-      GeneratedNotifier,
-    ) build,
-  ) {
-    return GeneratedNotifierProvider._(
-        argument: argument as int,
-        from: from! as GeneratedNotifierFamily,
-        runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<GeneratedNotifier, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -109,48 +79,38 @@ final class GeneratedNotifierFamily extends Family {
       GeneratedNotifierProvider._(argument: param, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$generatedNotifierHash();
-
-  @override
   String toString() => r'generatedNotifierProvider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    GeneratedNotifier Function(
-      int args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as GeneratedNotifierProvider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithCreate(() => create(argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          GeneratedNotifier Function(
+            int args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as GeneratedNotifierProvider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(create: () => create(argument))
+                .$createElement(pointer);
+          });
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function(Ref ref, GeneratedNotifier notifier, int argument) build,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as GeneratedNotifierProvider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          int Function(Ref ref, GeneratedNotifier notifier, int argument)
+              build) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as GeneratedNotifierProvider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(
+                    runNotifierBuildOverride: (ref, notifier) =>
+                        build(ref, notifier, argument))
+                .$createElement(pointer);
+          });
 }
 
 abstract class _$GeneratedNotifier extends $Notifier<int> {

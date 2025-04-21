@@ -14,12 +14,8 @@ const boredSuggestionProvider = BoredSuggestionProvider._();
 final class BoredSuggestionProvider
     extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>>
     with $FutureModifier<String>, $FutureProvider<String> {
-  const BoredSuggestionProvider._(
-      {FutureOr<String> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const BoredSuggestionProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -29,31 +25,17 @@ final class BoredSuggestionProvider
           allTransitiveDependencies: null,
         );
 
-  final FutureOr<String> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$boredSuggestionHash();
 
   @$internal
   @override
   $FutureProviderElement<String> $createElement($ProviderPointer pointer) =>
-      $FutureProviderElement(this, pointer);
-
-  @override
-  BoredSuggestionProvider $copyWithCreate(
-    FutureOr<String> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return BoredSuggestionProvider._(create: create);
-  }
+      $FutureProviderElement(pointer);
 
   @override
   FutureOr<String> create(Ref ref) {
-    final _$cb = _createCb ?? boredSuggestion;
-    return _$cb(ref);
+    return boredSuggestion(ref);
   }
 }
 

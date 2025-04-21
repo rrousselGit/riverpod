@@ -13,12 +13,8 @@ const itemsProvider = ItemsProvider._();
 
 final class ItemsProvider extends $FunctionalProvider<List<Item>, List<Item>>
     with $Provider<List<Item>> {
-  const ItemsProvider._(
-      {List<Item> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const ItemsProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -28,12 +24,18 @@ final class ItemsProvider extends $FunctionalProvider<List<Item>, List<Item>>
           allTransitiveDependencies: null,
         );
 
-  final List<Item> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$itemsHash();
+
+  @$internal
+  @override
+  $ProviderElement<List<Item>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  List<Item> create(Ref ref) {
+    return items(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(List<Item> value) {
@@ -41,26 +43,6 @@ final class ItemsProvider extends $FunctionalProvider<List<Item>, List<Item>>
       origin: this,
       providerOverride: $ValueProvider<List<Item>>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<List<Item>> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  ItemsProvider $copyWithCreate(
-    List<Item> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return ItemsProvider._(create: create);
-  }
-
-  @override
-  List<Item> create(Ref ref) {
-    final _$cb = _createCb ?? items;
-    return _$cb(ref);
   }
 }
 
@@ -72,12 +54,8 @@ const evenItemsProvider = EvenItemsProvider._();
 final class EvenItemsProvider
     extends $FunctionalProvider<List<Item>, List<Item>>
     with $Provider<List<Item>> {
-  const EvenItemsProvider._(
-      {List<Item> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const EvenItemsProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -87,12 +65,18 @@ final class EvenItemsProvider
           allTransitiveDependencies: null,
         );
 
-  final List<Item> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$evenItemsHash();
+
+  @$internal
+  @override
+  $ProviderElement<List<Item>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  List<Item> create(Ref ref) {
+    return evenItems(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(List<Item> value) {
@@ -100,26 +84,6 @@ final class EvenItemsProvider
       origin: this,
       providerOverride: $ValueProvider<List<Item>>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<List<Item>> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  EvenItemsProvider $copyWithCreate(
-    List<Item> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return EvenItemsProvider._(create: create);
-  }
-
-  @override
-  List<Item> create(Ref ref) {
-    final _$cb = _createCb ?? evenItems;
-    return _$cb(ref);
   }
 }
 

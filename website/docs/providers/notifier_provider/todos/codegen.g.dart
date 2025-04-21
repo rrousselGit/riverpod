@@ -12,10 +12,8 @@ part of 'codegen.dart';
 const todosProvider = TodosProvider._();
 
 final class TodosProvider extends $NotifierProvider<Todos, List<Todo>> {
-  const TodosProvider._(
-      {super.runNotifierBuildOverride, Todos Function()? create})
-      : _createCb = create,
-        super(
+  const TodosProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -25,10 +23,18 @@ final class TodosProvider extends $NotifierProvider<Todos, List<Todo>> {
           allTransitiveDependencies: null,
         );
 
-  final Todos Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$todosHash();
+
+  @$internal
+  @override
+  Todos create() => Todos();
+
+  @$internal
+  @override
+  $NotifierProviderElement<Todos, List<Todo>> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(List<Todo> value) {
@@ -37,35 +43,6 @@ final class TodosProvider extends $NotifierProvider<Todos, List<Todo>> {
       providerOverride: $ValueProvider<List<Todo>>(value),
     );
   }
-
-  @$internal
-  @override
-  Todos create() => _createCb?.call() ?? Todos();
-
-  @$internal
-  @override
-  TodosProvider $copyWithCreate(
-    Todos Function() create,
-  ) {
-    return TodosProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  TodosProvider $copyWithBuild(
-    List<Todo> Function(
-      Ref,
-      Todos,
-    ) build,
-  ) {
-    return TodosProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<Todos, List<Todo>> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 }
 
 String _$todosHash() => r'3485c14ec4db07efe5fe52243258a66e6f99b2b4';
