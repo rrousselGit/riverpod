@@ -388,14 +388,6 @@ final class A5Provider extends $AsyncNotifierProvider<A5, int> {
           $ProviderPointer pointer) =>
       $AsyncNotifierProviderElement(pointer);
 
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<int> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<int>>(value),
-    );
-  }
-
   @override
   bool operator ==(Object other) {
     return other is A5Provider && other.argument == argument;
@@ -511,14 +503,6 @@ final class A6Provider extends $AsyncNotifierProvider<A6, int> {
   $AsyncNotifierProviderElement<A6, int> $createElement(
           $ProviderPointer pointer) =>
       $AsyncNotifierProviderElement(pointer);
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<int> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<int>>(value),
-    );
-  }
 
   @override
   bool operator ==(Object other) {
@@ -636,14 +620,6 @@ final class A7Provider extends $StreamNotifierProvider<A7, int> {
           $ProviderPointer pointer) =>
       $StreamNotifierProviderElement(pointer);
 
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<int> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<int>>(value),
-    );
-  }
-
   @override
   bool operator ==(Object other) {
     return other is A7Provider && other.argument == argument;
@@ -759,14 +735,6 @@ final class A8Provider extends $StreamNotifierProvider<A8, int> {
   $StreamNotifierProviderElement<A8, int> $createElement(
           $ProviderPointer pointer) =>
       $StreamNotifierProviderElement(pointer);
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<int> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<int>>(value),
-    );
-  }
 
   @override
   bool operator ==(Object other) {

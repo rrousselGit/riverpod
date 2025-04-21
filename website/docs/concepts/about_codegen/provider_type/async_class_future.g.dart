@@ -35,14 +35,6 @@ final class ExampleProvider extends $AsyncNotifierProvider<Example, String> {
   $AsyncNotifierProviderElement<Example, String> $createElement(
           $ProviderPointer pointer) =>
       $AsyncNotifierProviderElement(pointer);
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<String> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<String>>(value),
-    );
-  }
 }
 
 String _$exampleHash() => r'8a906741b8ea4b9b0d3f0b924779704b3e1773a1';

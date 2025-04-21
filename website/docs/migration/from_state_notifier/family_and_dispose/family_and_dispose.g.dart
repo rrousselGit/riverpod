@@ -85,14 +85,6 @@ final class BugsEncounteredNotifierProvider
           $ProviderPointer pointer) =>
       $AsyncNotifierProviderElement(pointer);
 
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<int> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<int>>(value),
-    );
-  }
-
   @override
   bool operator ==(Object other) {
     return other is BugsEncounteredNotifierProvider &&

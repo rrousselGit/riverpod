@@ -69,14 +69,6 @@ final class ActivityNotifier2Provider
   $AsyncNotifierProviderElement<ActivityNotifier2, Activity> $createElement(
           $ProviderPointer pointer) =>
       $AsyncNotifierProviderElement(pointer);
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<Activity> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<Activity>>(value),
-    );
-  }
 }
 
 String _$activityNotifier2Hash() => r'280f4d82a186cfb62827f4d7c74f5349bb0a9e4a';

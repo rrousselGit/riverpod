@@ -193,14 +193,6 @@ final class CountAsyncNotifierProvider
   $AsyncNotifierProviderElement<CountAsyncNotifier, int> $createElement(
           $ProviderPointer pointer) =>
       $AsyncNotifierProviderElement(pointer);
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<int> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<int>>(value),
-    );
-  }
 }
 
 String _$countAsyncNotifierHash() =>
@@ -247,14 +239,6 @@ final class CountStreamNotifierProvider
   $StreamNotifierProviderElement<CountStreamNotifier, int> $createElement(
           $ProviderPointer pointer) =>
       $StreamNotifierProviderElement(pointer);
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<int> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<int>>(value),
-    );
-  }
 }
 
 String _$countStreamNotifierHash() =>
@@ -705,14 +689,6 @@ final class CountAsyncNotifier2Provider
           $ProviderPointer pointer) =>
       $AsyncNotifierProviderElement(pointer);
 
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<int> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<int>>(value),
-    );
-  }
-
   @override
   bool operator ==(Object other) {
     return other is CountAsyncNotifier2Provider && other.argument == argument;
@@ -834,14 +810,6 @@ final class CountStreamNotifier2Provider
   $StreamNotifierProviderElement<CountStreamNotifier2, int> $createElement(
           $ProviderPointer pointer) =>
       $StreamNotifierProviderElement(pointer);
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<int> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<int>>(value),
-    );
-  }
 
   @override
   bool operator ==(Object other) {

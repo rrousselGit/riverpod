@@ -224,14 +224,6 @@ final class PackageMetricsProvider
       $createElement($ProviderPointer pointer) =>
           $AsyncNotifierProviderElement(pointer);
 
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<PackageMetricsScore> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<PackageMetricsScore>>(value),
-    );
-  }
-
   @override
   bool operator ==(Object other) {
     return other is PackageMetricsProvider && other.argument == argument;

@@ -239,14 +239,6 @@ final class SelfNotifierProvider
   $AsyncNotifierProviderElement<SelfNotifier, SelfNotifier> $createElement(
           $ProviderPointer pointer) =>
       $AsyncNotifierProviderElement(pointer);
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<SelfNotifier> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<SelfNotifier>>(value),
-    );
-  }
 }
 
 String _$selfNotifierHash() => r'5a857f5c92a9b7a35daa4e527bd333cf3d8d19ac';
@@ -348,14 +340,6 @@ final class StreamSelfNotifierProvider
   $StreamNotifierProviderElement<StreamSelfNotifier, StreamSelfNotifier>
       $createElement($ProviderPointer pointer) =>
           $StreamNotifierProviderElement(pointer);
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<StreamSelfNotifier> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<StreamSelfNotifier>>(value),
-    );
-  }
 }
 
 String _$streamSelfNotifierHash() =>
@@ -406,14 +390,6 @@ final class StateNotifierClassAsyncProvider
   $AsyncNotifierProviderElement<StateNotifierClassAsync, MyStateNotifier>
       $createElement($ProviderPointer pointer) =>
           $AsyncNotifierProviderElement(pointer);
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<MyStateNotifier> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<MyStateNotifier>>(value),
-    );
-  }
 }
 
 String _$stateNotifierClassAsyncHash() =>

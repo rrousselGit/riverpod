@@ -36,14 +36,6 @@ final class MyNotifierProvider
   $AsyncNotifierProviderElement<MyNotifier, List<Todo>> $createElement(
           $ProviderPointer pointer) =>
       $AsyncNotifierProviderElement(pointer);
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<List<Todo>> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<List<Todo>>>(value),
-    );
-  }
 }
 
 String _$myNotifierHash() => r'1c67c12443102cf8c43efbf6c630d3028d9847c3';

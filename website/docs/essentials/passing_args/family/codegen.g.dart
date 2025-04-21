@@ -132,14 +132,6 @@ final class ActivityNotifier2Provider
           $ProviderPointer pointer) =>
       $AsyncNotifierProviderElement(pointer);
 
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<Activity> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<AsyncValue<Activity>>(value),
-    );
-  }
-
   @override
   bool operator ==(Object other) {
     return other is ActivityNotifier2Provider && other.argument == argument;
