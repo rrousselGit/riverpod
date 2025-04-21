@@ -13,12 +13,8 @@ const durationProvider = DurationProvider._();
 
 final class DurationProvider extends $FunctionalProvider<Duration, Duration>
     with $Provider<Duration> {
-  const DurationProvider._(
-      {Duration Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const DurationProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -28,12 +24,18 @@ final class DurationProvider extends $FunctionalProvider<Duration, Duration>
           allTransitiveDependencies: null,
         );
 
-  final Duration Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$durationHash();
+
+  @$internal
+  @override
+  $ProviderElement<Duration> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  Duration create(Ref ref) {
+    return duration(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Duration value) {
@@ -41,26 +43,6 @@ final class DurationProvider extends $FunctionalProvider<Duration, Duration>
       origin: this,
       providerOverride: $ValueProvider<Duration>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<Duration> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  DurationProvider $copyWithCreate(
-    Duration Function(
-      Ref ref,
-    ) create,
-  ) {
-    return DurationProvider._(create: create);
-  }
-
-  @override
-  Duration create(Ref ref) {
-    final _$cb = _createCb ?? duration;
-    return _$cb(ref);
   }
 }
 
@@ -71,12 +53,8 @@ const repositoryProvider = RepositoryProvider._();
 
 final class RepositoryProvider extends $FunctionalProvider<_MyRepo, _MyRepo>
     with $Provider<_MyRepo> {
-  const RepositoryProvider._(
-      {_MyRepo Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const RepositoryProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -86,12 +64,18 @@ final class RepositoryProvider extends $FunctionalProvider<_MyRepo, _MyRepo>
           allTransitiveDependencies: null,
         );
 
-  final _MyRepo Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$repositoryHash();
+
+  @$internal
+  @override
+  $ProviderElement<_MyRepo> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  _MyRepo create(Ref ref) {
+    return repository(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(_MyRepo value) {
@@ -99,26 +83,6 @@ final class RepositoryProvider extends $FunctionalProvider<_MyRepo, _MyRepo>
       origin: this,
       providerOverride: $ValueProvider<_MyRepo>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<_MyRepo> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  RepositoryProvider $copyWithCreate(
-    _MyRepo Function(
-      Ref ref,
-    ) create,
-  ) {
-    return RepositoryProvider._(create: create);
-  }
-
-  @override
-  _MyRepo create(Ref ref) {
-    final _$cb = _createCb ?? repository;
-    return _$cb(ref);
   }
 }
 
@@ -128,10 +92,8 @@ String _$repositoryHash() => r'8c1b035ba722660550674e92444db7b6f25ac2a3';
 const myNotifierProvider = MyNotifierProvider._();
 
 final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
-  const MyNotifierProvider._(
-      {super.runNotifierBuildOverride, MyNotifier Function()? create})
-      : _createCb = create,
-        super(
+  const MyNotifierProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -141,10 +103,18 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
           allTransitiveDependencies: null,
         );
 
-  final MyNotifier Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$myNotifierHash();
+
+  @$internal
+  @override
+  MyNotifier create() => MyNotifier();
+
+  @$internal
+  @override
+  $NotifierProviderElement<MyNotifier, int> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -153,35 +123,6 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
       providerOverride: $ValueProvider<int>(value),
     );
   }
-
-  @$internal
-  @override
-  MyNotifier create() => _createCb?.call() ?? MyNotifier();
-
-  @$internal
-  @override
-  MyNotifierProvider $copyWithCreate(
-    MyNotifier Function() create,
-  ) {
-    return MyNotifierProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  MyNotifierProvider $copyWithBuild(
-    int Function(
-      Ref,
-      MyNotifier,
-    ) build,
-  ) {
-    return MyNotifierProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<MyNotifier, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 }
 
 String _$myNotifierHash() => r'8ea2586ea29d12306efd4b8b847142136dd20338';

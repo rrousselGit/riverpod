@@ -12,10 +12,8 @@ part of 'codegen.dart';
 const todoListProvider = TodoListProvider._();
 
 final class TodoListProvider extends $NotifierProvider<TodoList, List<Todo>> {
-  const TodoListProvider._(
-      {super.runNotifierBuildOverride, TodoList Function()? create})
-      : _createCb = create,
-        super(
+  const TodoListProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -25,10 +23,18 @@ final class TodoListProvider extends $NotifierProvider<TodoList, List<Todo>> {
           allTransitiveDependencies: null,
         );
 
-  final TodoList Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$todoListHash();
+
+  @$internal
+  @override
+  TodoList create() => TodoList();
+
+  @$internal
+  @override
+  $NotifierProviderElement<TodoList, List<Todo>> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(List<Todo> value) {
@@ -37,35 +43,6 @@ final class TodoListProvider extends $NotifierProvider<TodoList, List<Todo>> {
       providerOverride: $ValueProvider<List<Todo>>(value),
     );
   }
-
-  @$internal
-  @override
-  TodoList create() => _createCb?.call() ?? TodoList();
-
-  @$internal
-  @override
-  TodoListProvider $copyWithCreate(
-    TodoList Function() create,
-  ) {
-    return TodoListProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  TodoListProvider $copyWithBuild(
-    List<Todo> Function(
-      Ref,
-      TodoList,
-    ) build,
-  ) {
-    return TodoListProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<TodoList, List<Todo>> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 }
 
 String _$todoListHash() => r'77f007cd4f5105330a4c2ab8555ea0d1716945c1';
@@ -88,12 +65,8 @@ const counterProvider = CounterProvider._();
 
 final class CounterProvider extends $FunctionalProvider<int, int>
     with $Provider<int> {
-  const CounterProvider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const CounterProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -103,12 +76,18 @@ final class CounterProvider extends $FunctionalProvider<int, int>
           allTransitiveDependencies: null,
         );
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$counterHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return counter(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -116,26 +95,6 @@ final class CounterProvider extends $FunctionalProvider<int, int>
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  CounterProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return CounterProvider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? counter;
-    return _$cb(ref);
   }
 }
 

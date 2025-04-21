@@ -13,12 +13,8 @@ const helloWorldProvider = HelloWorldProvider._();
 
 final class HelloWorldProvider extends $FunctionalProvider<String, String>
     with $Provider<String> {
-  const HelloWorldProvider._(
-      {String Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const HelloWorldProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -28,12 +24,18 @@ final class HelloWorldProvider extends $FunctionalProvider<String, String>
           allTransitiveDependencies: null,
         );
 
-  final String Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$helloWorldHash();
+
+  @$internal
+  @override
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  String create(Ref ref) {
+    return helloWorld(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
@@ -41,26 +43,6 @@ final class HelloWorldProvider extends $FunctionalProvider<String, String>
       origin: this,
       providerOverride: $ValueProvider<String>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  HelloWorldProvider $copyWithCreate(
-    String Function(
-      Ref ref,
-    ) create,
-  ) {
-    return HelloWorldProvider._(create: create);
-  }
-
-  @override
-  String create(Ref ref) {
-    final _$cb = _createCb ?? helloWorld;
-    return _$cb(ref);
   }
 }
 

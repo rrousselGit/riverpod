@@ -20,26 +20,14 @@ final class FetchPackagesProvider extends $FunctionalProvider<
         int page,
         String search,
       })
-          super.argument,
-      FutureOr<List<Package>> Function(
-        Ref ref, {
-        required int page,
-        String search,
-      })? create})
-      : _createCb = create,
-        super(
+          super.argument})
+      : super(
           retry: null,
           name: r'fetchPackagesProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final FutureOr<List<Package>> Function(
-    Ref ref, {
-    required int page,
-    String search,
-  })? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$fetchPackagesHash();
@@ -55,36 +43,15 @@ final class FetchPackagesProvider extends $FunctionalProvider<
   @override
   $FutureProviderElement<List<Package>> $createElement(
           $ProviderPointer pointer) =>
-      $FutureProviderElement(this, pointer);
-
-  @override
-  FetchPackagesProvider $copyWithCreate(
-    FutureOr<List<Package>> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return FetchPackagesProvider._(
-        argument: argument as ({
-          int page,
-          String search,
-        }),
-        from: from! as FetchPackagesFamily,
-        create: (
-          ref, {
-          required int page,
-          String search = '',
-        }) =>
-            create(ref));
-  }
+      $FutureProviderElement(pointer);
 
   @override
   FutureOr<List<Package>> create(Ref ref) {
-    final _$cb = _createCb ?? fetchPackages;
     final argument = this.argument as ({
       int page,
       String search,
     });
-    return _$cb(
+    return fetchPackages(
       ref,
       page: argument.page,
       search: argument.search,
@@ -124,37 +91,29 @@ final class FetchPackagesFamily extends Family {
       ), from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$fetchPackagesHash();
-
-  @override
   String toString() => r'fetchPackagesProvider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    FutureOr<List<Package>> Function(
-      Ref ref,
-      ({
-        int page,
-        String search,
-      }) args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as FetchPackagesProvider;
-
-        final argument = provider.argument as ({
-          int page,
-          String search,
-        });
-
-        return provider
-            .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          FutureOr<List<Package>> Function(
+            Ref ref,
+            ({
+              int page,
+              String search,
+            }) args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as FetchPackagesProvider;
+            final argument = provider.argument as ({
+              int page,
+              String search,
+            });
+            return provider
+                .$view(create: (ref) => create(ref, argument))
+                .$createElement(pointer);
+          });
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

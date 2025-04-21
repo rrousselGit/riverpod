@@ -12,10 +12,8 @@ part of 'codegen.dart';
 const todoListProvider = TodoListProvider._();
 
 final class TodoListProvider extends $NotifierProvider<TodoList, List<Todo>> {
-  const TodoListProvider._(
-      {super.runNotifierBuildOverride, TodoList Function()? create})
-      : _createCb = create,
-        super(
+  const TodoListProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -25,10 +23,18 @@ final class TodoListProvider extends $NotifierProvider<TodoList, List<Todo>> {
           allTransitiveDependencies: null,
         );
 
-  final TodoList Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$todoListHash();
+
+  @$internal
+  @override
+  TodoList create() => TodoList();
+
+  @$internal
+  @override
+  $NotifierProviderElement<TodoList, List<Todo>> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(List<Todo> value) {
@@ -37,35 +43,6 @@ final class TodoListProvider extends $NotifierProvider<TodoList, List<Todo>> {
       providerOverride: $ValueProvider<List<Todo>>(value),
     );
   }
-
-  @$internal
-  @override
-  TodoList create() => _createCb?.call() ?? TodoList();
-
-  @$internal
-  @override
-  TodoListProvider $copyWithCreate(
-    TodoList Function() create,
-  ) {
-    return TodoListProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  TodoListProvider $copyWithBuild(
-    List<Todo> Function(
-      Ref,
-      TodoList,
-    ) build,
-  ) {
-    return TodoListProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<TodoList, List<Todo>> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 }
 
 String _$todoListHash() => r'6c965beb867ffeee119133f0ae2e6ebeb68e6f7e';

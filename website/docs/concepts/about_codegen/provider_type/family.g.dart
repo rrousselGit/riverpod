@@ -14,25 +14,14 @@ const exampleProvider = ExampleFamily._();
 final class ExampleProvider extends $FunctionalProvider<String, String>
     with $Provider<String> {
   const ExampleProvider._(
-      {required ExampleFamily super.from,
-      required int super.argument,
-      String Function(
-        Ref ref,
-        int param,
-      )? create})
-      : _createCb = create,
-        super(
+      {required ExampleFamily super.from, required int super.argument})
+      : super(
           retry: null,
           name: r'exampleProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final String Function(
-    Ref ref,
-    int param,
-  )? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$exampleHash();
@@ -44,42 +33,25 @@ final class ExampleProvider extends $FunctionalProvider<String, String>
         '($argument)';
   }
 
+  @$internal
+  @override
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  String create(Ref ref) {
+    final argument = this.argument as int;
+    return example(
+      ref,
+      argument,
+    );
+  }
+
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
       providerOverride: $ValueProvider<String>(value),
-    );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  ExampleProvider $copyWithCreate(
-    String Function(
-      Ref ref,
-    ) create,
-  ) {
-    return ExampleProvider._(
-        argument: argument as int,
-        from: from! as ExampleFamily,
-        create: (
-          ref,
-          int param,
-        ) =>
-            create(ref));
-  }
-
-  @override
-  String create(Ref ref) {
-    final _$cb = _createCb ?? example;
-    final argument = this.argument as int;
-    return _$cb(
-      ref,
-      argument,
     );
   }
 
@@ -112,31 +84,23 @@ final class ExampleFamily extends Family {
       ExampleProvider._(argument: param, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$exampleHash();
-
-  @override
   String toString() => r'exampleProvider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    String Function(
-      Ref ref,
-      int args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as ExampleProvider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          String Function(
+            Ref ref,
+            int args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as ExampleProvider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(create: (ref) => create(ref, argument))
+                .$createElement(pointer);
+          });
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

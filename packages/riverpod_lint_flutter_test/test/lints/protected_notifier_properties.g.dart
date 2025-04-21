@@ -10,9 +10,8 @@ part of 'protected_notifier_properties.dart';
 const aProvider = AProvider._();
 
 final class AProvider extends $NotifierProvider<A, int> {
-  const AProvider._({super.runNotifierBuildOverride, A Function()? create})
-      : _createCb = create,
-        super(
+  const AProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -22,10 +21,17 @@ final class AProvider extends $NotifierProvider<A, int> {
           allTransitiveDependencies: null,
         );
 
-  final A Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$aHash();
+
+  @$internal
+  @override
+  A create() => A();
+
+  @$internal
+  @override
+  $NotifierProviderElement<A, int> $createElement($ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -34,34 +40,6 @@ final class AProvider extends $NotifierProvider<A, int> {
       providerOverride: $ValueProvider<int>(value),
     );
   }
-
-  @$internal
-  @override
-  A create() => _createCb?.call() ?? A();
-
-  @$internal
-  @override
-  AProvider $copyWithCreate(
-    A Function() create,
-  ) {
-    return AProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  AProvider $copyWithBuild(
-    int Function(
-      Ref,
-      A,
-    ) build,
-  ) {
-    return AProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<A, int> $createElement($ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 }
 
 String _$aHash() => r'9bf449b010f4dd5800e78f9f5b8a431b1a79c8b7';
@@ -83,9 +61,8 @@ abstract class _$A extends $Notifier<int> {
 const a2Provider = A2Provider._();
 
 final class A2Provider extends $NotifierProvider<A2, int> {
-  const A2Provider._({super.runNotifierBuildOverride, A2 Function()? create})
-      : _createCb = create,
-        super(
+  const A2Provider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -95,10 +72,17 @@ final class A2Provider extends $NotifierProvider<A2, int> {
           allTransitiveDependencies: null,
         );
 
-  final A2 Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$a2Hash();
+
+  @$internal
+  @override
+  A2 create() => A2();
+
+  @$internal
+  @override
+  $NotifierProviderElement<A2, int> $createElement($ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -107,34 +91,6 @@ final class A2Provider extends $NotifierProvider<A2, int> {
       providerOverride: $ValueProvider<int>(value),
     );
   }
-
-  @$internal
-  @override
-  A2 create() => _createCb?.call() ?? A2();
-
-  @$internal
-  @override
-  A2Provider $copyWithCreate(
-    A2 Function() create,
-  ) {
-    return A2Provider._(create: create);
-  }
-
-  @$internal
-  @override
-  A2Provider $copyWithBuild(
-    int Function(
-      Ref,
-      A2,
-    ) build,
-  ) {
-    return A2Provider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<A2, int> $createElement($ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 }
 
 String _$a2Hash() => r'898d46cbcec03233c7b8b0754810a6903226aa2e';
@@ -157,20 +113,14 @@ const a3Provider = A3Family._();
 
 final class A3Provider extends $NotifierProvider<A3, int> {
   const A3Provider._(
-      {required A3Family super.from,
-      required int super.argument,
-      super.runNotifierBuildOverride,
-      A3 Function()? create})
-      : _createCb = create,
-        super(
+      {required A3Family super.from, required int super.argument})
+      : super(
           retry: null,
           name: r'a3Provider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final A3 Function()? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$a3Hash();
@@ -182,6 +132,15 @@ final class A3Provider extends $NotifierProvider<A3, int> {
         '($argument)';
   }
 
+  @$internal
+  @override
+  A3 create() => A3();
+
+  @$internal
+  @override
+  $NotifierProviderElement<A3, int> $createElement($ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
+
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
@@ -189,38 +148,6 @@ final class A3Provider extends $NotifierProvider<A3, int> {
       providerOverride: $ValueProvider<int>(value),
     );
   }
-
-  @$internal
-  @override
-  A3 create() => _createCb?.call() ?? A3();
-
-  @$internal
-  @override
-  A3Provider $copyWithCreate(
-    A3 Function() create,
-  ) {
-    return A3Provider._(
-        argument: argument as int, from: from! as A3Family, create: create);
-  }
-
-  @$internal
-  @override
-  A3Provider $copyWithBuild(
-    int Function(
-      Ref,
-      A3,
-    ) build,
-  ) {
-    return A3Provider._(
-        argument: argument as int,
-        from: from! as A3Family,
-        runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<A3, int> $createElement($ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -251,48 +178,37 @@ final class A3Family extends Family {
       A3Provider._(argument: param, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$a3Hash();
-
-  @override
   String toString() => r'a3Provider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    A3 Function(
-      int args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as A3Provider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithCreate(() => create(argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          A3 Function(
+            int args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as A3Provider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(create: () => create(argument))
+                .$createElement(pointer);
+          });
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function(Ref ref, A3 notifier, int argument) build,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as A3Provider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          int Function(Ref ref, A3 notifier, int argument) build) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as A3Provider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(
+                    runNotifierBuildOverride: (ref, notifier) =>
+                        build(ref, notifier, argument))
+                .$createElement(pointer);
+          });
 }
 
 abstract class _$A3 extends $Notifier<int> {
@@ -320,20 +236,14 @@ const a4Provider = A4Family._();
 
 final class A4Provider extends $NotifierProvider<A4, int> {
   const A4Provider._(
-      {required A4Family super.from,
-      required int super.argument,
-      super.runNotifierBuildOverride,
-      A4 Function()? create})
-      : _createCb = create,
-        super(
+      {required A4Family super.from, required int super.argument})
+      : super(
           retry: null,
           name: r'a4Provider',
           isAutoDispose: false,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final A4 Function()? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$a4Hash();
@@ -345,6 +255,15 @@ final class A4Provider extends $NotifierProvider<A4, int> {
         '($argument)';
   }
 
+  @$internal
+  @override
+  A4 create() => A4();
+
+  @$internal
+  @override
+  $NotifierProviderElement<A4, int> $createElement($ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
+
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
@@ -352,38 +271,6 @@ final class A4Provider extends $NotifierProvider<A4, int> {
       providerOverride: $ValueProvider<int>(value),
     );
   }
-
-  @$internal
-  @override
-  A4 create() => _createCb?.call() ?? A4();
-
-  @$internal
-  @override
-  A4Provider $copyWithCreate(
-    A4 Function() create,
-  ) {
-    return A4Provider._(
-        argument: argument as int, from: from! as A4Family, create: create);
-  }
-
-  @$internal
-  @override
-  A4Provider $copyWithBuild(
-    int Function(
-      Ref,
-      A4,
-    ) build,
-  ) {
-    return A4Provider._(
-        argument: argument as int,
-        from: from! as A4Family,
-        runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<A4, int> $createElement($ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 
   @override
   bool operator ==(Object other) {
@@ -414,48 +301,37 @@ final class A4Family extends Family {
       A4Provider._(argument: param, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$a4Hash();
-
-  @override
   String toString() => r'a4Provider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    A4 Function(
-      int args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as A4Provider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithCreate(() => create(argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          A4 Function(
+            int args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as A4Provider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(create: () => create(argument))
+                .$createElement(pointer);
+          });
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function(Ref ref, A4 notifier, int argument) build,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as A4Provider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          int Function(Ref ref, A4 notifier, int argument) build) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as A4Provider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(
+                    runNotifierBuildOverride: (ref, notifier) =>
+                        build(ref, notifier, argument))
+                .$createElement(pointer);
+          });
 }
 
 abstract class _$A4 extends $Notifier<int> {
@@ -483,20 +359,14 @@ const a5Provider = A5Family._();
 
 final class A5Provider extends $AsyncNotifierProvider<A5, int> {
   const A5Provider._(
-      {required A5Family super.from,
-      required int super.argument,
-      super.runNotifierBuildOverride,
-      A5 Function()? create})
-      : _createCb = create,
-        super(
+      {required A5Family super.from, required int super.argument})
+      : super(
           retry: null,
           name: r'a5Provider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final A5 Function()? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$a5Hash();
@@ -510,36 +380,21 @@ final class A5Provider extends $AsyncNotifierProvider<A5, int> {
 
   @$internal
   @override
-  A5 create() => _createCb?.call() ?? A5();
-
-  @$internal
-  @override
-  A5Provider $copyWithCreate(
-    A5 Function() create,
-  ) {
-    return A5Provider._(
-        argument: argument as int, from: from! as A5Family, create: create);
-  }
-
-  @$internal
-  @override
-  A5Provider $copyWithBuild(
-    FutureOr<int> Function(
-      Ref,
-      A5,
-    ) build,
-  ) {
-    return A5Provider._(
-        argument: argument as int,
-        from: from! as A5Family,
-        runNotifierBuildOverride: build);
-  }
+  A5 create() => A5();
 
   @$internal
   @override
   $AsyncNotifierProviderElement<A5, int> $createElement(
           $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(this, pointer);
+      $AsyncNotifierProviderElement(pointer);
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<int> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<AsyncValue<int>>(value),
+    );
+  }
 
   @override
   bool operator ==(Object other) {
@@ -570,48 +425,37 @@ final class A5Family extends Family {
       A5Provider._(argument: param, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$a5Hash();
-
-  @override
   String toString() => r'a5Provider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    A5 Function(
-      int args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as A5Provider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithCreate(() => create(argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          A5 Function(
+            int args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as A5Provider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(create: () => create(argument))
+                .$createElement(pointer);
+          });
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    FutureOr<int> Function(Ref ref, A5 notifier, int argument) build,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as A5Provider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          FutureOr<int> Function(Ref ref, A5 notifier, int argument) build) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as A5Provider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(
+                    runNotifierBuildOverride: (ref, notifier) =>
+                        build(ref, notifier, argument))
+                .$createElement(pointer);
+          });
 }
 
 abstract class _$A5 extends $AsyncNotifier<int> {
@@ -639,20 +483,14 @@ const a6Provider = A6Family._();
 
 final class A6Provider extends $AsyncNotifierProvider<A6, int> {
   const A6Provider._(
-      {required A6Family super.from,
-      required int super.argument,
-      super.runNotifierBuildOverride,
-      A6 Function()? create})
-      : _createCb = create,
-        super(
+      {required A6Family super.from, required int super.argument})
+      : super(
           retry: null,
           name: r'a6Provider',
           isAutoDispose: false,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final A6 Function()? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$a6Hash();
@@ -666,36 +504,21 @@ final class A6Provider extends $AsyncNotifierProvider<A6, int> {
 
   @$internal
   @override
-  A6 create() => _createCb?.call() ?? A6();
-
-  @$internal
-  @override
-  A6Provider $copyWithCreate(
-    A6 Function() create,
-  ) {
-    return A6Provider._(
-        argument: argument as int, from: from! as A6Family, create: create);
-  }
-
-  @$internal
-  @override
-  A6Provider $copyWithBuild(
-    FutureOr<int> Function(
-      Ref,
-      A6,
-    ) build,
-  ) {
-    return A6Provider._(
-        argument: argument as int,
-        from: from! as A6Family,
-        runNotifierBuildOverride: build);
-  }
+  A6 create() => A6();
 
   @$internal
   @override
   $AsyncNotifierProviderElement<A6, int> $createElement(
           $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(this, pointer);
+      $AsyncNotifierProviderElement(pointer);
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<int> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<AsyncValue<int>>(value),
+    );
+  }
 
   @override
   bool operator ==(Object other) {
@@ -726,48 +549,37 @@ final class A6Family extends Family {
       A6Provider._(argument: param, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$a6Hash();
-
-  @override
   String toString() => r'a6Provider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    A6 Function(
-      int args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as A6Provider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithCreate(() => create(argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          A6 Function(
+            int args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as A6Provider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(create: () => create(argument))
+                .$createElement(pointer);
+          });
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    FutureOr<int> Function(Ref ref, A6 notifier, int argument) build,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as A6Provider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          FutureOr<int> Function(Ref ref, A6 notifier, int argument) build) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as A6Provider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(
+                    runNotifierBuildOverride: (ref, notifier) =>
+                        build(ref, notifier, argument))
+                .$createElement(pointer);
+          });
 }
 
 abstract class _$A6 extends $AsyncNotifier<int> {
@@ -795,20 +607,14 @@ const a7Provider = A7Family._();
 
 final class A7Provider extends $StreamNotifierProvider<A7, int> {
   const A7Provider._(
-      {required A7Family super.from,
-      required int super.argument,
-      super.runNotifierBuildOverride,
-      A7 Function()? create})
-      : _createCb = create,
-        super(
+      {required A7Family super.from, required int super.argument})
+      : super(
           retry: null,
           name: r'a7Provider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final A7 Function()? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$a7Hash();
@@ -822,36 +628,21 @@ final class A7Provider extends $StreamNotifierProvider<A7, int> {
 
   @$internal
   @override
-  A7 create() => _createCb?.call() ?? A7();
-
-  @$internal
-  @override
-  A7Provider $copyWithCreate(
-    A7 Function() create,
-  ) {
-    return A7Provider._(
-        argument: argument as int, from: from! as A7Family, create: create);
-  }
-
-  @$internal
-  @override
-  A7Provider $copyWithBuild(
-    Stream<int> Function(
-      Ref,
-      A7,
-    ) build,
-  ) {
-    return A7Provider._(
-        argument: argument as int,
-        from: from! as A7Family,
-        runNotifierBuildOverride: build);
-  }
+  A7 create() => A7();
 
   @$internal
   @override
   $StreamNotifierProviderElement<A7, int> $createElement(
           $ProviderPointer pointer) =>
-      $StreamNotifierProviderElement(this, pointer);
+      $StreamNotifierProviderElement(pointer);
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<int> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<AsyncValue<int>>(value),
+    );
+  }
 
   @override
   bool operator ==(Object other) {
@@ -882,48 +673,37 @@ final class A7Family extends Family {
       A7Provider._(argument: param, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$a7Hash();
-
-  @override
   String toString() => r'a7Provider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    A7 Function(
-      int args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as A7Provider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithCreate(() => create(argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          A7 Function(
+            int args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as A7Provider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(create: () => create(argument))
+                .$createElement(pointer);
+          });
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    Stream<int> Function(Ref ref, A7 notifier, int argument) build,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as A7Provider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          Stream<int> Function(Ref ref, A7 notifier, int argument) build) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as A7Provider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(
+                    runNotifierBuildOverride: (ref, notifier) =>
+                        build(ref, notifier, argument))
+                .$createElement(pointer);
+          });
 }
 
 abstract class _$A7 extends $StreamNotifier<int> {
@@ -951,20 +731,14 @@ const a8Provider = A8Family._();
 
 final class A8Provider extends $StreamNotifierProvider<A8, int> {
   const A8Provider._(
-      {required A8Family super.from,
-      required int super.argument,
-      super.runNotifierBuildOverride,
-      A8 Function()? create})
-      : _createCb = create,
-        super(
+      {required A8Family super.from, required int super.argument})
+      : super(
           retry: null,
           name: r'a8Provider',
           isAutoDispose: false,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final A8 Function()? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$a8Hash();
@@ -978,36 +752,21 @@ final class A8Provider extends $StreamNotifierProvider<A8, int> {
 
   @$internal
   @override
-  A8 create() => _createCb?.call() ?? A8();
-
-  @$internal
-  @override
-  A8Provider $copyWithCreate(
-    A8 Function() create,
-  ) {
-    return A8Provider._(
-        argument: argument as int, from: from! as A8Family, create: create);
-  }
-
-  @$internal
-  @override
-  A8Provider $copyWithBuild(
-    Stream<int> Function(
-      Ref,
-      A8,
-    ) build,
-  ) {
-    return A8Provider._(
-        argument: argument as int,
-        from: from! as A8Family,
-        runNotifierBuildOverride: build);
-  }
+  A8 create() => A8();
 
   @$internal
   @override
   $StreamNotifierProviderElement<A8, int> $createElement(
           $ProviderPointer pointer) =>
-      $StreamNotifierProviderElement(this, pointer);
+      $StreamNotifierProviderElement(pointer);
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<int> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<AsyncValue<int>>(value),
+    );
+  }
 
   @override
   bool operator ==(Object other) {
@@ -1038,48 +797,37 @@ final class A8Family extends Family {
       A8Provider._(argument: param, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$a8Hash();
-
-  @override
   String toString() => r'a8Provider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    A8 Function(
-      int args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as A8Provider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithCreate(() => create(argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          A8 Function(
+            int args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as A8Provider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(create: () => create(argument))
+                .$createElement(pointer);
+          });
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    Stream<int> Function(Ref ref, A8 notifier, int argument) build,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as A8Provider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          Stream<int> Function(Ref ref, A8 notifier, int argument) build) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as A8Provider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(
+                    runNotifierBuildOverride: (ref, notifier) =>
+                        build(ref, notifier, argument))
+                .$createElement(pointer);
+          });
 }
 
 abstract class _$A8 extends $StreamNotifier<int> {
@@ -1106,9 +854,8 @@ abstract class _$A8 extends $StreamNotifier<int> {
 const bProvider = BProvider._();
 
 final class BProvider extends $NotifierProvider<B, int> {
-  const BProvider._({super.runNotifierBuildOverride, B Function()? create})
-      : _createCb = create,
-        super(
+  const BProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -1118,10 +865,17 @@ final class BProvider extends $NotifierProvider<B, int> {
           allTransitiveDependencies: null,
         );
 
-  final B Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$bHash();
+
+  @$internal
+  @override
+  B create() => B();
+
+  @$internal
+  @override
+  $NotifierProviderElement<B, int> $createElement($ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -1130,34 +884,6 @@ final class BProvider extends $NotifierProvider<B, int> {
       providerOverride: $ValueProvider<int>(value),
     );
   }
-
-  @$internal
-  @override
-  B create() => _createCb?.call() ?? B();
-
-  @$internal
-  @override
-  BProvider $copyWithCreate(
-    B Function() create,
-  ) {
-    return BProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  BProvider $copyWithBuild(
-    int Function(
-      Ref,
-      B,
-    ) build,
-  ) {
-    return BProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<B, int> $createElement($ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 }
 
 String _$bHash() => r'44288285e9c28f846d609ba892520f577ecf7867';
@@ -1179,9 +905,8 @@ abstract class _$B extends $Notifier<int> {
 const b2Provider = B2Provider._();
 
 final class B2Provider extends $NotifierProvider<B2, int> {
-  const B2Provider._({super.runNotifierBuildOverride, B2 Function()? create})
-      : _createCb = create,
-        super(
+  const B2Provider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -1191,10 +916,17 @@ final class B2Provider extends $NotifierProvider<B2, int> {
           allTransitiveDependencies: null,
         );
 
-  final B2 Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$b2Hash();
+
+  @$internal
+  @override
+  B2 create() => B2();
+
+  @$internal
+  @override
+  $NotifierProviderElement<B2, int> $createElement($ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -1203,34 +935,6 @@ final class B2Provider extends $NotifierProvider<B2, int> {
       providerOverride: $ValueProvider<int>(value),
     );
   }
-
-  @$internal
-  @override
-  B2 create() => _createCb?.call() ?? B2();
-
-  @$internal
-  @override
-  B2Provider $copyWithCreate(
-    B2 Function() create,
-  ) {
-    return B2Provider._(create: create);
-  }
-
-  @$internal
-  @override
-  B2Provider $copyWithBuild(
-    int Function(
-      Ref,
-      B2,
-    ) build,
-  ) {
-    return B2Provider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<B2, int> $createElement($ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 }
 
 String _$b2Hash() => r'292925c285c6975ed6585d541c5a9ae18977d73c';

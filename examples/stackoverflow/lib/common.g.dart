@@ -25,12 +25,8 @@ final class ThemeProvider extends $FunctionalProvider<ThemeData, ThemeData>
   ///
   /// This is unimplemented by default, and will be overridden inside [MaterialApp]
   /// with the current theme obtained using a [BuildContext].
-  const ThemeProvider._(
-      {ThemeData Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const ThemeProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -40,12 +36,18 @@ final class ThemeProvider extends $FunctionalProvider<ThemeData, ThemeData>
           allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
-  final ThemeData Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$themeHash();
+
+  @$internal
+  @override
+  $ProviderElement<ThemeData> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  ThemeData create(Ref ref) {
+    return theme(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(ThemeData value) {
@@ -53,26 +55,6 @@ final class ThemeProvider extends $FunctionalProvider<ThemeData, ThemeData>
       origin: this,
       providerOverride: $ValueProvider<ThemeData>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<ThemeData> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  ThemeProvider $copyWithCreate(
-    ThemeData Function(
-      Ref ref,
-    ) create,
-  ) {
-    return ThemeProvider._(create: create);
-  }
-
-  @override
-  ThemeData create(Ref ref) {
-    final _$cb = _createCb ?? theme;
-    return _$cb(ref);
   }
 }
 

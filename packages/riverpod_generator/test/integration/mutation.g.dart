@@ -11,10 +11,8 @@ const syncTodoListProvider = SyncTodoListProvider._();
 
 final class SyncTodoListProvider
     extends $NotifierProvider<SyncTodoList, List<Todo>> {
-  const SyncTodoListProvider._(
-      {super.runNotifierBuildOverride, SyncTodoList Function()? create})
-      : _createCb = create,
-        super(
+  const SyncTodoListProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -24,46 +22,17 @@ final class SyncTodoListProvider
           allTransitiveDependencies: null,
         );
 
-  final SyncTodoList Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$syncTodoListHash();
 
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(List<Todo> value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<List<Todo>>(value),
-    );
-  }
-
   @$internal
   @override
-  SyncTodoList create() => _createCb?.call() ?? SyncTodoList();
-
-  @$internal
-  @override
-  SyncTodoListProvider $copyWithCreate(
-    SyncTodoList Function() create,
-  ) {
-    return SyncTodoListProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  SyncTodoListProvider $copyWithBuild(
-    List<Todo> Function(
-      Ref,
-      SyncTodoList,
-    ) build,
-  ) {
-    return SyncTodoListProvider._(runNotifierBuildOverride: build);
-  }
+  SyncTodoList create() => SyncTodoList();
 
   @$internal
   @override
   _$SyncTodoListElement $createElement($ProviderPointer pointer) =>
-      _$SyncTodoListElement(this, pointer);
+      _$SyncTodoListElement(pointer);
 
   ProviderListenable<SyncTodoList$AddSync> get addSync =>
       $LazyProxyListenable<SyncTodoList$AddSync, List<Todo>>(
@@ -84,6 +53,14 @@ final class SyncTodoListProvider
           return element._$addAsync;
         },
       );
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<Todo> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<List<Todo>>(value),
+    );
+  }
 }
 
 String _$syncTodoListHash() => r'18d459affe35603d564ac90e05c1978d4e862f40';
@@ -103,7 +80,7 @@ abstract class _$SyncTodoList extends $Notifier<List<Todo>> {
 
 class _$SyncTodoListElement
     extends $NotifierProviderElement<SyncTodoList, List<Todo>> {
-  _$SyncTodoListElement(super.provider, super.pointer) {
+  _$SyncTodoListElement(super.pointer) {
     _$addSync.result = $Result.data(_$SyncTodoList$AddSync(this));
     _$addAsync.result = $Result.data(_$SyncTodoList$AddAsync(this));
   }
@@ -226,10 +203,8 @@ const asyncTodoListProvider = AsyncTodoListProvider._();
 
 final class AsyncTodoListProvider
     extends $AsyncNotifierProvider<AsyncTodoList, List<Todo>> {
-  const AsyncTodoListProvider._(
-      {super.runNotifierBuildOverride, AsyncTodoList Function()? create})
-      : _createCb = create,
-        super(
+  const AsyncTodoListProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -239,38 +214,17 @@ final class AsyncTodoListProvider
           allTransitiveDependencies: null,
         );
 
-  final AsyncTodoList Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$asyncTodoListHash();
 
   @$internal
   @override
-  AsyncTodoList create() => _createCb?.call() ?? AsyncTodoList();
-
-  @$internal
-  @override
-  AsyncTodoListProvider $copyWithCreate(
-    AsyncTodoList Function() create,
-  ) {
-    return AsyncTodoListProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  AsyncTodoListProvider $copyWithBuild(
-    FutureOr<List<Todo>> Function(
-      Ref,
-      AsyncTodoList,
-    ) build,
-  ) {
-    return AsyncTodoListProvider._(runNotifierBuildOverride: build);
-  }
+  AsyncTodoList create() => AsyncTodoList();
 
   @$internal
   @override
   _$AsyncTodoListElement $createElement($ProviderPointer pointer) =>
-      _$AsyncTodoListElement(this, pointer);
+      _$AsyncTodoListElement(pointer);
 
   ProviderListenable<AsyncTodoList$AddSync> get addSync =>
       $LazyProxyListenable<AsyncTodoList$AddSync, AsyncValue<List<Todo>>>(
@@ -291,6 +245,14 @@ final class AsyncTodoListProvider
           return element._$addAsync;
         },
       );
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<List<Todo>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<AsyncValue<List<Todo>>>(value),
+    );
+  }
 }
 
 String _$asyncTodoListHash() => r'73d9aa3b39ad5d0c157510754bfc273a98075d30';
@@ -313,7 +275,7 @@ abstract class _$AsyncTodoList extends $AsyncNotifier<List<Todo>> {
 
 class _$AsyncTodoListElement
     extends $AsyncNotifierProviderElement<AsyncTodoList, List<Todo>> {
-  _$AsyncTodoListElement(super.provider, super.pointer) {
+  _$AsyncTodoListElement(super.pointer) {
     _$addSync.result = $Result.data(_$AsyncTodoList$AddSync(this));
     _$addAsync.result = $Result.data(_$AsyncTodoList$AddAsync(this));
   }
@@ -435,10 +397,8 @@ final class _$AsyncTodoList$AddAsync
 const simpleProvider = SimpleProvider._();
 
 final class SimpleProvider extends $NotifierProvider<Simple, int> {
-  const SimpleProvider._(
-      {super.runNotifierBuildOverride, Simple Function()? create})
-      : _createCb = create,
-        super(
+  const SimpleProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -448,46 +408,17 @@ final class SimpleProvider extends $NotifierProvider<Simple, int> {
           allTransitiveDependencies: null,
         );
 
-  final Simple Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$simpleHash();
 
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
   @$internal
   @override
-  Simple create() => _createCb?.call() ?? Simple();
-
-  @$internal
-  @override
-  SimpleProvider $copyWithCreate(
-    Simple Function() create,
-  ) {
-    return SimpleProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  SimpleProvider $copyWithBuild(
-    int Function(
-      Ref,
-      Simple,
-    ) build,
-  ) {
-    return SimpleProvider._(runNotifierBuildOverride: build);
-  }
+  Simple create() => Simple();
 
   @$internal
   @override
   _$SimpleElement $createElement($ProviderPointer pointer) =>
-      _$SimpleElement(this, pointer);
+      _$SimpleElement(pointer);
 
   ProviderListenable<Simple$Increment> get increment =>
       $LazyProxyListenable<Simple$Increment, int>(
@@ -518,6 +449,14 @@ final class SimpleProvider extends $NotifierProvider<Simple, int> {
           return element._$delegated;
         },
       );
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
 }
 
 String _$simpleHash() => r'bbccebb4e8d2a097b945f6d7ab5e54ac11781c49';
@@ -536,7 +475,7 @@ abstract class _$Simple extends $Notifier<int> {
 }
 
 class _$SimpleElement extends $NotifierProviderElement<Simple, int> {
-  _$SimpleElement(super.provider, super.pointer) {
+  _$SimpleElement(super.pointer) {
     _$increment.result = $Result.data(_$Simple$Increment(this));
     _$incrementOr.result = $Result.data(_$Simple$IncrementOr(this));
     _$delegated.result = $Result.data(_$Simple$Delegated(this));
@@ -708,20 +647,14 @@ const simpleFamilyProvider = SimpleFamilyFamily._();
 
 final class SimpleFamilyProvider extends $NotifierProvider<SimpleFamily, int> {
   const SimpleFamilyProvider._(
-      {required SimpleFamilyFamily super.from,
-      required String super.argument,
-      super.runNotifierBuildOverride,
-      SimpleFamily Function()? create})
-      : _createCb = create,
-        super(
+      {required SimpleFamilyFamily super.from, required String super.argument})
+      : super(
           retry: null,
           name: r'simpleFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final SimpleFamily Function()? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$simpleFamilyHash();
@@ -733,47 +666,14 @@ final class SimpleFamilyProvider extends $NotifierProvider<SimpleFamily, int> {
         '($argument)';
   }
 
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
   @$internal
   @override
-  SimpleFamily create() => _createCb?.call() ?? SimpleFamily();
-
-  @$internal
-  @override
-  SimpleFamilyProvider $copyWithCreate(
-    SimpleFamily Function() create,
-  ) {
-    return SimpleFamilyProvider._(
-        argument: argument as String,
-        from: from! as SimpleFamilyFamily,
-        create: create);
-  }
-
-  @$internal
-  @override
-  SimpleFamilyProvider $copyWithBuild(
-    int Function(
-      Ref,
-      SimpleFamily,
-    ) build,
-  ) {
-    return SimpleFamilyProvider._(
-        argument: argument as String,
-        from: from! as SimpleFamilyFamily,
-        runNotifierBuildOverride: build);
-  }
+  SimpleFamily create() => SimpleFamily();
 
   @$internal
   @override
   _$SimpleFamilyElement $createElement($ProviderPointer pointer) =>
-      _$SimpleFamilyElement(this, pointer);
+      _$SimpleFamilyElement(pointer);
 
   ProviderListenable<SimpleFamily$Increment> get increment =>
       $LazyProxyListenable<SimpleFamily$Increment, int>(
@@ -794,6 +694,14 @@ final class SimpleFamilyProvider extends $NotifierProvider<SimpleFamily, int> {
           return element._$incrementOr;
         },
       );
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
 
   @override
   bool operator ==(Object other) {
@@ -824,48 +732,38 @@ final class SimpleFamilyFamily extends Family {
       SimpleFamilyProvider._(argument: arg, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$simpleFamilyHash();
-
-  @override
   String toString() => r'simpleFamilyProvider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    SimpleFamily Function(
-      String args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as SimpleFamilyProvider;
-
-        final argument = provider.argument as String;
-
-        return provider
-            .$copyWithCreate(() => create(argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          SimpleFamily Function(
+            String args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as SimpleFamilyProvider;
+            final argument = provider.argument as String;
+            return provider
+                .$view(create: () => create(argument))
+                .$createElement(pointer);
+          });
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    int Function(Ref ref, SimpleFamily notifier, String argument) build,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as SimpleFamilyProvider;
-
-        final argument = provider.argument as String;
-
-        return provider
-            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          int Function(Ref ref, SimpleFamily notifier, String argument)
+              build) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as SimpleFamilyProvider;
+            final argument = provider.argument as String;
+            return provider
+                .$view(
+                    runNotifierBuildOverride: (ref, notifier) =>
+                        build(ref, notifier, argument))
+                .$createElement(pointer);
+          });
 }
 
 abstract class _$SimpleFamily extends $Notifier<int> {
@@ -890,7 +788,7 @@ abstract class _$SimpleFamily extends $Notifier<int> {
 
 class _$SimpleFamilyElement
     extends $NotifierProviderElement<SimpleFamily, int> {
-  _$SimpleFamilyElement(super.provider, super.pointer) {
+  _$SimpleFamilyElement(super.pointer) {
     _$increment.result = $Result.data(_$SimpleFamily$Increment(this));
     _$incrementOr.result = $Result.data(_$SimpleFamily$IncrementOr(this));
   }
@@ -1013,10 +911,8 @@ const simpleAsyncProvider = SimpleAsyncProvider._();
 
 final class SimpleAsyncProvider
     extends $AsyncNotifierProvider<SimpleAsync, int> {
-  const SimpleAsyncProvider._(
-      {super.runNotifierBuildOverride, SimpleAsync Function()? create})
-      : _createCb = create,
-        super(
+  const SimpleAsyncProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -1026,38 +922,17 @@ final class SimpleAsyncProvider
           allTransitiveDependencies: null,
         );
 
-  final SimpleAsync Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$simpleAsyncHash();
 
   @$internal
   @override
-  SimpleAsync create() => _createCb?.call() ?? SimpleAsync();
-
-  @$internal
-  @override
-  SimpleAsyncProvider $copyWithCreate(
-    SimpleAsync Function() create,
-  ) {
-    return SimpleAsyncProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  SimpleAsyncProvider $copyWithBuild(
-    FutureOr<int> Function(
-      Ref,
-      SimpleAsync,
-    ) build,
-  ) {
-    return SimpleAsyncProvider._(runNotifierBuildOverride: build);
-  }
+  SimpleAsync create() => SimpleAsync();
 
   @$internal
   @override
   _$SimpleAsyncElement $createElement($ProviderPointer pointer) =>
-      _$SimpleAsyncElement(this, pointer);
+      _$SimpleAsyncElement(pointer);
 
   ProviderListenable<SimpleAsync$Increment> get increment =>
       $LazyProxyListenable<SimpleAsync$Increment, AsyncValue<int>>(
@@ -1078,6 +953,14 @@ final class SimpleAsyncProvider
           return element._$delegated;
         },
       );
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<int> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<AsyncValue<int>>(value),
+    );
+  }
 }
 
 String _$simpleAsyncHash() => r'62dd0ee93e61fa27d139247b9a899630d5d3572c';
@@ -1097,7 +980,7 @@ abstract class _$SimpleAsync extends $AsyncNotifier<int> {
 
 class _$SimpleAsyncElement
     extends $AsyncNotifierProviderElement<SimpleAsync, int> {
-  _$SimpleAsyncElement(super.provider, super.pointer) {
+  _$SimpleAsyncElement(super.pointer) {
     _$increment.result = $Result.data(_$SimpleAsync$Increment(this));
     _$delegated.result = $Result.data(_$SimpleAsync$Delegated(this));
   }
@@ -1221,20 +1104,14 @@ const simpleAsync2Provider = SimpleAsync2Family._();
 final class SimpleAsync2Provider
     extends $StreamNotifierProvider<SimpleAsync2, int> {
   const SimpleAsync2Provider._(
-      {required SimpleAsync2Family super.from,
-      required String super.argument,
-      super.runNotifierBuildOverride,
-      SimpleAsync2 Function()? create})
-      : _createCb = create,
-        super(
+      {required SimpleAsync2Family super.from, required String super.argument})
+      : super(
           retry: null,
           name: r'simpleAsync2Provider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final SimpleAsync2 Function()? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$simpleAsync2Hash();
@@ -1248,37 +1125,12 @@ final class SimpleAsync2Provider
 
   @$internal
   @override
-  SimpleAsync2 create() => _createCb?.call() ?? SimpleAsync2();
-
-  @$internal
-  @override
-  SimpleAsync2Provider $copyWithCreate(
-    SimpleAsync2 Function() create,
-  ) {
-    return SimpleAsync2Provider._(
-        argument: argument as String,
-        from: from! as SimpleAsync2Family,
-        create: create);
-  }
-
-  @$internal
-  @override
-  SimpleAsync2Provider $copyWithBuild(
-    Stream<int> Function(
-      Ref,
-      SimpleAsync2,
-    ) build,
-  ) {
-    return SimpleAsync2Provider._(
-        argument: argument as String,
-        from: from! as SimpleAsync2Family,
-        runNotifierBuildOverride: build);
-  }
+  SimpleAsync2 create() => SimpleAsync2();
 
   @$internal
   @override
   _$SimpleAsync2Element $createElement($ProviderPointer pointer) =>
-      _$SimpleAsync2Element(this, pointer);
+      _$SimpleAsync2Element(pointer);
 
   ProviderListenable<SimpleAsync2$Increment> get increment =>
       $LazyProxyListenable<SimpleAsync2$Increment, AsyncValue<int>>(
@@ -1289,6 +1141,14 @@ final class SimpleAsync2Provider
           return element._$increment;
         },
       );
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<int> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<AsyncValue<int>>(value),
+    );
+  }
 
   @override
   bool operator ==(Object other) {
@@ -1319,48 +1179,38 @@ final class SimpleAsync2Family extends Family {
       SimpleAsync2Provider._(argument: arg, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$simpleAsync2Hash();
-
-  @override
   String toString() => r'simpleAsync2Provider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    SimpleAsync2 Function(
-      String args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as SimpleAsync2Provider;
-
-        final argument = provider.argument as String;
-
-        return provider
-            .$copyWithCreate(() => create(argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          SimpleAsync2 Function(
+            String args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as SimpleAsync2Provider;
+            final argument = provider.argument as String;
+            return provider
+                .$view(create: () => create(argument))
+                .$createElement(pointer);
+          });
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    Stream<int> Function(Ref ref, SimpleAsync2 notifier, String argument) build,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as SimpleAsync2Provider;
-
-        final argument = provider.argument as String;
-
-        return provider
-            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          Stream<int> Function(Ref ref, SimpleAsync2 notifier, String argument)
+              build) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as SimpleAsync2Provider;
+            final argument = provider.argument as String;
+            return provider
+                .$view(
+                    runNotifierBuildOverride: (ref, notifier) =>
+                        build(ref, notifier, argument))
+                .$createElement(pointer);
+          });
 }
 
 abstract class _$SimpleAsync2 extends $StreamNotifier<int> {
@@ -1385,7 +1235,7 @@ abstract class _$SimpleAsync2 extends $StreamNotifier<int> {
 
 class _$SimpleAsync2Element
     extends $StreamNotifierProviderElement<SimpleAsync2, int> {
-  _$SimpleAsync2Element(super.provider, super.pointer) {
+  _$SimpleAsync2Element(super.pointer) {
     _$increment.result = $Result.data(_$SimpleAsync2$Increment(this));
   }
   final _$increment = $ElementLense<_$SimpleAsync2$Increment>();
@@ -1455,12 +1305,8 @@ const genericProvider = GenericFamily._();
 
 final class GenericProvider<T extends num>
     extends $AsyncNotifierProvider<Generic<T>, int> {
-  const GenericProvider._(
-      {required GenericFamily super.from,
-      super.runNotifierBuildOverride,
-      Generic<T> Function()? create})
-      : _createCb = create,
-        super(
+  const GenericProvider._({required GenericFamily super.from})
+      : super(
           argument: null,
           retry: null,
           name: r'genericProvider',
@@ -1469,27 +1315,8 @@ final class GenericProvider<T extends num>
           allTransitiveDependencies: null,
         );
 
-  final Generic<T> Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$genericHash();
-
-  GenericProvider<T> _copyWithCreate(
-    Generic<T> Function<T extends num>() create,
-  ) {
-    return GenericProvider<T>._(
-        from: from! as GenericFamily, create: create<T>);
-  }
-
-  GenericProvider<T> _copyWithBuild(
-    FutureOr<int> Function<T extends num>(
-      Ref,
-      Generic<T>,
-    ) build,
-  ) {
-    return GenericProvider<T>._(
-        from: from! as GenericFamily, runNotifierBuildOverride: build<T>);
-  }
 
   @override
   String toString() {
@@ -1500,32 +1327,12 @@ final class GenericProvider<T extends num>
 
   @$internal
   @override
-  Generic<T> create() => _createCb?.call() ?? Generic<T>();
-
-  @$internal
-  @override
-  GenericProvider<T> $copyWithCreate(
-    Generic<T> Function() create,
-  ) {
-    return GenericProvider<T>._(from: from! as GenericFamily, create: create);
-  }
-
-  @$internal
-  @override
-  GenericProvider<T> $copyWithBuild(
-    FutureOr<int> Function(
-      Ref,
-      Generic<T>,
-    ) build,
-  ) {
-    return GenericProvider<T>._(
-        from: from! as GenericFamily, runNotifierBuildOverride: build);
-  }
+  Generic<T> create() => Generic<T>();
 
   @$internal
   @override
   _$GenericElement<T> $createElement($ProviderPointer pointer) =>
-      _$GenericElement(this, pointer);
+      _$GenericElement(pointer);
 
   ProviderListenable<Generic$Increment> get increment =>
       $LazyProxyListenable<Generic$Increment, AsyncValue<int>>(
@@ -1536,6 +1343,18 @@ final class GenericProvider<T extends num>
           return element._$increment;
         },
       );
+
+  $R _captureGenerics<$R>($R Function<T extends num>() cb) {
+    return cb<T>();
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<int> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<AsyncValue<int>>(value),
+    );
+  }
 
   @override
   bool operator ==(Object other) {
@@ -1565,38 +1384,35 @@ final class GenericFamily extends Family {
   GenericProvider<T> call<T extends num>() => GenericProvider<T>._(from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$genericHash();
-
-  @override
   String toString() => r'genericProvider';
 
   /// {@macro riverpod.override_with}
-  Override overrideWith(
-    Generic<T> Function<T extends num>() create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as GenericProvider;
-
-        return provider._copyWithCreate(create).$createElement(pointer);
-      },
-    );
-  }
+  Override overrideWith(Generic<T> Function<T extends num>() create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as GenericProvider;
+            return provider._captureGenerics(<T extends num>() {
+              provider as GenericProvider<T>;
+              return provider.$view(create: create<T>).$createElement(pointer);
+            });
+          });
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    FutureOr<int> Function<T extends num>(Ref ref, Generic<T> notifier) build,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as GenericProvider;
-
-        return provider._copyWithBuild(build).$createElement(pointer);
-      },
-    );
-  }
+          FutureOr<int> Function<T extends num>(Ref ref, Generic<T> notifier)
+              build) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as GenericProvider;
+            return provider._captureGenerics(<T extends num>() {
+              provider as GenericProvider<T>;
+              return provider
+                  .$view(runNotifierBuildOverride: build<T>)
+                  .$createElement(pointer);
+            });
+          });
 }
 
 abstract class _$Generic<T extends num> extends $AsyncNotifier<int> {
@@ -1614,7 +1430,7 @@ abstract class _$Generic<T extends num> extends $AsyncNotifier<int> {
 
 class _$GenericElement<T extends num>
     extends $AsyncNotifierProviderElement<Generic<T>, int> {
-  _$GenericElement(super.provider, super.pointer) {
+  _$GenericElement(super.pointer) {
     _$increment.result = $Result.data(_$Generic$Increment(this));
   }
   final _$increment = $ElementLense<_$Generic$Increment>();
@@ -1683,10 +1499,8 @@ final class _$Generic$Increment
 const genericMutProvider = GenericMutProvider._();
 
 final class GenericMutProvider extends $AsyncNotifierProvider<GenericMut, int> {
-  const GenericMutProvider._(
-      {super.runNotifierBuildOverride, GenericMut Function()? create})
-      : _createCb = create,
-        super(
+  const GenericMutProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -1696,38 +1510,17 @@ final class GenericMutProvider extends $AsyncNotifierProvider<GenericMut, int> {
           allTransitiveDependencies: null,
         );
 
-  final GenericMut Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$genericMutHash();
 
   @$internal
   @override
-  GenericMut create() => _createCb?.call() ?? GenericMut();
-
-  @$internal
-  @override
-  GenericMutProvider $copyWithCreate(
-    GenericMut Function() create,
-  ) {
-    return GenericMutProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  GenericMutProvider $copyWithBuild(
-    FutureOr<int> Function(
-      Ref,
-      GenericMut,
-    ) build,
-  ) {
-    return GenericMutProvider._(runNotifierBuildOverride: build);
-  }
+  GenericMut create() => GenericMut();
 
   @$internal
   @override
   _$GenericMutElement $createElement($ProviderPointer pointer) =>
-      _$GenericMutElement(this, pointer);
+      _$GenericMutElement(pointer);
 
   ProviderListenable<GenericMut$Increment> get increment =>
       $LazyProxyListenable<GenericMut$Increment, AsyncValue<int>>(
@@ -1738,6 +1531,14 @@ final class GenericMutProvider extends $AsyncNotifierProvider<GenericMut, int> {
           return element._$increment;
         },
       );
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<int> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<AsyncValue<int>>(value),
+    );
+  }
 }
 
 String _$genericMutHash() => r'1f38b70cf937501fb313ae35c8bf824728bbd8ba';
@@ -1757,7 +1558,7 @@ abstract class _$GenericMut extends $AsyncNotifier<int> {
 
 class _$GenericMutElement
     extends $AsyncNotifierProviderElement<GenericMut, int> {
-  _$GenericMutElement(super.provider, super.pointer) {
+  _$GenericMutElement(super.pointer) {
     _$increment.result = $Result.data(_$GenericMut$Increment(this));
   }
   final _$increment = $ElementLense<_$GenericMut$Increment>();
@@ -1829,10 +1630,8 @@ final class _$GenericMut$Increment
 const failingCtorProvider = FailingCtorProvider._();
 
 final class FailingCtorProvider extends $NotifierProvider<FailingCtor, int> {
-  const FailingCtorProvider._(
-      {super.runNotifierBuildOverride, FailingCtor Function()? create})
-      : _createCb = create,
-        super(
+  const FailingCtorProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -1842,46 +1641,17 @@ final class FailingCtorProvider extends $NotifierProvider<FailingCtor, int> {
           allTransitiveDependencies: null,
         );
 
-  final FailingCtor Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$failingCtorHash();
 
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(int value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
   @$internal
   @override
-  FailingCtor create() => _createCb?.call() ?? FailingCtor();
-
-  @$internal
-  @override
-  FailingCtorProvider $copyWithCreate(
-    FailingCtor Function() create,
-  ) {
-    return FailingCtorProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  FailingCtorProvider $copyWithBuild(
-    int Function(
-      Ref,
-      FailingCtor,
-    ) build,
-  ) {
-    return FailingCtorProvider._(runNotifierBuildOverride: build);
-  }
+  FailingCtor create() => FailingCtor();
 
   @$internal
   @override
   _$FailingCtorElement $createElement($ProviderPointer pointer) =>
-      _$FailingCtorElement(this, pointer);
+      _$FailingCtorElement(pointer);
 
   ProviderListenable<FailingCtor$Increment> get increment =>
       $LazyProxyListenable<FailingCtor$Increment, int>(
@@ -1892,6 +1662,14 @@ final class FailingCtorProvider extends $NotifierProvider<FailingCtor, int> {
           return element._$increment;
         },
       );
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<int>(value),
+    );
+  }
 }
 
 String _$failingCtorHash() => r'5d80d3b1dba058415cc8cfec17bc14e1f9c83fae';
@@ -1910,7 +1688,7 @@ abstract class _$FailingCtor extends $Notifier<int> {
 }
 
 class _$FailingCtorElement extends $NotifierProviderElement<FailingCtor, int> {
-  _$FailingCtorElement(super.provider, super.pointer) {
+  _$FailingCtorElement(super.pointer) {
     _$increment.result = $Result.data(_$FailingCtor$Increment(this));
   }
   final _$increment = $ElementLense<_$FailingCtor$Increment>();
@@ -1981,10 +1759,8 @@ final class _$FailingCtor$Increment
 const typedProvider = TypedProvider._();
 
 final class TypedProvider extends $NotifierProvider<Typed, String> {
-  const TypedProvider._(
-      {super.runNotifierBuildOverride, Typed Function()? create})
-      : _createCb = create,
-        super(
+  const TypedProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -1994,46 +1770,17 @@ final class TypedProvider extends $NotifierProvider<Typed, String> {
           allTransitiveDependencies: null,
         );
 
-  final Typed Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$typedHash();
 
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(String value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<String>(value),
-    );
-  }
-
   @$internal
   @override
-  Typed create() => _createCb?.call() ?? Typed();
-
-  @$internal
-  @override
-  TypedProvider $copyWithCreate(
-    Typed Function() create,
-  ) {
-    return TypedProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  TypedProvider $copyWithBuild(
-    String Function(
-      Ref,
-      Typed,
-    ) build,
-  ) {
-    return TypedProvider._(runNotifierBuildOverride: build);
-  }
+  Typed create() => Typed();
 
   @$internal
   @override
   _$TypedElement $createElement($ProviderPointer pointer) =>
-      _$TypedElement(this, pointer);
+      _$TypedElement(pointer);
 
   ProviderListenable<Typed$Mutate> get mutate =>
       $LazyProxyListenable<Typed$Mutate, String>(
@@ -2044,6 +1791,14 @@ final class TypedProvider extends $NotifierProvider<Typed, String> {
           return element._$mutate;
         },
       );
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<String>(value),
+    );
+  }
 }
 
 String _$typedHash() => r'1f53e16796771d14fcdfec41d2b9f5eb70d875a7';
@@ -2062,7 +1817,7 @@ abstract class _$Typed extends $Notifier<String> {
 }
 
 class _$TypedElement extends $NotifierProviderElement<Typed, String> {
-  _$TypedElement(super.provider, super.pointer) {
+  _$TypedElement(super.pointer) {
     _$mutate.result = $Result.data(_$Typed$Mutate(this));
   }
   final _$mutate = $ElementLense<_$Typed$Mutate>();

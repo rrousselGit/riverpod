@@ -12,10 +12,8 @@ part of 'async_class_future.dart';
 const exampleProvider = ExampleProvider._();
 
 final class ExampleProvider extends $AsyncNotifierProvider<Example, String> {
-  const ExampleProvider._(
-      {super.runNotifierBuildOverride, Example Function()? create})
-      : _createCb = create,
-        super(
+  const ExampleProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -25,39 +23,26 @@ final class ExampleProvider extends $AsyncNotifierProvider<Example, String> {
           allTransitiveDependencies: null,
         );
 
-  final Example Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$exampleHash();
 
   @$internal
   @override
-  Example create() => _createCb?.call() ?? Example();
-
-  @$internal
-  @override
-  ExampleProvider $copyWithCreate(
-    Example Function() create,
-  ) {
-    return ExampleProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  ExampleProvider $copyWithBuild(
-    FutureOr<String> Function(
-      Ref,
-      Example,
-    ) build,
-  ) {
-    return ExampleProvider._(runNotifierBuildOverride: build);
-  }
+  Example create() => Example();
 
   @$internal
   @override
   $AsyncNotifierProviderElement<Example, String> $createElement(
           $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(this, pointer);
+      $AsyncNotifierProviderElement(pointer);
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<String> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<AsyncValue<String>>(value),
+    );
+  }
 }
 
 String _$exampleHash() => r'8a906741b8ea4b9b0d3f0b924779704b3e1773a1';

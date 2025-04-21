@@ -14,12 +14,8 @@ const userProvider = UserProvider._();
 final class UserProvider
     extends $FunctionalProvider<AsyncValue<User>, FutureOr<User>>
     with $FutureModifier<User>, $FutureProvider<User> {
-  const UserProvider._(
-      {FutureOr<User> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const UserProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -29,31 +25,17 @@ final class UserProvider
           allTransitiveDependencies: null,
         );
 
-  final FutureOr<User> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$userHash();
 
   @$internal
   @override
   $FutureProviderElement<User> $createElement($ProviderPointer pointer) =>
-      $FutureProviderElement(this, pointer);
-
-  @override
-  UserProvider $copyWithCreate(
-    FutureOr<User> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return UserProvider._(create: create);
-  }
+      $FutureProviderElement(pointer);
 
   @override
   FutureOr<User> create(Ref ref) {
-    final _$cb = _createCb ?? user;
-    return _$cb(ref);
+    return user(ref);
   }
 }
 
@@ -64,12 +46,8 @@ const exampleProvider = ExampleProvider._();
 
 final class ExampleProvider extends $FunctionalProvider<Object?, Object?>
     with $Provider<Object?> {
-  const ExampleProvider._(
-      {Object? Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const ExampleProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -79,12 +57,18 @@ final class ExampleProvider extends $FunctionalProvider<Object?, Object?>
           allTransitiveDependencies: null,
         );
 
-  final Object? Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$exampleHash();
+
+  @$internal
+  @override
+  $ProviderElement<Object?> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  Object? create(Ref ref) {
+    return example(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Object? value) {
@@ -92,26 +76,6 @@ final class ExampleProvider extends $FunctionalProvider<Object?, Object?>
       origin: this,
       providerOverride: $ValueProvider<Object?>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<Object?> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  ExampleProvider $copyWithCreate(
-    Object? Function(
-      Ref ref,
-    ) create,
-  ) {
-    return ExampleProvider._(create: create);
-  }
-
-  @override
-  Object? create(Ref ref) {
-    final _$cb = _createCb ?? example;
-    return _$cb(ref);
   }
 }
 

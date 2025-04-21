@@ -11,12 +11,8 @@ const counter2Provider = Counter2Provider._();
 
 final class Counter2Provider extends $FunctionalProvider<int, int>
     with $Provider<int> {
-  const Counter2Provider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const Counter2Provider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -26,12 +22,18 @@ final class Counter2Provider extends $FunctionalProvider<int, int>
           allTransitiveDependencies: null,
         );
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$counter2Hash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return counter2(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -39,26 +41,6 @@ final class Counter2Provider extends $FunctionalProvider<int, int>
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  Counter2Provider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return Counter2Provider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? counter2;
-    return _$cb(ref);
   }
 }
 
@@ -69,12 +51,8 @@ const counterProvider = CounterProvider._();
 
 final class CounterProvider extends $FunctionalProvider<int, int>
     with $Provider<int> {
-  const CounterProvider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const CounterProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -84,12 +62,18 @@ final class CounterProvider extends $FunctionalProvider<int, int>
           allTransitiveDependencies: null,
         );
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$counterHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return counter(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -97,26 +81,6 @@ final class CounterProvider extends $FunctionalProvider<int, int>
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  CounterProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return CounterProvider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? counter;
-    return _$cb(ref);
   }
 }
 

@@ -19,26 +19,14 @@ final class RandomProvider extends $FunctionalProvider<int, int>
         int seed,
         int max,
       })
-          super.argument,
-      int Function(
-        Ref ref, {
-        required int seed,
-        required int max,
-      })? create})
-      : _createCb = create,
-        super(
+          super.argument})
+      : super(
           retry: null,
           name: r'randomProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final int Function(
-    Ref ref, {
-    required int seed,
-    required int max,
-  })? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$randomHash();
@@ -50,50 +38,29 @@ final class RandomProvider extends $FunctionalProvider<int, int>
         '$argument';
   }
 
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    final argument = this.argument as ({
+      int seed,
+      int max,
+    });
+    return random(
+      ref,
+      seed: argument.seed,
+      max: argument.max,
+    );
+  }
+
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
       providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  RandomProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return RandomProvider._(
-        argument: argument as ({
-          int seed,
-          int max,
-        }),
-        from: from! as RandomFamily,
-        create: (
-          ref, {
-          required int seed,
-          required int max,
-        }) =>
-            create(ref));
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? random;
-    final argument = this.argument as ({
-      int seed,
-      int max,
-    });
-    return _$cb(
-      ref,
-      seed: argument.seed,
-      max: argument.max,
     );
   }
 
@@ -130,37 +97,29 @@ final class RandomFamily extends Family {
       ), from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$randomHash();
-
-  @override
   String toString() => r'randomProvider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    int Function(
-      Ref ref,
-      ({
-        int seed,
-        int max,
-      }) args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as RandomProvider;
-
-        final argument = provider.argument as ({
-          int seed,
-          int max,
-        });
-
-        return provider
-            .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          int Function(
+            Ref ref,
+            ({
+              int seed,
+              int max,
+            }) args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as RandomProvider;
+            final argument = provider.argument as ({
+              int seed,
+              int max,
+            });
+            return provider
+                .$view(create: (ref) => create(ref, argument))
+                .$createElement(pointer);
+          });
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

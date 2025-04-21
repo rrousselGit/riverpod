@@ -13,10 +13,8 @@ const myNotifierProvider = MyNotifierProvider._();
 
 final class MyNotifierProvider
     extends $AsyncNotifierProvider<MyNotifier, List<Todo>> {
-  const MyNotifierProvider._(
-      {super.runNotifierBuildOverride, MyNotifier Function()? create})
-      : _createCb = create,
-        super(
+  const MyNotifierProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -26,39 +24,26 @@ final class MyNotifierProvider
           allTransitiveDependencies: null,
         );
 
-  final MyNotifier Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$myNotifierHash();
 
   @$internal
   @override
-  MyNotifier create() => _createCb?.call() ?? MyNotifier();
-
-  @$internal
-  @override
-  MyNotifierProvider $copyWithCreate(
-    MyNotifier Function() create,
-  ) {
-    return MyNotifierProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  MyNotifierProvider $copyWithBuild(
-    FutureOr<List<Todo>> Function(
-      Ref,
-      MyNotifier,
-    ) build,
-  ) {
-    return MyNotifierProvider._(runNotifierBuildOverride: build);
-  }
+  MyNotifier create() => MyNotifier();
 
   @$internal
   @override
   $AsyncNotifierProviderElement<MyNotifier, List<Todo>> $createElement(
           $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(this, pointer);
+      $AsyncNotifierProviderElement(pointer);
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<List<Todo>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<AsyncValue<List<Todo>>>(value),
+    );
+  }
 }
 
 String _$myNotifierHash() => r'bde95c56aa12eff7c8c01ede57ae4ad2b616c225';

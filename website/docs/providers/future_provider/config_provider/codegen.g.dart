@@ -14,12 +14,8 @@ const fetchConfigurationProvider = FetchConfigurationProvider._();
 final class FetchConfigurationProvider extends $FunctionalProvider<
         AsyncValue<Configuration>, FutureOr<Configuration>>
     with $FutureModifier<Configuration>, $FutureProvider<Configuration> {
-  const FetchConfigurationProvider._(
-      {FutureOr<Configuration> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const FetchConfigurationProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -29,10 +25,6 @@ final class FetchConfigurationProvider extends $FunctionalProvider<
           allTransitiveDependencies: null,
         );
 
-  final FutureOr<Configuration> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$fetchConfigurationHash();
 
@@ -40,21 +32,11 @@ final class FetchConfigurationProvider extends $FunctionalProvider<
   @override
   $FutureProviderElement<Configuration> $createElement(
           $ProviderPointer pointer) =>
-      $FutureProviderElement(this, pointer);
-
-  @override
-  FetchConfigurationProvider $copyWithCreate(
-    FutureOr<Configuration> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return FetchConfigurationProvider._(create: create);
-  }
+      $FutureProviderElement(pointer);
 
   @override
   FutureOr<Configuration> create(Ref ref) {
-    final _$cb = _createCb ?? fetchConfiguration;
-    return _$cb(ref);
+    return fetchConfiguration(ref);
   }
 }
 

@@ -11,12 +11,8 @@ const namelessProvider = NamelessProvider._();
 
 final class NamelessProvider extends $FunctionalProvider<int, int>
     with $Provider<int> {
-  const NamelessProvider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const NamelessProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -26,12 +22,18 @@ final class NamelessProvider extends $FunctionalProvider<int, int>
           allTransitiveDependencies: null,
         );
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$namelessHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return nameless(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -39,26 +41,6 @@ final class NamelessProvider extends $FunctionalProvider<int, int>
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  NamelessProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return NamelessProvider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? nameless;
-    return _$cb(ref);
   }
 }
 
@@ -69,13 +51,8 @@ const genericsProvider = GenericsFamily._();
 
 final class GenericsProvider<A extends num, B>
     extends $FunctionalProvider<int, int> with $Provider<int> {
-  const GenericsProvider._(
-      {required GenericsFamily super.from,
-      int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const GenericsProvider._({required GenericsFamily super.from})
+      : super(
           argument: null,
           retry: null,
           name: r'genericsProvider',
@@ -84,21 +61,8 @@ final class GenericsProvider<A extends num, B>
           allTransitiveDependencies: null,
         );
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$genericsHash();
-
-  GenericsProvider<A, B> _copyWithCreate(
-    int Function<A extends num, B>(
-      Ref ref,
-    ) create,
-  ) {
-    return GenericsProvider<A, B>._(
-        from: from! as GenericsFamily, create: create<A, B>);
-  }
 
   @override
   String toString() {
@@ -107,33 +71,26 @@ final class GenericsProvider<A extends num, B>
         '()';
   }
 
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return generics<A, B>(ref);
+  }
+
+  $R _captureGenerics<$R>($R Function<A extends num, B>() cb) {
+    return cb<A, B>();
+  }
+
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  GenericsProvider<A, B> $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return GenericsProvider<A, B>._(
-        from: from! as GenericsFamily, create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? generics<A, B>;
-    return _$cb(ref);
   }
 
   @override
@@ -165,24 +122,21 @@ final class GenericsFamily extends Family {
       GenericsProvider<A, B>._(from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$genericsHash();
-
-  @override
   String toString() => r'genericsProvider';
 
   /// {@macro riverpod.override_with}
-  Override overrideWith(
-    int Function<A extends num, B>(Ref ref) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as GenericsProvider;
-
-        return provider._copyWithCreate(create).$createElement(pointer);
-      },
-    );
-  }
+  Override overrideWith(int Function<A extends num, B>(Ref ref) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as GenericsProvider;
+            return provider._captureGenerics(<A extends num, B>() {
+              provider as GenericsProvider<A, B>;
+              return provider
+                  .$view(create: create<A, B>)
+                  .$createElement(pointer);
+            });
+          });
 }
 
 @ProviderFor(valid)
@@ -190,12 +144,8 @@ const validProvider = ValidProvider._();
 
 final class ValidProvider extends $FunctionalProvider<int, int>
     with $Provider<int> {
-  const ValidProvider._(
-      {int Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const ValidProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -205,12 +155,18 @@ final class ValidProvider extends $FunctionalProvider<int, int>
           allTransitiveDependencies: null,
         );
 
-  final int Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$validHash();
+
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    return valid(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -218,26 +174,6 @@ final class ValidProvider extends $FunctionalProvider<int, int>
       origin: this,
       providerOverride: $ValueProvider<int>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  ValidProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return ValidProvider._(create: create);
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? valid;
-    return _$cb(ref);
   }
 }
 

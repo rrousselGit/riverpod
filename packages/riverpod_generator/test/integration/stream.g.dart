@@ -12,13 +12,8 @@ const genericProvider = GenericFamily._();
 final class GenericProvider<T extends num>
     extends $FunctionalProvider<AsyncValue<List<T>>, Stream<List<T>>>
     with $FutureModifier<List<T>>, $StreamProvider<List<T>> {
-  const GenericProvider._(
-      {required GenericFamily super.from,
-      Stream<List<T>> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const GenericProvider._({required GenericFamily super.from})
+      : super(
           argument: null,
           retry: null,
           name: r'genericProvider',
@@ -27,21 +22,8 @@ final class GenericProvider<T extends num>
           allTransitiveDependencies: null,
         );
 
-  final Stream<List<T>> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$genericHash();
-
-  GenericProvider<T> _copyWithCreate(
-    Stream<List<T>> Function<T extends num>(
-      Ref ref,
-    ) create,
-  ) {
-    return GenericProvider<T>._(
-        from: from! as GenericFamily, create: create<T>);
-  }
 
   @override
   String toString() {
@@ -53,21 +35,15 @@ final class GenericProvider<T extends num>
   @$internal
   @override
   $StreamProviderElement<List<T>> $createElement($ProviderPointer pointer) =>
-      $StreamProviderElement(this, pointer);
-
-  @override
-  GenericProvider<T> $copyWithCreate(
-    Stream<List<T>> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return GenericProvider<T>._(from: from! as GenericFamily, create: create);
-  }
+      $StreamProviderElement(pointer);
 
   @override
   Stream<List<T>> create(Ref ref) {
-    final _$cb = _createCb ?? generic<T>;
-    return _$cb(ref);
+    return generic<T>(ref);
+  }
+
+  $R _captureGenerics<$R>($R Function<T extends num>() cb) {
+    return cb<T>();
   }
 
   @override
@@ -98,24 +74,20 @@ final class GenericFamily extends Family {
   GenericProvider<T> call<T extends num>() => GenericProvider<T>._(from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$genericHash();
-
-  @override
   String toString() => r'genericProvider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    Stream<List<T>> Function<T extends num>(Ref ref) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as GenericProvider;
-
-        return provider._copyWithCreate(create).$createElement(pointer);
-      },
-    );
-  }
+          Stream<List<T>> Function<T extends num>(Ref ref) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as GenericProvider;
+            return provider._captureGenerics(<T extends num>() {
+              provider as GenericProvider<T>;
+              return provider.$view(create: create<T>).$createElement(pointer);
+            });
+          });
 }
 
 @ProviderFor(GenericClass)
@@ -123,12 +95,8 @@ const genericClassProvider = GenericClassFamily._();
 
 final class GenericClassProvider<T extends num>
     extends $StreamNotifierProvider<GenericClass<T>, List<T>> {
-  const GenericClassProvider._(
-      {required GenericClassFamily super.from,
-      super.runNotifierBuildOverride,
-      GenericClass<T> Function()? create})
-      : _createCb = create,
-        super(
+  const GenericClassProvider._({required GenericClassFamily super.from})
+      : super(
           argument: null,
           retry: null,
           name: r'genericClassProvider',
@@ -137,27 +105,8 @@ final class GenericClassProvider<T extends num>
           allTransitiveDependencies: null,
         );
 
-  final GenericClass<T> Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$genericClassHash();
-
-  GenericClassProvider<T> _copyWithCreate(
-    GenericClass<T> Function<T extends num>() create,
-  ) {
-    return GenericClassProvider<T>._(
-        from: from! as GenericClassFamily, create: create<T>);
-  }
-
-  GenericClassProvider<T> _copyWithBuild(
-    Stream<List<T>> Function<T extends num>(
-      Ref,
-      GenericClass<T>,
-    ) build,
-  ) {
-    return GenericClassProvider<T>._(
-        from: from! as GenericClassFamily, runNotifierBuildOverride: build<T>);
-  }
 
   @override
   String toString() {
@@ -168,34 +117,25 @@ final class GenericClassProvider<T extends num>
 
   @$internal
   @override
-  GenericClass<T> create() => _createCb?.call() ?? GenericClass<T>();
-
-  @$internal
-  @override
-  GenericClassProvider<T> $copyWithCreate(
-    GenericClass<T> Function() create,
-  ) {
-    return GenericClassProvider<T>._(
-        from: from! as GenericClassFamily, create: create);
-  }
-
-  @$internal
-  @override
-  GenericClassProvider<T> $copyWithBuild(
-    Stream<List<T>> Function(
-      Ref,
-      GenericClass<T>,
-    ) build,
-  ) {
-    return GenericClassProvider<T>._(
-        from: from! as GenericClassFamily, runNotifierBuildOverride: build);
-  }
+  GenericClass<T> create() => GenericClass<T>();
 
   @$internal
   @override
   $StreamNotifierProviderElement<GenericClass<T>, List<T>> $createElement(
           $ProviderPointer pointer) =>
-      $StreamNotifierProviderElement(this, pointer);
+      $StreamNotifierProviderElement(pointer);
+
+  $R _captureGenerics<$R>($R Function<T extends num>() cb) {
+    return cb<T>();
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<List<T>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<AsyncValue<List<T>>>(value),
+    );
+  }
 
   @override
   bool operator ==(Object other) {
@@ -226,39 +166,36 @@ final class GenericClassFamily extends Family {
       GenericClassProvider<T>._(from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$genericClassHash();
-
-  @override
   String toString() => r'genericClassProvider';
 
   /// {@macro riverpod.override_with}
-  Override overrideWith(
-    GenericClass<T> Function<T extends num>() create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as GenericClassProvider;
-
-        return provider._copyWithCreate(create).$createElement(pointer);
-      },
-    );
-  }
+  Override overrideWith(GenericClass<T> Function<T extends num>() create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as GenericClassProvider;
+            return provider._captureGenerics(<T extends num>() {
+              provider as GenericClassProvider<T>;
+              return provider.$view(create: create<T>).$createElement(pointer);
+            });
+          });
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    Stream<List<T>> Function<T extends num>(Ref ref, GenericClass<T> notifier)
-        build,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as GenericClassProvider;
-
-        return provider._copyWithBuild(build).$createElement(pointer);
-      },
-    );
-  }
+          Stream<List<T>> Function<T extends num>(
+                  Ref ref, GenericClass<T> notifier)
+              build) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as GenericClassProvider;
+            return provider._captureGenerics(<T extends num>() {
+              provider as GenericClassProvider<T>;
+              return provider
+                  .$view(runNotifierBuildOverride: build<T>)
+                  .$createElement(pointer);
+            });
+          });
 }
 
 abstract class _$GenericClass<T extends num> extends $StreamNotifier<List<T>> {
@@ -283,12 +220,8 @@ const publicProvider = PublicProvider._();
 final class PublicProvider
     extends $FunctionalProvider<AsyncValue<String>, Stream<String>>
     with $FutureModifier<String>, $StreamProvider<String> {
-  const PublicProvider._(
-      {Stream<String> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const PublicProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -298,31 +231,17 @@ final class PublicProvider
           allTransitiveDependencies: null,
         );
 
-  final Stream<String> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$publicHash();
 
   @$internal
   @override
   $StreamProviderElement<String> $createElement($ProviderPointer pointer) =>
-      $StreamProviderElement(this, pointer);
-
-  @override
-  PublicProvider $copyWithCreate(
-    Stream<String> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return PublicProvider._(create: create);
-  }
+      $StreamProviderElement(pointer);
 
   @override
   Stream<String> create(Ref ref) {
-    final _$cb = _createCb ?? public;
-    return _$cb(ref);
+    return public(ref);
   }
 }
 
@@ -334,12 +253,8 @@ const _privateProvider = _PrivateProvider._();
 final class _PrivateProvider
     extends $FunctionalProvider<AsyncValue<String>, Stream<String>>
     with $FutureModifier<String>, $StreamProvider<String> {
-  const _PrivateProvider._(
-      {Stream<String> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const _PrivateProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -349,31 +264,17 @@ final class _PrivateProvider
           allTransitiveDependencies: null,
         );
 
-  final Stream<String> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$privateHash();
 
   @$internal
   @override
   $StreamProviderElement<String> $createElement($ProviderPointer pointer) =>
-      $StreamProviderElement(this, pointer);
-
-  @override
-  _PrivateProvider $copyWithCreate(
-    Stream<String> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return _PrivateProvider._(create: create);
-  }
+      $StreamProviderElement(pointer);
 
   @override
   Stream<String> create(Ref ref) {
-    final _$cb = _createCb ?? _private;
-    return _$cb(ref);
+    return _private(ref);
   }
 }
 
@@ -394,32 +295,14 @@ final class FamilyProvider
         bool fourth,
         List<String>? fifth,
       })
-          super.argument,
-      Stream<String> Function(
-        Ref ref,
-        int first, {
-        String? second,
-        required double third,
-        bool fourth,
-        List<String>? fifth,
-      })? create})
-      : _createCb = create,
-        super(
+          super.argument})
+      : super(
           retry: null,
           name: r'familyProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final Stream<String> Function(
-    Ref ref,
-    int first, {
-    String? second,
-    required double third,
-    bool fourth,
-    List<String>? fifth,
-  })? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$familyHash();
@@ -434,37 +317,10 @@ final class FamilyProvider
   @$internal
   @override
   $StreamProviderElement<String> $createElement($ProviderPointer pointer) =>
-      $StreamProviderElement(this, pointer);
-
-  @override
-  FamilyProvider $copyWithCreate(
-    Stream<String> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return FamilyProvider._(
-        argument: argument as (
-          int, {
-          String? second,
-          double third,
-          bool fourth,
-          List<String>? fifth,
-        }),
-        from: from! as FamilyFamily,
-        create: (
-          ref,
-          int first, {
-          String? second,
-          required double third,
-          bool fourth = true,
-          List<String>? fifth,
-        }) =>
-            create(ref));
-  }
+      $StreamProviderElement(pointer);
 
   @override
   Stream<String> create(Ref ref) {
-    final _$cb = _createCb ?? family;
     final argument = this.argument as (
       int, {
       String? second,
@@ -472,7 +328,7 @@ final class FamilyProvider
       bool fourth,
       List<String>? fifth,
     });
-    return _$cb(
+    return family(
       ref,
       argument.$1,
       second: argument.second,
@@ -521,43 +377,35 @@ final class FamilyFamily extends Family {
       ), from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$familyHash();
-
-  @override
   String toString() => r'familyProvider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    Stream<String> Function(
-      Ref ref,
-      (
-        int, {
-        String? second,
-        double third,
-        bool fourth,
-        List<String>? fifth,
-      }) args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as FamilyProvider;
-
-        final argument = provider.argument as (
-          int, {
-          String? second,
-          double third,
-          bool fourth,
-          List<String>? fifth,
-        });
-
-        return provider
-            .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          Stream<String> Function(
+            Ref ref,
+            (
+              int, {
+              String? second,
+              double third,
+              bool fourth,
+              List<String>? fifth,
+            }) args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as FamilyProvider;
+            final argument = provider.argument as (
+              int, {
+              String? second,
+              double third,
+              bool fourth,
+              List<String>? fifth,
+            });
+            return provider
+                .$view(create: (ref) => create(ref, argument))
+                .$createElement(pointer);
+          });
 }
 
 @ProviderFor(PublicClass)
@@ -565,10 +413,8 @@ const publicClassProvider = PublicClassProvider._();
 
 final class PublicClassProvider
     extends $StreamNotifierProvider<PublicClass, String> {
-  const PublicClassProvider._(
-      {super.runNotifierBuildOverride, PublicClass Function()? create})
-      : _createCb = create,
-        super(
+  const PublicClassProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -578,39 +424,26 @@ final class PublicClassProvider
           allTransitiveDependencies: null,
         );
 
-  final PublicClass Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$publicClassHash();
 
   @$internal
   @override
-  PublicClass create() => _createCb?.call() ?? PublicClass();
-
-  @$internal
-  @override
-  PublicClassProvider $copyWithCreate(
-    PublicClass Function() create,
-  ) {
-    return PublicClassProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  PublicClassProvider $copyWithBuild(
-    Stream<String> Function(
-      Ref,
-      PublicClass,
-    ) build,
-  ) {
-    return PublicClassProvider._(runNotifierBuildOverride: build);
-  }
+  PublicClass create() => PublicClass();
 
   @$internal
   @override
   $StreamNotifierProviderElement<PublicClass, String> $createElement(
           $ProviderPointer pointer) =>
-      $StreamNotifierProviderElement(this, pointer);
+      $StreamNotifierProviderElement(pointer);
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<String> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<AsyncValue<String>>(value),
+    );
+  }
 }
 
 String _$publicClassHash() => r'b1526943c8ff0aaa20642bf78e744e5833cf9d02';
@@ -633,10 +466,8 @@ const _privateClassProvider = _PrivateClassProvider._();
 
 final class _PrivateClassProvider
     extends $StreamNotifierProvider<_PrivateClass, String> {
-  const _PrivateClassProvider._(
-      {super.runNotifierBuildOverride, _PrivateClass Function()? create})
-      : _createCb = create,
-        super(
+  const _PrivateClassProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -646,39 +477,26 @@ final class _PrivateClassProvider
           allTransitiveDependencies: null,
         );
 
-  final _PrivateClass Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$privateClassHash();
 
   @$internal
   @override
-  _PrivateClass create() => _createCb?.call() ?? _PrivateClass();
-
-  @$internal
-  @override
-  _PrivateClassProvider $copyWithCreate(
-    _PrivateClass Function() create,
-  ) {
-    return _PrivateClassProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  _PrivateClassProvider $copyWithBuild(
-    Stream<String> Function(
-      Ref,
-      _PrivateClass,
-    ) build,
-  ) {
-    return _PrivateClassProvider._(runNotifierBuildOverride: build);
-  }
+  _PrivateClass create() => _PrivateClass();
 
   @$internal
   @override
   $StreamNotifierProviderElement<_PrivateClass, String> $createElement(
           $ProviderPointer pointer) =>
-      $StreamNotifierProviderElement(this, pointer);
+      $StreamNotifierProviderElement(pointer);
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<String> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<AsyncValue<String>>(value),
+    );
+  }
 }
 
 String _$privateClassHash() => r'8c0d52b7ab79c0546d0c84c011bb3512609e029e';
@@ -710,19 +528,14 @@ final class FamilyClassProvider
         bool fourth,
         List<String>? fifth,
       })
-          super.argument,
-      super.runNotifierBuildOverride,
-      FamilyClass Function()? create})
-      : _createCb = create,
-        super(
+          super.argument})
+      : super(
           retry: null,
           name: r'familyClassProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final FamilyClass Function()? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$familyClassHash();
@@ -736,50 +549,21 @@ final class FamilyClassProvider
 
   @$internal
   @override
-  FamilyClass create() => _createCb?.call() ?? FamilyClass();
-
-  @$internal
-  @override
-  FamilyClassProvider $copyWithCreate(
-    FamilyClass Function() create,
-  ) {
-    return FamilyClassProvider._(
-        argument: argument as (
-          int, {
-          String? second,
-          double third,
-          bool fourth,
-          List<String>? fifth,
-        }),
-        from: from! as FamilyClassFamily,
-        create: create);
-  }
-
-  @$internal
-  @override
-  FamilyClassProvider $copyWithBuild(
-    Stream<String> Function(
-      Ref,
-      FamilyClass,
-    ) build,
-  ) {
-    return FamilyClassProvider._(
-        argument: argument as (
-          int, {
-          String? second,
-          double third,
-          bool fourth,
-          List<String>? fifth,
-        }),
-        from: from! as FamilyClassFamily,
-        runNotifierBuildOverride: build);
-  }
+  FamilyClass create() => FamilyClass();
 
   @$internal
   @override
   $StreamNotifierProviderElement<FamilyClass, String> $createElement(
           $ProviderPointer pointer) =>
-      $StreamNotifierProviderElement(this, pointer);
+      $StreamNotifierProviderElement(pointer);
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<String> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<AsyncValue<String>>(value),
+    );
+  }
 
   @override
   bool operator ==(Object other) {
@@ -820,76 +604,65 @@ final class FamilyClassFamily extends Family {
       ), from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$familyClassHash();
-
-  @override
   String toString() => r'familyClassProvider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    FamilyClass Function(
-      (
-        int, {
-        String? second,
-        double third,
-        bool fourth,
-        List<String>? fifth,
-      }) args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as FamilyClassProvider;
-
-        final argument = provider.argument as (
-          int, {
-          String? second,
-          double third,
-          bool fourth,
-          List<String>? fifth,
-        });
-
-        return provider
-            .$copyWithCreate(() => create(argument))
-            .$createElement(pointer);
-      },
-    );
-  }
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-    Stream<String> Function(
-            Ref ref,
-            FamilyClass notifier,
+          FamilyClass Function(
             (
               int, {
               String? second,
               double third,
               bool fourth,
               List<String>? fifth,
-            }) argument)
-        build,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as FamilyClassProvider;
+            }) args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as FamilyClassProvider;
+            final argument = provider.argument as (
+              int, {
+              String? second,
+              double third,
+              bool fourth,
+              List<String>? fifth,
+            });
+            return provider
+                .$view(create: () => create(argument))
+                .$createElement(pointer);
+          });
 
-        final argument = provider.argument as (
-          int, {
-          String? second,
-          double third,
-          bool fourth,
-          List<String>? fifth,
-        });
-
-        return provider
-            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+          Stream<String> Function(
+                  Ref ref,
+                  FamilyClass notifier,
+                  (
+                    int, {
+                    String? second,
+                    double third,
+                    bool fourth,
+                    List<String>? fifth,
+                  }) argument)
+              build) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as FamilyClassProvider;
+            final argument = provider.argument as (
+              int, {
+              String? second,
+              double third,
+              bool fourth,
+              List<String>? fifth,
+            });
+            return provider
+                .$view(
+                    runNotifierBuildOverride: (ref, notifier) =>
+                        build(ref, notifier, argument))
+                .$createElement(pointer);
+          });
 }
 
 abstract class _$FamilyClass extends $StreamNotifier<String> {

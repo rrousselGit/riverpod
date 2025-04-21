@@ -13,10 +13,8 @@ const asyncTodosNotifierProvider = AsyncTodosNotifierProvider._();
 
 final class AsyncTodosNotifierProvider
     extends $AsyncNotifierProvider<AsyncTodosNotifier, List<Todo>> {
-  const AsyncTodosNotifierProvider._(
-      {super.runNotifierBuildOverride, AsyncTodosNotifier Function()? create})
-      : _createCb = create,
-        super(
+  const AsyncTodosNotifierProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -26,39 +24,26 @@ final class AsyncTodosNotifierProvider
           allTransitiveDependencies: null,
         );
 
-  final AsyncTodosNotifier Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$asyncTodosNotifierHash();
 
   @$internal
   @override
-  AsyncTodosNotifier create() => _createCb?.call() ?? AsyncTodosNotifier();
-
-  @$internal
-  @override
-  AsyncTodosNotifierProvider $copyWithCreate(
-    AsyncTodosNotifier Function() create,
-  ) {
-    return AsyncTodosNotifierProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  AsyncTodosNotifierProvider $copyWithBuild(
-    FutureOr<List<Todo>> Function(
-      Ref,
-      AsyncTodosNotifier,
-    ) build,
-  ) {
-    return AsyncTodosNotifierProvider._(runNotifierBuildOverride: build);
-  }
+  AsyncTodosNotifier create() => AsyncTodosNotifier();
 
   @$internal
   @override
   $AsyncNotifierProviderElement<AsyncTodosNotifier, List<Todo>> $createElement(
           $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(this, pointer);
+      $AsyncNotifierProviderElement(pointer);
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<List<Todo>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<AsyncValue<List<Todo>>>(value),
+    );
+  }
 }
 
 String _$asyncTodosNotifierHash() =>

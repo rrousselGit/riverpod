@@ -11,12 +11,8 @@ const aProvider = AProvider._();
 
 final class AProvider extends $FunctionalProvider<String, String>
     with $Provider<String> {
-  const AProvider._(
-      {String Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const AProvider._()
+      : super(
           from: null,
           argument: null,
           retry: myRetry,
@@ -26,12 +22,18 @@ final class AProvider extends $FunctionalProvider<String, String>
           allTransitiveDependencies: null,
         );
 
-  final String Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$aHash();
+
+  @$internal
+  @override
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  String create(Ref ref) {
+    return a(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
@@ -39,26 +41,6 @@ final class AProvider extends $FunctionalProvider<String, String>
       origin: this,
       providerOverride: $ValueProvider<String>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  AProvider $copyWithCreate(
-    String Function(
-      Ref ref,
-    ) create,
-  ) {
-    return AProvider._(create: create);
-  }
-
-  @override
-  String create(Ref ref) {
-    final _$cb = _createCb ?? a;
-    return _$cb(ref);
   }
 }
 
@@ -69,26 +51,14 @@ const bProvider = BFamily._();
 
 final class BProvider extends $FunctionalProvider<String, String>
     with $Provider<String> {
-  const BProvider._(
-      {required BFamily super.from,
-      required int super.argument,
-      String Function(
-        Ref ref,
-        int arg,
-      )? create})
-      : _createCb = create,
-        super(
+  const BProvider._({required BFamily super.from, required int super.argument})
+      : super(
           retry: myRetry2,
           name: r'bProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final String Function(
-    Ref ref,
-    int arg,
-  )? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$bHash();
@@ -100,42 +70,25 @@ final class BProvider extends $FunctionalProvider<String, String>
         '($argument)';
   }
 
+  @$internal
+  @override
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  String create(Ref ref) {
+    final argument = this.argument as int;
+    return b(
+      ref,
+      argument,
+    );
+  }
+
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
       providerOverride: $ValueProvider<String>(value),
-    );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  BProvider $copyWithCreate(
-    String Function(
-      Ref ref,
-    ) create,
-  ) {
-    return BProvider._(
-        argument: argument as int,
-        from: from! as BFamily,
-        create: (
-          ref,
-          int arg,
-        ) =>
-            create(ref));
-  }
-
-  @override
-  String create(Ref ref) {
-    final _$cb = _createCb ?? b;
-    final argument = this.argument as int;
-    return _$cb(
-      ref,
-      argument,
     );
   }
 
@@ -168,31 +121,23 @@ final class BFamily extends Family {
       BProvider._(argument: arg, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$bHash();
-
-  @override
   String toString() => r'bProvider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    String Function(
-      Ref ref,
-      int args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as BProvider;
-
-        final argument = provider.argument as int;
-
-        return provider
-            .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          String Function(
+            Ref ref,
+            int args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as BProvider;
+            final argument = provider.argument as int;
+            return provider
+                .$view(create: (ref) => create(ref, argument))
+                .$createElement(pointer);
+          });
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

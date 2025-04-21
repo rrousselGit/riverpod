@@ -12,10 +12,8 @@ part of 'sync_class.dart';
 const exampleProvider = ExampleProvider._();
 
 final class ExampleProvider extends $NotifierProvider<Example, String> {
-  const ExampleProvider._(
-      {super.runNotifierBuildOverride, Example Function()? create})
-      : _createCb = create,
-        super(
+  const ExampleProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -25,10 +23,18 @@ final class ExampleProvider extends $NotifierProvider<Example, String> {
           allTransitiveDependencies: null,
         );
 
-  final Example Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$exampleHash();
+
+  @$internal
+  @override
+  Example create() => Example();
+
+  @$internal
+  @override
+  $NotifierProviderElement<Example, String> $createElement(
+          $ProviderPointer pointer) =>
+      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
@@ -37,35 +43,6 @@ final class ExampleProvider extends $NotifierProvider<Example, String> {
       providerOverride: $ValueProvider<String>(value),
     );
   }
-
-  @$internal
-  @override
-  Example create() => _createCb?.call() ?? Example();
-
-  @$internal
-  @override
-  ExampleProvider $copyWithCreate(
-    Example Function() create,
-  ) {
-    return ExampleProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  ExampleProvider $copyWithBuild(
-    String Function(
-      Ref,
-      Example,
-    ) build,
-  ) {
-    return ExampleProvider._(runNotifierBuildOverride: build);
-  }
-
-  @$internal
-  @override
-  $NotifierProviderElement<Example, String> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(this, pointer);
 }
 
 String _$exampleHash() => r'c237193ab6d57674973aaa02eb73db6f6822eb26';

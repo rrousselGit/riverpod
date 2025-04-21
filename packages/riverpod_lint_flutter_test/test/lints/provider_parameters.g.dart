@@ -12,25 +12,14 @@ const generatorProvider = GeneratorFamily._();
 final class GeneratorProvider extends $FunctionalProvider<int, int>
     with $Provider<int> {
   const GeneratorProvider._(
-      {required GeneratorFamily super.from,
-      required Object? super.argument,
-      int Function(
-        Ref ref, {
-        Object? value,
-      })? create})
-      : _createCb = create,
-        super(
+      {required GeneratorFamily super.from, required Object? super.argument})
+      : super(
           retry: null,
           name: r'generatorProvider',
           isAutoDispose: false,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final int Function(
-    Ref ref, {
-    Object? value,
-  })? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$generatorHash();
@@ -42,42 +31,25 @@ final class GeneratorProvider extends $FunctionalProvider<int, int>
         '($argument)';
   }
 
+  @$internal
+  @override
+  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  int create(Ref ref) {
+    final argument = this.argument;
+    return generator(
+      ref,
+      value: argument,
+    );
+  }
+
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
       providerOverride: $ValueProvider<int>(value),
-    );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  GeneratorProvider $copyWithCreate(
-    int Function(
-      Ref ref,
-    ) create,
-  ) {
-    return GeneratorProvider._(
-        argument: argument,
-        from: from! as GeneratorFamily,
-        create: (
-          ref, {
-          Object? value,
-        }) =>
-            create(ref));
-  }
-
-  @override
-  int create(Ref ref) {
-    final _$cb = _createCb ?? generator;
-    final argument = this.argument;
-    return _$cb(
-      ref,
-      value: argument,
     );
   }
 
@@ -110,31 +82,23 @@ final class GeneratorFamily extends Family {
       GeneratorProvider._(argument: value, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$generatorHash();
-
-  @override
   String toString() => r'generatorProvider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    int Function(
-      Ref ref,
-      Object? args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as GeneratorProvider;
-
-        final argument = provider.argument;
-
-        return provider
-            .$copyWithCreate((ref) => create(ref, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          int Function(
+            Ref ref,
+            Object? args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as GeneratorProvider;
+            final argument = provider.argument;
+            return provider
+                .$view(create: (ref) => create(ref, argument))
+                .$createElement(pointer);
+          });
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

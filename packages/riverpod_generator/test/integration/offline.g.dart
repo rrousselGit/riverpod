@@ -14,12 +14,8 @@ final class StorageProvider extends $FunctionalProvider<
     with
         $FutureModifier<Storage<String, String>>,
         $FutureProvider<Storage<String, String>> {
-  const StorageProvider._(
-      {FutureOr<Storage<String, String>> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const StorageProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -29,10 +25,6 @@ final class StorageProvider extends $FunctionalProvider<
           allTransitiveDependencies: null,
         );
 
-  final FutureOr<Storage<String, String>> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$storageHash();
 
@@ -40,21 +32,11 @@ final class StorageProvider extends $FunctionalProvider<
   @override
   $FutureProviderElement<Storage<String, String>> $createElement(
           $ProviderPointer pointer) =>
-      $FutureProviderElement(this, pointer);
-
-  @override
-  StorageProvider $copyWithCreate(
-    FutureOr<Storage<String, String>> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return StorageProvider._(create: create);
-  }
+      $FutureProviderElement(pointer);
 
   @override
   FutureOr<Storage<String, String>> create(Ref ref) {
-    final _$cb = _createCb ?? storage;
-    return _$cb(ref);
+    return storage(ref);
   }
 }
 
@@ -66,10 +48,8 @@ const customAnnotationProvider = CustomAnnotationProvider._();
 
 final class CustomAnnotationProvider
     extends $AsyncNotifierProvider<CustomAnnotation, String> {
-  const CustomAnnotationProvider._(
-      {super.runNotifierBuildOverride, CustomAnnotation Function()? create})
-      : _createCb = create,
-        super(
+  const CustomAnnotationProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -79,39 +59,26 @@ final class CustomAnnotationProvider
           allTransitiveDependencies: null,
         );
 
-  final CustomAnnotation Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$customAnnotationHash();
 
   @$internal
   @override
-  CustomAnnotation create() => _createCb?.call() ?? CustomAnnotation();
-
-  @$internal
-  @override
-  CustomAnnotationProvider $copyWithCreate(
-    CustomAnnotation Function() create,
-  ) {
-    return CustomAnnotationProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  CustomAnnotationProvider $copyWithBuild(
-    FutureOr<String> Function(
-      Ref,
-      CustomAnnotation,
-    ) build,
-  ) {
-    return CustomAnnotationProvider._(runNotifierBuildOverride: build);
-  }
+  CustomAnnotation create() => CustomAnnotation();
 
   @$internal
   @override
   $AsyncNotifierProviderElement<CustomAnnotation, String> $createElement(
           $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(this, pointer);
+      $AsyncNotifierProviderElement(pointer);
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<String> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<AsyncValue<String>>(value),
+    );
+  }
 }
 
 String _$customAnnotationHash() => r'abdbe1ad35942aef6e4017f7ebcbfcc7fc6bb986';
@@ -136,20 +103,14 @@ const jsonProvider = JsonFamily._();
 final class JsonProvider
     extends $AsyncNotifierProvider<Json, Map<String, List<int>>> {
   const JsonProvider._(
-      {required JsonFamily super.from,
-      required String super.argument,
-      super.runNotifierBuildOverride,
-      Json Function()? create})
-      : _createCb = create,
-        super(
+      {required JsonFamily super.from, required String super.argument})
+      : super(
           retry: null,
           name: r'jsonProvider',
           isAutoDispose: true,
           dependencies: null,
           allTransitiveDependencies: null,
         );
-
-  final Json Function()? _createCb;
 
   @override
   String debugGetCreateSourceHash() => _$jsonHash();
@@ -163,38 +124,22 @@ final class JsonProvider
 
   @$internal
   @override
-  Json create() => _createCb?.call() ?? Json();
-
-  @$internal
-  @override
-  JsonProvider $copyWithCreate(
-    Json Function() create,
-  ) {
-    return JsonProvider._(
-        argument: argument as String,
-        from: from! as JsonFamily,
-        create: create);
-  }
-
-  @$internal
-  @override
-  JsonProvider $copyWithBuild(
-    FutureOr<Map<String, List<int>>> Function(
-      Ref,
-      Json,
-    ) build,
-  ) {
-    return JsonProvider._(
-        argument: argument as String,
-        from: from! as JsonFamily,
-        runNotifierBuildOverride: build);
-  }
+  Json create() => Json();
 
   @$internal
   @override
   $AsyncNotifierProviderElement<Json, Map<String, List<int>>> $createElement(
           $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(this, pointer);
+      $AsyncNotifierProviderElement(pointer);
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<Map<String, List<int>>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride:
+          $ValueProvider<AsyncValue<Map<String, List<int>>>>(value),
+    );
+  }
 
   @override
   bool operator ==(Object other) {
@@ -225,50 +170,39 @@ final class JsonFamily extends Family {
       JsonProvider._(argument: arg, from: this);
 
   @override
-  String debugGetCreateSourceHash() => _$jsonHash();
-
-  @override
   String toString() => r'jsonProvider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-    Json Function(
-      String args,
-    ) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as JsonProvider;
-
-        final argument = provider.argument as String;
-
-        return provider
-            .$copyWithCreate(() => create(argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          Json Function(
+            String args,
+          ) create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as JsonProvider;
+            final argument = provider.argument as String;
+            return provider
+                .$view(create: () => create(argument))
+                .$createElement(pointer);
+          });
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-    FutureOr<Map<String, List<int>>> Function(
-            Ref ref, Json notifier, String argument)
-        build,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as JsonProvider;
-
-        final argument = provider.argument as String;
-
-        return provider
-            .$copyWithBuild((ref, notifier) => build(ref, notifier, argument))
-            .$createElement(pointer);
-      },
-    );
-  }
+          FutureOr<Map<String, List<int>>> Function(
+                  Ref ref, Json notifier, String argument)
+              build) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as JsonProvider;
+            final argument = provider.argument as String;
+            return provider
+                .$view(
+                    runNotifierBuildOverride: (ref, notifier) =>
+                        build(ref, notifier, argument))
+                .$createElement(pointer);
+          });
 }
 
 abstract class _$JsonBase extends $AsyncNotifier<Map<String, List<int>>> {
@@ -300,10 +234,8 @@ const json2Provider = Json2Provider._();
 
 final class Json2Provider
     extends $AsyncNotifierProvider<Json2, Map<String, List<int>>> {
-  const Json2Provider._(
-      {super.runNotifierBuildOverride, Json2 Function()? create})
-      : _createCb = create,
-        super(
+  const Json2Provider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -313,39 +245,27 @@ final class Json2Provider
           allTransitiveDependencies: null,
         );
 
-  final Json2 Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$json2Hash();
 
   @$internal
   @override
-  Json2 create() => _createCb?.call() ?? Json2();
-
-  @$internal
-  @override
-  Json2Provider $copyWithCreate(
-    Json2 Function() create,
-  ) {
-    return Json2Provider._(create: create);
-  }
-
-  @$internal
-  @override
-  Json2Provider $copyWithBuild(
-    FutureOr<Map<String, List<int>>> Function(
-      Ref,
-      Json2,
-    ) build,
-  ) {
-    return Json2Provider._(runNotifierBuildOverride: build);
-  }
+  Json2 create() => Json2();
 
   @$internal
   @override
   $AsyncNotifierProviderElement<Json2, Map<String, List<int>>> $createElement(
           $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(this, pointer);
+      $AsyncNotifierProviderElement(pointer);
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<Map<String, List<int>>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride:
+          $ValueProvider<AsyncValue<Map<String, List<int>>>>(value),
+    );
+  }
 }
 
 String _$json2Hash() => r'3e263438daf3363cc46613c80645526c1f756796';
@@ -372,10 +292,8 @@ const customJsonProvider = CustomJsonProvider._();
 
 final class CustomJsonProvider
     extends $AsyncNotifierProvider<CustomJson, Map<String, Bar>> {
-  const CustomJsonProvider._(
-      {super.runNotifierBuildOverride, CustomJson Function()? create})
-      : _createCb = create,
-        super(
+  const CustomJsonProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -385,39 +303,26 @@ final class CustomJsonProvider
           allTransitiveDependencies: null,
         );
 
-  final CustomJson Function()? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$customJsonHash();
 
   @$internal
   @override
-  CustomJson create() => _createCb?.call() ?? CustomJson();
-
-  @$internal
-  @override
-  CustomJsonProvider $copyWithCreate(
-    CustomJson Function() create,
-  ) {
-    return CustomJsonProvider._(create: create);
-  }
-
-  @$internal
-  @override
-  CustomJsonProvider $copyWithBuild(
-    FutureOr<Map<String, Bar>> Function(
-      Ref,
-      CustomJson,
-    ) build,
-  ) {
-    return CustomJsonProvider._(runNotifierBuildOverride: build);
-  }
+  CustomJson create() => CustomJson();
 
   @$internal
   @override
   $AsyncNotifierProviderElement<CustomJson, Map<String, Bar>> $createElement(
           $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(this, pointer);
+      $AsyncNotifierProviderElement(pointer);
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(AsyncValue<Map<String, Bar>> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $ValueProvider<AsyncValue<Map<String, Bar>>>(value),
+    );
+  }
 }
 
 String _$customJsonHash() => r'641edf92aae1f74ac7cc41db82c6a7dc88d24eb7';

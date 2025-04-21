@@ -13,12 +13,8 @@ const anotherProvider = AnotherProvider._();
 
 final class AnotherProvider extends $FunctionalProvider<void, void>
     with $Provider<void> {
-  const AnotherProvider._(
-      {void Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const AnotherProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -28,12 +24,18 @@ final class AnotherProvider extends $FunctionalProvider<void, void>
           allTransitiveDependencies: null,
         );
 
-  final void Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$anotherHash();
+
+  @$internal
+  @override
+  $ProviderElement<void> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  void create(Ref ref) {
+    return another(ref);
+  }
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(void value) {
@@ -41,26 +43,6 @@ final class AnotherProvider extends $FunctionalProvider<void, void>
       origin: this,
       providerOverride: $ValueProvider<void>(value),
     );
-  }
-
-  @$internal
-  @override
-  $ProviderElement<void> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(this, pointer);
-
-  @override
-  AnotherProvider $copyWithCreate(
-    void Function(
-      Ref ref,
-    ) create,
-  ) {
-    return AnotherProvider._(create: create);
-  }
-
-  @override
-  void create(Ref ref) {
-    final _$cb = _createCb ?? another;
-    return _$cb(ref);
   }
 }
 

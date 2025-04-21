@@ -14,12 +14,8 @@ const exampleProvider = ExampleProvider._();
 final class ExampleProvider
     extends $FunctionalProvider<AsyncValue<int>, Stream<int>>
     with $FutureModifier<int>, $StreamProvider<int> {
-  const ExampleProvider._(
-      {Stream<int> Function(
-        Ref ref,
-      )? create})
-      : _createCb = create,
-        super(
+  const ExampleProvider._()
+      : super(
           from: null,
           argument: null,
           retry: null,
@@ -29,31 +25,17 @@ final class ExampleProvider
           allTransitiveDependencies: null,
         );
 
-  final Stream<int> Function(
-    Ref ref,
-  )? _createCb;
-
   @override
   String debugGetCreateSourceHash() => _$exampleHash();
 
   @$internal
   @override
   $StreamProviderElement<int> $createElement($ProviderPointer pointer) =>
-      $StreamProviderElement(this, pointer);
-
-  @override
-  ExampleProvider $copyWithCreate(
-    Stream<int> Function(
-      Ref ref,
-    ) create,
-  ) {
-    return ExampleProvider._(create: create);
-  }
+      $StreamProviderElement(pointer);
 
   @override
   Stream<int> create(Ref ref) {
-    final _$cb = _createCb ?? example;
-    return _$cb(ref);
+    return example(ref);
   }
 }
 
