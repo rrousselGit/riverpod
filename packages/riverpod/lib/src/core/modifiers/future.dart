@@ -195,6 +195,7 @@ base mixin $FutureModifier<StateT> on ProviderBase<AsyncValue<StateT>> {
   }
 }
 
+@internal
 mixin FutureModifierClassElement<
         NotifierT extends NotifierBase<AsyncValue<StateT>>, StateT, CreatedT>
     on

@@ -109,6 +109,7 @@ final class _FunctionalProviderView<StateT, CreatedT> //
   String? debugGetCreateSourceHash() => _inner.debugGetCreateSourceHash();
 }
 
+@internal
 abstract class $FunctionalProviderElement<StateT, CreatedT>
     extends ProviderElement<StateT> {
   /// Implementation detail of `riverpod_generator`.

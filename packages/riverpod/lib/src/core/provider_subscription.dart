@@ -138,6 +138,7 @@ abstract base class ProviderSubscriptionImpl<OutT, OriginT>
   }
 }
 
+@internal
 abstract class Pausable {
   bool get isPaused;
 
@@ -267,6 +268,7 @@ base class ProviderSubscriptionView<OutT, OriginT>
   OutT _callRead() => _read();
 }
 
+@internal
 final class DelegatingProviderSubscription<OutT, InT, OriginT>
     extends ProviderSubscriptionImpl<OutT, OriginT> {
   DelegatingProviderSubscription({

@@ -55,7 +55,12 @@ export 'src/framework.dart'
         shortHash,
         describeIdentity,
         CircularDependencyError,
-        $AsyncValueProvider;
+        $AsyncValueProvider,
+        $FunctionalProviderElement,
+        $LazyProxyListenable,
+        DelegatingProviderSubscription,
+        FutureModifierClassElement,
+        Pausable;
 
 export 'src/providers/async_notifier.dart'
     hide $AsyncNotifier, $AsyncNotifierProvider, $AsyncNotifierProviderElement;
