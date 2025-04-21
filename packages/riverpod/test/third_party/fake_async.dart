@@ -219,7 +219,6 @@ class FakeAsync {
     final absoluteTimeout = _elapsed + timeout;
     _fireTimersWhile((timer) {
       if (timer._nextCall > absoluteTimeout) {
-        // TODO(nweiz): Make this a [TimeoutException].
         throw StateError('Exceeded timeout $timeout while flushing timers');
       }
 
