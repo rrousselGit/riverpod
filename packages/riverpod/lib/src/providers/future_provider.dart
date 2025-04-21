@@ -12,9 +12,8 @@ import 'stream_provider.dart' show StreamProvider;
 /// Implementation detail of `riverpod_generator`.
 /// Do not use, as this may be removed at any time.
 @internal
-base mixin $FutureProvider<StateT> on ProviderBase<AsyncValue<StateT>> {
-  FutureOr<StateT> create(Ref ref);
-
+base mixin $FutureProvider<StateT>
+    on $FunctionalProvider<AsyncValue<StateT>, FutureOr<StateT>> {
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(AsyncValue<StateT> value) {
     return $ProviderOverride(
@@ -133,45 +132,26 @@ final class FutureProvider<StateT>
 
   final Create<FutureOr<StateT>> _create;
 
+  @internal
   @override
   FutureOr<StateT> create(Ref ref) => _create(ref);
 
   @internal
   @override
   $FutureProviderElement<StateT> $createElement($ProviderPointer pointer) {
-    return $FutureProviderElement(this, pointer);
-  }
-
-  @mustBeOverridden
-  @visibleForOverriding
-  @override
-  FutureProvider<StateT> $copyWithCreate(
-    Create<FutureOr<StateT>> create,
-  ) {
-    return FutureProvider<StateT>.internal(
-      create,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      from: from,
-      argument: argument,
-      isAutoDispose: isAutoDispose,
-      retry: retry,
-    );
+    return $FutureProviderElement(pointer);
   }
 }
 
 /// The element of a [FutureProvider]
 /// Implementation detail of `riverpod_generator`. Do not use.
 @internal
-class $FutureProviderElement<StateT> extends ProviderElement<AsyncValue<StateT>>
+class $FutureProviderElement<StateT>
+    extends $FunctionalProviderElement<AsyncValue<StateT>, FutureOr<StateT>>
     with FutureModifierElement<StateT> {
   /// The element of a [FutureProvider]
   /// Implementation detail of `riverpod_generator`. Do not use.
-  $FutureProviderElement(this.provider, super.pointer);
-
-  @override
-  final $FutureProvider<StateT> provider;
+  $FutureProviderElement(super.pointer);
 
   @override
   WhenComplete create(Ref ref) {

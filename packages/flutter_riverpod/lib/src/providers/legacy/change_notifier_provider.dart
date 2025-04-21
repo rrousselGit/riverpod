@@ -132,40 +132,22 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   Refreshable<NotifierT> get notifier => _notifier<NotifierT>(this);
 
   final NotifierT Function(Ref ref) _createFn;
+  @override
+  NotifierT create(Ref ref) => _createFn(ref);
 
   @internal
   @override
   ChangeNotifierProviderElement<NotifierT> $createElement(
     $ProviderPointer pointer,
   ) {
-    return ChangeNotifierProviderElement<NotifierT>._(this, pointer);
-  }
-
-  @mustBeOverridden
-  @visibleForOverriding
-  @override
-  ChangeNotifierProvider<NotifierT> $copyWithCreate(
-    Create<NotifierT> create,
-  ) {
-    return ChangeNotifierProvider<NotifierT>.internal(
-      create,
-      name: name,
-      dependencies: dependencies,
-      isAutoDispose: isAutoDispose,
-      from: from,
-      argument: argument,
-      allTransitiveDependencies: allTransitiveDependencies,
-    );
+    return ChangeNotifierProviderElement<NotifierT>._(pointer);
   }
 }
 
 /// The element of [ChangeNotifierProvider].
 class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
-    extends ProviderElement<NotifierT> {
-  ChangeNotifierProviderElement._(this.provider, super.pointer);
-
-  @override
-  final ChangeNotifierProvider<NotifierT> provider;
+    extends $FunctionalProviderElement<NotifierT, NotifierT> {
+  ChangeNotifierProviderElement._(super.pointer);
 
   final _notifierNotifier = $ElementLense<NotifierT>();
 
@@ -174,7 +156,7 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
   @override
   WhenComplete create(Ref ref) {
     final notifierResult = _notifierNotifier.result = $Result.guard(
-      () => provider._createFn(ref),
+      () => provider.create(ref),
     );
 
     final notifier = notifierResult.requireState;
@@ -232,26 +214,4 @@ class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
           allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
         );
-
-  @override
-  Override overrideWith(
-    NotifierT Function(Ref ref, Arg arg) create,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as ChangeNotifierProvider<NotifierT>;
-
-        return ChangeNotifierProvider<NotifierT>.internal(
-          (ref) => create(ref, provider.argument as Arg),
-          from: provider.from,
-          argument: provider.argument,
-          isAutoDispose: provider.isAutoDispose,
-          dependencies: null,
-          allTransitiveDependencies: null,
-          name: null,
-        ).$createElement(pointer);
-      },
-    );
-  }
 }

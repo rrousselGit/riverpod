@@ -93,19 +93,16 @@ ${provider.doc} final class $name$_genericsDefinition
 
     final constructorParameters = [
       if (provider.providerElement.isFamily)
-        'required ${provider.familyTypeName} super.from,',
+        'required ${provider.familyTypeName} super.from',
       if (provider.parameters.isNotEmpty)
-        'required $_argumentRecordType super.argument,',
-      if (provider is ClassBasedProviderDeclaration)
-        'super.runNotifierBuildOverride,',
-    ].join();
+        'required $_argumentRecordType super.argument',
+    ];
+    final params = constructorParameters.isEmpty
+        ? ''
+        : '{${constructorParameters.join(',')}}';
 
     buffer.writeln('''
-  ${provider.doc} const ${provider.providerTypeName}._({
-    $constructorParameters
-    ${provider.createType()}? create
-  }): _createCb = create,
-      super(
+  ${provider.doc} const ${provider.providerTypeName}._($params): super(
         $superParameters
         retry: ${provider.annotation.retryNode?.name ?? 'null'},
         name: r'${provider.providerName(options)}',
@@ -135,46 +132,20 @@ ${provider.doc} final class $name$_genericsDefinition
     _writeDependencies(buffer);
 
     buffer.writeln('''
-  final ${provider.createType()}? _createCb;
-
   @override
   String debugGetCreateSourceHash() => ${provider.hashFnName}();
 ''');
 
-    final copyParameters = [
-      if (provider.parameters.isNotEmpty)
-        'argument: argument${provider.argumentCast},',
-      if (provider.providerElement.isFamily)
-        'from: from! as ${provider.familyTypeName},',
-    ].join();
-
-    _writeGenericCopyWith(buffer, copyParameters: copyParameters);
     _writeToString(buffer);
-    _writeOverrideWithValue(buffer);
 
     switch (provider) {
       case FunctionalProviderDeclaration():
-        final createParams = buildParamDefinitionQuery(provider.parameters);
-        final createFn = provider.parameters.isEmpty
-            ? 'create'
-            : '(ref, $createParams) => create(ref)';
-
         buffer.writeln('''
   @\$internal
   @override
   ${provider.internalElementName}<${provider.valueTypeDisplayString}> \$createElement(
     \$ProviderPointer pointer
-  ) => ${provider.internalElementName}(this, pointer);
-
-  @override
-  ${provider.providerTypeName}$_generics \$copyWithCreate(
-    ${provider.createType(withArguments: false)} create,
-  ) {
-    return ${provider.providerTypeName}$_generics._(
-      $copyParameters
-      create: $createFn
-    );
-  }
+  ) => ${provider.internalElementName}(pointer);
 ''');
 
         _writeFunctionalCreate(buffer);
@@ -185,29 +156,7 @@ ${provider.doc} final class $name$_genericsDefinition
         buffer.writeln('''
   @\$internal
   @override
-  $notifierType create() => _createCb?.call() ?? $notifierType();
-
-  @\$internal
-  @override
-  ${provider.providerTypeName}$_generics \$copyWithCreate(
-    $notifierType Function() create,
-  ) {
-    return ${provider.providerTypeName}$_generics._(
-      $copyParameters
-      create: create
-    );
-  }
-
-  @\$internal
-  @override
-  ${provider.providerTypeName}$_generics \$copyWithBuild(
-    ${provider.notifierBuildType()} build,
-  ) {
-    return ${provider.providerTypeName}$_generics._(
-      $copyParameters
-      runNotifierBuildOverride: build
-    );
-  }
+  $notifierType create() => $notifierType();
 ''');
 
         _classCreateElement(mutations, buffer, notifierType);
@@ -227,7 +176,27 @@ ${provider.doc} final class $name$_genericsDefinition
         }
     }
 
+    _writeCaptureGenerics(buffer);
+    _writeOverrideWithValue(buffer);
+
     _writeEqual(buffer);
+  }
+
+  void _writeOverrideWithValue(StringBuffer buffer) {
+    if (provider.createdType != SupportedCreatedType.value &&
+        provider is FunctionalProviderDeclaration) {
+      return;
+    }
+
+    buffer.writeln('''
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(${provider.exposedTypeDisplayString} value) {
+    return \$ProviderOverride(
+      origin: this,
+      providerOverride: \$ValueProvider<${provider.exposedTypeDisplayString}>(value),
+    );
+  }
+''');
   }
 
   void _classCreateElement(
@@ -241,7 +210,7 @@ ${provider.doc} final class $name$_genericsDefinition
   @override
   ${provider.internalElementName}<$notifierType, ${provider.valueTypeDisplayString}> \$createElement(
     \$ProviderPointer pointer
-  ) => ${provider.internalElementName}(this, pointer);
+  ) => ${provider.internalElementName}(pointer);
 ''');
 
       return;
@@ -252,65 +221,19 @@ ${provider.doc} final class $name$_genericsDefinition
   @override
   ${provider.generatedElementName}$_generics \$createElement(
     \$ProviderPointer pointer
-  ) => ${provider.generatedElementName}(this, pointer);
+  ) => ${provider.generatedElementName}(pointer);
 ''');
-  }
-
-  void _writeOverrideWithValue(StringBuffer buffer) {
-    if (provider.createdType != SupportedCreatedType.value) return;
-
-    buffer.writeln('''
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(${provider.exposedTypeDisplayString} value) {
-    return \$ProviderOverride(
-      origin: this,
-      providerOverride: \$ValueProvider<${provider.exposedTypeDisplayString}>(value),
-    );
-  }
-''');
-  }
-
-  void _writeGenericCopyWith(
-    StringBuffer buffer, {
-    required String copyParameters,
-  }) {
-    if (provider.typeParameters?.typeParameters.isEmpty ?? true) return;
-
-    buffer.writeln('''
-    ${provider.providerTypeName}$_generics _copyWithCreate(
-      ${provider.createType(withGenericDefinition: true)} create,
-    ) {
-      return ${provider.providerTypeName}$_generics._(
-        $copyParameters
-        create: create$_generics
-      );
-    }
-    ''');
-
-    if (provider is ClassBasedProviderDeclaration) {
-      buffer.writeln('''
-    ${provider.providerTypeName}$_generics _copyWithBuild(
-      ${provider.notifierBuildType(withGenericDefinition: true)} build,
-    ) {
-      return ${provider.providerTypeName}$_generics._(
-        $copyParameters
-        runNotifierBuildOverride: build$_generics
-      );
-    }
-    ''');
-    }
   }
 
   void _writeFunctionalCreate(StringBuffer buffer) {
     buffer.write('''
   @override
   ${provider.createdTypeDisplayString} create(Ref ref) {
-    final _\$cb = _createCb ?? ${provider.name}$_generics;
 ''');
 
     switch (provider.parameters) {
       case []:
-        buffer.writeln(r'return _$cb(ref);');
+        buffer.writeln('return ${provider.name}$_generics(ref);');
       case [...]:
         final paramsPassThrough = buildParamInvocationQuery({
           for (final (index, parameter) in provider.parameters.indexed)
@@ -324,7 +247,7 @@ ${provider.doc} final class $name$_genericsDefinition
 
         buffer.writeln('''
         final argument = this.argument${provider.argumentCast};
-        return _\$cb(ref, $paramsPassThrough);
+        return ${provider.name}$_generics(ref, $paramsPassThrough);
       ''');
     }
 
@@ -375,6 +298,18 @@ String toString() {
       // Calling toString on a record, do we don't add the () to avoid `provider((...))`
       [_, ...] => r'$argument',
     }}';
+}
+''');
+  }
+
+  void _writeCaptureGenerics(StringBuffer buffer) {
+    if (_generics.isEmpty) return;
+
+    buffer.writeln('''
+\$R _captureGenerics<\$R>(
+  \$R Function$_genericsDefinition() cb
+) {
+  return cb$_generics();
 }
 ''');
   }

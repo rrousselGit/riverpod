@@ -53,9 +53,6 @@ ${provider.doc} final class ${provider.familyTypeName} extends Family {
     );
 
   @override
-  String debugGetCreateSourceHash() => ${provider.hashFnName}();
- 
-  @override
   String toString() => r'${provider.providerName(options)}';
 ''');
 
@@ -104,65 +101,22 @@ ${provider.doc} final class ${provider.familyTypeName} extends Family {
 
     buffer.writeln('''
 /// {@macro riverpod.override_with}
-Override overrideWith($createType create,) {
-  return \$FamilyOverride(
-    from: this,
-    createElement: (pointer) {
-      final provider = pointer.origin as ${provider.providerTypeName};
+Override overrideWith($createType create) =>
+  ${_override((buffer) {
+      buffer.writeln('''
+        return provider.\$view(create: ${switch ((
+        hasParameters: provider.parameters.isNotEmpty,
+        provider,
+      )) {
+        (_, hasParameters: false) => 'create$_generics',
+        (FunctionalProviderDeclaration(), hasParameters: true) =>
+          '(ref) => create(ref, argument)',
+        (ClassBasedProviderDeclaration(), hasParameters: true) =>
+          '() => create(argument)',
+      }}).\$createElement(pointer);
+      ''');
+    })};
 ''');
-
-    switch ((
-      hasParameters: provider.parameters.isNotEmpty,
-      hasGenerics: provider.typeParameters?.typeParameters.isNotEmpty ?? false,
-      provider,
-    )) {
-      case (hasParameters: false, hasGenerics: false, _):
-        buffer.writeln(
-          r'return provider.$copyWithCreate(create).$createElement(pointer);',
-        );
-      case (hasParameters: true, hasGenerics: false, _):
-        buffer.writeln('''
-        final argument = provider.argument$_argumentCast;
-
-        return provider.\$copyWithCreate(${switch (provider) {
-          FunctionalProviderDeclaration() => '(ref) => create(ref, argument)',
-          ClassBasedProviderDeclaration() => '() => create(argument)',
-        }}).\$createElement(pointer);
-      ''');
-
-      case (hasParameters: false, hasGenerics: true, _):
-        buffer.writeln(
-          r'return provider._copyWithCreate(create).$createElement(pointer);',
-        );
-
-      case (
-          hasParameters: true,
-          hasGenerics: true,
-          FunctionalProviderDeclaration()
-        ):
-        buffer.writeln('''
-        return provider._copyWithCreate($_genericsDefinition(ref, $_parameterDefinition) {
-          return create(ref, ${provider.argumentToRecord()});
-        }).\$createElement(pointer);
-      ''');
-      case (
-          hasParameters: true,
-          hasGenerics: true,
-          ClassBasedProviderDeclaration()
-        ):
-        buffer.writeln('''
-        return provider._copyWithCreate($_genericsDefinition() {
-          final argument = provider.argument$_argumentCast;
-
-          return create(argument);
-        }).\$createElement(pointer);
-      ''');
-    }
-
-    buffer.writeln('''
-    },
-  );
-}''');
   }
 
   void _writeOverrideWithBuild(
@@ -182,46 +136,49 @@ ${provider.createdTypeDisplayString} Function$_genericsDefinition(
 
     buffer.writeln('''
 /// {@macro riverpod.override_with_build}
-Override overrideWithBuild($runNotifierBuildType build,) {
-  return \$FamilyOverride(
+Override overrideWithBuild($runNotifierBuildType build) =>
+  ${_override((buffer) {
+      buffer.writeln('''
+        return provider.\$view(runNotifierBuildOverride: ${switch ((
+        hasParameters: provider.parameters.isNotEmpty,
+      )) {
+        (hasParameters: false) => 'build$_generics',
+        (hasParameters: true) =>
+          '(ref, notifier) => build$_generics(ref, notifier, argument)',
+      }}).\$createElement(pointer);
+      ''');
+    })};
+''');
+  }
+
+  String _override(void Function(StringBuffer buffer) build) {
+    final buffer = StringBuffer('''
+\$FamilyOverride(
     from: this,
-    createElement: (pointer) {
+    createElement: 
+(pointer) {
       final provider = pointer.origin as ${provider.providerTypeName};
 ''');
 
-    switch ((
-      hasParameters: provider.parameters.isNotEmpty,
-      hasGenerics: provider.typeParameters?.typeParameters.isNotEmpty ?? false,
-    )) {
-      case (hasParameters: false, hasGenerics: false):
-        buffer.writeln(
-          r'return provider.$copyWithBuild(build).$createElement(pointer);',
-        );
-      case (hasParameters: true, hasGenerics: false):
-        buffer.writeln('''
-        final argument = provider.argument$_argumentCast;
-
-        return provider.\$copyWithBuild((ref, notifier) => build(ref, notifier, argument)).\$createElement(pointer);
-      ''');
-
-      case (hasParameters: false, hasGenerics: true):
-        buffer.writeln(
-          r'return provider._copyWithBuild(build).$createElement(pointer);',
-        );
-
-      case (hasParameters: true, hasGenerics: true):
-        buffer.writeln('''
-        return provider._copyWithBuild($_genericsDefinition(ref, notifier) {
-          final argument = provider.argument$_argumentCast;
-
-          return build(ref, notifier, argument);
-        }).\$createElement(pointer);
-      ''');
+    final hasGenerics =
+        provider.typeParameters?.typeParameters.isNotEmpty ?? false;
+    final hasParameters = provider.parameters.isNotEmpty;
+    if (hasGenerics) {
+      buffer
+          .writeln('return provider._captureGenerics($_genericsDefinition() {');
+      buffer.writeln('provider as ${provider.providerTypeName}$_generics;');
+    }
+    if (hasParameters) {
+      buffer.writeln('final argument = provider.argument$_argumentCast;');
     }
 
-    buffer.writeln('''
-    },
-  );
-}''');
+    build(buffer);
+
+    if (hasGenerics) {
+      buffer.writeln('});');
+    }
+    buffer.write('})');
+
+    return buffer.toString();
   }
 }

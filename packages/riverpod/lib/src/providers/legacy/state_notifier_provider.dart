@@ -119,6 +119,8 @@ final class StateNotifierProvider< //
   static const family = StateNotifierProviderFamilyBuilder();
 
   final NotifierT Function(Ref ref) _create;
+  @override
+  NotifierT create(Ref ref) => _create(ref);
 
   /// Obtains the [StateNotifier] associated with this provider, without listening
   /// to state changes.
@@ -142,44 +144,23 @@ final class StateNotifierProvider< //
   StateNotifierProviderElement<NotifierT, StateT> $createElement(
     $ProviderPointer pointer,
   ) {
-    return StateNotifierProviderElement._(this, pointer);
-  }
-
-  @mustBeOverridden
-  @visibleForOverriding
-  @override
-  StateNotifierProvider<NotifierT, StateT> $copyWithCreate(
-    Create<NotifierT> create,
-  ) {
-    return StateNotifierProvider<NotifierT, StateT>.internal(
-      create,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      from: from,
-      argument: argument,
-      isAutoDispose: isAutoDispose,
-      retry: retry,
-    );
+    return StateNotifierProviderElement._(pointer);
   }
 }
 
 /// The element of [StateNotifierProvider].
 class StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
-    StateT> extends ProviderElement<StateT> {
-  StateNotifierProviderElement._(this.provider, super.pointer);
-
-  @override
-  final StateNotifierProvider<NotifierT, StateT> provider;
+    StateT> extends $FunctionalProviderElement<StateT, NotifierT> {
+  StateNotifierProviderElement._(super.pointer);
 
   final _notifierNotifier = $ElementLense<NotifierT>();
 
   void Function()? _removeListener;
 
   @override
-  WhenComplete create(Ref ref) {
+  WhenComplete create($Ref<StateT> ref) {
     final notifier = _notifierNotifier.result = $Result.guard(
-      () => provider._create(ref),
+      () => provider.create(ref),
     );
 
     _removeListener = notifier.requireState.addListener(

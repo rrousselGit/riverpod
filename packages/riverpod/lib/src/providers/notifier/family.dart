@@ -32,7 +32,6 @@ final class FamilyNotifierProvider //
     required super.from,
     required super.argument,
     required super.isAutoDispose,
-    required super.runNotifierBuildOverride,
     required super.retry,
   });
 
@@ -47,42 +46,7 @@ final class FamilyNotifierProvider //
   $NotifierProviderElement<NotifierT, StateT> $createElement(
     $ProviderPointer pointer,
   ) {
-    return $NotifierProviderElement(this, pointer);
-  }
-
-  FamilyNotifierProvider<NotifierT, StateT, ArgT> _copyWith({
-    NotifierT Function()? create,
-    RunNotifierBuild<NotifierT, StateT>? build,
-  }) {
-    return FamilyNotifierProvider._(
-      create ?? _createNotifier,
-      name: name,
-      dependencies: dependencies,
-      allTransitiveDependencies: allTransitiveDependencies,
-      isAutoDispose: isAutoDispose,
-      runNotifierBuildOverride: build ?? runNotifierBuildOverride,
-      from: from,
-      argument: argument,
-      retry: retry,
-    );
-  }
-
-  @override
-  @mustBeOverridden
-  @visibleForOverriding
-  FamilyNotifierProvider<NotifierT, StateT, ArgT> $copyWithBuild(
-    RunNotifierBuild<NotifierT, StateT> build,
-  ) {
-    return _copyWith(build: build);
-  }
-
-  @mustBeOverridden
-  @visibleForOverriding
-  @override
-  FamilyNotifierProvider<NotifierT, StateT, ArgT> $copyWithCreate(
-    NotifierT Function() create,
-  ) {
-    return _copyWith(create: create);
+    return $NotifierProviderElement(pointer);
   }
 }
 

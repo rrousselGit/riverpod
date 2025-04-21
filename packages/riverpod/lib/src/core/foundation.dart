@@ -104,17 +104,7 @@ sealed class ProviderOrFamily implements ProviderListenableOrFamily {
   /// automatically when the provider stops being listened.
   final bool isAutoDispose;
 
-  /// A debug-only function for obtaining a hash of the source code of the
-  /// initialization function.
-  ///
-  /// If after a hot-reload this function returns a different result, the
-  /// provider will be re-executed.
-  ///
-  /// This method only returns a non-null value when using `riverpod_generator`.
-  // This is voluntarily not implemented by default, to force all non-generated
-  // providers to apply the LegacyProviderMixin.
-  @internal
-  String? debugGetCreateSourceHash();
+
 }
 
 extension on ProviderListenableOrFamily {
