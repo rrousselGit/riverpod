@@ -20,6 +20,7 @@ ProviderElementProxy<NotifierT, NotifierT>
   );
 }
 
+/// {@template riverpod.change_notifier_provider}
 /// Creates a [ChangeNotifier] and exposes its current state.
 ///
 /// Combined with [ChangeNotifier], [ChangeNotifierProvider] can be used to manipulate
@@ -78,6 +79,7 @@ ProviderElementProxy<NotifierT, NotifierT>
 ///   );
 /// }
 /// ```
+/// {@endtemplate}
 final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     extends $FunctionalProvider<NotifierT, NotifierT>
     with LegacyProviderMixin<NotifierT> {

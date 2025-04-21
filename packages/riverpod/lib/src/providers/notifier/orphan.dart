@@ -76,6 +76,11 @@ abstract class Notifier<StateT> extends $Notifier<StateT> {
   }
 }
 
+/// {@template riverpod.notifier_provider}
+/// A provider that exposes a synchronous [Notifier].
+///
+/// [NotifierProvider] can be considered as a mutable [Provider].
+/// {@endtemplate}
 final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
     extends $NotifierProvider<NotifierT, StateT>
     with LegacyProviderMixin<StateT> {

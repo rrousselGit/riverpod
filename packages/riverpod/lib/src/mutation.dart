@@ -181,7 +181,7 @@ const mutationZoneKey = #_mutation;
 ///
 /// You can check for the [ErrorMutationState] and [SuccessMutationState] to show a snackbar.
 ///
-/// Since showing snackbars is done using `showSnackBar`, which is not a widget,
+/// Since showing snackbar is done using `showSnackBar`, which is not a widget,
 /// we cannot rely on `ref.watch` here.
 /// Instead, we should use `ref.listen` to listen to the mutation state.
 /// This will give us a callback where we can safely show a snackbar.
@@ -345,7 +345,7 @@ abstract class MutationBase<ResultT> {
   /// If you remove all `watch`/`listen` calls to a mutation, the mutation
   /// will automatically go-back to its [IdleMutationState].
   ///
-  /// If your mutation is always listened, you may want to call [reset] manually
+  /// If your mutation is always listened, you may want to call [MutationBase.reset] manually
   /// to restore the mutation to its [IdleMutationState].
   /// {@endtemplate}
   void reset();
