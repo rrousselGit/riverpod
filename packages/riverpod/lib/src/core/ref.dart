@@ -562,7 +562,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// Listen to a provider and call [listener] whenever its value changes.
   ///
   /// Listeners will automatically be removed when the provider rebuilds (such
-  /// as when a provider listened with [watch] changes).
+  /// as when a provider listened with [Ref.watch] changes).
   ///
   /// Returns an object that allows cancelling the subscription early.
   ///
