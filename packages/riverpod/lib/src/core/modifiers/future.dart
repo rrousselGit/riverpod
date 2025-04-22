@@ -15,7 +15,7 @@ typedef AsyncSubscription = ({
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
 @internal
-@Public.inLibrary('riverpod_annotation')
+@publicInCodegen
 mixin $AsyncClassModifier<StateT, CreatedT, ValueT>
     on NotifierBase<AsyncValue<StateT>> {
   /// The value currently exposed by this [AsyncNotifier].
@@ -124,7 +124,7 @@ mixin $AsyncClassModifier<StateT, CreatedT, ValueT>
 /// Implementation detail for `riverpod_generator`.
 /// Do not use.
 @internal
-@Public.inLibrary('riverpod_annotation')
+@publicInCodegen
 base mixin $FutureModifier<StateT> on ProviderBase<AsyncValue<StateT>> {
   /// Obtains the [Future] representing this provider.
   ///

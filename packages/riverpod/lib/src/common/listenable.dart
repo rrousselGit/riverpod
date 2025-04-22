@@ -20,7 +20,7 @@ class _Listener<T> {
 /// to subsets of the state exposed by a provider.
 @internal
 @optionalTypeArgs
-@Public.inLibrary('riverpod_annotation')
+@publicInCodegen
 final class $ElementLense<T> extends _ValueListenable<T> {
   /// Directly obtain the value exposed, gratefully handling cases where
   /// [result] is null or in error state.

@@ -5,3 +5,8 @@ class Public {
   final String library;
   final String? packageName;
 }
+
+const publicInCodegen = Public.inLibrary(
+  'riverpod_annotation',
+  packageName: 'riverpod_annotation',
+);

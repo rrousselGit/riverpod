@@ -13,7 +13,7 @@ import 'stream_provider.dart' show StreamProvider;
 /// Implementation detail of `riverpod_generator`.
 /// Do not use, as this may be removed at any time.
 @internal
-@Public.inLibrary('riverpod_annotation')
+@publicInCodegen
 base mixin $FutureProvider<StateT>
     on $FunctionalProvider<AsyncValue<StateT>, FutureOr<StateT>> {
   /// {@macro riverpod.override_with_value}
@@ -148,7 +148,7 @@ final class FutureProvider<StateT>
 /// The element of a [FutureProvider]
 /// Implementation detail of `riverpod_generator`. Do not use.
 @internal
-@Public.inLibrary('riverpod_annotation')
+@publicInCodegen
 class $FutureProviderElement<StateT>
     extends $FunctionalProviderElement<AsyncValue<StateT>, FutureOr<StateT>>
     with FutureModifierElement<StateT> {

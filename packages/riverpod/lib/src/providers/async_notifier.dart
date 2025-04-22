@@ -14,13 +14,13 @@ part 'async_notifier/family.dart';
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
-@Public.inLibrary('riverpod_annotation')
+@publicInCodegen
 abstract class $AsyncNotifier<StateT> extends $AsyncNotifierBase<StateT>
     with $AsyncClassModifier<StateT, FutureOr<StateT>, StateT> {}
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
-@Public.inLibrary('riverpod_annotation')
+@publicInCodegen
 abstract base class $AsyncNotifierProvider< //
         NotifierT extends $AsyncNotifier<StateT>,
         StateT> //
@@ -55,7 +55,7 @@ abstract base class $AsyncNotifierProvider< //
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
 @internal
-@Public.inLibrary('riverpod_annotation')
+@publicInCodegen
 class $AsyncNotifierProviderElement< //
         NotifierT extends $AsyncNotifier<StateT>,
         StateT> //

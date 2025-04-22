@@ -4,7 +4,7 @@ part of '../../framework.dart';
 /// Do not use, as this can be removed at any time.
 @internal
 @reopen
-@Public.inLibrary('riverpod_annotation')
+@publicInCodegen
 abstract base class $FunctionalProvider< //
         StateT,
         CreatedT> //

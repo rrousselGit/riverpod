@@ -15,13 +15,13 @@ part 'stream_notifier/orphan.dart';
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
-@Public.inLibrary('riverpod_annotation')
+@publicInCodegen
 abstract class $StreamNotifier<StateT> extends $AsyncNotifierBase<StateT>
     with $AsyncClassModifier<StateT, Stream<StateT>, StateT> {}
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
-@Public.inLibrary('riverpod_annotation')
+@publicInCodegen
 abstract base class $StreamNotifierProvider<
         NotifierT extends $StreamNotifier<StateT>, //
         StateT> //
@@ -56,7 +56,7 @@ abstract base class $StreamNotifierProvider<
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
 @internal
-@Public.inLibrary('riverpod_annotation')
+@publicInCodegen
 class $StreamNotifierProviderElement< //
         NotifierT extends $StreamNotifier<StateT>,
         StateT> //

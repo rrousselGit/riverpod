@@ -46,7 +46,7 @@ typedef WhenComplete = void Function(void Function() cb)?;
 /// {@endtemplate}
 @internal
 @optionalTypeArgs
-@Public.inLibrary('riverpod_annotation')
+@publicInCodegen
 abstract class ProviderElement<StateT> implements Node {
   /// {@macro riverpod.provider_element_base}
   ProviderElement(this.pointer);

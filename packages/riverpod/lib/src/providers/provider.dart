@@ -10,7 +10,7 @@ import 'stream_provider.dart' show StreamProvider;
 /// Implementation detail of `riverpod_generator`.
 /// Do not use, as this may be removed at any time.
 @internal
-@Public.inLibrary('riverpod_annotation')
+@publicInCodegen
 base mixin $Provider<StateT> on $FunctionalProvider<StateT, StateT> {}
 
 /// {@macro riverpod.provider}
@@ -326,7 +326,7 @@ base class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
 /// - [Provider.family], to allow providers to create a value from external parameters.
 /// {@endtemplate}
 @internal
-@Public.inLibrary('riverpod_annotation')
+@publicInCodegen
 class $ProviderElement<StateT>
     extends $FunctionalProviderElement<StateT, StateT> {
   /// A [ProviderElement] for [Provider]
