@@ -6,6 +6,8 @@ environment:
 
 dev_dependencies:
   custom_lint:
+  internal_lint:
+    path: packages/internal_lint
   riverpod_lint:
 
 workspace:
@@ -21,6 +23,7 @@ workspace:
   - packages/hooks_riverpod/example
   - packages/hooks_riverpod
   - packages/lint_visitor_generator
+  - packages/internal_lint
   - packages/riverpod/example
   - packages/riverpod
   - packages/riverpod_analyzer_utils

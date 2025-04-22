@@ -1,0 +1,15 @@
+name: internal_lint
+publish_to: none
+
+environment:
+  sdk: ^3.6.0
+
+resolution: workspace
+
+dependencies:
+  analyzer: ^7.0.0
+  analyzer_plugin: ^0.13.0
+  custom_lint_builder: ^0.7.0
+  meta: ^1.7.0
+  path: ^1.8.1
+  pubspec_parse: ^1.5.0
