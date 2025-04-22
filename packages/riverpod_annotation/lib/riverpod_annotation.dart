@@ -72,9 +72,25 @@ export 'package:riverpod/src/mutation.dart'
     show $SyncMutationBase, $AsyncMutationBase;
 // Separate export to avoid silencing valid @internal issues
 export 'package:riverpod/src/mutation.dart'
-    hide $SyncMutationBase, $AsyncMutationBase;
+    show
+        mutationZoneKey,
+        mutation,
+        Mutation,
+        MutationState,
+        IdleMutationState,
+        PendingMutationState,
+        ErrorMutationState,
+        SuccessMutationState,
+        MutationBase;
 
-export 'src/riverpod_annotation.dart';
+export 'src/riverpod_annotation.dart'
+    show
+        riverpod,
+        Riverpod,
+        ProviderFor,
+        Raw,
+        MissingScopeException,
+        Dependencies;
 
 /// An implementation detail of `riverpod_generator`.
 /// Do not use.
