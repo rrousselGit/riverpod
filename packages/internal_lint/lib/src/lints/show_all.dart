@@ -61,6 +61,14 @@ class ShowAll extends DartLintRule {
   List<Fix> getFixes() => [_ShowAllFix()];
 }
 
+extension on LibraryElement {
+  Set<Element> get exportedElements {
+    return exportNamespace.definedNames.values
+        .map((e) => e.nonSynthetic)
+        .toSet();
+  }
+}
+
 ({
   Iterable<Element> missing,
   Iterable<SimpleIdentifier> extra,
@@ -73,20 +81,15 @@ class ShowAll extends DartLintRule {
     );
   }
 
-  final exportedIdentifiers =
-      exportedLibrary.exportNamespace.definedNames.values
-          .where((e) => !e.isSynthetic)
-          .map((e) {
-            if (e.name == 'errorReporter') {
-              print('HEre $e');
-            }
-            final public = _Public.of(e);
-            if (e.hasInternal && public.isEmpty) return null;
+  final exportedIdentifiers = exportedLibrary.exportedElements
+      .map((e) {
+        final public = _Public.of(e);
+        if (e.hasInternal && public.isEmpty) return null;
 
-            return (public, e);
-          })
-          .nonNulls
-          .toList();
+        return (public, e);
+      })
+      .nonNulls
+      .toList();
 
   final show = export.combinators.whereType<ShowCombinator>().firstOrNull;
 
@@ -135,15 +138,13 @@ class _ShowAllFix extends DartFix {
             builder.addDeletion(hide.sourceRange);
           }
 
-          final toShow = export
-              .element!.exportedLibrary!.exportNamespace.definedNames.values
-              .where((e) => !e.isSynthetic)
+          final toShow = export.element!.exportedLibrary!.exportedElements
               .where(
                 (e) =>
                     hide == null ||
                     !hide.hiddenNames.map((e) => e.name).contains(e.name),
               )
-              .toList();
+              .toSet();
 
           builder.addInsertion(export.semicolon.offset, (builder) {
             builder.write(' show ');
