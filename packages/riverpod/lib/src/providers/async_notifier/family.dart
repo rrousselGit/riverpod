@@ -82,12 +82,4 @@ final class FamilyAsyncNotifierProvider< //
   @internal
   @override
   NotifierT create() => _createNotifier();
-
-  @internal
-  @override
-  $AsyncNotifierProviderElement<NotifierT, StateT> $createElement(
-    $ProviderPointer pointer,
-  ) {
-    return $AsyncNotifierProviderElement(pointer);
-  }
 }

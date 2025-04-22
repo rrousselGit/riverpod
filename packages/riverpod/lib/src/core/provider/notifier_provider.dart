@@ -275,6 +275,8 @@ extension ClassBaseX<StateT> on NotifierBase<StateT> {
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
+@internal
+@reopen
 abstract base class $ClassProvider< //
     NotifierT extends NotifierBase<StateT>,
     StateT,

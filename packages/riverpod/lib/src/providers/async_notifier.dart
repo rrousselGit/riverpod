@@ -39,6 +39,14 @@ abstract base class $AsyncNotifierProvider< //
     required super.isAutoDispose,
     required super.retry,
   });
+
+  @internal
+  @override
+  $AsyncNotifierProviderElement<NotifierT, StateT> $createElement(
+    $ProviderPointer pointer,
+  ) {
+    return $AsyncNotifierProviderElement(pointer);
+  }
 }
 
 /// Implementation detail of `riverpod_generator`.

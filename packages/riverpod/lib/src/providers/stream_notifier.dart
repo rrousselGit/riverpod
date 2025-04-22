@@ -40,6 +40,14 @@ abstract base class $StreamNotifierProvider<
     required super.isAutoDispose,
     required super.retry,
   });
+
+  @internal
+  @override
+  $StreamNotifierProviderElement<NotifierT, StateT> $createElement(
+    $ProviderPointer pointer,
+  ) {
+    return $StreamNotifierProviderElement(pointer);
+  }
 }
 
 /// Implementation detail of `riverpod_generator`.

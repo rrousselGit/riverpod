@@ -3,6 +3,7 @@ part of '../../framework.dart';
 /// Implementation detail of `riverpod_generator`.
 /// Do not use, as this can be removed at any time.
 @internal
+@reopen
 abstract base class $FunctionalProvider< //
         StateT,
         CreatedT> //
