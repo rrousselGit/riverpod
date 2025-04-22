@@ -201,16 +201,6 @@ class _Public {
   final String? packageName;
 
   bool hasMatch(LibraryExportElement e) {
-    print('''
-Has match
-  expected:
-    library: $library
-    packageName: $packageName
-  actual:
-    library: ${e.source.uri.pathSegments.skip(1).join('/')}
-    packageName: ${e.source.uri.pathSegments[0]}
-''');
-
     final uri = e.source.uri;
 
     if (packageName != null) {
