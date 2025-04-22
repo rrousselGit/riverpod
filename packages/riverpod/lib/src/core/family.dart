@@ -52,6 +52,9 @@ abstract class Family extends ProviderOrFamily implements _FamilyOverride {
 
   @override
   Family get from => this;
+
+  @override
+  String toString() => name ?? describeIdentity(this);
 }
 
 /// Setup how a family is overridden
@@ -127,9 +130,6 @@ class FunctionalFamily< //
       },
     );
   }
-
-  @override
-  String toString() => name ?? describeIdentity(this);
 }
 
 /// A base implementation for [Family] specific to `Notifier`-based providers.
@@ -207,7 +207,4 @@ class ClassFamily< //
       },
     );
   }
-
-  @override
-  String toString() => name ?? describeIdentity(this);
 }

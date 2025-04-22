@@ -343,8 +343,9 @@ class $ProviderElement<StateT>
 }
 
 /// The [Family] of [Provider]
-class ProviderFamily<StateT, ArgT>
+final class ProviderFamily<StateT, ArgT>
     extends FunctionalFamily<StateT, ArgT, StateT, Provider<StateT>> {
+  @internal
   ProviderFamily(
     super._createFn, {
     super.name,

@@ -201,10 +201,11 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
 }
 
 /// The [Family] of [ChangeNotifierProvider].
-class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
+final class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
     extends FunctionalFamily<NotifierT, Arg, NotifierT,
         ChangeNotifierProvider<NotifierT>> {
   /// The [Family] of [ChangeNotifierProvider].
+  @internal
   ChangeNotifierProviderFamily(
     super._createFn, {
     super.name,

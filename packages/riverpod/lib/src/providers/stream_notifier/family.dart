@@ -56,7 +56,7 @@ final class FamilyStreamNotifierProvider< //
 }
 
 /// The [Family] of [StreamNotifierProvider].
-class StreamNotifierProviderFamily< //
+final class StreamNotifierProviderFamily< //
         NotifierT extends FamilyStreamNotifier<StateT, ArgT>,
         StateT,
         ArgT> //
@@ -67,7 +67,7 @@ class StreamNotifierProviderFamily< //
         ArgT,
         Stream<StateT>,
         FamilyStreamNotifierProvider<NotifierT, StateT, ArgT>> {
-  /// The [Family] of [StreamNotifierProvider].
+  /// The [Family] of [FamilyStreamNotifierProvider].
   @internal
   StreamNotifierProviderFamily.internal(
     super._createFn, {

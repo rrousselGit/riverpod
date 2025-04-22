@@ -43,7 +43,7 @@ final class FamilyNotifierProvider //
 }
 
 /// The [Family] of [NotifierProvider].
-class NotifierProviderFamily<
+final class NotifierProviderFamily<
         NotifierT extends FamilyNotifier<StateT, ArgT>, StateT, ArgT>
     extends ClassFamily< //
         NotifierT,
@@ -52,7 +52,7 @@ class NotifierProviderFamily<
         ArgT,
         StateT,
         FamilyNotifierProvider<NotifierT, StateT, ArgT>> {
-  /// The [Family] of [AsyncNotifierProvider].
+  /// The [Family] of [FamilyNotifierProvider].
   @internal
   NotifierProviderFamily.internal(
     super._createFn, {

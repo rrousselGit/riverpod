@@ -199,8 +199,9 @@ class $StreamProviderElement<StateT>
 }
 
 /// The [Family] of a [StreamProvider]
-class StreamProviderFamily<StateT, ArgT> extends FunctionalFamily<
+final class StreamProviderFamily<StateT, ArgT> extends FunctionalFamily<
     AsyncValue<StateT>, ArgT, Stream<StateT>, StreamProvider<StateT>> {
+  @internal
   StreamProviderFamily(
     super._createFn, {
     super.name,

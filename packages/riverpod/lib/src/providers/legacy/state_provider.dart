@@ -153,12 +153,13 @@ class StateProviderElement<T> extends $FunctionalProviderElement<T, T> {
 }
 
 /// The [Family] of [StateProvider].
-class StateProviderFamily<StateT, Arg> extends FunctionalFamily< //
+final class StateProviderFamily<StateT, Arg> extends FunctionalFamily< //
     StateT,
     Arg,
     StateT,
     StateProvider<StateT>> {
-  /// The [Family] of [AsyncNotifierProvider].
+  /// The [Family] of [StateProvider].
+  @internal
   StateProviderFamily(
     super._createFn, {
     super.name,

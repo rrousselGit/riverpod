@@ -204,10 +204,12 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
 }
 
 /// The [Family] of [StateNotifierProvider].
-class StateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T, Arg>
+final class StateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T,
+        Arg>
     extends FunctionalFamily<T, Arg, NotifierT,
         StateNotifierProvider<NotifierT, T>> {
   /// The [Family] of [StateNotifierProvider].
+  @internal
   StateNotifierProviderFamily(
     super._createFn, {
     super.name,
