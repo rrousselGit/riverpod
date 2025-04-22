@@ -334,6 +334,7 @@ abstract base class $ClassProvider< //
     );
   }
 
+  @internal
   @override
   $ClassProviderElement< //
       NotifierT,
@@ -379,6 +380,7 @@ final class _ClassProviderView<
     return _inner.create();
   }
 
+  @internal
   @override
   $ClassProviderElement<NotifierT, StateT, ValueT, CreatedT> $createElement(
     $ProviderPointer pointer,

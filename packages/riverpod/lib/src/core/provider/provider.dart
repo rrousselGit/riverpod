@@ -22,7 +22,7 @@ typedef OnError = void Function(Object error, StackTrace stackTrace);
 /// A base class for _all_ providers.
 @immutable
 // Marked as "base" because linters/generators rely on fields on const provider instances.
-abstract base class ProviderBase<StateT> extends ProviderOrFamily
+abstract final class ProviderBase<StateT> extends ProviderOrFamily
     with
         ProviderListenable<StateT>,
         ProviderListenableWithOrigin<StateT, StateT>

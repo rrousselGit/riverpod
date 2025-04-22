@@ -70,6 +70,7 @@ abstract base class $FunctionalProvider< //
   @internal
   CreatedT create(Ref ref);
 
+  @internal
   @override
   $FunctionalProviderElement<StateT, CreatedT> $createElement(
     $ProviderPointer pointer,
@@ -99,6 +100,7 @@ final class _FunctionalProviderView<StateT, CreatedT> //
   @override
   CreatedT create(Ref ref) => _createOverride(ref);
 
+  @internal
   @override
   $FunctionalProviderElement<StateT, CreatedT> $createElement(
     $ProviderPointer pointer,

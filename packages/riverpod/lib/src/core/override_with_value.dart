@@ -89,6 +89,7 @@ final class $AsyncValueProvider<StateT>
     extends $ValueProvider<AsyncValue<StateT>> {
   const $AsyncValueProvider(super._value);
 
+  @internal
   @override
   // ignore: library_private_types_in_public_api, not public API
   _AsyncValueProviderElement<StateT> $createElement(
