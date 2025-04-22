@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 import 'package:meta/meta_meta.dart';
 
-import 'common/internal_lints.dart';
 import 'internals.dart';
 
 // Mutation code. This should be in riverpod_annotation, but has to be here

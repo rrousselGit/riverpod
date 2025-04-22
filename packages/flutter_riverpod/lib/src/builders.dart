@@ -16,6 +16,7 @@ import 'package:meta/meta.dart';
 import 'internals.dart';
 
 @internal
+@publicInMisc
 class ChangeNotifierProviderFamilyBuilder {
   const ChangeNotifierProviderFamilyBuilder();
 
@@ -297,6 +298,7 @@ class ChangeNotifierProviderFamilyBuilder {
 }
 
 @internal
+@publicInMisc
 class AutoDisposeChangeNotifierProviderBuilder {
   const AutoDisposeChangeNotifierProviderBuilder();
 
@@ -322,6 +324,7 @@ class AutoDisposeChangeNotifierProviderBuilder {
 }
 
 @internal
+@publicInMisc
 class AutoDisposeChangeNotifierProviderFamilyBuilder {
   const AutoDisposeChangeNotifierProviderFamilyBuilder();
 

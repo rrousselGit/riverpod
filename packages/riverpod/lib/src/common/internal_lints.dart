@@ -10,3 +10,5 @@ const publicInCodegen = Public.inLibrary(
   'riverpod_annotation',
   packageName: 'riverpod_annotation',
 );
+
+const publicInMisc = Public.inLibrary('misc');

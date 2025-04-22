@@ -5,6 +5,7 @@
 /// It is used by the flutter and hooks implementation, but is not stable.
 library;
 
+export 'common/internal_lints.dart';
 export 'common/listenable.dart';
 export 'common/result.dart';
 export 'common/run_guarded.dart';
