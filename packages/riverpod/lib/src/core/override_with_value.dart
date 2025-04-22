@@ -3,6 +3,7 @@ part of '../framework.dart';
 /// A provider that is driven by a value instead of a function.
 ///
 /// This is an implementation detail of `overrideWithValue`.
+@Public.inLibrary('riverpod_annotation')
 final class $ValueProvider<StateT> extends ProviderBase<StateT>
     with LegacyProviderMixin<StateT> {
   /// Creates a [$ValueProvider].

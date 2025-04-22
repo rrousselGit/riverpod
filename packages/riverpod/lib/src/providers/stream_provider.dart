@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 
 import '../builder.dart';
+import '../common/internal_lints.dart';
 import '../common/listenable.dart';
 import '../common/result.dart';
 import '../core/async_value.dart';
@@ -13,6 +14,7 @@ import 'provider.dart' show Provider;
 /// Implementation detail of `riverpod_generator`.
 /// Do not use, as this may be removed at any time.
 @internal
+@Public.inLibrary('riverpod_annotation')
 base mixin $StreamProvider<StateT>
     on $FunctionalProvider<AsyncValue<StateT>, Stream<StateT>> {
   /// {@macro riverpod.override_with_value}
@@ -134,6 +136,7 @@ base class StreamProvider<StateT>
 
 /// The element of [StreamProvider].
 @internal
+@Public.inLibrary('riverpod_annotation')
 class $StreamProviderElement<StateT>
     extends $FunctionalProviderElement<AsyncValue<StateT>, Stream<StateT>>
     with FutureModifierElement<StateT> {

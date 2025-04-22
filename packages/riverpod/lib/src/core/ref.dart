@@ -1,6 +1,7 @@
 part of '../framework.dart';
 
 @internal
+@Public.inLibrary('riverpod_annotation')
 extension $RefArg on Ref {
   // Implementation detail, do not use
   Object? get $arg => _element.origin.argument;
@@ -600,6 +601,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
 }
 
 @internal
+@Public.inLibrary('riverpod_annotation')
 class $Ref<StateT> extends Ref {
   /// {@macro riverpod.provider_ref_base}
   $Ref(

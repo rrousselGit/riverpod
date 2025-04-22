@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:meta/meta.dart';
 
 import '../builder.dart';
+import '../common/internal_lints.dart';
 import '../core/async_value.dart';
 import '../framework.dart';
 import 'future_provider.dart' show FutureProvider;
@@ -13,11 +14,13 @@ part 'async_notifier/family.dart';
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
+@Public.inLibrary('riverpod_annotation')
 abstract class $AsyncNotifier<StateT> extends $AsyncNotifierBase<StateT>
     with $AsyncClassModifier<StateT, FutureOr<StateT>, StateT> {}
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
+@Public.inLibrary('riverpod_annotation')
 abstract base class $AsyncNotifierProvider< //
         NotifierT extends $AsyncNotifier<StateT>,
         StateT> //
@@ -52,6 +55,7 @@ abstract base class $AsyncNotifierProvider< //
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
 @internal
+@Public.inLibrary('riverpod_annotation')
 class $AsyncNotifierProviderElement< //
         NotifierT extends $AsyncNotifier<StateT>,
         StateT> //

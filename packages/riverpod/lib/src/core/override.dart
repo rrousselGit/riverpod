@@ -50,6 +50,7 @@ extension on _FamilyOverride {
 ///
 /// - [ProviderContainer], which uses this object.
 /// - `overrideWithValue`, which creates a [$ProviderOverride].
+@Public.inLibrary('riverpod_annotation')
 class $ProviderOverride implements _ProviderOverride {
   /// Override a provider
   $ProviderOverride({

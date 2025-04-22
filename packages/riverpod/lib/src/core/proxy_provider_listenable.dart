@@ -1,6 +1,7 @@
 part of '../framework.dart';
 
 @internal
+@Public.inLibrary('riverpod_annotation')
 class $LazyProxyListenable<OutT, OriginT>
     with ProviderListenable<OutT>, ProviderListenableWithOrigin<OutT, OriginT> {
   $LazyProxyListenable(this.provider, this._lense);

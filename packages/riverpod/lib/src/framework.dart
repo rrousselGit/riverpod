@@ -12,6 +12,7 @@ import 'package:test/test.dart' as test;
 
 import './common/tenable.dart';
 import 'common/env.dart';
+import 'common/internal_lints.dart';
 import 'common/pragma.dart';
 import 'internals.dart';
 import 'mutation.dart';

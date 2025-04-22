@@ -15,6 +15,7 @@ abstract class _PointerBase {
 }
 
 @internal
+@Public.inLibrary('riverpod_annotation')
 class $ProviderPointer implements _PointerBase {
   $ProviderPointer({
     required this.providerOverride,

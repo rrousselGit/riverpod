@@ -277,6 +277,7 @@ extension ClassBaseX<StateT> on NotifierBase<StateT> {
 /// Do not use.
 @internal
 @reopen
+@Public.inLibrary('riverpod_annotation')
 abstract base class $ClassProvider< //
     NotifierT extends NotifierBase<StateT>,
     StateT,
@@ -397,6 +398,7 @@ final class _ClassProviderView<
 }
 
 @internal
+@Public.inLibrary('riverpod_annotation')
 abstract class $ClassProviderElement< //
         NotifierT extends NotifierBase<StateT>,
         StateT,

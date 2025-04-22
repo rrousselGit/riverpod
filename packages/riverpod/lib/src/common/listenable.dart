@@ -3,6 +3,7 @@ import 'package:meta/meta.dart';
 import '../framework.dart' show ProviderElement;
 import '../internals.dart' show OnError;
 import 'env.dart';
+import 'internal_lints.dart';
 import 'pragma.dart';
 import 'result.dart';
 
@@ -19,6 +20,7 @@ class _Listener<T> {
 /// to subsets of the state exposed by a provider.
 @internal
 @optionalTypeArgs
+@Public.inLibrary('riverpod_annotation')
 final class $ElementLense<T> extends _ValueListenable<T> {
   /// Directly obtain the value exposed, gratefully handling cases where
   /// [result] is null or in error state.
