@@ -5,6 +5,7 @@ import 'package:analyzer/error/listener.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:meta/meta.dart';
+import 'package:path/path.dart' as p;
 
 @internal
 class ShowAll extends DartLintRule {
@@ -95,11 +96,12 @@ extension on LibraryElement {
 
   final missing = exportedIdentifiers
       .where(
-        (e) =>
-            show == null ||
-            !show.shownNames.map((e) => e.name).contains(e.$2.name),
-      )
-      .where((e) => e.$1.any((p) => p.hasMatch(export.element!)));
+    (e) =>
+        show == null || !show.shownNames.map((e) => e.name).contains(e.$2.name),
+  )
+      .where((e) {
+    return e.$1.isEmpty || e.$1.any((p) => p.hasMatch(export.element!));
+  });
 
   final extra = show?.shownNames.where(
     (e) => !exportedIdentifiers.map((e) => e.$2.name).contains(e.name),
@@ -199,14 +201,24 @@ class _Public {
   final String? packageName;
 
   bool hasMatch(LibraryExportElement e) {
+    print('''
+Has match
+  expected:
+    library: $library
+    packageName: $packageName
+  actual:
+    library: ${e.source.uri.pathSegments.skip(1).join('/')}
+    packageName: ${e.source.uri.pathSegments[0]}
+''');
+
     final uri = e.source.uri;
 
     if (packageName != null) {
       if (uri.scheme != 'package') return false;
-      if (uri.pathSegments.elementAtOrNull(1) != packageName) return false;
+      if (uri.pathSegments[0] != packageName) return false;
     }
 
     final actualLibrary = uri.pathSegments.skip(1).join('/');
-    return library == actualLibrary;
+    return library == p.withoutExtension(actualLibrary);
   }
 }

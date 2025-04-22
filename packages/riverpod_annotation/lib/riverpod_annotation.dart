@@ -67,10 +67,8 @@ export 'package:riverpod/src/internals.dart'
         $NotifierProviderElement,
         $Notifier;
 
-// ignore: invalid_export_of_internal_element, used by the generator.
-export 'package:riverpod/src/mutation.dart'
-    show $SyncMutationBase, $AsyncMutationBase;
 // Separate export to avoid silencing valid @internal issues
+// ignore: invalid_export_of_internal_element
 export 'package:riverpod/src/mutation.dart'
     show
         mutationZoneKey,
@@ -81,7 +79,9 @@ export 'package:riverpod/src/mutation.dart'
         PendingMutationState,
         ErrorMutationState,
         SuccessMutationState,
-        MutationBase;
+        MutationBase,
+        $SyncMutationBase,
+        $AsyncMutationBase;
 
 export 'src/riverpod_annotation.dart'
     show

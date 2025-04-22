@@ -1,3 +1,6 @@
+import 'package:meta/meta.dart';
+
+@internal
 class Public {
   const Public.inLibrary(this.library, {this.packageName});
 
@@ -6,9 +9,11 @@ class Public {
   final String? packageName;
 }
 
+@internal
 const publicInCodegen = Public.inLibrary(
   'riverpod_annotation',
   packageName: 'riverpod_annotation',
 );
 
+@internal
 const publicInMisc = Public.inLibrary('misc');
