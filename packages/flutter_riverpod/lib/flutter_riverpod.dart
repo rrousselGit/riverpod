@@ -1,5 +1,5 @@
 // ignore: invalid_export_of_internal_element, Already tackled by riverpod/riverpod.dart. If we export internals, that's on purpose.
-export 'package:riverpod/riverpod.dart'
+export 'src/internals.dart'
     show
         AsyncValue,
         AsyncData,
@@ -40,10 +40,8 @@ export 'package:riverpod/riverpod.dart'
         StreamNotifier,
         StreamNotifierProvider,
         StreamProvider,
-        StreamProviderFamily;
-
-export 'src/core.dart'
-    show
+        StreamProviderFamily,
+        NotifierBase,
         Consumer,
         ConsumerWidget,
         ConsumerStatefulWidget,

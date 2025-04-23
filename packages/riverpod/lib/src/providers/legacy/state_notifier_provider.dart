@@ -1,21 +1,6 @@
 import 'package:meta/meta.dart';
-import 'package:state_notifier/state_notifier.dart';
 
-import '../../builder.dart';
 import '../../internals.dart';
-
-ProviderElementProxy<NotifierT, StateT>
-    _notifier<NotifierT extends StateNotifier<StateT>, StateT>(
-  StateNotifierProvider<NotifierT, StateT> that,
-) {
-  return ProviderElementProxy<NotifierT, StateT>(
-    that,
-    (element) {
-      return (element as StateNotifierProviderElement<NotifierT, StateT>)
-          ._notifierNotifier;
-    },
-  );
-}
 
 /// {@template riverpod.state_notifier_provider}
 /// Creates a [StateNotifier] and exposes its current state.
@@ -81,6 +66,7 @@ ProviderElementProxy<NotifierT, StateT>
 /// }
 /// ```
 /// {@endtemplate}
+@publicInLegacy
 final class StateNotifierProvider< //
         NotifierT extends StateNotifier<StateT>,
         StateT> //
@@ -139,21 +125,29 @@ final class StateNotifierProvider< //
   /// changes.
   /// This may happen if the provider is refreshed or one of its dependencies
   /// has changes.
-  Refreshable<NotifierT> get notifier => _notifier(this);
+  Refreshable<NotifierT> get notifier =>
+      ProviderElementProxy<NotifierT, StateT>(
+        this,
+        (element) {
+          return (element as _StateNotifierProviderElement<NotifierT, StateT>)
+              ._notifierNotifier;
+        },
+      );
 
   @internal
   @override
-  StateNotifierProviderElement<NotifierT, StateT> $createElement(
+  // ignore: library_private_types_in_public_api, not public API
+  _StateNotifierProviderElement<NotifierT, StateT> $createElement(
     $ProviderPointer pointer,
   ) {
-    return StateNotifierProviderElement._(pointer);
+    return _StateNotifierProviderElement._(pointer);
   }
 }
 
 /// The element of [StateNotifierProvider].
-class StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
+class _StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
     StateT> extends $FunctionalProviderElement<StateT, NotifierT> {
-  StateNotifierProviderElement._(super.pointer);
+  _StateNotifierProviderElement._(super.pointer);
 
   final _notifierNotifier = $ElementLense<NotifierT>();
 
@@ -204,6 +198,7 @@ class StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
 }
 
 /// The [Family] of [StateNotifierProvider].
+@publicInMisc
 final class StateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T,
         Arg>
     extends FunctionalFamily<T, Arg, NotifierT,

@@ -40,6 +40,7 @@ typedef ClassProviderFactory< //
 typedef FamilyCreate<CreatedT, ArgT> = CreatedT Function(Ref ref, ArgT arg);
 
 /// A base class for all families
+@publicInRiverpodAndCodegen
 abstract class Family extends ProviderOrFamily implements _FamilyOverride {
   /// A base class for all families
   const Family({

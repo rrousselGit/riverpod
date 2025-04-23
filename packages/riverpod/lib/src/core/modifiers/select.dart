@@ -2,6 +2,7 @@ part of '../../framework.dart';
 
 /// An abstraction of both [ProviderContainer] and [$ProviderElement] used by
 /// [ProviderListenable].
+@internal
 sealed class Node {
   /// Obtain the [ProviderElement] of a provider, creating it if necessary.
   @internal

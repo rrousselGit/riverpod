@@ -15,6 +15,7 @@ abstract class _PointerBase {
 }
 
 @internal
+@publicInCodegen
 class $ProviderPointer implements _PointerBase {
   $ProviderPointer({
     required this.providerOverride,
@@ -565,6 +566,7 @@ class ProviderPointerManager {
 /// This will automatically dispose the container at the end of the test.
 /// {@endtemplate}
 @sealed
+@publicInRiverpodAndCodegen
 class ProviderContainer implements Node {
   /// {@macro riverpod.provider_container}
   ProviderContainer({

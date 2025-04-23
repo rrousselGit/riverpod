@@ -1,6 +1,7 @@
 part of '../framework.dart';
 
 @internal
+@publicInCodegen
 extension $RefArg on Ref {
   // Implementation detail, do not use
   Object? get $arg => _element.origin.argument;
@@ -38,6 +39,7 @@ Cannot use the Ref of $origin after it has been disposed. This typically happens
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
 /// {@endtemplate}
 @optionalTypeArgs
+@publicInRiverpodAndCodegen
 sealed class Ref {
   Ref._({
     required this.isFirstBuild,
@@ -600,6 +602,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
 }
 
 @internal
+@publicInCodegen
 class $Ref<StateT> extends Ref {
   /// {@macro riverpod.provider_ref_base}
   $Ref(

@@ -1,7 +1,9 @@
-export 'src/core/async_value.dart'
-    show AsyncValue, AsyncData, AsyncLoading, AsyncError;
-export 'src/framework.dart'
+export 'src/internals.dart'
     show
+        AsyncValue,
+        AsyncData,
+        AsyncLoading,
+        AsyncError,
         Refreshable,
         Family,
         ProviderListenableOrFamily,
@@ -16,32 +18,26 @@ export 'src/framework.dart'
         ProviderObserver,
         ProviderSubscription,
         Ref,
-        KeepAliveLink;
-
-export 'src/providers/async_notifier.dart'
-    show
+        KeepAliveLink,
+        NotifierBase,
         AsyncNotifier,
         AsyncNotifierProvider,
         FamilyAsyncNotifier,
         AsyncNotifierProviderFamily,
-        FamilyAsyncNotifierProvider;
-
-export 'src/providers/future_provider.dart'
-    show FutureProvider, FutureProviderFamily;
-export 'src/providers/notifier.dart'
-    show
+        FamilyAsyncNotifierProvider,
+        FutureProvider,
+        FutureProviderFamily,
         Notifier,
         NotifierProvider,
         FamilyNotifier,
         FamilyNotifierProvider,
-        NotifierProviderFamily;
-export 'src/providers/provider.dart' show Provider, ProviderFamily;
-export 'src/providers/stream_notifier.dart'
-    show
+        NotifierProviderFamily,
+        Provider,
+        ProviderFamily,
         FamilyStreamNotifier,
         FamilyStreamNotifierProvider,
         StreamNotifierProviderFamily,
         StreamNotifier,
-        StreamNotifierProvider;
-export 'src/providers/stream_provider.dart'
-    show StreamProvider, StreamProviderFamily;
+        StreamNotifierProvider,
+        StreamProvider,
+        StreamProviderFamily;

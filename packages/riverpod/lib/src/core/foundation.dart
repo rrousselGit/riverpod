@@ -4,6 +4,7 @@ part of '../framework.dart';
 abstract class ProviderListenableOrFamily {}
 
 /// A common interface shared by [ProviderBase] and [Family]
+@publicInRiverpodAndCodegen
 sealed class ProviderOrFamily implements ProviderListenableOrFamily {
   /// A common interface shared by [ProviderBase] and [Family]
   const ProviderOrFamily({
@@ -194,6 +195,7 @@ mixin ProviderListenableWithOrigin<OutT, OriginT> on ProviderListenable<OutT> {
 ///
 /// Should override ==/hashCode when possible
 @immutable
+@publicInRiverpodAndCodegen
 mixin ProviderListenable<StateT> implements ProviderListenableOrFamily {
   /// Starts listening to this transformer
   ProviderSubscription<StateT> _addListener(

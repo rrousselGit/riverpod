@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../builder.dart';
+import '../common/internal_lints.dart';
 import '../common/result.dart';
 import '../framework.dart';
 import 'async_notifier.dart';
@@ -11,6 +12,7 @@ part 'notifier/family.dart';
 
 /// A base class for [$Notifier].
 /// Not meant for public consumption.
+@publicInCodegen
 abstract class $Notifier<StateT> extends $SyncNotifierBase<StateT> {
   /// The value currently exposed by this [Notifier].
   ///
@@ -83,6 +85,7 @@ abstract class $Notifier<StateT> extends $SyncNotifierBase<StateT> {
 
 /// An implementation detail of `riverpod_generator`.
 /// Do not use.
+@publicInCodegen
 abstract base class $NotifierProvider //
     <NotifierT extends $Notifier<StateT>, StateT>
     extends $ClassProvider<NotifierT, StateT, StateT, StateT> {
@@ -111,6 +114,7 @@ abstract base class $NotifierProvider //
 /// An implementation detail of `riverpod_generator`.
 /// Do not use.
 @internal
+@publicInCodegen
 class $NotifierProviderElement< //
         NotifierT extends $Notifier<StateT>,
         StateT> //

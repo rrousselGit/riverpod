@@ -1,3 +1,6 @@
+@publicInCodegen
+library;
+
 import 'dart:async';
 
 import 'package:meta/meta.dart';
@@ -7,8 +10,8 @@ import 'internals.dart';
 
 // Mutation code. This should be in riverpod_annotation, but has to be here
 // for the sake of ProviderObserver.
-
 @internal
+@publicInCodegen
 const mutationZoneKey = #_mutation;
 
 /// {@template mutation}
@@ -352,6 +355,7 @@ abstract class MutationBase<ResultT> {
 }
 
 @internal
+@publicInCodegen
 abstract class $SyncMutationBase<
         ResultT,
         MutationT extends $SyncMutationBase<ResultT, MutationT, ClassT>,
@@ -369,6 +373,7 @@ abstract class $SyncMutationBase<
 }
 
 @internal
+@publicInCodegen
 abstract class $AsyncMutationBase<
         ResultT,
         MutationT extends $AsyncMutationBase<ResultT, MutationT, ClassT>,

@@ -1,8 +1,11 @@
 import 'package:meta/meta.dart';
 
+import 'internal_lints.dart';
+
 /// A T|Error union type.
 @immutable
 @internal
+@publicInCodegen
 sealed class $Result<ValueT> {
   /// The data case
   factory $Result.data(ValueT state) = $ResultData;

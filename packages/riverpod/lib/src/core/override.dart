@@ -4,6 +4,7 @@ part of '../framework.dart';
 /// of a provider/family for part of the application.
 ///
 /// Do not extend or implement.
+@publicInRiverpodAndCodegen
 sealed class Override {}
 
 sealed class _ProviderOverride implements Override {}
@@ -50,6 +51,7 @@ extension on _FamilyOverride {
 ///
 /// - [ProviderContainer], which uses this object.
 /// - `overrideWithValue`, which creates a [$ProviderOverride].
+@publicInCodegen
 class $ProviderOverride implements _ProviderOverride {
   /// Override a provider
   $ProviderOverride({
@@ -92,6 +94,8 @@ class TransitiveProviderOverride implements $ProviderOverride {
 
 /// Do not use: Internal object to used by [ProviderContainer]/`ProviderScope`
 /// to override the behavior of a "family" for part of the application.
+@internal
+@publicInCodegen
 abstract class $FamilyOverride implements _FamilyOverride {
   /// Do not use: Internal object to used by [ProviderContainer]/`ProviderScope`
   /// to override the behavior of a "family" for part of the application.

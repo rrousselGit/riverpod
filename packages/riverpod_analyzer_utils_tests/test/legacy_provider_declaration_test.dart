@@ -419,6 +419,7 @@ final autoDisposeFamily2 = FutureProvider.family.autoDispose<int, int>((ref, id)
 
     testSource('Decode LegacyProviderType.stateProvider', source: '''
 import 'package:riverpod/legacy.dart';
+import 'package:riverpod/misc.dart';
 
 final alwaysAliveProvider = StateProvider<int>((ref) => 0);
 final alwaysAliveFamily = StateProvider.family<int, int>((ref, id) => 0);
@@ -535,6 +536,7 @@ final autoDisposeFamily2 = AsyncNotifierProvider.family.autoDispose<AutoDisposeF
 
     testSource('Decode LegacyProviderType.changeNotifierProvider', source: '''
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter/foundation.dart';
 
 final alwaysAliveProvider = ChangeNotifierProvider<ValueNotifier<int>>((ref) => ValueNotifier(0));
@@ -565,6 +567,7 @@ final autoDisposeFamily2 = ChangeNotifierProvider.family.autoDispose<ValueNotifi
 
     testSource('Decode LegacyProviderType.stateNotifierProvider', source: '''
 import 'package:riverpod/legacy.dart';
+import 'package:flutter_riverpod/misc.dart';
 
 final alwaysAliveProvider = StateNotifierProvider<StateController<int>, int>((ref) => StateController(0));
 final alwaysAliveFamily = StateNotifierProvider.family<StateController<int>, int, int>((ref, id) => StateController(0));

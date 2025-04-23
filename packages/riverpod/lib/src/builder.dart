@@ -11,11 +11,11 @@
 import 'dart:async';
 
 import 'package:meta/meta.dart';
-import 'package:state_notifier/state_notifier.dart';
 
 import 'internals.dart';
 
 @internal
+@publicInMisc
 class StateProviderFamilyBuilder {
   const StateProviderFamilyBuilder();
 
@@ -296,6 +296,7 @@ class StateProviderFamilyBuilder {
 }
 
 @internal
+@publicInMisc
 class AutoDisposeStateProviderBuilder {
   const AutoDisposeStateProviderBuilder();
 
@@ -321,6 +322,7 @@ class AutoDisposeStateProviderBuilder {
 }
 
 @internal
+@publicInMisc
 class AutoDisposeStateProviderFamilyBuilder {
   const AutoDisposeStateProviderFamilyBuilder();
 
@@ -342,6 +344,7 @@ class AutoDisposeStateProviderFamilyBuilder {
 }
 
 @internal
+@publicInMisc
 class StateNotifierProviderFamilyBuilder {
   const StateNotifierProviderFamilyBuilder();
 
@@ -367,6 +370,7 @@ class StateNotifierProviderFamilyBuilder {
 }
 
 @internal
+@publicInMisc
 class AutoDisposeStateNotifierProviderBuilder {
   const AutoDisposeStateNotifierProviderBuilder();
 
@@ -393,6 +397,7 @@ class AutoDisposeStateNotifierProviderBuilder {
 }
 
 @internal
+@publicInMisc
 class AutoDisposeStateNotifierProviderFamilyBuilder {
   const AutoDisposeStateNotifierProviderFamilyBuilder();
 
@@ -415,6 +420,7 @@ class AutoDisposeStateNotifierProviderFamilyBuilder {
 }
 
 @internal
+@publicInMisc
 class ProviderFamilyBuilder {
   const ProviderFamilyBuilder();
 
@@ -439,6 +445,7 @@ class ProviderFamilyBuilder {
 }
 
 @internal
+@publicInMisc
 class AutoDisposeProviderBuilder {
   const AutoDisposeProviderBuilder();
 
@@ -464,6 +471,7 @@ class AutoDisposeProviderBuilder {
 }
 
 @internal
+@publicInMisc
 class AutoDisposeProviderFamilyBuilder {
   const AutoDisposeProviderFamilyBuilder();
 
@@ -485,6 +493,7 @@ class AutoDisposeProviderFamilyBuilder {
 }
 
 @internal
+@publicInMisc
 class FutureProviderFamilyBuilder {
   const FutureProviderFamilyBuilder();
 
@@ -509,6 +518,7 @@ class FutureProviderFamilyBuilder {
 }
 
 @internal
+@publicInMisc
 class AutoDisposeFutureProviderBuilder {
   const AutoDisposeFutureProviderBuilder();
 
@@ -534,6 +544,7 @@ class AutoDisposeFutureProviderBuilder {
 }
 
 @internal
+@publicInMisc
 class AutoDisposeFutureProviderFamilyBuilder {
   const AutoDisposeFutureProviderFamilyBuilder();
 
@@ -555,6 +566,7 @@ class AutoDisposeFutureProviderFamilyBuilder {
 }
 
 @internal
+@publicInMisc
 class StreamProviderFamilyBuilder {
   const StreamProviderFamilyBuilder();
 
@@ -579,6 +591,7 @@ class StreamProviderFamilyBuilder {
 }
 
 @internal
+@publicInMisc
 class AutoDisposeStreamProviderBuilder {
   const AutoDisposeStreamProviderBuilder();
 
@@ -604,6 +617,7 @@ class AutoDisposeStreamProviderBuilder {
 }
 
 @internal
+@publicInMisc
 class AutoDisposeStreamProviderFamilyBuilder {
   const AutoDisposeStreamProviderFamilyBuilder();
 
@@ -625,6 +639,7 @@ class AutoDisposeStreamProviderFamilyBuilder {
 }
 
 @internal
+@publicInMisc
 class AutoDisposeNotifierProviderBuilder {
   const AutoDisposeNotifierProviderBuilder();
 
@@ -651,6 +666,7 @@ class AutoDisposeNotifierProviderBuilder {
 }
 
 @internal
+@publicInMisc
 class NotifierProviderFamilyBuilder {
   const NotifierProviderFamilyBuilder();
 
@@ -676,6 +692,7 @@ class NotifierProviderFamilyBuilder {
 }
 
 @internal
+@publicInMisc
 class AutoDisposeNotifierProviderFamilyBuilder {
   const AutoDisposeNotifierProviderFamilyBuilder();
 
@@ -698,6 +715,7 @@ class AutoDisposeNotifierProviderFamilyBuilder {
 }
 
 @internal
+@publicInMisc
 class AutoDisposeStreamNotifierProviderBuilder {
   const AutoDisposeStreamNotifierProviderBuilder();
 
@@ -724,6 +742,7 @@ class AutoDisposeStreamNotifierProviderBuilder {
 }
 
 @internal
+@publicInMisc
 class StreamNotifierProviderFamilyBuilder {
   const StreamNotifierProviderFamilyBuilder();
 
@@ -749,6 +768,7 @@ class StreamNotifierProviderFamilyBuilder {
 }
 
 @internal
+@publicInMisc
 class AutoDisposeStreamNotifierProviderFamilyBuilder {
   const AutoDisposeStreamNotifierProviderFamilyBuilder();
 
@@ -771,6 +791,7 @@ class AutoDisposeStreamNotifierProviderFamilyBuilder {
 }
 
 @internal
+@publicInMisc
 class AutoDisposeAsyncNotifierProviderBuilder {
   const AutoDisposeAsyncNotifierProviderBuilder();
 
@@ -797,6 +818,7 @@ class AutoDisposeAsyncNotifierProviderBuilder {
 }
 
 @internal
+@publicInMisc
 class AsyncNotifierProviderFamilyBuilder {
   const AsyncNotifierProviderFamilyBuilder();
 
@@ -822,6 +844,7 @@ class AsyncNotifierProviderFamilyBuilder {
 }
 
 @internal
+@publicInMisc
 class AutoDisposeAsyncNotifierProviderFamilyBuilder {
   const AutoDisposeAsyncNotifierProviderFamilyBuilder();
 

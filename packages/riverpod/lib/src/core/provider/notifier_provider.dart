@@ -69,6 +69,7 @@ abstract class $Value<ValueT> {
 ///   }
 /// }
 /// ```
+@publicInRiverpodAndCodegen
 mixin NotifierBase<StateT> {
   $Ref<StateT>? _ref;
   @protected
@@ -277,6 +278,7 @@ extension ClassBaseX<StateT> on NotifierBase<StateT> {
 /// Do not use.
 @internal
 @reopen
+@publicInCodegen
 abstract base class $ClassProvider< //
     NotifierT extends NotifierBase<StateT>,
     StateT,
@@ -397,6 +399,7 @@ final class _ClassProviderView<
 }
 
 @internal
+@publicInCodegen
 abstract class $ClassProviderElement< //
         NotifierT extends NotifierBase<StateT>,
         StateT,
