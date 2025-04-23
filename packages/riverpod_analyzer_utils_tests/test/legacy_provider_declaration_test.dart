@@ -90,6 +90,7 @@ final second = Provider<int>((ref) => 0);
 
     testSource('Decodes dependencies', runGenerator: true, source: '''
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/misc.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'foo.g.dart';
@@ -286,6 +287,7 @@ final autoDisposeFamily2 = Provider.family.autoDispose<int, int>(
 
     testSource('Decode LegacyProviderType.provider', source: '''
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/misc.dart';
 
 final alwaysAliveProvider = Provider<int>((ref) => 0);
 final alwaysAliveFamily = Provider.family<int, int>((ref, id) => 0);
@@ -390,6 +392,7 @@ final weird = Provider<int>(name: 'foo', dependencies: [], (ref) => 0);
 
     testSource('Decode LegacyProviderType.futureProvider', source: '''
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/misc.dart';
 
 final alwaysAliveProvider = FutureProvider<int>((ref) => 0);
 final alwaysAliveFamily = FutureProvider.family<int, int>((ref, id) => 0);
@@ -449,6 +452,7 @@ final autoDisposeFamily2 = StateProvider.family.autoDispose<int, int>((ref, id) 
 
     testSource('Decode LegacyProviderType.streamProvider', source: '''
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/misc.dart';
 
 final alwaysAliveProvider = StreamProvider<int>((ref) => Stream.empty());
 final alwaysAliveFamily = StreamProvider.family<int, int>((ref, id) => Stream.empty());
@@ -478,6 +482,7 @@ final autoDisposeFamily2 = StreamProvider.family.autoDispose<int, int>((ref, id)
 
     testSource('Decode LegacyProviderType.notifierProvider', source: '''
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/misc.dart';
 
 final alwaysAliveProvider = NotifierProvider<Notifier<int>, int>(() => throw UnimplementedError());
 final alwaysAliveFamily = NotifierProvider.family<FamilyNotifier<int, int>, int, int>(() => throw UnimplementedError());
@@ -507,6 +512,7 @@ final autoDisposeFamily2 = NotifierProvider.family.autoDispose<AutoDisposeFamily
 
     testSource('Decode LegacyProviderType.asyncNotifierProvider', source: '''
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/misc.dart';
 
 final alwaysAliveProvider = AsyncNotifierProvider<AsyncNotifier<int>, int>(() => throw UnimplementedError());
 final alwaysAliveFamily = AsyncNotifierProvider.family<FamilyAsyncNotifier<int, int>, int, int>(() => throw UnimplementedError());
@@ -597,6 +603,7 @@ final autoDisposeFamily2 = StateNotifierProvider.family.autoDispose<StateControl
 
     testSource('Decode families', source: '''
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/misc.dart';
 
 final alwaysAliveProvider = Provider<int>((ref) => 0);
 final autoDisposeProvider = Provider.autoDispose<int>((ref) => 0);
