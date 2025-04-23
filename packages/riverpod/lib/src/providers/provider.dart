@@ -346,6 +346,7 @@ class $ProviderElement<StateT>
 }
 
 /// The [Family] of [Provider]
+@publicInMisc
 final class ProviderFamily<StateT, ArgT>
     extends FunctionalFamily<StateT, ArgT, StateT, Provider<StateT>> {
   @internal

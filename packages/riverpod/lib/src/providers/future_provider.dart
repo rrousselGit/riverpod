@@ -174,6 +174,7 @@ class $FutureProviderElement<StateT>
 }
 
 /// The [Family] of a [FutureProvider]
+@publicInMisc
 final class FutureProviderFamily<StateT, ArgT> extends FunctionalFamily<
     AsyncValue<StateT>, ArgT, FutureOr<StateT>, FutureProvider<StateT>> {
   @internal

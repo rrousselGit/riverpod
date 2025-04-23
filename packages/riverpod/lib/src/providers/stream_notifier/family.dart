@@ -56,6 +56,7 @@ final class FamilyStreamNotifierProvider< //
 }
 
 /// The [Family] of [StreamNotifierProvider].
+@publicInMisc
 final class StreamNotifierProviderFamily< //
         NotifierT extends FamilyStreamNotifier<StateT, ArgT>,
         StateT,

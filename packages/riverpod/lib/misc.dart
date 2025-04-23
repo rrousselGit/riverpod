@@ -26,4 +26,12 @@ export 'src/internals.dart'
         AsyncNotifierProviderFamilyBuilder,
         AutoDisposeAsyncNotifierProviderFamilyBuilder,
         StateNotifierProviderFamily,
-        StateProviderFamily;
+        StateProviderFamily,
+        ProviderListenableOrFamily,
+        ProviderOrFamily,
+        AsyncNotifierProviderFamily,
+        FutureProviderFamily,
+        NotifierProviderFamily,
+        ProviderFamily,
+        StreamNotifierProviderFamily,
+        StreamProviderFamily;

@@ -202,6 +202,7 @@ class $StreamProviderElement<StateT>
 }
 
 /// The [Family] of a [StreamProvider]
+@publicInMisc
 final class StreamProviderFamily<StateT, ArgT> extends FunctionalFamily<
     AsyncValue<StateT>, ArgT, Stream<StateT>, StreamProvider<StateT>> {
   @internal
