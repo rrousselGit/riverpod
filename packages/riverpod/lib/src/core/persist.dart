@@ -6,8 +6,8 @@ import 'dart:async';
 import 'package:clock/clock.dart';
 import 'package:meta/meta.dart';
 
-import '../../riverpod.dart';
 import '../common/internal_lints.dart';
+import '../framework.dart';
 
 class StorageOptions {
   const StorageOptions({

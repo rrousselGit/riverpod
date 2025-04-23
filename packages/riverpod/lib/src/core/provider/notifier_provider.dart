@@ -160,6 +160,7 @@ abstract class $SyncNotifierBase<StateT> extends $Value<StateT>
   }
 }
 
+@publicInPersist
 mixin Persistable<ValueT, KeyT, EncodedT> on $Value<ValueT> {
   void _debugAssertNoDuplicateKey(
     Object? key,

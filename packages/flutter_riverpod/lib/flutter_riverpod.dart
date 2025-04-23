@@ -11,7 +11,6 @@ export 'src/internals.dart'
         ProviderOrFamily,
         ProviderListenable,
         Override,
-        Persistable,
         ProviderBase,
         ProviderContainer,
         MutationContext,

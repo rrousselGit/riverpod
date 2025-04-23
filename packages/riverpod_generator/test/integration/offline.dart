@@ -1,7 +1,6 @@
 // ignore_for_file: avoid_unused_constructor_parameters
 
 import 'package:riverpod/persist.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/experimental/json_persist.dart';
 import 'package:riverpod_annotation/persist.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
