@@ -6,6 +6,7 @@ void main() {
   testSource('Decode ProviderContainer creations',
       timeout: const Timeout.factor(4), source: '''
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/misc.dart';
 
 final provider = Provider((ref) => 0);
 final family = Provider.family<int, int>((ref, id) => 0);

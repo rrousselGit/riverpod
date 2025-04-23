@@ -5,6 +5,7 @@ import 'analyzer_test_utils.dart';
 void main() {
   testSource('Decode ProviderScope creations', source: '''
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter/material.dart';
 
 final provider = Provider((ref) => 0);
