@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 
+import '../common/internal_lints.dart';
 import '../common/stack_trace.dart';
 import '../framework.dart';
 import '../providers/future_provider.dart' show FutureProvider;
@@ -61,6 +62,7 @@ extension AsyncTransition<StateT> on AsyncValue<StateT> {
 /// - [AsyncValue.guard], to simplify transforming a [Future] into an [AsyncValue].
 @sealed
 @immutable
+@publicInRiverpodAndCodegen
 sealed class AsyncValue<StateT> {
   const AsyncValue._();
 
@@ -561,6 +563,7 @@ sealed class AsyncValue<StateT> {
 }
 
 /// {@macro async_value.data}
+@publicInRiverpodAndCodegen
 final class AsyncData<StateT> extends AsyncValue<StateT> {
   /// {@macro async_value.data}
   const AsyncData(
@@ -641,6 +644,7 @@ final class AsyncData<StateT> extends AsyncValue<StateT> {
 }
 
 /// {@macro async_value.loading}
+@publicInRiverpodAndCodegen
 final class AsyncLoading<StateT> extends AsyncValue<StateT> {
   /// {@macro async_value.loading}
   const AsyncLoading({this.progress})
@@ -760,6 +764,7 @@ final class AsyncLoading<StateT> extends AsyncValue<StateT> {
 }
 
 /// {@macro async_value.error_ctor}
+@publicInRiverpodAndCodegen
 final class AsyncError<StateT> extends AsyncValue<StateT> {
   /// {@macro async_value.error_ctor}
   const AsyncError(Object error, StackTrace stackTrace)

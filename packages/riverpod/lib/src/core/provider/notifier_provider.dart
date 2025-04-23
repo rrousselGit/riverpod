@@ -69,6 +69,7 @@ abstract class $Value<ValueT> {
 ///   }
 /// }
 /// ```
+@publicInRiverpodAndCodegen
 mixin NotifierBase<StateT> {
   $Ref<StateT>? _ref;
   @protected

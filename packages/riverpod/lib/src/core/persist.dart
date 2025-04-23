@@ -1,9 +1,13 @@
+@publicInPersist
+library;
+
 import 'dart:async';
 
 import 'package:clock/clock.dart';
 import 'package:meta/meta.dart';
 
 import '../../riverpod.dart';
+import '../common/internal_lints.dart';
 
 class StorageOptions {
   const StorageOptions({
@@ -94,9 +98,8 @@ class _InMemoryPersist<KeyT, EncodedT> implements Storage<KeyT, EncodedT> {
     state[key] = PersistedData(
       value,
       expireAt: switch (options.cacheTime) {
-        ForeverPersistCacheTime() => null,
-        DurationPersistCacheTime(:final duration) =>
-          _currentTimestamp().add(duration),
+        StorageCacheTime(duration: null) => null,
+        StorageCacheTime(:final duration?) => _currentTimestamp().add(duration),
       },
       destroyKey: options.destroyKey,
     );
@@ -106,8 +109,9 @@ class _InMemoryPersist<KeyT, EncodedT> implements Storage<KeyT, EncodedT> {
   FutureOr<void> delete(KeyT key) => state.remove(key);
 }
 
-sealed class StorageCacheTime {
-  const factory StorageCacheTime(Duration duration) = DurationPersistCacheTime;
+class StorageCacheTime {
+  const StorageCacheTime(Duration this.duration);
+  const StorageCacheTime._(this.duration);
 
   /// A cache time that will never expire.
   ///
@@ -124,15 +128,10 @@ sealed class StorageCacheTime {
   /// the responsibility of whatever Database you are using to handle this
   /// migration.
   // ignore: constant_identifier_names, voluntary for the sake of unsafeness.
-  static const StorageCacheTime unsafe_forever = ForeverPersistCacheTime();
-}
+  static const StorageCacheTime unsafe_forever = StorageCacheTime._(null);
 
-class ForeverPersistCacheTime implements StorageCacheTime {
-  const ForeverPersistCacheTime();
-}
-
-class DurationPersistCacheTime implements StorageCacheTime {
-  const DurationPersistCacheTime(this.duration);
-
-  final Duration duration;
+  /// The time before the data expires.
+  ///
+  /// If null, the data will never expire.
+  final Duration? duration;
 }

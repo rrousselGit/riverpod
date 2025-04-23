@@ -7,19 +7,6 @@ import 'package:riverpod/src/internals.dart';
 
 import '../../builders.dart';
 
-ProviderElementProxy<NotifierT, NotifierT>
-    _notifier<NotifierT extends ChangeNotifier?>(
-  ChangeNotifierProvider<NotifierT> that,
-) {
-  return ProviderElementProxy<NotifierT, NotifierT>(
-    that,
-    (element) {
-      return (element as ChangeNotifierProviderElement<NotifierT>)
-          ._notifierNotifier;
-    },
-  );
-}
-
 /// {@template riverpod.change_notifier_provider}
 /// Creates a [ChangeNotifier] and exposes its current state.
 ///
@@ -80,6 +67,7 @@ ProviderElementProxy<NotifierT, NotifierT>
 /// }
 /// ```
 /// {@endtemplate}
+@publicInLegacy
 final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     extends $FunctionalProvider<NotifierT, NotifierT>
     with LegacyProviderMixin<NotifierT> {
@@ -131,7 +119,14 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   /// changes.
   /// This may happen if the provider is refreshed or one of its dependencies
   /// has changes.
-  Refreshable<NotifierT> get notifier => _notifier<NotifierT>(this);
+  Refreshable<NotifierT> get notifier =>
+      ProviderElementProxy<NotifierT, NotifierT>(
+        this,
+        (element) {
+          return (element as _ChangeNotifierProviderElement<NotifierT>)
+              ._notifierNotifier;
+        },
+      );
 
   final NotifierT Function(Ref ref) _createFn;
   @override
@@ -139,17 +134,18 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
 
   @internal
   @override
-  ChangeNotifierProviderElement<NotifierT> $createElement(
+  // ignore: library_private_types_in_public_api, not public
+  _ChangeNotifierProviderElement<NotifierT> $createElement(
     $ProviderPointer pointer,
   ) {
-    return ChangeNotifierProviderElement<NotifierT>._(pointer);
+    return _ChangeNotifierProviderElement<NotifierT>._(pointer);
   }
 }
 
 /// The element of [ChangeNotifierProvider].
-class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
+class _ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
     extends $FunctionalProviderElement<NotifierT, NotifierT> {
-  ChangeNotifierProviderElement._(super.pointer);
+  _ChangeNotifierProviderElement._(super.pointer);
 
   final _notifierNotifier = $ElementLense<NotifierT>();
 
@@ -201,6 +197,7 @@ class ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
 }
 
 /// The [Family] of [ChangeNotifierProvider].
+@publicInMisc
 final class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
     extends FunctionalFamily<NotifierT, Arg, NotifierT,
         ChangeNotifierProvider<NotifierT>> {

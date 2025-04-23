@@ -1,4 +1,9 @@
+@publicInLegacy
+library;
+
 import 'package:state_notifier/state_notifier.dart';
+
+import '../../common/internal_lints.dart';
 
 /// A [StateNotifier] that allows modifying its [state] from outside.
 ///

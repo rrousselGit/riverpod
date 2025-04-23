@@ -1,19 +1,6 @@
 import 'package:meta/meta.dart';
 
-import '../../builder.dart';
 import '../../internals.dart';
-import 'state_controller.dart';
-
-ProviderElementProxy<StateController<StateT>, StateT> _notifier<StateT>(
-  StateProvider<StateT> that,
-) {
-  return ProviderElementProxy<StateController<StateT>, StateT>(
-    that,
-    (element) {
-      return (element as StateProviderElement<StateT>)._controllerNotifier;
-    },
-  );
-}
 
 /// {@template riverpod.state_provider}
 /// A provider that exposes a value that can be modified from outside.
@@ -48,6 +35,7 @@ ProviderElementProxy<StateController<StateT>, StateT> _notifier<StateT>(
 /// }
 /// ```
 /// {@endtemplate}
+@publicInLegacy
 final class StateProvider<StateT> extends $FunctionalProvider<StateT, StateT>
     with LegacyProviderMixin<StateT> {
   /// {@macro riverpod.state_provider}
@@ -87,20 +75,27 @@ final class StateProvider<StateT> extends $FunctionalProvider<StateT, StateT>
   @override
   StateT create(Ref ref) => _createFn(ref);
 
-  Refreshable<StateController<StateT>> get notifier => _notifier(this);
+  Refreshable<StateController<StateT>> get notifier =>
+      ProviderElementProxy<StateController<StateT>, StateT>(
+        this,
+        (element) {
+          return (element as _StateProviderElement<StateT>)._controllerNotifier;
+        },
+      );
 
   @internal
   @override
-  StateProviderElement<StateT> $createElement(
+  // ignore: library_private_types_in_public_api, not public
+  _StateProviderElement<StateT> $createElement(
     $ProviderPointer pointer,
   ) {
-    return StateProviderElement._(pointer);
+    return _StateProviderElement._(pointer);
   }
 }
 
 /// The element of [StateProvider].
-class StateProviderElement<T> extends $FunctionalProviderElement<T, T> {
-  StateProviderElement._(super.pointer);
+class _StateProviderElement<T> extends $FunctionalProviderElement<T, T> {
+  _StateProviderElement._(super.pointer);
 
   final _controllerNotifier = $ElementLense<StateController<T>>();
 
@@ -153,6 +148,7 @@ class StateProviderElement<T> extends $FunctionalProviderElement<T, T> {
 }
 
 /// The [Family] of [StateProvider].
+@publicInMisc
 final class StateProviderFamily<StateT, Arg> extends FunctionalFamily< //
     StateT,
     Arg,

@@ -39,6 +39,7 @@ Cannot use the Ref of $origin after it has been disposed. This typically happens
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
 /// {@endtemplate}
 @optionalTypeArgs
+@publicInRiverpodAndCodegen
 sealed class Ref {
   Ref._({
     required this.isFirstBuild,

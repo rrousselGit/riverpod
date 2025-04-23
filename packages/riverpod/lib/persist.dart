@@ -3,6 +3,4 @@ export 'src/core/persist.dart'
         StorageOptions,
         PersistedData,
         Storage,
-        StorageCacheTime,
-        ForeverPersistCacheTime,
-        DurationPersistCacheTime;
+        StorageCacheTime;

@@ -14,7 +14,6 @@ import './common/tenable.dart';
 import 'common/env.dart';
 import 'common/pragma.dart';
 import 'internals.dart';
-import 'mutation.dart';
 
 part 'core/element.dart';
 part 'core/family.dart';

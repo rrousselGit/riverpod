@@ -2,8 +2,7 @@ import 'dart:async';
 
 import 'package:clock/clock.dart';
 import 'package:meta/meta.dart';
-// ignore: implementation_imports, using tight constraint
-import 'package:riverpod/src/core/persist.dart';
+import 'package:riverpod/persist.dart';
 import 'package:sqflite/sqflite.dart';
 
 @internal
@@ -112,9 +111,9 @@ CREATE TABLE IF NOT EXISTS $_tableName(
       {
         'key': key,
         'json': value,
-        'expireAt': switch (options.cacheTime) {
-          ForeverPersistCacheTime() => null,
-          DurationPersistCacheTime(:final duration) =>
+        'expireAt': switch (options.cacheTime.duration) {
+          null => null,
+          final Duration duration =>
             _currentTimestamp() + duration.inMilliseconds,
         },
         if (options.destroyKey != null) 'destroyKey': options.destroyKey,

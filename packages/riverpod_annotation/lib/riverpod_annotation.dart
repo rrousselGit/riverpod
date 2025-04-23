@@ -6,7 +6,7 @@ import 'package:meta/meta.dart' as meta;
 export 'dart:async' show FutureOr;
 
 // ignore: invalid_export_of_internal_element
-export 'package:riverpod/src/internals.dart'
+export './src/internal.dart'
     show
         $Ref,
         $ClassProviderElement,
@@ -65,12 +65,9 @@ export 'package:riverpod/src/internals.dart'
         // Notifier
         $NotifierProvider,
         $NotifierProviderElement,
-        $Notifier;
+        $Notifier,
 
-// Separate export to avoid silencing valid @internal issues
-// ignore: invalid_export_of_internal_element
-export 'package:riverpod/src/mutation.dart'
-    show
+        // Mutation stuff
         mutationZoneKey,
         mutation,
         Mutation,
@@ -81,10 +78,9 @@ export 'package:riverpod/src/mutation.dart'
         SuccessMutationState,
         MutationBase,
         $SyncMutationBase,
-        $AsyncMutationBase;
+        $AsyncMutationBase,
 
-export 'src/riverpod_annotation.dart'
-    show
+        // Misc
         riverpod,
         Riverpod,
         ProviderFor,

@@ -1,4 +1,4 @@
-export 'package:flutter_riverpod/flutter_riverpod.dart'
+export 'src/internals.dart'
     show
         AsyncValue,
         AsyncData,
@@ -46,7 +46,8 @@ export 'package:flutter_riverpod/flutter_riverpod.dart'
         ConsumerState,
         WidgetRef,
         ProviderScope,
-        UncontrolledProviderScope;
-
-export 'src/consumer.dart'
-    show HookConsumerWidget, HookConsumer, StatefulHookConsumerWidget;
+        UncontrolledProviderScope,
+        NotifierBase,
+        HookConsumerWidget,
+        HookConsumer,
+        StatefulHookConsumerWidget;
