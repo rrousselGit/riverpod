@@ -5,7 +5,7 @@ import 'dart:async';
 
 import 'package:riverpod/riverpod.dart';
 
-mixin MyMixin<A, B> on NotifierBase<A> {}
+mixin MyMixin<A, B> on AnyNotifier<A> {}
 
 class Sync extends Notifier<int> with MyMixin<int, int> {
   @override

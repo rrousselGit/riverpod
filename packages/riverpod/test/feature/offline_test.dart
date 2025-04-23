@@ -537,7 +537,7 @@ final matrix = TestMatrix<TestFactory<Object?>>({
   ...notifierProviderFactory.values,
 });
 
-extension on NotifierBase<Object?> {
+extension on AnyNotifier<Object?> {
   Object? get stateOrNull {
     final that = this;
     switch (that) {
@@ -586,7 +586,7 @@ extension on TestFactory<Object?> {
   }
 
   ProviderBase<Object?> simpleProvider(
-    FutureOr<Object?> Function(Ref, NotifierBase<Object?> notifier) createCb, {
+    FutureOr<Object?> Function(Ref, AnyNotifier<Object?> notifier) createCb, {
     Storage? storage,
     Object Function(Object? args)? persistKey,
     Object? Function(Object? encoded)? decode,
@@ -604,7 +604,7 @@ extension on TestFactory<Object?> {
 
     FutureOr<Object?> create(
       Ref ref,
-      NotifierBase<Object?> self, {
+      AnyNotifier<Object?> self, {
       Object? Function()? args,
     }) {
       if (autoPersist) {
@@ -619,7 +619,7 @@ extension on TestFactory<Object?> {
       return createCb(ref, self);
     }
 
-    FutureOr<Object?> familyCreate(Ref ref, NotifierBase<Object?> self) {
+    FutureOr<Object?> familyCreate(Ref ref, AnyNotifier<Object?> self) {
       return create(ref, self, args: () => (self as dynamic).arg);
     }
 
@@ -663,7 +663,7 @@ extension on TestFactory<Object?> {
       streamNotifier: (factory) {
         Stream<Object?> handle(
           Ref ref,
-          NotifierBase<Object?> self,
+          AnyNotifier<Object?> self,
         ) {
           final futureOR =
               factory.isFamily ? familyCreate(ref, self) : create(ref, self);
@@ -754,7 +754,7 @@ extension on Object? {
     switch (that) {
       case $Notifier<Object?>():
         return that.stateOrNull.valueOf;
-      case NotifierBase<Object?>():
+      case AnyNotifier<Object?>():
         return that.state.valueOf;
       case AsyncValue<Object?>():
         return that.value;

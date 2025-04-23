@@ -35,7 +35,7 @@ export 'src/internals.dart'
         WidgetRef,
         ProviderScope,
         UncontrolledProviderScope,
-        NotifierBase,
+        AnyNotifier,
         HookConsumerWidget,
         HookConsumer,
         StatefulHookConsumerWidget;

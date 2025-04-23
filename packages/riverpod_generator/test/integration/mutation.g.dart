@@ -73,7 +73,7 @@ abstract class _$SyncTodoList extends $Notifier<List<Todo>> {
     final created = build();
     final ref = this.ref as $Ref<List<Todo>>;
     final element = ref.element as $ClassProviderElement<
-        NotifierBase<List<Todo>>, List<Todo>, Object?, Object?>;
+        AnyNotifier<List<Todo>>, List<Todo>, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -257,7 +257,7 @@ abstract class _$AsyncTodoList extends $AsyncNotifier<List<Todo>> {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<List<Todo>>>;
     final element = ref.element as $ClassProviderElement<
-        NotifierBase<AsyncValue<List<Todo>>>,
+        AnyNotifier<AsyncValue<List<Todo>>>,
         AsyncValue<List<Todo>>,
         Object?,
         Object?>;
@@ -461,7 +461,7 @@ abstract class _$Simple extends $Notifier<int> {
     final created = build();
     final ref = this.ref as $Ref<int>;
     final element = ref.element
-        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+        as $ClassProviderElement<AnyNotifier<int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -773,7 +773,7 @@ abstract class _$SimpleFamily extends $Notifier<int> {
     );
     final ref = this.ref as $Ref<int>;
     final element = ref.element
-        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+        as $ClassProviderElement<AnyNotifier<int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -957,7 +957,7 @@ abstract class _$SimpleAsync extends $AsyncNotifier<int> {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<int>>;
     final element = ref.element as $ClassProviderElement<
-        NotifierBase<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
+        AnyNotifier<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -1204,7 +1204,7 @@ abstract class _$SimpleAsync2 extends $StreamNotifier<int> {
     );
     final ref = this.ref as $Ref<AsyncValue<int>>;
     final element = ref.element as $ClassProviderElement<
-        NotifierBase<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
+        AnyNotifier<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -1391,7 +1391,7 @@ abstract class _$Generic<T extends num> extends $AsyncNotifier<int> {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<int>>;
     final element = ref.element as $ClassProviderElement<
-        NotifierBase<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
+        AnyNotifier<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -1511,7 +1511,7 @@ abstract class _$GenericMut extends $AsyncNotifier<int> {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<int>>;
     final element = ref.element as $ClassProviderElement<
-        NotifierBase<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
+        AnyNotifier<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -1642,7 +1642,7 @@ abstract class _$FailingCtor extends $Notifier<int> {
     final created = build();
     final ref = this.ref as $Ref<int>;
     final element = ref.element
-        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+        as $ClassProviderElement<AnyNotifier<int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -1770,8 +1770,8 @@ abstract class _$Typed extends $Notifier<String> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<String>;
-    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
-        String, Object?, Object?>;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<String>, String, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }

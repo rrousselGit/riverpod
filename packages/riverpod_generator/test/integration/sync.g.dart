@@ -335,7 +335,7 @@ abstract class _$GenericClass<T extends num> extends $Notifier<List<T>> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<List<T>>;
-    final element = ref.element as $ClassProviderElement<NotifierBase<List<T>>,
+    final element = ref.element as $ClassProviderElement<AnyNotifier<List<T>>,
         List<T>, Object?, Object?>;
     element.handleValue(ref, created);
   }
@@ -473,7 +473,7 @@ abstract class _$RawFutureClass extends $Notifier<Raw<Future<String>>> {
     final created = build();
     final ref = this.ref as $Ref<Raw<Future<String>>>;
     final element = ref.element as $ClassProviderElement<
-        NotifierBase<Raw<Future<String>>>,
+        AnyNotifier<Raw<Future<String>>>,
         Raw<Future<String>>,
         Object?,
         Object?>;
@@ -529,7 +529,7 @@ abstract class _$RawStreamClass extends $Notifier<Raw<Stream<String>>> {
     final created = build();
     final ref = this.ref as $Ref<Raw<Stream<String>>>;
     final element = ref.element as $ClassProviderElement<
-        NotifierBase<Raw<Stream<String>>>,
+        AnyNotifier<Raw<Stream<String>>>,
         Raw<Stream<String>>,
         Object?,
         Object?>;
@@ -855,7 +855,7 @@ abstract class _$RawFamilyFutureClass extends $Notifier<Raw<Future<String>>> {
     );
     final ref = this.ref as $Ref<Raw<Future<String>>>;
     final element = ref.element as $ClassProviderElement<
-        NotifierBase<Raw<Future<String>>>,
+        AnyNotifier<Raw<Future<String>>>,
         Raw<Future<String>>,
         Object?,
         Object?>;
@@ -987,7 +987,7 @@ abstract class _$RawFamilyStreamClass extends $Notifier<Raw<Stream<String>>> {
     );
     final ref = this.ref as $Ref<Raw<Stream<String>>>;
     final element = ref.element as $ClassProviderElement<
-        NotifierBase<Raw<Stream<String>>>,
+        AnyNotifier<Raw<Stream<String>>>,
         Raw<Stream<String>>,
         Object?,
         Object?>;
@@ -1307,8 +1307,8 @@ abstract class _$PublicClass extends $Notifier<String> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<String>;
-    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
-        String, Object?, Object?>;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<String>, String, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -1360,8 +1360,8 @@ abstract class _$PrivateClass extends $Notifier<String> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<String>;
-    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
-        String, Object?, Object?>;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<String>, String, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -1553,8 +1553,8 @@ abstract class _$FamilyClass extends $Notifier<String> {
       fifth: _$args.fifth,
     );
     final ref = this.ref as $Ref<String>;
-    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
-        String, Object?, Object?>;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<String>, String, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -1904,8 +1904,8 @@ abstract class _$Supports$InClassName<And$InT> extends $Notifier<String> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<String>;
-    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
-        String, Object?, Object?>;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<String>, String, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -2087,8 +2087,8 @@ abstract class _$Supports$InClassFamilyName<And$InT> extends $Notifier<String> {
       defaultArg: _$args.defaultArg,
     );
     final ref = this.ref as $Ref<String>;
-    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
-        String, Object?, Object?>;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<String>, String, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -2352,8 +2352,8 @@ abstract class _$UnnecessaryCastClass extends $Notifier<String> {
       _$args,
     );
     final ref = this.ref as $Ref<String>;
-    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
-        String, Object?, Object?>;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<String>, String, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }

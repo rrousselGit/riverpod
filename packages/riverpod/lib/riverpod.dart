@@ -16,7 +16,7 @@ export 'src/internals.dart'
         ProviderSubscription,
         Ref,
         KeepAliveLink,
-        NotifierBase,
+        AnyNotifier,
         AsyncNotifier,
         AsyncNotifierProvider,
         FamilyAsyncNotifier,

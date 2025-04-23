@@ -19,7 +19,7 @@ export './src/internal.dart'
         $FunctionalProvider,
         $FutureModifier,
         Ref,
-        NotifierBase,
+        AnyNotifier,
         $AsyncClassModifier,
         $ClassProvider,
         $ValueProvider,

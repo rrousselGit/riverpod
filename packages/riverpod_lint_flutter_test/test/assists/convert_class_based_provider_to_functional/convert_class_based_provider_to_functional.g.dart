@@ -56,7 +56,7 @@ abstract class _$Example extends $Notifier<int> {
     final created = build();
     final ref = this.ref as $Ref<int>;
     final element = ref.element
-        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+        as $ClassProviderElement<AnyNotifier<int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -217,7 +217,7 @@ abstract class _$ExampleFamily extends $Notifier<int> {
     );
     final ref = this.ref as $Ref<int>;
     final element = ref.element
-        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+        as $ClassProviderElement<AnyNotifier<int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -337,7 +337,7 @@ abstract class _$Generic<A, B> extends $Notifier<int> {
     final created = build();
     final ref = this.ref as $Ref<int>;
     final element = ref.element
-        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+        as $ClassProviderElement<AnyNotifier<int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }

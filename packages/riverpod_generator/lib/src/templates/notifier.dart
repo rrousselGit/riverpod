@@ -72,7 +72,7 @@ abstract class $notifierBaseName$genericsDefinition extends $baseClass {
   void runBuild() {
     ${buildVar}build($paramsPassThrough);
     final ref = this.ref as \$Ref<${provider.exposedTypeDisplayString}>;
-    final element = ref.element as \$ClassProviderElement<NotifierBase<${provider.exposedTypeDisplayString}>,
+    final element = ref.element as \$ClassProviderElement<AnyNotifier<${provider.exposedTypeDisplayString}>,
           ${provider.exposedTypeDisplayString}, Object?, Object?>;
     element.handleValue(ref, $buildVarUsage);
   }

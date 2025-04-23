@@ -47,7 +47,7 @@ abstract class _$Example extends $AsyncNotifier<String> {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<String>>;
     final element = ref.element as $ClassProviderElement<
-        NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+        AnyNotifier<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }

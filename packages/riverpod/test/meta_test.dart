@@ -41,51 +41,6 @@ void main() {
     expect(visitor.missingInheritedAnnotations, isEmpty);
   });
 
-  test('public API snapshot', skip: 'Disabled', () async {
-    // TODO consider other imports
-    expect(riverpod.exportNamespace.definedNames.keys, [
-      'AsyncValue',
-      'AsyncData',
-      'AsyncLoading',
-      'AsyncError',
-      'ProviderBase',
-      'NotifierBase',
-      'Refreshable',
-      'ProviderContainer',
-      'ProviderObserver',
-      'Family',
-      'ProviderSubscription',
-      'ProviderListenableOrFamily',
-      'ProviderOrFamily',
-      'ProviderListenable',
-      'Ref',
-      'KeepAliveLink',
-      'Override',
-      'AsyncNotifier',
-      'AsyncNotifierProvider',
-      'FamilyAsyncNotifier',
-      'FutureProvider',
-      'Notifier',
-      'NotifierProvider',
-      'FamilyNotifier',
-      'Provider',
-      'FamilyStreamNotifier',
-      'StreamNotifier',
-      'StreamNotifierProvider',
-      'StreamProvider',
-    ]);
-
-    expect(visitor.undocumentedElements, isEmpty);
-
-    expect(visitor.duplicateTemplates, isEmpty, reason: 'Duplicate templates');
-    for (final template in visitor.templates) {
-      expect(visitor.macros, contains(template), reason: 'Unused template');
-    }
-    for (final macro in visitor.macros) {
-      expect(visitor.templates, contains(macro), reason: 'Missing template');
-    }
-  });
-
   test('public API does not contain unexported elements', skip: 'Disabled', () {
     expect(visitor.unexportedElements, isEmpty);
   });

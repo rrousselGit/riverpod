@@ -313,7 +313,7 @@ abstract class _$PackageMetrics extends $AsyncNotifier<PackageMetricsScore> {
     );
     final ref = this.ref as $Ref<AsyncValue<PackageMetricsScore>>;
     final element = ref.element as $ClassProviderElement<
-        NotifierBase<AsyncValue<PackageMetricsScore>>,
+        AnyNotifier<AsyncValue<PackageMetricsScore>>,
         AsyncValue<PackageMetricsScore>,
         Object?,
         Object?>;

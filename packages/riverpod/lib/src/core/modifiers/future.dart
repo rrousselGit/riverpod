@@ -17,7 +17,7 @@ typedef AsyncSubscription = ({
 @internal
 @publicInCodegen
 mixin $AsyncClassModifier<StateT, CreatedT, ValueT>
-    on NotifierBase<AsyncValue<StateT>> {
+    on AnyNotifier<AsyncValue<StateT>> {
   /// The value currently exposed by this [AsyncNotifier].
   ///
   /// Defaults to [AsyncLoading] inside the [AsyncNotifier.build] method.
@@ -201,7 +201,7 @@ base mixin $FutureModifier<StateT> on ProviderBase<AsyncValue<StateT>> {
 
 @internal
 mixin FutureModifierClassElement<
-        NotifierT extends NotifierBase<AsyncValue<StateT>>, StateT, CreatedT>
+        NotifierT extends AnyNotifier<AsyncValue<StateT>>, StateT, CreatedT>
     on
         FutureModifierElement<StateT>,
         $ClassProviderElement<NotifierT, AsyncValue<StateT>, StateT, CreatedT> {

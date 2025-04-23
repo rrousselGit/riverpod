@@ -29,7 +29,7 @@ export 'src/internals.dart'
         StreamNotifier,
         StreamNotifierProvider,
         StreamProvider,
-        NotifierBase,
+        AnyNotifier,
         Consumer,
         ConsumerWidget,
         ConsumerStatefulWidget,

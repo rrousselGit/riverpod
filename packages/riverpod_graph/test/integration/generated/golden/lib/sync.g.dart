@@ -321,8 +321,8 @@ abstract class _$PublicClass extends $Notifier<String> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<String>;
-    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
-        String, Object?, Object?>;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<String>, String, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -374,8 +374,8 @@ abstract class _$PrivateClass extends $Notifier<String> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<String>;
-    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
-        String, Object?, Object?>;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<String>, String, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -567,8 +567,8 @@ abstract class _$FamilyClass extends $Notifier<String> {
       fifth: _$args.fifth,
     );
     final ref = this.ref as $Ref<String>;
-    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
-        String, Object?, Object?>;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<String>, String, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -624,8 +624,8 @@ abstract class _$Supports$InClassName extends $Notifier<String> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<String>;
-    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
-        String, Object?, Object?>;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<String>, String, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }

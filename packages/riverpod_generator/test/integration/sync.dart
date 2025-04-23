@@ -113,7 +113,7 @@ String _private(Ref ref) {
   return 'Hello world';
 }
 
-mixin MyMixin<A> on NotifierBase<A> {}
+mixin MyMixin<A> on AnyNotifier<A> {}
 
 /// This is some documentation
 @riverpod

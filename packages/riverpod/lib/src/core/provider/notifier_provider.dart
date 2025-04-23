@@ -56,7 +56,7 @@ abstract class $Value<ValueT> {
 /// [runBuild]:
 ///
 /// ```dart
-/// mixin MyMixin<T> extends NotifierBase<T, FutureOr<T>> {
+/// mixin MyMixin<T> extends AnyNotifier<T, FutureOr<T>> {
 ///   @override
 ///   FutureOr<User> runBuild() {
 ///     // It is safe to use "ref" here.
@@ -70,7 +70,7 @@ abstract class $Value<ValueT> {
 /// }
 /// ```
 @publicInRiverpodAndCodegen
-mixin NotifierBase<StateT> {
+mixin AnyNotifier<StateT> {
   $Ref<StateT>? _ref;
   @protected
   Ref get ref => $ref;
@@ -109,7 +109,7 @@ mixin NotifierBase<StateT> {
 
 @internal
 abstract class $AsyncNotifierBase<ValueT> extends $Value<ValueT>
-    with NotifierBase<AsyncValue<ValueT>> {
+    with AnyNotifier<AsyncValue<ValueT>> {
   @override
   void _setStateFromValue(ValueT value) {
     state = AsyncData(value, isFromCache: true);
@@ -140,7 +140,7 @@ abstract class $AsyncNotifierBase<ValueT> extends $Value<ValueT>
 
 @internal
 abstract class $SyncNotifierBase<StateT> extends $Value<StateT>
-    with NotifierBase<StateT> {
+    with AnyNotifier<StateT> {
   @override
   void _setStateFromValue(StateT value) => state = value;
 
@@ -167,7 +167,7 @@ mixin Persistable<ValueT, KeyT, EncodedT> on $Value<ValueT> {
     $Value<Object?> self,
   ) {
     if (kDebugMode) {
-      final selfElement = (self as NotifierBase).element();
+      final selfElement = (self as AnyNotifier).element();
 
       self._debugKey = (key,);
 
@@ -260,9 +260,9 @@ to a different value.
 }
 
 @internal
-extension ClassBaseX<StateT> on NotifierBase<StateT> {
-  $ClassProviderElement<NotifierBase<StateT>, StateT, Object?, Object?>?
-      element() => _ref?.element as $ClassProviderElement<NotifierBase<StateT>,
+extension ClassBaseX<StateT> on AnyNotifier<StateT> {
+  $ClassProviderElement<AnyNotifier<StateT>, StateT, Object?, Object?>?
+      element() => _ref?.element as $ClassProviderElement<AnyNotifier<StateT>,
           StateT, Object?, Object?>?;
 
   @internal
@@ -281,7 +281,7 @@ extension ClassBaseX<StateT> on NotifierBase<StateT> {
 @reopen
 @publicInCodegen
 abstract base class $ClassProvider< //
-    NotifierT extends NotifierBase<StateT>,
+    NotifierT extends AnyNotifier<StateT>,
     StateT,
     ValueT,
     CreatedT> extends ProviderBase<StateT> {
@@ -349,7 +349,7 @@ abstract base class $ClassProvider< //
 }
 
 final class _ClassProviderView<
-    NotifierT extends NotifierBase<StateT>,
+    NotifierT extends AnyNotifier<StateT>,
     StateT,
     ValueT,
     CreatedT> extends $ClassProvider<NotifierT, StateT, ValueT, CreatedT> {
@@ -402,7 +402,7 @@ final class _ClassProviderView<
 @internal
 @publicInCodegen
 abstract class $ClassProviderElement< //
-        NotifierT extends NotifierBase<StateT>,
+        NotifierT extends AnyNotifier<StateT>,
         StateT,
         ValueT,
         CreatedT> //

@@ -171,7 +171,7 @@ abstract class _$StateNotifierClass extends $Notifier<MyStateNotifier> {
     final created = build();
     final ref = this.ref as $Ref<MyStateNotifier>;
     final element = ref.element as $ClassProviderElement<
-        NotifierBase<MyStateNotifier>, MyStateNotifier, Object?, Object?>;
+        AnyNotifier<MyStateNotifier>, MyStateNotifier, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -251,7 +251,7 @@ abstract class _$SelfNotifier extends $AsyncNotifier<SelfNotifier> {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<SelfNotifier>>;
     final element = ref.element as $ClassProviderElement<
-        NotifierBase<AsyncValue<SelfNotifier>>,
+        AnyNotifier<AsyncValue<SelfNotifier>>,
         AsyncValue<SelfNotifier>,
         Object?,
         Object?>;
@@ -307,7 +307,7 @@ abstract class _$SyncSelfNotifier extends $Notifier<SyncSelfNotifier> {
     final created = build();
     final ref = this.ref as $Ref<SyncSelfNotifier>;
     final element = ref.element as $ClassProviderElement<
-        NotifierBase<SyncSelfNotifier>, SyncSelfNotifier, Object?, Object?>;
+        AnyNotifier<SyncSelfNotifier>, SyncSelfNotifier, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -354,7 +354,7 @@ abstract class _$StreamSelfNotifier
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<StreamSelfNotifier>>;
     final element = ref.element as $ClassProviderElement<
-        NotifierBase<AsyncValue<StreamSelfNotifier>>,
+        AnyNotifier<AsyncValue<StreamSelfNotifier>>,
         AsyncValue<StreamSelfNotifier>,
         Object?,
         Object?>;
@@ -404,7 +404,7 @@ abstract class _$StateNotifierClassAsync
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<MyStateNotifier>>;
     final element = ref.element as $ClassProviderElement<
-        NotifierBase<AsyncValue<MyStateNotifier>>,
+        AnyNotifier<AsyncValue<MyStateNotifier>>,
         AsyncValue<MyStateNotifier>,
         Object?,
         Object?>;
@@ -502,7 +502,7 @@ abstract class _$ChangeNotifierClass extends $Notifier<MyChangeNotifier> {
     final created = build();
     final ref = this.ref as $Ref<MyChangeNotifier>;
     final element = ref.element as $ClassProviderElement<
-        NotifierBase<MyChangeNotifier>, MyChangeNotifier, Object?, Object?>;
+        AnyNotifier<MyChangeNotifier>, MyChangeNotifier, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -638,7 +638,7 @@ abstract class _$NotifierClass extends $Notifier<MyNotifier> {
     final created = build();
     final ref = this.ref as $Ref<MyNotifier>;
     final element = ref.element as $ClassProviderElement<
-        NotifierBase<MyNotifier>, MyNotifier, Object?, Object?>;
+        AnyNotifier<MyNotifier>, MyNotifier, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -733,7 +733,7 @@ abstract class _$AsyncNotifierClass extends $Notifier<MyAsyncNotifier> {
     final created = build();
     final ref = this.ref as $Ref<MyAsyncNotifier>;
     final element = ref.element as $ClassProviderElement<
-        NotifierBase<MyAsyncNotifier>, MyAsyncNotifier, Object?, Object?>;
+        AnyNotifier<MyAsyncNotifier>, MyAsyncNotifier, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }

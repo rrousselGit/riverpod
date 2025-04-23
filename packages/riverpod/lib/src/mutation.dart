@@ -359,7 +359,7 @@ abstract class MutationBase<ResultT> {
 abstract class $SyncMutationBase<
         ResultT,
         MutationT extends $SyncMutationBase<ResultT, MutationT, ClassT>,
-        ClassT extends NotifierBase<Object?>>
+        ClassT extends AnyNotifier<Object?>>
     extends _MutationBase<ResultT, MutationT, ClassT> {
   $SyncMutationBase({super.state, super.key});
 
@@ -377,7 +377,7 @@ abstract class $SyncMutationBase<
 abstract class $AsyncMutationBase<
         ResultT,
         MutationT extends $AsyncMutationBase<ResultT, MutationT, ClassT>,
-        ClassT extends NotifierBase<Object?>>
+        ClassT extends AnyNotifier<Object?>>
     extends _MutationBase<ResultT, MutationT, ClassT> {
   $AsyncMutationBase({super.state, super.key});
 
@@ -424,7 +424,7 @@ abstract class $AsyncMutationBase<
 abstract class _MutationBase<
     ResultT,
     MutationT extends _MutationBase<ResultT, MutationT, ClassT>,
-    ClassT extends NotifierBase<Object?>> implements MutationBase<ResultT> {
+    ClassT extends AnyNotifier<Object?>> implements MutationBase<ResultT> {
   _MutationBase({MutationState<ResultT>? state, this.key})
       : state = state ?? IdleMutationState<ResultT>._() {
     listenable.onCancel = _scheduleAutoReset;

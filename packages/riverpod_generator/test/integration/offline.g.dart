@@ -83,7 +83,7 @@ abstract class _$CustomAnnotationBase extends $AsyncNotifier<String> {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<String>>;
     final element = ref.element as $ClassProviderElement<
-        NotifierBase<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+        AnyNotifier<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -203,7 +203,7 @@ abstract class _$JsonBase extends $AsyncNotifier<Map<String, List<int>>> {
     );
     final ref = this.ref as $Ref<AsyncValue<Map<String, List<int>>>>;
     final element = ref.element as $ClassProviderElement<
-        NotifierBase<AsyncValue<Map<String, List<int>>>>,
+        AnyNotifier<AsyncValue<Map<String, List<int>>>>,
         AsyncValue<Map<String, List<int>>>,
         Object?,
         Object?>;
@@ -252,7 +252,7 @@ abstract class _$Json2Base extends $AsyncNotifier<Map<String, List<int>>> {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<Map<String, List<int>>>>;
     final element = ref.element as $ClassProviderElement<
-        NotifierBase<AsyncValue<Map<String, List<int>>>>,
+        AnyNotifier<AsyncValue<Map<String, List<int>>>>,
         AsyncValue<Map<String, List<int>>>,
         Object?,
         Object?>;
@@ -301,7 +301,7 @@ abstract class _$CustomJsonBase extends $AsyncNotifier<Map<String, Bar>> {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<Map<String, Bar>>>;
     final element = ref.element as $ClassProviderElement<
-        NotifierBase<AsyncValue<Map<String, Bar>>>,
+        AnyNotifier<AsyncValue<Map<String, Bar>>>,
         AsyncValue<Map<String, Bar>>,
         Object?,
         Object?>;

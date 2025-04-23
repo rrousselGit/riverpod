@@ -94,7 +94,7 @@ abstract class _$KeepAliveClass extends $Notifier<int> {
     final created = build();
     final ref = this.ref as $Ref<int>;
     final element = ref.element
-        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+        as $ClassProviderElement<AnyNotifier<int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -187,7 +187,7 @@ abstract class _$AutoDisposeClass extends $Notifier<int> {
     final created = build();
     final ref = this.ref as $Ref<int>;
     final element = ref.element
-        as $ClassProviderElement<NotifierBase<int>, int, Object?, Object?>;
+        as $ClassProviderElement<AnyNotifier<int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }

@@ -157,8 +157,8 @@ abstract class _$Example extends $Notifier<String> {
       param2: _$args.param2,
     );
     final ref = this.ref as $Ref<String>;
-    final element = ref.element as $ClassProviderElement<NotifierBase<String>,
-        String, Object?, Object?>;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<String>, String, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
