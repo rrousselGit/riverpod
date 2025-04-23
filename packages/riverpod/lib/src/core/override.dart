@@ -4,7 +4,8 @@ part of '../framework.dart';
 /// of a provider/family for part of the application.
 ///
 /// Do not extend or implement.
-@publicInRiverpodAndCodegen
+@publicInCodegen
+@publicInMisc
 sealed class Override {}
 
 sealed class _ProviderOverride implements Override {}

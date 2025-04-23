@@ -3,6 +3,7 @@
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
+import 'package:riverpod/misc.dart' show Refreshable, ProviderListenable;
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart' show UnmountedRefException;
 import 'package:riverpod/src/providers/notifier.dart' show $Notifier;

@@ -40,4 +40,10 @@ export 'src/internals.dart'
         StreamProviderFamily,
         FamilyAsyncNotifierProvider,
         FamilyNotifierProvider,
-        FamilyStreamNotifierProvider;
+        FamilyStreamNotifierProvider,
+        Refreshable,
+        Family,
+        ProviderListenable,
+        Override,
+        ProviderBase,
+        KeepAliveLink;

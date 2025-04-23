@@ -1,5 +1,5 @@
 // ignore_for_file: omit_local_variable_types, unused_local_variable // testing type assignment
-import 'package:riverpod/riverpod.dart' show ProviderBase;
+import 'package:riverpod/misc.dart' show ProviderBase;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 

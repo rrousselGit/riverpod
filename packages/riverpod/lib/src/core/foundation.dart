@@ -197,7 +197,8 @@ mixin ProviderListenableWithOrigin<OutT, OriginT> on ProviderListenable<OutT> {
 ///
 /// Should override ==/hashCode when possible
 @immutable
-@publicInRiverpodAndCodegen
+@publicInCodegen
+@publicInMisc
 mixin ProviderListenable<StateT> implements ProviderListenableOrFamily {
   /// Starts listening to this transformer
   ProviderSubscription<StateT> _addListener(

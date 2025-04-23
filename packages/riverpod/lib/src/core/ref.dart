@@ -667,6 +667,7 @@ class $Ref<StateT> extends Ref {
 }
 
 /// A object that maintains a provider alive.
+@publicInMisc
 class KeepAliveLink {
   KeepAliveLink._(this._close);
 

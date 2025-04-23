@@ -16,6 +16,7 @@ part of '../framework.dart';
 /// ref.watch(provider.select((value) => value));
 /// ```
 /// {@endtemplate}
+@publicInMisc
 sealed class Refreshable<StateT> implements ProviderListenable<StateT> {}
 
 mixin _ProviderRefreshable<OutT, OriginT>

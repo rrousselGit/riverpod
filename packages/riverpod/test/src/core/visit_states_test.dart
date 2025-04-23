@@ -2,6 +2,7 @@
 // import 'package:test/test.dart';
 // import 'package:trotter/trotter.dart';
 
+import 'package:riverpod/misc.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 import 'package:trotter/trotter.dart';
