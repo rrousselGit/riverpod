@@ -67,26 +67,12 @@ export './src/internal.dart'
         $NotifierProviderElement,
         $Notifier,
 
-        // Mutation stuff
-        mutationZoneKey,
-        mutation,
-        Mutation,
-        MutationState,
-        IdleMutationState,
-        PendingMutationState,
-        ErrorMutationState,
-        SuccessMutationState,
-        MutationBase,
-        $SyncMutationBase,
-        $AsyncMutationBase,
-
         // Misc
         riverpod,
         Riverpod,
         ProviderFor,
         Raw,
-        MissingScopeException,
-        Dependencies;
+        MissingScopeException;
 
 /// An implementation detail of `riverpod_generator`.
 /// Do not use.

@@ -1,6 +1,6 @@
 import 'package:build_yaml/dependencies.dart';
 import 'package:build_yaml/main.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:riverpod_annotation/experimental/scope.dart';
 import 'package:test/test.dart';
 
 @Dependencies([calc2])
