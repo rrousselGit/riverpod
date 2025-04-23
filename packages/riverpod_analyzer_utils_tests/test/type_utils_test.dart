@@ -129,6 +129,7 @@ class D3 extends _$D3 {
   testSource('Parses all legacy providers', source: '''
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
+import 'package:flutter_riverpod/misc.dart';
 
 Never throws() => throw UnimplementedError();
 
