@@ -30,6 +30,7 @@ abstract class FamilyStreamNotifier<StateT, ArgT>
   }
 }
 
+@publicInMisc
 final class FamilyStreamNotifierProvider< //
         NotifierT extends FamilyStreamNotifier<StateT, ArgT>,
         StateT,

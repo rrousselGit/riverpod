@@ -60,6 +60,7 @@ final class AsyncNotifierProviderFamily< //
 }
 
 /// The provider returned by [AsyncNotifierProviderFamily].
+@publicInMisc
 final class FamilyAsyncNotifierProvider< //
         NotifierT extends FamilyAsyncNotifier<StateT, ArgT>,
         StateT,

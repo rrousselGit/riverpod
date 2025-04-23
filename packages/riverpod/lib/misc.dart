@@ -34,4 +34,7 @@ export 'src/internals.dart'
         NotifierProviderFamily,
         ProviderFamily,
         StreamNotifierProviderFamily,
-        StreamProviderFamily;
+        StreamProviderFamily,
+        FamilyAsyncNotifierProvider,
+        FamilyNotifierProvider,
+        FamilyStreamNotifierProvider;

@@ -19,6 +19,7 @@ abstract class FamilyNotifier<StateT, ArgT> extends $Notifier<StateT> {
   }
 }
 
+@publicInMisc
 final class FamilyNotifierProvider //
     <NotifierT extends $Notifier<StateT>, StateT, ArgT>
     extends $NotifierProvider<NotifierT, StateT>
