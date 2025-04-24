@@ -77,7 +77,7 @@ final class ExampleProvider extends $FunctionalProvider<String, String>
 
 String _$exampleHash() => r'5795b1f6c6f075de18d0e9789a3a52040c144f0c';
 
-final class ExampleFamily extends Family {
+final class ExampleFamily extends $Family {
   const ExampleFamily._()
       : super(
           retry: null,

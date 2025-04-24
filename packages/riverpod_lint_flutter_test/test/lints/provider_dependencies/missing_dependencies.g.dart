@@ -190,7 +190,7 @@ final class DepFamilyProvider extends $FunctionalProvider<int, int>
 
 String _$depFamilyHash() => r'6cca68b98693e352e9b801b1fc441d438fc72525';
 
-final class DepFamilyFamily extends Family {
+final class DepFamilyFamily extends $Family {
   const DepFamilyFamily._()
       : super(
           retry: null,

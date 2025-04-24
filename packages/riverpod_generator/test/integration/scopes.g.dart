@@ -47,7 +47,7 @@ String _$scopedClassHash() => r'113acc46a2e61abfeb61cf4b89a1dc555e915793';
 
 abstract class _$ScopedClass extends $Notifier<int> {
   int build() => throw MissingScopeException(ref);
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -115,7 +115,7 @@ final class ScopedClassFamilyProvider
 
 String _$scopedClassFamilyHash() => r'04aeb0bbfdc363e2c8714c7a5967368a7f990d58';
 
-final class ScopedClassFamilyFamily extends Family {
+final class ScopedClassFamilyFamily extends $Family {
   const ScopedClassFamilyFamily._()
       : super(
           retry: null,
@@ -173,7 +173,7 @@ abstract class _$ScopedClassFamily extends $Notifier<int> {
     int a,
   ) =>
       throw MissingScopeException(ref);
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(

@@ -75,7 +75,7 @@ String _$activityNotifier2Hash() => r'280f4d82a186cfb62827f4d7c74f5349bb0a9e4a';
 
 abstract class _$ActivityNotifier2 extends $AsyncNotifier<Activity> {
   FutureOr<Activity> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();

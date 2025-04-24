@@ -50,7 +50,7 @@ String _$counterNotifierHash() => r'b32033040f0fff627f1a6dfd9cfb4e93a842390b';
 
 abstract class _$CounterNotifier extends $Notifier<int> {
   int build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();

@@ -46,7 +46,7 @@ String _$aHash() => r'9bf449b010f4dd5800e78f9f5b8a431b1a79c8b7';
 
 abstract class _$A extends $Notifier<int> {
   int build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -97,7 +97,7 @@ String _$a2Hash() => r'898d46cbcec03233c7b8b0754810a6903226aa2e';
 
 abstract class _$A2 extends $Notifier<int> {
   int build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -162,7 +162,7 @@ final class A3Provider extends $NotifierProvider<A3, int> {
 
 String _$a3Hash() => r'2e21e9af8b67b5412611e0d23b862ead56deb8e1';
 
-final class A3Family extends Family {
+final class A3Family extends $Family {
   const A3Family._()
       : super(
           retry: null,
@@ -218,7 +218,7 @@ abstract class _$A3 extends $Notifier<int> {
   int build(
     int param,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -285,7 +285,7 @@ final class A4Provider extends $NotifierProvider<A4, int> {
 
 String _$a4Hash() => r'cdd9ad09099881cafe06d7b3095a8b06dbe7d876';
 
-final class A4Family extends Family {
+final class A4Family extends $Family {
   const A4Family._()
       : super(
           retry: null,
@@ -341,7 +341,7 @@ abstract class _$A4 extends $Notifier<int> {
   int build(
     int param,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -401,7 +401,7 @@ final class A5Provider extends $AsyncNotifierProvider<A5, int> {
 
 String _$a5Hash() => r'c83634c22b6a9149aa8787e45c3b7cd6c88b5958';
 
-final class A5Family extends Family {
+final class A5Family extends $Family {
   const A5Family._()
       : super(
           retry: null,
@@ -457,7 +457,7 @@ abstract class _$A5 extends $AsyncNotifier<int> {
   FutureOr<int> build(
     int param,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -517,7 +517,7 @@ final class A6Provider extends $AsyncNotifierProvider<A6, int> {
 
 String _$a6Hash() => r'fe641c72cacf3dd119eb77a34fe8fc71c5c30139';
 
-final class A6Family extends Family {
+final class A6Family extends $Family {
   const A6Family._()
       : super(
           retry: null,
@@ -573,7 +573,7 @@ abstract class _$A6 extends $AsyncNotifier<int> {
   FutureOr<int> build(
     int param,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -633,7 +633,7 @@ final class A7Provider extends $StreamNotifierProvider<A7, int> {
 
 String _$a7Hash() => r'd3d9ab5090e21987d65522f14ebb70d0058fc56a';
 
-final class A7Family extends Family {
+final class A7Family extends $Family {
   const A7Family._()
       : super(
           retry: null,
@@ -689,7 +689,7 @@ abstract class _$A7 extends $StreamNotifier<int> {
   Stream<int> build(
     int param,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -749,7 +749,7 @@ final class A8Provider extends $StreamNotifierProvider<A8, int> {
 
 String _$a8Hash() => r'54f4a841a283161bed3d444dcee53bf367958678';
 
-final class A8Family extends Family {
+final class A8Family extends $Family {
   const A8Family._()
       : super(
           retry: null,
@@ -805,7 +805,7 @@ abstract class _$A8 extends $StreamNotifier<int> {
   Stream<int> build(
     int param,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -858,7 +858,7 @@ String _$bHash() => r'44288285e9c28f846d609ba892520f577ecf7867';
 
 abstract class _$B extends $Notifier<int> {
   int build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -909,7 +909,7 @@ String _$b2Hash() => r'292925c285c6975ed6585d541c5a9ae18977d73c';
 
 abstract class _$B2 extends $Notifier<int> {
   int build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();

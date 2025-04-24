@@ -68,7 +68,7 @@ final class ExampleProvider extends $NotifierProvider<Example, String> {
 
 String _$exampleHash() => r'8025d93d6f5e9286043b1ce7ae55bead44f30acc';
 
-final class ExampleFamily extends Family {
+final class ExampleFamily extends $Family {
   const ExampleFamily._()
       : super(
           retry: null,
@@ -149,7 +149,7 @@ abstract class _$Example extends $Notifier<String> {
     int param1, {
     String param2 = 'foo',
   });
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(

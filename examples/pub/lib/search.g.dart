@@ -71,7 +71,7 @@ final class FetchPackagesProvider extends $FunctionalProvider<
 
 String _$fetchPackagesHash() => r'b52d4beb5d9ac53769d76ccd1d81bb005c66edd5';
 
-final class FetchPackagesFamily extends Family {
+final class FetchPackagesFamily extends $Family {
   const FetchPackagesFamily._()
       : super(
           retry: null,

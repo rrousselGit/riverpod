@@ -67,7 +67,7 @@ String _$syncTodoListHash() => r'18d459affe35603d564ac90e05c1978d4e862f40';
 
 abstract class _$SyncTodoList extends $Notifier<List<Todo>> {
   List<Todo> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -251,7 +251,7 @@ String _$asyncTodoListHash() => r'73d9aa3b39ad5d0c157510754bfc273a98075d30';
 
 abstract class _$AsyncTodoList extends $AsyncNotifier<List<Todo>> {
   FutureOr<List<Todo>> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -455,7 +455,7 @@ String _$simpleHash() => r'bbccebb4e8d2a097b945f6d7ab5e54ac11781c49';
 
 abstract class _$Simple extends $Notifier<int> {
   int build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -708,7 +708,7 @@ final class SimpleFamilyProvider extends $NotifierProvider<SimpleFamily, int> {
 
 String _$simpleFamilyHash() => r'5a1afef2fb83836b8cbdc48fda6975a9149d9f2d';
 
-final class SimpleFamilyFamily extends Family {
+final class SimpleFamilyFamily extends $Family {
   const SimpleFamilyFamily._()
       : super(
           retry: null,
@@ -765,7 +765,7 @@ abstract class _$SimpleFamily extends $Notifier<int> {
   int build(
     String arg,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -951,7 +951,7 @@ String _$simpleAsyncHash() => r'62dd0ee93e61fa27d139247b9a899630d5d3572c';
 
 abstract class _$SimpleAsync extends $AsyncNotifier<int> {
   FutureOr<int> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -1139,7 +1139,7 @@ final class SimpleAsync2Provider
 
 String _$simpleAsync2Hash() => r'b2268a85a058e6f40c5bbfce8c20c9d285270967';
 
-final class SimpleAsync2Family extends Family {
+final class SimpleAsync2Family extends $Family {
   const SimpleAsync2Family._()
       : super(
           retry: null,
@@ -1196,7 +1196,7 @@ abstract class _$SimpleAsync2 extends $StreamNotifier<int> {
   Stream<int> build(
     String arg,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -1339,7 +1339,7 @@ final class GenericProvider<T extends num>
 
 String _$genericHash() => r'd5341a17852b21f307e508a4f9d9470c5863aa17';
 
-final class GenericFamily extends Family {
+final class GenericFamily extends $Family {
   const GenericFamily._()
       : super(
           retry: null,
@@ -1385,7 +1385,7 @@ final class GenericFamily extends Family {
 
 abstract class _$Generic<T extends num> extends $AsyncNotifier<int> {
   FutureOr<int> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -1505,7 +1505,7 @@ String _$genericMutHash() => r'1f38b70cf937501fb313ae35c8bf824728bbd8ba';
 
 abstract class _$GenericMut extends $AsyncNotifier<int> {
   FutureOr<int> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -1636,7 +1636,7 @@ String _$failingCtorHash() => r'5d80d3b1dba058415cc8cfec17bc14e1f9c83fae';
 
 abstract class _$FailingCtor extends $Notifier<int> {
   int build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -1765,7 +1765,7 @@ String _$typedHash() => r'1f53e16796771d14fcdfec41d2b9f5eb70d875a7';
 
 abstract class _$Typed extends $Notifier<String> {
   String build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();

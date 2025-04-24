@@ -77,7 +77,7 @@ String _$customAnnotationHash() => r'abdbe1ad35942aef6e4017f7ebcbfcc7fc6bb986';
 
 abstract class _$CustomAnnotationBase extends $AsyncNotifier<String> {
   FutureOr<String> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -137,7 +137,7 @@ final class JsonProvider
 
 String _$jsonHash() => r'fb36d984214529f587e141faf4aae78f2a39474c';
 
-final class JsonFamily extends Family {
+final class JsonFamily extends $Family {
   const JsonFamily._()
       : super(
           retry: null,
@@ -195,7 +195,7 @@ abstract class _$JsonBase extends $AsyncNotifier<Map<String, List<int>>> {
   FutureOr<Map<String, List<int>>> build(
     String arg,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -246,7 +246,7 @@ String _$json2Hash() => r'3e263438daf3363cc46613c80645526c1f756796';
 
 abstract class _$Json2Base extends $AsyncNotifier<Map<String, List<int>>> {
   FutureOr<Map<String, List<int>>> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -295,7 +295,7 @@ String _$customJsonHash() => r'641edf92aae1f74ac7cc41db82c6a7dc88d24eb7';
 
 abstract class _$CustomJsonBase extends $AsyncNotifier<Map<String, Bar>> {
   FutureOr<Map<String, Bar>> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();

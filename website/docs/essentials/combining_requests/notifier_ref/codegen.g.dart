@@ -89,7 +89,7 @@ String _$exampleHash() => r'893db991b377b8e314e60c429043e5e81f1fd526';
 
 abstract class _$Example extends $Notifier<int> {
   int build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();

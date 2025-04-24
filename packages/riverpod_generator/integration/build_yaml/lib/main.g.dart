@@ -154,7 +154,7 @@ String _$countNotifierHash() => r'a8dd7a66ee0002b8af657245c4affaa206fd99ec';
 
 abstract class _$CountNotifier extends $Notifier<int> {
   int build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -200,7 +200,7 @@ String _$countAsyncNotifierHash() =>
 
 abstract class _$CountAsyncNotifier extends $AsyncNotifier<int> {
   FutureOr<int> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -246,7 +246,7 @@ String _$countStreamNotifierHash() =>
 
 abstract class _$CountStreamNotifier extends $StreamNotifier<int> {
   Stream<int> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -317,7 +317,7 @@ final class Count2Provider extends $FunctionalProvider<int, int>
 
 String _$count2Hash() => r'4146ae486161f9d444b4d80ec846199b13eeaae2';
 
-final class Count2Family extends Family {
+final class Count2Family extends $Family {
   const Count2Family._()
       : super(
           retry: null,
@@ -405,7 +405,7 @@ final class CountFuture2Provider
 
 String _$countFuture2Hash() => r'6acaa58de0116853fd831efb4ac1a8047205f12b';
 
-final class CountFuture2Family extends Family {
+final class CountFuture2Family extends $Family {
   const CountFuture2Family._()
       : super(
           retry: null,
@@ -493,7 +493,7 @@ final class CountStream2Provider
 
 String _$countStream2Hash() => r'96c9a0935240f1727986800c1fe6dea974b9accc';
 
-final class CountStream2Family extends Family {
+final class CountStream2Family extends $Family {
   const CountStream2Family._()
       : super(
           retry: null,
@@ -584,7 +584,7 @@ final class CountNotifier2Provider
 
 String _$countNotifier2Hash() => r'ef12bb4f94add336804ae43bcdbcd8e9b0bec420';
 
-final class CountNotifier2Family extends Family {
+final class CountNotifier2Family extends $Family {
   const CountNotifier2Family._()
       : super(
           retry: null,
@@ -640,7 +640,7 @@ abstract class _$CountNotifier2 extends $Notifier<int> {
   int build(
     int a,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -703,7 +703,7 @@ final class CountAsyncNotifier2Provider
 String _$countAsyncNotifier2Hash() =>
     r'e4bd4d858edbb47fa0d7581f3cfa72e13c914d3d';
 
-final class CountAsyncNotifier2Family extends Family {
+final class CountAsyncNotifier2Family extends $Family {
   const CountAsyncNotifier2Family._()
       : super(
           retry: null,
@@ -761,7 +761,7 @@ abstract class _$CountAsyncNotifier2 extends $AsyncNotifier<int> {
   FutureOr<int> build(
     int a,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -825,7 +825,7 @@ final class CountStreamNotifier2Provider
 String _$countStreamNotifier2Hash() =>
     r'13be1b7aa32801b33c68f2a228851d2fb6a4a9ee';
 
-final class CountStreamNotifier2Family extends Family {
+final class CountStreamNotifier2Family extends $Family {
   const CountStreamNotifier2Family._()
       : super(
           retry: null,
@@ -883,7 +883,7 @@ abstract class _$CountStreamNotifier2 extends $StreamNotifier<int> {
   Stream<int> build(
     int a,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(

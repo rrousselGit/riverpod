@@ -99,7 +99,7 @@ String _$classBasedHash() => r'f1139017b1fcf38017402b514c61fb32dae40c39';
 
 abstract class _$ClassBased extends $Notifier<String> {
   String build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -178,7 +178,7 @@ String _$familyHash() => r'5164f4ea1f2d6c741e5c600c48a1b2ac2be7a1eb';
 
 /// Hello world
 // Foo
-final class FamilyFamily extends Family {
+final class FamilyFamily extends $Family {
   const FamilyFamily._()
       : super(
           retry: null,
@@ -279,7 +279,7 @@ String _$classFamilyBasedHash() => r'8d83e9a88356796298419574f360e8bf95aa0729';
 
 /// Hello world
 // Foo
-final class ClassFamilyBasedFamily extends Family {
+final class ClassFamilyBasedFamily extends $Family {
   const ClassFamilyBasedFamily._()
       : super(
           retry: null,
@@ -341,7 +341,7 @@ abstract class _$ClassFamilyBased extends $Notifier<String> {
   String build(
     int id,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(

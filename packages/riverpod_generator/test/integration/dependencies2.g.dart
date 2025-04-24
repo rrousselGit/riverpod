@@ -136,7 +136,7 @@ final class FamilyWithDependencies2Provider
 String _$familyWithDependencies2Hash() =>
     r'd064c06ca5a85a62cbe2b47943e98fc2e858fb03';
 
-final class FamilyWithDependencies2Family extends Family {
+final class FamilyWithDependencies2Family extends $Family {
   const FamilyWithDependencies2Family._()
       : super(
           retry: null,
@@ -242,7 +242,7 @@ String _$notifierWithDependenciesHash() =>
 
 abstract class _$NotifierWithDependencies extends $Notifier<int> {
   int build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -321,7 +321,7 @@ final class NotifierFamilyWithDependenciesProvider
 String _$notifierFamilyWithDependenciesHash() =>
     r'b185ba93857cd028964c1412e748ee887dbd45c8';
 
-final class NotifierFamilyWithDependenciesFamily extends Family {
+final class NotifierFamilyWithDependenciesFamily extends $Family {
   const NotifierFamilyWithDependenciesFamily._()
       : super(
           retry: null,
@@ -391,7 +391,7 @@ abstract class _$NotifierFamilyWithDependencies extends $Notifier<int> {
   int build({
     int? id,
   });
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(

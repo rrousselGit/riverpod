@@ -41,7 +41,7 @@ String _$exampleHash() => r'8a906741b8ea4b9b0d3f0b924779704b3e1773a1';
 
 abstract class _$Example extends $AsyncNotifier<String> {
   FutureOr<String> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();

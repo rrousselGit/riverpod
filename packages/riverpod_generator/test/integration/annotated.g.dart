@@ -69,7 +69,7 @@ final class FunctionalProvider extends $FunctionalProvider<String, String>
 
 String _$functionalHash() => r'ba8606cd0526e2dde0f775eb8f4c9d8b5b6fdf2c';
 
-final class FunctionalFamily extends Family {
+final class FunctionalFamily extends $Family {
   const FunctionalFamily._()
       : super(
           retry: null,
@@ -162,7 +162,7 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
 
 String _$classBasedHash() => r'92b444806ef8a304c6e0dc3d8e2383601e781183';
 
-final class ClassBasedFamily extends Family {
+final class ClassBasedFamily extends $Family {
   const ClassBasedFamily._()
       : super(
           retry: null,
@@ -219,7 +219,7 @@ abstract class _$ClassBased extends $Notifier<String> {
   String build(
     @Deprecated('field') int id,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -295,7 +295,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
 
 String _$familyHash() => r'14b97009aec20a0332208f8a60bc177b44c9d1d4';
 
-final class FamilyFamily extends Family {
+final class FamilyFamily extends $Family {
   const FamilyFamily._()
       : super(
           retry: null,
@@ -414,7 +414,7 @@ String _$notCopiedClassBasedHash() =>
 
 abstract class _$NotCopiedClassBased extends $Notifier<String> {
   String build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -485,7 +485,7 @@ final class NotCopiedFamilyProvider extends $FunctionalProvider<String, String>
 
 String _$notCopiedFamilyHash() => r'ea652776532e2bf993a249b25b5254fc3dfff4b9';
 
-final class NotCopiedFamilyFamily extends Family {
+final class NotCopiedFamilyFamily extends $Family {
   const NotCopiedFamilyFamily._()
       : super(
           retry: null,

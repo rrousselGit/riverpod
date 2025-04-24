@@ -165,7 +165,7 @@ String _$stateNotifierClassHash() =>
 
 abstract class _$StateNotifierClass extends $Notifier<MyStateNotifier> {
   MyStateNotifier build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -245,7 +245,7 @@ String _$selfNotifierHash() => r'5a857f5c92a9b7a35daa4e527bd333cf3d8d19ac';
 
 abstract class _$SelfNotifier extends $AsyncNotifier<SelfNotifier> {
   FutureOr<SelfNotifier> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -301,7 +301,7 @@ String _$syncSelfNotifierHash() => r'4f3a2463cb5693a5c8d7e772b4d7c9774b9ba637';
 
 abstract class _$SyncSelfNotifier extends $Notifier<SyncSelfNotifier> {
   SyncSelfNotifier build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -348,7 +348,7 @@ String _$streamSelfNotifierHash() =>
 abstract class _$StreamSelfNotifier
     extends $StreamNotifier<StreamSelfNotifier> {
   Stream<StreamSelfNotifier> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -398,7 +398,7 @@ String _$stateNotifierClassAsyncHash() =>
 abstract class _$StateNotifierClassAsync
     extends $AsyncNotifier<MyStateNotifier> {
   FutureOr<MyStateNotifier> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -496,7 +496,7 @@ String _$changeNotifierClassHash() =>
 
 abstract class _$ChangeNotifierClass extends $Notifier<MyChangeNotifier> {
   MyChangeNotifier build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -632,7 +632,7 @@ String _$notifierClassHash() => r'e7eefebec2fca4f982582449e7ec14322932b748';
 
 abstract class _$NotifierClass extends $Notifier<MyNotifier> {
   MyNotifier build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -727,7 +727,7 @@ String _$asyncNotifierClassHash() =>
 
 abstract class _$AsyncNotifierClass extends $Notifier<MyAsyncNotifier> {
   MyAsyncNotifier build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();

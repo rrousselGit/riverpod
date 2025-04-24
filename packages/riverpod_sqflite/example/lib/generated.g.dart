@@ -93,7 +93,7 @@ String _$todosNotifierHash() => r'f7c580875a00ab559ff61cbd0f6986fe1fd515e6';
 
 abstract class _$TodosNotifierBase extends $AsyncNotifier<List<Todo>> {
   FutureOr<List<Todo>> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();

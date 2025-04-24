@@ -66,7 +66,7 @@ final class GeneratorProvider extends $FunctionalProvider<int, int>
 
 String _$generatorHash() => r'd7d1733f8884b6702f363ddb178ae57797d0034f';
 
-final class GeneratorFamily extends Family {
+final class GeneratorFamily extends $Family {
   const GeneratorFamily._()
       : super(
           retry: null,
