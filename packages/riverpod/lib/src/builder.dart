@@ -15,8 +15,7 @@ import 'package:meta/meta.dart';
 import 'internals.dart';
 
 @internal
-@publicInMisc
-class StateProviderFamilyBuilder {
+final class StateProviderFamilyBuilder {
   const StateProviderFamilyBuilder();
 
   /// {@template riverpod.family}
@@ -298,8 +297,7 @@ class StateProviderFamilyBuilder {
 }
 
 @internal
-@publicInMisc
-class AutoDisposeStateProviderBuilder {
+final class AutoDisposeStateProviderBuilder {
   const AutoDisposeStateProviderBuilder();
 
   /// {@macro riverpod.family}
@@ -324,8 +322,7 @@ class AutoDisposeStateProviderBuilder {
 }
 
 @internal
-@publicInMisc
-class AutoDisposeStateProviderFamilyBuilder {
+final class AutoDisposeStateProviderFamilyBuilder {
   const AutoDisposeStateProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
@@ -346,13 +343,12 @@ class AutoDisposeStateProviderFamilyBuilder {
 }
 
 @internal
-@publicInMisc
-class StateNotifierProviderFamilyBuilder {
+final class StateNotifierProviderFamilyBuilder {
   const StateNotifierProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
   StateNotifierProviderFamily<NotifierT, StateT, ArgT>
-      call<NotifierT extends StateNotifier<StateT>, StateT, ArgT>(
+  call<NotifierT extends StateNotifier<StateT>, StateT, ArgT>(
     NotifierT Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -374,13 +370,12 @@ class StateNotifierProviderFamilyBuilder {
 }
 
 @internal
-@publicInMisc
-class AutoDisposeStateNotifierProviderBuilder {
+final class AutoDisposeStateNotifierProviderBuilder {
   const AutoDisposeStateNotifierProviderBuilder();
 
   /// {@macro riverpod.family}
   StateNotifierProvider<NotifierT, StateT>
-      call<NotifierT extends StateNotifier<StateT>, StateT>(
+  call<NotifierT extends StateNotifier<StateT>, StateT>(
     NotifierT Function(Ref ref) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -401,13 +396,12 @@ class AutoDisposeStateNotifierProviderBuilder {
 }
 
 @internal
-@publicInMisc
-class AutoDisposeStateNotifierProviderFamilyBuilder {
+final class AutoDisposeStateNotifierProviderFamilyBuilder {
   const AutoDisposeStateNotifierProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
   StateNotifierProviderFamily<NotifierT, StateT, ArgT>
-      call<NotifierT extends StateNotifier<StateT>, StateT, ArgT>(
+  call<NotifierT extends StateNotifier<StateT>, StateT, ArgT>(
     NotifierT Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -424,8 +418,7 @@ class AutoDisposeStateNotifierProviderFamilyBuilder {
 }
 
 @internal
-@publicInMisc
-class ProviderFamilyBuilder {
+final class ProviderFamilyBuilder {
   const ProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
@@ -451,8 +444,7 @@ class ProviderFamilyBuilder {
 }
 
 @internal
-@publicInMisc
-class AutoDisposeProviderBuilder {
+final class AutoDisposeProviderBuilder {
   const AutoDisposeProviderBuilder();
 
   /// {@macro riverpod.family}
@@ -477,8 +469,7 @@ class AutoDisposeProviderBuilder {
 }
 
 @internal
-@publicInMisc
-class AutoDisposeProviderFamilyBuilder {
+final class AutoDisposeProviderFamilyBuilder {
   const AutoDisposeProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
@@ -499,8 +490,7 @@ class AutoDisposeProviderFamilyBuilder {
 }
 
 @internal
-@publicInMisc
-class FutureProviderFamilyBuilder {
+final class FutureProviderFamilyBuilder {
   const FutureProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
@@ -526,8 +516,7 @@ class FutureProviderFamilyBuilder {
 }
 
 @internal
-@publicInMisc
-class AutoDisposeFutureProviderBuilder {
+final class AutoDisposeFutureProviderBuilder {
   const AutoDisposeFutureProviderBuilder();
 
   /// {@macro riverpod.family}
@@ -552,8 +541,7 @@ class AutoDisposeFutureProviderBuilder {
 }
 
 @internal
-@publicInMisc
-class AutoDisposeFutureProviderFamilyBuilder {
+final class AutoDisposeFutureProviderFamilyBuilder {
   const AutoDisposeFutureProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
@@ -574,8 +562,7 @@ class AutoDisposeFutureProviderFamilyBuilder {
 }
 
 @internal
-@publicInMisc
-class StreamProviderFamilyBuilder {
+final class StreamProviderFamilyBuilder {
   const StreamProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
@@ -601,8 +588,7 @@ class StreamProviderFamilyBuilder {
 }
 
 @internal
-@publicInMisc
-class AutoDisposeStreamProviderBuilder {
+final class AutoDisposeStreamProviderBuilder {
   const AutoDisposeStreamProviderBuilder();
 
   /// {@macro riverpod.family}
@@ -627,8 +613,7 @@ class AutoDisposeStreamProviderBuilder {
 }
 
 @internal
-@publicInMisc
-class AutoDisposeStreamProviderFamilyBuilder {
+final class AutoDisposeStreamProviderFamilyBuilder {
   const AutoDisposeStreamProviderFamilyBuilder();
 
   /// {@macro riverpod.family}
@@ -649,13 +634,12 @@ class AutoDisposeStreamProviderFamilyBuilder {
 }
 
 @internal
-@publicInMisc
-class AutoDisposeNotifierProviderBuilder {
+final class AutoDisposeNotifierProviderBuilder {
   const AutoDisposeNotifierProviderBuilder();
 
   /// {@macro riverpod.autoDispose}
   NotifierProvider<NotifierT, StateT>
-      call<NotifierT extends Notifier<StateT>, StateT>(
+  call<NotifierT extends Notifier<StateT>, StateT>(
     NotifierT Function() create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -676,13 +660,12 @@ class AutoDisposeNotifierProviderBuilder {
 }
 
 @internal
-@publicInMisc
-class NotifierProviderFamilyBuilder {
+final class NotifierProviderFamilyBuilder {
   const NotifierProviderFamilyBuilder();
 
   /// {@macro riverpod.autoDispose}
   NotifierProviderFamily<NotifierT, StateT, ArgT>
-      call<NotifierT extends FamilyNotifier<StateT, ArgT>, StateT, ArgT>(
+  call<NotifierT extends FamilyNotifier<StateT, ArgT>, StateT, ArgT>(
     NotifierT Function() create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -704,13 +687,12 @@ class NotifierProviderFamilyBuilder {
 }
 
 @internal
-@publicInMisc
-class AutoDisposeNotifierProviderFamilyBuilder {
+final class AutoDisposeNotifierProviderFamilyBuilder {
   const AutoDisposeNotifierProviderFamilyBuilder();
 
   /// {@macro riverpod.autoDispose}
   NotifierProviderFamily<NotifierT, StateT, ArgT>
-      call<NotifierT extends FamilyNotifier<StateT, ArgT>, StateT, ArgT>(
+  call<NotifierT extends FamilyNotifier<StateT, ArgT>, StateT, ArgT>(
     NotifierT Function() create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -727,13 +709,12 @@ class AutoDisposeNotifierProviderFamilyBuilder {
 }
 
 @internal
-@publicInMisc
-class AutoDisposeStreamNotifierProviderBuilder {
+final class AutoDisposeStreamNotifierProviderBuilder {
   const AutoDisposeStreamNotifierProviderBuilder();
 
   /// {@macro riverpod.autoDispose}
   StreamNotifierProvider<NotifierT, StateT>
-      call<NotifierT extends StreamNotifier<StateT>, StateT>(
+  call<NotifierT extends StreamNotifier<StateT>, StateT>(
     NotifierT Function() create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -754,13 +735,12 @@ class AutoDisposeStreamNotifierProviderBuilder {
 }
 
 @internal
-@publicInMisc
-class StreamNotifierProviderFamilyBuilder {
+final class StreamNotifierProviderFamilyBuilder {
   const StreamNotifierProviderFamilyBuilder();
 
   /// {@macro riverpod.autoDispose}
   StreamNotifierProviderFamily<NotifierT, StateT, ArgT>
-      call<NotifierT extends FamilyStreamNotifier<StateT, ArgT>, StateT, ArgT>(
+  call<NotifierT extends FamilyStreamNotifier<StateT, ArgT>, StateT, ArgT>(
     NotifierT Function() create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -782,13 +762,12 @@ class StreamNotifierProviderFamilyBuilder {
 }
 
 @internal
-@publicInMisc
-class AutoDisposeStreamNotifierProviderFamilyBuilder {
+final class AutoDisposeStreamNotifierProviderFamilyBuilder {
   const AutoDisposeStreamNotifierProviderFamilyBuilder();
 
   /// {@macro riverpod.autoDispose}
   StreamNotifierProviderFamily<NotifierT, StateT, ArgT>
-      call<NotifierT extends FamilyStreamNotifier<StateT, ArgT>, StateT, ArgT>(
+  call<NotifierT extends FamilyStreamNotifier<StateT, ArgT>, StateT, ArgT>(
     NotifierT Function() create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -805,13 +784,12 @@ class AutoDisposeStreamNotifierProviderFamilyBuilder {
 }
 
 @internal
-@publicInMisc
-class AutoDisposeAsyncNotifierProviderBuilder {
+final class AutoDisposeAsyncNotifierProviderBuilder {
   const AutoDisposeAsyncNotifierProviderBuilder();
 
   /// {@macro riverpod.autoDispose}
   AsyncNotifierProvider<NotifierT, StateT>
-      call<NotifierT extends AsyncNotifier<StateT>, StateT>(
+  call<NotifierT extends AsyncNotifier<StateT>, StateT>(
     NotifierT Function() create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -832,13 +810,12 @@ class AutoDisposeAsyncNotifierProviderBuilder {
 }
 
 @internal
-@publicInMisc
-class AsyncNotifierProviderFamilyBuilder {
+final class AsyncNotifierProviderFamilyBuilder {
   const AsyncNotifierProviderFamilyBuilder();
 
   /// {@macro riverpod.autoDispose}
   AsyncNotifierProviderFamily<NotifierT, StateT, ArgT>
-      call<NotifierT extends FamilyAsyncNotifier<StateT, ArgT>, StateT, ArgT>(
+  call<NotifierT extends FamilyAsyncNotifier<StateT, ArgT>, StateT, ArgT>(
     NotifierT Function() create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -860,13 +837,12 @@ class AsyncNotifierProviderFamilyBuilder {
 }
 
 @internal
-@publicInMisc
-class AutoDisposeAsyncNotifierProviderFamilyBuilder {
+final class AutoDisposeAsyncNotifierProviderFamilyBuilder {
   const AutoDisposeAsyncNotifierProviderFamilyBuilder();
 
   /// {@macro riverpod.autoDispose}
   AsyncNotifierProviderFamily<NotifierT, StateT, ArgT>
-      call<NotifierT extends FamilyAsyncNotifier<StateT, ArgT>, StateT, ArgT>(
+  call<NotifierT extends FamilyAsyncNotifier<StateT, ArgT>, StateT, ArgT>(
     NotifierT Function() create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
