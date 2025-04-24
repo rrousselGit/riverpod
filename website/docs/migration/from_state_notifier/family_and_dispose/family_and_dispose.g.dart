@@ -100,7 +100,10 @@ final class BugsEncounteredNotifierProvider
 String _$bugsEncounteredNotifierHash() =>
     r'c76e924f84db91c57d226896b062d9f4e8ab79e5';
 
-final class BugsEncounteredNotifierFamily extends $Family {
+final class BugsEncounteredNotifierFamily extends $Family
+    with
+        $ClassFamilyOverride<BugsEncounteredNotifier, AsyncValue<int>, int,
+            FutureOr<int>, String> {
   const BugsEncounteredNotifierFamily._()
       : super(
           retry: null,
@@ -117,38 +120,6 @@ final class BugsEncounteredNotifierFamily extends $Family {
 
   @override
   String toString() => r'bugsEncounteredNotifierProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          BugsEncounteredNotifier Function(
-            String args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as BugsEncounteredNotifierProvider;
-            final argument = provider.argument as String;
-            return provider
-                .$view(create: () => create(argument))
-                .$createElement(pointer);
-          });
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-          FutureOr<int> Function(
-                  Ref ref, BugsEncounteredNotifier notifier, String argument)
-              build) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as BugsEncounteredNotifierProvider;
-            final argument = provider.argument as String;
-            return provider
-                .$view(
-                    runNotifierBuildOverride: (ref, notifier) =>
-                        build(ref, notifier, argument))
-                .$createElement(pointer);
-          });
 }
 
 abstract class _$BugsEncounteredNotifier extends $AsyncNotifier<int> {

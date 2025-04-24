@@ -43,6 +43,9 @@ void main() {
   test('Supports overriding family notifiers', () {
     final container = ProviderContainer.test(
       overrides: [
+        genericClassProvider
+            .overrideWith(<T extends num>() => GenericClass<T>()),
+        familyClassProvider.overrideWith(() => FamilyClass('Hello foo')),
         familyClassProvider(42, third: .42)
             .overrideWith(() => FamilyClass('Hello world')),
       ],

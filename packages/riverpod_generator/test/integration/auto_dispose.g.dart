@@ -186,7 +186,8 @@ final class KeepAliveFamilyProvider extends $FunctionalProvider<int, int>
 
 String _$keepAliveFamilyHash() => r'd1eb1243ea9463617b08a6e9cc5ae6b2df499ba2';
 
-final class KeepAliveFamilyFamily extends $Family {
+final class KeepAliveFamilyFamily extends $Family
+    with $FunctionalFamilyOverride<int, int> {
   const KeepAliveFamilyFamily._()
       : super(
           retry: null,
@@ -203,22 +204,6 @@ final class KeepAliveFamilyFamily extends $Family {
 
   @override
   String toString() => r'keepAliveFamilyProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          int Function(
-            Ref ref,
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as KeepAliveFamilyProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 
 @ProviderFor(notKeepAliveFamily)
@@ -283,7 +268,8 @@ final class NotKeepAliveFamilyProvider extends $FunctionalProvider<int, int>
 String _$notKeepAliveFamilyHash() =>
     r'a721713b026088b65be6c0f7f9beb1083a377a7c';
 
-final class NotKeepAliveFamilyFamily extends $Family {
+final class NotKeepAliveFamilyFamily extends $Family
+    with $FunctionalFamilyOverride<int, int> {
   const NotKeepAliveFamilyFamily._()
       : super(
           retry: null,
@@ -300,22 +286,6 @@ final class NotKeepAliveFamilyFamily extends $Family {
 
   @override
   String toString() => r'notKeepAliveFamilyProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          int Function(
-            Ref ref,
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as NotKeepAliveFamilyProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 
 @ProviderFor(defaultKeepAliveFamily)
@@ -381,7 +351,8 @@ final class DefaultKeepAliveFamilyProvider extends $FunctionalProvider<int, int>
 String _$defaultKeepAliveFamilyHash() =>
     r'e79f3d9ccd6713aade34c1701699c578f9236e9e';
 
-final class DefaultKeepAliveFamilyFamily extends $Family {
+final class DefaultKeepAliveFamilyFamily extends $Family
+    with $FunctionalFamilyOverride<int, int> {
   const DefaultKeepAliveFamilyFamily._()
       : super(
           retry: null,
@@ -398,22 +369,6 @@ final class DefaultKeepAliveFamilyFamily extends $Family {
 
   @override
   String toString() => r'defaultKeepAliveFamilyProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          int Function(
-            Ref ref,
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as DefaultKeepAliveFamilyProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

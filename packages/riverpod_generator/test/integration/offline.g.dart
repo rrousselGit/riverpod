@@ -137,7 +137,10 @@ final class JsonProvider
 
 String _$jsonHash() => r'fb36d984214529f587e141faf4aae78f2a39474c';
 
-final class JsonFamily extends $Family {
+final class JsonFamily extends $Family
+    with
+        $ClassFamilyOverride<Json, AsyncValue<Map<String, List<int>>>,
+            Map<String, List<int>>, FutureOr<Map<String, List<int>>>, String> {
   const JsonFamily._()
       : super(
           retry: null,
@@ -154,38 +157,6 @@ final class JsonFamily extends $Family {
 
   @override
   String toString() => r'jsonProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          Json Function(
-            String args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as JsonProvider;
-            final argument = provider.argument as String;
-            return provider
-                .$view(create: () => create(argument))
-                .$createElement(pointer);
-          });
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-          FutureOr<Map<String, List<int>>> Function(
-                  Ref ref, Json notifier, String argument)
-              build) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as JsonProvider;
-            final argument = provider.argument as String;
-            return provider
-                .$view(
-                    runNotifierBuildOverride: (ref, notifier) =>
-                        build(ref, notifier, argument))
-                .$createElement(pointer);
-          });
 }
 
 abstract class _$JsonBase extends $AsyncNotifier<Map<String, List<int>>> {

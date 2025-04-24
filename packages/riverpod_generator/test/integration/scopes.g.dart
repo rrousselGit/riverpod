@@ -115,7 +115,8 @@ final class ScopedClassFamilyProvider
 
 String _$scopedClassFamilyHash() => r'04aeb0bbfdc363e2c8714c7a5967368a7f990d58';
 
-final class ScopedClassFamilyFamily extends $Family {
+final class ScopedClassFamilyFamily extends $Family
+    with $ClassFamilyOverride<ScopedClassFamily, int, int, int, int> {
   const ScopedClassFamilyFamily._()
       : super(
           retry: null,
@@ -132,37 +133,6 @@ final class ScopedClassFamilyFamily extends $Family {
 
   @override
   String toString() => r'scopedClassFamilyProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          ScopedClassFamily Function(
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as ScopedClassFamilyProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: () => create(argument))
-                .$createElement(pointer);
-          });
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-          int Function(Ref ref, ScopedClassFamily notifier, int argument)
-              build) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as ScopedClassFamilyProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(
-                    runNotifierBuildOverride: (ref, notifier) =>
-                        build(ref, notifier, argument))
-                .$createElement(pointer);
-          });
 }
 
 abstract class _$ScopedClassFamily extends $Notifier<int> {

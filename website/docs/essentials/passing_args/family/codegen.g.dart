@@ -61,7 +61,8 @@ final class ActivityProvider
 
 String _$activityHash() => r'6c815736c0d2b40a92695adcd78516534d7ac2fc';
 
-final class ActivityFamily extends $Family {
+final class ActivityFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<Activity>, String> {
   const ActivityFamily._()
       : super(
           retry: null,
@@ -78,22 +79,6 @@ final class ActivityFamily extends $Family {
 
   @override
   String toString() => r'activityProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          FutureOr<Activity> Function(
-            Ref ref,
-            String args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as ActivityProvider;
-            final argument = provider.argument as String;
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 
 @ProviderFor(ActivityNotifier2)
@@ -145,7 +130,10 @@ final class ActivityNotifier2Provider
 
 String _$activityNotifier2Hash() => r'9e67c655d53a9f98c3b012a0534421385dde0339';
 
-final class ActivityNotifier2Family extends $Family {
+final class ActivityNotifier2Family extends $Family
+    with
+        $ClassFamilyOverride<ActivityNotifier2, AsyncValue<Activity>, Activity,
+            FutureOr<Activity>, String> {
   const ActivityNotifier2Family._()
       : super(
           retry: null,
@@ -162,38 +150,6 @@ final class ActivityNotifier2Family extends $Family {
 
   @override
   String toString() => r'activityNotifier2Provider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          ActivityNotifier2 Function(
-            String args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as ActivityNotifier2Provider;
-            final argument = provider.argument as String;
-            return provider
-                .$view(create: () => create(argument))
-                .$createElement(pointer);
-          });
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-          FutureOr<Activity> Function(
-                  Ref ref, ActivityNotifier2 notifier, String argument)
-              build) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as ActivityNotifier2Provider;
-            final argument = provider.argument as String;
-            return provider
-                .$view(
-                    runNotifierBuildOverride: (ref, notifier) =>
-                        build(ref, notifier, argument))
-                .$createElement(pointer);
-          });
 }
 
 abstract class _$ActivityNotifier2 extends $AsyncNotifier<Activity> {

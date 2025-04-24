@@ -178,7 +178,8 @@ String _$familyHash() => r'5164f4ea1f2d6c741e5c600c48a1b2ac2be7a1eb';
 
 /// Hello world
 // Foo
-final class FamilyFamily extends $Family {
+final class FamilyFamily extends $Family
+    with $FunctionalFamilyOverride<String, int> {
   const FamilyFamily._()
       : super(
           retry: null,
@@ -197,22 +198,6 @@ final class FamilyFamily extends $Family {
 
   @override
   String toString() => r'familyProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          String Function(
-            Ref ref,
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as FamilyProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 
 /// Hello world
@@ -279,7 +264,8 @@ String _$classFamilyBasedHash() => r'8d83e9a88356796298419574f360e8bf95aa0729';
 
 /// Hello world
 // Foo
-final class ClassFamilyBasedFamily extends $Family {
+final class ClassFamilyBasedFamily extends $Family
+    with $ClassFamilyOverride<ClassFamilyBased, String, String, String, int> {
   const ClassFamilyBasedFamily._()
       : super(
           retry: null,
@@ -298,37 +284,6 @@ final class ClassFamilyBasedFamily extends $Family {
 
   @override
   String toString() => r'classFamilyBasedProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          ClassFamilyBased Function(
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as ClassFamilyBasedProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: () => create(argument))
-                .$createElement(pointer);
-          });
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-          String Function(Ref ref, ClassFamilyBased notifier, int argument)
-              build) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as ClassFamilyBasedProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(
-                    runNotifierBuildOverride: (ref, notifier) =>
-                        build(ref, notifier, argument))
-                .$createElement(pointer);
-          });
 }
 
 abstract class _$ClassFamilyBased extends $Notifier<String> {

@@ -82,7 +82,8 @@ final class Calc2Provider extends $FunctionalProvider<int, int>
 
 String _$calc2Hash() => r'ae1d601ff7cdda569255e8014bd5d8d1c178b3eb';
 
-final class Calc2Family extends $Family {
+final class Calc2Family extends $Family
+    with $FunctionalFamilyOverride<int, String> {
   const Calc2Family._()
       : super(
           retry: null,
@@ -125,22 +126,6 @@ final class Calc2Family extends $Family {
 
   @override
   String toString() => r'myFamilyCalc2ProviderFamily';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          int Function(
-            Ref ref,
-            String args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as Calc2Provider;
-            final argument = provider.argument as String;
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

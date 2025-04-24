@@ -77,7 +77,14 @@ final class RandomProvider extends $FunctionalProvider<int, int>
 
 String _$randomHash() => r'ab69799dce84746b22880feae0f1db6dea906f6a';
 
-final class RandomFamily extends $Family {
+final class RandomFamily extends $Family
+    with
+        $FunctionalFamilyOverride<
+            int,
+            ({
+              int seed,
+              int max,
+            })> {
   const RandomFamily._()
       : super(
           retry: null,
@@ -98,28 +105,6 @@ final class RandomFamily extends $Family {
 
   @override
   String toString() => r'randomProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          int Function(
-            Ref ref,
-            ({
-              int seed,
-              int max,
-            }) args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as RandomProvider;
-            final argument = provider.argument as ({
-              int seed,
-              int max,
-            });
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -63,7 +63,8 @@ final class FetchPackageDetailsProvider
 String _$fetchPackageDetailsHash() =>
     r'16ad07d6f69412f6d456c6d482f15dc53421df74';
 
-final class FetchPackageDetailsFamily extends $Family {
+final class FetchPackageDetailsFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<Package>, String> {
   const FetchPackageDetailsFamily._()
       : super(
           retry: null,
@@ -80,22 +81,6 @@ final class FetchPackageDetailsFamily extends $Family {
 
   @override
   String toString() => r'fetchPackageDetailsProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          FutureOr<Package> Function(
-            Ref ref,
-            String args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as FetchPackageDetailsProvider;
-            final argument = provider.argument as String;
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 
 @ProviderFor(likedPackages)
@@ -242,7 +227,10 @@ String _$packageMetricsHash() => r'67cd25e50357e6e970d432c1d255085a23b856ac';
 ///
 /// It also exposes utilities to like/unlike a package, assuming the user
 /// is logged-in.
-final class PackageMetricsFamily extends $Family {
+final class PackageMetricsFamily extends $Family
+    with
+        $ClassFamilyOverride<PackageMetrics, AsyncValue<PackageMetricsScore>,
+            PackageMetricsScore, FutureOr<PackageMetricsScore>, String> {
   const PackageMetricsFamily._()
       : super(
           retry: null,
@@ -264,38 +252,6 @@ final class PackageMetricsFamily extends $Family {
 
   @override
   String toString() => r'packageMetricsProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          PackageMetrics Function(
-            String args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as PackageMetricsProvider;
-            final argument = provider.argument as String;
-            return provider
-                .$view(create: () => create(argument))
-                .$createElement(pointer);
-          });
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-          FutureOr<PackageMetricsScore> Function(
-                  Ref ref, PackageMetrics notifier, String argument)
-              build) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as PackageMetricsProvider;
-            final argument = provider.argument as String;
-            return provider
-                .$view(
-                    runNotifierBuildOverride: (ref, notifier) =>
-                        build(ref, notifier, argument))
-                .$createElement(pointer);
-          });
 }
 
 abstract class _$PackageMetrics extends $AsyncNotifier<PackageMetricsScore> {

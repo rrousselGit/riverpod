@@ -61,7 +61,8 @@ final class FetchUserProvider
 
 String _$fetchUserHash() => r'0ea61464a124f8af2cf15b830a1a012d4272eb47';
 
-final class FetchUserFamily extends $Family {
+final class FetchUserFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<User>, int> {
   const FetchUserFamily._()
       : super(
           retry: null,
@@ -78,22 +79,6 @@ final class FetchUserFamily extends $Family {
 
   @override
   String toString() => r'fetchUserProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          FutureOr<User> Function(
-            Ref ref,
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as FetchUserProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

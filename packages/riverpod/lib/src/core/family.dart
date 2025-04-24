@@ -85,6 +85,27 @@ typedef SetupFamilyOverride<Arg> = void Function(
   }),
 );
 
+@internal
+@publicInCodegen
+base mixin $FunctionalFamilyOverride<CreatedT, ArgT> on Family {
+  /// {@macro riverpod.override_with}
+  Override overrideWith(
+    CreatedT Function(Ref ref, ArgT arg) create,
+  ) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider =
+            pointer.origin as $FunctionalProvider<Object?, CreatedT>;
+
+        return provider
+            .$view(create: (ref) => create(ref, provider.argument as ArgT))
+            .$createElement(pointer);
+      },
+    );
+  }
+}
+
 /// A base implementation for [Family], used by the various providers to
 /// help them define a [Family].
 ///
@@ -92,10 +113,11 @@ typedef SetupFamilyOverride<Arg> = void Function(
 @internal
 @reopen
 base class FunctionalFamily< //
-    StateT,
-    ArgT,
-    CreatedT,
-    ProviderT extends $FunctionalProvider<StateT, CreatedT>> extends Family {
+        StateT,
+        ArgT,
+        CreatedT,
+        ProviderT extends $FunctionalProvider<StateT, CreatedT>> extends Family
+    with $FunctionalFamilyOverride<CreatedT, ArgT> {
   /// A base implementation for [Family], used by the various providers to
   /// help them define a [Family].
   ///
@@ -133,18 +155,37 @@ base class FunctionalFamily< //
       retry: retry,
     );
   }
+}
+
+@internal
+@publicInCodegen
+base mixin $ClassFamilyOverride<NotifierT extends AnyNotifier<StateT>, StateT,
+    ValueT, CreatedT, ArgT> on Family {
+  /// {@macro riverpod.override_with}
+  Override overrideWith(NotifierT Function() create) {
+    return $FamilyOverride(
+      from: this,
+      createElement: (pointer) {
+        final provider = pointer.origin
+            as $ClassProvider<NotifierT, StateT, ValueT, CreatedT>;
+
+        return provider.$view(create: create).$createElement(pointer);
+      },
+    );
+  }
 
   /// {@macro riverpod.override_with}
-  Override overrideWith(
-    CreatedT Function(Ref ref, ArgT arg) create,
+  Override overrideWithBuild(
+    RunNotifierBuild<NotifierT, CreatedT> build,
   ) {
     return $FamilyOverride(
       from: this,
       createElement: (pointer) {
-        final provider = pointer.origin as ProviderT;
+        final provider = pointer.origin
+            as $ClassProvider<NotifierT, StateT, ValueT, CreatedT>;
 
         return provider
-            .$view(create: (ref) => create(ref, provider.argument as ArgT))
+            .$view(runNotifierBuildOverride: build)
             .$createElement(pointer);
       },
     );
@@ -165,7 +206,8 @@ base class ClassFamily< //
         ArgT,
         CreatedT,
         ProviderT extends $ClassProvider<NotifierT, StateT, ValueT, CreatedT>>
-    extends Family {
+    extends Family
+    with $ClassFamilyOverride<NotifierT, StateT, ValueT, CreatedT, ArgT> {
   /// A base implementation for [Family], used by the various providers to
   /// help them define a [Family].
   ///
@@ -197,34 +239,6 @@ base class ClassFamily< //
       argument: argument,
       dependencies: null,
       allTransitiveDependencies: null,
-    );
-  }
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(NotifierT Function() create) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as ProviderT;
-
-        return provider.$view(create: create).$createElement(pointer);
-      },
-    );
-  }
-
-  /// {@macro riverpod.override_with}
-  Override overrideWithBuild(
-    RunNotifierBuild<NotifierT, CreatedT> build,
-  ) {
-    return $FamilyOverride(
-      from: this,
-      createElement: (pointer) {
-        final provider = pointer.origin as ProviderT;
-
-        return provider
-            .$view(runNotifierBuildOverride: build)
-            .$createElement(pointer);
-      },
     );
   }
 }

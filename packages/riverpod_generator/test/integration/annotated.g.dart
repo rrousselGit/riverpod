@@ -69,7 +69,8 @@ final class FunctionalProvider extends $FunctionalProvider<String, String>
 
 String _$functionalHash() => r'ba8606cd0526e2dde0f775eb8f4c9d8b5b6fdf2c';
 
-final class FunctionalFamily extends $Family {
+final class FunctionalFamily extends $Family
+    with $FunctionalFamilyOverride<String, int> {
   const FunctionalFamily._()
       : super(
           retry: null,
@@ -86,22 +87,6 @@ final class FunctionalFamily extends $Family {
 
   @override
   String toString() => r'functionalProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          String Function(
-            Ref ref,
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as FunctionalProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 
 @ProviderFor(ClassBased)
@@ -162,7 +147,8 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
 
 String _$classBasedHash() => r'92b444806ef8a304c6e0dc3d8e2383601e781183';
 
-final class ClassBasedFamily extends $Family {
+final class ClassBasedFamily extends $Family
+    with $ClassFamilyOverride<ClassBased, String, String, String, int> {
   const ClassBasedFamily._()
       : super(
           retry: null,
@@ -179,36 +165,6 @@ final class ClassBasedFamily extends $Family {
 
   @override
   String toString() => r'classBasedProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          ClassBased Function(
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as ClassBasedProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: () => create(argument))
-                .$createElement(pointer);
-          });
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-          String Function(Ref ref, ClassBased notifier, int argument) build) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as ClassBasedProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(
-                    runNotifierBuildOverride: (ref, notifier) =>
-                        build(ref, notifier, argument))
-                .$createElement(pointer);
-          });
 }
 
 abstract class _$ClassBased extends $Notifier<String> {
@@ -295,7 +251,8 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
 
 String _$familyHash() => r'14b97009aec20a0332208f8a60bc177b44c9d1d4';
 
-final class FamilyFamily extends $Family {
+final class FamilyFamily extends $Family
+    with $FunctionalFamilyOverride<String, int> {
   const FamilyFamily._()
       : super(
           retry: null,
@@ -312,22 +269,6 @@ final class FamilyFamily extends $Family {
 
   @override
   String toString() => r'familyProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          String Function(
-            Ref ref,
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as FamilyProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 
 @ProviderFor(notCopiedFunctional)
@@ -485,7 +426,8 @@ final class NotCopiedFamilyProvider extends $FunctionalProvider<String, String>
 
 String _$notCopiedFamilyHash() => r'ea652776532e2bf993a249b25b5254fc3dfff4b9';
 
-final class NotCopiedFamilyFamily extends $Family {
+final class NotCopiedFamilyFamily extends $Family
+    with $FunctionalFamilyOverride<String, int> {
   const NotCopiedFamilyFamily._()
       : super(
           retry: null,
@@ -502,22 +444,6 @@ final class NotCopiedFamilyFamily extends $Family {
 
   @override
   String toString() => r'notCopiedFamilyProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          String Function(
-            Ref ref,
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as NotCopiedFamilyProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

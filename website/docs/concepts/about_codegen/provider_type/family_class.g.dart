@@ -68,7 +68,17 @@ final class ExampleProvider extends $NotifierProvider<Example, String> {
 
 String _$exampleHash() => r'8025d93d6f5e9286043b1ce7ae55bead44f30acc';
 
-final class ExampleFamily extends $Family {
+final class ExampleFamily extends $Family
+    with
+        $ClassFamilyOverride<
+            Example,
+            String,
+            String,
+            String,
+            (
+              int, {
+              String param2,
+            })> {
   const ExampleFamily._()
       : super(
           retry: null,
@@ -89,52 +99,6 @@ final class ExampleFamily extends $Family {
 
   @override
   String toString() => r'exampleProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          Example Function(
-            (
-              int, {
-              String param2,
-            }) args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as ExampleProvider;
-            final argument = provider.argument as (
-              int, {
-              String param2,
-            });
-            return provider
-                .$view(create: () => create(argument))
-                .$createElement(pointer);
-          });
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-          String Function(
-                  Ref ref,
-                  Example notifier,
-                  (
-                    int, {
-                    String param2,
-                  }) argument)
-              build) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as ExampleProvider;
-            final argument = provider.argument as (
-              int, {
-              String param2,
-            });
-            return provider
-                .$view(
-                    runNotifierBuildOverride: (ref, notifier) =>
-                        build(ref, notifier, argument))
-                .$createElement(pointer);
-          });
 }
 
 abstract class _$Example extends $Notifier<String> {

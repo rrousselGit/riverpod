@@ -317,7 +317,8 @@ final class Count2Provider extends $FunctionalProvider<int, int>
 
 String _$count2Hash() => r'4146ae486161f9d444b4d80ec846199b13eeaae2';
 
-final class Count2Family extends $Family {
+final class Count2Family extends $Family
+    with $FunctionalFamilyOverride<int, int> {
   const Count2Family._()
       : super(
           retry: null,
@@ -334,22 +335,6 @@ final class Count2Family extends $Family {
 
   @override
   String toString() => r'myFamilyCount2ProviderFamily';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          int Function(
-            Ref ref,
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as Count2Provider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 
 @ProviderFor(countFuture2)
@@ -405,7 +390,8 @@ final class CountFuture2Provider
 
 String _$countFuture2Hash() => r'6acaa58de0116853fd831efb4ac1a8047205f12b';
 
-final class CountFuture2Family extends $Family {
+final class CountFuture2Family extends $Family
+    with $FunctionalFamilyOverride<FutureOr<int>, int> {
   const CountFuture2Family._()
       : super(
           retry: null,
@@ -422,22 +408,6 @@ final class CountFuture2Family extends $Family {
 
   @override
   String toString() => r'myFamilyCountFuture2ProviderFamily';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          FutureOr<int> Function(
-            Ref ref,
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as CountFuture2Provider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 
 @ProviderFor(countStream2)
@@ -493,7 +463,8 @@ final class CountStream2Provider
 
 String _$countStream2Hash() => r'96c9a0935240f1727986800c1fe6dea974b9accc';
 
-final class CountStream2Family extends $Family {
+final class CountStream2Family extends $Family
+    with $FunctionalFamilyOverride<Stream<int>, int> {
   const CountStream2Family._()
       : super(
           retry: null,
@@ -510,22 +481,6 @@ final class CountStream2Family extends $Family {
 
   @override
   String toString() => r'myFamilyCountStream2ProviderFamily';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          Stream<int> Function(
-            Ref ref,
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as CountStream2Provider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 
 @ProviderFor(CountNotifier2)
@@ -584,7 +539,8 @@ final class CountNotifier2Provider
 
 String _$countNotifier2Hash() => r'ef12bb4f94add336804ae43bcdbcd8e9b0bec420';
 
-final class CountNotifier2Family extends $Family {
+final class CountNotifier2Family extends $Family
+    with $ClassFamilyOverride<CountNotifier2, int, int, int, int> {
   const CountNotifier2Family._()
       : super(
           retry: null,
@@ -601,36 +557,6 @@ final class CountNotifier2Family extends $Family {
 
   @override
   String toString() => r'myFamilyCountNotifier2ProviderFamily';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          CountNotifier2 Function(
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as CountNotifier2Provider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: () => create(argument))
-                .$createElement(pointer);
-          });
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-          int Function(Ref ref, CountNotifier2 notifier, int argument) build) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as CountNotifier2Provider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(
-                    runNotifierBuildOverride: (ref, notifier) =>
-                        build(ref, notifier, argument))
-                .$createElement(pointer);
-          });
 }
 
 abstract class _$CountNotifier2 extends $Notifier<int> {
@@ -703,7 +629,10 @@ final class CountAsyncNotifier2Provider
 String _$countAsyncNotifier2Hash() =>
     r'e4bd4d858edbb47fa0d7581f3cfa72e13c914d3d';
 
-final class CountAsyncNotifier2Family extends $Family {
+final class CountAsyncNotifier2Family extends $Family
+    with
+        $ClassFamilyOverride<CountAsyncNotifier2, AsyncValue<int>, int,
+            FutureOr<int>, int> {
   const CountAsyncNotifier2Family._()
       : super(
           retry: null,
@@ -720,38 +649,6 @@ final class CountAsyncNotifier2Family extends $Family {
 
   @override
   String toString() => r'myFamilyCountAsyncNotifier2ProviderFamily';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          CountAsyncNotifier2 Function(
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as CountAsyncNotifier2Provider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: () => create(argument))
-                .$createElement(pointer);
-          });
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-          FutureOr<int> Function(
-                  Ref ref, CountAsyncNotifier2 notifier, int argument)
-              build) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as CountAsyncNotifier2Provider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(
-                    runNotifierBuildOverride: (ref, notifier) =>
-                        build(ref, notifier, argument))
-                .$createElement(pointer);
-          });
 }
 
 abstract class _$CountAsyncNotifier2 extends $AsyncNotifier<int> {
@@ -825,7 +722,10 @@ final class CountStreamNotifier2Provider
 String _$countStreamNotifier2Hash() =>
     r'13be1b7aa32801b33c68f2a228851d2fb6a4a9ee';
 
-final class CountStreamNotifier2Family extends $Family {
+final class CountStreamNotifier2Family extends $Family
+    with
+        $ClassFamilyOverride<CountStreamNotifier2, AsyncValue<int>, int,
+            Stream<int>, int> {
   const CountStreamNotifier2Family._()
       : super(
           retry: null,
@@ -842,38 +742,6 @@ final class CountStreamNotifier2Family extends $Family {
 
   @override
   String toString() => r'myFamilyCountStreamNotifier2ProviderFamily';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          CountStreamNotifier2 Function(
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as CountStreamNotifier2Provider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: () => create(argument))
-                .$createElement(pointer);
-          });
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-          Stream<int> Function(
-                  Ref ref, CountStreamNotifier2 notifier, int argument)
-              build) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as CountStreamNotifier2Provider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(
-                    runNotifierBuildOverride: (ref, notifier) =>
-                        build(ref, notifier, argument))
-                .$createElement(pointer);
-          });
 }
 
 abstract class _$CountStreamNotifier2 extends $StreamNotifier<int> {

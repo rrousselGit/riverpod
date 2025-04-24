@@ -35,8 +35,26 @@ class FamilyTemplate extends Template {
     final argument =
         provider.parameters.isEmpty ? '' : 'argument: $parametersPassThrough,';
 
+    final mixinTypes = <String>[
+      ...switch (provider) {
+        FunctionalProviderDeclaration(typeParameters: null) => [
+            '\$FunctionalFamilyOverride<${provider.createdTypeDisplayString}, $_argumentRecordType>',
+          ],
+        ClassBasedProviderDeclaration(typeParameters: null) => [
+            '\$ClassFamilyOverride<$_notifierType, '
+                '${provider.exposedTypeDisplayString}, '
+                '${provider.valueTypeDisplayString}, '
+                '${provider.createdTypeDisplayString}, '
+                '$_argumentRecordType>',
+          ],
+        _ => [],
+      },
+    ];
+
+    final mixins = mixinTypes.isEmpty ? '' : ' with ${mixinTypes.join(', ')}';
+
     buffer.writeln('''
-${provider.doc} final class ${provider.familyTypeName} extends \$Family {
+${provider.doc} final class ${provider.familyTypeName} extends \$Family $mixins {
   const ${provider.familyTypeName}._()
       : super(
         retry: ${provider.annotation.retryNode?.name ?? 'null'},
@@ -67,6 +85,9 @@ ${provider.doc} final class ${provider.familyTypeName} extends \$Family {
     StringBuffer buffer, {
     required StringBuffer topLevelBuffer,
   }) {
+    // If no generic is specific, we use mixins to add overrides
+    if (this.provider.typeParameters == null) return;
+
     // overrideWith
     _writeOverrideWith(
       buffer,
@@ -93,8 +114,6 @@ ${provider.doc} final class ${provider.familyTypeName} extends \$Family {
         '${provider.createdTypeDisplayString} Function$_genericsDefinition(Ref ref, $_argumentRecordType args,)',
       FunctionalProviderDeclaration(parameters: []) =>
         '${provider.createdTypeDisplayString} Function$_genericsDefinition(Ref ref)',
-      ClassBasedProviderDeclaration(parameters: [_, ...]) =>
-        '$_notifierType Function$_genericsDefinition($_argumentRecordType args,)',
       ClassBasedProviderDeclaration() =>
         '$_notifierType Function$_genericsDefinition()',
     };
@@ -108,11 +127,11 @@ Override overrideWith($createType create) =>
         hasParameters: provider.parameters.isNotEmpty,
         provider,
       )) {
-        (_, hasParameters: false) => 'create$_generics',
+        (_, hasParameters: false) ||
+        (ClassBasedProviderDeclaration(), hasParameters: _) =>
+          'create$_generics',
         (FunctionalProviderDeclaration(), hasParameters: true) =>
           '(ref) => create(ref, argument)',
-        (ClassBasedProviderDeclaration(), hasParameters: true) =>
-          '() => create(argument)',
       }}).\$createElement(pointer);
       ''');
     })};
@@ -128,10 +147,6 @@ Override overrideWith($createType create) =>
 ${provider.createdTypeDisplayString} Function$_genericsDefinition(
   Ref ref,
   $_notifierType notifier
-  ${switch (provider.parameters) {
-      [] => '',
-      [_, ...] => ', $_argumentRecordType argument',
-    }}
 )''';
 
     buffer.writeln('''
@@ -139,13 +154,7 @@ ${provider.createdTypeDisplayString} Function$_genericsDefinition(
 Override overrideWithBuild($runNotifierBuildType build) =>
   ${_override((buffer) {
       buffer.writeln('''
-        return provider.\$view(runNotifierBuildOverride: ${switch ((
-        hasParameters: provider.parameters.isNotEmpty,
-      )) {
-        (hasParameters: false) => 'build$_generics',
-        (hasParameters: true) =>
-          '(ref, notifier) => build$_generics(ref, notifier, argument)',
-      }}).\$createElement(pointer);
+        return provider.\$view(runNotifierBuildOverride: build$_generics).\$createElement(pointer);
       ''');
     })};
 ''');
@@ -168,7 +177,7 @@ Override overrideWithBuild($runNotifierBuildType build) =>
           .writeln('return provider._captureGenerics($_genericsDefinition() {');
       buffer.writeln('provider as ${provider.providerTypeName}$_generics;');
     }
-    if (hasParameters) {
+    if (provider is! ClassBasedProviderDeclaration && hasParameters) {
       buffer.writeln('final argument = provider.argument$_argumentCast;');
     }
 

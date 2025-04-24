@@ -1025,7 +1025,8 @@ final class FamilyDepProvider extends $FunctionalProvider<int, int>
 
 String _$familyDepHash() => r'ed674a44492b3871b72b4fbc68180ea0839723e5';
 
-final class FamilyDepFamily extends $Family {
+final class FamilyDepFamily extends $Family
+    with $FunctionalFamilyOverride<int, int> {
   const FamilyDepFamily._()
       : super(
           retry: null,
@@ -1044,22 +1045,6 @@ final class FamilyDepFamily extends $Family {
 
   @override
   String toString() => r'familyDepProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          int Function(
-            Ref ref,
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as FamilyDepProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 
 @ProviderFor(familyDep2)
@@ -1126,7 +1111,8 @@ final class FamilyDep2Provider extends $FunctionalProvider<int, int>
 
 String _$familyDep2Hash() => r'ee9c96f7a1d65e1b66c29aa8d8c030146995504c';
 
-final class FamilyDep2Family extends $Family {
+final class FamilyDep2Family extends $Family
+    with $FunctionalFamilyOverride<int, int> {
   const FamilyDep2Family._()
       : super(
           retry: null,
@@ -1146,22 +1132,6 @@ final class FamilyDep2Family extends $Family {
 
   @override
   String toString() => r'familyDep2Provider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          int Function(
-            Ref ref,
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as FamilyDep2Provider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 
 @ProviderFor(alias)

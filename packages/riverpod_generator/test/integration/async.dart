@@ -16,6 +16,12 @@ class GenericClass<T extends num> extends _$GenericClass<T> {
 }
 
 @riverpod
+class GenericArg<T extends num> extends _$GenericArg<T> {
+  @override
+  Future<String> build(T arg) async => 'Hello $T $arg';
+}
+
+@riverpod
 FutureOr<String> public(Ref ref) {
   return 'Hello world';
 }

@@ -63,7 +63,8 @@ final class GeneratedNotifierProvider
 
 String _$generatedNotifierHash() => r'2b7f4fba816b6e8ccd0e8b7d11fcd207bbb79828';
 
-final class GeneratedNotifierFamily extends $Family {
+final class GeneratedNotifierFamily extends $Family
+    with $ClassFamilyOverride<GeneratedNotifier, int, int, int, int> {
   const GeneratedNotifierFamily._()
       : super(
           retry: null,
@@ -80,37 +81,6 @@ final class GeneratedNotifierFamily extends $Family {
 
   @override
   String toString() => r'generatedNotifierProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          GeneratedNotifier Function(
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as GeneratedNotifierProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: () => create(argument))
-                .$createElement(pointer);
-          });
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-          int Function(Ref ref, GeneratedNotifier notifier, int argument)
-              build) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as GeneratedNotifierProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(
-                    runNotifierBuildOverride: (ref, notifier) =>
-                        build(ref, notifier, argument))
-                .$createElement(pointer);
-          });
 }
 
 abstract class _$GeneratedNotifier extends $Notifier<int> {

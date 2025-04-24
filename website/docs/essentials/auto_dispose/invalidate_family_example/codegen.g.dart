@@ -68,7 +68,8 @@ final class LabelProvider extends $FunctionalProvider<String, String>
 
 String _$labelHash() => r'c53d17dd111313633bd7ca6d6cf6b48dded58ca5';
 
-final class LabelFamily extends $Family {
+final class LabelFamily extends $Family
+    with $FunctionalFamilyOverride<String, String> {
   const LabelFamily._()
       : super(
           retry: null,
@@ -85,22 +86,6 @@ final class LabelFamily extends $Family {
 
   @override
   String toString() => r'labelProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          String Function(
-            Ref ref,
-            String args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as LabelProvider;
-            final argument = provider.argument as String;
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
