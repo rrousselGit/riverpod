@@ -16,6 +16,12 @@ class AllOf {
 }
 
 @internal
+const publicInCodegenMutation = Public.inLibrary(
+  'experimental/mutation',
+  packageName: 'riverpod_annotation',
+);
+
+@internal
 const publicInCodegen = Public.inLibrary(
   'riverpod_annotation',
   packageName: 'riverpod_annotation',

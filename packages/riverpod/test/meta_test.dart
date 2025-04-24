@@ -7,8 +7,6 @@ import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
 void main() {
-  // TODO assert all constructor parameters point to a field with dartdoc.
-
   // This verifies that:
   // - All public APIs are documented
   // - public APIs have no unexported types

@@ -1,6 +1,6 @@
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:riverpod_annotation/experimental/mutation.dart';
 import 'package:test/test.dart';
 
 class ListenerMock<T> with Mock {

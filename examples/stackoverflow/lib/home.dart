@@ -2,7 +2,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:riverpod_annotation/experimental/scope.dart';
 
 import 'question.dart';
 import 'tag.dart';

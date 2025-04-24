@@ -1,6 +1,6 @@
 Message: `Remove "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:20`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:21`:
 ```
 
 // expect_lint: provider_dependencies
@@ -12,7 +12,7 @@ void depFn() {}
 ---
 Message: `Remove "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:24`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:25`:
 ```
 
 // expect_lint: provider_dependencies
@@ -24,7 +24,7 @@ void depFamilyFn() {}
 ---
 Message: `Remove "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:40`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:41`:
 ```
 
 // expect_lint: provider_dependencies
@@ -36,7 +36,7 @@ class UnusedDepWidget extends ConsumerWidget {
 ---
 Message: `Specify "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:77`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:78`:
 ```
 
 // expect_lint: provider_dependencies
@@ -48,7 +48,7 @@ int plainAnnotation(Ref ref) {
 ---
 Message: `Specify "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:84`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:85`:
 ```
 
 // expect_lint: provider_dependencies
@@ -60,7 +60,7 @@ int customAnnotation(Ref ref) {
 ---
 Message: `Specify "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:92`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:93`:
 ```
 // expect_lint: provider_dependencies
 @Riverpod(
@@ -72,7 +72,7 @@ int customAnnotationWithTrailingComma(
 ---
 Message: `Update "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:104`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:105`:
 ```
   keepAlive: false,
   // expect_lint: provider_dependencies
@@ -84,7 +84,7 @@ int existingDep(Ref ref) {
 ---
 Message: `Update "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:114`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:115`:
 ```
   keepAlive: false,
   // expect_lint: provider_dependencies
@@ -96,7 +96,7 @@ int multipleDeps(Ref ref) {
 ---
 Message: `Specify "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:133`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:134`:
 ```
 
 // expect_lint: provider_dependencies
@@ -109,7 +109,7 @@ Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:133`:
 ---
 Message: `Specify "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:146`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:147`:
 ```
 
 // expect_lint: provider_dependencies
@@ -122,7 +122,7 @@ Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:146`:
 ---
 Message: `Specify "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:157`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:158`:
 ```
 
 // expect_lint: provider_dependencies
@@ -135,7 +135,7 @@ Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:157`:
 ---
 Message: `Specify "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:222`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:223`:
 ```
 
 // expect_lint: provider_dependencies
@@ -148,7 +148,7 @@ Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:222`:
 ---
 Message: `Specify "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:253`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies.dart:254`:
 ```
 
 // expect_lint: provider_dependencies

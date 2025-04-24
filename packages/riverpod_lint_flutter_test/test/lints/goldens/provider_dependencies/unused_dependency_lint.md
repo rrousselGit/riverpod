@@ -1,7 +1,7 @@
 code: provider_dependencies
 severity: Severity.warning
 message: Unused dependencies: dep
-test/lints/provider_dependencies/unused_dependency.dart:21:17
+test/lints/provider_dependencies/unused_dependency.dart:22:17
 
 ```dart
   keepAlive: false,
@@ -19,7 +19,7 @@ int extraDep(Ref ref) {
 code: provider_dependencies
 severity: Severity.warning
 message: Unused dependencies: dep
-test/lints/provider_dependencies/unused_dependency.dart:34:17
+test/lints/provider_dependencies/unused_dependency.dart:35:17
 
 ```dart
   keepAlive: false,
@@ -36,7 +36,7 @@ int noDep(Ref ref) {
 code: provider_dependencies
 severity: Severity.warning
 message: Unused dependencies: dep
-test/lints/provider_dependencies/unused_dependency.dart:44:17
+test/lints/provider_dependencies/unused_dependency.dart:45:17
 
 ```dart
 @Riverpod(
@@ -53,7 +53,7 @@ test/lints/provider_dependencies/unused_dependency.dart:44:17
 code: provider_dependencies
 severity: Severity.warning
 message: Unused dependencies: dep
-test/lints/provider_dependencies/unused_dependency.dart:55:17
+test/lints/provider_dependencies/unused_dependency.dart:56:17
 
 ```dart
 @Riverpod(
@@ -70,7 +70,7 @@ int noDepNoParam(Ref ref) {
 code: provider_dependencies
 severity: Severity.warning
 message: Unused dependencies: dep
-test/lints/provider_dependencies/unused_dependency.dart:64:43
+test/lints/provider_dependencies/unused_dependency.dart:65:43
 
 ```dart
 
@@ -85,7 +85,7 @@ int noDepWithoutComma(Ref ref) {
 code: provider_dependencies
 severity: Severity.warning
 message: Unused dependencies: root
-test/lints/provider_dependencies/unused_dependency.dart:72:17
+test/lints/provider_dependencies/unused_dependency.dart:73:17
 
 ```dart
   keepAlive: false,
@@ -102,7 +102,7 @@ int rootDep(Ref ref) => 0;
 code: provider_dependencies
 severity: Severity.warning
 message: Unused dependencies: dep
-test/lints/provider_dependencies/unused_dependency.dart:79:15
+test/lints/provider_dependencies/unused_dependency.dart:80:15
 
 ```dart
 
@@ -117,7 +117,7 @@ class StateNotFound extends ConsumerStatefulWidget {
 code: provider_dependencies
 severity: Severity.warning
 message: Unused dependencies: dep
-test/lints/provider_dependencies/unused_dependency.dart:117:15
+test/lints/provider_dependencies/unused_dependency.dart:118:15
 
 ```dart
 
@@ -132,7 +132,7 @@ void fn() {}
 code: provider_dependencies
 severity: Severity.warning
 message: Unused dependencies: dep
-test/lints/provider_dependencies/unused_dependency.dart:130:15
+test/lints/provider_dependencies/unused_dependency.dart:131:15
 
 ```dart
 
@@ -147,7 +147,7 @@ void secondUnused() {
 code: provider_dependencies
 severity: Severity.warning
 message: Unused dependencies: dep
-test/lints/provider_dependencies/unused_dependency.dart:136:15
+test/lints/provider_dependencies/unused_dependency.dart:137:15
 
 ```dart
 

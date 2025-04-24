@@ -6,6 +6,7 @@ import 'analyzer_test_utils.dart';
 void main() {
   testSource('Rejects mutations with a Stream return type', source: r'''
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:riverpod_annotation/experimental/mutation.dart';
 
 @riverpod
 class SyncNotifier<T> extends _$SyncNotifier<T> {
@@ -43,6 +44,7 @@ class SyncNotifier<T> extends _$SyncNotifier<T> {
 
   testSource('rejects abstract/static mutations', source: r'''
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:riverpod_annotation/experimental/mutation.dart';
 
 @riverpod
 class Abstract extends _$Abstract {
