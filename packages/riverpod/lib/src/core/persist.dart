@@ -9,7 +9,7 @@ import 'package:meta/meta.dart';
 import '../common/internal_lints.dart';
 import '../framework.dart';
 
-class StorageOptions {
+final class StorageOptions {
   const StorageOptions({
     this.destroyKey,
     this.cacheTime = const StorageCacheTime(Duration(days: 2)),
@@ -20,7 +20,7 @@ class StorageOptions {
 }
 
 @immutable
-class PersistedData<T> {
+final class PersistedData<T> {
   const PersistedData(this.data, {this.destroyKey, this.expireAt});
 
   final T data;
@@ -109,7 +109,7 @@ class _InMemoryPersist<KeyT, EncodedT> implements Storage<KeyT, EncodedT> {
   FutureOr<void> delete(KeyT key) => state.remove(key);
 }
 
-class StorageCacheTime {
+final class StorageCacheTime {
   const StorageCacheTime(Duration this.duration);
   const StorageCacheTime._(this.duration);
 
