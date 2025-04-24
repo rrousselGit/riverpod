@@ -151,7 +151,7 @@ void main() {
             return result;
           },
         ),
-        familyClassProvider.overrideWith(FamilyClass.new),
+        familyClassProvider.overrideWith(() => FamilyClass(42)),
       ],
     );
 
@@ -165,7 +165,7 @@ void main() {
       container
           .read(familyClassProvider(42, second: '42', third: .42).notifier)
           .param,
-      (42, second: '42', third: 0.42, fourth: true, fifth: null),
+      42,
     );
   });
 
