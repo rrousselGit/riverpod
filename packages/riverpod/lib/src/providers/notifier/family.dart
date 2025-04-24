@@ -11,7 +11,7 @@ abstract class FamilyNotifier<StateT, ArgT> extends $Notifier<StateT> {
   @visibleForOverriding
   StateT build(ArgT arg);
 
-  @internal
+  @mustCallSuper
   @override
   void runBuild() {
     final created = build(arg);
@@ -19,6 +19,7 @@ abstract class FamilyNotifier<StateT, ArgT> extends $Notifier<StateT> {
   }
 }
 
+/// The [NotifierProvider] that can be used with a [Family].
 @publicInMisc
 final class FamilyNotifierProvider //
     <NotifierT extends $Notifier<StateT>, StateT, ArgT>

@@ -75,6 +75,10 @@ final class StateProvider<StateT> extends $FunctionalProvider<StateT, StateT>
   @override
   StateT create(Ref ref) => _createFn(ref);
 
+  /// Obtains the [StateController] of this provider.
+  ///
+  /// The value obtained may change if the provider is refreshed (such as using
+  /// [Ref.watch] or [Ref.refresh]).
   Refreshable<StateController<StateT>> get notifier =>
       ProviderElementProxy<StateController<StateT>, StateT>(
         this,

@@ -18,16 +18,6 @@ typedef AsyncSubscription = ({
 @publicInCodegen
 mixin $AsyncClassModifier<StateT, CreatedT, ValueT>
     on AnyNotifier<AsyncValue<StateT>> {
-  /// The value currently exposed by this [AsyncNotifier].
-  ///
-  /// Defaults to [AsyncLoading] inside the [AsyncNotifier.build] method.
-  ///
-  /// Invoking the setter will notify listeners if [updateShouldNotify] returns true.
-  /// By default, this always notifies listeners (unless going from "loading"
-  /// to "loading", in which case the change is ignored).
-  ///
-  /// Reading [state] if the provider is out of date (such as if one of its
-  /// dependency has changed) will trigger [AsyncNotifier.build] to be re-executed.
   @visibleForTesting
   @protected
   @override
@@ -91,23 +81,6 @@ mixin $AsyncClassModifier<StateT, CreatedT, ValueT>
     return newState;
   }
 
-  /// A method invoked when the state exposed by this [AsyncNotifier] changes.
-  ///
-  /// As opposed to with [Notifier.updateShouldNotify], this method
-  /// does not filter out changes to [state] that are equal to the previous
-  /// value.
-  /// By default, any change to [state] will emit an update.
-  /// This method can be overridden to implement custom filtering logic if that
-  /// is undesired.
-  ///
-  /// The reasoning for this default behavior is that [AsyncNotifier.build]
-  /// returns a [Future]. As such, the value of [state] typically transitions
-  /// from "loading" to "data" or "error". In that scenario, the value equality
-  /// does not matter. Checking `==` would only hinder performances for no reason.
-  ///
-  /// See also:
-  /// - [ProviderBase.select] and [$FutureModifier.selectAsync], which are
-  ///   alternative ways to filter out changes to [state].
   @override
   @protected
   bool updateShouldNotify(

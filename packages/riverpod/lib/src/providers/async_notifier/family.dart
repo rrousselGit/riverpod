@@ -22,7 +22,7 @@ abstract class FamilyAsyncNotifier<StateT, ArgT>
   @visibleForOverriding
   FutureOr<StateT> build(ArgT arg);
 
-  @internal
+  @mustCallSuper
   @override
   void runBuild() {
     final created = build(arg);

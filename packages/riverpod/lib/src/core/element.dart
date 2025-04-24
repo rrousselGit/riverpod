@@ -19,7 +19,7 @@ part of '../framework.dart';
 @publicInMisc
 sealed class Refreshable<StateT> implements ProviderListenable<StateT> {}
 
-mixin _ProviderRefreshable<OutT, OriginT>
+base mixin _ProviderRefreshable<OutT, OriginT>
     implements Refreshable<OutT>, ProviderListenableWithOrigin<OutT, OriginT> {
   ProviderBase<OriginT> get provider;
 }
@@ -31,6 +31,7 @@ mixin _ProviderRefreshable<OutT, OriginT>
 @internal
 void Function()? debugCanModifyProviders;
 
+/// A Future-like that support synchronous completion.
 @internal
 typedef WhenComplete = void Function(void Function() cb)?;
 

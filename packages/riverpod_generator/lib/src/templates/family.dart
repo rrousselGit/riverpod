@@ -36,7 +36,7 @@ class FamilyTemplate extends Template {
         provider.parameters.isEmpty ? '' : 'argument: $parametersPassThrough,';
 
     buffer.writeln('''
-${provider.doc} final class ${provider.familyTypeName} extends Family {
+${provider.doc} final class ${provider.familyTypeName} extends \$Family {
   const ${provider.familyTypeName}._()
       : super(
         retry: ${provider.annotation.retryNode?.name ?? 'null'},

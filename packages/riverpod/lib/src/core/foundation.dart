@@ -2,7 +2,7 @@ part of '../framework.dart';
 
 /// A shared interface between [ProviderListenable] and [Family].
 @publicInMisc
-abstract class ProviderListenableOrFamily {}
+final class ProviderListenableOrFamily {}
 
 /// A common interface shared by [ProviderBase] and [Family]
 @publicInCodegen
@@ -168,7 +168,7 @@ String shortHash(Object? object) {
 }
 
 @internal
-mixin ProviderListenableWithOrigin<OutT, OriginT> on ProviderListenable<OutT> {
+base mixin ProviderListenableWithOrigin<OutT, OriginT> on ProviderListenable<OutT> {
   @override
   ProviderSubscriptionWithOrigin<OutT, OriginT> _addListener(
     Node source,
@@ -199,7 +199,7 @@ mixin ProviderListenableWithOrigin<OutT, OriginT> on ProviderListenable<OutT> {
 @immutable
 @publicInCodegen
 @publicInMisc
-mixin ProviderListenable<StateT> implements ProviderListenableOrFamily {
+base mixin ProviderListenable<StateT> implements ProviderListenableOrFamily {
   /// Starts listening to this transformer
   ProviderSubscription<StateT> _addListener(
     Node source,

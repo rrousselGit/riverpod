@@ -40,9 +40,8 @@ typedef ClassProviderFactory< //
 typedef FamilyCreate<CreatedT, ArgT> = CreatedT Function(Ref ref, ArgT arg);
 
 /// A base class for all families
-@publicInCodegen
 @publicInMisc
-abstract class Family extends ProviderOrFamily implements _FamilyOverride {
+final class Family extends ProviderOrFamily implements _FamilyOverride {
   /// A base class for all families
   const Family({
     required super.name,
@@ -54,6 +53,23 @@ abstract class Family extends ProviderOrFamily implements _FamilyOverride {
 
   @override
   Family get from => this;
+
+  @override
+  String toString() => name ?? describeIdentity(this);
+}
+
+@publicInCodegen
+@reopen
+@internal
+base class $Family extends Family {
+  /// A base class for all families
+  const $Family({
+    required super.name,
+    required super.dependencies,
+    required super.allTransitiveDependencies,
+    required super.isAutoDispose,
+    required super.retry,
+  });
 
   @override
   String toString() => name ?? describeIdentity(this);
@@ -74,7 +90,8 @@ typedef SetupFamilyOverride<Arg> = void Function(
 ///
 /// This API is not meant for public consumption.
 @internal
-class FunctionalFamily< //
+@reopen
+base class FunctionalFamily< //
     StateT,
     ArgT,
     CreatedT,
@@ -140,7 +157,8 @@ class FunctionalFamily< //
 ///
 /// This API is not meant for public consumption.
 @internal
-class ClassFamily< //
+@reopen
+base class ClassFamily< //
         NotifierT extends AnyNotifier<StateT>,
         StateT,
         ValueT,

@@ -20,7 +20,7 @@ abstract class StreamNotifier<StateT> extends $StreamNotifier<StateT> {
   @visibleForOverriding
   Stream<StateT> build();
 
-  @internal
+  @mustCallSuper
   @override
   void runBuild() {
     final created = build();

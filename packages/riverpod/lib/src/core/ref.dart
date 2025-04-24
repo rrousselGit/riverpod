@@ -54,10 +54,62 @@ sealed class Ref {
   List<void Function()>? _onAddListeners;
   List<void Function()>? _onRemoveListeners;
 
+  /// Whether we're initializing this provider for the first time.
+  ///
+  /// **Note**:
+  /// When using [Provider.autoDispose], this flag will reset to `true` when the
+  /// provider's state was destroyed and later recreated.
   final bool isFirstBuild;
+
+  /// Whether the provider was recomputed without any dependency change.
+  ///
+  /// This is typically triggered when [refresh] or [invalidate] is called.
   bool get isRefresh => !isFirstBuild && !isReload;
+
+  /// Whether the provider was recomputed after at least one dependency changed.
+  ///
+  /// This happens when using [watch] and the listened value changes.
+  /// It can also trigger when using [invalidate] + `asReload: true`.
   final bool isReload;
 
+  /// Whether this [Ref] is still active.
+  ///
+  /// All methods on a provider stop being usable once this becomes `false`.
+  /// This happens on purpose, and happens to catch possible race conditions.
+  ///
+  /// The fix is to either use [onDispose] or [mounted] to cancel any pending work.
+  ///
+  /// Example using [onDispose]:
+  ///
+  /// ```dart
+  /// import 'package:dio/dio.dart';
+  /// final myProvider = FutureProvider((ref) async {
+  ///   final cancelToken = CancelToken();
+  ///   // Cancel pending network requests upon dispose
+  ///   ref.onDispose(cancelToken.cancel);
+  ///
+  ///   return dio.get(..., cancelToken: cancelToken);
+  /// });
+  /// ```
+  ///
+  /// Example using [mounted]:
+  ///
+  /// ```dart
+  /// import 'package:dio/dio.dart';
+  /// final myProvider = FutureProvider((ref) async {
+  ///   await dio.get(..., cancelToken: cancelToken);
+  ///   if (!ref.mounted) throw Exception('cancelled');
+  ///
+  ///   return ...;
+  /// });
+  /// ```
+  ///
+  /// It is preferable to use [onDispose] when possible, as this will abort
+  /// pending work earlier.
+  ///
+  /// In both of the examples above, [onDispose] will stop the network request
+  /// while it is in progress. While [mounted] will let the network request
+  /// complete, and stop its logic after it is done.
   bool get mounted => _mounted;
   var _mounted = true;
 

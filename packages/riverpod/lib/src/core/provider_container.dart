@@ -235,6 +235,7 @@ class ProviderDirectory implements _PointerBase {
   }
 }
 
+/// A function that returns a duration to wait before retrying a failed
 @internal
 typedef Retry = Duration? Function(int retryCount, Object error);
 
@@ -1057,6 +1058,8 @@ extension ProviderContainerTest on ProviderContainer {
 /// Information about the pending mutation, when [ProviderObserver] emits
 /// an event while a mutation is in progress.
 final class MutationContext {
+  /// Information about the pending mutation, when [ProviderObserver] emits
+  /// an event while a mutation is in progress.
   @internal
   MutationContext(this.invocation, this.notifier);
 
@@ -1069,6 +1072,7 @@ final class MutationContext {
 
 /// Information about the [ProviderObserver] event.
 final class ProviderObserverContext {
+  /// Information about the [ProviderObserver] event.
   @internal
   ProviderObserverContext(
     this.provider,

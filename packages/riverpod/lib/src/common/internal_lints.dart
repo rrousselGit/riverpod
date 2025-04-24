@@ -15,27 +15,33 @@ class AllOf {
   final List<Public> public;
 }
 
+/// Not public
 @internal
 const publicInCodegenMutation = Public.inLibrary(
   'experimental/mutation',
   packageName: 'riverpod_annotation',
 );
 
+/// Not public
 @internal
 const publicInCodegen = Public.inLibrary(
   'riverpod_annotation',
   packageName: 'riverpod_annotation',
 );
 
+/// Not public
 @internal
 const publicInMisc = Public.inLibrary('misc');
 
+/// Not public
 @internal
 const publicInLegacy = Public.inLibrary('legacy');
 
+/// Not public
 @internal
 const publicInPersist = Public.inLibrary('persist');
 
+/// Not public
 @internal
 const publicInRiverpodAndCodegen = AllOf([
   Public.inLibrary('riverpod', packageName: 'riverpod'),
