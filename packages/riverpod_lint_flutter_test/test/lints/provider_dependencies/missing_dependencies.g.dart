@@ -190,7 +190,8 @@ final class DepFamilyProvider extends $FunctionalProvider<int, int>
 
 String _$depFamilyHash() => r'6cca68b98693e352e9b801b1fc441d438fc72525';
 
-final class DepFamilyFamily extends $Family {
+final class DepFamilyFamily extends $Family
+    with $FunctionalFamilyOverride<int, int> {
   const DepFamilyFamily._()
       : super(
           retry: null,
@@ -207,22 +208,6 @@ final class DepFamilyFamily extends $Family {
 
   @override
   String toString() => r'depFamilyProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          int Function(
-            Ref ref,
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as DepFamilyProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 
 ////////////

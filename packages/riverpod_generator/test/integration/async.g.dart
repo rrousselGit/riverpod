@@ -206,6 +206,128 @@ abstract class _$GenericClass<T extends num> extends $AsyncNotifier<List<T>> {
   }
 }
 
+@ProviderFor(GenericArg)
+const genericArgProvider = GenericArgFamily._();
+
+final class GenericArgProvider<T extends num>
+    extends $AsyncNotifierProvider<GenericArg<T>, String> {
+  const GenericArgProvider._(
+      {required GenericArgFamily super.from, required T super.argument})
+      : super(
+          retry: null,
+          name: r'genericArgProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$genericArgHash();
+
+  @override
+  String toString() {
+    return r'genericArgProvider'
+        '<${T}>'
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  GenericArg<T> create() => GenericArg<T>();
+
+  @$internal
+  @override
+  $AsyncNotifierProviderElement<GenericArg<T>, String> $createElement(
+          $ProviderPointer pointer) =>
+      $AsyncNotifierProviderElement(pointer);
+
+  $R _captureGenerics<$R>($R Function<T extends num>() cb) {
+    return cb<T>();
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is GenericArgProvider &&
+        other.runtimeType == runtimeType &&
+        other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return Object.hash(runtimeType, argument);
+  }
+}
+
+String _$genericArgHash() => r'26ad32d0efc4b0ee9da2d1a34fd7b9e3473f8520';
+
+final class GenericArgFamily extends $Family {
+  const GenericArgFamily._()
+      : super(
+          retry: null,
+          name: r'genericArgProvider',
+          dependencies: null,
+          allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  GenericArgProvider<T> call<T extends num>(
+    T arg,
+  ) =>
+      GenericArgProvider<T>._(argument: arg, from: this);
+
+  @override
+  String toString() => r'genericArgProvider';
+
+  /// {@macro riverpod.override_with}
+  Override overrideWith(GenericArg<T> Function<T extends num>() create) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as GenericArgProvider;
+            return provider._captureGenerics(<T extends num>() {
+              provider as GenericArgProvider<T>;
+              return provider.$view(create: create<T>).$createElement(pointer);
+            });
+          });
+
+  /// {@macro riverpod.override_with_build}
+  Override overrideWithBuild(
+          FutureOr<String> Function<T extends num>(
+                  Ref ref, GenericArg<T> notifier)
+              build) =>
+      $FamilyOverride(
+          from: this,
+          createElement: (pointer) {
+            final provider = pointer.origin as GenericArgProvider;
+            return provider._captureGenerics(<T extends num>() {
+              provider as GenericArgProvider<T>;
+              return provider
+                  .$view(runNotifierBuildOverride: build<T>)
+                  .$createElement(pointer);
+            });
+          });
+}
+
+abstract class _$GenericArg<T extends num> extends $AsyncNotifier<String> {
+  late final _$args = ref.$arg as T;
+  T get arg => _$args;
+
+  FutureOr<String> build(
+    T arg,
+  );
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build(
+      _$args,
+    );
+    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}
+
 @ProviderFor(public)
 const publicProvider = PublicProvider._();
 
@@ -325,7 +447,8 @@ final class FamilyOrProvider
 
 String _$familyOrHash() => r'97cce80a626e228202fa30b87c07ae8319b48023';
 
-final class FamilyOrFamily extends $Family {
+final class FamilyOrFamily extends $Family
+    with $FunctionalFamilyOverride<FutureOr<String>, int> {
   const FamilyOrFamily._()
       : super(
           retry: null,
@@ -342,22 +465,6 @@ final class FamilyOrFamily extends $Family {
 
   @override
   String toString() => r'familyOrProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          FutureOr<String> Function(
-            Ref ref,
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as FamilyOrProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 
 @ProviderFor(family)
@@ -431,7 +538,17 @@ final class FamilyProvider
 
 String _$familyHash() => r'1da6c928ee85a03729a1c147f33e018521bb9c89';
 
-final class FamilyFamily extends $Family {
+final class FamilyFamily extends $Family
+    with
+        $FunctionalFamilyOverride<
+            FutureOr<String>,
+            (
+              int, {
+              String? second,
+              double third,
+              bool fourth,
+              List<String>? fifth,
+            })> {
   const FamilyFamily._()
       : super(
           retry: null,
@@ -458,34 +575,6 @@ final class FamilyFamily extends $Family {
 
   @override
   String toString() => r'familyProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          FutureOr<String> Function(
-            Ref ref,
-            (
-              int, {
-              String? second,
-              double third,
-              bool fourth,
-              List<String>? fifth,
-            }) args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as FamilyProvider;
-            final argument = provider.argument as (
-              int, {
-              String? second,
-              double third,
-              bool fourth,
-              List<String>? fifth,
-            });
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 
 @ProviderFor(PublicClass)
@@ -626,7 +715,10 @@ final class FamilyOrClassProvider
 
 String _$familyOrClassHash() => r'b4882d4e79a03c63005d35eb7a021c9c4373a8d9';
 
-final class FamilyOrClassFamily extends $Family {
+final class FamilyOrClassFamily extends $Family
+    with
+        $ClassFamilyOverride<FamilyOrClass, AsyncValue<String>, String,
+            FutureOr<String>, int> {
   const FamilyOrClassFamily._()
       : super(
           retry: null,
@@ -643,38 +735,6 @@ final class FamilyOrClassFamily extends $Family {
 
   @override
   String toString() => r'familyOrClassProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          FamilyOrClass Function(
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as FamilyOrClassProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: () => create(argument))
-                .$createElement(pointer);
-          });
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-          FutureOr<String> Function(
-                  Ref ref, FamilyOrClass notifier, int argument)
-              build) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as FamilyOrClassProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(
-                    runNotifierBuildOverride: (ref, notifier) =>
-                        build(ref, notifier, argument))
-                .$createElement(pointer);
-          });
 }
 
 abstract class _$FamilyOrClass extends $AsyncNotifier<String> {
@@ -753,7 +813,20 @@ final class FamilyClassProvider
 
 String _$familyClassHash() => r'b7e3ca6091f12bbc99972e961acd885e05f42a15';
 
-final class FamilyClassFamily extends $Family {
+final class FamilyClassFamily extends $Family
+    with
+        $ClassFamilyOverride<
+            FamilyClass,
+            AsyncValue<String>,
+            String,
+            FutureOr<String>,
+            (
+              int, {
+              String? second,
+              double third,
+              bool fourth,
+              List<String>? fifth,
+            })> {
   const FamilyClassFamily._()
       : super(
           retry: null,
@@ -780,64 +853,6 @@ final class FamilyClassFamily extends $Family {
 
   @override
   String toString() => r'familyClassProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          FamilyClass Function(
-            (
-              int, {
-              String? second,
-              double third,
-              bool fourth,
-              List<String>? fifth,
-            }) args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as FamilyClassProvider;
-            final argument = provider.argument as (
-              int, {
-              String? second,
-              double third,
-              bool fourth,
-              List<String>? fifth,
-            });
-            return provider
-                .$view(create: () => create(argument))
-                .$createElement(pointer);
-          });
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-          FutureOr<String> Function(
-                  Ref ref,
-                  FamilyClass notifier,
-                  (
-                    int, {
-                    String? second,
-                    double third,
-                    bool fourth,
-                    List<String>? fifth,
-                  }) argument)
-              build) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as FamilyClassProvider;
-            final argument = provider.argument as (
-              int, {
-              String? second,
-              double third,
-              bool fourth,
-              List<String>? fifth,
-            });
-            return provider
-                .$view(
-                    runNotifierBuildOverride: (ref, notifier) =>
-                        build(ref, notifier, argument))
-                .$createElement(pointer);
-          });
 }
 
 abstract class _$FamilyClass extends $AsyncNotifier<String> {
@@ -973,26 +988,16 @@ final class Regression3490Family extends $Family {
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-          Regression3490<Model, Sort, Cursor> Function<Model, Sort, Cursor>(
-            ({
-              String type,
-              Regression3490Cb<Model, Sort, Cursor> getData,
-              String? parentId,
-            }) args,
-          ) create) =>
+          Regression3490<Model, Sort, Cursor> Function<Model, Sort, Cursor>()
+              create) =>
       $FamilyOverride(
           from: this,
           createElement: (pointer) {
             final provider = pointer.origin as Regression3490Provider;
             return provider._captureGenerics(<Model, Sort, Cursor>() {
               provider as Regression3490Provider<Model, Sort, Cursor>;
-              final argument = provider.argument as ({
-                String type,
-                Regression3490Cb<Model, Sort, Cursor> getData,
-                String? parentId,
-              });
               return provider
-                  .$view(create: () => create(argument))
+                  .$view(create: create<Model, Sort, Cursor>)
                   .$createElement(pointer);
             });
           });
@@ -1000,13 +1005,7 @@ final class Regression3490Family extends $Family {
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
           void Function<Model, Sort, Cursor>(
-                  Ref ref,
-                  Regression3490<Model, Sort, Cursor> notifier,
-                  ({
-                    String type,
-                    Regression3490Cb<Model, Sort, Cursor> getData,
-                    String? parentId,
-                  }) argument)
+                  Ref ref, Regression3490<Model, Sort, Cursor> notifier)
               build) =>
       $FamilyOverride(
           from: this,
@@ -1014,15 +1013,8 @@ final class Regression3490Family extends $Family {
             final provider = pointer.origin as Regression3490Provider;
             return provider._captureGenerics(<Model, Sort, Cursor>() {
               provider as Regression3490Provider<Model, Sort, Cursor>;
-              final argument = provider.argument as ({
-                String type,
-                Regression3490Cb<Model, Sort, Cursor> getData,
-                String? parentId,
-              });
               return provider
-                  .$view(
-                      runNotifierBuildOverride: (ref, notifier) =>
-                          build<Model, Sort, Cursor>(ref, notifier, argument))
+                  .$view(runNotifierBuildOverride: build<Model, Sort, Cursor>)
                   .$createElement(pointer);
             });
           });

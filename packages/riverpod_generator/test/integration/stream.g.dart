@@ -343,7 +343,17 @@ final class FamilyProvider
 
 String _$familyHash() => r'ba1df8eab0af0f3f71ae29d23ccb7a491d8e2825';
 
-final class FamilyFamily extends $Family {
+final class FamilyFamily extends $Family
+    with
+        $FunctionalFamilyOverride<
+            Stream<String>,
+            (
+              int, {
+              String? second,
+              double third,
+              bool fourth,
+              List<String>? fifth,
+            })> {
   const FamilyFamily._()
       : super(
           retry: null,
@@ -370,34 +380,6 @@ final class FamilyFamily extends $Family {
 
   @override
   String toString() => r'familyProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          Stream<String> Function(
-            Ref ref,
-            (
-              int, {
-              String? second,
-              double third,
-              bool fourth,
-              List<String>? fifth,
-            }) args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as FamilyProvider;
-            final argument = provider.argument as (
-              int, {
-              String? second,
-              double third,
-              bool fourth,
-              List<String>? fifth,
-            });
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 
 @ProviderFor(PublicClass)
@@ -546,7 +528,20 @@ final class FamilyClassProvider
 
 String _$familyClassHash() => r'6ec16ca23da8df4c010ecb5eed72e3e655504460';
 
-final class FamilyClassFamily extends $Family {
+final class FamilyClassFamily extends $Family
+    with
+        $ClassFamilyOverride<
+            FamilyClass,
+            AsyncValue<String>,
+            String,
+            Stream<String>,
+            (
+              int, {
+              String? second,
+              double third,
+              bool fourth,
+              List<String>? fifth,
+            })> {
   const FamilyClassFamily._()
       : super(
           retry: null,
@@ -573,64 +568,6 @@ final class FamilyClassFamily extends $Family {
 
   @override
   String toString() => r'familyClassProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          FamilyClass Function(
-            (
-              int, {
-              String? second,
-              double third,
-              bool fourth,
-              List<String>? fifth,
-            }) args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as FamilyClassProvider;
-            final argument = provider.argument as (
-              int, {
-              String? second,
-              double third,
-              bool fourth,
-              List<String>? fifth,
-            });
-            return provider
-                .$view(create: () => create(argument))
-                .$createElement(pointer);
-          });
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-          Stream<String> Function(
-                  Ref ref,
-                  FamilyClass notifier,
-                  (
-                    int, {
-                    String? second,
-                    double third,
-                    bool fourth,
-                    List<String>? fifth,
-                  }) argument)
-              build) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as FamilyClassProvider;
-            final argument = provider.argument as (
-              int, {
-              String? second,
-              double third,
-              bool fourth,
-              List<String>? fifth,
-            });
-            return provider
-                .$view(
-                    runNotifierBuildOverride: (ref, notifier) =>
-                        build(ref, notifier, argument))
-                .$createElement(pointer);
-          });
 }
 
 abstract class _$FamilyClass extends $StreamNotifier<String> {

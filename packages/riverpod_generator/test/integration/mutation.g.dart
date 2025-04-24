@@ -708,7 +708,8 @@ final class SimpleFamilyProvider extends $NotifierProvider<SimpleFamily, int> {
 
 String _$simpleFamilyHash() => r'5a1afef2fb83836b8cbdc48fda6975a9149d9f2d';
 
-final class SimpleFamilyFamily extends $Family {
+final class SimpleFamilyFamily extends $Family
+    with $ClassFamilyOverride<SimpleFamily, int, int, int, String> {
   const SimpleFamilyFamily._()
       : super(
           retry: null,
@@ -725,37 +726,6 @@ final class SimpleFamilyFamily extends $Family {
 
   @override
   String toString() => r'simpleFamilyProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          SimpleFamily Function(
-            String args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as SimpleFamilyProvider;
-            final argument = provider.argument as String;
-            return provider
-                .$view(create: () => create(argument))
-                .$createElement(pointer);
-          });
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-          int Function(Ref ref, SimpleFamily notifier, String argument)
-              build) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as SimpleFamilyProvider;
-            final argument = provider.argument as String;
-            return provider
-                .$view(
-                    runNotifierBuildOverride: (ref, notifier) =>
-                        build(ref, notifier, argument))
-                .$createElement(pointer);
-          });
 }
 
 abstract class _$SimpleFamily extends $Notifier<int> {
@@ -1139,7 +1109,10 @@ final class SimpleAsync2Provider
 
 String _$simpleAsync2Hash() => r'b2268a85a058e6f40c5bbfce8c20c9d285270967';
 
-final class SimpleAsync2Family extends $Family {
+final class SimpleAsync2Family extends $Family
+    with
+        $ClassFamilyOverride<SimpleAsync2, AsyncValue<int>, int, Stream<int>,
+            String> {
   const SimpleAsync2Family._()
       : super(
           retry: null,
@@ -1156,37 +1129,6 @@ final class SimpleAsync2Family extends $Family {
 
   @override
   String toString() => r'simpleAsync2Provider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          SimpleAsync2 Function(
-            String args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as SimpleAsync2Provider;
-            final argument = provider.argument as String;
-            return provider
-                .$view(create: () => create(argument))
-                .$createElement(pointer);
-          });
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-          Stream<int> Function(Ref ref, SimpleAsync2 notifier, String argument)
-              build) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as SimpleAsync2Provider;
-            final argument = provider.argument as String;
-            return provider
-                .$view(
-                    runNotifierBuildOverride: (ref, notifier) =>
-                        build(ref, notifier, argument))
-                .$createElement(pointer);
-          });
 }
 
 abstract class _$SimpleAsync2 extends $StreamNotifier<int> {

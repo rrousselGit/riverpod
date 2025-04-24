@@ -71,7 +71,14 @@ final class FetchPackagesProvider extends $FunctionalProvider<
 
 String _$fetchPackagesHash() => r'b52d4beb5d9ac53769d76ccd1d81bb005c66edd5';
 
-final class FetchPackagesFamily extends $Family {
+final class FetchPackagesFamily extends $Family
+    with
+        $FunctionalFamilyOverride<
+            FutureOr<List<Package>>,
+            ({
+              int page,
+              String search,
+            })> {
   const FetchPackagesFamily._()
       : super(
           retry: null,
@@ -92,28 +99,6 @@ final class FetchPackagesFamily extends $Family {
 
   @override
   String toString() => r'fetchPackagesProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          FutureOr<List<Package>> Function(
-            Ref ref,
-            ({
-              int page,
-              String search,
-            }) args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as FetchPackagesProvider;
-            final argument = provider.argument as ({
-              int page,
-              String search,
-            });
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

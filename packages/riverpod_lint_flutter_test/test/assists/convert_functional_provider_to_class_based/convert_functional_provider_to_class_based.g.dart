@@ -122,7 +122,14 @@ final class ExampleFamilyProvider extends $FunctionalProvider<int, int>
 String _$exampleFamilyHash() => r'70dfc6f4b2d7d251edbc3a66c3ac0f2c56aebf8b';
 
 /// Some comment
-final class ExampleFamilyFamily extends $Family {
+final class ExampleFamilyFamily extends $Family
+    with
+        $FunctionalFamilyOverride<
+            int,
+            ({
+              int a,
+              String b,
+            })> {
   const ExampleFamilyFamily._()
       : super(
           retry: null,
@@ -144,28 +151,6 @@ final class ExampleFamilyFamily extends $Family {
 
   @override
   String toString() => r'exampleFamilyProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          int Function(
-            Ref ref,
-            ({
-              int a,
-              String b,
-            }) args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as ExampleFamilyProvider;
-            final argument = provider.argument as ({
-              int a,
-              String b,
-            });
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

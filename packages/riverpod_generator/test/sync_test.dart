@@ -327,8 +327,8 @@ void main() {
     final container2 = ProviderContainer.test(
       overrides: [
         publicClassProvider.overrideWithBuild((ref, notifier) => 'Hello world'),
-        familyClassProvider.overrideWithBuild((ref, notifier, args) {
-          return 'FamilyClass$args';
+        familyClassProvider.overrideWithBuild((ref, notifier) {
+          return 'FamilyClass';
         }),
         familyClassProvider(21, third: .21).overrideWithBuild((ref, notifier) {
           return 'Override';
@@ -353,7 +353,7 @@ void main() {
     expect(container2.read(publicClassProvider), 'Hello world');
     expect(
       container2.read(familyClassProvider(42, third: .42)),
-      'FamilyClass(42, fifth: null, fourth: true, second: null, third: 0.42)',
+      'FamilyClass',
     );
     expect(
       container2.read(familyClassProvider(21, third: .21)),

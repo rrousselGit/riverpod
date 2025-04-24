@@ -136,7 +136,8 @@ final class FamilyWithDependencies2Provider
 String _$familyWithDependencies2Hash() =>
     r'd064c06ca5a85a62cbe2b47943e98fc2e858fb03';
 
-final class FamilyWithDependencies2Family extends $Family {
+final class FamilyWithDependencies2Family extends $Family
+    with $FunctionalFamilyOverride<int, int?> {
   const FamilyWithDependencies2Family._()
       : super(
           retry: null,
@@ -163,22 +164,6 @@ final class FamilyWithDependencies2Family extends $Family {
 
   @override
   String toString() => r'familyWithDependencies2Provider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          int Function(
-            Ref ref,
-            int? args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as FamilyWithDependencies2Provider;
-            final argument = provider.argument as int?;
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 
 @ProviderFor(NotifierWithDependencies)
@@ -321,7 +306,10 @@ final class NotifierFamilyWithDependenciesProvider
 String _$notifierFamilyWithDependenciesHash() =>
     r'b185ba93857cd028964c1412e748ee887dbd45c8';
 
-final class NotifierFamilyWithDependenciesFamily extends $Family {
+final class NotifierFamilyWithDependenciesFamily extends $Family
+    with
+        $ClassFamilyOverride<NotifierFamilyWithDependencies, int, int, int,
+            int?> {
   const NotifierFamilyWithDependenciesFamily._()
       : super(
           retry: null,
@@ -348,40 +336,6 @@ final class NotifierFamilyWithDependenciesFamily extends $Family {
 
   @override
   String toString() => r'notifierFamilyWithDependenciesProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          NotifierFamilyWithDependencies Function(
-            int? args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider =
-                pointer.origin as NotifierFamilyWithDependenciesProvider;
-            final argument = provider.argument as int?;
-            return provider
-                .$view(create: () => create(argument))
-                .$createElement(pointer);
-          });
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-          int Function(Ref ref, NotifierFamilyWithDependencies notifier,
-                  int? argument)
-              build) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider =
-                pointer.origin as NotifierFamilyWithDependenciesProvider;
-            final argument = provider.argument as int?;
-            return provider
-                .$view(
-                    runNotifierBuildOverride: (ref, notifier) =>
-                        build(ref, notifier, argument))
-                .$createElement(pointer);
-          });
 }
 
 abstract class _$NotifierFamilyWithDependencies extends $Notifier<int> {

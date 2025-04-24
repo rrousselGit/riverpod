@@ -66,7 +66,8 @@ final class GeneratorProvider extends $FunctionalProvider<int, int>
 
 String _$generatorHash() => r'd7d1733f8884b6702f363ddb178ae57797d0034f';
 
-final class GeneratorFamily extends $Family {
+final class GeneratorFamily extends $Family
+    with $FunctionalFamilyOverride<int, Object?> {
   const GeneratorFamily._()
       : super(
           retry: null,
@@ -83,22 +84,6 @@ final class GeneratorFamily extends $Family {
 
   @override
   String toString() => r'generatorProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          int Function(
-            Ref ref,
-            Object? args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as GeneratorProvider;
-            final argument = provider.argument;
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

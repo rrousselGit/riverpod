@@ -599,7 +599,8 @@ final class RawFamilyFutureProvider
 
 String _$rawFamilyFutureHash() => r'0ac70d7a2133691f1a9a38cedaeeb6b3bc667ade';
 
-final class RawFamilyFutureFamily extends $Family {
+final class RawFamilyFutureFamily extends $Family
+    with $FunctionalFamilyOverride<Raw<Future<String>>, int> {
   const RawFamilyFutureFamily._()
       : super(
           retry: null,
@@ -616,22 +617,6 @@ final class RawFamilyFutureFamily extends $Family {
 
   @override
   String toString() => r'rawFamilyFutureProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          Raw<Future<String>> Function(
-            Ref ref,
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as RawFamilyFutureProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 
 @ProviderFor(rawFamilyStream)
@@ -696,7 +681,8 @@ final class RawFamilyStreamProvider
 
 String _$rawFamilyStreamHash() => r'6eacfa3a3576d884099c08c298751a3d395271be';
 
-final class RawFamilyStreamFamily extends $Family {
+final class RawFamilyStreamFamily extends $Family
+    with $FunctionalFamilyOverride<Raw<Stream<String>>, int> {
   const RawFamilyStreamFamily._()
       : super(
           retry: null,
@@ -713,22 +699,6 @@ final class RawFamilyStreamFamily extends $Family {
 
   @override
   String toString() => r'rawFamilyStreamProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          Raw<Stream<String>> Function(
-            Ref ref,
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as RawFamilyStreamProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 
 @ProviderFor(RawFamilyFutureClass)
@@ -789,7 +759,10 @@ final class RawFamilyFutureClassProvider
 String _$rawFamilyFutureClassHash() =>
     r'd7cacb0f2c51697d107de6daa68b242c04085dca';
 
-final class RawFamilyFutureClassFamily extends $Family {
+final class RawFamilyFutureClassFamily extends $Family
+    with
+        $ClassFamilyOverride<RawFamilyFutureClass, Raw<Future<String>>,
+            Raw<Future<String>>, Raw<Future<String>>, int> {
   const RawFamilyFutureClassFamily._()
       : super(
           retry: null,
@@ -806,38 +779,6 @@ final class RawFamilyFutureClassFamily extends $Family {
 
   @override
   String toString() => r'rawFamilyFutureClassProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          RawFamilyFutureClass Function(
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as RawFamilyFutureClassProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: () => create(argument))
-                .$createElement(pointer);
-          });
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-          Raw<Future<String>> Function(
-                  Ref ref, RawFamilyFutureClass notifier, int argument)
-              build) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as RawFamilyFutureClassProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(
-                    runNotifierBuildOverride: (ref, notifier) =>
-                        build(ref, notifier, argument))
-                .$createElement(pointer);
-          });
 }
 
 abstract class _$RawFamilyFutureClass extends $Notifier<Raw<Future<String>>> {
@@ -921,7 +862,10 @@ final class RawFamilyStreamClassProvider
 String _$rawFamilyStreamClassHash() =>
     r'321796a0befc43fb83f7ccfdcb6b011fc8c7c599';
 
-final class RawFamilyStreamClassFamily extends $Family {
+final class RawFamilyStreamClassFamily extends $Family
+    with
+        $ClassFamilyOverride<RawFamilyStreamClass, Raw<Stream<String>>,
+            Raw<Stream<String>>, Raw<Stream<String>>, int> {
   const RawFamilyStreamClassFamily._()
       : super(
           retry: null,
@@ -938,38 +882,6 @@ final class RawFamilyStreamClassFamily extends $Family {
 
   @override
   String toString() => r'rawFamilyStreamClassProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          RawFamilyStreamClass Function(
-            int args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as RawFamilyStreamClassProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(create: () => create(argument))
-                .$createElement(pointer);
-          });
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-          Raw<Stream<String>> Function(
-                  Ref ref, RawFamilyStreamClass notifier, int argument)
-              build) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as RawFamilyStreamClassProvider;
-            final argument = provider.argument as int;
-            return provider
-                .$view(
-                    runNotifierBuildOverride: (ref, notifier) =>
-                        build(ref, notifier, argument))
-                .$createElement(pointer);
-          });
 }
 
 abstract class _$RawFamilyStreamClass extends $Notifier<Raw<Stream<String>>> {
@@ -1160,7 +1072,17 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
 String _$familyHash() => r'f58149448f80f10ec054f2f8a6f37bae61e38f49';
 
 /// This is some documentation
-final class FamilyFamily extends $Family {
+final class FamilyFamily extends $Family
+    with
+        $FunctionalFamilyOverride<
+            String,
+            (
+              int, {
+              String? second,
+              double third,
+              bool fourth,
+              List<String>? fifth,
+            })> {
   const FamilyFamily._()
       : super(
           retry: null,
@@ -1188,34 +1110,6 @@ final class FamilyFamily extends $Family {
 
   @override
   String toString() => r'familyProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          String Function(
-            Ref ref,
-            (
-              int, {
-              String? second,
-              double third,
-              bool fourth,
-              List<String>? fifth,
-            }) args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as FamilyProvider;
-            final argument = provider.argument as (
-              int, {
-              String? second,
-              double third,
-              bool fourth,
-              List<String>? fifth,
-            });
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 
 @ProviderFor(_private)
@@ -1433,7 +1327,20 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
 String _$familyClassHash() => r'f49696c6caf3cd8e3661369c43c4d61c4024fe93';
 
 /// This is some documentation
-final class FamilyClassFamily extends $Family {
+final class FamilyClassFamily extends $Family
+    with
+        $ClassFamilyOverride<
+            FamilyClass,
+            String,
+            String,
+            String,
+            (
+              int, {
+              String? second,
+              double third,
+              bool fourth,
+              List<String>? fifth,
+            })> {
   const FamilyClassFamily._()
       : super(
           retry: null,
@@ -1461,64 +1368,6 @@ final class FamilyClassFamily extends $Family {
 
   @override
   String toString() => r'familyClassProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          FamilyClass Function(
-            (
-              int, {
-              String? second,
-              double third,
-              bool fourth,
-              List<String>? fifth,
-            }) args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as FamilyClassProvider;
-            final argument = provider.argument as (
-              int, {
-              String? second,
-              double third,
-              bool fourth,
-              List<String>? fifth,
-            });
-            return provider
-                .$view(create: () => create(argument))
-                .$createElement(pointer);
-          });
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-          String Function(
-                  Ref ref,
-                  FamilyClass notifier,
-                  (
-                    int, {
-                    String? second,
-                    double third,
-                    bool fourth,
-                    List<String>? fifth,
-                  }) argument)
-              build) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as FamilyClassProvider;
-            final argument = provider.argument as (
-              int, {
-              String? second,
-              double third,
-              bool fourth,
-              List<String>? fifth,
-            });
-            return provider
-                .$view(
-                    runNotifierBuildOverride: (ref, notifier) =>
-                        build(ref, notifier, argument))
-                .$createElement(pointer);
-          });
 }
 
 abstract class _$FamilyClass extends $Notifier<String> {
@@ -2006,13 +1855,7 @@ final class Supports$InClassFamilyNameFamily extends $Family {
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-          Supports$InClassFamilyName<And$InT> Function<And$InT>(
-            (
-              And$InT, {
-              And$InT named$arg,
-              String defaultArg,
-            }) args,
-          ) create) =>
+          Supports$InClassFamilyName<And$InT> Function<And$InT>() create) =>
       $FamilyOverride(
           from: this,
           createElement: (pointer) {
@@ -2020,13 +1863,8 @@ final class Supports$InClassFamilyNameFamily extends $Family {
                 pointer.origin as Supports$InClassFamilyNameProvider;
             return provider._captureGenerics(<And$InT>() {
               provider as Supports$InClassFamilyNameProvider<And$InT>;
-              final argument = provider.argument as (
-                And$InT, {
-                And$InT named$arg,
-                String defaultArg,
-              });
               return provider
-                  .$view(create: () => create(argument))
+                  .$view(create: create<And$InT>)
                   .$createElement(pointer);
             });
           });
@@ -2034,13 +1872,7 @@ final class Supports$InClassFamilyNameFamily extends $Family {
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
           String Function<And$InT>(
-                  Ref ref,
-                  Supports$InClassFamilyName<And$InT> notifier,
-                  (
-                    And$InT, {
-                    And$InT named$arg,
-                    String defaultArg,
-                  }) argument)
+                  Ref ref, Supports$InClassFamilyName<And$InT> notifier)
               build) =>
       $FamilyOverride(
           from: this,
@@ -2049,15 +1881,8 @@ final class Supports$InClassFamilyNameFamily extends $Family {
                 pointer.origin as Supports$InClassFamilyNameProvider;
             return provider._captureGenerics(<And$InT>() {
               provider as Supports$InClassFamilyNameProvider<And$InT>;
-              final argument = provider.argument as (
-                And$InT, {
-                And$InT named$arg,
-                String defaultArg,
-              });
               return provider
-                  .$view(
-                      runNotifierBuildOverride: (ref, notifier) =>
-                          build<And$InT>(ref, notifier, argument))
+                  .$view(runNotifierBuildOverride: build<And$InT>)
                   .$createElement(pointer);
             });
           });
@@ -2194,7 +2019,8 @@ final class UnnecessaryCastProvider extends $FunctionalProvider<String, String>
 
 String _$unnecessaryCastHash() => r'c64330124f4b03a3e6757e787f62966a32bf83ad';
 
-final class UnnecessaryCastFamily extends $Family {
+final class UnnecessaryCastFamily extends $Family
+    with $FunctionalFamilyOverride<String, Object?> {
   const UnnecessaryCastFamily._()
       : super(
           retry: null,
@@ -2211,22 +2037,6 @@ final class UnnecessaryCastFamily extends $Family {
 
   @override
   String toString() => r'unnecessaryCastProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          String Function(
-            Ref ref,
-            Object? args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as UnnecessaryCastProvider;
-            final argument = provider.argument;
-            return provider
-                .$view(create: (ref) => create(ref, argument))
-                .$createElement(pointer);
-          });
 }
 
 @ProviderFor(UnnecessaryCastClass)
@@ -2287,7 +2097,10 @@ final class UnnecessaryCastClassProvider
 String _$unnecessaryCastClassHash() =>
     r'8cbf80b29c4edf7f5401e4447feca553e921e734';
 
-final class UnnecessaryCastClassFamily extends $Family {
+final class UnnecessaryCastClassFamily extends $Family
+    with
+        $ClassFamilyOverride<UnnecessaryCastClass, String, String, String,
+            Object?> {
   const UnnecessaryCastClassFamily._()
       : super(
           retry: null,
@@ -2304,38 +2117,6 @@ final class UnnecessaryCastClassFamily extends $Family {
 
   @override
   String toString() => r'unnecessaryCastClassProvider';
-
-  /// {@macro riverpod.override_with}
-  Override overrideWith(
-          UnnecessaryCastClass Function(
-            Object? args,
-          ) create) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as UnnecessaryCastClassProvider;
-            final argument = provider.argument;
-            return provider
-                .$view(create: () => create(argument))
-                .$createElement(pointer);
-          });
-
-  /// {@macro riverpod.override_with_build}
-  Override overrideWithBuild(
-          String Function(
-                  Ref ref, UnnecessaryCastClass notifier, Object? argument)
-              build) =>
-      $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as UnnecessaryCastClassProvider;
-            final argument = provider.argument;
-            return provider
-                .$view(
-                    runNotifierBuildOverride: (ref, notifier) =>
-                        build(ref, notifier, argument))
-                .$createElement(pointer);
-          });
 }
 
 abstract class _$UnnecessaryCastClass extends $Notifier<String> {
