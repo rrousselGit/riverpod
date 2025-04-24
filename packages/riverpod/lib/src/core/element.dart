@@ -53,6 +53,10 @@ abstract class ProviderElement<StateT> implements Node {
   /// {@macro riverpod.provider_element_base}
   ProviderElement(this.pointer);
 
+  static bool defaultUpdateShouldNotify(Object? previous, Object? next) {
+    return previous != next;
+  }
+
   static Duration? _defaultRetry(int retryCount, Object error) {
     return Duration(
       milliseconds: math.min(200 * math.pow(2, retryCount).toInt(), 6400),
@@ -209,7 +213,8 @@ This could mean a few things:
 
   /// Called when a provider is rebuilt. Used for providers to not notify their
   /// listeners if the exposed value did not change.
-  bool updateShouldNotify(StateT previous, StateT next);
+  bool updateShouldNotify(StateT previous, StateT next) =>
+      defaultUpdateShouldNotify(previous, next);
 
   /* /STATE */
 

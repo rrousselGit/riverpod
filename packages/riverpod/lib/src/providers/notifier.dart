@@ -26,7 +26,6 @@ abstract class $Notifier<StateT> extends $SyncNotifierBase<StateT> {
   /// It will also return null if [Notifier.build] threw.
   ///
   /// Invoking the setter will notify listeners if [updateShouldNotify] returns true.
-  /// By default, this will compare the previous and new value using [identical].
   ///
   /// Reading [stateOrNull] if the provider is out of date (such as if one of its
   /// dependency has changed) will trigger [Notifier.build] to be re-executed.
@@ -38,12 +37,6 @@ abstract class $Notifier<StateT> extends $SyncNotifierBase<StateT> {
 
     element.flush();
     return element.stateResult?.value;
-  }
-
-  @override
-  @visibleForOverriding
-  bool updateShouldNotify(StateT previous, StateT next) {
-    return !identical(previous, next);
   }
 }
 

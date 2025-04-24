@@ -80,18 +80,6 @@ mixin $AsyncClassModifier<StateT, CreatedT, ValueT>
     state = AsyncData<StateT>(newState);
     return newState;
   }
-
-  @override
-  @protected
-  bool updateShouldNotify(
-    AsyncValue<StateT> previous,
-    AsyncValue<StateT> next,
-  ) {
-    return FutureModifierElement.handleUpdateShouldNotify(
-      previous,
-      next,
-    );
-  }
 }
 
 /// Implementation detail for `riverpod_generator`.
@@ -189,19 +177,6 @@ mixin FutureModifierClassElement<
 /// `provider.future` + convert the object into an [AsyncValue].
 @internal
 mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
-  /// A default implementation for [ProviderElement.updateShouldNotify].
-  static bool handleUpdateShouldNotify<StateT>(
-    AsyncValue<StateT> previous,
-    AsyncValue<StateT> next,
-  ) {
-    final wasLoading = previous.isLoading;
-    final isLoading = next.isLoading;
-
-    if (wasLoading || isLoading) return wasLoading != isLoading;
-
-    return true;
-  }
-
   /// An observable for [FutureProvider.future].
   @internal
   final futureNotifier = $ElementLense<Future<StateT>>();

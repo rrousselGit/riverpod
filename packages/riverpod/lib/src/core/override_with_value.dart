@@ -78,11 +78,6 @@ class _ValueProviderElement<StateT> extends ProviderElement<StateT> {
 
     return null;
   }
-
-  @override
-  bool updateShouldNotify(StateT previous, StateT next) {
-    return true;
-  }
 }
 
 @internal

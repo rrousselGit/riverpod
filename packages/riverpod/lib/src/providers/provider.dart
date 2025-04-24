@@ -340,9 +340,7 @@ class $ProviderElement<StateT>
   }
 
   @override
-  bool updateShouldNotify(StateT previous, StateT next) {
-    return previous != next;
-  }
+  bool updateShouldNotify(StateT previous, StateT next) => previous != next;
 }
 
 /// The [Family] of [Provider]

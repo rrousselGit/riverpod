@@ -1,5 +1,9 @@
 ## Unreleased build
 
+- **Breaking**: All providers now use `==` to compare previous/new values and filter
+  updates.
+  If you want to revert to the old behavior, you can override `updateShouldNotify` inside
+  Notifiers.
 - Instead of `Provider.autoDispose()` and `Provider.autoDispose.family()`, it is now possible to write `Provider(isAutoDispose: true)` and `Provider.family(isAutoDispose: true)`.
 - **Breaking**: ProviderListenable.addListener is deleted and now internal-only.
   A simpler alternative will be added in the future.

@@ -30,6 +30,34 @@ void main() {
   });
 
   asyncNotifierProviderFactory.createGroup((factory) {
+    test('filters state update by == by default', () async {
+      final provider = factory.simpleTestProvider<Equal<int>>(
+        (ref, _) => Equal(42),
+      );
+      final container = ProviderContainer.test();
+      final listener = Listener<AsyncValue<Equal<int>>>();
+
+      container.listen(provider, listener.call);
+      clearInteractions(listener);
+
+      final notifier = container.read(provider.notifier);
+      final firstState = notifier.state;
+
+      // voluntarily assigning the same value
+      final self = notifier.state;
+      notifier.state = self;
+
+      verifyZeroInteractions(listener);
+
+      notifier.state = AsyncData(Equal(42));
+
+      verifyZeroInteractions(listener);
+
+      notifier.state = AsyncData(Equal(21));
+
+      verifyOnly(listener, listener(firstState, AsyncData(Equal(21))));
+    });
+
     if (factory.isFamily) {
       test('sets provider(arg) dependencies/allTransitiveDependencies to null',
           () {

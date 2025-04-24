@@ -1,6 +1,6 @@
 ---
 title: FAQ
-version: 1
+version: 2
 ---
 
 import { Link } from "/src/components/Link";
@@ -112,32 +112,6 @@ This is to respect good versioning practices.
 While you cannot use `hooks_riverpod` without `flutter_hooks`,
 both packages are versioned independently. A breaking change could happen
 in one but not the other.
-
-## Why does Riverpod use `identical` instead of `==` to filter updates in some cases?
-
-Notifiers use `identical` instead of `==` to filter updates.
-
-This is because it is quite common for Riverpod users to also use a code-generator
-such as Freezed/built_value for the sake of a copyWith implementation. Those packages
-override `==` to deeply compare objects. A deep object comparison is quite costly.
-"Business logic" models tend to have lots of properties. Worse, they also have collections
-such as lists, maps, and so on.
-
-At the same time, when using complex "business" objects, most `state = newState` invocations
-always result in a notification (otherwise there is no point in calling the setter). Generally, the main
-case where we call `state = newState` when the current state and new states are equal is
-for primitive objects (ints, enums, strings, but not lists/classes/...).
-These objects are "canonicalized by default". If such objects are equal,
-they generally are also "identical".
-
-Riverpod using `identical` to filter updates is therefore an attempt at having
-a good default for both worlds. For complex objects where we don't really care
-about filtering objects and where `==` may be expensive due to code-generators
-generating an `==` override by default, using `identical` provides an efficient way of notifying listeners.
-At the same time, for simple objects, `identical` does correctly filter redundant notifications.
-
-Last but not least, you can change this behavior by overriding the method
-`updateShouldNotify` on Notifiers.
 
 ## Is there a way to reset all providers at once?
 
