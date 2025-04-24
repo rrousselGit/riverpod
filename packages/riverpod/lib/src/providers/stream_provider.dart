@@ -82,7 +82,7 @@ base mixin $StreamProvider<StateT>
 /// - [StreamProvider.family], to create a [StreamProvider] from external parameters
 /// - [StreamProvider.autoDispose], to destroy the state of a [StreamProvider] when no longer needed.
 /// {@endtemplate}
-base class StreamProvider<StateT>
+final class StreamProvider<StateT>
     extends $FunctionalProvider<AsyncValue<StateT>, Stream<StateT>>
     with
         $FutureModifier<StateT>,

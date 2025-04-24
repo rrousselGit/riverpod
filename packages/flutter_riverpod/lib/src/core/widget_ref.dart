@@ -35,7 +35,7 @@ part of '../core.dart';
 /// interact with providers outside of the widget layer, consider using
 /// a [Ref] instead.
 /// {@endtemplate}
-abstract class WidgetRef {
+abstract final class WidgetRef {
   /// The [BuildContext] of the widget associated to this [WidgetRef].
   ///
   /// This is strictly identical to the [BuildContext] passed to [ConsumerWidget.build].

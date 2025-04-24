@@ -565,9 +565,8 @@ class ProviderPointerManager {
 /// Inside tests, consider using [ProviderContainer.test].
 /// This will automatically dispose the container at the end of the test.
 /// {@endtemplate}
-@sealed
 @publicInRiverpodAndCodegen
-class ProviderContainer implements Node {
+final class ProviderContainer implements Node {
   /// {@macro riverpod.provider_container}
   ProviderContainer({
     ProviderContainer? parent,
@@ -1057,7 +1056,7 @@ extension ProviderContainerTest on ProviderContainer {
 
 /// Information about the pending mutation, when [ProviderObserver] emits
 /// an event while a mutation is in progress.
-class MutationContext {
+final class MutationContext {
   @internal
   MutationContext(this.invocation, this.notifier);
 
@@ -1069,7 +1068,7 @@ class MutationContext {
 }
 
 /// Information about the [ProviderObserver] event.
-class ProviderObserverContext {
+final class ProviderObserverContext {
   @internal
   ProviderObserverContext(
     this.provider,

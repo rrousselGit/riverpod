@@ -14,7 +14,7 @@ import 'stream_provider.dart' show StreamProvider;
 base mixin $Provider<StateT> on $FunctionalProvider<StateT, StateT> {}
 
 /// {@macro riverpod.provider}
-base class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
+final class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
     with $Provider<StateT>, LegacyProviderMixin<StateT> {
   /// {@macro riverpod.provider}
   Provider(
