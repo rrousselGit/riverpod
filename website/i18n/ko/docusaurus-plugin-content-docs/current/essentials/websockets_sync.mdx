@@ -48,7 +48,7 @@ provider가 객체를 동기적으로 생성하면 객체가 소비되는 방식
   }}
 />
 
-이 차이로 인해 provice가 에러를 발생시키면 값을 읽으려고(read) 하면 에러가 다시 발생(rethrow)합니다.
+이 차이로 인해 provider 에러를 발생시키면 값을 읽으려고(read) 하면 에러가 다시 발생(rethrow)합니다.
 또는 `ref.listen`을 사용할 경우 "onError" 콜백이 호출됩니다.
 
 ### 수신 가능(Listenable) 객체 고려 사항
