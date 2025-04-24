@@ -1,6 +1,6 @@
 Message: `Specify "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:32`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:33`:
 ```
 
 // expect_lint: provider_dependencies
@@ -12,7 +12,7 @@ int watchGeneratedScopedButNoDependencies(
 ---
 Message: `Update "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:60`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:61`:
 ```
 
 // expect_lint: provider_dependencies
@@ -24,7 +24,7 @@ int watchGeneratedScopedButEmptyDependencies(
 ---
 Message: `Update "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:92`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:93`:
 ```
 
 // expect_lint: provider_dependencies
@@ -36,7 +36,7 @@ int watchGeneratedScopedButMissingDependencies(
 ---
 Message: `Remove "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:123`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:124`:
 ```
 }
 
@@ -55,7 +55,7 @@ int watchGeneratedRootAndContainsDependency(
 ---
 Message: `Update "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:142`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:143`:
 ```
     // generatedRoot is extra
     // expect_lint: provider_dependencies
@@ -69,7 +69,7 @@ int specifiedDependencyButNeverUsed(Ref ref) {
 ---
 Message: `Remove "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:224`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:225`:
 ```
 class MemberDependencies {
   // expect_lint: provider_dependencies
@@ -81,7 +81,7 @@ class MemberDependencies {
 ---
 Message: `Update "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:232`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:233`:
 ```
 class CanUpdateMultipleDependenciesAtOnce {
   // expect_lint: provider_dependencies
@@ -93,7 +93,7 @@ class CanUpdateMultipleDependenciesAtOnce {
 ---
 Message: `Update "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:229`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:230`:
 ```
 
 // expect_lint: provider_dependencies
@@ -105,7 +105,7 @@ class CanUpdateMultipleDependenciesAtOnce {
 ---
 Message: `Remove "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:252`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:253`:
 ```
 // Handle identifiers with dependencies
 // expect_lint: provider_dependencies
@@ -117,7 +117,7 @@ void fn() {}
 ---
 Message: `Specify "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:256`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:257`:
 ```
 
 // expect_lint: provider_dependencies
@@ -130,7 +130,7 @@ Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:256`:
 ---
 Message: `Specify "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:264`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:265`:
 ```
 
 // expect_lint: provider_dependencies
@@ -142,7 +142,7 @@ int foo(Ref ref) {
 ---
 Message: `Specify "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:281`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:282`:
 ```
 
 // expect_lint: provider_dependencies
@@ -155,7 +155,7 @@ Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:281`:
 ---
 Message: `Update "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:312`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:313`:
 ```
 
 // expect_lint: provider_dependencies
@@ -167,7 +167,7 @@ class Stateful2 extends StatefulWidget {
 ---
 Message: `Specify "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:328`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:329`:
 ```
 
 // expect_lint: provider_dependencies
@@ -180,7 +180,7 @@ Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:328`:
 ---
 Message: `Specify "dependencies"`
 Priority: 100
-Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:341`:
+Diff for file `test/lints/provider_dependencies/missing_dependencies2.dart:342`:
 ```
 
 // expect_lint: provider_dependencies
