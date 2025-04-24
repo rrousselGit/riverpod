@@ -97,7 +97,6 @@ mixin AnyNotifier<StateT> {
   /// The value currently exposed by this notifier.
   ///
   /// Invoking the setter will notify listeners if [updateShouldNotify] returns true.
-  /// By default, this will compare the previous and new value using [identical].
   ///
   /// Reading [state] if the provider is out of date (such as if one of its
   /// dependency has changed) will trigger [Notifier.build] to be re-executed.
@@ -123,30 +122,14 @@ mixin AnyNotifier<StateT> {
   /// It compares the previous and new value, and return whether listeners
   /// should be notified.
   ///
-  /// By default, the previous and new value are compared using [identical]
-  /// for performance reasons.
+  /// By default, the previous and new value are compared using [==].
   ///
-  /// Doing so ensured that doing:
-  ///
-  /// ```dart
-  /// state = 42;
-  /// state = 42;
-  /// ```
-  ///
-  /// does not notify listeners twice.
-  ///
-  /// But at the same time, for very complex objects with potentially dozens
-  /// if not hundreds of properties, Riverpod won't deeply compare every single
-  /// value.
-  ///
-  /// This ensures that the comparison stays efficient for the most common scenarios.
-  /// But it also means that listeners should be notified even if the
-  /// previous and new values are considered "equal".
-  ///
-  /// If you do not want that, you can override this method to perform a deep
-  /// comparison of the previous and new values.
+  /// You can override this method to provide a custom comparison logic,
+  /// such as using [identical] to use a more efficient comparison.
   @visibleForOverriding
-  bool updateShouldNotify(StateT previous, StateT next);
+  bool updateShouldNotify(StateT previous, StateT next) {
+    return ProviderElement.defaultUpdateShouldNotify(previous, next);
+  }
 
   /// Executes [Notifier.build].
   ///
@@ -544,7 +527,7 @@ abstract class $ClassProviderElement< //
   @override
   bool updateShouldNotify(StateT previous, StateT next) {
     return classListenable.result?.value?.updateShouldNotify(previous, next) ??
-        true;
+        super.updateShouldNotify(previous, next);
   }
 
   @override

@@ -162,16 +162,13 @@ class _ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
     setStateResult($ResultData(notifier));
 
     if (notifier != null) {
-      void listener() => setStateResult($ResultData(notifier));
+      void listener() => ref.notifyListeners();
       notifier.addListener(listener);
       _removeListener = () => notifier.removeListener(listener);
     }
 
     return null;
   }
-
-  @override
-  bool updateShouldNotify(NotifierT previous, NotifierT next) => true;
 
   @override
   void runOnDispose() {

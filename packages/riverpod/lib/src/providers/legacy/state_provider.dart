@@ -126,11 +126,6 @@ class _StateProviderElement<T> extends $FunctionalProviderElement<T, T> {
   }
 
   @override
-  bool updateShouldNotify(T previous, T next) {
-    return !identical(previous, next);
-  }
-
-  @override
   void runOnDispose() {
     super.runOnDispose();
 

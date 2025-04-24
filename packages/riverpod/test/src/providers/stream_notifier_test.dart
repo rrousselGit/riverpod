@@ -31,6 +31,35 @@ void main() {
   });
 
   streamNotifierProviderFactory.createGroup((factory) {
+    test('filters state update by == by default', () async {
+      final provider = factory.simpleTestProvider<Equal<int>>(
+        (ref, _) => Stream.value(Equal(42)),
+      );
+      final container = ProviderContainer.test();
+      final listener = Listener<AsyncValue<Equal<int>>>();
+
+      container.listen(provider, listener.call);
+      await container.read(provider.future);
+      clearInteractions(listener);
+
+      final notifier = container.read(provider.notifier);
+      final firstState = notifier.state;
+
+      // voluntarily assigning the same value
+      final self = notifier.state;
+      notifier.state = self;
+
+      verifyZeroInteractions(listener);
+
+      notifier.state = AsyncData(Equal(42));
+
+      verifyZeroInteractions(listener);
+
+      notifier.state = AsyncData(Equal(21));
+
+      verifyOnly(listener, listener(firstState, AsyncData(Equal(21))));
+    });
+
     test('closes the StreamSubscription upon disposing the provider', () async {
       final onCancel = OnCancelMock();
       final container = ProviderContainer.test();

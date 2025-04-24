@@ -25,6 +25,31 @@ void main() {
   });
 
   notifierProviderFactory.createGroup((factory) {
+    test('filters state update by == by default', () {
+      final provider =
+          factory.simpleTestProvider<Equal<int>>((ref, _) => Equal(42));
+      final container = ProviderContainer.test();
+      final listener = Listener<Equal<int>>();
+
+      container.listen(provider, listener.call);
+      final notifier = container.read(provider.notifier);
+      final firstState = notifier.state;
+
+      // voluntarily assigning the same value
+      final self = notifier.state;
+      notifier.state = self;
+
+      verifyZeroInteractions(listener);
+
+      final secondState = notifier.state = Equal(42);
+
+      verifyZeroInteractions(listener);
+
+      notifier.state = Equal(21);
+
+      verifyOnly(listener, listener(firstState, Equal(21)));
+    });
+
     test('Cannot share a Notifier instance between providers ', () {
       final container = ProviderContainer.test();
       final notifier = factory.deferredNotifier((ref, _) => 0);
@@ -484,27 +509,6 @@ void main() {
 
         verifyOnly(onError, onError(42, StackTrace.empty));
       });
-    });
-
-    test('filters state update by identical by default', () {
-      final provider =
-          factory.simpleTestProvider<Equal<int>>((ref, _) => Equal(42));
-      final container = ProviderContainer.test();
-      final listener = Listener<Equal<int>>();
-
-      container.listen(provider, listener.call);
-      final notifier = container.read(provider.notifier);
-      final firstState = notifier.state;
-
-      // voluntarily assigning the same value
-      final self = notifier.state;
-      notifier.state = self;
-
-      verifyZeroInteractions(listener);
-
-      final secondState = notifier.state = Equal(42);
-
-      verifyOnly(listener, listener(firstState, secondState));
     });
 
     test(
