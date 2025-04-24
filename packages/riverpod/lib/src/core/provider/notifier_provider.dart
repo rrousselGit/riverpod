@@ -123,7 +123,7 @@ mixin AnyNotifier<StateT> {
   /// should be notified.
   ///
   /// By default, the previous and new value are compared using [==].
-  /// 
+  ///
   /// You can override this method to provide a custom comparison logic,
   /// such as using [identical] to use a more efficient comparison.
   @visibleForOverriding
