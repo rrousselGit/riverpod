@@ -168,7 +168,8 @@ String shortHash(Object? object) {
 }
 
 @internal
-base mixin ProviderListenableWithOrigin<OutT, OriginT> on ProviderListenable<OutT> {
+base mixin ProviderListenableWithOrigin<OutT, OriginT>
+    on ProviderListenable<OutT> {
   @override
   ProviderSubscriptionWithOrigin<OutT, OriginT> _addListener(
     Node source,

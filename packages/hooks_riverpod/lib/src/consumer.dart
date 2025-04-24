@@ -17,7 +17,8 @@ abstract class HookConsumerWidget extends ConsumerWidget {
 }
 
 // ignore: invalid_use_of_internal_member
-final class _HookConsumerElement extends ConsumerStatefulElement with HookElement {
+final class _HookConsumerElement extends ConsumerStatefulElement
+    with HookElement {
   _HookConsumerElement(HookConsumerWidget super.widget);
 }
 

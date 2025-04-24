@@ -361,7 +361,8 @@ abstract class ConsumerState<T extends ConsumerStatefulWidget>
 
 /// The [Element] for a [ConsumerStatefulWidget]
 @internal
-base class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
+base class ConsumerStatefulElement extends StatefulElement
+    implements WidgetRef {
   /// The [Element] for a [ConsumerStatefulWidget]
   ConsumerStatefulElement(ConsumerStatefulWidget super.widget);
 
