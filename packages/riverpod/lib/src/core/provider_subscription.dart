@@ -8,7 +8,19 @@ part of '../framework.dart';
 sealed class ProviderSubscription<OutT> {
   /// Whether the subscription is closed.
   bool get closed;
+
+  /// Whether the subscription maintains the provider state.
+  ///
+  /// If false and [ProviderBase.isAutoDispose] is true, the provider
+  /// may still be disposed even if this subscription is active.
   bool get weak;
+
+  /// Whether the subscription is paused.
+  ///
+  /// {@template riverpod.pause}
+  /// Upon resuming the subscription, if any event was sent while paused,
+  /// the last event will be sent to the listener.
+  /// {@endtemplate}
   bool get isPaused;
 
   /// The object that listens to the associated [ProviderListenable].
@@ -17,7 +29,14 @@ sealed class ProviderSubscription<OutT> {
   /// but may be other values in the future.
   Node get source;
 
+  /// Pauses the subscription.
+  ///
+  /// {@macro riverpod.pause}
   void pause();
+
+  /// Resumes the subscription.
+  ///
+  /// {@macro riverpod.pause}
   void resume();
 
   /// Obtain the latest value emitted by the provider.

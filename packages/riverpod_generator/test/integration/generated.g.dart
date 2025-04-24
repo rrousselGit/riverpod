@@ -107,7 +107,7 @@ final class GeneratedFamilyProvider extends $FunctionalProvider<_Test, _Test>
 
 String _$generatedFamilyHash() => r'8ac3b633763cb8dbad6e0686a732df3a081a0d64';
 
-final class GeneratedFamilyFamily extends Family {
+final class GeneratedFamilyFamily extends $Family {
   const GeneratedFamilyFamily._()
       : super(
           retry: null,
@@ -184,7 +184,7 @@ String _$generatedClassHash() => r'984153f97e25de687d2f19756b277aabd56f6e72';
 
 abstract class _$GeneratedClass extends $Notifier<_Test> {
   _Test build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -253,7 +253,7 @@ final class GeneratedClassFamilyProvider
 String _$generatedClassFamilyHash() =>
     r'28d0a5a82af5b254f6ef07b492916e2feb7e6e63';
 
-final class GeneratedClassFamilyFamily extends Family {
+final class GeneratedClassFamilyFamily extends $Family {
   const GeneratedClassFamilyFamily._()
       : super(
           retry: null,
@@ -310,7 +310,7 @@ abstract class _$GeneratedClassFamily extends $Notifier<_Test> {
   _Test build(
     _Test test,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -424,7 +424,7 @@ final class $DynamicFamilyProvider extends $FunctionalProvider<Object?, Object?>
 
 String _$$dynamicFamilyHash() => r'6897846251c8b4b5b2fa72d8d3e14ae3381c0c0f';
 
-final class $DynamicFamilyFamily extends Family {
+final class $DynamicFamilyFamily extends $Family {
   const $DynamicFamilyFamily._()
       : super(
           retry: null,
@@ -501,7 +501,7 @@ String _$$dynamicClassHash() => r'c6d8e5191c3f060df3ce3eee66107433fd4c3292';
 
 abstract class _$$DynamicClass extends $Notifier<Object?> {
   Object? build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -570,7 +570,7 @@ final class $DynamicClassFamilyProvider
 String _$$dynamicClassFamilyHash() =>
     r'bdda961386f3b647c071d79293a8da441580c470';
 
-final class $DynamicClassFamilyFamily extends Family {
+final class $DynamicClassFamilyFamily extends $Family {
   const $DynamicClassFamilyFamily._()
       : super(
           retry: null,
@@ -628,7 +628,7 @@ abstract class _$$DynamicClassFamily extends $Notifier<Object?> {
   Object? build(
     dynamic test,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -701,7 +701,7 @@ final class _DynamicProvider extends $FunctionalProvider<Object?, Object?>
 
 String _$dynamicHash() => r'e08bd08481e4ea0d3da2ab7c38f940c34e96ba7f';
 
-final class _DynamicFamily extends Family {
+final class _DynamicFamily extends $Family {
   const _DynamicFamily._()
       : super(
           retry: null,
@@ -839,7 +839,7 @@ final class AliasFamilyProvider
 
 String _$aliasFamilyHash() => r'6afe0afc21cfd2f0f26862e9d8c1095eca5f6e42';
 
-final class AliasFamilyFamily extends Family {
+final class AliasFamilyFamily extends $Family {
   const AliasFamilyFamily._()
       : super(
           retry: null,
@@ -916,7 +916,7 @@ String _$aliasClassHash() => r'aac83936c14520c015f0fe8a0120d353c0baf602';
 
 abstract class _$AliasClass extends $Notifier<AsyncValue<int>> {
   AsyncValue<int> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -984,7 +984,7 @@ final class AliasClassFamilyProvider
 
 String _$aliasClassFamilyHash() => r'd4374c0ffbbca9d65fb967255129b3ceddaa764e';
 
-final class AliasClassFamilyFamily extends Family {
+final class AliasClassFamilyFamily extends $Family {
   const AliasClassFamilyFamily._()
       : super(
           retry: null,
@@ -1042,7 +1042,7 @@ abstract class _$AliasClassFamily extends $Notifier<AsyncValue<int>> {
   AsyncValue<int> build(
     AsyncValue<int> test,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(

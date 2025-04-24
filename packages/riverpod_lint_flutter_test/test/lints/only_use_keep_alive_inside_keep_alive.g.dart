@@ -88,7 +88,7 @@ String _$keepAliveClassHash() => r'e2fffa4d14837dfef71f6a2cc230b826b82541ea';
 
 abstract class _$KeepAliveClass extends $Notifier<int> {
   int build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -181,7 +181,7 @@ String _$autoDisposeClassHash() => r'5127ab94f7ab4ccf90deb3fca90d7a3c3c4c83f5';
 
 abstract class _$AutoDisposeClass extends $Notifier<int> {
   int build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();

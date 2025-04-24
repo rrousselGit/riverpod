@@ -84,8 +84,7 @@ typedef ConsumerBuilder = Widget Function(
 /// - [child], a way to optimize the widget tree by passing a child widget that
 ///   won't rebuild when the provider changes.
 /// {@endtemplate}
-@sealed
-class Consumer extends ConsumerWidget {
+final class Consumer extends ConsumerWidget {
   /// {@macro riverpod.consumer}
   const Consumer({super.key, required this.builder, this.child});
 
@@ -362,7 +361,8 @@ abstract class ConsumerState<T extends ConsumerStatefulWidget>
 
 /// The [Element] for a [ConsumerStatefulWidget]
 @internal
-class ConsumerStatefulElement extends StatefulElement implements WidgetRef {
+base class ConsumerStatefulElement extends StatefulElement
+    implements WidgetRef {
   /// The [Element] for a [ConsumerStatefulWidget]
   ConsumerStatefulElement(ConsumerStatefulWidget super.widget);
 

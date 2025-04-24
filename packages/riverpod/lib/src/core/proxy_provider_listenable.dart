@@ -2,7 +2,7 @@ part of '../framework.dart';
 
 @internal
 @publicInCodegen
-class $LazyProxyListenable<OutT, OriginT>
+final class $LazyProxyListenable<OutT, OriginT>
     with ProviderListenable<OutT>, ProviderListenableWithOrigin<OutT, OriginT> {
   $LazyProxyListenable(this.provider, this._lense);
 
@@ -72,7 +72,7 @@ class $LazyProxyListenable<OutT, OriginT>
 ///
 /// This API is not meant for public consumption.
 @internal
-class ProviderElementProxy<OutT, OriginT>
+final class ProviderElementProxy<OutT, OriginT>
     with
         ProviderListenable<OutT>,
         ProviderListenableWithOrigin<OutT, OriginT>,

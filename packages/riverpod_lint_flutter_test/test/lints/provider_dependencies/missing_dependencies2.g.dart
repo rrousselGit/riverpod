@@ -851,7 +851,7 @@ String _$classWatchGeneratedRootButMissingDependenciesHash() =>
 abstract class _$ClassWatchGeneratedRootButMissingDependencies
     extends $Notifier<int> {
   int build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -952,7 +952,7 @@ String _$regression2417Hash() => r'c9ac0ba44e849ea1460c79c1f676feba1b5400da';
 
 abstract class _$Regression2417 extends $Notifier<int> {
   int build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -1025,7 +1025,7 @@ final class FamilyDepProvider extends $FunctionalProvider<int, int>
 
 String _$familyDepHash() => r'ed674a44492b3871b72b4fbc68180ea0839723e5';
 
-final class FamilyDepFamily extends Family {
+final class FamilyDepFamily extends $Family {
   const FamilyDepFamily._()
       : super(
           retry: null,
@@ -1126,7 +1126,7 @@ final class FamilyDep2Provider extends $FunctionalProvider<int, int>
 
 String _$familyDep2Hash() => r'ee9c96f7a1d65e1b66c29aa8d8c030146995504c';
 
-final class FamilyDep2Family extends Family {
+final class FamilyDep2Family extends $Family {
   const FamilyDep2Family._()
       : super(
           retry: null,
@@ -1245,7 +1245,7 @@ String _$aliasClassHash() => r'f5c1f43e7541638274ca7dc334a713763c9c8071';
 
 abstract class _$AliasClass extends $Notifier<int> {
   int build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -1303,7 +1303,7 @@ String _$riverpodDependenciesHash() =>
 
 abstract class _$RiverpodDependencies extends $Notifier<int> {
   int build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();

@@ -16,8 +16,7 @@ import 'package:meta/meta.dart';
 import 'internals.dart';
 
 @internal
-@publicInMisc
-class ChangeNotifierProviderFamilyBuilder {
+final class ChangeNotifierProviderFamilyBuilder {
   const ChangeNotifierProviderFamilyBuilder();
 
   /// {@template riverpod.family}
@@ -300,8 +299,7 @@ class ChangeNotifierProviderFamilyBuilder {
 }
 
 @internal
-@publicInMisc
-class AutoDisposeChangeNotifierProviderBuilder {
+final class AutoDisposeChangeNotifierProviderBuilder {
   const AutoDisposeChangeNotifierProviderBuilder();
 
   /// {@macro riverpod.family}
@@ -326,8 +324,7 @@ class AutoDisposeChangeNotifierProviderBuilder {
 }
 
 @internal
-@publicInMisc
-class AutoDisposeChangeNotifierProviderFamilyBuilder {
+final class AutoDisposeChangeNotifierProviderFamilyBuilder {
   const AutoDisposeChangeNotifierProviderFamilyBuilder();
 
   /// {@macro riverpod.family}

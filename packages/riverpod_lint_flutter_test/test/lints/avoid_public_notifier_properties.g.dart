@@ -63,7 +63,7 @@ final class GeneratedNotifierProvider
 
 String _$generatedNotifierHash() => r'2b7f4fba816b6e8ccd0e8b7d11fcd207bbb79828';
 
-final class GeneratedNotifierFamily extends Family {
+final class GeneratedNotifierFamily extends $Family {
   const GeneratedNotifierFamily._()
       : super(
           retry: null,
@@ -120,7 +120,7 @@ abstract class _$GeneratedNotifier extends $Notifier<int> {
   int build(
     int param,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(

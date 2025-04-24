@@ -9,22 +9,61 @@ import 'package:meta/meta.dart';
 import '../common/internal_lints.dart';
 import '../framework.dart';
 
-class StorageOptions {
+/// {@template storage_options}
+/// Options to enable a [Storage] to persist state.
+///
+/// Those are passed to [Persistable.persist].
+/// {@endtemplate}
+final class StorageOptions {
+  /// {@macro storage_options}
   const StorageOptions({
     this.destroyKey,
     this.cacheTime = const StorageCacheTime(Duration(days: 2)),
   });
 
+  /// A key to forcibly destroy the associated state.
+  ///
+  /// The use-case for this option is to simplify database migration
+  /// when a provider changes its state in a breaking way.
+  ///
+  /// Instead of a complex database migration, an alternative is to change
+  /// the [destroyKey] of the provider before deploying the application.
+  /// When doing doing so, the old state will be destroyed, and a new fresh
+  /// state will be created.
+  ///
+  /// This key should be stable across application restarts.
+  /// It is highly recommended to use a constant value for this key.
   final String? destroyKey;
+
+  /// The time before the data expires.
+  ///
+  /// State that expired will be deleted from the database upon:
+  /// - application restart
+  /// - reading the provider after the expiration time
   final StorageCacheTime cacheTime;
 }
 
+/// A state representation of how the data is persisted.
+///
+/// This includes the data itself, along with various metadata that should
+/// also be persisted.
 @immutable
-class PersistedData<T> {
+final class PersistedData<T> {
+  /// A state representation of how the data is persisted.
+  ///
+  /// This includes the data itself, along with various metadata that should
+  /// also be persisted.
   const PersistedData(this.data, {this.destroyKey, this.expireAt});
 
+  /// The persisted data.
   final T data;
+
+  /// The key passed to [StorageOptions.destroyKey].
   final String? destroyKey;
+
+  /// The date at which the data expires.
+  ///
+  /// This is based off the [StorageOptions.cacheTime].
   final DateTime? expireAt;
 
   @override
@@ -109,7 +148,21 @@ class _InMemoryPersist<KeyT, EncodedT> implements Storage<KeyT, EncodedT> {
   FutureOr<void> delete(KeyT key) => state.remove(key);
 }
 
-class StorageCacheTime {
+/// {@template storage_cache_time}
+/// A cache time that will be used to determine when the data should be
+/// deleted.
+///
+/// It is discouraged to "forever persist" state, as this can lead to
+/// a form of memory leak.
+/// If a provider was to be persisted forever then deleted from the application's
+/// source code, the data would still be present in the database of existing
+/// users.
+///
+/// If you want to forever persist state, you will have to manually deal with
+/// database migration to gracefully handle those edge-cases.
+/// {@endtemplate}
+final class StorageCacheTime {
+  /// {@macro storage_cache_time}
   const StorageCacheTime(Duration this.duration);
   const StorageCacheTime._(this.duration);
 

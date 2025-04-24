@@ -12,7 +12,7 @@ export './src/internal.dart'
         $ClassProviderElement,
         // General stuff
         ProviderContainer,
-        Family,
+        $Family,
         ProviderOrFamily,
         Override,
         $FamilyOverride,
@@ -77,3 +77,7 @@ export './src/internal.dart'
 /// An implementation detail of `riverpod_generator`.
 /// Do not use.
 const $internal = meta.internal;
+
+/// An implementation detail of `riverpod_generator`.
+/// Do not use.
+const $mustCallSuper = meta.mustCallSuper;

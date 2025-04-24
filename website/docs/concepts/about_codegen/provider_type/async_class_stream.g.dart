@@ -41,7 +41,7 @@ String _$exampleHash() => r'4bca936132b77a9a804549f086f33571724b4804';
 
 abstract class _$Example extends $StreamNotifier<String> {
   Stream<String> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();

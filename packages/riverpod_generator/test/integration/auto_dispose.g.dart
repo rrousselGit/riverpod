@@ -186,7 +186,7 @@ final class KeepAliveFamilyProvider extends $FunctionalProvider<int, int>
 
 String _$keepAliveFamilyHash() => r'd1eb1243ea9463617b08a6e9cc5ae6b2df499ba2';
 
-final class KeepAliveFamilyFamily extends Family {
+final class KeepAliveFamilyFamily extends $Family {
   const KeepAliveFamilyFamily._()
       : super(
           retry: null,
@@ -283,7 +283,7 @@ final class NotKeepAliveFamilyProvider extends $FunctionalProvider<int, int>
 String _$notKeepAliveFamilyHash() =>
     r'a721713b026088b65be6c0f7f9beb1083a377a7c';
 
-final class NotKeepAliveFamilyFamily extends Family {
+final class NotKeepAliveFamilyFamily extends $Family {
   const NotKeepAliveFamilyFamily._()
       : super(
           retry: null,
@@ -381,7 +381,7 @@ final class DefaultKeepAliveFamilyProvider extends $FunctionalProvider<int, int>
 String _$defaultKeepAliveFamilyHash() =>
     r'e79f3d9ccd6713aade34c1701699c578f9236e9e';
 
-final class DefaultKeepAliveFamilyFamily extends Family {
+final class DefaultKeepAliveFamilyFamily extends $Family {
   const DefaultKeepAliveFamilyFamily._()
       : super(
           retry: null,

@@ -100,7 +100,7 @@ final class BugsEncounteredNotifierProvider
 String _$bugsEncounteredNotifierHash() =>
     r'c76e924f84db91c57d226896b062d9f4e8ab79e5';
 
-final class BugsEncounteredNotifierFamily extends Family {
+final class BugsEncounteredNotifierFamily extends $Family {
   const BugsEncounteredNotifierFamily._()
       : super(
           retry: null,
@@ -158,7 +158,7 @@ abstract class _$BugsEncounteredNotifier extends $AsyncNotifier<int> {
   FutureOr<int> build(
     String featureId,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(

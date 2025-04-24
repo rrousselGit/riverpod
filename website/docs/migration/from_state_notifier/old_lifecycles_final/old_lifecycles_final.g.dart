@@ -129,7 +129,7 @@ String _$myNotifierHash() => r'8ea2586ea29d12306efd4b8b847142136dd20338';
 
 abstract class _$MyNotifier extends $Notifier<int> {
   int build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();

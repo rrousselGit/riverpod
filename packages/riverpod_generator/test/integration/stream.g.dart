@@ -61,7 +61,7 @@ final class GenericProvider<T extends num>
 
 String _$genericHash() => r'eaaf15c08df1aba30b6d6e70d67622d669df977f';
 
-final class GenericFamily extends Family {
+final class GenericFamily extends $Family {
   const GenericFamily._()
       : super(
           retry: null,
@@ -144,7 +144,7 @@ final class GenericClassProvider<T extends num>
 
 String _$genericClassHash() => r'401ae1cfd97a4291dfd135a69ff8e1c436866e5a';
 
-final class GenericClassFamily extends Family {
+final class GenericClassFamily extends $Family {
   const GenericClassFamily._()
       : super(
           retry: null,
@@ -192,7 +192,7 @@ final class GenericClassFamily extends Family {
 
 abstract class _$GenericClass<T extends num> extends $StreamNotifier<List<T>> {
   Stream<List<T>> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -343,7 +343,7 @@ final class FamilyProvider
 
 String _$familyHash() => r'ba1df8eab0af0f3f71ae29d23ccb7a491d8e2825';
 
-final class FamilyFamily extends Family {
+final class FamilyFamily extends $Family {
   const FamilyFamily._()
       : super(
           retry: null,
@@ -434,7 +434,7 @@ String _$publicClassHash() => r'b1526943c8ff0aaa20642bf78e744e5833cf9d02';
 
 abstract class _$PublicClass extends $StreamNotifier<String> {
   Stream<String> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -479,7 +479,7 @@ String _$privateClassHash() => r'8c0d52b7ab79c0546d0c84c011bb3512609e029e';
 
 abstract class _$PrivateClass extends $StreamNotifier<String> {
   Stream<String> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -546,7 +546,7 @@ final class FamilyClassProvider
 
 String _$familyClassHash() => r'6ec16ca23da8df4c010ecb5eed72e3e655504460';
 
-final class FamilyClassFamily extends Family {
+final class FamilyClassFamily extends $Family {
   const FamilyClassFamily._()
       : super(
           retry: null,
@@ -654,7 +654,7 @@ abstract class _$FamilyClass extends $StreamNotifier<String> {
     bool fourth = true,
     List<String>? fifth,
   });
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(

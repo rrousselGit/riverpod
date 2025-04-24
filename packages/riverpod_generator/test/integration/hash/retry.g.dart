@@ -105,7 +105,7 @@ final class BProvider extends $FunctionalProvider<String, String>
 
 String _$bHash() => r'95798a157250c86a901bca5701b487f508f8a5a4';
 
-final class BFamily extends Family {
+final class BFamily extends $Family {
   const BFamily._()
       : super(
           retry: myRetry2,

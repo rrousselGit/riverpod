@@ -68,7 +68,7 @@ final class GenericProvider<T extends num>
 
 String _$genericHash() => r'4a2a38e246fc4ef25c46d93477010b66de01ff30';
 
-final class GenericFamily extends Family {
+final class GenericFamily extends $Family {
   const GenericFamily._()
       : super(
           retry: null,
@@ -172,7 +172,7 @@ final class ComplexGenericProvider<T extends num, Foo extends String?>
 
 String _$complexGenericHash() => r'bc3433c913396a238e833722a2dc3a78bdf844a4';
 
-final class ComplexGenericFamily extends Family {
+final class ComplexGenericFamily extends $Family {
   const ComplexGenericFamily._()
       : super(
           retry: null,
@@ -283,7 +283,7 @@ final class GenericClassProvider<T extends num>
 
 String _$genericClassHash() => r'fc46bb737f8812a28db6435d3605e8ac491f23d0';
 
-final class GenericClassFamily extends Family {
+final class GenericClassFamily extends $Family {
   const GenericClassFamily._()
       : super(
           retry: null,
@@ -330,7 +330,7 @@ final class GenericClassFamily extends Family {
 
 abstract class _$GenericClass<T extends num> extends $Notifier<List<T>> {
   List<T> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -467,7 +467,7 @@ String _$rawFutureClassHash() => r'bf66f1cdbd99118b8845d206e6a2611b3101f45c';
 
 abstract class _$RawFutureClass extends $Notifier<Raw<Future<String>>> {
   Raw<Future<String>> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -523,7 +523,7 @@ String _$rawStreamClassHash() => r'712cffcb2018cfb4ff45012c1aa6e43c8cbe9d5d';
 
 abstract class _$RawStreamClass extends $Notifier<Raw<Stream<String>>> {
   Raw<Stream<String>> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -599,7 +599,7 @@ final class RawFamilyFutureProvider
 
 String _$rawFamilyFutureHash() => r'0ac70d7a2133691f1a9a38cedaeeb6b3bc667ade';
 
-final class RawFamilyFutureFamily extends Family {
+final class RawFamilyFutureFamily extends $Family {
   const RawFamilyFutureFamily._()
       : super(
           retry: null,
@@ -696,7 +696,7 @@ final class RawFamilyStreamProvider
 
 String _$rawFamilyStreamHash() => r'6eacfa3a3576d884099c08c298751a3d395271be';
 
-final class RawFamilyStreamFamily extends Family {
+final class RawFamilyStreamFamily extends $Family {
   const RawFamilyStreamFamily._()
       : super(
           retry: null,
@@ -789,7 +789,7 @@ final class RawFamilyFutureClassProvider
 String _$rawFamilyFutureClassHash() =>
     r'd7cacb0f2c51697d107de6daa68b242c04085dca';
 
-final class RawFamilyFutureClassFamily extends Family {
+final class RawFamilyFutureClassFamily extends $Family {
   const RawFamilyFutureClassFamily._()
       : super(
           retry: null,
@@ -847,7 +847,7 @@ abstract class _$RawFamilyFutureClass extends $Notifier<Raw<Future<String>>> {
   Raw<Future<String>> build(
     int id,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -921,7 +921,7 @@ final class RawFamilyStreamClassProvider
 String _$rawFamilyStreamClassHash() =>
     r'321796a0befc43fb83f7ccfdcb6b011fc8c7c599';
 
-final class RawFamilyStreamClassFamily extends Family {
+final class RawFamilyStreamClassFamily extends $Family {
   const RawFamilyStreamClassFamily._()
       : super(
           retry: null,
@@ -979,7 +979,7 @@ abstract class _$RawFamilyStreamClass extends $Notifier<Raw<Stream<String>>> {
   Raw<Stream<String>> build(
     int id,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -1160,7 +1160,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
 String _$familyHash() => r'f58149448f80f10ec054f2f8a6f37bae61e38f49';
 
 /// This is some documentation
-final class FamilyFamily extends Family {
+final class FamilyFamily extends $Family {
   const FamilyFamily._()
       : super(
           retry: null,
@@ -1302,7 +1302,7 @@ String _$publicClassHash() => r'92fd83ba5c01942344a9fa94e170629da3588946';
 
 abstract class _$PublicClass extends $Notifier<String> {
   String build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -1355,7 +1355,7 @@ String _$privateClassHash() => r'be63bcdd570d32ecebb62262f4f04215ea0b3ab2';
 
 abstract class _$PrivateClass extends $Notifier<String> {
   String build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -1433,7 +1433,7 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
 String _$familyClassHash() => r'f49696c6caf3cd8e3661369c43c4d61c4024fe93';
 
 /// This is some documentation
-final class FamilyClassFamily extends Family {
+final class FamilyClassFamily extends $Family {
   const FamilyClassFamily._()
       : super(
           retry: null,
@@ -1542,7 +1542,7 @@ abstract class _$FamilyClass extends $Notifier<String> {
     bool fourth = true,
     List<String>? fifth,
   });
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -1622,7 +1622,7 @@ final class Supports$InFnNameProvider<And$InT>
 
 String _$supports$InFnNameHash() => r'09636911da6a98293c260aad55b89bea5296136b';
 
-final class Supports$InFnNameFamily extends Family {
+final class Supports$InFnNameFamily extends $Family {
   const Supports$InFnNameFamily._()
       : super(
           retry: null,
@@ -1732,7 +1732,7 @@ final class Supports$InFnNameFamilyProvider<And$InT>
 String _$supports$InFnNameFamilyHash() =>
     r'3124634e8535d4db655d6384b0827f0f195a75ef';
 
-final class Supports$InFnNameFamilyFamily extends Family {
+final class Supports$InFnNameFamilyFamily extends $Family {
   const Supports$InFnNameFamilyFamily._()
       : super(
           retry: null,
@@ -1848,7 +1848,7 @@ final class Supports$InClassNameProvider<And$InT>
 String _$supports$InClassNameHash() =>
     r'79073b0c9b8588ef04125e8e54ce03b5740a7d59';
 
-final class Supports$InClassNameFamily extends Family {
+final class Supports$InClassNameFamily extends $Family {
   const Supports$InClassNameFamily._()
       : super(
           retry: null,
@@ -1899,7 +1899,7 @@ final class Supports$InClassNameFamily extends Family {
 
 abstract class _$Supports$InClassName<And$InT> extends $Notifier<String> {
   String build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -1980,7 +1980,7 @@ final class Supports$InClassFamilyNameProvider<And$InT>
 String _$supports$InClassFamilyNameHash() =>
     r'39e844561e4f4727011bb2f97169d0334c928b20';
 
-final class Supports$InClassFamilyNameFamily extends Family {
+final class Supports$InClassFamilyNameFamily extends $Family {
   const Supports$InClassFamilyNameFamily._()
       : super(
           retry: null,
@@ -2078,7 +2078,7 @@ abstract class _$Supports$InClassFamilyName<And$InT> extends $Notifier<String> {
     required And$InT named$arg,
     String defaultArg = default$value,
   });
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -2194,7 +2194,7 @@ final class UnnecessaryCastProvider extends $FunctionalProvider<String, String>
 
 String _$unnecessaryCastHash() => r'c64330124f4b03a3e6757e787f62966a32bf83ad';
 
-final class UnnecessaryCastFamily extends Family {
+final class UnnecessaryCastFamily extends $Family {
   const UnnecessaryCastFamily._()
       : super(
           retry: null,
@@ -2287,7 +2287,7 @@ final class UnnecessaryCastClassProvider
 String _$unnecessaryCastClassHash() =>
     r'8cbf80b29c4edf7f5401e4447feca553e921e734';
 
-final class UnnecessaryCastClassFamily extends Family {
+final class UnnecessaryCastClassFamily extends $Family {
   const UnnecessaryCastClassFamily._()
       : super(
           retry: null,
@@ -2345,7 +2345,7 @@ abstract class _$UnnecessaryCastClass extends $Notifier<String> {
   String build(
     Object? arg,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -2419,7 +2419,7 @@ final class ManyDataStreamProvider<T extends Object, S extends Object>
 
 String _$manyDataStreamHash() => r'5f389757cba176868a47b89b14b1f96afe20d728';
 
-final class ManyDataStreamFamily extends Family {
+final class ManyDataStreamFamily extends $Family {
   const ManyDataStreamFamily._()
       : super(
           retry: null,

@@ -103,6 +103,7 @@ class _TenableFromFuture<T> extends Tenable<T> {
   }
 }
 
+@internal
 extension OrX<T> on FutureOr<T> {
   FutureOr<R> then<R>(
     FutureOr<R> Function(T value) cb,

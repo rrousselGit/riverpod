@@ -33,7 +33,7 @@ abstract class AsyncNotifier<StateT> extends $AsyncNotifier<StateT> {
   @visibleForOverriding
   FutureOr<StateT> build();
 
-  @internal
+  @mustCallSuper
   @override
   void runBuild() {
     final created = build();

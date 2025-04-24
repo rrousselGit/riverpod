@@ -68,7 +68,7 @@ final class LabelProvider extends $FunctionalProvider<String, String>
 
 String _$labelHash() => r'c53d17dd111313633bd7ca6d6cf6b48dded58ca5';
 
-final class LabelFamily extends Family {
+final class LabelFamily extends $Family {
   const LabelFamily._()
       : super(
           retry: null,

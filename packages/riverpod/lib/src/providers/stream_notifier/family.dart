@@ -22,7 +22,7 @@ abstract class FamilyStreamNotifier<StateT, ArgT>
   @visibleForOverriding
   Stream<StateT> build(ArgT arg);
 
-  @internal
+  @mustCallSuper
   @override
   void runBuild() {
     final created = build(arg);
@@ -30,6 +30,7 @@ abstract class FamilyStreamNotifier<StateT, ArgT>
   }
 }
 
+/// An implementation detail of Riverpod
 @publicInMisc
 final class FamilyStreamNotifierProvider< //
         NotifierT extends FamilyStreamNotifier<StateT, ArgT>,

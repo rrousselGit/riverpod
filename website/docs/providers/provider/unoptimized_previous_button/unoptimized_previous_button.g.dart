@@ -49,7 +49,7 @@ String _$pageIndexHash() => r'59307ecf23b5b2432833da5ad6b312bf36435d0e';
 
 abstract class _$PageIndex extends $Notifier<int> {
   int build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();

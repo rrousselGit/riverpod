@@ -235,6 +235,7 @@ class ProviderDirectory implements _PointerBase {
   }
 }
 
+/// A function that returns a duration to wait before retrying a failed
 @internal
 typedef Retry = Duration? Function(int retryCount, Object error);
 
@@ -565,9 +566,8 @@ class ProviderPointerManager {
 /// Inside tests, consider using [ProviderContainer.test].
 /// This will automatically dispose the container at the end of the test.
 /// {@endtemplate}
-@sealed
 @publicInRiverpodAndCodegen
-class ProviderContainer implements Node {
+final class ProviderContainer implements Node {
   /// {@macro riverpod.provider_container}
   ProviderContainer({
     ProviderContainer? parent,
@@ -1057,7 +1057,9 @@ extension ProviderContainerTest on ProviderContainer {
 
 /// Information about the pending mutation, when [ProviderObserver] emits
 /// an event while a mutation is in progress.
-class MutationContext {
+final class MutationContext {
+  /// Information about the pending mutation, when [ProviderObserver] emits
+  /// an event while a mutation is in progress.
   @internal
   MutationContext(this.invocation, this.notifier);
 
@@ -1069,7 +1071,8 @@ class MutationContext {
 }
 
 /// Information about the [ProviderObserver] event.
-class ProviderObserverContext {
+final class ProviderObserverContext {
+  /// Information about the [ProviderObserver] event.
   @internal
   ProviderObserverContext(
     this.provider,

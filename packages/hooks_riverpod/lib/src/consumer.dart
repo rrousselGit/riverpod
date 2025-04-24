@@ -17,13 +17,14 @@ abstract class HookConsumerWidget extends ConsumerWidget {
 }
 
 // ignore: invalid_use_of_internal_member
-class _HookConsumerElement extends ConsumerStatefulElement with HookElement {
+final class _HookConsumerElement extends ConsumerStatefulElement
+    with HookElement {
   _HookConsumerElement(HookConsumerWidget super.widget);
 }
 
 /// {@macro hooks_riverpod.hook_consumer.hook_consumer_widget}
 
-class HookConsumer extends HookConsumerWidget {
+final class HookConsumer extends HookConsumerWidget {
   /// {@macro hooks_riverpod.hook_consumer.hook_consumer_widget}
   const HookConsumer({super.key, required this.builder, this.child});
 
@@ -57,7 +58,7 @@ abstract class StatefulHookConsumerWidget extends ConsumerStatefulWidget {
 }
 
 // ignore: invalid_use_of_internal_member
-class _StatefulHookConsumerElement extends ConsumerStatefulElement
+final class _StatefulHookConsumerElement extends ConsumerStatefulElement
     with
 // ignore: invalid_use_of_visible_for_testing_member
         HookElement {

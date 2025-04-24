@@ -75,7 +75,7 @@ final class FnProvider extends $FunctionalProvider<int, int>
 
 String _$fnHash() => r'8a726da6104b38a55782e44062757e6771b19de3';
 
-final class FnFamily extends Family {
+final class FnFamily extends $Family {
   const FnFamily._()
       : super(
           retry: null,
@@ -180,7 +180,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
 
 String _$myNotifierHash() => r'04a0cf33dbda80e3fa80748fe46546b1c968da22';
 
-final class MyNotifierFamily extends Family {
+final class MyNotifierFamily extends $Family {
   const MyNotifierFamily._()
       : super(
           retry: null,
@@ -262,7 +262,7 @@ abstract class _$MyNotifier extends $Notifier<int> {
     BuildContext context1, {
     required BuildContext context2,
   });
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -318,7 +318,7 @@ String _$regression2959Hash() => r'e58855125577a855d642da1ef85f35178ad95afd';
 
 abstract class _$Regression2959 extends $Notifier<void> {
   void build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     build();

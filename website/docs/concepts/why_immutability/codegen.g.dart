@@ -50,7 +50,7 @@ String _$themeNotifierHash() => r'e119d56d9bf8b8d7c19624997f99d116098b45e9';
 
 abstract class _$ThemeNotifier extends $Notifier<ThemeSettings> {
   ThemeSettings build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();

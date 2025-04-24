@@ -108,7 +108,7 @@ final class GenericsProvider<A extends num, B>
 
 String _$genericsHash() => r'dddbd6460e73b1f20343bbadee6666311c5ac0ea';
 
-final class GenericsFamily extends Family {
+final class GenericsFamily extends $Family {
   const GenericsFamily._()
       : super(
           retry: null,

@@ -49,7 +49,7 @@ String _$countHash() => r'6fc5f8ad4bbd390899dd0d14c7b902407d4413bd';
 
 abstract class _$Count extends $Notifier<int> {
   int build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();

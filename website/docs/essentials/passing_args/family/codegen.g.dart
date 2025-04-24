@@ -61,7 +61,7 @@ final class ActivityProvider
 
 String _$activityHash() => r'6c815736c0d2b40a92695adcd78516534d7ac2fc';
 
-final class ActivityFamily extends Family {
+final class ActivityFamily extends $Family {
   const ActivityFamily._()
       : super(
           retry: null,
@@ -145,7 +145,7 @@ final class ActivityNotifier2Provider
 
 String _$activityNotifier2Hash() => r'9e67c655d53a9f98c3b012a0534421385dde0339';
 
-final class ActivityNotifier2Family extends Family {
+final class ActivityNotifier2Family extends $Family {
   const ActivityNotifier2Family._()
       : super(
           retry: null,
@@ -203,7 +203,7 @@ abstract class _$ActivityNotifier2 extends $AsyncNotifier<Activity> {
   FutureOr<Activity> build(
     String activityType,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(

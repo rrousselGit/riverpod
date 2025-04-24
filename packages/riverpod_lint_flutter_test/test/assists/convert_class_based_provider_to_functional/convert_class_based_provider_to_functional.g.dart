@@ -50,7 +50,7 @@ String _$exampleHash() => r'081776126bafed3e1583bba9c1fadef798215ad7';
 
 abstract class _$Example extends $Notifier<int> {
   int build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -126,7 +126,7 @@ final class ExampleFamilyProvider
 String _$exampleFamilyHash() => r'37d4a4fd66999562cd92051f91266270d5a1e5ea';
 
 /// Some comment
-final class ExampleFamilyFamily extends Family {
+final class ExampleFamilyFamily extends $Family {
   const ExampleFamilyFamily._()
       : super(
           retry: null,
@@ -208,7 +208,7 @@ abstract class _$ExampleFamily extends $Notifier<int> {
     required int a,
     String b = '42',
   });
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -284,7 +284,7 @@ final class GenericProvider<A, B>
 
 String _$genericHash() => r'0a3792d7b59723aebd92715eef2c74d2f267cbd2';
 
-final class GenericFamily extends Family {
+final class GenericFamily extends $Family {
   const GenericFamily._()
       : super(
           retry: null,
@@ -331,7 +331,7 @@ final class GenericFamily extends Family {
 
 abstract class _$Generic<A, B> extends $Notifier<int> {
   int build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();

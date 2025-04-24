@@ -69,7 +69,7 @@ part of '../core.dart';
 /// - [UncontrolledProviderScope], which exposes a [ProviderContainer] to the widget
 ///   tree without managing its life-cycles.
 /// {@endtemplate}
-class ProviderScope extends StatefulWidget {
+final class ProviderScope extends StatefulWidget {
   /// {@macro riverpod.provider_scope}
   const ProviderScope({
     super.key,

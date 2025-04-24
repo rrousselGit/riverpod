@@ -67,7 +67,7 @@ abstract class $notifierBaseName$genericsDefinition extends $baseClass {
         provider.valueTypeDisplayString == 'void' ? 'null' : 'created';
 
     buffer.writeln('''
-  @\$internal
+  @\$mustCallSuper
   @override
   void runBuild() {
     ${buildVar}build($paramsPassThrough);

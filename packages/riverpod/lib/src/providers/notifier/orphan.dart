@@ -68,7 +68,7 @@ abstract class Notifier<StateT> extends $Notifier<StateT> {
   @visibleForOverriding
   StateT build();
 
-  @internal
+  @mustCallSuper
   @override
   void runBuild() {
     final created = build();

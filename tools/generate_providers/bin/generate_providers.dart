@@ -247,8 +247,7 @@ void _generateFunctionalFamily(
 
   buffer.writeln('''
 @internal
-@publicInMisc
-class $builderName {
+final class $builderName {
   const $builderName();
 
   $familyDoc
@@ -285,8 +284,7 @@ void _generateFunctionalOrphan(
 
   buffer.writeln('''
 @internal
-@publicInMisc
-class $builderName {
+final class $builderName {
   const $builderName();
 
   $familyDoc
@@ -399,8 +397,7 @@ void _generateNotifier(
 
   buffer.writeln('''
 @internal
-@publicInMisc
-class $builderName {
+final class $builderName {
   const $builderName();
 
   $autoDisposeDoc

@@ -174,7 +174,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
 String _$familyHash() => r'062561e0cad8585939dc9adc23de6452be2c9788';
 
 /// A generated family provider.
-final class FamilyFamily extends Family {
+final class FamilyFamily extends $Family {
   const FamilyFamily._()
       : super(
           retry: null,
@@ -316,7 +316,7 @@ String _$publicClassHash() => r'c27eae39f455b986e570abb84f1471de7445ef3b';
 
 abstract class _$PublicClass extends $Notifier<String> {
   String build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -369,7 +369,7 @@ String _$privateClassHash() => r'3b08af72c6d4f24aed264efcf181572525b75603';
 
 abstract class _$PrivateClass extends $Notifier<String> {
   String build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -447,7 +447,7 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
 String _$familyClassHash() => r'721bdd2f1ca0d7cee1a0ae476d7bfe93f9ce6875';
 
 /// A generated family provider from a class.
-final class FamilyClassFamily extends Family {
+final class FamilyClassFamily extends $Family {
   const FamilyClassFamily._()
       : super(
           retry: null,
@@ -556,7 +556,7 @@ abstract class _$FamilyClass extends $Notifier<String> {
     bool forth = true,
     List<String>? fifth,
   });
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -619,7 +619,7 @@ String _$supports$InClassNameHash() =>
 
 abstract class _$Supports$InClassName extends $Notifier<String> {
   String build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();

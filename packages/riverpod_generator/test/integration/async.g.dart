@@ -61,7 +61,7 @@ final class GenericProvider<T extends num>
 
 String _$genericHash() => r'b7413a59722e9d62ae99c8a7ee0b4a24417fc3b4';
 
-final class GenericFamily extends Family {
+final class GenericFamily extends $Family {
   const GenericFamily._()
       : super(
           retry: null,
@@ -144,7 +144,7 @@ final class GenericClassProvider<T extends num>
 
 String _$genericClassHash() => r'd3c4acc9cdae12f6c666fbf1f89aee212bb086db';
 
-final class GenericClassFamily extends Family {
+final class GenericClassFamily extends $Family {
   const GenericClassFamily._()
       : super(
           retry: null,
@@ -192,7 +192,7 @@ final class GenericClassFamily extends Family {
 
 abstract class _$GenericClass<T extends num> extends $AsyncNotifier<List<T>> {
   FutureOr<List<T>> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -325,7 +325,7 @@ final class FamilyOrProvider
 
 String _$familyOrHash() => r'97cce80a626e228202fa30b87c07ae8319b48023';
 
-final class FamilyOrFamily extends Family {
+final class FamilyOrFamily extends $Family {
   const FamilyOrFamily._()
       : super(
           retry: null,
@@ -431,7 +431,7 @@ final class FamilyProvider
 
 String _$familyHash() => r'1da6c928ee85a03729a1c147f33e018521bb9c89';
 
-final class FamilyFamily extends Family {
+final class FamilyFamily extends $Family {
   const FamilyFamily._()
       : super(
           retry: null,
@@ -522,7 +522,7 @@ String _$publicClassHash() => r'e9bc69e44b72e8ed77d423524c0d74ad460d629d';
 
 abstract class _$PublicClass extends $AsyncNotifier<String> {
   FutureOr<String> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -567,7 +567,7 @@ String _$privateClassHash() => r'7e69cffe8315999710e4cb6bb3de9f179d3f2f5d';
 
 abstract class _$PrivateClass extends $AsyncNotifier<String> {
   FutureOr<String> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -626,7 +626,7 @@ final class FamilyOrClassProvider
 
 String _$familyOrClassHash() => r'b4882d4e79a03c63005d35eb7a021c9c4373a8d9';
 
-final class FamilyOrClassFamily extends Family {
+final class FamilyOrClassFamily extends $Family {
   const FamilyOrClassFamily._()
       : super(
           retry: null,
@@ -684,7 +684,7 @@ abstract class _$FamilyOrClass extends $AsyncNotifier<String> {
   FutureOr<String> build(
     int first,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -753,7 +753,7 @@ final class FamilyClassProvider
 
 String _$familyClassHash() => r'b7e3ca6091f12bbc99972e961acd885e05f42a15';
 
-final class FamilyClassFamily extends Family {
+final class FamilyClassFamily extends $Family {
   const FamilyClassFamily._()
       : super(
           retry: null,
@@ -861,7 +861,7 @@ abstract class _$FamilyClass extends $AsyncNotifier<String> {
     bool fourth = true,
     List<String>? fifth,
   });
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -947,7 +947,7 @@ final class Regression3490Provider<Model, Sort, Cursor>
 
 String _$regression3490Hash() => r'9d5d48cbde589961d0cdac395f68111ec17b194a';
 
-final class Regression3490Family extends Family {
+final class Regression3490Family extends $Family {
   const Regression3490Family._()
       : super(
           retry: null,
@@ -1043,7 +1043,7 @@ abstract class _$Regression3490<Model, Sort, Cursor> extends $Notifier<void> {
     required Regression3490Cb<Model, Sort, Cursor> getData,
     String? parentId,
   });
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     build(

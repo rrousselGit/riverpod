@@ -106,7 +106,7 @@ final class FamilyProvider extends $FunctionalProvider<int, int>
 
 String _$familyHash() => r'940eb87eb11206499f73f05791a6266b38cda88a';
 
-final class FamilyFamily extends Family {
+final class FamilyFamily extends $Family {
   const FamilyFamily._()
       : super(
           retry: null,
@@ -182,7 +182,7 @@ String _$dep2Hash() => r'2778537df77f6431148c2ce400724da3e2ab4b94';
 
 abstract class _$Dep2 extends $Notifier<int> {
   int build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -248,7 +248,7 @@ final class Family2Provider extends $NotifierProvider<Family2, int> {
 
 String _$family2Hash() => r'ce727b262aae067b0d4f703f03670abb70ad8977';
 
-final class Family2Family extends Family {
+final class Family2Family extends $Family {
   const Family2Family._()
       : super(
           retry: null,
@@ -304,7 +304,7 @@ abstract class _$Family2 extends $Notifier<int> {
   int build(
     int id,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -483,7 +483,7 @@ String _$provider3Hash() => r'dfdd6dec6cfee543c73d99593ce98d68f4db385c';
 
 abstract class _$Provider3 extends $Notifier<int> {
   int build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
@@ -554,7 +554,7 @@ final class Provider4Provider extends $NotifierProvider<Provider4, int> {
 
 String _$provider4Hash() => r'1c955214d99695bb694c96374b277aac58e734df';
 
-final class Provider4Family extends Family {
+final class Provider4Family extends $Family {
   const Provider4Family._()
       : super(
           retry: null,
@@ -620,7 +620,7 @@ abstract class _$Provider4 extends $Notifier<int> {
   int build(
     int id,
   );
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(
@@ -830,7 +830,7 @@ String _$emptyDependenciesClassBasedHash() =>
 
 abstract class _$EmptyDependenciesClassBased extends $Notifier<int> {
   int build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();

@@ -72,6 +72,8 @@ abstract class $Value<ValueT> {
 @publicInRiverpodAndCodegen
 mixin AnyNotifier<StateT> {
   $Ref<StateT>? _ref;
+
+  /// The [Ref] associated with this notifier.
   @protected
   Ref get ref => $ref;
 
@@ -92,6 +94,23 @@ mixin AnyNotifier<StateT> {
     return $ref.listenSelf(listener, onError: onError);
   }
 
+  /// The value currently exposed by this notifier.
+  ///
+  /// Invoking the setter will notify listeners if [updateShouldNotify] returns true.
+  /// By default, this will compare the previous and new value using [identical].
+  ///
+  /// Reading [state] if the provider is out of date (such as if one of its
+  /// dependency has changed) will trigger [Notifier.build] to be re-executed.
+  ///
+  /// **Warning**:
+  /// Inside synchronous notifiers ([Notifier]), reading [state] withing [Notifier.build]
+  /// may throw an exception if done before calling [state=].
+  /// Asynchronous notifiers ([AsyncNotifier]) are not affected by this, as they
+  /// initialize their state to [AsyncLoading] before calling [Notifier.build].
+  ///
+  /// **Warning**:
+  /// Inside synchronous providers, reading [state] may throw if  [Notifier.build] threw.
+  /// Asynchronous notifiers will instead convert the error into an [AsyncError].
   @visibleForTesting
   @protected
   StateT get state => $ref.state;
@@ -100,10 +119,57 @@ mixin AnyNotifier<StateT> {
   @protected
   set state(StateT newState) => $ref.state = newState;
 
+  /// A method invoked when the state exposed by this [Notifier] changes.
+  /// It compares the previous and new value, and return whether listeners
+  /// should be notified.
+  ///
+  /// By default, the previous and new value are compared using [identical]
+  /// for performance reasons.
+  ///
+  /// Doing so ensured that doing:
+  ///
+  /// ```dart
+  /// state = 42;
+  /// state = 42;
+  /// ```
+  ///
+  /// does not notify listeners twice.
+  ///
+  /// But at the same time, for very complex objects with potentially dozens
+  /// if not hundreds of properties, Riverpod won't deeply compare every single
+  /// value.
+  ///
+  /// This ensures that the comparison stays efficient for the most common scenarios.
+  /// But it also means that listeners should be notified even if the
+  /// previous and new values are considered "equal".
+  ///
+  /// If you do not want that, you can override this method to perform a deep
+  /// comparison of the previous and new values.
   @visibleForOverriding
   bool updateShouldNotify(StateT previous, StateT next);
 
-  @internal
+  /// Executes [Notifier.build].
+  ///
+  /// This is called by Riverpod, and should not be called manually.
+  /// The purpose of this method is to allow mixins to perform logic
+  /// before/after the `build` method of a notifier.
+  ///
+  /// For example, you could implement a mixin that logs state changes:
+  ///
+  /// ```dart
+  /// mixin LoggingMixin<T> on AnyNotifier<T> {
+  ///   @override
+  ///   void runBuild() {
+  ///     print('Will build $this');
+  ///     super.runBuild();
+  ///     print('Did build $this');
+  ///   }
+  /// }
+  /// ```
+  ///
+  /// The benefit of this method is that it applies on all notifiers,
+  /// regardless of whether they use arguments or not.
+  @mustCallSuper
   void runBuild();
 }
 
@@ -160,6 +226,10 @@ abstract class $SyncNotifierBase<StateT> extends $Value<StateT>
   }
 }
 
+/// A mixin that enables notifiers to be persisted to a database.
+///
+/// This does not cause notifiers to be persisted by default.
+/// Instead, notifiers have to call [persist] in their `build` method.
 @publicInPersist
 mixin Persistable<ValueT, KeyT, EncodedT> on $Value<ValueT> {
   void _debugAssertNoDuplicateKey(
@@ -200,6 +270,22 @@ to a different value.
     }
   }
 
+  /// Persist the state of a provider to a database.
+  ///
+  /// When calling this method, Riverpod will automatically listen to state
+  /// changes, and invoke [Storage] methods to persist the state.
+  ///
+  /// It is generally recommended to call this method at the very top of
+  /// [Notifier.build]. This will ensure that the state is persisted as soon as possible.
+  ///
+  /// Calling [persist] returns a [Future] that completes when the
+  /// initial decoding is done. After awaiting that future, [Notifier.state]
+  /// should be populated with the decoded value.
+  ///
+  /// **Note**:
+  /// The decoding of the state is only performed once, the first time
+  /// the provider is built. Calling [persist] multiple times will not
+  /// re-trigger the decoding.
   FutureOr<void> persist({
     required KeyT key,
     required FutureOr<Storage<KeyT, EncodedT>> storage,

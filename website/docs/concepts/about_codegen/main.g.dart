@@ -61,7 +61,7 @@ final class FetchUserProvider
 
 String _$fetchUserHash() => r'0ea61464a124f8af2cf15b830a1a012d4272eb47';
 
-final class FetchUserFamily extends Family {
+final class FetchUserFamily extends $Family {
   const FetchUserFamily._()
       : super(
           retry: null,

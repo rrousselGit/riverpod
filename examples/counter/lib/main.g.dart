@@ -59,7 +59,7 @@ String _$counterHash() => r'4243b34530f53accfd9014a9f0e316fe304ada3e';
 
 abstract class _$Counter extends $Notifier<int> {
   int build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();

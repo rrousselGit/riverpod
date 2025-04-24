@@ -8,8 +8,8 @@ import 'package:meta/meta_meta.dart';
 
 import 'internals.dart';
 
-// Mutation code. This should be in riverpod_annotation, but has to be here
-// for the sake of ProviderObserver.
+/// Mutation code. This should be in riverpod_annotation, but has to be here
+/// for the sake of ProviderObserver.
 @internal
 @publicInCodegenMutation
 const mutationZoneKey = #_mutation;

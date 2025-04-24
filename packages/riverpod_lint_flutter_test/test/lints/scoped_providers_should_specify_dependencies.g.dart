@@ -49,7 +49,7 @@ String _$unimplementedScopedHash() =>
 
 abstract class _$UnimplementedScoped extends $Notifier<int> {
   int build() => throw MissingScopeException(ref);
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();

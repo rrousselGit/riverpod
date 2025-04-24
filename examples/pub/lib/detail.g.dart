@@ -63,7 +63,7 @@ final class FetchPackageDetailsProvider
 String _$fetchPackageDetailsHash() =>
     r'16ad07d6f69412f6d456c6d482f15dc53421df74';
 
-final class FetchPackageDetailsFamily extends Family {
+final class FetchPackageDetailsFamily extends $Family {
   const FetchPackageDetailsFamily._()
       : super(
           retry: null,
@@ -242,7 +242,7 @@ String _$packageMetricsHash() => r'67cd25e50357e6e970d432c1d255085a23b856ac';
 ///
 /// It also exposes utilities to like/unlike a package, assuming the user
 /// is logged-in.
-final class PackageMetricsFamily extends Family {
+final class PackageMetricsFamily extends $Family {
   const PackageMetricsFamily._()
       : super(
           retry: null,
@@ -305,7 +305,7 @@ abstract class _$PackageMetrics extends $AsyncNotifier<PackageMetricsScore> {
   FutureOr<PackageMetricsScore> build({
     required String packageName,
   });
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build(

@@ -82,7 +82,7 @@ final class Calc2Provider extends $FunctionalProvider<int, int>
 
 String _$calc2Hash() => r'ae1d601ff7cdda569255e8014bd5d8d1c178b3eb';
 
-final class Calc2Family extends Family {
+final class Calc2Family extends $Family {
   const Calc2Family._()
       : super(
           retry: null,

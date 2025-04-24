@@ -90,7 +90,7 @@ String _$todosHash() => r'b66ac2b1e5cf7ac7957d25864cfdffad1af233a6';
 
 abstract class _$Todos extends $Notifier<List<Todo>> {
   List<Todo> build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();

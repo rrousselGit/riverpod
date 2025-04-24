@@ -127,7 +127,7 @@ String _$simpleClassHash() => r'958123cd6179c5b88da040cfeb71eb3061765277';
 
 abstract class _$SimpleClass extends $Notifier<String> {
   String build();
-  @$internal
+  @$mustCallSuper
   @override
   void runBuild() {
     final created = build();

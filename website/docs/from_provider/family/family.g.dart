@@ -77,7 +77,7 @@ final class RandomProvider extends $FunctionalProvider<int, int>
 
 String _$randomHash() => r'ab69799dce84746b22880feae0f1db6dea906f6a';
 
-final class RandomFamily extends Family {
+final class RandomFamily extends $Family {
   const RandomFamily._()
       : super(
           retry: null,
