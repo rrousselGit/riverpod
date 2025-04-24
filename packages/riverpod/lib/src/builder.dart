@@ -233,10 +233,12 @@ class StateProviderFamilyBuilder {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
+    bool isAutoDispose = false,
   }) {
     return StateProviderFamily<StateT, ArgT>(
       create,
       name: name,
+      isAutoDispose: isAutoDispose,
       dependencies: dependencies,
       retry: retry,
     );
@@ -355,10 +357,12 @@ class StateNotifierProviderFamilyBuilder {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
+    bool isAutoDispose = false,
   }) {
     return StateNotifierProviderFamily<NotifierT, StateT, ArgT>(
       create,
       name: name,
+      isAutoDispose: isAutoDispose,
       dependencies: dependencies,
       retry: retry,
     );
@@ -430,10 +434,12 @@ class ProviderFamilyBuilder {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
+    bool isAutoDispose = false,
   }) {
     return ProviderFamily<StateT, ArgT>(
       create,
       name: name,
+      isAutoDispose: isAutoDispose,
       dependencies: dependencies,
       retry: retry,
     );
@@ -503,10 +509,12 @@ class FutureProviderFamilyBuilder {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
+    bool isAutoDispose = false,
   }) {
     return FutureProviderFamily<StateT, ArgT>(
       create,
       name: name,
+      isAutoDispose: isAutoDispose,
       dependencies: dependencies,
       retry: retry,
     );
@@ -576,10 +584,12 @@ class StreamProviderFamilyBuilder {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
+    bool isAutoDispose = false,
   }) {
     return StreamProviderFamily<StateT, ArgT>(
       create,
       name: name,
+      isAutoDispose: isAutoDispose,
       dependencies: dependencies,
       retry: retry,
     );
@@ -677,10 +687,12 @@ class NotifierProviderFamilyBuilder {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
+    bool isAutoDispose = false,
   }) {
     return NotifierProviderFamily<NotifierT, StateT, ArgT>.internal(
       create,
       name: name,
+      isAutoDispose: isAutoDispose,
       dependencies: dependencies,
       retry: retry,
     );
@@ -753,10 +765,12 @@ class StreamNotifierProviderFamilyBuilder {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
+    bool isAutoDispose = false,
   }) {
     return StreamNotifierProviderFamily<NotifierT, StateT, ArgT>.internal(
       create,
       name: name,
+      isAutoDispose: isAutoDispose,
       dependencies: dependencies,
       retry: retry,
     );
@@ -829,10 +843,12 @@ class AsyncNotifierProviderFamilyBuilder {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
+    bool isAutoDispose = false,
   }) {
     return AsyncNotifierProviderFamily<NotifierT, StateT, ArgT>.internal(
       create,
       name: name,
+      isAutoDispose: isAutoDispose,
       dependencies: dependencies,
       retry: retry,
     );

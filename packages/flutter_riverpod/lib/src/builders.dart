@@ -235,10 +235,12 @@ class ChangeNotifierProviderFamilyBuilder {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
+    bool isAutoDispose = false,
   }) {
     return ChangeNotifierProviderFamily<NotifierT, ArgT>(
       create,
       name: name,
+      isAutoDispose: isAutoDispose,
       dependencies: dependencies,
       retry: retry,
     );

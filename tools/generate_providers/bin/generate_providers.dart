@@ -247,6 +247,7 @@ void _generateFunctionalFamily(
 
   buffer.writeln('''
 @internal
+@publicInMisc
 class $builderName {
   const $builderName();
 
@@ -256,6 +257,7 @@ class $builderName {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
+    ${_isAutoDisposeArg(disposeType)}
   }) {
     return ${provider.providerName}Family<${provider.genericsUsage}, ArgT>(
       create,
@@ -283,6 +285,7 @@ void _generateFunctionalOrphan(
 
   buffer.writeln('''
 @internal
+@publicInMisc
 class $builderName {
   const $builderName();
 
@@ -292,6 +295,7 @@ class $builderName {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
+    ${_isAutoDisposeArg(disposeType)}
   }) {
     return ${provider.providerName}<${provider.genericsUsage}>(
       create,
@@ -366,7 +370,13 @@ String _isAutoDisposeParam(_DisposeType disposeType) {
   if (disposeType == _DisposeType.autoDispose) {
     return 'isAutoDispose: true,';
   }
-  return '';
+  return 'isAutoDispose: isAutoDispose,';
+}
+
+String _isAutoDisposeArg(_DisposeType disposeType) {
+  if (disposeType == _DisposeType.autoDispose) return '';
+
+  return 'bool isAutoDispose = false,';
 }
 
 void _generateNotifier(
@@ -389,6 +399,7 @@ void _generateNotifier(
 
   buffer.writeln('''
 @internal
+@publicInMisc
 class $builderName {
   const $builderName();
 
@@ -398,8 +409,7 @@ class $builderName {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,
-    Persist? persist,
-    bool? shouldPersist,
+    ${_isAutoDisposeArg(disposeType)}
   }) {
     return $providerName${provider.genericsUsage}$ctor(
       create,
@@ -407,8 +417,6 @@ class $builderName {
       ${_isAutoDisposeParam(disposeType)}
       dependencies: dependencies,
       retry: retry,
-      persist: persist,
-      shouldPersist: shouldPersist,
     );
   }
 

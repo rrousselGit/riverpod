@@ -1,5 +1,6 @@
 ## Unreleased build
 
+- Instead of `Provider.autoDispose()` and `Provider.autoDispose.family()`, it is now possible to write `Provider(isAutoDispose: true)` and `Provider.family(isAutoDispose: true)`.
 - **Breaking**: ProviderListenable.addListener is deleted and now internal-only.
   A simpler alternative will be added in the future.
 - **Breaking**: ProviderObserver methods have been updated to take a `ProviderObserverContext` parameter.
