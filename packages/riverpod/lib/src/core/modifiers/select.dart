@@ -29,7 +29,7 @@ final class _ProviderSelector<InputT, OutputT, OriginT>
   final OutputT Function(InputT) selector;
 
   $Result<OutputT> _select($Result<InputT> value) {
-    if (kDebugMode) _debugIsRunningCallback = true;
+    if (kDebugMode) _debugCallbackStack++;
 
     try {
       return switch (value) {
@@ -40,7 +40,7 @@ final class _ProviderSelector<InputT, OutputT, OriginT>
     } catch (err, stack) {
       return $Result.error(err, stack);
     } finally {
-      if (kDebugMode) _debugIsRunningCallback = false;
+      if (kDebugMode) _debugCallbackStack--;
     }
   }
 

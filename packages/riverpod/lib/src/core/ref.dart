@@ -182,7 +182,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
 
   void _throwIfInvalidUsage() {
     assert(
-      !_debugIsRunningCallback,
+      _debugCallbackStack != 0,
       'Cannot use Ref inside life-cycles/selectors.',
     );
     if (_status == _RefStatus.unmounted) {
@@ -659,19 +659,19 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   }
 }
 
-var _debugIsRunningCallback = false;
+int _debugCallbackStack = 0;
 void _runCallbacks(List<void Function()>? callbacks) {
   if (callbacks == null) return;
 
-  for (var i = 0; i < callbacks.length; i++) {
+  for (final cb in callbacks) {
     try {
       if (kDebugMode) {
-        _debugIsRunningCallback = true;
+        _debugCallbackStack++;
       }
-      runGuarded(callbacks[i]);
+      runGuarded(cb);
     } finally {
       if (kDebugMode) {
-        _debugIsRunningCallback = false;
+        _debugCallbackStack--;
       }
     }
   }
