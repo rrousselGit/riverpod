@@ -11,8 +11,6 @@ sealed class Node {
   );
 }
 
-var _debugIsRunningSelector = false;
-
 /// An internal class for `ProviderBase.select`.
 final class _ProviderSelector<InputT, OutputT, OriginT>
     with
@@ -31,7 +29,7 @@ final class _ProviderSelector<InputT, OutputT, OriginT>
   final OutputT Function(InputT) selector;
 
   $Result<OutputT> _select($Result<InputT> value) {
-    if (kDebugMode) _debugIsRunningSelector = true;
+    if (kDebugMode) _debugCallbackStack++;
 
     try {
       return switch (value) {
@@ -42,7 +40,7 @@ final class _ProviderSelector<InputT, OutputT, OriginT>
     } catch (err, stack) {
       return $Result.error(err, stack);
     } finally {
-      if (kDebugMode) _debugIsRunningSelector = false;
+      if (kDebugMode) _debugCallbackStack--;
     }
   }
 

@@ -32,7 +32,7 @@ final refMethodsThatDependOnProviderOrFamilies =
 void main() {
   group('Ref', () {
     test('asserts that a lifecycle cannot be used after a ref is unmounted',
-        () {
+        () async {
       late Ref ref;
       final container = ProviderContainer.test();
       final dep = StateProvider((ref) => 0);
@@ -44,6 +44,8 @@ void main() {
 
       container.read(provider);
       container.read(dep.notifier).state++;
+
+      await null;
 
       final another = Provider((ref) => 0);
 
@@ -180,6 +182,32 @@ void main() {
       expect(
         () => container.read(provider.select((_) => ref.keepAlive())),
         throwsA(isA<AssertionError>()),
+      );
+    });
+
+    test('Can still use Ref synchronously after invalidation, but not async',
+        () async {
+      late Ref ref;
+      final container = ProviderContainer.test();
+      final dep = StateProvider((ref) => 0);
+      final provider = Provider<Object?>((r) {
+        ref = r;
+        ref.watch(dep);
+        return Object();
+      });
+
+      container.read(provider);
+      container.read(dep.notifier).state++;
+
+      container.invalidate(dep);
+
+      expect(() => ref.read(dep), returnsNormally);
+
+      await null;
+
+      expect(
+        () => ref.read(dep),
+        throwsA(isA<UnmountedRefException>()),
       );
     });
 
@@ -2967,24 +2995,6 @@ void main() {
         await container.pump();
 
         verifyZeroInteractions(listener);
-      });
-
-      test("can't use ref inside onDispose", () {
-        final provider2 = Provider((ref) => 0);
-        final provider = Provider((ref) {
-          ref.onDispose(() {
-            ref.watch(provider2);
-          });
-          return ref;
-        });
-        final container = ProviderContainer.test();
-
-        container.read(provider);
-
-        final errors = <Object>[];
-        runZonedGuarded(container.dispose, (err, _) => errors.add(err));
-
-        expect(errors, [isA<UnmountedRefException>()]);
       });
 
       test(

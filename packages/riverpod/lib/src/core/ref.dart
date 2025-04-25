@@ -29,6 +29,12 @@ Cannot use the Ref of $origin after it has been disposed. This typically happens
   }
 }
 
+enum _RefStatus {
+  mounted,
+  deactivated,
+  unmounted,
+}
+
 /// {@template riverpod.provider_ref_base}
 /// An object used by providers to interact with other providers and the life-cycles
 /// of the application.
@@ -110,8 +116,8 @@ sealed class Ref {
   /// In both of the examples above, [onDispose] will stop the network request
   /// while it is in progress. While [mounted] will let the network request
   /// complete, and stop its logic after it is done.
-  bool get mounted => _mounted;
-  var _mounted = true;
+  bool get mounted => _status == _RefStatus.mounted;
+  var _status = _RefStatus.mounted;
 
   /// The [ProviderContainer] that this provider is associated with.
   ProviderContainer get container => _element.container;
@@ -176,10 +182,10 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
 
   void _throwIfInvalidUsage() {
     assert(
-      !_debugIsRunningSelector,
-      'Cannot call ref.<methods> inside a selector',
+      _debugCallbackStack == 0,
+      'Cannot use Ref inside life-cycles/selectors.',
     );
-    if (!mounted) {
+    if (_status == _RefStatus.unmounted) {
       throw UnmountedRefException(_element.origin);
     }
   }
@@ -650,6 +656,24 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
       onError: onError,
       fireImmediately: fireImmediately,
     );
+  }
+}
+
+int _debugCallbackStack = 0;
+void _runCallbacks(List<void Function()>? callbacks) {
+  if (callbacks == null) return;
+
+  for (final cb in callbacks) {
+    try {
+      if (kDebugMode) {
+        _debugCallbackStack++;
+      }
+      runGuarded(cb);
+    } finally {
+      if (kDebugMode) {
+        _debugCallbackStack--;
+      }
+    }
   }
 }
 
