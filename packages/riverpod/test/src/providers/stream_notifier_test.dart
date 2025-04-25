@@ -222,11 +222,11 @@ void main() {
 
       expect(
         errors,
-        everyElement(isA<UnmountedRefException>()),
+        everyElement(isA<AssertionError>()),
       );
     });
 
-    test('Using the notifier after dispose throws', () {
+    test('Using the notifier after dispose throws', () async {
       final container = ProviderContainer.test();
       final provider = factory.simpleTestProvider(
         (ref, self) => Stream.value(0),
@@ -235,7 +235,8 @@ void main() {
       container.listen(provider.notifier, (prev, next) {});
       final notifier = container.read(provider.notifier);
 
-      container.dispose();
+      container.invalidate(provider);
+      await null;
 
       expect(notifier.ref.mounted, false);
       expect(

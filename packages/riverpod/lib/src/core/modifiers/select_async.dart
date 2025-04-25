@@ -22,14 +22,14 @@ final class _AsyncSelector<InputT, OutputT, OriginT>
   final OutputT Function(InputT) selector;
 
   $Result<OutputT> _select(InputT value) {
-    if (kDebugMode) _debugIsRunningSelector = true;
+    if (kDebugMode) _debugIsRunningCallback = true;
 
     try {
       return $Result.data(selector(value));
     } catch (err, stack) {
       return $Result.error(err, stack);
     } finally {
-      if (kDebugMode) _debugIsRunningSelector = false;
+      if (kDebugMode) _debugIsRunningCallback = false;
     }
   }
 

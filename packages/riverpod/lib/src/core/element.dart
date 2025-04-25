@@ -676,13 +676,13 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     switch ((wasActive: wasActive, isActive: isActive)) {
       case (wasActive: false, isActive: true) when _didCancelOnce:
         if (_notifyResumeListeners) {
-          ref?._onResumeListeners?.forEach(runGuarded);
+          _runCallbacks(ref?._onResumeListeners);
         }
         onResume();
 
       case (wasActive: true, isActive: false):
         _didCancelOnce = true;
-        ref?._onCancelListeners?.forEach(runGuarded);
+        _runCallbacks(ref?._onCancelListeners);
         onCancel();
 
       default:
@@ -690,14 +690,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
 
     if (_listenerCount < previousListenerCount) {
-      if (ref?._onRemoveListeners case final listeners?) {
-        listeners.forEach(runGuarded);
-      }
+      _runCallbacks(ref?._onRemoveListeners);
       mayNeedDispose();
     } else if (_listenerCount > previousListenerCount) {
-      if (ref?._onAddListeners case final listeners?) {
-        listeners.forEach(runGuarded);
-      }
+      _runCallbacks(ref?._onAddListeners);
     }
   }
 
@@ -763,9 +759,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   @mustCallSuper
   void runOnDispose() {
     final ref = this.ref;
-    if (ref == null || !ref._mounted) return;
+    if (ref == null || !ref.mounted) return;
 
-    ref._mounted = false;
+    ref._status = _RefStatus.deactivated;
+    Future.microtask(() => ref._status = _RefStatus.unmounted);
 
     _pendingRetryTimer?.cancel();
     _pendingRetryTimer = null;
@@ -778,7 +775,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
     subscriptions = null;
 
-    ref._onDisposeListeners?.forEach(runGuarded);
+    _runCallbacks(ref._onDisposeListeners);
 
     for (final observer in container.observers) {
       runUnaryGuarded(observer.didDisposeProvider, _currentObserverContext());

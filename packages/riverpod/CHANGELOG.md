@@ -1,5 +1,7 @@
 ## Unreleased build
 
+- Allow using Ref synchronously after a provider has been invalidated.
+  This avoids mounted exceptions when doing multiple operations in a quick succession.
 - **Breaking**: All providers now use `==` to compare previous/new values and filter
   updates.
   If you want to revert to the old behavior, you can override `updateShouldNotify` inside
