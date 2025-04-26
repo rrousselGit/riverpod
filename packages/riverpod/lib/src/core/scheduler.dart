@@ -23,13 +23,11 @@ class ProviderScheduler {
 
   /// A way to override [vsync], used by Flutter to synchronize a container
   /// with the widget tree.
-  @internal
   final flutterVsyncs = <Vsync>{};
 
   /// A function that controls the refresh rate of providers.
   ///
   /// Defaults to refreshing providers at the end of the next event-loop.
-  @internal
   void Function()? Function(void Function()) get vsync {
     if (flutterVsyncs.isNotEmpty) {
       // Notify all InheritedWidgets of a possible rebuild.

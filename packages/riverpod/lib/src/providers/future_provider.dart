@@ -93,6 +93,7 @@ base mixin $FutureProvider<StateT>
 /// - [FutureProvider.family], to create a [FutureProvider] from external parameters
 /// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no longer needed.
 /// {@endtemplate}
+/// {@category provider}
 final class FutureProvider<StateT>
     extends $FunctionalProvider<AsyncValue<StateT>, FutureOr<StateT>>
     with
@@ -114,6 +115,7 @@ final class FutureProvider<StateT>
         );
 
   /// An implementation detail of Riverpod
+  /// @nodoc
   @internal
   FutureProvider.internal(
     this._create, {
@@ -134,10 +136,12 @@ final class FutureProvider<StateT>
 
   final Create<FutureOr<StateT>> _create;
 
+  /// @nodoc
   @internal
   @override
   FutureOr<StateT> create(Ref ref) => _create(ref);
 
+  /// @nodoc
   @internal
   @override
   $FutureProviderElement<StateT> $createElement($ProviderPointer pointer) {
@@ -147,6 +151,7 @@ final class FutureProvider<StateT>
 
 /// The element of a [FutureProvider]
 /// Implementation detail of `riverpod_generator`. Do not use.
+/// @nodoc
 @internal
 @publicInCodegen
 class $FutureProviderElement<StateT>
@@ -167,6 +172,7 @@ class $FutureProviderElement<StateT>
 final class FutureProviderFamily<StateT, ArgT> extends FunctionalFamily<
     AsyncValue<StateT>, ArgT, FutureOr<StateT>, FutureProvider<StateT>> {
   /// The [Family] of a [FutureProvider]
+  /// @nodoc
   @internal
   FutureProviderFamily(
     super._createFn, {
@@ -181,6 +187,7 @@ final class FutureProviderFamily<StateT, ArgT> extends FunctionalFamily<
         );
 
   /// Implementation detail of the code-generator.
+  /// @nodoc
   @internal
   FutureProviderFamily.internal(
     super._createFn, {

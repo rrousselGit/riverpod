@@ -6,6 +6,7 @@ import 'package:riverpod/legacy.dart';
 import 'package:riverpod/misc.dart' show Refreshable, ProviderListenable;
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart' show UnmountedRefException;
+import 'package:riverpod/src/internals.dart' show InternalProviderContainer;
 import 'package:riverpod/src/providers/notifier.dart' show $Notifier;
 import 'package:test/test.dart';
 

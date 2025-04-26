@@ -44,6 +44,7 @@ enum _RefStatus {
 /// - [read] and [watch], two methods that allow a provider to consume other providers.
 /// - [onDispose], a method that allows performing a task when the provider is destroyed.
 /// {@endtemplate}
+/// {@category core}
 @optionalTypeArgs
 @publicInRiverpodAndCodegen
 sealed class Ref {

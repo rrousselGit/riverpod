@@ -82,6 +82,7 @@ base mixin $StreamProvider<StateT>
 /// - [StreamProvider.family], to create a [StreamProvider] from external parameters
 /// - [StreamProvider.autoDispose], to destroy the state of a [StreamProvider] when no longer needed.
 /// {@endtemplate}
+/// {@category provider}
 final class StreamProvider<StateT>
     extends $FunctionalProvider<AsyncValue<StateT>, Stream<StateT>>
     with
@@ -103,6 +104,7 @@ final class StreamProvider<StateT>
         );
 
   /// An implementation detail of Riverpod
+  /// @nodoc
   @internal
   StreamProvider.internal(
     this._create, {
@@ -123,10 +125,12 @@ final class StreamProvider<StateT>
 
   final Create<Stream<StateT>> _create;
 
+  /// @nodoc
   @internal
   @override
   Stream<StateT> create(Ref ref) => _create(ref);
 
+  /// @nodoc
   @internal
   @override
   $StreamProviderElement<StateT> $createElement($ProviderPointer pointer) {
@@ -195,6 +199,7 @@ class $StreamProviderElement<StateT>
 final class StreamProviderFamily<StateT, ArgT> extends FunctionalFamily<
     AsyncValue<StateT>, ArgT, Stream<StateT>, StreamProvider<StateT>> {
   /// The [Family] of a [StreamProvider]
+  /// @nodoc
   @internal
   StreamProviderFamily(
     super._createFn, {
@@ -209,6 +214,7 @@ final class StreamProviderFamily<StateT, ArgT> extends FunctionalFamily<
         );
 
   /// Implementation detail of the code-generator.
+  /// @nodoc
   @internal
   StreamProviderFamily.internal(
     super._createFn, {

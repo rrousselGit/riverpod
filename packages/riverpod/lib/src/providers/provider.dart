@@ -14,6 +14,7 @@ import 'stream_provider.dart' show StreamProvider;
 base mixin $Provider<StateT> on $FunctionalProvider<StateT, StateT> {}
 
 /// {@macro riverpod.provider}
+/// {@category provider}
 final class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
     with $Provider<StateT>, LegacyProviderMixin<StateT> {
   /// {@macro riverpod.provider}
@@ -31,6 +32,7 @@ final class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
         );
 
   /// An implementation detail of Riverpod
+  /// @nodoc
   @internal
   const Provider.internal(
     this._create, {
@@ -51,10 +53,12 @@ final class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
 
   final Create<StateT> _create;
 
+  /// @nodoc
   @internal
   @override
   StateT create(Ref ref) => _create(ref);
 
+  /// @nodoc
   @internal
   @override
   $ProviderElement<StateT> $createElement($ProviderPointer pointer) {
@@ -325,6 +329,7 @@ final class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
 ///   when that provider is no longer listened to.
 /// - [Provider.family], to allow providers to create a value from external parameters.
 /// {@endtemplate}
+/// @nodoc
 @internal
 @publicInCodegen
 class $ProviderElement<StateT>
@@ -348,6 +353,7 @@ class $ProviderElement<StateT>
 final class ProviderFamily<StateT, ArgT>
     extends FunctionalFamily<StateT, ArgT, StateT, Provider<StateT>> {
   /// The [Family] of [Provider]
+  /// @nodoc
   @internal
   ProviderFamily(
     super._createFn, {
@@ -362,6 +368,7 @@ final class ProviderFamily<StateT, ArgT>
         );
 
   /// An implementation detail of Riverpod
+  /// @nodoc
   @internal
   ProviderFamily.internal(
     super._createFn, {

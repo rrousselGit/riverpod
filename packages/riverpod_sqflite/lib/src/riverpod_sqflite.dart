@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:clock/clock.dart';
 import 'package:meta/meta.dart';
-import 'package:riverpod/persist.dart';
+import 'package:riverpod/experimental/persist.dart';
 import 'package:sqflite/sqflite.dart';
 
 @internal

@@ -1,4 +1,4 @@
-import 'package:riverpod/persist.dart';
+import 'package:riverpod/experimental/persist.dart';
 import 'package:riverpod_sqflite/src/riverpod_sqflite.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:test/test.dart';

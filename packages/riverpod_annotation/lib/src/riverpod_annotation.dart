@@ -168,6 +168,7 @@ class ProviderFor {
   /// the generated provider.
   // Put the annotation on the constructor to avoid the linter from complaining
   // about the annotation being exported; while preventing the user from using it.
+  /// @nodoc
   @internal
   const ProviderFor(this.value)
       : assert(

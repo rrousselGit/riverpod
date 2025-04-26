@@ -26,6 +26,7 @@ final class $ValueProvider<StateT> extends ProviderBase<StateT>
   @override
   Set<ProviderOrFamily>? get allTransitiveDependencies => null;
 
+  /// @nodoc
   @internal
   @override
   // ignore: library_private_types_in_public_api, not public API
@@ -85,6 +86,7 @@ final class $AsyncValueProvider<StateT>
     extends $ValueProvider<AsyncValue<StateT>> {
   const $AsyncValueProvider(super._value);
 
+  /// @nodoc
   @internal
   @override
   // ignore: library_private_types_in_public_api, not public API

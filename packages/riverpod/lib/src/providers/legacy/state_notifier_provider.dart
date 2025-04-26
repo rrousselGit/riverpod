@@ -88,6 +88,7 @@ final class StateNotifierProvider< //
         );
 
   /// An implementation detail of Riverpod
+  /// @nodoc
   @internal
   StateNotifierProvider.internal(
     this._create, {
@@ -134,6 +135,7 @@ final class StateNotifierProvider< //
         },
       );
 
+  /// @nodoc
   @internal
   @override
   // ignore: library_private_types_in_public_api, not public API
@@ -204,6 +206,7 @@ final class StateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T,
     extends FunctionalFamily<T, Arg, NotifierT,
         StateNotifierProvider<NotifierT, T>> {
   /// The [Family] of [StateNotifierProvider].
+  /// @nodoc
   @internal
   StateNotifierProviderFamily(
     super._createFn, {

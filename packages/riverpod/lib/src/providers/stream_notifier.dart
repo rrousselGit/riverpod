@@ -44,6 +44,7 @@ abstract base class $StreamNotifierProvider<
     required super.retry,
   });
 
+  /// @nodoc
   @internal
   @override
   $StreamNotifierProviderElement<NotifierT, StateT> $createElement(

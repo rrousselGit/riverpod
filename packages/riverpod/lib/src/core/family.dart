@@ -214,23 +214,23 @@ base class ClassFamily< //
   /// This API is not meant for public consumption.
   const ClassFamily(
     this._createFn, {
-    required this.providerFactory,
+    required ClassProviderFactory<NotifierT, ProviderT, CreatedT, ArgT>
+        providerFactory,
     required super.name,
     required super.dependencies,
     required super.allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
-  });
+  }) : _providerFactory = providerFactory;
 
-  @internal
   final ClassProviderFactory<NotifierT, ProviderT, CreatedT, ArgT>
-      providerFactory;
+      _providerFactory;
 
   final NotifierT Function() _createFn;
 
   /// {@macro family.call}
   ProviderT call(ArgT argument) {
-    return providerFactory(
+    return _providerFactory(
       _createFn,
       name: name,
       isAutoDispose: isAutoDispose,

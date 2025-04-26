@@ -16,6 +16,7 @@ part of '../async_notifier.dart';
 /// {@endtemplate}
 ///
 /// {@macro riverpod.async_notifier_provider_modifier}
+/// {@category notifier}
 abstract class AsyncNotifier<StateT> extends $AsyncNotifier<StateT> {
   /// {@template riverpod.async_notifier.build}
   /// Initialize an [AsyncNotifier].
@@ -57,6 +58,7 @@ abstract class AsyncNotifier<StateT> extends $AsyncNotifier<StateT> {
 /// When using `family`, your notifier type changes.
 /// Instead of extending [AsyncNotifier], you should extend [FamilyAsyncNotifier].
 /// {@endtemplate}
+/// {@category provider}
 final class AsyncNotifierProvider< //
         NotifierT extends AsyncNotifier<StateT>,
         StateT> //
@@ -79,6 +81,7 @@ final class AsyncNotifierProvider< //
         );
 
   /// An implementation detail of Riverpod
+  /// @nodoc
   @internal
   const AsyncNotifierProvider.internal(
     this._createNotifier, {
@@ -99,6 +102,7 @@ final class AsyncNotifierProvider< //
 
   final NotifierT Function() _createNotifier;
 
+  /// @nodoc
   @internal
   @override
   NotifierT create() => _createNotifier();

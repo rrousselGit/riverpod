@@ -43,6 +43,7 @@ abstract base class $AsyncNotifierProvider< //
     required super.retry,
   });
 
+  /// @nodoc
   @internal
   @override
   $AsyncNotifierProviderElement<NotifierT, StateT> $createElement(
@@ -50,6 +51,10 @@ abstract base class $AsyncNotifierProvider< //
   ) {
     return $AsyncNotifierProviderElement(pointer);
   }
+
+  /// @nodoc
+  @override
+  String toString() => super.toString();
 }
 
 /// Implementation detail of `riverpod_generator`.

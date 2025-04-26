@@ -3,7 +3,7 @@ import 'dart:convert';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path/path.dart';
-import 'package:riverpod/persist.dart';
+import 'package:riverpod/experimental/persist.dart';
 import 'package:riverpod_sqflite/riverpod_sqflite.dart';
 import 'package:sqflite/sqflite.dart';
 

@@ -388,7 +388,7 @@ class ProviderPointerManager {
     });
 
     return overrides.fold<ProviderContainer?>(null, (deepestContainer, target) {
-      if (deepestContainer == null || deepestContainer.depth < target.depth) {
+      if (deepestContainer == null || deepestContainer._depth < target._depth) {
         return target;
       }
 
@@ -556,6 +556,92 @@ class ProviderPointerManager {
   }
 }
 
+@internal
+extension InternalProviderContainer on ProviderContainer {
+  /// The scheduler of this container.
+  ///
+  /// This is used to schedule the execution of providers and notify listeners.
+  ProviderScheduler get scheduler => _scheduler;
+
+  int get depth => _depth;
+
+  /// Traverse the [ProviderElement]s associated with this [ProviderContainer].
+  Iterable<ProviderElement> getAllProviderElements() {
+    return _pointerManager
+        .listProviderPointers()
+        .map((e) => e.element)
+        .nonNulls
+        .where((e) => e.container == this);
+  }
+
+  /// Visit all nodes of the graph at most once, from roots to leaves.
+  ///
+  /// This is fairly expensive and should be avoided as much as possible.
+  /// If you do not need for providers to be sorted, consider using [getAllProviderElements]
+  /// instead, which returns an unsorted list and is significantly faster.
+  Iterable<ProviderElement> getAllProviderElementsInOrder() sync* {
+    final visitedNodes = HashSet<ProviderElement>();
+    final queue = DoubleLinkedQueue<ProviderElement>();
+
+    // get providers that don't depend on other providers from this container
+    for (final pointer in _pointerManager.listProviderPointers()) {
+      if (pointer.targetContainer != this) continue;
+      final element = pointer.element;
+      if (element == null) continue;
+
+      var hasAncestorsInContainer = false;
+      element.visitAncestors((element) {
+        // We ignore dependencies that are defined in another container, as
+        // they are in a separate graph
+        if (element.container == this) {
+          hasAncestorsInContainer = true;
+        }
+      });
+
+      if (!hasAncestorsInContainer) {
+        queue.add(element);
+      }
+    }
+
+    while (queue.isNotEmpty) {
+      final element = queue.removeFirst();
+
+      if (!visitedNodes.add(element)) {
+        // Already visited
+        continue;
+      }
+
+      yield element;
+
+      // Queue the children of this element, but only if all of its ancestors
+      // were already visited before.
+      // If a child does not have all of its ancestors visited, when those
+      // ancestors will be visited, they will retry visiting this child.
+      element.visitChildren((dependent) {
+        if (dependent.container == this) {
+          // All the parents of a node must have been visited before a node is visited
+          var areAllAncestorsAlreadyVisited = true;
+          dependent.visitAncestors((e) {
+            if (e.container == this && !visitedNodes.contains(e)) {
+              areAllAncestorsAlreadyVisited = false;
+            }
+          });
+
+          if (areAllAncestorsAlreadyVisited) queue.add(dependent);
+        }
+      });
+    }
+  }
+}
+
+@internal
+extension NodeInternal on Node {
+  ProviderElement<State> readProviderElement<State>(
+    ProviderBase<State> provider,
+  ) =>
+      _readProviderElement(provider);
+}
+
 /// {@template riverpod.provider_container}
 /// An object that stores the state of the providers and allows overriding the
 /// behavior of a specific provider.
@@ -566,6 +652,7 @@ class ProviderPointerManager {
 /// Inside tests, consider using [ProviderContainer.test].
 /// This will automatically dispose the container at the end of the test.
 /// {@endtemplate}
+/// {@category core}
 @publicInRiverpodAndCodegen
 final class ProviderContainer implements Node {
   /// {@macro riverpod.provider_container}
@@ -575,7 +662,7 @@ final class ProviderContainer implements Node {
     List<ProviderObserver>? observers,
     Retry? retry,
   })  : _debugOverridesLength = overrides.length,
-        depth = parent == null ? 0 : parent.depth + 1,
+        _depth = parent == null ? 0 : parent._depth + 1,
         _parent = parent,
         retry = retry ?? parent?.retry,
         observers = [
@@ -668,8 +755,8 @@ final class ProviderContainer implements Node {
   final int _debugOverridesLength;
 
   /// The object that handles when providers are refreshed and disposed.
-  @internal
-  late final ProviderScheduler scheduler = ProviderScheduler();
+  /// @nodoc
+  late final ProviderScheduler _scheduler = ProviderScheduler();
 
   /// {@macro riverpod.retry}
   final Retry? retry;
@@ -677,8 +764,7 @@ final class ProviderContainer implements Node {
   /// How deep this [ProviderContainer] is in the graph of containers.
   ///
   /// Starts at 0.
-  @internal
-  final int depth;
+  final int _depth;
   final ProviderContainer? _root;
   final ProviderContainer? _parent;
 
@@ -915,9 +1001,8 @@ final class ProviderContainer implements Node {
     }
   }
 
-  @internal
   @override
-  ProviderElement<State> readProviderElement<State>(
+  ProviderElement<State> _readProviderElement<State>(
     ProviderBase<State> provider,
   ) {
     if (_disposed) {
@@ -969,76 +1054,6 @@ final class ProviderContainer implements Node {
   /// Therefore, disposing the root [ProviderContainer] the entire graph.
   void dispose() => _dispose(updateChildren: true);
 
-  /// Traverse the [ProviderElement]s associated with this [ProviderContainer].
-  @internal
-  Iterable<ProviderElement> getAllProviderElements() {
-    return _pointerManager
-        .listProviderPointers()
-        .map((e) => e.element)
-        .nonNulls
-        .where((e) => e.container == this);
-  }
-
-  /// Visit all nodes of the graph at most once, from roots to leaves.
-  ///
-  /// This is fairly expensive and should be avoided as much as possible.
-  /// If you do not need for providers to be sorted, consider using [getAllProviderElements]
-  /// instead, which returns an unsorted list and is significantly faster.
-  @internal
-  Iterable<ProviderElement> getAllProviderElementsInOrder() sync* {
-    final visitedNodes = HashSet<ProviderElement>();
-    final queue = DoubleLinkedQueue<ProviderElement>();
-
-    // get providers that don't depend on other providers from this container
-    for (final pointer in _pointerManager.listProviderPointers()) {
-      if (pointer.targetContainer != this) continue;
-      final element = pointer.element;
-      if (element == null) continue;
-
-      var hasAncestorsInContainer = false;
-      element.visitAncestors((element) {
-        // We ignore dependencies that are defined in another container, as
-        // they are in a separate graph
-        if (element.container == this) {
-          hasAncestorsInContainer = true;
-        }
-      });
-
-      if (!hasAncestorsInContainer) {
-        queue.add(element);
-      }
-    }
-
-    while (queue.isNotEmpty) {
-      final element = queue.removeFirst();
-
-      if (!visitedNodes.add(element)) {
-        // Already visited
-        continue;
-      }
-
-      yield element;
-
-      // Queue the children of this element, but only if all of its ancestors
-      // were already visited before.
-      // If a child does not have all of its ancestors visited, when those
-      // ancestors will be visited, they will retry visiting this child.
-      element.visitChildren((dependent) {
-        if (dependent.container == this) {
-          // All the parents of a node must have been visited before a node is visited
-          var areAllAncestorsAlreadyVisited = true;
-          dependent.visitAncestors((e) {
-            if (e.container == this && !visitedNodes.contains(e)) {
-              areAllAncestorsAlreadyVisited = false;
-            }
-          });
-
-          if (areAllAncestorsAlreadyVisited) queue.add(dependent);
-        }
-      });
-    }
-  }
-
   @override
   String toString() => 'ProviderContainer#${shortHash(this)}()';
 }
@@ -1057,9 +1072,11 @@ extension ProviderContainerTest on ProviderContainer {
 
 /// Information about the pending mutation, when [ProviderObserver] emits
 /// an event while a mutation is in progress.
+/// {@category core}
 final class MutationContext {
   /// Information about the pending mutation, when [ProviderObserver] emits
   /// an event while a mutation is in progress.
+  /// @nodoc
   @internal
   MutationContext(this.invocation, this.notifier);
 
@@ -1071,8 +1088,10 @@ final class MutationContext {
 }
 
 /// Information about the [ProviderObserver] event.
+/// {@category core}
 final class ProviderObserverContext {
   /// Information about the [ProviderObserver] event.
+  /// @nodoc
   @internal
   ProviderObserverContext(
     this.provider,
@@ -1099,6 +1118,7 @@ final class ProviderObserverContext {
 /// An object that listens to the changes of a [ProviderContainer].
 ///
 /// This can be used for logging or making devtools.
+/// {@category core}
 abstract class ProviderObserver {
   /// An object that listens to the changes of a [ProviderContainer].
   ///

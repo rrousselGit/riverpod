@@ -39,7 +39,7 @@ const publicInLegacy = Public.inLibrary('legacy');
 
 /// Not public
 @internal
-const publicInPersist = Public.inLibrary('persist');
+const publicInPersist = Public.inLibrary('experimental/persist');
 
 /// Not public
 @internal

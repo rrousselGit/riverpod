@@ -69,6 +69,7 @@ abstract class $Value<ValueT> {
 ///   }
 /// }
 /// ```
+/// {@category notifier}
 @publicInRiverpodAndCodegen
 mixin AnyNotifier<StateT> {
   $Ref<StateT>? _ref;
@@ -373,9 +374,11 @@ abstract base class $ClassProvider< //
     );
   }
 
+  /// @nodoc
   @internal
   NotifierT create();
 
+  /// @nodoc
   @internal
   $ClassProvider<NotifierT, StateT, ValueT, CreatedT> $view({
     NotifierT Function()? create,
@@ -408,6 +411,7 @@ abstract base class $ClassProvider< //
     );
   }
 
+  /// @nodoc
   @internal
   @override
   $ClassProviderElement< //
@@ -454,6 +458,7 @@ final class _ClassProviderView<
     return _inner.create();
   }
 
+  /// @nodoc
   @internal
   @override
   $ClassProviderElement<NotifierT, StateT, ValueT, CreatedT> $createElement(

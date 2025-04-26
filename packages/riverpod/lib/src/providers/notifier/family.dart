@@ -39,6 +39,7 @@ final class FamilyNotifierProvider //
 
   final NotifierT Function() _createNotifier;
 
+  /// @nodoc
   @internal
   @override
   NotifierT create() => _createNotifier();
@@ -56,6 +57,7 @@ final class NotifierProviderFamily<
         StateT,
         FamilyNotifierProvider<NotifierT, StateT, ArgT>> {
   /// The [Family] of [FamilyNotifierProvider].
+  /// @nodoc
   @internal
   NotifierProviderFamily.internal(
     super._createFn, {

@@ -5,8 +5,7 @@ part of '../../framework.dart';
 @internal
 sealed class Node {
   /// Obtain the [ProviderElement] of a provider, creating it if necessary.
-  @internal
-  ProviderElement<StateT> readProviderElement<StateT>(
+  ProviderElement<StateT> _readProviderElement<StateT>(
     ProviderBase<StateT> provider,
   );
 }

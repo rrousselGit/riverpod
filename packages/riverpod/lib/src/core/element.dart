@@ -575,7 +575,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   @override
-  ProviderElement<T> readProviderElement<T>(ProviderBase<T> provider) {
+  ProviderElement<T> _readProviderElement<T>(ProviderBase<T> provider) {
     return container.readProviderElement(provider);
   }
 
