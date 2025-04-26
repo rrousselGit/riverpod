@@ -329,7 +329,7 @@ final class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
 ///   when that provider is no longer listened to.
 /// - [Provider.family], to allow providers to create a value from external parameters.
 /// {@endtemplate}
-  /// @nodoc
+/// @nodoc
 @internal
 @publicInCodegen
 class $ProviderElement<StateT>
