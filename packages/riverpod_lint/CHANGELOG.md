@@ -1,4 +1,4 @@
-## Unreleased build
+## Unreleased 3,0.0
 
 - All lints/assists now automatically add the relevant imports when
   updating code.
@@ -21,26 +21,6 @@ Various lints had their severity changed:
 - `scoped_providers_should_specify_dependencies` is now a WARNING
 - `notifier_extends` is now a WARNING
 - `provider_parameters` is now a WARNING
-
-## 3.0.0-dev.4 - 2023-11-27
-
-- `riverpod` upgraded to `3.0.0-dev.3`
-
-## 3.0.0-dev.3 - 2023-11-20
-
-- `riverpod` upgraded to `3.0.0-dev.2`
-
-## 3.0.0-dev.2 - 2023-11-20
-
-- Fix crash when encountering classes with a `ProviderBase` field.
-
-## 3.0.0-dev.1 - 2023-10-30
-
-- `riverpod_analyzer_utils` upgraded to `1.0.0-dev.0`
-
-## 3.0.0-dev.0 - 2023-10-29
-
-- `riverpod` upgraded to `3.0.0-dev.0`
 
 ## 2.6.5 - 2025-02-28
 

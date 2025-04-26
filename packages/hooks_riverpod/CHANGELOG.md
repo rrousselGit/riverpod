@@ -1,39 +1,97 @@
-## Unreleased build
+## Unreleased 3.0.0
+
+Say hello to Riverpod 3.0.0!  
+This major version is a transition version, to unblock the development of the project.
+It is quite possible that a 4.0.0 will be released relatively soon in the future, so keep
+that in mind when migrating.
+
+Here are some highlights about this version:
+
+- Offline and mutation support, as experimental features
+- Automatic retry support
+- Pause/resume support
+- Simplification of various aspects of the API (such as fusing `AutoDisposeNotifier`/`Notifier`)
+- Added a `Ref.mounted` to simplify dealing with provider disposal
+- Improved testing with the new `ProviderContainer.test()` and the ability to
+  mock a Notifier's `build` method without mocking the whole object using `provider.overrideWithBuild(...)`
+
+**Note about experimental features**:  
+Anything imported with `package:riverpod/experimental/....dart` are not stable features.
+They may be modified in breaking ways without a major version. Use with care!
+
+### Full change list
 
 - **Breaking**: `ChangeNotifierProvider`, `StateProvider` and `StateNotifierProvider`
   are moved out of `package:hooks_riverpod/hooks_riverpod.dart` to
   `package:hooks_riverpod/legacy.dart`.
 - Failing providers are now automatically retried after a delay.
   The delay can be optionally configured.
-
-## 3.0.0-dev.3 - 2023-11-27
-
-- Fix "pending timer" issue inside tests when using `ref.keepAlive()`.
-- Fix `Ref.invalidate`/`Ref.refresh` not throwing on circular dependency.
-- Fix an infinite loop caused by `ref.keepAlive` if the `KeepAliveLink` is immediately closed.
-- Fix `container.exists(provider)` on nested containers not checking their
-  parent containers.
-
-## 3.0.0-dev.2 - 2023-11-20
-
-Fix exceptions when using multiple root `ProviderContainers`/`ProviderScopes`.
-
-## 3.0.0-dev.1 - 2023-11-20
-
-- All notifier properties now throw an error if used after the notifier
-  has been disposed.
-- The error thrown when a notifier property is used inside the constructor
-  of a notifier has been improved.
-- Fix `ProviderObserver.didUpdateProvider` being called with an incorrect
-  "provider" parameter when the provider is overridden.
-
-## 3.0.0-dev.0 - 2023-10-29
-
-- **Breaking**: `AsyncValue` is now "sealed" and `AsyncData/AsyncLoading/AsyncError`
-  are "final". This means that it is no-longer possible to subclass
-  `AsyncValue` or the associated classes.
-- **Breaking**: Removed everything marked as "deprecated"
-- Bumped minimum Dart SDK to >= 3.0.0-dev
+- Allow using Ref synchronously after a provider has been invalidated.
+  This avoids mounted exceptions when doing multiple operations in a quick succession.
+- **Breaking**: All providers now use `==` to compare previous/new values and filter
+  updates.
+  If you want to revert to the old behavior, you can override `updateShouldNotify` inside
+  Notifiers.
+- Instead of `Provider.autoDispose()` and `Provider.autoDispose.family()`, it is now possible to write `Provider(isAutoDispose: true)` and `Provider.family(isAutoDispose: true)`.
+- **Breaking**: ProviderListenable.addListener is deleted and now internal-only.
+  A simpler alternative will be added in the future.
+- **Breaking**: ProviderObserver methods have been updated to take a `ProviderObserverContext` parameter.
+  This replaces the old `provider`+`container` parameters, and contains extra
+  information.
+- **Breaking**: It is now a runtime exception to "scope" a provider
+  that is not specifying `dependencies`.
+- **Breaking**: Removed all `Ref` subclasses (such `FutureProviderRef`).
+  Use `Ref` directly instead.
+  For `FutureProviderRef.future`, migrate to using an `AsyncNotifier`.
+- **Breaking** All ref and notifier methods besides "mounted" now throw if used after getting disposed.
+- **Breaking**: `StateProvider` and `StateNotifierProvider`
+  are moved out of `package:flutter_riverpod/flutter_riverpod.dart` to
+  `package:flutter_riverpod/legacy.dart`.
+- **Breaking** Some internal utils are no-longer exported.
+- **Breaking** `AsyncValue.value` now returns `null` during errors.
+- **Breaking** removed `AsyncValue.valueOrNull` (use `.value` instead).
+- `Stream/FutureProvider.overrideWithValue` was added back.
+- **Breaking**: `Notifier` and variants are now recreated whenever the provider
+  rebuilds. This enables using `Ref.mounted` to check dispose.
+- **Breaking**: `StreamProvider` now pauses its `StreamSubscription` when
+  the provider is not actively listened.
+- **Breaking**: Calling ref.watch multiple times calls ref.onListen every-times.
+- **Breaking**: A provider is now considered "paused" if all
+  of its listeners are also paused. So if a provider `A` is watched _only_ by a provider `B`, and `B` is currently unused,
+  then `A` will be paused.
+- **Breaking**: When an asynchronous provider rebuilds, it doesn't immediately stops
+  listening to its previous providers. Instead, those subscriptions are removed when the rebuild completes.  
+  This impacts how "auto-dispose" behaves. See https://github.com/rrousselGit/riverpod/issues/1253
+- Fix `StreamProvider` not cancelling the `StreamSubscription` if the stream is never emitted any value.
+- All `Ref` life-cycles (such as `Ref.onDispose`) and `Notifier.listenSelf`
+  now return a function to remove the listener.
+- Added methods to `ProviderObserver` for listening to "mutations".
+  Mutations are a new code-generation-only feature. See riverpod_generator's changelog
+  for more information.
+- Added `Ref.listen(..., weak: true)`.
+  When specifying `weak: true`, the listener will not cause the provider to be
+  initialized. This is useful when wanting to react to changes to a provider,
+  but not trigger a network request if not necessary.
+- `AsyncValue` now has an optional `progress` field.
+  This can be set by providers to allow the UI to show a custom progress logic.
+- An error is now thrown when trying to override a provider twice in the same
+  `ProviderContainer`.
+- Disposing a `ProviderContainer` now disposes of all of its sub `ProviderContainers` too.
+- Added `ProviderSubscription.pause()`/`.resume()`.
+  This enables temporarily stopping the subscription to a provider, without it possibly loosing its state when using `autoDispose`.
+- Added `ProviderContainer.test()`. This is a custom constructor for testing
+  purpose. It is meant to replace the `createContainer` utility.
+- Added `NotifierProvider.overrideWithBuild`, to override `Notifier.build` without
+  overriding methods of the notifier.
+- `Ref.mounted` has been added. It can now be used to check if a provider
+  was disposed.
+- When a provider is rebuilt, a new `Ref` is now created. This avoids
+  issues where an old build of a provider is still performing work.
+- Updated `AsyncValue` documentations to use pattern matching.
+- Added support for `Ref/ProviderContainer.invalidate(provider, asReload: true)`
+- Failing providers are now automatically retried after a delay.
+  The delay can be optionally configured.
+- Fixed a bug when overriding a specific provider of a `family`, combined with `dependencies: [family]`
 
 ## 2.6.1 - 2024-10-22
 

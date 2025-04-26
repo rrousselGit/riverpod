@@ -1,5 +1,31 @@
-## Unreleased build
+## Unreleased 3.0.0
 
+Say hello to Riverpod 3.0.0!  
+This major version is a transition version, to unblock the development of the project.
+It is quite possible that a 4.0.0 will be released relatively soon in the future, so keep
+that in mind when migrating.
+
+Here are some highlights about this version:
+
+- Offline and mutation support, as experimental features
+- Automatic retry support
+- Pause/resume support
+- Simplification of various aspects of the API (such as fusing `AutoDisposeNotifier`/`Notifier`)
+- Added a `Ref.mounted` to simplify dealing with provider disposal
+- Improved testing with the new `ProviderContainer.test()` and the ability to
+  mock a Notifier's `build` method without mocking the whole object using `provider.overrideWithBuild(...)`
+
+**Note about experimental features**:  
+Anything imported with `package:riverpod/experimental/....dart` are not stable features.
+They may be modified in breaking ways without a major version. Use with care!
+
+### Full change list
+
+- **Breaking**: `ChangeNotifierProvider`, `StateProvider` and `StateNotifierProvider`
+  are moved out of `package:hooks_riverpod/hooks_riverpod.dart` to
+  `package:hooks_riverpod/legacy.dart`.
+- Failing providers are now automatically retried after a delay.
+  The delay can be optionally configured.
 - Allow using Ref synchronously after a provider has been invalidated.
   This avoids mounted exceptions when doing multiple operations in a quick succession.
 - **Breaking**: All providers now use `==` to compare previous/new values and filter
@@ -66,36 +92,6 @@
 - Failing providers are now automatically retried after a delay.
   The delay can be optionally configured.
 - Fixed a bug when overriding a specific provider of a `family`, combined with `dependencies: [family]`
-
-## 3.0.0-dev.3 - 2023-11-27
-
-- Fix "pending timer" issue inside tests when using `ref.keepAlive()`.
-- Fix `Ref.invalidate`/`Ref.refresh` not throwing on circular dependency.
-- Fix an infinite loop caused by `ref.keepAlive` if the `KeepAliveLink` is
-  immediately closed.
-- Fix `container.exists(provider)` on nested containers not checking their
-  parent containers.
-
-## 3.0.0-dev.2 - 2023-11-20
-
-Fix exceptions when using multiple root `ProviderContainers`/`ProviderScopes`.
-
-## 3.0.0-dev.1 - 2023-11-20
-
-- All notifier properties now throw an error if used after the notifier
-  has been disposed.
-- The error thrown when a notifier property is used inside the constructor
-  of a notifier has been improved.
-- Fix `ProviderObserver.didUpdateProvider` being called with an incorrect
-  "provider" parameter when the provider is overridden.
-
-## 3.0.0-dev.0 - 2023-10-29
-
-- **Breaking**: `AsyncValue` is now "sealed" and `AsyncData/AsyncLoading/AsyncError`
-  are "final". This means that it is no-longer possible to subclass
-  `AsyncValue` or the associated classes.
-- **Breaking**: Removed everything marked as "deprecated"
-- Bumped minimum Dart SDK to >= 3.0.0-dev
 
 ## 2.6.1 - 2024-10-22
 
