@@ -7,6 +7,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/src/internals.dart' show ProviderScopeState;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:riverpod/legacy.dart';
+import 'package:riverpod/src/internals.dart'
+    show NodeInternal, InternalProviderContainer;
 
 class SimpleVisibility extends StatelessWidget {
   const SimpleVisibility({

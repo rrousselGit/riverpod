@@ -59,6 +59,7 @@ abstract base class $NotifierProvider //
     required super.retry,
   });
 
+  /// @nodoc
   @internal
   @override
   $NotifierProviderElement<NotifierT, StateT> $createElement(

@@ -21,6 +21,7 @@ abstract base class $FunctionalProvider< //
     required super.retry,
   });
 
+  /// @nodoc
   @internal
   $FunctionalProvider<StateT, CreatedT> $view({
     required Create<CreatedT> create,
@@ -69,9 +70,11 @@ abstract base class $FunctionalProvider< //
     );
   }
 
+  /// @nodoc
   @internal
   CreatedT create(Ref ref);
 
+  /// @nodoc
   @internal
   @override
   $FunctionalProviderElement<StateT, CreatedT> $createElement(
@@ -102,6 +105,7 @@ final class _FunctionalProviderView<StateT, CreatedT> //
   @override
   CreatedT create(Ref ref) => _createOverride(ref);
 
+  /// @nodoc
   @internal
   @override
   $FunctionalProviderElement<StateT, CreatedT> $createElement(

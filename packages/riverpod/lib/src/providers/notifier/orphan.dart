@@ -101,6 +101,7 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
         );
 
   /// An implementation detail of Riverpod
+  /// @nodoc
   @internal
   NotifierProvider.internal(
     this._createNotifier, {
@@ -121,6 +122,7 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
 
   final NotifierT Function() _createNotifier;
 
+  /// @nodoc
   @internal
   @override
   NotifierT create() => _createNotifier();

@@ -53,6 +53,7 @@ final class StateProvider<StateT> extends $FunctionalProvider<StateT, StateT>
         );
 
   /// An implementation detail of Riverpod
+  /// @nodoc
   @internal
   StateProvider.internal(
     this._createFn, {
@@ -87,6 +88,7 @@ final class StateProvider<StateT> extends $FunctionalProvider<StateT, StateT>
         },
       );
 
+  /// @nodoc
   @internal
   @override
   // ignore: library_private_types_in_public_api, not public
@@ -154,6 +156,7 @@ final class StateProviderFamily<StateT, Arg> extends FunctionalFamily< //
     StateT,
     StateProvider<StateT>> {
   /// The [Family] of [StateProvider].
+  /// @nodoc
   @internal
   StateProviderFamily(
     super._createFn, {
@@ -168,6 +171,7 @@ final class StateProviderFamily<StateT, Arg> extends FunctionalFamily< //
         );
 
   /// The [Family] of [AsyncNotifierProvider].
+  /// @nodoc
   @internal
   StateProviderFamily.internal(
     super._createFn, {

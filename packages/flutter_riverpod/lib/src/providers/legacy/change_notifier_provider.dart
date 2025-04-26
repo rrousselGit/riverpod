@@ -86,6 +86,7 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
         );
 
   /// An implementation detail of Riverpod
+  /// @nodoc
   @internal
   const ChangeNotifierProvider.internal(
     this._createFn, {
@@ -132,6 +133,7 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   @override
   NotifierT create(Ref ref) => _createFn(ref);
 
+  /// @nodoc
   @internal
   @override
   // ignore: library_private_types_in_public_api, not public
@@ -199,6 +201,7 @@ final class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
     extends FunctionalFamily<NotifierT, Arg, NotifierT,
         ChangeNotifierProvider<NotifierT>> {
   /// The [Family] of [ChangeNotifierProvider].
+  /// @nodoc
   @internal
   ChangeNotifierProviderFamily(
     super._createFn, {

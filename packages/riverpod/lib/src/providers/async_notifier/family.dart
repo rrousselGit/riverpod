@@ -45,6 +45,7 @@ final class AsyncNotifierProviderFamily< //
         FutureOr<StateT>,
         FamilyAsyncNotifierProvider<NotifierT, StateT, ArgT>> {
   /// The [Family] of [AsyncNotifierProvider].
+  /// @nodoc
   @internal
   AsyncNotifierProviderFamily.internal(
     super._createFn, {
@@ -81,6 +82,7 @@ final class FamilyAsyncNotifierProvider< //
 
   final NotifierT Function() _createNotifier;
 
+  /// @nodoc
   @internal
   @override
   NotifierT create() => _createNotifier();

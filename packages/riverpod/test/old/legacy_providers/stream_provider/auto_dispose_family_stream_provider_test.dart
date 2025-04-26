@@ -1,4 +1,5 @@
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/internals.dart' show InternalProviderContainer;
 import 'package:riverpod/src/internals.dart' show ProviderElement;
 import 'package:test/test.dart';
 

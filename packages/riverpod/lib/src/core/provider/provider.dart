@@ -89,6 +89,7 @@ abstract final class ProviderBase<StateT> extends ProviderOrFamily
   }
 
   /// An internal method that defines how a provider behaves.
+  /// @nodoc
   @visibleForOverriding
   ProviderElement<StateT> $createElement($ProviderPointer pointer);
 
@@ -101,6 +102,7 @@ abstract final class ProviderBase<StateT> extends ProviderOrFamily
   /// This method only returns a non-null value when using `riverpod_generator`.
   // This is voluntarily not implemented by default, to force all non-generated
   // providers to apply the LegacyProviderMixin.
+  /// @nodoc
   @internal
   String? debugGetCreateSourceHash();
 
@@ -142,6 +144,7 @@ base mixin LegacyProviderMixin<StateT> on ProviderBase<StateT> {
         other.argument == argument;
   }
 
+  /// @nodoc
   @internal
   @override
   String? debugGetCreateSourceHash() => null;

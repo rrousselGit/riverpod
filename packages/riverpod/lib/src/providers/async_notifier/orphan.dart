@@ -79,6 +79,7 @@ final class AsyncNotifierProvider< //
         );
 
   /// An implementation detail of Riverpod
+  /// @nodoc
   @internal
   const AsyncNotifierProvider.internal(
     this._createNotifier, {
@@ -99,6 +100,7 @@ final class AsyncNotifierProvider< //
 
   final NotifierT Function() _createNotifier;
 
+  /// @nodoc
   @internal
   @override
   NotifierT create() => _createNotifier();

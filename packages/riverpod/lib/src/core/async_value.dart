@@ -568,7 +568,8 @@ final class AsyncData<StateT> extends AsyncValue<StateT> {
   /// {@macro async_value.data}
   const AsyncData(
     StateT value, {
-    @internal bool isFromCache = false,
+    /// @nodoc
+    bool isFromCache = false,
   }) : this._(
           value,
           isLoading: false,
