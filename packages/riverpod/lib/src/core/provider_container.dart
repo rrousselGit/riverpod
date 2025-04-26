@@ -652,6 +652,7 @@ extension NodeInternal on Node {
 /// Inside tests, consider using [ProviderContainer.test].
 /// This will automatically dispose the container at the end of the test.
 /// {@endtemplate}
+/// {@category core}
 @publicInRiverpodAndCodegen
 final class ProviderContainer implements Node {
   /// {@macro riverpod.provider_container}
@@ -1071,6 +1072,7 @@ extension ProviderContainerTest on ProviderContainer {
 
 /// Information about the pending mutation, when [ProviderObserver] emits
 /// an event while a mutation is in progress.
+/// {@category core}
 final class MutationContext {
   /// Information about the pending mutation, when [ProviderObserver] emits
   /// an event while a mutation is in progress.
@@ -1086,6 +1088,7 @@ final class MutationContext {
 }
 
 /// Information about the [ProviderObserver] event.
+/// {@category core}
 final class ProviderObserverContext {
   /// Information about the [ProviderObserver] event.
   /// @nodoc
@@ -1115,6 +1118,7 @@ final class ProviderObserverContext {
 /// An object that listens to the changes of a [ProviderContainer].
 ///
 /// This can be used for logging or making devtools.
+/// {@category core}
 abstract class ProviderObserver {
   /// An object that listens to the changes of a [ProviderContainer].
   ///

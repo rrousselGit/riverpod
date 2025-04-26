@@ -84,6 +84,7 @@ typedef ConsumerBuilder = Widget Function(
 /// - [child], a way to optimize the widget tree by passing a child widget that
 ///   won't rebuild when the provider changes.
 /// {@endtemplate}
+/// {@category core}
 final class Consumer extends ConsumerWidget {
   /// {@macro riverpod.consumer}
   const Consumer({super.key, required this.builder, this.child});
@@ -230,6 +231,7 @@ final class Consumer extends ConsumerWidget {
 /// - [Consumer], to help reducing the number of rebuilt widgets without making
 ///   a new widget.
 /// {@endtemplate}
+/// {@category core}
 abstract class ConsumerWidget extends ConsumerStatefulWidget {
   /// {@macro riverpod.consumer_widget}
   const ConsumerWidget({super.key});
@@ -313,6 +315,7 @@ class _ConsumerState extends ConsumerState<ConsumerWidget> {
 /// }
 /// ```
 /// {@endtemplate}
+/// {@category core}
 abstract class ConsumerStatefulWidget extends StatefulWidget {
   /// {@macro riverpod.consumer_stateful_widget}
   const ConsumerStatefulWidget({super.key});
@@ -353,6 +356,7 @@ abstract class ConsumerStatefulWidget extends StatefulWidget {
 ///   }
 /// }
 /// ```
+/// {@category core}
 abstract class ConsumerState<T extends ConsumerStatefulWidget>
     extends State<T> {
   /// {@macro flutter_riverpod.widget_ref}

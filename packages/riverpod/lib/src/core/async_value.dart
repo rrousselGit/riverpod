@@ -60,6 +60,7 @@ extension AsyncTransition<StateT> on AsyncValue<StateT> {
 /// - [FutureProvider], [StreamProvider] which transforms a [Future] into
 ///   an [AsyncValue].
 /// - [AsyncValue.guard], to simplify transforming a [Future] into an [AsyncValue].
+/// {@category core}
 @sealed
 @immutable
 @publicInRiverpodAndCodegen
@@ -563,6 +564,7 @@ sealed class AsyncValue<StateT> {
 }
 
 /// {@macro async_value.data}
+/// {@category core}
 @publicInRiverpodAndCodegen
 final class AsyncData<StateT> extends AsyncValue<StateT> {
   /// {@macro async_value.data}
@@ -645,6 +647,7 @@ final class AsyncData<StateT> extends AsyncValue<StateT> {
 }
 
 /// {@macro async_value.loading}
+/// {@category core}
 @publicInRiverpodAndCodegen
 final class AsyncLoading<StateT> extends AsyncValue<StateT> {
   /// {@macro async_value.loading}
@@ -765,6 +768,7 @@ final class AsyncLoading<StateT> extends AsyncValue<StateT> {
 }
 
 /// {@macro async_value.error_ctor}
+/// {@category core}
 @publicInRiverpodAndCodegen
 final class AsyncError<StateT> extends AsyncValue<StateT> {
   /// {@macro async_value.error_ctor}

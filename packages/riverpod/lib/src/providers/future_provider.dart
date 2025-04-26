@@ -93,6 +93,7 @@ base mixin $FutureProvider<StateT>
 /// - [FutureProvider.family], to create a [FutureProvider] from external parameters
 /// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no longer needed.
 /// {@endtemplate}
+/// {@category provider}
 final class FutureProvider<StateT>
     extends $FunctionalProvider<AsyncValue<StateT>, FutureOr<StateT>>
     with

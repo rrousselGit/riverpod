@@ -82,6 +82,7 @@ base mixin $StreamProvider<StateT>
 /// - [StreamProvider.family], to create a [StreamProvider] from external parameters
 /// - [StreamProvider.autoDispose], to destroy the state of a [StreamProvider] when no longer needed.
 /// {@endtemplate}
+/// {@category provider}
 final class StreamProvider<StateT>
     extends $FunctionalProvider<AsyncValue<StateT>, Stream<StateT>>
     with
