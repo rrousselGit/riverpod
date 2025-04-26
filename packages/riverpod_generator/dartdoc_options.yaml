@@ -1,0 +1,15 @@
+dartdoc:
+  categories:
+    provider:
+      markdown: doc/First.md
+      name: Awesome
+    core:
+      markdown: doc/Second.md
+      name: Great
+    notifier:
+      markdown: doc/Second.md
+      name: Great
+  categoryOrder:
+    - core
+    - provider
+    - notifier

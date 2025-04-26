@@ -1,0 +1,16 @@
+dartdoc:
+  categories:
+    provider:
+      name: Awesome
+      markdown: doc/get-started.md
+    core:
+      name: Great
+      markdown: doc/get-started.md
+    notifier:
+      name: Great
+      markdown: doc/get-started.md
+  categoryOrder:
+    - core
+    - provider
+    - notifier
+  showUndocumentedCategories: true

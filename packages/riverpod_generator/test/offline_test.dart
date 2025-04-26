@@ -1,4 +1,4 @@
-import 'package:riverpod/persist.dart';
+import 'package:riverpod/experimental/persist.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 

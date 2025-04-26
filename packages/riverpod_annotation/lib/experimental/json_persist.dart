@@ -1,8 +1,8 @@
 import 'dart:convert';
 
-import 'package:riverpod/persist.dart';
+import 'package:riverpod/experimental/persist.dart';
 
-import '../persist.dart';
+import 'persist.dart';
 
 /// {@template json_persist}
 /// An annotation placed on Notifiers to indicated that they should be persisted
