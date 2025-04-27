@@ -13,6 +13,16 @@ import 'package:test/test.dart';
 import '../src/core/provider_container_test.dart';
 
 Future<void> main() async {
+  test('does not throw when scoping a provider with no dependencies', () {
+    final a = Provider((ref) => 0);
+    final b = Provider.family((ref, _) => 0);
+    final root = ProviderContainer.test();
+    final container = ProviderContainer.test(parent: root, overrides: [a, b]);
+
+    expect(container.read(a), 0);
+    expect(container.read(b(0)), 0);
+  });
+
   test(
       'reading a provider from a scoped container, '
       'then adding a new container with an override, '

@@ -683,27 +683,12 @@ final class ProviderContainer implements Node {
       for (final override in overrides) {
         switch (override) {
           case _ProviderOverride():
-            if (parent != null &&
-                override.origin.allTransitiveDependencies == null &&
-                override.origin.from?.allTransitiveDependencies == null) {
-              throw AssertionError(
-                'Tried to scope a provider that did not specify "dependencies": ${override.origin}',
-              );
-            }
-
             if (!overrideOrigins.add(override.origin)) {
               throw AssertionError(
                 'Tried to override a provider twice within the same container: ${override.origin}',
               );
             }
           case _FamilyOverride():
-            if (parent != null &&
-                override.from.allTransitiveDependencies == null) {
-              throw AssertionError(
-                'Tried to scope a family that did not specify "dependencies": ${override.from}',
-              );
-            }
-
             if (!overrideOrigins.add(override.from)) {
               throw AssertionError(
                 'Tried to override a family twice within the same container: ${override.from}',

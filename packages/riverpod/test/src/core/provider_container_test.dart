@@ -988,38 +988,6 @@ void main() {
 
   group('ProviderContainer', () {
     group('constructor', () {
-      test('throws if trying to scope a provider/family with no dependencies',
-          () {
-        final provider = Provider((_) => 0);
-        final family = Provider.family<int, int>((ref, _) => 0);
-
-        final root = ProviderContainer.test();
-
-        expect(
-          () => ProviderContainer.test(
-            parent: root,
-            overrides: [provider],
-          ),
-          throwsA(isA<AssertionError>()),
-        );
-
-        expect(
-          () => ProviderContainer.test(
-            parent: root,
-            overrides: [family],
-          ),
-          throwsA(isA<AssertionError>()),
-        );
-
-        expect(
-          () => ProviderContainer.test(
-            parent: root,
-            overrides: [family(21)],
-          ),
-          throwsA(isA<AssertionError>()),
-        );
-      });
-
       test('throws if "parent" is disposed', () {
         final root = ProviderContainer();
         root.dispose();
