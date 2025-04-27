@@ -38,8 +38,6 @@ They may be modified in breaking ways without a major version. Use with care!
 - **Breaking**: ProviderObserver methods have been updated to take a `ProviderObserverContext` parameter.
   This replaces the old `provider`+`container` parameters, and contains extra
   information.
-- **Breaking**: It is now a runtime exception to "scope" a provider
-  that is not specifying `dependencies`.
 - **Breaking**: Removed all `Ref` subclasses (such `FutureProviderRef`).
   Use `Ref` directly instead.
   For `FutureProviderRef.future`, migrate to using an `AsyncNotifier`.
