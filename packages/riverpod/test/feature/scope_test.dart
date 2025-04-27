@@ -10,7 +10,7 @@ import 'package:riverpod/src/internals.dart'
         InternalProviderContainer;
 import 'package:test/test.dart';
 
-import 'provider_container_test.dart';
+import '../src/core/provider_container_test.dart';
 
 Future<void> main() async {
   test(
