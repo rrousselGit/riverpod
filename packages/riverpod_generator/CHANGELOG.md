@@ -1,4 +1,4 @@
-## Unreleased build
+## Unreleased 3.0.0-dev.4
 
 - **Breaking** Removed support for `@riverpod external int fn();`.
 - **Breaking** Family arguments are no-longer available on the `Ref` object.
@@ -17,6 +17,7 @@
 
 - Added support for mutations. See also `@mutation` for further information.
 - Added support for `@Riverpod(retry: ...)`
+
 ## 2.6.5 - 2025-02-28
 
 - `riverpod_analyzer_utils` upgraded to `0.5.10`

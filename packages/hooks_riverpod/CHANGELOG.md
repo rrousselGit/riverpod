@@ -1,4 +1,4 @@
-## Unreleased 3.0.0
+## Unreleased 3.0.0-dev.4
 
 Say hello to Riverpod 3.0.0!  
 This major version is a transition version, to unblock the development of the project.
