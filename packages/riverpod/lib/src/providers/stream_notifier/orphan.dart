@@ -68,6 +68,7 @@ final class StreamNotifierProvider< //
         );
 
   /// An implementation detail of Riverpod
+  /// @nodoc
   @internal
   const StreamNotifierProvider.internal(
     this._createNotifier, {

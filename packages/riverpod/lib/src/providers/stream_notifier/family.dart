@@ -72,6 +72,7 @@ final class StreamNotifierProviderFamily< //
         Stream<StateT>,
         FamilyStreamNotifierProvider<NotifierT, StateT, ArgT>> {
   /// The [Family] of [FamilyStreamNotifierProvider].
+  /// @nodoc
   @internal
   StreamNotifierProviderFamily.internal(
     super._createFn, {
