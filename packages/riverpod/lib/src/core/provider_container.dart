@@ -1063,13 +1063,12 @@ final class MutationContext {
   /// an event while a mutation is in progress.
   /// @nodoc
   @internal
-  MutationContext(this.invocation, this.notifier);
+  MutationContext(this.invocation);
 
   /// Information about the method invoked by the mutation, and its arguments.
-  final Invocation invocation;
-
-  /// The notifier that triggered the mutation.
-  final AnyNotifier<Object?> notifier;
+  ///
+  /// This is only available when using code-generation.
+  final Invocation? invocation;
 }
 
 /// Information about the [ProviderObserver] event.
@@ -1081,7 +1080,8 @@ final class ProviderObserverContext {
   ProviderObserverContext(
     this.provider,
     this.container, {
-    this.mutation,
+    required this.mutation,
+    required this.notifier,
   });
 
   /// The provider that triggered the event.
@@ -1089,6 +1089,9 @@ final class ProviderObserverContext {
 
   /// The container that owns [provider]'s state.
   final ProviderContainer container;
+
+  /// The notifier that triggered the event, if any.
+  final AnyNotifier<Object?>? notifier;
 
   /// The pending mutation while the observer was called.
   ///
@@ -1098,6 +1101,17 @@ final class ProviderObserverContext {
   /// [ProviderObserver.didDisposeProvider] will contain the mutation that
   /// disposed the provider.
   final MutationContext? mutation;
+
+  @override
+  String toString() {
+    final args = [
+      'provider: $provider',
+      'container: $container',
+      if (notifier != null) 'notifier: ${describeIdentity(notifier)}',
+      if (mutation != null) 'mutation: ${describeIdentity(mutation)}',
+    ];
+    return 'ProviderObserverContext(${args.join(', ')})';
+  }
 }
 
 /// An object that listens to the changes of a [ProviderContainer].

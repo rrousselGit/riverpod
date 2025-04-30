@@ -455,7 +455,12 @@ abstract class _MutationBase<
 
     listenable.result = $ResultData(copyWith(IdleMutationState<ResultT>._()));
 
-    final context = ProviderObserverContext(element.origin, element.container);
+    final context = ProviderObserverContext(
+      element.origin,
+      element.container,
+      mutation: null,
+      notifier: element.classListenable.value,
+    );
 
     _notifyObserver((obs) => obs.mutationReset(context));
   }
@@ -466,7 +471,7 @@ abstract class _MutationBase<
   ) {
     element.flush();
     final notifier = element.classListenable.value;
-    final mutationContext = MutationContext(invocation, notifier);
+    final mutationContext = MutationContext(invocation);
 
     return runZoned(
       zoneValues: {mutationZoneKey: mutationContext},
@@ -487,6 +492,7 @@ abstract class _MutationBase<
       element.origin,
       element.container,
       mutation: mutationContext,
+      notifier: element.classListenable.value,
     );
 
     switch (mutation.state) {

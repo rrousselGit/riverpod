@@ -453,6 +453,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       origin,
       container,
       mutation: _currentMutationContext(),
+      notifier: null,
     );
   }
 

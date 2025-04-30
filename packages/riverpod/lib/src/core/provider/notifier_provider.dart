@@ -536,6 +536,16 @@ abstract class $ClassProviderElement< //
   }
 
   @override
+  ProviderObserverContext _currentObserverContext() {
+    return ProviderObserverContext(
+      origin,
+      container,
+      mutation: _currentMutationContext(),
+      notifier: classListenable.result?.value,
+    );
+  }
+
+  @override
   void visitListenables(
     void Function($ElementLense element) listenableVisitor,
   ) {

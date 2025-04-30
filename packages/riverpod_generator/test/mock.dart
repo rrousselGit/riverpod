@@ -1,6 +1,8 @@
 import 'package:mockito/mockito.dart';
+import 'package:riverpod/misc.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/experimental/mutation.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
 class ListenerMock<T> with Mock {
@@ -173,8 +175,8 @@ class ObserverMock extends Mock implements ProviderObserver {
 }
 
 TypeMatcher<ProviderObserverContext> isProviderObserverContext(
-  Object? provider,
-  Object? container, {
+  ProviderBase<Object?> provider,
+  ProviderContainer container, {
   required Object? mutation,
 }) {
   var matcher = isA<ProviderObserverContext>();
@@ -182,20 +184,18 @@ TypeMatcher<ProviderObserverContext> isProviderObserverContext(
   matcher = matcher.having((e) => e.provider, 'provider', provider);
   matcher = matcher.having((e) => e.container, 'container', container);
   matcher = matcher.having((e) => e.mutation, 'mutation', mutation);
+  if (provider is $ClassProvider) {
+    matcher = matcher.having(
+      (e) => e.notifier,
+      'notifier',
+      container.read(provider.notifier),
+    );
+  }
 
   return matcher;
 }
 
-TypeMatcher<MutationContext> isMutationContext(
-  Object? invocation, {
-  Object? notifier,
-}) {
-  var matcher = isA<MutationContext>();
-
-  matcher = matcher.having((e) => e.invocation, 'invocation', invocation);
-  if (notifier != null) {
-    matcher = matcher.having((e) => e.notifier, 'notifier', notifier);
-  }
-
-  return matcher;
+TypeMatcher<MutationContext> isMutationContext(Object? invocation) {
+  return isA<MutationContext>()
+      .having((e) => e.invocation, 'invocation', invocation);
 }

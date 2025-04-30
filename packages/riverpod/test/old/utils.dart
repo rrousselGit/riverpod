@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
-import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/framework.dart';
 import 'package:test/test.dart';
 
 final isAssertionError = isA<AssertionError>();
@@ -233,31 +233,29 @@ class ObserverMock extends Mock implements ProviderObserver {
 class CustomObserver extends ProviderObserver {}
 
 TypeMatcher<ProviderObserverContext> isProviderObserverContext(
-  Object? provider,
-  Object? container, {
-  Object? mutation,
+  ProviderBase<Object?> provider,
+  ProviderContainer container, {
+  Object? notifier,
 }) {
   var matcher = isA<ProviderObserverContext>();
 
   matcher = matcher.having((e) => e.provider, 'provider', provider);
   matcher = matcher.having((e) => e.container, 'container', container);
-  if (mutation != null) {
-    matcher = matcher.having((e) => e.mutation, 'mutation', mutation);
+  matcher = matcher.having((e) => e.mutation, 'mutation', null);
+  if (provider is $ClassProvider) {
+    if (notifier == null) {
+      throw ArgumentError(
+        r'You must provide a notifier when using $ClassProvider',
+      );
+    }
+
+    matcher = matcher.having((e) => e.notifier, 'notifier', notifier);
   }
 
   return matcher;
 }
 
-TypeMatcher<MutationContext> isMutationContext(
-  Object? invocation, {
-  Object? notifier,
-}) {
-  var matcher = isA<MutationContext>();
-
-  matcher = matcher.having((e) => e.invocation, 'invocation', invocation);
-  if (notifier != null) {
-    matcher = matcher.having((e) => e.notifier, 'notifier', notifier);
-  }
-
-  return matcher;
+TypeMatcher<MutationContext> isMutationContext(Object? invocation) {
+  return isA<MutationContext>()
+      .having((e) => e.invocation, 'invocation', invocation);
 }

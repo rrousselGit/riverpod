@@ -1935,11 +1935,18 @@ void main() {
         );
 
         container.listen(provider, listener.call, fireImmediately: true);
+        final notifier = container.read(provider.notifier);
 
         verifyOnly(
           observer,
           observer.didAddProvider(
-            argThat(isProviderObserverContext(provider, container)),
+            argThat(
+              isProviderObserverContext(
+                provider,
+                container,
+                notifier: notifier,
+              ),
+            ),
             0,
           ),
         );
@@ -1953,7 +1960,13 @@ void main() {
         verifyOnly(
           observer,
           observer.didUpdateProvider(
-            argThat(isProviderObserverContext(provider, container)),
+            argThat(
+              isProviderObserverContext(
+                provider,
+                container,
+                notifier: notifier,
+              ),
+            ),
             0,
             0,
           ),
@@ -1977,11 +1990,18 @@ void main() {
         );
 
         container.listen(provider, listener.call, fireImmediately: true);
+        final notifier = container.read(provider.notifier);
 
         verifyOnly(
           observer,
           observer.didAddProvider(
-            argThat(isProviderObserverContext(provider, container)),
+            argThat(
+              isProviderObserverContext(
+                provider,
+                container,
+                notifier: notifier,
+              ),
+            ),
             0,
           ),
         );
@@ -2012,11 +2032,18 @@ void main() {
         );
 
         container.listen(provider, listener.call, fireImmediately: true);
+        final notifier = container.read(provider.notifier);
 
         verifyOnly(
           observer,
           observer.didAddProvider(
-            argThat(isProviderObserverContext(provider, container)),
+            argThat(
+              isProviderObserverContext(
+                provider,
+                container,
+                notifier: notifier,
+              ),
+            ),
             firstValue,
           ),
         );
@@ -2026,17 +2053,30 @@ void main() {
         result = secondValue;
         callNotifyListeners = true;
         container.refresh(provider);
+        final notifier2 = container.read(provider.notifier);
 
         verifyOnly(selfListener, selfListener(firstValue, secondValue));
         verifyOnly(listener, listener(firstValue, secondValue));
         verify(
           observer.didDisposeProvider(
-            argThat(isProviderObserverContext(provider, container)),
+            argThat(
+              isProviderObserverContext(
+                provider,
+                container,
+                notifier: notifier,
+              ),
+            ),
           ),
         );
         verify(
           observer.didUpdateProvider(
-            argThat(isProviderObserverContext(provider, container)),
+            argThat(
+              isProviderObserverContext(
+                provider,
+                container,
+                notifier: notifier2,
+              ),
+            ),
             firstValue,
             secondValue,
           ),
