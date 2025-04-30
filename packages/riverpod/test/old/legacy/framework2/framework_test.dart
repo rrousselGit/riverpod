@@ -4,7 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart'
-    show $ProviderElement, ProviderElement;
+    show $ProviderElement, ProviderElement, InternalProviderContainer;
 import 'package:riverpod/src/internals.dart' show NodeInternal;
 import 'package:test/test.dart';
 

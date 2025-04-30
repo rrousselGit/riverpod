@@ -632,6 +632,11 @@ extension InternalProviderContainer on ProviderContainer {
       });
     }
   }
+
+  /// All the containers that have this container as `parent`.
+  ///
+  /// Do not use in production
+  List<ProviderContainer> get debugChildren => UnmodifiableListView(_children);
 }
 
 @internal
@@ -754,11 +759,6 @@ final class ProviderContainer implements Node {
   final ProviderContainer? _parent;
 
   final _children = <ProviderContainer>[];
-
-  /// All the containers that have this container as `parent`.
-  ///
-  /// Do not use in production
-  List<ProviderContainer> get debugChildren => UnmodifiableListView(_children);
 
   late final ProviderPointerManager _pointerManager;
 
