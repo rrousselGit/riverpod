@@ -8,6 +8,7 @@ resolution: workspace
 
 dependencies:
   clock: ^1.1.1
+  collection: ^1.14.0
   meta: ^1.15.0
   riverpod: 3.0.0-dev.12
   sqflite: ^2.4.1
