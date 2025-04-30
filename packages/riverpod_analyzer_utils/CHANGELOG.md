@@ -1,4 +1,4 @@
-## Unreleased build
+## 1.0.0-dev.2 - 2025-04-30
 
 - **Breaking**: Rewrote all RiverpodAst nodes to instead be extensions on `AstNodes`.
   Too many changes to detail everything. I'm the only one who uses this package anyway.

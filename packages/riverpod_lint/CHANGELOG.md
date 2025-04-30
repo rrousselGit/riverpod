@@ -1,4 +1,4 @@
-## Unreleased 3.0.0-dev.12
+## 3.0.0-dev.12 - 2025-04-30
 
 - All lints/assists now automatically add the relevant imports when
   updating code.
