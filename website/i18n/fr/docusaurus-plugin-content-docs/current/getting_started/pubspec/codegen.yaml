@@ -6,7 +6,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_riverpod: ^2.1.1
+  flutter_riverpod: ^3.0.0-dev.12
   riverpod_annotation: ^1.0.6
 
 dev_dependencies:
