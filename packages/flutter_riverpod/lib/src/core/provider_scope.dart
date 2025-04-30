@@ -69,7 +69,7 @@ part of '../core.dart';
 /// - [UncontrolledProviderScope], which exposes a [ProviderContainer] to the widget
 ///   tree without managing its life-cycles.
 /// {@endtemplate}
-/// {@category core}
+/// {@category Core}
 final class ProviderScope extends StatefulWidget {
   /// {@macro riverpod.provider_scope}
   const ProviderScope({
@@ -215,7 +215,7 @@ final class ProviderScopeState extends State<ProviderScope> {
 ///
 /// This is what makes `ref.watch`/`Consumer`/`ref.read` work.
 /// {@endtemplate}
-/// {@category core}
+/// {@category Core}
 final class UncontrolledProviderScope extends InheritedWidget {
   /// {@macro riverpod.UncontrolledProviderScope}
   const UncontrolledProviderScope({

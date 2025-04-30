@@ -2,7 +2,7 @@ part of '../framework.dart';
 
 /// Represents the subscription to a [ProviderListenable].
 ///
-/// {@category core}
+/// {@category Core}
 // This always is implemented with ProviderSubscriptionWithOrigin.
 // This interface exists to remove the redundant type parameters.
 @optionalTypeArgs
