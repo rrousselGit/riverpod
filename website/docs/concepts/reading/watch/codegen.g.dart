@@ -22,7 +22,7 @@ final class FilterTypeProvider
           name: r'filterTypeProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -61,7 +61,7 @@ final class TodosProvider extends $NotifierProvider<Todos, List<Todo>> {
           name: r'todosProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -115,7 +115,7 @@ final class FilteredTodoListProvider
           name: r'filteredTodoListProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

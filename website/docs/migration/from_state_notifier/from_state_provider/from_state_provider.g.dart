@@ -21,7 +21,7 @@ final class CounterNotifierProvider
           name: r'counterNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

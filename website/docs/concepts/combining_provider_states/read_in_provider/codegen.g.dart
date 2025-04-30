@@ -21,7 +21,7 @@ final class AnotherProvider extends $FunctionalProvider<MyValue, MyValue>
           name: r'anotherProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -61,7 +61,7 @@ final class MyProvider extends $FunctionalProvider<MyValue, MyValue>
           name: r'myProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

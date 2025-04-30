@@ -21,7 +21,7 @@ final class NumberProvider extends $FunctionalProvider<int, int>
           name: r'numberProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -61,7 +61,7 @@ final class DoubledProvider extends $FunctionalProvider<int, int>
           name: r'doubledProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

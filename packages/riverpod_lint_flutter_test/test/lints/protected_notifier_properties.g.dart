@@ -18,7 +18,7 @@ final class AProvider extends $NotifierProvider<A, int> {
           name: r'aProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -69,7 +69,7 @@ final class A2Provider extends $NotifierProvider<A2, int> {
           name: r'a2Provider',
           isAutoDispose: false,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -119,7 +119,7 @@ final class A3Provider extends $NotifierProvider<A3, int> {
           name: r'a3Provider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -169,7 +169,7 @@ final class A3Family extends $Family
           retry: null,
           name: r'a3Provider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -213,7 +213,7 @@ final class A4Provider extends $NotifierProvider<A4, int> {
           name: r'a4Provider',
           isAutoDispose: false,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -263,7 +263,7 @@ final class A4Family extends $Family
           retry: null,
           name: r'a4Provider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: false,
         );
 
@@ -307,7 +307,7 @@ final class A5Provider extends $AsyncNotifierProvider<A5, int> {
           name: r'a5Provider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -350,7 +350,7 @@ final class A5Family extends $Family
           retry: null,
           name: r'a5Provider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -394,7 +394,7 @@ final class A6Provider extends $AsyncNotifierProvider<A6, int> {
           name: r'a6Provider',
           isAutoDispose: false,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -437,7 +437,7 @@ final class A6Family extends $Family
           retry: null,
           name: r'a6Provider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: false,
         );
 
@@ -481,7 +481,7 @@ final class A7Provider extends $StreamNotifierProvider<A7, int> {
           name: r'a7Provider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -524,7 +524,7 @@ final class A7Family extends $Family
           retry: null,
           name: r'a7Provider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -568,7 +568,7 @@ final class A8Provider extends $StreamNotifierProvider<A8, int> {
           name: r'a8Provider',
           isAutoDispose: false,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -611,7 +611,7 @@ final class A8Family extends $Family
           retry: null,
           name: r'a8Provider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: false,
         );
 
@@ -656,7 +656,7 @@ final class BProvider extends $NotifierProvider<B, int> {
           name: r'bProvider',
           isAutoDispose: false,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -707,7 +707,7 @@ final class B2Provider extends $NotifierProvider<B2, int> {
           name: r'b2Provider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

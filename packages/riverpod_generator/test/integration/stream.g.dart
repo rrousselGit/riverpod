@@ -19,7 +19,7 @@ final class GenericProvider<T extends num>
           name: r'genericProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -67,7 +67,7 @@ final class GenericFamily extends $Family {
           retry: null,
           name: r'genericProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -102,7 +102,7 @@ final class GenericClassProvider<T extends num>
           name: r'genericClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -150,7 +150,7 @@ final class GenericClassFamily extends $Family {
           retry: null,
           name: r'genericClassProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -220,7 +220,7 @@ final class PublicProvider
           name: r'publicProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -253,7 +253,7 @@ final class _PrivateProvider
           name: r'_privateProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -293,7 +293,7 @@ final class FamilyProvider
           name: r'familyProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -359,7 +359,7 @@ final class FamilyFamily extends $Family
           retry: null,
           name: r'familyProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -395,7 +395,7 @@ final class PublicClassProvider
           name: r'publicClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -440,7 +440,7 @@ final class _PrivateClassProvider
           name: r'_privateClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -492,7 +492,7 @@ final class FamilyClassProvider
           name: r'familyClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -547,7 +547,7 @@ final class FamilyClassFamily extends $Family
           retry: null,
           name: r'familyClassProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 

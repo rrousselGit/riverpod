@@ -21,7 +21,7 @@ final class FetchUserProvider
           name: r'fetchUserProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -68,7 +68,7 @@ final class FetchUserFamily extends $Family
           retry: null,
           name: r'fetchUserProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 

@@ -18,7 +18,7 @@ final class GeneratorProvider extends $FunctionalProvider<int, int>
           name: r'generatorProvider',
           isAutoDispose: false,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -73,7 +73,7 @@ final class GeneratorFamily extends $Family
           retry: null,
           name: r'generatorProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: false,
         );
 

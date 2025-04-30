@@ -25,7 +25,7 @@ final class RandomProvider extends $FunctionalProvider<int, int>
           name: r'randomProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -90,7 +90,7 @@ final class RandomFamily extends $Family
           retry: null,
           name: r'randomProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 

@@ -23,7 +23,7 @@ final class ProviderWithDependencies2Provider
             _private2Provider,
             public2Provider
           ],
-          allTransitiveDependencies: const <ProviderOrFamily>{
+          $allTransitiveDependencies: const <ProviderOrFamily>{
             ProviderWithDependencies2Provider.$allTransitiveDependencies0,
             ProviderWithDependencies2Provider.$allTransitiveDependencies1,
             ProviderWithDependencies2Provider.$allTransitiveDependencies2,
@@ -78,7 +78,7 @@ final class FamilyWithDependencies2Provider
           name: r'familyWithDependencies2Provider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   static const $allTransitiveDependencies0 = providerWithDependenciesProvider;
@@ -147,7 +147,7 @@ final class FamilyWithDependencies2Family extends $Family
             _private2Provider,
             public2Provider
           ],
-          allTransitiveDependencies: const <ProviderOrFamily>{
+          $allTransitiveDependencies: const <ProviderOrFamily>{
             FamilyWithDependencies2Provider.$allTransitiveDependencies0,
             FamilyWithDependencies2Provider.$allTransitiveDependencies1,
             FamilyWithDependencies2Provider.$allTransitiveDependencies2,
@@ -183,7 +183,7 @@ final class NotifierWithDependenciesProvider
             _private2Provider,
             public2Provider
           ],
-          allTransitiveDependencies: const <ProviderOrFamily>{
+          $allTransitiveDependencies: const <ProviderOrFamily>{
             NotifierWithDependenciesProvider.$allTransitiveDependencies0,
             NotifierWithDependenciesProvider.$allTransitiveDependencies1,
             NotifierWithDependenciesProvider.$allTransitiveDependencies2,
@@ -252,7 +252,7 @@ final class NotifierFamilyWithDependenciesProvider
           name: r'notifierFamilyWithDependenciesProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   static const $allTransitiveDependencies0 = providerWithDependenciesProvider;
@@ -319,7 +319,7 @@ final class NotifierFamilyWithDependenciesFamily extends $Family
             _private2Provider,
             public2Provider
           ],
-          allTransitiveDependencies: const <ProviderOrFamily>{
+          $allTransitiveDependencies: const <ProviderOrFamily>{
             NotifierFamilyWithDependenciesProvider.$allTransitiveDependencies0,
             NotifierFamilyWithDependenciesProvider.$allTransitiveDependencies1,
             NotifierFamilyWithDependenciesProvider.$allTransitiveDependencies2,
@@ -371,7 +371,7 @@ final class _Private2Provider extends $FunctionalProvider<int, int>
           name: r'_private2Provider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -411,7 +411,7 @@ final class Public2Provider extends $FunctionalProvider<int, int>
           name: r'public2Provider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

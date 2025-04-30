@@ -18,7 +18,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
           name: r'myNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -71,7 +71,7 @@ final class _PrivateClassProvider
           name: r'_privateClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -123,7 +123,7 @@ final class GenericsProvider<A extends num, B>
           name: r'genericsProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -179,7 +179,7 @@ final class GenericsFamily extends $Family {
           retry: null,
           name: r'genericsProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -245,7 +245,7 @@ final class NoGenericsProvider<A extends num, B>
           name: r'noGenericsProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -301,7 +301,7 @@ final class NoGenericsFamily extends $Family {
           retry: null,
           name: r'noGenericsProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -367,7 +367,7 @@ final class MissingGenericsProvider<A, B>
           name: r'missingGenericsProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -423,7 +423,7 @@ final class MissingGenericsFamily extends $Family {
           retry: null,
           name: r'missingGenericsProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -488,7 +488,7 @@ final class WrongOrderProvider<A, B>
           name: r'wrongOrderProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -544,7 +544,7 @@ final class WrongOrderFamily extends $Family {
           retry: null,
           name: r'wrongOrderProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 

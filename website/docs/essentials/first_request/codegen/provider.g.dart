@@ -31,7 +31,7 @@ final class ActivityProvider
           name: r'activityProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

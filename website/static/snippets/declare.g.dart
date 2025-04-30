@@ -20,7 +20,7 @@ final class CountProvider extends $NotifierProvider<Count, int> {
           name: r'countProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

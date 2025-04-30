@@ -21,7 +21,7 @@ final class MyNotifierProvider
           name: r'myNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

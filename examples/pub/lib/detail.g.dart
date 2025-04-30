@@ -22,7 +22,7 @@ final class FetchPackageDetailsProvider
           name: r'fetchPackageDetailsProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -70,7 +70,7 @@ final class FetchPackageDetailsFamily extends $Family
           retry: null,
           name: r'fetchPackageDetailsProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -97,7 +97,7 @@ final class LikedPackagesProvider extends $FunctionalProvider<
           name: r'likedPackagesProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -131,7 +131,7 @@ final class PubRepositoryProvider
           name: r'pubRepositoryProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -186,7 +186,7 @@ final class PackageMetricsProvider
           name: r'packageMetricsProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -236,7 +236,7 @@ final class PackageMetricsFamily extends $Family
           retry: null,
           name: r'packageMetricsProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 

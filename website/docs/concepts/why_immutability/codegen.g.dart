@@ -21,7 +21,7 @@ final class ThemeNotifierProvider
           name: r'themeNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

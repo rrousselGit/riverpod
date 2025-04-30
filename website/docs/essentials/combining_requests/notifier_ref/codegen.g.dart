@@ -21,7 +21,7 @@ final class OtherProvider extends $FunctionalProvider<int, int>
           name: r'otherProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -60,7 +60,7 @@ final class ExampleProvider extends $NotifierProvider<Example, int> {
           name: r'exampleProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

@@ -22,7 +22,7 @@ final class RepositoryProvider
           name: r'repositoryProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -61,7 +61,7 @@ final class CounterProvider extends $NotifierProvider<Counter, int> {
           name: r'counterProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

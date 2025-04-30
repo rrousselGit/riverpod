@@ -23,7 +23,7 @@ final class FnProvider extends $FunctionalProvider<int, int>
           name: r'fnProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -88,7 +88,7 @@ final class FnFamily extends $Family
           retry: null,
           name: r'fnProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -121,7 +121,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
           name: r'myNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -181,7 +181,7 @@ final class MyNotifierFamily extends $Family
           retry: null,
           name: r'myNotifierProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -238,7 +238,7 @@ final class Regression2959Provider
           name: r'regression2959Provider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

@@ -19,7 +19,7 @@ final class Counter2Provider extends $FunctionalProvider<int, int>
           name: r'counter2Provider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -59,7 +59,7 @@ final class CounterProvider extends $FunctionalProvider<int, int>
           name: r'counterProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

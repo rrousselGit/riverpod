@@ -22,7 +22,7 @@ final class TodoListProvider
           name: r'todoListProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

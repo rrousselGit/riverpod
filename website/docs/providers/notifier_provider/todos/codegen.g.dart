@@ -20,7 +20,7 @@ final class TodosProvider extends $NotifierProvider<Todos, List<Todo>> {
           name: r'todosProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

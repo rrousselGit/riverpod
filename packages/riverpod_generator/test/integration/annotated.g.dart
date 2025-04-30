@@ -21,7 +21,7 @@ final class FunctionalProvider extends $FunctionalProvider<String, String>
           name: r'functionalProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -76,7 +76,7 @@ final class FunctionalFamily extends $Family
           retry: null,
           name: r'functionalProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -103,7 +103,7 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
           name: r'classBasedProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -154,7 +154,7 @@ final class ClassBasedFamily extends $Family
           retry: null,
           name: r'classBasedProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -203,7 +203,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
           name: r'familyProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -258,7 +258,7 @@ final class FamilyFamily extends $Family
           retry: null,
           name: r'familyProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -284,7 +284,7 @@ final class NotCopiedFunctionalProvider
           name: r'notCopiedFunctionalProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -325,7 +325,7 @@ final class NotCopiedClassBasedProvider
           name: r'notCopiedClassBasedProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -378,7 +378,7 @@ final class NotCopiedFamilyProvider extends $FunctionalProvider<String, String>
           name: r'notCopiedFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -433,7 +433,7 @@ final class NotCopiedFamilyFamily extends $Family
           retry: null,
           name: r'notCopiedFamilyProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 

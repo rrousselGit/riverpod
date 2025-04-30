@@ -22,7 +22,7 @@ final class RepositoryProvider
           name: r'repositoryProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -62,7 +62,7 @@ final class ValueProvider extends $FunctionalProvider<String, String>
           name: r'valueProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

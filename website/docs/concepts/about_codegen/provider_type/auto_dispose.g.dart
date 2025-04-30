@@ -21,7 +21,7 @@ final class Example1Provider extends $FunctionalProvider<String, String>
           name: r'example1Provider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -61,7 +61,7 @@ final class Example2Provider extends $FunctionalProvider<String, String>
           name: r'example2Provider',
           isAutoDispose: false,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

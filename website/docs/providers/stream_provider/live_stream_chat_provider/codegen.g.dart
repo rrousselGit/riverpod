@@ -22,7 +22,7 @@ final class ChatProvider
           name: r'chatProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

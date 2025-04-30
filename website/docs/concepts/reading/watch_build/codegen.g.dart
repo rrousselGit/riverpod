@@ -20,7 +20,7 @@ final class TodoListProvider extends $NotifierProvider<TodoList, List<Todo>> {
           name: r'todoListProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -73,7 +73,7 @@ final class CounterProvider extends $FunctionalProvider<int, int>
           name: r'counterProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

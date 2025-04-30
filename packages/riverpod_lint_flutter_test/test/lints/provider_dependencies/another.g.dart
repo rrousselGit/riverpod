@@ -19,7 +19,7 @@ final class BProvider extends $FunctionalProvider<int, int>
           name: r'bProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -59,7 +59,7 @@ final class AnotherScopedProvider extends $FunctionalProvider<int, int>
           name: r'anotherScopedProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
   @override
@@ -99,7 +99,7 @@ final class AnotherNonEmptyScopedProvider extends $FunctionalProvider<int, int>
           name: r'anotherNonEmptyScopedProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[anotherScopedProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
+          $allTransitiveDependencies: const <ProviderOrFamily>[
             AnotherNonEmptyScopedProvider.$allTransitiveDependencies0,
           ],
         );

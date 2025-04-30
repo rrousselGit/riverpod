@@ -33,7 +33,7 @@ final class ThemeProvider extends $FunctionalProvider<ThemeData, ThemeData>
           name: r'themeProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
   @override

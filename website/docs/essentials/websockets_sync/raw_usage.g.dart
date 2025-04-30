@@ -22,7 +22,7 @@ final class RawStreamProvider
           name: r'rawStreamProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

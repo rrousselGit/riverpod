@@ -19,7 +19,7 @@ final class SimpleProvider extends $FunctionalProvider<String, String>
           name: r'simpleProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -59,7 +59,7 @@ final class Simple2Provider extends $FunctionalProvider<String, String>
           name: r'simple2Provider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -98,7 +98,7 @@ final class SimpleClassProvider extends $NotifierProvider<SimpleClass, String> {
           name: r'simpleClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

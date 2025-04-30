@@ -31,7 +31,7 @@ final class MyListenableProvider extends $FunctionalProvider<
           name: r'myListenableProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

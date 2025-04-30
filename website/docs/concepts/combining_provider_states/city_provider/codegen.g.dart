@@ -21,7 +21,7 @@ final class CityProvider extends $FunctionalProvider<String, String>
           name: r'cityProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

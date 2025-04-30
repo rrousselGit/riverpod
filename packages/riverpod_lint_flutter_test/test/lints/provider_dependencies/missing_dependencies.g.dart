@@ -19,7 +19,7 @@ final class DepProvider extends $FunctionalProvider<int, int>
           name: r'depProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
   @override
@@ -59,7 +59,7 @@ final class TransitiveDepProvider extends $FunctionalProvider<int, int>
           name: r'transitiveDepProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[depProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
+          $allTransitiveDependencies: const <ProviderOrFamily>[
             TransitiveDepProvider.$allTransitiveDependencies0,
           ],
         );
@@ -103,7 +103,7 @@ final class Dep2Provider extends $FunctionalProvider<int, int>
           name: r'dep2Provider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
   @override
@@ -142,7 +142,7 @@ final class DepFamilyProvider extends $FunctionalProvider<int, int>
           name: r'depFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -197,7 +197,7 @@ final class DepFamilyFamily extends $Family
           retry: null,
           name: r'depFamilyProvider',
           dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
           isAutoDispose: true,
         );
 
@@ -229,7 +229,7 @@ final class PlainAnnotationProvider extends $FunctionalProvider<int, int>
           name: r'plainAnnotationProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -269,7 +269,7 @@ final class CustomAnnotationProvider extends $FunctionalProvider<int, int>
           name: r'customAnnotationProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -310,7 +310,7 @@ final class CustomAnnotationWithTrailingCommaProvider
           name: r'customAnnotationWithTrailingCommaProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -352,7 +352,7 @@ final class ExistingDepProvider extends $FunctionalProvider<int, int>
           name: r'existingDepProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
   @override
@@ -392,7 +392,7 @@ final class MultipleDepsProvider extends $FunctionalProvider<int, int>
           name: r'multipleDepsProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
   @override
@@ -438,7 +438,7 @@ final class ProviderWithDartDocProvider extends $FunctionalProvider<int, int>
           name: r'providerWithDartDocProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
   @override

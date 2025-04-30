@@ -22,7 +22,7 @@ final class PublicProvider extends $FunctionalProvider<String, String>
           name: r'publicProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -65,7 +65,7 @@ final class Supports$inNamesProvider extends $FunctionalProvider<String, String>
           name: r'supports$inNamesProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -115,7 +115,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
           name: r'familyProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -190,7 +190,7 @@ final class FamilyFamily extends $Family
           retry: null,
           name: r'familyProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -227,7 +227,7 @@ final class _PrivateProvider extends $FunctionalProvider<String, String>
           name: r'_privateProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -269,7 +269,7 @@ final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
           name: r'publicClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -322,7 +322,7 @@ final class _PrivateClassProvider
           name: r'_privateClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -384,7 +384,7 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
           name: r'familyClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -448,7 +448,7 @@ final class FamilyClassFamily extends $Family
           retry: null,
           name: r'familyClassProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -526,7 +526,7 @@ final class Supports$InClassNameProvider
           name: r'supports$InClassNameProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

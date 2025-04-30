@@ -22,7 +22,7 @@ final class StorageProvider extends $FunctionalProvider<
           name: r'storageProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -56,7 +56,7 @@ final class CustomAnnotationProvider
           name: r'customAnnotationProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -101,7 +101,7 @@ final class JsonProvider
           name: r'jsonProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -146,7 +146,7 @@ final class JsonFamily extends $Family
           retry: null,
           name: r'jsonProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -196,7 +196,7 @@ final class Json2Provider
           name: r'json2Provider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -245,7 +245,7 @@ final class CustomJsonProvider
           name: r'customJsonProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

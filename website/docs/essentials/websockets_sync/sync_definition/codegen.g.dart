@@ -21,7 +21,7 @@ final class SynchronousExampleProvider extends $FunctionalProvider<int, int>
           name: r'synchronousExampleProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

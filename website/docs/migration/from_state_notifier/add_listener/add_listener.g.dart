@@ -20,7 +20,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
           name: r'myNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

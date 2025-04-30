@@ -21,7 +21,7 @@ final class ExampleProvider extends $FunctionalProvider<int, int>
           name: r'exampleProvider',
           isAutoDispose: false,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

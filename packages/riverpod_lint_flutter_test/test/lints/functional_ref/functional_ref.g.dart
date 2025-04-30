@@ -19,7 +19,7 @@ final class NamelessProvider extends $FunctionalProvider<int, int>
           name: r'namelessProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -58,7 +58,7 @@ final class GenericsProvider<A extends num, B>
           name: r'genericsProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -114,7 +114,7 @@ final class GenericsFamily extends $Family {
           retry: null,
           name: r'genericsProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -152,7 +152,7 @@ final class ValidProvider extends $FunctionalProvider<int, int>
           name: r'validProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

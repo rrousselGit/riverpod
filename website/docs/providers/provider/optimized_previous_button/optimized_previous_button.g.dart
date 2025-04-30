@@ -20,7 +20,7 @@ final class PageIndexProvider extends $NotifierProvider<PageIndex, int> {
           name: r'pageIndexProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -73,7 +73,7 @@ final class CanGoToPreviousPageProvider extends $FunctionalProvider<bool, bool>
           name: r'canGoToPreviousPageProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

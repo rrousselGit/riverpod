@@ -19,7 +19,7 @@ final class CountProvider extends $FunctionalProvider<int, int>
           name: r'myCountPod',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -60,7 +60,7 @@ final class CountFutureProvider
           name: r'myCountFuturePod',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -93,7 +93,7 @@ final class CountStreamProvider
           name: r'myCountStreamPod',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -125,7 +125,7 @@ final class CountNotifierProvider
           name: r'myCountNotifierPod',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -178,7 +178,7 @@ final class CountAsyncNotifierProvider
           name: r'myCountAsyncNotifierPod',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -224,7 +224,7 @@ final class CountStreamNotifierProvider
           name: r'myCountStreamNotifierPod',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -269,7 +269,7 @@ final class Count2Provider extends $FunctionalProvider<int, int>
           name: r'myFamilyCount2ProviderFamily',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -324,7 +324,7 @@ final class Count2Family extends $Family
           retry: null,
           name: r'myFamilyCount2ProviderFamily',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -350,7 +350,7 @@ final class CountFuture2Provider
           name: r'myFamilyCountFuture2ProviderFamily',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -397,7 +397,7 @@ final class CountFuture2Family extends $Family
           retry: null,
           name: r'myFamilyCountFuture2ProviderFamily',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -423,7 +423,7 @@ final class CountStream2Provider
           name: r'myFamilyCountStream2ProviderFamily',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -470,7 +470,7 @@ final class CountStream2Family extends $Family
           retry: null,
           name: r'myFamilyCountStream2ProviderFamily',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -495,7 +495,7 @@ final class CountNotifier2Provider
           name: r'myFamilyCountNotifier2ProviderFamily',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -546,7 +546,7 @@ final class CountNotifier2Family extends $Family
           retry: null,
           name: r'myFamilyCountNotifier2ProviderFamily',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -592,7 +592,7 @@ final class CountAsyncNotifier2Provider
           name: r'myFamilyCountAsyncNotifier2ProviderFamily',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -638,7 +638,7 @@ final class CountAsyncNotifier2Family extends $Family
           retry: null,
           name: r'myFamilyCountAsyncNotifier2ProviderFamily',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -685,7 +685,7 @@ final class CountStreamNotifier2Provider
           name: r'myFamilyCountStreamNotifier2ProviderFamily',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -731,7 +731,7 @@ final class CountStreamNotifier2Family extends $Family
           retry: null,
           name: r'myFamilyCountStreamNotifier2ProviderFamily',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 

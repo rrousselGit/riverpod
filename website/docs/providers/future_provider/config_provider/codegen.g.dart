@@ -22,7 +22,7 @@ final class FetchConfigurationProvider extends $FunctionalProvider<
           name: r'fetchConfigurationProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

@@ -21,7 +21,7 @@ final class DurationProvider extends $FunctionalProvider<Duration, Duration>
           name: r'durationProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -61,7 +61,7 @@ final class RepositoryProvider extends $FunctionalProvider<_MyRepo, _MyRepo>
           name: r'repositoryProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -100,7 +100,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
           name: r'myNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

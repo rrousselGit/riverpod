@@ -38,7 +38,7 @@ final class StorageProvider extends $FunctionalProvider<
           name: r'storageProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -72,7 +72,7 @@ final class TodosNotifierProvider
           name: r'todosNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

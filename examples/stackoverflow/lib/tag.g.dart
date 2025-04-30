@@ -21,7 +21,7 @@ final class TagThemeProvider extends $FunctionalProvider<TagTheme, TagTheme>
           name: r'tagThemeProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[themeProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
+          $allTransitiveDependencies: const <ProviderOrFamily>[
             TagThemeProvider.$allTransitiveDependencies0,
           ],
         );

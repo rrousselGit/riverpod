@@ -19,7 +19,7 @@ final class SyncTodoListProvider
           name: r'syncTodoListProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -211,7 +211,7 @@ final class AsyncTodoListProvider
           name: r'asyncTodoListProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -397,7 +397,7 @@ final class SimpleProvider extends $NotifierProvider<Simple, int> {
           name: r'simpleProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -645,7 +645,7 @@ final class SimpleFamilyProvider extends $NotifierProvider<SimpleFamily, int> {
           name: r'simpleFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -715,7 +715,7 @@ final class SimpleFamilyFamily extends $Family
           retry: null,
           name: r'simpleFamilyProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -881,7 +881,7 @@ final class SimpleAsyncProvider
           name: r'simpleAsyncProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -1064,7 +1064,7 @@ final class SimpleAsync2Provider
           name: r'simpleAsync2Provider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -1118,7 +1118,7 @@ final class SimpleAsync2Family extends $Family
           retry: null,
           name: r'simpleAsync2Provider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -1230,7 +1230,7 @@ final class GenericProvider<T extends num>
           name: r'genericProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -1287,7 +1287,7 @@ final class GenericFamily extends $Family {
           retry: null,
           name: r'genericProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -1417,7 +1417,7 @@ final class GenericMutProvider extends $AsyncNotifierProvider<GenericMut, int> {
           name: r'genericMutProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -1540,7 +1540,7 @@ final class FailingCtorProvider extends $NotifierProvider<FailingCtor, int> {
           name: r'failingCtorProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -1669,7 +1669,7 @@ final class TypedProvider extends $NotifierProvider<Typed, String> {
           name: r'typedProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

@@ -19,7 +19,7 @@ final class GeneratedProvider extends $FunctionalProvider<_Test, _Test>
           name: r'generatedProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -59,7 +59,7 @@ final class GeneratedFamilyProvider extends $FunctionalProvider<_Test, _Test>
           name: r'generatedFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -114,7 +114,7 @@ final class GeneratedFamilyFamily extends $Family
           retry: null,
           name: r'generatedFamilyProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -140,7 +140,7 @@ final class GeneratedClassProvider
           name: r'generatedClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -193,7 +193,7 @@ final class GeneratedClassFamilyProvider
           name: r'generatedClassFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -246,7 +246,7 @@ final class GeneratedClassFamilyFamily extends $Family
           retry: null,
           name: r'generatedClassFamilyProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -292,7 +292,7 @@ final class $DynamicProvider extends $FunctionalProvider<Object?, Object?>
           name: r'$dynamicProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -332,7 +332,7 @@ final class $DynamicFamilyProvider extends $FunctionalProvider<Object?, Object?>
           name: r'$dynamicFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -387,7 +387,7 @@ final class $DynamicFamilyFamily extends $Family
           retry: null,
           name: r'$dynamicFamilyProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -413,7 +413,7 @@ final class $DynamicClassProvider
           name: r'$dynamicClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -466,7 +466,7 @@ final class $DynamicClassFamilyProvider
           name: r'$dynamicClassFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -520,7 +520,7 @@ final class $DynamicClassFamilyFamily extends $Family
           retry: null,
           name: r'$dynamicClassFamilyProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -565,7 +565,7 @@ final class _DynamicProvider extends $FunctionalProvider<Object?, Object?>
           name: r'_dynamicProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -620,7 +620,7 @@ final class _DynamicFamily extends $Family
           retry: null,
           name: r'_dynamicProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -647,7 +647,7 @@ final class AliasProvider
           name: r'aliasProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -688,7 +688,7 @@ final class AliasFamilyProvider
           name: r'aliasFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -743,7 +743,7 @@ final class AliasFamilyFamily extends $Family
           retry: null,
           name: r'aliasFamilyProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -769,7 +769,7 @@ final class AliasClassProvider
           name: r'aliasClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -822,7 +822,7 @@ final class AliasClassFamilyProvider
           name: r'aliasClassFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -875,7 +875,7 @@ final class AliasClassFamilyFamily extends $Family
           retry: null,
           name: r'aliasClassFamilyProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 

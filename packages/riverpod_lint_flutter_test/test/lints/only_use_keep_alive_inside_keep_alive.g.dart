@@ -19,7 +19,7 @@ final class KeepAliveProvider extends $FunctionalProvider<int, int>
           name: r'keepAliveProvider',
           isAutoDispose: false,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -59,7 +59,7 @@ final class KeepAliveClassProvider
           name: r'keepAliveClassProvider',
           isAutoDispose: false,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -112,7 +112,7 @@ final class AutoDisposeProvider extends $FunctionalProvider<int, int>
           name: r'autoDisposeProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -152,7 +152,7 @@ final class AutoDisposeClassProvider
           name: r'autoDisposeClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -205,7 +205,7 @@ final class FnProvider extends $FunctionalProvider<int, int>
           name: r'fnProvider',
           isAutoDispose: false,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

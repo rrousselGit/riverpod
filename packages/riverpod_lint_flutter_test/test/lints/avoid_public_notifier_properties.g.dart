@@ -19,7 +19,7 @@ final class GeneratedNotifierProvider
           name: r'generatedNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -70,7 +70,7 @@ final class GeneratedNotifierFamily extends $Family
           retry: null,
           name: r'generatedNotifierProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 

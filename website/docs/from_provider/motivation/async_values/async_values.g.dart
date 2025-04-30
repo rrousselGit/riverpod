@@ -22,7 +22,7 @@ final class ItemsApiProvider
           name: r'itemsApiProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -55,7 +55,7 @@ final class EvenItemsProvider
           name: r'evenItemsProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

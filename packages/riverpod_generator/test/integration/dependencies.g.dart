@@ -19,7 +19,7 @@ final class DepProvider extends $FunctionalProvider<int, int>
           name: r'depProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -58,7 +58,7 @@ final class FamilyProvider extends $FunctionalProvider<int, int>
           name: r'familyProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -113,7 +113,7 @@ final class FamilyFamily extends $Family
           retry: null,
           name: r'familyProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -138,7 +138,7 @@ final class Dep2Provider extends $NotifierProvider<Dep2, int> {
           name: r'dep2Provider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -189,7 +189,7 @@ final class Family2Provider extends $NotifierProvider<Family2, int> {
           name: r'family2Provider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -240,7 +240,7 @@ final class Family2Family extends $Family
           retry: null,
           name: r'family2Provider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -291,7 +291,7 @@ final class ProviderProvider extends $FunctionalProvider<int, int>
             dep2Provider,
             family2Provider
           ],
-          allTransitiveDependencies: const <ProviderOrFamily>{
+          $allTransitiveDependencies: const <ProviderOrFamily>{
             ProviderProvider.$allTransitiveDependencies0,
             ProviderProvider.$allTransitiveDependencies1,
             ProviderProvider.$allTransitiveDependencies2,
@@ -346,7 +346,7 @@ final class Provider2Provider extends $FunctionalProvider<int, int>
             dep2Provider,
             family2Provider
           ],
-          allTransitiveDependencies: const <ProviderOrFamily>{
+          $allTransitiveDependencies: const <ProviderOrFamily>{
             Provider2Provider.$allTransitiveDependencies0,
             Provider2Provider.$allTransitiveDependencies1,
             Provider2Provider.$allTransitiveDependencies2,
@@ -400,7 +400,7 @@ final class Provider3Provider extends $NotifierProvider<Provider3, int> {
             dep2Provider,
             family2Provider
           ],
-          allTransitiveDependencies: const <ProviderOrFamily>{
+          $allTransitiveDependencies: const <ProviderOrFamily>{
             Provider3Provider.$allTransitiveDependencies0,
             Provider3Provider.$allTransitiveDependencies1,
             Provider3Provider.$allTransitiveDependencies2,
@@ -461,7 +461,7 @@ final class Provider4Provider extends $NotifierProvider<Provider4, int> {
           name: r'provider4Provider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   static const $allTransitiveDependencies0 = depProvider;
@@ -522,7 +522,7 @@ final class Provider4Family extends $Family
             dep2Provider,
             family2Provider
           ],
-          allTransitiveDependencies: const <ProviderOrFamily>{
+          $allTransitiveDependencies: const <ProviderOrFamily>{
             Provider4Provider.$allTransitiveDependencies0,
             Provider4Provider.$allTransitiveDependencies1,
             Provider4Provider.$allTransitiveDependencies2,
@@ -573,7 +573,7 @@ final class TransitiveDependenciesProvider extends $FunctionalProvider<int, int>
           name: r'transitiveDependenciesProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[providerProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>{
+          $allTransitiveDependencies: const <ProviderOrFamily>{
             TransitiveDependenciesProvider.$allTransitiveDependencies0,
             TransitiveDependenciesProvider.$allTransitiveDependencies1,
             TransitiveDependenciesProvider.$allTransitiveDependencies2,
@@ -635,7 +635,7 @@ final class SmallTransitiveDependencyCountProvider
             familyProvider,
             dep2Provider
           ],
-          allTransitiveDependencies: const <ProviderOrFamily>[
+          $allTransitiveDependencies: const <ProviderOrFamily>[
             SmallTransitiveDependencyCountProvider.$allTransitiveDependencies0,
             SmallTransitiveDependencyCountProvider.$allTransitiveDependencies1,
             SmallTransitiveDependencyCountProvider.$allTransitiveDependencies2,
@@ -685,7 +685,7 @@ final class EmptyDependenciesFunctionalProvider
           name: r'emptyDependenciesFunctionalProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
   @override
@@ -727,7 +727,7 @@ final class EmptyDependenciesClassBasedProvider
           name: r'emptyDependenciesClassBasedProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
   @override
@@ -784,7 +784,7 @@ final class ProviderWithDependenciesProvider
             _privateDepProvider,
             publicDepProvider
           ],
-          allTransitiveDependencies: const <ProviderOrFamily>[
+          $allTransitiveDependencies: const <ProviderOrFamily>[
             ProviderWithDependenciesProvider.$allTransitiveDependencies0,
             ProviderWithDependenciesProvider.$allTransitiveDependencies1,
           ],
@@ -831,7 +831,7 @@ final class _PrivateDepProvider extends $FunctionalProvider<int, int>
           name: r'_privateDepProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -871,7 +871,7 @@ final class PublicDepProvider extends $FunctionalProvider<int, int>
           name: r'publicDepProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -911,7 +911,7 @@ final class DuplicateDependenciesProvider extends $FunctionalProvider<int, int>
           name: r'duplicateDependenciesProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[depProvider, dep2Provider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
+          $allTransitiveDependencies: const <ProviderOrFamily>[
             DuplicateDependenciesProvider.$allTransitiveDependencies0,
             DuplicateDependenciesProvider.$allTransitiveDependencies1,
           ],
@@ -961,7 +961,7 @@ final class DuplicateDependencies2Provider extends $FunctionalProvider<int, int>
             familyProvider,
             family2Provider
           ],
-          allTransitiveDependencies: const <ProviderOrFamily>[
+          $allTransitiveDependencies: const <ProviderOrFamily>[
             DuplicateDependencies2Provider.$allTransitiveDependencies0,
             DuplicateDependencies2Provider.$allTransitiveDependencies1,
           ],
@@ -1012,7 +1012,7 @@ final class TransitiveDuplicateDependenciesProvider
             duplicateDependenciesProvider,
             duplicateDependencies2Provider
           ],
-          allTransitiveDependencies: const <ProviderOrFamily>{
+          $allTransitiveDependencies: const <ProviderOrFamily>{
             TransitiveDuplicateDependenciesProvider.$allTransitiveDependencies0,
             TransitiveDuplicateDependenciesProvider.$allTransitiveDependencies1,
             TransitiveDuplicateDependenciesProvider.$allTransitiveDependencies2,

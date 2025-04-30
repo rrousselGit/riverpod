@@ -21,7 +21,7 @@ final class ItemsProvider extends $FunctionalProvider<List<Item>, List<Item>>
           name: r'itemsProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -62,7 +62,7 @@ final class EvenItemsProvider
           name: r'evenItemsProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

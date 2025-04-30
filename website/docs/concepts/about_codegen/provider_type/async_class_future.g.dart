@@ -20,7 +20,7 @@ final class ExampleProvider extends $AsyncNotifierProvider<Example, String> {
           name: r'exampleProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

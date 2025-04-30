@@ -22,7 +22,7 @@ final class StreamExampleProvider
           name: r'streamExampleProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

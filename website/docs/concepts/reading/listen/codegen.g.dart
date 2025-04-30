@@ -21,7 +21,7 @@ final class AnotherProvider extends $FunctionalProvider<void, void>
           name: r'anotherProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

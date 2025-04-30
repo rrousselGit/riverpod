@@ -19,7 +19,7 @@ final class AProvider extends $FunctionalProvider<String, String>
           name: r'aProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -57,7 +57,7 @@ final class BProvider extends $FunctionalProvider<String, String>
           name: r'bProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -112,7 +112,7 @@ final class BFamily extends $Family
           retry: myRetry2,
           name: r'bProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 

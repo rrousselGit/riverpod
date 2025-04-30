@@ -22,7 +22,7 @@ final class CompletedTodosProvider
           name: r'completedTodosProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

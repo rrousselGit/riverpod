@@ -19,7 +19,7 @@ final class UnimplementedScopedProvider
           name: r'unimplementedScopedProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
   @override
@@ -73,7 +73,7 @@ final class ScopedProvider extends $FunctionalProvider<int, int>
           name: r'scopedProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
   @override
@@ -113,7 +113,7 @@ final class RootProvider extends $FunctionalProvider<int, int>
           name: r'rootProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

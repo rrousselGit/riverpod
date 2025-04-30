@@ -26,7 +26,7 @@ final class FetchPackagesProvider extends $FunctionalProvider<
           name: r'fetchPackagesProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -84,7 +84,7 @@ final class FetchPackagesFamily extends $Family
           retry: null,
           name: r'fetchPackagesProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 

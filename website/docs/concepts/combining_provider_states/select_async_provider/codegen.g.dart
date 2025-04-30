@@ -22,7 +22,7 @@ final class ConfigProvider extends $FunctionalProvider<
           name: r'configProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -56,7 +56,7 @@ final class ProductsProvider extends $FunctionalProvider<
           name: r'productsProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

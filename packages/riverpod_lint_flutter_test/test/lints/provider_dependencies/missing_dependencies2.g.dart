@@ -19,7 +19,7 @@ final class DepProvider extends $FunctionalProvider<int, int>
           name: r'depProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
   @override
@@ -59,7 +59,7 @@ final class GeneratedScopedProvider extends $FunctionalProvider<int, int>
           name: r'generatedScopedProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
   @override
@@ -99,7 +99,7 @@ final class GeneratedRootProvider extends $FunctionalProvider<int, int>
           name: r'generatedRootProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -140,7 +140,7 @@ final class WatchScopedButNoDependenciesProvider
           name: r'watchScopedButNoDependenciesProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -182,7 +182,7 @@ final class WatchGeneratedScopedButNoDependenciesProvider
           name: r'watchGeneratedScopedButNoDependenciesProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -225,7 +225,7 @@ final class WatchRootButNoDependenciesProvider
           name: r'watchRootButNoDependenciesProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -267,7 +267,7 @@ final class WatchGeneratedRootButNoDependenciesProvider
           name: r'watchGeneratedRootButNoDependenciesProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -310,7 +310,7 @@ final class WatchScopedButEmptyDependenciesProvider
           name: r'watchScopedButEmptyDependenciesProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
   @override
@@ -352,7 +352,7 @@ final class WatchGeneratedScopedButEmptyDependenciesProvider
           name: r'watchGeneratedScopedButEmptyDependenciesProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
   @override
@@ -395,7 +395,7 @@ final class WatchRootButEmptyDependenciesProvider
           name: r'watchRootButEmptyDependenciesProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
   @override
@@ -437,7 +437,7 @@ final class WatchGeneratedRootButEmptyDependenciesProvider
           name: r'watchGeneratedRootButEmptyDependenciesProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
   @override
@@ -480,7 +480,7 @@ final class WatchScopedButMissingDependenciesProvider
           name: r'watchScopedButMissingDependenciesProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[depProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
+          $allTransitiveDependencies: const <ProviderOrFamily>[
             WatchScopedButMissingDependenciesProvider
                 .$allTransitiveDependencies0,
           ],
@@ -528,7 +528,7 @@ final class WatchGeneratedScopedButMissingDependenciesProvider
           name: r'watchGeneratedScopedButMissingDependenciesProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[depProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
+          $allTransitiveDependencies: const <ProviderOrFamily>[
             WatchGeneratedScopedButMissingDependenciesProvider
                 .$allTransitiveDependencies0,
           ],
@@ -576,7 +576,7 @@ final class WatchRootButMissingDependenciesProvider
           name: r'watchRootButMissingDependenciesProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[depProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
+          $allTransitiveDependencies: const <ProviderOrFamily>[
             WatchRootButMissingDependenciesProvider.$allTransitiveDependencies0,
           ],
         );
@@ -622,7 +622,7 @@ final class WatchGeneratedRootButMissingDependenciesProvider
           name: r'watchGeneratedRootButMissingDependenciesProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[depProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
+          $allTransitiveDependencies: const <ProviderOrFamily>[
             WatchGeneratedRootButMissingDependenciesProvider
                 .$allTransitiveDependencies0,
           ],
@@ -670,7 +670,7 @@ final class WatchGeneratedScopedAndContainsDependencyProvider
           name: r'watchGeneratedScopedAndContainsDependencyProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[generatedScopedProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
+          $allTransitiveDependencies: const <ProviderOrFamily>[
             WatchGeneratedScopedAndContainsDependencyProvider
                 .$allTransitiveDependencies0,
           ],
@@ -718,7 +718,7 @@ final class WatchGeneratedRootAndContainsDependencyProvider
           name: r'watchGeneratedRootAndContainsDependencyProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[generatedRootProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
+          $allTransitiveDependencies: const <ProviderOrFamily>[
             WatchGeneratedRootAndContainsDependencyProvider
                 .$allTransitiveDependencies0,
           ],
@@ -769,7 +769,7 @@ final class SpecifiedDependencyButNeverUsedProvider
             depProvider,
             generatedRootProvider
           ],
-          allTransitiveDependencies: const <ProviderOrFamily>[
+          $allTransitiveDependencies: const <ProviderOrFamily>[
             SpecifiedDependencyButNeverUsedProvider.$allTransitiveDependencies0,
             SpecifiedDependencyButNeverUsedProvider.$allTransitiveDependencies1,
           ],
@@ -818,7 +818,7 @@ final class ClassWatchGeneratedRootButMissingDependenciesProvider
           name: r'classWatchGeneratedRootButMissingDependenciesProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
   @override
@@ -875,7 +875,7 @@ final class Regression2348Provider extends $FunctionalProvider<int, int>
           name: r'regression2348Provider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[generatedScopedProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
+          $allTransitiveDependencies: const <ProviderOrFamily>[
             Regression2348Provider.$allTransitiveDependencies0,
           ],
         );
@@ -919,7 +919,7 @@ final class Regression2417Provider
           name: r'regression2417Provider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[generatedScopedProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
+          $allTransitiveDependencies: const <ProviderOrFamily>[
             Regression2417Provider.$allTransitiveDependencies0,
           ],
         );
@@ -975,7 +975,7 @@ final class FamilyDepProvider extends $FunctionalProvider<int, int>
           name: r'familyDepProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   static const $allTransitiveDependencies0 = depProvider;
@@ -1032,7 +1032,7 @@ final class FamilyDepFamily extends $Family
           retry: null,
           name: r'familyDepProvider',
           dependencies: const <ProviderOrFamily>[depProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
+          $allTransitiveDependencies: const <ProviderOrFamily>[
             FamilyDepProvider.$allTransitiveDependencies0,
           ],
           isAutoDispose: true,
@@ -1059,7 +1059,7 @@ final class FamilyDep2Provider extends $FunctionalProvider<int, int>
           name: r'familyDep2Provider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   static const $allTransitiveDependencies0 = familyDepProvider;
@@ -1118,7 +1118,7 @@ final class FamilyDep2Family extends $Family
           retry: null,
           name: r'familyDep2Provider',
           dependencies: const <ProviderOrFamily>[familyDepProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
+          $allTransitiveDependencies: const <ProviderOrFamily>[
             FamilyDep2Provider.$allTransitiveDependencies0,
             FamilyDep2Provider.$allTransitiveDependencies1,
           ],
@@ -1147,7 +1147,7 @@ final class AliasProvider extends $FunctionalProvider<int, int>
           name: r'aliasProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -1186,7 +1186,7 @@ final class AliasClassProvider extends $NotifierProvider<AliasClass, int> {
           name: r'aliasClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -1239,7 +1239,7 @@ final class RiverpodDependenciesProvider
           name: r'riverpodDependenciesProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[depProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
+          $allTransitiveDependencies: const <ProviderOrFamily>[
             RiverpodDependenciesProvider.$allTransitiveDependencies0,
           ],
         );
@@ -1297,7 +1297,7 @@ final class FooProvider extends $FunctionalProvider<int, int>
           name: r'fooProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -1337,7 +1337,7 @@ final class CrossFileDependencyProvider extends $FunctionalProvider<int, int>
           name: r'crossFileDependencyProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

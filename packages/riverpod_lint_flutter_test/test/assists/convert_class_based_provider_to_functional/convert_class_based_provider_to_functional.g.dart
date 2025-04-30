@@ -21,7 +21,7 @@ final class ExampleProvider extends $NotifierProvider<Example, int> {
           name: r'exampleProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -81,7 +81,7 @@ final class ExampleFamilyProvider
           name: r'exampleFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -142,7 +142,7 @@ final class ExampleFamilyFamily extends $Family
           retry: null,
           name: r'exampleFamilyProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -198,7 +198,7 @@ final class GenericProvider<A, B>
           name: r'genericProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -254,7 +254,7 @@ final class GenericFamily extends $Family {
           retry: null,
           name: r'genericProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 

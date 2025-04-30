@@ -18,7 +18,7 @@ final class Calc2Provider extends $FunctionalProvider<int, int>
           name: r'myFamilyCalc2ProviderFamily',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   static const $allTransitiveDependencies0 = myCountPod;
@@ -102,7 +102,7 @@ final class Calc2Family extends $Family
             myFamilyCountAsyncNotifier2ProviderFamily,
             myFamilyCountStreamNotifier2ProviderFamily
           ],
-          allTransitiveDependencies: const <ProviderOrFamily>{
+          $allTransitiveDependencies: const <ProviderOrFamily>{
             Calc2Provider.$allTransitiveDependencies0,
             Calc2Provider.$allTransitiveDependencies1,
             Calc2Provider.$allTransitiveDependencies2,

@@ -22,7 +22,7 @@ final class ConfigurationsProvider extends $FunctionalProvider<
           name: r'configurationsProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

@@ -22,7 +22,7 @@ final class UserProvider
           name: r'userProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -54,7 +54,7 @@ final class ExampleProvider extends $FunctionalProvider<Object?, Object?>
           name: r'exampleProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

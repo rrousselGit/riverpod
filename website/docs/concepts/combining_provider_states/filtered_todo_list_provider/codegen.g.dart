@@ -21,7 +21,7 @@ final class FilterProvider extends $FunctionalProvider<Filter, Filter>
           name: r'filterProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -62,7 +62,7 @@ final class FilteredTodoListProvider
           name: r'filteredTodoListProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

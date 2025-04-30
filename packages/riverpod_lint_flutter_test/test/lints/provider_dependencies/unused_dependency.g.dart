@@ -19,7 +19,7 @@ final class RootProvider extends $FunctionalProvider<int, int>
           name: r'rootProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -59,7 +59,7 @@ final class DepProvider extends $FunctionalProvider<int, int>
           name: r'depProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
   @override
@@ -99,7 +99,7 @@ final class Dep2Provider extends $FunctionalProvider<int, int>
           name: r'dep2Provider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
   @override
@@ -142,7 +142,7 @@ final class ExtraDepProvider extends $FunctionalProvider<int, int>
           name: r'extraDepProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[depProvider, dep2Provider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
+          $allTransitiveDependencies: const <ProviderOrFamily>[
             ExtraDepProvider.$allTransitiveDependencies0,
             ExtraDepProvider.$allTransitiveDependencies1,
           ],
@@ -188,7 +188,7 @@ final class NoDepProvider extends $FunctionalProvider<int, int>
           name: r'noDepProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[depProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
+          $allTransitiveDependencies: const <ProviderOrFamily>[
             NoDepProvider.$allTransitiveDependencies0,
           ],
         );
@@ -233,7 +233,7 @@ final class DependenciesFirstThenKeepAliveProvider
           name: r'dependenciesFirstThenKeepAliveProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[depProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
+          $allTransitiveDependencies: const <ProviderOrFamily>[
             DependenciesFirstThenKeepAliveProvider.$allTransitiveDependencies0,
           ],
         );
@@ -278,7 +278,7 @@ final class NoDepNoParamProvider extends $FunctionalProvider<int, int>
           name: r'noDepNoParamProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[depProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
+          $allTransitiveDependencies: const <ProviderOrFamily>[
             NoDepNoParamProvider.$allTransitiveDependencies0,
           ],
         );
@@ -322,7 +322,7 @@ final class NoDepWithoutCommaProvider extends $FunctionalProvider<int, int>
           name: r'noDepWithoutCommaProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[depProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
+          $allTransitiveDependencies: const <ProviderOrFamily>[
             NoDepWithoutCommaProvider.$allTransitiveDependencies0,
           ],
         );
@@ -366,7 +366,7 @@ final class RootDepProvider extends $FunctionalProvider<int, int>
           name: r'rootDepProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[rootProvider],
-          allTransitiveDependencies: const <ProviderOrFamily>[
+          $allTransitiveDependencies: const <ProviderOrFamily>[
             RootDepProvider.$allTransitiveDependencies0,
           ],
         );

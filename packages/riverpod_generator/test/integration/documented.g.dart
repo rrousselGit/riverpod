@@ -25,7 +25,7 @@ final class FunctionalProvider extends $FunctionalProvider<String, String>
           name: r'functionalProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -70,7 +70,7 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
           name: r'classBasedProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -128,7 +128,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
           name: r'familyProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -185,7 +185,7 @@ final class FamilyFamily extends $Family
           retry: null,
           name: r'familyProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -218,7 +218,7 @@ final class ClassFamilyBasedProvider
           name: r'classFamilyBasedProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -271,7 +271,7 @@ final class ClassFamilyBasedFamily extends $Family
           retry: null,
           name: r'classFamilyBasedProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 

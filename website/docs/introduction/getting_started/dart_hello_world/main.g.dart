@@ -21,7 +21,7 @@ final class HelloWorldProvider extends $FunctionalProvider<String, String>
           name: r'helloWorldProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

@@ -21,7 +21,7 @@ final class DiceRollProvider extends $FunctionalProvider<int, int>
           name: r'diceRollProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -61,7 +61,7 @@ final class CachedDiceRollProvider extends $FunctionalProvider<int, int>
           name: r'cachedDiceRollProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

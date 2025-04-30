@@ -37,7 +37,7 @@ final class AsyncTodosProvider
           name: r'asyncTodosProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

@@ -22,7 +22,7 @@ final class TaskTrackerProvider
           name: r'taskTrackerProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -62,7 +62,7 @@ final class BugsEncounteredNotifierProvider
           name: r'bugsEncounteredNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -109,7 +109,7 @@ final class BugsEncounteredNotifierFamily extends $Family
           retry: null,
           name: r'bugsEncounteredNotifierProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 

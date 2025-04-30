@@ -18,7 +18,7 @@ final class ScopedClassProvider extends $NotifierProvider<ScopedClass, int> {
           name: r'scopedClassProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
   @override
@@ -71,7 +71,7 @@ final class ScopedClassFamilyProvider
           name: r'scopedClassFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -122,7 +122,7 @@ final class ScopedClassFamilyFamily extends $Family
           retry: null,
           name: r'scopedClassFamilyProvider',
           dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
           isAutoDispose: true,
         );
 

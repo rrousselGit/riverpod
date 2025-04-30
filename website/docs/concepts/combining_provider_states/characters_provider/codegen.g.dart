@@ -21,7 +21,7 @@ final class SearchProvider extends $FunctionalProvider<String, String>
           name: r'searchProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -62,7 +62,7 @@ final class ConfigsProvider extends $FunctionalProvider<
           name: r'configsProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -96,7 +96,7 @@ final class CharactersProvider extends $FunctionalProvider<
           name: r'charactersProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

@@ -19,7 +19,7 @@ final class IntegerProvider extends $FunctionalProvider<int, int>
           name: r'integerProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -60,7 +60,7 @@ final class StateNotifierProvider
           name: r'stateNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -101,7 +101,7 @@ final class AsyncStateNotifierProvider extends $FunctionalProvider<
           name: r'asyncStateNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -135,7 +135,7 @@ final class StateNotifierClassProvider
           name: r'stateNotifierClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -190,7 +190,7 @@ final class StateNotifierAsyncProvider extends $FunctionalProvider<
           name: r'stateNotifierAsyncProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -224,7 +224,7 @@ final class SelfNotifierProvider
           name: r'selfNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -272,7 +272,7 @@ final class SyncSelfNotifierProvider
           name: r'syncSelfNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -325,7 +325,7 @@ final class StreamSelfNotifierProvider
           name: r'streamSelfNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -375,7 +375,7 @@ final class StateNotifierClassAsyncProvider
           name: r'stateNotifierClassAsyncProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -426,7 +426,7 @@ final class ChangeNotifierProvider
           name: r'changeNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -466,7 +466,7 @@ final class ChangeNotifierClassProvider
           name: r'changeNotifierClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -520,7 +520,7 @@ final class NotifierProvider extends $FunctionalProvider<MyNotifier, MyNotifier>
           name: r'notifierProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -561,7 +561,7 @@ final class AutoDisposeNotifierProvider
           name: r'autoDisposeNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -603,7 +603,7 @@ final class NotifierClassProvider
           name: r'notifierClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -657,7 +657,7 @@ final class AsyncNotifierProvider
           name: r'asyncNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -697,7 +697,7 @@ final class AsyncNotifierClassProvider
           name: r'asyncNotifierClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -752,7 +752,7 @@ final class RawNotifierProvider
           name: r'rawNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -794,7 +794,7 @@ final class RawFutureNotifierProvider extends $FunctionalProvider<
           name: r'rawFutureNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -836,7 +836,7 @@ final class RawStreamNotifierProvider extends $FunctionalProvider<
           name: r'rawStreamNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -880,7 +880,7 @@ final class FutureRawNotifierProvider extends $FunctionalProvider<
           name: r'futureRawNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -916,7 +916,7 @@ final class StreamRawNotifierProvider extends $FunctionalProvider<
           name: r'streamRawNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

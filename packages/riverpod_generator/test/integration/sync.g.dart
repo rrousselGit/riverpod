@@ -18,7 +18,7 @@ final class GenericProvider<T extends num>
           name: r'genericProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -74,7 +74,7 @@ final class GenericFamily extends $Family {
           retry: null,
           name: r'genericProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -113,7 +113,7 @@ final class ComplexGenericProvider<T extends num, Foo extends String?>
           name: r'complexGenericProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -178,7 +178,7 @@ final class ComplexGenericFamily extends $Family {
           retry: null,
           name: r'complexGenericProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -233,7 +233,7 @@ final class GenericClassProvider<T extends num>
           name: r'genericClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -289,7 +289,7 @@ final class GenericClassFamily extends $Family {
           retry: null,
           name: r'genericClassProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -355,7 +355,7 @@ final class RawFutureProvider
           name: r'rawFutureProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -397,7 +397,7 @@ final class RawStreamProvider
           name: r'rawStreamProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -438,7 +438,7 @@ final class RawFutureClassProvider
           name: r'rawFutureClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -494,7 +494,7 @@ final class RawStreamClassProvider
           name: r'rawStreamClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -550,7 +550,7 @@ final class RawFamilyFutureProvider
           name: r'rawFamilyFutureProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -606,7 +606,7 @@ final class RawFamilyFutureFamily extends $Family
           retry: null,
           name: r'rawFamilyFutureProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -632,7 +632,7 @@ final class RawFamilyStreamProvider
           name: r'rawFamilyStreamProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -688,7 +688,7 @@ final class RawFamilyStreamFamily extends $Family
           retry: null,
           name: r'rawFamilyStreamProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -714,7 +714,7 @@ final class RawFamilyFutureClassProvider
           name: r'rawFamilyFutureClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -768,7 +768,7 @@ final class RawFamilyFutureClassFamily extends $Family
           retry: null,
           name: r'rawFamilyFutureClassProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -817,7 +817,7 @@ final class RawFamilyStreamClassProvider
           name: r'rawFamilyStreamClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -871,7 +871,7 @@ final class RawFamilyStreamClassFamily extends $Family
           retry: null,
           name: r'rawFamilyStreamClassProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -923,7 +923,7 @@ final class PublicProvider extends $FunctionalProvider<String, String>
           name: r'publicProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -963,7 +963,7 @@ final class Supports$inNamesProvider extends $FunctionalProvider<String, String>
           name: r'supports$inNamesProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -1013,7 +1013,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
           name: r'familyProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -1088,7 +1088,7 @@ final class FamilyFamily extends $Family
           retry: null,
           name: r'familyProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -1125,7 +1125,7 @@ final class _PrivateProvider extends $FunctionalProvider<String, String>
           name: r'_privateProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -1167,7 +1167,7 @@ final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
           name: r'publicClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -1220,7 +1220,7 @@ final class _PrivateClassProvider
           name: r'_privateClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -1282,7 +1282,7 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
           name: r'familyClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -1346,7 +1346,7 @@ final class FamilyClassFamily extends $Family
           retry: null,
           name: r'familyClassProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -1421,7 +1421,7 @@ final class Supports$InFnNameProvider<And$InT>
           name: r'supports$InFnNameProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -1477,7 +1477,7 @@ final class Supports$InFnNameFamily extends $Family {
           retry: null,
           name: r'supports$InFnNameProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -1520,7 +1520,7 @@ final class Supports$InFnNameFamilyProvider<And$InT>
           name: r'supports$InFnNameFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -1587,7 +1587,7 @@ final class Supports$InFnNameFamilyFamily extends $Family {
           retry: null,
           name: r'supports$InFnNameFamilyProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -1646,7 +1646,7 @@ final class Supports$InClassNameProvider<And$InT>
           name: r'supports$InClassNameProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -1703,7 +1703,7 @@ final class Supports$InClassNameFamily extends $Family {
           retry: null,
           name: r'supports$InClassNameProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -1777,7 +1777,7 @@ final class Supports$InClassFamilyNameProvider<And$InT>
           name: r'supports$InClassFamilyNameProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -1835,7 +1835,7 @@ final class Supports$InClassFamilyNameFamily extends $Family {
           retry: null,
           name: r'supports$InClassFamilyNameProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -1931,7 +1931,7 @@ final class GeneratedProvider extends $FunctionalProvider<String, String>
           name: r'generatedProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -1971,7 +1971,7 @@ final class UnnecessaryCastProvider extends $FunctionalProvider<String, String>
           name: r'unnecessaryCastProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -2026,7 +2026,7 @@ final class UnnecessaryCastFamily extends $Family
           retry: null,
           name: r'unnecessaryCastProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -2052,7 +2052,7 @@ final class UnnecessaryCastClassProvider
           name: r'unnecessaryCastClassProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -2106,7 +2106,7 @@ final class UnnecessaryCastClassFamily extends $Family
           retry: null,
           name: r'unnecessaryCastClassProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -2153,7 +2153,7 @@ final class ManyDataStreamProvider<T extends Object, S extends Object>
           name: r'manyDataStreamProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -2206,7 +2206,7 @@ final class ManyDataStreamFamily extends $Family {
           retry: null,
           name: r'manyDataStreamProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 

@@ -19,7 +19,7 @@ final class KeepAliveProvider extends $FunctionalProvider<int, int>
           name: r'keepAliveProvider',
           isAutoDispose: false,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -59,7 +59,7 @@ final class NotKeepAliveProvider extends $FunctionalProvider<int, int>
           name: r'notKeepAliveProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -99,7 +99,7 @@ final class DefaultKeepAliveProvider extends $FunctionalProvider<int, int>
           name: r'defaultKeepAliveProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -138,7 +138,7 @@ final class KeepAliveFamilyProvider extends $FunctionalProvider<int, int>
           name: r'keepAliveFamilyProvider',
           isAutoDispose: false,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -193,7 +193,7 @@ final class KeepAliveFamilyFamily extends $Family
           retry: null,
           name: r'keepAliveFamilyProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: false,
         );
 
@@ -219,7 +219,7 @@ final class NotKeepAliveFamilyProvider extends $FunctionalProvider<int, int>
           name: r'notKeepAliveFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -275,7 +275,7 @@ final class NotKeepAliveFamilyFamily extends $Family
           retry: null,
           name: r'notKeepAliveFamilyProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -301,7 +301,7 @@ final class DefaultKeepAliveFamilyProvider extends $FunctionalProvider<int, int>
           name: r'defaultKeepAliveFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -358,7 +358,7 @@ final class DefaultKeepAliveFamilyFamily extends $Family
           retry: null,
           name: r'defaultKeepAliveFamilyProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 

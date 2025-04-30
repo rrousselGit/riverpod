@@ -22,7 +22,7 @@ final class ExampleProvider extends $FunctionalProvider<int, int>
           name: r'exampleProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -69,7 +69,7 @@ final class ExampleFamilyProvider extends $FunctionalProvider<int, int>
           name: r'exampleFamilyProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -135,7 +135,7 @@ final class ExampleFamilyFamily extends $Family
           retry: null,
           name: r'exampleFamilyProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 

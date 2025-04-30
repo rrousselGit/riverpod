@@ -20,7 +20,7 @@ final class LabelProvider extends $FunctionalProvider<String, String>
           name: r'labelProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -75,7 +75,7 @@ final class LabelFamily extends $Family
           retry: null,
           name: r'labelProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 

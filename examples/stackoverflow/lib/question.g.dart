@@ -73,7 +73,7 @@ final class QuestionThemeProvider
           name: r'questionThemeProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -150,7 +150,7 @@ final class CurrentQuestionProvider
           name: r'currentQuestionProvider',
           isAutoDispose: true,
           dependencies: const <ProviderOrFamily>[],
-          allTransitiveDependencies: const <ProviderOrFamily>[],
+          $allTransitiveDependencies: const <ProviderOrFamily>[],
         );
 
   @override

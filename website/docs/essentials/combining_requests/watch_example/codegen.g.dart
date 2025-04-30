@@ -25,7 +25,7 @@ final class LocationProvider extends $FunctionalProvider<
           name: r'locationProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -59,7 +59,7 @@ final class RestaurantsNearMeProvider extends $FunctionalProvider<
           name: r'restaurantsNearMeProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

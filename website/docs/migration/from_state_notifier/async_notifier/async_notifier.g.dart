@@ -21,7 +21,7 @@ final class AsyncTodosNotifierProvider
           name: r'asyncTodosNotifierProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

@@ -22,7 +22,7 @@ final class BoredSuggestionProvider
           name: r'boredSuggestionProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override

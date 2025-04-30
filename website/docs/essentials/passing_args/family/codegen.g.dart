@@ -21,7 +21,7 @@ final class ActivityProvider
           name: r'activityProvider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -68,7 +68,7 @@ final class ActivityFamily extends $Family
           retry: null,
           name: r'activityProvider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
@@ -94,7 +94,7 @@ final class ActivityNotifier2Provider
           name: r'activityNotifier2Provider',
           isAutoDispose: true,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
         );
 
   @override
@@ -139,7 +139,7 @@ final class ActivityNotifier2Family extends $Family
           retry: null,
           name: r'activityNotifier2Provider',
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           isAutoDispose: true,
         );
 
