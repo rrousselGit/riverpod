@@ -69,7 +69,7 @@ abstract class $Value<ValueT> {
 ///   }
 /// }
 /// ```
-/// {@category notifier}
+/// {@category Notifiers}
 @publicInRiverpodAndCodegen
 mixin AnyNotifier<StateT> {
   $Ref<StateT>? _ref;
