@@ -1,4 +1,4 @@
-## Unreleased 3.0.0-dev.4
+## Unreleased 3.0.0-dev.12
 
 - **Breaking** Removed support for `@riverpod external int fn();`.
 - **Breaking** Family arguments are no-longer available on the `Ref` object.
