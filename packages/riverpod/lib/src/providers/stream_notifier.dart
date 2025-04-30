@@ -39,7 +39,7 @@ abstract base class $StreamNotifierProvider<
     required super.from,
     required super.argument,
     required super.dependencies,
-    required super.allTransitiveDependencies,
+    required super.$allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
   });

@@ -79,7 +79,7 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-          allTransitiveDependencies:
+          $allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
@@ -92,7 +92,7 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     this._createFn, {
     required super.name,
     required super.dependencies,
-    required super.allTransitiveDependencies,
+    required super.$allTransitiveDependencies,
     required super.isAutoDispose,
     super.from,
     super.argument,
@@ -211,7 +211,7 @@ final class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
     super.retry,
   }) : super(
           providerFactory: ChangeNotifierProvider.internal,
-          allTransitiveDependencies:
+          $allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
         );
 }

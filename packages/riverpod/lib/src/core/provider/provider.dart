@@ -33,11 +33,11 @@ abstract final class ProviderBase<StateT> extends ProviderOrFamily
     required this.from,
     required this.argument,
     required super.dependencies,
-    required super.allTransitiveDependencies,
+    required super.$allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
   }) : assert(
-          from == null || allTransitiveDependencies == null,
+          from == null || $allTransitiveDependencies == null,
           'When from a family, providers cannot specify dependencies.',
         );
 

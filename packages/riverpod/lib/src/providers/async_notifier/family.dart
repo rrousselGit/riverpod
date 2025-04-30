@@ -55,7 +55,7 @@ final class AsyncNotifierProviderFamily< //
     super.retry,
   }) : super(
           providerFactory: FamilyAsyncNotifierProvider._,
-          allTransitiveDependencies:
+          $allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
         );
 }
@@ -73,7 +73,7 @@ final class FamilyAsyncNotifierProvider< //
     this._createNotifier, {
     required super.name,
     required super.dependencies,
-    required super.allTransitiveDependencies,
+    required super.$allTransitiveDependencies,
     required super.from,
     required super.argument,
     required super.isAutoDispose,

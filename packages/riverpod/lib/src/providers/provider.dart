@@ -25,7 +25,7 @@ final class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-          allTransitiveDependencies:
+          $allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
@@ -38,7 +38,7 @@ final class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
     this._create, {
     required super.name,
     required super.dependencies,
-    required super.allTransitiveDependencies,
+    required super.$allTransitiveDependencies,
     required super.from,
     required super.argument,
     required super.isAutoDispose,
@@ -363,7 +363,7 @@ final class ProviderFamily<StateT, ArgT>
     super.retry,
   }) : super(
           providerFactory: Provider.internal,
-          allTransitiveDependencies:
+          $allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
         );
 
@@ -374,7 +374,7 @@ final class ProviderFamily<StateT, ArgT>
     super._createFn, {
     required super.name,
     required super.dependencies,
-    required super.allTransitiveDependencies,
+    required super.$allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
   }) : super(providerFactory: Provider.internal);

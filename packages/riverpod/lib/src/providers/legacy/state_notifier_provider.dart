@@ -81,7 +81,7 @@ final class StateNotifierProvider< //
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-          allTransitiveDependencies:
+          $allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
@@ -94,7 +94,7 @@ final class StateNotifierProvider< //
     this._create, {
     required super.name,
     required super.dependencies,
-    required super.allTransitiveDependencies,
+    required super.$allTransitiveDependencies,
     required super.from,
     required super.argument,
     required super.isAutoDispose,
@@ -216,7 +216,7 @@ final class StateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T,
     super.retry,
   }) : super(
           providerFactory: StateNotifierProvider.internal,
-          allTransitiveDependencies:
+          $allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
         );
 }

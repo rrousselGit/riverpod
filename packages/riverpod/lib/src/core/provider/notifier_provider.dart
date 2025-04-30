@@ -360,7 +360,7 @@ abstract base class $ClassProvider< //
     required super.from,
     required super.argument,
     required super.dependencies,
-    required super.allTransitiveDependencies,
+    required super.$allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
   });
@@ -441,7 +441,7 @@ final class _ClassProviderView<
           from: _inner.from,
           argument: _inner.argument,
           dependencies: _inner.dependencies,
-          allTransitiveDependencies: _inner.allTransitiveDependencies,
+          $allTransitiveDependencies: _inner.$allTransitiveDependencies,
           retry: _inner.retry,
           isAutoDispose: _inner.isAutoDispose,
         );

@@ -55,30 +55,30 @@ void main() {
   });
 
   test('Generates transitive dependencies', () {
-    expect(depProvider.allTransitiveDependencies, null);
-    expect(dep2Provider.allTransitiveDependencies, null);
-    expect(familyProvider.allTransitiveDependencies, null);
-    expect(family2Provider.allTransitiveDependencies, null);
+    expect(depProvider.$allTransitiveDependencies, null);
+    expect(dep2Provider.$allTransitiveDependencies, null);
+    expect(familyProvider.$allTransitiveDependencies, null);
+    expect(family2Provider.$allTransitiveDependencies, null);
 
     expect(
-      providerProvider.allTransitiveDependencies,
+      providerProvider.$allTransitiveDependencies,
       [depProvider, familyProvider, dep2Provider, family2Provider],
     );
     expect(
-      provider2Provider.allTransitiveDependencies,
+      provider2Provider.$allTransitiveDependencies,
       [depProvider, familyProvider, dep2Provider, family2Provider],
     );
     expect(
-      provider3Provider.allTransitiveDependencies,
+      provider3Provider.$allTransitiveDependencies,
       [depProvider, familyProvider, dep2Provider, family2Provider],
     );
     expect(
-      provider4Provider.allTransitiveDependencies,
+      provider4Provider.$allTransitiveDependencies,
       [depProvider, familyProvider, dep2Provider, family2Provider],
     );
 
     expect(
-      transitiveDependenciesProvider.allTransitiveDependencies,
+      transitiveDependenciesProvider.$allTransitiveDependencies,
       [
         providerProvider,
         depProvider,
@@ -89,12 +89,12 @@ void main() {
     );
 
     expect(
-      emptyDependenciesFunctionalProvider.allTransitiveDependencies,
+      emptyDependenciesFunctionalProvider.$allTransitiveDependencies,
       same(const <ProviderOrFamily>[]),
     );
 
     expect(
-      emptyDependenciesClassBasedProvider.allTransitiveDependencies,
+      emptyDependenciesClassBasedProvider.$allTransitiveDependencies,
       same(const <ProviderOrFamily>[]),
     );
   });
@@ -103,7 +103,7 @@ void main() {
       'On families, passes `null` as dependencies/allTransitiveDependencies to the providers',
       () {
     expect(provider4Provider(42).dependencies, null);
-    expect(provider4Provider(42).allTransitiveDependencies, null);
+    expect(provider4Provider(42).$allTransitiveDependencies, null);
   });
 
   test('Caches dependencies', () {
@@ -141,20 +141,20 @@ void main() {
     );
 
     expect(
-      provider3Provider.allTransitiveDependencies,
-      same(provider3Provider.allTransitiveDependencies),
+      provider3Provider.$allTransitiveDependencies,
+      same(provider3Provider.$allTransitiveDependencies),
     );
     expect(
-      provider4Provider.allTransitiveDependencies,
-      same(provider4Provider.allTransitiveDependencies),
+      provider4Provider.$allTransitiveDependencies,
+      same(provider4Provider.$allTransitiveDependencies),
     );
     expect(
-      transitiveDependenciesProvider.allTransitiveDependencies,
-      same(transitiveDependenciesProvider.allTransitiveDependencies),
+      transitiveDependenciesProvider.$allTransitiveDependencies,
+      same(transitiveDependenciesProvider.$allTransitiveDependencies),
     );
     expect(
-      smallTransitiveDependencyCountProvider.allTransitiveDependencies,
-      same(smallTransitiveDependencyCountProvider.allTransitiveDependencies),
+      smallTransitiveDependencyCountProvider.$allTransitiveDependencies,
+      same(smallTransitiveDependencyCountProvider.$allTransitiveDependencies),
     );
   });
 
@@ -164,12 +164,12 @@ void main() {
       same(const <ProviderOrFamily>[depProvider, dep2Provider]),
     );
     expect(
-      duplicateDependenciesProvider.allTransitiveDependencies,
+      duplicateDependenciesProvider.$allTransitiveDependencies,
       same(const <ProviderOrFamily>[depProvider, dep2Provider]),
     );
 
     expect(
-      transitiveDuplicateDependenciesProvider.allTransitiveDependencies,
+      transitiveDuplicateDependenciesProvider.$allTransitiveDependencies,
       same(const <ProviderOrFamily>{
         duplicateDependenciesProvider,
         depProvider,
@@ -183,12 +183,12 @@ void main() {
 
   test('uses a set or a list based on the length', () {
     expect(
-      smallTransitiveDependencyCountProvider.allTransitiveDependencies,
+      smallTransitiveDependencyCountProvider.$allTransitiveDependencies,
       isA<List<Object?>>(),
     );
 
     expect(
-      transitiveDependenciesProvider.allTransitiveDependencies,
+      transitiveDependenciesProvider.$allTransitiveDependencies,
       isA<Set<Object?>>(),
     );
   });

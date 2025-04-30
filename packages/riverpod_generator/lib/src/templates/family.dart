@@ -60,7 +60,7 @@ ${provider.doc} final class ${provider.familyTypeName} extends \$Family $mixins 
         retry: ${provider.annotation.retryNode?.name ?? 'null'},
         name: r'${provider.providerName(options)}',
         dependencies: ${provider.dependencies(options)},
-        allTransitiveDependencies: ${provider.allTransitiveDependencies(allTransitiveDependencies)},
+        \$allTransitiveDependencies: ${provider.allTransitiveDependencies(allTransitiveDependencies)},
         isAutoDispose: ${provider.providerElement.isAutoDispose},
       );
 

@@ -33,7 +33,7 @@ class $ProviderPointer implements _PointerBase {
   ///
   /// If non-null, this pointer should **never** be removed.
   ///
-  /// This override may be implicitly created by [ProviderOrFamily.allTransitiveDependencies].
+  /// This override may be implicitly created by [ProviderOrFamily.$allTransitiveDependencies].
   // ignore: library_private_types_in_public_api, not public API
   _ProviderOverride? providerOverride;
   ProviderElement? element;
@@ -91,9 +91,9 @@ extension<PointerT extends _PointerBase, ProviderT extends ProviderOrFamily>
 
 extension on ProviderOrFamily {
   bool get canBeTransitivelyOverridden {
-    final allTransitiveDependencies = this.allTransitiveDependencies;
-    return allTransitiveDependencies != null &&
-        allTransitiveDependencies.isNotEmpty;
+    final $allTransitiveDependencies = this.$allTransitiveDependencies;
+    return $allTransitiveDependencies != null &&
+        $allTransitiveDependencies.isNotEmpty;
   }
 }
 
@@ -126,7 +126,7 @@ class ProviderDirectory implements _PointerBase {
   ///
   /// If non-null, this pointer should **never** be removed.
   ///
-  /// This override may be implicitly created by [ProviderOrFamily.allTransitiveDependencies].
+  /// This override may be implicitly created by [ProviderOrFamily.$allTransitiveDependencies].
   // ignore: library_private_types_in_public_api, not public API
   _FamilyOverride? familyOverride;
   final HashMap<ProviderBase<Object?>, $ProviderPointer> pointers;
@@ -289,7 +289,7 @@ class ProviderPointerManager {
         )
             .map(
           (e) {
-            if (e.key.allTransitiveDependencies == null) return e;
+            if (e.key.$allTransitiveDependencies == null) return e;
 
             return MapEntry(e.key, ProviderDirectory.from(e.value));
           },
@@ -369,7 +369,7 @@ class ProviderPointerManager {
       return null;
     }
 
-    final overrides = provider.allTransitiveDependencies!
+    final overrides = provider.$allTransitiveDependencies!
         .expand<ProviderContainer>((dependency) {
       switch (dependency) {
         case Family():

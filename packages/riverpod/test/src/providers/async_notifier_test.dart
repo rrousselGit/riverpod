@@ -67,7 +67,7 @@ void main() {
         );
 
         expect(provider().dependencies, null);
-        expect(provider().allTransitiveDependencies, null);
+        expect(provider().$allTransitiveDependencies, null);
       });
     }
 

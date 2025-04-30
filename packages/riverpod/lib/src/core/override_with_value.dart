@@ -12,7 +12,7 @@ final class $ValueProvider<StateT> extends ProviderBase<StateT>
           name: null,
           from: null,
           argument: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           dependencies: null,
           isAutoDispose: false,
           retry: null,
@@ -24,7 +24,7 @@ final class $ValueProvider<StateT> extends ProviderBase<StateT>
   Iterable<ProviderOrFamily>? get dependencies => null;
 
   @override
-  Set<ProviderOrFamily>? get allTransitiveDependencies => null;
+  Set<ProviderOrFamily>? get $allTransitiveDependencies => null;
 
   /// @nodoc
   @internal

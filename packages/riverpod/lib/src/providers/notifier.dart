@@ -54,7 +54,7 @@ abstract base class $NotifierProvider //
     required super.from,
     required super.argument,
     required super.dependencies,
-    required super.allTransitiveDependencies,
+    required super.$allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
   });

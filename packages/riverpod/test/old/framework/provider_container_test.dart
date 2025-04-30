@@ -23,7 +23,7 @@ void main() {
           argument: null,
           name: null,
           dependencies: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           retry: null,
           (ref) {
             constantHashBuild();
@@ -39,7 +39,7 @@ void main() {
           name: null,
           dependencies: null,
           retry: null,
-          allTransitiveDependencies: null,
+          $allTransitiveDependencies: null,
           (ref) {
             changingHashBuild();
             return 0;

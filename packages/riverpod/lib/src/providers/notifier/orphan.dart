@@ -96,7 +96,7 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-          allTransitiveDependencies:
+          $allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
@@ -109,7 +109,7 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
     this._createNotifier, {
     required super.name,
     required super.dependencies,
-    required super.allTransitiveDependencies,
+    required super.$allTransitiveDependencies,
     required super.from,
     required super.argument,
     required super.isAutoDispose,

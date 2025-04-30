@@ -43,7 +43,7 @@ final class FamilyStreamNotifierProvider< //
     this._createNotifier, {
     required super.name,
     required super.dependencies,
-    required super.allTransitiveDependencies,
+    required super.$allTransitiveDependencies,
     required super.from,
     required super.argument,
     required super.isAutoDispose,
@@ -52,6 +52,7 @@ final class FamilyStreamNotifierProvider< //
 
   final NotifierT Function() _createNotifier;
 
+  /// @nodoc
   @internal
   @override
   NotifierT create() => _createNotifier();
@@ -80,7 +81,7 @@ final class StreamNotifierProviderFamily< //
     super.retry,
   }) : super(
           providerFactory: FamilyStreamNotifierProvider._,
-          allTransitiveDependencies:
+          $allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
         );
 }

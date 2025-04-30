@@ -97,7 +97,7 @@ final class StreamProvider<StateT>
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-          allTransitiveDependencies:
+          $allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
@@ -110,7 +110,7 @@ final class StreamProvider<StateT>
     this._create, {
     required super.name,
     required super.dependencies,
-    required super.allTransitiveDependencies,
+    required super.$allTransitiveDependencies,
     required super.from,
     required super.argument,
     required super.isAutoDispose,
@@ -209,7 +209,7 @@ final class StreamProviderFamily<StateT, ArgT> extends FunctionalFamily<
     super.retry,
   }) : super(
           providerFactory: StreamProvider<StateT>.internal,
-          allTransitiveDependencies:
+          $allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
         );
 
@@ -220,7 +220,7 @@ final class StreamProviderFamily<StateT, ArgT> extends FunctionalFamily<
     super._createFn, {
     required super.name,
     required super.dependencies,
-    required super.allTransitiveDependencies,
+    required super.$allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
   }) : super(providerFactory: StreamProvider<StateT>.internal);

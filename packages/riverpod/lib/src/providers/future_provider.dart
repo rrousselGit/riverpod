@@ -108,7 +108,7 @@ final class FutureProvider<StateT>
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-          allTransitiveDependencies:
+          $allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
@@ -121,7 +121,7 @@ final class FutureProvider<StateT>
     this._create, {
     required super.name,
     required super.dependencies,
-    required super.allTransitiveDependencies,
+    required super.$allTransitiveDependencies,
     required super.from,
     required super.argument,
     required super.isAutoDispose,
@@ -182,7 +182,7 @@ final class FutureProviderFamily<StateT, ArgT> extends FunctionalFamily<
     super.retry,
   }) : super(
           providerFactory: FutureProvider<StateT>.internal,
-          allTransitiveDependencies:
+          $allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
         );
 
@@ -193,7 +193,7 @@ final class FutureProviderFamily<StateT, ArgT> extends FunctionalFamily<
     super._createFn, {
     required super.name,
     required super.dependencies,
-    required super.allTransitiveDependencies,
+    required super.$allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
   }) : super(providerFactory: FutureProvider<StateT>.internal);

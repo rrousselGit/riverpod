@@ -9,11 +9,11 @@ void main() {
       final c = Provider((ref) => 0, dependencies: [b]);
       final d = Provider((ref) => 0, dependencies: [c]);
 
-      expect(d.allTransitiveDependencies, containsAll(<Object>[a, b, c]));
+      expect(d.$allTransitiveDependencies, containsAll(<Object>[a, b, c]));
 
-      expect(b.allTransitiveDependencies, isNotNull);
+      expect(b.$allTransitiveDependencies, isNotNull);
       expect(b.dependencies, isNotNull);
-      expect(b(21).allTransitiveDependencies, isNull);
+      expect(b(21).$allTransitiveDependencies, isNull);
       expect(b(21).dependencies, isNull);
     });
 

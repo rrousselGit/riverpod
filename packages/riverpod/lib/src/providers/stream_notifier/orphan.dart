@@ -61,7 +61,7 @@ final class StreamNotifierProvider< //
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-          allTransitiveDependencies:
+          $allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
           from: null,
           argument: null,
@@ -73,7 +73,7 @@ final class StreamNotifierProvider< //
     this._createNotifier, {
     required super.name,
     required super.dependencies,
-    required super.allTransitiveDependencies,
+    required super.$allTransitiveDependencies,
     required super.from,
     required super.argument,
     required super.isAutoDispose,
@@ -88,6 +88,7 @@ final class StreamNotifierProvider< //
 
   final NotifierT Function() _createNotifier;
 
+  /// @nodoc
   @internal
   @override
   NotifierT create() => _createNotifier();

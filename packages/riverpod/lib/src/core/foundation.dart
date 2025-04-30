@@ -12,7 +12,7 @@ sealed class ProviderOrFamily implements ProviderListenableOrFamily {
   const ProviderOrFamily({
     required this.name,
     required this.dependencies,
-    required this.allTransitiveDependencies,
+    required this.$allTransitiveDependencies,
     required this.isAutoDispose,
     required this.retry,
   });
@@ -101,7 +101,9 @@ sealed class ProviderOrFamily implements ProviderListenableOrFamily {
   final Iterable<ProviderOrFamily>? dependencies;
 
   /// All the dependencies of a provider and their dependencies too.
-  final Iterable<ProviderOrFamily>? allTransitiveDependencies;
+  /// @nodoc
+  @internal
+  final Iterable<ProviderOrFamily>? $allTransitiveDependencies;
 
   /// Whether the state associated to this provider should be disposed
   /// automatically when the provider stops being listened.

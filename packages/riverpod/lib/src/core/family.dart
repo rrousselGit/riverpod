@@ -10,7 +10,7 @@ typedef FunctionalProviderFactory< //
   Create<CreatedT> create, {
   required String? name,
   required List<ProviderOrFamily>? dependencies,
-  required List<ProviderOrFamily>? allTransitiveDependencies,
+  required List<ProviderOrFamily>? $allTransitiveDependencies,
   required bool isAutoDispose,
   required Family from,
   required ArgT argument,
@@ -28,7 +28,7 @@ typedef ClassProviderFactory< //
   NotifierT Function() create, {
   required String? name,
   required Iterable<ProviderOrFamily>? dependencies,
-  required Iterable<ProviderOrFamily>? allTransitiveDependencies,
+  required Iterable<ProviderOrFamily>? $allTransitiveDependencies,
   required bool isAutoDispose,
   required Family from,
   required ArgT argument,
@@ -46,7 +46,7 @@ final class Family extends ProviderOrFamily implements _FamilyOverride {
   const Family({
     required super.name,
     required super.dependencies,
-    required super.allTransitiveDependencies,
+    required super.$allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
   });
@@ -66,7 +66,7 @@ base class $Family extends Family {
   const $Family({
     required super.name,
     required super.dependencies,
-    required super.allTransitiveDependencies,
+    required super.$allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
   });
@@ -128,7 +128,7 @@ base class FunctionalFamily< //
         providerFactory,
     required super.name,
     required super.dependencies,
-    required super.allTransitiveDependencies,
+    required super.$allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
   }) : _providerFactory = providerFactory;
@@ -151,7 +151,7 @@ base class FunctionalFamily< //
       from: this,
       argument: argument,
       dependencies: null,
-      allTransitiveDependencies: null,
+      $allTransitiveDependencies: null,
       retry: retry,
     );
   }
@@ -218,7 +218,7 @@ base class ClassFamily< //
         providerFactory,
     required super.name,
     required super.dependencies,
-    required super.allTransitiveDependencies,
+    required super.$allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
   }) : _providerFactory = providerFactory;
@@ -238,7 +238,7 @@ base class ClassFamily< //
       retry: retry,
       argument: argument,
       dependencies: null,
-      allTransitiveDependencies: null,
+      $allTransitiveDependencies: null,
     );
   }
 }
