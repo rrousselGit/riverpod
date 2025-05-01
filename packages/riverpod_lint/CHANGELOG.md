@@ -1,3 +1,7 @@
+## 3.0.0-dev.13 - 2025-05-01
+
+- `riverpod` upgraded to `3.0.0-dev.13`
+
 ## 3.0.0-dev.12 - 2025-04-30
 
 - All lints/assists now automatically add the relevant imports when

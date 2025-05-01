@@ -1,3 +1,8 @@
+## 3.0.0-dev.13 - 2025-05-01
+
+- `flutter_riverpod` upgraded to `3.0.0-dev.13`
+- `riverpod` upgraded to `3.0.0-dev.13`
+
 ## 3.0.0-dev.12 - 2025-04-30
 
 Say hello to Riverpod 3.0.0!  
