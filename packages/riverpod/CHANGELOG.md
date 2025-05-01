@@ -1,3 +1,7 @@
+## Unreleased patch
+
+- Attempt to fix a runtime error in Javascript builds
+
 ## 3.0.0-dev.12 - 2025-04-30
 
 Say hello to Riverpod 3.0.0!  

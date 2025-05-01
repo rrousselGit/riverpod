@@ -106,11 +106,11 @@ abstract class ProviderElement<StateT> implements Node {
   /// excluding `listen(weak: true)`.
   bool get hasNonWeakListeners => _listenerCount > 0;
 
-  List<ProviderSubscriptionWithOrigin>? _inactiveSubscriptions;
+  List<ProviderSubscription>? _inactiveSubscriptions;
   @visibleForTesting
-  List<ProviderSubscriptionWithOrigin>? subscriptions;
+  List<ProviderSubscription>? subscriptions;
   @visibleForTesting
-  List<ProviderSubscriptionWithOrigin>? dependents;
+  List<ProviderSubscriptionWithOrigin<Object?, StateT>>? dependents;
 
   /// "listen(weak: true)" pointing to this provider.
   ///
@@ -118,7 +118,7 @@ abstract class ProviderElement<StateT> implements Node {
   /// - They do not count towards [ProviderElement.isActive].
   /// - They may be reused between two instances of a [ProviderElement].
   @visibleForTesting
-  final weakDependents = <ProviderSubscriptionImpl>[];
+  final weakDependents = <ProviderSubscriptionWithOrigin<Object?, StateT>>[];
 
   bool _mustRecomputeState = false;
   bool _dependencyMayHaveChanged = false;
@@ -629,7 +629,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     });
   }
 
-  void addDependentSubscription(ProviderSubscriptionImpl sub) {
+  void addDependentSubscription(ProviderSubscriptionImpl<Object?, StateT> sub) {
     _onChangeSubscription(sub, () {
       if (sub.weak) {
         weakDependents.add(sub);
@@ -877,7 +877,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   void visitChildren(
     void Function(ProviderElement element) elementVisitor,
   ) {
-    void lookup(Iterable<ProviderSubscriptionWithOrigin> children) {
+    void lookup(
+      Iterable<ProviderSubscriptionWithOrigin<Object?, Object?>> children,
+    ) {
       for (final child in children) {
         switch (child.source) {
           case final ProviderElement dependent:
@@ -911,7 +913,11 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     if (subscriptions != null) {
       for (var i = 0; i < subscriptions.length; i++) {
         final sub = subscriptions[i];
-        visitor(sub._listenedElement);
+
+        switch (sub) {
+          case final ProviderSubscriptionImpl<Object?, Object?> sub:
+            visitor(sub._listenedElement);
+        }
       }
     }
   }

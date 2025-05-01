@@ -52,7 +52,6 @@ sealed class ProviderSubscription<OutT> {
 }
 
 @internal
-@optionalTypeArgs
 sealed class ProviderSubscriptionWithOrigin<OutT, StateT>
     extends ProviderSubscription<OutT> implements Pausable {
   ProviderBase<StateT> get origin;
@@ -78,7 +77,6 @@ sealed class ProviderSubscriptionWithOrigin<OutT, StateT>
 }
 
 @internal
-@optionalTypeArgs
 abstract base class ProviderSubscriptionImpl<OutT, OriginT>
     extends ProviderSubscriptionWithOrigin<OutT, OriginT> with _OnPauseMixin {
   @override
