@@ -83,6 +83,7 @@ abstract class ProviderElement<StateT> implements Node {
   /// The [ProviderContainer] that owns this [ProviderElement].
   ProviderContainer get container => pointer.targetContainer;
 
+  bool unsafeCheckIfMounted = true;
   // ignore: library_private_types_in_public_api, not public
   $Ref<StateT>? ref;
 

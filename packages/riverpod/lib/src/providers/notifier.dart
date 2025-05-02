@@ -32,8 +32,7 @@ abstract class $Notifier<StateT> extends $SyncNotifierBase<StateT> {
   @protected
   @visibleForTesting
   StateT? get stateOrNull {
-    final element = this.element();
-    if (element == null) throw StateError(uninitializedElementError);
+    final element = requireElement();
 
     element.flush();
     return element.stateResult?.value;

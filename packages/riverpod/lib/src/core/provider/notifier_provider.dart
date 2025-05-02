@@ -221,7 +221,7 @@ mixin Persistable<ValueT, KeyT, EncodedT> on $Value<ValueT> {
     $Value<Object?> self,
   ) {
     if (kDebugMode) {
-      final selfElement = (self as AnyNotifier).element();
+      final selfElement = (self as AnyNotifier).elementOrNull();
 
       self._debugKey = (key,);
 
@@ -332,8 +332,26 @@ to a different value.
 @internal
 extension ClassBaseX<StateT> on AnyNotifier<StateT> {
   $ClassProviderElement<AnyNotifier<StateT>, StateT, Object?, Object?>?
-      element() => _ref?.element as $ClassProviderElement<AnyNotifier<StateT>,
-          StateT, Object?, Object?>?;
+      elementOrNull() {
+    final ref = _ref;
+    if (ref == null) return null;
+
+    return ref.element as $ClassProviderElement<AnyNotifier<StateT>, StateT,
+        Object?, Object?>?;
+  }
+
+  $ClassProviderElement<AnyNotifier<StateT>, StateT, Object?, Object?>
+      requireElement() {
+    final ref = _ref;
+    final element = elementOrNull();
+    if (ref == null || element == null) {
+      throw StateError(uninitializedElementError);
+    }
+
+    ref._throwIfInvalidUsage();
+
+    return element;
+  }
 
   @internal
   // ignore: library_private_types_in_public_api, not public

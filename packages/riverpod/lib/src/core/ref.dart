@@ -61,6 +61,33 @@ sealed class Ref {
   List<void Function()>? _onAddListeners;
   List<void Function()>? _onRemoveListeners;
 
+  /// An option flag to disable the exception when a [Ref]/[Notifier] is interacted
+  /// after it has been disposed.
+  ///
+  /// Avoid disabling this flag at all costs. This flag is meant to ease migration
+  /// between 2.0.0 and 3.0.0.
+  /// Do not write new code that relies on this flag.
+  ///
+  /// Disabling mounted checks may cause unexpected behavior, such as:
+  /// - Memory leaks
+  ///   A provider may not have aborted its computation upon refresh and
+  ///   is still holding references to objects that should have been
+  ///   disposed
+  /// - Race conditions / Concurrent modification
+  ///   After a provider has been refreshed, it is possible that both the
+  ///   old "build" and new "build" are trying to update `state` at the
+  ///   same time.
+  ///
+  /// These errors could be particularly hard to debug, as they may not
+  /// happen immediately, or only under specific conditions.
+  /// As such, it is highly recommended to keep this flag enabled, to
+  /// avoid these issues.
+  // ignore: non_constant_identifier_names
+  bool get unsafe_checkIfMounted => _element.unsafeCheckIfMounted;
+  // ignore: non_constant_identifier_names
+  set unsafe_checkIfMounted(bool value) =>
+      _element.unsafeCheckIfMounted = value;
+
   /// Whether we're initializing this provider for the first time.
   ///
   /// **Note**:
@@ -186,7 +213,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
       _debugCallbackStack == 0,
       'Cannot use Ref inside life-cycles/selectors.',
     );
-    if (_status == _RefStatus.unmounted) {
+    if (unsafe_checkIfMounted && _status == _RefStatus.unmounted) {
       throw UnmountedRefException(_element.origin);
     }
   }
