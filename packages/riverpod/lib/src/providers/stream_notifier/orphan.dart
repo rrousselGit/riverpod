@@ -25,7 +25,7 @@ abstract class StreamNotifier<StateT> extends $StreamNotifier<StateT> {
   @override
   void runBuild() {
     final created = build();
-    element()!.handleValue(ref, created);
+    requireElement().handleValue(ref, created);
   }
 }
 

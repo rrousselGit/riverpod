@@ -108,6 +108,40 @@ void main() {
       );
     });
 
+    test('Lifecycle can be used if mounted check is disabled', () async {
+      late Ref ref;
+      final container = ProviderContainer.test();
+      final dep = StateProvider((ref) => 0);
+      final provider = Provider<Object?>((r) {
+        r.watch(dep);
+        ref = r;
+        return Object();
+      });
+
+      container.read(provider);
+      container.read(dep.notifier).state++;
+
+      await null;
+
+      final another = Provider((ref) => 0);
+      ref.unsafe_checkIfMounted = false;
+
+      expect(() => ref.watch(another), returnsNormally);
+      expect(() => ref.invalidateSelf(), returnsNormally);
+      expect(() => ref.invalidate(dep), returnsNormally);
+      expect(() => ref.refresh(another), returnsNormally);
+      expect(() => ref.read(another), returnsNormally);
+      expect(() => ref.onDispose(() {}), returnsNormally);
+      expect(() => ref.onAddListener(() {}), returnsNormally);
+      expect(() => ref.onCancel(() {}), returnsNormally);
+      expect(() => ref.onRemoveListener(() {}), returnsNormally);
+      expect(() => ref.onResume(() {}), returnsNormally);
+      expect(() => ref.notifyListeners(), returnsNormally);
+      expect(() => ref.listen(another, (_, __) {}), returnsNormally);
+      expect(() => ref.exists(another), returnsNormally);
+      expect(() => ref.keepAlive(), returnsNormally);
+    });
+
     test('asserts that a lifecycle cannot be used inside selectors', () {
       late Ref ref;
       final container = ProviderContainer.test();

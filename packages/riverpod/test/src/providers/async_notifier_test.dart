@@ -283,6 +283,25 @@ void main() {
       );
     });
 
+    test('Using the notifier after dispose does not throw if flag is disabled',
+        () async {
+      final container = ProviderContainer.test();
+      final provider = factory.simpleTestProvider((ref, _) => 0);
+
+      container.listen(provider.notifier, (prev, next) {});
+      final notifier = container.read(provider.notifier);
+      notifier.ref.unsafe_checkIfMounted = false;
+
+      container.invalidate(provider);
+      await null;
+
+      expect(notifier.ref.mounted, false);
+      expect(() => notifier.state, returnsNormally);
+      expect(() => notifier.future, returnsNormally);
+      expect(() => notifier.state = const AsyncData(42), returnsNormally);
+      expect(() => notifier.update((p1) => 42), returnsNormally);
+    });
+
     test('Can assign `AsyncLoading<T>` to `AsyncValue<void>`', () {
       // Regression test for https://github.com/rrousselGit/riverpod/issues/2120
       final provider = factory.simpleTestProvider<void>((ref, _) => 42);

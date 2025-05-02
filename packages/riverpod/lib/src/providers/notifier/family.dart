@@ -15,7 +15,7 @@ abstract class FamilyNotifier<StateT, ArgT> extends $Notifier<StateT> {
   @override
   void runBuild() {
     final created = build(arg);
-    element()!.handleValue(ref, created);
+    requireElement().handleValue(ref, created);
   }
 }
 
