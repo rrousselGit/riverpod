@@ -24,30 +24,7 @@ final class Riverpod {
     this.keepAlive = false,
     this.dependencies,
     this.retry,
-    this.persist,
-    this.destroyKey,
   });
-
-  /// Whether the state of the provider should be stored in a database.
-  ///
-  /// When using a separate annotation for enabling persistence, it is generally
-  /// not necessary to specify this field.
-  final bool? persist;
-
-  /// When [persist] is enabled, this key can be optionally specified to
-  /// clear the previously stored state.
-  ///
-  /// In short, whenever your application releases a new version and the
-  /// [destroyKey] changes, the associated state will be cleared.
-  /// But if the [destroyKey] is unchanged, the state will be preserved.
-  ///
-  /// This is useful when a new version of your application breaks the
-  /// compatibility with the previous state (such as when adding a new required field).
-  /// The alternative is to manually migrate your Database ; which is more
-  /// powerful but more complex.
-  ///
-  /// **Note**: This field is only relevant when [persist] is enabled.
-  final String? destroyKey;
 
   /// The default retry logic used by providers associated to this container.
   ///
