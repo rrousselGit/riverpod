@@ -3,8 +3,6 @@
 // ignore: invalid_export_of_internal_element
 export 'src/internals.dart'
     show
-        StateNotifierProviderFamily,
-        StateProviderFamily,
         ChangeNotifierProviderFamily,
         ProviderListenableOrFamily,
         ProviderOrFamily,

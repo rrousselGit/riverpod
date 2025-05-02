@@ -149,7 +149,7 @@ class _StateProviderElement<T> extends $FunctionalProviderElement<T, T> {
 }
 
 /// The [Family] of [StateProvider].
-@publicInMisc
+@publicInLegacy
 final class StateProviderFamily<StateT, Arg> extends FunctionalFamily< //
     StateT,
     Arg,

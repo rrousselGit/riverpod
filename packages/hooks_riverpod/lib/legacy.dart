@@ -4,4 +4,6 @@ export 'src/internals.dart'
         StateController,
         StateNotifierProvider,
         StateProvider,
-        ChangeNotifierProvider;
+        ChangeNotifierProvider,
+        StateNotifierProviderFamily,
+        StateProviderFamily;
