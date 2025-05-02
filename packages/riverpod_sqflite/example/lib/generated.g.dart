@@ -124,10 +124,10 @@ abstract class _$TodosNotifier extends _$TodosNotifierBase
     List<Todo> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
   }) {
-    final resolvedKey = "TodosNotifier";
+    const resolvedKey = "TodosNotifier";
 
     return super.persist(
-      key: resolvedKey,
+      key: key ?? resolvedKey,
       storage: storage,
       encode: encode ?? (value) => $jsonCodex.encode(state.requireValue),
       decode: decode ??

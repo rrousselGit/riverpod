@@ -63,10 +63,10 @@ class JsonGenerator extends ParserGenerator<JsonPersist> {
     };
 
     final resolvedKey = !provider.providerElement.isFamily
-        ? 'final resolvedKey = "${provider.name}";'
+        ? 'const resolvedKey = "${provider.name}";'
         : '''
-    final args = ${provider.argumentToRecord()};
-    final resolvedKey = '${provider.name}(\$args)';
+    late final args = ${provider.argumentToRecord()};
+    late final resolvedKey = '${provider.name}(\$args)';
 ''';
 
     String decode(DartType type, String name) {
@@ -114,7 +114,7 @@ abstract class $notifierClass$genericsDefinition extends $baseClass
     $resolvedKey
 
     return super.persist(
-      key: resolvedKey,
+      key: key ?? resolvedKey,
       storage: storage,
       encode: encode ?? (value) => \$jsonCodex.encode($valueString),
       decode: decode ?? (encoded) {

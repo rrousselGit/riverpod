@@ -45,4 +45,46 @@ void main() {
     expect(result.keys, ['foo']);
     expect(result.values, [isA<Bar>().having((e) => e.value, 'value', 42)]);
   });
+
+  test('CustomKey', () async {
+    final container = ProviderContainer.test();
+    final persist = await container
+        .listen(
+          storageProvider.future,
+          (a, b) {},
+        )
+        .read();
+    persist.write('My key', '{"foo": {"value": 42}}', const StorageOptions());
+
+    final result = await container
+        .listen(customKeyProvider.future, (prev, next) {})
+        .read();
+
+    expect(result, hasLength(1));
+    expect(result.keys, ['foo']);
+    expect(result.values, [isA<Bar>().having((e) => e.value, 'value', 42)]);
+  });
+
+  test('CustomJsonWithArgs', () async {
+    final container = ProviderContainer.test();
+    final persist = await container
+        .listen(
+          storageProvider.future,
+          (a, b) {},
+        )
+        .read();
+    persist.write(
+      'CustomJsonWithArgs((42, a, arg3: null))',
+      '{"foo": {"value": 42}}',
+      const StorageOptions(),
+    );
+
+    final result = await container
+        .listen(customJsonWithArgsProvider(42, 'a').future, (prev, next) {})
+        .read();
+
+    expect(result, hasLength(1));
+    expect(result.keys, ['foo']);
+    expect(result.values, [isA<Bar>().having((e) => e.value, 'value', 42)]);
+  });
 }

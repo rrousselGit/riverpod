@@ -79,6 +79,31 @@ class CustomJson extends _$CustomJson {
   }
 }
 
+@riverpod
+@JsonPersist()
+class CustomKey extends _$CustomKey {
+  @override
+  Future<Map<String, Bar>> build() async {
+    await persist(
+      key: 'My key',
+      storage: ref.watch(storageProvider.future),
+    );
+
+    return state.value ?? {};
+  }
+}
+
+@riverpod
+@JsonPersist()
+class CustomJsonWithArgs extends _$CustomJsonWithArgs {
+  @override
+  Future<Map<String, Bar>> build(int arg, String arg2, {int? arg3}) async {
+    await persist(storage: ref.watch(storageProvider.future));
+
+    return state.value ?? {};
+  }
+}
+
 class Bar {
   const Bar(this.value);
   Bar.fromJson(Map<String, dynamic> json) : value = json['value'] as int;
