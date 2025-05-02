@@ -1,12 +1,12 @@
 dartdoc:
   categories:
     "Core":
-      markdown: ../../dartdoc/core.md
+      markdown: ./dartdoc/core.md
       name: Core
     "Providers":
-      markdown: ../../dartdoc/providers.md
+      markdown: ./dartdoc/providers.md
       name: Providers
     "Notifiers":
-      markdown: ../../dartdoc/notifiers.md
+      markdown: ./dartdoc/notifiers.md
       name: Notifiers
   showUndocumentedCategories: true

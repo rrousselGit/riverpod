@@ -1,3 +1,4 @@
+<!-- WARNING: This file should be kept in sync with its duplicates in the other riverpod packages -->
 Here, you will find the list of all providers (excluding the "legacy" ones)  
 You can safely pick a provider from this list and be sure that its usage is recommended.
 

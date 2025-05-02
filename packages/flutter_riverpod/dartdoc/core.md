@@ -1,3 +1,4 @@
+<!-- WARNING: This file should be kept in sync with its duplicates in the other riverpod packages -->
 This list is a set of important objects to interact
 with "providers".
 
