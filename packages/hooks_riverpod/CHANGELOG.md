@@ -1,3 +1,8 @@
+## 3.0.0-dev.14 - 2025-05-02
+
+- `flutter_riverpod` upgraded to `3.0.0-dev.14`
+- `riverpod` upgraded to `3.0.0-dev.14`
+
 ## 3.0.0-dev.13 - 2025-05-01
 
 - `flutter_riverpod` upgraded to `3.0.0-dev.13`
