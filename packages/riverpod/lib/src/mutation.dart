@@ -136,20 +136,20 @@ const mutationZoneKey = #_mutation;
 /// final addTodo = ref.watch(todoListProvider.addTodo);
 ///
 /// switch (addTodo.state) {
-///   case IdleMutationState():
+///   case IdleMutation():
 ///     print('The mutation is idle');
-///   case PendingMutationState():
+///   case PendingMutation():
 ///     print('The mutation is in progress');
-///   case ErrorMutationState(:final error):
+///   case ErrorMutation(:final error):
 ///     print('The mutation has failed with $error');
-///   case SuccessMutationState(:final value):
+///   case SuccessMutation(:final value):
 ///     print('The mutation has succeeded, and $value was returned');
 /// }
 /// ```
 ///
 /// ### Example: Showing a loading indicator while the mutation is in progress
 ///
-/// You can check for the [PendingMutationState] to show a loading indicator.
+/// You can check for the [PendingMutation] to show a loading indicator.
 /// The following code shows a loading indicator while the mutation is in progress.
 /// The indicator will disappear when the mutation completes or fails.
 ///
@@ -163,7 +163,7 @@ const mutationZoneKey = #_mutation;
 ///       body: Column(
 ///         children: [
 ///           // If the mutation is in progress, show a loading indicator
-///           if (addTodo.state is PendingMutationState)
+///           if (addTodo.state is PendingMutation)
 ///             const LinearProgressIndicator(),
 ///           // See above for how AddTodoButton is defined
 ///           AddTodoButton(),
@@ -182,7 +182,7 @@ const mutationZoneKey = #_mutation;
 ///
 /// ### Example: Showing a snackbar when the mutation completes/fails
 ///
-/// You can check for the [ErrorMutationState] and [SuccessMutationState] to show a snackbar.
+/// You can check for the [ErrorMutation] and [SuccessMutation] to show a snackbar.
 ///
 /// Since showing snackbar is done using `showSnackBar`, which is not a widget,
 /// we cannot rely on `ref.watch` here.
@@ -197,10 +197,10 @@ const mutationZoneKey = #_mutation;
 ///       // We determine if the mutation succeeded or failed, and change
 ///       // the message accordingly.
 ///       String message;
-///       if (addTodo.state is ErrorMutationState) {
+///       if (addTodo.state is ErrorMutation) {
 ///         message = 'Failed to add todo';
 ///       }
-///       else if (addTodo.state is SuccessMutationState) {
+///       else if (addTodo.state is SuccessMutation) {
 ///         message = 'Todo added successfully';
 ///       }
 ///       // We are neither in a success nor in an error state, so we do not show a snackbar.
@@ -217,7 +217,7 @@ const mutationZoneKey = #_mutation;
 ///
 /// ## Example: Disabling a button while the operation is pending
 ///
-/// You can check for the [PendingMutationState] to know if an operation is
+/// You can check for the [PendingMutation] to know if an operation is
 /// in progress. We can use this information to disable a button, by setting its
 /// `onPressed` to `null`:
 ///
@@ -228,7 +228,7 @@ const mutationZoneKey = #_mutation;
 ///     final addTodo = ref.watch(todoListProvider.addTodo);
 ///
 ///     return ElevatedButton(
-///       onPressed: addTodo.state is PendingMutationState
+///       onPressed: addTodo.state is PendingMutation
 ///         ? null  // If the mutation is in progress, disable the button
 ///         : () => addTodo('Buy milk'), // Otherwise enable the button
 ///     );
@@ -237,8 +237,8 @@ const mutationZoneKey = #_mutation;
 /// ```
 ///
 /// A similar logic can be used for showing the button in red/green when the
-/// operation fails/completes, by instead checking for [ErrorMutationState] and
-/// [SuccessMutationState].
+/// operation fails/completes, by instead checking for [ErrorMutation] and
+/// [SuccessMutation].
 ///
 /// {@macro auto_reset}
 /// {@endtemplate}
@@ -255,10 +255,10 @@ const mutation = Mutation();
 ///
 /// {@template mutation_states}
 /// A mutation can be in any of the following states:
-/// - [IdleMutationState]: The mutation is not running. This is the default state.
-/// - [PendingMutationState]: The mutation has been called and is in progress.
-/// - [ErrorMutationState]: The mutation has failed with an error.
-/// - [SuccessMutationState]: The mutation has completed successfully.
+/// - [IdleMutation]: The mutation is not running. This is the default state.
+/// - [PendingMutation]: The mutation has been called and is in progress.
+/// - [ErrorMutation]: The mutation has failed with an error.
+/// - [SuccessMutation]: The mutation has completed successfully.
 /// {@endtemplate}
 sealed class MutationState<ResultT> {
   const MutationState._();
@@ -272,28 +272,28 @@ sealed class MutationState<ResultT> {
 /// {@macro auto_reset}
 ///
 /// {@macro mutation_states}
-final class IdleMutationState<ResultT> extends MutationState<ResultT> {
-  const IdleMutationState._() : super._();
+final class IdleMutation<ResultT> extends MutationState<ResultT> {
+  const IdleMutation._() : super._();
 
   @override
-  String toString() => 'IdleMutationState<$ResultT>()';
+  String toString() => 'IdleMutation<$ResultT>()';
 }
 
 /// The mutation has been called and is in progress.
 ///
 /// {@macro mutation_states}
-final class PendingMutationState<ResultT> extends MutationState<ResultT> {
-  const PendingMutationState._() : super._();
+final class PendingMutation<ResultT> extends MutationState<ResultT> {
+  const PendingMutation._() : super._();
 
   @override
-  String toString() => 'PendingMutationState<$ResultT>()';
+  String toString() => 'PendingMutation<$ResultT>()';
 }
 
 /// The mutation has failed with an error.
 ///
 /// {@macro mutation_states}
-final class ErrorMutationState<ResultT> extends MutationState<ResultT> {
-  ErrorMutationState._(this.error, this.stackTrace) : super._();
+final class ErrorMutation<ResultT> extends MutationState<ResultT> {
+  ErrorMutation._(this.error, this.stackTrace) : super._();
 
   /// The error thrown by the mutation.
   final Object error;
@@ -302,20 +302,20 @@ final class ErrorMutationState<ResultT> extends MutationState<ResultT> {
   final StackTrace stackTrace;
 
   @override
-  String toString() => 'ErrorMutationState<$ResultT>($error, $stackTrace)';
+  String toString() => 'ErrorMutation<$ResultT>($error, $stackTrace)';
 }
 
 /// The mutation has completed successfully.
 ///
 /// {@macro mutation_states}
-final class SuccessMutationState<ResultT> extends MutationState<ResultT> {
-  SuccessMutationState._(this.value) : super._();
+final class SuccessMutation<ResultT> extends MutationState<ResultT> {
+  SuccessMutation._(this.value) : super._();
 
   /// The new state of the notifier after the mutation has completed.
   final ResultT value;
 
   @override
-  String toString() => 'SuccessMutationState<$ResultT>($value)';
+  String toString() => 'SuccessMutation<$ResultT>($value)';
 }
 
 /// A base class that all mutations extends.
@@ -325,19 +325,19 @@ final class SuccessMutationState<ResultT> extends MutationState<ResultT> {
 abstract class MutationBase<ResultT> {
   /// The current state of the mutation.
   ///
-  /// This defaults to [IdleMutationState].
-  /// When the mutation starts, it will change to [PendingMutationState] and
-  /// then to either [ErrorMutationState] or [SuccessMutationState].
+  /// This defaults to [IdleMutation].
+  /// When the mutation starts, it will change to [PendingMutation] and
+  /// then to either [ErrorMutation] or [SuccessMutation].
   ///
   /// **Note**:
   /// This property is immutable. The state will not change unless you
   /// call `ref.watch(provider.myMutation)` again.
   MutationState<ResultT> get state;
 
-  /// Sets [state] back to [IdleMutationState].
+  /// Sets [state] back to [IdleMutation].
   ///
   /// Calling [reset] is useful when the mutation is actively listened to,
-  /// and you want to forcibly go back to the [IdleMutationState].
+  /// and you want to forcibly go back to the [IdleMutation].
   ///
   /// {@template auto_reset}
   /// ## Automatic resets
@@ -346,10 +346,10 @@ abstract class MutationBase<ResultT> {
   /// being listened to.
   /// This is similar to Riverpod's "auto-dispose" feature, for mutations.
   /// If you remove all `watch`/`listen` calls to a mutation, the mutation
-  /// will automatically go-back to its [IdleMutationState].
+  /// will automatically go-back to its [IdleMutation].
   ///
   /// If your mutation is always listened, you may want to call [MutationBase.reset] manually
-  /// to restore the mutation to its [IdleMutationState].
+  /// to restore the mutation to its [IdleMutation].
   /// {@endtemplate}
   void reset();
 }
@@ -394,14 +394,14 @@ abstract class $AsyncMutationBase<
         try {
           _setState(
             mutationContext,
-            copyWith(PendingMutationState<ResultT>._(), key: key),
+            copyWith(PendingMutation<ResultT>._(), key: key),
           );
 
           final result = await cb(notifier);
           if (key == _currentKey) {
             _setState(
               mutationContext,
-              copyWith(SuccessMutationState<ResultT>._(result)),
+              copyWith(SuccessMutation<ResultT>._(result)),
             );
           }
 
@@ -410,7 +410,7 @@ abstract class $AsyncMutationBase<
           if (key == _currentKey) {
             _setState(
               mutationContext,
-              copyWith(ErrorMutationState<ResultT>._(err, stack)),
+              copyWith(ErrorMutation<ResultT>._(err, stack)),
             );
           }
 
@@ -426,7 +426,7 @@ abstract class _MutationBase<
     MutationT extends _MutationBase<ResultT, MutationT, ClassT>,
     ClassT extends AnyNotifier<Object?>> implements MutationBase<ResultT> {
   _MutationBase({MutationState<ResultT>? state, this.key})
-      : state = state ?? IdleMutationState<ResultT>._() {
+      : state = state ?? IdleMutation<ResultT>._() {
     listenable.onCancel = _scheduleAutoReset;
   }
 
@@ -451,9 +451,9 @@ abstract class _MutationBase<
 
   @override
   void reset() {
-    if (state is IdleMutationState<ResultT>) return;
+    if (state is IdleMutation<ResultT>) return;
 
-    listenable.result = $ResultData(copyWith(IdleMutationState<ResultT>._()));
+    listenable.result = $ResultData(copyWith(IdleMutation<ResultT>._()));
 
     final context = ProviderObserverContext(
       element.origin,
@@ -496,7 +496,7 @@ abstract class _MutationBase<
     );
 
     switch (mutation.state) {
-      case ErrorMutationState(:final error, :final stackTrace):
+      case ErrorMutation(:final error, :final stackTrace):
         _notifyObserver(
           (obs) => obs.mutationError(
             obsContext,
@@ -506,12 +506,12 @@ abstract class _MutationBase<
           ),
         );
 
-      case SuccessMutationState(:final value):
+      case SuccessMutation(:final value):
         _notifyObserver(
           (obs) => obs.mutationSuccess(obsContext, mutationContext!, value),
         );
 
-      case PendingMutationState():
+      case PendingMutation():
         _notifyObserver(
           (obs) => obs.mutationStart(obsContext, mutationContext!),
         );

@@ -32,11 +32,11 @@ class MutationTemplate extends Template {
 sealed class ${mutation.generatedMutationInterfaceName} extends MutationBase<${mutation.valueDisplayType}> {
   /// Starts the mutation.
   /// 
-  /// This will first set the state to [PendingMutationState], then
+  /// This will first set the state to [PendingMutation], then
   /// will call [${provider.name}.${mutation.name}] with the provided parameters.
   ///
   /// After the method completes, the mutation state will be updated to either
-  /// [SuccessMutationState] or [ErrorMutationState] based on if the method
+  /// [SuccessMutation] or [ErrorMutation] based on if the method
   /// threw or not.
   ///
   /// **Note**:
