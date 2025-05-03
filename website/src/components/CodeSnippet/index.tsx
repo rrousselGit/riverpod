@@ -33,20 +33,10 @@ function findFirstLineWithContent(lines: Array<string>) {
   throw new Error("No content found in snippet");
 }
 
-const c = ` @riverpod
-        Result myFunction(Ref ref) {
-          <your logic here>`;
-
 export function trimSnippet(
   snippet: string,
   translations?: TranslationMap
 ): string {
-  function log(...obj) {
-    if (snippet.includes(c)) {
-      console.log(...obj);
-    }
-  }
-
   if (!snippet) return;
   let startAtKeyIndex = snippet.indexOf(START_AT);
   // Substring starts after "/* START" + 1 for the newline
