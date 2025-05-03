@@ -3,7 +3,7 @@ import codegen from "!!raw-loader!./async_notifier.dart";
 
 export default {
   raw,
-  hooks: raw,
+  hooks: undefined,
   codegen,
-  hooksCodegen: codegen,
+  hooksCodegen: undefined,
 };

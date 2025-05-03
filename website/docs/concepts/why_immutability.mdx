@@ -1,6 +1,6 @@
 ---
 title: Why Immutability
-version: 1
+version: 2
 ---
 
 import Tabs from "@theme/Tabs";
@@ -9,7 +9,6 @@ import whyImmutability from "./why_immutability"
 import {
   trimSnippet,
   AutoSnippet,
-  When,
 } from "/src/components/CodeSnippet";
 
 :::caution
@@ -23,7 +22,7 @@ in the top of the sidebar instead (introduction/essentials/case-studies/...)
 Immutability is when all fields of an `Object` are final or late final.
 They are set exactly once upon construction.
 
-Immutability is desireable for many different reasons
+Immutability is desirable for many different reasons
 
 - Value equality rather than reference equality
 - Local reasoning about a piece of code
@@ -74,7 +73,7 @@ If you just call a method that mutates an object, the reference is the same.
 
 ### Using immutable state
 
-Immutable state is best fit for using a [Notifier] <When codegen={false}> in combination with [NotifierProvider] </When>.
+Immutable state is best fit for using a [Notifier].
 A [Notifier] allows you to expose an interface through which you can 'mutate' the state.
 You cannot mutate the state from outside the class you define that extends [Notifier].
 This enforces a separation of concerns and keeps business logic outside of your UI.

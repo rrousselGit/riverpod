@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import CodeBlock from "@theme/CodeBlock";
 import "./DocuCode.scss";
+import { trimSnippet, CodeSnippet } from "/src/components/CodeSnippet";
 
 type AnnotatedCode = {
   color?: string;
@@ -20,6 +21,8 @@ export const colors = [
 ];
 
 const Legend = ({ annotations, code }) => {
+  code = trimSnippet(code);
+
   const fullAnnotations = new Array<AnnotatedCode>();
 
   let annotationOffset = 0;

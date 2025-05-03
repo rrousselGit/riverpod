@@ -1,7 +1,7 @@
 ---
 title: Getting started
 pagination_next: essentials/first_request
-version: 5
+version: 6
 ---
 
 import Tabs from "@theme/Tabs";
@@ -15,7 +15,6 @@ import dartPubspec from "./getting_started/dart_pubspec";
 import dartPubadd from "./getting_started/dart_pub_add";
 import {
   AutoSnippet,
-  When,
 } from "/src/components/CodeSnippet";
 import { Link } from "/src/components/Link";
 
@@ -71,10 +70,6 @@ Alternatively, you can manually add the dependency to your app from within your 
 
 Then, install packages with `flutter pub get`.
 
-<When codegen={true}>
-  You can now run the code-generator with{" "}
-  <code>dart run build_runner watch</code>.
-</When>
 
 </TabItem>
 <TabItem value="riverpod">
@@ -87,13 +82,15 @@ Then, install packages with `flutter pub get`.
 
 Then, install packages with `dart pub get`.
 
-<When codegen={true}>
-  You can now run the code-generator with{" "}
-  <code>dart run build_runner watch</code>.
-</When>
-
 </TabItem>
 </Tabs>
+
+:::info
+If using code-generation, you can now run the code-generator with:
+```sh
+dart run build_runner watch -d
+```
+:::
 
 That's it. You've added [Riverpod] to your app!
 

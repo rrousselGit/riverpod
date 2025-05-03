@@ -3,7 +3,7 @@ import codegen from "!!raw-loader!./codegen.dart";
 
 export default {
   raw: raw,
-  hooks: raw,
+  hooks: undefined,
   codegen: codegen,
-  hooksCodegen: codegen,
+  hooksCodegen: undefined,
 };

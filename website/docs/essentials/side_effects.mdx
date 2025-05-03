@@ -4,7 +4,7 @@ version: 2
 ---
 
 import { Link } from "/src/components/Link";
-import { AutoSnippet, When } from "/src/components/CodeSnippet";
+import { AutoSnippet } from "/src/components/CodeSnippet";
 import Legend, { colors } from "./first_request/legend/legend";
 import todoListProvider from "./side_effects/todo_list_provider";
 import todoListNotifier from "./side_effects/todo_list_notifier";
@@ -15,6 +15,8 @@ import invalidateSelfAddTodo from "!!raw-loader!./side_effects/raw/invalidate_se
 import manualAddTodo from "!!raw-loader!./side_effects/raw/manual_add_todo.dart";
 import mutableManualAddTodo from "!!raw-loader!./side_effects/raw/mutable_manual_add_todo.dart";
 import renderAddTodo from "./side_effects/render_add_todo";
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 So far, we've only seen how to fetch data (aka perform a _GET_ HTTP request).  
 But what about side-effects, such as a _POST_ request?
@@ -49,7 +51,8 @@ Notifiers are the "stateful widget" of providers. They require a slight tweak to
 the syntax for defining a provider.  
 This new syntax is as follows:
 
-<When codegen={false}>
+<Tabs>
+<TabItem value="riverpod_generator" label="riverpod_generator">
 <Legend
   code={`final name = SomeNotifierProvider.someModifier<MyNotifier, Result>(MyNotifier.new);
  
@@ -192,11 +195,8 @@ This method should not be called directly.
     },
 ]}
 />
-</When>
-
-<!-- Some separation for good measure -->
-
-<When codegen={true}>
+</TabItem>
+<TabItem value="riverpod" label="riverpod">
 <Legend
   code={`@riverpod
 class MyNotifier extends _$MyNotifier {
@@ -258,7 +258,8 @@ This method should not be called directly.
     },
 ]}
 />
-</When>
+</TabItem>
+</Tabs>
 
 For reference, you might want to check <Link documentID="essentials/first_request" />
 to compare this new syntax with the previously seen syntax.
