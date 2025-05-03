@@ -1,6 +1,6 @@
 ---
 title: Reading a Provider
-version: 1
+version: 2
 ---
 
 import CodeBlock from "@theme/CodeBlock";
@@ -20,7 +20,6 @@ import provider from "./reading/provider";
 import {
   trimSnippet,
   AutoSnippet,
-  When,
 } from "/src/components/CodeSnippet";
 import { Link } from "/src/components/Link";
 
@@ -49,12 +48,6 @@ All providers receive a "ref" as a parameter:
 
 This parameter is safe to pass to the value exposed by the provider.
 
-<When codegen={false}>
-
-A common use-case is to pass the provider's "ref" to a `StateNotifier`
-
-</When>
-
 <AutoSnippet language="dart" {...counter}></AutoSnippet>
 
 Doing so allows our `Counter` class to read providers.
@@ -63,8 +56,6 @@ Doing so allows our `Counter` class to read providers.
 
 Widgets naturally do not have a ref parameter. But [Riverpod] offers multiple
 solutions to obtain one from widgets.
-
-<When>
 
 #### Extending ConsumerWidget instead of StatelessWidget
 
@@ -88,11 +79,7 @@ a property of the [ConsumerState] object:
 
 <AutoSnippet language="dart" {...consumerStatefulWidget}></AutoSnippet>
 
-</When>
-
-<When hooks>
-
-#### Extending HookConsumerWidget instead of HookWidget
+#### Extending HookConsumerWidget instead of HookWidget (hooks_riverpod)
 
 This option is for [flutter_hooks] users. Since [flutter_hooks] requires
 extending [HookWidget] to work, widgets that use hooks are unable to extend
@@ -106,7 +93,7 @@ An example would be:
 
 <AutoSnippet language="dart" {...consumerWidget}></AutoSnippet>
 
-#### Extending StatefulHookConsumerWidget instead of HookWidget
+#### Extending StatefulHookConsumerWidget instead of HookWidget (hooks_riverpod)
 
 This option is for [flutter_hooks] users, who need to use [StatefulWidget] lifecycle methods in addition to hooks.
 
@@ -114,7 +101,7 @@ An example would be:
 
 <AutoSnippet language="dart" {...consumerStatefulWidget}></AutoSnippet>
 
-#### Consumer and HookConsumer widgets
+#### Consumer and HookConsumer widgets (hooks_riverpod)
 
 A final way to obtain a "ref" inside widgets is to rely on [Consumer]/
 [HookConsumer].
@@ -126,8 +113,6 @@ As such, these widgets are a way to obtain a "ref" without having to define a cl
 An example would be:
 
 <CodeBlock>{trimSnippet(consumerHook)}</CodeBlock>
-
-</When>
 
 ## Using ref to interact with providers
 
@@ -288,26 +273,11 @@ For example, another part of the application could call:
 ref.refresh(counterProvider);
 ```
 
-<When codegen={false}>
-  
-which would recreate the `StateController` object.
+which would recreate the notifier object.
 
-If we used `ref.read` here, our button would still use the previous
-`StateController` instance, which was disposed and should no-longer be used.
-Whereas using `ref.watch` correctly rebuilds the button to use the new
-`StateController`.
-
-</When>
-
-<When codegen>
-
-which would recreate the `Counter` object.
-
-If we used `ref.read` here, our button would still use the previous `Counter`
+If we used `ref.read` here, our button would still use the previous notifier
 instance, which was disposed and should no-longer be used. Whereas using
-`ref.watch` correctly rebuilds the button to use the new `Counter`.
-
-</When>
+`ref.watch` correctly rebuilds the button to use the new notifier.
 
 ## Deciding what to read
 

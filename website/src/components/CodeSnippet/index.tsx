@@ -2,6 +2,8 @@
 
 import React, { useContext } from "react";
 import CodeBlock from "@theme/CodeBlock";
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 import {
   CodegenContext,
@@ -17,31 +19,56 @@ const endTemplateRegex = /^\s*\/\/\s*{@endtemplate}/g;
 
 type TranslationMap = Record<string, string>;
 
+function findFirstLineWithContent(lines: Array<string>) {
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+
+    const isEmpty = line.trim() === "";
+    if (isEmpty) continue;
+
+    const leadingSpaceCharCount = line.length - line.trimStart().length;
+    return [i, leadingSpaceCharCount];
+  }
+
+  throw new Error("No content found in snippet");
+}
+
+const c = ` @riverpod
+        Result myFunction(Ref ref) {
+          <your logic here>`;
+
 export function trimSnippet(
   snippet: string,
   translations?: TranslationMap
 ): string {
+  function log(...obj) {
+    if (snippet.includes(c)) {
+      console.log(...obj);
+    }
+  }
+
   if (!snippet) return;
-  const startAtIndex = snippet.indexOf(START_AT);
-  if (startAtIndex < 0) return snippet;
+  let startAtKeyIndex = snippet.indexOf(START_AT);
+  // Substring starts after "/* START" + 1 for the newline
+  const startAtOffset =
+    startAtKeyIndex < 0 ? 0 : startAtKeyIndex + START_AT.length + 1;
 
   let endAtIndex = snippet.indexOf(END_AT);
   if (endAtIndex < 0) endAtIndex = undefined;
 
-  // Substring starts after "/* START" + 1 for the newline
-  snippet = snippet.substring(startAtIndex + START_AT.length + 1, endAtIndex);
+  snippet = snippet.substring(startAtOffset, endAtIndex);
 
   let currentTemplateKey: string | undefined;
 
-  const leadingSpaces = snippet.match(/^\h+/)?.[0];
   const lines = snippet.split("\n");
+  let [i, leadingSpacesCharCount] = findFirstLineWithContent(lines);
 
   const transformedLines: Array<string> = [];
 
-  for (var i = 0; i < lines.length; i++) {
+  for (; i < lines.length; i++) {
     let line = lines[i];
-    if (leadingSpaces && line.startsWith(leadingSpaces[0])) {
-      line = line.substring(leadingSpaces.length);
+    if (leadingSpacesCharCount) {
+      line = line.substring(leadingSpacesCharCount);
     }
 
     const templateMatch = templateRegex.exec(line);
@@ -120,29 +147,60 @@ export function AutoSnippet(props: {
   hooks?: string | Array<string>;
   translations?: TranslationMap;
 }) {
-  const [codegen] = useIsBrowser() ? useContext(CodegenContext) : [true];
-  const [hooksEnabled] = useIsBrowser()
-    ? useContext(FlutterHooksContext)
-    : [false];
+  const shouldUseTabs =
+    !!props.codegen || !!props.hooks || !!props.hooksCodegen;
 
-  let snippet: string | Array<string>;
-  if (codegen && hooksEnabled) {
-    snippet = props.hooksCodegen;
-  }
-  if (codegen) {
-    snippet ??= props.codegen;
-  }
-  if (!codegen && hooksEnabled) {
-    snippet ??= props.hooks;
-  }
-  snippet ??= props.raw;
+  const keys: Array<keyof typeof props> = [
+    "codegen",
+    "hooks",
+    "raw",
+    "hooksCodegen",
+  ];
+  for (const codeKey of keys) {
+    const code = props[codeKey];
+    if (!code) continue;
 
-  const code = Array.isArray(snippet) ? snippet.join("\n") : snippet;
+    for (const otherKey of keys) {
+      if (codeKey == otherKey) continue;
+      const otherCode = props[otherKey];
+
+      if (otherCode && code == otherCode) {
+        throw new Error(
+          `Duplicate code found in ${codeKey} and ${otherKey}. Code:\n${code}`
+        );
+      }
+    }
+  }
+
+  function block(rawCode: string | Array<string>) {
+    const code = Array.isArray(rawCode) ? rawCode.join("\n") : rawCode;
+
+    return (
+      <CodeBlock language={props.language} title={props.title}>
+        {trimSnippet(code, props.translations)}
+      </CodeBlock>
+    );
+  }
+
+  if (!shouldUseTabs) return block(props.raw);
+
+  function tab(rawCode: string | Array<string> | undefined, label: string) {
+    if (!rawCode) return undefined;
+
+    return (
+      <TabItem value={label} label={label}>
+        {block(rawCode)}
+      </TabItem>
+    );
+  }
 
   return (
-    <CodeBlock language={props.language} title={props.title}>
-      {trimSnippet(code, props.translations)}
-    </CodeBlock>
+    <Tabs>
+      {tab(props.codegen, "riverpod_generator")}
+      {tab(props.hooksCodegen, "riverpod_generator + flutter_hooks")}
+      {tab(props.raw, "riverpod")}
+      {tab(props.hooks, "riverpod + flutter_hooks")}
+    </Tabs>
   );
 }
 

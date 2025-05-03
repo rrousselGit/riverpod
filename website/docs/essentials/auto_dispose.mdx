@@ -1,10 +1,10 @@
 ---
 title: "Clearing cache and reacting to state disposal"
-version: 1
+version: 2
 ---
 
 import { Link } from "/src/components/Link";
-import { AutoSnippet, When } from "/src/components/CodeSnippet";
+import { AutoSnippet } from "/src/components/CodeSnippet";
 import onDisposeExample from "./auto_dispose/on_dispose_example";
 import codegenKeepAlive from "!!raw-loader!./auto_dispose/codegen_keep_alive.dart";
 import rawAutoDispose from "!!raw-loader!./auto_dispose/raw_auto_dispose.dart";
@@ -22,8 +22,6 @@ This ranges from delaying the disposal of state to reacting to destruction.
 
 ## When is state destroyed and how to change this?
 
-<When codegen={true}>
-
 When using code-generation, by default, the state is destroyed when
 the provider stops being listened to.  
 This happens when a listener has no active listener for a full frame.
@@ -35,10 +33,6 @@ are removed.
 
 <AutoSnippet raw={codegenKeepAlive} />
 
-</When>
-
-<When codegen={false}>
-
 When not using code-generation, by default the state isn't destroyed
 when the provider stops being listened.
 
@@ -49,8 +43,6 @@ Then, if the provider has no listeners for a full frame, the state will be destr
 To enable automatic disposal, you can use `.autoDispose` next to the provider type:
 
 <AutoSnippet raw={rawAutoDispose} />
-
-</When>
 
 :::note
 Enabling/disabling automatic disposal has no impact on whether or not

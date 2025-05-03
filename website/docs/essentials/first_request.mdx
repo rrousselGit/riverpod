@@ -1,11 +1,11 @@
 ---
 title: Make your first provider/network request
 pagination_prev: introduction/getting_started
-version: 2
+version: 3
 ---
 
 import { Link } from "/src/components/Link";
-import { AutoSnippet, When } from "/src/components/CodeSnippet";
+import { AutoSnippet } from "/src/components/CodeSnippet";
 import activity from "./first_request/activity";
 import provider from "./first_request/provider";
 import consumer from "./first_request/consumer";
@@ -13,6 +13,8 @@ import consumerWidget from "./first_request/consumer_widget";
 import consumerStatefulWidget from "./first_request/consumer_stateful_widget";
 import hookConsumerWidget from "./first_request/hook_consumer_widget";
 import Legend from "./first_request/legend/legend";
+import Tabs from "@theme/Tabs";
+import TabItem from "@theme/TabItem";
 
 Network requests are the core of any application. But there are a lot of things to consider when
 making a network request:
@@ -90,18 +92,20 @@ To do so, we will need to create our first provider.
 
 The syntax for defining a provider is as followed:
 
-<When codegen={false}>
+<Tabs>
+<TabItem value="riverpod_generator" label="riverpod_generator">
 <Legend
-  code={`final name = SomeProvider.someModifier<Result>((ref) {
-  <your logic here>
-});
-`}
+  code={`
+    final name = SomeProvider.someModifier<Result>((ref) {
+      <your logic here>
+    });
+  `}
   annotations={[
     {
       offset: 6,
       length: 4,
       label: "The provider variable",
-       description: <>
+        description: <>
 
 This variable is what will be used to interact with our provider.  
 The variable must be final and "top-level" (global).
@@ -172,23 +176,23 @@ Subsequent reads will not call the function again, but instead return the cached
 
 </>
     },
-]}
+  ]}
 />
-</When>
-
-<When codegen={true}>
+</TabItem>
+<TabItem value="riverpod" label="riverpod">
 <Legend
-  code={`@riverpod
-Result myFunction(Ref ref) {
-  <your logic here>
-}
-`}
+  code={`
+    @riverpod
+    Result myFunction(Ref ref) {
+      <your logic here>
+    }
+  `}
   annotations={[
     {
       offset: 0,
       length: 9,
       label: "The annotation",
-       description: <>
+      description: <>
 
 All providers must be annotated with `@riverpod` or `@Riverpod()`.
 This annotation can be placed on global functions or classes.  
@@ -202,7 +206,7 @@ For example, we can disable "auto-dispose" (which we will see later) by writing 
       offset: 17,
       length: 10,
       label: "The annotated function",
-       description: <>
+      description: <>
 
 The name of the annotated function determines how the provider
 will be interacted with.  
@@ -232,7 +236,8 @@ The type of this object is determined by the name of the function/class.
     },
 ]}
 />
-</When>
+</TabItem>
+</Tabs>
 
 In our case, we want to _GET_ an activity from the API.  
 Since a _GET_ is an asynchronous operation, that means we will want

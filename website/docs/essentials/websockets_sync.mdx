@@ -1,12 +1,11 @@
 ---
 title: Websockets and synchronous execution
-version: 1
+version: 2
 ---
 
 import {
   trimSnippet,
   AutoSnippet,
-  When,
 } from "/src/components/CodeSnippet";
 import syncDefinition from "./websockets_sync/sync_definition";
 import streamProvider from "./websockets_sync/stream_provider";
@@ -50,9 +49,9 @@ will be invoked.
 
 ### Listenable objects considerations
 
-<When codegen={true}>
 
-Listenable objects such as `ChangeNotifier` or `StateNotifier` are not supported.  
+Using code-generation, listenable objects such as `ChangeNotifier` or `StateNotifier` are
+not supported.  
 If, for compatibility reasons, you need to interact with one of such objects,
 one workaround is to pipe their notification mechanism to Riverpod.
 
@@ -66,10 +65,6 @@ This enables extracting the dispose/listening logic out of the provider:
 <AutoSnippet raw={sharedPipeChangeNotifier} />
 :::
 
-</When>
-
-<When codegen={false}>
-
 When not using code-generation, Riverpod offers "legacy" providers
 to support `ChangeNotifier` and `StateNotifier` out of the box:
 `ChangeNotifierProvider` and `StateNotifierProvider`. Using them is
@@ -81,8 +76,6 @@ But they can be helpful when interacting with legacy code,
 such as when migrating from `pkg:provider` to Riverpod.
 
 <AutoSnippet raw={changeNotifierProvider} />
-
-</When>
 
 ## Listening to a Stream
 
