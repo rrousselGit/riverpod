@@ -1,0 +1,135 @@
+---
+title: What's new in Riverpod 3.0
+hide_table_of_contents: true
+---
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import { AutoSnippet } from "/src/components/CodeSnippet";
+
+
+Welcome to Riverpod 3.0!  
+This update includes many long-due features, bug fixes, and simplifications of the API.
+
+This version is a transition period toward a simpler, unified Riverpod.  
+
+:::caution
+This version contains a few life-cycle changes. Those could break your app in subtle ways. Upgrade carefully.  
+For the migration guide, please refer to the [migration page](3.0_migration).
+:::
+
+Some of the key highlights include:
+
+- [Offline persistence (experimental)](#offline-persistence-experimental) - Providers can now opt-in to be persisted to a database
+- [Mutations (experimental) (code-generation)](#mutations-experimental-code-generation-only) - A new mechanism to enable interfaces to react to side-effects
+- [Automatic retry](#automatic-retry) - Providers now refresh when they fail, with exponential backoff
+- [`Ref.mounted`](#refmounted) - Similar to `BuildContext.mounted`, but for `Ref`.
+- [Generic support (code-generation)](#generic-support-code-generation) - Generated providers can now define type parameters
+- [Pause/Resume support](#pauseresume-support) - Temporarily pause a listener when using `ref.listen`
+- [Unification of the Public APIs](#unification-of-the-public-apis) - Behaviors are unified and duplicate interfaces are fused
+- [Provider life-cycle changes](#provider-life-cycle-changes) - Slight tweaks to how providers behave, to better fit modern code
+- [New testing utilities](#new-testing-utilities):
+  - [`ProviderContainer.test`](#providercontainertest) - A test util that creates a container and automatically disposes it after the test ends.
+  - [`NotifierProvider.overrideWithBuild`](#notifierprovideroverridewithbuild) - A way to mock only `Notifier.build`, without mocking the whole notifier.
+  - [`Future/StreamProvider.overrideWithValue`](#futurestreamprovideroverridewithvalue) - The old utilities are back
+- [Statically safe scoping](#statically-safe-scoping) - New lint rules are added to detect when an override is missing
+- [And more!](#other-changes-changes)
+
+## Offline persistence (experimental)
+
+:::info
+This feature is experimental and not yet stable.
+It is usable, but the API may change in breaking ways without a major version bump.
+:::
+
+Offline persistence is a new feature that enables caching a provider locally on the device.
+Then, when the application is closed and reopened, the provider can be restored from the cache.  
+Offline persistence is opt-in, and supported by all "Notifier" providers,
+and regardless of if you use code generation or not.
+
+Riverpod only includes interfaces to interact with a database. It does not include a database itself.
+You can use any database you want, as long as it implements the interfaces.  
+An official package for SQlife is maintained: [riverpod_sqflite](https://pub.dev/packages/riverpod_sqflite).
+
+
+    <AutoSnippet language="dart" raw="void main() {}"></AutoSnippet>
+
+{/*  TODO  */}
+
+## Mutations (experimental) (code-generation only)
+
+:::info
+This feature is experimental and not yet stable.
+It is usable, but the API may change in breaking ways without a major version bump.
+:::
+
+
+{/*  TODO  */}
+
+## Automatic retry
+
+{/*  TODO  */}
+## `Ref.mounted`
+
+{/*  TODO  */}
+## Generic support (code-generation)
+{/*  TODO  */}
+## Pause/Resume support
+{/*  TODO  */}
+## Unification of the Public APIs
+{/*  TODO  */}
+
+
+- Simplified syntax for functional providers (Ref instead of MyNameRef)****
+
+
+- StateProvider/ChangeNotifierProvider/StateNotifierProvider are officially discouraged.
+  They aren't removed, but instead moved to a different import: `package:riverpod/legacy.dart`
+- AutoDispose interfaces have been removed (no more `Notifier` vs `AutoDisposeNotifier`)
+- ^ At the same time, `isAutoDispose` is added on all provider constructors, to be more "Dart-like"
+- Unified `Ref`. No more `FutureProviderRef` vs `StreamProviderRef`, ...
+- All in all, dozens upon dozens of copy-paste interfaces have been removed,
+  significantly simplifying the API
+- `updateShouldNotify` is unified and all use `==`
+
+## Provider life-cycle changes
+
+{/*  TODO  */}
+Life-cycle changes
+
+- Providers that are not visible are now paused
+- If a provider A is exclusively used by a provider B, and B is paused, then A is paused too.
+- When a provider rebuilds, its previous subscriptions are
+  kept until the rebuild completes (but subscriptions are paused)
+- UpdateShouldNotify changes
+- A new Ref is recreated whenever the provider rebuilds.
+- ^ Same with Notifier
+- Providers that are not visible are now paused
+
+
+## New testing utilities
+### `ProviderContainer.test`
+{/*  TODO  */}
+### `NotifierProvider.overrideWithBuild`
+{/*  TODO  */}
+### `Future/StreamProvider.overrideWithValue`
+{/*  TODO  */}
+
+## Statically safe scoping
+
+{/*  TODO  */}
+
+## Other changes changes
+{/*  TODO  */}
+
+Minor changes:
+
+- AsyncValue
+  - AsyncValue(progress)
+  - is sealed
+  - .valueOrNull is now .value
+    (aka .value no-longer rethrows errors)
+- All Ref listeners return a function to remove the listener
+- `Ref.invalidate(asReload: true)` - Make an `invalidate` behave
+  as a `ref.watch` change
+- Weak listeners - Register `ref.listen` listeners without preventing a provider disposal
+

@@ -1,0 +1,20 @@
+---
+title: Migrating from 2.0 to 3.0
+---
+
+For the list of changes, please refer to the [What's new in Riverpod 3.0](whats_new) page.
+
+
+
+- Legacy provider moved
+  => either import /legacy or migrate to Notifiers
+- updateShouldNotify changes
+  => override ==
+- ProviderObserver methods (provider, ..., container) => (context, ...)
+- Removed Ref subclasses and generic
+  => Convert Providers to their respective Notifier to use listenSelf & co
+- AutoDispose removal
+  => Use `Notifier` instead of `AutoDisposeNotifier`.
+  the behaviour is the same
+- Provider/Notifier life-cycle changes
+  => Check mounted or disable ref.unsafe_mountedCheck
