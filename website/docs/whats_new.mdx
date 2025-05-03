@@ -1,6 +1,5 @@
 ---
 title: What's new in Riverpod 3.0
-hide_table_of_contents: true
 ---
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
@@ -32,7 +31,6 @@ Some of the key highlights include:
   - [`NotifierProvider.overrideWithBuild`](#notifierprovideroverridewithbuild) - A way to mock only `Notifier.build`, without mocking the whole notifier.
   - [`Future/StreamProvider.overrideWithValue`](#futurestreamprovideroverridewithvalue) - The old utilities are back
 - [Statically safe scoping](#statically-safe-scoping) - New lint rules are added to detect when an override is missing
-- [And more!](#other-changes-changes)
 
 ## Offline persistence (experimental)
 
@@ -51,7 +49,7 @@ You can use any database you want, as long as it implements the interfaces.
 An official package for SQlife is maintained: [riverpod_sqflite](https://pub.dev/packages/riverpod_sqflite).
 
 
-    <AutoSnippet language="dart" raw="void main() {}"></AutoSnippet>
+<AutoSnippet language="dart" raw="void main() {}"></AutoSnippet>
 
 {/*  TODO  */}
 
@@ -67,29 +65,304 @@ It is usable, but the API may change in breaking ways without a major version bu
 
 ## Automatic retry
 
-{/*  TODO  */}
+Starting 3.0, providers that fail during initialization will automatically retry.
+The retry is done with an exponential backoff, and the provider will be retried
+until it succeeds or is disposed. This helps when an operation fails due to a temporary issue, such as a lack of network connection.
+
+The default behavior retries any error, and starts with a 200ms delay that
+doubles after each retry up to 6.4 seconds.  
+This can be customized for all providers on [ProviderContainer]/[ProviderScope] by passing a `retry` parameter:
+
+<Tabs>
+<TabItem value="ProviderScope" label="ProviderScope" defaultValue>
+
+```dart
+void main() {
+  runApp(
+    ProviderScope(
+      // You can customize the retry logic, such as to skip
+      // specific errors or add a limit to the number of retries
+      // or change the delay
+      retry: (retryCount, error) {
+        if (error is SomeSpecificError) return null;
+        if (retryCount > 5) return null;
+
+        return Duration(seconds: retryCount * 2);
+      },
+      child: MyApp(),
+    ),
+  );
+}
+```
+
+</TabItem>
+<TabItem value="ProviderContainer" label="ProviderContainer" defaultValue>
+
+```dart
+void main() {
+  final container = ProviderContainer(
+    // You can customize the retry logic, such as to skip
+    // specific errors or add a limit to the number of retries
+    // or change the delay
+    retry: (retryCount, error) {
+      if (error is SomeSpecificError) return null;
+      if (retryCount > 5) return null;
+
+      return Duration(seconds: retryCount * 2);
+    },
+  );
+}
+```
+
+</TabItem>
+</Tabs>
+
+Alternatively, this can be configured on a per-provider basis by passing a `retry` parameter to the provider constructor:
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+  Duration retry(int retryCount, Object error) {
+    if (error is SomeSpecificError) return null;
+    if (retryCount > 5) return null;
+  
+    return Duration(seconds: retryCount * 2);
+  }
+  
+  @Riverpod(retry: retry)
+  class TodoList extends _$TodoList {
+    @override
+    List<Todo> build() => [];
+  }
+  `}
+  
+  raw={`
+  final todoListProvider = NotifierProvider<TodoList, List<Todo>>(
+    TodoList.new,
+    retry: (retryCount, error) {
+      if (error is SomeSpecificError) return null;
+      if (retryCount > 5) return null;
+    
+      return Duration(seconds: retryCount * 2);
+    },
+  );
+  `}
+></AutoSnippet>
+
+
 ## `Ref.mounted`
 
-{/*  TODO  */}
+The long-awaited `Ref.mounted` is finally here! It is similar to `BuildContext.mounted`, but for `Ref`.
+
+You can use it to check if a provider is still mounted after an async operation:
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+  @riverpod
+  class TodoList extends _$TodoList {
+    @override
+    List<Todo> build() => [];
+    
+    Future<void> addTodo(String title) async {
+      // Post the new todo to the server
+      final newTodo = await api.addTodo(title);
+      // Check if the provider is still mounted
+      // after the async operation
+      if (!ref.mounted) return;
+    
+      // If it is, update the state
+      state = [...state, newTodo];
+    }
+  }
+  `}
+  
+  raw={`
+  class TodoList extends Notifier<List<Todo>> {
+    @override
+    List<Todo> build() => [];
+    
+    Future<void> addTodo(String title) async {
+      // Post the new todo to the server
+      final newTodo = await api.addTodo(title);
+      // Check if the provider is still mounted
+      // after the async operation
+      if (!ref.mounted) return;
+    
+      // If it is, update the state
+      state = [...state, newTodo];
+    }
+  }
+  `}
+></AutoSnippet>
+
+For this to work, quite a few life-cycle changes were necessary.  
+Make sure to read the [life-cycle changes](#provider-life-cycle-changes) section.
+
 ## Generic support (code-generation)
-{/*  TODO  */}
+
+When using code generation, you can now define type parameters for your generated providers.
+Type parameters work like any other provider parameter, and need to be passed
+when watching the provider.
+
+```dart
+@riverpod
+T multiply<T extends num>(T a, T b) {
+  return a * b;
+}
+
+// ...
+
+int integer = ref.watch(multiplyProvider<int>(2, 3));
+double decimal = ref.watch(multiplyProvider<double>(2.5, 3.5));
+```
+
 ## Pause/Resume support
-{/*  TODO  */}
+
+In 2.0, Riverpod already had some form of pause/resume support, but it was fairly limited.
+With 3.0, all `ref.listen` listeners can be manually paused/resumed on demand:
+
+```dart
+final subscription = ref.listen(
+  todoListProvider,
+  (previous, next) {
+    // Do something with the new value
+  },
+);
+
+subscription.pause();
+subscription.resume();
+```
+
+At the same time, Riverpod now pauses providers in various situations:
+- When a provider is no-longer visible, it is paused
+  (Based off [Visibility](https://api.flutter.dev/flutter/widgets/Visibility-class.html)).
+- When a provider rebuilds, its subscriptions are paused until the rebuild completes.
+- When a provider is paused, all of its subscriptions are paused too.
+
+See the [life-cycle changes](#provider-life-cycle-changes) section for more details.
+
 ## Unification of the Public APIs
-{/*  TODO  */}
+
+One goal of Riverpod 3.0 is to simplify the API. This includes:
+- Highlighting what ha recommended and what is not
+- Removing needless interface duplicates
+- Making sure all functionalities function in a consistent way
+
+For this sake, a few changes were made:
+
+### [StateProvider]/[StateNotifierProvider] and [ChangeNotifierProvider] are discouraged and moved to a different import
+
+Those providers are not removed, but simply moved to a different import.
+Instead of:
+
+```dart
+import 'package:riverpod/riverpod.dart';
+```
+You should now use:
+```dart
+import 'package:riverpod/legacy.dart';
+```
+
+This is to highlight that those providers are not recommended anymore.  
+At the same time, those are preserved for backward compatibility.
+
+### AutoDispose interfaces are removed
+
+No, the "auto-dispose" feature isn't removed. This only concerns the interfaces.
+In 2.0, every provider, Ref, and Notifier was duplicated for the sake of auto-dispose (
+`Ref` vs `AutoDisposeRef`, `Notifier` vs `AutoDisposeNotifier`, etc).
+This was done for the sake of having a compilation error in some edge-cases, but came
+at the cost of a worse API.
+
+In 3.0, the interfaces are unified, and the previous compilation error is now implemented
+as a lint rule (using [riverpod_lint]). 
+What this means concretely is that you can replace all references to
+`AutoDisposeNotifier` with `Notifier`. The behavior of your code should not change.
+
+```diff
+final provider = NotifierProvider.autoDispose<MyNotifier, int>(
+  MyNotifier.new,
+);
+
+- class MyNotifier extends AutoDisposeNotifier<int> {
++ class MyNotifier extends Notifier<int> {
+}
+```
+
+### One `Ref` to rule them all
+
+In Riverpod 2.0, each provider came with its own [Ref] subclass (`FutureProviderRef`, `StreamProviderRef`, etc).  
+Some `Ref` had `state` property, some a `future`, or a `notifier`, etc. 
+Although useful, this was a lot of complexity for not much gain. One of the reasons
+for that is because [Notifier]s already have the extra properties it had,
+so the interfaces were redundant.
+
+In 3.0, `Ref` is unified. No more generic parameter such as `Ref<T>`,
+no more `FutureProviderRef`. We only have one thing: `Ref`.
+What this means in practice is, the syntax for generated providers is simplified:
+
+```diff
+-Example example(ExampleRef ref) {
++Example example(Ref ref) {
+  return Example();
+}
+```
 
 
-- Simplified syntax for functional providers (Ref instead of MyNameRef)****
+:::info
+This does not concern [WidgetRef], which is intact.  
+[Ref] and [WidgetRef] are two different things.
+:::
 
+### All `updateShouldNotify` now use `==`
 
-- StateProvider/ChangeNotifierProvider/StateNotifierProvider are officially discouraged.
-  They aren't removed, but instead moved to a different import: `package:riverpod/legacy.dart`
-- AutoDispose interfaces have been removed (no more `Notifier` vs `AutoDisposeNotifier`)
-- ^ At the same time, `isAutoDispose` is added on all provider constructors, to be more "Dart-like"
-- Unified `Ref`. No more `FutureProviderRef` vs `StreamProviderRef`, ...
-- All in all, dozens upon dozens of copy-paste interfaces have been removed,
-  significantly simplifying the API
-- `updateShouldNotify` is unified and all use `==`
+`updateShouldNotify` is a method that is used to determine if a provider should
+notify its listeners when a state change occurs. 
+But in 2.0, the implementation of this method varied quite a bit between providers.
+Some providers used `==`, some `identical`, and some more complex logic.
+
+Starting 3.0, all providers use `==` to filter notifications.
+
+This can impact you in a few ways:
+- Some of your providers may not notify their listeners anymore
+  in certain situations.
+- Some listeners may be notified more often than before.
+- If you have a large data class that overrides `==`, you may see a small
+  performance impact.
+
+If you are impacted by those changes, you can override `updateShouldNotify` to
+use a custom implementation:
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+  @riverpod
+  class TodoList extends _$TodoList {
+    @override
+    List<Todo> build() => [];
+  
+    @override
+    bool updateShouldNotify(List<Todo> previous, List<Todo> next) {
+      // Custom implementation
+      return true;
+    }
+  }
+  `}
+  
+  raw={`
+  class TodoList extends Notifier<List<Todo>> {
+    @override
+    List<Todo> build() => [];
+  
+    @override
+    bool updateShouldNotify(List<Todo> previous, List<Todo> next) {
+      // Custom implementation
+      return true;
+    }
+  }
+  `}
+></AutoSnippet>
 
 ## Provider life-cycle changes
 
@@ -133,3 +406,9 @@ Minor changes:
   as a `ref.watch` change
 - Weak listeners - Register `ref.listen` listeners without preventing a provider disposal
 
+
+[ProviderContainer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderContainer-class.html
+[ProviderScope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[riverpod_lint]: https://pub.dev/packages/riverpod_lint
+[Ref]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Ref-class.html
+[WidgetRef]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/WidgetRef-class.html
