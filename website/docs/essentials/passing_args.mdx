@@ -1,10 +1,10 @@
 ---
 title: Passing arguments to your requests
-version: 3
+version: 4
 ---
 
 import { Link } from "/src/components/Link";
-import { AutoSnippet, When } from "/src/components/CodeSnippet";
+import { AutoSnippet } from "/src/components/CodeSnippet";
 import noArgProvider from "./passing_args/no_arg_provider";
 import family from "./passing_args/family";
 import consumerProvider from "!!raw-loader!./passing_args/raw/consumer_provider.dart";
@@ -31,22 +31,19 @@ As a reminder, previously we defined our provider like this:
 
 <AutoSnippet {...noArgProvider} />
 
-<When codegen={false}>
+When using code-generation, to pass parameters to our providers, we can add our parameters
+on the annotated function itself.  
+For example, we could update our provider to accept a `String` argument
+corresponding to the type of activity desired
+
 When not relying on code-generation, we need to tweak the syntax for defining
 our providers a bit to support passing arguments. This is done by relying on
-the "modifier" called "family".
-
+the "modifier" called "family".  
 In short, we need to add `.family` after the type of our provider, and
 an extra type parameter corresponding to the argument type.
 For example, we could update our provider to accept a `String` argument
 corresponding to the type of activity desired:
-</When>
-<When codegen={true}>
-To pass parameters to our providers, we can simply add our parameters
-on the annotated function itself.  
-For example, we could update our provider to accept a `String` argument
-corresponding to the type of activity desired:
-</When>
+
 
 <AutoSnippet {...family} />
 
@@ -70,13 +67,6 @@ We could update our UI to pass a hard-coded type of activity like this:
 
 <AutoSnippet raw={consumerFamily} />
 
-<When codegen={true}>
-
-The parameters passed to the provider corresponds to the parameters
-of the annotated function, minus the "ref" parameter.
-
-</When>
-
 :::info
 It is entirely possible to listen to the same provider with different arguments
 simultaneously.  
@@ -84,13 +74,10 @@ For example, our UI could render both "recreational" _and_ "cooking" activities:
 
 <AutoSnippet raw={multipleConsumerFamily} />
 
-<When codegen={false}>
-
-This is the reason why the modifier is called "family": Because passing
+This is the reason why this feature is called "family": Because passing
 parameters to a provider effectively transforms the provider in a group of
 states with the same logic under the hood.
 
-</When>
 :::
 
 ## Caching considerations and parameter restrictions
@@ -129,13 +116,10 @@ lint rule. Then, the previous snippet would show a warning.
 See <Link documentID="introduction/getting_started" hash="enabling-riverpod_lintcustom_lint" /> for installation steps.
 :::
 
-<When codegen={false}>
+### Passing multiple parameters (without code-generation)
 
-With that in mind, you may wonder how to pass multiple parameters to a provider.  
-The recommended solution is either to:
-
-- Switch to code-generation, which enables passing any number of parameters
-- Use Dart 3's records
+Due to the restrictions mentioned above, you may wonder how to pass
+multiple parameters to a provider. One solution is to use Dart 3's records:
 
 The reason why Dart 3's records come in handy is because they
 naturally override `==` and have a convenient syntax.  
@@ -148,4 +132,3 @@ We can then consume this provider like so:
 
 <AutoSnippet raw={consumerTupleFamily} />
 
-</When>

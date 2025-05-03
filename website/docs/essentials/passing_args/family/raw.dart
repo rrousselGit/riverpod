@@ -33,6 +33,7 @@ final activityProvider2 = AsyncNotifierProvider.autoDispose
 // {@template raw_ActivityNotifier}
 // When using ".family" with notifiers, we need to change the notifier subclass:
 // AsyncNotifier -> FamilyAsyncNotifier
+// {@endtemplate}
 class ActivityNotifier extends FamilyAsyncNotifier<Activity, String> {
   // {@template raw_build}
   /// Family arguments are passed to the build method and accessible with this.arg

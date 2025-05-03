@@ -3,7 +3,7 @@ import codegen from "!!raw-loader!./side_effects.dart";
 
 export default {
   raw,
-  hooks: raw,
-  codegen,
-  hooksCodegen: codegen,
+  hooks: undefined,
+  codegen: undefined,
+  hooksCodegen: undefined,
 };

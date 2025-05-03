@@ -1,9 +1,9 @@
 ---
 title: Testing your providers
-version: 2
+version: 3
 ---
 
-import { AutoSnippet, When } from "/src/components/CodeSnippet";
+import { AutoSnippet } from "/src/components/CodeSnippet";
 import unitTest from "!!raw-loader!./testing/unit_test.dart";
 import widgetTest from "!!raw-loader!./testing/widget_test.dart";
 import fullWidgetTest from "!!raw-loader!./testing/full_widget_test.dart";
@@ -152,12 +152,10 @@ You should instead write:
 
 <AutoSnippet {...notifierMock} />
 
-<When codegen={true}>
-
-For this to work, your mock will have to be placed in the same file as the
-Notifier you are mocking. Otherwise you would not have access to the `_$MyNotifier` class.
-
-</When>
+:::info
+If using code-generation, for the above to work, your mock will have to
+be placed in the same file as the Notifier you are mocking.
+Otherwise you would not have access to the `_$MyNotifier` class.
 
 Then, to use your notifier you could do:
 
