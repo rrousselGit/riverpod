@@ -4,6 +4,6 @@ import hooks from "!!raw-loader!./hooks.dart";
 export default {
   raw,
   hooks: hooks,
-  codegen: raw,
-  hooksCodegen: hooks,
+  codegen: undefined,
+  hooksCodegen: undefined,
 };

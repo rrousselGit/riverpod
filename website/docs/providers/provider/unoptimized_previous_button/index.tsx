@@ -3,7 +3,7 @@ import codegen from "!!raw-loader!./unoptimized_previous_button.dart";
 
 export default {
   raw,
-  hooks: raw,
+  hooks: undefined,
   codegen,
-  hooksCodegen: codegen,
+  hooksCodegen: undefined,
 };
