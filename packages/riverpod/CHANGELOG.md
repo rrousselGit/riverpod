@@ -1,4 +1,4 @@
-## Unreleased build
+## 3.0.0-dev.15 - 2025-05-04
 
 - Docs update
 - Fix an AsyncValue bug
