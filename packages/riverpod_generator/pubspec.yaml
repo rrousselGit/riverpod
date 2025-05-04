@@ -21,7 +21,7 @@ dependencies:
   mockito: ^5.4.4
   path: ^1.8.0
   riverpod_analyzer_utils: 1.0.0-dev.2
-  riverpod_annotation: 3.0.0-dev.14
+  riverpod_annotation: 3.0.0-dev.15
   source_gen: ^2.0.0
 
 dev_dependencies:
