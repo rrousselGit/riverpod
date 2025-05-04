@@ -761,7 +761,14 @@ final class AsyncLoading<StateT> extends AsyncValue<StateT> {
           stackTrace: e.stackTrace,
           progress: progress,
         ),
-        loading: (e) => e,
+        loading: (e) => AsyncLoading._(
+          hasValue: e.hasValue,
+          value: e.value,
+          isFromCache: e.isFromCache,
+          error: e.error,
+          stackTrace: e.stackTrace,
+          progress: progress,
+        ),
       );
     }
   }

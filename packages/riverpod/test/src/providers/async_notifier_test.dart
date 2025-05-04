@@ -228,6 +228,28 @@ void main() {
       );
     });
 
+    test('Support AsyncLoading.progress', () async {
+      final container = ProviderContainer.test();
+      final provider = factory.simpleTestProvider<int>((ref, self) async {
+        self.state = const AsyncLoading<int>(progress: 0.5);
+        await null;
+        self.state = const AsyncLoading<int>(progress: 1);
+        return 0;
+      });
+      final listener = Listener<AsyncValue<int>>();
+
+      container.listen(provider, listener.call);
+      await container.read(provider.future);
+
+      verifyInOrder([
+        listener(
+          const AsyncLoading<int>(progress: 0.5),
+          const AsyncLoading<int>(progress: 1),
+        ),
+        listener(const AsyncLoading<int>(progress: 1), const AsyncData(0)),
+      ]);
+    });
+
     test('Can read state inside onDispose', () {
       final container = ProviderContainer.test();
       late TestAsyncNotifier<int> notifier;

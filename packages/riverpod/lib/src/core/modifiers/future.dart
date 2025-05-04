@@ -206,6 +206,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   }) {
     final previous = stateResult?.requireState;
 
+
     if (previous == null) {
       super.setStateResult($ResultData(newState));
     } else {

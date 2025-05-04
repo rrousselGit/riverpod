@@ -100,10 +100,19 @@ void main() {
       test('with AsyncLoading, is identical to the incoming AsyncLoading', () {
         final incomingLoading = const AsyncLoading<int>(progress: .1)
             .copyWithPrevious(const AsyncData(42), isRefresh: false);
+
         final result = const AsyncLoading<int>(progress: .1)
             .copyWithPrevious(incomingLoading, isRefresh: false);
 
-        expect(result, same(incomingLoading));
+        expect(result, isA<AsyncLoading<int>>());
+        expect(result.hasValue, true);
+        expect(result.value, 42);
+        expect(result.progress, .1);
+
+        expect(result.hasError, false);
+        expect(result.error, null);
+        expect(result.stackTrace, null);
+        expect(result.isFromCache, false);
       });
 
       test('with AsyncData, sets value and hasValue', () {
