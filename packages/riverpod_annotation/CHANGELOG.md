@@ -1,3 +1,7 @@
+## 3.0.0-dev.15 - 2025-05-02
+
+Update dependency
+
 ## 3.0.0-dev.14 - 2025-05-02
 
 Removed dead code
