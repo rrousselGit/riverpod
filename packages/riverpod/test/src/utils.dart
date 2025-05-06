@@ -9,21 +9,6 @@ export '../old/utils.dart'
 
 typedef RemoveListener = void Function();
 
-Matcher throwsProviderException({
-  Object? exception,
-  Object? stackTrace,
-}) {
-  var matcher = isA<ProviderException>();
-  if (exception != null) {
-    matcher = matcher.having((e) => e.exception, 'exception', exception);
-  }
-  if (stackTrace != null) {
-    matcher = matcher.having((e) => e.stackTrace, 'stackTrace', stackTrace);
-  }
-
-  return matcher;
-}
-
 List<Object?> captureErrors(List<void Function()> cb) {
   final errors = <Object?>[];
   for (final fn in cb) {
