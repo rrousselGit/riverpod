@@ -93,7 +93,7 @@ To do so, we will need to create our first provider.
 The syntax for defining a provider is as followed:
 
 <Tabs>
-<TabItem value="riverpod_generator" label="riverpod_generator">
+<TabItem value="riverpod" label="riverpod">
 <Legend
   code={`
     final name = SomeProvider.someModifier<Result>((ref) {
@@ -179,7 +179,7 @@ Subsequent reads will not call the function again, but instead return the cached
   ]}
 />
 </TabItem>
-<TabItem value="riverpod" label="riverpod">
+<TabItem value="riverpod_generator" label="riverpod_generator">
 <Legend
   code={`
     @riverpod
