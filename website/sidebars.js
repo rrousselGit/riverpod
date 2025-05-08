@@ -1,5 +1,7 @@
 module.exports = {
   Sidebar: [
+    "whats_new",
+    "3.0_migration",
     {
       type: "category",
       label: "Introduction",
@@ -15,6 +17,7 @@ module.exports = {
         "from_provider/motivation/motivation",
       ],
     },
+
     {
       type: "category",
       label: "Essentials",
@@ -204,7 +207,8 @@ module.exports = {
       items: [
         {
           type: "link",
-          label: "DummyMart: Full CRUD app with authentication + go_router integration",
+          label:
+            "DummyMart: Full CRUD app with authentication + go_router integration",
           href: "https://github.com/dhafinrayhan/dummymart",
         },
         {
