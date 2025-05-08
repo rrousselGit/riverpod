@@ -1,10 +1,10 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/mockito.dart';
+
+import 'utils.dart';
 
 void main() {
   testWidgets('.read(context)', (tester) async {
@@ -51,7 +51,8 @@ void main() {
     await tester.pumpWidget(Container());
   });
 
-  testWidgets('onDispose calls all callbacks in order', (tester) async {
+  testWidgetsWithStubbedFlutterErrors('onDispose calls all callbacks in order',
+      (tester, errors) async {
     final dispose1 = OnDisposeMock();
 
     final dispose2 = OnDisposeMock();
@@ -86,11 +87,7 @@ void main() {
     verifyZeroInteractions(dispose2);
     verifyZeroInteractions(dispose3);
 
-    final errors = <Object>[];
-    await runZonedGuarded(
-      () => tester.pumpWidget(Container()),
-      (err, _) => errors.add(err),
-    );
+    await tester.pumpWidget(Container());
 
     verifyInOrder([
       dispose1(),

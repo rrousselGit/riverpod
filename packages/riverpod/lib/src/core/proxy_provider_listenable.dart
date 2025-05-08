@@ -15,7 +15,7 @@ final class $LazyProxyListenable<OutT, OriginT>
   ProviderSubscriptionWithOrigin<OutT, OriginT> _addListener(
     Node source,
     void Function(OutT? previous, OutT next) listener, {
-    required void Function(Object error, StackTrace stackTrace)? onError,
+    required void Function(Object error, StackTrace stackTrace) onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
     required bool weak,
@@ -28,11 +28,10 @@ final class $LazyProxyListenable<OutT, OriginT>
         case null:
           break;
         case final $ResultData<OutT> data:
-          runBinaryGuarded(listener, null, data.value);
+          source.container.runBinaryGuarded(listener, null, data.value);
         case final $ResultError<OutT> error:
-          if (onError != null) {
-            runBinaryGuarded(onError, error.error, error.stackTrace);
-          }
+          source.container
+              .runBinaryGuarded(onError, error.error, error.stackTrace);
       }
     }
 
@@ -110,7 +109,7 @@ final class ProviderElementProxy<OutT, OriginT>
   ProviderSubscriptionWithOrigin<OutT, OriginT> _addListener(
     Node source,
     void Function(OutT? previous, OutT next) listener, {
-    required void Function(Object error, StackTrace stackTrace)? onError,
+    required void Function(Object error, StackTrace stackTrace) onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
     required bool weak,
@@ -129,7 +128,7 @@ final class ProviderElementProxy<OutT, OriginT>
       fireImmediately: false,
       weak: weak,
       onDependencyMayHaveChanged: onDependencyMayHaveChanged,
-      onError: null,
+      onError: (err, stack) {},
     );
 
     final notifier = _lense(element);
@@ -138,11 +137,10 @@ final class ProviderElementProxy<OutT, OriginT>
         case null:
           break;
         case final $ResultData<OutT> data:
-          runBinaryGuarded(listener, null, data.value);
+          source.container.runBinaryGuarded(listener, null, data.value);
         case final $ResultError<OutT> error:
-          if (onError != null) {
-            runBinaryGuarded(onError, error.error, error.stackTrace);
-          }
+          source.container
+              .runBinaryGuarded(onError, error.error, error.stackTrace);
       }
     }
 

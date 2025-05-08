@@ -481,7 +481,7 @@ abstract class _MutationBase<
 
   void _notifyObserver(void Function(ProviderObserver obs) cb) {
     for (final observer in element.container.observers) {
-      runUnaryGuarded(cb, observer);
+      element.container.runUnaryGuarded(cb, observer);
     }
   }
 

@@ -396,7 +396,7 @@ This could mean a few things:
 
     // Capture exceptions. On error, stop retrying if the retry
     // function failed
-    runGuarded(() {
+    container.runGuarded(() {
       final duration = retry(_retryCount, error);
       if (duration == null) return;
 
@@ -474,7 +474,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         final onChangeSelfListeners = ref?._onChangeSelfListeners;
         if (onChangeSelfListeners != null) {
           for (var i = 0; i < onChangeSelfListeners.length; i++) {
-            Zone.current.runBinaryGuarded(
+            container.runBinaryGuarded(
               onChangeSelfListeners[i],
               previousState,
               newState.value,
@@ -485,7 +485,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         final onErrorSelfListeners = ref?._onErrorSelfListeners;
         if (onErrorSelfListeners != null) {
           for (var i = 0; i < onErrorSelfListeners.length; i++) {
-            Zone.current.runBinaryGuarded(
+            container.runBinaryGuarded(
               onErrorSelfListeners[i],
               newState.error,
               newState.stackTrace,
@@ -512,7 +512,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
           final listener = listeners[i];
           if (listener.closed) continue;
 
-          Zone.current.runBinaryGuarded(
+          container.runBinaryGuarded(
             listener._onOriginData,
             previousState,
             newState.value,
@@ -523,7 +523,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
           final listener = listeners[i];
           if (listener.closed) continue;
 
-          Zone.current.runBinaryGuarded(
+          container.runBinaryGuarded(
             listener._onOriginError,
             newState.error,
             newState.stackTrace,
@@ -533,13 +533,13 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     for (final observer in container.observers) {
       if (isFirstBuild) {
-        runBinaryGuarded(
+        container.runBinaryGuarded(
           observer.didAddProvider,
           _currentObserverContext(),
           newState.value,
         );
       } else {
-        runTernaryGuarded(
+        container.runTernaryGuarded(
           observer.didUpdateProvider,
           _currentObserverContext(),
           previousState,
@@ -550,7 +550,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     for (final observer in container.observers) {
       if (newState is $ResultError<StateT>) {
-        runTernaryGuarded(
+        container.runTernaryGuarded(
           observer.providerDidFail,
           _currentObserverContext(),
           newState.error,
@@ -597,7 +597,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       this,
       listener,
       fireImmediately: fireImmediately,
-      onError: onError,
+      onError: onError ?? container.defaultOnError,
       weak: weak,
       onDependencyMayHaveChanged: onDependencyMayHaveChanged,
     );
@@ -678,13 +678,13 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     switch ((wasActive: wasActive, isActive: isActive)) {
       case (wasActive: false, isActive: true) when _didCancelOnce:
         if (_notifyResumeListeners) {
-          _runCallbacks(ref?._onResumeListeners);
+          _runCallbacks(container, ref?._onResumeListeners);
         }
         onResume();
 
       case (wasActive: true, isActive: false):
         _didCancelOnce = true;
-        _runCallbacks(ref?._onCancelListeners);
+        _runCallbacks(container, ref?._onCancelListeners);
         onCancel();
 
       default:
@@ -692,10 +692,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
 
     if (_listenerCount < previousListenerCount) {
-      _runCallbacks(ref?._onRemoveListeners);
+      _runCallbacks(container, ref?._onRemoveListeners);
       mayNeedDispose();
     } else if (_listenerCount > previousListenerCount) {
-      _runCallbacks(ref?._onAddListeners);
+      _runCallbacks(container, ref?._onAddListeners);
     }
   }
 
@@ -777,10 +777,13 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
     subscriptions = null;
 
-    _runCallbacks(ref._onDisposeListeners);
+    _runCallbacks(container, ref._onDisposeListeners);
 
     for (final observer in container.observers) {
-      runUnaryGuarded(observer.didDisposeProvider, _currentObserverContext());
+      container.runUnaryGuarded(
+        observer.didDisposeProvider,
+        _currentObserverContext(),
+      );
     }
 
     ref._keepAliveLinks = null;
