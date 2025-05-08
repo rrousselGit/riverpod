@@ -1,3 +1,8 @@
+## Unreleased build
+
+Provider errors are now reported to the
+`ProviderContainer`'s `Zone` instead of whatever last used the provider.
+
 ## 3.0.0-dev.15 - 2025-05-04
 
 - `riverpod` upgraded to `3.0.0-dev.15`
