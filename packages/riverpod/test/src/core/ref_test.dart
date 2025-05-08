@@ -1354,19 +1354,19 @@ void main() {
 
       test('when no onError is specified, fallbacks to handleUncaughtError',
           () async {
-        final container = ProviderContainer.test();
+        final errors = <Object>[];
+        final container = runZonedGuarded(
+          ProviderContainer.test,
+          (err, stack) => errors.add(err),
+        )!;
         final isErrored = StateProvider((ref) => false);
         final dep = Provider<int>((ref) {
           if (ref.watch(isErrored)) throw UnimplementedError();
           return 0;
         });
         final listener = Listener<int>();
-        final errors = <Object>[];
         final provider = Provider((ref) {
-          runZonedGuarded(
-            () => ref.listen(dep, listener.call),
-            (err, stack) => errors.add(err),
-          );
+          ref.listen(dep, listener.call);
         });
 
         container.listen(provider, (a, b) {});
@@ -1385,19 +1385,19 @@ void main() {
       test(
           'when no onError is specified, selectors fallbacks to handleUncaughtError',
           () async {
-        final container = ProviderContainer.test();
+        final errors = <Object>[];
+        final container = runZonedGuarded(
+          ProviderContainer.test,
+          (err, stack) => errors.add(err),
+        )!;
         final isErrored = StateProvider((ref) => false);
         final dep = Provider<int>((ref) {
           if (ref.watch(isErrored)) throw UnimplementedError();
           return 0;
         });
         final listener = Listener<int>();
-        final errors = <Object>[];
         final provider = Provider((ref) {
-          runZonedGuarded(
-            () => ref.listen(dep.select((value) => value), listener.call),
-            (err, stack) => errors.add(err),
-          );
+          ref.listen(dep.select((value) => value), listener.call);
         });
 
         container.listen(provider, (p, n) {});
@@ -1482,20 +1482,18 @@ void main() {
       group('fireImmediately', () {
         test('when no onError is specified, fallbacks to handleUncaughtError',
             () {
-          final container = ProviderContainer.test();
+          final errors = <Object>[];
+          final container = runZonedGuarded(
+            ProviderContainer.test,
+            (err, stack) => errors.add(err),
+          )!;
           final dep = Provider<int>((ref) => throw UnimplementedError());
           final listener = Listener<int>();
-          final errors = <Object>[];
           final provider = Provider((ref) {
-            runZonedGuarded(
-              () {
-                ref.listen(
-                  dep,
-                  listener.call,
-                  fireImmediately: true,
-                );
-              },
-              (err, stack) => errors.add(err),
+            ref.listen(
+              dep,
+              listener.call,
+              fireImmediately: true,
             );
           });
 
@@ -1510,20 +1508,18 @@ void main() {
         test(
             'when no onError is specified on selectors, fallbacks to handleUncaughtError',
             () {
-          final container = ProviderContainer.test();
+          final errors = <Object>[];
+          final container = runZonedGuarded(
+            ProviderContainer.test,
+            (err, stack) => errors.add(err),
+          )!;
           final dep = Provider<int>((ref) => throw UnimplementedError());
           final listener = Listener<int>();
-          final errors = <Object>[];
           final provider = Provider((ref) {
-            runZonedGuarded(
-              () {
-                ref.listen(
-                  dep.select((value) => value),
-                  listener.call,
-                  fireImmediately: true,
-                );
-              },
-              (err, stack) => errors.add(err),
+            ref.listen(
+              dep.select((value) => value),
+              listener.call,
+              fireImmediately: true,
             );
           });
 
@@ -1589,25 +1585,25 @@ void main() {
           final listener = Listener<int>();
           var isFirstCall = true;
 
-          final container = ProviderContainer.test();
           final errors = <Object>[];
+          final container = runZonedGuarded(
+            ProviderContainer.test,
+            (err, stack) => errors.add(err),
+          )!;
 
           ProviderSubscription<int>? sub;
 
           final provider = Provider((ref) {
-            sub = runZonedGuarded(
-              () => ref.listen<int>(
-                dep.select((value) => value),
-                (prev, value) {
-                  listener(prev, value);
-                  if (isFirstCall) {
-                    isFirstCall = false;
-                    throw StateError('Some error');
-                  }
-                },
-                fireImmediately: true,
-              ),
-              (err, stack) => errors.add(err),
+            sub = ref.listen<int>(
+              dep.select((value) => value),
+              (prev, value) {
+                listener(prev, value);
+                if (isFirstCall) {
+                  isFirstCall = false;
+                  throw StateError('Some error');
+                }
+              },
+              fireImmediately: true,
             );
           });
 
@@ -1626,25 +1622,25 @@ void main() {
           final listener = Listener<int>();
           var isFirstCall = true;
 
-          final container = ProviderContainer.test();
           final errors = <Object>[];
+          final container = runZonedGuarded(
+            ProviderContainer.test,
+            (err, stack) => errors.add(err),
+          )!;
 
           ProviderSubscription<int>? sub;
 
           final provider = Provider((ref) {
-            sub = runZonedGuarded(
-              () => ref.listen<int>(
-                dep,
-                (prev, value) {
-                  listener(prev, value);
-                  if (isFirstCall) {
-                    isFirstCall = false;
-                    throw StateError('Some error');
-                  }
-                },
-                fireImmediately: true,
-              ),
-              (err, stack) => errors.add(err),
+            sub = ref.listen<int>(
+              dep,
+              (prev, value) {
+                listener(prev, value);
+                if (isFirstCall) {
+                  isFirstCall = false;
+                  throw StateError('Some error');
+                }
+              },
+              fireImmediately: true,
             );
           });
 
@@ -1672,26 +1668,26 @@ void main() {
           final errorListener = ErrorListener();
           var isFirstCall = true;
 
-          final container = ProviderContainer.test();
           final errors = <Object>[];
+          final container = runZonedGuarded(
+            ProviderContainer.test,
+            (err, stack) => errors.add(err),
+          )!;
 
           ProviderSubscription<int>? sub;
 
           final provider = Provider((ref) {
-            sub = runZonedGuarded(
-              () => ref.listen<int>(
-                dep2.select((value) => value),
-                listener.call,
-                onError: (err, stack) {
-                  errorListener(err, stack);
-                  if (isFirstCall) {
-                    isFirstCall = false;
-                    throw StateError('Some error');
-                  }
-                },
-                fireImmediately: true,
-              ),
-              (err, stack) => errors.add(err),
+            sub = ref.listen<int>(
+              dep2.select((value) => value),
+              listener.call,
+              onError: (err, stack) {
+                errorListener(err, stack);
+                if (isFirstCall) {
+                  isFirstCall = false;
+                  throw StateError('Some error');
+                }
+              },
+              fireImmediately: true,
             );
           });
 
@@ -1726,26 +1722,26 @@ void main() {
           final errorListener = ErrorListener();
           var isFirstCall = true;
 
-          final container = ProviderContainer.test();
           final errors = <Object>[];
+          final container = runZonedGuarded(
+            ProviderContainer.test,
+            (err, stack) => errors.add(err),
+          )!;
 
           ProviderSubscription<int>? sub;
 
           final provider = Provider((ref) {
-            sub = runZonedGuarded(
-              () => ref.listen<int>(
-                dep2,
-                listener.call,
-                onError: (err, stack) {
-                  errorListener(err, stack);
-                  if (isFirstCall) {
-                    isFirstCall = false;
-                    throw StateError('Some error');
-                  }
-                },
-                fireImmediately: true,
-              ),
-              (err, stack) => errors.add(err),
+            sub = ref.listen<int>(
+              dep2,
+              listener.call,
+              onError: (err, stack) {
+                errorListener(err, stack);
+                if (isFirstCall) {
+                  isFirstCall = false;
+                  throw StateError('Some error');
+                }
+              },
+              fireImmediately: true,
             );
           });
 
@@ -2448,8 +2444,11 @@ void main() {
       });
 
       test('if a listener throws, still calls all listeners', () {
-        final errors = <Object?>[];
-        final container = ProviderContainer.test();
+        final errors = <Object>[];
+        final container = runZonedGuarded(
+          ProviderContainer.test,
+          (err, stack) => errors.add(err),
+        )!;
         final listener = OnRemoveListener();
         final listener2 = OnRemoveListener();
         when(listener()).thenThrow(42);
@@ -2460,10 +2459,7 @@ void main() {
 
         final sub = container.listen<void>(provider, (prev, next) {});
 
-        runZonedGuarded(
-          sub.close,
-          (err, stack) => errors.add(err),
-        );
+        sub.close();
 
         verifyInOrder([listener(), listener2()]);
         verifyNoMoreInteractions(listener);
@@ -2633,8 +2629,11 @@ void main() {
       });
 
       test('if a listener throws, still calls all listeners', () {
-        final errors = <Object?>[];
-        final container = ProviderContainer.test();
+        final errors = <Object>[];
+        final container = runZonedGuarded(
+          ProviderContainer.test,
+          (err, stack) => errors.add(err),
+        )!;
         final listener = OnAddListener();
         final listener2 = OnAddListener();
         when(listener()).thenThrow(42);
@@ -2643,10 +2642,7 @@ void main() {
           ref.onAddListener(listener2.call);
         });
 
-        runZonedGuarded(
-          () => container.listen<void>(provider, (prev, next) {}),
-          (err, stack) => errors.add(err),
-        );
+        container.listen<void>(provider, (prev, next) {});
 
         verifyInOrder([listener(), listener2()]);
         verifyNoMoreInteractions(listener);
@@ -2836,8 +2832,11 @@ void main() {
       });
 
       test('if a listener throws, still calls all listeners', () {
-        final errors = <Object?>[];
-        final container = ProviderContainer.test();
+        final errors = <Object>[];
+        final container = runZonedGuarded(
+          ProviderContainer.test,
+          (err, stack) => errors.add(err),
+        )!;
         final listener = OnResume();
         final listener2 = OnResume();
         when(listener()).thenThrow(42);
@@ -2852,10 +2851,7 @@ void main() {
         verifyZeroInteractions(listener);
         verifyZeroInteractions(listener2);
 
-        runZonedGuarded(
-          () => container.listen<void>(provider, (prev, next) {}),
-          (err, stack) => errors.add(err),
-        );
+        container.listen<void>(provider, (prev, next) {});
 
         verifyInOrder([listener(), listener2()]);
         verifyNoMoreInteractions(listener);
@@ -3025,8 +3021,11 @@ void main() {
       });
 
       test('if a listener throws, still calls all listeners', () {
-        final errors = <Object?>[];
-        final container = ProviderContainer.test();
+        final errors = <Object>[];
+        final container = runZonedGuarded(
+          ProviderContainer.test,
+          (err, stack) => errors.add(err),
+        )!;
         final listener = OnCancelMock();
         final listener2 = OnCancelMock();
         when(listener()).thenThrow(42);
@@ -3040,10 +3039,7 @@ void main() {
         verifyZeroInteractions(listener);
         verifyZeroInteractions(listener2);
 
-        runZonedGuarded(
-          sub.close,
-          (err, stack) => errors.add(err),
-        );
+        sub.close();
 
         verifyInOrder([listener(), listener2()]);
         verifyNoMoreInteractions(listener);

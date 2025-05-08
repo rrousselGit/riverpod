@@ -235,7 +235,7 @@ mixin Persistable<ValueT, KeyT, EncodedT> on $Value<ValueT> {
         final otherKey = notifier._debugKey;
 
         if (otherKey == self._debugKey) {
-          Zone.current.handleUncaughtError(
+          ref.container.defaultOnError(
             AssertionError('''
 Duplicate `persistKey` found:
 - `$key` from `${selfElement?.origin}`
@@ -284,12 +284,15 @@ to a different value.
       didChange = true;
 
       try {
-        _callEncode(
+        final futureOr = _callEncode(
           storage,
           key,
           encode,
           options,
         );
+        if (futureOr is Future) {
+          unawaited(futureOr.onError(ref.container.defaultOnError));
+        }
       } finally {
         didChange = false;
       }
@@ -298,7 +301,7 @@ to a different value.
     if (ref.isFirstBuild) {
       try {
         // Let's read the Database
-        return storage.then(
+        final futureOr = storage.then(
           (storage) => storage.read(key).then((value) {
             // The state was initialized during the decoding, abort
             if (didChange) return null;
@@ -321,9 +324,14 @@ to a different value.
             _setStateFromValue(decoded);
           }),
         );
+
+        if (futureOr is Future) {
+          return futureOr.catchError(ref.container.defaultOnError);
+        }
+        return null;
       } catch (err, stack) {
         // Don't block the provider if decoding failed
-        Zone.current.handleUncaughtError(err, stack);
+        ref.container.defaultOnError(err, stack);
       }
     }
   }

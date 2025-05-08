@@ -55,7 +55,7 @@ abstract final class ProviderBase<StateT> extends ProviderOrFamily
   ProviderSubscriptionWithOrigin<StateT, StateT> _addListener(
     Node source,
     void Function(StateT? previous, StateT next) listener, {
-    required void Function(Object error, StackTrace stackTrace)? onError,
+    required void Function(Object error, StackTrace stackTrace) onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
     required bool weak,
@@ -65,14 +65,13 @@ abstract final class ProviderBase<StateT> extends ProviderOrFamily
       'Cannot use fireImmediately with weak listeners',
     );
 
-    onError ??= Zone.current.handleUncaughtError;
-
     final element = source.readProviderElement(this);
 
     if (!weak) element.flush();
 
     if (fireImmediately) {
       _handleFireImmediately(
+        source.container,
         element.stateResult!,
         listener: listener,
         onError: onError,

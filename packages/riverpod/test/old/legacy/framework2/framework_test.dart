@@ -388,6 +388,11 @@ void main() {
       });
 
       test('is guarded', () {
+        final errors = <Object>[];
+        final container = runZonedGuarded(
+          ProviderContainer.test,
+          (err, stack) => errors.add(err),
+        )!;
         final counter = Counter();
         final provider = StateNotifierProvider<Counter, int>((ref) => counter);
         final didChange2 = Listener<int>();
@@ -397,7 +402,7 @@ void main() {
         container.listen(provider, didChange.call);
         container.listen(provider, didChange2.call);
 
-        final errors = errorsOf(counter.increment);
+        counter.increment();
 
         expect(errors, unorderedEquals(<Object>[42, 21]));
         verifyOnly(didChange, didChange(0, 1));

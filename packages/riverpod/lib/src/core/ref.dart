@@ -688,7 +688,10 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
 }
 
 int _debugCallbackStack = 0;
-void _runCallbacks(List<void Function()>? callbacks) {
+void _runCallbacks(
+  ProviderContainer container,
+  List<void Function()>? callbacks,
+) {
   if (callbacks == null) return;
 
   for (final cb in callbacks) {
@@ -696,7 +699,7 @@ void _runCallbacks(List<void Function()>? callbacks) {
       if (kDebugMode) {
         _debugCallbackStack++;
       }
-      runGuarded(cb);
+      container.runGuarded(cb);
     } finally {
       if (kDebugMode) {
         _debugCallbackStack--;

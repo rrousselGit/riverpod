@@ -1,15 +1,5 @@
 part of '../../framework.dart';
 
-/// An abstraction of both [ProviderContainer] and [$ProviderElement] used by
-/// [ProviderListenable].
-@internal
-sealed class Node {
-  /// Obtain the [ProviderElement] of a provider, creating it if necessary.
-  ProviderElement<StateT> _readProviderElement<StateT>(
-    ProviderBase<StateT> provider,
-  );
-}
-
 /// An internal class for `ProviderBase.select`.
 final class _ProviderSelector<InputT, OutputT, OriginT>
     with
@@ -69,13 +59,11 @@ final class _ProviderSelector<InputT, OutputT, OriginT>
   ProviderSubscriptionWithOrigin<OutputT, OriginT> _addListener(
     Node node,
     void Function(OutputT? previous, OutputT next) listener, {
-    required void Function(Object error, StackTrace stackTrace)? onError,
+    required void Function(Object error, StackTrace stackTrace) onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
     required bool weak,
   }) {
-    onError ??= Zone.current.handleUncaughtError;
-
     late final ProviderSubscriptionView<OutputT, OriginT> providerSub;
     $Result<OutputT>? lastSelectedValue;
     final sub = provider._addListener(
@@ -120,6 +108,7 @@ final class _ProviderSelector<InputT, OutputT, OriginT>
 
     if (fireImmediately) {
       _handleFireImmediately(
+        node.container,
         lastSelectedValue!,
         listener: providerSub._notifyData,
         onError: providerSub._notifyError,

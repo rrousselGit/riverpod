@@ -37,7 +37,7 @@ final class _AsyncSelector<InputT, OutputT, OriginT>
   ProviderSubscriptionWithOrigin<Future<OutputT>, OriginT> _addListener(
     Node node,
     void Function(Future<OutputT>? previous, Future<OutputT> next) listener, {
-    required void Function(Object error, StackTrace stackTrace)? onError,
+    required void Function(Object error, StackTrace stackTrace) onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
     required bool weak,

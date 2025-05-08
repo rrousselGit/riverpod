@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter/material.dart' hide Listener;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
@@ -211,25 +209,21 @@ void main() {
       verifyOnly(listener, listener(true, false));
     });
 
-    testWidgets(
+    testWidgetsWithStubbedFlutterErrors(
         'when no onError is specified, fallbacks to handleUncaughtError',
-        (tester) async {
+        (tester, errors) async {
       final isErrored = StateProvider((ref) => false);
       final dep = Provider<int>((ref) {
         if (ref.watch(isErrored)) throw UnimplementedError();
         return 0;
       });
       final listener = Listener<int>();
-      final errors = <Object>[];
 
       await tester.pumpWidget(
         ProviderScope(
           child: Consumer(
             builder: (context, ref, _) {
-              runZonedGuarded(
-                () => ref.listen(dep, listener.call),
-                (err, stack) => errors.add(err),
-              );
+              ref.listen(dep, listener.call);
 
               return Container();
             },
@@ -251,25 +245,21 @@ void main() {
       expect(errors, [isUnimplementedError]);
     });
 
-    testWidgets(
+    testWidgetsWithStubbedFlutterErrors(
         'when no onError is specified, selectors fallbacks to handleUncaughtError',
-        (tester) async {
+        (tester, errors) async {
       final isErrored = StateProvider((ref) => false);
       final dep = Provider<int>((ref) {
         if (ref.watch(isErrored)) throw UnimplementedError();
         return 0;
       });
       final listener = Listener<int>();
-      final errors = <Object>[];
 
       await tester.pumpWidget(
         ProviderScope(
           child: Consumer(
             builder: (context, ref, _) {
-              runZonedGuarded(
-                () => ref.listen(dep.select((value) => value), listener.call),
-                (err, stack) => errors.add(err),
-              );
+              ref.listen(dep.select((value) => value), listener.call);
 
               return Container();
             },

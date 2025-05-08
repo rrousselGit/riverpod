@@ -516,7 +516,7 @@ base class ConsumerStatefulElement extends StatefulElement
   }
 
   @override
-  State refresh<State>(Refreshable<State> provider) {
+  StateT refresh<StateT>(Refreshable<StateT> provider) {
     _assertNotDisposed();
     return ProviderScope.containerOf(this, listen: false).refresh(provider);
   }

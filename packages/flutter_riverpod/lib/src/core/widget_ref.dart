@@ -239,9 +239,9 @@ abstract final class WidgetRef {
   /// It is not necessary to call [ProviderSubscription.close] inside [State.dispose].
   /// When the widget that calls [listenManual] is disposed, the subscription
   /// will be disposed automatically.
-  ProviderSubscription<T> listenManual<T>(
-    ProviderListenable<T> provider,
-    void Function(T? previous, T next) listener, {
+  ProviderSubscription<StateT> listenManual<StateT>(
+    ProviderListenable<StateT> provider,
+    void Function(StateT? previous, StateT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
     bool fireImmediately,
   });
@@ -313,7 +313,7 @@ abstract final class WidgetRef {
   /// While more verbose than [read], using [Provider]/`select` is a lot safer.
   /// It does not rely on implementation details on `Model`, and it makes
   /// impossible to have a bug where our UI does not refresh.
-  T read<T>(ProviderListenable<T> provider);
+  StateT read<StateT>(ProviderListenable<StateT> provider);
 
   /// Forces a provider to re-evaluate its state immediately, and return the created value.
   ///
@@ -365,7 +365,7 @@ abstract final class WidgetRef {
   /// }
   /// ```
   @useResult
-  State refresh<State>(Refreshable<State> provider);
+  StateT refresh<StateT>(Refreshable<StateT> provider);
 
   /// Invalidates the state of the provider, causing it to refresh.
   ///

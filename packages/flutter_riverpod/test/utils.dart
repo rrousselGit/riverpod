@@ -1,8 +1,34 @@
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
+
+(List<Object>, void Function() resetOnError) stubFlutterErrors() {
+  final onError = FlutterError.onError;
+  final errors = <Object>[];
+  FlutterError.onError = (details) => errors.add(details.exception);
+
+  return (errors, () => {FlutterError.onError = onError});
+}
+
+@isTest
+void testWidgetsWithStubbedFlutterErrors(
+  String description,
+  Future<void> Function(WidgetTester tester, List<Object> errors) callback,
+) {
+  testWidgets(description, (tester) async {
+    final (errors, resetOnError) = stubFlutterErrors();
+    try {
+      await callback(tester, errors);
+    } finally {
+      resetOnError();
+    }
+  });
+}
 
 class ErrorListener extends Mock {
   void call(Object? error, StackTrace? stackTrace);

@@ -161,6 +161,15 @@ final class ProviderScopeState extends State<ProviderScope> {
       overrides: widget.overrides,
       observers: widget.observers,
       retry: widget.retry,
+      onError: (err, stack) {
+        FlutterError.reportError(
+          FlutterErrorDetails(
+            exception: err,
+            stack: stack,
+            library: 'riverpod',
+          ),
+        );
+      },
     );
   }
 

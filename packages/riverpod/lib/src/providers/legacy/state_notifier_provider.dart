@@ -185,7 +185,7 @@ class _StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
 
     final notifier = _notifierNotifier.result?.value;
     if (notifier != null) {
-      runGuarded(notifier.dispose);
+      container.runGuarded(notifier.dispose);
     }
     _notifierNotifier.result = null;
   }

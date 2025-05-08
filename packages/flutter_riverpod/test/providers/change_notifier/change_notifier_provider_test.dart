@@ -13,17 +13,16 @@ void main() {
     final notifier = DelegateNotifier(
       onDispose: () => throw StateError('called'),
     );
-    final container = ProviderContainer.test();
+    final errors = <Object>[];
+    final container = runZonedGuarded(
+      ProviderContainer.test,
+      (e, s) => errors.add(e),
+    )!;
     final provider = ChangeNotifierProvider((_) => notifier);
 
     container.read(provider);
 
-    final errors = <Object>[];
-
-    runZonedGuarded(
-      () => container.invalidate(provider),
-      (error, stack) => errors.add(error),
-    );
+    container.invalidate(provider);
 
     expect(errors, [isStateError]);
   });
@@ -35,12 +34,16 @@ void main() {
       (ref) => ValueNotifier(0),
     );
 
-    final container = ProviderContainer.test(
-      overrides: [
-        provider.overrideWith((ref) => ValueNotifier(42)),
-        autoDispose.overrideWith((ref) => ValueNotifier(84)),
-      ],
-    );
+    final errors = <Object>[];
+    final container = runZonedGuarded(
+      () => ProviderContainer.test(
+        overrides: [
+          provider.overrideWith((ref) => ValueNotifier(42)),
+          autoDispose.overrideWith((ref) => ValueNotifier(84)),
+        ],
+      ),
+      (e, s) => errors.add(e),
+    )!;
 
     expect(container.read(provider).value, 42);
     expect(container.read(autoDispose).value, 84);

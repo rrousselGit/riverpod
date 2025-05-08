@@ -1,5 +1,26 @@
 part of '../framework.dart';
 
+/// An abstraction of both [ProviderContainer] and [$ProviderElement] used by
+/// [ProviderListenable].
+@internal
+sealed class Node {
+  /// Obtain the [ProviderElement] of a provider, creating it if necessary.
+  ProviderElement<StateT> _readProviderElement<StateT>(
+    ProviderBase<StateT> provider,
+  );
+}
+
+@internal
+extension NodeX on Node {
+  ProviderContainer get container {
+    final that = this;
+    return switch (that) {
+      ProviderContainer() => that,
+      ProviderElement() => that.container,
+    };
+  }
+}
+
 extension on String {
   String indentAfterFirstLine(int level) {
     final indent = '  ' * level;
@@ -562,8 +583,12 @@ extension InternalProviderContainer on ProviderContainer {
   ///
   /// This is used to schedule the execution of providers and notify listeners.
   ProviderScheduler get scheduler => _scheduler;
-
   int get depth => _depth;
+
+  void defaultOnError(Object error, StackTrace stackTrace) {
+    // TODO silence ProviderExceptions
+    _onError(error, stackTrace);
+  }
 
   /// Traverse the [ProviderElement]s associated with this [ProviderContainer].
   Iterable<ProviderElement> getAllProviderElements() {
@@ -637,6 +662,67 @@ extension InternalProviderContainer on ProviderContainer {
   ///
   /// Do not use in production
   List<ProviderContainer> get debugChildren => UnmodifiableListView(_children);
+
+  /// Run a function while catching errors and reporting possible errors to the zone.
+  @internal
+  void runGuarded(void Function() cb) {
+    try {
+      cb();
+    } catch (err, stack) {
+      defaultOnError(err, stack);
+    }
+  }
+
+  /// Run a function while catching errors and reporting possible errors to the zone.
+  @internal
+  void runUnaryGuarded<T, Res>(Res Function(T) cb, T value) {
+    try {
+      cb(value);
+    } catch (err, stack) {
+      defaultOnError(err, stack);
+    }
+  }
+
+  /// Run a function while catching errors and reporting possible errors to the zone.
+  @internal
+  void runBinaryGuarded<A, B>(void Function(A, B) cb, A value, B value2) {
+    try {
+      cb(value, value2);
+    } catch (err, stack) {
+      defaultOnError(err, stack);
+    }
+  }
+
+  /// Run a function while catching errors and reporting possible errors to the zone.
+  @internal
+  void runTernaryGuarded<A, B, C>(
+    void Function(A, B, C) cb,
+    A value,
+    B value2,
+    C value3,
+  ) {
+    try {
+      cb(value, value2, value3);
+    } catch (err, stack) {
+      defaultOnError(err, stack);
+    }
+  }
+
+  /// Run a function while catching errors and reporting possible errors to the zone.
+  @internal
+  void runQuaternaryGuarded<A, B, C, D>(
+    void Function(A, B, C, D) cb,
+    A value,
+    B value2,
+    C value3,
+    D value4,
+  ) {
+    try {
+      cb(value, value2, value3, value4);
+    } catch (err, stack) {
+      defaultOnError(err, stack);
+    }
+  }
 }
 
 @internal
@@ -665,10 +751,12 @@ final class ProviderContainer implements Node {
     ProviderContainer? parent,
     List<Override> overrides = const [],
     List<ProviderObserver>? observers,
+    @internal void Function(Object error, StackTrace stackTrace)? onError,
     Retry? retry,
   })  : _debugOverridesLength = overrides.length,
         _depth = parent == null ? 0 : parent._depth + 1,
         _parent = parent,
+        _onError = onError ?? Zone.current.handleUncaughtError,
         retry = retry ?? parent?.retry,
         observers = [
           ...?observers,
@@ -743,6 +831,9 @@ final class ProviderContainer implements Node {
   }
 
   final int _debugOverridesLength;
+
+  /// Default error handler for this container.
+  final void Function(Object error, StackTrace stackTrace) _onError;
 
   /// The object that handles when providers are refreshed and disposed.
   /// @nodoc
@@ -845,7 +936,7 @@ final class ProviderContainer implements Node {
       listener,
       fireImmediately: fireImmediately,
       weak: weak,
-      onError: onError,
+      onError: onError ?? defaultOnError,
       onDependencyMayHaveChanged: null,
     );
 
