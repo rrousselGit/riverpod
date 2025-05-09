@@ -6,6 +6,8 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
+import '../utils.dart';
+
 void main() {
   test('Can do exhaustive pattern matching', () {
     expect(
@@ -1373,7 +1375,7 @@ void main() {
     );
     expect(
       () => const AsyncError<int>('err', StackTrace.empty).requireValue,
-      throwsA('err'),
+      throwsProviderException('err'),
     );
   });
 

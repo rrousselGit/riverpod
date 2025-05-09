@@ -204,7 +204,7 @@ This could mean a few things:
     if (state == null) throw StateError(uninitializedError);
 
     return switch (state) {
-      $ResultError() => throwErrorWithCombinedStackTrace(
+      $ResultError() => throwProviderException(
           state.error,
           state.stackTrace,
         ),

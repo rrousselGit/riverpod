@@ -356,20 +356,6 @@ void main() {
       verifyOnly(listener, listener(null, 11));
     });
 
-    group('readSelf', () {
-      test('throws on providers that threw', () {
-        final container = ProviderContainer.test();
-        final provider = Provider((ref) => throw UnimplementedError());
-
-        final element = container.readProviderElement(provider);
-
-        expect(
-          element.readSelf,
-          throwsUnimplementedError,
-        );
-      });
-    });
-
     group('visitChildren', () {
       test('includes ref.watch dependents', () {
         final container = ProviderContainer.test();

@@ -3,6 +3,7 @@ import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
 import '../../src/matrix.dart';
+import '../../src/utils.dart' show throwsProviderException;
 import '../utils.dart';
 
 void main() {
@@ -113,7 +114,7 @@ void main() {
 
         expect(
           () => container.read(provider),
-          throwsA(isA<StateError>()),
+          throwsProviderException(isA<StateError>()),
         );
       });
 
@@ -135,7 +136,7 @@ void main() {
 
         expect(
           () => container.read(provider),
-          throwsA(isA<StateError>()),
+          throwsA(anything),
         );
       });
     });

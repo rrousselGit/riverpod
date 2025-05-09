@@ -1,14 +1,60 @@
+import 'dart:async';
+
 import 'package:meta/meta.dart';
-import 'package:stack_trace/stack_trace.dart';
 
-/// Rethrows [error] with a stacktrace that is the combination of [stackTrace]
-/// and [StackTrace.current].
+import '../internals.dart';
+
+/// Rethrows as a [ProviderException] with the given stack trace.
 @internal
-Never throwErrorWithCombinedStackTrace(Object error, StackTrace stackTrace) {
-  final chain = Chain([
-    Trace.current(),
-    ...Chain.forTrace(stackTrace).traces,
-  ]).foldFrames((frame) => frame.package == 'riverpod');
+Never throwProviderException(Object error, StackTrace stackTrace) {
+  throw ProviderException._(error, stackTrace);
+}
 
-  Error.throwWithStackTrace(error, chain.toTrace().vmTrace);
+@internal
+extension ProviderExceptionX on ProviderException {
+  Never unwrap(StackTrace stackTrace) =>
+      Error.throwWithStackTrace(exception, stackTrace);
+}
+
+/// An exception thrown when trying to read a provider that is in error state.
+///
+/// This exception can be thrown when either:
+/// - You're using a synchronous provider ([Notifier]/[Provider]) and
+///   the provider threw an exception during its initialization.
+/// - You're using an asynchronous provider ([FutureProvider]/[StreamProvider]),
+///   the state is an [AsyncError], and you called [AsyncValue.requireValue].
+/// - Using an asynchronous provider, you awaited [FutureProvider.future],
+///   and the provider was in error state.
+///
+///
+/// Catching this exception can be useful to differentiate between
+/// a provider in error state from a provider that depends on another provider
+/// in error state.
+///
+/// In particular, Riverpod will:
+/// - Disable automatic retry if a [ProviderException] is thrown by a provider.
+///   This avoids retrying a provider that isn't the source of the problem.
+/// - Not report the error to [Zone] if it is a [ProviderException].
+///   This avoids reporting the same error twice.
+@publicInMisc
+final class ProviderException implements Exception {
+  ProviderException._(
+    this.exception,
+    this.stackTrace,
+  );
+
+  /// The exception that was thrown by the provider.
+  final Object exception;
+
+  /// The stack trace of the exception.
+  final StackTrace stackTrace;
+
+  @override
+  String toString() {
+    return 'ProviderException: Tired to use a provider that is in error state.\n\n'
+        'The provider threw the following exception:\n'
+        '$exception\n\n'
+        'The stack trace of the exception:\n'
+        '$stackTrace';
+  }
 }

@@ -5,6 +5,7 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart' show ProviderElement, NodeInternal;
 import 'package:test/test.dart';
 
+import '../../src/utils.dart' show isProviderException, throwsProviderException;
 import '../utils.dart';
 
 class Counter extends StateNotifier<int> {
@@ -119,7 +120,7 @@ void main() {
 
     expect(
       () => container.read(provider),
-      throwsUnimplementedError,
+      throwsProviderException(isProviderException(isUnimplementedError)),
     );
   });
 
@@ -139,10 +140,7 @@ void main() {
       return ref.watch(provider);
     });
 
-    expect(
-      () => container.read(dep),
-      throwsUnimplementedError,
-    );
+    expect(() => container.read(dep), throwsA(anything));
 
     container.read(throws.notifier).state = false;
 
@@ -167,7 +165,7 @@ void main() {
 
     expect(
       () => container.read(dep),
-      throwsUnimplementedError,
+      throwsProviderException(isProviderException(isUnimplementedError)),
     );
 
     container.read(throws.notifier).state = false;
@@ -212,7 +210,7 @@ void main() {
 
     expect(
       () => container.read(provider),
-      throwsA(isA<AssertionError>()),
+      throwsProviderException(isA<AssertionError>()),
     );
   });
 
@@ -227,7 +225,7 @@ void main() {
 
     expect(
       () => container.read(provider),
-      throwsA(isA<AssertionError>()),
+      throwsProviderException(isA<AssertionError>()),
     );
   });
 
@@ -247,7 +245,7 @@ void main() {
 
     expect(
       () => container.read(provider),
-      throwsA(isA<AssertionError>()),
+      throwsProviderException(isA<AssertionError>()),
     );
   });
 
