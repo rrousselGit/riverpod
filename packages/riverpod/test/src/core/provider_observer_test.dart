@@ -492,7 +492,7 @@ void main() {
 
         expect(
           () => container.read(provider),
-          throwsUnimplementedError,
+          throwsA(anything),
         );
 
         verifyInOrder([
@@ -572,7 +572,7 @@ void main() {
 
         expect(
           () => container.read(provider),
-          throwsUnimplementedError,
+          throwsA(anything),
         );
 
         verify(

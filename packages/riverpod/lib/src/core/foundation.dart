@@ -35,6 +35,8 @@ sealed class ProviderOrFamily implements ProviderListenableOrFamily {
   /// - starts with a delay of 200ms
   /// - doubles the delay on each retry up to 6.4 seconds
   /// - retries all failures
+  /// - ignores [ProviderException]s (which happens when a provider
+  ///   rethrows the error of another provider)
   /// {@endtemplate}
   final Retry? retry;
 

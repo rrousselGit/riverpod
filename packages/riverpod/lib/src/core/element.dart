@@ -58,6 +58,8 @@ abstract class ProviderElement<StateT> implements Node {
   }
 
   static Duration? _defaultRetry(int retryCount, Object error) {
+    if (error is ProviderException) return null;
+
     return Duration(
       milliseconds: math.min(200 * math.pow(2, retryCount).toInt(), 6400),
     );
@@ -204,7 +206,7 @@ This could mean a few things:
     if (state == null) throw StateError(uninitializedError);
 
     return switch (state) {
-      $ResultError() => throwErrorWithCombinedStackTrace(
+      $ResultError() => throwProviderException(
           state.error,
           state.stackTrace,
         ),

@@ -240,7 +240,7 @@ void main() {
 
     expect(sub.read(), isMutationBase<int>(state: isIdleMutation()));
 
-    expect(() => sub.read().call(2), throwsStateError);
+    expect(() => sub.read().call(2), throwsProviderException(isStateError));
 
     expect(
       sub.read(),

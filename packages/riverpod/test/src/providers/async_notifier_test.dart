@@ -657,7 +657,7 @@ void main() {
       );
       expect(
         () => container.read(provider.notifier),
-        throwsA(0),
+        throwsProviderException(0),
       );
 
       await expectLater(container.read(provider.future), throwsA(0));
@@ -897,7 +897,7 @@ void main() {
 
         await expectLater(
           container.read(provider.future),
-          throwsA(isA<StateError>()),
+          throwsA(isStateError),
         );
         verify(listener(any, any)).called(1);
       });
@@ -1079,10 +1079,10 @@ void main() {
 
         await expectLater(
           () => container.read(provider.notifier),
-          throwsA(isA<StateError>()),
+          throwsProviderException(isStateError),
         );
         verifyZeroInteractions(listener);
-        verifyOnly(onError, onError(isA<StateError>(), any)).called(1);
+        verifyOnly(onError, onError(isStateError, any)).called(1);
       });
 
       test(

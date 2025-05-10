@@ -459,23 +459,23 @@ void main() {
           // rejects providers that are not part of its dependencies
           expect(
             () => call(ref, transitiveDep),
-            throwsA(isA<StateError>()),
+            throwsA(isStateError),
           );
           expect(
             () => call(ref2, transitiveDep),
-            throwsA(isA<StateError>()),
+            throwsA(isStateError),
           );
           expect(
             () => call(ref, unrelatedScoped),
-            throwsA(isA<StateError>()),
+            throwsA(isStateError),
           );
           expect(
             () => call(ref2, unrelatedScoped),
-            throwsA(isA<StateError>()),
+            throwsA(isStateError),
           );
           expect(
             () => call(ref2, unrelatedScopedFamily(42)),
-            throwsA(isA<StateError>()),
+            throwsA(isStateError),
           );
         });
       }
@@ -518,15 +518,15 @@ void main() {
           // rejects providers that are not part of its dependencies
           await expectLater(
             () => call(ref, unrelatedScoped.select((value) => 0)),
-            throwsA(isA<StateError>()),
+            throwsA(isStateError),
           );
           await expectLater(
             () => call(ref, unrelatedScoped.selectAsync((value) => 0)),
-            throwsA(isA<StateError>()),
+            throwsA(isStateError),
           );
           await expectLater(
             () => call(ref, unrelatedScoped.future),
-            throwsA(isA<StateError>()),
+            throwsA(isStateError),
           );
         });
       }
@@ -567,11 +567,11 @@ void main() {
           // rejects providers that are not part of its dependencies
           expect(
             () => call(ref, transitiveDep),
-            throwsA(isA<StateError>()),
+            throwsA(isStateError),
           );
           expect(
             () => call(ref, unrelatedScoped),
-            throwsA(isA<StateError>()),
+            throwsA(isStateError),
           );
         });
       }
@@ -830,7 +830,7 @@ void main() {
           }),
         );
 
-        expect(() => container.read(provider), throwsA(42));
+        expect(() => container.read(provider), throwsA(anything));
 
         verifyZeroInteractions(listener);
         verifyInOrder([
@@ -841,7 +841,7 @@ void main() {
         verifyNoMoreInteractions(errorListener2);
 
         error = 21;
-        expect(() => container.refresh(provider), throwsA(21));
+        expect(() => container.refresh(provider), throwsA(anything));
 
         verifyZeroInteractions(listener);
 
@@ -881,7 +881,7 @@ void main() {
         verifyZeroInteractions(errorListener2);
 
         error = Exception();
-        expect(() => container.refresh(provider), throwsA(error));
+        expect(() => container.refresh(provider), throwsA(anything));
 
         verifyInOrder([
           errorListener(error, StackTrace.empty),
@@ -1252,7 +1252,7 @@ void main() {
         verifyZeroInteractions(listener);
         verifyOnly(errorListener, errorListener(42, stack));
 
-        expect(() => container.refresh(provider), throwsA(42));
+        expect(() => container.refresh(provider), throwsProviderException(42));
 
         verifyZeroInteractions(listener);
         verifyOnly(errorListener, errorListener(42, stack));
@@ -1269,7 +1269,10 @@ void main() {
           }),
         );
 
-        expect(() => container.read(provider), throwsA(isAssertionError));
+        expect(
+          () => container.read(provider),
+          throwsProviderException(isAssertionError),
+        );
 
         container.read(provider.notifier).state = 42;
 

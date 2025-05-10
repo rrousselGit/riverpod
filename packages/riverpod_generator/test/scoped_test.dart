@@ -3,6 +3,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
 import 'integration/scopes.dart';
+import 'mock.dart';
 
 @Dependencies([ScopedClass, ScopedClassFamily])
 void main() {
@@ -11,7 +12,7 @@ void main() {
 
     expect(
       () => container.read(scopedClassProvider),
-      throwsA(
+      throwsProviderException(
         isA<MissingScopeException>().having(
           (e) => e.toString(),
           'toString',
@@ -28,7 +29,7 @@ void main() {
 
     expect(
       () => container.read(scopedClassFamilyProvider(42)),
-      throwsA(
+      throwsProviderException(
         isA<MissingScopeException>().having(
           (e) => e.toString(),
           'toString',

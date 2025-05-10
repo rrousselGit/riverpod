@@ -1115,6 +1115,26 @@ void main() {
       });
     });
 
+    group('defaultOnError', () {
+      test('does not report ProviderExceptions', () {
+        final errors = <Object>[];
+        final container = runZonedGuarded(
+          ProviderContainer.test,
+          (e, s) => errors.add(e),
+        )!;
+
+        final dep = Provider((ref) => throw Exception());
+        final provider = Provider((ref) => ref.watch(dep));
+
+        container.listen(
+          provider,
+          (previous, next) {},
+          fireImmediately: true,
+        );
+        expect(errors, isEmpty);
+      });
+    });
+
     group('retry', () {
       test('inherits retry from parent if arg is null', () {
         Duration? rootRetry(int count, Object error) => Duration.zero;

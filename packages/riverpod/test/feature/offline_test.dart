@@ -176,8 +176,8 @@ void main() {
         await null;
 
         expect(errors, [
-          isA<StateError>().having((e) => e.message, 'message', 'read'),
-          isA<StateError>().having((e) => e.message, 'message', 'write'),
+          isStateError.having((e) => e.message, 'message', 'read'),
+          isStateError.having((e) => e.message, 'message', 'write'),
         ]);
         errors.clear();
 
@@ -189,7 +189,7 @@ void main() {
 
           expect(
             errors.single,
-            isA<StateError>().having((e) => e.message, 'message', 'delete'),
+            isStateError.having((e) => e.message, 'message', 'delete'),
           );
         }
       });

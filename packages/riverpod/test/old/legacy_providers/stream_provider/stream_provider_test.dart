@@ -352,7 +352,7 @@ void main() {
       await expectLater(
         future,
         throwsA(
-          isA<StateError>().having(
+          isStateError.having(
             (e) => e.message,
             'message',
             equalsIgnoringHashCodes(

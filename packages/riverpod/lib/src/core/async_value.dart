@@ -233,7 +233,7 @@ sealed class AsyncValue<StateT> {
   StateT get requireValue {
     if (hasValue) return value as StateT;
     if (hasError) {
-      throwErrorWithCombinedStackTrace(error!, stackTrace!);
+      throwProviderException(error!, stackTrace!);
     }
 
     throw StateError(

@@ -5,6 +5,23 @@ import 'package:riverpod_annotation/experimental/mutation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
+TypeMatcher<ProviderException> isProviderException(
+  Object exception, [
+  Object? stackTrace,
+]) {
+  var matcher = isA<ProviderException>();
+  matcher = matcher.having((e) => e.exception, 'exception', exception);
+  if (stackTrace != null) {
+    matcher = matcher.having((e) => e.stackTrace, 'stackTrace', stackTrace);
+  }
+
+  return matcher;
+}
+
+Matcher throwsProviderException(Object exception, [Object? stackTrace]) {
+  return throwsA(isProviderException(exception, stackTrace));
+}
+
 class ListenerMock<T> with Mock {
   void call(Object? a, Object? b);
 }

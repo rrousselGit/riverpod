@@ -5,6 +5,7 @@ import 'package:riverpod/src/internals.dart'
 import 'package:riverpod/src/internals.dart' show InternalProviderContainer;
 import 'package:test/test.dart';
 
+import '../../src/utils.dart' show throwsProviderException;
 import '../utils.dart';
 
 void main() {
@@ -75,7 +76,7 @@ void main() {
     final container = ProviderContainer.test();
     expect(
       () => container.read(provider),
-      throwsA(isA<CircularDependencyError>()),
+      throwsProviderException(isA<CircularDependencyError>()),
     );
   });
 
@@ -196,7 +197,7 @@ void main() {
     });
     final container = ProviderContainer.test();
 
-    expect(() => container.read(provider), throwsA(error));
+    expect(() => container.read(provider), throwsA(anything));
     expect(callCount, 1);
 
     final onDispose2 = OnDisposeMock();

@@ -586,7 +586,8 @@ extension InternalProviderContainer on ProviderContainer {
   int get depth => _depth;
 
   void defaultOnError(Object error, StackTrace stackTrace) {
-    // TODO silence ProviderExceptions
+    if (error is ProviderException) return;
+
     _onError(error, stackTrace);
   }
 
