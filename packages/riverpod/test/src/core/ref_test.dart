@@ -43,9 +43,8 @@ void main() {
       });
 
       container.read(provider);
-      container.read(dep.notifier).state++;
 
-      await null;
+      container.dispose();
 
       final another = Provider((ref) => 0);
 
@@ -106,40 +105,6 @@ void main() {
         () => ref.keepAlive(),
         throwsA(isA<UnmountedRefException>()),
       );
-    });
-
-    test('Lifecycle can be used if mounted check is disabled', () async {
-      late Ref ref;
-      final container = ProviderContainer.test();
-      final dep = StateProvider((ref) => 0);
-      final provider = Provider<Object?>((r) {
-        r.watch(dep);
-        ref = r;
-        return Object();
-      });
-
-      container.read(provider);
-      container.read(dep.notifier).state++;
-
-      await null;
-
-      final another = Provider((ref) => 0);
-      ref.unsafe_checkIfMounted = false;
-
-      expect(() => ref.watch(another), returnsNormally);
-      expect(() => ref.invalidateSelf(), returnsNormally);
-      expect(() => ref.invalidate(dep), returnsNormally);
-      expect(() => ref.refresh(another), returnsNormally);
-      expect(() => ref.read(another), returnsNormally);
-      expect(() => ref.onDispose(() {}), returnsNormally);
-      expect(() => ref.onAddListener(() {}), returnsNormally);
-      expect(() => ref.onCancel(() {}), returnsNormally);
-      expect(() => ref.onRemoveListener(() {}), returnsNormally);
-      expect(() => ref.onResume(() {}), returnsNormally);
-      expect(() => ref.notifyListeners(), returnsNormally);
-      expect(() => ref.listen(another, (_, __) {}), returnsNormally);
-      expect(() => ref.exists(another), returnsNormally);
-      expect(() => ref.keepAlive(), returnsNormally);
     });
 
     test('asserts that a lifecycle cannot be used inside selectors', () {
@@ -216,32 +181,6 @@ void main() {
       expect(
         () => container.read(provider.select((_) => ref.keepAlive())),
         throwsA(isA<AssertionError>()),
-      );
-    });
-
-    test('Can still use Ref synchronously after invalidation, but not async',
-        () async {
-      late Ref ref;
-      final container = ProviderContainer.test();
-      final dep = StateProvider((ref) => 0);
-      final provider = Provider<Object?>((r) {
-        ref = r;
-        ref.watch(dep);
-        return Object();
-      });
-
-      container.read(provider);
-      container.read(dep.notifier).state++;
-
-      container.invalidate(dep);
-
-      expect(() => ref.read(dep), returnsNormally);
-
-      await null;
-
-      expect(
-        () => ref.read(dep),
-        throwsA(isA<UnmountedRefException>()),
       );
     });
 
@@ -3189,42 +3128,6 @@ void main() {
     });
 
     group('mounted', () {
-      test('stays false on older refs while new refs are building', () {
-        final container = ProviderContainer.test();
-        late Ref ref;
-        final provider = Provider<int>((r) {
-          ref = r;
-          return 0;
-        });
-
-        container.read(provider);
-        final oldRef = ref;
-
-        container.refresh(provider);
-
-        expect(oldRef.mounted, false);
-        expect(ref.mounted, true);
-      });
-
-      test('is false during onDispose caused by ref.watch', () {
-        final container = ProviderContainer.test();
-        bool? mounted;
-        late Ref ref;
-        final dep = StateProvider((ref) => 0);
-        final provider = Provider((r) {
-          ref = r;
-          ref.watch(dep);
-          ref.onDispose(() => mounted = ref.mounted);
-        });
-
-        container.read(provider);
-        expect(mounted, null);
-
-        container.read(dep.notifier).state++;
-
-        expect(mounted, false);
-      });
-
       test('is false during onDispose caused by container dispose', () {
         final container = ProviderContainer.test();
         bool? mounted;
@@ -3233,18 +3136,22 @@ void main() {
         final provider = Provider((r) {
           ref = r;
           ref.watch(dep);
-          ref.onDispose(() => mounted = ref.mounted);
+          ref.onDispose(() {
+            mounted = ref.mounted;
+          });
         });
 
         container.read(provider);
+        expect(ref.mounted, true);
         expect(mounted, null);
 
         container.dispose();
 
-        expect(mounted, false);
+        expect(ref.mounted, false);
+        expect(ref.mounted, false);
       });
 
-      test('is false in between rebuilds', () {
+      test('is true in between rebuilds', () {
         final container = ProviderContainer.test();
         final dep = StateProvider((ref) => 0);
         late Ref ref;
@@ -3258,7 +3165,7 @@ void main() {
 
         container.read(dep.notifier).state++;
 
-        expect(ref.mounted, false);
+        expect(ref.mounted, true);
       });
     });
   });

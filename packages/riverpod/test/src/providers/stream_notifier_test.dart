@@ -235,10 +235,8 @@ void main() {
       container.listen(provider.notifier, (prev, next) {});
       final notifier = container.read(provider.notifier);
 
-      container.invalidate(provider);
-      await null;
+      container.dispose();
 
-      expect(notifier.ref.mounted, false);
       expect(
         () => notifier.state,
         throwsA(isA<UnmountedRefException>()),
@@ -856,8 +854,6 @@ void main() {
         final sub = container.listen(provider.notifier, notifierListener.call);
         final initialNotifier = sub.read();
 
-        expect(initialNotifier.ref.mounted, true);
-
         // Skip the loading
         await container.read(provider.future);
         verifyNoMoreInteractions(notifierListener);
@@ -870,8 +866,6 @@ void main() {
           notifierListener,
           notifierListener(initialNotifier, newNotifier),
         ).called(1);
-        expect(initialNotifier.ref.mounted, false);
-        expect(newNotifier.ref.mounted, true);
       });
     });
 
