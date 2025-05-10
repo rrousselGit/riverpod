@@ -22,31 +22,31 @@ void main() {
 
     verifyOnly(
       listener,
-      listener(any, isMutationBase<int>(state: isIdleMutation())),
+      listener(any, isMutationBase<int>(state: isMutationIdle())),
     );
 
     final future = sub.read().call(() async => 1);
 
     verifyOnly(
       listener,
-      listener(any, isMutationBase<int>(state: isPendingMutation())),
+      listener(any, isMutationBase<int>(state: isMutationPending())),
     );
 
     expect(await future, 1);
 
     verifyOnly(
       listener,
-      listener(any, isMutationBase<int>(state: isSuccessMutation(1))),
+      listener(any, isMutationBase<int>(state: isMutationSuccess(1))),
     );
 
     final future2 = sub.read().call(() => throw StateError('42'));
 
     await expectLater(future2, throwsA(isStateError));
     verifyInOrder([
-      listener(any, isMutationBase<int>(state: isPendingMutation())),
+      listener(any, isMutationBase<int>(state: isMutationPending())),
       listener(
         any,
-        isMutationBase<int>(state: isErrorMutation(isStateError)),
+        isMutationBase<int>(state: isMutationError(isStateError)),
       ),
     ]);
     verifyNoMoreInteractions(listener);
@@ -61,21 +61,21 @@ void main() {
 
     expect(
       sub.read(),
-      isMutationBase<int>(state: isIdleMutation()),
+      isMutationBase<int>(state: isMutationIdle()),
     );
 
     final future = sub.read().call(2);
 
     expect(
       sub.read(),
-      isMutationBase<int>(state: isPendingMutation()),
+      isMutationBase<int>(state: isMutationPending()),
     );
 
     expect(await future, 2);
 
     expect(
       sub.read(),
-      isMutationBase<int>(state: isSuccessMutation(2)),
+      isMutationBase<int>(state: isMutationSuccess(2)),
     );
   });
 
@@ -87,7 +87,7 @@ void main() {
 
     expect(
       sub.read(),
-      isMutationBase<int>(state: isIdleMutation()),
+      isMutationBase<int>(state: isMutationIdle()),
     );
 
     final future = sub.read().call<double>(2.5);
@@ -96,7 +96,7 @@ void main() {
 
     expect(
       sub.read(),
-      isMutationBase<int>(state: isSuccessMutation(3)),
+      isMutationBase<int>(state: isMutationSuccess(3)),
     );
   });
 
@@ -118,7 +118,7 @@ void main() {
 
       expect(
         container.read(simpleProvider.increment),
-        isMutationBase<int>(state: isSuccessMutation(2)),
+        isMutationBase<int>(state: isMutationSuccess(2)),
       );
 
       sub2.close();
@@ -126,7 +126,7 @@ void main() {
 
       expect(
         container.read(simpleProvider.increment),
-        isMutationBase<int>(state: isIdleMutation()),
+        isMutationBase<int>(state: isMutationIdle()),
       );
     });
 
@@ -143,7 +143,7 @@ void main() {
 
       expect(
         container.read(simpleProvider.increment),
-        isMutationBase<int>(state: isSuccessMutation(2)),
+        isMutationBase<int>(state: isMutationSuccess(2)),
       );
     });
   });
@@ -159,7 +159,7 @@ void main() {
 
     expect(
       sub.read(),
-      isMutationBase<int>(state: isSuccessMutation(2)),
+      isMutationBase<int>(state: isMutationSuccess(2)),
     );
   });
 
@@ -180,7 +180,7 @@ void main() {
     expect(await future, 42);
     expect(
       sub.read(),
-      isMutationBase<int>(state: isPendingMutation()),
+      isMutationBase<int>(state: isMutationPending()),
     );
     expect(container.read(simpleAsyncProvider), const AsyncData(42));
 
@@ -188,7 +188,7 @@ void main() {
     await expectLater(future2, throwsA(21));
     expect(
       sub.read(),
-      isMutationBase<int>(state: isPendingMutation()),
+      isMutationBase<int>(state: isMutationPending()),
     );
     expect(container.read(simpleAsyncProvider), const AsyncData(42));
 
@@ -196,7 +196,7 @@ void main() {
     expect(await future3, 21);
     expect(
       sub.read(),
-      isMutationBase<int>(state: isSuccessMutation(21)),
+      isMutationBase<int>(state: isMutationSuccess(21)),
     );
     expect(container.read(simpleAsyncProvider), const AsyncData(21));
   });
@@ -238,13 +238,13 @@ void main() {
 
     final sub = container.listen(failingCtorProvider.increment, (a, b) {});
 
-    expect(sub.read(), isMutationBase<int>(state: isIdleMutation()));
+    expect(sub.read(), isMutationBase<int>(state: isMutationIdle()));
 
     expect(() => sub.read().call(2), throwsProviderException(isStateError));
 
     expect(
       sub.read(),
-      isMutationBase<int>(state: isIdleMutation()),
+      isMutationBase<int>(state: isMutationIdle()),
     );
     verifyNever(observer.mutationError(any, any, any, any));
   });
@@ -260,7 +260,7 @@ void main() {
 
     expect(
       sub.read(),
-      isMutationBase<String>(state: isSuccessMutation('five six seven')),
+      isMutationBase<String>(state: isMutationSuccess('five six seven')),
     );
   });
 
@@ -279,7 +279,7 @@ void main() {
       expect(await future, 42);
       expect(
         sub.read(),
-        isMutationBase<int>(state: isIdleMutation()),
+        isMutationBase<int>(state: isMutationIdle()),
       );
     });
 
@@ -295,7 +295,7 @@ void main() {
 
       expect(
         sub.read(),
-        isMutationBase<int>(state: isIdleMutation()),
+        isMutationBase<int>(state: isMutationIdle()),
       );
     });
   });

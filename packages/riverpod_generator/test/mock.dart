@@ -60,20 +60,20 @@ TypeMatcher<MutationBase<T>> isMutationBase<T>({
   return matcher;
 }
 
-TypeMatcher<IdleMutation<T>> isIdleMutation<T>() {
-  return isA<IdleMutation<T>>();
+TypeMatcher<MutationIdle<T>> isMutationIdle<T>() {
+  return isA<MutationIdle<T>>();
 }
 
-TypeMatcher<PendingMutation<T>> isPendingMutation<T>() {
-  return isA<PendingMutation<T>>();
+TypeMatcher<MutationPending<T>> isMutationPending<T>() {
+  return isA<MutationPending<T>>();
 }
 
-TypeMatcher<SuccessMutation<T>> isSuccessMutation<T>(T value) {
-  return isA<SuccessMutation<T>>().having((e) => e.value, 'value', value);
+TypeMatcher<MutationSuccess<T>> isMutationSuccess<T>(T value) {
+  return isA<MutationSuccess<T>>().having((e) => e.value, 'value', value);
 }
 
-TypeMatcher<ErrorMutation<T>> isErrorMutation<T>(Object error) {
-  return isA<ErrorMutation<T>>().having((e) => e.error, 'error', error);
+TypeMatcher<MutationError<T>> isMutationError<T>(Object error) {
+  return isA<MutationError<T>>().having((e) => e.error, 'error', error);
 }
 
 enum InvocationKind {
