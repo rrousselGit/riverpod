@@ -281,7 +281,7 @@ void main() {
     await tester.pumpWidget(ProviderScope(child: Container()));
 
     final throwsDisposeError = throwsA(
-      isA<StateError>().having(
+      isStateError.having(
         (e) => e.message,
         'message',
         'Cannot use "ref" after the widget was disposed.',

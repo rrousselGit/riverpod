@@ -83,7 +83,18 @@ final class _ProviderSelector<InputT, OutputT, OriginT>
       onError: onError,
     );
 
-    if (!weak) lastSelectedValue = _select($Result.guard(sub.read));
+    if (!weak) {
+      lastSelectedValue = _select(
+        $Result.guard(() {
+          try {
+            return sub.read();
+          } catch (e, s) {
+            e as ProviderException;
+            e.unwrap(s);
+          }
+        }),
+      );
+    }
 
     providerSub = ProviderSubscriptionView<OutputT, OriginT>(
       innerSubscription: sub,
@@ -95,14 +106,7 @@ final class _ProviderSelector<InputT, OutputT, OriginT>
 
         // Using ! because since `sub.read` flushes the inner subscription,
         // it is guaranteed that `lastSelectedValue` is not null.
-        return switch (lastSelectedValue!) {
-          $ResultData(:final value) => value,
-          $ResultError(:final error, :final stackTrace) =>
-            throwErrorWithCombinedStackTrace(
-              error,
-              stackTrace,
-            ),
-        };
+        return lastSelectedValue!.requireState;
       },
     );
 

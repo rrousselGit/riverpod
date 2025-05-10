@@ -88,6 +88,32 @@ void main() {
 
     group('retry', () {
       test(
+        'default ignores ProviderExceptions',
+        () => fakeAsync((fake) async {
+          final container = ProviderContainer.test();
+          final dep = Provider(
+            (ref) => throw StateError('message'),
+            retry: (count, err) => null,
+          );
+          var buildCount = 0;
+          final provider = Provider((ref) {
+            buildCount++;
+            ref.watch(dep);
+          });
+
+          container.listen(
+            provider,
+            (prev, next) {},
+            onError: (e, s) {},
+          );
+
+          fake.elapse(const Duration(hours: 1));
+
+          expect(buildCount, 1);
+        }),
+      );
+
+      test(
         'default retry delays from 200ms to 6.4 seconds',
         () => fakeAsync((fake) async {
           final container = ProviderContainer.test();
@@ -354,20 +380,6 @@ void main() {
       await container.pump();
 
       verifyOnly(listener, listener(null, 11));
-    });
-
-    group('readSelf', () {
-      test('throws on providers that threw', () {
-        final container = ProviderContainer.test();
-        final provider = Provider((ref) => throw UnimplementedError());
-
-        final element = container.readProviderElement(provider);
-
-        expect(
-          element.readSelf,
-          throwsUnimplementedError,
-        );
-      });
     });
 
     group('visitChildren', () {

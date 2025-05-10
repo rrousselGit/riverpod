@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../framework.dart' show ProviderElement;
-import '../internals.dart' show OnError;
+import '../internals.dart' show OnError, throwProviderException;
 import 'env.dart';
 import 'internal_lints.dart';
 import 'pragma.dart';
@@ -26,10 +26,14 @@ final class $ElementLense<T> extends _ValueListenable<T> {
   /// [result] is null or in error state.
   T get value {
     final result = _result;
-    if (result == null) {
-      throw StateError('Trying to read an uninitialized value.');
+    switch (result) {
+      case null:
+        throw StateError('Trying to read an uninitialized value.');
+      case $ResultData<T>():
+        return result.value;
+      case $ResultError<T>():
+        throwProviderException(result.error, result.stackTrace);
     }
-    return result.requireState;
   }
 
   /// The state associated with this notifier.

@@ -510,7 +510,7 @@ void main() {
       );
       expect(
         () => container.read(provider.notifier),
-        throwsA(0),
+        throwsProviderException(0),
       );
 
       await expectLater(container.read(provider.future), throwsA(0));
