@@ -88,6 +88,32 @@ void main() {
 
     group('retry', () {
       test(
+        'default ignores ProviderExceptions',
+        () => fakeAsync((fake) async {
+          final container = ProviderContainer.test();
+          final dep = Provider(
+            (ref) => throw StateError('message'),
+            retry: (count, err) => null,
+          );
+          var buildCount = 0;
+          final provider = Provider((ref) {
+            buildCount++;
+            ref.watch(dep);
+          });
+
+          container.listen(
+            provider,
+            (prev, next) {},
+            onError: (e, s) {},
+          );
+
+          fake.elapse(const Duration(hours: 1));
+
+          expect(buildCount, 1);
+        }),
+      );
+
+      test(
         'default retry delays from 200ms to 6.4 seconds',
         () => fakeAsync((fake) async {
           final container = ProviderContainer.test();
