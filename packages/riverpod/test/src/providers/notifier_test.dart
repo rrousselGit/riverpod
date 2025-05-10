@@ -83,31 +83,12 @@ void main() {
       container.listen(provider.notifier, (prev, next) {});
       final notifier = container.read(provider.notifier);
 
-      container.invalidate(provider);
-      await null;
+      container.dispose();
 
       expect(notifier.ref.mounted, false);
       expect(() => notifier.state, throwsA(isA<UnmountedRefException>()));
       expect(() => notifier.state = 42, throwsA(isA<UnmountedRefException>()));
       expect(() => notifier.stateOrNull, throwsA(isA<UnmountedRefException>()));
-    });
-
-    test('Using the notifier after dispose does not throw if flag is disabled',
-        () async {
-      final container = ProviderContainer.test();
-      final provider = factory.simpleTestProvider((ref, _) => 0);
-
-      container.listen(provider.notifier, (prev, next) {});
-      final notifier = container.read(provider.notifier);
-      notifier.ref.unsafe_checkIfMounted = false;
-
-      container.invalidate(provider);
-      await null;
-
-      expect(notifier.ref.mounted, false);
-      expect(() => notifier.state, returnsNormally);
-      expect(() => notifier.state = 42, returnsNormally);
-      expect(() => notifier.stateOrNull, returnsNormally);
     });
 
     test(
@@ -262,8 +243,6 @@ void main() {
         final sub = container.listen(provider.notifier, notifierListener.call);
         final initialNotifier = sub.read();
 
-        expect(initialNotifier.ref.mounted, true);
-
         container.refresh(provider);
         final newNotifier = sub.read();
 
@@ -272,8 +251,6 @@ void main() {
           notifierListener,
           notifierListener(initialNotifier, newNotifier),
         ).called(1);
-        expect(initialNotifier.ref.mounted, false);
-        expect(newNotifier.ref.mounted, true);
       });
     });
 

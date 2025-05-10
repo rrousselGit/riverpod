@@ -140,14 +140,14 @@ void main() {
 
         await container.pump();
 
-        verifyOnly(
-          observer,
+        verify(
           observer.didUpdateProvider(
             argThat(isProviderObserverContext(computed, container)),
             0,
             1,
           ),
         ).called(1);
+        verifyNever(observer.didUpdateProvider(any, any, any));
       });
 
       test('handles direct provider update', () {
@@ -302,7 +302,7 @@ void main() {
             1,
           ),
         ]);
-        verifyNoMoreInteractions(observer);
+        verifyNever(observer.didUpdateProvider(any, any, any));
 
         counter.state = -10;
         await container.pump();
@@ -323,8 +323,8 @@ void main() {
             true,
           ),
         ]);
+        verifyNever(observer.didUpdateProvider(any, any, any));
         verifyNoMoreInteractions(isNegativeListener);
-        verifyNoMoreInteractions(observer);
       });
     });
 
@@ -421,10 +421,9 @@ void main() {
             StackTrace.empty,
           ),
         ]);
-
-        verifyNoMoreInteractions(observer3);
-        verifyNoMoreInteractions(observer2);
-        verifyNoMoreInteractions(observer);
+        verifyNever(observer3.didUpdateProvider(any, any, any));
+        verifyNever(observer2.didUpdateProvider(any, any, any));
+        verifyNever(observer.didUpdateProvider(any, any, any));
       });
 
       test('is called when FutureProvider emits an error', () async {

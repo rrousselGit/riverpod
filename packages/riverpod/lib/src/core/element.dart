@@ -763,10 +763,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   @mustCallSuper
   void runOnDispose() {
     final ref = this.ref;
-    if (ref == null || !ref.mounted) return;
-
-    ref._status = _RefStatus.deactivated;
-    Future.microtask(() => ref._status = _RefStatus.unmounted);
+    if (ref == null) return;
 
     _pendingRetryTimer?.cancel();
     _pendingRetryTimer = null;
@@ -826,6 +823,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
   }
 
+  bool _disposed = false;
+
   /// Release the resources associated to this [ProviderElement].
   ///
   /// This will be invoked when:
@@ -840,6 +839,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   @protected
   @mustCallSuper
   void dispose() {
+    _disposed = true;
     clearState();
 
     _closeSubscriptions(weakDependents);
