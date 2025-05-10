@@ -555,7 +555,10 @@ void main() {
     expect(
       tester.takeException(),
       isStateError.having(
-          (e) => e.message, 'message', 'No ProviderScope found'),
+        (e) => e.message,
+        'message',
+        'No ProviderScope found',
+      ),
     );
   });
 
