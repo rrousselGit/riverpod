@@ -107,11 +107,11 @@ class _$SyncTodoListElement
 sealed class SyncTodoList$AddSync extends MutationBase<Todo> {
   /// Starts the mutation.
   ///
-  /// This will first set the state to [PendingMutation], then
+  /// This will first set the state to [MutationPending], then
   /// will call [SyncTodoList.addSync] with the provided parameters.
   ///
   /// After the method completes, the mutation state will be updated to either
-  /// [SuccessMutation] or [ErrorMutation] based on if the method
+  /// [MutationSuccess] or [MutationError] based on if the method
   /// threw or not.
   ///
   /// **Note**:
@@ -154,11 +154,11 @@ final class _$SyncTodoList$AddSync
 sealed class SyncTodoList$AddAsync extends MutationBase<Todo> {
   /// Starts the mutation.
   ///
-  /// This will first set the state to [PendingMutation], then
+  /// This will first set the state to [MutationPending], then
   /// will call [SyncTodoList.addAsync] with the provided parameters.
   ///
   /// After the method completes, the mutation state will be updated to either
-  /// [SuccessMutation] or [ErrorMutation] based on if the method
+  /// [MutationSuccess] or [MutationError] based on if the method
   /// threw or not.
   ///
   /// **Note**:
@@ -294,11 +294,11 @@ class _$AsyncTodoListElement
 sealed class AsyncTodoList$AddSync extends MutationBase<Todo> {
   /// Starts the mutation.
   ///
-  /// This will first set the state to [PendingMutation], then
+  /// This will first set the state to [MutationPending], then
   /// will call [AsyncTodoList.addSync] with the provided parameters.
   ///
   /// After the method completes, the mutation state will be updated to either
-  /// [SuccessMutation] or [ErrorMutation] based on if the method
+  /// [MutationSuccess] or [MutationError] based on if the method
   /// threw or not.
   ///
   /// **Note**:
@@ -341,11 +341,11 @@ final class _$AsyncTodoList$AddSync
 sealed class AsyncTodoList$AddAsync extends MutationBase<Todo> {
   /// Starts the mutation.
   ///
-  /// This will first set the state to [PendingMutation], then
+  /// This will first set the state to [MutationPending], then
   /// will call [AsyncTodoList.addAsync] with the provided parameters.
   ///
   /// After the method completes, the mutation state will be updated to either
-  /// [SuccessMutation] or [ErrorMutation] based on if the method
+  /// [MutationSuccess] or [MutationError] based on if the method
   /// threw or not.
   ///
   /// **Note**:
@@ -498,11 +498,11 @@ class _$SimpleElement extends $NotifierProviderElement<Simple, int> {
 sealed class Simple$Increment extends MutationBase<int> {
   /// Starts the mutation.
   ///
-  /// This will first set the state to [PendingMutation], then
+  /// This will first set the state to [MutationPending], then
   /// will call [Simple.increment] with the provided parameters.
   ///
   /// After the method completes, the mutation state will be updated to either
-  /// [SuccessMutation] or [ErrorMutation] based on if the method
+  /// [MutationSuccess] or [MutationError] based on if the method
   /// threw or not.
   ///
   /// **Note**:
@@ -545,11 +545,11 @@ final class _$Simple$Increment
 sealed class Simple$IncrementOr extends MutationBase<int> {
   /// Starts the mutation.
   ///
-  /// This will first set the state to [PendingMutation], then
+  /// This will first set the state to [MutationPending], then
   /// will call [Simple.incrementOr] with the provided parameters.
   ///
   /// After the method completes, the mutation state will be updated to either
-  /// [SuccessMutation] or [ErrorMutation] based on if the method
+  /// [MutationSuccess] or [MutationError] based on if the method
   /// threw or not.
   ///
   /// **Note**:
@@ -590,11 +590,11 @@ final class _$Simple$IncrementOr
 sealed class Simple$Delegated extends MutationBase<int> {
   /// Starts the mutation.
   ///
-  /// This will first set the state to [PendingMutation], then
+  /// This will first set the state to [MutationPending], then
   /// will call [Simple.delegated] with the provided parameters.
   ///
   /// After the method completes, the mutation state will be updated to either
-  /// [SuccessMutation] or [ErrorMutation] based on if the method
+  /// [MutationSuccess] or [MutationError] based on if the method
   /// threw or not.
   ///
   /// **Note**:
@@ -777,11 +777,11 @@ class _$SimpleFamilyElement
 sealed class SimpleFamily$Increment extends MutationBase<int> {
   /// Starts the mutation.
   ///
-  /// This will first set the state to [PendingMutation], then
+  /// This will first set the state to [MutationPending], then
   /// will call [SimpleFamily.increment] with the provided parameters.
   ///
   /// After the method completes, the mutation state will be updated to either
-  /// [SuccessMutation] or [ErrorMutation] based on if the method
+  /// [MutationSuccess] or [MutationError] based on if the method
   /// threw or not.
   ///
   /// **Note**:
@@ -824,11 +824,11 @@ final class _$SimpleFamily$Increment
 sealed class SimpleFamily$IncrementOr extends MutationBase<int> {
   /// Starts the mutation.
   ///
-  /// This will first set the state to [PendingMutation], then
+  /// This will first set the state to [MutationPending], then
   /// will call [SimpleFamily.incrementOr] with the provided parameters.
   ///
   /// After the method completes, the mutation state will be updated to either
-  /// [SuccessMutation] or [ErrorMutation] based on if the method
+  /// [MutationSuccess] or [MutationError] based on if the method
   /// threw or not.
   ///
   /// **Note**:
@@ -961,11 +961,11 @@ class _$SimpleAsyncElement
 sealed class SimpleAsync$Increment extends MutationBase<int> {
   /// Starts the mutation.
   ///
-  /// This will first set the state to [PendingMutation], then
+  /// This will first set the state to [MutationPending], then
   /// will call [SimpleAsync.increment] with the provided parameters.
   ///
   /// After the method completes, the mutation state will be updated to either
-  /// [SuccessMutation] or [ErrorMutation] based on if the method
+  /// [MutationSuccess] or [MutationError] based on if the method
   /// threw or not.
   ///
   /// **Note**:
@@ -1008,11 +1008,11 @@ final class _$SimpleAsync$Increment
 sealed class SimpleAsync$Delegated extends MutationBase<int> {
   /// Starts the mutation.
   ///
-  /// This will first set the state to [PendingMutation], then
+  /// This will first set the state to [MutationPending], then
   /// will call [SimpleAsync.delegated] with the provided parameters.
   ///
   /// After the method completes, the mutation state will be updated to either
-  /// [SuccessMutation] or [ErrorMutation] based on if the method
+  /// [MutationSuccess] or [MutationError] based on if the method
   /// threw or not.
   ///
   /// **Note**:
@@ -1176,11 +1176,11 @@ class _$SimpleAsync2Element
 sealed class SimpleAsync2$Increment extends MutationBase<int> {
   /// Starts the mutation.
   ///
-  /// This will first set the state to [PendingMutation], then
+  /// This will first set the state to [MutationPending], then
   /// will call [SimpleAsync2.increment] with the provided parameters.
   ///
   /// After the method completes, the mutation state will be updated to either
-  /// [SuccessMutation] or [ErrorMutation] based on if the method
+  /// [MutationSuccess] or [MutationError] based on if the method
   /// threw or not.
   ///
   /// **Note**:
@@ -1363,11 +1363,11 @@ class _$GenericElement<T extends num>
 sealed class Generic$Increment extends MutationBase<int> {
   /// Starts the mutation.
   ///
-  /// This will first set the state to [PendingMutation], then
+  /// This will first set the state to [MutationPending], then
   /// will call [Generic.increment] with the provided parameters.
   ///
   /// After the method completes, the mutation state will be updated to either
-  /// [SuccessMutation] or [ErrorMutation] based on if the method
+  /// [MutationSuccess] or [MutationError] based on if the method
   /// threw or not.
   ///
   /// **Note**:
@@ -1483,11 +1483,11 @@ class _$GenericMutElement
 sealed class GenericMut$Increment extends MutationBase<int> {
   /// Starts the mutation.
   ///
-  /// This will first set the state to [PendingMutation], then
+  /// This will first set the state to [MutationPending], then
   /// will call [GenericMut.increment] with the provided parameters.
   ///
   /// After the method completes, the mutation state will be updated to either
-  /// [SuccessMutation] or [ErrorMutation] based on if the method
+  /// [MutationSuccess] or [MutationError] based on if the method
   /// threw or not.
   ///
   /// **Note**:
@@ -1613,11 +1613,11 @@ class _$FailingCtorElement extends $NotifierProviderElement<FailingCtor, int> {
 sealed class FailingCtor$Increment extends MutationBase<int> {
   /// Starts the mutation.
   ///
-  /// This will first set the state to [PendingMutation], then
+  /// This will first set the state to [MutationPending], then
   /// will call [FailingCtor.increment] with the provided parameters.
   ///
   /// After the method completes, the mutation state will be updated to either
-  /// [SuccessMutation] or [ErrorMutation] based on if the method
+  /// [MutationSuccess] or [MutationError] based on if the method
   /// threw or not.
   ///
   /// **Note**:
@@ -1742,11 +1742,11 @@ class _$TypedElement extends $NotifierProviderElement<Typed, String> {
 sealed class Typed$Mutate extends MutationBase<String> {
   /// Starts the mutation.
   ///
-  /// This will first set the state to [PendingMutation], then
+  /// This will first set the state to [MutationPending], then
   /// will call [Typed.mutate] with the provided parameters.
   ///
   /// After the method completes, the mutation state will be updated to either
-  /// [SuccessMutation] or [ErrorMutation] based on if the method
+  /// [MutationSuccess] or [MutationError] based on if the method
   /// threw or not.
   ///
   /// **Note**:
