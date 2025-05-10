@@ -229,7 +229,7 @@ class StorageMock<KeyT, EncodedT> extends Mock
 final isAssertionError = isA<AssertionError>();
 
 Matcher isStateErrorWith({String? message}) {
-  var matcher = isA<StateError>();
+  var matcher = isStateError;
 
   if (message != null) {
     matcher = matcher.having((e) => e.message, 'message', message);

@@ -114,7 +114,7 @@ void main() {
 
         expect(
           () => container.read(provider),
-          throwsProviderException(isA<StateError>()),
+          throwsProviderException(isStateError),
         );
       });
 

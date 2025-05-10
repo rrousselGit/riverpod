@@ -459,23 +459,23 @@ void main() {
           // rejects providers that are not part of its dependencies
           expect(
             () => call(ref, transitiveDep),
-            throwsA(isA<StateError>()),
+            throwsA(isStateError),
           );
           expect(
             () => call(ref2, transitiveDep),
-            throwsA(isA<StateError>()),
+            throwsA(isStateError),
           );
           expect(
             () => call(ref, unrelatedScoped),
-            throwsA(isA<StateError>()),
+            throwsA(isStateError),
           );
           expect(
             () => call(ref2, unrelatedScoped),
-            throwsA(isA<StateError>()),
+            throwsA(isStateError),
           );
           expect(
             () => call(ref2, unrelatedScopedFamily(42)),
-            throwsA(isA<StateError>()),
+            throwsA(isStateError),
           );
         });
       }
@@ -518,15 +518,15 @@ void main() {
           // rejects providers that are not part of its dependencies
           await expectLater(
             () => call(ref, unrelatedScoped.select((value) => 0)),
-            throwsA(isA<StateError>()),
+            throwsA(isStateError),
           );
           await expectLater(
             () => call(ref, unrelatedScoped.selectAsync((value) => 0)),
-            throwsA(isA<StateError>()),
+            throwsA(isStateError),
           );
           await expectLater(
             () => call(ref, unrelatedScoped.future),
-            throwsA(isA<StateError>()),
+            throwsA(isStateError),
           );
         });
       }
@@ -567,11 +567,11 @@ void main() {
           // rejects providers that are not part of its dependencies
           expect(
             () => call(ref, transitiveDep),
-            throwsA(isA<StateError>()),
+            throwsA(isStateError),
           );
           expect(
             () => call(ref, unrelatedScoped),
-            throwsA(isA<StateError>()),
+            throwsA(isStateError),
           );
         });
       }
