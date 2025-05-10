@@ -38,10 +38,7 @@ extension ProviderExceptionX on ProviderException {
 ///   This avoids reporting the same error twice.
 @publicInMisc
 final class ProviderException implements Exception {
-  ProviderException._(
-    this.exception,
-    this.stackTrace,
-  );
+  ProviderException._(this.exception, this.stackTrace);
 
   /// The exception that was thrown by the provider.
   final Object exception;
@@ -51,10 +48,21 @@ final class ProviderException implements Exception {
 
   @override
   String toString() {
-    return 'ProviderException: Tired to use a provider that is in error state.\n\n'
-        'The provider threw the following exception:\n'
-        '$exception\n\n'
-        'The stack trace of the exception:\n'
-        '$stackTrace';
+    if (exception case final ProviderException exception) {
+      return '''
+$exception
+
+And rethrown at:
+$stackTrace''';
+    }
+
+    return '''
+ProviderException: Tried to use a provider that is in error state.
+
+A provider threw the following exception:
+$exception
+
+The stack trace of the exception:
+$stackTrace''';
   }
 }
