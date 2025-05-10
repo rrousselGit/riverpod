@@ -400,10 +400,7 @@ void main() {
 
       final notifier = container.read(provider.notifier);
 
-      expect(
-        () => notifier.state,
-        throwsProviderException(isUnimplementedError),
-      );
+      expect(() => notifier.state, throwsUnimplementedError);
     });
 
     test(
