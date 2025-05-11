@@ -6,6 +6,8 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
+import '../utils.dart';
+
 void main() {
   test('Can do exhaustive pattern matching', () {
     expect(
@@ -100,10 +102,19 @@ void main() {
       test('with AsyncLoading, is identical to the incoming AsyncLoading', () {
         final incomingLoading = const AsyncLoading<int>(progress: .1)
             .copyWithPrevious(const AsyncData(42), isRefresh: false);
+
         final result = const AsyncLoading<int>(progress: .1)
             .copyWithPrevious(incomingLoading, isRefresh: false);
 
-        expect(result, same(incomingLoading));
+        expect(result, isA<AsyncLoading<int>>());
+        expect(result.hasValue, true);
+        expect(result.value, 42);
+        expect(result.progress, .1);
+
+        expect(result.hasError, false);
+        expect(result.error, null);
+        expect(result.stackTrace, null);
+        expect(result.isFromCache, false);
       });
 
       test('with AsyncData, sets value and hasValue', () {
@@ -1364,7 +1375,7 @@ void main() {
     );
     expect(
       () => const AsyncError<int>('err', StackTrace.empty).requireValue,
-      throwsA('err'),
+      throwsProviderException('err'),
     );
   });
 

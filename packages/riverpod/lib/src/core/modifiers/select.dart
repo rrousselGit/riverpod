@@ -1,15 +1,5 @@
 part of '../../framework.dart';
 
-/// An abstraction of both [ProviderContainer] and [$ProviderElement] used by
-/// [ProviderListenable].
-@internal
-sealed class Node {
-  /// Obtain the [ProviderElement] of a provider, creating it if necessary.
-  ProviderElement<StateT> _readProviderElement<StateT>(
-    ProviderBase<StateT> provider,
-  );
-}
-
 /// An internal class for `ProviderBase.select`.
 final class _ProviderSelector<InputT, OutputT, OriginT>
     with
@@ -69,13 +59,11 @@ final class _ProviderSelector<InputT, OutputT, OriginT>
   ProviderSubscriptionWithOrigin<OutputT, OriginT> _addListener(
     Node node,
     void Function(OutputT? previous, OutputT next) listener, {
-    required void Function(Object error, StackTrace stackTrace)? onError,
+    required void Function(Object error, StackTrace stackTrace) onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool fireImmediately,
     required bool weak,
   }) {
-    onError ??= Zone.current.handleUncaughtError;
-
     late final ProviderSubscriptionView<OutputT, OriginT> providerSub;
     $Result<OutputT>? lastSelectedValue;
     final sub = provider._addListener(
@@ -95,7 +83,18 @@ final class _ProviderSelector<InputT, OutputT, OriginT>
       onError: onError,
     );
 
-    if (!weak) lastSelectedValue = _select($Result.guard(sub.read));
+    if (!weak) {
+      lastSelectedValue = _select(
+        $Result.guard(() {
+          try {
+            return sub.read();
+          } catch (e, s) {
+            e as ProviderException;
+            e.unwrap(s);
+          }
+        }),
+      );
+    }
 
     providerSub = ProviderSubscriptionView<OutputT, OriginT>(
       innerSubscription: sub,
@@ -107,19 +106,13 @@ final class _ProviderSelector<InputT, OutputT, OriginT>
 
         // Using ! because since `sub.read` flushes the inner subscription,
         // it is guaranteed that `lastSelectedValue` is not null.
-        return switch (lastSelectedValue!) {
-          $ResultData(:final value) => value,
-          $ResultError(:final error, :final stackTrace) =>
-            throwErrorWithCombinedStackTrace(
-              error,
-              stackTrace,
-            ),
-        };
+        return lastSelectedValue!.requireState;
       },
     );
 
     if (fireImmediately) {
       _handleFireImmediately(
+        node.container,
         lastSelectedValue!,
         listener: providerSub._notifyData,
         onError: providerSub._notifyError,

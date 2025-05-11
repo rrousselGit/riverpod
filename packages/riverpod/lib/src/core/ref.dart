@@ -29,12 +29,6 @@ Cannot use the Ref of $origin after it has been disposed. This typically happens
   }
 }
 
-enum _RefStatus {
-  mounted,
-  deactivated,
-  unmounted,
-}
-
 /// {@template riverpod.provider_ref_base}
 /// An object used by providers to interact with other providers and the life-cycles
 /// of the application.
@@ -60,33 +54,6 @@ sealed class Ref {
   List<void Function()>? _onCancelListeners;
   List<void Function()>? _onAddListeners;
   List<void Function()>? _onRemoveListeners;
-
-  /// An option flag to disable the exception when a [Ref]/[Notifier] is interacted
-  /// after it has been disposed.
-  ///
-  /// Avoid disabling this flag at all costs. This flag is meant to ease migration
-  /// between 2.0.0 and 3.0.0.
-  /// Do not write new code that relies on this flag.
-  ///
-  /// Disabling mounted checks may cause unexpected behavior, such as:
-  /// - Memory leaks
-  ///   A provider may not have aborted its computation upon refresh and
-  ///   is still holding references to objects that should have been
-  ///   disposed
-  /// - Race conditions / Concurrent modification
-  ///   After a provider has been refreshed, it is possible that both the
-  ///   old "build" and new "build" are trying to update `state` at the
-  ///   same time.
-  ///
-  /// These errors could be particularly hard to debug, as they may not
-  /// happen immediately, or only under specific conditions.
-  /// As such, it is highly recommended to keep this flag enabled, to
-  /// avoid these issues.
-  // ignore: non_constant_identifier_names
-  bool get unsafe_checkIfMounted => _element.unsafeCheckIfMounted;
-  // ignore: non_constant_identifier_names
-  set unsafe_checkIfMounted(bool value) =>
-      _element.unsafeCheckIfMounted = value;
 
   /// Whether we're initializing this provider for the first time.
   ///
@@ -144,8 +111,7 @@ sealed class Ref {
   /// In both of the examples above, [onDispose] will stop the network request
   /// while it is in progress. While [mounted] will let the network request
   /// complete, and stop its logic after it is done.
-  bool get mounted => _status == _RefStatus.mounted;
-  var _status = _RefStatus.mounted;
+  bool get mounted => !_element._disposed;
 
   /// The [ProviderContainer] that this provider is associated with.
   ProviderContainer get container => _element.container;
@@ -213,7 +179,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
       _debugCallbackStack == 0,
       'Cannot use Ref inside life-cycles/selectors.',
     );
-    if (unsafe_checkIfMounted && _status == _RefStatus.unmounted) {
+    if (!mounted) {
       throw UnmountedRefException(_element.origin);
     }
   }
@@ -677,6 +643,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     bool weak = false,
     bool fireImmediately = false,
   }) {
+    _throwIfInvalidUsage();
     return _element.listen(
       provider,
       listener,
@@ -688,7 +655,10 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
 }
 
 int _debugCallbackStack = 0;
-void _runCallbacks(List<void Function()>? callbacks) {
+void _runCallbacks(
+  ProviderContainer container,
+  List<void Function()>? callbacks,
+) {
   if (callbacks == null) return;
 
   for (final cb in callbacks) {
@@ -696,7 +666,7 @@ void _runCallbacks(List<void Function()>? callbacks) {
       if (kDebugMode) {
         _debugCallbackStack++;
       }
-      runGuarded(cb);
+      container.runGuarded(cb);
     } finally {
       if (kDebugMode) {
         _debugCallbackStack--;
@@ -735,7 +705,12 @@ class $Ref<StateT> extends Ref {
   StateT get state {
     _throwIfInvalidUsage();
 
-    return _element.readSelf();
+    try {
+      return _element.readSelf();
+    } catch (e, s) {
+      e as ProviderException;
+      e.unwrap(s);
+    }
   }
 
   set state(StateT newState) {

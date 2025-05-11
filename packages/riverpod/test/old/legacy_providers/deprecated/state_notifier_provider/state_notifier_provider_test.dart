@@ -16,19 +16,17 @@ void main() {
     final notifier = DelegateNotifier(
       onDispose: () => throw StateError('called'),
     );
-    final container = ProviderContainer.test();
+    final errors = <Object>[];
+    final container = runZonedGuarded(
+      ProviderContainer.test,
+      (err, stack) => errors.add(err),
+    )!;
     final provider = StateNotifierProvider<DelegateNotifier, int>(
       (_) => notifier,
     );
 
     container.read(provider);
-
-    final errors = <Object>[];
-
-    runZonedGuarded(
-      () => container.invalidate(provider),
-      (error, stack) => errors.add(error),
-    );
+    container.invalidate(provider);
 
     expect(errors, [isStateError]);
   });

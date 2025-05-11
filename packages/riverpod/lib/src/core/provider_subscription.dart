@@ -208,7 +208,8 @@ base class ProviderSubscriptionView<OutT, OriginT>
   })  : _read = read,
         _onClose = onClose,
         _listener = listener,
-        _errorListener = onError ?? Zone.current.handleUncaughtError;
+        _errorListener = onError ??
+            innerSubscription._listenedElement.container.defaultOnError;
 
   final ProviderSubscriptionWithOrigin<Object?, OriginT> innerSubscription;
   final OutT Function() _read;
@@ -300,7 +301,7 @@ final class DelegatingProviderSubscription<OutT, InT, OriginT>
     void Function(Object error, StackTrace stackTrace)? onOriginError,
     required OutT Function() read,
     required void Function()? onClose,
-  })  : _errorListener = errorListener ?? Zone.current.handleUncaughtError,
+  })  : _errorListener = errorListener ?? source.container.defaultOnError,
         _listenedElement = listenedElement,
         _listener = listener,
         _onOriginDataCb = onOriginData,
@@ -389,14 +390,19 @@ final class ProviderStateSubscription<StateT>
 /// Deals with the internals of synchronously calling the listeners
 /// when using `fireImmediately: true`
 void _handleFireImmediately<StateT>(
+  ProviderContainer container,
   $Result<StateT> currentState, {
   required void Function(StateT? previous, StateT current) listener,
   required void Function(Object error, StackTrace stackTrace) onError,
 }) {
   switch (currentState) {
     case $ResultData():
-      runBinaryGuarded(listener, null, currentState.value);
+      container.runBinaryGuarded(listener, null, currentState.value);
     case $ResultError():
-      runBinaryGuarded(onError, currentState.error, currentState.stackTrace);
+      container.runBinaryGuarded(
+        onError,
+        currentState.error,
+        currentState.stackTrace,
+      );
   }
 }

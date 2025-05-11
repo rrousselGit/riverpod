@@ -1,6 +1,15 @@
 ## Unreleased build
 
-Docs update
+- Provider errors are now reported to the
+  `ProviderContainer`'s `Zone` instead of whatever last used the provider.
+
+- **Breaking**: When a `ref.watch`/`ref.read` rethrows an error,
+  the error is now wrapped in a `ProviderException`.
+
+## 3.0.0-dev.15 - 2025-05-04
+
+- Docs update
+- Fix an AsyncValue bug
 
 ## 3.0.0-dev.14 - 2025-05-02
 

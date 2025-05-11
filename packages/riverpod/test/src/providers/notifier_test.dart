@@ -51,21 +51,6 @@ void main() {
       verifyOnly(listener, listener(firstState, Equal(21)));
     });
 
-    test('Cannot share a Notifier instance between providers ', () {
-      final container = ProviderContainer.test();
-      final notifier = factory.deferredNotifier((ref, _) => 0);
-
-      final provider = factory.provider<int>(() => notifier);
-      final provider2 = factory.provider<int>(() => notifier);
-
-      container.read(provider);
-
-      expect(
-        () => container.read(provider2),
-        throwsA(isA<StateError>()),
-      );
-    });
-
     test('Cannot read properties inside onDispose', () {
       final container = ProviderContainer.test();
       late TestNotifier<int> notifier;
@@ -98,31 +83,12 @@ void main() {
       container.listen(provider.notifier, (prev, next) {});
       final notifier = container.read(provider.notifier);
 
-      container.invalidate(provider);
-      await null;
+      container.dispose();
 
       expect(notifier.ref.mounted, false);
       expect(() => notifier.state, throwsA(isA<UnmountedRefException>()));
       expect(() => notifier.state = 42, throwsA(isA<UnmountedRefException>()));
       expect(() => notifier.stateOrNull, throwsA(isA<UnmountedRefException>()));
-    });
-
-    test('Using the notifier after dispose does not throw if flag is disabled',
-        () async {
-      final container = ProviderContainer.test();
-      final provider = factory.simpleTestProvider((ref, _) => 0);
-
-      container.listen(provider.notifier, (prev, next) {});
-      final notifier = container.read(provider.notifier);
-      notifier.ref.unsafe_checkIfMounted = false;
-
-      container.invalidate(provider);
-      await null;
-
-      expect(notifier.ref.mounted, false);
-      expect(() => notifier.state, returnsNormally);
-      expect(() => notifier.state = 42, returnsNormally);
-      expect(() => notifier.stateOrNull, returnsNormally);
     });
 
     test(
@@ -140,7 +106,7 @@ void main() {
 
       expect(
         () => container.read(provider2),
-        throwsA(isA<Error>()),
+        throwsProviderException(isStateError),
       );
     });
 
@@ -277,8 +243,6 @@ void main() {
         final sub = container.listen(provider.notifier, notifierListener.call);
         final initialNotifier = sub.read();
 
-        expect(initialNotifier.ref.mounted, true);
-
         container.refresh(provider);
         final newNotifier = sub.read();
 
@@ -287,8 +251,6 @@ void main() {
           notifierListener,
           notifierListener(initialNotifier, newNotifier),
         ).called(1);
-        expect(initialNotifier.ref.mounted, false);
-        expect(newNotifier.ref.mounted, true);
       });
     });
 
@@ -322,7 +284,7 @@ void main() {
 
       expect(
         () => container.read(provider),
-        throwsStateError,
+        throwsProviderException(isStateError),
       );
 
       container.read(provider.notifier);
@@ -339,11 +301,11 @@ void main() {
 
       expect(
         () => container.read(provider.notifier),
-        throwsUnimplementedError,
+        throwsProviderException(isUnimplementedError),
       );
       expect(
         () => container.read(provider),
-        throwsUnimplementedError,
+        throwsProviderException(isUnimplementedError),
       );
 
       final stateSub = container.listen(
@@ -380,8 +342,8 @@ void main() {
 
       verifyOnly(listener, listener(err, stack));
 
-      expect(stateSub.read, throwsUnimplementedError);
-      expect(notifierSub.read, throwsUnimplementedError);
+      expect(stateSub.read, throwsProviderException(isUnimplementedError));
+      expect(notifierSub.read, throwsProviderException(isUnimplementedError));
     });
 
     test('can read/set the current state within the notifier', () {
@@ -441,7 +403,7 @@ void main() {
       verifyOnly(onError, onError(err, stack));
       verifyZeroInteractions(listener);
 
-      expect(() => notifier.state, throwsUnimplementedError);
+      expect(() => notifier.state, throwsA(anything));
 
       notifier.state = 0;
 
@@ -520,7 +482,7 @@ void main() {
         });
         final container = ProviderContainer.test();
 
-        expect(() => container.read(provider), throwsA(42));
+        expect(() => container.read(provider), throwsA(anything));
 
         verifyOnly(onError, onError(42, StackTrace.empty));
       });

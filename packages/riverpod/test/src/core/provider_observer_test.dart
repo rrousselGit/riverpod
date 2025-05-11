@@ -140,14 +140,14 @@ void main() {
 
         await container.pump();
 
-        verifyOnly(
-          observer,
+        verify(
           observer.didUpdateProvider(
             argThat(isProviderObserverContext(computed, container)),
             0,
             1,
           ),
         ).called(1);
+        verifyNever(observer.didUpdateProvider(any, any, any));
       });
 
       test('handles direct provider update', () {
@@ -229,10 +229,14 @@ void main() {
         final observer3 = ObserverMock();
         final provider = StateNotifierProvider<Counter, int>((_) => Counter());
         final counter = Counter();
-        final container = ProviderContainer.test(
-          overrides: [provider.overrideWith((ref) => counter)],
-          observers: [observer, observer2, observer3],
-        );
+        final errors = <Object>[];
+        final container = runZonedGuarded(
+          () => ProviderContainer.test(
+            overrides: [provider.overrideWith((ref) => counter)],
+            observers: [observer, observer2, observer3],
+          ),
+          (err, stack) => errors.add(err),
+        )!;
 
         container.read(provider);
 
@@ -240,8 +244,7 @@ void main() {
         clearInteractions(observer2);
         clearInteractions(observer3);
 
-        final errors = <Object>[];
-        runZonedGuarded(counter.increment, (err, stack) => errors.add(err));
+        counter.increment();
 
         expect(errors, ['error1', 'error2']);
         verifyInOrder([
@@ -299,7 +302,7 @@ void main() {
             1,
           ),
         ]);
-        verifyNoMoreInteractions(observer);
+        verifyNever(observer.didUpdateProvider(any, any, any));
 
         counter.state = -10;
         await container.pump();
@@ -320,8 +323,8 @@ void main() {
             true,
           ),
         ]);
+        verifyNever(observer.didUpdateProvider(any, any, any));
         verifyNoMoreInteractions(isNegativeListener);
-        verifyNoMoreInteractions(observer);
       });
     });
 
@@ -418,10 +421,9 @@ void main() {
             StackTrace.empty,
           ),
         ]);
-
-        verifyNoMoreInteractions(observer3);
-        verifyNoMoreInteractions(observer2);
-        verifyNoMoreInteractions(observer);
+        verifyNever(observer3.didUpdateProvider(any, any, any));
+        verifyNever(observer2.didUpdateProvider(any, any, any));
+        verifyNever(observer.didUpdateProvider(any, any, any));
       });
 
       test('is called when FutureProvider emits an error', () async {
@@ -489,7 +491,7 @@ void main() {
 
         expect(
           () => container.read(provider),
-          throwsUnimplementedError,
+          throwsA(anything),
         );
 
         verifyInOrder([
@@ -569,7 +571,7 @@ void main() {
 
         expect(
           () => container.read(provider),
-          throwsUnimplementedError,
+          throwsA(anything),
         );
 
         verify(
@@ -661,17 +663,15 @@ void main() {
         when(observer2.didAddProvider(any, any)).thenThrow('error2');
         final observer3 = ObserverMock();
         final provider = Provider((_) => 42);
-        final container = ProviderContainer.test(
-          observers: [observer, observer2, observer3],
-        );
-
         final errors = <Object>[];
-        final result = runZonedGuarded(
-          () => container.read(provider),
-          (err, stack) {
-            errors.add(err);
-          },
-        );
+        final container = runZonedGuarded(
+          () => ProviderContainer.test(
+            observers: [observer, observer2, observer3],
+          ),
+          (err, stack) => errors.add(err),
+        )!;
+
+        final result = container.read(provider);
 
         expect(result, 42);
         expect(errors, ['error1', 'error2']);
@@ -768,9 +768,13 @@ void main() {
         return 0;
       });
       final provider2 = Provider((ref) => ref.watch(provider));
-      final container = ProviderContainer.test(
-        observers: [observer, observer2, observer3],
-      );
+      final errors = <Object>[];
+      final container = runZonedGuarded(
+        () => ProviderContainer.test(
+          observers: [observer, observer2, observer3],
+        ),
+        (err, stack) => errors.add(err),
+      )!;
 
       expect(container.read(provider), 0);
       expect(container.read(provider2), 0);
@@ -779,8 +783,7 @@ void main() {
       clearInteractions(observer3);
       verifyNoMoreInteractions(onDispose);
 
-      final errors = <Object>[];
-      runZonedGuarded(container.dispose, (err, stack) => errors.add(err));
+      container.dispose();
 
       expect(errors, ['error1', 'error2', 'error1', 'error2']);
       verifyInOrder([

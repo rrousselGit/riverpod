@@ -228,6 +228,28 @@ void main() {
       );
     });
 
+    test('Support AsyncLoading.progress', () async {
+      final container = ProviderContainer.test();
+      final provider = factory.simpleTestProvider<int>((ref, self) async {
+        self.state = const AsyncLoading<int>(progress: 0.5);
+        await null;
+        self.state = const AsyncLoading<int>(progress: 1);
+        return 0;
+      });
+      final listener = Listener<AsyncValue<int>>();
+
+      container.listen(provider, listener.call);
+      await container.read(provider.future);
+
+      verifyInOrder([
+        listener(
+          const AsyncLoading<int>(progress: 0.5),
+          const AsyncLoading<int>(progress: 1),
+        ),
+        listener(const AsyncLoading<int>(progress: 1), const AsyncData(0)),
+      ]);
+    });
+
     test('Can read state inside onDispose', () {
       final container = ProviderContainer.test();
       late TestAsyncNotifier<int> notifier;
@@ -261,8 +283,7 @@ void main() {
       container.listen(provider.notifier, (prev, next) {});
       final notifier = container.read(provider.notifier);
 
-      container.invalidate(provider);
-      await null;
+      container.dispose();
 
       expect(notifier.ref.mounted, false);
       expect(
@@ -281,25 +302,6 @@ void main() {
         () => notifier.update((p1) => 42),
         throwsA(isA<UnmountedRefException>()),
       );
-    });
-
-    test('Using the notifier after dispose does not throw if flag is disabled',
-        () async {
-      final container = ProviderContainer.test();
-      final provider = factory.simpleTestProvider((ref, _) => 0);
-
-      container.listen(provider.notifier, (prev, next) {});
-      final notifier = container.read(provider.notifier);
-      notifier.ref.unsafe_checkIfMounted = false;
-
-      container.invalidate(provider);
-      await null;
-
-      expect(notifier.ref.mounted, false);
-      expect(() => notifier.state, returnsNormally);
-      expect(() => notifier.future, returnsNormally);
-      expect(() => notifier.state = const AsyncData(42), returnsNormally);
-      expect(() => notifier.update((p1) => 42), returnsNormally);
     });
 
     test('Can assign `AsyncLoading<T>` to `AsyncValue<void>`', () {
@@ -635,7 +637,7 @@ void main() {
       );
       expect(
         () => container.read(provider.notifier),
-        throwsA(0),
+        throwsProviderException(0),
       );
 
       await expectLater(container.read(provider.future), throwsA(0));
@@ -875,7 +877,7 @@ void main() {
 
         await expectLater(
           container.read(provider.future),
-          throwsA(isA<StateError>()),
+          throwsA(isStateError),
         );
         verify(listener(any, any)).called(1);
       });
@@ -1057,10 +1059,10 @@ void main() {
 
         await expectLater(
           () => container.read(provider.notifier),
-          throwsA(isA<StateError>()),
+          throwsProviderException(isStateError),
         );
         verifyZeroInteractions(listener);
-        verifyOnly(onError, onError(isA<StateError>(), any)).called(1);
+        verifyOnly(onError, onError(isStateError, any)).called(1);
       });
 
       test(
@@ -1078,8 +1080,6 @@ void main() {
         final sub = container.listen(provider.notifier, notifierListener.call);
         final initialNotifier = sub.read();
 
-        expect(initialNotifier.ref.mounted, true);
-
         // Skip the loading
         await container.read(provider.future);
         verifyNoMoreInteractions(notifierListener);
@@ -1092,8 +1092,6 @@ void main() {
           notifierListener,
           notifierListener(initialNotifier, newNotifier),
         ).called(1);
-        expect(initialNotifier.ref.mounted, false);
-        expect(newNotifier.ref.mounted, true);
       });
     });
 

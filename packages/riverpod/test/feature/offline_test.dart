@@ -96,7 +96,11 @@ void main() {
       });
 
       test('throws if two providers have the same persistKey', () {
-        final container = ProviderContainer.test();
+        final errors = <Object>[];
+        final container = runZonedGuarded(
+          ProviderContainer.test,
+          (err, stack) => errors.add(err),
+        )!;
         final a = factory.simpleProvider(
           (ref, self) => 0,
           persistKey: (_) => 'myKey',
@@ -109,12 +113,7 @@ void main() {
         );
 
         container.read(a);
-
-        final errors = <Object>[];
-        runZonedGuarded(
-          () => container.read(b),
-          (e, s) => errors.add(e),
-        );
+        container.read(b);
 
         expect(errors, hasLength(1));
         expect(
@@ -166,38 +165,31 @@ void main() {
             delete: (_) => throw StateError('delete'),
           ),
         );
-        final container = ProviderContainer.test();
-
         final errors = <Object>[];
-        runZonedGuarded(
-          () {
-            container.read(provider);
-          },
-          (e, s) => errors.add(e),
-        );
+        final container = runZonedGuarded(
+          ProviderContainer.test,
+          (err, stack) => errors.add(err),
+        )!;
+
+        container.read(provider);
 
         await null;
 
         expect(errors, [
-          isA<StateError>().having((e) => e.message, 'message', 'read'),
-          isA<StateError>().having((e) => e.message, 'message', 'write'),
+          isStateError.having((e) => e.message, 'message', 'read'),
+          isStateError.having((e) => e.message, 'message', 'write'),
         ]);
         errors.clear();
 
         if (factory.isAsync) {
-          runZonedGuarded(
-            () {
-              container.read(provider.notifier!).state =
-                  const AsyncError<Object?>(42, StackTrace.empty);
-            },
-            (e, s) => errors.add(e),
-          );
+          container.read(provider.notifier!).state =
+              const AsyncError<Object?>(42, StackTrace.empty);
 
           await null;
 
           expect(
             errors.single,
-            isA<StateError>().having((e) => e.message, 'message', 'delete'),
+            isStateError.having((e) => e.message, 'message', 'delete'),
           );
         }
       });

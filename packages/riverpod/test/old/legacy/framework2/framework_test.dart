@@ -4,10 +4,11 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart'
-    show $ProviderElement, ProviderElement, InternalProviderContainer;
+    show $ProviderElement, InternalProviderContainer, ProviderElement;
 import 'package:riverpod/src/internals.dart' show NodeInternal;
 import 'package:test/test.dart';
 
+import '../../../src/utils.dart' show throwsProviderException;
 import '../../utils.dart';
 
 void main() {
@@ -235,12 +236,18 @@ void main() {
       }
     });
 
-    expect(() => container.read(provider), throwsStateError);
+    expect(
+      () => container.read(provider),
+      throwsProviderException(isStateError),
+    );
     expect(callCount, 1);
 
     container.read(atom.notifier).state = 0;
 
-    expect(() => container.read(provider), throwsStateError);
+    expect(
+      () => container.read(provider),
+      throwsProviderException(isStateError),
+    );
     expect(callCount, 1);
   });
 
@@ -388,6 +395,11 @@ void main() {
       });
 
       test('is guarded', () {
+        final errors = <Object>[];
+        final container = runZonedGuarded(
+          ProviderContainer.test,
+          (err, stack) => errors.add(err),
+        )!;
         final counter = Counter();
         final provider = StateNotifierProvider<Counter, int>((ref) => counter);
         final didChange2 = Listener<int>();
@@ -397,7 +409,7 @@ void main() {
         container.listen(provider, didChange.call);
         container.listen(provider, didChange2.call);
 
-        final errors = errorsOf(counter.increment);
+        counter.increment();
 
         expect(errors, unorderedEquals(<Object>[42, 21]));
         verifyOnly(didChange, didChange(0, 1));
@@ -433,7 +445,7 @@ void main() {
 
         final sub = container.listen(provider, (_, __) {});
 
-        expect(sub.read, throwsA(error));
+        expect(sub.read, throwsProviderException(error));
       });
 
       test('rethrows the exception thrown when building a selected provider',
@@ -446,7 +458,7 @@ void main() {
           (_, __) {},
         );
 
-        expect(sub.read, throwsA(error));
+        expect(sub.read, throwsProviderException(error));
       });
 
       test('flushes the provider', () {
