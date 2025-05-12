@@ -30,7 +30,7 @@ Some of the key highlights include:
   - [`ProviderContainer.test`](#providercontainertest) - A test util that creates a container and automatically disposes it after the test ends.
   - [`NotifierProvider.overrideWithBuild`](#notifierprovideroverridewithbuild) - A way to mock only `Notifier.build`, without mocking the whole notifier.
   - [`Future/StreamProvider.overrideWithValue`](#futurestreamprovideroverridewithvalue) - The old utilities are back
-- [Statically safe scoping](#statically-safe-scoping) - New lint rules are added to detect when an override is missing
+- [Statically safe scoping](#statically-safe-scoping-code-generation-only) - New lint rules are added to detect when an override is missing
 
 ## Offline persistence (experimental)
 
@@ -369,7 +369,57 @@ use a custom implementation:
 {/*  TODO  */}
 Life-cycle changes
 
-- Providers that are not visible are now paused
+### Listeners inside widgets that are not visible are now paused
+
+Now that Riverpod has a way to [pause listeners](#pauseresume-support), Riverpod uses that to
+natively pauses listeners when the widget is not visible. In practice what this means is: Providers that are not used by the visible widget tree
+are paused.
+
+As a concrete example, consider an application with two routes:
+- A home page, listening to a websocket using a provider
+- A settings page, which does not rely on that websocket
+
+
+In typical applications, a user first opens the home page _and then_ opens the settings page.
+This means that while the settings page is open, the homepage is also open, but not visible.
+
+In 2.0, the homepage would actively keep listening to the websocket.  
+In 3.0, the websocket provider will instead be paused, possibly saving resources.
+
+**How it works:**  
+Riverpod relies on [Visibility] to determine if a widget is visible or not. And when
+false, all listeners of a [Consumer] are paused.
+
+It also means that you can rely on [Visibility] yourself to manually control
+the pause behavior of your consumers. You can voluntarily set the value to true/false
+to forcibly resume/pause listeners:
+
+```dart
+class MyWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Visibility(
+      visible: false, // This will pause the listeners
+      child: Consumer(
+        builder: (context, ref, child) {
+          // This "watch" will be paused
+          // until Visibility is set to true
+          final value = ref.watch(myProvider);
+          return Text(value.toString());
+        },
+      ),
+    );
+  }
+}
+```
+
+### Notifiers are now recreated when the provider rebuilds.
+
+In 2.0, a [Notifier] instance was maintained for the whole lifetime of a provider.
+
+Although useful, this directly conflicted with the implementation of `Ref.mounted`.
+
+
 - If a provider A is exclusively used by a provider B, and B is paused, then A is paused too.
 - When a provider rebuilds, its previous subscriptions are
   kept until the rebuild completes (but subscriptions are paused)
@@ -380,35 +430,346 @@ Life-cycle changes
 
 
 ## New testing utilities
+
 ### `ProviderContainer.test`
-{/*  TODO  */}
+
+In 2.0, typical testing code would rely on a custom-made utility called `createContainer`.  
+In 3.0, this utility is now part of Riverpod, and is called `ProviderContainer.test`.
+It creates a new container, and automatically disposes it after the test ends.
+
+```dart
+void main() {
+  test('My test', () {
+    final container = ProviderContainer.test();
+    // Use the container
+    // ...
+    // The container is automatically disposed after the test ends
+  });
+}
+```
+
+You can safely do a global search-and-replace for `createContainer` to `ProviderContainer.test`.
+
 ### `NotifierProvider.overrideWithBuild`
-{/*  TODO  */}
+
+It is now possible to mock only the `Notifier.build` method, without mocking the whole notifier.
+This is useful when you want to initialize your notifier with a specific state, but still want to
+use the original implementation of the notifier.
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+    @riverpod
+    class MyNotifier extends _$MyNotifier {
+      @override
+      int build() => 0;
+    
+      void increment() {
+        state++;
+      }
+    }
+    
+    void main() {
+      final container = ProviderContainer.test(
+        overrides: [
+          myNotifierProvider.overrideWithBuild((ref) {
+            // Mock the build method to start at 42.
+            // The "increment" method is unaffected.
+            return 42;
+          }),
+        ],
+      );
+    }
+  `}
+  
+  raw={`
+    class MyNotifier extends Notifier<int> {
+      @override
+      int build() => 0;
+    
+      void increment() {
+        state++;
+      }
+    }
+    
+    final myNotifierProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
+    
+    void main() {
+      final container = ProviderContainer.test(
+        overrides: [
+          myNotifierProvider.overrideWithBuild((ref) {
+            // Mock the build method to start at 42.
+            // The "increment" method is unaffected.
+            return 42;
+          }),
+        ],
+      );
+    }
+  `}
+></AutoSnippet>
+
 ### `Future/StreamProvider.overrideWithValue`
-{/*  TODO  */}
 
-## Statically safe scoping
+A while back, `FutureProvider.overrideWithValue` and `StreamProvider.overrideWithValue`
+were removed "temporarily" from Riverpod.  
+They are finally back!
 
-{/*  TODO  */}
+<AutoSnippet
+  language="dart"
+  codegen={`
+    @riverpod
+    Future<int> myFutureProvider() async {
+      return 42;
+    }
+    
+    void main() {
+      final container = ProviderContainer.test(
+        overrides: [
+          // Initializes the provider with a value.
+          // Changing the override will update the value.
+          myFutureProvider.overrideWithValue(AsyncValue.data(42)),
+        ],
+      );
+    }
+  `}
+  
+  raw={`
+    Future<int> myFutureProvider() async {
+      return 42;
+    }
+    
+    void main() {
+      final container = ProviderContainer.test(
+        overrides: [
+          // Initializes the provider with a value.
+          // Changing the override will update the value.
+          myFutureProvider.overrideWithValue(AsyncValue.data(42)),
+        ],
+      );
+    }
+  `}
+></AutoSnippet>
+
+## Statically safe scoping (code-generation only)
+
+Through [riverpod_lint], Riverpod now includes a way to detect when scoping is used incorrectly.
+This lints detects when an override is missing, to avoid runtime errors.
+
+Consider:
+
+```dart
+// A typical "scoped provider"
+@Riverpod(dependencies: [])
+Future<int> myFutureProvider() => throw UnimplementedError();
+```
+
+To use this provider, you have two options.  
+If neither of the following options are used, the provider will throw an error at runtime.
+
+- Override the provider using `ProviderScope` before using it:
+  ```dart
+  class MyWidget extends StatelessWidget {
+    @override
+    Widget build(BuildContext context) {
+      return ProviderScope(
+        overrides: [
+          myFutureProvider.overrideWithValue(AsyncValue.data(42)),
+        ],
+        // A consumer is necessary to access the overridden provider
+        child: Consumer(
+          builder: (context, ref, child) {
+            // Use the provider
+            final value = ref.watch(myFutureProvider);
+            return Text(value.toString());
+          },
+        ),
+      );
+    }
+  }
+  ```
+- Specify `@Dependencies` on whatever uses the scoped provider to indicate that it 
+  depends on it.
+  ```dart
+  @Dependencies([myFuture])
+  class MyWidget extends ConsumerWidget {
+    @override
+    Widget build(BuildContext context, WidgetRef ref) {
+      // Use the provider
+      final value = ref.watch(myFutureProvider);
+      return Text(value.toString());
+    }
+  }
+  ```
+  After specifying `@Dependencies`, all usages of `MyWidget` will
+  require the same two options as above:
+  - Either override the provider using `ProviderScope` before using `MyWidget`
+    ```dart
+    void main() {
+      runApp(
+        ProviderScope(
+          overrides: [
+            myFutureProvider.overrideWithValue(AsyncValue.data(42)),
+          ],
+          child: MyWidget(),
+        ),
+      );
+    }
+    ```
+  - Or specify `@Dependencies` on whatever uses `MyWidget` to indicate that it depends on it.
+    ```dart
+    @Dependencies([myFuture])
+    class MyApp extends ConsumerWidget {
+      @override
+      Widget build(BuildContext context, WidgetRef ref) {
+         // MyApp indirectly uses scoped providers through MyWidget
+         return MyWidget();
+      }
+    }
+    ```
 
 ## Other changes changes
-{/*  TODO  */}
 
-Minor changes:
+### AsyncValue
 
-- AsyncValue
-  - AsyncValue(progress)
-  - is sealed
-  - .valueOrNull is now .value
-    (aka .value no-longer rethrows errors)
-- All Ref listeners return a function to remove the listener
-- `Ref.invalidate(asReload: true)` - Make an `invalidate` behave
-  as a `ref.watch` change
-- Weak listeners - Register `ref.listen` listeners without preventing a provider disposal
+[AsyncValue] received various changes.
 
+* It is now "sealed". This enables exhaustive pattern matching:
+  ```dart
+  AsyncValue<int> value;
+  switch (value) {
+    case AsyncData():
+      print('data');
+    case AsyncError():
+      print('error');
+    case AsyncLoading():
+      print('loading');
+    // No default case needed
+  }
+  ```
+
+* `valueOrNull` has been renamed to `value`.
+  The old `value` is removed, as its behavior related to errors
+  was odd.
+  To migrate, do a global search-and-replace of `valueOrNull` -> `value`.
+
+* `AsyncValue.isFromCache` has been added.  
+  This flag is set when a value is obtained through offline persistence.
+  It enables your UI to differentiate state coming from the database
+  and state from the server.
+
+* An optional `progress` property is available on `AsyncLoading`.
+  This enables your providers to define the current progress for a
+  request:
+  
+  <AutoSnippet
+    language="dart"
+    codegen={`
+      @riverpod
+      class MyNotifier extends _$MyNotifier {
+        @override
+        Future<User> build() async {
+          // You can optionally pass a "progress" to AsyncLoading
+          state = AsyncLoading(progress: .0);
+          await fetchSomething();
+          state = AsyncLoading(progress: 0.5);
+          
+          return User();
+        }
+      }
+    `}
+    
+    raw={`
+      class MyNotifier extends AsyncNotifier<User> {
+        @override
+        Future<User> build() async {
+          // You can optionally pass a "progress" to AsyncLoading
+          state = AsyncLoading(progress: .0);
+          await fetchSomething();
+          state = AsyncLoading(progress: 0.5);
+        
+          return User();
+        }
+      }
+    `}
+  ></AutoSnippet>
+
+### All Ref listeners now return a way to remove the listener
+
+It is now possible to "unsubscribe" to the various life-cycles listeners:
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+    @riverpod
+    Future<int> example(Ref ref) {
+      // onDispose and other life-cycle listeners return a function
+      // to remove the listener.
+      final removeListener = ref.onDispose(() => print('dispose));
+      // Simply call the function to remove the listener:
+      removeListener();
+      
+      // ...
+    }
+  `}
+  
+  raw={`
+    final exampleProvider = FutureProvider<int>((ref) {
+      // onDispose and other life-cycle listeners return a function
+      // to remove the listener.
+      final removeListener = ref.onDispose(() => print('dispose));
+      // Simply call the function to remove the listener:
+      removeListener();
+       
+      // ...
+    });
+  `}
+></AutoSnippet>
+
+### Weak listeners - listen to a provider without preventing auto-dispose.
+
+When using `Ref.listen`, you can optionally specify `weak: true`:
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+    @riverpod
+    Future<int> example(Ref ref) {
+      ref.listen(
+        anotherProvider,
+        // Specify the flag
+        weak: true,
+        (previous, next) {},
+      );
+      
+      // ...
+    }
+  `}
+  
+  raw={`
+    final exampleProvider = FutureProvider<int>((ref) {
+      ref.listen(
+        anotherProvider,
+        // Specify the flag
+        weak: true,
+        (previous, next) {},
+      );
+      
+      // ...
+    });
+  `}
+></AutoSnippet>
+
+Specifying this flag will tell Riverpod that it can still dispose
+the listened provider if it stops being used.
+
+This flag is an advanced feature to help with some niche use-cases
+regarding combining multiple "sources of truth" in a single provider.
 
 [ProviderContainer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderContainer-class.html
 [ProviderScope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
 [riverpod_lint]: https://pub.dev/packages/riverpod_lint
 [Ref]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Ref-class.html
 [WidgetRef]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/WidgetRef-class.html
+[Visibility]: https://api.flutter.dev/flutter/widgets/Visibility-class.html
+[Consumer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Consumer-class.html
+[Notifier]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Notifier-class.html

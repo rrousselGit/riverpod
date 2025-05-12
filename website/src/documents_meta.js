@@ -1,5 +1,7 @@
 export const documentTitles = {
   'en': {
+    "whats_new": "What's new in Riverpod 3.0",
+    "3.0_migration": "Migrating from 2.0 to 3.0",
     "providers/stream_provider": "StreamProvider",
     "providers/state_provider": "StateProvider",
     "providers/state_notifier_provider": "StateNotifierProvider",
