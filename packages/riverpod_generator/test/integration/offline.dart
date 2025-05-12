@@ -111,3 +111,18 @@ class Bar {
   final int value;
   Map<String, dynamic> toJson() => {'value': value};
 }
+
+@riverpod
+@JsonPersist()
+class PassEncodeDecodeByHand extends _$PassEncodeDecodeByHand {
+  @override
+  Future<Map<String, String>> build() async {
+    await persist(
+      decode: (encoded) => {'value': encoded},
+      encode: (state) => state['value']!,
+      storage: ref.watch(storageProvider.future),
+    );
+
+    return state.value ?? {};
+  }
+}
