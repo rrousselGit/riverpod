@@ -1,6 +1,3 @@
-// ignore_for_file: invalid_use_of_internal_member
-
-// ignore: invalid_export_of_internal_element
 export 'src/internals.dart'
     show
         ChangeNotifierProviderFamily,
