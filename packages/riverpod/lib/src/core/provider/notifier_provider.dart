@@ -58,14 +58,13 @@ abstract class $Value<ValueT> {
 /// ```dart
 /// mixin MyMixin<T> extends AnyNotifier<T, FutureOr<T>> {
 ///   @override
-///   FutureOr<User> runBuild() {
+///   void runBuild() {
 ///     // It is safe to use "ref" here.
 ///     ref.listenSelf((prev, next) => print("New state $next"));
 ///
-///     // Before
-///     final result = super.runBuild();
-///     // After
-///     return result;
+///     print('Before build');
+///     super.runBuild();
+///     print('After build');
 ///   }
 /// }
 /// ```
