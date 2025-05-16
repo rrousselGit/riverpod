@@ -646,21 +646,17 @@ If neither of the following options are used, the provider will throw an error a
     // No default case needed
   }
   ```
-
 * `valueOrNull` has been renamed to `value`.
   The old `value` is removed, as its behavior related to errors
   was odd.
   To migrate, do a global search-and-replace of `valueOrNull` -> `value`.
-
 * `AsyncValue.isFromCache` has been added.  
   This flag is set when a value is obtained through offline persistence.
   It enables your UI to differentiate state coming from the database
   and state from the server.
-
 * An optional `progress` property is available on `AsyncLoading`.
   This enables your providers to define the current progress for a
   request:
-  
   <AutoSnippet
     language="dart"
     codegen={`
@@ -773,3 +769,4 @@ regarding combining multiple "sources of truth" in a single provider.
 [Visibility]: https://api.flutter.dev/flutter/widgets/Visibility-class.html
 [Consumer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Consumer-class.html
 [Notifier]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Notifier-class.html
+[AsyncValue]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/AsyncValue-class.html
