@@ -176,11 +176,16 @@ final class _AsyncSelector<InputT, OutputT, OriginT>
             fireImmediately: false,
           );
 
-          sub
-              .read()
-              .then((v) => _select(v).requireState)
-              .then(completer.complete, onError: completer.completeError)
-              .whenComplete(sub.close);
+          sub.read().then((v) => _select(v).requireState).then(
+            (value) {
+              // Avoid possible race condition
+              if (!completer.isCompleted) completer.complete(value);
+            },
+            onError: (Object err, StackTrace stack) {
+              // Avoid possible race condition
+              if (!completer.isCompleted) completer.completeError(err, stack);
+            },
+          ).whenComplete(sub.close);
         }
       },
     );

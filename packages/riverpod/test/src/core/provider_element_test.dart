@@ -60,6 +60,24 @@ void main() {
       expect(depS.isActive, false);
     });
 
+    test(
+        'Adding a listener on a provider with only paused proxy subscriptions unpauses the provider',
+        () async {
+      // Regression test for when "resume" somehow triggers too late
+      final container = ProviderContainer.test();
+      final onResume = OnResume();
+      final dep = FutureProvider<int>((ref) {
+        ref.onResume(onResume.call);
+        return 0;
+      });
+
+      final sub = container.listen(dep.future, (_, __) {})..pause();
+      clearInteractions(onResume);
+
+      container.listen(dep, (_, __) {});
+      verifyOnly(onResume, onResume.call());
+    });
+
     test('Only includes direct subscriptions in subscription lists', () {
       final container = ProviderContainer.test();
       final provider = FutureProvider((ref) => 0);
