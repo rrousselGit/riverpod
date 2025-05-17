@@ -366,9 +366,6 @@ use a custom implementation:
 
 ## Provider life-cycle changes
 
-{/*  TODO  */}
-Life-cycle changes
-
 ### Listeners inside widgets that are not visible are now paused
 
 Now that Riverpod has a way to [pause listeners](#pauseresume-support), Riverpod uses that to
@@ -633,19 +630,6 @@ resumed
 ----
 ... // And so on every second
 ```
-
-In 2.0, a [Notifier] instance was maintained for the whole lifetime of a provider.
-
-Although useful, this directly conflicted with the implementation of `Ref.mounted`.
-
-
-- When a provider rebuilds, its previous subscriptions are
-  kept until the rebuild completes (but subscriptions are paused)
-- UpdateShouldNotify changes
-- A new Ref is recreated whenever the provider rebuilds.
-- ^ Same with Notifier
-- Providers that are not visible are now paused
-
 
 ## New testing utilities
 
