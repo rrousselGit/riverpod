@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart' show NodeInternal;
+import 'package:riverpod/src/mutation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
@@ -10,6 +11,38 @@ import 'integration/mutation.dart';
 import 'mock.dart';
 
 void main() {
+  test('Can use pattern matching to check the mutation state', () async {
+    final container = ProviderContainer.test();
+    final listener = ListenerMock<Simple$Delegated>();
+
+    final sub = container.listen(
+      simpleProvider.delegated,
+      listener.call,
+      fireImmediately: true,
+    );
+
+    Object pattern(Simple$Delegated mut) => switch (mut.state) {
+          MutationIdle<int>() => 'idle',
+          MutationPending<int>() => 'pending',
+          MutationError<int>() => 'error',
+          MutationSuccess<int>() => 'success',
+        };
+
+    expect(pattern(sub.read()), 'idle');
+
+    unawaited(sub.read().call(() async => 1));
+    expect(pattern(sub.read()), 'pending');
+
+    await sub.read().call(() async => 1);
+    expect(pattern(sub.read()), 'success');
+
+    await expectLater(
+      sub.read().call(() => throw StateError('42')),
+      throwsA(anything),
+    );
+    expect(pattern(sub.read()), 'error');
+  });
+
   test('Can listen a mutation', () async {
     final container = ProviderContainer.test();
     final listener = ListenerMock<Simple$Delegated>();

@@ -48,10 +48,149 @@ Riverpod only includes interfaces to interact with a database. It does not inclu
 You can use any database you want, as long as it implements the interfaces.  
 An official package for SQlife is maintained: [riverpod_sqflite](https://pub.dev/packages/riverpod_sqflite).
 
+As a short demo, here's how you can use offline persistence:  
 
-<AutoSnippet language="dart" raw="void main() {}"></AutoSnippet>
+<AutoSnippet
+  language="dart"
+  codegen={`
+    @riverpod
+    Future<JsonSqFliteStorage> storage(Ref ref) async {
+      // Initialize SQFlite. We should share the Storage instance between providers.
+      return JsonSqFliteStorage.open(
+        join(await getDatabasesPath(), 'riverpod.db'),
+      );
+    }
+    
+    /// A serializable Todo class. We're using Freezed for simple serialization.
+    @freezed
+    abstract class Todo with _$Todo {
+      const factory Todo({
+        required int id,
+        required String description,
+        required bool completed,
+      }) = _Todo;
+    
+      factory Todo.fromJson(Map<String, dynamic> json) => _$TodoFromJson(json);
+    }
+    
+    @riverpod
+    @JsonPersist()
+    class TodosNotifier extends _$TodosNotifier {
+      @override
+      FutureOr<List<Todo>> build() async {
+        // We call persist at the start of our 'build' method.
+        // This will:
+        // - Read the DB and update the state with the persisted value the first
+        //   time this method executes.
+        // - Listen to changes on this provider and write those changes to the DB.
+        // We "await" for persist to complete to make sure that the decoding is done
+        // before we return the state.
+        await persist(
+          // We pass our JsonSqFliteStorage instance. No need to "await" the Future.
+          // Riverpod will take care of that.
+          storage: ref.watch(storageProvider.future),
+          // By default, state is cached offline only for 2 days.
+          // In this example, we tell Riverpod to cache the state forever.
+          options: const StorageOptions(cacheTime: StorageCacheTime.unsafe_forever),
+        );
+  
+        // If a state is persisted, we return it. Otherwise we return an empty list.
+        return state.value ?? [];
+      }
+  
+      Future<void> add(Todo todo) async {
+        // When modifying the state, no need for any extra logic to persist the change.
+        // Riverpod will automatically cache the new state and write it to the DB.
+        state = AsyncData([...await future, todo]);
+      }
+    }
+  `}
+  
+  raw={`
+  // A example showcasing JsonSqFliteStorage without code generation.
+  final storageProvider = FutureProvider<JsonSqFliteStorage>((ref) async {
+    // Initialize SQFlite. We should share the Storage instance between providers.
+    return JsonSqFliteStorage.open(
+      join(await getDatabasesPath(), 'riverpod.db'),
+    );
+  });
+  
+  /// A serializable Todo class.
+  class Todo {
+    const Todo({
+      required this.id,
+      required this.description,
+      required this.completed,
+    });
+  
+    Todo.fromJson(Map<String, dynamic> json)
+        : id = json['id'] as int,
+          description = json['description'] as String,
+          completed = json['completed'] as bool;
+  
+    final int id;
+    final String description;
+    final bool completed;
+  
+    Map<String, dynamic> toJson() {
+      return {
+        'id': id,
+        'description': description,
+        'completed': completed,
+      };
+    }
+  }
+  
+  final todosProvider =
+      AsyncNotifierProvider<TodosNotifier, List<Todo>>(TodosNotifier.new);
+  
+  class TodosNotifier extends AsyncNotifier<List<Todo>>
+      // We mix-in [Persistable] to enable the automatic persistence of the state.
+      // Since the object will be encoded into JSON, we pass [String]/[String]
+      // as key/value types.
+      with
+          Persistable<List<Todo>, String, String> {
+    @override
+    FutureOr<List<Todo>> build() async {
+      // We call persist at the start of our 'build' method.
+      // This will:
+      // - Read the DB and update the state with the persisted value the first
+      //   time this method executes.
+      // - Listen to changes on this provider and write those changes to the DB.
+      // We "await" for persist to complete to make sure that the decoding is done
+      // before we return the state.
+      await persist(
+        // A unique key for this state.
+        // No other provider should use the same key.
+        key: 'todos',
+        // We pass our JsonSqFliteStorage instance. No need to "await" the Future.
+        // Riverpod will take care of that.
+        storage: ref.watch(storageProvider.future),
+        // By default, state is cached offline only for 2 days.
+        // In this example, we tell Riverpod to cache the state forever.
+        options: const StorageOptions(cacheTime: StorageCacheTime.unsafe_forever),
+        encode: jsonEncode,
+        decode: (json) {
+          final decoded = jsonDecode(json) as List;
+          return decoded
+              .map((e) => Todo.fromJson(e as Map<String, Object?>))
+              .toList();
+        },
+      );
+  
+      // If a state is persisted, we return it. Otherwise we return an empty list.
+      return state.value ?? [];
+    }
+  
+    Future<void> add(Todo todo) async {
+      // When modifying the state, no need for any extra logic to persist the change.
+      // Riverpod will automatically cache the new state and write it to the DB.
+      state = AsyncData([...await future, todo]);
+    }
+  }
+  `}
+></AutoSnippet>
 
-{/*  TODO  */}
 
 ## Mutations (experimental) (code-generation only)
 
@@ -60,8 +199,68 @@ This feature is experimental and not yet stable.
 It is usable, but the API may change in breaking ways without a major version bump.
 :::
 
+:::note
+Mutations are currently only available using code generation.  
+Support for non-code generation is planned.
+:::
 
-{/*  TODO  */}
+A new feature called "mutations" is introduced in Riverpod 3.0.  
+This feature is a mean to allow your UI to easily show spinners/errors for side-effects (such as form submissions).
+
+The TL;DR is, inside a `Notifier`, you can annotate a method with `@mutation`:
+
+```dart
+@riverpod
+class Todos extends _$Todos {
+  @override
+  Future<List<Todo>> build() async {
+    // TODO: fetch todos from the server
+    return [];
+  }
+
+  @mutation
+  Future<void> addTodo(String title) async {
+    // Post the new todo to the server
+    await http.post('https://example.com/todos', body: {
+      'title': title,
+    });
+    // Refresh the state after the post request
+    ref.invalidateSelf();
+  }
+}
+```
+
+After that, your UI can use `ref.listen`/`ref.watch` to listen to the state of mutations:
+
+```dart
+class AddTodoButton extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    // Listen to the status of the "addTodo" side-effect
+    final addTodo = ref.watch(todosProvider.addTodo);
+
+    return switch (addTodo.state) {
+      // No side-effect is in progress
+      // Let's show a submit button
+      MutationIdle() => ElevatedButton(
+        // Trigger the side-effect on click. This is done by calling
+        // the "addTodo" object and passing the required parameters.
+        onPressed: () => addTodo('New Todo'),
+        child: const Text('Submit'),
+      ),
+      // The side-effect is in progress. We show a spinner
+      MutationPending() => const CircularProgressIndicator(),
+      // The side-effect failed. We show a retry button
+      MutationErrored() => ElevatedButton(
+        onPressed: () => addTodo('New Todo'),
+        child: const Text('Retry'),
+      ),
+      // The side-effect was successful. We show a success message
+      MutationSucceeded() => const Text('Todo added!'),
+    };
+  }
+}
+```
 
 ## Automatic retry
 
