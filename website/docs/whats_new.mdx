@@ -270,7 +270,7 @@ At the same time, those are preserved for backward compatibility.
 ### AutoDispose interfaces are removed
 
 No, the "auto-dispose" feature isn't removed. This only concerns the interfaces.
-In 2.0, every provider, Ref, and Notifier was duplicated for the sake of auto-dispose (
+In 2.0, all providers, Refs and Notifiers were duplicated for the sake of auto-dispose (
 `Ref` vs `AutoDisposeRef`, `Notifier` vs `AutoDisposeNotifier`, etc).
 This was done for the sake of having a compilation error in some edge-cases, but came
 at the cost of a worse API.
@@ -413,14 +413,232 @@ class MyWidget extends StatelessWidget {
 }
 ```
 
-### Notifiers are now recreated when the provider rebuilds.
+### If a provider is only used by paused providers, it is paused too
+
+Riverpod 2.0 already had some form of pause/resume support. But it was limited and failed 
+to cover some edge-cases.
+
+Consider:
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+  @riverpod
+  int example(Ref ref) {
+    ref.keepAlive();
+    ref.onCancel(() => print('paused'));
+    ref.onResume(() => print('resumed'));
+    return 0;
+  }
+  `}
+  
+  raw={`
+  final exampleProvider = Provider<int>((ref) {
+    ref.onCancel(() => print('paused'));
+    ref.onResume(() => print('resumed'));
+    return 0;
+  });
+  `}
+></AutoSnippet>
+
+In 2.0, if you were to call `ref.read` once on this provider,
+the state of the provider would be maintained, but 'paused' will be printed. This is because
+calling `ref.read` does not "listen" to the provider. And since the provider is not "listened"
+to, it is paused.
+
+This is useful to pause providers that are currently not used!  
+The problem is that in many cases, this optimization does not work.
+
+For example, your provider could be used indirectly through another provider.
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+  @riverpod
+  int another(Ref ref) {
+    ref.keepAlive();
+    return ref.watch(exampleProvider);
+  }
+  
+  class MyWidget extends ConsumerWidget {
+    @override
+    Widget build(BuildContext context, WidgetRef ref) {
+      return Button(
+        onPressed: () {
+          ref.read(anotherProvider);
+        },
+        child: Text('Click me'),
+      );
+    }
+  }
+  `}
+  
+  raw={`
+  final exampleProvider = Provider<int>((ref) {
+    return ref.watch(exampleProvider);
+  });
+   
+   class MyWidget extends ConsumerWidget {
+    @override
+    Widget build(BuildContext context, WidgetRef ref) {
+      return Button(
+        onPressed: () {
+          ref.read(anotherProvider);
+        },
+        child: Text('Click me'),
+      );
+    }
+  }
+  `}
+></AutoSnippet>
+
+In this scenario, if we click on the button once,
+then `anotherProvider` will start listening to our `exampleProvider`. But `anotherProvider`
+is no-longer used and will be paused. Yet `exampleProvider` will not be paused,
+because it thinks that it is still being used.
+
+As such, clicking on the button will not print 'paused' anymore.  
+
+In 3.0, this is fixed. If a provider is only used by paused providers, it is paused too.
+
+### When a provider rebuilds, its previous subscriptions now are kept until the rebuild completes
+
+In 2.0, there was a known inconvenience when using asynchronous providers
+combined with 'auto-dispose'.
+
+Specifically, when an asynchronous provider watches an auto-dispose provider
+after an `await`, the "auto dispose" could be triggered unexpectedly.
+
+Consider:  
+<AutoSnippet
+  language="dart"
+  codegen={`
+  @riverpod
+  Stream<int> autoDispose(Ref ref) {
+    ref.onDispose(() => print('disposed'));
+    ref.onCancel(() => print('paused'));
+    ref.onResume(() => print('resumed'));
+    // A stream that emits a value every second
+    return Stream.periodic(Duration(seconds: 1), (i) => i);
+  }
+  
+  @riverpod
+  Future<int> asynchronousExample(Ref ref) async {
+    print('Before async gap');
+    // An async gap inside a provider ; typically an API call.
+    // This will dispose the "autoDispose" provider
+    // before the async operation is completed
+    await null;
+    
+    print('after async gap');
+    // We listen to our auto-dispose provider
+    // after the async operation
+    return ref.watch(autoDisposeProvider.future);
+  }
+  
+  void main() {
+    final container = ProviderContainer();
+    // This will print 'disposed' every second,
+    // and will constantly print 0
+    container.listen(asynchronousExampleProvider, (_, value) {
+      if (value is AsyncData) print('\${value.value}\\n----');
+    });
+  }
+  `}
+  
+  raw={`
+  final autoDisposeProvider = StreamProvider.autoDispose<int>((ref) {
+    ref.onDispose(() => print('disposed'));
+    ref.onCancel(() => print('paused'));
+    ref.onResume(() => print('resumed'));
+    // A stream that emits a value every second
+    return Stream.periodic(Duration(seconds: 1), (i) => i);
+  });
+  
+  final asynchronousExampleProvider = FutureProvider<int>((ref) async {
+    print('Before async gap');
+    // An async gap inside a provider ; typically an API call.
+    // This will dispose the "autoDispose" provider
+    // before the async operation is completed
+    await null;
+    
+    print('after async gap');
+    // We listen to our auto-dispose provider
+    // after the async operation
+    return ref.watch(autoDisposeProvider.future);
+  });
+  
+  void main() {
+    final container = ProviderContainer();
+    // This will print 'disposed' every second,
+    // and will constantly print 0
+    container.listen(asynchronousExampleProvider, (_, value) {
+      if (value is AsyncData) print('\${value.value}\\n----');
+    });
+  }
+  `}
+></AutoSnippet>
+
+In you run this on [Dartpad](https://dartpad.dev/), you will see that its prints:
+
+```
+// First print
+Before async gap
+after async gap
+0
+---- // Second and after prints
+paused
+Before async gap
+disposed // The 'autoDispose' provider was disposed during the async gap!
+after async gap
+0
+----
+paused
+Before async gap
+disposed
+after async gap
+0
+----
+... // And so on every second
+```
+
+As you can see, this consistently prints `0` every second,
+because the `autoDispose` provider repeatedly gets disposed during the async gap. 
+A workaround was to move the `ref.watch` call before the `await` statement.
+But this is error prone, not very intuitive, and not always possible.
+
+In 3.0, this is fixed by delaying the disposal of listeners.  
+When a provider rebuilds, instead of immediately removing all of its listeners,
+it [pauses](#pauseresume-support) them.
+
+The exact same code will now instead print:
+
+```
+// First print
+Before async gap
+after async gap
+0
+----
+paused
+Before async gap
+after async gap
+resumed
+1
+----
+paused
+Before async gap
+after async gap
+resumed
+2
+----
+... // And so on every second
+```
 
 In 2.0, a [Notifier] instance was maintained for the whole lifetime of a provider.
 
 Although useful, this directly conflicted with the implementation of `Ref.mounted`.
 
 
-- If a provider A is exclusively used by a provider B, and B is paused, then A is paused too.
 - When a provider rebuilds, its previous subscriptions are
   kept until the rebuild completes (but subscriptions are paused)
 - UpdateShouldNotify changes
