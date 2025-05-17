@@ -97,13 +97,11 @@ abstract base class ProviderSubscriptionImpl<OutT, OriginT>
   void Function(OutT? prev, OutT next) get _listener;
   OnError get _errorListener;
 
-  @mustCallSuper
   @override
   void onCancel() {
     _listenedElement.onSubscriptionPause(this);
   }
 
-  @mustCallSuper
   @override
   void onResume() {
     _listenedElement.onSubscriptionResume(this);
@@ -245,33 +243,21 @@ base class ProviderSubscriptionView<OutT, OriginT>
   }
 
   @override
-  void onCancel() {
-    super.onCancel();
-    switch (innerSubscription) {
-      case final ProviderSubscriptionImpl<Object?, OriginT> sub:
-        sub.onCancel();
-    }
-  }
+  void onCancel() {}
 
   @override
-  void onResume() {
-    super.onResume();
-    switch (innerSubscription) {
-      case final ProviderSubscriptionImpl<Object?, OriginT> sub:
-        sub.onResume();
-    }
-  }
+  void onResume() {}
 
   @override
   void pause() {
-    innerSubscription.pause();
     super.pause();
+    innerSubscription.pause();
   }
 
   @override
   void resume() {
-    innerSubscription.resume();
     super.resume();
+    innerSubscription.resume();
   }
 
   @override
@@ -279,8 +265,8 @@ base class ProviderSubscriptionView<OutT, OriginT>
     if (_closed) return;
 
     _onClose?.call();
-    innerSubscription.close();
     super.close();
+    innerSubscription.close();
   }
 
   @override

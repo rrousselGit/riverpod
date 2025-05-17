@@ -455,6 +455,57 @@ abstract class _$CustomJsonWithArgsBase
   }
 }
 
+@ProviderFor(PassEncodeDecodeByHand)
+@JsonPersist()
+const passEncodeDecodeByHandProvider = PassEncodeDecodeByHandProvider._();
+
+final class PassEncodeDecodeByHandProvider extends $AsyncNotifierProvider<
+    PassEncodeDecodeByHand, Map<String, String>> {
+  const PassEncodeDecodeByHandProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'passEncodeDecodeByHandProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$passEncodeDecodeByHandHash();
+
+  @$internal
+  @override
+  PassEncodeDecodeByHand create() => PassEncodeDecodeByHand();
+
+  @$internal
+  @override
+  $AsyncNotifierProviderElement<PassEncodeDecodeByHand, Map<String, String>>
+      $createElement($ProviderPointer pointer) =>
+          $AsyncNotifierProviderElement(pointer);
+}
+
+String _$passEncodeDecodeByHandHash() =>
+    r'511b6a0a53ccf35ca3e495b710de57223ede73be';
+
+abstract class _$PassEncodeDecodeByHandBase
+    extends $AsyncNotifier<Map<String, String>> {
+  FutureOr<Map<String, String>> build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<AsyncValue<Map<String, String>>>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<AsyncValue<Map<String, String>>>,
+        AsyncValue<Map<String, String>>,
+        Object?,
+        Object?>;
+    element.handleValue(ref, created);
+  }
+}
+
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
 
@@ -478,7 +529,7 @@ abstract class _$Json extends _$JsonBase
     return super.persist(
       key: key ?? resolvedKey,
       storage: storage,
-      encode: encode ?? (value) => $jsonCodex.encode(state.requireValue),
+      encode: encode ?? $jsonCodex.encode,
       decode: decode ??
           (encoded) {
             final e = $jsonCodex.decode(encoded);
@@ -505,7 +556,7 @@ abstract class _$Json2 extends _$Json2Base
     return super.persist(
       key: key ?? resolvedKey,
       storage: storage,
-      encode: encode ?? (value) => $jsonCodex.encode(state.requireValue),
+      encode: encode ?? $jsonCodex.encode,
       decode: decode ??
           (encoded) {
             final e = $jsonCodex.decode(encoded);
@@ -532,7 +583,7 @@ abstract class _$CustomJson extends _$CustomJsonBase
     return super.persist(
       key: key ?? resolvedKey,
       storage: storage,
-      encode: encode ?? (value) => $jsonCodex.encode(state.requireValue),
+      encode: encode ?? $jsonCodex.encode,
       decode: decode ??
           (encoded) {
             final e = $jsonCodex.decode(encoded);
@@ -559,7 +610,7 @@ abstract class _$CustomKey extends _$CustomKeyBase
     return super.persist(
       key: key ?? resolvedKey,
       storage: storage,
-      encode: encode ?? (value) => $jsonCodex.encode(state.requireValue),
+      encode: encode ?? $jsonCodex.encode,
       decode: decode ??
           (encoded) {
             final e = $jsonCodex.decode(encoded);
@@ -591,12 +642,38 @@ abstract class _$CustomJsonWithArgs extends _$CustomJsonWithArgsBase
     return super.persist(
       key: key ?? resolvedKey,
       storage: storage,
-      encode: encode ?? (value) => $jsonCodex.encode(state.requireValue),
+      encode: encode ?? $jsonCodex.encode,
       decode: decode ??
           (encoded) {
             final e = $jsonCodex.decode(encoded);
             return (e as Map).map((k, v) =>
                 MapEntry(k as String, Bar.fromJson(v as Map<String, Object?>)));
+          },
+      options: options,
+    );
+  }
+}
+
+abstract class _$PassEncodeDecodeByHand extends _$PassEncodeDecodeByHandBase
+    with Persistable<Map<String, String>, String, String> {
+  @override
+  FutureOr<void> persist({
+    String? key,
+    required FutureOr<Storage<String, String>> storage,
+    String Function(Map<String, String> state)? encode,
+    Map<String, String> Function(String encoded)? decode,
+    StorageOptions options = const StorageOptions(),
+  }) {
+    const resolvedKey = "PassEncodeDecodeByHand";
+
+    return super.persist(
+      key: key ?? resolvedKey,
+      storage: storage,
+      encode: encode ?? $jsonCodex.encode,
+      decode: decode ??
+          (encoded) {
+            final e = $jsonCodex.decode(encoded);
+            return (e as Map).map((k, v) => MapEntry(k as String, v as String));
           },
       options: options,
     );

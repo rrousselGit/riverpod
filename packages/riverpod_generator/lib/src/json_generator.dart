@@ -55,13 +55,6 @@ class JsonGenerator extends ParserGenerator<JsonPersist> {
 
     final genericsDefinition = provider.genericsDefinition();
 
-    final valueString = switch (provider.createdType) {
-      SupportedCreatedType.future ||
-      SupportedCreatedType.stream =>
-        'state.requireValue',
-      SupportedCreatedType.value => 'state',
-    };
-
     final resolvedKey = !provider.providerElement.isFamily
         ? 'const resolvedKey = "${provider.name}";'
         : '''
@@ -116,7 +109,7 @@ abstract class $notifierClass$genericsDefinition extends $baseClass
     return super.persist(
       key: key ?? resolvedKey,
       storage: storage,
-      encode: encode ?? (value) => \$jsonCodex.encode($valueString),
+      encode: encode ?? \$jsonCodex.encode,
       decode: decode ?? (encoded) {
         final e = \$jsonCodex.decode(encoded);
         return $decoded;

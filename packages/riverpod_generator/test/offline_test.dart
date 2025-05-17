@@ -87,4 +87,34 @@ void main() {
     expect(result.keys, ['foo']);
     expect(result.values, [isA<Bar>().having((e) => e.value, 'value', 42)]);
   });
+
+  test('PassEncodeDecodeByHand', () async {
+    final container = ProviderContainer.test();
+    final persist = await container
+        .listen(
+          storageProvider.future,
+          (a, b) {},
+        )
+        .read();
+    persist.write(
+      'PassEncodeDecodeByHand',
+      'Hello world',
+      const StorageOptions(),
+    );
+
+    final result = await container
+        .listen(passEncodeDecodeByHandProvider.future, (prev, next) {})
+        .read();
+
+    expect(result, hasLength(1));
+    expect(result.keys, ['value']);
+    expect(result.values, ['Hello world']);
+
+    container.read(passEncodeDecodeByHandProvider.notifier).state =
+        const AsyncData({'value': 'Hello world2'});
+    await null;
+
+    final persisted = await persist.read('PassEncodeDecodeByHand');
+    expect(persisted?.data, 'Hello world2');
+  });
 }

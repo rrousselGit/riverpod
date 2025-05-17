@@ -1,4 +1,3 @@
-// ignore: invalid_export_of_internal_element
 export 'src/internals.dart'
     show
         ProviderListenableOrFamily,
