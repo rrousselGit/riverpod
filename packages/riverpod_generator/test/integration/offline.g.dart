@@ -529,7 +529,7 @@ abstract class _$Json extends _$JsonBase
     return super.persist(
       key: key ?? resolvedKey,
       storage: storage,
-      encode: encode ?? (value) => $jsonCodex.encode(state.requireValue),
+      encode: encode ?? $jsonCodex.encode,
       decode: decode ??
           (encoded) {
             final e = $jsonCodex.decode(encoded);
@@ -556,7 +556,7 @@ abstract class _$Json2 extends _$Json2Base
     return super.persist(
       key: key ?? resolvedKey,
       storage: storage,
-      encode: encode ?? (value) => $jsonCodex.encode(state.requireValue),
+      encode: encode ?? $jsonCodex.encode,
       decode: decode ??
           (encoded) {
             final e = $jsonCodex.decode(encoded);
@@ -583,7 +583,7 @@ abstract class _$CustomJson extends _$CustomJsonBase
     return super.persist(
       key: key ?? resolvedKey,
       storage: storage,
-      encode: encode ?? (value) => $jsonCodex.encode(state.requireValue),
+      encode: encode ?? $jsonCodex.encode,
       decode: decode ??
           (encoded) {
             final e = $jsonCodex.decode(encoded);
@@ -610,7 +610,7 @@ abstract class _$CustomKey extends _$CustomKeyBase
     return super.persist(
       key: key ?? resolvedKey,
       storage: storage,
-      encode: encode ?? (value) => $jsonCodex.encode(state.requireValue),
+      encode: encode ?? $jsonCodex.encode,
       decode: decode ??
           (encoded) {
             final e = $jsonCodex.decode(encoded);
@@ -642,7 +642,7 @@ abstract class _$CustomJsonWithArgs extends _$CustomJsonWithArgsBase
     return super.persist(
       key: key ?? resolvedKey,
       storage: storage,
-      encode: encode ?? (value) => $jsonCodex.encode(state.requireValue),
+      encode: encode ?? $jsonCodex.encode,
       decode: decode ??
           (encoded) {
             final e = $jsonCodex.decode(encoded);
@@ -669,7 +669,7 @@ abstract class _$PassEncodeDecodeByHand extends _$PassEncodeDecodeByHandBase
     return super.persist(
       key: key ?? resolvedKey,
       storage: storage,
-      encode: encode ?? (value) => $jsonCodex.encode(state.requireValue),
+      encode: encode ?? $jsonCodex.encode,
       decode: decode ??
           (encoded) {
             final e = $jsonCodex.decode(encoded);

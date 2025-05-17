@@ -129,7 +129,7 @@ abstract class _$TodosNotifier extends _$TodosNotifierBase
     return super.persist(
       key: key ?? resolvedKey,
       storage: storage,
-      encode: encode ?? (value) => $jsonCodex.encode(state.requireValue),
+      encode: encode ?? $jsonCodex.encode,
       decode: decode ??
           (encoded) {
             final e = $jsonCodex.decode(encoded);
