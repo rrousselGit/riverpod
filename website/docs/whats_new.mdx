@@ -366,6 +366,96 @@ use a custom implementation:
 
 ## Provider life-cycle changes
 
+### When reading a provider results in an exception, the error is now wrapped in a ProviderException
+
+Before, if a provider threw an error, Riverpod would sometimes rethrow that error directly:
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+  @riverpod
+  Future<int> example(Ref ref) async {
+    throw StateError('Error');
+  }
+  
+  // ...
+  ElevatedButton(
+    onPressed: () async {
+      // This will rethrow the StateError
+      ref.read(exampleProvider).requireValue;
+    
+      // This also rethrows the StateError
+      await ref.read(exampleProvider.future);
+    },
+    child: Text('Click me'),
+  );
+  `}
+  
+  raw={`
+  final exampleProvider = FutureProvider<int>((ref) async {
+    throw StateError('Error');
+  });
+  
+  // ...
+  ElevatedButton(
+    onPressed: () async {
+      // This will rethrow the StateError
+      ref.read(exampleProvider).requireValue;
+    
+      // This also rethrows the StateError
+      await ref.read(exampleProvider.future);
+    },
+    child: Text('Click me'),
+  );
+  `}
+></AutoSnippet>
+
+
+In 3.0, this is changed. Instead, the error will be encapsulated in a `ProviderException`
+that contains both the original error and its stack trace.
+
+:::info
+`AsyncValue.error`, `ref.listen(..., onError: ...)` and [ProviderObserver]s  are unaffected by this change,
+and will still receive the unaltered error.
+:::
+
+This has multiple benefits:
+- Debugging is improved, as we have a much better stack trace
+- It is now possible to determine if a provider failed, or
+  if it is in error state because it depends on another provider that failed.
+
+For example, a [ProviderObserver] can use this to avoid logging the same error twice:
+
+```dart
+class MyObserver extends ProviderObserver {
+  @override
+  void providerDidFail(ProviderObserverContext context, Object error, StackTrace stackTrace) {
+    if (error is ProviderException) {
+      // The provider didn't fail directly, but instead depends on a failed provider.
+      // The error was therefore already logged.
+      return;
+    }
+
+    // Log the error
+    print('Provider failed: $error');
+  }
+}
+```
+
+This is used internally by Riverpod in its automatic retry mechanism. The default automatic retry
+ignores `ProviderException`s:
+
+```dart
+ProviderContainer(
+  // Example of the default retry behavior
+  retry: (retryCount, error) {
+    if (error is ProviderException) return null;
+
+    // ...
+  },
+);
+```
+
 ### Listeners inside widgets that are not visible are now paused
 
 Now that Riverpod has a way to [pause listeners](#pauseresume-support), Riverpod uses that to
@@ -1026,3 +1116,4 @@ regarding combining multiple "sources of truth" in a single provider.
 [Consumer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Consumer-class.html
 [Notifier]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Notifier-class.html
 [AsyncValue]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/AsyncValue-class.html
+[ProviderObserver]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderObserver-class.html
