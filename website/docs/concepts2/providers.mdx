@@ -3,56 +3,528 @@ title: Providers
 version: 1
 ---
 
-import creatingProvider from "./providers/creating_a_provider";
 import declaringManyProviders from "./providers/declaring_many_providers";
 import {
   AutoSnippet,
 } from "/src/components/CodeSnippet";
 import { Link } from "/src/components/Link";
+import Legend, { colors } from "/src/components/Legend";
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
 
-:::caution
-The content of this page may be outdated.  
-It will be updated in the future, but for now you may want to refer to the content
-in the top of the sidebar instead (introduction/essentials/case-studies/...)
+Providers are the central feature of Riverpod. If you use Riverpod, you use it for its providers.
+
+## What is a provider?
+
+Providers are essentially "memoized functions", with sugar on top.  
+What this means is, providers are functions which will return a cached value
+when called with the same parameters.
+
+The most common use-case for using providers is to perform a network request.  
+Consider a function that fetches a user from an API:
+
+```dart
+Future<User> fetchUser() async {
+  final response = await http.get('https://api.example.com/user/123');
+  return User.fromJson(response.body);
+}
+```
+
+One issue with this function is, if we were to try using it inside a widgets,
+we'd have to cache the result ourselves ; then figure out a way to share 
+the value across all widgets that need it.
+
+That is where providers come in. Providers are wrappers around functions,
+which will cache the result of said function ; and allow multiple widgets
+to access the same value:
+
+<AutoSnippet
+  language="dart"
+  codegen={`
+  // The equivalent of our fetchUser function, but the result is cached.
+  // This will generate a "userProvider". Using it multiple times will
+  // return the same value.
+  @riverpod
+  Future<User> user(Ref ref) async {
+    final response = await http.get('https://api.example.com/user/123');
+    return User.fromJson(response.body);
+  }
+  `}
+  raw={`
+  // The equivalent of our fetchUser function, but the result is cached.
+  // Using userProvider multiple times will return the same value.
+  final userProvider = FutureProvider<User>((ref) async {
+    final response = await http.get('https://api.example.com/user/123');
+    return User.fromJson(response.body);
+  });
+  `}
+  ></AutoSnippet>
+
+On top of basic caching, providers then add various features to make
+them more powerful:
+
+- Built-in cache invalidation mechanisms.  
+  In particular, [Ref.watch](https://pub.dev/documentation/riverpod/latest/riverpod/Ref/watch.html)
+  allows you to combined caches together, automatically invalidating what is needed.
+- Automatic disposal of resources.  
+  Providers can automatically release resources when they are no longer needed.
+- Data-binding.  
+  Providers remove the need for a [FutureBuilder](https://api.flutter.dev/flutter/widgets/FutureBuilder-class.html)
+  or a [StreamBuilder](https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html).
+- Automatic error handling.  
+  Providers can automatically catch errors and expose them to the UI.
+- Built-in mocking support, for better testing.
+- Offline persistence.  
+  The result of a provider can be persisted to disk, and automatically
+  reloaded when the app is restarted.
+
+Providers come 6 variants:
+
+|              | Synchronous      | Future                | Stream                 |
+| ------------ | ---------------- | --------------------- | ---------------------- |
+| Unmodifiable | [Provider]         | [FutureProvider]        | [StreamProvider]         |
+| Modifiable   | [NotifierProvider] | [AsyncNotifierProvider] | [StreamNotifierProvider] |
+
+This may seem overwhelming at first. Let's break it down.
+
+**Sync** vs **Future** vs **Stream**:  
+The columns of this table represent the built-in Dart types for functions.
+```dart
+int synchronous() => 0;
+Future<int> future() async => 0;
+Stream<int> stream() => Stream.value(0);
+```
+
+**Unmodifiable vs Modifiable**:  
+By default, providers are not modifiable by widgets. The "Notifier" variant of
+providers make them externally modifiable.  
+This is similar to a private setter ("unmodifiable" providers)
+```dart
+// _state is internally modifiable
+// but cannot be modified externally
+var _state = 0;
+int get state => _state;
+```
+VS a public setter ("modifiable" providers)
+```dart
+// Anything can modify "state"
+var state = 0;
+```
+
+:::info
+You can also view **unmodifiable** vs **modifiable** as respectively `StatelessWidget` vs `StatefulWidget` in principle.  
+
+This is not entirely accurate, as providers are not widgets, and both kinds store "state".
+But hte principle is similar: "One object, immutable" vs "Two objects, mutable".
 :::
 
-Now that we have installed [Riverpod], let's talk about "providers".
-
-Providers are the most important part of a [Riverpod] application.
-A provider is an object that encapsulates a piece of state and allows listening
-to that state.
-
-## Why use providers?
-
-Wrapping a piece of state in a provider:
-
-- Allows easily accessing that state in multiple locations.
-  Providers are a complete replacement for patterns like Singletons,
-  Service Locators, Dependency Injection or InheritedWidgets.
-
-- Simplifies combining this state with others.
-  Ever struggled to merge multiple objects into one? This scenario is built
-  directly inside providers.
-
-- Enables performance optimizations.
-  Whether for filtering widget rebuilds or for caching expensive state computations;
-  providers ensure that only what is impacted by a state change is recomputed.
-
-- Increases the testability of your application.
-  With providers, you do not need complex `setUp`/`tearDown` steps. Furthermore,
-  any provider can be overridden to behave differently during a test, which
-  allows easily testing a very specific behavior.
-
-- Allows easy integration with advanced features, such as logging or
-  pull-to-refresh.
 
 ## Creating a provider
 
-Providers come in many variants, but they all work the same way.
+Providers should be created as "top-level" declarations.  
+This means that they should be declared outside of any class or function.
 
-The most common usage is to declare them as global constants like so:
+The syntax for creating a provider depends on whether it is "modifiable" or "unmodifiable",
+as per the table above.
 
-<AutoSnippet language="dart" {...creatingProvider}></AutoSnippet>
+<Tabs>
+<TabItem value="Unmodifiable" label="Unmodifiable (functional)">
+
+<Tabs>
+<TabItem value="riverpod_generator" label="riverpod_generator">
+<Legend
+  code={`
+    @riverpod
+    Result myFunction(Ref ref) {
+      <your logic here>
+    }
+  `}
+  annotations={[
+    {
+      offset: 0,
+      length: 9,
+      label: "The annotation",
+      description: <>
+
+All generated providers must be annotated with `@riverpod` or `@Riverpod()`.
+This annotation can be placed on global functions or classes. Through this annotation, 
+it is possible to configure the provider.
+
+For example, we can disable "auto-dispose" (which we will see later) by writing `@Riverpod(keepAlive: true)`.
+
+</>
+    },
+    {
+      offset: 17,
+      length: 10,
+      label: "The annotated function",
+      description: <>
+
+The name of the annotated function determines how the provider
+will be interacted with.  
+For a given function `myFunction`, a `myFunctionProvider` will be generated.
+
+Annotated functions **must** specify a [Ref] as first parameter.  
+Besides that, the function can have any number of parameters, including generics.
+The function is also free to return a `Future`/`Stream` if it wishes to.
+
+This function will be called when the provider is first read.  
+Subsequent reads will not call the function again, but instead return the cached value.
+
+</>
+    },
+    {
+      offset: 28,
+      length: 7,
+      label: "Ref",
+      description: <>
+
+An object used to interact with other providers.  
+All providers have one; either as parameter of the provider function,
+or as a property of a Notifier.  
+The type of this object is determined by the name of the function/class.
+
+</>
+    },
+]}
+/>
+</TabItem>
+<TabItem value="riverpod" label="riverpod">
+<Legend
+  code={`
+    final name = SomeProvider.someModifier<Result>((ref) {
+      <your logic here>
+    });
+  `}
+  annotations={[
+    {
+      offset: 6,
+      length: 4,
+      label: "The provider variable",
+        description: <>
+
+This variable is what will be used to interact with our provider.  
+The variable must be final and "top-level" (global).
+
+</>
+    },
+    {
+      offset: 13,
+      length: 12,
+      label: "The provider type",
+      description: <>
+
+Generally either [Provider], [FutureProvider] or [StreamProvider].  
+The type of provider used depends on the return value of your function.
+For example, to create a `Future<Activity>`, you'll want a `FutureProvider<Activity>`.
+
+`FutureProvider` is the one you'll want to use the most.
+
+:::tip
+Don't think in terms of "Which provider should I pick".
+Instead, think in terms of "What do I want to return". The provider type
+will follow naturally.
+:::
+
+</>
+    },
+    {
+      offset: 25,
+      length: 13,
+      label: "Modifiers (optional)",
+      description: <>
+
+Often, after the type of the provider you may see a "modifier".  
+Modifiers are optional, and are used to tweak the behavior of the provider
+in a way that is type-safe.
+
+There are currently two modifiers available:
+
+- `autoDispose`, which will automatically clear the cache when the provider
+  stops being used.  
+  See also <Link documentID="concept2/auto_dispose" />
+- `family`, which enables passing arguments to your provider.  
+  See also <Link documentID="essentials/passing_args" />.
+
+</>
+    },
+    {
+      offset: 48,
+      length: 3,
+      label: "Ref",
+      description: <>
+
+An object used to interact with other providers.  
+All providers have one; either as parameter of the provider function,
+or as a property of a Notifier.
+
+</>
+    },
+    {
+      offset: 57,
+      length: 17,
+      label: "The provider function",
+      description: <>
+
+This is where we place the logic of our providers.
+This function will be called when the provider is first read.  
+Subsequent reads will not call the function again, but instead return the cached value.
+
+</>
+    },
+  ]}
+/>
+</TabItem>
+</Tabs>
+
+</TabItem>
+
+<TabItem value="Modifiable" label="Modifiable (notifier)">
+<Tabs>
+<TabItem value="riverpod_generator" label="riverpod_generator">
+<Legend
+  code={`@riverpod
+class MyNotifier extends _$MyNotifier {
+  @override
+  Result build() {
+    <your logic here>
+  }
+
+  <your methods here>
+}`}
+  annotations={[
+    {
+      offset: 0,
+      length: 9,
+      label: "The annotation",
+      description: <>
+
+All providers must be annotated with `@riverpod` or `@Riverpod()`.
+This annotation can be placed on global functions or classes.  
+Through this annotation, it is possible to configure the provider.
+
+For example, we can disable "auto-dispose" (which we will see later) by writing `@Riverpod(keepAlive: true)`.
+
+</>
+    },
+    {
+      offset: 10,
+      length: 16,
+      label: "The Notifier",
+       description: <>
+
+When a `@riverpod` annotation is placed on a class, that class is called
+a "Notifier".  
+The class must extend `_$NotifierName`, where `NotifierName` is the class name.
+
+Notifiers are responsible for exposing ways to modify the state of the provider.  
+Public methods on this class are accessible to consumers using `ref.read(yourProvider.notifier).yourMethod()`.
+
+:::note
+Notifiers should not have public properties besides the built-in `state`, as the UI
+would have no means to know that state has changed.
+:::
+
+:::caution
+Do not put logic in the constructor of your notifier.  
+Notifiers should not have a constructor, as `ref` and other properties aren't
+yet available at that point. Instead, put your logic in the `build` method.
+
+```dart
+class MyNotifier extends ... {
+  MyNotifier() {
+    // ❌ Don't do this
+    // This will throw an exception
+    state = AsyncValue.data(42);
+  }
+
+  @override
+  Future<int> build() {
+    // ✅ Do this instead
+    state = AsyncValue.data(42);
+  }
+}
+```
+:::
+
+</>
+    },
+    {
+      offset: 52,
+      length: 54,
+      label: "The build method",
+      description: <>
+
+All notifiers must override the `build` method.  
+This method is equivalent to the place where you would normally put your
+logic in a non-notifier provider.
+
+This method should not be called directly.
+
+</>
+    },
+]}
+/>
+</TabItem>
+<TabItem value="riverpod" label="riverpod">
+<Legend
+  code={`final name = SomeNotifierProvider.someModifier<MyNotifier, Result>(MyNotifier.new);
+ 
+class MyNotifier extends SomeNotifier<Result> {
+  @override
+  Result build() {
+    <your logic here>
+  }
+
+  <your methods here>
+}`}
+  annotations={[
+    {
+      offset: 6,
+      length: 4,
+      label: "The provider variable",
+       description: <>
+
+This variable is what will be used to interact with our provider.  
+The variable must be final and "top-level" (global).
+
+</>
+    },
+    {
+      offset: 13,
+      length: 20,
+      label: "The provider type",
+       description: <>
+
+Generally either [NotifierProvider], [AsyncNotifierProvider] or [StreamNotifierProvider].  
+The type of provider used depends on the return value of your function.
+For example, to create a `Future<Activity>`, you'll want a `AsyncNotifierProvider<Activity>`.
+
+[AsyncNotifierProvider] is the one you'll want to use the most.
+
+:::tip
+As with functional providers, don't think in terms of "Which provider should I pick".
+Create whatever state you want to create, and the provider type will follow naturally.
+:::
+
+</>
+    },
+    {
+      offset: 33,
+      length: 13,
+      label: "Modifiers (optional)",
+      description: <>
+
+Often, after the type of the provider you may see a "modifier".  
+Modifiers are optional, and are used to tweak the behavior of the provider
+in a way that is type-safe.
+
+There are currently two modifiers available:
+
+- `autoDispose`, which will automatically clear the cache when the provider
+  stops being used.  
+  See also <Link documentID="concept2/auto_dispose" />
+- `family`, which enables passing arguments to your provider.  
+  See also <Link documentID="essentials/passing_args" />.
+
+</>
+    },
+    {
+      offset: 67,
+      length: 14,
+      label: "The Notifier's constructor",
+      description: <>
+
+The parameter of "notifier providers" is a function which is expected
+to instantiate the "notifier".  
+It generally should be a "constructor tear-off".
+
+</>
+    },
+    {
+      offset: 86,
+      length: 16,
+      label: "The Notifier",
+      description: <>
+
+If `NotifierProvider` is equivalent to `StatefulWidget`, then this part is
+the `State` class.
+
+This class is responsible for exposing ways to modify the state of the provider.  
+Public methods on this class are accessible to consumers using `ref.read(yourProvider.notifier).yourMethod()`.
+
+:::note
+Notifiers should not have properties besides the built-in `state`, as any state
+outside of `state` may be inadvertently destroyed by Riverpod.
+:::
+
+:::caution
+Do not put logic in the constructor of your notifier.  
+Notifiers should not have a constructor, as `ref` and other properties aren't
+yet available at that point. Instead, put your logic in the `build` method.
+
+```dart
+class MyNotifier extends ... {
+  MyNotifier() {
+    // ❌ Don't do this
+    // This will throw an exception
+    state = AsyncValue.data(42);
+  }
+
+  @override
+  Future<int> build() {
+    // ✅ Do this instead
+    state = AsyncValue.data(42);
+  }
+}
+```
+:::
+
+</>
+    },
+    {
+      offset: 111,
+      length: 12,
+      label: "The Notifier type",
+      description: <>
+
+The base class extended by your notifier should match that of the provider + "family", if used.
+Some examples would be:
+
+- <span style={{ color: colors[0] }}>Notifier</span>Provider -> <span style={{ color: colors[0] }}>Notifier</span>
+- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider -> <span style={{ color: colors[0] }}>AsyncNotifier</span>
+- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider.<span
+    style={{ color: colors[2] }}
+  >
+    family
+  </span> -> <span style={{ color: colors[2] }}>Family</span>
+  <span style={{ color: colors[0] }}>AsyncNotifier</span>
+
+To make this simpler, it is recommended to use the code generator, as it
+automatically infers the correct type.
+
+</>
+    },
+    {
+      offset: 136,
+      length: 54,
+      label: "The build method",
+      description: <>
+
+All notifiers must override the `build` method.  
+This method is equivalent to the place where you would normally put your
+logic in a non-notifier provider.
+
+This method should not be called directly.
+
+</>
+    },
+]}
+/>
+</TabItem>
+</Tabs>
+</TabItem>
+</Tabs>
 
 :::note
 Do not be frightened by the global aspect of providers.
@@ -60,31 +532,9 @@ Providers are fully immutable. Declaring a provider is no different from declari
 a function, and providers are testable and maintainable.
 :::
 
-This snippet consists of three components:
-
-- `final myProvider`, the declaration of a variable.
-  This variable is what we will use in the future to read the state of our provider.
-  Providers should always be `final`.
-
-- `Provider`, the provider that we decided to use.
-  [Provider] is the most basic of all providers. It exposes an object that never
-  changes.
-  We could replace [Provider] with other providers like [StreamProvider] or
-  [NotifierProvider], to change how the value is interacted with.
-
-- A function that creates the shared state.
-  That function will always receive an object called `ref` as a parameter. This object
-  allows us to read other providers, perform some operations when the state
-  of our provider will be destroyed, and much more.
-
-The type of the object returned by the function passed to a provider depends on
-the provider used.
-For example, the function of a [Provider] can create any object.
-On the other hand, [StreamProvider]'s callback will be expected to return a [Stream].
-
 :::info
 You can declare as many providers as you want without limitations.
-As opposed to when using `package:provider`, [Riverpod] allows creating multiple
+As opposed to when using `package:provider`, Riverpod allows creating multiple
 providers exposing a state of the same "type":
 
 <AutoSnippet language="dart" {...declaringManyProviders}></AutoSnippet>
@@ -92,9 +542,20 @@ providers exposing a state of the same "type":
 The fact that both providers create a `String` does not cause any problem.
 :::
 
-:::caution
-For providers to work, you must add [ProviderScope] at the root of your
-Flutter applications:
+
+## Using providers
+
+Providers are similar to widgets in that, on their own, they do nothing.  
+Similarly to how widgets are a description of the UI, providers are a description
+of the state.  
+Surprisingly, a provider is fully stateless, and could be instantiated as `const`
+if not for the fact that this would make the syntax a bit more verbose.
+
+To use a provider, you need a separate object: [ProviderContainer]. 
+See <Link documentID="concepts2/containers" /> for more information.
+
+Long story short, before you can use a provider, wrap your Flutter applications
+in a [ProviderScope]:
 
 ```dart
 void main() {
@@ -102,81 +563,43 @@ void main() {
 }
 ```
 
-:::
+Once that is done, you will need to obtain a [Ref] to interact with your providers. 
+See <Link documentID="concepts2/refs" /> for information about those.
 
-## Different Types of Providers
+In short, there are two ways to obtain a [Ref]:
+- Providers naturally get access to one.  
+  This is the first parameter of the provider function, or the `ref` property of a Notifier.
+  This enables providers to communicate with each other.
+- The Widget tree will need special kind of widgets, called <Link documentID="concepts2/consumers" />.
+  Those widgets bridge the gap between the widget tree and the provider tree, by giving you a [WidgetRef].
 
-There are multiple types of providers for multiple different use cases.
-
-With all of these providers available, it is sometimes difficult to understand when to use one provider type over another.
-Use the table below to choose a provider that fits what you want to provide to the widget tree.
-
-| Provider Type            | Provider Create Function              | Example Use Case                                                                                      |
-| ------------------------ | ------------------------------------- | ----------------------------------------------------------------------------------------------------- |
-| [Provider]               | Returns any type                      | A service class / computed property (filtered list)                                                   |
-| [StateProvider]          | Returns any type                      | A filter condition / simple state object                                                              |
-| [FutureProvider]         | Returns a Future of any type          | A result from an API call                                                                             |
-| [StreamProvider]         | Returns a Stream of any type          | A stream of results from an API                                                                       |
-| [NotifierProvider]       | Returns a subclass of (Async)Notifier | A complex state object that is immutable except through an interface                                  |
-| [StateNotifierProvider]  | Returns a subclass of StateNotifier   | A complex state object that is immutable except through an interface. Prefer using a notifierProvider |
-| [ChangeNotifierProvider] | Returns a subclass of ChangeNotifier  | A complex state object that requires mutability                                                       |
-
-:::caution
-While all providers have their purpose, [ChangeNotifierProvider]s are not recommended for scalable applications. See <Link documentID="concepts/why_immutability" />. It exists in the
-`flutter_riverpod` package to provide an easy migration path from
-`package:provider`, and allows for some flutter specific use-cases such as
-integration with some Navigator 2 packages. :::
-
-## Provider Modifiers
-
-All Providers have a built-in way to add extra functionalities to your different providers.
-
-They may add new features to the `ref` object or change slightly how the provider
-is consumed.
-Modifiers can be used on all providers, with a syntax similar to named constructor:
+As example, consider a `helloWorldProvider` that returns a simple string.
+You could use it inside widgets like this:
 
 ```dart
-final myAutoDisposeProvider = StateProvider.autoDispose<int>((ref) => 0);
-final myFamilyProvider = Provider.family<String, int>((ref, id) => '$id');
+class Example extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Consumer(
+      builder: (context, ref, _) {
+        // Obtain the value of the provider
+        final helloWorld = ref.watch(helloWorldProvider);
+
+        // Use the value in the UI
+        return Text(helloWorld);
+      },
+    );
+  }
+}
 ```
 
-At the moment, there are two modifiers available:
-
-- <Link documentID="concepts/modifiers/auto_dispose" />, which will make the
-  provider automatically destroy its state when it is no longer being listened
-  to.
-- <Link documentID="concepts/modifiers/family" />, which allows creating a
-  provider from external parameters.
-
-:::note
-A provider can use multiple modifiers at once:
-
-```dart
-final userProvider = FutureProvider.autoDispose.family<User, int>((ref, userId) async {
-  return fetchUser(userId);
-});
-```
-
-:::
-
-That's it for this guide!
-
-You can continue with <Link documentID="concepts/reading"/>.
-Alternatively, you can see <Link documentID="concepts/combining_providers"/>.
-
-[get_it]: http://pub.dev/packages/get_it
-[inheritedwidget]: https://api.flutter.dev/flutter/widgets/InheritedWidget-class.html
-[stream]: https://api.dart.dev/stable/2.8.4/dart-async/Stream-class.html
-[ondispose]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/onDispose.html
-[riverpod]: https://github.com/rrousselgit/riverpod
-[hooks_riverpod]: https://pub.dev/packages/hooks_riverpod
-[flutter_riverpod]: https://pub.dev/packages/flutter_riverpod
-[flutter_hooks]: https://github.com/rrousselGit/flutter_hooks
-[provider]: /docs/providers/provider
-[streamprovider]: /docs/providers/stream_provider
-[futureprovider]: /docs/providers/future_provider
-[stateprovider]: /docs/providers/state_provider
-[statenotifierprovider]: /docs/providers/state_notifier_provider
-[notifierProvider]: /docs/providers/notifier_provider
-[changenotifierprovider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ChangeNotifierProvider-class.html
-[providerscope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[provider]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/Provider-class.html
+[futureprovider]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/FutureProvider-class.html
+[streamprovider]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/StreamProvider-class.html
+[notifierprovider]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/NotifierProvider-class.html
+[asyncnotifierprovider]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/AsyncNotifierProvider-class.html
+[streamnotifierprovider]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/StreamNotifierProvider-class.html
+[ref]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/Ref-class.html
+[widgetref]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/WidgetRef-class.html
+[providerscope]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/ProviderScope-class.html
+[providercontainer]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/ProviderContainer-class.html

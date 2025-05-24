@@ -26,6 +26,15 @@ module.exports = {
         "concepts/about_code_generation",
         "concepts/about_hooks",
         "concepts2/providers",
+        'concepts2/consumers',
+        'concepts2/refs',
+        'concepts2/containers',
+        'concepts2/auto_dispose',
+        'concepts2/offline',
+        'concepts2/retry',
+        'concepts2/observers',
+        'concepts2/overrides',
+        'concepts2/scoping',
       ],
     },
     {
@@ -141,6 +150,16 @@ module.exports = {
               label: "Consumer",
               href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/Consumer-class.html",
             },
+            {
+              type: "link",
+              label: "HookConsumerWidget",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/HookConsumerWidget-class.html",
+            },
+            {
+              type: "link",
+              label: "HookConsumer",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/HookConsumer-class.html",
+            },
           ],
         },
         {
@@ -199,7 +218,6 @@ module.exports = {
         "essentials/passing_args",
         "essentials/websockets_sync",
         "essentials/combining_requests",
-        "essentials/auto_dispose",
         // {
         //   type: "link",
         //   label: "Progress indicators and error pages (WIP)",
@@ -412,20 +430,6 @@ module.exports = {
         "concepts/scopes",
         "concepts/provider_lifecycles",
         "concepts/why_immutability",
-      ],
-    },
-
-    {
-      type: "category",
-      label: "All Providers 🚧",
-      items: [
-        "providers/provider",
-        "providers/notifier_provider",
-        "providers/state_notifier_provider",
-        "providers/future_provider",
-        "providers/stream_provider",
-        "providers/state_provider",
-        "providers/change_notifier_provider",
       ],
     },
 
