@@ -153,25 +153,14 @@ would have no means to know that state has changed.
       label: "The Notifier type",
       description: <>
 
-The base class extended by your notifier should match that of the provider + modifiers.
+The base class extended by your notifier should match that of the provider + "Family", if used.
 Some examples would be:
 
 - <span style={{ color: colors[0] }}>Notifier</span>Provider -> <span style={{ color: colors[0] }}>Notifier</span>
 - <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider -> <span style={{ color: colors[0] }}>AsyncNotifier</span>
-- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider.
-  <span style={{ color: colors[1] }}>autoDispose</span> -> <span
-    style={{ color: colors[1] }}
-  >
-    AutoDispose
-  </span>
-  <span style={{ color: colors[0] }}>AsyncNotifier</span>
-- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider.
-  <span style={{ color: colors[1] }}>autoDispose</span>.<span
-    style={{ color: colors[2] }}
-  >
+- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider.<span style={{ color: colors[2] }}>
     family
-  </span> -> <span style={{ color: colors[1] }}>AutoDispose</span>
-  <span style={{ color: colors[2] }}>Family</span>
+  </span> -> <span style={{ color: colors[2] }}>Family</span>
   <span style={{ color: colors[0] }}>AsyncNotifier</span>
 
 To make this simpler, it is recommended to use the code generator, as it
