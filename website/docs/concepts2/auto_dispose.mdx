@@ -2,47 +2,37 @@
 title: "Clearing cache and reacting to state disposal"
 version: 2
 ---
-
 import { Link } from "/src/components/Link";
 import { AutoSnippet } from "/src/components/CodeSnippet";
 import onDisposeExample from "./auto_dispose/on_dispose_example";
-import codegenKeepAlive from "!!raw-loader!./auto_dispose/codegen_keep_alive.dart";
-import rawAutoDispose from "!!raw-loader!./auto_dispose/raw_auto_dispose.dart";
 import invalidateExample from "!!raw-loader!./auto_dispose/invalidate_example.dart";
 import keepAlive from "./auto_dispose/keep_alive";
 import cacheForExtension from "!!raw-loader!./auto_dispose/cache_for_extension.dart";
 import cacheForUsage from "./auto_dispose/cache_for_usage";
 import invalidateFamilyExample from './auto_dispose/invalidate_family_example'
 
-So far, we've seen how to create/update some state.
-But we have yet to talk about when state destruction occurs.
+In Riverpod, it is possible to tell the framework to automatically
+destroy resources associated with a provider when it is no longer used.
 
-Riverpod offers various ways to interact with state disposal.
-This ranges from delaying the disposal of state to reacting to destruction.
+## Enabling/disabling automatic disposal
 
-## When is state destroyed and how to change this?
+If you're using code-generation, this is enabled by default, and can be opted
+out in the annotation:
+```dart
+// Disable automatic disposal
+@Riverpod(keepAlive: true)
+String helloWorld(Ref ref) => 'Hello world!';
+```
 
-When using code-generation, by default, the state is destroyed when
-the provider stops being listened to.  
-This happens when a listener has no active listener for a full frame.
-When that happens, the state is destroyed.
-
-This behavior can be opted out by using `keepAlive: true`.  
-Doing so will prevent the state from getting destroyed when all listeners
-are removed.
-
-<AutoSnippet raw={codegenKeepAlive} />
-
-When not using code-generation, by default the state isn't destroyed
-when the provider stops being listened.
-
-You can optionally change this behavior and use automatic disposal.
-When doing so, Riverpod will track whether a provider has listeners or not.
-Then, if the provider has no listeners for a full frame, the state will be destroyed.
-
-To enable automatic disposal, you can use `.autoDispose` next to the provider type:
-
-<AutoSnippet raw={rawAutoDispose} />
+If you're not using code-generation, you can enable it by using `isAutoDispose: true`
+when creating the provider:
+```dart
+final helloWorldProvider = Provider<String>(
+  // Opt-in to automatic disposal
+  isAutoDispose: true,
+  (ref) => 'Hello world!',
+);
+```
 
 :::note
 Enabling/disabling automatic disposal has no impact on whether or not
@@ -56,6 +46,19 @@ That is because otherwise, one state per parameter combination will be created,
 which can lead to memory leaks.
 :::
 
+## When is automatic disposal triggered?
+
+When automatic disposal is enabled, Riverpod will track whether a provider has listeners or not.
+This happens by tracking [Ref.watch](https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/Ref/watch.html)/[Ref.listen](https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/Ref/listen.html)
+calls (and a few others).  
+
+When that counter reaches zero, the provider will be considered as "not used", and
+[Ref.onCancel](https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/Ref/onCancel.html)
+will be triggered. 
+At that point, Riverpod will wait for one frame (cf `await null`). If after that frame,
+if the provider is still not used, then the provider will be destroyed and
+[Ref.onDispose](https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/Ref/onDispose.html)
+will be triggered.
 ## Reacting to state disposal
 
 In Riverpod, there are a few built-in ways for state to be destroyed:
