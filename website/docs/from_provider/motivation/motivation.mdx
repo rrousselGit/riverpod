@@ -93,7 +93,7 @@ to automatically destroy its providers' state when they're no-longer used.
 With Provider, [we have to] rely on scoping providers to dispose the state when it stops being used.  
 But this isn't easy, as it gets tricky when state is shared between pages.
 
-Riverpod solves this with easy-to-understand APIs such as [autodispose] and [keepAlive].  
+Riverpod solves this with easy-to-understand APIs such as [autodispose] and [Ref.keepAlive].  
 These two APIs enable flexible and creative caching strategies (e.g. time-based caching):
 
 <AutoSnippet language="dart" {...autoDispose}></AutoSnippet>
@@ -186,10 +186,10 @@ Riverpod is overall better designed and could lead to drastic simplifications of
 
 [ref.watch]: /docs/concepts/reading#using-refwatch-to-observe-a-provider
 [ref.listen]: /docs/concepts/reading#using-reflisten-to-react-to-a-provider-change
-[autodispose]: /docs/concepts/modifiers/auto_dispose
+[autodispose]: /docs/concepts2/auto_dispose
 [workaround]: https://pub.dev/packages/provider#can-i-obtain-two-different-providers-using-the-same-type
 [.family modifier]: /docs/concepts/modifiers/family
-[keepAlive]: /docs/concepts/modifiers/auto_dispose#refkeepalive
+[keepAlive]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/Ref/keepAlive.html
 [as these two features go hand-in-hand]: /docs/concepts/modifiers/family#prefer-using-autodispose-when-the-parameter-is-not-constant
 [simplification of logic]: /docs/concepts/modifiers/family#usage
 [we have to]: https://github.com/flutter/flutter/issues/128432
