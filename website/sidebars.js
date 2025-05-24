@@ -423,7 +423,6 @@ module.exports = {
           label: "Modifiers",
           items: [
             "concepts/modifiers/family",
-            "concepts/modifiers/auto_dispose",
           ],
         },
         "concepts/provider_observer",
