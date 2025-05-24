@@ -156,7 +156,6 @@ export const documentTitles = {
     "essentials/eager_initialization": "providers의 빠른 초기화(Eager initialization)",
     "essentials/do_dont": "권장사항(DO/DON'T)",
     "essentials/combining_requests": "요청 결합하기",
-    "essentials/auto_dispose": "캐시 지우기 및 상태 폐기(disposal)에 반응하기",
     "cookbooks/testing": "Testing",
     "cookbooks/search_as_we_type": "Search as we type",
     "concepts/why_immutability": "Why Immutability",
