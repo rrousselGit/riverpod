@@ -202,6 +202,18 @@ module.exports = {
       ],
     },
 
+    // Concepts
+    {
+      type: "category",
+      label: "Concepts",
+      collapsible: false,
+      items: [
+        "concepts/about_code_generation",
+        "concepts/about_hooks",
+        "concepts2/providers",
+      ],
+    },
+
     // Case studies
     {
       type: "category",
@@ -223,14 +235,6 @@ module.exports = {
         // },
         "advanced/select",
       ],
-    },
-
-    // Concepts
-    {
-      type: "category",
-      label: "Concepts",
-      collapsible: false,
-      items: ["concepts/about_code_generation", "concepts/about_hooks"],
     },
 
     // Migration guides
@@ -392,16 +396,9 @@ module.exports = {
     },
 
     {
-      type: "link",
-      label: "API reference",
-      href: "https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/hooks_riverpod-library.html",
-    },
-
-    {
       type: "category",
       label: "Concepts 🚧",
       items: [
-        "concepts/providers",
         "concepts/reading",
         "concepts/combining_providers",
         {
