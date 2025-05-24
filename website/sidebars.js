@@ -17,6 +17,17 @@ module.exports = {
         "from_provider/motivation/motivation",
       ],
     },
+    // Concepts
+    {
+      type: "category",
+      label: "Concepts",
+      collapsible: false,
+      items: [
+        "concepts/about_code_generation",
+        "concepts/about_hooks",
+        "concepts2/providers",
+      ],
+    },
     {
       type: "category",
       label: "References",
@@ -199,18 +210,6 @@ module.exports = {
         "essentials/provider_observer",
         "essentials/faq",
         "essentials/do_dont",
-      ],
-    },
-
-    // Concepts
-    {
-      type: "category",
-      label: "Concepts",
-      collapsible: false,
-      items: [
-        "concepts/about_code_generation",
-        "concepts/about_hooks",
-        "concepts2/providers",
       ],
     },
 
