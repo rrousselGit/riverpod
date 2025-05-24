@@ -6,8 +6,7 @@ import 'package:flutter_riverpod/legacy.dart';
 
 /* SNIPPET START */
 
-// A Counter example implemented with riverpod with Logger
-
+// A basic logger, which logs any state changes.
 class Logger extends ProviderObserver {
   @override
   void didUpdateProvider(
@@ -25,11 +24,20 @@ class Logger extends ProviderObserver {
 
 void main() {
   runApp(
-    // Adding ProviderScope enables Riverpod for the entire project
-    // Adding our Logger to the list of observers
-    ProviderScope(observers: [Logger()], child: const MyApp()),
+    ProviderScope(
+      // ProviderObservers are used by passing them to ProviderScope/ProviderContainer
+      observers: [
+        // Adding ProviderScope enables Riverpod for the entire project
+        // Adding our Logger to the list of observers
+        Logger(),
+      ],
+      child: const MyApp(),
+    ),
   );
 }
+
+// After this, implement a typical Flutter application
+/* SNIPPET END */
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
