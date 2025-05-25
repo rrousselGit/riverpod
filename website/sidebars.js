@@ -30,6 +30,7 @@ module.exports = {
         'concepts2/refs',
         'concepts2/containers',
         'concepts2/auto_dispose',
+        'concepts2/mutations',
         'concepts2/offline',
         'concepts2/retry',
         'concepts2/observers',

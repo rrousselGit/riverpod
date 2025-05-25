@@ -1,3 +1,171 @@
 ---
 title: Mutations
 ---
+import { Link } from "/src/components/Link";
+
+:::info
+Mutations are currently only available using code-generation.
+:::
+
+:::caution
+Mutations are experimental, and the API may change in a breaking way without
+a major version bump.
+:::
+
+Mutations, in Riverpod, are objects which enable the user interface
+to react to state changes.  
+A common use-case is displaying a loading indicator while a form is being submitted
+
+In short, mutations are to achieve effects such as this:  
+![Submit progress indicator](/img/essentials/side_effects/spinner.gif)!
+
+Without mutations, you would have to store the progress of the form submission
+directly inside the state of a provider. This is not ideal as it pollutes the
+state of your provider with UI concerns ; and it involves a lot of boilerplate code
+to handle the loading state, error state, and success state.
+
+Mutations are designed to handle these concerns in a more elegant way.
+
+## Defining a mutation
+
+Mutations are defined using the `@mutation` annotation,
+placed inside a Notifier. See <Link documentID="concepts2/providers"/> for more information about those.
+
+```dart
+/// A provider that handles a list of todos
+@riverpod
+class Todos extends _$Todos {
+  @override
+  Future<List<Todo>> build() async {
+    // TODO fetch todos from the server
+  }
+
+  /// A mutation submit a todo
+  /// This enables the UI to listen to the submission.
+  @mutation
+  Future<void> addTodo(String text) async {
+    // We submit the todo request to the server.
+    await http.post(
+      Uri.parse('https://example.com/todos/new'),
+      body: {'text': text},
+    );
+
+    // We refresh the list of todos.
+    ref.invalidateSelf();
+    
+    // We wait for the todos to be fetched again.
+    await future;
+  }
+}
+```
+
+Notice how we purposefully never set the state to `AsyncLoading` or `AsyncError`,
+nor caught possible exceptions. This is intentional, as mutations natively
+handle those states for us.
+
+:::note
+This example relies on [Ref.invalidateSelf](https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/Ref/invalidateSelf.html)
+to update the local state after the post request is done.  
+This is one of the many ways to update local state.
+See <Link documentID="essentials/side_effects"/> for more information.
+:::
+
+## Using a mutation
+
+Once we've defined a mutation, we can start using it inside widgets (or other providers).
+
+To use them, we rely on a code-generated function, available on our provider.
+Since we previously defined a mutation named `addTodo` in the `Todos` class,
+then we will have an `todosProvider` with an `addTodo` property:
+
+```dart
+todosProvider.addTodo; // This is our mutation property.
+```
+
+This property can then be used using <Link documentID="concepts2/refs" />
+(typically [Ref.watch](https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/Ref/watch.html)),
+obtained using <Link documentID="concepts2/consumers" />:
+
+```dart
+class Example extends ConsumerWidget {
+  const Example({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // We listen to the current state of the "addTodo" mutation.
+    // Listening to this will not perform any side effects by itself.
+    final addTodo = ref.watch(todosProvider.addTodo);
+
+    return Row(
+      children: [
+        ElevatedButton(
+          style: ButtonStyle(
+            // If there is an error, we show the button in red
+            backgroundColor: switch (addTodo.state) {
+              MutationError() => WidgetStatePropertyAll(Colors.red),
+              _ => null,
+            },
+          ),
+          onPressed: () {
+            // On button press, we call the mutation.
+            addTodo('This is a new todo');
+          },
+          child: const Text('Add todo'),
+        ),
+
+        // The operation is pending, let's show a progress indicator
+        if (addTodo.state is MutationPending) ...[
+          const SizedBox(width: 8),
+          const CircularProgressIndicator(),
+        ],
+      ],
+    );
+  }
+}
+```
+
+### The different mutation states and their meaning
+
+Mutations can be in one of the following states:
+- [MutationPending]: The mutation has started and is currently loading.
+- [MutationError]: The mutation has failed, and an error is available.
+- [MutationSuccess]: The mutation has succeeded, and the result is available.
+- [MutationIdle]: The mutation has not been called yet, or has been reset.
+
+You can switch over the different states using a `switch` statement:
+
+```dart
+switch (addTodo.state) {
+  case MutationPending():
+  case MutationError():
+  case MutationSuccess():
+  case MutationIdle():
+}
+```
+
+### After a mutation has been started once, how to reset it to its idle state?
+
+Mutations naturally reset themselves to [MutationIdle] if:
+- They have completed (either successfully or with an error).
+- All listeners have been removed (e.g. the spinner widget has been removed)
+
+This is similar to how <Link documentID="concepts2/auto_dispose"/> works, but for mutations.
+
+Alternatively, you can manually reset a mutation to its idle state
+by calling the [reset] method:
+
+```dart
+ElevatedButton(
+  onPressed: () {
+    // Reset the mutation to its idle state.
+    addTodo.reset();
+  },
+  child: const Text('Reset mutation'),
+);
+```
+
+[MutationPending]: https://pub.dev/documentation/riverpod_annotation/3.0.0-dev.15/experimental_mutation/MutationPending-class.html
+[MutationError]: https://pub.dev/documentation/riverpod_annotation/3.0.0-dev.15/experimental_mutation/MutationError-class.html
+[MutationSuccess]: https://pub.dev/documentation/riverpod_annotation/3.0.0-dev.15/experimental_mutation/MutationSuccess-class.html
+[MutationIdle]: https://pub.dev/documentation/riverpod_annotation/3.0.0-dev.15/experimental_mutation/MutationIdle-class.html
+[reset]: https://pub.dev/documentation/riverpod_annotation/3.0.0-dev.15/experimental_mutation/MutationBase/reset.html
