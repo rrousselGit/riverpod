@@ -11,6 +11,31 @@ the state of a given provider is stored inside this container object.
 widget tree. Hence why, when you use Riverpod, you will always see a scope at the root of apps.  
 Without it, Riverpod would be unable to store the state of providers!
 
+### Using a ProviderContainer for pure Dart applications
+
+[ProviderContainer] is a useful object when you want to use Riverpod
+in pure Dart codebases, such as command-line applications or server-side applications.
+
+You can create a [ProviderContainer] inside your `main`, and use it to read and modify providers:
+
+```dart
+import 'package:riverpod/riverpod.dart';
+
+void main() {
+  final container = ProviderContainer();
+
+  try {
+    final sub = container.listen(counterProvider, (previous, next) {
+      print('Counter changed from $previous to $next');
+    });
+    print('Counter starts at ${sub.read()}');
+  } finally {
+    // Dispose the container when done
+    container.dispose();
+  }
+}
+```
+
 :::note
 Inside tests, do not use [ProviderContainer] directly.
 Use [ProviderContainer.test](https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/ProviderContainer/ProviderContainer.test.html) instead.
@@ -26,6 +51,32 @@ test('Counter starts at 0 and can be incremented', () {
 ```
 :::
 
+### Using a ProviderScope for Flutter applications
+
+In Flutter applications, you shouldn't use [ProviderContainer] directly.
+Instead, you should use [ProviderScope], which is a widget equivalent of [ProviderContainer].
+
+The end-result is the same: Create a [ProviderScope] in your `main`. After that, you can
+use [Consumers](./consumers.mdx) to read and modify providers in your widgets.
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+void main() {
+  runApp(
+    ProviderScope(
+      child: Consumer(
+        builder: (context, ref, _) {
+          final counter = ref.watch(counterProvider);
+
+          // TODO use "counter"
+        },
+      ),
+    ),
+  );
+}
+```
 
 ## Why store the state of providers inside a container?
 
