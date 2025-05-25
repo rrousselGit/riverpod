@@ -1,3 +1,58 @@
 ---
 title: Provider overrides
 ---
+import { Link } from "/src/components/Link";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+In Riverpod, _all_ providers can be overridden to change their behavior.
+This is useful for testing, debugging, or providing different implementations in different environments,
+or even <Link documentID="concepts2/scoping"/>.
+
+Overriding a provider is done at on <Link documentID="concepts2/containers"/>, using the `overrides` parameter.
+In it, you can specify a list of instructions on how to override a specific provider.
+
+Such "instruction" is created using your provider, combined with value methods named `overrideWithSomething`.  
+There are a bunch of these methods available, but all of them have their name starting with `overrideWith`.
+This includes:
+- [overrideWith](https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/Provider/overrideWith.html)
+- [overrideWithValue](https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/FutureProvider/overrideWithValue.html)
+- [overrideWithBuild](https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/StreamProvider/overrideWithBuild.html)
+
+A typical override looks like this:
+
+<Tabs>
+<TabItem value="scope" label="ProviderScope">
+
+```dart
+void main() {
+  runApp(
+    ProviderScope(
+      overrides: [
+        // Your overrides are defined here.
+        // The following shows how to override a "counter provider"
+        // to use a different initial value.
+        counterProvider.overrideWith((ref) => 42),
+      ]
+    )
+  );
+}
+```
+</TabItem>
+<TabItem value="container" label="ProviderContainer">
+
+```dart
+final container = ProviderContainer(
+  overrides: [
+    // Your overrides are defined here.
+    // The following shows how to override a "counter provider"
+    // to use a different initial value.
+    counterProvider.overrideWith((ref) => 42),
+  ]
+);
+```
+</TabItem>
+</Tabs>
