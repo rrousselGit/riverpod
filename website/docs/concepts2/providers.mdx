@@ -63,20 +63,24 @@ to access the same value:
 On top of basic caching, providers then add various features to make
 them more powerful:
 
-- Built-in cache invalidation mechanisms.  
+- **Built-in cache invalidation mechanisms**  
   In particular, [Ref.watch](https://pub.dev/documentation/riverpod/latest/riverpod/Ref/watch.html)
   allows you to combined caches together, automatically invalidating what is needed.
-- Automatic disposal of resources.  
+- **<Link documentID="concepts2/auto_dispose" />** <br/>
   Providers can automatically release resources when they are no longer needed.
-- Data-binding.  
+- **Data-binding**  
   Providers remove the need for a [FutureBuilder](https://api.flutter.dev/flutter/widgets/FutureBuilder-class.html)
   or a [StreamBuilder](https://api.flutter.dev/flutter/widgets/StreamBuilder-class.html).
-- Automatic error handling.  
+- **Automatic error handling**  
   Providers can automatically catch errors and expose them to the UI.
-- Built-in mocking support, for better testing.
-- Offline persistence.  
+- **Mocking support**  
+  For better testing and other purposes, all providers can be mocked.
+  See <Link documentID="concepts2/overrides" />.
+- **<Link documentID="concepts2/offline"/>** <br/>
   The result of a provider can be persisted to disk, and automatically
   reloaded when the app is restarted.
+- **<Link documentID="concepts2/mutations" />** <br/>
+  Providers offer a built-in way for UIs render a spinner/error for side effects (such as form submission).
 
 Providers come 6 variants:
 
