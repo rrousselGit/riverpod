@@ -1,3 +1,405 @@
 ---
 title: Refs
 ---
+import { Link } from "/src/components/Link";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+
+Refs are the primary way to interact with <Link documentID="concepts2/providers"/>.  
+Refs are fairly similar to the `BuildContext` in Flutter, but for providers instead of widgets.
+A non-exhaustive list of things you can do with a ref:
+- read/observe the state of a provider
+- check if a provider currently is loaded or
+- reset the state of a provider
+
+On top of that, [Ref] also enables a provider to observe life-cycles about its own state.
+Think "initState" and "dispose", but for providers. This includes methods such as:
+- [onDispose]
+- [onCancel]
+- [onPause]
+- etc.
+
+## How to obtain a [Ref]
+
+Obtaining a [Ref] depends on where you are in your app.
+
+Providers naturally have access to a Ref. You can find it as parameter of 
+the initializer function, or as a property of Notifier classes.
+
+<AutoSnippet
+  codegen={`
+  @riverpod
+  int myProvider(Ref ref) {
+    // ref is available here
+    ...
+  }
+  
+  @riverpod
+  class MyNotifier extends _$MyNotifier {
+    @override
+    int build() {
+      // this.ref is available anywhere inside notifiers
+      ref.watch(someProvider);
+      ...
+    }
+  }
+  `}
+  raw={`
+  final myProvider = Provider<int>((ref) {
+    // ref is available here
+    ...
+  });
+  
+  final myNotifierProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
+  
+  class MyNotifier extends Notifier<int> {
+    @override
+    int build() {
+      // this.ref is available anywhere inside notifiers
+      ref.watch(someProvider);
+      ...
+    }
+  }
+  `}
+/>
+
+To obtain a [Ref] inside widgets, you need <Link documentID="concepts2/consumers"/>.
+
+```dart
+Consumer(
+  builder: (context, ref, _) {
+    // ref is available here
+    final value = ref.watch(myProvider);
+    return Text('$value');
+  },
+);
+```
+
+**I am never inside a widget, nor a provider. How do I get a Ref then?**  
+If you are neither inside widgets nor providers, chances are whatever you are using
+is still loosely connected to a widget/provider.
+
+In that case, simply pass the ref you obtained from your widget/provider to your function/object of choice:
+
+```dart
+void myFunction(WidgetRef ref) {
+  // You can pass the ref around!
+}
+
+...
+
+Consumer(
+  builder: (context, ref, _) {
+    return ElevatedButton(
+      onPressed: () => myFunction(ref), // Pass the ref to your function
+      child: Text('Click me'),
+    );
+  },
+);
+```
+
+## Using Refs to interact with providers
+
+Interactions with providers generally fall under two categories:
+- Listening to a provider's state
+- Modifying a provider's state 
+  (e.g., resetting it, updating it, etc.)
+
+### Listening to a provider's state
+
+Riverpod offers two ways to listen to a provider's state:
+- [Ref.watch] - This is a "declarative" way of listening to providers.  
+  It is the most common way to listen to providers, and should be your go to choice.
+- [Ref.listen] - This is a "manual" way of listening to providers.  
+  It is use typical "addListener" style of listening. Powerful, but more complex.
+
+For the following examples, consider a provider that updates every second:
+
+<AutoSnippet
+  codegen={`
+  @riverpod
+  class Tick extends _$Tick {
+    @override
+    int build() {
+      final timer = Timer.periodic(Duration(seconds: 1), (_) => state++);
+      ref.onDispose(timer.cancel);
+      return 0;
+    }
+  }
+  `}
+  raw={`
+  final tickProvider = NotifierProvider<Tick, int>(Tick.new);
+  class Tick extends Notifier<int> {
+    @override
+    int build() {
+      final timer = Timer.periodic(Duration(seconds: 1), (_) => state++);
+      ref.onDispose(timer.cancel);
+      return 0;
+    }
+  }
+  `}
+/>
+
+#### Ref.watch
+
+[Ref.watch] is Riverpod's defining feature. It enables combining providers together seamlessly,
+and easily have your UI update when a provider's state changes.
+
+Using [Ref.watch] is similar to using an `InheritedWidget` in Flutter.
+In Flutter, when you call `Theme.of(context)`, your widget subscribes to the `Theme`
+and will rebuild whenever the `Theme` changes. Similarly, when you call `ref.watch(myProvider)`,
+your widget/provider subscribes to `myProvider`, and will rebuild whenever `myProvider` changes.
+
+The following code shows a <Link documentID="concepts2/consumers"/> that automatically updates whenever our `Tick` provider updates:
+
+```dart
+Consumer(
+  builder: (context, ref, _) {
+    final tick = ref.watch(tickProvider);
+    return Text('Tick: $tick');
+  },
+);
+```
+
+The most interesting part of [Ref.watch] is that providers can use it too!  
+For example, we could create a provider that returns "is tick divisible by 4?":
+
+<AutoSnippet
+  codegen={`
+  @riverpod
+  bool isDivisibleBy4(Ref ref) {
+    final tick = ref.watch(tickProvider);
+    return tick % 4 == 0;
+  }
+  `}
+  raw={`
+  final isDivisibleBy4 = Provider<bool>((ref) {
+    final tick = ref.watch(tickProvider);
+    return tick % 4 == 0;
+  });
+  `}
+/>
+
+Then, we could listen to this new provider in our UI instead:
+
+```dart
+Consumer(
+  builder: (context, ref, _) {
+    final isDivisibleBy4 = ref.watch(isDivisibleBy4Provider);
+    return Text('Can tick be divided by 4? ${isDivisibleBy4}');
+  },
+);
+```
+
+Now, instead of updating every second, our UI will only update
+when the boolean value changes.  
+
+#### Ref.listen
+
+[Ref.listen] is a more manual way of listening to providers.
+It is similar to the `addListener` method of `ChangeNotifier`, or the `Stream.listen` method.
+
+This method is useful when you want to perform a side-effect when a provider's state changes, such as
+- Showing a dialog
+- Navigating to a new screen
+- Logging a message
+- etc.
+
+<AutoSnippet
+  codegen={`
+  @riverpod
+  int example(Ref ref) {
+    ref.listen(tickProvider, (previous, next) {
+      // This is called whenever tickProvider changes
+      print('Tick changed from $previous to $next');
+    });
+  
+    return 0;
+  }
+  `}
+  raw={`
+  final exampleProvider = Provider<int>((ref) {
+    ref.listen(tickProvider, (previous, next) {
+      // This is called whenever tickProvider changes
+      print('Tick changed from $previous to $next');
+    });
+  
+    return 0;
+  });
+  `}
+/>
+
+```dart
+Consumer(
+  builder: (context, ref, _) {
+    ref.listen(tickProvider, (previous, next) {
+      // This is called whenever tickProvider changes
+      print('Tick changed from $previous to $next');
+    });
+  
+    return Text('Listening to tick changes');
+  },
+);
+```
+
+:::note
+It is safe to use [WidgetRef.listen] inside the `build` method of a widget. This is how the
+method is designed to be used.  
+If you want to listen to providers outside of `build` (such as `State.initState`), use [WidgetRef.listenManual] instead.
+:::
+
+
+### Resetting a provider's state
+
+Using [Ref.invalidate], you can reset a provider's state.  
+This will tell Riverpod to discard the current state and re-evaluate the provider the next time it is read.
+
+The following example will reset the tick to `0`:
+
+```dart
+Consumer(
+  builder: (context, ref, _) {
+    return ElevatedButton(
+      onPressed: () {
+        // Reset the tick provider
+        // This will restart the tick from 0
+        ref.invalidate(tickProvider);
+      },
+      child: Text('Reset Tick'),
+    );
+  },
+);
+```
+
+:::tip
+If you need to obtain the new state right after resetting it, you can call [Ref.read]:
+
+```dart
+ref.invalidate(tickProvider);
+final newTick = ref.read(tickProvider);
+```
+Alternatively, you can use [Ref.refresh] to reset the provider and read its new state in one go:
+```dart
+final newTick = ref.refresh(tickProvider);
+```
+
+Both codes are strictly equivalent. [Ref.refresh] is syntax sugar for [Ref.invalidate] followed by [Ref.read].
+:::
+
+
+### Interacting with the provider's state inside user interactions
+
+A last use-case is to interact with a provider's state inside button clicks.
+In this scenario, we do not want to "listen" to the state. For this case, [Ref.read] exists.
+
+You can safely call [Ref.read] button clicks to perform work. The following example
+will print the current tick value when the button is clicked:
+
+```dart
+Consumer(
+  builder: (context, ref, _) {
+    return ElevatedButton(
+      onPressed: () {
+        // Read the current tick value
+        final tick = ref.read(tickProvider);
+        print('Current tick: $tick');
+      },
+      child: Text('Print Tick'),
+    );
+  },
+);
+```
+
+:::danger
+Do not use [Ref.read] as a mean to "optimize" your code by avoiding [Ref.watch].
+This will make your code more brittle, as changes in your provider's behavior could cause your
+UI to be out of sync with the provider's state.
+
+Either use [Ref.watch] anyway (as the difference is negligible) or use [select]:
+```dart
+Consumer(
+  builder: (context, ref, _) {
+    // ❌ Don't use "read" as a mean to ignore changes
+    final tick = ref.read(tickProvider);
+
+    // ✅ Use "watch" to listen to changes.
+    // This shouldn't be a bottle-neck in your apps. Do not over-optimize.
+    final tick = ref.watch(tickProvider);
+
+    // ✅ Use "select" to only listen to the specific part of the state you care about
+    final isEven = ref.watch(
+      tickProvider.select((tick) => tick.isEven),
+    );
+
+    ...
+  },
+);
+```
+:::
+
+
+### Listening to life-cycle events
+
+A provider-specific feature of [Ref] is the ability to listen to life-cycle events.
+These events are similar to the `initState`, `dispose`, and other life-cycle methods in Flutter widgets.
+
+Life-cycles listeners are registered using an "addListener" style API.
+Listeners are methods with a name that starts with `on`, such as [onDispose] or [onCancel].
+
+<AutoSnippet
+  codegen={`
+  @riverpod
+  int counter(Ref ref) {
+    ref.onDispose(() {
+      // This is called when the provider is disposed
+      print('Counter provider is being disposed');
+    });
+    
+    return 0;
+  }
+  `}
+  raw={`
+  final counterProvider = Provider<int>((ref) {
+    ref.onDispose(() {
+      // This is called when the provider is disposed
+      print('Counter provider is being disposed');
+    });
+    
+    return 0;
+  });
+  `}
+/>
+
+
+:::tip
+You do not need to "unregister" these listeners.  
+Riverpod automatically cleans them up when the provider is reset.
+
+Although if you wish to unregister them manually, you can do so by using the return
+value of the listener method.
+
+```dart
+final unregister = ref.onDispose(() {
+  print('This will never be called');
+});
+
+// This will unregister the "onDispose" listener
+unregister();
+```
+:::
+
+[Ref]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/Ref-class.html
+[Ref.watch]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/Ref/watch.html
+[Ref.listen]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/Ref/listen.html
+[Ref.invalidate]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/Ref/invalidate.html
+[Ref.refresh]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/Ref/refresh.html
+[Ref.read]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/Ref/read.html
+[WidgetRef.listen]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/WidgetRef/listen.html
+[WidgetRef.listenManual]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/WidgetRef/listenManual.html
+[WidgetRef]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/WidgetRef-class.html
+[onDispose]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/Ref/onDispose.html
+[onCancel]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/Ref/onCancel.html
+[onPause]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/Ref/onPause.html
+[select]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/misc/ProviderListenable/select.html
+[ProviderSubscription]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/hooks_riverpod/ProviderSubscription-class.html
