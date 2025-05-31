@@ -99,7 +99,7 @@ abstract class _$TodosNotifierBase extends $AsyncNotifier<List<Todo>> {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<List<Todo>>>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<List<Todo>>>,
+        AnyNotifier<AsyncValue<List<Todo>>, List<Todo>>,
         AsyncValue<List<Todo>>,
         Object?,
         Object?>;
@@ -114,21 +114,25 @@ abstract class _$TodosNotifierBase extends $AsyncNotifier<List<Todo>> {
 // JsonGenerator
 // **************************************************************************
 
-abstract class _$TodosNotifier extends _$TodosNotifierBase
-    with Persistable<List<Todo>, String, String> {
-  @override
-  FutureOr<void> persist({
-    String? key,
+abstract class _$TodosNotifier extends _$TodosNotifierBase {
+  /// The default key used by [persistJson].
+  String get key {
+    const resolvedKey = "TodosNotifier";
+    return resolvedKey;
+  }
+
+  /// A variant of [persist], for JSON-specific encoding.
+  ///
+  /// You can override [key] to customize the key used for storage.
+  FutureOr<void> persistJson({
     required FutureOr<Storage<String, String>> storage,
     String Function(List<Todo> state)? encode,
     List<Todo> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
   }) {
-    const resolvedKey = "TodosNotifier";
-
-    return super.persist(
-      key: key ?? resolvedKey,
-      storage: storage,
+    return persist<String, String>(
+      storage,
+      key: key,
       encode: encode ?? $jsonCodex.encode,
       decode: decode ??
           (encoded) {

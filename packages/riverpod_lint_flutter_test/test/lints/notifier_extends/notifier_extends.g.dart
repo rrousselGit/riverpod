@@ -53,7 +53,7 @@ abstract class _$MyNotifier extends $Notifier<int> {
     final created = build();
     final ref = this.ref as $Ref<int>;
     final element = ref.element
-        as $ClassProviderElement<AnyNotifier<int>, int, Object?, Object?>;
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -105,8 +105,8 @@ abstract class _$PrivateClass extends $Notifier<String> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<String>;
-    final element = ref.element
-        as $ClassProviderElement<AnyNotifier<String>, String, Object?, Object?>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<String, String>, String, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -228,7 +228,7 @@ abstract class _$Generics<A extends num, B> extends $Notifier<int> {
     final created = build();
     final ref = this.ref as $Ref<int>;
     final element = ref.element
-        as $ClassProviderElement<AnyNotifier<int>, int, Object?, Object?>;
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -350,7 +350,7 @@ abstract class _$NoGenerics<A extends num, B> extends $Notifier<int> {
     final created = build();
     final ref = this.ref as $Ref<int>;
     final element = ref.element
-        as $ClassProviderElement<AnyNotifier<int>, int, Object?, Object?>;
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -471,7 +471,7 @@ abstract class _$MissingGenerics<A, B> extends $Notifier<int> {
     final created = build();
     final ref = this.ref as $Ref<int>;
     final element = ref.element
-        as $ClassProviderElement<AnyNotifier<int>, int, Object?, Object?>;
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -592,7 +592,7 @@ abstract class _$WrongOrder<A, B> extends $Notifier<int> {
     final created = build();
     final ref = this.ref as $Ref<int>;
     final element = ref.element
-        as $ClassProviderElement<AnyNotifier<int>, int, Object?, Object?>;
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }

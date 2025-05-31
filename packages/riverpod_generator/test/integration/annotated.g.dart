@@ -182,8 +182,8 @@ abstract class _$ClassBased extends $Notifier<String> {
       _$args,
     );
     final ref = this.ref as $Ref<String>;
-    final element = ref.element
-        as $ClassProviderElement<AnyNotifier<String>, String, Object?, Object?>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<String, String>, String, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -360,8 +360,8 @@ abstract class _$NotCopiedClassBased extends $Notifier<String> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<String>;
-    final element = ref.element
-        as $ClassProviderElement<AnyNotifier<String>, String, Object?, Object?>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<String, String>, String, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
