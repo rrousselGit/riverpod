@@ -174,8 +174,8 @@ abstract class _$GeneratedClass extends $Notifier<_Test> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<_Test>;
-    final element = ref.element
-        as $ClassProviderElement<AnyNotifier<_Test>, _Test, Object?, Object?>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<_Test, _Test>, _Test, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -273,8 +273,8 @@ abstract class _$GeneratedClassFamily extends $Notifier<_Test> {
       _$args,
     );
     final ref = this.ref as $Ref<_Test>;
-    final element = ref.element
-        as $ClassProviderElement<AnyNotifier<_Test>, _Test, Object?, Object?>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<_Test, _Test>, _Test, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -447,8 +447,8 @@ abstract class _$$DynamicClass extends $Notifier<Object?> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<Object?>;
-    final element = ref.element as $ClassProviderElement<AnyNotifier<Object?>,
-        Object?, Object?, Object?>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<Object?, Object?>, Object?, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -547,8 +547,8 @@ abstract class _$$DynamicClassFamily extends $Notifier<Object?> {
       _$args,
     );
     final ref = this.ref as $Ref<Object?>;
-    final element = ref.element as $ClassProviderElement<AnyNotifier<Object?>,
-        Object?, Object?, Object?>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<Object?, Object?>, Object?, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -804,7 +804,10 @@ abstract class _$AliasClass extends $Notifier<AsyncValue<int>> {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<int>>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
+        AnyNotifier<AsyncValue<int>, AsyncValue<int>>,
+        AsyncValue<int>,
+        Object?,
+        Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -903,7 +906,10 @@ abstract class _$AliasClassFamily extends $Notifier<AsyncValue<int>> {
     );
     final ref = this.ref as $Ref<AsyncValue<int>>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
+        AnyNotifier<AsyncValue<int>, AsyncValue<int>>,
+        AsyncValue<int>,
+        Object?,
+        Object?>;
     element.handleValue(ref, created);
   }
 }

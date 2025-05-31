@@ -94,21 +94,25 @@ class JsonGenerator extends ParserGenerator<JsonPersist> {
 
     buffer.writeln(
       '''
-abstract class $notifierClass$genericsDefinition extends $baseClass
-    with Persistable<${provider.valueTypeDisplayString}, String, String> {
-  @override
-  FutureOr<void> persist({
-    String? key,
-    required FutureOr<Storage<String, String>> storage,
+abstract class $notifierClass$genericsDefinition extends $baseClass {
+  /// The default key used by [persistJson].
+  String get key {
+    $resolvedKey
+    return resolvedKey;
+  }
+
+  /// A variant of [persist], for JSON-specific encoding.
+  ///
+  /// You can override [key] to customize the key used for storage.
+  FutureOr<void> persistJson(
+    FutureOr<Storage<String, String>> storage, {
     String Function(${provider.valueTypeDisplayString} state)? encode,
     ${provider.valueTypeDisplayString} Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
   }) {
-    $resolvedKey
-
-    return super.persist(
-      key: key ?? resolvedKey,
-      storage: storage,
+    return persist<String, String>(
+      storage,
+      key: key,
       encode: encode ?? \$jsonCodex.encode,
       decode: decode ?? (encoded) {
         final e = \$jsonCodex.decode(encoded);

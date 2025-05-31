@@ -55,7 +55,7 @@ abstract class _$TodoList extends $Notifier<List<Todo>> {
     final created = build();
     final ref = this.ref as $Ref<List<Todo>>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<List<Todo>>, List<Todo>, Object?, Object?>;
+        AnyNotifier<List<Todo>, List<Todo>>, List<Todo>, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }

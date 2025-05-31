@@ -137,7 +137,7 @@ abstract class _$BugsEncounteredNotifier extends $AsyncNotifier<int> {
     );
     final ref = this.ref as $Ref<AsyncValue<int>>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
+        AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }

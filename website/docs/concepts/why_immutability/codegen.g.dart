@@ -56,7 +56,10 @@ abstract class _$ThemeNotifier extends $Notifier<ThemeSettings> {
     final created = build();
     final ref = this.ref as $Ref<ThemeSettings>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<ThemeSettings>, ThemeSettings, Object?, Object?>;
+        AnyNotifier<ThemeSettings, ThemeSettings>,
+        ThemeSettings,
+        Object?,
+        Object?>;
     element.handleValue(ref, created);
   }
 }

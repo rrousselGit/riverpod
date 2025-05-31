@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_final_locals
+
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
@@ -8,6 +10,35 @@ import 'package:test/test.dart';
 import '../src/matrix.dart';
 import '../src/utils.dart';
 import '../third_party/fake_async.dart';
+
+// ignore: unreachable_from_main, inference test
+class EncodedT {}
+
+// ignore: unreachable_from_main, inference test
+class KeyT {}
+
+// ignore: unreachable_from_main, inference test
+class CanInferPersist extends Notifier<int> {
+  @override
+  int build() {
+    final FutureOr<Storage<KeyT, EncodedT>> storage = Future.error(Exception());
+
+    persist(
+      storage,
+      key: KeyT(),
+      encode: (value) {
+        int v = value;
+        return EncodedT();
+      },
+      decode: (encoded) {
+        EncodedT e = encoded;
+        return 42;
+      },
+    );
+
+    return 0;
+  }
+}
 
 void main() {
   group('Offline', () {
@@ -136,15 +167,13 @@ void main() {
         test('supports async storage', () async {
           final provider = factory.simpleProvider(
             (ref, self) {
-              final persistable = self as Persistable;
-
-              persistable.persist(
-                key: 'key',
-                storage: Future.value(
+              self.persist(
+                Future.value(
                   DelegatingStorage(
                     read: (_) => Future.value(const PersistedData(42)),
                   ),
                 ),
+                key: 'key',
                 encode: (value) => value,
                 decode: (encoded) => encoded,
               );
@@ -519,6 +548,7 @@ class Encode<T> with Mock {
   Object? call(T? value);
 }
 
+// ignore: avoid_types_as_parameter_names
 class Delete<KeyT> with Mock {
   void call(KeyT? key);
 }
@@ -529,7 +559,7 @@ final matrix = TestMatrix<TestFactory<Object?>>({
   ...notifierProviderFactory.values,
 });
 
-extension on AnyNotifier<Object?> {
+extension on AnyNotifier<Object?, Object?> {
   Object? get stateOrNull {
     final that = this;
     switch (that) {
@@ -578,7 +608,8 @@ extension on TestFactory<Object?> {
   }
 
   ProviderBase<Object?> simpleProvider(
-    FutureOr<Object?> Function(Ref, AnyNotifier<Object?> notifier) createCb, {
+    FutureOr<Object?> Function(Ref, AnyNotifier<Object?, Object?> notifier)
+        createCb, {
     Storage? storage,
     Object Function(Object? args)? persistKey,
     Object? Function(Object? encoded)? decode,
@@ -596,12 +627,12 @@ extension on TestFactory<Object?> {
 
     FutureOr<Object?> create(
       Ref ref,
-      AnyNotifier<Object?> self, {
+      AnyNotifier<Object?, Object?> self, {
       Object? Function()? args,
     }) {
       if (autoPersist) {
-        (self as Persistable<Object?, Object?, Object?>).persist(
-          storage: storage!,
+        self.persist(
+          storage!,
           key: persistKey!(args?.call()),
           encode: encode!,
           decode: decode!,
@@ -611,7 +642,10 @@ extension on TestFactory<Object?> {
       return createCb(ref, self);
     }
 
-    FutureOr<Object?> familyCreate(Ref ref, AnyNotifier<Object?> self) {
+    FutureOr<Object?> familyCreate(
+      Ref ref,
+      AnyNotifier<Object?, Object?> self,
+    ) {
       return create(ref, self, args: () => (self as dynamic).arg);
     }
 
@@ -655,7 +689,7 @@ extension on TestFactory<Object?> {
       streamNotifier: (factory) {
         Stream<Object?> handle(
           Ref ref,
-          AnyNotifier<Object?> self,
+          AnyNotifier<Object?, Object?> self,
         ) {
           final futureOR =
               factory.isFamily ? familyCreate(ref, self) : create(ref, self);
@@ -746,7 +780,7 @@ extension on Object? {
     switch (that) {
       case $Notifier<Object?>():
         return that.stateOrNull.valueOf;
-      case AnyNotifier<Object?>():
+      case AnyNotifier<Object?, Object?>():
         return that.state.valueOf;
       case AsyncValue<Object?>():
         return that.value;
@@ -756,6 +790,7 @@ extension on Object? {
   }
 }
 
+// ignore: avoid_types_as_parameter_names
 class DelegatingStorage<KeyT, EncodedT> implements Storage<KeyT, EncodedT> {
   DelegatingStorage({
     required FutureOr<PersistedData<EncodedT>?> Function(KeyT key) read,

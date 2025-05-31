@@ -198,7 +198,7 @@ abstract class _$GenericClass<T extends num> extends $AsyncNotifier<List<T>> {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<List<T>>>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<List<T>>>,
+        AnyNotifier<AsyncValue<List<T>>, List<T>>,
         AsyncValue<List<T>>,
         Object?,
         Object?>;
@@ -323,7 +323,10 @@ abstract class _$GenericArg<T extends num> extends $AsyncNotifier<String> {
     );
     final ref = this.ref as $Ref<AsyncValue<String>>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+        AnyNotifier<AsyncValue<String>, String>,
+        AsyncValue<String>,
+        Object?,
+        Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -617,7 +620,10 @@ abstract class _$PublicClass extends $AsyncNotifier<String> {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<String>>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+        AnyNotifier<AsyncValue<String>, String>,
+        AsyncValue<String>,
+        Object?,
+        Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -662,7 +668,10 @@ abstract class _$PrivateClass extends $AsyncNotifier<String> {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<String>>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+        AnyNotifier<AsyncValue<String>, String>,
+        AsyncValue<String>,
+        Object?,
+        Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -752,7 +761,10 @@ abstract class _$FamilyOrClass extends $AsyncNotifier<String> {
     );
     final ref = this.ref as $Ref<AsyncValue<String>>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+        AnyNotifier<AsyncValue<String>, String>,
+        AsyncValue<String>,
+        Object?,
+        Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -888,7 +900,10 @@ abstract class _$FamilyClass extends $AsyncNotifier<String> {
     );
     final ref = this.ref as $Ref<AsyncValue<String>>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+        AnyNotifier<AsyncValue<String>, String>,
+        AsyncValue<String>,
+        Object?,
+        Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -1044,8 +1059,8 @@ abstract class _$Regression3490<Model, Sort, Cursor> extends $Notifier<void> {
       parentId: _$args.parentId,
     );
     final ref = this.ref as $Ref<void>;
-    final element = ref.element
-        as $ClassProviderElement<AnyNotifier<void>, void, Object?, Object?>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<void, void>, void, Object?, Object?>;
     element.handleValue(ref, null);
   }
 }

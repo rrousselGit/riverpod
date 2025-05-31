@@ -220,7 +220,7 @@ abstract class _$MyNotifier extends $Notifier<int> {
     );
     final ref = this.ref as $Ref<int>;
     final element = ref.element
-        as $ClassProviderElement<AnyNotifier<int>, int, Object?, Object?>;
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -272,8 +272,8 @@ abstract class _$Regression2959 extends $Notifier<void> {
   void runBuild() {
     build();
     final ref = this.ref as $Ref<void>;
-    final element = ref.element
-        as $ClassProviderElement<AnyNotifier<void>, void, Object?, Object?>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<void, void>, void, Object?, Object?>;
     element.handleValue(ref, null);
   }
 }
