@@ -12,7 +12,7 @@ import '../framework.dart';
 /// {@template storage_options}
 /// Options to enable a [Storage] to persist state.
 ///
-/// Those are passed to [AnyNotifier.persist].
+/// Those are passed to [NotifierPersistX.persist].
 /// {@endtemplate}
 final class StorageOptions {
   /// {@macro storage_options}
@@ -80,7 +80,7 @@ final class PersistedData<T> {
 
 /// An interface to enable Riverpod to interact with a database.
 ///
-/// This is used in conjunction with [AnyNotifier.persist] to enable persistence
+/// This is used in conjunction with [NotifierPersistX.persist] to enable persistence
 /// for a notifier.
 ///
 /// Storages are generally implemented by third-party packages.
@@ -102,11 +102,11 @@ abstract class Storage<KeyT extends Object?, EncodedT extends Object?> {
   /// If no data is associated with [key], this method should return `null`.
   /// Otherwise it should return the data associated with [key].
   ///
-  /// It is fine to return expired data, as [AnyNotifier.persist] will handle the
+  /// It is fine to return expired data, as [NotifierPersistX.persist] will handle the
   /// expiration logic.
   ///
   /// If possible, make this method synchronous. This can enable
-  /// [AnyNotifier.persist] to be synchronous too ; which will allow the persisted
+  /// [NotifierPersistX.persist] to be synchronous too ; which will allow the persisted
   /// data to be available as soon as possible in the UI.
   FutureOr<PersistedData<EncodedT>?> read(KeyT key);
 
@@ -119,7 +119,7 @@ abstract class Storage<KeyT extends Object?, EncodedT extends Object?> {
   /// Deletes the data associated with [key].
   ///
   /// If [key] does not exist, this method should do nothing.
-  /// This method will usually be called by [AnyNotifier.persist] when either
+  /// This method will usually be called by [NotifierPersistX.persist] when either
   /// [StorageOptions.destroyKey] changes or [StorageOptions.cacheTime] expires.
   FutureOr<void> delete(KeyT key);
 }

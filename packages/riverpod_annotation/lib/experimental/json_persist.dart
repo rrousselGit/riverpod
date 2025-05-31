@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:riverpod/experimental/persist.dart';
 
 import 'persist.dart';
 
@@ -12,7 +11,7 @@ import 'persist.dart';
 /// such as [int], [String], [bool], [double], [List], [Map], or objects that
 /// contain a `fromJson/toJson` method pair.
 ///
-/// Notifiers should then call [Persistable.persist] in their `build` method,
+/// Notifiers should then call [NotifierPersistX.persist] in their `build` method,
 /// and pass a compatible [Storage].
 ///
 /// ```dart
