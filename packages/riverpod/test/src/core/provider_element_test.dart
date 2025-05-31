@@ -110,8 +110,33 @@ void main() {
         () => fakeAsync((fake) async {
           final container = ProviderContainer.test();
           final dep = Provider(
-            (ref) => throw StateError('message'),
+            (ref) => throw Exception('message'),
             retry: (count, err) => null,
+          );
+          var buildCount = 0;
+          final provider = Provider((ref) {
+            buildCount++;
+            ref.watch(dep);
+          });
+
+          container.listen(
+            provider,
+            (prev, next) {},
+            onError: (e, s) {},
+          );
+
+          fake.elapse(const Duration(hours: 1));
+
+          expect(buildCount, 1);
+        }),
+      );
+
+      test(
+        'default ignores Errors',
+        () => fakeAsync((fake) async {
+          final container = ProviderContainer.test();
+          final dep = Provider(
+            (ref) => throw Error(),
           );
           var buildCount = 0;
           final provider = Provider((ref) {
@@ -138,7 +163,7 @@ void main() {
           var buildCount = 0;
           final provider = Provider((ref) {
             buildCount++;
-            throw StateError('');
+            throw Exception('');
           });
 
           container.listen(
@@ -155,6 +180,7 @@ void main() {
             1600,
             3200,
             6400,
+            6400,
           ];
 
           for (final (index, time) in times.indexed) {
@@ -164,6 +190,29 @@ void main() {
             fake.elapse(const Duration(milliseconds: 10));
             expect(buildCount, index + 2);
           }
+        }),
+      );
+
+      test(
+        'default retries at most 10 times',
+        () => fakeAsync((fake) async {
+          final container = ProviderContainer.test();
+          var buildCount = 0;
+          final provider = Provider((ref) {
+            buildCount++;
+            throw Exception('');
+          });
+
+          container.listen(
+            provider,
+            (prev, next) {},
+            fireImmediately: true,
+            onError: (e, s) {},
+          );
+
+          fake.elapse(const Duration(hours: 1));
+
+          expect(buildCount, 11);
         }),
       );
 
