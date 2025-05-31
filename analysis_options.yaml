@@ -17,6 +17,8 @@ analyzer:
     # for the sake of consistency.
     unused_element_parameter: false
     unrecognized_error_code: ignore
+    # Temporary disable due to tons of deprecated rules in analyzer
+    deprecated_member_use: ignore
 
 linter:
   rules:
