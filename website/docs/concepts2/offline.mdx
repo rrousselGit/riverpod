@@ -1,3 +1,61 @@
 ---
 title: Offline persistence
 ---
+import { Link } from "/src/components/Link";
+import {
+  AutoSnippet,
+} from "/src/components/CodeSnippet";
+
+Offline persistence is the ability to store the state of <Link documentID="concepts2/providers" />
+on the user's device, so that it can be accessed even when the user is offline or when the app is restarted.
+
+Riverpod is independent from the underlying database or the protocol used to store the data.
+But by default, Riverpod provides [riverpod_sqflite] alongside basic JSON serialization.
+
+:::caution
+Riverpod's offline persistence is designed to be a simple wrapper around
+databases. It is not designed to fully replace code for interacting with a database.
+
+You may still need to manually interact with a database for:
+- Advanced Database migrations
+- More optimized storage strategies
+- Unusual use-cases
+:::
+
+
+Offline persistence works using two parts:
+1. [Storage], an interface to interact with your database.
+  This is typically implemented by a package (such as [riverpod_sqflite]).
+1. [Persistable], a mixin applied on notifiers to make them persistable.
+  
+
+## Persisting the state of a provider
+
+Currently, only "Notifiers" can be persisted. See <Link documentID="concepts2/providers" /> for more information.
+
+### Understanding keys
+
+
+## Using simplified JSON serialization (code-generation)
+
+## Using 
+
+
+
+
+## Dealing with database migration
+
+
+## Changing the cache duration
+
+By default, state is only cached for 2 days. This is to prevent
+the database from continuously growing and consuming too much space.
+
+This is generally safe, as Riverpod is designed to be use primarily
+as a cache for IO operations (network requests, database queries, etc).
+But such default will not be suitable for all use-cases, such as if
+you want to store user preferences.
+
+## Creating your own Storage
+
+## Implementing your own offline persistence from scratch

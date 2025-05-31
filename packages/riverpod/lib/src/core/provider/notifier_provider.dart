@@ -213,6 +213,11 @@ abstract class $SyncNotifierBase<StateT> extends $Value<StateT>
 ///
 /// This does not cause notifiers to be persisted by default.
 /// Instead, notifiers have to call [persist] in their `build` method.
+///
+/// See also
+/// - [Offline persistence](https://riverpod.dev/docs/concepts2/offline)
+/// - [JsonPersist](https://pub.dev/documentation/riverpod_annotation/3.0.0-dev.15/experimental_json_persist/JsonPersist-class.html)
+///   for a code-generation based way to use this mixin, using JSON encoding.
 @publicInPersist
 mixin Persistable<ValueT, KeyT, EncodedT> on $Value<ValueT> {
   void _debugAssertNoDuplicateKey(
