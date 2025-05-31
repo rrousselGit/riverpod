@@ -1,6 +1,5 @@
 // ignore_for_file: avoid_unused_constructor_parameters
 
-import 'package:riverpod/experimental/persist.dart';
 import 'package:riverpod_annotation/experimental/json_persist.dart';
 import 'package:riverpod_annotation/experimental/persist.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -21,26 +20,24 @@ FutureOr<Storage<String, String>> storage(Ref ref) {
 class CustomAnnotation extends _$CustomAnnotation {
   @override
   Future<String> build() async {
-    await persist(storage: ref.watch(storageProvider.future));
+    await persist2(storage: ref.watch(storageProvider.future));
     return state.value ?? '';
   }
 }
 
-abstract class _$CustomAnnotation extends _$CustomAnnotationBase
-    with Persistable<String, Object, String> {
-  @override
-  FutureOr<void> persist({
+abstract class _$CustomAnnotation extends _$CustomAnnotationBase {
+  FutureOr<void> persist2({
     Object? key,
     required FutureOr<Storage<Object, String>> storage,
     String Function(String state)? encode,
     String Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
   }) {
-    return super.persist(
+    return persist(
+      storage,
       key: key ?? 'CustomAnnotation',
-      storage: storage,
       encode: encode ?? (value) => value,
-      decode: decode ?? (encoded) => encoded,
+      decode: decode ?? (encoded) => encoded.toString(),
       options: options,
     );
   }
@@ -51,7 +48,7 @@ abstract class _$CustomAnnotation extends _$CustomAnnotationBase
 class Json extends _$Json {
   @override
   Future<Map<String, List<int>>> build(String arg) async {
-    persist(storage: ref.watch(storageProvider.future));
+    persistJson(ref.watch(storageProvider.future));
 
     return {};
   }
@@ -62,7 +59,7 @@ class Json extends _$Json {
 class Json2 extends _$Json2 {
   @override
   Future<Map<String, List<int>>> build() async {
-    persist(storage: ref.watch(storageProvider.future));
+    persistJson(ref.watch(storageProvider.future));
 
     return {};
   }
@@ -73,7 +70,7 @@ class Json2 extends _$Json2 {
 class CustomJson extends _$CustomJson {
   @override
   Future<Map<String, Bar>> build() async {
-    await persist(storage: ref.watch(storageProvider.future));
+    await persistJson(ref.watch(storageProvider.future));
 
     return state.value ?? {};
   }
@@ -83,11 +80,11 @@ class CustomJson extends _$CustomJson {
 @JsonPersist()
 class CustomKey extends _$CustomKey {
   @override
+  String get key => 'My key';
+
+  @override
   Future<Map<String, Bar>> build() async {
-    await persist(
-      key: 'My key',
-      storage: ref.watch(storageProvider.future),
-    );
+    await persistJson(ref.watch(storageProvider.future));
 
     return state.value ?? {};
   }
@@ -98,7 +95,7 @@ class CustomKey extends _$CustomKey {
 class CustomJsonWithArgs extends _$CustomJsonWithArgs {
   @override
   Future<Map<String, Bar>> build(int arg, String arg2, {int? arg3}) async {
-    await persist(storage: ref.watch(storageProvider.future));
+    await persistJson(ref.watch(storageProvider.future));
 
     return state.value ?? {};
   }
@@ -117,10 +114,10 @@ class Bar {
 class PassEncodeDecodeByHand extends _$PassEncodeDecodeByHand {
   @override
   Future<Map<String, String>> build() async {
-    await persist(
+    await persistJson(
+      ref.watch(storageProvider.future),
       decode: (encoded) => {'value': encoded},
       encode: (state) => state['value']!,
-      storage: ref.watch(storageProvider.future),
     );
 
     return state.value ?? {};

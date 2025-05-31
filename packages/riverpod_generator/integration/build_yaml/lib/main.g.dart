@@ -160,7 +160,7 @@ abstract class _$CountNotifier extends $Notifier<int> {
     final created = build();
     final ref = this.ref as $Ref<int>;
     final element = ref.element
-        as $ClassProviderElement<AnyNotifier<int>, int, Object?, Object?>;
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -206,7 +206,7 @@ abstract class _$CountAsyncNotifier extends $AsyncNotifier<int> {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<int>>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
+        AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -252,7 +252,7 @@ abstract class _$CountStreamNotifier extends $StreamNotifier<int> {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<int>>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
+        AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -574,7 +574,7 @@ abstract class _$CountNotifier2 extends $Notifier<int> {
     );
     final ref = this.ref as $Ref<int>;
     final element = ref.element
-        as $ClassProviderElement<AnyNotifier<int>, int, Object?, Object?>;
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -666,7 +666,7 @@ abstract class _$CountAsyncNotifier2 extends $AsyncNotifier<int> {
     );
     final ref = this.ref as $Ref<AsyncValue<int>>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
+        AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -759,7 +759,7 @@ abstract class _$CountStreamNotifier2 extends $StreamNotifier<int> {
     );
     final ref = this.ref as $Ref<AsyncValue<int>>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<int>>, AsyncValue<int>, Object?, Object?>;
+        AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }

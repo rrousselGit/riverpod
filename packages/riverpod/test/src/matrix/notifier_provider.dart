@@ -131,7 +131,6 @@ abstract class TestNotifier<StateT> implements $Notifier<StateT> {
 }
 
 class DeferredNotifier<StateT> extends Notifier<StateT>
-    with Persistable<StateT, Object?, Object?>
     implements TestNotifier<StateT> {
   DeferredNotifier(
     this._create, {
@@ -163,7 +162,6 @@ class DeferredNotifier<StateT> extends Notifier<StateT>
 }
 
 class DeferredFamilyNotifier<StateT> extends FamilyNotifier<StateT, int>
-    with Persistable<StateT, Object?, Object?>
     implements TestNotifier<StateT> {
   DeferredFamilyNotifier(
     this._create, {

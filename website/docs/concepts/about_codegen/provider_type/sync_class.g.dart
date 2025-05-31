@@ -54,8 +54,8 @@ abstract class _$Example extends $Notifier<String> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<String>;
-    final element = ref.element
-        as $ClassProviderElement<AnyNotifier<String>, String, Object?, Object?>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<String, String>, String, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }

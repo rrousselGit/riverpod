@@ -47,7 +47,10 @@ abstract class _$Example extends $StreamNotifier<String> {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<String>>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<String>>, AsyncValue<String>, Object?, Object?>;
+        AnyNotifier<AsyncValue<String>, String>,
+        AsyncValue<String>,
+        Object?,
+        Object?>;
     element.handleValue(ref, created);
   }
 }

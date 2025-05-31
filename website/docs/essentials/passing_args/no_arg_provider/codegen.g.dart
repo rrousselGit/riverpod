@@ -81,7 +81,7 @@ abstract class _$ActivityNotifier2 extends $AsyncNotifier<Activity> {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<Activity>>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<Activity>>,
+        AnyNotifier<AsyncValue<Activity>, Activity>,
         AsyncValue<Activity>,
         Object?,
         Object?>;

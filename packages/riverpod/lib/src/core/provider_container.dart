@@ -1183,7 +1183,7 @@ final class ProviderObserverContext {
   final ProviderContainer container;
 
   /// The notifier that triggered the event, if any.
-  final AnyNotifier<Object?>? notifier;
+  final AnyNotifier<Object?, Object?>? notifier;
 
   /// The pending mutation while the observer was called.
   ///
