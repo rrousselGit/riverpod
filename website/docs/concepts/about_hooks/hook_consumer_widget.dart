@@ -3,8 +3,8 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import '../combining_provider_states/read_in_provider/codegen.dart';
 
-import '../providers/creating_a_provider/codegen.dart';
 
 class MyValue {}
 
