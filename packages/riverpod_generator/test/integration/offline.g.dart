@@ -528,8 +528,8 @@ abstract class _$Json extends _$JsonBase {
   /// A variant of [persist], for JSON-specific encoding.
   ///
   /// You can override [key] to customize the key used for storage.
-  FutureOr<void> persistJson({
-    required FutureOr<Storage<String, String>> storage,
+  FutureOr<void> persistJson(
+    FutureOr<Storage<String, String>> storage, {
     String Function(Map<String, List<int>> state)? encode,
     Map<String, List<int>> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
@@ -559,8 +559,8 @@ abstract class _$Json2 extends _$Json2Base {
   /// A variant of [persist], for JSON-specific encoding.
   ///
   /// You can override [key] to customize the key used for storage.
-  FutureOr<void> persistJson({
-    required FutureOr<Storage<String, String>> storage,
+  FutureOr<void> persistJson(
+    FutureOr<Storage<String, String>> storage, {
     String Function(Map<String, List<int>> state)? encode,
     Map<String, List<int>> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
@@ -590,8 +590,8 @@ abstract class _$CustomJson extends _$CustomJsonBase {
   /// A variant of [persist], for JSON-specific encoding.
   ///
   /// You can override [key] to customize the key used for storage.
-  FutureOr<void> persistJson({
-    required FutureOr<Storage<String, String>> storage,
+  FutureOr<void> persistJson(
+    FutureOr<Storage<String, String>> storage, {
     String Function(Map<String, Bar> state)? encode,
     Map<String, Bar> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
@@ -621,8 +621,8 @@ abstract class _$CustomKey extends _$CustomKeyBase {
   /// A variant of [persist], for JSON-specific encoding.
   ///
   /// You can override [key] to customize the key used for storage.
-  FutureOr<void> persistJson({
-    required FutureOr<Storage<String, String>> storage,
+  FutureOr<void> persistJson(
+    FutureOr<Storage<String, String>> storage, {
     String Function(Map<String, Bar> state)? encode,
     Map<String, Bar> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
@@ -658,8 +658,8 @@ abstract class _$CustomJsonWithArgs extends _$CustomJsonWithArgsBase {
   /// A variant of [persist], for JSON-specific encoding.
   ///
   /// You can override [key] to customize the key used for storage.
-  FutureOr<void> persistJson({
-    required FutureOr<Storage<String, String>> storage,
+  FutureOr<void> persistJson(
+    FutureOr<Storage<String, String>> storage, {
     String Function(Map<String, Bar> state)? encode,
     Map<String, Bar> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
@@ -689,8 +689,8 @@ abstract class _$PassEncodeDecodeByHand extends _$PassEncodeDecodeByHandBase {
   /// A variant of [persist], for JSON-specific encoding.
   ///
   /// You can override [key] to customize the key used for storage.
-  FutureOr<void> persistJson({
-    required FutureOr<Storage<String, String>> storage,
+  FutureOr<void> persistJson(
+    FutureOr<Storage<String, String>> storage, {
     String Function(Map<String, String> state)? encode,
     Map<String, String> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),

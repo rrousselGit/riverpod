@@ -44,12 +44,7 @@ class Todo {
 final todosProvider =
     AsyncNotifierProvider<TodosNotifier, List<Todo>>(TodosNotifier.new);
 
-class TodosNotifier extends AsyncNotifier<List<Todo>>
-    // We mix-in [Persistable] to enable the automatic persistence of the state.
-    // Since the object will be encoded into JSON, we pass [String]/[String]
-    // as key/value types.
-    with
-        Persistable<List<Todo>, String, String> {
+class TodosNotifier extends AsyncNotifier<List<Todo>> {
   @override
   FutureOr<List<Todo>> build() async {
     // We call persist at the start of our `build` method.
@@ -60,12 +55,12 @@ class TodosNotifier extends AsyncNotifier<List<Todo>>
     // We "await" for persist to complete to make sure that the decoding is done
     // before we return the state.
     await persist(
+      // We pass our JsonSqFliteStorage instance. No need to "await" the Future.
+      // Riverpod will take care of that.
+      ref.watch(storageProvider.future),
       // A unique key for this state.
       // No other provider should use the same key.
       key: 'todos',
-      // We pass our JsonSqFliteStorage instance. No need to "await" the Future.
-      // Riverpod will take care of that.
-      storage: ref.watch(storageProvider.future),
       // By default, state is cached offline only for 2 days.
       // In this example, we tell Riverpod to cache the state forever.
       options: const StorageOptions(cacheTime: StorageCacheTime.unsafe_forever),

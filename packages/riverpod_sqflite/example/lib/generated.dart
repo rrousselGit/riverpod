@@ -45,10 +45,10 @@ class TodosNotifier extends _$TodosNotifier {
     // - Listen to changes on this provider and write those changes to the DB.
     // We "await" for persist to complete to make sure that the decoding is done
     // before we return the state.
-    await persist(
+    await persistJson(
       // We pass our JsonSqFliteStorage instance. No need to "await" the Future.
       // Riverpod will take care of that.
-      storage: ref.watch(storageProvider.future),
+      ref.watch(storageProvider.future),
       // By default, state is cached offline only for 2 days.
       // In this example, we tell Riverpod to cache the state forever.
       options: const StorageOptions(cacheTime: StorageCacheTime.unsafe_forever),

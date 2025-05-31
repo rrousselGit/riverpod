@@ -159,8 +159,8 @@ base class FunctionalFamily< //
 
 @internal
 @publicInCodegen
-base mixin $ClassFamilyOverride<NotifierT extends AnyNotifier<StateT>, StateT,
-    ValueT, CreatedT, ArgT> on Family {
+base mixin $ClassFamilyOverride<NotifierT extends AnyNotifier<StateT, ValueT>,
+    StateT, ValueT, CreatedT, ArgT> on Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(NotifierT Function() create) {
     return $FamilyOverride(
@@ -200,7 +200,7 @@ base mixin $ClassFamilyOverride<NotifierT extends AnyNotifier<StateT>, StateT,
 @internal
 @reopen
 base class ClassFamily< //
-        NotifierT extends AnyNotifier<StateT>,
+        NotifierT extends AnyNotifier<StateT, ValueT>,
         StateT,
         ValueT,
         ArgT,

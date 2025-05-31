@@ -89,7 +89,7 @@ final class TodosNotifierProvider
       $AsyncNotifierProviderElement(pointer);
 }
 
-String _$todosNotifierHash() => r'f7c580875a00ab559ff61cbd0f6986fe1fd515e6';
+String _$todosNotifierHash() => r'6068b8a1398c16a0e15532bb79ab8b702de84959';
 
 abstract class _$TodosNotifierBase extends $AsyncNotifier<List<Todo>> {
   FutureOr<List<Todo>> build();
@@ -124,8 +124,8 @@ abstract class _$TodosNotifier extends _$TodosNotifierBase {
   /// A variant of [persist], for JSON-specific encoding.
   ///
   /// You can override [key] to customize the key used for storage.
-  FutureOr<void> persistJson({
-    required FutureOr<Storage<String, String>> storage,
+  FutureOr<void> persistJson(
+    FutureOr<Storage<String, String>> storage, {
     String Function(List<Todo> state)? encode,
     List<Todo> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),

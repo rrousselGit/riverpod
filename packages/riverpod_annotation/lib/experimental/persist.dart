@@ -1,3 +1,11 @@
+export 'package:riverpod/src/internals.dart'
+    show
+        StorageOptions,
+        PersistedData,
+        Storage,
+        StorageCacheTime,
+        NotifierPersistX;
+
 /// {@template riverpod_persist_annotation}
 /// An interface to mark annotations as "used to enable persistence for a provider".
 ///

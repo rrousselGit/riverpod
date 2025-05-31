@@ -29,25 +29,6 @@ typedef RunNotifierBuild<NotifierT, CreatedT> = CreatedT Function(
   NotifierT notifier,
 );
 
-@internal
-abstract class $Value<ValueT> {
-  Ref get ref;
-  (Object?,)? _debugKey;
-
-  void _setStateFromValue(ValueT value);
-
-  FutureOr<void> _callEncode<KeyT, EncodedT>(
-    FutureOr<Storage<KeyT, EncodedT>> storage,
-    KeyT key,
-    EncodedT Function(ValueT state) encode,
-    StorageOptions options,
-  );
-
-  void Function() _listenSelfFromValue(
-    void Function() listener,
-  );
-}
-
 /// A base class for all "notifiers".
 ///
 /// This is a good interface to target for writing mixins for Notifiers.
@@ -70,7 +51,22 @@ abstract class $Value<ValueT> {
 /// ```
 /// {@category Notifiers}
 @publicInRiverpodAndCodegen
-mixin AnyNotifier<StateT> {
+mixin AnyNotifier<StateT, ValueT> {
+  (Object?,)? _debugKey;
+
+  void _setStateFromValue(ValueT value);
+
+  FutureOr<void> _callEncode<KeyT, EncodedT>(
+    FutureOr<Storage<KeyT, EncodedT>> storage,
+    KeyT key,
+    EncodedT Function(ValueT state) encode,
+    StorageOptions options,
+  );
+
+  void Function() _listenSelfFromValue(
+    void Function() listener,
+  );
+
   $Ref<StateT>? _ref;
 
   /// The [Ref] associated with this notifier.
@@ -154,70 +150,10 @@ mixin AnyNotifier<StateT> {
   /// regardless of whether they use arguments or not.
   @mustCallSuper
   void runBuild();
-}
 
-@internal
-abstract class $AsyncNotifierBase<ValueT> extends $Value<ValueT>
-    with AnyNotifier<AsyncValue<ValueT>> {
-  @override
-  void _setStateFromValue(ValueT value) {
-    state = AsyncData(value, isFromCache: true);
-  }
-
-  @override
-  void Function() _listenSelfFromValue(void Function() listener) =>
-      listenSelf((previous, next) => listener());
-
-  @override
-  FutureOr<void> _callEncode<KeyT, EncodedT>(
-    FutureOr<Storage<KeyT, EncodedT>> storage,
-    KeyT key,
-    EncodedT Function(ValueT state) encode,
-    StorageOptions options,
-  ) {
-    switch (state) {
-      case AsyncLoading():
-        return null;
-      case AsyncError():
-        return storage.then((storage) => storage.delete(key));
-      case AsyncData(:final value):
-        return storage
-            .then((storage) => storage.write(key, encode(value), options));
-    }
-  }
-}
-
-@internal
-abstract class $SyncNotifierBase<StateT> extends $Value<StateT>
-    with AnyNotifier<StateT> {
-  @override
-  void _setStateFromValue(StateT value) => state = value;
-
-  @override
-  void Function() _listenSelfFromValue(void Function() listener) =>
-      listenSelf((previous, next) => listener());
-
-  @override
-  FutureOr<void> _callEncode<KeyT, EncodedT>(
-    FutureOr<Storage<KeyT, EncodedT>> storage,
-    KeyT key,
-    EncodedT Function(StateT state) encode,
-    StorageOptions options,
-  ) {
-    return storage
-        .then((storage) => storage.write(key, encode(state), options));
-  }
-}
-
-/// A mixin that enables notifiers to be persisted to a database.
-///
-/// This does not cause notifiers to be persisted by default.
-/// Instead, notifiers have to call [persist] in their `build` method.
-@publicInPersist
-mixin Persistable<ValueT, KeyT, EncodedT> on $Value<ValueT> {
   void _debugAssertNoDuplicateKey(
     Object? key,
-    $Value<Object?> self,
+    AnyNotifier<Object?, Object?> self,
   ) {
     if (kDebugMode) {
       final selfElement = (self as AnyNotifier).elementOrNull();
@@ -228,8 +164,8 @@ mixin Persistable<ValueT, KeyT, EncodedT> on $Value<ValueT> {
         if (element == selfElement) continue;
         if (element is! $ClassProviderElement) continue;
 
-        final Object? notifier = element.classListenable.result?.value;
-        if (notifier is! $Value) continue;
+        final notifier = element.classListenable.result?.value;
+        if (notifier == null) continue;
 
         final otherKey = notifier._debugKey;
 
@@ -252,7 +188,13 @@ to a different value.
       }
     }
   }
+}
 
+/// Adds [persist] method to [AnyNotifier].
+///
+/// This is separate from [AnyNotifier] because it is experimental.
+@publicInPersist
+extension NotifierPersistX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
   /// Persist the state of a provider to a database.
   ///
   /// When calling this method, Riverpod will automatically listen to state
@@ -269,9 +211,9 @@ to a different value.
   /// The decoding of the state is only performed once, the first time
   /// the provider is built. Calling [persist] multiple times will not
   /// re-trigger the decoding.
-  FutureOr<void> persist({
+  FutureOr<void> persist<KeyT, EncodedT>(
+    FutureOr<Storage<KeyT, EncodedT>> storage, {
     required KeyT key,
-    required FutureOr<Storage<KeyT, EncodedT>> storage,
     required EncodedT Function(ValueT state) encode,
     required ValueT Function(EncodedT encoded) decode,
     StorageOptions options = const StorageOptions(),
@@ -337,17 +279,69 @@ to a different value.
 }
 
 @internal
-extension ClassBaseX<StateT> on AnyNotifier<StateT> {
-  $ClassProviderElement<AnyNotifier<StateT>, StateT, Object?, Object?>?
+abstract class $AsyncNotifierBase<ValueT>
+    with AnyNotifier<AsyncValue<ValueT>, ValueT> {
+  @override
+  void _setStateFromValue(ValueT value) {
+    state = AsyncData(value, isFromCache: true);
+  }
+
+  @override
+  void Function() _listenSelfFromValue(void Function() listener) =>
+      listenSelf((previous, next) => listener());
+
+  @override
+  FutureOr<void> _callEncode<KeyT, EncodedT>(
+    FutureOr<Storage<KeyT, EncodedT>> storage,
+    KeyT key,
+    EncodedT Function(ValueT state) encode,
+    StorageOptions options,
+  ) {
+    switch (state) {
+      case AsyncLoading():
+        return null;
+      case AsyncError():
+        return storage.then((storage) => storage.delete(key));
+      case AsyncData(:final value):
+        return storage
+            .then((storage) => storage.write(key, encode(value), options));
+    }
+  }
+}
+
+@internal
+abstract class $SyncNotifierBase<StateT> with AnyNotifier<StateT, StateT> {
+  @override
+  void _setStateFromValue(StateT value) => state = value;
+
+  @override
+  void Function() _listenSelfFromValue(void Function() listener) =>
+      listenSelf((previous, next) => listener());
+
+  @override
+  FutureOr<void> _callEncode<KeyT, EncodedT>(
+    FutureOr<Storage<KeyT, EncodedT>> storage,
+    KeyT key,
+    EncodedT Function(StateT state) encode,
+    StorageOptions options,
+  ) {
+    return storage
+        .then((storage) => storage.write(key, encode(state), options));
+  }
+}
+
+@internal
+extension ClassBaseX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
+  $ClassProviderElement<AnyNotifier<StateT, ValueT>, StateT, Object?, Object?>?
       elementOrNull() {
     final ref = _ref;
     if (ref == null) return null;
 
-    return ref.element as $ClassProviderElement<AnyNotifier<StateT>, StateT,
-        Object?, Object?>?;
+    return ref.element as $ClassProviderElement<AnyNotifier<StateT, ValueT>,
+        StateT, Object?, Object?>?;
   }
 
-  $ClassProviderElement<AnyNotifier<StateT>, StateT, Object?, Object?>
+  $ClassProviderElement<AnyNotifier<StateT, ValueT>, StateT, Object?, Object?>
       requireElement() {
     final ref = _ref;
     final element = elementOrNull();
@@ -376,7 +370,7 @@ extension ClassBaseX<StateT> on AnyNotifier<StateT> {
 @reopen
 @publicInCodegen
 abstract base class $ClassProvider< //
-    NotifierT extends AnyNotifier<StateT>,
+    NotifierT extends AnyNotifier<StateT, ValueT>,
     StateT,
     ValueT,
     CreatedT> extends ProviderBase<StateT> {
@@ -447,7 +441,7 @@ abstract base class $ClassProvider< //
 }
 
 final class _ClassProviderView<
-    NotifierT extends AnyNotifier<StateT>,
+    NotifierT extends AnyNotifier<StateT, ValueT>,
     StateT,
     ValueT,
     CreatedT> extends $ClassProvider<NotifierT, StateT, ValueT, CreatedT> {
@@ -501,7 +495,7 @@ final class _ClassProviderView<
 @internal
 @publicInCodegen
 abstract class $ClassProviderElement< //
-        NotifierT extends AnyNotifier<StateT>,
+        NotifierT extends AnyNotifier<StateT, ValueT>,
         StateT,
         ValueT,
         CreatedT> //
