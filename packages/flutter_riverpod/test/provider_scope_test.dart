@@ -28,7 +28,7 @@ void main() {
         var buildCount = 0;
         final provider = Provider((ref) {
           buildCount++;
-          throw UnimplementedError();
+          throw Exception();
         });
 
         final element = tester.element(find.byType(Container));
