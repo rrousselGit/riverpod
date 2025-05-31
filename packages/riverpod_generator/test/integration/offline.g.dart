@@ -138,7 +138,7 @@ final class JsonProvider
   }
 }
 
-String _$jsonHash() => r'a6ab4c02b107b6859b2c71809384e9ad65b0ee9f';
+String _$jsonHash() => r'e11c0c818cd6c17db4932b342b8f58f3ee9201ad';
 
 final class JsonFamily extends $Family
     with
@@ -216,7 +216,7 @@ final class Json2Provider
       $AsyncNotifierProviderElement(pointer);
 }
 
-String _$json2Hash() => r'fa74f7a2f050bac0bb8f18cf6fcd23bda46129c1';
+String _$json2Hash() => r'e78dd67d75e7b0df7664edd3ab751eb7a7510d2f';
 
 abstract class _$Json2Base extends $AsyncNotifier<Map<String, List<int>>> {
   FutureOr<Map<String, List<int>>> build();
@@ -265,7 +265,7 @@ final class CustomJsonProvider
       $AsyncNotifierProviderElement(pointer);
 }
 
-String _$customJsonHash() => r'4e1fd543858bfb9a0620c753eb749a18b8679a89';
+String _$customJsonHash() => r'bedf8824f5a581e95f701092cedaea530cbb6363';
 
 abstract class _$CustomJsonBase extends $AsyncNotifier<Map<String, Bar>> {
   FutureOr<Map<String, Bar>> build();
@@ -314,7 +314,7 @@ final class CustomKeyProvider
       $AsyncNotifierProviderElement(pointer);
 }
 
-String _$customKeyHash() => r'35fffedc57900626abaef0caa3c984ed7cf9bb0d';
+String _$customKeyHash() => r'1cf5b48308d38026d6db0a901e484affa49415c9';
 
 abstract class _$CustomKeyBase extends $AsyncNotifier<Map<String, Bar>> {
   FutureOr<Map<String, Bar>> build();
@@ -386,7 +386,7 @@ final class CustomJsonWithArgsProvider
 }
 
 String _$customJsonWithArgsHash() =>
-    r'50d79f954bb00f57343106c8a90db26d01ac7188';
+    r'990280fd7bf119dda26ef2951c5b9a50054e3c8f';
 
 final class CustomJsonWithArgsFamily extends $Family
     with
@@ -490,7 +490,7 @@ final class PassEncodeDecodeByHandProvider extends $AsyncNotifierProvider<
 }
 
 String _$passEncodeDecodeByHandHash() =>
-    r'61e331f4209ccdd7c19c9cecb8fef71aa61ffcd6';
+    r'dc30fc54f14027fd52e74ab294bee0b760702283';
 
 abstract class _$PassEncodeDecodeByHandBase
     extends $AsyncNotifier<Map<String, String>> {
