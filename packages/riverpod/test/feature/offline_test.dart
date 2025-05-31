@@ -548,6 +548,7 @@ class Encode<T> with Mock {
   Object? call(T? value);
 }
 
+// ignore: avoid_types_as_parameter_names
 class Delete<KeyT> with Mock {
   void call(KeyT? key);
 }
@@ -789,6 +790,7 @@ extension on Object? {
   }
 }
 
+// ignore: avoid_types_as_parameter_names
 class DelegatingStorage<KeyT, EncodedT> implements Storage<KeyT, EncodedT> {
   DelegatingStorage({
     required FutureOr<PersistedData<EncodedT>?> Function(KeyT key) read,
