@@ -30,6 +30,7 @@ sealed class ProviderOrFamily implements ProviderListenableOrFamily {
   /// {@template riverpod.retry}
   /// The default retry logic used by providers associated to this container.
   ///
+  // Make sure to also update the website retry.mdx
   /// The default implementation:
   /// - has unlimited retries
   /// - starts with a delay of 200ms
@@ -37,6 +38,8 @@ sealed class ProviderOrFamily implements ProviderListenableOrFamily {
   /// - retries all failures
   /// - ignores [ProviderException]s (which happens when a provider
   ///   rethrows the error of another provider)
+  ///
+  /// To learn more about retry logic, see [Automatic Retry](https://riverpod.dev/docs/concepts2/retry).
   /// {@endtemplate}
   final Retry? retry;
 
