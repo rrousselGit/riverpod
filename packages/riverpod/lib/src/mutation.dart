@@ -422,9 +422,10 @@ abstract class $AsyncMutationBase<
 }
 
 abstract class _MutationBase<
-    ResultT,
-    MutationT extends _MutationBase<ResultT, MutationT, ClassT>,
-    ClassT extends AnyNotifier<Object?, Object?>> implements MutationBase<ResultT> {
+        ResultT,
+        MutationT extends _MutationBase<ResultT, MutationT, ClassT>,
+        ClassT extends AnyNotifier<Object?, Object?>>
+    implements MutationBase<ResultT> {
   _MutationBase({MutationState<ResultT>? state, this.key})
       : state = state ?? MutationIdle<ResultT>._() {
     listenable.onCancel = _scheduleAutoReset;

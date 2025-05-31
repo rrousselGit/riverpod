@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-
 import 'persist.dart';
 
 /// {@template json_persist}
