@@ -59,8 +59,9 @@ abstract class Notifier<StateT> extends $Notifier<StateT> {
   /// It is safe to use [Ref.watch] or [Ref.listen] inside this method.
   ///
   /// If a dependency of this [Notifier] (when using [Ref.watch]) changes,
-  /// then [build] will be re-executed **and** the [Notifier] **will** be
-  /// recreated.
+  /// then [build] will be re-executed. On the other hand, the [Notifier]
+  /// will **not** be recreated. Its instance will be preserved between
+  /// executions of [build].
   ///
   /// If this method throws, reading this provider will rethrow the error.
   /// {@endtemplate}
@@ -88,13 +89,12 @@ final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-         allTransitiveDependencies: computeAllTransitiveDependencies(
-           dependencies,
-         ),
-         from: null,
-         argument: null,
-         runNotifierBuildOverride: null,
-       );
+          allTransitiveDependencies:
+              computeAllTransitiveDependencies(dependencies),
+          from: null,
+          argument: null,
+          runNotifierBuildOverride: null,
+        );
 
   /// An implementation detail of Riverpod
   @internal
