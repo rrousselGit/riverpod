@@ -138,6 +138,9 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   /// If [keepAlive] is invoked multiple times, all [KeepAliveLink] will have
   /// to be closed for the provider to dispose itself when all listeners are removed.
+  ///
+  /// Finally, keep in mind that [keepAlive] doesn't mark a provider immune to rebuilds or invalidations.
+  /// Indeed, when a provider disposes, **all** its associated [KeepAliveLink]s will be closed.
   KeepAliveLink keepAlive() {
     _throwIfInvalidUsage();
 
