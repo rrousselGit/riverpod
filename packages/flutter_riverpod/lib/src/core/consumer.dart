@@ -75,7 +75,7 @@ typedef ConsumerBuilder = Widget Function(
 /// pausing unused streams, [Consumer] will temporarily stop listening to
 /// providers when the widget stops being visible.
 ///
-/// This is determined using [Visibility.of], and will invoke
+/// This is determined using [TickerMode.of], and will invoke
 /// [ProviderSubscription.pause] on all currently active subscriptions.
 ///
 /// See also:
@@ -380,7 +380,7 @@ base class ConsumerStatefulElement extends StatefulElement
       _oldDependencies;
   final _listeners = <ProviderSubscription<Object?>>[];
   List<ProviderSubscription<Object?>>? _manualListeners;
-  bool? _visible;
+  bool? _isActive;
 
   Iterable<ProviderSubscription> get _allSubscriptions sync* {
     yield* _dependencies.values;
@@ -390,8 +390,8 @@ base class ConsumerStatefulElement extends StatefulElement
     }
   }
 
-  void _applyVisibility(ProviderSubscription sub) {
-    if (_visible == false) sub.pause();
+  void _applyTickerMode(ProviderSubscription sub) {
+    if (_isActive == false) sub.pause();
   }
 
   @override
@@ -409,11 +409,11 @@ base class ConsumerStatefulElement extends StatefulElement
 
   @override
   Widget build() {
-    final visible = Visibility.of(context);
-    if (visible != _visible) {
-      _visible = visible;
+    final isActive = TickerMode.of(context);
+    if (isActive != _isActive) {
+      _isActive = isActive;
       for (final sub in _allSubscriptions) {
-        if (visible) {
+        if (isActive) {
           sub.resume();
         } else {
           sub.pause();
@@ -457,7 +457,7 @@ base class ConsumerStatefulElement extends StatefulElement
         target,
         (_, __) => markNeedsBuild(),
       );
-      _applyVisibility(sub);
+      _applyTickerMode(sub);
       return sub;
     }).read() as Res;
   }
@@ -499,7 +499,7 @@ base class ConsumerStatefulElement extends StatefulElement
     // which listen call was preserved between widget rebuild, and we wouldn't
     // want to call the listener on every rebuild.
     final sub = _container.listen<T>(provider, listener, onError: onError);
-    _applyVisibility(sub);
+    _applyTickerMode(sub);
     _listeners.add(sub);
   }
 
@@ -561,7 +561,7 @@ base class ConsumerStatefulElement extends StatefulElement
       onClose: () => _manualListeners?.remove(sub),
       read: innerSubscription.read,
     );
-    _applyVisibility(sub);
+    _applyTickerMode(sub);
     listeners.add(sub);
 
     return sub;

@@ -2,9 +2,10 @@
 
 - Provider errors are now reported to the
   `ProviderContainer`'s `Zone` instead of whatever last used the provider.
-
 - **Breaking**: When a `ref.watch`/`ref.read` rethrows an error,
   the error is now wrapped in a `ProviderException`.
+- Use TickerMode instead of Visibility for pausing out-of-view widgets
+- Reworked offline to simplify its usage
 
 ## 3.0.0-dev.15 - 2025-05-04
 

@@ -430,7 +430,7 @@ subscription.resume();
 
 At the same time, Riverpod now pauses providers in various situations:
 - When a provider is no-longer visible, it is paused
-  (Based off [Visibility](https://api.flutter.dev/flutter/widgets/Visibility-class.html)).
+  (Based off [TickerMode]).
 - When a provider rebuilds, its subscriptions are paused until the rebuild completes.
 - When a provider is paused, all of its subscriptions are paused too.
 
@@ -668,10 +668,10 @@ In 2.0, the homepage would actively keep listening to the websocket.
 In 3.0, the websocket provider will instead be paused, possibly saving resources.
 
 **How it works:**  
-Riverpod relies on [Visibility] to determine if a widget is visible or not. And when
+Riverpod relies on [TickerMode] to determine if a widget is visible or not. And when
 false, all listeners of a [Consumer] are paused.
 
-It also means that you can rely on [Visibility] yourself to manually control
+It also means that you can rely on [TickerMode] yourself to manually control
 the pause behavior of your consumers. You can voluntarily set the value to true/false
 to forcibly resume/pause listeners:
 
@@ -679,12 +679,12 @@ to forcibly resume/pause listeners:
 class MyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Visibility(
-      visible: false, // This will pause the listeners
+    return TickerMode(
+      enabled: false, // This will pause the listeners
       child: Consumer(
         builder: (context, ref, child) {
           // This "watch" will be paused
-          // until Visibility is set to true
+          // until TickerMode is set to true
           final value = ref.watch(myProvider);
           return Text(value.toString());
         },
@@ -1306,7 +1306,7 @@ regarding combining multiple "sources of truth" in a single provider.
 [riverpod_lint]: https://pub.dev/packages/riverpod_lint
 [Ref]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Ref-class.html
 [WidgetRef]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/WidgetRef-class.html
-[Visibility]: https://api.flutter.dev/flutter/widgets/Visibility-class.html
+[TickerMode]: https://api.flutter.dev/flutter/widgets/TickerMode-class.html
 [Consumer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Consumer-class.html
 [Notifier]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Notifier-class.html
 [AsyncValue]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/AsyncValue-class.html
