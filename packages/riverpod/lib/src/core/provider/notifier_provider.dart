@@ -63,10 +63,6 @@ mixin AnyNotifier<StateT, ValueT> {
     StorageOptions options,
   );
 
-  void Function() _listenSelfFromValue(
-    void Function() listener,
-  );
-
   $Ref<StateT>? _ref;
 
   /// The [Ref] associated with this notifier.
@@ -221,7 +217,7 @@ extension NotifierPersistX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
     _debugAssertNoDuplicateKey(key, this);
 
     var didChange = false;
-    _listenSelfFromValue(() async {
+    listenSelf((_, __) async {
       didChange = true;
 
       try {
@@ -287,10 +283,6 @@ abstract class $AsyncNotifierBase<ValueT>
   }
 
   @override
-  void Function() _listenSelfFromValue(void Function() listener) =>
-      listenSelf((previous, next) => listener());
-
-  @override
   FutureOr<void> _callEncode<KeyT, EncodedT>(
     FutureOr<Storage<KeyT, EncodedT>> storage,
     KeyT key,
@@ -313,10 +305,6 @@ abstract class $AsyncNotifierBase<ValueT>
 abstract class $SyncNotifierBase<StateT> with AnyNotifier<StateT, StateT> {
   @override
   void _setStateFromValue(StateT value) => state = value;
-
-  @override
-  void Function() _listenSelfFromValue(void Function() listener) =>
-      listenSelf((previous, next) => listener());
 
   @override
   FutureOr<void> _callEncode<KeyT, EncodedT>(
