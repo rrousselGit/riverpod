@@ -1,5 +1,6 @@
 ## Unreleased build
 
+- Better doc comments on `ref.keepAlive` (thanks to @lucavenir)
 - **Breaking**: ProviderObserver methods have been updated to take a `ProviderObserverContext` parameter.
   This replaces the old `provider`+`container` parameters, and contains extra
   information.
