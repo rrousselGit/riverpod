@@ -23,9 +23,8 @@ abstract class AsyncNotifier<StateT> extends $AsyncNotifier<StateT> {
   /// It is safe to use [Ref.watch] or [Ref.listen] inside this method.
   ///
   /// If a dependency of this [AsyncNotifier] (when using [Ref.watch]) changes,
-  /// then [build] will be re-executed. On the other hand, the [AsyncNotifier]
-  /// will **not** be recreated. Its instance will be preserved between
-  /// executions of [build].
+  /// then [build] will be re-executed **and** the [AsyncNotifier] **will** be
+  /// recreated.
   ///
   /// If this method throws or returns a future that fails, the error
   /// will be caught and an [AsyncError] will be emitted.

@@ -59,9 +59,8 @@ abstract class Notifier<StateT> extends $Notifier<StateT> {
   /// It is safe to use [Ref.watch] or [Ref.listen] inside this method.
   ///
   /// If a dependency of this [Notifier] (when using [Ref.watch]) changes,
-  /// then [build] will be re-executed. On the other hand, the [Notifier]
-  /// will **not** be recreated. Its instance will be preserved between
-  /// executions of [build].
+  /// then [build] will be re-executed **and** the [Notifier] **will** be
+  /// recreated.
   ///
   /// If this method throws, reading this provider will rethrow the error.
   /// {@endtemplate}
