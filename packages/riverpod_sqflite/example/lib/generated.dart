@@ -45,7 +45,7 @@ class TodosNotifier extends _$TodosNotifier {
     // - Listen to changes on this provider and write those changes to the DB.
     // We "await" for persist to complete to make sure that the decoding is done
     // before we return the state.
-    await persistJson(
+    await persist(
       // We pass our JsonSqFliteStorage instance. No need to "await" the Future.
       // Riverpod will take care of that.
       ref.watch(storageProvider.future),

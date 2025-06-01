@@ -89,7 +89,7 @@ final class TodosNotifierProvider
       $AsyncNotifierProviderElement(pointer);
 }
 
-String _$todosNotifierHash() => r'6068b8a1398c16a0e15532bb79ab8b702de84959';
+String _$todosNotifierHash() => r'b3894a6a57e51a902e2889133583d3e4ba317c64';
 
 abstract class _$TodosNotifierBase extends $AsyncNotifier<List<Todo>> {
   FutureOr<List<Todo>> build();
@@ -115,7 +115,7 @@ abstract class _$TodosNotifierBase extends $AsyncNotifier<List<Todo>> {
 // **************************************************************************
 
 abstract class _$TodosNotifier extends _$TodosNotifierBase {
-  /// The default key used by [persistJson].
+  /// The default key used by [persist].
   String get key {
     const resolvedKey = "TodosNotifier";
     return resolvedKey;
@@ -124,13 +124,13 @@ abstract class _$TodosNotifier extends _$TodosNotifierBase {
   /// A variant of [persist], for JSON-specific encoding.
   ///
   /// You can override [key] to customize the key used for storage.
-  FutureOr<void> persistJson(
+  FutureOr<void> persist(
     FutureOr<Storage<String, String>> storage, {
     String Function(List<Todo> state)? encode,
     List<Todo> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
   }) {
-    return persist<String, String>(
+    return NotifierPersistX(this).persist<String, String>(
       storage,
       key: key,
       encode: encode ?? $jsonCodex.encode,

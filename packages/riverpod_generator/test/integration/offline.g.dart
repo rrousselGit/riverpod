@@ -138,7 +138,7 @@ final class JsonProvider
   }
 }
 
-String _$jsonHash() => r'e11c0c818cd6c17db4932b342b8f58f3ee9201ad';
+String _$jsonHash() => r'54532ee1d9de0979dc96fe8eeb87e2aae92089c5';
 
 final class JsonFamily extends $Family
     with
@@ -216,7 +216,7 @@ final class Json2Provider
       $AsyncNotifierProviderElement(pointer);
 }
 
-String _$json2Hash() => r'e78dd67d75e7b0df7664edd3ab751eb7a7510d2f';
+String _$json2Hash() => r'0cc67d4dde84df76d54ff4c0e52f30a9b3faa9fd';
 
 abstract class _$Json2Base extends $AsyncNotifier<Map<String, List<int>>> {
   FutureOr<Map<String, List<int>>> build();
@@ -265,7 +265,7 @@ final class CustomJsonProvider
       $AsyncNotifierProviderElement(pointer);
 }
 
-String _$customJsonHash() => r'bedf8824f5a581e95f701092cedaea530cbb6363';
+String _$customJsonHash() => r'63e29ca9b3fd9fe21a18e45f1052bbdbc96a6568';
 
 abstract class _$CustomJsonBase extends $AsyncNotifier<Map<String, Bar>> {
   FutureOr<Map<String, Bar>> build();
@@ -314,7 +314,7 @@ final class CustomKeyProvider
       $AsyncNotifierProviderElement(pointer);
 }
 
-String _$customKeyHash() => r'1cf5b48308d38026d6db0a901e484affa49415c9';
+String _$customKeyHash() => r'3c7e8e451f51b47d295754bdd16527f5c40fa457';
 
 abstract class _$CustomKeyBase extends $AsyncNotifier<Map<String, Bar>> {
   FutureOr<Map<String, Bar>> build();
@@ -386,7 +386,7 @@ final class CustomJsonWithArgsProvider
 }
 
 String _$customJsonWithArgsHash() =>
-    r'990280fd7bf119dda26ef2951c5b9a50054e3c8f';
+    r'7ad8d5007b14cf007d145d79eb6bc8ad18f20aeb';
 
 final class CustomJsonWithArgsFamily extends $Family
     with
@@ -490,7 +490,7 @@ final class PassEncodeDecodeByHandProvider extends $AsyncNotifierProvider<
 }
 
 String _$passEncodeDecodeByHandHash() =>
-    r'dc30fc54f14027fd52e74ab294bee0b760702283';
+    r'ee0f5eee113aa4b86817990ca53867ad50b294e5';
 
 abstract class _$PassEncodeDecodeByHandBase
     extends $AsyncNotifier<Map<String, String>> {
@@ -517,7 +517,7 @@ abstract class _$PassEncodeDecodeByHandBase
 // **************************************************************************
 
 abstract class _$Json extends _$JsonBase {
-  /// The default key used by [persistJson].
+  /// The default key used by [persist].
   String get key {
     late final args = arg;
     late final resolvedKey = 'Json($args)';
@@ -528,13 +528,13 @@ abstract class _$Json extends _$JsonBase {
   /// A variant of [persist], for JSON-specific encoding.
   ///
   /// You can override [key] to customize the key used for storage.
-  FutureOr<void> persistJson(
+  FutureOr<void> persist(
     FutureOr<Storage<String, String>> storage, {
     String Function(Map<String, List<int>> state)? encode,
     Map<String, List<int>> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
   }) {
-    return persist<String, String>(
+    return NotifierPersistX(this).persist<String, String>(
       storage,
       key: key,
       encode: encode ?? $jsonCodex.encode,
@@ -550,7 +550,7 @@ abstract class _$Json extends _$JsonBase {
 }
 
 abstract class _$Json2 extends _$Json2Base {
-  /// The default key used by [persistJson].
+  /// The default key used by [persist].
   String get key {
     const resolvedKey = "Json2";
     return resolvedKey;
@@ -559,13 +559,13 @@ abstract class _$Json2 extends _$Json2Base {
   /// A variant of [persist], for JSON-specific encoding.
   ///
   /// You can override [key] to customize the key used for storage.
-  FutureOr<void> persistJson(
+  FutureOr<void> persist(
     FutureOr<Storage<String, String>> storage, {
     String Function(Map<String, List<int>> state)? encode,
     Map<String, List<int>> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
   }) {
-    return persist<String, String>(
+    return NotifierPersistX(this).persist<String, String>(
       storage,
       key: key,
       encode: encode ?? $jsonCodex.encode,
@@ -581,7 +581,7 @@ abstract class _$Json2 extends _$Json2Base {
 }
 
 abstract class _$CustomJson extends _$CustomJsonBase {
-  /// The default key used by [persistJson].
+  /// The default key used by [persist].
   String get key {
     const resolvedKey = "CustomJson";
     return resolvedKey;
@@ -590,13 +590,13 @@ abstract class _$CustomJson extends _$CustomJsonBase {
   /// A variant of [persist], for JSON-specific encoding.
   ///
   /// You can override [key] to customize the key used for storage.
-  FutureOr<void> persistJson(
+  FutureOr<void> persist(
     FutureOr<Storage<String, String>> storage, {
     String Function(Map<String, Bar> state)? encode,
     Map<String, Bar> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
   }) {
-    return persist<String, String>(
+    return NotifierPersistX(this).persist<String, String>(
       storage,
       key: key,
       encode: encode ?? $jsonCodex.encode,
@@ -612,7 +612,7 @@ abstract class _$CustomJson extends _$CustomJsonBase {
 }
 
 abstract class _$CustomKey extends _$CustomKeyBase {
-  /// The default key used by [persistJson].
+  /// The default key used by [persist].
   String get key {
     const resolvedKey = "CustomKey";
     return resolvedKey;
@@ -621,13 +621,13 @@ abstract class _$CustomKey extends _$CustomKeyBase {
   /// A variant of [persist], for JSON-specific encoding.
   ///
   /// You can override [key] to customize the key used for storage.
-  FutureOr<void> persistJson(
+  FutureOr<void> persist(
     FutureOr<Storage<String, String>> storage, {
     String Function(Map<String, Bar> state)? encode,
     Map<String, Bar> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
   }) {
-    return persist<String, String>(
+    return NotifierPersistX(this).persist<String, String>(
       storage,
       key: key,
       encode: encode ?? $jsonCodex.encode,
@@ -643,7 +643,7 @@ abstract class _$CustomKey extends _$CustomKeyBase {
 }
 
 abstract class _$CustomJsonWithArgs extends _$CustomJsonWithArgsBase {
-  /// The default key used by [persistJson].
+  /// The default key used by [persist].
   String get key {
     late final args = (
       arg,
@@ -658,13 +658,13 @@ abstract class _$CustomJsonWithArgs extends _$CustomJsonWithArgsBase {
   /// A variant of [persist], for JSON-specific encoding.
   ///
   /// You can override [key] to customize the key used for storage.
-  FutureOr<void> persistJson(
+  FutureOr<void> persist(
     FutureOr<Storage<String, String>> storage, {
     String Function(Map<String, Bar> state)? encode,
     Map<String, Bar> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
   }) {
-    return persist<String, String>(
+    return NotifierPersistX(this).persist<String, String>(
       storage,
       key: key,
       encode: encode ?? $jsonCodex.encode,
@@ -680,7 +680,7 @@ abstract class _$CustomJsonWithArgs extends _$CustomJsonWithArgsBase {
 }
 
 abstract class _$PassEncodeDecodeByHand extends _$PassEncodeDecodeByHandBase {
-  /// The default key used by [persistJson].
+  /// The default key used by [persist].
   String get key {
     const resolvedKey = "PassEncodeDecodeByHand";
     return resolvedKey;
@@ -689,13 +689,13 @@ abstract class _$PassEncodeDecodeByHand extends _$PassEncodeDecodeByHandBase {
   /// A variant of [persist], for JSON-specific encoding.
   ///
   /// You can override [key] to customize the key used for storage.
-  FutureOr<void> persistJson(
+  FutureOr<void> persist(
     FutureOr<Storage<String, String>> storage, {
     String Function(Map<String, String> state)? encode,
     Map<String, String> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
   }) {
-    return persist<String, String>(
+    return NotifierPersistX(this).persist<String, String>(
       storage,
       key: key,
       encode: encode ?? $jsonCodex.encode,
