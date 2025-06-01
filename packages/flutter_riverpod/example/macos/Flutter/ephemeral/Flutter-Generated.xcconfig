@@ -1,0 +1,14 @@
+// This is a generated file; do not edit or check into version control.
+FLUTTER_ROOT=/Users/remirousselet/dev/flutter
+FLUTTER_APPLICATION_PATH=/Users/remirousselet/dev/rrousselGit/riverpod/packages/flutter_riverpod/example
+COCOAPODS_PARALLEL_CODE_SIGN=true
+FLUTTER_TARGET=/Users/remirousselet/dev/rrousselGit/riverpod/packages/flutter_riverpod/example/lib/main.dart
+FLUTTER_BUILD_DIR=build
+FLUTTER_BUILD_NAME=1.0.0
+FLUTTER_BUILD_NUMBER=1
+FLUTTER_CLI_BUILD_MODE=debug
+DART_DEFINES=RkxVVFRFUl9WRVJTSU9OPTMuMzMuMC0xLjAucHJlLjMwMw==,RkxVVFRFUl9DSEFOTkVMPW1hc3Rlcg==,RkxVVFRFUl9HSVRfVVJMPWh0dHBzOi8vZ2l0aHViLmNvbS9mbHV0dGVyL2ZsdXR0ZXI=,RkxVVFRFUl9GUkFNRVdPUktfUkVWSVNJT049MGE2ZTRhNmRlNg==,RkxVVFRFUl9FTkdJTkVfUkVWSVNJT049MGE2ZTRhNmRlNg==,RkxVVFRFUl9EQVJUX1ZFUlNJT049My45LjAgKGJ1aWxkIDMuOS4wLTE3Mi4wLmRldik=
+DART_OBFUSCATION=false
+TRACK_WIDGET_CREATION=true
+TREE_SHAKE_ICONS=false
+PACKAGE_CONFIG=/Users/remirousselet/dev/rrousselGit/riverpod/.dart_tool/package_config.json

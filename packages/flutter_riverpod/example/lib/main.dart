@@ -16,7 +16,14 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(home: Home());
+    return MaterialApp(
+      routes: {
+        '/details': (context) => Scaffold(
+              appBar: AppBar(),
+            ),
+      },
+      home: const Home(),
+    );
   }
 }
 
@@ -28,6 +35,7 @@ class Home extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+
     return Scaffold(
       appBar: AppBar(title: const Text('Counter example')),
       body: Center(
@@ -40,8 +48,7 @@ class Home extends ConsumerWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        // The read method is a utility to read a provider without listening to it
-        onPressed: () => ref.read(counterProvider.notifier).state++,
+        onPressed: () => Navigator.pushNamed(context, '/details'),
         child: const Icon(Icons.add),
       ),
     );

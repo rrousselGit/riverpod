@@ -94,18 +94,18 @@ Alternatively, you can disable automatic retry on a per-provider basis by using 
 In Riverpod 3.0, [out of view providers are paused by default](./whats_new.mdx#listeners-inside-widgets-that-are-not-visible-are-now-paused).
 
 There is currently no way to disable this behavior globally, but you can control
-the pause behavior at the consumer level by using the [Visibility] widget.
+the pause behavior at the consumer level by using the [TickerMode] widget.
 
 ```dart
 class MyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Visibility(
-      visible: false, // This will pause the listeners
+    return TickerMode(
+      enabled: false, // This will pause the listeners
       child: Consumer(
         builder: (context, ref, child) {
           // This "watch" will be paused
-          // until Visibility is set to true
+          // until TickerMode is set to true
           final value = ref.watch(myProvider);
           return Text(value.toString());
         },
@@ -401,7 +401,7 @@ To fix this, you will need to move any custom state inside `Notifier.state`.
 ></AutoSnippet>
 
 
-[Visibility]: https://api.flutter.dev/flutter/widgets/Visibility-class.html
+[TickerMode]: https://api.flutter.dev/flutter/widgets/TickerMode-class.html
 [StreamProvider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/StreamProvider-class.html
 [StreamNotifierProvider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/StreamNotifierProvider.html
 [ProviderObserver]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderObserver-class.html
