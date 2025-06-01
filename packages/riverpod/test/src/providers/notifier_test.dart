@@ -7,7 +7,6 @@ import 'package:riverpod/misc.dart' show Refreshable, ProviderListenable;
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart' show UnmountedRefException;
 import 'package:riverpod/src/internals.dart' show InternalProviderContainer;
-import 'package:riverpod/src/providers/notifier.dart' show $Notifier;
 import 'package:test/test.dart';
 
 import '../matrix.dart';
@@ -26,6 +25,20 @@ void main() {
   });
 
   notifierProviderFactory.createGroup((factory) {
+    test('The notifier instance is preserved across builds', () {
+      final notifier = factory.deferredNotifier((ref, _) => 0);
+      final provider = factory.provider<int>(() => notifier);
+      final container = ProviderContainer.test();
+
+      container.listen(provider, (previous, next) {});
+
+      expect(container.read(provider.notifier), notifier);
+
+      container.refresh(provider);
+
+      expect(container.read(provider.notifier), notifier);
+    });
+
     test('filters state update by == by default', () {
       final provider =
           factory.simpleTestProvider<Equal<int>>((ref, _) => Equal(42));
@@ -227,31 +240,6 @@ void main() {
       container.read(provider.notifier).state++;
 
       verifyOnly(listener, listener(0, 1));
-    });
-
-    group('.notifier', () {
-      test(
-          'Notifies listeners whenever `build` is re-executed, due to recreating a new notifier.',
-          () async {
-        final notifierListener = Listener<$Notifier<int>>();
-        final dep = StateProvider((ref) => 0);
-        final provider = factory.provider<int>(() {
-          return factory.deferredNotifier((ref, _) => ref.watch(dep));
-        });
-        final container = ProviderContainer.test();
-
-        final sub = container.listen(provider.notifier, notifierListener.call);
-        final initialNotifier = sub.read();
-
-        container.refresh(provider);
-        final newNotifier = sub.read();
-
-        expect(newNotifier, isNot(same(initialNotifier)));
-        verifyOnly(
-          notifierListener,
-          notifierListener(initialNotifier, newNotifier),
-        ).called(1);
-      });
     });
 
     test('calls notifier.build on every watch update', () async {

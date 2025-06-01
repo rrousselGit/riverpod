@@ -8,8 +8,6 @@ import 'package:riverpod/legacy.dart';
 import 'package:riverpod/misc.dart' show Refreshable, ProviderListenable;
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart' show UnmountedRefException;
-import 'package:riverpod/src/providers/stream_notifier.dart'
-    show $StreamNotifier;
 import 'package:test/test.dart';
 
 import '../../third_party/fake_async.dart';
@@ -835,37 +833,6 @@ void main() {
         final notifier = container.read(provider.notifier);
 
         expect(notifier.future, same(container.read(provider.future)));
-      });
-    });
-
-    group('StreamNotifierProvider.notifier', () {
-      test(
-          'Notifies listeners whenever `build` is re-executed, due to recreating a new notifier.',
-          () async {
-        final notifierListener = Listener<$StreamNotifier<int>>();
-        final dep = StateProvider((ref) => 0);
-        final provider = factory.provider<int>(() {
-          return factory.deferredNotifier(
-            (ref, _) => Stream.value(ref.watch(dep)),
-          );
-        });
-        final container = ProviderContainer.test();
-
-        final sub = container.listen(provider.notifier, notifierListener.call);
-        final initialNotifier = sub.read();
-
-        // Skip the loading
-        await container.read(provider.future);
-        verifyNoMoreInteractions(notifierListener);
-
-        container.refresh(provider);
-        final newNotifier = sub.read();
-
-        expect(newNotifier, isNot(same(initialNotifier)));
-        verifyOnly(
-          notifierListener,
-          notifierListener(initialNotifier, newNotifier),
-        ).called(1);
       });
     });
 

@@ -1,5 +1,6 @@
 ## Unreleased build
 
+- Revert Notifier life-cycle change. They are once again preserved across rebuilds.
 - Provider errors are now reported to the
   `ProviderContainer`'s `Zone` instead of whatever last used the provider.
 - **Breaking**: When a `ref.watch`/`ref.read` rethrows an error,

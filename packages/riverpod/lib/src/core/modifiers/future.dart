@@ -42,18 +42,10 @@ mixin $AsyncClassModifier<StateT, CreatedT, ValueT>
   @visibleForTesting
   @protected
   Future<StateT> get future {
-    final ref = _ref;
-    if (ref == null) {
-      throw StateError(uninitializedElementError);
-    }
-
-    ref._throwIfInvalidUsage();
-
-    final element = ref._element;
-    element as FutureModifierElement<StateT>;
+    final element = requireElement();
 
     element.flush();
-    return element.futureNotifier.value;
+    return (element as FutureModifierElement<StateT>).futureNotifier.value;
   }
 
   /// A function to update [state] from its previous value, while

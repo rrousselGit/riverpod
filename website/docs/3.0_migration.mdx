@@ -343,64 +343,6 @@ if (value.error is NotFoundException) {
 :::
 
 
-## Notifiers are now recreated when the provider rebuilds
-
-In 2.0, Notifier instances were reused for the lifetime of the provider.
-In 3.0, [a new Notifier is created whenever the provider rebuilds](./whats_new.mdx#when-a-notifier-rebuilds-a-new-instance-of-the-notifier-class-is-created).
-
-This prevents storing state inside the Notifier class itself, as any state outside of the `state` property
-will be lost when the provider rebuilds.  
-To fix this, you will need to move any custom state inside `Notifier.state`.
-
-
-<AutoSnippet
-  language="dart"
-  codegen={`
-  // Before:
-  @riverpod
-  class TodoList extends _$TodoList {
-    int _count = 0;
-  
-    @override
-    List<Todo> build() => [];
-  }
-  
-  // After
-  class TodosState {
-    TodosState._(this.todos, this._count);
-    final List<Todo> todos;
-    int _count;
-  }
-  @riverpod
-  class TodoList extends _$TodoList {
-    @override
-    TodosState build() => TodosState._([], 0);
-  }
-  `}
-  
-  raw={`
-  // Before:
-  class TodoList extends Notifier<List<Todo>> {
-    int _count = 0;
-  
-    @override
-    List<Todo> build() => [];
-  }
-  
-  // After
-  class TodosState {
-    TodosState._(this.todos, this._count);
-    final List<Todo> todos;
-    int _count;
-  }
-  class TodoList extends Notifier<TodosState> {
-    @override
-    TodosState build() => TodosState._([], 0);
-  }
-  `}
-></AutoSnippet>
-
-
 [TickerMode]: https://api.flutter.dev/flutter/widgets/TickerMode-class.html
 [StreamProvider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/StreamProvider-class.html
 [StreamNotifierProvider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/StreamNotifierProvider.html
