@@ -23,9 +23,8 @@ abstract class AsyncNotifier<StateT> extends $AsyncNotifier<StateT> {
   /// It is safe to use [Ref.watch] or [Ref.listen] inside this method.
   ///
   /// If a dependency of this [AsyncNotifier] (when using [Ref.watch]) changes,
-  /// then [build] will be re-executed. On the other hand, the [AsyncNotifier]
-  /// will **not** be recreated. Its instance will be preserved between
-  /// executions of [build].
+  /// then [build] will be re-executed **and** the [AsyncNotifier] **will** be
+  /// recreated.
   ///
   /// If this method throws or returns a future that fails, the error
   /// will be caught and an [AsyncError] will be emitted.
@@ -57,9 +56,11 @@ abstract class AsyncNotifier<StateT> extends $AsyncNotifier<StateT> {
 /// When using `family`, your notifier type changes.
 /// Instead of extending [AsyncNotifier], you should extend [FamilyAsyncNotifier].
 /// {@endtemplate}
-final class AsyncNotifierProvider< //
-        NotifierT extends AsyncNotifier<StateT>,
-        StateT> //
+final class AsyncNotifierProvider<
+  //
+  NotifierT extends AsyncNotifier<StateT>,
+  StateT
+> //
     extends $AsyncNotifierProvider<NotifierT, StateT>
     with LegacyProviderMixin<AsyncValue<StateT>> {
   /// {@macro riverpod.async_notifier_provider}
@@ -72,12 +73,13 @@ final class AsyncNotifierProvider< //
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-          allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-          from: null,
-          argument: null,
-          runNotifierBuildOverride: null,
-        );
+         allTransitiveDependencies: computeAllTransitiveDependencies(
+           dependencies,
+         ),
+         from: null,
+         argument: null,
+         runNotifierBuildOverride: null,
+       );
 
   /// An implementation detail of Riverpod
   @internal
