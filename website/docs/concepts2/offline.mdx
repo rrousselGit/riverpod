@@ -26,7 +26,7 @@ You may still need to manually interact with a database for:
 Offline persistence works using two parts:
 1. [Storage], an interface to interact with your database.
   This is typically implemented by a package (such as [riverpod_sqflite]).
-1. [Persistable], a mixin applied on notifiers to make them persistable.
+1. [AnyNotifier.persist], a function used inside notifiers to opt-in to persistence.
   
 
 ## Persisting the state of a provider
@@ -59,3 +59,7 @@ you want to store user preferences.
 ## Creating your own Storage
 
 ## Implementing your own offline persistence from scratch
+
+[riverpod_sqflite]: https://pub.dev/packages/riverpod_sqflite
+[Storage]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/experimental_persist/Storage-class.html
+[AnyNotifier.persist]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.15/experimental_persist/NotifierPersistX/persist.html
