@@ -812,7 +812,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     runOnDispose();
     _didMount = false;
     _stateResult = null;
-    ref = null;
 
     if (dependents case final subs?) {
       _closeSubscriptions(subs);

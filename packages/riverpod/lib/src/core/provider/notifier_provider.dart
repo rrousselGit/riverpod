@@ -63,7 +63,8 @@ mixin AnyNotifier<StateT, ValueT> {
     StorageOptions options,
   );
 
-  $Ref<StateT>? _ref;
+  $ClassProviderElement<AnyNotifier<StateT, ValueT>, StateT, ValueT, Object?>?
+      _element;
 
   /// The [Ref] associated with this notifier.
   @protected
@@ -321,19 +322,12 @@ abstract class $SyncNotifierBase<StateT> with AnyNotifier<StateT, StateT> {
 @internal
 extension ClassBaseX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
   $ClassProviderElement<AnyNotifier<StateT, ValueT>, StateT, Object?, Object?>?
-      elementOrNull() {
-    final ref = _ref;
-    if (ref == null) return null;
-
-    return ref.element as $ClassProviderElement<AnyNotifier<StateT, ValueT>,
-        StateT, Object?, Object?>?;
-  }
+      elementOrNull() => _element;
 
   $ClassProviderElement<AnyNotifier<StateT, ValueT>, StateT, Object?, Object?>
       requireElement() {
-    final ref = _ref;
     final element = elementOrNull();
-    if (ref == null || element == null) {
+    if (element == null) {
       throw StateError(uninitializedElementError);
     }
 
@@ -345,7 +339,7 @@ extension ClassBaseX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
   @internal
   // ignore: library_private_types_in_public_api, not public
   $Ref<StateT> get $ref {
-    final ref = _ref;
+    final ref = _element?.ref;
     if (ref == null) throw StateError(uninitializedElementError);
 
     return ref;
@@ -504,13 +498,13 @@ abstract class $ClassProviderElement< //
     // ignore: library_private_types_in_public_api, not public
     $Ref<StateT> ref,
   ) {
-    final result = classListenable.result = $Result.guard(() {
+    final result = classListenable.result ??= $Result.guard(() {
       final notifier = provider.create();
-      if (notifier._ref != null) {
+      if (notifier._element != null) {
         throw StateError(alreadyInitializedError);
       }
 
-      notifier._ref = ref;
+      notifier._element = this;
       return notifier;
     });
 

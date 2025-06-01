@@ -912,63 +912,6 @@ resumed
 ... // And so on every second
 ```
 
-### When a Notifier rebuilds, a new instance of the Notifier class is created
-
-In 2.0, `Notifier`s instances were created once, then reused for the lifetime of the provider.  
-This enabled storing custom state in the `Notifier` class. Unfortunately, this also meant
-caused some possible race conditions ; especially when we consider the new "offline persistence" feature.
-
-Offline persistence works by differentiating the first build of a provider
-from the subsequent builds. This is done by checking `Ref.isFirstBuild`. 
-The problem is, if `Notifier` instances are reused and a rebuild occurs
-while `Notifier.build` is still running, this could confuse offline persistence.
-
-Although unfortunate, for 3.0 the decision was made to break the old behavior
-and create a new instance of the `Notifier` class every time the provider rebuilds.
-
-On the upside, it means that you can now safely rely on `late final` variables initialized during `build`:
-
-
-<AutoSnippet
-  language="dart"
-  codegen={`
-    @riverpod
-    class MyNotifier extends _$MyNotifier {
-      late final int _cached;
-      
-      @override
-      int build() {
-        // This is now safe, as a new Notifier instance is created upon rebuild
-        _cached = ref.watch(myProvider);
-        return 0;
-      }
-      
-      void increment() {
-        print(_cached);
-      }
-    }
-  `}
-  
-  raw={`
-    class MyNotifier extends Notifier<int> {
-      late final int _cached;
-      
-      @override
-      int build() {
-        // This is now safe, as a new Notifier instance is created upon rebuild
-        _cached = ref.watch(myProvider);
-        return 0;
-      }
-      
-      void increment() {
-        print(_cached);
-      }
-    }
-    
-    final myNotifierProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
-  `}
-></AutoSnippet>
-
 ## New testing utilities
 
 ### `ProviderContainer.test`

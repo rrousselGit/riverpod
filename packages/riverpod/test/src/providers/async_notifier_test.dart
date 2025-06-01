@@ -857,31 +857,6 @@ void main() {
         expect(sub.read().future, completion(42));
       });
 
-      test('If the notifier is recreated with an error, rethrows the new error',
-          () async {
-        final container = ProviderContainer.test();
-        final listener = Listener<Future<int>>();
-        var body = () => factory.deferredNotifier((ref, _) => 0);
-        final provider = factory.provider<int>(() => body());
-
-        container.listen(provider.future, listener.call);
-
-        await expectLater(
-          container.read(provider.future),
-          completion(0),
-        );
-        verifyZeroInteractions(listener);
-
-        body = () => throw StateError('foo');
-        container.invalidate(provider);
-
-        await expectLater(
-          container.read(provider.future),
-          throwsA(isStateError),
-        );
-        verify(listener(any, any)).called(1);
-      });
-
       test(
           'when disposed during loading, resolves with the content of AsyncNotifier.build',
           () async {
@@ -1032,66 +1007,6 @@ void main() {
         final notifier = container.read(provider.notifier);
 
         expect(notifier.future, same(container.read(provider.future)));
-      });
-    });
-
-    group('AsyncNotifierProvider.notifier', () {
-      test('If the notifier is recreated with an error, rethrows the new error',
-          () async {
-        final container = ProviderContainer.test();
-        final listener = Listener<$AsyncNotifier<int>>();
-        final onError = ErrorListener();
-        var body = () => factory.deferredNotifier((ref, _) => 0);
-        final provider = factory.provider<int>(() => body());
-
-        container.listen(
-          provider.notifier,
-          listener.call,
-          onError: onError.call,
-        );
-
-        await expectLater(container.read(provider.notifier), isNotNull);
-        verifyZeroInteractions(listener);
-        verifyZeroInteractions(onError);
-
-        body = () => throw StateError('foo');
-        container.invalidate(provider);
-
-        await expectLater(
-          () => container.read(provider.notifier),
-          throwsProviderException(isStateError),
-        );
-        verifyZeroInteractions(listener);
-        verifyOnly(onError, onError(isStateError, any)).called(1);
-      });
-
-      test(
-          'Notifies listeners whenever `build` is re-executed, due to recreating a new notifier.',
-          () async {
-        final notifierListener = Listener<$AsyncNotifier<int>>();
-        final dep = StateProvider((ref) => 0);
-        final provider = factory.provider<int>(() {
-          return factory.deferredNotifier(
-            (ref, _) => Future.value(ref.watch(dep)),
-          );
-        });
-        final container = ProviderContainer.test();
-
-        final sub = container.listen(provider.notifier, notifierListener.call);
-        final initialNotifier = sub.read();
-
-        // Skip the loading
-        await container.read(provider.future);
-        verifyNoMoreInteractions(notifierListener);
-
-        container.refresh(provider);
-        final newNotifier = sub.read();
-
-        expect(newNotifier, isNot(same(initialNotifier)));
-        verifyOnly(
-          notifierListener,
-          notifierListener(initialNotifier, newNotifier),
-        ).called(1);
       });
     });
 
