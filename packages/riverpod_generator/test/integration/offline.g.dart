@@ -517,7 +517,7 @@ abstract class _$PassEncodeDecodeByHandBase
 // **************************************************************************
 
 abstract class _$Json extends _$JsonBase {
-  /// The default key used by [persistJson].
+  /// The default key used by [persist].
   String get key {
     late final args = arg;
     late final resolvedKey = 'Json($args)';
@@ -550,7 +550,7 @@ abstract class _$Json extends _$JsonBase {
 }
 
 abstract class _$Json2 extends _$Json2Base {
-  /// The default key used by [persistJson].
+  /// The default key used by [persist].
   String get key {
     const resolvedKey = "Json2";
     return resolvedKey;
@@ -581,7 +581,7 @@ abstract class _$Json2 extends _$Json2Base {
 }
 
 abstract class _$CustomJson extends _$CustomJsonBase {
-  /// The default key used by [persistJson].
+  /// The default key used by [persist].
   String get key {
     const resolvedKey = "CustomJson";
     return resolvedKey;
@@ -612,7 +612,7 @@ abstract class _$CustomJson extends _$CustomJsonBase {
 }
 
 abstract class _$CustomKey extends _$CustomKeyBase {
-  /// The default key used by [persistJson].
+  /// The default key used by [persist].
   String get key {
     const resolvedKey = "CustomKey";
     return resolvedKey;
@@ -643,7 +643,7 @@ abstract class _$CustomKey extends _$CustomKeyBase {
 }
 
 abstract class _$CustomJsonWithArgs extends _$CustomJsonWithArgsBase {
-  /// The default key used by [persistJson].
+  /// The default key used by [persist].
   String get key {
     late final args = (
       arg,
@@ -680,7 +680,7 @@ abstract class _$CustomJsonWithArgs extends _$CustomJsonWithArgsBase {
 }
 
 abstract class _$PassEncodeDecodeByHand extends _$PassEncodeDecodeByHandBase {
-  /// The default key used by [persistJson].
+  /// The default key used by [persist].
   String get key {
     const resolvedKey = "PassEncodeDecodeByHand";
     return resolvedKey;

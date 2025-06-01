@@ -95,7 +95,7 @@ class JsonGenerator extends ParserGenerator<JsonPersist> {
     buffer.writeln(
       '''
 abstract class $notifierClass$genericsDefinition extends $baseClass {
-  /// The default key used by [persistJson].
+  /// The default key used by [persist].
   String get key {
     $resolvedKey
     return resolvedKey;
