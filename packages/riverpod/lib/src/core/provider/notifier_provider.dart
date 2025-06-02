@@ -41,7 +41,7 @@ typedef RunNotifierBuild<NotifierT, CreatedT> = CreatedT Function(
 ///   @override
 ///   void runBuild() {
 ///     // It is safe to use "ref" here.
-///     ref.listenSelf((prev, next) => print("New state $next"));
+///     listenSelf((prev, next) => print("New state $next"));
 ///
 ///     print('Before build');
 ///     super.runBuild();
