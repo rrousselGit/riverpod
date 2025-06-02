@@ -87,7 +87,7 @@ sealed class ProviderBase<StateT> extends ProviderOrFamily
 
 /// A base class for _all_ providers.
 @immutable
-@publicInMisc
+@internal
 abstract final class $ProviderBaseImpl<StateT, ValueT>
     extends ProviderBase<StateT>
     with ProviderListenableWithOrigin<StateT, StateT, ValueT> {
