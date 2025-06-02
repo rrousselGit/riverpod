@@ -192,7 +192,7 @@ class ObserverMock extends Mock implements ProviderObserver {
 }
 
 TypeMatcher<ProviderObserverContext> isProviderObserverContext(
-  ProviderBase<Object?> provider,
+  ProviderBase<Object?, Object?> provider,
   ProviderContainer container, {
   required Object? mutation,
 }) {

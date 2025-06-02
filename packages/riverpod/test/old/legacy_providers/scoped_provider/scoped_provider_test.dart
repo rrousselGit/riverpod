@@ -41,7 +41,7 @@ void main() {
 
       expect(container.getAllProviderElements(), isEmpty);
       expect(mid.getAllProviderElements(), [
-        isA<ProviderElement<int>>()
+        isA<ProviderElement>()
             .having((e) => e.origin, 'origin', provider)
             .having((e) => e.readSelf(), 'readSelf()', 42),
       ]);

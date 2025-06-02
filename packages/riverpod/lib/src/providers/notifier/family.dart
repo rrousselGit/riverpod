@@ -3,13 +3,13 @@ part of '../notifier.dart';
 /// {@macro riverpod.notifier}
 ///
 /// {@macro riverpod.notifier_provider_modifier}
-abstract class FamilyNotifier<StateT, ArgT> extends $Notifier<StateT> {
+abstract class FamilyNotifier<ValueT, ArgT> extends $Notifier<ValueT> {
   /// {@macro riverpod.notifier.family_arg}
   late final ArgT arg = ref.$arg as ArgT;
 
   /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
-  StateT build(ArgT arg);
+  ValueT build(ArgT arg);
 
   @mustCallSuper
   @override
@@ -22,9 +22,9 @@ abstract class FamilyNotifier<StateT, ArgT> extends $Notifier<StateT> {
 /// The [NotifierProvider] that can be used with a [Family].
 @publicInMisc
 final class FamilyNotifierProvider //
-    <NotifierT extends $Notifier<StateT>, StateT, ArgT>
-    extends $NotifierProvider<NotifierT, StateT>
-    with LegacyProviderMixin<StateT> {
+    <NotifierT extends $Notifier<ValueT>, ValueT, ArgT>
+    extends $NotifierProvider<NotifierT, ValueT>
+    with LegacyProviderMixin<ValueT, ValueT> {
   /// An implementation detail of Riverpod
   const FamilyNotifierProvider._(
     this._createNotifier, {

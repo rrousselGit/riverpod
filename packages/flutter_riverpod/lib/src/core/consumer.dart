@@ -504,7 +504,7 @@ base class ConsumerStatefulElement extends StatefulElement
   }
 
   @override
-  bool exists(ProviderBase<Object?> provider) {
+  bool exists(ProviderBase<Object?, Object?> provider) {
     _assertNotDisposed();
     return ProviderScope.containerOf(this, listen: false).exists(provider);
   }
@@ -516,7 +516,7 @@ base class ConsumerStatefulElement extends StatefulElement
   }
 
   @override
-  StateT refresh<StateT>(Refreshable<StateT> provider) {
+  ValueT refresh<ValueT>(Refreshable<ValueT> provider) {
     _assertNotDisposed();
     return ProviderScope.containerOf(this, listen: false).refresh(provider);
   }
@@ -531,9 +531,9 @@ base class ConsumerStatefulElement extends StatefulElement
   }
 
   @override
-  ProviderSubscription<T> listenManual<T>(
-    ProviderListenable<T> provider,
-    void Function(T? previous, T next) listener, {
+  ProviderSubscription<ValueT> listenManual<ValueT>(
+    ProviderListenable<ValueT> provider,
+    void Function(ValueT? previous, ValueT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
     bool fireImmediately = false,
   }) {
@@ -544,17 +544,17 @@ base class ConsumerStatefulElement extends StatefulElement
     // be used inside initState.
     final container = ProviderScope.containerOf(this, listen: false);
 
-    final innerSubscription = container.listen<T>(
+    final innerSubscription = container.listen<ValueT>(
       provider,
       listener,
       onError: onError,
       fireImmediately: fireImmediately,
       // ignore: invalid_use_of_internal_member, from riverpod
-    ) as ProviderSubscriptionWithOrigin<T, Object?>;
+    ) as ProviderSubscriptionWithOrigin<ValueT, Object?, Object?>;
 
     // ignore: invalid_use_of_internal_member, from riverpod
-    late final ProviderSubscriptionView<T, Object?> sub;
-    sub = ProviderSubscriptionView<T, Object?>(
+    late final ProviderSubscriptionView<ValueT, Object?, Object?> sub;
+    sub = ProviderSubscriptionView<ValueT, Object?, Object?>(
       innerSubscription: innerSubscription,
       listener: (prev, next) {},
       onError: (error, stackTrace) {},

@@ -573,7 +573,7 @@ extension on AnyNotifier<Object?, Object?> {
   Future<Object?> get future {
     final that = this;
     switch (that) {
-      case $AsyncClassModifier<Object?, Object?, Object?>():
+      case $AsyncClassModifier<Object?, Object?>():
         return that.future;
       default:
         throw AssertionError('not async');
@@ -607,7 +607,7 @@ extension on TestFactory<Object?> {
     throw AssertionError('unreachable');
   }
 
-  ProviderBase<Object?> simpleProvider(
+  ProviderBase<Object?, Object?> simpleProvider(
     FutureOr<Object?> Function(Ref, AnyNotifier<Object?, Object?> notifier)
         createCb, {
     Storage? storage,

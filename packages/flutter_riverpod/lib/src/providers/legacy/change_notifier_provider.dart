@@ -69,8 +69,8 @@ import '../../builders.dart';
 /// {@endtemplate}
 @publicInLegacy
 final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
-    extends $FunctionalProvider<NotifierT, NotifierT>
-    with LegacyProviderMixin<NotifierT> {
+    extends $FunctionalProvider<NotifierT, NotifierT, NotifierT>
+    with LegacyProviderMixin<NotifierT, NotifierT> {
   /// {@macro riverpod.change_notifier_provider}
   ChangeNotifierProvider(
     this._createFn, {
@@ -121,7 +121,7 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   /// This may happen if the provider is refreshed or one of its dependencies
   /// has changes.
   Refreshable<NotifierT> get notifier =>
-      ProviderElementProxy<NotifierT, NotifierT>(
+      ProviderElementProxy<NotifierT, NotifierT, NotifierT>(
         this,
         (element) {
           return (element as _ChangeNotifierProviderElement<NotifierT>)
@@ -146,7 +146,7 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
 
 /// The element of [ChangeNotifierProvider].
 class _ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
-    extends $FunctionalProviderElement<NotifierT, NotifierT> {
+    extends $FunctionalProviderElement<NotifierT, NotifierT, NotifierT> {
   _ChangeNotifierProviderElement._(super.pointer);
 
   final _notifierNotifier = $ElementLense<NotifierT>();
@@ -197,8 +197,9 @@ class _ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
 
 /// The [Family] of [ChangeNotifierProvider].
 @publicInMisc
-final class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
-    extends FunctionalFamily<NotifierT, Arg, NotifierT,
+final class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?,
+        ArgT>
+    extends FunctionalFamily<NotifierT, NotifierT, ArgT, NotifierT,
         ChangeNotifierProvider<NotifierT>> {
   /// The [Family] of [ChangeNotifierProvider].
   /// @nodoc

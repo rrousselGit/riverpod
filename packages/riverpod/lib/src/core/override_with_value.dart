@@ -4,8 +4,8 @@ part of '../framework.dart';
 ///
 /// This is an implementation detail of `overrideWithValue`.
 @publicInCodegen
-final class $ValueProvider<StateT> extends ProviderBase<StateT>
-    with LegacyProviderMixin<StateT> {
+final class $ValueProvider<StateT, ValueT> extends ProviderBase<StateT, ValueT>
+    with LegacyProviderMixin<StateT, ValueT> {
   /// Creates a [$ValueProvider].
   const $ValueProvider(this._value)
       : super(
@@ -30,13 +30,16 @@ final class $ValueProvider<StateT> extends ProviderBase<StateT>
   @internal
   @override
   // ignore: library_private_types_in_public_api, not public API
-  _ValueProviderElement<StateT> $createElement($ProviderPointer pointer) {
+  _ValueProviderElement<StateT, ValueT> $createElement(
+    $ProviderPointer pointer,
+  ) {
     return _ValueProviderElement(this, pointer);
   }
 }
 
 /// The [ProviderElement] of a [$ValueProvider]
-class _ValueProviderElement<StateT> extends ProviderElement<StateT> {
+class _ValueProviderElement<StateT, ValueT>
+    extends ProviderElement<StateT, ValueT> {
   /// The [ProviderElement] of a [$ValueProvider]
   _ValueProviderElement(this.provider, super.pointer);
 
@@ -45,10 +48,10 @@ class _ValueProviderElement<StateT> extends ProviderElement<StateT> {
   void Function(StateT value)? onChange;
 
   @override
-  $ValueProvider<StateT> provider;
+  $ValueProvider<StateT, ValueT> provider;
 
   @override
-  void update(covariant $ValueProvider<StateT> newProvider) {
+  void update(covariant $ValueProvider<StateT, ValueT> newProvider) {
     super.update(newProvider);
     provider = newProvider;
     final newValue = provider._value;
@@ -82,28 +85,28 @@ class _ValueProviderElement<StateT> extends ProviderElement<StateT> {
 }
 
 @internal
-final class $AsyncValueProvider<StateT>
-    extends $ValueProvider<AsyncValue<StateT>> {
+final class $AsyncValueProvider<ValueT>
+    extends $ValueProvider<AsyncValue<ValueT>, ValueT> {
   const $AsyncValueProvider(super._value);
 
   /// @nodoc
   @internal
   @override
   // ignore: library_private_types_in_public_api, not public API
-  _AsyncValueProviderElement<StateT> $createElement(
+  _AsyncValueProviderElement<ValueT> $createElement(
     $ProviderPointer pointer,
   ) {
     return _AsyncValueProviderElement(this, pointer);
   }
 }
 
-class _AsyncValueProviderElement<StateT>
-    extends _ValueProviderElement<AsyncValue<StateT>>
-    with FutureModifierElement<StateT> {
+class _AsyncValueProviderElement<ValueT>
+    extends _ValueProviderElement<AsyncValue<ValueT>, ValueT>
+    with FutureModifierElement<ValueT> {
   _AsyncValueProviderElement(super.provider, super.pointer);
 
   @override
-  void _setValue(AsyncValue<StateT> value) {
+  void _setValue(AsyncValue<ValueT> value) {
     switch (value) {
       case AsyncData():
         onData(value, seamless: true);

@@ -12,7 +12,8 @@ void main() {
       () async {
     final container = ProviderContainer.test();
 
-    const ProviderBase<AsyncValue<String>> provider = publicClassProvider;
+    const ProviderBase<AsyncValue<String>, String> provider =
+        publicClassProvider;
 
     expect(
       await container.listen(publicClassProvider.future, (_, __) {}).read(),
@@ -110,7 +111,7 @@ void main() {
       fourth: false,
       fifth: const ['x42'],
     );
-    final ProviderBase<AsyncValue<String>> futureProvider = provider;
+    final ProviderBase<AsyncValue<String>, String> futureProvider = provider;
 
     expect(
       await container

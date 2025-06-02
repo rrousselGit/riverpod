@@ -16,10 +16,10 @@ part of '../stream_notifier.dart';
 /// [StreamNotifier], you should extend [FamilyStreamNotifier].
 /// {@endtemplate}
 /// {@category Notifiers}
-abstract class StreamNotifier<StateT> extends $StreamNotifier<StateT> {
+abstract class StreamNotifier<ValueT> extends $StreamNotifier<ValueT> {
   /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
-  Stream<StateT> build();
+  Stream<ValueT> build();
 
   @mustCallSuper
   @override
@@ -47,10 +47,10 @@ abstract class StreamNotifier<StateT> extends $StreamNotifier<StateT> {
 /// {@endtemplate}
 /// {@category Providers}
 final class StreamNotifierProvider< //
-        NotifierT extends StreamNotifier<StateT>,
-        StateT> //
-    extends $StreamNotifierProvider<NotifierT, StateT>
-    with LegacyProviderMixin<AsyncValue<StateT>> {
+        NotifierT extends StreamNotifier<ValueT>,
+        ValueT> //
+    extends $StreamNotifierProvider<NotifierT, ValueT>
+    with LegacyProviderMixin<AsyncValue<ValueT>, ValueT> {
   /// {@macro riverpod.stream_notifier_provider}
   ///
   /// {@macro riverpod.async_notifier_provider_modifier}

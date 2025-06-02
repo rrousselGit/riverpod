@@ -22,10 +22,10 @@ typedef OnError = void Function(Object error, StackTrace stackTrace);
 /// A base class for _all_ providers.
 @immutable
 @publicInMisc
-abstract final class ProviderBase<StateT> extends ProviderOrFamily
+abstract final class ProviderBase<StateT, ValueT> extends ProviderOrFamily
     with
         ProviderListenable<StateT>,
-        ProviderListenableWithOrigin<StateT, StateT>
+        ProviderListenableWithOrigin<StateT, StateT, ValueT>
     implements Refreshable<StateT>, _ProviderOverride {
   /// A base class for _all_ providers.
   const ProviderBase({
@@ -52,7 +52,7 @@ abstract final class ProviderBase<StateT> extends ProviderOrFamily
   final Object? argument;
 
   @override
-  ProviderSubscriptionWithOrigin<StateT, StateT> _addListener(
+  ProviderSubscriptionWithOrigin<StateT, StateT, ValueT> _addListener(
     Node source,
     void Function(StateT? previous, StateT next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
@@ -78,7 +78,7 @@ abstract final class ProviderBase<StateT> extends ProviderOrFamily
       );
     }
 
-    return ProviderStateSubscription<StateT>(
+    return ProviderStateSubscription<StateT, ValueT>(
       source: source,
       listenedElement: element,
       weak: weak,
@@ -90,7 +90,7 @@ abstract final class ProviderBase<StateT> extends ProviderOrFamily
   /// An internal method that defines how a provider behaves.
   /// @nodoc
   @visibleForOverriding
-  ProviderElement<StateT> $createElement($ProviderPointer pointer);
+  ProviderElement<StateT, ValueT> $createElement($ProviderPointer pointer);
 
   /// A debug-only function for obtaining a hash of the source code of the
   /// initialization function.
@@ -125,7 +125,7 @@ abstract final class ProviderBase<StateT> extends ProviderOrFamily
 
 /// A mixin that implements some methods for non-generic providers.
 @internal
-base mixin LegacyProviderMixin<StateT> on ProviderBase<StateT> {
+base mixin LegacyProviderMixin<StateT, ValueT> on ProviderBase<StateT, ValueT> {
   @override
   int get hashCode {
     if (from == null) return super.hashCode;
@@ -138,7 +138,7 @@ base mixin LegacyProviderMixin<StateT> on ProviderBase<StateT> {
     if (from == null) return identical(other, this);
 
     return other.runtimeType == runtimeType &&
-        other is ProviderBase<StateT> &&
+        other is ProviderBase<StateT, ValueT> &&
         other.from == from &&
         other.argument == argument;
   }

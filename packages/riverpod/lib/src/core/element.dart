@@ -19,9 +19,11 @@ part of '../framework.dart';
 @publicInMisc
 sealed class Refreshable<StateT> implements ProviderListenable<StateT> {}
 
-base mixin _ProviderRefreshable<OutT, OriginT>
-    implements Refreshable<OutT>, ProviderListenableWithOrigin<OutT, OriginT> {
-  ProviderBase<OriginT> get provider;
+base mixin _ProviderRefreshable<OutT, OriginStateT, OriginValueT>
+    implements
+        Refreshable<OutT>,
+        ProviderListenableWithOrigin<OutT, OriginStateT, OriginValueT> {
+  ProviderBase<OriginStateT, OriginValueT> get provider;
 }
 
 /// A debug utility used by `flutter_riverpod`/`hooks_riverpod` to check
@@ -49,7 +51,7 @@ typedef WhenComplete = void Function(void Function() cb)?;
 @internal
 @optionalTypeArgs
 @publicInCodegen
-abstract class ProviderElement<StateT> implements Node {
+abstract class ProviderElement<StateT, ValueT> implements Node {
   /// {@macro riverpod.provider_element_base}
   ProviderElement(this.pointer);
 
@@ -75,10 +77,11 @@ abstract class ProviderElement<StateT> implements Node {
   var _debugSkipNotifyListenersAsserts = false;
 
   /// The provider associated with this [ProviderElement], before applying overrides.
-  ProviderBase<StateT> get origin => pointer.origin as ProviderBase<StateT>;
+  ProviderBase<StateT, ValueT> get origin =>
+      pointer.origin as ProviderBase<StateT, ValueT>;
 
   /// The provider associated with this [ProviderElement], after applying overrides.
-  ProviderBase<StateT> get provider;
+  ProviderBase<StateT, ValueT> get provider;
 
   /// The [$ProviderPointer] associated with this [ProviderElement].
   final $ProviderPointer pointer;
@@ -88,7 +91,7 @@ abstract class ProviderElement<StateT> implements Node {
 
   bool unsafeCheckIfMounted = true;
   // ignore: library_private_types_in_public_api, not public
-  $Ref<StateT>? ref;
+  $Ref<StateT, ValueT>? ref;
 
   /// Whether this [ProviderElement] is actively in use.
   ///
@@ -114,7 +117,7 @@ abstract class ProviderElement<StateT> implements Node {
   @visibleForTesting
   List<ProviderSubscription>? subscriptions;
   @visibleForTesting
-  List<ProviderSubscriptionWithOrigin<Object?, StateT>>? dependents;
+  List<ProviderSubscriptionWithOrigin<Object?, StateT, ValueT>>? dependents;
 
   /// "listen(weak: true)" pointing to this provider.
   ///
@@ -122,7 +125,8 @@ abstract class ProviderElement<StateT> implements Node {
   /// - They do not count towards [ProviderElement.isActive].
   /// - They may be reused between two instances of a [ProviderElement].
   @visibleForTesting
-  final weakDependents = <ProviderSubscriptionWithOrigin<Object?, StateT>>[];
+  final weakDependents =
+      <ProviderSubscriptionWithOrigin<Object?, StateT, ValueT>>[];
 
   bool _mustRecomputeState = false;
   bool _dependencyMayHaveChanged = false;
@@ -261,7 +265,7 @@ depending on itself.
   /// - `overrideWithValue`, which relies on [update] to handle
   ///   the scenario where the value changed.
   @visibleForOverriding
-  void update(ProviderBase<StateT> newProvider) {}
+  void update(ProviderBase<StateT, ValueT> newProvider) {}
 
   /// Initialize a provider and track dependencies used during the initialization.
   ///
@@ -308,7 +312,7 @@ depending on itself.
   @visibleForOverriding
   WhenComplete create(
     // ignore: library_private_types_in_public_api, not public
-    $Ref<StateT> ref,
+    $Ref<StateT, ValueT> ref,
   );
 
   /// A utility for re-initializing a provider when needed.
@@ -354,7 +358,7 @@ depending on itself.
   @internal
   void buildState(
     // ignore: library_private_types_in_public_api, not public
-    $Ref<StateT> ref,
+    $Ref<StateT, ValueT> ref,
   ) {
     if (_didChangeDependency) _retryCount = 0;
 
@@ -579,7 +583,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   @override
-  ProviderElement<T> _readProviderElement<T>(ProviderBase<T> provider) {
+  ProviderElement<NewStateT, NewValueT>
+      _readProviderElement<NewStateT, NewValueT>(
+    ProviderBase<NewStateT, NewValueT> provider,
+  ) {
     return container.readProviderElement(provider);
   }
 
@@ -605,7 +612,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     );
 
     switch (sub) {
-      case final ProviderSubscriptionImpl<Object?, Object?> sub:
+      case final ProviderSubscriptionImpl<Object?, Object?, Object?> sub:
         sub._listenedElement.addDependentSubscription(sub);
     }
 
@@ -632,7 +639,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     });
   }
 
-  void addDependentSubscription(ProviderSubscriptionImpl<Object?, StateT> sub) {
+  void addDependentSubscription(
+    ProviderSubscriptionImpl<Object?, StateT, ValueT> sub,
+  ) {
     _onChangeSubscription(sub, () {
       if (sub.weak) {
         weakDependents.add(sub);
@@ -883,7 +892,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     void Function(ProviderElement element) elementVisitor,
   ) {
     void lookup(
-      Iterable<ProviderSubscriptionWithOrigin<Object?, Object?>> children,
+      Iterable<ProviderSubscriptionWithOrigin<Object?, Object?, Object?>>
+          children,
     ) {
       for (final child in children) {
         switch (child.source) {
@@ -920,7 +930,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         final sub = subscriptions[i];
 
         switch (sub) {
-          case final ProviderSubscriptionImpl<Object?, Object?> sub:
+          case final ProviderSubscriptionImpl<Object?, Object?, Object?> sub:
             visitor(sub._listenedElement);
         }
       }

@@ -7,8 +7,9 @@ part of '../../framework.dart';
 @publicInCodegen
 abstract base class $FunctionalProvider< //
         StateT,
+        ValueT,
         CreatedT> //
-    extends ProviderBase<StateT> {
+    extends ProviderBase<StateT, ValueT> {
   /// Implementation detail of `riverpod_generator`.
   /// Do not use, as this can be removed at any time.
   const $FunctionalProvider({
@@ -23,10 +24,10 @@ abstract base class $FunctionalProvider< //
 
   /// @nodoc
   @internal
-  $FunctionalProvider<StateT, CreatedT> $view({
+  $FunctionalProvider<StateT, ValueT, CreatedT> $view({
     required Create<CreatedT> create,
   }) {
-    return _FunctionalProviderView.$FunctionalView(this, create);
+    return _FunctionalProviderView(this, create);
   }
 
   /// {@template riverpod.override_with}
@@ -77,16 +78,16 @@ abstract base class $FunctionalProvider< //
   /// @nodoc
   @internal
   @override
-  $FunctionalProviderElement<StateT, CreatedT> $createElement(
+  $FunctionalProviderElement<StateT, ValueT, CreatedT> $createElement(
     $ProviderPointer pointer,
   );
 }
 
-final class _FunctionalProviderView<StateT, CreatedT> //
-    extends $FunctionalProvider<StateT, CreatedT> {
+final class _FunctionalProviderView<StateT, ValueT, CreatedT> //
+    extends $FunctionalProvider<StateT, ValueT, CreatedT> {
   /// Implementation detail of `riverpod_generator`.
   /// Do not use, as this can be removed at any time.
-  _FunctionalProviderView.$FunctionalView(
+  _FunctionalProviderView(
     this._inner,
     this._createOverride,
   ) : super(
@@ -99,7 +100,7 @@ final class _FunctionalProviderView<StateT, CreatedT> //
           retry: _inner.retry,
         );
 
-  final $FunctionalProvider<StateT, CreatedT> _inner;
+  final $FunctionalProvider<StateT, ValueT, CreatedT> _inner;
   final Create<CreatedT> _createOverride;
 
   @override
@@ -108,7 +109,7 @@ final class _FunctionalProviderView<StateT, CreatedT> //
   /// @nodoc
   @internal
   @override
-  $FunctionalProviderElement<StateT, CreatedT> $createElement(
+  $FunctionalProviderElement<StateT, ValueT, CreatedT> $createElement(
     $ProviderPointer pointer,
   ) {
     return _inner.$createElement(pointer)..provider = this;
@@ -119,13 +120,14 @@ final class _FunctionalProviderView<StateT, CreatedT> //
 }
 
 @internal
-abstract class $FunctionalProviderElement<StateT, CreatedT>
-    extends ProviderElement<StateT> {
+abstract class $FunctionalProviderElement<StateT, ValueT, CreatedT>
+    extends ProviderElement<StateT, ValueT> {
   /// Implementation detail of `riverpod_generator`.
   /// Do not use, as this can be removed at any time.
   $FunctionalProviderElement(super.pointer)
-      : provider = pointer.origin as $FunctionalProvider<StateT, CreatedT>;
+      : provider =
+            pointer.origin as $FunctionalProvider<StateT, ValueT, CreatedT>;
 
   @override
-  $FunctionalProvider<StateT, CreatedT> provider;
+  $FunctionalProvider<StateT, ValueT, CreatedT> provider;
 }

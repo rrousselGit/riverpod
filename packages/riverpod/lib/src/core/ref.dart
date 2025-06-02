@@ -14,7 +14,7 @@ extension $RefArg on Ref {
 class UnmountedRefException implements Exception {
   UnmountedRefException(this.origin);
 
-  final ProviderBase<Object?> origin;
+  final ProviderBase<Object?, Object?> origin;
 
   @override
   String toString() {
@@ -47,7 +47,7 @@ sealed class Ref {
     required this.isReload,
   });
 
-  ProviderElement<Object?> get _element;
+  ProviderElement<Object?, Object?> get _element;
   List<KeepAliveLink>? _keepAliveLinks;
   List<void Function()>? _onDisposeListeners;
   List<void Function()>? _onResumeListeners;
@@ -527,7 +527,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// });
   /// ```
   /// {@endtemplate}
-  bool exists(ProviderBase<Object?> provider) {
+  bool exists(ProviderBase<Object?, Object?> provider) {
     _throwIfInvalidUsage();
 
     final result = container.exists(provider);
@@ -677,7 +677,7 @@ void _runCallbacks(
 
 @internal
 @publicInCodegen
-class $Ref<StateT> extends Ref {
+class $Ref<StateT, ValueT> extends Ref {
   /// {@macro riverpod.provider_ref_base}
   $Ref(
     this._element, {
@@ -685,10 +685,10 @@ class $Ref<StateT> extends Ref {
     required super.isReload,
   }) : super._();
 
-  ProviderElement<StateT> get element => _element;
+  ProviderElement<StateT, ValueT> get element => _element;
 
   @override
-  final ProviderElement<StateT> _element;
+  final ProviderElement<StateT, ValueT> _element;
 
   List<void Function(StateT?, StateT)>? _onChangeSelfListeners;
   List<OnError>? _onErrorSelfListeners;

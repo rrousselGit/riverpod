@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show ProviderBase, Override;
 
-extension on ProviderBase<Object?> {
+extension on ProviderBase<Object?, Object?> {
   // ignore: unused_element
   Override overrideWithValue(Object? value) => throw UnimplementedError();
 }

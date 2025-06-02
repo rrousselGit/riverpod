@@ -16,22 +16,22 @@ part 'stream_notifier/orphan.dart';
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
 @publicInCodegen
-abstract class $StreamNotifier<StateT> extends $AsyncNotifierBase<StateT>
-    with $AsyncClassModifier<StateT, Stream<StateT>, StateT> {}
+abstract class $StreamNotifier<ValueT> extends $AsyncNotifierBase<ValueT>
+    with $AsyncClassModifier<ValueT, Stream<ValueT>> {}
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
 @publicInCodegen
 abstract base class $StreamNotifierProvider<
-        NotifierT extends $StreamNotifier<StateT>, //
-        StateT> //
+        NotifierT extends $StreamNotifier<ValueT>, //
+        ValueT> //
     extends $ClassProvider< //
         NotifierT,
-        AsyncValue<StateT>,
-        StateT,
-        Stream<StateT>> //
+        AsyncValue<ValueT>,
+        ValueT,
+        Stream<ValueT>> //
     with
-        $FutureModifier<StateT> {
+        $FutureModifier<ValueT> {
   /// Implementation detail of `riverpod_generator`.
   /// Do not use.
   const $StreamNotifierProvider({
@@ -47,7 +47,7 @@ abstract base class $StreamNotifierProvider<
   /// @nodoc
   @internal
   @override
-  $StreamNotifierProviderElement<NotifierT, StateT> $createElement(
+  $StreamNotifierProviderElement<NotifierT, ValueT> $createElement(
     $ProviderPointer pointer,
   ) {
     return $StreamNotifierProviderElement(pointer);
@@ -59,22 +59,22 @@ abstract base class $StreamNotifierProvider<
 @internal
 @publicInCodegen
 class $StreamNotifierProviderElement< //
-        NotifierT extends $StreamNotifier<StateT>,
-        StateT> //
+        NotifierT extends $StreamNotifier<ValueT>,
+        ValueT> //
     extends $ClassProviderElement< //
         NotifierT,
-        AsyncValue<StateT>,
-        StateT,
-        Stream<StateT>> //
+        AsyncValue<ValueT>,
+        ValueT,
+        Stream<ValueT>> //
     with
-        FutureModifierElement<StateT>,
-        FutureModifierClassElement<NotifierT, StateT, Stream<StateT>> {
+        FutureModifierElement<ValueT>,
+        FutureModifierClassElement<NotifierT, ValueT, Stream<ValueT>> {
   /// Implementation detail of `riverpod_generator`.
   /// Do not use.
   $StreamNotifierProviderElement(super.pointer);
 
   @override
-  void handleValue(Ref ref, Stream<StateT> created) {
+  void handleValue(Ref ref, Stream<ValueT> created) {
     handleStream(ref, () => created);
   }
 }

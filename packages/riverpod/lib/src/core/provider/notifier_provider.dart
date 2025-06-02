@@ -303,15 +303,15 @@ abstract class $AsyncNotifierBase<ValueT>
 }
 
 @internal
-abstract class $SyncNotifierBase<StateT> with AnyNotifier<StateT, StateT> {
+abstract class $SyncNotifierBase<ValueT> with AnyNotifier<ValueT, ValueT> {
   @override
-  void _setStateFromValue(StateT value) => state = value;
+  void _setStateFromValue(ValueT value) => state = value;
 
   @override
   FutureOr<void> _callEncode<KeyT, EncodedT>(
     FutureOr<Storage<KeyT, EncodedT>> storage,
     KeyT key,
-    EncodedT Function(StateT state) encode,
+    EncodedT Function(ValueT state) encode,
     StorageOptions options,
   ) {
     return storage
@@ -338,7 +338,7 @@ extension ClassBaseX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
 
   @internal
   // ignore: library_private_types_in_public_api, not public
-  $Ref<StateT> get $ref {
+  $Ref<StateT, ValueT> get $ref {
     final ref = _element?.ref;
     if (ref == null) throw StateError(uninitializedElementError);
 
@@ -355,7 +355,7 @@ abstract base class $ClassProvider< //
     NotifierT extends AnyNotifier<StateT, ValueT>,
     StateT,
     ValueT,
-    CreatedT> extends ProviderBase<StateT> {
+    CreatedT> extends ProviderBase<StateT, ValueT> {
   const $ClassProvider({
     required super.name,
     required super.from,
@@ -367,7 +367,7 @@ abstract base class $ClassProvider< //
   });
 
   Refreshable<NotifierT> get notifier {
-    return ProviderElementProxy<NotifierT, StateT>(
+    return ProviderElementProxy<NotifierT, StateT, ValueT>(
       this,
       (element) => (element
               as $ClassProviderElement<NotifierT, StateT, ValueT, CreatedT>)
@@ -481,7 +481,7 @@ abstract class $ClassProviderElement< //
         StateT,
         ValueT,
         CreatedT> //
-    extends ProviderElement<StateT> {
+    extends ProviderElement<StateT, ValueT> {
   $ClassProviderElement(super.pointer)
       : provider = pointer.origin
             as $ClassProvider<NotifierT, StateT, ValueT, CreatedT>;
@@ -496,7 +496,7 @@ abstract class $ClassProviderElement< //
   @override
   WhenComplete create(
     // ignore: library_private_types_in_public_api, not public
-    $Ref<StateT> ref,
+    $Ref<StateT, ValueT> ref,
   ) {
     final result = classListenable.result ??= $Result.guard(() {
       final notifier = provider.create();

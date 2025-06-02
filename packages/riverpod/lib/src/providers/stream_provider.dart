@@ -15,13 +15,13 @@ import 'provider.dart' show Provider;
 /// Do not use, as this may be removed at any time.
 @internal
 @publicInCodegen
-base mixin $StreamProvider<StateT>
-    on $FunctionalProvider<AsyncValue<StateT>, Stream<StateT>> {
+base mixin $StreamProvider<ValueT>
+    on $FunctionalProvider<AsyncValue<ValueT>, ValueT, Stream<ValueT>> {
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<StateT> value) {
+  Override overrideWithValue(AsyncValue<ValueT> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $AsyncValueProvider<StateT>(value),
+      providerOverride: $AsyncValueProvider<ValueT>(value),
     );
   }
 }
@@ -83,12 +83,12 @@ base mixin $StreamProvider<StateT>
 /// - [StreamProvider.autoDispose], to destroy the state of a [StreamProvider] when no longer needed.
 /// {@endtemplate}
 /// {@category Providers}
-final class StreamProvider<StateT>
-    extends $FunctionalProvider<AsyncValue<StateT>, Stream<StateT>>
+final class StreamProvider<ValueT>
+    extends $FunctionalProvider<AsyncValue<ValueT>, ValueT, Stream<ValueT>>
     with
-        $FutureModifier<StateT>,
-        $StreamProvider<StateT>,
-        LegacyProviderMixin<AsyncValue<StateT>> {
+        $FutureModifier<ValueT>,
+        $StreamProvider<ValueT>,
+        LegacyProviderMixin<AsyncValue<ValueT>, ValueT> {
   /// {@macro riverpod.stream_provider}
   StreamProvider(
     this._create, {
@@ -123,17 +123,17 @@ final class StreamProvider<StateT>
   /// {@macro riverpod.family}
   static const family = StreamProviderFamilyBuilder();
 
-  final Create<Stream<StateT>> _create;
+  final Create<Stream<ValueT>> _create;
 
   /// @nodoc
   @internal
   @override
-  Stream<StateT> create(Ref ref) => _create(ref);
+  Stream<ValueT> create(Ref ref) => _create(ref);
 
   /// @nodoc
   @internal
   @override
-  $StreamProviderElement<StateT> $createElement($ProviderPointer pointer) {
+  $StreamProviderElement<ValueT> $createElement($ProviderPointer pointer) {
     return $StreamProviderElement(pointer);
   }
 }
@@ -141,15 +141,16 @@ final class StreamProvider<StateT>
 /// The element of [StreamProvider].
 @internal
 @publicInCodegen
-class $StreamProviderElement<StateT>
-    extends $FunctionalProviderElement<AsyncValue<StateT>, Stream<StateT>>
-    with FutureModifierElement<StateT> {
+class $StreamProviderElement<ValueT> extends $FunctionalProviderElement<
+    AsyncValue<ValueT>,
+    ValueT,
+    Stream<ValueT>> with FutureModifierElement<ValueT> {
   /// The element of [StreamProvider].
   $StreamProviderElement(super.pointer);
 
-  final _streamNotifier = $ElementLense<Stream<StateT>>();
-  final StreamController<StateT> _streamController =
-      StreamController<StateT>.broadcast();
+  final _streamNotifier = $ElementLense<Stream<ValueT>>();
+  final StreamController<ValueT> _streamController =
+      StreamController<ValueT>.broadcast();
 
   @override
   WhenComplete create(Ref ref) {
@@ -176,7 +177,7 @@ class $StreamProviderElement<StateT>
   }
 
   @override
-  void onData(AsyncData<StateT> value, {bool seamless = false}) {
+  void onData(AsyncData<ValueT> value, {bool seamless = false}) {
     if (!_streamController.isClosed) {
       // The controller might be closed if onData is executed post dispose. Cf onData
       _streamController.add(value.value);
@@ -185,7 +186,7 @@ class $StreamProviderElement<StateT>
   }
 
   @override
-  void onError(AsyncError<StateT> value, {bool seamless = false}) {
+  void onError(AsyncError<ValueT> value, {bool seamless = false}) {
     if (!_streamController.isClosed) {
       // The controller might be closed if onError is executed post dispose. Cf onError
       _streamController.addError(value.error, value.stackTrace);
@@ -196,8 +197,8 @@ class $StreamProviderElement<StateT>
 
 /// The [Family] of a [StreamProvider]
 @publicInMisc
-final class StreamProviderFamily<StateT, ArgT> extends FunctionalFamily<
-    AsyncValue<StateT>, ArgT, Stream<StateT>, StreamProvider<StateT>> {
+final class StreamProviderFamily<ValueT, ArgT> extends FunctionalFamily<
+    AsyncValue<ValueT>, ValueT, ArgT, Stream<ValueT>, StreamProvider<ValueT>> {
   /// The [Family] of a [StreamProvider]
   /// @nodoc
   @internal
@@ -208,7 +209,7 @@ final class StreamProviderFamily<StateT, ArgT> extends FunctionalFamily<
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-          providerFactory: StreamProvider<StateT>.internal,
+          providerFactory: StreamProvider<ValueT>.internal,
           $allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
         );
@@ -223,5 +224,5 @@ final class StreamProviderFamily<StateT, ArgT> extends FunctionalFamily<
     required super.$allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
-  }) : super(providerFactory: StreamProvider<StateT>.internal);
+  }) : super(providerFactory: StreamProvider<ValueT>.internal);
 }

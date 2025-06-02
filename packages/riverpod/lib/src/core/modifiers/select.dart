@@ -1,10 +1,10 @@
 part of '../../framework.dart';
 
 /// An internal class for `ProviderBase.select`.
-final class _ProviderSelector<InputT, OutputT, OriginT>
+final class _ProviderSelector<InputT, OutputT, OriginStateT, OriginValueT>
     with
         ProviderListenable<OutputT>,
-        ProviderListenableWithOrigin<OutputT, OriginT> {
+        ProviderListenableWithOrigin<OutputT, OriginStateT, OriginValueT> {
   /// An internal class for `ProviderBase.select`.
   _ProviderSelector({
     required this.provider,
@@ -12,7 +12,8 @@ final class _ProviderSelector<InputT, OutputT, OriginT>
   });
 
   /// The provider that was selected
-  final ProviderListenableWithOrigin<InputT, OriginT> provider;
+  final ProviderListenableWithOrigin<InputT, OriginStateT, OriginValueT>
+      provider;
 
   /// The selector applied
   final OutputT Function(InputT) selector;
@@ -56,7 +57,8 @@ final class _ProviderSelector<InputT, OutputT, OriginT>
   }
 
   @override
-  ProviderSubscriptionWithOrigin<OutputT, OriginT> _addListener(
+  ProviderSubscriptionWithOrigin<OutputT, OriginStateT, OriginValueT>
+      _addListener(
     Node node,
     void Function(OutputT? previous, OutputT next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
@@ -64,7 +66,8 @@ final class _ProviderSelector<InputT, OutputT, OriginT>
     required bool fireImmediately,
     required bool weak,
   }) {
-    late final ProviderSubscriptionView<OutputT, OriginT> providerSub;
+    late final ProviderSubscriptionView<OutputT, OriginStateT, OriginValueT>
+        providerSub;
     $Result<OutputT>? lastSelectedValue;
     final sub = provider._addListener(
       node,
@@ -96,7 +99,7 @@ final class _ProviderSelector<InputT, OutputT, OriginT>
       );
     }
 
-    providerSub = ProviderSubscriptionView<OutputT, OriginT>(
+    providerSub = ProviderSubscriptionView<OutputT, OriginStateT, OriginValueT>(
       innerSubscription: sub,
       listener: listener,
       onError: onError,
