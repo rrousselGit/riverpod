@@ -192,9 +192,8 @@ abstract class ProviderElement<StateT> implements Node {
   StateT get requireState {
     const uninitializedError = '''
 Tried to read the state of an uninitialized provider.
-This could mean a few things:
-- You have a circular dependency, and your provider end-up depending on itself.
-- You read "ref.state", but no value was set beforehand.
+This generally means that have a circular dependency, and your provider end-up
+depending on itself.
 ''';
 
     if (kDebugMode) {

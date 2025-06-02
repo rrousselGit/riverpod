@@ -190,17 +190,12 @@ sealed class AsyncValue<StateT> {
   /// This value must be between 0 and 1.
   ///
   /// By default, the progress will always be `null`.
-  /// Providers can set this manually as such:
+  /// Notifiers can set this manually as such:
   ///
   /// ```dart
-  /// @riverpod
-  /// Future<Model> example(Ref ref) async {
-  ///   ref.state = AsyncLoading(progress: 0);
-  ///
-  ///   await something();
-  ///
-  ///   ref.state = AsyncLoading(progress: 1);
-  /// }
+  /// state = AsyncLoading(progress: 0);
+  /// await something();
+  /// ref.state = AsyncLoading(progress: 1);
   /// ```
   num? get progress;
 
