@@ -9,7 +9,7 @@ part of 'auto_dispose.dart';
 @ProviderFor(keepAlive)
 const keepAliveProvider = KeepAliveProvider._();
 
-final class KeepAliveProvider extends $FunctionalProvider<int, int>
+final class KeepAliveProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const KeepAliveProvider._()
       : super(
@@ -39,7 +39,7 @@ final class KeepAliveProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -49,7 +49,7 @@ String _$keepAliveHash() => r'44af50bf7e6dcfddc61a1f32855855b534a7fe4f';
 @ProviderFor(notKeepAlive)
 const notKeepAliveProvider = NotKeepAliveProvider._();
 
-final class NotKeepAliveProvider extends $FunctionalProvider<int, int>
+final class NotKeepAliveProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const NotKeepAliveProvider._()
       : super(
@@ -79,7 +79,7 @@ final class NotKeepAliveProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -89,7 +89,7 @@ String _$notKeepAliveHash() => r'e60c952d04ffd7548294908c2e1ef472614c284b';
 @ProviderFor(defaultKeepAlive)
 const defaultKeepAliveProvider = DefaultKeepAliveProvider._();
 
-final class DefaultKeepAliveProvider extends $FunctionalProvider<int, int>
+final class DefaultKeepAliveProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const DefaultKeepAliveProvider._()
       : super(
@@ -119,7 +119,7 @@ final class DefaultKeepAliveProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -129,7 +129,7 @@ String _$defaultKeepAliveHash() => r'76485c3c7574c38dcba6dda28c94a59c09b339c0';
 @ProviderFor(keepAliveFamily)
 const keepAliveFamilyProvider = KeepAliveFamilyFamily._();
 
-final class KeepAliveFamilyProvider extends $FunctionalProvider<int, int>
+final class KeepAliveFamilyProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const KeepAliveFamilyProvider._(
       {required KeepAliveFamilyFamily super.from, required int super.argument})
@@ -169,7 +169,7 @@ final class KeepAliveFamilyProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 
@@ -209,8 +209,8 @@ final class KeepAliveFamilyFamily extends $Family
 @ProviderFor(notKeepAliveFamily)
 const notKeepAliveFamilyProvider = NotKeepAliveFamilyFamily._();
 
-final class NotKeepAliveFamilyProvider extends $FunctionalProvider<int, int>
-    with $Provider<int> {
+final class NotKeepAliveFamilyProvider
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const NotKeepAliveFamilyProvider._(
       {required NotKeepAliveFamilyFamily super.from,
       required int super.argument})
@@ -250,7 +250,7 @@ final class NotKeepAliveFamilyProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 
@@ -291,8 +291,8 @@ final class NotKeepAliveFamilyFamily extends $Family
 @ProviderFor(defaultKeepAliveFamily)
 const defaultKeepAliveFamilyProvider = DefaultKeepAliveFamilyFamily._();
 
-final class DefaultKeepAliveFamilyProvider extends $FunctionalProvider<int, int>
-    with $Provider<int> {
+final class DefaultKeepAliveFamilyProvider
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const DefaultKeepAliveFamilyProvider._(
       {required DefaultKeepAliveFamilyFamily super.from,
       required int super.argument})
@@ -332,7 +332,7 @@ final class DefaultKeepAliveFamilyProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 

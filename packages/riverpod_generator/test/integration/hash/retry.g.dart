@@ -9,7 +9,7 @@ part of 'retry.dart';
 @ProviderFor(a)
 const aProvider = AProvider._();
 
-final class AProvider extends $FunctionalProvider<String, String>
+final class AProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const AProvider._()
       : super(
@@ -39,7 +39,7 @@ final class AProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 }
@@ -49,7 +49,7 @@ String _$aHash() => r'83a9516d10f85dc72ca773837e042bfc6e36c1f1';
 @ProviderFor(b)
 const bProvider = BFamily._();
 
-final class BProvider extends $FunctionalProvider<String, String>
+final class BProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const BProvider._({required BFamily super.from, required int super.argument})
       : super(
@@ -88,7 +88,7 @@ final class BProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 

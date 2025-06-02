@@ -39,7 +39,7 @@ final class UnimplementedScopedProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -53,7 +53,7 @@ abstract class _$UnimplementedScoped extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -63,7 +63,7 @@ abstract class _$UnimplementedScoped extends $Notifier<int> {
 @ProviderFor(scoped)
 const scopedProvider = ScopedProvider._();
 
-final class ScopedProvider extends $FunctionalProvider<int, int>
+final class ScopedProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const ScopedProvider._()
       : super(
@@ -93,7 +93,7 @@ final class ScopedProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -103,7 +103,7 @@ String _$scopedHash() => r'5a271e9b23e18517694454448b922a6c9d03781e';
 @ProviderFor(root)
 const rootProvider = RootProvider._();
 
-final class RootProvider extends $FunctionalProvider<int, int>
+final class RootProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const RootProvider._()
       : super(
@@ -133,7 +133,7 @@ final class RootProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }

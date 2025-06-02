@@ -11,8 +11,8 @@ part of 'codegen.dart';
 @ProviderFor(synchronousExample)
 const synchronousExampleProvider = SynchronousExampleProvider._();
 
-final class SynchronousExampleProvider extends $FunctionalProvider<int, int>
-    with $Provider<int> {
+final class SynchronousExampleProvider
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const SynchronousExampleProvider._()
       : super(
           from: null,
@@ -41,7 +41,7 @@ final class SynchronousExampleProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }

@@ -11,7 +11,7 @@ part of 'family_fn.dart';
 @ProviderFor(example)
 const exampleProvider = ExampleFamily._();
 
-final class ExampleProvider extends $FunctionalProvider<String, String>
+final class ExampleProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const ExampleProvider._(
       {required ExampleFamily super.from,
@@ -60,7 +60,7 @@ final class ExampleProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 

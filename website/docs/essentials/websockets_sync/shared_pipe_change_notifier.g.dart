@@ -13,6 +13,7 @@ const myListenableProvider = MyListenableProvider._();
 
 final class MyListenableProvider extends $FunctionalProvider<
     Raw<ValueNotifier<int>>,
+    Raw<ValueNotifier<int>>,
     Raw<ValueNotifier<int>>> with $Provider<Raw<ValueNotifier<int>>> {
   const MyListenableProvider._()
       : super(
@@ -43,7 +44,9 @@ final class MyListenableProvider extends $FunctionalProvider<
   Override overrideWithValue(Raw<ValueNotifier<int>> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Raw<ValueNotifier<int>>>(value),
+      providerOverride:
+          $ValueProvider<Raw<ValueNotifier<int>>, Raw<ValueNotifier<int>>>(
+              value),
     );
   }
 }
@@ -54,6 +57,7 @@ String _$myListenableHash() => r'a28ce39430582e0d7be5f8303a31477569153193';
 const anotherListenableProvider = AnotherListenableProvider._();
 
 final class AnotherListenableProvider extends $FunctionalProvider<
+    Raw<ValueNotifier<int>>,
     Raw<ValueNotifier<int>>,
     Raw<ValueNotifier<int>>> with $Provider<Raw<ValueNotifier<int>>> {
   const AnotherListenableProvider._()
@@ -85,7 +89,9 @@ final class AnotherListenableProvider extends $FunctionalProvider<
   Override overrideWithValue(Raw<ValueNotifier<int>> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Raw<ValueNotifier<int>>>(value),
+      providerOverride:
+          $ValueProvider<Raw<ValueNotifier<int>>, Raw<ValueNotifier<int>>>(
+              value),
     );
   }
 }

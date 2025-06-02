@@ -12,7 +12,7 @@ part of 'codegen.dart';
 const fetchConfigurationProvider = FetchConfigurationProvider._();
 
 final class FetchConfigurationProvider extends $FunctionalProvider<
-        AsyncValue<Configuration>, FutureOr<Configuration>>
+        AsyncValue<Configuration>, Configuration, FutureOr<Configuration>>
     with $FutureModifier<Configuration>, $FutureProvider<Configuration> {
   const FetchConfigurationProvider._()
       : super(

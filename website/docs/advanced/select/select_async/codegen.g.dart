@@ -12,7 +12,7 @@ part of 'codegen.dart';
 const userProvider = UserProvider._();
 
 final class UserProvider
-    extends $FunctionalProvider<AsyncValue<User>, FutureOr<User>>
+    extends $FunctionalProvider<AsyncValue<User>, User, FutureOr<User>>
     with $FutureModifier<User>, $FutureProvider<User> {
   const UserProvider._()
       : super(
@@ -44,7 +44,8 @@ String _$userHash() => r'b83ca110a6fae2341d1bfca73fb3d89c4d12723d';
 @ProviderFor(example)
 const exampleProvider = ExampleProvider._();
 
-final class ExampleProvider extends $FunctionalProvider<Object?, Object?>
+final class ExampleProvider
+    extends $FunctionalProvider<Object?, Object?, Object?>
     with $Provider<Object?> {
   const ExampleProvider._()
       : super(
@@ -74,7 +75,7 @@ final class ExampleProvider extends $FunctionalProvider<Object?, Object?>
   Override overrideWithValue(Object? value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Object?>(value),
+      providerOverride: $ValueProvider<Object?, Object?>(value),
     );
   }
 }

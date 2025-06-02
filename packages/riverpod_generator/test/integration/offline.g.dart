@@ -10,7 +10,9 @@ part of 'offline.dart';
 const storageProvider = StorageProvider._();
 
 final class StorageProvider extends $FunctionalProvider<
-        AsyncValue<Storage<String, String>>, FutureOr<Storage<String, String>>>
+        AsyncValue<Storage<String, String>>,
+        Storage<String, String>,
+        FutureOr<Storage<String, String>>>
     with
         $FutureModifier<Storage<String, String>>,
         $FutureProvider<Storage<String, String>> {
@@ -81,7 +83,7 @@ abstract class _$CustomAnnotationBase extends $AsyncNotifier<String> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<String>, String>,
         AsyncValue<String>,
@@ -175,7 +177,8 @@ abstract class _$JsonBase extends $AsyncNotifier<Map<String, List<int>>> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<AsyncValue<Map<String, List<int>>>>;
+    final ref = this.ref
+        as $Ref<AsyncValue<Map<String, List<int>>>, Map<String, List<int>>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<Map<String, List<int>>>, Map<String, List<int>>>,
         AsyncValue<Map<String, List<int>>>,
@@ -224,7 +227,8 @@ abstract class _$Json2Base extends $AsyncNotifier<Map<String, List<int>>> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<Map<String, List<int>>>>;
+    final ref = this.ref
+        as $Ref<AsyncValue<Map<String, List<int>>>, Map<String, List<int>>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<Map<String, List<int>>>, Map<String, List<int>>>,
         AsyncValue<Map<String, List<int>>>,
@@ -273,7 +277,8 @@ abstract class _$CustomJsonBase extends $AsyncNotifier<Map<String, Bar>> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<Map<String, Bar>>>;
+    final ref =
+        this.ref as $Ref<AsyncValue<Map<String, Bar>>, Map<String, Bar>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<Map<String, Bar>>, Map<String, Bar>>,
         AsyncValue<Map<String, Bar>>,
@@ -322,7 +327,8 @@ abstract class _$CustomKeyBase extends $AsyncNotifier<Map<String, Bar>> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<Map<String, Bar>>>;
+    final ref =
+        this.ref as $Ref<AsyncValue<Map<String, Bar>>, Map<String, Bar>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<Map<String, Bar>>, Map<String, Bar>>,
         AsyncValue<Map<String, Bar>>,
@@ -448,7 +454,8 @@ abstract class _$CustomJsonWithArgsBase
       _$args.$2,
       arg3: _$args.arg3,
     );
-    final ref = this.ref as $Ref<AsyncValue<Map<String, Bar>>>;
+    final ref =
+        this.ref as $Ref<AsyncValue<Map<String, Bar>>, Map<String, Bar>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<Map<String, Bar>>, Map<String, Bar>>,
         AsyncValue<Map<String, Bar>>,
@@ -499,7 +506,8 @@ abstract class _$PassEncodeDecodeByHandBase
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<Map<String, String>>>;
+    final ref =
+        this.ref as $Ref<AsyncValue<Map<String, String>>, Map<String, String>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<Map<String, String>>, Map<String, String>>,
         AsyncValue<Map<String, String>>,

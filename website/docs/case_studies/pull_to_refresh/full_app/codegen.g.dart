@@ -29,8 +29,8 @@ Map<String, dynamic> _$ActivityToJson(_Activity instance) => <String, dynamic>{
 @ProviderFor(activity)
 const activityProvider = ActivityProvider._();
 
-final class ActivityProvider
-    extends $FunctionalProvider<AsyncValue<Activity>, FutureOr<Activity>>
+final class ActivityProvider extends $FunctionalProvider<AsyncValue<Activity>,
+        Activity, FutureOr<Activity>>
     with $FutureModifier<Activity>, $FutureProvider<Activity> {
   const ActivityProvider._()
       : super(

@@ -11,7 +11,8 @@ part of 'codegen.dart';
 @ProviderFor(another)
 const anotherProvider = AnotherProvider._();
 
-final class AnotherProvider extends $FunctionalProvider<MyValue, MyValue>
+final class AnotherProvider
+    extends $FunctionalProvider<MyValue, MyValue, MyValue>
     with $Provider<MyValue> {
   const AnotherProvider._()
       : super(
@@ -41,7 +42,7 @@ final class AnotherProvider extends $FunctionalProvider<MyValue, MyValue>
   Override overrideWithValue(MyValue value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<MyValue>(value),
+      providerOverride: $ValueProvider<MyValue, MyValue>(value),
     );
   }
 }
@@ -51,7 +52,7 @@ String _$anotherHash() => r'07629e5ae4a53bcd316b91c07d7558edbdea9317';
 @ProviderFor(my)
 const myProvider = MyProvider._();
 
-final class MyProvider extends $FunctionalProvider<MyValue, MyValue>
+final class MyProvider extends $FunctionalProvider<MyValue, MyValue, MyValue>
     with $Provider<MyValue> {
   const MyProvider._()
       : super(
@@ -81,7 +82,7 @@ final class MyProvider extends $FunctionalProvider<MyValue, MyValue>
   Override overrideWithValue(MyValue value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<MyValue>(value),
+      providerOverride: $ValueProvider<MyValue, MyValue>(value),
     );
   }
 }

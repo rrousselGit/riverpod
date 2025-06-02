@@ -11,9 +11,8 @@ part of 'raw_usage.dart';
 @ProviderFor(rawStream)
 const rawStreamProvider = RawStreamProvider._();
 
-final class RawStreamProvider
-    extends $FunctionalProvider<Raw<Stream<int>>, Raw<Stream<int>>>
-    with $Provider<Raw<Stream<int>>> {
+final class RawStreamProvider extends $FunctionalProvider<Raw<Stream<int>>,
+    Raw<Stream<int>>, Raw<Stream<int>>> with $Provider<Raw<Stream<int>>> {
   const RawStreamProvider._()
       : super(
           from: null,
@@ -42,7 +41,8 @@ final class RawStreamProvider
   Override overrideWithValue(Raw<Stream<int>> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Raw<Stream<int>>>(value),
+      providerOverride:
+          $ValueProvider<Raw<Stream<int>>, Raw<Stream<int>>>(value),
     );
   }
 }

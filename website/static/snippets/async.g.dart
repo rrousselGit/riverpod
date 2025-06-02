@@ -12,7 +12,7 @@ part of 'async.dart';
 const configurationsProvider = ConfigurationsProvider._();
 
 final class ConfigurationsProvider extends $FunctionalProvider<
-        AsyncValue<Configuration>, FutureOr<Configuration>>
+        AsyncValue<Configuration>, Configuration, FutureOr<Configuration>>
     with $FutureModifier<Configuration>, $FutureProvider<Configuration> {
   const ConfigurationsProvider._()
       : super(

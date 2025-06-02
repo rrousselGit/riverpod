@@ -19,6 +19,7 @@ const myListenableProvider = MyListenableProvider._();
 // {@endtemplate}
 final class MyListenableProvider extends $FunctionalProvider<
     Raw<ValueNotifier<int>>,
+    Raw<ValueNotifier<int>>,
     Raw<ValueNotifier<int>>> with $Provider<Raw<ValueNotifier<int>>> {
   /// A provider which creates a ValueNotifier and update its listeners
   /// whenever the value changes.
@@ -52,7 +53,9 @@ final class MyListenableProvider extends $FunctionalProvider<
   Override overrideWithValue(Raw<ValueNotifier<int>> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Raw<ValueNotifier<int>>>(value),
+      providerOverride:
+          $ValueProvider<Raw<ValueNotifier<int>>, Raw<ValueNotifier<int>>>(
+              value),
     );
   }
 }

@@ -12,7 +12,7 @@ part of 'async_fn_future.dart';
 const exampleProvider = ExampleProvider._();
 
 final class ExampleProvider
-    extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>>
+    extends $FunctionalProvider<AsyncValue<String>, String, FutureOr<String>>
     with $FutureModifier<String>, $FutureProvider<String> {
   const ExampleProvider._()
       : super(

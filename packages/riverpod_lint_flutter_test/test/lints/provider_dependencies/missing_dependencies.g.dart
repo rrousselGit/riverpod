@@ -9,7 +9,7 @@ part of 'missing_dependencies.dart';
 @ProviderFor(dep)
 const depProvider = DepProvider._();
 
-final class DepProvider extends $FunctionalProvider<int, int>
+final class DepProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const DepProvider._()
       : super(
@@ -39,7 +39,7 @@ final class DepProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -49,7 +49,7 @@ String _$depHash() => r'578a350a40cda46444ecd9fa3ea2fd7bd0994692';
 @ProviderFor(transitiveDep)
 const transitiveDepProvider = TransitiveDepProvider._();
 
-final class TransitiveDepProvider extends $FunctionalProvider<int, int>
+final class TransitiveDepProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const TransitiveDepProvider._()
       : super(
@@ -83,7 +83,7 @@ final class TransitiveDepProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -93,7 +93,7 @@ String _$transitiveDepHash() => r'cedc000b7d16447684dff970ddea659cca24cdf6';
 @ProviderFor(dep2)
 const dep2Provider = Dep2Provider._();
 
-final class Dep2Provider extends $FunctionalProvider<int, int>
+final class Dep2Provider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const Dep2Provider._()
       : super(
@@ -123,7 +123,7 @@ final class Dep2Provider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -133,7 +133,7 @@ String _$dep2Hash() => r'97901e825cdcf5b1ac455b0fe8a2111662ce9f13';
 @ProviderFor(depFamily)
 const depFamilyProvider = DepFamilyFamily._();
 
-final class DepFamilyProvider extends $FunctionalProvider<int, int>
+final class DepFamilyProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const DepFamilyProvider._(
       {required DepFamilyFamily super.from, required int super.argument})
@@ -173,7 +173,7 @@ final class DepFamilyProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 
@@ -217,7 +217,7 @@ const plainAnnotationProvider = PlainAnnotationProvider._();
 
 ////////////
 // expect_lint: provider_dependencies
-final class PlainAnnotationProvider extends $FunctionalProvider<int, int>
+final class PlainAnnotationProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   ////////////
 // expect_lint: provider_dependencies
@@ -249,7 +249,7 @@ final class PlainAnnotationProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -259,7 +259,7 @@ String _$plainAnnotationHash() => r'6a3d1f1f2e53902af56cd7ce6ceba17358690b70';
 @ProviderFor(customAnnotation)
 const customAnnotationProvider = CustomAnnotationProvider._();
 
-final class CustomAnnotationProvider extends $FunctionalProvider<int, int>
+final class CustomAnnotationProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const CustomAnnotationProvider._()
       : super(
@@ -289,7 +289,7 @@ final class CustomAnnotationProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -301,7 +301,7 @@ const customAnnotationWithTrailingCommaProvider =
     CustomAnnotationWithTrailingCommaProvider._();
 
 final class CustomAnnotationWithTrailingCommaProvider
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const CustomAnnotationWithTrailingCommaProvider._()
       : super(
           from: null,
@@ -331,7 +331,7 @@ final class CustomAnnotationWithTrailingCommaProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -342,7 +342,7 @@ String _$customAnnotationWithTrailingCommaHash() =>
 @ProviderFor(existingDep)
 const existingDepProvider = ExistingDepProvider._();
 
-final class ExistingDepProvider extends $FunctionalProvider<int, int>
+final class ExistingDepProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const ExistingDepProvider._()
       : super(
@@ -372,7 +372,7 @@ final class ExistingDepProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -382,7 +382,7 @@ String _$existingDepHash() => r'73e7e1a0d4c2ae07ed03fb248408c3d82fe85554';
 @ProviderFor(multipleDeps)
 const multipleDepsProvider = MultipleDepsProvider._();
 
-final class MultipleDepsProvider extends $FunctionalProvider<int, int>
+final class MultipleDepsProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const MultipleDepsProvider._()
       : super(
@@ -412,7 +412,7 @@ final class MultipleDepsProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -426,8 +426,8 @@ const providerWithDartDocProvider = ProviderWithDartDocProvider._();
 
 /// Random doc to test that identifiers in docs don't trigger the lint.
 /// [dep], [DepWidget], [depProvider]
-final class ProviderWithDartDocProvider extends $FunctionalProvider<int, int>
-    with $Provider<int> {
+final class ProviderWithDartDocProvider
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   /// Random doc to test that identifiers in docs don't trigger the lint.
   /// [dep], [DepWidget], [depProvider]
   const ProviderWithDartDocProvider._()
@@ -458,7 +458,7 @@ final class ProviderWithDartDocProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }

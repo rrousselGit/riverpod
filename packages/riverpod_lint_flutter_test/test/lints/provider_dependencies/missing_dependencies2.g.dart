@@ -9,7 +9,7 @@ part of 'missing_dependencies2.dart';
 @ProviderFor(dep)
 const depProvider = DepProvider._();
 
-final class DepProvider extends $FunctionalProvider<int, int>
+final class DepProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const DepProvider._()
       : super(
@@ -39,7 +39,7 @@ final class DepProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -49,7 +49,7 @@ String _$depHash() => r'578a350a40cda46444ecd9fa3ea2fd7bd0994692';
 @ProviderFor(generatedScoped)
 const generatedScopedProvider = GeneratedScopedProvider._();
 
-final class GeneratedScopedProvider extends $FunctionalProvider<int, int>
+final class GeneratedScopedProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const GeneratedScopedProvider._()
       : super(
@@ -79,7 +79,7 @@ final class GeneratedScopedProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -89,7 +89,7 @@ String _$generatedScopedHash() => r'f8e5b6926ce13765c83dbb7f8c8458c9c5fe7d69';
 @ProviderFor(generatedRoot)
 const generatedRootProvider = GeneratedRootProvider._();
 
-final class GeneratedRootProvider extends $FunctionalProvider<int, int>
+final class GeneratedRootProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const GeneratedRootProvider._()
       : super(
@@ -119,7 +119,7 @@ final class GeneratedRootProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -131,7 +131,7 @@ const watchScopedButNoDependenciesProvider =
     WatchScopedButNoDependenciesProvider._();
 
 final class WatchScopedButNoDependenciesProvider
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchScopedButNoDependenciesProvider._()
       : super(
           from: null,
@@ -160,7 +160,7 @@ final class WatchScopedButNoDependenciesProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -173,7 +173,7 @@ const watchGeneratedScopedButNoDependenciesProvider =
     WatchGeneratedScopedButNoDependenciesProvider._();
 
 final class WatchGeneratedScopedButNoDependenciesProvider
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchGeneratedScopedButNoDependenciesProvider._()
       : super(
           from: null,
@@ -203,7 +203,7 @@ final class WatchGeneratedScopedButNoDependenciesProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -216,7 +216,7 @@ const watchRootButNoDependenciesProvider =
     WatchRootButNoDependenciesProvider._();
 
 final class WatchRootButNoDependenciesProvider
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchRootButNoDependenciesProvider._()
       : super(
           from: null,
@@ -245,7 +245,7 @@ final class WatchRootButNoDependenciesProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -258,7 +258,7 @@ const watchGeneratedRootButNoDependenciesProvider =
     WatchGeneratedRootButNoDependenciesProvider._();
 
 final class WatchGeneratedRootButNoDependenciesProvider
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchGeneratedRootButNoDependenciesProvider._()
       : super(
           from: null,
@@ -288,7 +288,7 @@ final class WatchGeneratedRootButNoDependenciesProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -301,7 +301,7 @@ const watchScopedButEmptyDependenciesProvider =
     WatchScopedButEmptyDependenciesProvider._();
 
 final class WatchScopedButEmptyDependenciesProvider
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchScopedButEmptyDependenciesProvider._()
       : super(
           from: null,
@@ -330,7 +330,7 @@ final class WatchScopedButEmptyDependenciesProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -343,7 +343,7 @@ const watchGeneratedScopedButEmptyDependenciesProvider =
     WatchGeneratedScopedButEmptyDependenciesProvider._();
 
 final class WatchGeneratedScopedButEmptyDependenciesProvider
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchGeneratedScopedButEmptyDependenciesProvider._()
       : super(
           from: null,
@@ -373,7 +373,7 @@ final class WatchGeneratedScopedButEmptyDependenciesProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -386,7 +386,7 @@ const watchRootButEmptyDependenciesProvider =
     WatchRootButEmptyDependenciesProvider._();
 
 final class WatchRootButEmptyDependenciesProvider
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchRootButEmptyDependenciesProvider._()
       : super(
           from: null,
@@ -415,7 +415,7 @@ final class WatchRootButEmptyDependenciesProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -428,7 +428,7 @@ const watchGeneratedRootButEmptyDependenciesProvider =
     WatchGeneratedRootButEmptyDependenciesProvider._();
 
 final class WatchGeneratedRootButEmptyDependenciesProvider
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchGeneratedRootButEmptyDependenciesProvider._()
       : super(
           from: null,
@@ -458,7 +458,7 @@ final class WatchGeneratedRootButEmptyDependenciesProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -471,7 +471,7 @@ const watchScopedButMissingDependenciesProvider =
     WatchScopedButMissingDependenciesProvider._();
 
 final class WatchScopedButMissingDependenciesProvider
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchScopedButMissingDependenciesProvider._()
       : super(
           from: null,
@@ -506,7 +506,7 @@ final class WatchScopedButMissingDependenciesProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -519,7 +519,7 @@ const watchGeneratedScopedButMissingDependenciesProvider =
     WatchGeneratedScopedButMissingDependenciesProvider._();
 
 final class WatchGeneratedScopedButMissingDependenciesProvider
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchGeneratedScopedButMissingDependenciesProvider._()
       : super(
           from: null,
@@ -554,7 +554,7 @@ final class WatchGeneratedScopedButMissingDependenciesProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -567,7 +567,7 @@ const watchRootButMissingDependenciesProvider =
     WatchRootButMissingDependenciesProvider._();
 
 final class WatchRootButMissingDependenciesProvider
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchRootButMissingDependenciesProvider._()
       : super(
           from: null,
@@ -600,7 +600,7 @@ final class WatchRootButMissingDependenciesProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -613,7 +613,7 @@ const watchGeneratedRootButMissingDependenciesProvider =
     WatchGeneratedRootButMissingDependenciesProvider._();
 
 final class WatchGeneratedRootButMissingDependenciesProvider
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchGeneratedRootButMissingDependenciesProvider._()
       : super(
           from: null,
@@ -648,7 +648,7 @@ final class WatchGeneratedRootButMissingDependenciesProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -661,7 +661,7 @@ const watchGeneratedScopedAndContainsDependencyProvider =
     WatchGeneratedScopedAndContainsDependencyProvider._();
 
 final class WatchGeneratedScopedAndContainsDependencyProvider
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchGeneratedScopedAndContainsDependencyProvider._()
       : super(
           from: null,
@@ -696,7 +696,7 @@ final class WatchGeneratedScopedAndContainsDependencyProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -709,7 +709,7 @@ const watchGeneratedRootAndContainsDependencyProvider =
     WatchGeneratedRootAndContainsDependencyProvider._();
 
 final class WatchGeneratedRootAndContainsDependencyProvider
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const WatchGeneratedRootAndContainsDependencyProvider._()
       : super(
           from: null,
@@ -744,7 +744,7 @@ final class WatchGeneratedRootAndContainsDependencyProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -757,7 +757,7 @@ const specifiedDependencyButNeverUsedProvider =
     SpecifiedDependencyButNeverUsedProvider._();
 
 final class SpecifiedDependencyButNeverUsedProvider
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const SpecifiedDependencyButNeverUsedProvider._()
       : super(
           from: null,
@@ -795,7 +795,7 @@ final class SpecifiedDependencyButNeverUsedProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -840,7 +840,7 @@ final class ClassWatchGeneratedRootButMissingDependenciesProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -855,7 +855,7 @@ abstract class _$ClassWatchGeneratedRootButMissingDependencies
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -865,7 +865,7 @@ abstract class _$ClassWatchGeneratedRootButMissingDependencies
 @ProviderFor(regression2348)
 const regression2348Provider = Regression2348Provider._();
 
-final class Regression2348Provider extends $FunctionalProvider<int, int>
+final class Regression2348Provider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const Regression2348Provider._()
       : super(
@@ -899,7 +899,7 @@ final class Regression2348Provider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -943,7 +943,7 @@ final class Regression2417Provider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -956,7 +956,7 @@ abstract class _$Regression2417 extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -966,7 +966,7 @@ abstract class _$Regression2417 extends $Notifier<int> {
 @ProviderFor(familyDep)
 const familyDepProvider = FamilyDepFamily._();
 
-final class FamilyDepProvider extends $FunctionalProvider<int, int>
+final class FamilyDepProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const FamilyDepProvider._(
       {required FamilyDepFamily super.from, required int super.argument})
@@ -1008,7 +1008,7 @@ final class FamilyDepProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 
@@ -1050,7 +1050,7 @@ final class FamilyDepFamily extends $Family
 @ProviderFor(familyDep2)
 const familyDep2Provider = FamilyDep2Family._();
 
-final class FamilyDep2Provider extends $FunctionalProvider<int, int>
+final class FamilyDep2Provider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const FamilyDep2Provider._(
       {required FamilyDep2Family super.from, required int super.argument})
@@ -1094,7 +1094,7 @@ final class FamilyDep2Provider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 
@@ -1137,7 +1137,7 @@ final class FamilyDep2Family extends $Family
 @ProviderFor(alias)
 const aliasProvider = AliasProvider._();
 
-final class AliasProvider extends $FunctionalProvider<int, int>
+final class AliasProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const AliasProvider._()
       : super(
@@ -1167,7 +1167,7 @@ final class AliasProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -1206,7 +1206,7 @@ final class AliasClassProvider extends $NotifierProvider<AliasClass, int> {
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -1219,7 +1219,7 @@ abstract class _$AliasClass extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -1263,7 +1263,7 @@ final class RiverpodDependenciesProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -1277,7 +1277,7 @@ abstract class _$RiverpodDependencies extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -1287,7 +1287,7 @@ abstract class _$RiverpodDependencies extends $Notifier<int> {
 @ProviderFor(foo)
 const fooProvider = FooProvider._();
 
-final class FooProvider extends $FunctionalProvider<int, int>
+final class FooProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const FooProvider._()
       : super(
@@ -1317,7 +1317,7 @@ final class FooProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -1327,8 +1327,8 @@ String _$fooHash() => r'a390b7b969bb0eec183426bfc85bec32750e9475';
 @ProviderFor(crossFileDependency)
 const crossFileDependencyProvider = CrossFileDependencyProvider._();
 
-final class CrossFileDependencyProvider extends $FunctionalProvider<int, int>
-    with $Provider<int> {
+final class CrossFileDependencyProvider
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const CrossFileDependencyProvider._()
       : super(
           from: null,
@@ -1357,7 +1357,7 @@ final class CrossFileDependencyProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }

@@ -19,7 +19,8 @@ const themeProvider = ThemeProvider._();
 ///
 /// This is unimplemented by default, and will be overridden inside [MaterialApp]
 /// with the current theme obtained using a [BuildContext].
-final class ThemeProvider extends $FunctionalProvider<ThemeData, ThemeData>
+final class ThemeProvider
+    extends $FunctionalProvider<ThemeData, ThemeData, ThemeData>
     with $Provider<ThemeData> {
   /// A Provider that exposes the current theme.
   ///
@@ -53,7 +54,7 @@ final class ThemeProvider extends $FunctionalProvider<ThemeData, ThemeData>
   Override overrideWithValue(ThemeData value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<ThemeData>(value),
+      providerOverride: $ValueProvider<ThemeData, ThemeData>(value),
     );
   }
 }

@@ -12,7 +12,7 @@ part of 'codegen.dart';
 const exampleProvider = ExampleProvider._();
 
 final class ExampleProvider
-    extends $FunctionalProvider<AsyncValue<int>, Stream<int>>
+    extends $FunctionalProvider<AsyncValue<int>, int, Stream<int>>
     with $FutureModifier<int>, $StreamProvider<int> {
   const ExampleProvider._()
       : super(

@@ -41,7 +41,7 @@ final class ThemeNotifierProvider
   Override overrideWithValue(ThemeSettings value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<ThemeSettings>(value),
+      providerOverride: $ValueProvider<ThemeSettings, ThemeSettings>(value),
     );
   }
 }
@@ -54,7 +54,7 @@ abstract class _$ThemeNotifier extends $Notifier<ThemeSettings> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<ThemeSettings>;
+    final ref = this.ref as $Ref<ThemeSettings, ThemeSettings>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<ThemeSettings, ThemeSettings>,
         ThemeSettings,

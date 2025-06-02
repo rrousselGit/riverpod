@@ -10,7 +10,7 @@ part of 'dependencies2.dart';
 const providerWithDependencies2Provider = ProviderWithDependencies2Provider._();
 
 final class ProviderWithDependencies2Provider
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const ProviderWithDependencies2Provider._()
       : super(
           from: null,
@@ -57,7 +57,7 @@ final class ProviderWithDependencies2Provider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -69,7 +69,7 @@ String _$providerWithDependencies2Hash() =>
 const familyWithDependencies2Provider = FamilyWithDependencies2Family._();
 
 final class FamilyWithDependencies2Provider
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const FamilyWithDependencies2Provider._(
       {required FamilyWithDependencies2Family super.from,
       required int? super.argument})
@@ -117,7 +117,7 @@ final class FamilyWithDependencies2Provider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 
@@ -217,7 +217,7 @@ final class NotifierWithDependenciesProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -231,7 +231,7 @@ abstract class _$NotifierWithDependencies extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -287,7 +287,7 @@ final class NotifierFamilyWithDependenciesProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 
@@ -351,7 +351,7 @@ abstract class _$NotifierFamilyWithDependencies extends $Notifier<int> {
     final created = build(
       id: _$args,
     );
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -361,7 +361,7 @@ abstract class _$NotifierFamilyWithDependencies extends $Notifier<int> {
 @ProviderFor(_private2)
 const _private2Provider = _Private2Provider._();
 
-final class _Private2Provider extends $FunctionalProvider<int, int>
+final class _Private2Provider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const _Private2Provider._()
       : super(
@@ -391,7 +391,7 @@ final class _Private2Provider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -401,7 +401,7 @@ String _$private2Hash() => r'e420875c8fbd9bf33eff945f2b7276b585032a38';
 @ProviderFor(public2)
 const public2Provider = Public2Provider._();
 
-final class Public2Provider extends $FunctionalProvider<int, int>
+final class Public2Provider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const Public2Provider._()
       : super(
@@ -431,7 +431,7 @@ final class Public2Provider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }

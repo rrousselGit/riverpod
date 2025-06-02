@@ -12,7 +12,7 @@ part of 'codegen.dart';
 const repositoryProvider = RepositoryProvider._();
 
 final class RepositoryProvider
-    extends $FunctionalProvider<Repository, Repository>
+    extends $FunctionalProvider<Repository, Repository, Repository>
     with $Provider<Repository> {
   const RepositoryProvider._()
       : super(
@@ -42,7 +42,7 @@ final class RepositoryProvider
   Override overrideWithValue(Repository value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Repository>(value),
+      providerOverride: $ValueProvider<Repository, Repository>(value),
     );
   }
 }
@@ -52,7 +52,7 @@ String _$repositoryHash() => r'6f859a9d70c3112139aaf826ee2bd541a4c001cb';
 @ProviderFor(value)
 const valueProvider = ValueProvider._();
 
-final class ValueProvider extends $FunctionalProvider<String, String>
+final class ValueProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const ValueProvider._()
       : super(
@@ -82,7 +82,7 @@ final class ValueProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 }

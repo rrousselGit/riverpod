@@ -11,7 +11,7 @@ part of 'codegen.dart';
 @ProviderFor(label)
 const labelProvider = LabelFamily._();
 
-final class LabelProvider extends $FunctionalProvider<String, String>
+final class LabelProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const LabelProvider._(
       {required LabelFamily super.from, required String super.argument})
@@ -51,7 +51,7 @@ final class LabelProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 

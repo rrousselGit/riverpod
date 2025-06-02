@@ -12,7 +12,7 @@ part of 'async_fn_stream.dart';
 const exampleProvider = ExampleProvider._();
 
 final class ExampleProvider
-    extends $FunctionalProvider<AsyncValue<String>, Stream<String>>
+    extends $FunctionalProvider<AsyncValue<String>, String, Stream<String>>
     with $FutureModifier<String>, $StreamProvider<String> {
   const ExampleProvider._()
       : super(

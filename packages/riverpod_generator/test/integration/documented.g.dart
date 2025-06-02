@@ -13,8 +13,8 @@ const functionalProvider = FunctionalProvider._();
 
 /// Hello world
 // Foo
-final class FunctionalProvider extends $FunctionalProvider<String, String>
-    with $Provider<String> {
+final class FunctionalProvider
+    extends $FunctionalProvider<String, String, String> with $Provider<String> {
   /// Hello world
 // Foo
   const FunctionalProvider._()
@@ -45,7 +45,7 @@ final class FunctionalProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 }
@@ -90,7 +90,7 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 }
@@ -103,7 +103,7 @@ abstract class _$ClassBased extends $Notifier<String> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<String>;
+    final ref = this.ref as $Ref<String, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<String, String>, String, Object?, Object?>;
     element.handleValue(ref, created);
@@ -117,7 +117,7 @@ const familyProvider = FamilyFamily._();
 
 /// Hello world
 // Foo
-final class FamilyProvider extends $FunctionalProvider<String, String>
+final class FamilyProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   /// Hello world
 // Foo
@@ -159,7 +159,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 
@@ -245,7 +245,7 @@ final class ClassFamilyBasedProvider
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 
@@ -302,7 +302,7 @@ abstract class _$ClassFamilyBased extends $Notifier<String> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<String>;
+    final ref = this.ref as $Ref<String, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<String, String>, String, Object?, Object?>;
     element.handleValue(ref, created);

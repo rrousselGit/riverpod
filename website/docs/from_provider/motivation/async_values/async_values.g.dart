@@ -11,8 +11,8 @@ part of 'async_values.dart';
 @ProviderFor(itemsApi)
 const itemsApiProvider = ItemsApiProvider._();
 
-final class ItemsApiProvider
-    extends $FunctionalProvider<AsyncValue<List<Item>>, FutureOr<List<Item>>>
+final class ItemsApiProvider extends $FunctionalProvider<AsyncValue<List<Item>>,
+        List<Item>, FutureOr<List<Item>>>
     with $FutureModifier<List<Item>>, $FutureProvider<List<Item>> {
   const ItemsApiProvider._()
       : super(
@@ -45,7 +45,7 @@ String _$itemsApiHash() => r'fa5a8f7e93ac048d9bd5dfc1744749995cf154af';
 const evenItemsProvider = EvenItemsProvider._();
 
 final class EvenItemsProvider
-    extends $FunctionalProvider<List<Item>, List<Item>>
+    extends $FunctionalProvider<List<Item>, List<Item>, List<Item>>
     with $Provider<List<Item>> {
   const EvenItemsProvider._()
       : super(
@@ -75,7 +75,7 @@ final class EvenItemsProvider
   Override overrideWithValue(List<Item> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<Item>>(value),
+      providerOverride: $ValueProvider<List<Item>, List<Item>>(value),
     );
   }
 }

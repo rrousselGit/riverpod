@@ -13,6 +13,7 @@ const locationProvider = LocationProvider._();
 
 final class LocationProvider extends $FunctionalProvider<
         AsyncValue<({double longitude, double latitude})>,
+        ({double longitude, double latitude}),
         Stream<({double longitude, double latitude})>>
     with
         $FutureModifier<({double longitude, double latitude})>,
@@ -49,7 +50,7 @@ String _$locationHash() => r'39328e5d0ec2b97acec14f1aba6c8db3f24f46a8';
 const restaurantsNearMeProvider = RestaurantsNearMeProvider._();
 
 final class RestaurantsNearMeProvider extends $FunctionalProvider<
-        AsyncValue<List<String>>, FutureOr<List<String>>>
+        AsyncValue<List<String>>, List<String>, FutureOr<List<String>>>
     with $FutureModifier<List<String>>, $FutureProvider<List<String>> {
   const RestaurantsNearMeProvider._()
       : super(

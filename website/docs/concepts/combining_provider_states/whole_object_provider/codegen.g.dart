@@ -12,7 +12,7 @@ part of 'codegen.dart';
 const configProvider = ConfigProvider._();
 
 final class ConfigProvider extends $FunctionalProvider<
-        AsyncValue<Configuration>, Stream<Configuration>>
+        AsyncValue<Configuration>, Configuration, Stream<Configuration>>
     with $FutureModifier<Configuration>, $StreamProvider<Configuration> {
   const ConfigProvider._()
       : super(
@@ -46,7 +46,7 @@ String _$configHash() => r'66f48a02bf939463649f0e7ad34137265e5c8b66';
 const productsProvider = ProductsProvider._();
 
 final class ProductsProvider extends $FunctionalProvider<
-        AsyncValue<List<Product>>, FutureOr<List<Product>>>
+        AsyncValue<List<Product>>, List<Product>, FutureOr<List<Product>>>
     with $FutureModifier<List<Product>>, $FutureProvider<List<Product>> {
   const ProductsProvider._()
       : super(

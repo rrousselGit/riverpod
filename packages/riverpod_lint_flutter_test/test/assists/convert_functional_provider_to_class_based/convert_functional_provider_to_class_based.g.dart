@@ -11,7 +11,7 @@ part of 'convert_functional_provider_to_class_based.dart';
 const exampleProvider = ExampleProvider._();
 
 /// Some comment
-final class ExampleProvider extends $FunctionalProvider<int, int>
+final class ExampleProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   /// Some comment
   const ExampleProvider._()
@@ -42,7 +42,7 @@ final class ExampleProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -54,7 +54,7 @@ String _$exampleHash() => r'67898608b444d39a000852f647ca6d3326740c98';
 const exampleFamilyProvider = ExampleFamilyFamily._();
 
 /// Some comment
-final class ExampleFamilyProvider extends $FunctionalProvider<int, int>
+final class ExampleFamilyProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   /// Some comment
   const ExampleFamilyProvider._(
@@ -104,7 +104,7 @@ final class ExampleFamilyProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 

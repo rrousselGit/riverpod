@@ -10,7 +10,7 @@ part of 'stream.dart';
 const genericProvider = GenericFamily._();
 
 final class GenericProvider<T extends num>
-    extends $FunctionalProvider<AsyncValue<List<T>>, Stream<List<T>>>
+    extends $FunctionalProvider<AsyncValue<List<T>>, List<T>, Stream<List<T>>>
     with $FutureModifier<List<T>>, $StreamProvider<List<T>> {
   const GenericProvider._({required GenericFamily super.from})
       : super(
@@ -196,7 +196,7 @@ abstract class _$GenericClass<T extends num> extends $StreamNotifier<List<T>> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<List<T>>>;
+    final ref = this.ref as $Ref<AsyncValue<List<T>>, List<T>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<List<T>>, List<T>>,
         AsyncValue<List<T>>,
@@ -210,7 +210,7 @@ abstract class _$GenericClass<T extends num> extends $StreamNotifier<List<T>> {
 const publicProvider = PublicProvider._();
 
 final class PublicProvider
-    extends $FunctionalProvider<AsyncValue<String>, Stream<String>>
+    extends $FunctionalProvider<AsyncValue<String>, String, Stream<String>>
     with $FutureModifier<String>, $StreamProvider<String> {
   const PublicProvider._()
       : super(
@@ -243,7 +243,7 @@ String _$publicHash() => r'ed93527425175c4a2475e83a3f44223a2aa604d7';
 const _privateProvider = _PrivateProvider._();
 
 final class _PrivateProvider
-    extends $FunctionalProvider<AsyncValue<String>, Stream<String>>
+    extends $FunctionalProvider<AsyncValue<String>, String, Stream<String>>
     with $FutureModifier<String>, $StreamProvider<String> {
   const _PrivateProvider._()
       : super(
@@ -276,7 +276,7 @@ String _$privateHash() => r'7915ccdd16751e7dc6274bb024d1b273d78dc78b';
 const familyProvider = FamilyFamily._();
 
 final class FamilyProvider
-    extends $FunctionalProvider<AsyncValue<String>, Stream<String>>
+    extends $FunctionalProvider<AsyncValue<String>, String, Stream<String>>
     with $FutureModifier<String>, $StreamProvider<String> {
   const FamilyProvider._(
       {required FamilyFamily super.from,
@@ -420,7 +420,7 @@ abstract class _$PublicClass extends $StreamNotifier<String> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<String>, String>,
         AsyncValue<String>,
@@ -468,7 +468,7 @@ abstract class _$PrivateClass extends $StreamNotifier<String> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<String>, String>,
         AsyncValue<String>,
@@ -607,7 +607,7 @@ abstract class _$FamilyClass extends $StreamNotifier<String> {
       fourth: _$args.fourth,
       fifth: _$args.fifth,
     );
-    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<String>, String>,
         AsyncValue<String>,

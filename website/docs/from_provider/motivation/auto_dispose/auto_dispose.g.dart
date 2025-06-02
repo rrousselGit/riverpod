@@ -11,7 +11,7 @@ part of 'auto_dispose.dart';
 @ProviderFor(diceRoll)
 const diceRollProvider = DiceRollProvider._();
 
-final class DiceRollProvider extends $FunctionalProvider<int, int>
+final class DiceRollProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const DiceRollProvider._()
       : super(
@@ -41,7 +41,7 @@ final class DiceRollProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -51,7 +51,7 @@ String _$diceRollHash() => r'58d43e5143bb64e855939d55a3be3ee81d66c518';
 @ProviderFor(cachedDiceRoll)
 const cachedDiceRollProvider = CachedDiceRollProvider._();
 
-final class CachedDiceRollProvider extends $FunctionalProvider<int, int>
+final class CachedDiceRollProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const CachedDiceRollProvider._()
       : super(
@@ -81,7 +81,7 @@ final class CachedDiceRollProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }

@@ -9,7 +9,7 @@ part of 'provider_parameters.dart';
 @ProviderFor(generator)
 const generatorProvider = GeneratorFamily._();
 
-final class GeneratorProvider extends $FunctionalProvider<int, int>
+final class GeneratorProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const GeneratorProvider._(
       {required GeneratorFamily super.from, required Object? super.argument})
@@ -49,7 +49,7 @@ final class GeneratorProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 

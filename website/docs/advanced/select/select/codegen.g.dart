@@ -11,7 +11,7 @@ part of 'codegen.dart';
 @ProviderFor(example)
 const exampleProvider = ExampleProvider._();
 
-final class ExampleProvider extends $FunctionalProvider<User, User>
+final class ExampleProvider extends $FunctionalProvider<User, User, User>
     with $Provider<User> {
   const ExampleProvider._()
       : super(
@@ -41,7 +41,7 @@ final class ExampleProvider extends $FunctionalProvider<User, User>
   Override overrideWithValue(User value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<User>(value),
+      providerOverride: $ValueProvider<User, User>(value),
     );
   }
 }

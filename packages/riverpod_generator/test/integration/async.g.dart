@@ -10,7 +10,7 @@ part of 'async.dart';
 const genericProvider = GenericFamily._();
 
 final class GenericProvider<T extends num>
-    extends $FunctionalProvider<AsyncValue<List<T>>, FutureOr<List<T>>>
+    extends $FunctionalProvider<AsyncValue<List<T>>, List<T>, FutureOr<List<T>>>
     with $FutureModifier<List<T>>, $FutureProvider<List<T>> {
   const GenericProvider._({required GenericFamily super.from})
       : super(
@@ -196,7 +196,7 @@ abstract class _$GenericClass<T extends num> extends $AsyncNotifier<List<T>> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<List<T>>>;
+    final ref = this.ref as $Ref<AsyncValue<List<T>>, List<T>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<List<T>>, List<T>>,
         AsyncValue<List<T>>,
@@ -321,7 +321,7 @@ abstract class _$GenericArg<T extends num> extends $AsyncNotifier<String> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<String>, String>,
         AsyncValue<String>,
@@ -335,7 +335,7 @@ abstract class _$GenericArg<T extends num> extends $AsyncNotifier<String> {
 const publicProvider = PublicProvider._();
 
 final class PublicProvider
-    extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>>
+    extends $FunctionalProvider<AsyncValue<String>, String, FutureOr<String>>
     with $FutureModifier<String>, $FutureProvider<String> {
   const PublicProvider._()
       : super(
@@ -368,7 +368,7 @@ String _$publicHash() => r'19bceccf795e4c3a26ad1e613fd6f41aad949e2b';
 const _privateProvider = _PrivateProvider._();
 
 final class _PrivateProvider
-    extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>>
+    extends $FunctionalProvider<AsyncValue<String>, String, FutureOr<String>>
     with $FutureModifier<String>, $FutureProvider<String> {
   const _PrivateProvider._()
       : super(
@@ -401,7 +401,7 @@ String _$privateHash() => r'7f0d1ff55a21e520b8471bbabc4649b5336221d4';
 const familyOrProvider = FamilyOrFamily._();
 
 final class FamilyOrProvider
-    extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>>
+    extends $FunctionalProvider<AsyncValue<String>, String, FutureOr<String>>
     with $FutureModifier<String>, $FutureProvider<String> {
   const FamilyOrProvider._(
       {required FamilyOrFamily super.from, required int super.argument})
@@ -474,7 +474,7 @@ final class FamilyOrFamily extends $Family
 const familyProvider = FamilyFamily._();
 
 final class FamilyProvider
-    extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>>
+    extends $FunctionalProvider<AsyncValue<String>, String, FutureOr<String>>
     with $FutureModifier<String>, $FutureProvider<String> {
   const FamilyProvider._(
       {required FamilyFamily super.from,
@@ -618,7 +618,7 @@ abstract class _$PublicClass extends $AsyncNotifier<String> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<String>, String>,
         AsyncValue<String>,
@@ -666,7 +666,7 @@ abstract class _$PrivateClass extends $AsyncNotifier<String> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<String>, String>,
         AsyncValue<String>,
@@ -759,7 +759,7 @@ abstract class _$FamilyOrClass extends $AsyncNotifier<String> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<String>, String>,
         AsyncValue<String>,
@@ -898,7 +898,7 @@ abstract class _$FamilyClass extends $AsyncNotifier<String> {
       fourth: _$args.fourth,
       fifth: _$args.fifth,
     );
-    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<String>, String>,
         AsyncValue<String>,
@@ -958,7 +958,7 @@ final class Regression3490Provider<Model, Sort, Cursor>
   Override overrideWithValue(void value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<void>(value),
+      providerOverride: $ValueProvider<void, void>(value),
     );
   }
 
@@ -1058,7 +1058,7 @@ abstract class _$Regression3490<Model, Sort, Cursor> extends $Notifier<void> {
       getData: _$args.getData,
       parentId: _$args.parentId,
     );
-    final ref = this.ref as $Ref<void>;
+    final ref = this.ref as $Ref<void, void>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<void, void>, void, Object?, Object?>;
     element.handleValue(ref, null);

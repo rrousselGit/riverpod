@@ -11,9 +11,8 @@ part of 'family_and_dispose.dart';
 @ProviderFor(taskTracker)
 const taskTrackerProvider = TaskTrackerProvider._();
 
-final class TaskTrackerProvider
-    extends $FunctionalProvider<TaskTrackerRepo, TaskTrackerRepo>
-    with $Provider<TaskTrackerRepo> {
+final class TaskTrackerProvider extends $FunctionalProvider<TaskTrackerRepo,
+    TaskTrackerRepo, TaskTrackerRepo> with $Provider<TaskTrackerRepo> {
   const TaskTrackerProvider._()
       : super(
           from: null,
@@ -42,7 +41,7 @@ final class TaskTrackerProvider
   Override overrideWithValue(TaskTrackerRepo value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<TaskTrackerRepo>(value),
+      providerOverride: $ValueProvider<TaskTrackerRepo, TaskTrackerRepo>(value),
     );
   }
 }
@@ -135,7 +134,7 @@ abstract class _$BugsEncounteredNotifier extends $AsyncNotifier<int> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final ref = this.ref as $Ref<AsyncValue<int>, int>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);

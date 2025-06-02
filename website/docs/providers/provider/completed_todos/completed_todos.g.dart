@@ -12,7 +12,7 @@ part of 'completed_todos.dart';
 const completedTodosProvider = CompletedTodosProvider._();
 
 final class CompletedTodosProvider
-    extends $FunctionalProvider<List<Todo>, List<Todo>>
+    extends $FunctionalProvider<List<Todo>, List<Todo>, List<Todo>>
     with $Provider<List<Todo>> {
   const CompletedTodosProvider._()
       : super(
@@ -42,7 +42,7 @@ final class CompletedTodosProvider
   Override overrideWithValue(List<Todo> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<Todo>>(value),
+      providerOverride: $ValueProvider<List<Todo>, List<Todo>>(value),
     );
   }
 }

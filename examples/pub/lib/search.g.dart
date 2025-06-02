@@ -12,7 +12,7 @@ part of 'search.dart';
 const fetchPackagesProvider = FetchPackagesFamily._();
 
 final class FetchPackagesProvider extends $FunctionalProvider<
-        AsyncValue<List<Package>>, FutureOr<List<Package>>>
+        AsyncValue<List<Package>>, List<Package>, FutureOr<List<Package>>>
     with $FutureModifier<List<Package>>, $FutureProvider<List<Package>> {
   const FetchPackagesProvider._(
       {required FetchPackagesFamily super.from,

@@ -35,7 +35,7 @@ final class SyncTodoListProvider
       _$SyncTodoListElement(pointer);
 
   ProviderListenable<SyncTodoList$AddSync> get addSync =>
-      $LazyProxyListenable<SyncTodoList$AddSync, List<Todo>>(
+      $LazyProxyListenable<SyncTodoList$AddSync, List<Todo>, List<Todo>>(
         this,
         (element) {
           element as _$SyncTodoListElement;
@@ -45,7 +45,7 @@ final class SyncTodoListProvider
       );
 
   ProviderListenable<SyncTodoList$AddAsync> get addAsync =>
-      $LazyProxyListenable<SyncTodoList$AddAsync, List<Todo>>(
+      $LazyProxyListenable<SyncTodoList$AddAsync, List<Todo>, List<Todo>>(
         this,
         (element) {
           element as _$SyncTodoListElement;
@@ -58,7 +58,7 @@ final class SyncTodoListProvider
   Override overrideWithValue(List<Todo> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<Todo>>(value),
+      providerOverride: $ValueProvider<List<Todo>, List<Todo>>(value),
     );
   }
 }
@@ -71,7 +71,7 @@ abstract class _$SyncTodoList extends $Notifier<List<Todo>> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<List<Todo>>;
+    final ref = this.ref as $Ref<List<Todo>, List<Todo>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<List<Todo>, List<Todo>>, List<Todo>, Object?, Object?>;
     element.handleValue(ref, created);
@@ -226,8 +226,8 @@ final class AsyncTodoListProvider
   _$AsyncTodoListElement $createElement($ProviderPointer pointer) =>
       _$AsyncTodoListElement(pointer);
 
-  ProviderListenable<AsyncTodoList$AddSync> get addSync =>
-      $LazyProxyListenable<AsyncTodoList$AddSync, AsyncValue<List<Todo>>>(
+  ProviderListenable<AsyncTodoList$AddSync> get addSync => $LazyProxyListenable<
+          AsyncTodoList$AddSync, AsyncValue<List<Todo>>, List<Todo>>(
         this,
         (element) {
           element as _$AsyncTodoListElement;
@@ -237,7 +237,8 @@ final class AsyncTodoListProvider
       );
 
   ProviderListenable<AsyncTodoList$AddAsync> get addAsync =>
-      $LazyProxyListenable<AsyncTodoList$AddAsync, AsyncValue<List<Todo>>>(
+      $LazyProxyListenable<AsyncTodoList$AddAsync, AsyncValue<List<Todo>>,
+          List<Todo>>(
         this,
         (element) {
           element as _$AsyncTodoListElement;
@@ -255,7 +256,7 @@ abstract class _$AsyncTodoList extends $AsyncNotifier<List<Todo>> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<List<Todo>>>;
+    final ref = this.ref as $Ref<AsyncValue<List<Todo>>, List<Todo>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<List<Todo>>, List<Todo>>,
         AsyncValue<List<Todo>>,
@@ -413,7 +414,7 @@ final class SimpleProvider extends $NotifierProvider<Simple, int> {
       _$SimpleElement(pointer);
 
   ProviderListenable<Simple$Increment> get increment =>
-      $LazyProxyListenable<Simple$Increment, int>(
+      $LazyProxyListenable<Simple$Increment, int, int>(
         this,
         (element) {
           element as _$SimpleElement;
@@ -423,7 +424,7 @@ final class SimpleProvider extends $NotifierProvider<Simple, int> {
       );
 
   ProviderListenable<Simple$IncrementOr> get incrementOr =>
-      $LazyProxyListenable<Simple$IncrementOr, int>(
+      $LazyProxyListenable<Simple$IncrementOr, int, int>(
         this,
         (element) {
           element as _$SimpleElement;
@@ -433,7 +434,7 @@ final class SimpleProvider extends $NotifierProvider<Simple, int> {
       );
 
   ProviderListenable<Simple$Delegated> get delegated =>
-      $LazyProxyListenable<Simple$Delegated, int>(
+      $LazyProxyListenable<Simple$Delegated, int, int>(
         this,
         (element) {
           element as _$SimpleElement;
@@ -446,7 +447,7 @@ final class SimpleProvider extends $NotifierProvider<Simple, int> {
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -459,7 +460,7 @@ abstract class _$Simple extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -668,7 +669,7 @@ final class SimpleFamilyProvider extends $NotifierProvider<SimpleFamily, int> {
       _$SimpleFamilyElement(pointer);
 
   ProviderListenable<SimpleFamily$Increment> get increment =>
-      $LazyProxyListenable<SimpleFamily$Increment, int>(
+      $LazyProxyListenable<SimpleFamily$Increment, int, int>(
         this,
         (element) {
           element as _$SimpleFamilyElement;
@@ -678,7 +679,7 @@ final class SimpleFamilyProvider extends $NotifierProvider<SimpleFamily, int> {
       );
 
   ProviderListenable<SimpleFamily$IncrementOr> get incrementOr =>
-      $LazyProxyListenable<SimpleFamily$IncrementOr, int>(
+      $LazyProxyListenable<SimpleFamily$IncrementOr, int, int>(
         this,
         (element) {
           element as _$SimpleFamilyElement;
@@ -691,7 +692,7 @@ final class SimpleFamilyProvider extends $NotifierProvider<SimpleFamily, int> {
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 
@@ -741,7 +742,7 @@ abstract class _$SimpleFamily extends $Notifier<int> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -897,7 +898,7 @@ final class SimpleAsyncProvider
       _$SimpleAsyncElement(pointer);
 
   ProviderListenable<SimpleAsync$Increment> get increment =>
-      $LazyProxyListenable<SimpleAsync$Increment, AsyncValue<int>>(
+      $LazyProxyListenable<SimpleAsync$Increment, AsyncValue<int>, int>(
         this,
         (element) {
           element as _$SimpleAsyncElement;
@@ -907,7 +908,7 @@ final class SimpleAsyncProvider
       );
 
   ProviderListenable<SimpleAsync$Delegated> get delegated =>
-      $LazyProxyListenable<SimpleAsync$Delegated, AsyncValue<int>>(
+      $LazyProxyListenable<SimpleAsync$Delegated, AsyncValue<int>, int>(
         this,
         (element) {
           element as _$SimpleAsyncElement;
@@ -925,7 +926,7 @@ abstract class _$SimpleAsync extends $AsyncNotifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final ref = this.ref as $Ref<AsyncValue<int>, int>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
@@ -1087,7 +1088,7 @@ final class SimpleAsync2Provider
       _$SimpleAsync2Element(pointer);
 
   ProviderListenable<SimpleAsync2$Increment> get increment =>
-      $LazyProxyListenable<SimpleAsync2$Increment, AsyncValue<int>>(
+      $LazyProxyListenable<SimpleAsync2$Increment, AsyncValue<int>, int>(
         this,
         (element) {
           element as _$SimpleAsync2Element;
@@ -1144,7 +1145,7 @@ abstract class _$SimpleAsync2 extends $StreamNotifier<int> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final ref = this.ref as $Ref<AsyncValue<int>, int>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
@@ -1253,7 +1254,7 @@ final class GenericProvider<T extends num>
       _$GenericElement(pointer);
 
   ProviderListenable<Generic$Increment> get increment =>
-      $LazyProxyListenable<Generic$Increment, AsyncValue<int>>(
+      $LazyProxyListenable<Generic$Increment, AsyncValue<int>, int>(
         this,
         (element) {
           element as _$GenericElement<T>;
@@ -1331,7 +1332,7 @@ abstract class _$Generic<T extends num> extends $AsyncNotifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final ref = this.ref as $Ref<AsyncValue<int>, int>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
@@ -1433,7 +1434,7 @@ final class GenericMutProvider extends $AsyncNotifierProvider<GenericMut, int> {
       _$GenericMutElement(pointer);
 
   ProviderListenable<GenericMut$Increment> get increment =>
-      $LazyProxyListenable<GenericMut$Increment, AsyncValue<int>>(
+      $LazyProxyListenable<GenericMut$Increment, AsyncValue<int>, int>(
         this,
         (element) {
           element as _$GenericMutElement;
@@ -1451,7 +1452,7 @@ abstract class _$GenericMut extends $AsyncNotifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final ref = this.ref as $Ref<AsyncValue<int>, int>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
@@ -1556,7 +1557,7 @@ final class FailingCtorProvider extends $NotifierProvider<FailingCtor, int> {
       _$FailingCtorElement(pointer);
 
   ProviderListenable<FailingCtor$Increment> get increment =>
-      $LazyProxyListenable<FailingCtor$Increment, int>(
+      $LazyProxyListenable<FailingCtor$Increment, int, int>(
         this,
         (element) {
           element as _$FailingCtorElement;
@@ -1569,7 +1570,7 @@ final class FailingCtorProvider extends $NotifierProvider<FailingCtor, int> {
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -1582,7 +1583,7 @@ abstract class _$FailingCtor extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -1685,7 +1686,7 @@ final class TypedProvider extends $NotifierProvider<Typed, String> {
       _$TypedElement(pointer);
 
   ProviderListenable<Typed$Mutate> get mutate =>
-      $LazyProxyListenable<Typed$Mutate, String>(
+      $LazyProxyListenable<Typed$Mutate, String, String>(
         this,
         (element) {
           element as _$TypedElement;
@@ -1698,7 +1699,7 @@ final class TypedProvider extends $NotifierProvider<Typed, String> {
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 }
@@ -1711,7 +1712,7 @@ abstract class _$Typed extends $Notifier<String> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<String>;
+    final ref = this.ref as $Ref<String, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<String, String>, String, Object?, Object?>;
     element.handleValue(ref, created);

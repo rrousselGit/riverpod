@@ -9,7 +9,7 @@ part of 'hash1.dart';
 @ProviderFor(simple)
 const simpleProvider = SimpleProvider._();
 
-final class SimpleProvider extends $FunctionalProvider<String, String>
+final class SimpleProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const SimpleProvider._()
       : super(
@@ -39,7 +39,7 @@ final class SimpleProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 }
@@ -49,7 +49,7 @@ String _$simpleHash() => r'f916b37e39d654e9acfc9c2bd7a244902197b306';
 @ProviderFor(simple2)
 const simple2Provider = Simple2Provider._();
 
-final class Simple2Provider extends $FunctionalProvider<String, String>
+final class Simple2Provider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const Simple2Provider._()
       : super(
@@ -79,7 +79,7 @@ final class Simple2Provider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 }
@@ -118,7 +118,7 @@ final class SimpleClassProvider extends $NotifierProvider<SimpleClass, String> {
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 }
@@ -131,7 +131,7 @@ abstract class _$SimpleClass extends $Notifier<String> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<String>;
+    final ref = this.ref as $Ref<String, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<String, String>, String, Object?, Object?>;
     element.handleValue(ref, created);

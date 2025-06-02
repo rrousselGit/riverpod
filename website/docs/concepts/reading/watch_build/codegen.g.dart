@@ -40,7 +40,7 @@ final class TodoListProvider extends $NotifierProvider<TodoList, List<Todo>> {
   Override overrideWithValue(List<Todo> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<Todo>>(value),
+      providerOverride: $ValueProvider<List<Todo>, List<Todo>>(value),
     );
   }
 }
@@ -53,7 +53,7 @@ abstract class _$TodoList extends $Notifier<List<Todo>> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<List<Todo>>;
+    final ref = this.ref as $Ref<List<Todo>, List<Todo>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<List<Todo>, List<Todo>>, List<Todo>, Object?, Object?>;
     element.handleValue(ref, created);
@@ -63,7 +63,7 @@ abstract class _$TodoList extends $Notifier<List<Todo>> {
 @ProviderFor(counter)
 const counterProvider = CounterProvider._();
 
-final class CounterProvider extends $FunctionalProvider<int, int>
+final class CounterProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const CounterProvider._()
       : super(
@@ -93,7 +93,7 @@ final class CounterProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }

@@ -11,7 +11,7 @@ part of 'sync.dart';
 const publicProvider = PublicProvider._();
 
 /// A public generated provider.
-final class PublicProvider extends $FunctionalProvider<String, String>
+final class PublicProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   /// A public generated provider.
   const PublicProvider._()
@@ -42,7 +42,7 @@ final class PublicProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 }
@@ -54,8 +54,8 @@ String _$publicHash() => r'94bee36125844f9fe521363bb228632b9f3bfbc7';
 const supports$inNamesProvider = Supports$inNamesProvider._();
 
 /// A generated provider with a '$' in its name.
-final class Supports$inNamesProvider extends $FunctionalProvider<String, String>
-    with $Provider<String> {
+final class Supports$inNamesProvider
+    extends $FunctionalProvider<String, String, String> with $Provider<String> {
   /// A generated provider with a '$' in its name.
   const Supports$inNamesProvider._()
       : super(
@@ -85,7 +85,7 @@ final class Supports$inNamesProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 }
@@ -97,7 +97,7 @@ String _$supports$inNamesHash() => r'a883450ddca90a227631fe54d1d9ae305bc558d9';
 const familyProvider = FamilyFamily._();
 
 /// A generated family provider.
-final class FamilyProvider extends $FunctionalProvider<String, String>
+final class FamilyProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   /// A generated family provider.
   const FamilyProvider._(
@@ -156,7 +156,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 
@@ -217,7 +217,7 @@ final class FamilyFamily extends $Family
 @ProviderFor(_private)
 const _privateProvider = _PrivateProvider._();
 
-final class _PrivateProvider extends $FunctionalProvider<String, String>
+final class _PrivateProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const _PrivateProvider._()
       : super(
@@ -247,7 +247,7 @@ final class _PrivateProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 }
@@ -289,7 +289,7 @@ final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 }
@@ -302,7 +302,7 @@ abstract class _$PublicClass extends $Notifier<String> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<String>;
+    final ref = this.ref as $Ref<String, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<String, String>, String, Object?, Object?>;
     element.handleValue(ref, created);
@@ -342,7 +342,7 @@ final class _PrivateClassProvider
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 }
@@ -355,7 +355,7 @@ abstract class _$PrivateClass extends $Notifier<String> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<String>;
+    final ref = this.ref as $Ref<String, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<String, String>, String, Object?, Object?>;
     element.handleValue(ref, created);
@@ -411,7 +411,7 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 
@@ -503,7 +503,7 @@ abstract class _$FamilyClass extends $Notifier<String> {
       forth: _$args.forth,
       fifth: _$args.fifth,
     );
-    final ref = this.ref as $Ref<String>;
+    final ref = this.ref as $Ref<String, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<String, String>, String, Object?, Object?>;
     element.handleValue(ref, created);
@@ -546,7 +546,7 @@ final class Supports$InClassNameProvider
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 }
@@ -560,7 +560,7 @@ abstract class _$Supports$InClassName extends $Notifier<String> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<String>;
+    final ref = this.ref as $Ref<String, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<String, String>, String, Object?, Object?>;
     element.handleValue(ref, created);

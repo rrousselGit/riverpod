@@ -11,7 +11,7 @@ part of 'sync_fn.dart';
 @ProviderFor(example)
 const exampleProvider = ExampleProvider._();
 
-final class ExampleProvider extends $FunctionalProvider<String, String>
+final class ExampleProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const ExampleProvider._()
       : super(
@@ -41,7 +41,7 @@ final class ExampleProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 }

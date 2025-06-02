@@ -40,7 +40,7 @@ final class PageIndexProvider extends $NotifierProvider<PageIndex, int> {
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -53,7 +53,7 @@ abstract class _$PageIndex extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -63,8 +63,8 @@ abstract class _$PageIndex extends $Notifier<int> {
 @ProviderFor(canGoToPreviousPage)
 const canGoToPreviousPageProvider = CanGoToPreviousPageProvider._();
 
-final class CanGoToPreviousPageProvider extends $FunctionalProvider<bool, bool>
-    with $Provider<bool> {
+final class CanGoToPreviousPageProvider
+    extends $FunctionalProvider<bool, bool, bool> with $Provider<bool> {
   const CanGoToPreviousPageProvider._()
       : super(
           from: null,
@@ -93,7 +93,7 @@ final class CanGoToPreviousPageProvider extends $FunctionalProvider<bool, bool>
   Override overrideWithValue(bool value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<bool>(value),
+      providerOverride: $ValueProvider<bool, bool>(value),
     );
   }
 }

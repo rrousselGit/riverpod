@@ -11,7 +11,8 @@ part of 'same_type.dart';
 @ProviderFor(items)
 const itemsProvider = ItemsProvider._();
 
-final class ItemsProvider extends $FunctionalProvider<List<Item>, List<Item>>
+final class ItemsProvider
+    extends $FunctionalProvider<List<Item>, List<Item>, List<Item>>
     with $Provider<List<Item>> {
   const ItemsProvider._()
       : super(
@@ -41,7 +42,7 @@ final class ItemsProvider extends $FunctionalProvider<List<Item>, List<Item>>
   Override overrideWithValue(List<Item> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<Item>>(value),
+      providerOverride: $ValueProvider<List<Item>, List<Item>>(value),
     );
   }
 }
@@ -52,7 +53,7 @@ String _$itemsHash() => r'8dafed1afc3fc52651c24445640d8b57ff080f66';
 const evenItemsProvider = EvenItemsProvider._();
 
 final class EvenItemsProvider
-    extends $FunctionalProvider<List<Item>, List<Item>>
+    extends $FunctionalProvider<List<Item>, List<Item>, List<Item>>
     with $Provider<List<Item>> {
   const EvenItemsProvider._()
       : super(
@@ -82,7 +83,7 @@ final class EvenItemsProvider
   Override overrideWithValue(List<Item> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<Item>>(value),
+      providerOverride: $ValueProvider<List<Item>, List<Item>>(value),
     );
   }
 }
