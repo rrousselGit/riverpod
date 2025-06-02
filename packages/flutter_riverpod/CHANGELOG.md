@@ -1,6 +1,5 @@
 ## Unreleased build
 
-- **Breaking**: `ProviderBase` now takes two generic arguments.
 - Revert Notifier life-cycle change. They are once again preserved across rebuilds.
 - Provider errors are now reported to the
   `ProviderContainer`'s `Zone` instead of whatever last used the provider.
