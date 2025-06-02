@@ -34,16 +34,16 @@ abstract class FamilyAsyncNotifier<StateT, ArgT>
 /// @nodoc
 @publicInMisc
 final class AsyncNotifierProviderFamily< //
-        NotifierT extends FamilyAsyncNotifier<StateT, ArgT>,
-        StateT,
+        NotifierT extends FamilyAsyncNotifier<ValueT, ArgT>,
+        ValueT,
         ArgT> //
     extends ClassFamily< //
         NotifierT,
-        AsyncValue<StateT>,
-        StateT,
+        AsyncValue<ValueT>,
+        ValueT,
         ArgT,
-        FutureOr<StateT>,
-        FamilyAsyncNotifierProvider<NotifierT, StateT, ArgT>> {
+        FutureOr<ValueT>,
+        FamilyAsyncNotifierProvider<NotifierT, ValueT, ArgT>> {
   /// The [Family] of [AsyncNotifierProvider].
   /// @nodoc
   @internal
@@ -63,11 +63,11 @@ final class AsyncNotifierProviderFamily< //
 /// The provider returned by [AsyncNotifierProviderFamily].
 @publicInMisc
 final class FamilyAsyncNotifierProvider< //
-        NotifierT extends FamilyAsyncNotifier<StateT, ArgT>,
-        StateT,
+        NotifierT extends FamilyAsyncNotifier<ValueT, ArgT>,
+        ValueT,
         ArgT> //
-    extends $AsyncNotifierProvider<NotifierT, StateT>
-    with LegacyProviderMixin<AsyncValue<StateT>> {
+    extends $AsyncNotifierProvider<NotifierT, ValueT>
+    with LegacyProviderMixin<AsyncValue<ValueT>, ValueT> {
   /// An implementation detail of Riverpod
   const FamilyAsyncNotifierProvider._(
     this._createNotifier, {

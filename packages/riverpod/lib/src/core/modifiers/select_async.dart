@@ -1,10 +1,11 @@
 part of '../../framework.dart';
 
 /// An internal class for `ProviderBase.selectAsync`.
-final class _AsyncSelector<InputT, OutputT, OriginT>
+final class _AsyncSelector<InputT, OutputT, OriginStateT, OriginValueT>
     with
         ProviderListenable<Future<OutputT>>,
-        ProviderListenableWithOrigin<Future<OutputT>, OriginT> {
+        ProviderListenableWithOrigin<Future<OutputT>, OriginStateT,
+            OriginValueT> {
   /// An internal class for `ProviderBase.select`.
   _AsyncSelector({
     required this.provider,
@@ -13,10 +14,12 @@ final class _AsyncSelector<InputT, OutputT, OriginT>
   });
 
   /// The provider that was selected
-  final ProviderListenableWithOrigin<AsyncValue<InputT>, OriginT> provider;
+  final ProviderListenableWithOrigin<AsyncValue<InputT>, OriginStateT,
+      OriginValueT> provider;
 
   /// The future associated to the listened provider
-  final ProviderListenableWithOrigin<Future<InputT>, OriginT> future;
+  final ProviderListenableWithOrigin<Future<InputT>, OriginStateT, OriginValueT>
+      future;
 
   /// The selector applied
   final OutputT Function(InputT) selector;
@@ -34,7 +37,8 @@ final class _AsyncSelector<InputT, OutputT, OriginT>
   }
 
   @override
-  ProviderSubscriptionWithOrigin<Future<OutputT>, OriginT> _addListener(
+  ProviderSubscriptionWithOrigin<Future<OutputT>, OriginStateT, OriginValueT>
+      _addListener(
     Node node,
     void Function(Future<OutputT>? previous, Future<OutputT> next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
@@ -42,7 +46,8 @@ final class _AsyncSelector<InputT, OutputT, OriginT>
     required bool fireImmediately,
     required bool weak,
   }) {
-    late final ProviderSubscriptionView<Future<OutputT>, OriginT> providerSub;
+    late final ProviderSubscriptionView<Future<OutputT>, OriginStateT,
+        OriginValueT> providerSub;
 
     $Result<OutputT>? lastSelectedValue;
     Completer<OutputT>? selectedCompleter;
@@ -155,7 +160,8 @@ final class _AsyncSelector<InputT, OutputT, OriginT>
       listener(null, selectedFuture!);
     }
 
-    return providerSub = ProviderSubscriptionView<Future<OutputT>, OriginT>(
+    return providerSub =
+        ProviderSubscriptionView<Future<OutputT>, OriginStateT, OriginValueT>(
       innerSubscription: sub,
       listener: listener,
       onError: onError,

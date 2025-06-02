@@ -11,7 +11,7 @@ part of 'family.dart';
 @ProviderFor(random)
 const randomProvider = RandomFamily._();
 
-final class RandomProvider extends $FunctionalProvider<int, int>
+final class RandomProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const RandomProvider._(
       {required RandomFamily super.from,
@@ -60,7 +60,7 @@ final class RandomProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 

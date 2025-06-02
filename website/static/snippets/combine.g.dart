@@ -11,7 +11,8 @@ part of 'combine.dart';
 @ProviderFor(todos)
 const todosProvider = TodosProvider._();
 
-final class TodosProvider extends $FunctionalProvider<List<Todo>, List<Todo>>
+final class TodosProvider
+    extends $FunctionalProvider<List<Todo>, List<Todo>, List<Todo>>
     with $Provider<List<Todo>> {
   const TodosProvider._()
       : super(
@@ -41,7 +42,7 @@ final class TodosProvider extends $FunctionalProvider<List<Todo>, List<Todo>>
   Override overrideWithValue(List<Todo> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<Todo>>(value),
+      providerOverride: $ValueProvider<List<Todo>, List<Todo>>(value),
     );
   }
 }
@@ -51,7 +52,7 @@ String _$todosHash() => r'ed255140669430745a7779b542a1209dc182ce0c';
 @ProviderFor(filter)
 const filterProvider = FilterProvider._();
 
-final class FilterProvider extends $FunctionalProvider<Filter, Filter>
+final class FilterProvider extends $FunctionalProvider<Filter, Filter, Filter>
     with $Provider<Filter> {
   const FilterProvider._()
       : super(
@@ -81,7 +82,7 @@ final class FilterProvider extends $FunctionalProvider<Filter, Filter>
   Override overrideWithValue(Filter value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Filter>(value),
+      providerOverride: $ValueProvider<Filter, Filter>(value),
     );
   }
 }
@@ -92,7 +93,7 @@ String _$filterHash() => r'38c5f61dc2d4b44e9be37bb724487d265cc0a645';
 const filteredTodosProvider = FilteredTodosProvider._();
 
 final class FilteredTodosProvider
-    extends $FunctionalProvider<List<Todo>, List<Todo>>
+    extends $FunctionalProvider<List<Todo>, List<Todo>, List<Todo>>
     with $Provider<List<Todo>> {
   const FilteredTodosProvider._()
       : super(
@@ -122,7 +123,7 @@ final class FilteredTodosProvider
   Override overrideWithValue(List<Todo> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<Todo>>(value),
+      providerOverride: $ValueProvider<List<Todo>, List<Todo>>(value),
     );
   }
 }

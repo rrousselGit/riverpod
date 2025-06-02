@@ -9,7 +9,7 @@ part of 'dependencies.dart';
 @ProviderFor(calc2)
 const myFamilyCalc2ProviderFamily = Calc2Family._();
 
-final class Calc2Provider extends $FunctionalProvider<int, int>
+final class Calc2Provider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const Calc2Provider._(
       {required Calc2Family super.from, required String super.argument})
@@ -65,7 +65,7 @@ final class Calc2Provider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 

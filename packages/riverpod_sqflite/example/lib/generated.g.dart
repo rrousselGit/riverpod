@@ -26,7 +26,9 @@ Map<String, dynamic> _$TodoToJson(_Todo instance) => <String, dynamic>{
 const storageProvider = StorageProvider._();
 
 final class StorageProvider extends $FunctionalProvider<
-        AsyncValue<JsonSqFliteStorage>, FutureOr<JsonSqFliteStorage>>
+        AsyncValue<JsonSqFliteStorage>,
+        JsonSqFliteStorage,
+        FutureOr<JsonSqFliteStorage>>
     with
         $FutureModifier<JsonSqFliteStorage>,
         $FutureProvider<JsonSqFliteStorage> {
@@ -97,7 +99,7 @@ abstract class _$TodosNotifierBase extends $AsyncNotifier<List<Todo>> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<List<Todo>>>;
+    final ref = this.ref as $Ref<AsyncValue<List<Todo>>, List<Todo>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<List<Todo>>, List<Todo>>,
         AsyncValue<List<Todo>>,

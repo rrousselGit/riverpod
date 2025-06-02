@@ -63,7 +63,7 @@ Map<String, dynamic> _$QuestionToJson(_Question instance) => <String, dynamic>{
 const questionThemeProvider = QuestionThemeProvider._();
 
 final class QuestionThemeProvider
-    extends $FunctionalProvider<QuestionTheme, QuestionTheme>
+    extends $FunctionalProvider<QuestionTheme, QuestionTheme, QuestionTheme>
     with $Provider<QuestionTheme> {
   const QuestionThemeProvider._()
       : super(
@@ -93,7 +93,7 @@ final class QuestionThemeProvider
   Override overrideWithValue(QuestionTheme value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<QuestionTheme>(value),
+      providerOverride: $ValueProvider<QuestionTheme, QuestionTheme>(value),
     );
   }
 }
@@ -127,9 +127,10 @@ const currentQuestionProvider = CurrentQuestionProvider._();
 ///
 /// This is an optional step. Since scoping is a fairly advanced mechanism,
 /// it's entirely fine to simply pass the [Question] to [QuestionItem] directly.
-final class CurrentQuestionProvider
-    extends $FunctionalProvider<AsyncValue<Question>, AsyncValue<Question>>
-    with $Provider<AsyncValue<Question>> {
+final class CurrentQuestionProvider extends $FunctionalProvider<
+    AsyncValue<Question>,
+    AsyncValue<Question>,
+    AsyncValue<Question>> with $Provider<AsyncValue<Question>> {
   /// A scoped provider, exposing the current question used by [QuestionItem].
   ///
   /// This is used as a performance optimization to pass a [Question] to
@@ -171,7 +172,8 @@ final class CurrentQuestionProvider
   Override overrideWithValue(AsyncValue<Question> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<AsyncValue<Question>>(value),
+      providerOverride:
+          $ValueProvider<AsyncValue<Question>, AsyncValue<Question>>(value),
     );
   }
 }

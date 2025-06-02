@@ -11,7 +11,7 @@ part of 'codegen.dart';
 @ProviderFor(search)
 const searchProvider = SearchProvider._();
 
-final class SearchProvider extends $FunctionalProvider<String, String>
+final class SearchProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const SearchProvider._()
       : super(
@@ -41,7 +41,7 @@ final class SearchProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 }
@@ -52,7 +52,7 @@ String _$searchHash() => r'bc08d7ad4026615f3c0e4824c6b943f315cf18be';
 const configsProvider = ConfigsProvider._();
 
 final class ConfigsProvider extends $FunctionalProvider<
-        AsyncValue<Configuration>, Stream<Configuration>>
+        AsyncValue<Configuration>, Configuration, Stream<Configuration>>
     with $FutureModifier<Configuration>, $StreamProvider<Configuration> {
   const ConfigsProvider._()
       : super(
@@ -86,7 +86,7 @@ String _$configsHash() => r'6416514dacd408abb24de2bd1404860e6518c564';
 const charactersProvider = CharactersProvider._();
 
 final class CharactersProvider extends $FunctionalProvider<
-        AsyncValue<List<Character>>, FutureOr<List<Character>>>
+        AsyncValue<List<Character>>, List<Character>, FutureOr<List<Character>>>
     with $FutureModifier<List<Character>>, $FutureProvider<List<Character>> {
   const CharactersProvider._()
       : super(

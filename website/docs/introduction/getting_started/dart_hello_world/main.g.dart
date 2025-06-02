@@ -11,8 +11,8 @@ part of 'main.dart';
 @ProviderFor(helloWorld)
 const helloWorldProvider = HelloWorldProvider._();
 
-final class HelloWorldProvider extends $FunctionalProvider<String, String>
-    with $Provider<String> {
+final class HelloWorldProvider
+    extends $FunctionalProvider<String, String, String> with $Provider<String> {
   const HelloWorldProvider._()
       : super(
           from: null,
@@ -41,7 +41,7 @@ final class HelloWorldProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 }

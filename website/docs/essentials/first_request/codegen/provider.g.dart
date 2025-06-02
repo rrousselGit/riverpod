@@ -17,8 +17,8 @@ const activityProvider = ActivityProvider._();
 /// This will create a provider named `activityProvider`
 /// which will cache the result of this function.
 // {@endtemplate}
-final class ActivityProvider
-    extends $FunctionalProvider<AsyncValue<Activity>, FutureOr<Activity>>
+final class ActivityProvider extends $FunctionalProvider<AsyncValue<Activity>,
+        Activity, FutureOr<Activity>>
     with $FutureModifier<Activity>, $FutureProvider<Activity> {
   /// This will create a provider named `activityProvider`
   /// which will cache the result of this function.

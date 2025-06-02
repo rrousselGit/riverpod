@@ -12,19 +12,19 @@ sealed class _ProviderOverride implements Override {}
 
 extension on _ProviderOverride {
   /// The provider that is overridden.
-  ProviderBase<Object?> get origin {
+  $ProviderBaseImpl<Object?, Object?> get origin {
     final that = this;
     return switch (that) {
-      ProviderBase() => that,
+      $ProviderBaseImpl() => that,
       $ProviderOverride() => that.origin,
     };
   }
 
   /// The new provider behavior.
-  ProviderBase<Object?> get providerOverride {
+  $ProviderBaseImpl<Object?, Object?> get providerOverride {
     final that = this;
     return switch (that) {
-      ProviderBase() => that,
+      $ProviderBaseImpl() => that,
       $ProviderOverride() => that.providerOverride,
     };
   }
@@ -61,10 +61,10 @@ class $ProviderOverride implements _ProviderOverride {
   });
 
   /// The provider that is overridden.
-  final ProviderBase<Object?> origin;
+  final $ProviderBaseImpl<Object?, Object?> origin;
 
   /// The new provider behavior.
-  final ProviderBase<Object?> providerOverride;
+  final $ProviderBaseImpl<Object?, Object?> providerOverride;
 
   @mustBeOverridden
   @override
@@ -84,10 +84,10 @@ class TransitiveProviderOverride implements $ProviderOverride {
   TransitiveProviderOverride(this.origin);
 
   @override
-  final ProviderBase<Object?> origin;
+  final $ProviderBaseImpl<Object?, Object?> origin;
 
   @override
-  ProviderBase<Object?> get providerOverride => origin;
+  $ProviderBaseImpl<Object?, Object?> get providerOverride => origin;
 
   @override
   String toString() => '$origin';

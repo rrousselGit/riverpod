@@ -56,6 +56,7 @@ class ProviderTemplate extends Template {
 ${provider.doc} final class $name$_genericsDefinition
     extends \$FunctionalProvider<
         $exposedType,
+        $valueType,
         $createdType
       >
     $mixins {
@@ -164,7 +165,7 @@ ${provider.doc} final class $name$_genericsDefinition
         for (final mutation in mutations) {
           buffer.writeln('''
   ProviderListenable<${mutation.generatedMutationInterfaceName}> get ${mutation.name}
-    => \$LazyProxyListenable<${mutation.generatedMutationInterfaceName}, ${provider.exposedTypeDisplayString}>(
+    => \$LazyProxyListenable<${mutation.generatedMutationInterfaceName}, ${provider.exposedTypeDisplayString}, ${provider.valueTypeDisplayString}>(
       this,
       (element) {
         element as ${provider.generatedElementName}$_generics;
@@ -190,7 +191,7 @@ ${provider.doc} final class $name$_genericsDefinition
   Override overrideWithValue(${provider.exposedTypeDisplayString} value) {
     return \$ProviderOverride(
       origin: this,
-      providerOverride: \$ValueProvider<${provider.exposedTypeDisplayString}>(value),
+      providerOverride: \$ValueProvider<${provider.exposedTypeDisplayString}, ${provider.valueTypeDisplayString}>(value),
     );
   }
 ''');

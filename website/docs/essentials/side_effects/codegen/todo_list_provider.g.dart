@@ -11,8 +11,8 @@ part of 'todo_list_provider.dart';
 @ProviderFor(todoList)
 const todoListProvider = TodoListProvider._();
 
-final class TodoListProvider
-    extends $FunctionalProvider<AsyncValue<List<Todo>>, FutureOr<List<Todo>>>
+final class TodoListProvider extends $FunctionalProvider<AsyncValue<List<Todo>>,
+        List<Todo>, FutureOr<List<Todo>>>
     with $FutureModifier<List<Todo>>, $FutureProvider<List<Todo>> {
   const TodoListProvider._()
       : super(

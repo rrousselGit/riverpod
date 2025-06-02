@@ -11,12 +11,12 @@ import 'stream_provider.dart' show StreamProvider;
 /// Do not use, as this may be removed at any time.
 @internal
 @publicInCodegen
-base mixin $Provider<StateT> on $FunctionalProvider<StateT, StateT> {}
+base mixin $Provider<ValueT> on $FunctionalProvider<ValueT, ValueT, ValueT> {}
 
 /// {@macro riverpod.provider}
 /// {@category Providers}
-final class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
-    with $Provider<StateT>, LegacyProviderMixin<StateT> {
+final class Provider<ValueT> extends $FunctionalProvider<ValueT, ValueT, ValueT>
+    with $Provider<ValueT>, LegacyProviderMixin<ValueT, ValueT> {
   /// {@macro riverpod.provider}
   Provider(
     this._create, {
@@ -51,17 +51,17 @@ final class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
   /// {@macro riverpod.family}
   static const family = ProviderFamilyBuilder();
 
-  final Create<StateT> _create;
+  final Create<ValueT> _create;
 
   /// @nodoc
   @internal
   @override
-  StateT create(Ref ref) => _create(ref);
+  ValueT create(Ref ref) => _create(ref);
 
   /// @nodoc
   @internal
   @override
-  $ProviderElement<StateT> $createElement($ProviderPointer pointer) {
+  $ProviderElement<ValueT> $createElement($ProviderPointer pointer) {
     return $ProviderElement(pointer);
   }
 
@@ -111,10 +111,10 @@ final class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
   /// The benefit of using [overrideWithValue] over [overrideWith] in this scenario
   /// is that if the theme ever changes, then `themeProvider` will be updated.
   /// {@endtemplate}
-  Override overrideWithValue(StateT value) {
+  Override overrideWithValue(ValueT value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<StateT>(value),
+      providerOverride: $ValueProvider<ValueT, ValueT>(value),
     );
   }
 }
@@ -333,7 +333,7 @@ final class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
 @internal
 @publicInCodegen
 class $ProviderElement<StateT>
-    extends $FunctionalProviderElement<StateT, StateT> {
+    extends $FunctionalProviderElement<StateT, StateT, StateT> {
   /// A [ProviderElement] for [Provider]
   $ProviderElement(super.pointer);
 
@@ -351,7 +351,7 @@ class $ProviderElement<StateT>
 /// The [Family] of [Provider]
 @publicInMisc
 final class ProviderFamily<StateT, ArgT>
-    extends FunctionalFamily<StateT, ArgT, StateT, Provider<StateT>> {
+    extends FunctionalFamily<StateT, StateT, ArgT, StateT, Provider<StateT>> {
   /// The [Family] of [Provider]
   /// @nodoc
   @internal

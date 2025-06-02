@@ -80,8 +80,8 @@ base class $Family extends Family {
 typedef SetupFamilyOverride<Arg> = void Function(
   Arg argument,
   void Function({
-    required ProviderBase<Object?> origin,
-    required ProviderBase<Object?> override,
+    required $ProviderBaseImpl<Object?, Object?> origin,
+    required $ProviderBaseImpl<Object?, Object?> override,
   }),
 );
 
@@ -96,7 +96,7 @@ base mixin $FunctionalFamilyOverride<CreatedT, ArgT> on Family {
       from: this,
       createElement: (pointer) {
         final provider =
-            pointer.origin as $FunctionalProvider<Object?, CreatedT>;
+            pointer.origin as $FunctionalProvider<Object?, Object?, CreatedT>;
 
         return provider
             .$view(create: (ref) => create(ref, provider.argument as ArgT))
@@ -114,10 +114,11 @@ base mixin $FunctionalFamilyOverride<CreatedT, ArgT> on Family {
 @reopen
 base class FunctionalFamily< //
         StateT,
+        ValueT,
         ArgT,
         CreatedT,
-        ProviderT extends $FunctionalProvider<StateT, CreatedT>> extends Family
-    with $FunctionalFamilyOverride<CreatedT, ArgT> {
+        ProviderT extends $FunctionalProvider<StateT, ValueT, CreatedT>>
+    extends Family with $FunctionalFamilyOverride<CreatedT, ArgT> {
   /// A base implementation for [Family], used by the various providers to
   /// help them define a [Family].
   ///

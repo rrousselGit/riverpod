@@ -33,11 +33,11 @@ abstract class FamilyStreamNotifier<StateT, ArgT>
 /// An implementation detail of Riverpod
 @publicInMisc
 final class FamilyStreamNotifierProvider< //
-        NotifierT extends FamilyStreamNotifier<StateT, ArgT>,
-        StateT,
+        NotifierT extends FamilyStreamNotifier<ValueT, ArgT>,
+        ValueT,
         ArgT> //
-    extends $StreamNotifierProvider<NotifierT, StateT>
-    with LegacyProviderMixin<AsyncValue<StateT>> {
+    extends $StreamNotifierProvider<NotifierT, ValueT>
+    with LegacyProviderMixin<AsyncValue<ValueT>, ValueT> {
   /// An implementation detail of Riverpod
   const FamilyStreamNotifierProvider._(
     this._createNotifier, {
@@ -61,16 +61,16 @@ final class FamilyStreamNotifierProvider< //
 /// The [Family] of [StreamNotifierProvider].
 @publicInMisc
 final class StreamNotifierProviderFamily< //
-        NotifierT extends FamilyStreamNotifier<StateT, ArgT>,
-        StateT,
+        NotifierT extends FamilyStreamNotifier<ValueT, ArgT>,
+        ValueT,
         ArgT> //
     extends ClassFamily< //
         NotifierT,
-        AsyncValue<StateT>,
-        StateT,
+        AsyncValue<ValueT>,
+        ValueT,
         ArgT,
-        Stream<StateT>,
-        FamilyStreamNotifierProvider<NotifierT, StateT, ArgT>> {
+        Stream<ValueT>,
+        FamilyStreamNotifierProvider<NotifierT, ValueT, ArgT>> {
   /// The [Family] of [FamilyStreamNotifierProvider].
   /// @nodoc
   @internal

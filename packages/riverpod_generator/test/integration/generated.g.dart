@@ -9,7 +9,7 @@ part of 'generated.dart';
 @ProviderFor(generated)
 const generatedProvider = GeneratedProvider._();
 
-final class GeneratedProvider extends $FunctionalProvider<_Test, _Test>
+final class GeneratedProvider extends $FunctionalProvider<_Test, _Test, _Test>
     with $Provider<_Test> {
   const GeneratedProvider._()
       : super(
@@ -39,7 +39,7 @@ final class GeneratedProvider extends $FunctionalProvider<_Test, _Test>
   Override overrideWithValue(_Test value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<_Test>(value),
+      providerOverride: $ValueProvider<_Test, _Test>(value),
     );
   }
 }
@@ -49,8 +49,8 @@ String _$generatedHash() => r'0332eb232658688654514ff241ff380edbf4dbf6';
 @ProviderFor(generatedFamily)
 const generatedFamilyProvider = GeneratedFamilyFamily._();
 
-final class GeneratedFamilyProvider extends $FunctionalProvider<_Test, _Test>
-    with $Provider<_Test> {
+final class GeneratedFamilyProvider
+    extends $FunctionalProvider<_Test, _Test, _Test> with $Provider<_Test> {
   const GeneratedFamilyProvider._(
       {required GeneratedFamilyFamily super.from,
       required _Test super.argument})
@@ -90,7 +90,7 @@ final class GeneratedFamilyProvider extends $FunctionalProvider<_Test, _Test>
   Override overrideWithValue(_Test value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<_Test>(value),
+      providerOverride: $ValueProvider<_Test, _Test>(value),
     );
   }
 
@@ -160,7 +160,7 @@ final class GeneratedClassProvider
   Override overrideWithValue(_Test value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<_Test>(value),
+      providerOverride: $ValueProvider<_Test, _Test>(value),
     );
   }
 }
@@ -173,7 +173,7 @@ abstract class _$GeneratedClass extends $Notifier<_Test> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<_Test>;
+    final ref = this.ref as $Ref<_Test, _Test>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<_Test, _Test>, _Test, Object?, Object?>;
     element.handleValue(ref, created);
@@ -220,7 +220,7 @@ final class GeneratedClassFamilyProvider
   Override overrideWithValue(_Test value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<_Test>(value),
+      providerOverride: $ValueProvider<_Test, _Test>(value),
     );
   }
 
@@ -272,7 +272,7 @@ abstract class _$GeneratedClassFamily extends $Notifier<_Test> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<_Test>;
+    final ref = this.ref as $Ref<_Test, _Test>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<_Test, _Test>, _Test, Object?, Object?>;
     element.handleValue(ref, created);
@@ -282,7 +282,8 @@ abstract class _$GeneratedClassFamily extends $Notifier<_Test> {
 @ProviderFor($dynamic)
 const $dynamicProvider = $DynamicProvider._();
 
-final class $DynamicProvider extends $FunctionalProvider<Object?, Object?>
+final class $DynamicProvider
+    extends $FunctionalProvider<Object?, Object?, Object?>
     with $Provider<Object?> {
   const $DynamicProvider._()
       : super(
@@ -312,7 +313,7 @@ final class $DynamicProvider extends $FunctionalProvider<Object?, Object?>
   Override overrideWithValue(Object? value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Object?>(value),
+      providerOverride: $ValueProvider<Object?, Object?>(value),
     );
   }
 }
@@ -322,7 +323,8 @@ String _$$dynamicHash() => r'17c8e140446da2e3c026ebb51c4b074d2894b7ff';
 @ProviderFor($dynamicFamily)
 const $dynamicFamilyProvider = $DynamicFamilyFamily._();
 
-final class $DynamicFamilyProvider extends $FunctionalProvider<Object?, Object?>
+final class $DynamicFamilyProvider
+    extends $FunctionalProvider<Object?, Object?, Object?>
     with $Provider<Object?> {
   const $DynamicFamilyProvider._(
       {required $DynamicFamilyFamily super.from,
@@ -363,7 +365,7 @@ final class $DynamicFamilyProvider extends $FunctionalProvider<Object?, Object?>
   Override overrideWithValue(Object? value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Object?>(value),
+      providerOverride: $ValueProvider<Object?, Object?>(value),
     );
   }
 
@@ -433,7 +435,7 @@ final class $DynamicClassProvider
   Override overrideWithValue(Object? value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Object?>(value),
+      providerOverride: $ValueProvider<Object?, Object?>(value),
     );
   }
 }
@@ -446,7 +448,7 @@ abstract class _$$DynamicClass extends $Notifier<Object?> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<Object?>;
+    final ref = this.ref as $Ref<Object?, Object?>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<Object?, Object?>, Object?, Object?, Object?>;
     element.handleValue(ref, created);
@@ -493,7 +495,7 @@ final class $DynamicClassFamilyProvider
   Override overrideWithValue(Object? value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Object?>(value),
+      providerOverride: $ValueProvider<Object?, Object?>(value),
     );
   }
 
@@ -546,7 +548,7 @@ abstract class _$$DynamicClassFamily extends $Notifier<Object?> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<Object?>;
+    final ref = this.ref as $Ref<Object?, Object?>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<Object?, Object?>, Object?, Object?, Object?>;
     element.handleValue(ref, created);
@@ -556,7 +558,8 @@ abstract class _$$DynamicClassFamily extends $Notifier<Object?> {
 @ProviderFor(_dynamic)
 const _dynamicProvider = _DynamicFamily._();
 
-final class _DynamicProvider extends $FunctionalProvider<Object?, Object?>
+final class _DynamicProvider
+    extends $FunctionalProvider<Object?, Object?, Object?>
     with $Provider<Object?> {
   const _DynamicProvider._(
       {required _DynamicFamily super.from, required dynamic super.argument})
@@ -596,7 +599,7 @@ final class _DynamicProvider extends $FunctionalProvider<Object?, Object?>
   Override overrideWithValue(Object? value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Object?>(value),
+      providerOverride: $ValueProvider<Object?, Object?>(value),
     );
   }
 
@@ -636,9 +639,8 @@ final class _DynamicFamily extends $Family
 @ProviderFor(alias)
 const aliasProvider = AliasProvider._();
 
-final class AliasProvider
-    extends $FunctionalProvider<AsyncValue<int>, AsyncValue<int>>
-    with $Provider<AsyncValue<int>> {
+final class AliasProvider extends $FunctionalProvider<AsyncValue<int>,
+    AsyncValue<int>, AsyncValue<int>> with $Provider<AsyncValue<int>> {
   const AliasProvider._()
       : super(
           from: null,
@@ -667,7 +669,7 @@ final class AliasProvider
   Override overrideWithValue(AsyncValue<int> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<AsyncValue<int>>(value),
+      providerOverride: $ValueProvider<AsyncValue<int>, AsyncValue<int>>(value),
     );
   }
 }
@@ -677,9 +679,8 @@ String _$aliasHash() => r'3feb548aa9a314142b5c5e3c9c7664a316a10d11';
 @ProviderFor(aliasFamily)
 const aliasFamilyProvider = AliasFamilyFamily._();
 
-final class AliasFamilyProvider
-    extends $FunctionalProvider<AsyncValue<int>, AsyncValue<int>>
-    with $Provider<AsyncValue<int>> {
+final class AliasFamilyProvider extends $FunctionalProvider<AsyncValue<int>,
+    AsyncValue<int>, AsyncValue<int>> with $Provider<AsyncValue<int>> {
   const AliasFamilyProvider._(
       {required AliasFamilyFamily super.from,
       required AsyncValue<int> super.argument})
@@ -719,7 +720,7 @@ final class AliasFamilyProvider
   Override overrideWithValue(AsyncValue<int> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<AsyncValue<int>>(value),
+      providerOverride: $ValueProvider<AsyncValue<int>, AsyncValue<int>>(value),
     );
   }
 
@@ -789,7 +790,7 @@ final class AliasClassProvider
   Override overrideWithValue(AsyncValue<int> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<AsyncValue<int>>(value),
+      providerOverride: $ValueProvider<AsyncValue<int>, AsyncValue<int>>(value),
     );
   }
 }
@@ -802,7 +803,7 @@ abstract class _$AliasClass extends $Notifier<AsyncValue<int>> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final ref = this.ref as $Ref<AsyncValue<int>, AsyncValue<int>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<int>, AsyncValue<int>>,
         AsyncValue<int>,
@@ -852,7 +853,7 @@ final class AliasClassFamilyProvider
   Override overrideWithValue(AsyncValue<int> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<AsyncValue<int>>(value),
+      providerOverride: $ValueProvider<AsyncValue<int>, AsyncValue<int>>(value),
     );
   }
 
@@ -904,7 +905,7 @@ abstract class _$AliasClassFamily extends $Notifier<AsyncValue<int>> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final ref = this.ref as $Ref<AsyncValue<int>, AsyncValue<int>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<int>, AsyncValue<int>>,
         AsyncValue<int>,

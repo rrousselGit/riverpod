@@ -12,7 +12,7 @@ part of 'codegen.dart';
 const streamExampleProvider = StreamExampleProvider._();
 
 final class StreamExampleProvider
-    extends $FunctionalProvider<AsyncValue<int>, Stream<int>>
+    extends $FunctionalProvider<AsyncValue<int>, int, Stream<int>>
     with $FutureModifier<int>, $StreamProvider<int> {
   const StreamExampleProvider._()
       : super(

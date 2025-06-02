@@ -11,7 +11,7 @@ part of 'codegen.dart';
 @ProviderFor(city)
 const cityProvider = CityProvider._();
 
-final class CityProvider extends $FunctionalProvider<String, String>
+final class CityProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const CityProvider._()
       : super(
@@ -41,7 +41,7 @@ final class CityProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 }
@@ -52,7 +52,7 @@ String _$cityHash() => r'6a5023a3aba119f1ecaee6c7db44b3f519e72759';
 const weatherProvider = WeatherProvider._();
 
 final class WeatherProvider
-    extends $FunctionalProvider<AsyncValue<Weather>, FutureOr<Weather>>
+    extends $FunctionalProvider<AsyncValue<Weather>, Weather, FutureOr<Weather>>
     with $FutureModifier<Weather>, $FutureProvider<Weather> {
   const WeatherProvider._()
       : super(

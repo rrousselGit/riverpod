@@ -933,7 +933,7 @@ void main() {
 
           expect(
             container.pointerManager.orphanPointers.pointers[dep]!.element,
-            isA<ProviderElement<int>>()
+            isA<ProviderElement>()
                 .having((e) => e.stateResult, 'stateResult', null),
           );
         });

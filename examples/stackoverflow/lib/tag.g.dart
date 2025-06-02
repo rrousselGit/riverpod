@@ -11,7 +11,8 @@ part of 'tag.dart';
 @ProviderFor(tagTheme)
 const tagThemeProvider = TagThemeProvider._();
 
-final class TagThemeProvider extends $FunctionalProvider<TagTheme, TagTheme>
+final class TagThemeProvider
+    extends $FunctionalProvider<TagTheme, TagTheme, TagTheme>
     with $Provider<TagTheme> {
   const TagThemeProvider._()
       : super(
@@ -45,7 +46,7 @@ final class TagThemeProvider extends $FunctionalProvider<TagTheme, TagTheme>
   Override overrideWithValue(TagTheme value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<TagTheme>(value),
+      providerOverride: $ValueProvider<TagTheme, TagTheme>(value),
     );
   }
 }

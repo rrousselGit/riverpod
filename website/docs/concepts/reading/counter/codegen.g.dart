@@ -12,7 +12,7 @@ part of 'codegen.dart';
 const repositoryProvider = RepositoryProvider._();
 
 final class RepositoryProvider
-    extends $FunctionalProvider<Repository, Repository>
+    extends $FunctionalProvider<Repository, Repository, Repository>
     with $Provider<Repository> {
   const RepositoryProvider._()
       : super(
@@ -42,7 +42,7 @@ final class RepositoryProvider
   Override overrideWithValue(Repository value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Repository>(value),
+      providerOverride: $ValueProvider<Repository, Repository>(value),
     );
   }
 }
@@ -81,7 +81,7 @@ final class CounterProvider extends $NotifierProvider<Counter, int> {
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -94,7 +94,7 @@ abstract class _$Counter extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);

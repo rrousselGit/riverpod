@@ -573,7 +573,7 @@ extension on AnyNotifier<Object?, Object?> {
   Future<Object?> get future {
     final that = this;
     switch (that) {
-      case $AsyncClassModifier<Object?, Object?, Object?>():
+      case $AsyncClassModifier<Object?, Object?>():
         return that.future;
       default:
         throw AssertionError('not async');

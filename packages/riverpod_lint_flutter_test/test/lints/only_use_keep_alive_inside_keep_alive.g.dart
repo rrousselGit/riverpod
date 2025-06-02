@@ -9,7 +9,7 @@ part of 'only_use_keep_alive_inside_keep_alive.dart';
 @ProviderFor(keepAlive)
 const keepAliveProvider = KeepAliveProvider._();
 
-final class KeepAliveProvider extends $FunctionalProvider<int, int>
+final class KeepAliveProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const KeepAliveProvider._()
       : super(
@@ -39,7 +39,7 @@ final class KeepAliveProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -79,7 +79,7 @@ final class KeepAliveClassProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -92,7 +92,7 @@ abstract class _$KeepAliveClass extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -102,7 +102,7 @@ abstract class _$KeepAliveClass extends $Notifier<int> {
 @ProviderFor(autoDispose)
 const autoDisposeProvider = AutoDisposeProvider._();
 
-final class AutoDisposeProvider extends $FunctionalProvider<int, int>
+final class AutoDisposeProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const AutoDisposeProvider._()
       : super(
@@ -132,7 +132,7 @@ final class AutoDisposeProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -172,7 +172,7 @@ final class AutoDisposeClassProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -185,7 +185,7 @@ abstract class _$AutoDisposeClass extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -195,7 +195,7 @@ abstract class _$AutoDisposeClass extends $Notifier<int> {
 @ProviderFor(fn)
 const fnProvider = FnProvider._();
 
-final class FnProvider extends $FunctionalProvider<int, int>
+final class FnProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const FnProvider._()
       : super(
@@ -225,7 +225,7 @@ final class FnProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }

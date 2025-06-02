@@ -9,7 +9,7 @@ part of 'functional_ref.dart';
 @ProviderFor(nameless)
 const namelessProvider = NamelessProvider._();
 
-final class NamelessProvider extends $FunctionalProvider<int, int>
+final class NamelessProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const NamelessProvider._()
       : super(
@@ -39,7 +39,7 @@ final class NamelessProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -50,7 +50,7 @@ String _$namelessHash() => r'1a2aa61445a64c65301051820b159c5998195606';
 const genericsProvider = GenericsFamily._();
 
 final class GenericsProvider<A extends num, B>
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const GenericsProvider._({required GenericsFamily super.from})
       : super(
           argument: null,
@@ -89,7 +89,7 @@ final class GenericsProvider<A extends num, B>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 
@@ -142,7 +142,7 @@ final class GenericsFamily extends $Family {
 @ProviderFor(valid)
 const validProvider = ValidProvider._();
 
-final class ValidProvider extends $FunctionalProvider<int, int>
+final class ValidProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const ValidProvider._()
       : super(
@@ -172,7 +172,7 @@ final class ValidProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }

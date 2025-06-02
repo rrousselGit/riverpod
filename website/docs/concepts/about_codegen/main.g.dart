@@ -12,7 +12,7 @@ part of 'main.dart';
 const fetchUserProvider = FetchUserFamily._();
 
 final class FetchUserProvider
-    extends $FunctionalProvider<AsyncValue<User>, FutureOr<User>>
+    extends $FunctionalProvider<AsyncValue<User>, User, FutureOr<User>>
     with $FutureModifier<User>, $FutureProvider<User> {
   const FetchUserProvider._(
       {required FetchUserFamily super.from, required int super.argument})

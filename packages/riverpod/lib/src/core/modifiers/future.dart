@@ -16,17 +16,17 @@ typedef AsyncSubscription = ({
 /// Do not use.
 @internal
 @publicInCodegen
-mixin $AsyncClassModifier<StateT, CreatedT, ValueT>
-    on AnyNotifier<AsyncValue<StateT>, ValueT> {
+mixin $AsyncClassModifier<ValueT, CreatedT>
+    on AnyNotifier<AsyncValue<ValueT>, ValueT> {
   @visibleForTesting
   @protected
   @override
-  AsyncValue<StateT> get state;
+  AsyncValue<ValueT> get state;
 
   @visibleForTesting
   @protected
   @override
-  set state(AsyncValue<StateT> newState);
+  set state(AsyncValue<ValueT> newState);
 
   /// {@template riverpod.async_notifier.future}
   /// Obtains a [Future] that resolves with the first [state] value that is not
@@ -41,11 +41,11 @@ mixin $AsyncClassModifier<StateT, CreatedT, ValueT>
   /// {@endtemplate}
   @visibleForTesting
   @protected
-  Future<StateT> get future {
+  Future<ValueT> get future {
     final element = requireElement();
 
     element.flush();
-    return (element as FutureModifierElement<StateT>).futureNotifier.value;
+    return (element as FutureModifierElement<ValueT>).futureNotifier.value;
   }
 
   /// A function to update [state] from its previous value, while
@@ -64,12 +64,12 @@ mixin $AsyncClassModifier<StateT, CreatedT, ValueT>
   /// - [AsyncValue.guard], and alternate way to perform asynchronous operations.
   @visibleForTesting
   @protected
-  Future<StateT> update(
-    FutureOr<StateT> Function(StateT previousState) cb, {
-    FutureOr<StateT> Function(Object err, StackTrace stackTrace)? onError,
+  Future<ValueT> update(
+    FutureOr<ValueT> Function(ValueT previousState) cb, {
+    FutureOr<ValueT> Function(Object err, StackTrace stackTrace)? onError,
   }) async {
     final newState = await future.then(cb, onError: onError);
-    state = AsyncData<StateT>(newState);
+    state = AsyncData<ValueT>(newState);
     return newState;
   }
 }
@@ -78,7 +78,8 @@ mixin $AsyncClassModifier<StateT, CreatedT, ValueT>
 /// Do not use.
 @internal
 @publicInCodegen
-base mixin $FutureModifier<StateT> on ProviderBase<AsyncValue<StateT>> {
+base mixin $FutureModifier<ValueT>
+    on $ProviderBaseImpl<AsyncValue<ValueT>, ValueT> {
   /// Obtains the [Future] representing this provider.
   ///
   /// The instance of [Future] obtained may change over time. This typically
@@ -99,13 +100,13 @@ base mixin $FutureModifier<StateT> on ProviderBase<AsyncValue<StateT>> {
   ///   return await http.get('${configs.host}/products');
   /// });
   /// ```
-  Refreshable<Future<StateT>> get future => _future;
+  Refreshable<Future<ValueT>> get future => _future;
 
-  _ProviderRefreshable<Future<StateT>, AsyncValue<StateT>> get _future {
-    return ProviderElementProxy<Future<StateT>, AsyncValue<StateT>>(
+  _ProviderRefreshable<Future<ValueT>, AsyncValue<ValueT>, ValueT> get _future {
+    return ProviderElementProxy<Future<ValueT>, AsyncValue<ValueT>, ValueT>(
       this,
       (element) {
-        element as FutureModifierElement<StateT>;
+        element as FutureModifierElement<ValueT>;
 
         return element.futureNotifier;
       },
@@ -142,9 +143,9 @@ base mixin $FutureModifier<StateT> on ProviderBase<AsyncValue<StateT>> {
   /// ```
   /// {@endtemplate}
   ProviderListenable<Future<Output>> selectAsync<Output>(
-    Output Function(StateT data) selector,
+    Output Function(ValueT data) selector,
   ) {
-    return _AsyncSelector<StateT, Output, AsyncValue<StateT>>(
+    return _AsyncSelector<ValueT, Output, AsyncValue<ValueT>, ValueT>(
       selector: selector,
       provider: this,
       future: _future,
@@ -154,12 +155,12 @@ base mixin $FutureModifier<StateT> on ProviderBase<AsyncValue<StateT>> {
 
 @internal
 mixin FutureModifierClassElement<
-        NotifierT extends AnyNotifier<AsyncValue<StateT>, StateT>,
-        StateT,
+        NotifierT extends AnyNotifier<AsyncValue<ValueT>, ValueT>,
+        ValueT,
         CreatedT>
     on
-        FutureModifierElement<StateT>,
-        $ClassProviderElement<NotifierT, AsyncValue<StateT>, StateT, CreatedT> {
+        FutureModifierElement<ValueT>,
+        $ClassProviderElement<NotifierT, AsyncValue<ValueT>, ValueT, CreatedT> {
   @override
   void handleError(Ref ref, Object error, StackTrace stackTrace) {
     triggerRetry(error);
@@ -170,22 +171,23 @@ mixin FutureModifierClassElement<
 /// Mixin to help implement logic for listening to [Future]s/[Stream]s and setup
 /// `provider.future` + convert the object into an [AsyncValue].
 @internal
-mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
+mixin FutureModifierElement<ValueT>
+    on ProviderElement<AsyncValue<ValueT>, ValueT> {
   /// An observable for [FutureProvider.future].
   @internal
-  final futureNotifier = $ElementLense<Future<StateT>>();
-  Completer<StateT>? _futureCompleter;
-  Future<StateT>? _lastFuture;
+  final futureNotifier = $ElementLense<Future<ValueT>>();
+  Completer<ValueT>? _futureCompleter;
+  Future<ValueT>? _lastFuture;
   AsyncSubscription? _cancelSubscription;
 
   @override
   void initState(Ref ref) {
-    onLoading(AsyncLoading<StateT>(), seamless: !ref.isReload);
+    onLoading(AsyncLoading<ValueT>(), seamless: !ref.isReload);
   }
 
   @override
   void mount() {
-    _stateResult = $ResultData(AsyncLoading<StateT>());
+    _stateResult = $ResultData(AsyncLoading<ValueT>());
     super.mount();
   }
 
@@ -195,7 +197,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   /// - seamless:true => import previous state and skip loading
   /// - seamless:false => import previous state and prefer loading
   void asyncTransition(
-    AsyncValue<StateT> newState, {
+    AsyncValue<ValueT> newState, {
     required bool seamless,
   }) {
     final previous = stateResult?.requireState;
@@ -206,7 +208,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
       super.setStateResult(
         $ResultData(
           newState
-              .cast<StateT>()
+              .cast<ValueT>()
               .copyWithPrevious(previous, isRefresh: seamless),
         ),
       );
@@ -215,7 +217,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
 
   @override
   @protected
-  void setStateResult($Result<AsyncValue<StateT>> newState) {
+  void setStateResult($Result<AsyncValue<ValueT>> newState) {
     newState.requireState.map(
       loading: onLoading,
       error: onError,
@@ -224,7 +226,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   }
 
   @internal
-  void onLoading(AsyncLoading<StateT> value, {bool seamless = false}) {
+  void onLoading(AsyncLoading<ValueT> value, {bool seamless = false}) {
     asyncTransition(value, seamless: seamless);
     if (_futureCompleter == null) {
       final completer = _futureCompleter = Completer();
@@ -237,7 +239,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   /// Might be invoked after the element is disposed in the case where `provider.future`
   /// has yet to complete.
   @internal
-  void onError(AsyncError<StateT> value, {bool seamless = false}) {
+  void onError(AsyncError<ValueT> value, {bool seamless = false}) {
     asyncTransition(value, seamless: seamless);
 
     for (final observer in container.observers) {
@@ -273,7 +275,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   /// Might be invoked after the element is disposed in the case where `provider.future`
   /// has yet to complete.
   @internal
-  void onData(AsyncData<StateT> value, {bool seamless = false}) {
+  void onData(AsyncData<ValueT> value, {bool seamless = false}) {
     asyncTransition(value, seamless: seamless);
 
     final completer = _futureCompleter;
@@ -288,7 +290,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   /// Listens to a [Stream] and convert it into an [AsyncValue].
   @preferInline
   @internal
-  WhenComplete handleStream(Ref ref, Stream<StateT> Function() create) {
+  WhenComplete handleStream(Ref ref, Stream<ValueT> Function() create) {
     return _handleAsync(ref, ({
       required data,
       required done,
@@ -297,7 +299,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
     }) {
       final stream = create();
 
-      late StreamSubscription<StateT> subscription;
+      late StreamSubscription<ValueT> subscription;
       subscription = stream.listen(data, onError: error, onDone: done);
 
       final asyncSub = (
@@ -337,7 +339,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   @internal
   WhenComplete handleFuture(
     Ref ref,
-    FutureOr<StateT> Function() create,
+    FutureOr<ValueT> Function() create,
   ) {
     return _handleAsync(ref, ({
       required data,
@@ -346,7 +348,7 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
       required last,
     }) {
       final futureOr = create();
-      if (futureOr is! Future<StateT>) {
+      if (futureOr is! Future<ValueT>) {
         data(futureOr);
         done();
         return null;
@@ -389,10 +391,10 @@ mixin FutureModifierElement<StateT> on ProviderElement<AsyncValue<StateT>> {
   WhenComplete _handleAsync(
     Ref ref,
     AsyncSubscription? Function({
-      required void Function(StateT) data,
+      required void Function(ValueT) data,
       required void Function(Object, StackTrace) error,
       required void Function() done,
-      required void Function(Future<StateT>) last,
+      required void Function(Future<ValueT>) last,
     }) listen,
   ) {
     void callOnError(Object error, StackTrace stackTrace) {

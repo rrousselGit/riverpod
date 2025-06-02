@@ -119,10 +119,10 @@ sealed class ProviderOrFamily implements ProviderListenableOrFamily {
 }
 
 extension on ProviderListenableOrFamily {
-  ProviderBase<Object?>? get debugListenedProvider {
+  $ProviderBaseImpl<Object?, Object?>? get debugListenedProvider {
     final that = this;
     return switch (that) {
-      ProviderBase() => that,
+      $ProviderBaseImpl() => that,
       _ProviderSelector() => that.provider.debugListenedProvider,
       _AsyncSelector() => that.provider.debugListenedProvider,
       ProviderElementProxy() => that.provider,
@@ -178,10 +178,10 @@ String shortHash(Object? object) {
 }
 
 @internal
-base mixin ProviderListenableWithOrigin<OutT, OriginT>
+base mixin ProviderListenableWithOrigin<OutT, OriginStateT, OriginValueT>
     on ProviderListenable<OutT> {
   @override
-  ProviderSubscriptionWithOrigin<OutT, OriginT> _addListener(
+  ProviderSubscriptionWithOrigin<OutT, OriginStateT, OriginValueT> _addListener(
     Node source,
     void Function(OutT? previous, OutT next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
@@ -194,7 +194,7 @@ base mixin ProviderListenableWithOrigin<OutT, OriginT>
   ProviderListenable<Selected> select<Selected>(
     Selected Function(OutT value) selector,
   ) {
-    return _ProviderSelector<OutT, Selected, OriginT>(
+    return _ProviderSelector<OutT, Selected, OriginStateT, OriginValueT>(
       provider: this,
       selector: selector,
     );

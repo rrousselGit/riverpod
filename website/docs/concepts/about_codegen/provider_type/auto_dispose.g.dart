@@ -11,7 +11,7 @@ part of 'auto_dispose.dart';
 @ProviderFor(example1)
 const example1Provider = Example1Provider._();
 
-final class Example1Provider extends $FunctionalProvider<String, String>
+final class Example1Provider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const Example1Provider._()
       : super(
@@ -41,7 +41,7 @@ final class Example1Provider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 }
@@ -51,7 +51,7 @@ String _$example1Hash() => r'6a361ee6f9dd1d0cdbb42f967f6356aa058f7041';
 @ProviderFor(example2)
 const example2Provider = Example2Provider._();
 
-final class Example2Provider extends $FunctionalProvider<String, String>
+final class Example2Provider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const Example2Provider._()
       : super(
@@ -81,7 +81,7 @@ final class Example2Provider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 }

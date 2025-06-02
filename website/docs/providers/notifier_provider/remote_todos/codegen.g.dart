@@ -62,7 +62,7 @@ abstract class _$AsyncTodos extends $AsyncNotifier<List<Todo>> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<List<Todo>>>;
+    final ref = this.ref as $Ref<AsyncValue<List<Todo>>, List<Todo>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<List<Todo>>, List<Todo>>,
         AsyncValue<List<Todo>>,

@@ -11,7 +11,8 @@ part of 'old_lifecycles_final.dart';
 @ProviderFor(duration)
 const durationProvider = DurationProvider._();
 
-final class DurationProvider extends $FunctionalProvider<Duration, Duration>
+final class DurationProvider
+    extends $FunctionalProvider<Duration, Duration, Duration>
     with $Provider<Duration> {
   const DurationProvider._()
       : super(
@@ -41,7 +42,7 @@ final class DurationProvider extends $FunctionalProvider<Duration, Duration>
   Override overrideWithValue(Duration value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Duration>(value),
+      providerOverride: $ValueProvider<Duration, Duration>(value),
     );
   }
 }
@@ -51,7 +52,8 @@ String _$durationHash() => r'997cacfb78da8107053428dfc5515497354b50c6';
 @ProviderFor(repository)
 const repositoryProvider = RepositoryProvider._();
 
-final class RepositoryProvider extends $FunctionalProvider<_MyRepo, _MyRepo>
+final class RepositoryProvider
+    extends $FunctionalProvider<_MyRepo, _MyRepo, _MyRepo>
     with $Provider<_MyRepo> {
   const RepositoryProvider._()
       : super(
@@ -81,7 +83,7 @@ final class RepositoryProvider extends $FunctionalProvider<_MyRepo, _MyRepo>
   Override overrideWithValue(_MyRepo value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<_MyRepo>(value),
+      providerOverride: $ValueProvider<_MyRepo, _MyRepo>(value),
     );
   }
 }
@@ -120,7 +122,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -133,7 +135,7 @@ abstract class _$MyNotifier extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);

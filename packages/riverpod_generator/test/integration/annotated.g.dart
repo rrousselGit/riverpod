@@ -12,8 +12,8 @@ part of 'annotated.dart';
 @protected
 const functionalProvider = FunctionalFamily._();
 
-final class FunctionalProvider extends $FunctionalProvider<String, String>
-    with $Provider<String> {
+final class FunctionalProvider
+    extends $FunctionalProvider<String, String, String> with $Provider<String> {
   const FunctionalProvider._(
       {required FunctionalFamily super.from, required int super.argument})
       : super(
@@ -52,7 +52,7 @@ final class FunctionalProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 
@@ -130,7 +130,7 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 
@@ -181,7 +181,7 @@ abstract class _$ClassBased extends $Notifier<String> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<String>;
+    final ref = this.ref as $Ref<String, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<String, String>, String, Object?, Object?>;
     element.handleValue(ref, created);
@@ -194,7 +194,7 @@ abstract class _$ClassBased extends $Notifier<String> {
 @protected
 const familyProvider = FamilyFamily._();
 
-final class FamilyProvider extends $FunctionalProvider<String, String>
+final class FamilyProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const FamilyProvider._(
       {required FamilyFamily super.from, required int super.argument})
@@ -234,7 +234,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 
@@ -275,7 +275,7 @@ final class FamilyFamily extends $Family
 const notCopiedFunctionalProvider = NotCopiedFunctionalProvider._();
 
 final class NotCopiedFunctionalProvider
-    extends $FunctionalProvider<String, String> with $Provider<String> {
+    extends $FunctionalProvider<String, String, String> with $Provider<String> {
   const NotCopiedFunctionalProvider._()
       : super(
           from: null,
@@ -304,7 +304,7 @@ final class NotCopiedFunctionalProvider
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 }
@@ -345,7 +345,7 @@ final class NotCopiedClassBasedProvider
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 }
@@ -359,7 +359,7 @@ abstract class _$NotCopiedClassBased extends $Notifier<String> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<String>;
+    final ref = this.ref as $Ref<String, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<String, String>, String, Object?, Object?>;
     element.handleValue(ref, created);
@@ -369,8 +369,8 @@ abstract class _$NotCopiedClassBased extends $Notifier<String> {
 @ProviderFor(notCopiedFamily)
 const notCopiedFamilyProvider = NotCopiedFamilyFamily._();
 
-final class NotCopiedFamilyProvider extends $FunctionalProvider<String, String>
-    with $Provider<String> {
+final class NotCopiedFamilyProvider
+    extends $FunctionalProvider<String, String, String> with $Provider<String> {
   const NotCopiedFamilyProvider._(
       {required NotCopiedFamilyFamily super.from, required int super.argument})
       : super(
@@ -409,7 +409,7 @@ final class NotCopiedFamilyProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 

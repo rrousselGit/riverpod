@@ -9,7 +9,7 @@ part of 'split.dart';
 @ProviderFor(counter2)
 const counter2Provider = Counter2Provider._();
 
-final class Counter2Provider extends $FunctionalProvider<int, int>
+final class Counter2Provider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const Counter2Provider._()
       : super(
@@ -39,7 +39,7 @@ final class Counter2Provider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -49,7 +49,7 @@ String _$counter2Hash() => r'ab7bef7da79217c780c76761a5ae0c0172ca097e';
 @ProviderFor(counter)
 const counterProvider = CounterProvider._();
 
-final class CounterProvider extends $FunctionalProvider<int, int>
+final class CounterProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const CounterProvider._()
       : super(
@@ -79,7 +79,7 @@ final class CounterProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }

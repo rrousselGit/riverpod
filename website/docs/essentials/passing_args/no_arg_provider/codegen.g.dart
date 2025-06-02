@@ -11,8 +11,8 @@ part of 'codegen.dart';
 @ProviderFor(activity)
 const activityProvider = ActivityProvider._();
 
-final class ActivityProvider
-    extends $FunctionalProvider<AsyncValue<Activity>, FutureOr<Activity>>
+final class ActivityProvider extends $FunctionalProvider<AsyncValue<Activity>,
+        Activity, FutureOr<Activity>>
     with $FutureModifier<Activity>, $FutureProvider<Activity> {
   const ActivityProvider._()
       : super(
@@ -79,7 +79,7 @@ abstract class _$ActivityNotifier2 extends $AsyncNotifier<Activity> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<Activity>>;
+    final ref = this.ref as $Ref<AsyncValue<Activity>, Activity>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<Activity>, Activity>,
         AsyncValue<Activity>,

@@ -41,7 +41,7 @@ final class ExampleProvider extends $NotifierProvider<Example, int> {
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -54,7 +54,7 @@ abstract class _$Example extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -108,7 +108,7 @@ final class ExampleFamilyProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 
@@ -179,7 +179,7 @@ abstract class _$ExampleFamily extends $Notifier<int> {
       a: _$args.a,
       b: _$args.b,
     );
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -229,7 +229,7 @@ final class GenericProvider<A, B>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 
@@ -299,7 +299,7 @@ abstract class _$Generic<A, B> extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);

@@ -45,7 +45,7 @@ abstract class _$Example extends $StreamNotifier<String> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<String>>;
+    final ref = this.ref as $Ref<AsyncValue<String>, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<String>, String>,
         AsyncValue<String>,

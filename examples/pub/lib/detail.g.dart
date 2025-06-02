@@ -12,7 +12,7 @@ part of 'detail.dart';
 const fetchPackageDetailsProvider = FetchPackageDetailsFamily._();
 
 final class FetchPackageDetailsProvider
-    extends $FunctionalProvider<AsyncValue<Package>, FutureOr<Package>>
+    extends $FunctionalProvider<AsyncValue<Package>, Package, FutureOr<Package>>
     with $FutureModifier<Package>, $FutureProvider<Package> {
   const FetchPackageDetailsProvider._(
       {required FetchPackageDetailsFamily super.from,
@@ -87,7 +87,7 @@ final class FetchPackageDetailsFamily extends $Family
 const likedPackagesProvider = LikedPackagesProvider._();
 
 final class LikedPackagesProvider extends $FunctionalProvider<
-        AsyncValue<List<String>>, FutureOr<List<String>>>
+        AsyncValue<List<String>>, List<String>, FutureOr<List<String>>>
     with $FutureModifier<List<String>>, $FutureProvider<List<String>> {
   const LikedPackagesProvider._()
       : super(
@@ -121,7 +121,7 @@ String _$likedPackagesHash() => r'8debee8d8fa48334d1de21fa9bbf03224265d29d';
 const pubRepositoryProvider = PubRepositoryProvider._();
 
 final class PubRepositoryProvider
-    extends $FunctionalProvider<PubRepository, PubRepository>
+    extends $FunctionalProvider<PubRepository, PubRepository, PubRepository>
     with $Provider<PubRepository> {
   const PubRepositoryProvider._()
       : super(
@@ -151,7 +151,7 @@ final class PubRepositoryProvider
   Override overrideWithValue(PubRepository value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<PubRepository>(value),
+      providerOverride: $ValueProvider<PubRepository, PubRepository>(value),
     );
   }
 }
@@ -267,7 +267,8 @@ abstract class _$PackageMetrics extends $AsyncNotifier<PackageMetricsScore> {
     final created = build(
       packageName: _$args,
     );
-    final ref = this.ref as $Ref<AsyncValue<PackageMetricsScore>>;
+    final ref =
+        this.ref as $Ref<AsyncValue<PackageMetricsScore>, PackageMetricsScore>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<PackageMetricsScore>, PackageMetricsScore>,
         AsyncValue<PackageMetricsScore>,

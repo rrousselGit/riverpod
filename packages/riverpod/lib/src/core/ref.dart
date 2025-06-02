@@ -47,7 +47,7 @@ sealed class Ref {
     required this.isReload,
   });
 
-  ProviderElement<Object?> get _element;
+  ProviderElement<Object?, Object?> get _element;
   List<KeepAliveLink>? _keepAliveLinks;
   List<void Function()>? _onDisposeListeners;
   List<void Function()>? _onResumeListeners;
@@ -677,7 +677,7 @@ void _runCallbacks(
 
 @internal
 @publicInCodegen
-class $Ref<StateT> extends Ref {
+class $Ref<StateT, ValueT> extends Ref {
   /// {@macro riverpod.provider_ref_base}
   $Ref(
     this._element, {
@@ -685,10 +685,10 @@ class $Ref<StateT> extends Ref {
     required super.isReload,
   }) : super._();
 
-  ProviderElement<StateT> get element => _element;
+  ProviderElement<StateT, ValueT> get element => _element;
 
   @override
-  final ProviderElement<StateT> _element;
+  final ProviderElement<StateT, ValueT> _element;
 
   List<void Function(StateT?, StateT)>? _onChangeSelfListeners;
   List<OnError>? _onErrorSelfListeners;

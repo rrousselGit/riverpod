@@ -36,8 +36,9 @@ import '../../internals.dart';
 /// ```
 /// {@endtemplate}
 @publicInLegacy
-final class StateProvider<StateT> extends $FunctionalProvider<StateT, StateT>
-    with LegacyProviderMixin<StateT> {
+final class StateProvider<ValueT>
+    extends $FunctionalProvider<ValueT, ValueT, ValueT>
+    with LegacyProviderMixin<ValueT, ValueT> {
   /// {@macro riverpod.state_provider}
   StateProvider(
     this._createFn, {
@@ -72,19 +73,19 @@ final class StateProvider<StateT> extends $FunctionalProvider<StateT, StateT>
   /// {@macro riverpod.family}
   static const family = StateProviderFamilyBuilder();
 
-  final StateT Function(Ref ref) _createFn;
+  final ValueT Function(Ref ref) _createFn;
   @override
-  StateT create(Ref ref) => _createFn(ref);
+  ValueT create(Ref ref) => _createFn(ref);
 
   /// Obtains the [StateController] of this provider.
   ///
   /// The value obtained may change if the provider is refreshed (such as using
   /// [Ref.watch] or [Ref.refresh]).
-  Refreshable<StateController<StateT>> get notifier =>
-      ProviderElementProxy<StateController<StateT>, StateT>(
+  Refreshable<StateController<ValueT>> get notifier =>
+      ProviderElementProxy<StateController<ValueT>, ValueT, ValueT>(
         this,
         (element) {
-          return (element as _StateProviderElement<StateT>)._controllerNotifier;
+          return (element as _StateProviderElement<ValueT>)._controllerNotifier;
         },
       );
 
@@ -92,7 +93,7 @@ final class StateProvider<StateT> extends $FunctionalProvider<StateT, StateT>
   @internal
   @override
   // ignore: library_private_types_in_public_api, not public
-  _StateProviderElement<StateT> $createElement(
+  _StateProviderElement<ValueT> $createElement(
     $ProviderPointer pointer,
   ) {
     return _StateProviderElement._(pointer);
@@ -100,17 +101,18 @@ final class StateProvider<StateT> extends $FunctionalProvider<StateT, StateT>
 }
 
 /// The element of [StateProvider].
-class _StateProviderElement<T> extends $FunctionalProviderElement<T, T> {
+class _StateProviderElement<ValueT>
+    extends $FunctionalProviderElement<ValueT, ValueT, ValueT> {
   _StateProviderElement._(super.pointer);
 
-  final _controllerNotifier = $ElementLense<StateController<T>>();
+  final _controllerNotifier = $ElementLense<StateController<ValueT>>();
 
-  final _stateNotifier = $ElementLense<StateController<T>>();
+  final _stateNotifier = $ElementLense<StateController<ValueT>>();
 
   void Function()? _removeListener;
 
   @override
-  WhenComplete create($Ref<T> ref) {
+  WhenComplete create(Ref ref) {
     final initialState = provider.create(ref);
 
     final controller = StateController(initialState);
@@ -150,11 +152,12 @@ class _StateProviderElement<T> extends $FunctionalProviderElement<T, T> {
 
 /// The [Family] of [StateProvider].
 @publicInLegacy
-final class StateProviderFamily<StateT, Arg> extends FunctionalFamily< //
-    StateT,
+final class StateProviderFamily<ValueT, Arg> extends FunctionalFamily< //
+    ValueT,
+    ValueT,
     Arg,
-    StateT,
-    StateProvider<StateT>> {
+    ValueT,
+    StateProvider<ValueT>> {
   /// The [Family] of [StateProvider].
   /// @nodoc
   @internal

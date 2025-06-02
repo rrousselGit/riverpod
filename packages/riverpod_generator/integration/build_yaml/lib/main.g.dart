@@ -9,7 +9,7 @@ part of 'main.dart';
 @ProviderFor(count)
 const myCountPod = CountProvider._();
 
-final class CountProvider extends $FunctionalProvider<int, int>
+final class CountProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const CountProvider._()
       : super(
@@ -39,7 +39,7 @@ final class CountProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -50,7 +50,7 @@ String _$countHash() => r'a31bb5cbb0ddb2466df2cc62a306709ea24fae12';
 const myCountFuturePod = CountFutureProvider._();
 
 final class CountFutureProvider
-    extends $FunctionalProvider<AsyncValue<int>, FutureOr<int>>
+    extends $FunctionalProvider<AsyncValue<int>, int, FutureOr<int>>
     with $FutureModifier<int>, $FutureProvider<int> {
   const CountFutureProvider._()
       : super(
@@ -83,7 +83,7 @@ String _$countFutureHash() => r'c292214b486fdd9ec98a61e277812f29fc4b5802';
 const myCountStreamPod = CountStreamProvider._();
 
 final class CountStreamProvider
-    extends $FunctionalProvider<AsyncValue<int>, Stream<int>>
+    extends $FunctionalProvider<AsyncValue<int>, int, Stream<int>>
     with $FutureModifier<int>, $StreamProvider<int> {
   const CountStreamProvider._()
       : super(
@@ -145,7 +145,7 @@ final class CountNotifierProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -158,7 +158,7 @@ abstract class _$CountNotifier extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -204,7 +204,7 @@ abstract class _$CountAsyncNotifier extends $AsyncNotifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final ref = this.ref as $Ref<AsyncValue<int>, int>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
@@ -250,7 +250,7 @@ abstract class _$CountStreamNotifier extends $StreamNotifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final ref = this.ref as $Ref<AsyncValue<int>, int>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
@@ -260,7 +260,7 @@ abstract class _$CountStreamNotifier extends $StreamNotifier<int> {
 @ProviderFor(count2)
 const myFamilyCount2ProviderFamily = Count2Family._();
 
-final class Count2Provider extends $FunctionalProvider<int, int>
+final class Count2Provider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const Count2Provider._(
       {required Count2Family super.from, required int super.argument})
@@ -300,7 +300,7 @@ final class Count2Provider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 
@@ -341,7 +341,7 @@ final class Count2Family extends $Family
 const myFamilyCountFuture2ProviderFamily = CountFuture2Family._();
 
 final class CountFuture2Provider
-    extends $FunctionalProvider<AsyncValue<int>, FutureOr<int>>
+    extends $FunctionalProvider<AsyncValue<int>, int, FutureOr<int>>
     with $FutureModifier<int>, $FutureProvider<int> {
   const CountFuture2Provider._(
       {required CountFuture2Family super.from, required int super.argument})
@@ -414,7 +414,7 @@ final class CountFuture2Family extends $Family
 const myFamilyCountStream2ProviderFamily = CountStream2Family._();
 
 final class CountStream2Provider
-    extends $FunctionalProvider<AsyncValue<int>, Stream<int>>
+    extends $FunctionalProvider<AsyncValue<int>, int, Stream<int>>
     with $FutureModifier<int>, $StreamProvider<int> {
   const CountStream2Provider._(
       {required CountStream2Family super.from, required int super.argument})
@@ -522,7 +522,7 @@ final class CountNotifier2Provider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 
@@ -572,7 +572,7 @@ abstract class _$CountNotifier2 extends $Notifier<int> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -664,7 +664,7 @@ abstract class _$CountAsyncNotifier2 extends $AsyncNotifier<int> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final ref = this.ref as $Ref<AsyncValue<int>, int>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
@@ -757,7 +757,7 @@ abstract class _$CountStreamNotifier2 extends $StreamNotifier<int> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final ref = this.ref as $Ref<AsyncValue<int>, int>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);

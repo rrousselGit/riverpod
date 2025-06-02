@@ -11,7 +11,7 @@ part of 'codegen.dart';
 @ProviderFor(filter)
 const filterProvider = FilterProvider._();
 
-final class FilterProvider extends $FunctionalProvider<Filter, Filter>
+final class FilterProvider extends $FunctionalProvider<Filter, Filter, Filter>
     with $Provider<Filter> {
   const FilterProvider._()
       : super(
@@ -41,7 +41,7 @@ final class FilterProvider extends $FunctionalProvider<Filter, Filter>
   Override overrideWithValue(Filter value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Filter>(value),
+      providerOverride: $ValueProvider<Filter, Filter>(value),
     );
   }
 }
@@ -52,7 +52,7 @@ String _$filterHash() => r'6583f8bace972f4385964cd26f217751164b537b';
 const filteredTodoListProvider = FilteredTodoListProvider._();
 
 final class FilteredTodoListProvider
-    extends $FunctionalProvider<List<Todo>, List<Todo>>
+    extends $FunctionalProvider<List<Todo>, List<Todo>, List<Todo>>
     with $Provider<List<Todo>> {
   const FilteredTodoListProvider._()
       : super(
@@ -82,7 +82,7 @@ final class FilteredTodoListProvider
   Override overrideWithValue(List<Todo> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<Todo>>(value),
+      providerOverride: $ValueProvider<List<Todo>, List<Todo>>(value),
     );
   }
 }

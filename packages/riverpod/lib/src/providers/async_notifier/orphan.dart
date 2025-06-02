@@ -60,10 +60,10 @@ abstract class AsyncNotifier<StateT> extends $AsyncNotifier<StateT> {
 /// {@endtemplate}
 /// {@category Providers}
 final class AsyncNotifierProvider< //
-        NotifierT extends AsyncNotifier<StateT>,
-        StateT> //
-    extends $AsyncNotifierProvider<NotifierT, StateT>
-    with LegacyProviderMixin<AsyncValue<StateT>> {
+        NotifierT extends AsyncNotifier<ValueT>,
+        ValueT> //
+    extends $AsyncNotifierProvider<NotifierT, ValueT>
+    with LegacyProviderMixin<AsyncValue<ValueT>, ValueT> {
   /// {@macro riverpod.async_notifier_provider}
   ///
   /// {@macro riverpod.async_notifier_provider_modifier}

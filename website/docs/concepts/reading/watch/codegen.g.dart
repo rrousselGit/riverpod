@@ -12,7 +12,7 @@ part of 'codegen.dart';
 const filterTypeProvider = FilterTypeProvider._();
 
 final class FilterTypeProvider
-    extends $FunctionalProvider<FilterType, FilterType>
+    extends $FunctionalProvider<FilterType, FilterType, FilterType>
     with $Provider<FilterType> {
   const FilterTypeProvider._()
       : super(
@@ -42,7 +42,7 @@ final class FilterTypeProvider
   Override overrideWithValue(FilterType value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<FilterType>(value),
+      providerOverride: $ValueProvider<FilterType, FilterType>(value),
     );
   }
 }
@@ -81,7 +81,7 @@ final class TodosProvider extends $NotifierProvider<Todos, List<Todo>> {
   Override overrideWithValue(List<Todo> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<Todo>>(value),
+      providerOverride: $ValueProvider<List<Todo>, List<Todo>>(value),
     );
   }
 }
@@ -94,7 +94,7 @@ abstract class _$Todos extends $Notifier<List<Todo>> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<List<Todo>>;
+    final ref = this.ref as $Ref<List<Todo>, List<Todo>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<List<Todo>, List<Todo>>, List<Todo>, Object?, Object?>;
     element.handleValue(ref, created);
@@ -105,7 +105,7 @@ abstract class _$Todos extends $Notifier<List<Todo>> {
 const filteredTodoListProvider = FilteredTodoListProvider._();
 
 final class FilteredTodoListProvider
-    extends $FunctionalProvider<List<Todo>, List<Todo>>
+    extends $FunctionalProvider<List<Todo>, List<Todo>, List<Todo>>
     with $Provider<List<Todo>> {
   const FilteredTodoListProvider._()
       : super(
@@ -135,7 +135,7 @@ final class FilteredTodoListProvider
   Override overrideWithValue(List<Todo> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<Todo>>(value),
+      providerOverride: $ValueProvider<List<Todo>, List<Todo>>(value),
     );
   }
 }

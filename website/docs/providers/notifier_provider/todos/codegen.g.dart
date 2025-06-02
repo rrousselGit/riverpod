@@ -40,7 +40,7 @@ final class TodosProvider extends $NotifierProvider<Todos, List<Todo>> {
   Override overrideWithValue(List<Todo> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<Todo>>(value),
+      providerOverride: $ValueProvider<List<Todo>, List<Todo>>(value),
     );
   }
 }
@@ -53,7 +53,7 @@ abstract class _$Todos extends $Notifier<List<Todo>> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<List<Todo>>;
+    final ref = this.ref as $Ref<List<Todo>, List<Todo>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<List<Todo>, List<Todo>>, List<Todo>, Object?, Object?>;
     element.handleValue(ref, created);

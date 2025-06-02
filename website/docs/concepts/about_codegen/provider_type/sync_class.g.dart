@@ -40,7 +40,7 @@ final class ExampleProvider extends $NotifierProvider<Example, String> {
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 }
@@ -53,7 +53,7 @@ abstract class _$Example extends $Notifier<String> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<String>;
+    final ref = this.ref as $Ref<String, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<String, String>, String, Object?, Object?>;
     element.handleValue(ref, created);

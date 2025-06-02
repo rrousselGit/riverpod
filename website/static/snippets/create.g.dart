@@ -12,7 +12,7 @@ part of 'create.dart';
 const boredSuggestionProvider = BoredSuggestionProvider._();
 
 final class BoredSuggestionProvider
-    extends $FunctionalProvider<AsyncValue<String>, FutureOr<String>>
+    extends $FunctionalProvider<AsyncValue<String>, String, FutureOr<String>>
     with $FutureModifier<String>, $FutureProvider<String> {
   const BoredSuggestionProvider._()
       : super(

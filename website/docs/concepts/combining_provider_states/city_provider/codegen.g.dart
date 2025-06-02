@@ -11,7 +11,7 @@ part of 'codegen.dart';
 @ProviderFor(city)
 const cityProvider = CityProvider._();
 
-final class CityProvider extends $FunctionalProvider<String, String>
+final class CityProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const CityProvider._()
       : super(
@@ -41,7 +41,7 @@ final class CityProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $ValueProvider<String, String>(value),
     );
   }
 }

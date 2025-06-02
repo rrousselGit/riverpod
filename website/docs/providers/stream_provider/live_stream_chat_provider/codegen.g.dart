@@ -11,8 +11,8 @@ part of 'codegen.dart';
 @ProviderFor(chat)
 const chatProvider = ChatProvider._();
 
-final class ChatProvider
-    extends $FunctionalProvider<AsyncValue<List<String>>, Stream<List<String>>>
+final class ChatProvider extends $FunctionalProvider<AsyncValue<List<String>>,
+        List<String>, Stream<List<String>>>
     with $FutureModifier<List<String>>, $StreamProvider<List<String>> {
   const ChatProvider._()
       : super(

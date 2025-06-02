@@ -7,7 +7,7 @@ import '../providers/future_provider.dart' show FutureProvider;
 import '../providers/stream_provider.dart' show StreamProvider;
 
 @internal
-extension AsyncTransition<StateT> on AsyncValue<StateT> {
+extension AsyncTransition<ValueT> on AsyncValue<ValueT> {
   AsyncValue<T> cast<T>() => _cast<T>();
 }
 
@@ -64,14 +64,14 @@ extension AsyncTransition<StateT> on AsyncValue<StateT> {
 @sealed
 @immutable
 @publicInRiverpodAndCodegen
-sealed class AsyncValue<StateT> {
+sealed class AsyncValue<ValueT> {
   const AsyncValue._();
 
   /// {@template async_value.data}
   /// Creates an [AsyncValue] with a data.
   /// {@endtemplate}
   // coverage:ignore-start
-  const factory AsyncValue.data(StateT value) = AsyncData<StateT>;
+  const factory AsyncValue.data(ValueT value) = AsyncData<ValueT>;
   // coverage:ignore-end
 
   /// {@template async_value.loading}
@@ -80,7 +80,7 @@ sealed class AsyncValue<StateT> {
   /// Prefer always using this constructor with the `const` keyword.
   /// {@endtemplate}
   // coverage:ignore-start
-  const factory AsyncValue.loading({num progress}) = AsyncLoading<StateT>;
+  const factory AsyncValue.loading({num progress}) = AsyncLoading<ValueT>;
   // coverage:ignore-end
 
   /// {@template async_value.error_ctor}
@@ -95,7 +95,7 @@ sealed class AsyncValue<StateT> {
   /// {@endtemplate}
   // coverage:ignore-start
   const factory AsyncValue.error(Object error, StackTrace stackTrace) =
-      AsyncError<StateT>;
+      AsyncError<ValueT>;
   // coverage:ignore-end
 
   /// Transforms a [Future] that may fail into something that is safe to read.
@@ -210,7 +210,7 @@ sealed class AsyncValue<StateT> {
   /// ```dart
   /// ref.watch(provider).unwrapPrevious().value;
   /// ```
-  StateT? get value;
+  ValueT? get value;
 
   /// The [error].
   Object? get error;
@@ -225,8 +225,8 @@ sealed class AsyncValue<StateT> {
   /// Finally if in loading state, throws a [StateError].
   ///
   /// This is typically used for when the UI assumes that [value] is always present.
-  StateT get requireValue {
-    if (hasValue) return value as StateT;
+  ValueT get requireValue {
+    if (hasValue) return value as ValueT;
     if (hasError) {
       throwProviderException(error!, stackTrace!);
     }
@@ -271,7 +271,7 @@ sealed class AsyncValue<StateT> {
   ///
   /// Note that an [AsyncData] may still be in loading/error state, such
   /// as during a pull-to-refresh.
-  AsyncData<StateT>? get asData {
+  AsyncData<ValueT>? get asData {
     return map(
       data: (d) => d,
       error: (e) => null,
@@ -284,7 +284,7 @@ sealed class AsyncValue<StateT> {
   ///
   /// Note that an [AsyncError] may still be in loading state, such
   /// as during a pull-to-refresh.
-  AsyncError<StateT>? get asError => map(
+  AsyncError<ValueT>? get asError => map(
         data: (_) => null,
         error: (e) => e,
         loading: (_) => null,
@@ -295,9 +295,9 @@ sealed class AsyncValue<StateT> {
   /// This allows reading the content of an [AsyncValue] in a type-safe way,
   /// without potentially ignoring to handle a case.
   R map<R>({
-    required R Function(AsyncData<StateT> data) data,
-    required R Function(AsyncError<StateT> error) error,
-    required R Function(AsyncLoading<StateT> loading) loading,
+    required R Function(AsyncData<ValueT> data) data,
+    required R Function(AsyncError<ValueT> error) error,
+    required R Function(AsyncLoading<ValueT> loading) loading,
   });
 
   /// Casts the [AsyncValue] to a different type.
@@ -307,7 +307,7 @@ sealed class AsyncValue<StateT> {
   ///
   /// For loading/error cases, creates a new [AsyncValue] with the corresponding
   /// generic type while preserving the error/stacktrace.
-  AsyncValue<R> whenData<R>(R Function(StateT value) cb) {
+  AsyncValue<R> whenData<R>(R Function(ValueT value) cb) {
     return map(
       data: (d) {
         try {
@@ -352,7 +352,7 @@ sealed class AsyncValue<StateT> {
     bool skipLoadingOnReload = false,
     bool skipLoadingOnRefresh = true,
     bool skipError = false,
-    R Function(StateT data)? data,
+    R Function(ValueT data)? data,
     R Function(Object error, StackTrace stackTrace)? error,
     R Function()? loading,
     required R Function() orElse,
@@ -398,7 +398,7 @@ sealed class AsyncValue<StateT> {
     bool skipLoadingOnReload = false,
     bool skipLoadingOnRefresh = true,
     bool skipError = false,
-    required R Function(StateT data) data,
+    required R Function(ValueT data) data,
     required R Function(Object error, StackTrace stackTrace) error,
     required R Function() loading,
   }) {
@@ -431,7 +431,7 @@ sealed class AsyncValue<StateT> {
     bool skipLoadingOnReload = false,
     bool skipLoadingOnRefresh = true,
     bool skipError = false,
-    R? Function(StateT data)? data,
+    R? Function(ValueT data)? data,
     R? Function(Object error, StackTrace stackTrace)? error,
     R? Function()? loading,
   }) {
@@ -448,9 +448,9 @@ sealed class AsyncValue<StateT> {
   /// Perform some actions based on the state of the [AsyncValue], or call orElse
   /// if the current state was not tested.
   R maybeMap<R>({
-    R Function(AsyncData<StateT> data)? data,
-    R Function(AsyncError<StateT> error)? error,
-    R Function(AsyncLoading<StateT> loading)? loading,
+    R Function(AsyncData<ValueT> data)? data,
+    R Function(AsyncError<ValueT> error)? error,
+    R Function(AsyncLoading<ValueT> loading)? loading,
     required R Function() orElse,
   }) {
     return map(
@@ -472,9 +472,9 @@ sealed class AsyncValue<StateT> {
   /// Perform some actions based on the state of the [AsyncValue], or return null
   /// if the current state wasn't tested.
   R? mapOrNull<R>({
-    R? Function(AsyncData<StateT> data)? data,
-    R? Function(AsyncError<StateT> error)? error,
-    R? Function(AsyncLoading<StateT> loading)? loading,
+    R? Function(AsyncData<ValueT> data)? data,
+    R? Function(AsyncError<ValueT> error)? error,
+    R? Function(AsyncLoading<ValueT> loading)? loading,
   }) {
     return map(
       data: (d) => data?.call(d),
@@ -495,24 +495,24 @@ sealed class AsyncValue<StateT> {
   /// or instead by [Ref.watch] (if false).
   /// This changes the default behavior of [when] and sets the [isReloading]/
   /// [isRefreshing] flags accordingly.
-  AsyncValue<StateT> copyWithPrevious(
-    AsyncValue<StateT> previous, {
+  AsyncValue<ValueT> copyWithPrevious(
+    AsyncValue<ValueT> previous, {
     bool isRefresh = true,
   });
 
   /// The opposite of [copyWithPrevious], reverting to the raw [AsyncValue]
   /// with no information on the previous state.
-  AsyncValue<StateT> unwrapPrevious() {
+  AsyncValue<ValueT> unwrapPrevious() {
     return map(
       data: (d) {
-        if (d.isLoading) return AsyncLoading<StateT>(progress: progress);
+        if (d.isLoading) return AsyncLoading<ValueT>(progress: progress);
         return AsyncData(d.value);
       },
       error: (e) {
-        if (e.isLoading) return AsyncLoading<StateT>(progress: progress);
+        if (e.isLoading) return AsyncLoading<ValueT>(progress: progress);
         return AsyncError(e.error, e.stackTrace);
       },
-      loading: (l) => AsyncLoading<StateT>(progress: progress),
+      loading: (l) => AsyncLoading<ValueT>(progress: progress),
     );
   }
 
@@ -529,13 +529,13 @@ sealed class AsyncValue<StateT> {
       if (isFromCache) 'isFromCache: $isFromCache',
     ].join(', ');
 
-    return '$_displayString<$StateT>($content)';
+    return '$_displayString<$ValueT>($content)';
   }
 
   @override
   bool operator ==(Object other) {
     return runtimeType == other.runtimeType &&
-        other is AsyncValue<StateT> &&
+        other is AsyncValue<ValueT> &&
         other.isLoading == isLoading &&
         other.hasValue == hasValue &&
         other.error == error &&
@@ -561,10 +561,10 @@ sealed class AsyncValue<StateT> {
 /// {@macro async_value.data}
 /// {@category Core}
 @publicInRiverpodAndCodegen
-final class AsyncData<StateT> extends AsyncValue<StateT> {
+final class AsyncData<ValueT> extends AsyncValue<ValueT> {
   /// {@macro async_value.data}
   const AsyncData(
-    StateT value, {
+    ValueT value, {
     /// @nodoc
     bool isFromCache = false,
   }) : this._(
@@ -598,7 +598,7 @@ final class AsyncData<StateT> extends AsyncValue<StateT> {
   final num? progress;
 
   @override
-  final StateT value;
+  final ValueT value;
 
   @override
   @override
@@ -612,16 +612,16 @@ final class AsyncData<StateT> extends AsyncValue<StateT> {
 
   @override
   R map<R>({
-    required R Function(AsyncData<StateT> data) data,
-    required R Function(AsyncError<StateT> error) error,
-    required R Function(AsyncLoading<StateT> loading) loading,
+    required R Function(AsyncData<ValueT> data) data,
+    required R Function(AsyncError<ValueT> error) error,
+    required R Function(AsyncLoading<ValueT> loading) loading,
   }) {
     return data(this);
   }
 
   @override
-  AsyncData<StateT> copyWithPrevious(
-    AsyncValue<StateT> previous, {
+  AsyncData<ValueT> copyWithPrevious(
+    AsyncValue<ValueT> previous, {
     bool isRefresh = true,
   }) {
     return this;
@@ -629,7 +629,7 @@ final class AsyncData<StateT> extends AsyncValue<StateT> {
 
   @override
   AsyncValue<R> _cast<R>() {
-    if (StateT == R) return this as AsyncValue<R>;
+    if (ValueT == R) return this as AsyncValue<R>;
     return AsyncData<R>._(
       value as R,
       isLoading: isLoading,
@@ -644,7 +644,7 @@ final class AsyncData<StateT> extends AsyncValue<StateT> {
 /// {@macro async_value.loading}
 /// {@category Core}
 @publicInRiverpodAndCodegen
-final class AsyncLoading<StateT> extends AsyncValue<StateT> {
+final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
   /// {@macro async_value.loading}
   const AsyncLoading({this.progress})
       : hasValue = false,
@@ -683,7 +683,7 @@ final class AsyncLoading<StateT> extends AsyncValue<StateT> {
   final num? progress;
 
   @override
-  final StateT? value;
+  final ValueT? value;
 
   @override
   final Object? error;
@@ -693,7 +693,7 @@ final class AsyncLoading<StateT> extends AsyncValue<StateT> {
 
   @override
   AsyncValue<R> _cast<R>() {
-    if (StateT == R) return this as AsyncValue<R>;
+    if (ValueT == R) return this as AsyncValue<R>;
     return AsyncLoading<R>._(
       hasValue: hasValue,
       value: value as R?,
@@ -706,16 +706,16 @@ final class AsyncLoading<StateT> extends AsyncValue<StateT> {
 
   @override
   R map<R>({
-    required R Function(AsyncData<StateT> data) data,
-    required R Function(AsyncError<StateT> error) error,
-    required R Function(AsyncLoading<StateT> loading) loading,
+    required R Function(AsyncData<ValueT> data) data,
+    required R Function(AsyncError<ValueT> error) error,
+    required R Function(AsyncLoading<ValueT> loading) loading,
   }) {
     return loading(this);
   }
 
   @override
-  AsyncValue<StateT> copyWithPrevious(
-    AsyncValue<StateT> previous, {
+  AsyncValue<ValueT> copyWithPrevious(
+    AsyncValue<ValueT> previous, {
     bool isRefresh = true,
   }) {
     if (isRefresh) {
@@ -772,7 +772,7 @@ final class AsyncLoading<StateT> extends AsyncValue<StateT> {
 /// {@macro async_value.error_ctor}
 /// {@category Core}
 @publicInRiverpodAndCodegen
-final class AsyncError<StateT> extends AsyncValue<StateT> {
+final class AsyncError<ValueT> extends AsyncValue<ValueT> {
   /// {@macro async_value.error_ctor}
   const AsyncError(Object error, StackTrace stackTrace)
       : this._(
@@ -809,7 +809,7 @@ final class AsyncError<StateT> extends AsyncValue<StateT> {
   final bool hasValue;
 
   @override
-  final StateT? value;
+  final ValueT? value;
 
   @override
   final Object error;
@@ -819,7 +819,7 @@ final class AsyncError<StateT> extends AsyncValue<StateT> {
 
   @override
   AsyncValue<R> _cast<R>() {
-    if (StateT == R) return this as AsyncValue<R>;
+    if (ValueT == R) return this as AsyncValue<R>;
     return AsyncError<R>._(
       error,
       stackTrace: stackTrace,
@@ -832,16 +832,16 @@ final class AsyncError<StateT> extends AsyncValue<StateT> {
 
   @override
   R map<R>({
-    required R Function(AsyncData<StateT> data) data,
-    required R Function(AsyncError<StateT> error) error,
-    required R Function(AsyncLoading<StateT> loading) loading,
+    required R Function(AsyncData<ValueT> data) data,
+    required R Function(AsyncError<ValueT> error) error,
+    required R Function(AsyncLoading<ValueT> loading) loading,
   }) {
     return error(this);
   }
 
   @override
-  AsyncError<StateT> copyWithPrevious(
-    AsyncValue<StateT> previous, {
+  AsyncError<ValueT> copyWithPrevious(
+    AsyncValue<ValueT> previous, {
     bool isRefresh = true,
   }) {
     return AsyncError._(

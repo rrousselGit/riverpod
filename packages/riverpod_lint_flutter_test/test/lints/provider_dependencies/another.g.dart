@@ -9,7 +9,7 @@ part of 'another.dart';
 @ProviderFor(b)
 const bProvider = BProvider._();
 
-final class BProvider extends $FunctionalProvider<int, int>
+final class BProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const BProvider._()
       : super(
@@ -39,7 +39,7 @@ final class BProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -49,7 +49,7 @@ String _$bHash() => r'31624e9aa10c9cd7941c9626e841c6df3468723b';
 @ProviderFor(anotherScoped)
 const anotherScopedProvider = AnotherScopedProvider._();
 
-final class AnotherScopedProvider extends $FunctionalProvider<int, int>
+final class AnotherScopedProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const AnotherScopedProvider._()
       : super(
@@ -79,7 +79,7 @@ final class AnotherScopedProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
@@ -89,8 +89,8 @@ String _$anotherScopedHash() => r'edf3ccffb7c3ce1b1e4ffdd4009aeed4fa38c3f8';
 @ProviderFor(anotherNonEmptyScoped)
 const anotherNonEmptyScopedProvider = AnotherNonEmptyScopedProvider._();
 
-final class AnotherNonEmptyScopedProvider extends $FunctionalProvider<int, int>
-    with $Provider<int> {
+final class AnotherNonEmptyScopedProvider
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const AnotherNonEmptyScopedProvider._()
       : super(
           from: null,
@@ -123,7 +123,7 @@ final class AnotherNonEmptyScopedProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $ValueProvider<int, int>(value),
     );
   }
 }
