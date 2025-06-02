@@ -607,7 +607,7 @@ extension on TestFactory<Object?> {
     throw AssertionError('unreachable');
   }
 
-  ProviderBase<Object?, Object?> simpleProvider(
+  ProviderBase<Object?> simpleProvider(
     FutureOr<Object?> Function(Ref, AnyNotifier<Object?, Object?> notifier)
         createCb, {
     Storage? storage,

@@ -504,7 +504,7 @@ base class ConsumerStatefulElement extends StatefulElement
   }
 
   @override
-  bool exists(ProviderBase<Object?, Object?> provider) {
+  bool exists(ProviderBase<Object?> provider) {
     _assertNotDisposed();
     return ProviderScope.containerOf(this, listen: false).exists(provider);
   }

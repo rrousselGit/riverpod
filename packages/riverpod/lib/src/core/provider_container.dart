@@ -6,7 +6,7 @@ part of '../framework.dart';
 sealed class Node {
   /// Obtain the [ProviderElement] of a provider, creating it if necessary.
   ProviderElement<StateT, ValueT> _readProviderElement<StateT, ValueT>(
-    ProviderBase<StateT, ValueT> provider,
+    $ProviderBaseImpl<StateT, ValueT> provider,
   );
 }
 
@@ -48,7 +48,7 @@ class $ProviderPointer implements _PointerBase {
   bool get isTransitiveOverride =>
       providerOverride is TransitiveProviderOverride;
 
-  final ProviderBase<Object?, Object?> origin;
+  final $ProviderBaseImpl<Object?, Object?> origin;
 
   /// The override associated with this provider, if any.
   ///
@@ -150,7 +150,7 @@ class ProviderDirectory implements _PointerBase {
   /// This override may be implicitly created by [ProviderOrFamily.$allTransitiveDependencies].
   // ignore: library_private_types_in_public_api, not public API
   _FamilyOverride? familyOverride;
-  final HashMap<ProviderBase<Object?, Object?>, $ProviderPointer> pointers;
+  final HashMap<$ProviderBaseImpl<Object?, Object?>, $ProviderPointer> pointers;
   @override
   ProviderContainer targetContainer;
 
@@ -169,7 +169,7 @@ class ProviderDirectory implements _PointerBase {
   }
 
   $ProviderPointer upsertPointer(
-    ProviderBase<Object?, Object?> provider, {
+    $ProviderBaseImpl<Object?, Object?> provider, {
     required ProviderContainer currentContainer,
   }) {
     return pointers._upsert(
@@ -194,7 +194,7 @@ class ProviderDirectory implements _PointerBase {
   ///
   /// Non-overridden providers are mounted in the root container.
   $ProviderPointer mount(
-    ProviderBase<Object?, Object?> origin, {
+    $ProviderBaseImpl<Object?, Object?> origin, {
     required ProviderContainer currentContainer,
   }) {
     final pointer = upsertPointer(
@@ -400,7 +400,7 @@ class ProviderPointerManager {
           return [familyPointer.targetContainer].followedBy(
             familyPointer.pointers.values.map((e) => e.targetContainer),
           );
-        case ProviderBase():
+        case $ProviderBaseImpl():
           return [
             if (readPointer(dependency)?.targetContainer case final container?)
               container,
@@ -456,7 +456,9 @@ class ProviderPointerManager {
     );
   }
 
-  ProviderDirectory? readDirectory(ProviderBase<Object?, Object?> provider) {
+  ProviderDirectory? readDirectory(
+    $ProviderBaseImpl<Object?, Object?> provider,
+  ) {
     final from = provider.from;
 
     if (from == null) {
@@ -466,15 +468,17 @@ class ProviderPointerManager {
     }
   }
 
-  $ProviderPointer? readPointer(ProviderBase<Object?, Object?> provider) {
+  $ProviderPointer? readPointer($ProviderBaseImpl<Object?, Object?> provider) {
     return readDirectory(provider)?.pointers[provider];
   }
 
-  ProviderElement? readElement(ProviderBase<Object?, Object?> provider) {
+  ProviderElement? readElement($ProviderBaseImpl<Object?, Object?> provider) {
     return readPointer(provider)?.element;
   }
 
-  ProviderDirectory upsertDirectory(ProviderBase<Object?, Object?> provider) {
+  ProviderDirectory upsertDirectory(
+    $ProviderBaseImpl<Object?, Object?> provider,
+  ) {
     final from = provider.from;
 
     if (from == null) {
@@ -484,14 +488,14 @@ class ProviderPointerManager {
     }
   }
 
-  $ProviderPointer upsertPointer(ProviderBase<Object?, Object?> provider) {
+  $ProviderPointer upsertPointer($ProviderBaseImpl<Object?, Object?> provider) {
     return upsertDirectory(provider).mount(
       provider,
       currentContainer: container,
     );
   }
 
-  ProviderElement upsertElement(ProviderBase<Object?, Object?> provider) {
+  ProviderElement upsertElement($ProviderBaseImpl<Object?, Object?> provider) {
     return upsertPointer(provider).element!;
   }
 
@@ -519,7 +523,7 @@ class ProviderPointerManager {
   /// Noop if the provider is from an override or doesn't exist.
   ///
   /// Returns the associated pointer, even if it was not removed.
-  $ProviderPointer? remove(ProviderBase<Object?, Object?> provider) {
+  $ProviderPointer? remove($ProviderBaseImpl<Object?, Object?> provider) {
     final directory = readDirectory(provider);
     if (directory == null) return null;
 
@@ -729,7 +733,7 @@ extension InternalProviderContainer on ProviderContainer {
 @internal
 extension NodeInternal on Node {
   ProviderElement<State, ValueT> readProviderElement<State, ValueT>(
-    ProviderBase<State, ValueT> provider,
+    $ProviderBaseImpl<State, ValueT> provider,
   ) =>
       _readProviderElement(provider);
 }
@@ -907,12 +911,15 @@ final class ProviderContainer implements Node {
   }
 
   /// {@macro riverpod.exists}
-  bool exists(ProviderBase<Object?, Object?> provider) {
-    return _pointerManager
-            .readDirectory(provider)
-            ?.pointers[provider]
-            ?.element !=
-        null;
+  bool exists(ProviderBase<Object?> provider) {
+    switch (provider) {
+      case $ProviderBaseImpl():
+        return _pointerManager
+                .readDirectory(provider)
+                ?.pointers[provider]
+                ?.element !=
+            null;
+    }
   }
 
   /// Executes [ProviderElement.debugReassemble] on all the providers.
@@ -955,7 +962,7 @@ final class ProviderContainer implements Node {
     bool asReload = false,
   }) {
     switch (provider) {
-      case ProviderBase<Object?, Object?>():
+      case $ProviderBaseImpl<Object?, Object?>():
         _pointerManager
             .readElement(provider)
             ?.invalidateSelf(asReload: asReload);
@@ -969,7 +976,7 @@ final class ProviderContainer implements Node {
   /// {@macro riverpod.refresh}
   StateT refresh<StateT>(Refreshable<StateT> refreshable) {
     final providerToRefresh = switch (refreshable) {
-      final ProviderBase<Object?, Object?> p => p,
+      final $ProviderBaseImpl<Object?, Object?> p => p,
       _ProviderRefreshable<Object?, Object?, Object?>(:final provider) =>
         provider
     };
@@ -979,7 +986,7 @@ final class ProviderContainer implements Node {
   }
 
   void _recursivePointerRemoval(
-    ProviderBase<Object?, Object?> provider,
+    $ProviderBaseImpl<Object?, Object?> provider,
     $ProviderPointer pointer,
   ) {
     for (final child in _children) {
@@ -995,7 +1002,7 @@ final class ProviderContainer implements Node {
     _pointerManager.remove(provider);
   }
 
-  void _disposeProvider(ProviderBase<Object?, Object?> provider) {
+  void _disposeProvider($ProviderBaseImpl<Object?, Object?> provider) {
     final pointer = _pointerManager.remove(provider);
     // The provider is already disposed, so we don't need to do anything
     if (pointer == null) return;
@@ -1081,7 +1088,7 @@ final class ProviderContainer implements Node {
 
   @override
   ProviderElement<StateT, ValueT> _readProviderElement<StateT, ValueT>(
-    ProviderBase<StateT, ValueT> provider,
+    $ProviderBaseImpl<StateT, ValueT> provider,
   ) {
     if (_disposed) {
       throw StateError(
@@ -1178,7 +1185,7 @@ final class ProviderObserverContext {
   });
 
   /// The provider that triggered the event.
-  final ProviderBase<Object?, Object?> provider;
+  final ProviderBase<Object?> provider;
 
   /// The container that owns [provider]'s state.
   final ProviderContainer container;
@@ -1313,8 +1320,8 @@ abstract class ProviderObserver {
 /// An implementation detail for the override mechanism of providers
 @internal
 typedef SetupOverride = void Function({
-  required ProviderBase<Object?, Object?> origin,
-  required ProviderBase<Object?, Object?> override,
+  required $ProviderBaseImpl<Object?, Object?> origin,
+  required $ProviderBaseImpl<Object?, Object?> override,
 });
 
 /// An error thrown when a call to [Ref.read]/[Ref.watch]

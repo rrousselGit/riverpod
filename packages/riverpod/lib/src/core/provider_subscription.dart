@@ -54,7 +54,7 @@ sealed class ProviderSubscription<OutT> {
 @internal
 sealed class ProviderSubscriptionWithOrigin<OutT, StateT, ValueT>
     extends ProviderSubscription<OutT> implements Pausable {
-  ProviderBase<StateT, ValueT> get origin;
+  ProviderBase<StateT> get origin;
   ProviderElement<StateT, ValueT> get _listenedElement;
 
   void _onOriginData(StateT? prev, StateT next);
@@ -222,8 +222,7 @@ base class ProviderSubscriptionView<OutT, OriginStateT, OriginValueT>
   final void Function(OutT? prev, OutT next) _listener;
 
   @override
-  ProviderBase<OriginStateT, OriginValueT> get origin =>
-      innerSubscription.origin;
+  ProviderBase<OriginStateT> get origin => innerSubscription.origin;
 
   @override
   ProviderElement<OriginStateT, OriginValueT> get _listenedElement =>
@@ -300,7 +299,7 @@ final class DelegatingProviderSubscription<OutT, InT, OriginStateT,
         _onCloseCb = onClose;
 
   @override
-  final ProviderBase<OriginStateT, OriginValueT> origin;
+  final $ProviderBaseImpl<OriginStateT, OriginValueT> origin;
   @override
   final Node source;
   @override
@@ -351,7 +350,7 @@ final class ProviderStateSubscription<StateT, ValueT>
         _errorListener = onError;
 
   @override
-  ProviderBase<StateT, ValueT> get origin => _listenedElement.origin;
+  ProviderBase<StateT> get origin => _listenedElement.origin;
 
   @override
   final Node source;

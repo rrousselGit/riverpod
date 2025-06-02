@@ -143,7 +143,7 @@ abstract final class WidgetRef {
   ///   return Item.fromJson(json);
   /// });
   /// ```
-  bool exists(ProviderBase<Object?, Object?> provider);
+  bool exists(ProviderBase<Object?> provider);
 
   /// Listen to a provider and call `listener` whenever its value changes,
   /// without having to take care of removing the listener.

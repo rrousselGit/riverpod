@@ -23,7 +23,7 @@ base mixin _ProviderRefreshable<OutT, OriginStateT, OriginValueT>
     implements
         Refreshable<OutT>,
         ProviderListenableWithOrigin<OutT, OriginStateT, OriginValueT> {
-  ProviderBase<OriginStateT, OriginValueT> get provider;
+  $ProviderBaseImpl<OriginStateT, OriginValueT> get provider;
 }
 
 /// A debug utility used by `flutter_riverpod`/`hooks_riverpod` to check
@@ -77,11 +77,11 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
   var _debugSkipNotifyListenersAsserts = false;
 
   /// The provider associated with this [ProviderElement], before applying overrides.
-  ProviderBase<StateT, ValueT> get origin =>
-      pointer.origin as ProviderBase<StateT, ValueT>;
+  $ProviderBaseImpl<StateT, ValueT> get origin =>
+      pointer.origin as $ProviderBaseImpl<StateT, ValueT>;
 
   /// The provider associated with this [ProviderElement], after applying overrides.
-  ProviderBase<StateT, ValueT> get provider;
+  $ProviderBaseImpl<StateT, ValueT> get provider;
 
   /// The [$ProviderPointer] associated with this [ProviderElement].
   final $ProviderPointer pointer;
@@ -265,7 +265,7 @@ depending on itself.
   /// - `overrideWithValue`, which relies on [update] to handle
   ///   the scenario where the value changed.
   @visibleForOverriding
-  void update(ProviderBase<StateT, ValueT> newProvider) {}
+  void update($ProviderBaseImpl<StateT, ValueT> newProvider) {}
 
   /// Initialize a provider and track dependencies used during the initialization.
   ///
@@ -585,7 +585,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   @override
   ProviderElement<NewStateT, NewValueT>
       _readProviderElement<NewStateT, NewValueT>(
-    ProviderBase<NewStateT, NewValueT> provider,
+    $ProviderBaseImpl<NewStateT, NewValueT> provider,
   ) {
     return container.readProviderElement(provider);
   }

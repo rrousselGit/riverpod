@@ -188,7 +188,7 @@ class DeferredFamilyNotifier<ValueT> extends FamilyNotifier<ValueT, int>
 }
 
 class NotifierTestFactory extends TestFactory<
-    ProviderFactory<$Notifier<Object?>, ProviderBase<Object?, Object?>>> {
+    ProviderFactory<$Notifier<Object?>, ProviderBase<Object?>>> {
   NotifierTestFactory({
     required super.isAutoDispose,
     required super.isFamily,

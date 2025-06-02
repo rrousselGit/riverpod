@@ -14,7 +14,7 @@ extension $RefArg on Ref {
 class UnmountedRefException implements Exception {
   UnmountedRefException(this.origin);
 
-  final ProviderBase<Object?, Object?> origin;
+  final ProviderBase<Object?> origin;
 
   @override
   String toString() {
@@ -527,7 +527,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// });
   /// ```
   /// {@endtemplate}
-  bool exists(ProviderBase<Object?, Object?> provider) {
+  bool exists(ProviderBase<Object?> provider) {
     _throwIfInvalidUsage();
 
     final result = container.exists(provider);

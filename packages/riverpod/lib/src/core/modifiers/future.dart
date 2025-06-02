@@ -78,7 +78,8 @@ mixin $AsyncClassModifier<ValueT, CreatedT>
 /// Do not use.
 @internal
 @publicInCodegen
-base mixin $FutureModifier<ValueT> on ProviderBase<AsyncValue<ValueT>, ValueT> {
+base mixin $FutureModifier<ValueT>
+    on $ProviderBaseImpl<AsyncValue<ValueT>, ValueT> {
   /// Obtains the [Future] representing this provider.
   ///
   /// The instance of [Future] obtained may change over time. This typically

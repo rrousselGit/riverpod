@@ -233,7 +233,7 @@ class ObserverMock extends Mock implements ProviderObserver {
 class CustomObserver extends ProviderObserver {}
 
 TypeMatcher<ProviderObserverContext> isProviderObserverContext(
-  ProviderBase<Object?, Object?> provider,
+  ProviderBase<Object?> provider,
   ProviderContainer container, {
   Object? notifier,
 }) {

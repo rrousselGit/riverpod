@@ -194,7 +194,7 @@ class DeferredFamilyAsyncNotifier<ValueT>
 }
 
 class AsyncNotifierTestFactory extends TestFactory<
-    ProviderFactory<$AsyncNotifier<Object?>, ProviderBase<Object?, Object?>>> {
+    ProviderFactory<$AsyncNotifier<Object?>, ProviderBase<Object?>>> {
   AsyncNotifierTestFactory({
     required super.isAutoDispose,
     required super.isFamily,

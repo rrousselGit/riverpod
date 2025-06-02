@@ -4,7 +4,8 @@ part of '../framework.dart';
 ///
 /// This is an implementation detail of `overrideWithValue`.
 @publicInCodegen
-final class $ValueProvider<StateT, ValueT> extends ProviderBase<StateT, ValueT>
+final class $ValueProvider<StateT, ValueT>
+    extends $ProviderBaseImpl<StateT, ValueT>
     with LegacyProviderMixin<StateT, ValueT> {
   /// Creates a [$ValueProvider].
   const $ValueProvider(this._value)

@@ -40,7 +40,7 @@ typedef ProviderFactory<BaseT, ProviderT> = ProviderT Function([Object? arg])
   Retry? retry,
 });
 
-extension $Modifiers on ProviderBase<Object?, Object?> {
+extension $Modifiers on ProviderBase<Object?> {
   Refreshable<AnyNotifier<Object?, Object?>>? get notifier {
     final that = this;
     return switch (that) {
@@ -166,7 +166,7 @@ final streamProviderFactories =
 ];
 
 final asyncProviderFactory =
-    <ProviderFactory<Object?, ProviderBase<AsyncValue<Object?>, Object?>>>[
+    <ProviderFactory<Object?, ProviderBase<AsyncValue<Object?>>>>[
   for (final factory in futureProviderFactories)
     (create, {name, dependencies, retry}) => factory(
           (ref, arg) async => create(ref, arg),

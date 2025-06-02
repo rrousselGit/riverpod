@@ -9,7 +9,7 @@ abstract base class $FunctionalProvider< //
         StateT,
         ValueT,
         CreatedT> //
-    extends ProviderBase<StateT, ValueT> {
+    extends $ProviderBaseImpl<StateT, ValueT> {
   /// Implementation detail of `riverpod_generator`.
   /// Do not use, as this can be removed at any time.
   const $FunctionalProvider({

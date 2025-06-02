@@ -12,7 +12,7 @@ void main() {
       () {
     final container = ProviderContainer.test();
 
-    const ProviderBase<AsyncValue<String>, String> provider = publicProvider;
+    const ProviderBase<AsyncValue<String>> provider = publicProvider;
     final AsyncValue<String> result = container.read(publicProvider);
 
     expect(result, const AsyncData('Hello world'));
@@ -104,7 +104,7 @@ void main() {
       fourth: false,
       fifth: const ['x42'],
     );
-    final ProviderBase<AsyncValue<String>, String> futureProvider = provider;
+    final ProviderBase<AsyncValue<String>> futureProvider = provider;
 
     final sub = container.listen(
       familyProvider(

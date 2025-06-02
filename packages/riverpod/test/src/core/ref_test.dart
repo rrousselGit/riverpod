@@ -10,7 +10,7 @@ import '../matrix.dart';
 import '../utils.dart';
 
 final refMethodsThatDependOnProviders =
-    <String, void Function(Ref ref, ProviderBase<Object?, Object?>)>{
+    <String, void Function(Ref ref, ProviderBase<Object?>)>{
   'watch': (ref, p) => ref.watch(p),
   'read': (ref, p) => ref.read(p),
   'listen': (ref, p) => ref.listen(p, (prev, next) {}),

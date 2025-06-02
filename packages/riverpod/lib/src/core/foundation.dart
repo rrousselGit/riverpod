@@ -119,10 +119,10 @@ sealed class ProviderOrFamily implements ProviderListenableOrFamily {
 }
 
 extension on ProviderListenableOrFamily {
-  ProviderBase<Object?, Object?>? get debugListenedProvider {
+  $ProviderBaseImpl<Object?, Object?>? get debugListenedProvider {
     final that = this;
     return switch (that) {
-      ProviderBase() => that,
+      $ProviderBaseImpl() => that,
       _ProviderSelector() => that.provider.debugListenedProvider,
       _AsyncSelector() => that.provider.debugListenedProvider,
       ProviderElementProxy() => that.provider,

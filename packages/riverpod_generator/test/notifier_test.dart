@@ -11,7 +11,7 @@ void main() {
       () {
     final container = ProviderContainer.test();
 
-    const ProviderBase<String, String> provider = publicClassProvider;
+    const ProviderBase<String> provider = publicClassProvider;
     final String result = container.read(publicProvider);
 
     expect(result, 'Hello world');
@@ -108,7 +108,7 @@ void main() {
       fifth: const ['x42'],
     );
     // ignore: invalid_use_of_internal_member //
-    final ProviderBase<String, String> futureProvider = provider;
+    final ProviderBase<String> futureProvider = provider;
 
     final String result = container.read(
       familyClassProvider(

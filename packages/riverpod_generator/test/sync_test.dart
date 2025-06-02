@@ -204,8 +204,7 @@ void main() {
       () async {
     final container = ProviderContainer.test();
 
-    const ProviderBase<Stream<String>, Stream<String>> provider =
-        rawStreamProvider;
+    const ProviderBase<Stream<String>> provider = rawStreamProvider;
     final Stream<String> result = container.read(rawStreamProvider);
 
     await expectLater(result, emits('Hello world'));
@@ -215,7 +214,7 @@ void main() {
       () {
     final container = ProviderContainer.test();
 
-    const ProviderBase<String, String> provider = publicProvider;
+    const ProviderBase<String> provider = publicProvider;
     final String result = container.read(publicProvider);
 
     expect(result, 'Hello world');
@@ -275,7 +274,7 @@ void main() {
       fifth: const ['x42'],
     );
 
-    final ProviderBase<String, String> futureProvider = provider;
+    final ProviderBase<String> futureProvider = provider;
 
     final argument = provider.argument! as (
       int, {

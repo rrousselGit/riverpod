@@ -11,8 +11,7 @@ void main() {
       () {
     final container = ProviderContainer.test();
 
-    const ProviderBase<AsyncValue<String>, String> provider =
-        publicClassProvider;
+    const ProviderBase<AsyncValue<String>> provider = publicClassProvider;
     final AsyncValue<String> result = container.read(publicClassProvider);
 
     expect(result, const AsyncData('Hello world'));
@@ -112,7 +111,7 @@ void main() {
       fifth: const ['x42'],
     );
     // ignore: invalid_use_of_internal_member // Just checking
-    final ProviderBase<AsyncValue<String>, String> futureProvider = provider;
+    final ProviderBase<AsyncValue<String>> futureProvider = provider;
 
     final sub = container.listen(
       familyClassProvider(

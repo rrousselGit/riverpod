@@ -355,7 +355,7 @@ abstract base class $ClassProvider< //
     NotifierT extends AnyNotifier<StateT, ValueT>,
     StateT,
     ValueT,
-    CreatedT> extends ProviderBase<StateT, ValueT> {
+    CreatedT> extends $ProviderBaseImpl<StateT, ValueT> {
   const $ClassProvider({
     required super.name,
     required super.from,
