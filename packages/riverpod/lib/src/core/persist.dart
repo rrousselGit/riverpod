@@ -28,7 +28,7 @@ final class StorageOptions {
   ///
   /// Instead of a complex database migration, an alternative is to change
   /// the [destroyKey] of the provider before deploying the application.
-  /// When doing doing so, the old state will be destroyed, and a new fresh
+  /// When doing so, the old state will be destroyed, and a new fresh
   /// state will be created.
   ///
   /// This key should be stable across application restarts.
