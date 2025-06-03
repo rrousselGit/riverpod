@@ -22,7 +22,7 @@ export './src/internal.dart'
         AnyNotifier,
         $AsyncClassModifier,
         $ClassProvider,
-        $ValueProvider,
+        $SyncValueProvider,
         $ProviderOverride,
         $RefArg,
         $ProviderPointer,

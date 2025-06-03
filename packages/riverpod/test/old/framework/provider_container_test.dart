@@ -164,9 +164,10 @@ void main() {
     test(
         'flushes listened-to providers even if they have no external listeners (with ProviderListenable)',
         () async {
-      final dep = StateProvider((ref) => 0);
-      final provider = Provider((ref) => ref.watch(dep));
+      final dep = StateProvider(name: 'dep', (ref) => 0);
+      final provider = Provider(name: 'provider', (ref) => ref.watch(dep));
       final another = NotifierProvider<Notifier<int>, int>(
+        name: 'another',
         () => DeferredNotifier((ref, self) {
           ref.listen(provider, (prev, value) => self.state++);
           return 0;

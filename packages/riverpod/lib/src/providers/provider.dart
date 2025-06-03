@@ -2,7 +2,7 @@ import 'package:meta/meta.dart';
 
 import '../builder.dart';
 import '../common/internal_lints.dart';
-import '../common/result.dart';
+import '../core/async_value.dart';
 import '../framework.dart';
 import 'legacy/state_notifier_provider.dart' show StateNotifierProvider;
 import 'stream_provider.dart' show StreamProvider;
@@ -114,7 +114,7 @@ final class Provider<ValueT> extends $FunctionalProvider<ValueT, ValueT, ValueT>
   Override overrideWithValue(ValueT value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<ValueT, ValueT>(value),
+      providerOverride: $SyncValueProvider<ValueT>(value),
     );
   }
 }
@@ -332,20 +332,21 @@ final class Provider<ValueT> extends $FunctionalProvider<ValueT, ValueT, ValueT>
 /// @nodoc
 @internal
 @publicInCodegen
-class $ProviderElement<StateT>
-    extends $FunctionalProviderElement<StateT, StateT, StateT> {
+class $ProviderElement<ValueT>
+    extends $FunctionalProviderElement<ValueT, ValueT, ValueT>
+    with SyncProviderElement<ValueT> {
   /// A [ProviderElement] for [Provider]
   $ProviderElement(super.pointer);
 
   @override
   WhenComplete create(Ref ref) {
-    setStateResult($ResultData(provider.create(ref)));
+    value = AsyncData(provider.create(ref));
 
     return null;
   }
 
   @override
-  bool updateShouldNotify(StateT previous, StateT next) => previous != next;
+  bool updateShouldNotify(ValueT previous, ValueT next) => previous != next;
 }
 
 /// The [Family] of [Provider]

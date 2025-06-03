@@ -191,7 +191,7 @@ ${provider.doc} final class $name$_genericsDefinition
   Override overrideWithValue(${provider.exposedTypeDisplayString} value) {
     return \$ProviderOverride(
       origin: this,
-      providerOverride: \$ValueProvider<${provider.exposedTypeDisplayString}, ${provider.valueTypeDisplayString}>(value),
+      providerOverride: \$SyncValueProvider<${provider.valueTypeDisplayString}>(value),
     );
   }
 ''');

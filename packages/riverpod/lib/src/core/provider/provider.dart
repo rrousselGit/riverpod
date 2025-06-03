@@ -123,7 +123,7 @@ abstract final class $ProviderBaseImpl<StateT, ValueT>
     if (fireImmediately) {
       _handleFireImmediately(
         source.container,
-        element.stateResult!,
+        element.stateResult()!,
         listener: listener,
         onError: onError,
       );

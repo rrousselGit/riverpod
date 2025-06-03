@@ -186,10 +186,12 @@ mixin FutureModifierElement<ValueT>
   }
 
   @override
-  void mount() {
-    _stateResult = $ResultData(AsyncLoading<ValueT>());
-    super.mount();
+  $Result<AsyncValue<ValueT>> resultForValue(AsyncValue<ValueT> value) {
+    return $ResultData(value);
   }
+
+  @override
+  void setValueFromState(AsyncValue<ValueT> state) => value = state;
 
   /// Internal utility for transitioning an [AsyncValue] after a provider refresh.
   ///
@@ -200,25 +202,16 @@ mixin FutureModifierElement<ValueT>
     AsyncValue<ValueT> newState, {
     required bool seamless,
   }) {
-    final previous = stateResult?.requireState;
+    final previous = value;
 
-    if (previous == null) {
-      super.setStateResult($ResultData(newState));
-    } else {
-      super.setStateResult(
-        $ResultData(
-          newState
-              .cast<ValueT>()
-              .copyWithPrevious(previous, isRefresh: seamless),
-        ),
-      );
-    }
+    super.value =
+        newState.cast<ValueT>().copyWithPrevious(previous, isRefresh: seamless);
   }
 
   @override
   @protected
-  void setStateResult($Result<AsyncValue<ValueT>> newState) {
-    newState.requireState.map(
+  set value(AsyncValue<ValueT> newState) {
+    newState.map(
       loading: onLoading,
       error: onError,
       data: onData,

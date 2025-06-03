@@ -59,10 +59,10 @@ void main() {
 
   test('can listen multiple providers at once', () async {
     final container = ProviderContainer.test();
-    final count = StateProvider((ref) => 0);
-    final count2 = StateProvider((ref) => 0);
+    final count = StateProvider((ref) => 0, name: 'count');
+    final count2 = StateProvider((ref) => 0, name: 'count2');
 
-    final provider = Provider((ref) {
+    final provider = Provider(name: 'provider', (ref) {
       final first = ref.watch(count);
       final second = ref.watch(count2);
 
