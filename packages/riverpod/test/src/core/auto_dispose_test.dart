@@ -36,10 +36,10 @@ void main() {
 
       expect(buildCount, 1);
       expect(container.readProviderElement(provider), same(element));
-      expect(element.stateResult, null);
+      expect(element.stateResult(), null);
 
       expect(sub.read(), 0);
-      expect(element.stateResult, $ResultData(0));
+      expect(element.stateResult(), $ResultData(0));
       expect(buildCount, 2);
     });
 

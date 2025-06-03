@@ -42,7 +42,7 @@ final class RepositoryProvider
   Override overrideWithValue(Repository value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Repository, Repository>(value),
+      providerOverride: $SyncValueProvider<Repository>(value),
     );
   }
 }
@@ -82,7 +82,7 @@ final class ValueProvider extends $FunctionalProvider<String, String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }

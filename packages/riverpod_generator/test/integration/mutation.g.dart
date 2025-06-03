@@ -58,7 +58,7 @@ final class SyncTodoListProvider
   Override overrideWithValue(List<Todo> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<Todo>, List<Todo>>(value),
+      providerOverride: $SyncValueProvider<List<Todo>>(value),
     );
   }
 }
@@ -447,7 +447,7 @@ final class SimpleProvider extends $NotifierProvider<Simple, int> {
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -692,7 +692,7 @@ final class SimpleFamilyProvider extends $NotifierProvider<SimpleFamily, int> {
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -1570,7 +1570,7 @@ final class FailingCtorProvider extends $NotifierProvider<FailingCtor, int> {
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -1699,7 +1699,7 @@ final class TypedProvider extends $NotifierProvider<Typed, String> {
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }

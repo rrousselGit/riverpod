@@ -148,8 +148,9 @@ final class StateNotifierProvider< //
 }
 
 /// The element of [StateNotifierProvider].
-class _StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
-    StateT> extends $FunctionalProviderElement<StateT, StateT, NotifierT> {
+class _StateNotifierProviderElement<NotifierT extends StateNotifier<ValueT>,
+        ValueT> extends $FunctionalProviderElement<ValueT, ValueT, NotifierT>
+    with SyncProviderElement<ValueT> {
   _StateNotifierProviderElement._(super.pointer);
 
   final _notifierNotifier = $ElementLense<NotifierT>();
@@ -163,7 +164,7 @@ class _StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
     );
 
     _removeListener = notifier.requireState.addListener(
-      (newState) => setStateResult($ResultData(newState)),
+      (newState) => value = AsyncData(newState),
       fireImmediately: true,
     );
 
@@ -171,7 +172,7 @@ class _StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
   }
 
   @override
-  bool updateShouldNotify(StateT previous, StateT next) {
+  bool updateShouldNotify(ValueT previous, ValueT next) {
     return _notifierNotifier.result!.requireState
         // ignore: invalid_use_of_protected_member
         .updateShouldNotify(previous, next);

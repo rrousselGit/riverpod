@@ -145,19 +145,24 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
   var _didMount = false;
 
   /* STATE */
-  $Result<StateT>? _stateResult;
+  var _value = AsyncValue<ValueT>.loading();
+  AsyncValue<ValueT> get value => _value;
+  set value(AsyncValue<ValueT> value) {
+    if (kDebugMode) _debugDidSetState = true;
 
-  /// The current state of the provider.
-  ///
-  /// Obtains the current state, or null if the provider has yet to initialize.
-  ///
-  /// The returned object will contain error information, if any.
-  /// This function does not cause the provider to rebuild if it somehow was
-  /// outdated.
-  ///
-  /// This is not meant for public consumption. Instead, public API should use
-  /// [readSelf].
-  $Result<StateT>? get stateResult => _stateResult;
+    final previousResult = this.value;
+    final result = _value = value;
+
+    if (_didBuild) {
+      _notifyListeners(result, previousResult);
+    }
+  }
+
+  $Result<StateT>? stateResult() => resultForValue(value);
+
+  void setValueFromState(StateT state);
+
+  $Result<StateT>? resultForValue(AsyncValue<ValueT> value);
 
   /// Returns the currently exposed by a provider
   ///
@@ -168,24 +173,6 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
     return requireState;
   }
 
-  /// Update the exposed value of a provider and notify its listeners.
-  ///
-  /// Listeners will only be notified if [updateShouldNotify]
-  /// returns true.
-  ///
-  /// This API is not meant for public consumption. Instead if a [Ref] needs
-  /// to expose a way to update the state, the practice is to expose a getter/setter.
-  void setStateResult($Result<StateT> newState) {
-    if (kDebugMode) _debugDidSetState = true;
-
-    final previousResult = stateResult;
-    final result = _stateResult = newState;
-
-    if (_didBuild) {
-      _notifyListeners(result, previousResult);
-    }
-  }
-
   /// Read the current value of a provider and:
   ///
   /// - if in error state, rethrow the error
@@ -194,6 +181,8 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
   /// This is not meant for public consumption. Instead, public API should use
   /// [readSelf].
   StateT get requireState {
+    final state = resultForValue(value);
+
     const uninitializedError = '''
 Tried to read the state of an uninitialized provider.
 This generally means that have a circular dependency, and your provider end-up
@@ -206,7 +195,6 @@ depending on itself.
       }
     }
 
-    final state = stateResult;
     if (state == null) throw StateError(uninitializedError);
 
     return switch (state) {
@@ -247,12 +235,12 @@ depending on itself.
     }
 
     final ref = this.ref = $Ref(this, isFirstBuild: true, isReload: false);
-    final initialState = _stateResult;
+    final initialState = value;
 
     buildState(ref);
 
     _notifyListeners(
-      _stateResult!,
+      value,
       initialState,
       isFirstBuild: true,
       checkUpdateShouldNotify: false,
@@ -278,7 +266,7 @@ depending on itself.
       isFirstBuild: false,
       isReload: _didChangeDependency,
     );
-    final previousStateResult = _stateResult;
+    final previousValue = value;
 
     if (kDebugMode) _debugDidSetState = false;
 
@@ -292,12 +280,12 @@ depending on itself.
       listenable.unlockNotification();
     });
 
-    if (!identical(_stateResult, previousStateResult)) {
+    if (!identical(value, previousValue)) {
       // Asserts would otherwise prevent a provider rebuild from updating
       // other providers
       if (kDebugMode) _debugSkipNotifyListenersAsserts = true;
 
-      _notifyListeners(_stateResult!, previousStateResult);
+      _notifyListeners(value, previousValue);
 
       if (kDebugMode) _debugSkipNotifyListenersAsserts = false;
     }
@@ -305,7 +293,7 @@ depending on itself.
 
   /// Initialize a provider.
   ///
-  /// This function **must** call [setStateResult] or throw (or both).
+  /// This function **must** call [value=] or throw (or both).
   ///
   /// Exceptions within this function will be caught and set the provider in error
   /// state. Then, reading this provider will rethrow the thrown exception.
@@ -378,18 +366,13 @@ depending on itself.
     } catch (err, stack) {
       if (kDebugMode) _debugDidSetState = true;
 
-      _stateResult = $Result.error(err, stack);
+      value = AsyncValue.error(err, stack);
       triggerRetry(err);
     } finally {
       _didBuild = true;
       if (kDebugMode) {
         _debugCurrentlyBuildingElement = debugPreviouslyBuildingElement;
       }
-
-      assert(
-        stateResult != null,
-        'Bad state, the provider did not initialize. Did "create" forget to set the state?',
-      );
     }
   }
 
@@ -465,12 +448,16 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   void _notifyListeners(
-    $Result<StateT> newState,
-    $Result<StateT>? previousStateResult, {
+    AsyncValue<ValueT> newStateValue,
+    AsyncValue<ValueT>? previousStateValue, {
     bool checkUpdateShouldNotify = true,
     bool isFirstBuild = false,
   }) {
     if (kDebugMode && !isFirstBuild) _debugAssertNotificationAllowed();
+
+    final newState = resultForValue(newStateValue)!;
+    final previousStateResult =
+        previousStateValue != null ? resultForValue(previousStateValue) : null;
 
     final previousState = previousStateResult?.value;
 
@@ -819,7 +806,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   void clearState() {
     runOnDispose();
     _didMount = false;
-    _stateResult = null;
+    _value = AsyncLoading();
 
     if (dependents case final subs?) {
       _closeSubscriptions(subs);
@@ -863,7 +850,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     buffer.writeAll(
       [
-        switch (_stateResult) {
+        switch (resultForValue(value)) {
           null => 'state: uninitialized',
           $ResultData<StateT>(:final value) => 'state: $value',
           $ResultError<StateT>(:final error, :final stackTrace) =>
@@ -936,4 +923,22 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       }
     }
   }
+}
+
+@internal
+mixin SyncProviderElement<ValueT> on ProviderElement<ValueT, ValueT> {
+  @override
+  $Result<ValueT>? resultForValue(AsyncValue<ValueT> value) {
+    switch (value) {
+      case AsyncData():
+        return $ResultData(value.value);
+      case AsyncError():
+        return $ResultError(value.error, value.stackTrace);
+      case AsyncLoading():
+        return null;
+    }
+  }
+
+  @override
+  void setValueFromState(ValueT state) => value = AsyncData(state);
 }

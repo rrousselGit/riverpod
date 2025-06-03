@@ -41,7 +41,7 @@ final class ExampleProvider extends $FunctionalProvider<User, User, User>
   Override overrideWithValue(User value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<User, User>(value),
+      providerOverride: $SyncValueProvider<User>(value),
     );
   }
 }

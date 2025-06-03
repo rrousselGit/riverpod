@@ -958,7 +958,7 @@ final class Regression3490Provider<Model, Sort, Cursor>
   Override overrideWithValue(void value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<void, void>(value),
+      providerOverride: $SyncValueProvider<void>(value),
     );
   }
 

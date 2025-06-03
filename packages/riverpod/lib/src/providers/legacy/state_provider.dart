@@ -102,7 +102,8 @@ final class StateProvider<ValueT>
 
 /// The element of [StateProvider].
 class _StateProviderElement<ValueT>
-    extends $FunctionalProviderElement<ValueT, ValueT, ValueT> {
+    extends $FunctionalProviderElement<ValueT, ValueT, ValueT>
+    with SyncProviderElement<ValueT> {
   _StateProviderElement._(super.pointer);
 
   final _controllerNotifier = $ElementLense<StateController<ValueT>>();
@@ -122,7 +123,7 @@ class _StateProviderElement<ValueT>
       fireImmediately: true,
       (state) {
         _stateNotifier.result = _controllerNotifier.result;
-        setStateResult($ResultData(state));
+        value = AsyncData(state);
       },
     );
 

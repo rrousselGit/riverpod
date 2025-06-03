@@ -146,7 +146,8 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
 
 /// The element of [ChangeNotifierProvider].
 class _ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
-    extends $FunctionalProviderElement<NotifierT, NotifierT, NotifierT> {
+    extends $FunctionalProviderElement<NotifierT, NotifierT, NotifierT>
+    with SyncProviderElement<NotifierT> {
   _ChangeNotifierProviderElement._(super.pointer);
 
   final _notifierNotifier = $ElementLense<NotifierT>();
@@ -161,7 +162,7 @@ class _ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
 
     final notifier = notifierResult.requireState;
 
-    setStateResult($ResultData(notifier));
+    value = AsyncData(notifier);
 
     if (notifier != null) {
       void listener() => ref.notifyListeners();

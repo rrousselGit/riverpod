@@ -40,7 +40,7 @@ final class TodoListProvider extends $NotifierProvider<TodoList, List<Todo>> {
   Override overrideWithValue(List<Todo> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<Todo>, List<Todo>>(value),
+      providerOverride: $SyncValueProvider<List<Todo>>(value),
     );
   }
 }

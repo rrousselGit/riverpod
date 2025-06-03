@@ -75,7 +75,7 @@ final class EvenItemsProvider
   Override overrideWithValue(List<Item> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<Item>, List<Item>>(value),
+      providerOverride: $SyncValueProvider<List<Item>>(value),
     );
   }
 }

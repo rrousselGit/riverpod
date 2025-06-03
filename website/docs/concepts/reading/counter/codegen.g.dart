@@ -42,7 +42,7 @@ final class RepositoryProvider
   Override overrideWithValue(Repository value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Repository, Repository>(value),
+      providerOverride: $SyncValueProvider<Repository>(value),
     );
   }
 }
@@ -81,7 +81,7 @@ final class CounterProvider extends $NotifierProvider<Counter, int> {
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }

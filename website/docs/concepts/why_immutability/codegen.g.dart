@@ -41,7 +41,7 @@ final class ThemeNotifierProvider
   Override overrideWithValue(ThemeSettings value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<ThemeSettings, ThemeSettings>(value),
+      providerOverride: $SyncValueProvider<ThemeSettings>(value),
     );
   }
 }

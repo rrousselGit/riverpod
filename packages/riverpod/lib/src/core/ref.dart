@@ -300,15 +300,12 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   void notifyListeners() {
     _throwIfInvalidUsage();
 
-    final currentResult = _element.stateResult;
-    // If `notifyListeners` is used during `build`, the result will be null.
-    // Throwing would be unnecessarily inconvenient, so we simply skip it.
-    if (currentResult == null) return;
+    final currentValue = _element.value;
 
     if (_element._didBuild) {
       _element._notifyListeners(
-        currentResult,
-        currentResult,
+        currentValue,
+        currentValue,
         checkUpdateShouldNotify: false,
       );
     }
@@ -716,7 +713,7 @@ class $Ref<StateT, ValueT> extends Ref {
   set state(StateT newState) {
     _throwIfInvalidUsage();
 
-    _element.setStateResult($ResultData(newState));
+    _element.setValueFromState(newState);
   }
 
   /// Listens to changes on the value exposed by this provider.

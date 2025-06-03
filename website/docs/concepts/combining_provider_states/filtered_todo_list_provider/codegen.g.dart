@@ -41,7 +41,7 @@ final class FilterProvider extends $FunctionalProvider<Filter, Filter, Filter>
   Override overrideWithValue(Filter value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Filter, Filter>(value),
+      providerOverride: $SyncValueProvider<Filter>(value),
     );
   }
 }
@@ -82,7 +82,7 @@ final class FilteredTodoListProvider
   Override overrideWithValue(List<Todo> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<Todo>, List<Todo>>(value),
+      providerOverride: $SyncValueProvider<List<Todo>>(value),
     );
   }
 }

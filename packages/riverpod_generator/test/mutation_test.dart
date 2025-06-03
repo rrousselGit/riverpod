@@ -257,7 +257,7 @@ void main() {
 
     final element = container.readProviderElement(simpleProvider);
 
-    expect(element.stateResult, null);
+    expect(element.stateResult(), null);
 
     await sub.read().call(2);
 

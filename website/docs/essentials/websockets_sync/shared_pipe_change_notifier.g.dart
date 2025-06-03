@@ -44,9 +44,7 @@ final class MyListenableProvider extends $FunctionalProvider<
   Override overrideWithValue(Raw<ValueNotifier<int>> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride:
-          $ValueProvider<Raw<ValueNotifier<int>>, Raw<ValueNotifier<int>>>(
-              value),
+      providerOverride: $SyncValueProvider<Raw<ValueNotifier<int>>>(value),
     );
   }
 }
@@ -89,9 +87,7 @@ final class AnotherListenableProvider extends $FunctionalProvider<
   Override overrideWithValue(Raw<ValueNotifier<int>> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride:
-          $ValueProvider<Raw<ValueNotifier<int>>, Raw<ValueNotifier<int>>>(
-              value),
+      providerOverride: $SyncValueProvider<Raw<ValueNotifier<int>>>(value),
     );
   }
 }

@@ -151,7 +151,7 @@ final class PubRepositoryProvider
   Override overrideWithValue(PubRepository value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<PubRepository, PubRepository>(value),
+      providerOverride: $SyncValueProvider<PubRepository>(value),
     );
   }
 }

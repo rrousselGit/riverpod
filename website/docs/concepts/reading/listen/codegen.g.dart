@@ -41,7 +41,7 @@ final class AnotherProvider extends $FunctionalProvider<void, void, void>
   Override overrideWithValue(void value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<void, void>(value),
+      providerOverride: $SyncValueProvider<void>(value),
     );
   }
 }
