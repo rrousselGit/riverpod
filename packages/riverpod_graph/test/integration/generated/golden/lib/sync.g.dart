@@ -42,7 +42,7 @@ final class PublicProvider extends $FunctionalProvider<String, String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }
@@ -85,7 +85,7 @@ final class Supports$inNamesProvider
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }
@@ -156,7 +156,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 
@@ -247,7 +247,7 @@ final class _PrivateProvider extends $FunctionalProvider<String, String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }
@@ -289,7 +289,7 @@ final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }
@@ -342,7 +342,7 @@ final class _PrivateClassProvider
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }
@@ -411,7 +411,7 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 
@@ -546,7 +546,7 @@ final class Supports$InClassNameProvider
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }

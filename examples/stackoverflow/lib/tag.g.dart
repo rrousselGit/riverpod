@@ -46,7 +46,7 @@ final class TagThemeProvider
   Override overrideWithValue(TagTheme value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<TagTheme, TagTheme>(value),
+      providerOverride: $SyncValueProvider<TagTheme>(value),
     );
   }
 }

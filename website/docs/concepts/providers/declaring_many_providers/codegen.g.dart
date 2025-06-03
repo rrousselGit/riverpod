@@ -41,7 +41,7 @@ final class CityProvider extends $FunctionalProvider<String, String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }
@@ -81,7 +81,7 @@ final class CountryProvider extends $FunctionalProvider<String, String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }

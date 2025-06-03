@@ -41,7 +41,7 @@ final class SynchronousExampleProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }

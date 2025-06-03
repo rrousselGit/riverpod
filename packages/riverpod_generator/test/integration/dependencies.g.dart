@@ -39,7 +39,7 @@ final class DepProvider extends $FunctionalProvider<int, int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -89,7 +89,7 @@ final class FamilyProvider extends $FunctionalProvider<int, int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -158,7 +158,7 @@ final class Dep2Provider extends $NotifierProvider<Dep2, int> {
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -216,7 +216,7 @@ final class Family2Provider extends $NotifierProvider<Family2, int> {
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -321,7 +321,7 @@ final class ProviderProvider extends $FunctionalProvider<int, int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -376,7 +376,7 @@ final class Provider2Provider extends $FunctionalProvider<int, int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -430,7 +430,7 @@ final class Provider3Provider extends $NotifierProvider<Provider3, int> {
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -493,7 +493,7 @@ final class Provider4Provider extends $NotifierProvider<Provider4, int> {
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -609,7 +609,7 @@ final class TransitiveDependenciesProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -663,7 +663,7 @@ final class SmallTransitiveDependencyCountProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -705,7 +705,7 @@ final class EmptyDependenciesFunctionalProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -747,7 +747,7 @@ final class EmptyDependenciesClassBasedProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -810,7 +810,7 @@ final class ProviderWithDependenciesProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -851,7 +851,7 @@ final class _PrivateDepProvider extends $FunctionalProvider<int, int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -891,7 +891,7 @@ final class PublicDepProvider extends $FunctionalProvider<int, int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -937,7 +937,7 @@ final class DuplicateDependenciesProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -987,7 +987,7 @@ final class DuplicateDependencies2Provider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -1050,7 +1050,7 @@ final class TransitiveDuplicateDependenciesProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }

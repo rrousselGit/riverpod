@@ -41,8 +41,7 @@ final class RawStreamProvider extends $FunctionalProvider<Raw<Stream<int>>,
   Override overrideWithValue(Raw<Stream<int>> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride:
-          $ValueProvider<Raw<Stream<int>>, Raw<Stream<int>>>(value),
+      providerOverride: $SyncValueProvider<Raw<Stream<int>>>(value),
     );
   }
 }

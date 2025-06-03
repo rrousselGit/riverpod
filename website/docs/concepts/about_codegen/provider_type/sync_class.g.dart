@@ -40,7 +40,7 @@ final class ExampleProvider extends $NotifierProvider<Example, String> {
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }

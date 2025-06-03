@@ -50,7 +50,7 @@ final class GenericProvider<T extends num>
   Override overrideWithValue(List<T> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<T>, List<T>>(value),
+      providerOverride: $SyncValueProvider<List<T>>(value),
     );
   }
 
@@ -155,7 +155,7 @@ final class ComplexGenericProvider<T extends num, Foo extends String?>
   Override overrideWithValue(List<T> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<T>, List<T>>(value),
+      providerOverride: $SyncValueProvider<List<T>>(value),
     );
   }
 
@@ -266,7 +266,7 @@ final class GenericClassProvider<T extends num>
   Override overrideWithValue(List<T> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<T>, List<T>>(value),
+      providerOverride: $SyncValueProvider<List<T>>(value),
     );
   }
 
@@ -379,8 +379,7 @@ final class RawFutureProvider extends $FunctionalProvider<
   Override overrideWithValue(Raw<Future<String>> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride:
-          $ValueProvider<Raw<Future<String>>, Raw<Future<String>>>(value),
+      providerOverride: $SyncValueProvider<Raw<Future<String>>>(value),
     );
   }
 }
@@ -423,8 +422,7 @@ final class RawStreamProvider extends $FunctionalProvider<
   Override overrideWithValue(Raw<Stream<String>> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride:
-          $ValueProvider<Raw<Stream<String>>, Raw<Stream<String>>>(value),
+      providerOverride: $SyncValueProvider<Raw<Stream<String>>>(value),
     );
   }
 }
@@ -464,8 +462,7 @@ final class RawFutureClassProvider
   Override overrideWithValue(Raw<Future<String>> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride:
-          $ValueProvider<Raw<Future<String>>, Raw<Future<String>>>(value),
+      providerOverride: $SyncValueProvider<Raw<Future<String>>>(value),
     );
   }
 }
@@ -521,8 +518,7 @@ final class RawStreamClassProvider
   Override overrideWithValue(Raw<Stream<String>> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride:
-          $ValueProvider<Raw<Stream<String>>, Raw<Stream<String>>>(value),
+      providerOverride: $SyncValueProvider<Raw<Stream<String>>>(value),
     );
   }
 }
@@ -591,8 +587,7 @@ final class RawFamilyFutureProvider extends $FunctionalProvider<
   Override overrideWithValue(Raw<Future<String>> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride:
-          $ValueProvider<Raw<Future<String>>, Raw<Future<String>>>(value),
+      providerOverride: $SyncValueProvider<Raw<Future<String>>>(value),
     );
   }
 
@@ -675,8 +670,7 @@ final class RawFamilyStreamProvider extends $FunctionalProvider<
   Override overrideWithValue(Raw<Stream<String>> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride:
-          $ValueProvider<Raw<Stream<String>>, Raw<Stream<String>>>(value),
+      providerOverride: $SyncValueProvider<Raw<Stream<String>>>(value),
     );
   }
 
@@ -753,8 +747,7 @@ final class RawFamilyFutureClassProvider
   Override overrideWithValue(Raw<Future<String>> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride:
-          $ValueProvider<Raw<Future<String>>, Raw<Future<String>>>(value),
+      providerOverride: $SyncValueProvider<Raw<Future<String>>>(value),
     );
   }
 
@@ -857,8 +850,7 @@ final class RawFamilyStreamClassProvider
   Override overrideWithValue(Raw<Stream<String>> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride:
-          $ValueProvider<Raw<Stream<String>>, Raw<Stream<String>>>(value),
+      providerOverride: $SyncValueProvider<Raw<Stream<String>>>(value),
     );
   }
 
@@ -957,7 +949,7 @@ final class PublicProvider extends $FunctionalProvider<String, String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }
@@ -997,7 +989,7 @@ final class Supports$inNamesProvider
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }
@@ -1068,7 +1060,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 
@@ -1159,7 +1151,7 @@ final class _PrivateProvider extends $FunctionalProvider<String, String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }
@@ -1201,7 +1193,7 @@ final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }
@@ -1254,7 +1246,7 @@ final class _PrivateClassProvider
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }
@@ -1323,7 +1315,7 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 
@@ -1466,7 +1458,7 @@ final class Supports$InFnNameProvider<And$InT>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 
@@ -1575,7 +1567,7 @@ final class Supports$InFnNameFamilyProvider<And$InT>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 
@@ -1691,7 +1683,7 @@ final class Supports$InClassNameProvider<And$InT>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 
@@ -1823,7 +1815,7 @@ final class Supports$InClassFamilyNameProvider<And$InT>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 
@@ -1965,7 +1957,7 @@ final class GeneratedProvider
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }
@@ -2016,7 +2008,7 @@ final class UnnecessaryCastProvider
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 
@@ -2093,7 +2085,7 @@ final class UnnecessaryCastClassProvider
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 

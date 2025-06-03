@@ -39,7 +39,7 @@ final class DepProvider extends $FunctionalProvider<int, int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -83,7 +83,7 @@ final class TransitiveDepProvider extends $FunctionalProvider<int, int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -123,7 +123,7 @@ final class Dep2Provider extends $FunctionalProvider<int, int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -173,7 +173,7 @@ final class DepFamilyProvider extends $FunctionalProvider<int, int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -249,7 +249,7 @@ final class PlainAnnotationProvider extends $FunctionalProvider<int, int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -289,7 +289,7 @@ final class CustomAnnotationProvider extends $FunctionalProvider<int, int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -331,7 +331,7 @@ final class CustomAnnotationWithTrailingCommaProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -372,7 +372,7 @@ final class ExistingDepProvider extends $FunctionalProvider<int, int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -412,7 +412,7 @@ final class MultipleDepsProvider extends $FunctionalProvider<int, int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -458,7 +458,7 @@ final class ProviderWithDartDocProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }

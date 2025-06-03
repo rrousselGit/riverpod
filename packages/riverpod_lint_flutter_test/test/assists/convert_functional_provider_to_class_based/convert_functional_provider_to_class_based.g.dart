@@ -42,7 +42,7 @@ final class ExampleProvider extends $FunctionalProvider<int, int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -104,7 +104,7 @@ final class ExampleFamilyProvider extends $FunctionalProvider<int, int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 

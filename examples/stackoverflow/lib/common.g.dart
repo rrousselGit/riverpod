@@ -54,7 +54,7 @@ final class ThemeProvider
   Override overrideWithValue(ThemeData value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<ThemeData, ThemeData>(value),
+      providerOverride: $SyncValueProvider<ThemeData>(value),
     );
   }
 }

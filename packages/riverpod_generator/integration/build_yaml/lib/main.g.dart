@@ -39,7 +39,7 @@ final class CountProvider extends $FunctionalProvider<int, int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -145,7 +145,7 @@ final class CountNotifierProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -300,7 +300,7 @@ final class Count2Provider extends $FunctionalProvider<int, int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -522,7 +522,7 @@ final class CountNotifier2Provider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 

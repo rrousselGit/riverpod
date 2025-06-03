@@ -39,7 +39,7 @@ final class IntegerProvider extends $FunctionalProvider<int, int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -79,7 +79,7 @@ final class StateNotifierProvider extends $FunctionalProvider<MyStateNotifier,
   Override overrideWithValue(MyStateNotifier value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<MyStateNotifier, MyStateNotifier>(value),
+      providerOverride: $SyncValueProvider<MyStateNotifier>(value),
     );
   }
 }
@@ -154,7 +154,7 @@ final class StateNotifierClassProvider
   Override overrideWithValue(MyStateNotifier value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<MyStateNotifier, MyStateNotifier>(value),
+      providerOverride: $SyncValueProvider<MyStateNotifier>(value),
     );
   }
 }
@@ -294,8 +294,7 @@ final class SyncSelfNotifierProvider
   Override overrideWithValue(SyncSelfNotifier value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride:
-          $ValueProvider<SyncSelfNotifier, SyncSelfNotifier>(value),
+      providerOverride: $SyncValueProvider<SyncSelfNotifier>(value),
     );
   }
 }
@@ -452,8 +451,7 @@ final class ChangeNotifierProvider extends $FunctionalProvider<MyChangeNotifier,
   Override overrideWithValue(MyChangeNotifier value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride:
-          $ValueProvider<MyChangeNotifier, MyChangeNotifier>(value),
+      providerOverride: $SyncValueProvider<MyChangeNotifier>(value),
     );
   }
 }
@@ -493,8 +491,7 @@ final class ChangeNotifierClassProvider
   Override overrideWithValue(MyChangeNotifier value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride:
-          $ValueProvider<MyChangeNotifier, MyChangeNotifier>(value),
+      providerOverride: $SyncValueProvider<MyChangeNotifier>(value),
     );
   }
 }
@@ -552,7 +549,7 @@ final class NotifierProvider
   Override overrideWithValue(MyNotifier value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<MyNotifier, MyNotifier>(value),
+      providerOverride: $SyncValueProvider<MyNotifier>(value),
     );
   }
 }
@@ -595,8 +592,7 @@ final class AutoDisposeNotifierProvider extends $FunctionalProvider<
   Override overrideWithValue(MyAutoDisposeNotifier value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride:
-          $ValueProvider<MyAutoDisposeNotifier, MyAutoDisposeNotifier>(value),
+      providerOverride: $SyncValueProvider<MyAutoDisposeNotifier>(value),
     );
   }
 }
@@ -637,7 +633,7 @@ final class NotifierClassProvider
   Override overrideWithValue(MyNotifier value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<MyNotifier, MyNotifier>(value),
+      providerOverride: $SyncValueProvider<MyNotifier>(value),
     );
   }
 }
@@ -690,7 +686,7 @@ final class AsyncNotifierProvider extends $FunctionalProvider<MyAsyncNotifier,
   Override overrideWithValue(MyAsyncNotifier value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<MyAsyncNotifier, MyAsyncNotifier>(value),
+      providerOverride: $SyncValueProvider<MyAsyncNotifier>(value),
     );
   }
 }
@@ -730,7 +726,7 @@ final class AsyncNotifierClassProvider
   Override overrideWithValue(MyAsyncNotifier value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<MyAsyncNotifier, MyAsyncNotifier>(value),
+      providerOverride: $SyncValueProvider<MyAsyncNotifier>(value),
     );
   }
 }
@@ -790,8 +786,7 @@ final class RawNotifierProvider extends $FunctionalProvider<
   Override overrideWithValue(Raw<MyChangeNotifier> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride:
-          $ValueProvider<Raw<MyChangeNotifier>, Raw<MyChangeNotifier>>(value),
+      providerOverride: $SyncValueProvider<Raw<MyChangeNotifier>>(value),
     );
   }
 }
@@ -835,8 +830,8 @@ final class RawFutureNotifierProvider extends $FunctionalProvider<
   Override overrideWithValue(Raw<Future<MyChangeNotifier>> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Raw<Future<MyChangeNotifier>>,
-          Raw<Future<MyChangeNotifier>>>(value),
+      providerOverride:
+          $SyncValueProvider<Raw<Future<MyChangeNotifier>>>(value),
     );
   }
 }
@@ -880,8 +875,8 @@ final class RawStreamNotifierProvider extends $FunctionalProvider<
   Override overrideWithValue(Raw<Stream<MyChangeNotifier>> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Raw<Stream<MyChangeNotifier>>,
-          Raw<Stream<MyChangeNotifier>>>(value),
+      providerOverride:
+          $SyncValueProvider<Raw<Stream<MyChangeNotifier>>>(value),
     );
   }
 }

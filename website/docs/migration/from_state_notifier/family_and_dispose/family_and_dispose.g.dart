@@ -41,7 +41,7 @@ final class TaskTrackerProvider extends $FunctionalProvider<TaskTrackerRepo,
   Override overrideWithValue(TaskTrackerRepo value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<TaskTrackerRepo, TaskTrackerRepo>(value),
+      providerOverride: $SyncValueProvider<TaskTrackerRepo>(value),
     );
   }
 }

@@ -39,7 +39,7 @@ final class GeneratedProvider extends $FunctionalProvider<_Test, _Test, _Test>
   Override overrideWithValue(_Test value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<_Test, _Test>(value),
+      providerOverride: $SyncValueProvider<_Test>(value),
     );
   }
 }
@@ -90,7 +90,7 @@ final class GeneratedFamilyProvider
   Override overrideWithValue(_Test value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<_Test, _Test>(value),
+      providerOverride: $SyncValueProvider<_Test>(value),
     );
   }
 
@@ -160,7 +160,7 @@ final class GeneratedClassProvider
   Override overrideWithValue(_Test value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<_Test, _Test>(value),
+      providerOverride: $SyncValueProvider<_Test>(value),
     );
   }
 }
@@ -220,7 +220,7 @@ final class GeneratedClassFamilyProvider
   Override overrideWithValue(_Test value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<_Test, _Test>(value),
+      providerOverride: $SyncValueProvider<_Test>(value),
     );
   }
 
@@ -313,7 +313,7 @@ final class $DynamicProvider
   Override overrideWithValue(Object? value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Object?, Object?>(value),
+      providerOverride: $SyncValueProvider<Object?>(value),
     );
   }
 }
@@ -365,7 +365,7 @@ final class $DynamicFamilyProvider
   Override overrideWithValue(Object? value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Object?, Object?>(value),
+      providerOverride: $SyncValueProvider<Object?>(value),
     );
   }
 
@@ -435,7 +435,7 @@ final class $DynamicClassProvider
   Override overrideWithValue(Object? value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Object?, Object?>(value),
+      providerOverride: $SyncValueProvider<Object?>(value),
     );
   }
 }
@@ -495,7 +495,7 @@ final class $DynamicClassFamilyProvider
   Override overrideWithValue(Object? value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Object?, Object?>(value),
+      providerOverride: $SyncValueProvider<Object?>(value),
     );
   }
 
@@ -599,7 +599,7 @@ final class _DynamicProvider
   Override overrideWithValue(Object? value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Object?, Object?>(value),
+      providerOverride: $SyncValueProvider<Object?>(value),
     );
   }
 
@@ -669,7 +669,7 @@ final class AliasProvider extends $FunctionalProvider<AsyncValue<int>,
   Override overrideWithValue(AsyncValue<int> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<AsyncValue<int>, AsyncValue<int>>(value),
+      providerOverride: $SyncValueProvider<AsyncValue<int>>(value),
     );
   }
 }
@@ -720,7 +720,7 @@ final class AliasFamilyProvider extends $FunctionalProvider<AsyncValue<int>,
   Override overrideWithValue(AsyncValue<int> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<AsyncValue<int>, AsyncValue<int>>(value),
+      providerOverride: $SyncValueProvider<AsyncValue<int>>(value),
     );
   }
 
@@ -790,7 +790,7 @@ final class AliasClassProvider
   Override overrideWithValue(AsyncValue<int> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<AsyncValue<int>, AsyncValue<int>>(value),
+      providerOverride: $SyncValueProvider<AsyncValue<int>>(value),
     );
   }
 }
@@ -853,7 +853,7 @@ final class AliasClassFamilyProvider
   Override overrideWithValue(AsyncValue<int> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<AsyncValue<int>, AsyncValue<int>>(value),
+      providerOverride: $SyncValueProvider<AsyncValue<int>>(value),
     );
   }
 

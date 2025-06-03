@@ -41,7 +41,7 @@ final class Example1Provider extends $FunctionalProvider<String, String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }
@@ -81,7 +81,7 @@ final class Example2Provider extends $FunctionalProvider<String, String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String, String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }

@@ -42,7 +42,7 @@ final class FilterTypeProvider
   Override overrideWithValue(FilterType value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<FilterType, FilterType>(value),
+      providerOverride: $SyncValueProvider<FilterType>(value),
     );
   }
 }
@@ -81,7 +81,7 @@ final class TodosProvider extends $NotifierProvider<Todos, List<Todo>> {
   Override overrideWithValue(List<Todo> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<Todo>, List<Todo>>(value),
+      providerOverride: $SyncValueProvider<List<Todo>>(value),
     );
   }
 }
@@ -135,7 +135,7 @@ final class FilteredTodoListProvider
   Override overrideWithValue(List<Todo> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<Todo>, List<Todo>>(value),
+      providerOverride: $SyncValueProvider<List<Todo>>(value),
     );
   }
 }

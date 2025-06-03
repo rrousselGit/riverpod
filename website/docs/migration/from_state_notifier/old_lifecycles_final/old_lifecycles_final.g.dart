@@ -42,7 +42,7 @@ final class DurationProvider
   Override overrideWithValue(Duration value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Duration, Duration>(value),
+      providerOverride: $SyncValueProvider<Duration>(value),
     );
   }
 }
@@ -83,7 +83,7 @@ final class RepositoryProvider
   Override overrideWithValue(_MyRepo value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<_MyRepo, _MyRepo>(value),
+      providerOverride: $SyncValueProvider<_MyRepo>(value),
     );
   }
 }
@@ -122,7 +122,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int, int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }

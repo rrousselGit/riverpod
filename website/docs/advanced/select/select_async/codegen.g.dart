@@ -75,7 +75,7 @@ final class ExampleProvider
   Override overrideWithValue(Object? value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Object?, Object?>(value),
+      providerOverride: $SyncValueProvider<Object?>(value),
     );
   }
 }

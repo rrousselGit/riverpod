@@ -93,7 +93,7 @@ final class QuestionThemeProvider
   Override overrideWithValue(QuestionTheme value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<QuestionTheme, QuestionTheme>(value),
+      providerOverride: $SyncValueProvider<QuestionTheme>(value),
     );
   }
 }
@@ -172,8 +172,7 @@ final class CurrentQuestionProvider extends $FunctionalProvider<
   Override overrideWithValue(AsyncValue<Question> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride:
-          $ValueProvider<AsyncValue<Question>, AsyncValue<Question>>(value),
+      providerOverride: $SyncValueProvider<AsyncValue<Question>>(value),
     );
   }
 }
