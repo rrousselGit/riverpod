@@ -52,7 +52,7 @@ sealed class ProviderBase<StateT> extends ProviderOrFamily
   /// An internal method that defines how a provider behaves.
   /// @nodoc
   @visibleForOverriding
-  ProviderElement<StateT, Object?> $createElement($ProviderPointer pointer);
+  ElementWithFuture<StateT, Object?> $createElement($ProviderPointer pointer);
 
   /// A debug-only function for obtaining a hash of the source code of the
   /// initialization function.
@@ -140,7 +140,7 @@ abstract final class $ProviderBaseImpl<StateT, ValueT>
 
   @override
   @visibleForOverriding
-  ProviderElement<StateT, ValueT> $createElement($ProviderPointer pointer);
+  ElementWithFuture<StateT, ValueT> $createElement($ProviderPointer pointer);
 }
 
 /// A mixin that implements some methods for non-generic providers.
