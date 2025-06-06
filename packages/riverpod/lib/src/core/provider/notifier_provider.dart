@@ -54,38 +54,12 @@ typedef RunNotifierBuild<NotifierT, CreatedT> = CreatedT Function(
 mixin AnyNotifier<StateT, ValueT> {
   (Object?,)? _debugKey;
 
-  void _setStateFromValue(ValueT value);
-
-  FutureOr<void> _callEncode<KeyT, EncodedT>(
-    FutureOr<Storage<KeyT, EncodedT>> storage,
-    KeyT key,
-    EncodedT Function(ValueT state) encode,
-    StorageOptions options,
-  );
-
   $ClassProviderElement<AnyNotifier<StateT, ValueT>, StateT, ValueT, Object?>?
       _element;
 
   /// The [Ref] associated with this notifier.
   @protected
   Ref get ref => $ref;
-
-  /// Listens to changes on the value exposed by this provider.
-  ///
-  /// The listener will be called immediately after the provider completes building.
-  ///
-  /// As opposed to [Ref.listen], the listener will be called even if
-  /// [updateShouldNotify] returns false, meaning that the previous
-  /// and new value can potentially be identical.
-  ///
-  /// Returns a function which can be called to remove the listener.
-  @protected
-  RemoveListener listenSelf(
-    void Function(StateT? previous, StateT next) listener, {
-    void Function(Object error, StackTrace stackTrace)? onError,
-  }) {
-    return $ref.listenSelf(listener, onError: onError);
-  }
 
   /// The value currently exposed by this notifier.
   ///
@@ -110,6 +84,32 @@ mixin AnyNotifier<StateT, ValueT> {
   @visibleForTesting
   @protected
   set state(StateT newState) => $ref.state = newState;
+
+  void _setStateFromValue(ValueT value);
+
+  FutureOr<void> _callEncode<KeyT, EncodedT>(
+    FutureOr<Storage<KeyT, EncodedT>> storage,
+    KeyT key,
+    EncodedT Function(ValueT state) encode,
+    StorageOptions options,
+  );
+
+  /// Listens to changes on the value exposed by this provider.
+  ///
+  /// The listener will be called immediately after the provider completes building.
+  ///
+  /// As opposed to [Ref.listen], the listener will be called even if
+  /// [updateShouldNotify] returns false, meaning that the previous
+  /// and new value can potentially be identical.
+  ///
+  /// Returns a function which can be called to remove the listener.
+  @protected
+  RemoveListener listenSelf(
+    void Function(StateT? previous, StateT next) listener, {
+    void Function(Object error, StackTrace stackTrace)? onError,
+  }) {
+    return $ref.listenSelf(listener, onError: onError);
+  }
 
   /// A method invoked when the state exposed by this [Notifier] changes.
   /// It compares the previous and new value, and return whether listeners
