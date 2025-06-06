@@ -138,6 +138,14 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   /// If [keepAlive] is invoked multiple times, all [KeepAliveLink] will have
   /// to be closed for the provider to dispose itself when all listeners are removed.
+  ///
+  /// **Note:**
+  /// You do not need to call [KeepAliveLink.close].
+  /// When a provider rebuilds, previously created links are automatically closed.
+  ///
+  /// **Note:**
+  /// [keepAlive] only affects [auto dispose](https://riverpod.dev/docs/essentials/auto_dispose),
+  /// and does not prevent a provider from rebuilding, such as when using [watch]/[invalidate].
   KeepAliveLink keepAlive() {
     _throwIfInvalidUsage();
 
