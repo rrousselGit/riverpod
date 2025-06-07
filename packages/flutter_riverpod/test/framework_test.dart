@@ -352,8 +352,7 @@ void main() {
     expect(find.text('Hello 0'), findsOneWidget);
     expect(find.text('Hello 1'), findsNothing);
 
-    final consumerElement = tester.element(find.byType(Consumer));
-    final container = ProviderScope.containerOf(consumerElement);
+    final container = tester.container();
 
     container.read(dep.notifier).state++;
 

@@ -32,7 +32,7 @@ void main() {
         ),
       );
 
-      final container = ProviderScope.containerOf(ref.context);
+      final container = tester.container();
       final element = container.readProviderElement(provider);
 
       expect(element.isActive, true);
@@ -66,9 +66,7 @@ void main() {
         ),
       );
 
-      final container = ProviderScope.containerOf(
-        tester.element(find.byType(MaterialApp)),
-      );
+      final container = tester.container();
       final element = container.readProviderElement(provider);
       final navigator = tester.state<NavigatorState>(
         find.byType(Navigator),
@@ -150,9 +148,7 @@ void main() {
         ),
       );
 
-      final container = ProviderScope.containerOf(
-        tester.element(find.byType(Column)),
-      );
+      final container = tester.container();
       final visibleElement = container.readProviderElement(providerForVisible);
       final hiddenElement = container.readProviderElement(_provider);
 

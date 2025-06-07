@@ -12,8 +12,7 @@ void main() {
           ProviderScope(retry: retry, child: Container()),
         );
 
-        final element = tester.element(find.byType(Container));
-        final container = ProviderScope.containerOf(element);
+        final container = tester.container();
 
         expect(container.retry, retry);
       });
@@ -31,8 +30,7 @@ void main() {
           throw Exception();
         });
 
-        final element = tester.element(find.byType(Container));
-        final container = ProviderScope.containerOf(element);
+        final container = tester.container();
 
         container.listen(provider, (a, b) {}, onError: (err, stack) {});
 
@@ -41,6 +39,64 @@ void main() {
         await tester.pump(const Duration(milliseconds: 10));
 
         expect(buildCount, 2);
+      });
+    });
+
+    group('tester helpers finds container from a pumped ProviderScope', () {
+      testWidgets('using default lookup', (tester) async {
+        await tester.pumpWidget(const ProviderScope(child: Placeholder()));
+        expect(tester.container(), isA<ProviderContainer>());
+
+        await tester.pumpWidget(
+          Builder(
+            builder: (context) {
+              return const Column(
+                children: [
+                  ProviderScope(child: Placeholder()),
+                ],
+              );
+            },
+          ),
+        );
+        expect(
+          tester.container(),
+          isA<ProviderContainer>(),
+          reason: 'the helper method should find the container'
+              ' in a scope that is not the first widget',
+        );
+      });
+
+      testWidgets('from a ProviderScope using of', (tester) async {
+        await tester.pumpWidget(const ProviderScope(child: Placeholder()));
+
+        expect(
+          tester.container(of: find.byType(Placeholder)),
+          isA<ProviderContainer>(),
+        );
+
+        const innerKey = Key('inner');
+        const outerKey = Key('outer');
+
+        final outerContainer = ProviderContainer.test();
+        final innerContainer = ProviderContainer.test();
+
+        await tester.pumpWidget(
+          UncontrolledProviderScope(
+            container: outerContainer,
+            child: Container(
+              key: outerKey,
+              child: UncontrolledProviderScope(
+                container: innerContainer,
+                child: Container(
+                  key: innerKey,
+                ),
+              ),
+            ),
+          ),
+        );
+
+        expect(tester.container(of: find.byKey(innerKey)), innerContainer);
+        expect(tester.container(of: find.byKey(outerKey)), outerContainer);
       });
     });
   });

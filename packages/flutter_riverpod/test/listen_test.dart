@@ -63,9 +63,7 @@ void main() {
         ),
       );
 
-      final container = ProviderScope.containerOf(
-        tester.element(find.byType(Consumer)),
-      );
+      final container = tester.container();
 
       ref.listenManual(provider, listener.call);
       ref.listenManual(provider, listener2.call);
@@ -234,8 +232,7 @@ void main() {
       verifyZeroInteractions(listener);
       expect(errors, isEmpty);
 
-      final context = tester.element(find.byType(Consumer));
-      final container = ProviderScope.containerOf(context);
+      final container = tester.container();
 
       container.read(isErrored.notifier).state = true;
 
@@ -270,8 +267,7 @@ void main() {
       verifyZeroInteractions(listener);
       expect(errors, isEmpty);
 
-      final context = tester.element(find.byType(Consumer));
-      final container = ProviderScope.containerOf(context);
+      final container = tester.container();
 
       container.read(isErrored.notifier).state = true;
 
@@ -306,8 +302,7 @@ void main() {
       verifyZeroInteractions(errorListener);
       verifyZeroInteractions(listener);
 
-      final context = tester.element(find.byType(Consumer));
-      final container = ProviderScope.containerOf(context);
+      final container = tester.container();
 
       container.read(dep.notifier).state++;
 
@@ -353,8 +348,7 @@ void main() {
       verifyZeroInteractions(errorListener);
       verifyZeroInteractions(listener);
 
-      final context = tester.element(find.byType(Consumer));
-      final container = ProviderScope.containerOf(context);
+      final container = tester.container();
 
       container.read(dep.notifier).state++;
 
