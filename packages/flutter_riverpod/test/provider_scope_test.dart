@@ -12,8 +12,7 @@ void main() {
           ProviderScope(retry: retry, child: Container()),
         );
 
-        final element = tester.element(find.byType(Container));
-        final container = ProviderScope.containerOf(element);
+        final container = tester.container();
 
         expect(container.retry, retry);
       });
@@ -31,8 +30,7 @@ void main() {
           throw Exception();
         });
 
-        final element = tester.element(find.byType(Container));
-        final container = ProviderScope.containerOf(element);
+        final container = tester.container();
 
         container.listen(provider, (a, b) {}, onError: (err, stack) {});
 
