@@ -61,7 +61,7 @@ final class $SyncValueProvider<ValueT> extends _ValueProvider<ValueT, ValueT> {
 
 /// The [ProviderElement] of a [_ValueProvider]
 abstract class _ValueProviderElement<StateT, ValueT>
-    extends ProviderElement<StateT, ValueT> {
+    extends ProviderElement<StateT, ValueT> with ElementWithFuture {
   /// The [ProviderElement] of a [_ValueProvider]
   _ValueProviderElement(this.provider, super.pointer);
 

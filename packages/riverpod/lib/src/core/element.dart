@@ -37,6 +37,304 @@ void Function()? debugCanModifyProviders;
 @internal
 typedef WhenComplete = void Function(void Function() cb)?;
 
+/// Mixin to help implement logic for listening to [Future]s/[Stream]s and setup
+/// `provider.future` + convert the object into an [AsyncValue].
+@internal
+mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
+  /// An observable for [FutureProvider.future].
+  @internal
+  final futureNotifier = $ElementLense<Future<ValueT>>();
+  Completer<ValueT>? _futureCompleter;
+  Future<ValueT>? _lastFuture;
+  AsyncSubscription? _cancelSubscription;
+
+  @override
+  void initState(Ref ref) {
+    onLoading(AsyncLoading<ValueT>(), seamless: !ref.isReload);
+  }
+
+  /// Internal utility for transitioning an [AsyncValue] after a provider refresh.
+  ///
+  /// [seamless] controls how the previous state is preserved:
+  /// - seamless:true => import previous state and skip loading
+  /// - seamless:false => import previous state and prefer loading
+  void asyncTransition(
+    AsyncValue<ValueT> newState, {
+    required bool seamless,
+  }) {
+    final previous = value;
+
+    super.value =
+        newState.cast<ValueT>().copyWithPrevious(previous, isRefresh: seamless);
+  }
+
+  @override
+  @protected
+  set value(AsyncValue<ValueT> newState) {
+    newState.map(
+      loading: onLoading,
+      error: onError,
+      data: onData,
+    );
+  }
+
+  @internal
+  void onLoading(AsyncLoading<ValueT> value, {bool seamless = false}) {
+    asyncTransition(value, seamless: seamless);
+    if (_futureCompleter == null) {
+      final completer = _futureCompleter = Completer();
+      futureNotifier.result = $ResultData(completer.future);
+    }
+  }
+
+  /// Life-cycle for when an error from the provider's "build" method is received.
+  ///
+  /// Might be invoked after the element is disposed in the case where `provider.future`
+  /// has yet to complete.
+  @internal
+  void onError(AsyncError<ValueT> value, {bool seamless = false}) {
+    asyncTransition(value, seamless: seamless);
+
+    final result = resultForValue(value);
+    if (result is! $ResultError<StateT>) {
+      // Hard error states are already reported to the observers
+      for (final observer in container.observers) {
+        container.runTernaryGuarded(
+          observer.providerDidFail,
+          _currentObserverContext(),
+          value.error,
+          value.stackTrace,
+        );
+      }
+    }
+
+    final completer = _futureCompleter;
+    if (completer != null) {
+      completer
+        ..future.ignore()
+        ..completeError(
+          value.error,
+          value.stackTrace,
+        );
+      _futureCompleter = null;
+    } else {
+      futureNotifier.result = $Result.data(
+        Future.error(
+          value.error,
+          value.stackTrace,
+        )..ignore(),
+      );
+    }
+  }
+
+  /// Life-cycle for when a data from the provider's "build" method is received.
+  ///
+  /// Might be invoked after the element is disposed in the case where `provider.future`
+  /// has yet to complete.
+  @internal
+  void onData(AsyncData<ValueT> value, {bool seamless = false}) {
+    asyncTransition(value, seamless: seamless);
+
+    final completer = _futureCompleter;
+    if (completer != null) {
+      completer.complete(value.value);
+      _futureCompleter = null;
+    } else {
+      futureNotifier.result = $Result.data(Future.value(value.value));
+    }
+  }
+
+  /// Listens to a [Stream] and convert it into an [AsyncValue].
+  @preferInline
+  @internal
+  WhenComplete handleStream(Ref ref, Stream<ValueT> Function() create) {
+    return _handleAsync(ref, ({
+      required data,
+      required done,
+      required error,
+      required last,
+    }) {
+      final stream = create();
+
+      late StreamSubscription<ValueT> subscription;
+      subscription = stream.listen(data, onError: error, onDone: done);
+
+      final asyncSub = (
+        cancel: subscription.cancel,
+        pause: subscription.pause,
+        resume: subscription.resume,
+        abort: subscription.cancel,
+      );
+
+      return asyncSub;
+    });
+  }
+
+  @override
+  void onCancel() {
+    super.onCancel();
+
+    _cancelSubscription?.pause?.call();
+  }
+
+  @override
+  void onResume() {
+    super.onResume();
+
+    _cancelSubscription?.resume?.call();
+  }
+
+  StateError _missingLastValueError() {
+    return StateError(
+      'The provider $origin was disposed during loading state, '
+      'yet no value could be emitted.',
+    );
+  }
+
+  /// Listens to a [Future] and convert it into an [AsyncValue].
+  @preferInline
+  @internal
+  WhenComplete handleFuture(
+    Ref ref,
+    FutureOr<ValueT> Function() create,
+  ) {
+    return _handleAsync(ref, ({
+      required data,
+      required done,
+      required error,
+      required last,
+    }) {
+      final futureOr = create();
+      if (futureOr is! Future<ValueT>) {
+        data(futureOr);
+        done();
+        return null;
+      }
+      // Received a Future<T>
+
+      var running = true;
+      void cancel() {
+        running = false;
+      }
+
+      futureOr.then(
+        (value) {
+          if (!running) return;
+          data(value);
+          done();
+        },
+        // ignore: avoid_types_on_closure_parameters
+        onError: (Object err, StackTrace stackTrace) {
+          if (!running) return;
+          error(err, stackTrace);
+          done();
+        },
+      );
+
+      last(futureOr);
+
+      return (
+        cancel: cancel,
+        // We don't call `cancel` here to let `provider.future` resolve with
+        // the last value emitted by the future.
+        abort: null,
+        pause: null,
+        resume: null,
+      );
+    });
+  }
+
+  /// Listens to a [Future] and transforms it into an [AsyncValue].
+  WhenComplete _handleAsync(
+    Ref ref,
+    AsyncSubscription? Function({
+      required void Function(ValueT) data,
+      required void Function(Object, StackTrace) error,
+      required void Function() done,
+      required void Function(Future<ValueT>) last,
+    }) listen,
+  ) {
+    void callOnError(Object error, StackTrace stackTrace) {
+      triggerRetry(error);
+      onError(AsyncError(error, stackTrace), seamless: !ref.isReload);
+    }
+
+    void Function()? onDone;
+    var isDone = false;
+
+    try {
+      _cancelSubscription = listen(
+        data: (value) {
+          onData(AsyncData(value), seamless: !ref.isReload);
+        },
+        error: callOnError,
+        last: (last) {
+          assert(_lastFuture == null, 'bad state');
+          _lastFuture = last;
+        },
+        done: () {
+          _lastFuture = null;
+          isDone = true;
+          onDone?.call();
+        },
+      );
+    } catch (error, stackTrace) {
+      callOnError(error, stackTrace);
+    }
+
+    return (onDoneCb) {
+      onDone = onDoneCb;
+      // Handle synchronous completion
+      if (isDone) onDoneCb();
+    };
+  }
+
+  @override
+  @internal
+  void runOnDispose() {
+    // Stops listening to the previous async operation
+    _lastFuture = null;
+    _cancelSubscription?.cancel();
+    _cancelSubscription = null;
+    super.runOnDispose();
+  }
+
+  @override
+  void dispose() {
+    final completer = _futureCompleter;
+    if (completer != null) {
+      // Whatever happens after this, the error is emitted post dispose of the provider.
+      // So the error doesn't matter anymore.
+      completer.future.ignore();
+
+      final lastFuture = _lastFuture;
+      if (lastFuture != null) {
+        _cancelSubscription?.abort?.call();
+
+        // Prevent super.dispose from cancelling the subscription on the "last"
+        // stream value, so that it can be sent to `provider.future`.
+        _lastFuture = null;
+        _cancelSubscription = null;
+      } else {
+        // The listened stream completed during a "loading" state.
+        completer.completeError(
+          _missingLastValueError(),
+          StackTrace.current,
+        );
+      }
+    }
+    super.dispose();
+  }
+
+  @override
+  void visitListenables(
+    void Function($ElementLense element) listenableVisitor,
+  ) {
+    super.visitListenables(listenableVisitor);
+    listenableVisitor(futureNotifier);
+  }
+}
+
 /// {@template riverpod.provider_element_base}
 /// An internal class that handles the state of a provider.
 ///
