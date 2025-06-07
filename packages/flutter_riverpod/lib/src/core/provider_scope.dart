@@ -347,3 +347,40 @@ To fix this problem, you have one of two solutions:
     return super.build();
   }
 }
+
+/// Widget testing helpers for flutter_riverpod.
+extension WidgetTesterHelpers on flutter_test.WidgetTester {
+  /// Attempt to look up the top-most [ProviderContainer] in the current widget.
+  ///
+  /// If `of` is provided is equivalent to
+  /// ```dart
+  /// final element = tester.element(of);
+  /// return ProviderScope.containerOf(element);
+  /// ```
+  ProviderContainer container({
+    flutter_test.Finder? of,
+    bool listen = true,
+  }) {
+    if (of != null) {
+      final element = this.element(of);
+      return ProviderScope.containerOf(element, listen: listen);
+    }
+
+    final byElementPredicate = flutter_test.find.byElementPredicate(
+      (element) {
+        final maybe = element
+            .dependOnInheritedWidgetOfExactType<UncontrolledProviderScope>();
+        return maybe != null;
+      },
+    );
+
+    final element = firstElement(
+      flutter_test.find.descendant(
+        of: flutter_test.find.byType(ProviderScope),
+        matching: byElementPredicate,
+      ),
+    );
+
+    return ProviderScope.containerOf(element, listen: listen);
+  }
+}

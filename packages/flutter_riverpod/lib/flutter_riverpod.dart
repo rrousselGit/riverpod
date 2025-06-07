@@ -30,4 +30,5 @@ export 'src/internals.dart'
         ConsumerState,
         WidgetRef,
         ProviderScope,
-        UncontrolledProviderScope;
+        UncontrolledProviderScope,
+        WidgetTesterHelpers;
