@@ -351,9 +351,9 @@ To fix this problem, you have one of two solutions:
 /// Widget testing helpers for flutter_riverpod.
 @visibleForTesting
 extension WidgetTesterHelpers on flutter_test.WidgetTester {
-  /// Attempt to look up the top-most [ProviderContainer] in the current widget.
+  /// Finds the [ProviderContainer] in the current widget.
   ///
-  /// If `of` is provided it looks for an `element` in
+  /// `of` is used to find an element in the widget that has a ProviderScope available.
   @visibleForTesting
   ProviderContainer container({
     flutter_test.Finder? of,
@@ -363,21 +363,7 @@ extension WidgetTesterHelpers on flutter_test.WidgetTester {
       return ProviderScope.containerOf(element, listen: false);
     }
 
-    final byElementPredicate = flutter_test.find.byElementPredicate(
-      (element) {
-        final maybe = element
-            .dependOnInheritedWidgetOfExactType<UncontrolledProviderScope>();
-        return maybe != null;
-      },
-    );
-
-    final element = firstElement(
-      flutter_test.find.descendant(
-        of: flutter_test.find.byType(ProviderScope),
-        matching: byElementPredicate,
-      ),
-    );
-
-    return ProviderScope.containerOf(element, listen: false);
+    final scope = widget(flutter_test.find.byType(UncontrolledProviderScope));
+    return (scope as UncontrolledProviderScope).container;
   }
 }
