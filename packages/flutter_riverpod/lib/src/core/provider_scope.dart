@@ -349,6 +349,7 @@ To fix this problem, you have one of two solutions:
 }
 
 /// Widget testing helpers for flutter_riverpod.
+@visibleForTesting
 extension WidgetTesterHelpers on flutter_test.WidgetTester {
   /// Attempt to look up the top-most [ProviderContainer] in the current widget.
   ///
@@ -357,6 +358,7 @@ extension WidgetTesterHelpers on flutter_test.WidgetTester {
   /// final element = tester.element(of);
   /// return ProviderScope.containerOf(element);
   /// ```
+  @visibleForTesting
   ProviderContainer container({
     flutter_test.Finder? of,
     bool listen = true,
