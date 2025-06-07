@@ -20,8 +20,7 @@ void main() {
       const ProviderScope(child: YourWidgetYouWantToTest()),
     );
 
-    final element = tester.element(find.byType(YourWidgetYouWantToTest));
-    final container = ProviderScope.containerOf(element);
+    final container = tester.container();
 
     // {@template useProvider}
     // TODO interact with your providers

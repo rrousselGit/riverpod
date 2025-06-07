@@ -7,7 +7,7 @@ import { AutoSnippet } from "/src/components/CodeSnippet";
 import unitTest from "!!raw-loader!./testing/unit_test.dart";
 import widgetTest from "!!raw-loader!./testing/widget_test.dart";
 import fullWidgetTest from "!!raw-loader!./testing/full_widget_test.dart";
-import widgetContainerOf from "!!raw-loader!./testing/widget_container_of.dart";
+import testerOf from "!!raw-loader!./testing/tester_container.dart";
 import providerToMock from "./testing/provider_to_mock";
 import mockProvider from "!!raw-loader!./testing/mock_provider.dart";
 import autoDisposeListen from "!!raw-loader!./testing/auto_dispose_listen.dart";
@@ -56,11 +56,11 @@ Now that we have a ProviderContainer, we can use it to read providers using:
 - `container.listen`, to listen to a provider and be notified of changes.
 
 :::caution
-Be careful when using `container.read` when providers are automatically disposed.  
+Be careful when using `container.read` when providers are automatically disposed.
 If your provider is not listened to, chances are that its state will get destroyed
 in the middle of your test.
 
-In that case, consider using `container.listen`.  
+In that case, consider using `container.listen`.
 Its return value enables reading the current value of provider anyway,
 but will also ensure that the provider is not disposed in the middle of your test:
 
@@ -81,10 +81,10 @@ This is similar to what we do when we enable Riverpod in our Flutter app.
 Then, we can use `tester` to interact with our widget.
 Alternatively if you want to interact with providers, you can obtain
 a `ProviderContainer`.
-One can be obtained using `ProviderScope.containerOf(buildContext)`.  
+One can be obtained using `tester.container()`.
 By using `tester`, we can therefore write the following:
 
-<AutoSnippet raw={widgetContainerOf} />
+<AutoSnippet raw={testerOf} />
 
 We can then use it to read providers. Here's a full example:
 
@@ -95,7 +95,7 @@ We can then use it to read providers. Here's a full example:
 So far, we've seen how to set up a test and basic interactions with providers.
 However, in some cases, we may want to mock a provider.
 
-The cool part: All providers can be mocked by default, without any additional setup.  
+The cool part: All providers can be mocked by default, without any additional setup.
 This is possible by specifying the `overrides` parameter on either
 `ProviderScope` or `ProviderContainer`.
 
@@ -115,12 +115,12 @@ use it to "listen" to a provider:
 <AutoSnippet raw={listenProvider} />
 
 You can then combine this with packages such as [mockito](https://pub.dev/packages/mockito)
-or [mocktail](https://pub.dev/packages/mocktail) to use their `verify` API.  
+or [mocktail](https://pub.dev/packages/mocktail) to use their `verify` API.
 Or more simply, you can add all changes in a list and assert on it.
 
 ## Awaiting asynchronous providers
 
-In Riverpod, it is very common for providers to return a Future/Stream.  
+In Riverpod, it is very common for providers to return a Future/Stream.
 In that case, chances are that our tests need to await for that asynchronous operation
 to be completed.
 
