@@ -939,13 +939,24 @@ final class ProviderContainer implements Node {
     bool weak = false,
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
+    assert(
+      !(weak && fireImmediately),
+      'Cannot specify both weak and fireImmediately',
+    );
+
     final sub = provider._addListener(
       this,
       listener,
-      fireImmediately: fireImmediately,
       weak: weak,
       onError: onError ?? defaultOnError,
       onDependencyMayHaveChanged: null,
+    );
+    _handleFireImmediately(
+      container,
+      sub,
+      fireImmediately: fireImmediately,
+      listener: listener,
+      onError: onError,
     );
 
     switch (sub) {

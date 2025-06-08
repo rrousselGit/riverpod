@@ -108,26 +108,11 @@ abstract final class $ProviderBaseImpl<StateT, ValueT>
     void Function(StateT? previous, StateT next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
     required void Function()? onDependencyMayHaveChanged,
-    required bool fireImmediately,
     required bool weak,
   }) {
-    assert(
-      !fireImmediately || !weak,
-      'Cannot use fireImmediately with weak listeners',
-    );
-
     final element = source.readProviderElement(this);
 
     if (!weak) element.flush();
-
-    if (fireImmediately) {
-      _handleFireImmediately(
-        source.container,
-        element.stateResult()!,
-        listener: listener,
-        onError: onError,
-      );
-    }
 
     return ProviderStateSubscription<StateT, ValueT>(
       source: source,
