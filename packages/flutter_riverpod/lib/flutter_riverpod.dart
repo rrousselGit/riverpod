@@ -31,4 +31,4 @@ export 'src/internals.dart'
         WidgetRef,
         ProviderScope,
         UncontrolledProviderScope,
-        WidgetTesterHelpers;
+        RiverpodWidgetTesterX;
