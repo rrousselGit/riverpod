@@ -33,4 +33,4 @@ export 'src/internals.dart'
         HookConsumerWidget,
         HookConsumer,
         StatefulHookConsumerWidget,
-        WidgetTesterHelpers;
+        RiverpodWidgetTesterX;
