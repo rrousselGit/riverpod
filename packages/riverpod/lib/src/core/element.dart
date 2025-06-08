@@ -884,16 +884,28 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     // Not part of the public "Ref" API
     void Function()? onDependencyMayHaveChanged,
   }) {
+    assert(
+      !fireImmediately || !weak,
+      'Cannot use fireImmediately with weak listeners',
+    );
+
     final ref = this.ref!;
     ref._throwIfInvalidUsage();
 
     final sub = listenable._addListener(
       this,
       listener,
-      fireImmediately: fireImmediately,
       onError: onError ?? container.defaultOnError,
       weak: weak,
       onDependencyMayHaveChanged: onDependencyMayHaveChanged,
+    );
+
+    _handleFireImmediately(
+      container,
+      sub,
+      fireImmediately: fireImmediately,
+      listener: listener,
+      onError: onError,
     );
 
     switch (sub) {

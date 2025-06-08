@@ -19,23 +19,11 @@ final class $LazyProxyListenable<OutT, OriginStateT, OriginValueT>
     void Function(OutT? previous, OutT next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
     required void Function()? onDependencyMayHaveChanged,
-    required bool fireImmediately,
     required bool weak,
   }) {
     final element = source.readProviderElement(provider);
 
     final listenable = _lense(element);
-    if (fireImmediately) {
-      switch (listenable.result) {
-        case null:
-          break;
-        case final $ResultData<OutT> data:
-          source.container.runBinaryGuarded(listener, null, data.value);
-        case final $ResultError<OutT> error:
-          source.container
-              .runBinaryGuarded(onError, error.error, error.stackTrace);
-      }
-    }
 
     late final ProviderSubscriptionImpl<OutT, OriginStateT, OriginValueT> sub;
     final removeListener = listenable.addListener(
@@ -114,7 +102,6 @@ final class ProviderElementProxy<OutT, OriginStateT, OriginValueT>
     void Function(OutT? previous, OutT next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
     required void Function()? onDependencyMayHaveChanged,
-    required bool fireImmediately,
     required bool weak,
   }) {
     final element = source.readProviderElement(provider);
@@ -128,24 +115,12 @@ final class ProviderElementProxy<OutT, OriginStateT, OriginValueT>
     final innerSub = provider._addListener(
       source,
       (prev, next) {},
-      fireImmediately: false,
       weak: weak,
       onDependencyMayHaveChanged: onDependencyMayHaveChanged,
       onError: (err, stack) {},
     );
 
     final notifier = _lense(element);
-    if (fireImmediately) {
-      switch (notifier.result) {
-        case null:
-          break;
-        case final $ResultData<OutT> data:
-          source.container.runBinaryGuarded(listener, null, data.value);
-        case final $ResultError<OutT> error:
-          source.container
-              .runBinaryGuarded(onError, error.error, error.stackTrace);
-      }
-    }
 
     late ProviderSubscriptionView<OutT, OriginStateT, OriginValueT> sub;
     final removeListener = notifier.addListener(

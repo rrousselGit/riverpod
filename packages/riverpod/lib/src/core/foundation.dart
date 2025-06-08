@@ -186,7 +186,6 @@ base mixin ProviderListenableWithOrigin<OutT, OriginStateT, OriginValueT>
     void Function(OutT? previous, OutT next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
     required void Function()? onDependencyMayHaveChanged,
-    required bool fireImmediately,
     required bool weak,
   });
 
@@ -217,7 +216,6 @@ base mixin ProviderListenable<StateT> implements ProviderListenableOrFamily {
     void Function(StateT? previous, StateT next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
     required void Function()? onDependencyMayHaveChanged,
-    required bool fireImmediately,
     required bool weak,
   });
 

@@ -380,18 +380,23 @@ final class ProviderStateSubscription<StateT, ValueT>
 /// when using `fireImmediately: true`
 void _handleFireImmediately<StateT>(
   ProviderContainer container,
-  $Result<StateT> currentState, {
+  ProviderSubscription<StateT> sub, {
+  required bool fireImmediately,
   required void Function(StateT? previous, StateT current) listener,
-  required void Function(Object error, StackTrace stackTrace) onError,
+  required void Function(Object error, StackTrace stackTrace)? onError,
 }) {
-  switch (currentState) {
-    case $ResultData():
-      container.runBinaryGuarded(listener, null, currentState.value);
-    case $ResultError():
-      container.runBinaryGuarded(
-        onError,
-        currentState.error,
-        currentState.stackTrace,
-      );
+  if (!fireImmediately) return;
+
+  onError ??= container.defaultOnError;
+
+  try {
+    container.runBinaryGuarded(listener, null, sub.read());
+  } on ProviderException catch (error) {
+    // If the read fails, we call the error listener
+    container.runBinaryGuarded(
+      onError,
+      error.exception,
+      error.stackTrace,
+    );
   }
 }

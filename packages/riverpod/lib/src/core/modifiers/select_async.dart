@@ -43,7 +43,6 @@ final class _AsyncSelector<InputT, OutputT, OriginStateT, OriginValueT>
     void Function(Future<OutputT>? previous, Future<OutputT> next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
     required void Function()? onDependencyMayHaveChanged,
-    required bool fireImmediately,
     required bool weak,
   }) {
     late final ProviderSubscriptionView<Future<OutputT>, OriginStateT,
@@ -151,14 +150,9 @@ final class _AsyncSelector<InputT, OutputT, OriginStateT, OriginValueT>
       weak: weak,
       onDependencyMayHaveChanged: onDependencyMayHaveChanged,
       onError: onError,
-      fireImmediately: false,
     );
 
     playValue(sub.read(), callListeners: false);
-
-    if (fireImmediately) {
-      listener(null, selectedFuture!);
-    }
 
     return providerSub =
         ProviderSubscriptionView<Future<OutputT>, OriginStateT, OriginValueT>(
@@ -179,7 +173,6 @@ final class _AsyncSelector<InputT, OutputT, OriginStateT, OriginValueT>
             weak: weak,
             onDependencyMayHaveChanged: () {},
             onError: onError,
-            fireImmediately: false,
           );
 
           sub.read().then((v) => _select(v).requireState).then(

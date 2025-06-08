@@ -63,7 +63,6 @@ final class _ProviderSelector<InputT, OutputT, OriginStateT, OriginValueT>
     void Function(OutputT? previous, OutputT next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
     required void Function()? onDependencyMayHaveChanged,
-    required bool fireImmediately,
     required bool weak,
   }) {
     late final ProviderSubscriptionView<OutputT, OriginStateT, OriginValueT>
@@ -80,7 +79,6 @@ final class _ProviderSelector<InputT, OutputT, OriginStateT, OriginValueT>
           onChange: (newState) => lastSelectedValue = newState,
         );
       },
-      fireImmediately: false,
       weak: weak,
       onDependencyMayHaveChanged: onDependencyMayHaveChanged,
       onError: onError,
@@ -99,7 +97,8 @@ final class _ProviderSelector<InputT, OutputT, OriginStateT, OriginValueT>
       );
     }
 
-    providerSub = ProviderSubscriptionView<OutputT, OriginStateT, OriginValueT>(
+    return providerSub =
+        ProviderSubscriptionView<OutputT, OriginStateT, OriginValueT>(
       innerSubscription: sub,
       listener: listener,
       onError: onError,
@@ -112,16 +111,5 @@ final class _ProviderSelector<InputT, OutputT, OriginStateT, OriginValueT>
         return lastSelectedValue!.requireState;
       },
     );
-
-    if (fireImmediately) {
-      _handleFireImmediately(
-        node.container,
-        lastSelectedValue!,
-        listener: providerSub._notifyData,
-        onError: providerSub._notifyError,
-      );
-    }
-
-    return providerSub;
   }
 }
