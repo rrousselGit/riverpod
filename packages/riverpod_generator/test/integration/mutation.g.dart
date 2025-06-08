@@ -84,8 +84,8 @@ class _$SyncTodoListElement
     _$addSync.result = $Result.data(_$SyncTodoList$AddSync(this));
     _$addAsync.result = $Result.data(_$SyncTodoList$AddAsync(this));
   }
-  final _$addSync = $ElementLense<_$SyncTodoList$AddSync>();
-  final _$addAsync = $ElementLense<_$SyncTodoList$AddAsync>();
+  final _$addSync = $Observable<_$SyncTodoList$AddSync>();
+  final _$addAsync = $Observable<_$SyncTodoList$AddAsync>();
   @override
   void mount() {
     super.mount();
@@ -95,7 +95,7 @@ class _$SyncTodoListElement
 
   @override
   void visitListenables(
-    void Function($ElementLense element) listenableVisitor,
+    void Function($Observable element) listenableVisitor,
   ) {
     super.visitListenables(listenableVisitor);
 
@@ -131,7 +131,7 @@ final class _$SyncTodoList$AddSync
   final _$SyncTodoListElement element;
 
   @override
-  $ElementLense<_$SyncTodoList$AddSync> get listenable => element._$addSync;
+  $Observable<_$SyncTodoList$AddSync> get listenable => element._$addSync;
 
   @override
   Todo call(Todo todo) {
@@ -178,7 +178,7 @@ final class _$SyncTodoList$AddAsync
   final _$SyncTodoListElement element;
 
   @override
-  $ElementLense<_$SyncTodoList$AddAsync> get listenable => element._$addAsync;
+  $Observable<_$SyncTodoList$AddAsync> get listenable => element._$addAsync;
 
   @override
   Future<Todo> call(Todo todo) {
@@ -272,8 +272,8 @@ class _$AsyncTodoListElement
     _$addSync.result = $Result.data(_$AsyncTodoList$AddSync(this));
     _$addAsync.result = $Result.data(_$AsyncTodoList$AddAsync(this));
   }
-  final _$addSync = $ElementLense<_$AsyncTodoList$AddSync>();
-  final _$addAsync = $ElementLense<_$AsyncTodoList$AddAsync>();
+  final _$addSync = $Observable<_$AsyncTodoList$AddSync>();
+  final _$addAsync = $Observable<_$AsyncTodoList$AddAsync>();
   @override
   void mount() {
     super.mount();
@@ -283,7 +283,7 @@ class _$AsyncTodoListElement
 
   @override
   void visitListenables(
-    void Function($ElementLense element) listenableVisitor,
+    void Function($Observable element) listenableVisitor,
   ) {
     super.visitListenables(listenableVisitor);
 
@@ -319,7 +319,7 @@ final class _$AsyncTodoList$AddSync
   final _$AsyncTodoListElement element;
 
   @override
-  $ElementLense<_$AsyncTodoList$AddSync> get listenable => element._$addSync;
+  $Observable<_$AsyncTodoList$AddSync> get listenable => element._$addSync;
 
   @override
   Todo call(Todo todo) {
@@ -366,7 +366,7 @@ final class _$AsyncTodoList$AddAsync
   final _$AsyncTodoListElement element;
 
   @override
-  $ElementLense<_$AsyncTodoList$AddAsync> get listenable => element._$addAsync;
+  $Observable<_$AsyncTodoList$AddAsync> get listenable => element._$addAsync;
 
   @override
   Future<Todo> call(Todo todo) {
@@ -473,9 +473,9 @@ class _$SimpleElement extends $NotifierProviderElement<Simple, int> {
     _$incrementOr.result = $Result.data(_$Simple$IncrementOr(this));
     _$delegated.result = $Result.data(_$Simple$Delegated(this));
   }
-  final _$increment = $ElementLense<_$Simple$Increment>();
-  final _$incrementOr = $ElementLense<_$Simple$IncrementOr>();
-  final _$delegated = $ElementLense<_$Simple$Delegated>();
+  final _$increment = $Observable<_$Simple$Increment>();
+  final _$incrementOr = $Observable<_$Simple$IncrementOr>();
+  final _$delegated = $Observable<_$Simple$Delegated>();
   @override
   void mount() {
     super.mount();
@@ -486,7 +486,7 @@ class _$SimpleElement extends $NotifierProviderElement<Simple, int> {
 
   @override
   void visitListenables(
-    void Function($ElementLense element) listenableVisitor,
+    void Function($Observable element) listenableVisitor,
   ) {
     super.visitListenables(listenableVisitor);
 
@@ -523,7 +523,7 @@ final class _$Simple$Increment
   final _$SimpleElement element;
 
   @override
-  $ElementLense<_$Simple$Increment> get listenable => element._$increment;
+  $Observable<_$Simple$Increment> get listenable => element._$increment;
 
   @override
   Future<int> call([int inc = 1]) {
@@ -570,7 +570,7 @@ final class _$Simple$IncrementOr
   final _$SimpleElement element;
 
   @override
-  $ElementLense<_$Simple$IncrementOr> get listenable => element._$incrementOr;
+  $Observable<_$Simple$IncrementOr> get listenable => element._$incrementOr;
 
   @override
   FutureOr<int> call() {
@@ -615,7 +615,7 @@ final class _$Simple$Delegated
   final _$SimpleElement element;
 
   @override
-  $ElementLense<_$Simple$Delegated> get listenable => element._$delegated;
+  $Observable<_$Simple$Delegated> get listenable => element._$delegated;
 
   @override
   Future<int> call(Future<int> Function() fn) {
@@ -755,8 +755,8 @@ class _$SimpleFamilyElement
     _$increment.result = $Result.data(_$SimpleFamily$Increment(this));
     _$incrementOr.result = $Result.data(_$SimpleFamily$IncrementOr(this));
   }
-  final _$increment = $ElementLense<_$SimpleFamily$Increment>();
-  final _$incrementOr = $ElementLense<_$SimpleFamily$IncrementOr>();
+  final _$increment = $Observable<_$SimpleFamily$Increment>();
+  final _$incrementOr = $Observable<_$SimpleFamily$IncrementOr>();
   @override
   void mount() {
     super.mount();
@@ -766,7 +766,7 @@ class _$SimpleFamilyElement
 
   @override
   void visitListenables(
-    void Function($ElementLense element) listenableVisitor,
+    void Function($Observable element) listenableVisitor,
   ) {
     super.visitListenables(listenableVisitor);
 
@@ -802,7 +802,7 @@ final class _$SimpleFamily$Increment
   final _$SimpleFamilyElement element;
 
   @override
-  $ElementLense<_$SimpleFamily$Increment> get listenable => element._$increment;
+  $Observable<_$SimpleFamily$Increment> get listenable => element._$increment;
 
   @override
   Future<int> call([int inc = 1]) {
@@ -849,7 +849,7 @@ final class _$SimpleFamily$IncrementOr
   final _$SimpleFamilyElement element;
 
   @override
-  $ElementLense<_$SimpleFamily$IncrementOr> get listenable =>
+  $Observable<_$SimpleFamily$IncrementOr> get listenable =>
       element._$incrementOr;
 
   @override
@@ -939,8 +939,8 @@ class _$SimpleAsyncElement
     _$increment.result = $Result.data(_$SimpleAsync$Increment(this));
     _$delegated.result = $Result.data(_$SimpleAsync$Delegated(this));
   }
-  final _$increment = $ElementLense<_$SimpleAsync$Increment>();
-  final _$delegated = $ElementLense<_$SimpleAsync$Delegated>();
+  final _$increment = $Observable<_$SimpleAsync$Increment>();
+  final _$delegated = $Observable<_$SimpleAsync$Delegated>();
   @override
   void mount() {
     super.mount();
@@ -950,7 +950,7 @@ class _$SimpleAsyncElement
 
   @override
   void visitListenables(
-    void Function($ElementLense element) listenableVisitor,
+    void Function($Observable element) listenableVisitor,
   ) {
     super.visitListenables(listenableVisitor);
 
@@ -986,7 +986,7 @@ final class _$SimpleAsync$Increment
   final _$SimpleAsyncElement element;
 
   @override
-  $ElementLense<_$SimpleAsync$Increment> get listenable => element._$increment;
+  $Observable<_$SimpleAsync$Increment> get listenable => element._$increment;
 
   @override
   Future<int> call([int inc = 1]) {
@@ -1033,7 +1033,7 @@ final class _$SimpleAsync$Delegated
   final _$SimpleAsyncElement element;
 
   @override
-  $ElementLense<_$SimpleAsync$Delegated> get listenable => element._$delegated;
+  $Observable<_$SimpleAsync$Delegated> get listenable => element._$delegated;
 
   @override
   Future<int> call(Future<int> Function() fn) {
@@ -1157,7 +1157,7 @@ class _$SimpleAsync2Element
   _$SimpleAsync2Element(super.pointer) {
     _$increment.result = $Result.data(_$SimpleAsync2$Increment(this));
   }
-  final _$increment = $ElementLense<_$SimpleAsync2$Increment>();
+  final _$increment = $Observable<_$SimpleAsync2$Increment>();
   @override
   void mount() {
     super.mount();
@@ -1166,7 +1166,7 @@ class _$SimpleAsync2Element
 
   @override
   void visitListenables(
-    void Function($ElementLense element) listenableVisitor,
+    void Function($Observable element) listenableVisitor,
   ) {
     super.visitListenables(listenableVisitor);
 
@@ -1201,7 +1201,7 @@ final class _$SimpleAsync2$Increment
   final _$SimpleAsync2Element element;
 
   @override
-  $ElementLense<_$SimpleAsync2$Increment> get listenable => element._$increment;
+  $Observable<_$SimpleAsync2$Increment> get listenable => element._$increment;
 
   @override
   Future<int> call() {
@@ -1344,7 +1344,7 @@ class _$GenericElement<T extends num>
   _$GenericElement(super.pointer) {
     _$increment.result = $Result.data(_$Generic$Increment(this));
   }
-  final _$increment = $ElementLense<_$Generic$Increment>();
+  final _$increment = $Observable<_$Generic$Increment>();
   @override
   void mount() {
     super.mount();
@@ -1353,7 +1353,7 @@ class _$GenericElement<T extends num>
 
   @override
   void visitListenables(
-    void Function($ElementLense element) listenableVisitor,
+    void Function($Observable element) listenableVisitor,
   ) {
     super.visitListenables(listenableVisitor);
 
@@ -1388,7 +1388,7 @@ final class _$Generic$Increment
   final _$GenericElement element;
 
   @override
-  $ElementLense<_$Generic$Increment> get listenable => element._$increment;
+  $Observable<_$Generic$Increment> get listenable => element._$increment;
 
   @override
   Future<int> call() {
@@ -1464,7 +1464,7 @@ class _$GenericMutElement
   _$GenericMutElement(super.pointer) {
     _$increment.result = $Result.data(_$GenericMut$Increment(this));
   }
-  final _$increment = $ElementLense<_$GenericMut$Increment>();
+  final _$increment = $Observable<_$GenericMut$Increment>();
   @override
   void mount() {
     super.mount();
@@ -1473,7 +1473,7 @@ class _$GenericMutElement
 
   @override
   void visitListenables(
-    void Function($ElementLense element) listenableVisitor,
+    void Function($Observable element) listenableVisitor,
   ) {
     super.visitListenables(listenableVisitor);
 
@@ -1508,7 +1508,7 @@ final class _$GenericMut$Increment
   final _$GenericMutElement element;
 
   @override
-  $ElementLense<_$GenericMut$Increment> get listenable => element._$increment;
+  $Observable<_$GenericMut$Increment> get listenable => element._$increment;
 
   @override
   Future<int> call<T extends num>(T value) {
@@ -1594,7 +1594,7 @@ class _$FailingCtorElement extends $NotifierProviderElement<FailingCtor, int> {
   _$FailingCtorElement(super.pointer) {
     _$increment.result = $Result.data(_$FailingCtor$Increment(this));
   }
-  final _$increment = $ElementLense<_$FailingCtor$Increment>();
+  final _$increment = $Observable<_$FailingCtor$Increment>();
   @override
   void mount() {
     super.mount();
@@ -1603,7 +1603,7 @@ class _$FailingCtorElement extends $NotifierProviderElement<FailingCtor, int> {
 
   @override
   void visitListenables(
-    void Function($ElementLense element) listenableVisitor,
+    void Function($Observable element) listenableVisitor,
   ) {
     super.visitListenables(listenableVisitor);
 
@@ -1638,7 +1638,7 @@ final class _$FailingCtor$Increment
   final _$FailingCtorElement element;
 
   @override
-  $ElementLense<_$FailingCtor$Increment> get listenable => element._$increment;
+  $Observable<_$FailingCtor$Increment> get listenable => element._$increment;
 
   @override
   Future<int> call([int inc = 1]) {
@@ -1723,7 +1723,7 @@ class _$TypedElement extends $NotifierProviderElement<Typed, String> {
   _$TypedElement(super.pointer) {
     _$mutate.result = $Result.data(_$Typed$Mutate(this));
   }
-  final _$mutate = $ElementLense<_$Typed$Mutate>();
+  final _$mutate = $Observable<_$Typed$Mutate>();
   @override
   void mount() {
     super.mount();
@@ -1732,7 +1732,7 @@ class _$TypedElement extends $NotifierProviderElement<Typed, String> {
 
   @override
   void visitListenables(
-    void Function($ElementLense element) listenableVisitor,
+    void Function($Observable element) listenableVisitor,
   ) {
     super.visitListenables(listenableVisitor);
 
@@ -1767,7 +1767,7 @@ final class _$Typed$Mutate
   final _$TypedElement element;
 
   @override
-  $ElementLense<_$Typed$Mutate> get listenable => element._$mutate;
+  $Observable<_$Typed$Mutate> get listenable => element._$mutate;
 
   @override
   Future<String> call(String one,
