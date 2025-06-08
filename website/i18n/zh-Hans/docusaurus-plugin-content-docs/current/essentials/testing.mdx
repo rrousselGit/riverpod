@@ -6,7 +6,7 @@ import { AutoSnippet, When } from "@site/src/components/CodeSnippet";
 import unitTest from "!!raw-loader!/docs/essentials/testing/unit_test.dart";
 import widgetTest from "!!raw-loader!/docs/essentials/testing/widget_test.dart";
 import fullWidgetTest from "!!raw-loader!/docs/essentials/testing/full_widget_test.dart";
-import widgetContainerOf from "!!raw-loader!/docs/essentials/testing/widget_container_of.dart";
+import testerContainer from "!!raw-loader!/docs/essentials/testing/tester_container.dart";
 import providerToMock from "/docs/essentials/testing/provider_to_mock";
 import mockProvider from "!!raw-loader!/docs/essentials/testing/mock_provider.dart";
 import autoDisposeListen from "!!raw-loader!/docs/essentials/testing/auto_dispose_listen.dart";
@@ -156,7 +156,7 @@ By using `tester`, we can therefore write the following:
 也可以使用 `ProviderScope.containerOf(buildContext)` 获得一个。  
 因此，通过使用 `tester` ，我们可以编写以下内容：
 
-<AutoSnippet raw={widgetContainerOf} />
+<AutoSnippet raw={testerContainer} />
 
 <!---
 We can then use it to read providers. Here's a full example:

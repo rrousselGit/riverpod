@@ -32,4 +32,5 @@ export 'src/internals.dart'
         AnyNotifier,
         HookConsumerWidget,
         HookConsumer,
-        StatefulHookConsumerWidget;
+        StatefulHookConsumerWidget,
+        RiverpodWidgetTesterX;

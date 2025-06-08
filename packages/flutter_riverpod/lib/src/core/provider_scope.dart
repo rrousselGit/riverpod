@@ -347,3 +347,24 @@ To fix this problem, you have one of two solutions:
     return super.build();
   }
 }
+
+/// Widget testing helpers for flutter_riverpod.
+@visibleForTesting
+extension RiverpodWidgetTesterX on flutter_test.WidgetTester {
+  /// Finds the [ProviderContainer] in the widget tree.
+  ///
+  /// If [of] is provided, searches for the container within the context of
+  /// the specified finder.
+  @visibleForTesting
+  ProviderContainer container({
+    flutter_test.Finder? of,
+  }) {
+    if (of != null) {
+      final element = this.element(of);
+      return ProviderScope.containerOf(element, listen: false);
+    }
+
+    final scope = widget(flutter_test.find.byType(UncontrolledProviderScope));
+    return (scope as UncontrolledProviderScope).container;
+  }
+}
