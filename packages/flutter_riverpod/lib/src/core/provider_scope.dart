@@ -351,9 +351,10 @@ To fix this problem, you have one of two solutions:
 /// Widget testing helpers for flutter_riverpod.
 @visibleForTesting
 extension WidgetTesterHelpers on flutter_test.WidgetTester {
-  /// Finds the [ProviderContainer] in the current widget.
+  /// Finds the [ProviderContainer] in the widget tree.
   ///
-  /// `of` is used to find an element in the widget that has a ProviderScope available.
+  /// If [of] is provided, searches for the container within the context of
+  /// the specified finder.
   @visibleForTesting
   ProviderContainer container({
     flutter_test.Finder? of,
