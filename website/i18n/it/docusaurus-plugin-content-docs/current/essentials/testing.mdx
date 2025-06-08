@@ -6,7 +6,7 @@ import { AutoSnippet, When } from "../../../../../src/components/CodeSnippet";
 import unitTest from "!!raw-loader!/docs/essentials/testing/unit_test.dart";
 import widgetTest from "!!raw-loader!/docs/essentials/testing/widget_test.dart";
 import fullWidgetTest from "!!raw-loader!/docs/essentials/testing/full_widget_test.dart";
-import widgetContainerOf from "!!raw-loader!/docs/essentials/testing/widget_container_of.dart";
+import testerContainer from "!!raw-loader!/docs/essentials/testing/tester_container.dart";
 import providerToMock from "/docs/essentials/testing/provider_to_mock";
 import mockProvider from "!!raw-loader!/docs/essentials/testing/mock_provider.dart";
 import autoDisposeListen from "!!raw-loader!/docs/essentials/testing/auto_dispose_listen.dart";
@@ -18,9 +18,9 @@ Una parte fondamentale delle API di Riverpod è l'abilità di testare i tuoi pro
 
 Per una suite di test adeguata, ci sono alcune sfide da superare:
 
-- I test non dovrebbero condividere lo stato. Ciò significa che nuovi test 
+- I test non dovrebbero condividere lo stato. Ciò significa che nuovi test
   non dovrebbero essere influenzati dai test precedenti.
-- I test dovrebbero darci l'abilità di emulare certe funzionalità 
+- I test dovrebbero darci l'abilità di emulare certe funzionalità
   per ottenere lo stato desiderato.
 - L'ambiente di test dovrebbe essere il più vicino possibile all'ambiente reale.
 
@@ -51,11 +51,11 @@ Ora che abbiamo un ProviderContainer possiamo utilizzarlo per leggere i provider
 
 :::caution
 Fai attenzione quando usi `container.read` quando i provider sono distrutti automaticamente.
-Se il tuo provider non è ascoltato, ci sono chances che il suo stato verrà distrutto nel mezzo 
+Se il tuo provider non è ascoltato, ci sono chances che il suo stato verrà distrutto nel mezzo
 del nostro test.
 
 In quel caso, considera utilizzare `container.listen`.
-Il suo valore di ritorno permette comunque di leggere il valore corrente del provider, 
+Il suo valore di ritorno permette comunque di leggere il valore corrente del provider,
 ma si assicurerà anche che il provider non venga distrutto nel mezzo del tuo test:
 
 <AutoSnippet raw={autoDisposeListen} />
@@ -65,7 +65,7 @@ ma si assicurerà anche che il provider non venga distrutto nel mezzo del tuo te
 
 I test dei widget sono definiti usando la funzione `testWidgets` da [package:flutter_test](https://pub.dev/packages/flutter_test).
 
-In questo caso, la differenza principale con i normali test di widget è che dobbiamo 
+In questo caso, la differenza principale con i normali test di widget è che dobbiamo
 aggiungere un widget `ProviderScope` alla radice di `tester.pumpWidget`.
 
 <AutoSnippet raw={widgetTest} />
@@ -73,12 +73,12 @@ aggiungere un widget `ProviderScope` alla radice di `tester.pumpWidget`.
 Questo è simile a quello che facciamo quando abilitiamo Riverpod nella nostra app Flutter.
 
 Successivamente, possiamo usare `tester` per interagire col nostro widget.
-In alternativa, se vuoi interagire coi tuoi provider, puoi ottenere 
+In alternativa, se vuoi interagire coi tuoi provider, puoi ottenere
 un `ProviderContainer`.
 Un oggetto `ProviderContainer` può essere ottenuto usando `ProviderScope.containerOf(buildContext)`.
 Usando `tester` possiamo quindi scrivere quanto segue:
 
-<AutoSnippet raw={widgetContainerOf} />
+<AutoSnippet raw={testerContainer} />
 
 Possiamo quindi usarlo per leggere i provider. Di seguito un esempio completo:
 
@@ -89,7 +89,7 @@ Possiamo quindi usarlo per leggere i provider. Di seguito un esempio completo:
 Fino ad ora abbiamo visto come impostare un test ed interagire in modo semplice con i provider.
 Tuttavia, in alcuni casi, potremmo voler imitare un provider.
 
-La parte interessante: tutti i provider possono essere imitati di default, senza nessun impostazione aggiuntiva. 
+La parte interessante: tutti i provider possono essere imitati di default, senza nessun impostazione aggiuntiva.
 Questo è possibile specificando il parametro `overrides` su `ProviderScope` o `ProviderContainer`.
 
 Consideriamo il provider seguente:
@@ -102,19 +102,19 @@ Possiamo imitarlo usando:
 
 ## Spiare i cambiamenti in un provider
 
-Dato che abbiamo ottenuto un `ProviderContainer` nei nostri test, è possibile 
+Dato che abbiamo ottenuto un `ProviderContainer` nei nostri test, è possibile
 usarlo per "ascoltare" un provider:
 
 <AutoSnippet raw={listenProvider} />
 
-Puoi combinare questo con pacchetti come [mockito](https://pub.dev/packages/mockito) o 
+Puoi combinare questo con pacchetti come [mockito](https://pub.dev/packages/mockito) o
 [mocktail](https://pub.dev/packages/mocktail) per usare la loro API `verify`.
 O più semplicemente, puoi aggiungere tutti i cambiamenti in una lista e controllarli tramite 'assert'.
 
 ## Aspettare provider asincroni
 
 In Riverpod è molto comune per i provider restituire un Future/Stream.
-In questo caso, ci sono chances che i nostri test abbiano bisogno di aspettare che 
+In questo caso, ci sono chances che i nostri test abbiano bisogno di aspettare che
 quelle operazioni asincrone siano completate.
 
 Un modo per farlo è leggere il `.future` di un provider:
@@ -124,14 +124,14 @@ Un modo per farlo è leggere il `.future` di un provider:
 ## Imitare i Notifier
 
 È generalmente sconsigliato imitare i Notifier.
-Invece, dovresti probabilmente introdurre un livello di astrazione nella logica del tuo 
+Invece, dovresti probabilmente introdurre un livello di astrazione nella logica del tuo
 Notifier, in modo tale da poter imitare tale astrazione.
-Per esempio, al posto di imitare un Notifier, potresti imitare un "repository" 
+Per esempio, al posto di imitare un Notifier, potresti imitare un "repository"
 che il Notifier usa per ottenere i dati.
 
-Se vuoi insistere nell'imitare un Notifier, esiste una considerazione speciale 
-per creare un mock di questo tipo: il tuo mock deve essere una subclass della classe 
-base del Notifier: non puoi implementare (via "implements") un Notifier, poichè 
+Se vuoi insistere nell'imitare un Notifier, esiste una considerazione speciale
+per creare un mock di questo tipo: il tuo mock deve essere una subclass della classe
+base del Notifier: non puoi implementare (via "implements") un Notifier, poichè
 romperebbe l'interfaccia.
 
 Pertanto, quando si imita un Notifier, invece di scrivere il codice mockito seguente:
@@ -146,7 +146,7 @@ Dovresti invece scrivere:
 
 <When codegen={true}>
 
-Per far sì che funzioni, il tuo mock deve essere posto nello stesso file del Notifier 
+Per far sì che funzioni, il tuo mock deve essere posto nello stesso file del Notifier
 che stai imitando. Altrimenti, non avresti accesso alla classe `_$MyNotifier`.
 
 </When>
