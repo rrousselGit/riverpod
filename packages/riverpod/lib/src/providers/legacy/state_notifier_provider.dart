@@ -153,7 +153,7 @@ class _StateNotifierProviderElement<NotifierT extends StateNotifier<ValueT>,
     with SyncProviderElement<ValueT> {
   _StateNotifierProviderElement._(super.pointer);
 
-  final _notifierNotifier = $ElementLense<NotifierT>();
+  final _notifierNotifier = $Observable<NotifierT>();
 
   void Function()? _removeListener;
 
@@ -194,7 +194,7 @@ class _StateNotifierProviderElement<NotifierT extends StateNotifier<ValueT>,
 
   @override
   void visitListenables(
-    void Function($ElementLense element) listenableVisitor,
+    void Function($Observable element) listenableVisitor,
   ) {
     super.visitListenables(listenableVisitor);
     listenableVisitor(_notifierNotifier);

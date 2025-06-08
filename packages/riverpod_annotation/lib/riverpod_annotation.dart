@@ -31,7 +31,7 @@ export './src/internal.dart'
         ProviderListenable,
         $LazyProxyListenable,
         ProviderElement,
-        $ElementLense,
+        $Observable,
         $Result,
 
         // Provider

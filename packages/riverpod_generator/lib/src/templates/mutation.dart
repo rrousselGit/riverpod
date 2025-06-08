@@ -56,7 +56,7 @@ final class ${mutation.generatedMutationImplName}
   final ${provider.generatedElementName} element;
 
   @override
-  \$ElementLense<${mutation.generatedMutationImplName}> get listenable => element.${mutation.elementFieldName};
+  \$Observable<${mutation.generatedMutationImplName}> get listenable => element.${mutation.elementFieldName};
 
   @override
   ${mutation.node.returnType ?? ''} call${mutation.node.typeParameters.genericDefinitionDisplayString()}${mutation.node.parameters} {

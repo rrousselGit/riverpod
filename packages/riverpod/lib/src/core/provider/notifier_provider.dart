@@ -490,7 +490,7 @@ abstract class $ClassProviderElement< //
   $ClassProvider<NotifierT, StateT, ValueT, CreatedT> provider;
   RunNotifierBuild<NotifierT, CreatedT>? _runNotifierBuildOverride;
 
-  final classListenable = $ElementLense<NotifierT>();
+  final classListenable = $Observable<NotifierT>();
 
   @mustCallSuper
   @override
@@ -548,7 +548,7 @@ abstract class $ClassProviderElement< //
 
   @override
   void visitListenables(
-    void Function($ElementLense element) listenableVisitor,
+    void Function($Observable element) listenableVisitor,
   ) {
     super.visitListenables(listenableVisitor);
     listenableVisitor(classListenable);

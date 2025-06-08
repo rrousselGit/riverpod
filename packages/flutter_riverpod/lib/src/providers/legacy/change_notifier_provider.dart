@@ -150,7 +150,7 @@ class _ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
     with SyncProviderElement<NotifierT> {
   _ChangeNotifierProviderElement._(super.pointer);
 
-  final _notifierNotifier = $ElementLense<NotifierT>();
+  final _notifierNotifier = $Observable<NotifierT>();
 
   void Function()? _removeListener;
 
@@ -189,7 +189,7 @@ class _ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
 
   @override
   void visitListenables(
-    void Function($ElementLense element) listenableVisitor,
+    void Function($Observable element) listenableVisitor,
   ) {
     super.visitListenables(listenableVisitor);
     listenableVisitor(_notifierNotifier);

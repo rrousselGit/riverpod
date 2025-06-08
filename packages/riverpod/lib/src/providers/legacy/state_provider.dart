@@ -106,9 +106,9 @@ class _StateProviderElement<ValueT>
     with SyncProviderElement<ValueT> {
   _StateProviderElement._(super.pointer);
 
-  final _controllerNotifier = $ElementLense<StateController<ValueT>>();
+  final _controllerNotifier = $Observable<StateController<ValueT>>();
 
-  final _stateNotifier = $ElementLense<StateController<ValueT>>();
+  final _stateNotifier = $Observable<StateController<ValueT>>();
 
   void Function()? _removeListener;
 
@@ -143,7 +143,7 @@ class _StateProviderElement<ValueT>
 
   @override
   void visitListenables(
-    void Function($ElementLense element) listenableVisitor,
+    void Function($Observable element) listenableVisitor,
   ) {
     super.visitListenables(listenableVisitor);
     listenableVisitor(_stateNotifier);

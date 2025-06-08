@@ -9,7 +9,7 @@ final class $LazyProxyListenable<OutT, OriginStateT, OriginValueT>
   $LazyProxyListenable(this.provider, this._lense);
 
   final $ProviderBaseImpl<OriginStateT, OriginValueT> provider;
-  final $ElementLense<OutT> Function(
+  final $Observable<OutT> Function(
     ProviderElement<OriginStateT, OriginValueT> element,
   ) _lense;
 
@@ -104,7 +104,7 @@ final class ProviderElementProxy<OutT, OriginStateT, OriginValueT>
 
   @override
   final $ProviderBaseImpl<OriginStateT, OriginValueT> provider;
-  final $ElementLense<OutT> Function(
+  final $Observable<OutT> Function(
     ProviderElement<OriginStateT, OriginValueT> element,
   ) _lense;
 

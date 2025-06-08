@@ -51,7 +51,7 @@ class ${provider.generatedElementName}$_genericsDefinition extends ${provider.in
     buffer.writeln(r'''
   @override
   void visitListenables(
-    void Function($ElementLense element) listenableVisitor,
+    void Function($Observable element) listenableVisitor,
   ) {
     super.visitListenables(listenableVisitor);
 ''');
@@ -68,7 +68,7 @@ class ${provider.generatedElementName}$_genericsDefinition extends ${provider.in
   void _fields(StringBuffer buffer) {
     for (final mutation in provider.mutations) {
       buffer.writeln(
-        '  final ${mutation.elementFieldName} = \$ElementLense<${mutation.generatedMutationImplName}>();',
+        '  final ${mutation.elementFieldName} = \$Observable<${mutation.generatedMutationImplName}>();',
       );
     }
   }

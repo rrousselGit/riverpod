@@ -43,7 +43,7 @@ typedef WhenComplete = void Function(void Function() cb)?;
 mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
   /// An observable for [FutureProvider.future].
   @internal
-  final futureNotifier = $ElementLense<Future<ValueT>>();
+  final futureNotifier = $Observable<Future<ValueT>>();
   Completer<ValueT>? _futureCompleter;
   Future<ValueT>? _lastFuture;
   AsyncSubscription? _cancelSubscription;
@@ -328,7 +328,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
 
   @override
   void visitListenables(
-    void Function($ElementLense element) listenableVisitor,
+    void Function($Observable element) listenableVisitor,
   ) {
     super.visitListenables(listenableVisitor);
     listenableVisitor(futureNotifier);
@@ -1195,7 +1195,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   void visitListenables(
-    void Function($ElementLense element) listenableVisitor,
+    void Function($Observable element) listenableVisitor,
   ) {}
 
   /// Visit the [ProviderElement]s that this provider is listening to.

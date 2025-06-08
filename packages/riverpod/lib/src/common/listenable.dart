@@ -21,7 +21,7 @@ class _Listener<T> {
 @internal
 @optionalTypeArgs
 @publicInCodegen
-final class $ElementLense<T> extends _ValueListenable<T> {
+final class $Observable<T> extends _ValueListenable<T> {
   /// Directly obtain the value exposed, gratefully handling cases where
   /// [result] is null or in error state.
   T get value {

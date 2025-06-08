@@ -436,7 +436,7 @@ abstract class _MutationBase<
   final Object? key;
 
   $ClassProviderElement<ClassT, Object?, Object?, Object?> get element;
-  $ElementLense<MutationT> get listenable;
+  $Observable<MutationT> get listenable;
 
   Object? get _currentKey => listenable.result?.value?.key;
 

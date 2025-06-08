@@ -148,7 +148,7 @@ class $StreamProviderElement<ValueT> extends $FunctionalProviderElement<
   /// The element of [StreamProvider].
   $StreamProviderElement(super.pointer);
 
-  final _streamNotifier = $ElementLense<Stream<ValueT>>();
+  final _streamNotifier = $Observable<Stream<ValueT>>();
   final StreamController<ValueT> _streamController =
       StreamController<ValueT>.broadcast();
 
@@ -170,7 +170,7 @@ class $StreamProviderElement<ValueT> extends $FunctionalProviderElement<
 
   @override
   void visitListenables(
-    void Function($ElementLense element) listenableVisitor,
+    void Function($Observable element) listenableVisitor,
   ) {
     super.visitListenables(listenableVisitor);
     listenableVisitor(_streamNotifier);
