@@ -30,6 +30,7 @@ Some of the key highlights include:
   - [`ProviderContainer.test`](#providercontainertest) - A test util that creates a container and automatically disposes it after the test ends.
   - [`NotifierProvider.overrideWithBuild`](#notifierprovideroverridewithbuild) - A way to mock only `Notifier.build`, without mocking the whole notifier.
   - [`Future/StreamProvider.overrideWithValue`](#futurestreamprovideroverridewithvalue) - The old utilities are back
+  - [`WidgetTester.container`](#widgettestercontainer) - A helper method to obtain the `ProviderContainer` in the widget tree
 - [Statically safe scoping](#statically-safe-scoping-code-generation-only) - New lint rules are added to detect when an override is missing
 
 ## Offline persistence (experimental)
@@ -1032,6 +1033,45 @@ They are finally back!
     }
   `}
 ></AutoSnippet>
+
+### `WidgetTester.container`
+
+A simple way to access the `ProviderContainer` in your widget tree.
+
+```dart
+void main() {
+  testWidgets('can access a ProviderContainer', (tester) async {
+    await tester.pumpWidget(const ProviderScope(child: MyWidget()));
+    ProviderContainer container = tester.container();
+  });
+}
+```
+
+If you have several `ProviderScope`s in your widget tree, you can use the `of` 
+parameter to find a context of that `ProviderScope`.
+
+```dart
+void main() {
+  testWidgets('can get access ProviderContainers', (tester) async {
+    await tester.pumpWidget(
+      ProviderScope(
+        child: OuterWidget(
+          child: ProviderScope(
+            child: InnerWidget(),
+          ),
+        ),
+      ),
+    );
+
+    
+    // getting a container of the outer ProviderScope
+    ProviderContainer container = tester.container(of: find.byType(OuterWidget));
+    
+    // getting a container of the inner ProviderScope
+    container = tester.container(of: find.byType(InnerWidget));
+  });
+}
+```
 
 ## Statically safe scoping (code-generation only)
 
