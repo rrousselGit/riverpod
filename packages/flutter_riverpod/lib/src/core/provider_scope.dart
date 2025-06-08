@@ -350,7 +350,7 @@ To fix this problem, you have one of two solutions:
 
 /// Widget testing helpers for flutter_riverpod.
 @visibleForTesting
-extension WidgetTesterHelpers on flutter_test.WidgetTester {
+extension RiverpodWidgetTesterX on flutter_test.WidgetTester {
   /// Finds the [ProviderContainer] in the widget tree.
   ///
   /// If [of] is provided, searches for the container within the context of
