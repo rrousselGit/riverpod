@@ -7,7 +7,7 @@ import { AutoSnippet, When } from "/src/components/CodeSnippet";
 import unitTest from "!!raw-loader!/docs/essentials/testing/unit_test.dart";
 import widgetTest from "!!raw-loader!/docs/essentials/testing/widget_test.dart";
 import fullWidgetTest from "!!raw-loader!/docs/essentials/testing/full_widget_test.dart";
-import widgetContainerOf from "!!raw-loader!/docs/essentials/testing/widget_container_of.dart";
+import testerContainer from "!!raw-loader!/docs/essentials/testing/tester_container.dart";
 import providerToMock from "/docs/essentials/testing/provider_to_mock";
 import mockProvider from "!!raw-loader!/docs/essentials/testing/mock_provider.dart";
 import autoDisposeListen from "!!raw-loader!/docs/essentials/testing/auto_dispose_listen.dart";
@@ -20,7 +20,7 @@ Riverpod API の重要な部分は、provider を単独でテストする能力�
 
 適切なテストスイートを作成するためには、いくつかの課題を克服する必要があります:
 
-- テストは state を共有すべきではありません。  
+- テストは state を共有すべきではありません。
   これは、新しいテストが前のテストの影響を受けないことを意味します.
 - テストは特定の機能をモックできる能力を提供し、望んだ state を実現します。
 - テスト環境は可能な限り実際の環境に近いものであるべきです。
@@ -31,16 +31,16 @@ Riverpod API の重要な部分は、provider を単独でテストする能力�
 
 Riverpod でテストを定義するとき、大きく 2 つのシナリオがあります:
 
-- ユニットテスト、通常は Flutter 依存関係がないテスト。  
+- ユニットテスト、通常は Flutter 依存関係がないテスト。
   これは provider の動作を単独でテストするときに便利です。
-- ウィジェットテスト、通常は Flutter 依存関係があるテスト。  
+- ウィジェットテスト、通常は Flutter 依存関係があるテスト。
   provider を使用するウィジェットの動作をテストするのに便利です。
 
 ### ユニットテスト
 
 ユニットテストは [package:test](https://pub.dev/packages/test) の`test` 関数を使用して定義されます。
 
-他のテストとの主な違いは、`ProviderContainer`オブジェクトを作成する必要があるという点です。  
+他のテストとの主な違いは、`ProviderContainer`オブジェクトを作成する必要があるという点です。
 このオブジェクトは provider との対話することを可能にします。
 
 次に、このユーティリティを使用して `test`を定義できます:
@@ -85,12 +85,12 @@ provider がリッスンされていない場合、テストの途中でその�
 
 これは Flutter アプリで Riverpod を有効にする時と似ています。
 
-次に、`tester`を使用してウィジェットと対話できます。  
-または provider と対話したい場合は、`ProviderContainer`を取得できます。  
-これは `ProviderScope.containerOf(buildContext)`を使用して取得できます。  
+次に、`tester`を使用してウィジェットと対話できます。
+または provider と対話したい場合は、`ProviderContainer`を取得できます。
+これは `ProviderScope.containerOf(buildContext)`を使用して取得できます。
 したがって、`tester`を使用すると次のように書くことができます:
 
-<AutoSnippet raw={widgetContainerOf} translations={{}} />
+<AutoSnippet raw={testerContainer} translations={{}} />
 
 次に、これを使用して provider を読み取ることができます。以下は完全な例です:
 
@@ -103,10 +103,10 @@ provider がリッスンされていない場合、テストの途中でその�
 
 ## provider のモック
 
-これまでに、テストの設定方法と provider と基本的なやりとりについて見てきました。  
+これまでに、テストの設定方法と provider と基本的なやりとりについて見てきました。
 しかし、場合によっては provider をモック(mock)したいことがあります。
 
-全ての provider は追加の設定なしでモックすることができます。  
+全ての provider は追加の設定なしでモックすることができます。
 これは、、`ProviderScope`または`ProviderContainer`の`overrides`パラメータを指定することで可能です。
 
 次の provider を考えてみましょう:
@@ -143,12 +143,12 @@ provider がリッスンされていない場合、テストの途中でその�
 
 <AutoSnippet raw={listenProvider} translations={{}} />
 
-次に、これを[mockito](https://pub.dev/packages/mockito)や[mocktail](https://pub.dev/packages/mocktail)などのパッケージと組み合わせて、`verify` API を使用できます。  
+次に、これを[mockito](https://pub.dev/packages/mockito)や[mocktail](https://pub.dev/packages/mocktail)などのパッケージと組み合わせて、`verify` API を使用できます。
 または、よりシンプルに全ての変更をリストに追加し、それをアサート(assert)することもできます。
 
 ## 非同期 provider の待機
 
-Riverpod では、provider が Future/Stream を返す場合が非常に多いです。  
+Riverpod では、provider が Future/Stream を返す場合が非常に多いです。
 その場合、テストでは非同期操作が完了するのを待つ必要があります。
 
 その方法の一つは、プロバイダの`.future`を読み取ることです:
@@ -165,14 +165,14 @@ Riverpod では、provider が Future/Stream を返す場合が非常に多い�
 
 ## Notifiers のモック
 
-一般的には Notifiers をモックすることは推奨されません。  
+一般的には Notifiers をモックすることは推奨されません。
 なぜなら Notifiers は自己インスタンス化できず、provider の一部としてのみ機能するためです。
 
-代わりに、Notifiers のロジックに抽象化のレベルを導入し、その抽象化をモックすることを検討すべきです。  
+代わりに、Notifiers のロジックに抽象化のレベルを導入し、その抽象化をモックすることを検討すべきです。
 例えば、Notifier をモック化するよりも、Notifier がデータを取得するために使用する "repository"をモックすることができます。
 
-それでも Notifier をモックしたい場合、特別な考慮が必要です。:  
-モックは元の Notifier ベースクラスをサブクラス化する必要があります:  
+それでも Notifier をモックしたい場合、特別な考慮が必要です。:
+モックは元の Notifier ベースクラスをサブクラス化する必要があります:
 インターフェースが壊れる可能性があるため、Notifier を "implement" することはできません。
 
 そのため、Notifier をモックするときは、次のような mockito コードを書かないでください:
@@ -192,7 +192,7 @@ class MyNotifierMock with Mock implements MyNotifier {}
 
 <When codegen={true}>
 
-これを機能させるためには、モックをモックする Notifier と同じファイルに配置する必要があります。  
+これを機能させるためには、モックをモックする Notifier と同じファイルに配置する必要があります。
 そうしないと、`_$MyNotifier`クラスにアクセスできません。
 
 </When>
