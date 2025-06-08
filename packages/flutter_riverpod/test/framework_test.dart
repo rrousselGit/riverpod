@@ -352,7 +352,7 @@ void main() {
     expect(find.text('Hello 0'), findsOneWidget);
     expect(find.text('Hello 1'), findsNothing);
 
-    final container = tester.container();
+    final container = tester.container(of: find.byType(Text));
 
     container.read(dep.notifier).state++;
 
