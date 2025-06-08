@@ -481,7 +481,7 @@ abstract class $ClassProviderElement< //
         StateT,
         ValueT,
         CreatedT> //
-    extends ProviderElement<StateT, ValueT> {
+    extends ProviderElement<StateT, ValueT> with ElementWithFuture {
   $ClassProviderElement(super.pointer)
       : provider = pointer.origin
             as $ClassProvider<NotifierT, StateT, ValueT, CreatedT>;

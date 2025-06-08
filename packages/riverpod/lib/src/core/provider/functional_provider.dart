@@ -121,7 +121,7 @@ final class _FunctionalProviderView<StateT, ValueT, CreatedT> //
 
 @internal
 abstract class $FunctionalProviderElement<StateT, ValueT, CreatedT>
-    extends ProviderElement<StateT, ValueT> {
+    extends ProviderElement<StateT, ValueT> with ElementWithFuture {
   /// Implementation detail of `riverpod_generator`.
   /// Do not use, as this can be removed at any time.
   $FunctionalProviderElement(super.pointer)
