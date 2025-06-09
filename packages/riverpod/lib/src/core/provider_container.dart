@@ -960,7 +960,7 @@ final class ProviderContainer implements Node {
     );
 
     switch (sub) {
-      case final ProviderSubscriptionImpl<Object?, Object?, Object?> sub:
+      case final ProviderSubscriptionImpl<Object?, Object?> sub:
         sub._listenedElement.addDependentSubscription(sub);
     }
 

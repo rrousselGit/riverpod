@@ -90,7 +90,7 @@ sealed class ProviderBase<StateT> extends ProviderOrFamily
 @internal
 abstract final class $ProviderBaseImpl<StateT, ValueT>
     extends ProviderBase<StateT>
-    with ProviderListenableWithOrigin<StateT, StateT, ValueT> {
+    with ProviderListenableWithOrigin<StateT, StateT> {
   /// A base class for _all_ providers.
   const $ProviderBaseImpl({
     required super.name,
@@ -103,7 +103,7 @@ abstract final class $ProviderBaseImpl<StateT, ValueT>
   });
 
   @override
-  ProviderSubscriptionWithOrigin<StateT, StateT, ValueT> _addListener(
+  ProviderSubscriptionWithOrigin<StateT, StateT> _addListener(
     Node source,
     void Function(StateT? previous, StateT next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,

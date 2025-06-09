@@ -52,10 +52,10 @@ sealed class ProviderSubscription<OutT> {
 }
 
 @internal
-sealed class ProviderSubscriptionWithOrigin<OutT, StateT, ValueT>
+sealed class ProviderSubscriptionWithOrigin<OutT, StateT>
     extends ProviderSubscription<OutT> implements Pausable {
   ProviderBase<StateT> get origin;
-  ProviderElement<StateT, ValueT> get _listenedElement;
+  ProviderElement<StateT, Object?> get _listenedElement;
 
   void _onOriginData(StateT? prev, StateT next);
   void _onOriginError(Object error, StackTrace stackTrace);
@@ -77,9 +77,8 @@ sealed class ProviderSubscriptionWithOrigin<OutT, StateT, ValueT>
 }
 
 @internal
-abstract base class ProviderSubscriptionImpl<OutT, OriginT, ValueT>
-    extends ProviderSubscriptionWithOrigin<OutT, OriginT, ValueT>
-    with _OnPauseMixin {
+abstract base class ProviderSubscriptionImpl<OutT, OriginT>
+    extends ProviderSubscriptionWithOrigin<OutT, OriginT> with _OnPauseMixin {
   @override
   bool get isPaused => _isPaused;
 
@@ -196,8 +195,8 @@ mixin _OnPauseMixin on Pausable {
 }
 
 @internal
-base class ProviderSubscriptionView<OutT, OriginStateT, OriginValueT>
-    extends ProviderSubscriptionImpl<OutT, OriginStateT, OriginValueT> {
+base class ProviderSubscriptionView<OutT, OriginStateT>
+    extends ProviderSubscriptionImpl<OutT, OriginStateT> {
   ProviderSubscriptionView({
     required this.innerSubscription,
     required OutT Function() read,
@@ -210,8 +209,7 @@ base class ProviderSubscriptionView<OutT, OriginStateT, OriginValueT>
         _errorListener = onError ??
             innerSubscription._listenedElement.container.defaultOnError;
 
-  final ProviderSubscriptionWithOrigin<Object?, OriginStateT, OriginValueT>
-      innerSubscription;
+  final ProviderSubscriptionWithOrigin<Object?, OriginStateT> innerSubscription;
   final OutT Function() _read;
   final void Function()? _onClose;
 
@@ -225,7 +223,7 @@ base class ProviderSubscriptionView<OutT, OriginStateT, OriginValueT>
   ProviderBase<OriginStateT> get origin => innerSubscription.origin;
 
   @override
-  ProviderElement<OriginStateT, OriginValueT> get _listenedElement =>
+  ProviderElement<OriginStateT, Object?> get _listenedElement =>
       innerSubscription._listenedElement;
 
   @override
@@ -277,8 +275,7 @@ base class ProviderSubscriptionView<OutT, OriginStateT, OriginValueT>
 
 @internal
 final class DelegatingProviderSubscription<OutT, InT, OriginStateT,
-        OriginValueT>
-    extends ProviderSubscriptionImpl<OutT, OriginStateT, OriginValueT> {
+    OriginValueT> extends ProviderSubscriptionImpl<OutT, OriginStateT> {
   DelegatingProviderSubscription({
     required this.origin,
     required this.source,
@@ -338,7 +335,7 @@ final class DelegatingProviderSubscription<OutT, InT, OriginStateT,
 /// When a provider listens to another provider using `listen`
 @internal
 final class ProviderStateSubscription<StateT, ValueT>
-    extends ProviderSubscriptionImpl<StateT, StateT, ValueT> {
+    extends ProviderSubscriptionImpl<StateT, StateT> {
   ProviderStateSubscription({
     required this.source,
     required this.weak,

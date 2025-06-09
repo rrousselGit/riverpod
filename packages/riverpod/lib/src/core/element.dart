@@ -22,7 +22,7 @@ sealed class Refreshable<StateT> implements ProviderListenable<StateT> {}
 base mixin _ProviderRefreshable<OutT, OriginStateT, OriginValueT>
     implements
         Refreshable<OutT>,
-        ProviderListenableWithOrigin<OutT, OriginStateT, OriginValueT> {
+        ProviderListenableWithOrigin<OutT, OriginStateT> {
   $ProviderBaseImpl<OriginStateT, OriginValueT> get provider;
 }
 
@@ -415,7 +415,7 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
   @visibleForTesting
   List<ProviderSubscription>? subscriptions;
   @visibleForTesting
-  List<ProviderSubscriptionWithOrigin<Object?, StateT, ValueT>>? dependents;
+  List<ProviderSubscriptionWithOrigin<Object?, StateT>>? dependents;
 
   /// "listen(weak: true)" pointing to this provider.
   ///
@@ -423,8 +423,7 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
   /// - They do not count towards [ProviderElement.isActive].
   /// - They may be reused between two instances of a [ProviderElement].
   @visibleForTesting
-  final weakDependents =
-      <ProviderSubscriptionWithOrigin<Object?, StateT, ValueT>>[];
+  final weakDependents = <ProviderSubscriptionWithOrigin<Object?, StateT>>[];
 
   bool _mustRecomputeState = false;
   bool _dependencyMayHaveChanged = false;
@@ -909,7 +908,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     );
 
     switch (sub) {
-      case final ProviderSubscriptionImpl<Object?, Object?, Object?> sub:
+      case final ProviderSubscriptionImpl<Object?, Object?> sub:
         sub._listenedElement.addDependentSubscription(sub);
     }
 
@@ -937,7 +936,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   void addDependentSubscription(
-    ProviderSubscriptionImpl<Object?, StateT, ValueT> sub,
+    ProviderSubscriptionImpl<Object?, StateT> sub,
   ) {
     _onChangeSubscription(sub, () {
       if (sub.weak) {
@@ -1189,8 +1188,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     void Function(ProviderElement element) elementVisitor,
   ) {
     void lookup(
-      Iterable<ProviderSubscriptionWithOrigin<Object?, Object?, Object?>>
-          children,
+      Iterable<ProviderSubscriptionWithOrigin<Object?, Object?>> children,
     ) {
       for (final child in children) {
         switch (child.source) {
@@ -1227,7 +1225,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         final sub = subscriptions[i];
 
         switch (sub) {
-          case final ProviderSubscriptionImpl<Object?, Object?, Object?> sub:
+          case final ProviderSubscriptionImpl<Object?, Object?> sub:
             visitor(sub._listenedElement);
         }
       }

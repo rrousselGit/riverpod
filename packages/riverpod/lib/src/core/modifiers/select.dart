@@ -1,10 +1,10 @@
 part of '../../framework.dart';
 
 /// An internal class for `ProviderBase.select`.
-final class _ProviderSelector<InputT, OutputT, OriginStateT, OriginValueT>
+final class _ProviderSelector<InputT, OutputT, OriginStateT>
     with
         ProviderListenable<OutputT>,
-        ProviderListenableWithOrigin<OutputT, OriginStateT, OriginValueT> {
+        ProviderListenableWithOrigin<OutputT, OriginStateT> {
   /// An internal class for `ProviderBase.select`.
   _ProviderSelector({
     required this.provider,
@@ -12,8 +12,7 @@ final class _ProviderSelector<InputT, OutputT, OriginStateT, OriginValueT>
   });
 
   /// The provider that was selected
-  final ProviderListenableWithOrigin<InputT, OriginStateT, OriginValueT>
-      provider;
+  final ProviderListenableWithOrigin<InputT, OriginStateT> provider;
 
   /// The selector applied
   final OutputT Function(InputT) selector;
@@ -57,16 +56,14 @@ final class _ProviderSelector<InputT, OutputT, OriginStateT, OriginValueT>
   }
 
   @override
-  ProviderSubscriptionWithOrigin<OutputT, OriginStateT, OriginValueT>
-      _addListener(
+  ProviderSubscriptionWithOrigin<OutputT, OriginStateT> _addListener(
     Node node,
     void Function(OutputT? previous, OutputT next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool weak,
   }) {
-    late final ProviderSubscriptionView<OutputT, OriginStateT, OriginValueT>
-        providerSub;
+    late final ProviderSubscriptionView<OutputT, OriginStateT> providerSub;
     $Result<OutputT>? lastSelectedValue;
     final sub = provider._addListener(
       node,
@@ -97,8 +94,7 @@ final class _ProviderSelector<InputT, OutputT, OriginStateT, OriginValueT>
       );
     }
 
-    return providerSub =
-        ProviderSubscriptionView<OutputT, OriginStateT, OriginValueT>(
+    return providerSub = ProviderSubscriptionView<OutputT, OriginStateT>(
       innerSubscription: sub,
       listener: listener,
       onError: onError,
