@@ -8,12 +8,6 @@ import 'package:meta/meta_meta.dart';
 
 import 'internals.dart';
 
-/// Mutation code. This should be in riverpod_annotation, but has to be here
-/// for the sake of ProviderObserver.
-@internal
-@publicInCodegenMutation
-const mutationZoneKey = #_mutation;
-
 /// {@template mutation}
 /// Declares a method of a notifier as a "mutation".
 ///
@@ -250,109 +244,6 @@ final class Mutation {
 
 /// {@macro mutation}
 const mutation = Mutation();
-
-/// The current state of a mutation.
-///
-/// {@template mutation_states}
-/// A mutation can be in any of the following states:
-/// - [MutationIdle]: The mutation is not running. This is the default state.
-/// - [MutationPending]: The mutation has been called and is in progress.
-/// - [MutationError]: The mutation has failed with an error.
-/// - [MutationSuccess]: The mutation has completed successfully.
-/// {@endtemplate}
-sealed class MutationState<ResultT> {
-  const MutationState._();
-}
-
-/// The mutation is not running.
-///
-/// This is the default state of a mutation.
-/// A mutation can be reset to this state by calling [MutationBase.reset].
-///
-/// {@macro auto_reset}
-///
-/// {@macro mutation_states}
-final class MutationIdle<ResultT> extends MutationState<ResultT> {
-  const MutationIdle._() : super._();
-
-  @override
-  String toString() => 'MutationIdle<$ResultT>()';
-}
-
-/// The mutation has been called and is in progress.
-///
-/// {@macro mutation_states}
-final class MutationPending<ResultT> extends MutationState<ResultT> {
-  const MutationPending._() : super._();
-
-  @override
-  String toString() => 'MutationPending<$ResultT>()';
-}
-
-/// The mutation has failed with an error.
-///
-/// {@macro mutation_states}
-final class MutationError<ResultT> extends MutationState<ResultT> {
-  MutationError._(this.error, this.stackTrace) : super._();
-
-  /// The error thrown by the mutation.
-  final Object error;
-
-  /// The stack trace of the [error].
-  final StackTrace stackTrace;
-
-  @override
-  String toString() => 'MutationError<$ResultT>($error, $stackTrace)';
-}
-
-/// The mutation has completed successfully.
-///
-/// {@macro mutation_states}
-final class MutationSuccess<ResultT> extends MutationState<ResultT> {
-  MutationSuccess._(this.value) : super._();
-
-  /// The new state of the notifier after the mutation has completed.
-  final ResultT value;
-
-  @override
-  String toString() => 'MutationSuccess<$ResultT>($value)';
-}
-
-/// A base class that all mutations extends.
-///
-/// See also [Mutation] for information on how to define a mutation.
-@immutable
-abstract class MutationBase<ResultT> {
-  /// The current state of the mutation.
-  ///
-  /// This defaults to [MutationIdle].
-  /// When the mutation starts, it will change to [MutationPending] and
-  /// then to either [MutationError] or [MutationSuccess].
-  ///
-  /// **Note**:
-  /// This property is immutable. The state will not change unless you
-  /// call `ref.watch(provider.myMutation)` again.
-  MutationState<ResultT> get state;
-
-  /// Sets [state] back to [MutationIdle].
-  ///
-  /// Calling [reset] is useful when the mutation is actively listened to,
-  /// and you want to forcibly go back to the [MutationIdle].
-  ///
-  /// {@template auto_reset}
-  /// ## Automatic resets
-  ///
-  /// By default, mutations are automatically reset when they are no longer
-  /// being listened to.
-  /// This is similar to Riverpod's "auto-dispose" feature, for mutations.
-  /// If you remove all `watch`/`listen` calls to a mutation, the mutation
-  /// will automatically go-back to its [MutationIdle].
-  ///
-  /// If your mutation is always listened, you may want to call [MutationBase.reset] manually
-  /// to restore the mutation to its [MutationIdle].
-  /// {@endtemplate}
-  void reset();
-}
 
 @internal
 @publicInCodegenMutation

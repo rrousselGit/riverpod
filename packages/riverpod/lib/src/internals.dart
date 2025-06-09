@@ -14,7 +14,6 @@ export 'common/stack_trace.dart';
 export 'core/async_value.dart';
 export 'core/persist.dart';
 export 'framework.dart';
-export 'mutation.dart';
 export 'providers/async_notifier.dart';
 export 'providers/future_provider.dart';
 export 'providers/legacy/state_controller.dart';

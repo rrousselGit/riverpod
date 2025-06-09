@@ -491,6 +491,12 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
     return result;
   }
 
+  Future<T> mutate<T>(
+    Mutation<T> mutation,
+    Future<T> Function(MutationRef ref) cb,
+  ) =>
+      container.mutate(mutation, cb); 
+
   /// {@template riverpod.exists}
   /// Determines whether a provider is initialized or not.
   ///

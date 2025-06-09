@@ -4,21 +4,12 @@ part of '../framework.dart';
 /// [ProviderListenable].
 @internal
 sealed class Node {
-  /// Obtain the [ProviderElement] of a provider, creating it if necessary.
-  ProviderElement<StateT, ValueT> _readProviderElement<StateT, ValueT>(
-    $ProviderBaseImpl<StateT, ValueT> provider,
-  );
+  ProviderContainer get _container;
 }
 
 @internal
 extension NodeX on Node {
-  ProviderContainer get container {
-    final that = this;
-    return switch (that) {
-      ProviderContainer() => that,
-      ProviderElement() => that.container,
-    };
-  }
+  ProviderContainer get container => _container;
 }
 
 extension on String {
@@ -735,7 +726,7 @@ extension NodeInternal on Node {
   ProviderElement<State, ValueT> readProviderElement<State, ValueT>(
     $ProviderBaseImpl<State, ValueT> provider,
   ) =>
-      _readProviderElement(provider);
+      _container._readProviderElement(provider);
 }
 
 /// {@template riverpod.provider_container}
@@ -834,6 +825,9 @@ final class ProviderContainer implements Node {
 
     return container;
   }
+
+  @override
+  ProviderContainer get _container => this;
 
   final int _debugOverridesLength;
 
@@ -967,6 +961,12 @@ final class ProviderContainer implements Node {
     return sub;
   }
 
+  Future<T> mutate<T>(
+    Mutation<T> mutation,
+    Future<T> Function(MutationRef ref) cb,
+  ) =>
+      mutation._mutate(this, cb);
+
   /// {@macro riverpod.invalidate}
   void invalidate(
     ProviderOrFamily provider, {
@@ -1097,7 +1097,6 @@ final class ProviderContainer implements Node {
     }
   }
 
-  @override
   ProviderElement<StateT, ValueT> _readProviderElement<StateT, ValueT>(
     $ProviderBaseImpl<StateT, ValueT> provider,
   ) {

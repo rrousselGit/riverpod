@@ -3,9 +3,7 @@ part of '../framework.dart';
 @internal
 @publicInCodegen
 final class $LazyProxyListenable<OutT, OriginStateT, OriginValueT>
-    with
-        ProviderListenable<OutT>,
-        ProviderListenableWithOrigin<OutT, OriginStateT, OriginValueT> {
+    with ProviderListenableWithOrigin<OutT, OriginStateT, OriginValueT> {
   $LazyProxyListenable(this.provider, this._lense);
 
   final $ProviderBaseImpl<OriginStateT, OriginValueT> provider;
@@ -64,7 +62,6 @@ final class $LazyProxyListenable<OutT, OriginStateT, OriginValueT>
 @internal
 final class ProviderElementProxy<OutT, OriginStateT, OriginValueT>
     with
-        ProviderListenable<OutT>,
         ProviderListenableWithOrigin<OutT, OriginStateT, OriginValueT>,
         _ProviderRefreshable<OutT, OriginStateT, OriginValueT> {
   /// An internal utility for reading alternate values of a provider.

@@ -145,6 +145,8 @@ abstract final class WidgetRef {
   /// ```
   bool exists(ProviderBase<Object?> provider);
 
+  Future<T> mutate<T>(Mutation<T> mutation, Future<T> Function(MutationRef ref) cb);
+
   /// Listen to a provider and call `listener` whenever its value changes,
   /// without having to take care of removing the listener.
   ///

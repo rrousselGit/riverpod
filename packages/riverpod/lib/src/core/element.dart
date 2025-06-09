@@ -368,6 +368,9 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
 
   static ProviderElement? _debugCurrentlyBuildingElement;
 
+  @override
+  ProviderContainer get _container => pointer.targetContainer;
+
   /// The last result of [ProviderBase.debugGetCreateSourceHash].
   ///
   /// Available only in debug mode.
@@ -383,9 +386,6 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
 
   /// The [$ProviderPointer] associated with this [ProviderElement].
   final $ProviderPointer pointer;
-
-  /// The [ProviderContainer] that owns this [ProviderElement].
-  ProviderContainer get container => pointer.targetContainer;
 
   bool unsafeCheckIfMounted = true;
   // ignore: library_private_types_in_public_api, not public
@@ -865,14 +865,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       },
     );
     visitListenables((notifier) => notifier.notifyDependencyMayHaveChanged());
-  }
-
-  @override
-  ProviderElement<NewStateT, NewValueT>
-      _readProviderElement<NewStateT, NewValueT>(
-    $ProviderBaseImpl<NewStateT, NewValueT> provider,
-  ) {
-    return container.readProviderElement(provider);
   }
 
   ProviderSubscription<T> listen<T>(

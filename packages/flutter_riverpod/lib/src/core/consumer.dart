@@ -504,6 +504,10 @@ base class ConsumerStatefulElement extends StatefulElement
   }
 
   @override
+  Future<T> mutate<T>(Mutation<T> mutation, Future<T> Function(MutationRef ref) cb) =>
+      _container.mutate(mutation, cb);
+
+  @override
   bool exists(ProviderBase<Object?> provider) {
     _assertNotDisposed();
     return ProviderScope.containerOf(this, listen: false).exists(provider);

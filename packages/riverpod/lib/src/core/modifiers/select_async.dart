@@ -3,7 +3,6 @@ part of '../../framework.dart';
 /// An internal class for `ProviderBase.selectAsync`.
 final class _AsyncSelector<InputT, OutputT, OriginStateT, OriginValueT>
     with
-        ProviderListenable<Future<OutputT>>,
         ProviderListenableWithOrigin<Future<OutputT>, OriginStateT,
             OriginValueT> {
   /// An internal class for `ProviderBase.select`.
