@@ -30,6 +30,7 @@ Some of the key highlights include:
   - [`ProviderContainer.test`](#providercontainertest) - A test util that creates a container and automatically disposes it after the test ends.
   - [`NotifierProvider.overrideWithBuild`](#notifierprovideroverridewithbuild) - A way to mock only `Notifier.build`, without mocking the whole notifier.
   - [`Future/StreamProvider.overrideWithValue`](#futurestreamprovideroverridewithvalue) - The old utilities are back
+  - [`WidgetTester.container`](#widgettestercontainer) - A helper method to obtain the `ProviderContainer` inside widget tests
 - [Statically safe scoping](#statically-safe-scoping-code-generation-only) - New lint rules are added to detect when an override is missing
 
 ## Offline persistence (experimental)
@@ -1033,6 +1034,21 @@ They are finally back!
   `}
 ></AutoSnippet>
 
+### `WidgetTester.container`
+
+A simple way to access the `ProviderContainer` in your widget tree.
+
+```dart
+void main() {
+  testWidgets('can access a ProviderContainer', (tester) async {
+    await tester.pumpWidget(const ProviderScope(child: MyWidget()));
+    ProviderContainer container = tester.container();
+  });
+}
+```
+
+See the [WidgetTester.container] extension for more information.
+
 ## Statically safe scoping (code-generation only)
 
 Through [riverpod_lint], Riverpod now includes a way to detect when scoping is used incorrectly.
@@ -1254,3 +1270,4 @@ regarding combining multiple "sources of truth" in a single provider.
 [Notifier]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Notifier-class.html
 [AsyncValue]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/AsyncValue-class.html
 [ProviderObserver]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderObserver-class.html
+[WidgetTester.container]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/RiverpodWidgetTesterX/container.html
