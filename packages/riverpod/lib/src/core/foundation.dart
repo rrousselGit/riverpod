@@ -178,10 +178,10 @@ String shortHash(Object? object) {
 }
 
 @internal
-base mixin ProviderListenableWithOrigin<OutT, OriginStateT, OriginValueT>
-    on ProviderListenable<OutT> {
+base mixin ProviderListenableWithOrigin<OutT, OriginStateT>
+    implements ProviderListenable<OutT> {
   @override
-  ProviderSubscriptionWithOrigin<OutT, OriginStateT, OriginValueT> _addListener(
+  ProviderSubscriptionWithOrigin<OutT, OriginStateT> _addListener(
     Node source,
     void Function(OutT? previous, OutT next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
@@ -193,7 +193,7 @@ base mixin ProviderListenableWithOrigin<OutT, OriginStateT, OriginValueT>
   ProviderListenable<Selected> select<Selected>(
     Selected Function(OutT value) selector,
   ) {
-    return _ProviderSelector<OutT, Selected, OriginStateT, OriginValueT>(
+    return _ProviderSelector<OutT, Selected, OriginStateT>(
       provider: this,
       selector: selector,
     );
@@ -209,7 +209,8 @@ base mixin ProviderListenableWithOrigin<OutT, OriginStateT, OriginValueT>
 @immutable
 @publicInCodegen
 @publicInMisc
-base mixin ProviderListenable<StateT> implements ProviderListenableOrFamily {
+abstract final class ProviderListenable<StateT>
+    implements ProviderListenableOrFamily {
   /// Starts listening to this transformer
   ProviderSubscription<StateT> _addListener(
     Node source,

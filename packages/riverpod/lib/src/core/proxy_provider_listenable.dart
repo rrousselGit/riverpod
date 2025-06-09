@@ -3,9 +3,7 @@ part of '../framework.dart';
 @internal
 @publicInCodegen
 final class $LazyProxyListenable<OutT, OriginStateT, OriginValueT>
-    with
-        ProviderListenable<OutT>,
-        ProviderListenableWithOrigin<OutT, OriginStateT, OriginValueT> {
+    with ProviderListenableWithOrigin<OutT, OriginStateT> {
   $LazyProxyListenable(this.provider, this._lense);
 
   final $ProviderBaseImpl<OriginStateT, OriginValueT> provider;
@@ -14,7 +12,7 @@ final class $LazyProxyListenable<OutT, OriginStateT, OriginValueT>
   ) _lense;
 
   @override
-  ProviderSubscriptionWithOrigin<OutT, OriginStateT, OriginValueT> _addListener(
+  ProviderSubscriptionWithOrigin<OutT, OriginStateT> _addListener(
     Node source,
     void Function(OutT? previous, OutT next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
@@ -25,7 +23,7 @@ final class $LazyProxyListenable<OutT, OriginStateT, OriginValueT>
 
     final listenable = _lense(element);
 
-    late final ProviderSubscriptionImpl<OutT, OriginStateT, OriginValueT> sub;
+    late final ProviderSubscriptionImpl<OutT, OriginStateT> sub;
     final removeListener = listenable.addListener(
       (a, b) => sub._notifyData(a, b),
       onError: onError,
@@ -64,8 +62,7 @@ final class $LazyProxyListenable<OutT, OriginStateT, OriginValueT>
 @internal
 final class ProviderElementProxy<OutT, OriginStateT, OriginValueT>
     with
-        ProviderListenable<OutT>,
-        ProviderListenableWithOrigin<OutT, OriginStateT, OriginValueT>,
+        ProviderListenableWithOrigin<OutT, OriginStateT>,
         _ProviderRefreshable<OutT, OriginStateT, OriginValueT> {
   /// An internal utility for reading alternate values of a provider.
   ///
@@ -97,7 +94,7 @@ final class ProviderElementProxy<OutT, OriginStateT, OriginValueT>
   ) _lense;
 
   @override
-  ProviderSubscriptionWithOrigin<OutT, OriginStateT, OriginValueT> _addListener(
+  ProviderSubscriptionWithOrigin<OutT, OriginStateT> _addListener(
     Node source,
     void Function(OutT? previous, OutT next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
@@ -122,14 +119,14 @@ final class ProviderElementProxy<OutT, OriginStateT, OriginValueT>
 
     final notifier = _lense(element);
 
-    late ProviderSubscriptionView<OutT, OriginStateT, OriginValueT> sub;
+    late ProviderSubscriptionView<OutT, OriginStateT> sub;
     final removeListener = notifier.addListener(
       (prev, next) => sub._notifyData(prev, next),
       onError: onError,
       onDependencyMayHaveChanged: onDependencyMayHaveChanged,
     );
 
-    return sub = ProviderSubscriptionView<OutT, OriginStateT, OriginValueT>(
+    return sub = ProviderSubscriptionView<OutT, OriginStateT>(
       innerSubscription: innerSub,
       onClose: removeListener,
       listener: listener,

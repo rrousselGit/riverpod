@@ -2,10 +2,7 @@ part of '../../framework.dart';
 
 /// An internal class for `ProviderBase.selectAsync`.
 final class _AsyncSelector<InputT, OutputT, OriginStateT, OriginValueT>
-    with
-        ProviderListenable<Future<OutputT>>,
-        ProviderListenableWithOrigin<Future<OutputT>, OriginStateT,
-            OriginValueT> {
+    with ProviderListenableWithOrigin<Future<OutputT>, OriginStateT> {
   /// An internal class for `ProviderBase.select`.
   _AsyncSelector({
     required this.provider,
@@ -14,12 +11,10 @@ final class _AsyncSelector<InputT, OutputT, OriginStateT, OriginValueT>
   });
 
   /// The provider that was selected
-  final ProviderListenableWithOrigin<AsyncValue<InputT>, OriginStateT,
-      OriginValueT> provider;
+  final ProviderListenableWithOrigin<AsyncValue<InputT>, OriginStateT> provider;
 
   /// The future associated to the listened provider
-  final ProviderListenableWithOrigin<Future<InputT>, OriginStateT, OriginValueT>
-      future;
+  final ProviderListenableWithOrigin<Future<InputT>, OriginStateT> future;
 
   /// The selector applied
   final OutputT Function(InputT) selector;
@@ -37,16 +32,15 @@ final class _AsyncSelector<InputT, OutputT, OriginStateT, OriginValueT>
   }
 
   @override
-  ProviderSubscriptionWithOrigin<Future<OutputT>, OriginStateT, OriginValueT>
-      _addListener(
+  ProviderSubscriptionWithOrigin<Future<OutputT>, OriginStateT> _addListener(
     Node node,
     void Function(Future<OutputT>? previous, Future<OutputT> next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool weak,
   }) {
-    late final ProviderSubscriptionView<Future<OutputT>, OriginStateT,
-        OriginValueT> providerSub;
+    late final ProviderSubscriptionView<Future<OutputT>, OriginStateT>
+        providerSub;
 
     $Result<OutputT>? lastSelectedValue;
     Completer<OutputT>? selectedCompleter;
@@ -155,7 +149,7 @@ final class _AsyncSelector<InputT, OutputT, OriginStateT, OriginValueT>
     playValue(sub.read(), callListeners: false);
 
     return providerSub =
-        ProviderSubscriptionView<Future<OutputT>, OriginStateT, OriginValueT>(
+        ProviderSubscriptionView<Future<OutputT>, OriginStateT>(
       innerSubscription: sub,
       listener: listener,
       onError: onError,
