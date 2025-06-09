@@ -50,6 +50,11 @@ class _MutationNotifier<T> {
 
   final MutationState<T> state;
   final void Function(MutationState<T> state) setState;
+
+  @override
+  String toString() {
+    return 'MutationNotifier<$T>($state)';
+  }
 }
 
 class _MutationElement<T> extends $FunctionalProviderElement<
@@ -60,7 +65,9 @@ class _MutationElement<T> extends $FunctionalProviderElement<
 
   @override
   WhenComplete? create(Ref ref) {
+    print('create: $ref');
     void setState(MutationState<T> state) {
+      print('setState: $state');
       value = AsyncData(_MutationNotifier(state, setState));
     }
 
@@ -101,15 +108,19 @@ final class Mutation<ResultT>
   }) {
     final listenable = _MutationProvider<ResultT>(this);
 
-    final sub = source._container.listen(listenable, (_, __) {});
+    final sub = source._container.listen(listenable, (_, __) {
+      print('There $_ $__');
+    });
 
     return ProviderSubscriptionView(
       innerSubscription: sub as ProviderSubscriptionWithOrigin<
-          MutationState<ResultT>,
+          _MutationNotifier<ResultT>,
           _MutationNotifier<ResultT>,
           _MutationNotifier<ResultT>>,
       read: () => sub.read().state,
-      listener: listener,
+      listener: (a, b) {
+        print('Here $a, $b');
+      },
       onError: onError,
     );
   }
@@ -118,7 +129,8 @@ final class Mutation<ResultT>
     ProviderContainer container,
     Future<ResultT> Function(MutationRef ref) cb,
   ) async {
-    final sub = container.listen(_MutationProvider(this), (_, __) {});
+    print('oy');
+    final sub = container.listen(_MutationProvider<ResultT>(this), (_, __) {});
     try {
       final ref = MutationRef._();
 
@@ -139,6 +151,7 @@ final class Mutation<ResultT>
   }
 
   void _mutationStart(ProviderSubscription<_MutationNotifier<ResultT>> sub) {
+    print('foo');
     final _MutationNotifier(:state, :setState) = sub.read();
 
     setState(MutationPending<ResultT>._(state._reset));
