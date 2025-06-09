@@ -1047,31 +1047,7 @@ void main() {
 }
 ```
 
-If you have several `ProviderScope`s in your widget tree, you can use the `of` 
-parameter to find a context of that `ProviderScope`.
-
-```dart
-void main() {
-  testWidgets('can get access ProviderContainers', (tester) async {
-    await tester.pumpWidget(
-      ProviderScope(
-        child: OuterWidget(
-          child: ProviderScope(
-            child: InnerWidget(),
-          ),
-        ),
-      ),
-    );
-
-    
-    // getting a container of the outer ProviderScope
-    ProviderContainer container = tester.container(of: find.byType(OuterWidget));
-    
-    // getting a container of the inner ProviderScope
-    container = tester.container(of: find.byType(InnerWidget));
-  });
-}
-```
+See the [RiverpodWidgetTesterX] extension for more information.
 
 ## Statically safe scoping (code-generation only)
 
@@ -1294,3 +1270,4 @@ regarding combining multiple "sources of truth" in a single provider.
 [Notifier]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Notifier-class.html
 [AsyncValue]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/AsyncValue-class.html
 [ProviderObserver]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderObserver-class.html
+[RiverpodWidgetTesterX]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/RiverpodWidgetTesterX/container.html
