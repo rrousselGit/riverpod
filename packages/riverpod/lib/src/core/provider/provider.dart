@@ -23,8 +23,10 @@ typedef OnError = void Function(Object error, StackTrace stackTrace);
 @immutable
 @publicInMisc
 sealed class ProviderBase<StateT> extends ProviderOrFamily
-    with ProviderListenable<StateT>
-    implements Refreshable<StateT>, _ProviderOverride {
+    implements
+        ProviderListenable<StateT>,
+        Refreshable<StateT>,
+        _ProviderOverride {
   /// A base class for _all_ providers.
   const ProviderBase({
     required super.name,

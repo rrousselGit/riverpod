@@ -2,9 +2,7 @@ part of '../../framework.dart';
 
 /// An internal class for `ProviderBase.select`.
 final class _ProviderSelector<InputT, OutputT, OriginStateT>
-    with
-        ProviderListenable<OutputT>,
-        ProviderListenableWithOrigin<OutputT, OriginStateT> {
+    with ProviderListenableWithOrigin<OutputT, OriginStateT> {
   /// An internal class for `ProviderBase.select`.
   _ProviderSelector({
     required this.provider,
