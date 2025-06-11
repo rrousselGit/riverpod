@@ -234,9 +234,6 @@ final class ExternalProviderSubscription<InT, OutT>
   @override
   final void Function(OutT? prev, OutT next) _listener;
 
-  // @override
-  // ProviderBase<InT> get origin => _innerSubscription.origin;
-
   @override
   ProviderElement<Object?, Object?> get _listenedElement =>
       _innerSubscription.impl._listenedElement;
