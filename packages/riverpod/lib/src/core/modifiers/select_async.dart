@@ -148,8 +148,8 @@ final class _AsyncSelector<InputT, OutputT>
 
     playValue(sub.read(), callListeners: false);
 
-    return providerSub =
-        ExternalProviderSubscription<AsyncValue<InputT>, Future<OutputT>>(
+    return providerSub = ExternalProviderSubscription<AsyncValue<InputT>,
+        Future<OutputT>>.fromSub(
       innerSubscription: sub,
       listener: listener,
       onError: onError,

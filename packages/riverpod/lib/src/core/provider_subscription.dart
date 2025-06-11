@@ -205,7 +205,7 @@ final class ProviderProviderSubscription<StateT>
 @internal
 final class ExternalProviderSubscription<InT, OutT>
     extends ProviderSubscriptionImpl<OutT> {
-  ExternalProviderSubscription({
+  ExternalProviderSubscription.fromSub({
     required ProviderSubscription<InT> innerSubscription,
     required OutT Function() read,
     void Function()? onClose,

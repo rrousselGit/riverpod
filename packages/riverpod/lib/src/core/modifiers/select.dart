@@ -169,7 +169,7 @@ final class _ProviderSelector<InputT, OutputT>
       );
     }
 
-    return providerSub = ExternalProviderSubscription<InputT, OutputT>(
+    return providerSub = ExternalProviderSubscription<InputT, OutputT>.fromSub(
       innerSubscription: sub,
       listener: listener,
       onError: onError,

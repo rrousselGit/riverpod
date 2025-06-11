@@ -32,7 +32,7 @@ final class $LazyProxyListenable<OutT, InT>
       onDependencyMayHaveChanged: onDependencyMayHaveChanged,
     );
 
-    return sub = ExternalProviderSubscription<InT, OutT>(
+    return sub = ExternalProviderSubscription<InT, OutT>.fromSub(
       innerSubscription: innerSub,
       onClose: removeListener,
       onError: onError,
@@ -122,7 +122,7 @@ final class ProviderElementProxy<OutT, InT>
       onDependencyMayHaveChanged: onDependencyMayHaveChanged,
     );
 
-    return sub = ExternalProviderSubscription<InT, OutT>(
+    return sub = ExternalProviderSubscription<InT, OutT>.fromSub(
       innerSubscription: innerSub,
       onClose: removeListener,
       listener: listener,
@@ -139,8 +139,7 @@ final class ProviderElementProxy<OutT, InT>
 
   @override
   bool operator ==(Object other) =>
-      other is ProviderElementProxy<OutT, InT> &&
-      other.provider == provider;
+      other is ProviderElementProxy<OutT, InT> && other.provider == provider;
 
   @override
   int get hashCode => provider.hashCode;

@@ -554,7 +554,7 @@ base class ConsumerStatefulElement extends StatefulElement
 
     // ignore: invalid_use_of_internal_member, from riverpod
     late final ExternalProviderSubscription<Object?, ValueT> sub;
-    sub = ExternalProviderSubscription<Object?, ValueT>(
+    sub = ExternalProviderSubscription<Object?, ValueT>.fromSub(
       innerSubscription: innerSubscription,
       listener: (prev, next) {},
       onError: (error, stackTrace) {},
