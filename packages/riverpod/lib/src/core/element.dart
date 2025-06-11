@@ -19,9 +19,9 @@ part of '../framework.dart';
 @publicInMisc
 sealed class Refreshable<StateT> implements ProviderListenable<StateT> {}
 
-base mixin _ProviderRefreshable<OutT, OriginStateT>
+base mixin _ProviderRefreshable<OutT, InT>
     implements Refreshable<OutT> {
-  $ProviderBaseImpl<OriginStateT> get provider;
+  $ProviderBaseImpl<InT> get provider;
 }
 
 /// A debug utility used by `flutter_riverpod`/`hooks_riverpod` to check

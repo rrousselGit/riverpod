@@ -2,13 +2,13 @@ part of '../framework.dart';
 
 @internal
 @publicInCodegen
-final class $LazyProxyListenable<OutT, OriginStateT>
+final class $LazyProxyListenable<OutT, InT>
     implements ProviderListenable<OutT> {
   $LazyProxyListenable(this.provider, this._lense);
 
-  final $ProviderBaseImpl<OriginStateT> provider;
+  final $ProviderBaseImpl<InT> provider;
   final $Observable<OutT> Function(
-    ProviderElement<OriginStateT, Object?> element,
+    ProviderElement<InT, Object?> element,
   ) _lense;
 
   @override
@@ -32,7 +32,7 @@ final class $LazyProxyListenable<OutT, OriginStateT>
       onDependencyMayHaveChanged: onDependencyMayHaveChanged,
     );
 
-    return sub = ExternalProviderSubscription<OriginStateT, OutT>(
+    return sub = ExternalProviderSubscription<InT, OutT>(
       innerSubscription: innerSub,
       onClose: removeListener,
       onError: onError,
@@ -58,8 +58,8 @@ final class $LazyProxyListenable<OutT, OriginStateT>
 ///
 /// This API is not meant for public consumption.
 @internal
-final class ProviderElementProxy<OutT, OriginStateT>
-    with _ProviderRefreshable<OutT, OriginStateT> {
+final class ProviderElementProxy<OutT, InT>
+    with _ProviderRefreshable<OutT, InT> {
   /// An internal utility for reading alternate values of a provider.
   ///
   /// For example, this is used by [FutureProvider] to differentiate:
@@ -84,9 +84,9 @@ final class ProviderElementProxy<OutT, OriginStateT>
   final bool flushElement;
 
   @override
-  final $ProviderBaseImpl<OriginStateT> provider;
+  final $ProviderBaseImpl<InT> provider;
   final $Observable<OutT> Function(
-    ProviderElement<OriginStateT, Object?> element,
+    ProviderElement<InT, Object?> element,
   ) _lense;
 
   @override
@@ -115,14 +115,14 @@ final class ProviderElementProxy<OutT, OriginStateT>
 
     final notifier = _lense(element);
 
-    late ExternalProviderSubscription<OriginStateT, OutT> sub;
+    late ExternalProviderSubscription<InT, OutT> sub;
     final removeListener = notifier.addListener(
       (prev, next) => sub._notifyData(prev, next),
       onError: onError,
       onDependencyMayHaveChanged: onDependencyMayHaveChanged,
     );
 
-    return sub = ExternalProviderSubscription<OriginStateT, OutT>(
+    return sub = ExternalProviderSubscription<InT, OutT>(
       innerSubscription: innerSub,
       onClose: removeListener,
       listener: listener,
@@ -139,7 +139,7 @@ final class ProviderElementProxy<OutT, OriginStateT>
 
   @override
   bool operator ==(Object other) =>
-      other is ProviderElementProxy<OutT, OriginStateT> &&
+      other is ProviderElementProxy<OutT, InT> &&
       other.provider == provider;
 
   @override
