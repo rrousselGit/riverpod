@@ -2,8 +2,7 @@ part of '../framework.dart';
 
 @reopen
 abstract base class _ValueProvider<StateT, ValueT>
-    extends $ProviderBaseImpl<StateT>
-    with LegacyProviderMixin<StateT> {
+    extends $ProviderBaseImpl<StateT> with LegacyProviderMixin<StateT> {
   /// Creates a [_ValueProvider].
   const _ValueProvider(this._value)
       : super(

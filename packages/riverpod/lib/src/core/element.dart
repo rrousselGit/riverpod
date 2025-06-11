@@ -19,8 +19,7 @@ part of '../framework.dart';
 @publicInMisc
 sealed class Refreshable<StateT> implements ProviderListenable<StateT> {}
 
-base mixin _ProviderRefreshable<OutT, InT>
-    implements Refreshable<OutT> {
+base mixin _ProviderRefreshable<OutT, InT> implements Refreshable<OutT> {
   $ProviderBaseImpl<InT> get provider;
 }
 
