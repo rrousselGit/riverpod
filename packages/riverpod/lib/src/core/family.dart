@@ -80,8 +80,8 @@ base class $Family extends Family {
 typedef SetupFamilyOverride<Arg> = void Function(
   Arg argument,
   void Function({
-    required $ProviderBaseImpl<Object?, Object?> origin,
-    required $ProviderBaseImpl<Object?, Object?> override,
+    required $ProviderBaseImpl<Object?> origin,
+    required $ProviderBaseImpl<Object?> override,
   }),
 );
 

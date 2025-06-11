@@ -165,7 +165,7 @@ ${provider.doc} final class $name$_genericsDefinition
         for (final mutation in mutations) {
           buffer.writeln('''
   ProviderListenable<${mutation.generatedMutationInterfaceName}> get ${mutation.name}
-    => \$LazyProxyListenable<${mutation.generatedMutationInterfaceName}, ${provider.exposedTypeDisplayString}, ${provider.valueTypeDisplayString}>(
+    => \$LazyProxyListenable<${mutation.generatedMutationInterfaceName}, ${provider.exposedTypeDisplayString}>(
       this,
       (element) {
         element as ${provider.generatedElementName}$_generics;

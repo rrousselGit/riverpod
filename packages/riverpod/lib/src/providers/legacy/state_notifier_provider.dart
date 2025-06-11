@@ -73,7 +73,7 @@ final class StateNotifierProvider< //
     extends $FunctionalProvider< //
         ValueT,
         ValueT,
-        NotifierT> with LegacyProviderMixin<ValueT, ValueT> {
+        NotifierT> with LegacyProviderMixin<ValueT> {
   /// {@macro riverpod.state_notifier_provider}
   StateNotifierProvider(
     this._create, {
@@ -128,7 +128,7 @@ final class StateNotifierProvider< //
   /// This may happen if the provider is refreshed or one of its dependencies
   /// has changes.
   Refreshable<NotifierT> get notifier =>
-      ProviderElementProxy<NotifierT, ValueT, ValueT>(
+      ProviderElementProxy<NotifierT, ValueT>(
         this,
         (element) {
           return (element as _StateNotifierProviderElement<NotifierT, ValueT>)

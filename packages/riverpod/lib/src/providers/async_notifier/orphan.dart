@@ -63,7 +63,7 @@ final class AsyncNotifierProvider< //
         NotifierT extends AsyncNotifier<ValueT>,
         ValueT> //
     extends $AsyncNotifierProvider<NotifierT, ValueT>
-    with LegacyProviderMixin<AsyncValue<ValueT>, ValueT> {
+    with LegacyProviderMixin<AsyncValue<ValueT>> {
   /// {@macro riverpod.async_notifier_provider}
   ///
   /// {@macro riverpod.async_notifier_provider_modifier}

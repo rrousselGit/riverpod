@@ -19,11 +19,9 @@ part of '../framework.dart';
 @publicInMisc
 sealed class Refreshable<StateT> implements ProviderListenable<StateT> {}
 
-base mixin _ProviderRefreshable<OutT, OriginStateT, OriginValueT>
-    implements
-        Refreshable<OutT>,
-        ProviderListenableWithOrigin<OutT, OriginStateT> {
-  $ProviderBaseImpl<OriginStateT, OriginValueT> get provider;
+base mixin _ProviderRefreshable<OutT, OriginStateT>
+    implements Refreshable<OutT> {
+  $ProviderBaseImpl<OriginStateT> get provider;
 }
 
 /// A debug utility used by `flutter_riverpod`/`hooks_riverpod` to check
@@ -375,11 +373,11 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
   var _debugSkipNotifyListenersAsserts = false;
 
   /// The provider associated with this [ProviderElement], before applying overrides.
-  $ProviderBaseImpl<StateT, ValueT> get origin =>
-      pointer.origin as $ProviderBaseImpl<StateT, ValueT>;
+  $ProviderBaseImpl<StateT> get origin =>
+      pointer.origin as $ProviderBaseImpl<StateT>;
 
   /// The provider associated with this [ProviderElement], after applying overrides.
-  $ProviderBaseImpl<StateT, ValueT> get provider;
+  $ProviderBaseImpl<StateT> get provider;
 
   /// The [$ProviderPointer] associated with this [ProviderElement].
   final $ProviderPointer pointer;
@@ -414,8 +412,9 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
   List<ProviderSubscription>? _inactiveSubscriptions;
   @visibleForTesting
   List<ProviderSubscription>? subscriptions;
+
   @visibleForTesting
-  List<ProviderSubscriptionWithOrigin<Object?, StateT>>? dependents;
+  List<ProviderSubscriptionImpl<Object?>>? dependents;
 
   /// "listen(weak: true)" pointing to this provider.
   ///
@@ -423,7 +422,7 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
   /// - They do not count towards [ProviderElement.isActive].
   /// - They may be reused between two instances of a [ProviderElement].
   @visibleForTesting
-  final weakDependents = <ProviderSubscriptionWithOrigin<Object?, StateT>>[];
+  final weakDependents = <ProviderSubscriptionImpl<Object?>>[];
 
   bool _mustRecomputeState = false;
   bool _dependencyMayHaveChanged = false;
@@ -550,7 +549,7 @@ depending on itself.
   /// - `overrideWithValue`, which relies on [update] to handle
   ///   the scenario where the value changed.
   @visibleForOverriding
-  void update($ProviderBaseImpl<StateT, ValueT> newProvider) {}
+  void update($ProviderBaseImpl<StateT> newProvider) {}
 
   /// Initialize a provider and track dependencies used during the initialization.
   ///
@@ -803,7 +802,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
           if (listener.closed) continue;
 
           container.runBinaryGuarded(
-            listener._onOriginData,
+            listener.providerSub._notifyData,
             previousState,
             newState.value,
           );
@@ -814,7 +813,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
           if (listener.closed) continue;
 
           container.runBinaryGuarded(
-            listener._onOriginError,
+            listener.providerSub._notifyError,
             newState.error,
             newState.stackTrace,
           );
@@ -867,9 +866,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   @override
-  ProviderElement<NewStateT, NewValueT>
-      _readProviderElement<NewStateT, NewValueT>(
-    $ProviderBaseImpl<NewStateT, NewValueT> provider,
+  ProviderElement<NewStateT, Object?> _readProviderElement<NewStateT>(
+    $ProviderBaseImpl<NewStateT> provider,
   ) {
     return container.readProviderElement(provider);
   }
@@ -907,10 +905,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       onError: onError,
     );
 
-    switch (sub) {
-      case final ProviderSubscriptionImpl<Object?, Object?> sub:
-        sub._listenedElement.addDependentSubscription(sub);
-    }
+    sub.impl._listenedElement.addDependentSubscription(sub.impl);
 
     if (kDebugMode) ref._debugAssertCanDependOn(listenable);
 
@@ -936,7 +931,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   void addDependentSubscription(
-    ProviderSubscriptionImpl<Object?, StateT> sub,
+    ProviderSubscriptionImpl<Object?> sub,
   ) {
     _onChangeSubscription(sub, () {
       if (sub.weak) {
@@ -1188,7 +1183,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     void Function(ProviderElement element) elementVisitor,
   ) {
     void lookup(
-      Iterable<ProviderSubscriptionWithOrigin<Object?, Object?>> children,
+      Iterable<ProviderSubscription<Object?>> children,
     ) {
       for (final child in children) {
         switch (child.source) {
@@ -1224,10 +1219,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       for (var i = 0; i < subscriptions.length; i++) {
         final sub = subscriptions[i];
 
-        switch (sub) {
-          case final ProviderSubscriptionImpl<Object?, Object?> sub:
-            visitor(sub._listenedElement);
-        }
+        visitor(sub.impl._listenedElement);
       }
     }
   }

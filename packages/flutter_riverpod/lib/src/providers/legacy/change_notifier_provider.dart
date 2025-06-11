@@ -70,7 +70,7 @@ import '../../builders.dart';
 @publicInLegacy
 final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     extends $FunctionalProvider<NotifierT, NotifierT, NotifierT>
-    with LegacyProviderMixin<NotifierT, NotifierT> {
+    with LegacyProviderMixin<NotifierT> {
   /// {@macro riverpod.change_notifier_provider}
   ChangeNotifierProvider(
     this._createFn, {
@@ -121,7 +121,7 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
   /// This may happen if the provider is refreshed or one of its dependencies
   /// has changes.
   Refreshable<NotifierT> get notifier =>
-      ProviderElementProxy<NotifierT, NotifierT, NotifierT>(
+      ProviderElementProxy<NotifierT, NotifierT>(
         this,
         (element) {
           return (element as _ChangeNotifierProviderElement<NotifierT>)

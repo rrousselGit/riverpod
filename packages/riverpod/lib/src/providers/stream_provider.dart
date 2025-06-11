@@ -88,7 +88,7 @@ final class StreamProvider<ValueT>
     with
         $FutureModifier<ValueT>,
         $StreamProvider<ValueT>,
-        LegacyProviderMixin<AsyncValue<ValueT>, ValueT> {
+        LegacyProviderMixin<AsyncValue<ValueT>> {
   /// {@macro riverpod.stream_provider}
   StreamProvider(
     this._create, {

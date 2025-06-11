@@ -1,8 +1,85 @@
 part of '../../framework.dart';
 
+/// Adds [select] to [ProviderListenable].
+extension ProviderListenableSelect<InT> on ProviderListenable<InT> {
+  /// Partially listen to a provider.
+  ///
+  /// The [select] function allows filtering unwanted rebuilds of a Widget
+  /// by reading only the properties that we care about.
+  ///
+  /// For example, consider the following `ChangeNotifier`:
+  ///
+  /// ```dart
+  /// class Person extends ChangeNotifier {
+  ///   int _age = 0;
+  ///   int get age => _age;
+  ///   set age(int age) {
+  ///     _age = age;
+  ///     notifyListeners();
+  ///   }
+  ///
+  ///   String _name = '';
+  ///   String get name => _name;
+  ///   set name(String name) {
+  ///     _name = name;
+  ///     notifyListeners();
+  ///   }
+  /// }
+  ///
+  /// final personProvider = ChangeNotifierProvider((_) => Person());
+  /// ```
+  ///
+  /// In this class, both `name` and `age` may change, but a widget may need
+  /// only `age`.
+  ///
+  /// If we used `ref.watch(`/`Consumer` as we normally would, this would cause
+  /// widgets that only use `age` to still rebuild when `name` changes, which
+  /// is inefficient.
+  ///
+  /// The method [select] can be used to fix this, by explicitly reading only
+  /// a specific part of the object.
+  ///
+  /// A typical usage would be:
+  ///
+  /// ```dart
+  /// @override
+  /// Widget build(BuildContext context, WidgetRef ref) {
+  ///   final age = ref.watch(personProvider.select((p) => p.age));
+  ///   return Text('$age');
+  /// }
+  /// ```
+  ///
+  /// This will cause our widget to rebuild **only** when `age` changes.
+  ///
+  ///
+  /// **NOTE**: The function passed to [select] can return complex computations
+  /// too.
+  ///
+  /// For example, instead of `age`, we could return a "isAdult" boolean:
+  ///
+  /// ```dart
+  /// @override
+  /// Widget build(BuildContext context, WidgetRef ref) {
+  ///   final isAdult = ref.watch(personProvider.select((p) => p.age >= 18));
+  ///   return Text('$isAdult');
+  /// }
+  /// ```
+  ///
+  /// This will further optimize our widget by rebuilding it only when "isAdult"
+  /// changed instead of whenever the age changes.
+  ProviderListenable<OutT> select<OutT>(
+    OutT Function(InT value) selector,
+  ) {
+    return _ProviderSelector<InT, OutT>(
+      provider: this,
+      selector: selector,
+    );
+  }
+}
+
 /// An internal class for `ProviderBase.select`.
-final class _ProviderSelector<InputT, OutputT, OriginStateT>
-    with ProviderListenableWithOrigin<OutputT, OriginStateT> {
+final class _ProviderSelector<InputT, OutputT>
+    implements ProviderListenable<OutputT> {
   /// An internal class for `ProviderBase.select`.
   _ProviderSelector({
     required this.provider,
@@ -10,7 +87,7 @@ final class _ProviderSelector<InputT, OutputT, OriginStateT>
   });
 
   /// The provider that was selected
-  final ProviderListenableWithOrigin<InputT, OriginStateT> provider;
+  final ProviderListenable<InputT> provider;
 
   /// The selector applied
   final OutputT Function(InputT) selector;
@@ -54,14 +131,14 @@ final class _ProviderSelector<InputT, OutputT, OriginStateT>
   }
 
   @override
-  ProviderSubscriptionWithOrigin<OutputT, OriginStateT> _addListener(
+  ProviderSubscriptionImpl<OutputT> _addListener(
     Node node,
     void Function(OutputT? previous, OutputT next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool weak,
   }) {
-    late final ProviderSubscriptionView<OutputT, OriginStateT> providerSub;
+    late final ExternalProviderSubscription<InputT, OutputT> providerSub;
     $Result<OutputT>? lastSelectedValue;
     final sub = provider._addListener(
       node,
@@ -92,7 +169,7 @@ final class _ProviderSelector<InputT, OutputT, OriginStateT>
       );
     }
 
-    return providerSub = ProviderSubscriptionView<OutputT, OriginStateT>(
+    return providerSub = ExternalProviderSubscription<InputT, OutputT>(
       innerSubscription: sub,
       listener: listener,
       onError: onError,
