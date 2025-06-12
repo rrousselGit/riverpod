@@ -78,8 +78,7 @@ mixin $AsyncClassModifier<ValueT, CreatedT>
 /// Do not use.
 @internal
 @publicInCodegen
-base mixin $FutureModifier<ValueT>
-    on $ProviderBaseImpl<AsyncValue<ValueT>, ValueT> {
+base mixin $FutureModifier<ValueT> on $ProviderBaseImpl<AsyncValue<ValueT>> {
   /// Obtains the [Future] representing this provider.
   ///
   /// The instance of [Future] obtained may change over time. This typically
@@ -102,8 +101,8 @@ base mixin $FutureModifier<ValueT>
   /// ```
   Refreshable<Future<ValueT>> get future => _future;
 
-  _ProviderRefreshable<Future<ValueT>, AsyncValue<ValueT>, ValueT> get _future {
-    return ProviderElementProxy<Future<ValueT>, AsyncValue<ValueT>, ValueT>(
+  _ProviderRefreshable<Future<ValueT>, AsyncValue<ValueT>> get _future {
+    return ProviderElementProxy<Future<ValueT>, AsyncValue<ValueT>>(
       this,
       (element) {
         element as FutureModifierElement<ValueT>;
@@ -145,7 +144,7 @@ base mixin $FutureModifier<ValueT>
   ProviderListenable<Future<Output>> selectAsync<Output>(
     Output Function(ValueT data) selector,
   ) {
-    return _AsyncSelector<ValueT, Output, AsyncValue<ValueT>, ValueT>(
+    return _AsyncSelector<ValueT, Output>(
       selector: selector,
       provider: this,
       future: _future,

@@ -355,7 +355,7 @@ abstract base class $ClassProvider< //
     NotifierT extends AnyNotifier<StateT, ValueT>,
     StateT,
     ValueT,
-    CreatedT> extends $ProviderBaseImpl<StateT, ValueT> {
+    CreatedT> extends $ProviderBaseImpl<StateT> {
   const $ClassProvider({
     required super.name,
     required super.from,
@@ -367,7 +367,7 @@ abstract base class $ClassProvider< //
   });
 
   Refreshable<NotifierT> get notifier {
-    return ProviderElementProxy<NotifierT, StateT, ValueT>(
+    return ProviderElementProxy<NotifierT, StateT>(
       this,
       (element) => (element
               as $ClassProviderElement<NotifierT, StateT, ValueT, CreatedT>)

@@ -38,7 +38,7 @@ import '../../internals.dart';
 @publicInLegacy
 final class StateProvider<ValueT>
     extends $FunctionalProvider<ValueT, ValueT, ValueT>
-    with LegacyProviderMixin<ValueT, ValueT> {
+    with LegacyProviderMixin<ValueT> {
   /// {@macro riverpod.state_provider}
   StateProvider(
     this._createFn, {
@@ -82,7 +82,7 @@ final class StateProvider<ValueT>
   /// The value obtained may change if the provider is refreshed (such as using
   /// [Ref.watch] or [Ref.refresh]).
   Refreshable<StateController<ValueT>> get notifier =>
-      ProviderElementProxy<StateController<ValueT>, ValueT, ValueT>(
+      ProviderElementProxy<StateController<ValueT>, ValueT>(
         this,
         (element) {
           return (element as _StateProviderElement<ValueT>)._controllerNotifier;

@@ -550,11 +550,11 @@ base class ConsumerStatefulElement extends StatefulElement
       onError: onError,
       fireImmediately: fireImmediately,
       // ignore: invalid_use_of_internal_member, from riverpod
-    ) as ProviderSubscriptionWithOrigin<ValueT, Object?>;
+    );
 
     // ignore: invalid_use_of_internal_member, from riverpod
-    late final ProviderSubscriptionView<ValueT, Object?> sub;
-    sub = ProviderSubscriptionView<ValueT, Object?>(
+    late final ExternalProviderSubscription<Object?, ValueT> sub;
+    sub = ExternalProviderSubscription<Object?, ValueT>.fromSub(
       innerSubscription: innerSubscription,
       listener: (prev, next) {},
       onError: (error, stackTrace) {},

@@ -99,7 +99,7 @@ final class FutureProvider<ValueT>
     with
         $FutureModifier<ValueT>,
         $FutureProvider<ValueT>,
-        LegacyProviderMixin<AsyncValue<ValueT>, ValueT> {
+        LegacyProviderMixin<AsyncValue<ValueT>> {
   /// {@macro riverpod.future_provider}
   FutureProvider(
     this._create, {

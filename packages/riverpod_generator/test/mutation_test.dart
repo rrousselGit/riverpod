@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart' show NodeInternal;
 import 'package:riverpod/src/mutation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
@@ -248,20 +247,6 @@ void main() {
 
     await container.pump();
     expect(container.exists(simpleProvider), false);
-  });
-
-  test('Listening a mutation lazily initializes the provider', () async {
-    final container = ProviderContainer.test();
-
-    final sub = container.listen(simpleProvider.increment, (a, b) {});
-
-    final element = container.readProviderElement(simpleProvider);
-
-    expect(element.stateResult(), null);
-
-    await sub.read().call(2);
-
-    expect(container.read(simpleProvider), 2);
   });
 
   test('If notifier constructor throws, the mutation immediately throws',

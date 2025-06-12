@@ -85,7 +85,7 @@ abstract class Notifier<ValueT> extends $Notifier<ValueT> {
 /// {@category Providers}
 final class NotifierProvider<NotifierT extends Notifier<ValueT>, ValueT>
     extends $NotifierProvider<NotifierT, ValueT>
-    with LegacyProviderMixin<ValueT, ValueT> {
+    with LegacyProviderMixin<ValueT> {
   /// {@macro riverpod.notifier_provider}
   ///
   /// {@macro riverpod.notifier_provider_modifier}

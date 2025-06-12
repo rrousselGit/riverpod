@@ -16,7 +16,7 @@ base mixin $Provider<ValueT> on $FunctionalProvider<ValueT, ValueT, ValueT> {}
 /// {@macro riverpod.provider}
 /// {@category Providers}
 final class Provider<ValueT> extends $FunctionalProvider<ValueT, ValueT, ValueT>
-    with $Provider<ValueT>, LegacyProviderMixin<ValueT, ValueT> {
+    with $Provider<ValueT>, LegacyProviderMixin<ValueT> {
   /// {@macro riverpod.provider}
   Provider(
     this._create, {

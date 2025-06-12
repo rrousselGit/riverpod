@@ -35,7 +35,7 @@ final class SyncTodoListProvider
       _$SyncTodoListElement(pointer);
 
   ProviderListenable<SyncTodoList$AddSync> get addSync =>
-      $LazyProxyListenable<SyncTodoList$AddSync, List<Todo>, List<Todo>>(
+      $LazyProxyListenable<SyncTodoList$AddSync, List<Todo>>(
         this,
         (element) {
           element as _$SyncTodoListElement;
@@ -45,7 +45,7 @@ final class SyncTodoListProvider
       );
 
   ProviderListenable<SyncTodoList$AddAsync> get addAsync =>
-      $LazyProxyListenable<SyncTodoList$AddAsync, List<Todo>, List<Todo>>(
+      $LazyProxyListenable<SyncTodoList$AddAsync, List<Todo>>(
         this,
         (element) {
           element as _$SyncTodoListElement;
@@ -226,8 +226,8 @@ final class AsyncTodoListProvider
   _$AsyncTodoListElement $createElement($ProviderPointer pointer) =>
       _$AsyncTodoListElement(pointer);
 
-  ProviderListenable<AsyncTodoList$AddSync> get addSync => $LazyProxyListenable<
-          AsyncTodoList$AddSync, AsyncValue<List<Todo>>, List<Todo>>(
+  ProviderListenable<AsyncTodoList$AddSync> get addSync =>
+      $LazyProxyListenable<AsyncTodoList$AddSync, AsyncValue<List<Todo>>>(
         this,
         (element) {
           element as _$AsyncTodoListElement;
@@ -237,8 +237,7 @@ final class AsyncTodoListProvider
       );
 
   ProviderListenable<AsyncTodoList$AddAsync> get addAsync =>
-      $LazyProxyListenable<AsyncTodoList$AddAsync, AsyncValue<List<Todo>>,
-          List<Todo>>(
+      $LazyProxyListenable<AsyncTodoList$AddAsync, AsyncValue<List<Todo>>>(
         this,
         (element) {
           element as _$AsyncTodoListElement;
@@ -414,7 +413,7 @@ final class SimpleProvider extends $NotifierProvider<Simple, int> {
       _$SimpleElement(pointer);
 
   ProviderListenable<Simple$Increment> get increment =>
-      $LazyProxyListenable<Simple$Increment, int, int>(
+      $LazyProxyListenable<Simple$Increment, int>(
         this,
         (element) {
           element as _$SimpleElement;
@@ -424,7 +423,7 @@ final class SimpleProvider extends $NotifierProvider<Simple, int> {
       );
 
   ProviderListenable<Simple$IncrementOr> get incrementOr =>
-      $LazyProxyListenable<Simple$IncrementOr, int, int>(
+      $LazyProxyListenable<Simple$IncrementOr, int>(
         this,
         (element) {
           element as _$SimpleElement;
@@ -434,7 +433,7 @@ final class SimpleProvider extends $NotifierProvider<Simple, int> {
       );
 
   ProviderListenable<Simple$Delegated> get delegated =>
-      $LazyProxyListenable<Simple$Delegated, int, int>(
+      $LazyProxyListenable<Simple$Delegated, int>(
         this,
         (element) {
           element as _$SimpleElement;
@@ -669,7 +668,7 @@ final class SimpleFamilyProvider extends $NotifierProvider<SimpleFamily, int> {
       _$SimpleFamilyElement(pointer);
 
   ProviderListenable<SimpleFamily$Increment> get increment =>
-      $LazyProxyListenable<SimpleFamily$Increment, int, int>(
+      $LazyProxyListenable<SimpleFamily$Increment, int>(
         this,
         (element) {
           element as _$SimpleFamilyElement;
@@ -679,7 +678,7 @@ final class SimpleFamilyProvider extends $NotifierProvider<SimpleFamily, int> {
       );
 
   ProviderListenable<SimpleFamily$IncrementOr> get incrementOr =>
-      $LazyProxyListenable<SimpleFamily$IncrementOr, int, int>(
+      $LazyProxyListenable<SimpleFamily$IncrementOr, int>(
         this,
         (element) {
           element as _$SimpleFamilyElement;
@@ -898,7 +897,7 @@ final class SimpleAsyncProvider
       _$SimpleAsyncElement(pointer);
 
   ProviderListenable<SimpleAsync$Increment> get increment =>
-      $LazyProxyListenable<SimpleAsync$Increment, AsyncValue<int>, int>(
+      $LazyProxyListenable<SimpleAsync$Increment, AsyncValue<int>>(
         this,
         (element) {
           element as _$SimpleAsyncElement;
@@ -908,7 +907,7 @@ final class SimpleAsyncProvider
       );
 
   ProviderListenable<SimpleAsync$Delegated> get delegated =>
-      $LazyProxyListenable<SimpleAsync$Delegated, AsyncValue<int>, int>(
+      $LazyProxyListenable<SimpleAsync$Delegated, AsyncValue<int>>(
         this,
         (element) {
           element as _$SimpleAsyncElement;
@@ -1088,7 +1087,7 @@ final class SimpleAsync2Provider
       _$SimpleAsync2Element(pointer);
 
   ProviderListenable<SimpleAsync2$Increment> get increment =>
-      $LazyProxyListenable<SimpleAsync2$Increment, AsyncValue<int>, int>(
+      $LazyProxyListenable<SimpleAsync2$Increment, AsyncValue<int>>(
         this,
         (element) {
           element as _$SimpleAsync2Element;
@@ -1254,7 +1253,7 @@ final class GenericProvider<T extends num>
       _$GenericElement(pointer);
 
   ProviderListenable<Generic$Increment> get increment =>
-      $LazyProxyListenable<Generic$Increment, AsyncValue<int>, int>(
+      $LazyProxyListenable<Generic$Increment, AsyncValue<int>>(
         this,
         (element) {
           element as _$GenericElement<T>;
@@ -1434,7 +1433,7 @@ final class GenericMutProvider extends $AsyncNotifierProvider<GenericMut, int> {
       _$GenericMutElement(pointer);
 
   ProviderListenable<GenericMut$Increment> get increment =>
-      $LazyProxyListenable<GenericMut$Increment, AsyncValue<int>, int>(
+      $LazyProxyListenable<GenericMut$Increment, AsyncValue<int>>(
         this,
         (element) {
           element as _$GenericMutElement;
@@ -1557,7 +1556,7 @@ final class FailingCtorProvider extends $NotifierProvider<FailingCtor, int> {
       _$FailingCtorElement(pointer);
 
   ProviderListenable<FailingCtor$Increment> get increment =>
-      $LazyProxyListenable<FailingCtor$Increment, int, int>(
+      $LazyProxyListenable<FailingCtor$Increment, int>(
         this,
         (element) {
           element as _$FailingCtorElement;
@@ -1686,7 +1685,7 @@ final class TypedProvider extends $NotifierProvider<Typed, String> {
       _$TypedElement(pointer);
 
   ProviderListenable<Typed$Mutate> get mutate =>
-      $LazyProxyListenable<Typed$Mutate, String, String>(
+      $LazyProxyListenable<Typed$Mutate, String>(
         this,
         (element) {
           element as _$TypedElement;

@@ -24,7 +24,7 @@ abstract class FamilyNotifier<ValueT, ArgT> extends $Notifier<ValueT> {
 final class FamilyNotifierProvider //
     <NotifierT extends $Notifier<ValueT>, ValueT, ArgT>
     extends $NotifierProvider<NotifierT, ValueT>
-    with LegacyProviderMixin<ValueT, ValueT> {
+    with LegacyProviderMixin<ValueT> {
   /// An implementation detail of Riverpod
   const FamilyNotifierProvider._(
     this._createNotifier, {
