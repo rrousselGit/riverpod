@@ -674,7 +674,7 @@ depending on itself.
   @protected
   void triggerRetry(Object error) {
     // Don't start retry if the provider was disposed
-    if (ref == null) return;
+    if (_disposed) return;
 
     final retry = origin.retry ?? container.retry ?? _defaultRetry;
 
