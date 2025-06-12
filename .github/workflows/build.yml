@@ -28,7 +28,7 @@ jobs:
     strategy:
       matrix:
         channel:
-          # - stable
+          - stable
           - master
         package_path:
           - examples/counter
@@ -80,7 +80,8 @@ jobs:
             if grep -q flutter "pubspec.yaml"; then
               flutter test --coverage
             else
-              ${{github.workspace}}/scripts/coverage.sh
+              dart test
+              # ${{github.workspace}}/scripts/coverage.sh
             fi
           fi
 
