@@ -558,10 +558,18 @@ sealed class AsyncValue<ValueT> {
       );
 }
 
+/// A variant of [AsyncValue] that excludes [AsyncLoading].
+///
+/// This is useful when you want to represent only data|error states.
+@publicInRiverpodAndCodegen
+sealed class AsyncResult<ValueT> extends AsyncValue<ValueT> {
+  const AsyncResult._() : super._();
+}
+
 /// {@macro async_value.data}
 /// {@category Core}
 @publicInRiverpodAndCodegen
-final class AsyncData<ValueT> extends AsyncValue<ValueT> {
+final class AsyncData<ValueT> extends AsyncResult<ValueT> {
   /// {@macro async_value.data}
   const AsyncData(
     ValueT value, {
@@ -772,7 +780,7 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
 /// {@macro async_value.error_ctor}
 /// {@category Core}
 @publicInRiverpodAndCodegen
-final class AsyncError<ValueT> extends AsyncValue<ValueT> {
+final class AsyncError<ValueT> extends AsyncResult<ValueT> {
   /// {@macro async_value.error_ctor}
   const AsyncError(Object error, StackTrace stackTrace)
       : this._(

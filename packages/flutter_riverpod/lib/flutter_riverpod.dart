@@ -32,4 +32,5 @@ export 'src/internals.dart'
         ProviderScope,
         UncontrolledProviderScope,
         RiverpodWidgetTesterX,
-        ProviderListenableSelect;
+        ProviderListenableSelect,
+        AsyncResult;
