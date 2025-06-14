@@ -34,4 +34,5 @@ export 'src/internals.dart'
         HookConsumer,
         StatefulHookConsumerWidget,
         RiverpodWidgetTesterX,
-        ProviderListenableSelect;
+        ProviderListenableSelect,
+        AsyncResult;

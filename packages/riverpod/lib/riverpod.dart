@@ -26,4 +26,5 @@ export 'src/internals.dart'
         ProviderListenableSelect,
         ProviderTransformerContext,
         ProviderTransformer,
-        ProviderTransformerMixin;
+        ProviderTransformerMixin,
+        AsyncResult;
