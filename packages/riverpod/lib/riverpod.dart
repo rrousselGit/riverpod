@@ -23,4 +23,7 @@ export 'src/internals.dart'
         StreamNotifier,
         StreamNotifierProvider,
         StreamProvider,
-        ProviderListenableSelect;
+        ProviderListenableSelect,
+        ProviderTransformerContext,
+        ProviderTransformer,
+        ProviderTransformerMixin;
