@@ -12,8 +12,8 @@ final class ProviderTransformerContext<InT, OutT> {
 class ProviderTransformer<InT, OutT> {
   ProviderTransformer({
     required this.listener,
-    required $Result<OutT> initialState,
-  }) : state = initialState;
+    required OutT Function() initialState,
+  }) : state = $Result.guard(initialState);
 
   void Function($Result<OutT>? prev, $Result<OutT> next)? _notify;
 

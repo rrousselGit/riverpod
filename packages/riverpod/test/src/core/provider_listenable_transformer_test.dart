@@ -13,7 +13,8 @@ void main() {
 
     final listenable = DelegatingTransformer<int, String>((context) {
       return ProviderTransformer(
-        initialState: 'Hello ${context.sourceState.}'
+        initialState: () => 'Hello ${context.sourceState.requireState}',
+        listener: (self, prev, next) {},
       );
     });
   });
