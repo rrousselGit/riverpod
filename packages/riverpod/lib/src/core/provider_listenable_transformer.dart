@@ -31,20 +31,15 @@ class ProviderTransformer<InT, ValueT> {
   ) listener;
 }
 
-base mixin ProviderTransformerMixin<InT, StateT, ValueT>
-    implements ProviderListenable<StateT> {
-  /// The source of this transformer.
-  ///
-  /// This is the provider that this transformer listens to.
-  ProviderListenable<InT> get source;
-
-  @override
-  ProviderSubscriptionImpl<StateT> _addListener(
+extension<InT, StateT, ValueT>
+    on _ProviderTransformerMixin<InT, StateT, ValueT> {
+  ProviderSubscriptionImpl<StateT> _handle(
     Node source,
     void Function(StateT? previous, StateT next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool weak,
+    required $Result<StateT> Function(AsyncResult<ValueT> asyncResult) read,
   }) {
     ExternalProviderSubscription<InT, StateT>? resultSub;
     AsyncResult<ProviderTransformer<InT, ValueT>>? transformer;
@@ -54,12 +49,11 @@ base mixin ProviderTransformerMixin<InT, StateT, ValueT>
       final prev = context._sourceState;
       context._sourceState = state;
 
-      try {
-        if (transformer?.value case final transformer?) {
-          transformer.listener(transformer, prev, state);
-        }
-      } catch (e, stack) {
-        onError(e, stack);
+      if (transformer?.value case final transformer?) {
+        runZonedGuarded(
+          () => transformer.listener(transformer, prev, state),
+          source.container.defaultOnError,
+        );
       }
     }
 
@@ -80,11 +74,11 @@ base mixin ProviderTransformerMixin<InT, StateT, ValueT>
     final t = transformer = AsyncResult.guard(() {
       final transformer = transform(context);
 
-      var currentResult = $Result.guard(() => read(transformer.state));
+      var currentResult = read(transformer.state);
 
       transformer._notify = (next) {
         final prevResult = currentResult;
-        currentResult = $Result.guard(() => read(next));
+        currentResult = read(next);
 
         final sub = resultSub;
         // Emitted during init, we can ignore it
@@ -109,13 +103,76 @@ base mixin ProviderTransformerMixin<InT, StateT, ValueT>
       innerSubscription: sub,
       listener: listener,
       onError: onError,
-      read: () => read(t.requireValue.state),
+      read: () => read(
+        switch (t) {
+          AsyncData() => t.value.state,
+          // Maps transformer errors as state errors
+          AsyncError(:final error, :final stackTrace) =>
+            AsyncError(error, stackTrace),
+        },
+      ),
     );
   }
+}
 
-  StateT read(AsyncResult<ValueT> asyncResult);
+abstract class _ProviderTransformerMixin<InT, StateT, ValueT>
+    implements ProviderListenable<StateT> {
+  /// The source of this transformer.
+  ///
+  /// This is the provider that this transformer listens to.
+  ProviderListenable<InT> get source;
 
   ProviderTransformer<InT, ValueT> transform(
     ProviderTransformerContext<InT, ValueT> context,
   );
+}
+
+base mixin SyncProviderTransformerMixin<InT, ValueT>
+    implements _ProviderTransformerMixin<InT, ValueT, ValueT> {
+  @override
+  ProviderSubscriptionImpl<ValueT> _addListener(
+    Node source,
+    void Function(ValueT? previous, ValueT next) listener, {
+    required void Function(Object error, StackTrace stackTrace) onError,
+    required void Function()? onDependencyMayHaveChanged,
+    required bool weak,
+  }) {
+    return _handle(
+      source,
+      listener,
+      onError: onError,
+      onDependencyMayHaveChanged: onDependencyMayHaveChanged,
+      weak: weak,
+      read: (asyncResult) {
+        switch (asyncResult) {
+          case AsyncData(:final value):
+            return $ResultData(value);
+          case AsyncError():
+            return $ResultError(asyncResult.error, asyncResult.stackTrace);
+        }
+      },
+    );
+  }
+}
+
+base mixin AsyncProviderTransformerMixin<InT, ValueT>
+    implements _ProviderTransformerMixin<InT, AsyncValue<ValueT>, ValueT> {
+  @override
+  ProviderSubscriptionImpl<AsyncValue<ValueT>> _addListener(
+    Node source,
+    void Function(AsyncValue<ValueT>? previous, AsyncValue<ValueT> next)
+        listener, {
+    required void Function(Object error, StackTrace stackTrace) onError,
+    required void Function()? onDependencyMayHaveChanged,
+    required bool weak,
+  }) {
+    return _handle(
+      source,
+      listener,
+      onError: onError,
+      onDependencyMayHaveChanged: onDependencyMayHaveChanged,
+      weak: weak,
+      read: $Result.data,
+    );
+  }
 }

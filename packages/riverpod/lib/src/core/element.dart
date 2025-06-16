@@ -891,8 +891,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       container,
       sub,
       fireImmediately: fireImmediately,
-      listener: listener,
-      onError: onError,
     );
 
     sub.impl._listenedElement.addDependentSubscription(sub.impl);

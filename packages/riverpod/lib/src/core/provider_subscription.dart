@@ -147,7 +147,7 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
       return;
     }
 
-    _listener(prev, next);
+    _listenedElement.container.runBinaryGuarded(_listener, prev, next);
   }
 
   void _notifyError(Object error, StackTrace stackTrace) {
@@ -157,7 +157,11 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
       return;
     }
 
-    _errorListener(error, stackTrace);
+    _listenedElement.container.runBinaryGuarded(
+      _errorListener,
+      error,
+      stackTrace,
+    );
   }
 
   /// Stops listening to the provider.
@@ -327,21 +331,13 @@ void _handleFireImmediately<StateT>(
   ProviderContainer container,
   ProviderSubscription<StateT> sub, {
   required bool fireImmediately,
-  required void Function(StateT? previous, StateT current) listener,
-  required void Function(Object error, StackTrace stackTrace)? onError,
 }) {
   if (!fireImmediately) return;
 
-  onError ??= container.defaultOnError;
-
-  try {
-    container.runBinaryGuarded(listener, null, sub.read());
-  } on ProviderException catch (error) {
-    // If the read fails, we call the error listener
-    container.runBinaryGuarded(
-      onError,
-      error.exception,
-      error.stackTrace,
-    );
+  switch (sub.readSafe()) {
+    case $ResultData<StateT>(:final value):
+      sub.impl._notifyData(null, value);
+    case $ResultError<StateT>(:final error, :final stackTrace):
+      sub.impl._notifyError(error, stackTrace);
   }
 }

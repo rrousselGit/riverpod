@@ -15,9 +15,8 @@ void main() {
     final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
     final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
 
-    final listenable = DelegatingTransformer<int, String, String>(
+    final listenable = SyncDelegatingTransformer<int, String>(
       provider,
-      read: (r) => r.requireValue,
       (context) {
         return ProviderTransformer(
           initialState: () => 'Hello ${context.sourceState.requireValue}',
@@ -61,9 +60,8 @@ void main() {
     final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
     final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
 
-    final listenable = DelegatingTransformer<int, AsyncValue<String>, String>(
+    final listenable = AsyncDelegatingTransformer<int, String>(
       provider,
-      read: (r) => r,
       (context) {
         return ProviderTransformer(
           initialState: () => 'Hello ${context.sourceState.requireValue}',
@@ -113,9 +111,8 @@ void main() {
     final container = ProviderContainer.test();
     final provider = Provider<int>((ref) => 0);
 
-    final listenable = DelegatingTransformer<int, AsyncValue<String>, String>(
+    final listenable = AsyncDelegatingTransformer<int, String>(
       provider,
-      read: (r) => r,
       (context) {
         return ProviderTransformer(
           initialState: () => throw Exception('Initial error'),
@@ -137,9 +134,8 @@ void main() {
     final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
     final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
 
-    final listenable = DelegatingTransformer<int, String, String>(
+    final listenable = SyncDelegatingTransformer<int, String>(
       provider,
-      read: (r) => r.requireValue,
       (context) {
         return ProviderTransformer(
           initialState: () => 'Hello ${context.sourceState.requireValue}',
@@ -193,9 +189,8 @@ void main() {
     final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
     final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
 
-    final listenable = DelegatingTransformer<int, String, String>(
+    final listenable = SyncDelegatingTransformer<int, String>(
       provider,
-      read: (r) => r.requireValue,
       (context) {
         return ProviderTransformer(
           initialState: () => 'Hello ${context.sourceState.requireValue}',
@@ -223,9 +218,8 @@ void main() {
         final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
         late final ProviderTransformerContext<int, String> context;
 
-        final listenable = DelegatingTransformer<int, String, String>(
+        final listenable = SyncDelegatingTransformer<int, String>(
           provider,
-          read: (r) => r.requireValue,
           (c) {
             context = c;
             return ProviderTransformer(
@@ -251,10 +245,8 @@ void main() {
 
         late final AsyncResult<int> initialState;
 
-        final listenable =
-            DelegatingTransformer<int, AsyncValue<String>, String>(
+        final listenable = AsyncDelegatingTransformer<int, String>(
           provider,
-          read: (r) => r,
           (c) {
             context = c;
             return ProviderTransformer(
@@ -315,13 +307,12 @@ void main() {
   });
 }
 
-final class DelegatingTransformer<InT, StateT, ValueT>
-    with ProviderTransformerMixin<InT, StateT, ValueT> {
-  DelegatingTransformer(
+final class SyncDelegatingTransformer<InT, ValueT>
+    with SyncProviderTransformerMixin<InT, ValueT> {
+  SyncDelegatingTransformer(
     this.source,
-    this.transformCb, {
-    required StateT Function(AsyncResult<ValueT> asyncResult) read,
-  }) : _read = read;
+    this.transformCb,
+  );
 
   @override
   final ProviderListenable<InT> source;
@@ -336,8 +327,26 @@ final class DelegatingTransformer<InT, StateT, ValueT>
   ) {
     return transformCb(context);
   }
+}
 
-  final StateT Function(AsyncResult<ValueT> asyncResult) _read;
+final class AsyncDelegatingTransformer<InT, ValueT>
+    with AsyncProviderTransformerMixin<InT, ValueT> {
+  AsyncDelegatingTransformer(
+    this.source,
+    this.transformCb,
+  );
+
   @override
-  StateT read(AsyncResult<ValueT> asyncResult) => _read(asyncResult);
+  final ProviderListenable<InT> source;
+
+  final ProviderTransformer<InT, ValueT> Function(
+    ProviderTransformerContext<InT, ValueT> context,
+  ) transformCb;
+
+  @override
+  ProviderTransformer<InT, ValueT> transform(
+    ProviderTransformerContext<InT, ValueT> context,
+  ) {
+    return transformCb(context);
+  }
 }
