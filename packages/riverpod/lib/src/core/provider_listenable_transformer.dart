@@ -12,12 +12,17 @@ final class ProviderTransformerContext<InT, OutT> {
 class ProviderTransformer<InT, ValueT> {
   ProviderTransformer({
     required this.listener,
-    required ValueT Function() initialState,
-  }) : _state = AsyncResult.guard(initialState);
+    required ValueT Function(ProviderTransformer<InT, ValueT> self)
+        initState,
+    this.close,
+  }) {
+    _state = AsyncResult.guard(() => initState(this));
+  }
 
   void Function(AsyncResult<ValueT> next)? _notify;
+  final void Function()? close;
 
-  AsyncResult<ValueT> _state;
+  late AsyncResult<ValueT> _state;
   AsyncResult<ValueT> get state => _state;
   set state(AsyncResult<ValueT> value) {
     _state = value;
@@ -118,6 +123,12 @@ extension<InT, StateT, ValueT>
       innerSubscription: sub,
       listener: listener,
       onError: onError,
+      onClose: () {
+        final onClose = transformer?.value?.close;
+        if (onClose != null) {
+          source.container.runGuarded(onClose);
+        }
+      },
       read: () => read(
         switch (upsertTransformer()) {
           AsyncData() && final transformer => transformer.value.state,

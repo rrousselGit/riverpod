@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart';
@@ -19,7 +21,7 @@ void main() {
       provider,
       (context) {
         return ProviderTransformer(
-          initialState: () => 'Hello ${context.sourceState.requireValue}',
+          initState: (self) => 'Hello ${context.sourceState.requireValue}',
           listener: (self, prev, next) {
             if (next.value == 2) {
               self.state = AsyncError('Error at 2', StackTrace.current);
@@ -64,7 +66,7 @@ void main() {
       provider,
       (context) {
         return ProviderTransformer(
-          initialState: () => 'Hello ${context.sourceState.requireValue}',
+          initState: (self) => 'Hello ${context.sourceState.requireValue}',
           listener: (self, prev, next) {
             if (next.value == 2) {
               self.state = AsyncError('Error at 2', StackTrace.current);
@@ -107,7 +109,7 @@ void main() {
     );
   });
 
-  test('If initialState throws, init to AsyncError', () {
+  test('If initState throws, init to AsyncError', () {
     final container = ProviderContainer.test();
     final provider = Provider<int>((ref) => 0);
 
@@ -115,7 +117,7 @@ void main() {
       provider,
       (context) {
         return ProviderTransformer(
-          initialState: () => throw Exception('Initial error'),
+          initState: (self) => throw Exception('Initial error'),
           listener: (self, prev, next) {
             self.state = AsyncData('Hello ${next.requireValue}');
           },
@@ -127,6 +129,7 @@ void main() {
 
     expect(sub.read(), isA<AsyncError<String>>());
   });
+
   test('Supports sub.pause/sub.resume with both data and error', () {
     final container = ProviderContainer.test();
     final listener = utils.Listener<String>();
@@ -138,7 +141,7 @@ void main() {
       provider,
       (context) {
         return ProviderTransformer(
-          initialState: () => 'Hello ${context.sourceState.requireValue}',
+          initState: (self) => 'Hello ${context.sourceState.requireValue}',
           listener: (self, prev, next) {
             if (next.value == 2) {
               self.state = AsyncError('Error at 2', StackTrace.current);
@@ -194,7 +197,7 @@ void main() {
       provider,
       (context) {
         return ProviderTransformer(
-          initialState: () => 'Hello ${context.sourceState.requireValue}',
+          initState: (self) => 'Hello ${context.sourceState.requireValue}',
           listener: (self, prev, next) {
             listener(prev, next);
           },
@@ -224,7 +227,7 @@ void main() {
           (c) {
             context = c;
             return ProviderTransformer(
-              initialState: () => '',
+              initState: (self) => '',
               listener: (self, prev, next) {},
             );
           },
@@ -251,7 +254,7 @@ void main() {
           (c) {
             context = c;
             return ProviderTransformer(
-              initialState: () {
+              initState: (self) {
                 initialState = context.sourceState;
                 return '';
               },
@@ -309,7 +312,7 @@ void main() {
       (context) {
         listenableCallCount++;
         return ProviderTransformer(
-          initialState: () => 'Hello ${context.sourceState.requireValue}',
+          initState: (self) => 'Hello ${context.sourceState.requireValue}',
           listener: (self, prev, next) {
             listener(prev, next);
             self.state = AsyncData('Hello ${next.requireValue}');
@@ -343,13 +346,140 @@ void main() {
     verifyOnly(listener, listener(const AsyncData(0), const AsyncData(1)));
   });
 
-  test('Supports both providers and other listenables as source', () {});
-  test('ProviderSubscription.read reads current value, if any', () {});
+  test('Supports other listenables as source', () {
+    final container = ProviderContainer.test();
+    final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
+    final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
+    var callCount = 0;
+    final listenable = SyncDelegatingTransformer<bool, String>(
+      provider.select((v) => v.isEven),
+      (context) {
+        return ProviderTransformer(
+          initState: (self) => 'Hello ${context.sourceState.requireValue}',
+          listener: (self, prev, next) {
+            callCount++;
+            self.state = AsyncData('Hello ${next.requireValue}');
+          },
+        );
+      },
+    );
+
+    final sub = container.listen(
+      listenable,
+      (previous, next) {},
+    );
+
+    expect(sub.read(), 'Hello true');
+    expect(callCount, 0);
+
+    notifier.state += 2;
+
+    expect(sub.read(), 'Hello true');
+    expect(callCount, 0);
+
+    notifier.state += 1;
+
+    expect(sub.read(), 'Hello false');
+    expect(callCount, 1);
+  });
 
   group('ProviderTransformer', () {
-    group('pause', () {});
-    group('resume', () {});
-    group('dispose', () {});
+    group('close', () {
+      test('guards the listener', () {
+        final errors = <Object>[];
+        final container = runZonedGuarded(
+          ProviderContainer.test,
+          (err, _) => errors.add(err),
+        )!;
+        final provider = Provider<int>((ref) => 0);
+
+        final listenable = SyncDelegatingTransformer<int, String>(
+          provider,
+          (context) {
+            return ProviderTransformer(
+              initState: (self) => 'Hello',
+              listener: (self, prev, next) {},
+              close: () {
+                throw Exception('Close error');
+              },
+            );
+          },
+        );
+
+        final sub = container.listen(
+          listenable,
+          (previous, next) {},
+        );
+
+        sub.close();
+
+        expect(errors, [isException]);
+        expect(sub.closed, isTrue);
+      });
+
+      test(
+          'does not trigger the listened provider if weak but not yet initialized',
+          () {
+        final container = ProviderContainer.test();
+        var callCount = 0;
+        final provider = Provider<int>((ref) {
+          callCount++;
+          return 0;
+        });
+
+        final listenable = SyncDelegatingTransformer<int, String>(
+          provider,
+          (context) {
+            return ProviderTransformer(
+              initState: (self) => 'Hello',
+              listener: (self, prev, next) {},
+              close: () {},
+            );
+          },
+        );
+
+        final sub = container.listen(
+          listenable,
+          (previous, next) {},
+          weak: true,
+        );
+
+        sub.close();
+
+        expect(callCount, 0);
+      });
+
+      test('triggers on the first sub.close', () {
+        final container = ProviderContainer.test();
+        final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
+        final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
+
+        var callCount = 0;
+        final listenable = SyncDelegatingTransformer<int, String>(
+          provider,
+          (context) {
+            return ProviderTransformer(
+              initState: (self) => 'Hello',
+              listener: (self, prev, next) {},
+              close: () {
+                callCount++;
+              },
+            );
+          },
+        );
+
+        final sub = container.listen(
+          listenable,
+          (previous, next) {},
+        );
+
+        expect(callCount, 0);
+        sub.close();
+        expect(callCount, 1);
+        sub.close();
+        expect(callCount, 1); // Should not trigger again
+      });
+    });
   });
 
   group('error handling', () {
