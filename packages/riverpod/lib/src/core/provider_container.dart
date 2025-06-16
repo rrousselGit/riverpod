@@ -3,16 +3,17 @@ part of '../framework.dart';
 /// An abstraction of both [ProviderContainer] and [$ProviderElement] used by
 /// [ProviderListenable].
 @internal
-sealed class Node {
-  /// Obtain the [ProviderElement] of a provider, creating it if necessary.
-  ProviderElement<StateT, Object?> _readProviderElement<StateT>(
-    $ProviderBaseImpl<StateT> provider,
-  );
-}
+sealed class Node {}
 
 @internal
 extension NodeX on Node {
-  ProviderContainer get container => _container;
+  ProviderContainer get container {
+    final that = this;
+    return switch (that) {
+      ProviderContainer() => that,
+      ProviderElement() => that.container,
+    };
+  }
 }
 
 extension on String {
@@ -729,7 +730,7 @@ extension NodeInternal on Node {
   ProviderElement<State, Object?> readProviderElement<State>(
     $ProviderBaseImpl<State> provider,
   ) =>
-      _container._readProviderElement(provider);
+      container._readProviderElement(provider);
 }
 
 /// {@template riverpod.provider_container}
@@ -828,9 +829,6 @@ final class ProviderContainer implements Node {
 
     return container;
   }
-
-  @override
-  ProviderContainer get _container => this;
 
   final int _debugOverridesLength;
 
@@ -1094,7 +1092,6 @@ final class ProviderContainer implements Node {
     }
   }
 
-  @override
   ProviderElement<StateT, Object?> _readProviderElement<StateT>(
     $ProviderBaseImpl<StateT> provider,
   ) {

@@ -365,9 +365,6 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
 
   static ProviderElement? _debugCurrentlyBuildingElement;
 
-  @override
-  ProviderContainer get _container => pointer.targetContainer;
-
   /// The last result of [ProviderBase.debugGetCreateSourceHash].
   ///
   /// Available only in debug mode.
@@ -853,13 +850,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       },
     );
     visitListenables((notifier) => notifier.notifyDependencyMayHaveChanged());
-  }
-
-  @override
-  ProviderElement<NewStateT, Object?> _readProviderElement<NewStateT>(
-    $ProviderBaseImpl<NewStateT> provider,
-  ) {
-    return container.readProviderElement(provider);
   }
 
   ProviderSubscription<T> listen<T>(

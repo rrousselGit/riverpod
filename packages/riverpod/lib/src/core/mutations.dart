@@ -83,46 +83,22 @@ class _MutationElement<T> extends $FunctionalProviderElement<
 @publicInMutations
 final class Mutation<ResultT>
     with
-        ProviderListenableWithOrigin<MutationState<ResultT>,
-            _MutationNotifier<ResultT>, _MutationNotifier<ResultT>> {
+        SyncProviderTransformerMixin<_MutationNotifier<ResultT>,
+            MutationState<ResultT>> {
   Mutation({this.label}) : _key = null;
 
   Mutation._keyed(this._key, {this.label});
+
+  @internal
+  @override
+  ProviderListenable<_MutationNotifier<ResultT>> get source =>
+      _MutationProvider<ResultT>(this);
 
   final Object? label;
   final (Object? value, Mutation<ResultT> parent)? _key;
 
   ProviderListenable<MutationState<ResultT>> call(Object? key) {
     return Mutation<ResultT>._keyed((key, this), label: label);
-  }
-
-  @override
-  ProviderSubscriptionWithOrigin<MutationState<ResultT>,
-      _MutationNotifier<ResultT>, _MutationNotifier<ResultT>> _addListener(
-    Node source,
-    void Function(MutationState<ResultT>? previous, MutationState<ResultT> next)
-        listener, {
-    required void Function(Object error, StackTrace stackTrace) onError,
-    required void Function()? onDependencyMayHaveChanged,
-    required bool weak,
-  }) {
-    final listenable = _MutationProvider<ResultT>(this);
-
-    final sub = source._container.listen(listenable, (_, __) {
-      print('There $_ $__');
-    });
-
-    return ProviderSubscriptionView(
-      innerSubscription: sub as ProviderSubscriptionWithOrigin<
-          _MutationNotifier<ResultT>,
-          _MutationNotifier<ResultT>,
-          _MutationNotifier<ResultT>>,
-      read: () => sub.read().state,
-      listener: (a, b) {
-        print('Here $a, $b');
-      },
-      onError: onError,
-    );
   }
 
   Future<ResultT> _mutate(
@@ -189,6 +165,17 @@ final class Mutation<ResultT>
     if (_key != null) return _key.hashCode;
 
     return super.hashCode;
+  }
+
+  @override
+  ProviderTransformer<_MutationNotifier<ResultT>, MutationState<ResultT>>
+      transform(
+    ProviderTransformerContext<_MutationNotifier<ResultT>,
+            MutationState<ResultT>>
+        context,
+  ) {
+    // TODO: implement transform
+    throw UnimplementedError();
   }
 }
 
