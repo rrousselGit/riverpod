@@ -11,7 +11,7 @@ class AvoidSubRead extends DartLintRule {
 
   static const _code = LintCode(
     name: 'avoid_sub_read',
-    problemMessage: 'Do not use `sub.read()` within Riverpod packages. {0}',
+    problemMessage: 'Do not use `sub.read()` within Riverpod packages.',
     errorSeverity: ErrorSeverity.ERROR,
   );
 
@@ -54,8 +54,7 @@ class AvoidSubRead extends DartLintRule {
         return;
       }
 
-      reporter
-          .atNode(node, _code, arguments: [node.parent.runtimeType.toString()]);
+      reporter.atNode(node, _code);
     });
   }
 }
