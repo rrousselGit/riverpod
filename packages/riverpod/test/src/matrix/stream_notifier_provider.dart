@@ -123,14 +123,7 @@ final streamNotifierProviderFactory = TestMatrix<StreamNotifierTestFactory>(
   },
 );
 
-abstract class TestStreamNotifier<ValueT> implements $StreamNotifier<ValueT> {
-  // Removing protected
-  @override
-  AsyncValue<ValueT> get state;
-
-  @override
-  set state(AsyncValue<ValueT> value);
-}
+abstract class TestStreamNotifier<ValueT> implements $StreamNotifier<ValueT> {}
 
 class DeferredStreamNotifier<ValueT> extends StreamNotifier<ValueT>
     implements TestStreamNotifier<ValueT> {
