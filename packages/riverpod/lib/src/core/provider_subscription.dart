@@ -335,12 +335,10 @@ void _handleFireImmediately<StateT>(
 }) {
   if (!fireImmediately) return;
 
-  onError ??= container.defaultOnError;
-
   switch (sub.readSafe()) {
     case $ResultData<StateT>(:final value):
-      container.runBinaryGuarded(listener, null, value);
+      container.runBinaryGuarded(sub.impl._listener, null, value);
     case $ResultError<StateT>(:final error, :final stackTrace):
-      container.runBinaryGuarded(onError, error, stackTrace);
+      container.runBinaryGuarded(sub.impl._errorListener, error, stackTrace);
   }
 }
