@@ -1,5 +1,8 @@
 ## Unreleased build
 
+- Added `Async/SyncProviderTransformerMixin`.
+  Those enable making custom `ProviderListenable`s using a reasonably simple syntax.
+  For instance, you could implement your own `provider.select`
 - Added `AsyncResult`. This is an interface shared between `AsyncData` and `AsyncError`, but _not_ `AsyncLoading`.
 - Revert Notifier life-cycle change. They are once again preserved across rebuilds.
 - Provider errors are now reported to the
