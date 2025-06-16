@@ -160,7 +160,7 @@ class _ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
       () => provider.create(ref),
     );
 
-    final notifier = notifierResult.requireState;
+    final notifier = notifierResult.valueOrRawException;
 
     value = AsyncData(notifier);
 

@@ -210,7 +210,7 @@ void main() {
 
     expect(
       () => container.read(provider),
-      throwsProviderException(isA<AssertionError>()),
+      throwsProviderException(isProviderException(isA<AssertionError>())),
     );
   });
 
@@ -225,7 +225,7 @@ void main() {
 
     expect(
       () => container.read(provider),
-      throwsProviderException(isA<AssertionError>()),
+      throwsProviderException(isProviderException(isA<AssertionError>())),
     );
   });
 
@@ -245,7 +245,7 @@ void main() {
 
     expect(
       () => container.read(provider),
-      throwsProviderException(isA<AssertionError>()),
+      throwsProviderException(isProviderException(isA<AssertionError>())),
     );
   });
 

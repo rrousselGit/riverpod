@@ -163,7 +163,7 @@ class _StateNotifierProviderElement<NotifierT extends StateNotifier<ValueT>,
       () => provider.create(ref),
     );
 
-    _removeListener = notifier.requireState.addListener(
+    _removeListener = notifier.valueOrRawException.addListener(
       (newState) => value = AsyncData(newState),
       fireImmediately: true,
     );
@@ -173,7 +173,7 @@ class _StateNotifierProviderElement<NotifierT extends StateNotifier<ValueT>,
 
   @override
   bool updateShouldNotify(ValueT previous, ValueT next) {
-    return _notifierNotifier.result!.requireState
+    return _notifierNotifier.result!.valueOrProviderException
         // ignore: invalid_use_of_protected_member
         .updateShouldNotify(previous, next);
   }

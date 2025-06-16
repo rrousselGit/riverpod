@@ -430,7 +430,7 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
   var _retryCount = 0;
   Timer? _pendingRetryTimer;
 
-  /// Whether the assert that prevents [requireState] from returning
+  /// Whether the assert that prevents [readSelf] from returning
   /// if the state was not set before is enabled.
   @visibleForOverriding
   bool get debugAssertDidSetStateEnabled => true;
@@ -462,20 +462,9 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
   /// Returns the currently exposed by a provider
   ///
   /// May throw if the provider threw when creating the exposed value.
-  StateT readSelf() {
+  $Result<StateT> readSelf() {
     flush();
 
-    return requireState;
-  }
-
-  /// Read the current value of a provider and:
-  ///
-  /// - if in error state, rethrow the error
-  /// - if the provider is not initialized, gracefully handle the error.
-  ///
-  /// This is not meant for public consumption. Instead, public API should use
-  /// [readSelf].
-  StateT get requireState {
     final state = resultForValue(value);
 
     const uninitializedError = '''
@@ -486,19 +475,21 @@ depending on itself.
 
     if (kDebugMode) {
       if (debugAssertDidSetStateEnabled && !_debugDidSetState) {
-        throw StateError(uninitializedError);
+        return $Result.error(
+          StateError(uninitializedError),
+          StackTrace.current,
+        );
       }
     }
 
-    if (state == null) throw StateError(uninitializedError);
+    if (state == null) {
+      return $ResultError(
+        StateError(uninitializedError),
+        StackTrace.current,
+      );
+    }
 
-    return switch (state) {
-      $ResultError() => throwProviderException(
-          state.error,
-          state.stackTrace,
-        ),
-      $ResultData() => state.value,
-    };
+    return state;
   }
 
   /// Called when a provider is rebuilt. Used for providers to not notify their
@@ -782,15 +773,15 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         }
     }
 
-    if (checkUpdateShouldNotify &&
-        previousStateResult != null &&
-        previousStateResult.hasData &&
-        newState.hasData &&
-        !updateShouldNotify(
-          previousState as StateT,
-          newState.requireState,
-        )) {
-      return;
+    if (checkUpdateShouldNotify) {
+      switch ((previousStateResult, newState)) {
+        case ((null, _)):
+        case (($ResultError(), _)):
+        case ((_, $ResultError())):
+          break;
+        case (($ResultData() && final prev, $ResultData() && final next)):
+          if (!updateShouldNotify(prev.value, next.value)) return;
+      }
     }
 
     final listeners = [...weakDependents, if (!isFirstBuild) ...?dependents];

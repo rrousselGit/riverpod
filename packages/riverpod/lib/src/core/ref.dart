@@ -702,12 +702,7 @@ class $Ref<StateT, ValueT> extends Ref {
   StateT get state {
     _throwIfInvalidUsage();
 
-    try {
-      return _element.readSelf();
-    } catch (e, s) {
-      e as ProviderException;
-      e.unwrap(s);
-    }
+    return _element.readSelf().valueOrRawException;
   }
 
   set state(StateT newState) {

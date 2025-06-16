@@ -37,7 +37,7 @@ final class $LazyProxyListenable<OutT, InT>
       onClose: removeListener,
       onError: onError,
       listener: listener,
-      read: () => listenable.value,
+      read: () => listenable.requireResult,
     );
   }
 }
@@ -132,7 +132,7 @@ final class ProviderElementProxy<OutT, InT>
         element.flush();
         element.mayNeedDispose();
 
-        return _lense(element).value;
+        return _lense(element).requireResult;
       },
     );
   }

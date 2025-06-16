@@ -45,7 +45,10 @@ mixin $AsyncClassModifier<ValueT, CreatedT>
     final element = requireElement();
 
     element.flush();
-    return (element as FutureModifierElement<ValueT>).futureNotifier.value;
+    return (element as FutureModifierElement<ValueT>)
+        .futureNotifier
+        .requireResult
+        .valueOrRawException;
   }
 
   /// A function to update [state] from its previous value, while
