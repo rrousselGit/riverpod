@@ -1,7 +1,7 @@
 import 'package:meta/meta.dart';
 
 import '../framework.dart' show ProviderElement;
-import '../internals.dart' show OnError, throwProviderException;
+import '../internals.dart' show OnError;
 import 'env.dart';
 import 'internal_lints.dart';
 import 'pragma.dart';
@@ -22,20 +22,6 @@ class _Listener<T> {
 @optionalTypeArgs
 @publicInCodegen
 final class $Observable<T> extends _ValueListenable<T> {
-  /// Directly obtain the value exposed, gratefully handling cases where
-  /// [result] is null or in error state.
-  T get value {
-    final result = _result;
-    switch (result) {
-      case null:
-        throw StateError('Trying to read an uninitialized value.');
-      case $ResultData<T>():
-        return result.value;
-      case $ResultError<T>():
-        throwProviderException(result.error, result.stackTrace);
-    }
-  }
-
   /// The state associated with this notifier.
   ///
   /// Modifying this property will notify listeners.
@@ -53,6 +39,17 @@ final class $Observable<T> extends _ValueListenable<T> {
       case $ResultError<T>():
         _notifyError(value.error, value.stackTrace);
     }
+  }
+
+  $Result<T> get requireResult {
+    final result = _result;
+    if (result == null) {
+      return $ResultError(
+        StateError('Trying to read an uninitialized value.'),
+        StackTrace.current,
+      );
+    }
+    return result;
   }
 }
 

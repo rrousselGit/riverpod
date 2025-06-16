@@ -72,6 +72,22 @@ extension<T> on ProviderSubscription<T> {
 }
 
 @internal
+extension ProviderSubX<T> on ProviderSubscription<T> {
+  $Result<T> readSafe() {
+    if (closed) {
+      throw StateError(
+        'called ProviderSubscription.read on a subscription that was closed',
+      );
+    }
+    final that = impl;
+    that._listenedElement.mayNeedDispose();
+    that._listenedElement.flush();
+
+    return that._callRead();
+  }
+}
+
+@internal
 sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
     with _OnPauseMixin {
   @override
@@ -95,20 +111,10 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
   // ProviderBase<StateT> get origin;
   ProviderElement<Object?, Object?> get _listenedElement;
 
-  OutT _callRead();
+  $Result<OutT> _callRead();
 
   @override
-  OutT read() {
-    if (closed) {
-      throw StateError(
-        'called ProviderSubscription.read on a subscription that was closed',
-      );
-    }
-    _listenedElement.mayNeedDispose();
-    _listenedElement.flush();
-
-    return _callRead();
-  }
+  OutT read() => readSafe().valueOrProviderException;
 
   @override
   void onCancel() {
@@ -197,7 +203,7 @@ final class ProviderProviderSubscription<StateT>
   final bool weak;
 
   @override
-  StateT _callRead() => _listenedElement.readSelf();
+  $Result<StateT> _callRead() => _listenedElement.readSelf();
 }
 
 /// Subscriptions obtained from listening to a [ProviderListenable]
@@ -207,7 +213,7 @@ final class ExternalProviderSubscription<InT, OutT>
     extends ProviderSubscriptionImpl<OutT> {
   ExternalProviderSubscription.fromSub({
     required ProviderSubscription<InT> innerSubscription,
-    required OutT Function() read,
+    required $Result<OutT> Function() read,
     void Function()? onClose,
     required void Function(OutT? prev, OutT next) listener,
     required OnError? onError,
@@ -224,7 +230,7 @@ final class ExternalProviderSubscription<InT, OutT>
             innerSubscription.impl._listenedElement.container.defaultOnError;
 
   final ProviderSubscription<InT> _innerSubscription;
-  final OutT Function() _read;
+  final $Result<OutT> Function() _read;
   final void Function()? _onClose;
   final ProviderProviderSubscription<Object?> _source;
 
@@ -272,7 +278,7 @@ final class ExternalProviderSubscription<InT, OutT>
   }
 
   @override
-  OutT _callRead() => _read();
+  $Result<OutT> _callRead() => _read();
 }
 
 @internal

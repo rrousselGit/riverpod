@@ -125,62 +125,62 @@ void main() {
 
       expect(
         () => container.read(provider.select((_) => ref.watch(another))),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
       expect(
         () => container.read(provider.select((_) => ref.invalidateSelf())),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
       expect(
         () => container.read(provider.select((_) => ref.invalidate(dep))),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
       expect(
         () => container.read(provider.select((_) => ref.refresh(another))),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
       expect(
         () => container.read(provider.select((_) => ref.read(another))),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
       expect(
         () => container.read(provider.select((_) => ref.onDispose(() {}))),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
       expect(
         () => container.read(provider.select((_) => ref.onAddListener(() {}))),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
       expect(
         () => container.read(provider.select((_) => ref.onCancel(() {}))),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
       expect(
         () =>
             container.read(provider.select((_) => ref.onRemoveListener(() {}))),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
       expect(
         () => container.read(provider.select((_) => ref.onResume(() {}))),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
       expect(
         () => container.read(provider.select((_) => ref.notifyListeners())),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
       expect(
         () => container
             .read(provider.select((_) => ref.listen(another, (_, __) {}))),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
       expect(
         () => container.read(provider.select((_) => ref.exists(another))),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
 
       expect(
         () => container.read(provider.select((_) => ref.keepAlive())),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
     });
 

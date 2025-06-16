@@ -119,7 +119,7 @@ final class _ProviderSelector<InputT, OutputT>
     if (lastSelectedValue == null ||
         !lastSelectedValue.hasData ||
         !newSelectedValue.hasData ||
-        lastSelectedValue.requireState != newSelectedValue.requireState) {
+        lastSelectedValue.value != newSelectedValue.value) {
       onChange(newSelectedValue);
       switch (newSelectedValue) {
         case $ResultData(:final value):
@@ -179,7 +179,7 @@ final class _ProviderSelector<InputT, OutputT>
 
         // Using ! because since `sub.read` flushes the inner subscription,
         // it is guaranteed that `lastSelectedValue` is not null.
-        return lastSelectedValue!.requireState;
+        return lastSelectedValue!;
       },
     );
   }

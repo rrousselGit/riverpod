@@ -156,7 +156,7 @@ final class _AsyncSelector<InputT, OutputT>
       read: () {
         // Flush
         sub.read();
-        return selectedFuture!;
+        return $ResultData(selectedFuture!);
       },
       onClose: () {
         final completer = selectedCompleter;
@@ -169,7 +169,7 @@ final class _AsyncSelector<InputT, OutputT>
             onError: onError,
           );
 
-          sub.read().then((v) => _select(v).requireState).then(
+          sub.read().then((v) => _select(v).valueOrProviderException).then(
             (value) {
               // Avoid possible race condition
               if (!completer.isCompleted) completer.complete(value);

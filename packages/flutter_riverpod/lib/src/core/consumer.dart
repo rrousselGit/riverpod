@@ -559,7 +559,7 @@ base class ConsumerStatefulElement extends StatefulElement
       listener: (prev, next) {},
       onError: (error, stackTrace) {},
       onClose: () => _manualListeners?.remove(sub),
-      read: innerSubscription.read,
+      read: innerSubscription.readSafe,
     );
     _applyTickerMode(sub);
     listeners.add(sub);
