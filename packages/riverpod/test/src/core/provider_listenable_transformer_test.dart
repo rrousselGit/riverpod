@@ -483,12 +483,133 @@ void main() {
   });
 
   group('error handling', () {
-    test('Async uncaught errors are reported to the container zone', () {});
-    test('If transform throws, reports to onError', () {});
-    test('If listener throws, reports to onError', () {});
-    test('Setting state to ResultError notifies onError', () {});
-    test('ProviderSubscription.read rethrows transformer error if any', () {});
-    test('ProviderSubscription.read rethrows state error if any', () {});
+    test('If transform throws, reports to onError', () {
+      final errors = <Object>[];
+      final container = runZonedGuarded(
+        ProviderContainer.test,
+        (err, _) => errors.add(err),
+      )!;
+      final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
+      final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
+
+      final listenable = AsyncDelegatingTransformer<int, String>(
+        provider,
+        (context) {
+          throw Exception('Error in transformer');
+        },
+      );
+
+      final sub = container.listen(listenable, (a, b) {});
+      notifier.state = 1;
+
+      expect(
+        errors,
+        [
+          isException.having(
+            (e) => e.toString(),
+            'toString',
+            'Exception: Error in transformer',
+          ),
+        ],
+      );
+    });
+
+    test('If listener throws, reports to onError', () {
+      final errors = <Object>[];
+      final container = runZonedGuarded(
+        ProviderContainer.test,
+        (err, _) => errors.add(err),
+      )!;
+      final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
+      final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
+
+      final listenable = SyncDelegatingTransformer<int, String>(
+        provider,
+        (context) {
+          return ProviderTransformer(
+            initState: (self) => 'Hello ${context.sourceState.requireValue}',
+            listener: (self, prev, next) {
+              throw Exception('Error in listener');
+            },
+          );
+        },
+      );
+
+      final sub = container.listen(listenable, (a, b) {});
+
+      notifier.state = 1;
+
+      expect(
+        errors,
+        [
+          isException.having(
+            (e) => e.toString(),
+            'toString',
+            'Exception: Error in listener',
+          ),
+        ],
+      );
+    });
+
+    test('Setting state to ResultError notifies onError', () {
+      final container = ProviderContainer.test();
+      final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
+      final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
+
+      final listenable = SyncDelegatingTransformer<int, String>(
+        provider,
+        (context) {
+          return ProviderTransformer(
+            initState: (self) => 'Hello ${context.sourceState.requireValue}',
+            listener: (self, prev, next) {
+              self.state = AsyncError('Error in listener', StackTrace.current);
+            },
+          );
+        },
+      );
+
+      final onError = utils.ErrorListener();
+      final sub = container.listen(
+        listenable,
+        (a, b) {},
+        onError: onError.call,
+      );
+
+      verifyZeroInteractions(onError);
+
+      notifier.state = 1;
+
+      utils.verifyOnly(onError, onError('Error in listener', any));
+    });
+
+    test('ProviderSubscription.read returns transformer error', () {
+      final container = ProviderContainer.test();
+      final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
+      final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
+
+      final listenable = AsyncDelegatingTransformer<int, String>(
+        provider,
+        (context) {
+          throw Exception('Error in transformer');
+        },
+      );
+
+      final sub = container.listen(listenable, (a, b) {}, onError: (e, s) {});
+      notifier.state = 1;
+
+      expect(
+        sub.read(),
+        isA<AsyncError<String>>().having(
+          (e) => e.error,
+          'error',
+          isException.having(
+            (e) => e.toString(),
+            'toString',
+            contains('Error in transformer'),
+          ),
+        ),
+      );
+    });
   });
 }
 

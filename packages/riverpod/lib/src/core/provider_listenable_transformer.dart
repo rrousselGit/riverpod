@@ -12,8 +12,7 @@ final class ProviderTransformerContext<InT, OutT> {
 class ProviderTransformer<InT, ValueT> {
   ProviderTransformer({
     required this.listener,
-    required ValueT Function(ProviderTransformer<InT, ValueT> self)
-        initState,
+    required ValueT Function(ProviderTransformer<InT, ValueT> self) initState,
     this.close,
   }) {
     _state = AsyncResult.guard(() => initState(this));
@@ -59,8 +58,9 @@ extension<InT, StateT, ValueT>
     );
 
     AsyncResult<ProviderTransformer<InT, ValueT>>? transformer;
-    AsyncResult<ProviderTransformer<InT, ValueT>> upsertTransformer() =>
-        transformer ??= AsyncResult.guard(() {
+    AsyncResult<ProviderTransformer<InT, ValueT>> upsertTransformer() {
+      if (transformer == null) {
+        transformer = AsyncResult.guard(() {
           final transformer = transform(context);
 
           var currentResult = read(transformer.state);
@@ -88,15 +88,25 @@ extension<InT, StateT, ValueT>
           return transformer;
         });
 
+        if (transformer case AsyncError(:final error, :final stackTrace)) {
+          resultSub!._notifyError(error, stackTrace);
+        }
+      }
+
+      return transformer!;
+    }
+
     void setSourceState(AsyncResult<InT> state) {
       final prev = context._sourceState;
       context._sourceState = state;
 
       // Don't call `upsert` here to avoid calling `listener` on lazy-loaded init.
       if (transformer?.value case final transformer?) {
-        runZonedGuarded(
-          () => transformer.listener(transformer, prev, state),
-          source.container.defaultOnError,
+        source.container.runTernaryGuarded(
+          transformer.listener,
+          transformer,
+          prev,
+          state,
         );
       }
 
@@ -113,13 +123,7 @@ extension<InT, StateT, ValueT>
           weak: weak,
         );
 
-    // 'weak' is lazy loaded, but weak:false isn't.
-    // We rely on 'late final' for that.
-    if (!weak) {
-      upsertTransformer();
-    }
-
-    return resultSub = ExternalProviderSubscription.fromSub(
+    resultSub = ExternalProviderSubscription.fromSub(
       innerSubscription: sub,
       listener: listener,
       onError: onError,
@@ -138,6 +142,14 @@ extension<InT, StateT, ValueT>
         },
       ),
     );
+
+    // 'weak' is lazy loaded, but weak:false isn't.
+    // We rely on 'late final' for that.
+    if (!weak) {
+      upsertTransformer();
+    }
+
+    return resultSub;
   }
 }
 
