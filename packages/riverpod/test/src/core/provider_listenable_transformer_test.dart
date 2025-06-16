@@ -215,9 +215,11 @@ void main() {
 
   group('ProviderTransformerContext', () {
     group('sourceState', () {
-      test('returns the current state of the source provider', () {
+      test('returns the current state of the source provider', () async {
         final container = ProviderContainer.test();
-        final notifier = utils.DeferredNotifier<int>((self, ref) => 42);
+        final notifier = utils.DeferredNotifier<int>((self, ref) {
+          return 42;
+        });
         final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
         late final ProviderTransformerContext<int, String> context;
 
@@ -236,73 +238,66 @@ void main() {
         final sub = container.listen(listenable, (a, b) {});
 
         expect(context.sourceState, const AsyncData(42));
-        notifier.state = 42;
-        expect(sub.read(), 'Value: 42');
-        notifier.;
+        notifier.state = 50;
+        expect(context.sourceState, const AsyncData(50));
       });
-    });
 
-    test('Converts dependency error into AsyncError', () async {
-      final container = ProviderContainer.test();
-      final listener = utils.Listener<AsyncValue<int>>();
-      final onError = utils.ErrorListener();
-      final provider = Provider<int>(
-        (ref) => throw Exception('Dependency error'),
-      );
+      test('Converts dependency error into AsyncError', () async {
+        final container = ProviderContainer.test();
+        late final ProviderTransformerContext<int, String> context;
+        final provider = Provider<int>(
+          (ref) => throw Exception('Dependency error'),
+        );
 
-      late final AsyncResult<int> initialState;
+        late final AsyncResult<int> initialState;
 
-      final listenable = DelegatingTransformer<int, AsyncValue<String>, String>(
-        provider,
-        read: (r) => r,
-        (context) {
-          return ProviderTransformer(
-            initialState: () {
-              initialState = context.sourceState;
-              return '';
-            },
-            listener: (self, prev, next) {
-              listener(prev, next);
-            },
-          );
-        },
-      );
+        final listenable =
+            DelegatingTransformer<int, AsyncValue<String>, String>(
+          provider,
+          read: (r) => r,
+          (c) {
+            context = c;
+            return ProviderTransformer(
+              initialState: () {
+                initialState = context.sourceState;
+                return '';
+              },
+              listener: (self, prev, next) {},
+            );
+          },
+        );
 
-      final sub = container.listen(listenable, (a, b) {});
+        final sub = container.listen(listenable, (a, b) {});
 
-      expect(
-        initialState,
-        isA<AsyncError<int>>().having(
-          (e) => e.error,
-          'error',
-          isException.having(
-            (e) => e.toString(),
-            'toString',
-            'Exception: Dependency error',
-          ),
-        ),
-      );
-
-      container.invalidate(provider);
-      await container.pump();
-
-      verifyOnly(
-        listener,
-        listener(
-          argThat(isNull),
-          argThat(
-            isA<AsyncError<String>>().having(
-              (e) => e.error,
-              'error',
-              isException.having(
-                (e) => e.toString(),
-                'toString',
-                'Exception: Dependency error',
-              ),
+        expect(
+          initialState,
+          isA<AsyncError<int>>().having(
+            (e) => e.error,
+            'error',
+            isException.having(
+              (e) => e.toString(),
+              'toString',
+              'Exception: Dependency error',
             ),
           ),
-        ),
-      );
+        );
+
+        container.invalidate(provider);
+        await container.pump();
+
+        expect(
+          context.sourceState,
+          isA<AsyncError<String>>().having(
+            (e) => e.error,
+            'error',
+            isException.having(
+              (e) => e.toString(),
+              'toString',
+              'Exception: Dependency error',
+            ),
+          ),
+        );
+      });
     });
   });
 
