@@ -183,6 +183,9 @@ String shortHash(Object? object) {
 /// both a provider and `provider.select`.
 ///
 /// Should override ==/hashCode when possible
+///
+/// See also:
+/// - [SyncProviderTransformerMixin] and [AsyncProviderTransformerMixin], for making custom [ProviderListenable]s.
 @immutable
 @publicInCodegen
 @publicInMisc

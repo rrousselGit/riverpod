@@ -1,33 +1,66 @@
 part of '../framework.dart';
 
+/// An object containing metadata about the listened object of a
+/// [ProviderTransformer].
 final class ProviderTransformerContext<InT, OutT> {
   ProviderTransformerContext._({
     required AsyncResult<InT> sourceState,
   }) : _sourceState = sourceState;
 
   AsyncResult<InT> _sourceState;
+
+  /// The current state of [SyncProviderTransformerMixin.source].
   AsyncResult<InT> get sourceState => _sourceState;
 }
 
+/// {@template provider_transformer}
+/// The logic responsible for transforming a [ProviderListenable] into another
+/// [ProviderListenable].
+///
+/// It is both:
+/// - the object that hols the current state of the transformation
+/// - a description of how to react to various life-cycles
+///   related to the listened object.
+/// {@endtemplate}
 class ProviderTransformer<InT, ValueT> {
+  /// {@macro provider_transformer}
   ProviderTransformer({
     required this.listener,
     required ValueT Function(ProviderTransformer<InT, ValueT> self) initState,
-    this.close,
+    this.onClose,
   }) {
     _state = AsyncResult.guard(() => initState(this));
   }
 
   void Function(AsyncResult<ValueT> next)? _notify;
-  final void Function()? close;
+
+  /// A life-cycle method for when [ProviderSubscription] is closed.
+  ///
+  /// This callback will only be called once regardless of how many times
+  /// [ProviderSubscription.close] is called.
+  final void Function()? onClose;
 
   late AsyncResult<ValueT> _state;
+
+  /// The currently exposed state of this transformer.
+  ///
+  /// Based on if using [SyncProviderTransformerMixin] or
+  /// [AsyncProviderTransformerMixin], how the UI will react to [AsyncError]
+  /// will differ:
+  /// - [SyncProviderTransformerMixin] will rethrow the error
+  /// - [AsyncProviderTransformerMixin] will return an [AsyncError] directly
   AsyncResult<ValueT> get state => _state;
   set state(AsyncResult<ValueT> value) {
     _state = value;
     _notify?.call(value);
   }
 
+  /// A callback invoked when the source changes after the initial event.
+  ///
+  /// It will _not_ be called with the initial value.
+  ///
+  /// - `self` represents the `this` object of the [ProviderTransformer].
+  ///   It offers a convenient way to call [ProviderTransformer.state].
   final void Function(
     ProviderTransformer<InT, ValueT> self,
     AsyncResult<InT> prev,
@@ -128,7 +161,7 @@ extension<InT, StateT, ValueT>
       listener: listener,
       onError: onError,
       onClose: () {
-        final onClose = transformer?.value?.close;
+        final onClose = transformer?.value?.onClose;
         if (onClose != null) {
           source.container.runGuarded(onClose);
         }
@@ -165,6 +198,14 @@ abstract class _ProviderTransformerMixin<InT, StateT, ValueT>
   );
 }
 
+/// A mixin for custom [ProviderListenable]s that do not emit [AsyncValue].
+///
+/// If in error state, an exception will happen when trying to read the state
+/// of this listenable.
+///
+/// See also:
+/// - [AsyncProviderTransformerMixin], for listenables that emit an [AsyncValue]
+/// - [ProviderTransformer], the object responsible for the transformation logic.
 base mixin SyncProviderTransformerMixin<InT, ValueT>
     implements _ProviderTransformerMixin<InT, ValueT, ValueT> {
   @override
@@ -193,6 +234,14 @@ base mixin SyncProviderTransformerMixin<InT, ValueT>
   }
 }
 
+/// A mixin for custom [ProviderListenable]s that emit an [AsyncValue].
+///
+/// If in error state, an [AsyncError] will be emitted instead of an exception.
+///
+/// See also:
+/// - [SyncProviderTransformerMixin], for listenables that do not emit an
+///   [AsyncValue]
+/// - [ProviderTransformer], the object responsible for the transformation logic.
 base mixin AsyncProviderTransformerMixin<InT, ValueT>
     implements _ProviderTransformerMixin<InT, AsyncValue<ValueT>, ValueT> {
   @override

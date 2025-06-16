@@ -384,7 +384,7 @@ void main() {
   });
 
   group('ProviderTransformer', () {
-    group('close', () {
+    group('onClose', () {
       test('guards the listener', () {
         final errors = <Object>[];
         final container = runZonedGuarded(
@@ -399,7 +399,7 @@ void main() {
             return ProviderTransformer(
               initState: (self) => 'Hello',
               listener: (self, prev, next) {},
-              close: () {
+              onClose: () {
                 throw Exception('Close error');
               },
             );
@@ -433,7 +433,7 @@ void main() {
             return ProviderTransformer(
               initState: (self) => 'Hello',
               listener: (self, prev, next) {},
-              close: () {},
+              onClose: () {},
             );
           },
         );
@@ -461,7 +461,7 @@ void main() {
             return ProviderTransformer(
               initState: (self) => 'Hello',
               listener: (self, prev, next) {},
-              close: () {
+              onClose: () {
                 callCount++;
               },
             );
