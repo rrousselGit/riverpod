@@ -73,6 +73,7 @@ extension<T> on ProviderSubscription<T> {
 
 @internal
 extension ProviderSubX<T> on ProviderSubscription<T> {
+  @useResult
   $Result<T> readSafe() {
     if (closed) {
       throw StateError(
@@ -334,10 +335,12 @@ void _handleFireImmediately<StateT>(
 }) {
   if (!fireImmediately) return;
 
+  onError ??= container.defaultOnError;
+
   switch (sub.readSafe()) {
     case $ResultData<StateT>(:final value):
-      sub.impl._notifyData(null, value);
+      container.runBinaryGuarded(listener, null, value);
     case $ResultError<StateT>(:final error, :final stackTrace):
-      sub.impl._notifyError(error, stackTrace);
+      container.runBinaryGuarded(onError, error, stackTrace);
   }
 }
