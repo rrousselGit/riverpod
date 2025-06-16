@@ -564,6 +564,16 @@ sealed class AsyncValue<ValueT> {
 @publicInRiverpodAndCodegen
 sealed class AsyncResult<ValueT> extends AsyncValue<ValueT> {
   const AsyncResult._() : super._();
+
+  /// A variant of [AsyncValue.guard] that returns an [AsyncResult],
+  /// but does not support returning a [Future].
+  static AsyncResult<T> guard<T>(T Function() fn) {
+    try {
+      return AsyncData(fn());
+    } catch (err, stack) {
+      return AsyncError(err, stack);
+    }
+  }
 }
 
 /// {@macro async_value.data}

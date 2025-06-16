@@ -2,50 +2,55 @@ part of '../framework.dart';
 
 final class ProviderTransformerContext<InT, OutT> {
   ProviderTransformerContext._({
-    required $Result<InT> sourceState,
+    required AsyncResult<InT> sourceState,
   }) : _sourceState = sourceState;
 
-  $Result<InT> _sourceState;
-  $Result<InT> get sourceState => _sourceState;
+  AsyncResult<InT> _sourceState;
+  AsyncResult<InT> get sourceState => _sourceState;
 }
 
-class ProviderTransformer<InT, OutT> {
+class ProviderTransformer<InT, ValueT> {
   ProviderTransformer({
     required this.listener,
-    required OutT Function() initialState,
-  }) : state = $Result.guard(initialState);
+    required ValueT Function() initialState,
+  }) : _state = AsyncResult.guard(initialState);
 
-  void Function($Result<OutT>? prev, $Result<OutT> next)? _notify;
+  void Function(AsyncResult<ValueT> next)? _notify;
 
-  $Result<OutT> state;
+  AsyncResult<ValueT> _state;
+  AsyncResult<ValueT> get state => _state;
+  set state(AsyncResult<ValueT> value) {
+    _state = value;
+    _notify?.call(value);
+  }
 
   final void Function(
-    ProviderTransformer<InT, OutT> self,
-    $Result<InT>? prev,
-    $Result<InT> next,
+    ProviderTransformer<InT, ValueT> self,
+    AsyncResult<InT>? prev,
+    AsyncResult<InT> next,
   ) listener;
 }
 
-base mixin ProviderTransformerMixin<InT, OutT>
-    implements ProviderListenable<OutT> {
+base mixin ProviderTransformerMixin<InT, StateT, ValueT>
+    implements ProviderListenable<StateT> {
   /// The source of this transformer.
   ///
   /// This is the provider that this transformer listens to.
   ProviderListenable<InT> get source;
 
   @override
-  ProviderSubscriptionImpl<OutT> _addListener(
+  ProviderSubscriptionImpl<StateT> _addListener(
     Node source,
-    void Function(OutT? previous, OutT next) listener, {
+    void Function(StateT? previous, StateT next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
     required void Function()? onDependencyMayHaveChanged,
     required bool weak,
   }) {
-    ExternalProviderSubscription<InT, OutT>? resultSub;
-    $Result<ProviderTransformer<InT, OutT>>? transformer;
-    late final ProviderTransformerContext<InT, OutT> context;
+    ExternalProviderSubscription<InT, StateT>? resultSub;
+    AsyncResult<ProviderTransformer<InT, ValueT>>? transformer;
+    late final ProviderTransformerContext<InT, ValueT> context;
 
-    void setSourceState($Result<InT> state) {
+    void setSourceState(AsyncResult<InT> state) {
       final prev = context._sourceState;
       context._sourceState = state;
 
@@ -60,31 +65,40 @@ base mixin ProviderTransformerMixin<InT, OutT>
 
     final sub = this.source._addListener(
           source,
-          (previous, next) => setSourceState($ResultData(next)),
+          (previous, next) => setSourceState(AsyncData(next)),
           onError: (err, stackTrace) => setSourceState(
-            $ResultError(err, stackTrace),
+            AsyncError(err, stackTrace),
           ),
           onDependencyMayHaveChanged: onDependencyMayHaveChanged,
           weak: weak,
         );
 
-    context = ProviderTransformerContext<InT, OutT>._(
-      sourceState: $Result.guard(sub.read),
+    context = ProviderTransformerContext._(
+      sourceState: AsyncResult.guard(sub.read),
     );
 
-    final t = transformer = $Result.guard(() {
+    final t = transformer = AsyncResult.guard(() {
       final transformer = transform(context);
 
-      transformer._notify = (prev, next) {
+      var currentResult = $Result.guard(() => read(transformer.state));
+
+      transformer._notify = (next) {
+        final prevResult = currentResult;
+        currentResult = $Result.guard(() => read(next));
+
         final sub = resultSub;
         // Emitted during init, we can ignore it
         if (sub == null) return;
 
-        switch (next) {
-          case $ResultData():
-            sub._notifyData(prev?.value, next.value);
-          case $ResultError():
-            sub._notifyError(next.error, next.stackTrace);
+        switch (currentResult) {
+          case $ResultData(:final value):
+            sub._notifyData(prevResult.value, value);
+          case $ResultError(
+              error: ProviderException(exception: final error),
+              :final stackTrace
+            ):
+          case $ResultError(:final error, :final stackTrace):
+            sub._notifyError(error, stackTrace);
         }
       };
 
@@ -95,11 +109,13 @@ base mixin ProviderTransformerMixin<InT, OutT>
       innerSubscription: sub,
       listener: listener,
       onError: onError,
-      read: () => t.requireState.state.requireState,
+      read: () => read(t.requireValue.state),
     );
   }
 
-  ProviderTransformer<InT, OutT> transform(
-    ProviderTransformerContext<InT, OutT> context,
+  StateT read(AsyncResult<ValueT> asyncResult);
+
+  ProviderTransformer<InT, ValueT> transform(
+    ProviderTransformerContext<InT, ValueT> context,
   );
 }

@@ -14,11 +14,6 @@ part 'notifier/family.dart';
 /// Not meant for public consumption.
 @publicInCodegen
 abstract class $Notifier<StateT> extends $SyncNotifierBase<StateT> {
-  @override
-  @protected
-  @visibleForTesting
-  StateT get state;
-
   /// The value currently exposed by this [Notifier].
   ///
   /// As opposed to [state], this is guaranteed to be safe to use inside [Notifier.build].
