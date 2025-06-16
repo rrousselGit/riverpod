@@ -337,8 +337,8 @@ void _handleFireImmediately<StateT>(
 
   switch (sub.readSafe()) {
     case $ResultData<StateT>(:final value):
-      container.runBinaryGuarded(sub.impl._listener, null, value);
+      sub.impl._notifyData(null, value);
     case $ResultError<StateT>(:final error, :final stackTrace):
-      container.runBinaryGuarded(sub.impl._errorListener, error, stackTrace);
+      sub.impl._notifyError(error, stackTrace);
   }
 }
