@@ -95,6 +95,7 @@ export 'src/nodes.dart'
         RiverpodAstRegistry;
 export 'src/riverpod_types.dart'
     show
+        providerSubscriptionType,
         futureType,
         streamType,
         futureOrStreamType,

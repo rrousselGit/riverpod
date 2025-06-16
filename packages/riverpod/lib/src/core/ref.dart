@@ -606,7 +606,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
       onDependencyMayHaveChanged: _element._markDependencyMayHaveChanged,
     );
 
-    return sub.read();
+    return sub.readSafe().valueOrProviderException;
   }
 
   /// {@template riverpod.listen}

@@ -446,20 +446,23 @@ base class ConsumerStatefulElement extends StatefulElement
   @override
   Res watch<Res>(ProviderListenable<Res> target) {
     _assertNotDisposed();
-    return _dependencies.putIfAbsent(target, () {
-      final oldDependency = _oldDependencies?.remove(target);
+    return _dependencies
+        .putIfAbsent(target, () {
+          final oldDependency = _oldDependencies?.remove(target);
 
-      if (oldDependency != null) {
-        return oldDependency;
-      }
+          if (oldDependency != null) {
+            return oldDependency;
+          }
 
-      final sub = _container.listen<Res>(
-        target,
-        (_, __) => markNeedsBuild(),
-      );
-      _applyTickerMode(sub);
-      return sub;
-    }).read() as Res;
+          final sub = _container.listen<Res>(
+            target,
+            (_, __) => markNeedsBuild(),
+          );
+          _applyTickerMode(sub);
+          return sub;
+        })
+        .readSafe()
+        .valueOrProviderException as Res;
   }
 
   @override

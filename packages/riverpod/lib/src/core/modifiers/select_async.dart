@@ -146,7 +146,15 @@ final class _AsyncSelector<InputT, OutputT>
       onError: onError,
     );
 
-    playValue(sub.read(), callListeners: false);
+    playValue(
+      // ignore: unused_result, https://github.com/dart-lang/sdk/issues/60831
+      switch (sub.readSafe()) {
+        $ResultData<AsyncValue<InputT>>() && final d => d.value,
+        $ResultError<AsyncValue<InputT>>() && final d =>
+          AsyncError(d.error, d.stackTrace),
+      },
+      callListeners: false,
+    );
 
     return providerSub = ExternalProviderSubscription<AsyncValue<InputT>,
         Future<OutputT>>.fromSub(
@@ -155,7 +163,11 @@ final class _AsyncSelector<InputT, OutputT>
       onError: onError,
       read: () {
         // Flush
-        sub.read();
+        final result = sub.readSafe();
+        if (result case $ResultError(:final error, :final stackTrace)) {
+          return $Result.error(error, stackTrace);
+        }
+
         return $ResultData(selectedFuture!);
       },
       onClose: () {
@@ -169,6 +181,7 @@ final class _AsyncSelector<InputT, OutputT>
             onError: onError,
           );
 
+          // ignore: avoid_sub_read, We are handling errors
           sub.read().then((v) => _select(v).valueOrProviderException).then(
             (value) {
               // Avoid possible race condition

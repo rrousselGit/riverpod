@@ -157,16 +157,7 @@ final class _ProviderSelector<InputT, OutputT>
     );
 
     if (!weak) {
-      lastSelectedValue = _select(
-        $Result.guard(() {
-          try {
-            return sub.read();
-          } catch (e, s) {
-            e as ProviderException;
-            e.unwrap(s);
-          }
-        }),
-      );
+      lastSelectedValue = _select(sub.readSafe());
     }
 
     return providerSub = ExternalProviderSubscription<InputT, OutputT>.fromSub(
@@ -175,7 +166,10 @@ final class _ProviderSelector<InputT, OutputT>
       onError: onError,
       read: () {
         // flushes the provider
-        sub.read();
+        final result = sub.readSafe();
+        if (result case $ResultError(:final error, :final stackTrace)) {
+          return $Result.error(error, stackTrace);
+        }
 
         // Using ! because since `sub.read` flushes the inner subscription,
         // it is guaranteed that `lastSelectedValue` is not null.

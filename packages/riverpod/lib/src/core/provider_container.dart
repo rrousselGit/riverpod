@@ -904,7 +904,7 @@ final class ProviderContainer implements Node {
     final sub = listen(provider, (_, __) {});
 
     try {
-      return sub.read();
+      return sub.readSafe().valueOrProviderException;
     } finally {
       sub.close();
     }

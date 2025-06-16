@@ -13,3 +13,4 @@ dependencies:
   meta: ^1.7.0
   path: ^1.8.1
   pubspec_parse: ^1.5.0
+  riverpod_analyzer_utils:
