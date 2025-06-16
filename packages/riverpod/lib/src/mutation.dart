@@ -259,7 +259,10 @@ abstract class $SyncMutationBase<
     Invocation invocation,
     ResultT Function(ClassT clazz) cb,
   ) {
-    return _run(invocation, (_, notifier) => cb(notifier));
+    return _run(
+      invocation,
+      (_, notifier) => cb(notifier),
+    );
   }
 }
 
@@ -351,7 +354,7 @@ abstract class _MutationBase<
       element.origin,
       element.container,
       mutation: null,
-      notifier: element.classListenable.value,
+      notifier: element.classListenable.requireResult.value,
     );
 
     _notifyObserver((obs) => obs.mutationReset(context));
@@ -362,7 +365,7 @@ abstract class _MutationBase<
     T Function(MutationContext mutationContext, ClassT notifier) cb,
   ) {
     element.flush();
-    final notifier = element.classListenable.value;
+    final notifier = element.classListenable.requireResult.valueOrRawException;
     final mutationContext = MutationContext(invocation);
 
     return runZoned(
@@ -384,7 +387,7 @@ abstract class _MutationBase<
       element.origin,
       element.container,
       mutation: mutationContext,
-      notifier: element.classListenable.value,
+      notifier: element.classListenable.requireResult.value,
     );
 
     switch (mutation.state) {

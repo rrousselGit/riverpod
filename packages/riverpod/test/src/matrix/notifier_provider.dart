@@ -116,13 +116,6 @@ final notifierProviderFactory = TestMatrix<NotifierTestFactory>(
 );
 
 abstract class TestNotifier<ValueT> implements $Notifier<ValueT> {
-  // Removing protected
-  @override
-  ValueT get state;
-
-  @override
-  set state(ValueT value);
-
   @override
   RemoveListener listenSelf(
     void Function(ValueT? previous, ValueT next) listener, {

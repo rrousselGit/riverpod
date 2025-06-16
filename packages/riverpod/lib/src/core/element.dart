@@ -19,11 +19,8 @@ part of '../framework.dart';
 @publicInMisc
 sealed class Refreshable<StateT> implements ProviderListenable<StateT> {}
 
-base mixin _ProviderRefreshable<OutT, OriginStateT, OriginValueT>
-    implements
-        Refreshable<OutT>,
-        ProviderListenableWithOrigin<OutT, OriginStateT, OriginValueT> {
-  $ProviderBaseImpl<OriginStateT, OriginValueT> get provider;
+base mixin _ProviderRefreshable<OutT, InT> implements Refreshable<OutT> {
+  $ProviderBaseImpl<InT> get provider;
 }
 
 /// A debug utility used by `flutter_riverpod`/`hooks_riverpod` to check
@@ -378,11 +375,11 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
   var _debugSkipNotifyListenersAsserts = false;
 
   /// The provider associated with this [ProviderElement], before applying overrides.
-  $ProviderBaseImpl<StateT, ValueT> get origin =>
-      pointer.origin as $ProviderBaseImpl<StateT, ValueT>;
+  $ProviderBaseImpl<StateT> get origin =>
+      pointer.origin as $ProviderBaseImpl<StateT>;
 
   /// The provider associated with this [ProviderElement], after applying overrides.
-  $ProviderBaseImpl<StateT, ValueT> get provider;
+  $ProviderBaseImpl<StateT> get provider;
 
   /// The [$ProviderPointer] associated with this [ProviderElement].
   final $ProviderPointer pointer;
@@ -414,8 +411,9 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
   List<ProviderSubscription>? _inactiveSubscriptions;
   @visibleForTesting
   List<ProviderSubscription>? subscriptions;
+
   @visibleForTesting
-  List<ProviderSubscriptionWithOrigin<Object?, StateT, ValueT>>? dependents;
+  List<ProviderSubscriptionImpl<Object?>>? dependents;
 
   /// "listen(weak: true)" pointing to this provider.
   ///
@@ -423,8 +421,7 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
   /// - They do not count towards [ProviderElement.isActive].
   /// - They may be reused between two instances of a [ProviderElement].
   @visibleForTesting
-  final weakDependents =
-      <ProviderSubscriptionWithOrigin<Object?, StateT, ValueT>>[];
+  final weakDependents = <ProviderSubscriptionImpl<Object?>>[];
 
   bool _mustRecomputeState = false;
   bool _dependencyMayHaveChanged = false;
@@ -433,7 +430,7 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
   var _retryCount = 0;
   Timer? _pendingRetryTimer;
 
-  /// Whether the assert that prevents [requireState] from returning
+  /// Whether the assert that prevents [readSelf] from returning
   /// if the state was not set before is enabled.
   @visibleForOverriding
   bool get debugAssertDidSetStateEnabled => true;
@@ -465,20 +462,9 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
   /// Returns the currently exposed by a provider
   ///
   /// May throw if the provider threw when creating the exposed value.
-  StateT readSelf() {
+  $Result<StateT> readSelf() {
     flush();
 
-    return requireState;
-  }
-
-  /// Read the current value of a provider and:
-  ///
-  /// - if in error state, rethrow the error
-  /// - if the provider is not initialized, gracefully handle the error.
-  ///
-  /// This is not meant for public consumption. Instead, public API should use
-  /// [readSelf].
-  StateT get requireState {
     final state = resultForValue(value);
 
     const uninitializedError = '''
@@ -489,19 +475,21 @@ depending on itself.
 
     if (kDebugMode) {
       if (debugAssertDidSetStateEnabled && !_debugDidSetState) {
-        throw StateError(uninitializedError);
+        return $Result.error(
+          StateError(uninitializedError),
+          StackTrace.current,
+        );
       }
     }
 
-    if (state == null) throw StateError(uninitializedError);
+    if (state == null) {
+      return $ResultError(
+        StateError(uninitializedError),
+        StackTrace.current,
+      );
+    }
 
-    return switch (state) {
-      $ResultError() => throwProviderException(
-          state.error,
-          state.stackTrace,
-        ),
-      $ResultData() => state.value,
-    };
+    return state;
   }
 
   /// Called when a provider is rebuilt. Used for providers to not notify their
@@ -551,7 +539,7 @@ depending on itself.
   /// - `overrideWithValue`, which relies on [update] to handle
   ///   the scenario where the value changed.
   @visibleForOverriding
-  void update($ProviderBaseImpl<StateT, ValueT> newProvider) {}
+  void update($ProviderBaseImpl<StateT> newProvider) {}
 
   /// Initialize a provider and track dependencies used during the initialization.
   ///
@@ -677,7 +665,7 @@ depending on itself.
   @protected
   void triggerRetry(Object error) {
     // Don't start retry if the provider was disposed
-    if (ref == null) return;
+    if (_disposed) return;
 
     final retry = origin.retry ?? container.retry ?? _defaultRetry;
 
@@ -785,15 +773,15 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         }
     }
 
-    if (checkUpdateShouldNotify &&
-        previousStateResult != null &&
-        previousStateResult.hasData &&
-        newState.hasData &&
-        !updateShouldNotify(
-          previousState as StateT,
-          newState.requireState,
-        )) {
-      return;
+    if (checkUpdateShouldNotify) {
+      switch ((previousStateResult, newState)) {
+        case ((null, _)):
+        case (($ResultError(), _)):
+        case ((_, $ResultError())):
+          break;
+        case (($ResultData() && final prev, $ResultData() && final next)):
+          if (!updateShouldNotify(prev.value, next.value)) return;
+      }
     }
 
     final listeners = [...weakDependents, if (!isFirstBuild) ...?dependents];
@@ -804,7 +792,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
           if (listener.closed) continue;
 
           container.runBinaryGuarded(
-            listener._onOriginData,
+            listener.providerSub._notifyData,
             previousState,
             newState.value,
           );
@@ -815,7 +803,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
           if (listener.closed) continue;
 
           container.runBinaryGuarded(
-            listener._onOriginError,
+            listener.providerSub._notifyError,
             newState.error,
             newState.stackTrace,
           );
@@ -867,6 +855,13 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     visitListenables((notifier) => notifier.notifyDependencyMayHaveChanged());
   }
 
+  @override
+  ProviderElement<NewStateT, Object?> _readProviderElement<NewStateT>(
+    $ProviderBaseImpl<NewStateT> provider,
+  ) {
+    return container.readProviderElement(provider);
+  }
+
   ProviderSubscription<T> listen<T>(
     ProviderListenable<T> listenable,
     void Function(T? previous, T value) listener, {
@@ -896,14 +891,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       container,
       sub,
       fireImmediately: fireImmediately,
-      listener: listener,
-      onError: onError,
     );
 
-    switch (sub) {
-      case final ProviderSubscriptionImpl<Object?, Object?, Object?> sub:
-        sub._listenedElement.addDependentSubscription(sub);
-    }
+    sub.impl._listenedElement.addDependentSubscription(sub.impl);
 
     if (kDebugMode) ref._debugAssertCanDependOn(listenable);
 
@@ -929,7 +919,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   void addDependentSubscription(
-    ProviderSubscriptionImpl<Object?, StateT, ValueT> sub,
+    ProviderSubscriptionImpl<Object?> sub,
   ) {
     _onChangeSubscription(sub, () {
       if (sub.weak) {
@@ -1181,8 +1171,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     void Function(ProviderElement element) elementVisitor,
   ) {
     void lookup(
-      Iterable<ProviderSubscriptionWithOrigin<Object?, Object?, Object?>>
-          children,
+      Iterable<ProviderSubscription<Object?>> children,
     ) {
       for (final child in children) {
         switch (child.source) {
@@ -1218,10 +1207,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       for (var i = 0; i < subscriptions.length; i++) {
         final sub = subscriptions[i];
 
-        switch (sub) {
-          case final ProviderSubscriptionImpl<Object?, Object?, Object?> sub:
-            visitor(sub._listenedElement);
-        }
+        visitor(sub.impl._listenedElement);
       }
     }
   }

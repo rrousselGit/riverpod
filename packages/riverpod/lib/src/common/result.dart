@@ -1,6 +1,7 @@
 import 'package:meta/meta.dart';
 
 import 'internal_lints.dart';
+import 'stack_trace.dart';
 
 /// A T|Error union type.
 @immutable
@@ -29,7 +30,8 @@ sealed class $Result<ValueT> {
   ValueT? get value;
 
   /// The state if this is a [$ResultData], throws otherwise.
-  ValueT get requireState;
+  ValueT get valueOrProviderException;
+  ValueT get valueOrRawException;
 
   /// The error if this is a [$ResultError], `null` otherwise.
   Object? get error;
@@ -60,7 +62,9 @@ final class $ResultData<State> implements $Result<State> {
   final State value;
 
   @override
-  State get requireState => value;
+  State get valueOrProviderException => value;
+  @override
+  State get valueOrRawException => value;
 
   @override
   bool operator ==(Object other) =>
@@ -96,7 +100,11 @@ final class $ResultError<State> implements $Result<State> {
   State? get value => null;
 
   @override
-  State get requireState => Error.throwWithStackTrace(error, stackTrace);
+  State get valueOrRawException => Error.throwWithStackTrace(error, stackTrace);
+
+  @override
+  State get valueOrProviderException =>
+      throwProviderException(error, stackTrace);
 
   @override
   bool operator ==(Object other) =>

@@ -9,6 +9,19 @@ import 'package:test/test.dart';
 import '../utils.dart';
 
 void main() {
+  group('AsyncResult', () {
+    test('Can be switched over with only data-error cases', () {
+      final AsyncResult<int> result = const AsyncData<int>(42);
+
+      switch (result) {
+        case AsyncData<int>(:final value):
+          expect(value, 42);
+        case AsyncError<int>(:final error, :final stackTrace):
+          fail('Unexpected error: $error, $stackTrace');
+      }
+    });
+  });
+
   test('Can do exhaustive pattern matching', () {
     expect(
       switch (const AsyncValue<int>.loading()) {

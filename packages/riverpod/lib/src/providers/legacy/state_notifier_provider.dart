@@ -73,7 +73,7 @@ final class StateNotifierProvider< //
     extends $FunctionalProvider< //
         ValueT,
         ValueT,
-        NotifierT> with LegacyProviderMixin<ValueT, ValueT> {
+        NotifierT> with LegacyProviderMixin<ValueT> {
   /// {@macro riverpod.state_notifier_provider}
   StateNotifierProvider(
     this._create, {
@@ -128,7 +128,7 @@ final class StateNotifierProvider< //
   /// This may happen if the provider is refreshed or one of its dependencies
   /// has changes.
   Refreshable<NotifierT> get notifier =>
-      ProviderElementProxy<NotifierT, ValueT, ValueT>(
+      ProviderElementProxy<NotifierT, ValueT>(
         this,
         (element) {
           return (element as _StateNotifierProviderElement<NotifierT, ValueT>)
@@ -163,7 +163,7 @@ class _StateNotifierProviderElement<NotifierT extends StateNotifier<ValueT>,
       () => provider.create(ref),
     );
 
-    _removeListener = notifier.requireState.addListener(
+    _removeListener = notifier.valueOrRawException.addListener(
       (newState) => value = AsyncData(newState),
       fireImmediately: true,
     );
@@ -173,7 +173,7 @@ class _StateNotifierProviderElement<NotifierT extends StateNotifier<ValueT>,
 
   @override
   bool updateShouldNotify(ValueT previous, ValueT next) {
-    return _notifierNotifier.result!.requireState
+    return _notifierNotifier.result!.valueOrProviderException
         // ignore: invalid_use_of_protected_member
         .updateShouldNotify(previous, next);
   }

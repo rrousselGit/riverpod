@@ -50,7 +50,7 @@ final class StreamNotifierProvider< //
         NotifierT extends StreamNotifier<ValueT>,
         ValueT> //
     extends $StreamNotifierProvider<NotifierT, ValueT>
-    with LegacyProviderMixin<AsyncValue<ValueT>, ValueT> {
+    with LegacyProviderMixin<AsyncValue<ValueT>> {
   /// {@macro riverpod.stream_notifier_provider}
   ///
   /// {@macro riverpod.async_notifier_provider_modifier}

@@ -22,4 +22,10 @@ export 'src/internals.dart'
         FamilyStreamNotifier,
         StreamNotifier,
         StreamNotifierProvider,
-        StreamProvider;
+        StreamProvider,
+        ProviderListenableSelect,
+        ProviderTransformerContext,
+        ProviderTransformer,
+        SyncProviderTransformerMixin,
+        AsyncProviderTransformerMixin,
+        AsyncResult;

@@ -24,7 +24,9 @@ void main() {
 
       expect(
         sub.read,
-        throwsA(isStateError.having((e) => e.message, 'message', 'Foo')),
+        throwsProviderException(
+          isStateError.having((e) => e.message, 'message', 'Foo'),
+        ),
       );
       expect(errors, [isStateError.having((e) => e.message, 'message', 'Foo')]);
     });

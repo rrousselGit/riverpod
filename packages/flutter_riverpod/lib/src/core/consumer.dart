@@ -446,20 +446,23 @@ base class ConsumerStatefulElement extends StatefulElement
   @override
   Res watch<Res>(ProviderListenable<Res> target) {
     _assertNotDisposed();
-    return _dependencies.putIfAbsent(target, () {
-      final oldDependency = _oldDependencies?.remove(target);
+    return _dependencies
+        .putIfAbsent(target, () {
+          final oldDependency = _oldDependencies?.remove(target);
 
-      if (oldDependency != null) {
-        return oldDependency;
-      }
+          if (oldDependency != null) {
+            return oldDependency;
+          }
 
-      final sub = _container.listen<Res>(
-        target,
-        (_, __) => markNeedsBuild(),
-      );
-      _applyTickerMode(sub);
-      return sub;
-    }).read() as Res;
+          final sub = _container.listen<Res>(
+            target,
+            (_, __) => markNeedsBuild(),
+          );
+          _applyTickerMode(sub);
+          return sub;
+        })
+        .readSafe()
+        .valueOrProviderException as Res;
   }
 
   @override
@@ -554,16 +557,16 @@ base class ConsumerStatefulElement extends StatefulElement
       onError: onError,
       fireImmediately: fireImmediately,
       // ignore: invalid_use_of_internal_member, from riverpod
-    ) as ProviderSubscriptionWithOrigin<ValueT, Object?, Object?>;
+    );
 
     // ignore: invalid_use_of_internal_member, from riverpod
-    late final ProviderSubscriptionView<ValueT, Object?, Object?> sub;
-    sub = ProviderSubscriptionView<ValueT, Object?, Object?>(
+    late final ExternalProviderSubscription<Object?, ValueT> sub;
+    sub = ExternalProviderSubscription<Object?, ValueT>.fromSub(
       innerSubscription: innerSubscription,
       listener: (prev, next) {},
       onError: (error, stackTrace) {},
       onClose: () => _manualListeners?.remove(sub),
-      read: innerSubscription.read,
+      read: innerSubscription.readSafe,
     );
     _applyTickerMode(sub);
     listeners.add(sub);

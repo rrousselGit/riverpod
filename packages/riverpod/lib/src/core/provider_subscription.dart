@@ -51,34 +51,45 @@ sealed class ProviderSubscription<OutT> {
   void close();
 }
 
+extension<T> on ProviderSubscription<T> {
+  ProviderSubscriptionImpl<T> get impl {
+    final that = this;
+    switch (that) {
+      case ProviderSubscriptionImpl<T>():
+        return that;
+    }
+  }
+
+  ProviderProviderSubscription<Object?> get providerSub {
+    final that = impl;
+    switch (that) {
+      case final ProviderProviderSubscription<Object?> sub:
+        return sub;
+      case final ExternalProviderSubscription<Object?, Object?> sub:
+        return sub._source;
+    }
+  }
+}
+
 @internal
-sealed class ProviderSubscriptionWithOrigin<OutT, StateT, ValueT>
-    extends ProviderSubscription<OutT> implements Pausable {
-  ProviderBase<StateT> get origin;
-  ProviderElement<StateT, ValueT> get _listenedElement;
-
-  void _onOriginData(StateT? prev, StateT next);
-  void _onOriginError(Object error, StackTrace stackTrace);
-
-  OutT _callRead();
-
-  @override
-  OutT read() {
+extension ProviderSubX<T> on ProviderSubscription<T> {
+  @useResult
+  $Result<T> readSafe() {
     if (closed) {
       throw StateError(
         'called ProviderSubscription.read on a subscription that was closed',
       );
     }
-    _listenedElement.mayNeedDispose();
-    _listenedElement.flush();
+    final that = impl;
+    that._listenedElement.mayNeedDispose();
+    that._listenedElement.flush();
 
-    return _callRead();
+    return that._callRead();
   }
 }
 
 @internal
-abstract base class ProviderSubscriptionImpl<OutT, OriginT, ValueT>
-    extends ProviderSubscriptionWithOrigin<OutT, OriginT, ValueT>
+sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
     with _OnPauseMixin {
   @override
   bool get isPaused => _isPaused;
@@ -97,6 +108,14 @@ abstract base class ProviderSubscriptionImpl<OutT, OriginT, ValueT>
   })? _missedCalled;
   void Function(OutT? prev, OutT next) get _listener;
   OnError get _errorListener;
+
+  // ProviderBase<StateT> get origin;
+  ProviderElement<Object?, Object?> get _listenedElement;
+
+  $Result<OutT> _callRead();
+
+  @override
+  OutT read() => readSafe().valueOrProviderException;
 
   @override
   void onCancel() {
@@ -129,7 +148,7 @@ abstract base class ProviderSubscriptionImpl<OutT, OriginT, ValueT>
       return;
     }
 
-    _listener(prev, next);
+    _listenedElement.container.runBinaryGuarded(_listener, prev, next);
   }
 
   void _notifyError(Object error, StackTrace stackTrace) {
@@ -139,7 +158,11 @@ abstract base class ProviderSubscriptionImpl<OutT, OriginT, ValueT>
       return;
     }
 
-    _errorListener(error, stackTrace);
+    _listenedElement.container.runBinaryGuarded(
+      _errorListener,
+      error,
+      stackTrace,
+    );
   }
 
   /// Stops listening to the provider.
@@ -155,6 +178,114 @@ abstract base class ProviderSubscriptionImpl<OutT, OriginT, ValueT>
   }
 }
 
+/// Subscriptions obtained from listening to a [ProviderBase]
+@internal
+final class ProviderProviderSubscription<StateT>
+    extends ProviderSubscriptionImpl<StateT> {
+  ProviderProviderSubscription({
+    required ProviderElement<StateT, Object?> listenedElement,
+    required OnError onError,
+    required this.source,
+    required this.weak,
+    required void Function(StateT? prev, StateT next) listener,
+  })  : _errorListener = onError,
+        _listener = listener,
+        _listenedElement = listenedElement;
+
+  @override
+  final OnError _errorListener;
+
+  @override
+  final void Function(StateT? prev, StateT next) _listener;
+
+  @override
+  final ProviderElement<StateT, Object?> _listenedElement;
+
+  @override
+  final Node source;
+
+  @override
+  final bool weak;
+
+  @override
+  $Result<StateT> _callRead() => _listenedElement.readSelf();
+}
+
+/// Subscriptions obtained from listening to a [ProviderListenable]
+/// that is not a [ProviderBase].
+@internal
+final class ExternalProviderSubscription<InT, OutT>
+    extends ProviderSubscriptionImpl<OutT> {
+  ExternalProviderSubscription.fromSub({
+    required ProviderSubscription<InT> innerSubscription,
+    required $Result<OutT> Function() read,
+    void Function()? onClose,
+    required void Function(OutT? prev, OutT next) listener,
+    required OnError? onError,
+  })  : _read = read,
+        _innerSubscription = innerSubscription,
+        _onClose = onClose,
+        _listener = listener,
+        _source = switch (innerSubscription.impl) {
+          final ProviderProviderSubscription<Object?> sub => sub,
+          final ExternalProviderSubscription<Object?, Object?> sub =>
+            sub._source,
+        },
+        _errorListener = onError ??
+            innerSubscription.impl._listenedElement.container.defaultOnError;
+
+  final ProviderSubscription<InT> _innerSubscription;
+  final $Result<OutT> Function() _read;
+  final void Function()? _onClose;
+  final ProviderProviderSubscription<Object?> _source;
+
+  @override
+  final OnError _errorListener;
+
+  @override
+  final void Function(OutT? prev, OutT next) _listener;
+
+  @override
+  ProviderElement<Object?, Object?> get _listenedElement =>
+      _innerSubscription.impl._listenedElement;
+
+  @override
+  bool get weak => _innerSubscription.weak;
+
+  @override
+  Node get source => _innerSubscription.source;
+
+  @override
+  void onCancel() {}
+
+  @override
+  void onResume() {}
+
+  @override
+  void pause() {
+    super.pause();
+    _innerSubscription.pause();
+  }
+
+  @override
+  void resume() {
+    super.resume();
+    _innerSubscription.resume();
+  }
+
+  @override
+  void close() {
+    if (_closed) return;
+
+    _onClose?.call();
+    super.close();
+    _innerSubscription.close();
+  }
+
+  @override
+  $Result<OutT> _callRead() => _read();
+}
+
 @internal
 abstract class Pausable {
   bool get isPaused;
@@ -166,7 +297,7 @@ abstract class Pausable {
   void onResume();
 }
 
-mixin _OnPauseMixin on Pausable {
+mixin _OnPauseMixin implements Pausable {
   bool get _isPaused => _pauseCount > 0;
   var _pauseCount = 0;
 
@@ -195,208 +326,19 @@ mixin _OnPauseMixin on Pausable {
   void onCancel();
 }
 
-@internal
-base class ProviderSubscriptionView<OutT, OriginStateT, OriginValueT>
-    extends ProviderSubscriptionImpl<OutT, OriginStateT, OriginValueT> {
-  ProviderSubscriptionView({
-    required this.innerSubscription,
-    required OutT Function() read,
-    void Function()? onClose,
-    required void Function(OutT? prev, OutT next) listener,
-    required OnError? onError,
-  })  : _read = read,
-        _onClose = onClose,
-        _listener = listener,
-        _errorListener = onError ??
-            innerSubscription._listenedElement.container.defaultOnError;
-
-  final ProviderSubscriptionWithOrigin<Object?, OriginStateT, OriginValueT>
-      innerSubscription;
-  final OutT Function() _read;
-  final void Function()? _onClose;
-
-  @override
-  final OnError _errorListener;
-
-  @override
-  final void Function(OutT? prev, OutT next) _listener;
-
-  @override
-  ProviderBase<OriginStateT> get origin => innerSubscription.origin;
-
-  @override
-  ProviderElement<OriginStateT, OriginValueT> get _listenedElement =>
-      innerSubscription._listenedElement;
-
-  @override
-  bool get weak => innerSubscription.weak;
-
-  @override
-  Node get source => innerSubscription.source;
-
-  @override
-  void _onOriginData(OriginStateT? prev, OriginStateT next) {
-    innerSubscription._onOriginData(prev, next);
-  }
-
-  @override
-  void _onOriginError(Object error, StackTrace stackTrace) {
-    innerSubscription._onOriginError(error, stackTrace);
-  }
-
-  @override
-  void onCancel() {}
-
-  @override
-  void onResume() {}
-
-  @override
-  void pause() {
-    super.pause();
-    innerSubscription.pause();
-  }
-
-  @override
-  void resume() {
-    super.resume();
-    innerSubscription.resume();
-  }
-
-  @override
-  void close() {
-    if (_closed) return;
-
-    _onClose?.call();
-    super.close();
-    innerSubscription.close();
-  }
-
-  @override
-  OutT _callRead() => _read();
-}
-
-@internal
-final class DelegatingProviderSubscription<OutT, InT, OriginStateT,
-        OriginValueT>
-    extends ProviderSubscriptionImpl<OutT, OriginStateT, OriginValueT> {
-  DelegatingProviderSubscription({
-    required this.origin,
-    required this.source,
-    required this.weak,
-    required OnError? errorListener,
-    required ProviderElement<OriginStateT, OriginValueT> listenedElement,
-    required void Function(OutT? prev, OutT next) listener,
-    void Function(OriginStateT? prev, OriginStateT next)? onOriginData,
-    void Function(Object error, StackTrace stackTrace)? onOriginError,
-    required OutT Function() read,
-    required void Function()? onClose,
-  })  : _errorListener = errorListener ?? source.container.defaultOnError,
-        _listenedElement = listenedElement,
-        _listener = listener,
-        _onOriginDataCb = onOriginData,
-        _onOriginErrorCb = onOriginError,
-        _readCb = read,
-        _onCloseCb = onClose;
-
-  @override
-  final $ProviderBaseImpl<OriginStateT, OriginValueT> origin;
-  @override
-  final Node source;
-  @override
-  final bool weak;
-  @override
-  final OnError _errorListener;
-  @override
-  final ProviderElement<OriginStateT, OriginValueT> _listenedElement;
-  @override
-  final void Function(OutT? prev, OutT next) _listener;
-  final void Function(OriginStateT? prev, OriginStateT next)? _onOriginDataCb;
-  final void Function(Object error, StackTrace stackTrace)? _onOriginErrorCb;
-  final OutT Function() _readCb;
-  final void Function()? _onCloseCb;
-
-  @override
-  void _onOriginData(OriginStateT? prev, OriginStateT next) =>
-      _onOriginDataCb?.call(prev, next);
-
-  @override
-  void _onOriginError(Object error, StackTrace stackTrace) =>
-      _onOriginErrorCb?.call(error, stackTrace);
-
-  @override
-  OutT _callRead() => _readCb();
-
-  @override
-  void close() {
-    if (_closed) return;
-
-    _onCloseCb?.call();
-    super.close();
-  }
-}
-
-/// When a provider listens to another provider using `listen`
-@internal
-final class ProviderStateSubscription<StateT, ValueT>
-    extends ProviderSubscriptionImpl<StateT, StateT, ValueT> {
-  ProviderStateSubscription({
-    required this.source,
-    required this.weak,
-    required ProviderElement<StateT, ValueT> listenedElement,
-    required void Function(StateT? prev, StateT next) listener,
-    required OnError onError,
-  })  : _listenedElement = listenedElement,
-        _listener = listener,
-        _errorListener = onError;
-
-  @override
-  ProviderBase<StateT> get origin => _listenedElement.origin;
-
-  @override
-  final Node source;
-  @override
-  final ProviderElement<StateT, ValueT> _listenedElement;
-  @override
-  final bool weak;
-
-  // Why can't this be typed correctly?
-  @override
-  final void Function(StateT? prev, StateT next) _listener;
-  @override
-  final OnError _errorListener;
-
-  @override
-  StateT _callRead() => _listenedElement.readSelf();
-
-  @override
-  void _onOriginData(StateT? prev, StateT next) => _notifyData(prev, next);
-
-  @override
-  void _onOriginError(Object error, StackTrace stackTrace) =>
-      _notifyError(error, stackTrace);
-}
-
 /// Deals with the internals of synchronously calling the listeners
 /// when using `fireImmediately: true`
 void _handleFireImmediately<StateT>(
   ProviderContainer container,
   ProviderSubscription<StateT> sub, {
   required bool fireImmediately,
-  required void Function(StateT? previous, StateT current) listener,
-  required void Function(Object error, StackTrace stackTrace)? onError,
 }) {
   if (!fireImmediately) return;
 
-  onError ??= container.defaultOnError;
-
-  try {
-    container.runBinaryGuarded(listener, null, sub.read());
-  } on ProviderException catch (error) {
-    // If the read fails, we call the error listener
-    container.runBinaryGuarded(
-      onError,
-      error.exception,
-      error.stackTrace,
-    );
+  switch (sub.readSafe()) {
+    case $ResultData<StateT>(:final value):
+      sub.impl._notifyData(null, value);
+    case $ResultError<StateT>(:final error, :final stackTrace):
+      sub.impl._notifyError(error, stackTrace);
   }
 }

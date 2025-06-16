@@ -122,14 +122,7 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
   },
 );
 
-abstract class TestAsyncNotifier<ValueT> implements $AsyncNotifier<ValueT> {
-  // Removing protected
-  @override
-  AsyncValue<ValueT> get state;
-
-  @override
-  set state(AsyncValue<ValueT> value);
-}
+abstract class TestAsyncNotifier<ValueT> implements $AsyncNotifier<ValueT> {}
 
 class DeferredAsyncNotifier<ValueT> extends AsyncNotifier<ValueT>
     implements TestAsyncNotifier<ValueT> {

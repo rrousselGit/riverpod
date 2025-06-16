@@ -105,6 +105,31 @@ void main() {
     });
 
     group('retry', () {
+      test('does not start retry if error is emitted after element dispose',
+          () async {
+        final container = ProviderContainer.test();
+        final completer = Completer<int>();
+        final retryMock = RetryMock();
+        final provider = FutureProvider<int>(
+          (ref) => completer.future,
+          retry: retryMock.call,
+        );
+
+        container.listen(
+          provider,
+          (prev, next) {},
+          fireImmediately: true,
+          onError: (e, s) {},
+        );
+
+        container.dispose();
+
+        completer.completeError('err');
+        await completer.future.catchError((_) => 0);
+
+        verifyZeroInteractions(retryMock);
+      });
+
       test(
         'default ignores ProviderExceptions',
         () => fakeAsync((fake) async {

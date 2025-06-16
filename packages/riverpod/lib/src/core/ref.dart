@@ -612,7 +612,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
       onDependencyMayHaveChanged: _element._markDependencyMayHaveChanged,
     );
 
-    return sub.read();
+    return sub.readSafe().valueOrProviderException;
   }
 
   /// {@template riverpod.listen}
@@ -708,12 +708,7 @@ class $Ref<StateT, ValueT> extends Ref {
   StateT get state {
     _throwIfInvalidUsage();
 
-    try {
-      return _element.readSelf();
-    } catch (e, s) {
-      e as ProviderException;
-      e.unwrap(s);
-    }
+    return _element.readSelf().valueOrRawException;
   }
 
   set state(StateT newState) {
