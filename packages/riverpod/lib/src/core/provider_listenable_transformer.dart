@@ -191,6 +191,7 @@ abstract class _ProviderTransformerMixin<InT, StateT, ValueT>
   /// The source of this transformer.
   ///
   /// This is the provider that this transformer listens to.
+  @visibleForOverriding
   ProviderListenable<InT> get source;
 
   ProviderTransformer<InT, ValueT> transform(
