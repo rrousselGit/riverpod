@@ -26,7 +26,7 @@ class ProviderTransformer<InT, ValueT> {
 
   final void Function(
     ProviderTransformer<InT, ValueT> self,
-    AsyncResult<InT>? prev,
+    AsyncResult<InT> prev,
     AsyncResult<InT> next,
   ) listener;
 }
@@ -42,22 +42,63 @@ extension<InT, StateT, ValueT>
     required $Result<StateT> Function(AsyncResult<ValueT> asyncResult) read,
   }) {
     ExternalProviderSubscription<InT, StateT>? resultSub;
+
+    late final ProviderSubscription<InT> sub;
+    late final context = ProviderTransformerContext<InT, ValueT>._(
+      // ignore: unused_result, false positive
+      sourceState: switch (sub.readSafe()) {
+        $ResultData(:final value) => AsyncData(value),
+        $ResultError(:final error, :final stackTrace) =>
+          AsyncError(error, stackTrace),
+      },
+    );
+
     AsyncResult<ProviderTransformer<InT, ValueT>>? transformer;
-    late final ProviderTransformerContext<InT, ValueT> context;
+    AsyncResult<ProviderTransformer<InT, ValueT>> upsertTransformer() =>
+        transformer ??= AsyncResult.guard(() {
+          final transformer = transform(context);
+
+          var currentResult = read(transformer.state);
+
+          transformer._notify = (next) {
+            final prevResult = currentResult;
+            currentResult = read(next);
+
+            final sub = resultSub;
+            // Emitted during init, we can ignore it
+            if (sub == null) return;
+
+            switch (currentResult) {
+              case $ResultData(:final value):
+                sub._notifyData(prevResult.value, value);
+              case $ResultError(
+                  error: ProviderException(exception: final error),
+                  :final stackTrace
+                ):
+              case $ResultError(:final error, :final stackTrace):
+                sub._notifyError(error, stackTrace);
+            }
+          };
+
+          return transformer;
+        });
 
     void setSourceState(AsyncResult<InT> state) {
       final prev = context._sourceState;
       context._sourceState = state;
 
+      // Don't call `upsert` here to avoid calling `listener` on lazy-loaded init.
       if (transformer?.value case final transformer?) {
         runZonedGuarded(
           () => transformer.listener(transformer, prev, state),
           source.container.defaultOnError,
         );
       }
+
+      upsertTransformer();
     }
 
-    final sub = this.source._addListener(
+    sub = this.source._addListener(
           source,
           (previous, next) => setSourceState(AsyncData(next)),
           onError: (err, stackTrace) => setSourceState(
@@ -67,50 +108,19 @@ extension<InT, StateT, ValueT>
           weak: weak,
         );
 
-    context = ProviderTransformerContext._(
-      // ignore: unused_result, false positive
-      sourceState: switch (sub.readSafe()) {
-        $ResultData(:final value) => AsyncData(value),
-        $ResultError(:final error, :final stackTrace) =>
-          AsyncError(error, stackTrace),
-      },
-    );
-
-    final t = transformer = AsyncResult.guard(() {
-      final transformer = transform(context);
-
-      var currentResult = read(transformer.state);
-
-      transformer._notify = (next) {
-        final prevResult = currentResult;
-        currentResult = read(next);
-
-        final sub = resultSub;
-        // Emitted during init, we can ignore it
-        if (sub == null) return;
-
-        switch (currentResult) {
-          case $ResultData(:final value):
-            sub._notifyData(prevResult.value, value);
-          case $ResultError(
-              error: ProviderException(exception: final error),
-              :final stackTrace
-            ):
-          case $ResultError(:final error, :final stackTrace):
-            sub._notifyError(error, stackTrace);
-        }
-      };
-
-      return transformer;
-    });
+    // 'weak' is lazy loaded, but weak:false isn't.
+    // We rely on 'late final' for that.
+    if (!weak) {
+      upsertTransformer();
+    }
 
     return resultSub = ExternalProviderSubscription.fromSub(
       innerSubscription: sub,
       listener: listener,
       onError: onError,
       read: () => read(
-        switch (t) {
-          AsyncData() => t.value.state,
+        switch (upsertTransformer()) {
+          AsyncData() && final transformer => transformer.value.state,
           // Maps transformer errors as state errors
           AsyncError(:final error, :final stackTrace) =>
             AsyncError(error, stackTrace),

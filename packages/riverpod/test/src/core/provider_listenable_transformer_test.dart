@@ -182,7 +182,7 @@ void main() {
     utils.verifyOnly(onError, onError('Error at 2', any));
     expect(sub.read, utils.throwsProviderException('Error at 2'));
   });
-  
+
   test('Passes the previous value to the listener', () {
     final container = ProviderContainer.test();
     final listener = utils.Listener<AsyncValue<int>>();
@@ -293,10 +293,64 @@ void main() {
       });
     });
   });
- 
-  test('Respect weak flag', () {});
+
+  test('Respect weak flag', () async {
+    final container = ProviderContainer.test();
+    int callCount = 0;
+    final notifier = utils.DeferredNotifier<int>((self, ref) {
+      callCount++;
+      return 0;
+    });
+    final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
+    final listener = utils.Listener<AsyncValue<int>>();
+    var listenableCallCount = 0;
+    final listenable = SyncDelegatingTransformer<int, String>(
+      provider,
+      (context) {
+        listenableCallCount++;
+        return ProviderTransformer(
+          initialState: () => 'Hello ${context.sourceState.requireValue}',
+          listener: (self, prev, next) {
+            listener(prev, next);
+            self.state = AsyncData('Hello ${next.requireValue}');
+          },
+        );
+      },
+    );
+
+    final sub = container.listen(
+      listenable,
+      (a, b) {},
+      weak: true,
+    );
+
+    expect(callCount, 0);
+    expect(listenableCallCount, 0);
+    verifyZeroInteractions(listener);
+
+    container.listen(provider, (a, b) {});
+
+    expect(callCount, 1);
+    expect(listenableCallCount, 1);
+    expect(sub.read(), 'Hello 0');
+    expect(callCount, 1);
+    expect(listenableCallCount, 1);
+    // Initial state does not trigger the listener
+    verifyZeroInteractions(listener);
+
+    notifier.state++;
+
+    verifyOnly(listener, listener(const AsyncData(0), const AsyncData(1)));
+  });
+
   test('Supports both providers and other listenables as source', () {});
   test('ProviderSubscription.read reads current value, if any', () {});
+
+  group('ProviderTransformer', () {
+    group('pause', () {});
+    group('resume', () {});
+    group('dispose', () {});
+  });
 
   group('error handling', () {
     test('Async uncaught errors are reported to the container zone', () {});
