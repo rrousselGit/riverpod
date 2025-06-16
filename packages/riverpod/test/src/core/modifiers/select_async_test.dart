@@ -374,9 +374,9 @@ void main() {
 
       container.listen(provider, (p, n) {});
 
-      expect(
+      await expectLater(
         container.read(provider.selectAsync((data) => throw StateError('err'))),
-        throwsStateError,
+        throwsProviderException(isStateError),
       );
     });
   });
