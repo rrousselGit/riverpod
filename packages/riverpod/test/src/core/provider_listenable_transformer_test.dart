@@ -182,6 +182,7 @@ void main() {
     utils.verifyOnly(onError, onError('Error at 2', any));
     expect(sub.read, utils.throwsProviderException('Error at 2'));
   });
+  
   test('Passes the previous value to the listener', () {
     final container = ProviderContainer.test();
     final listener = utils.Listener<AsyncValue<int>>();
@@ -279,7 +280,7 @@ void main() {
 
         expect(
           context.sourceState,
-          isA<AsyncError<String>>().having(
+          isA<AsyncError<int>>().having(
             (e) => e.error,
             'error',
             isException.having(
@@ -292,7 +293,7 @@ void main() {
       });
     });
   });
-
+ 
   test('Respect weak flag', () {});
   test('Supports both providers and other listenables as source', () {});
   test('ProviderSubscription.read reads current value, if any', () {});

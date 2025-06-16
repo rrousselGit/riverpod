@@ -68,7 +68,12 @@ extension<InT, StateT, ValueT>
         );
 
     context = ProviderTransformerContext._(
-      sourceState: AsyncResult.guard(sub.read),
+      // ignore: unused_result, false positive
+      sourceState: switch (sub.readSafe()) {
+        $ResultData(:final value) => AsyncData(value),
+        $ResultError(:final error, :final stackTrace) =>
+          AsyncError(error, stackTrace),
+      },
     );
 
     final t = transformer = AsyncResult.guard(() {
