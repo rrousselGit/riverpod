@@ -2613,7 +2613,11 @@ void main() {
             fireImmediately: true,
           );
 
-          container.listen(provider, (prev, value) {});
+          container.listen(
+            provider,
+            (prev, value) {},
+            onError: (err, stack) {},
+          );
 
           expect(sub, isNotNull);
           verifyZeroInteractions(listener);

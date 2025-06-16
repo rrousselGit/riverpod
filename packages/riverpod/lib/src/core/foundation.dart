@@ -2,7 +2,7 @@ part of '../framework.dart';
 
 /// A shared interface between [ProviderListenable] and [Family].
 @publicInMisc
-final class ProviderListenableOrFamily {}
+interface class ProviderListenableOrFamily {}
 
 /// A common interface shared by [ProviderBase] and [Family]
 @publicInCodegen
@@ -183,10 +183,13 @@ String shortHash(Object? object) {
 /// both a provider and `provider.select`.
 ///
 /// Should override ==/hashCode when possible
+///
+/// See also:
+/// - [SyncProviderTransformerMixin] and [AsyncProviderTransformerMixin], for making custom [ProviderListenable]s.
 @immutable
 @publicInCodegen
 @publicInMisc
-abstract final class ProviderListenable<StateT>
+abstract interface class ProviderListenable<StateT>
     implements ProviderListenableOrFamily {
   /// Starts listening to this transformer
   ProviderSubscriptionImpl<StateT> _addListener(

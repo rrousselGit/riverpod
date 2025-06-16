@@ -24,4 +24,8 @@ export 'src/internals.dart'
         StreamNotifierProvider,
         StreamProvider,
         ProviderListenableSelect,
+        ProviderTransformerContext,
+        ProviderTransformer,
+        SyncProviderTransformerMixin,
+        AsyncProviderTransformerMixin,
         AsyncResult;

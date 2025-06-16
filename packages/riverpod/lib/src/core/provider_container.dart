@@ -955,8 +955,6 @@ final class ProviderContainer implements Node {
       container,
       sub,
       fireImmediately: fireImmediately,
-      listener: listener,
-      onError: onError,
     );
 
     sub.impl._listenedElement.addDependentSubscription(sub.impl);
