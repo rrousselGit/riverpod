@@ -1,5 +1,6 @@
 ## Unreleased build
 
+- Added `AsyncProviderListenable` interface
 - Added `Async/SyncProviderTransformerMixin`.
   Those enable making custom `ProviderListenable`s using a reasonably simple syntax.
   For instance, you could implement your own `provider.select`
