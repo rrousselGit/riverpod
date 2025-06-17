@@ -1229,7 +1229,7 @@ mixin SyncProviderElement<ValueT> on ProviderElement<ValueT, ValueT> {
 ///
 /// The error was intended to inherit the [StateError] so that any specific
 /// handling around the previous [StateError] still works.
-class ProviderMissingLastValueError<StateT> extends StateError {
+final class ProviderMissingLastValueError<StateT> extends StateError {
   /// Creates an [ProviderMissingLastValueError].
   ProviderMissingLastValueError(
     $ProviderBaseImpl<StateT> origin,
