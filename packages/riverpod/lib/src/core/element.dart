@@ -365,6 +365,8 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
 
   static ProviderElement? _debugCurrentlyBuildingElement;
 
+  ProviderContainer get container => pointer.targetContainer;
+
   /// The last result of [ProviderBase.debugGetCreateSourceHash].
   ///
   /// Available only in debug mode.

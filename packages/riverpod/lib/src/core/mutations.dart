@@ -81,13 +81,33 @@ class _MutationElement<T> extends $FunctionalProviderElement<
 
 @immutable
 @publicInMutations
-final class Mutation<ResultT>
+sealed class Mutation<ResultT>
+    implements ProviderListenable<MutationState<ResultT>> {
+  factory Mutation({Object? label}) = MutationImpl<ResultT>;
+
+  ProviderListenable<MutationState<ResultT>> call(Object? key);
+}
+
+extension<T> on Mutation<T> {
+  MutationImpl<T> get impl {
+    final that = this;
+    switch (that) {
+      case MutationImpl():
+        return that;
+    }
+  }
+}
+
+@internal
+final class MutationImpl<ResultT>
     with
         SyncProviderTransformerMixin<_MutationNotifier<ResultT>,
-            MutationState<ResultT>> {
-  Mutation({this.label}) : _key = null;
+            MutationState<ResultT>>
+    implements
+        Mutation<ResultT> {
+  MutationImpl({this.label}) : _key = null;
 
-  Mutation._keyed(this._key, {this.label});
+  MutationImpl._keyed(this._key, {this.label});
 
   @internal
   @override
@@ -97,8 +117,9 @@ final class Mutation<ResultT>
   final Object? label;
   final (Object? value, Mutation<ResultT> parent)? _key;
 
+  @override
   ProviderListenable<MutationState<ResultT>> call(Object? key) {
-    return Mutation<ResultT>._keyed((key, this), label: label);
+    return MutationImpl<ResultT>._keyed((key, this), label: label);
   }
 
   Future<ResultT> _mutate(
@@ -128,7 +149,8 @@ final class Mutation<ResultT>
 
   void _mutationStart(ProviderSubscription<_MutationNotifier<ResultT>> sub) {
     print('foo');
-    final _MutationNotifier(:state, :setState) = sub.read();
+    final _MutationNotifier(:state, :setState) =
+        sub.readSafe().valueOrRawException;
 
     setState(MutationPending<ResultT>._(state._reset));
   }
@@ -137,7 +159,8 @@ final class Mutation<ResultT>
     ProviderSubscription<_MutationNotifier<ResultT>> sub,
     ResultT result,
   ) {
-    final _MutationNotifier(:state, :setState) = sub.read();
+    final _MutationNotifier(:state, :setState) =
+        sub.readSafe().valueOrRawException;
 
     setState(MutationSuccess<ResultT>._(result, state._reset));
   }
@@ -147,14 +170,26 @@ final class Mutation<ResultT>
     Object error,
     StackTrace stackTrace,
   ) {
-    final _MutationNotifier(:state, :setState) = sub.read();
+    final _MutationNotifier(:state, :setState) =
+        sub.readSafe().valueOrRawException;
 
     setState(MutationError<ResultT>._(error, stackTrace, state._reset));
   }
 
   @override
+  ProviderTransformer<_MutationNotifier<ResultT>, MutationState<ResultT>>
+      transform(context) {
+    return ProviderTransformer(
+      initState: (self) => context.sourceState.requireValue.state,
+      listener: (self, prev, next) {
+        self.state = AsyncResult.guard(() => next.requireValue.state);
+      },
+    );
+  }
+
+  @override
   bool operator ==(Object other) {
-    if (other is! Mutation<ResultT>) return false;
+    if (other is! MutationImpl<ResultT>) return false;
     if (_key != null) return _key == other._key;
 
     return super == other;
@@ -165,17 +200,6 @@ final class Mutation<ResultT>
     if (_key != null) return _key.hashCode;
 
     return super.hashCode;
-  }
-
-  @override
-  ProviderTransformer<_MutationNotifier<ResultT>, MutationState<ResultT>>
-      transform(
-    ProviderTransformerContext<_MutationNotifier<ResultT>,
-            MutationState<ResultT>>
-        context,
-  ) {
-    // TODO: implement transform
-    throw UnimplementedError();
   }
 }
 

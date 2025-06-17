@@ -961,7 +961,7 @@ final class ProviderContainer implements Node {
     Mutation<T> mutation,
     Future<T> Function(MutationRef ref) cb,
   ) =>
-      mutation._mutate(this, cb);
+      mutation.impl._mutate(this, cb);
 
   /// {@macro riverpod.invalidate}
   void invalidate(
