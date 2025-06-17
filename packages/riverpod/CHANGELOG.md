@@ -11,6 +11,7 @@
   the error is now wrapped in a `ProviderException`.
 - Use TickerMode instead of Visibility for pausing out-of-view widgets
 - Reworked offline to simplify its usage
+- Replace `StateError` with `ProviderMissingLastValueError` when disposing a provider with no value emitted. (thanks to @AlexV525)
 
 ## 3.0.0-dev.15 - 2025-05-04
 
