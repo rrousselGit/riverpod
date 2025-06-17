@@ -181,13 +181,6 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
     _cancelSubscription?.resume?.call();
   }
 
-  StateError _missingLastValueError() {
-    return StateError(
-      'The provider $origin was disposed during loading state, '
-      'yet no value could be emitted.',
-    );
-  }
-
   /// Listens to a [Future] and convert it into an [AsyncValue].
   @preferInline
   @internal
@@ -315,7 +308,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
       } else {
         // The listened stream completed during a "loading" state.
         completer.completeError(
-          _missingLastValueError(),
+          ProviderMissingLastValueError(origin),
           StackTrace.current,
         );
       }
@@ -1229,4 +1222,19 @@ mixin SyncProviderElement<ValueT> on ProviderElement<ValueT, ValueT> {
 
   @override
   void setValueFromState(ValueT state) => value = AsyncData(state);
+}
+
+/// An error thrown when a provider is disposed while in loading state,
+/// and no value was emitted.
+///
+/// The error was intended to inherit the [StateError] so that any specific
+/// handling around the previous [StateError] still works.
+class ProviderMissingLastValueError<StateT> extends StateError {
+  /// Creates an [ProviderMissingLastValueError].
+  ProviderMissingLastValueError(
+    $ProviderBaseImpl<StateT> origin,
+  ) : super(
+          'The provider $origin was disposed during loading state, '
+          'yet no value could be emitted.',
+        );
 }
