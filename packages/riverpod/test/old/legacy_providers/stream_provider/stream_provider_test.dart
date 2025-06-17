@@ -6,6 +6,7 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart' show ProviderElement;
+import 'package:riverpod/src/internals.dart' show ProviderMissingLastValueError;
 import 'package:riverpod/src/internals.dart' show InternalProviderContainer;
 import 'package:test/test.dart';
 
@@ -352,7 +353,7 @@ void main() {
       await expectLater(
         future,
         throwsA(
-          isStateError.having(
+          const TypeMatcher<ProviderMissingLastValueError<int>>().having(
             (e) => e.message,
             'message',
             equalsIgnoringHashCodes(
