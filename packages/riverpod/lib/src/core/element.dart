@@ -1229,10 +1229,10 @@ mixin SyncProviderElement<ValueT> on ProviderElement<ValueT, ValueT> {
 ///
 /// The error was intended to inherit the [StateError] so that any specific
 /// handling around the previous [StateError] still works.
-final class ProviderMissingLastValueError<StateT> extends StateError {
+final class ProviderMissingLastValueError extends StateError {
   /// Creates an [ProviderMissingLastValueError].
   ProviderMissingLastValueError(
-    $ProviderBaseImpl<StateT> origin,
+    $ProviderBaseImpl<Object?> origin,
   ) : super(
           'The provider $origin was disposed during loading state, '
           'yet no value could be emitted.',

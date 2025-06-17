@@ -353,8 +353,7 @@ void main() {
       await expectLater(
         future,
         throwsA(
-          const TypeMatcher<ProviderMissingLastValueError<AsyncValue<int>>>()
-              .having(
+          const TypeMatcher<ProviderMissingLastValueError>().having(
             (e) => e.message,
             'message',
             equalsIgnoringHashCodes(
