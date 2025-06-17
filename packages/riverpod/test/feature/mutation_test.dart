@@ -1,11 +1,10 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
-import 'package:riverpod/experimental/mutation.dart';
-import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
+import '../old/utils.dart' show equalsIgnoringHashCodes;
 import '../src/utils.dart';
 
 void main() {
@@ -108,6 +107,26 @@ void main() {
       expect(mut(1).hashCode, isNot(mut(2).hashCode));
       expect(mut(1), isNot(mut));
       expect(mut(1).hashCode, isNot(mut.hashCode));
+    });
+
+    test('toString', () {
+      expect(
+        Mutation<int>().toString(),
+        equalsIgnoringHashCodes('Mutation<int>#00000()'),
+      );
+      expect(
+        Mutation<int>()(1).toString(),
+        equalsIgnoringHashCodes('Mutation<int>#00000(1)'),
+      );
+
+      expect(
+        Mutation<int>(label: 'test').toString(),
+        equalsIgnoringHashCodes('Mutation<int>#00000(label: test)'),
+      );
+      expect(
+        Mutation<int>(label: 'test')(1).toString(),
+        equalsIgnoringHashCodes('Mutation<int>#00000(1, label: test)'),
+      );
     });
   });
 

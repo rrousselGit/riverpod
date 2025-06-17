@@ -65,9 +65,7 @@ class _MutationElement<T> extends $FunctionalProviderElement<
 
   @override
   WhenComplete? create(Ref ref) {
-    print('create: $ref');
     void setState(MutationState<T> state) {
-      print('setState: $state');
       value = AsyncData(_MutationNotifier(state, setState));
     }
 
@@ -126,7 +124,6 @@ final class MutationImpl<ResultT>
     ProviderContainer container,
     Future<ResultT> Function(MutationRef ref) cb,
   ) async {
-    print('oy');
     final sub = container.listen(_MutationProvider<ResultT>(this), (_, __) {});
     try {
       final ref = MutationRef._();
@@ -148,7 +145,6 @@ final class MutationImpl<ResultT>
   }
 
   void _mutationStart(ProviderSubscription<_MutationNotifier<ResultT>> sub) {
-    print('foo');
     final _MutationNotifier(:state, :setState) =
         sub.readSafe().valueOrRawException;
 
@@ -200,6 +196,20 @@ final class MutationImpl<ResultT>
     if (_key != null) return _key.hashCode;
 
     return super.hashCode;
+  }
+
+  @override
+  String toString() {
+    final buffer = StringBuffer('Mutation<$ResultT>#${shortHash(this)}(');
+    buffer.writeAll(
+      [
+        if (_key != null) '${_key.$1}',
+        if (label != null) 'label: $label',
+      ],
+      ', ',
+    );
+    buffer.write(')');
+    return buffer.toString();
   }
 }
 
