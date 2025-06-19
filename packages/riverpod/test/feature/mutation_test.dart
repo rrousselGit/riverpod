@@ -382,5 +382,10 @@ void main() {
     await mut2.run(container, (ref) async => 2);
     await mut3.run(container, (ref) async => 3);
     await mut4.run(container, (ref) async => 4);
+
+    expect(container.read(mut1), isMutationSuccess<int>(1));
+    expect(container.read(mut2), isMutationSuccess<int>(2));
+    expect(container.read(mut3), isMutationSuccess<int>(3));
+    expect(container.read(mut4), isMutationSuccess<int>(4));
   });
 }
