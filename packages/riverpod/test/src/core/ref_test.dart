@@ -1932,9 +1932,8 @@ void main() {
           observer.didAddProvider(
             argThat(
               isProviderObserverContext(
-                provider,
-                container,
-                notifier: notifier,
+                provider: provider,
+                container: container,
               ),
             ),
             0,
@@ -1952,9 +1951,8 @@ void main() {
           observer.didUpdateProvider(
             argThat(
               isProviderObserverContext(
-                provider,
-                container,
-                notifier: notifier,
+                provider: provider,
+                container: container,
               ),
             ),
             0,
@@ -1987,9 +1985,8 @@ void main() {
           observer.didAddProvider(
             argThat(
               isProviderObserverContext(
-                provider,
-                container,
-                notifier: notifier,
+                provider: provider,
+                container: container,
               ),
             ),
             0,
@@ -2029,9 +2026,8 @@ void main() {
           observer.didAddProvider(
             argThat(
               isProviderObserverContext(
-                provider,
-                container,
-                notifier: notifier,
+                provider: provider,
+                container: container,
               ),
             ),
             firstValue,
@@ -2051,9 +2047,8 @@ void main() {
           observer.didDisposeProvider(
             argThat(
               isProviderObserverContext(
-                provider,
-                container,
-                notifier: notifier,
+                provider: provider,
+                container: container,
               ),
             ),
           ),
@@ -2062,9 +2057,8 @@ void main() {
           observer.didUpdateProvider(
             argThat(
               isProviderObserverContext(
-                provider,
-                container,
-                notifier: notifier2,
+                provider: provider,
+                container: container,
               ),
             ),
             firstValue,

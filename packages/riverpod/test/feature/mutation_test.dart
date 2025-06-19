@@ -4,10 +4,63 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart';
 
-import '../old/utils.dart' show equalsIgnoringHashCodes;
+import '../old/utils.dart' show equalsIgnoringHashCodes, ProviderObserverMock;
 import '../src/utils.dart';
 
 void main() {
+  test('Supports void mutations', () async {
+    final mut = Mutation<void>();
+    final container = ProviderContainer.test();
+
+    final sub = container.listen(
+      mut,
+      (previous, next) {},
+      fireImmediately: true,
+    );
+
+    await mut.run(container, (ref) async {});
+
+    expect(container.read(mut), isMutationSuccess<void>());
+  });
+
+  test('Concurrent run call ignores the previous run call', () async {
+    final mut = Mutation<int>();
+    final container = ProviderContainer.test();
+    final completer1 = Completer<int>();
+    final completer2 = Completer<int>();
+    final listener = Listener<MutationState<int>>();
+
+    final sub = container.listen(mut, listener.call);
+
+    final a = mut.run(container, (ref) => completer1.future);
+    verifyOnly(
+      listener,
+      listener(
+        argThat(isMutationIdle<int>()),
+        argThat(isMutationPending<int>()),
+      ),
+    );
+
+    final b = mut.run(container, (ref) => completer2.future);
+    verifyNoMoreInteractions(listener);
+
+    completer1.complete(1);
+    await a;
+
+    verifyNoMoreInteractions(listener);
+
+    completer2.complete(2);
+    await b;
+
+    verifyOnly(
+      listener,
+      listener(
+        argThat(isMutationPending<int>()),
+        argThat(isMutationSuccess<int>(2)),
+      ),
+    );
+  });
+
   test('Success flow', () async {
     final mut = Mutation<int>();
     final container = ProviderContainer.test();
@@ -93,6 +146,27 @@ void main() {
   });
 
   group('Mutation', () {
+    group('.reset', () {
+      test('simple flow', () async {
+        final mut = Mutation<int>();
+        final container = ProviderContainer.test();
+
+        unawaited(mut.run(container, (ref) async => 42));
+        mut.reset(container);
+
+        expect(container.read(mut), isMutationIdle<int>());
+      });
+
+      test('supports being called on an inactive mutation', () async {
+        final mut = Mutation<int>();
+        final container = ProviderContainer.test();
+
+        mut.reset(container);
+
+        expect(container.read(mut), isMutationIdle<int>());
+      });
+    });
+
     test('overrides ==/hashCode', () {
       expect(Mutation<int>(), isNot(Mutation<int>()));
       expect(Mutation<int>().hashCode, isNot(Mutation<int>().hashCode));
@@ -130,7 +204,123 @@ void main() {
     });
   });
 
-  test('Notifies ProviderObserver', () {});
+  test('Notifies ProviderObserver', () async {
+    final mut = Mutation<int>();
+    final observer = ProviderObserverMock();
+    final container = ProviderContainer.test(observers: [observer]);
+    final completer = Completer<int>();
+
+    final sub = container.listen(
+      mut(1),
+      (previous, next) {},
+    );
+    final sub2 = container.listen(
+      mut(2),
+      (previous, next) {},
+    );
+
+    final first = mut(1).run(container, (ref) => completer.future);
+
+    verifyOnly(
+      observer,
+      observer.mutationStart(
+        argThat(
+          isProviderObserverContext(
+            mutation: mut(1),
+            container: container,
+          ),
+        ),
+        mut(1),
+      ),
+    );
+
+    completer.complete(42);
+    await first;
+
+    verifyOnly(
+      observer,
+      observer.mutationSuccess(
+        argThat(
+          isProviderObserverContext(
+            mutation: mut(1),
+            container: container,
+          ),
+        ),
+        mut(1),
+        argThat(equals(42)),
+      ),
+    );
+
+    final second = mut(2).run(
+      container,
+      (ref) async => throw Exception('error'),
+    );
+
+    verifyOnly(
+      observer,
+      observer.mutationStart(
+        argThat(
+          isProviderObserverContext(
+            mutation: mut(2),
+            container: container,
+          ),
+        ),
+        mut(2),
+      ),
+    );
+
+    await expectLater(
+      second,
+      throwsA(isA<Exception>()),
+    );
+
+    verifyOnly(
+      observer,
+      observer.mutationError(
+        argThat(
+          isProviderObserverContext(
+            mutation: mut(2),
+            container: container,
+          ),
+        ),
+        mut(2),
+        argThat(isA<Exception>()),
+        any,
+      ),
+    );
+
+    // No provider event should be emitted
+    verifyNoMoreInteractions(observer);
+  });
+
+  test('While within `run`, ProviderObserver events log the current mutation',
+      () async {
+    final mut = Mutation<void>();
+    final observer = ProviderObserverMock();
+    final container = ProviderContainer.test(
+      observers: [observer],
+    );
+    final provider = Provider<int>((ref) => 0);
+
+    unawaited(
+      mut.run(container, (ref) async {
+        ref.get(provider);
+      }),
+    );
+
+    verify(
+      observer.didAddProvider(
+        argThat(
+          isProviderObserverContext(
+            mutation: mut,
+            provider: provider,
+            container: container,
+          ),
+        ),
+        any,
+      ),
+    );
+  });
 
   test('Keeps used listenables active until the end of the transaction',
       () async {

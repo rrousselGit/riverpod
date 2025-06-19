@@ -1,7 +1,5 @@
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/misc.dart';
-import 'package:riverpod/riverpod.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
 TypeMatcher<ProviderException> isProviderException(
@@ -102,88 +100,4 @@ TypeMatcher<Invocation> isInvocation({
   }
 
   return matcher;
-}
-
-class ObserverMock extends Mock implements ProviderObserver {
-  ObserverMock([this.label]);
-
-  final String? label;
-
-  @override
-  String toString() {
-    return label ?? super.toString();
-  }
-
-  @override
-  void didAddProvider(
-    ProviderObserverContext? context,
-    Object? value,
-  );
-
-  @override
-  void providerDidFail(
-    ProviderObserverContext? context,
-    Object? error,
-    StackTrace? stackTrace,
-  );
-
-  @override
-  void didUpdateProvider(
-    ProviderObserverContext? context,
-    Object? previousValue,
-    Object? newValue,
-  );
-
-  @override
-  void didDisposeProvider(ProviderObserverContext? context);
-
-  @override
-  void mutationReset(ProviderObserverContext? context);
-
-  @override
-  void mutationStart(
-    ProviderObserverContext? context,
-    MutationContext? mutation,
-  );
-
-  @override
-  void mutationError(
-    ProviderObserverContext? context,
-    MutationContext? mutation,
-    Object? error,
-    StackTrace? stackTrace,
-  );
-
-  @override
-  void mutationSuccess(
-    ProviderObserverContext? context,
-    MutationContext? mutation,
-    Object? result,
-  );
-}
-
-TypeMatcher<ProviderObserverContext> isProviderObserverContext(
-  ProviderBase<Object?> provider,
-  ProviderContainer container, {
-  required Object? mutation,
-}) {
-  var matcher = isA<ProviderObserverContext>();
-
-  matcher = matcher.having((e) => e.provider, 'provider', provider);
-  matcher = matcher.having((e) => e.container, 'container', container);
-  matcher = matcher.having((e) => e.mutation, 'mutation', mutation);
-  if (provider is $ClassProvider) {
-    matcher = matcher.having(
-      (e) => e.notifier,
-      'notifier',
-      container.read(provider.notifier),
-    );
-  }
-
-  return matcher;
-}
-
-TypeMatcher<MutationContext> isMutationContext(Object? invocation) {
-  return isA<MutationContext>()
-      .having((e) => e.invocation, 'invocation', invocation);
 }

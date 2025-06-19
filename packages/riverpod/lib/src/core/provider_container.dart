@@ -1158,22 +1158,6 @@ extension ProviderContainerTest on ProviderContainer {
   ProviderPointerManager get pointerManager => _pointerManager;
 }
 
-/// Information about the pending mutation, when [ProviderObserver] emits
-/// an event while a mutation is in progress.
-/// {@category Core}
-final class MutationContext {
-  /// Information about the pending mutation, when [ProviderObserver] emits
-  /// an event while a mutation is in progress.
-  /// @nodoc
-  @internal
-  MutationContext(this.invocation);
-
-  /// Information about the method invoked by the mutation, and its arguments.
-  ///
-  /// This is only available when using code-generation.
-  final Invocation? invocation;
-}
-
 /// Information about the [ProviderObserver] event.
 /// {@category Core}
 final class ProviderObserverContext {
@@ -1184,7 +1168,6 @@ final class ProviderObserverContext {
     this.provider,
     this.container, {
     required this.mutation,
-    required this.notifier,
   });
 
   /// The provider that triggered the event.
@@ -1193,9 +1176,6 @@ final class ProviderObserverContext {
   /// The container that owns [provider]'s state.
   final ProviderContainer container;
 
-  /// The notifier that triggered the event, if any.
-  final AnyNotifier<Object?, Object?>? notifier;
-
   /// The pending mutation while the observer was called.
   ///
   /// Pretty much all observer events may be triggered by a mutation under some
@@ -1203,14 +1183,13 @@ final class ProviderObserverContext {
   /// For example, if a mutation refreshes another provider, then
   /// [ProviderObserver.didDisposeProvider] will contain the mutation that
   /// disposed the provider.
-  final MutationContext? mutation;
+  final Mutation<Object?>? mutation;
 
   @override
   String toString() {
     final args = [
       'provider: $provider',
       'container: $container',
-      if (notifier != null) 'notifier: ${describeIdentity(notifier)}',
       if (mutation != null) 'mutation: ${describeIdentity(mutation)}',
     ];
     return 'ProviderObserverContext(${args.join(', ')})';
@@ -1277,11 +1256,14 @@ abstract class ProviderObserver {
 
   /// A mutation was reset.
   ///
-  /// This includes both manual calls to [MutationBase.reset] and automatic
+  /// This includes both manual calls to [Mutation.reset] and automatic
   /// resets.
   ///
   /// {@macro auto_reset}
-  void mutationReset(ProviderObserverContext context) {}
+  void mutationReset(
+    ProviderObserverContext context,
+    Mutation<Object?> mutation,
+  ) {}
 
   /// A mutation was started.
   ///
@@ -1292,7 +1274,7 @@ abstract class ProviderObserver {
   /// {@endtemplate}
   void mutationStart(
     ProviderObserverContext context,
-    MutationContext mutation,
+    Mutation<Object?> mutation,
   ) {}
 
   /// A mutation failed.
@@ -1303,7 +1285,7 @@ abstract class ProviderObserver {
   /// {@macro obs_mutation_arg}
   void mutationError(
     ProviderObserverContext context,
-    MutationContext mutation,
+    Mutation<Object?> mutation,
     Object error,
     StackTrace stackTrace,
   ) {}
@@ -1315,7 +1297,7 @@ abstract class ProviderObserver {
   /// {@macro obs_mutation_arg}
   void mutationSuccess(
     ProviderObserverContext context,
-    MutationContext mutation,
+    Mutation<Object?> mutation,
     Object? result,
   ) {}
 }

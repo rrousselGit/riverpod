@@ -4,8 +4,7 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart' hide Retry;
 
-export '../old/utils.dart'
-    show ObserverMock, isProviderObserverContext, isMutationContext;
+export '../old/utils.dart' show ObserverMock, isProviderObserverContext;
 
 class _Sentinel {
   const _Sentinel();

@@ -93,7 +93,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
     asyncTransition(value, seamless: seamless);
 
     final result = resultForValue(value);
-    if (result is! $ResultError<StateT>) {
+    if (result is! $ResultError<StateT> && !origin._isSynthetic) {
       // Hard error states are already reported to the observers
       for (final observer in container.observers) {
         container.runTernaryGuarded(
@@ -720,15 +720,14 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     visitListenables((notifier) => notifier.notifyDependencyMayHaveChanged());
   }
 
-  MutationContext? _currentMutationContext() =>
-      Zone.current[mutationZoneKey] as MutationContext?;
+  Mutation<Object?>? _currentMutationContext() =>
+      Zone.current[mutationZoneKey] as Mutation<Object?>?;
 
   ProviderObserverContext _currentObserverContext() {
     return ProviderObserverContext(
       origin,
       container,
       mutation: _currentMutationContext(),
-      notifier: null,
     );
   }
 
@@ -809,31 +808,33 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         }
     }
 
-    for (final observer in container.observers) {
-      if (isFirstBuild) {
-        container.runBinaryGuarded(
-          observer.didAddProvider,
-          _currentObserverContext(),
-          newState.value,
-        );
-      } else {
-        container.runTernaryGuarded(
-          observer.didUpdateProvider,
-          _currentObserverContext(),
-          previousState,
-          newState.value,
-        );
+    if (!origin._isSynthetic) {
+      for (final observer in container.observers) {
+        if (isFirstBuild) {
+          container.runBinaryGuarded(
+            observer.didAddProvider,
+            _currentObserverContext(),
+            newState.value,
+          );
+        } else {
+          container.runTernaryGuarded(
+            observer.didUpdateProvider,
+            _currentObserverContext(),
+            previousState,
+            newState.value,
+          );
+        }
       }
-    }
 
-    for (final observer in container.observers) {
-      if (newState is $ResultError<StateT>) {
-        container.runTernaryGuarded(
-          observer.providerDidFail,
-          _currentObserverContext(),
-          newState.error,
-          newState.stackTrace,
-        );
+      for (final observer in container.observers) {
+        if (newState is $ResultError<StateT>) {
+          container.runTernaryGuarded(
+            observer.providerDidFail,
+            _currentObserverContext(),
+            newState.error,
+            newState.stackTrace,
+          );
+        }
       }
     }
   }
@@ -1045,11 +1046,13 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     _runCallbacks(container, ref._onDisposeListeners);
 
-    for (final observer in container.observers) {
-      container.runUnaryGuarded(
-        observer.didDisposeProvider,
-        _currentObserverContext(),
-      );
+    if (!origin._isSynthetic) {
+      for (final observer in container.observers) {
+        container.runUnaryGuarded(
+          observer.didDisposeProvider,
+          _currentObserverContext(),
+        );
+      }
     }
 
     ref._keepAliveLinks = null;
