@@ -1,3 +1,7 @@
+## Unreleased patch
+
+Updated dependencies
+
 ## 0.1.1 - 2025-05-04
 
 - `riverpod` upgraded to `3.0.0-dev.15`
