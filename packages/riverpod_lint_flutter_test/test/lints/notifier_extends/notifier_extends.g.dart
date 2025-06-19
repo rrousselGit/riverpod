@@ -28,12 +28,6 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
   @override
   MyNotifier create() => MyNotifier();
 
-  @$internal
-  @override
-  $NotifierProviderElement<MyNotifier, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
@@ -80,12 +74,6 @@ final class _PrivateClassProvider
   @$internal
   @override
   _PrivateClass create() => _PrivateClass();
-
-  @$internal
-  @override
-  $NotifierProviderElement<_PrivateClass, String> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
@@ -139,12 +127,6 @@ final class GenericsProvider<A extends num, B>
   @$internal
   @override
   Generics<A, B> create() => Generics<A, B>();
-
-  @$internal
-  @override
-  $NotifierProviderElement<Generics<A, B>, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   $R _captureGenerics<$R>($R Function<A extends num, B>() cb) {
     return cb<A, B>();
@@ -262,12 +244,6 @@ final class NoGenericsProvider<A extends num, B>
   @override
   NoGenerics<A, B> create() => NoGenerics<A, B>();
 
-  @$internal
-  @override
-  $NotifierProviderElement<NoGenerics<A, B>, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   $R _captureGenerics<$R>($R Function<A extends num, B>() cb) {
     return cb<A, B>();
   }
@@ -384,12 +360,6 @@ final class MissingGenericsProvider<A, B>
   @override
   MissingGenerics<A, B> create() => MissingGenerics<A, B>();
 
-  @$internal
-  @override
-  $NotifierProviderElement<MissingGenerics<A, B>, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   $R _captureGenerics<$R>($R Function<A, B>() cb) {
     return cb<A, B>();
   }
@@ -504,12 +474,6 @@ final class WrongOrderProvider<A, B>
   @$internal
   @override
   WrongOrder<A, B> create() => WrongOrder<A, B>();
-
-  @$internal
-  @override
-  $NotifierProviderElement<WrongOrder<A, B>, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   $R _captureGenerics<$R>($R Function<A, B>() cb) {
     return cb<A, B>();

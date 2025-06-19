@@ -4,8 +4,47 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart' hide Retry;
 
-export '../old/utils.dart'
-    show ObserverMock, isProviderObserverContext, isMutationContext;
+export '../old/utils.dart' show ObserverMock, isProviderObserverContext;
+
+class _Sentinel {
+  const _Sentinel();
+}
+
+TypeMatcher<MutationIdle<T>> isMutationIdle<T>() {
+  return isA<MutationIdle<T>>();
+}
+
+TypeMatcher<MutationPending<T>> isMutationPending<T>() {
+  return isA<MutationPending<T>>();
+}
+
+TypeMatcher<MutationSuccess<T>> isMutationSuccess<T>([
+  Object? value = const _Sentinel(),
+]) {
+  final matcher = isA<MutationSuccess<T>>();
+
+  if (value != const _Sentinel()) {
+    return matcher.having((e) => e.value, 'value', value);
+  }
+
+  return matcher;
+}
+
+TypeMatcher<MutationError<T>> isMutationError<T>({
+  Object? error = const _Sentinel(),
+  Object? stackTrace = const _Sentinel(),
+}) {
+  var matcher = isA<MutationError<T>>();
+
+  if (error != const _Sentinel()) {
+    matcher = matcher.having((e) => e.error, 'error', error);
+  }
+  if (stackTrace != const _Sentinel()) {
+    matcher = matcher.having((e) => e.stackTrace, 'stackTrace', stackTrace);
+  }
+
+  return matcher;
+}
 
 typedef RemoveListener = void Function();
 

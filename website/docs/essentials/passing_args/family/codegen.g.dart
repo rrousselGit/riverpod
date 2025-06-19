@@ -111,12 +111,6 @@ final class ActivityNotifier2Provider
   @override
   ActivityNotifier2 create() => ActivityNotifier2();
 
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<ActivityNotifier2, Activity> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
-
   @override
   bool operator ==(Object other) {
     return other is ActivityNotifier2Provider && other.argument == argument;

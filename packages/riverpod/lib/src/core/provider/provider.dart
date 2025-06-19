@@ -41,6 +41,8 @@ sealed class ProviderBase<StateT> extends ProviderOrFamily
           'When from a family, providers cannot specify dependencies.',
         );
 
+  bool get _isSynthetic => false;
+
   /// If this provider was created with the `.family` modifier, [from] is the `.family` instance.
   @override
   final Family? from;

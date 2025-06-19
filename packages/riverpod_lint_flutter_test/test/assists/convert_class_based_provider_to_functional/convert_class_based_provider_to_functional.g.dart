@@ -31,12 +31,6 @@ final class ExampleProvider extends $NotifierProvider<Example, int> {
   @override
   Example create() => Example();
 
-  @$internal
-  @override
-  $NotifierProviderElement<Example, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
@@ -97,12 +91,6 @@ final class ExampleFamilyProvider
   @$internal
   @override
   ExampleFamily create() => ExampleFamily();
-
-  @$internal
-  @override
-  $NotifierProviderElement<ExampleFamily, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -214,12 +202,6 @@ final class GenericProvider<A, B>
   @$internal
   @override
   Generic<A, B> create() => Generic<A, B>();
-
-  @$internal
-  @override
-  $NotifierProviderElement<Generic<A, B>, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   $R _captureGenerics<$R>($R Function<A, B>() cb) {
     return cb<A, B>();

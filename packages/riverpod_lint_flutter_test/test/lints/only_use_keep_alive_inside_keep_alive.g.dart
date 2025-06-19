@@ -69,12 +69,6 @@ final class KeepAliveClassProvider
   @override
   KeepAliveClass create() => KeepAliveClass();
 
-  @$internal
-  @override
-  $NotifierProviderElement<KeepAliveClass, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
@@ -161,12 +155,6 @@ final class AutoDisposeClassProvider
   @$internal
   @override
   AutoDisposeClass create() => AutoDisposeClass();
-
-  @$internal
-  @override
-  $NotifierProviderElement<AutoDisposeClass, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {

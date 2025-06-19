@@ -29,12 +29,6 @@ final class ExampleProvider extends $AsyncNotifierProvider<Example, String> {
   @$internal
   @override
   Example create() => Example();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<Example, String> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 }
 
 String _$exampleHash() => r'8a906741b8ea4b9b0d3f0b924779704b3e1773a1';

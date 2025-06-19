@@ -2,7 +2,6 @@ import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../models.dart';
 import '../riverpod_generator.dart';
-import 'element.dart';
 import 'parameters.dart';
 import 'template.dart';
 
@@ -151,7 +150,7 @@ ${provider.doc} final class $name$_genericsDefinition
 
         _writeFunctionalCreate(buffer);
 
-      case ClassBasedProviderDeclaration(:final mutations):
+      case ClassBasedProviderDeclaration():
         final notifierType = '${provider.name}$_generics';
 
         buffer.writeln('''
@@ -159,22 +158,6 @@ ${provider.doc} final class $name$_genericsDefinition
   @override
   $notifierType create() => $notifierType();
 ''');
-
-        _classCreateElement(mutations, buffer, notifierType);
-
-        for (final mutation in mutations) {
-          buffer.writeln('''
-  ProviderListenable<${mutation.generatedMutationInterfaceName}> get ${mutation.name}
-    => \$LazyProxyListenable<${mutation.generatedMutationInterfaceName}, ${provider.exposedTypeDisplayString}>(
-      this,
-      (element) {
-        element as ${provider.generatedElementName}$_generics;
-
-        return element.${mutation.elementFieldName};
-      },
-    );
-        ''');
-        }
     }
 
     _writeCaptureGenerics(buffer);
@@ -194,32 +177,6 @@ ${provider.doc} final class $name$_genericsDefinition
       providerOverride: \$SyncValueProvider<${provider.valueTypeDisplayString}>(value),
     );
   }
-''');
-  }
-
-  void _classCreateElement(
-    List<Mutation> mutations,
-    StringBuffer buffer,
-    String notifierType,
-  ) {
-    if (mutations.isEmpty) {
-      buffer.writeln('''
-  @\$internal
-  @override
-  ${provider.internalElementName}<$notifierType, ${provider.valueTypeDisplayString}> \$createElement(
-    \$ProviderPointer pointer
-  ) => ${provider.internalElementName}(pointer);
-''');
-
-      return;
-    }
-
-    buffer.writeln('''
-  @\$internal
-  @override
-  ${provider.generatedElementName}$_generics \$createElement(
-    \$ProviderPointer pointer
-  ) => ${provider.generatedElementName}(pointer);
 ''');
   }
 

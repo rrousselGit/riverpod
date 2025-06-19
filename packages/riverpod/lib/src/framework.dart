@@ -30,5 +30,6 @@ part 'core/provider_listenable_transformer.dart';
 part 'core/provider_container.dart';
 part 'core/provider_subscription.dart';
 part 'core/proxy_provider_listenable.dart';
+part 'core/mutations.dart';
 part 'core/ref.dart';
 part 'core/scheduler.dart';

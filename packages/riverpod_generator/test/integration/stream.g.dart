@@ -119,12 +119,6 @@ final class GenericClassProvider<T extends num>
   @override
   GenericClass<T> create() => GenericClass<T>();
 
-  @$internal
-  @override
-  $StreamNotifierProviderElement<GenericClass<T>, List<T>> $createElement(
-          $ProviderPointer pointer) =>
-      $StreamNotifierProviderElement(pointer);
-
   $R _captureGenerics<$R>($R Function<T extends num>() cb) {
     return cb<T>();
   }
@@ -404,12 +398,6 @@ final class PublicClassProvider
   @$internal
   @override
   PublicClass create() => PublicClass();
-
-  @$internal
-  @override
-  $StreamNotifierProviderElement<PublicClass, String> $createElement(
-          $ProviderPointer pointer) =>
-      $StreamNotifierProviderElement(pointer);
 }
 
 String _$publicClassHash() => r'b1526943c8ff0aaa20642bf78e744e5833cf9d02';
@@ -452,12 +440,6 @@ final class _PrivateClassProvider
   @$internal
   @override
   _PrivateClass create() => _PrivateClass();
-
-  @$internal
-  @override
-  $StreamNotifierProviderElement<_PrivateClass, String> $createElement(
-          $ProviderPointer pointer) =>
-      $StreamNotifierProviderElement(pointer);
 }
 
 String _$privateClassHash() => r'8c0d52b7ab79c0546d0c84c011bb3512609e029e';
@@ -514,12 +496,6 @@ final class FamilyClassProvider
   @$internal
   @override
   FamilyClass create() => FamilyClass();
-
-  @$internal
-  @override
-  $StreamNotifierProviderElement<FamilyClass, String> $createElement(
-          $ProviderPointer pointer) =>
-      $StreamNotifierProviderElement(pointer);
 
   @override
   bool operator ==(Object other) {

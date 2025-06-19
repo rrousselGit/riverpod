@@ -830,12 +830,6 @@ final class ClassWatchGeneratedRootButMissingDependenciesProvider
   ClassWatchGeneratedRootButMissingDependencies create() =>
       ClassWatchGeneratedRootButMissingDependencies();
 
-  @$internal
-  @override
-  $NotifierProviderElement<ClassWatchGeneratedRootButMissingDependencies, int>
-      $createElement($ProviderPointer pointer) =>
-          $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
@@ -932,12 +926,6 @@ final class Regression2417Provider
   @$internal
   @override
   Regression2417 create() => Regression2417();
-
-  @$internal
-  @override
-  $NotifierProviderElement<Regression2417, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -1196,12 +1184,6 @@ final class AliasClassProvider extends $NotifierProvider<AliasClass, int> {
   @override
   AliasClass create() => AliasClass();
 
-  @$internal
-  @override
-  $NotifierProviderElement<AliasClass, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
@@ -1252,12 +1234,6 @@ final class RiverpodDependenciesProvider
   @$internal
   @override
   RiverpodDependencies create() => RiverpodDependencies();
-
-  @$internal
-  @override
-  $NotifierProviderElement<RiverpodDependencies, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {

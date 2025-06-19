@@ -373,7 +373,8 @@ base class ConsumerStatefulElement extends StatefulElement
   @override
   BuildContext get context => this;
 
-  late ProviderContainer _container = ProviderScope.containerOf(this);
+  @override
+  late ProviderContainer container = ProviderScope.containerOf(this);
   var _dependencies =
       <ProviderListenable<Object?>, ProviderSubscription<Object?>>{};
   Map<ProviderListenable<Object?>, ProviderSubscription<Object?>>?
@@ -398,8 +399,8 @@ base class ConsumerStatefulElement extends StatefulElement
   void didChangeDependencies() {
     super.didChangeDependencies();
     final newContainer = ProviderScope.containerOf(this);
-    if (_container != newContainer) {
-      _container = newContainer;
+    if (container != newContainer) {
+      container = newContainer;
       for (final dependency in _dependencies.values) {
         dependency.close();
       }
@@ -454,7 +455,7 @@ base class ConsumerStatefulElement extends StatefulElement
             return oldDependency;
           }
 
-          final sub = _container.listen<Res>(
+          final sub = container.listen<Res>(
             target,
             (_, __) => markNeedsBuild(),
           );
@@ -501,7 +502,7 @@ base class ConsumerStatefulElement extends StatefulElement
     // We can't implement a fireImmediately flag because we wouldn't know
     // which listen call was preserved between widget rebuild, and we wouldn't
     // want to call the listener on every rebuild.
-    final sub = _container.listen<T>(provider, listener, onError: onError);
+    final sub = container.listen<T>(provider, listener, onError: onError);
     _applyTickerMode(sub);
     _listeners.add(sub);
   }
@@ -530,7 +531,7 @@ base class ConsumerStatefulElement extends StatefulElement
     bool asReload = false,
   }) {
     _assertNotDisposed();
-    _container.invalidate(provider, asReload: asReload);
+    container.invalidate(provider, asReload: asReload);
   }
 
   @override

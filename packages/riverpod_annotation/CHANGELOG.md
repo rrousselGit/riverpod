@@ -1,3 +1,7 @@
+## Unreleased patch
+
+Reworked annotations. The old annotation logic has been removed.
+
 ## 3.0.0-dev.15 - 2025-05-02
 
 Update dependency

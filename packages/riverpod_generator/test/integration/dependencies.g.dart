@@ -148,12 +148,6 @@ final class Dep2Provider extends $NotifierProvider<Dep2, int> {
   @override
   Dep2 create() => Dep2();
 
-  @$internal
-  @override
-  $NotifierProviderElement<Dep2, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
@@ -205,12 +199,6 @@ final class Family2Provider extends $NotifierProvider<Family2, int> {
   @$internal
   @override
   Family2 create() => Family2();
-
-  @$internal
-  @override
-  $NotifierProviderElement<Family2, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -420,12 +408,6 @@ final class Provider3Provider extends $NotifierProvider<Provider3, int> {
   @override
   Provider3 create() => Provider3();
 
-  @$internal
-  @override
-  $NotifierProviderElement<Provider3, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
@@ -482,12 +464,6 @@ final class Provider4Provider extends $NotifierProvider<Provider4, int> {
   @$internal
   @override
   Provider4 create() => Provider4();
-
-  @$internal
-  @override
-  $NotifierProviderElement<Provider4, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -736,12 +712,6 @@ final class EmptyDependenciesClassBasedProvider
   @$internal
   @override
   EmptyDependenciesClassBased create() => EmptyDependenciesClassBased();
-
-  @$internal
-  @override
-  $NotifierProviderElement<EmptyDependenciesClassBased, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {

@@ -30,12 +30,6 @@ final class TodoListProvider
   @$internal
   @override
   TodoList create() => TodoList();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<TodoList, List<Todo>> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 }
 
 String _$todoListHash() => r'4008395aaca8f55312f668c0b2a32e7599f82349';

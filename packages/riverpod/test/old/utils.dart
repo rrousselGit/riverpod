@@ -29,7 +29,40 @@ List<Object> errorsOf(void Function() cb) {
   return [...errors];
 }
 
-class ProviderObserverMock extends Mock implements ProviderObserver {}
+class ProviderObserverMock extends Mock implements ProviderObserver {
+  @override
+  void didAddProvider(
+    ProviderObserverContext? context,
+    Object? value,
+  );
+
+  @override
+  void mutationReset(
+    ProviderObserverContext? context,
+    Mutation<Object?>? mutation,
+  );
+
+  @override
+  void mutationStart(
+    ProviderObserverContext? context,
+    Mutation<Object?>? mutation,
+  );
+
+  @override
+  void mutationError(
+    ProviderObserverContext? context,
+    Mutation<Object?>? mutation,
+    Object? error,
+    StackTrace? stackTrace,
+  );
+
+  @override
+  void mutationSuccess(
+    ProviderObserverContext? context,
+    Mutation<Object?>? mutation,
+    Object? result,
+  );
+}
 
 class OnBuildMock extends Mock {
   void call();
@@ -205,18 +238,21 @@ class ObserverMock extends Mock implements ProviderObserver {
   void didDisposeProvider(ProviderObserverContext? context);
 
   @override
-  void mutationReset(ProviderObserverContext? context);
+  void mutationReset(
+    ProviderObserverContext? context,
+    Mutation<Object?>? mutation,
+  );
 
   @override
   void mutationStart(
     ProviderObserverContext? context,
-    MutationContext? mutation,
+    Mutation<Object?>? mutation,
   );
 
   @override
   void mutationError(
     ProviderObserverContext? context,
-    MutationContext? mutation,
+    Mutation<Object?>? mutation,
     Object? error,
     StackTrace? stackTrace,
   );
@@ -224,7 +260,7 @@ class ObserverMock extends Mock implements ProviderObserver {
   @override
   void mutationSuccess(
     ProviderObserverContext? context,
-    MutationContext? mutation,
+    Mutation<Object?>? mutation,
     Object? result,
   );
 }
@@ -232,30 +268,26 @@ class ObserverMock extends Mock implements ProviderObserver {
 // can subclass ProviderObserver without implementing all life-cycles
 class CustomObserver extends ProviderObserver {}
 
-TypeMatcher<ProviderObserverContext> isProviderObserverContext(
-  ProviderBase<Object?> provider,
-  ProviderContainer container, {
-  Object? notifier,
+TypeMatcher<ProviderObserverContext> isProviderObserverContext({
+  Object? provider = const _Sentinel(),
+  Object? container = const _Sentinel(),
+  Object? mutation = const _Sentinel(),
 }) {
   var matcher = isA<ProviderObserverContext>();
 
-  matcher = matcher.having((e) => e.provider, 'provider', provider);
-  matcher = matcher.having((e) => e.container, 'container', container);
-  matcher = matcher.having((e) => e.mutation, 'mutation', null);
-  if (provider is $ClassProvider) {
-    if (notifier == null) {
-      throw ArgumentError(
-        r'You must provide a notifier when using $ClassProvider',
-      );
-    }
-
-    matcher = matcher.having((e) => e.notifier, 'notifier', notifier);
+  if (provider is! _Sentinel) {
+    matcher = matcher.having((e) => e.provider, 'provider', provider);
+  }
+  if (container is! _Sentinel) {
+    matcher = matcher.having((e) => e.container, 'container', container);
+  }
+  if (mutation is! _Sentinel) {
+    matcher = matcher.having((e) => e.mutation, 'mutation', mutation);
   }
 
   return matcher;
 }
 
-TypeMatcher<MutationContext> isMutationContext(Object? invocation) {
-  return isA<MutationContext>()
-      .having((e) => e.invocation, 'invocation', invocation);
+class _Sentinel {
+  const _Sentinel();
 }

@@ -1,3 +1,7 @@
+## Unreleased patch
+
+Reworked Mutations to be independent from code-generation
+
 ## 3.0.0-dev.15 - 2025-05-04
 
 - `riverpod` upgraded to `3.0.0-dev.15`

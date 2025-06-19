@@ -78,12 +78,6 @@ final class BugsEncounteredNotifierProvider
   @override
   BugsEncounteredNotifier create() => BugsEncounteredNotifier();
 
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<BugsEncounteredNotifier, int> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
-
   @override
   bool operator ==(Object other) {
     return other is BugsEncounteredNotifierProvider &&

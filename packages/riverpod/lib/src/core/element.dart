@@ -93,7 +93,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
     asyncTransition(value, seamless: seamless);
 
     final result = resultForValue(value);
-    if (result is! $ResultError<StateT>) {
+    if (result is! $ResultError<StateT> && !origin._isSynthetic) {
       // Hard error states are already reported to the observers
       for (final observer in container.observers) {
         container.runTernaryGuarded(
@@ -365,6 +365,8 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
 
   static ProviderElement? _debugCurrentlyBuildingElement;
 
+  ProviderContainer get container => pointer.targetContainer;
+
   /// The last result of [ProviderBase.debugGetCreateSourceHash].
   ///
   /// Available only in debug mode.
@@ -380,9 +382,6 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
 
   /// The [$ProviderPointer] associated with this [ProviderElement].
   final $ProviderPointer pointer;
-
-  /// The [ProviderContainer] that owns this [ProviderElement].
-  ProviderContainer get container => pointer.targetContainer;
 
   bool unsafeCheckIfMounted = true;
   // ignore: library_private_types_in_public_api, not public
@@ -721,15 +720,14 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     visitListenables((notifier) => notifier.notifyDependencyMayHaveChanged());
   }
 
-  MutationContext? _currentMutationContext() =>
-      Zone.current[mutationZoneKey] as MutationContext?;
+  Mutation<Object?>? _currentMutationContext() =>
+      Zone.current[mutationZoneKey] as Mutation<Object?>?;
 
   ProviderObserverContext _currentObserverContext() {
     return ProviderObserverContext(
       origin,
       container,
       mutation: _currentMutationContext(),
-      notifier: null,
     );
   }
 
@@ -810,31 +808,33 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         }
     }
 
-    for (final observer in container.observers) {
-      if (isFirstBuild) {
-        container.runBinaryGuarded(
-          observer.didAddProvider,
-          _currentObserverContext(),
-          newState.value,
-        );
-      } else {
-        container.runTernaryGuarded(
-          observer.didUpdateProvider,
-          _currentObserverContext(),
-          previousState,
-          newState.value,
-        );
+    if (!origin._isSynthetic) {
+      for (final observer in container.observers) {
+        if (isFirstBuild) {
+          container.runBinaryGuarded(
+            observer.didAddProvider,
+            _currentObserverContext(),
+            newState.value,
+          );
+        } else {
+          container.runTernaryGuarded(
+            observer.didUpdateProvider,
+            _currentObserverContext(),
+            previousState,
+            newState.value,
+          );
+        }
       }
-    }
 
-    for (final observer in container.observers) {
-      if (newState is $ResultError<StateT>) {
-        container.runTernaryGuarded(
-          observer.providerDidFail,
-          _currentObserverContext(),
-          newState.error,
-          newState.stackTrace,
-        );
+      for (final observer in container.observers) {
+        if (newState is $ResultError<StateT>) {
+          container.runTernaryGuarded(
+            observer.providerDidFail,
+            _currentObserverContext(),
+            newState.error,
+            newState.stackTrace,
+          );
+        }
       }
     }
   }
@@ -853,13 +853,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       },
     );
     visitListenables((notifier) => notifier.notifyDependencyMayHaveChanged());
-  }
-
-  @override
-  ProviderElement<NewStateT, Object?> _readProviderElement<NewStateT>(
-    $ProviderBaseImpl<NewStateT> provider,
-  ) {
-    return container.readProviderElement(provider);
   }
 
   ProviderSubscription<T> listen<T>(
@@ -1031,19 +1024,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
   }
 
-  void _closeSubscriptions(List<ProviderSubscription> subscriptions) {
-    final subs = subscriptions.toList();
-    for (var i = 0; i < subs.length; i++) {
-      subs[i].close();
-    }
-  }
-
-  void _pauseSubscriptions(List<ProviderSubscription> subscriptions) {
-    for (var i = 0; i < subscriptions.length; i++) {
-      subscriptions[i].pause();
-    }
-  }
-
   /// Executes the [Ref.onDispose] listeners previously registered, then clear
   /// the list of listeners.
   @protected
@@ -1066,11 +1046,13 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     _runCallbacks(container, ref._onDisposeListeners);
 
-    for (final observer in container.observers) {
-      container.runUnaryGuarded(
-        observer.didDisposeProvider,
-        _currentObserverContext(),
-      );
+    if (!origin._isSynthetic) {
+      for (final observer in container.observers) {
+        container.runUnaryGuarded(
+          observer.didDisposeProvider,
+          _currentObserverContext(),
+        );
+      }
     }
 
     ref._keepAliveLinks = null;
@@ -1210,6 +1192,19 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         visitor(sub.impl._listenedElement);
       }
     }
+  }
+}
+
+void _closeSubscriptions(List<ProviderSubscription> subscriptions) {
+  final subs = subscriptions.toList();
+  for (var i = 0; i < subs.length; i++) {
+    subs[i].close();
+  }
+}
+
+void _pauseSubscriptions(List<ProviderSubscription> subscriptions) {
+  for (var i = 0; i < subscriptions.length; i++) {
+    subscriptions[i].pause();
   }
 }
 

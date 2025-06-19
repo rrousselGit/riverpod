@@ -19,7 +19,7 @@ For the migration guide, please refer to the [migration page](3.0_migration).
 Some of the key highlights include:
 
 - [Offline persistence (experimental)](#offline-persistence-experimental) - Providers can now opt-in to be persisted to a database
-- [Mutations (experimental) (code-generation)](#mutations-experimental-code-generation-only) - A new mechanism to enable interfaces to react to side-effects
+- [Mutations (experimental)](#mutations-experimental) - A new mechanism to enable interfaces to react to side-effects
 - [Automatic retry](#automatic-retry) - Providers now refresh when they fail, with exponential backoff
 - [`Ref.mounted`](#refmounted) - Similar to `BuildContext.mounted`, but for `Ref`.
 - [Generic support (code-generation)](#generic-support-code-generation) - Generated providers can now define type parameters
@@ -188,42 +188,26 @@ As a short demo, here's how you can use offline persistence:
 ></AutoSnippet>
 
 
-## Mutations (experimental) (code-generation only)
+## Mutations (experimental)
 
 :::info
 This feature is experimental and not yet stable.
 It is usable, but the API may change in breaking ways without a major version bump.
 :::
 
-:::note
-Mutations are currently only available using code generation.  
-Support for non-code generation is planned.
-:::
-
 A new feature called "mutations" is introduced in Riverpod 3.0.  
-This feature is a mean to allow your UI to easily show spinners/errors for side-effects (such as form submissions).
+This feature solves two problems:
+- It empowers the UI to react to "side-effects" (such as form submissions, button clicks, etc),
+  to enable it to show loading/success/error messages.
+  Think "Show a toast when a form is submitted successfully".
+- It solves an issue where `onPressed` callbacks combined with [Ref.read] and [autoDispose](./essentials/auto_dispose)
+  could cause providers to be disposed while a side-effect is still in progress.
 
-The TL;DR is, inside a `Notifier`, you can annotate a method with `@mutation`:
+The TL;DR is, a new [Mutation] object is added. It is declared as a top-level final variable,
+like providers:
 
 ```dart
-@riverpod
-class Todos extends _$Todos {
-  @override
-  Future<List<Todo>> build() async {
-    // TODO: fetch todos from the server
-    return [];
-  }
-
-  @mutation
-  Future<void> addTodo(String title) async {
-    // Post the new todo to the server
-    await http.post('https://example.com/todos', body: {
-      'title': title,
-    });
-    // Refresh the state after the post request
-    ref.invalidateSelf();
-  }
-}
+final addTodoMutation = Mutation<void>();
 ```
 
 After that, your UI can use `ref.listen`/`ref.watch` to listen to the state of mutations:
@@ -233,9 +217,9 @@ class AddTodoButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Listen to the status of the "addTodo" side-effect
-    final addTodo = ref.watch(todosProvider.addTodo);
+    final addTodo = ref.watch(addTodoMutation);
 
-    return switch (addTodo.state) {
+    return switch (addTodo) {
       // No side-effect is in progress
       // Let's show a submit button
       MutationIdle() => ElevatedButton(
@@ -248,7 +232,9 @@ class AddTodoButton extends ConsumerWidget {
       MutationPending() => const CircularProgressIndicator(),
       // The side-effect failed. We show a retry button
       MutationErrored() => ElevatedButton(
-        onPressed: () => addTodo('New Todo'),
+        onPressed: () {
+          // TODO see explanation after the code snippet
+        },
         child: const Text('Retry'),
       ),
       // The side-effect was successful. We show a success message
@@ -257,6 +243,26 @@ class AddTodoButton extends ConsumerWidget {
   }
 }
 ```
+
+Last but not least, inside our `onPressed` callback, we can trigger our side-effect as
+followed:
+
+```dart
+onPressed: () {
+  addTodoMutation.run((ref) async {
+    // This is where we run our side-effect.
+    // Here, we typically obtain a Notifier and call a method on it.
+    await ref.get(todoListProvider.notifier).addTodo('New Todo');
+  });
+}
+```
+
+:::note
+Note how we called [ref.get] here instead of [Ref.read].  
+This is a feature unique to mutations. That [ref.get] obtains the state of a provider,
+but keep it alive until the mutation is completed.
+:::
+
 
 ## Automatic retry
 
@@ -1262,8 +1268,11 @@ regarding combining multiple "sources of truth" in a single provider.
 
 [ProviderContainer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderContainer-class.html
 [ProviderScope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[Mutation]: https://pub.dev/documentation/riverpod/3.0.0-dev.15/experimental_mutation/Mutation-class.html
 [riverpod_lint]: https://pub.dev/packages/riverpod_lint
 [Ref]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Ref-class.html
+[Ref.read]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Ref/read.html
+[ref.get]: https://pub.dev/documentation/riverpod/3.0.0-dev.15/experimental_mutation/MutationRef/get.html
 [WidgetRef]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/WidgetRef-class.html
 [TickerMode]: https://api.flutter.dev/flutter/widgets/TickerMode-class.html
 [Consumer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Consumer-class.html

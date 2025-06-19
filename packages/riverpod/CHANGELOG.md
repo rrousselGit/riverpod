@@ -1,9 +1,9 @@
 ## Unreleased build
 
-- Added `AsyncProviderListenable` interface
 - Added `Async/SyncProviderTransformerMixin`.
   Those enable making custom `ProviderListenable`s using a reasonably simple syntax.
   For instance, you could implement your own `provider.select`
+- Reworked mutations to work without code-generation
 - Added `AsyncResult`. This is an interface shared between `AsyncData` and `AsyncError`, but _not_ `AsyncLoading`.
 - Revert Notifier life-cycle change. They are once again preserved across rebuilds.
 - Provider errors are now reported to the
@@ -12,6 +12,7 @@
   the error is now wrapped in a `ProviderException`.
 - Use TickerMode instead of Visibility for pausing out-of-view widgets
 - Reworked offline to simplify its usage
+- Added widget test helper to find a `ProviderContainer` in the widget tree: `tester.container()` (thanks to @Luckey-Elijah)
 
 ## 3.0.0-dev.15 - 2025-05-04
 

@@ -252,12 +252,6 @@ final class GenericClassProvider<T extends num>
   @override
   GenericClass<T> create() => GenericClass<T>();
 
-  @$internal
-  @override
-  $NotifierProviderElement<GenericClass<T>, List<T>> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   $R _captureGenerics<$R>($R Function<T extends num>() cb) {
     return cb<T>();
   }
@@ -452,12 +446,6 @@ final class RawFutureClassProvider
   @override
   RawFutureClass create() => RawFutureClass();
 
-  @$internal
-  @override
-  $NotifierProviderElement<RawFutureClass, Raw<Future<String>>> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Raw<Future<String>> value) {
     return $ProviderOverride(
@@ -507,12 +495,6 @@ final class RawStreamClassProvider
   @$internal
   @override
   RawStreamClass create() => RawStreamClass();
-
-  @$internal
-  @override
-  $NotifierProviderElement<RawStreamClass, Raw<Stream<String>>> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Raw<Stream<String>> value) {
@@ -737,12 +719,6 @@ final class RawFamilyFutureClassProvider
   @override
   RawFamilyFutureClass create() => RawFamilyFutureClass();
 
-  @$internal
-  @override
-  $NotifierProviderElement<RawFamilyFutureClass, Raw<Future<String>>>
-      $createElement($ProviderPointer pointer) =>
-          $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Raw<Future<String>> value) {
     return $ProviderOverride(
@@ -839,12 +815,6 @@ final class RawFamilyStreamClassProvider
   @$internal
   @override
   RawFamilyStreamClass create() => RawFamilyStreamClass();
-
-  @$internal
-  @override
-  $NotifierProviderElement<RawFamilyStreamClass, Raw<Stream<String>>>
-      $createElement($ProviderPointer pointer) =>
-          $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Raw<Stream<String>> value) {
@@ -1183,12 +1153,6 @@ final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
   @override
   PublicClass create() => PublicClass();
 
-  @$internal
-  @override
-  $NotifierProviderElement<PublicClass, String> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
     return $ProviderOverride(
@@ -1235,12 +1199,6 @@ final class _PrivateClassProvider
   @$internal
   @override
   _PrivateClass create() => _PrivateClass();
-
-  @$internal
-  @override
-  $NotifierProviderElement<_PrivateClass, String> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
@@ -1304,12 +1262,6 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
   @$internal
   @override
   FamilyClass create() => FamilyClass();
-
-  @$internal
-  @override
-  $NotifierProviderElement<FamilyClass, String> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
@@ -1669,12 +1621,6 @@ final class Supports$InClassNameProvider<And$InT>
   @override
   Supports$InClassName<And$InT> create() => Supports$InClassName<And$InT>();
 
-  @$internal
-  @override
-  $NotifierProviderElement<Supports$InClassName<And$InT>, String>
-      $createElement($ProviderPointer pointer) =>
-          $NotifierProviderElement(pointer);
-
   $R _captureGenerics<$R>($R Function<And$InT>() cb) {
     return cb<And$InT>();
   }
@@ -1800,12 +1746,6 @@ final class Supports$InClassFamilyNameProvider<And$InT>
   @override
   Supports$InClassFamilyName<And$InT> create() =>
       Supports$InClassFamilyName<And$InT>();
-
-  @$internal
-  @override
-  $NotifierProviderElement<Supports$InClassFamilyName<And$InT>, String>
-      $createElement($ProviderPointer pointer) =>
-          $NotifierProviderElement(pointer);
 
   $R _captureGenerics<$R>($R Function<And$InT>() cb) {
     return cb<And$InT>();
@@ -2074,12 +2014,6 @@ final class UnnecessaryCastClassProvider
   @$internal
   @override
   UnnecessaryCastClass create() => UnnecessaryCastClass();
-
-  @$internal
-  @override
-  $NotifierProviderElement<UnnecessaryCastClass, String> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {

@@ -30,12 +30,6 @@ final class TodosProvider extends $NotifierProvider<Todos, List<Todo>> {
   @override
   Todos create() => Todos();
 
-  @$internal
-  @override
-  $NotifierProviderElement<Todos, List<Todo>> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(List<Todo> value) {
     return $ProviderOverride(

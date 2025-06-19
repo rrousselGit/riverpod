@@ -1,11 +1,36 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/experimental/mutation.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:meta/meta.dart';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
+
+class _Sentinel {
+  const _Sentinel();
+}
+
+TypeMatcher<MutationIdle<T>> isMutationIdle<T>() {
+  return isA<MutationIdle<T>>();
+}
+
+TypeMatcher<MutationPending<T>> isMutationPending<T>() {
+  return isA<MutationPending<T>>();
+}
+
+TypeMatcher<MutationSuccess<T>> isMutationSuccess<T>([
+  Object? value = const _Sentinel(),
+]) {
+  final matcher = isA<MutationSuccess<T>>();
+
+  if (value != const _Sentinel()) {
+    return matcher.having((e) => e.value, 'value', value);
+  }
+
+  return matcher;
+}
 
 (List<Object>, void Function() resetOnError) stubFlutterErrors() {
   final onError = FlutterError.onError;

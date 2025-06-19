@@ -41,12 +41,6 @@ final class ExampleProvider extends $NotifierProvider<Example, String> {
   @override
   Example create() => Example();
 
-  @$internal
-  @override
-  $NotifierProviderElement<Example, String> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
     return $ProviderOverride(

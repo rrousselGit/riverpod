@@ -3,12 +3,7 @@ part of '../framework.dart';
 /// An abstraction of both [ProviderContainer] and [$ProviderElement] used by
 /// [ProviderListenable].
 @internal
-sealed class Node {
-  /// Obtain the [ProviderElement] of a provider, creating it if necessary.
-  ProviderElement<StateT, Object?> _readProviderElement<StateT>(
-    $ProviderBaseImpl<StateT> provider,
-  );
-}
+sealed class Node {}
 
 @internal
 extension NodeX on Node {
@@ -735,7 +730,7 @@ extension NodeInternal on Node {
   ProviderElement<State, Object?> readProviderElement<State>(
     $ProviderBaseImpl<State> provider,
   ) =>
-      _readProviderElement(provider);
+      container._readProviderElement(provider);
 }
 
 /// {@template riverpod.provider_container}
@@ -750,7 +745,7 @@ extension NodeInternal on Node {
 /// {@endtemplate}
 /// {@category Core}
 @publicInRiverpodAndCodegen
-final class ProviderContainer implements Node {
+final class ProviderContainer implements Node, MutationTarget {
   /// {@macro riverpod.provider_container}
   ProviderContainer({
     ProviderContainer? parent,
@@ -843,6 +838,10 @@ final class ProviderContainer implements Node {
   /// The object that handles when providers are refreshed and disposed.
   /// @nodoc
   late final ProviderScheduler _scheduler = ProviderScheduler();
+
+  @internal
+  @override
+  ProviderContainer get container => this;
 
   /// {@macro riverpod.retry}
   final Retry? retry;
@@ -1091,7 +1090,6 @@ final class ProviderContainer implements Node {
     }
   }
 
-  @override
   ProviderElement<StateT, Object?> _readProviderElement<StateT>(
     $ProviderBaseImpl<StateT> provider,
   ) {
@@ -1160,22 +1158,6 @@ extension ProviderContainerTest on ProviderContainer {
   ProviderPointerManager get pointerManager => _pointerManager;
 }
 
-/// Information about the pending mutation, when [ProviderObserver] emits
-/// an event while a mutation is in progress.
-/// {@category Core}
-final class MutationContext {
-  /// Information about the pending mutation, when [ProviderObserver] emits
-  /// an event while a mutation is in progress.
-  /// @nodoc
-  @internal
-  MutationContext(this.invocation);
-
-  /// Information about the method invoked by the mutation, and its arguments.
-  ///
-  /// This is only available when using code-generation.
-  final Invocation? invocation;
-}
-
 /// Information about the [ProviderObserver] event.
 /// {@category Core}
 final class ProviderObserverContext {
@@ -1186,7 +1168,6 @@ final class ProviderObserverContext {
     this.provider,
     this.container, {
     required this.mutation,
-    required this.notifier,
   });
 
   /// The provider that triggered the event.
@@ -1195,9 +1176,6 @@ final class ProviderObserverContext {
   /// The container that owns [provider]'s state.
   final ProviderContainer container;
 
-  /// The notifier that triggered the event, if any.
-  final AnyNotifier<Object?, Object?>? notifier;
-
   /// The pending mutation while the observer was called.
   ///
   /// Pretty much all observer events may be triggered by a mutation under some
@@ -1205,14 +1183,13 @@ final class ProviderObserverContext {
   /// For example, if a mutation refreshes another provider, then
   /// [ProviderObserver.didDisposeProvider] will contain the mutation that
   /// disposed the provider.
-  final MutationContext? mutation;
+  final Mutation<Object?>? mutation;
 
   @override
   String toString() {
     final args = [
       'provider: $provider',
       'container: $container',
-      if (notifier != null) 'notifier: ${describeIdentity(notifier)}',
       if (mutation != null) 'mutation: ${describeIdentity(mutation)}',
     ];
     return 'ProviderObserverContext(${args.join(', ')})';
@@ -1249,8 +1226,8 @@ abstract class ProviderObserver {
   ///
   /// - [newValue] will be `null` if the provider threw during initialization.
   /// - [previousValue] will be `null` if the previous build threw during initialization.
-  ///
-  /// If the change is caused by a "mutation", [mutation] will be the invocation
+  ///mutation
+  /// If the change is caused by a "mutation", [] will be the invocation
   /// that caused the state change.
   /// This includes when a mutation manually calls `state=`:
   ///
@@ -1279,11 +1256,14 @@ abstract class ProviderObserver {
 
   /// A mutation was reset.
   ///
-  /// This includes both manual calls to [MutationBase.reset] and automatic
+  /// This includes both manual calls to [Mutation.reset] and automatic
   /// resets.
   ///
   /// {@macro auto_reset}
-  void mutationReset(ProviderObserverContext context) {}
+  void mutationReset(
+    ProviderObserverContext context,
+    Mutation<Object?> mutation,
+  ) {}
 
   /// A mutation was started.
   ///
@@ -1294,7 +1274,7 @@ abstract class ProviderObserver {
   /// {@endtemplate}
   void mutationStart(
     ProviderObserverContext context,
-    MutationContext mutation,
+    Mutation<Object?> mutation,
   ) {}
 
   /// A mutation failed.
@@ -1305,7 +1285,7 @@ abstract class ProviderObserver {
   /// {@macro obs_mutation_arg}
   void mutationError(
     ProviderObserverContext context,
-    MutationContext mutation,
+    Mutation<Object?> mutation,
     Object error,
     StackTrace stackTrace,
   ) {}
@@ -1317,7 +1297,7 @@ abstract class ProviderObserver {
   /// {@macro obs_mutation_arg}
   void mutationSuccess(
     ProviderObserverContext context,
-    MutationContext mutation,
+    Mutation<Object?> mutation,
     Object? result,
   ) {}
 }

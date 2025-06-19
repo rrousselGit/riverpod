@@ -63,12 +63,6 @@ final class ActivityNotifier2Provider
   @$internal
   @override
   ActivityNotifier2 create() => ActivityNotifier2();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<ActivityNotifier2, Activity> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 }
 
 String _$activityNotifier2Hash() => r'280f4d82a186cfb62827f4d7c74f5349bb0a9e4a';

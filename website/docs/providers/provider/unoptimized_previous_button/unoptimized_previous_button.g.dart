@@ -30,12 +30,6 @@ final class PageIndexProvider extends $NotifierProvider<PageIndex, int> {
   @override
   PageIndex create() => PageIndex();
 
-  @$internal
-  @override
-  $NotifierProviderElement<PageIndex, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(

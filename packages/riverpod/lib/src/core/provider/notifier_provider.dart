@@ -542,7 +542,6 @@ abstract class $ClassProviderElement< //
       origin,
       container,
       mutation: _currentMutationContext(),
-      notifier: classListenable.result?.value,
     );
   }
 

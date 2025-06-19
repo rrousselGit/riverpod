@@ -80,12 +80,6 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
   @override
   ClassBased create() => ClassBased();
 
-  @$internal
-  @override
-  $NotifierProviderElement<ClassBased, String> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
     return $ProviderOverride(
@@ -234,12 +228,6 @@ final class ClassFamilyBasedProvider
   @$internal
   @override
   ClassFamilyBased create() => ClassFamilyBased();
-
-  @$internal
-  @override
-  $NotifierProviderElement<ClassFamilyBased, String> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {

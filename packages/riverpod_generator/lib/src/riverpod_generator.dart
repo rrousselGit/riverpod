@@ -10,10 +10,8 @@ import 'package:source_gen/source_gen.dart';
 
 import 'models.dart';
 import 'parse_generator.dart';
-import 'templates/element.dart';
 import 'templates/family.dart';
 import 'templates/hash.dart';
-import 'templates/mutation.dart';
 import 'templates/notifier.dart';
 import 'templates/parameters.dart';
 import 'templates/provider.dart';
@@ -203,10 +201,6 @@ class _RiverpodGeneratorVisitor {
   ) {
     visitGeneratorProviderDeclaration(provider);
     NotifierTemplate(provider).run(buffer);
-    ElementTemplate(provider).run(buffer);
-    for (final mutation in provider.mutations) {
-      MutationTemplate(mutation, provider).run(buffer);
-    }
   }
 
   void visitFunctionalProviderDeclaration(

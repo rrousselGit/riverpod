@@ -119,12 +119,6 @@ final class GenericClassProvider<T extends num>
   @override
   GenericClass<T> create() => GenericClass<T>();
 
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<GenericClass<T>, List<T>> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
-
   $R _captureGenerics<$R>($R Function<T extends num>() cb) {
     return cb<T>();
   }
@@ -234,12 +228,6 @@ final class GenericArgProvider<T extends num>
   @$internal
   @override
   GenericArg<T> create() => GenericArg<T>();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<GenericArg<T>, String> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 
   $R _captureGenerics<$R>($R Function<T extends num>() cb) {
     return cb<T>();
@@ -602,12 +590,6 @@ final class PublicClassProvider
   @$internal
   @override
   PublicClass create() => PublicClass();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<PublicClass, String> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 }
 
 String _$publicClassHash() => r'e9bc69e44b72e8ed77d423524c0d74ad460d629d';
@@ -650,12 +632,6 @@ final class _PrivateClassProvider
   @$internal
   @override
   _PrivateClass create() => _PrivateClass();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<_PrivateClass, String> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 }
 
 String _$privateClassHash() => r'7e69cffe8315999710e4cb6bb3de9f179d3f2f5d';
@@ -704,12 +680,6 @@ final class FamilyOrClassProvider
   @$internal
   @override
   FamilyOrClass create() => FamilyOrClass();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<FamilyOrClass, String> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 
   @override
   bool operator ==(Object other) {
@@ -805,12 +775,6 @@ final class FamilyClassProvider
   @$internal
   @override
   FamilyClass create() => FamilyClass();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<FamilyClass, String> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 
   @override
   bool operator ==(Object other) {
@@ -943,12 +907,6 @@ final class Regression3490Provider<Model, Sort, Cursor>
   @override
   Regression3490<Model, Sort, Cursor> create() =>
       Regression3490<Model, Sort, Cursor>();
-
-  @$internal
-  @override
-  $NotifierProviderElement<Regression3490<Model, Sort, Cursor>, void>
-      $createElement($ProviderPointer pointer) =>
-          $NotifierProviderElement(pointer);
 
   $R _captureGenerics<$R>($R Function<Model, Sort, Cursor>() cb) {
     return cb<Model, Sort, Cursor>();
