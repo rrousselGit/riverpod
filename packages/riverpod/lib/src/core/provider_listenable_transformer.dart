@@ -2,6 +2,7 @@ part of '../framework.dart';
 
 /// An object containing metadata about the listened object of a
 /// [ProviderTransformer].
+@publicInMisc
 final class ProviderTransformerContext<InT, OutT> {
   ProviderTransformerContext._({
     required AsyncResult<InT> sourceState,
@@ -22,6 +23,7 @@ final class ProviderTransformerContext<InT, OutT> {
 /// - a description of how to react to various life-cycles
 ///   related to the listened object.
 /// {@endtemplate}
+@publicInMisc
 class ProviderTransformer<InT, ValueT> {
   /// {@macro provider_transformer}
   ProviderTransformer({
@@ -191,6 +193,7 @@ abstract class _ProviderTransformerMixin<InT, StateT, ValueT>
   /// The source of this transformer.
   ///
   /// This is the provider that this transformer listens to.
+  @visibleForOverriding
   ProviderListenable<InT> get source;
 
   ProviderTransformer<InT, ValueT> transform(
@@ -206,6 +209,7 @@ abstract class _ProviderTransformerMixin<InT, StateT, ValueT>
 /// See also:
 /// - [AsyncProviderTransformerMixin], for listenables that emit an [AsyncValue]
 /// - [ProviderTransformer], the object responsible for the transformation logic.
+@publicInMisc
 base mixin SyncProviderTransformerMixin<InT, ValueT>
     implements _ProviderTransformerMixin<InT, ValueT, ValueT> {
   @override
@@ -242,6 +246,7 @@ base mixin SyncProviderTransformerMixin<InT, ValueT>
 /// - [SyncProviderTransformerMixin], for listenables that do not emit an
 ///   [AsyncValue]
 /// - [ProviderTransformer], the object responsible for the transformation logic.
+@publicInMisc
 base mixin AsyncProviderTransformerMixin<InT, ValueT>
     implements _ProviderTransformerMixin<InT, AsyncValue<ValueT>, ValueT> {
   @override

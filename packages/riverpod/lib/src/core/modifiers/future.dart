@@ -77,11 +77,14 @@ mixin $AsyncClassModifier<ValueT, CreatedT>
   }
 }
 
-/// Implementation detail for `riverpod_generator`.
-/// Do not use.
-@internal
-@publicInCodegen
-base mixin $FutureModifier<ValueT> on $ProviderBaseImpl<AsyncValue<ValueT>> {
+/// A [ProviderListenable] that exposes an [AsyncValue] and
+/// can be converted into a [Future] using the [future] property.
+///
+/// This is used by [FutureProvider] and [StreamProvider] to
+/// expose their asynchronous values.
+@publicInMisc
+abstract interface class AsyncProviderListenable<ValueT>
+    implements ProviderListenable<AsyncValue<ValueT>> {
   /// Obtains the [Future] representing this provider.
   ///
   /// The instance of [Future] obtained may change over time. This typically
@@ -102,6 +105,16 @@ base mixin $FutureModifier<ValueT> on $ProviderBaseImpl<AsyncValue<ValueT>> {
   ///   return await http.get('${configs.host}/products');
   /// });
   /// ```
+  Refreshable<Future<ValueT>> get future;
+}
+
+/// Implementation detail for `riverpod_generator`.
+/// Do not use.
+@internal
+@publicInCodegen
+base mixin $FutureModifier<ValueT> on $ProviderBaseImpl<AsyncValue<ValueT>>
+    implements AsyncProviderListenable<ValueT> {
+  @override
   Refreshable<Future<ValueT>> get future => _future;
 
   _ProviderRefreshable<Future<ValueT>, AsyncValue<ValueT>> get _future {

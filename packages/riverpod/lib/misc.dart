@@ -17,4 +17,9 @@ export 'src/internals.dart'
         Override,
         ProviderBase,
         KeepAliveLink,
-        ProviderException;
+        ProviderException,
+        ProviderTransformerContext,
+        ProviderTransformer,
+        SyncProviderTransformerMixin,
+        AsyncProviderTransformerMixin,
+        AsyncProviderListenable;
