@@ -1,4 +1,4 @@
-## Unreleased build
+## 3.0.0-dev.16 - 2025-06-20
 
 Reworked annotations. The old annotation logic has been removed.
 

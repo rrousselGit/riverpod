@@ -1,4 +1,4 @@
-## Unreleased build
+## 3.0.0-dev.16 - 2025-06-20
 
 Reworked Mutations to be independent from code-generation
 

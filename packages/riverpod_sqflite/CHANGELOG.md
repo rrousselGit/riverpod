@@ -1,4 +1,4 @@
-## Unreleased patch
+## 0.1.2 - 2025-06-20
 
 Updated dependencies
 
