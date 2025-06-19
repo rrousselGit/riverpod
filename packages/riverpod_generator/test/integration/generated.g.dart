@@ -150,12 +150,6 @@ final class GeneratedClassProvider
   @override
   GeneratedClass create() => GeneratedClass();
 
-  @$internal
-  @override
-  $NotifierProviderElement<GeneratedClass, _Test> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(_Test value) {
     return $ProviderOverride(
@@ -209,12 +203,6 @@ final class GeneratedClassFamilyProvider
   @$internal
   @override
   GeneratedClassFamily create() => GeneratedClassFamily();
-
-  @$internal
-  @override
-  $NotifierProviderElement<GeneratedClassFamily, _Test> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(_Test value) {
@@ -425,12 +413,6 @@ final class $DynamicClassProvider
   @override
   $DynamicClass create() => $DynamicClass();
 
-  @$internal
-  @override
-  $NotifierProviderElement<$DynamicClass, Object?> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Object? value) {
     return $ProviderOverride(
@@ -484,12 +466,6 @@ final class $DynamicClassFamilyProvider
   @$internal
   @override
   $DynamicClassFamily create() => $DynamicClassFamily();
-
-  @$internal
-  @override
-  $NotifierProviderElement<$DynamicClassFamily, Object?> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(Object? value) {
@@ -780,12 +756,6 @@ final class AliasClassProvider
   @override
   AliasClass create() => AliasClass();
 
-  @$internal
-  @override
-  $NotifierProviderElement<AliasClass, AsyncValue<int>> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(AsyncValue<int> value) {
     return $ProviderOverride(
@@ -842,12 +812,6 @@ final class AliasClassFamilyProvider
   @$internal
   @override
   AliasClassFamily create() => AliasClassFamily();
-
-  @$internal
-  @override
-  $NotifierProviderElement<AliasClassFamily, AsyncValue<int>> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(AsyncValue<int> value) {

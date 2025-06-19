@@ -279,12 +279,6 @@ final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
   @override
   PublicClass create() => PublicClass();
 
-  @$internal
-  @override
-  $NotifierProviderElement<PublicClass, String> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
     return $ProviderOverride(
@@ -331,12 +325,6 @@ final class _PrivateClassProvider
   @$internal
   @override
   _PrivateClass create() => _PrivateClass();
-
-  @$internal
-  @override
-  $NotifierProviderElement<_PrivateClass, String> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
@@ -400,12 +388,6 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
   @$internal
   @override
   FamilyClass create() => FamilyClass();
-
-  @$internal
-  @override
-  $NotifierProviderElement<FamilyClass, String> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
@@ -535,12 +517,6 @@ final class Supports$InClassNameProvider
   @$internal
   @override
   Supports$InClassName create() => Supports$InClassName();
-
-  @$internal
-  @override
-  $NotifierProviderElement<Supports$InClassName, String> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {

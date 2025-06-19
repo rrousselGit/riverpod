@@ -36,12 +36,6 @@ final class GeneratedNotifierProvider
   @override
   GeneratedNotifier create() => GeneratedNotifier();
 
-  @$internal
-  @override
-  $NotifierProviderElement<GeneratedNotifier, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(

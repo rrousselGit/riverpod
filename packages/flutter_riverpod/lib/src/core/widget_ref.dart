@@ -36,7 +36,7 @@ part of '../core.dart';
 /// a [Ref] instead.
 /// {@endtemplate}
 /// {@category Core}
-abstract final class WidgetRef {
+sealed class WidgetRef implements MutationTarget {
   /// The [BuildContext] of the widget associated to this [WidgetRef].
   ///
   /// This is strictly identical to the [BuildContext] passed to [ConsumerWidget.build].
@@ -144,8 +144,6 @@ abstract final class WidgetRef {
   /// });
   /// ```
   bool exists(ProviderBase<Object?> provider);
-
-  Future<T> mutate<T>(Mutation<T> mutation, Future<T> Function(MutationRef ref) cb);
 
   /// Listen to a provider and call `listener` whenever its value changes,
   /// without having to take care of removing the listener.

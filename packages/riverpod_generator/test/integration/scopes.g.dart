@@ -28,12 +28,6 @@ final class ScopedClassProvider extends $NotifierProvider<ScopedClass, int> {
   @override
   ScopedClass create() => ScopedClass();
 
-  @$internal
-  @override
-  $NotifierProviderElement<ScopedClass, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
@@ -87,12 +81,6 @@ final class ScopedClassFamilyProvider
   @$internal
   @override
   ScopedClassFamily create() => ScopedClassFamily();
-
-  @$internal
-  @override
-  $NotifierProviderElement<ScopedClassFamily, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {

@@ -40,12 +40,6 @@ final class CounterProvider extends $NotifierProvider<Counter, int> {
   @override
   Counter create() => Counter();
 
-  @$internal
-  @override
-  $NotifierProviderElement<Counter, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(

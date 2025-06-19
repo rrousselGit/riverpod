@@ -745,7 +745,7 @@ extension NodeInternal on Node {
 /// {@endtemplate}
 /// {@category Core}
 @publicInRiverpodAndCodegen
-final class ProviderContainer implements Node {
+final class ProviderContainer implements Node, MutationTarget {
   /// {@macro riverpod.provider_container}
   ProviderContainer({
     ProviderContainer? parent,
@@ -838,6 +838,10 @@ final class ProviderContainer implements Node {
   /// The object that handles when providers are refreshed and disposed.
   /// @nodoc
   late final ProviderScheduler _scheduler = ProviderScheduler();
+
+  @internal
+  @override
+  ProviderContainer get container => this;
 
   /// {@macro riverpod.retry}
   final Retry? retry;
@@ -956,12 +960,6 @@ final class ProviderContainer implements Node {
 
     return sub;
   }
-
-  Future<T> mutate<T>(
-    Mutation<T> mutation,
-    Future<T> Function(MutationRef ref) cb,
-  ) =>
-      mutation.impl._mutate(this, cb);
 
   /// {@macro riverpod.invalidate}
   void invalidate(
@@ -1249,8 +1247,8 @@ abstract class ProviderObserver {
   ///
   /// - [newValue] will be `null` if the provider threw during initialization.
   /// - [previousValue] will be `null` if the previous build threw during initialization.
-  ///
-  /// If the change is caused by a "mutation", [mutation] will be the invocation
+  ///mutation
+  /// If the change is caused by a "mutation", [] will be the invocation
   /// that caused the state change.
   /// This includes when a mutation manually calls `state=`:
   ///

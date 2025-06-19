@@ -29,12 +29,6 @@ final class UnimplementedScopedProvider
   @override
   UnimplementedScoped create() => UnimplementedScoped();
 
-  @$internal
-  @override
-  $NotifierProviderElement<UnimplementedScoped, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(

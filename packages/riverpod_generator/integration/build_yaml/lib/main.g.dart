@@ -135,12 +135,6 @@ final class CountNotifierProvider
   @override
   CountNotifier create() => CountNotifier();
 
-  @$internal
-  @override
-  $NotifierProviderElement<CountNotifier, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
@@ -187,12 +181,6 @@ final class CountAsyncNotifierProvider
   @$internal
   @override
   CountAsyncNotifier create() => CountAsyncNotifier();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<CountAsyncNotifier, int> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 }
 
 String _$countAsyncNotifierHash() =>
@@ -233,12 +221,6 @@ final class CountStreamNotifierProvider
   @$internal
   @override
   CountStreamNotifier create() => CountStreamNotifier();
-
-  @$internal
-  @override
-  $StreamNotifierProviderElement<CountStreamNotifier, int> $createElement(
-          $ProviderPointer pointer) =>
-      $StreamNotifierProviderElement(pointer);
 }
 
 String _$countStreamNotifierHash() =>
@@ -512,12 +494,6 @@ final class CountNotifier2Provider
   @override
   CountNotifier2 create() => CountNotifier2();
 
-  @$internal
-  @override
-  $NotifierProviderElement<CountNotifier2, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
@@ -609,12 +585,6 @@ final class CountAsyncNotifier2Provider
   @override
   CountAsyncNotifier2 create() => CountAsyncNotifier2();
 
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<CountAsyncNotifier2, int> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
-
   @override
   bool operator ==(Object other) {
     return other is CountAsyncNotifier2Provider && other.argument == argument;
@@ -701,12 +671,6 @@ final class CountStreamNotifier2Provider
   @$internal
   @override
   CountStreamNotifier2 create() => CountStreamNotifier2();
-
-  @$internal
-  @override
-  $StreamNotifierProviderElement<CountStreamNotifier2, int> $createElement(
-          $ProviderPointer pointer) =>
-      $StreamNotifierProviderElement(pointer);
 
   @override
   bool operator ==(Object other) {

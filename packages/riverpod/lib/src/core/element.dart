@@ -1023,19 +1023,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
   }
 
-  void _closeSubscriptions(List<ProviderSubscription> subscriptions) {
-    final subs = subscriptions.toList();
-    for (var i = 0; i < subs.length; i++) {
-      subs[i].close();
-    }
-  }
-
-  void _pauseSubscriptions(List<ProviderSubscription> subscriptions) {
-    for (var i = 0; i < subscriptions.length; i++) {
-      subscriptions[i].pause();
-    }
-  }
-
   /// Executes the [Ref.onDispose] listeners previously registered, then clear
   /// the list of listeners.
   @protected
@@ -1202,6 +1189,19 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         visitor(sub.impl._listenedElement);
       }
     }
+  }
+}
+
+void _closeSubscriptions(List<ProviderSubscription> subscriptions) {
+  final subs = subscriptions.toList();
+  for (var i = 0; i < subs.length; i++) {
+    subs[i].close();
+  }
+}
+
+void _pauseSubscriptions(List<ProviderSubscription> subscriptions) {
+  for (var i = 0; i < subscriptions.length; i++) {
+    subscriptions[i].pause();
   }
 }
 

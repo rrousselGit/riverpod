@@ -1,6 +1,14 @@
 import 'package:meta/meta.dart';
 
 @internal
+class ChangePrivacy {
+  const ChangePrivacy();
+}
+
+@internal
+const changePrivacy = ChangePrivacy();
+
+@internal
 class Public {
   const Public.inLibrary(this.library, {this.packageName});
 

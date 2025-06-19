@@ -30,12 +30,6 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
   @override
   MyNotifier create() => MyNotifier();
 
-  @$internal
-  @override
-  $NotifierProviderElement<MyNotifier, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(

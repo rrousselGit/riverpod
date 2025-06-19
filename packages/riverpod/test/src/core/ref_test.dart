@@ -31,6 +31,24 @@ final refMethodsThatDependOnProviderOrFamilies =
 
 void main() {
   group('Ref', () {
+    test('can be used with mutations', () async {
+      final container = ProviderContainer.test();
+      final notifier = DeferredNotifier<int>((self, ref) => 0);
+      final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
+      final mutation = Mutation<int>();
+
+      container.read(provider);
+      final sub = container.listen(mutation, (a, b) {});
+
+      await mutation.run(notifier.ref, (ref) async {
+        notifier.state++;
+
+        return notifier.state;
+      });
+
+      expect(sub.read(), isMutationSuccess<int>(1));
+    });
+
     test('asserts that a lifecycle cannot be used after a ref is unmounted',
         () async {
       late Ref ref;

@@ -203,12 +203,6 @@ final class PackageMetricsProvider
   @override
   PackageMetrics create() => PackageMetrics();
 
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<PackageMetrics, PackageMetricsScore>
-      $createElement($ProviderPointer pointer) =>
-          $AsyncNotifierProviderElement(pointer);
-
   @override
   bool operator ==(Object other) {
     return other is PackageMetricsProvider && other.argument == argument;

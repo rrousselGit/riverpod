@@ -28,11 +28,6 @@ final class AProvider extends $NotifierProvider<A, int> {
   @override
   A create() => A();
 
-  @$internal
-  @override
-  $NotifierProviderElement<A, int> $createElement($ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
@@ -78,11 +73,6 @@ final class A2Provider extends $NotifierProvider<A2, int> {
   @$internal
   @override
   A2 create() => A2();
-
-  @$internal
-  @override
-  $NotifierProviderElement<A2, int> $createElement($ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -135,11 +125,6 @@ final class A3Provider extends $NotifierProvider<A3, int> {
   @$internal
   @override
   A3 create() => A3();
-
-  @$internal
-  @override
-  $NotifierProviderElement<A3, int> $createElement($ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
@@ -230,11 +215,6 @@ final class A4Provider extends $NotifierProvider<A4, int> {
   @override
   A4 create() => A4();
 
-  @$internal
-  @override
-  $NotifierProviderElement<A4, int> $createElement($ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
@@ -324,12 +304,6 @@ final class A5Provider extends $AsyncNotifierProvider<A5, int> {
   @override
   A5 create() => A5();
 
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<A5, int> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
-
   @override
   bool operator ==(Object other) {
     return other is A5Provider && other.argument == argument;
@@ -410,12 +384,6 @@ final class A6Provider extends $AsyncNotifierProvider<A6, int> {
   @$internal
   @override
   A6 create() => A6();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<A6, int> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 
   @override
   bool operator ==(Object other) {
@@ -498,12 +466,6 @@ final class A7Provider extends $StreamNotifierProvider<A7, int> {
   @override
   A7 create() => A7();
 
-  @$internal
-  @override
-  $StreamNotifierProviderElement<A7, int> $createElement(
-          $ProviderPointer pointer) =>
-      $StreamNotifierProviderElement(pointer);
-
   @override
   bool operator ==(Object other) {
     return other is A7Provider && other.argument == argument;
@@ -585,12 +547,6 @@ final class A8Provider extends $StreamNotifierProvider<A8, int> {
   @override
   A8 create() => A8();
 
-  @$internal
-  @override
-  $StreamNotifierProviderElement<A8, int> $createElement(
-          $ProviderPointer pointer) =>
-      $StreamNotifierProviderElement(pointer);
-
   @override
   bool operator ==(Object other) {
     return other is A8Provider && other.argument == argument;
@@ -666,11 +622,6 @@ final class BProvider extends $NotifierProvider<B, int> {
   @override
   B create() => B();
 
-  @$internal
-  @override
-  $NotifierProviderElement<B, int> $createElement($ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
@@ -716,11 +667,6 @@ final class B2Provider extends $NotifierProvider<B2, int> {
   @$internal
   @override
   B2 create() => B2();
-
-  @$internal
-  @override
-  $NotifierProviderElement<B2, int> $createElement($ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {

@@ -1,7 +1,6 @@
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/misc.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod_annotation/experimental/mutation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:test/test.dart';
 
@@ -46,34 +45,6 @@ VerifyOnly get verifyOnly {
     verifyNoMoreInteractions(mock);
     return result;
   };
-}
-
-TypeMatcher<MutationBase<T>> isMutationBase<T>({
-  TypeMatcher<MutationState<T>>? state,
-}) {
-  var matcher = isA<MutationBase<T>>();
-
-  if (state != null) {
-    matcher = matcher.having((e) => e.state, 'state', state);
-  }
-
-  return matcher;
-}
-
-TypeMatcher<MutationIdle<T>> isMutationIdle<T>() {
-  return isA<MutationIdle<T>>();
-}
-
-TypeMatcher<MutationPending<T>> isMutationPending<T>() {
-  return isA<MutationPending<T>>();
-}
-
-TypeMatcher<MutationSuccess<T>> isMutationSuccess<T>(T value) {
-  return isA<MutationSuccess<T>>().having((e) => e.value, 'value', value);
-}
-
-TypeMatcher<MutationError<T>> isMutationError<T>(Object error) {
-  return isA<MutationError<T>>().having((e) => e.error, 'error', error);
 }
 
 enum InvocationKind {

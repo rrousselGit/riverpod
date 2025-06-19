@@ -207,12 +207,6 @@ final class NotifierWithDependenciesProvider
   @override
   NotifierWithDependencies create() => NotifierWithDependencies();
 
-  @$internal
-  @override
-  $NotifierProviderElement<NotifierWithDependencies, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
@@ -276,12 +270,6 @@ final class NotifierFamilyWithDependenciesProvider
   @$internal
   @override
   NotifierFamilyWithDependencies create() => NotifierFamilyWithDependencies();
-
-  @$internal
-  @override
-  $NotifierProviderElement<NotifierFamilyWithDependencies, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {

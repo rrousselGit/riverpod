@@ -83,12 +83,6 @@ final class TodosNotifierProvider
   @$internal
   @override
   TodosNotifier create() => TodosNotifier();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<TodosNotifier, List<Todo>> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 }
 
 String _$todosNotifierHash() => r'b3894a6a57e51a902e2889133583d3e4ba317c64';

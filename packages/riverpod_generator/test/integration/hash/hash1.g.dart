@@ -108,12 +108,6 @@ final class SimpleClassProvider extends $NotifierProvider<SimpleClass, String> {
   @override
   SimpleClass create() => SimpleClass();
 
-  @$internal
-  @override
-  $NotifierProviderElement<SimpleClass, String> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
     return $ProviderOverride(

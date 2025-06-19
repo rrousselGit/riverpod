@@ -31,12 +31,6 @@ final class CounterNotifierProvider
   @override
   CounterNotifier create() => CounterNotifier();
 
-  @$internal
-  @override
-  $NotifierProviderElement<CounterNotifier, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(

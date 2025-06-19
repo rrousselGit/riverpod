@@ -157,6 +157,7 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor<void> {
     if (overrides.isEmpty) return;
 
     for (final override in overrides) {
+      if (element.hasChangePrivacy) continue;
       if ((!element.hasInternal && override.hasInternal) ||
           (!element.hasProtected && override.hasProtected) ||
           (!element.hasVisibleForOverriding &&
@@ -187,6 +188,12 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor<void> {
         macros.add(name);
       }
     }
+  }
+}
+
+extension on Element {
+  bool get hasChangePrivacy {
+    return metadata.any((e) => e.element?.name == 'changePrivacy');
   }
 }
 

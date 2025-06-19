@@ -67,12 +67,6 @@ final class CustomAnnotationProvider
   @$internal
   @override
   CustomAnnotation create() => CustomAnnotation();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<CustomAnnotation, String> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 }
 
 String _$customAnnotationHash() => r'4c741d54be76217c840b239b8838495358b3d1f1';
@@ -122,12 +116,6 @@ final class JsonProvider
   @$internal
   @override
   Json create() => Json();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<Json, Map<String, List<int>>> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 
   @override
   bool operator ==(Object other) {
@@ -211,12 +199,6 @@ final class Json2Provider
   @$internal
   @override
   Json2 create() => Json2();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<Json2, Map<String, List<int>>> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 }
 
 String _$json2Hash() => r'0cc67d4dde84df76d54ff4c0e52f30a9b3faa9fd';
@@ -261,12 +243,6 @@ final class CustomJsonProvider
   @$internal
   @override
   CustomJson create() => CustomJson();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<CustomJson, Map<String, Bar>> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 }
 
 String _$customJsonHash() => r'63e29ca9b3fd9fe21a18e45f1052bbdbc96a6568';
@@ -311,12 +287,6 @@ final class CustomKeyProvider
   @$internal
   @override
   CustomKey create() => CustomKey();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<CustomKey, Map<String, Bar>> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 }
 
 String _$customKeyHash() => r'3c7e8e451f51b47d295754bdd16527f5c40fa457';
@@ -373,12 +343,6 @@ final class CustomJsonWithArgsProvider
   @$internal
   @override
   CustomJsonWithArgs create() => CustomJsonWithArgs();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<CustomJsonWithArgs, Map<String, Bar>>
-      $createElement($ProviderPointer pointer) =>
-          $AsyncNotifierProviderElement(pointer);
 
   @override
   bool operator ==(Object other) {
@@ -488,12 +452,6 @@ final class PassEncodeDecodeByHandProvider extends $AsyncNotifierProvider<
   @$internal
   @override
   PassEncodeDecodeByHand create() => PassEncodeDecodeByHand();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<PassEncodeDecodeByHand, Map<String, String>>
-      $createElement($ProviderPointer pointer) =>
-          $AsyncNotifierProviderElement(pointer);
 }
 
 String _$passEncodeDecodeByHandHash() =>

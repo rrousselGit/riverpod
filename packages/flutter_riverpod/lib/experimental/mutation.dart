@@ -6,4 +6,5 @@ export '../src/internals.dart'
         MutationIdle,
         MutationPending,
         MutationSuccess,
-        MutationError;
+        MutationError,
+        MutationTarget;

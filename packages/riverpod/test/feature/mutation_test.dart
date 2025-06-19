@@ -25,7 +25,7 @@ void main() {
       listener(argThat(isNull), argThat(isMutationIdle<int>())),
     );
 
-    final result = container.mutate(mut, (ref) => completer.future);
+    final result = mut.run(container, (ref) => completer.future);
 
     verifyOnly(
       listener,
@@ -67,7 +67,7 @@ void main() {
       listener(argThat(isNull), argThat(isMutationIdle<int>())),
     );
 
-    final result = container.mutate(mut, (ref) => completer.future);
+    final result = mut.run(container, (ref) => completer.future);
 
     // caching errors before they are reported to the zone
     expect(result, throwsA(42));
@@ -130,7 +130,67 @@ void main() {
     });
   });
 
-  group('auto reset', () {
-    test('resets to idle if all listeners are removed', () {});
+  test('Notifies ProviderObserver', () {});
+
+  test('Keeps used listenables active until the end of the transaction',
+      () async {
+    final mut = Mutation<int>();
+    final onDispose = OnDisposeMock();
+    final futureCompleter = Completer<int>();
+    final p = FutureProvider.autoDispose<int>((ref) {
+      ref.onDispose(onDispose.call);
+      return futureCompleter.future;
+    });
+    final container = ProviderContainer.test();
+    final completer = Completer<void>();
+
+    final f = mut.run(container, (ref) async {
+      ref.get(p);
+
+      await completer.future;
+
+      return 0;
+    });
+
+    await container.pump();
+    futureCompleter.complete(42);
+    await container.pump();
+
+    verifyZeroInteractions(onDispose);
+
+    completer.complete();
+    await completer.future;
+    await container.pump();
+
+    verifyOnly(onDispose, onDispose.call());
+  });
+
+  test('Resets to idle if all listeners are removed', () async {
+    final mut = Mutation<int>();
+    final container = ProviderContainer.test();
+
+    await mut.run(container, (ref) async => 0);
+
+    await container.pump();
+
+    expect(container.read(mut), isMutationIdle<int>());
+  });
+
+  test('Mutations are independent from one another', () async {
+    final mut1 = Mutation<int>();
+    final mut2 = mut1('foo');
+    final mut3 = mut1('bar');
+    final mut4 = Mutation<int>();
+    final container = ProviderContainer.test();
+
+    final sub1 = container.listen(mut1, (previous, next) {});
+    final sub2 = container.listen(mut2, (previous, next) {});
+    final sub3 = container.listen(mut3, (previous, next) {});
+    final sub4 = container.listen(mut4, (previous, next) {});
+
+    await mut1.run(container, (ref) async => 1);
+    await mut2.run(container, (ref) async => 2);
+    await mut3.run(container, (ref) async => 3);
+    await mut4.run(container, (ref) async => 4);
   });
 }

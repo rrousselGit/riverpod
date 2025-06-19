@@ -31,12 +31,6 @@ final class ThemeNotifierProvider
   @override
   ThemeNotifier create() => ThemeNotifier();
 
-  @$internal
-  @override
-  $NotifierProviderElement<ThemeNotifier, ThemeSettings> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(ThemeSettings value) {
     return $ProviderOverride(

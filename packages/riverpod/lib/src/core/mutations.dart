@@ -8,7 +8,38 @@ const mutationZoneKey = #_mutation;
 
 @publicInMutations
 final class MutationRef {
-  MutationRef._();
+  MutationRef._(this._container);
+
+  final ProviderContainer _container;
+  var _closed = false;
+  final List<ProviderSubscription<Object?>> _subscriptions = [];
+
+  /// Reads the current state of a listenable and maintains a subscription
+  /// to it until the transaction completes.
+  ///
+  /// **Note**: Updates to the listenable during the transaction are ignored.
+  StateT get<StateT>(ProviderListenable<StateT> listenable) {
+    assert(
+      !_closed,
+      'Cannot get a listenable after the transaction has been closed',
+    );
+
+    final sub = _container.listen(
+      listenable,
+      (previous, next) {},
+      onError: (error, stackTrace) {},
+    );
+
+    _subscriptions.add(sub);
+
+    return sub.readSafe().valueOrProviderException;
+  }
+
+  void _close() {
+    assert(!_closed, 'MutationRef is already closed');
+    _closed = true;
+    _closeSubscriptions(_subscriptions);
+  }
 }
 
 final class _MutationProvider<T> extends $FunctionalProvider<
@@ -77,13 +108,24 @@ class _MutationElement<T> extends $FunctionalProviderElement<
   }
 }
 
+@publicInMutations
+abstract class MutationTarget {
+  @internal
+  ProviderContainer get container;
+}
+
 @immutable
 @publicInMutations
 sealed class Mutation<ResultT>
     implements ProviderListenable<MutationState<ResultT>> {
   factory Mutation({Object? label}) = MutationImpl<ResultT>;
 
-  ProviderListenable<MutationState<ResultT>> call(Object? key);
+  Mutation<ResultT> call(Object? key);
+
+  Future<ResultT> run(
+    MutationTarget target,
+    Future<ResultT> Function(MutationRef ref) cb,
+  );
 }
 
 extension<T> on Mutation<T> {
@@ -116,31 +158,38 @@ final class MutationImpl<ResultT>
   final (Object? value, Mutation<ResultT> parent)? _key;
 
   @override
-  ProviderListenable<MutationState<ResultT>> call(Object? key) {
+  MutationImpl<ResultT> call(Object? key) {
     return MutationImpl<ResultT>._keyed((key, this), label: label);
   }
 
-  Future<ResultT> _mutate(
-    ProviderContainer container,
+  Future<ResultT> run(
+    MutationTarget target,
     Future<ResultT> Function(MutationRef ref) cb,
   ) async {
-    final sub = container.listen(_MutationProvider<ResultT>(this), (_, __) {});
-    try {
-      final ref = MutationRef._();
+    final container = target.container;
 
-      _mutationStart(sub);
+    final mut = impl;
+    final sub = container.listen<_MutationNotifier<ResultT>>(
+      _MutationProvider(this),
+      (_, __) {},
+    );
+    final ref = MutationRef._(container);
+
+    try {
+      mut._mutationStart(sub);
 
       final result = await cb(ref);
 
-      _mutationSuccess(sub, result);
+      mut._mutationSuccess(sub, result);
 
       return result;
     } catch (error, stackTrace) {
-      _mutationErrored(sub, error, stackTrace);
+      mut._mutationErrored(sub, error, stackTrace);
 
       rethrow;
     } finally {
       sub.close();
+      ref._close();
     }
   }
 
