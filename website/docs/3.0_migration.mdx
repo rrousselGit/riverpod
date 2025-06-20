@@ -206,7 +206,7 @@ Specifically, `ProviderRef.state`, `Ref.listenSelf` and `FutureProviderRef.futur
   language="dart"
   codegen={`
   // Before:
-  @override
+  @riverpod
   Future<int> value(ValueRef ref) async {
     ref.listen(anotherProvider, (previous, next) {
       ref.state++;
