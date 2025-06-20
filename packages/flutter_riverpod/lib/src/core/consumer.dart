@@ -440,7 +440,11 @@ base class ConsumerStatefulElement extends StatefulElement
 
   void _assertNotDisposed() {
     if (!context.mounted) {
-      throw StateError('Cannot use "ref" after the widget was disposed.');
+      throw StateError(
+        'Using "ref" when a widget is about to or has been unmounted is unsafe.\n'
+        'Ref relies on BuildContext, and BuildContext is unsafe to use when the widget is deactivated.\n'
+        'To safely refer to the state of providers inside State.dispose(), save the provider state in a field of your State class.',
+      );
     }
   }
 

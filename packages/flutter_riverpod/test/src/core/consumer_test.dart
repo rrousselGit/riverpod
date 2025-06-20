@@ -320,13 +320,7 @@ void main() {
 
     await tester.pumpWidget(ProviderScope(child: Container()));
 
-    final throwsDisposeError = throwsA(
-      isStateError.having(
-        (e) => e.message,
-        'message',
-        'Cannot use "ref" after the widget was disposed.',
-      ),
-    );
+    final throwsDisposeError = throwsA(isStateError);
 
     expect(() => ref.read(_provider), throwsDisposeError);
     expect(() => ref.watch(_provider), throwsDisposeError);
