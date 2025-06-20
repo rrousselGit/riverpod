@@ -97,7 +97,7 @@ void main() {
         )
         .read();
     persist.write(
-      'PassEncodeDecodeByHand',
+      'Foo',
       'Hello world',
       const StorageOptions(),
     );
@@ -114,7 +114,7 @@ void main() {
         const AsyncData({'value': 'Hello world2'});
     await null;
 
-    final persisted = await persist.read('PassEncodeDecodeByHand');
+    final persisted = await persist.read('Foo');
     expect(persisted?.data, 'Hello world2');
   });
 }

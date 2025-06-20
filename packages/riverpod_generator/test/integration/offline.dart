@@ -115,6 +115,7 @@ class PassEncodeDecodeByHand extends _$PassEncodeDecodeByHand {
   @override
   Future<Map<String, String>> build() async {
     await persist(
+      key: 'Foo',
       ref.watch(storageProvider.future),
       decode: (encoded) => {'value': encoded},
       encode: (state) => state['value']!,

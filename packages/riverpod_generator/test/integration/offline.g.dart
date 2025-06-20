@@ -455,7 +455,7 @@ final class PassEncodeDecodeByHandProvider extends $AsyncNotifierProvider<
 }
 
 String _$passEncodeDecodeByHandHash() =>
-    r'ee0f5eee113aa4b86817990ca53867ad50b294e5';
+    r'3960536b1d2300e99dc2b6344d44f2f354a5e679';
 
 abstract class _$PassEncodeDecodeByHandBase
     extends $AsyncNotifier<Map<String, String>> {
@@ -496,13 +496,14 @@ abstract class _$Json extends _$JsonBase {
   /// You can override [key] to customize the key used for storage.
   FutureOr<void> persist(
     FutureOr<Storage<String, String>> storage, {
+    String? key,
     String Function(Map<String, List<int>> state)? encode,
     Map<String, List<int>> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
   }) {
     return NotifierPersistX(this).persist<String, String>(
       storage,
-      key: key,
+      key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,
       decode: decode ??
           (encoded) {
@@ -527,13 +528,14 @@ abstract class _$Json2 extends _$Json2Base {
   /// You can override [key] to customize the key used for storage.
   FutureOr<void> persist(
     FutureOr<Storage<String, String>> storage, {
+    String? key,
     String Function(Map<String, List<int>> state)? encode,
     Map<String, List<int>> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
   }) {
     return NotifierPersistX(this).persist<String, String>(
       storage,
-      key: key,
+      key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,
       decode: decode ??
           (encoded) {
@@ -558,13 +560,14 @@ abstract class _$CustomJson extends _$CustomJsonBase {
   /// You can override [key] to customize the key used for storage.
   FutureOr<void> persist(
     FutureOr<Storage<String, String>> storage, {
+    String? key,
     String Function(Map<String, Bar> state)? encode,
     Map<String, Bar> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
   }) {
     return NotifierPersistX(this).persist<String, String>(
       storage,
-      key: key,
+      key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,
       decode: decode ??
           (encoded) {
@@ -589,13 +592,14 @@ abstract class _$CustomKey extends _$CustomKeyBase {
   /// You can override [key] to customize the key used for storage.
   FutureOr<void> persist(
     FutureOr<Storage<String, String>> storage, {
+    String? key,
     String Function(Map<String, Bar> state)? encode,
     Map<String, Bar> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
   }) {
     return NotifierPersistX(this).persist<String, String>(
       storage,
-      key: key,
+      key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,
       decode: decode ??
           (encoded) {
@@ -626,13 +630,14 @@ abstract class _$CustomJsonWithArgs extends _$CustomJsonWithArgsBase {
   /// You can override [key] to customize the key used for storage.
   FutureOr<void> persist(
     FutureOr<Storage<String, String>> storage, {
+    String? key,
     String Function(Map<String, Bar> state)? encode,
     Map<String, Bar> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
   }) {
     return NotifierPersistX(this).persist<String, String>(
       storage,
-      key: key,
+      key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,
       decode: decode ??
           (encoded) {
@@ -657,13 +662,14 @@ abstract class _$PassEncodeDecodeByHand extends _$PassEncodeDecodeByHandBase {
   /// You can override [key] to customize the key used for storage.
   FutureOr<void> persist(
     FutureOr<Storage<String, String>> storage, {
+    String? key,
     String Function(Map<String, String> state)? encode,
     Map<String, String> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
   }) {
     return NotifierPersistX(this).persist<String, String>(
       storage,
-      key: key,
+      key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,
       decode: decode ??
           (encoded) {

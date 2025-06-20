@@ -122,13 +122,14 @@ abstract class _$TodosNotifier extends _$TodosNotifierBase {
   /// You can override [key] to customize the key used for storage.
   FutureOr<void> persist(
     FutureOr<Storage<String, String>> storage, {
+    String? key,
     String Function(List<Todo> state)? encode,
     List<Todo> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
   }) {
     return NotifierPersistX(this).persist<String, String>(
       storage,
-      key: key,
+      key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,
       decode: decode ??
           (encoded) {
