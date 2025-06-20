@@ -20,13 +20,13 @@ FutureOr<Storage<String, String>> storage(Ref ref) {
 class CustomAnnotation extends _$CustomAnnotation {
   @override
   Future<String> build() async {
-    await persist2(storage: ref.watch(storageProvider.future));
+    await persist2(storage: ref.watch(storageProvider.future)).future;
     return state.value ?? '';
   }
 }
 
 abstract class _$CustomAnnotation extends _$CustomAnnotationBase {
-  FutureOr<void> persist2({
+  PersistResult persist2({
     Object? key,
     required FutureOr<Storage<Object, String>> storage,
     String Function(String state)? encode,
@@ -70,7 +70,7 @@ class Json2 extends _$Json2 {
 class CustomJson extends _$CustomJson {
   @override
   Future<Map<String, Bar>> build() async {
-    await persist(ref.watch(storageProvider.future));
+    await persist(ref.watch(storageProvider.future)).future;
 
     return state.value ?? {};
   }
@@ -84,7 +84,7 @@ class CustomKey extends _$CustomKey {
 
   @override
   Future<Map<String, Bar>> build() async {
-    await persist(ref.watch(storageProvider.future));
+    await persist(ref.watch(storageProvider.future)).future;
 
     return state.value ?? {};
   }
@@ -95,7 +95,7 @@ class CustomKey extends _$CustomKey {
 class CustomJsonWithArgs extends _$CustomJsonWithArgs {
   @override
   Future<Map<String, Bar>> build(int arg, String arg2, {int? arg3}) async {
-    await persist(ref.watch(storageProvider.future));
+    await persist(ref.watch(storageProvider.future)).future;
 
     return state.value ?? {};
   }
@@ -119,7 +119,7 @@ class PassEncodeDecodeByHand extends _$PassEncodeDecodeByHand {
       ref.watch(storageProvider.future),
       decode: (encoded) => {'value': encoded},
       encode: (state) => state['value']!,
-    );
+    ).future;
 
     return state.value ?? {};
   }

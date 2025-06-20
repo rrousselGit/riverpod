@@ -187,6 +187,19 @@ to a different value.
   }
 }
 
+/// Metadata about offline persistence.
+///
+/// This generally should be ignored. But for specific use-cases, Notifiers
+/// may want to use this object to await [future].
+@publicInPersist
+final class PersistResult {
+  PersistResult._({required this.future});
+
+  /// A future that completes when the persisted state has been decoded
+  /// (or null if no decoding was performed).
+  final Future<void>? future;
+}
+
 /// Adds [persist] method to [AnyNotifier].
 ///
 /// This is separate from [AnyNotifier] because it is experimental.
@@ -198,17 +211,18 @@ extension NotifierPersistX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
   /// changes, and invoke [Storage] methods to persist the state.
   ///
   /// It is generally recommended to call this method at the very top of
-  /// [Notifier.build]. This will ensure that the state is persisted as soon as possible.
+  /// [Notifier.build] This will ensure that the state is persisted as soon as possible.
   ///
-  /// Calling [persist] returns a [Future] that completes when the
-  /// initial decoding is done. After awaiting that future, [Notifier.state]
-  /// should be populated with the decoded value.
+  /// Calling [persist] returns [PersistResult] that contains a [Future]
+  /// which completes when decoding has finished. See [PersistResult.future].
+  /// In general, you should not await this future, as awaiting it would
+  /// only delay the core logic, such as fetching data from an API.
   ///
   /// **Note**:
   /// The decoding of the state is only performed once, the first time
   /// the provider is built. Calling [persist] multiple times will not
   /// re-trigger the decoding.
-  FutureOr<void> persist<KeyT, EncodedT>(
+  PersistResult persist<KeyT, EncodedT>(
     FutureOr<Storage<KeyT, EncodedT>> storage, {
     required KeyT key,
     required EncodedT Function(ValueT state) encode,
@@ -264,14 +278,17 @@ extension NotifierPersistX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
         );
 
         if (futureOr is Future) {
-          return futureOr.catchError(ref.container.defaultOnError);
+          return PersistResult._(
+            future: futureOr.catchError(ref.container.defaultOnError),
+          );
         }
-        return null;
       } catch (err, stack) {
         // Don't block the provider if decoding failed
         ref.container.defaultOnError(err, stack);
       }
     }
+
+    return PersistResult._(future: null);
   }
 }
 

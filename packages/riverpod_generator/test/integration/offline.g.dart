@@ -69,7 +69,7 @@ final class CustomAnnotationProvider
   CustomAnnotation create() => CustomAnnotation();
 }
 
-String _$customAnnotationHash() => r'4c741d54be76217c840b239b8838495358b3d1f1';
+String _$customAnnotationHash() => r'd170ee1343274afe29c07525071b81b49c689d1c';
 
 abstract class _$CustomAnnotationBase extends $AsyncNotifier<String> {
   FutureOr<String> build();
@@ -289,7 +289,7 @@ final class CustomKeyProvider
   CustomKey create() => CustomKey();
 }
 
-String _$customKeyHash() => r'3c7e8e451f51b47d295754bdd16527f5c40fa457';
+String _$customKeyHash() => r'b8b7a780ae558e6716d7316c9b7696d7da187014';
 
 abstract class _$CustomKeyBase extends $AsyncNotifier<Map<String, Bar>> {
   FutureOr<Map<String, Bar>> build();
@@ -494,7 +494,7 @@ abstract class _$Json extends _$JsonBase {
   /// A variant of [persist], for JSON-specific encoding.
   ///
   /// You can override [key] to customize the key used for storage.
-  FutureOr<void> persist(
+  PersistResult persist(
     FutureOr<Storage<String, String>> storage, {
     String? key,
     String Function(Map<String, List<int>> state)? encode,
@@ -526,7 +526,7 @@ abstract class _$Json2 extends _$Json2Base {
   /// A variant of [persist], for JSON-specific encoding.
   ///
   /// You can override [key] to customize the key used for storage.
-  FutureOr<void> persist(
+  PersistResult persist(
     FutureOr<Storage<String, String>> storage, {
     String? key,
     String Function(Map<String, List<int>> state)? encode,
@@ -558,7 +558,7 @@ abstract class _$CustomJson extends _$CustomJsonBase {
   /// A variant of [persist], for JSON-specific encoding.
   ///
   /// You can override [key] to customize the key used for storage.
-  FutureOr<void> persist(
+  PersistResult persist(
     FutureOr<Storage<String, String>> storage, {
     String? key,
     String Function(Map<String, Bar> state)? encode,
@@ -590,7 +590,7 @@ abstract class _$CustomKey extends _$CustomKeyBase {
   /// A variant of [persist], for JSON-specific encoding.
   ///
   /// You can override [key] to customize the key used for storage.
-  FutureOr<void> persist(
+  PersistResult persist(
     FutureOr<Storage<String, String>> storage, {
     String? key,
     String Function(Map<String, Bar> state)? encode,
@@ -628,7 +628,7 @@ abstract class _$CustomJsonWithArgs extends _$CustomJsonWithArgsBase {
   /// A variant of [persist], for JSON-specific encoding.
   ///
   /// You can override [key] to customize the key used for storage.
-  FutureOr<void> persist(
+  PersistResult persist(
     FutureOr<Storage<String, String>> storage, {
     String? key,
     String Function(Map<String, Bar> state)? encode,
@@ -660,7 +660,7 @@ abstract class _$PassEncodeDecodeByHand extends _$PassEncodeDecodeByHandBase {
   /// A variant of [persist], for JSON-specific encoding.
   ///
   /// You can override [key] to customize the key used for storage.
-  FutureOr<void> persist(
+  PersistResult persist(
     FutureOr<Storage<String, String>> storage, {
     String? key,
     String Function(Map<String, String> state)? encode,

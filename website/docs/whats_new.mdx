@@ -84,19 +84,21 @@ As a short demo, here's how you can use offline persistence:
         // - Read the DB and update the state with the persisted value the first
         //   time this method executes.
         // - Listen to changes on this provider and write those changes to the DB.
-        // We "await" for persist to complete to make sure that the decoding is done
-        // before we return the state.
-        await persist(
+        persist(
           // We pass our JsonSqFliteStorage instance. No need to "await" the Future.
           // Riverpod will take care of that.
           ref.watch(storageProvider.future),
           // By default, state is cached offline only for 2 days.
-          // In this example, we tell Riverpod to cache the state forever.
-          options: const StorageOptions(cacheTime: StorageCacheTime.unsafe_forever),
+          // We can optionally uncomment the following line to change cache duration.
+          // options: const StorageOptions(cacheTime: StorageCacheTime.unsafe_forever),
         );
   
-        // If a state is persisted, we return it. Otherwise we return an empty list.
-        return state.value ?? [];
+        // We asynchronously fetch todos from the server.
+        // During the await, the persisted todo list will be available.
+        // After the network request completes, the server state will take precedence
+        // over the persisted state.
+        final todos = await fetchTodos();
+        return todos;
       }
   
       Future<void> add(Todo todo) async {
@@ -153,9 +155,7 @@ As a short demo, here's how you can use offline persistence:
       // - Read the DB and update the state with the persisted value the first
       //   time this method executes.
       // - Listen to changes on this provider and write those changes to the DB.
-      // We "await" for persist to complete to make sure that the decoding is done
-      // before we return the state.
-      await persist(
+      persist(
         // We pass our JsonSqFliteStorage instance. No need to "await" the Future.
         // Riverpod will take care of that.
         ref.watch(storageProvider.future),
@@ -163,8 +163,8 @@ As a short demo, here's how you can use offline persistence:
         // No other provider should use the same key.
         key: 'todos',
         // By default, state is cached offline only for 2 days.
-        // In this example, we tell Riverpod to cache the state forever.
-        options: const StorageOptions(cacheTime: StorageCacheTime.unsafe_forever),
+        // We can optionally uncomment the following line to change cache duration.
+        // options: const StorageOptions(cacheTime: StorageCacheTime.unsafe_forever),
         encode: jsonEncode,
         decode: (json) {
           final decoded = jsonDecode(json) as List;
@@ -174,8 +174,12 @@ As a short demo, here's how you can use offline persistence:
         },
       );
   
-      // If a state is persisted, we return it. Otherwise we return an empty list.
-      return state.value ?? [];
+        // We asynchronously fetch todos from the server.
+        // During the await, the persisted todo list will be available.
+        // After the network request completes, the server state will take precedence
+        // over the persisted state.
+        final todos = await fetchTodos();
+        return todos;
     }
   
     Future<void> add(Todo todo) async {
