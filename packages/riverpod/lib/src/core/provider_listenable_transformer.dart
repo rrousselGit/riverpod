@@ -206,6 +206,45 @@ abstract class _ProviderTransformerMixin<InT, StateT, ValueT>
 /// If in error state, an exception will happen when trying to read the state
 /// of this listenable.
 ///
+/// ## Usage
+///
+/// To use this mixin, you must implement the [transform] method, along with
+/// the [source] getter. The [source] will be the original provider that you are transforming.
+/// And [transform] is where your transformation logic will be defined.
+///
+/// The following example implements a variable of [ProviderListenableSelect.select],
+/// where the callback returns a boolean instead of the selected value.
+///
+/// ```dart
+/// final class Where<T> with SyncProviderTransformerMixin<T, T> {
+///   Where(this.source, this.where);
+///   @override
+///   final ProviderListenable<T> source;
+///   final bool Function(T previous, T value) where;
+///
+///   @override
+///   ProviderTransformer<T, T> transform(
+///     ProviderTransformerContext<T, T> context,
+///   ) {
+///      return ProviderTransformer(
+///        initState: (_) => context.sourceState.requireValue,
+///        listener: (self, previous, next) {
+///          if (where(previous, next))
+///            self.state = next;
+///        },
+///      );
+///   }
+/// }
+///
+/// extension<T> on ProviderListenable<T> {
+///   ProviderListenable<T> where(
+///     bool Function(T previous, T value) where,
+///   ) => Where<T>(this, where);
+/// }
+/// ```
+///
+/// Used as `ref.watch(provider.where((previous, value) => value > 0))`.
+///
 /// See also:
 /// - [AsyncProviderTransformerMixin], for listenables that emit an [AsyncValue]
 /// - [ProviderTransformer], the object responsible for the transformation logic.

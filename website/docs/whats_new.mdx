@@ -1055,6 +1055,44 @@ void main() {
 
 See the [WidgetTester.container] extension for more information.
 
+## Custom ProviderListenables
+
+It is now possible to create custom [ProviderListenable]s in Riverpod 3.0.
+This is doable using [SyncProviderTransformerMixin].
+
+The following example implements a variable of `provider.select`,
+where the callback returns a boolean instead of the selected value.
+
+```dart
+final class Where<T> with SyncProviderTransformerMixin<T, T> {
+  Where(this.source, this.where);
+  @override
+  final ProviderListenable<T> source;
+  final bool Function(T previous, T value) where;
+
+  @override
+  ProviderTransformer<T, T> transform(
+    ProviderTransformerContext<T, T> context,
+  ) {
+     return ProviderTransformer(
+       initState: (_) => context.sourceState.requireValue,
+       listener: (self, previous, next) {
+         if (where(previous, next))
+           self.state = next;
+       },
+     );
+  }
+}
+
+extension<T> on ProviderListenable<T> {
+  ProviderListenable<T> where(
+    bool Function(T previous, T value) where,
+  ) => Where<T>(this, where);
+}
+```
+
+Used as `ref.watch(provider.where((previous, value) => value > 0))`.
+
 ## Statically safe scoping (code-generation only)
 
 Through [riverpod_lint], Riverpod now includes a way to detect when scoping is used incorrectly.
@@ -1280,3 +1318,5 @@ regarding combining multiple "sources of truth" in a single provider.
 [AsyncValue]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/AsyncValue-class.html
 [ProviderObserver]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderObserver-class.html
 [WidgetTester.container]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/RiverpodWidgetTesterX/container.html
+[SyncProviderTransformerMixin]: https://pub.dev/documentation/riverpod/3.0.0-dev.16/misc/SyncProviderTransformerMixin-mixin.html
+[ProviderListenable]: https://pub.dev/documentation/riverpod/3.0.0-dev.16/misc/ProviderListenable-class.html
