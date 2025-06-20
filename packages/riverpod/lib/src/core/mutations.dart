@@ -250,7 +250,7 @@ abstract class MutationTarget {
 ///     addTodoMutation.run(ref, (ref) async {
 ///       // This is where you perform the side-effect. Here, you can
 ///       // read your providers to modify them.
-///       await ref.read(todoListProvider.notifier).addTodo(
+///       await ref.get(todoListProvider.notifier).addTodo(
 ///         Todo(title: 'New Todo'),
 ///       );
 ///     });
