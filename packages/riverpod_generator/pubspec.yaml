@@ -17,7 +17,7 @@ dependencies:
   build_config: ^1.0.0
   collection: ^1.15.0
   crypto: ^3.0.2
-  meta: ^1.17.0
+  meta: ^1.15.0
   mockito: ^5.4.4
   path: ^1.8.0
   riverpod_analyzer_utils: 1.0.0-dev.3
