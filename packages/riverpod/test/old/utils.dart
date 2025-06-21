@@ -7,8 +7,8 @@ import 'package:test/test.dart';
 
 final isAssertionError = isA<AssertionError>();
 
-R Function(Key) cacheFamily<Key, R>(R Function(Key key) create) {
-  final cache = <Key, R>{};
+ValueT Function(KeyT) cacheFamily<KeyT, ValueT>(ValueT Function(KeyT key) create) {
+  final cache = <KeyT, ValueT>{};
   return (key) => cache.putIfAbsent(key, () => create(key));
 }
 
@@ -97,37 +97,37 @@ class OnRemoveListener extends Mock {
   void call();
 }
 
-class Listener<T> extends Mock {
-  void call(T? previous, T? next);
+class Listener<StateT> extends Mock {
+  void call(StateT? previous, StateT? next);
 }
 
 class ErrorListener extends Mock {
   void call(Object? error, StackTrace? stackTrace);
 }
 
-class Selector<Input, Output> extends Mock {
-  Selector(this.fake, Output Function(Input) selector) {
+class Selector<InT, OutT> extends Mock {
+  Selector(this.fake, OutT Function(InT) selector) {
     when(call(any)).thenAnswer((i) {
       return selector(
-        i.positionalArguments.first as Input,
+        i.positionalArguments.first as InT,
       );
     });
   }
 
-  final Output fake;
+  final OutT fake;
 
-  Output call(Input? value) {
+  OutT call(InT? value) {
     return super.noSuchMethod(
       Invocation.method(#call, [value]),
       returnValue: fake,
       returnValueForMissingStub: fake,
-    ) as Output;
+    ) as OutT;
   }
 }
 
-typedef VerifyOnly = VerificationResult Function<T>(
+typedef VerifyOnly = VerificationResult Function<ResT>(
   Mock mock,
-  T matchingInvocations,
+  ResT matchingInvocations,
 );
 
 /// Syntax sugar for:
@@ -139,7 +139,7 @@ typedef VerifyOnly = VerificationResult Function<T>(
 VerifyOnly get verifyOnly {
   final verification = verify;
 
-  return <T>(mock, invocation) {
+  return <ResT>(mock, invocation) {
     final result = verification(invocation);
     result.called(1);
     verifyNoMoreInteractions(mock);

@@ -204,8 +204,8 @@ class _StateNotifierProviderElement<NotifierT extends StateNotifier<ValueT>,
 /// The [Family] of [StateNotifierProvider].
 @publicInLegacy
 final class StateNotifierProviderFamily<NotifierT extends StateNotifier<ValueT>,
-        ValueT, Arg>
-    extends FunctionalFamily<ValueT, ValueT, Arg, NotifierT,
+        ValueT, ArgT>
+    extends FunctionalFamily<ValueT, ValueT, ArgT, NotifierT,
         StateNotifierProvider<NotifierT, ValueT>> {
   /// The [Family] of [StateNotifierProvider].
   /// @nodoc

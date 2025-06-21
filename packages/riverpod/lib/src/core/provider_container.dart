@@ -675,7 +675,7 @@ extension InternalProviderContainer on ProviderContainer {
 
   /// Run a function while catching errors and reporting possible errors to the zone.
   @internal
-  void runUnaryGuarded<T, Res>(Res Function(T) cb, T value) {
+  void runUnaryGuarded<FirstT, ResT>(ResT Function(FirstT) cb, FirstT value) {
     try {
       cb(value);
     } catch (err, stack) {
@@ -685,7 +685,12 @@ extension InternalProviderContainer on ProviderContainer {
 
   /// Run a function while catching errors and reporting possible errors to the zone.
   @internal
-  void runBinaryGuarded<A, B>(void Function(A, B) cb, A value, B value2) {
+  void runBinaryGuarded<FirstT, SecondT>(
+    // ignore: require_trailing_commas
+    void Function(FirstT, SecondT) cb,
+    FirstT value,
+    SecondT value2,
+  ) {
     try {
       cb(value, value2);
     } catch (err, stack) {
@@ -695,11 +700,11 @@ extension InternalProviderContainer on ProviderContainer {
 
   /// Run a function while catching errors and reporting possible errors to the zone.
   @internal
-  void runTernaryGuarded<A, B, C>(
-    void Function(A, B, C) cb,
-    A value,
-    B value2,
-    C value3,
+  void runTernaryGuarded<FirstT, SecondT, ThirdT>(
+    void Function(FirstT, SecondT, ThirdT) cb,
+    FirstT value,
+    SecondT value2,
+    ThirdT value3,
   ) {
     try {
       cb(value, value2, value3);
@@ -710,12 +715,12 @@ extension InternalProviderContainer on ProviderContainer {
 
   /// Run a function while catching errors and reporting possible errors to the zone.
   @internal
-  void runQuaternaryGuarded<A, B, C, D>(
-    void Function(A, B, C, D) cb,
-    A value,
-    B value2,
-    C value3,
-    D value4,
+  void runQuaternaryGuarded<FirstT, SecondT, ThirdT, ForthT>(
+    void Function(FirstT, SecondT, ThirdT, ForthT) cb,
+    FirstT value,
+    SecondT value2,
+    ThirdT value3,
+    ForthT value4,
   ) {
     try {
       cb(value, value2, value3, value4);
@@ -727,8 +732,8 @@ extension InternalProviderContainer on ProviderContainer {
 
 @internal
 extension NodeInternal on Node {
-  ProviderElement<State, Object?> readProviderElement<State>(
-    $ProviderBaseImpl<State> provider,
+  ProviderElement<StateT, Object?> readProviderElement<StateT>(
+    $ProviderBaseImpl<StateT> provider,
   ) =>
       container._readProviderElement(provider);
 }
@@ -897,8 +902,8 @@ final class ProviderContainer implements Node, MutationTarget {
   ///   print(container.read(greetingProvider)); // Hello World
   /// }
   /// ```
-  Result read<Result>(
-    ProviderListenable<Result> provider,
+  StateT read<StateT>(
+    ProviderListenable<StateT> provider,
   ) {
     final sub = listen(provider, (_, __) {});
 
@@ -931,9 +936,9 @@ final class ProviderContainer implements Node, MutationTarget {
   }
 
   /// {@macro riverpod.listen}
-  ProviderSubscription<State> listen<State>(
-    ProviderListenable<State> provider,
-    void Function(State? previous, State next) listener, {
+  ProviderSubscription<StateT> listen<StateT>(
+    ProviderListenable<StateT> provider,
+    void Function(StateT? previous, StateT next) listener, {
     bool fireImmediately = false,
     bool weak = false,
     void Function(Object error, StackTrace stackTrace)? onError,

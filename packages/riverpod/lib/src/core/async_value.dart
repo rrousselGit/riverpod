@@ -8,7 +8,7 @@ import '../providers/stream_provider.dart' show StreamProvider;
 
 @internal
 extension AsyncTransition<ValueT> on AsyncValue<ValueT> {
-  AsyncValue<T> cast<T>() => _cast<T>();
+  AsyncValue<NewT> cast<NewT>() => _cast<NewT>();
 }
 
 /// A utility for safely manipulating asynchronous data.
@@ -150,8 +150,8 @@ sealed class AsyncValue<ValueT> {
   ///   );
   /// }
   /// ```
-  static Future<AsyncValue<T>> guard<T>(
-    Future<T> Function() future, [
+  static Future<AsyncValue<ValueT>> guard<ValueT>(
+    Future<ValueT> Function() future, [
     bool Function(Object)? test,
   ]) async {
     try {
@@ -294,20 +294,20 @@ sealed class AsyncValue<ValueT> {
   ///
   /// This allows reading the content of an [AsyncValue] in a type-safe way,
   /// without potentially ignoring to handle a case.
-  R map<R>({
-    required R Function(AsyncData<ValueT> data) data,
-    required R Function(AsyncError<ValueT> error) error,
-    required R Function(AsyncLoading<ValueT> loading) loading,
+  NewT map<NewT>({
+    required NewT Function(AsyncData<ValueT> data) data,
+    required NewT Function(AsyncError<ValueT> error) error,
+    required NewT Function(AsyncLoading<ValueT> loading) loading,
   });
 
   /// Casts the [AsyncValue] to a different type.
-  AsyncValue<R> _cast<R>();
+  AsyncValue<NewT> _cast<NewT>();
 
   /// Shorthand for [when] to handle only the `data` case.
   ///
   /// For loading/error cases, creates a new [AsyncValue] with the corresponding
   /// generic type while preserving the error/stacktrace.
-  AsyncValue<R> whenData<R>(R Function(ValueT value) cb) {
+  AsyncValue<NewT> whenData<NewT>(NewT Function(ValueT value) cb) {
     return map(
       data: (d) {
         try {
@@ -338,7 +338,7 @@ sealed class AsyncValue<ValueT> {
         hasValue: false,
         progress: e.progress,
       ),
-      loading: (l) => AsyncLoading<R>(progress: progress),
+      loading: (l) => AsyncLoading<NewT>(progress: progress),
     );
   }
 
@@ -348,14 +348,14 @@ sealed class AsyncValue<ValueT> {
   /// If [AsyncValue] was in a case that is not handled, will return [orElse].
   ///
   /// {@macro async_value.skip_flags}
-  R maybeWhen<R>({
+  NewT maybeWhen<NewT>({
     bool skipLoadingOnReload = false,
     bool skipLoadingOnRefresh = true,
     bool skipError = false,
-    R Function(ValueT data)? data,
-    R Function(Object error, StackTrace stackTrace)? error,
-    R Function()? loading,
-    required R Function() orElse,
+    NewT Function(ValueT data)? data,
+    NewT Function(Object error, StackTrace stackTrace)? error,
+    NewT Function()? loading,
+    required NewT Function() orElse,
   }) {
     return when(
       skipError: skipError,
@@ -394,13 +394,13 @@ sealed class AsyncValue<ValueT> {
   /// - [skipError] (false by default) decides whether to invoke [data] instead
   ///   of [error] if a previous [value] is available.
   /// {@endtemplate}
-  R when<R>({
+  NewT when<NewT>({
     bool skipLoadingOnReload = false,
     bool skipLoadingOnRefresh = true,
     bool skipError = false,
-    required R Function(ValueT data) data,
-    required R Function(Object error, StackTrace stackTrace) error,
-    required R Function() loading,
+    required NewT Function(ValueT data) data,
+    required NewT Function(Object error, StackTrace stackTrace) error,
+    required NewT Function() loading,
   }) {
     if (isLoading) {
       bool skip;
@@ -427,13 +427,13 @@ sealed class AsyncValue<ValueT> {
   /// This is similar to [maybeWhen] where `orElse` returns null.
   ///
   /// {@macro async_value.skip_flags}
-  R? whenOrNull<R>({
+  NewT? whenOrNull<NewT>({
     bool skipLoadingOnReload = false,
     bool skipLoadingOnRefresh = true,
     bool skipError = false,
-    R? Function(ValueT data)? data,
-    R? Function(Object error, StackTrace stackTrace)? error,
-    R? Function()? loading,
+    NewT? Function(ValueT data)? data,
+    NewT? Function(Object error, StackTrace stackTrace)? error,
+    NewT? Function()? loading,
   }) {
     return when(
       skipError: skipError,
@@ -447,11 +447,11 @@ sealed class AsyncValue<ValueT> {
 
   /// Perform some actions based on the state of the [AsyncValue], or call orElse
   /// if the current state was not tested.
-  R maybeMap<R>({
-    R Function(AsyncData<ValueT> data)? data,
-    R Function(AsyncError<ValueT> error)? error,
-    R Function(AsyncLoading<ValueT> loading)? loading,
-    required R Function() orElse,
+  NewT maybeMap<NewT>({
+    NewT Function(AsyncData<ValueT> data)? data,
+    NewT Function(AsyncError<ValueT> error)? error,
+    NewT Function(AsyncLoading<ValueT> loading)? loading,
+    required NewT Function() orElse,
   }) {
     return map(
       data: (d) {
@@ -471,10 +471,10 @@ sealed class AsyncValue<ValueT> {
 
   /// Perform some actions based on the state of the [AsyncValue], or return null
   /// if the current state wasn't tested.
-  R? mapOrNull<R>({
-    R? Function(AsyncData<ValueT> data)? data,
-    R? Function(AsyncError<ValueT> error)? error,
-    R? Function(AsyncLoading<ValueT> loading)? loading,
+  NewT? mapOrNull<NewT>({
+    NewT? Function(AsyncData<ValueT> data)? data,
+    NewT? Function(AsyncError<ValueT> error)? error,
+    NewT? Function(AsyncLoading<ValueT> loading)? loading,
   }) {
     return map(
       data: (d) => data?.call(d),
@@ -567,7 +567,7 @@ sealed class AsyncResult<ValueT> extends AsyncValue<ValueT> {
 
   /// A variant of [AsyncValue.guard] that returns an [AsyncResult],
   /// but does not support returning a [Future].
-  static AsyncResult<T> guard<T>(T Function() fn) {
+  static AsyncResult<ValueT> guard<ValueT>(ValueT Function() fn) {
     try {
       return AsyncData(fn());
     } catch (err, stack) {
@@ -629,10 +629,10 @@ final class AsyncData<ValueT> extends AsyncResult<ValueT> {
   final StackTrace? stackTrace;
 
   @override
-  R map<R>({
-    required R Function(AsyncData<ValueT> data) data,
-    required R Function(AsyncError<ValueT> error) error,
-    required R Function(AsyncLoading<ValueT> loading) loading,
+  NewT map<NewT>({
+    required NewT Function(AsyncData<ValueT> data) data,
+    required NewT Function(AsyncError<ValueT> error) error,
+    required NewT Function(AsyncLoading<ValueT> loading) loading,
   }) {
     return data(this);
   }
@@ -646,10 +646,10 @@ final class AsyncData<ValueT> extends AsyncResult<ValueT> {
   }
 
   @override
-  AsyncValue<R> _cast<R>() {
-    if (ValueT == R) return this as AsyncValue<R>;
-    return AsyncData<R>._(
-      value as R,
+  AsyncValue<NewT> _cast<NewT>() {
+    if (ValueT == NewT) return this as AsyncValue<NewT>;
+    return AsyncData<NewT>._(
+      value as NewT,
       isLoading: isLoading,
       error: error,
       stackTrace: stackTrace,
@@ -710,11 +710,11 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
   final StackTrace? stackTrace;
 
   @override
-  AsyncValue<R> _cast<R>() {
-    if (ValueT == R) return this as AsyncValue<R>;
-    return AsyncLoading<R>._(
+  AsyncValue<NewT> _cast<NewT>() {
+    if (ValueT == NewT) return this as AsyncValue<NewT>;
+    return AsyncLoading<NewT>._(
       hasValue: hasValue,
-      value: value as R?,
+      value: value as NewT?,
       error: error,
       stackTrace: stackTrace,
       progress: progress,
@@ -723,10 +723,10 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
   }
 
   @override
-  R map<R>({
-    required R Function(AsyncData<ValueT> data) data,
-    required R Function(AsyncError<ValueT> error) error,
-    required R Function(AsyncLoading<ValueT> loading) loading,
+  NewT map<NewT>({
+    required NewT Function(AsyncData<ValueT> data) data,
+    required NewT Function(AsyncError<ValueT> error) error,
+    required NewT Function(AsyncLoading<ValueT> loading) loading,
   }) {
     return loading(this);
   }
@@ -836,23 +836,23 @@ final class AsyncError<ValueT> extends AsyncResult<ValueT> {
   final StackTrace stackTrace;
 
   @override
-  AsyncValue<R> _cast<R>() {
-    if (ValueT == R) return this as AsyncValue<R>;
-    return AsyncError<R>._(
+  AsyncValue<NewT> _cast<NewT>() {
+    if (ValueT == NewT) return this as AsyncValue<NewT>;
+    return AsyncError<NewT>._(
       error,
       stackTrace: stackTrace,
       isLoading: isLoading,
-      value: value as R?,
+      value: value as NewT?,
       hasValue: hasValue,
       progress: progress,
     );
   }
 
   @override
-  R map<R>({
-    required R Function(AsyncData<ValueT> data) data,
-    required R Function(AsyncError<ValueT> error) error,
-    required R Function(AsyncLoading<ValueT> loading) loading,
+  NewT map<NewT>({
+    required NewT Function(AsyncData<ValueT> data) data,
+    required NewT Function(AsyncError<ValueT> error) error,
+    required NewT Function(AsyncLoading<ValueT> loading) loading,
   }) {
     return error(this);
   }

@@ -5,7 +5,7 @@ import 'dart:async';
 
 import 'package:riverpod/riverpod.dart';
 
-mixin MyMixin<A, Value, B> on AnyNotifier<A, Value> {}
+mixin MyMixin<StateT, ValueT, RandomT> on AnyNotifier<StateT, ValueT> {}
 
 mixin SimpleMixin<StateT, ValueT> on AnyNotifier<StateT, ValueT> {}
 

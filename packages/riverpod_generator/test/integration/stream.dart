@@ -3,15 +3,15 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'stream.g.dart';
 
 @riverpod
-Stream<List<T>> generic<T extends num>(Ref ref) async* {
-  yield <T>[];
+Stream<List<ItemT>> generic<ItemT extends num>(Ref ref) async* {
+  yield <ItemT>[];
 }
 
 @riverpod
-class GenericClass<T extends num> extends _$GenericClass<T> {
+class GenericClass<StateT extends num> extends _$GenericClass<StateT> {
   @override
-  Stream<List<T>> build() async* {
-    yield <T>[];
+  Stream<List<StateT>> build() async* {
+    yield <StateT>[];
   }
 }
 

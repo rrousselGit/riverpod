@@ -544,8 +544,8 @@ void main() {
   });
 }
 
-class Encode<T> with Mock {
-  Object? call(T? value);
+class Encode<DecodedT> with Mock {
+  Object? call(DecodedT? value);
 }
 
 // ignore: avoid_types_as_parameter_names
@@ -590,10 +590,10 @@ extension on TestFactory<Object?> {
     );
   }
 
-  R when<R>({
-    required R Function(AsyncNotifierTestFactory) asyncNotifier,
-    required R Function(StreamNotifierTestFactory) streamNotifier,
-    required R Function(NotifierTestFactory) notifier,
+  ResultT when<ResultT>({
+    required ResultT Function(AsyncNotifierTestFactory) asyncNotifier,
+    required ResultT Function(StreamNotifierTestFactory) streamNotifier,
+    required ResultT Function(NotifierTestFactory) notifier,
   }) {
     if (this is AsyncNotifierTestFactory) {
       return asyncNotifier(this as AsyncNotifierTestFactory);

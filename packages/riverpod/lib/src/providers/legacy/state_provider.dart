@@ -153,10 +153,10 @@ class _StateProviderElement<ValueT>
 
 /// The [Family] of [StateProvider].
 @publicInLegacy
-final class StateProviderFamily<ValueT, Arg> extends FunctionalFamily< //
+final class StateProviderFamily<ValueT, ArgT> extends FunctionalFamily< //
     ValueT,
     ValueT,
-    Arg,
+    ArgT,
     ValueT,
     StateProvider<ValueT>> {
   /// The [Family] of [StateProvider].

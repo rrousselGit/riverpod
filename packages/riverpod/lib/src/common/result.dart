@@ -14,7 +14,7 @@ sealed class $Result<ValueT> {
   /// The error case
   factory $Result.error(Object error, StackTrace stackTrace) = $ResultError;
 
-  static $Result<State> guard<State>(State Function() cb) {
+  static $Result<ValueT> guard<ValueT>(ValueT Function() cb) {
     try {
       return $Result.data(cb());
     } catch (err, stack) {
@@ -42,7 +42,7 @@ sealed class $Result<ValueT> {
 
 /// The data case
 @internal
-final class $ResultData<State> implements $Result<State> {
+final class $ResultData<ValueT> implements $Result<ValueT> {
   /// The data case
   $ResultData(this.value);
 
@@ -59,16 +59,16 @@ final class $ResultData<State> implements $Result<State> {
   StackTrace? get stackTrace => null;
 
   @override
-  final State value;
+  final ValueT value;
 
   @override
-  State get valueOrProviderException => value;
+  ValueT get valueOrProviderException => value;
   @override
-  State get valueOrRawException => value;
+  ValueT get valueOrRawException => value;
 
   @override
   bool operator ==(Object other) =>
-      other is $ResultData<State> &&
+      other is $ResultData<ValueT> &&
       other.runtimeType == runtimeType &&
       other.value == value;
 
@@ -78,7 +78,7 @@ final class $ResultData<State> implements $Result<State> {
 
 /// The error case
 @internal
-final class $ResultError<State> implements $Result<State> {
+final class $ResultError<ValueT> implements $Result<ValueT> {
   /// The error case
   $ResultError(this.error, this.stackTrace);
 
@@ -97,18 +97,18 @@ final class $ResultError<State> implements $Result<State> {
   bool get hasError => true;
 
   @override
-  State? get value => null;
+  ValueT? get value => null;
 
   @override
-  State get valueOrRawException => Error.throwWithStackTrace(error, stackTrace);
+  ValueT get valueOrRawException => Error.throwWithStackTrace(error, stackTrace);
 
   @override
-  State get valueOrProviderException =>
+  ValueT get valueOrProviderException =>
       throwProviderException(error, stackTrace);
 
   @override
   bool operator ==(Object other) =>
-      other is $ResultError<State> &&
+      other is $ResultError<ValueT> &&
       other.runtimeType == runtimeType &&
       other.stackTrace == stackTrace &&
       other.error == error;

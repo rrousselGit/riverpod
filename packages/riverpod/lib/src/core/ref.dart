@@ -237,7 +237,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// to restart a specific provider.
   /// {@endtemplate}
   @useResult
-  T refresh<T>(Refreshable<T> refreshable) {
+  StateT refresh<StateT>(Refreshable<StateT> refreshable) {
     _throwIfInvalidUsage();
 
     if (kDebugMode) _debugAssertCanDependOn(refreshable);
@@ -483,7 +483,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   /// If possible, avoid using [read] and prefer [watch], which is generally
   /// safer to use.
-  T read<T>(ProviderListenable<T> listenable) {
+  StateT read<StateT>(ProviderListenable<StateT> listenable) {
     _throwIfInvalidUsage();
 
     final result = container.read(listenable);
@@ -598,10 +598,10 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///    return sub.read();
   /// }
   /// ```
-  T watch<T>(ProviderListenable<T> listenable) {
+  StateT watch<StateT>(ProviderListenable<StateT> listenable) {
     _throwIfInvalidUsage();
-    late ProviderSubscription<T> sub;
-    sub = _element.listen<T>(
+    late ProviderSubscription<StateT> sub;
+    sub = _element.listen<StateT>(
       listenable,
       (prev, value) => invalidateSelf(asReload: true),
       onError: (err, stack) => invalidateSelf(asReload: true),
@@ -635,9 +635,9 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///   This enables listening to changes on a provider, without causing it to
   ///   perform any work if it currently isn't used.
   /// {@endtemplate}
-  ProviderSubscription<T> listen<T>(
-    ProviderListenable<T> provider,
-    void Function(T? previous, T next) listener, {
+  ProviderSubscription<StateT> listen<StateT>(
+    ProviderListenable<StateT> provider,
+    void Function(StateT? previous, StateT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
     bool weak = false,
     bool fireImmediately = false,

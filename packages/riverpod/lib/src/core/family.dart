@@ -77,8 +77,8 @@ base class $Family extends Family {
 
 /// Setup how a family is overridden
 @internal
-typedef SetupFamilyOverride<Arg> = void Function(
-  Arg argument,
+typedef SetupFamilyOverride<ArgT> = void Function(
+  ArgT argument,
   void Function({
     required $ProviderBaseImpl<Object?> origin,
     required $ProviderBaseImpl<Object?> override,

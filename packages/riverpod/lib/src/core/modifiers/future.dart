@@ -157,10 +157,10 @@ base mixin $FutureModifier<ValueT> on $ProviderBaseImpl<AsyncValue<ValueT>>
   /// });
   /// ```
   /// {@endtemplate}
-  ProviderListenable<Future<Output>> selectAsync<Output>(
-    Output Function(ValueT data) selector,
+  ProviderListenable<Future<OutT>> selectAsync<OutT>(
+    OutT Function(ValueT data) selector,
   ) {
-    return _AsyncSelector<ValueT, Output>(
+    return _AsyncSelector<ValueT, OutT>(
       selector: selector,
       provider: this,
       future: _future,

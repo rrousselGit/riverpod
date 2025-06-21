@@ -12,18 +12,18 @@ class _Sentinel {
   const _Sentinel();
 }
 
-TypeMatcher<MutationIdle<T>> isMutationIdle<T>() {
-  return isA<MutationIdle<T>>();
+TypeMatcher<MutationIdle<StateT>> isMutationIdle<StateT>() {
+  return isA<MutationIdle<StateT>>();
 }
 
-TypeMatcher<MutationPending<T>> isMutationPending<T>() {
-  return isA<MutationPending<T>>();
+TypeMatcher<MutationPending<StateT>> isMutationPending<StateT>() {
+  return isA<MutationPending<StateT>>();
 }
 
-TypeMatcher<MutationSuccess<T>> isMutationSuccess<T>([
+TypeMatcher<MutationSuccess<StateT>> isMutationSuccess<StateT>([
   Object? value = const _Sentinel(),
 ]) {
-  final matcher = isA<MutationSuccess<T>>();
+  final matcher = isA<MutationSuccess<StateT>>();
 
   if (value != const _Sentinel()) {
     return matcher.having((e) => e.value, 'value', value);
@@ -65,8 +65,8 @@ class Counter extends StateNotifier<int> {
   void increment() => state++;
 }
 
-class Listener<T> extends Mock {
-  void call(T? prev, T? value);
+class Listener<StateT> extends Mock {
+  void call(StateT? prev, StateT? value);
 }
 
 List<Object> errorsOf(void Function() cb) {
@@ -75,17 +75,17 @@ List<Object> errorsOf(void Function() cb) {
   return [...errors];
 }
 
-class MayHaveChangedMock<T> extends Mock {
-  void call(ProviderSubscription<T> sub);
+class MayHaveChangedMock<StateT> extends Mock {
+  void call(ProviderSubscription<StateT> sub);
 }
 
-class DidChangedMock<T> extends Mock {
-  void call(ProviderSubscription<T> sub);
+class DidChangedMock<StateT> extends Mock {
+  void call(ProviderSubscription<StateT> sub);
 }
 
-typedef VerifyOnly = VerificationResult Function<T>(
+typedef VerifyOnly = VerificationResult Function<ResultT>(
   Mock mock,
-  T matchingInvocations,
+  ResultT matchingInvocations,
 );
 
 /// Syntax sugar for:
@@ -97,7 +97,7 @@ typedef VerifyOnly = VerificationResult Function<T>(
 VerifyOnly get verifyOnly {
   final verification = verify;
 
-  return <T>(mock, invocation) {
+  return <ResultT>(mock, invocation) {
     final result = verification(invocation);
     result.called(1);
     verifyNoMoreInteractions(mock);

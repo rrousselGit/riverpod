@@ -11,7 +11,9 @@ extension on Ref {
   // We can move the previous logic to a Ref extension.
   // This enables reusing the logic between providers
   // {@endtemplate}
-  T disposeAndListenChangeNotifier<T extends ChangeNotifier>(T notifier) {
+  NotifierT disposeAndListenChangeNotifier<NotifierT extends ChangeNotifier>(
+    NotifierT notifier,
+  ) {
     onDispose(notifier.dispose);
     notifier.addListener(notifyListeners);
     // {@template return}

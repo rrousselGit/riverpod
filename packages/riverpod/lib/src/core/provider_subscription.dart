@@ -51,11 +51,11 @@ sealed class ProviderSubscription<OutT> {
   void close();
 }
 
-extension<T> on ProviderSubscription<T> {
-  ProviderSubscriptionImpl<T> get impl {
+extension<StateT> on ProviderSubscription<StateT> {
+  ProviderSubscriptionImpl<StateT> get impl {
     final that = this;
     switch (that) {
-      case ProviderSubscriptionImpl<T>():
+      case ProviderSubscriptionImpl<StateT>():
         return that;
     }
   }
@@ -72,9 +72,9 @@ extension<T> on ProviderSubscription<T> {
 }
 
 @internal
-extension ProviderSubX<T> on ProviderSubscription<T> {
+extension ProviderSubX<StateT> on ProviderSubscription<StateT> {
   @useResult
-  $Result<T> readSafe() {
+  $Result<StateT> readSafe() {
     if (closed) {
       throw StateError(
         'called ProviderSubscription.read on a subscription that was closed',

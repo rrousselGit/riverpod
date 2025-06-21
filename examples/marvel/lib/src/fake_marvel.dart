@@ -27,7 +27,7 @@ class FakeDio implements Dio {
   final String? _apiKey;
 
   @override
-  Future<Response<T>> get<T>(
+  Future<Response<ValueT>> get<ValueT>(
     String path, {
     Object? data,
     Map<String, dynamic>? queryParameters,
@@ -42,19 +42,19 @@ class FakeDio implements Dio {
 
     switch (path) {
       case 'https://gateway.marvel.com/v1/public/characters/1009368':
-        return FakeResponse(_character1009368) as Response<T>;
+        return FakeResponse(_character1009368) as Response<ValueT>;
       case 'https://gateway.marvel.com/v1/public/characters':
         if (queryParameters?['nameStartsWith'] == 'Iron man') {
-          return FakeResponse(_charactersIronMan) as Response<T>;
+          return FakeResponse(_charactersIronMan) as Response<ValueT>;
         }
         if (queryParameters?['nameStartsWith'] == 'Iron man (') {
-          return FakeResponse(_charactersIronMan2) as Response<T>;
+          return FakeResponse(_charactersIronMan2) as Response<ValueT>;
         }
         if (queryParameters?['offset'] == 0) {
-          return FakeResponse(_characters) as Response<T>;
+          return FakeResponse(_characters) as Response<ValueT>;
         }
         if (queryParameters?['offset'] == 20) {
-          return FakeResponse(_characters20) as Response<T>;
+          return FakeResponse(_characters20) as Response<ValueT>;
         }
         break;
     }

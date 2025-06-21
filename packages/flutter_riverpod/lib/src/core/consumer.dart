@@ -357,8 +357,8 @@ abstract class ConsumerStatefulWidget extends StatefulWidget {
 /// }
 /// ```
 /// {@category Core}
-abstract class ConsumerState<T extends ConsumerStatefulWidget>
-    extends State<T> {
+abstract class ConsumerState<WidgetT extends ConsumerStatefulWidget>
+    extends State<WidgetT> {
   /// {@macro flutter_riverpod.widget_ref}
   late final WidgetRef ref = context as WidgetRef;
 }
@@ -449,7 +449,7 @@ base class ConsumerStatefulElement extends StatefulElement
   }
 
   @override
-  T watch<T>(ProviderListenable<T> target) {
+  StateT watch<StateT>(ProviderListenable<StateT> target) {
     _assertNotDisposed();
     return _dependencies
         .putIfAbsent(target, () {
@@ -459,7 +459,7 @@ base class ConsumerStatefulElement extends StatefulElement
             return oldDependency;
           }
 
-          final sub = container.listen<T>(
+          final sub = container.listen<StateT>(
             target,
             (_, __) => markNeedsBuild(),
           );
@@ -467,7 +467,7 @@ base class ConsumerStatefulElement extends StatefulElement
           return sub;
         })
         .readSafe()
-        .valueOrProviderException as T;
+        .valueOrProviderException as StateT;
   }
 
   @override
@@ -492,9 +492,9 @@ base class ConsumerStatefulElement extends StatefulElement
   }
 
   @override
-  void listen<T>(
-    ProviderListenable<T> provider,
-    void Function(T? previous, T value) listener, {
+  void listen<StateT>(
+    ProviderListenable<StateT> provider,
+    void Function(StateT? previous, StateT value) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
     _assertNotDisposed();
@@ -506,7 +506,7 @@ base class ConsumerStatefulElement extends StatefulElement
     // We can't implement a fireImmediately flag because we wouldn't know
     // which listen call was preserved between widget rebuild, and we wouldn't
     // want to call the listener on every rebuild.
-    final sub = container.listen<T>(provider, listener, onError: onError);
+    final sub = container.listen<StateT>(provider, listener, onError: onError);
     _applyTickerMode(sub);
     _listeners.add(sub);
   }
@@ -518,7 +518,7 @@ base class ConsumerStatefulElement extends StatefulElement
   }
 
   @override
-  T read<T>(ProviderListenable<T> provider) {
+  StateT read<StateT>(ProviderListenable<StateT> provider) {
     _assertNotDisposed();
     return ProviderScope.containerOf(this, listen: false).read(provider);
   }

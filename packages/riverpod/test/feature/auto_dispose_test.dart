@@ -4,12 +4,12 @@ import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:test/test.dart';
 
-class Builder<T extends Function, R> {
+class Builder<FunctionT extends Function, ArgT> {
   Builder(this.ctor);
 
-  final R Function(T create, {bool isAutoDispose}) ctor;
+  final ArgT Function(FunctionT create, {bool isAutoDispose}) ctor;
 
-  Factory<R> build(T fn) {
+  Factory<ArgT> build(FunctionT fn) {
     return ({Object isAutoDispose = const Object()}) {
       switch (isAutoDispose) {
         case const Object():
@@ -23,19 +23,21 @@ class Builder<T extends Function, R> {
   }
 }
 
-extension<T, R> on Builder<T Function(Ref ref), R> {
-  Factory<R> get unimplemented => build((ref) => throw UnimplementedError());
+extension<CreatedT, ArgT> on Builder<CreatedT Function(Ref ref), ArgT> {
+  Factory<ArgT> get unimplemented => build((ref) => throw UnimplementedError());
 }
 
-extension<T, R> on Builder<T Function(Ref ref, Object?), R> {
-  Factory<R> get unimplemented => build((ref, _) => throw UnimplementedError());
+extension<CreatedT, ArgT>
+    on Builder<CreatedT Function(Ref ref, Object?), ArgT> {
+  Factory<ArgT> get unimplemented =>
+      build((ref, _) => throw UnimplementedError());
 }
 
-extension<T, R> on Builder<T Function(), R> {
-  Factory<R> get unimplemented => build(() => throw UnimplementedError());
+extension<CreatedT, ArgT> on Builder<CreatedT Function(), ArgT> {
+  Factory<ArgT> get unimplemented => build(() => throw UnimplementedError());
 }
 
-typedef Factory<R> = R Function({bool isAutoDispose});
+typedef Factory<CreatedT> = CreatedT Function({bool isAutoDispose});
 
 final matrix = [
   // Functional

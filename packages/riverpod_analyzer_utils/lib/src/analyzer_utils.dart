@@ -2,9 +2,9 @@ import 'package:analyzer/dart/ast/ast.dart';
 import 'package:meta/meta.dart';
 
 @internal
-class Box<T> {
+class Box<BoxedT> {
   Box(this.value);
-  final T value;
+  final BoxedT value;
 }
 
 @internal

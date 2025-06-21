@@ -19,13 +19,13 @@ Matcher throwsProviderException(Object exception, [Object? stackTrace]) {
   return throwsA(isProviderException(exception, stackTrace));
 }
 
-class ListenerMock<T> with Mock {
+class ListenerMock<StateT> with Mock {
   void call(Object? a, Object? b);
 }
 
-typedef VerifyOnly = VerificationResult Function<T>(
+typedef VerifyOnly = VerificationResult Function<ResT>(
   Mock mock,
-  T matchingInvocations,
+  ResT matchingInvocations,
 );
 
 /// Syntax sugar for:
@@ -37,7 +37,7 @@ typedef VerifyOnly = VerificationResult Function<T>(
 VerifyOnly get verifyOnly {
   final verification = verify;
 
-  return <T>(mock, invocation) {
+  return <ResT>(mock, invocation) {
     final result = verification(invocation);
     result.called(1);
     verifyNoMoreInteractions(mock);

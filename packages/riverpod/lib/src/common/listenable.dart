@@ -8,10 +8,10 @@ import 'pragma.dart';
 import 'result.dart';
 
 /// Listener for [_ValueListenable]
-class _Listener<T> {
+class _Listener<ValueT> {
   _Listener._(this.onValue, this.onError, this.onDependencyMayHaveChanged);
 
-  final void Function(T? previous, T next) onValue;
+  final void Function(ValueT? previous, ValueT next) onValue;
   final void Function(Object error, StackTrace stackTrace)? onError;
   final void Function()? onDependencyMayHaveChanged;
 }
@@ -21,27 +21,27 @@ class _Listener<T> {
 @internal
 @optionalTypeArgs
 @publicInCodegen
-final class $Observable<T> extends _ValueListenable<T> {
+final class $Observable<ValueT> extends _ValueListenable<ValueT> {
   /// The state associated with this notifier.
   ///
   /// Modifying this property will notify listeners.
-  $Result<T>? get result => _result;
-  $Result<T>? _result;
-  set result($Result<T>? value) {
+  $Result<ValueT>? get result => _result;
+  $Result<ValueT>? _result;
+  set result($Result<ValueT>? value) {
     final previous = _result;
     _result = value;
 
     switch (value) {
       case null:
         break;
-      case $ResultData<T>():
+      case $ResultData<ValueT>():
         _notifyValue(previous?.value, value.value);
-      case $ResultError<T>():
+      case $ResultError<ValueT>():
         _notifyError(value.error, value.stackTrace);
     }
   }
 
-  $Result<T> get requireResult {
+  $Result<ValueT> get requireResult {
     final result = _result;
     if (result == null) {
       return $ResultError(
@@ -53,7 +53,7 @@ final class $Observable<T> extends _ValueListenable<T> {
   }
 }
 
-final class _ValueListenable<T> {
+final class _ValueListenable<ValueT> {
   void Function()? onCancel;
 
   int _count = 0;
@@ -65,17 +65,17 @@ final class _ValueListenable<T> {
   // keeping runtime type the same during the lifetime of this class lets the
   // compiler to infer concrete type for this property, and thus improves
   // performance.
-  static List<_Listener<T>?> _emptyListeners<T>() =>
-      List<_Listener<T>?>.filled(0, null);
+  static List<_Listener<ValueT>?> _emptyListeners<ValueT>() =>
+      List<_Listener<ValueT>?>.filled(0, null);
 
-  List<_Listener<T>?> _listeners = _emptyListeners();
+  List<_Listener<ValueT>?> _listeners = _emptyListeners();
   int _notificationCallStackDepth = 0;
   int _reentrantlyRemovedListeners = 0;
   bool _debugDisposed = false;
 
   /// The accumulated skipped notification while it was locked by [lockNotification].
   ({
-    ({T? prev, T next})? data,
+    ({ValueT? prev, ValueT next})? data,
     ({Object error, StackTrace stack})? error,
   })? _skippedNotification;
 
@@ -153,7 +153,7 @@ final class _ValueListenable<T> {
   ///  * [_removeListener], which removes a previously registered closure from
   ///    the list of closures that are notified when the object changes.
   void Function() addListener(
-    void Function(T?, T) onChange, {
+    void Function(ValueT?, ValueT) onChange, {
     required OnError? onError,
     required void Function()? onDependencyMayHaveChanged,
   }) {
@@ -162,10 +162,10 @@ final class _ValueListenable<T> {
     final listener = _Listener._(onChange, onError, onDependencyMayHaveChanged);
     if (_count == _listeners.length) {
       if (_count == 0) {
-        _listeners = List<_Listener<T>?>.filled(1, null);
+        _listeners = List<_Listener<ValueT>?>.filled(1, null);
       } else {
         final newListeners =
-            List<_Listener<T>?>.filled(_listeners.length * 2, null);
+            List<_Listener<ValueT>?>.filled(_listeners.length * 2, null);
         for (var i = 0; i < _count; i++) {
           newListeners[i] = _listeners[i];
         }
@@ -185,7 +185,7 @@ final class _ValueListenable<T> {
     // of our list.
     _count -= 1;
     if (_count * 2 <= _listeners.length) {
-      final newListeners = List<_Listener<T>?>.filled(_count, null);
+      final newListeners = List<_Listener<ValueT>?>.filled(_count, null);
 
       // Listeners before the index are at the same place.
       for (var i = 0; i < index; i++) {
@@ -222,7 +222,7 @@ final class _ValueListenable<T> {
   ///
   ///  * [addListener], which registers a closure to be called when the object
   ///    changes.
-  void _removeListener(_Listener<T> listener) {
+  void _removeListener(_Listener<ValueT> listener) {
     // This method is allowed to be called on disposed instances for usability
     // reasons. Due to how our frame scheduling logic between render objects and
     // overlays, it is common that the owner of this instance would be disposed a
@@ -285,7 +285,7 @@ final class _ValueListenable<T> {
   /// See the discussion at [_removeListener].
   @protected
   @notifyDebuggerOnException
-  void _notifyListeners(void Function(_Listener<T> listener) notify) {
+  void _notifyListeners(void Function(_Listener<ValueT> listener) notify) {
     assert(_ValueListenable.debugAssertNotDisposed(this), '');
     if (_count == 0) {
       return;
@@ -327,7 +327,7 @@ final class _ValueListenable<T> {
       if (newLength * 2 <= _listeners.length) {
         // As in _removeAt, we only shrink the list when the real number of
         // listeners is half the length of our list.
-        final newListeners = List<_Listener<T>?>.filled(newLength, null);
+        final newListeners = List<_Listener<ValueT>?>.filled(newLength, null);
 
         var newIndex = 0;
         for (var i = 0; i < _count; i++) {
@@ -358,7 +358,7 @@ final class _ValueListenable<T> {
     }
   }
 
-  void _notifyValue(T? prev, T next) {
+  void _notifyValue(ValueT? prev, ValueT next) {
     if (_skippedNotification != null) {
       _skippedNotification = (
         error: null,

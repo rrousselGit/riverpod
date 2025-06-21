@@ -581,12 +581,12 @@ void main() {
   });
 
   group('modifiers', () {
-    void canBeAssignedToRefreshable<T>(
-      Refreshable<T> provider,
+    void canBeAssignedToRefreshable<StateT>(
+      Refreshable<StateT> provider,
     ) {}
 
-    void canBeAssignedToProviderListenable<T>(
-      ProviderListenable<T> provider,
+    void canBeAssignedToProviderListenable<StateT>(
+      ProviderListenable<StateT> provider,
     ) {}
 
     test('provider', () {
@@ -672,13 +672,13 @@ void main() {
 }
 
 @immutable
-class Equal<T> {
+class Equal<BoxedT> {
   const Equal(this.value);
 
-  final T value;
+  final BoxedT value;
 
   @override
-  bool operator ==(Object other) => other is Equal<T> && other.value == value;
+  bool operator ==(Object other) => other is Equal<BoxedT> && other.value == value;
 
   @override
   int get hashCode => Object.hash(runtimeType, value);

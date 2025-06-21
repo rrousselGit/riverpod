@@ -48,7 +48,7 @@ final class StorageOptions {
 /// This includes the data itself, along with various metadata that should
 /// also be persisted.
 @immutable
-final class PersistedData<T> {
+final class PersistedData<DataT> {
   /// A state representation of how the data is persisted.
   ///
   /// This includes the data itself, along with various metadata that should
@@ -56,7 +56,7 @@ final class PersistedData<T> {
   const PersistedData(this.data, {this.destroyKey, this.expireAt});
 
   /// The persisted data.
-  final T data;
+  final DataT data;
 
   /// The key passed to [StorageOptions.destroyKey].
   final String? destroyKey;
@@ -68,7 +68,7 @@ final class PersistedData<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is PersistedData<T> &&
+    return other is PersistedData<DataT> &&
         other.data == data &&
         other.destroyKey == destroyKey &&
         other.expireAt == expireAt;

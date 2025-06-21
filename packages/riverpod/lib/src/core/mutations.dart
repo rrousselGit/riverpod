@@ -52,8 +52,8 @@ final class MutationRef {
   }
 }
 
-final class _MutationProvider<T> extends $FunctionalProvider<
-    _MutationNotifier<T>, _MutationNotifier<T>, _MutationNotifier<T>> {
+final class _MutationProvider<ValueT> extends $FunctionalProvider<
+    _MutationNotifier<ValueT>, _MutationNotifier<ValueT>, _MutationNotifier<ValueT>> {
   const _MutationProvider(this.mutation)
       : super(
           from: null,
@@ -68,55 +68,55 @@ final class _MutationProvider<T> extends $FunctionalProvider<
   @override
   bool get _isSynthetic => true;
 
-  final Mutation<T> mutation;
+  final Mutation<ValueT> mutation;
 
   @override
-  _MutationElement<T> $createElement($ProviderPointer pointer) =>
-      _MutationElement<T>(pointer);
+  _MutationElement<ValueT> $createElement($ProviderPointer pointer) =>
+      _MutationElement<ValueT>(pointer);
 
   @override
-  _MutationNotifier<T> create(Ref ref) => throw UnimplementedError();
+  _MutationNotifier<ValueT> create(Ref ref) => throw UnimplementedError();
 
   @override
   String? debugGetCreateSourceHash() => null;
 
   @override
   bool operator ==(Object other) {
-    return other is _MutationProvider<T> && mutation == other.mutation;
+    return other is _MutationProvider<ValueT> && mutation == other.mutation;
   }
 
   @override
   int get hashCode => mutation.hashCode;
 }
 
-class _MutationNotifier<T> {
+class _MutationNotifier<ValueT> {
   _MutationNotifier(this.state, this.setState, this.setRef, this.getRef);
 
-  final MutationState<T> state;
-  final void Function(MutationState<T> state, MutationRef ref) setState;
+  final MutationState<ValueT> state;
+  final void Function(MutationState<ValueT> state, MutationRef ref) setState;
   final void Function(MutationRef ref) setRef;
   final MutationRef? Function() getRef;
 
   @override
   String toString() {
-    return 'MutationNotifier<$T>($state)';
+    return 'MutationNotifier<$ValueT>($state)';
   }
 }
 
-class _MutationElement<T> extends $FunctionalProviderElement<
-    _MutationNotifier<T>,
-    _MutationNotifier<T>,
-    _MutationNotifier<T>> with SyncProviderElement<_MutationNotifier<T>> {
+class _MutationElement<StateT> extends $FunctionalProviderElement<
+    _MutationNotifier<StateT>,
+    _MutationNotifier<StateT>,
+    _MutationNotifier<StateT>> with SyncProviderElement<_MutationNotifier<StateT>> {
   _MutationElement(super.pointer);
 
   @override
   WhenComplete? create(Ref ref) {
-    final provider = this.provider as _MutationProvider<T>;
+    final provider = this.provider as _MutationProvider<StateT>;
     final mutation = provider.mutation;
 
     MutationRef? activeRef;
 
-    void setState(MutationState<T> state, MutationRef? mutRef) {
+    void setState(MutationState<StateT> state, MutationRef? mutRef) {
       if (mutRef != activeRef) return;
 
       final prevState = value;
@@ -173,7 +173,7 @@ class _MutationElement<T> extends $FunctionalProviderElement<
       }
     }
 
-    setState(MutationIdle<T>._(), null);
+    setState(MutationIdle<StateT>._(), null);
 
     return null;
   }
@@ -362,8 +362,8 @@ sealed class Mutation<ResultT>
   void reset(MutationTarget container);
 }
 
-extension<T> on Mutation<T> {
-  MutationImpl<T> get impl {
+extension<StateT> on Mutation<StateT> {
+  MutationImpl<StateT> get impl {
     final that = this;
     switch (that) {
       case MutationImpl():

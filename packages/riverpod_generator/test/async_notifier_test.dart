@@ -44,7 +44,7 @@ void main() {
     final container = ProviderContainer.test(
       overrides: [
         genericClassProvider
-            .overrideWith(<T extends num>() => GenericClass<T>()),
+            .overrideWith(<ObjT extends num>() => GenericClass<ObjT>()),
         familyClassProvider.overrideWith(() => FamilyClass('Hello foo')),
         familyClassProvider(42, third: .42)
             .overrideWith(() => FamilyClass('Hello world')),

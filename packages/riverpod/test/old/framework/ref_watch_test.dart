@@ -652,9 +652,9 @@ void main() {
   });
 }
 
-class Notifier<T> extends StateNotifier<T> {
+class Notifier<StateT> extends StateNotifier<StateT> {
   Notifier(super._state);
 
   // ignore: use_setters_to_change_properties
-  void setState(T value) => state = value;
+  void setState(StateT value) => state = value;
 }

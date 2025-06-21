@@ -855,9 +855,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     visitListenables((notifier) => notifier.notifyDependencyMayHaveChanged());
   }
 
-  ProviderSubscription<T> listen<T>(
-    ProviderListenable<T> listenable,
-    void Function(T? previous, T value) listener, {
+  ProviderSubscription<ListenedStateT> listen<ListenedStateT>(
+    ProviderListenable<ListenedStateT> listenable,
+    void Function(ListenedStateT? previous, ListenedStateT value) listener, {
     bool weak = false,
     void Function(Object error, StackTrace stackTrace)? onError,
     bool fireImmediately = false,

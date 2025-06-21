@@ -161,7 +161,7 @@ class ProviderFor {
 /// An annotation for marking a value type as "should not be handled
 /// by Riverpod".
 ///
-/// This is a type-alias to [T], and has no runtime effect. It is only used
+/// This is a type-alias to [WrappedT], and has no runtime effect. It is only used
 /// as metadata for the code-generator/linter.
 ///
 /// This serves two purposes:
@@ -197,7 +197,7 @@ class ProviderFor {
 /// ```
 ///
 /// {@endtemplate}
-typedef Raw<T> = T;
+typedef Raw<WrappedT> = WrappedT;
 
 /// An exception thrown when a scoped provider is accessed when not yet overridden.
 ///
