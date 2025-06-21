@@ -7,7 +7,8 @@ import 'package:test/test.dart';
 
 final isAssertionError = isA<AssertionError>();
 
-ValueT Function(KeyT) cacheFamily<KeyT, ValueT>(ValueT Function(KeyT key) create) {
+ValueT Function(KeyT) cacheFamily<KeyT, ValueT>(
+    ValueT Function(KeyT key) create) {
   final cache = <KeyT, ValueT>{};
   return (key) => cache.putIfAbsent(key, () => create(key));
 }

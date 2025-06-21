@@ -53,7 +53,9 @@ final class MutationRef {
 }
 
 final class _MutationProvider<ValueT> extends $FunctionalProvider<
-    _MutationNotifier<ValueT>, _MutationNotifier<ValueT>, _MutationNotifier<ValueT>> {
+    _MutationNotifier<ValueT>,
+    _MutationNotifier<ValueT>,
+    _MutationNotifier<ValueT>> {
   const _MutationProvider(this.mutation)
       : super(
           from: null,
@@ -104,9 +106,10 @@ class _MutationNotifier<ValueT> {
 }
 
 class _MutationElement<StateT> extends $FunctionalProviderElement<
-    _MutationNotifier<StateT>,
-    _MutationNotifier<StateT>,
-    _MutationNotifier<StateT>> with SyncProviderElement<_MutationNotifier<StateT>> {
+        _MutationNotifier<StateT>,
+        _MutationNotifier<StateT>,
+        _MutationNotifier<StateT>>
+    with SyncProviderElement<_MutationNotifier<StateT>> {
   _MutationElement(super.pointer);
 
   @override

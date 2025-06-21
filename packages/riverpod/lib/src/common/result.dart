@@ -100,7 +100,8 @@ final class $ResultError<ValueT> implements $Result<ValueT> {
   ValueT? get value => null;
 
   @override
-  ValueT get valueOrRawException => Error.throwWithStackTrace(error, stackTrace);
+  ValueT get valueOrRawException =>
+      Error.throwWithStackTrace(error, stackTrace);
 
   @override
   ValueT get valueOrProviderException =>

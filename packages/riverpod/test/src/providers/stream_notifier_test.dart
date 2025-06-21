@@ -1203,7 +1203,8 @@ class Equal<BoxedT> {
   final BoxedT value;
 
   @override
-  bool operator ==(Object other) => other is Equal<BoxedT> && other.value == value;
+  bool operator ==(Object other) =>
+      other is Equal<BoxedT> && other.value == value;
 
   @override
   int get hashCode => Object.hash(runtimeType, value);

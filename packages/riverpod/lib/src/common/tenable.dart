@@ -12,7 +12,8 @@ sealed class Tenable<ValueT> {
   const factory Tenable.value(ValueT value) = _TenableValue<ValueT>;
   const factory Tenable.error(Object error, StackTrace stacktrace) =
       _TenableError<ValueT>;
-  factory Tenable.fromFuture(Future<ValueT> future) = _TenableFromFuture<ValueT>;
+  factory Tenable.fromFuture(Future<ValueT> future) =
+      _TenableFromFuture<ValueT>;
   factory Tenable.guardSync(ValueT Function() cb) {
     try {
       return Tenable.value(cb());
