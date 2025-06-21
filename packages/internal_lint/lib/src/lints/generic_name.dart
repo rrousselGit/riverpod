@@ -8,7 +8,8 @@ class GenericName extends DartLintRule {
 
   static const _code = LintCode(
     name: 'generic_name',
-    problemMessage: 'Suffix generics with an uppercase T',
+    problemMessage:
+        'Suffix generics with an uppercase T and as least 2 characters.',
   );
 
   @override
@@ -18,7 +19,9 @@ class GenericName extends DartLintRule {
     CustomLintContext context,
   ) {
     context.registry.addTypeParameter((node) {
-      if (node.name.lexeme.endsWith('T')) return;
+      if (node.name.lexeme.endsWith('T') && node.name.lexeme.length >= 2) {
+        return;
+      }
 
       reporter.atNode(node, _code);
     });
