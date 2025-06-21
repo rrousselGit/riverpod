@@ -17,7 +17,7 @@ dependencies:
   analyzer_plugin: ^0.13.0
   collection: ^1.16.0
   custom_lint_builder: ^0.7.0
-  meta: ^1.7.0
+  meta: ^1.17.0
   path: ^1.8.1
   riverpod: 3.0.0-dev.16
   riverpod_analyzer_utils: 1.0.0-dev.3

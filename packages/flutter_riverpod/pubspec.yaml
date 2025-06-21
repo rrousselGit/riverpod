@@ -21,7 +21,7 @@ dependencies:
     sdk: flutter
   flutter_test:
     sdk: flutter
-  meta: ^1.4.0
+  meta: ^1.17.0
   riverpod: 3.0.0-dev.16
   state_notifier: ">=0.7.2 <2.0.0"
 

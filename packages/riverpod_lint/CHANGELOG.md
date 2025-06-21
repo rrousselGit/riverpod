@@ -1,3 +1,7 @@
+## Unreleased build
+
+Bump minimum `meta` version
+
 ## 3.0.0-dev.16 - 2025-06-20
 
 - `riverpod` upgraded to `3.0.0-dev.16`

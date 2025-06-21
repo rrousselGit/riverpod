@@ -1,6 +1,7 @@
 ## Unreleased build
 
 Allow passing `persist(key: ...)`
+Bump minimum `meta` version
 
 ## 3.0.0-dev.16 - 2025-06-20
 

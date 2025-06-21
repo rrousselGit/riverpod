@@ -1,3 +1,7 @@
+## Unreleased build
+
+Bump minimum `meta` version
+
 ## 0.1.2 - 2025-06-20
 
 Updated dependencies
