@@ -128,16 +128,16 @@ abstract class $notifierClass$genericsDefinition extends $baseClass {
 }
 
 extension on DartType {
-  R switchPrimitiveType<R>({
-    required R Function() boolean,
-    required R Function() integer,
-    required R Function() double,
-    required R Function() number,
-    required R Function() string,
-    required R Function(DartType item) array,
-    required R Function(DartType item) set,
-    required R Function(DartType key, DartType value) map,
-    required R Function() object,
+  ResT switchPrimitiveType<ResT>({
+    required ResT Function() boolean,
+    required ResT Function() integer,
+    required ResT Function() double,
+    required ResT Function() number,
+    required ResT Function() string,
+    required ResT Function(DartType item) array,
+    required ResT Function(DartType item) set,
+    required ResT Function(DartType key, DartType value) map,
+    required ResT Function() object,
   }) {
     if (isDartCoreBool) {
       return boolean();

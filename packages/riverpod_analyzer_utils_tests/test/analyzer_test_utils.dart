@@ -16,13 +16,13 @@ import 'package:test/test.dart';
 
 @internal
 extension ObjectX<T> on T? {
-  R? cast<R>() {
+  NewT? cast<NewT>() {
     final that = this;
-    if (that is R) return that;
+    if (that is NewT) return that;
     return null;
   }
 
-  R? let<R>(R? Function(T value)? cb) {
+  NewT? let<NewT>(NewT? Function(T value)? cb) {
     if (cb == null) return null;
     final that = this;
     if (that != null) return cb(that);
@@ -176,14 +176,14 @@ class _VisitNode extends GeneralizingAstVisitor<void> {
   void visitNode(AstNode node) => cb(node);
 }
 
-extension MapTake<Key, Value> on Map<Key, Value> {
-  Map<Key, Value> take(List<Key> keys) {
-    return <Key, Value>{
+extension MapTake<KeyT, ValueT> on Map<KeyT, ValueT> {
+  Map<KeyT, ValueT> take(List<KeyT> keys) {
+    return <KeyT, ValueT>{
       for (final key in keys)
         if (!containsKey(key))
           key: throw StateError('No key $key found')
         else
-          key: this[key] as Value,
+          key: this[key] as ValueT,
     };
   }
 }
@@ -199,8 +199,8 @@ extension TakeList<T extends ProviderDeclaration> on List<T> {
   }
 }
 
-extension FindAst<Base extends AstNode> on List<Base> {
-  T findByName<T extends Base>(String name) {
+extension FindAst<NodeT extends AstNode> on List<NodeT> {
+  T findByName<T extends NodeT>(String name) {
     for (final node in this) {
       switch (node) {
         case TopLevelVariableDeclaration():

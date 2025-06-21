@@ -59,12 +59,12 @@ extension RawTypeX on DartType {
   }
 }
 
-class _Cache<R> {
+class _Cache<CachedT> {
   final _cacheExpando = Expando<(Object?,)>();
 
-  R call(Object e, R Function() create) {
+  CachedT call(Object e, CachedT Function() create) {
     final existing = _cacheExpando[e];
-    if (existing != null) return existing.$1 as R;
+    if (existing != null) return existing.$1 as CachedT;
 
     final created = create();
     _cacheExpando[e] = (created,);

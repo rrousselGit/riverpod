@@ -19,10 +19,10 @@ extension AstUtils on AstNode {
 }
 
 @internal
-extension ExpandoUtils<R> on Expando<Box<R>> {
-  R upsert(
+extension ExpandoUtils<NodeT> on Expando<Box<NodeT>> {
+  NodeT upsert(
     AstNode key,
-    R Function() create,
+    NodeT Function() create,
   ) {
     // Using a record to differentiate "null value" from "no value".
     final existing = this[key];

@@ -449,7 +449,7 @@ base class ConsumerStatefulElement extends StatefulElement
   }
 
   @override
-  Res watch<Res>(ProviderListenable<Res> target) {
+  T watch<T>(ProviderListenable<T> target) {
     _assertNotDisposed();
     return _dependencies
         .putIfAbsent(target, () {
@@ -459,7 +459,7 @@ base class ConsumerStatefulElement extends StatefulElement
             return oldDependency;
           }
 
-          final sub = container.listen<Res>(
+          final sub = container.listen<T>(
             target,
             (_, __) => markNeedsBuild(),
           );
@@ -467,7 +467,7 @@ base class ConsumerStatefulElement extends StatefulElement
           return sub;
         })
         .readSafe()
-        .valueOrProviderException as Res;
+        .valueOrProviderException as T;
   }
 
   @override

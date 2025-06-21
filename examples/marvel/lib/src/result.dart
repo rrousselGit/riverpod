@@ -25,7 +25,7 @@ sealed class Result<T> with _$Result<T> {
     }
   }
 
-  Result<Res> chain<Res>(Res Function(T value) cb) {
+  Result<NewT> chain<NewT>(NewT Function(T value) cb) {
     switch (this) {
       case _$ResultData(:final value):
         try {
