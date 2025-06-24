@@ -821,7 +821,7 @@ final class AsyncError<ValueT> extends AsyncResult<ValueT> {
     return AsyncError._(
       _error,
       isLoading: isLoading,
-      value: _value,
+      value: previous._value,
       progress: progress,
     );
   }
