@@ -600,7 +600,7 @@ final class AsyncData<ValueT> extends AsyncResult<ValueT> {
   const AsyncData(
     ValueT value, {
     /// @nodoc
-    bool isFromCache = false,
+    @internal bool isFromCache = false,
   }) : this._(
           value,
           loading: null,
@@ -699,8 +699,8 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
   AsyncValue<NewT> _cast<NewT>() {
     if (ValueT == NewT) return this as AsyncValue<NewT>;
     return AsyncLoading<NewT>._(
-      (progress: progress),
-      value: value as (NewT,)?,
+      _loading,
+      value: value as _DataRecord<NewT>?,
       error: _error,
       isFromCache: isFromCache,
     );
@@ -721,7 +721,7 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
         ),
         error: (e) => AsyncError._(
           e._error,
-          loading: (progress: progress),
+          loading: _loading,
           value: e._value,
         ),
         loading: (_) => this,
@@ -729,19 +729,19 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
     } else {
       return previous.map(
         data: (d) => AsyncLoading._(
-          (progress: progress),
+          _loading,
           value: d._value,
           isFromCache: d.isFromCache,
           error: d._error,
         ),
         error: (e) => AsyncLoading._(
-          (progress: progress),
+          _loading,
           value: e._value,
           isFromCache: e.isFromCache,
           error: e._error,
         ),
         loading: (e) => AsyncLoading._(
-          (progress: progress),
+          _loading,
           value: e._value,
           isFromCache: e.isFromCache,
           error: e._error,
@@ -797,7 +797,7 @@ final class AsyncError<ValueT> extends AsyncResult<ValueT> {
     return AsyncError<NewT>._(
       _error,
       loading: _loading,
-      value: _value as (NewT,)?,
+      value: _value as _DataRecord<NewT>?,
     );
   }
 
