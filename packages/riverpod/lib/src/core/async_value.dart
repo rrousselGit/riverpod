@@ -123,7 +123,7 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
       data: (d) {
         try {
           return AsyncData._(
-            cb(d.value),
+            (cb(d.value),),
             loading: d._loading,
             error: d._error,
             isFromCache: d.isFromCache,
@@ -602,19 +602,18 @@ final class AsyncData<ValueT> extends AsyncResult<ValueT> {
     /// @nodoc
     @internal bool isFromCache = false,
   }) : this._(
-          value,
+          (value,),
           loading: null,
           isFromCache: isFromCache,
           error: null,
         );
 
   const AsyncData._(
-    ValueT value, {
+    this._value, {
     required _ErrorRecord? error,
     required _LoadingRecord? loading,
     required this.isFromCache,
-  })  : _value = (value,),
-        _loading = loading,
+  })  : _loading = loading,
         _error = error,
         super._();
 
@@ -647,7 +646,7 @@ final class AsyncData<ValueT> extends AsyncResult<ValueT> {
   AsyncValue<NewT> _cast<NewT>() {
     if (ValueT == NewT) return this as AsyncValue<NewT>;
     return AsyncData<NewT>._(
-      value as NewT,
+      _value as _DataRecord<NewT>,
       error: _error,
       loading: _loading,
       isFromCache: isFromCache,
@@ -714,7 +713,7 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
     if (isRefresh) {
       return previous.map(
         data: (d) => AsyncData._(
-          d.value,
+          d._value,
           error: d._error,
           loading: _loading,
           isFromCache: d.isFromCache,
