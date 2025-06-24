@@ -69,28 +69,23 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
           return AsyncData._(
             cb(d.value),
             isLoading: d.isLoading,
-            error: d.error,
-            stackTrace: d.stackTrace,
+            error: d._error,
             progress: d.progress,
             isFromCache: d.isFromCache,
           );
         } catch (err, stack) {
           return AsyncError._(
-            err,
-            stackTrace: stack,
+            (err: err, stack: stack),
             isLoading: d.isLoading,
             value: null,
-            hasValue: false,
             progress: d.progress,
           );
         }
       },
       error: (e) => AsyncError._(
-        e.error,
-        stackTrace: e.stackTrace,
+        e._error,
         isLoading: e.isLoading,
         value: null,
-        hasValue: false,
         progress: e.progress,
       ),
       loading: (l) => AsyncLoading<NewT>(progress: progress),
@@ -423,63 +418,6 @@ sealed class AsyncValue<ValueT> {
   /// to also be true.
   bool get isLoading;
 
-  /// Whether [value] is set.
-  ///
-  /// Even if [hasValue] is true, it is still possible for [isLoading]/[hasError]
-  /// to also be true.
-  bool get hasValue;
-
-  /// The current progress of the asynchronous operation.
-  ///
-  /// This value must be between 0 and 1.
-  ///
-  /// By default, the progress will always be `null`.
-  /// Notifiers can set this manually as such:
-  ///
-  /// ```dart
-  /// state = AsyncLoading(progress: 0);
-  /// await something();
-  /// ref.state = AsyncLoading(progress: 1);
-  /// ```
-  num? get progress;
-
-  /// The value currently exposed.
-  ///
-  /// If currently in error/loading state, will return the previous value.
-  /// If there is no previous value available, `null` will be returned.
-  ///
-  /// If you do not want to return previous value during loading/error states,
-  /// consider using [unwrapPrevious]:
-  ///
-  /// ```dart
-  /// ref.watch(provider).unwrapPrevious().value;
-  /// ```
-  ValueT? get value;
-
-  /// The [error].
-  Object? get error;
-
-  /// The stacktrace of [error].
-  StackTrace? get stackTrace;
-
-  String get _displayString;
-
-  /// If [hasValue] is true, returns the value.
-  /// Otherwise if [hasError], rethrows the error.
-  /// Finally if in loading state, throws a [StateError].
-  ///
-  /// This is typically used for when the UI assumes that [value] is always present.
-  ValueT get requireValue {
-    if (hasValue) return value as ValueT;
-    if (hasError) {
-      throwProviderException(error!, stackTrace!);
-    }
-
-    throw StateError(
-      'Tried to call `requireValue` on an `AsyncValue` that has no value: $this',
-    );
-  }
-
   /// Whether the associated provider was forced to recompute even though
   /// none of its dependencies has changed, after at least one [value]/[error] was emitted.
   ///
@@ -502,13 +440,74 @@ sealed class AsyncValue<ValueT> {
   /// See also [isRefreshing] for manual provider rebuild.
   bool get isReloading => (hasValue || hasError) && this is AsyncLoading;
 
+  /// The current progress of the asynchronous operation.
+  ///
+  /// This value must be between 0 and 1.
+  ///
+  /// By default, the progress will always be `null`.
+  /// Notifiers can set this manually as such:
+  ///
+  /// ```dart
+  /// state = AsyncLoading(progress: 0);
+  /// await something();
+  /// ref.state = AsyncLoading(progress: 1);
+  /// ```
+  num? get progress;
+
+  (ValueT,)? get _value;
+
+  /// Whether [value] is set.
+  ///
+  /// Even if [hasValue] is true, it is still possible for [isLoading]/[hasError]
+  /// to also be true.
+  bool get hasValue => _value != null;
+
+  /// The value currently exposed.
+  ///
+  /// If currently in error/loading state, will return the previous value.
+  /// If there is no previous value available, `null` will be returned.
+  ///
+  /// If you do not want to return previous value during loading/error states,
+  /// consider using [unwrapPrevious]:
+  ///
+  /// ```dart
+  /// ref.watch(provider).unwrapPrevious().value;
+  /// ```
+  ValueT? get value => _value?.$1;
+
+  /// If [hasValue] is true, returns the value.
+  /// Otherwise if [hasError], rethrows the error.
+  /// Finally if in loading state, throws a [StateError].
+  ///
+  /// This is typically used for when the UI assumes that [value] is always present.
+  ValueT get requireValue {
+    if (hasValue) return value as ValueT;
+    if (hasError) {
+      throwProviderException(error!, stackTrace!);
+    }
+
+    throw StateError(
+      'Tried to call `requireValue` on an `AsyncValue` that has no value: $this',
+    );
+  }
+
   /// Whether [error] is not null.
   ///
   /// Even if [hasError] is true, it is still possible for [hasValue]/[isLoading]
   /// to also be true.
   // It is safe to check it through `error != null` because `error` is non-nullable
   // on the AsyncError constructor.
-  bool get hasError => error != null;
+  bool get hasError => _error != null;
+
+  ({Object err, StackTrace stack})? get _error;
+
+  /// The [error].
+  Object? get error => _error?.err;
+
+  /// The stacktrace of [error].
+  StackTrace? get stackTrace => _error?.stack;
+
+  String get _displayString;
 
   /// Casts the [AsyncValue] to a different type.
   AsyncValue<NewT> _cast<NewT>();
@@ -604,24 +603,21 @@ final class AsyncData<ValueT> extends AsyncResult<ValueT> {
           isLoading: false,
           isFromCache: isFromCache,
           error: null,
-          stackTrace: null,
           progress: null,
         );
 
   const AsyncData._(
-    this.value, {
+    ValueT value, {
     required this.isLoading,
-    required this.error,
-    required this.stackTrace,
+    required ({Object err, StackTrace stack})? error,
     required this.progress,
     required this.isFromCache,
-  }) : super._();
+  })  : _value = (value,),
+        _error = error,
+        super._();
 
   @override
   String get _displayString => 'AsyncData';
-
-  @override
-  bool get hasValue => true;
 
   @override
   final bool isFromCache;
@@ -630,17 +626,16 @@ final class AsyncData<ValueT> extends AsyncResult<ValueT> {
   final num? progress;
 
   @override
-  final ValueT value;
+  final (ValueT,) _value;
+  @override
+  ValueT get value => _value.$1;
+
+  @override
+  final ({Object err, StackTrace stack})? _error;
 
   @override
   @override
   final bool isLoading;
-
-  @override
-  final Object? error;
-
-  @override
-  final StackTrace? stackTrace;
 
   @override
   AsyncData<ValueT> copyWithPrevious(
@@ -656,8 +651,7 @@ final class AsyncData<ValueT> extends AsyncResult<ValueT> {
     return AsyncData<NewT>._(
       value as NewT,
       isLoading: isLoading,
-      error: error,
-      stackTrace: stackTrace,
+      error: _error,
       progress: progress,
       isFromCache: isFromCache,
     );
@@ -670,10 +664,8 @@ final class AsyncData<ValueT> extends AsyncResult<ValueT> {
 final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
   /// {@macro async_value.loading}
   const AsyncLoading({this.progress})
-      : hasValue = false,
-        value = null,
-        error = null,
-        stackTrace = null,
+      : _value = null,
+        _error = null,
         isFromCache = false,
         assert(
           progress == null || (progress >= 0 && progress <= 1),
@@ -682,13 +674,13 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
         super._();
 
   const AsyncLoading._({
-    required this.hasValue,
-    required this.value,
-    required this.error,
-    required this.stackTrace,
+    required (ValueT,)? value,
+    required ({Object err, StackTrace stack})? error,
     required this.progress,
     required this.isFromCache,
-  }) : super._();
+  })  : _value = value,
+        _error = error,
+        super._();
 
   @override
   bool get isLoading => true;
@@ -700,28 +692,20 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
   String get _displayString => 'AsyncLoading';
 
   @override
-  final bool hasValue;
-
-  @override
   final num? progress;
 
   @override
-  final ValueT? value;
+  final (ValueT,)? _value;
 
   @override
-  final Object? error;
-
-  @override
-  final StackTrace? stackTrace;
+  final ({Object err, StackTrace stack})? _error;
 
   @override
   AsyncValue<NewT> _cast<NewT>() {
     if (ValueT == NewT) return this as AsyncValue<NewT>;
     return AsyncLoading<NewT>._(
-      hasValue: hasValue,
-      value: value as NewT?,
-      error: error,
-      stackTrace: stackTrace,
+      value: value as (NewT,)?,
+      error: _error,
       progress: progress,
       isFromCache: isFromCache,
     );
@@ -737,17 +721,14 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
         data: (d) => AsyncData._(
           d.value,
           isLoading: true,
-          error: d.error,
-          stackTrace: d.stackTrace,
+          error: d._error,
           progress: progress,
           isFromCache: d.isFromCache,
         ),
         error: (e) => AsyncError._(
-          e.error,
+          e._error,
           isLoading: true,
-          value: e.value,
-          stackTrace: e.stackTrace,
-          hasValue: e.hasValue,
+          value: e._value,
           progress: progress,
         ),
         loading: (_) => this,
@@ -755,27 +736,21 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
     } else {
       return previous.map(
         data: (d) => AsyncLoading._(
-          hasValue: true,
-          value: d.value,
+          value: d._value,
           isFromCache: d.isFromCache,
-          error: d.error,
-          stackTrace: d.stackTrace,
+          error: d._error,
           progress: progress,
         ),
         error: (e) => AsyncLoading._(
-          hasValue: e.hasValue,
-          value: e.value,
+          value: e._value,
           isFromCache: e.isFromCache,
-          error: e.error,
-          stackTrace: e.stackTrace,
+          error: e._error,
           progress: progress,
         ),
         loading: (e) => AsyncLoading._(
-          hasValue: e.hasValue,
-          value: e.value,
+          value: e._value,
           isFromCache: e.isFromCache,
-          error: e.error,
-          stackTrace: e.stackTrace,
+          error: e._error,
           progress: progress,
         ),
       );
@@ -790,22 +765,19 @@ final class AsyncError<ValueT> extends AsyncResult<ValueT> {
   /// {@macro async_value.error_ctor}
   const AsyncError(Object error, StackTrace stackTrace)
       : this._(
-          error,
-          stackTrace: stackTrace,
+          (err: error, stack: stackTrace),
           isLoading: false,
-          hasValue: false,
           value: null,
           progress: null,
         );
 
   const AsyncError._(
-    this.error, {
-    required this.stackTrace,
-    required this.value,
-    required this.hasValue,
+    this._error, {
+    required (ValueT,)? value,
     required this.isLoading,
     required this.progress,
-  }) : super._();
+  })  : _value = value,
+        super._();
 
   @override
   String get _displayString => 'AsyncError';
@@ -820,26 +792,23 @@ final class AsyncError<ValueT> extends AsyncResult<ValueT> {
   final bool isLoading;
 
   @override
-  final bool hasValue;
+  final (ValueT,)? _value;
 
   @override
-  final ValueT? value;
+  final ({Object err, StackTrace stack}) _error;
 
   @override
-  final Object error;
-
+  Object get error => _error.err;
   @override
-  final StackTrace stackTrace;
+  StackTrace get stackTrace => _error.stack;
 
   @override
   AsyncValue<NewT> _cast<NewT>() {
     if (ValueT == NewT) return this as AsyncValue<NewT>;
     return AsyncError<NewT>._(
-      error,
-      stackTrace: stackTrace,
+      _error,
       isLoading: isLoading,
-      value: value as NewT?,
-      hasValue: hasValue,
+      value: _value as (NewT,)?,
       progress: progress,
     );
   }
@@ -850,11 +819,9 @@ final class AsyncError<ValueT> extends AsyncResult<ValueT> {
     bool isRefresh = true,
   }) {
     return AsyncError._(
-      error,
-      stackTrace: stackTrace,
+      _error,
       isLoading: isLoading,
-      value: previous.value,
-      hasValue: previous.hasValue,
+      value: _value,
       progress: progress,
     );
   }
