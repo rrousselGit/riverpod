@@ -52,6 +52,7 @@ export './src/internal.dart'
         AsyncData,
         AsyncError,
         AsyncResult,
+        AsyncValueExtensions,
 
         // AsyncNotifier
         $AsyncNotifierProvider,
