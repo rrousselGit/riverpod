@@ -9,9 +9,9 @@ part of 'async.dart';
 @ProviderFor(generic)
 const genericProvider = GenericFamily._();
 
-final class GenericProvider<T extends num>
-    extends $FunctionalProvider<AsyncValue<List<T>>, List<T>, FutureOr<List<T>>>
-    with $FutureModifier<List<T>>, $FutureProvider<List<T>> {
+final class GenericProvider<ObjT extends num> extends $FunctionalProvider<
+        AsyncValue<List<ObjT>>, List<ObjT>, FutureOr<List<ObjT>>>
+    with $FutureModifier<List<ObjT>>, $FutureProvider<List<ObjT>> {
   const GenericProvider._({required GenericFamily super.from})
       : super(
           argument: null,
@@ -28,22 +28,22 @@ final class GenericProvider<T extends num>
   @override
   String toString() {
     return r'genericProvider'
-        '<${T}>'
+        '<${ObjT}>'
         '()';
   }
 
   @$internal
   @override
-  $FutureProviderElement<List<T>> $createElement($ProviderPointer pointer) =>
+  $FutureProviderElement<List<ObjT>> $createElement($ProviderPointer pointer) =>
       $FutureProviderElement(pointer);
 
   @override
-  FutureOr<List<T>> create(Ref ref) {
-    return generic<T>(ref);
+  FutureOr<List<ObjT>> create(Ref ref) {
+    return generic<ObjT>(ref);
   }
 
-  $R _captureGenerics<$R>($R Function<T extends num>() cb) {
-    return cb<T>();
+  $R _captureGenerics<$R>($R Function<ObjT extends num>() cb) {
+    return cb<ObjT>();
   }
 
   @override
@@ -59,7 +59,7 @@ final class GenericProvider<T extends num>
   }
 }
 
-String _$genericHash() => r'b7413a59722e9d62ae99c8a7ee0b4a24417fc3b4';
+String _$genericHash() => r'f530516182a22020b12fb9c3868245ad003fe8bc';
 
 final class GenericFamily extends $Family {
   const GenericFamily._()
@@ -71,21 +71,24 @@ final class GenericFamily extends $Family {
           isAutoDispose: true,
         );
 
-  GenericProvider<T> call<T extends num>() => GenericProvider<T>._(from: this);
+  GenericProvider<ObjT> call<ObjT extends num>() =>
+      GenericProvider<ObjT>._(from: this);
 
   @override
   String toString() => r'genericProvider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-          FutureOr<List<T>> Function<T extends num>(Ref ref) create) =>
+          FutureOr<List<ObjT>> Function<ObjT extends num>(Ref ref) create) =>
       $FamilyOverride(
           from: this,
           createElement: (pointer) {
             final provider = pointer.origin as GenericProvider;
-            return provider._captureGenerics(<T extends num>() {
-              provider as GenericProvider<T>;
-              return provider.$view(create: create<T>).$createElement(pointer);
+            return provider._captureGenerics(<ObjT extends num>() {
+              provider as GenericProvider<ObjT>;
+              return provider
+                  .$view(create: create<ObjT>)
+                  .$createElement(pointer);
             });
           });
 }
@@ -93,8 +96,8 @@ final class GenericFamily extends $Family {
 @ProviderFor(GenericClass)
 const genericClassProvider = GenericClassFamily._();
 
-final class GenericClassProvider<T extends num>
-    extends $AsyncNotifierProvider<GenericClass<T>, List<T>> {
+final class GenericClassProvider<ObjT extends num>
+    extends $AsyncNotifierProvider<GenericClass<ObjT>, List<ObjT>> {
   const GenericClassProvider._({required GenericClassFamily super.from})
       : super(
           argument: null,
@@ -111,16 +114,16 @@ final class GenericClassProvider<T extends num>
   @override
   String toString() {
     return r'genericClassProvider'
-        '<${T}>'
+        '<${ObjT}>'
         '()';
   }
 
   @$internal
   @override
-  GenericClass<T> create() => GenericClass<T>();
+  GenericClass<ObjT> create() => GenericClass<ObjT>();
 
-  $R _captureGenerics<$R>($R Function<T extends num>() cb) {
-    return cb<T>();
+  $R _captureGenerics<$R>($R Function<ObjT extends num>() cb) {
+    return cb<ObjT>();
   }
 
   @override
@@ -136,7 +139,7 @@ final class GenericClassProvider<T extends num>
   }
 }
 
-String _$genericClassHash() => r'd3c4acc9cdae12f6c666fbf1f89aee212bb086db';
+String _$genericClassHash() => r'1ee74c45e7f5efac4db7e959f75fcf29b033c1d9';
 
 final class GenericClassFamily extends $Family {
   const GenericClassFamily._()
@@ -148,52 +151,56 @@ final class GenericClassFamily extends $Family {
           isAutoDispose: true,
         );
 
-  GenericClassProvider<T> call<T extends num>() =>
-      GenericClassProvider<T>._(from: this);
+  GenericClassProvider<ObjT> call<ObjT extends num>() =>
+      GenericClassProvider<ObjT>._(from: this);
 
   @override
   String toString() => r'genericClassProvider';
 
   /// {@macro riverpod.override_with}
-  Override overrideWith(GenericClass<T> Function<T extends num>() create) =>
+  Override overrideWith(
+          GenericClass<ObjT> Function<ObjT extends num>() create) =>
       $FamilyOverride(
           from: this,
           createElement: (pointer) {
             final provider = pointer.origin as GenericClassProvider;
-            return provider._captureGenerics(<T extends num>() {
-              provider as GenericClassProvider<T>;
-              return provider.$view(create: create<T>).$createElement(pointer);
+            return provider._captureGenerics(<ObjT extends num>() {
+              provider as GenericClassProvider<ObjT>;
+              return provider
+                  .$view(create: create<ObjT>)
+                  .$createElement(pointer);
             });
           });
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-          FutureOr<List<T>> Function<T extends num>(
-                  Ref ref, GenericClass<T> notifier)
+          FutureOr<List<ObjT>> Function<ObjT extends num>(
+                  Ref ref, GenericClass<ObjT> notifier)
               build) =>
       $FamilyOverride(
           from: this,
           createElement: (pointer) {
             final provider = pointer.origin as GenericClassProvider;
-            return provider._captureGenerics(<T extends num>() {
-              provider as GenericClassProvider<T>;
+            return provider._captureGenerics(<ObjT extends num>() {
+              provider as GenericClassProvider<ObjT>;
               return provider
-                  .$view(runNotifierBuildOverride: build<T>)
+                  .$view(runNotifierBuildOverride: build<ObjT>)
                   .$createElement(pointer);
             });
           });
 }
 
-abstract class _$GenericClass<T extends num> extends $AsyncNotifier<List<T>> {
-  FutureOr<List<T>> build();
+abstract class _$GenericClass<ObjT extends num>
+    extends $AsyncNotifier<List<ObjT>> {
+  FutureOr<List<ObjT>> build();
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<List<T>>, List<T>>;
+    final ref = this.ref as $Ref<AsyncValue<List<ObjT>>, List<ObjT>>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<List<T>>, List<T>>,
-        AsyncValue<List<T>>,
+        AnyNotifier<AsyncValue<List<ObjT>>, List<ObjT>>,
+        AsyncValue<List<ObjT>>,
         Object?,
         Object?>;
     element.handleValue(ref, created);
@@ -203,10 +210,10 @@ abstract class _$GenericClass<T extends num> extends $AsyncNotifier<List<T>> {
 @ProviderFor(GenericArg)
 const genericArgProvider = GenericArgFamily._();
 
-final class GenericArgProvider<T extends num>
-    extends $AsyncNotifierProvider<GenericArg<T>, String> {
+final class GenericArgProvider<ObjT extends num>
+    extends $AsyncNotifierProvider<GenericArg<ObjT>, String> {
   const GenericArgProvider._(
-      {required GenericArgFamily super.from, required T super.argument})
+      {required GenericArgFamily super.from, required ObjT super.argument})
       : super(
           retry: null,
           name: r'genericArgProvider',
@@ -221,16 +228,16 @@ final class GenericArgProvider<T extends num>
   @override
   String toString() {
     return r'genericArgProvider'
-        '<${T}>'
+        '<${ObjT}>'
         '($argument)';
   }
 
   @$internal
   @override
-  GenericArg<T> create() => GenericArg<T>();
+  GenericArg<ObjT> create() => GenericArg<ObjT>();
 
-  $R _captureGenerics<$R>($R Function<T extends num>() cb) {
-    return cb<T>();
+  $R _captureGenerics<$R>($R Function<ObjT extends num>() cb) {
+    return cb<ObjT>();
   }
 
   @override
@@ -246,7 +253,7 @@ final class GenericArgProvider<T extends num>
   }
 }
 
-String _$genericArgHash() => r'26ad32d0efc4b0ee9da2d1a34fd7b9e3473f8520';
+String _$genericArgHash() => r'cd3043cae4ddbb54b11b76599098b07301b7a33a';
 
 final class GenericArgFamily extends $Family {
   const GenericArgFamily._()
@@ -258,50 +265,52 @@ final class GenericArgFamily extends $Family {
           isAutoDispose: true,
         );
 
-  GenericArgProvider<T> call<T extends num>(
-    T arg,
+  GenericArgProvider<ObjT> call<ObjT extends num>(
+    ObjT arg,
   ) =>
-      GenericArgProvider<T>._(argument: arg, from: this);
+      GenericArgProvider<ObjT>._(argument: arg, from: this);
 
   @override
   String toString() => r'genericArgProvider';
 
   /// {@macro riverpod.override_with}
-  Override overrideWith(GenericArg<T> Function<T extends num>() create) =>
+  Override overrideWith(GenericArg<ObjT> Function<ObjT extends num>() create) =>
       $FamilyOverride(
           from: this,
           createElement: (pointer) {
             final provider = pointer.origin as GenericArgProvider;
-            return provider._captureGenerics(<T extends num>() {
-              provider as GenericArgProvider<T>;
-              return provider.$view(create: create<T>).$createElement(pointer);
+            return provider._captureGenerics(<ObjT extends num>() {
+              provider as GenericArgProvider<ObjT>;
+              return provider
+                  .$view(create: create<ObjT>)
+                  .$createElement(pointer);
             });
           });
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-          FutureOr<String> Function<T extends num>(
-                  Ref ref, GenericArg<T> notifier)
+          FutureOr<String> Function<ObjT extends num>(
+                  Ref ref, GenericArg<ObjT> notifier)
               build) =>
       $FamilyOverride(
           from: this,
           createElement: (pointer) {
             final provider = pointer.origin as GenericArgProvider;
-            return provider._captureGenerics(<T extends num>() {
-              provider as GenericArgProvider<T>;
+            return provider._captureGenerics(<ObjT extends num>() {
+              provider as GenericArgProvider<ObjT>;
               return provider
-                  .$view(runNotifierBuildOverride: build<T>)
+                  .$view(runNotifierBuildOverride: build<ObjT>)
                   .$createElement(pointer);
             });
           });
 }
 
-abstract class _$GenericArg<T extends num> extends $AsyncNotifier<String> {
-  late final _$args = ref.$arg as T;
-  T get arg => _$args;
+abstract class _$GenericArg<ObjT extends num> extends $AsyncNotifier<String> {
+  late final _$args = ref.$arg as ObjT;
+  ObjT get arg => _$args;
 
   FutureOr<String> build(
-    T arg,
+    ObjT arg,
   );
   @$mustCallSuper
   @override
@@ -875,13 +884,13 @@ abstract class _$FamilyClass extends $AsyncNotifier<String> {
 @ProviderFor(Regression3490)
 const regression3490Provider = Regression3490Family._();
 
-final class Regression3490Provider<Model, Sort, Cursor>
-    extends $NotifierProvider<Regression3490<Model, Sort, Cursor>, void> {
+final class Regression3490Provider<ModelT, SortT, CursorT>
+    extends $NotifierProvider<Regression3490<ModelT, SortT, CursorT>, void> {
   const Regression3490Provider._(
       {required Regression3490Family super.from,
       required ({
         String type,
-        Regression3490Cb<Model, Sort, Cursor> getData,
+        Regression3490Cb<ModelT, SortT, CursorT> getData,
         String? parentId,
       })
           super.argument})
@@ -899,17 +908,17 @@ final class Regression3490Provider<Model, Sort, Cursor>
   @override
   String toString() {
     return r'regression3490Provider'
-        '<${Model}, ${Sort}, ${Cursor}>'
+        '<${ModelT}, ${SortT}, ${CursorT}>'
         '$argument';
   }
 
   @$internal
   @override
-  Regression3490<Model, Sort, Cursor> create() =>
-      Regression3490<Model, Sort, Cursor>();
+  Regression3490<ModelT, SortT, CursorT> create() =>
+      Regression3490<ModelT, SortT, CursorT>();
 
-  $R _captureGenerics<$R>($R Function<Model, Sort, Cursor>() cb) {
-    return cb<Model, Sort, Cursor>();
+  $R _captureGenerics<$R>($R Function<ModelT, SortT, CursorT>() cb) {
+    return cb<ModelT, SortT, CursorT>();
   }
 
   /// {@macro riverpod.override_with_value}
@@ -933,7 +942,7 @@ final class Regression3490Provider<Model, Sort, Cursor>
   }
 }
 
-String _$regression3490Hash() => r'9d5d48cbde589961d0cdac395f68111ec17b194a';
+String _$regression3490Hash() => r'1e22e082b06069c176814aea015c20723959b1f8';
 
 final class Regression3490Family extends $Family {
   const Regression3490Family._()
@@ -945,12 +954,12 @@ final class Regression3490Family extends $Family {
           isAutoDispose: true,
         );
 
-  Regression3490Provider<Model, Sort, Cursor> call<Model, Sort, Cursor>({
+  Regression3490Provider<ModelT, SortT, CursorT> call<ModelT, SortT, CursorT>({
     required String type,
-    required Regression3490Cb<Model, Sort, Cursor> getData,
+    required Regression3490Cb<ModelT, SortT, CursorT> getData,
     String? parentId,
   }) =>
-      Regression3490Provider<Model, Sort, Cursor>._(argument: (
+      Regression3490Provider<ModelT, SortT, CursorT>._(argument: (
         type: type,
         getData: getData,
         parentId: parentId,
@@ -961,51 +970,54 @@ final class Regression3490Family extends $Family {
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-          Regression3490<Model, Sort, Cursor> Function<Model, Sort, Cursor>()
+          Regression3490<ModelT, SortT, CursorT>
+                  Function<ModelT, SortT, CursorT>()
               create) =>
       $FamilyOverride(
           from: this,
           createElement: (pointer) {
             final provider = pointer.origin as Regression3490Provider;
-            return provider._captureGenerics(<Model, Sort, Cursor>() {
-              provider as Regression3490Provider<Model, Sort, Cursor>;
+            return provider._captureGenerics(<ModelT, SortT, CursorT>() {
+              provider as Regression3490Provider<ModelT, SortT, CursorT>;
               return provider
-                  .$view(create: create<Model, Sort, Cursor>)
+                  .$view(create: create<ModelT, SortT, CursorT>)
                   .$createElement(pointer);
             });
           });
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-          void Function<Model, Sort, Cursor>(
-                  Ref ref, Regression3490<Model, Sort, Cursor> notifier)
+          void Function<ModelT, SortT, CursorT>(
+                  Ref ref, Regression3490<ModelT, SortT, CursorT> notifier)
               build) =>
       $FamilyOverride(
           from: this,
           createElement: (pointer) {
             final provider = pointer.origin as Regression3490Provider;
-            return provider._captureGenerics(<Model, Sort, Cursor>() {
-              provider as Regression3490Provider<Model, Sort, Cursor>;
+            return provider._captureGenerics(<ModelT, SortT, CursorT>() {
+              provider as Regression3490Provider<ModelT, SortT, CursorT>;
               return provider
-                  .$view(runNotifierBuildOverride: build<Model, Sort, Cursor>)
+                  .$view(
+                      runNotifierBuildOverride: build<ModelT, SortT, CursorT>)
                   .$createElement(pointer);
             });
           });
 }
 
-abstract class _$Regression3490<Model, Sort, Cursor> extends $Notifier<void> {
+abstract class _$Regression3490<ModelT, SortT, CursorT>
+    extends $Notifier<void> {
   late final _$args = ref.$arg as ({
     String type,
-    Regression3490Cb<Model, Sort, Cursor> getData,
+    Regression3490Cb<ModelT, SortT, CursorT> getData,
     String? parentId,
   });
   String get type => _$args.type;
-  Regression3490Cb<Model, Sort, Cursor> get getData => _$args.getData;
+  Regression3490Cb<ModelT, SortT, CursorT> get getData => _$args.getData;
   String? get parentId => _$args.parentId;
 
   void build({
     required String type,
-    required Regression3490Cb<Model, Sort, Cursor> getData,
+    required Regression3490Cb<ModelT, SortT, CursorT> getData,
     String? parentId,
   });
   @$mustCallSuper

@@ -245,7 +245,7 @@ final class CustomJsonProvider
   CustomJson create() => CustomJson();
 }
 
-String _$customJsonHash() => r'63e29ca9b3fd9fe21a18e45f1052bbdbc96a6568';
+String _$customJsonHash() => r'8f071e5878ad594850f66a10f0419e77e6c3bf4e';
 
 abstract class _$CustomJsonBase extends $AsyncNotifier<Map<String, Bar>> {
   FutureOr<Map<String, Bar>> build();
@@ -289,7 +289,7 @@ final class CustomKeyProvider
   CustomKey create() => CustomKey();
 }
 
-String _$customKeyHash() => r'b8b7a780ae558e6716d7316c9b7696d7da187014';
+String _$customKeyHash() => r'528119880183ac4a8703f10a70d34e668c34560b';
 
 abstract class _$CustomKeyBase extends $AsyncNotifier<Map<String, Bar>> {
   FutureOr<Map<String, Bar>> build();
@@ -356,7 +356,7 @@ final class CustomJsonWithArgsProvider
 }
 
 String _$customJsonWithArgsHash() =>
-    r'7ad8d5007b14cf007d145d79eb6bc8ad18f20aeb';
+    r'b3363ef1436f3e00d228bd2b27cf94cf952b42e5';
 
 final class CustomJsonWithArgsFamily extends $Family
     with
@@ -455,7 +455,7 @@ final class PassEncodeDecodeByHandProvider extends $AsyncNotifierProvider<
 }
 
 String _$passEncodeDecodeByHandHash() =>
-    r'3960536b1d2300e99dc2b6344d44f2f354a5e679';
+    r'a84472fd5601bd429e051a5f0136b5eb18ee9866';
 
 abstract class _$PassEncodeDecodeByHandBase
     extends $AsyncNotifier<Map<String, String>> {

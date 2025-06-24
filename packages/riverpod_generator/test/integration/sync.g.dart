@@ -9,9 +9,9 @@ part of 'sync.dart';
 @ProviderFor(generic)
 const genericProvider = GenericFamily._();
 
-final class GenericProvider<T extends num>
-    extends $FunctionalProvider<List<T>, List<T>, List<T>>
-    with $Provider<List<T>> {
+final class GenericProvider<ItemT extends num>
+    extends $FunctionalProvider<List<ItemT>, List<ItemT>, List<ItemT>>
+    with $Provider<List<ItemT>> {
   const GenericProvider._({required GenericFamily super.from})
       : super(
           argument: null,
@@ -28,29 +28,29 @@ final class GenericProvider<T extends num>
   @override
   String toString() {
     return r'genericProvider'
-        '<${T}>'
+        '<${ItemT}>'
         '()';
   }
 
   @$internal
   @override
-  $ProviderElement<List<T>> $createElement($ProviderPointer pointer) =>
+  $ProviderElement<List<ItemT>> $createElement($ProviderPointer pointer) =>
       $ProviderElement(pointer);
 
   @override
-  List<T> create(Ref ref) {
-    return generic<T>(ref);
+  List<ItemT> create(Ref ref) {
+    return generic<ItemT>(ref);
   }
 
-  $R _captureGenerics<$R>($R Function<T extends num>() cb) {
-    return cb<T>();
+  $R _captureGenerics<$R>($R Function<ItemT extends num>() cb) {
+    return cb<ItemT>();
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(List<T> value) {
+  Override overrideWithValue(List<ItemT> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<List<T>>(value),
+      providerOverride: $SyncValueProvider<List<ItemT>>(value),
     );
   }
 
@@ -67,7 +67,7 @@ final class GenericProvider<T extends num>
   }
 }
 
-String _$genericHash() => r'4a2a38e246fc4ef25c46d93477010b66de01ff30';
+String _$genericHash() => r'560436def511aa3619152db2325771684296d7e5';
 
 final class GenericFamily extends $Family {
   const GenericFamily._()
@@ -79,20 +79,24 @@ final class GenericFamily extends $Family {
           isAutoDispose: true,
         );
 
-  GenericProvider<T> call<T extends num>() => GenericProvider<T>._(from: this);
+  GenericProvider<ItemT> call<ItemT extends num>() =>
+      GenericProvider<ItemT>._(from: this);
 
   @override
   String toString() => r'genericProvider';
 
   /// {@macro riverpod.override_with}
-  Override overrideWith(List<T> Function<T extends num>(Ref ref) create) =>
+  Override overrideWith(
+          List<ItemT> Function<ItemT extends num>(Ref ref) create) =>
       $FamilyOverride(
           from: this,
           createElement: (pointer) {
             final provider = pointer.origin as GenericProvider;
-            return provider._captureGenerics(<T extends num>() {
-              provider as GenericProvider<T>;
-              return provider.$view(create: create<T>).$createElement(pointer);
+            return provider._captureGenerics(<ItemT extends num>() {
+              provider as GenericProvider<ItemT>;
+              return provider
+                  .$view(create: create<ItemT>)
+                  .$createElement(pointer);
             });
           });
 }
@@ -100,14 +104,14 @@ final class GenericFamily extends $Family {
 @ProviderFor(complexGeneric)
 const complexGenericProvider = ComplexGenericFamily._();
 
-final class ComplexGenericProvider<T extends num, Foo extends String?>
-    extends $FunctionalProvider<List<T>, List<T>, List<T>>
-    with $Provider<List<T>> {
+final class ComplexGenericProvider<ItemT extends num, OtherT extends String?>
+    extends $FunctionalProvider<List<ItemT>, List<ItemT>, List<ItemT>>
+    with $Provider<List<ItemT>> {
   const ComplexGenericProvider._(
       {required ComplexGenericFamily super.from,
       required ({
-        T param,
-        Foo? otherParam,
+        ItemT param,
+        OtherT? otherParam,
       })
           super.argument})
       : super(
@@ -124,22 +128,22 @@ final class ComplexGenericProvider<T extends num, Foo extends String?>
   @override
   String toString() {
     return r'complexGenericProvider'
-        '<${T}, ${Foo}>'
+        '<${ItemT}, ${OtherT}>'
         '$argument';
   }
 
   @$internal
   @override
-  $ProviderElement<List<T>> $createElement($ProviderPointer pointer) =>
+  $ProviderElement<List<ItemT>> $createElement($ProviderPointer pointer) =>
       $ProviderElement(pointer);
 
   @override
-  List<T> create(Ref ref) {
+  List<ItemT> create(Ref ref) {
     final argument = this.argument as ({
-      T param,
-      Foo? otherParam,
+      ItemT param,
+      OtherT? otherParam,
     });
-    return complexGeneric<T, Foo>(
+    return complexGeneric<ItemT, OtherT>(
       ref,
       param: argument.param,
       otherParam: argument.otherParam,
@@ -147,15 +151,15 @@ final class ComplexGenericProvider<T extends num, Foo extends String?>
   }
 
   $R _captureGenerics<$R>(
-      $R Function<T extends num, Foo extends String?>() cb) {
-    return cb<T, Foo>();
+      $R Function<ItemT extends num, OtherT extends String?>() cb) {
+    return cb<ItemT, OtherT>();
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(List<T> value) {
+  Override overrideWithValue(List<ItemT> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<List<T>>(value),
+      providerOverride: $SyncValueProvider<List<ItemT>>(value),
     );
   }
 
@@ -172,7 +176,7 @@ final class ComplexGenericProvider<T extends num, Foo extends String?>
   }
 }
 
-String _$complexGenericHash() => r'bc3433c913396a238e833722a2dc3a78bdf844a4';
+String _$complexGenericHash() => r'02fe9175ec1a496c21379692efe6b11a7286ae55';
 
 final class ComplexGenericFamily extends $Family {
   const ComplexGenericFamily._()
@@ -184,37 +188,38 @@ final class ComplexGenericFamily extends $Family {
           isAutoDispose: true,
         );
 
-  ComplexGenericProvider<T, Foo> call<T extends num, Foo extends String?>({
-    required T param,
-    Foo? otherParam,
+  ComplexGenericProvider<ItemT, OtherT>
+      call<ItemT extends num, OtherT extends String?>({
+    required ItemT param,
+    OtherT? otherParam,
   }) =>
-      ComplexGenericProvider<T, Foo>._(argument: (
-        param: param,
-        otherParam: otherParam,
-      ), from: this);
+          ComplexGenericProvider<ItemT, OtherT>._(argument: (
+            param: param,
+            otherParam: otherParam,
+          ), from: this);
 
   @override
   String toString() => r'complexGenericProvider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-          List<T> Function<T extends num, Foo extends String?>(
+          List<ItemT> Function<ItemT extends num, OtherT extends String?>(
             Ref ref,
             ({
-              T param,
-              Foo? otherParam,
+              ItemT param,
+              OtherT? otherParam,
             }) args,
           ) create) =>
       $FamilyOverride(
           from: this,
           createElement: (pointer) {
             final provider = pointer.origin as ComplexGenericProvider;
-            return provider
-                ._captureGenerics(<T extends num, Foo extends String?>() {
-              provider as ComplexGenericProvider<T, Foo>;
+            return provider._captureGenerics(
+                <ItemT extends num, OtherT extends String?>() {
+              provider as ComplexGenericProvider<ItemT, OtherT>;
               final argument = provider.argument as ({
-                T param,
-                Foo? otherParam,
+                ItemT param,
+                OtherT? otherParam,
               });
               return provider
                   .$view(create: (ref) => create(ref, argument))
@@ -226,8 +231,8 @@ final class ComplexGenericFamily extends $Family {
 @ProviderFor(GenericClass)
 const genericClassProvider = GenericClassFamily._();
 
-final class GenericClassProvider<T extends num>
-    extends $NotifierProvider<GenericClass<T>, List<T>> {
+final class GenericClassProvider<ValueT extends num>
+    extends $NotifierProvider<GenericClass<ValueT>, List<ValueT>> {
   const GenericClassProvider._({required GenericClassFamily super.from})
       : super(
           argument: null,
@@ -244,23 +249,23 @@ final class GenericClassProvider<T extends num>
   @override
   String toString() {
     return r'genericClassProvider'
-        '<${T}>'
+        '<${ValueT}>'
         '()';
   }
 
   @$internal
   @override
-  GenericClass<T> create() => GenericClass<T>();
+  GenericClass<ValueT> create() => GenericClass<ValueT>();
 
-  $R _captureGenerics<$R>($R Function<T extends num>() cb) {
-    return cb<T>();
+  $R _captureGenerics<$R>($R Function<ValueT extends num>() cb) {
+    return cb<ValueT>();
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(List<T> value) {
+  Override overrideWithValue(List<ValueT> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<List<T>>(value),
+      providerOverride: $SyncValueProvider<List<ValueT>>(value),
     );
   }
 
@@ -277,7 +282,7 @@ final class GenericClassProvider<T extends num>
   }
 }
 
-String _$genericClassHash() => r'42ec5a5635796c0d597f0c9dac28ec2f61a486ff';
+String _$genericClassHash() => r'6e0c2b5d8d270649213bcc5df9d99a16a41e4fe0';
 
 final class GenericClassFamily extends $Family {
   const GenericClassFamily._()
@@ -289,50 +294,58 @@ final class GenericClassFamily extends $Family {
           isAutoDispose: true,
         );
 
-  GenericClassProvider<T> call<T extends num>() =>
-      GenericClassProvider<T>._(from: this);
+  GenericClassProvider<ValueT> call<ValueT extends num>() =>
+      GenericClassProvider<ValueT>._(from: this);
 
   @override
   String toString() => r'genericClassProvider';
 
   /// {@macro riverpod.override_with}
-  Override overrideWith(GenericClass<T> Function<T extends num>() create) =>
+  Override overrideWith(
+          GenericClass<ValueT> Function<ValueT extends num>() create) =>
       $FamilyOverride(
           from: this,
           createElement: (pointer) {
             final provider = pointer.origin as GenericClassProvider;
-            return provider._captureGenerics(<T extends num>() {
-              provider as GenericClassProvider<T>;
-              return provider.$view(create: create<T>).$createElement(pointer);
+            return provider._captureGenerics(<ValueT extends num>() {
+              provider as GenericClassProvider<ValueT>;
+              return provider
+                  .$view(create: create<ValueT>)
+                  .$createElement(pointer);
             });
           });
 
   /// {@macro riverpod.override_with_build}
   Override overrideWithBuild(
-          List<T> Function<T extends num>(Ref ref, GenericClass<T> notifier)
+          List<ValueT> Function<ValueT extends num>(
+                  Ref ref, GenericClass<ValueT> notifier)
               build) =>
       $FamilyOverride(
           from: this,
           createElement: (pointer) {
             final provider = pointer.origin as GenericClassProvider;
-            return provider._captureGenerics(<T extends num>() {
-              provider as GenericClassProvider<T>;
+            return provider._captureGenerics(<ValueT extends num>() {
+              provider as GenericClassProvider<ValueT>;
               return provider
-                  .$view(runNotifierBuildOverride: build<T>)
+                  .$view(runNotifierBuildOverride: build<ValueT>)
                   .$createElement(pointer);
             });
           });
 }
 
-abstract class _$GenericClass<T extends num> extends $Notifier<List<T>> {
-  List<T> build();
+abstract class _$GenericClass<ValueT extends num>
+    extends $Notifier<List<ValueT>> {
+  List<ValueT> build();
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<List<T>, List<T>>;
+    final ref = this.ref as $Ref<List<ValueT>, List<ValueT>>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<List<T>, List<T>>, List<T>, Object?, Object?>;
+        AnyNotifier<List<ValueT>, List<ValueT>>,
+        List<ValueT>,
+        Object?,
+        Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -2082,12 +2095,13 @@ abstract class _$UnnecessaryCastClass extends $Notifier<String> {
 @ProviderFor(manyDataStream)
 const manyDataStreamProvider = ManyDataStreamFamily._();
 
-final class ManyDataStreamProvider<T extends Object, S extends Object>
-    extends $FunctionalProvider<AsyncValue<List<T>>, List<T>, Stream<List<T>>>
-    with $FutureModifier<List<T>>, $StreamProvider<List<T>> {
+final class ManyDataStreamProvider<ItemT extends Object, OtherT extends Object>
+    extends $FunctionalProvider<AsyncValue<List<ItemT>>, List<ItemT>,
+        Stream<List<ItemT>>>
+    with $FutureModifier<List<ItemT>>, $StreamProvider<List<ItemT>> {
   const ManyDataStreamProvider._(
       {required ManyDataStreamFamily super.from,
-      required ManyProviderData<T, S> super.argument})
+      required ManyProviderData<ItemT, OtherT> super.argument})
       : super(
           retry: null,
           name: r'manyDataStreamProvider',
@@ -2102,27 +2116,28 @@ final class ManyDataStreamProvider<T extends Object, S extends Object>
   @override
   String toString() {
     return r'manyDataStreamProvider'
-        '<${T}, ${S}>'
+        '<${ItemT}, ${OtherT}>'
         '($argument)';
   }
 
   @$internal
   @override
-  $StreamProviderElement<List<T>> $createElement($ProviderPointer pointer) =>
+  $StreamProviderElement<List<ItemT>> $createElement(
+          $ProviderPointer pointer) =>
       $StreamProviderElement(pointer);
 
   @override
-  Stream<List<T>> create(Ref ref) {
-    final argument = this.argument as ManyProviderData<T, S>;
-    return manyDataStream<T, S>(
+  Stream<List<ItemT>> create(Ref ref) {
+    final argument = this.argument as ManyProviderData<ItemT, OtherT>;
+    return manyDataStream<ItemT, OtherT>(
       ref,
       argument,
     );
   }
 
   $R _captureGenerics<$R>(
-      $R Function<T extends Object, S extends Object>() cb) {
-    return cb<T, S>();
+      $R Function<ItemT extends Object, OtherT extends Object>() cb) {
+    return cb<ItemT, OtherT>();
   }
 
   @override
@@ -2138,7 +2153,7 @@ final class ManyDataStreamProvider<T extends Object, S extends Object>
   }
 }
 
-String _$manyDataStreamHash() => r'5f389757cba176868a47b89b14b1f96afe20d728';
+String _$manyDataStreamHash() => r'57682645596b340352f90a6b2c29d490ce30806b';
 
 final class ManyDataStreamFamily extends $Family {
   const ManyDataStreamFamily._()
@@ -2150,28 +2165,31 @@ final class ManyDataStreamFamily extends $Family {
           isAutoDispose: true,
         );
 
-  ManyDataStreamProvider<T, S> call<T extends Object, S extends Object>(
-    ManyProviderData<T, S> pData,
+  ManyDataStreamProvider<ItemT, OtherT>
+      call<ItemT extends Object, OtherT extends Object>(
+    ManyProviderData<ItemT, OtherT> pData,
   ) =>
-      ManyDataStreamProvider<T, S>._(argument: pData, from: this);
+          ManyDataStreamProvider<ItemT, OtherT>._(argument: pData, from: this);
 
   @override
   String toString() => r'manyDataStreamProvider';
 
   /// {@macro riverpod.override_with}
   Override overrideWith(
-          Stream<List<T>> Function<T extends Object, S extends Object>(
+          Stream<List<ItemT>>
+              Function<ItemT extends Object, OtherT extends Object>(
             Ref ref,
-            ManyProviderData<T, S> args,
+            ManyProviderData<ItemT, OtherT> args,
           ) create) =>
       $FamilyOverride(
           from: this,
           createElement: (pointer) {
             final provider = pointer.origin as ManyDataStreamProvider;
-            return provider
-                ._captureGenerics(<T extends Object, S extends Object>() {
-              provider as ManyDataStreamProvider<T, S>;
-              final argument = provider.argument as ManyProviderData<T, S>;
+            return provider._captureGenerics(
+                <ItemT extends Object, OtherT extends Object>() {
+              provider as ManyDataStreamProvider<ItemT, OtherT>;
+              final argument =
+                  provider.argument as ManyProviderData<ItemT, OtherT>;
               return provider
                   .$view(create: (ref) => create(ref, argument))
                   .$createElement(pointer);

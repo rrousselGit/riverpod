@@ -14,11 +14,11 @@ part of 'result.dart';
 T _$identity<T>(T value) => value;
 
 /// @nodoc
-mixin _$Result<T> {
+mixin _$Result<ValueT> {
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is Result<T>);
+        (other.runtimeType == runtimeType && other is Result<ValueT>);
   }
 
   @override
@@ -26,34 +26,35 @@ mixin _$Result<T> {
 
   @override
   String toString() {
-    return 'Result<$T>()';
+    return 'Result<$ValueT>()';
   }
 }
 
 /// @nodoc
-class $ResultCopyWith<T, $Res> {
-  $ResultCopyWith(Result<T> _, $Res Function(Result<T>) __);
+class $ResultCopyWith<ValueT, $Res> {
+  $ResultCopyWith(Result<ValueT> _, $Res Function(Result<ValueT>) __);
 }
 
 /// @nodoc
 
-class _$ResultData<T> extends Result<T> {
+class _$ResultData<ValueT> extends Result<ValueT> {
   _$ResultData(this.value) : super._();
 
-  final T value;
+  final ValueT value;
 
   /// Create a copy of Result
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$$ResultDataCopyWith<T, _$ResultData<T>> get copyWith =>
-      __$$ResultDataCopyWithImpl<T, _$ResultData<T>>(this, _$identity);
+  _$$ResultDataCopyWith<ValueT, _$ResultData<ValueT>> get copyWith =>
+      __$$ResultDataCopyWithImpl<ValueT, _$ResultData<ValueT>>(
+          this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ResultData<T> &&
+            other is _$ResultData<ValueT> &&
             const DeepCollectionEquality().equals(other.value, value));
   }
 
@@ -63,27 +64,26 @@ class _$ResultData<T> extends Result<T> {
 
   @override
   String toString() {
-    return 'Result<$T>.data(value: $value)';
+    return 'Result<$ValueT>.data(value: $value)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$$ResultDataCopyWith<T, $Res>
-    implements $ResultCopyWith<T, $Res> {
-  factory _$$ResultDataCopyWith(
-          _$ResultData<T> value, $Res Function(_$ResultData<T>) _then) =
-      __$$ResultDataCopyWithImpl;
+abstract mixin class _$$ResultDataCopyWith<ValueT, $Res>
+    implements $ResultCopyWith<ValueT, $Res> {
+  factory _$$ResultDataCopyWith(_$ResultData<ValueT> value,
+      $Res Function(_$ResultData<ValueT>) _then) = __$$ResultDataCopyWithImpl;
   @useResult
-  $Res call({T value});
+  $Res call({ValueT value});
 }
 
 /// @nodoc
-class __$$ResultDataCopyWithImpl<T, $Res>
-    implements _$$ResultDataCopyWith<T, $Res> {
+class __$$ResultDataCopyWithImpl<ValueT, $Res>
+    implements _$$ResultDataCopyWith<ValueT, $Res> {
   __$$ResultDataCopyWithImpl(this._self, this._then);
 
-  final _$ResultData<T> _self;
-  final $Res Function(_$ResultData<T>) _then;
+  final _$ResultData<ValueT> _self;
+  final $Res Function(_$ResultData<ValueT>) _then;
 
   /// Create a copy of Result
   /// with the given fields replaced by the non-null parameter values.
@@ -91,18 +91,18 @@ class __$$ResultDataCopyWithImpl<T, $Res>
   $Res call({
     Object? value = freezed,
   }) {
-    return _then(_$ResultData<T>(
+    return _then(_$ResultData<ValueT>(
       freezed == value
           ? _self.value
           : value // ignore: cast_nullable_to_non_nullable
-              as T,
+              as ValueT,
     ));
   }
 }
 
 /// @nodoc
 
-class _$ResultError<T> extends Result<T> {
+class _$ResultError<ValueT> extends Result<ValueT> {
   _$ResultError(this.error, [this.stackTrace]) : super._();
 
   final Object error;
@@ -112,14 +112,15 @@ class _$ResultError<T> extends Result<T> {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$$ResultErrorCopyWith<T, _$ResultError<T>> get copyWith =>
-      __$$ResultErrorCopyWithImpl<T, _$ResultError<T>>(this, _$identity);
+  _$$ResultErrorCopyWith<ValueT, _$ResultError<ValueT>> get copyWith =>
+      __$$ResultErrorCopyWithImpl<ValueT, _$ResultError<ValueT>>(
+          this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$ResultError<T> &&
+            other is _$ResultError<ValueT> &&
             const DeepCollectionEquality().equals(other.error, error) &&
             (identical(other.stackTrace, stackTrace) ||
                 other.stackTrace == stackTrace));
@@ -131,27 +132,26 @@ class _$ResultError<T> extends Result<T> {
 
   @override
   String toString() {
-    return 'Result<$T>.error(error: $error, stackTrace: $stackTrace)';
+    return 'Result<$ValueT>.error(error: $error, stackTrace: $stackTrace)';
   }
 }
 
 /// @nodoc
-abstract mixin class _$$ResultErrorCopyWith<T, $Res>
-    implements $ResultCopyWith<T, $Res> {
-  factory _$$ResultErrorCopyWith(
-          _$ResultError<T> value, $Res Function(_$ResultError<T>) _then) =
-      __$$ResultErrorCopyWithImpl;
+abstract mixin class _$$ResultErrorCopyWith<ValueT, $Res>
+    implements $ResultCopyWith<ValueT, $Res> {
+  factory _$$ResultErrorCopyWith(_$ResultError<ValueT> value,
+      $Res Function(_$ResultError<ValueT>) _then) = __$$ResultErrorCopyWithImpl;
   @useResult
   $Res call({Object error, StackTrace? stackTrace});
 }
 
 /// @nodoc
-class __$$ResultErrorCopyWithImpl<T, $Res>
-    implements _$$ResultErrorCopyWith<T, $Res> {
+class __$$ResultErrorCopyWithImpl<ValueT, $Res>
+    implements _$$ResultErrorCopyWith<ValueT, $Res> {
   __$$ResultErrorCopyWithImpl(this._self, this._then);
 
-  final _$ResultError<T> _self;
-  final $Res Function(_$ResultError<T>) _then;
+  final _$ResultError<ValueT> _self;
+  final $Res Function(_$ResultError<ValueT>) _then;
 
   /// Create a copy of Result
   /// with the given fields replaced by the non-null parameter values.
@@ -160,7 +160,7 @@ class __$$ResultErrorCopyWithImpl<T, $Res>
     Object? error = null,
     Object? stackTrace = freezed,
   }) {
-    return _then(_$ResultError<T>(
+    return _then(_$ResultError<ValueT>(
       null == error ? _self.error : error,
       freezed == stackTrace
           ? _self.stackTrace
