@@ -303,6 +303,10 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
   }
 }
 
+typedef _DataRecord<ValueT> = (ValueT,);
+typedef _ErrorRecord = ({Object err, StackTrace stack});
+typedef _LoadingRecord = ({num? progress});
+
 /// A utility for safely manipulating asynchronous data.
 ///
 /// By using [AsyncValue], you are guaranteed that you cannot forget to
@@ -465,9 +469,9 @@ sealed class AsyncValue<ValueT> {
   /// When [isFromCache] is true, [isLoading] should also be true.
   bool get isFromCache;
 
-  ({num? progress})? get _loading;
+  _LoadingRecord? get _loading;
 
-  (ValueT,)? get _value;
+  _DataRecord<ValueT>? get _value;
 
   /// The value currently exposed.
   ///
@@ -498,7 +502,7 @@ sealed class AsyncValue<ValueT> {
     );
   }
 
-  ({Object err, StackTrace stack})? get _error;
+  _ErrorRecord? get _error;
 
   /// The [error].
   Object? get error => _error?.err;
@@ -606,8 +610,8 @@ final class AsyncData<ValueT> extends AsyncResult<ValueT> {
 
   const AsyncData._(
     ValueT value, {
-    required ({Object err, StackTrace stack})? error,
-    required ({num? progress})? loading,
+    required _ErrorRecord? error,
+    required _LoadingRecord? loading,
     required this.isFromCache,
   })  : _value = (value,),
         _loading = loading,
@@ -615,7 +619,7 @@ final class AsyncData<ValueT> extends AsyncResult<ValueT> {
         super._();
 
   @override
-  final ({num? progress})? _loading;
+  final _LoadingRecord? _loading;
 
   @override
   String get _displayString => 'AsyncData';
@@ -624,12 +628,12 @@ final class AsyncData<ValueT> extends AsyncResult<ValueT> {
   final bool isFromCache;
 
   @override
-  final (ValueT,) _value;
+  final _DataRecord<ValueT> _value;
   @override
   ValueT get value => _value.$1;
 
   @override
-  final ({Object err, StackTrace stack})? _error;
+  final _ErrorRecord? _error;
 
   @override
   AsyncData<ValueT> copyWithPrevious(
@@ -669,15 +673,15 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
 
   const AsyncLoading._(
     this._loading, {
-    required (ValueT,)? value,
-    required ({Object err, StackTrace stack})? error,
+    required _DataRecord<ValueT>? value,
+    required _ErrorRecord? error,
     required this.isFromCache,
   })  : _value = value,
         _error = error,
         super._();
 
   @override
-  final ({num? progress})? _loading;
+  final _LoadingRecord? _loading;
 
   @override
   final bool isFromCache;
@@ -686,10 +690,10 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
   String get _displayString => 'AsyncLoading';
 
   @override
-  final (ValueT,)? _value;
+  final _DataRecord<ValueT>? _value;
 
   @override
-  final ({Object err, StackTrace stack})? _error;
+  final _ErrorRecord? _error;
 
   @override
   AsyncValue<NewT> _cast<NewT>() {
@@ -761,14 +765,14 @@ final class AsyncError<ValueT> extends AsyncResult<ValueT> {
 
   const AsyncError._(
     this._error, {
-    required (ValueT,)? value,
-    required ({num? progress})? loading,
+    required _DataRecord<ValueT>? value,
+    required _LoadingRecord? loading,
   })  : _value = value,
         _loading = loading,
         super._();
 
   @override
-  final ({num? progress})? _loading;
+  final _LoadingRecord? _loading;
 
   @override
   String get _displayString => 'AsyncError';
@@ -777,10 +781,10 @@ final class AsyncError<ValueT> extends AsyncResult<ValueT> {
   bool get isFromCache => false;
 
   @override
-  final (ValueT,)? _value;
+  final _DataRecord<ValueT>? _value;
 
   @override
-  final ({Object err, StackTrace stack}) _error;
+  final _ErrorRecord _error;
 
   @override
   Object get error => _error.err;
