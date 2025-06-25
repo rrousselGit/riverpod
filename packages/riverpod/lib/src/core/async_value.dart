@@ -11,27 +11,6 @@ extension AsyncTransition<ValueT> on AsyncValue<ValueT> {
   AsyncValue<NewT> cast<NewT>() => _cast<NewT>();
 }
 
-extension<BoxedT> on (BoxedT,)? {
-  BoxedT unwrapSentinel(BoxedT current) {
-    final that = this;
-    if (that == null) return current;
-
-    return that.$1;
-  }
-}
-
-extension on _LoadingRecord {
-  _LoadingRecord copyWith({
-    (num?,)? progress,
-    (_LoadingKind?,)? kind,
-  }) {
-    return (
-      progress: progress.unwrapSentinel(this.progress),
-      kind: kind.unwrapSentinel(this.kind),
-    );
-  }
-}
-
 /// Adds non-state related methods/getters to [AsyncValue].
 @publicInRiverpodAndCodegen
 extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
@@ -58,7 +37,7 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
   ///
   /// If a provider rebuilds because one of its dependencies changes (using [Ref.watch]),
   /// then [isRefreshing] will be false, and instead [isReloading] will be true.
-  bool get isRefreshing => _hasState && _loading?.kind == _LoadingKind.refresh;
+  bool get isRefreshing => _hasState && isLoading && this is! AsyncLoading;
 
   /// Whether the associated provider was recomputed because of a dependency change
   /// (using [Ref.watch]), after at least one [value]/[error] was emitted.
@@ -69,7 +48,7 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
   /// [isReloading] will be false (and [isRefreshing] will be true).
   ///
   /// See also [isRefreshing] for manual provider rebuild.
-  bool get isReloading => _hasState && _loading?.kind == _LoadingKind.reload;
+  bool get isReloading => _hasState && isLoading && this is AsyncLoading;
 
   /// The current progress of the asynchronous operation.
   ///
@@ -328,11 +307,6 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
   }
 }
 
-enum _LoadingKind {
-  reload,
-  refresh,
-}
-
 @internal
 enum SourceKind {
   cache,
@@ -343,7 +317,9 @@ enum SourceKind {
 
 typedef _DataRecord<ValueT> = (ValueT, {SourceKind? source});
 typedef _ErrorRecord = ({Object err, StackTrace stack});
-typedef _LoadingRecord = ({num? progress, _LoadingKind? kind});
+typedef _LoadingRecord = ({
+  num? progress,
+});
 
 /// A utility for safely manipulating asynchronous data.
 ///
@@ -683,7 +659,7 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
   /// {@macro async_value.loading}
   const AsyncLoading({num? progress})
       : _value = null,
-        _loading = (progress: progress, kind: null),
+        _loading = (progress: progress),
         _error = null,
         assert(
           progress == null || (progress >= 0 && progress <= 1),
@@ -726,27 +702,23 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
     AsyncValue<ValueT> previous, {
     bool isRefresh = true,
   }) {
-    final newLoading = _loading.copyWith(
-      kind: (isRefresh ? _LoadingKind.refresh : _LoadingKind.reload,),
-    );
-
     if (isRefresh) {
       return previous.map(
         data: (d) => AsyncData._(
           d._value,
           error: d._error,
-          loading: newLoading,
+          loading: _loading,
         ),
         error: (e) => AsyncError._(
           e._error,
-          loading: newLoading,
+          loading: _loading,
           value: e._value,
         ),
         loading: (_) => this,
       );
     } else {
       return AsyncLoading._(
-        newLoading,
+        _loading,
         value: previous._value,
         error: previous._error,
       );
