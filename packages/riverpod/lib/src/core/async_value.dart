@@ -568,12 +568,7 @@ sealed class AsyncValue<ValueT> {
   }
 
   @override
-  int get hashCode => Object.hash(
-        runtimeType,
-        _loading,
-        _value,
-        _error,
-      );
+  int get hashCode => Object.hash(runtimeType, _loading, _value, _error);
 }
 
 /// A variant of [AsyncValue] that excludes [AsyncLoading].
