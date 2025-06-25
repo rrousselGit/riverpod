@@ -570,7 +570,10 @@ void main() {
 
       test('is called when FutureProvider emits an error', () async {
         final observer = ObserverMock();
-        final container = ProviderContainer.test(observers: [observer]);
+        final container = ProviderContainer.test(
+          observers: [observer],
+          retry: (_, __) => null,
+        );
         final provider = FutureProvider(
           (ref) => Future<void>.error('error', StackTrace.empty),
         );
@@ -613,7 +616,10 @@ void main() {
 
       test('is called when StreamProvider emits an error', () async {
         final observer = ObserverMock();
-        final container = ProviderContainer.test(observers: [observer]);
+        final container = ProviderContainer.test(
+          observers: [observer],
+          retry: (_, __) => null,
+        );
         final provider = StreamProvider(
           (ref) => Stream<void>.error('error', StackTrace.empty),
         );
