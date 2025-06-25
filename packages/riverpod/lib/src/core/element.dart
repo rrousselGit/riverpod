@@ -252,8 +252,7 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
     }) listen,
   ) {
     void callOnError(Object error, StackTrace stackTrace) {
-      triggerRetry(error);
-      onError(AsyncError(error, stackTrace), seamless: !ref.isReload);
+      onError(triggerRetry(error, stackTrace), seamless: !ref.isReload);
     }
 
     void Function()? onDone;
@@ -651,8 +650,7 @@ depending on itself.
     } catch (err, stack) {
       if (kDebugMode) _debugDidSetState = true;
 
-      value = AsyncValue.error(err, stack);
-      triggerRetry(err);
+      value = triggerRetry(err, stack);
     } finally {
       _didBuild = true;
       if (kDebugMode) {
@@ -662,24 +660,30 @@ depending on itself.
   }
 
   @protected
-  void triggerRetry(Object error) {
+  @useResult
+  AsyncError<ValueT> triggerRetry(Object error, StackTrace stackTrace) {
+    var retrying = false;
+
     // Don't start retry if the provider was disposed
-    if (_disposed) return;
+    if (!_disposed) {
+      final retry = origin.retry ?? container.retry ?? _defaultRetry;
 
-    final retry = origin.retry ?? container.retry ?? _defaultRetry;
+      // Capture exceptions. On error, stop retrying if the retry
+      // function failed
+      container.runGuarded(() {
+        final duration = retry(_retryCount, error);
+        if (duration == null) return;
 
-    // Capture exceptions. On error, stop retrying if the retry
-    // function failed
-    container.runGuarded(() {
-      final duration = retry(_retryCount, error);
-      if (duration == null) return;
-
-      _pendingRetryTimer = Timer(duration, () {
-        _pendingRetryTimer = null;
-        _retryCount++;
-        invalidateSelf(asReload: false);
+        retrying = true;
+        _pendingRetryTimer = Timer(duration, () {
+          _pendingRetryTimer = null;
+          _retryCount++;
+          invalidateSelf(asReload: false);
+        });
       });
-    });
+    }
+
+    return AsyncError(error, stackTrace, retrying: retrying);
   }
 
   void _debugAssertNotificationAllowed() {

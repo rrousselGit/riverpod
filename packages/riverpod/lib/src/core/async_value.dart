@@ -14,12 +14,34 @@ extension AsyncTransition<ValueT> on AsyncValue<ValueT> {
 /// Adds non-state related methods/getters to [AsyncValue].
 @publicInRiverpodAndCodegen
 extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
-  SourceKind get _valueSource => _value?.source ?? SourceKind.live;
+  _DataFilledRecord<ValueT>? get _valueFilled {
+    final value = _value;
+    if (value == null) return null;
+
+    return (value: value.$1, source: value.source ?? SourceKind.live);
+  }
+
+  _ErrorFilledRecord? get _errorFilled {
+    final error = _error;
+    if (error == null) return null;
+
+    return (
+      error: error.err,
+      stackTrace: error.stack,
+      retrying: error.retrying ?? false,
+    );
+  }
+
+  /// If an error was emitted, whether that error is currently being retried.
+  /// 
+  /// [retrying] can be true and [isLoading] false.
+  /// This happens when a retry is scheduled, but the delay has not yet elapsed.
+  bool get retrying => _errorFilled?.retrying ?? false;
 
   /// Whether the value was obtained using Riverpod's offline-persistence feature.
   ///
   /// When [isFromCache] is true, [isLoading] should also be true.
-  bool get isFromCache => _valueSource == SourceKind.cache;
+  bool get isFromCache => _valueFilled?.source == SourceKind.cache;
 
   /// Whether some new value is currently asynchronously loading.
   ///
@@ -137,7 +159,7 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
           );
         } catch (err, stack) {
           return AsyncError._(
-            (err: err, stack: stack),
+            (err: err, stack: stack, retrying: null),
             loading: d._loading,
             value: null,
           );
@@ -316,7 +338,16 @@ enum SourceKind {
 }
 
 typedef _DataRecord<ValueT> = (ValueT, {SourceKind? source});
-typedef _ErrorRecord = ({Object err, StackTrace stack});
+typedef _DataFilledRecord<ValueT> = ({
+  ValueT value,
+  SourceKind source,
+});
+typedef _ErrorRecord = ({Object err, StackTrace stack, bool? retrying});
+typedef _ErrorFilledRecord = ({
+  Object error,
+  StackTrace stackTrace,
+  bool retrying,
+});
 typedef _LoadingRecord = ({
   num? progress,
 });
@@ -547,9 +578,10 @@ sealed class AsyncValue<ValueT> {
       if (isLoading && this is! AsyncLoading) 'isLoading: $isLoading',
       if (progress case final progress?) 'progress: $progress',
       if (hasValue) 'value: $value',
-      if (hasError) ...[
+      if (_error != null) ...[
         'error: $error',
         'stackTrace: $stackTrace',
+        if (_errorFilled!.retrying) 'retrying',
       ],
       if (_value?.source case final valueSource?)
         'valueSource: ${valueSource.name}',
@@ -563,12 +595,13 @@ sealed class AsyncValue<ValueT> {
     return runtimeType == other.runtimeType &&
         other is AsyncValue<ValueT> &&
         other._loading == _loading &&
-        other._value == _value &&
-        other._error == _error;
+        other._valueFilled == _valueFilled &&
+        other._errorFilled == _errorFilled;
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, _loading, _value, _error);
+  int get hashCode =>
+      Object.hash(runtimeType, _loading, _valueFilled, _errorFilled);
 }
 
 /// A variant of [AsyncValue] that excludes [AsyncLoading].
@@ -724,9 +757,12 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
 @publicInRiverpodAndCodegen
 final class AsyncError<ValueT> extends AsyncResult<ValueT> {
   /// {@macro async_value.error_ctor}
-  const AsyncError(Object error, StackTrace stackTrace)
-      : this._(
-          (err: error, stack: stackTrace),
+  const AsyncError(
+    Object error,
+    StackTrace stackTrace, {
+    @internal bool? retrying,
+  }) : this._(
+          (err: error, stack: stackTrace, retrying: retrying),
           loading: null,
           value: null,
         );
