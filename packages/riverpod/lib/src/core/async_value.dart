@@ -562,8 +562,7 @@ sealed class AsyncValue<ValueT> {
   bool operator ==(Object other) {
     return runtimeType == other.runtimeType &&
         other is AsyncValue<ValueT> &&
-        other.isLoading == isLoading &&
-        other.progress == progress &&
+        other._loading == _loading &&
         other._value == _value &&
         other._error == _error;
   }
@@ -571,8 +570,7 @@ sealed class AsyncValue<ValueT> {
   @override
   int get hashCode => Object.hash(
         runtimeType,
-        isLoading,
-        progress,
+        _loading,
         _value,
         _error,
       );
