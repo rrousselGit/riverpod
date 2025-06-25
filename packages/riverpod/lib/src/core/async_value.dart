@@ -11,14 +11,44 @@ extension AsyncTransition<ValueT> on AsyncValue<ValueT> {
   AsyncValue<NewT> cast<NewT>() => _cast<NewT>();
 }
 
+extension<BoxedT> on (BoxedT,)? {
+  BoxedT unwrapSentinel(BoxedT current) {
+    final that = this;
+    if (that == null) return current;
+
+    return that.$1;
+  }
+}
+
+extension on _LoadingRecord {
+  _LoadingRecord copyWith({
+    (num?,)? progress,
+    (_LoadingKind?,)? kind,
+  }) {
+    return (
+      progress: progress.unwrapSentinel(this.progress),
+      kind: kind.unwrapSentinel(this.kind),
+    );
+  }
+}
+
 /// Adds non-state related methods/getters to [AsyncValue].
 @publicInRiverpodAndCodegen
 extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
+  SourceKind get _valueSource => _value?.source ?? SourceKind.live;
+
+  /// Whether the value was obtained using Riverpod's offline-persistence feature.
+  ///
+  /// When [isFromCache] is true, [isLoading] should also be true.
+  bool get isFromCache => _valueSource == SourceKind.cache;
+
   /// Whether some new value is currently asynchronously loading.
   ///
   /// Even if [isLoading] is true, it is still possible for [hasValue]/[hasError]
   /// to also be true.
   bool get isLoading => _loading != null;
+
+  bool get _hasState => hasValue || hasError;
 
   /// Whether the associated provider was forced to recompute even though
   /// none of its dependencies has changed, after at least one [value]/[error] was emitted.
@@ -28,8 +58,7 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
   ///
   /// If a provider rebuilds because one of its dependencies changes (using [Ref.watch]),
   /// then [isRefreshing] will be false, and instead [isReloading] will be true.
-  bool get isRefreshing =>
-      isLoading && (hasValue || hasError) && this is! AsyncLoading;
+  bool get isRefreshing => _hasState && _loading?.kind == _LoadingKind.refresh;
 
   /// Whether the associated provider was recomputed because of a dependency change
   /// (using [Ref.watch]), after at least one [value]/[error] was emitted.
@@ -40,7 +69,7 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
   /// [isReloading] will be false (and [isRefreshing] will be true).
   ///
   /// See also [isRefreshing] for manual provider rebuild.
-  bool get isReloading => (hasValue || hasError) && this is AsyncLoading;
+  bool get isReloading => _hasState && _loading?.kind == _LoadingKind.reload;
 
   /// The current progress of the asynchronous operation.
   ///
@@ -123,10 +152,9 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
       data: (d) {
         try {
           return AsyncData._(
-            (cb(d.value),),
+            (cb(d.value), source: null),
             loading: d._loading,
             error: d._error,
-            isFromCache: d.isFromCache,
           );
         } catch (err, stack) {
           return AsyncError._(
@@ -289,23 +317,33 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
   /// The opposite of [copyWithPrevious], reverting to the raw [AsyncValue]
   /// with no information on the previous state.
   AsyncValue<ValueT> unwrapPrevious() {
-    return map(
-      data: (d) {
-        if (d.isLoading) return AsyncLoading<ValueT>(progress: progress);
-        return AsyncData(d.value);
-      },
-      error: (e) {
-        if (e.isLoading) return AsyncLoading<ValueT>(progress: progress);
-        return AsyncError(e.error, e.stackTrace);
-      },
-      loading: (l) => AsyncLoading<ValueT>(progress: progress),
-    );
+    final that = this;
+    return switch (that) {
+      AsyncValue(isLoading: true) ||
+      AsyncLoading() =>
+        AsyncLoading<ValueT>(progress: that.progress),
+      AsyncData() => AsyncData<ValueT>(that.value),
+      AsyncError() => AsyncError<ValueT>(that.error, that.stackTrace),
+    };
   }
 }
 
-typedef _DataRecord<ValueT> = (ValueT,);
+enum _LoadingKind {
+  reload,
+  refresh,
+}
+
+@internal
+enum SourceKind {
+  cache,
+  live,
+  reload,
+  refresh,
+}
+
+typedef _DataRecord<ValueT> = (ValueT, {SourceKind? source});
 typedef _ErrorRecord = ({Object err, StackTrace stack});
-typedef _LoadingRecord = ({num? progress});
+typedef _LoadingRecord = ({num? progress, _LoadingKind? kind});
 
 /// A utility for safely manipulating asynchronous data.
 ///
@@ -464,14 +502,9 @@ sealed class AsyncValue<ValueT> {
     }
   }
 
-  /// Whether the value was obtained using Riverpod's offline-persistence feature.
-  ///
-  /// When [isFromCache] is true, [isLoading] should also be true.
-  bool get isFromCache;
-
   _LoadingRecord? get _loading;
-
   _DataRecord<ValueT>? get _value;
+  _ErrorRecord? get _error;
 
   /// The value currently exposed.
   ///
@@ -494,15 +527,15 @@ sealed class AsyncValue<ValueT> {
   ValueT get requireValue {
     if (hasValue) return value as ValueT;
     if (hasError) {
+      assert(this is! AsyncData, 'Bad state');
       throwProviderException(error!, stackTrace!);
     }
 
+    assert(this is! AsyncData, 'Bad state');
     throw StateError(
       'Tried to call `requireValue` on an `AsyncValue` that has no value: $this',
     );
   }
-
-  _ErrorRecord? get _error;
 
   /// The [error].
   Object? get error => _error?.err;
@@ -542,7 +575,8 @@ sealed class AsyncValue<ValueT> {
         'error: $error',
         'stackTrace: $stackTrace',
       ],
-      if (isFromCache) 'isFromCache: $isFromCache',
+      if (_value?.source case final valueSource?)
+        'valueSource: ${valueSource.name}',
     ].join(', ');
 
     return '$_displayString<$ValueT>($content)';
@@ -553,24 +587,18 @@ sealed class AsyncValue<ValueT> {
     return runtimeType == other.runtimeType &&
         other is AsyncValue<ValueT> &&
         other.isLoading == isLoading &&
-        other.hasValue == hasValue &&
-        other.error == error &&
-        other.stackTrace == stackTrace &&
         other.progress == progress &&
-        other.isFromCache == isFromCache &&
-        other.value == value;
+        other._value == _value &&
+        other._error == _error;
   }
 
   @override
   int get hashCode => Object.hash(
         runtimeType,
         isLoading,
-        hasValue,
-        value,
-        error,
-        stackTrace,
         progress,
-        isFromCache,
+        _value,
+        _error,
       );
 }
 
@@ -600,11 +628,10 @@ final class AsyncData<ValueT> extends AsyncResult<ValueT> {
   const AsyncData(
     ValueT value, {
     /// @nodoc
-    @internal bool isFromCache = false,
+    @internal SourceKind? source,
   }) : this._(
-          (value,),
+          (value, source: source),
           loading: null,
-          isFromCache: isFromCache,
           error: null,
         );
 
@@ -612,7 +639,6 @@ final class AsyncData<ValueT> extends AsyncResult<ValueT> {
     this._value, {
     required _ErrorRecord? error,
     required _LoadingRecord? loading,
-    required this.isFromCache,
   })  : _loading = loading,
         _error = error,
         super._();
@@ -622,9 +648,6 @@ final class AsyncData<ValueT> extends AsyncResult<ValueT> {
 
   @override
   String get _displayString => 'AsyncData';
-
-  @override
-  final bool isFromCache;
 
   @override
   final _DataRecord<ValueT> _value;
@@ -649,7 +672,6 @@ final class AsyncData<ValueT> extends AsyncResult<ValueT> {
       _value as _DataRecord<NewT>,
       error: _error,
       loading: _loading,
-      isFromCache: isFromCache,
     );
   }
 }
@@ -661,9 +683,8 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
   /// {@macro async_value.loading}
   const AsyncLoading({num? progress})
       : _value = null,
-        _loading = (progress: progress),
+        _loading = (progress: progress, kind: null),
         _error = null,
-        isFromCache = false,
         assert(
           progress == null || (progress >= 0 && progress <= 1),
           'progress must be between 0 and 1',
@@ -674,16 +695,12 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
     this._loading, {
     required _DataRecord<ValueT>? value,
     required _ErrorRecord? error,
-    required this.isFromCache,
   })  : _value = value,
         _error = error,
         super._();
 
   @override
-  final _LoadingRecord? _loading;
-
-  @override
-  final bool isFromCache;
+  final _LoadingRecord _loading;
 
   @override
   String get _displayString => 'AsyncLoading';
@@ -701,7 +718,6 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
       _loading,
       value: value as _DataRecord<NewT>?,
       error: _error,
-      isFromCache: isFromCache,
     );
   }
 
@@ -710,41 +726,29 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
     AsyncValue<ValueT> previous, {
     bool isRefresh = true,
   }) {
+    final newLoading = _loading.copyWith(
+      kind: (isRefresh ? _LoadingKind.refresh : _LoadingKind.reload,),
+    );
+
     if (isRefresh) {
       return previous.map(
         data: (d) => AsyncData._(
           d._value,
           error: d._error,
-          loading: _loading,
-          isFromCache: d.isFromCache,
+          loading: newLoading,
         ),
         error: (e) => AsyncError._(
           e._error,
-          loading: _loading,
+          loading: newLoading,
           value: e._value,
         ),
         loading: (_) => this,
       );
     } else {
-      return previous.map(
-        data: (d) => AsyncLoading._(
-          _loading,
-          value: d._value,
-          isFromCache: d.isFromCache,
-          error: d._error,
-        ),
-        error: (e) => AsyncLoading._(
-          _loading,
-          value: e._value,
-          isFromCache: e.isFromCache,
-          error: e._error,
-        ),
-        loading: (e) => AsyncLoading._(
-          _loading,
-          value: e._value,
-          isFromCache: e.isFromCache,
-          error: e._error,
-        ),
+      return AsyncLoading._(
+        newLoading,
+        value: previous._value,
+        error: previous._error,
       );
     }
   }
@@ -775,9 +779,6 @@ final class AsyncError<ValueT> extends AsyncResult<ValueT> {
 
   @override
   String get _displayString => 'AsyncError';
-
-  @override
-  bool get isFromCache => false;
 
   @override
   final _DataRecord<ValueT>? _value;

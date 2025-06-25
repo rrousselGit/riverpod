@@ -3,7 +3,7 @@
 import 'dart:async';
 
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart';
+import 'package:riverpod/src/core/async_value.dart' show SourceKind;
 import 'package:test/test.dart';
 
 import '../utils.dart';
@@ -132,7 +132,7 @@ void main() {
 
       test('with AsyncData, sets value and hasValue', () {
         final result = const AsyncLoading<int>(progress: .1).copyWithPrevious(
-          const AsyncData(42, isFromCache: true),
+          const AsyncData(42, source: SourceKind.cache),
           isRefresh: false,
         );
 
@@ -293,7 +293,7 @@ void main() {
 
         test('with AsyncData', () {
           final value = const AsyncLoading<int>(progress: .1)
-              .copyWithPrevious(const AsyncData(42, isFromCache: true));
+              .copyWithPrevious(const AsyncData(42, source: SourceKind.cache));
 
           expect(value, isA<AsyncData<int>>());
           expect(value.isLoading, true);
@@ -308,8 +308,9 @@ void main() {
 
         test('with refreshing AsyncData', () {
           final value = const AsyncLoading<int>(progress: .1).copyWithPrevious(
-            const AsyncLoading<int>()
-                .copyWithPrevious(const AsyncData(42, isFromCache: true)),
+            const AsyncLoading<int>().copyWithPrevious(
+              const AsyncData(42, source: SourceKind.cache),
+            ),
           );
 
           expect(value, isA<AsyncData<int>>());
@@ -1236,11 +1237,11 @@ void main() {
     );
 
     expect(
-      const AsyncData<int>(42, isFromCache: true),
-      const AsyncData<int>(42, isFromCache: true),
+      const AsyncData<int>(42, source: SourceKind.cache),
+      const AsyncData<int>(42, source: SourceKind.cache),
     );
     expect(
-      const AsyncData<int>(42, isFromCache: true),
+      const AsyncData<int>(42, source: SourceKind.cache),
       isNot(const AsyncData<int>(42)),
     );
   });
@@ -1348,11 +1349,11 @@ void main() {
     );
 
     expect(
-      const AsyncData<int>(42, isFromCache: true).hashCode,
-      const AsyncData<int>(42, isFromCache: true).hashCode,
+      const AsyncData<int>(42, source: SourceKind.cache).hashCode,
+      const AsyncData<int>(42, source: SourceKind.cache).hashCode,
     );
     expect(
-      const AsyncData<int>(42, isFromCache: true).hashCode,
+      const AsyncData<int>(42, source: SourceKind.cache).hashCode,
       isNot(const AsyncData<int>(42).hashCode),
     );
   });
@@ -1448,8 +1449,8 @@ void main() {
     );
 
     expect(
-      const AsyncData<int>(42, isFromCache: true).toString(),
-      'AsyncData<int>(value: 42, isFromCache: true)',
+      const AsyncData<int>(42, source: SourceKind.cache).toString(),
+      'AsyncData<int>(value: 42, valueSource: cache)',
     );
   });
 
