@@ -33,7 +33,7 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
   }
 
   /// If an error was emitted, whether that error is currently being retried.
-  /// 
+  ///
   /// [retrying] can be true and [isLoading] false.
   /// This happens when a retry is scheduled, but the delay has not yet elapsed.
   bool get retrying => _errorFilled?.retrying ?? false;
