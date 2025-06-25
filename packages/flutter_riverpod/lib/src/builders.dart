@@ -11,6 +11,7 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 import 'package:flutter/foundation.dart';
+// ignore: unnecessary_import, foundation exports @internal on master only
 import 'package:meta/meta.dart';
 
 import 'internals.dart';
