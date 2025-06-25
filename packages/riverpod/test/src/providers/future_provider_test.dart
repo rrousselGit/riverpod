@@ -25,7 +25,12 @@ void main() {
 
           verifyOnly(
             listener,
-            listener(any, AsyncValue<int>.error(err, stack)),
+            listener(
+              any,
+              argThat(
+                isAsyncError<int>(err, stackTrace: stack, retrying: true),
+              ),
+            ),
           );
 
           err = Exception('bar');
@@ -37,7 +42,12 @@ void main() {
 
           verifyOnly(
             listener,
-            listener(any, AsyncValue<int>.error(err, stack)),
+            listener(
+              any,
+              argThat(
+                isAsyncError<int>(err, stackTrace: stack, retrying: true),
+              ),
+            ),
           );
         }),
       );

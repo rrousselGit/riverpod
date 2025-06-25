@@ -315,7 +315,9 @@ void main() {
   });
 
   test('Loading to error', () {
-    final container = ProviderContainer.test();
+    final container = ProviderContainer.test(
+      retry: (_, __) => null,
+    );
     final controller = StreamController<int>(sync: true);
     addTearDown(() => controller.close);
     final provider = StreamProvider((ref) => controller.stream);

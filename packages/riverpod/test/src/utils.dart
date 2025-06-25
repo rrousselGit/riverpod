@@ -232,6 +232,38 @@ class OnRemoveListener extends Mock {
   void call();
 }
 
+TypeMatcher<AsyncError<ValueT>> isAsyncError<ValueT>(
+  Object? error, {
+  Object? stackTrace = const _Sentinel(),
+  Object? retrying = const _Sentinel(),
+  Object? isLoading = const _Sentinel(),
+}) {
+  var matcher = isA<AsyncError<ValueT>>();
+  matcher = matcher.having((e) => e.error, 'error', error);
+  if (stackTrace != const _Sentinel()) {
+    matcher = matcher.having((e) => e.stackTrace, 'stackTrace', stackTrace);
+  }
+  if (retrying != const _Sentinel()) {
+    matcher = matcher.having((e) => e.retrying, 'retrying', retrying);
+  }
+  if (isLoading != const _Sentinel()) {
+    matcher = matcher.having((e) => e.isLoading, 'isLoading', isLoading);
+  }
+
+  return matcher;
+}
+
+TypeMatcher<AsyncLoading<ValueT>> isAsyncLoading<ValueT>({
+  Object? retrying = const _Sentinel(),
+}) {
+  var matcher = isA<AsyncLoading<ValueT>>();
+  if (retrying != const _Sentinel()) {
+    matcher = matcher.having((e) => e.retrying, 'retrying', retrying);
+  }
+
+  return matcher;
+}
+
 /// Syntax sugar for:
 ///
 /// ```dart
