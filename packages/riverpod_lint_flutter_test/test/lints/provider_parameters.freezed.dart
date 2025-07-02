@@ -55,4 +55,66 @@ class _FreezedExample implements FreezedExample {
   }
 }
 
+/// @nodoc
+mixin _$ClassicFreezed {
+  int get value;
+
+  /// Create a copy of ClassicFreezed
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $ClassicFreezedCopyWith<ClassicFreezed> get copyWith =>
+      _$ClassicFreezedCopyWithImpl<ClassicFreezed>(
+          this as ClassicFreezed, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is ClassicFreezed &&
+            (identical(other.value, value) || other.value == value));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, value);
+
+  @override
+  String toString() {
+    return 'ClassicFreezed(value: $value)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $ClassicFreezedCopyWith<$Res> {
+  factory $ClassicFreezedCopyWith(
+          ClassicFreezed value, $Res Function(ClassicFreezed) _then) =
+      _$ClassicFreezedCopyWithImpl;
+  @useResult
+  $Res call({int value});
+}
+
+/// @nodoc
+class _$ClassicFreezedCopyWithImpl<$Res>
+    implements $ClassicFreezedCopyWith<$Res> {
+  _$ClassicFreezedCopyWithImpl(this._self, this._then);
+
+  final ClassicFreezed _self;
+  final $Res Function(ClassicFreezed) _then;
+
+  /// Create a copy of ClassicFreezed
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? value = null,
+  }) {
+    return _then(ClassicFreezed(
+      null == value
+          ? _self.value
+          : value // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
 // dart format on

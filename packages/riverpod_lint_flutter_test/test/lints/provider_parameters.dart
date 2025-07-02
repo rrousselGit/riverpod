@@ -37,6 +37,7 @@ final dep = Provider((ref) {
   ref.watch(legacy(Object()));
   ref.watch(legacy(const Object()));
   ref.watch(legacy(FreezedExample()));
+  ref.watch(legacy(ClassicFreezed(42)));
 
   void fn() {}
 
@@ -202,4 +203,12 @@ class IndirectEqual with Equatable {
   const IndirectEqual();
   @override
   List<Object?> get props => const [];
+}
+
+@freezed
+class ClassicFreezed with _$ClassicFreezed {
+  const ClassicFreezed(this.value);
+
+  @override
+  final int value;
 }
