@@ -11,6 +11,26 @@ extension AsyncTransition<ValueT> on AsyncValue<ValueT> {
   AsyncValue<NewT> cast<NewT>() => _cast<NewT>();
 }
 
+extension<BoxedT> on (BoxedT,)? {
+  BoxedT unwrapSentinel(BoxedT fallback) {
+    final that = this;
+    if (that == null) return fallback;
+    return that.$1;
+  }
+}
+
+extension<ValueT> on _DataRecord<ValueT> {
+  _DataRecord<ValueT> copyWith({
+    (_DataSource?,)? source,
+  }) {
+    return (
+      $1,
+      kind: kind,
+      source: source.unwrapSentinel(this.source),
+    );
+  }
+}
+
 /// Adds non-state related methods/getters to [AsyncValue].
 @publicInRiverpodAndCodegen
 extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
@@ -18,7 +38,11 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
     final value = _value;
     if (value == null) return null;
 
-    return (value: value.$1, source: value.source ?? SourceKind.live);
+    return (
+      value: value.$1,
+      kind: value.kind ?? DataKind.live,
+      source: value.source ?? _DataSource.liveOrRefresh,
+    );
   }
 
   _ErrorFilledRecord? get _errorFilled {
@@ -41,7 +65,7 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
   /// Whether the value was obtained using Riverpod's offline-persistence feature.
   ///
   /// When [isFromCache] is true, [isLoading] should also be true.
-  bool get isFromCache => _valueFilled?.source == SourceKind.cache;
+  bool get isFromCache => _valueFilled?.kind == DataKind.cache;
 
   /// Whether some new value is currently asynchronously loading.
   ///
@@ -153,7 +177,7 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
       data: (d) {
         try {
           return AsyncData._(
-            (cb(d.value), source: null),
+            (cb(d.value), kind: null, source: null),
             loading: d._loading,
             error: d._error,
           );
@@ -330,17 +354,21 @@ extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
 }
 
 @internal
-enum SourceKind {
+enum DataKind {
   cache,
   live,
-  reload,
-  refresh,
 }
 
-typedef _DataRecord<ValueT> = (ValueT, {SourceKind? source});
+enum _DataSource {
+  liveOrRefresh,
+  reload,
+}
+
+typedef _DataRecord<ValueT> = (ValueT, {DataKind? kind, _DataSource? source});
 typedef _DataFilledRecord<ValueT> = ({
   ValueT value,
-  SourceKind source,
+  DataKind kind,
+  _DataSource? source,
 });
 typedef _ErrorRecord = ({Object err, StackTrace stack, bool? retrying});
 typedef _ErrorFilledRecord = ({
@@ -583,7 +611,7 @@ sealed class AsyncValue<ValueT> {
         'stackTrace: $stackTrace',
         if (_errorFilled!.retrying) 'retrying',
       ],
-      if (_value?.source case final valueSource?)
+      if (_value?.kind case final valueSource?)
         'valueSource: ${valueSource.name}',
     ].join(', ');
 
@@ -630,9 +658,9 @@ final class AsyncData<ValueT> extends AsyncResult<ValueT> {
   const AsyncData(
     ValueT value, {
     /// @nodoc
-    @internal SourceKind? source,
+    @internal DataKind? kind,
   }) : this._(
-          (value, source: source),
+          (value, kind: kind, source: null),
           loading: null,
           error: null,
         );
@@ -728,24 +756,37 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
     AsyncValue<ValueT> previous, {
     bool isRefresh = true,
   }) {
+    final source = isRefresh ? _DataSource.liveOrRefresh : _DataSource.reload;
+    final previousValue = previous._value?.copyWith(
+      source: (source,),
+    );
+
     if (isRefresh) {
       return previous.map(
-        data: (d) => AsyncData._(
-          d._value,
-          error: d._error,
+        data: (previous) => AsyncData._(
+          previousValue!,
+          error: previous._error,
           loading: _loading,
         ),
-        error: (e) => AsyncError._(
-          e._error,
+        error: (previous) => AsyncError._(
+          previous._error,
           loading: _loading,
-          value: e._value,
+          value: previousValue,
         ),
-        loading: (_) => this,
+        loading: (_) {
+          if (_value == previousValue) return this;
+
+          return AsyncLoading<ValueT>._(
+            _loading,
+            value: previousValue,
+            error: _error,
+          );
+        },
       );
     } else {
       return AsyncLoading._(
         _loading,
-        value: previous._value,
+        value: previousValue,
         error: previous._error,
       );
     }

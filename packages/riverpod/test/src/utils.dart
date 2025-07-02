@@ -237,6 +237,8 @@ TypeMatcher<AsyncError<ValueT>> isAsyncError<ValueT>(
   Object? stackTrace = const _Sentinel(),
   Object? retrying = const _Sentinel(),
   Object? isLoading = const _Sentinel(),
+  Object? value = const _Sentinel(),
+  Object? hasValue = const _Sentinel(),
 }) {
   var matcher = isA<AsyncError<ValueT>>();
   matcher = matcher.having((e) => e.error, 'error', error);
@@ -249,16 +251,42 @@ TypeMatcher<AsyncError<ValueT>> isAsyncError<ValueT>(
   if (isLoading != const _Sentinel()) {
     matcher = matcher.having((e) => e.isLoading, 'isLoading', isLoading);
   }
+  if (value != const _Sentinel()) {
+    matcher = matcher.having((e) => e.value, 'value', value);
+  }
+  if (hasValue != const _Sentinel()) {
+    matcher = matcher.having((e) => e.hasValue, 'hasValue', hasValue);
+  }
 
   return matcher;
 }
 
 TypeMatcher<AsyncLoading<ValueT>> isAsyncLoading<ValueT>({
   Object? retrying = const _Sentinel(),
+  Object? value = const _Sentinel(),
+  Object? hasValue = const _Sentinel(),
+  Object? error = const _Sentinel(),
+  Object? stackTrace = const _Sentinel(),
+  Object? hasError = const _Sentinel(),
 }) {
   var matcher = isA<AsyncLoading<ValueT>>();
   if (retrying != const _Sentinel()) {
     matcher = matcher.having((e) => e.retrying, 'retrying', retrying);
+  }
+  if (value != const _Sentinel()) {
+    matcher = matcher.having((e) => e.value, 'value', value);
+  }
+  if (hasValue != const _Sentinel()) {
+    matcher = matcher.having((e) => e.hasValue, 'hasValue', hasValue);
+  }
+  if (error != const _Sentinel()) {
+    matcher = matcher.having((e) => e.error, 'error', error);
+  }
+  if (stackTrace != const _Sentinel()) {
+    matcher = matcher.having((e) => e.stackTrace, 'stackTrace', stackTrace);
+  }
+  if (hasError != const _Sentinel()) {
+    matcher = matcher.having((e) => e.hasError, 'hasError', hasError);
   }
 
   return matcher;

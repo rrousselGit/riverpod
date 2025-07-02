@@ -297,7 +297,7 @@ abstract class $AsyncNotifierBase<ValueT>
     with AnyNotifier<AsyncValue<ValueT>, ValueT> {
   @override
   void _setStateFromValue(ValueT value) {
-    state = AsyncData(value, source: SourceKind.cache);
+    state = AsyncData(value, kind: DataKind.cache);
   }
 
   @override
