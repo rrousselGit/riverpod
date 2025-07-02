@@ -2817,7 +2817,7 @@ void main() {
     group('.onCancel', () {
       test('returns a way to unregister the listener', () {
         final container = ProviderContainer.test();
-        final listener = OnCancelMock();
+        final listener = OnCancel();
         late RemoveListener remove;
         final provider = Provider((ref) {
           remove = ref.onCancel(listener.call);
@@ -2834,8 +2834,8 @@ void main() {
 
       test('is called when all container listeners are removed', () {
         final container = ProviderContainer.test();
-        final listener = OnCancelMock();
-        final listener2 = OnCancelMock();
+        final listener = OnCancel();
+        final listener2 = OnCancel();
         final provider = Provider((ref) {
           ref.onCancel(listener.call);
           ref.onCancel(listener2.call);
@@ -2860,8 +2860,8 @@ void main() {
 
       test('is called when all provider listeners are removed', () {
         final container = ProviderContainer.test();
-        final listener = OnCancelMock();
-        final listener2 = OnCancelMock();
+        final listener = OnCancel();
+        final listener2 = OnCancel();
         final dep = Provider((ref) {
           ref.onCancel(listener.call);
           ref.onCancel(listener2.call);
@@ -2891,8 +2891,8 @@ void main() {
 
       test('is called when all provider dependencies are removed', () async {
         final container = ProviderContainer.test();
-        final listener = OnCancelMock();
-        final listener2 = OnCancelMock();
+        final listener = OnCancel();
+        final listener2 = OnCancel();
         final resume = OnResume();
         final dep = Provider(name: 'dep', (ref) {
           ref.onCancel(listener.call);
@@ -2930,7 +2930,7 @@ void main() {
 
       test('is called when using container.read', () async {
         final container = ProviderContainer.test();
-        final listener = OnCancelMock();
+        final listener = OnCancel();
         final provider = Provider((ref) {
           ref.onCancel(listener.call);
         });
@@ -2942,8 +2942,8 @@ void main() {
 
       test('listeners are cleared on rebuild', () {
         final container = ProviderContainer.test();
-        final listener = OnCancelMock();
-        final listener2 = OnCancelMock();
+        final listener = OnCancel();
+        final listener2 = OnCancel();
         var isSecondBuild = false;
         final provider = Provider((ref) {
           if (isSecondBuild) {
@@ -2980,8 +2980,8 @@ void main() {
           ProviderContainer.test,
           (err, stack) => errors.add(err),
         )!;
-        final listener = OnCancelMock();
-        final listener2 = OnCancelMock();
+        final listener = OnCancel();
+        final listener2 = OnCancel();
         when(listener()).thenThrow(42);
         final provider = Provider((ref) {
           ref.onCancel(listener.call);

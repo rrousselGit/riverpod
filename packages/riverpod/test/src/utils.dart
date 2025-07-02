@@ -212,7 +212,7 @@ class OnDisposeMock extends Mock {
   void call();
 }
 
-class OnCancelMock extends Mock {
+class OnCancel extends Mock {
   void call();
 }
 

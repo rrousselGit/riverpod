@@ -83,7 +83,7 @@ class OnDisposeMock extends Mock {
   }
 }
 
-class OnCancelMock extends Mock {
+class OnCancel extends Mock {
   void call();
 }
 

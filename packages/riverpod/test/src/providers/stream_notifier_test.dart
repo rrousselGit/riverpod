@@ -59,7 +59,7 @@ void main() {
     });
 
     test('closes the StreamSubscription upon disposing the provider', () async {
-      final onCancel = OnCancelMock();
+      final onCancel = OnCancel();
       final container = ProviderContainer.test();
       final provider = factory.simpleTestProvider<int>((ref, _) {
         final controller = StreamController<int>();
