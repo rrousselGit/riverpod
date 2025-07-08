@@ -254,7 +254,7 @@ followed:
 
 ```dart
 onPressed: () {
-  addTodoMutation.run((ref) async {
+  addTodoMutation.run(ref, (ref) async {
     // This is where we run our side-effect.
     // Here, we typically obtain a Notifier and call a method on it.
     await ref.get(todoListProvider.notifier).addTodo('New Todo');
