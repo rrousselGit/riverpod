@@ -765,7 +765,7 @@ For example, your provider could be used indirectly through another provider.
   `}
   
   raw={`
-  final exampleProvider = Provider<int>((ref) {
+  final anotherProvider = Provider<int>((ref) {
     return ref.watch(exampleProvider);
   });
    
@@ -1029,9 +1029,9 @@ They are finally back!
   `}
   
   raw={`
-    Future<int> myFutureProvider() async {
+    final myFutureProvider = FutureProvider<int>((ref) async {
       return 42;
-    }
+    });
     
     void main() {
       final container = ProviderContainer.test(
