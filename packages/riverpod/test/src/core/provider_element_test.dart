@@ -10,6 +10,109 @@ import '../utils.dart';
 
 void main() {
   group('ProviderElement', () {
+    group('pausedActiveSubscriptionCount', () {
+      test('Handles removing a subscription that is paused', () async {
+        final container = ProviderContainer.test();
+        final provider = Provider(name: 'provider', (ref) => 0);
+        final dep = Provider(name: 'dep', (ref) {
+          ref.watch(provider);
+        });
+
+        container.read(dep);
+        container.refresh(dep);
+
+        final element = container.readProviderElement(provider);
+
+        expect(element.pausedActiveSubscriptionCount, 1);
+        expect(element.listenerCount, 1);
+      });
+
+      test('Handles pause/resume on Element views', () async {
+        final container = ProviderContainer.test();
+        final provider = FutureProvider(name: 'provider', (ref) => 0);
+
+        final sub = container.listen(provider.future, (_, __) {})..pause();
+        final element = container.readProviderElement(provider);
+
+        expect(element.pausedActiveSubscriptionCount, 1);
+
+        sub.resume();
+
+        expect(element.pausedActiveSubscriptionCount, 0);
+      });
+    });
+
+    group('listenerCount', () {
+      test('Handles Element views', () async {
+        final container = ProviderContainer.test();
+        final provider = FutureProvider(name: 'provider', (ref) => 0);
+
+        final sub = container.listen(provider.future, (_, __) {});
+        final element = container.readProviderElement(provider);
+
+        expect(element.listenerCount, 1);
+
+        sub.close();
+
+        expect(element.listenerCount, 0);
+      });
+    });
+
+    test("adding and removing a dep shouldn't stop its listeners", () async {
+      final numberProvider =
+          StreamProvider.autoDispose<int>(name: 'number', (ref) {
+        final controller = StreamController<int>();
+
+        int counter = 0;
+        final timer = Timer.periodic(const Duration(milliseconds: 10), (_) {
+          if (!controller.isClosed) controller.sink.add(counter++);
+        });
+
+        ref.onDispose(() {
+          timer.cancel();
+          controller.close();
+        });
+
+        return controller.stream;
+      });
+      final provider1 = FutureProvider.autoDispose(
+        (ref) => ref.watch(numberProvider.future),
+        name: 'one',
+      );
+      final provider2 = FutureProvider.autoDispose(
+        (ref) => ref.watch(numberProvider.future),
+        name: 'two',
+      );
+
+      // Regression test for https://github.com/rrousselGit/riverpod/issues/4117
+      final container = ProviderContainer.test();
+
+      final element = container.readProviderElement(numberProvider);
+
+      Future.delayed(Duration.zero, () async {
+        Future<void> pushAndPop() async {
+          print(element);
+          final sub2 = container.listen(provider2, (previous, next) {});
+          print(element);
+          await Future.microtask(() {});
+          print(element);
+          sub2.close();
+          print(element);
+        }
+
+        await pushAndPop();
+        await Future<void>.delayed(Duration.zero);
+
+        print('====== pop2 ======');
+        await pushAndPop();
+        print('====== did pop2 ======');
+      });
+
+      container.listen(provider1, (previous, next) {});
+
+      await expectLater(container.read(numberProvider.future), completes);
+    });
+
     test(
         'pauses old subscriptions upon invalidation until the completion of the new computation',
         () async {
