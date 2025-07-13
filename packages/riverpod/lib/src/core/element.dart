@@ -393,18 +393,18 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
   /// - all of its listeners are "weak" (i.e. created with `listen(weak: true)`)
   ///
   /// See also [mayNeedDispose], called when [isActive] may have changed.
-  bool get isActive => (_listenerCount - _pausedActiveSubscriptionCount) > 0;
+  bool get isActive => (listenerCount - pausedActiveSubscriptionCount) > 0;
 
-  int get _listenerCount => dependents?.length ?? 0;
+  int get listenerCount => dependents?.length ?? 0;
 
-  var _pausedActiveSubscriptionCount = 0;
+  int pausedActiveSubscriptionCount = 0;
   var _didCancelOnce = false;
 
   /// Whether this [ProviderElement] is currently listened to or not.
   ///
   /// This maps to listeners added with `listen` and `watch`,
   /// excluding `listen(weak: true)`.
-  bool get hasNonWeakListeners => _listenerCount > 0;
+  bool get hasNonWeakListeners => listenerCount > 0;
 
   List<ProviderSubscription>? _inactiveSubscriptions;
   @visibleForTesting
@@ -959,7 +959,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   var _notifyResumeListeners = true;
   void _onChangeSubscription(ProviderSubscription sub, void Function() apply) {
     final wasActive = isActive;
-    final previousListenerCount = _listenerCount;
+    final previousListenerCount = listenerCount;
     apply();
 
     switch ((wasActive: wasActive, isActive: isActive)) {
@@ -978,10 +978,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       // No state change, so do nothing
     }
 
-    if (_listenerCount < previousListenerCount) {
+    if (listenerCount < previousListenerCount) {
       _runCallbacks(container, ref?._onRemoveListeners);
       mayNeedDispose();
-    } else if (_listenerCount > previousListenerCount) {
+    } else if (listenerCount > previousListenerCount) {
       _runCallbacks(container, ref?._onAddListeners);
     }
   }
@@ -991,7 +991,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     // _pausedActiveSubscriptionCount
     if (sub.weak) return;
 
-    _onChangeSubscription(sub, () => _pausedActiveSubscriptionCount++);
+    _onChangeSubscription(sub, () => pausedActiveSubscriptionCount++);
   }
 
   void onSubscriptionResume(ProviderSubscription sub) {
@@ -1000,9 +1000,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     if (sub.weak) return;
 
     _onChangeSubscription(sub, () {
-      _pausedActiveSubscriptionCount = math.max(
+      pausedActiveSubscriptionCount = math.max(
         0,
-        _pausedActiveSubscriptionCount - 1,
+        pausedActiveSubscriptionCount - 1,
       );
     });
   }

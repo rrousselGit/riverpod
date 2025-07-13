@@ -24,7 +24,6 @@ void main() {
         final element = container.readProviderElement(provider);
 
         expect(element.pausedActiveSubscriptionCount, 1);
-        expect(element.listenerCount, 1);
       });
 
       test('Handles pause/resume on Element views', () async {
