@@ -13,6 +13,7 @@ import 'package:test/test.dart' as test;
 import './common/tenable.dart';
 import 'common/env.dart';
 import 'common/pragma.dart';
+import 'common/string.dart';
 import 'internals.dart';
 
 part 'core/element.dart';

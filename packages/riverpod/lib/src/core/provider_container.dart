@@ -16,13 +16,6 @@ extension NodeX on Node {
   }
 }
 
-extension on String {
-  String indentAfterFirstLine(int level) {
-    final indent = '  ' * level;
-    return split('\n').join('\n$indent');
-  }
-}
-
 abstract class _PointerBase {
   bool get isTransitiveOverride;
 
