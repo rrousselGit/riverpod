@@ -91,21 +91,15 @@ void main() {
 
       Future.delayed(Duration.zero, () async {
         Future<void> pushAndPop() async {
-          print(element);
           final sub2 = container.listen(provider2, (previous, next) {});
-          print(element);
           await Future.microtask(() {});
-          print(element);
           sub2.close();
-          print(element);
         }
 
         await pushAndPop();
         await Future<void>.delayed(Duration.zero);
 
-        print('====== pop2 ======');
         await pushAndPop();
-        print('====== did pop2 ======');
       });
 
       container.listen(provider1, (previous, next) {});
