@@ -179,7 +179,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   void _throwIfInvalidUsage() {
     assert(
       _debugCallbackStack == 0,
-      'Cannot use Ref inside life-cycles/selectors.',
+      'Cannot use Ref or modify other providers inside life-cycles/selectors.',
     );
     if (!mounted) {
       throw UnmountedRefException(_element.origin);

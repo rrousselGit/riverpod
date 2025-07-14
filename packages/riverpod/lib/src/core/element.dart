@@ -964,16 +964,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     ProviderSubscription sub,
     void Function() apply,
   ) {
-    if (sub.impl.$hasParent) {
-      // If the subscription is an indirect one, so we don't count it towards
-      // pausedActiveSubscriptionCount, otherwise one listener would count twice.
-      return;
-    }
-
-    // Weak listeners are not counted towards isActive, so we don't want to change
-    // pausedActiveSubscriptionCount
-    if (sub.weak) return;
-
     _onChangeSubscription(sub, () {
       final before = sub.impl.pausedOrDeactivated;
       apply();
@@ -983,6 +973,12 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       );
       final after = sub.impl.pausedOrDeactivated;
 
+      // If the subscription is an indirect one, so we don't count it towards
+      // pausedActiveSubscriptionCount, otherwise one listener would count twice.
+      if (sub.impl.$hasParent) return;
+      // Weak listeners are not counted towards isActive, so we don't want to change
+      // pausedActiveSubscriptionCount
+      if (sub.weak) return;
       if (before == after) return;
       pausedActiveSubscriptionCount++;
     });
@@ -992,16 +988,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     ProviderSubscription sub,
     void Function() apply,
   ) {
-    if (sub.impl.$hasParent) {
-      // If the subscription is an indirect one, so we don't count it towards
-      // pausedActiveSubscriptionCount, otherwise one listener would count twice.
-      return;
-    }
-
-    // Weak listeners are not counted towards isActive, so we don't want to change
-    // pausedActiveSubscriptionCount
-    if (sub.weak) return;
-
     _onChangeSubscription(sub, () {
       final before = sub.impl.pausedOrDeactivated;
       apply();
@@ -1011,6 +997,12 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       );
       final after = sub.impl.pausedOrDeactivated;
 
+      // If the subscription is an indirect one, so we don't count it towards
+      // pausedActiveSubscriptionCount, otherwise one listener would count twice.
+      if (sub.impl.$hasParent) return;
+      // Weak listeners are not counted towards isActive, so we don't want to change
+      // pausedActiveSubscriptionCount
+      if (sub.weak) return;
       if (before == after) return;
 
       pausedActiveSubscriptionCount = math.max(

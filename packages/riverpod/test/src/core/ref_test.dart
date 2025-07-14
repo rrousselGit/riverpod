@@ -125,6 +125,62 @@ void main() {
       );
     });
 
+    test('asserts that lifecycles cannot use other lifecycles', () {
+      final onDispose = OnDisposeMock();
+      final onResume = OnResume();
+      final onCancel = OnCancel();
+      final onAddListener = OnAddListener();
+      final onRemoveListener = OnRemoveListener();
+      final listenSelf = Listener<int>();
+      final listen = Listener<int>();
+
+      final depNotifier = DeferredNotifier<int>((ref, self) => 0);
+      final dep = NotifierProvider<DeferredNotifier<int>, int>(
+        () => depNotifier,
+      );
+
+      final notifier = DeferredNotifier<int>((ref, self) {
+        ref.onDispose(onDispose.call);
+        ref.onResume(onResume.call);
+        ref.onCancel(onCancel.call);
+        ref.onAddListener(onAddListener.call);
+        ref.onRemoveListener(onRemoveListener.call);
+        ref.listen(dep, listen.call);
+        self.listenSelf(listenSelf.call);
+        return 0;
+      });
+
+      when(onDispose()).thenAnswer((_) {
+        notifier.ref.invalidate(dep);
+      });
+      when(onResume()).thenAnswer((_) {
+        notifier.ref.invalidate(dep);
+      });
+      when(onCancel()).thenAnswer((_) {
+        notifier.ref.invalidate(dep);
+      });
+      when(onAddListener()).thenAnswer((_) {
+        notifier.ref.invalidate(dep);
+      });
+      when(onRemoveListener()).thenAnswer((_) {
+        notifier.ref.invalidate(dep);
+      });
+      when(listenSelf(any, any)).thenAnswer((_) {
+        notifier.ref.invalidate(dep);
+      });
+      when(listen(any, any)).thenAnswer((_) {
+        notifier.ref.invalidate(dep);
+      });
+
+      verifyOnly(onDispose, onDispose());
+      verifyOnly(onResume, onResume());
+      verifyOnly(onCancel, onCancel());
+      verifyOnly(onAddListener, onAddListener());
+      verifyOnly(onRemoveListener, onRemoveListener());
+      verifyOnly(listenSelf, listenSelf(any, any));
+      verifyOnly(listen, listen(any, any));
+    });
+
     test('asserts that a lifecycle cannot be used inside selectors', () {
       late Ref ref;
       final container = ProviderContainer.test();

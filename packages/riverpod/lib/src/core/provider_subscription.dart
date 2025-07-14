@@ -126,11 +126,13 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
   @override
   OutT read() => readSafe().valueOrProviderException;
 
+  @mustCallSuper
   @override
   void pause() {
     _listenedElement.onSubscriptionPauseOrDeactivate(this, super.pause);
   }
 
+  @mustCallSuper
   @override
   void resume() {
     _listenedElement.onSubscriptionResumeOrReactivate(this, () {
@@ -155,11 +157,13 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
     });
   }
 
+  @mustCallSuper
   @override
   void deactivate() {
     _listenedElement.onSubscriptionPauseOrDeactivate(this, super.deactivate);
   }
 
+  @mustCallSuper
   @override
   void reactivate() {
     _listenedElement.onSubscriptionResumeOrReactivate(this, super.reactivate);
@@ -209,10 +213,15 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
       ProviderContainer() => source.toString(),
     };
     return '''
-Subscription(
+$runtimeType(
   listened: $listenedDisplay,
   listener: $listenerDisplay,
   pauseCount: $_pauseCount,
+  childSub: ${switch (this) {
+      final ExternalProviderSubscription<Object?, Object?> e =>
+        e._innerSubscription.toString().indentAfterFirstLine(1),
+      _ => null
+    }}
   active: $active,
   weak: $weak,
   closed: $closed,
