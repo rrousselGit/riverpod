@@ -501,17 +501,27 @@ void main() {
             (ref) => 0,
             dependencies: const [],
           );
-          final dep = FutureProvider((ref) => 0, dependencies: [transitiveDep]);
+          final dep = FutureProvider(
+            name: 'dep',
+            (ref) => 0,
+            dependencies: [transitiveDep],
+          );
           final depFamily = FutureProvider.family(
+            name: 'depFamily',
             (ref, id) => 0,
             dependencies: const [],
           );
           final unrelatedScoped = FutureProvider(
+            name: 'unrelatedScoped',
             (ref) => 0,
             dependencies: const [],
           );
-          final nonScopedProvider = FutureProvider((ref) => 0);
+          final nonScopedProvider = FutureProvider(
+            name: 'nonScopedProvider',
+            (ref) => 0,
+          );
           final provider = FutureProvider(
+            name: 'provider',
             (ref) => ref,
             dependencies: [dep, depFamily],
           );
@@ -522,6 +532,7 @@ void main() {
           // accepts providers that are part of its dependencies
           call(ref, dep.select((value) => 0));
           call(ref, dep.selectAsync((value) => 0));
+
           call(ref, depFamily(42).select((value) => 0));
 
           // accepts non-scoped providers

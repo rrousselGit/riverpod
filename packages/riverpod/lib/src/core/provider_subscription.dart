@@ -213,18 +213,18 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
     };
     return '''
 $runtimeType#${shortHash(this)}(
+  active: $active,
+  pauseCount: $_pauseCount,
+  closed: $closed,
   listened: $listenedDisplay,
   listener: $listenerDisplay,
-  pauseCount: $_pauseCount,
+  weak: $weak,
   hasParent: ${$hasParent},
   childSub: ${switch (this) {
       final ExternalProviderSubscription<Object?, Object?> e =>
         e._innerSubscription.toString().indentAfterFirstLine(1),
       _ => null
     }}
-  active: $active,
-  weak: $weak,
-  closed: $closed,
 )''';
   }
 }

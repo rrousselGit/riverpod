@@ -938,8 +938,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
     _onChangeSubscription(sub, () {
       apply();
+      // If the subscription is an indirect one, so we don't count it towards
+      // pausedActiveSubscriptionCount, otherwise one listener would count twice.
       ; // Shouldn't apply to weak listeners
-      if (sub.isPaused || !sub.impl.active) {
+      if (!sub.impl.$hasParent && (sub.isPaused || !sub.impl.active)) {
         pausedActiveSubscriptionCount = math.max(
           0,
           pausedActiveSubscriptionCount - 1,

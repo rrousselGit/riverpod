@@ -46,18 +46,37 @@ void main() {
         expect(element.pausedActiveSubscriptionCount, 1);
       });
 
-      test('Handles pause/resume on Element views', () async {
+      test('Handles pause/resume/remove on Element views', () async {
         final container = ProviderContainer.test();
         final provider = FutureProvider(name: 'provider', (ref) => 0);
+
+        container.listen(provider, (_, __) {}).pause();
 
         final sub = container.listen(provider.future, (_, __) {})..pause();
         final element = container.readProviderElement(provider);
 
-        expect(element.pausedActiveSubscriptionCount, 1);
+        expect(
+          element.pausedActiveSubscriptionCount,
+          2,
+          reason: 'should not increment twice',
+        );
 
         sub.resume();
 
-        expect(element.pausedActiveSubscriptionCount, 0);
+        expect(
+          element.pausedActiveSubscriptionCount,
+          1,
+          reason: 'should not decrement twice',
+        );
+
+        sub.pause();
+        sub.close();
+
+        expect(
+          element.pausedActiveSubscriptionCount,
+          1,
+          reason: 'should not decrement twice',
+        );
       });
     });
 
