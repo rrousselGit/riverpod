@@ -212,7 +212,7 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
       ProviderContainer() => source.toString(),
     };
     return '''
-$runtimeType#${shortHash(this)}(
+ProviderSubscription<$OutT>#${shortHash(this)}(
   active: $active,
   pauseCount: $_pauseCount,
   closed: $closed,

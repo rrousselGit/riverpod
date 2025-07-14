@@ -940,22 +940,14 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       apply();
       // If the subscription is an indirect one, so we don't count it towards
       // pausedActiveSubscriptionCount, otherwise one listener would count twice.
-      ; // Shouldn't apply to weak listeners
-      if (!sub.impl.$hasParent && (sub.isPaused || !sub.impl.active)) {
+      if (!sub.weak &&
+          !sub.impl.$hasParent &&
+          (sub.isPaused || !sub.impl.active)) {
         pausedActiveSubscriptionCount = math.max(
           0,
           pausedActiveSubscriptionCount - 1,
         );
       }
-
-      // If the subscription is paused, internally resume it to decrement any
-      // associated state.
-      // We don't want to call onResume though.
-      // _notifyResumeListeners = false;
-      ; // TODO removing a manually paused listener should not trigger the listener that skipped an event
-      ; //  Overall this is odd
-      // sub.impl.$forceResume();
-      // _notifyResumeListeners = true;
 
       if (sub.weak) {
         weakDependents.remove(sub);
@@ -1044,8 +1036,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
 
     final actualPausedCount = pausedActiveSubscriptionCount;
-    final expectedPausedCount =
-        dependents?.where((sub) => sub.isPaused || !sub.active).length ?? 0;
+    final expectedPausedCount = dependents
+            ?.where((sub) => !sub.weak && (sub.isPaused || !sub.active))
+            .length ??
+        0;
 
     assert(
       actualPausedCount == expectedPausedCount,
@@ -1067,7 +1061,6 @@ $this''',
     );
   }
 
-  var _notifyResumeListeners = true;
   void _onChangeSubscription(ProviderSubscription sub, void Function() apply) {
     final wasActive = isActive;
     final previousListenerCount = listenerCount;
@@ -1077,9 +1070,7 @@ $this''',
 
     switch ((wasActive: wasActive, isActive: isActive)) {
       case (wasActive: false, isActive: true) when _didCancelOnce:
-        if (_notifyResumeListeners) {
-          _runCallbacks(container, ref?._onResumeListeners);
-        }
+        _runCallbacks(container, ref?._onResumeListeners);
         onResume();
 
       case (wasActive: true, isActive: false):

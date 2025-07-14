@@ -5,8 +5,7 @@ import 'dart:async';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/framework.dart';
-import 'package:riverpod/src/internals.dart' show ProviderElement;
+import 'package:riverpod/src/internals.dart' show ProviderElement, NodeInternal;
 import 'package:riverpod/src/internals.dart' show InternalProviderContainer;
 import 'package:test/test.dart';
 

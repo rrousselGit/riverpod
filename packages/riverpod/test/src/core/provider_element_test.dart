@@ -46,6 +46,43 @@ void main() {
         expect(element.pausedActiveSubscriptionCount, 1);
       });
 
+      test('Does not count weak subscription', () {
+        final container = ProviderContainer.test();
+        final provider = FutureProvider(name: 'provider', (ref) => 0);
+
+        container.listen(provider, (_, __) {}).pause();
+
+        final sub = container.listen(
+          provider,
+          (_, __) {},
+          weak: true,
+        )..pause();
+        final element = container.readProviderElement(provider);
+
+        expect(
+          element.pausedActiveSubscriptionCount,
+          1,
+          reason: 'Ignores weak',
+        );
+
+        sub.resume();
+
+        expect(
+          element.pausedActiveSubscriptionCount,
+          1,
+          reason: 'Ignores weak',
+        );
+
+        sub.pause();
+        sub.close();
+
+        expect(
+          element.pausedActiveSubscriptionCount,
+          1,
+          reason: 'Ignores weak',
+        );
+      });
+
       test('Handles pause/resume/remove on Element views', () async {
         final container = ProviderContainer.test();
         final provider = FutureProvider(name: 'provider', (ref) => 0);
