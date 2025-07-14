@@ -899,25 +899,22 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
   void onCancel() {
     subscriptions?.forEach((sub) {
-      switch (sub) {
-        case ProviderSubscriptionImpl():
-          sub._listenedElement.onSubscriptionPause(sub);
-      }
+      sub.impl.deactivate();
     });
   }
 
   void onResume() {
     subscriptions?.forEach((sub) {
-      switch (sub) {
-        case ProviderSubscriptionImpl():
-          sub._listenedElement.onSubscriptionResume(sub);
-      }
+      sub.impl.reactivate();
     });
   }
 
-  void addDependentSubscription(
-    ProviderSubscriptionImpl<Object?> sub,
-  ) {
+  void addDependentSubscription(ProviderSubscriptionImpl<Object?> sub) {
+    assert(
+      !sub.isPaused && sub.impl.active,
+      'Expected subscription to be active and not paused',
+    );
+
     _onChangeSubscription(sub, () {
       if (sub.weak) {
         weakDependents.add(sub);
@@ -935,14 +932,21 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
   void removeDependentSubscription(ProviderSubscription sub) {
     _onChangeSubscription(sub, () {
+      if (sub.isPaused || !sub.impl.active) {
+        pausedActiveSubscriptionCount = math.max(
+          0,
+          pausedActiveSubscriptionCount - 1,
+        );
+      }
+
       // If the subscription is paused, internally resume it to decrement any
       // associated state.
       // We don't want to call onResume though.
-      _notifyResumeListeners = false;
-      while (sub.isPaused) {
-        sub.resume();
-      }
-      _notifyResumeListeners = true;
+      // _notifyResumeListeners = false;
+      ; // TODO removing a manually paused listener should not trigger the listener.
+      ; //  Overall this is odd
+      // sub.impl.$forceResume();
+      // _notifyResumeListeners = true;
 
       if (sub.weak) {
         weakDependents.remove(sub);
@@ -950,17 +954,94 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         dependents?.remove(sub);
       }
 
-      if (sub.source case final ProviderElement element) {
+      if (sub.impl.source case final ProviderElement element) {
         element.subscriptions?.remove(sub);
       }
     });
+  }
+
+  void onSubscriptionPauseOrDeactivate(
+    ProviderSubscription sub,
+    void Function() apply,
+  ) {
+    if (sub.impl.$hasParent) {
+      // If the subscription is an indirect one, so we don't count it towards
+      // pausedActiveSubscriptionCount, otherwise one listener would count twice.
+      return;
+    }
+
+    // Weak listeners are not counted towards isActive, so we don't want to change
+    // pausedActiveSubscriptionCount
+    if (sub.weak) return;
+
+    _onChangeSubscription(sub, () {
+      final before = sub.impl.pausedOrDeactivated;
+      apply();
+      assert(
+        sub.isPaused || !sub.impl.active,
+        'Expected subscription to be paused/inactive',
+      );
+      final after = sub.impl.pausedOrDeactivated;
+
+      if (before == after) return;
+      pausedActiveSubscriptionCount++;
+    });
+  }
+
+  void onSubscriptionResumeOrReactivate(
+    ProviderSubscription sub,
+    void Function() apply,
+  ) {
+    if (sub.impl.$hasParent) {
+      // If the subscription is an indirect one, so we don't count it towards
+      // pausedActiveSubscriptionCount, otherwise one listener would count twice.
+      return;
+    }
+
+    // Weak listeners are not counted towards isActive, so we don't want to change
+    // pausedActiveSubscriptionCount
+    if (sub.weak) return;
+
+    _onChangeSubscription(sub, () {
+      final before = sub.impl.pausedOrDeactivated;
+      apply();
+      assert(
+        !sub.isPaused || sub.impl.active,
+        'Expected subscription to be resumed/active',
+      );
+      final after = sub.impl.pausedOrDeactivated;
+
+      if (before == after) return;
+
+      pausedActiveSubscriptionCount = math.max(
+        0,
+        pausedActiveSubscriptionCount - 1,
+      );
+    });
+  }
+
+  void _assertValidInternalPauseState() {
+    if (!kDebugMode) return;
+
+    final actualPausedCount = pausedActiveSubscriptionCount;
+    final expectedPausedCount =
+        dependents?.where((sub) => sub.isPaused || !sub.active).length ?? 0;
+
+    assert(
+      actualPausedCount == expectedPausedCount,
+      'Expected pausedActiveSubscriptionCount to be $expectedPausedCount, '
+      'but was $actualPausedCount. '
+      'This is likely due to a bug in the provider implementation.',
+    );
   }
 
   var _notifyResumeListeners = true;
   void _onChangeSubscription(ProviderSubscription sub, void Function() apply) {
     final wasActive = isActive;
     final previousListenerCount = listenerCount;
+    _assertValidInternalPauseState();
     apply();
+    _assertValidInternalPauseState();
 
     switch ((wasActive: wasActive, isActive: isActive)) {
       case (wasActive: false, isActive: true) when _didCancelOnce:
@@ -984,27 +1065,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     } else if (listenerCount > previousListenerCount) {
       _runCallbacks(container, ref?._onAddListeners);
     }
-  }
-
-  void onSubscriptionPause(ProviderSubscription sub) {
-    // Weak listeners are not counted towards isActive, so we don't want to change
-    // _pausedActiveSubscriptionCount
-    if (sub.weak) return;
-
-    _onChangeSubscription(sub, () => pausedActiveSubscriptionCount++);
-  }
-
-  void onSubscriptionResume(ProviderSubscription sub) {
-    // Weak listeners are not counted towards isActive, so we don't want to change
-    // _pausedActiveSubscriptionCount
-    if (sub.weak) return;
-
-    _onChangeSubscription(sub, () {
-      pausedActiveSubscriptionCount = math.max(
-        0,
-        pausedActiveSubscriptionCount - 1,
-      );
-    });
   }
 
   /// A life-cycle called by subclasses of [ProviderElement] when
@@ -1044,7 +1104,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     // of the next rebuild.
     if (subscriptions case final subs?) {
       (_inactiveSubscriptions ??= []).addAll(subs);
-      _pauseSubscriptions(subs);
+      for (var i = 0; i < subs.length; i++) {
+        subs[i].impl.deactivate();
+      }
     }
     subscriptions = null;
 
@@ -1126,21 +1188,30 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   String toString() {
     final buffer = StringBuffer('$runtimeType(');
 
-    buffer.writeAll(
-      [
-        switch (resultForValue(value)) {
-          null => 'state: uninitialized',
-          $ResultData<StateT>(:final value) => 'state: $value',
-          $ResultError<StateT>(:final error, :final stackTrace) =>
-            'state: error $error\n$stackTrace',
-        },
-        if (provider != origin) 'provider: $provider',
-        'origin: $origin',
-      ],
-      ', ',
-    );
+    final lines = [
+      'origin: $origin',
+      if (provider != origin) 'provider: $provider',
+      'isActive: $isActive',
+      'listenerCount: $listenerCount',
+      'pausedActiveSubscriptionCount: $pausedActiveSubscriptionCount',
+      'retryCount: $_retryCount',
+      'weakDependents: $weakDependents',
+      'dependents: $dependents',
+      'inactiveSubscriptions: $_inactiveSubscriptions',
+      'subscriptions: $subscriptions',
+      switch (resultForValue(value)) {
+        null => 'state: uninitialized',
+        $ResultData<StateT>(:final value) => 'state: $value',
+        $ResultError<StateT>(:final error, :final stackTrace) =>
+          'state: error $error\n$stackTrace',
+      },
+    ];
 
-    buffer.write(')');
+    for (final line in lines) {
+      buffer.write('\n${line.indent(1)}');
+    }
+
+    buffer.write('\n)');
 
     return buffer.toString();
   }
@@ -1160,7 +1231,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       Iterable<ProviderSubscription<Object?>> children,
     ) {
       for (final child in children) {
-        switch (child.source) {
+        switch (child.impl.source) {
           case final ProviderElement dependent:
             elementVisitor(dependent);
           case ProviderContainer():
@@ -1203,12 +1274,6 @@ void _closeSubscriptions(List<ProviderSubscription> subscriptions) {
   final subs = subscriptions.toList();
   for (var i = 0; i < subs.length; i++) {
     subs[i].close();
-  }
-}
-
-void _pauseSubscriptions(List<ProviderSubscription> subscriptions) {
-  for (var i = 0; i < subscriptions.length; i++) {
-    subscriptions[i].pause();
   }
 }
 

@@ -24,12 +24,6 @@ sealed class ProviderSubscription<OutT> {
   /// {@endtemplate}
   bool get isPaused;
 
-  /// The object that listens to the associated [ProviderListenable].
-  ///
-  /// This is typically a [ProviderElement] or a [ProviderContainer],
-  /// but may be other values in the future.
-  Node get source;
-
   /// Pauses the subscription.
   ///
   /// {@macro riverpod.pause}
@@ -91,6 +85,12 @@ extension ProviderSubX<StateT> on ProviderSubscription<StateT> {
 @internal
 sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
     with _OnPauseMixin {
+  /// The object that listens to the associated [ProviderListenable].
+  ///
+  /// This is typically a [ProviderElement] or a [ProviderContainer],
+  /// but may be other values in the future.
+  Node get source;
+
   @override
   bool get isPaused => _isPaused;
 
@@ -98,6 +98,11 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
   @override
   bool get closed => _closed;
   var _closed = false;
+
+  /// Whether this subscription is indirectly attached to an element.
+  bool get $hasParent => _parent != null;
+
+  ProviderSubscriptionImpl<void>? _parent;
 
   /// Whether an event was sent while this subscription was paused.
   ///
@@ -109,8 +114,12 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
   void Function(OutT? prev, OutT next) get _listener;
   OnError get _errorListener;
 
-  // ProviderBase<StateT> get origin;
   ProviderElement<Object?, Object?> get _listenedElement;
+
+  void _attach(ProviderSubscriptionImpl<void> parent) {
+    assert(_parent == null, 'Already attached to a parent: $_parent');
+    _parent = parent;
+  }
 
   $Result<OutT> _callRead();
 
@@ -118,27 +127,42 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
   OutT read() => readSafe().valueOrProviderException;
 
   @override
-  void onCancel() {
-    _listenedElement.onSubscriptionPause(this);
+  void pause() {
+    _listenedElement.onSubscriptionPauseOrDeactivate(this, super.pause);
   }
 
   @override
-  void onResume() {
-    _listenedElement.onSubscriptionResume(this);
-    if (closed) return;
-    if (_missedCalled?.data case final event?) {
-      final prev = event.$1;
-      final next = event.$2;
+  void resume() {
+    _listenedElement.onSubscriptionResumeOrReactivate(this, () {
+      final wasPaused = _isPaused;
+      super.resume();
 
-      _missedCalled = null;
-      _notifyData(prev, next);
-    } else if (_missedCalled?.error case final event?) {
-      final error = event.$1;
-      final stackTrace = event.$2;
+      if (wasPaused && !isPaused) {
+        if (_missedCalled?.data case final event?) {
+          final prev = event.$1;
+          final next = event.$2;
 
-      _missedCalled = null;
-      _notifyError(error, stackTrace);
-    }
+          _missedCalled = null;
+          _notifyData(prev, next);
+        } else if (_missedCalled?.error case final event?) {
+          final error = event.$1;
+          final stackTrace = event.$2;
+
+          _missedCalled = null;
+          _notifyError(error, stackTrace);
+        }
+      }
+    });
+  }
+
+  @override
+  void deactivate() {
+    _listenedElement.onSubscriptionPauseOrDeactivate(this, super.deactivate);
+  }
+
+  @override
+  void reactivate() {
+    _listenedElement.onSubscriptionResumeOrReactivate(this, super.reactivate);
   }
 
   void _notifyData(OutT? prev, OutT next) {
@@ -175,6 +199,24 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
     _closed = true;
 
     _listenedElement.removeDependentSubscription(this);
+  }
+
+  @override
+  String toString() {
+    final listenedDisplay = _listenedElement.origin.toString();
+    final listenerDisplay = switch (source) {
+      final ProviderElement e => e.origin.toString(),
+      ProviderContainer() => source.toString(),
+    };
+    return '''
+Subscription(
+  listened: $listenedDisplay,
+  listener: $listenerDisplay,
+  pauseCount: $_pauseCount,
+  active: $active,
+  weak: $weak,
+  closed: $closed,
+)''';
   }
 }
 
@@ -232,7 +274,9 @@ final class ExternalProviderSubscription<InT, OutT>
             sub._source,
         },
         _errorListener = onError ??
-            innerSubscription.impl._listenedElement.container.defaultOnError;
+            innerSubscription.impl._listenedElement.container.defaultOnError {
+    innerSubscription.impl._attach(this);
+  }
 
   final ProviderSubscription<InT> _innerSubscription;
   final $Result<OutT> Function() _read;
@@ -253,13 +297,7 @@ final class ExternalProviderSubscription<InT, OutT>
   bool get weak => _innerSubscription.weak;
 
   @override
-  Node get source => _innerSubscription.source;
-
-  @override
-  void onCancel() {}
-
-  @override
-  void onResume() {}
+  Node get source => _innerSubscription.impl.source;
 
   @override
   void pause() {
@@ -286,44 +324,34 @@ final class ExternalProviderSubscription<InT, OutT>
   $Result<OutT> _callRead() => _read();
 }
 
-@internal
-abstract class Pausable {
-  bool get isPaused;
-
-  void pause();
-  void resume();
-
-  void onCancel();
-  void onResume();
-}
-
-mixin _OnPauseMixin implements Pausable {
+mixin _OnPauseMixin {
   bool get _isPaused => _pauseCount > 0;
   var _pauseCount = 0;
 
-  @override
+  int _deactivateCount = 0;
+  bool get active => _deactivateCount == 0;
+
+  bool get pausedOrDeactivated => _isPaused || !active;
+
   @mustCallSuper
   void pause() {
-    final shouldCallCancel = _pauseCount == 0;
     _pauseCount++;
-
-    if (shouldCallCancel) onCancel();
   }
 
-  @override
   @mustCallSuper
   void resume() {
-    final shouldCallResume = _pauseCount == 1;
     _pauseCount = math.max(_pauseCount - 1, 0);
-
-    if (shouldCallResume) onResume();
   }
 
-  @override
-  void onResume();
+  @internal
+  void deactivate() {
+    _deactivateCount++;
+  }
 
-  @override
-  void onCancel();
+  @internal
+  void reactivate() {
+    _deactivateCount = math.max(_deactivateCount - 1, 0);
+  }
 }
 
 /// Deals with the internals of synchronously calling the listeners

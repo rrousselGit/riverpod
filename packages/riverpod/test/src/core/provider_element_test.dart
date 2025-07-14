@@ -11,6 +11,26 @@ import '../utils.dart';
 void main() {
   group('ProviderElement', () {
     group('pausedActiveSubscriptionCount', () {
+      test('Handles subscription.pause', () async {
+        final container = ProviderContainer.test();
+        final provider = FutureProvider(name: 'provider', (ref) => 0);
+
+        final sub = container.listen(provider, (_, __) {});
+        final sub2 = container.listen(provider.future, (_, __) {});
+        final element = container.readProviderElement(provider);
+
+        expect(element.pausedActiveSubscriptionCount, 0);
+        sub.pause();
+        expect(element.pausedActiveSubscriptionCount, 1);
+        sub2.pause();
+        expect(element.pausedActiveSubscriptionCount, 2);
+
+        sub.resume();
+        expect(element.pausedActiveSubscriptionCount, 1);
+        sub2.resume();
+        expect(element.pausedActiveSubscriptionCount, 0);
+      });
+
       test('Handles removing a subscription that is paused', () async {
         final container = ProviderContainer.test();
         final provider = Provider(name: 'provider', (ref) => 0);

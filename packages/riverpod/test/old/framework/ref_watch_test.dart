@@ -185,14 +185,17 @@ void main() {
       ref.watch(dep2);
     });
 
-    container.read(provider);
+    final depNotifier = container.read(dep.notifier);
+    final dep2Notifier = container.read(dep2.notifier);
 
-    container.read(dep.notifier).state++;
+    container.listen(provider, (_, __) {});
+
+    depNotifier.state++;
 
     verifyOnly(onDispose, onDispose());
 
-    container.read(dep.notifier).state++;
-    container.read(dep2.notifier).state++;
+    depNotifier.state++;
+    dep2Notifier.state++;
 
     verifyNoMoreInteractions(onDispose);
   });

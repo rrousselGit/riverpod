@@ -1167,7 +1167,7 @@ void main() {
           return 0;
         });
 
-        container.read(another);
+        container.listen(another, (a, b) {});
 
         expect(buildCount, 1);
         verifyOnly(isEvenListener, isEvenListener(null, true));
@@ -1246,7 +1246,7 @@ void main() {
           ref.listen<int>(dep, listener.call, fireImmediately: true);
         });
 
-        container.read(provider);
+        container.listen(provider, (a, b) {});
 
         verifyOnly(listener, listener(null, 0));
 
@@ -1300,7 +1300,7 @@ void main() {
           );
         });
 
-        container.read(provider);
+        container.listen(provider, (a, b) {});
         verifyOnly(listener, listener(null, true));
 
         container.read(dep.notifier).state += 2;
@@ -3064,7 +3064,7 @@ void main() {
         final container = ProviderContainer();
         addTearDown(container.dispose);
 
-        container.read(provider); // register the onDispose hooks
+        container.listen(provider, (_, __) {});
 
         verifyZeroInteractions(onDispose);
         verifyZeroInteractions(onDispose2);
@@ -3095,7 +3095,7 @@ void main() {
         final container = ProviderContainer();
         addTearDown(container.dispose);
 
-        container.read(provider); // register the onDispose hooks
+        container.listen(provider, (_, __) {});
 
         verifyZeroInteractions(onDispose);
 
@@ -3121,7 +3121,7 @@ void main() {
         final container = ProviderContainer();
         addTearDown(container.dispose);
 
-        container.read(provider); // register the onDispose hooks
+        container.listen(provider, (_, __) {});
         expect(buildCount, 1);
 
         verifyZeroInteractions(onDispose);

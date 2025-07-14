@@ -159,6 +159,7 @@ void main() {
       final dep = StateProvider((ref) => 0);
       final provider = FutureProvider((ref) => Future.value(ref.watch(dep)));
 
+      container.listen(provider, (_, __) {});
       await expectLater(container.read(provider.future), completion(0));
       expect(container.read(provider), const AsyncData(0));
 

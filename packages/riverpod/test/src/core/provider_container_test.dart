@@ -2422,33 +2422,33 @@ void main() {
       test(
           'if a listener removes another provider.listen, the removed listener is not called',
           () {
-        final provider = StateProvider((ref) => 0);
+        final dep = StateProvider((ref) => 0);
         final container = ProviderContainer.test();
 
         final listener = Listener<int>();
         final listener2 = Listener<int>();
 
-        final p = Provider((ref) {
+        final provider = Provider((ref) {
           ProviderSubscription<int>? a;
-          ref.listen<int>(provider, (prev, value) {
+          ref.listen<int>(dep, (prev, value) {
             listener(prev, value);
             a?.close();
             a = null;
           });
 
-          a = ref.listen<int>(provider, listener2.call);
+          a = ref.listen<int>(dep, listener2.call);
         });
-        container.read(p);
+        container.listen(provider, (prev, value) {});
 
         verifyZeroInteractions(listener);
         verifyZeroInteractions(listener2);
 
-        container.read(provider.notifier).state++;
+        container.read(dep.notifier).state++;
 
         verifyOnly(listener, listener(0, 1));
         verifyZeroInteractions(listener2);
 
-        container.read(provider.notifier).state++;
+        container.read(dep.notifier).state++;
 
         verify(listener(1, 2)).called(1);
         verifyNoMoreInteractions(listener2);
@@ -2457,26 +2457,26 @@ void main() {
       test(
           'if a listener adds a provider.listen, the new listener is not called immediately',
           () {
-        final provider = StateProvider((ref) => 0);
+        final dep = StateProvider((ref) => 0);
         final container = ProviderContainer.test();
 
         final listener = Listener<int>();
 
-        final p = Provider((ref) {
-          ref.listen<int>(provider, (prev, value) {
+        final provider = Provider((ref) {
+          ref.listen<int>(dep, (prev, value) {
             listener(prev, value);
-            ref.listen<int>(provider, listener.call);
+            ref.listen<int>(dep, listener.call);
           });
         });
-        container.read(p);
+        container.listen(provider, (prev, value) {});
 
         verifyZeroInteractions(listener);
 
-        container.read(provider.notifier).state++;
+        container.read(dep.notifier).state++;
 
         verify(listener(0, 1)).called(1);
 
-        container.read(provider.notifier).state++;
+        container.read(dep.notifier).state++;
 
         verify(listener(1, 2)).called(2);
       });
