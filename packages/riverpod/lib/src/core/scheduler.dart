@@ -98,11 +98,23 @@ class ProviderScheduler {
   }
 
   void _performRefresh() {
+    Set<ProviderElement>? seen;
+    if (kDebugMode) seen = {};
+
     /// No need to traverse entries from top to bottom, because refreshing a
     /// child will automatically refresh its parent when it will try to read it
     for (var i = 0; i < _stateToRefresh.length; i++) {
       final element = _stateToRefresh[i];
-      if (element.isActive) element.flush();
+      if (element.isActive) {
+        if (kDebugMode) {
+          if (!seen!.add(element)) {
+            throw StateError(
+              'Tried to refresh ${element.origin} multiple times in the same frame',
+            );
+          }
+        }
+        element.flush();
+      }
     }
   }
 

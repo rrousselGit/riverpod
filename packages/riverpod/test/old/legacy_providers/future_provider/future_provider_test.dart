@@ -5,6 +5,7 @@ import 'dart:async';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/src/framework.dart';
 import 'package:riverpod/src/internals.dart' show ProviderElement;
 import 'package:riverpod/src/internals.dart' show InternalProviderContainer;
 import 'package:test/test.dart';
@@ -467,29 +468,46 @@ void main() {
       // Regression test for https://github.com/rrousselGit/riverpod/issues/2041
       final container = ProviderContainer.test();
 
-      final testNotifierProvider =
-          FutureProvider.autoDispose<int>((ref) => 0, name: 'testNotifier');
-      // ProxyProvider is never rebuilt directly, but rather indirectly through
-      // testNotifierProvider. This means the scheduler does not naturally cover it.
-      // Then testProvider is the one to trigger the rebuild by listening to it.
-      final proxyProvider = FutureProvider.autoDispose<int>(
-        (ref) => ref.watch(testNotifierProvider.future),
-        name: 'proxy',
+      final rootProvider = FutureProvider.autoDispose<int>(
+        name: 'root',
+        (ref) {
+          // ref.onDispose(() => print('root disposed'));
+          // print('root');
+          return 0;
+        },
       );
-
-      var buildCount = 0;
-      final testProvider = FutureProvider.autoDispose<int>(
-        (ref) async {
-          buildCount++;
-          final res = (await ref.watch(proxyProvider.future)) + 2;
+      // ProxyProvider is never rebuilt directly, but rather indirectly through
+      // rootProvider. This means the scheduler does not naturally cover it.
+      // Then testProvider is the one to trigger the rebuild by listening to it.
+      final midProvider = FutureProvider.autoDispose<int>(
+        name: 'mid',
+        (ref) {
+          // ref.onDispose(() => print('mid disposed'));
+          // print('mid');
+          final res = ref.watch(rootProvider.future);
+          // print('mid post watch');
 
           return res;
         },
-        name: 'test',
+      );
+
+      var buildCount = 0;
+      final leafProvider = FutureProvider.autoDispose<int>(
+        name: 'leaf',
+        (ref) async {
+          // ref.onDispose(() => print('leaf disposed'));
+          // print('leaf');
+          buildCount++;
+          final future = ref.watch(midProvider.future);
+          // print('leaf post watch');
+          final res = (await future) + 2;
+
+          return res;
+        },
       );
 
       container.listen<AsyncValue<void>>(
-        testProvider,
+        leafProvider,
         (previous, next) {
           if (!next.isLoading && next is AsyncError) {
             Zone.current.handleUncaughtError(next.error, next.stackTrace);
@@ -498,12 +516,42 @@ void main() {
         fireImmediately: true,
       );
 
-      container.invalidate(testNotifierProvider);
-      container.invalidate(testProvider);
+      final rootElement = container.readProviderElement(rootProvider);
+      final midElement = container.readProviderElement(midProvider);
+      final leafElement = container.readProviderElement(leafProvider);
 
+      // print('rootElement: $rootElement');
+      // print('midElement: $midElement');
+      // print('leafElement: $leafElement');
+
+      // print('1----');
+      // print('1----');
+      // print('1----');
+      // print('1----');
+      // print('1----');
+      container.invalidate(rootProvider);
+      // print('rootElement: $rootElement');
+      // print('midElement: $midElement');
+      // print('leafElement: $leafElement');
+      // print('2----');
+      // print('2----');
+      // print('2----');
+      // print('2----');
+      // print('2----');
+      container.invalidate(leafProvider);
+      // print('rootElement: $rootElement');
+      // print('midElement: $midElement');
+      // print('leafElement: $leafElement');
+
+      // print('3----');
+      // print('3----');
+      // print('3----');
+      // print('3----');
+      // print('3----');
       expect(buildCount, 1);
 
       await container.pump();
+      // print('4----');
 
       expect(buildCount, 2);
     });

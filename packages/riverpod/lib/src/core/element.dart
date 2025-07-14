@@ -930,8 +930,15 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     });
   }
 
-  void removeDependentSubscription(ProviderSubscription sub) {
+  void removeDependentSubscription(
+    ProviderSubscription sub,
+    void Function() apply,
+  ) {
+    _assertContainsDependent(sub);
+
     _onChangeSubscription(sub, () {
+      apply();
+      ; // Shouldn't apply to weak listeners
       if (sub.isPaused || !sub.impl.active) {
         pausedActiveSubscriptionCount = math.max(
           0,
@@ -955,7 +962,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       }
 
       if (sub.impl.source case final ProviderElement element) {
-        element.subscriptions?.remove(sub);
+        element
+          ..subscriptions?.remove(sub)
+          .._inactiveSubscriptions?.remove(sub);
       }
     });
   }
@@ -964,6 +973,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     ProviderSubscription sub,
     void Function() apply,
   ) {
+    _assertContainsDependent(sub);
+
     _onChangeSubscription(sub, () {
       final before = sub.impl.pausedOrDeactivated;
       apply();
@@ -988,6 +999,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     ProviderSubscription sub,
     void Function() apply,
   ) {
+    _assertContainsDependent(sub);
+
     _onChangeSubscription(sub, () {
       final before = sub.impl.pausedOrDeactivated;
       apply();
@@ -1015,6 +1028,19 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   void _assertValidInternalPauseState() {
     if (!kDebugMode) return;
 
+    final closedSubs = [
+      ...?subscriptions,
+      ...?dependents,
+      ...weakDependents,
+      ...?_inactiveSubscriptions,
+    ].where((e) => e.closed);
+    if (closedSubs.isNotEmpty) {
+      throw StateError(
+        'Some leftover closed subscriptions were found.\n'
+        'This is likely due to a bug in the provider implementation.\n$this',
+      );
+    }
+
     final actualPausedCount = pausedActiveSubscriptionCount;
     final expectedPausedCount =
         dependents?.where((sub) => sub.isPaused || !sub.active).length ?? 0;
@@ -1023,7 +1049,19 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       actualPausedCount == expectedPausedCount,
       'Expected pausedActiveSubscriptionCount to be $expectedPausedCount, '
       'but was $actualPausedCount. '
-      'This is likely due to a bug in the provider implementation.',
+      'This is likely due to a bug in the provider implementation.\n$this',
+    );
+  }
+
+  void _assertContainsDependent(ProviderSubscription sub) {
+    assert(
+      sub.impl.$hasParent || [...weakDependents, ...?dependents].contains(sub),
+      '''
+Expected subscription to be part of this provider element, but it was not found.
+Sub:
+$sub
+Element:
+$this''',
     );
   }
 
@@ -1097,7 +1135,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     if (subscriptions case final subs?) {
       (_inactiveSubscriptions ??= []).addAll(subs);
       for (var i = 0; i < subs.length; i++) {
-        subs[i].impl.deactivate();
+        subs[i].impl.pause();
       }
     }
     subscriptions = null;
@@ -1178,7 +1216,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
   @override
   String toString() {
-    final buffer = StringBuffer('$runtimeType(');
+    final buffer = StringBuffer('$runtimeType${shortHash(this)}(');
 
     final lines = [
       'origin: $origin',

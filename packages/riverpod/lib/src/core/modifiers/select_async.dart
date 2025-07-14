@@ -173,13 +173,12 @@ final class _AsyncSelector<InputT, OutputT>
       onClose: () {
         final completer = selectedCompleter;
         if (completer != null && !completer.isCompleted) {
-          final sub = future._addListener(
-            node,
-            (prev, next) {},
-            weak: weak,
-            onDependencyMayHaveChanged: () {},
-            onError: onError,
-          );
+          final sub = switch (node) {
+            ProviderElement() =>
+              node.listen(future, (prev, next) {}, onError: onError),
+            ProviderContainer() =>
+              node.listen(future, (prev, next) {}, onError: onError),
+          };
 
           // ignore: avoid_sub_read, We are handling errors
           sub.read().then((v) => _select(v).valueOrProviderException).then(

@@ -200,9 +200,8 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
   @mustCallSuper
   void close() {
     if (_closed) return;
-    _closed = true;
 
-    _listenedElement.removeDependentSubscription(this);
+    _listenedElement.removeDependentSubscription(this, () => _closed = true);
   }
 
   @override
@@ -213,10 +212,11 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
       ProviderContainer() => source.toString(),
     };
     return '''
-$runtimeType(
+$runtimeType#${shortHash(this)}(
   listened: $listenedDisplay,
   listener: $listenerDisplay,
   pauseCount: $_pauseCount,
+  hasParent: ${$hasParent},
   childSub: ${switch (this) {
       final ExternalProviderSubscription<Object?, Object?> e =>
         e._innerSubscription.toString().indentAfterFirstLine(1),
