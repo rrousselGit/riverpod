@@ -313,7 +313,6 @@ sealed class WidgetRef implements MutationTarget {
   /// While more verbose than [read], using [Provider]/`select` is a lot safer.
   /// It does not rely on implementation details on `Model`, and it makes
   /// impossible to have a bug where our UI does not refresh.
-  @useResult
   StateT read<StateT>(ProviderListenable<StateT> provider);
 
   /// Forces a provider to re-evaluate its state immediately, and return the created value.

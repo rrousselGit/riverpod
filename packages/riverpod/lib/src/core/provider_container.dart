@@ -895,7 +895,6 @@ final class ProviderContainer implements Node, MutationTarget {
   ///   print(container.read(greetingProvider)); // Hello World
   /// }
   /// ```
-  @useResult
   StateT read<StateT>(
     ProviderListenable<StateT> provider,
   ) {

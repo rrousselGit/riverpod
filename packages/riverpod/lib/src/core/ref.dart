@@ -483,7 +483,6 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   /// If possible, avoid using [read] and prefer [watch], which is generally
   /// safer to use.
-  @useResult
   StateT read<StateT>(ProviderListenable<StateT> listenable) {
     _throwIfInvalidUsage();
 
