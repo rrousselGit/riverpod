@@ -45,7 +45,8 @@ sealed class ProviderSubscription<OutT> {
   void close();
 }
 
-extension<StateT> on ProviderSubscription<StateT> {
+@internal
+extension ProviderSubImpl<StateT> on ProviderSubscription<StateT> {
   ProviderSubscriptionImpl<StateT> get impl {
     final that = this;
     switch (that) {
@@ -85,6 +86,12 @@ extension ProviderSubX<StateT> on ProviderSubscription<StateT> {
 @internal
 sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
     with _OnPauseMixin {
+  ProviderSubscriptionImpl({
+    required this.onClose,
+  });
+
+  void Function()? onClose;
+
   /// The object that listens to the associated [ProviderListenable].
   ///
   /// This is typically a [ProviderElement] or a [ProviderContainer],
@@ -201,7 +208,10 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
   void close() {
     if (_closed) return;
 
-    _listenedElement.removeDependentSubscription(this, () => _closed = true);
+    onClose?.call();
+    _listenedElement.removeDependentSubscription(this, () {
+      _closed = true;
+    });
   }
 
   @override
@@ -238,6 +248,7 @@ final class ProviderProviderSubscription<StateT>
     required OnError onError,
     required this.source,
     required this.weak,
+    super.onClose,
     required void Function(StateT? prev, StateT next) listener,
   })  : _errorListener = onError,
         _listener = listener,
@@ -270,12 +281,12 @@ final class ExternalProviderSubscription<InT, OutT>
   ExternalProviderSubscription.fromSub({
     required ProviderSubscription<InT> innerSubscription,
     required $Result<OutT> Function() read,
-    void Function()? onClose,
+    super.onClose,
     required void Function(OutT? prev, OutT next) listener,
     required OnError? onError,
+    bool attachToInner = true,
   })  : _read = read,
         _innerSubscription = innerSubscription,
-        _onClose = onClose,
         _listener = listener,
         _source = switch (innerSubscription.impl) {
           final ProviderProviderSubscription<Object?> sub => sub,
@@ -284,12 +295,11 @@ final class ExternalProviderSubscription<InT, OutT>
         },
         _errorListener = onError ??
             innerSubscription.impl._listenedElement.container.defaultOnError {
-    innerSubscription.impl._attach(this);
+    if (attachToInner) innerSubscription.impl._attach(this);
   }
 
   final ProviderSubscription<InT> _innerSubscription;
   final $Result<OutT> Function() _read;
-  final void Function()? _onClose;
   final ProviderProviderSubscription<Object?> _source;
 
   @override
@@ -324,7 +334,6 @@ final class ExternalProviderSubscription<InT, OutT>
   void close() {
     if (_closed) return;
 
-    _onClose?.call();
     super.close();
     _innerSubscription.close();
   }
