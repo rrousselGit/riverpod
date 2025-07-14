@@ -131,8 +131,6 @@ void main() {
       final onCancel = OnCancel();
       final onAddListener = OnAddListener();
       final onRemoveListener = OnRemoveListener();
-      final listenSelf = Listener<int>();
-      final listen = Listener<int>();
 
       final depNotifier = DeferredNotifier<int>((ref, self) => 0);
       final dep = NotifierProvider<DeferredNotifier<int>, int>(
@@ -145,40 +143,41 @@ void main() {
         ref.onCancel(onCancel.call);
         ref.onAddListener(onAddListener.call);
         ref.onRemoveListener(onRemoveListener.call);
-        ref.listen(dep, listen.call);
-        self.listenSelf(listenSelf.call);
         return 0;
       });
+      final provider = NotifierProvider<DeferredNotifier<int>, int>(
+        () => notifier,
+      );
 
-      when(onDispose()).thenAnswer((_) {
-        notifier.ref.invalidate(dep);
-      });
-      when(onResume()).thenAnswer((_) {
-        notifier.ref.invalidate(dep);
-      });
-      when(onCancel()).thenAnswer((_) {
-        notifier.ref.invalidate(dep);
-      });
-      when(onAddListener()).thenAnswer((_) {
-        notifier.ref.invalidate(dep);
-      });
-      when(onRemoveListener()).thenAnswer((_) {
-        notifier.ref.invalidate(dep);
-      });
-      when(listenSelf(any, any)).thenAnswer((_) {
-        notifier.ref.invalidate(dep);
-      });
-      when(listen(any, any)).thenAnswer((_) {
-        notifier.ref.invalidate(dep);
-      });
+      void check() {
+        expect(
+          () => notifier.ref.invalidate(dep),
+          throwsA(isAssertionError),
+        );
+      }
 
-      verifyOnly(onDispose, onDispose());
-      verifyOnly(onResume, onResume());
-      verifyOnly(onCancel, onCancel());
-      verifyOnly(onAddListener, onAddListener());
-      verifyOnly(onRemoveListener, onRemoveListener());
-      verifyOnly(listenSelf, listenSelf(any, any));
-      verifyOnly(listen, listen(any, any));
+      when(onDispose()).thenAnswer((_) => check());
+      when(onResume()).thenAnswer((_) => check());
+      when(onCancel()).thenAnswer((_) => check());
+      when(onAddListener()).thenAnswer((_) => check());
+      when(onRemoveListener()).thenAnswer((_) => check());
+
+      final container = ProviderContainer.test();
+
+      container.listen(dep, (a, b) {});
+      final sub = container.listen(provider, (a, b) {});
+      sub.pause();
+      sub.resume();
+      sub.close();
+      notifier.state++;
+      depNotifier.state++;
+      container.invalidate(provider);
+
+      verify(onDispose());
+      verify(onResume());
+      verify(onCancel());
+      verify(onAddListener());
+      verify(onRemoveListener());
     });
 
     test('asserts that a lifecycle cannot be used inside selectors', () {

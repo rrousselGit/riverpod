@@ -461,12 +461,15 @@ void main() {
       verifyZeroInteractions(onFuture);
     });
 
-    test('Regression 2041', () async {
+    test(
+        'Does not throw assert _lastFuture != null '
+        'nor rebuild a provider twice in the same frame', () async {
+      // Regression test for https://github.com/rrousselGit/riverpod/issues/2041
       final container = ProviderContainer.test();
 
       final testNotifierProvider =
           FutureProvider.autoDispose<int>((ref) => 0, name: 'testNotifier');
-      // ProxyProvider is never rebuild directly, but rather indirectly through
+      // ProxyProvider is never rebuilt directly, but rather indirectly through
       // testNotifierProvider. This means the scheduler does not naturally cover it.
       // Then testProvider is the one to trigger the rebuild by listening to it.
       final proxyProvider = FutureProvider.autoDispose<int>(
