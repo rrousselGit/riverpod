@@ -469,39 +469,23 @@ void main() {
 
       final rootProvider = FutureProvider.autoDispose<int>(
         name: 'root',
-        (ref) {
-          // ref.onDispose(() => print('root disposed'));
-          // print('root');
-          return 0;
-        },
+        (ref) => 0,
       );
       // ProxyProvider is never rebuilt directly, but rather indirectly through
       // rootProvider. This means the scheduler does not naturally cover it.
       // Then testProvider is the one to trigger the rebuild by listening to it.
       final midProvider = FutureProvider.autoDispose<int>(
         name: 'mid',
-        (ref) {
-          // ref.onDispose(() => print('mid disposed'));
-          // print('mid');
-          final res = ref.watch(rootProvider.future);
-          // print('mid post watch');
-
-          return res;
-        },
+        (ref) => ref.watch(rootProvider.future),
       );
 
       var buildCount = 0;
       final leafProvider = FutureProvider.autoDispose<int>(
         name: 'leaf',
         (ref) async {
-          // ref.onDispose(() => print('leaf disposed'));
-          // print('leaf');
           buildCount++;
           final future = ref.watch(midProvider.future);
-          // print('leaf post watch');
-          final res = (await future) + 2;
-
-          return res;
+          return (await future) + 2;
         },
       );
 
@@ -519,38 +503,12 @@ void main() {
       final midElement = container.readProviderElement(midProvider);
       final leafElement = container.readProviderElement(leafProvider);
 
-      // print('rootElement: $rootElement');
-      // print('midElement: $midElement');
-      // print('leafElement: $leafElement');
-
-      // print('1----');
-      // print('1----');
-      // print('1----');
-      // print('1----');
-      // print('1----');
       container.invalidate(rootProvider);
-      // print('rootElement: $rootElement');
-      // print('midElement: $midElement');
-      // print('leafElement: $leafElement');
-      // print('2----');
-      // print('2----');
-      // print('2----');
-      // print('2----');
-      // print('2----');
       container.invalidate(leafProvider);
-      // print('rootElement: $rootElement');
-      // print('midElement: $midElement');
-      // print('leafElement: $leafElement');
 
-      // print('3----');
-      // print('3----');
-      // print('3----');
-      // print('3----');
-      // print('3----');
       expect(buildCount, 1);
 
       await container.pump();
-      // print('4----');
 
       expect(buildCount, 2);
     });
