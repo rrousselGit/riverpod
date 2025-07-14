@@ -943,7 +943,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       // associated state.
       // We don't want to call onResume though.
       // _notifyResumeListeners = false;
-      ; // TODO removing a manually paused listener should not trigger the listener.
+      ; // TODO removing a manually paused listener should not trigger the listener that skipped an event
       ; //  Overall this is odd
       // sub.impl.$forceResume();
       // _notifyResumeListeners = true;
