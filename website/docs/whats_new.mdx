@@ -227,22 +227,23 @@ class AddTodoButton extends ConsumerWidget {
       // No side-effect is in progress
       // Let's show a submit button
       MutationIdle() => ElevatedButton(
-        // Trigger the side-effect on click. This is done by calling
-        // the "addTodo" object and passing the required parameters.
-        onPressed: () => addTodo('New Todo'),
+        // Trigger the side-effect on click
+        onPressed: () {
+          // TODO see explanation after the code snippet
+        },
         child: const Text('Submit'),
       ),
       // The side-effect is in progress. We show a spinner
       MutationPending() => const CircularProgressIndicator(),
       // The side-effect failed. We show a retry button
-      MutationErrored() => ElevatedButton(
+      MutationError() => ElevatedButton(
         onPressed: () {
           // TODO see explanation after the code snippet
         },
         child: const Text('Retry'),
       ),
       // The side-effect was successful. We show a success message
-      MutationSucceeded() => const Text('Todo added!'),
+      MutationSuccess() => const Text('Todo added!'),
     };
   }
 }
@@ -253,7 +254,7 @@ followed:
 
 ```dart
 onPressed: () {
-  addTodoMutation.run((ref) async {
+  addTodoMutation.run(ref, (ref) async {
     // This is where we run our side-effect.
     // Here, we typically obtain a Notifier and call a method on it.
     await ref.get(todoListProvider.notifier).addTodo('New Todo');
@@ -764,7 +765,7 @@ For example, your provider could be used indirectly through another provider.
   `}
   
   raw={`
-  final exampleProvider = Provider<int>((ref) {
+  final anotherProvider = Provider<int>((ref) {
     return ref.watch(exampleProvider);
   });
    
@@ -1028,9 +1029,9 @@ They are finally back!
   `}
   
   raw={`
-    Future<int> myFutureProvider() async {
+    final myFutureProvider = FutureProvider<int>((ref) async {
       return 42;
-    }
+    });
     
     void main() {
       final container = ProviderContainer.test(
