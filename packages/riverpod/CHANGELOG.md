@@ -1,5 +1,6 @@
 ## Unreleased build
 
+- fixes various "pause" issues
 - Bump minimum `meta` version
 - Added `AsyncValue.retrying`, to check when a retry is scheduled or pending
 
