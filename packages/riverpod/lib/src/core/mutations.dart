@@ -549,6 +549,26 @@ final class MutationImpl<ResultT>
 sealed class MutationState<ResultT> {
   const MutationState._();
 
+  /// Whether the mutation is currently idle.
+  ///
+  /// This is equivalent to checking if the mutation state is [MutationIdle].
+  bool get isIdle => this is MutationIdle<ResultT>;
+
+  /// Whether the mutation is currently pending.
+  ///
+  /// This is equivalent to checking if the mutation state is [MutationPending].
+  bool get isPending => this is MutationPending<ResultT>;
+
+  /// Whether the mutation has completed with an error.
+  ///
+  /// This is equivalent to checking if the mutation state is [MutationError].
+  bool get hasError => this is MutationError<ResultT>;
+
+  /// Whether the mutation has completed successfully.
+  ///
+  /// This is equivalent to checking if the mutation state is [MutationSuccess].
+  bool get isSuccess => this is MutationSuccess<ResultT>;
+
   @override
   @mustBeOverridden
   bool operator ==(Object other);
