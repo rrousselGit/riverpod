@@ -183,8 +183,11 @@ targets:
           provider_family_name_suffix: "Provider" # (default)
           # A regular expression that riverpod_generator will
           # remove from generated providers names.
-          # Here the generated provider for notifier class
-          # AuthMethodNotifier would be authMethodProvider
+          # The following regex removes the trailing `Notifier` from
+          # the name of generated providers.
+          # Given a class named `CounterNotifier`, Riverpod will
+          # remove any text matching the regex (so here `Notifier`).
+          # We end-up with `Counter` ; which is then transformed to `counterProvider`
           providerNameStripPattern: "Notifier$"
 ```
 
