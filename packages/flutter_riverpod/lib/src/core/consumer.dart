@@ -552,7 +552,7 @@ base class ConsumerStatefulElement extends StatefulElement
     // be used inside initState.
     final container = ProviderScope.containerOf(this, listen: false);
 
-    final innerSubscription = container.listen<ValueT>(
+    final sub = container.listen<ValueT>(
       provider,
       listener,
       onError: onError,
@@ -560,15 +560,15 @@ base class ConsumerStatefulElement extends StatefulElement
       // ignore: invalid_use_of_internal_member, from riverpod
     );
 
-    // ignore: invalid_use_of_internal_member, from riverpod
-    late final ExternalProviderSubscription<Object?, ValueT> sub;
-    sub = ExternalProviderSubscription<Object?, ValueT>.fromSub(
-      innerSubscription: innerSubscription,
-      listener: (prev, next) {},
-      onError: (error, stackTrace) {},
-      onClose: () => _manualListeners?.remove(sub),
-      read: innerSubscription.readSafe,
-    );
+    // Hook-up on onClose to avoid memory leaks.
+    final previousOnClose = sub.impl.onClose;
+    sub.impl.onClose = () {
+      previousOnClose?.call();
+      // If the subscription is closed, we remove it from the manual listeners
+      // so that it doesn't leak.
+      _manualListeners?.remove(sub);
+    };
+
     _applyTickerMode(sub);
     listeners.add(sub);
 

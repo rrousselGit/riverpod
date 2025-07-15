@@ -5,7 +5,7 @@ import 'dart:async';
 import 'package:mockito/mockito.dart';
 import 'package:riverpod/legacy.dart';
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart' show ProviderElement;
+import 'package:riverpod/src/internals.dart' show ProviderElement, NodeInternal;
 import 'package:riverpod/src/internals.dart' show InternalProviderContainer;
 import 'package:test/test.dart';
 
@@ -159,6 +159,7 @@ void main() {
       final dep = StateProvider((ref) => 0);
       final provider = FutureProvider((ref) => Future.value(ref.watch(dep)));
 
+      container.listen(provider, (_, __) {});
       await expectLater(container.read(provider.future), completion(0));
       expect(container.read(provider), const AsyncData(0));
 
@@ -460,32 +461,36 @@ void main() {
       verifyZeroInteractions(onFuture);
     });
 
-    test('Regression 2041', () async {
+    test(
+        'Does not throw assert _lastFuture != null '
+        'nor rebuild a provider twice in the same frame', () async {
+      // Regression test for https://github.com/rrousselGit/riverpod/issues/2041
       final container = ProviderContainer.test();
 
-      final testNotifierProvider =
-          FutureProvider.autoDispose<int>((ref) => 0, name: 'testNotifier');
-      // ProxyProvider is never rebuild directly, but rather indirectly through
-      // testNotifierProvider. This means the scheduler does not naturally cover it.
+      final rootProvider = FutureProvider.autoDispose<int>(
+        name: 'root',
+        (ref) => 0,
+      );
+      // ProxyProvider is never rebuilt directly, but rather indirectly through
+      // rootProvider. This means the scheduler does not naturally cover it.
       // Then testProvider is the one to trigger the rebuild by listening to it.
-      final proxyProvider = FutureProvider.autoDispose<int>(
-        (ref) => ref.watch(testNotifierProvider.future),
-        name: 'proxy',
+      final midProvider = FutureProvider.autoDispose<int>(
+        name: 'mid',
+        (ref) => ref.watch(rootProvider.future),
       );
 
       var buildCount = 0;
-      final testProvider = FutureProvider.autoDispose<int>(
+      final leafProvider = FutureProvider.autoDispose<int>(
+        name: 'leaf',
         (ref) async {
           buildCount++;
-          final res = (await ref.watch(proxyProvider.future)) + 2;
-
-          return res;
+          final future = ref.watch(midProvider.future);
+          return (await future) + 2;
         },
-        name: 'test',
       );
 
       container.listen<AsyncValue<void>>(
-        testProvider,
+        leafProvider,
         (previous, next) {
           if (!next.isLoading && next is AsyncError) {
             Zone.current.handleUncaughtError(next.error, next.stackTrace);
@@ -494,8 +499,12 @@ void main() {
         fireImmediately: true,
       );
 
-      container.invalidate(testNotifierProvider);
-      container.invalidate(testProvider);
+      final rootElement = container.readProviderElement(rootProvider);
+      final midElement = container.readProviderElement(midProvider);
+      final leafElement = container.readProviderElement(leafProvider);
+
+      container.invalidate(rootProvider);
+      container.invalidate(leafProvider);
 
       expect(buildCount, 1);
 

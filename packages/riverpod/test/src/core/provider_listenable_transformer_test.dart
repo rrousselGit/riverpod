@@ -136,6 +136,7 @@ void main() {
     final onError = utils.ErrorListener();
     final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
     final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
+    final listenerTransformer = utils.Listener<AsyncResult<int>>();
 
     final listenable = SyncDelegatingTransformer<int, String>(
       provider,
@@ -143,6 +144,7 @@ void main() {
         return ProviderTransformer(
           initState: (self) => 'Hello ${context.sourceState.requireValue}',
           listener: (self, prev, next) {
+            listenerTransformer(prev, next);
             if (next.value == 2) {
               self.state = AsyncError('Error at 2', StackTrace.current);
             } else {
@@ -166,18 +168,25 @@ void main() {
     notifier.state = 1;
 
     verifyZeroInteractions(listener);
+    verifyZeroInteractions(listenerTransformer);
     expect(sub.read(), 'Hello 0');
 
+    notifier.state = 3;
     sub.resume();
-    verifyOnly(listener, listener('Hello 0', 'Hello 1'));
-    expect(sub.read(), 'Hello 1');
+
+    verifyOnly(
+      listenerTransformer,
+      listenerTransformer(const AsyncData(0), const AsyncData(3)),
+    );
+    verifyOnly(listener, listener('Hello 0', 'Hello 3'));
+    expect(sub.read(), 'Hello 3');
 
     sub.pause();
     notifier.state = 2;
 
     verifyNoMoreInteractions(listener);
     verifyZeroInteractions(onError);
-    expect(sub.read(), 'Hello 1');
+    expect(sub.read(), 'Hello 3');
 
     sub.resume();
 

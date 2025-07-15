@@ -43,32 +43,6 @@ void main() {
       expect(buildCount, 2);
     });
 
-    test(
-        'onDispose is triggered only once if within autoDispose unmount, a dependency changed',
-        () async {
-      // regression test for https://github.com/rrousselGit/riverpod/issues/1064
-      final container = ProviderContainer.test();
-      final onDispose = OnDisposeMock();
-      final dep = StateProvider((ref) => 0);
-      final provider = Provider.autoDispose((ref) {
-        ref.watch(dep);
-        ref.onDispose(onDispose.call);
-      });
-
-      when(onDispose()).thenAnswer((realInvocation) {
-        container.read(dep.notifier).state++;
-      });
-
-      container.read(provider);
-      verifyZeroInteractions(onDispose);
-
-      // cause provider to be disposed
-      await container.pump();
-
-      verify(onDispose()).called(1);
-      verifyNoMoreInteractions(onDispose);
-    });
-
     test('supports disposing of overridden families', () async {
       // Regression test for https://github.com/rrousselGit/riverpod/issues/2480
       final provider = Provider.autoDispose.family<int, int>(

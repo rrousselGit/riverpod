@@ -176,23 +176,26 @@ void main() {
   test('disposes providers synchronously when their dependency changes',
       () async {
     final onDispose = OnDisposeMock();
-    final dep = StateProvider((ref) => 0);
-    final dep2 = StateProvider((ref) => 0);
+    final dep = StateProvider(name: 'dep', (ref) => 0);
+    final dep2 = StateProvider(name: 'dep2', (ref) => 0);
     final container = ProviderContainer.test();
-    final provider = Provider((ref) {
+    final provider = Provider(name: 'provider', (ref) {
       ref.onDispose(onDispose.call);
       ref.watch(dep);
       ref.watch(dep2);
     });
 
-    container.read(provider);
+    final depNotifier = container.read(dep.notifier);
+    final dep2Notifier = container.read(dep2.notifier);
 
-    container.read(dep.notifier).state++;
+    container.listen(provider, (_, __) {});
+
+    depNotifier.state++;
 
     verifyOnly(onDispose, onDispose());
 
-    container.read(dep.notifier).state++;
-    container.read(dep2.notifier).state++;
+    depNotifier.state++;
+    dep2Notifier.state++;
 
     verifyNoMoreInteractions(onDispose);
   });
