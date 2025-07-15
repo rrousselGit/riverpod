@@ -27,7 +27,7 @@ dependencies:
 dev_dependencies:
   build_runner: ^2.1.7
   build_verify: ^3.0.0
-  freezed: ^3.0.0
+  freezed: ^3.1.0
   freezed_annotation: ^3.0.0
   riverpod: 3.0.0-dev.16
   test: ^1.21.0
