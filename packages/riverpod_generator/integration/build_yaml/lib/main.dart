@@ -79,3 +79,19 @@ class CountStreamNotifier2 extends _$CountStreamNotifier2 {
     return Stream.value(1);
   }
 }
+
+@riverpod
+class TimeController extends _$TimeController {
+  @override
+  int build() {
+    return 1;
+  }
+}
+
+@riverpod
+class TimeController2 extends _$TimeController2 {
+  @override
+  int build(int a) {
+    return 1;
+  }
+}
