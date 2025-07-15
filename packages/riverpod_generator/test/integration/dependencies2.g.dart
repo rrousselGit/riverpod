@@ -363,7 +363,7 @@ final class _Private2Provider extends $FunctionalProvider<int, int, int>
         );
 
   @override
-  String debugGetCreateSourceHash() => _$private2Hash();
+  String debugGetCreateSourceHash() => _$_private2Hash();
 
   @$internal
   @override
@@ -384,7 +384,7 @@ final class _Private2Provider extends $FunctionalProvider<int, int, int>
   }
 }
 
-String _$private2Hash() => r'e420875c8fbd9bf33eff945f2b7276b585032a38';
+String _$_private2Hash() => r'e420875c8fbd9bf33eff945f2b7276b585032a38';
 
 @ProviderFor(public2)
 const public2Provider = Public2Provider._();

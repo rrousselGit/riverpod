@@ -69,7 +69,7 @@ final class _PrivateClassProvider
         );
 
   @override
-  String debugGetCreateSourceHash() => _$privateClassHash();
+  String debugGetCreateSourceHash() => _$_privateClassHash();
 
   @$internal
   @override
@@ -84,7 +84,7 @@ final class _PrivateClassProvider
   }
 }
 
-String _$privateClassHash() => r'ba68a29a609566bb8bc0792391f842762356e124';
+String _$_privateClassHash() => r'ba68a29a609566bb8bc0792391f842762356e124';
 
 abstract class _$PrivateClass extends $Notifier<String> {
   String build();

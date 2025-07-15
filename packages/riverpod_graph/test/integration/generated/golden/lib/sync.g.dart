@@ -231,7 +231,7 @@ final class _PrivateProvider extends $FunctionalProvider<String, String, String>
         );
 
   @override
-  String debugGetCreateSourceHash() => _$privateHash();
+  String debugGetCreateSourceHash() => _$_privateHash();
 
   @$internal
   @override
@@ -252,7 +252,7 @@ final class _PrivateProvider extends $FunctionalProvider<String, String, String>
   }
 }
 
-String _$privateHash() => r'4f7b825ffa8a674f01dc8453cb480060a6a7bf5f';
+String _$_privateHash() => r'4f7b825ffa8a674f01dc8453cb480060a6a7bf5f';
 
 /// A generated public provider from a class
 @ProviderFor(PublicClass)
@@ -320,7 +320,7 @@ final class _PrivateClassProvider
         );
 
   @override
-  String debugGetCreateSourceHash() => _$privateClassHash();
+  String debugGetCreateSourceHash() => _$_privateClassHash();
 
   @$internal
   @override
@@ -335,7 +335,7 @@ final class _PrivateClassProvider
   }
 }
 
-String _$privateClassHash() => r'3b08af72c6d4f24aed264efcf181572525b75603';
+String _$_privateClassHash() => r'3b08af72c6d4f24aed264efcf181572525b75603';
 
 abstract class _$PrivateClass extends $Notifier<String> {
   String build();

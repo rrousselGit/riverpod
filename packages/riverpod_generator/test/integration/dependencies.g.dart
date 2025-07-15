@@ -805,7 +805,7 @@ final class _PrivateDepProvider extends $FunctionalProvider<int, int, int>
         );
 
   @override
-  String debugGetCreateSourceHash() => _$privateDepHash();
+  String debugGetCreateSourceHash() => _$_privateDepHash();
 
   @$internal
   @override
@@ -826,7 +826,7 @@ final class _PrivateDepProvider extends $FunctionalProvider<int, int, int>
   }
 }
 
-String _$privateDepHash() => r'92ff5cc515ecf2455cb04773f1b49f23b17ea2e2';
+String _$_privateDepHash() => r'92ff5cc515ecf2455cb04773f1b49f23b17ea2e2';
 
 @ProviderFor(publicDep)
 const publicDepProvider = PublicDepProvider._();

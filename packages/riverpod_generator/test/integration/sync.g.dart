@@ -1118,7 +1118,7 @@ final class _PrivateProvider extends $FunctionalProvider<String, String, String>
         );
 
   @override
-  String debugGetCreateSourceHash() => _$privateHash();
+  String debugGetCreateSourceHash() => _$_privateHash();
 
   @$internal
   @override
@@ -1139,7 +1139,7 @@ final class _PrivateProvider extends $FunctionalProvider<String, String, String>
   }
 }
 
-String _$privateHash() => r'834affaed42662bf46ce7f6203ac2495e1e8974b';
+String _$_privateHash() => r'834affaed42662bf46ce7f6203ac2495e1e8974b';
 
 /// This is some documentation
 @ProviderFor(PublicClass)
@@ -1207,7 +1207,7 @@ final class _PrivateClassProvider
         );
 
   @override
-  String debugGetCreateSourceHash() => _$privateClassHash();
+  String debugGetCreateSourceHash() => _$_privateClassHash();
 
   @$internal
   @override
@@ -1222,7 +1222,7 @@ final class _PrivateClassProvider
   }
 }
 
-String _$privateClassHash() => r'796e16abb79d7ad77728f9288d24566e429643f2';
+String _$_privateClassHash() => r'796e16abb79d7ad77728f9288d24566e429643f2';
 
 abstract class _$PrivateClass extends $Notifier<String> {
   String build();
@@ -2196,5 +2196,86 @@ final class ManyDataStreamFamily extends $Family {
             });
           });
 }
+
+@ProviderFor(issue4113)
+const issue4113Provider = Issue4113Provider._();
+
+final class Issue4113Provider extends $FunctionalProvider<void, void, void>
+    with $Provider<void> {
+  const Issue4113Provider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'issue4113Provider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$issue4113Hash();
+
+  @$internal
+  @override
+  $ProviderElement<void> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  void create(Ref ref) {
+    return issue4113(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(void value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<void>(value),
+    );
+  }
+}
+
+String _$issue4113Hash() => r'3800dad2a71076827951824e347e324306cf29da';
+
+@ProviderFor(_issue4113)
+const _issue4113Provider = _Issue4113Provider._();
+
+final class _Issue4113Provider extends $FunctionalProvider<void, void, void>
+    with $Provider<void> {
+  const _Issue4113Provider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'_issue4113Provider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$_issue4113Hash();
+
+  @$internal
+  @override
+  $ProviderElement<void> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  void create(Ref ref) {
+    return _issue4113(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(void value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<void>(value),
+    );
+  }
+}
+
+String _$_issue4113Hash() => r'9dedddc3d06343015a3a768628a23adb9294fcf1';
+
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

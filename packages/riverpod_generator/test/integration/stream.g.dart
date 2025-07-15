@@ -259,7 +259,7 @@ final class _PrivateProvider
         );
 
   @override
-  String debugGetCreateSourceHash() => _$privateHash();
+  String debugGetCreateSourceHash() => _$_privateHash();
 
   @$internal
   @override
@@ -272,7 +272,7 @@ final class _PrivateProvider
   }
 }
 
-String _$privateHash() => r'7915ccdd16751e7dc6274bb024d1b273d78dc78b';
+String _$_privateHash() => r'7915ccdd16751e7dc6274bb024d1b273d78dc78b';
 
 @ProviderFor(family)
 const familyProvider = FamilyFamily._();
@@ -443,14 +443,14 @@ final class _PrivateClassProvider
         );
 
   @override
-  String debugGetCreateSourceHash() => _$privateClassHash();
+  String debugGetCreateSourceHash() => _$_privateClassHash();
 
   @$internal
   @override
   _PrivateClass create() => _PrivateClass();
 }
 
-String _$privateClassHash() => r'8c0d52b7ab79c0546d0c84c011bb3512609e029e';
+String _$_privateClassHash() => r'8c0d52b7ab79c0546d0c84c011bb3512609e029e';
 
 abstract class _$PrivateClass extends $StreamNotifier<String> {
   Stream<String> build();

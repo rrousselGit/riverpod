@@ -548,7 +548,7 @@ final class _DynamicProvider
         );
 
   @override
-  String debugGetCreateSourceHash() => _$dynamicHash();
+  String debugGetCreateSourceHash() => _$_dynamicHash();
 
   @override
   String toString() {
@@ -590,7 +590,7 @@ final class _DynamicProvider
   }
 }
 
-String _$dynamicHash() => r'e08bd08481e4ea0d3da2ab7c38f940c34e96ba7f';
+String _$_dynamicHash() => r'e08bd08481e4ea0d3da2ab7c38f940c34e96ba7f';
 
 final class _DynamicFamily extends $Family
     with $FunctionalFamilyOverride<Object?, dynamic> {

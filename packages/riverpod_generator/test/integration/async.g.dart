@@ -379,7 +379,7 @@ final class _PrivateProvider
         );
 
   @override
-  String debugGetCreateSourceHash() => _$privateHash();
+  String debugGetCreateSourceHash() => _$_privateHash();
 
   @$internal
   @override
@@ -392,7 +392,7 @@ final class _PrivateProvider
   }
 }
 
-String _$privateHash() => r'7f0d1ff55a21e520b8471bbabc4649b5336221d4';
+String _$_privateHash() => r'7f0d1ff55a21e520b8471bbabc4649b5336221d4';
 
 @ProviderFor(familyOr)
 const familyOrProvider = FamilyOrFamily._();
@@ -636,14 +636,14 @@ final class _PrivateClassProvider
         );
 
   @override
-  String debugGetCreateSourceHash() => _$privateClassHash();
+  String debugGetCreateSourceHash() => _$_privateClassHash();
 
   @$internal
   @override
   _PrivateClass create() => _PrivateClass();
 }
 
-String _$privateClassHash() => r'7e69cffe8315999710e4cb6bb3de9f179d3f2f5d';
+String _$_privateClassHash() => r'7e69cffe8315999710e4cb6bb3de9f179d3f2f5d';
 
 abstract class _$PrivateClass extends $AsyncNotifier<String> {
   FutureOr<String> build();
