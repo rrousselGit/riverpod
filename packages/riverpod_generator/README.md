@@ -188,7 +188,7 @@ targets:
           # Given a class named `CounterNotifier`, Riverpod will
           # remove any text matching the regex (so here `Notifier`).
           # We end-up with `Counter` ; which is then transformed to `counterProvider`
-          providerNameStripPattern: "Notifier$"
+          provider_ame_strip_pattern: "Notifier$"
 ```
 
 [family]: https://riverpod.dev/docs/concepts/modifiers/family
