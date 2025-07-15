@@ -228,8 +228,11 @@ extension ProviderElementNames on GeneratorProviderDeclarationElement {
       try {
         final regex = RegExp(stripPattern);
         baseName = name.replaceAll(regex, '');
-      } catch (_) {
-        // If the regex is invalid ignore it
+      } on FormatException {
+        throw InvalidGenerationSourceError(
+          'Your providerNameStripPattern definition is not a valid regular expression: $stripPattern',
+          element: element,
+        );
       }
     }
 
