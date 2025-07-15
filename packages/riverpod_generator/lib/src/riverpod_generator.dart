@@ -403,7 +403,7 @@ extension ProviderNames on GeneratorProviderDeclaration {
           },
       };
 
-  String get hashFnName => '_\$${providerElement.name.public.lowerFirst}Hash';
+  String get hashFnName => '_\$${providerElement.name.lowerFirst}Hash';
 
   List<FormalParameter> get parameters {
     final provider = this;

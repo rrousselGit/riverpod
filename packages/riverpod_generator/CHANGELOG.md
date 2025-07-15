@@ -1,7 +1,8 @@
 ## Unreleased build
 
-Allow passing `persist(key: ...)`
-Bump minimum `meta` version
+- Fixed a conflict between public and private providers of the same name
+- Allow passing `persist(key: ...)`
+- Bump minimum `meta` version
 
 ## 3.0.0-dev.16 - 2025-06-20
 

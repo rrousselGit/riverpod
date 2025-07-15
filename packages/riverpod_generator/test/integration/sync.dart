@@ -232,3 +232,12 @@ Stream<List<ItemT>> manyDataStream<ItemT extends Object, OtherT extends Object>(
   Ref ref,
   ManyProviderData<ItemT, OtherT> pData,
 ) async* {}
+
+// Regression for https://github.com/rrousselGit/riverpod/issues/4113
+@riverpod
+void issue4113(Ref ref) {}
+@riverpod
+void _issue4113(Ref ref) {}
+
+const prov = issue4113Provider;
+const prov2 = _issue4113Provider;
