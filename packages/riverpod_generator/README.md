@@ -181,6 +181,11 @@ targets:
           # providers with parameters ("families").
           # This takes precedence over provider_name_suffix.
           provider_family_name_suffix: "Provider" # (default)
+          # A regular expression that riverpod_generator will
+          # remove from generated providers names.
+          # Here the generated provider for notifier class
+          # AuthMethodNotifier would be authMethodProvider
+          providerNameStripPattern: "Notifier$"
 ```
 
 [family]: https://riverpod.dev/docs/concepts/modifiers/family
