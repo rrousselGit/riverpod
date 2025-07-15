@@ -241,3 +241,13 @@ void _issue4113(Ref ref) {}
 
 const prov = issue4113Provider;
 const prov2 = _issue4113Provider;
+
+@Riverpod(name: 'manualRename')
+String fn(Ref ref) => '';
+
+const fnProv = manualRename;
+
+@Riverpod(name: 'manualRename2')
+String fn2(Ref ref, int a) => '';
+
+const fn2Prov = manualRename2;

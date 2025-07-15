@@ -212,6 +212,8 @@ class _RiverpodGeneratorVisitor {
 
 extension ProviderElementNames on GeneratorProviderDeclarationElement {
   String providerName(BuildYamlOptions options) {
+    if (annotation.name case final name?) return name;
+
     final prefix = (isFamily
             ? options.providerFamilyNamePrefix
             : options.providerNamePrefix) ??

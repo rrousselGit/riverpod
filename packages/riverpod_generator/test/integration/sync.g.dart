@@ -2277,5 +2277,124 @@ final class _Issue4113Provider extends $FunctionalProvider<void, void, void>
 
 String _$_issue4113Hash() => r'9dedddc3d06343015a3a768628a23adb9294fcf1';
 
+@ProviderFor(fn)
+const manualRename = FnProvider._();
+
+final class FnProvider extends $FunctionalProvider<String, String, String>
+    with $Provider<String> {
+  const FnProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'manualRename',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$fnHash();
+
+  @$internal
+  @override
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  String create(Ref ref) {
+    return fn(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<String>(value),
+    );
+  }
+}
+
+String _$fnHash() => r'af32cc34953e77edd986478ab61d3dbe947b2c3e';
+
+@ProviderFor(fn2)
+const manualRename2 = Fn2Family._();
+
+final class Fn2Provider extends $FunctionalProvider<String, String, String>
+    with $Provider<String> {
+  const Fn2Provider._(
+      {required Fn2Family super.from, required int super.argument})
+      : super(
+          retry: null,
+          name: r'manualRename2',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$fn2Hash();
+
+  @override
+  String toString() {
+    return r'manualRename2'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<String> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  String create(Ref ref) {
+    final argument = this.argument as int;
+    return fn2(
+      ref,
+      argument,
+    );
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<String>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is Fn2Provider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$fn2Hash() => r'529fc50b1f92a884650b5d023b2f58f49598a695';
+
+final class Fn2Family extends $Family
+    with $FunctionalFamilyOverride<String, int> {
+  const Fn2Family._()
+      : super(
+          retry: null,
+          name: r'manualRename2',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  Fn2Provider call(
+    int a,
+  ) =>
+      Fn2Provider._(argument: a, from: this);
+
+  @override
+  String toString() => r'manualRename2';
+}
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

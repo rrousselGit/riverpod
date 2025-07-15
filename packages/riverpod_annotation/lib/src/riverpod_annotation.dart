@@ -24,7 +24,20 @@ final class Riverpod {
     this.keepAlive = false,
     this.dependencies,
     this.retry,
+    this.name,
   });
+
+  /// The name of the generated provider.
+  ///
+  /// If null, the name will be derived from the annotated element,
+  /// after applying prefix/suffix transformations from the `build.yaml`
+  /// configuration.
+  ///
+  /// If non-null, transformation from the `build.yaml` will not be applied,
+  /// and the name will be used as-is.
+  ///
+  /// This name should be unique within the library.
+  final String? name;
 
   /// The default retry logic used by providers associated to this container.
   ///

@@ -93,6 +93,7 @@ final class RiverpodAnnotationElement {
     required this.dependencies,
     required this.allTransitiveDependencies,
     required this.element,
+    required this.name,
   });
 
   static final _cache = _Cache<RiverpodAnnotationElement?>();
@@ -107,6 +108,9 @@ final class RiverpodAnnotationElement {
 
       final keepAlive = constant.getField('keepAlive');
       if (keepAlive == null) return null;
+
+      final name = constant.getField('name');
+      if (name == null) return null;
 
       final dependencies = constant.getField('dependencies');
       if (dependencies == null) return null;
@@ -126,6 +130,7 @@ final class RiverpodAnnotationElement {
       return RiverpodAnnotationElement._(
         keepAlive: keepAlive.toBoolValue()!,
         element: element,
+        name: name.toStringValue(),
         dependencies: dependencyList,
         allTransitiveDependencies: allTransitiveDependencies,
       );
@@ -137,6 +142,7 @@ final class RiverpodAnnotationElement {
   }
 
   final bool keepAlive;
+  final String? name;
   final ElementAnnotation element;
   final List<GeneratorProviderDeclarationElement>? dependencies;
   final Set<GeneratorProviderDeclarationElement>? allTransitiveDependencies;

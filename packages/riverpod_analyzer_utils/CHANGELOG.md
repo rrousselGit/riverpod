@@ -1,6 +1,7 @@
 ## Unreleased build
 
-Bump minimum `meta` version
+- Bump minimum `meta` version
+- Support `@Riverpod(name: ...)`
 
 ## 1.0.0-dev.3 - 2025-06-20
 
