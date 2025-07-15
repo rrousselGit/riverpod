@@ -58,4 +58,9 @@ void main() {
       ]),
     );
   });
+
+  test('strip pattern', () {
+    expect(myTimePod.name, 'myTimePod');
+    expect(myFamilyTimeProviderFamily.name, 'myFamilyTimeProviderFamily');
+  });
 }

@@ -728,5 +728,142 @@ abstract class _$CountStreamNotifier2 extends $StreamNotifier<int> {
   }
 }
 
+@ProviderFor(TimeController)
+const myTimePod = TimeControllerProvider._();
+
+final class TimeControllerProvider
+    extends $NotifierProvider<TimeController, int> {
+  const TimeControllerProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'myTimePod',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$timeControllerHash();
+
+  @$internal
+  @override
+  TimeController create() => TimeController();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<int>(value),
+    );
+  }
+}
+
+String _$timeControllerHash() => r'6bf21e367715e4d476170b36e2ab75e34a653c7d';
+
+abstract class _$TimeController extends $Notifier<int> {
+  int build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<int, int>;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}
+
+@ProviderFor(TimeController2)
+const myFamilyTimeProviderFamily = TimeController2Family._();
+
+final class TimeController2Provider
+    extends $NotifierProvider<TimeController2, int> {
+  const TimeController2Provider._(
+      {required TimeController2Family super.from, required int super.argument})
+      : super(
+          retry: null,
+          name: r'myFamilyTimeProviderFamily',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$timeController2Hash();
+
+  @override
+  String toString() {
+    return r'myFamilyTimeProviderFamily'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  TimeController2 create() => TimeController2();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<int>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is TimeController2Provider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$timeController2Hash() => r'8bba0763d5955bd6e276ee913a0f25e032aa0db6';
+
+final class TimeController2Family extends $Family
+    with $ClassFamilyOverride<TimeController2, int, int, int, int> {
+  const TimeController2Family._()
+      : super(
+          retry: null,
+          name: r'myFamilyTimeProviderFamily',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  TimeController2Provider call(
+    int a,
+  ) =>
+      TimeController2Provider._(argument: a, from: this);
+
+  @override
+  String toString() => r'myFamilyTimeProviderFamily';
+}
+
+abstract class _$TimeController2 extends $Notifier<int> {
+  late final _$args = ref.$arg as int;
+  int get a => _$args;
+
+  int build(
+    int a,
+  );
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build(
+      _$args,
+    );
+    final ref = this.ref as $Ref<int, int>;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}
+
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

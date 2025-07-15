@@ -3,7 +3,6 @@ import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/element/element.dart';
 import 'package:meta/meta.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
-
 // ignore: implementation_imports, safe as we are the one controlling this file
 import 'package:riverpod_annotation/src/riverpod_annotation.dart';
 import 'package:source_gen/source_gen.dart';
@@ -223,7 +222,21 @@ extension ProviderElementNames on GeneratorProviderDeclarationElement {
             : options.providerNameSuffix) ??
         _defaultProviderNameSuffix;
 
-    return '$prefix${prefix.isEmpty ? name.lowerFirst : name.titled}$suffix';
+    var baseName = name;
+
+    if (options.providerNameStripPattern case final stripPattern?) {
+      try {
+        final regex = RegExp(stripPattern);
+        baseName = name.replaceAll(regex, '');
+      } on FormatException {
+        throw InvalidGenerationSourceError(
+          'Your providerNameStripPattern definition is not a valid regular expression: $stripPattern',
+          element: element,
+        );
+      }
+    }
+
+    return '$prefix${prefix.isEmpty ? baseName.lowerFirst : baseName.titled}$suffix';
   }
 
   String get providerTypeName => '${name.titled}Provider';

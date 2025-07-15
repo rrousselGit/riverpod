@@ -7,3 +7,4 @@ targets:
           provider_family_name_prefix: 'myFamily'
           provider_name_suffix: 'Pod'
           provider_family_name_suffix: 'ProviderFamily'
+          provider_name_strip_pattern: '(Controller|Controller2)$'

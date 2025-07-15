@@ -181,6 +181,14 @@ targets:
           # providers with parameters ("families").
           # This takes precedence over provider_name_suffix.
           provider_family_name_suffix: "Provider" # (default)
+          # A regular expression that riverpod_generator will
+          # remove from generated providers names.
+          # The following regex removes the trailing `Notifier` from
+          # the name of generated providers.
+          # Given a class named `CounterNotifier`, Riverpod will
+          # remove any text matching the regex (so here `Notifier`).
+          # We end-up with `Counter` ; which is then transformed to `counterProvider`
+          provider_name_strip_pattern: "Notifier$"
 ```
 
 [family]: https://riverpod.dev/docs/concepts/modifiers/family
