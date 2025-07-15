@@ -4,7 +4,7 @@
 - Allow passing `persist(key: ...)`
 - Bump minimum `meta` version
 - Support `@Riverpod(name: ...)`
-- Add `providerNameStripPattern` build option
+- Add `provider_name_strip_pattern` build option
 
 ## 3.0.0-dev.16 - 2025-06-20
 
