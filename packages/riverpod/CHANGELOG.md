@@ -4,6 +4,7 @@
 - fixes various "pause" issues
 - Bump minimum `meta` version
 - Added `AsyncValue.retrying`, to check when a retry is scheduled or pending
+- Exposed the default retry implementation (`ProviderContainer.defaultRetry`)
 
 ## 3.0.0-dev.16 - 2025-06-20
 

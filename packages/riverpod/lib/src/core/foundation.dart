@@ -27,15 +27,15 @@ sealed class ProviderOrFamily implements ProviderListenableOrFamily {
   /// {@endtemplate}
   final String? name;
 
-  /// {@template riverpod.retry}
-  /// The default retry logic used by providers associated to this container.
+  /// The retry strategy to use when a provider fails.
   ///
+  /// {@template riverpod.retry}
   /// The function takes two parameters:
   /// - `retryCount`: The number of times the provider has been retried
   ///   (starting at 0).
   /// - `error`: The error that caused the retry.
   ///
-  /// The default implementation:
+  /// The default implementation ([ProviderContainer.defaultRetry]) has:
   /// - 10 retries
   /// - starts with a delay of 200ms
   /// - doubles the delay on each retry up to 6.4 seconds

@@ -828,6 +828,25 @@ final class ProviderContainer implements Node, MutationTarget {
     return container;
   }
 
+  /// The default implementation of [retry].
+  ///
+  /// {@macro riverpod.retry}
+  static Duration? defaultRetry(
+    int retryCount,
+    Object error, {
+    int maxRetries = 10,
+    Duration maxDelay = const Duration(milliseconds: 6400),
+    Duration minDelay = const Duration(milliseconds: 200),
+  }) {
+    if (retryCount >= maxRetries) return null;
+    if (error is ProviderException || error is Error) return null;
+
+    final delay = minDelay * math.pow(2, retryCount).toInt();
+    if (delay > maxDelay) return maxDelay;
+
+    return delay;
+  }
+
   final int _debugOverridesLength;
 
   /// Default error handler for this container.
@@ -841,6 +860,8 @@ final class ProviderContainer implements Node, MutationTarget {
   @override
   ProviderContainer get container => this;
 
+  /// The default retry logic used by providers associated to this container.
+  ///
   /// {@macro riverpod.retry}
   final Retry? retry;
 

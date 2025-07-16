@@ -353,15 +353,6 @@ abstract class ProviderElement<StateT, ValueT> implements Node {
     return previous != next;
   }
 
-  static Duration? _defaultRetry(int retryCount, Object error) {
-    if (retryCount >= 10) return null;
-    if (error is ProviderException || error is Error) return null;
-
-    return Duration(
-      milliseconds: math.min(200 * math.pow(2, retryCount).toInt(), 6400),
-    );
-  }
-
   static ProviderElement? _debugCurrentlyBuildingElement;
 
   ProviderContainer get container => pointer.targetContainer;
@@ -666,7 +657,8 @@ depending on itself.
 
     // Don't start retry if the provider was disposed
     if (!_disposed) {
-      final retry = origin.retry ?? container.retry ?? _defaultRetry;
+      final retry =
+          origin.retry ?? container.retry ?? ProviderContainer.defaultRetry;
 
       // Capture exceptions. On error, stop retrying if the retry
       // function failed
