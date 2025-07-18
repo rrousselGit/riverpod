@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
+import 'package:package_config/package_config_types.dart';
 import 'package:path/path.dart' as path;
 import 'package:riverpod_generator/src/riverpod_generator.dart';
 import 'package:source_gen/source_gen.dart';
@@ -110,6 +112,21 @@ File createTmpFile(String filePath) {
 Future<String> compile(String source) async {
   final generator = RiverpodGenerator(const {});
 
+  final configUri = (await Isolate.packageConfig)!;
+  final config = PackageConfig.parseString(
+    File.fromUri(configUri).readAsStringSync(),
+    configUri,
+  );
+
+  final riverpodAnnotation =
+      config.packages.where((e) => e.name == 'riverpod_annotation').firstOrNull;
+
+  if (riverpodAnnotation == null) {
+    throw Exception(
+      'riverpod_annotation package not found in package config at $configUri',
+    );
+  }
+
   final main = createTmpFile('lib/main.dart')..writeAsStringSync(source);
   final pubspec = createTmpFile('pubspec.yaml')..writeAsStringSync('''
 name: test_app
@@ -118,7 +135,11 @@ environment:
   sdk: ">=3.6.0 <4.0.0"
 
 dependencies:
-  riverpod_annotation: ^2.3.3
+  riverpod_annotation:
+
+dependency_overrides:
+  riverpod_annotation:
+    path: ${riverpodAnnotation.root.path}
 ''');
 
   await runPubGet(pubspec.parent);
@@ -141,7 +162,8 @@ Future<void> runPubGet(Directory parent) async {
   if (exitCode != 0) {
     throw Exception(
       'flutter pub get failed with exit code $exitCode\n'
-      '${await process.stdout.transform(utf8.decoder).join()}',
+      '${await process.stdout.transform(utf8.decoder).join()}\n'
+      '${await process.stderr.transform(utf8.decoder).join()}',
     );
   }
 }
