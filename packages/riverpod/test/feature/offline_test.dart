@@ -45,6 +45,7 @@ void main() {
     matrix.createGroup((factory) {
       test('Persist if the notifier implements NotifierEncoder', () {
         final storage = StorageMock<String, Object?>();
+        verify(storage.deleteOutOfDate());
         const op = StorageOptions(destroyKey: 'b');
         final provider = factory.simpleProvider(
           (ref, self) => 0,

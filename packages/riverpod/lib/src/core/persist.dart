@@ -94,9 +94,6 @@ abstract base class Storage<KeyT extends Object?, EncodedT extends Object?> {
     deleteOutOfDate();
   }
 
-  /// Deletes all data that is out of date.
-  void deleteOutOfDate();
-
   /// A storage that stores data in-memory.
   ///
   /// This is a useful API for testing. Inside unit tests, you can override
@@ -106,6 +103,9 @@ abstract base class Storage<KeyT extends Object?, EncodedT extends Object?> {
   /// not persist data across app restarts.
   @visibleForTesting
   factory Storage.inMemory() = _InMemoryPersist<KeyT, EncodedT>;
+
+  /// Deletes all data that is out of date.
+  void deleteOutOfDate();
 
   /// Reads the data associated with [key].
   ///
@@ -134,7 +134,8 @@ abstract base class Storage<KeyT extends Object?, EncodedT extends Object?> {
   FutureOr<void> delete(KeyT key);
 }
 
-final class _InMemoryPersist<KeyT, EncodedT> implements Storage<KeyT, EncodedT> {
+final class _InMemoryPersist<KeyT, EncodedT>
+    implements Storage<KeyT, EncodedT> {
   final Map<KeyT, PersistedData<EncodedT>> state = {};
 
   DateTime _currentTimestamp() => clock.now().toUtc();
