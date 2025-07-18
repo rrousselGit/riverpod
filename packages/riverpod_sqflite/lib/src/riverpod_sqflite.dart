@@ -15,7 +15,7 @@ extension Db on JsonSqFliteStorage {
 ///
 /// Only JSON serializable is supported.
 /// This is generally used in combination `riverpod_annotation's` `JsonPersist`.
-class JsonSqFliteStorage implements Storage<String, String> {
+final class JsonSqFliteStorage extends Storage<String, String> {
   JsonSqFliteStorage._(this._db);
 
   static String get _tableName => 'riverpod';
@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS $_tableName(
       },
     );
     final instance = JsonSqFliteStorage._(db);
-    await instance._init();
+    await instance.deleteOutOfDate();
     return instance;
   }
 
@@ -56,7 +56,8 @@ CREATE TABLE IF NOT EXISTS $_tableName(
   /// This makes the object unusable.
   Future<void> close() => _db.close();
 
-  Future<void> _init() async {
+  @override
+  Future<void> deleteOutOfDate() async {
     await _db.transaction<void>((transaction) async {
       await transaction.execute('''
 CREATE TABLE IF NOT EXISTS $_tableName(

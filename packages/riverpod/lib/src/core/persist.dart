@@ -78,6 +78,7 @@ final class PersistedData<DataT> {
   int get hashCode => Object.hash(data, destroyKey, expireAt);
 }
 
+/// {@template storage}
 /// An interface to enable Riverpod to interact with a database.
 ///
 /// This is used in conjunction with [NotifierPersistX.persist] to enable persistence
@@ -86,7 +87,16 @@ final class PersistedData<DataT> {
 /// Storages are generally implemented by third-party packages.
 /// Riverpod provides an official implementation of [Storage] that stores data
 /// using SQLite, in the `riverpod_sqflite` package.
-abstract class Storage<KeyT extends Object?, EncodedT extends Object?> {
+/// {@endtemplate}
+abstract base class Storage<KeyT extends Object?, EncodedT extends Object?> {
+  /// {@macro storage}
+  Storage() {
+    deleteOutOfDate();
+  }
+
+  /// Deletes all data that is out of date.
+  void deleteOutOfDate();
+
   /// A storage that stores data in-memory.
   ///
   /// This is a useful API for testing. Inside unit tests, you can override
@@ -124,7 +134,7 @@ abstract class Storage<KeyT extends Object?, EncodedT extends Object?> {
   FutureOr<void> delete(KeyT key);
 }
 
-class _InMemoryPersist<KeyT, EncodedT> implements Storage<KeyT, EncodedT> {
+final class _InMemoryPersist<KeyT, EncodedT> implements Storage<KeyT, EncodedT> {
   final Map<KeyT, PersistedData<EncodedT>> state = {};
 
   DateTime _currentTimestamp() => clock.now().toUtc();
@@ -146,6 +156,11 @@ class _InMemoryPersist<KeyT, EncodedT> implements Storage<KeyT, EncodedT> {
 
   @override
   FutureOr<void> delete(KeyT key) => state.remove(key);
+
+  @override
+  void deleteOutOfDate() {
+    // No-op, as this is an in-memory storage.
+  }
 }
 
 /// {@template storage_cache_time}

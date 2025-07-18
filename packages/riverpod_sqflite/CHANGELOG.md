@@ -1,6 +1,7 @@
 ## Unreleased build
 
-Bump minimum `meta` version
+- Bump minimum `meta` version
+- Update to new Storage interface
 
 ## 0.1.2 - 2025-06-20
 
