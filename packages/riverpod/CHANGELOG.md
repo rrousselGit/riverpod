@@ -6,6 +6,8 @@
 - Added `AsyncValue.retrying`, to check when a retry is scheduled or pending
 - Exposed the default retry implementation (`ProviderContainer.defaultRetry`)
 - Offline's Storage now is `base` and requires overriding `deleteOutOfDate`
+- Make AsyncValue.copyWithPrevious `@internal`.
+  This API was not meant to be public.
 
 ## 3.0.0-dev.16 - 2025-06-20
 

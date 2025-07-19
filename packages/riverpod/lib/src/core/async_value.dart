@@ -595,6 +595,7 @@ sealed class AsyncValue<ValueT> {
   /// or instead by [Ref.watch] (if false).
   /// This changes the default behavior of [when] and sets the [isReloading]/
   /// [isRefreshing] flags accordingly.
+  @internal
   AsyncValue<ValueT> copyWithPrevious(
     AsyncValue<ValueT> previous, {
     bool isRefresh = true,
