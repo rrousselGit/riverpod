@@ -318,8 +318,8 @@ class Listener<StateT> extends Mock {
   void call(StateT? previous, StateT? next);
 }
 
-class StorageMock<KeyT, EncodedT> extends Mock
-    implements Storage<KeyT, EncodedT> {
+final class StorageMock<KeyT, EncodedT> extends Storage<KeyT, EncodedT>
+    with Mock {
   @override
   FutureOr<PersistedData<EncodedT>?> read(KeyT? key);
   @override

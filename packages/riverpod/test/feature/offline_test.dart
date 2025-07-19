@@ -45,6 +45,7 @@ void main() {
     matrix.createGroup((factory) {
       test('Persist if the notifier implements NotifierEncoder', () {
         final storage = StorageMock<String, Object?>();
+        verify(storage.deleteOutOfDate());
         const op = StorageOptions(destroyKey: 'b');
         final provider = factory.simpleProvider(
           (ref, self) => 0,
@@ -791,7 +792,7 @@ extension on Object? {
 }
 
 // ignore: avoid_types_as_parameter_names
-class DelegatingStorage<KeyT, EncodedT> implements Storage<KeyT, EncodedT> {
+final class DelegatingStorage<KeyT, EncodedT> extends Storage<KeyT, EncodedT> {
   DelegatingStorage({
     required FutureOr<PersistedData<EncodedT>?> Function(KeyT key) read,
     FutureOr<void> Function(
@@ -820,4 +821,7 @@ class DelegatingStorage<KeyT, EncodedT> implements Storage<KeyT, EncodedT> {
   final FutureOr<void> Function(KeyT key) _delete;
   @override
   FutureOr<void> delete(KeyT key) => _delete(key);
+
+  @override
+  void deleteOutOfDate() {}
 }
