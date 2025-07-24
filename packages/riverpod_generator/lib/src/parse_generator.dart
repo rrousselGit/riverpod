@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:build/build.dart';
 import 'package:path/path.dart' as p;
 import 'package:source_gen/source_gen.dart';
@@ -18,14 +18,14 @@ abstract class ParserGenerator<AnnotationT>
     LibraryReader library,
     BuildStep buildStep,
   ) async {
-    final firstAnnotatedElementFromUniqueSource = <Uri, Element>{};
+    final firstAnnotatedElementFromUniqueSource = <Uri, Element2>{};
 
     for (final annotated in library.annotatedWithExact(
       typeChecker,
       throwOnUnresolved: false,
     )) {
       firstAnnotatedElementFromUniqueSource.putIfAbsent(
-        annotated.element.source!.uri,
+        annotated.element.library2!.uri,
         () => annotated.element,
       );
     }
@@ -33,7 +33,7 @@ abstract class ParserGenerator<AnnotationT>
     final ast = await Future.wait(
       firstAnnotatedElementFromUniqueSource.values.map(
         (e) => buildStep.resolver
-            .astNodeFor(e, resolve: true)
+            .astNodeFor(e.firstFragment, resolve: true)
             .then((value) => value!.root as CompilationUnit),
       ),
     );
@@ -45,12 +45,12 @@ abstract class ParserGenerator<AnnotationT>
 
   @override
   Stream<String> generateForAnnotatedElement(
-    Element element,
+    Element2 element,
     ConstantReader annotation,
     BuildStep buildStep,
   ) async* {
     final ast = await buildStep.resolver
-        .astNodeFor(element, resolve: true)
+        .astNodeFor(element.firstFragment, resolve: true)
         .then((value) => value?.root);
 
     ast as CompilationUnit?;

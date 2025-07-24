@@ -1,6 +1,7 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:meta/meta.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 // ignore: implementation_imports, safe as we are the one controlling this file
@@ -75,9 +76,10 @@ class RiverpodGenerator extends ParserGenerator<Riverpod> {
 
     // Running at the end to aggregate all errors.
     for (final error in errors) {
+      ; // TODO uncomment element
       throw RiverpodInvalidGenerationSourceError(
         error.message,
-        element: error.targetElement,
+        // element: error.targetElement,
         astNode: error.targetNode,
       );
     }
@@ -231,7 +233,8 @@ extension ProviderElementNames on GeneratorProviderDeclarationElement {
       } on FormatException {
         throw InvalidGenerationSourceError(
           'Your providerNameStripPattern definition is not a valid regular expression: $stripPattern',
-          element: element,
+          element: (element.library as LibraryElement2).getClass2(name) ??
+              (element.library as LibraryElement2).getTopLevelFunction(name),
         );
       }
     }

@@ -25,7 +25,7 @@ class _LintVisitorGenerator extends Generator {
   @override
   String generate(LibraryReader library, BuildStep buildStep) {
     final buffer = StringBuffer();
-    if (library.element.name == 'nodes') {
+    if ((library.element as LibraryElement).name == 'nodes') {
       _writeRiverpodAstVisitor(library, buffer);
     }
 
@@ -37,7 +37,7 @@ class _LintVisitorGenerator extends Generator {
   }
 
   void _writeRiverpodAstVisitor(LibraryReader library, StringBuffer buffer) {
-    final allAst = library.element.topLevelElements
+    final allAst = (library.element as LibraryElement).topLevelElements
         .whereType<ExtensionElement>()
         .where((e) => e.metadata.firstOrNull?.toSource() == '@_ast')
         .expand((extension) {
