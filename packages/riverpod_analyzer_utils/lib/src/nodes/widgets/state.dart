@@ -1,6 +1,6 @@
 part of '../../nodes.dart';
 
-ClassElement? _findStateWidget(ClassElement node) {
+ClassElement2? _findStateWidget(ClassElement2 node) {
   final type = node.supertype?.typeArguments.firstOrNull;
   if (type == null) return null;
 
@@ -13,7 +13,7 @@ ClassElement? _findStateWidget(ClassElement node) {
     return null;
   }
 
-  return type.element.cast<ClassElement>();
+  return type.element3.cast<ClassElement2>();
 }
 
 final class StateDeclaration {
@@ -24,13 +24,15 @@ final class StateDeclaration {
   });
 
   static StateDeclaration? _parse(ClassDeclaration node) {
-    final widget = node.declaredElement.let(_findStateWidget);
-    final element = node.declaredElement.let(StateDeclarationElement._parse);
+    final widget = node.declaredFragment?.element.let(_findStateWidget);
+    final element = node.declaredFragment?.element
+        .let((e) => StateDeclarationElement._parse(e, node));
 
     if (element == null) return null;
 
     return StateDeclaration._(
-      widget: widget.let(StatefulWidgetDeclarationElement._parse),
+      widget:
+          widget.let((e) => StatefulWidgetDeclarationElement._parse(e, node)),
       element: element,
       node: node,
     );
@@ -41,7 +43,7 @@ final class StateDeclaration {
   final StateDeclarationElement element;
 
   WidgetDeclaration? findWidgetAst() {
-    final widgetName = widget?.element.name;
+    final widgetName = widget?.element.name3;
     if (widgetName == null) return null;
 
     final unit = node.thisOrAncestorOfType<CompilationUnit>()!;
@@ -62,17 +64,18 @@ final class StateDeclarationElement {
 
   static final _cache = _Cache<StateDeclarationElement>();
 
-  static StateDeclarationElement? _parse(ClassElement element) {
+  static StateDeclarationElement? _parse(ClassElement2 element, AstNode from) {
     return _cache(element, () {
       final widget = _findStateWidget(element);
 
       return StateDeclarationElement._(
         element: element,
-        widget: widget.let(StatefulWidgetDeclarationElement._parse),
+        widget:
+            widget.let((e) => StatefulWidgetDeclarationElement._parse(e, from)),
       );
     });
   }
 
-  final ClassElement element;
+  final ClassElement2 element;
   final StatefulWidgetDeclarationElement? widget;
 }

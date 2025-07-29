@@ -6,15 +6,14 @@ extension FunctionalProviderDeclarationX on FunctionDeclaration {
 
   FunctionalProviderDeclaration? get provider {
     return _cache.upsert(this, () {
-      final element = declaredElement;
+      final element = declaredFragment?.element;
       if (element == null) return null;
 
       final riverpod = this.riverpod;
       if (riverpod == null) return null;
 
-      final providerElement = FunctionalProviderDeclarationElement._parse(
-        element,
-      );
+      final providerElement =
+          FunctionalProviderDeclarationElement._parse(element, this);
       if (providerElement == null) return null;
 
       final createdTypeNode = returnType;
@@ -79,14 +78,15 @@ class FunctionalProviderDeclarationElement
   static final _cache = _Cache<FunctionalProviderDeclarationElement?>();
 
   static FunctionalProviderDeclarationElement? _parse(
-    ExecutableElement element,
+    ExecutableElement2 element,
+    AstNode from,
   ) {
     return _cache(element, () {
-      final riverpodAnnotation = RiverpodAnnotationElement._of(element);
+      final riverpodAnnotation = RiverpodAnnotationElement._of(element, from);
       if (riverpodAnnotation == null) return null;
 
       return FunctionalProviderDeclarationElement._(
-        name: element.name,
+        name: element.name3!,
         annotation: riverpodAnnotation,
         element: element,
       );
@@ -98,7 +98,8 @@ class FunctionalProviderDeclarationElement
 
   @override
   bool get isFamily {
-    return element.parameters.length > 1 || element.typeParameters.isNotEmpty;
+    return element.formalParameters.length > 1 ||
+        element.typeParameters2.isNotEmpty;
   }
 
   @override
@@ -106,5 +107,5 @@ class FunctionalProviderDeclarationElement
   @override
   final String name;
   @override
-  final ExecutableElement element;
+  final ExecutableElement2 element;
 }

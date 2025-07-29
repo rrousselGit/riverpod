@@ -27,7 +27,6 @@ class SyncNotifier<T> extends _$SyncNotifier<T> {
       everyElement(
         isA<RiverpodAnalysisError>()
             .having((e) => e.targetNode, 'node', isNotNull)
-            .having((e) => e.targetElement, 'element', isNotNull)
             .having(
               (e) => e.code,
               'code',
@@ -68,7 +67,6 @@ class Abstract extends _$Abstract {
       everyElement(
         isA<RiverpodAnalysisError>()
             .having((e) => e.targetNode, 'node', isNotNull)
-            .having((e) => e.targetElement, 'element', isNotNull)
             .having(
               (e) => e.code,
               'code',

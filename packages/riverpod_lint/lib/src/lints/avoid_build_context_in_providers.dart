@@ -47,8 +47,8 @@ class AvoidBuildContextInProviders extends RiverpodLintRule {
   ) {
     final buildContextParameters = parameters.parameters.where(
       (e) =>
-          e.declaredElement?.type != null &&
-          buildContextType.isExactlyType(e.declaredElement!.type),
+          e.declaredFragment?.element.type != null &&
+          buildContextType.isExactlyType(e.declaredFragment!.element.type),
     );
 
     for (final contextParameter in buildContextParameters) {

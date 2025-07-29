@@ -16,7 +16,7 @@ dependencies:
   mockito: ^5.0.13
 
 dev_dependencies:
-  custom_lint: ^0.7.5
+  custom_lint: ^0.8.0
   flutter_test:
     sdk: flutter
   riverpod_lint:

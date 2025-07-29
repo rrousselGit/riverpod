@@ -53,7 +53,7 @@ extension LegacyProviderDeclarationX on VariableDeclaration {
 
   LegacyProviderDeclaration? get provider {
     return _cache.upsert(this, () {
-      final element = declaredElement;
+      final element = declaredElement2;
       if (element == null) return null;
 
       final providerElement = LegacyProviderDeclarationElement._parse(element);
@@ -209,7 +209,7 @@ LegacyProviderType? parseLegacyProviderType(DartType type) {
     return null;
   }
 
-  final name = type.element?.name;
+  final name = type.element3?.name3;
   if (name == 'FutureProvider' || name == 'FutureProviderFamily') {
     return LegacyProviderType.futureProvider;
   }
@@ -253,7 +253,7 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
     required this.providerType,
   });
 
-  static LegacyProviderDeclarationElement? _parse(VariableElement element) {
+  static LegacyProviderDeclarationElement? _parse(VariableElement2 element) {
     return _cache(element, () {
       final type = element.type;
       final providerType = parseLegacyProviderType(type);
@@ -262,17 +262,17 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
 
       LegacyFamilyInvocationElement? familyElement;
       if (familyType.isAssignableFromType(element.type)) {
-        final callFn = (element.type as InterfaceType).lookUpMethod2(
+        final callFn = (element.type as InterfaceType).lookUpMethod3(
           'call',
-          element.library!,
+          element.library2!,
         )!;
-        final parameter = callFn.parameters.single;
+        final parameter = callFn.formalParameters.single;
 
         familyElement = LegacyFamilyInvocationElement._(parameter.type);
       }
 
       return LegacyProviderDeclarationElement._(
-        name: element.name,
+        name: element.name3!,
         element: element,
         familyElement: familyElement,
         providerType: providerType,
@@ -283,7 +283,7 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
   static final _cache = _Cache<LegacyProviderDeclarationElement?>();
 
   @override
-  final VariableElement element;
+  final VariableElement2 element;
 
   @override
   final String name;

@@ -22,14 +22,15 @@ Consumer? fromFlutterRiverpod = null;
     for (final variable in variables) {
       expect(
         parseLegacyProviderType(
-          variable.variables.variables.single.declaredElement!.type,
+          variable.variables.variables.single.declaredElement2!.type,
         ),
         isNull,
         reason: variable.toString(),
       );
       expect(
         parseFirstProviderFor(
-          variable.variables.variables.single.declaredElement!,
+          variable.variables.variables.single.declaredElement2!,
+          variable,
         ),
         isNull,
         reason: variable.toString(),
@@ -111,14 +112,15 @@ class D3 extends _$D3 {
     for (final variable in variables) {
       expect(
         parseFirstProviderFor(
-          variable.variables.variables.single.declaredElement!,
+          variable.variables.variables.single.declaredElement2!,
+          variable,
         )?.$1,
         isNotNull,
         reason: variable.toString(),
       );
       expect(
         parseLegacyProviderType(
-          variable.variables.variables.single.declaredElement!.type,
+          variable.variables.variables.single.declaredElement2!.type,
         ),
         isNull,
         reason: variable.toString(),
@@ -168,14 +170,15 @@ final streamNotifierProviderFamily = StreamNotifierProvider.family<int, int>((re
     for (final variable in variables) {
       expect(
         parseLegacyProviderType(
-          variable.variables.variables.single.declaredElement!.type,
+          variable.variables.variables.single.declaredElement2!.type,
         ),
         isNotNull,
         reason: variable.toString(),
       );
       expect(
         parseFirstProviderFor(
-          variable.variables.variables.single.declaredElement!,
+          variable.variables.variables.single.declaredElement2!,
+          variable,
         ),
         isNull,
         reason: variable.toString(),

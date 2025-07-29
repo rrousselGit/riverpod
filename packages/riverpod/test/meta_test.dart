@@ -1,8 +1,8 @@
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/analysis/utilities.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
-import 'package:analyzer/dart/element/visitor.dart';
+import 'package:analyzer/dart/element/visitor2.dart';
 import 'package:path/path.dart' as path;
 import 'package:test/test.dart';
 
@@ -14,7 +14,7 @@ void main() {
   // - all {@template} are used
   // - all {@macro} have an associated {@template}
 
-  late final LibraryElement riverpod;
+  late final LibraryElement2 riverpod;
   late final _PublicAPIVisitor visitor;
 
   setUpAll(() async {
@@ -24,14 +24,14 @@ void main() {
     final result = await resolveFile2(path: absolute);
     result as ResolvedUnitResult;
 
-    riverpod = result.libraryElement.importedLibraries.firstWhere(
-      (e) => e.source.uri.toString() == 'package:riverpod/riverpod.dart',
+    riverpod = result.libraryFragment.importedLibraries2.firstWhere(
+      (e) => e.uri.toString() == 'package:riverpod/riverpod.dart',
     );
     visitor = _PublicAPIVisitor(riverpod);
 
-    riverpod.accept(visitor);
-    for (final publicApi in riverpod.exportNamespace.definedNames.values) {
-      publicApi.accept(visitor);
+    riverpod.accept2(visitor);
+    for (final publicApi in riverpod.exportNamespace.definedNames2.values) {
+      publicApi.accept2(visitor);
     }
   });
 
@@ -58,10 +58,10 @@ void main() {
   });
 }
 
-class _PublicAPIVisitor extends GeneralizingElementVisitor<void> {
+class _PublicAPIVisitor extends GeneralizingElementVisitor2<void> {
   _PublicAPIVisitor(this.riverpod);
 
-  final LibraryElement riverpod;
+  final LibraryElement2 riverpod;
   final missingInheritedAnnotations = <String>{};
   final unexportedElements = <String>{};
   final undocumentedElements = <String>{};
@@ -70,7 +70,7 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor<void> {
   final duplicateTemplates = <String>{};
   final macros = <String>{};
 
-  void _verifyTypeIsExported(DartType type, VariableElement element) {
+  void _verifyTypeIsExported(DartType type, VariableElement2 element) {
     if (type is TypeParameterType) {
       _verifyTypeIsExported(type.bound, element);
       return;
@@ -78,7 +78,7 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor<void> {
 
     if (type is FunctionType) {
       _verifyTypeIsExported(type.returnType, element);
-      for (final parameter in type.parameters) {
+      for (final parameter in type.formalParameters) {
         _verifyTypeIsExported(parameter.type, element);
       }
       return;
@@ -86,22 +86,29 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor<void> {
 
     if (type.isCore) return;
 
-    final key = type.element?.name ?? '';
-    if (!riverpod.exportNamespace.definedNames.containsKey(key)) {
-      unexportedElements.add('${element.location}#$key');
+    final key = type.element3?.name3 ?? '';
+    if (!riverpod.exportNamespace.definedNames2.containsKey(key)) {
+      unexportedElements.add('${element.library2!.uri}#$key');
     }
   }
 
-  void _verifyHasDocs(Element element) {
-    if (element.documentationComment?.isNotEmpty != true) {
-      undocumentedElements.add('${element.location}');
+  void _verifyHasDocs(Element2 element) {
+    final Object annotatable = element;
+    if (annotatable is! Annotatable) return;
+
+    if (annotatable.documentationComment?.isNotEmpty != true) {
+      undocumentedElements.add('${element.library2!.uri}');
     }
   }
 
-  bool _isPublicApi(Element element) {
+  bool _isPublicApi(Element2 element) {
     if (element.isPrivate) return false;
     // Is part of an @internal element
-    if (element.thisOrAncestorMatching((e) => e.hasInternal) != null) {
+    if (element.thisOrAncestorMatching2((e) {
+          final Object obj = e;
+          return obj is Annotatable && obj.metadata2.hasInternal;
+        }) !=
+        null) {
       return false;
     }
 
@@ -109,7 +116,7 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor<void> {
   }
 
   @override
-  void visitElement(Element element) {
+  void visitElement(Element2 element) {
     super.visitElement(element);
 
     if (_isPublicApi(element)) {
@@ -120,7 +127,7 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor<void> {
   }
 
   @override
-  void visitClassElement(ClassElement element) {
+  void visitClassElement(ClassElement2 element) {
     super.visitClassElement(element);
 
     // Verify that inherited members also respect public API constraints
@@ -130,26 +137,23 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor<void> {
   }
 
   @override
-  void visitVariableElement(VariableElement element) {
+  void visitVariableElement(VariableElement2 element) {
     super.visitVariableElement(element);
 
     _verifyTypeIsExported(element.type, element);
   }
 
-  void _verifyInheritsAnnotations(Element element) {
-    final parent = element.enclosingElement3;
+  void _verifyInheritsAnnotations(Element2 element) {
+    final annotatable = element as Annotatable;
+    final parent = element.enclosingElement2;
 
-    if (parent is! ClassElement) return;
+    if (parent is! ClassElement2) return;
 
     final overrides = parent.allSupertypes
         .map((e) {
-          if (element is MethodElement) {
-            return e.getMethod(element.name);
-          } else if (element is PropertyAccessorElement && element.isGetter) {
-            return e.getGetter(element.name);
-          } else if (element is PropertyAccessorElement && element.isSetter) {
-            return e.getSetter(element.name);
-          }
+          final name = element.name3!;
+
+          return e.getMethod2(name) ?? e.getGetter2(name) ?? e.getSetter2(name);
         })
         .nonNulls
         .toList();
@@ -157,22 +161,26 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor<void> {
     if (overrides.isEmpty) return;
 
     for (final override in overrides) {
-      if (element.hasChangePrivacy) continue;
-      if ((!element.hasInternal && override.hasInternal) ||
-          (!element.hasProtected && override.hasProtected) ||
-          (!element.hasVisibleForOverriding &&
-              override.hasVisibleForOverriding) ||
-          (!element.hasVisibleForTesting && override.hasVisibleForTesting)) {
-        missingInheritedAnnotations.add(
-          '${element.location} vs ${override.location}\n'
-          '${element.metadata} vs ${override.metadata}',
-        );
+      if (annotatable.hasChangePrivacy) continue;
+      if ((!annotatable.metadata2.hasInternal &&
+              override.metadata2.hasInternal) ||
+          (!annotatable.metadata2.hasProtected &&
+              override.metadata2.hasProtected) ||
+          (!annotatable.metadata2.hasVisibleForOverriding &&
+              override.metadata2.hasVisibleForOverriding) ||
+          (!annotatable.metadata2.hasVisibleForTesting &&
+              override.metadata2.hasVisibleForTesting)) {
+        missingInheritedAnnotations
+            .add('${element.library2!.uri} vs ${override.library2.uri}');
       }
     }
   }
 
-  void _parseTemplatesAndMacros(Element element) {
-    final docs = element.documentationComment;
+  void _parseTemplatesAndMacros(Element2 element) {
+    final Object annotatable = element;
+    if (annotatable is! Annotatable) return;
+
+    final docs = annotatable.documentationComment;
     if (docs == null) return;
 
     final regExp = RegExp(r'{@(\w+) (\S+)}', multiLine: true);
@@ -191,9 +199,10 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor<void> {
   }
 }
 
-extension on Element {
+extension on Annotatable {
   bool get hasChangePrivacy {
-    return metadata.any((e) => e.element?.name == 'changePrivacy');
+    return metadata2.annotations
+        .any((e) => e.element2?.name3 == 'changePrivacy');
   }
 }
 
@@ -224,9 +233,9 @@ extension on DartType {
       return true;
     }
 
-    final element = this.element;
+    final element = element3;
     if (element == null) return false;
 
-    return element.librarySource?.uri.toString().startsWith('dart:') ?? false;
+    return element.library2?.uri.toString().startsWith('dart:') ?? false;
   }
 }

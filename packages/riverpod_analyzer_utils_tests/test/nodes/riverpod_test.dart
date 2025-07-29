@@ -47,33 +47,29 @@ int eight(Ref ref) => 0;
       errors[0].message,
       'Only list literals (using []) as supported.',
     );
-    expect(errors[0].targetNode?.toSource(), 'deps');
+    expect(errors[0].targetNode.toSource(), 'deps');
 
     expect(
       errors[1].message,
       'Only list literals (using []) as supported.',
     );
-    expect(errors[1].targetNode?.toSource(), '');
+    expect(errors[1].targetNode.toSource(), '');
 
     expect(
       errors[2].message,
       'Only elements annotated with @riverpod are supported.',
     );
-    expect(errors[2].targetNode?.toSource(), 'gibberish');
+    expect(errors[2].targetNode.toSource(), 'gibberish');
 
     expect(
       errors[3].message,
       'if/for/spread operators as not supported.',
     );
-    expect(errors[3].targetNode?.toSource(), 'if (true) forth');
+    expect(errors[3].targetNode.toSource(), 'if (true) forth');
 
     expect(
       errors[4].message,
       'Unsupported dependency "int". Only functions and classes annotated by @riverpod are supported.',
-    );
-    expect(
-      errors[4].targetElement.toString(),
-      'Riverpod Riverpod({bool keepAlive = false, List<Object>? dependencies, Duration? Function(int, Object)? retry})',
     );
 
     expect(
@@ -86,10 +82,6 @@ int eight(Ref ref) => 0;
       errors[6].message,
       'Unsupported dependency "void fn()". Only functions and classes annotated by @riverpod are supported.',
     );
-    expect(
-      errors[6].targetElement.toString(),
-      'Riverpod Riverpod({bool keepAlive = false, List<Object>? dependencies, Duration? Function(int, Object)? retry})',
-    );
 
     expect(
       errors[7].message,
@@ -100,10 +92,6 @@ int eight(Ref ref) => 0;
     expect(
       errors[8].message,
       'Unsupported dependency "String (\'foo\')". Only functions and classes annotated by @riverpod are supported.',
-    );
-    expect(
-      errors[8].targetElement.toString(),
-      'Riverpod Riverpod({bool keepAlive = false, List<Object>? dependencies, Duration? Function(int, Object)? retry})',
     );
 
     expect(

@@ -3,7 +3,6 @@ import 'package:analyzer/error/error.dart'
         // ignore: undefined_hidden_name, necessary to support broad analyzer versions
         LintCode;
 import 'package:analyzer/error/listener.dart';
-import 'package:analyzer/source/source_range.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
@@ -29,14 +28,7 @@ class RiverpodSyntaxError extends RiverpodLintRule {
         return;
       }
 
-      final location = switch (error) {
-        RiverpodAnalysisError(:final targetElement?) =>
-          SourceRange(targetElement.nameOffset, targetElement.nameLength),
-        RiverpodAnalysisError(:final targetNode?) => targetNode.sourceRange,
-        _ => null,
-      };
-
-      if (location == null) return;
+      final location = error.targetNode.sourceRange;
 
       reporter.atOffset(
         errorCode: _code,

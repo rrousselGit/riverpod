@@ -1,5 +1,4 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
 
 typedef RiverpodErrorReporter = void Function(RiverpodAnalysisError);
 
@@ -23,27 +22,20 @@ enum RiverpodAnalysisErrorCode {
 }
 
 class RiverpodAnalysisError {
-  RiverpodAnalysisError(
+  RiverpodAnalysisError.ast(
     this.message, {
-    this.targetNode,
-    this.targetElement,
+    required this.targetNode,
     required this.code,
   });
 
   final String message;
-  final AstNode? targetNode;
-  final Element? targetElement;
+  final AstNode targetNode;
   final RiverpodAnalysisErrorCode? code;
 
   @override
   String toString() {
     var trailing = '';
-    if (targetElement != null) {
-      trailing += ' ; element: $targetElement (${targetElement.runtimeType})';
-    }
-    if (targetNode != null) {
-      trailing += ' ; node: $targetNode (${targetNode.runtimeType})';
-    }
+    trailing += ' ; node: $targetNode (${targetNode.runtimeType})';
 
     return 'RiverpodAnalysisError: $message$trailing';
   }

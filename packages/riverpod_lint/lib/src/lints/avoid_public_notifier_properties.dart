@@ -1,9 +1,10 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
+import '../object_utils.dart';
 import '../riverpod_custom_lint.dart';
 
 class AvoidPublicNotifierProperties extends RiverpodLintRule {
@@ -22,7 +23,7 @@ class AvoidPublicNotifierProperties extends RiverpodLintRule {
     CustomLintContext context,
   ) {
     context.registry.addClassDeclaration((node) {
-      final notifierElement = node.declaredElement;
+      final notifierElement = node.declaredFragment?.element;
 
       if (notifierElement == null ||
           !anyNotifierType.isAssignableFromType(notifierElement.thisType)) {
@@ -31,14 +32,21 @@ class AvoidPublicNotifierProperties extends RiverpodLintRule {
 
       for (final member in node.members) {
         // Skip members if there's an @override annotation
-        if (member.declaredElement?.hasOverride ?? false) continue;
+        if (member.declaredFragment?.element
+                .safeCast<Annotatable>()
+                ?.metadata2
+                .hasOverride ??
+            false) {
+          continue;
+        }
 
-        bool isVisibleOutsideTheNotifier(Element? element) {
+        bool isVisibleOutsideTheNotifier(Element2? element) {
+          final annotatable = element as Annotatable?;
           return element != null &&
               element.isPublic &&
-              !element.hasProtected &&
-              !element.hasVisibleForOverriding &&
-              !element.hasVisibleForTesting;
+              !annotatable!.metadata2.hasProtected &&
+              !annotatable.metadata2.hasVisibleForOverriding &&
+              !annotatable.metadata2.hasVisibleForTesting;
         }
 
         if (member is FieldDeclaration) {
@@ -47,7 +55,7 @@ class AvoidPublicNotifierProperties extends RiverpodLintRule {
 
           for (final variable in member.fields.variables) {
             if (variable.isFinal) continue;
-            if (!isVisibleOutsideTheNotifier(variable.declaredElement)) {
+            if (!isVisibleOutsideTheNotifier(variable.declaredElement2)) {
               continue;
             }
 
@@ -56,7 +64,9 @@ class AvoidPublicNotifierProperties extends RiverpodLintRule {
         } else if (member is MethodDeclaration) {
           if (!member.isGetter) continue;
           if (member.isStatic) continue;
-          if (!isVisibleOutsideTheNotifier(member.declaredElement)) continue;
+          if (!isVisibleOutsideTheNotifier(member.declaredFragment!.element)) {
+            continue;
+          }
 
           reporter.atNode(member, _code);
         }

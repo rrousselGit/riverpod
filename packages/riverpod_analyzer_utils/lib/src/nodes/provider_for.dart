@@ -3,9 +3,9 @@ part of '../nodes.dart';
 @internal
 (ProviderDeclarationElement?,)? parseProviderFor(
   ElementAnnotation annotation, {
-  required Element? from,
+  required AstNode from,
 }) {
-  final type = annotation.element.cast<ExecutableElement>()?.returnType;
+  final type = annotation.element2.cast<ExecutableElement2>()?.returnType;
   if (type == null || !providerForType.isExactlyType(type)) return null;
 
   final value = annotation.computeConstantValue()?.getField('value');
@@ -15,9 +15,12 @@ part of '../nodes.dart';
 }
 
 @internal
-(ProviderDeclarationElement?,)? parseFirstProviderFor(Element annotation) {
-  return annotation.metadata
-      .map((e) => parseProviderFor(e, from: annotation))
+(ProviderDeclarationElement?,)? parseFirstProviderFor(
+  Annotatable annotation,
+  AstNode from,
+) {
+  return annotation.metadata2.annotations
+      .map((e) => parseProviderFor(e, from: from))
       .nonNulls
       .firstOrNull;
 }

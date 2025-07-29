@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:meta/meta.dart';
@@ -46,8 +45,7 @@ class JsonGenerator extends ParserGenerator<JsonPersist> {
     if (provider.node.typeParameters?.typeParameters.isNotEmpty ?? false) {
       throw InvalidGenerationSourceError(
         'Encoding generic notifiers is currently not supported',
-        element: (provider.node.declaredElement!.library as LibraryElement2)
-            .classes
+        element: provider.node.declaredFragment!.libraryFragment.element.classes
             .where((e) => e.name3 == provider.name.lexeme)
             .firstOrNull,
         node: provider.node,
