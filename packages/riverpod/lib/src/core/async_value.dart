@@ -688,6 +688,7 @@ final class AsyncData<ValueT> extends AsyncResult<ValueT> {
   @override
   final _ErrorRecord? _error;
 
+  @internal
   @override
   AsyncData<ValueT> copyWithPrevious(
     AsyncValue<ValueT> previous, {
@@ -752,6 +753,7 @@ final class AsyncLoading<ValueT> extends AsyncValue<ValueT> {
     );
   }
 
+  @internal
   @override
   AsyncValue<ValueT> copyWithPrevious(
     AsyncValue<ValueT> previous, {
@@ -844,6 +846,7 @@ final class AsyncError<ValueT> extends AsyncResult<ValueT> {
     );
   }
 
+  @internal
   @override
   AsyncError<ValueT> copyWithPrevious(
     AsyncValue<ValueT> previous, {

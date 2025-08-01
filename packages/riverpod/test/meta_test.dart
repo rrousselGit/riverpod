@@ -152,15 +152,18 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor2<void> {
     final overrides = parent.allSupertypes
         .map((e) {
           final name = element.name3!;
+          final override= e.getMethod2(name) ?? e.getGetter2(name) ?? e.getSetter2(name);
 
-          return e.getMethod2(name) ?? e.getGetter2(name) ?? e.getSetter2(name);
+          if (override == null) return null;
+
+          return (override, e.element3.name3!);
         })
         .nonNulls
         .toList();
 
     if (overrides.isEmpty) return;
 
-    for (final override in overrides) {
+    for (final (override, className) in overrides) {
       if (annotatable.hasChangePrivacy) continue;
       if ((!annotatable.metadata2.hasInternal &&
               override.metadata2.hasInternal) ||
@@ -170,8 +173,9 @@ class _PublicAPIVisitor extends GeneralizingElementVisitor2<void> {
               override.metadata2.hasVisibleForOverriding) ||
           (!annotatable.metadata2.hasVisibleForTesting &&
               override.metadata2.hasVisibleForTesting)) {
-        missingInheritedAnnotations
-            .add('${element.library2!.uri} vs ${override.library2.uri}');
+        missingInheritedAnnotations.add(
+          '${element.library2!.uri}#${element.enclosingElement2!.name3}.${element.name3} vs ${override.library2.uri}#$className.${override.name3}',
+        );
       }
     }
   }
