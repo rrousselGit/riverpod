@@ -1,3 +1,6 @@
+@Timeout.factor(2)
+library;
+
 import 'package:riverpod_analyzer_utils/src/nodes.dart';
 import 'package:test/test.dart';
 
