@@ -1,7 +1,7 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/source/source.dart';
 import 'package:analyzer/source/source_range.dart';
 import 'package:collection/collection.dart';
@@ -170,25 +170,25 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
 
       // Prepare nodes to move.
       final nodesToMove = <ClassMember>[];
-      final elementsToMove = <Element>{};
+      final elementsToMove = <Element2>{};
       for (final member in stateClass.members) {
         if (member is FieldDeclaration) {
           if (member.isStatic) {
             return;
           }
           for (final fieldNode in member.fields.variables) {
-            final fieldElement = fieldNode.declaredElement as FieldElement?;
+            final fieldElement = fieldNode.declaredElement2 as FieldElement2?;
             if (fieldElement == null) continue;
             if (!fieldsAssignedInConstructors.contains(fieldElement)) {
               nodesToMove.add(member);
               elementsToMove.add(fieldElement);
 
-              final getter = fieldElement.getter;
+              final getter = fieldElement.getter2;
               if (getter != null) {
                 elementsToMove.add(getter);
               }
 
-              final setter = fieldElement.setter;
+              final setter = fieldElement.setter2;
               if (setter != null) {
                 elementsToMove.add(setter);
               }
@@ -200,7 +200,7 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
           }
           if (!_isDefaultOverride(member)) {
             nodesToMove.add(member);
-            elementsToMove.add(member.declaredElement!);
+            elementsToMove.add(member.declaredFragment!.element);
           }
         }
       }
@@ -208,7 +208,7 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
       final deleteRanges = <SourceRange>[];
       for (final node in nodesToMove) {
         final visitor = _ReplacementEditBuilder(
-          widgetClass.declaredElement!,
+          widgetClass.declaredFragment!.element,
           elementsToMove,
         );
         node.accept(visitor);
@@ -282,14 +282,14 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
 // Original implementation in
 // package:analysis_server/lib/src/services/correction/dart/flutter_convert_to_stateless_widget.dart
 class _FieldFinder extends RecursiveAstVisitor<void> {
-  final fieldsAssignedInConstructors = <FieldElement>{};
+  final fieldsAssignedInConstructors = <FieldElement2>{};
 
   @override
   void visitSimpleIdentifier(SimpleIdentifier node) {
     if (node.parent is FieldFormalParameter) {
-      final element = node.staticElement;
-      if (element is FieldFormalParameterElement) {
-        final field = element.field;
+      final element = node.element;
+      if (element is FieldFormalParameterElement2) {
+        final field = element.field2;
         if (field != null) {
           fieldsAssignedInConstructors.add(field);
         }
@@ -297,17 +297,17 @@ class _FieldFinder extends RecursiveAstVisitor<void> {
     }
 
     if (node.parent is ConstructorFieldInitializer) {
-      final element = node.staticElement;
-      if (element is FieldElement) {
+      final element = node.element;
+      if (element is FieldElement2) {
         fieldsAssignedInConstructors.add(element);
       }
     }
 
     if (node.inSetterContext()) {
       final element = node.writeOrReadElement;
-      if (element is PropertyAccessorElement) {
-        final field = element.variable2;
-        if (field is FieldElement) {
+      if (element is PropertyAccessorElement2) {
+        final field = element.variable3;
+        if (field is FieldElement2) {
           fieldsAssignedInConstructors.add(field);
         }
       }
@@ -321,8 +321,8 @@ class _ReplacementEditBuilder extends RecursiveAstVisitor<void> {
     this.elementsToMove,
   );
 
-  final ClassElement widgetClassElement;
-  final Set<Element> elementsToMove;
+  final ClassElement2 widgetClassElement;
+  final Set<Element2> elementsToMove;
 
   List<SourceRange> deleteRanges = [];
 
@@ -331,9 +331,9 @@ class _ReplacementEditBuilder extends RecursiveAstVisitor<void> {
     if (node.inDeclarationContext()) {
       return;
     }
-    final element = node.staticElement;
-    if (element is ExecutableElement &&
-        element.enclosingElement3 == widgetClassElement &&
+    final element = node.element;
+    if (element is ExecutableElement2 &&
+        element.enclosingElement2 == widgetClassElement &&
         !elementsToMove.contains(element)) {
       final parent = node.parent;
       if (parent is PrefixedIdentifier) {

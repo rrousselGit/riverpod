@@ -13,25 +13,21 @@ extension SimpleIdentifierX on SimpleIdentifier {
   bool get isFlutterRunApp {
     if (name != 'runApp') return false;
 
-    final library = staticElement?.library;
+    final library = element?.library2;
     if (library == null) return false;
-    final libraryUri = Uri.tryParse(library.identifier);
-    if (libraryUri == null) return false;
 
-    return libraryUri.scheme == 'package' &&
-        libraryUri.pathSegments.first == 'flutter';
+    return library.uri.scheme == 'package' &&
+        library.uri.pathSegments.first == 'flutter';
   }
 
   bool get isPumpWidget {
     if (name != 'pumpWidget') return false;
 
-    final library = staticElement?.library;
+    final library = element?.library2;
     if (library == null) return false;
-    final libraryUri = Uri.tryParse(library.identifier);
-    if (libraryUri == null) return false;
 
-    return libraryUri.scheme == 'package' &&
-        libraryUri.pathSegments.first == 'flutter_test';
+    return library.uri.scheme == 'package' &&
+        library.uri.pathSegments.first == 'flutter_test';
   }
 }
 

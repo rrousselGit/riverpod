@@ -41,7 +41,7 @@ String buildParamDefinitionQuery(
         ? '${parameter.metadata.map((e) => e.toSource()).join(' ')} '
         : '';
 
-    late final element = parameter.declaredElement!;
+    late final element = parameter.declaredFragment!.element;
     late final leading = parameter.isRequiredNamed || asRequiredNamed
         ? 'required $metadata'
         : metadata;

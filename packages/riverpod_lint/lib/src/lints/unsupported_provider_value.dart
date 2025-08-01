@@ -8,7 +8,7 @@ extension on ClassBasedProviderDeclaration {
   /// Returns whether the value exposed by the provider is the newly created
   /// Notifier itself.
   bool get returnsSelf {
-    return valueTypeNode?.type == node.declaredElement?.thisType;
+    return valueTypeNode?.type == node.declaredFragment?.element.thisType;
   }
 }
 

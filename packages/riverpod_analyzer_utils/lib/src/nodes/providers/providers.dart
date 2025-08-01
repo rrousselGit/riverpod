@@ -7,7 +7,7 @@ sealed class ProviderDeclaration {
 }
 
 sealed class ProviderDeclarationElement {
-  Element get element;
+  Element2 get element;
   String get name;
 }
 
@@ -104,7 +104,7 @@ SourcedType? _computeExposedType(
   TypeAnnotation? createdType,
   CompilationUnit unit,
 ) {
-  final library = unit.declaredElement!.library;
+  final library = unit.declaredFragment!.element;
 
   if (createdType == null) {
     return (

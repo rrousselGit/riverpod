@@ -114,7 +114,6 @@ sealed class Ref implements MutationTarget {
   bool get mounted => !_element._disposed;
 
   /// The [ProviderContainer] that this provider is associated with.
-  @changePrivacy
   @override
   ProviderContainer get container => _element.container;
 

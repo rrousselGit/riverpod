@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/error/error.dart'
     hide
         // ignore: undefined_hidden_name, necessary to support broad analyzer versions
@@ -50,11 +50,11 @@ class ProviderParameters extends RiverpodLintRule {
           // provider(() => 42) is bad because a new function will always be created
           reporter.atNode(value, _code);
         } else if (value is InstanceCreationExpression && !value.isConst) {
-          final instantiatedObject = value.constructorName.staticElement
-              ?.applyRedirectedConstructors();
+          final instantiatedObject =
+              value.constructorName.element?.applyRedirectedConstructors();
 
           final operatorEqual =
-              instantiatedObject?.enclosingElement3.recursiveGetMethod('==');
+              instantiatedObject?.enclosingElement2.recursiveGetMethod('==');
 
           if (operatorEqual == null) {
             // Doing `provider(new Class())` is bad if the class does not override ==
@@ -66,25 +66,25 @@ class ProviderParameters extends RiverpodLintRule {
   }
 }
 
-extension on ConstructorElement {
-  ConstructorElement applyRedirectedConstructors() {
-    final redirected = redirectedConstructor;
+extension on ConstructorElement2 {
+  ConstructorElement2 applyRedirectedConstructors() {
+    final redirected = redirectedConstructor2;
     if (redirected != null) return redirected.applyRedirectedConstructors();
     return this;
   }
 }
 
-extension on InterfaceElement {
-  MethodElement? recursiveGetMethod(String name) {
+extension on InterfaceElement2 {
+  MethodElement2? recursiveGetMethod(String name) {
     if (thisType.isDartCoreObject) return null;
 
-    final thisMethod = getMethod(name);
+    final thisMethod = getMethod2(name);
     if (thisMethod != null) return thisMethod;
 
     for (final superType in allSupertypes) {
       if (superType.isDartCoreObject) continue;
 
-      final superMethod = superType.getMethod(name);
+      final superMethod = superType.getMethod2(name);
       if (superMethod != null) return superMethod;
     }
 

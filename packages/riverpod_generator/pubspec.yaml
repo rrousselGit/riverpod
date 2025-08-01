@@ -13,7 +13,7 @@ resolution: workspace
 
 dependencies:
   analyzer: ^7.0.0
-  build: ^2.0.0
+  build: ^3.0.0
   build_config: ^1.0.0
   collection: ^1.15.0
   crypto: ^3.0.2
@@ -22,12 +22,12 @@ dependencies:
   path: ^1.8.0
   riverpod_analyzer_utils: 1.0.0-dev.3
   riverpod_annotation: 3.0.0-dev.16
-  source_gen: ^2.0.0
+  source_gen: ^3.0.0
 
 dev_dependencies:
   build_runner: ^2.1.7
   build_verify: ^3.0.0
-  freezed: ^3.1.0
+  freezed: ^3.2.0
   freezed_annotation: ^3.0.0
   package_config: ^2.2.0
   riverpod: 3.0.0-dev.16

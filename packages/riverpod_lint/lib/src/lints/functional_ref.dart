@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/error/error.dart'
     hide
         // ignore: undefined_hidden_name, necessary to support lower analyzer version
@@ -131,7 +131,7 @@ class FunctionalRefFix extends RiverpodFix {
 }
 
 extension LibraryForNode on AstNode {
-  LibraryElement get library => (root as CompilationUnit).library;
+  LibraryElement2 get library => (root as CompilationUnit).library;
 }
 
 TypeAnnotation typeAnnotationFor(FormalParameter param) {

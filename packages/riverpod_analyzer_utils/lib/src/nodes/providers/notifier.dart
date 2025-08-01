@@ -6,7 +6,7 @@ extension ClassBasedProviderDeclarationX on ClassDeclaration {
 
   ClassBasedProviderDeclaration? get provider {
     return _cache.upsert(this, () {
-      final element = declaredElement;
+      final element = declaredFragment?.element;
       if (element == null) return null;
 
       final riverpod = this.riverpod;
@@ -14,10 +14,9 @@ extension ClassBasedProviderDeclarationX on ClassDeclaration {
 
       if (abstractKeyword != null) {
         errorReporter(
-          RiverpodAnalysisError(
+          RiverpodAnalysisError.ast(
             'Classes annotated with @riverpod cannot be abstract.',
             targetNode: this,
-            targetElement: declaredElement,
             code: RiverpodAnalysisErrorCode.abstractNotifier,
           ),
         );
@@ -28,10 +27,9 @@ extension ClassBasedProviderDeclarationX on ClassDeclaration {
           .firstWhereOrNull((constructor) => constructor.name == null);
       if (defaultConstructor == null && constructors.isNotEmpty) {
         errorReporter(
-          RiverpodAnalysisError(
+          RiverpodAnalysisError.ast(
             'Classes annotated with @riverpod must have a default constructor.',
             targetNode: this,
-            targetElement: declaredElement,
             code: RiverpodAnalysisErrorCode.missingNotifierDefaultConstructor,
           ),
         );
@@ -39,11 +37,10 @@ extension ClassBasedProviderDeclarationX on ClassDeclaration {
       if (defaultConstructor != null &&
           defaultConstructor.parameters.parameters.any((e) => e.isRequired)) {
         errorReporter(
-          RiverpodAnalysisError(
+          RiverpodAnalysisError.ast(
             'The default constructor of classes annotated with @riverpod '
             'cannot have required parameters.',
             targetNode: this,
-            targetElement: declaredElement,
             code: RiverpodAnalysisErrorCode
                 .notifierDefaultConstructorHasRequiredParameters,
           ),
@@ -55,7 +52,7 @@ extension ClassBasedProviderDeclarationX on ClassDeclaration {
           .firstWhereOrNull((method) => method.name.lexeme == 'build');
       if (buildMethod == null) {
         errorReporter(
-          RiverpodAnalysisError(
+          RiverpodAnalysisError.ast(
             'No "build" method found. '
             'Classes annotated with @riverpod must define a method named "build".',
             targetNode: this,
@@ -65,9 +62,8 @@ extension ClassBasedProviderDeclarationX on ClassDeclaration {
         return null;
       }
 
-      final providerElement = ClassBasedProviderDeclarationElement._parse(
-        element,
-      );
+      final providerElement =
+          ClassBasedProviderDeclarationElement._parse(element, this);
       if (providerElement == null) return null;
 
       final createdTypeNode = buildMethod.returnType;
@@ -145,20 +141,23 @@ class ClassBasedProviderDeclarationElement
 
   static final _cache = _Cache<ClassBasedProviderDeclarationElement?>();
 
-  static ClassBasedProviderDeclarationElement? _parse(ClassElement element) {
+  static ClassBasedProviderDeclarationElement? _parse(
+    ClassElement2 element,
+    AstNode from,
+  ) {
     return _cache(element, () {
-      final riverpodAnnotation = RiverpodAnnotationElement._of(element);
+      final riverpodAnnotation = RiverpodAnnotationElement._of(element, from);
       if (riverpodAnnotation == null) return null;
 
-      final buildMethod =
-          element.methods.firstWhereOrNull((method) => method.name == 'build');
+      final buildMethod = element.methods2
+          .firstWhereOrNull((method) => method.name3 == 'build');
 
       if (buildMethod == null) {
         errorReporter(
-          RiverpodAnalysisError(
+          RiverpodAnalysisError.ast(
             'No "build" method found. '
             'Classes annotated with @riverpod must define a method named "build".',
-            targetElement: element,
+            targetNode: from,
             code: RiverpodAnalysisErrorCode.missingNotifierBuild,
           ),
         );
@@ -167,7 +166,7 @@ class ClassBasedProviderDeclarationElement
       }
 
       return ClassBasedProviderDeclarationElement._(
-        name: element.name,
+        name: element.name3!,
         buildMethod: buildMethod,
         element: element,
         annotation: riverpodAnnotation,
@@ -177,12 +176,12 @@ class ClassBasedProviderDeclarationElement
 
   @override
   bool get isFamily {
-    return buildMethod.parameters.isNotEmpty ||
-        element.typeParameters.isNotEmpty;
+    return buildMethod.formalParameters.isNotEmpty ||
+        element.typeParameters2.isNotEmpty;
   }
 
   @override
-  final ClassElement element;
+  final ClassElement2 element;
 
   @override
   final String name;
@@ -190,5 +189,5 @@ class ClassBasedProviderDeclarationElement
   @override
   final RiverpodAnnotationElement annotation;
 
-  final ExecutableElement buildMethod;
+  final ExecutableElement2 buildMethod;
 }

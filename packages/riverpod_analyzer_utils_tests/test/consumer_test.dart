@@ -6,6 +6,7 @@ import 'analyzer_test_utils.dart';
 void main() {
   testSource('Handles consumers with a ProviderBase inside', source: '''
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter/material.dart';
 
 class ProviderWidget<T> extends ConsumerWidget {

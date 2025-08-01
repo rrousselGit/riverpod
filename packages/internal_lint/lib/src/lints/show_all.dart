@@ -1,8 +1,7 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/error/error.dart' hide LintCode;
 import 'package:analyzer/error/listener.dart';
-import 'package:analyzer/source/source.dart';
 import 'package:analyzer/source/source_range.dart';
 import 'package:analyzer_plugin/utilities/range_factory.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
@@ -26,11 +25,11 @@ class ShowAll extends DartLintRule {
     CustomLintContext context,
   ) {
     context.registry.addExportDirective((export) {
-      final uri = export.element?.source.uri;
+      final uri = export.libraryExport?.exportedLibrary2?.uri;
       if (uri == null || uri.scheme != 'package') return;
       if (uri.pathSegments.elementAtOrNull(1) == 'src') return;
 
-      final exportedLibrary = export.element?.exportedLibrary;
+      final exportedLibrary = export.libraryExport?.exportedLibrary2;
       if (exportedLibrary == null) return;
 
       final meta = _computeExportDiff(export);
@@ -70,40 +69,34 @@ class ShowAll extends DartLintRule {
   List<Fix> getFixes() => [_ShowAllFix()];
 }
 
-extension on LibraryElement {
-  Set<Element> get exportedElements {
-    return exportNamespace.definedNames.values
-        .map((e) => e.nonSynthetic)
+extension on LibraryElement2 {
+  Set<Element2> get exportedElements {
+    return exportNamespace.definedNames2.values
+        .map((e) => e.nonSynthetic2)
         .toSet();
   }
 }
 
-extension on Source {
-  String? get packageName {
-    if (uri.scheme != 'package') return null;
-
-    return uri.pathSegments.elementAtOrNull(0);
-  }
-}
-
 ({
-  Iterable<Element> missing,
+  Iterable<Element2> missing,
   Iterable<SimpleIdentifier> extra,
-  List<Element> toExport,
+  List<Element2> toExport,
 })? _computeExportDiff(ExportDirective export) {
-  final exportedLibrary = export.element!.exportedLibrary!;
-  final exportedPackageName = exportedLibrary.source.packageName;
+  final exportedLibrary = export.libraryExport!.exportedLibrary2;
+  final exportedPackageName = exportedLibrary?.packageName;
   if (exportedPackageName == null) {
     return null;
   }
 
-  final exportedIdentifiers = exportedLibrary.exportedElements
+  final exportedIdentifiers = exportedLibrary!.exportedElements
       .where((e) {
-        var targets = _Public.of(e);
-        if (targets.isEmpty && e.hasInternal) return false;
+        final annotatable = e as Annotatable;
+
+        var targets = _Public.of(annotatable);
+        if (targets.isEmpty && annotatable.metadata2.hasInternal) return false;
 
         if (targets.isEmpty) {
-          targets = _Public.of(e.library!);
+          targets = _Public.of(e.library2!);
         }
 
         if (targets.isEmpty) {
@@ -112,7 +105,7 @@ extension on Source {
         if (targets.isEmpty) return false;
 
         final match = targets
-            .where((public) => public.hasMatch(export.element!))
+            .where((public) => public.hasMatch(export.libraryExport!))
             .firstOrNull;
 
         return match != null;
@@ -123,11 +116,12 @@ extension on Source {
   final show = export.combinators.whereType<ShowCombinator>().firstOrNull;
 
   final missing = exportedIdentifiers.where(
-    (e) => show == null || !show.shownNames.map((e) => e.name).contains(e.name),
+    (e) =>
+        show == null || !show.shownNames.map((e) => e.name).contains(e.name3),
   );
 
   final extra = show?.shownNames.where(
-    (e) => !exportedIdentifiers.map((e) => e.name).contains(e.name),
+    (e) => !exportedIdentifiers.map((e) => e.name3).contains(e.name),
   );
 
   return (
@@ -166,7 +160,7 @@ class _ShowAllFix extends DartFix {
         if (show == null) {
           builder.addInsertion(export.semicolon.offset, (builder) {
             builder.write('show ');
-            final allExported = toExport.map((e) => e.name).join(', ');
+            final allExported = toExport.map((e) => e.name3).join(', ');
             builder.write(allExported);
           });
           return;
@@ -186,7 +180,7 @@ class _ShowAllFix extends DartFix {
         if (missing.isNotEmpty) {
           builder.addInsertion(export.semicolon.offset, (builder) {
             builder.write(', ');
-            final unexportedElements = missing.map((e) => e.name).join(', ');
+            final unexportedElements = missing.map((e) => e.name3).join(', ');
             builder.write(unexportedElements);
           });
         }
@@ -279,7 +273,7 @@ class _Public {
   static const type = TypeChecker.fromName('Public', packageName: 'riverpod');
   static const allOf = TypeChecker.fromName('AllOf', packageName: 'riverpod');
 
-  static List<_Public> of(Element element) {
+  static List<_Public> of(Annotatable element) {
     final annotations = type.annotationsOfExact(
       element,
       throwOnUnresolved: false,
@@ -306,10 +300,10 @@ class _Public {
   final String library;
   final String? packageName;
 
-  bool hasMatch(LibraryExportElement e) {
-    final uri = e.source.uri;
+  bool hasMatch(LibraryExport e) {
+    final uri = e.exportedLibrary2!.uri;
 
-    if (packageName != null && packageName != e.source.packageName) {
+    if (packageName != null && packageName != e.exportedLibrary2!.packageName) {
       return false;
     }
 
@@ -322,9 +316,9 @@ class _Public {
 
   static List<_Public> defaultOf(
     ExportDirective export,
-    Element element,
+    Element2 element,
   ) {
-    final definingPackageName = element.source!.packageName;
+    final definingPackageName = element.library2!.packageName;
     if (definingPackageName == 'riverpod' ||
         definingPackageName == 'flutter_riverpod' ||
         definingPackageName == 'hooks_riverpod') {
@@ -336,7 +330,7 @@ class _Public {
     }
 
     if (definingPackageName == 'state_notifier' &&
-        element.name == 'StateNotifier') {
+        element.name3 == 'StateNotifier') {
       return [
         _Public(library: 'legacy', packageName: 'riverpod'),
         _Public(library: 'legacy', packageName: 'flutter_riverpod'),
@@ -345,10 +339,18 @@ class _Public {
     }
 
     final exportedPackageName =
-        export.element!.exportedLibrary!.source.packageName;
+        export.libraryExport!.exportedLibrary2!.packageName;
     return [
       if (exportedPackageName != null)
         _Public(library: exportedPackageName, packageName: exportedPackageName),
     ];
+  }
+}
+
+extension on LibraryElement2 {
+  String? get packageName {
+    if (uri.scheme != 'package') return null;
+
+    return uri.pathSegments.first;
   }
 }

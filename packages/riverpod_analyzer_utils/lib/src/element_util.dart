@@ -1,5 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:collection/collection.dart';
@@ -9,27 +9,27 @@ import 'errors.dart';
 import 'riverpod_types.dart';
 
 @internal
-extension LibraryElementX on CompilationUnit {
-  static final _asyncValueCache = Expando<ClassElement>();
+extension LibraryElement2X on CompilationUnit {
+  static final _asyncValueCache = Expando<ClassElement2>();
 
-  LibraryElement? get _library => declaredElement?.library;
+  LibraryFragment? get _fragment => declaredFragment;
 
-  Element? findElementWithNameFromRiverpod(String name) {
-    return _library!.importedLibraries
-        .map((e) => e.exportNamespace.get(name))
+  Element2? findElementWithNameFromRiverpod(String name) {
+    return _fragment!.importedLibraries2
+        .map((e) => e.exportNamespace.get2(name))
         .firstWhereOrNull(
           (element) => element != null && isFromRiverpod.isExactly(element),
         );
   }
 
-  ClassElement? findAsyncValue() {
+  ClassElement2? findAsyncValue() {
     final cache = _asyncValueCache[this];
     if (cache != null) return cache;
 
     final result = findElementWithNameFromRiverpod('AsyncValue');
     if (result == null) {
       errorReporter(
-        RiverpodAnalysisError(
+        RiverpodAnalysisError.ast(
           'No AsyncValue accessible in the library. '
           'Did you forget to import Riverpod?',
           targetNode: this,
@@ -39,7 +39,7 @@ extension LibraryElementX on CompilationUnit {
       return null;
     }
 
-    return _asyncValueCache[this] = result as ClassElement?;
+    return _asyncValueCache[this] = result as ClassElement2?;
   }
 
   DartType? createdTypeToValueType(DartType? typeArg) {

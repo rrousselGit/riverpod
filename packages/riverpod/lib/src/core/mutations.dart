@@ -188,7 +188,6 @@ class _MutationElement<StateT> extends $FunctionalProviderElement<
 @publicInMutations
 abstract class MutationTarget {
   /// The [ProviderContainer] that is used to run the mutation.
-  @visibleForOverriding
   ProviderContainer get container;
 }
 

@@ -1,14 +1,17 @@
 import 'dart:async';
+import 'dart:io';
+import 'dart:isolate';
 
 import 'package:analyzer/dart/analysis/results.dart';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/diagnostic/diagnostic.dart';
 import 'package:build/build.dart';
 import 'package:build_test/build_test.dart';
 import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
+import 'package:package_config/package_config.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:riverpod_analyzer_utils/src/nodes.dart';
 import 'package:riverpod_generator/src/riverpod_generator.dart';
@@ -86,7 +89,7 @@ void testSource(
       ) async {
         final lib = await resolver.findLibraryByName('foo');
 
-        final ast = await lib!.session.getResolvedLibrary(lib.source.fullName);
+        final ast = await lib!.session.getResolvedLibraryByElement2(lib);
         ast as ResolvedLibraryResult;
 
         return (
@@ -95,27 +98,40 @@ void testSource(
         );
       }
 
+      final packageConfigUri = await Isolate.packageConfig;
+      final packageConfig = PackageConfig.parseString(
+        File.fromUri(packageConfigUri!).readAsStringSync(),
+        packageConfigUri,
+      );
+
       String? generated;
       if (runGenerator) {
         generated = await resolveSources(
+          packageConfig: packageConfig,
+          readAllSourcesFromFilesystem: true,
           {
             '$packageName|lib/foo.dart': sourceWithLibrary,
             ...otherSources,
           },
           (resolver) async {
-            final (_, unit) = await getUnits(resolver);
+            final (units, _) = await getUnits(resolver);
 
-            return RiverpodGenerator(const {}).generateForUnit([unit]);
+            return RiverpodGenerator(const {}).generateForUnit(
+              units.map((e) => e.unit).toList(),
+            );
           },
         );
       }
 
-      await resolveSources({
-        '$packageName|lib/foo.dart': sourceWithLibrary,
-        if (generated != null)
-          '$packageName|lib/foo.g.dart': 'part of "foo.dart";$generated',
-        ...otherSources,
-      }, (resolver) async {
+      await resolveSources(
+          packageConfig: packageConfig,
+          readAllSourcesFromFilesystem: true,
+          {
+            '$packageName|lib/foo.dart': sourceWithLibrary,
+            if (generated != null)
+              '$packageName|lib/foo.g.dart': 'part of "foo.dart";$generated',
+            ...otherSources,
+          }, (resolver) async {
         try {
           final originalZone = Zone.current;
           return runZoned(
@@ -242,9 +258,21 @@ extension ResolverX on Resolver {
       libraryName,
       ignoreErrors: ignoreErrors,
     );
+
     final libraryAst =
-        await library.session.getResolvedLibraryByElement(library);
+        await library.session.getResolvedLibraryByElement2(library);
     libraryAst as ResolvedLibraryResult;
+
+    final compilerErrors = libraryAst.units
+        .expand((e) => e.errors)
+        .where((e) => e.severity == Severity.error)
+        .toList();
+    if (compilerErrors.isNotEmpty) {
+      throw StateError('''
+The parsed library has compiler errors:
+${compilerErrors.map((e) => '- $e\n').join()}
+''');
+    }
 
     final result = RiverpodAnalysisResult();
 
@@ -277,7 +305,7 @@ extension ResolverX on Resolver {
     return result;
   }
 
-  Future<LibraryElement> requireFindLibraryByName(
+  Future<LibraryElement2> requireFindLibraryByName(
     String libraryName, {
     required bool ignoreErrors,
   }) async {

@@ -31,10 +31,6 @@ workspace:
   - packages/riverpod_annotation
   - packages/riverpod_generator/integration/build_yaml
   - packages/riverpod_generator
-  - packages/riverpod_graph
-  - packages/riverpod_graph/test/integration/addition/golden
-  - packages/riverpod_graph/test/integration/consumer_widget/golden
-  - packages/riverpod_graph/test/integration/generated/golden
   - packages/riverpod_lint
   # Custom_lint doesn't handle plugins from workspaces yet
   # - packages/riverpod_lint_flutter_test
@@ -42,3 +38,27 @@ workspace:
   - packages/riverpod_sqflite
   - tools/generate_providers
   - website
+
+dependency_overrides:
+  build:
+    git:
+      url: https://github.com/dart-lang/build
+      path: build
+      ref: 8355dd011de981e60ad0c333ea7c10beb024b07e
+  build_resolvers:
+    git:
+      url: https://github.com/dart-lang/build
+      path: build_resolvers
+      ref: 8355dd011de981e60ad0c333ea7c10beb024b07e
+  build_runner:
+    git:
+      url: https://github.com/dart-lang/build
+      path: build_runner
+      ref: 8355dd011de981e60ad0c333ea7c10beb024b07e
+  build_runner_core:
+    git:
+      url: https://github.com/dart-lang/build
+      path: build_runner_core
+      ref: 8355dd011de981e60ad0c333ea7c10beb024b07e
+  meta: ^1.16.0
+  source_gen: ^3.0.0

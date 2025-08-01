@@ -13,9 +13,9 @@ extension RiverpodAnnotatedAnnotatedNodeOfX on AnnotatedNode {
 extension AnnotationOf on Annotation {
   ElementAnnotation? annotationOfType(TypeChecker type, {required bool exact}) {
     final elementAnnotation = this.elementAnnotation;
-    final element = this.element;
+    final element = element2;
     if (element == null || elementAnnotation == null) return null;
-    if (element is! ExecutableElement) return null;
+    if (element is! ExecutableElement2) return null;
 
     if ((exact && !type.isExactlyType(element.returnType)) ||
         (!exact && !type.isAssignableFromType(element.returnType))) {
@@ -35,9 +35,8 @@ extension RiverpodAnnotatedAnnotatedNodeX on Annotation {
       final elementAnnotation = annotationOfType(riverpodType, exact: true);
       if (elementAnnotation == null) return null;
 
-      final riverpodAnnotationElement = RiverpodAnnotationElement._parse(
-        elementAnnotation,
-      );
+      final riverpodAnnotationElement =
+          RiverpodAnnotationElement._parse(elementAnnotation, this);
       if (riverpodAnnotationElement == null) return null;
 
       final dependenciesNode = arguments?.named('dependencies');
@@ -49,7 +48,7 @@ extension RiverpodAnnotatedAnnotatedNodeX on Annotation {
       final AstNode? retryNode = arguments?.named('retry')?.expression;
       if (retryNode is! SimpleIdentifier?) {
         errorReporter(
-          RiverpodAnalysisError(
+          RiverpodAnalysisError.ast(
             'The "retry" argument must be a variable.',
             targetNode: retryNode,
             code: RiverpodAnalysisErrorCode.invalidRetryArgument,
@@ -98,9 +97,12 @@ final class RiverpodAnnotationElement {
 
   static final _cache = _Cache<RiverpodAnnotationElement?>();
 
-  static RiverpodAnnotationElement? _parse(ElementAnnotation element) {
+  static RiverpodAnnotationElement? _parse(
+    ElementAnnotation element,
+    AstNode from,
+  ) {
     return _cache(element, () {
-      final type = element.element.cast<ExecutableElement>()?.returnType;
+      final type = element.element2.cast<ExecutableElement2>()?.returnType;
       if (type == null || !riverpodType.isExactlyType(type)) return null;
 
       final constant = element.computeConstantValue();
@@ -116,7 +118,7 @@ final class RiverpodAnnotationElement {
       if (dependencies == null) return null;
 
       final dependencyList = dependencies.toDependencyList(
-        from: element.element,
+        from: from,
       );
       final allTransitiveDependencies = dependencyList == null
           ? null
@@ -137,8 +139,11 @@ final class RiverpodAnnotationElement {
     });
   }
 
-  static RiverpodAnnotationElement? _of(Element element) {
-    return element.metadata.map(_parse).nonNulls.firstOrNull;
+  static RiverpodAnnotationElement? _of(Annotatable element, AstNode from) {
+    return element.metadata2.annotations
+        .map((e) => _parse(e, from))
+        .nonNulls
+        .firstOrNull;
   }
 
   final bool keepAlive;

@@ -99,9 +99,9 @@ final dep = Provider<int>((ref) => 0);
 final family = Provider.family<int, int>((ref, id) => 0);
 
 @Riverpod(keepAlive: true)
-int dep2(Dep2Ref ref) => 0;
+int dep2(Ref ref) => 0;
 @Riverpod(keepAlive: true)
-int family2(Family2Ref ref, int id) => 0;
+int family2(Ref ref, int id) => 0;
 
 final explicitDep = Provider<int>((ref) => 0, dependencies: []);
 final explicitFamily = Provider.family<int, int>((ref, id) => 0, dependencies: []);
@@ -486,16 +486,14 @@ import 'package:riverpod/misc.dart';
 
 final alwaysAliveProvider = NotifierProvider<Notifier<int>, int>(() => throw UnimplementedError());
 final alwaysAliveFamily = NotifierProvider.family<FamilyNotifier<int, int>, int, int>(() => throw UnimplementedError());
-final explicitAlwaysAliveFamily = NotifierProviderFamily<FamilyNotifier<int, int>, int, int>(() => throw UnimplementedError());
-final autoDisposeProvider = NotifierProvider.autoDispose<AutoDisposeNotifier<int>, int>(() => throw UnimplementedError());
-final autoDisposeFamily = NotifierProvider.autoDispose.family<AutoDisposeFamilyNotifier<int, int>, int, int>(() => throw UnimplementedError());
-final autoDisposeFamily2 = NotifierProvider.family.autoDispose<AutoDisposeFamilyNotifier<int, int>, int, int>(() => throw UnimplementedError());
+final autoDisposeProvider = NotifierProvider.autoDispose<Notifier<int>, int>(() => throw UnimplementedError());
+final autoDisposeFamily = NotifierProvider.autoDispose.family<FamilyNotifier<int, int>, int, int>(() => throw UnimplementedError());
+final autoDisposeFamily2 = NotifierProvider.family.autoDispose<FamilyNotifier<int, int>, int, int>(() => throw UnimplementedError());
 ''', (resolver, unit, units) async {
       final result = await resolver.resolveRiverpodAnalysisResult();
       final providers = result.legacyProviderDeclarations.takeAll([
         'alwaysAliveProvider',
         'alwaysAliveFamily',
-        'explicitAlwaysAliveFamily',
         'autoDisposeProvider',
         'autoDisposeFamily',
         'autoDisposeFamily2',
@@ -516,16 +514,14 @@ import 'package:riverpod/misc.dart';
 
 final alwaysAliveProvider = AsyncNotifierProvider<AsyncNotifier<int>, int>(() => throw UnimplementedError());
 final alwaysAliveFamily = AsyncNotifierProvider.family<FamilyAsyncNotifier<int, int>, int, int>(() => throw UnimplementedError());
-final explicitAlwaysAliveFamily = AsyncNotifierProviderFamily<FamilyAsyncNotifier<int, int>, int, int>(() => throw UnimplementedError());
-final autoDisposeProvider = AsyncNotifierProvider.autoDispose<AutoDisposeAsyncNotifier<int>, int>(() => throw UnimplementedError());
-final autoDisposeFamily = AsyncNotifierProvider.autoDispose.family<AutoDisposeFamilyAsyncNotifier<int, int>, int, int>(() => throw UnimplementedError());
-final autoDisposeFamily2 = AsyncNotifierProvider.family.autoDispose<AutoDisposeFamilyAsyncNotifier<int, int>, int, int>(() => throw UnimplementedError());
+final autoDisposeProvider = AsyncNotifierProvider.autoDispose<AsyncNotifier<int>, int>(() => throw UnimplementedError());
+final autoDisposeFamily = AsyncNotifierProvider.autoDispose.family<FamilyAsyncNotifier<int, int>, int, int>(() => throw UnimplementedError());
+final autoDisposeFamily2 = AsyncNotifierProvider.family.autoDispose<FamilyAsyncNotifier<int, int>, int, int>(() => throw UnimplementedError());
 ''', (resolver, unit, units) async {
       final result = await resolver.resolveRiverpodAnalysisResult();
       final providers = result.legacyProviderDeclarations.takeAll([
         'alwaysAliveProvider',
         'alwaysAliveFamily',
-        'explicitAlwaysAliveFamily',
         'autoDisposeProvider',
         'autoDisposeFamily',
         'autoDisposeFamily2',

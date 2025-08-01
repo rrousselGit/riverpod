@@ -277,7 +277,7 @@ class ProviderDependencies extends RiverpodLintRule {
       }
 
       late final unit = list.node.thisOrAncestorOfType<CompilationUnit>();
-      late final source = unit?.declaredElement?.source;
+      late final source = unit?.declaredFragment?.source;
 
       reporter.atNode(
         list.target,

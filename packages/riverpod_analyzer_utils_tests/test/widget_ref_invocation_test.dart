@@ -1,3 +1,6 @@
+@Timeout.factor(2)
+library;
+
 import 'package:riverpod_analyzer_utils/src/nodes.dart';
 import 'package:test/test.dart';
 
@@ -30,6 +33,8 @@ void main() {
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
+
+const gibberish = 0;
 
 @ProviderFor(gibberish)
 final gibberishProvider = Provider((ref) => 0);
@@ -75,7 +80,7 @@ part 'foo.g.dart';
 final dep = FutureProvider((ref) => 0);
 
 @Riverpod(keepAlive: true)
-Future<int> dep2(Dep2Ref ref) async => 0;
+Future<int> dep2(Ref ref) async => 0;
 
 @Riverpod(keepAlive: true)
 class Dep3 extends _$Dep3 {
@@ -183,6 +188,7 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:riverpod/misc.dart';
 
 part 'foo.g.dart';
 
@@ -193,7 +199,7 @@ extension on WidgetRef {
 final dep = FutureProvider((ref) => 0);
 
 @Riverpod(keepAlive: true)
-Future<int> dep2(Dep2Ref ref) async => 0;
+Future<int> dep2(Ref ref) async => 0;
 
 @Riverpod(keepAlive: true)
 class Dep3 extends _$Dep3 {
@@ -528,6 +534,7 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:riverpod/misc.dart';
 
 part 'foo.g.dart';
 
@@ -538,7 +545,7 @@ extension on WidgetRef {
 final family = FutureProvider.family<int, int>((ref, id) => 0);
 
 @Riverpod(keepAlive: true)
-Future<int> family2(Family2Ref ref, {required int id}) async => 0;
+Future<int> family2(Ref ref, {required int id}) async => 0;
 
 @Riverpod(keepAlive: true)
 class Family3 extends _$Family3 {
@@ -666,15 +673,19 @@ part 'foo.g.dart';
 final family = FutureProvider.family<int, int>((ref, id) => 0);
 
 @Riverpod(keepAlive: true)
-Future<int> family2(Family2Ref ref, {required int id}) async => 0;
+Future<int> family2(Ref ref, {required int id}) async => 0;
 
 class MyWidget extends ConsumerWidget {
   const MyWidget({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    ref.watch(family(ref.read(family2Provider(id: 0))));
-    ref.watch(family2Provider(ref.watch(family(id: 0))));
+    ref.watch(family(
+      ref.read(family2Provider(id: 0)).requireValue,
+    ));
+    ref.watch(family2Provider(id: 
+      ref.watch(family(0)).requireValue,
+    ));
     return Container();
   }
 }
@@ -685,12 +696,12 @@ class MyWidget extends ConsumerWidget {
 
     expect(
       result.widgetRefWatchInvocations[0].node.toSource(),
-      'ref.watch(family(ref.read(family2Provider(id: 0))))',
+      'ref.watch(family(ref.read(family2Provider(id: 0)).requireValue))',
     );
     expect(result.widgetRefWatchInvocations[0].function.toSource(), 'watch');
     expect(
       result.widgetRefWatchInvocations[0].listenable.node.toSource(),
-      'family(ref.read(family2Provider(id: 0)))',
+      'family(ref.read(family2Provider(id: 0)).requireValue)',
     );
     expect(
       result.widgetRefWatchInvocations[0].listenable.provider?.node.toSource(),
@@ -705,18 +716,18 @@ class MyWidget extends ConsumerWidget {
     expect(
       result.widgetRefWatchInvocations[0].listenable.familyArguments
           ?.toSource(),
-      '(ref.read(family2Provider(id: 0)))',
+      '(ref.read(family2Provider(id: 0)).requireValue)',
     );
 
     // ref.watch(family2Provider(ref.watch(family(id: 0)));
     expect(
       result.widgetRefWatchInvocations[2].node.toSource(),
-      'ref.watch(family2Provider(ref.watch(family(id: 0))))',
+      'ref.watch(family2Provider(id: ref.watch(family(0)).requireValue))',
     );
     expect(result.widgetRefWatchInvocations[2].function.toSource(), 'watch');
     expect(
       result.widgetRefWatchInvocations[2].listenable.node.toSource(),
-      'family2Provider(ref.watch(family(id: 0)))',
+      'family2Provider(id: ref.watch(family(0)).requireValue)',
     );
     expect(
       result.widgetRefWatchInvocations[2].listenable.provider?.node.toSource(),
@@ -733,7 +744,7 @@ class MyWidget extends ConsumerWidget {
     expect(
       result.widgetRefWatchInvocations[2].listenable.familyArguments
           ?.toSource(),
-      '(ref.watch(family(id: 0)))',
+      '(id: ref.watch(family(0)).requireValue)',
     );
   });
 
@@ -743,6 +754,7 @@ import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter/material.dart';
+import 'package:riverpod/misc.dart';
 
 part 'foo.g.dart';
 
@@ -753,7 +765,7 @@ extension on WidgetRef {
 final dep = FutureProvider((ref) => 0);
 
 @Riverpod(keepAlive: true)
-Future<int> dep2(Dep2Ref ref) async => 0;
+Future<int> dep2(Ref ref) async => 0;
 
 @Riverpod(keepAlive: true)
 class Dep3 extends _$Dep3 {

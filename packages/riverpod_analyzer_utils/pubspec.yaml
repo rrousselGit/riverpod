@@ -15,7 +15,7 @@ dependencies:
   analyzer: ^7.3.0
   collection: ^1.16.0
   crypto: ^3.0.2
-  custom_lint_core: ^0.7.0
+  custom_lint_core: ^0.8.0
   freezed_annotation: ^3.0.0
   meta: ^1.15.0
   path: ^1.8.0
@@ -25,7 +25,7 @@ dev_dependencies:
   build: ^2.3.1
   build_runner: ^2.3.2
   build_test: ^3.2.1
-  freezed: ^3.1.0
+  freezed: ^3.2.0
   lint_visitor_generator:
   lints: ^6.0.0
   test: ^1.21.7

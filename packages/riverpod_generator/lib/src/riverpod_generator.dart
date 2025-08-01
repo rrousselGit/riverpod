@@ -1,6 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
-import 'package:analyzer/dart/element/element.dart';
 import 'package:meta/meta.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 // ignore: implementation_imports, safe as we are the one controlling this file
@@ -15,28 +14,6 @@ import 'templates/notifier.dart';
 import 'templates/parameters.dart';
 import 'templates/provider.dart';
 import 'templates/provider_variable.dart';
-
-String providerDocFor(Element element) {
-  return element.documentationComment == null
-      ? '/// See also [${element.name}].'
-      : '${element.documentationComment}\n///\n/// Copied from [${element.name}].';
-}
-
-String metaAnnotations(NodeList<Annotation> metadata) {
-  final buffer = StringBuffer();
-  for (final annotation in metadata) {
-    final element = annotation.elementAnnotation;
-    if (element == null) continue;
-    if (element.isDeprecated ||
-        element.isVisibleForTesting ||
-        element.isProtected) {
-      buffer.writeln('$annotation');
-      continue;
-    }
-  }
-
-  return buffer.toString();
-}
 
 const _defaultProviderNamePrefix = '';
 const _defaultProviderNameSuffix = 'Provider';
@@ -77,7 +54,6 @@ class RiverpodGenerator extends ParserGenerator<Riverpod> {
     for (final error in errors) {
       throw RiverpodInvalidGenerationSourceError(
         error.message,
-        element: error.targetElement,
         astNode: error.targetNode,
       );
     }
@@ -87,8 +63,8 @@ class RiverpodGenerator extends ParserGenerator<Riverpod> {
 
   void _generate(List<CompilationUnit> units, StringBuffer buffer) {
     final visitor = _RiverpodGeneratorVisitor(buffer, options);
-    for (final unit in units.expand((e) => e.declarations)) {
-      final provider = unit.provider;
+    for (final member in units.expand((e) => e.declarations)) {
+      final provider = member.provider;
 
       switch (provider) {
         case ClassBasedProviderDeclaration():
@@ -231,7 +207,8 @@ extension ProviderElementNames on GeneratorProviderDeclarationElement {
       } on FormatException {
         throw InvalidGenerationSourceError(
           'Your providerNameStripPattern definition is not a valid regular expression: $stripPattern',
-          element: element,
+          element: (element.library2!).getClass2(name) ??
+              (element.library2!).getTopLevelFunction(name),
         );
       }
     }
