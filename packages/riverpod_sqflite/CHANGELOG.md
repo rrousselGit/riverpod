@@ -1,4 +1,4 @@
-## 0.1.3 - 2025-08-01
+## 0.2.0 - 2025-08-01
 
 - Bump minimum `meta` version
 - Update to new Storage interface
