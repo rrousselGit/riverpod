@@ -4,7 +4,6 @@ import 'package:analyzer/error/listener.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
-import '../object_utils.dart';
 import '../riverpod_custom_lint.dart';
 
 class AvoidPublicNotifierProperties extends RiverpodLintRule {
@@ -31,12 +30,13 @@ class AvoidPublicNotifierProperties extends RiverpodLintRule {
       }
 
       for (final member in node.members) {
+        final metadata = switch (member) {
+          FieldDeclaration() => member
+              .fields.variables.first.declaredFragment?.element as Annotatable?,
+          _ => member.declaredFragment?.element as Annotatable?,
+        };
         // Skip members if there's an @override annotation
-        if (member.declaredFragment?.element
-                .safeCast<Annotatable>()
-                ?.metadata2
-                .hasOverride ??
-            false) {
+        if (metadata == null || metadata.metadata2.hasOverride) {
           continue;
         }
 
@@ -55,7 +55,9 @@ class AvoidPublicNotifierProperties extends RiverpodLintRule {
 
           for (final variable in member.fields.variables) {
             if (variable.isFinal) continue;
-            if (!isVisibleOutsideTheNotifier(variable.declaredElement2)) {
+            if (!isVisibleOutsideTheNotifier(
+              variable.declaredFragment?.element,
+            )) {
               continue;
             }
 
