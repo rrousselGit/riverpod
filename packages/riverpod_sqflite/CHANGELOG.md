@@ -1,4 +1,4 @@
-## Unreleased build
+## Unreleased patch
 
 - Bump minimum `meta` version
 - Update to new Storage interface
