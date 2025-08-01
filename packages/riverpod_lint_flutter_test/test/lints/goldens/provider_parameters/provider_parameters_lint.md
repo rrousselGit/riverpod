@@ -91,7 +91,7 @@ test/lints/provider_parameters.dart:37:20
 code: provider_parameters
 severity: Severity.warning
 message: Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==
-test/lints/provider_parameters.dart:44:22
+test/lints/provider_parameters.dart:45:22
 
 ```dart
 
@@ -106,7 +106,7 @@ test/lints/provider_parameters.dart:44:22
 code: provider_parameters
 severity: Severity.warning
 message: Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==
-test/lints/provider_parameters.dart:50:20
+test/lints/provider_parameters.dart:51:20
 
 ```dart
   ref.watch(legacy(const ClassThatOverridesEqual()));
@@ -121,7 +121,7 @@ test/lints/provider_parameters.dart:50:20
 code: provider_parameters
 severity: Severity.warning
 message: Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==
-test/lints/provider_parameters.dart:57:38
+test/lints/provider_parameters.dart:58:38
 
 ```dart
   ref.watch(generatorProvider(value: 42));
@@ -136,7 +136,7 @@ test/lints/provider_parameters.dart:57:38
 code: provider_parameters
 severity: Severity.warning
 message: Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==
-test/lints/provider_parameters.dart:59:38
+test/lints/provider_parameters.dart:60:38
 
 ```dart
   ref.watch(generatorProvider(value: [42]));
@@ -151,7 +151,7 @@ test/lints/provider_parameters.dart:59:38
 code: provider_parameters
 severity: Severity.warning
 message: Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==
-test/lints/provider_parameters.dart:61:38
+test/lints/provider_parameters.dart:62:38
 
 ```dart
   ref.watch(generatorProvider(value: {'string': 42}));
@@ -166,7 +166,7 @@ test/lints/provider_parameters.dart:61:38
 code: provider_parameters
 severity: Severity.warning
 message: Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==
-test/lints/provider_parameters.dart:67:38
+test/lints/provider_parameters.dart:68:38
 
 ```dart
   ref.watch(generatorProvider(value: null));
@@ -181,7 +181,7 @@ test/lints/provider_parameters.dart:67:38
 code: provider_parameters
 severity: Severity.warning
 message: Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==
-test/lints/provider_parameters.dart:74:38
+test/lints/provider_parameters.dart:75:38
 
 ```dart
 
@@ -196,7 +196,7 @@ test/lints/provider_parameters.dart:74:38
 code: provider_parameters
 severity: Severity.warning
 message: Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==
-test/lints/provider_parameters.dart:78:38
+test/lints/provider_parameters.dart:79:38
 
 ```dart
 
@@ -211,7 +211,7 @@ test/lints/provider_parameters.dart:78:38
 code: provider_parameters
 severity: Severity.warning
 message: Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==
-test/lints/provider_parameters.dart:115:21
+test/lints/provider_parameters.dart:116:21
 
 ```dart
     ref.read(legacy(42));
@@ -226,7 +226,7 @@ test/lints/provider_parameters.dart:115:21
 code: provider_parameters
 severity: Severity.warning
 message: Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==
-test/lints/provider_parameters.dart:118:23
+test/lints/provider_parameters.dart:119:23
 
 ```dart
     ref.listen(legacy(42), (prev, next) {});
@@ -241,7 +241,7 @@ test/lints/provider_parameters.dart:118:23
 code: provider_parameters
 severity: Severity.warning
 message: Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==
-test/lints/provider_parameters.dart:121:29
+test/lints/provider_parameters.dart:122:29
 
 ```dart
     ref.listenManual(legacy(42), (prev, next) {});
@@ -256,7 +256,7 @@ test/lints/provider_parameters.dart:121:29
 code: provider_parameters
 severity: Severity.warning
 message: Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==
-test/lints/provider_parameters.dart:126:22
+test/lints/provider_parameters.dart:127:22
 
 ```dart
     ref.read(legacy(list));
@@ -271,7 +271,7 @@ test/lints/provider_parameters.dart:126:22
 code: provider_parameters
 severity: Severity.warning
 message: Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==
-test/lints/provider_parameters.dart:128:22
+test/lints/provider_parameters.dart:129:22
 
 ```dart
     ref.watch(legacy([42]));
@@ -286,7 +286,7 @@ test/lints/provider_parameters.dart:128:22
 code: provider_parameters
 severity: Severity.warning
 message: Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==
-test/lints/provider_parameters.dart:130:22
+test/lints/provider_parameters.dart:131:22
 
 ```dart
     ref.watch(legacy({'string': 42}));
@@ -301,7 +301,7 @@ test/lints/provider_parameters.dart:130:22
 code: provider_parameters
 severity: Severity.warning
 message: Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==
-test/lints/provider_parameters.dart:136:22
+test/lints/provider_parameters.dart:137:22
 
 ```dart
     ref.watch(legacy(null));
@@ -316,7 +316,7 @@ test/lints/provider_parameters.dart:136:22
 code: provider_parameters
 severity: Severity.warning
 message: Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==
-test/lints/provider_parameters.dart:144:22
+test/lints/provider_parameters.dart:145:22
 
 ```dart
     ref.watch(legacy(const IndirectEqual()));
@@ -331,7 +331,7 @@ test/lints/provider_parameters.dart:144:22
 code: provider_parameters
 severity: Severity.warning
 message: Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==
-test/lints/provider_parameters.dart:147:22
+test/lints/provider_parameters.dart:148:22
 
 ```dart
     ref.watch(legacy(const Bar()));
@@ -346,7 +346,7 @@ test/lints/provider_parameters.dart:147:22
 code: provider_parameters
 severity: Severity.warning
 message: Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==
-test/lints/provider_parameters.dart:154:40
+test/lints/provider_parameters.dart:155:40
 
 ```dart
     ref.watch(generatorProvider(value: 42));
@@ -361,7 +361,7 @@ test/lints/provider_parameters.dart:154:40
 code: provider_parameters
 severity: Severity.warning
 message: Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==
-test/lints/provider_parameters.dart:156:40
+test/lints/provider_parameters.dart:157:40
 
 ```dart
     ref.watch(generatorProvider(value: [42]));
@@ -376,7 +376,7 @@ test/lints/provider_parameters.dart:156:40
 code: provider_parameters
 severity: Severity.warning
 message: Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==
-test/lints/provider_parameters.dart:158:40
+test/lints/provider_parameters.dart:159:40
 
 ```dart
     ref.watch(generatorProvider(value: {'string': 42}));
@@ -391,7 +391,7 @@ test/lints/provider_parameters.dart:158:40
 code: provider_parameters
 severity: Severity.warning
 message: Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==
-test/lints/provider_parameters.dart:164:40
+test/lints/provider_parameters.dart:165:40
 
 ```dart
     ref.watch(generatorProvider(value: null));
@@ -406,7 +406,7 @@ test/lints/provider_parameters.dart:164:40
 code: provider_parameters
 severity: Severity.warning
 message: Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==
-test/lints/provider_parameters.dart:173:40
+test/lints/provider_parameters.dart:174:40
 
 ```dart
 
@@ -421,7 +421,7 @@ test/lints/provider_parameters.dart:173:40
 code: provider_parameters
 severity: Severity.warning
 message: Providers parameters should have a consistent ==. Meaning either the values should be cached, or the parameters should override ==
-test/lints/provider_parameters.dart:177:40
+test/lints/provider_parameters.dart:178:40
 
 ```dart
 
