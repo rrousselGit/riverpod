@@ -12,6 +12,7 @@ dependencies:
   collection: ^1.16.0
   freezed_annotation: ^3.0.0
   meta: ^1.15.0
+  package_config: ^2.2.0
   path: ^1.8.0
   source_span: ^1.8.0
 

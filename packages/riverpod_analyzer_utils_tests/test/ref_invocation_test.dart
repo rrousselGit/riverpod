@@ -65,6 +65,9 @@ int aliased(Ref ref) {
   testSource('Decode watch expressions with syntax errors',
       timeout: const Timeout.factor(4), source: '''
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
+const int gibberish = 0;
 
 @ProviderFor(gibberish)
 final gibberishProvider = Provider<int>((ref) => 0).select((p) => p);
@@ -140,7 +143,7 @@ part 'foo.g.dart';
 final dep = FutureProvider((ref) => 0);
 
 @Riverpod(keepAlive: true)
-Future<int> dep2(Dep2Ref ref) async => 0;
+Future<int> dep2(Ref ref) async => 0;
 
 @Riverpod(keepAlive: true)
 class Dep3 extends _$Dep3 {
@@ -229,6 +232,7 @@ final provider = Provider<int>((ref) {
   testSource('Decodes simple ref.watch usages',
       timeout: const Timeout.factor(4), runGenerator: true, source: r'''
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/misc.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'foo.g.dart';
@@ -240,7 +244,7 @@ extension on Ref {
 final dep = FutureProvider((ref) => 0);
 
 @Riverpod(keepAlive: true)
-Future<int> dep2(Dep2Ref ref) async => 0;
+Future<int> dep2(Ref ref) async => 0;
 
 @Riverpod(keepAlive: true)
 class Dep3 extends _$Dep3 {
@@ -448,13 +452,17 @@ final dep2 = FutureProvider.family((ref, int arg) => 0);
 final dep3 = FutureProvider.family((ref, int arg) => 0);
 
 final provider = Provider<int>((ref) {
-  ref.read(dep2(ref.read(dep)));
+  ref.read(dep2(ref.read(dep).requireValue));
 
   return 0;
 });
 
 final provider2 = Provider<int>((ref) {
-  ref.read(dep3(ref.read(dep2(ref.read(dep)))));
+  ref.read(dep3(
+    ref.read(dep2(
+      ref.read(dep).requireValue
+    )).requireValue
+  ));
 
   return 0;
 });
@@ -464,7 +472,11 @@ int transformArg(int arg) {
 }
 
 final provider3 = Provider<int>((ref) {
-  ref.read(dep3(transformArg(ref.read(dep))));
+  ref.read(dep3(
+    transformArg(
+      ref.read(dep).requireValue
+    ))
+  );
 
   return 0;
 });
@@ -486,7 +498,7 @@ final provider3 = Provider<int>((ref) {
 
     expect(
       result.refReadInvocations[1].node.toSource(),
-      'ref.read(dep2(ref.read(dep)))',
+      'ref.read(dep2(ref.read(dep).requireValue))',
     );
     expect(result.refReadInvocations[1].function.toSource(), 'read');
     expect(
@@ -500,11 +512,11 @@ final provider3 = Provider<int>((ref) {
     expect(result.refReadInvocations[2].node.toSource(), 'ref.read(dep)');
     expect(
       result.refReadInvocations[3].node.toSource(),
-      'ref.read(dep2(ref.read(dep)))',
+      'ref.read(dep2(ref.read(dep).requireValue))',
     );
     expect(
       result.refReadInvocations[4].node.toSource(),
-      'ref.read(dep3(ref.read(dep2(ref.read(dep)))))',
+      'ref.read(dep3(ref.read(dep2(ref.read(dep).requireValue)).requireValue))',
     );
     expect(result.refReadInvocations[4].function.toSource(), 'read');
     expect(
@@ -518,7 +530,7 @@ final provider3 = Provider<int>((ref) {
     expect(result.refReadInvocations[5].node.toSource(), 'ref.read(dep)');
     expect(
       result.refReadInvocations[6].node.toSource(),
-      'ref.read(dep3(transformArg(ref.read(dep))))',
+      'ref.read(dep3(transformArg(ref.read(dep).requireValue)))',
     );
   });
 
@@ -560,6 +572,7 @@ void fn(Ref ref) {
   testSource('Decodes family ref.watch usages',
       timeout: const Timeout.factor(4), runGenerator: true, source: r'''
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/misc.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'foo.g.dart';
@@ -571,7 +584,7 @@ extension on Ref {
 final family = FutureProvider.family<int, int>((ref, id) => 0);
 
 @Riverpod(keepAlive: true)
-Future<int> family2(Family2Ref ref, {required int id}) async => 0;
+Future<int> family2(Ref ref, {required int id}) async => 0;
 
 @Riverpod(keepAlive: true)
 class Family3 extends _$Family3 {
@@ -688,7 +701,7 @@ final dep = FutureProvider((ref) => 0);
 final dep2 = FutureProvider.family((ref, int arg) => 0);
 
 final provider = Provider<int>((ref) {
-  ref.watch(dep2(ref.read(dep)));
+  ref.watch(dep2(ref.read(dep).requireValue));
 
   return 0;
 });
@@ -704,7 +717,7 @@ final provider = Provider<int>((ref) {
 
     expect(
       result.refWatchInvocations[0].node.toSource(),
-      'ref.watch(dep2(ref.read(dep)))',
+      'ref.watch(dep2(ref.read(dep).requireValue))',
     );
     expect(result.refWatchInvocations[0].function.toSource(), 'watch');
     expect(
@@ -714,7 +727,10 @@ final provider = Provider<int>((ref) {
       ),
     );
 
-    expect(result.refReadInvocations[0].node.toSource(), 'ref.read(dep)');
+    expect(
+      result.refReadInvocations[0].node.toSource(),
+      'ref.read(dep)',
+    );
     expect(result.refReadInvocations[0].function.toSource(), 'read');
     expect(
       result.refReadInvocations[0].listenable.provider?.providerElement,
@@ -727,6 +743,7 @@ final provider = Provider<int>((ref) {
   testSource('Decodes provider.query ref.watch usages',
       timeout: const Timeout.factor(4), runGenerator: true, source: r'''
 import 'package:riverpod/riverpod.dart';
+import 'package:riverpod/misc.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'foo.g.dart';
@@ -738,7 +755,7 @@ extension on Ref {
 final dep = FutureProvider((ref) => 0);
 
 @Riverpod(keepAlive: true)
-Future<int> dep2(Dep2Ref ref) async => 0;
+Future<int> dep2(Ref ref) async => 0;
 
 @Riverpod(keepAlive: true)
 class Dep3 extends _$Dep3 {

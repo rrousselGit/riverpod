@@ -16,9 +16,6 @@ enum RiverpodAnalysisErrorCode {
   providerDependencyListParseError,
   providerOrFamilyExpressionParseError,
   invalidRetryArgument,
-  mutationIsStatic,
-  mutationIsAbstract,
-  unsupportedMutationReturnType,
 }
 
 class RiverpodAnalysisError {

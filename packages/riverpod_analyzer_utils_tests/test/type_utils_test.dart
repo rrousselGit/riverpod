@@ -1,6 +1,7 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:riverpod_analyzer_utils/src/nodes.dart';
 import 'package:test/test.dart';
 
@@ -9,6 +10,7 @@ import 'analyzer_test_utils.dart';
 void main() {
   testSource('Rejects unrelated types', source: '''
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod/misc.dart';
 
 const random = 42;
 ProviderBase? fromRiverpod = null;
@@ -17,25 +19,26 @@ Consumer? fromFlutterRiverpod = null;
     final variables =
         unit.declarations.whereType<TopLevelVariableDeclaration>();
 
-    expect(variables, hasLength(3));
-
     for (final variable in variables) {
       expect(
         parseLegacyProviderType(
-          variable.variables.variables.single.declaredElement2!.type,
+          variable.variables.variables.single.declaredFragment!.element.type,
         ),
         isNull,
         reason: variable.toString(),
       );
       expect(
         parseFirstProviderFor(
-          variable.variables.variables.single.declaredElement2!,
+          variable.variables.variables.single.declaredFragment!.element
+              as TopLevelVariableElement2,
           variable,
         ),
         isNull,
         reason: variable.toString(),
       );
     }
+
+    expect(variables, hasLength(3));
   });
 
   testSource('Parses all generated providers', runGenerator: true, source: r'''
@@ -65,7 +68,7 @@ class D extends _$D {
 
 
 @riverpod
-Future<int> a2(A2Ref ref) => throws();
+Future<int> a2(Ref ref) => throws();
 
 @riverpod
 class B2 extends _$B2 {
@@ -74,7 +77,7 @@ class B2 extends _$B2 {
 }
 
 @riverpod
-Future<int> c2(C2Ref ref, int arg) => throws();
+Future<int> c2(Ref ref, int arg) => throws();
 
 @riverpod
 class D2 extends _$D2 {
@@ -84,7 +87,7 @@ class D2 extends _$D2 {
 
 
 @riverpod
-Stream<int> a3(A3Ref ref) => throws();
+Stream<int> a3(Ref ref) => throws();
 
 @riverpod
 class B3 extends _$B3 {
@@ -93,7 +96,7 @@ class B3 extends _$B3 {
 }
 
 @riverpod
-Stream<int> c3(C3Ref ref, int arg) => throws();
+Stream<int> c3(Ref ref, int arg) => throws();
 
 @riverpod
 class D3 extends _$D3 {
@@ -112,7 +115,8 @@ class D3 extends _$D3 {
     for (final variable in variables) {
       expect(
         parseFirstProviderFor(
-          variable.variables.variables.single.declaredElement2!,
+          variable.variables.variables.single.declaredFragment!.element
+              as TopLevelVariableElement2,
           variable,
         )?.$1,
         isNotNull,
@@ -120,7 +124,7 @@ class D3 extends _$D3 {
       );
       expect(
         parseLegacyProviderType(
-          variable.variables.variables.single.declaredElement2!.type,
+          variable.variables.variables.single.declaredFragment!.element.type,
         ),
         isNull,
         reason: variable.toString(),
@@ -170,14 +174,15 @@ final streamNotifierProviderFamily = StreamNotifierProvider.family<int, int>((re
     for (final variable in variables) {
       expect(
         parseLegacyProviderType(
-          variable.variables.variables.single.declaredElement2!.type,
+          variable.variables.variables.single.declaredFragment!.element.type,
         ),
         isNotNull,
         reason: variable.toString(),
       );
       expect(
         parseFirstProviderFor(
-          variable.variables.variables.single.declaredElement2!,
+          variable.variables.variables.single.declaredFragment!.element
+              as TopLevelVariableElement2,
           variable,
         ),
         isNull,

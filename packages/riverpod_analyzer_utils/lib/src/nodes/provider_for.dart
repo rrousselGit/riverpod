@@ -6,6 +6,7 @@ part of '../nodes.dart';
   required AstNode from,
 }) {
   final type = annotation.element2.cast<ExecutableElement2>()?.returnType;
+
   if (type == null || !providerForType.isExactlyType(type)) return null;
 
   final value = annotation.computeConstantValue()?.getField('value');

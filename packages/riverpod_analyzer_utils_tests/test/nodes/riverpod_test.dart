@@ -145,7 +145,7 @@ int constructor(Ref ref) => 0;
 int explicit(Ref ref) => 0;
 
 @Riverpod(keepAlive: true, dependencies: [variable])
-int constructor2(Constructor2Ref ref) => 0;
+int constructor2(Ref ref) => 0;
 
 class NestedClass {
   void method() {

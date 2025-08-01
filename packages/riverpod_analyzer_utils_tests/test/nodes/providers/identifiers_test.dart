@@ -11,6 +11,7 @@ void main() {
   testSource('Decode generated provider identifiers',
       runGenerator: true, source: r'''
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:riverpod/riverpod.dart';
 
 part 'foo.g.dart';
 

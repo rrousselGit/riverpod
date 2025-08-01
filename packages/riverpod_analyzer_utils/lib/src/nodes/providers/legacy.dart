@@ -53,7 +53,7 @@ extension LegacyProviderDeclarationX on VariableDeclaration {
 
   LegacyProviderDeclaration? get provider {
     return _cache.upsert(this, () {
-      final element = declaredElement2;
+      final element = declaredFragment?.element;
       if (element == null) return null;
 
       final providerElement = LegacyProviderDeclarationElement._parse(element);

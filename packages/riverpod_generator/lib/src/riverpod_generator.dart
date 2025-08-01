@@ -63,8 +63,8 @@ class RiverpodGenerator extends ParserGenerator<Riverpod> {
 
   void _generate(List<CompilationUnit> units, StringBuffer buffer) {
     final visitor = _RiverpodGeneratorVisitor(buffer, options);
-    for (final unit in units.expand((e) => e.declarations)) {
-      final provider = unit.provider;
+    for (final member in units.expand((e) => e.declarations)) {
+      final provider = member.provider;
 
       switch (provider) {
         case ClassBasedProviderDeclaration():
