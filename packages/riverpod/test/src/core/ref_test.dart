@@ -258,6 +258,30 @@ void main() {
     });
 
     group('invalidate', () {
+      test('Handles family', () {
+        // Regression test for https://github.com/rrousselGit/riverpod/issues/3567#issuecomment-2946467360
+        final onDispose = OnDisposeMock();
+        final someProvider = Provider((ref) => 0);
+        final familyProvider = Provider.family<int, int>(
+          (ref, a) {
+            final b = ref.watch(someProvider);
+            ref.onDispose(onDispose.call);
+            return a + b;
+          },
+          dependencies: [someProvider],
+        );
+        final root = ProviderContainer();
+        final container = ProviderContainer(
+          parent: root,
+          overrides: [someProvider.overrideWith((ref) => 42)],
+        );
+
+        container.read(familyProvider(1));
+        container.invalidate(familyProvider);
+
+        verifyOnly(onDispose, onDispose());
+      });
+
       test('can disposes of the element if not used anymore', () async {
         late Ref ref;
         final dep = Provider((r) {
