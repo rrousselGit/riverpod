@@ -1,66 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-void main() => runApp(const ProviderScope(child: MyPage()));
+part 'main.g.dart';
 
-class MyPage extends ConsumerWidget {
-  const MyPage({super.key});
+// A Counter example implemented with riverpod
+
+void main() {
+  runApp(
+    // Adding ProviderScope enables Riverpod for the entire project
+    const ProviderScope(child: MyApp()),
+  );
+}
+
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
+  Widget build(BuildContext context) {
+    return MaterialApp(home: Home());
+  }
+}
+
+/// Annotating a class by `@riverpod` defines a new shared state for your application,
+/// accessible using the generated [counterProvider].
+/// This class is both responsible for initializing the state (through the [build] method)
+/// and exposing ways to modify it (cf [increment]).
+@riverpod
+class Counter extends _$Counter {
+  /// Classes annotated by `@riverpod` **must** define a [build] function.
+  /// This function is expected to return the initial state of your shared state.
+  /// It is totally acceptable for this function to return a [Future] or [Stream] if you need to.
+  /// You can also freely define parameters on this method.
+  @override
+  int build() => 0;
+
+  void increment() => state++;
+}
+
+class Home extends ConsumerWidget {
+  @override
   Widget build(BuildContext context, WidgetRef ref) {
-    print('===');
-    ref.watch(combine);
-    return MaterialApp(
-      home: Scaffold(
-        body: Text(ref.watch(myNotifierProvider).toString()),
+    return Scaffold(
+      appBar: AppBar(title: const Text('Counter example')),
+      body: Center(
+        child: Text('${ref.watch(counterProvider)}'),
+      ),
+      floatingActionButton: FloatingActionButton(
+        // The read method is a utility to read a provider without listening to it
+        onPressed: () => ref.read(counterProvider.notifier).increment(),
+        child: const Icon(Icons.add),
       ),
     );
   }
 }
-
-final data = FutureProvider.autoDispose(name: 'data', (ref) async {
-  print('data start');
-  await Future<void>.delayed(
-    const Duration(seconds: 1),
-  ); // Simulating network request
-  print('===');
-  return 'data';
-});
-
-final data2 = Provider.autoDispose(name: 'data2', (ref) {
-  print('data2 start');
-  return ref.watch(data).value;
-});
-
-final data3 = Provider.autoDispose(name: 'data3', (ref) {
-  print('data3 start');
-  return ref.watch(data2);
-});
-
-final myNotifierProvider =
-    NotifierProvider.autoDispose<MyNotifier, int>(MyNotifier.new);
-
-class MyNotifier extends Notifier<int> {
-  @override
-  int build() {
-    print('notifier start');
-    // change to return ref.watch to fix
-    ref.listen(
-      data3,
-      (previous, next) {
-        print('set new state');
-        state = 1;
-      },
-    );
-    return 0;
-  }
-}
-
-final combine = Provider.autoDispose(name: 'combine', (ref) {
-  print('combine start');
-  ref.watch(data2);
-  // ref.watch(data3); // uncomment this to fix
-  ref.watch(myNotifierProvider);
-  print('provider end');
-  return 0;
-});
