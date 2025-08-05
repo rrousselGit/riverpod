@@ -258,6 +258,36 @@ void main() {
     });
 
     group('invalidate', () {
+      test("invalidating shouldn't trigger a build on uninitialized providers",
+          () async {
+        // Regression test for https://github.com/rrousselGit/riverpod/issues/3760
+        final container = ProviderContainer.test();
+        var buildCount = 0;
+
+        final myNotifierProvider = AsyncNotifierProvider.family
+            .autoDispose<DeferredFamilyAsyncNotifier<int>, int, int>(
+          () => DeferredFamilyAsyncNotifier<int>((ref, chatId) {
+            buildCount++;
+            return 0;
+          }),
+        );
+
+        final peerNotifier = DeferredAsyncNotifier<int>(
+          (ref, self) => Future.value(0),
+        );
+        final peerNotifierProvider =
+            AsyncNotifierProvider.autoDispose<DeferredAsyncNotifier<int>, int>(
+          () => peerNotifier,
+          name: 'peerNotifierProvider',
+        );
+
+        container.read(peerNotifierProvider);
+        // ignore: invalid_use_of_protected_member
+        peerNotifier.ref.invalidate(myNotifierProvider(0));
+
+        expect(buildCount, 0);
+      });
+
       test('Handles family', () {
         // Regression test for https://github.com/rrousselGit/riverpod/issues/3567#issuecomment-2946467360
         final onDispose = OnDisposeMock();
@@ -270,8 +300,8 @@ void main() {
           },
           dependencies: [someProvider],
         );
-        final root = ProviderContainer();
-        final container = ProviderContainer(
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
           parent: root,
           overrides: [someProvider.overrideWith((ref) => 42)],
         );
