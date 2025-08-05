@@ -97,25 +97,29 @@ class ProviderScheduler {
     _pendingTaskCompleter = null;
   }
 
+  void debugNotifyDidBuild(ProviderElement element) {
+    if (kDebugMode) {
+      final set = _builtWithinFrame;
+      if (set != null && !set.add(element)) {
+        throw StateError(
+          'Tried to rebuild ${element.origin} multiple times in the same frame',
+        );
+      }
+    }
+  }
+
+  Set<ProviderElement>? _builtWithinFrame;
   void _performRefresh() {
-    Set<ProviderElement>? seen;
-    if (kDebugMode) seen = {};
+    if (kDebugMode) _builtWithinFrame = {};
 
     /// No need to traverse entries from top to bottom, because refreshing a
     /// child will automatically refresh its parent when it will try to read it
     for (var i = 0; i < _stateToRefresh.length; i++) {
       final element = _stateToRefresh[i];
-      if (element.isActive) {
-        if (kDebugMode) {
-          if (!seen!.add(element)) {
-            throw StateError(
-              'Tried to refresh ${element.origin} multiple times in the same frame',
-            );
-          }
-        }
-        element.flush();
-      }
+      if (element.isActive) element.flush();
     }
+
+    if (kDebugMode) _builtWithinFrame = null;
   }
 
   /// Schedules a provider to be disposed.

@@ -630,6 +630,7 @@ depending on itself.
     if (kDebugMode) {
       debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
       _debugCurrentlyBuildingElement = this;
+      container.scheduler.debugNotifyDidBuild(this);
     }
 
     _didBuild = false;
