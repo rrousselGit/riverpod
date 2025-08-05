@@ -646,6 +646,38 @@ void main() {
       verifyOnly(listener, listener(null, 11));
     });
 
+    group('visitAncestors', () {
+      test('includes inactive subscriptions', () async {
+        final container = ProviderContainer.test();
+        final provider = Provider<void>((ref) => 0);
+        Completer<void>? completer;
+        final dependent = FutureProvider<void>((ref) async {
+          await completer?.future;
+
+          ref.watch(provider);
+        });
+
+        final sub = container.listen(dependent.future, (_, __) {});
+        await sub.read();
+        final element = container.readProviderElement(dependent);
+
+        completer = Completer<void>();
+        addTearDown(() => completer?.complete());
+
+        container.refresh(dependent);
+        // Don't await sub.read(), to ensure that the new ref.watch isn't
+        // triggered yet
+
+        final children = <ProviderElement>[];
+        element.visitAncestors(children.add);
+
+        expect(
+          children.map((e) => e.origin).toList(),
+          [provider],
+        );
+      });
+    });
+
     group('visitChildren', () {
       test('includes ref.watch dependents', () {
         final container = ProviderContainer.test();

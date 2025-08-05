@@ -1,3 +1,7 @@
+## Unreleased build
+
+- Fix provider rebuild order issue.
+
 ## 3.0.0-dev.17 - 2025-08-01
 
 - Added `MutationState.isPending/isIdle/hasError/isSuccess`

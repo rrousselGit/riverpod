@@ -1274,10 +1274,16 @@ $this''',
   void visitAncestors(
     void Function(ProviderElement element) visitor,
   ) {
-    final subscriptions = this.subscriptions;
-    if (subscriptions != null) {
+    if (subscriptions case final subscriptions?) {
       for (var i = 0; i < subscriptions.length; i++) {
         final sub = subscriptions[i];
+
+        visitor(sub.impl._listenedElement);
+      }
+    }
+    if (_inactiveSubscriptions case final inactiveSubscriptions?) {
+      for (var i = 0; i < inactiveSubscriptions.length; i++) {
+        final sub = inactiveSubscriptions[i];
 
         visitor(sub.impl._listenedElement);
       }
