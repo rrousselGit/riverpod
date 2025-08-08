@@ -1,3 +1,7 @@
+## Unreleased build
+
+- Fixed a "markNeedsBuild" exception in some edge-cases when using scoped providers.
+
 ## 3.0.0-dev.17 - 2025-08-01
 
 - Added `MutationState.isPending/isIdle/hasError/isSuccess`

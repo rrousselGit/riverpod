@@ -53,7 +53,7 @@ class ProviderScheduler {
   }
 
   final _stateToDispose = <ProviderElement>[];
-  final _stateToRefresh = <ProviderElement>[];
+  final stateToRefresh = <ProviderElement>[];
 
   Completer<void>? _pendingTaskCompleter;
 
@@ -67,7 +67,11 @@ class ProviderScheduler {
   /// The refresh will happen at the end of the next event-loop,
   /// and only if the provider is active.
   void scheduleProviderRefresh(ProviderElement element) {
-    _stateToRefresh.add(element);
+    assert(
+      element.container.scheduler == this,
+      'Tried to refresh ${element.origin}, but it does not belong to this scheduler',
+    );
+    stateToRefresh.add(element);
 
     _scheduleTask();
   }
@@ -92,7 +96,7 @@ class ProviderScheduler {
 
     _performRefresh();
     _performDispose();
-    _stateToRefresh.clear();
+    stateToRefresh.clear();
     _stateToDispose.clear();
     _pendingTaskCompleter = null;
   }
@@ -114,8 +118,8 @@ class ProviderScheduler {
 
     /// No need to traverse entries from top to bottom, because refreshing a
     /// child will automatically refresh its parent when it will try to read it
-    for (var i = 0; i < _stateToRefresh.length; i++) {
-      final element = _stateToRefresh[i];
+    for (var i = 0; i < stateToRefresh.length; i++) {
+      final element = stateToRefresh[i];
       if (element.isActive) element.flush();
     }
 
@@ -126,6 +130,10 @@ class ProviderScheduler {
   ///
   /// The provider will be disposed at the end of the next event-loop,
   void scheduleProviderDispose(ProviderElement element) {
+    assert(
+      element.container.scheduler == this,
+      'Tried to dispose ${element.origin}, but it does not belong to this scheduler',
+    );
     assert(
       !element.isActive,
       'Tried to dispose ${element.origin} , but still has listeners',

@@ -253,10 +253,10 @@ class _UncontrolledProviderScopeElement extends InheritedElement {
   _UncontrolledProviderScopeElement(UncontrolledProviderScope super.widget);
 
   void Function()? _task;
-  bool _mounted = true;
-
   ProviderContainer _containerOf(Widget widget) =>
       (widget as UncontrolledProviderScope).container;
+
+  Timer? _timer;
 
   @override
   void mount(Element? parent, Object? newSlot) {
@@ -278,15 +278,19 @@ class _UncontrolledProviderScopeElement extends InheritedElement {
 
   void _flutterVsync(void Function() task) {
     assert(_task == null, 'Only one task can be scheduled at a time');
+    assert(mounted, 'Cannot schedule a task on an unmounted element');
     _task = task;
 
-    if (SchedulerBinding.instance.schedulerPhase ==
-        SchedulerPhase.transientCallbacks) {
+    try {
       markNeedsBuild();
-    } else {
-      // Using microtask, otherwise Flutter tests complain about pending timers
-      Future.microtask(() {
-        if (_mounted) markNeedsBuild();
+    } catch (err) {
+      assert(
+        _timer == null,
+        'Cannot schedule a task while the widget tree is building',
+      );
+      _timer = Timer(Duration.zero, () {
+        _timer = null;
+        if (mounted) markNeedsBuild();
       });
     }
   }
@@ -330,7 +334,7 @@ To fix this problem, you have one of two solutions:
 
   @override
   void unmount() {
-    _mounted = false;
+    _timer?.cancel();
     if (kDebugMode && debugCanModifyProviders == _debugCanModifyProviders) {
       debugCanModifyProviders = null;
     }
