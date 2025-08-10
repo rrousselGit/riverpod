@@ -58,7 +58,7 @@ void main() {
 
       expect(find.text('is combined? true'), findsOneWidget);
       expect(find.text('second: 42, combined 42'), findsOneWidget);
-    }); 
+    });
 
     group('retry', () {
       testWidgets('passes the value to the ProviderContainer', (tester) async {
