@@ -305,6 +305,25 @@ void main() {
     expect(find.byKey(const Key('42')), findsOneWidget);
   });
 
+  testWidgets(
+      'Handles using ref.read inside initState on autoDispose providers',
+      (tester) async {
+    // Regression test for https://github.com/rrousselGit/riverpod/issues/3498
+    // When using autoDispose + ref.read, this could trigger a markNeedsBuild
+    // exception in the ProviderScope.
+    final provider = Provider.autoDispose((ref) => 0);
+
+    final widget = CallbackConsumerWidget(
+      initState: (context, ref) {
+        ref.read(provider);
+      },
+    );
+
+    await tester.pumpWidget(ProviderScope(child: widget));
+
+    // Should not have thrown an exception
+  });
+
   testWidgets('Ref is unusable after dispose', (tester) async {
     late WidgetRef ref;
     await tester.pumpWidget(
