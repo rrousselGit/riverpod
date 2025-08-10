@@ -8,6 +8,10 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
 @ProviderFor(chat)
 const chatProvider = ChatProvider._();
 
@@ -41,6 +45,3 @@ final class ChatProvider extends $FunctionalProvider<AsyncValue<List<String>>,
 }
 
 String _$chatHash() => r'bad093d5344471463a1e71688281924642f3a58c';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

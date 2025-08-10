@@ -6,6 +6,10 @@ part of 'unsupported_provider_value.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
 @ProviderFor(integer)
 const integerProvider = IntegerProvider._();
 
@@ -910,6 +914,3 @@ final class StreamRawNotifierProvider extends $FunctionalProvider<
 }
 
 String _$streamRawNotifierHash() => r'1d4abe389b7dfe1381879d8ffb174f6d1d9325e0';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

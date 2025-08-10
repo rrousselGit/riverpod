@@ -6,6 +6,10 @@ part of 'dependencies.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
 @ProviderFor(dep)
 const depProvider = DepProvider._();
 
@@ -1027,6 +1031,3 @@ final class TransitiveDuplicateDependenciesProvider
 
 String _$transitiveDuplicateDependenciesHash() =>
     r'be6a85098fc66be440b6b201f58a6ce1c526caf6';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

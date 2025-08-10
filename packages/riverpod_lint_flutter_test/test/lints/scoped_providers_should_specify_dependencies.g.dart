@@ -6,6 +6,10 @@ part of 'scoped_providers_should_specify_dependencies.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
 @ProviderFor(UnimplementedScoped)
 const unimplementedScopedProvider = UnimplementedScopedProvider._();
 
@@ -133,6 +137,3 @@ final class RootProvider extends $FunctionalProvider<int, int, int>
 }
 
 String _$rootHash() => r'dda8bbb46cb4d7c658597669e3be92e2447dcfb0';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

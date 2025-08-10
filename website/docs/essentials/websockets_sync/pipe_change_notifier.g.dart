@@ -8,6 +8,10 @@ part of 'pipe_change_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
 /// A provider which creates a ValueNotifier and update its listeners
 /// whenever the value changes.
 // {@endtemplate}
@@ -59,6 +63,3 @@ final class MyListenableProvider extends $FunctionalProvider<
 }
 
 String _$myListenableHash() => r'11b973997ad9787b8f775746d7a87211df2cb6bb';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

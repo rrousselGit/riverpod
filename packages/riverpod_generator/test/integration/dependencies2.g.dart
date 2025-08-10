@@ -6,6 +6,10 @@ part of 'dependencies2.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
 @ProviderFor(providerWithDependencies2)
 const providerWithDependencies2Provider = ProviderWithDependencies2Provider._();
 
@@ -425,6 +429,3 @@ final class Public2Provider extends $FunctionalProvider<int, int, int>
 }
 
 String _$public2Hash() => r'20eb4f82e5f25fafc72775e7b86021d70ebb5579';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

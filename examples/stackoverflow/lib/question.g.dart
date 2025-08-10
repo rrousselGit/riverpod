@@ -59,6 +59,10 @@ Map<String, dynamic> _$QuestionToJson(_Question instance) => <String, dynamic>{
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
 @ProviderFor(questionTheme)
 const questionThemeProvider = QuestionThemeProvider._();
 
@@ -178,6 +182,3 @@ final class CurrentQuestionProvider extends $FunctionalProvider<
 }
 
 String _$currentQuestionHash() => r'e9359841a5b980cd7b8c79a0b56cb98878190861';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

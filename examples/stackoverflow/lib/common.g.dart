@@ -8,6 +8,10 @@ part of 'common.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
 /// A Provider that exposes the current theme.
 ///
 /// This is unimplemented by default, and will be overridden inside [MaterialApp]
@@ -60,6 +64,3 @@ final class ThemeProvider
 }
 
 String _$themeHash() => r'0fea6438c8bee8be98515c10e8e67c2e75c6af46';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

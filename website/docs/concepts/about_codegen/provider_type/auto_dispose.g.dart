@@ -8,6 +8,10 @@ part of 'auto_dispose.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
 @ProviderFor(example1)
 const example1Provider = Example1Provider._();
 
@@ -87,6 +91,3 @@ final class Example2Provider extends $FunctionalProvider<String, String, String>
 }
 
 String _$example2Hash() => r'181b89435c06a7284a8978c5ab9f13bb4a3693b0';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

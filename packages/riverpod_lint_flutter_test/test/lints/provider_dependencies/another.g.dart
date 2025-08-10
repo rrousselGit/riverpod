@@ -6,6 +6,10 @@ part of 'another.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
 @ProviderFor(b)
 const bProvider = BProvider._();
 
@@ -130,6 +134,3 @@ final class AnotherNonEmptyScopedProvider
 
 String _$anotherNonEmptyScopedHash() =>
     r'56da5331e55d74e8e10ff710d20618f217394a69';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

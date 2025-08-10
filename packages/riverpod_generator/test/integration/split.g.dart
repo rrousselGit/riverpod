@@ -6,6 +6,10 @@ part of 'split.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
 @ProviderFor(counter2)
 const counter2Provider = Counter2Provider._();
 
@@ -45,6 +49,3 @@ final class Counter2Provider extends $FunctionalProvider<int, int, int>
 }
 
 String _$counter2Hash() => r'ab7bef7da79217c780c76761a5ae0c0172ca097e';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

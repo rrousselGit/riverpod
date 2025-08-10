@@ -8,6 +8,10 @@ part of 'sync_fn.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
 @ProviderFor(example)
 const exampleProvider = ExampleProvider._();
 
@@ -47,6 +51,3 @@ final class ExampleProvider extends $FunctionalProvider<String, String, String>
 }
 
 String _$exampleHash() => r'e75fe2037fef7a3f80e04fa007fe64d719dba2fd';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -8,6 +8,10 @@ part of 'async_values.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
 @ProviderFor(itemsApi)
 const itemsApiProvider = ItemsApiProvider._();
 
@@ -81,6 +85,3 @@ final class EvenItemsProvider
 }
 
 String _$evenItemsHash() => r'22297e33c5f55ff99fb49747c203be595a28fabf';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -6,6 +6,10 @@ part of 'missing_dependencies.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
 @ProviderFor(dep)
 const depProvider = DepProvider._();
 
@@ -465,6 +469,3 @@ final class ProviderWithDartDocProvider
 
 String _$providerWithDartDocHash() =>
     r'aeb5735ad2dbe1d0b41a529828f9bb2c915071b6';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

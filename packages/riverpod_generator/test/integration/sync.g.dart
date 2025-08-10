@@ -6,6 +6,10 @@ part of 'sync.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
 @ProviderFor(generic)
 const genericProvider = GenericFamily._();
 
@@ -1379,6 +1383,100 @@ abstract class _$FamilyClass extends $Notifier<String> {
   }
 }
 
+@ProviderFor(LocalStaticDefault)
+const localStaticDefaultProvider = LocalStaticDefaultFamily._();
+
+final class LocalStaticDefaultProvider
+    extends $NotifierProvider<LocalStaticDefault, String> {
+  const LocalStaticDefaultProvider._(
+      {required LocalStaticDefaultFamily super.from,
+      required String super.argument})
+      : super(
+          retry: null,
+          name: r'localStaticDefaultProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$localStaticDefaultHash();
+
+  @override
+  String toString() {
+    return r'localStaticDefaultProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  LocalStaticDefault create() => LocalStaticDefault();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<String>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is LocalStaticDefaultProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$localStaticDefaultHash() =>
+    r'e538b32aeefabdbeb30da7d8a12c74ab88c9c84b';
+
+final class LocalStaticDefaultFamily extends $Family
+    with
+        $ClassFamilyOverride<LocalStaticDefault, String, String, String,
+            String> {
+  const LocalStaticDefaultFamily._()
+      : super(
+          retry: null,
+          name: r'localStaticDefaultProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  LocalStaticDefaultProvider call({
+    String arg = LocalStaticDefault.value,
+  }) =>
+      LocalStaticDefaultProvider._(argument: arg, from: this);
+
+  @override
+  String toString() => r'localStaticDefaultProvider';
+}
+
+abstract class _$LocalStaticDefault extends $Notifier<String> {
+  late final _$args = ref.$arg as String;
+  String get arg => _$args;
+
+  String build({
+    String arg = LocalStaticDefault.value,
+  });
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build(
+      arg: _$args,
+    );
+    final ref = this.ref as $Ref<String, String>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<String, String>, String, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}
+
 @ProviderFor(supports$InFnName)
 const supports$InFnNameProvider = Supports$InFnNameFamily._();
 
@@ -2396,5 +2494,3 @@ final class Fn2Family extends $Family
   @override
   String toString() => r'manualRename2';
 }
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

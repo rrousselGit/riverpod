@@ -8,6 +8,10 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
 @ProviderFor(fetchConfiguration)
 const fetchConfigurationProvider = FetchConfigurationProvider._();
 
@@ -42,6 +46,3 @@ final class FetchConfigurationProvider extends $FunctionalProvider<
 
 String _$fetchConfigurationHash() =>
     r'f18dd06ced5e58734c6fd925e5614c34e94d1b9e';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -6,6 +6,10 @@ part of 'only_use_keep_alive_inside_keep_alive.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
 @ProviderFor(keepAlive)
 const keepAliveProvider = KeepAliveProvider._();
 
@@ -219,6 +223,3 @@ final class FnProvider extends $FunctionalProvider<int, int, int>
 }
 
 String _$fnHash() => r'e96b0302f7492f5aecedd46f6edeeea456839d01';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

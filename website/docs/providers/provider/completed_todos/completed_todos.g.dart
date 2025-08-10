@@ -8,6 +8,10 @@ part of 'completed_todos.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
 @ProviderFor(completedTodos)
 const completedTodosProvider = CompletedTodosProvider._();
 
@@ -48,6 +52,3 @@ final class CompletedTodosProvider
 }
 
 String _$completedTodosHash() => r'0a6a67db7f22556b2cd64236815fdd4d2e72a72b';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

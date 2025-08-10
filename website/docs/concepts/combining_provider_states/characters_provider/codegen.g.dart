@@ -8,6 +8,10 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
 @ProviderFor(search)
 const searchProvider = SearchProvider._();
 
@@ -115,6 +119,3 @@ final class CharactersProvider extends $FunctionalProvider<
 }
 
 String _$charactersHash() => r'd2bac558571ceae538d012696be58e2a06e8013f';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

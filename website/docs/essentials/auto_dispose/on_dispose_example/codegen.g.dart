@@ -8,6 +8,10 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+
 @ProviderFor(other)
 const otherProvider = OtherProvider._();
 
@@ -80,6 +84,3 @@ final class ExampleProvider
 }
 
 String _$exampleHash() => r'012c40f45aaeb96633a857d1407f04d25255f32f';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
