@@ -7,8 +7,7 @@ part of 'unused_dependency.dart';
 // **************************************************************************
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+// ignore_for_file: type=lint, type=warning
 
 @ProviderFor(root)
 const rootProvider = RootProvider._();
@@ -131,10 +130,12 @@ final class Dep2Provider extends $FunctionalProvider<int, int, int>
 String _$dep2Hash() => r'97901e825cdcf5b1ac455b0fe8a2111662ce9f13';
 
 ////////////
+
 @ProviderFor(extraDep)
 const extraDepProvider = ExtraDepProvider._();
 
 ////////////
+
 final class ExtraDepProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   ////////////

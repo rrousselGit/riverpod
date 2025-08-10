@@ -7,8 +7,7 @@ part of 'offline.dart';
 // **************************************************************************
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+// ignore_for_file: type=lint, type=warning
 
 @ProviderFor(storage)
 const storageProvider = StorageProvider._();
@@ -52,6 +51,7 @@ String _$storageHash() => r'1feb3def45be8bc9cc695a7282b6d29e5c212b60';
 @MyAnnotation()
 const customAnnotationProvider = CustomAnnotationProvider._();
 
+@MyAnnotation()
 final class CustomAnnotationProvider
     extends $AsyncNotifierProvider<CustomAnnotation, String> {
   const CustomAnnotationProvider._()
@@ -75,6 +75,7 @@ final class CustomAnnotationProvider
 
 String _$customAnnotationHash() => r'd170ee1343274afe29c07525071b81b49c689d1c';
 
+@MyAnnotation()
 abstract class _$CustomAnnotationBase extends $AsyncNotifier<String> {
   FutureOr<String> build();
   @$mustCallSuper
@@ -95,6 +96,7 @@ abstract class _$CustomAnnotationBase extends $AsyncNotifier<String> {
 @JsonPersist()
 const jsonProvider = JsonFamily._();
 
+@JsonPersist()
 final class JsonProvider
     extends $AsyncNotifierProvider<Json, Map<String, List<int>>> {
   const JsonProvider._(
@@ -134,6 +136,7 @@ final class JsonProvider
 
 String _$jsonHash() => r'54532ee1d9de0979dc96fe8eeb87e2aae92089c5';
 
+@JsonPersist()
 final class JsonFamily extends $Family
     with
         $ClassFamilyOverride<Json, AsyncValue<Map<String, List<int>>>,
@@ -147,6 +150,7 @@ final class JsonFamily extends $Family
           isAutoDispose: true,
         );
 
+  @JsonPersist()
   JsonProvider call(
     String arg,
   ) =>
@@ -156,6 +160,7 @@ final class JsonFamily extends $Family
   String toString() => r'jsonProvider';
 }
 
+@JsonPersist()
 abstract class _$JsonBase extends $AsyncNotifier<Map<String, List<int>>> {
   late final _$args = ref.$arg as String;
   String get arg => _$args;
@@ -184,6 +189,7 @@ abstract class _$JsonBase extends $AsyncNotifier<Map<String, List<int>>> {
 @JsonPersist()
 const json2Provider = Json2Provider._();
 
+@JsonPersist()
 final class Json2Provider
     extends $AsyncNotifierProvider<Json2, Map<String, List<int>>> {
   const Json2Provider._()
@@ -207,6 +213,7 @@ final class Json2Provider
 
 String _$json2Hash() => r'0cc67d4dde84df76d54ff4c0e52f30a9b3faa9fd';
 
+@JsonPersist()
 abstract class _$Json2Base extends $AsyncNotifier<Map<String, List<int>>> {
   FutureOr<Map<String, List<int>>> build();
   @$mustCallSuper
@@ -228,6 +235,7 @@ abstract class _$Json2Base extends $AsyncNotifier<Map<String, List<int>>> {
 @JsonPersist()
 const customJsonProvider = CustomJsonProvider._();
 
+@JsonPersist()
 final class CustomJsonProvider
     extends $AsyncNotifierProvider<CustomJson, Map<String, Bar>> {
   const CustomJsonProvider._()
@@ -251,6 +259,7 @@ final class CustomJsonProvider
 
 String _$customJsonHash() => r'8f071e5878ad594850f66a10f0419e77e6c3bf4e';
 
+@JsonPersist()
 abstract class _$CustomJsonBase extends $AsyncNotifier<Map<String, Bar>> {
   FutureOr<Map<String, Bar>> build();
   @$mustCallSuper
@@ -272,6 +281,7 @@ abstract class _$CustomJsonBase extends $AsyncNotifier<Map<String, Bar>> {
 @JsonPersist()
 const customKeyProvider = CustomKeyProvider._();
 
+@JsonPersist()
 final class CustomKeyProvider
     extends $AsyncNotifierProvider<CustomKey, Map<String, Bar>> {
   const CustomKeyProvider._()
@@ -295,6 +305,7 @@ final class CustomKeyProvider
 
 String _$customKeyHash() => r'528119880183ac4a8703f10a70d34e668c34560b';
 
+@JsonPersist()
 abstract class _$CustomKeyBase extends $AsyncNotifier<Map<String, Bar>> {
   FutureOr<Map<String, Bar>> build();
   @$mustCallSuper
@@ -316,6 +327,7 @@ abstract class _$CustomKeyBase extends $AsyncNotifier<Map<String, Bar>> {
 @JsonPersist()
 const customJsonWithArgsProvider = CustomJsonWithArgsFamily._();
 
+@JsonPersist()
 final class CustomJsonWithArgsProvider
     extends $AsyncNotifierProvider<CustomJsonWithArgs, Map<String, Bar>> {
   const CustomJsonWithArgsProvider._(
@@ -362,6 +374,7 @@ final class CustomJsonWithArgsProvider
 String _$customJsonWithArgsHash() =>
     r'b3363ef1436f3e00d228bd2b27cf94cf952b42e5';
 
+@JsonPersist()
 final class CustomJsonWithArgsFamily extends $Family
     with
         $ClassFamilyOverride<
@@ -383,6 +396,7 @@ final class CustomJsonWithArgsFamily extends $Family
           isAutoDispose: true,
         );
 
+  @JsonPersist()
   CustomJsonWithArgsProvider call(
     int arg,
     String arg2, {
@@ -398,6 +412,7 @@ final class CustomJsonWithArgsFamily extends $Family
   String toString() => r'customJsonWithArgsProvider';
 }
 
+@JsonPersist()
 abstract class _$CustomJsonWithArgsBase
     extends $AsyncNotifier<Map<String, Bar>> {
   late final _$args = ref.$arg as (
@@ -437,6 +452,7 @@ abstract class _$CustomJsonWithArgsBase
 @JsonPersist()
 const passEncodeDecodeByHandProvider = PassEncodeDecodeByHandProvider._();
 
+@JsonPersist()
 final class PassEncodeDecodeByHandProvider extends $AsyncNotifierProvider<
     PassEncodeDecodeByHand, Map<String, String>> {
   const PassEncodeDecodeByHandProvider._()
@@ -461,6 +477,7 @@ final class PassEncodeDecodeByHandProvider extends $AsyncNotifierProvider<
 String _$passEncodeDecodeByHandHash() =>
     r'a84472fd5601bd429e051a5f0136b5eb18ee9866';
 
+@JsonPersist()
 abstract class _$PassEncodeDecodeByHandBase
     extends $AsyncNotifier<Map<String, String>> {
   FutureOr<Map<String, String>> build();

@@ -7,14 +7,14 @@ part of 'convert_functional_provider_to_class_based.dart';
 // **************************************************************************
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
-
+// ignore_for_file: type=lint, type=warning
 /// Some comment
+
 @ProviderFor(example)
 const exampleProvider = ExampleProvider._();
 
 /// Some comment
+
 final class ExampleProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   /// Some comment
@@ -54,10 +54,12 @@ final class ExampleProvider extends $FunctionalProvider<int, int, int>
 String _$exampleHash() => r'67898608b444d39a000852f647ca6d3326740c98';
 
 /// Some comment
+
 @ProviderFor(exampleFamily)
 const exampleFamilyProvider = ExampleFamilyFamily._();
 
 /// Some comment
+
 final class ExampleFamilyProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   /// Some comment
@@ -126,6 +128,7 @@ final class ExampleFamilyProvider extends $FunctionalProvider<int, int, int>
 String _$exampleFamilyHash() => r'70dfc6f4b2d7d251edbc3a66c3ac0f2c56aebf8b';
 
 /// Some comment
+
 final class ExampleFamilyFamily extends $Family
     with
         $FunctionalFamilyOverride<
@@ -144,6 +147,7 @@ final class ExampleFamilyFamily extends $Family
         );
 
   /// Some comment
+
   ExampleFamilyProvider call({
     required int a,
     String b = '42',

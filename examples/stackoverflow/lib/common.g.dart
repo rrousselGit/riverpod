@@ -9,13 +9,12 @@ part of 'common.dart';
 // **************************************************************************
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
-
+// ignore_for_file: type=lint, type=warning
 /// A Provider that exposes the current theme.
 ///
 /// This is unimplemented by default, and will be overridden inside [MaterialApp]
 /// with the current theme obtained using a [BuildContext].
+
 @ProviderFor(theme)
 const themeProvider = ThemeProvider._();
 
@@ -23,6 +22,7 @@ const themeProvider = ThemeProvider._();
 ///
 /// This is unimplemented by default, and will be overridden inside [MaterialApp]
 /// with the current theme obtained using a [BuildContext].
+
 final class ThemeProvider
     extends $FunctionalProvider<ThemeData, ThemeData, ThemeData>
     with $Provider<ThemeData> {

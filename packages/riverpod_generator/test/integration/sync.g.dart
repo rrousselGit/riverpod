@@ -7,8 +7,7 @@ part of 'sync.dart';
 // **************************************************************************
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+// ignore_for_file: type=lint, type=warning
 
 @ProviderFor(generic)
 const genericProvider = GenericFamily._();
@@ -901,10 +900,12 @@ abstract class _$RawFamilyStreamClass extends $Notifier<Raw<Stream<String>>> {
 }
 
 /// This is some documentation
+
 @ProviderFor(public)
 const publicProvider = PublicProvider._();
 
 /// This is some documentation
+
 final class PublicProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   /// This is some documentation
@@ -984,10 +985,12 @@ final class Supports$inNamesProvider
 String _$supports$inNamesHash() => r'8da1f9329f302ce75e38d03c96595de3260b4d2d';
 
 /// This is some documentation
+
 @ProviderFor(family)
 const familyProvider = FamilyFamily._();
 
 /// This is some documentation
+
 final class FamilyProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   /// This is some documentation
@@ -1065,6 +1068,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String, String>
 String _$familyHash() => r'f58149448f80f10ec054f2f8a6f37bae61e38f49';
 
 /// This is some documentation
+
 final class FamilyFamily extends $Family
     with
         $FunctionalFamilyOverride<
@@ -1086,6 +1090,7 @@ final class FamilyFamily extends $Family
         );
 
   /// This is some documentation
+
   FamilyProvider call(
     int first, {
     String? second,
@@ -1146,6 +1151,7 @@ final class _PrivateProvider extends $FunctionalProvider<String, String, String>
 String _$_privateHash() => r'834affaed42662bf46ce7f6203ac2495e1e8974b';
 
 /// This is some documentation
+
 @ProviderFor(PublicClass)
 const publicClassProvider = PublicClassProvider._();
 
@@ -1180,6 +1186,8 @@ final class PublicClassProvider extends $NotifierProvider<PublicClass, String> {
 }
 
 String _$publicClassHash() => r'd261f9eb927ca71440a5e1bdb24558c25fae4833';
+
+/// This is some documentation
 
 abstract class _$PublicClass extends $Notifier<String> {
   String build();
@@ -1242,6 +1250,7 @@ abstract class _$PrivateClass extends $Notifier<String> {
 }
 
 /// This is some documentation
+
 @ProviderFor(FamilyClass)
 const familyClassProvider = FamilyClassFamily._();
 
@@ -1302,6 +1311,7 @@ final class FamilyClassProvider extends $NotifierProvider<FamilyClass, String> {
 String _$familyClassHash() => r'ac5aba6b9cbee66236d6e1fa3d18b9b6ffb2c5f1';
 
 /// This is some documentation
+
 final class FamilyClassFamily extends $Family
     with
         $ClassFamilyOverride<
@@ -1326,6 +1336,7 @@ final class FamilyClassFamily extends $Family
         );
 
   /// This is some documentation
+
   FamilyClassProvider call(
     int first, {
     String? second,
@@ -1344,6 +1355,8 @@ final class FamilyClassFamily extends $Family
   @override
   String toString() => r'familyClassProvider';
 }
+
+/// This is some documentation
 
 abstract class _$FamilyClass extends $Notifier<String> {
   late final _$args = ref.$arg as (

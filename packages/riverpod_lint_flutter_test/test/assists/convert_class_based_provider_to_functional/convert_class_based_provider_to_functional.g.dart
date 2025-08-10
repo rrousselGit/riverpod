@@ -7,10 +7,9 @@ part of 'convert_class_based_provider_to_functional.dart';
 // **************************************************************************
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
-
+// ignore_for_file: type=lint, type=warning
 /// Some comment
+
 @ProviderFor(Example)
 const exampleProvider = ExampleProvider._();
 
@@ -46,6 +45,8 @@ final class ExampleProvider extends $NotifierProvider<Example, int> {
 
 String _$exampleHash() => r'081776126bafed3e1583bba9c1fadef798215ad7';
 
+/// Some comment
+
 abstract class _$Example extends $Notifier<int> {
   int build();
   @$mustCallSuper
@@ -60,6 +61,7 @@ abstract class _$Example extends $Notifier<int> {
 }
 
 /// Some comment
+
 @ProviderFor(ExampleFamily)
 const exampleFamilyProvider = ExampleFamilyFamily._();
 
@@ -118,6 +120,7 @@ final class ExampleFamilyProvider
 String _$exampleFamilyHash() => r'37d4a4fd66999562cd92051f91266270d5a1e5ea';
 
 /// Some comment
+
 final class ExampleFamilyFamily extends $Family
     with
         $ClassFamilyOverride<
@@ -139,6 +142,7 @@ final class ExampleFamilyFamily extends $Family
         );
 
   /// Some comment
+
   ExampleFamilyProvider call({
     required int a,
     String b = '42',
@@ -151,6 +155,8 @@ final class ExampleFamilyFamily extends $Family
   @override
   String toString() => r'exampleFamilyProvider';
 }
+
+/// Some comment
 
 abstract class _$ExampleFamily extends $Notifier<int> {
   late final _$args = ref.$arg as ({

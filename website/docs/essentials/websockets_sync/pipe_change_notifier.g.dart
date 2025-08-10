@@ -9,18 +9,18 @@ part of 'pipe_change_notifier.dart';
 // **************************************************************************
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
-
+// ignore_for_file: type=lint, type=warning
 /// A provider which creates a ValueNotifier and update its listeners
 /// whenever the value changes.
 // {@endtemplate}
+
 @ProviderFor(myListenable)
 const myListenableProvider = MyListenableProvider._();
 
 /// A provider which creates a ValueNotifier and update its listeners
 /// whenever the value changes.
 // {@endtemplate}
+
 final class MyListenableProvider extends $FunctionalProvider<
     Raw<ValueNotifier<int>>,
     Raw<ValueNotifier<int>>,

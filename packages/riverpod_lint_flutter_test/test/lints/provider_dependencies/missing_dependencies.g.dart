@@ -7,8 +7,7 @@ part of 'missing_dependencies.dart';
 // **************************************************************************
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+// ignore_for_file: type=lint, type=warning
 
 @ProviderFor(dep)
 const depProvider = DepProvider._();
@@ -213,14 +212,15 @@ final class DepFamilyFamily extends $Family
   @override
   String toString() => r'depFamilyProvider';
 }
-
 ////////////
 // expect_lint: provider_dependencies
+
 @ProviderFor(plainAnnotation)
 const plainAnnotationProvider = PlainAnnotationProvider._();
 
 ////////////
 // expect_lint: provider_dependencies
+
 final class PlainAnnotationProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   ////////////
@@ -425,11 +425,13 @@ String _$multipleDepsHash() => r'66de70567c011a294a2c46703dfab8ba7247fd5e';
 
 /// Random doc to test that identifiers in docs don't trigger the lint.
 /// [dep], [DepWidget], [depProvider]
+
 @ProviderFor(providerWithDartDoc)
 const providerWithDartDocProvider = ProviderWithDartDocProvider._();
 
 /// Random doc to test that identifiers in docs don't trigger the lint.
 /// [dep], [DepWidget], [depProvider]
+
 final class ProviderWithDartDocProvider
     extends $FunctionalProvider<int, int, int> with $Provider<int> {
   /// Random doc to test that identifiers in docs don't trigger the lint.

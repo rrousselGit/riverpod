@@ -7,13 +7,12 @@ part of 'main.dart';
 // **************************************************************************
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
-
+// ignore_for_file: type=lint, type=warning
 /// Annotating a class by `@riverpod` defines a new shared state for your application,
 /// accessible using the generated [counterProvider].
 /// This class is both responsible for initializing the state (through the [build] method)
 /// and exposing ways to modify it (cf [increment]).
+
 @ProviderFor(Counter)
 const counterProvider = CounterProvider._();
 
@@ -54,6 +53,11 @@ final class CounterProvider extends $NotifierProvider<Counter, int> {
 }
 
 String _$counterHash() => r'4243b34530f53accfd9014a9f0e316fe304ada3e';
+
+/// Annotating a class by `@riverpod` defines a new shared state for your application,
+/// accessible using the generated [counterProvider].
+/// This class is both responsible for initializing the state (through the [build] method)
+/// and exposing ways to modify it (cf [increment]).
 
 abstract class _$Counter extends $Notifier<int> {
   int build();

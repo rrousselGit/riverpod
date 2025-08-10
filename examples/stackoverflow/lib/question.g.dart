@@ -60,8 +60,7 @@ Map<String, dynamic> _$QuestionToJson(_Question instance) => <String, dynamic>{
 // **************************************************************************
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+// ignore_for_file: type=lint, type=warning
 
 @ProviderFor(questionTheme)
 const questionThemeProvider = QuestionThemeProvider._();
@@ -116,6 +115,7 @@ String _$questionThemeHash() => r'c66658995d65c988e6db012ab7f9f754eaa0e5ce';
 ///
 /// This is an optional step. Since scoping is a fairly advanced mechanism,
 /// it's entirely fine to simply pass the [Question] to [QuestionItem] directly.
+
 @ProviderFor(currentQuestion)
 const currentQuestionProvider = CurrentQuestionProvider._();
 
@@ -131,6 +131,7 @@ const currentQuestionProvider = CurrentQuestionProvider._();
 ///
 /// This is an optional step. Since scoping is a fairly advanced mechanism,
 /// it's entirely fine to simply pass the [Question] to [QuestionItem] directly.
+
 final class CurrentQuestionProvider extends $FunctionalProvider<
     AsyncValue<Question>,
     AsyncValue<Question>,

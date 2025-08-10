@@ -7,8 +7,7 @@ part of 'annotated.dart';
 // **************************************************************************
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+// ignore_for_file: type=lint, type=warning
 
 @ProviderFor(functional)
 @Deprecated('Deprecation message')
@@ -16,6 +15,9 @@ part of 'annotated.dart';
 @protected
 const functionalProvider = FunctionalFamily._();
 
+@Deprecated('Deprecation message')
+@visibleForTesting
+@protected
 final class FunctionalProvider
     extends $FunctionalProvider<String, String, String> with $Provider<String> {
   const FunctionalProvider._(
@@ -73,6 +75,9 @@ final class FunctionalProvider
 
 String _$functionalHash() => r'ba8606cd0526e2dde0f775eb8f4c9d8b5b6fdf2c';
 
+@Deprecated('Deprecation message')
+@visibleForTesting
+@protected
 final class FunctionalFamily extends $Family
     with $FunctionalFamilyOverride<String, int> {
   const FunctionalFamily._()
@@ -84,6 +89,9 @@ final class FunctionalFamily extends $Family
           isAutoDispose: true,
         );
 
+  @Deprecated('Deprecation message')
+  @visibleForTesting
+  @protected
   FunctionalProvider call(
     @Deprecated('field') int id,
   ) =>
@@ -99,6 +107,9 @@ final class FunctionalFamily extends $Family
 @protected
 const classBasedProvider = ClassBasedFamily._();
 
+@Deprecated('Deprecation message')
+@visibleForTesting
+@protected
 final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
   const ClassBasedProvider._(
       {required ClassBasedFamily super.from, required int super.argument})
@@ -145,6 +156,9 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
 
 String _$classBasedHash() => r'92b444806ef8a304c6e0dc3d8e2383601e781183';
 
+@Deprecated('Deprecation message')
+@visibleForTesting
+@protected
 final class ClassBasedFamily extends $Family
     with $ClassFamilyOverride<ClassBased, String, String, String, int> {
   const ClassBasedFamily._()
@@ -156,6 +170,9 @@ final class ClassBasedFamily extends $Family
           isAutoDispose: true,
         );
 
+  @Deprecated('Deprecation message')
+  @visibleForTesting
+  @protected
   ClassBasedProvider call(
     @Deprecated('field') int id,
   ) =>
@@ -165,6 +182,9 @@ final class ClassBasedFamily extends $Family
   String toString() => r'classBasedProvider';
 }
 
+@Deprecated('Deprecation message')
+@visibleForTesting
+@protected
 abstract class _$ClassBased extends $Notifier<String> {
   late final _$args = ref.$arg as int;
   @Deprecated('field')
@@ -192,6 +212,9 @@ abstract class _$ClassBased extends $Notifier<String> {
 @protected
 const familyProvider = FamilyFamily._();
 
+@Deprecated('Deprecation message')
+@visibleForTesting
+@protected
 final class FamilyProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const FamilyProvider._(
@@ -249,6 +272,9 @@ final class FamilyProvider extends $FunctionalProvider<String, String, String>
 
 String _$familyHash() => r'14b97009aec20a0332208f8a60bc177b44c9d1d4';
 
+@Deprecated('Deprecation message')
+@visibleForTesting
+@protected
 final class FamilyFamily extends $Family
     with $FunctionalFamilyOverride<String, int> {
   const FamilyFamily._()
@@ -260,6 +286,9 @@ final class FamilyFamily extends $Family
           isAutoDispose: true,
         );
 
+  @Deprecated('Deprecation message')
+  @visibleForTesting
+  @protected
   FamilyProvider call(
     int id,
   ) =>

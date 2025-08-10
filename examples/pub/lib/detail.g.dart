@@ -9,8 +9,7 @@ part of 'detail.dart';
 // **************************************************************************
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+// ignore_for_file: type=lint, type=warning
 
 @ProviderFor(fetchPackageDetails)
 const fetchPackageDetailsProvider = FetchPackageDetailsFamily._();
@@ -167,6 +166,7 @@ String _$pubRepositoryHash() => r'fd358feb202d2c34ad507ebf0a40bddbebc8ea98';
 ///
 /// It also exposes utilities to like/unlike a package, assuming the user
 /// is logged-in.
+
 @ProviderFor(PackageMetrics)
 const packageMetricsProvider = PackageMetricsFamily._();
 
@@ -225,6 +225,7 @@ String _$packageMetricsHash() => r'67cd25e50357e6e970d432c1d255085a23b856ac';
 ///
 /// It also exposes utilities to like/unlike a package, assuming the user
 /// is logged-in.
+
 final class PackageMetricsFamily extends $Family
     with
         $ClassFamilyOverride<PackageMetrics, AsyncValue<PackageMetricsScore>,
@@ -243,6 +244,7 @@ final class PackageMetricsFamily extends $Family
   ///
   /// It also exposes utilities to like/unlike a package, assuming the user
   /// is logged-in.
+
   PackageMetricsProvider call({
     required String packageName,
   }) =>
@@ -251,6 +253,12 @@ final class PackageMetricsFamily extends $Family
   @override
   String toString() => r'packageMetricsProvider';
 }
+
+/// A provider that fetches the likes count, popularity score and pub points
+/// for a given package.
+///
+/// It also exposes utilities to like/unlike a package, assuming the user
+/// is logged-in.
 
 abstract class _$PackageMetrics extends $AsyncNotifier<PackageMetricsScore> {
   late final _$args = ref.$arg as String;

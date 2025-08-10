@@ -23,8 +23,7 @@ Map<String, dynamic> _$TodoToJson(_Todo instance) => <String, dynamic>{
 // **************************************************************************
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+// ignore_for_file: type=lint, type=warning
 
 @ProviderFor(storage)
 const storageProvider = StorageProvider._();
@@ -68,6 +67,7 @@ String _$storageHash() => r'f0dc33f3f7b62aa7f1ecd8faff381278503b1b01';
 @JsonPersist()
 const todosNotifierProvider = TodosNotifierProvider._();
 
+@JsonPersist()
 final class TodosNotifierProvider
     extends $AsyncNotifierProvider<TodosNotifier, List<Todo>> {
   const TodosNotifierProvider._()
@@ -91,6 +91,7 @@ final class TodosNotifierProvider
 
 String _$todosNotifierHash() => r'82bca33ebc86b96dd0d7cd2942c043114f05b055';
 
+@JsonPersist()
 abstract class _$TodosNotifierBase extends $AsyncNotifier<List<Todo>> {
   FutureOr<List<Todo>> build();
   @$mustCallSuper
