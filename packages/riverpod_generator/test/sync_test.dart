@@ -228,6 +228,12 @@ void main() {
     expect(familyProvider(42, third: .42).name, 'familyProvider');
   });
 
+  test('Supports advanced default value syntax', () {
+    final container = ProviderContainer.test();
+
+    expect(container.read(localStaticDefaultProvider()), 'Hello world');
+  });
+
   test(
       'Creates a Provider.family<T> if @riverpod is used on a synchronous function with parameters',
       () {

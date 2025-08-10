@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer_buffer/analyzer_buffer.dart';
 
 String buildParamDefinitionQuery(
   List<FormalParameter> parameters, {
@@ -45,10 +46,13 @@ String buildParamDefinitionQuery(
     late final leading = parameter.isRequiredNamed || asRequiredNamed
         ? 'required $metadata'
         : metadata;
-    late final trailing =
-        element.defaultValueCode != null && !asRequiredNamed && withDefaults
-            ? '= ${element.defaultValueCode}'
-            : '';
+    late final constant = element.computeConstantValue();
+    late final trailing = element.hasDefaultValue &&
+            constant != null &&
+            !asRequiredNamed &&
+            withDefaults
+        ? '= ${constant.toCode()}'
+        : '';
     if (asThisParameter) return '${leading}this.${parameter.name}$trailing';
     if (asSuperParameter) return '${leading}super.${parameter.name}$trailing';
 

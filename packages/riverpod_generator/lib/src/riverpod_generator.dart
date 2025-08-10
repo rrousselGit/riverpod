@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
+import 'package:analyzer_buffer/analyzer_buffer.dart';
 import 'package:meta/meta.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 // ignore: implementation_imports, safe as we are the one controlling this file
@@ -38,7 +39,13 @@ class RiverpodGenerator extends ParserGenerator<Riverpod> {
 
   @override
   String generateForUnit(List<CompilationUnit> compilationUnits) {
-    final buffer = StringBuffer();
+    final buffer = AnalyzerBuffer.part2(
+      compilationUnits.first.declaredFragment!.element,
+      header: '''
+// ignore_for_file: type=lint
+// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+''',
+    );
 
     final errors = <RiverpodAnalysisError>[];
     final previousErrorReporter = errorReporter;
@@ -61,8 +68,9 @@ class RiverpodGenerator extends ParserGenerator<Riverpod> {
     return buffer.toString();
   }
 
-  void _generate(List<CompilationUnit> units, StringBuffer buffer) {
-    final visitor = _RiverpodGeneratorVisitor(buffer, options);
+  void _generate(List<CompilationUnit> units, AnalyzerBuffer buffer) {
+    final tmpBuffer = StringBuffer();
+    final visitor = _RiverpodGeneratorVisitor(tmpBuffer, options);
     for (final member in units.expand((e) => e.declarations)) {
       final provider = member.provider;
 
@@ -77,11 +85,10 @@ class RiverpodGenerator extends ParserGenerator<Riverpod> {
     }
 
     // Only emit the header if we actually generated something
-    if (buffer.isNotEmpty) {
+    if (tmpBuffer.isNotEmpty) {
       buffer.write('''
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
 ''');
+      buffer.write(tmpBuffer.toString());
     }
   }
 }

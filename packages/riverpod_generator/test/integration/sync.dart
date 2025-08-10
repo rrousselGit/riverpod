@@ -158,6 +158,16 @@ class FamilyClass extends _$FamilyClass with MyMixin<String, String> {
 }
 
 @riverpod
+class LocalStaticDefault extends _$LocalStaticDefault {
+  static const value = 'world';
+
+  @override
+  String build({String arg = value}) {
+    return 'Hello $value';
+  }
+}
+
+@riverpod
 String supports$InFnName<And$InT>(Ref ref) {
   return 'Hello world';
 }

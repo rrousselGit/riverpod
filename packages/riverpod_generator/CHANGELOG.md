@@ -1,3 +1,7 @@
+## Unreleased build
+
+- Fix invalid generated code when a `Notifier` uses `static const` as default value for some of its `build` parameters.
+
 ## 3.0.0-dev.17 - 2025-08-01
 
 - Fixed a conflict between public and private providers of the same name
