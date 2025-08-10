@@ -52,7 +52,9 @@ class ProviderTemplate extends Template {
         final mixins = modifiers.isEmpty ? '' : ' with ${modifiers.join(', ')}';
 
         buffer.writeln('''
-${provider.doc} final class $name$_genericsDefinition
+${provider.doc}
+${provider.metadata}
+final class $name$_genericsDefinition
     extends \$FunctionalProvider<
         $exposedType,
         $valueType,
@@ -76,7 +78,7 @@ ${provider.doc} final class $name$_genericsDefinition
         }
 
         buffer.writeln(
-          '${provider.doc} final class $name$_genericsDefinition extends $baseClass {',
+          '${provider.doc} ${provider.metadata} final class $name$_genericsDefinition extends $baseClass {',
         );
     }
 

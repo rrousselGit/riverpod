@@ -43,10 +43,7 @@ class RiverpodGenerator extends ParserGenerator<Riverpod> {
 
     final buffer = AnalyzerBuffer.part2(
       compilationUnits.first.declaredFragment!.element,
-      header: '''
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
-''',
+      header: '// ignore_for_file: type=lint, type=warning',
     );
 
     final errors = <RiverpodAnalysisError>[];
@@ -294,17 +291,19 @@ extension ProviderNames on GeneratorProviderDeclaration {
     }
   }
 
-  Iterable<String> get metadata {
-    return ['@ProviderFor($name)'].followedBy(
-      node.metadata.where((e) {
-        if (e.elementAnnotation!.isDoNotStore) return false;
+  String get metadata {
+    return node.metadata
+        .map((e) {
+          if (e.riverpod != null) return null;
+          if (e.elementAnnotation!.isDoNotStore) return null;
 
-        final valueType = e.elementAnnotation!.computeConstantValue()?.type;
-        if (valueType == null) return false;
+          final constant = e.elementAnnotation!.computeConstantValue();
+          if (constant == null) return null;
 
-        return !riverpodType.isExactlyType(valueType);
-      }).map((e) => e.toString()),
-    );
+          return '@${constant.toCode(addLeadingConst: false)}';
+        })
+        .nonNulls
+        .join(' ');
   }
 
   String get doc => node.doc;

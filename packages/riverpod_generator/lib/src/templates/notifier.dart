@@ -53,6 +53,8 @@ class NotifierTemplate extends Template {
     ).join();
 
     buffer.writeln('''
+${provider.doc}
+${provider.metadata}
 abstract class $notifierBaseName$genericsDefinition extends $baseClass {
   ${provider.parameters.isNotEmpty ? _$args : ''}
   $parametersAsFields

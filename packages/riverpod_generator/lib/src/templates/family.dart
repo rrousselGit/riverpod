@@ -54,7 +54,9 @@ class FamilyTemplate extends Template {
     final mixins = mixinTypes.isEmpty ? '' : ' with ${mixinTypes.join(', ')}';
 
     buffer.writeln('''
-${provider.doc} final class ${provider.familyTypeName} extends \$Family $mixins {
+${provider.doc}
+${provider.metadata}
+final class ${provider.familyTypeName} extends \$Family $mixins {
   const ${provider.familyTypeName}._()
       : super(
         retry: ${provider.annotation.retryNode?.name ?? 'null'},
@@ -64,7 +66,9 @@ ${provider.doc} final class ${provider.familyTypeName} extends \$Family $mixins 
         isAutoDispose: ${provider.providerElement.isAutoDispose},
       );
 
-  ${provider.doc} ${provider.providerTypeName}$_generics call$_genericsDefinition($_parameterDefinition)
+  ${provider.doc}
+  ${provider.metadata}
+  ${provider.providerTypeName}$_generics call$_genericsDefinition($_parameterDefinition)
     => ${provider.providerTypeName}$_generics._(
       $argument
       from: this
