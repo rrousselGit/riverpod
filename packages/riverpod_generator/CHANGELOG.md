@@ -1,6 +1,7 @@
 ## Unreleased build
 
 - Fix invalid generated code when a `Notifier` uses `static const` as default value for some of its `build` parameters.
+- Support records with a single value.
 
 ## 3.0.0-dev.17 - 2025-08-01
 
