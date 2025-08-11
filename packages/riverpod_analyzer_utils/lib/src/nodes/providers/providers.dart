@@ -102,40 +102,33 @@ sealed class GeneratorProviderDeclarationElement
     unit,
     valueType: valueType,
   );
-  if (createdType == null) return null;
 
-  final exposedType = _computeExposedType(createdType.$1, unit);
+  final exposedType = _computeExposedType(createdType, unit);
   if (exposedType == null) return null;
 
   return (
-    createdType: createdType.$1,
+    createdType: createdType,
     valueType: valueType,
     exposedType: exposedType.$1,
   );
 }
 
-(DartType,)? _computeCreatedType(
+DartType _computeCreatedType(
   DartType createdType,
   CompilationUnit unit, {
   required DartType valueType,
 }) {
-  if (createdType.isRaw) return (createdType,);
+  if (createdType.isRaw) return createdType;
 
   if (createdType.isDartAsyncFuture || createdType.isDartAsyncFutureOr) {
     createdType as InterfaceType;
 
-    final futureOr = unit.findFutureOr();
-    if (futureOr == null) return null;
+    final typeProvider = unit.declaredFragment!.element.typeProvider;
 
-    return (
-      futureOr.instantiate(
-        typeArguments: [valueType],
-        nullabilitySuffix: NullabilitySuffix.none,
-      ),
-    );
+    return typeProvider.futureOrType(valueType);
   }
 
-  return (createdType,);
+  return createdType;
 }
 
 (DartType,)? _computeExposedType(

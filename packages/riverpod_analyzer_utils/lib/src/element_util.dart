@@ -3,7 +3,6 @@ import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
 import 'package:collection/collection.dart';
-import 'package:custom_lint_core/custom_lint_core.dart';
 import 'package:meta/meta.dart';
 
 import 'errors.dart';
@@ -12,7 +11,6 @@ import 'riverpod_types.dart';
 @internal
 extension LibraryElement2X on CompilationUnit {
   static final _asyncValueCache = Expando<ClassElement2>();
-  static final _futureOrCache = Expando<ClassElement2>();
 
   LibraryFragment? get _fragment => declaredFragment;
 
@@ -35,15 +33,6 @@ extension LibraryElement2X on CompilationUnit {
     );
   }
 
-  Element2? findElementWithNameFromDartAsync(String name) {
-    return findElementWithName(
-      name,
-      where: (element) =>
-          element != null &&
-          const TypeChecker.fromPackage('dart:async').isExactly(element),
-    );
-  }
-
   ClassElement2? findAsyncValue() {
     final cache = _asyncValueCache[this];
     if (cache != null) return cache;
@@ -62,26 +51,6 @@ extension LibraryElement2X on CompilationUnit {
     }
 
     return _asyncValueCache[this] = result as ClassElement2?;
-  }
-
-  ClassElement2? findFutureOr() {
-    final cache = _futureOrCache[this];
-    if (cache != null) return cache;
-
-    final result = findElementWithNameFromDartAsync('FutureOr');
-    if (result == null) {
-      errorReporter(
-        RiverpodAnalysisError.ast(
-          'No FutureOr accessible in the library. '
-          'Did you forget to import Riverpod?',
-          targetNode: this,
-          code: null,
-        ),
-      );
-      return null;
-    }
-
-    return _futureOrCache[this] = result as ClassElement2?;
   }
 
   DartType? createdTypeToValueType(DartType? typeArg) {
