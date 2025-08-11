@@ -1,3 +1,4 @@
+import 'package:analyzer_buffer/analyzer_buffer.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../models.dart';
@@ -26,15 +27,15 @@ class ProviderTemplate extends Template {
     final provider = this.provider;
 
     final name = provider.providerTypeName;
-    final exposedType = provider.exposedTypeDisplayString;
-    final createdType = provider.createdTypeDisplayString;
-    final valueType = provider.valueTypeDisplayString;
+    final exposedType = provider.providerElement.exposedTypeNode;
+    final createdType = provider.providerElement.createdTypeNode;
+    final valueType = provider.providerElement.valueTypeNode.toCode();
 
     switch (provider) {
       case FunctionalProviderDeclaration():
         final List<String> modifiers;
 
-        switch (provider.createdType) {
+        switch (provider.providerElement.createdType) {
           case SupportedCreatedType.future:
             modifiers = [
               '\$FutureModifier<$valueType>',
@@ -68,7 +69,7 @@ final class $name$_genericsDefinition
 
         final String baseClass;
 
-        switch (provider.createdType) {
+        switch (provider.providerElement.createdType) {
           case SupportedCreatedType.future:
             baseClass = '\$AsyncNotifierProvider<$notifierType, $valueType>';
           case SupportedCreatedType.stream:
@@ -145,7 +146,7 @@ final class $name$_genericsDefinition
         buffer.writeln('''
   @\$internal
   @override
-  ${provider.internalElementName}<${provider.valueTypeDisplayString}> \$createElement(
+  ${provider.internalElementName}<${provider.providerElement.valueTypeNode.toCode()}> \$createElement(
     \$ProviderPointer pointer
   ) => ${provider.internalElementName}(pointer);
 ''');
@@ -169,14 +170,16 @@ final class $name$_genericsDefinition
   }
 
   void _writeOverrideWithValue(StringBuffer buffer) {
-    if (provider.createdType != SupportedCreatedType.value) return;
+    if (provider.providerElement.createdType != SupportedCreatedType.value) {
+      return;
+    }
 
     buffer.writeln('''
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(${provider.exposedTypeDisplayString} value) {
+  Override overrideWithValue(${provider.providerElement.exposedTypeNode} value) {
     return \$ProviderOverride(
       origin: this,
-      providerOverride: \$SyncValueProvider<${provider.valueTypeDisplayString}>(value),
+      providerOverride: \$SyncValueProvider<${provider.providerElement.valueTypeNode.toCode()}>(value),
     );
   }
 ''');
@@ -185,7 +188,7 @@ final class $name$_genericsDefinition
   void _writeFunctionalCreate(StringBuffer buffer) {
     buffer.write('''
   @override
-  ${provider.createdTypeDisplayString} create(Ref ref) {
+  ${provider.providerElement.createdTypeNode} create(Ref ref) {
 ''');
 
     switch (provider.parameters) {

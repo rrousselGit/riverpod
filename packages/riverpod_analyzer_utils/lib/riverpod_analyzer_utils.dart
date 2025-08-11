@@ -49,7 +49,6 @@ export 'src/nodes.dart'
         SupportedCreatedType,
         GeneratorProviderDeclaration,
         GeneratorProviderDeclarationElement,
-        SourcedType,
         ProviderIdentifierX,
         ProviderIdentifier,
         ProviderOrFamilyExpression,

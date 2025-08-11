@@ -2061,7 +2061,7 @@ final class UnnecessaryCastProvider
 
   @override
   String create(Ref ref) {
-    final argument = this.argument;
+    final argument = this.argument as Object?;
     return unnecessaryCast(
       ref,
       argument,
@@ -2184,7 +2184,7 @@ final class UnnecessaryCastClassFamily extends $Family
 }
 
 abstract class _$UnnecessaryCastClass extends $Notifier<String> {
-  late final _$args = ref.$arg;
+  late final _$args = ref.$arg as Object?;
   Object? get arg => _$args;
 
   String build(
@@ -2506,4 +2506,264 @@ final class Fn2Family extends $Family
 
   @override
   String toString() => r'manualRename2';
+}
+
+@ProviderFor(voidFunctional)
+const voidFunctionalProvider = VoidFunctionalProvider._();
+
+final class VoidFunctionalProvider extends $FunctionalProvider<void, void, void>
+    with $Provider<void> {
+  const VoidFunctionalProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'voidFunctionalProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$voidFunctionalHash();
+
+  @$internal
+  @override
+  $ProviderElement<void> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  void create(Ref ref) {
+    return voidFunctional(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(void value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<void>(value),
+    );
+  }
+}
+
+String _$voidFunctionalHash() => r'520f9212a7364acb565dc676e189bdbfa898b05a';
+
+@ProviderFor(voidFunctionalWithArgs)
+const voidFunctionalWithArgsProvider = VoidFunctionalWithArgsFamily._();
+
+final class VoidFunctionalWithArgsProvider
+    extends $FunctionalProvider<void, void, void> with $Provider<void> {
+  const VoidFunctionalWithArgsProvider._(
+      {required VoidFunctionalWithArgsFamily super.from,
+      required int super.argument})
+      : super(
+          retry: null,
+          name: r'voidFunctionalWithArgsProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$voidFunctionalWithArgsHash();
+
+  @override
+  String toString() {
+    return r'voidFunctionalWithArgsProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<void> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  void create(Ref ref) {
+    final argument = this.argument as int;
+    return voidFunctionalWithArgs(
+      ref,
+      argument,
+    );
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(void value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<void>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is VoidFunctionalWithArgsProvider &&
+        other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$voidFunctionalWithArgsHash() =>
+    r'ad4ca78db96afc32953c39203ff29e490ec0f2ad';
+
+final class VoidFunctionalWithArgsFamily extends $Family
+    with $FunctionalFamilyOverride<void, int> {
+  const VoidFunctionalWithArgsFamily._()
+      : super(
+          retry: null,
+          name: r'voidFunctionalWithArgsProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  VoidFunctionalWithArgsProvider call(
+    int a,
+  ) =>
+      VoidFunctionalWithArgsProvider._(argument: a, from: this);
+
+  @override
+  String toString() => r'voidFunctionalWithArgsProvider';
+}
+
+@ProviderFor(VoidClass)
+const voidClassProvider = VoidClassProvider._();
+
+final class VoidClassProvider extends $NotifierProvider<VoidClass, void> {
+  const VoidClassProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'voidClassProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$voidClassHash();
+
+  @$internal
+  @override
+  VoidClass create() => VoidClass();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(void value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<void>(value),
+    );
+  }
+}
+
+String _$voidClassHash() => r'18c6860ccefbab8551e6a718563cfc618528c97c';
+
+abstract class _$VoidClass extends $Notifier<void> {
+  void build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    build();
+    final ref = this.ref as $Ref<void, void>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<void, void>, void, Object?, Object?>;
+    element.handleValue(ref, null);
+  }
+}
+
+@ProviderFor(VoidClassWithArgs)
+const voidClassWithArgsProvider = VoidClassWithArgsFamily._();
+
+final class VoidClassWithArgsProvider
+    extends $NotifierProvider<VoidClassWithArgs, void> {
+  const VoidClassWithArgsProvider._(
+      {required VoidClassWithArgsFamily super.from,
+      required int super.argument})
+      : super(
+          retry: null,
+          name: r'voidClassWithArgsProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$voidClassWithArgsHash();
+
+  @override
+  String toString() {
+    return r'voidClassWithArgsProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  VoidClassWithArgs create() => VoidClassWithArgs();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(void value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<void>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is VoidClassWithArgsProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$voidClassWithArgsHash() => r'f5356413fda00368fb84893fc0cd6acc50476118';
+
+final class VoidClassWithArgsFamily extends $Family
+    with $ClassFamilyOverride<VoidClassWithArgs, void, void, void, int> {
+  const VoidClassWithArgsFamily._()
+      : super(
+          retry: null,
+          name: r'voidClassWithArgsProvider',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  VoidClassWithArgsProvider call(
+    int a,
+  ) =>
+      VoidClassWithArgsProvider._(argument: a, from: this);
+
+  @override
+  String toString() => r'voidClassWithArgsProvider';
+}
+
+abstract class _$VoidClassWithArgs extends $Notifier<void> {
+  late final _$args = ref.$arg as int;
+  int get a => _$args;
+
+  void build(
+    int a,
+  );
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    build(
+      _$args,
+    );
+    final ref = this.ref as $Ref<void, void>;
+    final element = ref.element as $ClassProviderElement<
+        AnyNotifier<void, void>, void, Object?, Object?>;
+    element.handleValue(ref, null);
+  }
 }

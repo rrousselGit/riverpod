@@ -8,7 +8,8 @@ extension on ClassBasedProviderDeclaration {
   /// Returns whether the value exposed by the provider is the newly created
   /// Notifier itself.
   bool get returnsSelf {
-    return valueTypeNode?.type == node.declaredFragment?.element.thisType;
+    return providerElement.valueTypeNode ==
+        node.declaredFragment?.element.thisType;
   }
 }
 
@@ -31,8 +32,8 @@ class UnsupportedProviderValue extends RiverpodLintRule {
     CustomLintContext context,
   ) {
     void checkCreatedType(GeneratorProviderDeclaration declaration) {
-      final valueType = declaration.valueTypeNode?.type;
-      if (valueType == null || valueType.isRaw) return;
+      final valueType = declaration.providerElement.valueTypeNode;
+      if (valueType.isRaw) return;
 
       String? invalidValueName;
       if (notifierBaseType.isAssignableFromType(valueType)) {

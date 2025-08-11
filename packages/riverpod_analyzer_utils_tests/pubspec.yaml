@@ -17,6 +17,7 @@ dependencies:
   source_span: ^1.8.0
 
 dev_dependencies:
+  analyzer_buffer: ^0.1.9
   build: ^3.0.0
   build_runner: ^2.3.2
   build_test: ^3.2.1

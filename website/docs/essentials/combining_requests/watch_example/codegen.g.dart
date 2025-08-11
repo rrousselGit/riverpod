@@ -15,12 +15,31 @@ part of 'codegen.dart';
 const locationProvider = LocationProvider._();
 
 final class LocationProvider extends $FunctionalProvider<
-        AsyncValue<({double longitude, double latitude})>,
-        ({double longitude, double latitude}),
-        Stream<({double longitude, double latitude})>>
+        AsyncValue<
+            ({
+              double latitude,
+              double longitude,
+            })>,
+        ({
+          double latitude,
+          double longitude,
+        }),
+        Stream<
+            ({
+              double latitude,
+              double longitude,
+            })>>
     with
-        $FutureModifier<({double longitude, double latitude})>,
-        $StreamProvider<({double longitude, double latitude})> {
+        $FutureModifier<
+            ({
+              double latitude,
+              double longitude,
+            })>,
+        $StreamProvider<
+            ({
+              double latitude,
+              double longitude,
+            })> {
   const LocationProvider._()
       : super(
           from: null,
@@ -37,12 +56,20 @@ final class LocationProvider extends $FunctionalProvider<
 
   @$internal
   @override
-  $StreamProviderElement<({double longitude, double latitude})> $createElement(
+  $StreamProviderElement<
+      ({
+        double latitude,
+        double longitude,
+      })> $createElement(
           $ProviderPointer pointer) =>
       $StreamProviderElement(pointer);
 
   @override
-  Stream<({double longitude, double latitude})> create(Ref ref) {
+  Stream<
+      ({
+        double latitude,
+        double longitude,
+      })> create(Ref ref) {
     return location(ref);
   }
 }

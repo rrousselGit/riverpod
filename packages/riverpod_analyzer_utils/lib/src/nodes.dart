@@ -11,6 +11,8 @@ import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/constant/value.dart';
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
+import 'package:analyzer/dart/element/type_provider.dart';
+import 'package:analyzer_buffer/analyzer_buffer.dart';
 import 'package:collection/collection.dart';
 import 'package:crypto/crypto.dart';
 import 'package:custom_lint_core/custom_lint_core.dart';
@@ -19,8 +21,8 @@ import 'package:meta/meta.dart';
 import '../riverpod_analyzer_utils.dart';
 import 'analyzer_utils.dart';
 import 'argument_list_utils.dart';
-import 'element_util.dart';
 import 'object_extensions.dart';
+import 'riverpod_types.dart';
 
 part 'nodes/widgets/state.dart';
 part 'nodes/widgets/stateful_widget.dart';

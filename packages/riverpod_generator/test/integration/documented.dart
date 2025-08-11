@@ -41,8 +41,7 @@ class ClassFamilyBased extends _$ClassFamilyBased {
   String build(
     /// Hello world
     // Foo
-    @annotation
-    int id,
+    @annotation int id,
   ) =>
       'ClassBased';
 }

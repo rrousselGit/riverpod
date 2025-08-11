@@ -361,7 +361,7 @@ extension ProviderNames on GeneratorProviderDeclaration {
           )
         : '';
 
-    return '$createdTypeDisplayString Function$genericsDefinition(Ref, $notifierType, $parameters)';
+    return '${providerElement.createdTypeNode} Function$genericsDefinition(Ref, $notifierType, $parameters)';
   }
 
   String createType({
@@ -382,7 +382,7 @@ extension ProviderNames on GeneratorProviderDeclaration {
               )
             : '';
 
-        return '${provider.createdTypeDisplayString} Function$genericsDefinition(Ref ref, $params)';
+        return '${provider.providerElement.createdTypeNode} Function$genericsDefinition(Ref ref, $params)';
       case ClassBasedProviderDeclaration():
         return '${provider.name}$generics Function$genericsDefinition()';
     }
@@ -391,12 +391,14 @@ extension ProviderNames on GeneratorProviderDeclaration {
   String get generatedElementName => '_\$${providerElement.name.public}Element';
 
   String get internalElementName => switch (this) {
-        ClassBasedProviderDeclaration() => switch (createdType) {
+        ClassBasedProviderDeclaration() => switch (
+              providerElement.createdType) {
             SupportedCreatedType.future => r'$AsyncNotifierProviderElement',
             SupportedCreatedType.stream => r'$StreamNotifierProviderElement',
             SupportedCreatedType.value => r'$NotifierProviderElement',
           },
-        FunctionalProviderDeclaration() => switch (createdType) {
+        FunctionalProviderDeclaration() => switch (
+              providerElement.createdType) {
             SupportedCreatedType.future => r'$FutureProviderElement',
             SupportedCreatedType.stream => r'$StreamProviderElement',
             SupportedCreatedType.value => r'$ProviderElement',

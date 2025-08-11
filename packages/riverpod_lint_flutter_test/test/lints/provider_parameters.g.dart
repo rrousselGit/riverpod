@@ -41,7 +41,7 @@ final class GeneratorProvider extends $FunctionalProvider<int, int, int>
 
   @override
   int create(Ref ref) {
-    final argument = this.argument;
+    final argument = this.argument as Object?;
     return generator(
       ref,
       value: argument,
