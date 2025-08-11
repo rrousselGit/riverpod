@@ -73,7 +73,7 @@ extension LibraryElement2X on CompilationUnit {
       errorReporter(
         RiverpodAnalysisError.ast(
           'No FutureOr accessible in the library. '
-          'Did you forget to import Riverpod?',
+          'Did you forget to import dart:async?',
           targetNode: this,
           code: null,
         ),
