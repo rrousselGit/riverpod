@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
+import 'package:analyzer_buffer/analyzer_buffer.dart';
 import 'package:meta/meta.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:riverpod_annotation/experimental/json_persist.dart';
@@ -16,7 +17,11 @@ import 'riverpod_generator.dart';
 class JsonGenerator extends ParserGenerator<JsonPersist> {
   @override
   FutureOr<String> generateForUnit(List<CompilationUnit> compilationUnits) {
-    final buffer = StringBuffer();
+    if (compilationUnits.isEmpty) return '';
+
+    final buffer = AnalyzerBuffer.part2(
+      compilationUnits.first.declaredFragment!.element,
+    );
 
     for (final unit in compilationUnits.expand((e) => e.declarations)) {
       final provider = unit.provider;
@@ -39,7 +44,7 @@ class JsonGenerator extends ParserGenerator<JsonPersist> {
   }
 
   void _generateNotifier(
-    StringBuffer buffer,
+    AnalyzerBuffer buffer,
     ClassBasedProviderDeclaration provider,
   ) {
     if (provider.node.typeParameters?.typeParameters.isNotEmpty ?? false) {
@@ -92,9 +97,9 @@ class JsonGenerator extends ParserGenerator<JsonPersist> {
       return result;
     }
 
-    final decoded = decode(provider.valueTypeNode!.type!, 'e');
+    final decoded = decode(provider.providerElement.valueTypeNode, 'e');
 
-    buffer.writeln(
+    buffer.write(
       '''
 abstract class $notifierClass$genericsDefinition extends $baseClass {
   /// The default key used by [persist].
@@ -109,8 +114,8 @@ abstract class $notifierClass$genericsDefinition extends $baseClass {
   PersistResult persist(
     FutureOr<Storage<String, String>> storage, {
     String? key,
-    String Function(${provider.valueTypeDisplayString} state)? encode,
-    ${provider.valueTypeDisplayString} Function(String encoded)? decode,
+    String Function(${provider.providerElement.valueTypeNode.toCode()} state)? encode,
+    ${provider.providerElement.valueTypeNode.toCode()} Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
   }) {
     return NotifierPersistX(this).persist<String, String>(
@@ -124,7 +129,8 @@ abstract class $notifierClass$genericsDefinition extends $baseClass {
       options: options,
     );
   }
-}''',
+}
+''',
     );
   }
 }

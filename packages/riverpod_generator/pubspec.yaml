@@ -13,7 +13,7 @@ resolution: workspace
 
 dependencies:
   analyzer: ^7.0.0
-  analyzer_buffer: ^0.1.6
+  analyzer_buffer: ^0.1.8
   build: ^3.0.0
   build_config: ^1.0.0
   collection: ^1.15.0

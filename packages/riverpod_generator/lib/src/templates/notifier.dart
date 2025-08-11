@@ -1,3 +1,5 @@
+import 'package:analyzer/dart/element/type.dart';
+import 'package:analyzer_buffer/analyzer_buffer.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../models.dart';
@@ -17,13 +19,13 @@ class NotifierTemplate extends Template {
         : '_\$${provider.name.lexeme.public}';
     final genericsDefinition = provider.genericsDefinition();
 
-    final baseClass = switch (provider.createdType) {
+    final baseClass = switch (provider.providerElement.createdType) {
       SupportedCreatedType.future =>
-        '\$AsyncNotifier<${provider.valueTypeDisplayString}>',
+        '\$AsyncNotifier<${provider.providerElement.valueTypeNode.toCode()}>',
       SupportedCreatedType.stream =>
-        '\$StreamNotifier<${provider.valueTypeDisplayString}>',
+        '\$StreamNotifier<${provider.providerElement.valueTypeNode.toCode()}>',
       SupportedCreatedType.value =>
-        '\$Notifier<${provider.valueTypeDisplayString}>',
+        '\$Notifier<${provider.providerElement.valueTypeNode.toCode()}>',
     };
 
     final paramsPassThrough = buildParamInvocationQuery({
@@ -62,20 +64,21 @@ abstract class $notifierBaseName$genericsDefinition extends $baseClass {
 
     _writeBuild(buffer);
 
-    final buildVar =
-        provider.valueTypeDisplayString == 'void' ? '' : 'final created = ';
+    final buildVar = provider.providerElement.valueTypeNode is VoidType
+        ? ''
+        : 'final created = ';
 
     final buildVarUsage =
-        provider.valueTypeDisplayString == 'void' ? 'null' : 'created';
+        provider.providerElement.valueTypeNode is VoidType ? 'null' : 'created';
 
     buffer.writeln('''
   @\$mustCallSuper
   @override
   void runBuild() {
     ${buildVar}build($paramsPassThrough);
-    final ref = this.ref as \$Ref<${provider.exposedTypeDisplayString}, ${provider.valueTypeDisplayString}>;
-    final element = ref.element as \$ClassProviderElement<AnyNotifier<${provider.exposedTypeDisplayString}, ${provider.valueTypeDisplayString}>,
-          ${provider.exposedTypeDisplayString}, Object?, Object?>;
+    final ref = this.ref as \$Ref<${provider.providerElement.exposedTypeNode.toCode()}, ${provider.providerElement.valueTypeNode.toCode()}>;
+    final element = ref.element as \$ClassProviderElement<AnyNotifier<${provider.providerElement.exposedTypeNode.toCode()}, ${provider.providerElement.valueTypeNode.toCode()}>,
+          ${provider.providerElement.exposedTypeNode.toCode()}, Object?, Object?>;
     element.handleValue(ref, $buildVarUsage);
   }
 }
@@ -85,7 +88,9 @@ abstract class $notifierBaseName$genericsDefinition extends $baseClass {
   void _writeBuild(StringBuffer buffer) {
     final buildParams = buildParamDefinitionQuery(provider.parameters);
 
-    buffer.write('${provider.createdTypeDisplayString} build($buildParams)');
+    buffer.write(
+      '${provider.providerElement.createdTypeNode.toCode()} build($buildParams)',
+    );
 
     if (provider.buildMethod.isAbstract) {
       buffer.writeln('=> throw MissingScopeException(ref);');

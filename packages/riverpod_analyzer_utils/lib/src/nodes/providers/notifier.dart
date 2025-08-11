@@ -66,31 +66,16 @@ extension ClassBasedProviderDeclarationX on ClassDeclaration {
           ClassBasedProviderDeclarationElement._parse(element, this);
       if (providerElement == null) return null;
 
-      final createdTypeNode = buildMethod.returnType;
-
-      final exposedTypeNode = _computeExposedType(
-        createdTypeNode,
-        root.cast<CompilationUnit>()!,
-      );
-      if (exposedTypeNode == null) {
-        // Error already reported
-        return null;
-      }
-
       final hasPersistAnnotation = metadata.any((e) {
         return e.annotationOfType(riverpodPersistType, exact: false) != null;
       });
 
-      final valueTypeNode = _getValueType(createdTypeNode);
       final classBasedProviderDeclaration = ClassBasedProviderDeclaration._(
         name: name,
         node: this,
         buildMethod: buildMethod,
         providerElement: providerElement,
         annotation: riverpod,
-        createdTypeNode: createdTypeNode,
-        exposedTypeNode: exposedTypeNode,
-        valueTypeNode: valueTypeNode,
         isPersisted: hasPersistAnnotation,
       );
 
@@ -106,9 +91,6 @@ final class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
     required this.buildMethod,
     required this.providerElement,
     required this.annotation,
-    required this.createdTypeNode,
-    required this.exposedTypeNode,
-    required this.valueTypeNode,
     required this.isPersisted,
   });
 
@@ -121,12 +103,6 @@ final class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
   @override
   final RiverpodAnnotation annotation;
   final MethodDeclaration buildMethod;
-  @override
-  final TypeAnnotation? createdTypeNode;
-  @override
-  final TypeAnnotation? valueTypeNode;
-  @override
-  final SourcedType exposedTypeNode;
   final bool isPersisted;
 }
 
@@ -137,6 +113,9 @@ class ClassBasedProviderDeclarationElement
     required this.annotation,
     required this.buildMethod,
     required this.element,
+    required this.createdTypeNode,
+    required this.exposedTypeNode,
+    required this.valueTypeNode,
   });
 
   static final _cache = _Cache<ClassBasedProviderDeclarationElement?>();
@@ -165,11 +144,21 @@ class ClassBasedProviderDeclarationElement
         return null;
       }
 
+      final rootUnit = from.root as CompilationUnit;
+      final types = _computeTypes(buildMethod.returnType, rootUnit);
+      if (types == null) {
+        // Error already reported
+        return null;
+      }
+
       return ClassBasedProviderDeclarationElement._(
         name: element.name3!,
         buildMethod: buildMethod,
         element: element,
         annotation: riverpodAnnotation,
+        createdTypeNode: types.createdType,
+        exposedTypeNode: types.exposedType,
+        valueTypeNode: types.valueType,
       );
     });
   }
@@ -182,12 +171,15 @@ class ClassBasedProviderDeclarationElement
 
   @override
   final ClassElement2 element;
-
   @override
   final String name;
-
   @override
   final RiverpodAnnotationElement annotation;
-
   final ExecutableElement2 buildMethod;
+  @override
+  final DartType createdTypeNode;
+  @override
+  final DartType exposedTypeNode;
+  @override
+  final DartType valueTypeNode;
 }

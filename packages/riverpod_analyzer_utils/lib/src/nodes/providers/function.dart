@@ -16,24 +16,11 @@ extension FunctionalProviderDeclarationX on FunctionDeclaration {
           FunctionalProviderDeclarationElement._parse(element, this);
       if (providerElement == null) return null;
 
-      final createdTypeNode = returnType;
-      final exposedTypeNode = _computeExposedType(
-        createdTypeNode,
-        root.cast<CompilationUnit>()!,
-      );
-      if (exposedTypeNode == null) {
-        // Error already reported
-        return null;
-      }
-
       return FunctionalProviderDeclaration._(
         name: name,
         node: this,
         providerElement: providerElement,
         annotation: riverpod,
-        createdTypeNode: createdTypeNode,
-        exposedTypeNode: exposedTypeNode,
-        valueTypeNode: _getValueType(createdTypeNode),
       );
     });
   }
@@ -45,9 +32,6 @@ final class FunctionalProviderDeclaration extends GeneratorProviderDeclaration {
     required this.node,
     required this.providerElement,
     required this.annotation,
-    required this.createdTypeNode,
-    required this.exposedTypeNode,
-    required this.valueTypeNode,
   });
 
   @override
@@ -59,12 +43,6 @@ final class FunctionalProviderDeclaration extends GeneratorProviderDeclaration {
   final FunctionalProviderDeclarationElement providerElement;
   @override
   final RiverpodAnnotation annotation;
-  @override
-  final TypeAnnotation? createdTypeNode;
-  @override
-  final TypeAnnotation? valueTypeNode;
-  @override
-  final SourcedType exposedTypeNode;
 }
 
 class FunctionalProviderDeclarationElement
@@ -73,6 +51,9 @@ class FunctionalProviderDeclarationElement
     required this.name,
     required this.annotation,
     required this.element,
+    required this.createdTypeNode,
+    required this.exposedTypeNode,
+    required this.valueTypeNode,
   });
 
   static final _cache = _Cache<FunctionalProviderDeclarationElement?>();
@@ -85,10 +66,20 @@ class FunctionalProviderDeclarationElement
       final riverpodAnnotation = RiverpodAnnotationElement._of(element, from);
       if (riverpodAnnotation == null) return null;
 
+      final rootUnit = from.root as CompilationUnit;
+      final types = _computeTypes(element.returnType, rootUnit);
+      if (types == null) {
+        // Error already reported
+        return null;
+      }
+
       return FunctionalProviderDeclarationElement._(
         name: element.name3!,
         annotation: riverpodAnnotation,
         element: element,
+        createdTypeNode: types.createdType,
+        exposedTypeNode: types.exposedType,
+        valueTypeNode: types.valueType,
       );
     });
   }
@@ -108,4 +99,10 @@ class FunctionalProviderDeclarationElement
   final String name;
   @override
   final ExecutableElement2 element;
+  @override
+  final DartType createdTypeNode;
+  @override
+  final DartType exposedTypeNode;
+  @override
+  final DartType valueTypeNode;
 }

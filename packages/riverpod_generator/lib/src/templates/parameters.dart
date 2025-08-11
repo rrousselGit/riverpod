@@ -1,5 +1,6 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer_buffer/analyzer_buffer.dart';
+import 'package:source_gen/source_gen.dart';
 
 String buildParamDefinitionQuery(
   List<FormalParameter> parameters, {
@@ -101,8 +102,15 @@ extension ParameterType on FormalParameter {
       case DefaultFormalParameter():
         return that.parameter.typeDisplayString;
       case SimpleFormalParameter():
-        // No type, so let's just return 'dynamic'
-        return that.type?.toSource() ?? 'dynamic';
+        try {
+          // No type, so let's just return 'dynamic'
+          return that.type?.type?.toCode() ?? 'dynamic';
+        } on InvalidTypeException catch (e, stackTrace) {
+          Error.throwWithStackTrace(
+            InvalidGenerationSource('Invalid type found', node: this),
+            stackTrace,
+          );
+        }
       case FieldFormalParameter():
       case FunctionTypedFormalParameter():
       case SuperFormalParameter():

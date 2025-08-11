@@ -31,8 +31,8 @@ enum SupportedCreatedType {
   stream,
   value;
 
-  static SupportedCreatedType from(TypeAnnotation? type) {
-    final dartType = type?.type;
+  static SupportedCreatedType from(DartType type) {
+    final dartType = type;
     switch (dartType) {
       case != null
           when !dartType.isRaw &&
@@ -51,27 +51,6 @@ sealed class GeneratorProviderDeclaration extends ProviderDeclaration {
   GeneratorProviderDeclarationElement get providerElement;
   RiverpodAnnotation get annotation;
 
-  String get valueTypeDisplayString => valueTypeNode?.toSource() ?? 'Object?';
-  String get exposedTypeDisplayString => exposedTypeNode?.source ?? 'Object?';
-  String get createdTypeDisplayString {
-    final type = createdTypeNode?.type;
-
-    if (type != null &&
-        !type.isRaw &&
-        (type.isDartAsyncFuture || type.isDartAsyncFutureOr)) {
-      return 'FutureOr<$valueTypeDisplayString>';
-    }
-
-    return createdTypeNode?.toSource() ?? 'Object?';
-  }
-
-  TypeAnnotation? get valueTypeNode;
-  SourcedType? get exposedTypeNode;
-  TypeAnnotation? get createdTypeNode;
-
-  SupportedCreatedType get createdType =>
-      SupportedCreatedType.from(createdTypeNode);
-
   String computeProviderHash() {
     final bytes = utf8.encode(node.toSource());
     final digest = sha1.convert(bytes);
@@ -82,6 +61,13 @@ sealed class GeneratorProviderDeclaration extends ProviderDeclaration {
 sealed class GeneratorProviderDeclarationElement
     implements ProviderDeclarationElement {
   RiverpodAnnotationElement get annotation;
+
+  DartType get valueTypeNode;
+  DartType get exposedTypeNode;
+  DartType get createdTypeNode;
+
+  SupportedCreatedType get createdType =>
+      SupportedCreatedType.from(createdTypeNode);
 
   /// Whether a provider has any form of parameter, be it function parameters
   /// or type parameters.
@@ -98,72 +84,91 @@ sealed class GeneratorProviderDeclarationElement
   bool get isAutoDispose => !annotation.keepAlive;
 }
 
-typedef SourcedType = ({String? source, DartType dartType});
-
-SourcedType? _computeExposedType(
-  TypeAnnotation? createdType,
+({
+  DartType createdType,
+  DartType valueType,
+  DartType exposedType,
+})? _computeTypes(
+  DartType buildReturnValue,
   CompilationUnit unit,
 ) {
-  final library = unit.declaredFragment!.element;
+  final valueType = _getValueType(
+    buildReturnValue,
+    typeProvider: unit.declaredFragment!.element.typeProvider,
+  );
 
-  if (createdType == null) {
-    return (
-      source: null,
-      dartType: library.typeProvider.dynamicType,
-    );
-  }
+  final createdType = _computeCreatedType(
+    buildReturnValue,
+    unit,
+    valueType: valueType,
+  );
+  if (createdType == null) return null;
 
-  final createdDartType = createdType.type!;
-  if (createdDartType.isRaw) {
-    return (
-      source: createdType.toSource(),
-      dartType: createdType.type!,
-    );
-  }
-
-  if (createdDartType.isDartAsyncFuture ||
-      createdDartType.isDartAsyncFutureOr ||
-      createdDartType.isDartAsyncStream) {
-    createdType as NamedType;
-    createdDartType as InterfaceType;
-
-    final typeSource = createdType.toSource();
-    if (typeSource != 'Future' &&
-        typeSource != 'FutureOr' &&
-        typeSource != 'Stream' &&
-        !typeSource.startsWith('Future<') &&
-        !typeSource.startsWith('FutureOr<') &&
-        !typeSource.startsWith('Stream<')) {
-      throw UnsupportedError(
-        'Returning a typedef of type Future/FutureOr/Stream is not supported\n'
-        'The code that triggered this error is: $typeSource',
-      );
-    }
-
-    final valueTypeArg = createdType.typeArguments?.arguments.firstOrNull;
-
-    final exposedDartType = unit.createdTypeToValueType(
-      createdDartType.typeArguments.first,
-    );
-    if (exposedDartType == null) return null;
-
-    return (
-      source: valueTypeArg == null ? 'AsyncValue' : 'AsyncValue<$valueTypeArg>',
-      dartType: exposedDartType,
-    );
-  }
+  final exposedType = _computeExposedType(createdType.$1, unit);
+  if (exposedType == null) return null;
 
   return (
-    source: createdType.toSource(),
-    dartType: createdType.type!,
+    createdType: createdType.$1,
+    valueType: valueType,
+    exposedType: exposedType.$1,
   );
 }
 
-TypeAnnotation? _getValueType(TypeAnnotation? createdType) {
+(DartType,)? _computeCreatedType(
+  DartType createdType,
+  CompilationUnit unit, {
+  required DartType valueType,
+}) {
+  if (createdType.isRaw) return (createdType,);
+
+  if (createdType.isDartAsyncFuture || createdType.isDartAsyncFutureOr) {
+    createdType as InterfaceType;
+
+    final futureOr = unit.findFutureOr();
+    if (futureOr == null) return null;
+
+    return (
+      futureOr.instantiate(
+        typeArguments: [valueType],
+        nullabilitySuffix: NullabilitySuffix.none,
+      ),
+    );
+  }
+
+  return (createdType,);
+}
+
+(DartType,)? _computeExposedType(
+  DartType createdType,
+  CompilationUnit unit,
+) {
+  if (createdType.isRaw) return (createdType,);
+
+  if (createdType.isDartAsyncFuture ||
+      createdType.isDartAsyncFutureOr ||
+      createdType.isDartAsyncStream) {
+    createdType as InterfaceType;
+
+    final exposedDartType = unit.createdTypeToValueType(
+      createdType.typeArguments.first,
+    );
+    if (exposedDartType == null) return null;
+
+    return (exposedDartType,);
+  }
+
+  return (createdType,);
+}
+
+DartType _getValueType(
+  DartType createdType, {
+  required TypeProvider typeProvider,
+}) {
   switch (SupportedCreatedType.from(createdType)) {
     case SupportedCreatedType.future:
     case SupportedCreatedType.stream:
-      return (createdType! as NamedType).typeArguments?.arguments.firstOrNull;
+      return (createdType as InterfaceType).typeArguments.firstOrNull ??
+          typeProvider.dynamicType;
     case SupportedCreatedType.value:
       return createdType;
   }

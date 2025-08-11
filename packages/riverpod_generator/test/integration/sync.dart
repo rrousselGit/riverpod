@@ -261,3 +261,21 @@ const fnProv = manualRename;
 String fn2(Ref ref, int a) => '';
 
 const fn2Prov = manualRename2;
+
+@riverpod
+void voidFunctional(Ref ref) {}
+
+@riverpod
+void voidFunctionalWithArgs(Ref ref, int a) {}
+
+@riverpod
+class VoidClass extends _$VoidClass {
+  @override
+  void build() {}
+}
+
+@riverpod
+class VoidClassWithArgs extends _$VoidClassWithArgs {
+  @override
+  void build(int a) {}
+}
