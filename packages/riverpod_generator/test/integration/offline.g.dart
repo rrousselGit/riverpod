@@ -500,6 +500,7 @@ abstract class _$PassEncodeDecodeByHandBase
 // JsonGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 abstract class _$Json extends _$JsonBase {
   /// The default key used by [persist].
   String get key {

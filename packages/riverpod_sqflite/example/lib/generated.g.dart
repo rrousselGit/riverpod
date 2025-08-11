@@ -112,6 +112,7 @@ abstract class _$TodosNotifierBase extends $AsyncNotifier<List<Todo>> {
 // JsonGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 abstract class _$TodosNotifier extends _$TodosNotifierBase {
   /// The default key used by [persist].
   String get key {
