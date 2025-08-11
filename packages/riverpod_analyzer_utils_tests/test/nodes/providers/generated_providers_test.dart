@@ -97,9 +97,8 @@ Future<Raw<int>> value3(Ref ref) async => 0;
     );
     expect(value2.providerElement.valueTypeNode.toCode(), '#{{dart:core|int}}');
     expect(value2.providerElement.createdTypeNode.isRaw, false);
-    expect(value2.providerElement.createdTypeNode.isRaw, false);
+    expect(value2.providerElement.exposedTypeNode.isRaw, false);
     expect(value2.providerElement.valueTypeNode.isRaw, false);
-
     expect(
       value3.providerElement.createdTypeNode.toCode(),
       '#{{dart:async|FutureOr}}<#{{package:riverpod_annotation/src/riverpod_annotation.dart|Raw}}<#{{dart:core|int}}>>',
