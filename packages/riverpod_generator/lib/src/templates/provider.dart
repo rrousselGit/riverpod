@@ -170,8 +170,9 @@ final class $name$_genericsDefinition
   }
 
   void _writeOverrideWithValue(StringBuffer buffer) {
-    if (provider.providerElement.createdType != SupportedCreatedType.value)
+    if (provider.providerElement.createdType != SupportedCreatedType.value) {
       return;
+    }
 
     buffer.writeln('''
   /// {@macro riverpod.override_with_value}

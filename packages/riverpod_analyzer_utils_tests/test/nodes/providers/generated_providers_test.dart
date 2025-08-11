@@ -72,25 +72,35 @@ Future<Raw<int>> value3(Ref ref) async => 0;
     final value3 =
         unit.declarations.findByName<FunctionDeclaration>('value3').provider!;
     expect(
-        value..providerElement.createdTypeNode.toString(), 'Raw<Future<int>>');
+      value..providerElement.createdTypeNode.toString(),
+      'Raw<Future<int>>',
+    );
     expect(
-        value..providerElement.exposedTypeNode.toString(), 'Raw<Future<int>>');
+      value..providerElement.exposedTypeNode.toString(),
+      'Raw<Future<int>>',
+    );
     expect(value..providerElement.valueTypeNode.toString(), 'Raw<Future<int>>');
     expect(value..providerElement.createdTypeNode.isRaw, true);
     expect(value..providerElement.valueTypeNode.isRaw, true);
 
     expect(value2..providerElement.createdTypeNode.toString(), 'Future<int>');
     expect(
-        value2..providerElement.exposedTypeNode.toString(), 'AsyncValue<int>');
+      value2..providerElement.exposedTypeNode.toString(),
+      'AsyncValue<int>',
+    );
     expect(value2..providerElement.valueTypeNode.toString(), 'int');
     expect(value2..providerElement.createdTypeNode.isRaw, false);
     expect(value2..providerElement.createdTypeNode.isRaw, false);
     expect(value2..providerElement.valueTypeNode.isRaw, false);
 
     expect(
-        value3..providerElement.createdTypeNode.toString(), 'Future<Raw<int>>');
-    expect(value3..providerElement.exposedTypeNode.toString(),
-        'AsyncValue<Raw<int>>');
+      value3..providerElement.createdTypeNode.toString(),
+      'Future<Raw<int>>',
+    );
+    expect(
+      value3..providerElement.exposedTypeNode.toString(),
+      'AsyncValue<Raw<int>>',
+    );
     expect(value3..providerElement.valueTypeNode.toString(), 'Raw<int>');
     expect(value3..providerElement.createdTypeNode.isRaw, false);
     expect(value3..providerElement.valueTypeNode.isRaw, true);
