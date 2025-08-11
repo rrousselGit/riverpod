@@ -39,13 +39,13 @@ class FamilyTemplate extends Template {
     final mixinTypes = <String>[
       ...switch (provider) {
         FunctionalProviderDeclaration(typeParameters: null) => [
-            '\$FunctionalFamilyOverride<${provider.providerElement.createdTypeNode.toCode()}, $_argumentRecordType>',
+            '\$FunctionalFamilyOverride<${provider.providerElement.createdTypeNode}, $_argumentRecordType>',
           ],
         ClassBasedProviderDeclaration(typeParameters: null) => [
             '\$ClassFamilyOverride<$_notifierType, '
-                '${provider.providerElement.exposedTypeNode.toCode()}, '
+                '${provider.providerElement.exposedTypeNode}, '
                 '${provider.providerElement.valueTypeNode.toCode()}, '
-                '${provider.providerElement.createdTypeNode.toCode()}, '
+                '${provider.providerElement.createdTypeNode}, '
                 '$_argumentRecordType>',
           ],
         _ => [],
@@ -116,9 +116,9 @@ final class ${provider.familyTypeName} extends \$Family $mixins {
   }) {
     final createType = switch (provider) {
       FunctionalProviderDeclaration(parameters: [_, ...]) =>
-        '${provider.providerElement.createdTypeNode.toCode()} Function$_genericsDefinition(Ref ref, $_argumentRecordType args,)',
+        '${provider.providerElement.createdTypeNode} Function$_genericsDefinition(Ref ref, $_argumentRecordType args,)',
       FunctionalProviderDeclaration(parameters: []) =>
-        '${provider.providerElement.createdTypeNode.toCode()} Function$_genericsDefinition(Ref ref)',
+        '${provider.providerElement.createdTypeNode} Function$_genericsDefinition(Ref ref)',
       ClassBasedProviderDeclaration() =>
         '$_notifierType Function$_genericsDefinition()',
     };
@@ -149,7 +149,7 @@ Override overrideWith($createType create) =>
     required StringBuffer topLevelBuffer,
   }) {
     final runNotifierBuildType = '''
-${provider.providerElement.createdTypeNode.toCode()} Function$_genericsDefinition(
+${provider.providerElement.createdTypeNode} Function$_genericsDefinition(
   Ref ref,
   $_notifierType notifier
 )''';

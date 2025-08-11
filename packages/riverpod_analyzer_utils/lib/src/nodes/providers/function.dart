@@ -54,6 +54,7 @@ class FunctionalProviderDeclarationElement
     required this.createdTypeNode,
     required this.exposedTypeNode,
     required this.valueTypeNode,
+    required this.createdType,
   });
 
   static final _cache = _Cache<FunctionalProviderDeclarationElement?>();
@@ -80,6 +81,7 @@ class FunctionalProviderDeclarationElement
         createdTypeNode: types.createdType,
         exposedTypeNode: types.exposedType,
         valueTypeNode: types.valueType,
+        createdType: types.supportedCreatedType,
       );
     });
   }
@@ -100,9 +102,11 @@ class FunctionalProviderDeclarationElement
   @override
   final ExecutableElement2 element;
   @override
-  final DartType createdTypeNode;
+  final String createdTypeNode;
   @override
-  final DartType exposedTypeNode;
+  final String exposedTypeNode;
   @override
   final DartType valueTypeNode;
+  @override
+  final SupportedCreatedType createdType;
 }

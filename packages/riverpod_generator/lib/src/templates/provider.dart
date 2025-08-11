@@ -27,8 +27,8 @@ class ProviderTemplate extends Template {
     final provider = this.provider;
 
     final name = provider.providerTypeName;
-    final exposedType = provider.providerElement.exposedTypeNode.toCode();
-    final createdType = provider.providerElement.createdTypeNode.toCode();
+    final exposedType = provider.providerElement.exposedTypeNode;
+    final createdType = provider.providerElement.createdTypeNode;
     final valueType = provider.providerElement.valueTypeNode.toCode();
 
     switch (provider) {
@@ -176,7 +176,7 @@ final class $name$_genericsDefinition
 
     buffer.writeln('''
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(${provider.providerElement.exposedTypeNode.toCode()} value) {
+  Override overrideWithValue(${provider.providerElement.exposedTypeNode} value) {
     return \$ProviderOverride(
       origin: this,
       providerOverride: \$SyncValueProvider<${provider.providerElement.valueTypeNode.toCode()}>(value),
@@ -188,7 +188,7 @@ final class $name$_genericsDefinition
   void _writeFunctionalCreate(StringBuffer buffer) {
     buffer.write('''
   @override
-  ${provider.providerElement.createdTypeNode.toCode()} create(Ref ref) {
+  ${provider.providerElement.createdTypeNode} create(Ref ref) {
 ''');
 
     switch (provider.parameters) {

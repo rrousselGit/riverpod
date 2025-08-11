@@ -76,9 +76,9 @@ abstract class $notifierBaseName$genericsDefinition extends $baseClass {
   @override
   void runBuild() {
     ${buildVar}build($paramsPassThrough);
-    final ref = this.ref as \$Ref<${provider.providerElement.exposedTypeNode.toCode()}, ${provider.providerElement.valueTypeNode.toCode()}>;
-    final element = ref.element as \$ClassProviderElement<AnyNotifier<${provider.providerElement.exposedTypeNode.toCode()}, ${provider.providerElement.valueTypeNode.toCode()}>,
-          ${provider.providerElement.exposedTypeNode.toCode()}, Object?, Object?>;
+    final ref = this.ref as \$Ref<${provider.providerElement.exposedTypeNode}, ${provider.providerElement.valueTypeNode.toCode()}>;
+    final element = ref.element as \$ClassProviderElement<AnyNotifier<${provider.providerElement.exposedTypeNode}, ${provider.providerElement.valueTypeNode.toCode()}>,
+          ${provider.providerElement.exposedTypeNode}, Object?, Object?>;
     element.handleValue(ref, $buildVarUsage);
   }
 }
@@ -89,7 +89,7 @@ abstract class $notifierBaseName$genericsDefinition extends $baseClass {
     final buildParams = buildParamDefinitionQuery(provider.parameters);
 
     buffer.write(
-      '${provider.providerElement.createdTypeNode.toCode()} build($buildParams)',
+      '${provider.providerElement.createdTypeNode} build($buildParams)',
     );
 
     if (provider.buildMethod.isAbstract) {

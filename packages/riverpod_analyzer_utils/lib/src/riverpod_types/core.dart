@@ -111,6 +111,7 @@ const asyncValueType = TypeChecker.fromName(
   'AsyncValue',
   packageName: 'riverpod',
 );
+const asyncValueCode = '#{{riverpod|AsyncValue}}';
 
 /// [TypeChecker] for `ProviderContainer`
 const containerType = TypeChecker.fromName(

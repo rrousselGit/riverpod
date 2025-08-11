@@ -13,6 +13,7 @@ resolution: workspace
 
 dependencies:
   analyzer: ^7.3.0
+  analyzer_buffer: ^0.1.9
   collection: ^1.16.0
   crypto: ^3.0.2
   custom_lint_core: ^0.8.0

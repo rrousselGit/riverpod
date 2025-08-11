@@ -63,11 +63,10 @@ sealed class GeneratorProviderDeclarationElement
   RiverpodAnnotationElement get annotation;
 
   DartType get valueTypeNode;
-  DartType get exposedTypeNode;
-  DartType get createdTypeNode;
+  String get exposedTypeNode;
+  String get createdTypeNode;
 
-  SupportedCreatedType get createdType =>
-      SupportedCreatedType.from(createdTypeNode);
+  SupportedCreatedType get createdType;
 
   /// Whether a provider has any form of parameter, be it function parameters
   /// or type parameters.
@@ -85,9 +84,10 @@ sealed class GeneratorProviderDeclarationElement
 }
 
 ({
-  DartType createdType,
+  String createdType,
   DartType valueType,
-  DartType exposedType,
+  String exposedType,
+  SupportedCreatedType supportedCreatedType
 })? _computeTypes(
   DartType buildReturnValue,
   CompilationUnit unit,
@@ -97,61 +97,59 @@ sealed class GeneratorProviderDeclarationElement
     typeProvider: unit.declaredFragment!.element.typeProvider,
   );
 
-  final createdType = _computeCreatedType(
+  final (createdType, supportedCreatedType) = _computeCreatedType(
     buildReturnValue,
     unit,
     valueType: valueType,
   );
 
-  final exposedType = _computeExposedType(createdType, unit);
-  if (exposedType == null) return null;
+  final exposedType = _computeExposedType(createdType);
 
   return (
-    createdType: createdType,
+    createdType: createdType.toCode(),
     valueType: valueType,
-    exposedType: exposedType.$1,
+    exposedType: exposedType,
+    supportedCreatedType: supportedCreatedType,
   );
 }
 
-DartType _computeCreatedType(
+(DartType, SupportedCreatedType) _computeCreatedType(
   DartType createdType,
   CompilationUnit unit, {
   required DartType valueType,
 }) {
-  if (createdType.isRaw) return createdType;
+  if (createdType.isRaw) return (createdType, SupportedCreatedType.value);
 
   if (createdType.isDartAsyncFuture || createdType.isDartAsyncFutureOr) {
     createdType as InterfaceType;
 
     final typeProvider = unit.declaredFragment!.element.typeProvider;
-
-    return typeProvider.futureOrType(valueType);
+    return (typeProvider.futureOrType(valueType), SupportedCreatedType.future);
   }
 
-  return createdType;
+  if (createdType.isDartAsyncStream) {
+    return (createdType, SupportedCreatedType.stream);
+  }
+
+  return (createdType, SupportedCreatedType.value);
 }
 
-(DartType,)? _computeExposedType(
-  DartType createdType,
-  CompilationUnit unit,
-) {
-  if (createdType.isRaw) return (createdType,);
+String _computeExposedType(DartType createdType) {
+  if (createdType.isRaw) return createdType.toCode();
 
   if (createdType.isDartAsyncFuture ||
       createdType.isDartAsyncFutureOr ||
       createdType.isDartAsyncStream) {
     createdType as InterfaceType;
 
-    final exposedDartType = unit.createdTypeToValueType(
-      createdType.typeArguments.first,
-    );
-    if (exposedDartType == null) return null;
-
-    return (exposedDartType,);
+    return _asyncValueTypeCode(createdType.typeArguments.first);
   }
 
-  return (createdType,);
+  return createdType.toCode();
 }
+
+String _asyncValueTypeCode(DartType typeArg) =>
+    '$asyncValueCode<${typeArg.toCode()}>';
 
 DartType _getValueType(
   DartType createdType, {

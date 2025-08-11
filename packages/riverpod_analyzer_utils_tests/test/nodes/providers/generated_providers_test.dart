@@ -73,45 +73,41 @@ Future<Raw<int>> value3(Ref ref) async => 0;
     final value3 =
         unit.declarations.findByName<FunctionDeclaration>('value3').provider!;
     expect(
-      value.providerElement.createdTypeNode.toCode(),
+      value.providerElement.createdTypeNode,
       '#{{package:riverpod_annotation/src/riverpod_annotation.dart|Raw}}<#{{dart:async|Future}}<#{{dart:core|int}}>>',
     );
     expect(
-      value.providerElement.exposedTypeNode.toCode(),
+      value.providerElement.exposedTypeNode,
       '#{{package:riverpod_annotation/src/riverpod_annotation.dart|Raw}}<#{{dart:async|Future}}<#{{dart:core|int}}>>',
     );
     expect(
       value.providerElement.valueTypeNode.toCode(),
       '#{{package:riverpod_annotation/src/riverpod_annotation.dart|Raw}}<#{{dart:async|Future}}<#{{dart:core|int}}>>',
     );
-    expect(value.providerElement.createdTypeNode.isRaw, true);
     expect(value.providerElement.valueTypeNode.isRaw, true);
 
     expect(
-      value2.providerElement.createdTypeNode.toCode(),
+      value2.providerElement.createdTypeNode,
       '#{{dart:async|FutureOr}}<#{{dart:core|int}}>',
     );
     expect(
-      value2.providerElement.exposedTypeNode.toCode(),
-      '#{{package:riverpod/src/core/async_value.dart|AsyncValue}}<#{{dart:core|int}}>',
+      value2.providerElement.exposedTypeNode,
+      '#{{riverpod|AsyncValue}}<#{{dart:core|int}}>',
     );
     expect(value2.providerElement.valueTypeNode.toCode(), '#{{dart:core|int}}');
-    expect(value2.providerElement.createdTypeNode.isRaw, false);
-    expect(value2.providerElement.exposedTypeNode.isRaw, false);
     expect(value2.providerElement.valueTypeNode.isRaw, false);
     expect(
-      value3.providerElement.createdTypeNode.toCode(),
+      value3.providerElement.createdTypeNode,
       '#{{dart:async|FutureOr}}<#{{package:riverpod_annotation/src/riverpod_annotation.dart|Raw}}<#{{dart:core|int}}>>',
     );
     expect(
-      value3.providerElement.exposedTypeNode.toCode(),
-      '#{{package:riverpod/src/core/async_value.dart|AsyncValue}}<#{{package:riverpod_annotation/src/riverpod_annotation.dart|Raw}}<#{{dart:core|int}}>>',
+      value3.providerElement.exposedTypeNode,
+      '#{{riverpod|AsyncValue}}<#{{package:riverpod_annotation/src/riverpod_annotation.dart|Raw}}<#{{dart:core|int}}>>',
     );
     expect(
       value3.providerElement.valueTypeNode.toCode(),
       '#{{package:riverpod_annotation/src/riverpod_annotation.dart|Raw}}<#{{dart:core|int}}>',
     );
-    expect(value3.providerElement.createdTypeNode.isRaw, false);
     expect(value3.providerElement.valueTypeNode.isRaw, true);
   });
 

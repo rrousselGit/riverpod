@@ -361,7 +361,7 @@ extension ProviderNames on GeneratorProviderDeclaration {
           )
         : '';
 
-    return '${providerElement.createdTypeNode.toCode()} Function$genericsDefinition(Ref, $notifierType, $parameters)';
+    return '${providerElement.createdTypeNode} Function$genericsDefinition(Ref, $notifierType, $parameters)';
   }
 
   String createType({
@@ -382,7 +382,7 @@ extension ProviderNames on GeneratorProviderDeclaration {
               )
             : '';
 
-        return '${provider.providerElement.createdTypeNode.toCode()} Function$genericsDefinition(Ref ref, $params)';
+        return '${provider.providerElement.createdTypeNode} Function$genericsDefinition(Ref ref, $params)';
       case ClassBasedProviderDeclaration():
         return '${provider.name}$generics Function$genericsDefinition()';
     }
