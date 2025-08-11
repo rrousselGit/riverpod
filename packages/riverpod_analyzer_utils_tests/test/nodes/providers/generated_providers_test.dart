@@ -1,4 +1,5 @@
 import 'package:analyzer/dart/ast/ast.dart';
+import 'package:analyzer_buffer/analyzer_buffer.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:test/test.dart';
 
@@ -72,38 +73,47 @@ Future<Raw<int>> value3(Ref ref) async => 0;
     final value3 =
         unit.declarations.findByName<FunctionDeclaration>('value3').provider!;
     expect(
-      value..providerElement.createdTypeNode.toString(),
-      'Raw<Future<int>>',
+      value.providerElement.createdTypeNode.toCode(),
+      '#{{package:riverpod_annotation/src/riverpod_annotation.dart|Raw}}<#{{dart:async|Future}}<#{{dart:core|int}}>>',
     );
     expect(
-      value..providerElement.exposedTypeNode.toString(),
-      'Raw<Future<int>>',
+      value.providerElement.exposedTypeNode.toCode(),
+      '#{{package:riverpod_annotation/src/riverpod_annotation.dart|Raw}}<#{{dart:async|Future}}<#{{dart:core|int}}>>',
     );
-    expect(value..providerElement.valueTypeNode.toString(), 'Raw<Future<int>>');
-    expect(value..providerElement.createdTypeNode.isRaw, true);
-    expect(value..providerElement.valueTypeNode.isRaw, true);
-
-    expect(value2..providerElement.createdTypeNode.toString(), 'Future<int>');
     expect(
-      value2..providerElement.exposedTypeNode.toString(),
-      'AsyncValue<int>',
+      value.providerElement.valueTypeNode.toCode(),
+      '#{{package:riverpod_annotation/src/riverpod_annotation.dart|Raw}}<#{{dart:async|Future}}<#{{dart:core|int}}>>',
     );
-    expect(value2..providerElement.valueTypeNode.toString(), 'int');
-    expect(value2..providerElement.createdTypeNode.isRaw, false);
-    expect(value2..providerElement.createdTypeNode.isRaw, false);
-    expect(value2..providerElement.valueTypeNode.isRaw, false);
+    expect(value.providerElement.createdTypeNode.isRaw, true);
+    expect(value.providerElement.valueTypeNode.isRaw, true);
 
     expect(
-      value3..providerElement.createdTypeNode.toString(),
-      'Future<Raw<int>>',
+      value2.providerElement.createdTypeNode.toCode(),
+      '#{{dart:async|FutureOr}}<#{{dart:core|int}}>',
     );
     expect(
-      value3..providerElement.exposedTypeNode.toString(),
-      'AsyncValue<Raw<int>>',
+      value2.providerElement.exposedTypeNode.toCode(),
+      '#{{package:riverpod/src/core/async_value.dart|AsyncValue}}<#{{dart:core|int}}>',
     );
-    expect(value3..providerElement.valueTypeNode.toString(), 'Raw<int>');
-    expect(value3..providerElement.createdTypeNode.isRaw, false);
-    expect(value3..providerElement.valueTypeNode.isRaw, true);
+    expect(value2.providerElement.valueTypeNode.toCode(), '#{{dart:core|int}}');
+    expect(value2.providerElement.createdTypeNode.isRaw, false);
+    expect(value2.providerElement.createdTypeNode.isRaw, false);
+    expect(value2.providerElement.valueTypeNode.isRaw, false);
+
+    expect(
+      value3.providerElement.createdTypeNode.toCode(),
+      '#{{dart:async|FutureOr}}<#{{package:riverpod_annotation/src/riverpod_annotation.dart|Raw}}<#{{dart:core|int}}>>',
+    );
+    expect(
+      value3.providerElement.exposedTypeNode.toCode(),
+      '#{{package:riverpod/src/core/async_value.dart|AsyncValue}}<#{{package:riverpod_annotation/src/riverpod_annotation.dart|Raw}}<#{{dart:core|int}}>>',
+    );
+    expect(
+      value3.providerElement.valueTypeNode.toCode(),
+      '#{{package:riverpod_annotation/src/riverpod_annotation.dart|Raw}}<#{{dart:core|int}}>',
+    );
+    expect(value3.providerElement.createdTypeNode.isRaw, false);
+    expect(value3.providerElement.valueTypeNode.isRaw, true);
   });
 
   testSource('Decode isScoped', source: '''
