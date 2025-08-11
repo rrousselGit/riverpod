@@ -222,7 +222,13 @@ final class ProviderScopeState extends State<ProviderScope> {
 /// {@template riverpod.UncontrolledProviderScope}
 /// Expose a [ProviderContainer] to the widget tree.
 ///
-/// This is what makes `ref.watch`/`Consumer`/`ref.read` work.
+/// This is what makes [Consumer] work.
+/// 
+/// **Note**: The [container] will _not_ be disposed when using this widget.
+/// It is the caller's responsibility to dispose of it when no longer needed.
+/// Alternatively, use [ProviderScope] to automatically manage the lifecycle of
+/// the [ProviderContainer].
+/// 
 /// {@endtemplate}
 /// {@category Core}
 class UncontrolledProviderScope extends StatefulWidget {
