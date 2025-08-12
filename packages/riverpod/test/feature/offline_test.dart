@@ -660,8 +660,8 @@ extension on TestFactory<Object?> {
 
     return when(
       asyncNotifier: (factory) {
-        DeferredFamilyAsyncNotifier<Object?> familyNotifierCreate() =>
-            DeferredFamilyAsyncNotifier(familyCreate);
+        DeferredAsyncNotifier<Object?> familyNotifierCreate([Object? arg]) =>
+            DeferredAsyncNotifier(familyCreate, arg: arg);
         DeferredAsyncNotifier<Object?> notifierCreate() =>
             DeferredAsyncNotifier(create);
 
@@ -676,13 +676,13 @@ extension on TestFactory<Object?> {
             return AsyncNotifierProvider.autoDispose<
                 DeferredAsyncNotifier<Object?>, Object?>(notifierCreate);
           case (family: true, autoDispose: false):
-            return AsyncNotifierProvider.family<
-                DeferredFamilyAsyncNotifier<Object?>, Object?, Object?>(
+            return AsyncNotifierProvider.family<DeferredAsyncNotifier<Object?>,
+                Object?, Object?>(
               familyNotifierCreate,
             )(0);
           case (family: true, autoDispose: true):
             return AsyncNotifierProvider.autoDispose
-                .family<DeferredFamilyAsyncNotifier<Object?>, Object?, Object?>(
+                .family<DeferredAsyncNotifier<Object?>, Object?, Object?>(
               familyNotifierCreate,
             )(0);
         }
@@ -708,8 +708,8 @@ extension on TestFactory<Object?> {
           return controller.stream;
         }
 
-        DeferredFamilyStreamNotifier<Object?> familyNotifierCreate() =>
-            DeferredFamilyStreamNotifier(handle);
+        DeferredStreamNotifier<Object?> familyNotifierCreate(Object? arg) =>
+            DeferredStreamNotifier(handle, arg: arg);
         DeferredStreamNotifier<Object?> notifierCreate() =>
             DeferredStreamNotifier(handle);
 
@@ -725,19 +725,21 @@ extension on TestFactory<Object?> {
                 DeferredStreamNotifier<Object?>, Object?>(notifierCreate);
           case (family: true, autoDispose: false):
             return StreamNotifierProvider.family<
-                DeferredFamilyStreamNotifier<Object?>, Object?, Object?>(
+                DeferredStreamNotifier<Object?>, Object?, Object?>(
               familyNotifierCreate,
             )(0);
           case (family: true, autoDispose: true):
-            return StreamNotifierProvider.autoDispose.family<
-                DeferredFamilyStreamNotifier<Object?>, Object?, Object?>(
+            return StreamNotifierProvider.autoDispose
+                .family<DeferredStreamNotifier<Object?>, Object?, Object?>(
               familyNotifierCreate,
             )(0);
         }
       },
       notifier: (factory) {
-        DeferredFamilyNotifier<Object?> familyNotifierCreate() =>
-            DeferredFamilyNotifier(familyCreate);
+        DeferredNotifier<Object?> familyNotifierCreate([Object? arg]) =>
+            DeferredNotifier(
+              familyCreate,
+            );
         DeferredNotifier<Object?> notifierCreate() => DeferredNotifier(create);
 
         switch ((
@@ -752,13 +754,13 @@ extension on TestFactory<Object?> {
             return NotifierProvider.autoDispose<DeferredNotifier<Object?>,
                 Object?>(notifierCreate);
           case (family: true, autoDispose: false):
-            return NotifierProvider.family<DeferredFamilyNotifier<Object?>,
-                Object?, Object?>(
+            return NotifierProvider.family<DeferredNotifier<Object?>, Object?,
+                Object?>(
               familyNotifierCreate,
             )(0);
           case (family: true, autoDispose: true):
             return NotifierProvider.autoDispose
-                .family<DeferredFamilyNotifier<Object?>, Object?, Object?>(
+                .family<DeferredNotifier<Object?>, Object?, Object?>(
               familyNotifierCreate,
             )(0);
         }

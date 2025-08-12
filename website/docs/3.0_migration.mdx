@@ -298,15 +298,46 @@ This primarily affects code-generation. Instead of `MyProviderRef`, you can now 
 }
 ```
 
-## AutoDispose interfaces are moved
+## AutoDispose interfaces are removed.
 
 The auto-dispose feature is simplified. Instead of relying on a clone of all interfaces,
-interfaces are unified.
-
-In short, instead of `AutoDisposeProvider`, `AutoDisposeNotifier`, etc, you now have `Provider`, `Notifier`, etc.
-The behavior is the same, but the API is simplified.
+interfaces are unified. In short, instead of `AutoDisposeProvider`, `AutoDisposeNotifier`, 
+etc, you now have `Provider`, `Notifier`, etc. The behavior is the same, but the API is simplified.
 
 To easily migrate, you can do a case-sensitive replace of `AutoDispose` to ` ` (empty string).
+
+## The family variant of Notifiers is removed
+
+In the same vein as the previous point, the family variant of Notifiers is removed.
+Now, we use `Notifier`/`AsyncNotifier`/`StreamNotifier` only, and `FamilyNotifier`/... are removed.
+
+To migrate, you will need to replace:
+- `FamilyNotifier` -> `Notifier`
+- `FamilyAsyncNotifier` -> `AsyncNotifier`
+- `FamilyStreamNotifier` -> `StreamNotifier`
+
+Then, you will need to:
+- Remove the parameter from the `build` method
+- Add a constructor on your Notifier
+
+An example of this migration is as follows:
+
+```diff
+final provider = NotifierProvider.family<CounterNotifier, int, String>(CounterNotifier.new);
+
+-class CounterNotifier extends FamilyNotifier<int, String> {
++class CounterNotifier extends Notifier<int> {
++  CounterNotifier(this.arg);
++  final String arg;
+
+   @override
+-  int build(String arg) {
++  int build() {
+     // Use `arg` as needed
+      return 0;
+   }
+}
+```
 
 ## Provider failures are now rethrown as ProviderExceptions
 

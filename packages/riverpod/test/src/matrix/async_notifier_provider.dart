@@ -60,27 +60,27 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
     'AsyncNotifierProvider.family': AsyncNotifierTestFactory(
       isAutoDispose: false,
       isFamily: true,
-      deferredNotifier: DeferredFamilyAsyncNotifier.new,
+      deferredNotifier: DeferredAsyncNotifier.new,
       deferredProvider: <ValueT>(create, {updateShouldNotify, retry}) {
-        return AsyncNotifierProvider.family<DeferredFamilyAsyncNotifier<ValueT>,
+        return AsyncNotifierProvider.family<DeferredAsyncNotifier<ValueT>,
             ValueT, Object?>(
           retry: retry,
-          () => DeferredFamilyAsyncNotifier(
+          (arg) => DeferredAsyncNotifier(
             create,
             updateShouldNotify: updateShouldNotify,
           ),
         ).call(42);
       },
       provider: <ValueT>(create) {
-        return AsyncNotifierProvider.family<
-            FamilyAsyncNotifier<ValueT, Object?>, ValueT, Object?>(
-          () => create() as FamilyAsyncNotifier<ValueT, Object?>,
+        return AsyncNotifierProvider.family<AsyncNotifier<ValueT>, ValueT,
+            Object?>(
+          (arg) => create() as AsyncNotifier<ValueT>,
         ).call(42);
       },
       value: (create, {name, dependencies, retry}) => ([arg]) {
-        return AsyncNotifierProvider.family<
-            FamilyAsyncNotifier<Object?, Object?>, Object?, Object?>(
-          () => create(null, arg) as FamilyAsyncNotifier<Object?, Object?>,
+        return AsyncNotifierProvider.family<AsyncNotifier<Object?>, Object?,
+            Object?>(
+          (arg) => create(null, arg) as AsyncNotifier<Object?>,
           name: name,
           dependencies: dependencies,
           retry: retry,
@@ -90,12 +90,12 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
     'AsyncNotifierProvider.autoDispose.family': AsyncNotifierTestFactory(
       isAutoDispose: true,
       isFamily: true,
-      deferredNotifier: DeferredFamilyAsyncNotifier.new,
+      deferredNotifier: DeferredAsyncNotifier.new,
       deferredProvider: <ValueT>(create, {updateShouldNotify, retry}) {
         return AsyncNotifierProvider.family
-            .autoDispose<DeferredFamilyAsyncNotifier<ValueT>, ValueT, Object?>(
+            .autoDispose<DeferredAsyncNotifier<ValueT>, ValueT, Object?>(
               retry: retry,
-              () => DeferredFamilyAsyncNotifier(
+              (arg) => DeferredAsyncNotifier(
                 create,
                 updateShouldNotify: updateShouldNotify,
               ),
@@ -104,15 +104,15 @@ final asyncNotifierProviderFactory = TestMatrix<AsyncNotifierTestFactory>(
       },
       provider: <ValueT>(create) {
         return AsyncNotifierProvider.autoDispose
-            .family<FamilyAsyncNotifier<ValueT, Object?>, ValueT, Object?>(
-              () => create() as FamilyAsyncNotifier<ValueT, Object?>,
+            .family<AsyncNotifier<ValueT>, ValueT, Object?>(
+              (arg) => create() as AsyncNotifier<ValueT>,
             )
             .call(42);
       },
       value: (create, {name, dependencies, retry}) => ([arg]) {
         return AsyncNotifierProvider.autoDispose
-            .family<FamilyAsyncNotifier<Object?, Object?>, Object?, Object?>(
-          () => create(null, arg) as FamilyAsyncNotifier<Object?, Object?>,
+            .family<AsyncNotifier<Object?>, Object?, Object?>(
+          (arg) => create(null, arg) as AsyncNotifier<Object?>,
           name: name,
           dependencies: dependencies,
           retry: retry,
@@ -129,7 +129,10 @@ class DeferredAsyncNotifier<ValueT> extends AsyncNotifier<ValueT>
   DeferredAsyncNotifier(
     this._create, {
     bool Function(AsyncValue<ValueT>, AsyncValue<ValueT>)? updateShouldNotify,
+    this.arg,
   }) : _updateShouldNotify = updateShouldNotify;
+
+  final Object? arg;
 
   final FutureOr<ValueT> Function(Ref ref, DeferredAsyncNotifier<ValueT> self)
       _create;
@@ -149,33 +152,6 @@ class DeferredAsyncNotifier<ValueT> extends AsyncNotifier<ValueT>
   }) {
     return super.listenSelf(listener, onError: onError);
   }
-
-  @override
-  bool updateShouldNotify(
-    AsyncValue<ValueT> previousState,
-    AsyncValue<ValueT> newState,
-  ) =>
-      _updateShouldNotify?.call(previousState, newState) ??
-      super.updateShouldNotify(previousState, newState);
-}
-
-class DeferredFamilyAsyncNotifier<ValueT>
-    extends FamilyAsyncNotifier<ValueT, int>
-    implements TestAsyncNotifier<ValueT> {
-  DeferredFamilyAsyncNotifier(
-    this._create, {
-    bool Function(AsyncValue<ValueT>, AsyncValue<ValueT>)? updateShouldNotify,
-  }) : _updateShouldNotify = updateShouldNotify;
-
-  final FutureOr<ValueT> Function(Ref ref, $AsyncNotifier<ValueT> self) _create;
-
-  final bool Function(
-    AsyncValue<ValueT> previousState,
-    AsyncValue<ValueT> newState,
-  )? _updateShouldNotify;
-
-  @override
-  FutureOr<ValueT> build(int arg) => _create(ref, this);
 
   @override
   bool updateShouldNotify(

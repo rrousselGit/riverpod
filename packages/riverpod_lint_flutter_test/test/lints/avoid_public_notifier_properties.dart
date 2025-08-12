@@ -70,14 +70,17 @@ class MyAutoDisposeNotifier extends Notifier<int> {
   int build() => 0;
 }
 
-class MyAutoDisposeFamilyNotifier extends FamilyNotifier<int, int> {
+class MyAutoDisposeFamilyNotifier extends Notifier<int> {
+  MyAutoDisposeFamilyNotifier(this.param);
+  final int param;
+
   int get _privateGetter => 0;
 
   // expect_lint: avoid_public_notifier_properties
   int get publicGetter => _privateGetter;
 
   @override
-  int build(int param) => 0;
+  int build() => 0;
 }
 
 class MyAsyncNotifier extends AsyncNotifier<int> {
@@ -100,14 +103,17 @@ class MyAutoDisposeAsyncNotifier extends AsyncNotifier<int> {
   Future<int> build() async => 0;
 }
 
-class MyAutoDisposeFamilyAsyncNotifier extends FamilyAsyncNotifier<int, int> {
+class MyAutoDisposeFamilyAsyncNotifier extends AsyncNotifier<int> {
+  MyAutoDisposeFamilyAsyncNotifier(this.param);
+  final int param;
+
   int get _privateGetter => 0;
 
   // expect_lint: avoid_public_notifier_properties
   int get publicGetter => _privateGetter;
 
   @override
-  Future<int> build(int param) async => 0;
+  Future<int> build() async => 0;
 }
 
 // Regression test for https://github.com/rrousselGit/riverpod/discussions/2642

@@ -18,9 +18,6 @@ void main() {
       () => CtorNotifier().state,
       () => CtorNotifier().state = 42,
       () => CtorNotifier().ref,
-      () => FamilyCtorNotifier().state,
-      () => FamilyCtorNotifier().state = 42,
-      () => FamilyCtorNotifier().ref,
     ]);
   });
 
@@ -557,21 +554,20 @@ void main() {
   });
 
   test('supports family overrideWith', () {
-    final family =
-        NotifierProvider.family<DeferredFamilyNotifier<int>, int, int>(
-      () => DeferredFamilyNotifier<int>((ref, _) => 0),
+    final family = NotifierProvider.family<DeferredNotifier<int>, int, int>(
+      (arg) => DeferredNotifier<int>((ref, _) => 0),
     );
-    final autoDisposeFamily = NotifierProvider.autoDispose
-        .family<DeferredFamilyNotifier<int>, int, int>(
-      () => DeferredFamilyNotifier<int>((ref, _) => 0),
+    final autoDisposeFamily =
+        NotifierProvider.autoDispose.family<DeferredNotifier<int>, int, int>(
+      (arg) => DeferredNotifier<int>((ref, _) => 0),
     );
     final container = ProviderContainer.test(
       overrides: [
         family.overrideWith(
-          () => DeferredFamilyNotifier<int>((ref, _) => 42),
+          () => DeferredNotifier<int>((ref, _) => 42),
         ),
         autoDisposeFamily.overrideWith(
-          () => DeferredFamilyNotifier<int>((ref, _) => 84),
+          () => DeferredNotifier<int>((ref, _) => 84),
         ),
       ],
     );
@@ -624,8 +620,8 @@ void main() {
 
     test('family', () {
       final family =
-          NotifierProvider.family<DeferredFamilyNotifier<String>, String, int>(
-        () => DeferredFamilyNotifier((ref, _) => '0'),
+          NotifierProvider.family<DeferredNotifier<String>, String, int>(
+        (arg) => DeferredNotifier((ref, _) => '0'),
       );
 
       family(0).select((String value) => 0);
@@ -633,10 +629,10 @@ void main() {
       canBeAssignedToProviderListenable<String>(family(0));
       canBeAssignedToRefreshable<String>(family(0));
 
-      canBeAssignedToProviderListenable<FamilyNotifier<String, int>>(
+      canBeAssignedToProviderListenable<Notifier<String>>(
         family(0).notifier,
       );
-      canBeAssignedToRefreshable<FamilyNotifier<String, int>>(
+      canBeAssignedToRefreshable<Notifier<String>>(
         family(0).notifier,
       );
     });
@@ -648,8 +644,8 @@ void main() {
       );
 
       final autoDisposeFamily = NotifierProvider.autoDispose
-          .family<DeferredFamilyNotifier<String>, String, int>(
-        () => DeferredFamilyNotifier((ref, _) => '0'),
+          .family<DeferredNotifier<String>, String, int>(
+        (arg) => DeferredNotifier((ref, _) => '0'),
       );
 
       autoDisposeFamily(0).select((String value) => 0);
@@ -661,10 +657,10 @@ void main() {
         autoDisposeFamily(0),
       );
 
-      canBeAssignedToProviderListenable<FamilyNotifier<String, int>>(
+      canBeAssignedToProviderListenable<Notifier<String>>(
         autoDisposeFamily(0).notifier,
       );
-      canBeAssignedToRefreshable<FamilyNotifier<String, int>>(
+      canBeAssignedToRefreshable<Notifier<String>>(
         autoDisposeFamily(0).notifier,
       );
     });
@@ -688,9 +684,4 @@ class Equal<BoxedT> {
 class CtorNotifier extends Notifier<int> {
   @override
   int build() => 0;
-}
-
-class FamilyCtorNotifier extends FamilyNotifier<int, int> {
-  @override
-  int build(int arg) => 0;
 }
