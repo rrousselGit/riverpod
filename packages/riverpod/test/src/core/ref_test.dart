@@ -258,6 +258,26 @@ void main() {
     });
 
     group('invalidate', () {
+      test('Does not mount unmounted providers', () {
+        final container = ProviderContainer.test();
+        var buildCount = 0;
+        final provider = Provider((ref) {
+          buildCount++;
+          return 0;
+        });
+        late Ref ref;
+        final dep = Provider((r) {
+          ref = r;
+          return 0;
+        });
+
+        container.read(dep);
+
+        ref.invalidate(provider);
+
+        expect(buildCount, 0);
+      });
+
       test("invalidating shouldn't trigger a build on uninitialized providers",
           () async {
         // Regression test for https://github.com/rrousselGit/riverpod/issues/3760
