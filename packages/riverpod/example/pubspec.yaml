@@ -8,7 +8,7 @@ resolution: workspace
 
 dependencies:
   crypto: ^3.0.0
-  dio: 5.8.0+1
+  dio: 5.9.0
   freezed_annotation: ^3.0.0
   json_annotation: ^4.9.0
   riverpod:
