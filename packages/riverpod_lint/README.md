@@ -43,7 +43,6 @@ Riverpod_lint adds various warnings with quick fixes and refactoring options, su
   - [missing\_provider\_scope](#missing_provider_scope)
   - [provider\_dependencies (riverpod\_generator only)](#provider_dependencies-riverpod_generator-only)
   - [scoped\_providers\_should\_specify\_dependencies (generator only)](#scoped_providers_should_specify_dependencies-generator-only)
-  - [avoid\_manual\_providers\_as\_generated\_provider\_dependency](#avoid_manual_providers_as_generated_provider_dependency)
   - [avoid\_build\_context\_in\_providers (riverpod\_generator only)](#avoid_build_context_in_providers-riverpod_generator-only)
   - [provider\_parameters](#provider_parameters)
   - [avoid\_public\_notifier\_properties](#avoid_public_notifier_properties)
@@ -349,36 +348,6 @@ class MyApp extends StatelessWidget {
       child: Container(),
     );
   }
-}
-```
-
-### avoid_manual_providers_as_generated_provider_dependency
-
-Providers using riverpod_generator should not depend on providers which do not use riverpod_generator.
-Failing to do so would break the [provider_dependencies](#provider_dependencies-riverpod_generator-only) lint.
-
-**Good**:
-
-```dart
-@riverpod
-int dep(Ref ref) => 0;
-
-@riverpod
-void example(Ref ref) {
-  /// Generated providers can depend on other generated providers
-  ref.watch(depProvider);
-}
-```
-
-**Bad**:
-
-```dart
-final depProvider = Provider((ref) => 0);
-
-@riverpod
-void example(Ref ref) {
-  // Generated providers should not depend on non-generated providers
-  ref.watch(depProvider);
 }
 ```
 
