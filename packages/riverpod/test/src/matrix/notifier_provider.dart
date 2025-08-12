@@ -55,26 +55,24 @@ final notifierProviderFactory = TestMatrix<NotifierTestFactory>(
     'NotifierProvider.family': NotifierTestFactory(
       isAutoDispose: false,
       isFamily: true,
-      deferredNotifier: DeferredFamilyNotifier.new,
+      deferredNotifier: DeferredNotifier.new,
       deferredProvider: <ValueT>(create, {updateShouldNotify}) {
-        return NotifierProvider.family<DeferredFamilyNotifier<ValueT>, ValueT,
+        return NotifierProvider.family<DeferredNotifier<ValueT>, ValueT,
             Object?>(
-          () => DeferredFamilyNotifier(
+          (arg) => DeferredNotifier(
             create,
             updateShouldNotify: updateShouldNotify,
           ),
         ).call(42);
       },
       provider: <ValueT>(create) {
-        return NotifierProvider.family<FamilyNotifier<ValueT, Object?>, ValueT,
-            Object?>(
-          () => create() as FamilyNotifier<ValueT, Object?>,
+        return NotifierProvider.family<Notifier<ValueT>, ValueT, Object?>(
+          (arg) => create() as Notifier<ValueT>,
         ).call(42);
       },
       value: (create, {name, dependencies, retry}) => ([arg]) {
-        return NotifierProvider.family<FamilyNotifier<Object?, Object?>,
-            Object?, Object?>(
-          () => create(null, arg) as FamilyNotifier<Object?, Object?>,
+        return NotifierProvider.family<Notifier<Object?>, Object?, Object?>(
+          (arg) => create(null, arg) as Notifier<Object?>,
           name: name,
           dependencies: dependencies,
           retry: retry,
@@ -84,11 +82,11 @@ final notifierProviderFactory = TestMatrix<NotifierTestFactory>(
     'NotifierProvider.autoDispose.family': NotifierTestFactory(
       isAutoDispose: true,
       isFamily: true,
-      deferredNotifier: DeferredFamilyNotifier.new,
+      deferredNotifier: DeferredNotifier.new,
       deferredProvider: <ValueT>(create, {updateShouldNotify}) {
         return NotifierProvider.family
-            .autoDispose<DeferredFamilyNotifier<ValueT>, ValueT, Object?>(
-              () => DeferredFamilyNotifier(
+            .autoDispose<DeferredNotifier<ValueT>, ValueT, Object?>(
+              (arg) => DeferredNotifier(
                 create,
                 updateShouldNotify: updateShouldNotify,
               ),
@@ -97,15 +95,15 @@ final notifierProviderFactory = TestMatrix<NotifierTestFactory>(
       },
       provider: <ValueT>(create) {
         return NotifierProvider.autoDispose
-            .family<FamilyNotifier<ValueT, Object?>, ValueT, Object?>(
-              () => create() as FamilyNotifier<ValueT, Object?>,
+            .family<Notifier<ValueT>, ValueT, Object?>(
+              (arg) => create() as Notifier<ValueT>,
             )
             .call(42);
       },
       value: (create, {name, dependencies, retry}) => ([arg]) {
         return NotifierProvider.autoDispose
-            .family<FamilyNotifier<Object?, Object?>, Object?, Object?>(
-          () => create(null, arg) as FamilyNotifier<Object?, Object?>,
+            .family<Notifier<Object?>, Object?, Object?>(
+          (arg) => create(null, arg) as Notifier<Object?>,
           name: name,
           dependencies: dependencies,
           retry: retry,
@@ -128,7 +126,10 @@ class DeferredNotifier<ValueT> extends Notifier<ValueT>
   DeferredNotifier(
     this._create, {
     bool Function(ValueT, ValueT)? updateShouldNotify,
+    this.arg,
   }) : _updateShouldNotify = updateShouldNotify;
+
+  final Object? arg;
 
   final ValueT Function(Ref ref, DeferredNotifier<ValueT> self) _create;
   final bool Function(
@@ -150,32 +151,6 @@ class DeferredNotifier<ValueT> extends Notifier<ValueT>
 
   @override
   bool updateShouldNotify(ValueT previousState, ValueT newState) =>
-      _updateShouldNotify?.call(previousState, newState) ??
-      super.updateShouldNotify(previousState, newState);
-}
-
-class DeferredFamilyNotifier<ValueT> extends FamilyNotifier<ValueT, int>
-    implements TestNotifier<ValueT> {
-  DeferredFamilyNotifier(
-    this._create, {
-    bool Function(ValueT, ValueT)? updateShouldNotify,
-  }) : _updateShouldNotify = updateShouldNotify;
-
-  final ValueT Function(Ref ref, DeferredFamilyNotifier<ValueT> self) _create;
-
-  final bool Function(
-    ValueT previousState,
-    ValueT newState,
-  )? _updateShouldNotify;
-
-  @override
-  ValueT build(int arg) => _create(ref, this);
-
-  @override
-  bool updateShouldNotify(
-    ValueT previousState,
-    ValueT newState,
-  ) =>
       _updateShouldNotify?.call(previousState, newState) ??
       super.updateShouldNotify(previousState, newState);
 }

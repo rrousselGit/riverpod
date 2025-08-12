@@ -44,7 +44,7 @@ void main() {
 
       test('overrideWithBuild', () {
         final provider = factory.simpleTestProvider((ref, _) => 0).from!;
-        provider as NotifierProviderFamily<DeferredFamilyNotifier<int>, int,
+        provider as NotifierProviderFamily<DeferredNotifier<int>, int,
             Object?>;
 
         final overrideWithBuild =

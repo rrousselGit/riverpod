@@ -153,26 +153,14 @@ would have no means to know that state has changed.
       label: "The Notifier type",
       description: <>
 
-The base class extended by your notifier should match that of the provider + modifiers.
-Some examples would be:
+The base class extended by your notifier should match that of the provider
 
-- <span style={{ color: colors[0] }}>Notifier</span>Provider -> <span style={{ color: colors[0] }}>Notifier</span>
-- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider -> <span style={{ color: colors[0] }}>AsyncNotifier</span>
-- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider.
-  <span style={{ color: colors[1] }}>autoDispose</span> -> <span
-    style={{ color: colors[1] }}
-  >
-    AutoDispose
-  </span>
-  <span style={{ color: colors[0] }}>AsyncNotifier</span>
-- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider.
-  <span style={{ color: colors[1] }}>autoDispose</span>.<span
-    style={{ color: colors[2] }}
-  >
-    family
-  </span> -> <span style={{ color: colors[1] }}>AutoDispose</span>
-  <span style={{ color: colors[2] }}>Family</span>
-  <span style={{ color: colors[0] }}>AsyncNotifier</span>
+- <span style={{ color: colors[0] }}>Notifier</span>Provider -> {" "}
+  <a href="https://pub.dev/documentation/riverpod/latest/riverpod/Notifier-class.html" style={{ color: colors[0] }}>Notifier</a>
+- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider -> {" "}
+  <a href="https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier-class.html" style={{ color: colors[0] }}>AsyncNotifier</a>
+- <span style={{ color: colors[0] }}>StreamNotifier</span>Provider -> {" "}
+  <a href="https://pub.dev/documentation/riverpod/latest/riverpod/StreamNotifier-class.html" style={{ color: colors[0] }}>StreamNotifier</a>
 
 To make this simpler, it is recommended to use the code generator, as it
 automatically infers the correct type.

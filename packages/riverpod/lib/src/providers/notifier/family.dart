@@ -1,24 +1,5 @@
 part of '../notifier.dart';
 
-/// {@macro riverpod.notifier}
-///
-/// {@macro riverpod.notifier_provider_modifier}
-abstract class FamilyNotifier<ValueT, ArgT> extends $Notifier<ValueT> {
-  /// {@macro riverpod.notifier.family_arg}
-  late final ArgT arg = ref.$arg as ArgT;
-
-  /// {@macro riverpod.async_notifier.build}
-  @visibleForOverriding
-  ValueT build(ArgT arg);
-
-  @mustCallSuper
-  @override
-  void runBuild() {
-    final created = build(arg);
-    requireElement().handleValue(ref, created);
-  }
-}
-
 /// The [NotifierProvider] that can be used with a [Family].
 @publicInMisc
 final class FamilyNotifierProvider //
@@ -48,7 +29,7 @@ final class FamilyNotifierProvider //
 /// The [Family] of [NotifierProvider].
 @publicInMisc
 final class NotifierProviderFamily<
-        NotifierT extends FamilyNotifier<StateT, ArgT>, StateT, ArgT>
+        NotifierT extends Notifier<StateT>, StateT, ArgT>
     extends ClassFamily< //
         NotifierT,
         StateT,

@@ -21,10 +21,6 @@ void main() {
       () => CtorNotifier().state = const AsyncData(42),
       () => CtorNotifier().future,
       () => CtorNotifier().ref,
-      () => FamilyCtorNotifier().state,
-      () => FamilyCtorNotifier().state = const AsyncData(42),
-      () => FamilyCtorNotifier().future,
-      () => FamilyCtorNotifier().ref,
     ]);
   });
 
@@ -1060,20 +1056,20 @@ void main() {
 
   test('supports family overrideWith', () async {
     final family = StreamNotifierProvider.family<
-        DeferredFamilyStreamNotifier<int>, int, int>(
-      () => DeferredFamilyStreamNotifier<int>((ref, _) => Stream.value(0)),
+        DeferredStreamNotifier<int>, int, int>(
+      (arg) => DeferredStreamNotifier<int>((ref, _) => Stream.value(0)),
     );
     final autoDisposeFamily = StreamNotifierProvider.autoDispose
-        .family<DeferredFamilyStreamNotifier<int>, int, int>(
-      () => DeferredFamilyStreamNotifier<int>((ref, _) => Stream.value(0)),
+        .family<DeferredStreamNotifier<int>, int, int>(
+      (arg) => DeferredStreamNotifier<int>((ref, _) => Stream.value(0)),
     );
     final container = ProviderContainer.test(
       overrides: [
         family.overrideWith(
-          () => DeferredFamilyStreamNotifier<int>((ref, _) => Stream.value(42)),
+          () => DeferredStreamNotifier<int>((ref, _) => Stream.value(42)),
         ),
         autoDisposeFamily.overrideWith(
-          () => DeferredFamilyStreamNotifier<int>(
+          () => DeferredStreamNotifier<int>(
             (ref, _) => Stream.value(84),
           ),
         ),
@@ -1160,8 +1156,8 @@ void main() {
 
     test('family', () {
       final family = StreamNotifierProvider.family<
-          DeferredFamilyStreamNotifier<String>, String, int>(
-        () => DeferredFamilyStreamNotifier((ref, _) => Stream.value('0')),
+          DeferredStreamNotifier<String>, String, int>(
+        (arg) => DeferredStreamNotifier((ref, _) => Stream.value('0')),
       );
 
       family(0).select((AsyncValue<String> value) => 0);
@@ -1172,13 +1168,6 @@ void main() {
 
       canBeAssignedToProviderListenable<Future<String>>(family(0).future);
       canBeAssignedToRefreshable<Future<String>>(family(0).future);
-
-      canBeAssignedToProviderListenable<FamilyStreamNotifier<String, int>>(
-        family(0).notifier,
-      );
-      canBeAssignedToRefreshable<FamilyStreamNotifier<String, int>>(
-        family(0).notifier,
-      );
     });
 
     test('autoDisposeFamily', () {
@@ -1188,8 +1177,8 @@ void main() {
       );
 
       final autoDisposeFamily = StreamNotifierProvider.autoDispose
-          .family<DeferredFamilyStreamNotifier<String>, String, int>(
-        () => DeferredFamilyStreamNotifier((ref, _) => Stream.value('0')),
+          .family<DeferredStreamNotifier<String>, String, int>(
+        (arg) => DeferredStreamNotifier((ref, _) => Stream.value('0')),
       );
 
       autoDisposeFamily(0).select((AsyncValue<String> value) => 0);
@@ -1207,13 +1196,6 @@ void main() {
       );
       canBeAssignedToRefreshable<Future<String>>(
         autoDisposeFamily(0).future,
-      );
-
-      canBeAssignedToProviderListenable<FamilyStreamNotifier<String, int>>(
-        autoDisposeFamily(0).notifier,
-      );
-      canBeAssignedToRefreshable<FamilyStreamNotifier<String, int>>(
-        autoDisposeFamily(0).notifier,
       );
     });
   });
@@ -1237,9 +1219,4 @@ class Equal<BoxedT> {
 class CtorNotifier extends StreamNotifier<int> {
   @override
   Stream<int> build() => Stream.value(0);
-}
-
-class FamilyCtorNotifier extends FamilyStreamNotifier<int, int> {
-  @override
-  Stream<int> build(int arg) => Stream.value(0);
 }

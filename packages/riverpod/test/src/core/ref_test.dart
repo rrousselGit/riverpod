@@ -125,7 +125,7 @@ void main() {
       );
     });
 
-    test('asserts that lifecycles cannot use other lifecycles', () {
+    test('asserts that lifecycle cannot use other lifecycle', () {
       final onDispose = OnDisposeMock();
       final onResume = OnResume();
       final onCancel = OnCancel();
@@ -265,8 +265,8 @@ void main() {
         var buildCount = 0;
 
         final myNotifierProvider = AsyncNotifierProvider.family
-            .autoDispose<DeferredFamilyAsyncNotifier<int>, int, int>(
-          () => DeferredFamilyAsyncNotifier<int>((ref, chatId) {
+            .autoDispose<DeferredAsyncNotifier<int>, int, int>(
+          (chatId) => DeferredAsyncNotifier<int>((ref, self) {
             buildCount++;
             return 0;
           }),

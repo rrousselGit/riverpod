@@ -227,12 +227,12 @@ base class ClassFamily< //
   final ClassProviderFactory<NotifierT, ProviderT, CreatedT, ArgT>
       _providerFactory;
 
-  final NotifierT Function() _createFn;
+  final NotifierT Function(ArgT arg) _createFn;
 
   /// {@macro family.call}
   ProviderT call(ArgT argument) {
     return _providerFactory(
-      _createFn,
+      () => _createFn(argument),
       name: name,
       isAutoDispose: isAutoDispose,
       from: this,

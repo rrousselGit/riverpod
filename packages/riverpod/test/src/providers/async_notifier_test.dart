@@ -22,10 +22,6 @@ void main() {
       () => CtorNotifier().state = const AsyncData(42),
       () => CtorNotifier().future,
       () => CtorNotifier().ref,
-      () => FamilyCtorNotifier().state,
-      () => FamilyCtorNotifier().state = const AsyncData(42),
-      () => FamilyCtorNotifier().future,
-      () => FamilyCtorNotifier().ref,
     ]);
   });
 
@@ -1272,21 +1268,21 @@ void main() {
   });
 
   test('supports family overrideWith', () {
-    final family = AsyncNotifierProvider.family<
-        DeferredFamilyAsyncNotifier<int>, int, int>(
-      () => DeferredFamilyAsyncNotifier((ref, _) => 0),
+    final family =
+        AsyncNotifierProvider.family<DeferredAsyncNotifier<int>, int, int>(
+      (arg) => DeferredAsyncNotifier((ref, _) => 0),
     );
     final autoDisposeFamily = AsyncNotifierProvider.autoDispose
-        .family<DeferredFamilyAsyncNotifier<int>, int, int>(
-      () => DeferredFamilyAsyncNotifier((ref, _) => 0),
+        .family<DeferredAsyncNotifier<int>, int, int>(
+      (arg) => DeferredAsyncNotifier((ref, _) => 0),
     );
     final container = ProviderContainer.test(
       overrides: [
         family.overrideWith(
-          () => DeferredFamilyAsyncNotifier<int>((ref, _) => 42),
+          () => DeferredAsyncNotifier<int>((ref, _) => 42),
         ),
         autoDisposeFamily.overrideWith(
-          () => DeferredFamilyAsyncNotifier<int>((ref, _) => 84),
+          () => DeferredAsyncNotifier<int>((ref, _) => 84),
         ),
       ],
     );
@@ -1346,9 +1342,9 @@ void main() {
     });
 
     test('family', () {
-      final family = AsyncNotifierProvider.family<
-          DeferredFamilyAsyncNotifier<String>, String, int>(
-        () => DeferredFamilyAsyncNotifier((ref, _) => '0'),
+      final family = AsyncNotifierProvider.family<DeferredAsyncNotifier<String>,
+          String, int>(
+        (arg) => DeferredAsyncNotifier((ref, _) => '0'),
       );
 
       family(0).select((AsyncValue<String> value) => 0);
@@ -1359,13 +1355,6 @@ void main() {
 
       canBeAssignedToProviderListenable<Future<String>>(family(0).future);
       canBeAssignedToRefreshable<Future<String>>(family(0).future);
-
-      canBeAssignedToProviderListenable<FamilyAsyncNotifier<String, int>>(
-        family(0).notifier,
-      );
-      canBeAssignedToRefreshable<FamilyAsyncNotifier<String, int>>(
-        family(0).notifier,
-      );
     });
 
     test('autoDisposeFamily', () {
@@ -1375,8 +1364,8 @@ void main() {
       );
 
       final autoDisposeFamily = AsyncNotifierProvider.autoDispose
-          .family<DeferredFamilyAsyncNotifier<String>, String, int>(
-        () => DeferredFamilyAsyncNotifier((ref, _) => '0'),
+          .family<DeferredAsyncNotifier<String>, String, int>(
+        (arg) => DeferredAsyncNotifier((ref, _) => '0'),
       );
 
       autoDisposeFamily(0).select((AsyncValue<String> value) => 0);
@@ -1394,13 +1383,6 @@ void main() {
       );
       canBeAssignedToRefreshable<Future<String>>(
         autoDisposeFamily(0).future,
-      );
-
-      canBeAssignedToProviderListenable<FamilyAsyncNotifier<String, int>>(
-        autoDisposeFamily(0).notifier,
-      );
-      canBeAssignedToRefreshable<FamilyAsyncNotifier<String, int>>(
-        autoDisposeFamily(0).notifier,
       );
     });
   });
@@ -1426,9 +1408,4 @@ class Equal<BoxedT> {
 class CtorNotifier extends AsyncNotifier<int> {
   @override
   FutureOr<int> build() => 0;
-}
-
-class FamilyCtorNotifier extends FamilyAsyncNotifier<int, int> {
-  @override
-  FutureOr<int> build(int arg) => 0;
 }

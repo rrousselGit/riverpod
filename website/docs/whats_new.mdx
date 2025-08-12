@@ -496,6 +496,44 @@ final provider = NotifierProvider.autoDispose<MyNotifier, int>(
 }
 ```
 
+### "FamilyNotifier" and "Notifier" are fused
+
+Similarly to the previous point, the `FamilyNotifier` and `Notifier` interfaces
+are now fused.
+
+Long story short, instead of:
+
+```dart
+final provider = NotifierProvider.family<CounterNotifier, int, Argument>(
+  MyNotifier.new,
+);
+
+class CounterNotifier extends FamilyNotifier<int, Argument> {
+  @override
+  int build(Argument arg) => 0;
+}
+```
+
+We now do:
+
+```dart
+final provider = NotifierProvider.family<CounterNotifier, int, Argument>(
+  CounterNotifier.new,
+);
+
+class CounterNotifier extends Notifier<int> {
+  CounterNotifier(this.arg);
+  final Argument arg;
+  @override
+  int build() => 0;
+}
+```
+
+This means that instead of `Notifier`+`FamilyNotifier`+`AutoDisposeNotifier`+`AutoDisposeFamilyNotifier`,
+we always use the `Notifier` class.
+
+This change has no impact on code-generation.
+
 ### One `Ref` to rule them all
 
 In Riverpod 2.0, each provider came with its own [Ref] subclass (`FutureProviderRef`, `StreamProviderRef`, etc).  

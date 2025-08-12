@@ -14,8 +14,6 @@ part of '../async_notifier.dart';
 /// - Initializing a [Notifier] from an asynchronous source of data.
 ///   For example, obtaining the initial state of [Notifier] from a local database.
 /// {@endtemplate}
-///
-/// {@macro riverpod.async_notifier_provider_modifier}
 /// {@category Notifiers}
 abstract class AsyncNotifier<StateT> extends $AsyncNotifier<StateT> {
   /// {@template riverpod.async_notifier.build}
@@ -53,11 +51,6 @@ abstract class AsyncNotifier<StateT> extends $AsyncNotifier<StateT> {
 /// Instead the ref (and argument) are directly accessible in the associated
 /// [AsyncNotifier].
 /// {@endtemplate}
-///
-/// {@template riverpod.async_notifier_provider_modifier}
-/// When using `family`, your notifier type changes.
-/// Instead of extending [AsyncNotifier], you should extend [FamilyAsyncNotifier].
-/// {@endtemplate}
 /// {@category Providers}
 final class AsyncNotifierProvider< //
         NotifierT extends AsyncNotifier<ValueT>,
@@ -65,8 +58,6 @@ final class AsyncNotifierProvider< //
     extends $AsyncNotifierProvider<NotifierT, ValueT>
     with LegacyProviderMixin<AsyncValue<ValueT>> {
   /// {@macro riverpod.async_notifier_provider}
-  ///
-  /// {@macro riverpod.async_notifier_provider_modifier}
   AsyncNotifierProvider(
     this._createNotifier, {
     super.name,
