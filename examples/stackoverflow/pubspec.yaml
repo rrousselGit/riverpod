@@ -9,7 +9,7 @@ environment:
 resolution: workspace
 
 dependencies:
-  dio: ^5.1.1
+  dio: 5.9.0
   flutter:
     sdk: flutter
   flutter_hooks: ^0.21.2
