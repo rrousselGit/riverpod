@@ -737,7 +737,9 @@ extension on TestFactory<Object?> {
       },
       notifier: (factory) {
         DeferredNotifier<Object?> familyNotifierCreate([Object? arg]) =>
-            DeferredNotifier(familyCreate, );
+            DeferredNotifier(
+              familyCreate,
+            );
         DeferredNotifier<Object?> notifierCreate() => DeferredNotifier(create);
 
         switch ((

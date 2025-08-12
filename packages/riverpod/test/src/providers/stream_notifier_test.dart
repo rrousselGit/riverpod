@@ -1055,8 +1055,8 @@ void main() {
   });
 
   test('supports family overrideWith', () async {
-    final family = StreamNotifierProvider.family<
-        DeferredStreamNotifier<int>, int, int>(
+    final family =
+        StreamNotifierProvider.family<DeferredStreamNotifier<int>, int, int>(
       (arg) => DeferredStreamNotifier<int>((ref, _) => Stream.value(0)),
     );
     final autoDisposeFamily = StreamNotifierProvider.autoDispose

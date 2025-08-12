@@ -28,8 +28,7 @@ final class FamilyNotifierProvider //
 
 /// The [Family] of [NotifierProvider].
 @publicInMisc
-final class NotifierProviderFamily<
-        NotifierT extends Notifier<StateT>, StateT, ArgT>
+final class NotifierProviderFamily<NotifierT extends Notifier<StateT>, StateT, ArgT>
     extends ClassFamily< //
         NotifierT,
         StateT,
