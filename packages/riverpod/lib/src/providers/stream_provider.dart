@@ -6,7 +6,6 @@ import '../builder.dart';
 import '../common/internal_lints.dart';
 import '../common/listenable.dart';
 import '../common/result.dart';
-import '../core/async_value.dart';
 import '../framework.dart';
 import 'future_provider.dart' show FutureProvider;
 import 'provider.dart' show Provider;
