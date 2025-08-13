@@ -4,7 +4,6 @@ import 'package:meta/meta.dart';
 
 import '../builder.dart';
 import '../common/internal_lints.dart';
-import '../core/async_value.dart';
 import '../framework.dart';
 import 'async_notifier.dart';
 import 'future_provider.dart' show FutureProvider;

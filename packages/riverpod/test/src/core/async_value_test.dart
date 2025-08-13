@@ -3,7 +3,7 @@
 import 'dart:async';
 
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/core/async_value.dart' show DataKind;
+import 'package:riverpod/src/internals.dart' show DataKind;
 import 'package:test/test.dart';
 
 import '../utils.dart';

@@ -61,6 +61,11 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
   }) {
     final previous = value;
 
+    if (newState._isMultiState) {
+      super.value = newState;
+      return;
+    }
+
     super.value =
         newState.cast<ValueT>().copyWithPrevious(previous, isRefresh: seamless);
   }

@@ -13,7 +13,6 @@ export 'common/internal_lints.dart';
 export 'common/listenable.dart';
 export 'common/result.dart';
 export 'common/stack_trace.dart';
-export 'core/async_value.dart';
 export 'core/persist.dart';
 export 'framework.dart';
 export 'providers/async_notifier.dart';

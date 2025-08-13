@@ -42,6 +42,46 @@ class CanInferPersist extends Notifier<int> {
 
 void main() {
   group('Offline', () {
+    test('Chaining providers using offline does not cause unnecessary rebuilds',
+        () async {
+      var buildCount = 0;
+      // Regression test for https://github.com/rrousselGit/riverpod/issues/4116
+      final container = ProviderContainer.test();
+      final parent = AsyncNotifierProvider<DeferredAsyncNotifier<int>, int>(
+        () => DeferredAsyncNotifier(
+          (ref, self) {
+            self.persist(
+              DelegatingStorage(read: (_) => const PersistedData(42)),
+              key: 'key',
+              encode: (value) => value,
+              decode: (encoded) => encoded,
+            );
+            return Future.value(0);
+          },
+        ),
+      );
+      final child = AsyncNotifierProvider<DeferredAsyncNotifier<int>, int>(
+        () => DeferredAsyncNotifier(
+          (ref, self) async {
+            buildCount++;
+            final value = await ref.watch(parent.future);
+            self.persist(
+              DelegatingStorage(read: (_) => const PersistedData(21)),
+              key: 'key2',
+              encode: (value) => value,
+              decode: (encoded) => encoded,
+            );
+            return value * 2;
+          },
+        ),
+      );
+
+      final sub = container.listen(child.future, (a, b) {});
+
+      expect(await sub.read(), 0);
+      expect(buildCount, 1);
+    });
+
     matrix.createGroup((factory) {
       test('Persist if the notifier implements NotifierEncoder', () {
         final storage = StorageMock<String, Object?>();
@@ -276,6 +316,46 @@ void main() {
         });
 
         if (factory.isAsync) {
+          test('Decoded value is available as AsyncLoading', () async {
+            // For the sake of not having provider.future resolve with decoded value,
+            // we emit decoded state as AsyncLoading.
+
+            final container = ProviderContainer.test();
+            final didPersist = Completer<void>();
+            final provider = factory.simpleProvider(
+              autoPersist: false,
+              (ref, self) async {
+                await self
+                    .persist(
+                      DelegatingStorage(read: (_) => const PersistedData(42)),
+                      key: 'foo',
+                      encode: (value) => value,
+                      decode: (value) => value,
+                    )
+                    .future;
+                didPersist.complete();
+                return self.future;
+              },
+            );
+
+            final sub = container.listen(provider, (a, b) {});
+            final notifier = container.read(provider.notifier!);
+
+            await didPersist.future;
+
+            expect(
+              notifier.stateOrNull,
+              isA<AsyncLoading<Object?>>()
+                  .having((e) => e.isFromCache, 'isFromCache', true)
+                  .having((e) => e.value, 'value', 42),
+            );
+
+            // Make it safe to dispose the provider by emitting at least one value.
+            notifier.state = const AsyncData(21);
+          });
+        }
+
+        if (factory.isAsync) {
           test(
               'Rebuilding a provider that is still in AsyncLoading() aborts the DB decoding',
               () async {
@@ -298,26 +378,43 @@ void main() {
 
             value.complete(21);
           });
-        }
 
-        if (factory.isAsync) {
           test('Adapters support asynchronously emitting values from the DB',
               () async {
+            final didPersistCompleter = Completer<void>();
+            final result = Completer<int>();
             final provider = factory.simpleProvider(
-              (ref, self) => self.future,
-              storage: DelegatingStorage(
-                read: (_) => Future(() => const PersistedData(21)),
-              ),
+              autoPersist: false,
+              (ref, self) async {
+                await self
+                    .persist(
+                      DelegatingStorage(
+                        read: (_) => Future(() => const PersistedData(21)),
+                      ),
+                      key: 'key',
+                      encode: (value) => value,
+                      decode: (encoded) => encoded,
+                    )
+                    .future;
+                didPersistCompleter.complete();
+                return result.future;
+              },
             );
             final container = ProviderContainer.test();
 
             container.listen(provider, (a, b) {});
+            final notifier = container.read(provider.notifier!);
 
             expect(
               container.read(provider),
               const AsyncValue<Object?>.loading(),
             );
-            expect(await container.read(provider.future!), 21);
+
+            await didPersistCompleter.future;
+
+            expect(notifier.valueOf, 21);
+
+            result.complete(42);
           });
         }
 

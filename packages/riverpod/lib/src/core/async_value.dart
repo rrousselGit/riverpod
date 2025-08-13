@@ -1,10 +1,4 @@
-import 'package:meta/meta.dart';
-
-import '../common/internal_lints.dart';
-import '../common/stack_trace.dart';
-import '../framework.dart';
-import '../providers/future_provider.dart' show FutureProvider;
-import '../providers/stream_provider.dart' show StreamProvider;
+part of '../framework.dart';
 
 @internal
 extension AsyncTransition<ValueT> on AsyncValue<ValueT> {
@@ -34,6 +28,15 @@ extension<ValueT> on _DataRecord<ValueT> {
 /// Adds non-state related methods/getters to [AsyncValue].
 @publicInRiverpodAndCodegen
 extension AsyncValueExtensions<ValueT> on AsyncValue<ValueT> {
+  bool get _isMultiState {
+    var count = 0;
+    if (_loading != null) count++;
+    if (_value != null) count++;
+    if (_error != null) count++;
+
+    return count > 1;
+  }
+
   _DataFilledRecord<ValueT>? get _valueFilled {
     final value = _value;
     if (value == null) return null;
