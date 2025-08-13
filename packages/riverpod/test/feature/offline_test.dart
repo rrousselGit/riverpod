@@ -204,28 +204,6 @@ void main() {
         );
       });
 
-      if (factory.isAsync) {
-        test('supports async storage', () async {
-          final provider = factory.simpleProvider(
-            (ref, self) {
-              self.persist(
-                Future.value(
-                  DelegatingStorage(
-                    read: (_) => Future.value(const PersistedData(42)),
-                  ),
-                ),
-                key: 'key',
-                encode: (value) => value,
-                decode: (encoded) => encoded,
-              );
-
-              return self.future;
-            },
-            autoPersist: false,
-          );
-        });
-      }
-
       test('Reports decoding/encoding errors to the zone', () async {
         final provider = factory.simpleProvider(
           (ref, self) => 0,
@@ -316,6 +294,26 @@ void main() {
         });
 
         if (factory.isAsync) {
+          test('Emitting an error after decoding preserves decoded state',
+              () async {
+            final container = ProviderContainer.test();
+            final provider = factory.simpleProvider(
+              (ref, self) => throw Exception('error'),
+              storage: DelegatingStorage(read: (_) => const PersistedData(42)),
+            );
+
+            container.listen(provider, (a, b) {});
+
+            expect(
+              container.read(provider),
+              isA<AsyncError<Object?>>()
+                  .having((e) => e.isFromCache, 'isFromCache', true)
+                  .having((e) => e.value, 'value', 42)
+                  .having((e) => e.stackTrace, 'stackTrace', isNotNull)
+                  .having((e) => e.error, 'message', isException),
+            );
+          });
+
           test('Decoded value is available as AsyncLoading', () async {
             // For the sake of not having provider.future resolve with decoded value,
             // we emit decoded state as AsyncLoading.
@@ -902,7 +900,7 @@ final class DelegatingStorage<KeyT, EncodedT> extends Storage<KeyT, EncodedT> {
     FutureOr<void> Function(KeyT key)? delete,
   })  : _read = read,
         _write = write ?? ((_, __, ___) {}),
-        _delete = delete ?? ((_) => throw UnimplementedError());
+        _delete = delete ?? ((_) {});
 
   final FutureOr<PersistedData<EncodedT>?> Function(KeyT key) _read;
   @override
