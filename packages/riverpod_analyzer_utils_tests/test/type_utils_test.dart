@@ -1,5 +1,8 @@
 // ignore_for_file: invalid_use_of_internal_member
 
+@Timeout.factor(2)
+library;
+
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/element2.dart';
 import 'package:riverpod_analyzer_utils/src/nodes.dart';
