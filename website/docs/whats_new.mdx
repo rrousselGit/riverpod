@@ -1005,7 +1005,7 @@ use the original implementation of the notifier.
     void main() {
       final container = ProviderContainer.test(
         overrides: [
-          myNotifierProvider.overrideWithBuild((ref) {
+          myProvider.overrideWithBuild((ref) {
             // Mock the build method to start at 42.
             // The "increment" method is unaffected.
             return 42;
@@ -1025,12 +1025,12 @@ use the original implementation of the notifier.
       }
     }
     
-    final myNotifierProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
+    final myProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
     
     void main() {
       final container = ProviderContainer.test(
         overrides: [
-          myNotifierProvider.overrideWithBuild((ref) {
+          myProvider.overrideWithBuild((ref) {
             // Mock the build method to start at 42.
             // The "increment" method is unaffected.
             return 42;
