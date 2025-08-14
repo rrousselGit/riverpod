@@ -816,6 +816,7 @@ class TestNotifier extends StateNotifier<int> {
   @override
   int get state;
 }
+
 final _provider = Provider((ref) => 'hello world');
 
 class MyWidget extends ConsumerWidget {
@@ -826,6 +827,7 @@ class MyWidget extends ConsumerWidget {
     return Text(ref.watch(_provider), textDirection: TextDirection.rtl);
   }
 }
+
 class CallbackConsumerWidget extends ConsumerStatefulWidget {
   const CallbackConsumerWidget({
     super.key,
