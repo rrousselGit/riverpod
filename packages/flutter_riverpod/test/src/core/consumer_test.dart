@@ -310,15 +310,7 @@ void main() {
 
   testWidgets('can extend ConsumerWidget', (tester) async {
     final provider = Provider((ref) => 'hello world');
-    await tester.pumpWidget(
-      ProviderScope(
-        child: Consumer(
-          builder: (context, ref, _) {
-            return Text(ref.watch(provider), textDirection: TextDirection.rtl);
-          },
-        ),
-      ),
-    );
+    await tester.pumpWidget(const ProviderScope(child: MyWidget()));
 
     expect(find.text('hello world'), findsOneWidget);
   });
@@ -825,7 +817,16 @@ class TestNotifier extends StateNotifier<int> {
   @override
   int get state;
 }
+final _provider = Provider((ref) => 'hello world');
 
+class MyWidget extends ConsumerWidget {
+  const MyWidget({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Text(ref.watch(_provider), textDirection: TextDirection.rtl);
+  }
+}
 class CallbackConsumerWidget extends ConsumerStatefulWidget {
   const CallbackConsumerWidget({
     super.key,
