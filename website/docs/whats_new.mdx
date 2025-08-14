@@ -962,6 +962,28 @@ resumed
 ... // And so on every second
 ```
 
+### Exceptions in providers are rethrown as "ProviderException".
+
+For the sake of differentiating between "a provider failed" from "a provider is depending on a failed provider",
+Riverpod 3.0 now wraps exceptions in a `ProviderException` that contains the original.
+
+This means that if you catch errors in your providers, you will need to update your try/catch to inspect
+the content of `ProviderException`:
+
+```dart
+try {
+  ref.watch(failingProvider);
+} on ProviderException catch (e) {
+  switch (e.exception) {
+    case SomeSpecificError():
+      // Handle the specific error
+    default:
+      // Handle other errors
+      rethrow;
+  }
+}
+```
+
 ## New testing utilities
 
 ### `ProviderContainer.test`
