@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:mockito/mockito.dart';
+import 'package:riverpod/misc.dart';
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart';
 import 'package:test/test.dart';
@@ -53,81 +54,6 @@ void main() {
     verifyNoMoreInteractions(listener);
     expect(sub.read, utils.throwsProviderException('Error at 2'));
     utils.verifyOnly(onError, onError('Error at 2', any));
-  });
-
-  test('Simple async example', () {
-    final container = ProviderContainer.test();
-    final listener = utils.Listener<AsyncValue<String>>();
-    final onError = utils.ErrorListener();
-    final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
-    final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
-
-    final listenable = AsyncDelegatingTransformer<int, String>(
-      provider,
-      (context) {
-        return ProviderTransformer(
-          initState: (self) => 'Hello ${context.sourceState.requireValue}',
-          listener: (self, prev, next) {
-            if (next.value == 2) {
-              self.state = AsyncError('Error at 2', StackTrace.current);
-            } else {
-              self.state = AsyncData('Hello ${next.requireValue}');
-            }
-          },
-        );
-      },
-    );
-
-    final sub = container.listen(
-      listenable,
-      listener.call,
-      onError: onError.call,
-    );
-
-    expect(sub.read(), const AsyncData('Hello 0'));
-    verifyZeroInteractions(listener);
-
-    notifier.state = 1;
-
-    verifyOnly(
-      listener,
-      listener(const AsyncData('Hello 0'), const AsyncData('Hello 1')),
-    );
-    expect(sub.read(), const AsyncData('Hello 1'));
-
-    notifier.state = 2;
-    verifyZeroInteractions(onError);
-    verifyOnly(
-      listener,
-      listener(
-        const AsyncData('Hello 1'),
-        argThat(
-          isA<AsyncError<String>>()
-              .having((e) => e.error, 'error', 'Error at 2'),
-        ),
-      ),
-    );
-  });
-
-  test('If initState throws, init to AsyncError', () {
-    final container = ProviderContainer.test();
-    final provider = Provider<int>((ref) => 0);
-
-    final listenable = AsyncDelegatingTransformer<int, String>(
-      provider,
-      (context) {
-        return ProviderTransformer(
-          initState: (self) => throw Exception('Initial error'),
-          listener: (self, prev, next) {
-            self.state = AsyncData('Hello ${next.requireValue}');
-          },
-        );
-      },
-    );
-
-    final sub = container.listen(listenable, (previous, next) {});
-
-    expect(sub.read(), isA<AsyncError<String>>());
   });
 
   test('Supports sub.pause/sub.resume with both data and error', () {
@@ -258,7 +184,7 @@ void main() {
 
         late final AsyncResult<int> initialState;
 
-        final listenable = AsyncDelegatingTransformer<int, String>(
+        final listenable = SyncDelegatingTransformer<int, String>(
           provider,
           (c) {
             context = c;
@@ -501,7 +427,7 @@ void main() {
       final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
       final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
 
-      final listenable = AsyncDelegatingTransformer<int, String>(
+      final listenable = SyncDelegatingTransformer<int, String>(
         provider,
         (context) {
           throw Exception('Error in transformer');
@@ -596,7 +522,7 @@ void main() {
       final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
       final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
 
-      final listenable = AsyncDelegatingTransformer<int, String>(
+      final listenable = SyncDelegatingTransformer<int, String>(
         provider,
         (context) {
           throw Exception('Error in transformer');
@@ -607,13 +533,11 @@ void main() {
       notifier.state = 1;
 
       expect(
-        sub.read(),
-        isA<AsyncError<String>>().having(
-          (e) => e.error,
-          'error',
-          isException.having(
-            (e) => e.toString(),
-            'toString',
+        sub.read,
+        throwsA(
+          isA<ProviderException>().having(
+            (e) => e.exception.toString(),
+            'exception',
             contains('Error in transformer'),
           ),
         ),
@@ -625,28 +549,6 @@ void main() {
 final class SyncDelegatingTransformer<InT, ValueT>
     with SyncProviderTransformerMixin<InT, ValueT> {
   SyncDelegatingTransformer(
-    this.source,
-    this.transformCb,
-  );
-
-  @override
-  final ProviderListenable<InT> source;
-
-  final ProviderTransformer<InT, ValueT> Function(
-    ProviderTransformerContext<InT, ValueT> context,
-  ) transformCb;
-
-  @override
-  ProviderTransformer<InT, ValueT> transform(
-    ProviderTransformerContext<InT, ValueT> context,
-  ) {
-    return transformCb(context);
-  }
-}
-
-final class AsyncDelegatingTransformer<InT, ValueT>
-    with AsyncProviderTransformerMixin<InT, ValueT> {
-  AsyncDelegatingTransformer(
     this.source,
     this.transformCb,
   );
