@@ -11,42 +11,6 @@ import 'package:riverpod/src/internals.dart'
     show NodeInternal, InternalProviderContainer;
 
 void main() {
-  group('_ListenManual', () {
-    testWidgets('handles pause/resume', (tester) async {
-      late WidgetRef ref;
-      late ProviderSubscription<int> sub;
-      final provider = Provider((ref) => 0);
-
-      await tester.pumpWidget(
-        ProviderScope(
-          child: Consumer(
-            builder: (context, r, child) {
-              ref = r;
-              sub = ref.listenManual(
-                provider,
-                (_, __) {},
-              );
-              return const SizedBox();
-            },
-          ),
-        ),
-      );
-
-      final container = tester.container();
-      final element = container.readProviderElement(provider);
-
-      expect(element.isActive, true);
-
-      sub.pause();
-
-      expect(element.isActive, false);
-
-      sub.resume();
-
-      expect(element.isActive, true);
-    });
-  });
-
   group('Handles TickerMode', () {
     testWidgets('e2e navigation', (tester) async {
       final provider = Provider((ref) => 0);
@@ -113,10 +77,9 @@ void main() {
       );
     });
 
-    testWidgets(
-        'when adding a listener, initializes pause state based on visibility',
-        (tester) async {
-      final providerForVisible = Provider((ref) => 0);
+    testWidgets('Pauses subscriptions based on TickerMode', (tester) async {
+      final expectActive = Provider((ref) => 0);
+      final expectPaused = Provider((ref) => 0);
 
       await tester.pumpWidget(
         ProviderScope(
@@ -124,9 +87,9 @@ void main() {
             children: [
               Consumer(
                 builder: (c, ref, _) {
-                  ref.listen(providerForVisible, (_, __) {});
-                  ref.watch(providerForVisible);
-                  ref.listenManual(providerForVisible, (_, __) {});
+                  ref.listen(expectActive, (_, __) {});
+                  ref.watch(expectActive);
+                  ref.listenManual(expectActive, (_, __) {});
 
                   return const SizedBox();
                 },
@@ -135,9 +98,9 @@ void main() {
                 enabled: false,
                 child: Consumer(
                   builder: (c, ref, _) {
-                    ref.listen(_provider, (_, __) {});
-                    ref.watch(_provider);
-                    ref.listenManual(_provider, (_, __) {});
+                    ref.listen(expectActive, (_, __) {});
+                    ref.watch(expectPaused);
+                    ref.listenManual(expectActive, (_, __) {});
 
                     return const SizedBox();
                   },
@@ -149,121 +112,23 @@ void main() {
       );
 
       final container = tester.container();
-      final visibleElement = container.readProviderElement(providerForVisible);
-      final hiddenElement = container.readProviderElement(_provider);
+      final activeElement = container.readProviderElement(expectActive);
+      final pausedElement = container.readProviderElement(expectPaused);
 
       expect(
-        hiddenElement.dependents,
+        pausedElement.dependents,
         everyElement(
           isA<ProviderSubscription>()
               .having((e) => e.isPaused, 'isPaused', true),
         ),
       );
       expect(
-        visibleElement.dependents,
+        activeElement.dependents,
         everyElement(
           isA<ProviderSubscription>()
               .having((e) => e.isPaused, 'isPaused', false),
         ),
       );
-    });
-
-    testWidgets(
-        'listenManual inside life-cycles before didChangeDependencies '
-        'on non-visible widgets does not paused twice', (tester) async {
-      late ProviderSubscription sub;
-      final widget = CallbackConsumerWidget(
-        initState: (context, ref) {
-          sub = ref.listenManual(_provider, (_, __) {});
-        },
-      );
-
-      await tester.pumpWidget(
-        ProviderScope(
-          child: TickerMode(enabled: false, child: widget),
-        ),
-      );
-
-      sub.resume();
-
-      expect(sub.isPaused, false);
-    });
-
-    testWidgets('when visibility changes, pause/resume listeners',
-        (tester) async {
-      late WidgetRef ref;
-      final widget = Consumer(
-        builder: (c, r, _) {
-          ref = r;
-
-          return const SizedBox();
-        },
-      );
-
-      await tester.pumpWidget(
-        ProviderScope(
-          child: TickerMode(enabled: true, child: widget),
-        ),
-      );
-
-      final sub = ref.listenManual(_provider, (_, __) {});
-
-      await tester.pumpWidget(
-        ProviderScope(
-          child: TickerMode(enabled: false, child: widget),
-        ),
-      );
-
-      expect(sub.isPaused, true);
-
-      await tester.pumpWidget(
-        ProviderScope(
-          child: TickerMode(enabled: true, child: widget),
-        ),
-      );
-
-      expect(sub.isPaused, false);
-    });
-
-    testWidgets(
-        'when a dependency changes but visibility does not, do not pause/resume listeners',
-        (tester) async {
-      late WidgetRef ref;
-      final widget = Consumer(
-        builder: (context, r, _) {
-          // Subscribe to Theme
-          Theme.of(context);
-          ref = r;
-
-          return const SizedBox();
-        },
-      );
-
-      await tester.pumpWidget(
-        ProviderScope(
-          child: Theme(
-            data: ThemeData.dark(),
-            child: TickerMode(enabled: false, child: widget),
-          ),
-        ),
-      );
-
-      final sub = ref.listenManual(_provider, (_, __) {});
-
-      await tester.pumpWidget(
-        ProviderScope(
-          child: Theme(
-            data: ThemeData.light(),
-            child: TickerMode(enabled: false, child: widget),
-          ),
-        ),
-      );
-
-      expect(sub.isPaused, true);
-
-      sub.resume();
-
-      expect(sub.isPaused, false);
     });
   });
 
@@ -325,6 +190,7 @@ void main() {
   });
 
   testWidgets('Ref is unusable after dispose', (tester) async {
+    final provider = Provider((ref) => 0);
     late WidgetRef ref;
     await tester.pumpWidget(
       ProviderScope(
@@ -341,12 +207,12 @@ void main() {
 
     final throwsDisposeError = throwsA(isStateError);
 
-    expect(() => ref.read(_provider), throwsDisposeError);
-    expect(() => ref.watch(_provider), throwsDisposeError);
-    expect(() => ref.refresh(_provider), throwsDisposeError);
-    expect(() => ref.invalidate(_provider), throwsDisposeError);
-    expect(() => ref.listen(_provider, (_, __) {}), throwsDisposeError);
-    expect(() => ref.listenManual(_provider, (_, __) {}), throwsDisposeError);
+    expect(() => ref.read(provider), throwsDisposeError);
+    expect(() => ref.watch(provider), throwsDisposeError);
+    expect(() => ref.refresh(provider), throwsDisposeError);
+    expect(() => ref.invalidate(provider), throwsDisposeError);
+    expect(() => ref.listen(provider, (_, __) {}), throwsDisposeError);
+    expect(() => ref.listenManual(provider, (_, __) {}), throwsDisposeError);
   });
 
   group('WidgetRef.exists', () {
@@ -443,7 +309,16 @@ void main() {
   });
 
   testWidgets('can extend ConsumerWidget', (tester) async {
-    await tester.pumpWidget(const ProviderScope(child: MyWidget()));
+    final provider = Provider((ref) => 'hello world');
+    await tester.pumpWidget(
+      ProviderScope(
+        child: Consumer(
+          builder: (context, ref, _) {
+            return Text(ref.watch(provider), textDirection: TextDirection.rtl);
+          },
+        ),
+      ),
+    );
 
     expect(find.text('hello world'), findsOneWidget);
   });
@@ -949,17 +824,6 @@ class TestNotifier extends StateNotifier<int> {
 
   @override
   int get state;
-}
-
-final _provider = Provider((ref) => 'hello world');
-
-class MyWidget extends ConsumerWidget {
-  const MyWidget({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    return Text(ref.watch(_provider), textDirection: TextDirection.rtl);
-  }
 }
 
 class CallbackConsumerWidget extends ConsumerStatefulWidget {
