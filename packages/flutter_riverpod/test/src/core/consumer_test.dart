@@ -309,7 +309,6 @@ void main() {
   });
 
   testWidgets('can extend ConsumerWidget', (tester) async {
-    final provider = Provider((ref) => 'hello world');
     await tester.pumpWidget(const ProviderScope(child: MyWidget()));
 
     expect(find.text('hello world'), findsOneWidget);
