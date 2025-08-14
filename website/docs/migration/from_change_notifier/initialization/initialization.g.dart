@@ -12,7 +12,7 @@ part of 'initialization.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(MyNotifier)
-const myNotifierProvider = MyNotifierProvider._();
+const myProvider = MyNotifierProvider._();
 
 final class MyNotifierProvider
     extends $AsyncNotifierProvider<MyNotifier, List<Todo>> {
@@ -21,7 +21,7 @@ final class MyNotifierProvider
           from: null,
           argument: null,
           retry: null,
-          name: r'myNotifierProvider',
+          name: r'myProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,

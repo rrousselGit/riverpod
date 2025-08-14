@@ -12,7 +12,7 @@ part of 'add_listener.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(MyNotifier)
-const myNotifierProvider = MyNotifierProvider._();
+const myProvider = MyNotifierProvider._();
 
 final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
   const MyNotifierProvider._()
@@ -20,7 +20,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
           from: null,
           argument: null,
           retry: null,
-          name: r'myNotifierProvider',
+          name: r'myProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,

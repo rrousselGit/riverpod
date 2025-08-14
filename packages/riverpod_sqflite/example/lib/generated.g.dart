@@ -65,7 +65,7 @@ String _$storageHash() => r'f0dc33f3f7b62aa7f1ecd8faff381278503b1b01';
 
 @ProviderFor(TodosNotifier)
 @JsonPersist()
-const todosNotifierProvider = TodosNotifierProvider._();
+const todosProvider = TodosNotifierProvider._();
 
 @JsonPersist()
 final class TodosNotifierProvider
@@ -75,7 +75,7 @@ final class TodosNotifierProvider
           from: null,
           argument: null,
           retry: null,
-          name: r'todosNotifierProvider',
+          name: r'todosProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,
