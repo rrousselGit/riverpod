@@ -12,7 +12,8 @@ class BuildYamlOptions {
       providerNamePrefix: (map['provider_name_prefix'] as String?) ?? '',
       providerFamilyNamePrefix:
           (map['provider_family_name_prefix'] as String?) ?? '',
-      providerNameSuffix: (map['provider_name_suffix'] as String?) ?? 'Provider',
+      providerNameSuffix:
+          (map['provider_name_suffix'] as String?) ?? 'Provider',
       providerFamilyNameSuffix:
           (map['provider_family_name_suffix'] as String?) ?? 'Provider',
       providerNameStripPattern:

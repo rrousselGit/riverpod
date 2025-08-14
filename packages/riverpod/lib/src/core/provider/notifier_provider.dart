@@ -422,7 +422,13 @@ abstract base class $ClassProvider< //
   }
 
   /// {@template riverpod.override_with_build}
-  /// Hello world
+  /// Overrides the `build` method of a notifier, allowing you to replace the
+  /// default implementation with a custom one for testing or specific use cases.
+  ///
+  /// This override affects only the `build` method of the notifier, leaving
+  /// the rest of the provider's behavior unchanged. It is useful when you want
+  /// to customize the notifier's initialization logic without altering other
+  /// aspects of the provider.
   /// {@endtemplate}
   Override overrideWithBuild(
     RunNotifierBuild<NotifierT, CreatedT> build,
