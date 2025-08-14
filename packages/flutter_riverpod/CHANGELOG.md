@@ -4,6 +4,7 @@
 - Fix provider rebuild order issue.
 - Fix "Tried to refresh x multiple times in the same frame" incorrectly triggering.
 - Removed `FamilyNotifier` and variants, in favour of `Notifier`.
+- Providers are no-longer paused when the Flutter application is paused.
 
 ## 3.0.0-dev.17 - 2025-08-01
 
