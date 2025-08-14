@@ -16,9 +16,6 @@ import 'templates/parameters.dart';
 import 'templates/provider.dart';
 import 'templates/provider_variable.dart';
 
-const _defaultProviderNamePrefix = '';
-const _defaultProviderNameSuffix = 'Provider';
-
 /// May be thrown by generators during [Generator.generate].
 class RiverpodInvalidGenerationSourceError
     extends InvalidGenerationSourceError {
@@ -97,14 +94,6 @@ class _RiverpodGeneratorVisitor {
 
   final StringBuffer buffer;
   final BuildYamlOptions options;
-
-  String get prefix => options.providerNamePrefix ?? _defaultProviderNamePrefix;
-
-  String get familyPrefix => options.providerFamilyNamePrefix ?? prefix;
-
-  String get suffix => options.providerNameSuffix ?? _defaultProviderNameSuffix;
-
-  String get familySuffix => options.providerFamilyNameSuffix ?? suffix;
 
   void visitGeneratorProviderDeclaration(
     GeneratorProviderDeclaration provider,
@@ -196,27 +185,23 @@ extension ProviderElementNames on GeneratorProviderDeclarationElement {
     if (annotation.name case final name?) return name;
 
     final prefix = (isFamily
-            ? options.providerFamilyNamePrefix
-            : options.providerNamePrefix) ??
-        _defaultProviderNamePrefix;
+        ? options.providerFamilyNamePrefix
+        : options.providerNamePrefix);
     final suffix = (isFamily
-            ? options.providerFamilyNameSuffix
-            : options.providerNameSuffix) ??
-        _defaultProviderNameSuffix;
+        ? options.providerFamilyNameSuffix
+        : options.providerNameSuffix);
 
     var baseName = name;
 
-    if (options.providerNameStripPattern case final stripPattern?) {
-      try {
-        final regex = RegExp(stripPattern);
-        baseName = name.replaceAll(regex, '');
-      } on FormatException {
-        throw InvalidGenerationSourceError(
-          'Your providerNameStripPattern definition is not a valid regular expression: $stripPattern',
-          element: (element.library2!).getClass2(name) ??
-              (element.library2!).getTopLevelFunction(name),
-        );
-      }
+    try {
+      final regex = RegExp(options.providerNameStripPattern);
+      baseName = name.replaceAll(regex, '');
+    } on FormatException {
+      throw InvalidGenerationSourceError(
+        'Your providerNameStripPattern definition is not a valid regular expression: $options.providerNameStripPattern',
+        element: (element.library2!).getClass2(name) ??
+            (element.library2!).getTopLevelFunction(name),
+      );
     }
 
     return '$prefix${prefix.isEmpty ? baseName.lowerFirst : baseName.titled}$suffix';
