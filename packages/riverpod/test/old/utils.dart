@@ -7,8 +7,10 @@ import 'package:test/test.dart';
 
 final isAssertionError = isA<AssertionError>();
 
-R Function(Key) cacheFamily<Key, R>(R Function(Key key) create) {
-  final cache = <Key, R>{};
+ValueT Function(KeyT) cacheFamily<KeyT, ValueT>(
+  ValueT Function(KeyT key) create,
+) {
+  final cache = <KeyT, ValueT>{};
   return (key) => cache.putIfAbsent(key, () => create(key));
 }
 
@@ -29,7 +31,40 @@ List<Object> errorsOf(void Function() cb) {
   return [...errors];
 }
 
-class ProviderObserverMock extends Mock implements ProviderObserver {}
+class ProviderObserverMock extends Mock implements ProviderObserver {
+  @override
+  void didAddProvider(
+    ProviderObserverContext? context,
+    Object? value,
+  );
+
+  @override
+  void mutationReset(
+    ProviderObserverContext? context,
+    Mutation<Object?>? mutation,
+  );
+
+  @override
+  void mutationStart(
+    ProviderObserverContext? context,
+    Mutation<Object?>? mutation,
+  );
+
+  @override
+  void mutationError(
+    ProviderObserverContext? context,
+    Mutation<Object?>? mutation,
+    Object? error,
+    StackTrace? stackTrace,
+  );
+
+  @override
+  void mutationSuccess(
+    ProviderObserverContext? context,
+    Mutation<Object?>? mutation,
+    Object? result,
+  );
+}
 
 class OnBuildMock extends Mock {
   void call();
@@ -48,7 +83,7 @@ class OnDisposeMock extends Mock {
   }
 }
 
-class OnCancelMock extends Mock {
+class OnCancel extends Mock {
   void call();
 }
 
@@ -64,37 +99,37 @@ class OnRemoveListener extends Mock {
   void call();
 }
 
-class Listener<T> extends Mock {
-  void call(T? previous, T? next);
+class Listener<StateT> extends Mock {
+  void call(StateT? previous, StateT? next);
 }
 
 class ErrorListener extends Mock {
   void call(Object? error, StackTrace? stackTrace);
 }
 
-class Selector<Input, Output> extends Mock {
-  Selector(this.fake, Output Function(Input) selector) {
+class Selector<InT, OutT> extends Mock {
+  Selector(this.fake, OutT Function(InT) selector) {
     when(call(any)).thenAnswer((i) {
       return selector(
-        i.positionalArguments.first as Input,
+        i.positionalArguments.first as InT,
       );
     });
   }
 
-  final Output fake;
+  final OutT fake;
 
-  Output call(Input? value) {
+  OutT call(InT? value) {
     return super.noSuchMethod(
       Invocation.method(#call, [value]),
       returnValue: fake,
       returnValueForMissingStub: fake,
-    ) as Output;
+    ) as OutT;
   }
 }
 
-typedef VerifyOnly = VerificationResult Function<T>(
+typedef VerifyOnly = VerificationResult Function<ResT>(
   Mock mock,
-  T matchingInvocations,
+  ResT matchingInvocations,
 );
 
 /// Syntax sugar for:
@@ -106,7 +141,7 @@ typedef VerifyOnly = VerificationResult Function<T>(
 VerifyOnly get verifyOnly {
   final verification = verify;
 
-  return <T>(mock, invocation) {
+  return <ResT>(mock, invocation) {
     final result = verification(invocation);
     result.called(1);
     verifyNoMoreInteractions(mock);
@@ -205,18 +240,21 @@ class ObserverMock extends Mock implements ProviderObserver {
   void didDisposeProvider(ProviderObserverContext? context);
 
   @override
-  void mutationReset(ProviderObserverContext? context);
+  void mutationReset(
+    ProviderObserverContext? context,
+    Mutation<Object?>? mutation,
+  );
 
   @override
   void mutationStart(
     ProviderObserverContext? context,
-    MutationContext? mutation,
+    Mutation<Object?>? mutation,
   );
 
   @override
   void mutationError(
     ProviderObserverContext? context,
-    MutationContext? mutation,
+    Mutation<Object?>? mutation,
     Object? error,
     StackTrace? stackTrace,
   );
@@ -224,7 +262,7 @@ class ObserverMock extends Mock implements ProviderObserver {
   @override
   void mutationSuccess(
     ProviderObserverContext? context,
-    MutationContext? mutation,
+    Mutation<Object?>? mutation,
     Object? result,
   );
 }
@@ -232,30 +270,26 @@ class ObserverMock extends Mock implements ProviderObserver {
 // can subclass ProviderObserver without implementing all life-cycles
 class CustomObserver extends ProviderObserver {}
 
-TypeMatcher<ProviderObserverContext> isProviderObserverContext(
-  ProviderBase<Object?> provider,
-  ProviderContainer container, {
-  Object? notifier,
+TypeMatcher<ProviderObserverContext> isProviderObserverContext({
+  Object? provider = const _Sentinel(),
+  Object? container = const _Sentinel(),
+  Object? mutation = const _Sentinel(),
 }) {
   var matcher = isA<ProviderObserverContext>();
 
-  matcher = matcher.having((e) => e.provider, 'provider', provider);
-  matcher = matcher.having((e) => e.container, 'container', container);
-  matcher = matcher.having((e) => e.mutation, 'mutation', null);
-  if (provider is $ClassProvider) {
-    if (notifier == null) {
-      throw ArgumentError(
-        r'You must provide a notifier when using $ClassProvider',
-      );
-    }
-
-    matcher = matcher.having((e) => e.notifier, 'notifier', notifier);
+  if (provider is! _Sentinel) {
+    matcher = matcher.having((e) => e.provider, 'provider', provider);
+  }
+  if (container is! _Sentinel) {
+    matcher = matcher.having((e) => e.container, 'container', container);
+  }
+  if (mutation is! _Sentinel) {
+    matcher = matcher.having((e) => e.mutation, 'mutation', mutation);
   }
 
   return matcher;
 }
 
-TypeMatcher<MutationContext> isMutationContext(Object? invocation) {
-  return isA<MutationContext>()
-      .having((e) => e.invocation, 'invocation', invocation);
+class _Sentinel {
+  const _Sentinel();
 }

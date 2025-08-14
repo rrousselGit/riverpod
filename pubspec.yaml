@@ -31,10 +31,6 @@ workspace:
   - packages/riverpod_annotation
   - packages/riverpod_generator/integration/build_yaml
   - packages/riverpod_generator
-  - packages/riverpod_graph
-  - packages/riverpod_graph/test/integration/addition/golden
-  - packages/riverpod_graph/test/integration/consumer_widget/golden
-  - packages/riverpod_graph/test/integration/generated/golden
   - packages/riverpod_lint
   # Custom_lint doesn't handle plugins from workspaces yet
   # - packages/riverpod_lint_flutter_test

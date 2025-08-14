@@ -6,10 +6,13 @@ part of 'avoid_build_context_in_providers.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(fn)
 const fnProvider = FnFamily._();
 
-final class FnProvider extends $FunctionalProvider<int, int>
+final class FnProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const FnProvider._(
       {required FnFamily super.from,
@@ -58,7 +61,7 @@ final class FnProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -138,17 +141,11 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
   @override
   MyNotifier create() => MyNotifier();
 
-  @$internal
-  @override
-  $NotifierProviderElement<MyNotifier, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -218,7 +215,7 @@ abstract class _$MyNotifier extends $Notifier<int> {
       _$args.$1,
       context2: _$args.context2,
     );
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -248,17 +245,11 @@ final class Regression2959Provider
   @override
   Regression2959 create() => Regression2959();
 
-  @$internal
-  @override
-  $NotifierProviderElement<Regression2959, void> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(void value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<void>(value),
+      providerOverride: $SyncValueProvider<void>(value),
     );
   }
 }
@@ -271,12 +262,9 @@ abstract class _$Regression2959 extends $Notifier<void> {
   @override
   void runBuild() {
     build();
-    final ref = this.ref as $Ref<void>;
+    final ref = this.ref as $Ref<void, void>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<void, void>, void, Object?, Object?>;
     element.handleValue(ref, null);
   }
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

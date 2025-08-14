@@ -1,6 +1,7 @@
 // ignore_for_file: invalid_use_of_internal_member
 
 import 'package:flutter/foundation.dart';
+// ignore: unnecessary_import, foundation exports @internal on master only
 import 'package:meta/meta.dart';
 // ignore: implementation_imports
 import 'package:riverpod/src/internals.dart';
@@ -69,7 +70,7 @@ import '../../builders.dart';
 /// {@endtemplate}
 @publicInLegacy
 final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
-    extends $FunctionalProvider<NotifierT, NotifierT>
+    extends $FunctionalProvider<NotifierT, NotifierT, NotifierT>
     with LegacyProviderMixin<NotifierT> {
   /// {@macro riverpod.change_notifier_provider}
   ChangeNotifierProvider(
@@ -146,10 +147,11 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
 
 /// The element of [ChangeNotifierProvider].
 class _ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
-    extends $FunctionalProviderElement<NotifierT, NotifierT> {
+    extends $FunctionalProviderElement<NotifierT, NotifierT, NotifierT>
+    with SyncProviderElement<NotifierT> {
   _ChangeNotifierProviderElement._(super.pointer);
 
-  final _notifierNotifier = $ElementLense<NotifierT>();
+  final _notifierNotifier = $Observable<NotifierT>();
 
   void Function()? _removeListener;
 
@@ -159,9 +161,9 @@ class _ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
       () => provider.create(ref),
     );
 
-    final notifier = notifierResult.requireState;
+    final notifier = notifierResult.valueOrRawException;
 
-    setStateResult($ResultData(notifier));
+    value = AsyncData(notifier);
 
     if (notifier != null) {
       void listener() => ref.notifyListeners();
@@ -188,7 +190,7 @@ class _ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
 
   @override
   void visitListenables(
-    void Function($ElementLense element) listenableVisitor,
+    void Function($Observable element) listenableVisitor,
   ) {
     super.visitListenables(listenableVisitor);
     listenableVisitor(_notifierNotifier);
@@ -197,8 +199,9 @@ class _ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
 
 /// The [Family] of [ChangeNotifierProvider].
 @publicInMisc
-final class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?, Arg>
-    extends FunctionalFamily<NotifierT, Arg, NotifierT,
+final class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?,
+        ArgT>
+    extends FunctionalFamily<NotifierT, NotifierT, ArgT, NotifierT,
         ChangeNotifierProvider<NotifierT>> {
   /// The [Family] of [ChangeNotifierProvider].
   /// @nodoc

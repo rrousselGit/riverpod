@@ -129,7 +129,7 @@ Future<void> main(List<String> args) async {
             isFamily: true,
             genericsUsage: '<NotifierT, StateT, ArgT>',
             genericsDefinition:
-                '<NotifierT extends FamilyNotifier<StateT, ArgT>, StateT, ArgT>',
+                '<NotifierT extends Notifier<StateT>, StateT, ArgT>',
           ),
           _NotifierBuilder(
             'StreamNotifierProvider',
@@ -143,7 +143,7 @@ Future<void> main(List<String> args) async {
             isFamily: true,
             genericsUsage: '<NotifierT, StateT, ArgT>',
             genericsDefinition:
-                '<NotifierT extends FamilyStreamNotifier<StateT, ArgT>, StateT, ArgT>',
+                '<NotifierT extends StreamNotifier<StateT>, StateT, ArgT>',
           ),
           _NotifierBuilder(
             'AsyncNotifierProvider',
@@ -157,7 +157,7 @@ Future<void> main(List<String> args) async {
             isFamily: true,
             genericsUsage: '<NotifierT, StateT, ArgT>',
             genericsDefinition:
-                '<NotifierT extends FamilyAsyncNotifier<StateT, ArgT>, StateT, ArgT>',
+                '<NotifierT extends AsyncNotifier<StateT>, StateT, ArgT>',
           ),
         ],
         kinds: _ProviderKind.values,
@@ -167,7 +167,6 @@ Future<void> main(List<String> args) async {
 import 'dart:async';
 
 import 'package:meta/meta.dart';
-import 'package:state_notifier/state_notifier.dart';
 
 import 'internals.dart';
 """,
@@ -395,6 +394,10 @@ void _generateNotifier(
 
   final ctor = provider.isFamily ? '.internal' : '';
 
+  final createType = provider.isFamily
+      ? 'NotifierT Function(ArgT arg)'
+      : 'NotifierT Function()';
+
   buffer.writeln('''
 @internal
 final class $builderName {
@@ -402,7 +405,7 @@ final class $builderName {
 
   $autoDisposeDoc
   $providerName${provider.genericsUsage} call${provider.genericsDefinition}(
-    NotifierT Function() create, {
+    $createType create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
     Retry? retry,

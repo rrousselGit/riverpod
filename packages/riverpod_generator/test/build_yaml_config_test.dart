@@ -25,4 +25,16 @@ void main() {
     final options = BuildYamlOptions.fromMap(map);
     expect(options.providerFamilyNamePrefix, 'myFamily');
   });
+
+  test('provider name strip pattern', () async {
+    const map = {'provider_name_strip_pattern': r'Notifier$'};
+    final options = BuildYamlOptions.fromMap(map);
+    expect(options.providerNameStripPattern, r'Notifier$');
+  });
+
+  test('provider name strip pattern with multiple patterns', () async {
+    const map = {'provider_name_strip_pattern': r'(Notifier|Controller)$'};
+    final options = BuildYamlOptions.fromMap(map);
+    expect(options.providerNameStripPattern, r'(Notifier|Controller)$');
+  });
 }

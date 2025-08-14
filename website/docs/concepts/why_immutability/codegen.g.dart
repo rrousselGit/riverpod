@@ -8,6 +8,9 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(ThemeNotifier)
 const themeNotifierProvider = ThemeNotifierProvider._();
 
@@ -31,17 +34,11 @@ final class ThemeNotifierProvider
   @override
   ThemeNotifier create() => ThemeNotifier();
 
-  @$internal
-  @override
-  $NotifierProviderElement<ThemeNotifier, ThemeSettings> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(ThemeSettings value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<ThemeSettings>(value),
+      providerOverride: $SyncValueProvider<ThemeSettings>(value),
     );
   }
 }
@@ -54,7 +51,7 @@ abstract class _$ThemeNotifier extends $Notifier<ThemeSettings> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<ThemeSettings>;
+    final ref = this.ref as $Ref<ThemeSettings, ThemeSettings>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<ThemeSettings, ThemeSettings>,
         ThemeSettings,
@@ -63,6 +60,3 @@ abstract class _$ThemeNotifier extends $Notifier<ThemeSettings> {
     element.handleValue(ref, created);
   }
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

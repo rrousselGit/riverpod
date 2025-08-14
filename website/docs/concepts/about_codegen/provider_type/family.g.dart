@@ -8,10 +8,13 @@ part of 'family.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(example)
 const exampleProvider = ExampleFamily._();
 
-final class ExampleProvider extends $FunctionalProvider<String, String>
+final class ExampleProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const ExampleProvider._(
       {required ExampleFamily super.from, required int super.argument})
@@ -51,7 +54,7 @@ final class ExampleProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 
@@ -87,5 +90,3 @@ final class ExampleFamily extends $Family
   @override
   String toString() => r'exampleProvider';
 }
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

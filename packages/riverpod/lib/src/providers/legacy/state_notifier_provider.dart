@@ -68,11 +68,12 @@ import '../../internals.dart';
 /// {@endtemplate}
 @publicInLegacy
 final class StateNotifierProvider< //
-        NotifierT extends StateNotifier<StateT>,
-        StateT> //
+        NotifierT extends StateNotifier<ValueT>,
+        ValueT> //
     extends $FunctionalProvider< //
-        StateT,
-        NotifierT> with LegacyProviderMixin<StateT> {
+        ValueT,
+        ValueT,
+        NotifierT> with LegacyProviderMixin<ValueT> {
   /// {@macro riverpod.state_notifier_provider}
   StateNotifierProvider(
     this._create, {
@@ -127,10 +128,10 @@ final class StateNotifierProvider< //
   /// This may happen if the provider is refreshed or one of its dependencies
   /// has changes.
   Refreshable<NotifierT> get notifier =>
-      ProviderElementProxy<NotifierT, StateT>(
+      ProviderElementProxy<NotifierT, ValueT>(
         this,
         (element) {
-          return (element as _StateNotifierProviderElement<NotifierT, StateT>)
+          return (element as _StateNotifierProviderElement<NotifierT, ValueT>)
               ._notifierNotifier;
         },
       );
@@ -139,7 +140,7 @@ final class StateNotifierProvider< //
   @internal
   @override
   // ignore: library_private_types_in_public_api, not public API
-  _StateNotifierProviderElement<NotifierT, StateT> $createElement(
+  _StateNotifierProviderElement<NotifierT, ValueT> $createElement(
     $ProviderPointer pointer,
   ) {
     return _StateNotifierProviderElement._(pointer);
@@ -147,22 +148,23 @@ final class StateNotifierProvider< //
 }
 
 /// The element of [StateNotifierProvider].
-class _StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
-    StateT> extends $FunctionalProviderElement<StateT, NotifierT> {
+class _StateNotifierProviderElement<NotifierT extends StateNotifier<ValueT>,
+        ValueT> extends $FunctionalProviderElement<ValueT, ValueT, NotifierT>
+    with SyncProviderElement<ValueT> {
   _StateNotifierProviderElement._(super.pointer);
 
-  final _notifierNotifier = $ElementLense<NotifierT>();
+  final _notifierNotifier = $Observable<NotifierT>();
 
   void Function()? _removeListener;
 
   @override
-  WhenComplete create($Ref<StateT> ref) {
+  WhenComplete create(Ref ref) {
     final notifier = _notifierNotifier.result = $Result.guard(
       () => provider.create(ref),
     );
 
-    _removeListener = notifier.requireState.addListener(
-      (newState) => setStateResult($ResultData(newState)),
+    _removeListener = notifier.valueOrRawException.addListener(
+      (newState) => value = AsyncData(newState),
       fireImmediately: true,
     );
 
@@ -170,8 +172,8 @@ class _StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
   }
 
   @override
-  bool updateShouldNotify(StateT previous, StateT next) {
-    return _notifierNotifier.result!.requireState
+  bool updateShouldNotify(ValueT previous, ValueT next) {
+    return _notifierNotifier.result!.valueOrProviderException
         // ignore: invalid_use_of_protected_member
         .updateShouldNotify(previous, next);
   }
@@ -192,7 +194,7 @@ class _StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
 
   @override
   void visitListenables(
-    void Function($ElementLense element) listenableVisitor,
+    void Function($Observable element) listenableVisitor,
   ) {
     super.visitListenables(listenableVisitor);
     listenableVisitor(_notifierNotifier);
@@ -201,10 +203,10 @@ class _StateNotifierProviderElement<NotifierT extends StateNotifier<StateT>,
 
 /// The [Family] of [StateNotifierProvider].
 @publicInLegacy
-final class StateNotifierProviderFamily<NotifierT extends StateNotifier<T>, T,
-        Arg>
-    extends FunctionalFamily<T, Arg, NotifierT,
-        StateNotifierProvider<NotifierT, T>> {
+final class StateNotifierProviderFamily<NotifierT extends StateNotifier<ValueT>,
+        ValueT, ArgT>
+    extends FunctionalFamily<ValueT, ValueT, ArgT, NotifierT,
+        StateNotifierProvider<NotifierT, ValueT>> {
   /// The [Family] of [StateNotifierProvider].
   /// @nodoc
   @internal

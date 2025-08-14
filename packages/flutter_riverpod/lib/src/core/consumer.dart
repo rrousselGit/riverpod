@@ -75,7 +75,7 @@ typedef ConsumerBuilder = Widget Function(
 /// pausing unused streams, [Consumer] will temporarily stop listening to
 /// providers when the widget stops being visible.
 ///
-/// This is determined using [Visibility.of], and will invoke
+/// This is determined using [TickerMode.of], and will invoke
 /// [ProviderSubscription.pause] on all currently active subscriptions.
 ///
 /// See also:
@@ -357,8 +357,8 @@ abstract class ConsumerStatefulWidget extends StatefulWidget {
 /// }
 /// ```
 /// {@category Core}
-abstract class ConsumerState<T extends ConsumerStatefulWidget>
-    extends State<T> {
+abstract class ConsumerState<WidgetT extends ConsumerStatefulWidget>
+    extends State<WidgetT> {
   /// {@macro flutter_riverpod.widget_ref}
   late final WidgetRef ref = context as WidgetRef;
 }
@@ -373,14 +373,15 @@ base class ConsumerStatefulElement extends StatefulElement
   @override
   BuildContext get context => this;
 
-  late ProviderContainer _container = ProviderScope.containerOf(this);
+  @override
+  late ProviderContainer container = ProviderScope.containerOf(this);
   var _dependencies =
       <ProviderListenable<Object?>, ProviderSubscription<Object?>>{};
   Map<ProviderListenable<Object?>, ProviderSubscription<Object?>>?
       _oldDependencies;
   final _listeners = <ProviderSubscription<Object?>>[];
   List<ProviderSubscription<Object?>>? _manualListeners;
-  bool? _visible;
+  bool? _isActive;
 
   Iterable<ProviderSubscription> get _allSubscriptions sync* {
     yield* _dependencies.values;
@@ -390,16 +391,16 @@ base class ConsumerStatefulElement extends StatefulElement
     }
   }
 
-  void _applyVisibility(ProviderSubscription sub) {
-    if (_visible == false) sub.pause();
+  void _applyTickerMode(ProviderSubscription sub) {
+    if (_isActive == false) sub.pause();
   }
 
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
     final newContainer = ProviderScope.containerOf(this);
-    if (_container != newContainer) {
-      _container = newContainer;
+    if (container != newContainer) {
+      container = newContainer;
       for (final dependency in _dependencies.values) {
         dependency.close();
       }
@@ -409,11 +410,11 @@ base class ConsumerStatefulElement extends StatefulElement
 
   @override
   Widget build() {
-    final visible = Visibility.of(context);
-    if (visible != _visible) {
-      _visible = visible;
+    final isActive = TickerMode.of(context);
+    if (isActive != _isActive) {
+      _isActive = isActive;
       for (final sub in _allSubscriptions) {
-        if (visible) {
+        if (isActive) {
           sub.resume();
         } else {
           sub.pause();
@@ -439,27 +440,34 @@ base class ConsumerStatefulElement extends StatefulElement
 
   void _assertNotDisposed() {
     if (!context.mounted) {
-      throw StateError('Cannot use "ref" after the widget was disposed.');
+      throw StateError(
+        'Using "ref" when a widget is about to or has been unmounted is unsafe.\n'
+        'Ref relies on BuildContext, and BuildContext is unsafe to use when the widget is deactivated.\n'
+        'To safely refer to the state of providers inside State.dispose(), save the provider state in a field of your State class.',
+      );
     }
   }
 
   @override
-  Res watch<Res>(ProviderListenable<Res> target) {
+  StateT watch<StateT>(ProviderListenable<StateT> target) {
     _assertNotDisposed();
-    return _dependencies.putIfAbsent(target, () {
-      final oldDependency = _oldDependencies?.remove(target);
+    return _dependencies
+        .putIfAbsent(target, () {
+          final oldDependency = _oldDependencies?.remove(target);
 
-      if (oldDependency != null) {
-        return oldDependency;
-      }
+          if (oldDependency != null) {
+            return oldDependency;
+          }
 
-      final sub = _container.listen<Res>(
-        target,
-        (_, __) => markNeedsBuild(),
-      );
-      _applyVisibility(sub);
-      return sub;
-    }).read() as Res;
+          final sub = container.listen<StateT>(
+            target,
+            (_, __) => markNeedsBuild(),
+          );
+          _applyTickerMode(sub);
+          return sub;
+        })
+        .readSafe()
+        .valueOrProviderException as StateT;
   }
 
   @override
@@ -484,9 +492,9 @@ base class ConsumerStatefulElement extends StatefulElement
   }
 
   @override
-  void listen<T>(
-    ProviderListenable<T> provider,
-    void Function(T? previous, T value) listener, {
+  void listen<StateT>(
+    ProviderListenable<StateT> provider,
+    void Function(StateT? previous, StateT value) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
     _assertNotDisposed();
@@ -498,8 +506,8 @@ base class ConsumerStatefulElement extends StatefulElement
     // We can't implement a fireImmediately flag because we wouldn't know
     // which listen call was preserved between widget rebuild, and we wouldn't
     // want to call the listener on every rebuild.
-    final sub = _container.listen<T>(provider, listener, onError: onError);
-    _applyVisibility(sub);
+    final sub = container.listen<StateT>(provider, listener, onError: onError);
+    _applyTickerMode(sub);
     _listeners.add(sub);
   }
 
@@ -510,13 +518,13 @@ base class ConsumerStatefulElement extends StatefulElement
   }
 
   @override
-  T read<T>(ProviderListenable<T> provider) {
+  StateT read<StateT>(ProviderListenable<StateT> provider) {
     _assertNotDisposed();
     return ProviderScope.containerOf(this, listen: false).read(provider);
   }
 
   @override
-  StateT refresh<StateT>(Refreshable<StateT> provider) {
+  ValueT refresh<ValueT>(Refreshable<ValueT> provider) {
     _assertNotDisposed();
     return ProviderScope.containerOf(this, listen: false).refresh(provider);
   }
@@ -527,13 +535,13 @@ base class ConsumerStatefulElement extends StatefulElement
     bool asReload = false,
   }) {
     _assertNotDisposed();
-    _container.invalidate(provider, asReload: asReload);
+    container.invalidate(provider, asReload: asReload);
   }
 
   @override
-  ProviderSubscription<T> listenManual<T>(
-    ProviderListenable<T> provider,
-    void Function(T? previous, T next) listener, {
+  ProviderSubscription<ValueT> listenManual<ValueT>(
+    ProviderListenable<ValueT> provider,
+    void Function(ValueT? previous, ValueT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
     bool fireImmediately = false,
   }) {
@@ -544,24 +552,24 @@ base class ConsumerStatefulElement extends StatefulElement
     // be used inside initState.
     final container = ProviderScope.containerOf(this, listen: false);
 
-    final innerSubscription = container.listen<T>(
+    final sub = container.listen<ValueT>(
       provider,
       listener,
       onError: onError,
       fireImmediately: fireImmediately,
       // ignore: invalid_use_of_internal_member, from riverpod
-    ) as ProviderSubscriptionWithOrigin<T, Object?>;
-
-    // ignore: invalid_use_of_internal_member, from riverpod
-    late final ProviderSubscriptionView<T, Object?> sub;
-    sub = ProviderSubscriptionView<T, Object?>(
-      innerSubscription: innerSubscription,
-      listener: (prev, next) {},
-      onError: (error, stackTrace) {},
-      onClose: () => _manualListeners?.remove(sub),
-      read: innerSubscription.read,
     );
-    _applyVisibility(sub);
+
+    // Hook-up on onClose to avoid memory leaks.
+    final previousOnClose = sub.impl.onClose;
+    sub.impl.onClose = () {
+      previousOnClose?.call();
+      // If the subscription is closed, we remove it from the manual listeners
+      // so that it doesn't leak.
+      _manualListeners?.remove(sub);
+    };
+
+    _applyTickerMode(sub);
     listeners.add(sub);
 
     return sub;

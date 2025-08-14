@@ -8,15 +8,38 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(location)
 const locationProvider = LocationProvider._();
 
 final class LocationProvider extends $FunctionalProvider<
-        AsyncValue<({double longitude, double latitude})>,
-        Stream<({double longitude, double latitude})>>
+        AsyncValue<
+            ({
+              double latitude,
+              double longitude,
+            })>,
+        ({
+          double latitude,
+          double longitude,
+        }),
+        Stream<
+            ({
+              double latitude,
+              double longitude,
+            })>>
     with
-        $FutureModifier<({double longitude, double latitude})>,
-        $StreamProvider<({double longitude, double latitude})> {
+        $FutureModifier<
+            ({
+              double latitude,
+              double longitude,
+            })>,
+        $StreamProvider<
+            ({
+              double latitude,
+              double longitude,
+            })> {
   const LocationProvider._()
       : super(
           from: null,
@@ -33,12 +56,20 @@ final class LocationProvider extends $FunctionalProvider<
 
   @$internal
   @override
-  $StreamProviderElement<({double longitude, double latitude})> $createElement(
+  $StreamProviderElement<
+      ({
+        double latitude,
+        double longitude,
+      })> $createElement(
           $ProviderPointer pointer) =>
       $StreamProviderElement(pointer);
 
   @override
-  Stream<({double longitude, double latitude})> create(Ref ref) {
+  Stream<
+      ({
+        double latitude,
+        double longitude,
+      })> create(Ref ref) {
     return location(ref);
   }
 }
@@ -49,7 +80,7 @@ String _$locationHash() => r'39328e5d0ec2b97acec14f1aba6c8db3f24f46a8';
 const restaurantsNearMeProvider = RestaurantsNearMeProvider._();
 
 final class RestaurantsNearMeProvider extends $FunctionalProvider<
-        AsyncValue<List<String>>, FutureOr<List<String>>>
+        AsyncValue<List<String>>, List<String>, FutureOr<List<String>>>
     with $FutureModifier<List<String>>, $FutureProvider<List<String>> {
   const RestaurantsNearMeProvider._()
       : super(
@@ -78,6 +109,3 @@ final class RestaurantsNearMeProvider extends $FunctionalProvider<
 }
 
 String _$restaurantsNearMeHash() => r'f577a4362db45208cd34f499d73f39f284807d13';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

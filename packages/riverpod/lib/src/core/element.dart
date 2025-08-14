@@ -19,9 +19,8 @@ part of '../framework.dart';
 @publicInMisc
 sealed class Refreshable<StateT> implements ProviderListenable<StateT> {}
 
-base mixin _ProviderRefreshable<OutT, OriginT>
-    implements Refreshable<OutT>, ProviderListenableWithOrigin<OutT, OriginT> {
-  ProviderBase<OriginT> get provider;
+base mixin _ProviderRefreshable<OutT, InT> implements Refreshable<OutT> {
+  $ProviderBaseImpl<InT> get provider;
 }
 
 /// A debug utility used by `flutter_riverpod`/`hooks_riverpod` to check
@@ -34,6 +33,308 @@ void Function()? debugCanModifyProviders;
 /// A Future-like that support synchronous completion.
 @internal
 typedef WhenComplete = void Function(void Function() cb)?;
+
+/// Mixin to help implement logic for listening to [Future]s/[Stream]s and setup
+/// `provider.future` + convert the object into an [AsyncValue].
+@internal
+mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
+  /// An observable for [FutureProvider.future].
+  @internal
+  final futureNotifier = $Observable<Future<ValueT>>();
+  Completer<ValueT>? _futureCompleter;
+  Future<ValueT>? _lastFuture;
+  AsyncSubscription? _cancelSubscription;
+
+  @override
+  void initState(Ref ref) {
+    onLoading(AsyncLoading<ValueT>(), seamless: !ref.isReload);
+  }
+
+  /// Internal utility for transitioning an [AsyncValue] after a provider refresh.
+  ///
+  /// [seamless] controls how the previous state is preserved:
+  /// - seamless:true => import previous state and skip loading
+  /// - seamless:false => import previous state and prefer loading
+  void asyncTransition(
+    AsyncValue<ValueT> newState, {
+    required bool seamless,
+  }) {
+    final previous = value;
+
+    if (newState._isMultiState) {
+      super.value = newState;
+      return;
+    }
+
+    super.value =
+        newState.cast<ValueT>().copyWithPrevious(previous, isRefresh: seamless);
+  }
+
+  @override
+  @protected
+  set value(AsyncValue<ValueT> newState) {
+    newState.map(
+      loading: onLoading,
+      error: onError,
+      data: onData,
+    );
+  }
+
+  @internal
+  void onLoading(AsyncLoading<ValueT> value, {bool seamless = false}) {
+    asyncTransition(value, seamless: seamless);
+    if (_futureCompleter == null) {
+      final completer = _futureCompleter = Completer();
+      futureNotifier.result = $ResultData(completer.future);
+    }
+  }
+
+  /// Life-cycle for when an error from the provider's "build" method is received.
+  ///
+  /// Might be invoked after the element is disposed in the case where `provider.future`
+  /// has yet to complete.
+  @internal
+  void onError(AsyncError<ValueT> value, {bool seamless = false}) {
+    asyncTransition(value, seamless: seamless);
+
+    final result = resultForValue(value);
+    if (result is! $ResultError<StateT> && !origin._isSynthetic) {
+      // Hard error states are already reported to the observers
+      for (final observer in container.observers) {
+        container.runTernaryGuarded(
+          observer.providerDidFail,
+          _currentObserverContext(),
+          value.error,
+          value.stackTrace,
+        );
+      }
+    }
+
+    final completer = _futureCompleter;
+    if (completer != null) {
+      completer
+        ..future.ignore()
+        ..completeError(
+          value.error,
+          value.stackTrace,
+        );
+      _futureCompleter = null;
+    } else {
+      futureNotifier.result = $Result.data(
+        Future.error(
+          value.error,
+          value.stackTrace,
+        )..ignore(),
+      );
+    }
+  }
+
+  /// Life-cycle for when a data from the provider's "build" method is received.
+  ///
+  /// Might be invoked after the element is disposed in the case where `provider.future`
+  /// has yet to complete.
+  @internal
+  void onData(AsyncData<ValueT> value, {bool seamless = false}) {
+    asyncTransition(value, seamless: seamless);
+
+    final completer = _futureCompleter;
+    if (completer != null) {
+      completer.complete(value.value);
+      _futureCompleter = null;
+    } else {
+      futureNotifier.result = $Result.data(Future.value(value.value));
+    }
+  }
+
+  /// Listens to a [Stream] and convert it into an [AsyncValue].
+  @preferInline
+  @internal
+  WhenComplete handleStream(Ref ref, Stream<ValueT> Function() create) {
+    return _handleAsync(ref, ({
+      required data,
+      required done,
+      required error,
+      required last,
+    }) {
+      final stream = create();
+
+      late StreamSubscription<ValueT> subscription;
+      subscription = stream.listen(data, onError: error, onDone: done);
+
+      final asyncSub = (
+        cancel: subscription.cancel,
+        pause: subscription.pause,
+        resume: subscription.resume,
+        abort: subscription.cancel,
+      );
+
+      return asyncSub;
+    });
+  }
+
+  @override
+  void onCancel() {
+    super.onCancel();
+
+    _cancelSubscription?.pause?.call();
+  }
+
+  @override
+  void onResume() {
+    super.onResume();
+
+    _cancelSubscription?.resume?.call();
+  }
+
+  StateError _missingLastValueError() {
+    return StateError(
+      'The provider $origin was disposed during loading state, '
+      'yet no value could be emitted.',
+    );
+  }
+
+  /// Listens to a [Future] and convert it into an [AsyncValue].
+  @preferInline
+  @internal
+  WhenComplete handleFuture(
+    Ref ref,
+    FutureOr<ValueT> Function() create,
+  ) {
+    return _handleAsync(ref, ({
+      required data,
+      required done,
+      required error,
+      required last,
+    }) {
+      final futureOr = create();
+      if (futureOr is! Future<ValueT>) {
+        data(futureOr);
+        done();
+        return null;
+      }
+      // Received a Future<T>
+
+      var running = true;
+      void cancel() {
+        running = false;
+      }
+
+      futureOr.then(
+        (value) {
+          if (!running) return;
+          data(value);
+          done();
+        },
+        // ignore: avoid_types_on_closure_parameters
+        onError: (Object err, StackTrace stackTrace) {
+          if (!running) return;
+          error(err, stackTrace);
+          done();
+        },
+      );
+
+      last(futureOr);
+
+      return (
+        cancel: cancel,
+        // We don't call `cancel` here to let `provider.future` resolve with
+        // the last value emitted by the future.
+        abort: null,
+        pause: null,
+        resume: null,
+      );
+    });
+  }
+
+  /// Listens to a [Future] and transforms it into an [AsyncValue].
+  WhenComplete _handleAsync(
+    Ref ref,
+    AsyncSubscription? Function({
+      required void Function(ValueT) data,
+      required void Function(Object, StackTrace) error,
+      required void Function() done,
+      required void Function(Future<ValueT>) last,
+    }) listen,
+  ) {
+    void callOnError(Object error, StackTrace stackTrace) {
+      onError(triggerRetry(error, stackTrace), seamless: !ref.isReload);
+    }
+
+    void Function()? onDone;
+    var isDone = false;
+
+    try {
+      _cancelSubscription = listen(
+        data: (value) {
+          onData(AsyncData(value), seamless: !ref.isReload);
+        },
+        error: callOnError,
+        last: (last) {
+          assert(_lastFuture == null, 'bad state');
+          _lastFuture = last;
+        },
+        done: () {
+          _lastFuture = null;
+          isDone = true;
+          onDone?.call();
+        },
+      );
+    } catch (error, stackTrace) {
+      callOnError(error, stackTrace);
+    }
+
+    return (onDoneCb) {
+      onDone = onDoneCb;
+      // Handle synchronous completion
+      if (isDone) onDoneCb();
+    };
+  }
+
+  @override
+  @internal
+  void runOnDispose() {
+    // Stops listening to the previous async operation
+    _lastFuture = null;
+    _cancelSubscription?.cancel();
+    _cancelSubscription = null;
+    super.runOnDispose();
+  }
+
+  @override
+  void dispose() {
+    final completer = _futureCompleter;
+    if (completer != null) {
+      // Whatever happens after this, the error is emitted post dispose of the provider.
+      // So the error doesn't matter anymore.
+      completer.future.ignore();
+
+      final lastFuture = _lastFuture;
+      if (lastFuture != null) {
+        _cancelSubscription?.abort?.call();
+
+        // Prevent super.dispose from cancelling the subscription on the "last"
+        // stream value, so that it can be sent to `provider.future`.
+        _lastFuture = null;
+        _cancelSubscription = null;
+      } else {
+        // The listened stream completed during a "loading" state.
+        completer.completeError(
+          _missingLastValueError(),
+          StackTrace.current,
+        );
+      }
+    }
+    super.dispose();
+  }
+
+  @override
+  void visitListenables(
+    void Function($Observable element) listenableVisitor,
+  ) {
+    super.visitListenables(listenableVisitor);
+    listenableVisitor(futureNotifier);
+  }
+}
 
 /// {@template riverpod.provider_element_base}
 /// An internal class that handles the state of a provider.
@@ -49,7 +350,7 @@ typedef WhenComplete = void Function(void Function() cb)?;
 @internal
 @optionalTypeArgs
 @publicInCodegen
-abstract class ProviderElement<StateT> implements Node {
+abstract class ProviderElement<StateT, ValueT> implements Node {
   /// {@macro riverpod.provider_element_base}
   ProviderElement(this.pointer);
 
@@ -57,16 +358,9 @@ abstract class ProviderElement<StateT> implements Node {
     return previous != next;
   }
 
-  static Duration? _defaultRetry(int retryCount, Object error) {
-    if (retryCount >= 10) return null;
-    if (error is ProviderException || error is Error) return null;
-
-    return Duration(
-      milliseconds: math.min(200 * math.pow(2, retryCount).toInt(), 6400),
-    );
-  }
-
   static ProviderElement? _debugCurrentlyBuildingElement;
+
+  ProviderContainer get container => pointer.targetContainer;
 
   /// The last result of [ProviderBase.debugGetCreateSourceHash].
   ///
@@ -75,20 +369,18 @@ abstract class ProviderElement<StateT> implements Node {
   var _debugSkipNotifyListenersAsserts = false;
 
   /// The provider associated with this [ProviderElement], before applying overrides.
-  ProviderBase<StateT> get origin => pointer.origin as ProviderBase<StateT>;
+  $ProviderBaseImpl<StateT> get origin =>
+      pointer.origin as $ProviderBaseImpl<StateT>;
 
   /// The provider associated with this [ProviderElement], after applying overrides.
-  ProviderBase<StateT> get provider;
+  $ProviderBaseImpl<StateT> get provider;
 
   /// The [$ProviderPointer] associated with this [ProviderElement].
   final $ProviderPointer pointer;
 
-  /// The [ProviderContainer] that owns this [ProviderElement].
-  ProviderContainer get container => pointer.targetContainer;
-
   bool unsafeCheckIfMounted = true;
   // ignore: library_private_types_in_public_api, not public
-  $Ref<StateT>? ref;
+  $Ref<StateT, ValueT>? ref;
 
   /// Whether this [ProviderElement] is actively in use.
   ///
@@ -97,24 +389,25 @@ abstract class ProviderElement<StateT> implements Node {
   /// - all of its listeners are "weak" (i.e. created with `listen(weak: true)`)
   ///
   /// See also [mayNeedDispose], called when [isActive] may have changed.
-  bool get isActive => (_listenerCount - _pausedActiveSubscriptionCount) > 0;
+  bool get isActive => (listenerCount - pausedActiveSubscriptionCount) > 0;
 
-  int get _listenerCount => dependents?.length ?? 0;
+  int get listenerCount => dependents?.length ?? 0;
 
-  var _pausedActiveSubscriptionCount = 0;
+  int pausedActiveSubscriptionCount = 0;
   var _didCancelOnce = false;
 
   /// Whether this [ProviderElement] is currently listened to or not.
   ///
   /// This maps to listeners added with `listen` and `watch`,
   /// excluding `listen(weak: true)`.
-  bool get hasNonWeakListeners => _listenerCount > 0;
+  bool get hasNonWeakListeners => listenerCount > 0;
 
   List<ProviderSubscription>? _inactiveSubscriptions;
   @visibleForTesting
   List<ProviderSubscription>? subscriptions;
+
   @visibleForTesting
-  List<ProviderSubscriptionWithOrigin<Object?, StateT>>? dependents;
+  List<ProviderSubscriptionImpl<Object?>>? dependents;
 
   /// "listen(weak: true)" pointing to this provider.
   ///
@@ -122,7 +415,7 @@ abstract class ProviderElement<StateT> implements Node {
   /// - They do not count towards [ProviderElement.isActive].
   /// - They may be reused between two instances of a [ProviderElement].
   @visibleForTesting
-  final weakDependents = <ProviderSubscriptionWithOrigin<Object?, StateT>>[];
+  final weakDependents = <ProviderSubscriptionImpl<Object?>>[];
 
   bool _mustRecomputeState = false;
   bool _dependencyMayHaveChanged = false;
@@ -131,7 +424,7 @@ abstract class ProviderElement<StateT> implements Node {
   var _retryCount = 0;
   Timer? _pendingRetryTimer;
 
-  /// Whether the assert that prevents [requireState] from returning
+  /// Whether the assert that prevents [readSelf] from returning
   /// if the state was not set before is enabled.
   @visibleForOverriding
   bool get debugAssertDidSetStateEnabled => true;
@@ -141,78 +434,56 @@ abstract class ProviderElement<StateT> implements Node {
   var _didMount = false;
 
   /* STATE */
-  $Result<StateT>? _stateResult;
-
-  /// The current state of the provider.
-  ///
-  /// Obtains the current state, or null if the provider has yet to initialize.
-  ///
-  /// The returned object will contain error information, if any.
-  /// This function does not cause the provider to rebuild if it somehow was
-  /// outdated.
-  ///
-  /// This is not meant for public consumption. Instead, public API should use
-  /// [readSelf].
-  $Result<StateT>? get stateResult => _stateResult;
-
-  /// Returns the currently exposed by a provider
-  ///
-  /// May throw if the provider threw when creating the exposed value.
-  StateT readSelf() {
-    flush();
-
-    return requireState;
-  }
-
-  /// Update the exposed value of a provider and notify its listeners.
-  ///
-  /// Listeners will only be notified if [updateShouldNotify]
-  /// returns true.
-  ///
-  /// This API is not meant for public consumption. Instead if a [Ref] needs
-  /// to expose a way to update the state, the practice is to expose a getter/setter.
-  void setStateResult($Result<StateT> newState) {
+  var _value = AsyncValue<ValueT>.loading();
+  AsyncValue<ValueT> get value => _value;
+  set value(AsyncValue<ValueT> value) {
     if (kDebugMode) _debugDidSetState = true;
 
-    final previousResult = stateResult;
-    final result = _stateResult = newState;
+    final previousResult = this.value;
+    final result = _value = value;
 
     if (_didBuild) {
       _notifyListeners(result, previousResult);
     }
   }
 
-  /// Read the current value of a provider and:
+  $Result<StateT>? stateResult() => resultForValue(value);
+
+  void setValueFromState(StateT state);
+
+  $Result<StateT>? resultForValue(AsyncValue<ValueT> value);
+
+  /// Returns the currently exposed by a provider
   ///
-  /// - if in error state, rethrow the error
-  /// - if the provider is not initialized, gracefully handle the error.
-  ///
-  /// This is not meant for public consumption. Instead, public API should use
-  /// [readSelf].
-  StateT get requireState {
+  /// May throw if the provider threw when creating the exposed value.
+  $Result<StateT> readSelf() {
+    flush();
+
+    final state = resultForValue(value);
+
     const uninitializedError = '''
 Tried to read the state of an uninitialized provider.
-This could mean a few things:
-- You have a circular dependency, and your provider end-up depending on itself.
-- You read "ref.state", but no value was set beforehand.
+This generally means that have a circular dependency, and your provider end-up
+depending on itself.
 ''';
 
     if (kDebugMode) {
       if (debugAssertDidSetStateEnabled && !_debugDidSetState) {
-        throw StateError(uninitializedError);
+        return $Result.error(
+          StateError(uninitializedError),
+          StackTrace.current,
+        );
       }
     }
 
-    final state = stateResult;
-    if (state == null) throw StateError(uninitializedError);
+    if (state == null) {
+      return $ResultError(
+        StateError(uninitializedError),
+        StackTrace.current,
+      );
+    }
 
-    return switch (state) {
-      $ResultError() => throwProviderException(
-          state.error,
-          state.stackTrace,
-        ),
-      $ResultData() => state.value,
-    };
+    return state;
   }
 
   /// Called when a provider is rebuilt. Used for providers to not notify their
@@ -244,12 +515,12 @@ This could mean a few things:
     }
 
     final ref = this.ref = $Ref(this, isFirstBuild: true, isReload: false);
-    final initialState = _stateResult;
+    final initialState = value;
 
     buildState(ref);
 
     _notifyListeners(
-      _stateResult!,
+      value,
       initialState,
       isFirstBuild: true,
       checkUpdateShouldNotify: false,
@@ -262,7 +533,7 @@ This could mean a few things:
   /// - `overrideWithValue`, which relies on [update] to handle
   ///   the scenario where the value changed.
   @visibleForOverriding
-  void update(ProviderBase<StateT> newProvider) {}
+  void update($ProviderBaseImpl<StateT> newProvider) {}
 
   /// Initialize a provider and track dependencies used during the initialization.
   ///
@@ -275,7 +546,7 @@ This could mean a few things:
       isFirstBuild: false,
       isReload: _didChangeDependency,
     );
-    final previousStateResult = _stateResult;
+    final previousValue = value;
 
     if (kDebugMode) _debugDidSetState = false;
 
@@ -289,12 +560,12 @@ This could mean a few things:
       listenable.unlockNotification();
     });
 
-    if (!identical(_stateResult, previousStateResult)) {
+    if (!identical(value, previousValue)) {
       // Asserts would otherwise prevent a provider rebuild from updating
       // other providers
       if (kDebugMode) _debugSkipNotifyListenersAsserts = true;
 
-      _notifyListeners(_stateResult!, previousStateResult);
+      _notifyListeners(value, previousValue);
 
       if (kDebugMode) _debugSkipNotifyListenersAsserts = false;
     }
@@ -302,14 +573,14 @@ This could mean a few things:
 
   /// Initialize a provider.
   ///
-  /// This function **must** call [setStateResult] or throw (or both).
+  /// This function **must** call [value=] or throw (or both).
   ///
   /// Exceptions within this function will be caught and set the provider in error
   /// state. Then, reading this provider will rethrow the thrown exception.
   @visibleForOverriding
   WhenComplete create(
     // ignore: library_private_types_in_public_api, not public
-    $Ref<StateT> ref,
+    $Ref<StateT, ValueT> ref,
   );
 
   /// A utility for re-initializing a provider when needed.
@@ -355,7 +626,7 @@ This could mean a few things:
   @internal
   void buildState(
     // ignore: library_private_types_in_public_api, not public
-    $Ref<StateT> ref,
+    $Ref<StateT, ValueT> ref,
   ) {
     if (_didChangeDependency) _retryCount = 0;
 
@@ -364,6 +635,7 @@ This could mean a few things:
     if (kDebugMode) {
       debugPreviouslyBuildingElement = _debugCurrentlyBuildingElement;
       _debugCurrentlyBuildingElement = this;
+      container.scheduler.debugNotifyDidBuild(this);
     }
 
     _didBuild = false;
@@ -375,40 +647,41 @@ This could mean a few things:
     } catch (err, stack) {
       if (kDebugMode) _debugDidSetState = true;
 
-      _stateResult = $Result.error(err, stack);
-      triggerRetry(err);
+      value = triggerRetry(err, stack);
     } finally {
       _didBuild = true;
       if (kDebugMode) {
         _debugCurrentlyBuildingElement = debugPreviouslyBuildingElement;
       }
-
-      assert(
-        stateResult != null,
-        'Bad state, the provider did not initialize. Did "create" forget to set the state?',
-      );
     }
   }
 
   @protected
-  void triggerRetry(Object error) {
+  @useResult
+  AsyncError<ValueT> triggerRetry(Object error, StackTrace stackTrace) {
+    var retrying = false;
+
     // Don't start retry if the provider was disposed
-    if (ref == null) return;
+    if (!_disposed) {
+      final retry =
+          origin.retry ?? container.retry ?? ProviderContainer.defaultRetry;
 
-    final retry = origin.retry ?? container.retry ?? _defaultRetry;
+      // Capture exceptions. On error, stop retrying if the retry
+      // function failed
+      container.runGuarded(() {
+        final duration = retry(_retryCount, error);
+        if (duration == null) return;
 
-    // Capture exceptions. On error, stop retrying if the retry
-    // function failed
-    container.runGuarded(() {
-      final duration = retry(_retryCount, error);
-      if (duration == null) return;
-
-      _pendingRetryTimer = Timer(duration, () {
-        _pendingRetryTimer = null;
-        _retryCount++;
-        invalidateSelf(asReload: false);
+        retrying = true;
+        _pendingRetryTimer = Timer(duration, () {
+          _pendingRetryTimer = null;
+          _retryCount++;
+          invalidateSelf(asReload: false);
+        });
       });
-    });
+    }
+
+    return AsyncError(error, stackTrace, retrying: retrying);
   }
 
   void _debugAssertNotificationAllowed() {
@@ -449,25 +722,28 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     visitListenables((notifier) => notifier.notifyDependencyMayHaveChanged());
   }
 
-  MutationContext? _currentMutationContext() =>
-      Zone.current[mutationZoneKey] as MutationContext?;
+  Mutation<Object?>? _currentMutationContext() =>
+      Zone.current[mutationZoneKey] as Mutation<Object?>?;
 
   ProviderObserverContext _currentObserverContext() {
     return ProviderObserverContext(
       origin,
       container,
       mutation: _currentMutationContext(),
-      notifier: null,
     );
   }
 
   void _notifyListeners(
-    $Result<StateT> newState,
-    $Result<StateT>? previousStateResult, {
+    AsyncValue<ValueT> newStateValue,
+    AsyncValue<ValueT>? previousStateValue, {
     bool checkUpdateShouldNotify = true,
     bool isFirstBuild = false,
   }) {
     if (kDebugMode && !isFirstBuild) _debugAssertNotificationAllowed();
+
+    final newState = resultForValue(newStateValue)!;
+    final previousStateResult =
+        previousStateValue != null ? resultForValue(previousStateValue) : null;
 
     final previousState = previousStateResult?.value;
 
@@ -497,15 +773,15 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         }
     }
 
-    if (checkUpdateShouldNotify &&
-        previousStateResult != null &&
-        previousStateResult.hasData &&
-        newState.hasData &&
-        !updateShouldNotify(
-          previousState as StateT,
-          newState.requireState,
-        )) {
-      return;
+    if (checkUpdateShouldNotify) {
+      switch ((previousStateResult, newState)) {
+        case ((null, _)):
+        case (($ResultError(), _)):
+        case ((_, $ResultError())):
+          break;
+        case (($ResultData() && final prev, $ResultData() && final next)):
+          if (!updateShouldNotify(prev.value, next.value)) return;
+      }
     }
 
     final listeners = [...weakDependents, if (!isFirstBuild) ...?dependents];
@@ -516,7 +792,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
           if (listener.closed) continue;
 
           container.runBinaryGuarded(
-            listener._onOriginData,
+            listener.providerSub._notifyData,
             previousState,
             newState.value,
           );
@@ -527,38 +803,40 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
           if (listener.closed) continue;
 
           container.runBinaryGuarded(
-            listener._onOriginError,
+            listener.providerSub._notifyError,
             newState.error,
             newState.stackTrace,
           );
         }
     }
 
-    for (final observer in container.observers) {
-      if (isFirstBuild) {
-        container.runBinaryGuarded(
-          observer.didAddProvider,
-          _currentObserverContext(),
-          newState.value,
-        );
-      } else {
-        container.runTernaryGuarded(
-          observer.didUpdateProvider,
-          _currentObserverContext(),
-          previousState,
-          newState.value,
-        );
+    if (!origin._isSynthetic) {
+      for (final observer in container.observers) {
+        if (isFirstBuild) {
+          container.runBinaryGuarded(
+            observer.didAddProvider,
+            _currentObserverContext(),
+            newState.value,
+          );
+        } else {
+          container.runTernaryGuarded(
+            observer.didUpdateProvider,
+            _currentObserverContext(),
+            previousState,
+            newState.value,
+          );
+        }
       }
-    }
 
-    for (final observer in container.observers) {
-      if (newState is $ResultError<StateT>) {
-        container.runTernaryGuarded(
-          observer.providerDidFail,
-          _currentObserverContext(),
-          newState.error,
-          newState.stackTrace,
-        );
+      for (final observer in container.observers) {
+        if (newState is $ResultError<StateT>) {
+          container.runTernaryGuarded(
+            observer.providerDidFail,
+            _currentObserverContext(),
+            newState.error,
+            newState.stackTrace,
+          );
+        }
       }
     }
   }
@@ -579,36 +857,38 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     visitListenables((notifier) => notifier.notifyDependencyMayHaveChanged());
   }
 
-  @override
-  ProviderElement<T> _readProviderElement<T>(ProviderBase<T> provider) {
-    return container.readProviderElement(provider);
-  }
-
-  ProviderSubscription<T> listen<T>(
-    ProviderListenable<T> listenable,
-    void Function(T? previous, T value) listener, {
+  ProviderSubscription<ListenedStateT> listen<ListenedStateT>(
+    ProviderListenable<ListenedStateT> listenable,
+    void Function(ListenedStateT? previous, ListenedStateT value) listener, {
     bool weak = false,
     void Function(Object error, StackTrace stackTrace)? onError,
     bool fireImmediately = false,
     // Not part of the public "Ref" API
     void Function()? onDependencyMayHaveChanged,
   }) {
+    assert(
+      !fireImmediately || !weak,
+      'Cannot use fireImmediately with weak listeners',
+    );
+
     final ref = this.ref!;
     ref._throwIfInvalidUsage();
 
     final sub = listenable._addListener(
       this,
       listener,
-      fireImmediately: fireImmediately,
       onError: onError ?? container.defaultOnError,
       weak: weak,
       onDependencyMayHaveChanged: onDependencyMayHaveChanged,
     );
 
-    switch (sub) {
-      case final ProviderSubscriptionImpl<Object?, Object?> sub:
-        sub._listenedElement.addDependentSubscription(sub);
-    }
+    _handleFireImmediately(
+      container,
+      sub,
+      fireImmediately: fireImmediately,
+    );
+
+    sub.impl._listenedElement.addDependentSubscription(sub.impl);
 
     if (kDebugMode) ref._debugAssertCanDependOn(listenable);
 
@@ -617,23 +897,22 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
   void onCancel() {
     subscriptions?.forEach((sub) {
-      switch (sub) {
-        case ProviderSubscriptionImpl():
-          sub._listenedElement.onSubscriptionPause(sub);
-      }
+      sub.impl.deactivate();
     });
   }
 
   void onResume() {
     subscriptions?.forEach((sub) {
-      switch (sub) {
-        case ProviderSubscriptionImpl():
-          sub._listenedElement.onSubscriptionResume(sub);
-      }
+      sub.impl.reactivate();
     });
   }
 
-  void addDependentSubscription(ProviderSubscriptionImpl<Object?, StateT> sub) {
+  void addDependentSubscription(ProviderSubscriptionImpl<Object?> sub) {
+    assert(
+      !sub.isPaused && sub.impl.active,
+      'Expected subscription to be active and not paused',
+    );
+
     _onChangeSubscription(sub, () {
       if (sub.weak) {
         weakDependents.add(sub);
@@ -649,16 +928,24 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     });
   }
 
-  void removeDependentSubscription(ProviderSubscription sub) {
+  void removeDependentSubscription(
+    ProviderSubscription sub,
+    void Function() apply,
+  ) {
+    _assertContainsDependent(sub);
+
     _onChangeSubscription(sub, () {
-      // If the subscription is paused, internally resume it to decrement any
-      // associated state.
-      // We don't want to call onResume though.
-      _notifyResumeListeners = false;
-      while (sub.isPaused) {
-        sub.resume();
+      apply();
+      // If the subscription is an indirect one, so we don't count it towards
+      // pausedActiveSubscriptionCount, otherwise one listener would count twice.
+      if (!sub.weak &&
+          !sub.impl.$hasParent &&
+          (sub.isPaused || !sub.impl.active)) {
+        pausedActiveSubscriptionCount = math.max(
+          0,
+          pausedActiveSubscriptionCount - 1,
+        );
       }
-      _notifyResumeListeners = true;
 
       if (sub.weak) {
         weakDependents.remove(sub);
@@ -666,23 +953,122 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
         dependents?.remove(sub);
       }
 
-      if (sub.source case final ProviderElement element) {
-        element.subscriptions?.remove(sub);
+      if (sub.impl.source case final ProviderElement element) {
+        element
+          ..subscriptions?.remove(sub)
+          .._inactiveSubscriptions?.remove(sub);
       }
     });
   }
 
-  var _notifyResumeListeners = true;
+  void onSubscriptionPauseOrDeactivate(
+    ProviderSubscription sub,
+    void Function() apply,
+  ) {
+    _assertContainsDependent(sub);
+
+    _onChangeSubscription(sub, () {
+      final before = sub.impl.pausedOrDeactivated;
+      apply();
+      assert(
+        sub.isPaused || !sub.impl.active,
+        'Expected subscription to be paused/inactive',
+      );
+      final after = sub.impl.pausedOrDeactivated;
+
+      // If the subscription is an indirect one, so we don't count it towards
+      // pausedActiveSubscriptionCount, otherwise one listener would count twice.
+      if (sub.impl.$hasParent) return;
+      // Weak listeners are not counted towards isActive, so we don't want to change
+      // pausedActiveSubscriptionCount
+      if (sub.weak) return;
+      if (before == after) return;
+      pausedActiveSubscriptionCount++;
+    });
+  }
+
+  void onSubscriptionResumeOrReactivate(
+    ProviderSubscription sub,
+    void Function() apply,
+  ) {
+    _assertContainsDependent(sub);
+
+    _onChangeSubscription(sub, () {
+      final before = sub.impl.pausedOrDeactivated;
+      apply();
+      assert(
+        !sub.isPaused || sub.impl.active,
+        'Expected subscription to be resumed/active',
+      );
+      final after = sub.impl.pausedOrDeactivated;
+
+      // If the subscription is an indirect one, so we don't count it towards
+      // pausedActiveSubscriptionCount, otherwise one listener would count twice.
+      if (sub.impl.$hasParent) return;
+      // Weak listeners are not counted towards isActive, so we don't want to change
+      // pausedActiveSubscriptionCount
+      if (sub.weak) return;
+      if (before == after) return;
+
+      pausedActiveSubscriptionCount = math.max(
+        0,
+        pausedActiveSubscriptionCount - 1,
+      );
+    });
+  }
+
+  void _assertValidInternalPauseState() {
+    if (!kDebugMode) return;
+
+    final closedSubs = [
+      ...?subscriptions,
+      ...?dependents,
+      ...weakDependents,
+      ...?_inactiveSubscriptions,
+    ].where((e) => e.closed);
+    if (closedSubs.isNotEmpty) {
+      throw StateError(
+        'Some leftover closed subscriptions were found.\n'
+        'This is likely due to a bug in the provider implementation.\n$this',
+      );
+    }
+
+    final actualPausedCount = pausedActiveSubscriptionCount;
+    final expectedPausedCount = dependents
+            ?.where((sub) => !sub.weak && (sub.isPaused || !sub.active))
+            .length ??
+        0;
+
+    assert(
+      actualPausedCount == expectedPausedCount,
+      'Expected pausedActiveSubscriptionCount to be $expectedPausedCount, '
+      'but was $actualPausedCount. '
+      'This is likely due to a bug in the provider implementation.\n$this',
+    );
+  }
+
+  void _assertContainsDependent(ProviderSubscription sub) {
+    assert(
+      sub.impl.$hasParent || [...weakDependents, ...?dependents].contains(sub),
+      '''
+Expected subscription to be part of this provider element, but it was not found.
+Sub:
+$sub
+Element:
+$this''',
+    );
+  }
+
   void _onChangeSubscription(ProviderSubscription sub, void Function() apply) {
     final wasActive = isActive;
-    final previousListenerCount = _listenerCount;
+    final previousListenerCount = listenerCount;
+    _assertValidInternalPauseState();
     apply();
+    _assertValidInternalPauseState();
 
     switch ((wasActive: wasActive, isActive: isActive)) {
       case (wasActive: false, isActive: true) when _didCancelOnce:
-        if (_notifyResumeListeners) {
-          _runCallbacks(container, ref?._onResumeListeners);
-        }
+        _runCallbacks(container, ref?._onResumeListeners);
         onResume();
 
       case (wasActive: true, isActive: false):
@@ -694,33 +1080,12 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
       // No state change, so do nothing
     }
 
-    if (_listenerCount < previousListenerCount) {
+    if (listenerCount < previousListenerCount) {
       _runCallbacks(container, ref?._onRemoveListeners);
       mayNeedDispose();
-    } else if (_listenerCount > previousListenerCount) {
+    } else if (listenerCount > previousListenerCount) {
       _runCallbacks(container, ref?._onAddListeners);
     }
-  }
-
-  void onSubscriptionPause(ProviderSubscription sub) {
-    // Weak listeners are not counted towards isActive, so we don't want to change
-    // _pausedActiveSubscriptionCount
-    if (sub.weak) return;
-
-    _onChangeSubscription(sub, () => _pausedActiveSubscriptionCount++);
-  }
-
-  void onSubscriptionResume(ProviderSubscription sub) {
-    // Weak listeners are not counted towards isActive, so we don't want to change
-    // _pausedActiveSubscriptionCount
-    if (sub.weak) return;
-
-    _onChangeSubscription(sub, () {
-      _pausedActiveSubscriptionCount = math.max(
-        0,
-        _pausedActiveSubscriptionCount - 1,
-      );
-    });
   }
 
   /// A life-cycle called by subclasses of [ProviderElement] when
@@ -744,19 +1109,6 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
   }
 
-  void _closeSubscriptions(List<ProviderSubscription> subscriptions) {
-    final subs = subscriptions.toList();
-    for (var i = 0; i < subs.length; i++) {
-      subs[i].close();
-    }
-  }
-
-  void _pauseSubscriptions(List<ProviderSubscription> subscriptions) {
-    for (var i = 0; i < subscriptions.length; i++) {
-      subscriptions[i].pause();
-    }
-  }
-
   /// Executes the [Ref.onDispose] listeners previously registered, then clear
   /// the list of listeners.
   @protected
@@ -773,17 +1125,21 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     // of the next rebuild.
     if (subscriptions case final subs?) {
       (_inactiveSubscriptions ??= []).addAll(subs);
-      _pauseSubscriptions(subs);
+      for (var i = 0; i < subs.length; i++) {
+        subs[i].impl.pause();
+      }
     }
     subscriptions = null;
 
     _runCallbacks(container, ref._onDisposeListeners);
 
-    for (final observer in container.observers) {
-      container.runUnaryGuarded(
-        observer.didDisposeProvider,
-        _currentObserverContext(),
-      );
+    if (!origin._isSynthetic) {
+      for (final observer in container.observers) {
+        container.runUnaryGuarded(
+          observer.didDisposeProvider,
+          _currentObserverContext(),
+        );
+      }
     }
 
     ref._keepAliveLinks = null;
@@ -811,8 +1167,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   void clearState() {
     runOnDispose();
     _didMount = false;
-    _stateResult = null;
-    ref = null;
+    _value = AsyncLoading();
 
     if (dependents case final subs?) {
       _closeSubscriptions(subs);
@@ -852,23 +1207,32 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
 
   @override
   String toString() {
-    final buffer = StringBuffer('$runtimeType(');
+    final buffer = StringBuffer('$runtimeType${shortHash(this)}(');
 
-    buffer.writeAll(
-      [
-        switch (_stateResult) {
-          null => 'state: uninitialized',
-          $ResultData<StateT>(:final value) => 'state: $value',
-          $ResultError<StateT>(:final error, :final stackTrace) =>
-            'state: error $error\n$stackTrace',
-        },
-        if (provider != origin) 'provider: $provider',
-        'origin: $origin',
-      ],
-      ', ',
-    );
+    final lines = [
+      'origin: $origin',
+      if (provider != origin) 'provider: $provider',
+      'isActive: $isActive',
+      'listenerCount: $listenerCount',
+      'pausedActiveSubscriptionCount: $pausedActiveSubscriptionCount',
+      'retryCount: $_retryCount',
+      'weakDependents: $weakDependents',
+      'dependents: $dependents',
+      'inactiveSubscriptions: $_inactiveSubscriptions',
+      'subscriptions: $subscriptions',
+      switch (resultForValue(value)) {
+        null => 'state: uninitialized',
+        $ResultData<StateT>(:final value) => 'state: $value',
+        $ResultError<StateT>(:final error, :final stackTrace) =>
+          'state: error $error\n$stackTrace',
+      },
+    ];
 
-    buffer.write(')');
+    for (final line in lines) {
+      buffer.write('\n${line.indent(1)}');
+    }
+
+    buffer.write('\n)');
 
     return buffer.toString();
   }
@@ -885,10 +1249,10 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     void Function(ProviderElement element) elementVisitor,
   ) {
     void lookup(
-      Iterable<ProviderSubscriptionWithOrigin<Object?, Object?>> children,
+      Iterable<ProviderSubscription<Object?>> children,
     ) {
       for (final child in children) {
-        switch (child.source) {
+        switch (child.impl.source) {
           case final ProviderElement dependent:
             elementVisitor(dependent);
           case ProviderContainer():
@@ -902,7 +1266,7 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   }
 
   void visitListenables(
-    void Function($ElementLense element) listenableVisitor,
+    void Function($Observable element) listenableVisitor,
   ) {}
 
   /// Visit the [ProviderElement]s that this provider is listening to.
@@ -916,16 +1280,44 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
   void visitAncestors(
     void Function(ProviderElement element) visitor,
   ) {
-    final subscriptions = this.subscriptions;
-    if (subscriptions != null) {
+    if (subscriptions case final subscriptions?) {
       for (var i = 0; i < subscriptions.length; i++) {
         final sub = subscriptions[i];
 
-        switch (sub) {
-          case final ProviderSubscriptionImpl<Object?, Object?> sub:
-            visitor(sub._listenedElement);
-        }
+        visitor(sub.impl._listenedElement);
+      }
+    }
+    if (_inactiveSubscriptions case final inactiveSubscriptions?) {
+      for (var i = 0; i < inactiveSubscriptions.length; i++) {
+        final sub = inactiveSubscriptions[i];
+
+        visitor(sub.impl._listenedElement);
       }
     }
   }
+}
+
+void _closeSubscriptions(List<ProviderSubscription> subscriptions) {
+  final subs = subscriptions.toList();
+  for (var i = 0; i < subs.length; i++) {
+    subs[i].close();
+  }
+}
+
+@internal
+mixin SyncProviderElement<ValueT> on ProviderElement<ValueT, ValueT> {
+  @override
+  $Result<ValueT>? resultForValue(AsyncValue<ValueT> value) {
+    switch (value) {
+      case AsyncData():
+        return $ResultData(value.value);
+      case AsyncError():
+        return $ResultError(value.error, value.stackTrace);
+      case AsyncLoading():
+        return null;
+    }
+  }
+
+  @override
+  void setValueFromState(ValueT state) => value = AsyncData(state);
 }

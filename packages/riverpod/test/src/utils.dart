@@ -4,8 +4,47 @@ import 'package:mockito/mockito.dart';
 import 'package:riverpod/src/internals.dart';
 import 'package:test/test.dart' hide Retry;
 
-export '../old/utils.dart'
-    show ObserverMock, isProviderObserverContext, isMutationContext;
+export '../old/utils.dart' show ObserverMock, isProviderObserverContext;
+
+class _Sentinel {
+  const _Sentinel();
+}
+
+TypeMatcher<MutationIdle<StateT>> isMutationIdle<StateT>() {
+  return isA<MutationIdle<StateT>>();
+}
+
+TypeMatcher<MutationPending<StateT>> isMutationPending<StateT>() {
+  return isA<MutationPending<StateT>>();
+}
+
+TypeMatcher<MutationSuccess<StateT>> isMutationSuccess<StateT>([
+  Object? value = const _Sentinel(),
+]) {
+  final matcher = isA<MutationSuccess<StateT>>();
+
+  if (value != const _Sentinel()) {
+    return matcher.having((e) => e.value, 'value', value);
+  }
+
+  return matcher;
+}
+
+TypeMatcher<MutationError<StateT>> isMutationError<StateT>({
+  Object? error = const _Sentinel(),
+  Object? stackTrace = const _Sentinel(),
+}) {
+  var matcher = isA<MutationError<StateT>>();
+
+  if (error != const _Sentinel()) {
+    matcher = matcher.having((e) => e.error, 'error', error);
+  }
+  if (stackTrace != const _Sentinel()) {
+    matcher = matcher.having((e) => e.stackTrace, 'stackTrace', stackTrace);
+  }
+
+  return matcher;
+}
 
 typedef RemoveListener = void Function();
 
@@ -39,13 +78,14 @@ List<Object?> captureErrors(List<void Function()> cb) {
   return errors;
 }
 
-class StreamSubscriptionView<T> implements StreamSubscription<T> {
+class StreamSubscriptionView<ValueT> implements StreamSubscription<ValueT> {
   StreamSubscriptionView(this.inner);
 
-  final StreamSubscription<T> inner;
+  final StreamSubscription<ValueT> inner;
 
   @override
-  Future<E> asFuture<E>([E? futureValue]) => inner.asFuture(futureValue);
+  Future<CastValueT> asFuture<CastValueT>([CastValueT? futureValue]) =>
+      inner.asFuture(futureValue);
 
   @override
   Future<void> cancel() => inner.cancel();
@@ -54,7 +94,8 @@ class StreamSubscriptionView<T> implements StreamSubscription<T> {
   bool get isPaused => inner.isPaused;
 
   @override
-  void onData(void Function(T data)? handleData) => inner.onData(handleData);
+  void onData(void Function(ValueT data)? handleData) =>
+      inner.onData(handleData);
 
   @override
   void onDone(void Function()? handleDone) => inner.onDone(handleDone);
@@ -69,7 +110,8 @@ class StreamSubscriptionView<T> implements StreamSubscription<T> {
   void resume() => inner.resume();
 }
 
-class _DelegatingStreamSubscription<T> extends StreamSubscriptionView<T> {
+class _DelegatingStreamSubscription<StateT>
+    extends StreamSubscriptionView<StateT> {
   _DelegatingStreamSubscription(
     super.inner, {
     this.onSubscriptionPause,
@@ -100,7 +142,7 @@ class _DelegatingStreamSubscription<T> extends StreamSubscriptionView<T> {
   }
 }
 
-class DelegatingStream<T> extends StreamView<T> {
+class DelegatingStream<ValueT> extends StreamView<ValueT> {
   DelegatingStream(
     super.stream, {
     this.onSubscriptionPause,
@@ -113,8 +155,8 @@ class DelegatingStream<T> extends StreamView<T> {
   final void Function()? onSubscriptionCancel;
 
   @override
-  StreamSubscription<T> listen(
-    void Function(T event)? onData, {
+  StreamSubscription<ValueT> listen(
+    void Function(ValueT event)? onData, {
     Function? onError,
     void Function()? onDone,
     bool? cancelOnError,
@@ -170,7 +212,7 @@ class OnDisposeMock extends Mock {
   void call();
 }
 
-class OnCancelMock extends Mock {
+class OnCancel extends Mock {
   void call();
 }
 
@@ -190,6 +232,66 @@ class OnRemoveListener extends Mock {
   void call();
 }
 
+TypeMatcher<AsyncError<ValueT>> isAsyncError<ValueT>(
+  Object? error, {
+  Object? stackTrace = const _Sentinel(),
+  Object? retrying = const _Sentinel(),
+  Object? isLoading = const _Sentinel(),
+  Object? value = const _Sentinel(),
+  Object? hasValue = const _Sentinel(),
+}) {
+  var matcher = isA<AsyncError<ValueT>>();
+  matcher = matcher.having((e) => e.error, 'error', error);
+  if (stackTrace != const _Sentinel()) {
+    matcher = matcher.having((e) => e.stackTrace, 'stackTrace', stackTrace);
+  }
+  if (retrying != const _Sentinel()) {
+    matcher = matcher.having((e) => e.retrying, 'retrying', retrying);
+  }
+  if (isLoading != const _Sentinel()) {
+    matcher = matcher.having((e) => e.isLoading, 'isLoading', isLoading);
+  }
+  if (value != const _Sentinel()) {
+    matcher = matcher.having((e) => e.value, 'value', value);
+  }
+  if (hasValue != const _Sentinel()) {
+    matcher = matcher.having((e) => e.hasValue, 'hasValue', hasValue);
+  }
+
+  return matcher;
+}
+
+TypeMatcher<AsyncLoading<ValueT>> isAsyncLoading<ValueT>({
+  Object? retrying = const _Sentinel(),
+  Object? value = const _Sentinel(),
+  Object? hasValue = const _Sentinel(),
+  Object? error = const _Sentinel(),
+  Object? stackTrace = const _Sentinel(),
+  Object? hasError = const _Sentinel(),
+}) {
+  var matcher = isA<AsyncLoading<ValueT>>();
+  if (retrying != const _Sentinel()) {
+    matcher = matcher.having((e) => e.retrying, 'retrying', retrying);
+  }
+  if (value != const _Sentinel()) {
+    matcher = matcher.having((e) => e.value, 'value', value);
+  }
+  if (hasValue != const _Sentinel()) {
+    matcher = matcher.having((e) => e.hasValue, 'hasValue', hasValue);
+  }
+  if (error != const _Sentinel()) {
+    matcher = matcher.having((e) => e.error, 'error', error);
+  }
+  if (stackTrace != const _Sentinel()) {
+    matcher = matcher.having((e) => e.stackTrace, 'stackTrace', stackTrace);
+  }
+  if (hasError != const _Sentinel()) {
+    matcher = matcher.having((e) => e.hasError, 'hasError', hasError);
+  }
+
+  return matcher;
+}
+
 /// Syntax sugar for:
 ///
 /// ```dart
@@ -199,7 +301,7 @@ class OnRemoveListener extends Mock {
 VerifyOnly get verifyOnly {
   final verification = verify;
 
-  return <T>(mock, invocation) {
+  return <ResT>(mock, invocation) {
     final result = verification(invocation);
     result.called(1);
     verifyNoMoreInteractions(mock);
@@ -207,17 +309,17 @@ VerifyOnly get verifyOnly {
   };
 }
 
-typedef VerifyOnly = VerificationResult Function<T>(
+typedef VerifyOnly = VerificationResult Function<ResT>(
   Mock mock,
-  T matchingInvocations,
+  ResT matchingInvocations,
 );
 
-class Listener<T> extends Mock {
-  void call(T? previous, T? next);
+class Listener<StateT> extends Mock {
+  void call(StateT? previous, StateT? next);
 }
 
-class StorageMock<KeyT, EncodedT> extends Mock
-    implements Storage<KeyT, EncodedT> {
+final class StorageMock<KeyT, EncodedT> extends Storage<KeyT, EncodedT>
+    with Mock {
   @override
   FutureOr<PersistedData<EncodedT>?> read(KeyT? key);
   @override
@@ -242,23 +344,23 @@ class ErrorListener extends Mock {
   void call(Object? error, StackTrace? stackTrace);
 }
 
-class Selector<Input, Output> extends Mock {
-  Selector(this.fake, Output Function(Input) selector) {
+class Selector<InT, OutT> extends Mock {
+  Selector(this.fake, OutT Function(InT) selector) {
     when(call(any)).thenAnswer((i) {
       return selector(
-        i.positionalArguments.first as Input,
+        i.positionalArguments.first as InT,
       );
     });
   }
 
-  final Output fake;
+  final OutT fake;
 
-  Output call(Input? value) {
+  OutT call(InT? value) {
     return super.noSuchMethod(
       Invocation.method(#call, [value]),
       returnValue: fake,
       returnValueForMissingStub: fake,
-    ) as Output;
+    ) as OutT;
   }
 }
 

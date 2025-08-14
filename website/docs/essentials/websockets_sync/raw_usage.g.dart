@@ -8,12 +8,14 @@ part of 'raw_usage.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(rawStream)
 const rawStreamProvider = RawStreamProvider._();
 
-final class RawStreamProvider
-    extends $FunctionalProvider<Raw<Stream<int>>, Raw<Stream<int>>>
-    with $Provider<Raw<Stream<int>>> {
+final class RawStreamProvider extends $FunctionalProvider<Raw<Stream<int>>,
+    Raw<Stream<int>>, Raw<Stream<int>>> with $Provider<Raw<Stream<int>>> {
   const RawStreamProvider._()
       : super(
           from: null,
@@ -42,12 +44,9 @@ final class RawStreamProvider
   Override overrideWithValue(Raw<Stream<int>> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Raw<Stream<int>>>(value),
+      providerOverride: $SyncValueProvider<Raw<Stream<int>>>(value),
     );
   }
 }
 
 String _$rawStreamHash() => r'9ce48e3afce64329958af139c77f5e271e0bf04f';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -8,6 +8,9 @@ part of 'async_notifier.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(AsyncTodosNotifier)
 const asyncTodosNotifierProvider = AsyncTodosNotifierProvider._();
 
@@ -30,12 +33,6 @@ final class AsyncTodosNotifierProvider
   @$internal
   @override
   AsyncTodosNotifier create() => AsyncTodosNotifier();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<AsyncTodosNotifier, List<Todo>> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 }
 
 String _$asyncTodosNotifierHash() =>
@@ -47,7 +44,7 @@ abstract class _$AsyncTodosNotifier extends $AsyncNotifier<List<Todo>> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<List<Todo>>>;
+    final ref = this.ref as $Ref<AsyncValue<List<Todo>>, List<Todo>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<List<Todo>>, List<Todo>>,
         AsyncValue<List<Todo>>,
@@ -56,6 +53,3 @@ abstract class _$AsyncTodosNotifier extends $AsyncNotifier<List<Todo>> {
     element.handleValue(ref, created);
   }
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

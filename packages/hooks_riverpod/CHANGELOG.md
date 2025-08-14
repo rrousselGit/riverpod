@@ -1,10 +1,36 @@
 ## Unreleased build
 
+- Fixed a "markNeedsBuild" exception in some edge-cases when using scoped providers.
+- Fix provider rebuild order issue.
+- Fix "Tried to refresh x multiple times in the same frame" incorrectly triggering.
+- Removed `FamilyNotifier` and variants, in favour of `Notifier`.
+
+## 3.0.0-dev.17 - 2025-08-01
+
+- Added `MutationState.isPending/isIdle/hasError/isSuccess`
+- fixes various "pause" issues
+- Bump minimum `meta` version
+- Added `AsyncValue.retrying`, to check when a retry is scheduled or pending
+- Exposed the default retry implementation (`ProviderContainer.defaultRetry`)
+- Offline's Storage now is `base` and requires overriding `deleteOutOfDate`
+- Make AsyncValue.copyWithPrevious `@internal`.
+  This API was not meant to be public.
+
+## 3.0.0-dev.16 - 2025-06-20
+
+- Reworked mutations to work without code-generation
+- Added `Async/SyncProviderTransformerMixin`.
+  Those enable making custom `ProviderListenable`s using a reasonably simple syntax.
+  For instance, you could implement your own `provider.select`
+- Added `AsyncResult`. This is an interface shared between `AsyncData` and `AsyncError`, but _not_ `AsyncLoading`.
+- Revert Notifier life-cycle change. They are once again preserved across rebuilds.
 - Provider errors are now reported to the
   `ProviderContainer`'s `Zone` instead of whatever last used the provider.
-
 - **Breaking**: When a `ref.watch`/`ref.read` rethrows an error,
   the error is now wrapped in a `ProviderException`.
+- Use TickerMode instead of Visibility for pausing out-of-view widgets
+- Reworked offline to simplify its usage
+- Added widget test helper to find a `ProviderContainer` in the widget tree: `tester.container()` (thanks to @Luckey-Elijah)
 
 ## 3.0.0-dev.15 - 2025-05-04
 

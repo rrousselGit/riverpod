@@ -8,11 +8,14 @@ part of 'todo_list_provider.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(todoList)
 const todoListProvider = TodoListProvider._();
 
-final class TodoListProvider
-    extends $FunctionalProvider<AsyncValue<List<Todo>>, FutureOr<List<Todo>>>
+final class TodoListProvider extends $FunctionalProvider<AsyncValue<List<Todo>>,
+        List<Todo>, FutureOr<List<Todo>>>
     with $FutureModifier<List<Todo>>, $FutureProvider<List<Todo>> {
   const TodoListProvider._()
       : super(
@@ -40,6 +43,3 @@ final class TodoListProvider
 }
 
 String _$todoListHash() => r'79ea254a2b6239c9fbcc2b5e6f075a3e5b72598e';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

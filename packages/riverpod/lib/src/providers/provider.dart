@@ -2,7 +2,6 @@ import 'package:meta/meta.dart';
 
 import '../builder.dart';
 import '../common/internal_lints.dart';
-import '../common/result.dart';
 import '../framework.dart';
 import 'legacy/state_notifier_provider.dart' show StateNotifierProvider;
 import 'stream_provider.dart' show StreamProvider;
@@ -11,12 +10,12 @@ import 'stream_provider.dart' show StreamProvider;
 /// Do not use, as this may be removed at any time.
 @internal
 @publicInCodegen
-base mixin $Provider<StateT> on $FunctionalProvider<StateT, StateT> {}
+base mixin $Provider<ValueT> on $FunctionalProvider<ValueT, ValueT, ValueT> {}
 
 /// {@macro riverpod.provider}
 /// {@category Providers}
-final class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
-    with $Provider<StateT>, LegacyProviderMixin<StateT> {
+final class Provider<ValueT> extends $FunctionalProvider<ValueT, ValueT, ValueT>
+    with $Provider<ValueT>, LegacyProviderMixin<ValueT> {
   /// {@macro riverpod.provider}
   Provider(
     this._create, {
@@ -51,17 +50,17 @@ final class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
   /// {@macro riverpod.family}
   static const family = ProviderFamilyBuilder();
 
-  final Create<StateT> _create;
+  final Create<ValueT> _create;
 
   /// @nodoc
   @internal
   @override
-  StateT create(Ref ref) => _create(ref);
+  ValueT create(Ref ref) => _create(ref);
 
   /// @nodoc
   @internal
   @override
-  $ProviderElement<StateT> $createElement($ProviderPointer pointer) {
+  $ProviderElement<ValueT> $createElement($ProviderPointer pointer) {
     return $ProviderElement(pointer);
   }
 
@@ -111,10 +110,10 @@ final class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
   /// The benefit of using [overrideWithValue] over [overrideWith] in this scenario
   /// is that if the theme ever changes, then `themeProvider` will be updated.
   /// {@endtemplate}
-  Override overrideWithValue(StateT value) {
+  Override overrideWithValue(ValueT value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<StateT>(value),
+      providerOverride: $SyncValueProvider<ValueT>(value),
     );
   }
 }
@@ -332,26 +331,27 @@ final class Provider<StateT> extends $FunctionalProvider<StateT, StateT>
 /// @nodoc
 @internal
 @publicInCodegen
-class $ProviderElement<StateT>
-    extends $FunctionalProviderElement<StateT, StateT> {
+class $ProviderElement<ValueT>
+    extends $FunctionalProviderElement<ValueT, ValueT, ValueT>
+    with SyncProviderElement<ValueT> {
   /// A [ProviderElement] for [Provider]
   $ProviderElement(super.pointer);
 
   @override
   WhenComplete create(Ref ref) {
-    setStateResult($ResultData(provider.create(ref)));
+    value = AsyncData(provider.create(ref));
 
     return null;
   }
 
   @override
-  bool updateShouldNotify(StateT previous, StateT next) => previous != next;
+  bool updateShouldNotify(ValueT previous, ValueT next) => previous != next;
 }
 
 /// The [Family] of [Provider]
 @publicInMisc
 final class ProviderFamily<StateT, ArgT>
-    extends FunctionalFamily<StateT, ArgT, StateT, Provider<StateT>> {
+    extends FunctionalFamily<StateT, StateT, ArgT, StateT, Provider<StateT>> {
   /// The [Family] of [Provider]
   /// @nodoc
   @internal

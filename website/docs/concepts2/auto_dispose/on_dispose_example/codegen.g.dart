@@ -8,10 +8,13 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(other)
 const otherProvider = OtherProvider._();
 
-final class OtherProvider extends $FunctionalProvider<int, int>
+final class OtherProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const OtherProvider._()
       : super(
@@ -41,7 +44,7 @@ final class OtherProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -52,7 +55,7 @@ String _$otherHash() => r'5d27b2b1b1c6bd17ba0844f74ade2088611be371';
 const exampleProvider = ExampleProvider._();
 
 final class ExampleProvider
-    extends $FunctionalProvider<AsyncValue<int>, Stream<int>>
+    extends $FunctionalProvider<AsyncValue<int>, int, Stream<int>>
     with $FutureModifier<int>, $StreamProvider<int> {
   const ExampleProvider._()
       : super(
@@ -80,6 +83,3 @@ final class ExampleProvider
 }
 
 String _$exampleHash() => r'012c40f45aaeb96633a857d1407f04d25255f32f';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -8,10 +8,13 @@ part of 'family.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(random)
 const randomProvider = RandomFamily._();
 
-final class RandomProvider extends $FunctionalProvider<int, int>
+final class RandomProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const RandomProvider._(
       {required RandomFamily super.from,
@@ -60,7 +63,7 @@ final class RandomProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -106,5 +109,3 @@ final class RandomFamily extends $Family
   @override
   String toString() => r'randomProvider';
 }
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

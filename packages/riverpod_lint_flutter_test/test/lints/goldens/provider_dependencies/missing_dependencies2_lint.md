@@ -2,7 +2,7 @@ code: provider_dependencies
 severity: Severity.warning
 contextMessages:
   message: generatedScoped
-  test/lints/provider_dependencies/missing_dependencies2.dart:37:20
+  test/lints/provider_dependencies/missing_dependencies2.dart:36:20
 
   ```dart
     Ref ref,
@@ -12,7 +12,7 @@ contextMessages:
   
   ```
 message: Missing dependencies: generatedScoped
-test/lints/provider_dependencies/missing_dependencies2.dart:33:1
+test/lints/provider_dependencies/missing_dependencies2.dart:32:1
 
 ```dart
 
@@ -28,7 +28,7 @@ code: provider_dependencies
 severity: Severity.warning
 contextMessages:
   message: generatedScoped
-  test/lints/provider_dependencies/missing_dependencies2.dart:65:20
+  test/lints/provider_dependencies/missing_dependencies2.dart:62:20
 
   ```dart
     Ref ref,
@@ -38,7 +38,7 @@ contextMessages:
   
   ```
 message: Missing dependencies: generatedScoped
-test/lints/provider_dependencies/missing_dependencies2.dart:61:25
+test/lints/provider_dependencies/missing_dependencies2.dart:58:25
 
 ```dart
 
@@ -54,7 +54,7 @@ code: provider_dependencies
 severity: Severity.warning
 contextMessages:
   message: generatedScoped
-  test/lints/provider_dependencies/missing_dependencies2.dart:98:20
+  test/lints/provider_dependencies/missing_dependencies2.dart:93:20
 
   ```dart
   ) {
@@ -64,7 +64,7 @@ contextMessages:
   
   ```
 message: Missing dependencies: generatedScoped
-test/lints/provider_dependencies/missing_dependencies2.dart:93:25
+test/lints/provider_dependencies/missing_dependencies2.dart:88:25
 
 ```dart
 
@@ -79,7 +79,7 @@ int watchGeneratedScopedButMissingDependencies(
 code: provider_dependencies
 severity: Severity.warning
 message: Unused dependencies: generatedRoot
-test/lints/provider_dependencies/missing_dependencies2.dart:128:7
+test/lints/provider_dependencies/missing_dependencies2.dart:122:7
 
 ```dart
       // The dependency is redundant because it is not a scoped provider
@@ -96,7 +96,7 @@ int watchGeneratedRootAndContainsDependency(
 code: provider_dependencies
 severity: Severity.warning
 message: Unused dependencies: generatedRoot
-test/lints/provider_dependencies/missing_dependencies2.dart:143:5
+test/lints/provider_dependencies/missing_dependencies2.dart:137:5
 
 ```dart
     // generatedRoot is extra
@@ -114,7 +114,7 @@ int specifiedDependencyButNeverUsed(Ref ref) {
 code: provider_dependencies
 severity: Severity.warning
 message: Unused dependencies: dep
-test/lints/provider_dependencies/missing_dependencies2.dart:225:17
+test/lints/provider_dependencies/missing_dependencies2.dart:217:17
 
 ```dart
 class MemberDependencies {
@@ -130,7 +130,7 @@ code: provider_dependencies
 severity: Severity.warning
 contextMessages:
   message: dep
-  test/lints/provider_dependencies/missing_dependencies2.dart:235:15
+  test/lints/provider_dependencies/missing_dependencies2.dart:227:15
 
   ```dart
     @Dependencies([])
@@ -140,7 +140,7 @@ contextMessages:
     }
   ```
 message: Missing dependencies: dep
-test/lints/provider_dependencies/missing_dependencies2.dart:233:17
+test/lints/provider_dependencies/missing_dependencies2.dart:225:17
 
 ```dart
 class CanUpdateMultipleDependenciesAtOnce {
@@ -156,7 +156,7 @@ code: provider_dependencies
 severity: Severity.warning
 contextMessages:
   message: dep
-  test/lints/provider_dependencies/missing_dependencies2.dart:235:15
+  test/lints/provider_dependencies/missing_dependencies2.dart:227:15
 
   ```dart
     @Dependencies([])
@@ -166,7 +166,7 @@ contextMessages:
     }
   ```
 message: Missing dependencies: dep
-test/lints/provider_dependencies/missing_dependencies2.dart:230:15
+test/lints/provider_dependencies/missing_dependencies2.dart:222:15
 
 ```dart
 
@@ -181,7 +181,7 @@ class CanUpdateMultipleDependenciesAtOnce {
 code: provider_dependencies
 severity: Severity.warning
 message: Unused dependencies: dep
-test/lints/provider_dependencies/missing_dependencies2.dart:253:15
+test/lints/provider_dependencies/missing_dependencies2.dart:245:15
 
 ```dart
 // Handle identifiers with dependencies
@@ -197,7 +197,7 @@ code: provider_dependencies
 severity: Severity.warning
 contextMessages:
   message: dep
-  test/lints/provider_dependencies/missing_dependencies2.dart:258:3
+  test/lints/provider_dependencies/missing_dependencies2.dart:250:3
 
   ```dart
   // expect_lint: provider_dependencies
@@ -207,7 +207,7 @@ contextMessages:
   
   ```
 message: Missing dependencies: dep
-test/lints/provider_dependencies/missing_dependencies2.dart:257:1
+test/lints/provider_dependencies/missing_dependencies2.dart:249:1
 
 ```dart
 
@@ -225,7 +225,7 @@ code: provider_dependencies
 severity: Severity.warning
 contextMessages:
   message: dep
-  test/lints/provider_dependencies/missing_dependencies2.dart:267:3
+  test/lints/provider_dependencies/missing_dependencies2.dart:259:3
 
   ```dart
   @riverpod
@@ -235,7 +235,7 @@ contextMessages:
   }
   ```
 message: Missing dependencies: dep
-test/lints/provider_dependencies/missing_dependencies2.dart:265:1
+test/lints/provider_dependencies/missing_dependencies2.dart:257:1
 
 ```dart
 
@@ -251,7 +251,7 @@ code: provider_dependencies
 severity: Severity.warning
 contextMessages:
   message: dep
-  test/lints/provider_dependencies/missing_dependencies2.dart:285:12
+  test/lints/provider_dependencies/missing_dependencies2.dart:277:12
 
   ```dart
     @override
@@ -261,7 +261,7 @@ contextMessages:
   }
   ```
 message: Missing dependencies: dep
-test/lints/provider_dependencies/missing_dependencies2.dart:282:1
+test/lints/provider_dependencies/missing_dependencies2.dart:274:1
 
 ```dart
 
@@ -282,7 +282,7 @@ code: provider_dependencies
 severity: Severity.warning
 contextMessages:
   message: dep
-  test/lints/provider_dependencies/missing_dependencies2.dart:324:12
+  test/lints/provider_dependencies/missing_dependencies2.dart:316:12
 
   ```dart
     @override
@@ -292,7 +292,7 @@ contextMessages:
   }
   ```
 message: Missing dependencies: dep
-test/lints/provider_dependencies/missing_dependencies2.dart:313:15
+test/lints/provider_dependencies/missing_dependencies2.dart:305:15
 
 ```dart
 
@@ -308,7 +308,7 @@ code: provider_dependencies
 severity: Severity.warning
 contextMessages:
   message: dep
-  test/lints/provider_dependencies/missing_dependencies2.dart:338:41
+  test/lints/provider_dependencies/missing_dependencies2.dart:330:41
 
   ```dart
   class _Stateful3State extends State<FindStateFromClassList> {
@@ -318,7 +318,7 @@ contextMessages:
   
   ```
 message: Missing dependencies: dep
-test/lints/provider_dependencies/missing_dependencies2.dart:329:1
+test/lints/provider_dependencies/missing_dependencies2.dart:321:1
 
 ```dart
 
@@ -339,7 +339,7 @@ code: provider_dependencies
 severity: Severity.warning
 contextMessages:
   message: anotherNonEmptyScoped
-  test/lints/provider_dependencies/missing_dependencies2.dart:344:13
+  test/lints/provider_dependencies/missing_dependencies2.dart:336:13
 
   ```dart
   @riverpod
@@ -349,7 +349,7 @@ contextMessages:
   }
   ```
 message: Missing dependencies: anotherNonEmptyScoped
-test/lints/provider_dependencies/missing_dependencies2.dart:342:1
+test/lints/provider_dependencies/missing_dependencies2.dart:334:1
 
 ```dart
 

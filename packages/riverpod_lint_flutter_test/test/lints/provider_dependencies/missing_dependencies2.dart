@@ -25,7 +25,6 @@ int generatedRoot(Ref ref) => 0;
 // dep no "dependencies"
 @riverpod
 int watchScopedButNoDependencies(Ref ref) {
-  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(scoped);
 }
 
@@ -39,7 +38,6 @@ int watchGeneratedScopedButNoDependencies(
 
 @riverpod
 int watchRootButNoDependencies(Ref ref) {
-  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(root);
 }
 
@@ -53,7 +51,6 @@ int watchGeneratedRootButNoDependencies(
 // Check "dependencies" specified but missing dependency
 @Riverpod(dependencies: [])
 int watchScopedButEmptyDependencies(Ref ref) {
-  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(scoped);
 }
 
@@ -67,7 +64,6 @@ int watchGeneratedScopedButEmptyDependencies(
 
 @Riverpod(dependencies: [])
 int watchRootButEmptyDependencies(Ref ref) {
-  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(root);
 }
 
@@ -85,7 +81,6 @@ int watchScopedButMissingDependencies(
   Ref ref,
 ) {
   ref.watch(depProvider);
-  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(scoped);
 }
 
@@ -101,7 +96,6 @@ int watchGeneratedScopedButMissingDependencies(
 @Riverpod(dependencies: [dep])
 int watchRootButMissingDependencies(Ref ref) {
   ref.watch(depProvider);
-  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   return ref.watch(root);
 }
 
@@ -191,7 +185,6 @@ int familyDep2(Ref ref, int p) {
 // Regression test for https://github.com/rrousselGit/riverpod/issues/2935
 @riverpod
 int alias(Ref ref) {
-  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   ref.watch(import_alias.aProvider);
   ref.watch(import_alias.bProvider);
   return 0;
@@ -200,7 +193,6 @@ int alias(Ref ref) {
 // Regression test for https://github.com/rrousselGit/riverpod/issues/2935
 @riverpod
 class AliasClass extends _$AliasClass {
-  // expect_lint: avoid_manual_providers_as_generated_provider_dependency
   late final int _a = ref.read(import_alias.aProvider);
   late final int _b = ref.read(import_alias.bProvider);
 

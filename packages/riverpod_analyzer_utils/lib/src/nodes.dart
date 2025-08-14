@@ -9,8 +9,10 @@ import 'package:analyzer/dart/ast/syntactic_entity.dart';
 import 'package:analyzer/dart/ast/token.dart';
 import 'package:analyzer/dart/ast/visitor.dart';
 import 'package:analyzer/dart/constant/value.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer/dart/element/element2.dart';
 import 'package:analyzer/dart/element/type.dart';
+import 'package:analyzer/dart/element/type_provider.dart';
+import 'package:analyzer_buffer/analyzer_buffer.dart';
 import 'package:collection/collection.dart';
 import 'package:crypto/crypto.dart';
 import 'package:custom_lint_core/custom_lint_core.dart';
@@ -19,8 +21,8 @@ import 'package:meta/meta.dart';
 import '../riverpod_analyzer_utils.dart';
 import 'analyzer_utils.dart';
 import 'argument_list_utils.dart';
-import 'element_util.dart';
 import 'object_extensions.dart';
+import 'riverpod_types.dart';
 
 part 'nodes/widgets/state.dart';
 part 'nodes/widgets/stateful_widget.dart';
@@ -54,17 +56,17 @@ extension RawTypeX on DartType {
   bool get isRaw {
     final alias = this.alias;
     if (alias == null) return false;
-    return alias.element.name == 'Raw' &&
-        isFromRiverpodAnnotation.isExactly(alias.element);
+    return alias.element2.name3 == 'Raw' &&
+        isFromRiverpodAnnotation.isExactly(alias.element2);
   }
 }
 
-class _Cache<R> {
+class _Cache<CachedT> {
   final _cacheExpando = Expando<(Object?,)>();
 
-  R call(Object e, R Function() create) {
+  CachedT call(Object e, CachedT Function() create) {
     final existing = _cacheExpando[e];
-    if (existing != null) return existing.$1 as R;
+    if (existing != null) return existing.$1 as CachedT;
 
     final created = create();
     _cacheExpando[e] = (created,);

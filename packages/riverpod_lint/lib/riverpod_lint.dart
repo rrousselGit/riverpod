@@ -9,7 +9,6 @@ import 'src/assists/wrap_with_consumer.dart';
 import 'src/assists/wrap_with_provider_scope.dart';
 import 'src/lints/async_value_nullable_pattern.dart';
 import 'src/lints/avoid_build_context_in_providers.dart';
-import 'src/lints/avoid_manual_providers_as_generated_provider_dependency.dart';
 import 'src/lints/avoid_public_notifier_properties.dart';
 import 'src/lints/avoid_ref_inside_state_dispose.dart';
 import 'src/lints/functional_ref.dart';
@@ -33,7 +32,6 @@ class _RiverpodPlugin extends PluginBase {
         const AsyncValueNullablePattern(),
         const AvoidBuildContextInProviders(),
         const OnlyUseKeepAliveInsideKeepAlive(),
-        const AvoidManualProvidersAsGeneratedProviderDependency(),
         const AvoidPublicNotifierProperties(),
         const AvoidRefInsideStateDispose(),
         const FunctionalRef(),

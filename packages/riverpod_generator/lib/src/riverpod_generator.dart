@@ -1,45 +1,20 @@
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/ast/token.dart';
-import 'package:analyzer/dart/element/element.dart';
+import 'package:analyzer_buffer/analyzer_buffer.dart';
 import 'package:meta/meta.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
-
 // ignore: implementation_imports, safe as we are the one controlling this file
 import 'package:riverpod_annotation/src/riverpod_annotation.dart';
 import 'package:source_gen/source_gen.dart';
 
 import 'models.dart';
 import 'parse_generator.dart';
-import 'templates/element.dart';
 import 'templates/family.dart';
 import 'templates/hash.dart';
-import 'templates/mutation.dart';
 import 'templates/notifier.dart';
 import 'templates/parameters.dart';
 import 'templates/provider.dart';
 import 'templates/provider_variable.dart';
-
-String providerDocFor(Element element) {
-  return element.documentationComment == null
-      ? '/// See also [${element.name}].'
-      : '${element.documentationComment}\n///\n/// Copied from [${element.name}].';
-}
-
-String metaAnnotations(NodeList<Annotation> metadata) {
-  final buffer = StringBuffer();
-  for (final annotation in metadata) {
-    final element = annotation.elementAnnotation;
-    if (element == null) continue;
-    if (element.isDeprecated ||
-        element.isVisibleForTesting ||
-        element.isProtected) {
-      buffer.writeln('$annotation');
-      continue;
-    }
-  }
-
-  return buffer.toString();
-}
 
 const _defaultProviderNamePrefix = '';
 const _defaultProviderNameSuffix = 'Provider';
@@ -64,7 +39,12 @@ class RiverpodGenerator extends ParserGenerator<Riverpod> {
 
   @override
   String generateForUnit(List<CompilationUnit> compilationUnits) {
-    final buffer = StringBuffer();
+    if (compilationUnits.isEmpty) return '';
+
+    final buffer = AnalyzerBuffer.part2(
+      compilationUnits.first.declaredFragment!.element,
+      header: '// ignore_for_file: type=lint, type=warning',
+    );
 
     final errors = <RiverpodAnalysisError>[];
     final previousErrorReporter = errorReporter;
@@ -80,7 +60,6 @@ class RiverpodGenerator extends ParserGenerator<Riverpod> {
     for (final error in errors) {
       throw RiverpodInvalidGenerationSourceError(
         error.message,
-        element: error.targetElement,
         astNode: error.targetNode,
       );
     }
@@ -88,10 +67,11 @@ class RiverpodGenerator extends ParserGenerator<Riverpod> {
     return buffer.toString();
   }
 
-  void _generate(List<CompilationUnit> units, StringBuffer buffer) {
-    final visitor = _RiverpodGeneratorVisitor(buffer, options);
-    for (final unit in units.expand((e) => e.declarations)) {
-      final provider = unit.provider;
+  void _generate(List<CompilationUnit> units, AnalyzerBuffer buffer) {
+    final tmpBuffer = StringBuffer();
+    final visitor = _RiverpodGeneratorVisitor(tmpBuffer, options);
+    for (final member in units.expand((e) => e.declarations)) {
+      final provider = member.provider;
 
       switch (provider) {
         case ClassBasedProviderDeclaration():
@@ -104,11 +84,10 @@ class RiverpodGenerator extends ParserGenerator<Riverpod> {
     }
 
     // Only emit the header if we actually generated something
-    if (buffer.isNotEmpty) {
+    if (tmpBuffer.isNotEmpty) {
       buffer.write('''
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
 ''');
+      buffer.write(tmpBuffer.toString());
     }
   }
 }
@@ -203,10 +182,6 @@ class _RiverpodGeneratorVisitor {
   ) {
     visitGeneratorProviderDeclaration(provider);
     NotifierTemplate(provider).run(buffer);
-    ElementTemplate(provider).run(buffer);
-    for (final mutation in provider.mutations) {
-      MutationTemplate(mutation, provider).run(buffer);
-    }
   }
 
   void visitFunctionalProviderDeclaration(
@@ -218,6 +193,8 @@ class _RiverpodGeneratorVisitor {
 
 extension ProviderElementNames on GeneratorProviderDeclarationElement {
   String providerName(BuildYamlOptions options) {
+    if (annotation.name case final name?) return name;
+
     final prefix = (isFamily
             ? options.providerFamilyNamePrefix
             : options.providerNamePrefix) ??
@@ -227,7 +204,22 @@ extension ProviderElementNames on GeneratorProviderDeclarationElement {
             : options.providerNameSuffix) ??
         _defaultProviderNameSuffix;
 
-    return '$prefix${prefix.isEmpty ? name.lowerFirst : name.titled}$suffix';
+    var baseName = name;
+
+    if (options.providerNameStripPattern case final stripPattern?) {
+      try {
+        final regex = RegExp(stripPattern);
+        baseName = name.replaceAll(regex, '');
+      } on FormatException {
+        throw InvalidGenerationSourceError(
+          'Your providerNameStripPattern definition is not a valid regular expression: $stripPattern',
+          element: (element.library2!).getClass2(name) ??
+              (element.library2!).getTopLevelFunction(name),
+        );
+      }
+    }
+
+    return '$prefix${prefix.isEmpty ? baseName.lowerFirst : baseName.titled}$suffix';
   }
 
   String get providerTypeName => '${name.titled}Provider';
@@ -299,17 +291,19 @@ extension ProviderNames on GeneratorProviderDeclaration {
     }
   }
 
-  Iterable<String> get metadata {
-    return ['@ProviderFor($name)'].followedBy(
-      node.metadata.where((e) {
-        if (e.elementAnnotation!.isDoNotStore) return false;
+  String get metadata {
+    return node.metadata
+        .map((e) {
+          if (e.riverpod != null) return null;
+          if (e.elementAnnotation!.isDoNotStore) return null;
 
-        final valueType = e.elementAnnotation!.computeConstantValue()?.type;
-        if (valueType == null) return false;
+          final constant = e.elementAnnotation!.computeConstantValue();
+          if (constant == null) return null;
 
-        return !riverpodType.isExactlyType(valueType);
-      }).map((e) => e.toString()),
-    );
+          return '@${constant.toCode(addLeadingConst: false)}';
+        })
+        .nonNulls
+        .join(' ');
   }
 
   String get doc => node.doc;
@@ -367,7 +361,7 @@ extension ProviderNames on GeneratorProviderDeclaration {
           )
         : '';
 
-    return '$createdTypeDisplayString Function$genericsDefinition(Ref, $notifierType, $parameters)';
+    return '${providerElement.createdTypeNode} Function$genericsDefinition(Ref, $notifierType, $parameters)';
   }
 
   String createType({
@@ -388,7 +382,7 @@ extension ProviderNames on GeneratorProviderDeclaration {
               )
             : '';
 
-        return '${provider.createdTypeDisplayString} Function$genericsDefinition(Ref ref, $params)';
+        return '${provider.providerElement.createdTypeNode} Function$genericsDefinition(Ref ref, $params)';
       case ClassBasedProviderDeclaration():
         return '${provider.name}$generics Function$genericsDefinition()';
     }
@@ -397,19 +391,21 @@ extension ProviderNames on GeneratorProviderDeclaration {
   String get generatedElementName => '_\$${providerElement.name.public}Element';
 
   String get internalElementName => switch (this) {
-        ClassBasedProviderDeclaration() => switch (createdType) {
+        ClassBasedProviderDeclaration() => switch (
+              providerElement.createdType) {
             SupportedCreatedType.future => r'$AsyncNotifierProviderElement',
             SupportedCreatedType.stream => r'$StreamNotifierProviderElement',
             SupportedCreatedType.value => r'$NotifierProviderElement',
           },
-        FunctionalProviderDeclaration() => switch (createdType) {
+        FunctionalProviderDeclaration() => switch (
+              providerElement.createdType) {
             SupportedCreatedType.future => r'$FutureProviderElement',
             SupportedCreatedType.stream => r'$StreamProviderElement',
             SupportedCreatedType.value => r'$ProviderElement',
           },
       };
 
-  String get hashFnName => '_\$${providerElement.name.public.lowerFirst}Hash';
+  String get hashFnName => '_\$${providerElement.name.lowerFirst}Hash';
 
   List<FormalParameter> get parameters {
     final provider = this;

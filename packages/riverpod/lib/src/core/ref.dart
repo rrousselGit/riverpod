@@ -40,13 +40,13 @@ Cannot use the Ref of $origin after it has been disposed. This typically happens
 /// {@endtemplate}
 /// {@category Core}
 @publicInRiverpodAndCodegen
-sealed class Ref {
+sealed class Ref implements MutationTarget {
   Ref._({
     required this.isFirstBuild,
     required this.isReload,
   });
 
-  ProviderElement<Object?> get _element;
+  ProviderElement<Object?, Object?> get _element;
   List<KeepAliveLink>? _keepAliveLinks;
   List<void Function()>? _onDisposeListeners;
   List<void Function()>? _onResumeListeners;
@@ -113,6 +113,7 @@ sealed class Ref {
   bool get mounted => !_element._disposed;
 
   /// The [ProviderContainer] that this provider is associated with.
+  @override
   ProviderContainer get container => _element.container;
 
   void _debugAssertCanDependOn(ProviderListenableOrFamily listenable) {
@@ -176,7 +177,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   void _throwIfInvalidUsage() {
     assert(
       _debugCallbackStack == 0,
-      'Cannot use Ref inside life-cycles/selectors.',
+      'Cannot use Ref or modify other providers inside life-cycles/selectors.',
     );
     if (!mounted) {
       throw UnmountedRefException(_element.origin);
@@ -234,7 +235,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   /// to restart a specific provider.
   /// {@endtemplate}
   @useResult
-  T refresh<T>(Refreshable<T> refreshable) {
+  StateT refresh<StateT>(Refreshable<StateT> refreshable) {
     _throwIfInvalidUsage();
 
     if (kDebugMode) _debugAssertCanDependOn(refreshable);
@@ -299,15 +300,12 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   void notifyListeners() {
     _throwIfInvalidUsage();
 
-    final currentResult = _element.stateResult;
-    // If `notifyListeners` is used during `build`, the result will be null.
-    // Throwing would be unnecessarily inconvenient, so we simply skip it.
-    if (currentResult == null) return;
+    final currentValue = _element.value;
 
     if (_element._didBuild) {
       _element._notifyListeners(
-        currentResult,
-        currentResult,
+        currentValue,
+        currentValue,
         checkUpdateShouldNotify: false,
       );
     }
@@ -483,7 +481,7 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///
   /// If possible, avoid using [read] and prefer [watch], which is generally
   /// safer to use.
-  T read<T>(ProviderListenable<T> listenable) {
+  StateT read<StateT>(ProviderListenable<StateT> listenable) {
     _throwIfInvalidUsage();
 
     final result = container.read(listenable);
@@ -598,17 +596,17 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///    return sub.read();
   /// }
   /// ```
-  T watch<T>(ProviderListenable<T> listenable) {
+  StateT watch<StateT>(ProviderListenable<StateT> listenable) {
     _throwIfInvalidUsage();
-    late ProviderSubscription<T> sub;
-    sub = _element.listen<T>(
+    late ProviderSubscription<StateT> sub;
+    sub = _element.listen<StateT>(
       listenable,
       (prev, value) => invalidateSelf(asReload: true),
       onError: (err, stack) => invalidateSelf(asReload: true),
       onDependencyMayHaveChanged: _element._markDependencyMayHaveChanged,
     );
 
-    return sub.read();
+    return sub.readSafe().valueOrProviderException;
   }
 
   /// {@template riverpod.listen}
@@ -635,9 +633,9 @@ final <yourProvider> = Provider(dependencies: [<dependency>]);
   ///   This enables listening to changes on a provider, without causing it to
   ///   perform any work if it currently isn't used.
   /// {@endtemplate}
-  ProviderSubscription<T> listen<T>(
-    ProviderListenable<T> provider,
-    void Function(T? previous, T next) listener, {
+  ProviderSubscription<StateT> listen<StateT>(
+    ProviderListenable<StateT> provider,
+    void Function(StateT? previous, StateT next) listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
     bool weak = false,
     bool fireImmediately = false,
@@ -676,7 +674,7 @@ void _runCallbacks(
 
 @internal
 @publicInCodegen
-class $Ref<StateT> extends Ref {
+class $Ref<StateT, ValueT> extends Ref {
   /// {@macro riverpod.provider_ref_base}
   $Ref(
     this._element, {
@@ -684,10 +682,10 @@ class $Ref<StateT> extends Ref {
     required super.isReload,
   }) : super._();
 
-  ProviderElement<StateT> get element => _element;
+  ProviderElement<StateT, ValueT> get element => _element;
 
   @override
-  final ProviderElement<StateT> _element;
+  final ProviderElement<StateT, ValueT> _element;
 
   List<void Function(StateT?, StateT)>? _onChangeSelfListeners;
   List<OnError>? _onErrorSelfListeners;
@@ -704,18 +702,13 @@ class $Ref<StateT> extends Ref {
   StateT get state {
     _throwIfInvalidUsage();
 
-    try {
-      return _element.readSelf();
-    } catch (e, s) {
-      e as ProviderException;
-      e.unwrap(s);
-    }
+    return _element.readSelf().valueOrRawException;
   }
 
   set state(StateT newState) {
     _throwIfInvalidUsage();
 
-    _element.setStateResult($ResultData(newState));
+    _element.setValueFromState(newState);
   }
 
   /// Listens to changes on the value exposed by this provider.

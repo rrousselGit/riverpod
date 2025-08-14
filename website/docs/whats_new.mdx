@@ -19,7 +19,7 @@ For the migration guide, please refer to the [migration page](3.0_migration).
 Some of the key highlights include:
 
 - [Offline persistence (experimental)](#offline-persistence-experimental) - Providers can now opt-in to be persisted to a database
-- [Mutations (experimental) (code-generation)](#mutations-experimental-code-generation-only) - A new mechanism to enable interfaces to react to side-effects
+- [Mutations (experimental)](#mutations-experimental) - A new mechanism to enable interfaces to react to side-effects
 - [Automatic retry](#automatic-retry) - Providers now refresh when they fail, with exponential backoff
 - [`Ref.mounted`](#refmounted) - Similar to `BuildContext.mounted`, but for `Ref`.
 - [Generic support (code-generation)](#generic-support-code-generation) - Generated providers can now define type parameters
@@ -30,6 +30,7 @@ Some of the key highlights include:
   - [`ProviderContainer.test`](#providercontainertest) - A test util that creates a container and automatically disposes it after the test ends.
   - [`NotifierProvider.overrideWithBuild`](#notifierprovideroverridewithbuild) - A way to mock only `Notifier.build`, without mocking the whole notifier.
   - [`Future/StreamProvider.overrideWithValue`](#futurestreamprovideroverridewithvalue) - The old utilities are back
+  - [`WidgetTester.container`](#widgettestercontainer) - A helper method to obtain the `ProviderContainer` inside widget tests
 - [Statically safe scoping](#statically-safe-scoping-code-generation-only) - New lint rules are added to detect when an override is missing
 
 ## Offline persistence (experimental)
@@ -83,19 +84,21 @@ As a short demo, here's how you can use offline persistence:
         // - Read the DB and update the state with the persisted value the first
         //   time this method executes.
         // - Listen to changes on this provider and write those changes to the DB.
-        // We "await" for persist to complete to make sure that the decoding is done
-        // before we return the state.
-        await persist(
+        persist(
           // We pass our JsonSqFliteStorage instance. No need to "await" the Future.
           // Riverpod will take care of that.
           ref.watch(storageProvider.future),
           // By default, state is cached offline only for 2 days.
-          // In this example, we tell Riverpod to cache the state forever.
-          options: const StorageOptions(cacheTime: StorageCacheTime.unsafe_forever),
+          // We can optionally uncomment the following line to change cache duration.
+          // options: const StorageOptions(cacheTime: StorageCacheTime.unsafe_forever),
         );
   
-        // If a state is persisted, we return it. Otherwise we return an empty list.
-        return state.value ?? [];
+        // We asynchronously fetch todos from the server.
+        // During the await, the persisted todo list will be available.
+        // After the network request completes, the server state will take precedence
+        // over the persisted state.
+        final todos = await fetchTodos();
+        return todos;
       }
   
       Future<void> add(Todo todo) async {
@@ -152,9 +155,7 @@ As a short demo, here's how you can use offline persistence:
       // - Read the DB and update the state with the persisted value the first
       //   time this method executes.
       // - Listen to changes on this provider and write those changes to the DB.
-      // We "await" for persist to complete to make sure that the decoding is done
-      // before we return the state.
-      await persist(
+      persist(
         // We pass our JsonSqFliteStorage instance. No need to "await" the Future.
         // Riverpod will take care of that.
         ref.watch(storageProvider.future),
@@ -162,8 +163,8 @@ As a short demo, here's how you can use offline persistence:
         // No other provider should use the same key.
         key: 'todos',
         // By default, state is cached offline only for 2 days.
-        // In this example, we tell Riverpod to cache the state forever.
-        options: const StorageOptions(cacheTime: StorageCacheTime.unsafe_forever),
+        // We can optionally uncomment the following line to change cache duration.
+        // options: const StorageOptions(cacheTime: StorageCacheTime.unsafe_forever),
         encode: jsonEncode,
         decode: (json) {
           final decoded = jsonDecode(json) as List;
@@ -173,8 +174,12 @@ As a short demo, here's how you can use offline persistence:
         },
       );
   
-      // If a state is persisted, we return it. Otherwise we return an empty list.
-      return state.value ?? [];
+        // We asynchronously fetch todos from the server.
+        // During the await, the persisted todo list will be available.
+        // After the network request completes, the server state will take precedence
+        // over the persisted state.
+        final todos = await fetchTodos();
+        return todos;
     }
   
     Future<void> add(Todo todo) async {
@@ -187,42 +192,26 @@ As a short demo, here's how you can use offline persistence:
 ></AutoSnippet>
 
 
-## Mutations (experimental) (code-generation only)
+## Mutations (experimental)
 
 :::info
 This feature is experimental and not yet stable.
 It is usable, but the API may change in breaking ways without a major version bump.
 :::
 
-:::note
-Mutations are currently only available using code generation.  
-Support for non-code generation is planned.
-:::
-
 A new feature called "mutations" is introduced in Riverpod 3.0.  
-This feature is a mean to allow your UI to easily show spinners/errors for side-effects (such as form submissions).
+This feature solves two problems:
+- It empowers the UI to react to "side-effects" (such as form submissions, button clicks, etc),
+  to enable it to show loading/success/error messages.
+  Think "Show a toast when a form is submitted successfully".
+- It solves an issue where `onPressed` callbacks combined with [Ref.read] and [autoDispose](./essentials/auto_dispose)
+  could cause providers to be disposed while a side-effect is still in progress.
 
-The TL;DR is, inside a `Notifier`, you can annotate a method with `@mutation`:
+The TL;DR is, a new [Mutation] object is added. It is declared as a top-level final variable,
+like providers:
 
 ```dart
-@riverpod
-class Todos extends _$Todos {
-  @override
-  Future<List<Todo>> build() async {
-    // TODO: fetch todos from the server
-    return [];
-  }
-
-  @mutation
-  Future<void> addTodo(String title) async {
-    // Post the new todo to the server
-    await http.post('https://example.com/todos', body: {
-      'title': title,
-    });
-    // Refresh the state after the post request
-    ref.invalidateSelf();
-  }
-}
+final addTodoMutation = Mutation<void>();
 ```
 
 After that, your UI can use `ref.listen`/`ref.watch` to listen to the state of mutations:
@@ -232,30 +221,53 @@ class AddTodoButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Listen to the status of the "addTodo" side-effect
-    final addTodo = ref.watch(todosProvider.addTodo);
+    final addTodo = ref.watch(addTodoMutation);
 
-    return switch (addTodo.state) {
+    return switch (addTodo) {
       // No side-effect is in progress
       // Let's show a submit button
       MutationIdle() => ElevatedButton(
-        // Trigger the side-effect on click. This is done by calling
-        // the "addTodo" object and passing the required parameters.
-        onPressed: () => addTodo('New Todo'),
+        // Trigger the side-effect on click
+        onPressed: () {
+          // TODO see explanation after the code snippet
+        },
         child: const Text('Submit'),
       ),
       // The side-effect is in progress. We show a spinner
       MutationPending() => const CircularProgressIndicator(),
       // The side-effect failed. We show a retry button
-      MutationErrored() => ElevatedButton(
-        onPressed: () => addTodo('New Todo'),
+      MutationError() => ElevatedButton(
+        onPressed: () {
+          // TODO see explanation after the code snippet
+        },
         child: const Text('Retry'),
       ),
       // The side-effect was successful. We show a success message
-      MutationSucceeded() => const Text('Todo added!'),
+      MutationSuccess() => const Text('Todo added!'),
     };
   }
 }
 ```
+
+Last but not least, inside our `onPressed` callback, we can trigger our side-effect as
+followed:
+
+```dart
+onPressed: () {
+  addTodoMutation.run(ref, (ref) async {
+    // This is where we run our side-effect.
+    // Here, we typically obtain a Notifier and call a method on it.
+    await ref.get(todoListProvider.notifier).addTodo('New Todo');
+  });
+}
+```
+
+:::note
+Note how we called [ref.get] here instead of [Ref.read].  
+This is a feature unique to mutations. That [ref.get] obtains the state of a provider,
+but keep it alive until the mutation is completed.
+:::
+
 
 ## Automatic retry
 
@@ -430,7 +442,7 @@ subscription.resume();
 
 At the same time, Riverpod now pauses providers in various situations:
 - When a provider is no-longer visible, it is paused
-  (Based off [Visibility](https://api.flutter.dev/flutter/widgets/Visibility-class.html)).
+  (Based off [TickerMode]).
 - When a provider rebuilds, its subscriptions are paused until the rebuild completes.
 - When a provider is paused, all of its subscriptions are paused too.
 
@@ -483,6 +495,44 @@ final provider = NotifierProvider.autoDispose<MyNotifier, int>(
 + class MyNotifier extends Notifier<int> {
 }
 ```
+
+### "FamilyNotifier" and "Notifier" are fused
+
+Similarly to the previous point, the `FamilyNotifier` and `Notifier` interfaces
+are now fused.
+
+Long story short, instead of:
+
+```dart
+final provider = NotifierProvider.family<CounterNotifier, int, Argument>(
+  MyNotifier.new,
+);
+
+class CounterNotifier extends FamilyNotifier<int, Argument> {
+  @override
+  int build(Argument arg) => 0;
+}
+```
+
+We now do:
+
+```dart
+final provider = NotifierProvider.family<CounterNotifier, int, Argument>(
+  CounterNotifier.new,
+);
+
+class CounterNotifier extends Notifier<int> {
+  CounterNotifier(this.arg);
+  final Argument arg;
+  @override
+  int build() => 0;
+}
+```
+
+This means that instead of `Notifier`+`FamilyNotifier`+`AutoDisposeNotifier`+`AutoDisposeFamilyNotifier`,
+we always use the `Notifier` class.
+
+This change has no impact on code-generation.
 
 ### One `Ref` to rule them all
 
@@ -668,10 +718,10 @@ In 2.0, the homepage would actively keep listening to the websocket.
 In 3.0, the websocket provider will instead be paused, possibly saving resources.
 
 **How it works:**  
-Riverpod relies on [Visibility] to determine if a widget is visible or not. And when
+Riverpod relies on [TickerMode] to determine if a widget is visible or not. And when
 false, all listeners of a [Consumer] are paused.
 
-It also means that you can rely on [Visibility] yourself to manually control
+It also means that you can rely on [TickerMode] yourself to manually control
 the pause behavior of your consumers. You can voluntarily set the value to true/false
 to forcibly resume/pause listeners:
 
@@ -679,12 +729,12 @@ to forcibly resume/pause listeners:
 class MyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Visibility(
-      visible: false, // This will pause the listeners
+    return TickerMode(
+      enabled: false, // This will pause the listeners
       child: Consumer(
         builder: (context, ref, child) {
           // This "watch" will be paused
-          // until Visibility is set to true
+          // until TickerMode is set to true
           final value = ref.watch(myProvider);
           return Text(value.toString());
         },
@@ -753,7 +803,7 @@ For example, your provider could be used indirectly through another provider.
   `}
   
   raw={`
-  final exampleProvider = Provider<int>((ref) {
+  final anotherProvider = Provider<int>((ref) {
     return ref.watch(exampleProvider);
   });
    
@@ -912,63 +962,6 @@ resumed
 ... // And so on every second
 ```
 
-### When a Notifier rebuilds, a new instance of the Notifier class is created
-
-In 2.0, `Notifier`s instances were created once, then reused for the lifetime of the provider.  
-This enabled storing custom state in the `Notifier` class. Unfortunately, this also meant
-caused some possible race conditions ; especially when we consider the new "offline persistence" feature.
-
-Offline persistence works by differentiating the first build of a provider
-from the subsequent builds. This is done by checking `Ref.isFirstBuild`. 
-The problem is, if `Notifier` instances are reused and a rebuild occurs
-while `Notifier.build` is still running, this could confuse offline persistence.
-
-Although unfortunate, for 3.0 the decision was made to break the old behavior
-and create a new instance of the `Notifier` class every time the provider rebuilds.
-
-On the upside, it means that you can now safely rely on `late final` variables initialized during `build`:
-
-
-<AutoSnippet
-  language="dart"
-  codegen={`
-    @riverpod
-    class MyNotifier extends _$MyNotifier {
-      late final int _cached;
-      
-      @override
-      int build() {
-        // This is now safe, as a new Notifier instance is created upon rebuild
-        _cached = ref.watch(myProvider);
-        return 0;
-      }
-      
-      void increment() {
-        print(_cached);
-      }
-    }
-  `}
-  
-  raw={`
-    class MyNotifier extends Notifier<int> {
-      late final int _cached;
-      
-      @override
-      int build() {
-        // This is now safe, as a new Notifier instance is created upon rebuild
-        _cached = ref.watch(myProvider);
-        return 0;
-      }
-      
-      void increment() {
-        print(_cached);
-      }
-    }
-    
-    final myNotifierProvider = NotifierProvider<MyNotifier, int>(MyNotifier.new);
-  `}
-></AutoSnippet>
-
 ## New testing utilities
 
 ### `ProviderContainer.test`
@@ -1074,9 +1067,9 @@ They are finally back!
   `}
   
   raw={`
-    Future<int> myFutureProvider() async {
+    final myFutureProvider = FutureProvider<int>((ref) async {
       return 42;
-    }
+    });
     
     void main() {
       final container = ProviderContainer.test(
@@ -1089,6 +1082,59 @@ They are finally back!
     }
   `}
 ></AutoSnippet>
+
+### `WidgetTester.container`
+
+A simple way to access the `ProviderContainer` in your widget tree.
+
+```dart
+void main() {
+  testWidgets('can access a ProviderContainer', (tester) async {
+    await tester.pumpWidget(const ProviderScope(child: MyWidget()));
+    ProviderContainer container = tester.container();
+  });
+}
+```
+
+See the [WidgetTester.container] extension for more information.
+
+## Custom ProviderListenables
+
+It is now possible to create custom [ProviderListenable]s in Riverpod 3.0.
+This is doable using [SyncProviderTransformerMixin].
+
+The following example implements a variable of `provider.select`,
+where the callback returns a boolean instead of the selected value.
+
+```dart
+final class Where<T> with SyncProviderTransformerMixin<T, T> {
+  Where(this.source, this.where);
+  @override
+  final ProviderListenable<T> source;
+  final bool Function(T previous, T value) where;
+
+  @override
+  ProviderTransformer<T, T> transform(
+    ProviderTransformerContext<T, T> context,
+  ) {
+     return ProviderTransformer(
+       initState: (_) => context.sourceState.requireValue,
+       listener: (self, previous, next) {
+         if (where(previous, next))
+           self.state = next;
+       },
+     );
+  }
+}
+
+extension<T> on ProviderListenable<T> {
+  ProviderListenable<T> where(
+    bool Function(T previous, T value) where,
+  ) => Where<T>(this, where);
+}
+```
+
+Used as `ref.watch(provider.where((previous, value) => value > 0))`.
 
 ## Statically safe scoping (code-generation only)
 
@@ -1303,11 +1349,17 @@ regarding combining multiple "sources of truth" in a single provider.
 
 [ProviderContainer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderContainer-class.html
 [ProviderScope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
+[Mutation]: https://pub.dev/documentation/riverpod/3.0.0-dev.16/experimental_mutation/Mutation-class.html
 [riverpod_lint]: https://pub.dev/packages/riverpod_lint
 [Ref]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Ref-class.html
+[Ref.read]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Ref/read.html
+[ref.get]: https://pub.dev/documentation/riverpod/3.0.0-dev.16/experimental_mutation/MutationRef/get.html
 [WidgetRef]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/WidgetRef-class.html
-[Visibility]: https://api.flutter.dev/flutter/widgets/Visibility-class.html
+[TickerMode]: https://api.flutter.dev/flutter/widgets/TickerMode-class.html
 [Consumer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Consumer-class.html
 [Notifier]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Notifier-class.html
 [AsyncValue]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/AsyncValue-class.html
 [ProviderObserver]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderObserver-class.html
+[WidgetTester.container]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/RiverpodWidgetTesterX/container.html
+[SyncProviderTransformerMixin]: https://pub.dev/documentation/riverpod/3.0.0-dev.16/misc/SyncProviderTransformerMixin-mixin.html
+[ProviderListenable]: https://pub.dev/documentation/riverpod/3.0.0-dev.16/misc/ProviderListenable-class.html

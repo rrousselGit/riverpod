@@ -8,11 +8,14 @@ part of 'async_fn_stream.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(example)
 const exampleProvider = ExampleProvider._();
 
 final class ExampleProvider
-    extends $FunctionalProvider<AsyncValue<String>, Stream<String>>
+    extends $FunctionalProvider<AsyncValue<String>, String, Stream<String>>
     with $FutureModifier<String>, $StreamProvider<String> {
   const ExampleProvider._()
       : super(
@@ -40,6 +43,3 @@ final class ExampleProvider
 }
 
 String _$exampleHash() => r'f7f90ac5fbf939c0259a549b8e01a559b0d95ff1';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

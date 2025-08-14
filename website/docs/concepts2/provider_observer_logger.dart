@@ -16,8 +16,9 @@ class Logger extends ProviderObserver {
   ) {
     print('''
 {
-  "provider": "${context.provider.name ?? context.provider.runtimeType}",
-  "newValue": "$newValue"
+  "provider": "${context.provider}",
+  "newValue": "$newValue",
+  "mutation": "${context.mutation}"
 }''');
   }
 }

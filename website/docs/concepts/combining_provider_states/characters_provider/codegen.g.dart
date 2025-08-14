@@ -8,10 +8,13 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(search)
 const searchProvider = SearchProvider._();
 
-final class SearchProvider extends $FunctionalProvider<String, String>
+final class SearchProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const SearchProvider._()
       : super(
@@ -41,7 +44,7 @@ final class SearchProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }
@@ -52,7 +55,7 @@ String _$searchHash() => r'bc08d7ad4026615f3c0e4824c6b943f315cf18be';
 const configsProvider = ConfigsProvider._();
 
 final class ConfigsProvider extends $FunctionalProvider<
-        AsyncValue<Configuration>, Stream<Configuration>>
+        AsyncValue<Configuration>, Configuration, Stream<Configuration>>
     with $FutureModifier<Configuration>, $StreamProvider<Configuration> {
   const ConfigsProvider._()
       : super(
@@ -86,7 +89,7 @@ String _$configsHash() => r'6416514dacd408abb24de2bd1404860e6518c564';
 const charactersProvider = CharactersProvider._();
 
 final class CharactersProvider extends $FunctionalProvider<
-        AsyncValue<List<Character>>, FutureOr<List<Character>>>
+        AsyncValue<List<Character>>, List<Character>, FutureOr<List<Character>>>
     with $FutureModifier<List<Character>>, $FutureProvider<List<Character>> {
   const CharactersProvider._()
       : super(
@@ -115,6 +118,3 @@ final class CharactersProvider extends $FunctionalProvider<
 }
 
 String _$charactersHash() => r'd2bac558571ceae538d012696be58e2a06e8013f';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -6,10 +6,13 @@ part of 'retry.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(a)
 const aProvider = AProvider._();
 
-final class AProvider extends $FunctionalProvider<String, String>
+final class AProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const AProvider._()
       : super(
@@ -39,7 +42,7 @@ final class AProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }
@@ -49,7 +52,7 @@ String _$aHash() => r'83a9516d10f85dc72ca773837e042bfc6e36c1f1';
 @ProviderFor(b)
 const bProvider = BFamily._();
 
-final class BProvider extends $FunctionalProvider<String, String>
+final class BProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const BProvider._({required BFamily super.from, required int super.argument})
       : super(
@@ -88,7 +91,7 @@ final class BProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 
@@ -124,5 +127,3 @@ final class BFamily extends $Family
   @override
   String toString() => r'bProvider';
 }
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

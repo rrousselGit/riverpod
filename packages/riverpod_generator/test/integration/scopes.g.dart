@@ -6,6 +6,9 @@ part of 'scopes.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(ScopedClass)
 const scopedClassProvider = ScopedClassProvider._();
 
@@ -28,17 +31,11 @@ final class ScopedClassProvider extends $NotifierProvider<ScopedClass, int> {
   @override
   ScopedClass create() => ScopedClass();
 
-  @$internal
-  @override
-  $NotifierProviderElement<ScopedClass, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -51,7 +48,7 @@ abstract class _$ScopedClass extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -88,17 +85,11 @@ final class ScopedClassFamilyProvider
   @override
   ScopedClassFamily create() => ScopedClassFamily();
 
-  @$internal
-  @override
-  $NotifierProviderElement<ScopedClassFamily, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -149,12 +140,9 @@ abstract class _$ScopedClassFamily extends $Notifier<int> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

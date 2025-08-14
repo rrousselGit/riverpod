@@ -4,7 +4,6 @@ import 'package:meta/meta.dart';
 
 import '../builder.dart';
 import '../common/internal_lints.dart';
-import '../core/async_value.dart';
 import '../framework.dart';
 import 'async_notifier.dart';
 import 'provider.dart' show Provider;
@@ -14,13 +13,13 @@ import 'stream_provider.dart' show StreamProvider;
 /// Do not use, as this may be removed at any time.
 @internal
 @publicInCodegen
-base mixin $FutureProvider<StateT>
-    on $FunctionalProvider<AsyncValue<StateT>, FutureOr<StateT>> {
+base mixin $FutureProvider<ValueT>
+    on $FunctionalProvider<AsyncValue<ValueT>, ValueT, FutureOr<ValueT>> {
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(AsyncValue<StateT> value) {
+  Override overrideWithValue(AsyncValue<ValueT> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $AsyncValueProvider<StateT>(value),
+      providerOverride: $AsyncValueProvider<ValueT>(value),
     );
   }
 }
@@ -94,12 +93,12 @@ base mixin $FutureProvider<StateT>
 /// - [FutureProvider.autoDispose], to destroy the state of a [FutureProvider] when no longer needed.
 /// {@endtemplate}
 /// {@category Providers}
-final class FutureProvider<StateT>
-    extends $FunctionalProvider<AsyncValue<StateT>, FutureOr<StateT>>
+final class FutureProvider<ValueT>
+    extends $FunctionalProvider<AsyncValue<ValueT>, ValueT, FutureOr<ValueT>>
     with
-        $FutureModifier<StateT>,
-        $FutureProvider<StateT>,
-        LegacyProviderMixin<AsyncValue<StateT>> {
+        $FutureModifier<ValueT>,
+        $FutureProvider<ValueT>,
+        LegacyProviderMixin<AsyncValue<ValueT>> {
   /// {@macro riverpod.future_provider}
   FutureProvider(
     this._create, {
@@ -134,17 +133,17 @@ final class FutureProvider<StateT>
   /// {@macro riverpod.family}
   static const family = FutureProviderFamilyBuilder();
 
-  final Create<FutureOr<StateT>> _create;
+  final Create<FutureOr<ValueT>> _create;
 
   /// @nodoc
   @internal
   @override
-  FutureOr<StateT> create(Ref ref) => _create(ref);
+  FutureOr<ValueT> create(Ref ref) => _create(ref);
 
   /// @nodoc
   @internal
   @override
-  $FutureProviderElement<StateT> $createElement($ProviderPointer pointer) {
+  $FutureProviderElement<ValueT> $createElement($ProviderPointer pointer) {
     return $FutureProviderElement(pointer);
   }
 }
@@ -154,9 +153,10 @@ final class FutureProvider<StateT>
 /// @nodoc
 @internal
 @publicInCodegen
-class $FutureProviderElement<StateT>
-    extends $FunctionalProviderElement<AsyncValue<StateT>, FutureOr<StateT>>
-    with FutureModifierElement<StateT> {
+class $FutureProviderElement<ValueT> extends $FunctionalProviderElement<
+    AsyncValue<ValueT>,
+    ValueT,
+    FutureOr<ValueT>> with FutureModifierElement<ValueT> {
   /// The element of a [FutureProvider]
   /// Implementation detail of `riverpod_generator`. Do not use.
   $FutureProviderElement(super.pointer);
@@ -169,8 +169,12 @@ class $FutureProviderElement<StateT>
 
 /// The [Family] of a [FutureProvider]
 @publicInMisc
-final class FutureProviderFamily<StateT, ArgT> extends FunctionalFamily<
-    AsyncValue<StateT>, ArgT, FutureOr<StateT>, FutureProvider<StateT>> {
+final class FutureProviderFamily<ValueT, ArgT> extends FunctionalFamily<
+    AsyncValue<ValueT>,
+    ValueT,
+    ArgT,
+    FutureOr<ValueT>,
+    FutureProvider<ValueT>> {
   /// The [Family] of a [FutureProvider]
   /// @nodoc
   @internal
@@ -181,7 +185,7 @@ final class FutureProviderFamily<StateT, ArgT> extends FunctionalFamily<
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-          providerFactory: FutureProvider<StateT>.internal,
+          providerFactory: FutureProvider<ValueT>.internal,
           $allTransitiveDependencies:
               computeAllTransitiveDependencies(dependencies),
         );
@@ -196,5 +200,5 @@ final class FutureProviderFamily<StateT, ArgT> extends FunctionalFamily<
     required super.$allTransitiveDependencies,
     required super.isAutoDispose,
     required super.retry,
-  }) : super(providerFactory: FutureProvider<StateT>.internal);
+  }) : super(providerFactory: FutureProvider<ValueT>.internal);
 }

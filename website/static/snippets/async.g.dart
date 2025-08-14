@@ -8,11 +8,14 @@ part of 'async.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(configurations)
 const configurationsProvider = ConfigurationsProvider._();
 
 final class ConfigurationsProvider extends $FunctionalProvider<
-        AsyncValue<Configuration>, FutureOr<Configuration>>
+        AsyncValue<Configuration>, Configuration, FutureOr<Configuration>>
     with $FutureModifier<Configuration>, $FutureProvider<Configuration> {
   const ConfigurationsProvider._()
       : super(
@@ -41,6 +44,3 @@ final class ConfigurationsProvider extends $FunctionalProvider<
 }
 
 String _$configurationsHash() => r'9ba3dc8a87bfe57002a403f03c8e0db6ba4759fd';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

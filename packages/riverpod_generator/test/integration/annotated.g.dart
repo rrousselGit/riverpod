@@ -6,14 +6,20 @@ part of 'annotated.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(functional)
 @Deprecated('Deprecation message')
 @visibleForTesting
 @protected
 const functionalProvider = FunctionalFamily._();
 
-final class FunctionalProvider extends $FunctionalProvider<String, String>
-    with $Provider<String> {
+@Deprecated('Deprecation message')
+@visibleForTesting
+@protected
+final class FunctionalProvider
+    extends $FunctionalProvider<String, String, String> with $Provider<String> {
   const FunctionalProvider._(
       {required FunctionalFamily super.from, required int super.argument})
       : super(
@@ -52,7 +58,7 @@ final class FunctionalProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 
@@ -69,6 +75,9 @@ final class FunctionalProvider extends $FunctionalProvider<String, String>
 
 String _$functionalHash() => r'ba8606cd0526e2dde0f775eb8f4c9d8b5b6fdf2c';
 
+@Deprecated('Deprecation message')
+@visibleForTesting
+@protected
 final class FunctionalFamily extends $Family
     with $FunctionalFamilyOverride<String, int> {
   const FunctionalFamily._()
@@ -80,6 +89,9 @@ final class FunctionalFamily extends $Family
           isAutoDispose: true,
         );
 
+  @Deprecated('Deprecation message')
+  @visibleForTesting
+  @protected
   FunctionalProvider call(
     @Deprecated('field') int id,
   ) =>
@@ -95,6 +107,9 @@ final class FunctionalFamily extends $Family
 @protected
 const classBasedProvider = ClassBasedFamily._();
 
+@Deprecated('Deprecation message')
+@visibleForTesting
+@protected
 final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
   const ClassBasedProvider._(
       {required ClassBasedFamily super.from, required int super.argument})
@@ -120,17 +135,11 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
   @override
   ClassBased create() => ClassBased();
 
-  @$internal
-  @override
-  $NotifierProviderElement<ClassBased, String> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 
@@ -147,6 +156,9 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
 
 String _$classBasedHash() => r'92b444806ef8a304c6e0dc3d8e2383601e781183';
 
+@Deprecated('Deprecation message')
+@visibleForTesting
+@protected
 final class ClassBasedFamily extends $Family
     with $ClassFamilyOverride<ClassBased, String, String, String, int> {
   const ClassBasedFamily._()
@@ -158,6 +170,9 @@ final class ClassBasedFamily extends $Family
           isAutoDispose: true,
         );
 
+  @Deprecated('Deprecation message')
+  @visibleForTesting
+  @protected
   ClassBasedProvider call(
     @Deprecated('field') int id,
   ) =>
@@ -167,6 +182,9 @@ final class ClassBasedFamily extends $Family
   String toString() => r'classBasedProvider';
 }
 
+@Deprecated('Deprecation message')
+@visibleForTesting
+@protected
 abstract class _$ClassBased extends $Notifier<String> {
   late final _$args = ref.$arg as int;
   @Deprecated('field')
@@ -181,7 +199,7 @@ abstract class _$ClassBased extends $Notifier<String> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<String>;
+    final ref = this.ref as $Ref<String, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<String, String>, String, Object?, Object?>;
     element.handleValue(ref, created);
@@ -194,7 +212,10 @@ abstract class _$ClassBased extends $Notifier<String> {
 @protected
 const familyProvider = FamilyFamily._();
 
-final class FamilyProvider extends $FunctionalProvider<String, String>
+@Deprecated('Deprecation message')
+@visibleForTesting
+@protected
+final class FamilyProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const FamilyProvider._(
       {required FamilyFamily super.from, required int super.argument})
@@ -234,7 +255,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 
@@ -251,6 +272,9 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
 
 String _$familyHash() => r'14b97009aec20a0332208f8a60bc177b44c9d1d4';
 
+@Deprecated('Deprecation message')
+@visibleForTesting
+@protected
 final class FamilyFamily extends $Family
     with $FunctionalFamilyOverride<String, int> {
   const FamilyFamily._()
@@ -262,6 +286,9 @@ final class FamilyFamily extends $Family
           isAutoDispose: true,
         );
 
+  @Deprecated('Deprecation message')
+  @visibleForTesting
+  @protected
   FamilyProvider call(
     int id,
   ) =>
@@ -275,7 +302,7 @@ final class FamilyFamily extends $Family
 const notCopiedFunctionalProvider = NotCopiedFunctionalProvider._();
 
 final class NotCopiedFunctionalProvider
-    extends $FunctionalProvider<String, String> with $Provider<String> {
+    extends $FunctionalProvider<String, String, String> with $Provider<String> {
   const NotCopiedFunctionalProvider._()
       : super(
           from: null,
@@ -304,7 +331,7 @@ final class NotCopiedFunctionalProvider
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }
@@ -335,17 +362,11 @@ final class NotCopiedClassBasedProvider
   @override
   NotCopiedClassBased create() => NotCopiedClassBased();
 
-  @$internal
-  @override
-  $NotifierProviderElement<NotCopiedClassBased, String> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }
@@ -359,7 +380,7 @@ abstract class _$NotCopiedClassBased extends $Notifier<String> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<String>;
+    final ref = this.ref as $Ref<String, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<String, String>, String, Object?, Object?>;
     element.handleValue(ref, created);
@@ -369,8 +390,8 @@ abstract class _$NotCopiedClassBased extends $Notifier<String> {
 @ProviderFor(notCopiedFamily)
 const notCopiedFamilyProvider = NotCopiedFamilyFamily._();
 
-final class NotCopiedFamilyProvider extends $FunctionalProvider<String, String>
-    with $Provider<String> {
+final class NotCopiedFamilyProvider
+    extends $FunctionalProvider<String, String, String> with $Provider<String> {
   const NotCopiedFamilyProvider._(
       {required NotCopiedFamilyFamily super.from, required int super.argument})
       : super(
@@ -409,7 +430,7 @@ final class NotCopiedFamilyProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 
@@ -445,5 +466,3 @@ final class NotCopiedFamilyFamily extends $Family
   @override
   String toString() => r'notCopiedFamilyProvider';
 }
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

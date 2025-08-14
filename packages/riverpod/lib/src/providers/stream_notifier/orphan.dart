@@ -12,14 +12,12 @@ part of '../stream_notifier.dart';
 /// [AsyncNotifier].
 ///
 /// This can be considered as a [StreamProvider] that can mutate its value over time.
-/// When using `family`, your notifier type changes. Instead of extending
-/// [StreamNotifier], you should extend [FamilyStreamNotifier].
 /// {@endtemplate}
 /// {@category Notifiers}
-abstract class StreamNotifier<StateT> extends $StreamNotifier<StateT> {
+abstract class StreamNotifier<ValueT> extends $StreamNotifier<ValueT> {
   /// {@macro riverpod.async_notifier.build}
   @visibleForOverriding
-  Stream<StateT> build();
+  Stream<ValueT> build();
 
   @mustCallSuper
   @override
@@ -40,20 +38,13 @@ abstract class StreamNotifier<StateT> extends $StreamNotifier<StateT> {
 /// Instead the ref (and argument) are directly accessible in the associated
 /// [StreamNotifier].
 /// {@endtemplate}
-///
-/// {@template riverpod.async_notifier_provider_modifier}
-/// When using your notifier type changes.
-/// Instead of extending [StreamNotifier], you should extend [FamilyStreamNotifier].
-/// {@endtemplate}
 /// {@category Providers}
 final class StreamNotifierProvider< //
-        NotifierT extends StreamNotifier<StateT>,
-        StateT> //
-    extends $StreamNotifierProvider<NotifierT, StateT>
-    with LegacyProviderMixin<AsyncValue<StateT>> {
+        NotifierT extends StreamNotifier<ValueT>,
+        ValueT> //
+    extends $StreamNotifierProvider<NotifierT, ValueT>
+    with LegacyProviderMixin<AsyncValue<ValueT>> {
   /// {@macro riverpod.stream_notifier_provider}
-  ///
-  /// {@macro riverpod.async_notifier_provider_modifier}
   StreamNotifierProvider(
     this._createNotifier, {
     super.name,

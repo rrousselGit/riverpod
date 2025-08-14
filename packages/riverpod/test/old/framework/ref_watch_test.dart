@@ -59,10 +59,10 @@ void main() {
 
   test('can listen multiple providers at once', () async {
     final container = ProviderContainer.test();
-    final count = StateProvider((ref) => 0);
-    final count2 = StateProvider((ref) => 0);
+    final count = StateProvider((ref) => 0, name: 'count');
+    final count2 = StateProvider((ref) => 0, name: 'count2');
 
-    final provider = Provider((ref) {
+    final provider = Provider(name: 'provider', (ref) {
       final first = ref.watch(count);
       final second = ref.watch(count2);
 
@@ -176,23 +176,26 @@ void main() {
   test('disposes providers synchronously when their dependency changes',
       () async {
     final onDispose = OnDisposeMock();
-    final dep = StateProvider((ref) => 0);
-    final dep2 = StateProvider((ref) => 0);
+    final dep = StateProvider(name: 'dep', (ref) => 0);
+    final dep2 = StateProvider(name: 'dep2', (ref) => 0);
     final container = ProviderContainer.test();
-    final provider = Provider((ref) {
+    final provider = Provider(name: 'provider', (ref) {
       ref.onDispose(onDispose.call);
       ref.watch(dep);
       ref.watch(dep2);
     });
 
-    container.read(provider);
+    final depNotifier = container.read(dep.notifier);
+    final dep2Notifier = container.read(dep2.notifier);
 
-    container.read(dep.notifier).state++;
+    container.listen(provider, (_, __) {});
+
+    depNotifier.state++;
 
     verifyOnly(onDispose, onDispose());
 
-    container.read(dep.notifier).state++;
-    container.read(dep2.notifier).state++;
+    depNotifier.state++;
+    dep2Notifier.state++;
 
     verifyNoMoreInteractions(onDispose);
   });
@@ -210,7 +213,7 @@ void main() {
 
     expect(
       () => container.read(provider),
-      throwsProviderException(isA<AssertionError>()),
+      throwsProviderException(isProviderException(isA<AssertionError>())),
     );
   });
 
@@ -225,7 +228,7 @@ void main() {
 
     expect(
       () => container.read(provider),
-      throwsProviderException(isA<AssertionError>()),
+      throwsProviderException(isProviderException(isA<AssertionError>())),
     );
   });
 
@@ -245,7 +248,7 @@ void main() {
 
     expect(
       () => container.read(provider),
-      throwsProviderException(isA<AssertionError>()),
+      throwsProviderException(isProviderException(isA<AssertionError>())),
     );
   });
 
@@ -652,9 +655,9 @@ void main() {
   });
 }
 
-class Notifier<T> extends StateNotifier<T> {
+class Notifier<StateT> extends StateNotifier<StateT> {
   Notifier(super._state);
 
   // ignore: use_setters_to_change_properties
-  void setState(T value) => state = value;
+  void setState(StateT value) => state = value;
 }

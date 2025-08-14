@@ -7,7 +7,7 @@ import { AutoSnippet, When } from "/src/components/CodeSnippet";
 import unitTest from "!!raw-loader!/docs/essentials/testing/unit_test.dart";
 import widgetTest from "!!raw-loader!/docs/essentials/testing/widget_test.dart";
 import fullWidgetTest from "!!raw-loader!/docs/essentials/testing/full_widget_test.dart";
-import widgetContainerOf from "!!raw-loader!/docs/essentials/testing/widget_container_of.dart";
+import testerContainer from "!!raw-loader!/docs/essentials/testing/tester_container.dart";
 import providerToMock from "/docs/essentials/testing/provider_to_mock";
 import mockProvider from "!!raw-loader!/docs/essentials/testing/mock_provider.dart";
 import autoDisposeListen from "!!raw-loader!/docs/essentials/testing/auto_dispose_listen.dart";
@@ -90,7 +90,7 @@ provider がリッスンされていない場合、テストの途中でその�
 これは `ProviderScope.containerOf(buildContext)`を使用して取得できます。  
 したがって、`tester`を使用すると次のように書くことができます:
 
-<AutoSnippet raw={widgetContainerOf} translations={{}} />
+<AutoSnippet raw={testerContainer} translations={{}} />
 
 次に、これを使用して provider を読み取ることができます。以下は完全な例です:
 

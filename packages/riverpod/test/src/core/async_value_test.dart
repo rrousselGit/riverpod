@@ -3,12 +3,25 @@
 import 'dart:async';
 
 import 'package:riverpod/riverpod.dart';
-import 'package:riverpod/src/internals.dart';
+import 'package:riverpod/src/internals.dart' show DataKind;
 import 'package:test/test.dart';
 
 import '../utils.dart';
 
 void main() {
+  group('AsyncResult', () {
+    test('Can be switched over with only data-error cases', () {
+      final AsyncResult<int> result = const AsyncData<int>(42);
+
+      switch (result) {
+        case AsyncData<int>(:final value):
+          expect(value, 42);
+        case AsyncError<int>(:final error, :final stackTrace):
+          fail('Unexpected error: $error, $stackTrace');
+      }
+    });
+  });
+
   test('Can do exhaustive pattern matching', () {
     expect(
       switch (const AsyncValue<int>.loading()) {
@@ -119,7 +132,7 @@ void main() {
 
       test('with AsyncData, sets value and hasValue', () {
         final result = const AsyncLoading<int>(progress: .1).copyWithPrevious(
-          const AsyncData(42, isFromCache: true),
+          const AsyncData(42, kind: DataKind.cache),
           isRefresh: false,
         );
 
@@ -280,7 +293,7 @@ void main() {
 
         test('with AsyncData', () {
           final value = const AsyncLoading<int>(progress: .1)
-              .copyWithPrevious(const AsyncData(42, isFromCache: true));
+              .copyWithPrevious(const AsyncData(42, kind: DataKind.cache));
 
           expect(value, isA<AsyncData<int>>());
           expect(value.isLoading, true);
@@ -295,8 +308,9 @@ void main() {
 
         test('with refreshing AsyncData', () {
           final value = const AsyncLoading<int>(progress: .1).copyWithPrevious(
-            const AsyncLoading<int>()
-                .copyWithPrevious(const AsyncData(42, isFromCache: true)),
+            const AsyncLoading<int>().copyWithPrevious(
+              const AsyncData(42, kind: DataKind.cache),
+            ),
           );
 
           expect(value, isA<AsyncData<int>>());
@@ -1223,11 +1237,11 @@ void main() {
     );
 
     expect(
-      const AsyncData<int>(42, isFromCache: true),
-      const AsyncData<int>(42, isFromCache: true),
+      const AsyncData<int>(42, kind: DataKind.cache),
+      const AsyncData<int>(42, kind: DataKind.cache),
     );
     expect(
-      const AsyncData<int>(42, isFromCache: true),
+      const AsyncData<int>(42, kind: DataKind.cache),
       isNot(const AsyncData<int>(42)),
     );
   });
@@ -1335,11 +1349,11 @@ void main() {
     );
 
     expect(
-      const AsyncData<int>(42, isFromCache: true).hashCode,
-      const AsyncData<int>(42, isFromCache: true).hashCode,
+      const AsyncData<int>(42, kind: DataKind.cache).hashCode,
+      const AsyncData<int>(42, kind: DataKind.cache).hashCode,
     );
     expect(
-      const AsyncData<int>(42, isFromCache: true).hashCode,
+      const AsyncData<int>(42, kind: DataKind.cache).hashCode,
       isNot(const AsyncData<int>(42).hashCode),
     );
   });
@@ -1435,8 +1449,8 @@ void main() {
     );
 
     expect(
-      const AsyncData<int>(42, isFromCache: true).toString(),
-      'AsyncData<int>(value: 42, isFromCache: true)',
+      const AsyncData<int>(42, kind: DataKind.cache).toString(),
+      'AsyncData<int>(value: 42, valueSource: cache)',
     );
   });
 

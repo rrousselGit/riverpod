@@ -1,0 +1,99 @@
+// GENERATED CODE - DO NOT MODIFY BY HAND
+
+// ignore_for_file: non_constant_identifier_names
+
+part of 'optimized_previous_button.dart';
+
+// **************************************************************************
+// RiverpodGenerator
+// **************************************************************************
+
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
+@ProviderFor(PageIndex)
+const pageIndexProvider = PageIndexProvider._();
+
+final class PageIndexProvider extends $NotifierProvider<PageIndex, int> {
+  const PageIndexProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'pageIndexProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$pageIndexHash();
+
+  @$internal
+  @override
+  PageIndex create() => PageIndex();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<int>(value),
+    );
+  }
+}
+
+String _$pageIndexHash() => r'59307ecf23b5b2432833da5ad6b312bf36435d0e';
+
+abstract class _$PageIndex extends $Notifier<int> {
+  int build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<int, int>;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}
+
+@ProviderFor(canGoToPreviousPage)
+const canGoToPreviousPageProvider = CanGoToPreviousPageProvider._();
+
+final class CanGoToPreviousPageProvider
+    extends $FunctionalProvider<bool, bool, bool> with $Provider<bool> {
+  const CanGoToPreviousPageProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'canGoToPreviousPageProvider',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$canGoToPreviousPageHash();
+
+  @$internal
+  @override
+  $ProviderElement<bool> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  bool create(Ref ref) {
+    return canGoToPreviousPage(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
+String _$canGoToPreviousPageHash() =>
+    r'1cb9c497aa7e5e8ee03c5711f079c2b68a4c28c5';

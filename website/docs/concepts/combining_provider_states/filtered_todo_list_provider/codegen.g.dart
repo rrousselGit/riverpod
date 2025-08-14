@@ -8,10 +8,13 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(filter)
 const filterProvider = FilterProvider._();
 
-final class FilterProvider extends $FunctionalProvider<Filter, Filter>
+final class FilterProvider extends $FunctionalProvider<Filter, Filter, Filter>
     with $Provider<Filter> {
   const FilterProvider._()
       : super(
@@ -41,7 +44,7 @@ final class FilterProvider extends $FunctionalProvider<Filter, Filter>
   Override overrideWithValue(Filter value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Filter>(value),
+      providerOverride: $SyncValueProvider<Filter>(value),
     );
   }
 }
@@ -52,7 +55,7 @@ String _$filterHash() => r'6583f8bace972f4385964cd26f217751164b537b';
 const filteredTodoListProvider = FilteredTodoListProvider._();
 
 final class FilteredTodoListProvider
-    extends $FunctionalProvider<List<Todo>, List<Todo>>
+    extends $FunctionalProvider<List<Todo>, List<Todo>, List<Todo>>
     with $Provider<List<Todo>> {
   const FilteredTodoListProvider._()
       : super(
@@ -82,12 +85,9 @@ final class FilteredTodoListProvider
   Override overrideWithValue(List<Todo> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<Todo>>(value),
+      providerOverride: $SyncValueProvider<List<Todo>>(value),
     );
   }
 }
 
 String _$filteredTodoListHash() => r'e0faf3934cd30a62b5771f2e4d64eaa727065c2f';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

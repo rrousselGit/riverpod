@@ -7,7 +7,6 @@ import 'package:riverpod/misc.dart' show Refreshable, ProviderListenable;
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart' show UnmountedRefException;
 import 'package:riverpod/src/internals.dart' show InternalProviderContainer;
-import 'package:riverpod/src/providers/notifier.dart' show $Notifier;
 import 'package:test/test.dart';
 
 import '../matrix.dart';
@@ -19,13 +18,24 @@ void main() {
       () => CtorNotifier().state,
       () => CtorNotifier().state = 42,
       () => CtorNotifier().ref,
-      () => FamilyCtorNotifier().state,
-      () => FamilyCtorNotifier().state = 42,
-      () => FamilyCtorNotifier().ref,
     ]);
   });
 
   notifierProviderFactory.createGroup((factory) {
+    test('The notifier instance is preserved across builds', () {
+      final notifier = factory.deferredNotifier((ref, _) => 0);
+      final provider = factory.provider<int>(() => notifier);
+      final container = ProviderContainer.test();
+
+      container.listen(provider, (previous, next) {});
+
+      expect(container.read(provider.notifier), notifier);
+
+      container.refresh(provider);
+
+      expect(container.read(provider.notifier), notifier);
+    });
+
     test('filters state update by == by default', () {
       final provider =
           factory.simpleTestProvider<Equal<int>>((ref, _) => Equal(42));
@@ -227,31 +237,6 @@ void main() {
       container.read(provider.notifier).state++;
 
       verifyOnly(listener, listener(0, 1));
-    });
-
-    group('.notifier', () {
-      test(
-          'Notifies listeners whenever `build` is re-executed, due to recreating a new notifier.',
-          () async {
-        final notifierListener = Listener<$Notifier<int>>();
-        final dep = StateProvider((ref) => 0);
-        final provider = factory.provider<int>(() {
-          return factory.deferredNotifier((ref, _) => ref.watch(dep));
-        });
-        final container = ProviderContainer.test();
-
-        final sub = container.listen(provider.notifier, notifierListener.call);
-        final initialNotifier = sub.read();
-
-        container.refresh(provider);
-        final newNotifier = sub.read();
-
-        expect(newNotifier, isNot(same(initialNotifier)));
-        verifyOnly(
-          notifierListener,
-          notifierListener(initialNotifier, newNotifier),
-        ).called(1);
-      });
     });
 
     test('calls notifier.build on every watch update', () async {
@@ -569,21 +554,20 @@ void main() {
   });
 
   test('supports family overrideWith', () {
-    final family =
-        NotifierProvider.family<DeferredFamilyNotifier<int>, int, int>(
-      () => DeferredFamilyNotifier<int>((ref, _) => 0),
+    final family = NotifierProvider.family<DeferredNotifier<int>, int, int>(
+      (arg) => DeferredNotifier<int>((ref, _) => 0),
     );
-    final autoDisposeFamily = NotifierProvider.autoDispose
-        .family<DeferredFamilyNotifier<int>, int, int>(
-      () => DeferredFamilyNotifier<int>((ref, _) => 0),
+    final autoDisposeFamily =
+        NotifierProvider.autoDispose.family<DeferredNotifier<int>, int, int>(
+      (arg) => DeferredNotifier<int>((ref, _) => 0),
     );
     final container = ProviderContainer.test(
       overrides: [
         family.overrideWith(
-          () => DeferredFamilyNotifier<int>((ref, _) => 42),
+          () => DeferredNotifier<int>((ref, _) => 42),
         ),
         autoDisposeFamily.overrideWith(
-          () => DeferredFamilyNotifier<int>((ref, _) => 84),
+          () => DeferredNotifier<int>((ref, _) => 84),
         ),
       ],
     );
@@ -593,12 +577,12 @@ void main() {
   });
 
   group('modifiers', () {
-    void canBeAssignedToRefreshable<T>(
-      Refreshable<T> provider,
+    void canBeAssignedToRefreshable<StateT>(
+      Refreshable<StateT> provider,
     ) {}
 
-    void canBeAssignedToProviderListenable<T>(
-      ProviderListenable<T> provider,
+    void canBeAssignedToProviderListenable<StateT>(
+      ProviderListenable<StateT> provider,
     ) {}
 
     test('provider', () {
@@ -636,8 +620,8 @@ void main() {
 
     test('family', () {
       final family =
-          NotifierProvider.family<DeferredFamilyNotifier<String>, String, int>(
-        () => DeferredFamilyNotifier((ref, _) => '0'),
+          NotifierProvider.family<DeferredNotifier<String>, String, int>(
+        (arg) => DeferredNotifier((ref, _) => '0'),
       );
 
       family(0).select((String value) => 0);
@@ -645,10 +629,10 @@ void main() {
       canBeAssignedToProviderListenable<String>(family(0));
       canBeAssignedToRefreshable<String>(family(0));
 
-      canBeAssignedToProviderListenable<FamilyNotifier<String, int>>(
+      canBeAssignedToProviderListenable<Notifier<String>>(
         family(0).notifier,
       );
-      canBeAssignedToRefreshable<FamilyNotifier<String, int>>(
+      canBeAssignedToRefreshable<Notifier<String>>(
         family(0).notifier,
       );
     });
@@ -660,8 +644,8 @@ void main() {
       );
 
       final autoDisposeFamily = NotifierProvider.autoDispose
-          .family<DeferredFamilyNotifier<String>, String, int>(
-        () => DeferredFamilyNotifier((ref, _) => '0'),
+          .family<DeferredNotifier<String>, String, int>(
+        (arg) => DeferredNotifier((ref, _) => '0'),
       );
 
       autoDisposeFamily(0).select((String value) => 0);
@@ -673,10 +657,10 @@ void main() {
         autoDisposeFamily(0),
       );
 
-      canBeAssignedToProviderListenable<FamilyNotifier<String, int>>(
+      canBeAssignedToProviderListenable<Notifier<String>>(
         autoDisposeFamily(0).notifier,
       );
-      canBeAssignedToRefreshable<FamilyNotifier<String, int>>(
+      canBeAssignedToRefreshable<Notifier<String>>(
         autoDisposeFamily(0).notifier,
       );
     });
@@ -684,13 +668,14 @@ void main() {
 }
 
 @immutable
-class Equal<T> {
+class Equal<BoxedT> {
   const Equal(this.value);
 
-  final T value;
+  final BoxedT value;
 
   @override
-  bool operator ==(Object other) => other is Equal<T> && other.value == value;
+  bool operator ==(Object other) =>
+      other is Equal<BoxedT> && other.value == value;
 
   @override
   int get hashCode => Object.hash(runtimeType, value);
@@ -699,9 +684,4 @@ class Equal<T> {
 class CtorNotifier extends Notifier<int> {
   @override
   int build() => 0;
-}
-
-class FamilyCtorNotifier extends FamilyNotifier<int, int> {
-  @override
-  int build(int arg) => 0;
 }

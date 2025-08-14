@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:analyzer/dart/ast/ast.dart';
 import 'package:analyzer/dart/element/nullability_suffix.dart';
 import 'package:analyzer/dart/element/type.dart';
+import 'package:analyzer_buffer/analyzer_buffer.dart';
 import 'package:meta/meta.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:riverpod_annotation/experimental/json_persist.dart';
@@ -16,7 +17,11 @@ import 'riverpod_generator.dart';
 class JsonGenerator extends ParserGenerator<JsonPersist> {
   @override
   FutureOr<String> generateForUnit(List<CompilationUnit> compilationUnits) {
-    final buffer = StringBuffer();
+    if (compilationUnits.isEmpty) return '';
+
+    final buffer = AnalyzerBuffer.part2(
+      compilationUnits.first.declaredFragment!.element,
+    );
 
     for (final unit in compilationUnits.expand((e) => e.declarations)) {
       final provider = unit.provider;
@@ -39,13 +44,15 @@ class JsonGenerator extends ParserGenerator<JsonPersist> {
   }
 
   void _generateNotifier(
-    StringBuffer buffer,
+    AnalyzerBuffer buffer,
     ClassBasedProviderDeclaration provider,
   ) {
     if (provider.node.typeParameters?.typeParameters.isNotEmpty ?? false) {
       throw InvalidGenerationSourceError(
         'Encoding generic notifiers is currently not supported',
-        element: provider.node.declaredElement,
+        element: provider.node.declaredFragment!.libraryFragment.element.classes
+            .where((e) => e.name3 == provider.name.lexeme)
+            .firstOrNull,
         node: provider.node,
       );
     }
@@ -90,12 +97,12 @@ class JsonGenerator extends ParserGenerator<JsonPersist> {
       return result;
     }
 
-    final decoded = decode(provider.valueTypeNode!.type!, 'e');
+    final decoded = decode(provider.providerElement.valueTypeNode, 'e');
 
-    buffer.writeln(
+    buffer.write(
       '''
 abstract class $notifierClass$genericsDefinition extends $baseClass {
-  /// The default key used by [persistJson].
+  /// The default key used by [persist].
   String get key {
     $resolvedKey
     return resolvedKey;
@@ -104,15 +111,16 @@ abstract class $notifierClass$genericsDefinition extends $baseClass {
   /// A variant of [persist], for JSON-specific encoding.
   ///
   /// You can override [key] to customize the key used for storage.
-  FutureOr<void> persistJson(
+  PersistResult persist(
     FutureOr<Storage<String, String>> storage, {
-    String Function(${provider.valueTypeDisplayString} state)? encode,
-    ${provider.valueTypeDisplayString} Function(String encoded)? decode,
+    String? key,
+    String Function(${provider.providerElement.valueTypeNode.toCode()} state)? encode,
+    ${provider.providerElement.valueTypeNode.toCode()} Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
   }) {
-    return persist<String, String>(
+    return NotifierPersistX(this).persist<String, String>(
       storage,
-      key: key,
+      key: key ?? this.key,
       encode: encode ?? \$jsonCodex.encode,
       decode: decode ?? (encoded) {
         final e = \$jsonCodex.decode(encoded);
@@ -121,22 +129,23 @@ abstract class $notifierClass$genericsDefinition extends $baseClass {
       options: options,
     );
   }
-}''',
+}
+''',
     );
   }
 }
 
 extension on DartType {
-  R switchPrimitiveType<R>({
-    required R Function() boolean,
-    required R Function() integer,
-    required R Function() double,
-    required R Function() number,
-    required R Function() string,
-    required R Function(DartType item) array,
-    required R Function(DartType item) set,
-    required R Function(DartType key, DartType value) map,
-    required R Function() object,
+  ResT switchPrimitiveType<ResT>({
+    required ResT Function() boolean,
+    required ResT Function() integer,
+    required ResT Function() double,
+    required ResT Function() number,
+    required ResT Function() string,
+    required ResT Function(DartType item) array,
+    required ResT Function(DartType item) set,
+    required ResT Function(DartType key, DartType value) map,
+    required ResT Function() object,
   }) {
     if (isDartCoreBool) {
       return boolean();

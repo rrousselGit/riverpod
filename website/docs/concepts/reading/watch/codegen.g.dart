@@ -8,11 +8,14 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(filterType)
 const filterTypeProvider = FilterTypeProvider._();
 
 final class FilterTypeProvider
-    extends $FunctionalProvider<FilterType, FilterType>
+    extends $FunctionalProvider<FilterType, FilterType, FilterType>
     with $Provider<FilterType> {
   const FilterTypeProvider._()
       : super(
@@ -42,7 +45,7 @@ final class FilterTypeProvider
   Override overrideWithValue(FilterType value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<FilterType>(value),
+      providerOverride: $SyncValueProvider<FilterType>(value),
     );
   }
 }
@@ -71,17 +74,11 @@ final class TodosProvider extends $NotifierProvider<Todos, List<Todo>> {
   @override
   Todos create() => Todos();
 
-  @$internal
-  @override
-  $NotifierProviderElement<Todos, List<Todo>> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(List<Todo> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<Todo>>(value),
+      providerOverride: $SyncValueProvider<List<Todo>>(value),
     );
   }
 }
@@ -94,7 +91,7 @@ abstract class _$Todos extends $Notifier<List<Todo>> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<List<Todo>>;
+    final ref = this.ref as $Ref<List<Todo>, List<Todo>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<List<Todo>, List<Todo>>, List<Todo>, Object?, Object?>;
     element.handleValue(ref, created);
@@ -105,7 +102,7 @@ abstract class _$Todos extends $Notifier<List<Todo>> {
 const filteredTodoListProvider = FilteredTodoListProvider._();
 
 final class FilteredTodoListProvider
-    extends $FunctionalProvider<List<Todo>, List<Todo>>
+    extends $FunctionalProvider<List<Todo>, List<Todo>, List<Todo>>
     with $Provider<List<Todo>> {
   const FilteredTodoListProvider._()
       : super(
@@ -135,12 +132,9 @@ final class FilteredTodoListProvider
   Override overrideWithValue(List<Todo> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<Todo>>(value),
+      providerOverride: $SyncValueProvider<List<Todo>>(value),
     );
   }
 }
 
 String _$filteredTodoListHash() => r'0508935737f2cb9718bd8150111135cb433bfaeb';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

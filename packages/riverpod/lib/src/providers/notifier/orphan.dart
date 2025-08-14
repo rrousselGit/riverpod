@@ -47,13 +47,8 @@ part of '../notifier.dart';
 /// The state of [Notifier] is expected to be initialized synchronously.
 /// For asynchronous initializations, see [AsyncNotifier].
 /// {@endtemplate}
-///
-/// {@template riverpod.notifier_provider_modifier}
-/// When using `family`, your notifier type changes.
-/// Instead of extending [Notifier], you should extend [FamilyNotifier].
-/// {@endtemplate}
 /// {@category Notifiers}
-abstract class Notifier<StateT> extends $Notifier<StateT> {
+abstract class Notifier<ValueT> extends $Notifier<ValueT> {
   /// {@template riverpod.notifier.build}
   /// Initialize a [Notifier].
   ///
@@ -67,7 +62,7 @@ abstract class Notifier<StateT> extends $Notifier<StateT> {
   /// If this method throws, reading this provider will rethrow the error.
   /// {@endtemplate}
   @visibleForOverriding
-  StateT build();
+  ValueT build();
 
   @mustCallSuper
   @override
@@ -83,12 +78,10 @@ abstract class Notifier<StateT> extends $Notifier<StateT> {
 /// [NotifierProvider] can be considered as a mutable [Provider].
 /// {@endtemplate}
 /// {@category Providers}
-final class NotifierProvider<NotifierT extends Notifier<StateT>, StateT>
-    extends $NotifierProvider<NotifierT, StateT>
-    with LegacyProviderMixin<StateT> {
+final class NotifierProvider<NotifierT extends Notifier<ValueT>, ValueT>
+    extends $NotifierProvider<NotifierT, ValueT>
+    with LegacyProviderMixin<ValueT> {
   /// {@macro riverpod.notifier_provider}
-  ///
-  /// {@macro riverpod.notifier_provider_modifier}
   NotifierProvider(
     this._createNotifier, {
     super.name,

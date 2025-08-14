@@ -1,10 +1,85 @@
 part of '../../framework.dart';
 
+/// Adds [select] to [ProviderListenable].
+extension ProviderListenableSelect<InT> on ProviderListenable<InT> {
+  /// Partially listen to a provider.
+  ///
+  /// The [select] function allows filtering unwanted rebuilds of a Widget
+  /// by reading only the properties that we care about.
+  ///
+  /// For example, consider the following `ChangeNotifier`:
+  ///
+  /// ```dart
+  /// class Person extends ChangeNotifier {
+  ///   int _age = 0;
+  ///   int get age => _age;
+  ///   set age(int age) {
+  ///     _age = age;
+  ///     notifyListeners();
+  ///   }
+  ///
+  ///   String _name = '';
+  ///   String get name => _name;
+  ///   set name(String name) {
+  ///     _name = name;
+  ///     notifyListeners();
+  ///   }
+  /// }
+  ///
+  /// final personProvider = ChangeNotifierProvider((_) => Person());
+  /// ```
+  ///
+  /// In this class, both `name` and `age` may change, but a widget may need
+  /// only `age`.
+  ///
+  /// If we used `ref.watch(`/`Consumer` as we normally would, this would cause
+  /// widgets that only use `age` to still rebuild when `name` changes, which
+  /// is inefficient.
+  ///
+  /// The method [select] can be used to fix this, by explicitly reading only
+  /// a specific part of the object.
+  ///
+  /// A typical usage would be:
+  ///
+  /// ```dart
+  /// @override
+  /// Widget build(BuildContext context, WidgetRef ref) {
+  ///   final age = ref.watch(personProvider.select((p) => p.age));
+  ///   return Text('$age');
+  /// }
+  /// ```
+  ///
+  /// This will cause our widget to rebuild **only** when `age` changes.
+  ///
+  ///
+  /// **NOTE**: The function passed to [select] can return complex computations
+  /// too.
+  ///
+  /// For example, instead of `age`, we could return a "isAdult" boolean:
+  ///
+  /// ```dart
+  /// @override
+  /// Widget build(BuildContext context, WidgetRef ref) {
+  ///   final isAdult = ref.watch(personProvider.select((p) => p.age >= 18));
+  ///   return Text('$isAdult');
+  /// }
+  /// ```
+  ///
+  /// This will further optimize our widget by rebuilding it only when "isAdult"
+  /// changed instead of whenever the age changes.
+  ProviderListenable<OutT> select<OutT>(
+    OutT Function(InT value) selector,
+  ) {
+    return _ProviderSelector<InT, OutT>(
+      provider: this,
+      selector: selector,
+    );
+  }
+}
+
 /// An internal class for `ProviderBase.select`.
-final class _ProviderSelector<InputT, OutputT, OriginT>
-    with
-        ProviderListenable<OutputT>,
-        ProviderListenableWithOrigin<OutputT, OriginT> {
+final class _ProviderSelector<InputT, OutputT>
+    implements ProviderListenable<OutputT> {
   /// An internal class for `ProviderBase.select`.
   _ProviderSelector({
     required this.provider,
@@ -12,7 +87,7 @@ final class _ProviderSelector<InputT, OutputT, OriginT>
   });
 
   /// The provider that was selected
-  final ProviderListenableWithOrigin<InputT, OriginT> provider;
+  final ProviderListenable<InputT> provider;
 
   /// The selector applied
   final OutputT Function(InputT) selector;
@@ -44,7 +119,7 @@ final class _ProviderSelector<InputT, OutputT, OriginT>
     if (lastSelectedValue == null ||
         !lastSelectedValue.hasData ||
         !newSelectedValue.hasData ||
-        lastSelectedValue.requireState != newSelectedValue.requireState) {
+        lastSelectedValue.value != newSelectedValue.value) {
       onChange(newSelectedValue);
       switch (newSelectedValue) {
         case $ResultData(:final value):
@@ -56,15 +131,14 @@ final class _ProviderSelector<InputT, OutputT, OriginT>
   }
 
   @override
-  ProviderSubscriptionWithOrigin<OutputT, OriginT> _addListener(
+  ProviderSubscriptionImpl<OutputT> _addListener(
     Node node,
     void Function(OutputT? previous, OutputT next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
     required void Function()? onDependencyMayHaveChanged,
-    required bool fireImmediately,
     required bool weak,
   }) {
-    late final ProviderSubscriptionView<OutputT, OriginT> providerSub;
+    late final ExternalProviderSubscription<InputT, OutputT> providerSub;
     $Result<OutputT>? lastSelectedValue;
     final sub = provider._addListener(
       node,
@@ -77,48 +151,30 @@ final class _ProviderSelector<InputT, OutputT, OriginT>
           onChange: (newState) => lastSelectedValue = newState,
         );
       },
-      fireImmediately: false,
       weak: weak,
       onDependencyMayHaveChanged: onDependencyMayHaveChanged,
       onError: onError,
     );
 
     if (!weak) {
-      lastSelectedValue = _select(
-        $Result.guard(() {
-          try {
-            return sub.read();
-          } catch (e, s) {
-            e as ProviderException;
-            e.unwrap(s);
-          }
-        }),
-      );
+      lastSelectedValue = _select(sub.readSafe());
     }
 
-    providerSub = ProviderSubscriptionView<OutputT, OriginT>(
+    return providerSub = ExternalProviderSubscription<InputT, OutputT>.fromSub(
       innerSubscription: sub,
       listener: listener,
       onError: onError,
       read: () {
         // flushes the provider
-        sub.read();
+        final result = sub.readSafe();
+        if (result case $ResultError(:final error, :final stackTrace)) {
+          return $Result.error(error, stackTrace);
+        }
 
         // Using ! because since `sub.read` flushes the inner subscription,
         // it is guaranteed that `lastSelectedValue` is not null.
-        return lastSelectedValue!.requireState;
+        return lastSelectedValue!;
       },
     );
-
-    if (fireImmediately) {
-      _handleFireImmediately(
-        node.container,
-        lastSelectedValue!,
-        listener: providerSub._notifyData,
-        onError: providerSub._notifyError,
-      );
-    }
-
-    return providerSub;
   }
 }

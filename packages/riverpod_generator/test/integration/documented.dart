@@ -2,14 +2,18 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'documented.g.dart';
 
+const annotation = Object();
+
 /// Hello world
 // Foo
 @riverpod
+@annotation
 String functional(Ref ref) => 'functional';
 
 /// Hello world
 // Foo
 @riverpod
+@annotation
 class ClassBased extends _$ClassBased {
   @override
   String build() => 'ClassBased';
@@ -18,6 +22,7 @@ class ClassBased extends _$ClassBased {
 /// Hello world
 // Foo
 @riverpod
+@annotation
 String family(
   Ref ref,
 
@@ -30,12 +35,13 @@ String family(
 /// Hello world
 // Foo
 @riverpod
+@annotation
 class ClassFamilyBased extends _$ClassFamilyBased {
   @override
   String build(
     /// Hello world
     // Foo
-    int id,
+    @annotation int id,
   ) =>
       'ClassBased';
 }

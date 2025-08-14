@@ -6,10 +6,13 @@ part of 'provider_parameters.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(generator)
 const generatorProvider = GeneratorFamily._();
 
-final class GeneratorProvider extends $FunctionalProvider<int, int>
+final class GeneratorProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const GeneratorProvider._(
       {required GeneratorFamily super.from, required Object? super.argument})
@@ -38,7 +41,7 @@ final class GeneratorProvider extends $FunctionalProvider<int, int>
 
   @override
   int create(Ref ref) {
-    final argument = this.argument;
+    final argument = this.argument as Object?;
     return generator(
       ref,
       value: argument,
@@ -49,7 +52,7 @@ final class GeneratorProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -85,5 +88,3 @@ final class GeneratorFamily extends $Family
   @override
   String toString() => r'generatorProvider';
 }
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

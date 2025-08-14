@@ -8,11 +8,14 @@ part of 'async_values.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(itemsApi)
 const itemsApiProvider = ItemsApiProvider._();
 
-final class ItemsApiProvider
-    extends $FunctionalProvider<AsyncValue<List<Item>>, FutureOr<List<Item>>>
+final class ItemsApiProvider extends $FunctionalProvider<AsyncValue<List<Item>>,
+        List<Item>, FutureOr<List<Item>>>
     with $FutureModifier<List<Item>>, $FutureProvider<List<Item>> {
   const ItemsApiProvider._()
       : super(
@@ -45,7 +48,7 @@ String _$itemsApiHash() => r'fa5a8f7e93ac048d9bd5dfc1744749995cf154af';
 const evenItemsProvider = EvenItemsProvider._();
 
 final class EvenItemsProvider
-    extends $FunctionalProvider<List<Item>, List<Item>>
+    extends $FunctionalProvider<List<Item>, List<Item>, List<Item>>
     with $Provider<List<Item>> {
   const EvenItemsProvider._()
       : super(
@@ -75,12 +78,9 @@ final class EvenItemsProvider
   Override overrideWithValue(List<Item> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<Item>>(value),
+      providerOverride: $SyncValueProvider<List<Item>>(value),
     );
   }
 }
 
 String _$evenItemsHash() => r'22297e33c5f55ff99fb49747c203be595a28fabf';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

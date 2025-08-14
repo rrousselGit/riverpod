@@ -6,284 +6,15 @@ part of 'generated.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-@ProviderFor(generated)
-const generatedProvider = GeneratedProvider._();
-
-final class GeneratedProvider extends $FunctionalProvider<_Test, _Test>
-    with $Provider<_Test> {
-  const GeneratedProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'generatedProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
-
-  @override
-  String debugGetCreateSourceHash() => _$generatedHash();
-
-  @$internal
-  @override
-  $ProviderElement<_Test> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  _Test create(Ref ref) {
-    return generated(ref);
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(_Test value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<_Test>(value),
-    );
-  }
-}
-
-String _$generatedHash() => r'0332eb232658688654514ff241ff380edbf4dbf6';
-
-@ProviderFor(generatedFamily)
-const generatedFamilyProvider = GeneratedFamilyFamily._();
-
-final class GeneratedFamilyProvider extends $FunctionalProvider<_Test, _Test>
-    with $Provider<_Test> {
-  const GeneratedFamilyProvider._(
-      {required GeneratedFamilyFamily super.from,
-      required _Test super.argument})
-      : super(
-          retry: null,
-          name: r'generatedFamilyProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
-
-  @override
-  String debugGetCreateSourceHash() => _$generatedFamilyHash();
-
-  @override
-  String toString() {
-    return r'generatedFamilyProvider'
-        ''
-        '($argument)';
-  }
-
-  @$internal
-  @override
-  $ProviderElement<_Test> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  _Test create(Ref ref) {
-    final argument = this.argument as _Test;
-    return generatedFamily(
-      ref,
-      argument,
-    );
-  }
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(_Test value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<_Test>(value),
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is GeneratedFamilyProvider && other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
-  }
-}
-
-String _$generatedFamilyHash() => r'8ac3b633763cb8dbad6e0686a732df3a081a0d64';
-
-final class GeneratedFamilyFamily extends $Family
-    with $FunctionalFamilyOverride<_Test, _Test> {
-  const GeneratedFamilyFamily._()
-      : super(
-          retry: null,
-          name: r'generatedFamilyProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
-
-  GeneratedFamilyProvider call(
-    _Test test,
-  ) =>
-      GeneratedFamilyProvider._(argument: test, from: this);
-
-  @override
-  String toString() => r'generatedFamilyProvider';
-}
-
-@ProviderFor(GeneratedClass)
-const generatedClassProvider = GeneratedClassProvider._();
-
-final class GeneratedClassProvider
-    extends $NotifierProvider<GeneratedClass, _Test> {
-  const GeneratedClassProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'generatedClassProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
-
-  @override
-  String debugGetCreateSourceHash() => _$generatedClassHash();
-
-  @$internal
-  @override
-  GeneratedClass create() => GeneratedClass();
-
-  @$internal
-  @override
-  $NotifierProviderElement<GeneratedClass, _Test> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(_Test value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<_Test>(value),
-    );
-  }
-}
-
-String _$generatedClassHash() => r'984153f97e25de687d2f19756b277aabd56f6e72';
-
-abstract class _$GeneratedClass extends $Notifier<_Test> {
-  _Test build();
-  @$mustCallSuper
-  @override
-  void runBuild() {
-    final created = build();
-    final ref = this.ref as $Ref<_Test>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<_Test, _Test>, _Test, Object?, Object?>;
-    element.handleValue(ref, created);
-  }
-}
-
-@ProviderFor(GeneratedClassFamily)
-const generatedClassFamilyProvider = GeneratedClassFamilyFamily._();
-
-final class GeneratedClassFamilyProvider
-    extends $NotifierProvider<GeneratedClassFamily, _Test> {
-  const GeneratedClassFamilyProvider._(
-      {required GeneratedClassFamilyFamily super.from,
-      required _Test super.argument})
-      : super(
-          retry: null,
-          name: r'generatedClassFamilyProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
-
-  @override
-  String debugGetCreateSourceHash() => _$generatedClassFamilyHash();
-
-  @override
-  String toString() {
-    return r'generatedClassFamilyProvider'
-        ''
-        '($argument)';
-  }
-
-  @$internal
-  @override
-  GeneratedClassFamily create() => GeneratedClassFamily();
-
-  @$internal
-  @override
-  $NotifierProviderElement<GeneratedClassFamily, _Test> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
-  /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(_Test value) {
-    return $ProviderOverride(
-      origin: this,
-      providerOverride: $ValueProvider<_Test>(value),
-    );
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return other is GeneratedClassFamilyProvider && other.argument == argument;
-  }
-
-  @override
-  int get hashCode {
-    return argument.hashCode;
-  }
-}
-
-String _$generatedClassFamilyHash() =>
-    r'28d0a5a82af5b254f6ef07b492916e2feb7e6e63';
-
-final class GeneratedClassFamilyFamily extends $Family
-    with
-        $ClassFamilyOverride<GeneratedClassFamily, _Test, _Test, _Test, _Test> {
-  const GeneratedClassFamilyFamily._()
-      : super(
-          retry: null,
-          name: r'generatedClassFamilyProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
-
-  GeneratedClassFamilyProvider call(
-    _Test test,
-  ) =>
-      GeneratedClassFamilyProvider._(argument: test, from: this);
-
-  @override
-  String toString() => r'generatedClassFamilyProvider';
-}
-
-abstract class _$GeneratedClassFamily extends $Notifier<_Test> {
-  late final _$args = ref.$arg as _Test;
-  _Test get test => _$args;
-
-  _Test build(
-    _Test test,
-  );
-  @$mustCallSuper
-  @override
-  void runBuild() {
-    final created = build(
-      _$args,
-    );
-    final ref = this.ref as $Ref<_Test>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<_Test, _Test>, _Test, Object?, Object?>;
-    element.handleValue(ref, created);
-  }
-}
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 
 @ProviderFor($dynamic)
 const $dynamicProvider = $DynamicProvider._();
 
-final class $DynamicProvider extends $FunctionalProvider<Object?, Object?>
-    with $Provider<Object?> {
+final class $DynamicProvider
+    extends $FunctionalProvider<dynamic, dynamic, dynamic>
+    with $Provider<dynamic> {
   const $DynamicProvider._()
       : super(
           from: null,
@@ -300,30 +31,31 @@ final class $DynamicProvider extends $FunctionalProvider<Object?, Object?>
 
   @$internal
   @override
-  $ProviderElement<Object?> $createElement($ProviderPointer pointer) =>
+  $ProviderElement<dynamic> $createElement($ProviderPointer pointer) =>
       $ProviderElement(pointer);
 
   @override
-  Object? create(Ref ref) {
+  dynamic create(Ref ref) {
     return $dynamic(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(Object? value) {
+  Override overrideWithValue(dynamic value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Object?>(value),
+      providerOverride: $SyncValueProvider<dynamic>(value),
     );
   }
 }
 
-String _$$dynamicHash() => r'17c8e140446da2e3c026ebb51c4b074d2894b7ff';
+String _$$dynamicHash() => r'1b4a1470c37babf1053660e3774de1a482c91269';
 
 @ProviderFor($dynamicFamily)
 const $dynamicFamilyProvider = $DynamicFamilyFamily._();
 
-final class $DynamicFamilyProvider extends $FunctionalProvider<Object?, Object?>
-    with $Provider<Object?> {
+final class $DynamicFamilyProvider
+    extends $FunctionalProvider<dynamic, dynamic, dynamic>
+    with $Provider<dynamic> {
   const $DynamicFamilyProvider._(
       {required $DynamicFamilyFamily super.from,
       required dynamic super.argument})
@@ -347,11 +79,11 @@ final class $DynamicFamilyProvider extends $FunctionalProvider<Object?, Object?>
 
   @$internal
   @override
-  $ProviderElement<Object?> $createElement($ProviderPointer pointer) =>
+  $ProviderElement<dynamic> $createElement($ProviderPointer pointer) =>
       $ProviderElement(pointer);
 
   @override
-  Object? create(Ref ref) {
+  dynamic create(Ref ref) {
     final argument = this.argument as dynamic;
     return $dynamicFamily(
       ref,
@@ -360,10 +92,10 @@ final class $DynamicFamilyProvider extends $FunctionalProvider<Object?, Object?>
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(Object? value) {
+  Override overrideWithValue(dynamic value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Object?>(value),
+      providerOverride: $SyncValueProvider<dynamic>(value),
     );
   }
 
@@ -378,10 +110,10 @@ final class $DynamicFamilyProvider extends $FunctionalProvider<Object?, Object?>
   }
 }
 
-String _$$dynamicFamilyHash() => r'6897846251c8b4b5b2fa72d8d3e14ae3381c0c0f';
+String _$$dynamicFamilyHash() => r'5cb3da6177d435e5a4fcfce446f0d3cd628fe6fb';
 
 final class $DynamicFamilyFamily extends $Family
-    with $FunctionalFamilyOverride<Object?, dynamic> {
+    with $FunctionalFamilyOverride<dynamic, dynamic> {
   const $DynamicFamilyFamily._()
       : super(
           retry: null,
@@ -404,7 +136,7 @@ final class $DynamicFamilyFamily extends $Family
 const $dynamicClassProvider = $DynamicClassProvider._();
 
 final class $DynamicClassProvider
-    extends $NotifierProvider<$DynamicClass, Object?> {
+    extends $NotifierProvider<$DynamicClass, dynamic> {
   const $DynamicClassProvider._()
       : super(
           from: null,
@@ -423,32 +155,26 @@ final class $DynamicClassProvider
   @override
   $DynamicClass create() => $DynamicClass();
 
-  @$internal
-  @override
-  $NotifierProviderElement<$DynamicClass, Object?> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(Object? value) {
+  Override overrideWithValue(dynamic value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Object?>(value),
+      providerOverride: $SyncValueProvider<dynamic>(value),
     );
   }
 }
 
-String _$$dynamicClassHash() => r'c6d8e5191c3f060df3ce3eee66107433fd4c3292';
+String _$$dynamicClassHash() => r'3bf95c69912b3544963ca03056f2c10ca77f477f';
 
-abstract class _$$DynamicClass extends $Notifier<Object?> {
-  Object? build();
+abstract class _$$DynamicClass extends $Notifier<dynamic> {
+  dynamic build();
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<Object?>;
+    final ref = this.ref as $Ref<dynamic, dynamic>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<Object?, Object?>, Object?, Object?, Object?>;
+        AnyNotifier<dynamic, dynamic>, dynamic, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -457,7 +183,7 @@ abstract class _$$DynamicClass extends $Notifier<Object?> {
 const $dynamicClassFamilyProvider = $DynamicClassFamilyFamily._();
 
 final class $DynamicClassFamilyProvider
-    extends $NotifierProvider<$DynamicClassFamily, Object?> {
+    extends $NotifierProvider<$DynamicClassFamily, dynamic> {
   const $DynamicClassFamilyProvider._(
       {required $DynamicClassFamilyFamily super.from,
       required dynamic super.argument})
@@ -483,17 +209,11 @@ final class $DynamicClassFamilyProvider
   @override
   $DynamicClassFamily create() => $DynamicClassFamily();
 
-  @$internal
-  @override
-  $NotifierProviderElement<$DynamicClassFamily, Object?> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(Object? value) {
+  Override overrideWithValue(dynamic value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Object?>(value),
+      providerOverride: $SyncValueProvider<dynamic>(value),
     );
   }
 
@@ -509,11 +229,11 @@ final class $DynamicClassFamilyProvider
 }
 
 String _$$dynamicClassFamilyHash() =>
-    r'bdda961386f3b647c071d79293a8da441580c470';
+    r'07ca043ea90a433ef89499c0400894236cf79176';
 
 final class $DynamicClassFamilyFamily extends $Family
     with
-        $ClassFamilyOverride<$DynamicClassFamily, Object?, Object?, Object?,
+        $ClassFamilyOverride<$DynamicClassFamily, dynamic, dynamic, dynamic,
             dynamic> {
   const $DynamicClassFamilyFamily._()
       : super(
@@ -533,11 +253,11 @@ final class $DynamicClassFamilyFamily extends $Family
   String toString() => r'$dynamicClassFamilyProvider';
 }
 
-abstract class _$$DynamicClassFamily extends $Notifier<Object?> {
+abstract class _$$DynamicClassFamily extends $Notifier<dynamic> {
   late final _$args = ref.$arg as dynamic;
   dynamic get test => _$args;
 
-  Object? build(
+  dynamic build(
     dynamic test,
   );
   @$mustCallSuper
@@ -546,9 +266,9 @@ abstract class _$$DynamicClassFamily extends $Notifier<Object?> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<Object?>;
+    final ref = this.ref as $Ref<dynamic, dynamic>;
     final element = ref.element as $ClassProviderElement<
-        AnyNotifier<Object?, Object?>, Object?, Object?, Object?>;
+        AnyNotifier<dynamic, dynamic>, dynamic, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
@@ -556,8 +276,9 @@ abstract class _$$DynamicClassFamily extends $Notifier<Object?> {
 @ProviderFor(_dynamic)
 const _dynamicProvider = _DynamicFamily._();
 
-final class _DynamicProvider extends $FunctionalProvider<Object?, Object?>
-    with $Provider<Object?> {
+final class _DynamicProvider
+    extends $FunctionalProvider<dynamic, dynamic, dynamic>
+    with $Provider<dynamic> {
   const _DynamicProvider._(
       {required _DynamicFamily super.from, required dynamic super.argument})
       : super(
@@ -569,7 +290,7 @@ final class _DynamicProvider extends $FunctionalProvider<Object?, Object?>
         );
 
   @override
-  String debugGetCreateSourceHash() => _$dynamicHash();
+  String debugGetCreateSourceHash() => _$_dynamicHash();
 
   @override
   String toString() {
@@ -580,11 +301,11 @@ final class _DynamicProvider extends $FunctionalProvider<Object?, Object?>
 
   @$internal
   @override
-  $ProviderElement<Object?> $createElement($ProviderPointer pointer) =>
+  $ProviderElement<dynamic> $createElement($ProviderPointer pointer) =>
       $ProviderElement(pointer);
 
   @override
-  Object? create(Ref ref) {
+  dynamic create(Ref ref) {
     final argument = this.argument as dynamic;
     return _dynamic(
       ref,
@@ -593,10 +314,10 @@ final class _DynamicProvider extends $FunctionalProvider<Object?, Object?>
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(Object? value) {
+  Override overrideWithValue(dynamic value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Object?>(value),
+      providerOverride: $SyncValueProvider<dynamic>(value),
     );
   }
 
@@ -611,10 +332,10 @@ final class _DynamicProvider extends $FunctionalProvider<Object?, Object?>
   }
 }
 
-String _$dynamicHash() => r'e08bd08481e4ea0d3da2ab7c38f940c34e96ba7f';
+String _$_dynamicHash() => r'e08bd08481e4ea0d3da2ab7c38f940c34e96ba7f';
 
 final class _DynamicFamily extends $Family
-    with $FunctionalFamilyOverride<Object?, dynamic> {
+    with $FunctionalFamilyOverride<dynamic, dynamic> {
   const _DynamicFamily._()
       : super(
           retry: null,
@@ -636,9 +357,8 @@ final class _DynamicFamily extends $Family
 @ProviderFor(alias)
 const aliasProvider = AliasProvider._();
 
-final class AliasProvider
-    extends $FunctionalProvider<AsyncValue<int>, AsyncValue<int>>
-    with $Provider<AsyncValue<int>> {
+final class AliasProvider extends $FunctionalProvider<AsyncValue<int>,
+    AsyncValue<int>, AsyncValue<int>> with $Provider<AsyncValue<int>> {
   const AliasProvider._()
       : super(
           from: null,
@@ -667,7 +387,7 @@ final class AliasProvider
   Override overrideWithValue(AsyncValue<int> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<AsyncValue<int>>(value),
+      providerOverride: $SyncValueProvider<AsyncValue<int>>(value),
     );
   }
 }
@@ -677,9 +397,8 @@ String _$aliasHash() => r'3feb548aa9a314142b5c5e3c9c7664a316a10d11';
 @ProviderFor(aliasFamily)
 const aliasFamilyProvider = AliasFamilyFamily._();
 
-final class AliasFamilyProvider
-    extends $FunctionalProvider<AsyncValue<int>, AsyncValue<int>>
-    with $Provider<AsyncValue<int>> {
+final class AliasFamilyProvider extends $FunctionalProvider<AsyncValue<int>,
+    AsyncValue<int>, AsyncValue<int>> with $Provider<AsyncValue<int>> {
   const AliasFamilyProvider._(
       {required AliasFamilyFamily super.from,
       required AsyncValue<int> super.argument})
@@ -719,7 +438,7 @@ final class AliasFamilyProvider
   Override overrideWithValue(AsyncValue<int> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<AsyncValue<int>>(value),
+      providerOverride: $SyncValueProvider<AsyncValue<int>>(value),
     );
   }
 
@@ -779,17 +498,11 @@ final class AliasClassProvider
   @override
   AliasClass create() => AliasClass();
 
-  @$internal
-  @override
-  $NotifierProviderElement<AliasClass, AsyncValue<int>> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(AsyncValue<int> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<AsyncValue<int>>(value),
+      providerOverride: $SyncValueProvider<AsyncValue<int>>(value),
     );
   }
 }
@@ -802,7 +515,7 @@ abstract class _$AliasClass extends $Notifier<AsyncValue<int>> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final ref = this.ref as $Ref<AsyncValue<int>, AsyncValue<int>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<int>, AsyncValue<int>>,
         AsyncValue<int>,
@@ -842,17 +555,11 @@ final class AliasClassFamilyProvider
   @override
   AliasClassFamily create() => AliasClassFamily();
 
-  @$internal
-  @override
-  $NotifierProviderElement<AliasClassFamily, AsyncValue<int>> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(AsyncValue<int> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<AsyncValue<int>>(value),
+      providerOverride: $SyncValueProvider<AsyncValue<int>>(value),
     );
   }
 
@@ -904,7 +611,7 @@ abstract class _$AliasClassFamily extends $Notifier<AsyncValue<int>> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final ref = this.ref as $Ref<AsyncValue<int>, AsyncValue<int>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<int>, AsyncValue<int>>,
         AsyncValue<int>,
@@ -913,6 +620,3 @@ abstract class _$AliasClassFamily extends $Notifier<AsyncValue<int>> {
     element.handleValue(ref, created);
   }
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

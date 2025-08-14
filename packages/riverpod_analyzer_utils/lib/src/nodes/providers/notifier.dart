@@ -6,7 +6,7 @@ extension ClassBasedProviderDeclarationX on ClassDeclaration {
 
   ClassBasedProviderDeclaration? get provider {
     return _cache.upsert(this, () {
-      final element = declaredElement;
+      final element = declaredFragment?.element;
       if (element == null) return null;
 
       final riverpod = this.riverpod;
@@ -14,10 +14,9 @@ extension ClassBasedProviderDeclarationX on ClassDeclaration {
 
       if (abstractKeyword != null) {
         errorReporter(
-          RiverpodAnalysisError(
+          RiverpodAnalysisError.ast(
             'Classes annotated with @riverpod cannot be abstract.',
             targetNode: this,
-            targetElement: declaredElement,
             code: RiverpodAnalysisErrorCode.abstractNotifier,
           ),
         );
@@ -28,10 +27,9 @@ extension ClassBasedProviderDeclarationX on ClassDeclaration {
           .firstWhereOrNull((constructor) => constructor.name == null);
       if (defaultConstructor == null && constructors.isNotEmpty) {
         errorReporter(
-          RiverpodAnalysisError(
+          RiverpodAnalysisError.ast(
             'Classes annotated with @riverpod must have a default constructor.',
             targetNode: this,
-            targetElement: declaredElement,
             code: RiverpodAnalysisErrorCode.missingNotifierDefaultConstructor,
           ),
         );
@@ -39,11 +37,10 @@ extension ClassBasedProviderDeclarationX on ClassDeclaration {
       if (defaultConstructor != null &&
           defaultConstructor.parameters.parameters.any((e) => e.isRequired)) {
         errorReporter(
-          RiverpodAnalysisError(
+          RiverpodAnalysisError.ast(
             'The default constructor of classes annotated with @riverpod '
             'cannot have required parameters.',
             targetNode: this,
-            targetElement: declaredElement,
             code: RiverpodAnalysisErrorCode
                 .notifierDefaultConstructorHasRequiredParameters,
           ),
@@ -55,7 +52,7 @@ extension ClassBasedProviderDeclarationX on ClassDeclaration {
           .firstWhereOrNull((method) => method.name.lexeme == 'build');
       if (buildMethod == null) {
         errorReporter(
-          RiverpodAnalysisError(
+          RiverpodAnalysisError.ast(
             'No "build" method found. '
             'Classes annotated with @riverpod must define a method named "build".',
             targetNode: this,
@@ -65,36 +62,20 @@ extension ClassBasedProviderDeclarationX on ClassDeclaration {
         return null;
       }
 
-      final providerElement = ClassBasedProviderDeclarationElement._parse(
-        element,
-      );
+      final providerElement =
+          ClassBasedProviderDeclarationElement._parse(element, this);
       if (providerElement == null) return null;
-
-      final createdTypeNode = buildMethod.returnType;
-
-      final exposedTypeNode = _computeExposedType(
-        createdTypeNode,
-        root.cast<CompilationUnit>()!,
-      );
-      if (exposedTypeNode == null) {
-        // Error already reported
-        return null;
-      }
 
       final hasPersistAnnotation = metadata.any((e) {
         return e.annotationOfType(riverpodPersistType, exact: false) != null;
       });
 
-      final valueTypeNode = _getValueType(createdTypeNode);
       final classBasedProviderDeclaration = ClassBasedProviderDeclaration._(
         name: name,
         node: this,
         buildMethod: buildMethod,
         providerElement: providerElement,
         annotation: riverpod,
-        createdTypeNode: createdTypeNode,
-        exposedTypeNode: exposedTypeNode,
-        valueTypeNode: valueTypeNode,
         isPersisted: hasPersistAnnotation,
       );
 
@@ -110,15 +91,8 @@ final class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
     required this.buildMethod,
     required this.providerElement,
     required this.annotation,
-    required this.createdTypeNode,
-    required this.exposedTypeNode,
-    required this.valueTypeNode,
     required this.isPersisted,
-  }) : mutations = node.members
-            .whereType<MethodDeclaration>()
-            .map((e) => e.mutation)
-            .nonNulls
-            .toList();
+  });
 
   @override
   final Token name;
@@ -129,108 +103,7 @@ final class ClassBasedProviderDeclaration extends GeneratorProviderDeclaration {
   @override
   final RiverpodAnnotation annotation;
   final MethodDeclaration buildMethod;
-  @override
-  final TypeAnnotation? createdTypeNode;
-  @override
-  final TypeAnnotation? valueTypeNode;
-  @override
-  final SourcedType exposedTypeNode;
-  final List<Mutation> mutations;
   final bool isPersisted;
-}
-
-extension MutationMethodDeclarationX on MethodDeclaration {
-  static final _cache = _Cache<Mutation?>();
-
-  Mutation? get mutation {
-    return _cache(this, () {
-      final element = declaredElement;
-      if (element == null) return null;
-
-      final mutationElement = MutationElement._parse(element);
-      if (mutationElement == null) return null;
-
-      if (isStatic) {
-        errorReporter(
-          RiverpodAnalysisError(
-            'Mutations cannot be static.',
-            targetNode: this,
-            targetElement: element,
-            code: RiverpodAnalysisErrorCode.mutationIsStatic,
-          ),
-        );
-        return null;
-      }
-      if (isAbstract) {
-        errorReporter(
-          RiverpodAnalysisError(
-            'Mutations cannot be abstract.',
-            targetNode: this,
-            targetElement: element,
-            code: RiverpodAnalysisErrorCode.mutationIsAbstract,
-          ),
-        );
-        return null;
-      }
-
-      final expectedReturnType = thisOrAncestorOfType<ClassDeclaration>()!
-          .members
-          .whereType<MethodDeclaration>()
-          .firstWhereOrNull((e) => e.name.lexeme == 'build')
-          ?.returnType;
-      if (expectedReturnType == null) return null;
-
-      final expectedValueType = _getValueType(expectedReturnType);
-      if (expectedValueType == null) return null;
-
-      final returnType = this.returnType;
-      final createdType = SupportedCreatedType.from(returnType);
-      String? valueDisplayString;
-      switch (createdType) {
-        case SupportedCreatedType.future:
-          valueDisplayString = (returnType! as NamedType)
-              .typeArguments
-              ?.arguments
-              .firstOrNull
-              ?.toSource();
-        case SupportedCreatedType.stream:
-          errorReporter(
-            RiverpodAnalysisError(
-              'Mutations returning Streams are not supported',
-              code: RiverpodAnalysisErrorCode.unsupportedMutationReturnType,
-              targetNode: this,
-              targetElement: element,
-            ),
-          );
-        case SupportedCreatedType.value:
-          valueDisplayString = returnType?.toSource();
-      }
-
-      final mutation = Mutation._(
-        node: this,
-        element: mutationElement,
-        createdType: createdType,
-        valueDisplayType: valueDisplayString ?? '',
-      );
-
-      return mutation;
-    });
-  }
-}
-
-final class Mutation {
-  Mutation._({
-    required this.node,
-    required this.element,
-    required this.valueDisplayType,
-    required this.createdType,
-  });
-
-  String get name => node.name.lexeme;
-  final String valueDisplayType;
-  final SupportedCreatedType createdType;
-  final MethodDeclaration node;
-  final MutationElement element;
 }
 
 class ClassBasedProviderDeclarationElement
@@ -240,24 +113,31 @@ class ClassBasedProviderDeclarationElement
     required this.annotation,
     required this.buildMethod,
     required this.element,
+    required this.createdTypeNode,
+    required this.exposedTypeNode,
+    required this.valueTypeNode,
+    required this.createdType,
   });
 
   static final _cache = _Cache<ClassBasedProviderDeclarationElement?>();
 
-  static ClassBasedProviderDeclarationElement? _parse(ClassElement element) {
+  static ClassBasedProviderDeclarationElement? _parse(
+    ClassElement2 element,
+    AstNode from,
+  ) {
     return _cache(element, () {
-      final riverpodAnnotation = RiverpodAnnotationElement._of(element);
+      final riverpodAnnotation = RiverpodAnnotationElement._of(element, from);
       if (riverpodAnnotation == null) return null;
 
-      final buildMethod =
-          element.methods.firstWhereOrNull((method) => method.name == 'build');
+      final buildMethod = element.methods2
+          .firstWhereOrNull((method) => method.name3 == 'build');
 
       if (buildMethod == null) {
         errorReporter(
-          RiverpodAnalysisError(
+          RiverpodAnalysisError.ast(
             'No "build" method found. '
             'Classes annotated with @riverpod must define a method named "build".',
-            targetElement: element,
+            targetNode: from,
             code: RiverpodAnalysisErrorCode.missingNotifierBuild,
           ),
         );
@@ -265,53 +145,45 @@ class ClassBasedProviderDeclarationElement
         return null;
       }
 
+      final rootUnit = from.root as CompilationUnit;
+      final types = _computeTypes(buildMethod.returnType, rootUnit);
+      if (types == null) {
+        // Error already reported
+        return null;
+      }
+
       return ClassBasedProviderDeclarationElement._(
-        name: element.name,
+        name: element.name3!,
         buildMethod: buildMethod,
         element: element,
         annotation: riverpodAnnotation,
+        createdTypeNode: types.createdType,
+        exposedTypeNode: types.exposedType,
+        valueTypeNode: types.valueType,
+        createdType: types.supportedCreatedType,
       );
     });
   }
 
   @override
   bool get isFamily {
-    return buildMethod.parameters.isNotEmpty ||
-        element.typeParameters.isNotEmpty;
+    return buildMethod.formalParameters.isNotEmpty ||
+        element.typeParameters2.isNotEmpty;
   }
 
   @override
-  final ClassElement element;
-
+  final ClassElement2 element;
   @override
   final String name;
-
   @override
   final RiverpodAnnotationElement annotation;
-
-  final ExecutableElement buildMethod;
-}
-
-class MutationElement {
-  MutationElement._({
-    required this.name,
-    required this.method,
-  });
-
-  static final _cache = _Cache<MutationElement?>();
-
-  static MutationElement? _parse(ExecutableElement element) {
-    return _cache(element, () {
-      final annotation = MutationAnnotationElement._of(element);
-      if (annotation == null) return null;
-
-      return MutationElement._(
-        name: element.name,
-        method: element,
-      );
-    });
-  }
-
-  final String name;
-  final ExecutableElement method;
+  final ExecutableElement2 buildMethod;
+  @override
+  final String createdTypeNode;
+  @override
+  final String exposedTypeNode;
+  @override
+  final DartType valueTypeNode;
+  @override
+  final SupportedCreatedType createdType;
 }

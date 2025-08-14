@@ -2,7 +2,7 @@ part of '../framework.dart';
 
 /// A shared interface between [ProviderListenable] and [Family].
 @publicInMisc
-final class ProviderListenableOrFamily {}
+interface class ProviderListenableOrFamily {}
 
 /// A common interface shared by [ProviderBase] and [Family]
 @publicInCodegen
@@ -27,9 +27,9 @@ sealed class ProviderOrFamily implements ProviderListenableOrFamily {
   /// {@endtemplate}
   final String? name;
 
-  /// {@template riverpod.retry}
-  /// The default retry logic used by providers associated to this container.
+  /// The retry strategy to use when a provider fails.
   ///
+  /// {@template riverpod.retry}
   /// The function takes two parameters:
   /// - `retryCount`: The number of times the provider has been retried
   ///   (starting at 0).
@@ -127,10 +127,10 @@ sealed class ProviderOrFamily implements ProviderListenableOrFamily {
 }
 
 extension on ProviderListenableOrFamily {
-  ProviderBase<Object?>? get debugListenedProvider {
+  $ProviderBaseImpl<Object?>? get debugListenedProvider {
     final that = this;
     return switch (that) {
-      ProviderBase() => that,
+      $ProviderBaseImpl() => that,
       _ProviderSelector() => that.provider.debugListenedProvider,
       _AsyncSelector() => that.provider.debugListenedProvider,
       ProviderElementProxy() => that.provider,
@@ -185,116 +185,26 @@ String shortHash(Object? object) {
   return object.hashCode.toUnsigned(20).toRadixString(16).padLeft(5, '0');
 }
 
-@internal
-base mixin ProviderListenableWithOrigin<OutT, OriginT>
-    on ProviderListenable<OutT> {
-  @override
-  ProviderSubscriptionWithOrigin<OutT, OriginT> _addListener(
-    Node source,
-    void Function(OutT? previous, OutT next) listener, {
-    required void Function(Object error, StackTrace stackTrace) onError,
-    required void Function()? onDependencyMayHaveChanged,
-    required bool fireImmediately,
-    required bool weak,
-  });
-
-  @override
-  ProviderListenable<Selected> select<Selected>(
-    Selected Function(OutT value) selector,
-  ) {
-    return _ProviderSelector<OutT, Selected, OriginT>(
-      provider: this,
-      selector: selector,
-    );
-  }
-}
-
 /// A base class for all providers, used to consume a provider.
 ///
 /// It is used by [ProviderContainer.listen] and `ref.watch` to listen to
 /// both a provider and `provider.select`.
 ///
 /// Should override ==/hashCode when possible
+///
+/// See also:
+/// - [SyncProviderTransformerMixin] and [AsyncProviderTransformerMixin], for making custom [ProviderListenable]s.
 @immutable
 @publicInCodegen
 @publicInMisc
-base mixin ProviderListenable<StateT> implements ProviderListenableOrFamily {
+abstract interface class ProviderListenable<StateT>
+    implements ProviderListenableOrFamily {
   /// Starts listening to this transformer
-  ProviderSubscription<StateT> _addListener(
+  ProviderSubscriptionImpl<StateT> _addListener(
     Node source,
     void Function(StateT? previous, StateT next) listener, {
     required void Function(Object error, StackTrace stackTrace) onError,
     required void Function()? onDependencyMayHaveChanged,
-    required bool fireImmediately,
     required bool weak,
   });
-
-  /// Partially listen to a provider.
-  ///
-  /// The [select] function allows filtering unwanted rebuilds of a Widget
-  /// by reading only the properties that we care about.
-  ///
-  /// For example, consider the following `ChangeNotifier`:
-  ///
-  /// ```dart
-  /// class Person extends ChangeNotifier {
-  ///   int _age = 0;
-  ///   int get age => _age;
-  ///   set age(int age) {
-  ///     _age = age;
-  ///     notifyListeners();
-  ///   }
-  ///
-  ///   String _name = '';
-  ///   String get name => _name;
-  ///   set name(String name) {
-  ///     _name = name;
-  ///     notifyListeners();
-  ///   }
-  /// }
-  ///
-  /// final personProvider = ChangeNotifierProvider((_) => Person());
-  /// ```
-  ///
-  /// In this class, both `name` and `age` may change, but a widget may need
-  /// only `age`.
-  ///
-  /// If we used `ref.watch(`/`Consumer` as we normally would, this would cause
-  /// widgets that only use `age` to still rebuild when `name` changes, which
-  /// is inefficient.
-  ///
-  /// The method [select] can be used to fix this, by explicitly reading only
-  /// a specific part of the object.
-  ///
-  /// A typical usage would be:
-  ///
-  /// ```dart
-  /// @override
-  /// Widget build(BuildContext context, WidgetRef ref) {
-  ///   final age = ref.watch(personProvider.select((p) => p.age));
-  ///   return Text('$age');
-  /// }
-  /// ```
-  ///
-  /// This will cause our widget to rebuild **only** when `age` changes.
-  ///
-  ///
-  /// **NOTE**: The function passed to [select] can return complex computations
-  /// too.
-  ///
-  /// For example, instead of `age`, we could return a "isAdult" boolean:
-  ///
-  /// ```dart
-  /// @override
-  /// Widget build(BuildContext context, WidgetRef ref) {
-  ///   final isAdult = ref.watch(personProvider.select((p) => p.age >= 18));
-  ///   return Text('$isAdult');
-  /// }
-  /// ```
-  ///
-  /// This will further optimize our widget by rebuilding it only when "isAdult"
-  /// changed instead of whenever the age changes.
-  ProviderListenable<Selected> select<Selected>(
-    Selected Function(StateT value) selector,
-  );
 }

@@ -8,8 +8,6 @@ import 'package:riverpod/legacy.dart';
 import 'package:riverpod/misc.dart' show Refreshable, ProviderListenable;
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod/src/framework.dart' show UnmountedRefException;
-import 'package:riverpod/src/providers/stream_notifier.dart'
-    show $StreamNotifier;
 import 'package:test/test.dart';
 
 import '../../third_party/fake_async.dart';
@@ -23,10 +21,6 @@ void main() {
       () => CtorNotifier().state = const AsyncData(42),
       () => CtorNotifier().future,
       () => CtorNotifier().ref,
-      () => FamilyCtorNotifier().state,
-      () => FamilyCtorNotifier().state = const AsyncData(42),
-      () => FamilyCtorNotifier().future,
-      () => FamilyCtorNotifier().ref,
     ]);
   });
 
@@ -61,7 +55,7 @@ void main() {
     });
 
     test('closes the StreamSubscription upon disposing the provider', () async {
-      final onCancel = OnCancelMock();
+      final onCancel = OnCancel();
       final container = ProviderContainer.test();
       final provider = factory.simpleTestProvider<int>((ref, _) {
         final controller = StreamController<int>();
@@ -136,7 +130,12 @@ void main() {
 
           verifyOnly(
             listener,
-            listener(any, AsyncValue<int>.error(err, stack)),
+            listener(
+              any,
+              argThat(
+                isAsyncError<int>(err, stackTrace: stack, retrying: true),
+              ),
+            ),
           );
 
           err = Exception('bar');
@@ -148,7 +147,12 @@ void main() {
 
           verifyOnly(
             listener,
-            listener(any, AsyncValue<int>.error(err, stack)),
+            listener(
+              any,
+              argThat(
+                isAsyncError<int>(err, stackTrace: stack, retrying: true),
+              ),
+            ),
           );
         }),
       );
@@ -409,7 +413,9 @@ void main() {
           self.listenSelf(listener.call, onError: onError.call);
           Error.throwWithStackTrace(42, StackTrace.empty);
         });
-        final container = ProviderContainer.test();
+        final container = ProviderContainer.test(
+          retry: (_, __) => null,
+        );
 
         container.listen(provider, (previous, next) {});
 
@@ -469,7 +475,9 @@ void main() {
       final provider = factory.simpleTestProvider<int>(
         (ref, _) => Stream.error(0, StackTrace.empty),
       );
-      final container = ProviderContainer.test();
+      final container = ProviderContainer.test(
+        retry: (_, __) => null,
+      );
       final listener = Listener<AsyncValue<int>>();
 
       container.listen(provider, listener.call, fireImmediately: true);
@@ -497,7 +505,9 @@ void main() {
       final provider = factory.provider<int>(
         () => Error.throwWithStackTrace(0, StackTrace.empty),
       );
-      final container = ProviderContainer.test();
+      final container = ProviderContainer.test(
+        retry: (_, __) => null,
+      );
       final listener = Listener<AsyncValue<int>>();
 
       container.listen(provider, listener.call, fireImmediately: true);
@@ -520,7 +530,9 @@ void main() {
       final provider = factory.simpleTestProvider<int>(
         (ref, _) => Error.throwWithStackTrace(42, StackTrace.empty),
       );
-      final container = ProviderContainer.test();
+      final container = ProviderContainer.test(
+        retry: (_, __) => null,
+      );
       final listener = Listener<AsyncValue<int>>();
 
       container.listen(provider, listener.call, fireImmediately: true);
@@ -578,7 +590,9 @@ void main() {
     test(
         'stops listening to the previous future error when the provider rebuilds',
         () async {
-      final container = ProviderContainer.test();
+      final container = ProviderContainer.test(
+        retry: (_, __) => null,
+      );
       final dep = StateProvider((ref) => 0);
       final completers = {
         0: Completer<int>.sync(),
@@ -838,37 +852,6 @@ void main() {
       });
     });
 
-    group('StreamNotifierProvider.notifier', () {
-      test(
-          'Notifies listeners whenever `build` is re-executed, due to recreating a new notifier.',
-          () async {
-        final notifierListener = Listener<$StreamNotifier<int>>();
-        final dep = StateProvider((ref) => 0);
-        final provider = factory.provider<int>(() {
-          return factory.deferredNotifier(
-            (ref, _) => Stream.value(ref.watch(dep)),
-          );
-        });
-        final container = ProviderContainer.test();
-
-        final sub = container.listen(provider.notifier, notifierListener.call);
-        final initialNotifier = sub.read();
-
-        // Skip the loading
-        await container.read(provider.future);
-        verifyNoMoreInteractions(notifierListener);
-
-        container.refresh(provider);
-        final newNotifier = sub.read();
-
-        expect(newNotifier, isNot(same(initialNotifier)));
-        verifyOnly(
-          notifierListener,
-          notifierListener(initialNotifier, newNotifier),
-        ).called(1);
-      });
-    });
-
     test(
         'Can override StreamNotifier.updateShouldNotify to change the default filter logic',
         () async {
@@ -935,7 +918,9 @@ void main() {
       });
 
       test('can specify onError to handle error scenario', () async {
-        final container = ProviderContainer.test();
+        final container = ProviderContainer.test(
+          retry: (_, __) => null,
+        );
         final provider = factory.simpleTestProvider<int>(
           (ref, _) => Error.throwWithStackTrace(42, StackTrace.empty),
         );
@@ -993,7 +978,9 @@ void main() {
 
       test('executes immediately with current state if an error is available',
           () async {
-        final container = ProviderContainer.test();
+        final container = ProviderContainer.test(
+          retry: (_, __) => null,
+        );
         final provider = factory.simpleTestProvider<int>(
           (ref, _) => Error.throwWithStackTrace(42, StackTrace.empty),
         );
@@ -1068,21 +1055,21 @@ void main() {
   });
 
   test('supports family overrideWith', () async {
-    final family = StreamNotifierProvider.family<
-        DeferredFamilyStreamNotifier<int>, int, int>(
-      () => DeferredFamilyStreamNotifier<int>((ref, _) => Stream.value(0)),
+    final family =
+        StreamNotifierProvider.family<DeferredStreamNotifier<int>, int, int>(
+      (arg) => DeferredStreamNotifier<int>((ref, _) => Stream.value(0)),
     );
     final autoDisposeFamily = StreamNotifierProvider.autoDispose
-        .family<DeferredFamilyStreamNotifier<int>, int, int>(
-      () => DeferredFamilyStreamNotifier<int>((ref, _) => Stream.value(0)),
+        .family<DeferredStreamNotifier<int>, int, int>(
+      (arg) => DeferredStreamNotifier<int>((ref, _) => Stream.value(0)),
     );
     final container = ProviderContainer.test(
       overrides: [
         family.overrideWith(
-          () => DeferredFamilyStreamNotifier<int>((ref, _) => Stream.value(42)),
+          () => DeferredStreamNotifier<int>((ref, _) => Stream.value(42)),
         ),
         autoDisposeFamily.overrideWith(
-          () => DeferredFamilyStreamNotifier<int>(
+          () => DeferredStreamNotifier<int>(
             (ref, _) => Stream.value(84),
           ),
         ),
@@ -1118,12 +1105,12 @@ void main() {
   });
 
   group('modifiers', () {
-    void canBeAssignedToRefreshable<T>(
-      Refreshable<T> provider,
+    void canBeAssignedToRefreshable<StateT>(
+      Refreshable<StateT> provider,
     ) {}
 
-    void canBeAssignedToProviderListenable<T>(
-      ProviderListenable<T> provider,
+    void canBeAssignedToProviderListenable<StateT>(
+      ProviderListenable<StateT> provider,
     ) {}
 
     test('provider', () {
@@ -1169,8 +1156,8 @@ void main() {
 
     test('family', () {
       final family = StreamNotifierProvider.family<
-          DeferredFamilyStreamNotifier<String>, String, int>(
-        () => DeferredFamilyStreamNotifier((ref, _) => Stream.value('0')),
+          DeferredStreamNotifier<String>, String, int>(
+        (arg) => DeferredStreamNotifier((ref, _) => Stream.value('0')),
       );
 
       family(0).select((AsyncValue<String> value) => 0);
@@ -1181,13 +1168,6 @@ void main() {
 
       canBeAssignedToProviderListenable<Future<String>>(family(0).future);
       canBeAssignedToRefreshable<Future<String>>(family(0).future);
-
-      canBeAssignedToProviderListenable<FamilyStreamNotifier<String, int>>(
-        family(0).notifier,
-      );
-      canBeAssignedToRefreshable<FamilyStreamNotifier<String, int>>(
-        family(0).notifier,
-      );
     });
 
     test('autoDisposeFamily', () {
@@ -1197,8 +1177,8 @@ void main() {
       );
 
       final autoDisposeFamily = StreamNotifierProvider.autoDispose
-          .family<DeferredFamilyStreamNotifier<String>, String, int>(
-        () => DeferredFamilyStreamNotifier((ref, _) => Stream.value('0')),
+          .family<DeferredStreamNotifier<String>, String, int>(
+        (arg) => DeferredStreamNotifier((ref, _) => Stream.value('0')),
       );
 
       autoDisposeFamily(0).select((AsyncValue<String> value) => 0);
@@ -1217,26 +1197,20 @@ void main() {
       canBeAssignedToRefreshable<Future<String>>(
         autoDisposeFamily(0).future,
       );
-
-      canBeAssignedToProviderListenable<FamilyStreamNotifier<String, int>>(
-        autoDisposeFamily(0).notifier,
-      );
-      canBeAssignedToRefreshable<FamilyStreamNotifier<String, int>>(
-        autoDisposeFamily(0).notifier,
-      );
     });
   });
 }
 
 @immutable
-class Equal<T> {
+class Equal<BoxedT> {
   // ignore: prefer_const_constructors_in_immutables
   Equal(this.value);
 
-  final T value;
+  final BoxedT value;
 
   @override
-  bool operator ==(Object other) => other is Equal<T> && other.value == value;
+  bool operator ==(Object other) =>
+      other is Equal<BoxedT> && other.value == value;
 
   @override
   int get hashCode => Object.hash(runtimeType, value);
@@ -1245,9 +1219,4 @@ class Equal<T> {
 class CtorNotifier extends StreamNotifier<int> {
   @override
   Stream<int> build() => Stream.value(0);
-}
-
-class FamilyCtorNotifier extends FamilyStreamNotifier<int, int> {
-  @override
-  Stream<int> build(int arg) => Stream.value(0);
 }

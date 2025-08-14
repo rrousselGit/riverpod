@@ -8,10 +8,13 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(another)
 const anotherProvider = AnotherProvider._();
 
-final class AnotherProvider extends $FunctionalProvider<void, void>
+final class AnotherProvider extends $FunctionalProvider<void, void, void>
     with $Provider<void> {
   const AnotherProvider._()
       : super(
@@ -41,12 +44,9 @@ final class AnotherProvider extends $FunctionalProvider<void, void>
   Override overrideWithValue(void value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<void>(value),
+      providerOverride: $SyncValueProvider<void>(value),
     );
   }
 }
 
 String _$anotherHash() => r'1901cd6ee57ea427f82e6d5bbee79e91ddf71065';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

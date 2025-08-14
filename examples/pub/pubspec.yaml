@@ -9,7 +9,7 @@ environment:
 resolution: workspace
 
 dependencies:
-  dio: ^5.1.1
+  dio: 5.9.0
   flutter:
     sdk: flutter
   flutter_hooks: ^0.21.2
@@ -24,10 +24,10 @@ dependencies:
 
 dev_dependencies:
   build_runner: ^2.0.0
-  custom_lint: ^0.7.5
+  custom_lint: ^0.8.0
   flutter_test:
     sdk: flutter
-  freezed: ^3.0.2
+  freezed: ^3.2.0
   json_serializable: ^6.3.0
   mockito: ^5.0.0
   riverpod_generator:

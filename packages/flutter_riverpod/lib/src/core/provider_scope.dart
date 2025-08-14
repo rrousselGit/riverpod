@@ -85,15 +85,15 @@ final class ProviderScope extends StatefulWidget {
     BuildContext context, {
     bool listen = true,
   }) {
-    UncontrolledProviderScope? scope;
+    _UncontrolledProviderScope? scope;
 
     if (listen) {
       scope = context //
-          .dependOnInheritedWidgetOfExactType<UncontrolledProviderScope>();
+          .dependOnInheritedWidgetOfExactType<_UncontrolledProviderScope>();
     } else {
       scope = context
-          .getElementForInheritedWidgetOfExactType<UncontrolledProviderScope>()
-          ?.widget as UncontrolledProviderScope?;
+          .getElementForInheritedWidgetOfExactType<_UncontrolledProviderScope>()
+          ?.widget as _UncontrolledProviderScope?;
     }
 
     if (scope == null) {
@@ -175,8 +175,8 @@ final class ProviderScopeState extends State<ProviderScope> {
 
   ProviderContainer? _getParent() {
     final scope = context
-        .getElementForInheritedWidgetOfExactType<UncontrolledProviderScope>()
-        ?.widget as UncontrolledProviderScope?;
+        .getElementForInheritedWidgetOfExactType<_UncontrolledProviderScope>()
+        ?.widget as _UncontrolledProviderScope?;
 
     return scope?.container;
   }
@@ -222,78 +222,72 @@ final class ProviderScopeState extends State<ProviderScope> {
 /// {@template riverpod.UncontrolledProviderScope}
 /// Expose a [ProviderContainer] to the widget tree.
 ///
-/// This is what makes `ref.watch`/`Consumer`/`ref.read` work.
+/// This is what makes [Consumer] work.
+///
+/// **Note**: The [container] will _not_ be disposed when using this widget.
+/// It is the caller's responsibility to dispose of it when no longer needed.
+/// Alternatively, use [ProviderScope] to automatically manage the lifecycle of
+/// the [ProviderContainer].
+///
 /// {@endtemplate}
 /// {@category Core}
-final class UncontrolledProviderScope extends InheritedWidget {
+class UncontrolledProviderScope extends StatefulWidget {
   /// {@macro riverpod.UncontrolledProviderScope}
   const UncontrolledProviderScope({
     super.key,
     required this.container,
-    required super.child,
+    required this.child,
   });
 
   /// The [ProviderContainer] exposed to the widget tree.
   final ProviderContainer container;
 
-  @override
-  bool updateShouldNotify(UncontrolledProviderScope oldWidget) {
-    return container != oldWidget.container;
-  }
+  /// The part of the widget tree that can use Riverpod.
+  final Widget child;
 
   @override
-  // ignore: library_private_types_in_public_api
-  _UncontrolledProviderScopeElement createElement() {
-    return _UncontrolledProviderScopeElement(this);
-  }
+  State<UncontrolledProviderScope> createState() =>
+      _UncontrolledProviderScopeState();
 }
 
-@sealed
-class _UncontrolledProviderScopeElement extends InheritedElement {
-  _UncontrolledProviderScopeElement(UncontrolledProviderScope super.widget);
-
-  void Function()? _task;
-  bool _mounted = true;
-
-  ProviderContainer _containerOf(Widget widget) =>
-      (widget as UncontrolledProviderScope).container;
-
+class _UncontrolledProviderScopeState extends State<UncontrolledProviderScope> {
   @override
-  void mount(Element? parent, Object? newSlot) {
-    if (kDebugMode) {
-      debugCanModifyProviders ??= _debugCanModifyProviders;
-    }
+  void initState() {
+    super.initState();
 
-    _containerOf(widget).scheduler.flutterVsyncs.add(_flutterVsync);
-    super.mount(parent, newSlot);
+    if (kDebugMode) debugCanModifyProviders ??= _debugCanModifyProviders;
+    widget.container.scheduler.flutterVsyncs.add(_flutterVsync);
   }
 
   @override
   void reassemble() {
     super.reassemble();
     if (kDebugMode) {
-      _containerOf(widget).debugReassemble();
+      widget.container.debugReassemble();
     }
   }
 
   void _flutterVsync(void Function() task) {
     assert(_task == null, 'Only one task can be scheduled at a time');
+    assert(mounted, 'Cannot schedule a task on an unmounted element');
     _task = task;
 
-    if (SchedulerBinding.instance.schedulerPhase ==
-        SchedulerPhase.transientCallbacks) {
-      markNeedsBuild();
-    } else {
-      // Using microtask, otherwise Flutter tests complain about pending timers
-      Future.microtask(() {
-        if (_mounted) markNeedsBuild();
-      });
+    try {
+      setState(() {});
+    } catch (e) {
+      // Ignore assertion errors, as we're doing it safely.
     }
+
+    _vsyncTimer?.cancel();
+    _vsyncTimer = Timer(Duration.zero, () {
+      _vsyncTimer = null;
+      if (mounted) setState(() {});
+    });
   }
 
   void _debugCanModifyProviders() {
     try {
-      markNeedsBuild();
+      setState(() {});
     } catch (err) {
       throw FlutterError.fromParts([
         ErrorSummary(
@@ -329,21 +323,64 @@ To fix this problem, you have one of two solutions:
   }
 
   @override
-  void unmount() {
-    _mounted = false;
+  Widget build(BuildContext context) {
+    _task?.call();
+    _task = null;
+
+    return _UncontrolledProviderScope(
+      container: widget.container,
+      child: widget.child,
+    );
+  }
+
+  void Function()? _task;
+  Timer? _vsyncTimer;
+
+  @override
+  void dispose() {
+    _vsyncTimer?.cancel();
+    _vsyncTimer = null;
     if (kDebugMode && debugCanModifyProviders == _debugCanModifyProviders) {
       debugCanModifyProviders = null;
     }
 
-    _containerOf(widget).scheduler.flutterVsyncs.remove(_flutterVsync);
+    widget.container.scheduler.flutterVsyncs.remove(_flutterVsync);
 
-    super.unmount();
+    super.dispose();
   }
+}
 
+final class _UncontrolledProviderScope extends InheritedWidget {
+  const _UncontrolledProviderScope({
+    super.key,
+    required this.container,
+    required super.child,
+  });
+
+  final ProviderContainer container;
   @override
-  Widget build() {
-    _task?.call();
-    _task = null;
-    return super.build();
+  bool updateShouldNotify(_UncontrolledProviderScope oldWidget) {
+    return container != oldWidget.container;
+  }
+}
+
+/// Widget testing helpers for flutter_riverpod.
+@visibleForTesting
+extension RiverpodWidgetTesterX on flutter_test.WidgetTester {
+  /// Finds the [ProviderContainer] in the widget tree.
+  ///
+  /// If [of] is provided, searches for the container within the context of
+  /// the specified finder.
+  @visibleForTesting
+  ProviderContainer container({
+    flutter_test.Finder? of,
+  }) {
+    if (of != null) {
+      final element = this.element(of);
+      return ProviderScope.containerOf(element, listen: false);
+    }
+
+    final scope = widget(flutter_test.find.byType(UncontrolledProviderScope));
+    return (scope as UncontrolledProviderScope).container;
   }
 }

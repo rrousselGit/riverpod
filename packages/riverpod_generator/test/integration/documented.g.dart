@@ -6,15 +6,21 @@ part of 'documented.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 /// Hello world
 // Foo
+
 @ProviderFor(functional)
+@annotation
 const functionalProvider = FunctionalProvider._();
 
 /// Hello world
 // Foo
-final class FunctionalProvider extends $FunctionalProvider<String, String>
-    with $Provider<String> {
+
+@annotation
+final class FunctionalProvider
+    extends $FunctionalProvider<String, String, String> with $Provider<String> {
   /// Hello world
 // Foo
   const FunctionalProvider._()
@@ -45,20 +51,23 @@ final class FunctionalProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }
 
-String _$functionalHash() => r'52eddcd28b005800da9cf6c22df77f2f040bfb34';
+String _$functionalHash() => r'483ddb9ce91e80912574bc3f64456eea5b6c7b0e';
 
 /// Hello world
 // Foo
+
 @ProviderFor(ClassBased)
+@annotation
 const classBasedProvider = ClassBasedProvider._();
 
 /// Hello world
 // Foo
+@annotation
 final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
   /// Hello world
 // Foo
@@ -80,30 +89,28 @@ final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
   @override
   ClassBased create() => ClassBased();
 
-  @$internal
-  @override
-  $NotifierProviderElement<ClassBased, String> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }
 
-String _$classBasedHash() => r'f1139017b1fcf38017402b514c61fb32dae40c39';
+String _$classBasedHash() => r'5c45e9bfdae87633f8cadb30533b946f8d0c9e2b';
 
+/// Hello world
+// Foo
+
+@annotation
 abstract class _$ClassBased extends $Notifier<String> {
   String build();
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<String>;
+    final ref = this.ref as $Ref<String, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<String, String>, String, Object?, Object?>;
     element.handleValue(ref, created);
@@ -112,12 +119,16 @@ abstract class _$ClassBased extends $Notifier<String> {
 
 /// Hello world
 // Foo
+
 @ProviderFor(family)
+@annotation
 const familyProvider = FamilyFamily._();
 
 /// Hello world
 // Foo
-final class FamilyProvider extends $FunctionalProvider<String, String>
+
+@annotation
+final class FamilyProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   /// Hello world
 // Foo
@@ -159,7 +170,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 
@@ -174,10 +185,12 @@ final class FamilyProvider extends $FunctionalProvider<String, String>
   }
 }
 
-String _$familyHash() => r'5164f4ea1f2d6c741e5c600c48a1b2ac2be7a1eb';
+String _$familyHash() => r'13354dca1ecbd172ae0627e9ba644d52cd9cfaaf';
 
 /// Hello world
 // Foo
+
+@annotation
 final class FamilyFamily extends $Family
     with $FunctionalFamilyOverride<String, int> {
   const FamilyFamily._()
@@ -191,6 +204,8 @@ final class FamilyFamily extends $Family
 
   /// Hello world
 // Foo
+
+  @annotation
   FamilyProvider call(
     int id,
   ) =>
@@ -202,11 +217,14 @@ final class FamilyFamily extends $Family
 
 /// Hello world
 // Foo
+
 @ProviderFor(ClassFamilyBased)
+@annotation
 const classFamilyBasedProvider = ClassFamilyBasedFamily._();
 
 /// Hello world
 // Foo
+@annotation
 final class ClassFamilyBasedProvider
     extends $NotifierProvider<ClassFamilyBased, String> {
   /// Hello world
@@ -235,17 +253,11 @@ final class ClassFamilyBasedProvider
   @override
   ClassFamilyBased create() => ClassFamilyBased();
 
-  @$internal
-  @override
-  $NotifierProviderElement<ClassFamilyBased, String> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 
@@ -260,10 +272,12 @@ final class ClassFamilyBasedProvider
   }
 }
 
-String _$classFamilyBasedHash() => r'8d83e9a88356796298419574f360e8bf95aa0729';
+String _$classFamilyBasedHash() => r'4681ad76c671518ac72ca40fa532126bc041dc2f';
 
 /// Hello world
 // Foo
+
+@annotation
 final class ClassFamilyBasedFamily extends $Family
     with $ClassFamilyOverride<ClassFamilyBased, String, String, String, int> {
   const ClassFamilyBasedFamily._()
@@ -277,8 +291,10 @@ final class ClassFamilyBasedFamily extends $Family
 
   /// Hello world
 // Foo
+
+  @annotation
   ClassFamilyBasedProvider call(
-    int id,
+    @annotation int id,
   ) =>
       ClassFamilyBasedProvider._(argument: id, from: this);
 
@@ -286,15 +302,20 @@ final class ClassFamilyBasedFamily extends $Family
   String toString() => r'classFamilyBasedProvider';
 }
 
+/// Hello world
+// Foo
+
+@annotation
 abstract class _$ClassFamilyBased extends $Notifier<String> {
   late final _$args = ref.$arg as int;
 
   /// Hello world
 // Foo
+  @annotation
   int get id => _$args;
 
   String build(
-    int id,
+    @annotation int id,
   );
   @$mustCallSuper
   @override
@@ -302,12 +323,9 @@ abstract class _$ClassFamilyBased extends $Notifier<String> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<String>;
+    final ref = this.ref as $Ref<String, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<String, String>, String, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

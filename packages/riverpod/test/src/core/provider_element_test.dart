@@ -10,6 +10,178 @@ import '../utils.dart';
 
 void main() {
   group('ProviderElement', () {
+    group('pausedActiveSubscriptionCount', () {
+      test('Handles subscription.pause', () async {
+        final container = ProviderContainer.test();
+        final provider = FutureProvider(name: 'provider', (ref) => 0);
+
+        final sub = container.listen(provider, (_, __) {});
+        final sub2 = container.listen(provider.future, (_, __) {});
+        final element = container.readProviderElement(provider);
+
+        expect(element.pausedActiveSubscriptionCount, 0);
+        sub.pause();
+        expect(element.pausedActiveSubscriptionCount, 1);
+        sub2.pause();
+        expect(element.pausedActiveSubscriptionCount, 2);
+
+        sub.resume();
+        expect(element.pausedActiveSubscriptionCount, 1);
+        sub2.resume();
+        expect(element.pausedActiveSubscriptionCount, 0);
+      });
+
+      test('Handles removing a subscription that is paused', () async {
+        final container = ProviderContainer.test();
+        final provider = Provider(name: 'provider', (ref) => 0);
+        final dep = Provider(name: 'dep', (ref) {
+          ref.watch(provider);
+        });
+
+        container.read(dep);
+        container.refresh(dep);
+
+        final element = container.readProviderElement(provider);
+
+        expect(element.pausedActiveSubscriptionCount, 1);
+      });
+
+      test('Does not count weak subscription', () {
+        final container = ProviderContainer.test();
+        final provider = FutureProvider(name: 'provider', (ref) => 0);
+
+        container.listen(provider, (_, __) {}).pause();
+
+        final sub = container.listen(
+          provider,
+          (_, __) {},
+          weak: true,
+        )..pause();
+        final element = container.readProviderElement(provider);
+
+        expect(
+          element.pausedActiveSubscriptionCount,
+          1,
+          reason: 'Ignores weak',
+        );
+
+        sub.resume();
+
+        expect(
+          element.pausedActiveSubscriptionCount,
+          1,
+          reason: 'Ignores weak',
+        );
+
+        sub.pause();
+        sub.close();
+
+        expect(
+          element.pausedActiveSubscriptionCount,
+          1,
+          reason: 'Ignores weak',
+        );
+      });
+
+      test('Handles pause/resume/remove on Element views', () async {
+        final container = ProviderContainer.test();
+        final provider = FutureProvider(name: 'provider', (ref) => 0);
+
+        container.listen(provider, (_, __) {}).pause();
+
+        final sub = container.listen(provider.future, (_, __) {})..pause();
+        final element = container.readProviderElement(provider);
+
+        expect(
+          element.pausedActiveSubscriptionCount,
+          2,
+          reason: 'should not increment twice',
+        );
+
+        sub.resume();
+
+        expect(
+          element.pausedActiveSubscriptionCount,
+          1,
+          reason: 'should not decrement twice',
+        );
+
+        sub.pause();
+        sub.close();
+
+        expect(
+          element.pausedActiveSubscriptionCount,
+          1,
+          reason: 'should not decrement twice',
+        );
+      });
+    });
+
+    group('listenerCount', () {
+      test('Handles Element views', () async {
+        final container = ProviderContainer.test();
+        final provider = FutureProvider(name: 'provider', (ref) => 0);
+
+        final sub = container.listen(provider.future, (_, __) {});
+        final element = container.readProviderElement(provider);
+
+        expect(element.listenerCount, 1);
+
+        sub.close();
+
+        expect(element.listenerCount, 0);
+      });
+    });
+
+    test("adding and removing a dep shouldn't stop its listeners", () async {
+      final numberProvider =
+          StreamProvider.autoDispose<int>(name: 'number', (ref) {
+        final controller = StreamController<int>();
+
+        int counter = 0;
+        final timer = Timer.periodic(const Duration(milliseconds: 10), (_) {
+          if (!controller.isClosed) controller.sink.add(counter++);
+        });
+
+        ref.onDispose(() {
+          timer.cancel();
+          controller.close();
+        });
+
+        return controller.stream;
+      });
+      final provider1 = FutureProvider.autoDispose(
+        (ref) => ref.watch(numberProvider.future),
+        name: 'one',
+      );
+      final provider2 = FutureProvider.autoDispose(
+        (ref) => ref.watch(numberProvider.future),
+        name: 'two',
+      );
+
+      // Regression test for https://github.com/rrousselGit/riverpod/issues/4117
+      final container = ProviderContainer.test();
+
+      final element = container.readProviderElement(numberProvider);
+
+      Future.delayed(Duration.zero, () async {
+        Future<void> pushAndPop() async {
+          final sub2 = container.listen(provider2, (previous, next) {});
+          await Future.microtask(() {});
+          sub2.close();
+        }
+
+        await pushAndPop();
+        await Future<void>.delayed(Duration.zero);
+
+        await pushAndPop();
+      });
+
+      container.listen(provider1, (previous, next) {});
+
+      await expectLater(container.read(numberProvider.future), completes);
+    });
+
     test(
         'pauses old subscriptions upon invalidation until the completion of the new computation',
         () async {
@@ -105,6 +277,31 @@ void main() {
     });
 
     group('retry', () {
+      test('does not start retry if error is emitted after element dispose',
+          () async {
+        final container = ProviderContainer.test();
+        final completer = Completer<int>();
+        final retryMock = RetryMock();
+        final provider = FutureProvider<int>(
+          (ref) => completer.future,
+          retry: retryMock.call,
+        );
+
+        container.listen(
+          provider,
+          (prev, next) {},
+          fireImmediately: true,
+          onError: (e, s) {},
+        );
+
+        container.dispose();
+
+        completer.completeError('err');
+        await completer.future.catchError((_) => 0);
+
+        verifyZeroInteractions(retryMock);
+      });
+
       test(
         'default ignores ProviderExceptions',
         () => fakeAsync((fake) async {
@@ -447,6 +644,38 @@ void main() {
       await container.pump();
 
       verifyOnly(listener, listener(null, 11));
+    });
+
+    group('visitAncestors', () {
+      test('includes inactive subscriptions', () async {
+        final container = ProviderContainer.test();
+        final provider = Provider<void>((ref) => 0);
+        Completer<void>? completer;
+        final dependent = FutureProvider<void>((ref) async {
+          await completer?.future;
+
+          ref.watch(provider);
+        });
+
+        final sub = container.listen(dependent.future, (_, __) {});
+        await sub.read();
+        final element = container.readProviderElement(dependent);
+
+        completer = Completer<void>();
+        addTearDown(() => completer?.complete());
+
+        container.refresh(dependent);
+        // Don't await sub.read(), to ensure that the new ref.watch isn't
+        // triggered yet
+
+        final children = <ProviderElement>[];
+        element.visitAncestors(children.add);
+
+        expect(
+          children.map((e) => e.origin).toList(),
+          [provider],
+        );
+      });
     });
 
     group('visitChildren', () {

@@ -4,29 +4,29 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'sync.g.dart';
 
 @riverpod
-List<T> generic<T extends num>(Ref ref) {
+List<ItemT> generic<ItemT extends num>(Ref ref) {
   return <Object?>[
     'Hello world',
     42,
     3.14,
-  ].whereType<T>().toList();
+  ].whereType<ItemT>().toList();
 }
 
 @riverpod
-List<T> complexGeneric<T extends num, Foo extends String?>(
+List<ItemT> complexGeneric<ItemT extends num, OtherT extends String?>(
   Ref ref, {
-  required T param,
-  Foo? otherParam,
+  required ItemT param,
+  OtherT? otherParam,
 }) {
-  return <T>[];
+  return <ItemT>[];
 }
 
 @riverpod
-class GenericClass<T extends num> extends _$GenericClass<T>
-    with MyMixin<List<T>, List<T>> {
+class GenericClass<ValueT extends num> extends _$GenericClass<ValueT>
+    with MyMixin<List<ValueT>, List<ValueT>> {
   @override
-  List<T> build() {
-    return <T>[];
+  List<ValueT> build() {
+    return <ValueT>[];
   }
 }
 
@@ -113,7 +113,7 @@ String _private(Ref ref) {
   return 'Hello world';
 }
 
-mixin MyMixin<A, B> on AnyNotifier<A, B> {}
+mixin MyMixin<StateT, ValueT> on AnyNotifier<StateT, ValueT> {}
 
 /// This is some documentation
 @riverpod
@@ -154,6 +154,16 @@ class FamilyClass extends _$FamilyClass with MyMixin<String, String> {
     List<String>? fifth,
   }) {
     return '(first: $first, second: $second, third: $third, fourth: $fourth, fifth: $fifth)';
+  }
+}
+
+@riverpod
+class LocalStaticDefault extends _$LocalStaticDefault {
+  static const value = 'world';
+
+  @override
+  String build({String arg = value}) {
+    return 'Hello $value';
   }
 }
 
@@ -225,10 +235,47 @@ class UnnecessaryCastClass extends _$UnnecessaryCastClass {
 }
 
 // Regression test for https://github.com/rrousselGit/riverpod/issues/3249
-class ManyProviderData<T, S> {}
+class ManyProviderData<FirstT, SecondT> {}
 
 @riverpod
-Stream<List<T>> manyDataStream<T extends Object, S extends Object>(
+Stream<List<ItemT>> manyDataStream<ItemT extends Object, OtherT extends Object>(
   Ref ref,
-  ManyProviderData<T, S> pData,
+  ManyProviderData<ItemT, OtherT> pData,
 ) async* {}
+
+// Regression for https://github.com/rrousselGit/riverpod/issues/4113
+@riverpod
+void issue4113(Ref ref) {}
+@riverpod
+void _issue4113(Ref ref) {}
+
+const prov = issue4113Provider;
+const prov2 = _issue4113Provider;
+
+@Riverpod(name: 'manualRename')
+String fn(Ref ref) => '';
+
+const fnProv = manualRename;
+
+@Riverpod(name: 'manualRename2')
+String fn2(Ref ref, int a) => '';
+
+const fn2Prov = manualRename2;
+
+@riverpod
+void voidFunctional(Ref ref) {}
+
+@riverpod
+void voidFunctionalWithArgs(Ref ref, int a) {}
+
+@riverpod
+class VoidClass extends _$VoidClass {
+  @override
+  void build() {}
+}
+
+@riverpod
+class VoidClassWithArgs extends _$VoidClassWithArgs {
+  @override
+  void build(int a) {}
+}

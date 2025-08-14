@@ -6,11 +6,14 @@ part of 'dependencies2.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(providerWithDependencies2)
 const providerWithDependencies2Provider = ProviderWithDependencies2Provider._();
 
 final class ProviderWithDependencies2Provider
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const ProviderWithDependencies2Provider._()
       : super(
           from: null,
@@ -57,7 +60,7 @@ final class ProviderWithDependencies2Provider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -69,7 +72,7 @@ String _$providerWithDependencies2Hash() =>
 const familyWithDependencies2Provider = FamilyWithDependencies2Family._();
 
 final class FamilyWithDependencies2Provider
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const FamilyWithDependencies2Provider._(
       {required FamilyWithDependencies2Family super.from,
       required int? super.argument})
@@ -117,7 +120,7 @@ final class FamilyWithDependencies2Provider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -207,17 +210,11 @@ final class NotifierWithDependenciesProvider
   @override
   NotifierWithDependencies create() => NotifierWithDependencies();
 
-  @$internal
-  @override
-  $NotifierProviderElement<NotifierWithDependencies, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -231,7 +228,7 @@ abstract class _$NotifierWithDependencies extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -277,17 +274,11 @@ final class NotifierFamilyWithDependenciesProvider
   @override
   NotifierFamilyWithDependencies create() => NotifierFamilyWithDependencies();
 
-  @$internal
-  @override
-  $NotifierProviderElement<NotifierFamilyWithDependencies, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -351,7 +342,7 @@ abstract class _$NotifierFamilyWithDependencies extends $Notifier<int> {
     final created = build(
       id: _$args,
     );
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -361,7 +352,7 @@ abstract class _$NotifierFamilyWithDependencies extends $Notifier<int> {
 @ProviderFor(_private2)
 const _private2Provider = _Private2Provider._();
 
-final class _Private2Provider extends $FunctionalProvider<int, int>
+final class _Private2Provider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const _Private2Provider._()
       : super(
@@ -375,7 +366,7 @@ final class _Private2Provider extends $FunctionalProvider<int, int>
         );
 
   @override
-  String debugGetCreateSourceHash() => _$private2Hash();
+  String debugGetCreateSourceHash() => _$_private2Hash();
 
   @$internal
   @override
@@ -391,17 +382,17 @@ final class _Private2Provider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
 
-String _$private2Hash() => r'e420875c8fbd9bf33eff945f2b7276b585032a38';
+String _$_private2Hash() => r'e420875c8fbd9bf33eff945f2b7276b585032a38';
 
 @ProviderFor(public2)
 const public2Provider = Public2Provider._();
 
-final class Public2Provider extends $FunctionalProvider<int, int>
+final class Public2Provider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const Public2Provider._()
       : super(
@@ -431,12 +422,9 @@ final class Public2Provider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
 
 String _$public2Hash() => r'20eb4f82e5f25fafc72775e7b86021d70ebb5579';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

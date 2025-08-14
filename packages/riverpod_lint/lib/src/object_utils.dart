@@ -1,13 +1,13 @@
 import 'package:analyzer/dart/ast/ast.dart';
 
-extension ObjectUtils<T> on T? {
-  R? safeCast<R>() {
+extension ObjectUtils<ObjT> on ObjT? {
+  NewT? safeCast<NewT>() {
     final that = this;
-    if (that is R) return that;
+    if (that is NewT) return that;
     return null;
   }
 
-  R? let<R>(R Function(T)? cb) {
+  NewT? let<NewT>(NewT Function(ObjT)? cb) {
     final that = this;
     if (that == null) return null;
     return cb?.call(that);

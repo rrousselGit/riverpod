@@ -1,3 +1,4 @@
+import 'package:analyzer_buffer/analyzer_buffer.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../models.dart';
@@ -38,13 +39,13 @@ class FamilyTemplate extends Template {
     final mixinTypes = <String>[
       ...switch (provider) {
         FunctionalProviderDeclaration(typeParameters: null) => [
-            '\$FunctionalFamilyOverride<${provider.createdTypeDisplayString}, $_argumentRecordType>',
+            '\$FunctionalFamilyOverride<${provider.providerElement.createdTypeNode}, $_argumentRecordType>',
           ],
         ClassBasedProviderDeclaration(typeParameters: null) => [
             '\$ClassFamilyOverride<$_notifierType, '
-                '${provider.exposedTypeDisplayString}, '
-                '${provider.valueTypeDisplayString}, '
-                '${provider.createdTypeDisplayString}, '
+                '${provider.providerElement.exposedTypeNode}, '
+                '${provider.providerElement.valueTypeNode.toCode()}, '
+                '${provider.providerElement.createdTypeNode}, '
                 '$_argumentRecordType>',
           ],
         _ => [],
@@ -54,7 +55,9 @@ class FamilyTemplate extends Template {
     final mixins = mixinTypes.isEmpty ? '' : ' with ${mixinTypes.join(', ')}';
 
     buffer.writeln('''
-${provider.doc} final class ${provider.familyTypeName} extends \$Family $mixins {
+${provider.doc}
+${provider.metadata}
+final class ${provider.familyTypeName} extends \$Family $mixins {
   const ${provider.familyTypeName}._()
       : super(
         retry: ${provider.annotation.retryNode?.name ?? 'null'},
@@ -64,7 +67,9 @@ ${provider.doc} final class ${provider.familyTypeName} extends \$Family $mixins 
         isAutoDispose: ${provider.providerElement.isAutoDispose},
       );
 
-  ${provider.doc} ${provider.providerTypeName}$_generics call$_genericsDefinition($_parameterDefinition)
+  ${provider.doc}
+  ${provider.metadata}
+  ${provider.providerTypeName}$_generics call$_genericsDefinition($_parameterDefinition)
     => ${provider.providerTypeName}$_generics._(
       $argument
       from: this
@@ -111,9 +116,9 @@ ${provider.doc} final class ${provider.familyTypeName} extends \$Family $mixins 
   }) {
     final createType = switch (provider) {
       FunctionalProviderDeclaration(parameters: [_, ...]) =>
-        '${provider.createdTypeDisplayString} Function$_genericsDefinition(Ref ref, $_argumentRecordType args,)',
+        '${provider.providerElement.createdTypeNode} Function$_genericsDefinition(Ref ref, $_argumentRecordType args,)',
       FunctionalProviderDeclaration(parameters: []) =>
-        '${provider.createdTypeDisplayString} Function$_genericsDefinition(Ref ref)',
+        '${provider.providerElement.createdTypeNode} Function$_genericsDefinition(Ref ref)',
       ClassBasedProviderDeclaration() =>
         '$_notifierType Function$_genericsDefinition()',
     };
@@ -144,7 +149,7 @@ Override overrideWith($createType create) =>
     required StringBuffer topLevelBuffer,
   }) {
     final runNotifierBuildType = '''
-${provider.createdTypeDisplayString} Function$_genericsDefinition(
+${provider.providerElement.createdTypeNode} Function$_genericsDefinition(
   Ref ref,
   $_notifierType notifier
 )''';

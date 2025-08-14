@@ -31,6 +31,24 @@ final refMethodsThatDependOnProviderOrFamilies =
 
 void main() {
   group('Ref', () {
+    test('can be used with mutations', () async {
+      final container = ProviderContainer.test();
+      final notifier = DeferredNotifier<int>((self, ref) => 0);
+      final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
+      final mutation = Mutation<int>();
+
+      container.read(provider);
+      final sub = container.listen(mutation, (a, b) {});
+
+      await mutation.run(notifier.ref, (ref) async {
+        notifier.state++;
+
+        return notifier.state;
+      });
+
+      expect(sub.read(), isMutationSuccess<int>(1));
+    });
+
     test('asserts that a lifecycle cannot be used after a ref is unmounted',
         () async {
       late Ref ref;
@@ -107,6 +125,61 @@ void main() {
       );
     });
 
+    test('asserts that lifecycle cannot use other lifecycle', () {
+      final onDispose = OnDisposeMock();
+      final onResume = OnResume();
+      final onCancel = OnCancel();
+      final onAddListener = OnAddListener();
+      final onRemoveListener = OnRemoveListener();
+
+      final depNotifier = DeferredNotifier<int>((ref, self) => 0);
+      final dep = NotifierProvider<DeferredNotifier<int>, int>(
+        () => depNotifier,
+      );
+
+      final notifier = DeferredNotifier<int>((ref, self) {
+        ref.onDispose(onDispose.call);
+        ref.onResume(onResume.call);
+        ref.onCancel(onCancel.call);
+        ref.onAddListener(onAddListener.call);
+        ref.onRemoveListener(onRemoveListener.call);
+        return 0;
+      });
+      final provider = NotifierProvider<DeferredNotifier<int>, int>(
+        () => notifier,
+      );
+
+      void check() {
+        expect(
+          () => notifier.ref.invalidate(dep),
+          throwsA(isAssertionError),
+        );
+      }
+
+      when(onDispose()).thenAnswer((_) => check());
+      when(onResume()).thenAnswer((_) => check());
+      when(onCancel()).thenAnswer((_) => check());
+      when(onAddListener()).thenAnswer((_) => check());
+      when(onRemoveListener()).thenAnswer((_) => check());
+
+      final container = ProviderContainer.test();
+
+      container.listen(dep, (a, b) {});
+      final sub = container.listen(provider, (a, b) {});
+      sub.pause();
+      sub.resume();
+      sub.close();
+      notifier.state++;
+      depNotifier.state++;
+      container.invalidate(provider);
+
+      verify(onDispose());
+      verify(onResume());
+      verify(onCancel());
+      verify(onAddListener());
+      verify(onRemoveListener());
+    });
+
     test('asserts that a lifecycle cannot be used inside selectors', () {
       late Ref ref;
       final container = ProviderContainer.test();
@@ -125,66 +198,140 @@ void main() {
 
       expect(
         () => container.read(provider.select((_) => ref.watch(another))),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
       expect(
         () => container.read(provider.select((_) => ref.invalidateSelf())),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
       expect(
         () => container.read(provider.select((_) => ref.invalidate(dep))),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
       expect(
         () => container.read(provider.select((_) => ref.refresh(another))),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
       expect(
         () => container.read(provider.select((_) => ref.read(another))),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
       expect(
         () => container.read(provider.select((_) => ref.onDispose(() {}))),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
       expect(
         () => container.read(provider.select((_) => ref.onAddListener(() {}))),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
       expect(
         () => container.read(provider.select((_) => ref.onCancel(() {}))),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
       expect(
         () =>
             container.read(provider.select((_) => ref.onRemoveListener(() {}))),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
       expect(
         () => container.read(provider.select((_) => ref.onResume(() {}))),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
       expect(
         () => container.read(provider.select((_) => ref.notifyListeners())),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
       expect(
         () => container
             .read(provider.select((_) => ref.listen(another, (_, __) {}))),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
       expect(
         () => container.read(provider.select((_) => ref.exists(another))),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
 
       expect(
         () => container.read(provider.select((_) => ref.keepAlive())),
-        throwsA(isA<AssertionError>()),
+        throwsProviderException(isA<AssertionError>()),
       );
     });
 
     group('invalidate', () {
+      test('Does not mount unmounted providers', () {
+        final container = ProviderContainer.test();
+        var buildCount = 0;
+        final provider = Provider((ref) {
+          buildCount++;
+          return 0;
+        });
+        late Ref ref;
+        final dep = Provider((r) {
+          ref = r;
+          return 0;
+        });
+
+        container.read(dep);
+
+        ref.invalidate(provider);
+
+        expect(buildCount, 0);
+      });
+
+      test("invalidating shouldn't trigger a build on uninitialized providers",
+          () async {
+        // Regression test for https://github.com/rrousselGit/riverpod/issues/3760
+        final container = ProviderContainer.test();
+        var buildCount = 0;
+
+        final myNotifierProvider = AsyncNotifierProvider.family
+            .autoDispose<DeferredAsyncNotifier<int>, int, int>(
+          (chatId) => DeferredAsyncNotifier<int>((ref, self) {
+            buildCount++;
+            return 0;
+          }),
+        );
+
+        final peerNotifier = DeferredAsyncNotifier<int>(
+          (ref, self) => Future.value(0),
+        );
+        final peerNotifierProvider =
+            AsyncNotifierProvider.autoDispose<DeferredAsyncNotifier<int>, int>(
+          () => peerNotifier,
+          name: 'peerNotifierProvider',
+        );
+
+        container.read(peerNotifierProvider);
+        // ignore: invalid_use_of_protected_member
+        peerNotifier.ref.invalidate(myNotifierProvider(0));
+
+        expect(buildCount, 0);
+      });
+
+      test('Handles family', () {
+        // Regression test for https://github.com/rrousselGit/riverpod/issues/3567#issuecomment-2946467360
+        final onDispose = OnDisposeMock();
+        final someProvider = Provider((ref) => 0);
+        final familyProvider = Provider.family<int, int>(
+          (ref, a) {
+            final b = ref.watch(someProvider);
+            ref.onDispose(onDispose.call);
+            return a + b;
+          },
+          dependencies: [someProvider],
+        );
+        final root = ProviderContainer.test();
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [someProvider.overrideWith((ref) => 42)],
+        );
+
+        container.read(familyProvider(1));
+        container.invalidate(familyProvider);
+
+        verifyOnly(onDispose, onDispose());
+      });
+
       test('can disposes of the element if not used anymore', () async {
         late Ref ref;
         final dep = Provider((r) {
@@ -428,17 +575,27 @@ void main() {
             (ref) => 0,
             dependencies: const [],
           );
-          final dep = FutureProvider((ref) => 0, dependencies: [transitiveDep]);
+          final dep = FutureProvider(
+            name: 'dep',
+            (ref) => 0,
+            dependencies: [transitiveDep],
+          );
           final depFamily = FutureProvider.family(
+            name: 'depFamily',
             (ref, id) => 0,
             dependencies: const [],
           );
           final unrelatedScoped = FutureProvider(
+            name: 'unrelatedScoped',
             (ref) => 0,
             dependencies: const [],
           );
-          final nonScopedProvider = FutureProvider((ref) => 0);
+          final nonScopedProvider = FutureProvider(
+            name: 'nonScopedProvider',
+            (ref) => 0,
+          );
           final provider = FutureProvider(
+            name: 'provider',
             (ref) => ref,
             dependencies: [dep, depFamily],
           );
@@ -449,6 +606,7 @@ void main() {
           // accepts providers that are part of its dependencies
           call(ref, dep.select((value) => 0));
           call(ref, dep.selectAsync((value) => 0));
+
           call(ref, depFamily(42).select((value) => 0));
 
           // accepts non-scoped providers
@@ -933,8 +1091,8 @@ void main() {
 
           expect(
             container.pointerManager.orphanPointers.pointers[dep]!.element,
-            isA<ProviderElement<int>>()
-                .having((e) => e.stateResult, 'stateResult', null),
+            isA<ProviderElement>()
+                .having((e) => e.stateResult(), 'stateResult', null),
           );
         });
 
@@ -1149,7 +1307,7 @@ void main() {
           return 0;
         });
 
-        container.read(another);
+        container.listen(another, (a, b) {});
 
         expect(buildCount, 1);
         verifyOnly(isEvenListener, isEvenListener(null, true));
@@ -1228,7 +1386,7 @@ void main() {
           ref.listen<int>(dep, listener.call, fireImmediately: true);
         });
 
-        container.read(provider);
+        container.listen(provider, (a, b) {});
 
         verifyOnly(listener, listener(null, 0));
 
@@ -1282,7 +1440,7 @@ void main() {
           );
         });
 
-        container.read(provider);
+        container.listen(provider, (a, b) {});
         verifyOnly(listener, listener(null, true));
 
         container.read(dep.notifier).state += 2;
@@ -1914,9 +2072,8 @@ void main() {
           observer.didAddProvider(
             argThat(
               isProviderObserverContext(
-                provider,
-                container,
-                notifier: notifier,
+                provider: provider,
+                container: container,
               ),
             ),
             0,
@@ -1934,9 +2091,8 @@ void main() {
           observer.didUpdateProvider(
             argThat(
               isProviderObserverContext(
-                provider,
-                container,
-                notifier: notifier,
+                provider: provider,
+                container: container,
               ),
             ),
             0,
@@ -1969,9 +2125,8 @@ void main() {
           observer.didAddProvider(
             argThat(
               isProviderObserverContext(
-                provider,
-                container,
-                notifier: notifier,
+                provider: provider,
+                container: container,
               ),
             ),
             0,
@@ -2011,9 +2166,8 @@ void main() {
           observer.didAddProvider(
             argThat(
               isProviderObserverContext(
-                provider,
-                container,
-                notifier: notifier,
+                provider: provider,
+                container: container,
               ),
             ),
             firstValue,
@@ -2033,9 +2187,8 @@ void main() {
           observer.didDisposeProvider(
             argThat(
               isProviderObserverContext(
-                provider,
-                container,
-                notifier: notifier,
+                provider: provider,
+                container: container,
               ),
             ),
           ),
@@ -2044,9 +2197,8 @@ void main() {
           observer.didUpdateProvider(
             argThat(
               isProviderObserverContext(
-                provider,
-                container,
-                notifier: notifier2,
+                provider: provider,
+                container: container,
               ),
             ),
             firstValue,
@@ -2805,7 +2957,7 @@ void main() {
     group('.onCancel', () {
       test('returns a way to unregister the listener', () {
         final container = ProviderContainer.test();
-        final listener = OnCancelMock();
+        final listener = OnCancel();
         late RemoveListener remove;
         final provider = Provider((ref) {
           remove = ref.onCancel(listener.call);
@@ -2822,8 +2974,8 @@ void main() {
 
       test('is called when all container listeners are removed', () {
         final container = ProviderContainer.test();
-        final listener = OnCancelMock();
-        final listener2 = OnCancelMock();
+        final listener = OnCancel();
+        final listener2 = OnCancel();
         final provider = Provider((ref) {
           ref.onCancel(listener.call);
           ref.onCancel(listener2.call);
@@ -2848,8 +3000,8 @@ void main() {
 
       test('is called when all provider listeners are removed', () {
         final container = ProviderContainer.test();
-        final listener = OnCancelMock();
-        final listener2 = OnCancelMock();
+        final listener = OnCancel();
+        final listener2 = OnCancel();
         final dep = Provider((ref) {
           ref.onCancel(listener.call);
           ref.onCancel(listener2.call);
@@ -2879,8 +3031,8 @@ void main() {
 
       test('is called when all provider dependencies are removed', () async {
         final container = ProviderContainer.test();
-        final listener = OnCancelMock();
-        final listener2 = OnCancelMock();
+        final listener = OnCancel();
+        final listener2 = OnCancel();
         final resume = OnResume();
         final dep = Provider(name: 'dep', (ref) {
           ref.onCancel(listener.call);
@@ -2918,7 +3070,7 @@ void main() {
 
       test('is called when using container.read', () async {
         final container = ProviderContainer.test();
-        final listener = OnCancelMock();
+        final listener = OnCancel();
         final provider = Provider((ref) {
           ref.onCancel(listener.call);
         });
@@ -2930,8 +3082,8 @@ void main() {
 
       test('listeners are cleared on rebuild', () {
         final container = ProviderContainer.test();
-        final listener = OnCancelMock();
-        final listener2 = OnCancelMock();
+        final listener = OnCancel();
+        final listener2 = OnCancel();
         var isSecondBuild = false;
         final provider = Provider((ref) {
           if (isSecondBuild) {
@@ -2968,8 +3120,8 @@ void main() {
           ProviderContainer.test,
           (err, stack) => errors.add(err),
         )!;
-        final listener = OnCancelMock();
-        final listener2 = OnCancelMock();
+        final listener = OnCancel();
+        final listener2 = OnCancel();
         when(listener()).thenThrow(42);
         final provider = Provider((ref) {
           ref.onCancel(listener.call);
@@ -3052,7 +3204,7 @@ void main() {
         final container = ProviderContainer();
         addTearDown(container.dispose);
 
-        container.read(provider); // register the onDispose hooks
+        container.listen(provider, (_, __) {});
 
         verifyZeroInteractions(onDispose);
         verifyZeroInteractions(onDispose2);
@@ -3083,7 +3235,7 @@ void main() {
         final container = ProviderContainer();
         addTearDown(container.dispose);
 
-        container.read(provider); // register the onDispose hooks
+        container.listen(provider, (_, __) {});
 
         verifyZeroInteractions(onDispose);
 
@@ -3109,7 +3261,7 @@ void main() {
         final container = ProviderContainer();
         addTearDown(container.dispose);
 
-        container.read(provider); // register the onDispose hooks
+        container.listen(provider, (_, __) {});
         expect(buildCount, 1);
 
         verifyZeroInteractions(onDispose);

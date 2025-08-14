@@ -42,9 +42,50 @@ class CanInferPersist extends Notifier<int> {
 
 void main() {
   group('Offline', () {
+    test('Chaining providers using offline does not cause unnecessary rebuilds',
+        () async {
+      var buildCount = 0;
+      // Regression test for https://github.com/rrousselGit/riverpod/issues/4116
+      final container = ProviderContainer.test();
+      final parent = AsyncNotifierProvider<DeferredAsyncNotifier<int>, int>(
+        () => DeferredAsyncNotifier(
+          (ref, self) {
+            self.persist(
+              DelegatingStorage(read: (_) => const PersistedData(42)),
+              key: 'key',
+              encode: (value) => value,
+              decode: (encoded) => encoded,
+            );
+            return Future.value(0);
+          },
+        ),
+      );
+      final child = AsyncNotifierProvider<DeferredAsyncNotifier<int>, int>(
+        () => DeferredAsyncNotifier(
+          (ref, self) async {
+            buildCount++;
+            final value = await ref.watch(parent.future);
+            self.persist(
+              DelegatingStorage(read: (_) => const PersistedData(21)),
+              key: 'key2',
+              encode: (value) => value,
+              decode: (encoded) => encoded,
+            );
+            return value * 2;
+          },
+        ),
+      );
+
+      final sub = container.listen(child.future, (a, b) {});
+
+      expect(await sub.read(), 0);
+      expect(buildCount, 1);
+    });
+
     matrix.createGroup((factory) {
       test('Persist if the notifier implements NotifierEncoder', () {
         final storage = StorageMock<String, Object?>();
+        verify(storage.deleteOutOfDate());
         const op = StorageOptions(destroyKey: 'b');
         final provider = factory.simpleProvider(
           (ref, self) => 0,
@@ -163,28 +204,6 @@ void main() {
         );
       });
 
-      if (factory.isAsync) {
-        test('supports async storage', () async {
-          final provider = factory.simpleProvider(
-            (ref, self) {
-              self.persist(
-                Future.value(
-                  DelegatingStorage(
-                    read: (_) => Future.value(const PersistedData(42)),
-                  ),
-                ),
-                key: 'key',
-                encode: (value) => value,
-                decode: (encoded) => encoded,
-              );
-
-              return self.future;
-            },
-            autoPersist: false,
-          );
-        });
-      }
-
       test('Reports decoding/encoding errors to the zone', () async {
         final provider = factory.simpleProvider(
           (ref, self) => 0,
@@ -275,6 +294,66 @@ void main() {
         });
 
         if (factory.isAsync) {
+          test('Emitting an error after decoding preserves decoded state',
+              () async {
+            final container = ProviderContainer.test();
+            final provider = factory.simpleProvider(
+              (ref, self) => throw Exception('error'),
+              storage: DelegatingStorage(read: (_) => const PersistedData(42)),
+            );
+
+            container.listen(provider, (a, b) {});
+
+            expect(
+              container.read(provider),
+              isA<AsyncError<Object?>>()
+                  .having((e) => e.isFromCache, 'isFromCache', true)
+                  .having((e) => e.value, 'value', 42)
+                  .having((e) => e.stackTrace, 'stackTrace', isNotNull)
+                  .having((e) => e.error, 'message', isException),
+            );
+          });
+
+          test('Decoded value is available as AsyncLoading', () async {
+            // For the sake of not having provider.future resolve with decoded value,
+            // we emit decoded state as AsyncLoading.
+
+            final container = ProviderContainer.test();
+            final didPersist = Completer<void>();
+            final provider = factory.simpleProvider(
+              autoPersist: false,
+              (ref, self) async {
+                await self
+                    .persist(
+                      DelegatingStorage(read: (_) => const PersistedData(42)),
+                      key: 'foo',
+                      encode: (value) => value,
+                      decode: (value) => value,
+                    )
+                    .future;
+                didPersist.complete();
+                return self.future;
+              },
+            );
+
+            final sub = container.listen(provider, (a, b) {});
+            final notifier = container.read(provider.notifier!);
+
+            await didPersist.future;
+
+            expect(
+              notifier.stateOrNull,
+              isA<AsyncLoading<Object?>>()
+                  .having((e) => e.isFromCache, 'isFromCache', true)
+                  .having((e) => e.value, 'value', 42),
+            );
+
+            // Make it safe to dispose the provider by emitting at least one value.
+            notifier.state = const AsyncData(21);
+          });
+        }
+
+        if (factory.isAsync) {
           test(
               'Rebuilding a provider that is still in AsyncLoading() aborts the DB decoding',
               () async {
@@ -297,26 +376,43 @@ void main() {
 
             value.complete(21);
           });
-        }
 
-        if (factory.isAsync) {
           test('Adapters support asynchronously emitting values from the DB',
               () async {
+            final didPersistCompleter = Completer<void>();
+            final result = Completer<int>();
             final provider = factory.simpleProvider(
-              (ref, self) => self.future,
-              storage: DelegatingStorage(
-                read: (_) => Future(() => const PersistedData(21)),
-              ),
+              autoPersist: false,
+              (ref, self) async {
+                await self
+                    .persist(
+                      DelegatingStorage(
+                        read: (_) => Future(() => const PersistedData(21)),
+                      ),
+                      key: 'key',
+                      encode: (value) => value,
+                      decode: (encoded) => encoded,
+                    )
+                    .future;
+                didPersistCompleter.complete();
+                return result.future;
+              },
             );
             final container = ProviderContainer.test();
 
             container.listen(provider, (a, b) {});
+            final notifier = container.read(provider.notifier!);
 
             expect(
               container.read(provider),
               const AsyncValue<Object?>.loading(),
             );
-            expect(await container.read(provider.future!), 21);
+
+            await didPersistCompleter.future;
+
+            expect(notifier.valueOf, 21);
+
+            result.complete(42);
           });
         }
 
@@ -544,8 +640,8 @@ void main() {
   });
 }
 
-class Encode<T> with Mock {
-  Object? call(T? value);
+class Encode<DecodedT> with Mock {
+  Object? call(DecodedT? value);
 }
 
 // ignore: avoid_types_as_parameter_names
@@ -573,7 +669,7 @@ extension on AnyNotifier<Object?, Object?> {
   Future<Object?> get future {
     final that = this;
     switch (that) {
-      case $AsyncClassModifier<Object?, Object?, Object?>():
+      case $AsyncClassModifier<Object?, Object?>():
         return that.future;
       default:
         throw AssertionError('not async');
@@ -590,10 +686,10 @@ extension on TestFactory<Object?> {
     );
   }
 
-  R when<R>({
-    required R Function(AsyncNotifierTestFactory) asyncNotifier,
-    required R Function(StreamNotifierTestFactory) streamNotifier,
-    required R Function(NotifierTestFactory) notifier,
+  ResultT when<ResultT>({
+    required ResultT Function(AsyncNotifierTestFactory) asyncNotifier,
+    required ResultT Function(StreamNotifierTestFactory) streamNotifier,
+    required ResultT Function(NotifierTestFactory) notifier,
   }) {
     if (this is AsyncNotifierTestFactory) {
       return asyncNotifier(this as AsyncNotifierTestFactory);
@@ -659,8 +755,8 @@ extension on TestFactory<Object?> {
 
     return when(
       asyncNotifier: (factory) {
-        DeferredFamilyAsyncNotifier<Object?> familyNotifierCreate() =>
-            DeferredFamilyAsyncNotifier(familyCreate);
+        DeferredAsyncNotifier<Object?> familyNotifierCreate([Object? arg]) =>
+            DeferredAsyncNotifier(familyCreate, arg: arg);
         DeferredAsyncNotifier<Object?> notifierCreate() =>
             DeferredAsyncNotifier(create);
 
@@ -675,13 +771,13 @@ extension on TestFactory<Object?> {
             return AsyncNotifierProvider.autoDispose<
                 DeferredAsyncNotifier<Object?>, Object?>(notifierCreate);
           case (family: true, autoDispose: false):
-            return AsyncNotifierProvider.family<
-                DeferredFamilyAsyncNotifier<Object?>, Object?, Object?>(
+            return AsyncNotifierProvider.family<DeferredAsyncNotifier<Object?>,
+                Object?, Object?>(
               familyNotifierCreate,
             )(0);
           case (family: true, autoDispose: true):
             return AsyncNotifierProvider.autoDispose
-                .family<DeferredFamilyAsyncNotifier<Object?>, Object?, Object?>(
+                .family<DeferredAsyncNotifier<Object?>, Object?, Object?>(
               familyNotifierCreate,
             )(0);
         }
@@ -707,8 +803,8 @@ extension on TestFactory<Object?> {
           return controller.stream;
         }
 
-        DeferredFamilyStreamNotifier<Object?> familyNotifierCreate() =>
-            DeferredFamilyStreamNotifier(handle);
+        DeferredStreamNotifier<Object?> familyNotifierCreate(Object? arg) =>
+            DeferredStreamNotifier(handle, arg: arg);
         DeferredStreamNotifier<Object?> notifierCreate() =>
             DeferredStreamNotifier(handle);
 
@@ -724,19 +820,21 @@ extension on TestFactory<Object?> {
                 DeferredStreamNotifier<Object?>, Object?>(notifierCreate);
           case (family: true, autoDispose: false):
             return StreamNotifierProvider.family<
-                DeferredFamilyStreamNotifier<Object?>, Object?, Object?>(
+                DeferredStreamNotifier<Object?>, Object?, Object?>(
               familyNotifierCreate,
             )(0);
           case (family: true, autoDispose: true):
-            return StreamNotifierProvider.autoDispose.family<
-                DeferredFamilyStreamNotifier<Object?>, Object?, Object?>(
+            return StreamNotifierProvider.autoDispose
+                .family<DeferredStreamNotifier<Object?>, Object?, Object?>(
               familyNotifierCreate,
             )(0);
         }
       },
       notifier: (factory) {
-        DeferredFamilyNotifier<Object?> familyNotifierCreate() =>
-            DeferredFamilyNotifier(familyCreate);
+        DeferredNotifier<Object?> familyNotifierCreate([Object? arg]) =>
+            DeferredNotifier(
+              familyCreate,
+            );
         DeferredNotifier<Object?> notifierCreate() => DeferredNotifier(create);
 
         switch ((
@@ -751,13 +849,13 @@ extension on TestFactory<Object?> {
             return NotifierProvider.autoDispose<DeferredNotifier<Object?>,
                 Object?>(notifierCreate);
           case (family: true, autoDispose: false):
-            return NotifierProvider.family<DeferredFamilyNotifier<Object?>,
-                Object?, Object?>(
+            return NotifierProvider.family<DeferredNotifier<Object?>, Object?,
+                Object?>(
               familyNotifierCreate,
             )(0);
           case (family: true, autoDispose: true):
             return NotifierProvider.autoDispose
-                .family<DeferredFamilyNotifier<Object?>, Object?, Object?>(
+                .family<DeferredNotifier<Object?>, Object?, Object?>(
               familyNotifierCreate,
             )(0);
         }
@@ -791,7 +889,7 @@ extension on Object? {
 }
 
 // ignore: avoid_types_as_parameter_names
-class DelegatingStorage<KeyT, EncodedT> implements Storage<KeyT, EncodedT> {
+final class DelegatingStorage<KeyT, EncodedT> extends Storage<KeyT, EncodedT> {
   DelegatingStorage({
     required FutureOr<PersistedData<EncodedT>?> Function(KeyT key) read,
     FutureOr<void> Function(
@@ -802,7 +900,7 @@ class DelegatingStorage<KeyT, EncodedT> implements Storage<KeyT, EncodedT> {
     FutureOr<void> Function(KeyT key)? delete,
   })  : _read = read,
         _write = write ?? ((_, __, ___) {}),
-        _delete = delete ?? ((_) => throw UnimplementedError());
+        _delete = delete ?? ((_) {});
 
   final FutureOr<PersistedData<EncodedT>?> Function(KeyT key) _read;
   @override
@@ -820,4 +918,7 @@ class DelegatingStorage<KeyT, EncodedT> implements Storage<KeyT, EncodedT> {
   final FutureOr<void> Function(KeyT key) _delete;
   @override
   FutureOr<void> delete(KeyT key) => _delete(key);
+
+  @override
+  void deleteOutOfDate() {}
 }

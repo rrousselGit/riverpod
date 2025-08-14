@@ -6,10 +6,13 @@ part of 'unused_dependency.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(root)
 const rootProvider = RootProvider._();
 
-final class RootProvider extends $FunctionalProvider<int, int>
+final class RootProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const RootProvider._()
       : super(
@@ -39,7 +42,7 @@ final class RootProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -49,7 +52,7 @@ String _$rootHash() => r'dda8bbb46cb4d7c658597669e3be92e2447dcfb0';
 @ProviderFor(dep)
 const depProvider = DepProvider._();
 
-final class DepProvider extends $FunctionalProvider<int, int>
+final class DepProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const DepProvider._()
       : super(
@@ -79,7 +82,7 @@ final class DepProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -89,7 +92,7 @@ String _$depHash() => r'578a350a40cda46444ecd9fa3ea2fd7bd0994692';
 @ProviderFor(dep2)
 const dep2Provider = Dep2Provider._();
 
-final class Dep2Provider extends $FunctionalProvider<int, int>
+final class Dep2Provider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const Dep2Provider._()
       : super(
@@ -119,7 +122,7 @@ final class Dep2Provider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -127,11 +130,13 @@ final class Dep2Provider extends $FunctionalProvider<int, int>
 String _$dep2Hash() => r'97901e825cdcf5b1ac455b0fe8a2111662ce9f13';
 
 ////////////
+
 @ProviderFor(extraDep)
 const extraDepProvider = ExtraDepProvider._();
 
 ////////////
-final class ExtraDepProvider extends $FunctionalProvider<int, int>
+
+final class ExtraDepProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   ////////////
   const ExtraDepProvider._()
@@ -168,7 +173,7 @@ final class ExtraDepProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -178,7 +183,7 @@ String _$extraDepHash() => r'586c1a0f0ac120f8608c025a6a47fe5282b80320';
 @ProviderFor(noDep)
 const noDepProvider = NoDepProvider._();
 
-final class NoDepProvider extends $FunctionalProvider<int, int>
+final class NoDepProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const NoDepProvider._()
       : super(
@@ -212,7 +217,7 @@ final class NoDepProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -224,7 +229,7 @@ const dependenciesFirstThenKeepAliveProvider =
     DependenciesFirstThenKeepAliveProvider._();
 
 final class DependenciesFirstThenKeepAliveProvider
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const DependenciesFirstThenKeepAliveProvider._()
       : super(
           from: null,
@@ -257,7 +262,7 @@ final class DependenciesFirstThenKeepAliveProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -268,7 +273,7 @@ String _$dependenciesFirstThenKeepAliveHash() =>
 @ProviderFor(noDepNoParam)
 const noDepNoParamProvider = NoDepNoParamProvider._();
 
-final class NoDepNoParamProvider extends $FunctionalProvider<int, int>
+final class NoDepNoParamProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const NoDepNoParamProvider._()
       : super(
@@ -302,7 +307,7 @@ final class NoDepNoParamProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -312,7 +317,7 @@ String _$noDepNoParamHash() => r'ea3e66e28bbfb716adf89cea37a1607c78283e06';
 @ProviderFor(noDepWithoutComma)
 const noDepWithoutCommaProvider = NoDepWithoutCommaProvider._();
 
-final class NoDepWithoutCommaProvider extends $FunctionalProvider<int, int>
+final class NoDepWithoutCommaProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const NoDepWithoutCommaProvider._()
       : super(
@@ -346,7 +351,7 @@ final class NoDepWithoutCommaProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -356,7 +361,7 @@ String _$noDepWithoutCommaHash() => r'a3b07e526b4829ee4ed1848de4ff64c3b05c1a30';
 @ProviderFor(rootDep)
 const rootDepProvider = RootDepProvider._();
 
-final class RootDepProvider extends $FunctionalProvider<int, int>
+final class RootDepProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const RootDepProvider._()
       : super(
@@ -390,12 +395,9 @@ final class RootDepProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
 
 String _$rootDepHash() => r'c406dc7e58c18bc46ed722a81208bc13fe62654a';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

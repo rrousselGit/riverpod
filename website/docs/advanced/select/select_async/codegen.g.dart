@@ -8,11 +8,14 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(user)
 const userProvider = UserProvider._();
 
 final class UserProvider
-    extends $FunctionalProvider<AsyncValue<User>, FutureOr<User>>
+    extends $FunctionalProvider<AsyncValue<User>, User, FutureOr<User>>
     with $FutureModifier<User>, $FutureProvider<User> {
   const UserProvider._()
       : super(
@@ -44,7 +47,8 @@ String _$userHash() => r'b83ca110a6fae2341d1bfca73fb3d89c4d12723d';
 @ProviderFor(example)
 const exampleProvider = ExampleProvider._();
 
-final class ExampleProvider extends $FunctionalProvider<Object?, Object?>
+final class ExampleProvider
+    extends $FunctionalProvider<Object?, Object?, Object?>
     with $Provider<Object?> {
   const ExampleProvider._()
       : super(
@@ -74,12 +78,9 @@ final class ExampleProvider extends $FunctionalProvider<Object?, Object?>
   Override overrideWithValue(Object? value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Object?>(value),
+      providerOverride: $SyncValueProvider<Object?>(value),
     );
   }
 }
 
 String _$exampleHash() => r'05abb7bf29fe43807cb1a31a17eb23c821529a69';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

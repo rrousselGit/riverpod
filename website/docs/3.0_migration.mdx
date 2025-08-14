@@ -94,18 +94,18 @@ Alternatively, you can disable automatic retry on a per-provider basis by using 
 In Riverpod 3.0, [out of view providers are paused by default](./whats_new.mdx#listeners-inside-widgets-that-are-not-visible-are-now-paused).
 
 There is currently no way to disable this behavior globally, but you can control
-the pause behavior at the consumer level by using the [Visibility] widget.
+the pause behavior at the consumer level by using the [TickerMode] widget.
 
 ```dart
 class MyWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Visibility(
-      visible: false, // This will pause the listeners
+    return TickerMode(
+      enabled: false, // This will pause the listeners
       child: Consumer(
         builder: (context, ref, child) {
           // This "watch" will be paused
-          // until Visibility is set to true
+          // until TickerMode is set to true
           final value = ref.watch(myProvider);
           return Text(value.toString());
         },
@@ -175,7 +175,7 @@ In the scenario where you didn't use a `Notifier`, you can refactor your provide
 
 ## ProviderObserver has its interface slightly changed
 
-For the sake of [mutations](./whats_new.mdx#mutations-experimental-code-generation-only), 
+For the sake of [mutations](./whats_new.mdx#mutations), 
 the [ProviderObserver] interface has changed slightly.
 
 Instead of two separate parameters for [ProviderContainer] and [ProviderBase], 
@@ -206,7 +206,7 @@ Specifically, `ProviderRef.state`, `Ref.listenSelf` and `FutureProviderRef.futur
   language="dart"
   codegen={`
   // Before:
-  @override
+  @riverpod
   Future<int> value(ValueRef ref) async {
     ref.listen(anotherProvider, (previous, next) {
       ref.state++;
@@ -298,15 +298,46 @@ This primarily affects code-generation. Instead of `MyProviderRef`, you can now 
 }
 ```
 
-## AutoDispose interfaces are moved
+## AutoDispose interfaces are removed.
 
 The auto-dispose feature is simplified. Instead of relying on a clone of all interfaces,
-interfaces are unified.
-
-In short, instead of `AutoDisposeProvider`, `AutoDisposeNotifier`, etc, you now have `Provider`, `Notifier`, etc.
-The behavior is the same, but the API is simplified.
+interfaces are unified. In short, instead of `AutoDisposeProvider`, `AutoDisposeNotifier`, 
+etc, you now have `Provider`, `Notifier`, etc. The behavior is the same, but the API is simplified.
 
 To easily migrate, you can do a case-sensitive replace of `AutoDispose` to ` ` (empty string).
+
+## The family variant of Notifiers is removed
+
+In the same vein as the previous point, the family variant of Notifiers is removed.
+Now, we use `Notifier`/`AsyncNotifier`/`StreamNotifier` only, and `FamilyNotifier`/... are removed.
+
+To migrate, you will need to replace:
+- `FamilyNotifier` -> `Notifier`
+- `FamilyAsyncNotifier` -> `AsyncNotifier`
+- `FamilyStreamNotifier` -> `StreamNotifier`
+
+Then, you will need to:
+- Remove the parameter from the `build` method
+- Add a constructor on your Notifier
+
+An example of this migration is as follows:
+
+```diff
+final provider = NotifierProvider.family<CounterNotifier, int, String>(CounterNotifier.new);
+
+-class CounterNotifier extends FamilyNotifier<int, String> {
++class CounterNotifier extends Notifier<int> {
++  CounterNotifier(this.arg);
++  final String arg;
+
+   @override
+-  int build(String arg) {
++  int build() {
+     // Use `arg` as needed
+      return 0;
+   }
+}
+```
 
 ## Provider failures are now rethrown as ProviderExceptions
 
@@ -343,65 +374,7 @@ if (value.error is NotFoundException) {
 :::
 
 
-## Notifiers are now recreated when the provider rebuilds
-
-In 2.0, Notifier instances were reused for the lifetime of the provider.
-In 3.0, [a new Notifier is created whenever the provider rebuilds](./whats_new.mdx#when-a-notifier-rebuilds-a-new-instance-of-the-notifier-class-is-created).
-
-This prevents storing state inside the Notifier class itself, as any state outside of the `state` property
-will be lost when the provider rebuilds.  
-To fix this, you will need to move any custom state inside `Notifier.state`.
-
-
-<AutoSnippet
-  language="dart"
-  codegen={`
-  // Before:
-  @riverpod
-  class TodoList extends _$TodoList {
-    int _count = 0;
-  
-    @override
-    List<Todo> build() => [];
-  }
-  
-  // After
-  class TodosState {
-    TodosState._(this.todos, this._count);
-    final List<Todo> todos;
-    int _count;
-  }
-  @riverpod
-  class TodoList extends _$TodoList {
-    @override
-    TodosState build() => TodosState._([], 0);
-  }
-  `}
-  
-  raw={`
-  // Before:
-  class TodoList extends Notifier<List<Todo>> {
-    int _count = 0;
-  
-    @override
-    List<Todo> build() => [];
-  }
-  
-  // After
-  class TodosState {
-    TodosState._(this.todos, this._count);
-    final List<Todo> todos;
-    int _count;
-  }
-  class TodoList extends Notifier<TodosState> {
-    @override
-    TodosState build() => TodosState._([], 0);
-  }
-  `}
-></AutoSnippet>
-
-
-[Visibility]: https://api.flutter.dev/flutter/widgets/Visibility-class.html
+[TickerMode]: https://api.flutter.dev/flutter/widgets/TickerMode-class.html
 [StreamProvider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/StreamProvider-class.html
 [StreamNotifierProvider]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/StreamNotifierProvider.html
 [ProviderObserver]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderObserver-class.html

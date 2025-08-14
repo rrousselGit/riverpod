@@ -12,19 +12,19 @@ sealed class _ProviderOverride implements Override {}
 
 extension on _ProviderOverride {
   /// The provider that is overridden.
-  ProviderBase<Object?> get origin {
+  $ProviderBaseImpl<Object?> get origin {
     final that = this;
     return switch (that) {
-      ProviderBase() => that,
+      $ProviderBaseImpl() => that,
       $ProviderOverride() => that.origin,
     };
   }
 
   /// The new provider behavior.
-  ProviderBase<Object?> get providerOverride {
+  $ProviderBaseImpl<Object?> get providerOverride {
     final that = this;
     return switch (that) {
-      ProviderBase() => that,
+      $ProviderBaseImpl() => that,
       $ProviderOverride() => that.providerOverride,
     };
   }
@@ -61,16 +61,16 @@ class $ProviderOverride implements _ProviderOverride {
   });
 
   /// The provider that is overridden.
-  final ProviderBase<Object?> origin;
+  final $ProviderBaseImpl<Object?> origin;
 
   /// The new provider behavior.
-  final ProviderBase<Object?> providerOverride;
+  final $ProviderBaseImpl<Object?> providerOverride;
 
   @mustBeOverridden
   @override
   String toString() {
     switch (providerOverride) {
-      case $ValueProvider(:final _value):
+      case _ValueProvider(:final _value):
         return '$origin.overrideWithValue($_value)';
       default:
         return '$origin.overrideWith(...)';
@@ -84,10 +84,10 @@ class TransitiveProviderOverride implements $ProviderOverride {
   TransitiveProviderOverride(this.origin);
 
   @override
-  final ProviderBase<Object?> origin;
+  final $ProviderBaseImpl<Object?> origin;
 
   @override
-  ProviderBase<Object?> get providerOverride => origin;
+  $ProviderBaseImpl<Object?> get providerOverride => origin;
 
   @override
   String toString() => '$origin';

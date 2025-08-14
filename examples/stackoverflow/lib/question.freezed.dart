@@ -1,6 +1,5 @@
-// dart format width=80
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -84,6 +83,159 @@ class _$QuestionsResponseCopyWithImpl<$Res>
           : total // ignore: cast_nullable_to_non_nullable
               as int,
     ));
+  }
+}
+
+/// Adds pattern-matching-related methods to [QuestionsResponse].
+extension QuestionsResponsePatterns on QuestionsResponse {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_QuestionsResponse value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _QuestionsResponse() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_QuestionsResponse value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _QuestionsResponse():
+        return $default(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_QuestionsResponse value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _QuestionsResponse() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(List<Question> items, int total)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _QuestionsResponse() when $default != null:
+        return $default(_that.items, _that.total);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(List<Question> items, int total) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _QuestionsResponse():
+        return $default(_that.items, _that.total);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(List<Question> items, int total)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _QuestionsResponse() when $default != null:
+        return $default(_that.items, _that.total);
+      case _:
+        return null;
+    }
   }
 }
 
@@ -362,6 +514,234 @@ class _$QuestionCopyWithImpl<$Res> implements $QuestionCopyWith<$Res> {
     return $UserCopyWith<$Res>(_self.owner, (value) {
       return _then(_self.copyWith(owner: value));
     });
+  }
+}
+
+/// Adds pattern-matching-related methods to [Question].
+extension QuestionPatterns on Question {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_Question value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _Question() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_Question value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _Question():
+        return $default(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_Question value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _Question() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(
+            List<String> tags,
+            int viewCount,
+            int score,
+            int? bountyAmount,
+            int? acceptedAnswerId,
+            User owner,
+            int answerCount,
+            @TimestampParser() DateTime creationDate,
+            int questionId,
+            String link,
+            String title,
+            String body)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _Question() when $default != null:
+        return $default(
+            _that.tags,
+            _that.viewCount,
+            _that.score,
+            _that.bountyAmount,
+            _that.acceptedAnswerId,
+            _that.owner,
+            _that.answerCount,
+            _that.creationDate,
+            _that.questionId,
+            _that.link,
+            _that.title,
+            _that.body);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(
+            List<String> tags,
+            int viewCount,
+            int score,
+            int? bountyAmount,
+            int? acceptedAnswerId,
+            User owner,
+            int answerCount,
+            @TimestampParser() DateTime creationDate,
+            int questionId,
+            String link,
+            String title,
+            String body)
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _Question():
+        return $default(
+            _that.tags,
+            _that.viewCount,
+            _that.score,
+            _that.bountyAmount,
+            _that.acceptedAnswerId,
+            _that.owner,
+            _that.answerCount,
+            _that.creationDate,
+            _that.questionId,
+            _that.link,
+            _that.title,
+            _that.body);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(
+            List<String> tags,
+            int viewCount,
+            int score,
+            int? bountyAmount,
+            int? acceptedAnswerId,
+            User owner,
+            int answerCount,
+            @TimestampParser() DateTime creationDate,
+            int questionId,
+            String link,
+            String title,
+            String body)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _Question() when $default != null:
+        return $default(
+            _that.tags,
+            _that.viewCount,
+            _that.score,
+            _that.bountyAmount,
+            _that.acceptedAnswerId,
+            _that.owner,
+            _that.answerCount,
+            _that.creationDate,
+            _that.questionId,
+            _that.link,
+            _that.title,
+            _that.body);
+      case _:
+        return null;
+    }
   }
 }
 
@@ -662,6 +1042,161 @@ class _$QuestionThemeCopyWithImpl<$Res>
           : descriptionStyle // ignore: cast_nullable_to_non_nullable
               as TextStyle,
     ));
+  }
+}
+
+/// Adds pattern-matching-related methods to [QuestionTheme].
+extension QuestionThemePatterns on QuestionTheme {
+  /// A variant of `map` that fallback to returning `orElse`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>(
+    TResult Function(_QuestionTheme value)? $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _QuestionTheme() when $default != null:
+        return $default(_that);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// Callbacks receives the raw object, upcasted.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case final Subclass2 value:
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>(
+    TResult Function(_QuestionTheme value) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _QuestionTheme():
+        return $default(_that);
+    }
+  }
+
+  /// A variant of `map` that fallback to returning `null`.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case final Subclass value:
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>(
+    TResult? Function(_QuestionTheme value)? $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _QuestionTheme() when $default != null:
+        return $default(_that);
+      case _:
+        return null;
+    }
+  }
+
+  /// A variant of `when` that fallback to an `orElse` callback.
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return orElse();
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>(
+    TResult Function(TextStyle titleStyle, TextStyle descriptionStyle)?
+        $default, {
+    required TResult orElse(),
+  }) {
+    final _that = this;
+    switch (_that) {
+      case _QuestionTheme() when $default != null:
+        return $default(_that.titleStyle, _that.descriptionStyle);
+      case _:
+        return orElse();
+    }
+  }
+
+  /// A `switch`-like method, using callbacks.
+  ///
+  /// As opposed to `map`, this offers destructuring.
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case Subclass2(:final field2):
+  ///     return ...;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>(
+    TResult Function(TextStyle titleStyle, TextStyle descriptionStyle) $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _QuestionTheme():
+        return $default(_that.titleStyle, _that.descriptionStyle);
+    }
+  }
+
+  /// A variant of `when` that fallback to returning `null`
+  ///
+  /// It is equivalent to doing:
+  /// ```dart
+  /// switch (sealedClass) {
+  ///   case Subclass(:final field):
+  ///     return ...;
+  ///   case _:
+  ///     return null;
+  /// }
+  /// ```
+
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>(
+    TResult? Function(TextStyle titleStyle, TextStyle descriptionStyle)?
+        $default,
+  ) {
+    final _that = this;
+    switch (_that) {
+      case _QuestionTheme() when $default != null:
+        return $default(_that.titleStyle, _that.descriptionStyle);
+      case _:
+        return null;
+    }
   }
 }
 

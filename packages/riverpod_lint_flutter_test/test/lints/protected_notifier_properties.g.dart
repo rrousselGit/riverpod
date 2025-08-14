@@ -6,6 +6,9 @@ part of 'protected_notifier_properties.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(A)
 const aProvider = AProvider._();
 
@@ -28,16 +31,11 @@ final class AProvider extends $NotifierProvider<A, int> {
   @override
   A create() => A();
 
-  @$internal
-  @override
-  $NotifierProviderElement<A, int> $createElement($ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -50,7 +48,7 @@ abstract class _$A extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -79,16 +77,11 @@ final class A2Provider extends $NotifierProvider<A2, int> {
   @override
   A2 create() => A2();
 
-  @$internal
-  @override
-  $NotifierProviderElement<A2, int> $createElement($ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -101,7 +94,7 @@ abstract class _$A2 extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -136,16 +129,11 @@ final class A3Provider extends $NotifierProvider<A3, int> {
   @override
   A3 create() => A3();
 
-  @$internal
-  @override
-  $NotifierProviderElement<A3, int> $createElement($ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -195,7 +183,7 @@ abstract class _$A3 extends $Notifier<int> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -230,16 +218,11 @@ final class A4Provider extends $NotifierProvider<A4, int> {
   @override
   A4 create() => A4();
 
-  @$internal
-  @override
-  $NotifierProviderElement<A4, int> $createElement($ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -289,7 +272,7 @@ abstract class _$A4 extends $Notifier<int> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -323,12 +306,6 @@ final class A5Provider extends $AsyncNotifierProvider<A5, int> {
   @$internal
   @override
   A5 create() => A5();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<A5, int> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 
   @override
   bool operator ==(Object other) {
@@ -376,7 +353,7 @@ abstract class _$A5 extends $AsyncNotifier<int> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final ref = this.ref as $Ref<AsyncValue<int>, int>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
@@ -410,12 +387,6 @@ final class A6Provider extends $AsyncNotifierProvider<A6, int> {
   @$internal
   @override
   A6 create() => A6();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<A6, int> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 
   @override
   bool operator ==(Object other) {
@@ -463,7 +434,7 @@ abstract class _$A6 extends $AsyncNotifier<int> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final ref = this.ref as $Ref<AsyncValue<int>, int>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
@@ -497,12 +468,6 @@ final class A7Provider extends $StreamNotifierProvider<A7, int> {
   @$internal
   @override
   A7 create() => A7();
-
-  @$internal
-  @override
-  $StreamNotifierProviderElement<A7, int> $createElement(
-          $ProviderPointer pointer) =>
-      $StreamNotifierProviderElement(pointer);
 
   @override
   bool operator ==(Object other) {
@@ -550,7 +515,7 @@ abstract class _$A7 extends $StreamNotifier<int> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final ref = this.ref as $Ref<AsyncValue<int>, int>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
@@ -584,12 +549,6 @@ final class A8Provider extends $StreamNotifierProvider<A8, int> {
   @$internal
   @override
   A8 create() => A8();
-
-  @$internal
-  @override
-  $StreamNotifierProviderElement<A8, int> $createElement(
-          $ProviderPointer pointer) =>
-      $StreamNotifierProviderElement(pointer);
 
   @override
   bool operator ==(Object other) {
@@ -637,7 +596,7 @@ abstract class _$A8 extends $StreamNotifier<int> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final ref = this.ref as $Ref<AsyncValue<int>, int>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
@@ -666,16 +625,11 @@ final class BProvider extends $NotifierProvider<B, int> {
   @override
   B create() => B();
 
-  @$internal
-  @override
-  $NotifierProviderElement<B, int> $createElement($ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -688,7 +642,7 @@ abstract class _$B extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -717,16 +671,11 @@ final class B2Provider extends $NotifierProvider<B2, int> {
   @override
   B2 create() => B2();
 
-  @$internal
-  @override
-  $NotifierProviderElement<B2, int> $createElement($ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -739,12 +688,9 @@ abstract class _$B2 extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

@@ -6,10 +6,13 @@ part of 'main.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(count)
 const myCountPod = CountProvider._();
 
-final class CountProvider extends $FunctionalProvider<int, int>
+final class CountProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const CountProvider._()
       : super(
@@ -39,7 +42,7 @@ final class CountProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -50,7 +53,7 @@ String _$countHash() => r'a31bb5cbb0ddb2466df2cc62a306709ea24fae12';
 const myCountFuturePod = CountFutureProvider._();
 
 final class CountFutureProvider
-    extends $FunctionalProvider<AsyncValue<int>, FutureOr<int>>
+    extends $FunctionalProvider<AsyncValue<int>, int, FutureOr<int>>
     with $FutureModifier<int>, $FutureProvider<int> {
   const CountFutureProvider._()
       : super(
@@ -83,7 +86,7 @@ String _$countFutureHash() => r'c292214b486fdd9ec98a61e277812f29fc4b5802';
 const myCountStreamPod = CountStreamProvider._();
 
 final class CountStreamProvider
-    extends $FunctionalProvider<AsyncValue<int>, Stream<int>>
+    extends $FunctionalProvider<AsyncValue<int>, int, Stream<int>>
     with $FutureModifier<int>, $StreamProvider<int> {
   const CountStreamProvider._()
       : super(
@@ -135,17 +138,11 @@ final class CountNotifierProvider
   @override
   CountNotifier create() => CountNotifier();
 
-  @$internal
-  @override
-  $NotifierProviderElement<CountNotifier, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -158,7 +155,7 @@ abstract class _$CountNotifier extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -187,12 +184,6 @@ final class CountAsyncNotifierProvider
   @$internal
   @override
   CountAsyncNotifier create() => CountAsyncNotifier();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<CountAsyncNotifier, int> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 }
 
 String _$countAsyncNotifierHash() =>
@@ -204,7 +195,7 @@ abstract class _$CountAsyncNotifier extends $AsyncNotifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final ref = this.ref as $Ref<AsyncValue<int>, int>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
@@ -233,12 +224,6 @@ final class CountStreamNotifierProvider
   @$internal
   @override
   CountStreamNotifier create() => CountStreamNotifier();
-
-  @$internal
-  @override
-  $StreamNotifierProviderElement<CountStreamNotifier, int> $createElement(
-          $ProviderPointer pointer) =>
-      $StreamNotifierProviderElement(pointer);
 }
 
 String _$countStreamNotifierHash() =>
@@ -250,7 +235,7 @@ abstract class _$CountStreamNotifier extends $StreamNotifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final ref = this.ref as $Ref<AsyncValue<int>, int>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
@@ -260,7 +245,7 @@ abstract class _$CountStreamNotifier extends $StreamNotifier<int> {
 @ProviderFor(count2)
 const myFamilyCount2ProviderFamily = Count2Family._();
 
-final class Count2Provider extends $FunctionalProvider<int, int>
+final class Count2Provider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const Count2Provider._(
       {required Count2Family super.from, required int super.argument})
@@ -300,7 +285,7 @@ final class Count2Provider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -341,7 +326,7 @@ final class Count2Family extends $Family
 const myFamilyCountFuture2ProviderFamily = CountFuture2Family._();
 
 final class CountFuture2Provider
-    extends $FunctionalProvider<AsyncValue<int>, FutureOr<int>>
+    extends $FunctionalProvider<AsyncValue<int>, int, FutureOr<int>>
     with $FutureModifier<int>, $FutureProvider<int> {
   const CountFuture2Provider._(
       {required CountFuture2Family super.from, required int super.argument})
@@ -414,7 +399,7 @@ final class CountFuture2Family extends $Family
 const myFamilyCountStream2ProviderFamily = CountStream2Family._();
 
 final class CountStream2Provider
-    extends $FunctionalProvider<AsyncValue<int>, Stream<int>>
+    extends $FunctionalProvider<AsyncValue<int>, int, Stream<int>>
     with $FutureModifier<int>, $StreamProvider<int> {
   const CountStream2Provider._(
       {required CountStream2Family super.from, required int super.argument})
@@ -512,17 +497,11 @@ final class CountNotifier2Provider
   @override
   CountNotifier2 create() => CountNotifier2();
 
-  @$internal
-  @override
-  $NotifierProviderElement<CountNotifier2, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -572,7 +551,7 @@ abstract class _$CountNotifier2 extends $Notifier<int> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -608,12 +587,6 @@ final class CountAsyncNotifier2Provider
   @$internal
   @override
   CountAsyncNotifier2 create() => CountAsyncNotifier2();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<CountAsyncNotifier2, int> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 
   @override
   bool operator ==(Object other) {
@@ -664,7 +637,7 @@ abstract class _$CountAsyncNotifier2 extends $AsyncNotifier<int> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final ref = this.ref as $Ref<AsyncValue<int>, int>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
@@ -701,12 +674,6 @@ final class CountStreamNotifier2Provider
   @$internal
   @override
   CountStreamNotifier2 create() => CountStreamNotifier2();
-
-  @$internal
-  @override
-  $StreamNotifierProviderElement<CountStreamNotifier2, int> $createElement(
-          $ProviderPointer pointer) =>
-      $StreamNotifierProviderElement(pointer);
 
   @override
   bool operator ==(Object other) {
@@ -757,12 +724,146 @@ abstract class _$CountStreamNotifier2 extends $StreamNotifier<int> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final ref = this.ref as $Ref<AsyncValue<int>, int>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
 
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
+@ProviderFor(TimeController)
+const myTimePod = TimeControllerProvider._();
+
+final class TimeControllerProvider
+    extends $NotifierProvider<TimeController, int> {
+  const TimeControllerProvider._()
+      : super(
+          from: null,
+          argument: null,
+          retry: null,
+          name: r'myTimePod',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$timeControllerHash();
+
+  @$internal
+  @override
+  TimeController create() => TimeController();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<int>(value),
+    );
+  }
+}
+
+String _$timeControllerHash() => r'6bf21e367715e4d476170b36e2ab75e34a653c7d';
+
+abstract class _$TimeController extends $Notifier<int> {
+  int build();
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build();
+    final ref = this.ref as $Ref<int, int>;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}
+
+@ProviderFor(TimeController2)
+const myFamilyTimeProviderFamily = TimeController2Family._();
+
+final class TimeController2Provider
+    extends $NotifierProvider<TimeController2, int> {
+  const TimeController2Provider._(
+      {required TimeController2Family super.from, required int super.argument})
+      : super(
+          retry: null,
+          name: r'myFamilyTimeProviderFamily',
+          isAutoDispose: true,
+          dependencies: null,
+          $allTransitiveDependencies: null,
+        );
+
+  @override
+  String debugGetCreateSourceHash() => _$timeController2Hash();
+
+  @override
+  String toString() {
+    return r'myFamilyTimeProviderFamily'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  TimeController2 create() => TimeController2();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(int value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<int>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is TimeController2Provider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$timeController2Hash() => r'8bba0763d5955bd6e276ee913a0f25e032aa0db6';
+
+final class TimeController2Family extends $Family
+    with $ClassFamilyOverride<TimeController2, int, int, int, int> {
+  const TimeController2Family._()
+      : super(
+          retry: null,
+          name: r'myFamilyTimeProviderFamily',
+          dependencies: null,
+          $allTransitiveDependencies: null,
+          isAutoDispose: true,
+        );
+
+  TimeController2Provider call(
+    int a,
+  ) =>
+      TimeController2Provider._(argument: a, from: this);
+
+  @override
+  String toString() => r'myFamilyTimeProviderFamily';
+}
+
+abstract class _$TimeController2 extends $Notifier<int> {
+  late final _$args = ref.$arg as int;
+  int get a => _$args;
+
+  int build(
+    int a,
+  );
+  @$mustCallSuper
+  @override
+  void runBuild() {
+    final created = build(
+      _$args,
+    );
+    final ref = this.ref as $Ref<int, int>;
+    final element = ref.element
+        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
+    element.handleValue(ref, created);
+  }
+}

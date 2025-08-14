@@ -10,29 +10,6 @@ import 'package:riverpod/legacy.dart';
 import 'package:riverpod/src/internals.dart'
     show NodeInternal, InternalProviderContainer;
 
-class SimpleVisibility extends StatelessWidget {
-  const SimpleVisibility({
-    super.key,
-    required this.visible,
-    required this.child,
-  });
-
-  final bool visible;
-  final Widget child;
-
-  @override
-  Widget build(BuildContext context) {
-    return Visibility(
-      visible: visible,
-      maintainState: true,
-      maintainAnimation: true,
-      maintainSize: true,
-      maintainInteractivity: true,
-      child: child,
-    );
-  }
-}
-
 void main() {
   group('_ListenManual', () {
     testWidgets('handles pause/resume', (tester) async {
@@ -55,7 +32,7 @@ void main() {
         ),
       );
 
-      final container = ProviderScope.containerOf(ref.context);
+      final container = tester.container();
       final element = container.readProviderElement(provider);
 
       expect(element.isActive, true);
@@ -70,7 +47,72 @@ void main() {
     });
   });
 
-  group('Handles Visibility', () {
+  group('Handles TickerMode', () {
+    testWidgets('e2e navigation', (tester) async {
+      final provider = Provider((ref) => 0);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: MaterialApp(
+            routes: {'/detail': (_) => const SizedBox()},
+            home: Consumer(
+              builder: (context, ref, child) {
+                ref.watch(provider);
+
+                return Container();
+              },
+            ),
+          ),
+        ),
+      );
+
+      final container = tester.container();
+      final element = container.readProviderElement(provider);
+      final navigator = tester.state<NavigatorState>(
+        find.byType(Navigator),
+      );
+
+      expect(
+        element.dependents,
+        everyElement(
+          isA<ProviderSubscription>()
+              .having((e) => e.isPaused, 'isPaused', false),
+        ),
+      );
+
+      unawaited(navigator.pushNamed('/detail'));
+      await tester.pump();
+
+      expect(
+        element.dependents,
+        everyElement(
+          isA<ProviderSubscription>()
+              .having((e) => e.isPaused, 'isPaused', false),
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      expect(
+        element.dependents,
+        everyElement(
+          isA<ProviderSubscription>()
+              .having((e) => e.isPaused, 'isPaused', true),
+        ),
+      );
+
+      navigator.pop();
+      await tester.pump();
+
+      expect(
+        element.dependents,
+        everyElement(
+          isA<ProviderSubscription>()
+              .having((e) => e.isPaused, 'isPaused', false),
+        ),
+      );
+    });
+
     testWidgets(
         'when adding a listener, initializes pause state based on visibility',
         (tester) async {
@@ -89,8 +131,8 @@ void main() {
                   return const SizedBox();
                 },
               ),
-              SimpleVisibility(
-                visible: false,
+              TickerMode(
+                enabled: false,
                 child: Consumer(
                   builder: (c, ref, _) {
                     ref.listen(_provider, (_, __) {});
@@ -106,9 +148,7 @@ void main() {
         ),
       );
 
-      final container = ProviderScope.containerOf(
-        tester.element(find.byType(Column)),
-      );
+      final container = tester.container();
       final visibleElement = container.readProviderElement(providerForVisible);
       final hiddenElement = container.readProviderElement(_provider);
 
@@ -140,7 +180,7 @@ void main() {
 
       await tester.pumpWidget(
         ProviderScope(
-          child: SimpleVisibility(visible: false, child: widget),
+          child: TickerMode(enabled: false, child: widget),
         ),
       );
 
@@ -162,7 +202,7 @@ void main() {
 
       await tester.pumpWidget(
         ProviderScope(
-          child: SimpleVisibility(visible: true, child: widget),
+          child: TickerMode(enabled: true, child: widget),
         ),
       );
 
@@ -170,7 +210,7 @@ void main() {
 
       await tester.pumpWidget(
         ProviderScope(
-          child: SimpleVisibility(visible: false, child: widget),
+          child: TickerMode(enabled: false, child: widget),
         ),
       );
 
@@ -178,7 +218,7 @@ void main() {
 
       await tester.pumpWidget(
         ProviderScope(
-          child: SimpleVisibility(visible: true, child: widget),
+          child: TickerMode(enabled: true, child: widget),
         ),
       );
 
@@ -203,7 +243,7 @@ void main() {
         ProviderScope(
           child: Theme(
             data: ThemeData.dark(),
-            child: SimpleVisibility(visible: false, child: widget),
+            child: TickerMode(enabled: false, child: widget),
           ),
         ),
       );
@@ -214,7 +254,7 @@ void main() {
         ProviderScope(
           child: Theme(
             data: ThemeData.light(),
-            child: SimpleVisibility(visible: false, child: widget),
+            child: TickerMode(enabled: false, child: widget),
           ),
         ),
       );
@@ -265,6 +305,25 @@ void main() {
     expect(find.byKey(const Key('42')), findsOneWidget);
   });
 
+  testWidgets(
+      'Handles using ref.read inside initState on autoDispose providers',
+      (tester) async {
+    // Regression test for https://github.com/rrousselGit/riverpod/issues/3498
+    // When using autoDispose + ref.read, this could trigger a markNeedsBuild
+    // exception in the ProviderScope.
+    final provider = Provider.autoDispose((ref) => 0);
+
+    final widget = CallbackConsumerWidget(
+      initState: (context, ref) {
+        ref.read(provider);
+      },
+    );
+
+    await tester.pumpWidget(ProviderScope(child: widget));
+
+    // Should not have thrown an exception
+  });
+
   testWidgets('Ref is unusable after dispose', (tester) async {
     late WidgetRef ref;
     await tester.pumpWidget(
@@ -280,13 +339,7 @@ void main() {
 
     await tester.pumpWidget(ProviderScope(child: Container()));
 
-    final throwsDisposeError = throwsA(
-      isStateError.having(
-        (e) => e.message,
-        'message',
-        'Cannot use "ref" after the widget was disposed.',
-      ),
-    );
+    final throwsDisposeError = throwsA(isStateError);
 
     expect(() => ref.read(_provider), throwsDisposeError);
     expect(() => ref.watch(_provider), throwsDisposeError);

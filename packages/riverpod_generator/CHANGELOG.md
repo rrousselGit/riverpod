@@ -1,3 +1,30 @@
+## Unreleased build
+
+- Fix invalid generated code when a `Notifier` uses `static const` as default value for some of its `build` parameters.
+- Support records with a single value.
+
+## 3.0.0-dev.17 - 2025-08-01
+
+- Fixed a conflict between public and private providers of the same name
+- Allow passing `persist(key: ...)`
+- Bump minimum `meta` version
+- Support `@Riverpod(name: ...)`
+- Add `provider_name_strip_pattern` build option
+- Bump minimum `meta` version
+- Support `@Riverpod(name: ...)`
+- Added `MutationState.isPending/isIdle/hasError/isSuccess`
+- fixes various "pause" issues
+- Bump minimum `meta` version
+- Added `AsyncValue.retrying`, to check when a retry is scheduled or pending
+- Exposed the default retry implementation (`ProviderContainer.defaultRetry`)
+- Offline's Storage now is `base` and requires overriding `deleteOutOfDate`
+- Make AsyncValue.copyWithPrevious `@internal`.
+  This API was not meant to be public.
+
+## 3.0.0-dev.16 - 2025-06-20
+
+Reworked Mutations to be independent from code-generation
+
 ## 3.0.0-dev.15 - 2025-05-04
 
 - `riverpod` upgraded to `3.0.0-dev.15`

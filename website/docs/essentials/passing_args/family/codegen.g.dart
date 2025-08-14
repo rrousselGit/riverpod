@@ -8,11 +8,14 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(activity)
 const activityProvider = ActivityFamily._();
 
-final class ActivityProvider
-    extends $FunctionalProvider<AsyncValue<Activity>, FutureOr<Activity>>
+final class ActivityProvider extends $FunctionalProvider<AsyncValue<Activity>,
+        Activity, FutureOr<Activity>>
     with $FutureModifier<Activity>, $FutureProvider<Activity> {
   const ActivityProvider._(
       {required ActivityFamily super.from, required String super.argument})
@@ -111,12 +114,6 @@ final class ActivityNotifier2Provider
   @override
   ActivityNotifier2 create() => ActivityNotifier2();
 
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<ActivityNotifier2, Activity> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
-
   @override
   bool operator ==(Object other) {
     return other is ActivityNotifier2Provider && other.argument == argument;
@@ -165,7 +162,7 @@ abstract class _$ActivityNotifier2 extends $AsyncNotifier<Activity> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<AsyncValue<Activity>>;
+    final ref = this.ref as $Ref<AsyncValue<Activity>, Activity>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<Activity>, Activity>,
         AsyncValue<Activity>,
@@ -174,6 +171,3 @@ abstract class _$ActivityNotifier2 extends $AsyncNotifier<Activity> {
     element.handleValue(ref, created);
   }
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

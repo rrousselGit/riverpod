@@ -6,6 +6,9 @@ part of 'scoped_providers_should_specify_dependencies.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(UnimplementedScoped)
 const unimplementedScopedProvider = UnimplementedScopedProvider._();
 
@@ -29,17 +32,11 @@ final class UnimplementedScopedProvider
   @override
   UnimplementedScoped create() => UnimplementedScoped();
 
-  @$internal
-  @override
-  $NotifierProviderElement<UnimplementedScoped, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -53,7 +50,7 @@ abstract class _$UnimplementedScoped extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -63,7 +60,7 @@ abstract class _$UnimplementedScoped extends $Notifier<int> {
 @ProviderFor(scoped)
 const scopedProvider = ScopedProvider._();
 
-final class ScopedProvider extends $FunctionalProvider<int, int>
+final class ScopedProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const ScopedProvider._()
       : super(
@@ -93,7 +90,7 @@ final class ScopedProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -103,7 +100,7 @@ String _$scopedHash() => r'5a271e9b23e18517694454448b922a6c9d03781e';
 @ProviderFor(root)
 const rootProvider = RootProvider._();
 
-final class RootProvider extends $FunctionalProvider<int, int>
+final class RootProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const RootProvider._()
       : super(
@@ -133,12 +130,9 @@ final class RootProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
 
 String _$rootHash() => r'dda8bbb46cb4d7c658597669e3be92e2447dcfb0';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

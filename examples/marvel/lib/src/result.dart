@@ -3,13 +3,13 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 part 'result.freezed.dart';
 
 @freezed
-sealed class Result<T> with _$Result<T> {
+sealed class Result<ValueT> with _$Result<ValueT> {
   Result._();
-  factory Result.data(T value) = _$ResultData<T>;
+  factory Result.data(ValueT value) = _$ResultData<ValueT>;
   factory Result.error(Object error, [StackTrace? stackTrace]) =
-      _$ResultError<T>;
+      _$ResultError<ValueT>;
 
-  factory Result.guard(T Function() cb) {
+  factory Result.guard(ValueT Function() cb) {
     try {
       return Result.data(cb());
     } catch (err, stack) {
@@ -17,7 +17,9 @@ sealed class Result<T> with _$Result<T> {
     }
   }
 
-  static Future<Result<T>> guardFuture<T>(Future<T> Function() cb) async {
+  static Future<Result<ValueT>> guardFuture<ValueT>(
+    Future<ValueT> Function() cb,
+  ) async {
     try {
       return Result.data(await cb());
     } catch (err, stack) {
@@ -25,7 +27,7 @@ sealed class Result<T> with _$Result<T> {
     }
   }
 
-  Result<Res> chain<Res>(Res Function(T value) cb) {
+  Result<NewT> chain<NewT>(NewT Function(ValueT value) cb) {
     switch (this) {
       case _$ResultData(:final value):
         try {
@@ -39,7 +41,7 @@ sealed class Result<T> with _$Result<T> {
     }
   }
 
-  T get dataOrThrow {
+  ValueT get dataOrThrow {
     switch (this) {
       case _$ResultData(:final value):
         return value;

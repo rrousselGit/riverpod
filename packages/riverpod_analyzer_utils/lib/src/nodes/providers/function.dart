@@ -6,35 +6,21 @@ extension FunctionalProviderDeclarationX on FunctionDeclaration {
 
   FunctionalProviderDeclaration? get provider {
     return _cache.upsert(this, () {
-      final element = declaredElement;
+      final element = declaredFragment?.element;
       if (element == null) return null;
 
       final riverpod = this.riverpod;
       if (riverpod == null) return null;
 
-      final providerElement = FunctionalProviderDeclarationElement._parse(
-        element,
-      );
+      final providerElement =
+          FunctionalProviderDeclarationElement._parse(element, this);
       if (providerElement == null) return null;
-
-      final createdTypeNode = returnType;
-      final exposedTypeNode = _computeExposedType(
-        createdTypeNode,
-        root.cast<CompilationUnit>()!,
-      );
-      if (exposedTypeNode == null) {
-        // Error already reported
-        return null;
-      }
 
       return FunctionalProviderDeclaration._(
         name: name,
         node: this,
         providerElement: providerElement,
         annotation: riverpod,
-        createdTypeNode: createdTypeNode,
-        exposedTypeNode: exposedTypeNode,
-        valueTypeNode: _getValueType(createdTypeNode),
       );
     });
   }
@@ -46,9 +32,6 @@ final class FunctionalProviderDeclaration extends GeneratorProviderDeclaration {
     required this.node,
     required this.providerElement,
     required this.annotation,
-    required this.createdTypeNode,
-    required this.exposedTypeNode,
-    required this.valueTypeNode,
   });
 
   @override
@@ -60,12 +43,6 @@ final class FunctionalProviderDeclaration extends GeneratorProviderDeclaration {
   final FunctionalProviderDeclarationElement providerElement;
   @override
   final RiverpodAnnotation annotation;
-  @override
-  final TypeAnnotation? createdTypeNode;
-  @override
-  final TypeAnnotation? valueTypeNode;
-  @override
-  final SourcedType exposedTypeNode;
 }
 
 class FunctionalProviderDeclarationElement
@@ -74,21 +51,37 @@ class FunctionalProviderDeclarationElement
     required this.name,
     required this.annotation,
     required this.element,
+    required this.createdTypeNode,
+    required this.exposedTypeNode,
+    required this.valueTypeNode,
+    required this.createdType,
   });
 
   static final _cache = _Cache<FunctionalProviderDeclarationElement?>();
 
   static FunctionalProviderDeclarationElement? _parse(
-    ExecutableElement element,
+    ExecutableElement2 element,
+    AstNode from,
   ) {
     return _cache(element, () {
-      final riverpodAnnotation = RiverpodAnnotationElement._of(element);
+      final riverpodAnnotation = RiverpodAnnotationElement._of(element, from);
       if (riverpodAnnotation == null) return null;
 
+      final rootUnit = from.root as CompilationUnit;
+      final types = _computeTypes(element.returnType, rootUnit);
+      if (types == null) {
+        // Error already reported
+        return null;
+      }
+
       return FunctionalProviderDeclarationElement._(
-        name: element.name,
+        name: element.name3!,
         annotation: riverpodAnnotation,
         element: element,
+        createdTypeNode: types.createdType,
+        exposedTypeNode: types.exposedType,
+        valueTypeNode: types.valueType,
+        createdType: types.supportedCreatedType,
       );
     });
   }
@@ -98,7 +91,8 @@ class FunctionalProviderDeclarationElement
 
   @override
   bool get isFamily {
-    return element.parameters.length > 1 || element.typeParameters.isNotEmpty;
+    return element.formalParameters.length > 1 ||
+        element.typeParameters2.isNotEmpty;
   }
 
   @override
@@ -106,5 +100,13 @@ class FunctionalProviderDeclarationElement
   @override
   final String name;
   @override
-  final ExecutableElement element;
+  final ExecutableElement2 element;
+  @override
+  final String createdTypeNode;
+  @override
+  final String exposedTypeNode;
+  @override
+  final DartType valueTypeNode;
+  @override
+  final SupportedCreatedType createdType;
 }

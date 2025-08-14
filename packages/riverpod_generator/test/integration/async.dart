@@ -3,22 +3,22 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'async.g.dart';
 
 @riverpod
-Future<List<T>> generic<T extends num>(Ref ref) async {
-  return <T>[];
+Future<List<ObjT>> generic<ObjT extends num>(Ref ref) async {
+  return <ObjT>[];
 }
 
 @riverpod
-class GenericClass<T extends num> extends _$GenericClass<T> {
+class GenericClass<ObjT extends num> extends _$GenericClass<ObjT> {
   @override
-  Future<List<T>> build() async {
-    return <T>[];
+  Future<List<ObjT>> build() async {
+    return <ObjT>[];
   }
 }
 
 @riverpod
-class GenericArg<T extends num> extends _$GenericArg<T> {
+class GenericArg<ObjT extends num> extends _$GenericArg<ObjT> {
   @override
-  Future<String> build(T arg) async => 'Hello $T $arg';
+  Future<String> build(ObjT arg) async => 'Hello $ObjT $arg';
 }
 
 @riverpod
@@ -100,19 +100,20 @@ class FamilyClass extends _$FamilyClass {
 }
 
 // Regression test for https://github.com/rrousselGit/riverpod/issues/3490
-typedef Regression3490Cb<Model, Sort, Cursor> = Future<(int, Cursor)> Function({
+typedef Regression3490Cb<ModelT, SortT, CursorT> = Future<(int, CursorT)>
+    Function({
   Map<String, dynamic> filters,
-  Sort? sort,
-  Cursor? cursor,
+  SortT? sort,
+  CursorT? cursor,
 });
 
 @riverpod
-class Regression3490<Model, Sort, Cursor>
-    extends _$Regression3490<Model, Sort, Cursor> {
+class Regression3490<ModelT, SortT, CursorT>
+    extends _$Regression3490<ModelT, SortT, CursorT> {
   @override
   void build({
     required String type,
-    required Regression3490Cb<Model, Sort, Cursor> getData,
+    required Regression3490Cb<ModelT, SortT, CursorT> getData,
     String? parentId,
   }) {}
 }

@@ -4,7 +4,6 @@ import 'package:meta/meta.dart';
 
 import '../builder.dart';
 import '../common/internal_lints.dart';
-import '../core/async_value.dart';
 import '../framework.dart';
 import 'future_provider.dart' show FutureProvider;
 import 'notifier.dart';
@@ -15,22 +14,22 @@ part 'async_notifier/family.dart';
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
 @publicInCodegen
-abstract class $AsyncNotifier<StateT> extends $AsyncNotifierBase<StateT>
-    with $AsyncClassModifier<StateT, FutureOr<StateT>, StateT> {}
+abstract class $AsyncNotifier<ValueT> extends $AsyncNotifierBase<ValueT>
+    with $AsyncClassModifier<ValueT, FutureOr<ValueT>> {}
 
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
 @publicInCodegen
 abstract base class $AsyncNotifierProvider< //
-        NotifierT extends $AsyncNotifier<StateT>,
-        StateT> //
+        NotifierT extends $AsyncNotifier<ValueT>,
+        ValueT> //
     extends $ClassProvider< //
         NotifierT,
-        AsyncValue<StateT>,
-        StateT,
-        FutureOr<StateT>> //
+        AsyncValue<ValueT>,
+        ValueT,
+        FutureOr<ValueT>> //
     with
-        $FutureModifier<StateT> {
+        $FutureModifier<ValueT> {
   /// Implementation detail of `riverpod_generator`.
   /// Do not use.
   const $AsyncNotifierProvider({
@@ -46,7 +45,7 @@ abstract base class $AsyncNotifierProvider< //
   /// @nodoc
   @internal
   @override
-  $AsyncNotifierProviderElement<NotifierT, StateT> $createElement(
+  $AsyncNotifierProviderElement<NotifierT, ValueT> $createElement(
     $ProviderPointer pointer,
   ) {
     return $AsyncNotifierProviderElement(pointer);
@@ -62,22 +61,22 @@ abstract base class $AsyncNotifierProvider< //
 @internal
 @publicInCodegen
 class $AsyncNotifierProviderElement< //
-        NotifierT extends $AsyncNotifier<StateT>,
-        StateT> //
+        NotifierT extends $AsyncNotifier<ValueT>,
+        ValueT> //
     extends $ClassProviderElement< //
         NotifierT,
-        AsyncValue<StateT>,
-        StateT,
-        FutureOr<StateT>> //
+        AsyncValue<ValueT>,
+        ValueT,
+        FutureOr<ValueT>> //
     with
-        FutureModifierElement<StateT>,
-        FutureModifierClassElement<NotifierT, StateT, FutureOr<StateT>> {
+        FutureModifierElement<ValueT>,
+        FutureModifierClassElement<NotifierT, ValueT, FutureOr<ValueT>> {
   /// Implementation detail of `riverpod_generator`.
   /// Do not use.
   $AsyncNotifierProviderElement(super.pointer);
 
   @override
-  void handleValue(Ref ref, FutureOr<StateT> created) {
+  void handleValue(Ref ref, FutureOr<ValueT> created) {
     handleFuture(ref, () => created);
   }
 }

@@ -6,7 +6,10 @@ part of 'convert_class_based_provider_to_functional.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
 /// Some comment
+
 @ProviderFor(Example)
 const exampleProvider = ExampleProvider._();
 
@@ -31,22 +34,18 @@ final class ExampleProvider extends $NotifierProvider<Example, int> {
   @override
   Example create() => Example();
 
-  @$internal
-  @override
-  $NotifierProviderElement<Example, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
 
 String _$exampleHash() => r'081776126bafed3e1583bba9c1fadef798215ad7';
+
+/// Some comment
 
 abstract class _$Example extends $Notifier<int> {
   int build();
@@ -54,7 +53,7 @@ abstract class _$Example extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -62,6 +61,7 @@ abstract class _$Example extends $Notifier<int> {
 }
 
 /// Some comment
+
 @ProviderFor(ExampleFamily)
 const exampleFamilyProvider = ExampleFamilyFamily._();
 
@@ -98,17 +98,11 @@ final class ExampleFamilyProvider
   @override
   ExampleFamily create() => ExampleFamily();
 
-  @$internal
-  @override
-  $NotifierProviderElement<ExampleFamily, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -126,6 +120,7 @@ final class ExampleFamilyProvider
 String _$exampleFamilyHash() => r'37d4a4fd66999562cd92051f91266270d5a1e5ea';
 
 /// Some comment
+
 final class ExampleFamilyFamily extends $Family
     with
         $ClassFamilyOverride<
@@ -147,6 +142,7 @@ final class ExampleFamilyFamily extends $Family
         );
 
   /// Some comment
+
   ExampleFamilyProvider call({
     required int a,
     String b = '42',
@@ -159,6 +155,8 @@ final class ExampleFamilyFamily extends $Family
   @override
   String toString() => r'exampleFamilyProvider';
 }
+
+/// Some comment
 
 abstract class _$ExampleFamily extends $Notifier<int> {
   late final _$args = ref.$arg as ({
@@ -179,7 +177,7 @@ abstract class _$ExampleFamily extends $Notifier<int> {
       a: _$args.a,
       b: _$args.b,
     );
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -215,12 +213,6 @@ final class GenericProvider<A, B>
   @override
   Generic<A, B> create() => Generic<A, B>();
 
-  @$internal
-  @override
-  $NotifierProviderElement<Generic<A, B>, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   $R _captureGenerics<$R>($R Function<A, B>() cb) {
     return cb<A, B>();
   }
@@ -229,7 +221,7 @@ final class GenericProvider<A, B>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -299,12 +291,9 @@ abstract class _$Generic<A, B> extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

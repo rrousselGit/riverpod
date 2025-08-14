@@ -22,6 +22,9 @@ Map<String, dynamic> _$TodoToJson(_Todo instance) => <String, dynamic>{
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(TodoList)
 const todoListProvider = TodoListProvider._();
 
@@ -44,12 +47,6 @@ final class TodoListProvider
   @$internal
   @override
   TodoList create() => TodoList();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<TodoList, List<Todo>> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 }
 
 String _$todoListHash() => r'c939d438b07da6065dbbcfab86c27ef363bdb76c';
@@ -60,7 +57,7 @@ abstract class _$TodoList extends $AsyncNotifier<List<Todo>> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<List<Todo>>>;
+    final ref = this.ref as $Ref<AsyncValue<List<Todo>>, List<Todo>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<List<Todo>>, List<Todo>>,
         AsyncValue<List<Todo>>,
@@ -69,6 +66,3 @@ abstract class _$TodoList extends $AsyncNotifier<List<Todo>> {
     element.handleValue(ref, created);
   }
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

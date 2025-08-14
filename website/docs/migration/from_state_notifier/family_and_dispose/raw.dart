@@ -8,9 +8,12 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../utils.dart';
 
 /* SNIPPET START */
-class BugsEncounteredNotifier extends FamilyAsyncNotifier<int, String> {
+class BugsEncounteredNotifier extends AsyncNotifier<int> {
+  BugsEncounteredNotifier(this.arg);
+  final String arg;
+
   @override
-  FutureOr<int> build(String featureId) {
+  FutureOr<int> build() {
     return 99;
   }
 

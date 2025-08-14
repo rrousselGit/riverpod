@@ -1,3 +1,17 @@
+## Unreleased build
+
+- Removed `avoid_manual_providers_as_generated_provider_dependency`.
+  The corresponding technical limitation has been solved, so this constraint is no-longer necessary.
+
+## 3.0.0-dev.17 - 2025-08-01
+
+Bump minimum `meta` version
+
+## 3.0.0-dev.16 - 2025-06-20
+
+- `riverpod` upgraded to `3.0.0-dev.16`
+- `riverpod_analyzer_utils` upgraded to `1.0.0-dev.3`
+
 ## 3.0.0-dev.15 - 2025-05-04
 
 - `riverpod` upgraded to `3.0.0-dev.15`

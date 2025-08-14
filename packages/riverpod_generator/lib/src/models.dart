@@ -4,6 +4,7 @@ class BuildYamlOptions {
     this.providerFamilyNamePrefix,
     this.providerNameSuffix,
     this.providerFamilyNameSuffix,
+    this.providerNameStripPattern,
   });
 
   factory BuildYamlOptions.fromMap(Map<String, dynamic> map) {
@@ -12,6 +13,7 @@ class BuildYamlOptions {
       providerFamilyNamePrefix: map['provider_family_name_prefix'] as String?,
       providerNameSuffix: map['provider_name_suffix'] as String?,
       providerFamilyNameSuffix: map['provider_family_name_suffix'] as String?,
+      providerNameStripPattern: map['provider_name_strip_pattern'] as String?,
     );
   }
 
@@ -19,6 +21,7 @@ class BuildYamlOptions {
   final String? providerFamilyNamePrefix;
   final String? providerNameSuffix;
   final String? providerFamilyNameSuffix;
+  final String? providerNameStripPattern;
 }
 
 extension CaseChangeExtension on String {

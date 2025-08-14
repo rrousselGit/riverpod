@@ -6,10 +6,13 @@ part of 'dependencies.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(dep)
 const depProvider = DepProvider._();
 
-final class DepProvider extends $FunctionalProvider<int, int>
+final class DepProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const DepProvider._()
       : super(
@@ -39,7 +42,7 @@ final class DepProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -49,7 +52,7 @@ String _$depHash() => r'1b3ec5231cd2328602151de9ceacdcd102a1d2e2';
 @ProviderFor(family)
 const familyProvider = FamilyFamily._();
 
-final class FamilyProvider extends $FunctionalProvider<int, int>
+final class FamilyProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const FamilyProvider._(
       {required FamilyFamily super.from, required int super.argument})
@@ -89,7 +92,7 @@ final class FamilyProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -148,17 +151,11 @@ final class Dep2Provider extends $NotifierProvider<Dep2, int> {
   @override
   Dep2 create() => Dep2();
 
-  @$internal
-  @override
-  $NotifierProviderElement<Dep2, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -171,7 +168,7 @@ abstract class _$Dep2 extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -206,17 +203,11 @@ final class Family2Provider extends $NotifierProvider<Family2, int> {
   @override
   Family2 create() => Family2();
 
-  @$internal
-  @override
-  $NotifierProviderElement<Family2, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -266,7 +257,7 @@ abstract class _$Family2 extends $Notifier<int> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -276,7 +267,7 @@ abstract class _$Family2 extends $Notifier<int> {
 @ProviderFor(provider)
 const providerProvider = ProviderProvider._();
 
-final class ProviderProvider extends $FunctionalProvider<int, int>
+final class ProviderProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const ProviderProvider._()
       : super(
@@ -321,7 +312,7 @@ final class ProviderProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -331,7 +322,7 @@ String _$providerHash() => r'1be7ae7ac2100d39b949af50ec50fce48b26cdd1';
 @ProviderFor(provider2)
 const provider2Provider = Provider2Provider._();
 
-final class Provider2Provider extends $FunctionalProvider<int, int>
+final class Provider2Provider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const Provider2Provider._()
       : super(
@@ -376,7 +367,7 @@ final class Provider2Provider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -420,17 +411,11 @@ final class Provider3Provider extends $NotifierProvider<Provider3, int> {
   @override
   Provider3 create() => Provider3();
 
-  @$internal
-  @override
-  $NotifierProviderElement<Provider3, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -443,7 +428,7 @@ abstract class _$Provider3 extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -483,17 +468,11 @@ final class Provider4Provider extends $NotifierProvider<Provider4, int> {
   @override
   Provider4 create() => Provider4();
 
-  @$internal
-  @override
-  $NotifierProviderElement<Provider4, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -553,7 +532,7 @@ abstract class _$Provider4 extends $Notifier<int> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -563,8 +542,8 @@ abstract class _$Provider4 extends $Notifier<int> {
 @ProviderFor(transitiveDependencies)
 const transitiveDependenciesProvider = TransitiveDependenciesProvider._();
 
-final class TransitiveDependenciesProvider extends $FunctionalProvider<int, int>
-    with $Provider<int> {
+final class TransitiveDependenciesProvider
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const TransitiveDependenciesProvider._()
       : super(
           from: null,
@@ -609,7 +588,7 @@ final class TransitiveDependenciesProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -622,7 +601,7 @@ const smallTransitiveDependencyCountProvider =
     SmallTransitiveDependencyCountProvider._();
 
 final class SmallTransitiveDependencyCountProvider
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const SmallTransitiveDependencyCountProvider._()
       : super(
           from: null,
@@ -663,7 +642,7 @@ final class SmallTransitiveDependencyCountProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -676,7 +655,7 @@ const emptyDependenciesFunctionalProvider =
     EmptyDependenciesFunctionalProvider._();
 
 final class EmptyDependenciesFunctionalProvider
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const EmptyDependenciesFunctionalProvider._()
       : super(
           from: null,
@@ -705,7 +684,7 @@ final class EmptyDependenciesFunctionalProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -737,17 +716,11 @@ final class EmptyDependenciesClassBasedProvider
   @override
   EmptyDependenciesClassBased create() => EmptyDependenciesClassBased();
 
-  @$internal
-  @override
-  $NotifierProviderElement<EmptyDependenciesClassBased, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -761,7 +734,7 @@ abstract class _$EmptyDependenciesClassBased extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -772,7 +745,7 @@ abstract class _$EmptyDependenciesClassBased extends $Notifier<int> {
 const providerWithDependenciesProvider = ProviderWithDependenciesProvider._();
 
 final class ProviderWithDependenciesProvider
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const ProviderWithDependenciesProvider._()
       : super(
           from: null,
@@ -810,7 +783,7 @@ final class ProviderWithDependenciesProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -821,7 +794,7 @@ String _$providerWithDependenciesHash() =>
 @ProviderFor(_privateDep)
 const _privateDepProvider = _PrivateDepProvider._();
 
-final class _PrivateDepProvider extends $FunctionalProvider<int, int>
+final class _PrivateDepProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const _PrivateDepProvider._()
       : super(
@@ -835,7 +808,7 @@ final class _PrivateDepProvider extends $FunctionalProvider<int, int>
         );
 
   @override
-  String debugGetCreateSourceHash() => _$privateDepHash();
+  String debugGetCreateSourceHash() => _$_privateDepHash();
 
   @$internal
   @override
@@ -851,17 +824,17 @@ final class _PrivateDepProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
 
-String _$privateDepHash() => r'92ff5cc515ecf2455cb04773f1b49f23b17ea2e2';
+String _$_privateDepHash() => r'92ff5cc515ecf2455cb04773f1b49f23b17ea2e2';
 
 @ProviderFor(publicDep)
 const publicDepProvider = PublicDepProvider._();
 
-final class PublicDepProvider extends $FunctionalProvider<int, int>
+final class PublicDepProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const PublicDepProvider._()
       : super(
@@ -891,7 +864,7 @@ final class PublicDepProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -901,8 +874,8 @@ String _$publicDepHash() => r'a9c461ae174577183ab4c0ff8d8267cc7a64a2c5';
 @ProviderFor(duplicateDependencies)
 const duplicateDependenciesProvider = DuplicateDependenciesProvider._();
 
-final class DuplicateDependenciesProvider extends $FunctionalProvider<int, int>
-    with $Provider<int> {
+final class DuplicateDependenciesProvider
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const DuplicateDependenciesProvider._()
       : super(
           from: null,
@@ -937,7 +910,7 @@ final class DuplicateDependenciesProvider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -948,8 +921,8 @@ String _$duplicateDependenciesHash() =>
 @ProviderFor(duplicateDependencies2)
 const duplicateDependencies2Provider = DuplicateDependencies2Provider._();
 
-final class DuplicateDependencies2Provider extends $FunctionalProvider<int, int>
-    with $Provider<int> {
+final class DuplicateDependencies2Provider
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const DuplicateDependencies2Provider._()
       : super(
           from: null,
@@ -987,7 +960,7 @@ final class DuplicateDependencies2Provider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -1000,7 +973,7 @@ const transitiveDuplicateDependenciesProvider =
     TransitiveDuplicateDependenciesProvider._();
 
 final class TransitiveDuplicateDependenciesProvider
-    extends $FunctionalProvider<int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int> with $Provider<int> {
   const TransitiveDuplicateDependenciesProvider._()
       : super(
           from: null,
@@ -1050,13 +1023,10 @@ final class TransitiveDuplicateDependenciesProvider
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
 
 String _$transitiveDuplicateDependenciesHash() =>
     r'be6a85098fc66be440b6b201f58a6ce1c526caf6';
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

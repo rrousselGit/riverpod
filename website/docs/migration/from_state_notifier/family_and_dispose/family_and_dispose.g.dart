@@ -8,12 +8,14 @@ part of 'family_and_dispose.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(taskTracker)
 const taskTrackerProvider = TaskTrackerProvider._();
 
-final class TaskTrackerProvider
-    extends $FunctionalProvider<TaskTrackerRepo, TaskTrackerRepo>
-    with $Provider<TaskTrackerRepo> {
+final class TaskTrackerProvider extends $FunctionalProvider<TaskTrackerRepo,
+    TaskTrackerRepo, TaskTrackerRepo> with $Provider<TaskTrackerRepo> {
   const TaskTrackerProvider._()
       : super(
           from: null,
@@ -42,7 +44,7 @@ final class TaskTrackerProvider
   Override overrideWithValue(TaskTrackerRepo value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<TaskTrackerRepo>(value),
+      providerOverride: $SyncValueProvider<TaskTrackerRepo>(value),
     );
   }
 }
@@ -78,12 +80,6 @@ final class BugsEncounteredNotifierProvider
   @$internal
   @override
   BugsEncounteredNotifier create() => BugsEncounteredNotifier();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<BugsEncounteredNotifier, int> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 
   @override
   bool operator ==(Object other) {
@@ -135,12 +131,9 @@ abstract class _$BugsEncounteredNotifier extends $AsyncNotifier<int> {
     final created = build(
       _$args,
     );
-    final ref = this.ref as $Ref<AsyncValue<int>>;
+    final ref = this.ref as $Ref<AsyncValue<int>, int>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

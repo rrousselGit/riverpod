@@ -2,7 +2,6 @@ import 'package:meta/meta.dart';
 
 import '../builder.dart';
 import '../common/internal_lints.dart';
-import '../common/result.dart';
 import '../framework.dart';
 import 'async_notifier.dart';
 import 'provider.dart';
@@ -14,11 +13,6 @@ part 'notifier/family.dart';
 /// Not meant for public consumption.
 @publicInCodegen
 abstract class $Notifier<StateT> extends $SyncNotifierBase<StateT> {
-  @override
-  @protected
-  @visibleForTesting
-  StateT get state;
-
   /// The value currently exposed by this [Notifier].
   ///
   /// As opposed to [state], this is guaranteed to be safe to use inside [Notifier.build].
@@ -35,7 +29,7 @@ abstract class $Notifier<StateT> extends $SyncNotifierBase<StateT> {
     final element = requireElement();
 
     element.flush();
-    return element.stateResult?.value;
+    return element.stateResult()?.value;
   }
 }
 
@@ -73,22 +67,21 @@ abstract base class $NotifierProvider //
 @internal
 @publicInCodegen
 class $NotifierProviderElement< //
-        NotifierT extends $Notifier<StateT>,
-        StateT> //
+        NotifierT extends $Notifier<ValueT>,
+        ValueT> //
     extends $ClassProviderElement< //
         NotifierT,
-        StateT,
-        StateT,
-        StateT> {
+        ValueT,
+        ValueT,
+        ValueT> with SyncProviderElement<ValueT> {
   /// An implementation detail of `riverpod_generator`.
   /// Do not use.
   $NotifierProviderElement(super.pointer);
 
   @override
   void handleError(Ref ref, Object error, StackTrace stackTrace) =>
-      setStateResult($ResultError<StateT>(error, stackTrace));
+      value = AsyncError<ValueT>(error, stackTrace);
 
   @override
-  void handleValue(Ref ref, StateT created) =>
-      setStateResult($ResultData(created));
+  void handleValue(Ref ref, ValueT created) => value = AsyncData(created);
 }

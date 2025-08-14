@@ -6,10 +6,13 @@ part of 'dependencies.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(calc2)
 const myFamilyCalc2ProviderFamily = Calc2Family._();
 
-final class Calc2Provider extends $FunctionalProvider<int, int>
+final class Calc2Provider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const Calc2Provider._(
       {required Calc2Family super.from, required String super.argument})
@@ -65,7 +68,7 @@ final class Calc2Provider extends $FunctionalProvider<int, int>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -127,5 +130,3 @@ final class Calc2Family extends $Family
   @override
   String toString() => r'myFamilyCalc2ProviderFamily';
 }
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

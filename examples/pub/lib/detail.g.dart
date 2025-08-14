@@ -8,11 +8,14 @@ part of 'detail.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(fetchPackageDetails)
 const fetchPackageDetailsProvider = FetchPackageDetailsFamily._();
 
 final class FetchPackageDetailsProvider
-    extends $FunctionalProvider<AsyncValue<Package>, FutureOr<Package>>
+    extends $FunctionalProvider<AsyncValue<Package>, Package, FutureOr<Package>>
     with $FutureModifier<Package>, $FutureProvider<Package> {
   const FetchPackageDetailsProvider._(
       {required FetchPackageDetailsFamily super.from,
@@ -87,7 +90,7 @@ final class FetchPackageDetailsFamily extends $Family
 const likedPackagesProvider = LikedPackagesProvider._();
 
 final class LikedPackagesProvider extends $FunctionalProvider<
-        AsyncValue<List<String>>, FutureOr<List<String>>>
+        AsyncValue<List<String>>, List<String>, FutureOr<List<String>>>
     with $FutureModifier<List<String>>, $FutureProvider<List<String>> {
   const LikedPackagesProvider._()
       : super(
@@ -121,7 +124,7 @@ String _$likedPackagesHash() => r'8debee8d8fa48334d1de21fa9bbf03224265d29d';
 const pubRepositoryProvider = PubRepositoryProvider._();
 
 final class PubRepositoryProvider
-    extends $FunctionalProvider<PubRepository, PubRepository>
+    extends $FunctionalProvider<PubRepository, PubRepository, PubRepository>
     with $Provider<PubRepository> {
   const PubRepositoryProvider._()
       : super(
@@ -151,7 +154,7 @@ final class PubRepositoryProvider
   Override overrideWithValue(PubRepository value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<PubRepository>(value),
+      providerOverride: $SyncValueProvider<PubRepository>(value),
     );
   }
 }
@@ -163,6 +166,7 @@ String _$pubRepositoryHash() => r'fd358feb202d2c34ad507ebf0a40bddbebc8ea98';
 ///
 /// It also exposes utilities to like/unlike a package, assuming the user
 /// is logged-in.
+
 @ProviderFor(PackageMetrics)
 const packageMetricsProvider = PackageMetricsFamily._();
 
@@ -203,12 +207,6 @@ final class PackageMetricsProvider
   @override
   PackageMetrics create() => PackageMetrics();
 
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<PackageMetrics, PackageMetricsScore>
-      $createElement($ProviderPointer pointer) =>
-          $AsyncNotifierProviderElement(pointer);
-
   @override
   bool operator ==(Object other) {
     return other is PackageMetricsProvider && other.argument == argument;
@@ -227,6 +225,7 @@ String _$packageMetricsHash() => r'67cd25e50357e6e970d432c1d255085a23b856ac';
 ///
 /// It also exposes utilities to like/unlike a package, assuming the user
 /// is logged-in.
+
 final class PackageMetricsFamily extends $Family
     with
         $ClassFamilyOverride<PackageMetrics, AsyncValue<PackageMetricsScore>,
@@ -245,6 +244,7 @@ final class PackageMetricsFamily extends $Family
   ///
   /// It also exposes utilities to like/unlike a package, assuming the user
   /// is logged-in.
+
   PackageMetricsProvider call({
     required String packageName,
   }) =>
@@ -253,6 +253,12 @@ final class PackageMetricsFamily extends $Family
   @override
   String toString() => r'packageMetricsProvider';
 }
+
+/// A provider that fetches the likes count, popularity score and pub points
+/// for a given package.
+///
+/// It also exposes utilities to like/unlike a package, assuming the user
+/// is logged-in.
 
 abstract class _$PackageMetrics extends $AsyncNotifier<PackageMetricsScore> {
   late final _$args = ref.$arg as String;
@@ -267,7 +273,8 @@ abstract class _$PackageMetrics extends $AsyncNotifier<PackageMetricsScore> {
     final created = build(
       packageName: _$args,
     );
-    final ref = this.ref as $Ref<AsyncValue<PackageMetricsScore>>;
+    final ref =
+        this.ref as $Ref<AsyncValue<PackageMetricsScore>, PackageMetricsScore>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<PackageMetricsScore>, PackageMetricsScore>,
         AsyncValue<PackageMetricsScore>,
@@ -276,6 +283,3 @@ abstract class _$PackageMetrics extends $AsyncNotifier<PackageMetricsScore> {
     element.handleValue(ref, created);
   }
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

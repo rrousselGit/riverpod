@@ -22,11 +22,16 @@ Map<String, dynamic> _$TodoToJson(_Todo instance) => <String, dynamic>{
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(storage)
 const storageProvider = StorageProvider._();
 
 final class StorageProvider extends $FunctionalProvider<
-        AsyncValue<JsonSqFliteStorage>, FutureOr<JsonSqFliteStorage>>
+        AsyncValue<JsonSqFliteStorage>,
+        JsonSqFliteStorage,
+        FutureOr<JsonSqFliteStorage>>
     with
         $FutureModifier<JsonSqFliteStorage>,
         $FutureProvider<JsonSqFliteStorage> {
@@ -62,6 +67,7 @@ String _$storageHash() => r'f0dc33f3f7b62aa7f1ecd8faff381278503b1b01';
 @JsonPersist()
 const todosNotifierProvider = TodosNotifierProvider._();
 
+@JsonPersist()
 final class TodosNotifierProvider
     extends $AsyncNotifierProvider<TodosNotifier, List<Todo>> {
   const TodosNotifierProvider._()
@@ -81,23 +87,18 @@ final class TodosNotifierProvider
   @$internal
   @override
   TodosNotifier create() => TodosNotifier();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<TodosNotifier, List<Todo>> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 }
 
-String _$todosNotifierHash() => r'6068b8a1398c16a0e15532bb79ab8b702de84959';
+String _$todosNotifierHash() => r'82bca33ebc86b96dd0d7cd2942c043114f05b055';
 
+@JsonPersist()
 abstract class _$TodosNotifierBase extends $AsyncNotifier<List<Todo>> {
   FutureOr<List<Todo>> build();
   @$mustCallSuper
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<List<Todo>>>;
+    final ref = this.ref as $Ref<AsyncValue<List<Todo>>, List<Todo>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<List<Todo>>, List<Todo>>,
         AsyncValue<List<Todo>>,
@@ -107,15 +108,13 @@ abstract class _$TodosNotifierBase extends $AsyncNotifier<List<Todo>> {
   }
 }
 
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
-
 // **************************************************************************
 // JsonGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
 abstract class _$TodosNotifier extends _$TodosNotifierBase {
-  /// The default key used by [persistJson].
+  /// The default key used by [persist].
   String get key {
     const resolvedKey = "TodosNotifier";
     return resolvedKey;
@@ -124,15 +123,16 @@ abstract class _$TodosNotifier extends _$TodosNotifierBase {
   /// A variant of [persist], for JSON-specific encoding.
   ///
   /// You can override [key] to customize the key used for storage.
-  FutureOr<void> persistJson(
+  PersistResult persist(
     FutureOr<Storage<String, String>> storage, {
+    String? key,
     String Function(List<Todo> state)? encode,
     List<Todo> Function(String encoded)? decode,
     StorageOptions options = const StorageOptions(),
   }) {
-    return persist<String, String>(
+    return NotifierPersistX(this).persist<String, String>(
       storage,
-      key: key,
+      key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,
       decode: decode ??
           (encoded) {

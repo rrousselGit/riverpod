@@ -28,7 +28,7 @@ final class StorageOptions {
   ///
   /// Instead of a complex database migration, an alternative is to change
   /// the [destroyKey] of the provider before deploying the application.
-  /// When doing doing so, the old state will be destroyed, and a new fresh
+  /// When doing so, the old state will be destroyed, and a new fresh
   /// state will be created.
   ///
   /// This key should be stable across application restarts.
@@ -48,7 +48,7 @@ final class StorageOptions {
 /// This includes the data itself, along with various metadata that should
 /// also be persisted.
 @immutable
-final class PersistedData<T> {
+final class PersistedData<DataT> {
   /// A state representation of how the data is persisted.
   ///
   /// This includes the data itself, along with various metadata that should
@@ -56,7 +56,7 @@ final class PersistedData<T> {
   const PersistedData(this.data, {this.destroyKey, this.expireAt});
 
   /// The persisted data.
-  final T data;
+  final DataT data;
 
   /// The key passed to [StorageOptions.destroyKey].
   final String? destroyKey;
@@ -68,7 +68,7 @@ final class PersistedData<T> {
 
   @override
   bool operator ==(Object other) {
-    return other is PersistedData<T> &&
+    return other is PersistedData<DataT> &&
         other.data == data &&
         other.destroyKey == destroyKey &&
         other.expireAt == expireAt;
@@ -78,6 +78,7 @@ final class PersistedData<T> {
   int get hashCode => Object.hash(data, destroyKey, expireAt);
 }
 
+/// {@template storage}
 /// An interface to enable Riverpod to interact with a database.
 ///
 /// This is used in conjunction with [NotifierPersistX.persist] to enable persistence
@@ -91,7 +92,13 @@ final class PersistedData<T> {
 /// - [Offline persistence](https://riverpod.dev/docs/concepts2/offline).
 /// - [riverpod_sqflite](https://pub.dev/packages/riverpod_sqflite) for an
 ///   implementation of [Storage] that uses SQLite.
-abstract class Storage<KeyT extends Object?, EncodedT extends Object?> {
+/// {@endtemplate}
+abstract base class Storage<KeyT extends Object?, EncodedT extends Object?> {
+  /// {@macro storage}
+  Storage() {
+    deleteOutOfDate();
+  }
+
   /// A storage that stores data in-memory.
   ///
   /// This is a useful API for testing. Inside unit tests, you can override
@@ -101,6 +108,9 @@ abstract class Storage<KeyT extends Object?, EncodedT extends Object?> {
   /// not persist data across app restarts.
   @visibleForTesting
   factory Storage.inMemory() = _InMemoryPersist<KeyT, EncodedT>;
+
+  /// Deletes all data that is out of date.
+  void deleteOutOfDate();
 
   /// Reads the data associated with [key].
   ///
@@ -129,7 +139,8 @@ abstract class Storage<KeyT extends Object?, EncodedT extends Object?> {
   FutureOr<void> delete(KeyT key);
 }
 
-class _InMemoryPersist<KeyT, EncodedT> implements Storage<KeyT, EncodedT> {
+final class _InMemoryPersist<KeyT, EncodedT>
+    implements Storage<KeyT, EncodedT> {
   final Map<KeyT, PersistedData<EncodedT>> state = {};
 
   DateTime _currentTimestamp() => clock.now().toUtc();
@@ -151,6 +162,11 @@ class _InMemoryPersist<KeyT, EncodedT> implements Storage<KeyT, EncodedT> {
 
   @override
   FutureOr<void> delete(KeyT key) => state.remove(key);
+
+  @override
+  void deleteOutOfDate() {
+    // No-op, as this is an in-memory storage.
+  }
 }
 
 /// {@template storage_cache_time}

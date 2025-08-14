@@ -6,31 +6,32 @@ import 'package:meta/meta.dart';
 ///
 /// This is similar to [FutureOr], but can hold errors.
 @internal
-sealed class Tenable<T> {
+sealed class Tenable<ValueT> {
   const Tenable._();
 
-  const factory Tenable.value(T value) = _TenableValue<T>;
+  const factory Tenable.value(ValueT value) = _TenableValue<ValueT>;
   const factory Tenable.error(Object error, StackTrace stacktrace) =
-      _TenableError<T>;
-  factory Tenable.fromFuture(Future<T> future) = _TenableFromFuture<T>;
-  factory Tenable.guardSync(T Function() cb) {
+      _TenableError<ValueT>;
+  factory Tenable.fromFuture(Future<ValueT> future) =
+      _TenableFromFuture<ValueT>;
+  factory Tenable.guardSync(ValueT Function() cb) {
     try {
       return Tenable.value(cb());
     } catch (err, stackTrace) {
       return Tenable.error(err, stackTrace);
     }
   }
-  factory Tenable.guardTenable(Tenable<T> Function() cb) {
+  factory Tenable.guardTenable(Tenable<ValueT> Function() cb) {
     try {
       return cb();
     } catch (err, stackTrace) {
       return Tenable.error(err, stackTrace);
     }
   }
-  factory Tenable.fromFutureOr(FutureOr<T> Function() cb) {
+  factory Tenable.fromFutureOr(FutureOr<ValueT> Function() cb) {
     try {
       final futureOr = cb();
-      if (futureOr is Future<T>) {
+      if (futureOr is Future<ValueT>) {
         return Tenable.fromFuture(futureOr);
       } else {
         return Tenable.value(futureOr);
@@ -40,9 +41,9 @@ sealed class Tenable<T> {
     }
   }
 
-  Tenable<R> then<R>(
-    FutureOr<R> Function(T value) cb, {
-    FutureOr<R> Function(Object error, StackTrace stack)? onError,
+  Tenable<NewT> then<NewT>(
+    FutureOr<NewT> Function(ValueT value) cb, {
+    FutureOr<NewT> Function(Object error, StackTrace stack)? onError,
   });
 
   Tenable<void> whenComplete(FutureOr<void> Function() cb) {
@@ -53,30 +54,30 @@ sealed class Tenable<T> {
   }
 }
 
-class _TenableValue<T> extends Tenable<T> {
+class _TenableValue<ValueT> extends Tenable<ValueT> {
   const _TenableValue(this.value) : super._();
 
-  final T value;
+  final ValueT value;
 
   @override
-  Tenable<R> then<R>(
-    FutureOr<R> Function(T value) cb, {
-    FutureOr<R> Function(Object error, StackTrace stack)? onError,
+  Tenable<NewT> then<NewT>(
+    FutureOr<NewT> Function(ValueT value) cb, {
+    FutureOr<NewT> Function(Object error, StackTrace stack)? onError,
   }) {
-    return Tenable<R>.fromFutureOr(() => cb(value));
+    return Tenable<NewT>.fromFutureOr(() => cb(value));
   }
 }
 
-class _TenableError<T> extends Tenable<T> {
+class _TenableError<ValueT> extends Tenable<ValueT> {
   const _TenableError(this.error, this.stackTrace) : super._();
 
   final Object error;
   final StackTrace stackTrace;
 
   @override
-  Tenable<R> then<R>(
-    FutureOr<R> Function(T value) cb, {
-    FutureOr<R> Function(Object error, StackTrace stack)? onError,
+  Tenable<NewT> then<NewT>(
+    FutureOr<NewT> Function(ValueT value) cb, {
+    FutureOr<NewT> Function(Object error, StackTrace stack)? onError,
   }) {
     if (onError == null) return Tenable.error(error, stackTrace);
 
@@ -84,15 +85,15 @@ class _TenableError<T> extends Tenable<T> {
   }
 }
 
-class _TenableFromFuture<T> extends Tenable<T> {
+class _TenableFromFuture<ValueT> extends Tenable<ValueT> {
   const _TenableFromFuture(this.future) : super._();
 
-  final Future<T> future;
+  final Future<ValueT> future;
 
   @override
-  Tenable<R> then<R>(
-    FutureOr<R> Function(T value) cb, {
-    FutureOr<R> Function(Object error, StackTrace stack)? onError,
+  Tenable<NewT> then<NewT>(
+    FutureOr<NewT> Function(ValueT value) cb, {
+    FutureOr<NewT> Function(Object error, StackTrace stack)? onError,
   }) {
     return Tenable.fromFuture(
       future.then(
@@ -104,12 +105,12 @@ class _TenableFromFuture<T> extends Tenable<T> {
 }
 
 @internal
-extension OrX<T> on FutureOr<T> {
-  FutureOr<R> then<R>(
-    FutureOr<R> Function(T value) cb,
+extension OrX<ValueT> on FutureOr<ValueT> {
+  FutureOr<NewT> then<NewT>(
+    FutureOr<NewT> Function(ValueT value) cb,
   ) {
     final that = this;
-    if (that is Future<T>) {
+    if (that is Future<ValueT>) {
       return that.then(cb);
     } else {
       try {

@@ -6,6 +6,9 @@ part of 'notifier_extends.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(MyNotifier)
 const myNotifierProvider = MyNotifierProvider._();
 
@@ -28,17 +31,11 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
   @override
   MyNotifier create() => MyNotifier();
 
-  @$internal
-  @override
-  $NotifierProviderElement<MyNotifier, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -51,7 +48,7 @@ abstract class _$MyNotifier extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -75,28 +72,22 @@ final class _PrivateClassProvider
         );
 
   @override
-  String debugGetCreateSourceHash() => _$privateClassHash();
+  String debugGetCreateSourceHash() => _$_privateClassHash();
 
   @$internal
   @override
   _PrivateClass create() => _PrivateClass();
 
-  @$internal
-  @override
-  $NotifierProviderElement<_PrivateClass, String> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }
 
-String _$privateClassHash() => r'ba68a29a609566bb8bc0792391f842762356e124';
+String _$_privateClassHash() => r'ba68a29a609566bb8bc0792391f842762356e124';
 
 abstract class _$PrivateClass extends $Notifier<String> {
   String build();
@@ -104,7 +95,7 @@ abstract class _$PrivateClass extends $Notifier<String> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<String>;
+    final ref = this.ref as $Ref<String, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<String, String>, String, Object?, Object?>;
     element.handleValue(ref, created);
@@ -140,12 +131,6 @@ final class GenericsProvider<A extends num, B>
   @override
   Generics<A, B> create() => Generics<A, B>();
 
-  @$internal
-  @override
-  $NotifierProviderElement<Generics<A, B>, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   $R _captureGenerics<$R>($R Function<A extends num, B>() cb) {
     return cb<A, B>();
   }
@@ -154,7 +139,7 @@ final class GenericsProvider<A extends num, B>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -226,7 +211,7 @@ abstract class _$Generics<A extends num, B> extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -262,12 +247,6 @@ final class NoGenericsProvider<A extends num, B>
   @override
   NoGenerics<A, B> create() => NoGenerics<A, B>();
 
-  @$internal
-  @override
-  $NotifierProviderElement<NoGenerics<A, B>, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   $R _captureGenerics<$R>($R Function<A extends num, B>() cb) {
     return cb<A, B>();
   }
@@ -276,7 +255,7 @@ final class NoGenericsProvider<A extends num, B>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -348,7 +327,7 @@ abstract class _$NoGenerics<A extends num, B> extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -384,12 +363,6 @@ final class MissingGenericsProvider<A, B>
   @override
   MissingGenerics<A, B> create() => MissingGenerics<A, B>();
 
-  @$internal
-  @override
-  $NotifierProviderElement<MissingGenerics<A, B>, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   $R _captureGenerics<$R>($R Function<A, B>() cb) {
     return cb<A, B>();
   }
@@ -398,7 +371,7 @@ final class MissingGenericsProvider<A, B>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -469,7 +442,7 @@ abstract class _$MissingGenerics<A, B> extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
@@ -505,12 +478,6 @@ final class WrongOrderProvider<A, B>
   @override
   WrongOrder<A, B> create() => WrongOrder<A, B>();
 
-  @$internal
-  @override
-  $NotifierProviderElement<WrongOrder<A, B>, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   $R _captureGenerics<$R>($R Function<A, B>() cb) {
     return cb<A, B>();
   }
@@ -519,7 +486,7 @@ final class WrongOrderProvider<A, B>
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 
@@ -590,12 +557,9 @@ abstract class _$WrongOrder<A, B> extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

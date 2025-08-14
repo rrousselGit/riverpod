@@ -6,10 +6,13 @@ part of 'hash1.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(simple)
 const simpleProvider = SimpleProvider._();
 
-final class SimpleProvider extends $FunctionalProvider<String, String>
+final class SimpleProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const SimpleProvider._()
       : super(
@@ -39,7 +42,7 @@ final class SimpleProvider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }
@@ -49,7 +52,7 @@ String _$simpleHash() => r'f916b37e39d654e9acfc9c2bd7a244902197b306';
 @ProviderFor(simple2)
 const simple2Provider = Simple2Provider._();
 
-final class Simple2Provider extends $FunctionalProvider<String, String>
+final class Simple2Provider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const Simple2Provider._()
       : super(
@@ -79,7 +82,7 @@ final class Simple2Provider extends $FunctionalProvider<String, String>
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }
@@ -108,17 +111,11 @@ final class SimpleClassProvider extends $NotifierProvider<SimpleClass, String> {
   @override
   SimpleClass create() => SimpleClass();
 
-  @$internal
-  @override
-  $NotifierProviderElement<SimpleClass, String> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<String>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }
@@ -131,12 +128,9 @@ abstract class _$SimpleClass extends $Notifier<String> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<String>;
+    final ref = this.ref as $Ref<String, String>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<String, String>, String, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

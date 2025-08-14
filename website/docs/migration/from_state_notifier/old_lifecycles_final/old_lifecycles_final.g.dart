@@ -8,10 +8,14 @@ part of 'old_lifecycles_final.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(duration)
 const durationProvider = DurationProvider._();
 
-final class DurationProvider extends $FunctionalProvider<Duration, Duration>
+final class DurationProvider
+    extends $FunctionalProvider<Duration, Duration, Duration>
     with $Provider<Duration> {
   const DurationProvider._()
       : super(
@@ -41,7 +45,7 @@ final class DurationProvider extends $FunctionalProvider<Duration, Duration>
   Override overrideWithValue(Duration value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<Duration>(value),
+      providerOverride: $SyncValueProvider<Duration>(value),
     );
   }
 }
@@ -51,7 +55,8 @@ String _$durationHash() => r'997cacfb78da8107053428dfc5515497354b50c6';
 @ProviderFor(repository)
 const repositoryProvider = RepositoryProvider._();
 
-final class RepositoryProvider extends $FunctionalProvider<_MyRepo, _MyRepo>
+final class RepositoryProvider
+    extends $FunctionalProvider<_MyRepo, _MyRepo, _MyRepo>
     with $Provider<_MyRepo> {
   const RepositoryProvider._()
       : super(
@@ -81,7 +86,7 @@ final class RepositoryProvider extends $FunctionalProvider<_MyRepo, _MyRepo>
   Override overrideWithValue(_MyRepo value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<_MyRepo>(value),
+      providerOverride: $SyncValueProvider<_MyRepo>(value),
     );
   }
 }
@@ -110,17 +115,11 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
   @override
   MyNotifier create() => MyNotifier();
 
-  @$internal
-  @override
-  $NotifierProviderElement<MyNotifier, int> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(int value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<int>(value),
+      providerOverride: $SyncValueProvider<int>(value),
     );
   }
 }
@@ -133,12 +132,9 @@ abstract class _$MyNotifier extends $Notifier<int> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<int>;
+    final ref = this.ref as $Ref<int, int>;
     final element = ref.element
         as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

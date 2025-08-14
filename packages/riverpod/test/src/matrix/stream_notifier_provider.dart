@@ -6,8 +6,8 @@ final streamNotifierProviderFactory = TestMatrix<StreamNotifierTestFactory>(
       isAutoDispose: false,
       isFamily: false,
       deferredNotifier: DeferredStreamNotifier.new,
-      deferredProvider: <StateT>(create, {updateShouldNotify, retry}) {
-        return StreamNotifierProvider<DeferredStreamNotifier<StateT>, StateT>(
+      deferredProvider: <ValueT>(create, {updateShouldNotify, retry}) {
+        return StreamNotifierProvider<DeferredStreamNotifier<ValueT>, ValueT>(
           retry: retry,
           () => DeferredStreamNotifier(
             create,
@@ -15,9 +15,9 @@ final streamNotifierProviderFactory = TestMatrix<StreamNotifierTestFactory>(
           ),
         );
       },
-      provider: <StateT>(create) =>
-          StreamNotifierProvider<StreamNotifier<StateT>, StateT>(
-        () => create() as StreamNotifier<StateT>,
+      provider: <ValueT>(create) =>
+          StreamNotifierProvider<StreamNotifier<ValueT>, ValueT>(
+        () => create() as StreamNotifier<ValueT>,
       ),
       value: (create, {name, dependencies, retry}) => ([arg]) {
         return StreamNotifierProvider<StreamNotifier<Object?>, Object?>(
@@ -32,9 +32,9 @@ final streamNotifierProviderFactory = TestMatrix<StreamNotifierTestFactory>(
       isAutoDispose: true,
       isFamily: false,
       deferredNotifier: DeferredStreamNotifier.new,
-      deferredProvider: <StateT>(create, {updateShouldNotify, retry}) {
+      deferredProvider: <ValueT>(create, {updateShouldNotify, retry}) {
         return StreamNotifierProvider.autoDispose<
-            DeferredStreamNotifier<StateT>, StateT>(
+            DeferredStreamNotifier<ValueT>, ValueT>(
           retry: retry,
           () => DeferredStreamNotifier(
             create,
@@ -42,10 +42,10 @@ final streamNotifierProviderFactory = TestMatrix<StreamNotifierTestFactory>(
           ),
         );
       },
-      provider: <StateT>(create) {
-        return StreamNotifierProvider.autoDispose<StreamNotifier<StateT>,
-            StateT>(
-          () => create() as StreamNotifier<StateT>,
+      provider: <ValueT>(create) {
+        return StreamNotifierProvider.autoDispose<StreamNotifier<ValueT>,
+            ValueT>(
+          () => create() as StreamNotifier<ValueT>,
         );
       },
       value: (create, {name, dependencies, retry}) => ([arg]) {
@@ -61,28 +61,28 @@ final streamNotifierProviderFactory = TestMatrix<StreamNotifierTestFactory>(
     'StreamNotifierProvider.family': StreamNotifierTestFactory(
       isAutoDispose: false,
       isFamily: true,
-      deferredNotifier: DeferredFamilyStreamNotifier.new,
-      deferredProvider: <StateT>(create, {updateShouldNotify, retry}) {
-        return StreamNotifierProvider.family<
-            DeferredFamilyStreamNotifier<StateT>, StateT, Object?>(
+      deferredNotifier: DeferredStreamNotifier.new,
+      deferredProvider: <ValueT>(create, {updateShouldNotify, retry}) {
+        return StreamNotifierProvider.family<DeferredStreamNotifier<ValueT>,
+            ValueT, Object?>(
           retry: retry,
-          () => DeferredFamilyStreamNotifier(
+          (arg) => DeferredStreamNotifier(
             create,
             updateShouldNotify: updateShouldNotify,
           ),
         ).call(42);
       },
-      provider: <StateT>(create) {
-        return StreamNotifierProvider.family<
-            FamilyStreamNotifier<StateT, Object?>, StateT, Object?>(
-          () => create() as FamilyStreamNotifier<StateT, Object?>,
+      provider: <ValueT>(create) {
+        return StreamNotifierProvider.family<StreamNotifier<ValueT>, ValueT,
+            Object?>(
+          (arg) => create() as StreamNotifier<ValueT>,
         ).call(42);
       },
       value: (create, {name, dependencies, retry}) => ([arg]) {
-        return StreamNotifierProvider.family<
-            FamilyStreamNotifier<Object?, Object?>, Object?, Object?>(
+        return StreamNotifierProvider.family<StreamNotifier<Object?>, Object?,
+            Object?>(
           retry: retry,
-          () => create(null, arg) as FamilyStreamNotifier<Object?, Object?>,
+          (arg) => create(null, arg) as StreamNotifier<Object?>,
           name: name,
           dependencies: dependencies,
         )(arg);
@@ -91,30 +91,30 @@ final streamNotifierProviderFactory = TestMatrix<StreamNotifierTestFactory>(
     'StreamNotifierProvider.autoDispose.family': StreamNotifierTestFactory(
       isAutoDispose: true,
       isFamily: true,
-      deferredNotifier: DeferredFamilyStreamNotifier.new,
-      deferredProvider: <StateT>(create, {updateShouldNotify, retry}) {
+      deferredNotifier: DeferredStreamNotifier.new,
+      deferredProvider: <ValueT>(create, {updateShouldNotify, retry}) {
         return StreamNotifierProvider.family
-            .autoDispose<DeferredFamilyStreamNotifier<StateT>, StateT, Object?>(
+            .autoDispose<DeferredStreamNotifier<ValueT>, ValueT, Object?>(
               retry: retry,
-              () => DeferredFamilyStreamNotifier(
+              (arg) => DeferredStreamNotifier(
                 create,
                 updateShouldNotify: updateShouldNotify,
               ),
             )
             .call(42);
       },
-      provider: <StateT>(create) {
+      provider: <ValueT>(create) {
         return StreamNotifierProvider.autoDispose
-            .family<FamilyStreamNotifier<StateT, Object?>, StateT, Object?>(
-              () => create() as FamilyStreamNotifier<StateT, Object?>,
+            .family<StreamNotifier<ValueT>, ValueT, Object?>(
+              (arg) => create() as StreamNotifier<ValueT>,
             )
             .call(42);
       },
       value: (create, {name, dependencies, retry}) => ([arg]) {
         return StreamNotifierProvider.autoDispose
-            .family<FamilyStreamNotifier<Object?, Object?>, Object?, Object?>(
+            .family<StreamNotifier<Object?>, Object?, Object?>(
           retry: retry,
-          () => create(null, arg) as FamilyStreamNotifier<Object?, Object?>,
+          (arg) => create(null, arg) as StreamNotifier<Object?>,
           name: name,
           dependencies: dependencies,
         )(arg);
@@ -123,37 +123,33 @@ final streamNotifierProviderFactory = TestMatrix<StreamNotifierTestFactory>(
   },
 );
 
-abstract class TestStreamNotifier<StateT> implements $StreamNotifier<StateT> {
-  // Removing protected
-  @override
-  AsyncValue<StateT> get state;
+abstract class TestStreamNotifier<ValueT> implements $StreamNotifier<ValueT> {}
 
-  @override
-  set state(AsyncValue<StateT> value);
-}
-
-class DeferredStreamNotifier<StateT> extends StreamNotifier<StateT>
-    implements TestStreamNotifier<StateT> {
+class DeferredStreamNotifier<ValueT> extends StreamNotifier<ValueT>
+    implements TestStreamNotifier<ValueT> {
   DeferredStreamNotifier(
     this._create, {
-    bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
+    bool Function(AsyncValue<ValueT>, AsyncValue<ValueT>)? updateShouldNotify,
+    this.arg,
   }) : _updateShouldNotify = updateShouldNotify;
 
-  final Stream<StateT> Function(
+  final Object? arg;
+
+  final Stream<ValueT> Function(
     Ref ref,
-    DeferredStreamNotifier<StateT> self,
+    DeferredStreamNotifier<ValueT> self,
   ) _create;
   final bool Function(
-    AsyncValue<StateT> previousState,
-    AsyncValue<StateT> newState,
+    AsyncValue<ValueT> previousState,
+    AsyncValue<ValueT> newState,
   )? _updateShouldNotify;
 
   @override
-  Stream<StateT> build() => _create(ref, this);
+  Stream<ValueT> build() => _create(ref, this);
 
   @override
   RemoveListener listenSelf(
-    void Function(AsyncValue<StateT>? previous, AsyncValue<StateT> next)
+    void Function(AsyncValue<ValueT>? previous, AsyncValue<ValueT> next)
         listener, {
     void Function(Object error, StackTrace stackTrace)? onError,
   }) {
@@ -162,38 +158,8 @@ class DeferredStreamNotifier<StateT> extends StreamNotifier<StateT>
 
   @override
   bool updateShouldNotify(
-    AsyncValue<StateT> previousState,
-    AsyncValue<StateT> newState,
-  ) =>
-      _updateShouldNotify?.call(previousState, newState) ??
-      super.updateShouldNotify(previousState, newState);
-}
-
-class DeferredFamilyStreamNotifier<StateT>
-    extends FamilyStreamNotifier<StateT, int>
-    implements TestStreamNotifier<StateT> {
-  DeferredFamilyStreamNotifier(
-    this._create, {
-    bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
-  }) : _updateShouldNotify = updateShouldNotify;
-
-  final Stream<StateT> Function(
-    Ref ref,
-    DeferredFamilyStreamNotifier<StateT> self,
-  ) _create;
-
-  final bool Function(
-    AsyncValue<StateT> previousState,
-    AsyncValue<StateT> newState,
-  )? _updateShouldNotify;
-
-  @override
-  Stream<StateT> build(int arg) => _create(ref, this);
-
-  @override
-  bool updateShouldNotify(
-    AsyncValue<StateT> previousState,
-    AsyncValue<StateT> newState,
+    AsyncValue<ValueT> previousState,
+    AsyncValue<ValueT> newState,
   ) =>
       _updateShouldNotify?.call(previousState, newState) ??
       super.updateShouldNotify(previousState, newState);
@@ -210,29 +176,29 @@ class StreamNotifierTestFactory extends TestFactory<
     required this.provider,
   });
 
-  final TestStreamNotifier<StateT> Function<StateT>(
-    Stream<StateT> Function(Ref ref, $StreamNotifier<StateT> self) create,
+  final TestStreamNotifier<ValueT> Function<ValueT>(
+    Stream<ValueT> Function(Ref ref, $StreamNotifier<ValueT> self) create,
   ) deferredNotifier;
 
-  final $StreamNotifierProvider<TestStreamNotifier<StateT>, StateT>
-      Function<StateT>(
-    Stream<StateT> Function(Ref ref, $StreamNotifier<StateT> self) create, {
-    bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
+  final $StreamNotifierProvider<TestStreamNotifier<ValueT>, ValueT>
+      Function<ValueT>(
+    Stream<ValueT> Function(Ref ref, $StreamNotifier<ValueT> self) create, {
+    bool Function(AsyncValue<ValueT>, AsyncValue<ValueT>)? updateShouldNotify,
     Retry? retry,
   }) deferredProvider;
 
-  final $StreamNotifierProvider<$StreamNotifier<StateT>, StateT>
-      Function<StateT>(
-    $StreamNotifier<StateT> Function() create,
+  final $StreamNotifierProvider<$StreamNotifier<ValueT>, ValueT>
+      Function<ValueT>(
+    $StreamNotifier<ValueT> Function() create,
   ) provider;
 
-  $StreamNotifierProvider<TestStreamNotifier<StateT>, StateT>
-      simpleTestProvider<StateT>(
-    Stream<StateT> Function(Ref ref, $StreamNotifier<StateT> self) create, {
-    bool Function(AsyncValue<StateT>, AsyncValue<StateT>)? updateShouldNotify,
+  $StreamNotifierProvider<TestStreamNotifier<ValueT>, ValueT>
+      simpleTestProvider<ValueT>(
+    Stream<ValueT> Function(Ref ref, $StreamNotifier<ValueT> self) create, {
+    bool Function(AsyncValue<ValueT>, AsyncValue<ValueT>)? updateShouldNotify,
     Retry? retry,
   }) {
-    return deferredProvider<StateT>(
+    return deferredProvider<ValueT>(
       (ref, self) => create(ref, self),
       updateShouldNotify: updateShouldNotify,
       retry: retry,

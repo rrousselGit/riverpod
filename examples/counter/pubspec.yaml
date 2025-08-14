@@ -22,10 +22,10 @@ dependencies:
 
 dev_dependencies:
   build_runner: ^2.3.3
-  custom_lint: ^0.7.5
+  custom_lint: ^0.8.0
   flutter_test:
     sdk: flutter
-  freezed: ^3.0.2
+  freezed: ^3.2.0
   json_serializable: ^6.6.1
   riverpod_generator:
   riverpod_lint:

@@ -8,6 +8,9 @@ part of 'migrated.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(MyNotifier)
 const myNotifierProvider = MyNotifierProvider._();
 
@@ -30,12 +33,6 @@ final class MyNotifierProvider
   @$internal
   @override
   MyNotifier create() => MyNotifier();
-
-  @$internal
-  @override
-  $AsyncNotifierProviderElement<MyNotifier, List<Todo>> $createElement(
-          $ProviderPointer pointer) =>
-      $AsyncNotifierProviderElement(pointer);
 }
 
 String _$myNotifierHash() => r'bde95c56aa12eff7c8c01ede57ae4ad2b616c225';
@@ -46,7 +43,7 @@ abstract class _$MyNotifier extends $AsyncNotifier<List<Todo>> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<AsyncValue<List<Todo>>>;
+    final ref = this.ref as $Ref<AsyncValue<List<Todo>>, List<Todo>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<AsyncValue<List<Todo>>, List<Todo>>,
         AsyncValue<List<Todo>>,
@@ -55,6 +52,3 @@ abstract class _$MyNotifier extends $AsyncNotifier<List<Todo>> {
     element.handleValue(ref, created);
   }
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

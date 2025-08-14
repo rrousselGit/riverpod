@@ -8,6 +8,9 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(TodoList)
 const todoListProvider = TodoListProvider._();
 
@@ -30,17 +33,11 @@ final class TodoListProvider extends $NotifierProvider<TodoList, List<Todo>> {
   @override
   TodoList create() => TodoList();
 
-  @$internal
-  @override
-  $NotifierProviderElement<TodoList, List<Todo>> $createElement(
-          $ProviderPointer pointer) =>
-      $NotifierProviderElement(pointer);
-
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(List<Todo> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $ValueProvider<List<Todo>>(value),
+      providerOverride: $SyncValueProvider<List<Todo>>(value),
     );
   }
 }
@@ -53,12 +50,9 @@ abstract class _$TodoList extends $Notifier<List<Todo>> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref as $Ref<List<Todo>>;
+    final ref = this.ref as $Ref<List<Todo>, List<Todo>>;
     final element = ref.element as $ClassProviderElement<
         AnyNotifier<List<Todo>, List<Todo>>, List<Todo>, Object?, Object?>;
     element.handleValue(ref, created);
   }
 }
-
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

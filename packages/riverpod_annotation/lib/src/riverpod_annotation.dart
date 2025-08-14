@@ -24,7 +24,20 @@ final class Riverpod {
     this.keepAlive = false,
     this.dependencies,
     this.retry,
+    this.name,
   });
+
+  /// The name of the generated provider.
+  ///
+  /// If null, the name will be derived from the annotated element,
+  /// after applying prefix/suffix transformations from the `build.yaml`
+  /// configuration.
+  ///
+  /// If non-null, transformation from the `build.yaml` will not be applied,
+  /// and the name will be used as-is.
+  ///
+  /// This name should be unique within the library.
+  final String? name;
 
   /// The default retry logic used by providers associated to this container.
   ///
@@ -161,7 +174,7 @@ class ProviderFor {
 /// An annotation for marking a value type as "should not be handled
 /// by Riverpod".
 ///
-/// This is a type-alias to [T], and has no runtime effect. It is only used
+/// This is a type-alias to [WrappedT], and has no runtime effect. It is only used
 /// as metadata for the code-generator/linter.
 ///
 /// This serves two purposes:
@@ -197,7 +210,7 @@ class ProviderFor {
 /// ```
 ///
 /// {@endtemplate}
-typedef Raw<T> = T;
+typedef Raw<WrappedT> = WrappedT;
 
 /// An exception thrown when a scoped provider is accessed when not yet overridden.
 ///

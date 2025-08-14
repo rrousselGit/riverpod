@@ -8,11 +8,14 @@ part of 'codegen.dart';
 // RiverpodGenerator
 // **************************************************************************
 
+// GENERATED CODE - DO NOT MODIFY BY HAND
+// ignore_for_file: type=lint, type=warning
+
 @ProviderFor(fetchPackages)
 const fetchPackagesProvider = FetchPackagesFamily._();
 
 final class FetchPackagesProvider extends $FunctionalProvider<
-        AsyncValue<List<Package>>, FutureOr<List<Package>>>
+        AsyncValue<List<Package>>, List<Package>, FutureOr<List<Package>>>
     with $FutureModifier<List<Package>>, $FutureProvider<List<Package>> {
   const FetchPackagesProvider._(
       {required FetchPackagesFamily super.from,
@@ -100,5 +103,3 @@ final class FetchPackagesFamily extends $Family
   @override
   String toString() => r'fetchPackagesProvider';
 }
-// ignore_for_file: type=lint
-// ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

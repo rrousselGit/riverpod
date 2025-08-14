@@ -8,7 +8,7 @@ extension on CollectionElement {
       final that = this;
       if (that is! Expression) {
         errorReporter(
-          RiverpodAnalysisError(
+          RiverpodAnalysisError.ast(
             'if/for/spread operators as not supported.',
             targetNode: that,
             code: RiverpodAnalysisErrorCode.providerDependencyListParseError,
@@ -19,7 +19,7 @@ extension on CollectionElement {
 
       if (that is! SimpleIdentifier) {
         errorReporter(
-          RiverpodAnalysisError(
+          RiverpodAnalysisError.ast(
             'Only elements annotated with @riverpod are supported.',
             targetNode: that,
             code: RiverpodAnalysisErrorCode.providerDependencyListParseError,
@@ -28,10 +28,11 @@ extension on CollectionElement {
         return null;
       }
 
-      final dependencyElement = that.staticElement;
-      if (dependencyElement is FunctionElement) {
+      final dependencyElement = that.element;
+      if (dependencyElement is ExecutableElement2) {
         final dependencyProvider = FunctionalProviderDeclarationElement._parse(
           dependencyElement,
+          this,
         );
 
         if (dependencyProvider != null) {
@@ -39,7 +40,7 @@ extension on CollectionElement {
         }
 
         errorReporter(
-          RiverpodAnalysisError(
+          RiverpodAnalysisError.ast(
             'The dependency $that is not a function annotated with @riverpod',
             targetNode: that,
             code: RiverpodAnalysisErrorCode.providerDependencyListParseError,
@@ -48,9 +49,10 @@ extension on CollectionElement {
         return null;
       }
 
-      if (dependencyElement is ClassElement) {
+      if (dependencyElement is ClassElement2) {
         final dependencyProvider = ClassBasedProviderDeclarationElement._parse(
           dependencyElement,
+          this,
         );
 
         if (dependencyProvider != null) {
@@ -58,7 +60,7 @@ extension on CollectionElement {
         }
 
         errorReporter(
-          RiverpodAnalysisError(
+          RiverpodAnalysisError.ast(
             'The dependency $that is not a class annotated with @riverpod',
             targetNode: that,
             code: RiverpodAnalysisErrorCode.providerDependencyListParseError,
@@ -68,7 +70,7 @@ extension on CollectionElement {
       }
 
       errorReporter(
-        RiverpodAnalysisError(
+        RiverpodAnalysisError.ast(
           'Only elements annotated with @riverpod are supported.',
           targetNode: that,
           code: RiverpodAnalysisErrorCode.providerDependencyListParseError,
@@ -102,7 +104,7 @@ extension on Expression {
 
       if (that is! ListLiteral) {
         errorReporter(
-          RiverpodAnalysisError(
+          RiverpodAnalysisError.ast(
             'Only list literals (using []) as supported.',
             targetNode: that,
             code: RiverpodAnalysisErrorCode.providerDependencyListParseError,
@@ -135,13 +137,12 @@ final class ProviderDependencyList {
 extension on DartObject {
   /// An element in `@Riverpod(dependencies: [a, b])` or equivalent.
   GeneratorProviderDeclarationElement? toDependency({
-    required Element? from,
+    required AstNode from,
   }) {
-    final functionType = toFunctionValue();
+    final functionType = toFunctionValue2();
     if (functionType != null) {
-      final provider = FunctionalProviderDeclarationElement._parse(
-        functionType,
-      );
+      final provider =
+          FunctionalProviderDeclarationElement._parse(functionType, from);
 
       if (provider != null) return provider;
     }
@@ -149,17 +150,18 @@ extension on DartObject {
     final type = toTypeValue();
     if (type != null) {
       final provider = ClassBasedProviderDeclarationElement._parse(
-        type.element! as ClassElement,
+        type.element3! as ClassElement2,
+        from,
       );
 
       if (provider != null) return provider;
     }
 
     errorReporter(
-      RiverpodAnalysisError(
+      RiverpodAnalysisError.ast(
         'Unsupported dependency "${functionType ?? type ?? this}". '
         'Only functions and classes annotated by @riverpod are supported.',
-        targetElement: from,
+        targetNode: from,
         code: RiverpodAnalysisErrorCode.providerDependencyListParseError,
       ),
     );
@@ -168,7 +170,7 @@ extension on DartObject {
 
   /// The list passed to `@Riverpod(dependencies: [a, b])` or equivalent.
   List<GeneratorProviderDeclarationElement>? toDependencyList({
-    required Element? from,
+    required AstNode from,
   }) {
     final list = toListValue();
     if (list == null) {
@@ -361,10 +363,11 @@ extension IdentifierDependenciesX on Identifier {
 
   IdentifierDependencies? get identifierDependencies {
     return _cache.upsert(this, () {
-      final staticElement = this.staticElement;
-      if (staticElement == null) return null;
+      final Object? staticElement = element;
+      if (staticElement is! Annotatable) return null;
 
-      final dependencies = DependenciesAnnotationElement._of(staticElement);
+      final dependencies =
+          DependenciesAnnotationElement._of(staticElement, this);
       if (dependencies == null) return null;
 
       return IdentifierDependencies._(node: this, dependencies: dependencies);
@@ -388,10 +391,11 @@ extension NamedTypeDependenciesX on NamedType {
 
   NamedTypeDependencies? get typeAnnotationDependencies {
     return _cache.upsert(this, () {
-      final staticElement = type?.element;
-      if (staticElement == null) return null;
+      final Object? staticElement = type?.element3;
+      if (staticElement is! Annotatable) return null;
 
-      final dependencies = DependenciesAnnotationElement._of(staticElement);
+      final dependencies =
+          DependenciesAnnotationElement._of(staticElement, this);
       if (dependencies == null) return null;
 
       return NamedTypeDependencies._(
@@ -423,6 +427,7 @@ extension DependenciesAnnotatedAnnotatedNodeX on Annotation {
 
       final dependenciesElement = DependenciesAnnotationElement._parse(
         elementAnnotation,
+        this,
       );
       if (dependenciesElement == null) return null;
 
@@ -466,28 +471,35 @@ final class DependenciesAnnotationElement {
 
   static final _cache = _Cache<DependenciesAnnotationElement?>();
 
-  static DependenciesAnnotationElement? _parse(ElementAnnotation element) {
-    return _cache(element, () {
-      final type = element.element.cast<ExecutableElement>()?.returnType;
+  static DependenciesAnnotationElement? _parse(
+    ElementAnnotation annotation,
+    AstNode from,
+  ) {
+    return _cache(annotation, () {
+      final type = annotation.element2.cast<ExecutableElement2>()?.returnType;
       if (type == null || !dependenciesType.isExactlyType(type)) return null;
 
       final dependencies =
-          element.computeConstantValue()?.getField('dependencies');
+          annotation.computeConstantValue()?.getField('dependencies');
       if (dependencies == null) return null;
 
-      final dependencyList = dependencies.toDependencyList(
-        from: element.element,
-      );
+      final dependencyList = dependencies.toDependencyList(from: from);
 
       return DependenciesAnnotationElement._(
-        element: element,
+        element: annotation,
         dependencies: dependencyList,
       );
     });
   }
 
-  static DependenciesAnnotationElement? _of(Element element) {
-    return element.metadata.map(_parse).nonNulls.firstOrNull;
+  static DependenciesAnnotationElement? _of(
+    Annotatable element,
+    AstNode from,
+  ) {
+    return element.metadata2.annotations
+        .map((e) => _parse(e, from))
+        .nonNulls
+        .firstOrNull;
   }
 
   final ElementAnnotation element;

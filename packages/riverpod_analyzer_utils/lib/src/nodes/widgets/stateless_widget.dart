@@ -7,8 +7,8 @@ final class StatelessWidgetDeclaration extends WidgetDeclaration {
   });
 
   static StatelessWidgetDeclaration? _parse(ClassDeclaration node) {
-    final element = node.declaredElement.let(
-      StatelessWidgetDeclarationElement._parse,
+    final element = node.declaredFragment?.element.let(
+      (e) => StatelessWidgetDeclarationElement._parse(e, node),
     );
     if (element == null) return null;
 
@@ -30,9 +30,12 @@ final class StatelessWidgetDeclarationElement extends WidgetDeclarationElement {
 
   static final _cache = _Cache<StatelessWidgetDeclarationElement>();
 
-  static StatelessWidgetDeclarationElement? _parse(ClassElement node) {
+  static StatelessWidgetDeclarationElement? _parse(
+    ClassElement2 node,
+    AstNode from,
+  ) {
     return _cache(node, () {
-      final dependencies = DependenciesAnnotationElement._of(node);
+      final dependencies = DependenciesAnnotationElement._of(node, from);
 
       return StatelessWidgetDeclarationElement._(
         dependencies: dependencies,

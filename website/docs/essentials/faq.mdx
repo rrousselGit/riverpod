@@ -128,7 +128,7 @@ user's state to `ref.watch` the "user" provider.
 Then, when the user logs out, all providers depending on it would automatically
 be reset but everything else would remain untouched.
 
-## I have the error "Cannot use "ref" after the widget was disposed", what's wrong?
+## I have the error "Using "ref" when a widget is about to or has been unmounted is unsafe." after the widget was disposed", what's wrong?
 
 You might also see "Bad state: No ProviderScope found", which is an older
 error message of the same issue.
@@ -140,7 +140,7 @@ mounted. This generally happens after an `await`:
 ElevatedButton(
   onPressed: () async {
     await future;
-    ref.read(...); // May throw "Cannot use "ref" after the widget was disposed"
+    ref.read(...); // May throw "Using "ref" when a widget is about to or has been unmounted is unsafe."
   }
 )
 ```

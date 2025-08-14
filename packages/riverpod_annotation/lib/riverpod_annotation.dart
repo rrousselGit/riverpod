@@ -22,7 +22,7 @@ export './src/internal.dart'
         AnyNotifier,
         $AsyncClassModifier,
         $ClassProvider,
-        $ValueProvider,
+        $SyncValueProvider,
         $ProviderOverride,
         $RefArg,
         $ProviderPointer,
@@ -31,7 +31,7 @@ export './src/internal.dart'
         ProviderListenable,
         $LazyProxyListenable,
         ProviderElement,
-        $ElementLense,
+        $Observable,
         $Result,
 
         // Provider
@@ -51,6 +51,8 @@ export './src/internal.dart'
         AsyncLoading,
         AsyncData,
         AsyncError,
+        AsyncResult,
+        AsyncValueExtensions,
 
         // AsyncNotifier
         $AsyncNotifierProvider,

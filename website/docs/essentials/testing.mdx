@@ -1,13 +1,13 @@
 ---
 title: Testing your providers
-version: 3
+version: 4
 ---
 
 import { AutoSnippet } from "/src/components/CodeSnippet";
 import unitTest from "!!raw-loader!./testing/unit_test.dart";
 import widgetTest from "!!raw-loader!./testing/widget_test.dart";
 import fullWidgetTest from "!!raw-loader!./testing/full_widget_test.dart";
-import widgetContainerOf from "!!raw-loader!./testing/widget_container_of.dart";
+import testerContainer from "!!raw-loader!./testing/tester_container.dart";
 import providerToMock from "./testing/provider_to_mock";
 import mockProvider from "!!raw-loader!./testing/mock_provider.dart";
 import autoDisposeListen from "!!raw-loader!./testing/auto_dispose_listen.dart";
@@ -81,10 +81,10 @@ This is similar to what we do when we enable Riverpod in our Flutter app.
 Then, we can use `tester` to interact with our widget.
 Alternatively if you want to interact with providers, you can obtain
 a `ProviderContainer`.
-One can be obtained using `ProviderScope.containerOf(buildContext)`.  
+One can be obtained using `tester.container()`.  
 By using `tester`, we can therefore write the following:
 
-<AutoSnippet raw={widgetContainerOf} />
+<AutoSnippet raw={testerContainer} />
 
 We can then use it to read providers. Here's a full example:
 

@@ -77,11 +77,11 @@ base class $Family extends Family {
 
 /// Setup how a family is overridden
 @internal
-typedef SetupFamilyOverride<Arg> = void Function(
-  Arg argument,
+typedef SetupFamilyOverride<ArgT> = void Function(
+  ArgT argument,
   void Function({
-    required ProviderBase<Object?> origin,
-    required ProviderBase<Object?> override,
+    required $ProviderBaseImpl<Object?> origin,
+    required $ProviderBaseImpl<Object?> override,
   }),
 );
 
@@ -96,7 +96,7 @@ base mixin $FunctionalFamilyOverride<CreatedT, ArgT> on Family {
       from: this,
       createElement: (pointer) {
         final provider =
-            pointer.origin as $FunctionalProvider<Object?, CreatedT>;
+            pointer.origin as $FunctionalProvider<Object?, Object?, CreatedT>;
 
         return provider
             .$view(create: (ref) => create(ref, provider.argument as ArgT))
@@ -114,10 +114,11 @@ base mixin $FunctionalFamilyOverride<CreatedT, ArgT> on Family {
 @reopen
 base class FunctionalFamily< //
         StateT,
+        ValueT,
         ArgT,
         CreatedT,
-        ProviderT extends $FunctionalProvider<StateT, CreatedT>> extends Family
-    with $FunctionalFamilyOverride<CreatedT, ArgT> {
+        ProviderT extends $FunctionalProvider<StateT, ValueT, CreatedT>>
+    extends Family with $FunctionalFamilyOverride<CreatedT, ArgT> {
   /// A base implementation for [Family], used by the various providers to
   /// help them define a [Family].
   ///
@@ -226,12 +227,12 @@ base class ClassFamily< //
   final ClassProviderFactory<NotifierT, ProviderT, CreatedT, ArgT>
       _providerFactory;
 
-  final NotifierT Function() _createFn;
+  final NotifierT Function(ArgT arg) _createFn;
 
   /// {@macro family.call}
   ProviderT call(ArgT argument) {
     return _providerFactory(
-      _createFn,
+      () => _createFn(argument),
       name: name,
       isAutoDispose: isAutoDispose,
       from: this,

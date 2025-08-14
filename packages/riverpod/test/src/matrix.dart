@@ -8,26 +8,26 @@ part 'matrix/async_notifier_provider.dart';
 part 'matrix/stream_notifier_provider.dart';
 part 'matrix/notifier_provider.dart';
 
-class TestMatrix<T extends TestFactory<Object?>> {
+class TestMatrix<FactoryT extends TestFactory<Object?>> {
   TestMatrix(this.values);
 
-  final Map<String, T> values;
+  final Map<String, FactoryT> values;
 
-  void createGroup(void Function(T factory) cb) {
+  void createGroup(void Function(FactoryT factory) cb) {
     for (final entry in values.entries) {
       group(entry.key, () => cb(entry.value));
     }
   }
 }
 
-class TestFactory<T> {
+class TestFactory<FactoryT> {
   TestFactory({
     required this.value,
     required this.isAutoDispose,
     required this.isFamily,
   });
 
-  final T value;
+  final FactoryT value;
   final bool isAutoDispose;
   final bool isFamily;
 }

@@ -31,7 +31,7 @@ void main() {
     final onAddListener = OnAddListener();
     final onRemoveListener = OnRemoveListener();
     final onResume = OnResume();
-    final onCancel = OnCancelMock();
+    final onCancel = OnCancel();
 
     final provider = FutureProvider((ref) {
       ref.onDispose(onDispose.call);
