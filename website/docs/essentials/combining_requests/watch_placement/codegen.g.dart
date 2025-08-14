@@ -92,7 +92,7 @@ final class ExampleProvider extends $FunctionalProvider<int, int, int>
 String _$exampleHash() => r'fed2d2be4787bc4a715efa198a89a297967b54a1';
 
 @ProviderFor(MyNotifier)
-const myNotifierProvider = MyNotifierProvider._();
+const myProvider = MyNotifierProvider._();
 
 final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
   const MyNotifierProvider._()
@@ -100,7 +100,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
           from: null,
           argument: null,
           retry: null,
-          name: r'myNotifierProvider',
+          name: r'myProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,

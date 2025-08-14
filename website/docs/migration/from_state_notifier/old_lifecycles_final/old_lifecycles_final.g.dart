@@ -94,7 +94,7 @@ final class RepositoryProvider
 String _$repositoryHash() => r'8c1b035ba722660550674e92444db7b6f25ac2a3';
 
 @ProviderFor(MyNotifier)
-const myNotifierProvider = MyNotifierProvider._();
+const myProvider = MyNotifierProvider._();
 
 final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
   const MyNotifierProvider._()
@@ -102,7 +102,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
           from: null,
           argument: null,
           retry: null,
-          name: r'myNotifierProvider',
+          name: r'myProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,

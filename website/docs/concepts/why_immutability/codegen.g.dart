@@ -12,7 +12,7 @@ part of 'codegen.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(ThemeNotifier)
-const themeNotifierProvider = ThemeNotifierProvider._();
+const themeProvider = ThemeNotifierProvider._();
 
 final class ThemeNotifierProvider
     extends $NotifierProvider<ThemeNotifier, ThemeSettings> {
@@ -21,7 +21,7 @@ final class ThemeNotifierProvider
           from: null,
           argument: null,
           retry: null,
-          name: r'themeNotifierProvider',
+          name: r'themeProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,

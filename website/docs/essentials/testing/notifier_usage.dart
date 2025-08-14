@@ -12,13 +12,13 @@ void main() {
       // {@template overrides}
       // Override the provider to have it create our mock Notifier.
       // {@endtemplate}
-      overrides: [myNotifierProvider.overrideWith(MyNotifierMock.new)],
+      overrides: [myProvider.overrideWith(MyNotifierMock.new)],
     );
 
     // {@template readNotifier}
     // Then obtain the mocked notifier through the container:
     // {@endtemplate}
-    final notifier = container.read(myNotifierProvider.notifier);
+    final notifier = container.read(myProvider.notifier);
 
     // {@template interactNotifier}
     // You can then interact with the notifier as you would with the real one:
