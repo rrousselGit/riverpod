@@ -251,6 +251,10 @@ class UncontrolledProviderScope extends StatefulWidget {
 }
 
 class _UncontrolledProviderScopeState extends State<UncontrolledProviderScope> {
+  void Function()? _task;
+  Timer? _vsyncTimer;
+  Timer? _vsyncTimOutTimer;
+
   @override
   void initState() {
     super.initState();
@@ -267,6 +271,13 @@ class _UncontrolledProviderScopeState extends State<UncontrolledProviderScope> {
     }
   }
 
+  void _callTask() {
+    if (!mounted) return;
+
+    _task?.call();
+    _task = null;
+  }
+
   void _flutterVsync(void Function() task) {
     assert(_task == null, 'Only one task can be scheduled at a time');
     assert(mounted, 'Cannot schedule a task on an unmounted element');
@@ -281,7 +292,14 @@ class _UncontrolledProviderScopeState extends State<UncontrolledProviderScope> {
     _vsyncTimer?.cancel();
     _vsyncTimer = Timer(Duration.zero, () {
       _vsyncTimer = null;
+      if (_task == null) return;
       if (mounted) setState(() {});
+
+      _vsyncTimOutTimer?.cancel();
+      _vsyncTimOutTimer = Timer(Duration.zero, () {
+        _vsyncTimOutTimer = null;
+        _callTask();
+      });
     });
   }
 
@@ -324,8 +342,7 @@ To fix this problem, you have one of two solutions:
 
   @override
   Widget build(BuildContext context) {
-    _task?.call();
-    _task = null;
+    _callTask();
 
     return _UncontrolledProviderScope(
       container: widget.container,
@@ -333,13 +350,12 @@ To fix this problem, you have one of two solutions:
     );
   }
 
-  void Function()? _task;
-  Timer? _vsyncTimer;
-
   @override
   void dispose() {
     _vsyncTimer?.cancel();
     _vsyncTimer = null;
+    _vsyncTimOutTimer?.cancel();
+    _vsyncTimOutTimer = null;
     if (kDebugMode && debugCanModifyProviders == _debugCanModifyProviders) {
       debugCanModifyProviders = null;
     }

@@ -5,6 +5,43 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('ProviderScope', () {
     testWidgets(
+        'If ProviderScope does not rebuild after a few frames, flush the scheduler',
+        (tester) async {
+      var result = 'Hello World';
+      final provider = Provider((ref) => result);
+
+      await tester.pumpWidget(
+        ProviderScope(
+          child: Consumer(
+            builder: (context, ref, _) {
+              return Text(
+                ref.watch(provider),
+                textDirection: TextDirection.ltr,
+              );
+            },
+          ),
+        ),
+      );
+      final container = tester.container();
+
+      late String value;
+      container.listen(
+        provider,
+        (previous, next) => value = next,
+        fireImmediately: true,
+      );
+
+      result = 'Hello Foo';
+      container.invalidate(provider);
+
+      expect(value, 'Hello World');
+
+      await tester.idle();
+
+      expect(value, 'Hello Foo');
+    });
+
+    testWidgets(
         'Supports scheduling rebuilds of a scoped provider '
         'from an ancestor scope update', (tester) async {
       // Regression test for https://github.com/rrousselGit/riverpod/issues/3498
