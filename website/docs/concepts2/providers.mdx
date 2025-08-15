@@ -34,8 +34,8 @@ One issue with this function is, if we were to try using it inside a widgets,
 we'd have to cache the result ourselves ; then figure out a way to share 
 the value across all widgets that need it.
 
-That is where providers come in. Providers are wrappers around functions,
-which will cache the result of said function ; and allow multiple widgets
+That is where providers come in. Providers are wrappers around functions. 
+They will cache the result of said function and allow multiple widgets
 to access the same value:
 
 <AutoSnippet
@@ -77,7 +77,7 @@ them more powerful:
   For better testing and other purposes, all providers can be mocked.
   See <Link documentID="concepts2/overrides" />.
 - **<Link documentID="concepts2/offline"/>** <br/>
-  The result of a provider can be persisted to disk, and automatically
+  The result of a provider can be persisted to disk and automatically
   reloaded when the app is restarted.
 - **<Link documentID="concepts2/mutations" />** <br/>
   Providers offer a built-in way for UIs render a spinner/error for side effects (such as form submission).
@@ -118,8 +118,8 @@ var state = 0;
 :::info
 You can also view **unmodifiable** vs **modifiable** as respectively `StatelessWidget` vs `StatefulWidget` in principle.  
 
-This is not entirely accurate, as providers are not widgets, and both kinds store "state".
-But hte principle is similar: "One object, immutable" vs "Two objects, mutable".
+This is not entirely accurate, as providers are not widgets and both kinds store "state".
+But the principle is similar: "One object, immutable" vs "Two objects, mutable".
 :::
 
 
@@ -135,64 +135,6 @@ as per the table above.
 <TabItem value="Unmodifiable" label="Unmodifiable (functional)">
 
 <Tabs>
-<TabItem value="riverpod_generator" label="riverpod_generator">
-<Legend
-  code={`
-    @riverpod
-    Result myFunction(Ref ref) {
-      <your logic here>
-    }
-  `}
-  annotations={[
-    {
-      offset: 0,
-      length: 9,
-      label: "The annotation",
-      description: <>
-
-All generated providers must be annotated with `@riverpod` or `@Riverpod()`.
-This annotation can be placed on global functions or classes. Through this annotation, 
-it is possible to configure the provider.
-
-For example, we can disable "auto-dispose" (which we will see later) by writing `@Riverpod(keepAlive: true)`.
-
-</>
-    },
-    {
-      offset: 17,
-      length: 10,
-      label: "The annotated function",
-      description: <>
-
-The name of the annotated function determines how the provider
-will be interacted with.  
-For a given function `myFunction`, a `myFunctionProvider` will be generated.
-
-Annotated functions **must** specify a [Ref] as first parameter.  
-Besides that, the function can have any number of parameters, including generics.
-The function is also free to return a `Future`/`Stream` if it wishes to.
-
-This function will be called when the provider is first read.  
-Subsequent reads will not call the function again, but instead return the cached value.
-
-</>
-    },
-    {
-      offset: 28,
-      length: 7,
-      label: "Ref",
-      description: <>
-
-An object used to interact with other providers.  
-All providers have one; either as parameter of the provider function,
-or as a property of a Notifier.  
-The type of this object is determined by the name of the function/class.
-
-</>
-    },
-]}
-/>
-</TabItem>
 <TabItem value="riverpod" label="riverpod">
 <Legend
   code={`
@@ -209,6 +151,12 @@ The type of this object is determined by the name of the function/class.
 
 This variable is what will be used to interact with our provider.  
 The variable must be final and "top-level" (global).
+
+:::note
+Do not be frightened by the global aspect of providers.
+Providers are fully immutable. Declaring a provider is no different from declaring
+a function, and providers are testable and maintainable.
+:::
 
 </>
     },
@@ -279,23 +227,14 @@ Subsequent reads will not call the function again, but instead return the cached
   ]}
 />
 </TabItem>
-</Tabs>
-
-</TabItem>
-
-<TabItem value="Modifiable" label="Modifiable (notifier)">
-<Tabs>
 <TabItem value="riverpod_generator" label="riverpod_generator">
 <Legend
-  code={`@riverpod
-class MyNotifier extends _$MyNotifier {
-  @override
-  Result build() {
-    <your logic here>
-  }
-
-  <your methods here>
-}`}
+  code={`
+    @riverpod
+    Result myFunction(Ref ref) {
+      <your logic here>
+    }
+  `}
   annotations={[
     {
       offset: 0,
@@ -303,73 +242,55 @@ class MyNotifier extends _$MyNotifier {
       label: "The annotation",
       description: <>
 
-All providers must be annotated with `@riverpod` or `@Riverpod()`.
-This annotation can be placed on global functions or classes.  
-Through this annotation, it is possible to configure the provider.
+All generated providers must be annotated with `@riverpod` or `@Riverpod()`.
+This annotation can be placed on global functions or classes. Through this annotation, 
+it is possible to configure the provider.
 
 For example, we can disable "auto-dispose" (which we will see later) by writing `@Riverpod(keepAlive: true)`.
 
 </>
     },
     {
-      offset: 10,
-      length: 16,
-      label: "The Notifier",
-       description: <>
+      offset: 17,
+      length: 10,
+      label: "The annotated function",
+      description: <>
 
-When a `@riverpod` annotation is placed on a class, that class is called
-a "Notifier".  
-The class must extend `_$NotifierName`, where `NotifierName` is the class name.
+The name of the annotated function determines how the provider
+will be interacted with.  
+For a given function `myFunction`, a `myFunctionProvider` will be generated.
 
-Notifiers are responsible for exposing ways to modify the state of the provider.  
-Public methods on this class are accessible to consumers using `ref.read(yourProvider.notifier).yourMethod()`.
+Annotated functions **must** specify a [Ref] as first parameter.  
+Besides that, the function can have any number of parameters, including generics.
+The function is also free to return a `Future`/`Stream` if it wishes to.
 
-:::note
-Notifiers should not have public properties besides the built-in `state`, as the UI
-would have no means to know that state has changed.
-:::
-
-:::caution
-Do not put logic in the constructor of your notifier.  
-Notifiers should not have a constructor, as `ref` and other properties aren't
-yet available at that point. Instead, put your logic in the `build` method.
-
-```dart
-class MyNotifier extends ... {
-  MyNotifier() {
-    // ❌ Don't do this
-    // This will throw an exception
-    state = AsyncValue.data(42);
-  }
-
-  @override
-  Future<int> build() {
-    // ✅ Do this instead
-    state = AsyncValue.data(42);
-  }
-}
-```
-:::
+This function will be called when the provider is first read.  
+Subsequent reads will not call the function again, but instead return the cached value.
 
 </>
     },
     {
-      offset: 52,
-      length: 54,
-      label: "The build method",
+      offset: 28,
+      length: 7,
+      label: "Ref",
       description: <>
 
-All notifiers must override the `build` method.  
-This method is equivalent to the place where you would normally put your
-logic in a non-notifier provider.
-
-This method should not be called directly.
+An object used to interact with other providers.  
+All providers have one; either as parameter of the provider function,
+or as a property of a Notifier.  
+The type of this object is determined by the name of the function/class.
 
 </>
     },
 ]}
 />
 </TabItem>
+</Tabs>
+
+</TabItem>
+
+<TabItem value="Modifiable" label="Modifiable (notifier)">
+<Tabs>
 <TabItem value="riverpod" label="riverpod">
 <Legend
   code={`final name = SomeNotifierProvider.someModifier<MyNotifier, Result>(MyNotifier.new);
@@ -391,6 +312,12 @@ class MyNotifier extends SomeNotifier<Result> {
 
 This variable is what will be used to interact with our provider.  
 The variable must be final and "top-level" (global).
+
+:::note
+Do not be frightened by the global aspect of providers.
+Providers are fully immutable. Declaring a provider is no different from declaring
+a function, and providers are testable and maintainable.
+:::
 
 </>
     },
@@ -457,11 +384,6 @@ the `State` class.
 This class is responsible for exposing ways to modify the state of the provider.  
 Public methods on this class are accessible to consumers using `ref.read(yourProvider.notifier).yourMethod()`.
 
-:::note
-Notifiers should not have properties besides the built-in `state`, as any state
-outside of `state` may be inadvertently destroyed by Riverpod.
-:::
-
 :::caution
 Do not put logic in the constructor of your notifier.  
 Notifiers should not have a constructor, as `ref` and other properties aren't
@@ -497,15 +419,7 @@ Some examples would be:
 
 - <span style={{ color: colors[0] }}>Notifier</span>Provider -> <span style={{ color: colors[0] }}>Notifier</span>
 - <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider -> <span style={{ color: colors[0] }}>AsyncNotifier</span>
-- <span style={{ color: colors[0] }}>AsyncNotifier</span>Provider.<span
-    style={{ color: colors[2] }}
-  >
-    family
-  </span> -> <span style={{ color: colors[2] }}>Family</span>
-  <span style={{ color: colors[0] }}>AsyncNotifier</span>
-
-To make this simpler, it is recommended to use the code generator, as it
-automatically infers the correct type.
+- <span style={{ color: colors[0] }}>StreamNotifier</span>Provider -> <span style={{ color: colors[0] }}>StreamNotifier</span>
 
 </>
     },
@@ -526,15 +440,89 @@ This method should not be called directly.
 ]}
 />
 </TabItem>
+<TabItem value="riverpod_generator" label="riverpod_generator">
+<Legend
+  code={`@riverpod
+class MyNotifier extends _$MyNotifier {
+  @override
+  Result build() {
+    <your logic here>
+  }
+
+  <your methods here>
+}`}
+  annotations={[
+    {
+      offset: 0,
+      length: 9,
+      label: "The annotation",
+      description: <>
+
+All providers must be annotated with `@riverpod` or `@Riverpod()`.
+This annotation can be placed on global functions or classes.  
+Through this annotation, it is possible to configure the provider.
+
+For example, we can disable "auto-dispose" (which we will see later) by writing `@Riverpod(keepAlive: true)`.
+
+</>
+    },
+    {
+      offset: 10,
+      length: 16,
+      label: "The Notifier",
+       description: <>
+
+When a `@riverpod` annotation is placed on a class, that class is called
+a "Notifier".  
+The class must extend `_$NotifierName`, where `NotifierName` is the class name.
+
+Notifiers are responsible for exposing ways to modify the state of the provider.  
+Public methods on this class are accessible to consumers using `ref.read(yourProvider.notifier).yourMethod()`.
+
+:::caution
+Do not put logic in the constructor of your notifier.  
+Notifiers should not have a constructor, as `ref` and other properties aren't
+yet available at that point. Instead, put your logic in the `build` method.
+
+```dart
+class MyNotifier extends ... {
+  MyNotifier() {
+    // ❌ Don't do this
+    // This will throw an exception
+    state = AsyncValue.data(42);
+  }
+
+  @override
+  Future<int> build() {
+    // ✅ Do this instead
+    state = AsyncValue.data(42);
+  }
+}
+```
+:::
+
+</>
+    },
+    {
+      offset: 52,
+      length: 54,
+      label: "The build method",
+      description: <>
+
+All notifiers must override the `build` method.  
+This method is equivalent to the place where you would normally put your
+logic in a non-notifier provider.
+
+This method should not be called directly.
+
+</>
+    },
+]}
+/>
+</TabItem>
 </Tabs>
 </TabItem>
 </Tabs>
-
-:::note
-Do not be frightened by the global aspect of providers.
-Providers are fully immutable. Declaring a provider is no different from declaring
-a function, and providers are testable and maintainable.
-:::
 
 :::info
 You can declare as many providers as you want without limitations.
