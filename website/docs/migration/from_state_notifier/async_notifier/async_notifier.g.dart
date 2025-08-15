@@ -12,7 +12,7 @@ part of 'async_notifier.dart';
 // ignore_for_file: type=lint, type=warning
 
 @ProviderFor(AsyncTodosNotifier)
-const asyncTodosNotifierProvider = AsyncTodosNotifierProvider._();
+const asyncTodosProvider = AsyncTodosNotifierProvider._();
 
 final class AsyncTodosNotifierProvider
     extends $AsyncNotifierProvider<AsyncTodosNotifier, List<Todo>> {
@@ -21,7 +21,7 @@ final class AsyncTodosNotifierProvider
           from: null,
           argument: null,
           retry: null,
-          name: r'asyncTodosNotifierProvider',
+          name: r'asyncTodosProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,

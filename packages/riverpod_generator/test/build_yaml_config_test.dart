@@ -2,6 +2,16 @@ import 'package:riverpod_generator/src/models.dart';
 import 'package:test/test.dart';
 
 void main() {
+  test('default options', () {
+    final options = BuildYamlOptions.fromMap({});
+
+    expect(options.providerNamePrefix, '');
+    expect(options.providerFamilyNamePrefix, '');
+    expect(options.providerNameSuffix, 'Provider');
+    expect(options.providerFamilyNameSuffix, 'Provider');
+    expect(options.providerNameStripPattern, r'Notifier$');
+  });
+
   test('custom suffix', () async {
     const map = {'provider_name_suffix': 'Pod'};
     final options = BuildYamlOptions.fromMap(map);
@@ -27,9 +37,9 @@ void main() {
   });
 
   test('provider name strip pattern', () async {
-    const map = {'provider_name_strip_pattern': r'Notifier$'};
+    const map = {'provider_name_strip_pattern': r'Foo$'};
     final options = BuildYamlOptions.fromMap(map);
-    expect(options.providerNameStripPattern, r'Notifier$');
+    expect(options.providerNameStripPattern, r'Foo$');
   });
 
   test('provider name strip pattern with multiple patterns', () async {

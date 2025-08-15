@@ -50,7 +50,7 @@ final class IntegerProvider extends $FunctionalProvider<int, int, int>
 String _$integerHash() => r'8ad63bb35c89ffcf2ef281d7c39539760afff303';
 
 @ProviderFor(stateNotifier)
-const stateNotifierProvider = StateNotifierProvider._();
+const stateProvider = StateNotifierProvider._();
 
 final class StateNotifierProvider extends $FunctionalProvider<MyStateNotifier,
     MyStateNotifier, MyStateNotifier> with $Provider<MyStateNotifier> {
@@ -59,7 +59,7 @@ final class StateNotifierProvider extends $FunctionalProvider<MyStateNotifier,
           from: null,
           argument: null,
           retry: null,
-          name: r'stateNotifierProvider',
+          name: r'stateProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,
@@ -90,7 +90,7 @@ final class StateNotifierProvider extends $FunctionalProvider<MyStateNotifier,
 String _$stateNotifierHash() => r'2505b564fd3a623976548c715b1623dea507f6d3';
 
 @ProviderFor(asyncStateNotifier)
-const asyncStateNotifierProvider = AsyncStateNotifierProvider._();
+const asyncStateProvider = AsyncStateNotifierProvider._();
 
 final class AsyncStateNotifierProvider extends $FunctionalProvider<
         AsyncValue<MyStateNotifier>, MyStateNotifier, FutureOr<MyStateNotifier>>
@@ -100,7 +100,7 @@ final class AsyncStateNotifierProvider extends $FunctionalProvider<
           from: null,
           argument: null,
           retry: null,
-          name: r'asyncStateNotifierProvider',
+          name: r'asyncStateProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,
@@ -211,7 +211,7 @@ String _$stateNotifierAsyncHash() =>
     r'ce67cf8c6f4bda46835042c17ea01186b5b399a5';
 
 @ProviderFor(SelfNotifier)
-const selfNotifierProvider = SelfNotifierProvider._();
+const selfProvider = SelfNotifierProvider._();
 
 final class SelfNotifierProvider
     extends $AsyncNotifierProvider<SelfNotifier, SelfNotifier> {
@@ -220,7 +220,7 @@ final class SelfNotifierProvider
           from: null,
           argument: null,
           retry: null,
-          name: r'selfNotifierProvider',
+          name: r'selfProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,
@@ -253,7 +253,7 @@ abstract class _$SelfNotifier extends $AsyncNotifier<SelfNotifier> {
 }
 
 @ProviderFor(SyncSelfNotifier)
-const syncSelfNotifierProvider = SyncSelfNotifierProvider._();
+const syncSelfProvider = SyncSelfNotifierProvider._();
 
 final class SyncSelfNotifierProvider
     extends $NotifierProvider<SyncSelfNotifier, SyncSelfNotifier> {
@@ -262,7 +262,7 @@ final class SyncSelfNotifierProvider
           from: null,
           argument: null,
           retry: null,
-          name: r'syncSelfNotifierProvider',
+          name: r'syncSelfProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,
@@ -303,7 +303,7 @@ abstract class _$SyncSelfNotifier extends $Notifier<SyncSelfNotifier> {
 }
 
 @ProviderFor(StreamSelfNotifier)
-const streamSelfNotifierProvider = StreamSelfNotifierProvider._();
+const streamSelfProvider = StreamSelfNotifierProvider._();
 
 final class StreamSelfNotifierProvider
     extends $StreamNotifierProvider<StreamSelfNotifier, StreamSelfNotifier> {
@@ -312,7 +312,7 @@ final class StreamSelfNotifierProvider
           from: null,
           argument: null,
           retry: null,
-          name: r'streamSelfNotifierProvider',
+          name: r'streamSelfProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,
@@ -392,7 +392,7 @@ abstract class _$StateNotifierClassAsync
 }
 
 @ProviderFor(changeNotifier)
-const changeNotifierProvider = ChangeNotifierProvider._();
+const changeProvider = ChangeNotifierProvider._();
 
 final class ChangeNotifierProvider extends $FunctionalProvider<MyChangeNotifier,
     MyChangeNotifier, MyChangeNotifier> with $Provider<MyChangeNotifier> {
@@ -401,7 +401,7 @@ final class ChangeNotifierProvider extends $FunctionalProvider<MyChangeNotifier,
           from: null,
           argument: null,
           retry: null,
-          name: r'changeNotifierProvider',
+          name: r'changeProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,
@@ -524,7 +524,7 @@ final class NotifierProvider
 String _$notifierHash() => r'5ad63d9ccd05ab78e7a6ba5c763cacf0b1decb7b';
 
 @ProviderFor(autoDisposeNotifier)
-const autoDisposeNotifierProvider = AutoDisposeNotifierProvider._();
+const autoDisposeProvider = AutoDisposeNotifierProvider._();
 
 final class AutoDisposeNotifierProvider extends $FunctionalProvider<
     MyAutoDisposeNotifier,
@@ -535,7 +535,7 @@ final class AutoDisposeNotifierProvider extends $FunctionalProvider<
           from: null,
           argument: null,
           retry: null,
-          name: r'autoDisposeNotifierProvider',
+          name: r'autoDisposeProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,
@@ -615,7 +615,7 @@ abstract class _$NotifierClass extends $Notifier<MyNotifier> {
 }
 
 @ProviderFor(asyncNotifier)
-const asyncNotifierProvider = AsyncNotifierProvider._();
+const asyncProvider = AsyncNotifierProvider._();
 
 final class AsyncNotifierProvider extends $FunctionalProvider<MyAsyncNotifier,
     MyAsyncNotifier, MyAsyncNotifier> with $Provider<MyAsyncNotifier> {
@@ -624,7 +624,7 @@ final class AsyncNotifierProvider extends $FunctionalProvider<MyAsyncNotifier,
           from: null,
           argument: null,
           retry: null,
-          name: r'asyncNotifierProvider',
+          name: r'asyncProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,
@@ -706,7 +706,7 @@ abstract class _$AsyncNotifierClass extends $Notifier<MyAsyncNotifier> {
 }
 
 @ProviderFor(rawNotifier)
-const rawNotifierProvider = RawNotifierProvider._();
+const rawProvider = RawNotifierProvider._();
 
 final class RawNotifierProvider extends $FunctionalProvider<
     Raw<MyChangeNotifier>,
@@ -717,7 +717,7 @@ final class RawNotifierProvider extends $FunctionalProvider<
           from: null,
           argument: null,
           retry: null,
-          name: r'rawNotifierProvider',
+          name: r'rawProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,
@@ -749,7 +749,7 @@ final class RawNotifierProvider extends $FunctionalProvider<
 String _$rawNotifierHash() => r'c667d10419c9ce1fdd227e2afd1f3aaf63c3380b';
 
 @ProviderFor(rawFutureNotifier)
-const rawFutureNotifierProvider = RawFutureNotifierProvider._();
+const rawFutureProvider = RawFutureNotifierProvider._();
 
 final class RawFutureNotifierProvider extends $FunctionalProvider<
         Raw<Future<MyChangeNotifier>>,
@@ -761,7 +761,7 @@ final class RawFutureNotifierProvider extends $FunctionalProvider<
           from: null,
           argument: null,
           retry: null,
-          name: r'rawFutureNotifierProvider',
+          name: r'rawFutureProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,
@@ -794,7 +794,7 @@ final class RawFutureNotifierProvider extends $FunctionalProvider<
 String _$rawFutureNotifierHash() => r'ff2744c369ebd96615f19451eae416d7afeef03f';
 
 @ProviderFor(rawStreamNotifier)
-const rawStreamNotifierProvider = RawStreamNotifierProvider._();
+const rawStreamProvider = RawStreamNotifierProvider._();
 
 final class RawStreamNotifierProvider extends $FunctionalProvider<
         Raw<Stream<MyChangeNotifier>>,
@@ -806,7 +806,7 @@ final class RawStreamNotifierProvider extends $FunctionalProvider<
           from: null,
           argument: null,
           retry: null,
-          name: r'rawStreamNotifierProvider',
+          name: r'rawStreamProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,
@@ -839,7 +839,7 @@ final class RawStreamNotifierProvider extends $FunctionalProvider<
 String _$rawStreamNotifierHash() => r'9a13efb8fbcef6c4388d5a2535b1b0aec6e46a9a';
 
 @ProviderFor(futureRawNotifier)
-const futureRawNotifierProvider = FutureRawNotifierProvider._();
+const futureRawProvider = FutureRawNotifierProvider._();
 
 final class FutureRawNotifierProvider extends $FunctionalProvider<
         AsyncValue<Raw<MyChangeNotifier>>,
@@ -853,7 +853,7 @@ final class FutureRawNotifierProvider extends $FunctionalProvider<
           from: null,
           argument: null,
           retry: null,
-          name: r'futureRawNotifierProvider',
+          name: r'futureRawProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,
@@ -877,7 +877,7 @@ final class FutureRawNotifierProvider extends $FunctionalProvider<
 String _$futureRawNotifierHash() => r'87103845bce1f4cae4ad62ae3b7da6ca3539581f';
 
 @ProviderFor(streamRawNotifier)
-const streamRawNotifierProvider = StreamRawNotifierProvider._();
+const streamRawProvider = StreamRawNotifierProvider._();
 
 final class StreamRawNotifierProvider extends $FunctionalProvider<
         AsyncValue<Raw<MyChangeNotifier>>,
@@ -891,7 +891,7 @@ final class StreamRawNotifierProvider extends $FunctionalProvider<
           from: null,
           argument: null,
           retry: null,
-          name: r'streamRawNotifierProvider',
+          name: r'streamRawProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,

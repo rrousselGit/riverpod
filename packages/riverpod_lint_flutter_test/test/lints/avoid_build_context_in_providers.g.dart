@@ -109,7 +109,7 @@ final class FnFamily extends $Family
 }
 
 @ProviderFor(MyNotifier)
-const myNotifierProvider = MyNotifierFamily._();
+const myProvider = MyNotifierFamily._();
 
 final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
   const MyNotifierProvider._(
@@ -121,7 +121,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
           super.argument})
       : super(
           retry: null,
-          name: r'myNotifierProvider',
+          name: r'myProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,
@@ -132,7 +132,7 @@ final class MyNotifierProvider extends $NotifierProvider<MyNotifier, int> {
 
   @override
   String toString() {
-    return r'myNotifierProvider'
+    return r'myProvider'
         ''
         '$argument';
   }
@@ -176,7 +176,7 @@ final class MyNotifierFamily extends $Family
   const MyNotifierFamily._()
       : super(
           retry: null,
-          name: r'myNotifierProvider',
+          name: r'myProvider',
           dependencies: null,
           $allTransitiveDependencies: null,
           isAutoDispose: true,
@@ -192,7 +192,7 @@ final class MyNotifierFamily extends $Family
       ), from: this);
 
   @override
-  String toString() => r'myNotifierProvider';
+  String toString() => r'myProvider';
 }
 
 abstract class _$MyNotifier extends $Notifier<int> {

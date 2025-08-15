@@ -52,7 +52,7 @@ final class TaskTrackerProvider extends $FunctionalProvider<TaskTrackerRepo,
 String _$taskTrackerHash() => r'004d4554b37d841c6f668e298067dd39611a453a';
 
 @ProviderFor(BugsEncounteredNotifier)
-const bugsEncounteredNotifierProvider = BugsEncounteredNotifierFamily._();
+const bugsEncounteredProvider = BugsEncounteredNotifierFamily._();
 
 final class BugsEncounteredNotifierProvider
     extends $AsyncNotifierProvider<BugsEncounteredNotifier, int> {
@@ -61,7 +61,7 @@ final class BugsEncounteredNotifierProvider
       required String super.argument})
       : super(
           retry: null,
-          name: r'bugsEncounteredNotifierProvider',
+          name: r'bugsEncounteredProvider',
           isAutoDispose: true,
           dependencies: null,
           $allTransitiveDependencies: null,
@@ -72,7 +72,7 @@ final class BugsEncounteredNotifierProvider
 
   @override
   String toString() {
-    return r'bugsEncounteredNotifierProvider'
+    return r'bugsEncounteredProvider'
         ''
         '($argument)';
   }
@@ -103,7 +103,7 @@ final class BugsEncounteredNotifierFamily extends $Family
   const BugsEncounteredNotifierFamily._()
       : super(
           retry: null,
-          name: r'bugsEncounteredNotifierProvider',
+          name: r'bugsEncounteredProvider',
           dependencies: null,
           $allTransitiveDependencies: null,
           isAutoDispose: true,
@@ -115,7 +115,7 @@ final class BugsEncounteredNotifierFamily extends $Family
       BugsEncounteredNotifierProvider._(argument: featureId, from: this);
 
   @override
-  String toString() => r'bugsEncounteredNotifierProvider';
+  String toString() => r'bugsEncounteredProvider';
 }
 
 abstract class _$BugsEncounteredNotifier extends $AsyncNotifier<int> {

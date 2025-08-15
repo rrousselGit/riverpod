@@ -46,11 +46,7 @@ class ProviderTransformer<InT, ValueT> {
 
   /// The currently exposed state of this transformer.
   ///
-  /// Based on if using [SyncProviderTransformerMixin] or
-  /// [AsyncProviderTransformerMixin], how the UI will react to [AsyncError]
-  /// will differ:
-  /// - [SyncProviderTransformerMixin] will rethrow the error
-  /// - [AsyncProviderTransformerMixin] will return an [AsyncError] directly
+  /// When using [SyncProviderTransformerMixin], will rethrow the error if any.
   AsyncResult<ValueT> get state => _state;
   set state(AsyncResult<ValueT> value) {
     _state = value;
@@ -246,7 +242,6 @@ abstract class _ProviderTransformerMixin<InT, StateT, ValueT>
 /// Used as `ref.watch(provider.where((previous, value) => value > 0))`.
 ///
 /// See also:
-/// - [AsyncProviderTransformerMixin], for listenables that emit an [AsyncValue]
 /// - [ProviderTransformer], the object responsible for the transformation logic.
 @publicInMisc
 base mixin SyncProviderTransformerMixin<InT, ValueT>
@@ -273,37 +268,6 @@ base mixin SyncProviderTransformerMixin<InT, ValueT>
             return $ResultError(asyncResult.error, asyncResult.stackTrace);
         }
       },
-    );
-  }
-}
-
-/// A mixin for custom [ProviderListenable]s that emit an [AsyncValue].
-///
-/// If in error state, an [AsyncError] will be emitted instead of an exception.
-///
-/// See also:
-/// - [SyncProviderTransformerMixin], for listenables that do not emit an
-///   [AsyncValue]
-/// - [ProviderTransformer], the object responsible for the transformation logic.
-@publicInMisc
-base mixin AsyncProviderTransformerMixin<InT, ValueT>
-    implements _ProviderTransformerMixin<InT, AsyncValue<ValueT>, ValueT> {
-  @override
-  ProviderSubscriptionImpl<AsyncValue<ValueT>> _addListener(
-    Node source,
-    void Function(AsyncValue<ValueT>? previous, AsyncValue<ValueT> next)
-        listener, {
-    required void Function(Object error, StackTrace stackTrace) onError,
-    required void Function()? onDependencyMayHaveChanged,
-    required bool weak,
-  }) {
-    return _handle(
-      source,
-      listener,
-      onError: onError,
-      onDependencyMayHaveChanged: onDependencyMayHaveChanged,
-      weak: weak,
-      read: $Result.data,
     );
   }
 }

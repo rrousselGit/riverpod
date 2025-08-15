@@ -580,9 +580,16 @@ sealed class MutationState<ResultT> {
 /// The mutation is not running.
 ///
 /// This is the default state of a mutation.
-/// A mutation can be reset to this state by calling [Mutation.reset].
 ///
-/// {@macro auto_reset}
+/// {@template auto_reset}
+/// ## Auto reset
+/// By default, mutations are automatically reset to [MutationIdle] when they
+/// are no longer being listened to. This is similar to Riverpod's "auto-dispose"
+/// feature, for mutations.
+///
+/// You cam also manually reset a mutation to its initial state using
+/// [Mutation.reset].
+/// {@endtemplate}
 ///
 /// {@macro mutation_states}
 @publicInMutations

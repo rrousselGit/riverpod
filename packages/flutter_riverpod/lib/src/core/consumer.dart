@@ -383,14 +383,6 @@ base class ConsumerStatefulElement extends StatefulElement
   List<ProviderSubscription<Object?>>? _manualListeners;
   bool? _isActive;
 
-  Iterable<ProviderSubscription> get _allSubscriptions sync* {
-    yield* _dependencies.values;
-    yield* _listeners;
-    if (_manualListeners != null) {
-      yield* _manualListeners!;
-    }
-  }
-
   void _applyTickerMode(ProviderSubscription sub) {
     if (_isActive == false) sub.pause();
   }
@@ -413,7 +405,7 @@ base class ConsumerStatefulElement extends StatefulElement
     final isActive = TickerMode.of(context);
     if (isActive != _isActive) {
       _isActive = isActive;
-      for (final sub in _allSubscriptions) {
+      for (final sub in _dependencies.values) {
         if (isActive) {
           sub.resume();
         } else {
@@ -507,7 +499,6 @@ base class ConsumerStatefulElement extends StatefulElement
     // which listen call was preserved between widget rebuild, and we wouldn't
     // want to call the listener on every rebuild.
     final sub = container.listen<StateT>(provider, listener, onError: onError);
-    _applyTickerMode(sub);
     _listeners.add(sub);
   }
 
@@ -569,7 +560,6 @@ base class ConsumerStatefulElement extends StatefulElement
       _manualListeners?.remove(sub);
     };
 
-    _applyTickerMode(sub);
     listeners.add(sub);
 
     return sub;

@@ -134,6 +134,7 @@ void main() {
     });
 
     test("adding and removing a dep shouldn't stop its listeners", () async {
+      // Regression test for https://github.com/rrousselGit/riverpod/issues/4117
       final numberProvider =
           StreamProvider.autoDispose<int>(name: 'number', (ref) {
         final controller = StreamController<int>();
@@ -159,13 +160,13 @@ void main() {
         name: 'two',
       );
 
-      // Regression test for https://github.com/rrousselGit/riverpod/issues/4117
       final container = ProviderContainer.test();
 
       final element = container.readProviderElement(numberProvider);
 
       Future.delayed(Duration.zero, () async {
         Future<void> pushAndPop() async {
+          if (container.disposed) return;
           final sub2 = container.listen(provider2, (previous, next) {});
           await Future.microtask(() {});
           sub2.close();

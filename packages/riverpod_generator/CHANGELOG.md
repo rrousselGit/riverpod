@@ -2,6 +2,7 @@
 
 - Fix invalid generated code when a `Notifier` uses `static const` as default value for some of its `build` parameters.
 - Support records with a single value.
+- Set the default for `provider_name_strip_pattern` to `Notifier$`.
 
 ## 3.0.0-dev.17 - 2025-08-01
 
