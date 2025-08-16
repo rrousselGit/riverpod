@@ -1,18 +1,26 @@
 // ignore_for_file: avoid_dynamic_calls
 
 import 'package:flutter_riverpod/experimental/persist.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/experimental/json_persist.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import '../storage/codegen.dart';
 
 part 'codegen.g.dart';
+part 'codegen.freezed.dart';
 
 Future<List<Todo>> fetchTodosFromServer() async => [];
 
-class Todo {
-  Todo({required this.task});
-  final String task;
+@freezed
+abstract class Todo with _$Todo {
+  const factory Todo({
+    required String id,
+    required String title,
+    required bool completed,
+  }) = _Todo;
+
+  factory Todo.fromJson(Map<String, dynamic> json) => _$TodoFromJson(json);
 }
 
 /* SNIPPET START */
