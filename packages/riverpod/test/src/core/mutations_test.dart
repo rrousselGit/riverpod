@@ -16,7 +16,7 @@ void main() {
           .having((e) => e.isSuccess, 'isSuccess', false),
     );
 
-    final future = mut.run(container, (ref) async {});
+    final future = mut.run(container, (tsx) async {});
 
     expect(
       container.read(mut),
@@ -38,7 +38,7 @@ void main() {
           .having((e) => e.isSuccess, 'isSuccess', true),
     );
 
-    await mut.run(container, (ref) async {
+    await mut.run(container, (tsx) async {
       throw Exception('error');
     }).catchError((_) {});
 

@@ -254,17 +254,17 @@ followed:
 
 ```dart
 onPressed: () {
-  addTodoMutation.run(ref, (ref) async {
+  addTodoMutation.run(ref, (tsx) async {
     // This is where we run our side-effect.
     // Here, we typically obtain a Notifier and call a method on it.
-    await ref.get(todoListProvider.notifier).addTodo('New Todo');
+    await tsx.get(todoListProvider.notifier).addTodo('New Todo');
   });
 }
 ```
 
 :::note
-Note how we called [ref.get] here instead of [Ref.read].  
-This is a feature unique to mutations. That [ref.get] obtains the state of a provider,
+Note how we called [tsx.get] here instead of [Ref.read].  
+This is a feature unique to mutations. That [tsx.get] obtains the state of a provider,
 but keep it alive until the mutation is completed.
 :::
 
@@ -1375,7 +1375,7 @@ regarding combining multiple "sources of truth" in a single provider.
 [riverpod_lint]: https://pub.dev/packages/riverpod_lint
 [Ref]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Ref-class.html
 [Ref.read]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Ref/read.html
-[ref.get]: https://pub.dev/documentation/riverpod/3.0.0-dev.16/experimental_mutation/MutationTransaction/get.html
+[tsx.get]: https://pub.dev/documentation/riverpod/3.0.0-dev.16/experimental_mutation/MutationTransaction/get.html
 [WidgetRef]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/WidgetRef-class.html
 [TickerMode]: https://api.flutter.dev/flutter/widgets/TickerMode-class.html
 [Consumer]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Consumer-class.html

@@ -249,10 +249,10 @@ abstract class MutationTarget {
 /// ```dart
 /// ElevatedButton(
 ///   onPressed: () {
-///     addTodoMutation.run(ref, (ref) async {
+///     addTodoMutation.run(ref, (tsx) async {
 ///       // This is where you perform the side-effect. Here, you can
 ///       // read your providers to modify them.
-///       await ref.get(todoListProvider.notifier).addTodo(
+///       await tsx.get(todoListProvider.notifier).addTodo(
 ///         Todo(title: 'New Todo'),
 ///       );
 ///     });
@@ -309,7 +309,7 @@ abstract class MutationTarget {
 /// onPressed: () {
 ///   // Upon calling `run`, you will have to pass the same key as when
 ///   // watching the mutation.
-///   deleteTodo(todo.id).run(ref, (ref) async { /* ... */ });
+///   deleteTodo(todo.id).run(ref, (tsx) async { /* ... */ });
 /// }
 /// ```
 ///
@@ -357,7 +357,7 @@ sealed class Mutation<ResultT>
   /// of the callback, and close any pending subscriptions after it completes.
   Future<ResultT> run(
     MutationTarget target,
-    Future<ResultT> Function(MutationTransaction ref) cb,
+    Future<ResultT> Function(MutationTransaction transaction) cb,
   );
 
   /// Resets the mutation to its initial state ([MutationIdle]).

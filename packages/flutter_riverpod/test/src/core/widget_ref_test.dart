@@ -23,7 +23,7 @@ void main() {
 
     final sub = ref.listenManual(mutation, (a, b) {});
 
-    await mutation.run(ref, (ref) async {
+    await mutation.run(ref, (tsx) async {
       return 1;
     });
 
