@@ -95,7 +95,8 @@ class _MutationNotifier<ValueT> {
   _MutationNotifier(this.state, this.setState, this.setRef, this.getRef);
 
   final MutationState<ValueT> state;
-  final void Function(MutationState<ValueT> state, MutationTransaction ref) setState;
+  final void Function(MutationState<ValueT> state, MutationTransaction ref)
+      setState;
   final void Function(MutationTransaction ref) setRef;
   final MutationTransaction? Function() getRef;
 
