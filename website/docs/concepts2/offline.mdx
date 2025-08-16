@@ -5,6 +5,13 @@ import { Link } from "/src/components/Link";
 import {
   AutoSnippet,
 } from "/src/components/CodeSnippet";
+import storage from './offline/storage'
+import manualPersist from './offline/manual_persist'
+import destroyKey from './offline/destroy_key';
+import waitPersist from 'raw-loader!./offline/wait_persist.dart';
+import jsonPersist from 'raw-loader!./offline/json_persist.dart'
+import customDuration from 'raw-loader!./offline/custom_duration.dart';
+import inMemoryTest from 'raw-loader!./offline/in_memory_test.dart';
 
 Offline persistence is the ability to store the state of <Link documentID="concepts2/providers" />
 on the user's device, so that it can be accessed even when the user is offline or when the app is restarted.
@@ -27,43 +34,130 @@ Offline persistence works using two parts:
 1. [Storage], an interface to interact with your database.
   This is typically implemented by a package (such as [riverpod_sqflite]).
 1. [AnyNotifier.persist], a function used inside notifiers to opt-in to persistence.
-  
+
+## Creating a Storage
+
+Before we start persisting notifiers, we need to instantiate an object that implements the
+[Storage] interface. This object will be responsible for connecting Riverpod with your database.
+
+You need have to either:
+- Download a package that provides a way to connect Riverpod with your Database of choice.
+- Manually implement [Storage]
+
+If using SQFlite, you can use [riverpod_sqflite]:
+
+```sh
+dart pub add riverpod_sqflite sqflite
+```
+
+Then, you can create a Storage by instantiating [JsonSqFliteStorage]:
+
+<AutoSnippet {...storage} />
 
 ## Persisting the state of a provider
 
-Currently, only "Notifiers" can be persisted. See <Link documentID="concepts2/providers" /> for more information.
+Once we've created a [Storage], we can start persisting the state of providers.  
+Currently, only "Notifiers" can be persisted. See <Link documentID="concepts2/providers" /> for more information about them.
 
-### Understanding provider keys
-### Understanding destroy keys
+To persist the state of a notifier, you will typically need to call [AnyNotifier.persist] inside the `build` method of your notifier.
 
-### Restoring long-lived objects
+<AutoSnippet {...manualPersist} />
 
-(awaiting persistence decoding)
+### Using simplified JSON serialization (code-generation)
 
-### Testing persistence
+If you are using [riverpod_sqflite] and code-generation, you can simplify the `persist` call
+by using the [JsonPersist] annotation:
 
-Using Storage.inMemory to test a provider's persistence logic
+<AutoSnippet raw={jsonPersist} />
 
+## Understanding persist keys
 
-## Using simplified JSON serialization (code-generation)
+In some of the previous snippets, we've passed a `key` parameter to [AnyNotifier.persist]. 
+That key is there to enable your database to know where to store the state of a provider in the Database.
+Depending on the database, this key may be a unique row ID.
 
-## Dealing with database migration
+When specifying `key`, it is critical to ensure that:
+- The key is unique across all providers that you persist.  
+  Failing to do so could cause data corruption, as two providers could be trying to write
+  to the same row in the database. If Riverpod detects two providers using the same key, an assertion will be thrown.
+- The key is stable across app restarts.
+  If the key changes, Riverpod will not be able to restore the state of the provider
+  when the app is restarted, and the provider will be initialized as if it was never persisted
+- The key needs to include any parameter that the provider takes.
+  When using "families" (cf <Link documentID="concepts2/family" />), the key needs to include the family parameter.
 
 
 ## Changing the cache duration
 
-By default, state is only cached for 2 days. This is to prevent
-the database from continuously growing and consuming too much space.
+By default, state is only cached for 2 days. This default ensures that
+no leak happens and deleted providers stay in the database indefinitely
 
 This is generally safe, as Riverpod is designed to be use primarily
 as a cache for IO operations (network requests, database queries, etc).
 But such default will not be suitable for all use-cases, such as if
 you want to store user preferences.
 
-## Creating your own Storage
+To change this default, specify `options` like so:
 
-## Implementing your own offline persistence from scratch
+<AutoSnippet raw={customDuration} />
+
+:::caution
+If you set the cache duration to infinite, make sure to
+manually delete the persisted state from the database if you ever delete the provider.
+
+For this, refer to your database's documentation.
+:::
+
+
+## Using "destroy key" for simple data-migration
+
+A common challenge when persisting data is handling when the data structure changes.
+If you change how an object is serialized, you may need to migrate the data stored in the database.
+
+While Riverpod does not provide a way to do proper data migration, it does provide a way to
+easily replace the old persisted state with a brand new one: Destroy keys.
+
+<AutoSnippet {...destroyKey} />
+
+Destroy keys help doing simple data migrations by enabling Riverpod to know when
+the old persisted state should be discarded. When a new version of the application
+is released with a different destroyKey, the old persisted state will be discarded,
+and the provider will be initialized as if it was never persisted.
+
+## Waiting for persistence decoding
+
+Until now, we've never waited for [AnyNotifier.persist] to complete.  
+This is voluntary, as this allows the provider to start its network requests as soon as possible.
+However, it means that the provider cannot easily access the persisted state
+right after calling `persist`.
+
+In some cases, instead of initializing the provider with a network request,
+you may want to initialize it with the persisted state.
+
+In that case, you can await the result of `persist` as follows:
+
+```dart
+await persist(...).future;
+```
+
+This enables accessing the persisted state within `build` using `this.state`:
+
+<AutoSnippet raw={waitPersist} />
+
+## Testing persistence
+
+When testing your application, it may be inconvenient to use a real database.
+In particular, unit and widget tests will not have access to a device,
+and thus cannot use a database.
+
+For this reason, Riverpod provides a way to use an in-memory database using [Storage.inMemory].  
+To have your test use this in-memory database, you can use <Link documentID="concepts2/overrides" />:
+
+<AutoSnippet raw={inMemoryTest} />
 
 [riverpod_sqflite]: https://pub.dev/packages/riverpod_sqflite
 [Storage]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/experimental_persist/Storage-class.html
 [AnyNotifier.persist]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/experimental_persist/NotifierPersistX/persist.html
+[JsonSqFliteStorage]: https://pub.dev/documentation/riverpod_sqflite/latest/riverpod_sqflite/JsonSqFliteStorage-class.html
+[JsonPersist]: https://pub.dev/documentation/riverpod_annotation/3.0.0-dev.17/experimental_json_persist/JsonPersist-class.html
+[Storage.inMemory]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/experimental_persist/Storage/Storage.inMemory.html

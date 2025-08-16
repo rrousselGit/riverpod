@@ -28,6 +28,7 @@ module.exports = {
         "concepts2/providers",
         'concepts2/consumers',
         'concepts2/refs',
+        'concepts2/family',
         'concepts2/containers',
         'concepts2/auto_dispose',
         'concepts2/mutations',
