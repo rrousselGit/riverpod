@@ -186,10 +186,10 @@ export function AutoSnippet(props: {
 
   return (
     <Tabs>
-      {tab(props.codegen, "riverpod_generator")}
-      {tab(props.hooksCodegen, "riverpod_generator + flutter_hooks")}
       {tab(props.raw, "riverpod")}
       {tab(props.hooks, "riverpod + flutter_hooks")}
+      {tab(props.codegen, "riverpod_generator")}
+      {tab(props.hooksCodegen, "riverpod_generator + flutter_hooks")}
     </Tabs>
   );
 }

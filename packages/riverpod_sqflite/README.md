@@ -43,12 +43,7 @@ final storageProvider = FutureProvider<JsonSqFliteStorage>((ref) async {
 Then, create a `Notifier`, mix-in `Persistable` and then invoke `persist` inside `Notifier.build`:
 
 ```dart
-class TodosNotifier extends AsyncNotifier<List<Todo>>
-    // We mix-in [Persistable] to enable the automatic persistence of the state.
-    // Since the object will be encoded into JSON, we pass [String]/[String]
-    // as key/value types.
-    with
-        Persistable<List<Todo>, String, String> {
+class TodosNotifier extends AsyncNotifier<List<Todo>> {
   @override
   FutureOr<List<Todo>> build() async {
     // We call persist at the start of our `build` method.
@@ -58,6 +53,7 @@ class TodosNotifier extends AsyncNotifier<List<Todo>>
     // - Listen to changes on this provider and write those changes to the DB.
     // We "await" for persist to complete to make sure that the decoding is done
     // before we return the state.
+    // If you do not care about the decoded value, don't await the future.
     await persist(
       // We pass our JsonSqFliteStorage instance. No need to "await" the Future.
       // Riverpod will take care of that.
@@ -75,7 +71,7 @@ class TodosNotifier extends AsyncNotifier<List<Todo>>
             .map((e) => Todo.fromJson(e as Map<String, Object?>))
             .toList();
       },
-    );
+    ).future;
 
     // If a state is persisted, we return it. Otherwise we return an empty list.
     return state.value ?? [];
