@@ -181,6 +181,27 @@ module.exports = {
         },
         {
           type: "category",
+          label: "Mutations (experimental)",
+          items: [
+            {
+              type: "link",
+              label: "Mutation",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/experimental_mutation/Mutation-class.html",
+            },
+            {
+              type: "link",
+              label: "MutationTransaction",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/experimental_mutation/MutationTransaction-class.html",
+            },
+            {
+              type: "link",
+              label: "MutationState",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/experimental_mutation/MutationState-class.html",
+            },
+          ],
+        },
+        {
+          type: "category",
           label: "core",
           items: [
             {
