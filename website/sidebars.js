@@ -27,6 +27,20 @@ module.exports = {
         "concepts2/scoping",
       ],
     },
+
+    {
+      type: "category",
+      label: "Guides",
+      collapsible: false,
+      items: [
+        "how_to/eager_initialization",
+        "how_to/testing",
+        "how_to/select",
+        "how_to/pull_to_refresh",
+        "how_to/cancel",
+      ],
+    },
+
     {
       type: "category",
       label: "References",
@@ -216,19 +230,6 @@ module.exports = {
           label: "misc",
           href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/misc/",
         },
-      ],
-    },
-
-    {
-      type: "category",
-      label: "How to",
-      collapsible: false,
-      items: [
-        "how_to/eager_initialization",
-        "how_to/testing",
-        "how_to/select",
-        "how_to/pull_to_refresh",
-        "how_to/cancel",
       ],
     },
 
