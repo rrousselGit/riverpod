@@ -4,6 +4,7 @@ title: What's new in Riverpod 3.0
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import { AutoSnippet } from "/src/components/CodeSnippet";
+import { Link } from "/src/components/Link";
 
 
 Welcome to Riverpod 3.0!  
@@ -204,7 +205,7 @@ This feature solves two problems:
 - It empowers the UI to react to "side-effects" (such as form submissions, button clicks, etc),
   to enable it to show loading/success/error messages.
   Think "Show a toast when a form is submitted successfully".
-- It solves an issue where `onPressed` callbacks combined with [Ref.read] and [autoDispose](./essentials/auto_dispose)
+- It solves an issue where `onPressed` callbacks combined with [Ref.read] and <Link documentID="concepts2/auto_dispose" />
   could cause providers to be disposed while a side-effect is still in progress.
 
 The TL;DR is, a new [Mutation] object is added. It is declared as a top-level final variable,
