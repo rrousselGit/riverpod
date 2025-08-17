@@ -74,28 +74,6 @@ If you plan on doing this, consider using import aliases for each Provider impor
 A full guide onto how to effectively implement import aliases is incoming soon.
 :::
 
-
-## You don't *have to* use `Consumer` right away
-
-It's important to keep in mind that there is no need to *immediately* use [Riverpod's `Consumer` APIs].  
-If you've just started the migration, [as mentioned above], you should probably start with `ChangeNotifierProvider`.
-
-Consider `myNotifierProvider`, defined above.
-
-Since your inner code is probably depending on pkg:Provider's APIs, use the following to start consuming `ChangeNotifier`s with pkg:Riverpod.
-```dart
-MultiProvider(
-  providers: [
-    ChangeNotifierProvider.value(value: ref.watch(myNotifierProvider.notifier)),
-  ]
-)
-```
-
-This way, only the root Widget has to be initially converted into a `ConsumerWidget`.  
-This should ease the migration towards pkg:Riverpod even more.
-
-
-
 ## Migrate one Provider at a time
 
 If you have an existing app, don't try to migrate all your providers at once!
@@ -136,7 +114,7 @@ just add another `ref.watch` and you'll be good to go.
 
 ## Eager initialization
 
-Since Notifiers are final global variables, they are [lazy by default].
+Since Notifiers are final global variables, they are lazy by default.
 
 If you need to initialize some warm-up data or a useful service on startup,
 the best way to do it is to first read your provider in the place where you used to put `MultiProvider`.
@@ -204,6 +182,4 @@ Following this guide, you *can* migrate towards codegen as a further step forwar
 [Notifiers]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/NotifierProvider-class.html
 [are composable by default]: /docs/from_provider/motivation#combining-providers-is-hard-and-error-prone
 [as mentioned above]: /docs/from_provider/quickstart#start-with-changenotifierprovider
-[Riverpod's `Consumer` APIs]: /docs/concepts/reading
-[lazy by default]: /docs/concepts/provider_lifecycles
 [is available here]: /docs/essentials/eager_initialization

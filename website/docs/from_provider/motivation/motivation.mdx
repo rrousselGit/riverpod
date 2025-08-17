@@ -104,13 +104,13 @@ Unluckily, there's no way to implement this with a raw `InheritedWidget`, and th
 ### Lack of a reliable parametrization mechanism
 Riverpod allows its user to declare "parametrized" Providers with the [.family modifier].  
 Indeed, `.family` is one of Riverpod's most powerful feature and it is core to its innovations, 
-e.g. it enables enormous [simplification of logic]. 
+e.g. it enables enormous simplification of logic. 
 
 If we wanted to implement something similar using Provider, we would have to give 
 up easiness of use *and* type-safeness on such parameters. 
 
 Furthermore, not being able to implement a similar `.autoDispose` mechanism with Provider 
-inherently prevents any equivalent implementation of `.family`, [as these two features go hand-in-hand].
+inherently prevents any equivalent implementation of `.family`, as these two features go hand-in-hand.
 
 Finally, as shown before, [it turns out] that widgets *never* stop to listen to an `InheritedWidget`.  
 This implies significant memory leaks if some provider state is "dynamically mounted", i.e. when using parameters 
@@ -131,7 +131,7 @@ Testing the combined state snippet above would be as simple as the following:
 Since `InheritedWidget` has no `onChange` callback, Provider can't have one.  
 This is problematic for navigation, such as for snackbars, modals, etc.  
 
-Instead, Riverpod simply offers `ref.listen`, which [integrates well with Flutter].
+Instead, Riverpod simply offers [ref.listen], which integrates well with Flutter.
 
 <AutoSnippet language="dart" {...sideEffects}></AutoSnippet>
 
@@ -179,17 +179,12 @@ We want to answer to this question very clearly:
 
 Riverpod is overall better designed and could lead to drastic simplifications of your logic.
 
-
-
-[ref.watch]: /docs/concepts/reading#using-refwatch-to-observe-a-provider
-[ref.listen]: /docs/concepts/reading#using-reflisten-to-react-to-a-provider-change
+[ref.watch]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/watch.html
+[ref.listen]: https://pub.dev/documentation/riverpod/latest/riverpod/Ref/listen.html
 [autodispose]: /docs/concepts2/auto_dispose
 [workaround]: https://pub.dev/packages/provider#can-i-obtain-two-different-providers-using-the-same-type
-[.family modifier]: /docs/concepts/modifiers/family
+[.family modifier]: /docs/concepts2/family
 [keepAlive]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/Ref/keepAlive.html
-[as these two features go hand-in-hand]: /docs/concepts/modifiers/family#prefer-using-autodispose-when-the-parameter-is-not-constant
-[simplification of logic]: /docs/concepts/modifiers/family#usage
 [we have to]: https://github.com/flutter/flutter/issues/128432
 [it turns out]: https://github.com/flutter/flutter/issues/106549
 [can't react when a consumer stops listening to them]: https://github.com/flutter/flutter/issues/106546
-[integrates well with Flutter]: /docs/concepts/reading#using-reflisten-to-react-to-a-provider-change
