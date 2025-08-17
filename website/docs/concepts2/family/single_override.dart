@@ -12,6 +12,7 @@ void main() {
     await tester.pumpWidget(
       ProviderScope(
         overrides: [
+          // highlight-next-line
           userProvider('123').overrideWith((ref) => User(name: 'User 123')),
         ],
         child: const MyApp(),
