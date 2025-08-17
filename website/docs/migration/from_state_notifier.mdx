@@ -22,12 +22,6 @@ import obtainNotifierOnTests from "!!raw-loader!./from_state_notifier/obtain_not
 import { Link } from "/src/components/Link";
 import { AutoSnippet } from "/src/components/CodeSnippet";
 
-:::caution
-The content of this page may be outdated.  
-It will be updated in the future, but for now you may want to refer to the content
-in the top of the sidebar instead (introduction/essentials/case-studies/...)
-:::
-
 Along with [Riverpod 2.0](https://pub.dev/packages/flutter_riverpod/changelog#200), new classes
 were introduced: `Notifier` / `AsyncNotifier`.
 `StateNotifier` is now discouraged in favor of those new APIs.
@@ -109,11 +103,6 @@ Let's go further down and highlight more differences and similarities.
 ## Explicit `.family` and `.autoDispose` modifications
 
 Another important difference is how families and auto dispose is handled with the new APIs.
-
-`Notifier`, has its own `.family` and `.autoDispose` counterparts, such as `FamilyNotifier`
-and `Notifier`.  
-As always, such modifications can be combined (aka `AutoDisposeFamilyNotifier`).  
-`AsyncNotifier` has its asynchronous equivalent, too (e.g. `FamilyAsyncNotifier`).
 
 Modifications are explicitly stated inside the class; any parameters are directly injected in the
 `build` method, so that they're available to the initialization logic.  

@@ -5,15 +5,6 @@ module.exports = {
     "introduction/getting_started",
     "root/faq",
     "root/do_dont",
-    {
-      type: "category",
-      label: "Riverpod for Provider Users",
-      items: [
-        "from_provider/quickstart",
-        "from_provider/provider_vs_riverpod",
-        "from_provider/motivation/motivation",
-      ],
-    },
     // Concepts
     {
       type: "category",
@@ -264,6 +255,15 @@ module.exports = {
       label: "Migration guides",
       collapsible: false,
       items: [
+        {
+          type: "category",
+          label: "Riverpod for Provider Users",
+          items: [
+            "from_provider/quickstart",
+            "from_provider/provider_vs_riverpod",
+            "from_provider/motivation/motivation",
+          ],
+        },
         "migration/from_state_notifier",
         "migration/from_change_notifier",
         "migration/0.14.0_to_1.0.0",
