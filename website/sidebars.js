@@ -8,6 +8,8 @@ module.exports = {
       collapsible: false,
       items: ["introduction/why_riverpod", "introduction/getting_started"],
     },
+    "root/faq",
+    "root/do_dont",
     {
       type: "category",
       label: "Riverpod for Provider Users",
@@ -235,14 +237,8 @@ module.exports = {
       type: "category",
       label: "How to",
       collapsible: false,
-      items: [
-        "how_to/eager_initialization",
-        "how_to/testing",
-      ],
+      items: ["how_to/eager_initialization", "how_to/testing"],
     },
-
-    "root/faq",
-    "root/do_dont",
 
     // Case studies
     {
