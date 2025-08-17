@@ -31,7 +31,7 @@ export const documentTitles = {
     "concepts2/offline": "Offline persistence (experimental)",
     "concepts2/observers": "ProviderObservers",
     "concepts2/mutations": "Mutations (experimental)",
-    "concepts2/family": "'Family': Passing arguments to providers",
+    "concepts2/family": "Family",
     "concepts2/containers": "ProviderContainers/ProviderScopes",
     "concepts2/consumers": "Consumers",
     "concepts2/auto_dispose": "Automatic disposal",
