@@ -223,15 +223,13 @@ module.exports = {
       type: "category",
       label: "How to",
       collapsible: false,
-      items: ["how_to/eager_initialization", "how_to/testing", "how_to/select"],
-    },
-
-    // Case studies
-    {
-      type: "category",
-      label: "Case studies",
-      collapsible: false,
-      items: ["case_studies/pull_to_refresh", "case_studies/cancel"],
+      items: [
+        "how_to/eager_initialization",
+        "how_to/testing",
+        "how_to/select",
+        "how_to/pull_to_refresh",
+        "how_to/cancel",
+      ],
     },
 
     // Migration guides
