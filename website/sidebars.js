@@ -2,12 +2,7 @@ module.exports = {
   Sidebar: [
     "whats_new",
     "3.0_migration",
-    {
-      type: "category",
-      label: "Introduction",
-      collapsible: false,
-      items: ["introduction/why_riverpod", "introduction/getting_started"],
-    },
+    "introduction/getting_started",
     "root/faq",
     "root/do_dont",
     {
