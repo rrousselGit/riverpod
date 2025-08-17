@@ -1,9 +1,105 @@
 ---
-title: "'Family': Passing arguments to providers"
+title: Family
 ---
 import { Link } from "/src/components/Link";
 import {
   AutoSnippet,
 } from "/src/components/CodeSnippet";
+import functionalFamily from './family/functional';
+import notifierFamily from './family/notifier';
+import singleOverride from 'raw-loader!./family/single_override.dart';
+import allOverride from 'raw-loader!./family/all_overrides.dart';
 
-IFhf
+One of Riverpod's most powerful feature is called "Families".  
+In short, it allows a provider to be associated with multiple independent states,
+based on a unique parameter combination.
+
+A typical use-case is to fetch data from a remove API, where the response depends
+on some parameters (such as a user ID or a search query or a page number). 
+It enables defining a single provider that can be used to fetch and cache any possible
+parameter combination.
+
+![Graph showing how family links a provider to multiple independent states](/img/concepts2/family/users.svg)
+
+
+:::info
+If normal providers can be assimilated to a variable, then "family" providers can be
+assimilated to a Map.
+:::
+
+## Creating a Family
+
+Defining a family is done by slightly modifying the provider definition
+to receive a parameter.
+
+For functional providers, the syntax is as follows:
+
+<AutoSnippet  {...functionalFamily} />
+
+And for notifier providers, the syntax is:
+
+<AutoSnippet {...notifierFamily} />
+
+:::info
+Although not strictly required, it is highly advised to enable <Link documentID="concepts2/auto_dispose" />
+when using families.
+
+This avoids memory leaks in case the parameter changes and the previous state is no longer needed.
+:::
+
+## Using a Family
+
+Providers that receive parameters see their usage slightly modified too.
+
+Long story short, you need to pass the parameters that your provider
+expects, as follows:
+
+```dart
+final user = ref.watch(userProvider('123'));
+```
+
+:::caution
+Parameters passed need to have a consistent `==`/`hashCode`.
+
+View "family" as a Map, where the parameters are the key and the provider's state is the value.
+As such, if the `==`/`hashCode` of a parameter changes, the value
+obtained will be different.
+
+Therefore code such as the following is incorrect:
+
+```dart
+// Incorrect parameter, as `[1, 2, 3] != [1, 2, 3]`
+ref.watch(myProvider([1, 2, 3]));
+```
+
+To help spot this mistake, it is recommended to use the [riverpod_lint](https://pub.dev/packages/riverpod_lint)
+and enable the [provider_parameters](https://github.com/rrousselGit/riverpod/tree/master/packages/riverpod_lint#provider_parameters)
+lint rule. Then, the previous snippet would show a warning.
+See <Link documentID="introduction/getting_started" hash="enabling-riverpod_lintcustom_lint" /> for installation steps.
+:::
+
+
+You can read as many "family" providers as you want, and they will all be independent. As such,
+it is legal to do:
+
+```dart
+class Example extends ConsumerWidget {
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final user1 = ref.watch(userProvider('123'));
+    final user2 = ref.watch(userProvider('456'));
+
+    // user1 and user2 are independent.
+  }
+}
+```
+
+## Overriding families
+
+When trying to mock a provider instead tests, you may want to override a family provider.  
+
+In that scenario, you have two options:
+- Override only a specific parameter combination:
+  <AutoSnippet raw={singleOverride} />
+- Override all parameter combinations:
+  <AutoSnippet raw={allOverride} />
