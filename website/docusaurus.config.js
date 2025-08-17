@@ -72,6 +72,18 @@ module.exports = {
               label: "Getting started",
               to: "docs/introduction/getting_started",
             },
+            {
+              label: "What's new in Riverpod 3.0",
+              to: "docs/whats_new",
+            },
+            {
+              label: "FAQ",
+              to: "docs/root/FAQ",
+            },
+            {
+              label: "DO/DON'T",
+              to: "docs/root/do_dont",
+            },
           ],
         },
         {
