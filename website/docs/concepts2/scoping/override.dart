@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../case_studies/cancel/detail_screen/codegen.dart';
+import '../../how_to/cancel/detail_screen/codegen.dart';
 import 'usage/codegen.dart';
 
 /* SNIPPET START */
