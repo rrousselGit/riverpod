@@ -233,26 +233,16 @@ module.exports = {
 
     {
       type: "category",
-      label: "Essentials",
+      label: "How to",
       collapsible: false,
       items: [
-        "essentials/first_request",
-        "essentials/side_effects",
-        "essentials/passing_args",
-        "essentials/websockets_sync",
-        "essentials/combining_requests",
-        // {
-        //   type: "link",
-        //   label: "Progress indicators and error pages (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
-        "essentials/eager_initialization",
-        "essentials/testing",
-        "essentials/provider_observer",
-        "essentials/faq",
-        "essentials/do_dont",
+        "how_to/eager_initialization",
+        "how_to/testing",
       ],
     },
+
+    "root/faq",
+    "root/do_dont",
 
     // Case studies
     {

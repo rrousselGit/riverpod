@@ -60,7 +60,7 @@ It is effectively putting your logic in the UI layer, which is not recommended.
 Such code should be refactored to **always** use `Ref`.
 
 The solution to this problem is typically to move your logic
-into a `Notifier` (see <Link documentID="essentials/side_effects" />), 
+into a `Notifier` (see <Link documentID="concepts2/providers" />), 
 and then have your logic be a method of that `Notifier`.
 
 This way, when your widgets want to invoke this logic, they can
