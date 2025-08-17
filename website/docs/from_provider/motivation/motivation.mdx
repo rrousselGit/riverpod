@@ -127,9 +127,6 @@ Testing the combined state snippet above would be as simple as the following:
 
 <AutoSnippet language="dart" {...override}></AutoSnippet>
 
-For more info about testing, see [Testing].
-
-
 ### Triggering side effects isn't straightforward
 Since `InheritedWidget` has no `onChange` callback, Provider can't have one.  
 This is problematic for navigation, such as for snackbars, modals, etc.  
@@ -195,5 +192,4 @@ Riverpod is overall better designed and could lead to drastic simplifications of
 [we have to]: https://github.com/flutter/flutter/issues/128432
 [it turns out]: https://github.com/flutter/flutter/issues/106549
 [can't react when a consumer stops listening to them]: https://github.com/flutter/flutter/issues/106546
-[Testing]: /docs/cookbooks/testing
 [integrates well with Flutter]: /docs/concepts/reading#using-reflisten-to-react-to-a-provider-change
