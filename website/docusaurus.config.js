@@ -7,6 +7,9 @@ module.exports = {
   projectName: "riverpod", // Usually your repo name.
   plugins: ["docusaurus-plugin-sass"],
   trailingSlash: false,
+  onBrokenLinks: 'warn',
+  onBrokenMarkdownLinks: 'warn',
+  onDuplicateRoutes: 'warn',
   i18n: {
     defaultLocale: "en",
     locales: ["en", "fr", "ko", "ja", "es", "bn", "de", "it", "ru", "tr", "zh-Hans"],
