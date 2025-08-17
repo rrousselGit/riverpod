@@ -223,7 +223,7 @@ module.exports = {
       type: "category",
       label: "How to",
       collapsible: false,
-      items: ["how_to/eager_initialization", "how_to/testing"],
+      items: ["how_to/eager_initialization", "how_to/testing", "how_to/select"],
     },
 
     // Case studies
@@ -232,21 +232,6 @@ module.exports = {
       label: "Case studies",
       collapsible: false,
       items: ["case_studies/pull_to_refresh", "case_studies/cancel"],
-    },
-
-    // Advanced
-    {
-      type: "category",
-      label: "Advanced topics",
-      collapsible: false,
-      items: [
-        // {
-        //   type: "link",
-        //   label: "Scoping providers (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
-        "advanced/select",
-      ],
     },
 
     // Migration guides
