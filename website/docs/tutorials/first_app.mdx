@@ -462,7 +462,7 @@ This allows us to display the previous joke while the new one is being fetched.
 
 However, UIs may want to handle those cases and show both a loading indicator and the previous joke.
 A [LinearProgressIndicator] is a common way to do so. To add this indicator, we can check
-[AsyncValue.isReloading]. This flag is `true` when old data is available and a new request is being made.
+[AsyncValue.isRefreshing]. This flag is `true` when old data is available and a new request is being made.
 
 Our updated `Stack` should look like this:
 
