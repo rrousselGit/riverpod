@@ -250,7 +250,7 @@ Now that we have a function to query the API, we can create a "provider" respons
 caching the result of that API.  
 See <Link documentID="concepts2/providers" /> for more information about them.
 
-Since our `fetchRandomJoke` function returns a `Future<Joke>`, we will use `[FutureProvider]`.
+Since our `fetchRandomJoke` function returns a `Future<Joke>`, we will use [FutureProvider].
 We can place the provider in the same `joke.dart` file, as it is also related to the `Hoke` class.
 
 By doing this, the execution of `fetchRandomJoke` will be cached, and regardless of how
@@ -502,3 +502,5 @@ Notice how we never had to write a `try/catch` or write code such as `isLoading 
 [Ref.invalidate]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/Ref/invalidate.html
 [LinearProgressIndicator]: https://api.flutter.dev/flutter/material/LinearProgressIndicator-class.html
 [AsyncValue.isReloading]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/AsyncValueX/isReloading.html
+[riverpod_lint]: https://pub.dev/packages/riverpod_lint
+[ProviderScope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html
