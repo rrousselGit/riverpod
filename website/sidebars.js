@@ -2,9 +2,9 @@ module.exports = {
   Sidebar: [
     "whats_new",
     "3.0_migration",
-    "introduction/getting_started",
     "root/faq",
     "root/do_dont",
+    "introduction/getting_started",
     // Concepts
     {
       type: "category",
