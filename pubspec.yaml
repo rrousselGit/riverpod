@@ -12,6 +12,7 @@ dev_dependencies:
 
 workspace:
   - benchmarks
+  - examples/first_app
   - examples/counter
   - examples/marvel
   - examples/pub
@@ -38,3 +39,5 @@ workspace:
   - packages/riverpod_sqflite
   - tools/generate_providers
   - website
+dependencies:
+  flutter_riverpod: ^3.0.0-dev.17

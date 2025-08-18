@@ -5,6 +5,16 @@ module.exports = {
     "root/faq",
     "root/do_dont",
     "introduction/getting_started",
+
+    {
+      type: "category",
+      label: 'Tutorials',
+      collapsible: false,
+      items: [
+        "tutorials/first_app",
+      ],
+    },
+
     // Concepts
     {
       type: "category",
