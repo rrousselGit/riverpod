@@ -2,6 +2,7 @@ export const documentTitles = {
   'en': {
     "whats_new": "What's new in Riverpod 3.0",
     "3.0_migration": "Migrating from 2.0 to 3.0",
+    "tutorials/first_app": "Your first Riverpod app",
     "root/faq": "FAQ",
     "root/do_dont": "DO/DON'T",
     "migration/from_state_notifier": "From `StateNotifier`",
@@ -13,7 +14,7 @@ export const documentTitles = {
     "how_to/select": "How to reduce provider/widget rebuilds",
     "how_to/pull_to_refresh": "Implementing pull-to-refresh",
     "how_to/eager_initialization": "How to eagerly initialize providers",
-    "how_to/cancel": "How to debouncing/cancelling network requests",
+    "how_to/cancel": "How to debounce/cancel network requests",
     "from_provider/quickstart": "Quickstart",
     "from_provider/provider_vs_riverpod": "Provider vs Riverpod",
     "from_provider/motivation/motivation": "Motivation",
