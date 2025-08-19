@@ -1,6 +1,6 @@
 ---
 title: About code generation
-version: 2
+version: 3
 ---
 
 import Tabs from "@theme/Tabs";
@@ -85,26 +85,20 @@ in the documentation's sidebar.
 Code generation is optional in Riverpod.
 With that in mind, you may wonder if you should use it or not.
 
-The answer is: **Most likely Yes**.  
-Using code generation is the recommended way to use Riverpod. It
-is the more future-proof approach and will allow you to use Riverpod to its full
-potential.  
+The answer is: **Only if you already use code-generation for other things**. (cf Freezed, json_serializable, etc.)  
+When the Dart team was working on a feature called "macros", using code generation
+was the recommended way to use Riverpod. Unfortunately, those have been cancelled.
+
+While code-generation brings many benefits, it currently is still fairly slow.
+The Dart team is working on improving the performance of code generation,
+but it is unclear when that will be available and how much it will improve.
+As such, if you are not already using code generation in your project, it is
+probably not worth it to start using it just for Riverpod.
+
 At the same time, many applications already use code generation with packages such
 as [Freezed](https://pub.dev/packages/freezed) or [json_serializable](https://pub.dev/packages/json_serializable).
 In that case, your project probably is already set up for code generation, and
 using Riverpod should be simple.
-
-Currently, code generation is optional because `build_runner` is disliked by many.
-But once [Static Metaprogramming](https://github.com/dart-lang/language/issues/1482)
-is available in Dart, `build_runner` will no longer be an issue. At that point,
-the code generation syntax will be the only syntax available in Riverpod.
-
-If using `build_runner` is a deal-breaker for you, then and only then you should
-consider not using code generation.
-But keep in mind that you will be missing out on some features, and that
-you will have to migrate to code generation in the future.  
-Although when that happens, Riverpod will provide a migration tool to make
-the transition as smoothly as possible.
 
 ## What are the benefits of using code generation?
 
@@ -119,12 +113,11 @@ This includes but is not limited to:
   - The syntax no longer looks like we're defining a "dirty global variable".
     Instead we are defining a custom function/class.
   - Passing parameters to providers is now unrestricted. Instead of being limited to
-    using <Link documentID="concepts/modifiers/family"/> and passing a single positional parameter,
+    using <Link documentID="concepts2/family"/> and passing a single positional parameter,
     you can now pass any parameter. This includes named parameters, optional ones,
     and even default values.
 - **Stateful hot-reload** of the code written in Riverpod.
 - Better debugging, through the generation of extra metadata that the debugger then picks up.
-- Some Riverpod features will be available only with code generation.
 
 ## The Syntax
 

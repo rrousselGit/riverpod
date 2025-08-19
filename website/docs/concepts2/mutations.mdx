@@ -1,0 +1,167 @@
+---
+title: Mutations (experimental)
+---
+import { Link } from "/src/components/Link";
+
+:::caution
+Mutations are experimental, and the API may change in a breaking way without
+a major version bump.
+:::
+
+Mutations, in Riverpod, are objects which enable the user interface
+to react to state changes.  
+A common use-case is displaying a loading indicator while a form is being submitted
+
+In short, mutations are to achieve effects such as this:  
+![Submit progress indicator](/img/concepts2/mutations/spinner.gif)!
+
+Without mutations, you would have to store the progress of the form submission
+directly inside the state of a provider. This is not ideal as it pollutes the
+state of your provider with UI concerns ; and it involves a lot of boilerplate code
+to handle the loading state, error state, and success state.
+
+Mutations are designed to handle these concerns in a more elegant way.
+
+## Defining a mutation
+
+Mutations are instances of the [Mutation] object, stored in a final variable somewhere.
+
+```dart
+// A mutation to track the "add todo" operation.
+// The generic type is optional and can be specified to enable the UI to interact
+// with the result of the mutation.
+final addTodo = Mutation<Todo>();
+```
+
+:::note
+Typically, this variable will either be global or as a `static final` variable on
+a [Notifier].
+:::
+
+## Listening to a mutation
+
+Once we've defined a mutation, we can start using it inside <Link documentID="concepts2/consumers" /> or <Link documentID="concepts2/providers" />.  
+For this, we will need a <Link documentID="concepts2/refs" /> and pick a listening method of our choice
+(typically [Ref.watch](https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/Ref/watch.html)).
+
+
+A typical example would be:
+
+```dart
+class Example extends ConsumerWidget {
+  const Example({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // We listen to the current state of the "addTodo" mutation.
+    // Listening to this will not perform any side effects by itself.
+    /* highlight-next-line */
+    final addTodoState = ref.watch(addTodo);
+
+    return Row(
+      children: [
+        ElevatedButton(
+          style: ButtonStyle(
+            // If there is an error, we show the button in red
+            /* highlight-next-line */
+            backgroundColor: switch (addTodoState) {
+              MutationError() => WidgetStatePropertyAll(Colors.red),
+              _ => null,
+            },
+          ),
+          onPressed: () {
+            // TODO
+          },
+          child: const Text('Add todo'),
+        ),
+
+        // The operation is pending, let's show a progress indicator
+        /* highlight-next-line */
+        if (addTodoState is MutationPending) ...[
+          const SizedBox(width: 8),
+          const CircularProgressIndicator(),
+        ],
+      ],
+    );
+  }
+}
+```
+
+### Triggering a mutation
+
+So far, we've listened to the state of a mutation, but nothing actually happens yet.
+
+To trigger a mutation, we can use [Mutation.run], pass our mutation, and provide an asynchronous callback
+that updates whatever state we want. Lastly, we'll need to return a value matching the generic type of the mutation.
+
+```dart
+ElevatedButton(
+  onPressed: () {
+    // Trigger the mutation, and run the callback.
+    // During the callback, we obtain a MutationTransaction (tsx) object
+    // which we can use to access providers and perform operations.
+    addTodo.run(ref, (tsx) async {
+      // We use tsx.get to access providers within mutations.
+      // This will keep the provider alive for the duration of the operation.
+      final todoNotifier = tsx.get(todoNotifierProvider);
+
+      // We perform a perform request using a Notifier.
+      final createdTodo = await todoNotifier.addTodo('Eat a cookie');
+
+      // We return the created todo. This enables our UI to show information
+      // about the created todo, such as its ID/creation date/etc.
+      return createdTodo;
+    });
+  },
+  child: const Text('Add todo'),
+);
+```
+
+### The different mutation states and their meaning
+
+Mutations can be in one of the following states:
+- [MutationPending]: The mutation has started and is currently loading.
+- [MutationError]: The mutation has failed, and an error is available.
+- [MutationSuccess]: The mutation has succeeded, and the result is available.
+- [MutationIdle]: The mutation has not been called yet, or has been reset.
+
+You can switch over the different states using a `switch` statement:
+
+```dart
+switch (addTodo.state) {
+  case MutationPending():
+  case MutationError():
+  case MutationSuccess():
+  case MutationIdle():
+}
+```
+
+### After a mutation has been started once, how to reset it to its idle state?
+
+Mutations naturally reset themselves to [MutationIdle] if:
+- They have completed (either successfully or with an error).
+- All listeners have been removed (e.g. the spinner widget has been removed)
+
+This is similar to how <Link documentID="concepts2/auto_dispose"/> works, but for mutations.
+
+Alternatively, you can manually reset a mutation to its idle state
+by calling the [Mutation.reset] method:
+
+```dart
+ElevatedButton(
+  onPressed: () {
+    // Reset the mutation to its idle state.
+    addTodo.reset(ref);
+  },
+  child: const Text('Reset mutation'),
+);
+```
+
+[MutationPending]: https://pub.dev/documentation/riverpod/3.0.0-dev.17/experimental_mutation/MutationPending-class.html
+[MutationError]: https://pub.dev/documentation/riverpod/3.0.0-dev.17/experimental_mutation/MutationError-class.html
+[MutationSuccess]: https://pub.dev/documentation/riverpod/3.0.0-dev.17/experimental_mutation/MutationSuccess-class.html
+[MutationIdle]: https://pub.dev/documentation/riverpod/3.0.0-dev.17/experimental_mutation/MutationIdle-class.html
+[Mutation.reset]: https://pub.dev/documentation/riverpod/3.0.0-dev.17/experimental_mutation/Mutation/reset.html
+[Mutation]: https://pub.dev/documentation/riverpod/3.0.0-dev.17/experimental_mutation/Mutation-class.html
+[Notifier]: https://pub.dev/documentation/riverpod/3.0.0-dev.17/riverpod/Notifier-class.html
+[Mutation.run]: https://pub.dev/documentation/flutter_riverpod/3.0.0-dev.17/experimental_mutation/Mutation/run.html

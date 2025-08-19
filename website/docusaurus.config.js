@@ -7,6 +7,9 @@ module.exports = {
   projectName: "riverpod", // Usually your repo name.
   plugins: ["docusaurus-plugin-sass"],
   trailingSlash: false,
+  onBrokenLinks: 'warn',
+  onBrokenMarkdownLinks: 'warn',
+  onDuplicateRoutes: 'warn',
   i18n: {
     defaultLocale: "en",
     locales: ["en", "fr", "ko", "ja", "es", "bn", "de", "it", "ru", "tr", "zh-Hans"],
@@ -36,7 +39,7 @@ module.exports = {
       },
       items: [
         {
-          to: "docs/introduction/why_riverpod",
+          to: "docs/introduction/getting_started",
           activeBasePath: "docs",
           label: "Docs",
           position: "right",
@@ -62,12 +65,20 @@ module.exports = {
           title: "Docs",
           items: [
             {
-              label: "Why Riverpod?",
-              to: "docs/introduction/why_riverpod",
-            },
-            {
               label: "Getting started",
               to: "docs/introduction/getting_started",
+            },
+            {
+              label: "What's new in Riverpod 3.0",
+              to: "docs/whats_new",
+            },
+            {
+              label: "FAQ",
+              to: "docs/root/FAQ",
+            },
+            {
+              label: "DO/DON'T",
+              to: "docs/root/do_dont",
             },
           ],
         },

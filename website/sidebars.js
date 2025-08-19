@@ -2,21 +2,55 @@ module.exports = {
   Sidebar: [
     "whats_new",
     "3.0_migration",
+    "root/faq",
+    "root/do_dont",
+    "introduction/getting_started",
+
     {
       type: "category",
-      label: "Introduction",
+      label: 'Tutorials',
       collapsible: false,
-      items: ["introduction/why_riverpod", "introduction/getting_started"],
-    },
-    {
-      type: "category",
-      label: "Riverpod for Provider Users",
       items: [
-        "from_provider/quickstart",
-        "from_provider/provider_vs_riverpod",
-        "from_provider/motivation/motivation",
+        "tutorials/first_app",
       ],
     },
+
+    // Concepts
+    {
+      type: "category",
+      label: "Concepts",
+      collapsible: false,
+      items: [
+        "concepts2/providers",
+        "concepts2/consumers",
+        "concepts2/containers",
+        "concepts2/refs",
+        "concepts2/auto_dispose",
+        "concepts2/family",
+        "concepts2/mutations",
+        "concepts2/offline",
+        "concepts2/retry",
+        "concepts2/observers",
+        "concepts2/overrides",
+        "concepts2/scoping",
+        "concepts/about_code_generation",
+        "concepts/about_hooks",
+      ],
+    },
+
+    {
+      type: "category",
+      label: "Guides",
+      collapsible: false,
+      items: [
+        "how_to/testing",
+        "how_to/select",
+        "how_to/eager_initialization",
+        "how_to/pull_to_refresh",
+        "how_to/cancel",
+      ],
+    },
+
     {
       type: "category",
       label: "References",
@@ -29,48 +63,48 @@ module.exports = {
             {
               type: "link",
               label: "Provider",
-              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/hooks_riverpod/Provider-class.html",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/Provider-class.html",
             },
             {
               type: "link",
               label: "FutureProvider",
-              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/hooks_riverpod/FutureProvider-class.html",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/FutureProvider-class.html",
             },
             {
               type: "link",
               label: "StreamProvider",
-              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/hooks_riverpod/StreamProvider-class.html",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/StreamProvider-class.html",
             },
             {
               type: "link",
               label: "NotifierProvider",
-              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/hooks_riverpod/NotifierProvider-class.html",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/NotifierProvider-class.html",
             },
             {
               type: "link",
               label: "AsyncNotifierProvider",
-              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/hooks_riverpod/AsyncNotifierProvider-class.html",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/AsyncNotifierProvider-class.html",
             },
             {
               type: "link",
               label: "StreamNotifierProvider",
-              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/hooks_riverpod/StreamNotifierProvider-class.html",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/StreamNotifierProvider-class.html",
             },
             // Legacy
             {
               type: "link",
               label: "ChangeNotifierProvider (legacy)",
-              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/legacy/ChangeNotifierProvider-class.html",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/legacy/ChangeNotifierProvider-class.html",
             },
             {
               type: "link",
               label: "StateNotifierProvider (legacy)",
-              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/legacy/StateNotifierProvider-class.html",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/legacy/StateNotifierProvider-class.html",
             },
             {
               type: "link",
               label: "StateProvider (legacy)",
-              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/legacy/StateProvider-class.html",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/legacy/StateProvider-class.html",
             },
           ],
         },
@@ -81,17 +115,17 @@ module.exports = {
             {
               type: "link",
               label: "ProviderContainer",
-              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/hooks_riverpod/ProviderContainer-class.html",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/ProviderContainer-class.html",
             },
             {
               type: "link",
               label: "ProviderScope",
-              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/hooks_riverpod/ProviderScope-class.html",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/ProviderScope-class.html",
             },
             {
               type: "link",
               label: "UncontrolledProviderScope",
-              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/hooks_riverpod/UncontrolledProviderScope-class.html",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/UncontrolledProviderScope-class.html",
             },
           ],
         },
@@ -102,12 +136,12 @@ module.exports = {
             {
               type: "link",
               label: "Ref",
-              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/hooks_riverpod/Ref-class.html",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/Ref-class.html",
             },
             {
               type: "link",
               label: "WidgetRef",
-              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/hooks_riverpod/WidgetRef-class.html",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/WidgetRef-class.html",
             },
           ],
         },
@@ -118,17 +152,27 @@ module.exports = {
             {
               type: "link",
               label: "ConsumerWidget",
-              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/hooks_riverpod/ConsumerWidget-class.html",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/ConsumerWidget-class.html",
             },
             {
               type: "link",
               label: "ConsumerStatefulWidget",
-              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/hooks_riverpod/ConsumerStatefulWidget-class.html",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/ConsumerStatefulWidget-class.html",
             },
             {
               type: "link",
               label: "Consumer",
-              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/hooks_riverpod/Consumer-class.html",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/Consumer-class.html",
+            },
+            {
+              type: "link",
+              label: "HookConsumerWidget",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/HookConsumerWidget-class.html",
+            },
+            {
+              type: "link",
+              label: "HookConsumer",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/HookConsumer-class.html",
             },
           ],
         },
@@ -139,12 +183,33 @@ module.exports = {
             {
               type: "link",
               label: "Storage (experimental)",
-              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/experimental_persist/Storage-class.html",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/experimental_persist/Storage-class.html",
             },
             {
               type: "link",
               label: "Persistable (experimental)",
-              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/experimental_persist/Persistable-mixin.html",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/experimental_persist/Persistable-mixin.html",
+            },
+          ],
+        },
+        {
+          type: "category",
+          label: "Mutations (experimental)",
+          items: [
+            {
+              type: "link",
+              label: "Mutation",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/experimental_mutation/Mutation-class.html",
+            },
+            {
+              type: "link",
+              label: "MutationTransaction",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/experimental_mutation/MutationTransaction-class.html",
+            },
+            {
+              type: "link",
+              label: "MutationState",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/experimental_mutation/MutationState-class.html",
             },
           ],
         },
@@ -155,17 +220,17 @@ module.exports = {
             {
               type: "link",
               label: "AsyncValue",
-              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/hooks_riverpod/AsyncValue-class.html",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/AsyncValue-class.html",
             },
             {
               type: "link",
               label: "ProviderObserver",
-              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/hooks_riverpod/ProviderObserver-class.html",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/ProviderObserver-class.html",
             },
             {
               type: "link",
               label: "ProviderSubscription",
-              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/hooks_riverpod/ProviderSubscription-class.html",
+              href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/ProviderSubscription-class.html",
             },
           ],
         },
@@ -173,64 +238,9 @@ module.exports = {
         {
           type: "link",
           label: "misc",
-          href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.16/misc/",
+          href: "https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/misc/",
         },
       ],
-    },
-
-    {
-      type: "category",
-      label: "Essentials",
-      collapsible: false,
-      items: [
-        "essentials/first_request",
-        "essentials/side_effects",
-        "essentials/passing_args",
-        "essentials/websockets_sync",
-        "essentials/combining_requests",
-        "essentials/auto_dispose",
-        // {
-        //   type: "link",
-        //   label: "Progress indicators and error pages (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
-        "essentials/eager_initialization",
-        "essentials/testing",
-        "essentials/provider_observer",
-        "essentials/faq",
-        "essentials/do_dont",
-      ],
-    },
-
-    // Case studies
-    {
-      type: "category",
-      label: "Case studies",
-      collapsible: false,
-      items: ["case_studies/pull_to_refresh", "case_studies/cancel"],
-    },
-
-    // Advanced
-    {
-      type: "category",
-      label: "Advanced topics",
-      collapsible: false,
-      items: [
-        // {
-        //   type: "link",
-        //   label: "Scoping providers (WIP)",
-        //   href: "https://github.com/rrousselGit/riverpod/tree/master/examples/marvel",
-        // },
-        "advanced/select",
-      ],
-    },
-
-    // Concepts
-    {
-      type: "category",
-      label: "Concepts",
-      collapsible: false,
-      items: ["concepts/about_code_generation", "concepts/about_hooks"],
     },
 
     // Migration guides
@@ -239,6 +249,15 @@ module.exports = {
       label: "Migration guides",
       collapsible: false,
       items: [
+        {
+          type: "category",
+          label: "Riverpod for Provider Users",
+          items: [
+            "from_provider/quickstart",
+            "from_provider/provider_vs_riverpod",
+            "from_provider/motivation/motivation",
+          ],
+        },
         "migration/from_state_notifier",
         "migration/from_change_notifier",
         "migration/0.14.0_to_1.0.0",
@@ -389,54 +408,6 @@ module.exports = {
           href: "https://github.com/never-inc/chat_gpt_boilerplate",
         },
       ],
-    },
-
-    {
-      type: "link",
-      label: "API reference",
-      href: "https://pub.dev/documentation/hooks_riverpod/latest/hooks_riverpod/hooks_riverpod-library.html",
-    },
-
-    {
-      type: "category",
-      label: "Concepts 🚧",
-      items: [
-        "concepts/providers",
-        "concepts/reading",
-        "concepts/combining_providers",
-        {
-          type: "category",
-          label: "Modifiers",
-          items: [
-            "concepts/modifiers/family",
-            "concepts/modifiers/auto_dispose",
-          ],
-        },
-        "concepts/provider_observer",
-        "concepts/scopes",
-        "concepts/provider_lifecycles",
-        "concepts/why_immutability",
-      ],
-    },
-
-    {
-      type: "category",
-      label: "All Providers 🚧",
-      items: [
-        "providers/provider",
-        "providers/notifier_provider",
-        "providers/state_notifier_provider",
-        "providers/future_provider",
-        "providers/stream_provider",
-        "providers/state_provider",
-        "providers/change_notifier_provider",
-      ],
-    },
-
-    {
-      type: "category",
-      label: "Guides 🚧",
-      items: ["cookbooks/testing"],
     },
   ],
 };

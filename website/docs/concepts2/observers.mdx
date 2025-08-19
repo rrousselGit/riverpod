@@ -1,0 +1,64 @@
+---
+title: ProviderObservers
+---
+import { Link } from "/src/components/Link";
+import CodeBlock from "@theme/CodeBlock";
+import logger from "!!raw-loader!/docs/concepts2/provider_observer_logger.dart";
+import { trimSnippet } from "/src/components/CodeSnippet";
+
+A [ProviderObserver] is an object used to observe provider lifecycle events in the application.
+They are generally used for logging, analytics, or debugging purposes. 
+
+## Usage
+
+To use a [ProviderObserver], you need to extend the class and override the life-cycles you want to observe.
+There are many methods available. It is recommended to check its [documentation][ProviderObserver] for more details.
+
+## Example: Logger
+
+The following observer logs all state changes of any provider in the application:
+
+<CodeBlock>{trimSnippet(logger)}</CodeBlock>
+
+Now, every time the value of our provider is updated, the logger will log it:
+
+```
+{
+  "provider": "Provider<int>",
+  "newValue": "1"
+}
+```
+
+To improve debugging, you can optionally give your providers a name:  
+```dart
+final myProvider = Provider<int>((ref) => 0, name: 'MyProvider');
+```
+
+With this change, the log becomes:
+```
+{
+  "provider": "MyProvider",
+  "newValue": "1"
+}
+```
+
+:::tip
+When using code-generation, a name is automatically assigned to providers.
+:::
+
+
+:::note
+If the state of a provider is mutated, (typically Lists, combined with [Ref.notifyListeners]),
+it is likely that `didUpdateProvider` will receive `previousValue` and `newValue` as the same value.
+
+This happens because Dart updates objects by "reference".
+If you want to change this, you will have to clone your objects before mutating them.
+:::
+
+
+
+
+[ProviderContainer]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/ProviderContainer-class.html
+[ProviderScope]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/ProviderScope-class.html
+[ProviderObserver]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/ProviderObserver-class.html
+[Ref.notifyListeners]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/Ref/notifyListeners.html

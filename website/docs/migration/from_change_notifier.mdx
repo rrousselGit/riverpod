@@ -1,6 +1,6 @@
 ---
 title: From `ChangeNotifier`
-version: 1
+version: 2
 ---
 
 import old from "!!raw-loader!./from_change_notifier/old.dart";
@@ -22,7 +22,7 @@ This article is meant for folks that already transitioned to riverpod, but want 
 
 All in all, migrating from `ChangeNotifier` to `AsyncNotifier` requires a
 paradigm shift, but it brings great simplification with the resulting migrated
-code. See also <Link documentID="concepts/why_immutability" />.
+code.
 
 Take this (faulty) example:
 <AutoSnippet raw={old} />
@@ -118,7 +118,7 @@ Below, we've cut down all the boilerplate and successfully fully migrated the ab
 
 :::tip
 Syntax and design choices may vary, but in the end we just need to write our request and update
-state afterwards. See <Link documentID="essentials/side_effects" />.
+state afterwards. See <Link documentID="concepts2/providers" />.
 :::
 
 ## Migration Process Summary

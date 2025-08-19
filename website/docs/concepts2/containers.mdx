@@ -1,0 +1,148 @@
+---
+title: ProviderContainers/ProviderScopes
+---
+import { Link } from "/src/components/Link";
+
+[ProviderContainer] is _the_ central piece of Riverpod's architecture.  
+In Riverpod, [Providers](./providers.mdx) hold no state themselves. Instead,
+the state of a given provider is stored inside this container object.
+
+[ProviderScope] is a widget that creates a [ProviderContainer] and exposes it to the 
+widget tree. Hence why, when you use Riverpod, you will always see a scope at the root of apps.  
+Without it, Riverpod would be unable to store the state of providers!
+
+### Using a ProviderContainer for pure Dart applications
+
+[ProviderContainer] is a useful object when you want to use Riverpod
+in pure Dart codebases, such as command-line applications or server-side applications.
+
+You can create a [ProviderContainer] inside your `main`, and use it to read and modify providers:
+
+```dart
+import 'package:riverpod/riverpod.dart';
+
+void main() {
+  final container = ProviderContainer();
+
+  try {
+    final sub = container.listen(counterProvider, (previous, next) {
+      print('Counter changed from $previous to $next');
+    });
+    print('Counter starts at ${sub.read()}');
+  } finally {
+    // Dispose the container when done
+    container.dispose();
+  }
+}
+```
+
+:::note
+Inside tests, do not use [ProviderContainer] directly.
+Use [ProviderContainer.test](https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/ProviderContainer/ProviderContainer.test.html) instead.
+This will automatically dispose the container when the test ends.
+
+```dart
+test('Counter starts at 0 and can be incremented', () {
+  // No need to dispose the container when the test ends
+  final container = ProviderContainer.test();
+
+  // Use the container to test your providers
+});
+```
+:::
+
+### Using a ProviderScope for Flutter applications
+
+In Flutter applications, you shouldn't use [ProviderContainer] directly.
+Instead, you should use [ProviderScope], which is a widget equivalent of [ProviderContainer].
+
+The end-result is the same: Create a [ProviderScope] in your `main`. After that, you can
+use [Consumers](./consumers.mdx) to read and modify providers in your widgets.
+
+```dart
+import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+
+void main() {
+  runApp(
+    ProviderScope(
+      child: Consumer(
+        builder: (context, ref, _) {
+          final counter = ref.watch(counterProvider);
+
+          // TODO use "counter"
+        },
+      ),
+    ),
+  );
+}
+```
+
+## Why store the state of providers inside a container?
+
+One might wonder why providers don't store their state themselves.
+If we got rid of that requirement, we could imagine a world where we could write:
+
+```dart
+print(helloWorldProvider.value); // Prints "Hello world!"
+```
+
+instead of having to write `ref.watch(helloWorldProvider)`.
+
+Riverpod does this for a few reasons, which come down the the same logic: "No global state".
+
+1. Better separation of concerns.  
+  If Riverpod were to allow providers to store their own state,
+  it would imply that _anything_ could read/write to that state. This means
+  that it would be difficult to control how/when is a state is modified.
+
+  Using Riverpod's architecture, state updates are centralized: All the logic
+  for modifying a provider is done in the provider itself.
+  And generally, the UI will no nothing but invoke one method on the provider's Notifier.
+
+1. Better testing.
+  By storing the state of providers inside a container, we do not have to worry about
+  resetting the application state between tests. We can simply create a new container
+  for each test, and a fresh state will be created for each provider:
+
+  ```dart
+  test('Counter starts at 0 and can be incremented', () {
+    final container = ProviderContainer.test();
+
+    expect(container.read(counterProvider), 0);
+    container.read(counterProvider.notifier).increment();
+    expect(container.read(counterProvider), 1);
+  });
+
+  test('Counter cannot go below 0', () {
+    final container = ProviderContainer.test();
+
+    expect(container.read(counterProvider), 0);
+    container.read(counterProvider.notifier).decrement();
+    expect(container.read(counterProvider), 0);
+  });
+  ```
+  Here, we can see that both tests rely on the same provider. Yet state changes
+  inside one test do not affect the other test.
+
+  Of course, the same applies when using [ProviderScope] and widget tests.
+
+1. A centralized place for configuring your application.  
+  Through [ProviderContainer] and [ProviderScope], we can configure various app-wide
+  aspects of Riverpod. For example:
+    * We can define a custom [ProviderObserver] to listen to all state changes in the app.
+      See <Link documentID="concepts2/observers"/>.
+    * We can override providers, either locally or globally. This
+      can be useful for testing or for applications with different environments,
+      or for development.
+      See <Link documentID="concepts2/overrides"/>.
+
+1. Support for <Link documentID="concepts2/scoping"/>.
+  By storing the state of a provider inside a container, we can have the same provider
+  resolve to a different state depending on where in the widget tree it is used.
+  This feature is quite advanced generally discouraged, but useful for performance optimizations.
+
+
+[ProviderContainer]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/ProviderContainer-class.html
+[ProviderScope]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/ProviderScope-class.html
+[ProviderObserver]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/ProviderObserver-class.html

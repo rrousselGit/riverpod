@@ -87,6 +87,11 @@ final class PersistedData<DataT> {
 /// Storages are generally implemented by third-party packages.
 /// Riverpod provides an official implementation of [Storage] that stores data
 /// using SQLite, in the `riverpod_sqflite` package.
+///
+/// See also:
+/// - [Offline persistence](https://riverpod.dev/docs/concepts2/offline).
+/// - [riverpod_sqflite](https://pub.dev/packages/riverpod_sqflite) for an
+///   implementation of [Storage] that uses SQLite.
 /// {@endtemplate}
 abstract base class Storage<KeyT extends Object?, EncodedT extends Object?> {
   /// {@macro storage}

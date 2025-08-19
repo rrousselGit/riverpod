@@ -1,6 +1,6 @@
 ---
 title: Quickstart
-version: 1
+version: 2
 ---
 
 This section is designed for people familiar with the [Provider] package who
@@ -45,7 +45,7 @@ Keep in mind that this provider is not recommended when writing new code,
 and it is not the best way to use Riverpod, but it's a gentle and very easy way to start your migration.
 
 :::tip
-There is no rush to *immediately* try to change your `ChangeNotifier`s into the more modern [Riverpod's providers].
+There is no rush to *immediately* try to change your `ChangeNotifier`s into the more modern [Notifiers].
 Some require a bit of a paradigm shift, so it may be difficult to do initially.  
 
 Take your time, as it is important to get yourself familiar with Riverpod first;
@@ -73,28 +73,6 @@ If you plan on doing this, consider using import aliases for each Provider impor
 :::info
 A full guide onto how to effectively implement import aliases is incoming soon.
 :::
-
-
-## You don't *have to* use `Consumer` right away
-
-It's important to keep in mind that there is no need to *immediately* use [Riverpod's `Consumer` APIs].  
-If you've just started the migration, [as mentioned above], you should probably start with `ChangeNotifierProvider`.
-
-Consider `myNotifierProvider`, defined above.
-
-Since your inner code is probably depending on pkg:Provider's APIs, use the following to start consuming `ChangeNotifier`s with pkg:Riverpod.
-```dart
-MultiProvider(
-  providers: [
-    ChangeNotifierProvider.value(value: ref.watch(myNotifierProvider.notifier)),
-  ]
-)
-```
-
-This way, only the root Widget has to be initially converted into a `ConsumerWidget`.  
-This should ease the migration towards pkg:Riverpod even more.
-
-
 
 ## Migrate one Provider at a time
 
@@ -136,7 +114,7 @@ just add another `ref.watch` and you'll be good to go.
 
 ## Eager initialization
 
-Since Riverpod's providers are final global variables, they are [lazy by default].
+Since Notifiers are final global variables, they are lazy by default.
 
 If you need to initialize some warm-up data or a useful service on startup,
 the best way to do it is to first read your provider in the place where you used to put `MultiProvider`.
@@ -144,7 +122,7 @@ the best way to do it is to first read your provider in the place where you used
 In other words, since Riverpod can't be forced to be eager initialized, they can be read and cached
 in your startup phase, so that they're warm and ready when needed inside the rest of your application.
 
-A full guide about eager initialization of pkg:Riverpod's providers [is available here].
+A full guide about eager initialization of pkg:Notifiers [is available here].
 
 ## Code Generation
 [Code generation] is recommended to use Riverpod the *future-proof* way.  
@@ -199,11 +177,9 @@ Following this guide, you *can* migrate towards codegen as a further step forwar
 [getting started]: /docs/introduction/getting_started
 [sandbox]: https://dartpad.dev/?null_safety=true&id=ef06ab3ce0b822e6cc5db0575248e6e2
 [provider]: https://pub.dev/packages/provider
-[ChangeNotifierProvider]: /docs/providers/change_notifier_provider
+[ChangeNotifierProvider]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/legacy/ChangeNotifierProvider-class.html
 [Code generation]: /docs/concepts/about_code_generation
-[Riverpod's providers]: /docs/providers/notifier_provider
+[Notifiers]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/NotifierProvider-class.html
 [are composable by default]: /docs/from_provider/motivation#combining-providers-is-hard-and-error-prone
 [as mentioned above]: /docs/from_provider/quickstart#start-with-changenotifierprovider
-[Riverpod's `Consumer` APIs]: /docs/concepts/reading
-[lazy by default]: /docs/concepts/provider_lifecycles
-[is available here]: /docs/essentials/eager_initialization
+[is available here]: /docs/how_to/eager_initialization

@@ -1,0 +1,64 @@
+---
+title: Scoping providers
+---
+import { Link } from "/src/components/Link";
+import { AutoSnippet } from "/src/components/CodeSnippet";
+import usage from './scoping/usage';
+import dependencies from './scoping/dependencies';
+import override from 'raw-loader!./scoping/override.dart';
+
+Scoping is the act of changing the behavior of a provider for only a small part of your application.
+
+This is useful for:
+- Page/Widget-specific customization (e.g changing the theme of your app for one specific page)
+- Performance optimization (e.g rebuilding only the item that changes in a `ListView`)
+- Avoiding having to pass parameters around (such as for <Link documentID="concepts2/family" />)
+
+Scoping is achieved using <Link documentID="concepts2/overrides" />, by 
+overriding a provider in <Link documentID="concepts2/containers" /> that are _not_ the root of your application.
+
+:::caution
+The scoping feature is highly complex and will likely be
+reworked in the future to be more ergonomic.  
+
+Thread carefully.
+:::
+
+
+## Defining a scoped provider
+
+By default, Riverpod will not allow you to scope a provider. You need to opt-in to this feature by
+specifying `dependencies` on the provider.
+
+The first scoped provider in your app will typically specify `dependencies: []`.  
+The following snippet defines a scoped provider that exposes the current item ID that is being displayed:
+
+<AutoSnippet {...usage} />
+
+## Listening to a scoped provider
+
+To listen to a scoped provider, use the provider as usual by obtaining <Link documentID="concepts2/refs" />,
+(such as with <Link documentID="concepts2/consumers" />).
+
+```dart
+final currentItemId = ref.watch(currentItemIdProvider);
+```
+
+If a provider is listening to a scoped provider, that scoped provider
+needs to be included in the `dependencies` of the provider that is listening to it:
+
+<AutoSnippet {...dependencies} />
+
+:::info
+Inside `dependencies`, you only need to list scoped providers.
+You do not need to list providers that are not scoped.
+:::
+
+## Setting the value of a scoped provider
+
+To set a scoped provider, you can use <Link documentID="concepts2/overrides" />.
+A typical example is to specify `overrides` on [ProviderScope] like so:
+
+<AutoSnippet raw={override} />
+
+[ProviderScope]: https://pub.dev/documentation/flutter_riverpod/latest/flutter_riverpod/ProviderScope-class.html

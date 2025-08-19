@@ -1,6 +1,6 @@
 ---
 title: From `StateNotifier`
-version: 2
+version: 3
 ---
 
 import buildInit from "./from_state_notifier/build_init";
@@ -21,12 +21,6 @@ import obtainNotifierOnTests from "!!raw-loader!./from_state_notifier/obtain_not
 
 import { Link } from "/src/components/Link";
 import { AutoSnippet } from "/src/components/CodeSnippet";
-
-:::caution
-The content of this page may be outdated.  
-It will be updated in the future, but for now you may want to refer to the content
-in the top of the sidebar instead (introduction/essentials/case-studies/...)
-:::
 
 Along with [Riverpod 2.0](https://pub.dev/packages/flutter_riverpod/changelog#200), new classes
 were introduced: `Notifier` / `AsyncNotifier`.
@@ -50,7 +44,7 @@ the new `AsyncNotifier` for asynchronous state.
 ## New syntax comparison
 
 Be sure to know how to define a `Notifier` before diving into this comparison.
-See <Link documentID="essentials/side_effects" hash="defining-a-notifier" />.
+See <Link documentID="concepts2/providers" />.
 
 Let's write an example, using the old `StateNotifier` syntax:
 <AutoSnippet raw={buildInitOld}/>
@@ -86,7 +80,7 @@ Here, it's easy to see `AsyncNotifier` as a `FutureProvider` with methods.
 [`future`](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier/future.html)
 and [`update`](https://pub.dev/documentation/riverpod/latest/riverpod/AsyncNotifier/update.html).
 This enables us to write much simpler logic when handling asynchronous mutations and side-effects.
-See also <Link documentID="essentials/side_effects" />.
+See also <Link documentID="concepts2/providers" />.
 :::tip
 Migrating from `StateNotifier<AsyncValue<T>>` to a `AsyncNotifier<T>` boils down to:
 
@@ -109,11 +103,6 @@ Let's go further down and highlight more differences and similarities.
 ## Explicit `.family` and `.autoDispose` modifications
 
 Another important difference is how families and auto dispose is handled with the new APIs.
-
-`Notifier`, has its own `.family` and `.autoDispose` counterparts, such as `FamilyNotifier`
-and `Notifier`.  
-As always, such modifications can be combined (aka `AutoDisposeFamilyNotifier`).  
-`AsyncNotifier` has its asynchronous equivalent, too (e.g. `FamilyAsyncNotifier`).
 
 Modifications are explicitly stated inside the class; any parameters are directly injected in the
 `build` method, so that they're available to the initialization logic.  
@@ -186,7 +175,7 @@ Canceling an operation can be done with a custom [Completer](https://api.flutter
 or any custom derivative.
 
 For example, if you're using `Dio` to perform network requests, consider using a [cancel token](https://pub.dev/documentation/dio/latest/dio/CancelToken-class.html)
-(see also <Link documentID="essentials/auto_dispose" />).
+(see also <Link documentID="concepts2/auto_dispose" />).
 
 Therefore, the above example migrates to the following:
 <AutoSnippet language="dart" {...oldLifecyclesFinal}></AutoSnippet>
@@ -222,7 +211,7 @@ Becomes this:
 <AutoSnippet language="dart" {...addListener}></AutoSnippet>
 
 In a nutshell: if you want to listen to a `Notifier`/`AsyncNotifier`, just use `ref.listen`.
-See <Link documentID="essentials/combining_requests" hash="the-reflistenlistenself-methods" />.
+See <Link documentID="concepts2/refs" />.
 
 ### From `.debugState` in tests
 
@@ -250,7 +239,7 @@ No problem, you can obtain one with `ref.read`, just like you would read its exp
 
 <AutoSnippet raw={obtainNotifierOnTests}/>
 
-Learn more about testing in its dedicated guide. See <Link documentID="essentials/testing" />.
+Learn more about testing in its dedicated guide. See <Link documentID="how_to/testing" />.
 
 ### From `StateProvider`  
 

@@ -1,6 +1,6 @@
 ---
 title: Provider vs Riverpod
-version: 1
+version: 2
 ---
 
 import family from "./family";
@@ -409,20 +409,13 @@ In many ways, passing parameters to providers is equivalent to a Map key.
 If the key is the same, the value obtained is the same. If it's a different key, a different state will be obtained.
 
 [provider]: https://pub.dev/packages/provider
-[ref.watch]: /docs/concepts/reading#using-refwatch-to-observe-a-provider
-[ref.listen]: /docs/concepts/reading#using-reflisten-to-react-to-a-provider-change
-[autodispose]: /docs/concepts/modifiers/auto_dispose
+[autodispose]: /docs/concepts2/auto_dispose
 [workaround]: https://pub.dev/packages/provider#can-i-obtain-two-different-providers-using-the-same-type
-[.family modifier]: /docs/concepts/modifiers/family
-[keepAlive]: /docs/concepts/modifiers/auto_dispose#refkeepalive
-[as these two features go hand-in-hand]: /docs/concepts/modifiers/family#prefer-using-autodispose-when-the-parameter-is-not-constant
-[simplification of logic]: /docs/concepts/modifiers/family#usage
+[keepAlive]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/Ref/keepAlive.html
 [we have to]: https://github.com/flutter/flutter/issues/128432
 [it turns out]: https://github.com/flutter/flutter/issues/106549
 [*can't* react when a consumer stops listening to them]: https://github.com/flutter/flutter/issues/106546
-[integrates well with Flutter]: /docs/concepts/reading#using-reflisten-to-react-to-a-provider-change
-[ChangeNotifierProvider]: /docs/providers/change_notifier_provider
+[ChangeNotifierProvider]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/legacy/ChangeNotifierProvider-class.html
 [Code generation]: /docs/about_code_generation
-[AsyncNotifiers]: /docs/providers/notifier_provider
-[combining Providers]: /docs/concepts/combining_providers
-[global final variable]: /docs/concepts/providers#creating-a-provider
+[AsyncNotifiers]: https://pub.dev/documentation/hooks_riverpod/3.0.0-dev.17/hooks_riverpod/AsyncNotifierProvider-class.html
+[global final variable]: /docs/concepts2/providers#creating-a-provider

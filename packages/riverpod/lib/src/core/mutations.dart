@@ -17,8 +17,8 @@ const mutationZoneKey = #_mutation;
 /// See also:
 /// - [get], the primary way to interact with providers within [Mutation.run].
 @publicInMutations
-final class MutationRef {
-  MutationRef._(this._container);
+final class MutationTransaction {
+  MutationTransaction._(this._container);
 
   final ProviderContainer _container;
   var _closed = false;
@@ -46,7 +46,7 @@ final class MutationRef {
   }
 
   void _close() {
-    assert(!_closed, 'MutationRef is already closed');
+    assert(!_closed, 'MutationTransaction is already closed');
     _closed = true;
     _closeSubscriptions(_subscriptions);
   }
@@ -95,9 +95,10 @@ class _MutationNotifier<ValueT> {
   _MutationNotifier(this.state, this.setState, this.setRef, this.getRef);
 
   final MutationState<ValueT> state;
-  final void Function(MutationState<ValueT> state, MutationRef ref) setState;
-  final void Function(MutationRef ref) setRef;
-  final MutationRef? Function() getRef;
+  final void Function(MutationState<ValueT> state, MutationTransaction ref)
+      setState;
+  final void Function(MutationTransaction ref) setRef;
+  final MutationTransaction? Function() getRef;
 
   @override
   String toString() {
@@ -117,9 +118,9 @@ class _MutationElement<StateT> extends $FunctionalProviderElement<
     final provider = this.provider as _MutationProvider<StateT>;
     final mutation = provider.mutation;
 
-    MutationRef? activeRef;
+    MutationTransaction? activeRef;
 
-    void setState(MutationState<StateT> state, MutationRef? mutRef) {
+    void setState(MutationState<StateT> state, MutationTransaction? mutRef) {
       if (mutRef != activeRef) return;
 
       final prevState = value;
@@ -249,10 +250,10 @@ abstract class MutationTarget {
 /// ```dart
 /// ElevatedButton(
 ///   onPressed: () {
-///     addTodoMutation.run(ref, (ref) async {
+///     addTodoMutation.run(ref, (tsx) async {
 ///       // This is where you perform the side-effect. Here, you can
 ///       // read your providers to modify them.
-///       await ref.get(todoListProvider.notifier).addTodo(
+///       await tsx.get(todoListProvider.notifier).addTodo(
 ///         Todo(title: 'New Todo'),
 ///       );
 ///     });
@@ -309,7 +310,7 @@ abstract class MutationTarget {
 /// onPressed: () {
 ///   // Upon calling `run`, you will have to pass the same key as when
 ///   // watching the mutation.
-///   deleteTodo(todo.id).run(ref, (ref) async { /* ... */ });
+///   deleteTodo(todo.id).run(ref, (tsx) async { /* ... */ });
 /// }
 /// ```
 ///
@@ -352,12 +353,12 @@ sealed class Mutation<ResultT>
   /// [MutationSuccess] or [MutationError] depending on whether the callback
   /// completes successfully or throws an error.
   ///
-  /// While within the callback, use [MutationRef] to interact with providers.
+  /// While within the callback, use [MutationTransaction] to interact with providers.
   /// When doing so, [run] will naturally keep the providers alive for the duration
   /// of the callback, and close any pending subscriptions after it completes.
   Future<ResultT> run(
     MutationTarget target,
-    Future<ResultT> Function(MutationRef ref) cb,
+    Future<ResultT> Function(MutationTransaction transaction) cb,
   );
 
   /// Resets the mutation to its initial state ([MutationIdle]).
@@ -406,7 +407,7 @@ final class MutationImpl<ResultT>
   @override
   Future<ResultT> run(
     MutationTarget target,
-    Future<ResultT> Function(MutationRef ref) cb,
+    Future<ResultT> Function(MutationTransaction ref) cb,
   ) {
     return runZoned(zoneValues: {mutationZoneKey: this}, () async {
       final container = target.container;
@@ -416,7 +417,7 @@ final class MutationImpl<ResultT>
         _MutationProvider(this),
         (_, __) {},
       );
-      final ref = MutationRef._(container);
+      final ref = MutationTransaction._(container);
 
       try {
         mut._mutationStart(sub, ref);
@@ -453,7 +454,7 @@ final class MutationImpl<ResultT>
 
   void _mutationStart(
     ProviderSubscription<_MutationNotifier<ResultT>> sub,
-    MutationRef ref,
+    MutationTransaction ref,
   ) {
     final _MutationNotifier(:state, :setState, :setRef) =
         sub.readSafe().valueOrRawException;
@@ -465,7 +466,7 @@ final class MutationImpl<ResultT>
 
   void _mutationSuccess(
     ProviderSubscription<_MutationNotifier<ResultT>> sub,
-    MutationRef ref,
+    MutationTransaction ref,
     ResultT result,
   ) {
     final _MutationNotifier(:state, :setState) =
@@ -476,7 +477,7 @@ final class MutationImpl<ResultT>
 
   void _mutationErrored(
     ProviderSubscription<_MutationNotifier<ResultT>> sub,
-    MutationRef ref,
+    MutationTransaction ref,
     Object error,
     StackTrace stackTrace,
   ) {
