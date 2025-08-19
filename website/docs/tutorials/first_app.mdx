@@ -101,7 +101,7 @@ Then, we can update our `main.dart` file to use this new `HomeView` widget:
 `}
 />
 
-If you run the app now, you show see the following:
+If you run the app now, you should see the following:
 
 ![Mocked UI](/img/tutorials/first_app/mocked_ui.png)
 
@@ -251,7 +251,7 @@ caching the result of that API.
 See <Link documentID="concepts2/providers" /> for more information about them.
 
 Since our `fetchRandomJoke` function returns a `Future<Joke>`, we will use [FutureProvider].
-We can place the provider in the same `joke.dart` file, as it is also related to the `Hoke` class.
+We can place the provider in the same `joke.dart` file, as it is also related to the `Joke` class.
 
 By doing this, the execution of `fetchRandomJoke` will be cached, and regardless of how
 many times we access to the value, the network request will only be performed once.
