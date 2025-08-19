@@ -13,6 +13,7 @@ dev_dependencies:
 workspace:
   - benchmarks
   - examples/first_app
+  - examples/animated_button
   - examples/counter
   - examples/marvel
   - examples/pub
