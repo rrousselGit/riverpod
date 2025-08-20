@@ -35,4 +35,3 @@ part 'core/mutations.dart';
 part 'core/ref.dart';
 part 'core/scheduler.dart';
 part 'core/async_value.dart';
-part 'core/devtool.dart';
