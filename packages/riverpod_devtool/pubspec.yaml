@@ -1,0 +1,25 @@
+name: riverpod_devtool
+description: "A new Flutter project."
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.9.0-253.0.dev
+
+resolution: workspace
+
+dependencies:
+  devtools_app_shared: ^0.4.0
+  devtools_extensions: ^0.4.0
+  flutter:
+    sdk: flutter
+  flutter_hooks: ^0.21.3+1
+  hooks_riverpod: 3.0.0-dev.17
+  vm_service: ^15.0.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+flutter:
+  uses-material-design: true
