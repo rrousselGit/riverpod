@@ -352,7 +352,9 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
 @publicInCodegen
 abstract class ProviderElement<StateT, ValueT> implements Node {
   /// {@macro riverpod.provider_element_base}
-  ProviderElement(this.pointer);
+  ProviderElement(this.pointer) {
+    if (kDebugMode) RiverpodDevtool.instance.addElement(this);
+  }
 
   static bool defaultUpdateShouldNotify(Object? previous, Object? next) {
     return previous != next;
@@ -1203,6 +1205,8 @@ $this''',
     visitListenables((notifier) {
       notifier.dispose();
     });
+
+    if (kDebugMode) RiverpodDevtool.instance.removeElement(this);
   }
 
   @override

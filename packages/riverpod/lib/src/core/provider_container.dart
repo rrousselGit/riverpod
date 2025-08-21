@@ -801,6 +801,8 @@ final class ProviderContainer implements Node, MutationTarget {
     // This ensures that if an error is thrown, the parent & global state
     // are not affected.
     parent?._children.add(this);
+
+    if (kDebugMode) RiverpodDevtool.instance.addContainer(this);
   }
 
   /// An automatically disposed [ProviderContainer].
@@ -1147,6 +1149,8 @@ final class ProviderContainer implements Node, MutationTarget {
     for (final element in getAllProviderElementsInOrder().toList().reversed) {
       element.dispose();
     }
+
+    if (kDebugMode) RiverpodDevtool.instance.removeContainer(this);
   }
 
   /// Release all the resources associated with this [ProviderContainer].

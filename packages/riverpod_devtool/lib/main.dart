@@ -19,12 +19,7 @@ class SomePkgDevToolsExtension extends ConsumerWidget {
     return DevToolsExtension(
       child: Consumer(
         builder: (context, ref, child) {
-          final intClass = ref.watch(intRef);
-
-          return Column(
-            children: [
-              Text(intClass.toString()),
-              Text('${intClass.value?.fields?.map((e) => e.name).join(', ')}'),
+          return Column(children: [
             ],
           );
         },
@@ -85,27 +80,36 @@ class VmServiceNotifier extends AsyncNotifier<VmService> {
   }
 }
 
-final evalProvider = FutureProvider.autoDispose
-    .family<EvalOnDartLibrary, String>((ref, libraryName) async {
-      final vmService = await ref.watch(vmServiceProvider.future);
-      final serviceManager = await ref.watch(serviceManagerProvider.future);
+class Eval {
+  Eval._(this._eval);
+  final EvalOnDartLibrary _eval;
 
-      return EvalOnDartLibrary(
-        libraryName,
-        vmService,
-        serviceManager: serviceManager,
-      );
-    });
+  String _formatCode(String code) => code.replaceAll('\n', ' ');
 
-final dartCore = evalProvider('dart:core');
-final dartAsync = evalProvider('dart:async');
+  Future<InstanceRef> eval(String code, Ref ref) async {
+    final disposable = ref.isAlive();
 
-final intRef = FutureProvider<Class>((ref) async {
-  final eval = await ref.watch(dartCore.future);
-  final res = await eval.safeEval('int', isAlive: ref.isAlive());
+    return _eval.safeEval(_formatCode(code), isAlive: disposable);
+  }
+}
 
-  return eval.safeGetClass(res.typeClass!, ref.isAlive());
+final evalProvider = FutureProvider.autoDispose.family<Eval, String>((
+  ref,
+  libraryName,
+) async {
+  final vmService = await ref.watch(vmServiceProvider.future);
+  final serviceManager = await ref.watch(serviceManagerProvider.future);
+
+  return Eval._(
+    EvalOnDartLibrary(libraryName, vmService, serviceManager: serviceManager),
+  );
 });
+
+final dartCoreEvalProvider = evalProvider('dart:core');
+final dartAsyncEvalProvider = evalProvider('dart:async');
+final riverpodInternalsEvalProvider = evalProvider(
+  'package:riverpod/src/internals.dart',
+);
 
 extension IsAlive on Ref {
   Disposable isAlive() {
@@ -114,3 +118,15 @@ extension IsAlive on Ref {
     return disposable;
   }
 }
+
+class ProviderContainerInstance {}
+
+final containersProvider =
+    FutureProvider.autoDispose<List<ProviderContainerInstance>>((ref) async {
+      final internals = await ref.watch(riverpodInternalsEvalProvider.future);
+
+      final containers = await internals.eval(
+        'RiverpodDevtool.instance.allContainers()',
+        ref,
+      );
+    });
