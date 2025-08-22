@@ -1,7 +1,7 @@
 import 'package:pubspec_parse/pubspec_parse.dart';
-import 'package:riverpod_lint/src/assists/convert_to_stateful_base_widget.dart';
-import 'package:riverpod_lint/src/assists/convert_to_stateless_base_widget.dart';
-import 'package:riverpod_lint/src/assists/convert_to_widget_utils.dart';
+import 'package:riverpod_lint/src/assists/consumers/convert_to_stateful_base_widget.dart';
+import 'package:riverpod_lint/src/assists/consumers/convert_to_stateless_base_widget.dart';
+import 'package:riverpod_lint/src/assists/consumers/convert_to_widget_utils.dart';
 import 'package:riverpod_lint/src/riverpod_custom_lint.dart';
 import 'package:test/test.dart';
 

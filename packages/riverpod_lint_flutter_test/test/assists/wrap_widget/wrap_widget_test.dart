@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
-import 'package:riverpod_lint/src/assists/wrap_with_consumer.dart';
-import 'package:riverpod_lint/src/assists/wrap_with_provider_scope.dart';
+import 'package:riverpod_lint/src/assists/wrap/wrap_with_consumer.dart';
+import 'package:riverpod_lint/src/assists/wrap/wrap_with_provider_scope.dart';
 
 import '../../test_lint.dart';
 

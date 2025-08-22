@@ -1,4 +1,4 @@
-import 'package:riverpod_lint/src/assists/functional_to_class_based_provider.dart';
+import 'package:riverpod_lint/src/assists/providers/functional_to_class_based_provider.dart';
 
 import '../../test_lint.dart';
 
