@@ -31,7 +31,7 @@ part 'nodes/widgets/widget.dart';
 
 part 'nodes/dependencies.dart';
 part 'nodes/generated_providers/function.dart';
-part 'nodes/generated_providers/legacy.dart';
+part 'nodes/manual_providers/legacy.dart';
 part 'nodes/generated_providers/notifier.dart';
 part 'nodes/generated_providers/providers.dart';
 part 'nodes/generated_providers/identifiers.dart';
