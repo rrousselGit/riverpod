@@ -4,8 +4,8 @@ import 'package:analyzer_plugin/utilities/change_builder/change_builder_dart.dar
 import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
-import '../imports.dart';
-import '../object_utils.dart';
+import '../../imports.dart';
+import '../../object_utils.dart';
 
 enum StatelessBaseWidgetType {
   hookConsumerWidget(
