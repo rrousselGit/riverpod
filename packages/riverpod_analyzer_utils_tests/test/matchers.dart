@@ -1,14 +1,14 @@
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:test/test.dart';
 
-TypeMatcher<LegacyProviderDeclarationElement>
+TypeMatcher<ManualProviderDeclarationElement>
     isLegacyProviderDeclarationElement({
   Object? element = const Object(),
   Object? name = const Object(),
   Object? familyElement = const Object(),
   Object? providerType = const Object(),
 }) {
-  var matcher = isA<LegacyProviderDeclarationElement>();
+  var matcher = isA<ManualProviderDeclarationElement>();
 
   if (element != const Object()) {
     matcher = matcher.having(

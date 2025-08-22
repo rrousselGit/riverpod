@@ -1,43 +1,43 @@
 part of '../../nodes.dart';
 
-final class LegacyProviderDependencies {
-  LegacyProviderDependencies._({
+final class ManualProviderDependencies {
+  ManualProviderDependencies._({
     required this.dependencies,
     required this.node,
   });
 
-  static LegacyProviderDependencies? _parse(NamedExpression? dependenciesNode) {
+  static ManualProviderDependencies? _parse(NamedExpression? dependenciesNode) {
     if (dependenciesNode == null) return null;
 
     final value = dependenciesNode.expression;
 
-    List<LegacyProviderDependency>? dependencies;
+    List<ManualProviderDependency>? dependencies;
     if (value is ListLiteral) {
       dependencies =
-          value.elements.map(LegacyProviderDependency._parse).toList();
+          value.elements.map(ManualProviderDependency._parse).toList();
     }
 
-    return LegacyProviderDependencies._(
+    return ManualProviderDependencies._(
       node: dependenciesNode,
       dependencies: dependencies,
     );
   }
 
-  final List<LegacyProviderDependency>? dependencies;
+  final List<ManualProviderDependency>? dependencies;
   final NamedExpression node;
 }
 
-final class LegacyProviderDependency {
-  LegacyProviderDependency._({
+final class ManualProviderDependency {
+  ManualProviderDependency._({
     required this.node,
     required this.provider,
   });
 
-  factory LegacyProviderDependency._parse(CollectionElement node) {
+  factory ManualProviderDependency._parse(CollectionElement node) {
     final provider =
         node.cast<Expression>().let(ProviderOrFamilyExpression._parse);
 
-    return LegacyProviderDependency._(
+    return ManualProviderDependency._(
       node: node,
       provider: provider,
     );
@@ -49,14 +49,14 @@ final class LegacyProviderDependency {
 
 @_ast
 extension LegacyProviderDeclarationX on VariableDeclaration {
-  static final _cache = Expando<Box<LegacyProviderDeclaration?>>();
+  static final _cache = Expando<Box<ManualProviderDeclaration?>>();
 
-  LegacyProviderDeclaration? get provider {
+  ManualProviderDeclaration? get provider {
     return _cache.upsert(this, () {
       final element = declaredFragment?.element;
       if (element == null) return null;
 
-      final providerElement = LegacyProviderDeclarationElement._parse(element);
+      final providerElement = ManualProviderDeclarationElement._parse(element);
       if (providerElement == null) return null;
 
       final initializer = this.initializer;
@@ -118,9 +118,9 @@ extension LegacyProviderDeclarationX on VariableDeclaration {
           .namedArguments()
           .firstWhereOrNull((e) => e.name.label.name == 'dependencies');
       final dependencies =
-          LegacyProviderDependencies._parse(dependenciesElement);
+          ManualProviderDependencies._parse(dependenciesElement);
 
-      return LegacyProviderDeclaration._(
+      return ManualProviderDeclaration._(
         name: name,
         node: this,
         build: build,
@@ -136,8 +136,8 @@ extension LegacyProviderDeclarationX on VariableDeclaration {
   }
 }
 
-final class LegacyProviderDeclaration implements ProviderDeclaration {
-  LegacyProviderDeclaration._({
+final class ManualProviderDeclaration implements ProviderDeclaration {
+  ManualProviderDeclaration._({
     required this.name,
     required this.node,
     required this.build,
@@ -150,7 +150,7 @@ final class LegacyProviderDeclaration implements ProviderDeclaration {
     required this.dependencies,
   });
 
-  final LegacyProviderDependencies? dependencies;
+  final ManualProviderDependencies? dependencies;
 
   final FunctionExpression build;
   final ArgumentList argumentList;
@@ -160,7 +160,7 @@ final class LegacyProviderDeclaration implements ProviderDeclaration {
   final TypeArgumentList? typeArguments;
 
   @override
-  final LegacyProviderDeclarationElement providerElement;
+  final ManualProviderDeclarationElement providerElement;
 
   @override
   final Token name;
@@ -173,7 +173,7 @@ final class LegacyProviderDeclaration implements ProviderDeclaration {
 ///
 /// Such as `FutureProvider` for `final provider = FutureProvider(...)`.
 /// This is only about the type, and does not include autoDispose/family/...
-enum LegacyProviderType {
+enum ManualProviderType {
   /// Type for `ChangeNotifierProvider`
   changeNotifierProvider,
 
@@ -203,7 +203,7 @@ enum LegacyProviderType {
 }
 
 @internal
-LegacyProviderType? parseLegacyProviderType(DartType type) {
+ManualProviderType? parseLegacyProviderType(DartType type) {
   if (!isFromRiverpod.isExactlyType(type) &&
       !isFromFlutterRiverpod.isExactlyType(type)) {
     return null;
@@ -211,56 +211,56 @@ LegacyProviderType? parseLegacyProviderType(DartType type) {
 
   final name = type.element3?.name3;
   if (name == 'FutureProvider' || name == 'FutureProviderFamily') {
-    return LegacyProviderType.futureProvider;
+    return ManualProviderType.futureProvider;
   }
   if (name == 'StreamProvider' || name == 'StreamProviderFamily') {
-    return LegacyProviderType.streamProvider;
+    return ManualProviderType.streamProvider;
   }
   if (name == 'StreamNotifierProvider' ||
       name == 'StreamNotifierProviderFamily') {
-    return LegacyProviderType.streamNotifier;
+    return ManualProviderType.streamNotifier;
   }
   if (name == 'StateProvider' || name == 'StateProviderFamily') {
-    return LegacyProviderType.stateProvider;
+    return ManualProviderType.stateProvider;
   }
   if (name == 'StateNotifierProvider' ||
       name == 'StateNotifierProviderFamily') {
-    return LegacyProviderType.stateNotifierProvider;
+    return ManualProviderType.stateNotifierProvider;
   }
   if (name == 'Provider' || name == 'ProviderFamily') {
-    return LegacyProviderType.provider;
+    return ManualProviderType.provider;
   }
   if (name == 'NotifierProvider' || name == 'NotifierProviderFamily') {
-    return LegacyProviderType.notifierProvider;
+    return ManualProviderType.notifierProvider;
   }
   if (name == 'AsyncNotifierProvider' ||
       name == 'AsyncNotifierProviderFamily') {
-    return LegacyProviderType.asyncNotifierProvider;
+    return ManualProviderType.asyncNotifierProvider;
   }
   if (name == 'ChangeNotifierProvider' ||
       name == 'ChangeNotifierProviderFamily') {
-    return LegacyProviderType.changeNotifierProvider;
+    return ManualProviderType.changeNotifierProvider;
   }
 
   return null;
 }
 
-class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
-  LegacyProviderDeclarationElement._({
+class ManualProviderDeclarationElement implements ProviderDeclarationElement {
+  ManualProviderDeclarationElement._({
     required this.name,
     required this.element,
     required this.familyElement,
     required this.providerType,
   });
 
-  static LegacyProviderDeclarationElement? _parse(VariableElement2 element) {
+  static ManualProviderDeclarationElement? _parse(VariableElement2 element) {
     return _cache(element, () {
       final type = element.type;
       final providerType = parseLegacyProviderType(type);
       // Not a legacy provider
       if (providerType == null) return null;
 
-      LegacyFamilyInvocationElement? familyElement;
+      ManualFamilyInvocationElement? familyElement;
       if (familyType.isAssignableFromType(element.type)) {
         final callFn = (element.type as InterfaceType).lookUpMethod3(
           'call',
@@ -268,10 +268,10 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
         )!;
         final parameter = callFn.formalParameters.single;
 
-        familyElement = LegacyFamilyInvocationElement._(parameter.type);
+        familyElement = ManualFamilyInvocationElement._(parameter.type);
       }
 
-      return LegacyProviderDeclarationElement._(
+      return ManualProviderDeclarationElement._(
         name: element.name3!,
         element: element,
         familyElement: familyElement,
@@ -280,7 +280,7 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
     });
   }
 
-  static final _cache = _Cache<LegacyProviderDeclarationElement?>();
+  static final _cache = _Cache<ManualProviderDeclarationElement?>();
 
   @override
   final VariableElement2 element;
@@ -288,12 +288,12 @@ class LegacyProviderDeclarationElement implements ProviderDeclarationElement {
   @override
   final String name;
 
-  final LegacyFamilyInvocationElement? familyElement;
+  final ManualFamilyInvocationElement? familyElement;
 
-  final LegacyProviderType providerType;
+  final ManualProviderType providerType;
 }
 
-class LegacyFamilyInvocationElement {
-  LegacyFamilyInvocationElement._(this.parameterType);
+class ManualFamilyInvocationElement {
+  ManualFamilyInvocationElement._(this.parameterType);
   final DartType parameterType;
 }

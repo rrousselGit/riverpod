@@ -79,10 +79,10 @@ final second = Provider<int>((ref) => 0);
           result.legacyProviderDeclarations.takeAll(['first', 'second']);
 
       expect(providers, {
-        'first': isA<LegacyProviderDeclaration>()
+        'first': isA<ManualProviderDeclaration>()
             .having((e) => e.name.toString(), 'name', 'first')
             .having((e) => e.node.name.toString(), 'node.name', 'first'),
-        'second': isA<LegacyProviderDeclaration>()
+        'second': isA<ManualProviderDeclaration>()
             .having((e) => e.name.toString(), 'name', 'second')
             .having((e) => e.node.name.toString(), 'node.name', 'second'),
       });
@@ -202,7 +202,7 @@ final autoDisposeFamily2 = Provider.family.autoDispose<int, int>(
 
         expect(
           provider.value.dependencies?.dependencies?[0],
-          isA<LegacyProviderDependency>()
+          isA<ManualProviderDependency>()
               .having((e) => e.node.toSource(), 'node', 'dep')
               .having(
                 (e) => e.provider?.provider?.providerElement,
@@ -213,7 +213,7 @@ final autoDisposeFamily2 = Provider.family.autoDispose<int, int>(
         );
         expect(
           provider.value.dependencies?.dependencies?[1],
-          isA<LegacyProviderDependency>()
+          isA<ManualProviderDependency>()
               .having((e) => e.node.toSource(), 'node', 'family')
               .having(
                 (e) => e.provider?.provider?.providerElement,
@@ -224,7 +224,7 @@ final autoDisposeFamily2 = Provider.family.autoDispose<int, int>(
         );
         expect(
           provider.value.dependencies?.dependencies?[2],
-          isA<LegacyProviderDependency>()
+          isA<ManualProviderDependency>()
               .having((e) => e.node.toSource(), 'node', 'family(42)')
               .having(
                 (e) => e.provider?.provider?.providerElement,
@@ -235,7 +235,7 @@ final autoDisposeFamily2 = Provider.family.autoDispose<int, int>(
         );
         expect(
           provider.value.dependencies?.dependencies?[3],
-          isA<LegacyProviderDependency>()
+          isA<ManualProviderDependency>()
               .having((e) => e.node.toSource(), 'node', '...getDeps()')
               .having(
                 (e) => e.provider?.provider?.providerElement,
@@ -257,7 +257,7 @@ final autoDisposeFamily2 = Provider.family.autoDispose<int, int>(
       );
       expect(
         generatorDependencies.dependencies?.dependencies?[0],
-        isA<LegacyProviderDependency>()
+        isA<ManualProviderDependency>()
             .having((e) => e.node.toSource(), 'node', 'dep2Provider')
             .having(
               (e) => e.provider?.provider?.providerElement,
@@ -271,7 +271,7 @@ final autoDisposeFamily2 = Provider.family.autoDispose<int, int>(
       );
       expect(
         generatorDependencies.dependencies?.dependencies?[1],
-        isA<LegacyProviderDependency>()
+        isA<ManualProviderDependency>()
             .having((e) => e.node.toSource(), 'node', 'family2Provider')
             .having(
               (e) => e.provider?.provider?.providerElement,
@@ -309,7 +309,7 @@ final autoDisposeFamily2 = Provider.family.autoDispose<int, int>((ref, id) => 0)
       for (final provider in providers.entries) {
         expect(
           provider.value.providerElement.providerType,
-          LegacyProviderType.provider,
+          ManualProviderType.provider,
           reason: '${provider.key} is a Provider',
         );
       }
@@ -414,7 +414,7 @@ final autoDisposeFamily2 = FutureProvider.family.autoDispose<int, int>((ref, id)
       for (final provider in providers.entries) {
         expect(
           provider.value.providerElement.providerType,
-          LegacyProviderType.futureProvider,
+          ManualProviderType.futureProvider,
           reason: '${provider.key} is a FutureProvider',
         );
       }
@@ -444,7 +444,7 @@ final autoDisposeFamily2 = StateProvider.family.autoDispose<int, int>((ref, id) 
       for (final provider in providers.entries) {
         expect(
           provider.value.providerElement.providerType,
-          LegacyProviderType.stateProvider,
+          ManualProviderType.stateProvider,
           reason: '${provider.key} is a StateProvider',
         );
       }
@@ -474,7 +474,7 @@ final autoDisposeFamily2 = StreamProvider.family.autoDispose<int, int>((ref, id)
       for (final provider in providers.entries) {
         expect(
           provider.value.providerElement.providerType,
-          LegacyProviderType.streamProvider,
+          ManualProviderType.streamProvider,
           reason: '${provider.key} is a StreamProvider',
         );
       }
@@ -502,7 +502,7 @@ final autoDisposeFamily2 = NotifierProvider.family.autoDispose<Notifier<int>, in
       for (final provider in providers.entries) {
         expect(
           provider.value.providerElement.providerType,
-          LegacyProviderType.notifierProvider,
+          ManualProviderType.notifierProvider,
           reason: '${provider.key} is a NotifierProvider',
         );
       }
@@ -530,7 +530,7 @@ final autoDisposeFamily2 = AsyncNotifierProvider.family.autoDispose<AsyncNotifie
       for (final provider in providers.entries) {
         expect(
           provider.value.providerElement.providerType,
-          LegacyProviderType.asyncNotifierProvider,
+          ManualProviderType.asyncNotifierProvider,
           reason: '${provider.key} is an AsyncNotifierProvider',
         );
       }
@@ -561,7 +561,7 @@ final autoDisposeFamily2 = ChangeNotifierProvider.family.autoDispose<ValueNotifi
       for (final provider in providers.entries) {
         expect(
           provider.value.providerElement.providerType,
-          LegacyProviderType.changeNotifierProvider,
+          ManualProviderType.changeNotifierProvider,
           reason: '${provider.key} is a ChangeNotifierProvider',
         );
       }
@@ -591,7 +591,7 @@ final autoDisposeFamily2 = StateNotifierProvider.family.autoDispose<StateControl
       for (final provider in providers.entries) {
         expect(
           provider.value.providerElement.providerType,
-          LegacyProviderType.stateNotifierProvider,
+          ManualProviderType.stateNotifierProvider,
           reason: '${provider.key} is a StreamProvider',
         );
       }

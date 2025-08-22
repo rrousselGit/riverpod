@@ -17,7 +17,7 @@ extension ProviderIdentifierX on SimpleIdentifier {
       if (providerFor != null) {
         providerElement = providerFor.$1;
       } else {
-        providerElement = LegacyProviderDeclarationElement._parse(variable);
+        providerElement = ManualProviderDeclarationElement._parse(variable);
       }
 
       if (providerElement == null) return null;
