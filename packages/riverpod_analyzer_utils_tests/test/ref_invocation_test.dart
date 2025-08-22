@@ -179,7 +179,7 @@ final provider = Provider<int>((ref) {
     );
     expect(
       result.refWatchInvocations[0].listenable.provider?.providerElement,
-      same(result.legacyProviderDeclarations.findByName('dep').providerElement),
+      same(result.manualProviderDeclarations.findByName('dep').providerElement),
     );
 
     expect(
@@ -286,7 +286,7 @@ void fn(_Ref ref) {
     );
     expect(
       result.refWatchInvocations[0].listenable.provider?.providerElement,
-      same(result.legacyProviderDeclarations.findByName('dep').providerElement),
+      same(result.manualProviderDeclarations.findByName('dep').providerElement),
     );
 
     expect(
@@ -369,7 +369,7 @@ final provider = Provider<int>((ref) {
     );
     expect(
       result.refListenInvocations[0].listenable.provider?.providerElement,
-      same(result.legacyProviderDeclarations.findByName('dep').providerElement),
+      same(result.manualProviderDeclarations.findByName('dep').providerElement),
     );
 
     expect(
@@ -383,7 +383,7 @@ final provider = Provider<int>((ref) {
     );
     expect(
       result.refListenInvocations[1].listenable.provider?.providerElement,
-      same(result.legacyProviderDeclarations.findByName('dep').providerElement),
+      same(result.manualProviderDeclarations.findByName('dep').providerElement),
     );
 
     expect(
@@ -397,7 +397,7 @@ final provider = Provider<int>((ref) {
     );
     expect(
       result.refListenInvocations[2].listenable.provider?.providerElement,
-      same(result.legacyProviderDeclarations.findByName('dep').providerElement),
+      same(result.manualProviderDeclarations.findByName('dep').providerElement),
     );
   });
 
@@ -427,7 +427,7 @@ final provider = Provider<int>((ref) {
     expect(result.refReadInvocations[0].function.toSource(), 'read');
     expect(
       result.refReadInvocations[0].listenable.provider?.providerElement,
-      same(result.legacyProviderDeclarations.findByName('dep').providerElement),
+      same(result.manualProviderDeclarations.findByName('dep').providerElement),
     );
 
     expect(result.refReadInvocations[1].node.toSource(), 'ref.read(dep2)');
@@ -435,7 +435,7 @@ final provider = Provider<int>((ref) {
     expect(
       result.refReadInvocations[1].listenable.provider?.providerElement,
       same(
-        result.legacyProviderDeclarations.findByName('dep2').providerElement,
+        result.manualProviderDeclarations.findByName('dep2').providerElement,
       ),
     );
   });
@@ -492,7 +492,7 @@ final provider3 = Provider<int>((ref) {
     expect(
       result.refReadInvocations[0].listenable.provider?.providerElement,
       same(
-        result.legacyProviderDeclarations.findByName('dep').providerElement,
+        result.manualProviderDeclarations.findByName('dep').providerElement,
       ),
     );
 
@@ -504,7 +504,7 @@ final provider3 = Provider<int>((ref) {
     expect(
       result.refReadInvocations[1].listenable.provider?.providerElement,
       same(
-        result.legacyProviderDeclarations.findByName('dep2').providerElement,
+        result.manualProviderDeclarations.findByName('dep2').providerElement,
       ),
     );
 
@@ -522,7 +522,7 @@ final provider3 = Provider<int>((ref) {
     expect(
       result.refReadInvocations[4].listenable.provider?.providerElement,
       same(
-        result.legacyProviderDeclarations.findByName('dep3').providerElement,
+        result.manualProviderDeclarations.findByName('dep3').providerElement,
       ),
     );
 
@@ -556,7 +556,7 @@ void fn(Ref ref) {
     expect(result.refReadInvocations[0].function.toSource(), 'read');
     expect(
       result.refReadInvocations[0].listenable.provider?.providerElement,
-      same(result.legacyProviderDeclarations.findByName('dep').providerElement),
+      same(result.manualProviderDeclarations.findByName('dep').providerElement),
     );
 
     expect(result.refReadInvocations[1].node.toSource(), 'ref.read(dep2)');
@@ -564,7 +564,7 @@ void fn(Ref ref) {
     expect(
       result.refReadInvocations[1].listenable.provider?.providerElement,
       same(
-        result.legacyProviderDeclarations.findByName('dep2').providerElement,
+        result.manualProviderDeclarations.findByName('dep2').providerElement,
       ),
     );
   });
@@ -629,7 +629,7 @@ void fn(_Ref ref) {
     expect(
       providerRefInvocations[0].listenable.provider?.providerElement,
       same(
-        result.legacyProviderDeclarations.findByName('family').providerElement,
+        result.manualProviderDeclarations.findByName('family').providerElement,
       ),
     );
     expect(
@@ -723,7 +723,7 @@ final provider = Provider<int>((ref) {
     expect(
       result.refWatchInvocations[0].listenable.provider?.providerElement,
       same(
-        result.legacyProviderDeclarations.findByName('dep2').providerElement,
+        result.manualProviderDeclarations.findByName('dep2').providerElement,
       ),
     );
 
@@ -735,7 +735,7 @@ final provider = Provider<int>((ref) {
     expect(
       result.refReadInvocations[0].listenable.provider?.providerElement,
       same(
-        result.legacyProviderDeclarations.findByName('dep').providerElement,
+        result.manualProviderDeclarations.findByName('dep').providerElement,
       ),
     );
   });
@@ -816,7 +816,7 @@ void fn(_Ref ref) {
     );
     expect(
       result.refWatchInvocations[0].listenable.provider?.providerElement,
-      same(result.legacyProviderDeclarations.findByName('dep').providerElement),
+      same(result.manualProviderDeclarations.findByName('dep').providerElement),
     );
 
     expect(
