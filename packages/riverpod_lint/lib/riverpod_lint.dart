@@ -1,10 +1,10 @@
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
-import 'src/assists/class_based_to_functional_provider.dart';
 import 'src/assists/consumers/convert_to_stateful_base_widget.dart';
 import 'src/assists/consumers/convert_to_stateless_base_widget.dart';
 import 'src/assists/consumers/convert_to_widget_utils.dart';
-import 'src/assists/functional_to_class_based_provider.dart';
+import 'src/assists/providers/class_based_to_functional_provider.dart';
+import 'src/assists/providers/functional_to_class_based_provider.dart';
 import 'src/assists/wrap_with_consumer.dart';
 import 'src/assists/wrap_with_provider_scope.dart';
 import 'src/lints/async_value_nullable_pattern.dart';

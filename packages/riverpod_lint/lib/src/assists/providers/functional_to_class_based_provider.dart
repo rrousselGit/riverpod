@@ -1,7 +1,7 @@
 import 'package:analyzer/source/source_range.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 
-import '../riverpod_custom_lint.dart';
+import '../../riverpod_custom_lint.dart';
 import 'class_based_to_functional_provider.dart';
 
 class FunctionalToClassBasedProvider extends RiverpodAssist {
