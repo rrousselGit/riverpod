@@ -14,7 +14,7 @@ mixin RiverpodAstVisitor {
   void visitNamedTypeDependencies(NamedTypeDependencies node) {}
   void visitDependenciesAnnotation(DependenciesAnnotation node) {}
   void visitFunctionalProviderDeclaration(FunctionalProviderDeclaration node) {}
-  void visitLegacyProviderDeclaration(ManualProviderDeclaration node) {}
+  void visitManualProviderDeclaration(ManualProviderDeclaration node) {}
   void visitClassBasedProviderDeclaration(ClassBasedProviderDeclaration node) {}
   void visitGeneratorProviderDeclaration(GeneratorProviderDeclaration node) {}
   void visitProviderIdentifier(ProviderIdentifier node) {}
@@ -110,7 +110,7 @@ abstract class RecursiveRiverpodAstVisitor extends GeneralizingAstVisitor<void>
   @override
   void visitVariableDeclaration(VariableDeclaration node) {
     if (node.provider case final value?) {
-      visitLegacyProviderDeclaration(value);
+      visitManualProviderDeclaration(value);
       return;
     }
 
@@ -220,7 +220,7 @@ abstract class RecursiveRiverpodAstVisitor extends GeneralizingAstVisitor<void>
     super.visitFunctionDeclaration(node.node);
   }
 
-  void visitLegacyProviderDeclaration(ManualProviderDeclaration node) {
+  void visitManualProviderDeclaration(ManualProviderDeclaration node) {
     super.visitVariableDeclaration(node.node);
   }
 
@@ -292,7 +292,7 @@ abstract class UnimplementedRiverpodAstVisitor
       throw UnimplementedError();
   void visitFunctionalProviderDeclaration(FunctionalProviderDeclaration node) =>
       throw UnimplementedError();
-  void visitLegacyProviderDeclaration(ManualProviderDeclaration node) =>
+  void visitManualProviderDeclaration(ManualProviderDeclaration node) =>
       throw UnimplementedError();
   void visitClassBasedProviderDeclaration(ClassBasedProviderDeclaration node) =>
       throw UnimplementedError();
@@ -496,7 +496,7 @@ class CollectionRiverpodAst extends SimpleRiverpodAstVisitor {
     _pendingList!.add(node);
   }
 
-  void visitLegacyProviderDeclaration(ManualProviderDeclaration node) {
+  void visitManualProviderDeclaration(ManualProviderDeclaration node) {
     _pendingList!.add(node);
   }
 
@@ -614,13 +614,13 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
     functionalProviderDeclarations.add(node);
   }
 
-  final legacyProviderDeclarations = <ManualProviderDeclaration>[];
+  final manualProviderDeclarations = <ManualProviderDeclaration>[];
   @override
-  void visitLegacyProviderDeclaration(
+  void visitManualProviderDeclaration(
     ManualProviderDeclaration node,
   ) {
-    super.visitLegacyProviderDeclaration(node);
-    legacyProviderDeclarations.add(node);
+    super.visitManualProviderDeclaration(node);
+    manualProviderDeclarations.add(node);
   }
 
   final classBasedProviderDeclarations = <ClassBasedProviderDeclaration>[];
@@ -796,11 +796,11 @@ class RiverpodAstRegistry {
     _onFunctionalProviderDeclaration.add(cb);
   }
 
-  final _onLegacyProviderDeclaration =
+  final _onManualProviderDeclaration =
       <void Function(ManualProviderDeclaration)>[];
-  void addLegacyProviderDeclaration(
+  void addManualProviderDeclaration(
       void Function(ManualProviderDeclaration node) cb) {
-    _onLegacyProviderDeclaration.add(cb);
+    _onManualProviderDeclaration.add(cb);
   }
 
   final _onClassBasedProviderDeclaration =
@@ -953,11 +953,11 @@ class _RiverpodAstRegistryVisitor extends RecursiveRiverpodAstVisitor {
   }
 
   @override
-  void visitLegacyProviderDeclaration(ManualProviderDeclaration node) {
-    super.visitLegacyProviderDeclaration(node);
+  void visitManualProviderDeclaration(ManualProviderDeclaration node) {
+    super.visitManualProviderDeclaration(node);
     _runSubscriptions(
       node,
-      _registry._onLegacyProviderDeclaration,
+      _registry._onManualProviderDeclaration,
     );
   }
 
