@@ -5,16 +5,41 @@ class RiverpodDevtool {
   RiverpodDevtool._();
   static final instance = RiverpodDevtool._();
 
-  final _containers = <ProviderContainer>[];
-  Iterable<ProviderContainer> get containers => _containers;
-  void addContainer(ProviderContainer container) => _containers.add(container);
-  void removeContainer(ProviderContainer container) =>
-      _containers.remove(container);
+  final events = <Event>[];
+  void addEvent(String name, [List<Object?> items = const []]) {
+    events.add(
+      Event(name, _deflated(items), DateTime.now()),
+    );
+    debugPostEvent(
+      name,
+      <Object?, Object?>{'offset': events.length - 1},
+    );
+  }
+}
 
-  final _elements = <ProviderElement>[];
-  Iterable<ProviderElement> get elements => _elements;
-  void addElement(ProviderElement element) => _elements.add(element);
-  void removeElement(ProviderElement element) => _elements.remove(element);
+@internal
+class Event {
+  Event(this.name, this.items, this.timestamp);
+  final String name;
+  final List<Object?> items;
+  final DateTime timestamp;
+}
+
+List<Object?> _deflated(List<Object?> items) => items..insert(0, items.length);
+
+@internal
+extension ProviderContainerParents on ProviderContainer {
+  // All the parents of this container, in order from the closest to the furthest.
+  Iterable<ProviderContainer> get parents {
+    final parents = <ProviderContainer>[];
+    for (var node = parent; node != null; node = node.parent) {
+      parents.add(node);
+    }
+
+    return parents;
+  }
+
+  String get id => _debugId;
 }
 
 /* ====  */

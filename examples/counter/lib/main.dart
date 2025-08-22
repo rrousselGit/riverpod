@@ -38,13 +38,27 @@ class Counter extends _$Counter {
   void increment() => state++;
 }
 
-class Home extends ConsumerWidget {
+class Home extends ConsumerStatefulWidget {
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<Home> createState() => _HomeState();
+}
+
+class _HomeState extends ConsumerState<Home> {
+  bool show = false;
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Counter example')),
-      body: Center(
-        child: Text('${ref.watch(counterProvider)}'),
+      body: Column(
+        children: [
+          Text('${ref.watch(counterProvider)}'),
+          if (show) ProviderScope(child: Container()),
+          ElevatedButton(
+            onPressed: () => setState(() => show = !show),
+            child: Text(show ? 'Hide' : 'Show'),
+          ),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         // The read method is a utility to read a provider without listening to it

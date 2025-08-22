@@ -802,7 +802,9 @@ final class ProviderContainer implements Node, MutationTarget {
     // are not affected.
     parent?._children.add(this);
 
-    if (kDebugMode) RiverpodDevtool.instance.addContainer(this);
+    if (kDebugMode) {
+      RiverpodDevtool.instance.addEvent('riverpod.container.add', [this]);
+    }
   }
 
   /// An automatically disposed [ProviderContainer].
@@ -848,6 +850,8 @@ final class ProviderContainer implements Node, MutationTarget {
 
     return delay;
   }
+
+  final _debugId = const Uuid().v4();
 
   final int _debugOverridesLength;
 
@@ -1150,7 +1154,9 @@ final class ProviderContainer implements Node, MutationTarget {
       element.dispose();
     }
 
-    if (kDebugMode) RiverpodDevtool.instance.removeContainer(this);
+    if (kDebugMode) {
+      RiverpodDevtool.instance.addEvent('riverpod.container.dispose', [this]);
+    }
   }
 
   /// Release all the resources associated with this [ProviderContainer].

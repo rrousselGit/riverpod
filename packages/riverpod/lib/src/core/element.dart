@@ -353,7 +353,9 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
 abstract class ProviderElement<StateT, ValueT> implements Node {
   /// {@macro riverpod.provider_element_base}
   ProviderElement(this.pointer) {
-    if (kDebugMode) RiverpodDevtool.instance.addElement(this);
+    if (kDebugMode) {
+      RiverpodDevtool.instance.addEvent('riverpod.element.add', [this]);
+    }
   }
 
   static bool defaultUpdateShouldNotify(Object? previous, Object? next) {
@@ -1206,7 +1208,9 @@ $this''',
       notifier.dispose();
     });
 
-    if (kDebugMode) RiverpodDevtool.instance.removeElement(this);
+    if (kDebugMode) {
+      RiverpodDevtool.instance.addEvent('riverpod.element.dispose', [this]);
+    }
   }
 
   @override

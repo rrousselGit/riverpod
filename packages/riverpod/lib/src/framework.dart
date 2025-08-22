@@ -10,6 +10,7 @@ import 'package:collection/collection.dart';
 import 'package:meta/meta.dart';
 import 'package:state_notifier/state_notifier.dart';
 import 'package:test/test.dart' as test;
+import 'package:uuid/uuid.dart';
 
 import './common/tenable.dart';
 import 'common/env.dart';
