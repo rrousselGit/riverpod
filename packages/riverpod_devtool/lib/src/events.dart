@@ -7,8 +7,8 @@ import 'package:vm_service/vm_service.dart';
 import 'containers.dart';
 import 'core.dart';
 
-class ProviderElementRef {
-  ProviderElementRef({
+class Event {
+  Event({
     required this.id,
     required this.ref,
     required this.originRef,
@@ -32,13 +32,13 @@ extension type ProviderElementId(String id) {}
 final providerElementsProvider =
     AsyncNotifierProvider.autoDispose<
       ProviderElementsNotifier,
-      Map<ProviderElementId, ProviderElementRef>
+      Map<ProviderElementId, Event>
     >(ProviderElementsNotifier.new, name: 'providerElementsProvider');
 
 class ProviderElementsNotifier
-    extends AsyncNotifier<Map<ProviderElementId, ProviderElementRef>> {
+    extends AsyncNotifier<Map<ProviderElementId, Event>> {
   @override
-  Future<Map<ProviderElementId, ProviderElementRef>> build() async {
+  Future<Map<ProviderElementId, Event>> build() async {
     final service = await ref.watch(vmServiceProvider.future);
 
     if (!state.hasValue) state = const AsyncData({});
@@ -75,7 +75,7 @@ class ProviderElementsNotifier
     return Map.fromEntries(state.value!.entries.followedBy(newItems));
   }
 
-  Future<List<MapEntry<ProviderElementId, ProviderElementRef>>>
+  Future<List<MapEntry<ProviderElementId, Event>>>
   _parseElementsForMap(
     String mapExpression, {
     required Eval riverpodEval,
@@ -115,7 +115,7 @@ class ProviderElementsNotifier
 }()
 ''');
 
-    final newItems = <MapEntry<ProviderElementId, ProviderElementRef>>[];
+    final newItems = <MapEntry<ProviderElementId, Event>>[];
     final list = inflateList(containers.elements!);
     final [flatElements, flatUniqueProvidersList] = list;
     final elements = inflateList(flatElements);
@@ -132,7 +132,7 @@ class ProviderElementsNotifier
         argument,
       ] = item;
 
-      final node = ProviderElementRef(
+      final node = Event(
         id: ProviderElementId(id!.valueAsString!),
         ref: element!,
         originRef: origin!,
