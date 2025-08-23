@@ -97,27 +97,31 @@ CREATE TABLE IF NOT EXISTS $_tableName(
 
   @override
   Future<void> write(String key, String value, StorageOptions options) async {
-    await _db.insert(_tableName, {
-      'key': key,
-      'json': value,
-      'expireAt': switch (options.cacheTime.duration) {
-        null => null,
-        final Duration duration =>
-          _currentTimestamp() + duration.inMilliseconds,
+    await _db.insert(
+      _tableName,
+      {
+        'key': key,
+        'json': value,
+        'expireAt': switch (options.cacheTime.duration) {
+          null => null,
+          final Duration duration =>
+            _currentTimestamp() + duration.inMilliseconds,
+        },
+        if (options.destroyKey != null) 'destroyKey': options.destroyKey,
       },
-      if (options.destroyKey != null) 'destroyKey': options.destroyKey,
-    }, conflictAlgorithm: ConflictAlgorithm.replace);
+      conflictAlgorithm: ConflictAlgorithm.replace,
+    );
   }
 }
 
 class _Row {
   _Row.fromMap(Map<String, Object?> map)
-    : key = map['key']! as String,
-      json = map['json']! as String,
-      expireAt = map['expireAt'] == null
-          ? null
-          : DateTime.fromMillisecondsSinceEpoch(map['expireAt']! as int),
-      destroyKey = map['destroyKey'] as String?;
+      : key = map['key']! as String,
+        json = map['json']! as String,
+        expireAt = map['expireAt'] == null
+            ? null
+            : DateTime.fromMillisecondsSinceEpoch(map['expireAt']! as int),
+        destroyKey = map['destroyKey'] as String?;
 
   final String key;
   final String json;
