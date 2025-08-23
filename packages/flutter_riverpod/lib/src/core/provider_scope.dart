@@ -88,12 +88,17 @@ final class ProviderScope extends StatefulWidget {
     _UncontrolledProviderScope? scope;
 
     if (listen) {
-      scope = context //
-          .dependOnInheritedWidgetOfExactType<_UncontrolledProviderScope>();
+      scope =
+          context //
+              .dependOnInheritedWidgetOfExactType<_UncontrolledProviderScope>();
     } else {
-      scope = context
-          .getElementForInheritedWidgetOfExactType<_UncontrolledProviderScope>()
-          ?.widget as _UncontrolledProviderScope?;
+      scope =
+          context
+                  .getElementForInheritedWidgetOfExactType<
+                    _UncontrolledProviderScope
+                  >()
+                  ?.widget
+              as _UncontrolledProviderScope?;
     }
 
     if (scope == null) {
@@ -174,9 +179,13 @@ final class ProviderScopeState extends State<ProviderScope> {
   }
 
   ProviderContainer? _getParent() {
-    final scope = context
-        .getElementForInheritedWidgetOfExactType<_UncontrolledProviderScope>()
-        ?.widget as _UncontrolledProviderScope?;
+    final scope =
+        context
+                .getElementForInheritedWidgetOfExactType<
+                  _UncontrolledProviderScope
+                >()
+                ?.widget
+            as _UncontrolledProviderScope?;
 
     return scope?.container;
   }

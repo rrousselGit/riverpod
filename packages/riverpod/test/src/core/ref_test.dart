@@ -11,23 +11,23 @@ import '../utils.dart';
 
 final refMethodsThatDependOnProviders =
     <String, void Function(Ref ref, ProviderBase<Object?>)>{
-  'watch': (ref, p) => ref.watch(p),
-  'read': (ref, p) => ref.read(p),
-  'listen': (ref, p) => ref.listen(p, (prev, next) {}),
-  'invalidate': (ref, p) => ref.invalidate(p),
-  'refresh': (ref, p) => ref.refresh(p),
-  'exists': (ref, p) => ref.exists(p),
-};
+      'watch': (ref, p) => ref.watch(p),
+      'read': (ref, p) => ref.read(p),
+      'listen': (ref, p) => ref.listen(p, (prev, next) {}),
+      'invalidate': (ref, p) => ref.invalidate(p),
+      'refresh': (ref, p) => ref.refresh(p),
+      'exists': (ref, p) => ref.exists(p),
+    };
 final refMethodsThatDependOnListenables =
     <String, void Function(Ref ref, ProviderListenable<Object?>)>{
-  'watch': (ref, p) => ref.watch(p),
-  'read': (ref, p) => ref.read(p),
-  'listen': (ref, p) => ref.listen(p, (prev, next) {}),
-};
+      'watch': (ref, p) => ref.watch(p),
+      'read': (ref, p) => ref.read(p),
+      'listen': (ref, p) => ref.listen(p, (prev, next) {}),
+    };
 final refMethodsThatDependOnProviderOrFamilies =
     <String, void Function(Ref ref, ProviderOrFamily)>{
-  'invalidate': (ref, p) => ref.invalidate(p),
-};
+      'invalidate': (ref, p) => ref.invalidate(p),
+    };
 
 void main() {
   group('Ref', () {
@@ -49,81 +49,74 @@ void main() {
       expect(sub.read(), isMutationSuccess<int>(1));
     });
 
-    test('asserts that a lifecycle cannot be used after a ref is unmounted',
-        () async {
-      late Ref ref;
-      final container = ProviderContainer.test();
-      final dep = StateProvider((ref) => 0);
-      final provider = Provider<Object?>((r) {
-        r.watch(dep);
-        ref = r;
-        return Object();
-      });
+    test(
+      'asserts that a lifecycle cannot be used after a ref is unmounted',
+      () async {
+        late Ref ref;
+        final container = ProviderContainer.test();
+        final dep = StateProvider((ref) => 0);
+        final provider = Provider<Object?>((r) {
+          r.watch(dep);
+          ref = r;
+          return Object();
+        });
 
-      container.read(provider);
+        container.read(provider);
 
-      container.dispose();
+        container.dispose();
 
-      final another = Provider((ref) => 0);
+        final another = Provider((ref) => 0);
 
-      expect(
-        () => ref.watch(another),
-        throwsA(isA<UnmountedRefException>()),
-      );
-      expect(
-        () => ref.invalidateSelf(),
-        throwsA(isA<UnmountedRefException>()),
-      );
-      expect(
-        () => ref.invalidate(dep),
-        throwsA(isA<UnmountedRefException>()),
-      );
-      expect(
-        () => ref.refresh(another),
-        throwsA(isA<UnmountedRefException>()),
-      );
-      expect(
-        () => ref.read(another),
-        throwsA(isA<UnmountedRefException>()),
-      );
-      expect(
-        () => ref.onDispose(() {}),
-        throwsA(isA<UnmountedRefException>()),
-      );
-      expect(
-        () => ref.onAddListener(() {}),
-        throwsA(isA<UnmountedRefException>()),
-      );
-      expect(
-        () => ref.onCancel(() {}),
-        throwsA(isA<UnmountedRefException>()),
-      );
-      expect(
-        () => ref.onRemoveListener(() {}),
-        throwsA(isA<UnmountedRefException>()),
-      );
-      expect(
-        () => ref.onResume(() {}),
-        throwsA(isA<UnmountedRefException>()),
-      );
-      expect(
-        () => ref.notifyListeners(),
-        throwsA(isA<UnmountedRefException>()),
-      );
-      expect(
-        () => ref.listen(another, (_, __) {}),
-        throwsA(isA<UnmountedRefException>()),
-      );
-      expect(
-        () => ref.exists(another),
-        throwsA(isA<UnmountedRefException>()),
-      );
+        expect(() => ref.watch(another), throwsA(isA<UnmountedRefException>()));
+        expect(
+          () => ref.invalidateSelf(),
+          throwsA(isA<UnmountedRefException>()),
+        );
+        expect(
+          () => ref.invalidate(dep),
+          throwsA(isA<UnmountedRefException>()),
+        );
+        expect(
+          () => ref.refresh(another),
+          throwsA(isA<UnmountedRefException>()),
+        );
+        expect(() => ref.read(another), throwsA(isA<UnmountedRefException>()));
+        expect(
+          () => ref.onDispose(() {}),
+          throwsA(isA<UnmountedRefException>()),
+        );
+        expect(
+          () => ref.onAddListener(() {}),
+          throwsA(isA<UnmountedRefException>()),
+        );
+        expect(
+          () => ref.onCancel(() {}),
+          throwsA(isA<UnmountedRefException>()),
+        );
+        expect(
+          () => ref.onRemoveListener(() {}),
+          throwsA(isA<UnmountedRefException>()),
+        );
+        expect(
+          () => ref.onResume(() {}),
+          throwsA(isA<UnmountedRefException>()),
+        );
+        expect(
+          () => ref.notifyListeners(),
+          throwsA(isA<UnmountedRefException>()),
+        );
+        expect(
+          () => ref.listen(another, (_, __) {}),
+          throwsA(isA<UnmountedRefException>()),
+        );
+        expect(
+          () => ref.exists(another),
+          throwsA(isA<UnmountedRefException>()),
+        );
 
-      expect(
-        () => ref.keepAlive(),
-        throwsA(isA<UnmountedRefException>()),
-      );
-    });
+        expect(() => ref.keepAlive(), throwsA(isA<UnmountedRefException>()));
+      },
+    );
 
     test('asserts that lifecycle cannot use other lifecycle', () {
       final onDispose = OnDisposeMock();
@@ -150,10 +143,7 @@ void main() {
       );
 
       void check() {
-        expect(
-          () => notifier.ref.invalidate(dep),
-          throwsA(isAssertionError),
-        );
+        expect(() => notifier.ref.invalidate(dep), throwsA(isAssertionError));
       }
 
       when(onDispose()).thenAnswer((_) => check());
@@ -242,8 +232,9 @@ void main() {
         throwsProviderException(isA<AssertionError>()),
       );
       expect(
-        () => container
-            .read(provider.select((_) => ref.listen(another, (_, __) {}))),
+        () => container.read(
+          provider.select((_) => ref.listen(another, (_, __) {})),
+        ),
         throwsProviderException(isA<AssertionError>()),
       );
       expect(
@@ -278,48 +269,47 @@ void main() {
         expect(buildCount, 0);
       });
 
-      test("invalidating shouldn't trigger a build on uninitialized providers",
-          () async {
-        // Regression test for https://github.com/rrousselGit/riverpod/issues/3760
-        final container = ProviderContainer.test();
-        var buildCount = 0;
+      test(
+        "invalidating shouldn't trigger a build on uninitialized providers",
+        () async {
+          // Regression test for https://github.com/rrousselGit/riverpod/issues/3760
+          final container = ProviderContainer.test();
+          var buildCount = 0;
 
-        final myNotifierProvider = AsyncNotifierProvider.family
-            .autoDispose<DeferredAsyncNotifier<int>, int, int>(
-          (chatId) => DeferredAsyncNotifier<int>((ref, self) {
-            buildCount++;
-            return 0;
-          }),
-        );
+          final myNotifierProvider = AsyncNotifierProvider.family
+              .autoDispose<DeferredAsyncNotifier<int>, int, int>(
+                (chatId) => DeferredAsyncNotifier<int>((ref, self) {
+                  buildCount++;
+                  return 0;
+                }),
+              );
 
-        final peerNotifier = DeferredAsyncNotifier<int>(
-          (ref, self) => Future.value(0),
-        );
-        final peerNotifierProvider =
-            AsyncNotifierProvider.autoDispose<DeferredAsyncNotifier<int>, int>(
-          () => peerNotifier,
-          name: 'peerNotifierProvider',
-        );
+          final peerNotifier = DeferredAsyncNotifier<int>(
+            (ref, self) => Future.value(0),
+          );
+          final peerNotifierProvider =
+              AsyncNotifierProvider.autoDispose<
+                DeferredAsyncNotifier<int>,
+                int
+              >(() => peerNotifier, name: 'peerNotifierProvider');
 
-        container.read(peerNotifierProvider);
-        // ignore: invalid_use_of_protected_member
-        peerNotifier.ref.invalidate(myNotifierProvider(0));
+          container.read(peerNotifierProvider);
+          // ignore: invalid_use_of_protected_member
+          peerNotifier.ref.invalidate(myNotifierProvider(0));
 
-        expect(buildCount, 0);
-      });
+          expect(buildCount, 0);
+        },
+      );
 
       test('Handles family', () {
         // Regression test for https://github.com/rrousselGit/riverpod/issues/3567#issuecomment-2946467360
         final onDispose = OnDisposeMock();
         final someProvider = Provider((ref) => 0);
-        final familyProvider = Provider.family<int, int>(
-          (ref, a) {
-            final b = ref.watch(someProvider);
-            ref.onDispose(onDispose.call);
-            return a + b;
-          },
-          dependencies: [someProvider],
-        );
+        final familyProvider = Provider.family<int, int>((ref, a) {
+          final b = ref.watch(someProvider);
+          ref.onDispose(onDispose.call);
+          return a + b;
+        }, dependencies: [someProvider]);
         final root = ProviderContainer.test();
         final container = ProviderContainer.test(
           parent: root,
@@ -350,31 +340,29 @@ void main() {
 
         await container.pump();
 
-        expect(
-          container.getAllProviderElements().map((e) => e.origin),
-          [dep],
-        );
+        expect(container.getAllProviderElements().map((e) => e.origin), [dep]);
       });
 
-      test('does not mount providers if they are not already mounted',
-          () async {
-        final container = ProviderContainer.test();
-        final provider = FutureProvider<int>((r) async => 0);
-        late Ref ref;
-        final dep = Provider((r) {
-          ref = r;
-          return 0;
-        });
+      test(
+        'does not mount providers if they are not already mounted',
+        () async {
+          final container = ProviderContainer.test();
+          final provider = FutureProvider<int>((r) async => 0);
+          late Ref ref;
+          final dep = Provider((r) {
+            ref = r;
+            return 0;
+          });
 
-        container.read(dep);
+          container.read(dep);
 
-        ref.invalidate(provider);
+          ref.invalidate(provider);
 
-        expect(
-          container.getAllProviderElements().map((e) => e.origin),
-          [dep],
-        );
-      });
+          expect(container.getAllProviderElements().map((e) => e.origin), [
+            dep,
+          ]);
+        },
+      );
 
       test('supports asReload', () async {
         final container = ProviderContainer.test();
@@ -500,179 +488,162 @@ void main() {
     });
 
     group(
-        'asserts that a provider cannot depend on a provider that is not in its dependencies:',
-        () {
-      for (final entry in refMethodsThatDependOnProviders.entries) {
-        final method = entry.key;
-        final call = entry.value;
+      'asserts that a provider cannot depend on a provider that is not in its dependencies:',
+      () {
+        for (final entry in refMethodsThatDependOnProviders.entries) {
+          final method = entry.key;
+          final call = entry.value;
 
-        test('Using `$method` when passing a provider', () {
-          final transitiveDep = Provider((ref) => 0, dependencies: const []);
-          final dep = Provider((ref) => 0, dependencies: [transitiveDep]);
-          final depFamily = Provider.family(
-            (ref, id) => 0,
-            dependencies: const [],
-          );
-          final unrelatedScoped = Provider((ref) => 0, dependencies: const []);
-          final unrelatedScopedFamily = Provider.family(
-            (ref, i) => 0,
-            dependencies: const [],
-          );
-          final nonScopedProvider = Provider((ref) => 0);
-          final provider = Provider(
-            (ref) => ref,
-            dependencies: [dep, depFamily],
-          );
-          final family = Provider.family(
-            (ref, id) => ref,
-            dependencies: [dep, depFamily],
-          );
+          test('Using `$method` when passing a provider', () {
+            final transitiveDep = Provider((ref) => 0, dependencies: const []);
+            final dep = Provider((ref) => 0, dependencies: [transitiveDep]);
+            final depFamily = Provider.family(
+              (ref, id) => 0,
+              dependencies: const [],
+            );
+            final unrelatedScoped = Provider(
+              (ref) => 0,
+              dependencies: const [],
+            );
+            final unrelatedScopedFamily = Provider.family(
+              (ref, i) => 0,
+              dependencies: const [],
+            );
+            final nonScopedProvider = Provider((ref) => 0);
+            final provider = Provider(
+              (ref) => ref,
+              dependencies: [dep, depFamily],
+            );
+            final family = Provider.family(
+              (ref, id) => ref,
+              dependencies: [dep, depFamily],
+            );
 
-          final container = ProviderContainer.test();
-          final ref = container.read(provider);
-          final ref2 = container.read(family(0));
+            final container = ProviderContainer.test();
+            final ref = container.read(provider);
+            final ref2 = container.read(family(0));
 
-          // accepts providers that are part of its dependencies
-          call(ref, dep);
-          call(ref2, dep);
-          call(ref, depFamily(42));
-          call(ref2, depFamily(42));
+            // accepts providers that are part of its dependencies
+            call(ref, dep);
+            call(ref2, dep);
+            call(ref, depFamily(42));
+            call(ref2, depFamily(42));
 
-          // accepts non-scoped providers
-          call(ref, nonScopedProvider);
-          call(ref2, nonScopedProvider);
+            // accepts non-scoped providers
+            call(ref, nonScopedProvider);
+            call(ref2, nonScopedProvider);
 
-          // rejects providers that are not part of its dependencies
-          expect(
-            () => call(ref, transitiveDep),
-            throwsA(isStateError),
-          );
-          expect(
-            () => call(ref2, transitiveDep),
-            throwsA(isStateError),
-          );
-          expect(
-            () => call(ref, unrelatedScoped),
-            throwsA(isStateError),
-          );
-          expect(
-            () => call(ref2, unrelatedScoped),
-            throwsA(isStateError),
-          );
-          expect(
-            () => call(ref2, unrelatedScopedFamily(42)),
-            throwsA(isStateError),
-          );
-        });
-      }
+            // rejects providers that are not part of its dependencies
+            expect(() => call(ref, transitiveDep), throwsA(isStateError));
+            expect(() => call(ref2, transitiveDep), throwsA(isStateError));
+            expect(() => call(ref, unrelatedScoped), throwsA(isStateError));
+            expect(() => call(ref2, unrelatedScoped), throwsA(isStateError));
+            expect(
+              () => call(ref2, unrelatedScopedFamily(42)),
+              throwsA(isStateError),
+            );
+          });
+        }
 
-      for (final entry in refMethodsThatDependOnListenables.entries) {
-        final method = entry.key;
-        final call = entry.value;
+        for (final entry in refMethodsThatDependOnListenables.entries) {
+          final method = entry.key;
+          final call = entry.value;
 
-        test('Using `$method` when passing a listenable', () async {
-          final transitiveDep = FutureProvider(
-            (ref) => 0,
-            dependencies: const [],
-          );
-          final dep = FutureProvider(
-            name: 'dep',
-            (ref) => 0,
-            dependencies: [transitiveDep],
-          );
-          final depFamily = FutureProvider.family(
-            name: 'depFamily',
-            (ref, id) => 0,
-            dependencies: const [],
-          );
-          final unrelatedScoped = FutureProvider(
-            name: 'unrelatedScoped',
-            (ref) => 0,
-            dependencies: const [],
-          );
-          final nonScopedProvider = FutureProvider(
-            name: 'nonScopedProvider',
-            (ref) => 0,
-          );
-          final provider = FutureProvider(
-            name: 'provider',
-            (ref) => ref,
-            dependencies: [dep, depFamily],
-          );
+          test('Using `$method` when passing a listenable', () async {
+            final transitiveDep = FutureProvider(
+              (ref) => 0,
+              dependencies: const [],
+            );
+            final dep = FutureProvider(
+              name: 'dep',
+              (ref) => 0,
+              dependencies: [transitiveDep],
+            );
+            final depFamily = FutureProvider.family(
+              name: 'depFamily',
+              (ref, id) => 0,
+              dependencies: const [],
+            );
+            final unrelatedScoped = FutureProvider(
+              name: 'unrelatedScoped',
+              (ref) => 0,
+              dependencies: const [],
+            );
+            final nonScopedProvider = FutureProvider(
+              name: 'nonScopedProvider',
+              (ref) => 0,
+            );
+            final provider = FutureProvider(
+              name: 'provider',
+              (ref) => ref,
+              dependencies: [dep, depFamily],
+            );
 
-          final container = ProviderContainer.test();
-          final ref = container.read(provider).requireValue;
+            final container = ProviderContainer.test();
+            final ref = container.read(provider).requireValue;
 
-          // accepts providers that are part of its dependencies
-          call(ref, dep.select((value) => 0));
-          call(ref, dep.selectAsync((value) => 0));
+            // accepts providers that are part of its dependencies
+            call(ref, dep.select((value) => 0));
+            call(ref, dep.selectAsync((value) => 0));
 
-          call(ref, depFamily(42).select((value) => 0));
+            call(ref, depFamily(42).select((value) => 0));
 
-          // accepts non-scoped providers
-          call(ref, nonScopedProvider.select((value) => 0));
+            // accepts non-scoped providers
+            call(ref, nonScopedProvider.select((value) => 0));
 
-          // rejects providers that are not part of its dependencies
-          await expectLater(
-            () => call(ref, unrelatedScoped.select((value) => 0)),
-            throwsA(isStateError),
-          );
-          await expectLater(
-            () => call(ref, unrelatedScoped.selectAsync((value) => 0)),
-            throwsA(isStateError),
-          );
-          await expectLater(
-            () => call(ref, unrelatedScoped.future),
-            throwsA(isStateError),
-          );
-        });
-      }
+            // rejects providers that are not part of its dependencies
+            await expectLater(
+              () => call(ref, unrelatedScoped.select((value) => 0)),
+              throwsA(isStateError),
+            );
+            await expectLater(
+              () => call(ref, unrelatedScoped.selectAsync((value) => 0)),
+              throwsA(isStateError),
+            );
+            await expectLater(
+              () => call(ref, unrelatedScoped.future),
+              throwsA(isStateError),
+            );
+          });
+        }
 
-      for (final entry in refMethodsThatDependOnProviderOrFamilies.entries) {
-        final method = entry.key;
-        final call = entry.value;
+        for (final entry in refMethodsThatDependOnProviderOrFamilies.entries) {
+          final method = entry.key;
+          final call = entry.value;
 
-        test('Using `$method` when passing a family (not `family(arg)`)', () {
-          final transitiveDep = Provider.family(
-            (ref, i) => 0,
-            dependencies: const [],
-          );
-          final dep = Provider.family(
-            (ref, id) => 0,
-            dependencies: [transitiveDep],
-          );
-          final unrelatedScoped = Provider.family(
-            (ref, i) => 0,
-            dependencies: const [],
-          );
-          final nonScopedProvider = Provider.family((ref, i) => 0);
+          test('Using `$method` when passing a family (not `family(arg)`)', () {
+            final transitiveDep = Provider.family(
+              (ref, i) => 0,
+              dependencies: const [],
+            );
+            final dep = Provider.family(
+              (ref, id) => 0,
+              dependencies: [transitiveDep],
+            );
+            final unrelatedScoped = Provider.family(
+              (ref, i) => 0,
+              dependencies: const [],
+            );
+            final nonScopedProvider = Provider.family((ref, i) => 0);
 
-          final provider = Provider(
-            (ref) => ref,
-            dependencies: [dep],
-          );
+            final provider = Provider((ref) => ref, dependencies: [dep]);
 
-          final container = ProviderContainer.test();
-          final ref = container.read(provider);
+            final container = ProviderContainer.test();
+            final ref = container.read(provider);
 
-          // accepts providers that are part of its dependencies
-          call(ref, dep);
+            // accepts providers that are part of its dependencies
+            call(ref, dep);
 
-          // accepts non-scoped providers
-          call(ref, nonScopedProvider);
+            // accepts non-scoped providers
+            call(ref, nonScopedProvider);
 
-          // rejects providers that are not part of its dependencies
-          expect(
-            () => call(ref, transitiveDep),
-            throwsA(isStateError),
-          );
-          expect(
-            () => call(ref, unrelatedScoped),
-            throwsA(isStateError),
-          );
-        });
-      }
-    });
+            // rejects providers that are not part of its dependencies
+            expect(() => call(ref, transitiveDep), throwsA(isStateError));
+            expect(() => call(ref, unrelatedScoped), throwsA(isStateError));
+          });
+        }
+      },
+    );
 
     group('.exists', () {
       test('Returns true if available on ancestor container', () {
@@ -693,10 +664,9 @@ void main() {
 
         final ref = container.read(refProvider);
 
-        expect(
-          container.getAllProviderElements().map((e) => e.origin),
-          [refProvider],
-        );
+        expect(container.getAllProviderElements().map((e) => e.origin), [
+          refProvider,
+        ]);
         expect(container.exists(refProvider), true);
         expect(ref.exists(provider), false);
 
@@ -745,12 +715,12 @@ void main() {
         final listener = Listener<AsyncValue<int>>();
         final provider =
             StreamNotifierProvider<DeferredStreamNotifier<int>, int>(
-          () => DeferredStreamNotifier<int>((ref, self) {
-            self.listenSelf(listener.call);
-            self.state = const AsyncData(0);
-            return Stream.value(1);
-          }),
-        );
+              () => DeferredStreamNotifier<int>((ref, self) {
+                self.listenSelf(listener.call);
+                self.state = const AsyncData(0);
+                return Stream.value(1);
+              }),
+            );
 
         container.listen(provider, (prev, next) {});
 
@@ -765,10 +735,10 @@ void main() {
 
         final provider =
             NotifierProvider.autoDispose<DeferredNotifier<void>, void>(
-          () => DeferredNotifier<void>((ref, self) {
-            self.listenSelf((previous, next) {});
-          }),
-        );
+              () => DeferredNotifier<void>((ref, self) {
+                self.listenSelf((previous, next) {});
+              }),
+            );
 
         container.read(provider);
         expect(container.getAllProviderElements(), [anything]);
@@ -794,19 +764,13 @@ void main() {
 
         container.read(provider);
 
-        verifyInOrder([
-          listener(null, 0),
-          listener2(null, 0),
-        ]);
+        verifyInOrder([listener(null, 0), listener2(null, 0)]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
 
         container.read(provider.notifier).state = 42;
 
-        verifyInOrder([
-          listener(0, 42),
-          listener2(0, 42),
-        ]);
+        verifyInOrder([listener(0, 42), listener2(0, 42)]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
       });
@@ -828,20 +792,14 @@ void main() {
 
         container.read(provider);
 
-        verifyInOrder([
-          listener(null, 0),
-          listener2(null, 0),
-        ]);
+        verifyInOrder([listener(null, 0), listener2(null, 0)]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
 
         result = 42;
         container.refresh(provider);
 
-        verifyInOrder([
-          listener(0, 42),
-          listener2(0, 42),
-        ]);
+        verifyInOrder([listener(0, 42), listener2(0, 42)]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
       });
@@ -862,19 +820,13 @@ void main() {
 
         container.read(provider);
 
-        verifyInOrder([
-          listener(null, 0),
-          listener2(null, 0),
-        ]);
+        verifyInOrder([listener(null, 0), listener2(null, 0)]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
 
         container.refresh(provider);
 
-        verifyInOrder([
-          listener(0, 0),
-          listener2(0, 0),
-        ]);
+        verifyInOrder([listener(0, 0), listener2(0, 0)]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
       });
@@ -1003,20 +955,14 @@ void main() {
 
         container.listen(provider, listener2.call, fireImmediately: true);
 
-        verifyInOrder([
-          listener(null, 0),
-          listener2(null, 0),
-        ]);
+        verifyInOrder([listener(null, 0), listener2(null, 0)]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
 
         result = 42;
         container.refresh(provider);
 
-        verifyInOrder([
-          listener(0, 42),
-          listener2(0, 42),
-        ]);
+        verifyInOrder([listener(0, 42), listener2(0, 42)]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
       });
@@ -1079,11 +1025,7 @@ void main() {
 
           final dep = StateProvider((ref) => 0);
           final provider = Provider((ref) {
-            ref.listen(
-              dep,
-              weak: true,
-              (previous, next) {},
-            );
+            ref.listen(dep, weak: true, (previous, next) {});
             return 0;
           });
 
@@ -1091,8 +1033,11 @@ void main() {
 
           expect(
             container.pointerManager.orphanPointers.pointers[dep]!.element,
-            isA<ProviderElement>()
-                .having((e) => e.stateResult(), 'stateResult', null),
+            isA<ProviderElement>().having(
+              (e) => e.stateResult(),
+              'stateResult',
+              null,
+            ),
           );
         });
 
@@ -1116,65 +1061,64 @@ void main() {
           verifyOnly(listener, listener(null, 0));
         });
 
-        test('when finally rebuilding a dirty element, notifies weak listeners',
-            () {
-          final container = ProviderContainer.test();
+        test(
+          'when finally rebuilding a dirty element, notifies weak listeners',
+          () {
+            final container = ProviderContainer.test();
 
-          final listener = Listener<int>();
-          var result = 0;
-          final dep = StateProvider((ref) => result);
-          final provider = Provider((ref) {
-            ref.listen(dep, weak: true, listener.call);
-            return 0;
-          });
+            final listener = Listener<int>();
+            var result = 0;
+            final dep = StateProvider((ref) => result);
+            final provider = Provider((ref) {
+              ref.listen(dep, weak: true, listener.call);
+              return 0;
+            });
 
-          container.read(dep);
-          container.invalidate(dep);
-          result = 1;
+            container.read(dep);
+            container.invalidate(dep);
+            result = 1;
 
-          container.read(provider);
+            container.read(provider);
 
-          verifyZeroInteractions(listener);
+            verifyZeroInteractions(listener);
 
-          // Flush the provider
-          container.read(dep);
+            // Flush the provider
+            container.read(dep);
 
-          verifyOnly(listener, listener(0, 1));
-        });
+            verifyOnly(listener, listener(0, 1));
+          },
+        );
 
         test(
-            'adding a weak listener on an invalidated provider does not rebuild it',
-            () {
-          final container = ProviderContainer.test();
-          var buildCount = 0;
-          final dep = StateProvider((ref) {
-            buildCount++;
-            return 0;
-          });
-          final provider = Provider((ref) {
-            ref.listen(dep, weak: true, (previous, next) {});
-            return 0;
-          });
+          'adding a weak listener on an invalidated provider does not rebuild it',
+          () {
+            final container = ProviderContainer.test();
+            var buildCount = 0;
+            final dep = StateProvider((ref) {
+              buildCount++;
+              return 0;
+            });
+            final provider = Provider((ref) {
+              ref.listen(dep, weak: true, (previous, next) {});
+              return 0;
+            });
 
-          container.read(dep);
-          container.invalidate(dep);
-          expect(buildCount, 1);
+            container.read(dep);
+            container.invalidate(dep);
+            expect(buildCount, 1);
 
-          container.read(provider);
+            container.read(provider);
 
-          expect(buildCount, 1);
-        });
+            expect(buildCount, 1);
+          },
+        );
 
         test('closing the subscription removes the listener', () {
           final container = ProviderContainer.test();
           final provider = Provider((ref) => Object());
           final listener = Listener<Object>();
 
-          final sub = container.listen(
-            provider,
-            weak: true,
-            listener.call,
-          );
+          final sub = container.listen(provider, weak: true, listener.call);
           sub.close();
 
           container.read(provider);
@@ -1244,8 +1188,9 @@ void main() {
 
       test('can listen selectors', () async {
         final container = ProviderContainer.test();
-        final provider =
-            StateNotifierProvider<StateController<int>, int>((ref) {
+        final provider = StateNotifierProvider<StateController<int>, int>((
+          ref,
+        ) {
           return StateController(0);
         });
         final isEvenSelector = Selector<int, bool>(false, (c) => c.isEven);
@@ -1289,8 +1234,9 @@ void main() {
 
       test('listen on selectors supports fireImmediately', () async {
         final container = ProviderContainer.test();
-        final provider =
-            StateNotifierProvider<StateController<int>, int>((ref) {
+        final provider = StateNotifierProvider<StateController<int>, int>((
+          ref,
+        ) {
           return StateController(0);
         });
         final isEvenSelector = Selector<int, bool>(false, (c) => c.isEven);
@@ -1329,31 +1275,35 @@ void main() {
       });
 
       test(
-          'when rebuild throws identical error/stack, listeners are still notified',
-          () {
-        final container = ProviderContainer.test();
-        const stack = StackTrace.empty;
-        final listener = Listener<int>();
-        final errorListener = ErrorListener();
-        final provider = Provider<int>((ref) {
-          Error.throwWithStackTrace(42, stack);
-        });
+        'when rebuild throws identical error/stack, listeners are still notified',
+        () {
+          final container = ProviderContainer.test();
+          const stack = StackTrace.empty;
+          final listener = Listener<int>();
+          final errorListener = ErrorListener();
+          final provider = Provider<int>((ref) {
+            Error.throwWithStackTrace(42, stack);
+          });
 
-        container.listen(
-          provider,
-          listener.call,
-          onError: errorListener.call,
-          fireImmediately: true,
-        );
+          container.listen(
+            provider,
+            listener.call,
+            onError: errorListener.call,
+            fireImmediately: true,
+          );
 
-        verifyZeroInteractions(listener);
-        verifyOnly(errorListener, errorListener(42, stack));
+          verifyZeroInteractions(listener);
+          verifyOnly(errorListener, errorListener(42, stack));
 
-        expect(() => container.refresh(provider), throwsProviderException(42));
+          expect(
+            () => container.refresh(provider),
+            throwsProviderException(42),
+          );
 
-        verifyZeroInteractions(listener);
-        verifyOnly(errorListener, errorListener(42, stack));
-      });
+          verifyZeroInteractions(listener);
+          verifyOnly(errorListener, errorListener(42, stack));
+        },
+      );
 
       test('cannot listen itself', () {
         final container = ProviderContainer.test();
@@ -1396,122 +1346,127 @@ void main() {
       });
 
       test(
-          'calling ref.listen on a provider with an outdated dependency flushes it, then add the listener',
-          () {
-        final container = ProviderContainer.test();
-        var buildCount = 0;
-        final dep2 = StateNotifierProvider<StateController<int>, int>(
-          (ref) => StateController(0),
-        );
-        final dep = Provider<int>((ref) {
-          buildCount++;
-          return ref.watch(dep2);
-        });
-        final listener = Listener<int>();
-        final provider = Provider((ref) {
-          ref.listen<int>(dep, listener.call);
-        });
-
-        container.read(dep);
-        container.read(dep2.notifier).state++; // mark `dep` as outdated
-
-        expect(buildCount, 1);
-        verifyZeroInteractions(listener);
-
-        container.read(provider);
-
-        expect(buildCount, 2);
-        verifyZeroInteractions(listener);
-      });
-
-      test(
-          'when using selectors, `previous` is the latest notification instead of latest event',
-          () {
-        final container = ProviderContainer.test();
-        final dep = StateNotifierProvider<StateController<int>, int>(
-          (ref) => StateController(0),
-        );
-        final listener = Listener<bool>();
-        final provider = Provider((ref) {
-          ref.listen<bool>(
-            dep.select((value) => value.isEven),
-            listener.call,
-            fireImmediately: true,
+        'calling ref.listen on a provider with an outdated dependency flushes it, then add the listener',
+        () {
+          final container = ProviderContainer.test();
+          var buildCount = 0;
+          final dep2 = StateNotifierProvider<StateController<int>, int>(
+            (ref) => StateController(0),
           );
-        });
+          final dep = Provider<int>((ref) {
+            buildCount++;
+            return ref.watch(dep2);
+          });
+          final listener = Listener<int>();
+          final provider = Provider((ref) {
+            ref.listen<int>(dep, listener.call);
+          });
 
-        container.listen(provider, (a, b) {});
-        verifyOnly(listener, listener(null, true));
+          container.read(dep);
+          container.read(dep2.notifier).state++; // mark `dep` as outdated
 
-        container.read(dep.notifier).state += 2;
+          expect(buildCount, 1);
+          verifyZeroInteractions(listener);
 
-        verifyNoMoreInteractions(listener);
+          container.read(provider);
 
-        container.read(dep.notifier).state++;
-
-        verifyOnly(listener, listener(true, false));
-      });
-
-      test('when no onError is specified, fallbacks to handleUncaughtError',
-          () async {
-        final errors = <Object>[];
-        final container = runZonedGuarded(
-          ProviderContainer.test,
-          (err, stack) => errors.add(err),
-        )!;
-        final isErrored = StateProvider((ref) => false);
-        final dep = Provider<int>((ref) {
-          if (ref.watch(isErrored)) throw UnimplementedError();
-          return 0;
-        });
-        final listener = Listener<int>();
-        final provider = Provider((ref) {
-          ref.listen(dep, listener.call);
-        });
-
-        container.listen(provider, (a, b) {});
-
-        verifyZeroInteractions(listener);
-        expect(errors, isEmpty);
-
-        container.read(isErrored.notifier).state = true;
-
-        await container.pump();
-
-        verifyZeroInteractions(listener);
-        expect(errors, [isUnimplementedError]);
-      });
+          expect(buildCount, 2);
+          verifyZeroInteractions(listener);
+        },
+      );
 
       test(
-          'when no onError is specified, selectors fallbacks to handleUncaughtError',
-          () async {
-        final errors = <Object>[];
-        final container = runZonedGuarded(
-          ProviderContainer.test,
-          (err, stack) => errors.add(err),
-        )!;
-        final isErrored = StateProvider((ref) => false);
-        final dep = Provider<int>((ref) {
-          if (ref.watch(isErrored)) throw UnimplementedError();
-          return 0;
-        });
-        final listener = Listener<int>();
-        final provider = Provider((ref) {
-          ref.listen(dep.select((value) => value), listener.call);
-        });
+        'when using selectors, `previous` is the latest notification instead of latest event',
+        () {
+          final container = ProviderContainer.test();
+          final dep = StateNotifierProvider<StateController<int>, int>(
+            (ref) => StateController(0),
+          );
+          final listener = Listener<bool>();
+          final provider = Provider((ref) {
+            ref.listen<bool>(
+              dep.select((value) => value.isEven),
+              listener.call,
+              fireImmediately: true,
+            );
+          });
 
-        container.listen(provider, (p, n) {});
+          container.listen(provider, (a, b) {});
+          verifyOnly(listener, listener(null, true));
 
-        verifyZeroInteractions(listener);
-        expect(errors, isEmpty);
+          container.read(dep.notifier).state += 2;
 
-        container.read(isErrored.notifier).state = true;
+          verifyNoMoreInteractions(listener);
 
-        await container.pump();
+          container.read(dep.notifier).state++;
 
-        verifyZeroInteractions(listener);
-        expect(errors, [isUnimplementedError]);
-      });
+          verifyOnly(listener, listener(true, false));
+        },
+      );
+
+      test(
+        'when no onError is specified, fallbacks to handleUncaughtError',
+        () async {
+          final errors = <Object>[];
+          final container = runZonedGuarded(
+            ProviderContainer.test,
+            (err, stack) => errors.add(err),
+          )!;
+          final isErrored = StateProvider((ref) => false);
+          final dep = Provider<int>((ref) {
+            if (ref.watch(isErrored)) throw UnimplementedError();
+            return 0;
+          });
+          final listener = Listener<int>();
+          final provider = Provider((ref) {
+            ref.listen(dep, listener.call);
+          });
+
+          container.listen(provider, (a, b) {});
+
+          verifyZeroInteractions(listener);
+          expect(errors, isEmpty);
+
+          container.read(isErrored.notifier).state = true;
+
+          await container.pump();
+
+          verifyZeroInteractions(listener);
+          expect(errors, [isUnimplementedError]);
+        },
+      );
+
+      test(
+        'when no onError is specified, selectors fallbacks to handleUncaughtError',
+        () async {
+          final errors = <Object>[];
+          final container = runZonedGuarded(
+            ProviderContainer.test,
+            (err, stack) => errors.add(err),
+          )!;
+          final isErrored = StateProvider((ref) => false);
+          final dep = Provider<int>((ref) {
+            if (ref.watch(isErrored)) throw UnimplementedError();
+            return 0;
+          });
+          final listener = Listener<int>();
+          final provider = Provider((ref) {
+            ref.listen(dep.select((value) => value), listener.call);
+          });
+
+          container.listen(provider, (p, n) {});
+
+          verifyZeroInteractions(listener);
+          expect(errors, isEmpty);
+
+          container.read(isErrored.notifier).state = true;
+
+          await container.pump();
+
+          verifyZeroInteractions(listener);
+          expect(errors, [isUnimplementedError]);
+        },
+      );
 
       test('when rebuild throws, calls onError', () async {
         final container = ProviderContainer.test();
@@ -1538,10 +1493,7 @@ void main() {
         await container.pump();
 
         verifyZeroInteractions(listener);
-        verifyOnly(
-          errorListener,
-          errorListener(isUnimplementedError, any),
-        );
+        verifyOnly(errorListener, errorListener(isUnimplementedError, any));
       });
 
       test('when rebuild throws on selector, calls onError', () async {
@@ -1573,63 +1525,55 @@ void main() {
         await container.pump();
 
         verifyZeroInteractions(listener);
-        verifyOnly(
-          errorListener,
-          errorListener(isUnimplementedError, any),
-        );
+        verifyOnly(errorListener, errorListener(isUnimplementedError, any));
       });
 
       group('fireImmediately', () {
-        test('when no onError is specified, fallbacks to handleUncaughtError',
-            () {
-          final errors = <Object>[];
-          final container = runZonedGuarded(
-            ProviderContainer.test,
-            (err, stack) => errors.add(err),
-          )!;
-          final dep = Provider<int>((ref) => throw UnimplementedError());
-          final listener = Listener<int>();
-          final provider = Provider((ref) {
-            ref.listen(
-              dep,
-              listener.call,
-              fireImmediately: true,
-            );
-          });
+        test(
+          'when no onError is specified, fallbacks to handleUncaughtError',
+          () {
+            final errors = <Object>[];
+            final container = runZonedGuarded(
+              ProviderContainer.test,
+              (err, stack) => errors.add(err),
+            )!;
+            final dep = Provider<int>((ref) => throw UnimplementedError());
+            final listener = Listener<int>();
+            final provider = Provider((ref) {
+              ref.listen(dep, listener.call, fireImmediately: true);
+            });
 
-          container.read(provider);
+            container.read(provider);
 
-          verifyZeroInteractions(listener);
-          expect(errors, [
-            isUnimplementedError,
-          ]);
-        });
+            verifyZeroInteractions(listener);
+            expect(errors, [isUnimplementedError]);
+          },
+        );
 
         test(
-            'when no onError is specified on selectors, fallbacks to handleUncaughtError',
-            () {
-          final errors = <Object>[];
-          final container = runZonedGuarded(
-            ProviderContainer.test,
-            (err, stack) => errors.add(err),
-          )!;
-          final dep = Provider<int>((ref) => throw UnimplementedError());
-          final listener = Listener<int>();
-          final provider = Provider((ref) {
-            ref.listen(
-              dep.select((value) => value),
-              listener.call,
-              fireImmediately: true,
-            );
-          });
+          'when no onError is specified on selectors, fallbacks to handleUncaughtError',
+          () {
+            final errors = <Object>[];
+            final container = runZonedGuarded(
+              ProviderContainer.test,
+              (err, stack) => errors.add(err),
+            )!;
+            final dep = Provider<int>((ref) => throw UnimplementedError());
+            final listener = Listener<int>();
+            final provider = Provider((ref) {
+              ref.listen(
+                dep.select((value) => value),
+                listener.call,
+                fireImmediately: true,
+              );
+            });
 
-          container.read(provider);
+            container.read(provider);
 
-          verifyZeroInteractions(listener);
-          expect(errors, [
-            isUnimplementedError,
-          ]);
-        });
+            verifyZeroInteractions(listener);
+            expect(errors, [isUnimplementedError]);
+          },
+        );
 
         test('on provider that threw, fireImmediately calls onError', () {
           final container = ProviderContainer.test();
@@ -1655,67 +1599,69 @@ void main() {
         });
 
         test(
-            'when selecting provider that threw, fireImmediately calls onError',
-            () {
-          final container = ProviderContainer.test();
-          final dep = Provider<String>((ref) => throw UnimplementedError());
-          final listener = Listener<int>();
-          final errorListener = ErrorListener();
-          final provider = Provider((ref) {
-            ref.listen<int>(
-              dep.select((value) => 0),
-              listener.call,
-              onError: errorListener.call,
-              fireImmediately: true,
+          'when selecting provider that threw, fireImmediately calls onError',
+          () {
+            final container = ProviderContainer.test();
+            final dep = Provider<String>((ref) => throw UnimplementedError());
+            final listener = Listener<int>();
+            final errorListener = ErrorListener();
+            final provider = Provider((ref) {
+              ref.listen<int>(
+                dep.select((value) => 0),
+                listener.call,
+                onError: errorListener.call,
+                fireImmediately: true,
+              );
+            });
+
+            container.read(provider);
+
+            verifyZeroInteractions(listener);
+            verifyOnly(
+              errorListener,
+              errorListener(isUnimplementedError, argThat(isNotNull)),
             );
-          });
+          },
+        );
 
-          container.read(provider);
+        test(
+          'correctly listens to the provider if selector listener throws',
+          () {
+            final dep = StateProvider((ref) => 0);
+            final listener = Listener<int>();
+            var isFirstCall = true;
 
-          verifyZeroInteractions(listener);
-          verifyOnly(
-            errorListener,
-            errorListener(isUnimplementedError, argThat(isNotNull)),
-          );
-        });
+            final errors = <Object>[];
+            final container = runZonedGuarded(
+              ProviderContainer.test,
+              (err, stack) => errors.add(err),
+            )!;
 
-        test('correctly listens to the provider if selector listener throws',
-            () {
-          final dep = StateProvider((ref) => 0);
-          final listener = Listener<int>();
-          var isFirstCall = true;
+            ProviderSubscription<int>? sub;
 
-          final errors = <Object>[];
-          final container = runZonedGuarded(
-            ProviderContainer.test,
-            (err, stack) => errors.add(err),
-          )!;
-
-          ProviderSubscription<int>? sub;
-
-          final provider = Provider((ref) {
-            sub = ref.listen<int>(
-              dep.select((value) => value),
-              (prev, value) {
+            final provider = Provider((ref) {
+              sub = ref.listen<int>(dep.select((value) => value), (
+                prev,
+                value,
+              ) {
                 listener(prev, value);
                 if (isFirstCall) {
                   isFirstCall = false;
                   throw StateError('Some error');
                 }
-              },
-              fireImmediately: true,
-            );
-          });
+              }, fireImmediately: true);
+            });
 
-          container.listen<void>(provider, (prev, value) {});
+            container.listen<void>(provider, (prev, value) {});
 
-          expect(sub, isNotNull);
-          verifyOnly(listener, listener(null, 0));
-          expect(errors, [isStateError]);
+            expect(sub, isNotNull);
+            verifyOnly(listener, listener(null, 0));
+            expect(errors, [isStateError]);
 
-          container.read(dep.notifier).state++;
-          verifyOnly(listener, listener(0, 1));
-        });
+            container.read(dep.notifier).state++;
+            verifyOnly(listener, listener(0, 1));
+          },
+        );
 
         test('correctly listens to the provider if normal listener throws', () {
           final dep = StateProvider((ref) => 0);
@@ -1731,17 +1677,13 @@ void main() {
           ProviderSubscription<int>? sub;
 
           final provider = Provider((ref) {
-            sub = ref.listen<int>(
-              dep,
-              (prev, value) {
-                listener(prev, value);
-                if (isFirstCall) {
-                  isFirstCall = false;
-                  throw StateError('Some error');
-                }
-              },
-              fireImmediately: true,
-            );
+            sub = ref.listen<int>(dep, (prev, value) {
+              listener(prev, value);
+              if (isFirstCall) {
+                isFirstCall = false;
+                throw StateError('Some error');
+              }
+            }, fireImmediately: true);
           });
 
           container.listen<void>(provider, (prev, value) {});
@@ -1755,148 +1697,150 @@ void main() {
         });
 
         test(
-            'correctly listens to the provider if selector onError listener throws',
-            () async {
-          final dep = StateProvider<int>((ref) => 0);
-          final dep2 = Provider<int>((ref) {
-            if (ref.watch(dep) == 0) {
-              throw UnimplementedError();
-            }
-            return ref.watch(dep);
-          });
-          final listener = Listener<int>();
-          final errorListener = ErrorListener();
-          var isFirstCall = true;
+          'correctly listens to the provider if selector onError listener throws',
+          () async {
+            final dep = StateProvider<int>((ref) => 0);
+            final dep2 = Provider<int>((ref) {
+              if (ref.watch(dep) == 0) {
+                throw UnimplementedError();
+              }
+              return ref.watch(dep);
+            });
+            final listener = Listener<int>();
+            final errorListener = ErrorListener();
+            var isFirstCall = true;
 
-          final errors = <Object>[];
-          final container = runZonedGuarded(
-            ProviderContainer.test,
-            (err, stack) => errors.add(err),
-          )!;
+            final errors = <Object>[];
+            final container = runZonedGuarded(
+              ProviderContainer.test,
+              (err, stack) => errors.add(err),
+            )!;
 
-          ProviderSubscription<int>? sub;
+            ProviderSubscription<int>? sub;
 
-          final provider = Provider((ref) {
-            sub = ref.listen<int>(
-              dep2.select((value) => value),
-              listener.call,
-              onError: (err, stack) {
-                errorListener(err, stack);
-                if (isFirstCall) {
-                  isFirstCall = false;
-                  throw StateError('Some error');
-                }
-              },
-              fireImmediately: true,
+            final provider = Provider((ref) {
+              sub = ref.listen<int>(
+                dep2.select((value) => value),
+                listener.call,
+                onError: (err, stack) {
+                  errorListener(err, stack);
+                  if (isFirstCall) {
+                    isFirstCall = false;
+                    throw StateError('Some error');
+                  }
+                },
+                fireImmediately: true,
+              );
+            });
+
+            container.listen(provider, (p, n) {});
+
+            expect(sub, isNotNull);
+            verifyZeroInteractions(listener);
+            verifyOnly(
+              errorListener,
+              errorListener(argThat(isUnimplementedError), argThat(isNotNull)),
             );
-          });
+            expect(errors, [isStateError]);
 
-          container.listen(provider, (p, n) {});
+            container.read(dep.notifier).state++;
+            await container.pump();
 
-          expect(sub, isNotNull);
-          verifyZeroInteractions(listener);
-          verifyOnly(
-            errorListener,
-            errorListener(argThat(isUnimplementedError), argThat(isNotNull)),
-          );
-          expect(errors, [isStateError]);
-
-          container.read(dep.notifier).state++;
-          await container.pump();
-
-          verifyNoMoreInteractions(errorListener);
-          verifyOnly(listener, listener(null, 1));
-        });
+            verifyNoMoreInteractions(errorListener);
+            verifyOnly(listener, listener(null, 1));
+          },
+        );
 
         test(
-            'correctly listens to the provider if normal onError listener throws',
-            () async {
-          final dep = StateProvider<int>((ref) => 0);
-          final dep2 = Provider<int>((ref) {
-            if (ref.watch(dep) == 0) {
-              throw UnimplementedError();
-            }
-            return ref.watch(dep);
-          });
-          final listener = Listener<int>();
-          final errorListener = ErrorListener();
-          var isFirstCall = true;
+          'correctly listens to the provider if normal onError listener throws',
+          () async {
+            final dep = StateProvider<int>((ref) => 0);
+            final dep2 = Provider<int>((ref) {
+              if (ref.watch(dep) == 0) {
+                throw UnimplementedError();
+              }
+              return ref.watch(dep);
+            });
+            final listener = Listener<int>();
+            final errorListener = ErrorListener();
+            var isFirstCall = true;
 
-          final errors = <Object>[];
-          final container = runZonedGuarded(
-            ProviderContainer.test,
-            (err, stack) => errors.add(err),
-          )!;
+            final errors = <Object>[];
+            final container = runZonedGuarded(
+              ProviderContainer.test,
+              (err, stack) => errors.add(err),
+            )!;
 
-          ProviderSubscription<int>? sub;
+            ProviderSubscription<int>? sub;
 
-          final provider = Provider((ref) {
-            sub = ref.listen<int>(
-              dep2,
-              listener.call,
-              onError: (err, stack) {
-                errorListener(err, stack);
-                if (isFirstCall) {
-                  isFirstCall = false;
-                  throw StateError('Some error');
-                }
-              },
-              fireImmediately: true,
+            final provider = Provider((ref) {
+              sub = ref.listen<int>(
+                dep2,
+                listener.call,
+                onError: (err, stack) {
+                  errorListener(err, stack);
+                  if (isFirstCall) {
+                    isFirstCall = false;
+                    throw StateError('Some error');
+                  }
+                },
+                fireImmediately: true,
+              );
+            });
+
+            container.listen(provider, (p, n) {});
+
+            expect(sub, isNotNull);
+            verifyZeroInteractions(listener);
+            verifyOnly(
+              errorListener,
+              errorListener(argThat(isUnimplementedError), argThat(isNotNull)),
             );
-          });
+            expect(errors, [isStateError]);
 
-          container.listen(provider, (p, n) {});
+            container.read(dep.notifier).state++;
+            await container.pump();
 
-          expect(sub, isNotNull);
-          verifyZeroInteractions(listener);
-          verifyOnly(
-            errorListener,
-            errorListener(argThat(isUnimplementedError), argThat(isNotNull)),
-          );
-          expect(errors, [isStateError]);
-
-          container.read(dep.notifier).state++;
-          await container.pump();
-
-          verifyNoMoreInteractions(errorListener);
-          verifyOnly(listener, listener(null, 1));
-        });
+            verifyNoMoreInteractions(errorListener);
+            verifyOnly(listener, listener(null, 1));
+          },
+        );
       });
     });
 
     group('keepAlive', () {
       test(
-          'Does not cause an infinite loop if aborted directly in the callback',
-          () async {
-        final container = ProviderContainer.test();
-        var buildCount = 0;
-        var disposeCount = 0;
-        final provider = Provider.autoDispose<String>((ref) {
-          buildCount++;
-          ref.onDispose(() => disposeCount++);
-          final link = ref.keepAlive();
-          link.close();
-          return 'value';
-        });
+        'Does not cause an infinite loop if aborted directly in the callback',
+        () async {
+          final container = ProviderContainer.test();
+          var buildCount = 0;
+          var disposeCount = 0;
+          final provider = Provider.autoDispose<String>((ref) {
+            buildCount++;
+            ref.onDispose(() => disposeCount++);
+            final link = ref.keepAlive();
+            link.close();
+            return 'value';
+          });
 
-        container.read(provider);
+          container.read(provider);
 
-        expect(buildCount, 1);
-        expect(disposeCount, 0);
-        expect(
-          container.getAllProviderElements().map((e) => e.provider),
-          [provider],
-        );
+          expect(buildCount, 1);
+          expect(disposeCount, 0);
+          expect(container.getAllProviderElements().map((e) => e.provider), [
+            provider,
+          ]);
 
-        await container.pump();
+          await container.pump();
 
-        expect(buildCount, 1);
-        expect(disposeCount, 1);
-        expect(
-          container.getAllProviderElements().map((e) => e.provider),
-          isEmpty,
-        );
-      });
+          expect(buildCount, 1);
+          expect(disposeCount, 1);
+          expect(
+            container.getAllProviderElements().map((e) => e.provider),
+            isEmpty,
+          );
+        },
+      );
 
       test('when the provider rebuilds, links are cleared', () async {
         final container = ProviderContainer.test();
@@ -1927,108 +1871,105 @@ void main() {
         );
       });
 
-      test('maintains the state of the provider until all links are closed',
-          () async {
-        final container = ProviderContainer.test();
-        late KeepAliveLink a;
-        late KeepAliveLink b;
+      test(
+        'maintains the state of the provider until all links are closed',
+        () async {
+          final container = ProviderContainer.test();
+          late KeepAliveLink a;
+          late KeepAliveLink b;
 
-        final provider = Provider.autoDispose<void>((ref) {
-          a = ref.keepAlive();
-          b = ref.keepAlive();
-        });
+          final provider = Provider.autoDispose<void>((ref) {
+            a = ref.keepAlive();
+            b = ref.keepAlive();
+          });
 
-        container.read(provider);
+          container.read(provider);
 
-        expect(
-          container.getAllProviderElements().map((e) => e.provider),
-          [provider],
-        );
+          expect(container.getAllProviderElements().map((e) => e.provider), [
+            provider,
+          ]);
 
-        await container.pump();
+          await container.pump();
 
-        expect(
-          container.getAllProviderElements().map((e) => e.provider),
-          [provider],
-        );
+          expect(container.getAllProviderElements().map((e) => e.provider), [
+            provider,
+          ]);
 
-        a.close();
-        await container.pump();
+          a.close();
+          await container.pump();
 
-        expect(
-          container.getAllProviderElements().map((e) => e.provider),
-          [provider],
-        );
+          expect(container.getAllProviderElements().map((e) => e.provider), [
+            provider,
+          ]);
 
-        b.close();
-        await container.pump();
+          b.close();
+          await container.pump();
 
-        expect(
-          container.getAllProviderElements(),
-          isEmpty,
-        );
-      });
+          expect(container.getAllProviderElements(), isEmpty);
+        },
+      );
 
       test(
-          'when closing KeepAliveLink, does not dispose the provider if it is still being listened to',
-          () async {
-        final container = ProviderContainer.test();
-        late KeepAliveLink a;
+        'when closing KeepAliveLink, does not dispose the provider if it is still being listened to',
+        () async {
+          final container = ProviderContainer.test();
+          late KeepAliveLink a;
 
-        final provider = Provider.autoDispose<void>((ref) {
-          a = ref.keepAlive();
-        });
+          final provider = Provider.autoDispose<void>((ref) {
+            a = ref.keepAlive();
+          });
 
-        final sub = container.listen<void>(provider, (previous, next) {});
+          final sub = container.listen<void>(provider, (previous, next) {});
 
-        a.close();
-        await container.pump();
+          a.close();
+          await container.pump();
 
-        expect(
-          container.getAllProviderElements().map((e) => e.provider),
-          [provider],
-        );
+          expect(container.getAllProviderElements().map((e) => e.provider), [
+            provider,
+          ]);
 
-        sub.close();
-        await container.pump();
+          sub.close();
+          await container.pump();
 
-        expect(
-          container.getAllProviderElements().map((e) => e.provider),
-          isEmpty,
-        );
-      });
+          expect(
+            container.getAllProviderElements().map((e) => e.provider),
+            isEmpty,
+          );
+        },
+      );
 
       test(
-          'when closing the last KeepAliveLink, then immediately adding a new link, '
-          'the provider will not be disposed.', () async {
-        final container = ProviderContainer.test();
-        late KeepAliveLink a;
-        late Ref ref;
+        'when closing the last KeepAliveLink, then immediately adding a new link, '
+        'the provider will not be disposed.',
+        () async {
+          final container = ProviderContainer.test();
+          late KeepAliveLink a;
+          late Ref ref;
 
-        final provider = Provider.autoDispose<void>((r) {
-          ref = r;
-          a = ref.keepAlive();
-        });
+          final provider = Provider.autoDispose<void>((r) {
+            ref = r;
+            a = ref.keepAlive();
+          });
 
-        container.read<void>(provider);
+          container.read<void>(provider);
 
-        a.close();
-        final b = ref.keepAlive();
-        await container.pump();
+          a.close();
+          final b = ref.keepAlive();
+          await container.pump();
 
-        expect(
-          container.getAllProviderElements().map((e) => e.provider),
-          [provider],
-        );
+          expect(container.getAllProviderElements().map((e) => e.provider), [
+            provider,
+          ]);
 
-        b.close();
-        await container.pump();
+          b.close();
+          await container.pump();
 
-        expect(
-          container.getAllProviderElements().map((e) => e.provider),
-          isEmpty,
-        );
-      });
+          expect(
+            container.getAllProviderElements().map((e) => e.provider),
+            isEmpty,
+          );
+        },
+      );
     });
 
     group('refresh', () {
@@ -2102,111 +2043,113 @@ void main() {
       });
 
       test(
-          'can be invoked during first initialization, and does not notify listeners',
-          () {
-        final observer = ObserverMock();
-        final selfListener = Listener<int>();
-        final listener = Listener<int>();
-        final container = ProviderContainer.test(observers: [observer]);
+        'can be invoked during first initialization, and does not notify listeners',
+        () {
+          final observer = ObserverMock();
+          final selfListener = Listener<int>();
+          final listener = Listener<int>();
+          final container = ProviderContainer.test(observers: [observer]);
 
-        final provider = NotifierProvider<DeferredNotifier<int>, int>(
-          () => DeferredNotifier<int>((ref, self) {
-            self.listenSelf(selfListener.call);
-            ref.notifyListeners();
-            return 0;
-          }),
-        );
+          final provider = NotifierProvider<DeferredNotifier<int>, int>(
+            () => DeferredNotifier<int>((ref, self) {
+              self.listenSelf(selfListener.call);
+              ref.notifyListeners();
+              return 0;
+            }),
+          );
 
-        container.listen(provider, listener.call, fireImmediately: true);
-        final notifier = container.read(provider.notifier);
+          container.listen(provider, listener.call, fireImmediately: true);
+          final notifier = container.read(provider.notifier);
 
-        verifyOnly(
-          observer,
-          observer.didAddProvider(
-            argThat(
-              isProviderObserverContext(
-                provider: provider,
-                container: container,
+          verifyOnly(
+            observer,
+            observer.didAddProvider(
+              argThat(
+                isProviderObserverContext(
+                  provider: provider,
+                  container: container,
+                ),
               ),
+              0,
             ),
-            0,
-          ),
-        );
-        verifyOnly(listener, listener(null, 0));
-        verifyOnly(selfListener, selfListener(null, 0));
-      });
+          );
+          verifyOnly(listener, listener(null, 0));
+          verifyOnly(selfListener, selfListener(null, 0));
+        },
+      );
 
       test(
-          'can be invoked during a re-initialization, and does not notify listeners',
-          () {
-        final observer = ObserverMock();
-        final listener = Listener<Object>();
-        final selfListener = Listener<Object>();
-        final container = ProviderContainer.test(observers: [observer]);
-        var callNotifyListeners = false;
-        const firstValue = 'first';
-        const secondValue = 'second';
-        var result = firstValue;
+        'can be invoked during a re-initialization, and does not notify listeners',
+        () {
+          final observer = ObserverMock();
+          final listener = Listener<Object>();
+          final selfListener = Listener<Object>();
+          final container = ProviderContainer.test(observers: [observer]);
+          var callNotifyListeners = false;
+          const firstValue = 'first';
+          const secondValue = 'second';
+          var result = firstValue;
 
-        final provider = NotifierProvider<DeferredNotifier<Object>, Object>(
-          () => DeferredNotifier<Object>((ref, self) {
-            self.listenSelf(selfListener.call);
-            if (callNotifyListeners) {
-              ref.notifyListeners();
-            }
-            return result;
-          }),
-        );
+          final provider = NotifierProvider<DeferredNotifier<Object>, Object>(
+            () => DeferredNotifier<Object>((ref, self) {
+              self.listenSelf(selfListener.call);
+              if (callNotifyListeners) {
+                ref.notifyListeners();
+              }
+              return result;
+            }),
+          );
 
-        container.listen(provider, listener.call, fireImmediately: true);
-        final notifier = container.read(provider.notifier);
+          container.listen(provider, listener.call, fireImmediately: true);
+          final notifier = container.read(provider.notifier);
 
-        verifyOnly(
-          observer,
-          observer.didAddProvider(
-            argThat(
-              isProviderObserverContext(
-                provider: provider,
-                container: container,
+          verifyOnly(
+            observer,
+            observer.didAddProvider(
+              argThat(
+                isProviderObserverContext(
+                  provider: provider,
+                  container: container,
+                ),
+              ),
+              firstValue,
+            ),
+          );
+          verifyOnly(selfListener, selfListener(null, firstValue));
+          verifyOnly(listener, listener(null, firstValue));
+
+          result = secondValue;
+          callNotifyListeners = true;
+          container.refresh(provider);
+          final notifier2 = container.read(provider.notifier);
+
+          verifyOnly(selfListener, selfListener(firstValue, secondValue));
+          verifyOnly(listener, listener(firstValue, secondValue));
+          verify(
+            observer.didDisposeProvider(
+              argThat(
+                isProviderObserverContext(
+                  provider: provider,
+                  container: container,
+                ),
               ),
             ),
-            firstValue,
-          ),
-        );
-        verifyOnly(selfListener, selfListener(null, firstValue));
-        verifyOnly(listener, listener(null, firstValue));
-
-        result = secondValue;
-        callNotifyListeners = true;
-        container.refresh(provider);
-        final notifier2 = container.read(provider.notifier);
-
-        verifyOnly(selfListener, selfListener(firstValue, secondValue));
-        verifyOnly(listener, listener(firstValue, secondValue));
-        verify(
-          observer.didDisposeProvider(
-            argThat(
-              isProviderObserverContext(
-                provider: provider,
-                container: container,
+          );
+          verify(
+            observer.didUpdateProvider(
+              argThat(
+                isProviderObserverContext(
+                  provider: provider,
+                  container: container,
+                ),
               ),
+              firstValue,
+              secondValue,
             ),
-          ),
-        );
-        verify(
-          observer.didUpdateProvider(
-            argThat(
-              isProviderObserverContext(
-                provider: provider,
-                container: container,
-              ),
-            ),
-            firstValue,
-            secondValue,
-          ),
-        ).called(1);
-        verifyNoMoreInteractions(observer);
-      });
+          ).called(1);
+          verifyNoMoreInteractions(observer);
+        },
+      );
     });
 
     group('.refresh', () {
@@ -2222,10 +2165,7 @@ void main() {
 
         container.read(b);
 
-        expect(
-          () => ref.refresh(b),
-          throwsA(isA<CircularDependencyError>()),
-        );
+        expect(() => ref.refresh(b), throwsA(isA<CircularDependencyError>()));
       });
     });
 
@@ -2259,10 +2199,7 @@ void main() {
 
         container.read(b(0));
 
-        expect(
-          () => ref.invalidate(b),
-          returnsNormally,
-        );
+        expect(() => ref.invalidate(b), returnsNormally);
       });
 
       test('triggers a rebuild on next frame', () async {
@@ -2397,56 +2334,52 @@ void main() {
         verifyOnly(listener, listener());
       });
 
-      test('calls listeners when container.listen subscriptions are closed',
-          () {
-        final container = ProviderContainer.test();
-        final listener = OnRemoveListener();
-        final listener2 = OnRemoveListener();
-        final provider = Provider((ref) {
-          ref.onRemoveListener(listener.call);
-          ref.onRemoveListener(listener2.call);
-        });
+      test(
+        'calls listeners when container.listen subscriptions are closed',
+        () {
+          final container = ProviderContainer.test();
+          final listener = OnRemoveListener();
+          final listener2 = OnRemoveListener();
+          final provider = Provider((ref) {
+            ref.onRemoveListener(listener.call);
+            ref.onRemoveListener(listener2.call);
+          });
 
-        final sub = container.listen<void>(provider, (previous, next) {});
-        verifyNoMoreInteractions(listener);
-        verifyNoMoreInteractions(listener2);
+          final sub = container.listen<void>(provider, (previous, next) {});
+          verifyNoMoreInteractions(listener);
+          verifyNoMoreInteractions(listener2);
 
-        sub.close();
+          sub.close();
 
-        verifyInOrder([listener(), listener2()]);
-        verifyNoMoreInteractions(listener);
-        verifyNoMoreInteractions(listener2);
+          verifyInOrder([listener(), listener2()]);
+          verifyNoMoreInteractions(listener);
+          verifyNoMoreInteractions(listener2);
 
-        final sub2 = container.listen<void>(provider, (previous, next) {});
+          final sub2 = container.listen<void>(provider, (previous, next) {});
 
-        verifyNoMoreInteractions(listener);
-        verifyNoMoreInteractions(listener2);
+          verifyNoMoreInteractions(listener);
+          verifyNoMoreInteractions(listener2);
 
-        sub2.close();
+          sub2.close();
 
-        verifyInOrder([listener(), listener2()]);
-        verifyNoMoreInteractions(listener);
-        verifyNoMoreInteractions(listener2);
-      });
+          verifyInOrder([listener(), listener2()]);
+          verifyNoMoreInteractions(listener);
+          verifyNoMoreInteractions(listener2);
+        },
+      );
 
       test('calls listeners when ref.listen subscriptions are closed', () {
         final container = ProviderContainer.test();
         final listener = OnRemoveListener();
         final listener2 = OnRemoveListener();
-        final dep = Provider(
-          name: 'dep',
-          (ref) {
-            ref.onRemoveListener(listener.call);
-            ref.onRemoveListener(listener2.call);
-          },
-        );
+        final dep = Provider(name: 'dep', (ref) {
+          ref.onRemoveListener(listener.call);
+          ref.onRemoveListener(listener2.call);
+        });
         late Ref ref;
-        final provider = Provider(
-          name: 'provider',
-          (r) {
-            ref = r;
-          },
-        );
+        final provider = Provider(name: 'provider', (r) {
+          ref = r;
+        });
 
         // initialize ref
         container.read(provider);
@@ -2478,18 +2411,12 @@ void main() {
         final container = ProviderContainer.test();
         final listener = OnRemoveListener();
         final listener2 = OnRemoveListener();
-        final dep = Provider(
-          name: 'dep',
-          (ref) {
-            ref.onRemoveListener(listener.call);
-            ref.onRemoveListener(listener2.call);
-          },
-        );
+        final dep = Provider(name: 'dep', (ref) {
+          ref.onRemoveListener(listener.call);
+          ref.onRemoveListener(listener2.call);
+        });
         late Ref ref;
-        final provider = Provider(
-          name: 'provider',
-          (r) => ref = r,
-        );
+        final provider = Provider(name: 'provider', (r) => ref = r);
 
         // initialize refs
         container.read(provider);
@@ -2619,18 +2546,12 @@ void main() {
         final container = ProviderContainer.test();
         final listener = OnAddListener();
         final listener2 = OnAddListener();
-        final dep = Provider(
-          name: 'dep',
-          (ref) {
-            ref.onAddListener(listener.call);
-            ref.onAddListener(listener2.call);
-          },
-        );
+        final dep = Provider(name: 'dep', (ref) {
+          ref.onAddListener(listener.call);
+          ref.onAddListener(listener2.call);
+        });
         late Ref ref;
-        final provider = Provider(
-          name: 'provider',
-          (r) => ref = r,
-        );
+        final provider = Provider(name: 'provider', (r) => ref = r);
 
         // initialize ref
         container.read(provider);
@@ -2652,23 +2573,14 @@ void main() {
         final container = ProviderContainer.test();
         final listener = OnAddListener();
         final listener2 = OnAddListener();
-        final dep = Provider(
-          name: 'dep',
-          (ref) {
-            ref.onAddListener(listener.call);
-            ref.onAddListener(listener2.call);
-          },
-        );
+        final dep = Provider(name: 'dep', (ref) {
+          ref.onAddListener(listener.call);
+          ref.onAddListener(listener2.call);
+        });
         late Ref ref;
-        final provider = Provider(
-          name: 'provider',
-          (r) => ref = r,
-        );
+        final provider = Provider(name: 'provider', (r) => ref = r);
         late Ref ref2;
-        final provider2 = Provider(
-          name: 'provider',
-          (r) => ref2 = r,
-        );
+        final provider2 = Provider(name: 'provider', (r) => ref2 = r);
 
         // initialize refs
         container.read(provider);
@@ -2776,50 +2688,46 @@ void main() {
         verifyZeroInteractions(listener);
       });
 
-      test('calls listeners on the first new container.listen after a cancel',
-          () {
-        final container = ProviderContainer.test();
-        final listener = OnResume();
-        final listener2 = OnResume();
-        final provider = Provider((ref) {
-          ref.onResume(listener.call);
-          ref.onResume(listener2.call);
-        });
+      test(
+        'calls listeners on the first new container.listen after a cancel',
+        () {
+          final container = ProviderContainer.test();
+          final listener = OnResume();
+          final listener2 = OnResume();
+          final provider = Provider((ref) {
+            ref.onResume(listener.call);
+            ref.onResume(listener2.call);
+          });
 
-        final sub = container.listen<void>(provider, (previous, next) {});
-        sub.close();
+          final sub = container.listen<void>(provider, (previous, next) {});
+          sub.close();
 
-        verifyZeroInteractions(listener);
-        verifyZeroInteractions(listener2);
+          verifyZeroInteractions(listener);
+          verifyZeroInteractions(listener2);
 
-        container.listen<void>(provider, (previous, next) {});
+          container.listen<void>(provider, (previous, next) {});
 
-        verifyInOrder([listener(), listener2()]);
-        verifyNoMoreInteractions(listener);
-        verifyNoMoreInteractions(listener2);
+          verifyInOrder([listener(), listener2()]);
+          verifyNoMoreInteractions(listener);
+          verifyNoMoreInteractions(listener2);
 
-        container.listen<void>(provider, (previous, next) {});
+          container.listen<void>(provider, (previous, next) {});
 
-        verifyNoMoreInteractions(listener);
-        verifyNoMoreInteractions(listener2);
-      });
+          verifyNoMoreInteractions(listener);
+          verifyNoMoreInteractions(listener2);
+        },
+      );
 
       test('calls listeners on the first new ref.listen after a cancel', () {
         final container = ProviderContainer.test();
         final listener = OnResume();
         final listener2 = OnResume();
-        final dep = Provider(
-          name: 'dep',
-          (ref) {
-            ref.onResume(listener.call);
-            ref.onResume(listener2.call);
-          },
-        );
+        final dep = Provider(name: 'dep', (ref) {
+          ref.onResume(listener.call);
+          ref.onResume(listener2.call);
+        });
         late Ref ref;
-        final provider = Provider(
-          name: 'provider',
-          (r) => ref = r,
-        );
+        final provider = Provider(name: 'provider', (r) => ref = r);
 
         // initialize ref
         container.read(provider);
@@ -2845,18 +2753,12 @@ void main() {
         final container = ProviderContainer.test();
         final listener = OnAddListener();
         final listener2 = OnAddListener();
-        final dep = Provider(
-          name: 'dep',
-          (ref) {
-            ref.onAddListener(listener.call);
-            ref.onAddListener(listener2.call);
-          },
-        );
+        final dep = Provider(name: 'dep', (ref) {
+          ref.onAddListener(listener.call);
+          ref.onAddListener(listener2.call);
+        });
         late Ref ref;
-        final provider = Provider(
-          name: 'provider',
-          (r) => ref = r,
-        );
+        final provider = Provider(name: 'provider', (r) => ref = r);
 
         // initialize refs
         container.read(provider);
@@ -3162,121 +3064,121 @@ void main() {
       });
 
       test(
-          'calls all the listeners in order when the ProviderContainer is disposed',
-          () {
-        final onDispose = OnDisposeMock();
-        final onDispose2 = OnDisposeMock();
-        final provider = Provider((ref) {
-          ref.onDispose(onDispose.call);
-          ref.onDispose(onDispose2.call);
-        });
+        'calls all the listeners in order when the ProviderContainer is disposed',
+        () {
+          final onDispose = OnDisposeMock();
+          final onDispose2 = OnDisposeMock();
+          final provider = Provider((ref) {
+            ref.onDispose(onDispose.call);
+            ref.onDispose(onDispose2.call);
+          });
 
-        final container = ProviderContainer();
-        addTearDown(container.dispose);
+          final container = ProviderContainer();
+          addTearDown(container.dispose);
 
-        container.read(provider); // register the onDispose hooks
+          container.read(provider); // register the onDispose hooks
 
-        verifyZeroInteractions(onDispose);
-        verifyZeroInteractions(onDispose2);
+          verifyZeroInteractions(onDispose);
+          verifyZeroInteractions(onDispose2);
 
-        container.dispose();
+          container.dispose();
 
-        verifyInOrder([
-          onDispose(),
-          onDispose2(),
-        ]);
-        verifyNoMoreInteractions(onDispose);
-        verifyNoMoreInteractions(onDispose2);
-      });
-
-      test('calls all listeners in order when one of its dependency changed',
-          () async {
-        final onDispose = OnDisposeMock();
-        final onDispose2 = OnDisposeMock();
-
-        final count = StateProvider((ref) => 0);
-        final provider = Provider((ref) {
-          ref.watch(count);
-          ref.onDispose(onDispose.call);
-          ref.onDispose(onDispose2.call);
-        });
-
-        final container = ProviderContainer();
-        addTearDown(container.dispose);
-
-        container.listen(provider, (_, __) {});
-
-        verifyZeroInteractions(onDispose);
-        verifyZeroInteractions(onDispose2);
-
-        container.read(count.notifier).state++;
-        await container.pump();
-
-        verifyInOrder([
-          onDispose(),
-          onDispose2(),
-        ]);
-        verifyNoMoreInteractions(onDispose);
-        verifyNoMoreInteractions(onDispose2);
-      });
-
-      test('does not call listeners again if more than one dependency changed',
-          () {
-        final onDispose = OnDisposeMock();
-
-        final count = StateProvider((ref) => 0);
-        final count2 = StateProvider((ref) => 0);
-        final provider = Provider((ref) {
-          ref.watch(count);
-          ref.watch(count2);
-          ref.onDispose(onDispose.call);
-        });
-
-        final container = ProviderContainer();
-        addTearDown(container.dispose);
-
-        container.listen(provider, (_, __) {});
-
-        verifyZeroInteractions(onDispose);
-
-        container.read(count.notifier).state++;
-        container.read(count2.notifier).state++;
-
-        verifyOnly(onDispose, onDispose());
-      });
+          verifyInOrder([onDispose(), onDispose2()]);
+          verifyNoMoreInteractions(onDispose);
+          verifyNoMoreInteractions(onDispose2);
+        },
+      );
 
       test(
-          'does not call listeners again if a dependency changed then ProviderContainer was disposed',
-          () async {
-        final onDispose = OnDisposeMock();
-        var buildCount = 0;
+        'calls all listeners in order when one of its dependency changed',
+        () async {
+          final onDispose = OnDisposeMock();
+          final onDispose2 = OnDisposeMock();
 
-        final count = StateProvider((ref) => 0);
-        final provider = Provider((ref) {
-          buildCount++;
-          ref.watch(count);
-          ref.onDispose(onDispose.call);
-        });
+          final count = StateProvider((ref) => 0);
+          final provider = Provider((ref) {
+            ref.watch(count);
+            ref.onDispose(onDispose.call);
+            ref.onDispose(onDispose2.call);
+          });
 
-        final container = ProviderContainer();
-        addTearDown(container.dispose);
+          final container = ProviderContainer();
+          addTearDown(container.dispose);
 
-        container.listen(provider, (_, __) {});
-        expect(buildCount, 1);
+          container.listen(provider, (_, __) {});
 
-        verifyZeroInteractions(onDispose);
+          verifyZeroInteractions(onDispose);
+          verifyZeroInteractions(onDispose2);
 
-        container.read(count.notifier).state++;
-        // no pump() because that would rebuild the provider, which means it would
-        // need to be disposed once again.
+          container.read(count.notifier).state++;
+          await container.pump();
 
-        verifyOnly(onDispose, onDispose());
+          verifyInOrder([onDispose(), onDispose2()]);
+          verifyNoMoreInteractions(onDispose);
+          verifyNoMoreInteractions(onDispose2);
+        },
+      );
 
-        container.dispose();
+      test(
+        'does not call listeners again if more than one dependency changed',
+        () {
+          final onDispose = OnDisposeMock();
 
-        expect(buildCount, 1);
-        verifyNoMoreInteractions(onDispose);
-      });
+          final count = StateProvider((ref) => 0);
+          final count2 = StateProvider((ref) => 0);
+          final provider = Provider((ref) {
+            ref.watch(count);
+            ref.watch(count2);
+            ref.onDispose(onDispose.call);
+          });
+
+          final container = ProviderContainer();
+          addTearDown(container.dispose);
+
+          container.listen(provider, (_, __) {});
+
+          verifyZeroInteractions(onDispose);
+
+          container.read(count.notifier).state++;
+          container.read(count2.notifier).state++;
+
+          verifyOnly(onDispose, onDispose());
+        },
+      );
+
+      test(
+        'does not call listeners again if a dependency changed then ProviderContainer was disposed',
+        () async {
+          final onDispose = OnDisposeMock();
+          var buildCount = 0;
+
+          final count = StateProvider((ref) => 0);
+          final provider = Provider((ref) {
+            buildCount++;
+            ref.watch(count);
+            ref.onDispose(onDispose.call);
+          });
+
+          final container = ProviderContainer();
+          addTearDown(container.dispose);
+
+          container.listen(provider, (_, __) {});
+          expect(buildCount, 1);
+
+          verifyZeroInteractions(onDispose);
+
+          container.read(count.notifier).state++;
+          // no pump() because that would rebuild the provider, which means it would
+          // need to be disposed once again.
+
+          verifyOnly(onDispose, onDispose());
+
+          container.dispose();
+
+          expect(buildCount, 1);
+          verifyNoMoreInteractions(onDispose);
+        },
+      );
     });
 
     group('mounted', () {

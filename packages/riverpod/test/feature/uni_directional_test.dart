@@ -7,30 +7,28 @@ import '../src/utils.dart';
 
 void main() {
   test(
-      'Catches sync circular dependency when the dependency is not yet mounted',
-      () {
-    // regression for #1766
-    final container = ProviderContainer.test();
+    'Catches sync circular dependency when the dependency is not yet mounted',
+    () {
+      // regression for #1766
+      final container = ProviderContainer.test();
 
-    final c = Provider((ref) => ref);
+      final c = Provider((ref) => ref);
 
-    final a = Provider<int>((ref) {
-      ref.watch(c);
-      return 0;
-    });
+      final a = Provider<int>((ref) {
+        ref.watch(c);
+        return 0;
+      });
 
-    final b = Provider<int>((ref) {
-      return ref.watch(a);
-    });
+      final b = Provider<int>((ref) {
+        return ref.watch(a);
+      });
 
-    container.read(a);
-    final ref = container.read(c);
+      container.read(a);
+      final ref = container.read(c);
 
-    expect(
-      () => ref.read(b),
-      throwsA(isA<CircularDependencyError>()),
-    );
-  });
+      expect(() => ref.read(b), throwsA(isA<CircularDependencyError>()));
+    },
+  );
 
   test('rebuilding a provider can modify other providers', () async {
     final dep = StateProvider((ref) => 0);
@@ -180,22 +178,16 @@ void main() {
     final container = ProviderContainer.test();
     final ancestor = StateProvider((_) => 0, name: 'ancestor');
     final counter = Counter();
-    final sibling = StateNotifierProvider<Counter, int>(
-      name: 'sibling',
-      (ref) {
-        ref.watch(ancestor);
-        return counter;
-      },
-    );
+    final sibling = StateNotifierProvider<Counter, int>(name: 'sibling', (ref) {
+      ref.watch(ancestor);
+      return counter;
+    });
     var didWatchAncestor = false;
-    final child = Provider(
-      name: 'child',
-      (ref) {
-        ref.watch(ancestor);
-        didWatchAncestor = true;
-        counter.increment();
-      },
-    );
+    final child = Provider(name: 'child', (ref) {
+      ref.watch(ancestor);
+      didWatchAncestor = true;
+      counter.increment();
+    });
 
     container.read(sibling);
 

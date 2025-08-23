@@ -56,10 +56,7 @@ void main() {
 
     group('scoping an override overrides all the associated sub-providers', () {
       test('when passing the provider itself', () {
-        final provider = Provider(
-          (ref) => 0,
-          dependencies: const [],
-        );
+        final provider = Provider((ref) => 0, dependencies: const []);
         final root = ProviderContainer.test();
         final container = ProviderContainer.test(
           parent: root,
@@ -74,10 +71,7 @@ void main() {
       });
 
       test('when using provider.overrideWithValue', () {
-        final provider = Provider(
-          (ref) => 0,
-          dependencies: const [],
-        );
+        final provider = Provider((ref) => 0, dependencies: const []);
         final root = ProviderContainer.test();
         final container = ProviderContainer.test(
           parent: root,
@@ -92,16 +86,11 @@ void main() {
       });
 
       test('when using provider.overrideWith', () {
-        final provider = Provider(
-          (ref) => 0,
-          dependencies: const [],
-        );
+        final provider = Provider((ref) => 0, dependencies: const []);
         final root = ProviderContainer.test();
         final container = ProviderContainer.test(
           parent: root,
-          overrides: [
-            provider.overrideWith((ref) => 42),
-          ],
+          overrides: [provider.overrideWith((ref) => 42)],
         );
 
         expect(container.read(provider), 42);
@@ -113,10 +102,7 @@ void main() {
     });
 
     test('can specify name', () {
-      final provider = Provider(
-        (_) => 0,
-        name: 'example',
-      );
+      final provider = Provider((_) => 0, name: 'example');
 
       expect(provider.name, 'example');
 
@@ -171,8 +157,11 @@ void main() {
       });
       final listener = Listener<bool>();
 
-      final sub =
-          container.listen(provider, listener.call, fireImmediately: true);
+      final sub = container.listen(
+        provider,
+        listener.call,
+        fireImmediately: true,
+      );
 
       verifyOnly(listener, listener(null, true));
       expect(sub.read(), true);
@@ -195,8 +184,11 @@ void main() {
       });
       final listener = Listener<bool>();
 
-      final sub =
-          container.listen(provider, listener.call, fireImmediately: true);
+      final sub = container.listen(
+        provider,
+        listener.call,
+        fireImmediately: true,
+      );
 
       verifyOnly(listener, listener(null, true));
       expect(sub.read(), true);
@@ -209,14 +201,8 @@ void main() {
   });
 
   test('can be auto-scoped', () async {
-    final dep = Provider(
-      (ref) => 0,
-      dependencies: const [],
-    );
-    final provider = Provider(
-      (ref) => ref.watch(dep),
-      dependencies: [dep],
-    );
+    final dep = Provider((ref) => 0, dependencies: const []);
+    final provider = Provider((ref) => ref.watch(dep), dependencies: [dep]);
     final root = ProviderContainer.test();
     final container = ProviderContainer.test(
       parent: root,

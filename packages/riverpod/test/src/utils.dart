@@ -182,10 +182,11 @@ class OverrideWithBuildMock<NotifierT, StateT, CreatedT> extends Mock {
 
   CreatedT call(Ref? ref, NotifierT? value) {
     return super.noSuchMethod(
-      Invocation.method(#call, [ref, value]),
-      returnValue: fallback,
-      returnValueForMissingStub: fallback,
-    ) as CreatedT;
+          Invocation.method(#call, [ref, value]),
+          returnValue: fallback,
+          returnValueForMissingStub: fallback,
+        )
+        as CreatedT;
   }
 }
 
@@ -309,10 +310,8 @@ VerifyOnly get verifyOnly {
   };
 }
 
-typedef VerifyOnly = VerificationResult Function<ResT>(
-  Mock mock,
-  ResT matchingInvocations,
-);
+typedef VerifyOnly =
+    VerificationResult Function<ResT>(Mock mock, ResT matchingInvocations);
 
 class Listener<StateT> extends Mock {
   void call(StateT? previous, StateT? next);
@@ -347,9 +346,7 @@ class ErrorListener extends Mock {
 class Selector<InT, OutT> extends Mock {
   Selector(this.fake, OutT Function(InT) selector) {
     when(call(any)).thenAnswer((i) {
-      return selector(
-        i.positionalArguments.first as InT,
-      );
+      return selector(i.positionalArguments.first as InT);
     });
   }
 
@@ -357,10 +354,11 @@ class Selector<InT, OutT> extends Mock {
 
   OutT call(InT? value) {
     return super.noSuchMethod(
-      Invocation.method(#call, [value]),
-      returnValue: fake,
-      returnValueForMissingStub: fake,
-    ) as OutT;
+          Invocation.method(#call, [value]),
+          returnValue: fake,
+          returnValueForMissingStub: fake,
+        )
+        as OutT;
   }
 }
 

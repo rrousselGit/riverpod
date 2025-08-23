@@ -63,7 +63,8 @@ class ProviderTransformer<InT, ValueT> {
     ProviderTransformer<InT, ValueT> self,
     AsyncResult<InT> prev,
     AsyncResult<InT> next,
-  ) listener;
+  )
+  listener;
 }
 
 extension<InT, StateT, ValueT>
@@ -83,8 +84,10 @@ extension<InT, StateT, ValueT>
       // ignore: unused_result, false positive
       sourceState: switch (sub.readSafe()) {
         $ResultData(:final value) => AsyncData(value),
-        $ResultError(:final error, :final stackTrace) =>
-          AsyncError(error, stackTrace),
+        $ResultError(:final error, :final stackTrace) => AsyncError(
+          error,
+          stackTrace,
+        ),
       },
     );
 
@@ -108,9 +111,9 @@ extension<InT, StateT, ValueT>
               case $ResultData(:final value):
                 sub._notifyData(prevResult.value, value);
               case $ResultError(
-                  error: ProviderException(exception: final error),
-                  :final stackTrace
-                ):
+                error: ProviderException(exception: final error),
+                :final stackTrace,
+              ):
               case $ResultError(:final error, :final stackTrace):
                 sub._notifyError(error, stackTrace);
             }
@@ -145,14 +148,14 @@ extension<InT, StateT, ValueT>
     }
 
     sub = this.source._addListener(
-          source,
-          (previous, next) => setSourceState(AsyncData(next)),
-          onError: (err, stackTrace) => setSourceState(
-            AsyncError(err, stackTrace),
-          ),
-          onDependencyMayHaveChanged: onDependencyMayHaveChanged,
-          weak: weak,
-        );
+      source,
+      (previous, next) => setSourceState(AsyncData(next)),
+      onError: (err, stackTrace) => setSourceState(
+        AsyncError(err, stackTrace),
+      ),
+      onDependencyMayHaveChanged: onDependencyMayHaveChanged,
+      weak: weak,
+    );
 
     resultSub = ExternalProviderSubscription.fromSub(
       innerSubscription: sub,
@@ -168,8 +171,10 @@ extension<InT, StateT, ValueT>
         switch (upsertTransformer()) {
           AsyncData() && final transformer => transformer.value.state,
           // Maps transformer errors as state errors
-          AsyncError(:final error, :final stackTrace) =>
-            AsyncError(error, stackTrace),
+          AsyncError(:final error, :final stackTrace) => AsyncError(
+            error,
+            stackTrace,
+          ),
         },
       ),
     );

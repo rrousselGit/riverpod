@@ -15,7 +15,8 @@ class ProviderParameters extends RiverpodLintRule {
 
   static const _code = LintCode(
     name: 'provider_parameters',
-    problemMessage: 'Providers parameters should have a consistent ==. '
+    problemMessage:
+        'Providers parameters should have a consistent ==. '
         'Meaning either the values should be cached, or the parameters should override ==',
     url:
         'https://riverpod.dev/docs/concepts/modifiers/family#passing-multiple-parameters-to-a-family',
@@ -50,11 +51,11 @@ class ProviderParameters extends RiverpodLintRule {
           // provider(() => 42) is bad because a new function will always be created
           reporter.atNode(value, _code);
         } else if (value is InstanceCreationExpression && !value.isConst) {
-          final instantiatedObject =
-              value.constructorName.element?.applyRedirectedConstructors();
+          final instantiatedObject = value.constructorName.element
+              ?.applyRedirectedConstructors();
 
-          final operatorEqual =
-              instantiatedObject?.enclosingElement2.recursiveGetMethod('==');
+          final operatorEqual = instantiatedObject?.enclosingElement2
+              .recursiveGetMethod('==');
 
           if (operatorEqual == null) {
             // Doing `provider(new Class())` is bad if the class does not override ==

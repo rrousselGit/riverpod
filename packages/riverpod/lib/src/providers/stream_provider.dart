@@ -96,11 +96,12 @@ final class StreamProvider<ValueT>
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-          $allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-          from: null,
-          argument: null,
-        );
+         $allTransitiveDependencies: computeAllTransitiveDependencies(
+           dependencies,
+         ),
+         from: null,
+         argument: null,
+       );
 
   /// An implementation detail of Riverpod
   /// @nodoc
@@ -140,10 +141,10 @@ final class StreamProvider<ValueT>
 /// The element of [StreamProvider].
 @internal
 @publicInCodegen
-class $StreamProviderElement<ValueT> extends $FunctionalProviderElement<
-    AsyncValue<ValueT>,
-    ValueT,
-    Stream<ValueT>> with FutureModifierElement<ValueT> {
+class $StreamProviderElement<ValueT>
+    extends
+        $FunctionalProviderElement<AsyncValue<ValueT>, ValueT, Stream<ValueT>>
+    with FutureModifierElement<ValueT> {
   /// The element of [StreamProvider].
   $StreamProviderElement(super.pointer);
 
@@ -196,8 +197,15 @@ class $StreamProviderElement<ValueT> extends $FunctionalProviderElement<
 
 /// The [Family] of a [StreamProvider]
 @publicInMisc
-final class StreamProviderFamily<ValueT, ArgT> extends FunctionalFamily<
-    AsyncValue<ValueT>, ValueT, ArgT, Stream<ValueT>, StreamProvider<ValueT>> {
+final class StreamProviderFamily<ValueT, ArgT>
+    extends
+        FunctionalFamily<
+          AsyncValue<ValueT>,
+          ValueT,
+          ArgT,
+          Stream<ValueT>,
+          StreamProvider<ValueT>
+        > {
   /// The [Family] of a [StreamProvider]
   /// @nodoc
   @internal
@@ -208,10 +216,11 @@ final class StreamProviderFamily<ValueT, ArgT> extends FunctionalFamily<
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-          providerFactory: StreamProvider<ValueT>.internal,
-          $allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-        );
+         providerFactory: StreamProvider<ValueT>.internal,
+         $allTransitiveDependencies: computeAllTransitiveDependencies(
+           dependencies,
+         ),
+       );
 
   /// Implementation detail of the code-generator.
   /// @nodoc

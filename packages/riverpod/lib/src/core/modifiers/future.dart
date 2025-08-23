@@ -170,9 +170,10 @@ base mixin $FutureModifier<ValueT> on $ProviderBaseImpl<AsyncValue<ValueT>>
 
 @internal
 mixin FutureModifierClassElement<
-        NotifierT extends AnyNotifier<AsyncValue<ValueT>, ValueT>,
-        ValueT,
-        CreatedT>
+  NotifierT extends AnyNotifier<AsyncValue<ValueT>, ValueT>,
+  ValueT,
+  CreatedT
+>
     on
         FutureModifierElement<ValueT>,
         $ClassProviderElement<NotifierT, AsyncValue<ValueT>, ValueT, CreatedT> {

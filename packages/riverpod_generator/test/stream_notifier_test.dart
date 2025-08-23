@@ -8,17 +8,18 @@ import 'integration/stream.dart';
 
 void main() {
   test(
-      'Creates a StreamNotifierProvider<T> if @riverpod is used on a Stream class',
-      () async {
-    final container = ProviderContainer.test();
+    'Creates a StreamNotifierProvider<T> if @riverpod is used on a Stream class',
+    () async {
+      final container = ProviderContainer.test();
 
-    const ProviderBase<AsyncValue<String>> provider = publicClassProvider;
+      const ProviderBase<AsyncValue<String>> provider = publicClassProvider;
 
-    expect(
-      await container.listen(publicClassProvider.future, (_, __) {}).read(),
-      'Hello world',
-    );
-  });
+      expect(
+        await container.listen(publicClassProvider.future, (_, __) {}).read(),
+        'Hello world',
+      );
+    },
+  );
 
   test('Generates .name for providers', () {
     expect(publicClassProvider.name, 'publicClassProvider');
@@ -46,13 +47,16 @@ void main() {
   test('Supports overriding family notifiers', () {
     final container = ProviderContainer.test(
       overrides: [
-        familyClassProvider(42, third: .42)
-            .overrideWith(() => FamilyClass('Hello world')),
+        familyClassProvider(
+          42,
+          third: .42,
+        ).overrideWith(() => FamilyClass('Hello world')),
       ],
     );
 
-    final notifier =
-        container.read(familyClassProvider(42, third: .42).notifier);
+    final notifier = container.read(
+      familyClassProvider(42, third: .42).notifier,
+    );
     expect(notifier.param, 'Hello world');
     expect(notifier.first, 42);
     expect(notifier.second, null);
@@ -66,66 +70,61 @@ void main() {
   });
 
   test(
-      'Creates a NotifierProvider.family<T> if @riverpod is used on a synchronous function with parameters',
-      () async {
-    final container = ProviderContainer.test();
+    'Creates a NotifierProvider.family<T> if @riverpod is used on a synchronous function with parameters',
+    () async {
+      final container = ProviderContainer.test();
 
-    const FamilyClassFamily family = familyClassProvider;
+      const FamilyClassFamily family = familyClassProvider;
 
-    expect(familyClassProvider(42, third: .42).from, familyClassProvider);
+      expect(familyClassProvider(42, third: .42).from, familyClassProvider);
 
-    expect(
-      familyClassProvider(42, third: .42),
-      familyClassProvider(42, third: .42),
-    );
-    expect(
-      familyClassProvider(42, third: .42),
-      isNot(familyClassProvider(42, third: .21)),
-    );
-    expect(
-      familyClassProvider(42, third: .42).hashCode,
-      isNot(familyClassProvider(42, third: .21).hashCode),
-    );
+      expect(
+        familyClassProvider(42, third: .42),
+        familyClassProvider(42, third: .42),
+      );
+      expect(
+        familyClassProvider(42, third: .42),
+        isNot(familyClassProvider(42, third: .21)),
+      );
+      expect(
+        familyClassProvider(42, third: .42).hashCode,
+        isNot(familyClassProvider(42, third: .21).hashCode),
+      );
 
-    // handle defaults
-    expect(
-      familyClassProvider(42, third: .42),
-      familyClassProvider(
+      // handle defaults
+      expect(
+        familyClassProvider(42, third: .42),
+        familyClassProvider(42, third: .42),
+      );
+      expect(
+        familyClassProvider(42, third: .42).hashCode,
+        familyClassProvider(42, third: .42).hashCode,
+      );
+
+      final FamilyClassProvider provider = familyClassProvider(
         42,
+        second: 'x42',
         third: .42,
-      ),
-    );
-    expect(
-      familyClassProvider(42, third: .42).hashCode,
-      familyClassProvider(
-        42,
-        third: .42,
-      ).hashCode,
-    );
+        fourth: false,
+        fifth: const ['x42'],
+      );
+      final ProviderBase<AsyncValue<String>> futureProvider = provider;
 
-    final FamilyClassProvider provider = familyClassProvider(
-      42,
-      second: 'x42',
-      third: .42,
-      fourth: false,
-      fifth: const ['x42'],
-    );
-    final ProviderBase<AsyncValue<String>> futureProvider = provider;
-
-    expect(
-      await container
-          .listen(
-            familyClassProvider(
-              42,
-              second: 'x42',
-              third: .42,
-              fourth: false,
-              fifth: const ['x42'],
-            ).future,
-            (_, __) {},
-          )
-          .read(),
-      '(first: 42, second: x42, third: 0.42, fourth: false, fifth: [x42])',
-    );
-  });
+      expect(
+        await container
+            .listen(
+              familyClassProvider(
+                42,
+                second: 'x42',
+                third: .42,
+                fourth: false,
+                fifth: const ['x42'],
+              ).future,
+              (_, __) {},
+            )
+            .read(),
+        '(first: 42, second: x42, third: 0.42, fourth: false, fifth: [x42])',
+      );
+    },
+  );
 }

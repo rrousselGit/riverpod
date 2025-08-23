@@ -114,10 +114,7 @@ sealed class ProviderSubscriptionImpl<OutT> extends ProviderSubscription<OutT>
   /// Whether an event was sent while this subscription was paused.
   ///
   /// This enables re-rending the last missing event when the subscription is resumed.
-  ({
-    (OutT?, OutT)? data,
-    (Object, StackTrace)? error,
-  })? _missedCalled;
+  ({(OutT?, OutT)? data, (Object, StackTrace)? error})? _missedCalled;
   void Function(OutT? prev, OutT next) get _listener;
   OnError get _errorListener;
 
@@ -231,9 +228,8 @@ ProviderSubscription<$OutT>#${shortHash(this)}(
   weak: $weak,
   hasParent: ${$hasParent},
   childSub: ${switch (this) {
-      final ExternalProviderSubscription<Object?, Object?> e =>
-        e._innerSubscription.toString().indentAfterFirstLine(1),
-      _ => null
+      final ExternalProviderSubscription<Object?, Object?> e => e._innerSubscription.toString().indentAfterFirstLine(1),
+      _ => null,
     }}
 )''';
   }
@@ -250,9 +246,9 @@ final class ProviderProviderSubscription<StateT>
     required this.weak,
     super.onClose,
     required void Function(StateT? prev, StateT next) listener,
-  })  : _errorListener = onError,
-        _listener = listener,
-        _listenedElement = listenedElement;
+  }) : _errorListener = onError,
+       _listener = listener,
+       _listenedElement = listenedElement;
 
   @override
   final OnError _errorListener;
@@ -285,16 +281,17 @@ final class ExternalProviderSubscription<InT, OutT>
     required void Function(OutT? prev, OutT next) listener,
     required OnError? onError,
     bool attachToInner = true,
-  })  : _read = read,
-        _innerSubscription = innerSubscription,
-        _listener = listener,
-        _source = switch (innerSubscription.impl) {
-          final ProviderProviderSubscription<Object?> sub => sub,
-          final ExternalProviderSubscription<Object?, Object?> sub =>
-            sub._source,
-        },
-        _errorListener = onError ??
-            innerSubscription.impl._listenedElement.container.defaultOnError {
+  }) : _read = read,
+       _innerSubscription = innerSubscription,
+       _listener = listener,
+       _source = switch (innerSubscription.impl) {
+         final ProviderProviderSubscription<Object?> sub => sub,
+         final ExternalProviderSubscription<Object?, Object?> sub =>
+           sub._source,
+       },
+       _errorListener =
+           onError ??
+           innerSubscription.impl._listenedElement.container.defaultOnError {
     if (attachToInner) innerSubscription.impl._attach(this);
   }
 

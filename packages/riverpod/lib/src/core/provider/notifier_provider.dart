@@ -24,10 +24,11 @@ This means that you tried to either:
 
 /// The prototype of `Notifier.build` overrides.
 @internal
-typedef RunNotifierBuild<NotifierT, CreatedT> = CreatedT Function(
-  Ref ref,
-  NotifierT notifier,
-);
+typedef RunNotifierBuild<NotifierT, CreatedT> =
+    CreatedT Function(
+      Ref ref,
+      NotifierT notifier,
+    );
 
 /// A base class for all "notifiers".
 ///
@@ -55,7 +56,7 @@ mixin AnyNotifier<StateT, ValueT> {
   (Object?,)? _debugKey;
 
   $ClassProviderElement<AnyNotifier<StateT, ValueT>, StateT, ValueT, Object?>?
-      _element;
+  _element;
 
   /// The [Ref] associated with this notifier.
   @protected
@@ -298,7 +299,9 @@ abstract class $AsyncNotifierBase<ValueT>
   @override
   void _setStateFromValue(ValueT value) {
     state = AsyncLoading._(
-      (progress: state.progress,),
+      (
+        progress: state.progress,
+      ),
       value: (value, kind: DataKind.cache, source: _DataSource.liveOrRefresh),
       error: state._error,
     );
@@ -317,8 +320,9 @@ abstract class $AsyncNotifierBase<ValueT>
       case AsyncError():
         return storage.then((storage) => storage.delete(key));
       case AsyncData(:final value):
-        return storage
-            .then((storage) => storage.write(key, encode(value), options));
+        return storage.then(
+          (storage) => storage.write(key, encode(value), options),
+        );
     }
   }
 }
@@ -335,18 +339,19 @@ abstract class $SyncNotifierBase<ValueT> with AnyNotifier<ValueT, ValueT> {
     EncodedT Function(ValueT state) encode,
     StorageOptions options,
   ) {
-    return storage
-        .then((storage) => storage.write(key, encode(state), options));
+    return storage.then(
+      (storage) => storage.write(key, encode(state), options),
+    );
   }
 }
 
 @internal
 extension ClassBaseX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
   $ClassProviderElement<AnyNotifier<StateT, ValueT>, StateT, Object?, Object?>?
-      elementOrNull() => _element;
+  elementOrNull() => _element;
 
   $ClassProviderElement<AnyNotifier<StateT, ValueT>, StateT, Object?, Object?>
-      requireElement() {
+  requireElement() {
     final element = elementOrNull();
     if (element == null) {
       throw StateError(uninitializedElementError);
@@ -372,11 +377,14 @@ extension ClassBaseX<StateT, ValueT> on AnyNotifier<StateT, ValueT> {
 @internal
 @reopen
 @publicInCodegen
-abstract base class $ClassProvider< //
-    NotifierT extends AnyNotifier<StateT, ValueT>,
-    StateT,
-    ValueT,
-    CreatedT> extends $ProviderBaseImpl<StateT> {
+abstract base class $ClassProvider<
+  //
+  NotifierT extends AnyNotifier<StateT, ValueT>,
+  StateT,
+  ValueT,
+  CreatedT
+>
+    extends $ProviderBaseImpl<StateT> {
   const $ClassProvider({
     required super.name,
     required super.from,
@@ -390,9 +398,10 @@ abstract base class $ClassProvider< //
   Refreshable<NotifierT> get notifier {
     return ProviderElementProxy<NotifierT, StateT>(
       this,
-      (element) => (element
-              as $ClassProviderElement<NotifierT, StateT, ValueT, CreatedT>)
-          .classListenable,
+      (element) =>
+          (element
+                  as $ClassProviderElement<NotifierT, StateT, ValueT, CreatedT>)
+              .classListenable,
     );
   }
 
@@ -442,37 +451,42 @@ abstract base class $ClassProvider< //
   /// @nodoc
   @internal
   @override
-  $ClassProviderElement< //
-      NotifierT,
-      StateT,
-      ValueT,
-      CreatedT> $createElement($ProviderPointer pointer);
+  $ClassProviderElement<
+    //
+    NotifierT,
+    StateT,
+    ValueT,
+    CreatedT
+  >
+  $createElement($ProviderPointer pointer);
 }
 
 final class _ClassProviderView<
-    NotifierT extends AnyNotifier<StateT, ValueT>,
-    StateT,
-    ValueT,
-    CreatedT> extends $ClassProvider<NotifierT, StateT, ValueT, CreatedT> {
+  NotifierT extends AnyNotifier<StateT, ValueT>,
+  StateT,
+  ValueT,
+  CreatedT
+>
+    extends $ClassProvider<NotifierT, StateT, ValueT, CreatedT> {
   _ClassProviderView(
     this._inner, {
     RunNotifierBuild<NotifierT, CreatedT>? runNotifierBuildOverride,
     NotifierT Function()? create,
-  })  : _create = create,
-        _runNotifierBuildOverride = runNotifierBuildOverride,
-        assert(
-          create != null || runNotifierBuildOverride != null,
-          'Either `create` or `runNotifierBuildOverride` must be provided.',
-        ),
-        super(
-          name: _inner.name,
-          from: _inner.from,
-          argument: _inner.argument,
-          dependencies: _inner.dependencies,
-          $allTransitiveDependencies: _inner.$allTransitiveDependencies,
-          retry: _inner.retry,
-          isAutoDispose: _inner.isAutoDispose,
-        );
+  }) : _create = create,
+       _runNotifierBuildOverride = runNotifierBuildOverride,
+       assert(
+         create != null || runNotifierBuildOverride != null,
+         'Either `create` or `runNotifierBuildOverride` must be provided.',
+       ),
+       super(
+         name: _inner.name,
+         from: _inner.from,
+         argument: _inner.argument,
+         dependencies: _inner.dependencies,
+         $allTransitiveDependencies: _inner.$allTransitiveDependencies,
+         retry: _inner.retry,
+         isAutoDispose: _inner.isAutoDispose,
+       );
 
   final $ClassProvider<NotifierT, StateT, ValueT, CreatedT> _inner;
 
@@ -503,15 +517,18 @@ final class _ClassProviderView<
 
 @internal
 @publicInCodegen
-abstract class $ClassProviderElement< //
-        NotifierT extends AnyNotifier<StateT, ValueT>,
-        StateT,
-        ValueT,
-        CreatedT> //
-    extends ProviderElement<StateT, ValueT> with ElementWithFuture {
+abstract class $ClassProviderElement<
+  //
+  NotifierT extends AnyNotifier<StateT, ValueT>,
+  StateT,
+  ValueT,
+  CreatedT
+> //
+    extends ProviderElement<StateT, ValueT>
+    with ElementWithFuture {
   $ClassProviderElement(super.pointer)
-      : provider = pointer.origin
-            as $ClassProvider<NotifierT, StateT, ValueT, CreatedT>;
+    : provider =
+          pointer.origin as $ClassProvider<NotifierT, StateT, ValueT, CreatedT>;
 
   @override
   $ClassProvider<NotifierT, StateT, ValueT, CreatedT> provider;

@@ -60,7 +60,7 @@ abstract class StatefulHookConsumerWidget extends ConsumerStatefulWidget {
 // ignore: invalid_use_of_internal_member
 final class _StatefulHookConsumerElement extends ConsumerStatefulElement
     with
-// ignore: invalid_use_of_visible_for_testing_member
+        // ignore: invalid_use_of_visible_for_testing_member
         HookElement {
   _StatefulHookConsumerElement(StatefulHookConsumerWidget super.widget);
 }

@@ -4,11 +4,12 @@ part of '../core.dart';
 ///
 /// See also [Consumer]
 @internal
-typedef ConsumerBuilder = Widget Function(
-  BuildContext context,
-  WidgetRef ref,
-  Widget? child,
-);
+typedef ConsumerBuilder =
+    Widget Function(
+      BuildContext context,
+      WidgetRef ref,
+      Widget? child,
+    );
 
 /// {@template riverpod.consumer}
 /// Build a widget tree while listening to providers.
@@ -378,7 +379,7 @@ base class ConsumerStatefulElement extends StatefulElement
   var _dependencies =
       <ProviderListenable<Object?>, ProviderSubscription<Object?>>{};
   Map<ProviderListenable<Object?>, ProviderSubscription<Object?>>?
-      _oldDependencies;
+  _oldDependencies;
   final _listeners = <ProviderSubscription<Object?>>[];
   List<ProviderSubscription<Object?>>? _manualListeners;
   bool? _isActive;
@@ -444,22 +445,23 @@ base class ConsumerStatefulElement extends StatefulElement
   StateT watch<StateT>(ProviderListenable<StateT> target) {
     _assertNotDisposed();
     return _dependencies
-        .putIfAbsent(target, () {
-          final oldDependency = _oldDependencies?.remove(target);
+            .putIfAbsent(target, () {
+              final oldDependency = _oldDependencies?.remove(target);
 
-          if (oldDependency != null) {
-            return oldDependency;
-          }
+              if (oldDependency != null) {
+                return oldDependency;
+              }
 
-          final sub = container.listen<StateT>(
-            target,
-            (_, __) => markNeedsBuild(),
-          );
-          _applyTickerMode(sub);
-          return sub;
-        })
-        .readSafe()
-        .valueOrProviderException as StateT;
+              final sub = container.listen<StateT>(
+                target,
+                (_, __) => markNeedsBuild(),
+              );
+              _applyTickerMode(sub);
+              return sub;
+            })
+            .readSafe()
+            .valueOrProviderException
+        as StateT;
   }
 
   @override

@@ -47,11 +47,12 @@ final class StateProvider<ValueT>
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-          $allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-          from: null,
-          argument: null,
-        );
+         $allTransitiveDependencies: computeAllTransitiveDependencies(
+           dependencies,
+         ),
+         from: null,
+         argument: null,
+       );
 
   /// An implementation detail of Riverpod
   /// @nodoc
@@ -153,12 +154,16 @@ class _StateProviderElement<ValueT>
 
 /// The [Family] of [StateProvider].
 @publicInLegacy
-final class StateProviderFamily<ValueT, ArgT> extends FunctionalFamily< //
-    ValueT,
-    ValueT,
-    ArgT,
-    ValueT,
-    StateProvider<ValueT>> {
+final class StateProviderFamily<ValueT, ArgT>
+    extends
+        FunctionalFamily<
+          //
+          ValueT,
+          ValueT,
+          ArgT,
+          ValueT,
+          StateProvider<ValueT>
+        > {
   /// The [Family] of [StateProvider].
   /// @nodoc
   @internal
@@ -169,10 +174,11 @@ final class StateProviderFamily<ValueT, ArgT> extends FunctionalFamily< //
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-          providerFactory: StateProvider.internal,
-          $allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-        );
+         providerFactory: StateProvider.internal,
+         $allTransitiveDependencies: computeAllTransitiveDependencies(
+           dependencies,
+         ),
+       );
 
   /// The [Family] of [AsyncNotifierProvider].
   /// @nodoc

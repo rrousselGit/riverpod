@@ -9,7 +9,8 @@ final class $LazyProxyListenable<OutT, InT>
   final $ProviderBaseImpl<InT> provider;
   final $Observable<OutT> Function(
     ProviderElement<InT, Object?> element,
-  ) _lense;
+  )
+  _lense;
 
   @override
   ProviderSubscriptionImpl<OutT> _addListener(
@@ -87,7 +88,8 @@ final class ProviderElementProxy<OutT, InT>
   final $ProviderBaseImpl<InT> provider;
   final $Observable<OutT> Function(
     ProviderElement<InT, Object?> element,
-  ) _lense;
+  )
+  _lense;
 
   @override
   ProviderSubscriptionImpl<OutT> _addListener(

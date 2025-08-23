@@ -20,19 +20,20 @@ const functionalProvider = FunctionalProvider._();
 
 @annotation
 final class FunctionalProvider
-    extends $FunctionalProvider<String, String, String> with $Provider<String> {
+    extends $FunctionalProvider<String, String, String>
+    with $Provider<String> {
   /// Hello world
-// Foo
+  // Foo
   const FunctionalProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'functionalProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'functionalProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$functionalHash();
@@ -70,17 +71,17 @@ const classBasedProvider = ClassBasedProvider._();
 @annotation
 final class ClassBasedProvider extends $NotifierProvider<ClassBased, String> {
   /// Hello world
-// Foo
+  // Foo
   const ClassBasedProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'classBasedProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'classBasedProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$classBasedHash();
@@ -111,8 +112,14 @@ abstract class _$ClassBased extends $Notifier<String> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<String, String>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<String, String>, String, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<String, String>,
+              String,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }
@@ -131,16 +138,17 @@ const familyProvider = FamilyFamily._();
 final class FamilyProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   /// Hello world
-// Foo
-  const FamilyProvider._(
-      {required FamilyFamily super.from, required int super.argument})
-      : super(
-          retry: null,
-          name: r'familyProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+  // Foo
+  const FamilyProvider._({
+    required FamilyFamily super.from,
+    required int super.argument,
+  }) : super(
+         retry: null,
+         name: r'familyProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$familyHash();
@@ -160,10 +168,7 @@ final class FamilyProvider extends $FunctionalProvider<String, String, String>
   @override
   String create(Ref ref) {
     final argument = this.argument as int;
-    return family(
-      ref,
-      argument,
-    );
+    return family(ref, argument);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -194,22 +199,19 @@ String _$familyHash() => r'13354dca1ecbd172ae0627e9ba644d52cd9cfaaf';
 final class FamilyFamily extends $Family
     with $FunctionalFamilyOverride<String, int> {
   const FamilyFamily._()
-      : super(
-          retry: null,
-          name: r'familyProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'familyProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
   /// Hello world
-// Foo
+  // Foo
 
   @annotation
-  FamilyProvider call(
-    int id,
-  ) =>
-      FamilyProvider._(argument: id, from: this);
+  FamilyProvider call(int id) => FamilyProvider._(argument: id, from: this);
 
   @override
   String toString() => r'familyProvider';
@@ -228,16 +230,17 @@ const classFamilyBasedProvider = ClassFamilyBasedFamily._();
 final class ClassFamilyBasedProvider
     extends $NotifierProvider<ClassFamilyBased, String> {
   /// Hello world
-// Foo
-  const ClassFamilyBasedProvider._(
-      {required ClassFamilyBasedFamily super.from, required int super.argument})
-      : super(
-          retry: null,
-          name: r'classFamilyBasedProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+  // Foo
+  const ClassFamilyBasedProvider._({
+    required ClassFamilyBasedFamily super.from,
+    required int super.argument,
+  }) : super(
+         retry: null,
+         name: r'classFamilyBasedProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$classFamilyBasedHash();
@@ -281,21 +284,19 @@ String _$classFamilyBasedHash() => r'4681ad76c671518ac72ca40fa532126bc041dc2f';
 final class ClassFamilyBasedFamily extends $Family
     with $ClassFamilyOverride<ClassFamilyBased, String, String, String, int> {
   const ClassFamilyBasedFamily._()
-      : super(
-          retry: null,
-          name: r'classFamilyBasedProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'classFamilyBasedProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
   /// Hello world
-// Foo
+  // Foo
 
   @annotation
-  ClassFamilyBasedProvider call(
-    @annotation int id,
-  ) =>
+  ClassFamilyBasedProvider call(@annotation int id) =>
       ClassFamilyBasedProvider._(argument: id, from: this);
 
   @override
@@ -310,22 +311,24 @@ abstract class _$ClassFamilyBased extends $Notifier<String> {
   late final _$args = ref.$arg as int;
 
   /// Hello world
-// Foo
+  // Foo
   @annotation
   int get id => _$args;
 
-  String build(
-    @annotation int id,
-  );
+  String build(@annotation int id);
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      _$args,
-    );
+    final created = build(_$args);
     final ref = this.ref as $Ref<String, String>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<String, String>, String, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<String, String>,
+              String,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }

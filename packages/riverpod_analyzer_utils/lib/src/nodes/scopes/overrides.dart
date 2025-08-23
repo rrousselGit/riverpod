@@ -63,19 +63,13 @@ extension ProviderOverrideListX on Expression {
             .toList();
       }
 
-      return ProviderOverrideList._(
-        node: expression,
-        overrides: overrides,
-      );
+      return ProviderOverrideList._(node: expression, overrides: overrides);
     });
   }
 }
 
 final class ProviderOverrideList {
-  ProviderOverrideList._({
-    required this.node,
-    required this.overrides,
-  });
+  ProviderOverrideList._({required this.node, required this.overrides});
 
   final Expression node;
   final List<ProviderOverrideExpression>? overrides;

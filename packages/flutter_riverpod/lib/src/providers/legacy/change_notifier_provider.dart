@@ -80,11 +80,12 @@ final class ChangeNotifierProvider<NotifierT extends ChangeNotifier?>
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-          $allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-          from: null,
-          argument: null,
-        );
+         $allTransitiveDependencies: computeAllTransitiveDependencies(
+           dependencies,
+         ),
+         from: null,
+         argument: null,
+       );
 
   /// An implementation detail of Riverpod
   /// @nodoc
@@ -199,10 +200,18 @@ class _ChangeNotifierProviderElement<NotifierT extends ChangeNotifier?>
 
 /// The [Family] of [ChangeNotifierProvider].
 @publicInMisc
-final class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?,
-        ArgT>
-    extends FunctionalFamily<NotifierT, NotifierT, ArgT, NotifierT,
-        ChangeNotifierProvider<NotifierT>> {
+final class ChangeNotifierProviderFamily<
+  NotifierT extends ChangeNotifier?,
+  ArgT
+>
+    extends
+        FunctionalFamily<
+          NotifierT,
+          NotifierT,
+          ArgT,
+          NotifierT,
+          ChangeNotifierProvider<NotifierT>
+        > {
   /// The [Family] of [ChangeNotifierProvider].
   /// @nodoc
   @internal
@@ -213,8 +222,9 @@ final class ChangeNotifierProviderFamily<NotifierT extends ChangeNotifier?,
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-          providerFactory: ChangeNotifierProvider.internal,
-          $allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-        );
+         providerFactory: ChangeNotifierProvider.internal,
+         $allTransitiveDependencies: computeAllTransitiveDependencies(
+           dependencies,
+         ),
+       );
 }

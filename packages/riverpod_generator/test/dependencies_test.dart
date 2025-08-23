@@ -24,22 +24,30 @@ void main() {
     expect(familyProvider.dependencies, null);
     expect(family2Provider.dependencies, null);
 
-    expect(
-      providerProvider.dependencies,
-      [depProvider, familyProvider, dep2Provider, family2Provider],
-    );
-    expect(
-      provider2Provider.dependencies,
-      [depProvider, familyProvider, dep2Provider, family2Provider],
-    );
-    expect(
-      provider3Provider.dependencies,
-      [depProvider, familyProvider, dep2Provider, family2Provider],
-    );
-    expect(
-      provider4Provider.dependencies,
-      [depProvider, familyProvider, dep2Provider, family2Provider],
-    );
+    expect(providerProvider.dependencies, [
+      depProvider,
+      familyProvider,
+      dep2Provider,
+      family2Provider,
+    ]);
+    expect(provider2Provider.dependencies, [
+      depProvider,
+      familyProvider,
+      dep2Provider,
+      family2Provider,
+    ]);
+    expect(provider3Provider.dependencies, [
+      depProvider,
+      familyProvider,
+      dep2Provider,
+      family2Provider,
+    ]);
+    expect(provider4Provider.dependencies, [
+      depProvider,
+      familyProvider,
+      dep2Provider,
+      family2Provider,
+    ]);
 
     expect(transitiveDependenciesProvider.dependencies, [providerProvider]);
 
@@ -60,33 +68,38 @@ void main() {
     expect(familyProvider.$allTransitiveDependencies, null);
     expect(family2Provider.$allTransitiveDependencies, null);
 
-    expect(
-      providerProvider.$allTransitiveDependencies,
-      [depProvider, familyProvider, dep2Provider, family2Provider],
-    );
-    expect(
-      provider2Provider.$allTransitiveDependencies,
-      [depProvider, familyProvider, dep2Provider, family2Provider],
-    );
-    expect(
-      provider3Provider.$allTransitiveDependencies,
-      [depProvider, familyProvider, dep2Provider, family2Provider],
-    );
-    expect(
-      provider4Provider.$allTransitiveDependencies,
-      [depProvider, familyProvider, dep2Provider, family2Provider],
-    );
+    expect(providerProvider.$allTransitiveDependencies, [
+      depProvider,
+      familyProvider,
+      dep2Provider,
+      family2Provider,
+    ]);
+    expect(provider2Provider.$allTransitiveDependencies, [
+      depProvider,
+      familyProvider,
+      dep2Provider,
+      family2Provider,
+    ]);
+    expect(provider3Provider.$allTransitiveDependencies, [
+      depProvider,
+      familyProvider,
+      dep2Provider,
+      family2Provider,
+    ]);
+    expect(provider4Provider.$allTransitiveDependencies, [
+      depProvider,
+      familyProvider,
+      dep2Provider,
+      family2Provider,
+    ]);
 
-    expect(
-      transitiveDependenciesProvider.$allTransitiveDependencies,
-      [
-        providerProvider,
-        depProvider,
-        familyProvider,
-        dep2Provider,
-        family2Provider,
-      ],
-    );
+    expect(transitiveDependenciesProvider.$allTransitiveDependencies, [
+      providerProvider,
+      depProvider,
+      familyProvider,
+      dep2Provider,
+      family2Provider,
+    ]);
 
     expect(
       emptyDependenciesFunctionalProvider.$allTransitiveDependencies,
@@ -100,17 +113,15 @@ void main() {
   });
 
   test(
-      'On families, passes `null` as dependencies/allTransitiveDependencies to the providers',
-      () {
-    expect(provider4Provider(42).dependencies, null);
-    expect(provider4Provider(42).$allTransitiveDependencies, null);
-  });
+    'On families, passes `null` as dependencies/allTransitiveDependencies to the providers',
+    () {
+      expect(provider4Provider(42).dependencies, null);
+      expect(provider4Provider(42).$allTransitiveDependencies, null);
+    },
+  );
 
   test('Caches dependencies', () {
-    expect(
-      providerProvider.dependencies,
-      same(providerProvider.dependencies),
-    );
+    expect(providerProvider.dependencies, same(providerProvider.dependencies));
     expect(
       provider2Provider.dependencies,
       same(provider2Provider.dependencies),

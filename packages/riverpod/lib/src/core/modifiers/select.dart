@@ -98,8 +98,10 @@ final class _ProviderSelector<InputT, OutputT>
     try {
       return switch (value) {
         $ResultData(:final value) => $Result.data(selector(value)),
-        $ResultError(:final error, :final stackTrace) =>
-          $Result.error(error, stackTrace),
+        $ResultError(:final error, :final stackTrace) => $Result.error(
+          error,
+          stackTrace,
+        ),
       };
     } catch (err, stack) {
       return $Result.error(err, stack);

@@ -83,19 +83,13 @@ TypeMatcher<ProviderDirectory> isProviderDirectory({
 void main() {
   group('ProviderPointerManager', () {
     group('findDeepestTransitiveDependencyProviderContainer', () {
-      final transitiveDependency = Provider(
-        (_) => 0,
-        dependencies: const [],
-      );
+      final transitiveDependency = Provider((_) => 0, dependencies: const []);
       final dependency = Provider(
         (_) => 0,
         dependencies: [transitiveDependency],
       );
 
-      final a = Provider(
-        (_) => 0,
-        dependencies: [dependency],
-      );
+      final a = Provider((_) => 0, dependencies: [dependency]);
 
       test('always returns null if has no dependency', () {
         final provider = Provider((_) => 0);
@@ -115,125 +109,111 @@ void main() {
         );
       });
 
-      test('returns null if the dependency is overridden in the root container',
-          () {
-        final root = ProviderContainer.test(
-          overrides: [
-            dependency.overrideWithValue(42),
-          ],
-        );
+      test(
+        'returns null if the dependency is overridden in the root container',
+        () {
+          final root = ProviderContainer.test(
+            overrides: [dependency.overrideWithValue(42)],
+          );
 
-        expect(
-          root.pointerManager
-              .findDeepestTransitiveDependencyProviderContainer(a),
-          null,
-        );
-      });
+          expect(
+            root.pointerManager
+                .findDeepestTransitiveDependencyProviderContainer(a),
+            null,
+          );
+        },
+      );
 
       test(
-          "for direct dependencies, returns the dependency's container if overridden",
-          () {
-        final root = ProviderContainer.test();
-        final container = ProviderContainer.test(
-          parent: root,
-          overrides: [
-            dependency.overrideWithValue(42),
-          ],
-        );
-        final leaf = ProviderContainer.test(
-          parent: container,
-          overrides: [
-            // Unrelated override, to avoid the container optimizing the pointer away
-            Provider((ref) => null, dependencies: const []),
-          ],
-        );
+        "for direct dependencies, returns the dependency's container if overridden",
+        () {
+          final root = ProviderContainer.test();
+          final container = ProviderContainer.test(
+            parent: root,
+            overrides: [dependency.overrideWithValue(42)],
+          );
+          final leaf = ProviderContainer.test(
+            parent: container,
+            overrides: [
+              // Unrelated override, to avoid the container optimizing the pointer away
+              Provider((ref) => null, dependencies: const []),
+            ],
+          );
 
-        expect(
-          leaf.pointerManager
-              .findDeepestTransitiveDependencyProviderContainer(a),
-          container,
-        );
-      });
-
-      test(
-          "for transitive dependencies, returns the dependency's container if overridden",
-          () {
-        final root = ProviderContainer.test();
-        final container = ProviderContainer.test(
-          parent: root,
-          overrides: [
-            transitiveDependency.overrideWithValue(42),
-          ],
-        );
-        final leaf = ProviderContainer.test(
-          parent: container,
-          overrides: [
-            // Unrelated override, to avoid the container optimizing the pointer away
-            Provider((ref) => null, dependencies: const []),
-          ],
-        );
-
-        expect(
-          leaf.pointerManager
-              .findDeepestTransitiveDependencyProviderContainer(a),
-          container,
-        );
-      });
+          expect(
+            leaf.pointerManager
+                .findDeepestTransitiveDependencyProviderContainer(a),
+            container,
+          );
+        },
+      );
 
       test(
-          'if multiple dependencies are overridden, returns the deepest container',
-          () {
-        final dep2 = Provider(
-          (_) => 0,
-          dependencies: const [],
-        );
-        final root = ProviderContainer.test();
-        final container = ProviderContainer.test(
-          parent: root,
-          overrides: [
-            dependency.overrideWithValue(42),
-          ],
-        );
-        final container2 = ProviderContainer.test(
-          parent: container,
-          overrides: [
-            dep2.overrideWithValue(42),
-          ],
-        );
-        final leaf = ProviderContainer.test(
-          parent: container2,
-          overrides: [
-            // Unrelated override, to avoid the container optimizing the pointer away
-            Provider((ref) => null, dependencies: const []),
-          ],
-        );
+        "for transitive dependencies, returns the dependency's container if overridden",
+        () {
+          final root = ProviderContainer.test();
+          final container = ProviderContainer.test(
+            parent: root,
+            overrides: [transitiveDependency.overrideWithValue(42)],
+          );
+          final leaf = ProviderContainer.test(
+            parent: container,
+            overrides: [
+              // Unrelated override, to avoid the container optimizing the pointer away
+              Provider((ref) => null, dependencies: const []),
+            ],
+          );
 
-        final b = Provider(
-          (_) => 0,
-          dependencies: [dep2],
-        );
+          expect(
+            leaf.pointerManager
+                .findDeepestTransitiveDependencyProviderContainer(a),
+            container,
+          );
+        },
+      );
 
-        expect(
-          leaf.pointerManager
-              .findDeepestTransitiveDependencyProviderContainer(a),
-          // Does not care about dep2, so points to 'container'
-          container,
-        );
+      test(
+        'if multiple dependencies are overridden, returns the deepest container',
+        () {
+          final dep2 = Provider((_) => 0, dependencies: const []);
+          final root = ProviderContainer.test();
+          final container = ProviderContainer.test(
+            parent: root,
+            overrides: [dependency.overrideWithValue(42)],
+          );
+          final container2 = ProviderContainer.test(
+            parent: container,
+            overrides: [dep2.overrideWithValue(42)],
+          );
+          final leaf = ProviderContainer.test(
+            parent: container2,
+            overrides: [
+              // Unrelated override, to avoid the container optimizing the pointer away
+              Provider((ref) => null, dependencies: const []),
+            ],
+          );
 
-        expect(
-          leaf.pointerManager
-              .findDeepestTransitiveDependencyProviderContainer(b),
-          container2,
-        );
-      });
+          final b = Provider((_) => 0, dependencies: [dep2]);
+
+          expect(
+            leaf.pointerManager
+                .findDeepestTransitiveDependencyProviderContainer(a),
+            // Does not care about dep2, so points to 'container'
+            container,
+          );
+
+          expect(
+            leaf.pointerManager
+                .findDeepestTransitiveDependencyProviderContainer(b),
+            container2,
+          );
+        },
+      );
     });
 
     group('upsertDirectory', () {
       test('handles auto-scoping', () {
-        final dep = Provider(
-          (_) => 0,
-          dependencies: const [],
-        );
+        final dep = Provider((_) => 0, dependencies: const []);
         final family = Provider.family<int, int>(
           (ref, id) => 0,
           dependencies: [dep],
@@ -255,20 +235,11 @@ void main() {
           ),
         );
 
-        expect(
-          container.pointerManager.familyPointers,
-          {family: directory},
-        );
+        expect(container.pointerManager.familyPointers, {family: directory});
 
         // Check that the root was unaffected
-        expect(
-          root.pointerManager.familyPointers,
-          isEmpty,
-        );
-        expect(
-          root.pointerManager.orphanPointers.pointers,
-          isEmpty,
-        );
+        expect(root.pointerManager.familyPointers, isEmpty);
+        expect(root.pointerManager.orphanPointers.pointers, isEmpty);
       });
 
       test('on orphans, return orphanPointers', () {
@@ -297,10 +268,7 @@ void main() {
           provider(42),
         );
 
-        expect(
-          container.pointerManager.familyPointers,
-          {provider: directory},
-        );
+        expect(container.pointerManager.familyPointers, {provider: directory});
 
         expect(
           directory,
@@ -316,10 +284,12 @@ void main() {
         final provider = Provider.family<int, int>((ref, _) => 0);
         final container = ProviderContainer.test();
 
-        final directory =
-            container.pointerManager.upsertDirectory(provider(42));
-        final directory2 =
-            container.pointerManager.upsertDirectory(provider(42));
+        final directory = container.pointerManager.upsertDirectory(
+          provider(42),
+        );
+        final directory2 = container.pointerManager.upsertDirectory(
+          provider(42),
+        );
 
         expect(directory2, same(directory));
       });
@@ -369,33 +339,21 @@ void main() {
         expect(root.pointerManager.familyPointers, isEmpty);
         expect(root.pointerManager.orphanPointers.pointers, isEmpty);
 
-        expect(
-          container.pointerManager.orphanPointers.pointers,
-          {
-            provider: isPointer(
-              targetContainer: container,
-              override: provider,
-            ),
-          },
-        );
-        expect(
-          container.pointerManager.familyPointers,
-          {
-            family: isProviderDirectory(
-              targetContainer: container,
-              override: family,
-              pointers: {family(42): isPointer(targetContainer: container)},
-            ),
-          },
-        );
+        expect(container.pointerManager.orphanPointers.pointers, {
+          provider: isPointer(targetContainer: container, override: provider),
+        });
+        expect(container.pointerManager.familyPointers, {
+          family: isProviderDirectory(
+            targetContainer: container,
+            override: family,
+            pointers: {family(42): isPointer(targetContainer: container)},
+          ),
+        });
       });
 
       group('auto-scoping', () {
         test('handles auto-scoping', () {
-          final dep = Provider(
-            (_) => 0,
-            dependencies: const [],
-          );
+          final dep = Provider((_) => 0, dependencies: const []);
           final family = Provider.family<int, int>(
             (ref, id) => 0,
             dependencies: [dep],
@@ -412,10 +370,7 @@ void main() {
 
           expect(
             pointer,
-            isPointer(
-              targetContainer: container,
-              override: null,
-            ),
+            isPointer(targetContainer: container, override: null),
           );
           expect(
             pointer2,
@@ -425,46 +380,29 @@ void main() {
             ),
           );
 
-          expect(
-            container.pointerManager.familyPointers,
-            {
-              family: isProviderDirectory(
-                targetContainer: container,
-                override: isTransitiveFamilyOverride(family),
-                pointers: {
-                  family(42): pointer,
-                },
-              ),
-            },
-          );
+          expect(container.pointerManager.familyPointers, {
+            family: isProviderDirectory(
+              targetContainer: container,
+              override: isTransitiveFamilyOverride(family),
+              pointers: {family(42): pointer},
+            ),
+          });
           expect(
             container.pointerManager.orphanPointers,
             isProviderDirectory(
               targetContainer: root,
               override: null,
-              pointers: {
-                provider: pointer2,
-                dep: isNotNull,
-              },
+              pointers: {provider: pointer2, dep: isNotNull},
             ),
           );
 
           // Check that the root was unaffected
-          expect(
-            root.pointerManager.familyPointers,
-            isEmpty,
-          );
-          expect(
-            root.pointerManager.orphanPointers.pointers,
-            isEmpty,
-          );
+          expect(root.pointerManager.familyPointers, isEmpty);
+          expect(root.pointerManager.orphanPointers.pointers, isEmpty);
         });
 
         test('skips auto-scoping if the provider is manually overridden', () {
-          final dep = Provider(
-            (_) => 0,
-            dependencies: const [],
-          );
+          final dep = Provider((_) => 0, dependencies: const []);
           final family = Provider.family<int, int>(
             (ref, id) => 0,
             dependencies: [dep],
@@ -486,21 +424,15 @@ void main() {
           container.pointerManager.upsertPointer(family(42));
           container.pointerManager.upsertPointer(provider);
 
-          expect(
-            container.pointerManager.familyPointers,
-            {
-              family: isProviderDirectory(
-                targetContainer: mid,
-                override: familyOverride,
-                pointers: {
-                  family(42): isPointer(
-                    targetContainer: mid,
-                    override: null,
-                  ),
-                },
-              ),
-            },
-          );
+          expect(container.pointerManager.familyPointers, {
+            family: isProviderDirectory(
+              targetContainer: mid,
+              override: familyOverride,
+              pointers: {
+                family(42): isPointer(targetContainer: mid, override: null),
+              },
+            ),
+          });
           expect(
             container.pointerManager.orphanPointers,
             isProviderDirectory(
@@ -574,25 +506,20 @@ void main() {
             ),
           );
 
-          expect(
-            leaf.pointerManager.familyPointers,
-            {
-              c: isProviderDirectory(
-                targetContainer: mid,
-                override: isTransitiveFamilyOverride(c),
-                pointers: {
-                  c(0): isPointer(targetContainer: mid, override: null),
-                },
-              ),
-              d: isProviderDirectory(
-                targetContainer: mid2,
-                override: isTransitiveFamilyOverride(d),
-                pointers: {
-                  d(0): isPointer(targetContainer: mid2, override: null),
-                },
-              ),
-            },
-          );
+          expect(leaf.pointerManager.familyPointers, {
+            c: isProviderDirectory(
+              targetContainer: mid,
+              override: isTransitiveFamilyOverride(c),
+              pointers: {c(0): isPointer(targetContainer: mid, override: null)},
+            ),
+            d: isProviderDirectory(
+              targetContainer: mid2,
+              override: isTransitiveFamilyOverride(d),
+              pointers: {
+                d(0): isPointer(targetContainer: mid2, override: null),
+              },
+            ),
+          });
         });
 
         test('when overriding a family provider', () {
@@ -617,76 +544,76 @@ void main() {
           expect(container.read(b('42')), 'override 42');
         });
 
-        test('when overriding both a family and one provider from said family',
-            () {
-          final a = Provider.family.autoDispose<String, String>(
-            (ref, value) => 'root $value',
-            dependencies: [],
-            name: 'a',
-          );
-          final b = Provider.family.autoDispose<String, String>(
-            (ref, value) => ref.watch(a(value)),
-            dependencies: [a],
-            name: 'b',
-          );
-
-          final root = ProviderContainer.test();
-          final mid = ProviderContainer.test(
-            parent: root,
-            overrides: [a.overrideWith((ref, _) => 'mid')],
-          );
-          final container = ProviderContainer.test(
-            parent: mid,
-            overrides: [a('42').overrideWith((ref) => 'override 42')],
-          );
-
-          final mid2 = ProviderContainer.test(
-            parent: root,
-            overrides: [a('42').overrideWith((ref) => 'mid')],
-          );
-          final container2 = ProviderContainer.test(
-            parent: mid2,
-            overrides: [a.overrideWith((ref, value) => 'override $value')],
-          );
-
-          expect(container.read(b('42')), 'override 42');
-          expect(container2.read(b('21')), 'override 21');
-        });
-      });
-
-      test(
-          'have ancestors and children share their pointers when not overridden',
+        test(
+          'when overriding both a family and one provider from said family',
           () {
-        final root = ProviderContainer.test();
-        final container = ProviderContainer.test(
-          parent: root,
-          overrides: [
-            // An unrelated override, added to avoid the container optimizing
-            Provider((_) => 0, dependencies: const []),
-          ],
-        );
-        final provider = Provider((ref) => 0);
-        final family = Provider.family<int, int>((ref, id) => 0);
+            final a = Provider.family.autoDispose<String, String>(
+              (ref, value) => 'root $value',
+              dependencies: [],
+              name: 'a',
+            );
+            final b = Provider.family.autoDispose<String, String>(
+              (ref, value) => ref.watch(a(value)),
+              dependencies: [a],
+              name: 'b',
+            );
 
-        root.read(provider);
-        root.read(family(42));
-        container.read(provider);
-        container.read(family(42));
+            final root = ProviderContainer.test();
+            final mid = ProviderContainer.test(
+              parent: root,
+              overrides: [a.overrideWith((ref, _) => 'mid')],
+            );
+            final container = ProviderContainer.test(
+              parent: mid,
+              overrides: [a('42').overrideWith((ref) => 'override 42')],
+            );
 
-        expect(
-          container.pointerManager.orphanPointers.pointers[provider],
-          same(root.pointerManager.orphanPointers.pointers[provider]),
-        );
+            final mid2 = ProviderContainer.test(
+              parent: root,
+              overrides: [a('42').overrideWith((ref) => 'mid')],
+            );
+            final container2 = ProviderContainer.test(
+              parent: mid2,
+              overrides: [a.overrideWith((ref, value) => 'override $value')],
+            );
 
-        expect(
-          container.pointerManager.familyPointers[family]!.pointers,
-          {
-            family(42): same(
-              root.pointerManager.familyPointers[family]!.pointers[family(42)],
-            ),
+            expect(container.read(b('42')), 'override 42');
+            expect(container2.read(b('21')), 'override 21');
           },
         );
       });
+
+      test(
+        'have ancestors and children share their pointers when not overridden',
+        () {
+          final root = ProviderContainer.test();
+          final container = ProviderContainer.test(
+            parent: root,
+            overrides: [
+              // An unrelated override, added to avoid the container optimizing
+              Provider((_) => 0, dependencies: const []),
+            ],
+          );
+          final provider = Provider((ref) => 0);
+          final family = Provider.family<int, int>((ref, id) => 0);
+
+          root.read(provider);
+          root.read(family(42));
+          container.read(provider);
+          container.read(family(42));
+
+          expect(
+            container.pointerManager.orphanPointers.pointers[provider],
+            same(root.pointerManager.orphanPointers.pointers[provider]),
+          );
+
+          expect(container.pointerManager.familyPointers[family]!.pointers, {
+            family(42): same(
+              root.pointerManager.familyPointers[family]!.pointers[family(42)],
+            ),
+          });
+        },
+      );
 
       test('on orphans, insert in orphanPointers', () {
         final provider = Provider((_) => 0);
@@ -694,29 +621,22 @@ void main() {
 
         final pointer = container.pointerManager.upsertPointer(provider);
 
-        expect(
-          container.pointerManager.orphanPointers.pointers,
-          {provider: pointer},
-        );
+        expect(container.pointerManager.orphanPointers.pointers, {
+          provider: pointer,
+        });
 
-        expect(
-          pointer,
-          isPointer(targetContainer: container, override: null),
-        );
+        expect(pointer, isPointer(targetContainer: container, override: null));
       });
 
       test('on families, adds a new pointer if not already present', () {
         final provider = Provider.family<int, int>((ref, _) => 0);
         final container = ProviderContainer.test();
 
-        final pointer = container.pointerManager.upsertPointer(
-          provider(42),
-        );
+        final pointer = container.pointerManager.upsertPointer(provider(42));
 
-        expect(
-          container.pointerManager.familyPointers[provider]!.pointers,
-          {provider(42): pointer},
-        );
+        expect(container.pointerManager.familyPointers[provider]!.pointers, {
+          provider(42): pointer,
+        });
 
         expect(
           pointer,
@@ -738,18 +658,14 @@ void main() {
 
         final pointer = container.pointerManager.upsertPointer(provider);
 
-        expect(
-          container.pointerManager.orphanPointers.pointers,
-          {provider: isPointer()},
-        );
+        expect(container.pointerManager.orphanPointers.pointers, {
+          provider: isPointer(),
+        });
 
         final removed = container.pointerManager.remove(provider);
 
         expect(removed, pointer);
-        expect(
-          container.pointerManager.orphanPointers.pointers,
-          isEmpty,
-        );
+        expect(container.pointerManager.orphanPointers.pointers, isEmpty);
       });
 
       test('removes family providers from family list', () {
@@ -760,40 +676,37 @@ void main() {
         // Mounting two values to avoid testing for empty families
         container.pointerManager.upsertPointer(family(21));
 
-        expect(
-          container.pointerManager.familyPointers[family]!.pointers,
-          {family(42): isPointer(), family(21): isPointer()},
-        );
+        expect(container.pointerManager.familyPointers[family]!.pointers, {
+          family(42): isPointer(),
+          family(21): isPointer(),
+        });
 
         final removed = container.pointerManager.remove(family(42));
 
         expect(removed, pointer);
-        expect(
-          container.pointerManager.familyPointers[family]!.pointers,
-          {family(21): isPointer()},
-        );
+        expect(container.pointerManager.familyPointers[family]!.pointers, {
+          family(21): isPointer(),
+        });
       });
 
-      test('if a family becomes empty after a remove, remove the directory',
-          () {
-        final family = Provider.family<int, int>((ref, _) => 0);
-        final container = ProviderContainer.test();
+      test(
+        'if a family becomes empty after a remove, remove the directory',
+        () {
+          final family = Provider.family<int, int>((ref, _) => 0);
+          final container = ProviderContainer.test();
 
-        final pointer = container.pointerManager.upsertPointer(family(42));
+          final pointer = container.pointerManager.upsertPointer(family(42));
 
-        expect(
-          container.pointerManager.familyPointers,
-          {family: isProviderDirectory()},
-        );
+          expect(container.pointerManager.familyPointers, {
+            family: isProviderDirectory(),
+          });
 
-        final removed = container.pointerManager.remove(family(42));
+          final removed = container.pointerManager.remove(family(42));
 
-        expect(removed, pointer);
-        expect(
-          container.pointerManager.familyPointers,
-          isEmpty,
-        );
-      });
+          expect(removed, pointer);
+          expect(container.pointerManager.familyPointers, isEmpty);
+        },
+      );
 
       test('if a family is not empty after a remove, keep the directory', () {
         final family = Provider.family<int, int>((ref, _) => 0);
@@ -802,122 +715,92 @@ void main() {
         final pointer = container.pointerManager.upsertPointer(family(42));
         container.pointerManager.upsertPointer(family(21));
 
-        expect(
-          container.pointerManager.familyPointers,
-          {
-            family: isProviderDirectory(
-              pointers: {
-                family(42): isPointer(),
-                family(21): isPointer(),
-              },
-            ),
-          },
-        );
+        expect(container.pointerManager.familyPointers, {
+          family: isProviderDirectory(
+            pointers: {family(42): isPointer(), family(21): isPointer()},
+          ),
+        });
 
         final removed = container.pointerManager.remove(family(42));
 
         expect(removed, pointer);
-        expect(
-          container.pointerManager.familyPointers,
-          {
-            family: isProviderDirectory(pointers: {family(21): isPointer()}),
-          },
-        );
+        expect(container.pointerManager.familyPointers, {
+          family: isProviderDirectory(pointers: {family(21): isPointer()}),
+        });
       });
 
       test('if an orphan provider is from an override, keep the pointer', () {
         final provider = Provider((_) => 0);
         final override = provider.overrideWithValue(42);
-        final container = ProviderContainer.test(
-          overrides: [override],
-        );
+        final container = ProviderContainer.test(overrides: [override]);
 
         final pointer = container.pointerManager.upsertPointer(provider);
 
-        expect(
-          container.pointerManager.orphanPointers.pointers,
-          {provider: isPointer(override: override)},
-        );
+        expect(container.pointerManager.orphanPointers.pointers, {
+          provider: isPointer(override: override),
+        });
 
         final removed = container.pointerManager.remove(provider);
 
         expect(removed, pointer);
-        expect(
-          container.pointerManager.orphanPointers.pointers,
-          {provider: isPointer(override: override)},
-        );
-      });
-
-      test('if a family provider is from a manual override, keep the pointer',
-          () {
-        final family = Provider.family<int, int>((ref, _) => 0);
-        final override = family(21).overrideWith((ref) => 42);
-        final container = ProviderContainer.test(
-          overrides: [override],
-        );
-
-        final pointer = container.pointerManager.upsertPointer(family(21));
-
-        expect(
-          container.pointerManager.familyPointers[family]!.pointers,
-          {family(21): isPointer(override: override)},
-        );
-
-        final removed = container.pointerManager.remove(family(21));
-
-        expect(removed, pointer);
-        expect(
-          container.pointerManager.familyPointers,
-          {
-            family: isProviderDirectory(
-              pointers: {family(21): isPointer(override: override)},
-            ),
-          },
-        );
+        expect(container.pointerManager.orphanPointers.pointers, {
+          provider: isPointer(override: override),
+        });
       });
 
       test(
-          'if a family becomes empty after a remove but is from a manual override, '
-          'keep the directory', () {
-        final family = Provider.family<int, int>((ref, _) => 0);
-        final override = family.overrideWith((ref, _) => 42);
-        final container = ProviderContainer.test(
-          overrides: [override],
-        );
+        'if a family provider is from a manual override, keep the pointer',
+        () {
+          final family = Provider.family<int, int>((ref, _) => 0);
+          final override = family(21).overrideWith((ref) => 42);
+          final container = ProviderContainer.test(overrides: [override]);
 
-        final pointer = container.pointerManager.upsertPointer(family(21));
+          final pointer = container.pointerManager.upsertPointer(family(21));
 
-        expect(
-          container.pointerManager.familyPointers,
-          {
+          expect(container.pointerManager.familyPointers[family]!.pointers, {
+            family(21): isPointer(override: override),
+          });
+
+          final removed = container.pointerManager.remove(family(21));
+
+          expect(removed, pointer);
+          expect(container.pointerManager.familyPointers, {
+            family: isProviderDirectory(
+              pointers: {family(21): isPointer(override: override)},
+            ),
+          });
+        },
+      );
+
+      test(
+        'if a family becomes empty after a remove but is from a manual override, '
+        'keep the directory',
+        () {
+          final family = Provider.family<int, int>((ref, _) => 0);
+          final override = family.overrideWith((ref, _) => 42);
+          final container = ProviderContainer.test(overrides: [override]);
+
+          final pointer = container.pointerManager.upsertPointer(family(21));
+
+          expect(container.pointerManager.familyPointers, {
             family: isProviderDirectory(
               override: override,
               pointers: {family(21): isPointer()},
             ),
-          },
-        );
+          });
 
-        final removed = container.pointerManager.remove(family(21));
+          final removed = container.pointerManager.remove(family(21));
 
-        expect(removed, pointer);
-        expect(
-          container.pointerManager.familyPointers,
-          {
-            family: isProviderDirectory(
-              override: override,
-              pointers: isEmpty,
-            ),
-          },
-        );
-      });
+          expect(removed, pointer);
+          expect(container.pointerManager.familyPointers, {
+            family: isProviderDirectory(override: override, pointers: isEmpty),
+          });
+        },
+      );
 
-      test(
-          'if an orphan is from a transitive override, '
+      test('if an orphan is from a transitive override, '
           'removes the pointer', () {
-        final dep = Provider(
-          (_) => 0,
-          dependencies: const [],
-        );
+        final dep = Provider((_) => 0, dependencies: const []);
         final provider = Provider<int>((ref) => 0, dependencies: [dep]);
         final root = ProviderContainer.test();
         final container = ProviderContainer.test(
@@ -927,32 +810,22 @@ void main() {
 
         final pointer = container.pointerManager.upsertPointer(provider);
 
-        expect(
-          container.pointerManager.orphanPointers.pointers,
-          {
-            dep: isPointer(override: dep),
-            provider: isPointer(
-              override: isTransitiveProviderOverride(provider),
-            ),
-          },
-        );
+        expect(container.pointerManager.orphanPointers.pointers, {
+          dep: isPointer(override: dep),
+          provider: isPointer(override: isTransitiveProviderOverride(provider)),
+        });
 
         final removed = container.pointerManager.remove(provider);
 
         expect(removed, pointer);
-        expect(
-          container.pointerManager.orphanPointers.pointers,
-          {dep: isPointer(override: dep)},
-        );
+        expect(container.pointerManager.orphanPointers.pointers, {
+          dep: isPointer(override: dep),
+        });
       });
 
-      test(
-          'if a family is from a transitive override and becomes empty, '
+      test('if a family is from a transitive override and becomes empty, '
           'remove the directory', () {
-        final dep = Provider(
-          (_) => 0,
-          dependencies: const [],
-        );
+        final dep = Provider((_) => 0, dependencies: const []);
         final family = Provider.family<int, int>(
           (ref, _) => 0,
           dependencies: [dep],
@@ -965,23 +838,17 @@ void main() {
 
         final pointer = container.pointerManager.upsertPointer(family(42));
 
-        expect(
-          container.pointerManager.familyPointers,
-          {
-            family: isProviderDirectory(
-              override: isTransitiveFamilyOverride(family),
-              pointers: {family(42): isPointer()},
-            ),
-          },
-        );
+        expect(container.pointerManager.familyPointers, {
+          family: isProviderDirectory(
+            override: isTransitiveFamilyOverride(family),
+            pointers: {family(42): isPointer()},
+          ),
+        });
 
         final removed = container.pointerManager.remove(family(42));
 
         expect(removed, pointer);
-        expect(
-          container.pointerManager.familyPointers,
-          isEmpty,
-        );
+        expect(container.pointerManager.familyPointers, isEmpty);
       });
     });
   });
@@ -992,10 +859,7 @@ void main() {
         final root = ProviderContainer();
         root.dispose();
 
-        expect(
-          () => ProviderContainer(parent: root),
-          throwsStateError,
-        );
+        expect(() => ProviderContainer(parent: root), throwsStateError);
 
         expect(
           root.children,
@@ -1040,78 +904,79 @@ void main() {
 
       group('overrides', () {
         test(
-            'throws if the same provider is overridden twice in the same container',
-            () {
-          final provider = Provider((ref) => 0);
+          'throws if the same provider is overridden twice in the same container',
+          () {
+            final provider = Provider((ref) => 0);
 
-          expect(
-            () => ProviderContainer.test(
+            expect(
+              () => ProviderContainer.test(
+                overrides: [
+                  provider.overrideWithValue(42),
+                  provider.overrideWithValue(21),
+                ],
+              ),
+              throwsA(isA<AssertionError>()),
+            );
+          },
+        );
+
+        test(
+          'throws if the same family is overridden twice in the same container',
+          () {
+            final provider = Provider.family<int, int>((ref, id) => 0);
+
+            expect(
+              () => ProviderContainer.test(
+                overrides: [
+                  provider.overrideWith((ref, arg) => arg),
+                  provider.overrideWith((ref, arg) => arg),
+                ],
+              ),
+              throwsA(isA<AssertionError>()),
+            );
+          },
+        );
+
+        test(
+          'supports overriding an already overridden provider/family in a different container',
+          () {
+            final provider = Provider((ref) => 0, dependencies: const []);
+            final family = Provider.family<int, int>(
+              (ref, id) => 0,
+              dependencies: const [],
+            );
+            final root = ProviderContainer(
               overrides: [
                 provider.overrideWithValue(42),
-                provider.overrideWithValue(21),
+                family.overrideWith((ref, arg) => arg),
               ],
-            ),
-            throwsA(isA<AssertionError>()),
-          );
-        });
+            );
+            addTearDown(root.dispose);
 
-        test(
-            'throws if the same family is overridden twice in the same container',
-            () {
-          final provider = Provider.family<int, int>((ref, id) => 0);
-
-          expect(
-            () => ProviderContainer.test(
+            final container = ProviderContainer(
+              parent: root,
               overrides: [
-                provider.overrideWith((ref, arg) => arg),
-                provider.overrideWith((ref, arg) => arg),
+                provider.overrideWithValue(21),
+                family.overrideWith((ref, arg) => arg * 2),
               ],
-            ),
-            throwsA(isA<AssertionError>()),
-          );
-        });
+            );
+            addTearDown(container.dispose);
+          },
+        );
 
         test(
-            'supports overriding an already overridden provider/family in a different container',
-            () {
-          final provider = Provider(
-            (ref) => 0,
-            dependencies: const [],
-          );
-          final family = Provider.family<int, int>(
-            (ref, id) => 0,
-            dependencies: const [],
-          );
-          final root = ProviderContainer(
-            overrides: [
-              provider.overrideWithValue(42),
-              family.overrideWith((ref, arg) => arg),
-            ],
-          );
-          addTearDown(root.dispose);
-
-          final container = ProviderContainer(
-            parent: root,
-            overrides: [
-              provider.overrideWithValue(21),
-              family.overrideWith((ref, arg) => arg * 2),
-            ],
-          );
-          addTearDown(container.dispose);
-        });
-
-        test(
-            'supports overriding a provider from a family, and then the family',
-            () {
-          final family = Provider.family<int, int>((ref, id) => 0);
-          final root = ProviderContainer(
-            overrides: [
-              family(42).overrideWithValue(42),
-              family.overrideWith((ref, arg) => arg),
-            ],
-          );
-          addTearDown(root.dispose);
-        });
+          'supports overriding a provider from a family, and then the family',
+          () {
+            final family = Provider.family<int, int>((ref, id) => 0);
+            final root = ProviderContainer(
+              overrides: [
+                family(42).overrideWithValue(42),
+                family.overrideWith((ref, arg) => arg),
+              ],
+            );
+            addTearDown(root.dispose);
+          },
+        );
       });
     });
 
@@ -1126,11 +991,7 @@ void main() {
         final dep = Provider((ref) => throw Exception());
         final provider = Provider((ref) => ref.watch(dep));
 
-        container.listen(
-          provider,
-          (previous, next) {},
-          fireImmediately: true,
-        );
+        container.listen(provider, (previous, next) {}, fireImmediately: true);
         expect(errors, isEmpty);
       });
     });
@@ -1153,22 +1014,23 @@ void main() {
     });
 
     test(
-        'Reading a provider with deps does not mount those deps if unused by the provider',
-        () {
-      final dep = Provider((_) => 0);
-      final provider = Provider((ref) => 0, dependencies: [dep]);
+      'Reading a provider with deps does not mount those deps if unused by the provider',
+      () {
+        final dep = Provider((_) => 0);
+        final provider = Provider((ref) => 0, dependencies: [dep]);
 
-      final container = ProviderContainer.test();
+        final container = ProviderContainer.test();
 
-      container.read(provider);
+        container.read(provider);
 
-      expect(
-        container.pointerManager
-            .listProviderPointers()
-            .map((e) => e.element?.origin),
-        [provider],
-      );
-    });
+        expect(
+          container.pointerManager.listProviderPointers().map(
+            (e) => e.element?.origin,
+          ),
+          [provider],
+        );
+      },
+    );
 
     group('pointers', () {
       test('has "container" pointing to "this"', () {
@@ -1195,45 +1057,44 @@ void main() {
 
       group('on scoped containers', () {
         test(
-            'Inheriting a transitively overridden family which contains family(arg) overrides '
-            'preserves the family(arg) overrides.', () {
-          final dep = Provider((_) => 0, dependencies: const []);
-          final provider = Provider.family<String, int>(
-            (ref, id) => 'root ${ref.watch(dep)}',
-            dependencies: [dep],
-          );
+          'Inheriting a transitively overridden family which contains family(arg) overrides '
+          'preserves the family(arg) overrides.',
+          () {
+            final dep = Provider((_) => 0, dependencies: const []);
+            final provider = Provider.family<String, int>(
+              (ref, id) => 'root ${ref.watch(dep)}',
+              dependencies: [dep],
+            );
 
-          final root = ProviderContainer.test(
-            overrides: [
-              provider(42).overrideWith((ref) {
-                return 'override ${ref.watch(dep)}';
-              }),
-            ],
-          );
+            final root = ProviderContainer.test(
+              overrides: [
+                provider(42).overrideWith((ref) {
+                  return 'override ${ref.watch(dep)}';
+                }),
+              ],
+            );
 
-          final container = ProviderContainer.test(
-            parent: root,
-            overrides: [dep.overrideWithValue(42)],
-          );
+            final container = ProviderContainer.test(
+              parent: root,
+              overrides: [dep.overrideWithValue(42)],
+            );
 
-          expect(
-            container.read(provider(42)),
-            'override 0',
-            reason: 'provider(42) is manually overridden, '
-                'so this disables auto-scoping',
-          );
-          expect(container.read(provider(21)), 'root 42');
-          expect(root.read(provider(21)), 'root 0');
-          expect(root.read(provider(42)), 'override 0');
-        });
+            expect(
+              container.read(provider(42)),
+              'override 0',
+              reason:
+                  'provider(42) is manually overridden, '
+                  'so this disables auto-scoping',
+            );
+            expect(container.read(provider(21)), 'root 42');
+            expect(root.read(provider(21)), 'root 0');
+            expect(root.read(provider(42)), 'override 0');
+          },
+        );
 
         test('does not inherit transitive overrides', () {
           final unrelated = Provider((_) => 0, dependencies: const []);
-          final dep = Provider(
-            (_) => 0,
-            dependencies: const [],
-            name: 'dep',
-          );
+          final dep = Provider((_) => 0, dependencies: const [], name: 'dep');
           final provider = Provider((_) => 0, dependencies: [dep], name: 'a');
           final family = Provider.family(
             (_, d) => 0,
@@ -1241,10 +1102,7 @@ void main() {
             name: 'b',
           );
           final root = ProviderContainer.test();
-          final mid = ProviderContainer.test(
-            parent: root,
-            overrides: [dep],
-          );
+          final mid = ProviderContainer.test(parent: root, overrides: [dep]);
 
           mid.pointerManager.upsertPointer(provider);
           mid.pointerManager.upsertPointer(family(42));
@@ -1257,36 +1115,24 @@ void main() {
             ],
           );
 
-          expect(
-            container.pointerManager.orphanPointers.pointers,
-            {
-              dep: isPointer(targetContainer: mid, override: dep),
-              unrelated: isPointer(),
-            },
-          );
-          expect(
-            container.pointerManager.familyPointers,
-            isEmpty,
-          );
+          expect(container.pointerManager.orphanPointers.pointers, {
+            dep: isPointer(targetContainer: mid, override: dep),
+            unrelated: isPointer(),
+          });
+          expect(container.pointerManager.familyPointers, isEmpty);
         });
 
         test('inherits overrides from its parents', () {
           final a = Provider((_) => 0, name: 'a');
           final aOverride = a.overrideWithValue(1);
-          final b = Provider(
-            (_) => 0,
-            name: 'b',
-            dependencies: const [],
-          );
+          final b = Provider((_) => 0, name: 'b', dependencies: const []);
           final bOverride = b.overrideWithValue(2);
-          final c = Provider(
-            (_) => 0,
-            name: 'c',
-            dependencies: const [],
-          );
+          final c = Provider((_) => 0, name: 'c', dependencies: const []);
           final cOverride = c.overrideWithValue(3);
-          final aFamily =
-              Provider.family<int, int>((_, __) => 0, name: 'aFamily');
+          final aFamily = Provider.family<int, int>(
+            (_, __) => 0,
+            name: 'aFamily',
+          );
           final aFamilyOverride = aFamily.overrideWith((_, __) => 1);
           final aValueOverride = aFamily(1).overrideWith((_) => 2);
           final bFamily = Provider.family<int, int>(
@@ -1316,44 +1162,41 @@ void main() {
             overrides: [cOverride, cFamilyOverride, cValueOverride],
           );
 
-          expect(
-            container.pointerManager.familyPointers,
-            {
-              aFamily: isProviderDirectory(
-                override: aFamilyOverride,
-                targetContainer: root,
-                pointers: {
-                  aFamily(1): isPointer(
-                    override: aValueOverride,
-                    targetContainer: root,
-                    element: null,
-                  ),
-                },
-              ),
-              bFamily: isProviderDirectory(
-                override: bFamilyOverride,
-                targetContainer: mid,
-                pointers: {
-                  bFamily(2): isPointer(
-                    override: bValueOverride,
-                    targetContainer: mid,
-                    element: null,
-                  ),
-                },
-              ),
-              cFamily: isProviderDirectory(
-                override: cFamilyOverride,
-                targetContainer: container,
-                pointers: {
-                  cFamily(3): isPointer(
-                    override: cValueOverride,
-                    targetContainer: container,
-                    element: null,
-                  ),
-                },
-              ),
-            },
-          );
+          expect(container.pointerManager.familyPointers, {
+            aFamily: isProviderDirectory(
+              override: aFamilyOverride,
+              targetContainer: root,
+              pointers: {
+                aFamily(1): isPointer(
+                  override: aValueOverride,
+                  targetContainer: root,
+                  element: null,
+                ),
+              },
+            ),
+            bFamily: isProviderDirectory(
+              override: bFamilyOverride,
+              targetContainer: mid,
+              pointers: {
+                bFamily(2): isPointer(
+                  override: bValueOverride,
+                  targetContainer: mid,
+                  element: null,
+                ),
+              },
+            ),
+            cFamily: isProviderDirectory(
+              override: cFamilyOverride,
+              targetContainer: container,
+              pointers: {
+                cFamily(3): isPointer(
+                  override: cValueOverride,
+                  targetContainer: container,
+                  element: null,
+                ),
+              },
+            ),
+          });
 
           expect(
             container.pointerManager.orphanPointers,
@@ -1411,31 +1254,22 @@ void main() {
 
         test('orphanPointers.containers are always equal to root', () {
           final root = ProviderContainer.test();
-          final provider = Provider(
-            (_) => 0,
-            dependencies: const [],
-          );
+          final provider = Provider((_) => 0, dependencies: const []);
           final container = ProviderContainer.test(
             parent: root,
             overrides: [provider],
           );
 
           expect(root.pointerManager.orphanPointers.targetContainer, root);
-          expect(
-            container.pointerManager.orphanPointers.targetContainer,
-            root,
-          );
+          expect(container.pointerManager.orphanPointers.targetContainer, root);
 
-          expect(
-            container.pointerManager.orphanPointers.pointers,
-            {
-              provider: isPointer(
-                targetContainer: container,
-                override: provider,
-                element: null,
-              ),
-            },
-          );
+          expect(container.pointerManager.orphanPointers.pointers, {
+            provider: isPointer(
+              targetContainer: container,
+              override: provider,
+              element: null,
+            ),
+          });
         });
 
         test('can scope a provider that is already scoped', () {
@@ -1460,59 +1294,42 @@ void main() {
             overrides: [providerOverride2, familyOverride2],
           );
 
-          expect(
-            leaf.pointerManager.orphanPointers.pointers,
-            {
-              provider: isPointer(
-                targetContainer: leaf,
-                override: providerOverride2,
-                element: null,
-              ),
-            },
-          );
-          expect(
-            leaf.pointerManager.familyPointers,
-            {
-              family: isProviderDirectory(
-                override: familyOverride2,
-                targetContainer: leaf,
-                pointers: isEmpty,
-              ),
-            },
-          );
+          expect(leaf.pointerManager.orphanPointers.pointers, {
+            provider: isPointer(
+              targetContainer: leaf,
+              override: providerOverride2,
+              element: null,
+            ),
+          });
+          expect(leaf.pointerManager.familyPointers, {
+            family: isProviderDirectory(
+              override: familyOverride2,
+              targetContainer: leaf,
+              pointers: isEmpty,
+            ),
+          });
 
-          expect(
-            mid.pointerManager.orphanPointers.pointers,
-            {
-              provider: isPointer(
-                targetContainer: mid,
-                override: providerOverride1,
-                element: null,
-              ),
-            },
-          );
-          expect(
-            mid.pointerManager.familyPointers,
-            {
-              family: isProviderDirectory(
-                override: familyOverride1,
-                targetContainer: mid,
-                pointers: isEmpty,
-              ),
-            },
-          );
+          expect(mid.pointerManager.orphanPointers.pointers, {
+            provider: isPointer(
+              targetContainer: mid,
+              override: providerOverride1,
+              element: null,
+            ),
+          });
+          expect(mid.pointerManager.familyPointers, {
+            family: isProviderDirectory(
+              override: familyOverride1,
+              targetContainer: mid,
+              pointers: isEmpty,
+            ),
+          });
         });
       });
 
       test('adds non-family provider overrides to orphanPointers', () {
-        final provider = Provider(
-          (_) => 0,
-          dependencies: const [],
-        );
+        final provider = Provider((_) => 0, dependencies: const []);
         final override = provider.overrideWithValue(42);
-        final root = ProviderContainer.test(
-          overrides: [override],
-        );
+        final root = ProviderContainer.test(overrides: [override]);
         final root2 = ProviderContainer.test();
         final container = ProviderContainer.test(
           parent: root2,
@@ -1534,10 +1351,7 @@ void main() {
           ),
         );
 
-        expect(
-          root2.pointerManager.orphanPointers.pointers,
-          isEmpty,
-        );
+        expect(root2.pointerManager.orphanPointers.pointers, isEmpty);
         expect(
           container.pointerManager.orphanPointers,
           isProviderDirectory(
@@ -1560,40 +1374,29 @@ void main() {
           dependencies: const [],
         );
         final override = provider.overrideWith((ref, arg) => 0);
-        final root = ProviderContainer.test(
-          overrides: [override],
-        );
+        final root = ProviderContainer.test(overrides: [override]);
         final root2 = ProviderContainer.test();
         final container = ProviderContainer.test(
           parent: root2,
           overrides: [override],
         );
 
-        expect(
-          root.pointerManager.familyPointers,
-          {
-            provider: isProviderDirectory(
-              override: override,
-              targetContainer: root,
-              pointers: isEmpty,
-            ),
-          },
-        );
+        expect(root.pointerManager.familyPointers, {
+          provider: isProviderDirectory(
+            override: override,
+            targetContainer: root,
+            pointers: isEmpty,
+          ),
+        });
 
-        expect(
-          root2.pointerManager.familyPointers,
-          isEmpty,
-        );
-        expect(
-          container.pointerManager.familyPointers,
-          {
-            provider: isProviderDirectory(
-              override: override,
-              targetContainer: container,
-              pointers: isEmpty,
-            ),
-          },
-        );
+        expect(root2.pointerManager.familyPointers, isEmpty);
+        expect(container.pointerManager.familyPointers, {
+          provider: isProviderDirectory(
+            override: override,
+            targetContainer: container,
+            pointers: isEmpty,
+          ),
+        });
       });
 
       test('adds family provider overrides to familyPointers.pointers', () {
@@ -1602,9 +1405,7 @@ void main() {
           dependencies: const [],
         );
         final override = provider(42).overrideWith((ref) => 0);
-        final root = ProviderContainer.test(
-          overrides: [override],
-        );
+        final root = ProviderContainer.test(overrides: [override]);
         final root2 = ProviderContainer.test();
 
         final container = ProviderContainer.test(
@@ -1612,86 +1413,74 @@ void main() {
           overrides: [override],
         );
 
-        expect(
-          root.pointerManager.familyPointers,
-          {
-            provider: isProviderDirectory(
-              override: null,
-              targetContainer: root,
-              pointers: {
-                provider(42): isPointer(
-                  targetContainer: root,
-                  override: override,
-                  element: null,
-                ),
-              },
-            ),
-          },
-        );
+        expect(root.pointerManager.familyPointers, {
+          provider: isProviderDirectory(
+            override: null,
+            targetContainer: root,
+            pointers: {
+              provider(42): isPointer(
+                targetContainer: root,
+                override: override,
+                element: null,
+              ),
+            },
+          ),
+        });
 
         expect(
           container.pointerManager.familyPointers,
           isNot(root2.pointerManager.familyPointers),
         );
 
-        expect(
-          root2.pointerManager.familyPointers,
-          isEmpty,
-        );
-
-        expect(
-          container.pointerManager.familyPointers,
-          {
-            provider: isProviderDirectory(
-              override: null,
-              targetContainer: root2,
-              pointers: {
-                provider(42): isPointer(
-                  targetContainer: container,
-                  override: override,
-                  element: null,
-                ),
-              },
-            ),
-          },
-        );
-      });
-
-      test(
-          'can override a family and a provider from that family in the same container',
-          () {
-        final family = Provider.family<String, int>((ref, a) => 'Hello $a');
-        final familyOverride = family.overrideWith((ref, a) => 'Hi $a');
-        final beforeOverride = family(42).overrideWithValue('Bonjour 42');
-        final afterOverride = family(21).overrideWithValue('Ola 42');
-
-        final container = ProviderContainer.test(
-          overrides: [
-            beforeOverride,
-            familyOverride,
-            afterOverride,
-          ],
-        );
+        expect(root2.pointerManager.familyPointers, isEmpty);
 
         expect(container.pointerManager.familyPointers, {
-          family: isProviderDirectory(
-            override: familyOverride,
-            targetContainer: container,
+          provider: isProviderDirectory(
+            override: null,
+            targetContainer: root2,
             pointers: {
-              family(42): isPointer(
-                override: beforeOverride,
+              provider(42): isPointer(
                 targetContainer: container,
-                element: null,
-              ),
-              family(21): isPointer(
-                override: afterOverride,
-                targetContainer: container,
+                override: override,
                 element: null,
               ),
             },
           ),
         });
       });
+
+      test(
+        'can override a family and a provider from that family in the same container',
+        () {
+          final family = Provider.family<String, int>((ref, a) => 'Hello $a');
+          final familyOverride = family.overrideWith((ref, a) => 'Hi $a');
+          final beforeOverride = family(42).overrideWithValue('Bonjour 42');
+          final afterOverride = family(21).overrideWithValue('Ola 42');
+
+          final container = ProviderContainer.test(
+            overrides: [beforeOverride, familyOverride, afterOverride],
+          );
+
+          expect(container.pointerManager.familyPointers, {
+            family: isProviderDirectory(
+              override: familyOverride,
+              targetContainer: container,
+              pointers: {
+                family(42): isPointer(
+                  override: beforeOverride,
+                  targetContainer: container,
+                  element: null,
+                ),
+                family(21): isPointer(
+                  override: afterOverride,
+                  targetContainer: container,
+                  element: null,
+                ),
+              },
+            ),
+          });
+        },
+      );
     });
 
     group('.test', () {
@@ -1706,19 +1495,14 @@ void main() {
       });
 
       test('Passes parameters', () {
-        final provider = Provider(
-          (ref) => 0,
-          dependencies: const [],
-        );
+        final provider = Provider((ref) => 0, dependencies: const []);
         final observer = _EmptyObserver();
 
         final root = ProviderContainer.test();
         final container = ProviderContainer.test(
           parent: root,
           observers: [observer],
-          overrides: [
-            provider.overrideWithValue(1),
-          ],
+          overrides: [provider.overrideWithValue(1)],
         );
 
         expect(container.root, root);
@@ -1729,54 +1513,54 @@ void main() {
 
     group('dispose', () {
       test(
-          'Handles cases where the ProviderContainer is disposed yet Scheduler.performDispose is invoked anyway',
-          () async {
-        // regression test for https://github.com/rrousselGit/riverpod/issues/1400
-        final provider = Provider.autoDispose(
-          (ref) => 0,
-          dependencies: const [],
-        );
-        final root = ProviderContainer.test();
-        final container = ProviderContainer.test(
-          parent: root,
-          overrides: [provider],
-        );
+        'Handles cases where the ProviderContainer is disposed yet Scheduler.performDispose is invoked anyway',
+        () async {
+          // regression test for https://github.com/rrousselGit/riverpod/issues/1400
+          final provider = Provider.autoDispose(
+            (ref) => 0,
+            dependencies: const [],
+          );
+          final root = ProviderContainer.test();
+          final container = ProviderContainer.test(
+            parent: root,
+            overrides: [provider],
+          );
 
-        container.read(provider);
-        container.dispose();
+          container.read(provider);
+          container.dispose();
 
-        await root.pump();
-      });
+          await root.pump();
+        },
+      );
 
       test(
-          'after a child container is disposed, '
-          'ref.watch keeps working on providers associated with the ancestor container',
-          () async {
-        final container = ProviderContainer.test();
-        final dep = StateProvider((ref) => 0);
-        final provider = Provider((ref) => ref.watch(dep));
-        final listener = Listener<int>();
-        final child = ProviderContainer.test(parent: container);
+        'after a child container is disposed, '
+        'ref.watch keeps working on providers associated with the ancestor container',
+        () async {
+          final container = ProviderContainer.test();
+          final dep = StateProvider((ref) => 0);
+          final provider = Provider((ref) => ref.watch(dep));
+          final listener = Listener<int>();
+          final child = ProviderContainer.test(parent: container);
 
-        container.listen<int>(provider, listener.call, fireImmediately: true);
+          container.listen<int>(provider, listener.call, fireImmediately: true);
 
-        verifyOnly(listener, listener(null, 0));
+          verifyOnly(listener, listener(null, 0));
 
-        child.dispose();
+          child.dispose();
 
-        container.read(dep.notifier).state++;
-        await container.pump();
+          container.read(dep.notifier).state++;
+          await container.pump();
 
-        verifyOnly(listener, listener(0, 1));
-      });
+          verifyOnly(listener, listener(0, 1));
+        },
+      );
 
       test('does not compute provider states if not loaded yet', () {
         var callCount = 0;
         final provider = Provider((_) => callCount++);
 
-        final container = ProviderContainer.test(
-          overrides: [provider],
-        );
+        final container = ProviderContainer.test(overrides: [provider]);
 
         container.dispose();
 
@@ -1787,13 +1571,10 @@ void main() {
         final rootOnDispose = OnDisposeMock();
         final childOnDispose = OnDisposeMock();
         final child2OnDispose = OnDisposeMock();
-        final provider = Provider(
-          (ref) {
-            ref.onDispose(rootOnDispose.call);
-            return 0;
-          },
-          dependencies: const [],
-        );
+        final provider = Provider((ref) {
+          ref.onDispose(rootOnDispose.call);
+          return 0;
+        }, dependencies: const []);
 
         final root = ProviderContainer.test();
         final container = ProviderContainer.test(
@@ -1829,10 +1610,7 @@ void main() {
 
         root.dispose();
 
-        verifyInOrder([
-          childOnDispose.call(),
-          rootOnDispose.call(),
-        ]);
+        verifyInOrder([childOnDispose.call(), rootOnDispose.call()]);
 
         expect(container.disposed, true);
         expect(root.disposed, true);
@@ -1881,9 +1659,7 @@ void main() {
       test('handles autoDispose', () async {
         final provider = Provider.autoDispose((ref) => 0);
         final container = ProviderContainer.test(
-          overrides: [
-            provider.overrideWith((ref) => 42),
-          ],
+          overrides: [provider.overrideWith((ref) => 42)],
         );
 
         expect(container.exists(provider), false);
@@ -1903,9 +1679,7 @@ void main() {
       test('Handles uninitialized overrideWith', () {
         final provider = Provider((ref) => 0);
         final container = ProviderContainer.test(
-          overrides: [
-            provider.overrideWith((ref) => 42),
-          ],
+          overrides: [provider.overrideWith((ref) => 42)],
         );
 
         expect(container.exists(provider), false);
@@ -1918,10 +1692,7 @@ void main() {
 
       test('handles nested providers', () {
         final provider = Provider((ref) => 0);
-        final provider2 = Provider(
-          (ref) => 0,
-          dependencies: const [],
-        );
+        final provider2 = Provider((ref) => 0, dependencies: const []);
         final root = ProviderContainer.test();
         final container = ProviderContainer.test(
           parent: root,
@@ -1943,48 +1714,45 @@ void main() {
         container.read(provider2);
 
         expect(container.exists(provider2), true);
-        expect(
-          container.getAllProviderElements().map((e) => e.origin),
-          [provider2],
-        );
+        expect(container.getAllProviderElements().map((e) => e.origin), [
+          provider2,
+        ]);
         expect(root.getAllProviderElements().map((e) => e.origin), [provider]);
       });
     });
 
     group('.pump', () {
       test(
-          'Waits for providers associated with this container and its parents to rebuild',
-          () async {
-        final dep = StateProvider((ref) => 0);
-        final a = Provider((ref) => ref.watch(dep));
-        final b = Provider(
-          (ref) => ref.watch(dep),
-          dependencies: const [],
-        );
-        final aListener = Listener<int>();
-        final bListener = Listener<int>();
+        'Waits for providers associated with this container and its parents to rebuild',
+        () async {
+          final dep = StateProvider((ref) => 0);
+          final a = Provider((ref) => ref.watch(dep));
+          final b = Provider((ref) => ref.watch(dep), dependencies: const []);
+          final aListener = Listener<int>();
+          final bListener = Listener<int>();
 
-        final root = ProviderContainer.test();
-        final scoped = ProviderContainer.test(parent: root, overrides: [b]);
+          final root = ProviderContainer.test();
+          final scoped = ProviderContainer.test(parent: root, overrides: [b]);
 
-        scoped.listen(a, aListener.call, fireImmediately: true);
-        scoped.listen(b, bListener.call, fireImmediately: true);
+          scoped.listen(a, aListener.call, fireImmediately: true);
+          scoped.listen(b, bListener.call, fireImmediately: true);
 
-        verifyOnly(aListener, aListener(null, 0));
-        verifyOnly(bListener, bListener(null, 0));
+          verifyOnly(aListener, aListener(null, 0));
+          verifyOnly(bListener, bListener(null, 0));
 
-        root.read(dep.notifier).state++;
-        await scoped.pump();
+          root.read(dep.notifier).state++;
+          await scoped.pump();
 
-        verifyOnly(aListener, aListener(0, 1));
-        verifyOnly(bListener, bListener(0, 1));
+          verifyOnly(aListener, aListener(0, 1));
+          verifyOnly(bListener, bListener(0, 1));
 
-        scoped.read(dep.notifier).state++;
-        await scoped.pump();
+          scoped.read(dep.notifier).state++;
+          await scoped.pump();
 
-        verifyOnly(aListener, aListener(1, 2));
-        verifyOnly(bListener, bListener(1, 2));
-      });
+          verifyOnly(aListener, aListener(1, 2));
+          verifyOnly(bListener, bListener(1, 2));
+        },
+      );
     });
 
     test('depth', () {
@@ -2012,10 +1780,7 @@ void main() {
 
         expect(container.read(provider), 42);
 
-        expect(
-          () => container.updateOverrides([]),
-          throwsA(isAssertionError),
-        );
+        expect(() => container.updateOverrides([]), throwsA(isAssertionError));
       });
 
       test('changing the override type at a given index throws', () {
@@ -2033,9 +1798,7 @@ void main() {
         var callCount = 0;
         final provider = Provider((_) => callCount++);
 
-        final container = ProviderContainer.test(
-          overrides: [provider],
-        );
+        final container = ProviderContainer.test(overrides: [provider]);
 
         container.updateOverrides([provider]);
 
@@ -2059,9 +1822,7 @@ void main() {
 
         verifyOnly(listener, listener(null, 42));
 
-        container.updateOverrides([
-          provider.overrideWithValue(42),
-        ]);
+        container.updateOverrides([provider.overrideWithValue(42)]);
 
         expect(container.read(provider), 42);
         verifyNoMoreInteractions(listener);
@@ -2080,40 +1841,35 @@ void main() {
 
         verifyOnly(listener, listener(null, 42));
 
-        container.updateOverrides([
-          provider.overrideWithValue(21),
-        ]);
+        container.updateOverrides([provider.overrideWithValue(21)]);
 
         verifyOnly(listener, listener(42, 21));
       });
 
-      test('updating parent override when there is a child override is no-op',
-          () async {
-        final provider = Provider(
-          (ref) => 0,
-          dependencies: const [],
-        );
-        final root = ProviderContainer.test(
-          overrides: [provider.overrideWithValue(21)],
-        );
-        final container = ProviderContainer.test(
-          parent: root,
-          overrides: [provider.overrideWithValue(42)],
-        );
-        final listener = Listener<int>();
+      test(
+        'updating parent override when there is a child override is no-op',
+        () async {
+          final provider = Provider((ref) => 0, dependencies: const []);
+          final root = ProviderContainer.test(
+            overrides: [provider.overrideWithValue(21)],
+          );
+          final container = ProviderContainer.test(
+            parent: root,
+            overrides: [provider.overrideWithValue(42)],
+          );
+          final listener = Listener<int>();
 
-        container.listen(provider, listener.call, fireImmediately: true);
+          container.listen(provider, listener.call, fireImmediately: true);
 
-        verifyOnly(listener, listener(null, 42));
+          verifyOnly(listener, listener(null, 42));
 
-        root.updateOverrides([
-          provider.overrideWithValue(22),
-        ]);
+          root.updateOverrides([provider.overrideWithValue(22)]);
 
-        await container.pump();
+          await container.pump();
 
-        verifyNoMoreInteractions(listener);
-      });
+          verifyNoMoreInteractions(listener);
+        },
+      );
 
       test('can update multiple ScopeProviders at once', () {
         final provider = Provider<int>((ref) => -1);
@@ -2140,29 +1896,20 @@ void main() {
           provider2.overrideWithValue(43),
         ]);
 
-        verifyInOrder([
-          listener(21, 22),
-          listener2(42, 43),
-        ]);
+        verifyInOrder([listener(21, 22), listener2(42, 43)]);
         verifyNoMoreInteractions(listener);
         verifyNoMoreInteractions(listener2);
       });
 
-      test(
-          'if listened from a child container, '
+      test('if listened from a child container, '
           'updating the parent override correctly notifies listeners', () {
-        final provider = Provider(
-          (ref) => 0,
-          dependencies: const [],
-        );
+        final provider = Provider((ref) => 0, dependencies: const []);
         final root = ProviderContainer.test(
           overrides: [provider.overrideWithValue(1)],
         );
         final mid = ProviderContainer.test(
           parent: root,
-          overrides: [
-            provider.overrideWithValue(42),
-          ],
+          overrides: [provider.overrideWithValue(42)],
         );
         final container = ProviderContainer.test(parent: mid);
         final listener = Listener<int>();
@@ -2171,9 +1918,7 @@ void main() {
 
         verifyOnly(listener, listener(null, 42));
 
-        mid.updateOverrides([
-          provider.overrideWithValue(21),
-        ]);
+        mid.updateOverrides([provider.overrideWithValue(21)]);
 
         verifyOnly(listener, listener(42, 21));
       });
@@ -2182,10 +1927,7 @@ void main() {
         final container = ProviderContainer.test();
         container.dispose();
 
-        expect(
-          () => container.updateOverrides([]),
-          throwsStateError,
-        );
+        expect(() => container.updateOverrides([]), throwsStateError);
       });
     });
 
@@ -2224,60 +1966,63 @@ void main() {
     });
 
     group('listen', () {
-      test('when no onError is specified, fallbacks to handleUncaughtError',
-          () async {
-        final errors = <Object>[];
-        final container = runZonedGuarded(
-          ProviderContainer.test,
-          (err, stack) => errors.add(err),
-        )!;
-        final isErrored = StateProvider((ref) => false);
-        final dep = Provider<int>((ref) {
-          if (ref.watch(isErrored)) throw UnimplementedError();
-          return 0;
-        });
-        final listener = Listener<int>();
+      test(
+        'when no onError is specified, fallbacks to handleUncaughtError',
+        () async {
+          final errors = <Object>[];
+          final container = runZonedGuarded(
+            ProviderContainer.test,
+            (err, stack) => errors.add(err),
+          )!;
+          final isErrored = StateProvider((ref) => false);
+          final dep = Provider<int>((ref) {
+            if (ref.watch(isErrored)) throw UnimplementedError();
+            return 0;
+          });
+          final listener = Listener<int>();
 
-        container.listen(dep, listener.call);
+          container.listen(dep, listener.call);
 
-        verifyZeroInteractions(listener);
-        expect(errors, isEmpty);
+          verifyZeroInteractions(listener);
+          expect(errors, isEmpty);
 
-        container.read(isErrored.notifier).state = true;
+          container.read(isErrored.notifier).state = true;
 
-        await container.pump();
+          await container.pump();
 
-        verifyZeroInteractions(listener);
-        expect(errors, [isUnimplementedError]);
-      });
+          verifyZeroInteractions(listener);
+          expect(errors, [isUnimplementedError]);
+        },
+      );
 
       test(
-          'when no onError is specified, selectors fallbacks to handleUncaughtError',
-          () async {
-        final errors = <Object>[];
-        final container = runZonedGuarded(
-          ProviderContainer.test,
-          (err, stack) => errors.add(err),
-        )!;
-        final isErrored = StateProvider((ref) => false);
-        final dep = Provider<int>((ref) {
-          if (ref.watch(isErrored)) throw UnimplementedError();
-          return 0;
-        });
-        final listener = Listener<int>();
+        'when no onError is specified, selectors fallbacks to handleUncaughtError',
+        () async {
+          final errors = <Object>[];
+          final container = runZonedGuarded(
+            ProviderContainer.test,
+            (err, stack) => errors.add(err),
+          )!;
+          final isErrored = StateProvider((ref) => false);
+          final dep = Provider<int>((ref) {
+            if (ref.watch(isErrored)) throw UnimplementedError();
+            return 0;
+          });
+          final listener = Listener<int>();
 
-        container.listen(dep.select((value) => value), listener.call);
+          container.listen(dep.select((value) => value), listener.call);
 
-        verifyZeroInteractions(listener);
-        expect(errors, isEmpty);
+          verifyZeroInteractions(listener);
+          expect(errors, isEmpty);
 
-        container.read(isErrored.notifier).state = true;
+          container.read(isErrored.notifier).state = true;
 
-        await container.pump();
+          await container.pump();
 
-        verifyZeroInteractions(listener);
-        expect(errors, [isUnimplementedError]);
-      });
+          verifyZeroInteractions(listener);
+          expect(errors, [isUnimplementedError]);
+        },
+      );
 
       test('when rebuild throws, calls onError', () async {
         final container = ProviderContainer.test();
@@ -2300,10 +2045,7 @@ void main() {
         await container.pump();
 
         verifyZeroInteractions(listener);
-        verifyOnly(
-          errorListener,
-          errorListener(isUnimplementedError, any),
-        );
+        verifyOnly(errorListener, errorListener(isUnimplementedError, any));
       });
 
       test('when rebuild throws on selector, calls onError', () async {
@@ -2331,37 +2073,35 @@ void main() {
         await container.pump();
 
         verifyZeroInteractions(listener);
-        verifyOnly(
-          errorListener,
-          errorListener(isUnimplementedError, any),
-        );
+        verifyOnly(errorListener, errorListener(isUnimplementedError, any));
       });
 
       test(
-          'when using selectors, `previous` is the latest notification instead of latest event',
-          () {
-        final container = ProviderContainer.test();
-        final provider = StateNotifierProvider<StateController<int>, int>(
-          (ref) => StateController(0),
-        );
-        final listener = Listener<bool>();
+        'when using selectors, `previous` is the latest notification instead of latest event',
+        () {
+          final container = ProviderContainer.test();
+          final provider = StateNotifierProvider<StateController<int>, int>(
+            (ref) => StateController(0),
+          );
+          final listener = Listener<bool>();
 
-        container.listen<bool>(
-          provider.select((value) => value.isEven),
-          listener.call,
-          fireImmediately: true,
-        );
+          container.listen<bool>(
+            provider.select((value) => value.isEven),
+            listener.call,
+            fireImmediately: true,
+          );
 
-        verifyOnly(listener, listener(null, true));
+          verifyOnly(listener, listener(null, true));
 
-        container.read(provider.notifier).state += 2;
+          container.read(provider.notifier).state += 2;
 
-        verifyNoMoreInteractions(listener);
+          verifyNoMoreInteractions(listener);
 
-        container.read(provider.notifier).state++;
+          container.read(provider.notifier).state++;
 
-        verifyOnly(listener, listener(true, false));
-      });
+          verifyOnly(listener, listener(true, false));
+        },
+      );
 
       test('expose previous and new value on change', () {
         final container = ProviderContainer.test();
@@ -2396,136 +2136,134 @@ void main() {
       });
 
       test(
-          'if a listener adds a container.listen, the new listener is not called immediately',
-          () {
-        final provider = StateProvider((ref) => 0);
-        final container = ProviderContainer.test();
+        'if a listener adds a container.listen, the new listener is not called immediately',
+        () {
+          final provider = StateProvider((ref) => 0);
+          final container = ProviderContainer.test();
 
-        final listener = Listener<int>();
+          final listener = Listener<int>();
 
-        container.listen<int>(provider, (prev, value) {
-          listener(prev, value);
-          container.listen<int>(provider, listener.call);
-        });
-
-        verifyZeroInteractions(listener);
-
-        container.read(provider.notifier).state++;
-
-        verify(listener(0, 1)).called(1);
-
-        container.read(provider.notifier).state++;
-
-        verify(listener(1, 2)).called(2);
-      });
-
-      test(
-          'if a listener removes another provider.listen, the removed listener is not called',
-          () {
-        final dep = StateProvider((ref) => 0);
-        final container = ProviderContainer.test();
-
-        final listener = Listener<int>();
-        final listener2 = Listener<int>();
-
-        final provider = Provider((ref) {
-          ProviderSubscription<int>? a;
-          ref.listen<int>(dep, (prev, value) {
+          container.listen<int>(provider, (prev, value) {
             listener(prev, value);
-            a?.close();
-            a = null;
+            container.listen<int>(provider, listener.call);
           });
 
-          a = ref.listen<int>(dep, listener2.call);
-        });
-        container.listen(provider, (prev, value) {});
+          verifyZeroInteractions(listener);
 
-        verifyZeroInteractions(listener);
-        verifyZeroInteractions(listener2);
+          container.read(provider.notifier).state++;
 
-        container.read(dep.notifier).state++;
+          verify(listener(0, 1)).called(1);
 
-        verifyOnly(listener, listener(0, 1));
-        verifyZeroInteractions(listener2);
+          container.read(provider.notifier).state++;
 
-        container.read(dep.notifier).state++;
-
-        verify(listener(1, 2)).called(1);
-        verifyNoMoreInteractions(listener2);
-      });
+          verify(listener(1, 2)).called(2);
+        },
+      );
 
       test(
-          'if a listener adds a provider.listen, the new listener is not called immediately',
-          () {
-        final dep = StateProvider((ref) => 0);
-        final container = ProviderContainer.test();
+        'if a listener removes another provider.listen, the removed listener is not called',
+        () {
+          final dep = StateProvider((ref) => 0);
+          final container = ProviderContainer.test();
 
-        final listener = Listener<int>();
+          final listener = Listener<int>();
+          final listener2 = Listener<int>();
 
-        final provider = Provider((ref) {
-          ref.listen<int>(dep, (prev, value) {
-            listener(prev, value);
-            ref.listen<int>(dep, listener.call);
+          final provider = Provider((ref) {
+            ProviderSubscription<int>? a;
+            ref.listen<int>(dep, (prev, value) {
+              listener(prev, value);
+              a?.close();
+              a = null;
+            });
+
+            a = ref.listen<int>(dep, listener2.call);
           });
-        });
-        container.listen(provider, (prev, value) {});
+          container.listen(provider, (prev, value) {});
 
-        verifyZeroInteractions(listener);
+          verifyZeroInteractions(listener);
+          verifyZeroInteractions(listener2);
 
-        container.read(dep.notifier).state++;
+          container.read(dep.notifier).state++;
 
-        verify(listener(0, 1)).called(1);
+          verifyOnly(listener, listener(0, 1));
+          verifyZeroInteractions(listener2);
 
-        container.read(dep.notifier).state++;
+          container.read(dep.notifier).state++;
 
-        verify(listener(1, 2)).called(2);
-      });
+          verify(listener(1, 2)).called(1);
+          verifyNoMoreInteractions(listener2);
+        },
+      );
+
+      test(
+        'if a listener adds a provider.listen, the new listener is not called immediately',
+        () {
+          final dep = StateProvider((ref) => 0);
+          final container = ProviderContainer.test();
+
+          final listener = Listener<int>();
+
+          final provider = Provider((ref) {
+            ref.listen<int>(dep, (prev, value) {
+              listener(prev, value);
+              ref.listen<int>(dep, listener.call);
+            });
+          });
+          container.listen(provider, (prev, value) {});
+
+          verifyZeroInteractions(listener);
+
+          container.read(dep.notifier).state++;
+
+          verify(listener(0, 1)).called(1);
+
+          container.read(dep.notifier).state++;
+
+          verify(listener(1, 2)).called(2);
+        },
+      );
 
       group('fireImmediately', () {
-        test('when no onError is specified, fallbacks to handleUncaughtError',
-            () {
-          final errors = <Object>[];
-          final container = runZonedGuarded(
-            ProviderContainer.test,
-            (err, stack) => errors.add(err),
-          )!;
-          final dep = Provider<int>((ref) => throw UnimplementedError());
-          final listener = Listener<int>();
+        test(
+          'when no onError is specified, fallbacks to handleUncaughtError',
+          () {
+            final errors = <Object>[];
+            final container = runZonedGuarded(
+              ProviderContainer.test,
+              (err, stack) => errors.add(err),
+            )!;
+            final dep = Provider<int>((ref) => throw UnimplementedError());
+            final listener = Listener<int>();
 
-          container.listen(
-            dep,
-            listener.call,
-            fireImmediately: true,
-          );
+            container.listen(dep, listener.call, fireImmediately: true);
 
-          verifyZeroInteractions(listener);
-          expect(errors, [
-            isUnimplementedError,
-          ]);
-        });
+            verifyZeroInteractions(listener);
+            expect(errors, [isUnimplementedError]);
+          },
+        );
 
         test(
-            'when no onError is specified on selectors, fallbacks to handleUncaughtError',
-            () {
-          final errors = <Object>[];
-          final container = runZonedGuarded(
-            ProviderContainer.test,
-            (err, stack) => errors.add(err),
-          )!;
-          final dep = Provider<int>((ref) => throw UnimplementedError());
-          final listener = Listener<int>();
+          'when no onError is specified on selectors, fallbacks to handleUncaughtError',
+          () {
+            final errors = <Object>[];
+            final container = runZonedGuarded(
+              ProviderContainer.test,
+              (err, stack) => errors.add(err),
+            )!;
+            final dep = Provider<int>((ref) => throw UnimplementedError());
+            final listener = Listener<int>();
 
-          container.listen(
-            dep.select((value) => value),
-            listener.call,
-            fireImmediately: true,
-          );
+            container.listen(
+              dep.select((value) => value),
+              listener.call,
+              fireImmediately: true,
+            );
 
-          verifyZeroInteractions(listener);
-          expect(errors, [
-            isUnimplementedError,
-          ]);
-        });
+            verifyZeroInteractions(listener);
+            expect(errors, [isUnimplementedError]);
+          },
+        );
 
         test('on provider that threw, fireImmediately calls onError', () {
           final container = ProviderContainer.test();
@@ -2581,141 +2319,145 @@ void main() {
         });
 
         test(
-            'correctly listens to the provider if selector onError listener throws',
-            () async {
-          final dep = StateProvider<int>((ref) => 0);
-          final provider = Provider<int>((ref) {
-            if (ref.watch(dep) == 0) {
-              throw UnimplementedError();
-            }
-            return ref.watch(dep);
-          });
-          final listener = Listener<int>();
-          final errorListener = ErrorListener();
-          var isFirstCall = true;
-
-          final errors = <Object>[];
-          final container = runZonedGuarded(
-            ProviderContainer.test,
-            (err, stack) => errors.add(err),
-          )!;
-
-          final sub = container.listen<int>(
-            provider.select((value) => value),
-            listener.call,
-            onError: (err, stack) {
-              errorListener(err, stack);
-              if (isFirstCall) {
-                isFirstCall = false;
-                throw StateError('Some error');
+          'correctly listens to the provider if selector onError listener throws',
+          () async {
+            final dep = StateProvider<int>((ref) => 0);
+            final provider = Provider<int>((ref) {
+              if (ref.watch(dep) == 0) {
+                throw UnimplementedError();
               }
-            },
-            fireImmediately: true,
-          );
+              return ref.watch(dep);
+            });
+            final listener = Listener<int>();
+            final errorListener = ErrorListener();
+            var isFirstCall = true;
 
-          container.listen(
-            provider,
-            (prev, value) {},
-            onError: (err, stack) {},
-          );
+            final errors = <Object>[];
+            final container = runZonedGuarded(
+              ProviderContainer.test,
+              (err, stack) => errors.add(err),
+            )!;
 
-          expect(sub, isNotNull);
-          verifyZeroInteractions(listener);
-          verifyOnly(
-            errorListener,
-            errorListener(argThat(isUnimplementedError), argThat(isNotNull)),
-          );
-          expect(errors, [isStateError]);
+            final sub = container.listen<int>(
+              provider.select((value) => value),
+              listener.call,
+              onError: (err, stack) {
+                errorListener(err, stack);
+                if (isFirstCall) {
+                  isFirstCall = false;
+                  throw StateError('Some error');
+                }
+              },
+              fireImmediately: true,
+            );
 
-          container.read(dep.notifier).state++;
-          await container.pump();
+            container.listen(
+              provider,
+              (prev, value) {},
+              onError: (err, stack) {},
+            );
 
-          verifyNoMoreInteractions(errorListener);
-          verifyOnly(listener, listener(null, 1));
-        });
+            expect(sub, isNotNull);
+            verifyZeroInteractions(listener);
+            verifyOnly(
+              errorListener,
+              errorListener(argThat(isUnimplementedError), argThat(isNotNull)),
+            );
+            expect(errors, [isStateError]);
+
+            container.read(dep.notifier).state++;
+            await container.pump();
+
+            verifyNoMoreInteractions(errorListener);
+            verifyOnly(listener, listener(null, 1));
+          },
+        );
 
         test(
-            'correctly listens to the provider if normal onError listener throws',
-            () async {
-          final dep = StateProvider<int>((ref) => 0);
-          final provider = Provider<int>((ref) {
-            if (ref.watch(dep) == 0) {
-              throw UnimplementedError();
-            }
-            return ref.watch(dep);
-          });
-          final listener = Listener<int>();
-          final errorListener = ErrorListener();
-          var isFirstCall = true;
-
-          final errors = <Object>[];
-          final container = runZonedGuarded(
-            ProviderContainer.test,
-            (err, stack) => errors.add(err),
-          )!;
-
-          final sub = container.listen<int>(
-            provider,
-            listener.call,
-            onError: (err, stack) {
-              errorListener(err, stack);
-              if (isFirstCall) {
-                isFirstCall = false;
-                throw StateError('Some error');
+          'correctly listens to the provider if normal onError listener throws',
+          () async {
+            final dep = StateProvider<int>((ref) => 0);
+            final provider = Provider<int>((ref) {
+              if (ref.watch(dep) == 0) {
+                throw UnimplementedError();
               }
-            },
-            fireImmediately: true,
-          );
+              return ref.watch(dep);
+            });
+            final listener = Listener<int>();
+            final errorListener = ErrorListener();
+            var isFirstCall = true;
 
-          container.listen(provider, (prev, value) {});
+            final errors = <Object>[];
+            final container = runZonedGuarded(
+              ProviderContainer.test,
+              (err, stack) => errors.add(err),
+            )!;
 
-          expect(sub, isNotNull);
-          verifyZeroInteractions(listener);
-          verifyOnly(
-            errorListener,
-            errorListener(argThat(isUnimplementedError), argThat(isNotNull)),
-          );
-          expect(errors, [isStateError]);
+            final sub = container.listen<int>(
+              provider,
+              listener.call,
+              onError: (err, stack) {
+                errorListener(err, stack);
+                if (isFirstCall) {
+                  isFirstCall = false;
+                  throw StateError('Some error');
+                }
+              },
+              fireImmediately: true,
+            );
 
-          container.read(dep.notifier).state++;
-          await container.pump();
+            container.listen(provider, (prev, value) {});
 
-          verifyNoMoreInteractions(errorListener);
-          verifyOnly(listener, listener(null, 1));
-        });
+            expect(sub, isNotNull);
+            verifyZeroInteractions(listener);
+            verifyOnly(
+              errorListener,
+              errorListener(argThat(isUnimplementedError), argThat(isNotNull)),
+            );
+            expect(errors, [isStateError]);
 
-        test('correctly listens to the provider if selector listener throws',
-            () {
-          final provider = StateProvider((ref) => 0);
-          final listener = Listener<int>();
-          var isFirstCall = true;
+            container.read(dep.notifier).state++;
+            await container.pump();
 
-          final errors = <Object>[];
-          final container = runZonedGuarded(
-            ProviderContainer.test,
-            (err, stack) => errors.add(err),
-          )!;
+            verifyNoMoreInteractions(errorListener);
+            verifyOnly(listener, listener(null, 1));
+          },
+        );
 
-          final sub = container.listen<int>(
-            provider.select((value) => value),
-            (prev, value) {
-              listener(prev, value);
-              if (isFirstCall) {
-                isFirstCall = false;
-                throw StateError('Some error');
-              }
-            },
-            fireImmediately: true,
-          );
+        test(
+          'correctly listens to the provider if selector listener throws',
+          () {
+            final provider = StateProvider((ref) => 0);
+            final listener = Listener<int>();
+            var isFirstCall = true;
 
-          expect(sub, isNotNull);
-          verifyOnly(listener, listener(null, 0));
-          expect(errors, [isStateError]);
+            final errors = <Object>[];
+            final container = runZonedGuarded(
+              ProviderContainer.test,
+              (err, stack) => errors.add(err),
+            )!;
 
-          container.read(provider.notifier).state++;
+            final sub = container.listen<int>(
+              provider.select((value) => value),
+              (prev, value) {
+                listener(prev, value);
+                if (isFirstCall) {
+                  isFirstCall = false;
+                  throw StateError('Some error');
+                }
+              },
+              fireImmediately: true,
+            );
 
-          verifyOnly(listener, listener(0, 1));
-        });
+            expect(sub, isNotNull);
+            verifyOnly(listener, listener(null, 0));
+            expect(errors, [isStateError]);
+
+            container.read(provider.notifier).state++;
+
+            verifyOnly(listener, listener(0, 1));
+          },
+        );
 
         test('correctly listens to the provider if normal listener throws', () {
           final provider = StateProvider((ref) => 0);
@@ -2728,17 +2470,13 @@ void main() {
             (err, stack) => errors.add(err),
           )!;
 
-          final sub = container.listen<int>(
-            provider,
-            (prev, notifier) {
-              listener(prev, notifier);
-              if (isFirstCall) {
-                isFirstCall = false;
-                throw StateError('Some error');
-              }
-            },
-            fireImmediately: true,
-          );
+          final sub = container.listen<int>(provider, (prev, notifier) {
+            listener(prev, notifier);
+            if (isFirstCall) {
+              isFirstCall = false;
+              throw StateError('Some error');
+            }
+          }, fireImmediately: true);
 
           expect(sub, isNotNull);
           verifyOnly(listener, listener(null, 0));
@@ -2755,8 +2493,11 @@ void main() {
         final container = ProviderContainer.test();
         final listener = Listener<int>();
 
-        final sub =
-            container.listen(provider, listener.call, fireImmediately: true);
+        final sub = container.listen(
+          provider,
+          listener.call,
+          fireImmediately: true,
+        );
 
         verify(listener(null, 0)).called(1);
         verifyNoMoreInteractions(listener);
@@ -2887,10 +2628,7 @@ void main() {
 
         container.read(count.notifier).state++;
 
-        await expectLater(
-          controller.stream,
-          emitsInOrder(<dynamic>[0, 1]),
-        );
+        await expectLater(controller.stream, emitsInOrder(<dynamic>[0, 1]));
       });
 
       test('call listener when provider emits an update', () async {
@@ -2951,8 +2689,9 @@ void main() {
         'can close a ProviderSubscription<Object?> multiple times with no effect',
         () {
           final container = ProviderContainer.test();
-          final provider =
-              StateNotifierProvider<StateController<int>, int>((ref) {
+          final provider = StateNotifierProvider<StateController<int>, int>((
+            ref,
+          ) {
             return StateController(0);
           });
           final listener = Listener<int>();
@@ -2974,8 +2713,9 @@ void main() {
         'closing an already closed ProviderSubscription<Object?> does not remove subscriptions with the same listener',
         () {
           final container = ProviderContainer.test();
-          final provider =
-              StateNotifierProvider<StateController<int>, int>((ref) {
+          final provider = StateNotifierProvider<StateController<int>, int>((
+            ref,
+          ) {
             return StateController(0);
           });
           final listener = Listener<int>();

@@ -5,10 +5,12 @@ part of '../../framework.dart';
 @internal
 @reopen
 @publicInCodegen
-abstract base class $FunctionalProvider< //
-        StateT,
-        ValueT,
-        CreatedT> //
+abstract base class $FunctionalProvider<
+  //
+  StateT,
+  ValueT,
+  CreatedT
+> //
     extends $ProviderBaseImpl<StateT> {
   /// Implementation detail of `riverpod_generator`.
   /// Do not use, as this can be removed at any time.
@@ -91,14 +93,14 @@ final class _FunctionalProviderView<StateT, ValueT, CreatedT> //
     this._inner,
     this._createOverride,
   ) : super(
-          name: _inner.name,
-          from: _inner.from,
-          argument: _inner.argument,
-          dependencies: _inner.dependencies,
-          $allTransitiveDependencies: _inner.$allTransitiveDependencies,
-          isAutoDispose: _inner.isAutoDispose,
-          retry: _inner.retry,
-        );
+        name: _inner.name,
+        from: _inner.from,
+        argument: _inner.argument,
+        dependencies: _inner.dependencies,
+        $allTransitiveDependencies: _inner.$allTransitiveDependencies,
+        isAutoDispose: _inner.isAutoDispose,
+        retry: _inner.retry,
+      );
 
   final $FunctionalProvider<StateT, ValueT, CreatedT> _inner;
   final Create<CreatedT> _createOverride;
@@ -121,12 +123,13 @@ final class _FunctionalProviderView<StateT, ValueT, CreatedT> //
 
 @internal
 abstract class $FunctionalProviderElement<StateT, ValueT, CreatedT>
-    extends ProviderElement<StateT, ValueT> with ElementWithFuture {
+    extends ProviderElement<StateT, ValueT>
+    with ElementWithFuture {
   /// Implementation detail of `riverpod_generator`.
   /// Do not use, as this can be removed at any time.
   $FunctionalProviderElement(super.pointer)
-      : provider =
-            pointer.origin as $FunctionalProvider<StateT, ValueT, CreatedT>;
+    : provider =
+          pointer.origin as $FunctionalProvider<StateT, ValueT, CreatedT>;
 
   @override
   $FunctionalProvider<StateT, ValueT, CreatedT> provider;

@@ -34,8 +34,8 @@ void main() {
     final container = ProviderContainer.test();
     final provider = ChangeNotifierProvider.autoDispose
         .family<ValueNotifier<int>, int>((ref, value) {
-      return ValueNotifier(value);
-    });
+          return ValueNotifier(value);
+        });
     final listener1 = Listener<ValueNotifier<int>>();
     final listener2 = Listener<ValueNotifier<int>>();
 
@@ -46,9 +46,7 @@ void main() {
       listener1,
       listener1(
         argThat(isNull),
-        argThat(
-          isA<ValueNotifier<int>>().having((s) => s.value, 'value', 0),
-        ),
+        argThat(isA<ValueNotifier<int>>().having((s) => s.value, 'value', 0)),
       ),
     );
 
@@ -56,9 +54,7 @@ void main() {
       listener2,
       listener2(
         argThat(isNull),
-        argThat(
-          isA<ValueNotifier<int>>().having((s) => s.value, 'value', 42),
-        ),
+        argThat(isA<ValueNotifier<int>>().having((s) => s.value, 'value', 42)),
       ),
     );
   });
@@ -74,10 +70,7 @@ void main() {
     addTearDown(container.dispose);
 
     var callCount = 0;
-    final sub = container.listen(
-      provider.notifier,
-      (_, __) => callCount++,
-    );
+    final sub = container.listen(provider.notifier, (_, __) => callCount++);
 
     expect(sub.read(), notifier);
     expect(callCount, 0);
@@ -104,8 +97,9 @@ void main() {
 
     expect(provider.name, 'example');
 
-    final provider2 =
-        ChangeNotifierProvider.autoDispose((_) => ValueNotifier(0));
+    final provider2 = ChangeNotifierProvider.autoDispose(
+      (_) => ValueNotifier(0),
+    );
 
     expect(provider2.name, isNull);
   });

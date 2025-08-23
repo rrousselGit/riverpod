@@ -7,10 +7,8 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   group('ChangeNotifierProvider.autoDispose.family', () {
     test('specifies `from` and `argument` for related providers', () {
-      final provider =
-          ChangeNotifierProvider.autoDispose.family<ValueNotifier<int>, int>(
-        (ref, _) => ValueNotifier(42),
-      );
+      final provider = ChangeNotifierProvider.autoDispose
+          .family<ValueNotifier<int>, int>((ref, _) => ValueNotifier(42));
 
       expect(provider(0).from, provider);
       expect(provider(0).argument, 0);
@@ -18,10 +16,8 @@ void main() {
 
     test('support null ChangeNotifier', () {
       final container = ProviderContainer.test();
-      final provider =
-          ChangeNotifierProvider.family.autoDispose<ValueNotifier<int>?, int>(
-        (ref, _) => null,
-      );
+      final provider = ChangeNotifierProvider.family
+          .autoDispose<ValueNotifier<int>?, int>((ref, _) => null);
 
       expect(container.read(provider(0)), null);
       expect(container.read(provider(0).notifier), null);
@@ -31,22 +27,27 @@ void main() {
 
     group('scoping an override overrides all the associated subproviders', () {
       test('when passing the provider itself', () async {
-        final provider =
-            ChangeNotifierProvider.autoDispose.family<ValueNotifier<int>, int>(
-          (ref, _) => ValueNotifier(0),
-          dependencies: const [],
-        );
+        final provider = ChangeNotifierProvider.autoDispose
+            .family<ValueNotifier<int>, int>(
+              (ref, _) => ValueNotifier(0),
+              dependencies: const [],
+            );
         final root = ProviderContainer.test();
-        final container =
-            ProviderContainer.test(parent: root, overrides: [provider]);
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [provider],
+        );
 
         expect(container.read(provider(0).notifier).value, 0);
         expect(container.read(provider(0)).value, 0);
         expect(
           container.getAllProviderElementsInOrder(),
           unorderedEquals(<Object?>[
-            isA<ProviderElement>()
-                .having((e) => e.origin, 'origin', provider(0)),
+            isA<ProviderElement>().having(
+              (e) => e.origin,
+              'origin',
+              provider(0),
+            ),
           ]),
         );
         expect(root.getAllProviderElementsInOrder(), isEmpty);
@@ -54,11 +55,11 @@ void main() {
 
       test('ChangeNotifier can be auto-scoped', () async {
         final dep = Provider((ref) => 0, dependencies: const []);
-        final provider =
-            ChangeNotifierProvider.autoDispose.family<ValueNotifier<int>, int>(
-          (ref, i) => ValueNotifier(ref.watch(dep) + i),
-          dependencies: [dep],
-        );
+        final provider = ChangeNotifierProvider.autoDispose
+            .family<ValueNotifier<int>, int>(
+              (ref, i) => ValueNotifier(ref.watch(dep) + i),
+              dependencies: [dep],
+            );
         final root = ProviderContainer.test();
         final container = ProviderContainer.test(
           parent: root,
@@ -72,17 +73,15 @@ void main() {
       });
 
       test('when using provider.overrideWith', () async {
-        final provider =
-            ChangeNotifierProvider.autoDispose.family<ValueNotifier<int>, int>(
-          (ref, _) => ValueNotifier(0),
-          dependencies: const [],
-        );
+        final provider = ChangeNotifierProvider.autoDispose
+            .family<ValueNotifier<int>, int>(
+              (ref, _) => ValueNotifier(0),
+              dependencies: const [],
+            );
         final root = ProviderContainer.test();
         final container = ProviderContainer.test(
           parent: root,
-          overrides: [
-            provider.overrideWith((ref, value) => ValueNotifier(42)),
-          ],
+          overrides: [provider.overrideWith((ref, value) => ValueNotifier(42))],
         );
 
         expect(container.read(provider(0).notifier).value, 42);
@@ -91,8 +90,11 @@ void main() {
         expect(
           container.getAllProviderElementsInOrder(),
           unorderedEquals(<Object?>[
-            isA<ProviderElement>()
-                .having((e) => e.origin, 'origin', provider(0)),
+            isA<ProviderElement>().having(
+              (e) => e.origin,
+              'origin',
+              provider(0),
+            ),
           ]),
         );
       });

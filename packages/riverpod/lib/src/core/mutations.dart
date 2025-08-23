@@ -52,20 +52,23 @@ final class MutationTransaction {
   }
 }
 
-final class _MutationProvider<ValueT> extends $FunctionalProvider<
-    _MutationNotifier<ValueT>,
-    _MutationNotifier<ValueT>,
-    _MutationNotifier<ValueT>> {
+final class _MutationProvider<ValueT>
+    extends
+        $FunctionalProvider<
+          _MutationNotifier<ValueT>,
+          _MutationNotifier<ValueT>,
+          _MutationNotifier<ValueT>
+        > {
   const _MutationProvider(this.mutation)
-      : super(
-          from: null,
-          argument: null,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-          retry: null,
-          name: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+        retry: null,
+        name: null,
+      );
 
   @override
   bool get _isSynthetic => true;
@@ -96,7 +99,7 @@ class _MutationNotifier<ValueT> {
 
   final MutationState<ValueT> state;
   final void Function(MutationState<ValueT> state, MutationTransaction ref)
-      setState;
+  setState;
   final void Function(MutationTransaction ref) setRef;
   final MutationTransaction? Function() getRef;
 
@@ -106,10 +109,13 @@ class _MutationNotifier<ValueT> {
   }
 }
 
-class _MutationElement<StateT> extends $FunctionalProviderElement<
-        _MutationNotifier<StateT>,
-        _MutationNotifier<StateT>,
-        _MutationNotifier<StateT>>
+class _MutationElement<StateT>
+    extends
+        $FunctionalProviderElement<
+          _MutationNotifier<StateT>,
+          _MutationNotifier<StateT>,
+          _MutationNotifier<StateT>
+        >
     with SyncProviderElement<_MutationNotifier<StateT>> {
   _MutationElement(super.pointer);
 
@@ -378,10 +384,11 @@ extension<StateT> on Mutation<StateT> {
 @internal
 final class MutationImpl<ResultT>
     with
-        SyncProviderTransformerMixin<_MutationNotifier<ResultT>,
-            MutationState<ResultT>>
-    implements
-        Mutation<ResultT> {
+        SyncProviderTransformerMixin<
+          _MutationNotifier<ResultT>,
+          MutationState<ResultT>
+        >
+    implements Mutation<ResultT> {
   MutationImpl({this.label}) : _key = null;
 
   MutationImpl._keyed(this._key, {this.label});
@@ -441,10 +448,10 @@ final class MutationImpl<ResultT>
   @override
   void reset(MutationTarget target) {
     final container = target.container;
-    final _MutationNotifier(:state, :setState, :getRef) =
-        container.read<_MutationNotifier<ResultT>>(
-      _MutationProvider(this),
-    );
+    final _MutationNotifier(:state, :setState, :getRef) = container
+        .read<_MutationNotifier<ResultT>>(
+          _MutationProvider(this),
+        );
 
     final ref = getRef();
     if (ref == null) return;
@@ -456,8 +463,9 @@ final class MutationImpl<ResultT>
     ProviderSubscription<_MutationNotifier<ResultT>> sub,
     MutationTransaction ref,
   ) {
-    final _MutationNotifier(:state, :setState, :setRef) =
-        sub.readSafe().valueOrRawException;
+    final _MutationNotifier(:state, :setState, :setRef) = sub
+        .readSafe()
+        .valueOrRawException;
 
     setRef(ref);
 
@@ -469,8 +477,9 @@ final class MutationImpl<ResultT>
     MutationTransaction ref,
     ResultT result,
   ) {
-    final _MutationNotifier(:state, :setState) =
-        sub.readSafe().valueOrRawException;
+    final _MutationNotifier(:state, :setState) = sub
+        .readSafe()
+        .valueOrRawException;
 
     setState(MutationSuccess<ResultT>._(result), ref);
   }
@@ -481,8 +490,9 @@ final class MutationImpl<ResultT>
     Object error,
     StackTrace stackTrace,
   ) {
-    final _MutationNotifier(:state, :setState) =
-        sub.readSafe().valueOrRawException;
+    final _MutationNotifier(:state, :setState) = sub
+        .readSafe()
+        .valueOrRawException;
 
     setState(MutationError<ResultT>._(error, stackTrace), ref);
   }

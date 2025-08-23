@@ -7,15 +7,16 @@ import 'integration/async.dart';
 
 void main() {
   test(
-      'Creates an AsyncNotifierProvider<T> if @riverpod is used on an async class',
-      () {
-    final container = ProviderContainer.test();
+    'Creates an AsyncNotifierProvider<T> if @riverpod is used on an async class',
+    () {
+      final container = ProviderContainer.test();
 
-    const ProviderBase<AsyncValue<String>> provider = publicClassProvider;
-    final AsyncValue<String> result = container.read(publicClassProvider);
+      const ProviderBase<AsyncValue<String>> provider = publicClassProvider;
+      final AsyncValue<String> result = container.read(publicClassProvider);
 
-    expect(result, const AsyncData('Hello world'));
-  });
+      expect(result, const AsyncData('Hello world'));
+    },
+  );
 
   test('Generates .name for providers', () {
     expect(publicClassProvider.name, 'publicClassProvider');
@@ -43,16 +44,20 @@ void main() {
   test('Supports overriding family notifiers', () {
     final container = ProviderContainer.test(
       overrides: [
-        genericClassProvider
-            .overrideWith(<ObjT extends num>() => GenericClass<ObjT>()),
+        genericClassProvider.overrideWith(
+          <ObjT extends num>() => GenericClass<ObjT>(),
+        ),
         familyClassProvider.overrideWith(() => FamilyClass('Hello foo')),
-        familyClassProvider(42, third: .42)
-            .overrideWith(() => FamilyClass('Hello world')),
+        familyClassProvider(
+          42,
+          third: .42,
+        ).overrideWith(() => FamilyClass('Hello world')),
       ],
     );
 
-    final notifier =
-        container.read(familyClassProvider(42, third: .42).notifier);
+    final notifier = container.read(
+      familyClassProvider(42, third: .42).notifier,
+    );
     expect(notifier.param, 'Hello world');
     expect(notifier.first, 42);
     expect(notifier.second, null);
@@ -66,80 +71,75 @@ void main() {
   });
 
   test(
-      'Creates a NotifierProvider.family<T> if @riverpod is used on a synchronous function with parameters',
-      () async {
-    final container = ProviderContainer.test();
+    'Creates a NotifierProvider.family<T> if @riverpod is used on a synchronous function with parameters',
+    () async {
+      final container = ProviderContainer.test();
 
-    const FamilyClassFamily family = familyClassProvider;
+      const FamilyClassFamily family = familyClassProvider;
 
-    expect(familyClassProvider(42, third: .42).from, familyClassProvider);
+      expect(familyClassProvider(42, third: .42).from, familyClassProvider);
 
-    expect(
-      familyClassProvider(42, third: .42),
-      familyClassProvider(42, third: .42),
-    );
-    expect(
-      familyClassProvider(42, third: .42),
-      isNot(familyClassProvider(42, third: .21)),
-    );
-    expect(
-      familyClassProvider(42, third: .42).hashCode,
-      isNot(familyClassProvider(42, third: .21).hashCode),
-    );
+      expect(
+        familyClassProvider(42, third: .42),
+        familyClassProvider(42, third: .42),
+      );
+      expect(
+        familyClassProvider(42, third: .42),
+        isNot(familyClassProvider(42, third: .21)),
+      );
+      expect(
+        familyClassProvider(42, third: .42).hashCode,
+        isNot(familyClassProvider(42, third: .21).hashCode),
+      );
 
-    // handle defaults
-    expect(
-      familyClassProvider(42, third: .42),
-      familyClassProvider(
-        42,
-        third: .42,
-      ),
-    );
-    expect(
-      familyClassProvider(42, third: .42).hashCode,
-      familyClassProvider(
-        42,
-        third: .42,
-      ).hashCode,
-    );
+      // handle defaults
+      expect(
+        familyClassProvider(42, third: .42),
+        familyClassProvider(42, third: .42),
+      );
+      expect(
+        familyClassProvider(42, third: .42).hashCode,
+        familyClassProvider(42, third: .42).hashCode,
+      );
 
-    final FamilyClassProvider provider = familyClassProvider(
-      42,
-      second: 'x42',
-      third: .42,
-      fourth: false,
-      fifth: const ['x42'],
-    );
-    // ignore: invalid_use_of_internal_member // Just checking
-    final ProviderBase<AsyncValue<String>> futureProvider = provider;
-
-    final sub = container.listen(
-      familyClassProvider(
+      final FamilyClassProvider provider = familyClassProvider(
         42,
         second: 'x42',
         third: .42,
         fourth: false,
         fifth: const ['x42'],
-      ).future,
-      (previous, next) {},
-    );
-    await sub.read();
+      );
+      // ignore: invalid_use_of_internal_member // Just checking
+      final ProviderBase<AsyncValue<String>> futureProvider = provider;
 
-    final AsyncValue<String> result = container.read(
-      familyClassProvider(
-        42,
-        second: 'x42',
-        third: .42,
-        fourth: false,
-        fifth: const ['x42'],
-      ),
-    );
+      final sub = container.listen(
+        familyClassProvider(
+          42,
+          second: 'x42',
+          third: .42,
+          fourth: false,
+          fifth: const ['x42'],
+        ).future,
+        (previous, next) {},
+      );
+      await sub.read();
 
-    expect(
-      result,
-      const AsyncData(
-        '(first: 42, second: x42, third: 0.42, fourth: false, fifth: [x42])',
-      ),
-    );
-  });
+      final AsyncValue<String> result = container.read(
+        familyClassProvider(
+          42,
+          second: 'x42',
+          third: .42,
+          fourth: false,
+          fifth: const ['x42'],
+        ),
+      );
+
+      expect(
+        result,
+        const AsyncData(
+          '(first: 42, second: x42, third: 0.42, fourth: false, fifth: [x42])',
+        ),
+      );
+    },
+  );
 }

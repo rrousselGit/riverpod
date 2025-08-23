@@ -14,10 +14,7 @@ String assetPath(AssetId assetId) {
 abstract class ParserGenerator<AnnotationT>
     extends GeneratorForAnnotation<AnnotationT> {
   @override
-  Future<String> generate(
-    LibraryReader library,
-    BuildStep buildStep,
-  ) async {
+  Future<String> generate(LibraryReader library, BuildStep buildStep) async {
     final firstAnnotatedElementFromUniqueSource = <Uri, Element2>{};
 
     for (final annotated in library.annotatedWithExact(

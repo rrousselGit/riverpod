@@ -21,19 +21,14 @@ class ProtectedNotifierProperties extends RiverpodLintRule {
     CustomLintContext context,
   ) {
     context.registry.addPropertyAccess((propertyAccess) {
-      const protectedProperties = {
-        'state',
-        'stateOrNull',
-        'future',
-        'ref',
-      };
+      const protectedProperties = {'state', 'stateOrNull', 'future', 'ref'};
 
       if (!protectedProperties.contains(propertyAccess.propertyName.name)) {
         return;
       }
 
-      final enclosingClass =
-          propertyAccess.thisOrAncestorOfType<ClassDeclaration>();
+      final enclosingClass = propertyAccess
+          .thisOrAncestorOfType<ClassDeclaration>();
       final enclosingClassElement = enclosingClass?.declaredFragment?.element;
       if (enclosingClass == null || enclosingClassElement == null) return;
 

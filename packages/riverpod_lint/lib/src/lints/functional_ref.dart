@@ -79,7 +79,11 @@ class FunctionalRefFix extends RiverpodFix {
       }
 
       final refNode = declaration
-          .node.functionExpression.parameters!.parameters.firstOrNull;
+          .node
+          .functionExpression
+          .parameters!
+          .parameters
+          .firstOrNull;
       if (refNode == null || refNode.isNamed) {
         // No ref parameter, adding one
         final changeBuilder = reporter.createChangeBuilder(
@@ -119,10 +123,7 @@ class FunctionalRefFix extends RiverpodFix {
 
         final type = typeAnnotationFor(refNode);
         builder.addSimpleReplacement(
-          sourceRangeFrom(
-            start: type.offset,
-            end: refNode.name!.offset,
-          ),
+          sourceRangeFrom(start: type.offset, end: refNode.name!.offset),
           '$ref ',
         );
       });

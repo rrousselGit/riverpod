@@ -2,38 +2,42 @@ part of '../framework.dart';
 
 /// A typedef representing the constructor of any classical provider.
 @internal
-typedef FunctionalProviderFactory< //
-        ProviderT,
-        CreatedT,
-        ArgT>
-    = ProviderT Function(
-  Create<CreatedT> create, {
-  required String? name,
-  required List<ProviderOrFamily>? dependencies,
-  required List<ProviderOrFamily>? $allTransitiveDependencies,
-  required bool isAutoDispose,
-  required Family from,
-  required ArgT argument,
-  required Retry? retry,
-});
+typedef FunctionalProviderFactory<
+  //
+  ProviderT,
+  CreatedT,
+  ArgT
+> =
+    ProviderT Function(
+      Create<CreatedT> create, {
+      required String? name,
+      required List<ProviderOrFamily>? dependencies,
+      required List<ProviderOrFamily>? $allTransitiveDependencies,
+      required bool isAutoDispose,
+      required Family from,
+      required ArgT argument,
+      required Retry? retry,
+    });
 
 /// A typedef representing the constructor of a [NotifierProvider].
 @internal
-typedef ClassProviderFactory< //
-        NotifierT,
-        ProviderT,
-        CreatedT,
-        ArgT>
-    = ProviderT Function(
-  NotifierT Function() create, {
-  required String? name,
-  required Iterable<ProviderOrFamily>? dependencies,
-  required Iterable<ProviderOrFamily>? $allTransitiveDependencies,
-  required bool isAutoDispose,
-  required Family from,
-  required ArgT argument,
-  required Retry? retry,
-});
+typedef ClassProviderFactory<
+  //
+  NotifierT,
+  ProviderT,
+  CreatedT,
+  ArgT
+> =
+    ProviderT Function(
+      NotifierT Function() create, {
+      required String? name,
+      required Iterable<ProviderOrFamily>? dependencies,
+      required Iterable<ProviderOrFamily>? $allTransitiveDependencies,
+      required bool isAutoDispose,
+      required Family from,
+      required ArgT argument,
+      required Retry? retry,
+    });
 
 /// A [Create] equivalent used by [Family].
 @internal
@@ -77,13 +81,14 @@ base class $Family extends Family {
 
 /// Setup how a family is overridden
 @internal
-typedef SetupFamilyOverride<ArgT> = void Function(
-  ArgT argument,
-  void Function({
-    required $ProviderBaseImpl<Object?> origin,
-    required $ProviderBaseImpl<Object?> override,
-  }),
-);
+typedef SetupFamilyOverride<ArgT> =
+    void Function(
+      ArgT argument,
+      void Function({
+        required $ProviderBaseImpl<Object?> origin,
+        required $ProviderBaseImpl<Object?> override,
+      }),
+    );
 
 @internal
 @publicInCodegen
@@ -112,13 +117,16 @@ base mixin $FunctionalFamilyOverride<CreatedT, ArgT> on Family {
 /// This API is not meant for public consumption.
 @internal
 @reopen
-base class FunctionalFamily< //
-        StateT,
-        ValueT,
-        ArgT,
-        CreatedT,
-        ProviderT extends $FunctionalProvider<StateT, ValueT, CreatedT>>
-    extends Family with $FunctionalFamilyOverride<CreatedT, ArgT> {
+base class FunctionalFamily<
+  //
+  StateT,
+  ValueT,
+  ArgT,
+  CreatedT,
+  ProviderT extends $FunctionalProvider<StateT, ValueT, CreatedT>
+>
+    extends Family
+    with $FunctionalFamilyOverride<CreatedT, ArgT> {
   /// A base implementation for [Family], used by the various providers to
   /// help them define a [Family].
   ///
@@ -126,7 +134,7 @@ base class FunctionalFamily< //
   const FunctionalFamily(
     this._createFn, {
     required FunctionalProviderFactory<ProviderT, CreatedT, ArgT>
-        providerFactory,
+    providerFactory,
     required super.name,
     required super.dependencies,
     required super.$allTransitiveDependencies,
@@ -160,15 +168,22 @@ base class FunctionalFamily< //
 
 @internal
 @publicInCodegen
-base mixin $ClassFamilyOverride<NotifierT extends AnyNotifier<StateT, ValueT>,
-    StateT, ValueT, CreatedT, ArgT> on Family {
+base mixin $ClassFamilyOverride<
+  NotifierT extends AnyNotifier<StateT, ValueT>,
+  StateT,
+  ValueT,
+  CreatedT,
+  ArgT
+>
+    on Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(NotifierT Function() create) {
     return $FamilyOverride(
       from: this,
       createElement: (pointer) {
-        final provider = pointer.origin
-            as $ClassProvider<NotifierT, StateT, ValueT, CreatedT>;
+        final provider =
+            pointer.origin
+                as $ClassProvider<NotifierT, StateT, ValueT, CreatedT>;
 
         return provider.$view(create: create).$createElement(pointer);
       },
@@ -182,8 +197,9 @@ base mixin $ClassFamilyOverride<NotifierT extends AnyNotifier<StateT, ValueT>,
     return $FamilyOverride(
       from: this,
       createElement: (pointer) {
-        final provider = pointer.origin
-            as $ClassProvider<NotifierT, StateT, ValueT, CreatedT>;
+        final provider =
+            pointer.origin
+                as $ClassProvider<NotifierT, StateT, ValueT, CreatedT>;
 
         return provider
             .$view(runNotifierBuildOverride: build)
@@ -200,13 +216,15 @@ base mixin $ClassFamilyOverride<NotifierT extends AnyNotifier<StateT, ValueT>,
 /// This API is not meant for public consumption.
 @internal
 @reopen
-base class ClassFamily< //
-        NotifierT extends AnyNotifier<StateT, ValueT>,
-        StateT,
-        ValueT,
-        ArgT,
-        CreatedT,
-        ProviderT extends $ClassProvider<NotifierT, StateT, ValueT, CreatedT>>
+base class ClassFamily<
+  //
+  NotifierT extends AnyNotifier<StateT, ValueT>,
+  StateT,
+  ValueT,
+  ArgT,
+  CreatedT,
+  ProviderT extends $ClassProvider<NotifierT, StateT, ValueT, CreatedT>
+>
     extends Family
     with $ClassFamilyOverride<NotifierT, StateT, ValueT, CreatedT, ArgT> {
   /// A base implementation for [Family], used by the various providers to
@@ -216,7 +234,7 @@ base class ClassFamily< //
   const ClassFamily(
     this._createFn, {
     required ClassProviderFactory<NotifierT, ProviderT, CreatedT, ArgT>
-        providerFactory,
+    providerFactory,
     required super.name,
     required super.dependencies,
     required super.$allTransitiveDependencies,
@@ -225,7 +243,7 @@ base class ClassFamily< //
   }) : _providerFactory = providerFactory;
 
   final ClassProviderFactory<NotifierT, ProviderT, CreatedT, ArgT>
-      _providerFactory;
+  _providerFactory;
 
   final NotifierT Function(ArgT arg) _createFn;
 

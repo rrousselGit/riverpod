@@ -24,11 +24,12 @@ final class Provider<ValueT> extends $FunctionalProvider<ValueT, ValueT, ValueT>
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-          $allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-          from: null,
-          argument: null,
-        );
+         $allTransitiveDependencies: computeAllTransitiveDependencies(
+           dependencies,
+         ),
+         from: null,
+         argument: null,
+       );
 
   /// An implementation detail of Riverpod
   /// @nodoc
@@ -362,10 +363,11 @@ final class ProviderFamily<StateT, ArgT>
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-          providerFactory: Provider.internal,
-          $allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-        );
+         providerFactory: Provider.internal,
+         $allTransitiveDependencies: computeAllTransitiveDependencies(
+           dependencies,
+         ),
+       );
 
   /// An implementation detail of Riverpod
   /// @nodoc

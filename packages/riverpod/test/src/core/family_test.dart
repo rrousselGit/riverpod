@@ -17,9 +17,7 @@ void main() {
         when(overrideWithBuild.call(any, any)).thenReturn(42);
 
         final container = ProviderContainer.test(
-          overrides: [
-            provider.overrideWithBuild(overrideWithBuild.call),
-          ],
+          overrides: [provider.overrideWithBuild(overrideWithBuild.call)],
         );
 
         verifyZeroInteractions(overrideWithBuild);
@@ -52,9 +50,7 @@ void main() {
         when(overrideWithBuild.call(any, any)).thenReturn(42);
 
         final container = ProviderContainer.test(
-          overrides: [
-            provider.overrideWithBuild(overrideWithBuild.call),
-          ],
+          overrides: [provider.overrideWithBuild(overrideWithBuild.call)],
         );
 
         verifyZeroInteractions(overrideWithBuild);

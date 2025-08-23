@@ -14,15 +14,15 @@ const scopedClassProvider = ScopedClassProvider._();
 
 final class ScopedClassProvider extends $NotifierProvider<ScopedClass, int> {
   const ScopedClassProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'scopedClassProvider',
-          isAutoDispose: true,
-          dependencies: const <ProviderOrFamily>[],
-          $allTransitiveDependencies: const <ProviderOrFamily>[],
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'scopedClassProvider',
+        isAutoDispose: true,
+        dependencies: const <ProviderOrFamily>[],
+        $allTransitiveDependencies: const <ProviderOrFamily>[],
+      );
 
   @override
   String debugGetCreateSourceHash() => _$scopedClassHash();
@@ -49,8 +49,14 @@ abstract class _$ScopedClass extends $Notifier<int> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<int, int>;
-    final element = ref.element
-        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<int, int>,
+              int,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }
@@ -60,16 +66,16 @@ const scopedClassFamilyProvider = ScopedClassFamilyFamily._();
 
 final class ScopedClassFamilyProvider
     extends $NotifierProvider<ScopedClassFamily, int> {
-  const ScopedClassFamilyProvider._(
-      {required ScopedClassFamilyFamily super.from,
-      required int super.argument})
-      : super(
-          retry: null,
-          name: r'scopedClassFamilyProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+  const ScopedClassFamilyProvider._({
+    required ScopedClassFamilyFamily super.from,
+    required int super.argument,
+  }) : super(
+         retry: null,
+         name: r'scopedClassFamilyProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$scopedClassFamilyHash();
@@ -109,17 +115,15 @@ String _$scopedClassFamilyHash() => r'04aeb0bbfdc363e2c8714c7a5967368a7f990d58';
 final class ScopedClassFamilyFamily extends $Family
     with $ClassFamilyOverride<ScopedClassFamily, int, int, int, int> {
   const ScopedClassFamilyFamily._()
-      : super(
-          retry: null,
-          name: r'scopedClassFamilyProvider',
-          dependencies: const <ProviderOrFamily>[],
-          $allTransitiveDependencies: const <ProviderOrFamily>[],
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'scopedClassFamilyProvider',
+        dependencies: const <ProviderOrFamily>[],
+        $allTransitiveDependencies: const <ProviderOrFamily>[],
+        isAutoDispose: true,
+      );
 
-  ScopedClassFamilyProvider call(
-    int a,
-  ) =>
+  ScopedClassFamilyProvider call(int a) =>
       ScopedClassFamilyProvider._(argument: a, from: this);
 
   @override
@@ -130,19 +134,20 @@ abstract class _$ScopedClassFamily extends $Notifier<int> {
   late final _$args = ref.$arg as int;
   int get a => _$args;
 
-  int build(
-    int a,
-  ) =>
-      throw MissingScopeException(ref);
+  int build(int a) => throw MissingScopeException(ref);
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      _$args,
-    );
+    final created = build(_$args);
     final ref = this.ref as $Ref<int, int>;
-    final element = ref.element
-        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<int, int>,
+              int,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }

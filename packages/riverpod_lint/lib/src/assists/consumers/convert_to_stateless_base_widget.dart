@@ -12,13 +12,9 @@ import '../../riverpod_custom_lint.dart';
 import 'convert_to_widget_utils.dart';
 
 class ConvertToStatelessBaseWidget extends RiverpodAssist {
-  ConvertToStatelessBaseWidget({
-    required this.targetWidget,
-  });
+  ConvertToStatelessBaseWidget({required this.targetWidget});
   final StatelessBaseWidgetType targetWidget;
-  late final statelessBaseType = getStatelessBaseType(
-    exclude: targetWidget,
-  );
+  late final statelessBaseType = getStatelessBaseType(exclude: targetWidget);
   late final statefulBaseType = getStatefulBaseType(
     exclude: targetWidget == StatelessBaseWidgetType.statelessWidget
         ? StatefulBaseWidgetType.statefulWidget
@@ -33,8 +29,9 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
     SourceRange target,
   ) {
     if (targetWidget.requiredPackage != null &&
-        !context.pubspec.dependencies.keys
-            .contains(targetWidget.requiredPackage)) {
+        !context.pubspec.dependencies.keys.contains(
+          targetWidget.requiredPackage,
+        )) {
       return;
     }
 
@@ -46,16 +43,14 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
       if (type == null) return;
 
       if (statelessBaseType.isExactlyType(type)) {
-        _convertStatelessToStatelessWidget(
-          reporter,
-          node,
-        );
+        _convertStatelessToStatelessWidget(reporter, node);
         return;
       }
 
       if (statefulBaseType.isExactlyType(type)) {
         final isExactlyStatefulWidget = StatefulBaseWidgetType
-            .statefulWidget.typeChecker
+            .statefulWidget
+            .typeChecker
             .isExactlyType(type);
 
         _convertStatefulToStatelessWidget(
@@ -262,10 +257,7 @@ class ConvertToStatelessBaseWidget extends RiverpodAssist {
           );
         case StatelessBaseWidgetType.hookWidget:
         case StatelessBaseWidgetType.statelessWidget:
-          builder.addSimpleReplacement(
-            parameterRange,
-            'BuildContext context',
-          );
+          builder.addSimpleReplacement(parameterRange, 'BuildContext context');
       }
     });
   }
@@ -316,10 +308,7 @@ class _FieldFinder extends RecursiveAstVisitor<void> {
 }
 
 class _ReplacementEditBuilder extends RecursiveAstVisitor<void> {
-  _ReplacementEditBuilder(
-    this.widgetClassElement,
-    this.elementsToMove,
-  );
+  _ReplacementEditBuilder(this.widgetClassElement, this.elementsToMove);
 
   final ClassElement2 widgetClassElement;
   final Set<Element2> elementsToMove;

@@ -18,10 +18,7 @@ void main() async {
         declarations.findNamed('ClassBasedFamily') as ClassDeclaration;
     final call = family.members.findNamed('call') as MethodDeclaration;
 
-    expect(
-      id.metadata.toString(),
-      "[@Deprecated('field')]",
-    );
+    expect(id.metadata.toString(), "[@Deprecated('field')]");
     expect(
       call.parameters!.parameters
           .firstWhere((e) => e.name!.lexeme == 'id')
@@ -32,8 +29,10 @@ void main() async {
   });
 
   test('Annotations on generated functionalProvider', () {
-    final annotations =
-        declarations.findNamed('functionalProvider').metadata.toString();
+    final annotations = declarations
+        .findNamed('functionalProvider')
+        .metadata
+        .toString();
 
     expect(
       annotations,
@@ -42,8 +41,10 @@ void main() async {
   });
 
   test('Annotations on generated classBasedProvider', () {
-    final annotations =
-        declarations.findNamed('classBasedProvider').metadata.toString();
+    final annotations = declarations
+        .findNamed('classBasedProvider')
+        .metadata
+        .toString();
 
     expect(
       annotations,
@@ -52,8 +53,10 @@ void main() async {
   });
 
   test('Annotations on generated familyProvider', () {
-    final annotations =
-        declarations.findNamed('familyProvider').metadata.toString();
+    final annotations = declarations
+        .findNamed('familyProvider')
+        .metadata
+        .toString();
     expect(
       annotations,
       "[@ProviderFor(family), @Deprecated('Deprecation message'), @visibleForTesting, @protected]",
@@ -65,10 +68,7 @@ void main() async {
         .findNamed('notCopiedFunctionalProvider')
         .metadata
         .toString();
-    expect(
-      annotations,
-      '[@ProviderFor(notCopiedFunctional)]',
-    );
+    expect(annotations, '[@ProviderFor(notCopiedFunctional)]');
   });
 
   test('Annotations on generated notCopiedClassBasedProvider', () {
@@ -76,19 +76,15 @@ void main() async {
         .findNamed('notCopiedClassBasedProvider')
         .metadata
         .toString();
-    expect(
-      annotations,
-      '[@ProviderFor(NotCopiedClassBased)]',
-    );
+    expect(annotations, '[@ProviderFor(NotCopiedClassBased)]');
   });
 
   test('Annotations on generated notCopiedFamilyProvider', () {
-    final annotations =
-        declarations.findNamed('notCopiedFamilyProvider').metadata.toString();
-    expect(
-      annotations,
-      '[@ProviderFor(notCopiedFamily)]',
-    );
+    final annotations = declarations
+        .findNamed('notCopiedFamilyProvider')
+        .metadata
+        .toString();
+    expect(annotations, '[@ProviderFor(notCopiedFamily)]');
   });
 }
 

@@ -9,10 +9,7 @@ import 'integration/sync.dart';
 void main() {
   group('Supports generics', () {
     test('checks generics in hashCode', () {
-      expect(
-        genericProvider<int>().hashCode,
-        genericProvider<int>().hashCode,
-      );
+      expect(genericProvider<int>().hashCode, genericProvider<int>().hashCode);
       expect(
         genericProvider<int>().hashCode,
         isNot(genericProvider<double>().hashCode),
@@ -25,86 +22,49 @@ void main() {
         genericProvider<double>().hashCode,
         isNot(genericProvider<num>().hashCode),
       );
-      expect(
-        genericProvider<num>().hashCode,
-        genericProvider<num>().hashCode,
-      );
+      expect(genericProvider<num>().hashCode, genericProvider<num>().hashCode);
     });
 
     test('checks generics in ==', () {
-      expect(
-        genericProvider<int>(),
-        genericProvider<int>(),
-      );
-      expect(
-        genericProvider<int>(),
-        isNot(genericProvider<double>()),
-      );
-      expect(
-        genericProvider<int>(),
-        isNot(genericProvider<num>()),
-      );
-      expect(
-        genericProvider<double>(),
-        isNot(genericProvider<num>()),
-      );
-      expect(
-        genericProvider<num>(),
-        genericProvider<num>(),
-      );
+      expect(genericProvider<int>(), genericProvider<int>());
+      expect(genericProvider<int>(), isNot(genericProvider<double>()));
+      expect(genericProvider<int>(), isNot(genericProvider<num>()));
+      expect(genericProvider<double>(), isNot(genericProvider<num>()));
+      expect(genericProvider<num>(), genericProvider<num>());
     });
 
     test('in simple scenarios', () {
       final container = ProviderContainer.test();
 
-      expect(
-        container.listen(genericProvider<int>(), (p, n) {}).read(),
-        [42],
-      );
-      expect(
-        container.listen(genericProvider<double>(), (p, n) {}).read(),
-        [3.14],
-      );
-      expect(
-        container.listen(genericProvider<num>(), (p, n) {}).read(),
-        [42, 3.14],
-      );
+      expect(container.listen(genericProvider<int>(), (p, n) {}).read(), [42]);
+      expect(container.listen(genericProvider<double>(), (p, n) {}).read(), [
+        3.14,
+      ]);
+      expect(container.listen(genericProvider<num>(), (p, n) {}).read(), [
+        42,
+        3.14,
+      ]);
     });
   });
 
   test('Supports Raw', () async {
     final container = ProviderContainer.test();
 
-    expect(
-      container.read(rawFutureProvider),
-      isA<Future<String>>(),
-    );
-    expect(
-      container.read(rawFutureClassProvider),
-      isA<Future<String>>(),
-    );
+    expect(container.read(rawFutureProvider), isA<Future<String>>());
+    expect(container.read(rawFutureClassProvider), isA<Future<String>>());
     expect(
       container.read(rawFutureClassProvider.notifier),
       isA<RawFutureClass>(),
     );
 
-    expect(
-      container.read(rawStreamProvider),
-      isA<Stream<String>>(),
-    );
-    expect(
-      container.read(rawStreamClassProvider),
-      isA<Stream<String>>(),
-    );
+    expect(container.read(rawStreamProvider), isA<Stream<String>>());
+    expect(container.read(rawStreamClassProvider), isA<Stream<String>>());
     expect(
       container.read(rawStreamClassProvider.notifier),
       isA<RawStreamClass>(),
     );
 
-    expect(
-      container.read(rawFamilyFutureProvider(0)),
-      isA<Future<String>>(),
-    );
+    expect(container.read(rawFamilyFutureProvider(0)), isA<Future<String>>());
     expect(
       container.read(rawFamilyFutureClassProvider(0)),
       isA<Future<String>>(),
@@ -114,10 +74,7 @@ void main() {
       isA<RawFamilyFutureClass>(),
     );
 
-    expect(
-      container.read(rawFamilyStreamProvider(0)),
-      isA<Stream<String>>(),
-    );
+    expect(container.read(rawFamilyStreamProvider(0)), isA<Stream<String>>());
     expect(
       container.read(rawFamilyStreamClassProvider(0)),
       isA<Stream<String>>(),
@@ -145,9 +102,11 @@ void main() {
       'familyProvider.overrideWith(...)',
     );
     expect(
-      familyProvider(42, second: 'foo', third: .3)
-          .overrideWith((ref) => '')
-          .toString(),
+      familyProvider(
+        42,
+        second: 'foo',
+        third: .3,
+      ).overrideWith((ref) => '').toString(),
       'familyProvider(42, fifth: null, fourth: true, second: foo, third: 0.3).overrideWith(...)',
     );
 
@@ -171,9 +130,7 @@ void main() {
 
   test('Supports overriding non-family providers', () {
     final container = ProviderContainer.test(
-      overrides: [
-        publicProvider.overrideWith((ref) => 'Hello world'),
-      ],
+      overrides: [publicProvider.overrideWith((ref) => 'Hello world')],
     );
 
     final result = container.read(publicProvider);
@@ -184,7 +141,8 @@ void main() {
     final container = ProviderContainer.test(
       overrides: [
         familyProvider.overrideWith(
-          (ref, args) => 'Hello world ${args.$1} ${args.second} '
+          (ref, args) =>
+              'Hello world ${args.$1} ${args.second} '
               '${args.third} ${args.fourth} ${args.fifth}',
         ),
         familyProvider(42, third: .42).overrideWith((ref) => 'Override'),
@@ -200,25 +158,28 @@ void main() {
   });
 
   test(
-      'Creates a Provider<T> if @riverpod is used on an stream function wrapped in Raw',
-      () async {
-    final container = ProviderContainer.test();
+    'Creates a Provider<T> if @riverpod is used on an stream function wrapped in Raw',
+    () async {
+      final container = ProviderContainer.test();
 
-    const ProviderBase<Stream<String>> provider = rawStreamProvider;
-    final Stream<String> result = container.read(rawStreamProvider);
+      const ProviderBase<Stream<String>> provider = rawStreamProvider;
+      final Stream<String> result = container.read(rawStreamProvider);
 
-    await expectLater(result, emits('Hello world'));
-  });
+      await expectLater(result, emits('Hello world'));
+    },
+  );
 
-  test('Creates a Provider<T> if @riverpod is used on a synchronous function',
-      () {
-    final container = ProviderContainer.test();
+  test(
+    'Creates a Provider<T> if @riverpod is used on a synchronous function',
+    () {
+      final container = ProviderContainer.test();
 
-    const ProviderBase<String> provider = publicProvider;
-    final String result = container.read(publicProvider);
+      const ProviderBase<String> provider = publicProvider;
+      final String result = container.read(publicProvider);
 
-    expect(result, 'Hello world');
-  });
+      expect(result, 'Hello world');
+    },
+  );
 
   test('Generates .name for providers', () {
     expect(publicProvider.name, 'publicProvider');
@@ -235,87 +196,75 @@ void main() {
   });
 
   test(
-      'Creates a Provider.family<T> if @riverpod is used on a synchronous function with parameters',
-      () {
-    final container = ProviderContainer.test();
+    'Creates a Provider.family<T> if @riverpod is used on a synchronous function with parameters',
+    () {
+      final container = ProviderContainer.test();
 
-    const FamilyFamily family = familyProvider;
+      const FamilyFamily family = familyProvider;
 
-    expect(familyProvider(42, third: .42).from, familyProvider);
+      expect(familyProvider(42, third: .42).from, familyProvider);
 
-    expect(
-      familyProvider(42, third: .42),
-      familyProvider(42, third: .42),
-    );
-    expect(
-      familyProvider(42, third: .42),
-      isNot(familyProvider(42, third: .21)),
-    );
-    expect(
-      familyProvider(42, third: .42).hashCode,
-      isNot(familyProvider(42, third: .21).hashCode),
-    );
+      expect(familyProvider(42, third: .42), familyProvider(42, third: .42));
+      expect(
+        familyProvider(42, third: .42),
+        isNot(familyProvider(42, third: .21)),
+      );
+      expect(
+        familyProvider(42, third: .42).hashCode,
+        isNot(familyProvider(42, third: .21).hashCode),
+      );
 
-    // handle defaults
-    expect(
-      familyProvider(42, third: .42),
-      familyProvider(
-        42,
-        third: .42,
-      ),
-    );
-    expect(
-      familyProvider(42, third: .42).hashCode,
-      familyProvider(
-        42,
-        third: .42,
-      ).hashCode,
-    );
+      // handle defaults
+      expect(familyProvider(42, third: .42), familyProvider(42, third: .42));
+      expect(
+        familyProvider(42, third: .42).hashCode,
+        familyProvider(42, third: .42).hashCode,
+      );
 
-    final FamilyProvider provider = familyProvider(
-      42,
-      second: 'x42',
-      third: .42,
-      fourth: false,
-      fifth: const ['x42'],
-    );
-
-    final ProviderBase<String> futureProvider = provider;
-
-    final argument = provider.argument! as (
-      int, {
-      String? second,
-      double third,
-      bool fourth,
-      List<String>? fifth,
-    });
-
-    expect(
-      argument,
-      (
+      final FamilyProvider provider = familyProvider(
         42,
         second: 'x42',
         third: .42,
         fourth: false,
         fifth: const ['x42'],
-      ),
-    );
+      );
 
-    final String result = container.read(
-      familyProvider(
+      final ProviderBase<String> futureProvider = provider;
+
+      final argument =
+          provider.argument!
+              as (
+                int, {
+                String? second,
+                double third,
+                bool fourth,
+                List<String>? fifth,
+              });
+
+      expect(argument, (
         42,
         second: 'x42',
         third: .42,
         fourth: false,
         fifth: const ['x42'],
-      ),
-    );
+      ));
 
-    expect(
-      result,
-      '(first: 42, second: x42, third: 0.42, fourth: false, fifth: [x42])',
-    );
-  });
+      final String result = container.read(
+        familyProvider(
+          42,
+          second: 'x42',
+          third: .42,
+          fourth: false,
+          fifth: const ['x42'],
+        ),
+      );
+
+      expect(
+        result,
+        '(first: 42, second: x42, third: 0.42, fourth: false, fifth: [x42])',
+      );
+    },
+  );
 
   test('can override providers', () {
     final container = ProviderContainer.test(
@@ -357,13 +306,7 @@ void main() {
     );
 
     expect(container2.read(publicClassProvider), 'Hello world');
-    expect(
-      container2.read(familyClassProvider(42, third: .42)),
-      'FamilyClass',
-    );
-    expect(
-      container2.read(familyClassProvider(21, third: .21)),
-      'Override',
-    );
+    expect(container2.read(familyClassProvider(42, third: .42)), 'FamilyClass');
+    expect(container2.read(familyClassProvider(21, third: .21)), 'Override');
   });
 }

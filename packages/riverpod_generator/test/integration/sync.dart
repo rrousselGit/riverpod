@@ -5,11 +5,7 @@ part 'sync.g.dart';
 
 @riverpod
 List<ItemT> generic<ItemT extends num>(Ref ref) {
-  return <Object?>[
-    'Hello world',
-    42,
-    3.14,
-  ].whereType<ItemT>().toList();
+  return <Object?>['Hello world', 42, 3.14].whereType<ItemT>().toList();
 }
 
 @riverpod

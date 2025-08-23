@@ -82,16 +82,10 @@ void main() {
       final family2 = Provider.family<int, int>((ref, _) => 0, name: 'name');
 
       expect(family2(0).name, 'name');
-      expect(
-        family2(0).toString(),
-        equalsIgnoringHashCodes('name(0)'),
-      );
+      expect(family2(0).toString(), equalsIgnoringHashCodes('name(0)'));
 
       expect(family2(1).name, 'name');
-      expect(
-        family2(1).toString(),
-        equalsIgnoringHashCodes('name(1)'),
-      );
+      expect(family2(1).toString(), equalsIgnoringHashCodes('name(1)'));
     });
   });
 
@@ -166,31 +160,32 @@ void main() {
     });
 
     test(
-        'recomputing a provider calls onDispose and clear the dispose listeners',
-        () {
-      final onDispose = OnDisposeMock();
-      var buildCount = 0;
-      final provider = Provider((ref) {
-        buildCount++;
-        ref.onDispose(onDispose.call);
-      });
-      final container = ProviderContainer.test();
+      'recomputing a provider calls onDispose and clear the dispose listeners',
+      () {
+        final onDispose = OnDisposeMock();
+        var buildCount = 0;
+        final provider = Provider((ref) {
+          buildCount++;
+          ref.onDispose(onDispose.call);
+        });
+        final container = ProviderContainer.test();
 
-      container.read(provider);
+        container.read(provider);
 
-      expect(buildCount, 1);
-      verifyZeroInteractions(onDispose);
+        expect(buildCount, 1);
+        verifyZeroInteractions(onDispose);
 
-      container.refresh(provider);
+        container.refresh(provider);
 
-      expect(buildCount, 2);
-      verifyOnly(onDispose, onDispose());
+        expect(buildCount, 2);
+        verifyOnly(onDispose, onDispose());
 
-      container.refresh(provider);
+        container.refresh(provider);
 
-      expect(buildCount, 3);
-      verifyOnly(onDispose, onDispose());
-    });
+        expect(buildCount, 3);
+        verifyOnly(onDispose, onDispose());
+      },
+    );
   });
 
   test('disposing child container does not dispose the providers', () {
@@ -223,33 +218,35 @@ void main() {
     expect(child.read(provider), 42);
   });
 
-  test('Providers still rethrow error if dependency rebuilt but did not change',
-      () {
-    var callCount = 0;
-    final atom = StateProvider((ref) => 0);
-    final dependency = Provider((ref) => ref.watch(atom));
-    final provider = Provider((ref) {
-      callCount++;
-      ref.watch(dependency);
-      if (callCount == 1) {
-        throw StateError('err');
-      }
-    });
+  test(
+    'Providers still rethrow error if dependency rebuilt but did not change',
+    () {
+      var callCount = 0;
+      final atom = StateProvider((ref) => 0);
+      final dependency = Provider((ref) => ref.watch(atom));
+      final provider = Provider((ref) {
+        callCount++;
+        ref.watch(dependency);
+        if (callCount == 1) {
+          throw StateError('err');
+        }
+      });
 
-    expect(
-      () => container.read(provider),
-      throwsProviderException(isStateError),
-    );
-    expect(callCount, 1);
+      expect(
+        () => container.read(provider),
+        throwsProviderException(isStateError),
+      );
+      expect(callCount, 1);
 
-    container.read(atom.notifier).state = 0;
+      container.read(atom.notifier).state = 0;
 
-    expect(
-      () => container.read(provider),
-      throwsProviderException(isStateError),
-    );
-    expect(callCount, 1);
-  });
+      expect(
+        () => container.read(provider),
+        throwsProviderException(isStateError),
+      );
+      expect(callCount, 1);
+    },
+  );
 
   test('re-evaluating a provider can stop listening to a dependency', () {
     final first = StateProvider((ref) => 0);
@@ -334,18 +331,19 @@ void main() {
   });
 
   test(
-      'ProviderContainer.read(MyProvider.autoDispose) disposes the provider if not listened to',
-      () async {
-    final provider = StateProvider.autoDispose((ref) => 0);
+    'ProviderContainer.read(MyProvider.autoDispose) disposes the provider if not listened to',
+    () async {
+      final provider = StateProvider.autoDispose((ref) => 0);
 
-    final state = container.read(provider.notifier);
+      final state = container.read(provider.notifier);
 
-    expect(state.mounted, true);
+      expect(state.mounted, true);
 
-    await container.pump();
+      await container.pump();
 
-    expect(state.mounted, false);
-  });
+      expect(state.mounted, false);
+    },
+  );
 
   group('Element.listen', () {
     group('didChange', () {
@@ -448,18 +446,20 @@ void main() {
         expect(sub.read, throwsProviderException(error));
       });
 
-      test('rethrows the exception thrown when building a selected provider',
-          () {
-        final error = Error();
-        final provider = Provider<int>((ref) => throw error, name: 'hello');
+      test(
+        'rethrows the exception thrown when building a selected provider',
+        () {
+          final error = Error();
+          final provider = Provider<int>((ref) => throw error, name: 'hello');
 
-        final sub = container.listen(
-          provider.select((value) => value),
-          (_, __) {},
-        );
+          final sub = container.listen(
+            provider.select((value) => value),
+            (_, __) {},
+          );
 
-        expect(sub.read, throwsProviderException(error));
-      });
+          expect(sub.read, throwsProviderException(error));
+        },
+      );
 
       test('flushes the provider', () {
         final counter = Counter();
@@ -519,41 +519,45 @@ void main() {
       expect(providerReference.container, root);
     });
 
-    test('immediately creates a new value, even if no changes are pending',
-        () async {
-      var future = Future.value(42);
-      var callCount = 0;
-      final provider = FutureProvider((ref) {
-        callCount++;
-        return future;
-      });
-      final container = ProviderContainer.test();
+    test(
+      'immediately creates a new value, even if no changes are pending',
+      () async {
+        var future = Future.value(42);
+        var callCount = 0;
+        final provider = FutureProvider((ref) {
+          callCount++;
+          return future;
+        });
+        final container = ProviderContainer.test();
 
-      await expectLater(container.read(provider.future), completion(42));
+        await expectLater(container.read(provider.future), completion(42));
 
-      expect(callCount, 1);
-      await expectLater(
-        container.read(provider),
-        const AsyncValue<int>.data(42),
-      );
+        expect(callCount, 1);
+        await expectLater(
+          container.read(provider),
+          const AsyncValue<int>.data(42),
+        );
 
-      future = Future.value(21);
+        future = Future.value(21);
 
-      expect(
-        container.refresh(provider),
-        const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncValue<int>.data(42)),
-      );
-      expect(
-        container.read(provider),
-        const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncValue<int>.data(42)),
-      );
-      expect(callCount, 2);
+        expect(
+          container.refresh(provider),
+          const AsyncLoading<int>().copyWithPrevious(
+            const AsyncValue<int>.data(42),
+          ),
+        );
+        expect(
+          container.read(provider),
+          const AsyncLoading<int>().copyWithPrevious(
+            const AsyncValue<int>.data(42),
+          ),
+        );
+        expect(callCount, 2);
 
-      await expectLater(container.read(provider.future), completion(21));
-      expect(callCount, 2);
-    });
+        await expectLater(container.read(provider.future), completion(21));
+        expect(callCount, 2);
+      },
+    );
 
     test('retrying an unmounted provider just mounts it', () async {
       var callCount = 0;
@@ -564,45 +568,40 @@ void main() {
       final container = ProviderContainer.test();
 
       expect(callCount, 0);
-      expect(
-        container.refresh(provider),
-        const AsyncValue<int>.loading(),
-      );
-      expect(
-        container.read(provider),
-        const AsyncValue<int>.loading(),
-      );
+      expect(container.refresh(provider), const AsyncValue<int>.loading());
+      expect(container.read(provider), const AsyncValue<int>.loading());
       expect(callCount, 1);
       await expectLater(container.read(provider.future), completion(42));
       expect(callCount, 1);
     });
 
     test(
-        'refreshing a provider already marked as needing to update do not create the value twice',
-        () async {
-      var future = Future.value(42);
-      var callCount = 0;
-      final dep = StateProvider((_) => 0);
-      final provider = FutureProvider((ref) {
-        callCount++;
-        ref.watch(dep);
-        return future;
-      });
-      final container = ProviderContainer.test();
+      'refreshing a provider already marked as needing to update do not create the value twice',
+      () async {
+        var future = Future.value(42);
+        var callCount = 0;
+        final dep = StateProvider((_) => 0);
+        final provider = FutureProvider((ref) {
+          callCount++;
+          ref.watch(dep);
+          return future;
+        });
+        final container = ProviderContainer.test();
 
-      container.refresh(provider);
+        container.refresh(provider);
 
-      expect(callCount, 1);
+        expect(callCount, 1);
 
-      container.read(dep.notifier).state++;
-      future = Future.value(21);
+        container.read(dep.notifier).state++;
+        future = Future.value(21);
 
-      expect(callCount, 1);
-      container.refresh(provider);
+        expect(callCount, 1);
+        container.refresh(provider);
 
-      expect(callCount, 2);
-      await expectLater(container.read(provider.future), completion(21));
-      expect(callCount, 2);
-    });
+        expect(callCount, 2);
+        await expectLater(container.read(provider.future), completion(21));
+        expect(callCount, 2);
+      },
+    );
   });
 }

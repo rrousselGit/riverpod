@@ -25,14 +25,16 @@ final class StateDeclaration {
 
   static StateDeclaration? _parse(ClassDeclaration node) {
     final widget = node.declaredFragment?.element.let(_findStateWidget);
-    final element = node.declaredFragment?.element
-        .let((e) => StateDeclarationElement._parse(e, node));
+    final element = node.declaredFragment?.element.let(
+      (e) => StateDeclarationElement._parse(e, node),
+    );
 
     if (element == null) return null;
 
     return StateDeclaration._(
-      widget:
-          widget.let((e) => StatefulWidgetDeclarationElement._parse(e, node)),
+      widget: widget.let(
+        (e) => StatefulWidgetDeclarationElement._parse(e, node),
+      ),
       element: element,
       node: node,
     );
@@ -57,10 +59,7 @@ final class StateDeclaration {
 }
 
 final class StateDeclarationElement {
-  StateDeclarationElement._({
-    required this.widget,
-    required this.element,
-  });
+  StateDeclarationElement._({required this.widget, required this.element});
 
   static final _cache = _Cache<StateDeclarationElement>();
 
@@ -70,8 +69,9 @@ final class StateDeclarationElement {
 
       return StateDeclarationElement._(
         element: element,
-        widget:
-            widget.let((e) => StatefulWidgetDeclarationElement._parse(e, from)),
+        widget: widget.let(
+          (e) => StatefulWidgetDeclarationElement._parse(e, from),
+        ),
       );
     });
   }

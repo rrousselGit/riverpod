@@ -81,7 +81,8 @@ extension<PointerT extends _PointerBase, ProviderT extends ProviderOrFamily>
         ._pointerManager
         .findDeepestTransitiveDependencyProviderContainer(provider);
 
-    final target = deepestTransitiveDependencyContainer ??
+    final target =
+        deepestTransitiveDependencyContainer ??
         pointer?.targetContainer ??
         targetContainer ??
         currentContainer._root ??
@@ -89,8 +90,9 @@ extension<PointerT extends _PointerBase, ProviderT extends ProviderOrFamily>
 
     if (target == currentContainer) {
       return this[provider] = scope(
-        override:
-            deepestTransitiveDependencyContainer == null ? null : provider,
+        override: deepestTransitiveDependencyContainer == null
+            ? null
+            : provider,
       );
     }
 
@@ -111,22 +113,22 @@ class ProviderDirectory implements _PointerBase {
   ProviderDirectory.empty(
     ProviderContainer container, {
     required this.familyOverride,
-  })  : pointers = HashMap(),
-        targetContainer = container;
+  }) : pointers = HashMap(),
+       targetContainer = container;
 
   ProviderDirectory.from(
     ProviderDirectory pointer, {
     ProviderContainer? targetContainer,
     _FamilyOverride? familyOverride,
-  })  : assert(
-          (familyOverride == null) == (targetContainer == null),
-          'Either both or neither of familyOverride and targetContainer should be null',
-        ),
-        familyOverride = familyOverride ?? pointer.familyOverride,
-        targetContainer = targetContainer ?? pointer.targetContainer,
-        pointers = HashMap.fromEntries(
-          pointer.pointers.entries.where((e) => !e.value.isTransitiveOverride),
-        );
+  }) : assert(
+         (familyOverride == null) == (targetContainer == null),
+         'Either both or neither of familyOverride and targetContainer should be null',
+       ),
+       familyOverride = familyOverride ?? pointer.familyOverride,
+       targetContainer = targetContainer ?? pointer.targetContainer,
+       pointers = HashMap.fromEntries(
+         pointer.pointers.entries.where((e) => !e.value.isTransitiveOverride),
+       );
 
   @override
   bool get isTransitiveOverride => familyOverride is TransitiveFamilyOverride;
@@ -167,7 +169,10 @@ class ProviderDirectory implements _PointerBase {
       inherit: (target) => target._pointerManager.upsertPointer(provider),
       scope: ({override}) => $ProviderPointer(
         targetContainer: currentContainer,
-        providerOverride: override == null || provider.from != null //
+        providerOverride:
+            override == null ||
+                provider.from !=
+                    null //
             ? null
             : TransitiveProviderOverride(override),
         origin: provider,
@@ -290,19 +295,19 @@ class ProviderPointerManager {
       familyPointers: HashMap.fromEntries(
         parent._pointerManager.familyPointers.entries
             .where(
-          (e) =>
-              !e.value.isTransitiveOverride &&
-              // Exclude families that may be automatically scoped unless they are overridden.
-              (!e.key.canBeTransitivelyOverridden ||
-                  e.value.familyOverride != null),
-        )
+              (e) =>
+                  !e.value.isTransitiveOverride &&
+                  // Exclude families that may be automatically scoped unless they are overridden.
+                  (!e.key.canBeTransitivelyOverridden ||
+                      e.value.familyOverride != null),
+            )
             .map(
-          (e) {
-            if (e.key.$allTransitiveDependencies == null) return e;
+              (e) {
+                if (e.key.$allTransitiveDependencies == null) return e;
 
-            return MapEntry(e.key, ProviderDirectory.from(e.value));
-          },
-        ),
+                return MapEntry(e.key, ProviderDirectory.from(e.value));
+              },
+            ),
       ),
     );
   }
@@ -380,21 +385,22 @@ class ProviderPointerManager {
 
     final overrides = provider.$allTransitiveDependencies!
         .expand<ProviderContainer>((dependency) {
-      switch (dependency) {
-        case Family():
-          final familyPointer = familyPointers[dependency];
-          if (familyPointer == null) return const [];
+          switch (dependency) {
+            case Family():
+              final familyPointer = familyPointers[dependency];
+              if (familyPointer == null) return const [];
 
-          return [familyPointer.targetContainer].followedBy(
-            familyPointer.pointers.values.map((e) => e.targetContainer),
-          );
-        case $ProviderBaseImpl():
-          return [
-            if (readPointer(dependency)?.targetContainer case final container?)
-              container,
-          ];
-      }
-    });
+              return [familyPointer.targetContainer].followedBy(
+                familyPointer.pointers.values.map((e) => e.targetContainer),
+              );
+            case $ProviderBaseImpl():
+              return [
+                if (readPointer(dependency)?.targetContainer
+                    case final container?)
+                  container,
+              ];
+          }
+        });
 
     return overrides.fold<ProviderContainer?>(null, (deepestContainer, target) {
       if (deepestContainer == null || deepestContainer._depth < target._depth) {
@@ -422,7 +428,9 @@ class ProviderPointerManager {
         return ProviderDirectory.from(parentPointer);
       },
       scope: ({override}) {
-        final familyOverride = override == null //
+        final familyOverride =
+            override ==
+                null //
             ? null
             : TransitiveFamilyOverride(override);
 
@@ -727,8 +735,7 @@ extension InternalProviderContainer on ProviderContainer {
 extension NodeInternal on Node {
   ProviderElement<StateT, Object?> readProviderElement<StateT>(
     $ProviderBaseImpl<StateT> provider,
-  ) =>
-      container._readProviderElement(provider);
+  ) => container._readProviderElement(provider);
 }
 
 /// {@template riverpod.provider_container}
@@ -751,16 +758,16 @@ final class ProviderContainer implements Node, MutationTarget {
     List<ProviderObserver>? observers,
     @internal void Function(Object error, StackTrace stackTrace)? onError,
     Retry? retry,
-  })  : _debugOverridesLength = overrides.length,
-        _depth = parent == null ? 0 : parent._depth + 1,
-        _parent = parent,
-        _onError = onError ?? Zone.current.handleUncaughtError,
-        retry = retry ?? parent?.retry,
-        observers = [
-          ...?observers,
-          if (parent != null) ...parent.observers,
-        ],
-        _root = parent?._root ?? parent {
+  }) : _debugOverridesLength = overrides.length,
+       _depth = parent == null ? 0 : parent._depth + 1,
+       _parent = parent,
+       _onError = onError ?? Zone.current.handleUncaughtError,
+       retry = retry ?? parent?.retry,
+       observers = [
+         ...?observers,
+         if (parent != null) ...parent.observers,
+       ],
+       _root = parent?._root ?? parent {
     if (parent != null) {
       if (parent.disposed) {
         throw StateError(
@@ -1001,7 +1008,7 @@ final class ProviderContainer implements Node, MutationTarget {
   StateT refresh<StateT>(Refreshable<StateT> refreshable) {
     final providerToRefresh = switch (refreshable) {
       final $ProviderBaseImpl<Object?> p => p,
-      _ProviderRefreshable<Object?, Object?>(:final provider) => provider
+      _ProviderRefreshable<Object?, Object?>(:final provider) => provider,
     };
     invalidate(providerToRefresh);
 
@@ -1323,10 +1330,11 @@ abstract class ProviderObserver {
 
 /// An implementation detail for the override mechanism of providers
 @internal
-typedef SetupOverride = void Function({
-  required $ProviderBaseImpl<Object?> origin,
-  required $ProviderBaseImpl<Object?> override,
-});
+typedef SetupOverride =
+    void Function({
+      required $ProviderBaseImpl<Object?> origin,
+      required $ProviderBaseImpl<Object?> override,
+    });
 
 /// An error thrown when a call to [Ref.read]/[Ref.watch]
 /// leads to a provider depending on itself.

@@ -36,8 +36,11 @@ void main() {
         expect(
           container.getAllProviderElements(),
           unorderedEquals(<Object?>[
-            isA<ProviderElement>()
-                .having((e) => e.origin, 'origin', provider(0)),
+            isA<ProviderElement>().having(
+              (e) => e.origin,
+              'origin',
+              provider(0),
+            ),
           ]),
         );
       });
@@ -67,9 +70,7 @@ void main() {
         return Stream.value(a * 2);
       });
       final container = ProviderContainer(
-        overrides: [
-          provider.overrideWith((ref, a) => Stream.value(a * 4)),
-        ],
+        overrides: [provider.overrideWith((ref, a) => Stream.value(a * 4))],
       );
       final listener = Listener<AsyncValue<int>>();
 
@@ -81,18 +82,12 @@ void main() {
 
       verifyOnly(
         listener,
-        listener(
-          const AsyncLoading(),
-          const AsyncValue.data(84),
-        ),
+        listener(const AsyncLoading(), const AsyncValue.data(84)),
       );
     });
 
     test('can be auto-scoped', () async {
-      final dep = Provider(
-        (ref) => 0,
-        dependencies: const [],
-      );
+      final dep = Provider((ref) => 0, dependencies: const []);
       final provider = StreamProvider.autoDispose.family<int, int>(
         (ref, i) => Stream.value(ref.watch(dep) + i),
         dependencies: [dep],

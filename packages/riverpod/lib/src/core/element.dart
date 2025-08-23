@@ -66,8 +66,10 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
       return;
     }
 
-    super.value =
-        newState.cast<ValueT>().copyWithPrevious(previous, isRefresh: seamless);
+    super.value = newState.cast<ValueT>().copyWithPrevious(
+      previous,
+      isRefresh: seamless,
+    );
   }
 
   @override
@@ -254,7 +256,8 @@ mixin ElementWithFuture<StateT, ValueT> on ProviderElement<StateT, ValueT> {
       required void Function(Object, StackTrace) error,
       required void Function() done,
       required void Function(Future<ValueT>) last,
-    }) listen,
+    })
+    listen,
   ) {
     void callOnError(Object error, StackTrace stackTrace) {
       onError(triggerRetry(error, stackTrace), seamless: !ref.isReload);
@@ -742,8 +745,9 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     if (kDebugMode && !isFirstBuild) _debugAssertNotificationAllowed();
 
     final newState = resultForValue(newStateValue)!;
-    final previousStateResult =
-        previousStateValue != null ? resultForValue(previousStateValue) : null;
+    final previousStateResult = previousStateValue != null
+        ? resultForValue(previousStateValue)
+        : null;
 
     final previousState = previousStateResult?.value;
 
@@ -1034,7 +1038,8 @@ The provider ${_debugCurrentlyBuildingElement!.origin} modified $origin while bu
     }
 
     final actualPausedCount = pausedActiveSubscriptionCount;
-    final expectedPausedCount = dependents
+    final expectedPausedCount =
+        dependents
             ?.where((sub) => !sub.weak && (sub.isPaused || !sub.active))
             .length ??
         0;

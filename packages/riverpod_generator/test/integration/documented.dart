@@ -42,6 +42,5 @@ class ClassFamilyBased extends _$ClassFamilyBased {
     /// Hello world
     // Foo
     @annotation int id,
-  ) =>
-      'ClassBased';
+  ) => 'ClassBased';
 }

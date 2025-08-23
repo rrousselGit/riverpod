@@ -33,18 +33,19 @@ void main() {
 
     group('handles listen(weak: true)', () {
       test(
-          'supports calling ProviderSubscription.read when no value were emitted yet',
-          () {
-        final container = ProviderContainer.test();
-        final provider = Provider((ref) => 0);
+        'supports calling ProviderSubscription.read when no value were emitted yet',
+        () {
+          final container = ProviderContainer.test();
+          final provider = Provider((ref) => 0);
 
-        final sub = container.listen(
-          provider.select((value) => 42),
-          (previous, value) {},
-        );
+          final sub = container.listen(
+            provider.select((value) => 42),
+            (previous, value) {},
+          );
 
-        expect(sub.read(), 42);
-      });
+          expect(sub.read(), 42);
+        },
+      );
 
       test('closing the subscription updated element.hasListeners', () {
         final container = ProviderContainer.test();
@@ -63,37 +64,35 @@ void main() {
 
         sub.close();
 
-        expect(
-          container.readProviderElement(provider).weakDependents,
-          isEmpty,
-        );
+        expect(container.readProviderElement(provider).weakDependents, isEmpty);
       });
 
       test(
-          'calls mayNeedDispose in ProviderSubscription.read for the sake of listen(weak: true)',
-          () async {
-        final container = ProviderContainer.test();
-        final onDispose = OnDisposeMock();
-        final provider = Provider.autoDispose((ref) {
-          ref.onDispose(onDispose.call);
-          return 0;
-        });
+        'calls mayNeedDispose in ProviderSubscription.read for the sake of listen(weak: true)',
+        () async {
+          final container = ProviderContainer.test();
+          final onDispose = OnDisposeMock();
+          final provider = Provider.autoDispose((ref) {
+            ref.onDispose(onDispose.call);
+            return 0;
+          });
 
-        final element = container.readProviderElement(provider);
+          final element = container.readProviderElement(provider);
 
-        final sub = container.listen(
-          provider.select((value) => value),
-          weak: true,
-          (previous, value) {},
-        );
+          final sub = container.listen(
+            provider.select((value) => value),
+            weak: true,
+            (previous, value) {},
+          );
 
-        expect(sub.read(), 0);
-        verifyZeroInteractions(onDispose);
+          expect(sub.read(), 0);
+          verifyZeroInteractions(onDispose);
 
-        await container.pump();
+          await container.pump();
 
-        verifyOnly(onDispose, onDispose());
-      });
+          verifyOnly(onDispose, onDispose());
+        },
+      );
 
       test('common use-case ', () {
         final provider = StateProvider((ref) => 'Hello');
@@ -140,26 +139,28 @@ void main() {
       });
 
       test(
-          'after calling `sub.read`, notifications correctly compare the previous and new value '
-          'instead of considering that "previous" is missing.', () {
-        final provider = StateProvider((ref) => 'Hello');
-        final container = ProviderContainer.test();
-        final listener = Listener<String>();
+        'after calling `sub.read`, notifications correctly compare the previous and new value '
+        'instead of considering that "previous" is missing.',
+        () {
+          final provider = StateProvider((ref) => 'Hello');
+          final container = ProviderContainer.test();
+          final listener = Listener<String>();
 
-        final sub = container.listen(
-          provider.select((value) => value[0]),
-          listener.call,
-          weak: true,
-        );
+          final sub = container.listen(
+            provider.select((value) => value[0]),
+            listener.call,
+            weak: true,
+          );
 
-        sub.read();
+          sub.read();
 
-        verifyOnly(listener, listener.call(null, 'H'));
+          verifyOnly(listener, listener.call(null, 'H'));
 
-        container.read(provider.notifier).state = 'Hi';
+          container.read(provider.notifier).state = 'Hi';
 
-        verifyNoMoreInteractions(listener);
-      });
+          verifyNoMoreInteractions(listener);
+        },
+      );
     });
   });
 

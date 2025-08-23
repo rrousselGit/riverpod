@@ -2,14 +2,21 @@ part of '../notifier.dart';
 
 /// The [Family] of [NotifierProvider].
 @publicInMisc
-final class NotifierProviderFamily<NotifierT extends Notifier<StateT>, StateT, ArgT>
-    extends ClassFamily< //
-        NotifierT,
-        StateT,
-        StateT,
-        ArgT,
-        StateT,
-        NotifierProvider<NotifierT, StateT>> {
+final class NotifierProviderFamily<
+  NotifierT extends Notifier<StateT>,
+  StateT,
+  ArgT
+>
+    extends
+        ClassFamily<
+          //
+          NotifierT,
+          StateT,
+          StateT,
+          ArgT,
+          StateT,
+          NotifierProvider<NotifierT, StateT>
+        > {
   /// The [Family] of [NotifierProvider].
   /// @nodoc
   @internal
@@ -20,8 +27,9 @@ final class NotifierProviderFamily<NotifierT extends Notifier<StateT>, StateT, A
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-          providerFactory: NotifierProvider.internal,
-          $allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-        );
+         providerFactory: NotifierProvider.internal,
+         $allTransitiveDependencies: computeAllTransitiveDependencies(
+           dependencies,
+         ),
+       );
 }

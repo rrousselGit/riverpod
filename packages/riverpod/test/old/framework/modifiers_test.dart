@@ -17,10 +17,7 @@ void main() {
         final sub = container.listen(provider.future, (prev, value) {});
         sub.close();
 
-        expect(
-          sub.read,
-          throwsStateError,
-        );
+        expect(sub.read, throwsStateError);
       });
     });
   });
@@ -95,10 +92,7 @@ void main() {
     AutoDisposeFutureProviderBuilder();
     AutoDisposeFutureProviderFamilyBuilder();
 
-    expect(
-      FutureProvider.family,
-      const FutureProviderFamilyBuilder(),
-    );
+    expect(FutureProvider.family, const FutureProviderFamilyBuilder());
     expect(
       FutureProvider.autoDispose,
       const AutoDisposeFutureProviderBuilder(),
@@ -118,10 +112,7 @@ void main() {
     AutoDisposeStreamProviderBuilder();
     AutoDisposeStreamProviderFamilyBuilder();
 
-    expect(
-      StreamProvider.family,
-      const StreamProviderFamilyBuilder(),
-    );
+    expect(StreamProvider.family, const StreamProviderFamilyBuilder());
     expect(
       StreamProvider.autoDispose,
       const AutoDisposeStreamProviderBuilder(),
@@ -158,8 +149,11 @@ void main() {
         (ref) => StateController(42),
         name: 'foo',
       ),
-      isA<StateNotifierProvider<StateController<int>, int>>()
-          .having((s) => s.name, 'name', 'foo'),
+      isA<StateNotifierProvider<StateController<int>, int>>().having(
+        (s) => s.name,
+        'name',
+        'foo',
+      ),
     );
   });
 
@@ -168,36 +162,30 @@ void main() {
     AutoDisposeProviderBuilder();
     AutoDisposeProviderFamilyBuilder();
 
-    expect(
-      Provider.family,
-      const ProviderFamilyBuilder(),
-    );
-    expect(
-      Provider.autoDispose,
-      const AutoDisposeProviderBuilder(),
-    );
-    expect(
-      Provider.autoDispose.family,
-      Provider.family.autoDispose,
-    );
+    expect(Provider.family, const ProviderFamilyBuilder());
+    expect(Provider.autoDispose, const AutoDisposeProviderBuilder());
+    expect(Provider.autoDispose.family, Provider.family.autoDispose);
     expect(
       Provider((ref) => StateController(42), name: 'foo'),
-      isA<Provider<StateController<int>>>()
-          .having((s) => s.name, 'name', 'foo'),
+      isA<Provider<StateController<int>>>().having(
+        (s) => s.name,
+        'name',
+        'foo',
+      ),
     );
   });
 
   test('StateProvider', () {
     StateProviderFamilyBuilder();
 
-    expect(
-      StateProvider.family,
-      const StateProviderFamilyBuilder(),
-    );
+    expect(StateProvider.family, const StateProviderFamilyBuilder());
     expect(
       StateProvider((ref) => StateController(42), name: 'foo'),
-      isA<StateProvider<StateController<int>>>()
-          .having((s) => s.name, 'name', 'foo'),
+      isA<StateProvider<StateController<int>>>().having(
+        (s) => s.name,
+        'name',
+        'foo',
+      ),
     );
   });
 }

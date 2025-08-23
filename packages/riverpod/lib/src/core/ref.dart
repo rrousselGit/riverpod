@@ -137,14 +137,14 @@ sealed class Ref implements MutationTarget {
         dependency.from?.dependencies ?? dependency.dependencies;
 
     if (
-        // If the target has a null "dependencies", it should never be scoped.
-        !(targetDependencies == null ||
-            // Ignore dependency check if from an override
-            provider != origin ||
-            // Families are allowed to depend on themselves with different parameters.
-            (origin.from != null && dependency.from == origin.from) ||
-            dependencies.contains(dependency.from) ||
-            dependencies.contains(dependency))) {
+    // If the target has a null "dependencies", it should never be scoped.
+    !(targetDependencies == null ||
+        // Ignore dependency check if from an override
+        provider != origin ||
+        // Families are allowed to depend on themselves with different parameters.
+        (origin.from != null && dependency.from == origin.from) ||
+        dependencies.contains(dependency.from) ||
+        dependencies.contains(dependency))) {
       throw StateError('''
 The provider `$origin` depends on `$dependency`, which may be scoped.
 Yet `$dependency` is not part of `$origin`'s `dependencies` list.
