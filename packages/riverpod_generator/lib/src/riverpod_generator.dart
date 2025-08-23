@@ -7,7 +7,6 @@ import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:riverpod_annotation/src/riverpod_annotation.dart';
 import 'package:source_gen/source_gen.dart';
 
-import 'models.dart';
 import 'parse_generator.dart';
 import 'templates/family.dart';
 import 'templates/hash.dart';
@@ -181,32 +180,6 @@ class _RiverpodGeneratorVisitor {
 }
 
 extension ProviderElementNames on GeneratorProviderDeclarationElement {
-  String providerName(BuildYamlOptions options) {
-    if (annotation.name case final name?) return name;
-
-    final prefix = (isFamily
-        ? options.providerFamilyNamePrefix
-        : options.providerNamePrefix);
-    final suffix = (isFamily
-        ? options.providerFamilyNameSuffix
-        : options.providerNameSuffix);
-
-    var baseName = name;
-
-    try {
-      final regex = RegExp(options.providerNameStripPattern);
-      baseName = name.replaceAll(regex, '');
-    } on FormatException {
-      throw InvalidGenerationSourceError(
-        'Your providerNameStripPattern definition is not a valid regular expression: $options.providerNameStripPattern',
-        element: (element.library2!).getClass2(name) ??
-            (element.library2!).getTopLevelFunction(name),
-      );
-    }
-
-    return '$prefix${prefix.isEmpty ? baseName.lowerFirst : baseName.titled}$suffix';
-  }
-
   String get providerTypeName => '${name.titled}Provider';
 
   String get familyTypeName => '${name.titled}Family';

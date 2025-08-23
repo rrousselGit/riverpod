@@ -9,7 +9,6 @@ import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:riverpod_annotation/experimental/json_persist.dart';
 import 'package:source_gen/source_gen.dart';
 
-import 'models.dart';
 import 'parse_generator.dart';
 import 'riverpod_generator.dart';
 

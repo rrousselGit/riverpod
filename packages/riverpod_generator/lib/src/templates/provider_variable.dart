@@ -1,6 +1,5 @@
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
-import '../models.dart';
 import '../riverpod_generator.dart';
 import 'template.dart';
 

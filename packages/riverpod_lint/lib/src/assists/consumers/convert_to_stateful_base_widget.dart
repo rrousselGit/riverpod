@@ -7,6 +7,7 @@ import 'package:analyzer/source/source_range.dart';
 import 'package:analyzer_plugin/utilities/change_builder/change_builder_dart.dart';
 import 'package:collection/collection.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../../imports.dart';
 import '../../riverpod_custom_lint.dart';

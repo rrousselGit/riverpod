@@ -2,7 +2,6 @@ import 'package:analyzer/dart/element/type.dart';
 import 'package:analyzer_buffer/analyzer_buffer.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
-import '../models.dart';
 import '../riverpod_generator.dart';
 import 'parameters.dart';
 import 'template.dart';
