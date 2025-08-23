@@ -15,15 +15,15 @@ const keepAliveProvider = KeepAliveProvider._();
 final class KeepAliveProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const KeepAliveProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'keepAliveProvider',
-          isAutoDispose: false,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'keepAliveProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$keepAliveHash();
@@ -55,15 +55,15 @@ const notKeepAliveProvider = NotKeepAliveProvider._();
 final class NotKeepAliveProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const NotKeepAliveProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'notKeepAliveProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'notKeepAliveProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$notKeepAliveHash();
@@ -95,15 +95,15 @@ const defaultKeepAliveProvider = DefaultKeepAliveProvider._();
 final class DefaultKeepAliveProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const DefaultKeepAliveProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'defaultKeepAliveProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'defaultKeepAliveProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$defaultKeepAliveHash();
@@ -134,15 +134,16 @@ const keepAliveFamilyProvider = KeepAliveFamilyFamily._();
 
 final class KeepAliveFamilyProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const KeepAliveFamilyProvider._(
-      {required KeepAliveFamilyFamily super.from, required int super.argument})
-      : super(
-          retry: null,
-          name: r'keepAliveFamilyProvider',
-          isAutoDispose: false,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+  const KeepAliveFamilyProvider._({
+    required KeepAliveFamilyFamily super.from,
+    required int super.argument,
+  }) : super(
+         retry: null,
+         name: r'keepAliveFamilyProvider',
+         isAutoDispose: false,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$keepAliveFamilyHash();
@@ -162,10 +163,7 @@ final class KeepAliveFamilyProvider extends $FunctionalProvider<int, int, int>
   @override
   int create(Ref ref) {
     final argument = this.argument as int;
-    return keepAliveFamily(
-      ref,
-      argument,
-    );
+    return keepAliveFamily(ref, argument);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -192,17 +190,15 @@ String _$keepAliveFamilyHash() => r'd1eb1243ea9463617b08a6e9cc5ae6b2df499ba2';
 final class KeepAliveFamilyFamily extends $Family
     with $FunctionalFamilyOverride<int, int> {
   const KeepAliveFamilyFamily._()
-      : super(
-          retry: null,
-          name: r'keepAliveFamilyProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: false,
-        );
+    : super(
+        retry: null,
+        name: r'keepAliveFamilyProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: false,
+      );
 
-  KeepAliveFamilyProvider call(
-    int a,
-  ) =>
+  KeepAliveFamilyProvider call(int a) =>
       KeepAliveFamilyProvider._(argument: a, from: this);
 
   @override
@@ -213,17 +209,18 @@ final class KeepAliveFamilyFamily extends $Family
 const notKeepAliveFamilyProvider = NotKeepAliveFamilyFamily._();
 
 final class NotKeepAliveFamilyProvider
-    extends $FunctionalProvider<int, int, int> with $Provider<int> {
-  const NotKeepAliveFamilyProvider._(
-      {required NotKeepAliveFamilyFamily super.from,
-      required int super.argument})
-      : super(
-          retry: null,
-          name: r'notKeepAliveFamilyProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    extends $FunctionalProvider<int, int, int>
+    with $Provider<int> {
+  const NotKeepAliveFamilyProvider._({
+    required NotKeepAliveFamilyFamily super.from,
+    required int super.argument,
+  }) : super(
+         retry: null,
+         name: r'notKeepAliveFamilyProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$notKeepAliveFamilyHash();
@@ -243,10 +240,7 @@ final class NotKeepAliveFamilyProvider
   @override
   int create(Ref ref) {
     final argument = this.argument as int;
-    return notKeepAliveFamily(
-      ref,
-      argument,
-    );
+    return notKeepAliveFamily(ref, argument);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -274,17 +268,15 @@ String _$notKeepAliveFamilyHash() =>
 final class NotKeepAliveFamilyFamily extends $Family
     with $FunctionalFamilyOverride<int, int> {
   const NotKeepAliveFamilyFamily._()
-      : super(
-          retry: null,
-          name: r'notKeepAliveFamilyProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'notKeepAliveFamilyProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
-  NotKeepAliveFamilyProvider call(
-    int a,
-  ) =>
+  NotKeepAliveFamilyProvider call(int a) =>
       NotKeepAliveFamilyProvider._(argument: a, from: this);
 
   @override
@@ -295,17 +287,18 @@ final class NotKeepAliveFamilyFamily extends $Family
 const defaultKeepAliveFamilyProvider = DefaultKeepAliveFamilyFamily._();
 
 final class DefaultKeepAliveFamilyProvider
-    extends $FunctionalProvider<int, int, int> with $Provider<int> {
-  const DefaultKeepAliveFamilyProvider._(
-      {required DefaultKeepAliveFamilyFamily super.from,
-      required int super.argument})
-      : super(
-          retry: null,
-          name: r'defaultKeepAliveFamilyProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    extends $FunctionalProvider<int, int, int>
+    with $Provider<int> {
+  const DefaultKeepAliveFamilyProvider._({
+    required DefaultKeepAliveFamilyFamily super.from,
+    required int super.argument,
+  }) : super(
+         retry: null,
+         name: r'defaultKeepAliveFamilyProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$defaultKeepAliveFamilyHash();
@@ -325,10 +318,7 @@ final class DefaultKeepAliveFamilyProvider
   @override
   int create(Ref ref) {
     final argument = this.argument as int;
-    return defaultKeepAliveFamily(
-      ref,
-      argument,
-    );
+    return defaultKeepAliveFamily(ref, argument);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -357,17 +347,15 @@ String _$defaultKeepAliveFamilyHash() =>
 final class DefaultKeepAliveFamilyFamily extends $Family
     with $FunctionalFamilyOverride<int, int> {
   const DefaultKeepAliveFamilyFamily._()
-      : super(
-          retry: null,
-          name: r'defaultKeepAliveFamilyProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'defaultKeepAliveFamilyProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
-  DefaultKeepAliveFamilyProvider call(
-    int a,
-  ) =>
+  DefaultKeepAliveFamilyProvider call(int a) =>
       DefaultKeepAliveFamilyProvider._(argument: a, from: this);
 
   @override

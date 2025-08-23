@@ -33,10 +33,7 @@ AsyncValue<int> alias(Ref ref) {
 }
 
 @riverpod
-AsyncValue<int> aliasFamily(
-  Ref ref,
-  AsyncValue<int> test,
-) {
+AsyncValue<int> aliasFamily(Ref ref, AsyncValue<int> test) {
   return const AsyncData(42);
 }
 
@@ -51,9 +48,7 @@ class AliasClass extends _$AliasClass {
 @riverpod
 class AliasClassFamily extends _$AliasClassFamily {
   @override
-  AsyncValue<int> build(
-    AsyncValue<int> test,
-  ) {
+  AsyncValue<int> build(AsyncValue<int> test) {
     return const AsyncData(42);
   }
 }

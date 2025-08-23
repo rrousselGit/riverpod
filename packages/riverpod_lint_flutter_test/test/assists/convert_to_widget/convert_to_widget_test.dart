@@ -16,143 +16,125 @@ void main() {
     },
   );
 
-  StatelessBaseWidgetType.values.forEach(
-    (targetWidget) {
-      final int expectedChangeCount;
-      switch (targetWidget) {
-        case StatelessBaseWidgetType.hookConsumerWidget:
-          expectedChangeCount = 11;
-          break;
-        case StatelessBaseWidgetType.hookWidget:
-        case StatelessBaseWidgetType.consumerWidget:
-          expectedChangeCount = 12;
-          break;
-        case StatelessBaseWidgetType.statelessWidget:
-          expectedChangeCount = 8;
-          break;
-      }
-      _runGoldenTest(
-        ConvertToStatelessBaseWidget(
-          targetWidget: targetWidget,
-        ),
-        'Convert widgets to ${targetWidget.name}s with hooks_riverpod and flutter_hooks dependency',
-        'test/assists/goldens/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff',
-        pubspecWithDependencies,
-        expectedChangeCount,
-      );
-    },
-  );
+  StatelessBaseWidgetType.values.forEach((targetWidget) {
+    final int expectedChangeCount;
+    switch (targetWidget) {
+      case StatelessBaseWidgetType.hookConsumerWidget:
+        expectedChangeCount = 11;
+        break;
+      case StatelessBaseWidgetType.hookWidget:
+      case StatelessBaseWidgetType.consumerWidget:
+        expectedChangeCount = 12;
+        break;
+      case StatelessBaseWidgetType.statelessWidget:
+        expectedChangeCount = 8;
+        break;
+    }
+    _runGoldenTest(
+      ConvertToStatelessBaseWidget(targetWidget: targetWidget),
+      'Convert widgets to ${targetWidget.name}s with hooks_riverpod and flutter_hooks dependency',
+      'test/assists/goldens/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff',
+      pubspecWithDependencies,
+      expectedChangeCount,
+    );
+  });
 
-  StatefulBaseWidgetType.values.forEach(
-    (targetWidget) {
-      final int expectedChangeCount;
-      switch (targetWidget) {
-        case StatefulBaseWidgetType.statefulHookConsumerWidget:
-        case StatefulBaseWidgetType.statefulHookWidget:
-          expectedChangeCount = 12;
-          break;
-        case StatefulBaseWidgetType.consumerStatefulWidget:
-          expectedChangeCount = 11;
-          break;
-        case StatefulBaseWidgetType.statefulWidget:
-          expectedChangeCount = 8;
-          break;
-      }
-      _runGoldenTest(
-        ConvertToStatefulBaseWidget(
-          targetWidget: targetWidget,
-        ),
-        'Convert widgets to ${targetWidget.name}s with hooks_riverpod and flutter_hooks dependency',
-        'test/assists/goldens/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff',
-        pubspecWithDependencies,
-        expectedChangeCount,
-      );
-    },
-  );
+  StatefulBaseWidgetType.values.forEach((targetWidget) {
+    final int expectedChangeCount;
+    switch (targetWidget) {
+      case StatefulBaseWidgetType.statefulHookConsumerWidget:
+      case StatefulBaseWidgetType.statefulHookWidget:
+        expectedChangeCount = 12;
+        break;
+      case StatefulBaseWidgetType.consumerStatefulWidget:
+        expectedChangeCount = 11;
+        break;
+      case StatefulBaseWidgetType.statefulWidget:
+        expectedChangeCount = 8;
+        break;
+    }
+    _runGoldenTest(
+      ConvertToStatefulBaseWidget(targetWidget: targetWidget),
+      'Convert widgets to ${targetWidget.name}s with hooks_riverpod and flutter_hooks dependency',
+      'test/assists/goldens/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff',
+      pubspecWithDependencies,
+      expectedChangeCount,
+    );
+  });
 
-  final pubspecWithoutDependencies = Pubspec(
-    'test_project',
-  );
+  final pubspecWithoutDependencies = Pubspec('test_project');
 
-  StatelessBaseWidgetType.values.forEach(
-    (targetWidget) {
-      final int expectedChangeCount;
-      switch (targetWidget) {
-        case StatelessBaseWidgetType.consumerWidget:
-          expectedChangeCount = 12;
-          break;
-        case StatelessBaseWidgetType.hookWidget:
-        case StatelessBaseWidgetType.hookConsumerWidget:
-          expectedChangeCount = 0;
-          break;
-        case StatelessBaseWidgetType.statelessWidget:
-          expectedChangeCount = 8;
-          break;
-      }
-      final String goldenFilePath;
-      switch (targetWidget) {
-        case StatelessBaseWidgetType.hookWidget:
-        case StatelessBaseWidgetType.hookConsumerWidget:
-          goldenFilePath = 'test/assists/goldens/empty.diff';
-          break;
-        case StatelessBaseWidgetType.consumerWidget:
-        case StatelessBaseWidgetType.statelessWidget:
-          goldenFilePath =
-              'test/assists/goldens/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff';
-          break;
-      }
+  StatelessBaseWidgetType.values.forEach((targetWidget) {
+    final int expectedChangeCount;
+    switch (targetWidget) {
+      case StatelessBaseWidgetType.consumerWidget:
+        expectedChangeCount = 12;
+        break;
+      case StatelessBaseWidgetType.hookWidget:
+      case StatelessBaseWidgetType.hookConsumerWidget:
+        expectedChangeCount = 0;
+        break;
+      case StatelessBaseWidgetType.statelessWidget:
+        expectedChangeCount = 8;
+        break;
+    }
+    final String goldenFilePath;
+    switch (targetWidget) {
+      case StatelessBaseWidgetType.hookWidget:
+      case StatelessBaseWidgetType.hookConsumerWidget:
+        goldenFilePath = 'test/assists/goldens/empty.diff';
+        break;
+      case StatelessBaseWidgetType.consumerWidget:
+      case StatelessBaseWidgetType.statelessWidget:
+        goldenFilePath =
+            'test/assists/goldens/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff';
+        break;
+    }
 
-      _runGoldenTest(
-        ConvertToStatelessBaseWidget(
-          targetWidget: targetWidget,
-        ),
-        'Convert widgets to ${targetWidget.name}s without hooks_riverpod and flutter_hooks dependency',
-        goldenFilePath,
-        pubspecWithoutDependencies,
-        expectedChangeCount,
-      );
-    },
-  );
+    _runGoldenTest(
+      ConvertToStatelessBaseWidget(targetWidget: targetWidget),
+      'Convert widgets to ${targetWidget.name}s without hooks_riverpod and flutter_hooks dependency',
+      goldenFilePath,
+      pubspecWithoutDependencies,
+      expectedChangeCount,
+    );
+  });
 
-  StatefulBaseWidgetType.values.forEach(
-    (targetWidget) {
-      final int expectedChangeCount;
-      switch (targetWidget) {
-        case StatefulBaseWidgetType.consumerStatefulWidget:
-          expectedChangeCount = 11;
-          break;
-        case StatefulBaseWidgetType.statefulHookWidget:
-        case StatefulBaseWidgetType.statefulHookConsumerWidget:
-          expectedChangeCount = 0;
-          break;
-        case StatefulBaseWidgetType.statefulWidget:
-          expectedChangeCount = 8;
-          break;
-      }
-      final String goldenFilePath;
-      switch (targetWidget) {
-        case StatefulBaseWidgetType.statefulHookWidget:
-        case StatefulBaseWidgetType.statefulHookConsumerWidget:
-          goldenFilePath = 'test/assists/goldens/empty.diff';
-          break;
-        case StatefulBaseWidgetType.consumerStatefulWidget:
-        case StatefulBaseWidgetType.statefulWidget:
-          goldenFilePath =
-              'test/assists/goldens/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff';
-          break;
-      }
+  StatefulBaseWidgetType.values.forEach((targetWidget) {
+    final int expectedChangeCount;
+    switch (targetWidget) {
+      case StatefulBaseWidgetType.consumerStatefulWidget:
+        expectedChangeCount = 11;
+        break;
+      case StatefulBaseWidgetType.statefulHookWidget:
+      case StatefulBaseWidgetType.statefulHookConsumerWidget:
+        expectedChangeCount = 0;
+        break;
+      case StatefulBaseWidgetType.statefulWidget:
+        expectedChangeCount = 8;
+        break;
+    }
+    final String goldenFilePath;
+    switch (targetWidget) {
+      case StatefulBaseWidgetType.statefulHookWidget:
+      case StatefulBaseWidgetType.statefulHookConsumerWidget:
+        goldenFilePath = 'test/assists/goldens/empty.diff';
+        break;
+      case StatefulBaseWidgetType.consumerStatefulWidget:
+      case StatefulBaseWidgetType.statefulWidget:
+        goldenFilePath =
+            'test/assists/goldens/convert_to_widget/convert_to_${targetWidget.name.toSnakeCase()}.diff';
+        break;
+    }
 
-      _runGoldenTest(
-        ConvertToStatefulBaseWidget(
-          targetWidget: targetWidget,
-        ),
-        'Convert widgets to ${targetWidget.name}s without hooks_riverpod and flutter_hooks dependency',
-        goldenFilePath,
-        pubspecWithoutDependencies,
-        expectedChangeCount,
-      );
-    },
-  );
+    _runGoldenTest(
+      ConvertToStatefulBaseWidget(targetWidget: targetWidget),
+      'Convert widgets to ${targetWidget.name}s without hooks_riverpod and flutter_hooks dependency',
+      goldenFilePath,
+      pubspecWithoutDependencies,
+      expectedChangeCount,
+    );
+  });
 }
 
 extension _StringX on String {

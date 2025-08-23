@@ -6,8 +6,8 @@ import 'src/riverpod_generator.dart';
 
 /// Builds generators for `build_runner` to run
 Builder riverpodBuilder(BuilderOptions options) {
-  return SharedPartBuilder(
-    [RiverpodGenerator(options.config), JsonGenerator()],
-    'riverpod',
-  );
+  return SharedPartBuilder([
+    RiverpodGenerator(options.config),
+    JsonGenerator(),
+  ], 'riverpod');
 }

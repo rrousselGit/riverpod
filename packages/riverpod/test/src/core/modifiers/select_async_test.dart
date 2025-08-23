@@ -71,9 +71,7 @@ void main() {
   test('implements ProviderSubscription.read on AsyncError', () async {
     final container = ProviderContainer.test();
     final dep = StateProvider((ref) => 0);
-    final provider = FutureProvider<int>(
-      (ref) => Future.error(ref.watch(dep)),
-    );
+    final provider = FutureProvider<int>((ref) => Future.error(ref.watch(dep)));
 
     final sub = container.listen<Future<bool>>(
       provider.selectAsync((data) => data.isEven),
@@ -128,8 +126,9 @@ void main() {
       fireImmediately: true,
     );
 
-    final result = verify(listener(argThat(isNull), captureAny)).captured.single
-        as Future<bool>;
+    final result =
+        verify(listener(argThat(isNull), captureAny)).captured.single
+            as Future<bool>;
     verifyNoMoreInteractions(listener);
     expect(await result, true);
   });
@@ -145,8 +144,9 @@ void main() {
       fireImmediately: true,
     );
 
-    final result = verify(listener(argThat(isNull), captureAny)).captured.single
-        as Future<bool>;
+    final result =
+        verify(listener(argThat(isNull), captureAny)).captured.single
+            as Future<bool>;
     verifyNoMoreInteractions(listener);
     expect(await result, true);
   });
@@ -162,8 +162,9 @@ void main() {
       fireImmediately: true,
     );
 
-    final result = verify(listener(argThat(isNull), captureAny)).captured.single
-        as Future<bool>;
+    final result =
+        verify(listener(argThat(isNull), captureAny)).captured.single
+            as Future<bool>;
     verifyNoMoreInteractions(listener);
     await expectLater(result, throwsStateError);
   });
@@ -182,20 +183,21 @@ void main() {
   });
 
   test(
-      'catching errors in the future is not necessary if the error is coming from AsyncError',
-      () async {
-    final container = ProviderContainer.test();
-    final provider = FutureProvider<int>((ref) => throw StateError('err'));
+    'catching errors in the future is not necessary if the error is coming from AsyncError',
+    () async {
+      final container = ProviderContainer.test();
+      final provider = FutureProvider<int>((ref) => throw StateError('err'));
 
-    container.listen(
-      provider.selectAsync((data) => data.isEven),
-      (prev, next) {},
-      fireImmediately: true,
-    );
+      container.listen(
+        provider.selectAsync((data) => data.isEven),
+        (prev, next) {},
+        fireImmediately: true,
+      );
 
-    // If somehow the future failed, it would be sent to the zone,
-    // making the test fail
-  });
+      // If somehow the future failed, it would be sent to the zone,
+      // making the test fail
+    },
+  );
 
   test('handles multiple AsyncLoading at once then data', () async {
     final container = ProviderContainer.test();
@@ -216,10 +218,12 @@ void main() {
     expect(sub.read(), completion(42));
 
     final notifier = container.read(provider.notifier);
-    notifier.state = const AsyncLoading<int>()
-        .copyWithPrevious(const AsyncValue<int>.data(0));
-    notifier.state = const AsyncLoading<int>()
-        .copyWithPrevious(const AsyncError<int>('err', StackTrace.empty));
+    notifier.state = const AsyncLoading<int>().copyWithPrevious(
+      const AsyncValue<int>.data(0),
+    );
+    notifier.state = const AsyncLoading<int>().copyWithPrevious(
+      const AsyncError<int>('err', StackTrace.empty),
+    );
     notifier.state = const AsyncLoading<int>();
     notifier.state = const AsyncData(2);
 
@@ -247,8 +251,10 @@ void main() {
     container.read(dep.notifier).state = 1;
     expect(
       container.read(a),
-      const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(0), isRefresh: false),
+      const AsyncLoading<int>().copyWithPrevious(
+        const AsyncData(0),
+        isRefresh: false,
+      ),
     );
     expect(container.read(b), const AsyncData(0));
     expect(buildCount, 1);
@@ -260,8 +266,10 @@ void main() {
     container.read(dep.notifier).state = 11;
     expect(
       container.read(a),
-      const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(1), isRefresh: false),
+      const AsyncLoading<int>().copyWithPrevious(
+        const AsyncData(1),
+        isRefresh: false,
+      ),
     );
     expect(container.read(b), const AsyncData(1));
     expect(buildCount, 2);
@@ -273,8 +281,10 @@ void main() {
     container.read(dep.notifier).state = 12;
     expect(
       container.read(a),
-      const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(11), isRefresh: false),
+      const AsyncLoading<int>().copyWithPrevious(
+        const AsyncData(11),
+        isRefresh: false,
+      ),
     );
     expect(container.read(b), const AsyncData(1));
     expect(buildCount, 2);
@@ -305,8 +315,10 @@ void main() {
     container.read(dep.notifier).state = 1;
     expect(
       container.read(a),
-      const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(0), isRefresh: false),
+      const AsyncLoading<int>().copyWithPrevious(
+        const AsyncData(0),
+        isRefresh: false,
+      ),
     );
     expect(container.read(b), const AsyncData(0));
     expect(buildCount, 1);
@@ -318,8 +330,10 @@ void main() {
     container.read(dep.notifier).state = 11;
     expect(
       container.read(a),
-      const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(1), isRefresh: false),
+      const AsyncLoading<int>().copyWithPrevious(
+        const AsyncData(1),
+        isRefresh: false,
+      ),
     );
     expect(container.read(b), const AsyncData(1));
     expect(buildCount, 2);
@@ -331,8 +345,10 @@ void main() {
     container.read(dep.notifier).state = 12;
     expect(
       container.read(a),
-      const AsyncLoading<int>()
-          .copyWithPrevious(const AsyncData(11), isRefresh: false),
+      const AsyncLoading<int>().copyWithPrevious(
+        const AsyncData(11),
+        isRefresh: false,
+      ),
     );
     expect(container.read(b), const AsyncData(1));
     expect(buildCount, 2);
@@ -357,8 +373,9 @@ void main() {
 
     test('resolves with error', () async {
       final container = ProviderContainer.test();
-      final provider =
-          FutureProvider<int>((ref) async => throw StateError('err'));
+      final provider = FutureProvider<int>(
+        (ref) async => throw StateError('err'),
+      );
 
       container.listen(provider, (p, n) {});
 

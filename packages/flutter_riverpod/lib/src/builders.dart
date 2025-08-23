@@ -230,7 +230,7 @@ final class ChangeNotifierProviderFamilyBuilder {
   ///   ```
   /// {@endtemplate}
   ChangeNotifierProviderFamily<NotifierT, ArgT>
-      call<NotifierT extends ChangeNotifier?, ArgT>(
+  call<NotifierT extends ChangeNotifier?, ArgT>(
     NotifierT Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,
@@ -330,7 +330,7 @@ final class AutoDisposeChangeNotifierProviderFamilyBuilder {
 
   /// {@macro riverpod.family}
   ChangeNotifierProviderFamily<NotifierT, ArgT>
-      call<NotifierT extends ChangeNotifier?, ArgT>(
+  call<NotifierT extends ChangeNotifier?, ArgT>(
     NotifierT Function(Ref ref, ArgT param) create, {
     String? name,
     Iterable<ProviderOrFamily>? dependencies,

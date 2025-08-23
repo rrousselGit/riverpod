@@ -89,12 +89,8 @@ int customAnnotation(Ref ref) {
 }
 
 // expect_lint: provider_dependencies
-@Riverpod(
-  keepAlive: false,
-)
-int customAnnotationWithTrailingComma(
-  Ref ref,
-) {
+@Riverpod(keepAlive: false)
+int customAnnotationWithTrailingComma(Ref ref) {
   ref.watch(depProvider);
   return 0;
 }
@@ -162,9 +158,7 @@ class ConditionalScope extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ProviderScope(
-      overrides: [
-        if (condition) depProvider.overrideWithValue(42),
-      ],
+      overrides: [if (condition) depProvider.overrideWithValue(42)],
       child: DepWidget(),
     );
   }
@@ -184,9 +178,7 @@ class OnlyNeedToOverrideProviderWithEmptyDependencies extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ProviderScope(
-      overrides: [
-        depProvider.overrideWithValue(42),
-      ],
+      overrides: [depProvider.overrideWithValue(42)],
       child: TransitiveDepWidget(),
     );
   }
@@ -196,9 +188,7 @@ class CanOverrideTransitiveProviderDirectly extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return ProviderScope(
-      overrides: [
-        transitiveDepProvider.overrideWithValue(42),
-      ],
+      overrides: [transitiveDepProvider.overrideWithValue(42)],
       child: TransitiveDepWidget(),
     );
   }
@@ -242,9 +232,7 @@ class SupportsNestedScopes extends ConsumerWidget {
       overrides: [depFamilyProvider.overrideWith((ref, arg) => 0)],
       child: ProviderScope(
         overrides: [depProvider.overrideWith((ref) => 0)],
-        child: DepFamily(
-          child: DepWidget(),
-        ),
+        child: DepFamily(child: DepWidget()),
       ),
     );
   }

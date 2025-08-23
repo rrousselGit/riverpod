@@ -15,15 +15,15 @@ const simpleProvider = SimpleProvider._();
 final class SimpleProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const SimpleProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'simpleProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'simpleProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$simpleHash();
@@ -55,15 +55,15 @@ const simple2Provider = Simple2Provider._();
 final class Simple2Provider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const Simple2Provider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'simple2Provider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'simple2Provider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$simple2Hash();
@@ -94,15 +94,15 @@ const simpleClassProvider = SimpleClassProvider._();
 
 final class SimpleClassProvider extends $NotifierProvider<SimpleClass, String> {
   const SimpleClassProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'simpleClassProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'simpleClassProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$simpleClassHash();
@@ -129,8 +129,14 @@ abstract class _$SimpleClass extends $Notifier<String> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<String, String>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<String, String>, String, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<String, String>,
+              String,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }

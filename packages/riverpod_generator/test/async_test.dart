@@ -8,15 +8,16 @@ import 'integration/async.dart';
 
 void main() {
   test(
-      'Creates a FutureProvider<T> if @riverpod is used on a FutureOr function',
-      () {
-    final container = ProviderContainer.test();
+    'Creates a FutureProvider<T> if @riverpod is used on a FutureOr function',
+    () {
+      final container = ProviderContainer.test();
 
-    const ProviderBase<AsyncValue<String>> provider = publicProvider;
-    final AsyncValue<String> result = container.read(publicProvider);
+      const ProviderBase<AsyncValue<String>> provider = publicProvider;
+      final AsyncValue<String> result = container.read(publicProvider);
 
-    expect(result, const AsyncData('Hello world'));
-  });
+      expect(result, const AsyncData('Hello world'));
+    },
+  );
 
   test('Generates .name for providers', () {
     expect(publicProvider.name, 'publicProvider');
@@ -40,9 +41,10 @@ void main() {
   test('Supports overriding family providers', () async {
     final container = ProviderContainer.test(
       overrides: [
-        familyProvider(21, third: .21).overrideWith(
-          (ref) => Future.value('Override'),
-        ),
+        familyProvider(
+          21,
+          third: .21,
+        ).overrideWith((ref) => Future.value('Override')),
         familyProvider.overrideWith(
           (ref, args) => Future.value(
             'Hello world ${args.$1} ${args.second} '
@@ -60,81 +62,70 @@ void main() {
   });
 
   test(
-      'Creates a Provider.family<T> if @riverpod is used on a synchronous function with parameters',
-      () async {
-    final container = ProviderContainer.test();
+    'Creates a Provider.family<T> if @riverpod is used on a synchronous function with parameters',
+    () async {
+      final container = ProviderContainer.test();
 
-    const FamilyFamily family = familyProvider;
+      const FamilyFamily family = familyProvider;
 
-    expect(familyProvider(42, third: .42).from, familyProvider);
+      expect(familyProvider(42, third: .42).from, familyProvider);
 
-    expect(
-      familyProvider(42, third: .42),
-      familyProvider(42, third: .42),
-    );
-    expect(
-      familyProvider(42, third: .42),
-      isNot(familyProvider(42, third: .21)),
-    );
-    expect(
-      familyProvider(42, third: .42).hashCode,
-      isNot(familyProvider(42, third: .21).hashCode),
-    );
+      expect(familyProvider(42, third: .42), familyProvider(42, third: .42));
+      expect(
+        familyProvider(42, third: .42),
+        isNot(familyProvider(42, third: .21)),
+      );
+      expect(
+        familyProvider(42, third: .42).hashCode,
+        isNot(familyProvider(42, third: .21).hashCode),
+      );
 
-    // handle defaults
-    expect(
-      familyProvider(42, third: .42),
-      familyProvider(
-        42,
-        third: .42,
-      ),
-    );
-    expect(
-      familyProvider(42, third: .42).hashCode,
-      familyProvider(
-        42,
-        third: .42,
-      ).hashCode,
-    );
+      // handle defaults
+      expect(familyProvider(42, third: .42), familyProvider(42, third: .42));
+      expect(
+        familyProvider(42, third: .42).hashCode,
+        familyProvider(42, third: .42).hashCode,
+      );
 
-    final FamilyProvider provider = familyProvider(
-      42,
-      second: 'x42',
-      third: .42,
-      fourth: false,
-      fifth: const ['x42'],
-    );
-    final ProviderBase<AsyncValue<String>> futureProvider = provider;
-
-    final sub = container.listen(
-      familyProvider(
+      final FamilyProvider provider = familyProvider(
         42,
         second: 'x42',
         third: .42,
         fourth: false,
         fifth: const ['x42'],
-      ).future,
-      (previous, next) {},
-    );
-    await sub.read();
+      );
+      final ProviderBase<AsyncValue<String>> futureProvider = provider;
 
-    final AsyncValue<String> result = container.read(
-      familyProvider(
-        42,
-        second: 'x42',
-        third: .42,
-        fourth: false,
-        fifth: const ['x42'],
-      ),
-    );
+      final sub = container.listen(
+        familyProvider(
+          42,
+          second: 'x42',
+          third: .42,
+          fourth: false,
+          fifth: const ['x42'],
+        ).future,
+        (previous, next) {},
+      );
+      await sub.read();
 
-    expect(
-      result,
-      const AsyncData(
-        '(first: 42, second: x42, third: 0.42, fourth: false, fifth: [x42])',
-      ),
-    );
-  });
+      final AsyncValue<String> result = container.read(
+        familyProvider(
+          42,
+          second: 'x42',
+          third: .42,
+          fourth: false,
+          fifth: const ['x42'],
+        ),
+      );
+
+      expect(
+        result,
+        const AsyncData(
+          '(first: 42, second: x42, third: 0.42, fourth: false, fifth: [x42])',
+        ),
+      );
+    },
+  );
 
   test('can overrideWith', () {
     final container = ProviderContainer.test(
@@ -144,13 +135,11 @@ void main() {
           return result;
         }),
         publicClassProvider.overrideWith(() => PublicClass(42)),
-        familyProvider.overrideWith(
-          (ref, args) {
-            final FutureOr<String> result =
-                'test (first: ${args.$1}, second: ${args.second}, third: ${args.third}, fourth: ${args.fourth}, fifth: ${args.fifth})';
-            return result;
-          },
-        ),
+        familyProvider.overrideWith((ref, args) {
+          final FutureOr<String> result =
+              'test (first: ${args.$1}, second: ${args.second}, third: ${args.third}, fourth: ${args.fourth}, fifth: ${args.fifth})';
+          return result;
+        }),
         familyClassProvider.overrideWith(() => FamilyClass(42)),
       ],
     );
@@ -173,8 +162,10 @@ void main() {
     final container = ProviderContainer.test(
       overrides: [
         publicProvider.overrideWithValue(const AsyncData('test')),
-        familyProvider(42, third: .2)
-            .overrideWithValue(const AsyncData('test')),
+        familyProvider(
+          42,
+          third: .2,
+        ).overrideWithValue(const AsyncData('test')),
       ],
     );
 

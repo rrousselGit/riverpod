@@ -12,23 +12,26 @@ part of 'offline.dart';
 @ProviderFor(storage)
 const storageProvider = StorageProvider._();
 
-final class StorageProvider extends $FunctionalProvider<
-        AsyncValue<Storage<String, String>>,
-        Storage<String, String>,
-        FutureOr<Storage<String, String>>>
+final class StorageProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<Storage<String, String>>,
+          Storage<String, String>,
+          FutureOr<Storage<String, String>>
+        >
     with
         $FutureModifier<Storage<String, String>>,
         $FutureProvider<Storage<String, String>> {
   const StorageProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'storageProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'storageProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$storageHash();
@@ -36,8 +39,8 @@ final class StorageProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<Storage<String, String>> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<Storage<String, String>> create(Ref ref) {
@@ -55,15 +58,15 @@ const customAnnotationProvider = CustomAnnotationProvider._();
 final class CustomAnnotationProvider
     extends $AsyncNotifierProvider<CustomAnnotation, String> {
   const CustomAnnotationProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'customAnnotationProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'customAnnotationProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$customAnnotationHash();
@@ -83,11 +86,14 @@ abstract class _$CustomAnnotationBase extends $AsyncNotifier<String> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<String>, String>,
-        AsyncValue<String>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<String>, String>,
+              AsyncValue<String>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }
@@ -99,15 +105,16 @@ const jsonProvider = JsonFamily._();
 @JsonPersist()
 final class JsonProvider
     extends $AsyncNotifierProvider<Json, Map<String, List<int>>> {
-  const JsonProvider._(
-      {required JsonFamily super.from, required String super.argument})
-      : super(
-          retry: null,
-          name: r'jsonProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+  const JsonProvider._({
+    required JsonFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'jsonProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$jsonHash();
@@ -139,22 +146,24 @@ String _$jsonHash() => r'54532ee1d9de0979dc96fe8eeb87e2aae92089c5';
 @JsonPersist()
 final class JsonFamily extends $Family
     with
-        $ClassFamilyOverride<Json, AsyncValue<Map<String, List<int>>>,
-            Map<String, List<int>>, FutureOr<Map<String, List<int>>>, String> {
+        $ClassFamilyOverride<
+          Json,
+          AsyncValue<Map<String, List<int>>>,
+          Map<String, List<int>>,
+          FutureOr<Map<String, List<int>>>,
+          String
+        > {
   const JsonFamily._()
-      : super(
-          retry: null,
-          name: r'jsonProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'jsonProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
   @JsonPersist()
-  JsonProvider call(
-    String arg,
-  ) =>
-      JsonProvider._(argument: arg, from: this);
+  JsonProvider call(String arg) => JsonProvider._(argument: arg, from: this);
 
   @override
   String toString() => r'jsonProvider';
@@ -165,22 +174,25 @@ abstract class _$JsonBase extends $AsyncNotifier<Map<String, List<int>>> {
   late final _$args = ref.$arg as String;
   String get arg => _$args;
 
-  FutureOr<Map<String, List<int>>> build(
-    String arg,
-  );
+  FutureOr<Map<String, List<int>>> build(String arg);
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      _$args,
-    );
-    final ref = this.ref
-        as $Ref<AsyncValue<Map<String, List<int>>>, Map<String, List<int>>>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<Map<String, List<int>>>, Map<String, List<int>>>,
-        AsyncValue<Map<String, List<int>>>,
-        Object?,
-        Object?>;
+    final created = build(_$args);
+    final ref =
+        this.ref
+            as $Ref<AsyncValue<Map<String, List<int>>>, Map<String, List<int>>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<
+                AsyncValue<Map<String, List<int>>>,
+                Map<String, List<int>>
+              >,
+              AsyncValue<Map<String, List<int>>>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }
@@ -193,15 +205,15 @@ const json2Provider = Json2Provider._();
 final class Json2Provider
     extends $AsyncNotifierProvider<Json2, Map<String, List<int>>> {
   const Json2Provider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'json2Provider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'json2Provider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$json2Hash();
@@ -220,13 +232,20 @@ abstract class _$Json2Base extends $AsyncNotifier<Map<String, List<int>>> {
   @override
   void runBuild() {
     final created = build();
-    final ref = this.ref
-        as $Ref<AsyncValue<Map<String, List<int>>>, Map<String, List<int>>>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<Map<String, List<int>>>, Map<String, List<int>>>,
-        AsyncValue<Map<String, List<int>>>,
-        Object?,
-        Object?>;
+    final ref =
+        this.ref
+            as $Ref<AsyncValue<Map<String, List<int>>>, Map<String, List<int>>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<
+                AsyncValue<Map<String, List<int>>>,
+                Map<String, List<int>>
+              >,
+              AsyncValue<Map<String, List<int>>>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }
@@ -239,15 +258,15 @@ const customJsonProvider = CustomJsonProvider._();
 final class CustomJsonProvider
     extends $AsyncNotifierProvider<CustomJson, Map<String, Bar>> {
   const CustomJsonProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'customJsonProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'customJsonProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$customJsonHash();
@@ -268,11 +287,14 @@ abstract class _$CustomJsonBase extends $AsyncNotifier<Map<String, Bar>> {
     final created = build();
     final ref =
         this.ref as $Ref<AsyncValue<Map<String, Bar>>, Map<String, Bar>>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<Map<String, Bar>>, Map<String, Bar>>,
-        AsyncValue<Map<String, Bar>>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<Map<String, Bar>>, Map<String, Bar>>,
+              AsyncValue<Map<String, Bar>>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }
@@ -285,15 +307,15 @@ const customKeyProvider = CustomKeyProvider._();
 final class CustomKeyProvider
     extends $AsyncNotifierProvider<CustomKey, Map<String, Bar>> {
   const CustomKeyProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'customKeyProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'customKeyProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$customKeyHash();
@@ -314,11 +336,14 @@ abstract class _$CustomKeyBase extends $AsyncNotifier<Map<String, Bar>> {
     final created = build();
     final ref =
         this.ref as $Ref<AsyncValue<Map<String, Bar>>, Map<String, Bar>>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<Map<String, Bar>>, Map<String, Bar>>,
-        AsyncValue<Map<String, Bar>>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<Map<String, Bar>>, Map<String, Bar>>,
+              AsyncValue<Map<String, Bar>>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }
@@ -330,21 +355,16 @@ const customJsonWithArgsProvider = CustomJsonWithArgsFamily._();
 @JsonPersist()
 final class CustomJsonWithArgsProvider
     extends $AsyncNotifierProvider<CustomJsonWithArgs, Map<String, Bar>> {
-  const CustomJsonWithArgsProvider._(
-      {required CustomJsonWithArgsFamily super.from,
-      required (
-        int,
-        String, {
-        int? arg3,
-      })
-          super.argument})
-      : super(
-          retry: null,
-          name: r'customJsonWithArgsProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+  const CustomJsonWithArgsProvider._({
+    required CustomJsonWithArgsFamily super.from,
+    required (int, String, {int? arg3}) super.argument,
+  }) : super(
+         retry: null,
+         name: r'customJsonWithArgsProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$customJsonWithArgsHash();
@@ -378,35 +398,27 @@ String _$customJsonWithArgsHash() =>
 final class CustomJsonWithArgsFamily extends $Family
     with
         $ClassFamilyOverride<
-            CustomJsonWithArgs,
-            AsyncValue<Map<String, Bar>>,
-            Map<String, Bar>,
-            FutureOr<Map<String, Bar>>,
-            (
-              int,
-              String, {
-              int? arg3,
-            })> {
+          CustomJsonWithArgs,
+          AsyncValue<Map<String, Bar>>,
+          Map<String, Bar>,
+          FutureOr<Map<String, Bar>>,
+          (int, String, {int? arg3})
+        > {
   const CustomJsonWithArgsFamily._()
-      : super(
-          retry: null,
-          name: r'customJsonWithArgsProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'customJsonWithArgsProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
   @JsonPersist()
-  CustomJsonWithArgsProvider call(
-    int arg,
-    String arg2, {
-    int? arg3,
-  }) =>
-      CustomJsonWithArgsProvider._(argument: (
-        arg,
-        arg2,
-        arg3: arg3,
-      ), from: this);
+  CustomJsonWithArgsProvider call(int arg, String arg2, {int? arg3}) =>
+      CustomJsonWithArgsProvider._(
+        argument: (arg, arg2, arg3: arg3),
+        from: this,
+      );
 
   @override
   String toString() => r'customJsonWithArgsProvider';
@@ -415,35 +427,26 @@ final class CustomJsonWithArgsFamily extends $Family
 @JsonPersist()
 abstract class _$CustomJsonWithArgsBase
     extends $AsyncNotifier<Map<String, Bar>> {
-  late final _$args = ref.$arg as (
-    int,
-    String, {
-    int? arg3,
-  });
+  late final _$args = ref.$arg as (int, String, {int? arg3});
   int get arg => _$args.$1;
   String get arg2 => _$args.$2;
   int? get arg3 => _$args.arg3;
 
-  FutureOr<Map<String, Bar>> build(
-    int arg,
-    String arg2, {
-    int? arg3,
-  });
+  FutureOr<Map<String, Bar>> build(int arg, String arg2, {int? arg3});
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      _$args.$1,
-      _$args.$2,
-      arg3: _$args.arg3,
-    );
+    final created = build(_$args.$1, _$args.$2, arg3: _$args.arg3);
     final ref =
         this.ref as $Ref<AsyncValue<Map<String, Bar>>, Map<String, Bar>>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<Map<String, Bar>>, Map<String, Bar>>,
-        AsyncValue<Map<String, Bar>>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<Map<String, Bar>>, Map<String, Bar>>,
+              AsyncValue<Map<String, Bar>>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }
@@ -453,18 +456,19 @@ abstract class _$CustomJsonWithArgsBase
 const passEncodeDecodeByHandProvider = PassEncodeDecodeByHandProvider._();
 
 @JsonPersist()
-final class PassEncodeDecodeByHandProvider extends $AsyncNotifierProvider<
-    PassEncodeDecodeByHand, Map<String, String>> {
+final class PassEncodeDecodeByHandProvider
+    extends
+        $AsyncNotifierProvider<PassEncodeDecodeByHand, Map<String, String>> {
   const PassEncodeDecodeByHandProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'passEncodeDecodeByHandProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'passEncodeDecodeByHandProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$passEncodeDecodeByHandHash();
@@ -487,11 +491,14 @@ abstract class _$PassEncodeDecodeByHandBase
     final created = build();
     final ref =
         this.ref as $Ref<AsyncValue<Map<String, String>>, Map<String, String>>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<Map<String, String>>, Map<String, String>>,
-        AsyncValue<Map<String, String>>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<Map<String, String>>, Map<String, String>>,
+              AsyncValue<Map<String, String>>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }
@@ -524,11 +531,16 @@ abstract class _$Json extends _$JsonBase {
       storage,
       key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,
-      decode: decode ??
+      decode:
+          decode ??
           (encoded) {
             final e = $jsonCodex.decode(encoded);
-            return (e as Map).map((k, v) => MapEntry(
-                k as String, (v as List).map((e) => e as int).toList()));
+            return (e as Map).map(
+              (k, v) => MapEntry(
+                k as String,
+                (v as List).map((e) => e as int).toList(),
+              ),
+            );
           },
       options: options,
     );
@@ -556,11 +568,16 @@ abstract class _$Json2 extends _$Json2Base {
       storage,
       key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,
-      decode: decode ??
+      decode:
+          decode ??
           (encoded) {
             final e = $jsonCodex.decode(encoded);
-            return (e as Map).map((k, v) => MapEntry(
-                k as String, (v as List).map((e) => e as int).toList()));
+            return (e as Map).map(
+              (k, v) => MapEntry(
+                k as String,
+                (v as List).map((e) => e as int).toList(),
+              ),
+            );
           },
       options: options,
     );
@@ -588,11 +605,16 @@ abstract class _$CustomJson extends _$CustomJsonBase {
       storage,
       key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,
-      decode: decode ??
+      decode:
+          decode ??
           (encoded) {
             final e = $jsonCodex.decode(encoded);
-            return (e as Map).map((k, v) =>
-                MapEntry(k as String, Bar.fromJson(v as Map<String, Object?>)));
+            return (e as Map).map(
+              (k, v) => MapEntry(
+                k as String,
+                Bar.fromJson(v as Map<String, Object?>),
+              ),
+            );
           },
       options: options,
     );
@@ -620,11 +642,16 @@ abstract class _$CustomKey extends _$CustomKeyBase {
       storage,
       key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,
-      decode: decode ??
+      decode:
+          decode ??
           (encoded) {
             final e = $jsonCodex.decode(encoded);
-            return (e as Map).map((k, v) =>
-                MapEntry(k as String, Bar.fromJson(v as Map<String, Object?>)));
+            return (e as Map).map(
+              (k, v) => MapEntry(
+                k as String,
+                Bar.fromJson(v as Map<String, Object?>),
+              ),
+            );
           },
       options: options,
     );
@@ -634,11 +661,7 @@ abstract class _$CustomKey extends _$CustomKeyBase {
 abstract class _$CustomJsonWithArgs extends _$CustomJsonWithArgsBase {
   /// The default key used by [persist].
   String get key {
-    late final args = (
-      arg,
-      arg2,
-      arg3: arg3,
-    );
+    late final args = (arg, arg2, arg3: arg3);
     late final resolvedKey = 'CustomJsonWithArgs($args)';
 
     return resolvedKey;
@@ -658,11 +681,16 @@ abstract class _$CustomJsonWithArgs extends _$CustomJsonWithArgsBase {
       storage,
       key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,
-      decode: decode ??
+      decode:
+          decode ??
           (encoded) {
             final e = $jsonCodex.decode(encoded);
-            return (e as Map).map((k, v) =>
-                MapEntry(k as String, Bar.fromJson(v as Map<String, Object?>)));
+            return (e as Map).map(
+              (k, v) => MapEntry(
+                k as String,
+                Bar.fromJson(v as Map<String, Object?>),
+              ),
+            );
           },
       options: options,
     );
@@ -690,7 +718,8 @@ abstract class _$PassEncodeDecodeByHand extends _$PassEncodeDecodeByHandBase {
       storage,
       key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,
-      decode: decode ??
+      decode:
+          decode ??
           (encoded) {
             final e = $jsonCodex.decode(encoded);
             return (e as Map).map((k, v) => MapEntry(k as String, v as String));

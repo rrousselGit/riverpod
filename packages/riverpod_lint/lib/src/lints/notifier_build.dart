@@ -28,18 +28,16 @@ class NotifierBuild extends RiverpodLintRule {
     CustomLintContext context,
   ) {
     context.registry.addClassDeclaration((node) {
-      final hasRiverpodAnnotation = node.metadata.where(
-        (element) {
-          final annotationElement = element.element2;
+      final hasRiverpodAnnotation = node.metadata.where((element) {
+        final annotationElement = element.element2;
 
-          if (annotationElement == null ||
-              annotationElement is! ExecutableElement2) {
-            return false;
-          }
+        if (annotationElement == null ||
+            annotationElement is! ExecutableElement2) {
+          return false;
+        }
 
-          return riverpodType.isExactlyType(annotationElement.returnType);
-        },
-      ).isNotEmpty;
+        return riverpodType.isExactlyType(annotationElement.returnType);
+      }).isNotEmpty;
 
       if (!hasRiverpodAnnotation) return;
 
@@ -56,9 +54,7 @@ class NotifierBuild extends RiverpodLintRule {
   }
 
   @override
-  List<RiverpodFix> getFixes() => [
-        AddBuildMethodFix(),
-      ];
+  List<RiverpodFix> getFixes() => [AddBuildMethodFix()];
 }
 
 class AddBuildMethodFix extends RiverpodFix {
@@ -81,17 +77,14 @@ class AddBuildMethodFix extends RiverpodFix {
       changeBuilder.addDartFileEdit((builder) {
         final offset = node.leftBracket.offset + 1;
 
-        builder.addSimpleInsertion(
-          offset,
-          '''
+        builder.addSimpleInsertion(offset, '''
 
   @override
   dynamic build() {
     // TODO: implement build
     throw UnimplementedError();
   }
-''',
-        );
+''');
       });
     });
   }

@@ -18,7 +18,8 @@ class MissingProviderScope extends RiverpodLintRule {
 
   static const _code = LintCode(
     name: 'missing_provider_scope',
-    problemMessage: 'Flutter applications should have a ProviderScope widget '
+    problemMessage:
+        'Flutter applications should have a ProviderScope widget '
         'at the top of the widget tree.',
     errorSeverity: ErrorSeverity.WARNING,
   );

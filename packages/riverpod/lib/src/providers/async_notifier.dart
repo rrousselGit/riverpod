@@ -20,16 +20,20 @@ abstract class $AsyncNotifier<ValueT> extends $AsyncNotifierBase<ValueT>
 /// Implementation detail of `riverpod_generator`.
 /// Do not use.
 @publicInCodegen
-abstract base class $AsyncNotifierProvider< //
-        NotifierT extends $AsyncNotifier<ValueT>,
-        ValueT> //
-    extends $ClassProvider< //
-        NotifierT,
-        AsyncValue<ValueT>,
-        ValueT,
-        FutureOr<ValueT>> //
-    with
-        $FutureModifier<ValueT> {
+abstract base class $AsyncNotifierProvider<
+  //
+  NotifierT extends $AsyncNotifier<ValueT>,
+  ValueT
+> //
+    extends
+        $ClassProvider<
+          //
+          NotifierT,
+          AsyncValue<ValueT>,
+          ValueT,
+          FutureOr<ValueT>
+        > //
+    with $FutureModifier<ValueT> {
   /// Implementation detail of `riverpod_generator`.
   /// Do not use.
   const $AsyncNotifierProvider({
@@ -60,14 +64,19 @@ abstract base class $AsyncNotifierProvider< //
 /// Do not use.
 @internal
 @publicInCodegen
-class $AsyncNotifierProviderElement< //
-        NotifierT extends $AsyncNotifier<ValueT>,
-        ValueT> //
-    extends $ClassProviderElement< //
-        NotifierT,
-        AsyncValue<ValueT>,
-        ValueT,
-        FutureOr<ValueT>> //
+class $AsyncNotifierProviderElement<
+  //
+  NotifierT extends $AsyncNotifier<ValueT>,
+  ValueT
+> //
+    extends
+        $ClassProviderElement<
+          //
+          NotifierT,
+          AsyncValue<ValueT>,
+          ValueT,
+          FutureOr<ValueT>
+        > //
     with
         FutureModifierElement<ValueT>,
         FutureModifierClassElement<NotifierT, ValueT, FutureOr<ValueT>> {

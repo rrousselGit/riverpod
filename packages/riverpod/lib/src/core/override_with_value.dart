@@ -2,18 +2,19 @@ part of '../framework.dart';
 
 @reopen
 abstract base class _ValueProvider<StateT, ValueT>
-    extends $ProviderBaseImpl<StateT> with LegacyProviderMixin<StateT> {
+    extends $ProviderBaseImpl<StateT>
+    with LegacyProviderMixin<StateT> {
   /// Creates a [_ValueProvider].
   const _ValueProvider(this._value)
-      : super(
-          name: null,
-          from: null,
-          argument: null,
-          $allTransitiveDependencies: null,
-          dependencies: null,
-          isAutoDispose: false,
-          retry: null,
-        );
+    : super(
+        name: null,
+        from: null,
+        argument: null,
+        $allTransitiveDependencies: null,
+        dependencies: null,
+        isAutoDispose: false,
+        retry: null,
+      );
 
   final StateT _value;
 
@@ -51,16 +52,15 @@ final class $SyncValueProvider<ValueT> extends _ValueProvider<ValueT, ValueT> {
   @internal
   @override
   // ignore: library_private_types_in_public_api, not public API
-  _SyncValueProviderElement<ValueT> $createElement(
-    $ProviderPointer pointer,
-  ) {
+  _SyncValueProviderElement<ValueT> $createElement($ProviderPointer pointer) {
     return _SyncValueProviderElement(this, pointer);
   }
 }
 
 /// The [ProviderElement] of a [_ValueProvider]
 abstract class _ValueProviderElement<StateT, ValueT>
-    extends ProviderElement<StateT, ValueT> with ElementWithFuture {
+    extends ProviderElement<StateT, ValueT>
+    with ElementWithFuture {
   /// The [ProviderElement] of a [_ValueProvider]
   _ValueProviderElement(this.provider, super.pointer);
 
@@ -129,9 +129,7 @@ final class $AsyncValueProvider<ValueT>
   @internal
   @override
   // ignore: library_private_types_in_public_api, not public API
-  _AsyncValueProviderElement<ValueT> $createElement(
-    $ProviderPointer pointer,
-  ) {
+  _AsyncValueProviderElement<ValueT> $createElement($ProviderPointer pointer) {
     return _AsyncValueProviderElement(this, pointer);
   }
 }

@@ -161,10 +161,10 @@ class ProviderFor {
   /// @nodoc
   @internal
   const ProviderFor(this.value)
-      : assert(
-          value is Function || value is Type,
-          '$value is not a class/function',
-        );
+    : assert(
+        value is Function || value is Type,
+        '$value is not a class/function',
+      );
 
   /// The code annotated by `@riverpod`
   final Object value;

@@ -52,9 +52,11 @@ abstract class AsyncNotifier<StateT> extends $AsyncNotifier<StateT> {
 /// [AsyncNotifier].
 /// {@endtemplate}
 /// {@category Providers}
-final class AsyncNotifierProvider< //
-        NotifierT extends AsyncNotifier<ValueT>,
-        ValueT> //
+final class AsyncNotifierProvider<
+  //
+  NotifierT extends AsyncNotifier<ValueT>,
+  ValueT
+> //
     extends $AsyncNotifierProvider<NotifierT, ValueT>
     with LegacyProviderMixin<AsyncValue<ValueT>> {
   /// {@macro riverpod.async_notifier_provider}
@@ -65,11 +67,12 @@ final class AsyncNotifierProvider< //
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-          $allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-          from: null,
-          argument: null,
-        );
+         $allTransitiveDependencies: computeAllTransitiveDependencies(
+           dependencies,
+         ),
+         from: null,
+         argument: null,
+       );
 
   /// An implementation detail of Riverpod
   /// @nodoc

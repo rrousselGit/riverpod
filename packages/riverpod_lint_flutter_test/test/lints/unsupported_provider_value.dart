@@ -113,29 +113,21 @@ class MyAsyncNotifier extends AsyncNotifier<int> {
 Raw<MyChangeNotifier> rawNotifier(Ref ref) => MyChangeNotifier();
 
 @riverpod
-Raw<Future<MyChangeNotifier>> rawFutureNotifier(
-  Ref ref,
-) async {
+Raw<Future<MyChangeNotifier>> rawFutureNotifier(Ref ref) async {
   return MyChangeNotifier();
 }
 
 @riverpod
-Raw<Stream<MyChangeNotifier>> rawStreamNotifier(
-  Ref ref,
-) async* {
+Raw<Stream<MyChangeNotifier>> rawStreamNotifier(Ref ref) async* {
   yield MyChangeNotifier();
 }
 
 @riverpod
-Future<Raw<MyChangeNotifier>> futureRawNotifier(
-  Ref ref,
-) async {
+Future<Raw<MyChangeNotifier>> futureRawNotifier(Ref ref) async {
   return MyChangeNotifier();
 }
 
 @riverpod
-Stream<Raw<MyChangeNotifier>> streamRawNotifier(
-  Ref ref,
-) async* {
+Stream<Raw<MyChangeNotifier>> streamRawNotifier(Ref ref) async* {
   yield MyChangeNotifier();
 }

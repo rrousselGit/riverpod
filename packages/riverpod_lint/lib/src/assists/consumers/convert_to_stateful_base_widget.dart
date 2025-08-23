@@ -14,18 +14,14 @@ import '../../riverpod_custom_lint.dart';
 import 'convert_to_widget_utils.dart';
 
 class ConvertToStatefulBaseWidget extends RiverpodAssist {
-  ConvertToStatefulBaseWidget({
-    required this.targetWidget,
-  });
+  ConvertToStatefulBaseWidget({required this.targetWidget});
   final StatefulBaseWidgetType targetWidget;
   late final statelessBaseType = getStatelessBaseType(
     exclude: targetWidget == StatefulBaseWidgetType.statefulWidget
         ? StatelessBaseWidgetType.statelessWidget
         : null,
   );
-  late final statefulBaseType = getStatefulBaseType(
-    exclude: targetWidget,
-  );
+  late final statefulBaseType = getStatefulBaseType(exclude: targetWidget);
 
   @override
   void run(
@@ -35,8 +31,9 @@ class ConvertToStatefulBaseWidget extends RiverpodAssist {
     SourceRange target,
   ) {
     if (targetWidget.requiredPackage != null &&
-        !context.pubspec.dependencies.keys
-            .contains(targetWidget.requiredPackage)) {
+        !context.pubspec.dependencies.keys.contains(
+          targetWidget.requiredPackage,
+        )) {
       return;
     }
 
@@ -54,7 +51,8 @@ class ConvertToStatefulBaseWidget extends RiverpodAssist {
 
       if (statefulBaseType.isExactlyType(type)) {
         final isExactlyStatefulWidget = StatefulBaseWidgetType
-            .statefulWidget.typeChecker
+            .statefulWidget
+            .typeChecker
             .isExactlyType(type);
 
         _convertStatefulToStatefulWidget(
@@ -292,8 +290,9 @@ class _ReplacementEditBuilder extends RecursiveAstVisitor<void> {
         element.enclosingElement2 == widgetClassElement &&
         !elementsToMove.contains(element)) {
       final offset = node.offset;
-      final qualifier =
-          element.isStatic ? widgetClassElement.displayName : 'widget';
+      final qualifier = element.isStatic
+          ? widgetClassElement.displayName
+          : 'widget';
 
       final parent = node.parent;
       if (parent is InterpolationExpression &&

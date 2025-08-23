@@ -55,10 +55,7 @@ extension on _FamilyOverride {
 @publicInCodegen
 class $ProviderOverride implements _ProviderOverride {
   /// Override a provider
-  $ProviderOverride({
-    required this.origin,
-    required this.providerOverride,
-  });
+  $ProviderOverride({required this.origin, required this.providerOverride});
 
   /// The provider that is overridden.
   final $ProviderBaseImpl<Object?> origin;

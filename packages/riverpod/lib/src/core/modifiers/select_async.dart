@@ -40,7 +40,7 @@ final class _AsyncSelector<InputT, OutputT>
     required bool weak,
   }) {
     late final ExternalProviderSubscription<AsyncValue<InputT>, Future<OutputT>>
-        providerSub;
+    providerSub;
 
     $Result<OutputT>? lastSelectedValue;
     Completer<OutputT>? selectedCompleter;
@@ -76,10 +76,7 @@ final class _AsyncSelector<InputT, OutputT>
       }
     }
 
-    void playValue(
-      AsyncValue<InputT> value, {
-      bool callListeners = true,
-    }) {
+    void playValue(AsyncValue<InputT> value, {bool callListeners = true}) {
       void onLoading(AsyncValue<void> loading) {
         if (selectedFuture == null) {
           // The first time a future is emitted
@@ -104,10 +101,7 @@ final class _AsyncSelector<InputT, OutputT>
           switch (newSelectedValue) {
             case $ResultData():
               if (newSelectedValue != lastSelectedValue) {
-                emitData(
-                  newSelectedValue.value,
-                  callListeners: callListeners,
-                );
+                emitData(newSelectedValue.value, callListeners: callListeners);
               }
             case $ResultError():
               emitError(
@@ -150,49 +144,65 @@ final class _AsyncSelector<InputT, OutputT>
       // ignore: unused_result, https://github.com/dart-lang/sdk/issues/60831
       switch (sub.readSafe()) {
         $ResultData<AsyncValue<InputT>>() && final d => d.value,
-        $ResultError<AsyncValue<InputT>>() && final d =>
-          AsyncError(d.error, d.stackTrace),
+        $ResultError<AsyncValue<InputT>>() && final d => AsyncError(
+          d.error,
+          d.stackTrace,
+        ),
       },
       callListeners: false,
     );
 
-    return providerSub = ExternalProviderSubscription<AsyncValue<InputT>,
-        Future<OutputT>>.fromSub(
-      innerSubscription: sub,
-      listener: listener,
-      onError: onError,
-      read: () {
-        // Flush
-        final result = sub.readSafe();
-        if (result case $ResultError(:final error, :final stackTrace)) {
-          return $Result.error(error, stackTrace);
-        }
+    return providerSub =
+        ExternalProviderSubscription<
+          AsyncValue<InputT>,
+          Future<OutputT>
+        >.fromSub(
+          innerSubscription: sub,
+          listener: listener,
+          onError: onError,
+          read: () {
+            // Flush
+            final result = sub.readSafe();
+            if (result case $ResultError(:final error, :final stackTrace)) {
+              return $Result.error(error, stackTrace);
+            }
 
-        return $ResultData(selectedFuture!);
-      },
-      onClose: () {
-        final completer = selectedCompleter;
-        if (completer != null && !completer.isCompleted) {
-          final sub = switch (node) {
-            ProviderElement() =>
-              node.listen(future, (prev, next) {}, onError: onError),
-            ProviderContainer() =>
-              node.listen(future, (prev, next) {}, onError: onError),
-          };
+            return $ResultData(selectedFuture!);
+          },
+          onClose: () {
+            final completer = selectedCompleter;
+            if (completer != null && !completer.isCompleted) {
+              final sub = switch (node) {
+                ProviderElement() => node.listen(
+                  future,
+                  (prev, next) {},
+                  onError: onError,
+                ),
+                ProviderContainer() => node.listen(
+                  future,
+                  (prev, next) {},
+                  onError: onError,
+                ),
+              };
 
-          // ignore: avoid_sub_read, We are handling errors
-          sub.read().then((v) => _select(v).valueOrProviderException).then(
-            (value) {
-              // Avoid possible race condition
-              if (!completer.isCompleted) completer.complete(value);
-            },
-            onError: (Object err, StackTrace stack) {
-              // Avoid possible race condition
-              if (!completer.isCompleted) completer.completeError(err, stack);
-            },
-          ).whenComplete(sub.close);
-        }
-      },
-    );
+              // ignore: avoid_sub_read, We are handling errors
+              sub
+                  .read()
+                  .then((v) => _select(v).valueOrProviderException)
+                  .then(
+                    (value) {
+                      // Avoid possible race condition
+                      if (!completer.isCompleted) completer.complete(value);
+                    },
+                    onError: (Object err, StackTrace stack) {
+                      // Avoid possible race condition
+                      if (!completer.isCompleted)
+                        completer.completeError(err, stack);
+                    },
+                  )
+                  .whenComplete(sub.close);
+            }
+          },
+        );
   }
 }

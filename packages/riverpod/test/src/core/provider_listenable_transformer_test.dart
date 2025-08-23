@@ -18,21 +18,20 @@ void main() {
     final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
     final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
 
-    final listenable = SyncDelegatingTransformer<int, String>(
-      provider,
-      (context) {
-        return ProviderTransformer(
-          initState: (self) => 'Hello ${context.sourceState.requireValue}',
-          listener: (self, prev, next) {
-            if (next.value == 2) {
-              self.state = AsyncError('Error at 2', StackTrace.current);
-            } else {
-              self.state = AsyncData('Hello ${next.requireValue}');
-            }
-          },
-        );
-      },
-    );
+    final listenable = SyncDelegatingTransformer<int, String>(provider, (
+      context,
+    ) {
+      return ProviderTransformer(
+        initState: (self) => 'Hello ${context.sourceState.requireValue}',
+        listener: (self, prev, next) {
+          if (next.value == 2) {
+            self.state = AsyncError('Error at 2', StackTrace.current);
+          } else {
+            self.state = AsyncData('Hello ${next.requireValue}');
+          }
+        },
+      );
+    });
 
     final sub = container.listen(
       listenable,
@@ -64,22 +63,21 @@ void main() {
     final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
     final listenerTransformer = utils.Listener<AsyncResult<int>>();
 
-    final listenable = SyncDelegatingTransformer<int, String>(
-      provider,
-      (context) {
-        return ProviderTransformer(
-          initState: (self) => 'Hello ${context.sourceState.requireValue}',
-          listener: (self, prev, next) {
-            listenerTransformer(prev, next);
-            if (next.value == 2) {
-              self.state = AsyncError('Error at 2', StackTrace.current);
-            } else {
-              self.state = AsyncData('Hello ${next.requireValue}');
-            }
-          },
-        );
-      },
-    );
+    final listenable = SyncDelegatingTransformer<int, String>(provider, (
+      context,
+    ) {
+      return ProviderTransformer(
+        initState: (self) => 'Hello ${context.sourceState.requireValue}',
+        listener: (self, prev, next) {
+          listenerTransformer(prev, next);
+          if (next.value == 2) {
+            self.state = AsyncError('Error at 2', StackTrace.current);
+          } else {
+            self.state = AsyncData('Hello ${next.requireValue}');
+          }
+        },
+      );
+    });
 
     final sub = container.listen(
       listenable,
@@ -128,17 +126,16 @@ void main() {
     final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
     final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
 
-    final listenable = SyncDelegatingTransformer<int, String>(
-      provider,
-      (context) {
-        return ProviderTransformer(
-          initState: (self) => 'Hello ${context.sourceState.requireValue}',
-          listener: (self, prev, next) {
-            listener(prev, next);
-          },
-        );
-      },
-    );
+    final listenable = SyncDelegatingTransformer<int, String>(provider, (
+      context,
+    ) {
+      return ProviderTransformer(
+        initState: (self) => 'Hello ${context.sourceState.requireValue}',
+        listener: (self, prev, next) {
+          listener(prev, next);
+        },
+      );
+    });
 
     final sub = container.listen(listenable, (a, b) {});
 
@@ -157,16 +154,15 @@ void main() {
         final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
         late final ProviderTransformerContext<int, String> context;
 
-        final listenable = SyncDelegatingTransformer<int, String>(
-          provider,
-          (c) {
-            context = c;
-            return ProviderTransformer(
-              initState: (self) => '',
-              listener: (self, prev, next) {},
-            );
-          },
-        );
+        final listenable = SyncDelegatingTransformer<int, String>(provider, (
+          c,
+        ) {
+          context = c;
+          return ProviderTransformer(
+            initState: (self) => '',
+            listener: (self, prev, next) {},
+          );
+        });
 
         final sub = container.listen(listenable, (a, b) {});
 
@@ -184,19 +180,18 @@ void main() {
 
         late final AsyncResult<int> initialState;
 
-        final listenable = SyncDelegatingTransformer<int, String>(
-          provider,
-          (c) {
-            context = c;
-            return ProviderTransformer(
-              initState: (self) {
-                initialState = context.sourceState;
-                return '';
-              },
-              listener: (self, prev, next) {},
-            );
-          },
-        );
+        final listenable = SyncDelegatingTransformer<int, String>(provider, (
+          c,
+        ) {
+          context = c;
+          return ProviderTransformer(
+            initState: (self) {
+              initialState = context.sourceState;
+              return '';
+            },
+            listener: (self, prev, next) {},
+          );
+        });
 
         final sub = container.listen(listenable, (a, b) {});
 
@@ -242,25 +237,20 @@ void main() {
     final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
     final listener = utils.Listener<AsyncValue<int>>();
     var listenableCallCount = 0;
-    final listenable = SyncDelegatingTransformer<int, String>(
-      provider,
-      (context) {
-        listenableCallCount++;
-        return ProviderTransformer(
-          initState: (self) => 'Hello ${context.sourceState.requireValue}',
-          listener: (self, prev, next) {
-            listener(prev, next);
-            self.state = AsyncData('Hello ${next.requireValue}');
-          },
-        );
-      },
-    );
+    final listenable = SyncDelegatingTransformer<int, String>(provider, (
+      context,
+    ) {
+      listenableCallCount++;
+      return ProviderTransformer(
+        initState: (self) => 'Hello ${context.sourceState.requireValue}',
+        listener: (self, prev, next) {
+          listener(prev, next);
+          self.state = AsyncData('Hello ${next.requireValue}');
+        },
+      );
+    });
 
-    final sub = container.listen(
-      listenable,
-      (a, b) {},
-      weak: true,
-    );
+    final sub = container.listen(listenable, (a, b) {}, weak: true);
 
     expect(callCount, 0);
     expect(listenableCallCount, 0);
@@ -299,10 +289,7 @@ void main() {
       },
     );
 
-    final sub = container.listen(
-      listenable,
-      (previous, next) {},
-    );
+    final sub = container.listen(listenable, (previous, next) {});
 
     expect(sub.read(), 'Hello true');
     expect(callCount, 0);
@@ -328,23 +315,19 @@ void main() {
         )!;
         final provider = Provider<int>((ref) => 0);
 
-        final listenable = SyncDelegatingTransformer<int, String>(
-          provider,
-          (context) {
-            return ProviderTransformer(
-              initState: (self) => 'Hello',
-              listener: (self, prev, next) {},
-              onClose: () {
-                throw Exception('Close error');
-              },
-            );
-          },
-        );
+        final listenable = SyncDelegatingTransformer<int, String>(provider, (
+          context,
+        ) {
+          return ProviderTransformer(
+            initState: (self) => 'Hello',
+            listener: (self, prev, next) {},
+            onClose: () {
+              throw Exception('Close error');
+            },
+          );
+        });
 
-        final sub = container.listen(
-          listenable,
-          (previous, next) {},
-        );
+        final sub = container.listen(listenable, (previous, next) {});
 
         sub.close();
 
@@ -353,36 +336,36 @@ void main() {
       });
 
       test(
-          'does not trigger the listened provider if weak but not yet initialized',
-          () {
-        final container = ProviderContainer.test();
-        var callCount = 0;
-        final provider = Provider<int>((ref) {
-          callCount++;
-          return 0;
-        });
+        'does not trigger the listened provider if weak but not yet initialized',
+        () {
+          final container = ProviderContainer.test();
+          var callCount = 0;
+          final provider = Provider<int>((ref) {
+            callCount++;
+            return 0;
+          });
 
-        final listenable = SyncDelegatingTransformer<int, String>(
-          provider,
-          (context) {
+          final listenable = SyncDelegatingTransformer<int, String>(provider, (
+            context,
+          ) {
             return ProviderTransformer(
               initState: (self) => 'Hello',
               listener: (self, prev, next) {},
               onClose: () {},
             );
-          },
-        );
+          });
 
-        final sub = container.listen(
-          listenable,
-          (previous, next) {},
-          weak: true,
-        );
+          final sub = container.listen(
+            listenable,
+            (previous, next) {},
+            weak: true,
+          );
 
-        sub.close();
+          sub.close();
 
-        expect(callCount, 0);
-      });
+          expect(callCount, 0);
+        },
+      );
 
       test('triggers on the first sub.close', () {
         final container = ProviderContainer.test();
@@ -390,23 +373,19 @@ void main() {
         final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
 
         var callCount = 0;
-        final listenable = SyncDelegatingTransformer<int, String>(
-          provider,
-          (context) {
-            return ProviderTransformer(
-              initState: (self) => 'Hello',
-              listener: (self, prev, next) {},
-              onClose: () {
-                callCount++;
-              },
-            );
-          },
-        );
+        final listenable = SyncDelegatingTransformer<int, String>(provider, (
+          context,
+        ) {
+          return ProviderTransformer(
+            initState: (self) => 'Hello',
+            listener: (self, prev, next) {},
+            onClose: () {
+              callCount++;
+            },
+          );
+        });
 
-        final sub = container.listen(
-          listenable,
-          (previous, next) {},
-        );
+        final sub = container.listen(listenable, (previous, next) {});
 
         expect(callCount, 0);
         sub.close();
@@ -427,26 +406,22 @@ void main() {
       final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
       final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
 
-      final listenable = SyncDelegatingTransformer<int, String>(
-        provider,
-        (context) {
-          throw Exception('Error in transformer');
-        },
-      );
+      final listenable = SyncDelegatingTransformer<int, String>(provider, (
+        context,
+      ) {
+        throw Exception('Error in transformer');
+      });
 
       final sub = container.listen(listenable, (a, b) {});
       notifier.state = 1;
 
-      expect(
-        errors,
-        [
-          isException.having(
-            (e) => e.toString(),
-            'toString',
-            'Exception: Error in transformer',
-          ),
-        ],
-      );
+      expect(errors, [
+        isException.having(
+          (e) => e.toString(),
+          'toString',
+          'Exception: Error in transformer',
+        ),
+      ]);
     });
 
     test('If listener throws, reports to onError', () {
@@ -458,32 +433,28 @@ void main() {
       final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
       final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
 
-      final listenable = SyncDelegatingTransformer<int, String>(
-        provider,
-        (context) {
-          return ProviderTransformer(
-            initState: (self) => 'Hello ${context.sourceState.requireValue}',
-            listener: (self, prev, next) {
-              throw Exception('Error in listener');
-            },
-          );
-        },
-      );
+      final listenable = SyncDelegatingTransformer<int, String>(provider, (
+        context,
+      ) {
+        return ProviderTransformer(
+          initState: (self) => 'Hello ${context.sourceState.requireValue}',
+          listener: (self, prev, next) {
+            throw Exception('Error in listener');
+          },
+        );
+      });
 
       final sub = container.listen(listenable, (a, b) {});
 
       notifier.state = 1;
 
-      expect(
-        errors,
-        [
-          isException.having(
-            (e) => e.toString(),
-            'toString',
-            'Exception: Error in listener',
-          ),
-        ],
-      );
+      expect(errors, [
+        isException.having(
+          (e) => e.toString(),
+          'toString',
+          'Exception: Error in listener',
+        ),
+      ]);
     });
 
     test('Setting state to ResultError notifies onError', () {
@@ -491,17 +462,16 @@ void main() {
       final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
       final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
 
-      final listenable = SyncDelegatingTransformer<int, String>(
-        provider,
-        (context) {
-          return ProviderTransformer(
-            initState: (self) => 'Hello ${context.sourceState.requireValue}',
-            listener: (self, prev, next) {
-              self.state = AsyncError('Error in listener', StackTrace.current);
-            },
-          );
-        },
-      );
+      final listenable = SyncDelegatingTransformer<int, String>(provider, (
+        context,
+      ) {
+        return ProviderTransformer(
+          initState: (self) => 'Hello ${context.sourceState.requireValue}',
+          listener: (self, prev, next) {
+            self.state = AsyncError('Error in listener', StackTrace.current);
+          },
+        );
+      });
 
       final onError = utils.ErrorListener();
       final sub = container.listen(
@@ -522,12 +492,11 @@ void main() {
       final notifier = utils.DeferredNotifier<int>((self, ref) => 0);
       final provider = NotifierProvider<Notifier<int>, int>(() => notifier);
 
-      final listenable = SyncDelegatingTransformer<int, String>(
-        provider,
-        (context) {
-          throw Exception('Error in transformer');
-        },
-      );
+      final listenable = SyncDelegatingTransformer<int, String>(provider, (
+        context,
+      ) {
+        throw Exception('Error in transformer');
+      });
 
       final sub = container.listen(listenable, (a, b) {}, onError: (e, s) {});
       notifier.state = 1;
@@ -548,17 +517,15 @@ void main() {
 
 final class SyncDelegatingTransformer<InT, ValueT>
     with SyncProviderTransformerMixin<InT, ValueT> {
-  SyncDelegatingTransformer(
-    this.source,
-    this.transformCb,
-  );
+  SyncDelegatingTransformer(this.source, this.transformCb);
 
   @override
   final ProviderListenable<InT> source;
 
   final ProviderTransformer<InT, ValueT> Function(
     ProviderTransformerContext<InT, ValueT> context,
-  ) transformCb;
+  )
+  transformCb;
 
   @override
   ProviderTransformer<InT, ValueT> transform(

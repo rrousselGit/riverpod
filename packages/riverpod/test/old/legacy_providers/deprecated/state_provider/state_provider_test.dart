@@ -11,12 +11,8 @@ import '../../../utils.dart';
 
 void main() {
   test('supports overrideWith', () {
-    final provider = StateProvider<int>(
-      (ref) => 0,
-    );
-    final autoDispose = StateProvider.autoDispose<int>(
-      (ref) => 0,
-    );
+    final provider = StateProvider<int>((ref) => 0);
+    final autoDispose = StateProvider.autoDispose<int>((ref) => 0);
     final container = ProviderContainer.test(
       overrides: [
         provider.overrideWith((ref) => 42),
@@ -45,38 +41,30 @@ void main() {
   });
 
   test(
-      'on refresh, does not notify listeners if the new value is identical to the previous one',
-      () {
-    // regression test for https://github.com/rrousselGit/riverpod/issues/1560
-    final container = ProviderContainer.test();
-    final provider = StateProvider((ref) => 0);
-    final listener = Listener<int>();
+    'on refresh, does not notify listeners if the new value is identical to the previous one',
+    () {
+      // regression test for https://github.com/rrousselGit/riverpod/issues/1560
+      final container = ProviderContainer.test();
+      final provider = StateProvider((ref) => 0);
+      final listener = Listener<int>();
 
-    container.listen(provider, listener.call, fireImmediately: true);
+      container.listen(provider, listener.call, fireImmediately: true);
 
-    verifyOnly(listener, listener(null, 0));
+      verifyOnly(listener, listener(null, 0));
 
-    container.refresh(provider);
+      container.refresh(provider);
 
-    verifyNoMoreInteractions(listener);
-  });
+      verifyNoMoreInteractions(listener);
+    },
+  );
 
   test('supports .name', () {
-    expect(
-      StateProvider((ref) => 0).name,
-      null,
-    );
-    expect(
-      StateProvider((ref) => 0, name: 'foo').name,
-      'foo',
-    );
+    expect(StateProvider((ref) => 0).name, null);
+    expect(StateProvider((ref) => 0, name: 'foo').name, 'foo');
   });
 
   test('can be auto-scoped', () async {
-    final dep = Provider(
-      (ref) => 0,
-      dependencies: const [],
-    );
+    final dep = Provider((ref) => 0, dependencies: const []);
     final provider = StateProvider(
       (ref) => ref.watch(dep),
       dependencies: [dep],
@@ -140,10 +128,7 @@ void main() {
 
   group('scoping an override overrides all the associated subproviders', () {
     test('when passing the provider itself', () async {
-      final provider = StateProvider<int>(
-        (ref) => 0,
-        dependencies: const [],
-      );
+      final provider = StateProvider<int>((ref) => 0, dependencies: const []);
       final root = ProviderContainer.test();
       final container = ProviderContainer.test(
         parent: root,
@@ -162,16 +147,11 @@ void main() {
     });
 
     test('when using provider.overrideWith', () async {
-      final provider = StateProvider<int>(
-        (ref) => 0,
-        dependencies: const [],
-      );
+      final provider = StateProvider<int>((ref) => 0, dependencies: const []);
       final root = ProviderContainer.test();
       final container = ProviderContainer.test(
         parent: root,
-        overrides: [
-          provider.overrideWith((ref) => 42),
-        ],
+        overrides: [provider.overrideWith((ref) => 42)],
       );
 
       expect(container.read(provider.notifier).state, 42);
@@ -267,10 +247,7 @@ void main() {
       });
 
       var callCount = 0;
-      final sub = container.listen(
-        provider.notifier,
-        (_, __) => callCount++,
-      );
+      final sub = container.listen(provider.notifier, (_, __) => callCount++);
 
       final controller = container.read(provider.notifier);
 
@@ -303,10 +280,7 @@ void main() {
       });
 
       var callCount = 0;
-      final sub = container.listen(
-        provider.notifier,
-        (_, __) => callCount++,
-      );
+      final sub = container.listen(provider.notifier, (_, __) => callCount++);
 
       final controller = container.read(provider.notifier);
 
@@ -359,8 +333,9 @@ void main() {
         return 42;
       });
 
-      final provider =
-          StateProvider.autoDispose.family<int, int>((ref, id) => id);
+      final provider = StateProvider.autoDispose.family<int, int>(
+        (ref, id) => id,
+      );
 
       final sub = container.listen(provider(0).notifier, (_, __) {});
       final sub2 = container.listen(provider(42).notifier, (_, __) {});

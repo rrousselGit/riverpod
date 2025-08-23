@@ -32,10 +32,7 @@ void main() {
     });
 
     test('can be auto-scoped', () async {
-      final dep = Provider(
-        (ref) => 0,
-        dependencies: const [],
-      );
+      final dep = Provider((ref) => 0, dependencies: const []);
       final provider = FutureProvider.family<int, int>(
         (ref, i) => ref.watch(dep) + i,
         dependencies: [dep],
@@ -60,9 +57,7 @@ void main() {
       final root = ProviderContainer.test();
       final container = ProviderContainer.test(
         parent: root,
-        overrides: [
-          provider.overrideWith((ref, value) async => 42),
-        ],
+        overrides: [provider.overrideWith((ref, value) async => 42)],
       );
 
       expect(await container.read(provider(0).future), 42);
@@ -84,9 +79,6 @@ void main() {
 
     await container.pump();
 
-    expect(
-      container.read(provider(0)),
-      const AsyncValue<String>.data('0'),
-    );
+    expect(container.read(provider(0)), const AsyncValue<String>.data('0'));
   });
 }

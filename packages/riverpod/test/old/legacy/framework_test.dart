@@ -13,12 +13,9 @@ void main() {
     final family = Provider.family<String, int>((ref, value) {
       return '$value';
     });
-    final family2 = Provider.family<String, int>(
-      (ref, value) {
-        return '$value 2';
-      },
-      dependencies: const [],
-    );
+    final family2 = Provider.family<String, int>((ref, value) {
+      return '$value 2';
+    }, dependencies: const []);
     final root = ProviderContainer.test();
     final container = ProviderContainer.test(
       parent: root,
@@ -141,10 +138,7 @@ void main() {
     container.read(provider2).read(provider1);
     final ref = container.read(provider);
 
-    expect(
-      ref.read(provider2),
-      isNotNull,
-    );
+    expect(ref.read(provider2), isNotNull);
   });
 
   test('dispose providers in dependency order (simple)', () {
@@ -174,11 +168,7 @@ void main() {
 
     container.dispose();
 
-    verifyInOrder([
-      onDispose3(),
-      onDispose2(),
-      onDispose1(),
-    ]);
+    verifyInOrder([onDispose3(), onDispose2(), onDispose1()]);
     verifyNoMoreInteractions(onDispose1);
     verifyNoMoreInteractions(onDispose2);
     verifyNoMoreInteractions(onDispose3);
@@ -209,10 +199,7 @@ void main() {
     container.dispose();
 
     expect(callCount, 1);
-    verifyInOrder([
-      onDispose(),
-      onDispose2(),
-    ]);
+    verifyInOrder([onDispose(), onDispose2()]);
     verifyNoMoreInteractions(onDispose);
     verifyNoMoreInteractions(onDispose2);
   });

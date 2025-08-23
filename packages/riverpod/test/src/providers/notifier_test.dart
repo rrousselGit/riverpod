@@ -37,8 +37,9 @@ void main() {
     });
 
     test('filters state update by == by default', () {
-      final provider =
-          factory.simpleTestProvider<Equal<int>>((ref, _) => Equal(42));
+      final provider = factory.simpleTestProvider<Equal<int>>(
+        (ref, _) => Equal(42),
+      );
       final container = ProviderContainer.test();
       final listener = Listener<Equal<int>>();
 
@@ -80,10 +81,7 @@ void main() {
 
       container.dispose();
 
-      expect(
-        errors,
-        everyElement(isA<AssertionError>()),
-      );
+      expect(errors, everyElement(isA<AssertionError>()));
     });
 
     test('Using the notifier after dispose throws', () async {
@@ -102,23 +100,24 @@ void main() {
     });
 
     test(
-        'throws if the same Notifier instance is reused in different providers',
-        () {
-      // Regression test for https://github.com/rrousselGit/riverpod/issues/2617
-      final container = ProviderContainer.test();
+      'throws if the same Notifier instance is reused in different providers',
+      () {
+        // Regression test for https://github.com/rrousselGit/riverpod/issues/2617
+        final container = ProviderContainer.test();
 
-      final notifier = factory.deferredNotifier((ref, _) => 0);
+        final notifier = factory.deferredNotifier((ref, _) => 0);
 
-      final provider = factory.provider<int>(() => notifier);
-      final provider2 = factory.provider<int>(() => notifier);
+        final provider = factory.provider<int>(() => notifier);
+        final provider2 = factory.provider<int>(() => notifier);
 
-      container.read(provider);
+        container.read(provider);
 
-      expect(
-        () => container.read(provider2),
-        throwsProviderException(isStateError),
-      );
-    });
+        expect(
+          () => container.read(provider2),
+          throwsProviderException(isStateError),
+        );
+      },
+    );
 
     group('Notifier.stateOrNull', () {
       test('returns null during first build until state= is set', () {
@@ -133,10 +132,7 @@ void main() {
         });
         final container = ProviderContainer.test();
 
-        final sub = container.listen(
-          provider.notifier,
-          (_, __) {},
-        );
+        final sub = container.listen(provider.notifier, (_, __) {});
 
         expect(stateInBuild, [null]);
 
@@ -149,16 +145,12 @@ void main() {
         );
         final container = ProviderContainer.test();
 
-        final sub = container.listen(
-          provider.notifier,
-          (_, __) {},
-        );
+        final sub = container.listen(provider.notifier, (_, __) {});
 
         expect(sub.read().stateOrNull, null);
       });
 
-      test(
-          'returns the previous state if using inside Notifier.build '
+      test('returns the previous state if using inside Notifier.build '
           'after the state was already initialized', () {
         final stateInBuild = <int?>[];
 
@@ -171,10 +163,7 @@ void main() {
         });
         final container = ProviderContainer.test();
 
-        final sub = container.listen(
-          provider.notifier,
-          (_, __) {},
-        );
+        final sub = container.listen(provider.notifier, (_, __) {});
 
         sub.read().state = 42;
         container.refresh(provider);
@@ -183,15 +172,10 @@ void main() {
       });
 
       test('Post build, returns the current state', () {
-        final provider = factory.simpleTestProvider<int>(
-          (ref, _) => 0,
-        );
+        final provider = factory.simpleTestProvider<int>((ref, _) => 0);
         final container = ProviderContainer.test();
 
-        final sub = container.listen(
-          provider.notifier,
-          (_, __) {},
-        );
+        final sub = container.listen(provider.notifier, (_, __) {});
 
         expect(sub.read().stateOrNull, 0);
 
@@ -201,43 +185,40 @@ void main() {
       });
 
       test(
-          'On invalidated providers, rebuilds the notifier and return the new state',
-          () {
-        final provider = factory.simpleTestProvider<int>(
-          (ref, _) => 0,
-        );
-        final container = ProviderContainer.test();
+        'On invalidated providers, rebuilds the notifier and return the new state',
+        () {
+          final provider = factory.simpleTestProvider<int>((ref, _) => 0);
+          final container = ProviderContainer.test();
 
-        final sub = container.listen(
-          provider.notifier,
-          (_, __) {},
-        );
+          final sub = container.listen(provider.notifier, (_, __) {});
 
-        sub.read().state = 42;
+          sub.read().state = 42;
 
-        expect(sub.read().stateOrNull, 42);
+          expect(sub.read().stateOrNull, 42);
 
-        container.invalidate(provider);
+          container.invalidate(provider);
 
-        expect(sub.read().stateOrNull, 0);
-      });
+          expect(sub.read().stateOrNull, 0);
+        },
+      );
     });
 
     test(
-        'uses notifier.build as initial state and update listeners when state changes',
-        () {
-      final provider = factory.simpleTestProvider((ref, _) => 0);
-      final container = ProviderContainer.test();
-      final listener = Listener<int>();
+      'uses notifier.build as initial state and update listeners when state changes',
+      () {
+        final provider = factory.simpleTestProvider((ref, _) => 0);
+        final container = ProviderContainer.test();
+        final listener = Listener<int>();
 
-      container.listen(provider, listener.call, fireImmediately: true);
+        container.listen(provider, listener.call, fireImmediately: true);
 
-      verifyOnly(listener, listener(null, 0));
+        verifyOnly(listener, listener(null, 0));
 
-      container.read(provider.notifier).state++;
+        container.read(provider.notifier).state++;
 
-      verifyOnly(listener, listener(0, 1));
-    });
+        verifyOnly(listener, listener(0, 1));
+      },
+    );
 
     test('calls notifier.build on every watch update', () async {
       final dep = StateProvider((ref) => 0);
@@ -260,20 +241,22 @@ void main() {
       verifyOnly(listener, listener(0, 1));
     });
 
-    test('After a state initialization error, the notifier is still available',
-        () {
-      final provider = factory.simpleTestProvider<int>((ref, _) {
-        throw StateError('Hey');
-      });
-      final container = ProviderContainer.test();
+    test(
+      'After a state initialization error, the notifier is still available',
+      () {
+        final provider = factory.simpleTestProvider<int>((ref, _) {
+          throw StateError('Hey');
+        });
+        final container = ProviderContainer.test();
 
-      expect(
-        () => container.read(provider),
-        throwsProviderException(isStateError),
-      );
+        expect(
+          () => container.read(provider),
+          throwsProviderException(isStateError),
+        );
 
-      container.read(provider.notifier);
-    });
+        container.read(provider.notifier);
+      },
+    );
 
     test('handles fail to initialize the notifier', () {
       final err = UnimplementedError();
@@ -354,59 +337,62 @@ void main() {
     });
 
     test(
-        'Reading the state inside the notifier rethrows initialization error, if any',
-        () {
-      final provider = factory
-          .simpleTestProvider<int>((ref, _) => throw UnimplementedError());
-      final container = ProviderContainer.test();
+      'Reading the state inside the notifier rethrows initialization error, if any',
+      () {
+        final provider = factory.simpleTestProvider<int>(
+          (ref, _) => throw UnimplementedError(),
+        );
+        final container = ProviderContainer.test();
 
-      final notifier = container.read(provider.notifier);
+        final notifier = container.read(provider.notifier);
 
-      expect(() => notifier.state, throwsUnimplementedError);
-    });
+        expect(() => notifier.state, throwsUnimplementedError);
+      },
+    );
 
     test(
-        'Setting the state after an initialization error allow listening the state again',
-        () {
-      final err = UnimplementedError();
-      final stack = StackTrace.current;
-      final provider = factory.simpleTestProvider<int>(
-        (ref, _) => Error.throwWithStackTrace(err, stack),
-      );
-      final container = ProviderContainer.test();
-      final listener = Listener<int>();
-      final onError = ErrorListener();
+      'Setting the state after an initialization error allow listening the state again',
+      () {
+        final err = UnimplementedError();
+        final stack = StackTrace.current;
+        final provider = factory.simpleTestProvider<int>(
+          (ref, _) => Error.throwWithStackTrace(err, stack),
+        );
+        final container = ProviderContainer.test();
+        final listener = Listener<int>();
+        final onError = ErrorListener();
 
-      container.listen(
-        provider,
-        listener.call,
-        onError: onError.call,
-        fireImmediately: true,
-      );
-      final notifier = container.read(provider.notifier);
+        container.listen(
+          provider,
+          listener.call,
+          onError: onError.call,
+          fireImmediately: true,
+        );
+        final notifier = container.read(provider.notifier);
 
-      verifyOnly(onError, onError(err, stack));
-      verifyZeroInteractions(listener);
+        verifyOnly(onError, onError(err, stack));
+        verifyZeroInteractions(listener);
 
-      expect(() => notifier.state, throwsA(anything));
+        expect(() => notifier.state, throwsA(anything));
 
-      notifier.state = 0;
+        notifier.state = 0;
 
-      verifyOnly(listener, listener(null, 0));
-      verifyNoMoreInteractions(onError);
-      expect(notifier.state, 0);
-      expect(container.read(provider), 0);
+        verifyOnly(listener, listener(null, 0));
+        verifyNoMoreInteractions(onError);
+        expect(notifier.state, 0);
+        expect(container.read(provider), 0);
 
-      container.listen(
-        provider,
-        listener.call,
-        onError: onError.call,
-        fireImmediately: true,
-      );
+        container.listen(
+          provider,
+          listener.call,
+          onError: onError.call,
+          fireImmediately: true,
+        );
 
-      verifyOnly(listener, listener(null, 0));
-      verifyNoMoreInteractions(onError);
-    });
+        verifyOnly(listener, listener(null, 0));
+        verifyNoMoreInteractions(onError);
+      },
+    );
 
     test('supports ref.refresh(provider)', () {
       final provider = factory.simpleTestProvider<int>((ref, _) => 0);
@@ -474,32 +460,33 @@ void main() {
     });
 
     test(
-        'Can override Notifier.updateShouldNotify to change the default filter logic',
-        () {
-      final provider = factory.simpleTestProvider<Equal<int>>(
-        (ref, _) => Equal(42),
-        updateShouldNotify: (a, b) => a != b,
-      );
-      final container = ProviderContainer.test();
-      final listener = Listener<Equal<int>>();
+      'Can override Notifier.updateShouldNotify to change the default filter logic',
+      () {
+        final provider = factory.simpleTestProvider<Equal<int>>(
+          (ref, _) => Equal(42),
+          updateShouldNotify: (a, b) => a != b,
+        );
+        final container = ProviderContainer.test();
+        final listener = Listener<Equal<int>>();
 
-      container.listen(provider, listener.call);
-      final notifier = container.read(provider.notifier);
+        container.listen(provider, listener.call);
+        final notifier = container.read(provider.notifier);
 
-      // voluntarily assigning the same value
-      final self = notifier.state;
-      notifier.state = self;
+        // voluntarily assigning the same value
+        final self = notifier.state;
+        notifier.state = self;
 
-      verifyZeroInteractions(listener);
+        verifyZeroInteractions(listener);
 
-      notifier.state = Equal(42);
+        notifier.state = Equal(42);
 
-      verifyZeroInteractions(listener);
+        verifyZeroInteractions(listener);
 
-      notifier.state = Equal(21);
+        notifier.state = Equal(21);
 
-      verifyOnly(listener, listener(Equal(42), Equal(21)));
-    });
+        verifyOnly(listener, listener(Equal(42), Equal(21)));
+      },
+    );
 
     test('can override Notifier.build', () {});
 
@@ -538,14 +525,12 @@ void main() {
     );
     final autoDispose =
         NotifierProvider.autoDispose<DeferredNotifier<int>, int>(
-      () => DeferredNotifier((ref, _) => 0),
-    );
+          () => DeferredNotifier((ref, _) => 0),
+        );
     final container = ProviderContainer.test(
       overrides: [
         provider.overrideWith(() => DeferredNotifier((ref, _) => 42)),
-        autoDispose.overrideWith(
-          () => DeferredNotifier((ref, _) => 84),
-        ),
+        autoDispose.overrideWith(() => DeferredNotifier((ref, _) => 84)),
       ],
     );
 
@@ -557,15 +542,13 @@ void main() {
     final family = NotifierProvider.family<DeferredNotifier<int>, int, int>(
       (arg) => DeferredNotifier<int>((ref, _) => 0),
     );
-    final autoDisposeFamily =
-        NotifierProvider.autoDispose.family<DeferredNotifier<int>, int, int>(
-      (arg) => DeferredNotifier<int>((ref, _) => 0),
-    );
+    final autoDisposeFamily = NotifierProvider.autoDispose
+        .family<DeferredNotifier<int>, int, int>(
+          (arg) => DeferredNotifier<int>((ref, _) => 0),
+        );
     final container = ProviderContainer.test(
       overrides: [
-        family.overrideWith(
-          () => DeferredNotifier<int>((ref, _) => 42),
-        ),
+        family.overrideWith(() => DeferredNotifier<int>((ref, _) => 42)),
         autoDisposeFamily.overrideWith(
           () => DeferredNotifier<int>((ref, _) => 84),
         ),
@@ -577,9 +560,7 @@ void main() {
   });
 
   group('modifiers', () {
-    void canBeAssignedToRefreshable<StateT>(
-      Refreshable<StateT> provider,
-    ) {}
+    void canBeAssignedToRefreshable<StateT>(Refreshable<StateT> provider) {}
 
     void canBeAssignedToProviderListenable<StateT>(
       ProviderListenable<StateT> provider,
@@ -602,8 +583,8 @@ void main() {
     test('autoDispose', () {
       final autoDispose =
           NotifierProvider.autoDispose<DeferredNotifier<int>, int>(
-        () => DeferredNotifier((ref, _) => 0),
-      );
+            () => DeferredNotifier((ref, _) => 0),
+          );
 
       autoDispose.select((int value) => 0);
 
@@ -613,28 +594,22 @@ void main() {
       canBeAssignedToProviderListenable<DeferredNotifier<int>>(
         autoDispose.notifier,
       );
-      canBeAssignedToRefreshable<DeferredNotifier<int>>(
-        autoDispose.notifier,
-      );
+      canBeAssignedToRefreshable<DeferredNotifier<int>>(autoDispose.notifier);
     });
 
     test('family', () {
       final family =
           NotifierProvider.family<DeferredNotifier<String>, String, int>(
-        (arg) => DeferredNotifier((ref, _) => '0'),
-      );
+            (arg) => DeferredNotifier((ref, _) => '0'),
+          );
 
       family(0).select((String value) => 0);
 
       canBeAssignedToProviderListenable<String>(family(0));
       canBeAssignedToRefreshable<String>(family(0));
 
-      canBeAssignedToProviderListenable<Notifier<String>>(
-        family(0).notifier,
-      );
-      canBeAssignedToRefreshable<Notifier<String>>(
-        family(0).notifier,
-      );
+      canBeAssignedToProviderListenable<Notifier<String>>(family(0).notifier);
+      canBeAssignedToRefreshable<Notifier<String>>(family(0).notifier);
     });
 
     test('autoDisposeFamily', () {
@@ -645,17 +620,13 @@ void main() {
 
       final autoDisposeFamily = NotifierProvider.autoDispose
           .family<DeferredNotifier<String>, String, int>(
-        (arg) => DeferredNotifier((ref, _) => '0'),
-      );
+            (arg) => DeferredNotifier((ref, _) => '0'),
+          );
 
       autoDisposeFamily(0).select((String value) => 0);
 
-      canBeAssignedToProviderListenable<String>(
-        autoDisposeFamily(0),
-      );
-      canBeAssignedToRefreshable<String>(
-        autoDisposeFamily(0),
-      );
+      canBeAssignedToProviderListenable<String>(autoDisposeFamily(0));
+      canBeAssignedToRefreshable<String>(autoDisposeFamily(0));
 
       canBeAssignedToProviderListenable<Notifier<String>>(
         autoDisposeFamily(0).notifier,

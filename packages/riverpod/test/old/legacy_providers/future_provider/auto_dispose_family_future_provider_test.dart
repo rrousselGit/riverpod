@@ -34,21 +34,12 @@ void main() {
         ),
       );
 
-      expect(
-        root.pointerManager.orphanPointers.pointers,
-        isEmpty,
-      );
-      expect(
-        root.pointerManager.familyPointers,
-        isEmpty,
-      );
+      expect(root.pointerManager.orphanPointers.pointers, isEmpty);
+      expect(root.pointerManager.familyPointers, isEmpty);
     });
 
     test('can be auto-scoped', () async {
-      final dep = Provider(
-        (ref) => 0,
-        dependencies: const [],
-      );
+      final dep = Provider((ref) => 0, dependencies: const []);
       final provider = FutureProvider.family.autoDispose<int, int>(
         (ref, i) => ref.watch(dep) + i,
         dependencies: [dep],
@@ -73,9 +64,7 @@ void main() {
       final root = ProviderContainer.test();
       final container = ProviderContainer.test(
         parent: root,
-        overrides: [
-          provider.overrideWith((ref, value) => 42),
-        ],
+        overrides: [provider.overrideWith((ref, value) => 42)],
       );
 
       expect(await container.read(provider(0).future), 42);

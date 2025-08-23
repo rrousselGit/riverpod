@@ -37,7 +37,7 @@ abstract class $Notifier<StateT> extends $SyncNotifierBase<StateT> {
 /// Do not use.
 @publicInCodegen
 abstract base class $NotifierProvider //
-    <NotifierT extends $Notifier<StateT>, StateT>
+<NotifierT extends $Notifier<StateT>, StateT>
     extends $ClassProvider<NotifierT, StateT, StateT, StateT> {
   /// An internal base class for [Notifier].
   ///
@@ -66,14 +66,20 @@ abstract base class $NotifierProvider //
 /// Do not use.
 @internal
 @publicInCodegen
-class $NotifierProviderElement< //
-        NotifierT extends $Notifier<ValueT>,
-        ValueT> //
-    extends $ClassProviderElement< //
-        NotifierT,
-        ValueT,
-        ValueT,
-        ValueT> with SyncProviderElement<ValueT> {
+class $NotifierProviderElement<
+  //
+  NotifierT extends $Notifier<ValueT>,
+  ValueT
+> //
+    extends
+        $ClassProviderElement<
+          //
+          NotifierT,
+          ValueT,
+          ValueT,
+          ValueT
+        >
+    with SyncProviderElement<ValueT> {
   /// An implementation detail of `riverpod_generator`.
   /// Do not use.
   $NotifierProviderElement(super.pointer);

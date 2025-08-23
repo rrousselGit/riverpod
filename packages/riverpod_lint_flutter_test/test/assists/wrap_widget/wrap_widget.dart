@@ -8,18 +8,13 @@ class MyWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     Map();
 
-    return Scaffold(
-      body: Container(),
-    );
+    return Scaffold(body: Container());
   }
 }
 
 // Regression test for https://github.com/rrousselGit/riverpod/discussions/2168#discussioncomment-4957220
 class Consumer extends ConsumerWidget {
-  const Consumer({
-    super.key,
-    this.onSaved,
-  });
+  const Consumer({super.key, this.onSaved});
 
   final VoidCallback? onSaved;
 

@@ -98,8 +98,7 @@ class JsonGenerator extends ParserGenerator<JsonPersist> {
 
     final decoded = decode(provider.providerElement.valueTypeNode, 'e');
 
-    buffer.write(
-      '''
+    buffer.write('''
 abstract class $notifierClass$genericsDefinition extends $baseClass {
   /// The default key used by [persist].
   String get key {
@@ -129,8 +128,7 @@ abstract class $notifierClass$genericsDefinition extends $baseClass {
     );
   }
 }
-''',
-    );
+''');
   }
 }
 

@@ -12,20 +12,27 @@ Pubspec? parsePubspecIfExist(String path) {
 }
 
 void main() {
-  final packageOffsetInPath =
-      Directory.current.path.lastIndexOf('/hooks_riverpod');
-  final baseDir = Directory.current.path
-      .substring(0, packageOffsetInPath + '/hooks_riverpod'.length);
+  final packageOffsetInPath = Directory.current.path.lastIndexOf(
+    '/hooks_riverpod',
+  );
+  final baseDir = Directory.current.path.substring(
+    0,
+    packageOffsetInPath + '/hooks_riverpod'.length,
+  );
 
-  final riverpodPubspec =
-      parsePubspecIfExist('$baseDir/../riverpod/pubspec.yaml');
+  final riverpodPubspec = parsePubspecIfExist(
+    '$baseDir/../riverpod/pubspec.yaml',
+  );
   final hooksRiverpodPubspec = parsePubspecIfExist('$baseDir/pubspec.yaml');
-  final flutterRiverpodPubspec =
-      parsePubspecIfExist('$baseDir/../flutter_riverpod/pubspec.yaml');
-  final riverpodAnnotationPubspec =
-      parsePubspecIfExist('$baseDir/../riverpod_annotation/pubspec.yaml');
-  final riverpodGeneratorPubspec =
-      parsePubspecIfExist('$baseDir/../riverpod_generator/pubspec.yaml');
+  final flutterRiverpodPubspec = parsePubspecIfExist(
+    '$baseDir/../flutter_riverpod/pubspec.yaml',
+  );
+  final riverpodAnnotationPubspec = parsePubspecIfExist(
+    '$baseDir/../riverpod_annotation/pubspec.yaml',
+  );
+  final riverpodGeneratorPubspec = parsePubspecIfExist(
+    '$baseDir/../riverpod_generator/pubspec.yaml',
+  );
 
   final allPubspecsWithRiverpodDependencies = <String, Pubspec?>{
     'flutter_riverpod': flutterRiverpodPubspec,
@@ -117,36 +124,40 @@ void main() {
       );
     });
 
-    test('Pubspec ${pubspecEntry.key} is up-to-date with riverpod_generator',
-        () {
-      expectDependencyMatchesVersion(
-        pubspec.dependencies['riverpod_generator'],
-        riverpodGeneratorPubspec.version!,
-      );
-      expectDependencyMatchesVersion(
-        pubspec.devDependencies['riverpod_generator'],
-        riverpodGeneratorPubspec.version!,
-      );
-      expectDependencyMatchesVersion(
-        pubspec.dependencyOverrides['riverpod_generator'],
-        riverpodGeneratorPubspec.version!,
-      );
-    });
+    test(
+      'Pubspec ${pubspecEntry.key} is up-to-date with riverpod_generator',
+      () {
+        expectDependencyMatchesVersion(
+          pubspec.dependencies['riverpod_generator'],
+          riverpodGeneratorPubspec.version!,
+        );
+        expectDependencyMatchesVersion(
+          pubspec.devDependencies['riverpod_generator'],
+          riverpodGeneratorPubspec.version!,
+        );
+        expectDependencyMatchesVersion(
+          pubspec.dependencyOverrides['riverpod_generator'],
+          riverpodGeneratorPubspec.version!,
+        );
+      },
+    );
 
-    test('Pubspec ${pubspecEntry.key} is up-to-date with riverpod_annotation',
-        () {
-      expectDependencyMatchesVersion(
-        pubspec.dependencies['riverpod_annotation'],
-        riverpodAnnotationPubspec.version!,
-      );
-      expectDependencyMatchesVersion(
-        pubspec.devDependencies['riverpod_annotation'],
-        riverpodAnnotationPubspec.version!,
-      );
-      expectDependencyMatchesVersion(
-        pubspec.dependencyOverrides['riverpod_annotation'],
-        riverpodAnnotationPubspec.version!,
-      );
-    });
+    test(
+      'Pubspec ${pubspecEntry.key} is up-to-date with riverpod_annotation',
+      () {
+        expectDependencyMatchesVersion(
+          pubspec.dependencies['riverpod_annotation'],
+          riverpodAnnotationPubspec.version!,
+        );
+        expectDependencyMatchesVersion(
+          pubspec.devDependencies['riverpod_annotation'],
+          riverpodAnnotationPubspec.version!,
+        );
+        expectDependencyMatchesVersion(
+          pubspec.dependencyOverrides['riverpod_annotation'],
+          riverpodAnnotationPubspec.version!,
+        );
+      },
+    );
   }
 }

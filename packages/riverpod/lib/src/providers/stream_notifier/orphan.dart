@@ -39,9 +39,11 @@ abstract class StreamNotifier<ValueT> extends $StreamNotifier<ValueT> {
 /// [StreamNotifier].
 /// {@endtemplate}
 /// {@category Providers}
-final class StreamNotifierProvider< //
-        NotifierT extends StreamNotifier<ValueT>,
-        ValueT> //
+final class StreamNotifierProvider<
+  //
+  NotifierT extends StreamNotifier<ValueT>,
+  ValueT
+> //
     extends $StreamNotifierProvider<NotifierT, ValueT>
     with LegacyProviderMixin<AsyncValue<ValueT>> {
   /// {@macro riverpod.stream_notifier_provider}
@@ -52,11 +54,12 @@ final class StreamNotifierProvider< //
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-          $allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-          from: null,
-          argument: null,
-        );
+         $allTransitiveDependencies: computeAllTransitiveDependencies(
+           dependencies,
+         ),
+         from: null,
+         argument: null,
+       );
 
   /// An implementation detail of Riverpod
   /// @nodoc
