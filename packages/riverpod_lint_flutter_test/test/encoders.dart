@@ -159,9 +159,11 @@ void _highlight(
 
   final endLine = min(lastChangedLine + trailingCount, lineInfo.lineCount - 1);
 
-  for (var line = max(0, firstChangedLine - leadingCount);
-      line <= endLine;
-      line++) {
+  for (
+    var line = max(0, firstChangedLine - leadingCount);
+    line <= endLine;
+    line++
+  ) {
     final endOfSource = !(line + 1 < lineInfo.lineCount);
 
     final lineContent = source.substring(

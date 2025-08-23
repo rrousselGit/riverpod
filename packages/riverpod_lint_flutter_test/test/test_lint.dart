@@ -66,7 +66,8 @@ void testGolden(
   Future<Iterable<PrioritizedSourceChange>> Function(
     ResolvedUnitResult,
     OffsetHelper helper,
-  ) body, {
+  )
+  body, {
   required String sourcePath,
 }) {
   assert(sourcePath.endsWith('.dart'));
@@ -155,7 +156,8 @@ class OffsetHelper {
 
     var mappedContent = _content;
     for (final offset in offsets.reversed) {
-      mappedContent = mappedContent.substring(0, offset) +
+      mappedContent =
+          mappedContent.substring(0, offset) +
           '<>' +
           mappedContent.substring(offset);
     }

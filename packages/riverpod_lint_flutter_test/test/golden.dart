@@ -191,7 +191,8 @@ class OffsetHelper {
 
     var mappedContent = _content;
     for (final offset in offsets.reversed) {
-      mappedContent = mappedContent.substring(0, offset) +
+      mappedContent =
+          mappedContent.substring(0, offset) +
           '<>' +
           mappedContent.substring(offset);
     }
@@ -251,7 +252,8 @@ void testGolden(
   Future<Iterable<PrioritizedSourceChange>> Function(
     ResolvedUnitResult unit,
     OffsetHelper offsetHelper,
-  ) body, {
+  )
+  body, {
   required String sourcePath,
 }) {
   test(description, () async {
@@ -261,8 +263,10 @@ void testGolden(
     result as ResolvedUnitResult;
 
     final source = file.readAsStringSync();
-    final changes = await body(result, OffsetHelper._(source))
-        .then((value) => value.toList());
+    final changes = await body(
+      result,
+      OffsetHelper._(source),
+    ).then((value) => value.toList());
 
     try {
       expect(
