@@ -18,15 +18,19 @@ void main() {
     lint as RiverpodLintRule;
 
     group(code.name, () {
-      final filesToTest = [
-        File('test/lints/${code.name}.dart'),
-        ...Glob('test/lints/${code.name}/*.dart').listSync(),
-      ]
-          .whereType<File>()
-          .where((e) =>
-              !e.path.endsWith('_test.dart') && !e.path.endsWith('.g.dart'))
-          .where((e) => e.existsSync())
-          .toList();
+      final filesToTest =
+          [
+                File('test/lints/${code.name}.dart'),
+                ...Glob('test/lints/${code.name}/*.dart').listSync(),
+              ]
+              .whereType<File>()
+              .where(
+                (e) =>
+                    !e.path.endsWith('_test.dart') &&
+                    !e.path.endsWith('.g.dart'),
+              )
+              .where((e) => e.existsSync())
+              .toList();
 
       if (filesToTest.isEmpty) {
         stderr.writeln('Missing test source for ${code.name}');
