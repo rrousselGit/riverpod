@@ -500,8 +500,8 @@ final class MutationImpl<ResultT>
   // ignore: library_private_types_in_public_api, not public
   ProviderTransformer<_MutationNotifier<ResultT>, MutationState<ResultT>>
   transform(
-    // ignore: library_private_types_in_public_api, not public
     ProviderTransformerContext<
+      // ignore: library_private_types_in_public_api, not public
       _MutationNotifier<ResultT>,
       MutationState<ResultT>
     >

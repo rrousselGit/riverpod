@@ -14,23 +14,24 @@ part of 'search.dart';
 @ProviderFor(fetchPackages)
 const fetchPackagesProvider = FetchPackagesFamily._();
 
-final class FetchPackagesProvider extends $FunctionalProvider<
-        AsyncValue<List<Package>>, List<Package>, FutureOr<List<Package>>>
+final class FetchPackagesProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<Package>>,
+          List<Package>,
+          FutureOr<List<Package>>
+        >
     with $FutureModifier<List<Package>>, $FutureProvider<List<Package>> {
-  const FetchPackagesProvider._(
-      {required FetchPackagesFamily super.from,
-      required ({
-        int page,
-        String search,
-      })
-          super.argument})
-      : super(
-          retry: null,
-          name: r'fetchPackagesProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+  const FetchPackagesProvider._({
+    required FetchPackagesFamily super.from,
+    required ({int page, String search}) super.argument,
+  }) : super(
+         retry: null,
+         name: r'fetchPackagesProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$fetchPackagesHash();
@@ -45,20 +46,13 @@ final class FetchPackagesProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<List<Package>> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<List<Package>> create(Ref ref) {
-    final argument = this.argument as ({
-      int page,
-      String search,
-    });
-    return fetchPackages(
-      ref,
-      page: argument.page,
-      search: argument.search,
-    );
+    final argument = this.argument as ({int page, String search});
+    return fetchPackages(ref, page: argument.page, search: argument.search);
   }
 
   @override
@@ -77,28 +71,23 @@ String _$fetchPackagesHash() => r'b52d4beb5d9ac53769d76ccd1d81bb005c66edd5';
 final class FetchPackagesFamily extends $Family
     with
         $FunctionalFamilyOverride<
-            FutureOr<List<Package>>,
-            ({
-              int page,
-              String search,
-            })> {
+          FutureOr<List<Package>>,
+          ({int page, String search})
+        > {
   const FetchPackagesFamily._()
-      : super(
-          retry: null,
-          name: r'fetchPackagesProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'fetchPackagesProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
-  FetchPackagesProvider call({
-    required int page,
-    String search = '',
-  }) =>
-      FetchPackagesProvider._(argument: (
-        page: page,
-        search: search,
-      ), from: this);
+  FetchPackagesProvider call({required int page, String search = ''}) =>
+      FetchPackagesProvider._(
+        argument: (page: page, search: search),
+        from: this,
+      );
 
   @override
   String toString() => r'fetchPackagesProvider';

@@ -44,9 +44,7 @@ class UserAvatar extends StatelessWidget {
         Container(
           height: 32,
           width: 32,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(3),
-          ),
+          decoration: BoxDecoration(borderRadius: BorderRadius.circular(3)),
           clipBehavior: Clip.hardEdge,
           child: Image.network(owner.profileImage),
         ),
@@ -56,10 +54,7 @@ class UserAvatar extends StatelessWidget {
           children: [
             Text(
               owner.displayName,
-              style: const TextStyle(
-                color: Color(0xff3ca4ff),
-                fontSize: 12,
-              ),
+              style: const TextStyle(color: Color(0xff3ca4ff), fontSize: 12),
             ),
             Row(
               children: [

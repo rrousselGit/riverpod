@@ -22,9 +22,9 @@ sealed class Configuration with _$Configuration {
 }
 
 final configurationsProvider = FutureProvider<Configuration>((_) async {
-  final content = json.decode(
-    await rootBundle.loadString('assets/configurations.json'),
-  ) as Map<String, Object?>;
+  final content =
+      json.decode(await rootBundle.loadString('assets/configurations.json'))
+          as Map<String, Object?>;
 
   return Configuration.fromJson(content);
 });

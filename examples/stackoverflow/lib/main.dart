@@ -12,9 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: ThemeData(
-        scaffoldBackgroundColor: const Color(0xFF2d2d2d),
-      ),
+      theme: ThemeData(scaffoldBackgroundColor: const Color(0xFF2d2d2d)),
       builder: (context, child) {
         final theme = Theme.of(context);
 

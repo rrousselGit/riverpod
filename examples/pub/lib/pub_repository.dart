@@ -18,11 +18,9 @@ class PubRepository {
     required int page,
     CancelToken? cancelToken,
   }) async {
-    final uri = Uri.https(
-      _host,
-      'api/packages',
-      <String, String>{'page': '$page'},
-    );
+    final uri = Uri.https(_host, 'api/packages', <String, String>{
+      'page': '$page',
+    });
 
     final response = await dio.getUri<Map<String, Object?>>(
       uri,
@@ -38,11 +36,10 @@ class PubRepository {
     required String search,
     CancelToken? cancelToken,
   }) async {
-    final uri = Uri.https(
-      _host,
-      'api/search',
-      <String, String>{'page': '$page', 'q': search},
-    );
+    final uri = Uri.https(_host, 'api/search', <String, String>{
+      'page': '$page',
+      'q': search,
+    });
     // Returns {packages: [{ package: string }]}
     final response = await dio.getUri<Map<String, Object?>>(
       uri,
@@ -90,8 +87,9 @@ class PubRepository {
       cancelToken: cancelToken,
     );
 
-    final metricsResponse =
-        PackageMetricsResponse.fromJson((await responseFuture).data!);
+    final metricsResponse = PackageMetricsResponse.fromJson(
+      (await responseFuture).data!,
+    );
     return metricsResponse.score.copyWith(
       likeCount: (await likesResponseFuture).data!['likes']! as int,
     );
@@ -106,9 +104,7 @@ class PubRepository {
     await dio.putUri<void>(
       uri,
       cancelToken: cancelToken,
-      options: Options(
-        headers: <String, String>{'authorization': userToken},
-      ),
+      options: Options(headers: <String, String>{'authorization': userToken}),
     );
   }
 
@@ -131,9 +127,7 @@ class PubRepository {
     final response = await dio.getUri<Map<String, Object?>>(
       uri,
       cancelToken: cancelToken,
-      options: Options(
-        headers: <String, String>{'authorization': userToken},
-      ),
+      options: Options(headers: <String, String>{'authorization': userToken}),
     );
 
     final packageResponse = LikedPackagesResponse.fromJson(response.data!);
@@ -165,9 +159,8 @@ sealed class PackageMetricsScore with _$PackageMetricsScore {
 
 @freezed
 sealed class PackageMetricsResponse with _$PackageMetricsResponse {
-  factory PackageMetricsResponse({
-    required PackageMetricsScore score,
-  }) = _PackageMetricsResponse;
+  factory PackageMetricsResponse({required PackageMetricsScore score}) =
+      _PackageMetricsResponse;
 
   factory PackageMetricsResponse.fromJson(Map<String, Object?> json) =>
       _$PackageMetricsResponseFromJson(json);
@@ -175,10 +168,8 @@ sealed class PackageMetricsResponse with _$PackageMetricsResponse {
 
 @freezed
 sealed class PackageDetails with _$PackageDetails {
-  factory PackageDetails({
-    required String version,
-    required Pubspec pubspec,
-  }) = _PackageDetails;
+  factory PackageDetails({required String version, required Pubspec pubspec}) =
+      _PackageDetails;
 
   factory PackageDetails.fromJson(Map<String, Object?> json) =>
       _$PackageDetailsFromJson(json);
@@ -186,10 +177,8 @@ sealed class PackageDetails with _$PackageDetails {
 
 @freezed
 sealed class Package with _$Package {
-  factory Package({
-    required String name,
-    required PackageDetails latest,
-  }) = _Package;
+  factory Package({required String name, required PackageDetails latest}) =
+      _Package;
 
   factory Package.fromJson(Map<String, Object?> json) =>
       _$PackageFromJson(json);
@@ -215,9 +204,8 @@ sealed class LikedPackagesResponse with _$LikedPackagesResponse {
 
 @freezed
 sealed class PubPackagesResponse with _$PubPackagesResponse {
-  factory PubPackagesResponse({
-    required List<Package> packages,
-  }) = _PubPackagesResponse;
+  factory PubPackagesResponse({required List<Package> packages}) =
+      _PubPackagesResponse;
 
   factory PubPackagesResponse.fromJson(Map<String, Object?> json) =>
       _$PubPackagesResponseFromJson(json);
@@ -233,9 +221,8 @@ sealed class SearchPackage with _$SearchPackage {
 
 @freezed
 sealed class PubSearchResponse with _$PubSearchResponse {
-  factory PubSearchResponse({
-    required List<SearchPackage> packages,
-  }) = _PubSearchResponse;
+  factory PubSearchResponse({required List<SearchPackage> packages}) =
+      _PubSearchResponse;
 
   factory PubSearchResponse.fromJson(Map<String, Object?> json) =>
       _$PubSearchResponseFromJson(json);

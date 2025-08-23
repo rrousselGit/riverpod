@@ -18,17 +18,17 @@ final class TagThemeProvider
     extends $FunctionalProvider<TagTheme, TagTheme, TagTheme>
     with $Provider<TagTheme> {
   const TagThemeProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'tagThemeProvider',
-          isAutoDispose: true,
-          dependencies: const <ProviderOrFamily>[themeProvider],
-          $allTransitiveDependencies: const <ProviderOrFamily>[
-            TagThemeProvider.$allTransitiveDependencies0,
-          ],
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'tagThemeProvider',
+        isAutoDispose: true,
+        dependencies: const <ProviderOrFamily>[themeProvider],
+        $allTransitiveDependencies: const <ProviderOrFamily>[
+          TagThemeProvider.$allTransitiveDependencies0,
+        ],
+      );
 
   static const $allTransitiveDependencies0 = themeProvider;
 

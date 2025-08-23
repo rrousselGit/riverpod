@@ -14,22 +14,16 @@ class MyHomePage extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('StackOverflow'),
-      ),
+      appBar: AppBar(title: const Text('StackOverflow')),
       body: HookConsumer(
         builder: (context, ref, child) {
           final count = ref.watch(questionsCountProvider);
 
           return count.when(
-            loading: () => const Center(
-              child: CircularProgressIndicator(),
-            ),
+            loading: () => const Center(child: CircularProgressIndicator()),
             error: (err, stack) {
               if (err is DioException) {
-                return Text(
-                  err.response!.data.toString(),
-                );
+                return Text(err.response!.data.toString());
               }
               return Text('Error $err\n$stack');
             },
@@ -54,10 +48,7 @@ class MyHomePage extends HookConsumerWidget {
                     );
                   },
                   separatorBuilder: (context, _) {
-                    return const Divider(
-                      height: 30,
-                      color: Color(0xff3d3d3d),
-                    );
+                    return const Divider(height: 30, color: Color(0xff3d3d3d));
                   },
                 ),
               );

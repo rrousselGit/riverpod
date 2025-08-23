@@ -196,8 +196,9 @@ final class _AsyncSelector<InputT, OutputT>
                     },
                     onError: (Object err, StackTrace stack) {
                       // Avoid possible race condition
-                      if (!completer.isCompleted)
+                      if (!completer.isCompleted) {
                         completer.completeError(err, stack);
+                      }
                     },
                   )
                   .whenComplete(sub.close);

@@ -28,9 +28,7 @@ TagTheme tagTheme(Ref ref) {
       horizontal: theme.textTheme.bodyLarge!.fontSize! * 0.5,
       vertical: theme.textTheme.bodyLarge!.fontSize! * 0.4,
     ),
-    style: theme.textTheme.bodyMedium!.copyWith(
-      color: const Color(0xff9cc3db),
-    ),
+    style: theme.textTheme.bodyMedium!.copyWith(color: const Color(0xff9cc3db)),
     borderRadius: BorderRadius.circular(3),
     backgroundColor: const Color(0xFF3e4a52),
   );

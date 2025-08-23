@@ -43,9 +43,7 @@ class Home extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(title: const Text('Counter example')),
-      body: Center(
-        child: Text('${ref.watch(counterProvider)}'),
-      ),
+      body: Center(child: Text('${ref.watch(counterProvider)}')),
       floatingActionButton: FloatingActionButton(
         // The read method is a utility to read a provider without listening to it
         onPressed: () => ref.read(counterProvider.notifier).increment(),

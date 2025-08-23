@@ -18,11 +18,7 @@ final allFilterKey = UniqueKey();
 final todoListProvider = NotifierProvider<TodoList, List<Todo>>(TodoList.new);
 
 /// The different ways to filter the list of todos
-enum TodoListFilter {
-  all,
-  active,
-  completed,
-}
+enum TodoListFilter { all, active, completed }
 
 /// The currently active filter.
 ///
@@ -69,9 +65,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Home(),
-    );
+    return const MaterialApp(home: Home());
   }
 }
 
@@ -112,9 +106,7 @@ class Home extends HookConsumerWidget {
                   ref.read(todoListProvider.notifier).remove(todos[i]);
                 },
                 child: ProviderScope(
-                  overrides: [
-                    _currentTodo.overrideWithValue(todos[i]),
-                  ],
+                  overrides: [_currentTodo.overrideWithValue(todos[i])],
                   child: const TodoItem(),
                 ),
               ),
@@ -127,9 +119,7 @@ class Home extends HookConsumerWidget {
 }
 
 class Toolbar extends HookConsumerWidget {
-  const Toolbar({
-    super.key,
-  });
+  const Toolbar({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -157,8 +147,9 @@ class Toolbar extends HookConsumerWidget {
                   ref.read(todoListFilter.notifier).state = TodoListFilter.all,
               style: ButtonStyle(
                 visualDensity: VisualDensity.compact,
-                foregroundColor:
-                    WidgetStatePropertyAll(textColorFor(TodoListFilter.all)),
+                foregroundColor: WidgetStatePropertyAll(
+                  textColorFor(TodoListFilter.all),
+                ),
               ),
               child: const Text('All'),
             ),
@@ -283,17 +274,14 @@ class TodoItem extends HookConsumerWidget {
 bool useIsFocused(FocusNode node) {
   final isFocused = useState(node.hasFocus);
 
-  useEffect(
-    () {
-      void listener() {
-        isFocused.value = node.hasFocus;
-      }
+  useEffect(() {
+    void listener() {
+      isFocused.value = node.hasFocus;
+    }
 
-      node.addListener(listener);
-      return () => node.removeListener(listener);
-    },
-    [node],
-  );
+    node.addListener(listener);
+    return () => node.removeListener(listener);
+  }, [node]);
 
   return isFocused.value;
 }

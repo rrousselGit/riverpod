@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 
 class LoadingImage extends StatelessWidget {
-  const LoadingImage({
-    Key? key,
-    required this.url,
-  }) : super(key: key);
+  const LoadingImage({Key? key, required this.url}) : super(key: key);
 
   final String url;
   @override

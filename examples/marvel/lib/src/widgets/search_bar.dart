@@ -59,15 +59,9 @@ class SearchBar extends HookConsumerWidget {
 
     final hints = TweenAnimationBuilder<double>(
       duration: const Duration(milliseconds: 150),
-      tween: Tween(
-        begin: 0,
-        end: searchFocusNode.hasFocus ? 1 : 0,
-      ),
+      tween: Tween(begin: 0, end: searchFocusNode.hasFocus ? 1 : 0),
       builder: (context, opacity, child) {
-        return Opacity(
-          opacity: opacity,
-          child: child,
-        );
+        return Opacity(opacity: opacity, child: child);
       },
       child: _SearchHintContainer(
         theme: theme,
@@ -107,10 +101,8 @@ class SearchBar extends HookConsumerWidget {
 }
 
 class _SearchHints extends HookConsumerWidget {
-  const _SearchHints({
-    Key? key,
-    required this.textEditingController,
-  }) : super(key: key);
+  const _SearchHints({Key? key, required this.textEditingController})
+    : super(key: key);
 
   final TextEditingController textEditingController;
 
@@ -118,7 +110,9 @@ class _SearchHints extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final search = useValueListenable(textEditingController).text;
 
-    return ref.watch(charactersCount(search)).when(
+    return ref
+        .watch(charactersCount(search))
+        .when(
           loading: () => const Center(
             heightFactor: 1,
             child: Padding(
@@ -141,9 +135,11 @@ class _SearchHints extends HookConsumerWidget {
               itemBuilder: (context, index) {
                 return HookConsumer(
                   builder: (context, ref, child) {
-                    final character = ref.watch(characterAtIndex(
-                      CharacterOffset(offset: index, name: search),
-                    ));
+                    final character = ref.watch(
+                      characterAtIndex(
+                        CharacterOffset(offset: index, name: search),
+                      ),
+                    );
 
                     return character.when(
                       loading: () {
@@ -155,7 +151,9 @@ class _SearchHints extends HookConsumerWidget {
                           visualDensity: VisualDensity.compact,
                           onTap: () {
                             Navigator.pushNamed(
-                                context, '/characters/${character.id}');
+                              context,
+                              '/characters/${character.id}',
+                            );
                           },
                           title: Text(
                             character.name,
@@ -186,9 +184,7 @@ class _SearchHintContainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      constraints: BoxConstraints(
-        maxHeight: theme.height,
-      ),
+      constraints: BoxConstraints(maxHeight: theme.height),
       margin: theme.searchMargin,
       child: Material(
         elevation: 16,
@@ -256,7 +252,8 @@ class _SearchbarView extends StatelessWidget {
           ),
         ),
         AnimatedTheme(
-          data: isFocused //
+          data:
+              isFocused //
               ? ThemeData.light()
               : ThemeData.dark(),
           child: AnimatedPadding(
