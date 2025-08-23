@@ -37,7 +37,10 @@ void testLint(
     result as ResolvedUnitResult;
 
     final errors = await lint.testRun(result);
-    expect(errors, matchesAnalysisErrorGoldens(lintGoldenPath));
+    expect(
+      errors,
+      matchesAnalysisErrorGoldens(lintGoldenPath),
+    );
 
     final fixes = await lint.getFixes();
     final changes = await Future.wait([
@@ -77,10 +80,9 @@ void testGolden(
     result as ResolvedUnitResult;
 
     final source = sourceFile.readAsStringSync();
-    final changes = await body(
-      result,
-      OffsetHelper._(source),
-    ).then((value) => value.toList());
+    final changes = await body(result, OffsetHelper._(source)).then(
+      (value) => value.toList(),
+    );
 
     expect(
       await changes,

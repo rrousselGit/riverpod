@@ -22,8 +22,8 @@ test/lints/avoid_build_context_in_providers.dart:14:3
   BuildContext context1, {
   // expect_lint: avoid_build_context_in_providers
   >>>required BuildContext context2<<<,
-}) =>
-    0;
+}) => 0;
+
 ```
 
 =======
@@ -31,7 +31,7 @@ test/lints/avoid_build_context_in_providers.dart:14:3
 code: avoid_build_context_in_providers
 severity: Severity.info
 message: Passing BuildContext to providers indicates mixing UI with the business logic.
-test/lints/avoid_build_context_in_providers.dart:22:5
+test/lints/avoid_build_context_in_providers.dart:21:5
 
 ```dart
   int build(
@@ -46,14 +46,14 @@ test/lints/avoid_build_context_in_providers.dart:22:5
 code: avoid_build_context_in_providers
 severity: Severity.info
 message: Passing BuildContext to providers indicates mixing UI with the business logic.
-test/lints/avoid_build_context_in_providers.dart:24:5
+test/lints/avoid_build_context_in_providers.dart:23:5
 
 ```dart
     BuildContext context1, {
     // expect_lint: avoid_build_context_in_providers
     >>>required BuildContext context2<<<,
-  }) =>
-      0;
+  }) => 0;
+
 ```
 
 =======
@@ -61,7 +61,7 @@ test/lints/avoid_build_context_in_providers.dart:24:5
 code: avoid_build_context_in_providers
 severity: Severity.info
 message: Passing BuildContext to providers indicates mixing UI with the business logic.
-test/lints/avoid_build_context_in_providers.dart:30:5
+test/lints/avoid_build_context_in_providers.dart:28:5
 
 ```dart
   void event(
@@ -76,7 +76,7 @@ test/lints/avoid_build_context_in_providers.dart:30:5
 code: avoid_build_context_in_providers
 severity: Severity.info
 message: Passing BuildContext to providers indicates mixing UI with the business logic.
-test/lints/avoid_build_context_in_providers.dart:32:5
+test/lints/avoid_build_context_in_providers.dart:30:5
 
 ```dart
     BuildContext context3, {

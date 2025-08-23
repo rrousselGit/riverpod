@@ -21,7 +21,11 @@ Matcher matchersGoldenFile<T>(
   required String Function(T value) encode,
   required bool Function(T value) isEmpty,
 }) {
-  return _MatchesGoldenFile(file: file, encode: encode, isEmpty: isEmpty);
+  return _MatchesGoldenFile(
+    file: file,
+    encode: encode,
+    isEmpty: isEmpty,
+  );
 }
 
 class _MatchesGoldenFile<T> extends Matcher {
@@ -39,7 +43,10 @@ class _MatchesGoldenFile<T> extends Matcher {
   static final Object _expectedKey = Object();
 
   @override
-  bool matches(Object? object, Map<Object?, Object?> matchState) {
+  bool matches(
+    Object? object,
+    Map<Object?, Object?> matchState,
+  ) {
     if (object is! T) {
       matchState[_mismatchedValueKey] = 'Expected a ${T.toString()}';
       return false;

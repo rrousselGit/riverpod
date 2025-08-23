@@ -3,19 +3,29 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 void main() {
   // expect_lint: missing_provider_scope
-  runApp(MyApp());
+  runApp(
+    MyApp(),
+  );
   runApp(ProviderScope(child: MyApp()));
   runApp(
-    UncontrolledProviderScope(container: ProviderContainer(), child: MyApp()),
+    UncontrolledProviderScope(
+      container: ProviderContainer(),
+      child: MyApp(),
+    ),
   );
 }
 
 void definitelyNotAMain() {
   // expect_lint: missing_provider_scope
-  runApp(MyApp());
+  runApp(
+    MyApp(),
+  );
   runApp(ProviderScope(child: MyApp()));
   runApp(
-    UncontrolledProviderScope(container: ProviderContainer(), child: MyApp()),
+    UncontrolledProviderScope(
+      container: ProviderContainer(),
+      child: MyApp(),
+    ),
   );
 }
 

@@ -12,7 +12,10 @@ void main() {
 
   switch (Object()) {
     // Using hasValue on nullable generic, all is good
-    case AsyncValue<int?>(:final value, hasValue: true):
+    case AsyncValue<int?>(
+      :final value,
+      hasValue: true,
+    ):
       print(value);
   }
 
@@ -39,7 +42,10 @@ void main() {
   switch (Object()) {
     // Using hasValue on non-nullable generic.
     // We could use :final value?, but that's just a style.
-    case AsyncValue<int>(:final value, hasValue: true):
+    case AsyncValue<int>(
+      :final value,
+      hasValue: true,
+    ):
       print(value);
   }
 
