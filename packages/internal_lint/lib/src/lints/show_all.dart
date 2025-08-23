@@ -56,11 +56,7 @@ class ShowAll extends DartLintRule {
 
       if (extra.isNotEmpty) {
         final allExtra = extra.map((e) => e.name).join(', ');
-        reporter.atNode(
-          export,
-          _code,
-          arguments: ['Extra show: $allExtra'],
-        );
+        reporter.atNode(export, _code, arguments: ['Extra show: $allExtra']);
       }
     });
   }
@@ -81,7 +77,8 @@ extension on LibraryElement2 {
   Iterable<Element2> missing,
   Iterable<SimpleIdentifier> extra,
   List<Element2> toExport,
-})? _computeExportDiff(ExportDirective export) {
+})?
+_computeExportDiff(ExportDirective export) {
   final exportedLibrary = export.libraryExport!.exportedLibrary2;
   final exportedPackageName = exportedLibrary?.packageName;
   if (exportedPackageName == null) {
@@ -217,8 +214,10 @@ extension on RangeFactory {
       HideCombinator() => combinator.hiddenNames,
     };
 
-    final indexes =
-        nodes.map(list.indexOf).where((index) => index != -1).toList();
+    final indexes = nodes
+        .map(list.indexOf)
+        .where((index) => index != -1)
+        .toList();
 
     final grouped = indexes.foldIndexes();
 
@@ -314,10 +313,7 @@ class _Public {
   @override
   String toString() => 'Public(library: $library, packageName: $packageName)';
 
-  static List<_Public> defaultOf(
-    ExportDirective export,
-    Element2 element,
-  ) {
+  static List<_Public> defaultOf(ExportDirective export, Element2 element) {
     final definingPackageName = element.library2!.packageName;
     if (definingPackageName == 'riverpod' ||
         definingPackageName == 'flutter_riverpod' ||

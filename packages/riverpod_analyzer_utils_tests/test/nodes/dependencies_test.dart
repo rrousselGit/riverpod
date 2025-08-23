@@ -10,7 +10,10 @@ import '../analyzer_test_utils.dart';
 import '../matchers.dart';
 
 void main() {
-  testSource('Decodes Dependencies', runGenerator: true, source: r'''
+  testSource(
+    'Decodes Dependencies',
+    runGenerator: true,
+    source: r'''
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:riverpod_annotation/experimental/scope.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -44,58 +47,60 @@ void main() {
   @Dependencies([a, B, c, D])
   var value = 0;
 }
-''', (resolver, unit, units) async {
-    final clazz = unit.declarations.findByName('Class');
-    final function = unit.declarations.findByName('function');
+''',
+    (resolver, unit, units) async {
+      final clazz = unit.declarations.findByName('Class');
+      final function = unit.declarations.findByName('function');
 
-    final value = unit.declarations
-        .findByName<FunctionDeclaration>('main')
-        .functionExpression
-        .body
-        .cast<BlockFunctionBody>()!
-        .block
-        .statements
-        .whereType<VariableDeclarationStatement>()
-        .single;
+      final value = unit.declarations
+          .findByName<FunctionDeclaration>('main')
+          .functionExpression
+          .body
+          .cast<BlockFunctionBody>()!
+          .block
+          .statements
+          .whereType<VariableDeclarationStatement>()
+          .single;
 
-    expect(
-      clazz.dependencies,
-      isDependencies(
-        node: hasToString('@Dependencies([a, B, c, D])'),
-        dependenciesNode: hasToString('[a, B, c, D]'),
-        element: isDependenciesElement(
-          element: isA<ElementAnnotation>().having(
-            (e) => e.toSource(),
-            'toSource',
-            '@Dependencies([a, B, c, D])',
+      expect(
+        clazz.dependencies,
+        isDependencies(
+          node: hasToString('@Dependencies([a, B, c, D])'),
+          dependenciesNode: hasToString('[a, B, c, D]'),
+          element: isDependenciesElement(
+            element: isA<ElementAnnotation>().having(
+              (e) => e.toSource(),
+              'toSource',
+              '@Dependencies([a, B, c, D])',
+            ),
+            dependencies: [
+              isFunctionalProviderDeclarationElement(name: 'a'),
+              isClassBasedProviderDeclarationElement(name: 'B'),
+              isFunctionalProviderDeclarationElement(name: 'c'),
+              isClassBasedProviderDeclarationElement(name: 'D'),
+            ],
           ),
-          dependencies: [
-            isFunctionalProviderDeclarationElement(name: 'a'),
-            isClassBasedProviderDeclarationElement(name: 'B'),
-            isFunctionalProviderDeclarationElement(name: 'c'),
-            isClassBasedProviderDeclarationElement(name: 'D'),
-          ],
+          dependencies: isProviderDependencyList(
+            values: [
+              isProviderDependency(
+                provider: isFunctionalProviderDeclarationElement(name: 'a'),
+              ),
+              isProviderDependency(
+                provider: isClassBasedProviderDeclarationElement(name: 'B'),
+              ),
+              isProviderDependency(
+                provider: isFunctionalProviderDeclarationElement(name: 'c'),
+              ),
+              isProviderDependency(
+                provider: isClassBasedProviderDeclarationElement(name: 'D'),
+              ),
+            ],
+          ),
         ),
-        dependencies: isProviderDependencyList(
-          values: [
-            isProviderDependency(
-              provider: isFunctionalProviderDeclarationElement(name: 'a'),
-            ),
-            isProviderDependency(
-              provider: isClassBasedProviderDeclarationElement(name: 'B'),
-            ),
-            isProviderDependency(
-              provider: isFunctionalProviderDeclarationElement(name: 'c'),
-            ),
-            isProviderDependency(
-              provider: isClassBasedProviderDeclarationElement(name: 'D'),
-            ),
-          ],
-        ),
-      ),
-    );
+      );
 
-    expect(function.dependencies, isDependencies());
-    expect(value.variables.dependencies, isDependencies());
-  });
+      expect(function.dependencies, isDependencies());
+      expect(value.variables.dependencies, isDependencies());
+    },
+  );
 }

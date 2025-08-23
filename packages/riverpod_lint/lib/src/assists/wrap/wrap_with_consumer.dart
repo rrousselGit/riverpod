@@ -2,8 +2,8 @@ import 'package:analyzer/source/source_range.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
-import '../imports.dart';
-import '../riverpod_custom_lint.dart';
+import '../../imports.dart';
+import '../../riverpod_custom_lint.dart';
 
 /// Right above "wrap in builder"
 const wrapPriority = 28;

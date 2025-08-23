@@ -16,9 +16,7 @@ part 'generated.g.dart';
 @riverpod
 Future<JsonSqFliteStorage> storage(Ref ref) async {
   // Initialize SQFlite. We should share the Storage instance between providers.
-  return JsonSqFliteStorage.open(
-    join(await getDatabasesPath(), 'riverpod.db'),
-  );
+  return JsonSqFliteStorage.open(join(await getDatabasesPath(), 'riverpod.db'));
 }
 
 /// A serializable Todo class. We're using Freezed for simple serialization.

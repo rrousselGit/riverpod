@@ -10,9 +10,7 @@ import 'package:sqflite/sqflite.dart';
 // A example showcasing JsonSqFliteStorage without code generation.
 final storageProvider = FutureProvider<JsonSqFliteStorage>((ref) async {
   // Initialize SQFlite. We should share the Storage instance between providers.
-  return JsonSqFliteStorage.open(
-    join(await getDatabasesPath(), 'riverpod.db'),
-  );
+  return JsonSqFliteStorage.open(join(await getDatabasesPath(), 'riverpod.db'));
 });
 
 /// A serializable Todo class.
@@ -24,25 +22,22 @@ class Todo {
   });
 
   Todo.fromJson(Map<String, dynamic> json)
-      : id = json['id'] as int,
-        description = json['description'] as String,
-        completed = json['completed'] as bool;
+    : id = json['id'] as int,
+      description = json['description'] as String,
+      completed = json['completed'] as bool;
 
   final int id;
   final String description;
   final bool completed;
 
   Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'description': description,
-      'completed': completed,
-    };
+    return {'id': id, 'description': description, 'completed': completed};
   }
 }
 
-final todosProvider =
-    AsyncNotifierProvider<TodosNotifier, List<Todo>>(TodosNotifier.new);
+final todosProvider = AsyncNotifierProvider<TodosNotifier, List<Todo>>(
+  TodosNotifier.new,
+);
 
 class TodosNotifier extends AsyncNotifier<List<Todo>> {
   @override

@@ -7,16 +7,16 @@ part of 'generated.dart';
 // **************************************************************************
 
 _Todo _$TodoFromJson(Map<String, dynamic> json) => _Todo(
-      id: (json['id'] as num).toInt(),
-      description: json['description'] as String,
-      completed: json['completed'] as bool,
-    );
+  id: (json['id'] as num).toInt(),
+  description: json['description'] as String,
+  completed: json['completed'] as bool,
+);
 
 Map<String, dynamic> _$TodoToJson(_Todo instance) => <String, dynamic>{
-      'id': instance.id,
-      'description': instance.description,
-      'completed': instance.completed,
-    };
+  'id': instance.id,
+  'description': instance.description,
+  'completed': instance.completed,
+};
 
 // **************************************************************************
 // RiverpodGenerator
@@ -28,23 +28,26 @@ Map<String, dynamic> _$TodoToJson(_Todo instance) => <String, dynamic>{
 @ProviderFor(storage)
 const storageProvider = StorageProvider._();
 
-final class StorageProvider extends $FunctionalProvider<
-        AsyncValue<JsonSqFliteStorage>,
-        JsonSqFliteStorage,
-        FutureOr<JsonSqFliteStorage>>
+final class StorageProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<JsonSqFliteStorage>,
+          JsonSqFliteStorage,
+          FutureOr<JsonSqFliteStorage>
+        >
     with
         $FutureModifier<JsonSqFliteStorage>,
         $FutureProvider<JsonSqFliteStorage> {
   const StorageProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'storageProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'storageProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$storageHash();
@@ -52,8 +55,8 @@ final class StorageProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<JsonSqFliteStorage> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<JsonSqFliteStorage> create(Ref ref) {
@@ -71,15 +74,15 @@ const todosProvider = TodosNotifierProvider._();
 final class TodosNotifierProvider
     extends $AsyncNotifierProvider<TodosNotifier, List<Todo>> {
   const TodosNotifierProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'todosProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'todosProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$todosNotifierHash();
@@ -99,11 +102,14 @@ abstract class _$TodosNotifierBase extends $AsyncNotifier<List<Todo>> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<List<Todo>>, List<Todo>>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<List<Todo>>, List<Todo>>,
-        AsyncValue<List<Todo>>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<List<Todo>>, List<Todo>>,
+              AsyncValue<List<Todo>>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }
@@ -134,7 +140,8 @@ abstract class _$TodosNotifier extends _$TodosNotifierBase {
       storage,
       key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,
-      decode: decode ??
+      decode:
+          decode ??
           (encoded) {
             final e = $jsonCodex.decode(encoded);
             return (e as List)

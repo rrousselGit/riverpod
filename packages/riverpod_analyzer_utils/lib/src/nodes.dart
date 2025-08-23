@@ -30,11 +30,11 @@ part 'nodes/widgets/stateless_widget.dart';
 part 'nodes/widgets/widget.dart';
 
 part 'nodes/dependencies.dart';
-part 'nodes/providers/function.dart';
-part 'nodes/providers/legacy.dart';
-part 'nodes/providers/notifier.dart';
-part 'nodes/providers/providers.dart';
-part 'nodes/providers/identifiers.dart';
+part 'nodes/generated_providers/function.dart';
+part 'nodes/manual_providers/provider.dart';
+part 'nodes/generated_providers/notifier.dart';
+part 'nodes/generated_providers/providers.dart';
+part 'nodes/generated_providers/identifiers.dart';
 
 part 'nodes/provider_for.dart';
 part 'nodes/provider_or_family.dart';

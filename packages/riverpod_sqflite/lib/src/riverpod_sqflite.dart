@@ -28,9 +28,7 @@ final class JsonSqFliteStorage extends Storage<String, String> {
   /// [open] relies on the `clock` package to obtain the current time, for the
   /// purpose of determining if a key has expired.
   /// This enables your tests to mock the current type.
-  static Future<JsonSqFliteStorage> open(
-    String path,
-  ) async {
+  static Future<JsonSqFliteStorage> open(String path) async {
     final db = await openDatabase(
       path,
       version: 1,
@@ -77,11 +75,7 @@ CREATE TABLE IF NOT EXISTS $_tableName(
 
   @override
   Future<void> delete(String key) async {
-    await _db.delete(
-      _tableName,
-      where: 'key = ?',
-      whereArgs: [key],
-    );
+    await _db.delete(_tableName, where: 'key = ?', whereArgs: [key]);
   }
 
   int _currentTimestamp() => clock.now().toUtc().millisecondsSinceEpoch;
@@ -102,11 +96,7 @@ CREATE TABLE IF NOT EXISTS $_tableName(
   }
 
   @override
-  Future<void> write(
-    String key,
-    String value,
-    StorageOptions options,
-  ) async {
+  Future<void> write(String key, String value, StorageOptions options) async {
     await _db.insert(
       _tableName,
       {
@@ -148,10 +138,6 @@ class _Row {
   }
 
   PersistedData<String> toPersistedData() {
-    return PersistedData(
-      json,
-      destroyKey: destroyKey,
-      expireAt: expireAt,
-    );
+    return PersistedData(json, destroyKey: destroyKey, expireAt: expireAt);
   }
 }

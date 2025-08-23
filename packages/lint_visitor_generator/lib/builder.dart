@@ -4,10 +4,7 @@ import 'package:source_gen/source_gen.dart' hide TypeChecker;
 
 /// Builds generators for `build_runner` to run
 Builder lintVisitorGenerator(BuilderOptions options) {
-  return SharedPartBuilder(
-    [_LintVisitorGenerator()],
-    'lint_visitor_generator',
-  );
+  return SharedPartBuilder([_LintVisitorGenerator()], 'lint_visitor_generator');
 }
 
 extension on String {
@@ -52,11 +49,8 @@ class _LintVisitorGenerator extends Generator {
           .where((e) => !e.name.startsWith('_cache'));
     }).toList();
 
-    final byConstraint = <({
-      String type,
-      String name,
-    }),
-        List<({String type, String name})>>{};
+    final byConstraint =
+        <({String type, String name}), List<({String type, String name})>>{};
     for (final ast in allAst) {
       byConstraint.putIfAbsent(
         (
