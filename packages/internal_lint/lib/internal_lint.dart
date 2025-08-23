@@ -10,8 +10,8 @@ PluginBase createPlugin() => _InternalLints();
 class _InternalLints extends PluginBase {
   @override
   List<DartLintRule> getLintRules(CustomLintConfigs configs) => [
-        const ShowAll(),
-        const AvoidSubRead(),
-        const GenericName(),
-      ];
+    const ShowAll(),
+    const AvoidSubRead(),
+    const GenericName(),
+  ];
 }

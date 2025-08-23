@@ -58,7 +58,8 @@ void testSource(
     Resolver resolver,
     CompilationUnit unit,
     List<ResolvedUnitResult> units,
-  ) run, {
+  )
+  run, {
   required String source,
   Map<String, String> files = const {},
   bool runGenerator = false,
@@ -66,72 +67,66 @@ void testSource(
   Object? skip,
 }) {
   final testId = _testNumber++;
-  test(
-    description,
-    skip: skip,
-    timeout: timeout,
-    () async {
-      // Giving a unique name to the package to avoid the analyzer cache
-      // messing up tests.
-      final packageName = 'test_lib$testId';
-      final sourceWithLibrary = 'library foo;$source';
+  test(description, skip: skip, timeout: timeout, () async {
+    // Giving a unique name to the package to avoid the analyzer cache
+    // messing up tests.
+    final packageName = 'test_lib$testId';
+    final sourceWithLibrary = 'library foo;$source';
 
-      final enclosingZone = Zone.current;
+    final enclosingZone = Zone.current;
 
-      final otherSources = {
-        for (final entry in files.entries)
-          '$packageName|lib/${entry.key}':
-              'library "${entry.key}"; ${entry.value}',
-      };
+    final otherSources = {
+      for (final entry in files.entries)
+        '$packageName|lib/${entry.key}':
+            'library "${entry.key}"; ${entry.value}',
+    };
 
-      Future<(List<ResolvedUnitResult>, CompilationUnit)> getUnits(
-        Resolver resolver,
-      ) async {
-        final lib = await resolver.findLibraryByName('foo');
+    Future<(List<ResolvedUnitResult>, CompilationUnit)> getUnits(
+      Resolver resolver,
+    ) async {
+      final lib = await resolver.findLibraryByName('foo');
 
-        final ast = await lib!.session.getResolvedLibraryByElement2(lib);
-        ast as ResolvedLibraryResult;
+      final ast = await lib!.session.getResolvedLibraryByElement2(lib);
+      ast as ResolvedLibraryResult;
 
-        return (
-          ast.units,
-          ast.units.firstWhere((e) => e.path.endsWith('foo.dart')).unit,
-        );
-      }
-
-      final packageConfigUri = await Isolate.packageConfig;
-      final packageConfig = PackageConfig.parseString(
-        File.fromUri(packageConfigUri!).readAsStringSync(),
-        packageConfigUri,
+      return (
+        ast.units,
+        ast.units.firstWhere((e) => e.path.endsWith('foo.dart')).unit,
       );
+    }
 
-      String? generated;
-      if (runGenerator) {
-        generated = await resolveSources(
-          packageConfig: packageConfig,
-          readAllSourcesFromFilesystem: true,
-          {
-            '$packageName|lib/foo.dart': sourceWithLibrary,
-            ...otherSources,
-          },
-          (resolver) async {
-            final (units, _) = await getUnits(resolver);
+    final packageConfigUri = await Isolate.packageConfig;
+    final packageConfig = PackageConfig.parseString(
+      File.fromUri(packageConfigUri!).readAsStringSync(),
+      packageConfigUri,
+    );
 
-            return RiverpodGenerator(const {}).generateForUnit(
-              units.map((e) => e.unit).toList(),
-            );
-          },
-        );
-      }
+    String? generated;
+    if (runGenerator) {
+      generated = await resolveSources(
+        packageConfig: packageConfig,
+        readAllSourcesFromFilesystem: true,
+        {'$packageName|lib/foo.dart': sourceWithLibrary, ...otherSources},
+        (resolver) async {
+          final (units, _) = await getUnits(resolver);
 
-      await resolveSources(
-          packageConfig: packageConfig,
-          readAllSourcesFromFilesystem: true,
-          {
-            '$packageName|lib/foo.dart': sourceWithLibrary,
-            if (generated != null)
-              '$packageName|lib/foo.g.dart': 'part of "foo.dart";$generated',
-            ...otherSources,
-          }, (resolver) async {
+          return RiverpodGenerator(
+            const {},
+          ).generateForUnit(units.map((e) => e.unit).toList());
+        },
+      );
+    }
+
+    await resolveSources(
+      packageConfig: packageConfig,
+      readAllSourcesFromFilesystem: true,
+      {
+        '$packageName|lib/foo.dart': sourceWithLibrary,
+        if (generated != null)
+          '$packageName|lib/foo.g.dart': 'part of "foo.dart";$generated',
+        ...otherSources,
+      },
+      (resolver) async {
         try {
           final originalZone = Zone.current;
           return runZoned(
@@ -160,9 +155,9 @@ void testSource(
         } catch (err, stack) {
           enclosingZone.handleUncaughtError(err, stack);
         }
-      });
-    },
-  );
+      },
+    );
+  });
 }
 
 /// Asserts that no [AstNode] has to Riverpod ast.
@@ -171,14 +166,7 @@ void expectRiverpodAstOnlyHasASingleOptionPerNode(AstNode node) {
   node.accept(result);
 
   for (final entry in result.riverpodAst.entries) {
-    expect(
-      entry.value,
-      anyOf(
-        hasLength(0),
-        hasLength(1),
-      ),
-      reason: entry.key,
-    );
+    expect(entry.value, anyOf(hasLength(0), hasLength(1)), reason: entry.key);
   }
 
   node.visitChildren(_VisitNode(expectRiverpodAstOnlyHasASingleOptionPerNode));
@@ -259,8 +247,9 @@ extension ResolverX on Resolver {
       ignoreErrors: ignoreErrors,
     );
 
-    final libraryAst =
-        await library.session.getResolvedLibraryByElement2(library);
+    final libraryAst = await library.session.getResolvedLibraryByElement2(
+      library,
+    );
     libraryAst as ResolvedLibraryResult;
 
     final compilerErrors = libraryAst.units
@@ -315,8 +304,9 @@ ${compilerErrors.map((e) => '- $e\n').join()}
     }
 
     if (!ignoreErrors) {
-      final errorResult =
-          await library.session.getErrors('/test_lib/lib/foo.dart');
+      final errorResult = await library.session.getErrors(
+        '/test_lib/lib/foo.dart',
+      );
       errorResult as ErrorsResult;
 
       final errors = errorResult.errors

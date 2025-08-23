@@ -44,10 +44,7 @@ void main() {
     });
 
     test('returns null on unknown keys', () async {
-      await expectLater(
-        persist.read('key'),
-        completion(null),
-      );
+      await expectLater(persist.read('key'), completion(null));
     });
 
     test('returns the value if it exists', () async {
@@ -63,10 +60,7 @@ void main() {
       await persist.write('key', 'value', const StorageOptions());
       await persist.delete('key');
 
-      await expectLater(
-        persist.read('key'),
-        completion(null),
-      );
+      await expectLater(persist.read('key'), completion(null));
     });
   });
 }

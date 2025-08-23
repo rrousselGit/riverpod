@@ -8,8 +8,10 @@ import '../../analyzer_test_utils.dart';
 import '../../matchers.dart';
 
 void main() {
-  testSource('Decode generated provider identifiers',
-      runGenerator: true, source: r'''
+  testSource(
+    'Decode generated provider identifiers',
+    runGenerator: true,
+    source: r'''
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:riverpod/riverpod.dart';
 
@@ -30,29 +32,33 @@ void main() {
   aProvider;
   bProvider;
 }
-''', (resolver, unit, units) async {
-    final visitor = _FindIdentifiersVisitor();
-    unit.accept(visitor);
+''',
+    (resolver, unit, units) async {
+      final visitor = _FindIdentifiersVisitor();
+      unit.accept(visitor);
 
-    expect(visitor.identifiers, hasLength(2));
+      expect(visitor.identifiers, hasLength(2));
 
-    expect(
-      visitor.identifiers[0],
-      isProviderIdentifier(
-        node: hasToString('aProvider'),
-        providerElement: isFunctionalProviderDeclarationElement(name: 'a'),
-      ),
-    );
-    expect(
-      visitor.identifiers[1],
-      isProviderIdentifier(
-        node: hasToString('bProvider'),
-        providerElement: isClassBasedProviderDeclarationElement(name: 'B'),
-      ),
-    );
-  });
+      expect(
+        visitor.identifiers[0],
+        isProviderIdentifier(
+          node: hasToString('aProvider'),
+          providerElement: isFunctionalProviderDeclarationElement(name: 'a'),
+        ),
+      );
+      expect(
+        visitor.identifiers[1],
+        isProviderIdentifier(
+          node: hasToString('bProvider'),
+          providerElement: isClassBasedProviderDeclarationElement(name: 'B'),
+        ),
+      );
+    },
+  );
 
-  testSource('Decode legacy provider identifiers', source: '''
+  testSource(
+    'Decode legacy provider identifiers',
+    source: '''
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final provider = Provider<int>((ref) => 0);
@@ -60,20 +66,22 @@ final provider = Provider<int>((ref) => 0);
 void main() {
   provider;
 }
-''', (resolver, unit, units) async {
-    final visitor = _FindIdentifiersVisitor();
-    unit.accept(visitor);
+''',
+    (resolver, unit, units) async {
+      final visitor = _FindIdentifiersVisitor();
+      unit.accept(visitor);
 
-    expect(visitor.identifiers, hasLength(1));
+      expect(visitor.identifiers, hasLength(1));
 
-    expect(
-      visitor.identifiers[0],
-      isProviderIdentifier(
-        node: hasToString('provider'),
-        providerElement: isLegacyProviderDeclarationElement(name: 'provider'),
-      ),
-    );
-  });
+      expect(
+        visitor.identifiers[0],
+        isProviderIdentifier(
+          node: hasToString('provider'),
+          providerElement: isLegacyProviderDeclarationElement(name: 'provider'),
+        ),
+      );
+    },
+  );
 }
 
 class _FindIdentifiersVisitor extends RecursiveAstVisitor<void> {

@@ -11,40 +11,47 @@ import 'package:test/test.dart';
 import 'analyzer_test_utils.dart';
 
 void main() {
-  testSource('Rejects unrelated types', source: '''
+  testSource(
+    'Rejects unrelated types',
+    source: '''
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:riverpod/misc.dart';
 
 const random = 42;
 ProviderBase? fromRiverpod = null;
 Consumer? fromFlutterRiverpod = null;
-''', (resolver, unit, units) async {
-    final variables =
-        unit.declarations.whereType<TopLevelVariableDeclaration>();
+''',
+    (resolver, unit, units) async {
+      final variables = unit.declarations
+          .whereType<TopLevelVariableDeclaration>();
 
-    for (final variable in variables) {
-      expect(
-        parseLegacyProviderType(
-          variable.variables.variables.single.declaredFragment!.element.type,
-        ),
-        isNull,
-        reason: variable.toString(),
-      );
-      expect(
-        parseFirstProviderFor(
-          variable.variables.variables.single.declaredFragment!.element
-              as TopLevelVariableElement2,
-          variable,
-        ),
-        isNull,
-        reason: variable.toString(),
-      );
-    }
+      for (final variable in variables) {
+        expect(
+          parseLegacyProviderType(
+            variable.variables.variables.single.declaredFragment!.element.type,
+          ),
+          isNull,
+          reason: variable.toString(),
+        );
+        expect(
+          parseFirstProviderFor(
+            variable.variables.variables.single.declaredFragment!.element
+                as TopLevelVariableElement2,
+            variable,
+          ),
+          isNull,
+          reason: variable.toString(),
+        );
+      }
 
-    expect(variables, hasLength(3));
-  });
+      expect(variables, hasLength(3));
+    },
+  );
 
-  testSource('Parses all generated providers', runGenerator: true, source: r'''
+  testSource(
+    'Parses all generated providers',
+    runGenerator: true,
+    source: r'''
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'foo.g.dart';
@@ -106,36 +113,42 @@ class D3 extends _$D3 {
   @override
   Stream<int> build(int arg) => throws();
 }
-''', (resolver, unit, units) async {
-    final generated = units.singleWhere((e) => e.path.endsWith('.g.dart')).unit;
+''',
+    (resolver, unit, units) async {
+      final generated = units
+          .singleWhere((e) => e.path.endsWith('.g.dart'))
+          .unit;
 
-    final variables = generated.declarations
-        .whereType<TopLevelVariableDeclaration>()
-        .toList();
+      final variables = generated.declarations
+          .whereType<TopLevelVariableDeclaration>()
+          .toList();
 
-    expect(variables, hasLength(12));
+      expect(variables, hasLength(12));
 
-    for (final variable in variables) {
-      expect(
-        parseFirstProviderFor(
-          variable.variables.variables.single.declaredFragment!.element
-              as TopLevelVariableElement2,
-          variable,
-        )?.$1,
-        isNotNull,
-        reason: variable.toString(),
-      );
-      expect(
-        parseLegacyProviderType(
-          variable.variables.variables.single.declaredFragment!.element.type,
-        ),
-        isNull,
-        reason: variable.toString(),
-      );
-    }
-  });
+      for (final variable in variables) {
+        expect(
+          parseFirstProviderFor(
+            variable.variables.variables.single.declaredFragment!.element
+                as TopLevelVariableElement2,
+            variable,
+          )?.$1,
+          isNotNull,
+          reason: variable.toString(),
+        );
+        expect(
+          parseLegacyProviderType(
+            variable.variables.variables.single.declaredFragment!.element.type,
+          ),
+          isNull,
+          reason: variable.toString(),
+        );
+      }
+    },
+  );
 
-  testSource('Parses all legacy providers', source: '''
+  testSource(
+    'Parses all legacy providers',
+    source: '''
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/legacy.dart';
 import 'package:flutter_riverpod/misc.dart';
@@ -168,29 +181,31 @@ final asyncNotifierProviderFamily = AsyncNotifierProvider.family<int, int>((ref,
 
 final streamNotifierProvider = StreamNotifierProvider((ref) => throws());
 final streamNotifierProviderFamily = StreamNotifierProvider.family<int, int>((ref, id) => throws());
-''', (resolver, unit, units) async {
-    final variables =
-        unit.declarations.whereType<TopLevelVariableDeclaration>();
+''',
+    (resolver, unit, units) async {
+      final variables = unit.declarations
+          .whereType<TopLevelVariableDeclaration>();
 
-    expect(variables, hasLength(18));
+      expect(variables, hasLength(18));
 
-    for (final variable in variables) {
-      expect(
-        parseLegacyProviderType(
-          variable.variables.variables.single.declaredFragment!.element.type,
-        ),
-        isNotNull,
-        reason: variable.toString(),
-      );
-      expect(
-        parseFirstProviderFor(
-          variable.variables.variables.single.declaredFragment!.element
-              as TopLevelVariableElement2,
-          variable,
-        ),
-        isNull,
-        reason: variable.toString(),
-      );
-    }
-  });
+      for (final variable in variables) {
+        expect(
+          parseLegacyProviderType(
+            variable.variables.variables.single.declaredFragment!.element.type,
+          ),
+          isNotNull,
+          reason: variable.toString(),
+        );
+        expect(
+          parseFirstProviderFor(
+            variable.variables.variables.single.declaredFragment!.element
+                as TopLevelVariableElement2,
+            variable,
+          ),
+          isNull,
+          reason: variable.toString(),
+        );
+      }
+    },
+  );
 }

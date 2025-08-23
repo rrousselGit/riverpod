@@ -4,7 +4,9 @@ import 'package:test/test.dart';
 import 'analyzer_test_utils.dart';
 
 void main() {
-  testSource('Handles consumers with a ProviderBase inside', source: '''
+  testSource(
+    'Handles consumers with a ProviderBase inside',
+    source: '''
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart';
 import 'package:flutter/material.dart';
@@ -20,15 +22,19 @@ class ProviderWidget<T> extends ConsumerWidget {
     return Container();
   }
 }
-''', (resolver, unit, units) async {
-    final result = await resolver.resolveRiverpodAnalysisResult();
+''',
+    (resolver, unit, units) async {
+      final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final consumerWidget = result.widgetDeclarations.single;
-    expect(consumerWidget, isA<StatelessWidgetDeclaration>());
-    expect(consumerWidget.node.name.toString(), 'ProviderWidget');
-  });
+      final consumerWidget = result.widgetDeclarations.single;
+      expect(consumerWidget, isA<StatelessWidgetDeclaration>());
+      expect(consumerWidget.node.name.toString(), 'ProviderWidget');
+    },
+  );
 
-  testSource('Decode ConsumerWidget declarations', source: '''
+  testSource(
+    'Decode ConsumerWidget declarations',
+    source: '''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -43,15 +49,19 @@ class MyConsumerWidget extends ConsumerWidget {
     return Container();
   }
 }
-''', (resolver, unit, units) async {
-    final result = await resolver.resolveRiverpodAnalysisResult();
+''',
+    (resolver, unit, units) async {
+      final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final consumerWidget = result.widgetDeclarations.single;
-    expect(consumerWidget, isA<StatelessWidgetDeclaration>());
-    expect(consumerWidget.node.name.toString(), 'MyConsumerWidget');
-  });
+      final consumerWidget = result.widgetDeclarations.single;
+      expect(consumerWidget, isA<StatelessWidgetDeclaration>());
+      expect(consumerWidget.node.name.toString(), 'MyConsumerWidget');
+    },
+  );
 
-  testSource('Decode HookConsumerWidgetDeclaration declarations', source: '''
+  testSource(
+    'Decode HookConsumerWidgetDeclaration declarations',
+    source: '''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -66,16 +76,19 @@ class MyConsumerWidget extends HookConsumerWidget {
     return Container();
   }
 }
-''', (resolver, unit, units) async {
-    final result = await resolver.resolveRiverpodAnalysisResult();
+''',
+    (resolver, unit, units) async {
+      final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final consumerWidget = result.widgetDeclarations.single;
-    expect(consumerWidget, isA<StatelessWidgetDeclaration>());
-    expect(consumerWidget.node.name.toString(), 'MyConsumerWidget');
-  });
+      final consumerWidget = result.widgetDeclarations.single;
+      expect(consumerWidget, isA<StatelessWidgetDeclaration>());
+      expect(consumerWidget.node.name.toString(), 'MyConsumerWidget');
+    },
+  );
 
-  testSource('Decode ConsumerStatefulWidgetDeclarations declarations',
-      source: '''
+  testSource(
+    'Decode ConsumerStatefulWidgetDeclarations declarations',
+    source: '''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -102,23 +115,26 @@ class MyConsumerState extends ConsumerState<MyConsumerWidget> {
     return Container();
   }
 }
-''', (resolver, unit, units) async {
-    final result = await resolver.resolveRiverpodAnalysisResult();
+''',
+    (resolver, unit, units) async {
+      final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final consumerWidget =
-        result.widgetDeclarations.single as StatefulWidgetDeclaration;
-    final consumerState = result.stateDeclarations.single;
+      final consumerWidget =
+          result.widgetDeclarations.single as StatefulWidgetDeclaration;
+      final consumerState = result.stateDeclarations.single;
 
-    expect(consumerWidget.node.name.toString(), 'MyConsumerWidget');
-    expect(consumerWidget.state, consumerState.element);
+      expect(consumerWidget.node.name.toString(), 'MyConsumerWidget');
+      expect(consumerWidget.state, consumerState.element);
 
-    expect(consumerState.node.name.toString(), 'MyConsumerState');
-    expect(consumerState.widget, consumerWidget.element);
-    expect(consumerState.element.widget, consumerWidget.element);
-  });
+      expect(consumerState.node.name.toString(), 'MyConsumerState');
+      expect(consumerState.widget, consumerWidget.element);
+      expect(consumerState.element.widget, consumerWidget.element);
+    },
+  );
 
-  testSource('Decode StatefulHookConsumerWidgetDeclaration declarations',
-      source: '''
+  testSource(
+    'Decode StatefulHookConsumerWidgetDeclaration declarations',
+    source: '''
 import 'package:riverpod/riverpod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -144,18 +160,20 @@ class MyConsumerState extends ConsumerState<MyConsumerWidget> {
     return Container();
   }
 }
-''', (resolver, unit, units) async {
-    final result = await resolver.resolveRiverpodAnalysisResult();
+''',
+    (resolver, unit, units) async {
+      final result = await resolver.resolveRiverpodAnalysisResult();
 
-    final consumerWidget =
-        result.widgetDeclarations.single as StatefulWidgetDeclaration;
-    final consumerState = result.stateDeclarations.single;
+      final consumerWidget =
+          result.widgetDeclarations.single as StatefulWidgetDeclaration;
+      final consumerState = result.stateDeclarations.single;
 
-    expect(consumerWidget.node.name.toString(), 'MyConsumerWidget');
-    expect(consumerWidget.state, consumerState.element);
+      expect(consumerWidget.node.name.toString(), 'MyConsumerWidget');
+      expect(consumerWidget.state, consumerState.element);
 
-    expect(consumerState.node.name.toString(), 'MyConsumerState');
-    expect(consumerState.widget, consumerWidget.element);
-    expect(consumerState.element.widget, consumerWidget.element);
-  });
+      expect(consumerState.node.name.toString(), 'MyConsumerState');
+      expect(consumerState.widget, consumerWidget.element);
+      expect(consumerState.element.widget, consumerWidget.element);
+    },
+  );
 }
