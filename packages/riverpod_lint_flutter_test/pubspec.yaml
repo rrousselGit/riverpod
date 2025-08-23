@@ -2,7 +2,7 @@ name: riverpod_lint_flutter_test
 publish_to: none
 
 environment:
-  sdk: ^3.6.0
+  sdk: ^3.8.0
   flutter: ">=3.0.0"
 
 dependencies:

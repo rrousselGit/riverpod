@@ -7,7 +7,7 @@ funding:
 version: 1.0.0-dev.4
 
 environment:
-  sdk: ^3.6.0
+  sdk: ^3.8.0
 
 resolution: workspace
 

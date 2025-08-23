@@ -7,7 +7,7 @@ import {
 
 const codegen = `name: my_app_name
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ^3.8.0
 
 dependencies:
   riverpod: ^${riverpodVersion}
@@ -22,7 +22,7 @@ dev_dependencies:
 
 const raw = `name: my_app_name
 environment:
-  sdk: ">=3.0.0 <4.0.0"
+  sdk: ^3.8.0
 
 dependencies:
   riverpod: ^${riverpodVersion}
