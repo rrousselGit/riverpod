@@ -15,15 +15,15 @@ const keepAliveProvider = KeepAliveProvider._();
 final class KeepAliveProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const KeepAliveProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'keepAliveProvider',
-          isAutoDispose: false,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'keepAliveProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$keepAliveHash();
@@ -55,15 +55,15 @@ const keepAliveClassProvider = KeepAliveClassProvider._();
 final class KeepAliveClassProvider
     extends $NotifierProvider<KeepAliveClass, int> {
   const KeepAliveClassProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'keepAliveClassProvider',
-          isAutoDispose: false,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'keepAliveClassProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$keepAliveClassHash();
@@ -90,8 +90,14 @@ abstract class _$KeepAliveClass extends $Notifier<int> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<int, int>;
-    final element = ref.element
-        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<int, int>,
+              int,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }
@@ -102,15 +108,15 @@ const autoDisposeProvider = AutoDisposeProvider._();
 final class AutoDisposeProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const AutoDisposeProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'autoDisposeProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'autoDisposeProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$autoDisposeHash();
@@ -142,15 +148,15 @@ const autoDisposeClassProvider = AutoDisposeClassProvider._();
 final class AutoDisposeClassProvider
     extends $NotifierProvider<AutoDisposeClass, int> {
   const AutoDisposeClassProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'autoDisposeClassProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'autoDisposeClassProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$autoDisposeClassHash();
@@ -177,8 +183,14 @@ abstract class _$AutoDisposeClass extends $Notifier<int> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<int, int>;
-    final element = ref.element
-        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<int, int>,
+              int,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }
@@ -189,15 +201,15 @@ const fnProvider = FnProvider._();
 final class FnProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const FnProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'fnProvider',
-          isAutoDispose: false,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'fnProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$fnHash();

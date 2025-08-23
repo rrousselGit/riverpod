@@ -14,15 +14,16 @@ const generatorProvider = GeneratorFamily._();
 
 final class GeneratorProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
-  const GeneratorProvider._(
-      {required GeneratorFamily super.from, required Object? super.argument})
-      : super(
-          retry: null,
-          name: r'generatorProvider',
-          isAutoDispose: false,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+  const GeneratorProvider._({
+    required GeneratorFamily super.from,
+    required Object? super.argument,
+  }) : super(
+         retry: null,
+         name: r'generatorProvider',
+         isAutoDispose: false,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$generatorHash();
@@ -72,18 +73,17 @@ String _$generatorHash() => r'd7d1733f8884b6702f363ddb178ae57797d0034f';
 final class GeneratorFamily extends $Family
     with $FunctionalFamilyOverride<int, Object?> {
   const GeneratorFamily._()
-      : super(
-          retry: null,
-          name: r'generatorProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: false,
-        );
+    : super(
+        retry: null,
+        name: r'generatorProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: false,
+      );
 
   GeneratorProvider call({
     Object? value,
-  }) =>
-      GeneratorProvider._(argument: value, from: this);
+  }) => GeneratorProvider._(argument: value, from: this);
 
   @override
   String toString() => r'generatorProvider';

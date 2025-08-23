@@ -15,15 +15,15 @@ const namelessProvider = NamelessProvider._();
 final class NamelessProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const NamelessProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'namelessProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'namelessProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$namelessHash();
@@ -53,16 +53,17 @@ String _$namelessHash() => r'1a2aa61445a64c65301051820b159c5998195606';
 const genericsProvider = GenericsFamily._();
 
 final class GenericsProvider<A extends num, B>
-    extends $FunctionalProvider<int, int, int> with $Provider<int> {
+    extends $FunctionalProvider<int, int, int>
+    with $Provider<int> {
   const GenericsProvider._({required GenericsFamily super.from})
-      : super(
-          argument: null,
-          retry: null,
-          name: r'genericsProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        argument: null,
+        retry: null,
+        name: r'genericsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$genericsHash();
@@ -113,13 +114,13 @@ String _$genericsHash() => r'dddbd6460e73b1f20343bbadee6666311c5ac0ea';
 
 final class GenericsFamily extends $Family {
   const GenericsFamily._()
-      : super(
-          retry: null,
-          name: r'genericsProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'genericsProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
   GenericsProvider<A, B> call<A extends num, B>() =>
       GenericsProvider<A, B>._(from: this);
@@ -130,16 +131,15 @@ final class GenericsFamily extends $Family {
   /// {@macro riverpod.override_with}
   Override overrideWith(int Function<A extends num, B>(Ref ref) create) =>
       $FamilyOverride(
-          from: this,
-          createElement: (pointer) {
-            final provider = pointer.origin as GenericsProvider;
-            return provider._captureGenerics(<A extends num, B>() {
-              provider as GenericsProvider<A, B>;
-              return provider
-                  .$view(create: create<A, B>)
-                  .$createElement(pointer);
-            });
+        from: this,
+        createElement: (pointer) {
+          final provider = pointer.origin as GenericsProvider;
+          return provider._captureGenerics(<A extends num, B>() {
+            provider as GenericsProvider<A, B>;
+            return provider.$view(create: create<A, B>).$createElement(pointer);
           });
+        },
+      );
 }
 
 @ProviderFor(valid)
@@ -148,15 +148,15 @@ const validProvider = ValidProvider._();
 final class ValidProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const ValidProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'validProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'validProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$validHash();

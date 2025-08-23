@@ -15,15 +15,15 @@ const unimplementedScopedProvider = UnimplementedScopedProvider._();
 final class UnimplementedScopedProvider
     extends $NotifierProvider<UnimplementedScoped, int> {
   const UnimplementedScopedProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'unimplementedScopedProvider',
-          isAutoDispose: true,
-          dependencies: const <ProviderOrFamily>[],
-          $allTransitiveDependencies: const <ProviderOrFamily>[],
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'unimplementedScopedProvider',
+        isAutoDispose: true,
+        dependencies: const <ProviderOrFamily>[],
+        $allTransitiveDependencies: const <ProviderOrFamily>[],
+      );
 
   @override
   String debugGetCreateSourceHash() => _$unimplementedScopedHash();
@@ -51,8 +51,14 @@ abstract class _$UnimplementedScoped extends $Notifier<int> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<int, int>;
-    final element = ref.element
-        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<int, int>,
+              int,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }
@@ -63,15 +69,15 @@ const scopedProvider = ScopedProvider._();
 final class ScopedProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const ScopedProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'scopedProvider',
-          isAutoDispose: true,
-          dependencies: const <ProviderOrFamily>[],
-          $allTransitiveDependencies: const <ProviderOrFamily>[],
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'scopedProvider',
+        isAutoDispose: true,
+        dependencies: const <ProviderOrFamily>[],
+        $allTransitiveDependencies: const <ProviderOrFamily>[],
+      );
 
   @override
   String debugGetCreateSourceHash() => _$scopedHash();
@@ -103,15 +109,15 @@ const rootProvider = RootProvider._();
 final class RootProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const RootProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'rootProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'rootProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$rootHash();
