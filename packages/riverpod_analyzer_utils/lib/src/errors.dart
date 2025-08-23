@@ -15,7 +15,8 @@ enum RiverpodAnalysisErrorCode {
   notifierDefaultConstructorHasRequiredParameters,
   providerDependencyListParseError,
   providerOrFamilyExpressionParseError,
-  invalidRetryArgument, invalidProviderNameStripPattern,
+  invalidRetryArgument,
+  invalidProviderNameStripPattern,
 }
 
 class RiverpodAnalysisError {

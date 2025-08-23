@@ -33,32 +33,32 @@ class _LintVisitorGenerator extends Generator {
   void _writeRiverpodAstVisitor(LibraryReader library, StringBuffer buffer) {
     final allAst = library.element.extensions
         .where(
-      (e) => e.metadata2.annotations.firstOrNull?.toSource() == '@_ast',
-    )
+          (e) => e.metadata2.annotations.firstOrNull?.toSource() == '@_ast',
+        )
         .expand((extension) {
-      final constraint = extension.extendedType;
+          final constraint = extension.extendedType;
 
-      return extension.getters2
-          .map(
-            (e) => (
-              constraint: constraint.element3!.name3!,
-              type: e.returnType.element3!.name3!,
-              name: e.name3!,
-            ),
-          )
-          .where((e) => !e.name.startsWith('_cache'));
-    }).toList();
+          return extension.getters2
+              .map(
+                (e) => (
+                  constraint: constraint.element3!.name3!,
+                  type: e.returnType.element3!.name3!,
+                  name: e.name3!,
+                ),
+              )
+              .where((e) => !e.name.startsWith('_cache'));
+        })
+        .toList();
 
     final byConstraint =
         <({String type, String name}), List<({String type, String name})>>{};
     for (final ast in allAst) {
-      byConstraint.putIfAbsent(
-        (
-          type: ast.constraint,
-          name: ast.constraint == 'AstNode' ? 'Node' : ast.constraint,
-        ),
-        () => [],
-      ).add((type: ast.type, name: ast.name));
+      byConstraint
+          .putIfAbsent((
+            type: ast.constraint,
+            name: ast.constraint == 'AstNode' ? 'Node' : ast.constraint,
+          ), () => [])
+          .add((type: ast.type, name: ast.name));
     }
 
     buffer.writeln('''
@@ -69,30 +69,24 @@ mixin RiverpodAstVisitor {
 abstract class RecursiveRiverpodAstVisitor
     extends GeneralizingAstVisitor<void>
     with RiverpodAstVisitor {
-  ${byConstraint.entries.map(
-              (e) => '''
+  ${byConstraint.entries.map((e) => '''
 @override
 void visit${e.key.name}(${e.key.type} node) {
-  ${e.value.map(
-                        (e) => '''
+  ${e.value.map((e) => '''
   if (node.${e.name} case final value?) {
     visit${e.type}(value);
     return;
   }
-  ''',
-                      ).join('\n')}
+  ''').join('\n')}
 
   super.visit${e.key.name}(node);
-}''',
-            ).join('\n')}
+}''').join('\n')}
 
-  ${allAst.map(
-              (e) => '''
+  ${allAst.map((e) => '''
   void visit${e.type}(${e.type} node) {
     super.visit${e.constraint == 'AstNode' ? 'Node' : e.constraint}(node.node);
   }
-  ''',
-            ).join('\n')}
+  ''').join('\n')}
 
 }
 
@@ -112,8 +106,7 @@ class CollectionRiverpodAst extends SimpleRiverpodAstVisitor {
   final Map<String, List<Object>> riverpodAst = {};
   List<Object?>? _pendingList;
 
-${byConstraint.keys.map(
-              (e) => '''
+${byConstraint.keys.map((e) => '''
   @override
   void visit${e.name}(
     ${e.type} node,
@@ -124,24 +117,20 @@ ${byConstraint.keys.map(
     super.visit${e.name}(node);
     _pendingList = previousList;
   }
-''',
-            ).join('\n')}
+''').join('\n')}
 
-${allAst.map(
-              (e) => '''
+${allAst.map((e) => '''
   void visit${e.type}(${e.type} node) {
     _pendingList!.add(node);
   }
-''',
-            ).join('\n')}
+''').join('\n')}
 }
 
 @internal
 class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
   final List<RiverpodAnalysisError> errors = [];
 
-    ${allAst.map(
-              (e) => '''
+    ${allAst.map((e) => '''
   final ${e.type.lowerFirst.plural} = <${e.type}>[];
   @override
   void visit${e.type}(
@@ -150,8 +139,7 @@ class RiverpodAnalysisResult extends RecursiveRiverpodAstVisitor {
     super.visit${e.type}(node);
     ${e.type.lowerFirst.plural}.add(node);
   }
-''',
-            ).join('\n')}
+''').join('\n')}
 }
 
 class RiverpodAstRegistry {
@@ -184,14 +172,12 @@ class RiverpodAstRegistry {
     _onRiverpodAnalysisError.add(cb);
   }
 
-  ${allAst.map(
-              (e) => '''
+  ${allAst.map((e) => '''
   final _on${e.type} = <void Function(${e.type})>[];
   void add${e.type}(void Function(${e.type} node) cb) {
     _on${e.type}.add(cb);
   }
-''',
-            ).join('\n')}
+''').join('\n')}
 }
 
 class _RiverpodAstRegistryVisitor extends RecursiveRiverpodAstVisitor {
@@ -212,8 +198,7 @@ class _RiverpodAstRegistryVisitor extends RecursiveRiverpodAstVisitor {
     }
   }
 
-  ${allAst.map(
-              (e) => '''
+  ${allAst.map((e) => '''
   @override
   void visit${e.type}(${e.type} node) {
     super.visit${e.type}(node);
@@ -223,8 +208,7 @@ class _RiverpodAstRegistryVisitor extends RecursiveRiverpodAstVisitor {
     );
   }
 
-''',
-            ).join('\n')}
+''').join('\n')}
 }
 ''');
   }
