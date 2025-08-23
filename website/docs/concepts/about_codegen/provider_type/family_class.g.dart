@@ -15,20 +15,16 @@ part of 'family_class.dart';
 const exampleProvider = ExampleFamily._();
 
 final class ExampleProvider extends $NotifierProvider<Example, String> {
-  const ExampleProvider._(
-      {required ExampleFamily super.from,
-      required (
-        int, {
-        String param2,
-      })
-          super.argument})
-      : super(
-          retry: null,
-          name: r'exampleProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+  const ExampleProvider._({
+    required ExampleFamily super.from,
+    required (int, {String param2}) super.argument,
+  }) : super(
+         retry: null,
+         name: r'exampleProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$exampleHash();
@@ -68,58 +64,47 @@ String _$exampleHash() => r'8025d93d6f5e9286043b1ce7ae55bead44f30acc';
 final class ExampleFamily extends $Family
     with
         $ClassFamilyOverride<
-            Example,
-            String,
-            String,
-            String,
-            (
-              int, {
-              String param2,
-            })> {
+          Example,
+          String,
+          String,
+          String,
+          (int, {String param2})
+        > {
   const ExampleFamily._()
-      : super(
-          retry: null,
-          name: r'exampleProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'exampleProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
-  ExampleProvider call(
-    int param1, {
-    String param2 = 'foo',
-  }) =>
-      ExampleProvider._(argument: (
-        param1,
-        param2: param2,
-      ), from: this);
+  ExampleProvider call(int param1, {String param2 = 'foo'}) =>
+      ExampleProvider._(argument: (param1, param2: param2), from: this);
 
   @override
   String toString() => r'exampleProvider';
 }
 
 abstract class _$Example extends $Notifier<String> {
-  late final _$args = ref.$arg as (
-    int, {
-    String param2,
-  });
+  late final _$args = ref.$arg as (int, {String param2});
   int get param1 => _$args.$1;
   String get param2 => _$args.param2;
 
-  String build(
-    int param1, {
-    String param2 = 'foo',
-  });
+  String build(int param1, {String param2 = 'foo'});
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      _$args.$1,
-      param2: _$args.param2,
-    );
+    final created = build(_$args.$1, param2: _$args.param2);
     final ref = this.ref as $Ref<String, String>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<String, String>, String, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<String, String>,
+              String,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }

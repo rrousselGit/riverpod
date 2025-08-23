@@ -9,18 +9,18 @@ part of 'codegen.dart';
 // **************************************************************************
 
 _Activity _$ActivityFromJson(Map<String, dynamic> json) => _Activity(
-      activity: json['activity'] as String,
-      type: json['type'] as String,
-      participants: (json['participants'] as num).toInt(),
-      price: (json['price'] as num).toDouble(),
-    );
+  activity: json['activity'] as String,
+  type: json['type'] as String,
+  participants: (json['participants'] as num).toInt(),
+  price: (json['price'] as num).toDouble(),
+);
 
 Map<String, dynamic> _$ActivityToJson(_Activity instance) => <String, dynamic>{
-      'activity': instance.activity,
-      'type': instance.type,
-      'participants': instance.participants,
-      'price': instance.price,
-    };
+  'activity': instance.activity,
+  'type': instance.type,
+  'participants': instance.participants,
+  'price': instance.price,
+};
 
 // **************************************************************************
 // RiverpodGenerator
@@ -32,19 +32,20 @@ Map<String, dynamic> _$ActivityToJson(_Activity instance) => <String, dynamic>{
 @ProviderFor(activity)
 const activityProvider = ActivityProvider._();
 
-final class ActivityProvider extends $FunctionalProvider<AsyncValue<Activity>,
-        Activity, FutureOr<Activity>>
+final class ActivityProvider
+    extends
+        $FunctionalProvider<AsyncValue<Activity>, Activity, FutureOr<Activity>>
     with $FutureModifier<Activity>, $FutureProvider<Activity> {
   const ActivityProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'activityProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'activityProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$activityHash();

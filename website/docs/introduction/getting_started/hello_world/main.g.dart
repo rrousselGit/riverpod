@@ -15,17 +15,18 @@ part of 'main.dart';
 const helloWorldProvider = HelloWorldProvider._();
 
 final class HelloWorldProvider
-    extends $FunctionalProvider<String, String, String> with $Provider<String> {
+    extends $FunctionalProvider<String, String, String>
+    with $Provider<String> {
   const HelloWorldProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'helloWorldProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'helloWorldProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$helloWorldHash();

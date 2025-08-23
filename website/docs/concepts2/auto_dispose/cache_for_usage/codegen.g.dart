@@ -18,15 +18,15 @@ final class ExampleProvider
     extends $FunctionalProvider<AsyncValue<Object>, Object, FutureOr<Object>>
     with $FutureModifier<Object>, $FutureProvider<Object> {
   const ExampleProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'exampleProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'exampleProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$exampleHash();

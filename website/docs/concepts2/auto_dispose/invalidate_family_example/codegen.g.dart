@@ -16,15 +16,16 @@ const labelProvider = LabelFamily._();
 
 final class LabelProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const LabelProvider._(
-      {required LabelFamily super.from, required String super.argument})
-      : super(
-          retry: null,
-          name: r'labelProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+  const LabelProvider._({
+    required LabelFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'labelProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$labelHash();
@@ -44,10 +45,7 @@ final class LabelProvider extends $FunctionalProvider<String, String, String>
   @override
   String create(Ref ref) {
     final argument = this.argument as String;
-    return label(
-      ref,
-      argument,
-    );
+    return label(ref, argument);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -74,17 +72,15 @@ String _$labelHash() => r'c53d17dd111313633bd7ca6d6cf6b48dded58ca5';
 final class LabelFamily extends $Family
     with $FunctionalFamilyOverride<String, String> {
   const LabelFamily._()
-      : super(
-          retry: null,
-          name: r'labelProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'labelProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
-  LabelProvider call(
-    String userName,
-  ) =>
+  LabelProvider call(String userName) =>
       LabelProvider._(argument: userName, from: this);
 
   @override

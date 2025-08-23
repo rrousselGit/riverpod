@@ -14,23 +14,26 @@ part of 'codegen.dart';
 @ProviderFor(storage)
 const storageProvider = StorageProvider._();
 
-final class StorageProvider extends $FunctionalProvider<
-        AsyncValue<Storage<String, String>>,
-        Storage<String, String>,
-        FutureOr<Storage<String, String>>>
+final class StorageProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<Storage<String, String>>,
+          Storage<String, String>,
+          FutureOr<Storage<String, String>>
+        >
     with
         $FutureModifier<Storage<String, String>>,
         $FutureProvider<Storage<String, String>> {
   const StorageProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'storageProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'storageProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$storageHash();
@@ -38,8 +41,8 @@ final class StorageProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<Storage<String, String>> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<Storage<String, String>> create(Ref ref) {

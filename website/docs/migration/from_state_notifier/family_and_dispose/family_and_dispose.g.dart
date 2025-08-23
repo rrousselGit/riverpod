@@ -14,18 +14,20 @@ part of 'family_and_dispose.dart';
 @ProviderFor(taskTracker)
 const taskTrackerProvider = TaskTrackerProvider._();
 
-final class TaskTrackerProvider extends $FunctionalProvider<TaskTrackerRepo,
-    TaskTrackerRepo, TaskTrackerRepo> with $Provider<TaskTrackerRepo> {
+final class TaskTrackerProvider
+    extends
+        $FunctionalProvider<TaskTrackerRepo, TaskTrackerRepo, TaskTrackerRepo>
+    with $Provider<TaskTrackerRepo> {
   const TaskTrackerProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'taskTrackerProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'taskTrackerProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$taskTrackerHash();
@@ -56,16 +58,16 @@ const bugsEncounteredProvider = BugsEncounteredNotifierFamily._();
 
 final class BugsEncounteredNotifierProvider
     extends $AsyncNotifierProvider<BugsEncounteredNotifier, int> {
-  const BugsEncounteredNotifierProvider._(
-      {required BugsEncounteredNotifierFamily super.from,
-      required String super.argument})
-      : super(
-          retry: null,
-          name: r'bugsEncounteredProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+  const BugsEncounteredNotifierProvider._({
+    required BugsEncounteredNotifierFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'bugsEncounteredProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$bugsEncounteredNotifierHash();
@@ -98,20 +100,23 @@ String _$bugsEncounteredNotifierHash() =>
 
 final class BugsEncounteredNotifierFamily extends $Family
     with
-        $ClassFamilyOverride<BugsEncounteredNotifier, AsyncValue<int>, int,
-            FutureOr<int>, String> {
+        $ClassFamilyOverride<
+          BugsEncounteredNotifier,
+          AsyncValue<int>,
+          int,
+          FutureOr<int>,
+          String
+        > {
   const BugsEncounteredNotifierFamily._()
-      : super(
-          retry: null,
-          name: r'bugsEncounteredProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'bugsEncounteredProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
-  BugsEncounteredNotifierProvider call(
-    String featureId,
-  ) =>
+  BugsEncounteredNotifierProvider call(String featureId) =>
       BugsEncounteredNotifierProvider._(argument: featureId, from: this);
 
   @override
@@ -122,18 +127,20 @@ abstract class _$BugsEncounteredNotifier extends $AsyncNotifier<int> {
   late final _$args = ref.$arg as String;
   String get featureId => _$args;
 
-  FutureOr<int> build(
-    String featureId,
-  );
+  FutureOr<int> build(String featureId);
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      _$args,
-    );
+    final created = build(_$args);
     final ref = this.ref as $Ref<AsyncValue<int>, int>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<int>, int>, AsyncValue<int>, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<int>, int>,
+              AsyncValue<int>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }

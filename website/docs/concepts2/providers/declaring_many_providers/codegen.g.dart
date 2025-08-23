@@ -17,15 +17,15 @@ const cityProvider = CityProvider._();
 final class CityProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const CityProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'cityProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'cityProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$cityHash();
@@ -57,15 +57,15 @@ const countryProvider = CountryProvider._();
 final class CountryProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const CountryProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'countryProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'countryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$countryHash();

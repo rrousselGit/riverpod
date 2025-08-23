@@ -18,17 +18,17 @@ final class CurrentItemProvider
     extends $FunctionalProvider<AsyncValue<Item?>, Item?, FutureOr<Item?>>
     with $FutureModifier<Item?>, $FutureProvider<Item?> {
   const CurrentItemProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'currentItemProvider',
-          isAutoDispose: true,
-          dependencies: const <ProviderOrFamily>[currentItemIdProvider],
-          $allTransitiveDependencies: const <ProviderOrFamily>[
-            CurrentItemProvider.$allTransitiveDependencies0,
-          ],
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'currentItemProvider',
+        isAutoDispose: true,
+        dependencies: const <ProviderOrFamily>[currentItemIdProvider],
+        $allTransitiveDependencies: const <ProviderOrFamily>[
+          CurrentItemProvider.$allTransitiveDependencies0,
+        ],
+      );
 
   static const $allTransitiveDependencies0 = currentItemIdProvider;
 

@@ -17,15 +17,15 @@ const exampleProvider = ExampleProvider._();
 final class ExampleProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const ExampleProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'exampleProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'exampleProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$exampleHash();
