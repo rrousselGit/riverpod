@@ -92,11 +92,7 @@ final class ExampleFamilyProvider extends $FunctionalProvider<int, int, int>
   @override
   int create(Ref ref) {
     final argument = this.argument as ({int a, String b});
-    return exampleFamily(
-      ref,
-      a: argument.a,
-      b: argument.b,
-    );
+    return exampleFamily(ref, a: argument.a, b: argument.b);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -135,16 +131,8 @@ final class ExampleFamilyFamily extends $Family
 
   /// Some comment
 
-  ExampleFamilyProvider call({
-    required int a,
-    String b = '42',
-  }) => ExampleFamilyProvider._(
-    argument: (
-      a: a,
-      b: b,
-    ),
-    from: this,
-  );
+  ExampleFamilyProvider call({required int a, String b = '42'}) =>
+      ExampleFamilyProvider._(argument: (a: a, b: b), from: this);
 
   @override
   String toString() => r'exampleFamilyProvider';

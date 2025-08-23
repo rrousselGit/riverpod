@@ -143,16 +143,8 @@ final class ExampleFamilyFamily extends $Family
 
   /// Some comment
 
-  ExampleFamilyProvider call({
-    required int a,
-    String b = '42',
-  }) => ExampleFamilyProvider._(
-    argument: (
-      a: a,
-      b: b,
-    ),
-    from: this,
-  );
+  ExampleFamilyProvider call({required int a, String b = '42'}) =>
+      ExampleFamilyProvider._(argument: (a: a, b: b), from: this);
 
   @override
   String toString() => r'exampleFamilyProvider';
@@ -165,17 +157,11 @@ abstract class _$ExampleFamily extends $Notifier<int> {
   int get a => _$args.a;
   String get b => _$args.b;
 
-  int build({
-    required int a,
-    String b = '42',
-  });
+  int build({required int a, String b = '42'});
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      a: _$args.a,
-      b: _$args.b,
-    );
+    final created = build(a: _$args.a, b: _$args.b);
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element

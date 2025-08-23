@@ -174,9 +174,7 @@ final class A3Family extends $Family
         isAutoDispose: true,
       );
 
-  A3Provider call(
-    int param,
-  ) => A3Provider._(argument: param, from: this);
+  A3Provider call(int param) => A3Provider._(argument: param, from: this);
 
   @override
   String toString() => r'a3Provider';
@@ -186,15 +184,11 @@ abstract class _$A3 extends $Notifier<int> {
   late final _$args = ref.$arg as int;
   int get param => _$args;
 
-  int build(
-    int param,
-  );
+  int build(int param);
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      _$args,
-    );
+    final created = build(_$args);
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -269,9 +263,7 @@ final class A4Family extends $Family
         isAutoDispose: false,
       );
 
-  A4Provider call(
-    int param,
-  ) => A4Provider._(argument: param, from: this);
+  A4Provider call(int param) => A4Provider._(argument: param, from: this);
 
   @override
   String toString() => r'a4Provider';
@@ -281,15 +273,11 @@ abstract class _$A4 extends $Notifier<int> {
   late final _$args = ref.$arg as int;
   int get param => _$args;
 
-  int build(
-    int param,
-  );
+  int build(int param);
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      _$args,
-    );
+    final created = build(_$args);
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
@@ -356,9 +344,7 @@ final class A5Family extends $Family
         isAutoDispose: true,
       );
 
-  A5Provider call(
-    int param,
-  ) => A5Provider._(argument: param, from: this);
+  A5Provider call(int param) => A5Provider._(argument: param, from: this);
 
   @override
   String toString() => r'a5Provider';
@@ -368,15 +354,11 @@ abstract class _$A5 extends $AsyncNotifier<int> {
   late final _$args = ref.$arg as int;
   int get param => _$args;
 
-  FutureOr<int> build(
-    int param,
-  );
+  FutureOr<int> build(int param);
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      _$args,
-    );
+    final created = build(_$args);
     final ref = this.ref as $Ref<AsyncValue<int>, int>;
     final element =
         ref.element
@@ -443,9 +425,7 @@ final class A6Family extends $Family
         isAutoDispose: false,
       );
 
-  A6Provider call(
-    int param,
-  ) => A6Provider._(argument: param, from: this);
+  A6Provider call(int param) => A6Provider._(argument: param, from: this);
 
   @override
   String toString() => r'a6Provider';
@@ -455,15 +435,11 @@ abstract class _$A6 extends $AsyncNotifier<int> {
   late final _$args = ref.$arg as int;
   int get param => _$args;
 
-  FutureOr<int> build(
-    int param,
-  );
+  FutureOr<int> build(int param);
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      _$args,
-    );
+    final created = build(_$args);
     final ref = this.ref as $Ref<AsyncValue<int>, int>;
     final element =
         ref.element
@@ -530,9 +506,7 @@ final class A7Family extends $Family
         isAutoDispose: true,
       );
 
-  A7Provider call(
-    int param,
-  ) => A7Provider._(argument: param, from: this);
+  A7Provider call(int param) => A7Provider._(argument: param, from: this);
 
   @override
   String toString() => r'a7Provider';
@@ -542,15 +516,11 @@ abstract class _$A7 extends $StreamNotifier<int> {
   late final _$args = ref.$arg as int;
   int get param => _$args;
 
-  Stream<int> build(
-    int param,
-  );
+  Stream<int> build(int param);
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      _$args,
-    );
+    final created = build(_$args);
     final ref = this.ref as $Ref<AsyncValue<int>, int>;
     final element =
         ref.element
@@ -617,9 +587,7 @@ final class A8Family extends $Family
         isAutoDispose: false,
       );
 
-  A8Provider call(
-    int param,
-  ) => A8Provider._(argument: param, from: this);
+  A8Provider call(int param) => A8Provider._(argument: param, from: this);
 
   @override
   String toString() => r'a8Provider';
@@ -629,15 +597,11 @@ abstract class _$A8 extends $StreamNotifier<int> {
   late final _$args = ref.$arg as int;
   int get param => _$args;
 
-  Stream<int> build(
-    int param,
-  );
+  Stream<int> build(int param);
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      _$args,
-    );
+    final created = build(_$args);
     final ref = this.ref as $Ref<AsyncValue<int>, int>;
     final element =
         ref.element

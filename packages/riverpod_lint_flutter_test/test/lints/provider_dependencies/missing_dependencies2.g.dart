@@ -1016,10 +1016,7 @@ final class FamilyDepProvider extends $FunctionalProvider<int, int, int>
   @override
   int create(Ref ref) {
     final argument = this.argument as int;
-    return familyDep(
-      ref,
-      argument,
-    );
+    return familyDep(ref, argument);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -1056,9 +1053,7 @@ final class FamilyDepFamily extends $Family
         isAutoDispose: true,
       );
 
-  FamilyDepProvider call(
-    int p,
-  ) => FamilyDepProvider._(argument: p, from: this);
+  FamilyDepProvider call(int p) => FamilyDepProvider._(argument: p, from: this);
 
   @override
   String toString() => r'familyDepProvider';
@@ -1102,10 +1097,7 @@ final class FamilyDep2Provider extends $FunctionalProvider<int, int, int>
   @override
   int create(Ref ref) {
     final argument = this.argument as int;
-    return familyDep2(
-      ref,
-      argument,
-    );
+    return familyDep2(ref, argument);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -1143,9 +1135,8 @@ final class FamilyDep2Family extends $Family
         isAutoDispose: true,
       );
 
-  FamilyDep2Provider call(
-    int p,
-  ) => FamilyDep2Provider._(argument: p, from: this);
+  FamilyDep2Provider call(int p) =>
+      FamilyDep2Provider._(argument: p, from: this);
 
   @override
   String toString() => r'familyDep2Provider';

@@ -43,10 +43,7 @@ final class GeneratorProvider extends $FunctionalProvider<int, int, int>
   @override
   int create(Ref ref) {
     final argument = this.argument as Object?;
-    return generator(
-      ref,
-      value: argument,
-    );
+    return generator(ref, value: argument);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -81,9 +78,8 @@ final class GeneratorFamily extends $Family
         isAutoDispose: false,
       );
 
-  GeneratorProvider call({
-    Object? value,
-  }) => GeneratorProvider._(argument: value, from: this);
+  GeneratorProvider call({Object? value}) =>
+      GeneratorProvider._(argument: value, from: this);
 
   @override
   String toString() => r'generatorProvider';

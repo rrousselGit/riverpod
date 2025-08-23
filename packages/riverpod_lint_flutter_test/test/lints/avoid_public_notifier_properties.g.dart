@@ -71,9 +71,8 @@ final class GeneratedNotifierFamily extends $Family
         isAutoDispose: true,
       );
 
-  GeneratedNotifierProvider call(
-    int param,
-  ) => GeneratedNotifierProvider._(argument: param, from: this);
+  GeneratedNotifierProvider call(int param) =>
+      GeneratedNotifierProvider._(argument: param, from: this);
 
   @override
   String toString() => r'generatedProvider';
@@ -83,15 +82,11 @@ abstract class _$GeneratedNotifier extends $Notifier<int> {
   late final _$args = ref.$arg as int;
   int get param => _$args;
 
-  int build(
-    int param,
-  );
+  int build(int param);
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      _$args,
-    );
+    final created = build(_$args);
     final ref = this.ref as $Ref<int, int>;
     final element =
         ref.element
