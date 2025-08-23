@@ -10,3 +10,8 @@ analyzer:
 
 custom_lint:
   debug: true
+
+# analysis_options.yaml
+formatter:
+  # Preserving commas for the sake of testing code with/without commas
+  trailing_commas: preserve
