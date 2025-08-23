@@ -69,10 +69,7 @@ class PackageDetailBodyScrollView extends StatelessWidget {
                     ),
                   ],
                 ),
-                const Text(
-                  'PUB POINTS',
-                  style: TextStyle(fontSize: 13),
-                ),
+                const Text('PUB POINTS', style: TextStyle(fontSize: 13)),
               ],
             ),
             Column(
@@ -90,17 +87,11 @@ class PackageDetailBodyScrollView extends StatelessWidget {
                     ),
                     const Text(
                       '%',
-                      style: TextStyle(
-                        color: Color(0xff1967d2),
-                        fontSize: 20,
-                      ),
+                      style: TextStyle(color: Color(0xff1967d2), fontSize: 20),
                     ),
                   ],
                 ),
-                const Text(
-                  'POPULARITY',
-                  style: TextStyle(fontSize: 13),
-                ),
+                const Text('POPULARITY', style: TextStyle(fontSize: 13)),
               ],
             ),
           ],

@@ -14,19 +14,20 @@ part of 'codegen.dart';
 @ProviderFor(activity)
 const activityProvider = ActivityProvider._();
 
-final class ActivityProvider extends $FunctionalProvider<AsyncValue<Activity>,
-        Activity, FutureOr<Activity>>
+final class ActivityProvider
+    extends
+        $FunctionalProvider<AsyncValue<Activity>, Activity, FutureOr<Activity>>
     with $FutureModifier<Activity>, $FutureProvider<Activity> {
   const ActivityProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'activityProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'activityProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$activityHash();

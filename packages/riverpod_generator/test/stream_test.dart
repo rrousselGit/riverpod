@@ -7,17 +7,19 @@ import 'package:test/test.dart';
 import 'integration/stream.dart';
 
 void main() {
-  test('Creates a StreamProvider<T> if @riverpod is used on a Stream function',
-      () async {
-    final container = ProviderContainer.test();
+  test(
+    'Creates a StreamProvider<T> if @riverpod is used on a Stream function',
+    () async {
+      final container = ProviderContainer.test();
 
-    const ProviderBase<AsyncValue<String>> provider = publicProvider;
+      const ProviderBase<AsyncValue<String>> provider = publicProvider;
 
-    expect(
-      await container.listen(publicProvider.future, (_, __) {}).read(),
-      'Hello world',
-    );
-  });
+      expect(
+        await container.listen(publicProvider.future, (_, __) {}).read(),
+        'Hello world',
+      );
+    },
+  );
 
   test('Generates .name for providers', () {
     expect(publicProvider.name, 'publicProvider');
@@ -47,9 +49,10 @@ void main() {
             '${args.third} ${args.fourth} ${args.fifth}',
           ),
         ),
-        familyProvider(21, third: .21).overrideWith(
-          (ref) => Stream.value('Override'),
-        ),
+        familyProvider(
+          21,
+          third: .21,
+        ).overrideWith((ref) => Stream.value('Override')),
       ],
     );
 
@@ -68,81 +71,68 @@ void main() {
   });
 
   test(
-      'Creates a Provider.family<T> if @riverpod is used on a synchronous function with parameters',
-      () async {
-    final container = ProviderContainer.test();
+    'Creates a Provider.family<T> if @riverpod is used on a synchronous function with parameters',
+    () async {
+      final container = ProviderContainer.test();
 
-    const FamilyFamily family = familyProvider;
+      const FamilyFamily family = familyProvider;
 
-    expect(familyProvider(42, third: .42).from, familyProvider);
+      expect(familyProvider(42, third: .42).from, familyProvider);
 
-    expect(
-      familyProvider(42, third: .42),
-      familyProvider(42, third: .42),
-    );
-    expect(
-      familyProvider(42, third: .42),
-      isNot(familyProvider(42, third: .21)),
-    );
-    expect(
-      familyProvider(42, third: .42).hashCode,
-      isNot(familyProvider(42, third: .21).hashCode),
-    );
+      expect(familyProvider(42, third: .42), familyProvider(42, third: .42));
+      expect(
+        familyProvider(42, third: .42),
+        isNot(familyProvider(42, third: .21)),
+      );
+      expect(
+        familyProvider(42, third: .42).hashCode,
+        isNot(familyProvider(42, third: .21).hashCode),
+      );
 
-    // handle defaults
-    expect(
-      familyProvider(42, third: .42),
-      familyProvider(
+      // handle defaults
+      expect(familyProvider(42, third: .42), familyProvider(42, third: .42));
+      expect(
+        familyProvider(42, third: .42).hashCode,
+        familyProvider(42, third: .42).hashCode,
+      );
+
+      final FamilyProvider provider = familyProvider(
         42,
+        second: 'x42',
         third: .42,
-      ),
-    );
-    expect(
-      familyProvider(42, third: .42).hashCode,
-      familyProvider(
-        42,
-        third: .42,
-      ).hashCode,
-    );
+        fourth: false,
+        fifth: const ['x42'],
+      );
+      final ProviderBase<AsyncValue<String>> futureProvider = provider;
 
-    final FamilyProvider provider = familyProvider(
-      42,
-      second: 'x42',
-      third: .42,
-      fourth: false,
-      fifth: const ['x42'],
-    );
-    final ProviderBase<AsyncValue<String>> futureProvider = provider;
-
-    expect(
-      await container
-          .listen(
-            familyProvider(
-              42,
-              second: 'x42',
-              third: .42,
-              fourth: false,
-              fifth: const ['x42'],
-            ).future,
-            (_, __) {},
-          )
-          .read(),
-      '(first: 42, second: x42, third: 0.42, fourth: false, fifth: [x42])',
-    );
-  });
+      expect(
+        await container
+            .listen(
+              familyProvider(
+                42,
+                second: 'x42',
+                third: .42,
+                fourth: false,
+                fifth: const ['x42'],
+              ).future,
+              (_, __) {},
+            )
+            .read(),
+        '(first: 42, second: x42, third: 0.42, fourth: false, fifth: [x42])',
+      );
+    },
+  );
 
   test('can overrideWith', () async {
     final container = ProviderContainer.test(
       overrides: [
         publicProvider.overrideWith((ref) => Stream.value('test')),
         publicClassProvider.overrideWith(() => PublicClass(42)),
-        familyProvider.overrideWith(
-          (ref, args) {
-            return Stream.value(
-              'test (first: ${args.$1}, second: ${args.second}, third: ${args.third}, fourth: ${args.fourth}, fifth: ${args.fifth})',
-            );
-          },
-        ),
+        familyProvider.overrideWith((ref, args) {
+          return Stream.value(
+            'test (first: ${args.$1}, second: ${args.second}, third: ${args.third}, fourth: ${args.fourth}, fifth: ${args.fifth})',
+          );
+        }),
         familyClassProvider.overrideWith(() => FamilyClass(42)),
       ],
     );
@@ -173,8 +163,10 @@ void main() {
     final container = ProviderContainer.test(
       overrides: [
         publicProvider.overrideWithValue(const AsyncData('test')),
-        familyProvider(42, third: .2)
-            .overrideWithValue(const AsyncData('test')),
+        familyProvider(
+          42,
+          third: .2,
+        ).overrideWithValue(const AsyncData('test')),
       ],
     );
 

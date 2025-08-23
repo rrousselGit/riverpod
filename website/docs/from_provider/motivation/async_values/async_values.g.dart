@@ -14,19 +14,24 @@ part of 'async_values.dart';
 @ProviderFor(itemsApi)
 const itemsApiProvider = ItemsApiProvider._();
 
-final class ItemsApiProvider extends $FunctionalProvider<AsyncValue<List<Item>>,
-        List<Item>, FutureOr<List<Item>>>
+final class ItemsApiProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<Item>>,
+          List<Item>,
+          FutureOr<List<Item>>
+        >
     with $FutureModifier<List<Item>>, $FutureProvider<List<Item>> {
   const ItemsApiProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'itemsApiProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'itemsApiProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$itemsApiHash();
@@ -51,15 +56,15 @@ final class EvenItemsProvider
     extends $FunctionalProvider<List<Item>, List<Item>, List<Item>>
     with $Provider<List<Item>> {
   const EvenItemsProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'evenItemsProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'evenItemsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$evenItemsHash();

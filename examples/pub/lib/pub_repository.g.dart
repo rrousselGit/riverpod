@@ -18,27 +18,24 @@ _PackageMetricsScore _$PackageMetricsScoreFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$PackageMetricsScoreToJson(
-        _PackageMetricsScore instance) =>
-    <String, dynamic>{
-      'grantedPoints': instance.grantedPoints,
-      'maxPoints': instance.maxPoints,
-      'likeCount': instance.likeCount,
-      'popularityScore': instance.popularityScore,
-      'tags': instance.tags,
-    };
+  _PackageMetricsScore instance,
+) => <String, dynamic>{
+  'grantedPoints': instance.grantedPoints,
+  'maxPoints': instance.maxPoints,
+  'likeCount': instance.likeCount,
+  'popularityScore': instance.popularityScore,
+  'tags': instance.tags,
+};
 
 _PackageMetricsResponse _$PackageMetricsResponseFromJson(
-        Map<String, dynamic> json) =>
-    _PackageMetricsResponse(
-      score:
-          PackageMetricsScore.fromJson(json['score'] as Map<String, dynamic>),
-    );
+  Map<String, dynamic> json,
+) => _PackageMetricsResponse(
+  score: PackageMetricsScore.fromJson(json['score'] as Map<String, dynamic>),
+);
 
 Map<String, dynamic> _$PackageMetricsResponseToJson(
-        _PackageMetricsResponse instance) =>
-    <String, dynamic>{
-      'score': instance.score,
-    };
+  _PackageMetricsResponse instance,
+) => <String, dynamic>{'score': instance.score};
 
 _PackageDetails _$PackageDetailsFromJson(Map<String, dynamic> json) =>
     _PackageDetails(
@@ -47,20 +44,17 @@ _PackageDetails _$PackageDetailsFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$PackageDetailsToJson(_PackageDetails instance) =>
-    <String, dynamic>{
-      'version': instance.version,
-      'pubspec': instance.pubspec,
-    };
+    <String, dynamic>{'version': instance.version, 'pubspec': instance.pubspec};
 
 _Package _$PackageFromJson(Map<String, dynamic> json) => _Package(
-      name: json['name'] as String,
-      latest: PackageDetails.fromJson(json['latest'] as Map<String, dynamic>),
-    );
+  name: json['name'] as String,
+  latest: PackageDetails.fromJson(json['latest'] as Map<String, dynamic>),
+);
 
 Map<String, dynamic> _$PackageToJson(_Package instance) => <String, dynamic>{
-      'name': instance.name,
-      'latest': instance.latest,
-    };
+  'name': instance.name,
+  'latest': instance.latest,
+};
 
 _LikedPackage _$LikedPackageFromJson(Map<String, dynamic> json) =>
     _LikedPackage(
@@ -69,24 +63,19 @@ _LikedPackage _$LikedPackageFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$LikedPackageToJson(_LikedPackage instance) =>
-    <String, dynamic>{
-      'package': instance.package,
-      'liked': instance.liked,
-    };
+    <String, dynamic>{'package': instance.package, 'liked': instance.liked};
 
 _LikesPackagesResponse _$LikesPackagesResponseFromJson(
-        Map<String, dynamic> json) =>
-    _LikesPackagesResponse(
-      likedPackages: (json['likedPackages'] as List<dynamic>)
-          .map((e) => LikedPackage.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
+  Map<String, dynamic> json,
+) => _LikesPackagesResponse(
+  likedPackages: (json['likedPackages'] as List<dynamic>)
+      .map((e) => LikedPackage.fromJson(e as Map<String, dynamic>))
+      .toList(),
+);
 
 Map<String, dynamic> _$LikesPackagesResponseToJson(
-        _LikesPackagesResponse instance) =>
-    <String, dynamic>{
-      'likedPackages': instance.likedPackages,
-    };
+  _LikesPackagesResponse instance,
+) => <String, dynamic>{'likedPackages': instance.likedPackages};
 
 _PubPackagesResponse _$PubPackagesResponseFromJson(Map<String, dynamic> json) =>
     _PubPackagesResponse(
@@ -96,20 +85,14 @@ _PubPackagesResponse _$PubPackagesResponseFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$PubPackagesResponseToJson(
-        _PubPackagesResponse instance) =>
-    <String, dynamic>{
-      'packages': instance.packages,
-    };
+  _PubPackagesResponse instance,
+) => <String, dynamic>{'packages': instance.packages};
 
 _SearchPackage _$SearchPackageFromJson(Map<String, dynamic> json) =>
-    _SearchPackage(
-      package: json['package'] as String,
-    );
+    _SearchPackage(package: json['package'] as String);
 
 Map<String, dynamic> _$SearchPackageToJson(_SearchPackage instance) =>
-    <String, dynamic>{
-      'package': instance.package,
-    };
+    <String, dynamic>{'package': instance.package};
 
 _PubSearchResponse _$PubSearchResponseFromJson(Map<String, dynamic> json) =>
     _PubSearchResponse(
@@ -119,6 +102,4 @@ _PubSearchResponse _$PubSearchResponseFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$PubSearchResponseToJson(_PubSearchResponse instance) =>
-    <String, dynamic>{
-      'packages': instance.packages,
-    };
+    <String, dynamic>{'packages': instance.packages};

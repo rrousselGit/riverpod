@@ -1,4 +1,4 @@
-import 'package:riverpod_generator/src/models.dart';
+import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:test/test.dart';
 
 void main() {

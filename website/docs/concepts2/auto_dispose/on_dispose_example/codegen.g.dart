@@ -17,15 +17,15 @@ const otherProvider = OtherProvider._();
 final class OtherProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const OtherProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'otherProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'otherProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$otherHash();
@@ -58,15 +58,15 @@ final class ExampleProvider
     extends $FunctionalProvider<AsyncValue<int>, int, Stream<int>>
     with $FutureModifier<int>, $StreamProvider<int> {
   const ExampleProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'exampleProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'exampleProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$exampleHash();

@@ -7,7 +7,6 @@ import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:riverpod_annotation/src/riverpod_annotation.dart';
 import 'package:source_gen/source_gen.dart';
 
-import 'models.dart';
 import 'parse_generator.dart';
 import 'templates/family.dart';
 import 'templates/hash.dart';
@@ -30,7 +29,7 @@ class RiverpodInvalidGenerationSourceError
 @immutable
 class RiverpodGenerator extends ParserGenerator<Riverpod> {
   RiverpodGenerator(Map<String, Object?> mapConfig)
-      : options = BuildYamlOptions.fromMap(mapConfig);
+    : options = BuildYamlOptions.fromMap(mapConfig);
 
   final BuildYamlOptions options;
 
@@ -98,8 +97,9 @@ class _RiverpodGeneratorVisitor {
   void visitGeneratorProviderDeclaration(
     GeneratorProviderDeclaration provider,
   ) {
-    final allTransitiveDependencies =
-        _computeAllTransitiveDependencies(provider);
+    final allTransitiveDependencies = _computeAllTransitiveDependencies(
+      provider,
+    );
 
     ProviderVariableTemplate(provider, options).run(buffer);
     ProviderTemplate(
@@ -124,7 +124,7 @@ class _RiverpodGeneratorVisitor {
     final allTransitiveDependencies = <String>[];
 
     Iterable<GeneratorProviderDeclarationElement>
-        computeAllTransitiveDependencies(
+    computeAllTransitiveDependencies(
       GeneratorProviderDeclarationElement provider,
     ) sync* {
       final deps = provider.annotation.dependencies;
@@ -181,32 +181,6 @@ class _RiverpodGeneratorVisitor {
 }
 
 extension ProviderElementNames on GeneratorProviderDeclarationElement {
-  String providerName(BuildYamlOptions options) {
-    if (annotation.name case final name?) return name;
-
-    final prefix = (isFamily
-        ? options.providerFamilyNamePrefix
-        : options.providerNamePrefix);
-    final suffix = (isFamily
-        ? options.providerFamilyNameSuffix
-        : options.providerNameSuffix);
-
-    var baseName = name;
-
-    try {
-      final regex = RegExp(options.providerNameStripPattern);
-      baseName = name.replaceAll(regex, '');
-    } on FormatException {
-      throw InvalidGenerationSourceError(
-        'Your providerNameStripPattern definition is not a valid regular expression: $options.providerNameStripPattern',
-        element: (element.library2!).getClass2(name) ??
-            (element.library2!).getTopLevelFunction(name),
-      );
-    }
-
-    return '$prefix${prefix.isEmpty ? baseName.lowerFirst : baseName.titled}$suffix';
-  }
-
   String get providerTypeName => '${name.titled}Provider';
 
   String get familyTypeName => '${name.titled}Family';
@@ -219,10 +193,7 @@ extension ProviderElementNames on GeneratorProviderDeclarationElement {
     final buffer = StringBuffer('const <ProviderOrFamily>');
     buffer.write('[');
 
-    buffer.writeAll(
-      dependencies.map((e) => e.providerName(options)),
-      ',',
-    );
+    buffer.writeAll(dependencies.map((e) => e.providerName(options)), ',');
 
     buffer.write(']');
     return buffer.toString();
@@ -304,13 +275,8 @@ extension ProviderNames on GeneratorProviderDeclaration {
       case [final p]:
         return variableName ?? p.name.toString();
       case [...]:
-        return '(${buildParamInvocationQuery({
-              for (final parameter in parameters)
-                if (variableName != null)
-                  parameter: '$variableName.${parameter.name}'
-                else
-                  parameter: parameter.name.toString(),
-            })})';
+        return '(${buildParamInvocationQuery({for (final parameter in parameters)
+          if (variableName != null) parameter: '$variableName.${parameter.name}' else parameter: parameter.name.toString()})})';
     }
   }
 
@@ -322,10 +288,10 @@ extension ProviderNames on GeneratorProviderDeclaration {
   }
 
   TypeParameterList? get typeParameters => switch (this) {
-        final FunctionalProviderDeclaration p =>
-          p.node.functionExpression.typeParameters,
-        final ClassBasedProviderDeclaration p => p.node.typeParameters
-      };
+    final FunctionalProviderDeclaration p =>
+      p.node.functionExpression.typeParameters,
+    final ClassBasedProviderDeclaration p => p.node.typeParameters,
+  };
 
   String generics() => typeParameters.genericUsageDisplayString();
   String genericsDefinition() =>
@@ -335,15 +301,13 @@ extension ProviderNames on GeneratorProviderDeclaration {
     bool withGenericDefinition = false,
     bool withArguments = false,
   }) {
-    final genericsDefinition =
-        withGenericDefinition ? this.genericsDefinition() : '';
+    final genericsDefinition = withGenericDefinition
+        ? this.genericsDefinition()
+        : '';
     final notifierType = '$name${generics()}';
 
     final parameters = withArguments
-        ? buildParamDefinitionQuery(
-            this.parameters,
-            withDefaults: false,
-          )
+        ? buildParamDefinitionQuery(this.parameters, withDefaults: false)
         : '';
 
     return '${providerElement.createdTypeNode} Function$genericsDefinition(Ref, $notifierType, $parameters)';
@@ -354,17 +318,15 @@ extension ProviderNames on GeneratorProviderDeclaration {
     bool withGenericDefinition = false,
   }) {
     final generics = this.generics();
-    final genericsDefinition =
-        withGenericDefinition ? this.genericsDefinition() : '';
+    final genericsDefinition = withGenericDefinition
+        ? this.genericsDefinition()
+        : '';
 
     final provider = this;
     switch (provider) {
       case FunctionalProviderDeclaration():
         final params = withArguments
-            ? buildParamDefinitionQuery(
-                parameters,
-                withDefaults: false,
-              )
+            ? buildParamDefinitionQuery(parameters, withDefaults: false)
             : '';
 
         return '${provider.providerElement.createdTypeNode} Function$genericsDefinition(Ref ref, $params)';
@@ -376,19 +338,17 @@ extension ProviderNames on GeneratorProviderDeclaration {
   String get generatedElementName => '_\$${providerElement.name.public}Element';
 
   String get internalElementName => switch (this) {
-        ClassBasedProviderDeclaration() => switch (
-              providerElement.createdType) {
-            SupportedCreatedType.future => r'$AsyncNotifierProviderElement',
-            SupportedCreatedType.stream => r'$StreamNotifierProviderElement',
-            SupportedCreatedType.value => r'$NotifierProviderElement',
-          },
-        FunctionalProviderDeclaration() => switch (
-              providerElement.createdType) {
-            SupportedCreatedType.future => r'$FutureProviderElement',
-            SupportedCreatedType.stream => r'$StreamProviderElement',
-            SupportedCreatedType.value => r'$ProviderElement',
-          },
-      };
+    ClassBasedProviderDeclaration() => switch (providerElement.createdType) {
+      SupportedCreatedType.future => r'$AsyncNotifierProviderElement',
+      SupportedCreatedType.stream => r'$StreamNotifierProviderElement',
+      SupportedCreatedType.value => r'$NotifierProviderElement',
+    },
+    FunctionalProviderDeclaration() => switch (providerElement.createdType) {
+      SupportedCreatedType.future => r'$FutureProviderElement',
+      SupportedCreatedType.stream => r'$StreamProviderElement',
+      SupportedCreatedType.value => r'$ProviderElement',
+    },
+  };
 
   String get hashFnName => '_\$${providerElement.name.lowerFirst}Hash';
 
@@ -426,15 +386,19 @@ extension ParameterDoc on AstNode {
 
     switch (that) {
       case AnnotatedNode():
-        for (var token = that.documentationComment?.beginToken;
-            token != null;
-            token = token.next) {
+        for (
+          var token = that.documentationComment?.beginToken;
+          token != null;
+          token = token.next
+        ) {
           builder.writeln(token);
         }
       case _:
-        for (Token? token = beginToken.precedingComments;
-            token != null;
-            token = token.next) {
+        for (
+          Token? token = beginToken.precedingComments;
+          token != null;
+          token = token.next
+        ) {
           builder.writeln(token);
         }
     }

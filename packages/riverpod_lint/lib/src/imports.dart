@@ -25,7 +25,7 @@ extension ImportFix on DartFileEditBuilder {
   @useResult
   String importHookWidget() => _importFlutterHooks('HookWidget');
 
-// hooks_riverpod
+  // hooks_riverpod
   @useResult
   String importHookConsumerWidget() =>
       _importHooksRiverpod('HookConsumerWidget');

@@ -60,9 +60,7 @@ class PackageItemShimmer extends StatelessWidget {
                   width: 100,
                   decoration: const BoxDecoration(
                     color: Colors.grey,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(50),
-                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(50)),
                   ),
                 ),
                 const Spacer(),
@@ -71,9 +69,7 @@ class PackageItemShimmer extends StatelessWidget {
                   width: 40,
                   decoration: const BoxDecoration(
                     color: Colors.grey,
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(50),
-                    ),
+                    borderRadius: BorderRadius.all(Radius.circular(50)),
                   ),
                 ),
               ],
@@ -91,9 +87,7 @@ class PackageItemShimmer extends StatelessWidget {
                     width: double.infinity,
                     decoration: const BoxDecoration(
                       color: Colors.grey,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(50),
-                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(50)),
                     ),
                   ),
                   const SizedBox(height: 5),
@@ -102,9 +96,7 @@ class PackageItemShimmer extends StatelessWidget {
                     width: double.infinity,
                     decoration: const BoxDecoration(
                       color: Colors.grey,
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(50),
-                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(50)),
                     ),
                   ),
                 ],

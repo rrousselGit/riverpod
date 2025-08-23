@@ -33,10 +33,7 @@ List<Object> errorsOf(void Function() cb) {
 
 class ProviderObserverMock extends Mock implements ProviderObserver {
   @override
-  void didAddProvider(
-    ProviderObserverContext? context,
-    Object? value,
-  );
+  void didAddProvider(ProviderObserverContext? context, Object? value);
 
   @override
   void mutationReset(
@@ -110,9 +107,7 @@ class ErrorListener extends Mock {
 class Selector<InT, OutT> extends Mock {
   Selector(this.fake, OutT Function(InT) selector) {
     when(call(any)).thenAnswer((i) {
-      return selector(
-        i.positionalArguments.first as InT,
-      );
+      return selector(i.positionalArguments.first as InT);
     });
   }
 
@@ -120,17 +115,16 @@ class Selector<InT, OutT> extends Mock {
 
   OutT call(InT? value) {
     return super.noSuchMethod(
-      Invocation.method(#call, [value]),
-      returnValue: fake,
-      returnValueForMissingStub: fake,
-    ) as OutT;
+          Invocation.method(#call, [value]),
+          returnValue: fake,
+          returnValueForMissingStub: fake,
+        )
+        as OutT;
   }
 }
 
-typedef VerifyOnly = VerificationResult Function<ResT>(
-  Mock mock,
-  ResT matchingInvocations,
-);
+typedef VerifyOnly =
+    VerificationResult Function<ResT>(Mock mock, ResT matchingInvocations);
 
 /// Syntax sugar for:
 ///
@@ -217,10 +211,7 @@ class ObserverMock extends Mock implements ProviderObserver {
   }
 
   @override
-  void didAddProvider(
-    ProviderObserverContext? context,
-    Object? value,
-  );
+  void didAddProvider(ProviderObserverContext? context, Object? value);
 
   @override
   void providerDidFail(

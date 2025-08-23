@@ -23,10 +23,8 @@ class ListenerMock<StateT> with Mock {
   void call(Object? a, Object? b);
 }
 
-typedef VerifyOnly = VerificationResult Function<ResT>(
-  Mock mock,
-  ResT matchingInvocations,
-);
+typedef VerifyOnly =
+    VerificationResult Function<ResT>(Mock mock, ResT matchingInvocations);
 
 /// Syntax sugar for:
 ///
@@ -45,11 +43,7 @@ VerifyOnly get verifyOnly {
   };
 }
 
-enum InvocationKind {
-  method,
-  getter,
-  setter,
-}
+enum InvocationKind { method, getter, setter }
 
 TypeMatcher<Invocation> isInvocation({
   Object? memberName,

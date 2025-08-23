@@ -31,9 +31,7 @@ class MyApp extends HookConsumerWidget {
     return MaterialApp(
       theme: ThemeData(primarySwatch: Colors.red),
       builder: (context, child) {
-        return _Unfocus(
-          child: child!,
-        );
+        return _Unfocus(child: child!);
       },
       home: const Portal(child: Home()),
       onGenerateRoute: (settings) {
@@ -44,9 +42,7 @@ class MyApp extends HookConsumerWidget {
         Widget? result;
         if (settings.name!.startsWith('/characters/') && split.length == 3) {
           result = ProviderScope(
-            overrides: [
-              selectedCharacterId.overrideWithValue(split.last),
-            ],
+            overrides: [selectedCharacterId.overrideWithValue(split.last)],
             child: const CharacterView(),
           );
         }
@@ -56,9 +52,7 @@ class MyApp extends HookConsumerWidget {
         }
         return MaterialPageRoute<void>(builder: (context) => result!);
       },
-      routes: {
-        '/character': (c) => const CharacterView(),
-      },
+      routes: {'/character': (c) => const CharacterView()},
     );
   }
 }
@@ -68,10 +62,7 @@ class MyApp extends HookConsumerWidget {
 /// This implements the "Unfocus when tapping in empty space" behavior for the
 /// entire application.
 class _Unfocus extends HookConsumerWidget {
-  const _Unfocus({
-    Key? key,
-    required this.child,
-  }) : super(key: key);
+  const _Unfocus({Key? key, required this.child}) : super(key: key);
 
   final Widget child;
 

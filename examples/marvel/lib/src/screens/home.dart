@@ -15,42 +15,43 @@ const kCharactersPageLimit = 50;
 
 @freezed
 sealed class CharacterPagination with _$CharacterPagination {
-  factory CharacterPagination({
-    required int page,
-    String? name,
-  }) = _CharacterPagination;
+  factory CharacterPagination({required int page, String? name}) =
+      _CharacterPagination;
 }
 
 class AbortedException implements Exception {}
 
 final characterPages = FutureProvider.autoDispose
-    .family<MarvelListCharactersResponse, CharacterPagination>(
-  (ref, meta) async {
-    // Cancel the page request if the UI no longer needs it before the request
-    // is finished.
-    // This typically happen if the user scrolls very fast
-    final cancelToken = CancelToken();
-    ref.onDispose(cancelToken.cancel);
+    .family<MarvelListCharactersResponse, CharacterPagination>((
+      ref,
+      meta,
+    ) async {
+      // Cancel the page request if the UI no longer needs it before the request
+      // is finished.
+      // This typically happen if the user scrolls very fast
+      final cancelToken = CancelToken();
+      ref.onDispose(cancelToken.cancel);
 
-    // Debouncing the request. By having this delay, it leaves the opportunity
-    // for consumers to subscribe to a different `meta` parameters. In which
-    // case, this request will be aborted.
-    await Future<void>.delayed(const Duration(milliseconds: 250));
-    if (cancelToken.isCancelled) throw AbortedException();
+      // Debouncing the request. By having this delay, it leaves the opportunity
+      // for consumers to subscribe to a different `meta` parameters. In which
+      // case, this request will be aborted.
+      await Future<void>.delayed(const Duration(milliseconds: 250));
+      if (cancelToken.isCancelled) throw AbortedException();
 
-    final repository = ref.watch(repositoryProvider);
-    final charactersResponse = await repository.fetchCharacters(
-      offset: meta.page * kCharactersPageLimit,
-      limit: kCharactersPageLimit,
-      nameStartsWith: meta.name,
-      cancelToken: cancelToken,
-    );
-    return charactersResponse;
-  },
-);
+      final repository = ref.watch(repositoryProvider);
+      final charactersResponse = await repository.fetchCharacters(
+        offset: meta.page * kCharactersPageLimit,
+        limit: kCharactersPageLimit,
+        nameStartsWith: meta.name,
+        cancelToken: cancelToken,
+      );
+      return charactersResponse;
+    });
 
-final charactersCount =
-    Provider.autoDispose.family<AsyncValue<int>, String>((ref, name) {
+final charactersCount = Provider.autoDispose.family<AsyncValue<int>, String>((
+  ref,
+  name,
+) {
   final meta = CharacterPagination(page: 0, name: name);
 
   return ref.watch(characterPages(meta)).whenData((value) => value.totalCount);
@@ -58,32 +59,32 @@ final charactersCount =
 
 @freezed
 sealed class CharacterOffset with _$CharacterOffset {
-  factory CharacterOffset({
-    required int offset,
-    @Default('') String name,
-  }) = _CharacterOffset;
+  factory CharacterOffset({required int offset, @Default('') String name}) =
+      _CharacterOffset;
 }
 
 final characterAtIndex = Provider.autoDispose
     .family<AsyncValue<Character>, CharacterOffset>((ref, query) {
-  final offsetInPage = query.offset % kCharactersPageLimit;
+      final offsetInPage = query.offset % kCharactersPageLimit;
 
-  final meta = CharacterPagination(
-    page: query.offset ~/ kCharactersPageLimit,
-    name: query.name,
-  );
-
-  return ref.watch(characterPages(meta)).whenData(
-        (value) => value.characters[offsetInPage],
+      final meta = CharacterPagination(
+        page: query.offset ~/ kCharactersPageLimit,
+        name: query.name,
       );
-});
+
+      return ref
+          .watch(characterPages(meta))
+          .whenData((value) => value.characters[offsetInPage]);
+    });
 
 class Home extends HookConsumerWidget {
   const Home({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(charactersCount('')).when(
+    return ref
+        .watch(charactersCount(''))
+        .when(
           loading: () => Container(
             color: Colors.white,
             child: const Center(child: CircularProgressIndicator()),
@@ -92,12 +93,10 @@ class Home extends HookConsumerWidget {
             return Scaffold(
               appBar: AppBar(title: const Text('Error')),
               body: Center(
-                child: Text(
-                  switch (err) {
-                    DioException() => err.message ?? '$err',
-                    _ => '$err',
-                  },
-                ),
+                child: Text(switch (err) {
+                  DioException() => err.message ?? '$err',
+                  _ => '$err',
+                }),
               ),
             );
           },
@@ -108,10 +107,7 @@ class Home extends HookConsumerWidget {
                   SliverAppBar(
                     expandedHeight: 200,
                     flexibleSpace: FlexibleSpaceBar(
-                      title: SizedBox(
-                        height: 40,
-                        child: marvelLogo,
-                      ),
+                      title: SizedBox(height: 40, child: marvelLogo),
                       centerTitle: true,
                       background: Image.asset(
                         'assets/marvel_background.jpeg',
@@ -122,18 +118,16 @@ class Home extends HookConsumerWidget {
                       titlePadding: const EdgeInsetsDirectional.only(bottom: 8),
                     ),
                     pinned: true,
-                    actions: const [
-                      SearchBar(),
-                    ],
+                    actions: const [SearchBar()],
                   ),
                   SliverPadding(
                     padding: const EdgeInsets.only(top: 10, left: 3, right: 3),
                     sliver: SliverGrid(
                       gridDelegate:
                           const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        childAspectRatio: 0.8,
-                      ),
+                            crossAxisCount: 2,
+                            childAspectRatio: 0.8,
+                          ),
                       delegate: SliverChildBuilderDelegate(
                         childCount: charactersCount,
                         (c, index) {

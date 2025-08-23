@@ -17,15 +17,15 @@ const diceRollProvider = DiceRollProvider._();
 final class DiceRollProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const DiceRollProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'diceRollProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'diceRollProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$diceRollHash();
@@ -57,15 +57,15 @@ const cachedDiceRollProvider = CachedDiceRollProvider._();
 final class CachedDiceRollProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const CachedDiceRollProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'cachedDiceRollProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'cachedDiceRollProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$cachedDiceRollHash();

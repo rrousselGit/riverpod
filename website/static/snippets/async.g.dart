@@ -14,19 +14,24 @@ part of 'async.dart';
 @ProviderFor(configurations)
 const configurationsProvider = ConfigurationsProvider._();
 
-final class ConfigurationsProvider extends $FunctionalProvider<
-        AsyncValue<Configuration>, Configuration, FutureOr<Configuration>>
+final class ConfigurationsProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<Configuration>,
+          Configuration,
+          FutureOr<Configuration>
+        >
     with $FutureModifier<Configuration>, $FutureProvider<Configuration> {
   const ConfigurationsProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'configurationsProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'configurationsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$configurationsHash();
@@ -34,8 +39,8 @@ final class ConfigurationsProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<Configuration> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<Configuration> create(Ref ref) {

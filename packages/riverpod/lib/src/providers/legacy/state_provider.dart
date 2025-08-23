@@ -47,11 +47,12 @@ final class StateProvider<ValueT>
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-          $allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-          from: null,
-          argument: null,
-        );
+         $allTransitiveDependencies: computeAllTransitiveDependencies(
+           dependencies,
+         ),
+         from: null,
+         argument: null,
+       );
 
   /// An implementation detail of Riverpod
   /// @nodoc
@@ -82,20 +83,15 @@ final class StateProvider<ValueT>
   /// The value obtained may change if the provider is refreshed (such as using
   /// [Ref.watch] or [Ref.refresh]).
   Refreshable<StateController<ValueT>> get notifier =>
-      ProviderElementProxy<StateController<ValueT>, ValueT>(
-        this,
-        (element) {
-          return (element as _StateProviderElement<ValueT>)._controllerNotifier;
-        },
-      );
+      ProviderElementProxy<StateController<ValueT>, ValueT>(this, (element) {
+        return (element as _StateProviderElement<ValueT>)._controllerNotifier;
+      });
 
   /// @nodoc
   @internal
   @override
   // ignore: library_private_types_in_public_api, not public
-  _StateProviderElement<ValueT> $createElement(
-    $ProviderPointer pointer,
-  ) {
+  _StateProviderElement<ValueT> $createElement($ProviderPointer pointer) {
     return _StateProviderElement._(pointer);
   }
 }
@@ -119,13 +115,10 @@ class _StateProviderElement<ValueT>
     final controller = StateController(initialState);
     _controllerNotifier.result = $Result.data(controller);
 
-    _removeListener = controller.addListener(
-      fireImmediately: true,
-      (state) {
-        _stateNotifier.result = _controllerNotifier.result;
-        value = AsyncData(state);
-      },
-    );
+    _removeListener = controller.addListener(fireImmediately: true, (state) {
+      _stateNotifier.result = _controllerNotifier.result;
+      value = AsyncData(state);
+    });
 
     return null;
   }
@@ -142,9 +135,7 @@ class _StateProviderElement<ValueT>
   }
 
   @override
-  void visitListenables(
-    void Function($Observable element) listenableVisitor,
-  ) {
+  void visitListenables(void Function($Observable element) listenableVisitor) {
     super.visitListenables(listenableVisitor);
     listenableVisitor(_stateNotifier);
     listenableVisitor(_controllerNotifier);
@@ -153,12 +144,16 @@ class _StateProviderElement<ValueT>
 
 /// The [Family] of [StateProvider].
 @publicInLegacy
-final class StateProviderFamily<ValueT, ArgT> extends FunctionalFamily< //
-    ValueT,
-    ValueT,
-    ArgT,
-    ValueT,
-    StateProvider<ValueT>> {
+final class StateProviderFamily<ValueT, ArgT>
+    extends
+        FunctionalFamily<
+          //
+          ValueT,
+          ValueT,
+          ArgT,
+          ValueT,
+          StateProvider<ValueT>
+        > {
   /// The [Family] of [StateProvider].
   /// @nodoc
   @internal
@@ -169,10 +164,11 @@ final class StateProviderFamily<ValueT, ArgT> extends FunctionalFamily< //
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-          providerFactory: StateProvider.internal,
-          $allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-        );
+         providerFactory: StateProvider.internal,
+         $allTransitiveDependencies: computeAllTransitiveDependencies(
+           dependencies,
+         ),
+       );
 
   /// The [Family] of [AsyncNotifierProvider].
   /// @nodoc

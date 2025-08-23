@@ -26,15 +26,15 @@ final class CounterProvider extends $NotifierProvider<Counter, int> {
   /// This class is both responsible for initializing the state (through the [build] method)
   /// and exposing ways to modify it (cf [increment]).
   const CounterProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'counterProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'counterProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$counterHash();
@@ -66,8 +66,14 @@ abstract class _$Counter extends $Notifier<int> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<int, int>;
-    final element = ref.element
-        as $ClassProviderElement<AnyNotifier<int, int>, int, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<int, int>,
+              int,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }

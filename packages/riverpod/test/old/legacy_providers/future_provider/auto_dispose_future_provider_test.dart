@@ -11,10 +11,7 @@ import '../../utils.dart';
 
 void main() {
   test('can be auto-scoped', () async {
-    final dep = Provider(
-      (ref) => 0,
-      dependencies: const [],
-    );
+    final dep = Provider((ref) => 0, dependencies: const []);
     final provider = FutureProvider.autoDispose(
       (ref) => ref.watch(dep),
       dependencies: [dep],
@@ -42,14 +39,18 @@ void main() {
   });
 
   test('can return an error synchronously, bypassing AsyncLoading', () async {
-    final provider =
-        FutureProvider.autoDispose((ref) => throw UnimplementedError());
+    final provider = FutureProvider.autoDispose(
+      (ref) => throw UnimplementedError(),
+    );
     final container = ProviderContainer.test();
 
     expect(
       container.read(provider),
-      isA<AsyncError<Never>>()
-          .having((e) => e.error, 'error', isUnimplementedError),
+      isA<AsyncError<Never>>().having(
+        (e) => e.error,
+        'error',
+        isUnimplementedError,
+      ),
     );
     await expectLater(
       container.read(provider.future),
@@ -58,51 +59,42 @@ void main() {
   });
 
   test(
-      'when going from AsyncLoading to AsyncLoading, does not notify listeners',
-      () async {
-    final dep = StateProvider((ref) => Future.value(42));
-    final provider = FutureProvider.autoDispose((ref) => ref.watch(dep));
-    final container = ProviderContainer.test();
-    final listener = Listener<AsyncValue<int>>();
+    'when going from AsyncLoading to AsyncLoading, does not notify listeners',
+    () async {
+      final dep = StateProvider((ref) => Future.value(42));
+      final provider = FutureProvider.autoDispose((ref) => ref.watch(dep));
+      final container = ProviderContainer.test();
+      final listener = Listener<AsyncValue<int>>();
 
-    container.listen(provider, (prev, value) {});
+      container.listen(provider, (prev, value) {});
 
-    await expectLater(
-      container.read(provider.future),
-      completion(42),
-    );
-    expect(
-      container.read(provider),
-      const AsyncData<int>(42),
-    );
+      await expectLater(container.read(provider.future), completion(42));
+      expect(container.read(provider), const AsyncData<int>(42));
 
-    final completer = Completer<int>();
-    container.read(dep.notifier).state = completer.future;
+      final completer = Completer<int>();
+      container.read(dep.notifier).state = completer.future;
 
-    container.listen(provider, listener.call, fireImmediately: true);
+      container.listen(provider, listener.call, fireImmediately: true);
 
-    verifyOnly(
-      listener,
-      listener(
-        null,
-        const AsyncLoading<int>()
-            .copyWithPrevious(const AsyncData(42), isRefresh: false),
-      ),
-    );
+      verifyOnly(
+        listener,
+        listener(
+          null,
+          const AsyncLoading<int>().copyWithPrevious(
+            const AsyncData(42),
+            isRefresh: false,
+          ),
+        ),
+      );
 
-    container.read(dep.notifier).state = Future.value(21);
+      container.read(dep.notifier).state = Future.value(21);
 
-    verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener);
 
-    await expectLater(
-      container.read(provider.future),
-      completion(21),
-    );
-    expect(
-      container.read(provider),
-      const AsyncData<int>(21),
-    );
-  });
+      await expectLater(container.read(provider.future), completion(21));
+      expect(container.read(provider), const AsyncData<int>(21));
+    },
+  );
 
   test('can refresh .future', () async {
     var future = Future.value(1);
@@ -139,53 +131,56 @@ void main() {
     expect(container.read(provider), const AsyncValue.data(1));
   });
 
-  test('does not update dependents if the created stream did not change',
-      () async {
-    final container = ProviderContainer.test();
-    final dep = StateProvider((ref) => 0);
-    final completer = Completer<int>();
-    final provider = FutureProvider.autoDispose((ref) {
-      ref.watch(dep);
-      return completer.future;
-    });
-    final listener = Listener<AsyncValue<int>>();
+  test(
+    'does not update dependents if the created stream did not change',
+    () async {
+      final container = ProviderContainer.test();
+      final dep = StateProvider((ref) => 0);
+      final completer = Completer<int>();
+      final provider = FutureProvider.autoDispose((ref) {
+        ref.watch(dep);
+        return completer.future;
+      });
+      final listener = Listener<AsyncValue<int>>();
 
-    container.listen(provider, listener.call, fireImmediately: true);
+      container.listen(provider, listener.call, fireImmediately: true);
 
-    verifyOnly(listener, listener(null, const AsyncValue.loading()));
+      verifyOnly(listener, listener(null, const AsyncValue.loading()));
 
-    container.read(dep.notifier).state++;
-    await container.pump();
+      container.read(dep.notifier).state++;
+      await container.pump();
 
-    verifyNoMoreInteractions(listener);
-  });
+      verifyNoMoreInteractions(listener);
+    },
+  );
 
   test(
-      '.stream does not update dependents if the created stream did not change',
-      () async {
-    final container = ProviderContainer.test();
-    final dep = StateProvider((ref) => 0);
-    final completer = Completer<int>();
-    final provider = FutureProvider.autoDispose((ref) {
-      ref.watch(dep);
-      return completer.future;
-    });
-    final listener = Listener<Future<int>>();
+    '.stream does not update dependents if the created stream did not change',
+    () async {
+      final container = ProviderContainer.test();
+      final dep = StateProvider((ref) => 0);
+      final completer = Completer<int>();
+      final provider = FutureProvider.autoDispose((ref) {
+        ref.watch(dep);
+        return completer.future;
+      });
+      final listener = Listener<Future<int>>();
 
-    container.listen(provider.future, listener.call, fireImmediately: true);
+      container.listen(provider.future, listener.call, fireImmediately: true);
 
-    verifyOnly(listener, listener(any, any));
+      verifyOnly(listener, listener(any, any));
 
-    container.read(dep.notifier).state++;
-    await container.pump();
+      container.read(dep.notifier).state++;
+      await container.pump();
 
-    verifyNoMoreInteractions(listener);
+      verifyNoMoreInteractions(listener);
 
-    // No value were emitted, so the future will fail. Catching the error to
-    // avoid false positive.
-    // ignore: unawaited_futures, avoid_types_on_closure_parameters
-    container.read(provider.future).catchError((Object _) => 0);
-  });
+      // No value were emitted, so the future will fail. Catching the error to
+      // avoid false positive.
+      // ignore: unawaited_futures, avoid_types_on_closure_parameters
+      container.read(provider.future).catchError((Object _) => 0);
+    },
+  );
 
   group('scoping an override overrides all the associated sub-providers', () {
     test('when passing the provider itself', () async {
@@ -215,9 +210,7 @@ void main() {
       final root = ProviderContainer.test();
       final container = ProviderContainer.test(
         parent: root,
-        overrides: [
-          provider.overrideWithValue(const AsyncValue.data(42)),
-        ],
+        overrides: [provider.overrideWithValue(const AsyncValue.data(42))],
       );
 
       expect(await container.read(provider.future), 42);
@@ -258,8 +251,11 @@ void main() {
     final container = ProviderContainer.test();
     final listener = Listener<AsyncValue<int>>();
 
-    final sub =
-        container.listen(provider, listener.call, fireImmediately: true);
+    final sub = container.listen(
+      provider,
+      listener.call,
+      fireImmediately: true,
+    );
 
     verifyOnly(listener, listener(null, const AsyncValue.loading()));
 

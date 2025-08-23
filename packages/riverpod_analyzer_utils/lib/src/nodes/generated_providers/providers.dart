@@ -81,17 +81,41 @@ sealed class GeneratorProviderDeclarationElement
   }
 
   bool get isAutoDispose => !annotation.keepAlive;
+
+  String providerName(BuildYamlOptions options) {
+    if (annotation.name case final name?) return name;
+
+    final prefix = (isFamily
+        ? options.providerFamilyNamePrefix
+        : options.providerNamePrefix);
+    final suffix = (isFamily
+        ? options.providerFamilyNameSuffix
+        : options.providerNameSuffix);
+
+    var baseName = name;
+
+    try {
+      final regex = RegExp(options.providerNameStripPattern);
+      baseName = name.replaceAll(regex, '');
+    } on FormatException {
+      throw ArgumentError.value(
+        options.providerNameStripPattern,
+        'providerNameStripPattern',
+        r'Your providerNameStripPattern definition is not a valid regular expression: $options.providerNameStripPattern',
+      );
+    }
+
+    return '$prefix${prefix.isEmpty ? baseName.lowerFirst : baseName.titled}$suffix';
+  }
 }
 
 ({
   String createdType,
   DartType valueType,
   String exposedType,
-  SupportedCreatedType supportedCreatedType
-})? _computeTypes(
-  DartType buildReturnValue,
-  CompilationUnit unit,
-) {
+  SupportedCreatedType supportedCreatedType,
+})?
+_computeTypes(DartType buildReturnValue, CompilationUnit unit) {
   final valueType = _getValueType(
     buildReturnValue,
     typeProvider: unit.declaredFragment!.element.typeProvider,

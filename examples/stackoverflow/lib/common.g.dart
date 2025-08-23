@@ -31,15 +31,15 @@ final class ThemeProvider
   /// This is unimplemented by default, and will be overridden inside [MaterialApp]
   /// with the current theme obtained using a [BuildContext].
   const ThemeProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'themeProvider',
-          isAutoDispose: true,
-          dependencies: const <ProviderOrFamily>[],
-          $allTransitiveDependencies: const <ProviderOrFamily>[],
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'themeProvider',
+        isAutoDispose: true,
+        dependencies: const <ProviderOrFamily>[],
+        $allTransitiveDependencies: const <ProviderOrFamily>[],
+      );
 
   @override
   String debugGetCreateSourceHash() => _$themeHash();

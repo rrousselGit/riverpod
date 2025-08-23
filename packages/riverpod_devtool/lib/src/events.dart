@@ -75,8 +75,7 @@ class ProviderElementsNotifier
     return Map.fromEntries(state.value!.entries.followedBy(newItems));
   }
 
-  Future<List<MapEntry<ProviderElementId, Event>>>
-  _parseElementsForMap(
+  Future<List<MapEntry<ProviderElementId, Event>>> _parseElementsForMap(
     String mapExpression, {
     required Eval riverpodEval,
     required Disposable isAlive,

@@ -37,8 +37,7 @@ enum StatelessBaseWidgetType {
       'StatelessWidget',
       packageName: 'flutter',
     ),
-  ),
-  ;
+  );
 
   const StatelessBaseWidgetType({
     required this.priority,
@@ -101,12 +100,8 @@ enum StatefulBaseWidgetType {
   statefulWidget(
     widgetAssistName: 'StatefulWidget',
     priority: 30,
-    typeChecker: TypeChecker.fromName(
-      'StatefulWidget',
-      packageName: 'flutter',
-    ),
-  ),
-  ;
+    typeChecker: TypeChecker.fromName('StatefulWidget', packageName: 'flutter'),
+  );
 
   const StatefulBaseWidgetType({
     required this.widgetAssistName,
@@ -133,9 +128,7 @@ enum StatefulBaseWidgetType {
   }
 }
 
-TypeChecker getStatelessBaseType({
-  required StatelessBaseWidgetType? exclude,
-}) {
+TypeChecker getStatelessBaseType({required StatelessBaseWidgetType? exclude}) {
   return TypeChecker.any(
     StatelessBaseWidgetType.values
         .where((e) => e != exclude)
@@ -143,9 +136,7 @@ TypeChecker getStatelessBaseType({
   );
 }
 
-TypeChecker getStatefulBaseType({
-  required StatefulBaseWidgetType? exclude,
-}) {
+TypeChecker getStatefulBaseType({required StatefulBaseWidgetType? exclude}) {
   return TypeChecker.any(
     StatefulBaseWidgetType.values
         .where((e) => e != exclude)
@@ -166,18 +157,24 @@ ClassDeclaration? findStateClass(ClassDeclaration widgetClass) {
       .where(
         // Is the class a state class?
         (e) =>
-            e.extendsClause?.superclass.type
-                .let(_stateType.isAssignableFromType) ??
+            e.extendsClause?.superclass.type.let(
+              _stateType.isAssignableFromType,
+            ) ??
             false,
       )
       .firstWhereOrNull((e) {
-    final stateWidgetType =
-        e.extendsClause?.superclass.typeArguments?.arguments.firstOrNull?.type;
-    if (stateWidgetType == null) return false;
+        final stateWidgetType = e
+            .extendsClause
+            ?.superclass
+            .typeArguments
+            ?.arguments
+            .firstOrNull
+            ?.type;
+        if (stateWidgetType == null) return false;
 
-    final checker = TypeChecker.fromStatic(widgetType);
-    return checker.isExactlyType(stateWidgetType);
-  });
+        final checker = TypeChecker.fromStatic(widgetType);
+        return checker.isExactlyType(stateWidgetType);
+      });
 }
 
 // Original implementation in package:analyzer/lib/src/dart/ast/extensions.dart

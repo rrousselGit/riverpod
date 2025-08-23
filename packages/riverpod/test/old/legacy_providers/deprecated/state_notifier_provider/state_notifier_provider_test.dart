@@ -53,10 +53,8 @@ void main() {
     final family = StateNotifierProvider.family<TestNotifier, int, int>(
       (ref, arg) => TestNotifier(0 + arg),
     );
-    final autoDisposeFamily =
-        StateNotifierProvider.autoDispose.family<TestNotifier, int, int>(
-      (ref, arg) => TestNotifier(0 + arg),
-    );
+    final autoDisposeFamily = StateNotifierProvider.autoDispose
+        .family<TestNotifier, int, int>((ref, arg) => TestNotifier(0 + arg));
     final container = ProviderContainer.test(
       overrides: [
         family.overrideWith((ref, int arg) => TestNotifier(42 + arg)),
@@ -71,29 +69,27 @@ void main() {
   });
 
   test(
-      'on refresh, does not notify listeners if the new value is identical to the previous one',
-      () {
-    // regression test for https://github.com/rrousselGit/riverpod/issues/1560
-    final container = ProviderContainer.test();
-    final provider = StateNotifierProvider<StateController<int>, int>(
-      (ref) => StateController(0),
-    );
-    final listener = Listener<int>();
+    'on refresh, does not notify listeners if the new value is identical to the previous one',
+    () {
+      // regression test for https://github.com/rrousselGit/riverpod/issues/1560
+      final container = ProviderContainer.test();
+      final provider = StateNotifierProvider<StateController<int>, int>(
+        (ref) => StateController(0),
+      );
+      final listener = Listener<int>();
 
-    container.listen(provider, listener.call, fireImmediately: true);
+      container.listen(provider, listener.call, fireImmediately: true);
 
-    verifyOnly(listener, listener(null, 0));
+      verifyOnly(listener, listener(null, 0));
 
-    container.refresh(provider);
+      container.refresh(provider);
 
-    verifyNoMoreInteractions(listener);
-  });
+      verifyNoMoreInteractions(listener);
+    },
+  );
 
   test('can be auto-scoped', () async {
-    final dep = Provider(
-      (ref) => 0,
-      dependencies: const [],
-    );
+    final dep = Provider((ref) => 0, dependencies: const []);
     final provider = StateNotifierProvider<StateController<int>, int>(
       (ref) => StateController(ref.watch(dep)),
       dependencies: [dep],
@@ -112,8 +108,9 @@ void main() {
 
   test('can refresh .notifier', () async {
     var initialValue = 1;
-    final provider =
-        StateNotifierProvider<Counter, int>((ref) => Counter(initialValue));
+    final provider = StateNotifierProvider<Counter, int>(
+      (ref) => Counter(initialValue),
+    );
     final container = ProviderContainer.test();
 
     expect(container.read(provider), 1);
@@ -128,8 +125,9 @@ void main() {
   test('can be refreshed', () async {
     var result = StateController(0);
     final container = ProviderContainer.test();
-    final provider =
-        StateNotifierProvider<StateController<int>, int>((ref) => result);
+    final provider = StateNotifierProvider<StateController<int>, int>(
+      (ref) => result,
+    );
 
     expect(container.read(provider), 0);
     expect(container.read(provider.notifier), result);
@@ -170,16 +168,14 @@ void main() {
         final controller = StateController(0);
         final provider =
             StateNotifierProvider.autoDispose<StateController<int>, int>(
-          (ref) => controller,
-          dependencies: const [],
-        );
+              (ref) => controller,
+              dependencies: const [],
+            );
         final root = ProviderContainer.test();
         final controllerOverride = StateController(42);
         final container = ProviderContainer.test(
           parent: root,
-          overrides: [
-            provider.overrideWith((ref) => controllerOverride),
-          ],
+          overrides: [provider.overrideWith((ref) => controllerOverride)],
         );
 
         expect(container.read(provider.notifier), controllerOverride);
@@ -196,14 +192,12 @@ void main() {
   });
 
   test('can specify name', () {
-    final provider = StateNotifierProvider<TestNotifier, int>(
-      (_) {
-        return TestNotifier();
-      },
-      name: 'example',
+    final provider = StateNotifierProvider<TestNotifier, int>((_) {
+      return TestNotifier();
+    }, name: 'example');
+    final provider2 = StateNotifierProvider<TestNotifier, int>(
+      (_) => TestNotifier(),
     );
-    final provider2 =
-        StateNotifierProvider<TestNotifier, int>((_) => TestNotifier());
 
     expect(provider.name, 'example');
     expect(provider2.name, isNull);
@@ -284,10 +278,7 @@ void main() {
     addTearDown(container.dispose);
 
     var callCount = 0;
-    final sub = container.listen(
-      provider.notifier,
-      (_, __) => callCount++,
-    );
+    final sub = container.listen(provider.notifier, (_, __) => callCount++);
 
     expect(sub.read(), notifier);
     expect(callCount, 0);
@@ -360,9 +351,7 @@ void main() {
     final notifier = TestNotifier(42);
     final notifier2 = TestNotifier(21);
     final container = ProviderContainer.test(
-      overrides: [
-        provider.overrideWith((_) => notifier),
-      ],
+      overrides: [provider.overrideWith((_) => notifier)],
     );
     addTearDown(container.dispose);
     final listener = Listener<int>();
@@ -378,9 +367,7 @@ void main() {
     await container.pump();
     verifyOnly(listener, listener(42, 43));
 
-    container.updateOverrides([
-      provider.overrideWith((_) => notifier2),
-    ]);
+    container.updateOverrides([provider.overrideWith((_) => notifier2)]);
 
     await container.pump();
     expect(container.read(provider.notifier), notifier);

@@ -24,9 +24,11 @@ bool areGenericTypeArgumentsMatching(
 ) {
   // Are type arguments specified in the correct order?
   var i = 0;
-  for (;
-      i < expectedTypeArguments.length && i < actualTypeArguments.length;
-      i++) {
+  for (
+    ;
+    i < expectedTypeArguments.length && i < actualTypeArguments.length;
+    i++
+  ) {
     final expectedType = expectedTypeArguments[i].name.lexeme;
     final actualType = actualTypeArguments[i].toSource();
 
@@ -83,10 +85,10 @@ class NotifierExtends extends RiverpodLintRule {
 
       final expectedTypeArguments =
           declaration.node.typeParameters?.typeParameters ??
-              const <TypeParameter>[];
+          const <TypeParameter>[];
       final actualTypeArguments =
           extendsClause.superclass.typeArguments?.arguments ??
-              const <TypeAnnotation>[];
+          const <TypeAnnotation>[];
       if (!areGenericTypeArgumentsMatching(
         expectedTypeArguments,
         actualTypeArguments,

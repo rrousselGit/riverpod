@@ -51,38 +51,38 @@ sealed class Question with _$Question {
 
 final paginatedQuestionsProvider = FutureProvider.autoDispose
     .family<QuestionsResponse, int>((ref, pageIndex) async {
-  final cancelToken = CancelToken();
-  ref.onDispose(cancelToken.cancel);
+      final cancelToken = CancelToken();
+      ref.onDispose(cancelToken.cancel);
 
-  final uri = Uri(
-    scheme: 'https',
-    host: 'api.stackexchange.com',
-    path: '/2.2/questions',
-    queryParameters: <String, Object>{
-      'order': 'desc',
-      'sort': 'creation',
-      'site': 'stackoverflow',
-      'filter': '!17vW1m9jnXcpKOO(p4a5Jj.QeqRQmvxcbquXIXJ1fJcKq4',
-      'tagged': 'flutter',
-      'pagesize': '50',
-      'page': '${pageIndex + 1}',
-    },
-  );
+      final uri = Uri(
+        scheme: 'https',
+        host: 'api.stackexchange.com',
+        path: '/2.2/questions',
+        queryParameters: <String, Object>{
+          'order': 'desc',
+          'sort': 'creation',
+          'site': 'stackoverflow',
+          'filter': '!17vW1m9jnXcpKOO(p4a5Jj.QeqRQmvxcbquXIXJ1fJcKq4',
+          'tagged': 'flutter',
+          'pagesize': '50',
+          'page': '${pageIndex + 1}',
+        },
+      );
 
-  final response = await ref
-      .watch(client)
-      .getUri<Map<String, Object?>>(uri, cancelToken: cancelToken);
+      final response = await ref
+          .watch(client)
+          .getUri<Map<String, Object?>>(uri, cancelToken: cancelToken);
 
-  final parsed = QuestionsResponse.fromJson(response.data!);
-  final page = parsed.copyWith(
-    items: parsed.items.map((e) {
-      final document = parse(e.body);
-      return e.copyWith(body: document.body!.text.replaceAll('\n', ' '));
-    }).toList(),
-  );
+      final parsed = QuestionsResponse.fromJson(response.data!);
+      final page = parsed.copyWith(
+        items: parsed.items.map((e) {
+          final document = parse(e.body);
+          return e.copyWith(body: document.body!.text.replaceAll('\n', ' '));
+        }).toList(),
+      );
 
-  return page;
-});
+      return page;
+    });
 
 /// A provider exposing the total count of questions
 final questionsCountProvider = Provider.autoDispose((ref) {
@@ -102,14 +102,8 @@ sealed class QuestionTheme with _$QuestionTheme {
 @riverpod
 QuestionTheme questionTheme(Ref ref) {
   return const QuestionTheme(
-    titleStyle: TextStyle(
-      color: Color(0xFF3ca4ff),
-      fontSize: 16,
-    ),
-    descriptionStyle: TextStyle(
-      color: Color(0xFFe7e8eb),
-      fontSize: 13,
-    ),
+    titleStyle: TextStyle(color: Color(0xFF3ca4ff), fontSize: 16),
+    descriptionStyle: TextStyle(color: Color(0xFFe7e8eb), fontSize: 13),
   );
 }
 
@@ -148,19 +142,12 @@ class QuestionItem extends HookConsumerWidget {
       loading: () => const Center(child: Text('loading')),
       data: (question) {
         return ListTile(
-          title: Text(
-            question.title,
-            style: questionTheme.titleStyle,
-          ),
+          title: Text(question.title, style: questionTheme.titleStyle),
           subtitle: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               const SizedBox(height: 5),
-              Text(
-                question.body,
-                maxLines: 3,
-                overflow: TextOverflow.ellipsis,
-              ),
+              Text(question.body, maxLines: 3, overflow: TextOverflow.ellipsis),
               const SizedBox(height: 12),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -168,9 +155,7 @@ class QuestionItem extends HookConsumerWidget {
                   Wrap(
                     spacing: 5,
                     runSpacing: 5,
-                    children: [
-                      for (final tag in question.tags) Tag(tag: tag),
-                    ],
+                    children: [for (final tag in question.tags) Tag(tag: tag)],
                   ),
                   const SizedBox(height: 6),
                   Row(
@@ -207,34 +192,30 @@ class QuestionItem extends HookConsumerWidget {
 String _useAskedHowLongAgo(DateTime creationDate) {
   final label = useState('');
 
-  useEffect(
-    () {
-      void setLabel() {
-        final now = DateTime.now();
-        final diff = now.difference(creationDate);
+  useEffect(() {
+    void setLabel() {
+      final now = DateTime.now();
+      final diff = now.difference(creationDate);
 
-        String value;
-        if (diff.inDays > 1) {
-          value = '${diff.inDays} days';
-        } else if (diff.inHours > 0) {
-          value = '${diff.inHours} hours';
-        } else if (diff.inMinutes > 0) {
-          value = '${diff.inMinutes} mins';
-        } else {
-          value = '${diff.inSeconds} seconds';
-        }
-
-        label.value = 'asked $value ago';
+      String value;
+      if (diff.inDays > 1) {
+        value = '${diff.inDays} days';
+      } else if (diff.inHours > 0) {
+        value = '${diff.inHours} hours';
+      } else if (diff.inMinutes > 0) {
+        value = '${diff.inMinutes} mins';
+      } else {
+        value = '${diff.inSeconds} seconds';
       }
 
-      setLabel();
-      final timer =
-          Timer.periodic(const Duration(minutes: 1), (_) => setLabel());
+      label.value = 'asked $value ago';
+    }
 
-      return timer.cancel;
-    },
-    [creationDate],
-  );
+    setLabel();
+    final timer = Timer.periodic(const Duration(minutes: 1), (_) => setLabel());
+
+    return timer.cancel;
+  }, [creationDate]);
 
   return label.value;
 }
@@ -269,11 +250,7 @@ class PostInfo extends HookConsumerWidget {
 
 /// A UI component for showing the answer count on a question
 class AnswersCount extends StatelessWidget {
-  const AnswersCount(
-    this.answerCount, {
-    super.key,
-    required this.accepted,
-  });
+  const AnswersCount(this.answerCount, {super.key, required this.accepted});
 
   final int answerCount;
   final bool accepted;
@@ -283,8 +260,8 @@ class AnswersCount extends StatelessWidget {
     final textStyle = accepted
         ? null
         : answerCount == 0
-            ? const TextStyle(color: Color(0xffacb2b8))
-            : const TextStyle(color: Color(0xff5a9e6f));
+        ? const TextStyle(color: Color(0xffacb2b8))
+        : const TextStyle(color: Color(0xff5a9e6f));
     return Container(
       decoration: answerCount > 0
           ? BoxDecoration(

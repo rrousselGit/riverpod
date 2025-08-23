@@ -88,12 +88,17 @@ final class ProviderScope extends StatefulWidget {
     _UncontrolledProviderScope? scope;
 
     if (listen) {
-      scope = context //
-          .dependOnInheritedWidgetOfExactType<_UncontrolledProviderScope>();
+      scope =
+          context //
+              .dependOnInheritedWidgetOfExactType<_UncontrolledProviderScope>();
     } else {
-      scope = context
-          .getElementForInheritedWidgetOfExactType<_UncontrolledProviderScope>()
-          ?.widget as _UncontrolledProviderScope?;
+      scope =
+          context
+                  .getElementForInheritedWidgetOfExactType<
+                    _UncontrolledProviderScope
+                  >()
+                  ?.widget
+              as _UncontrolledProviderScope?;
     }
 
     if (scope == null) {
@@ -174,9 +179,13 @@ final class ProviderScopeState extends State<ProviderScope> {
   }
 
   ProviderContainer? _getParent() {
-    final scope = context
-        .getElementForInheritedWidgetOfExactType<_UncontrolledProviderScope>()
-        ?.widget as _UncontrolledProviderScope?;
+    final scope =
+        context
+                .getElementForInheritedWidgetOfExactType<
+                  _UncontrolledProviderScope
+                >()
+                ?.widget
+            as _UncontrolledProviderScope?;
 
     return scope?.container;
   }
@@ -206,10 +215,7 @@ final class ProviderScopeState extends State<ProviderScope> {
       container.updateOverrides(widget.overrides);
     }
 
-    return UncontrolledProviderScope(
-      container: container,
-      child: widget.child,
-    );
+    return UncontrolledProviderScope(container: container, child: widget.child);
   }
 
   @override
@@ -311,8 +317,7 @@ class _UncontrolledProviderScopeState extends State<UncontrolledProviderScope> {
         ErrorSummary(
           'Tried to modify a provider while the widget tree was building.',
         ),
-        ErrorDescription(
-          '''
+        ErrorDescription('''
 If you are encountering this error, chances are you tried to modify a provider
 in a widget life-cycle, such as but not limited to:
 - build
@@ -334,8 +339,7 @@ To fix this problem, you have one of two solutions:
 - Delay your modification, such as by encapsulating the modification
   in a `Future(() {...})`.
   This will perform your update after the widget tree is done building.
-''',
-        ),
+'''),
       ]);
     }
   }
@@ -388,9 +392,7 @@ extension RiverpodWidgetTesterX on flutter_test.WidgetTester {
   /// If [of] is provided, searches for the container within the context of
   /// the specified finder.
   @visibleForTesting
-  ProviderContainer container({
-    flutter_test.Finder? of,
-  }) {
+  ProviderContainer container({flutter_test.Finder? of}) {
     if (of != null) {
       final element = this.element(of);
       return ProviderScope.containerOf(element, listen: false);

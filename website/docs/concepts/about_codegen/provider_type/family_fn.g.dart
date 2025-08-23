@@ -16,20 +16,16 @@ const exampleProvider = ExampleFamily._();
 
 final class ExampleProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const ExampleProvider._(
-      {required ExampleFamily super.from,
-      required (
-        int, {
-        String param2,
-      })
-          super.argument})
-      : super(
-          retry: null,
-          name: r'exampleProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+  const ExampleProvider._({
+    required ExampleFamily super.from,
+    required (int, {String param2}) super.argument,
+  }) : super(
+         retry: null,
+         name: r'exampleProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$exampleHash();
@@ -48,15 +44,8 @@ final class ExampleProvider extends $FunctionalProvider<String, String, String>
 
   @override
   String create(Ref ref) {
-    final argument = this.argument as (
-      int, {
-      String param2,
-    });
-    return example(
-      ref,
-      argument.$1,
-      param2: argument.param2,
-    );
+    final argument = this.argument as (int, {String param2});
+    return example(ref, argument.$1, param2: argument.param2);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -81,30 +70,18 @@ final class ExampleProvider extends $FunctionalProvider<String, String, String>
 String _$exampleHash() => r'5795b1f6c6f075de18d0e9789a3a52040c144f0c';
 
 final class ExampleFamily extends $Family
-    with
-        $FunctionalFamilyOverride<
-            String,
-            (
-              int, {
-              String param2,
-            })> {
+    with $FunctionalFamilyOverride<String, (int, {String param2})> {
   const ExampleFamily._()
-      : super(
-          retry: null,
-          name: r'exampleProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'exampleProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
-  ExampleProvider call(
-    int param1, {
-    String param2 = 'foo',
-  }) =>
-      ExampleProvider._(argument: (
-        param1,
-        param2: param2,
-      ), from: this);
+  ExampleProvider call(int param1, {String param2 = 'foo'}) =>
+      ExampleProvider._(argument: (param1, param2: param2), from: this);
 
   @override
   String toString() => r'exampleProvider';

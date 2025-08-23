@@ -102,8 +102,9 @@ class PackageDetailPage extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final package =
-        ref.watch(fetchPackageDetailsProvider(packageName: packageName));
+    final package = ref.watch(
+      fetchPackageDetailsProvider(packageName: packageName),
+    );
 
     final likedPackages = ref.watch(likedPackagesProvider);
     final isLiked = likedPackages.value?.contains(packageName) ?? false;

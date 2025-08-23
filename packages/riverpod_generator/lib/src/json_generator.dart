@@ -9,7 +9,6 @@ import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 import 'package:riverpod_annotation/experimental/json_persist.dart';
 import 'package:source_gen/source_gen.dart';
 
-import 'models.dart';
 import 'parse_generator.dart';
 import 'riverpod_generator.dart';
 
@@ -99,8 +98,7 @@ class JsonGenerator extends ParserGenerator<JsonPersist> {
 
     final decoded = decode(provider.providerElement.valueTypeNode, 'e');
 
-    buffer.write(
-      '''
+    buffer.write('''
 abstract class $notifierClass$genericsDefinition extends $baseClass {
   /// The default key used by [persist].
   String get key {
@@ -130,8 +128,7 @@ abstract class $notifierClass$genericsDefinition extends $baseClass {
     );
   }
 }
-''',
-    );
+''');
   }
 }
 

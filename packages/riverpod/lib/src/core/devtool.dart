@@ -7,13 +7,8 @@ class RiverpodDevtool {
 
   final events = <Event>[];
   void addEvent(String name, [List<Object?> items = const []]) {
-    events.add(
-      Event(name, _deflated(items), DateTime.now()),
-    );
-    debugPostEvent(
-      name,
-      <Object?, Object?>{'offset': events.length - 1},
-    );
+    events.add(Event(name, _deflated(items), DateTime.now()));
+    debugPostEvent(name, <Object?, Object?>{'offset': events.length - 1});
   }
 }
 
@@ -44,10 +39,8 @@ extension ProviderContainerParents on ProviderContainer {
 
 /* ====  */
 
-void Function(
-  String eventKind,
-  Map<Object?, Object?> event,
-)? _debugPostEventOverride;
+void Function(String eventKind, Map<Object?, Object?> event)?
+_debugPostEventOverride;
 
 @internal
 void debugPostEvent(
@@ -90,10 +83,7 @@ class PostEventSpy {
     _debugPostEventOverride = null;
   }
 
-  void _postEvent(
-    String eventKind,
-    Map<Object?, Object?> event,
-  ) {
+  void _postEvent(String eventKind, Map<Object?, Object?> event) {
     logs.add(PostEventCall._(eventKind, event));
   }
 }

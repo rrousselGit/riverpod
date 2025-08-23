@@ -1,6 +1,5 @@
 import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
-import '../models.dart';
 import '../riverpod_generator.dart';
 import 'template.dart';
 
@@ -20,8 +19,9 @@ class ProviderVariableTemplate extends Template {
 
     switch (provider) {
       case _ when provider.providerElement.isFamily:
-        buffer
-            .writeln('const $providerName = ${provider.familyTypeName}._();\n');
+        buffer.writeln(
+          'const $providerName = ${provider.familyTypeName}._();\n',
+        );
 
       case _:
         final providerType = provider.providerTypeName;

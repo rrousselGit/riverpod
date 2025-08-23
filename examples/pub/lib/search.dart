@@ -69,8 +69,10 @@ class SearchPage extends HookConsumerWidget {
                 ref.invalidate(fetchPackagesProvider);
                 // keep showing the progress indicator until the first page is fetched
                 return ref.read(
-                  fetchPackagesProvider(page: 1, search: searchController.text)
-                      .future,
+                  fetchPackagesProvider(
+                    page: 1,
+                    search: searchController.text,
+                  ).future,
                 );
               },
               child: ListView.custom(

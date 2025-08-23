@@ -58,8 +58,10 @@ void main() {
           dependencies: const [],
         );
         final root = ProviderContainer.test();
-        final container =
-            ProviderContainer.test(parent: root, overrides: [provider]);
+        final container = ProviderContainer.test(
+          parent: root,
+          overrides: [provider],
+        );
 
         expect(container.read(provider.notifier).value, 0);
         expect(container.read(provider).value, 0);
@@ -80,9 +82,7 @@ void main() {
         final root = ProviderContainer.test();
         final container = ProviderContainer.test(
           parent: root,
-          overrides: [
-            provider.overrideWith((ref) => ValueNotifier(42)),
-          ],
+          overrides: [provider.overrideWith((ref) => ValueNotifier(42))],
         );
 
         expect(container.read(provider.notifier).value, 42);

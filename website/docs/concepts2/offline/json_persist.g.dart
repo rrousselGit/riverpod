@@ -8,13 +8,12 @@ part of 'json_persist.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_Todo _$TodoFromJson(Map<String, dynamic> json) => _Todo(
-      task: json['task'] as String,
-    );
+_Todo _$TodoFromJson(Map<String, dynamic> json) =>
+    _Todo(task: json['task'] as String);
 
 Map<String, dynamic> _$TodoToJson(_Todo instance) => <String, dynamic>{
-      'task': instance.task,
-    };
+  'task': instance.task,
+};
 
 // **************************************************************************
 // RiverpodGenerator
@@ -31,15 +30,15 @@ const todoListProvider = TodoListProvider._();
 final class TodoListProvider
     extends $AsyncNotifierProvider<TodoList, List<Todo>> {
   const TodoListProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'todoListProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'todoListProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$todoListHash();
@@ -59,11 +58,14 @@ abstract class _$TodoListBase extends $AsyncNotifier<List<Todo>> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<List<Todo>>, List<Todo>>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<List<Todo>>, List<Todo>>,
-        AsyncValue<List<Todo>>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<List<Todo>>, List<Todo>>,
+              AsyncValue<List<Todo>>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }
@@ -94,7 +96,8 @@ abstract class _$TodoList extends _$TodoListBase {
       storage,
       key: key ?? this.key,
       encode: encode ?? $jsonCodex.encode,
-      decode: decode ??
+      decode:
+          decode ??
           (encoded) {
             final e = $jsonCodex.decode(encoded);
             return (e as List)

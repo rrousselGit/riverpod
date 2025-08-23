@@ -15,15 +15,15 @@ const counter2Provider = Counter2Provider._();
 final class Counter2Provider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const Counter2Provider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'counter2Provider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'counter2Provider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$counter2Hash();

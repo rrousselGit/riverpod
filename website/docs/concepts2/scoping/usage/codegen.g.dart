@@ -18,15 +18,15 @@ final class CurrentItemIdProvider
     extends $FunctionalProvider<String?, String?, String?>
     with $Provider<String?> {
   const CurrentItemIdProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'currentItemIdProvider',
-          isAutoDispose: true,
-          dependencies: const <ProviderOrFamily>[],
-          $allTransitiveDependencies: const <ProviderOrFamily>[],
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'currentItemIdProvider',
+        isAutoDispose: true,
+        dependencies: const <ProviderOrFamily>[],
+        $allTransitiveDependencies: const <ProviderOrFamily>[],
+      );
 
   @override
   String debugGetCreateSourceHash() => _$currentItemIdHash();

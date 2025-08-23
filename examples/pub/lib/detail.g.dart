@@ -17,16 +17,16 @@ const fetchPackageDetailsProvider = FetchPackageDetailsFamily._();
 final class FetchPackageDetailsProvider
     extends $FunctionalProvider<AsyncValue<Package>, Package, FutureOr<Package>>
     with $FutureModifier<Package>, $FutureProvider<Package> {
-  const FetchPackageDetailsProvider._(
-      {required FetchPackageDetailsFamily super.from,
-      required String super.argument})
-      : super(
-          retry: null,
-          name: r'fetchPackageDetailsProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+  const FetchPackageDetailsProvider._({
+    required FetchPackageDetailsFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'fetchPackageDetailsProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$fetchPackageDetailsHash();
@@ -46,10 +46,7 @@ final class FetchPackageDetailsProvider
   @override
   FutureOr<Package> create(Ref ref) {
     final argument = this.argument as String;
-    return fetchPackageDetails(
-      ref,
-      packageName: argument,
-    );
+    return fetchPackageDetails(ref, packageName: argument);
   }
 
   @override
@@ -69,17 +66,15 @@ String _$fetchPackageDetailsHash() =>
 final class FetchPackageDetailsFamily extends $Family
     with $FunctionalFamilyOverride<FutureOr<Package>, String> {
   const FetchPackageDetailsFamily._()
-      : super(
-          retry: null,
-          name: r'fetchPackageDetailsProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'fetchPackageDetailsProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
-  FetchPackageDetailsProvider call({
-    required String packageName,
-  }) =>
+  FetchPackageDetailsProvider call({required String packageName}) =>
       FetchPackageDetailsProvider._(argument: packageName, from: this);
 
   @override
@@ -89,19 +84,24 @@ final class FetchPackageDetailsFamily extends $Family
 @ProviderFor(likedPackages)
 const likedPackagesProvider = LikedPackagesProvider._();
 
-final class LikedPackagesProvider extends $FunctionalProvider<
-        AsyncValue<List<String>>, List<String>, FutureOr<List<String>>>
+final class LikedPackagesProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<List<String>>,
+          List<String>,
+          FutureOr<List<String>>
+        >
     with $FutureModifier<List<String>>, $FutureProvider<List<String>> {
   const LikedPackagesProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'likedPackagesProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'likedPackagesProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$likedPackagesHash();
@@ -109,8 +109,8 @@ final class LikedPackagesProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<List<String>> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<List<String>> create(Ref ref) {
@@ -127,15 +127,15 @@ final class PubRepositoryProvider
     extends $FunctionalProvider<PubRepository, PubRepository, PubRepository>
     with $Provider<PubRepository> {
   const PubRepositoryProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'pubRepositoryProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'pubRepositoryProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$pubRepositoryHash();
@@ -182,16 +182,16 @@ final class PackageMetricsProvider
   ///
   /// It also exposes utilities to like/unlike a package, assuming the user
   /// is logged-in.
-  const PackageMetricsProvider._(
-      {required PackageMetricsFamily super.from,
-      required String super.argument})
-      : super(
-          retry: null,
-          name: r'packageMetricsProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+  const PackageMetricsProvider._({
+    required PackageMetricsFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'packageMetricsProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$packageMetricsHash();
@@ -228,16 +228,21 @@ String _$packageMetricsHash() => r'67cd25e50357e6e970d432c1d255085a23b856ac';
 
 final class PackageMetricsFamily extends $Family
     with
-        $ClassFamilyOverride<PackageMetrics, AsyncValue<PackageMetricsScore>,
-            PackageMetricsScore, FutureOr<PackageMetricsScore>, String> {
+        $ClassFamilyOverride<
+          PackageMetrics,
+          AsyncValue<PackageMetricsScore>,
+          PackageMetricsScore,
+          FutureOr<PackageMetricsScore>,
+          String
+        > {
   const PackageMetricsFamily._()
-      : super(
-          retry: null,
-          name: r'packageMetricsProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'packageMetricsProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
   /// A provider that fetches the likes count, popularity score and pub points
   /// for a given package.
@@ -245,9 +250,7 @@ final class PackageMetricsFamily extends $Family
   /// It also exposes utilities to like/unlike a package, assuming the user
   /// is logged-in.
 
-  PackageMetricsProvider call({
-    required String packageName,
-  }) =>
+  PackageMetricsProvider call({required String packageName}) =>
       PackageMetricsProvider._(argument: packageName, from: this);
 
   @override
@@ -264,22 +267,21 @@ abstract class _$PackageMetrics extends $AsyncNotifier<PackageMetricsScore> {
   late final _$args = ref.$arg as String;
   String get packageName => _$args;
 
-  FutureOr<PackageMetricsScore> build({
-    required String packageName,
-  });
+  FutureOr<PackageMetricsScore> build({required String packageName});
   @$mustCallSuper
   @override
   void runBuild() {
-    final created = build(
-      packageName: _$args,
-    );
+    final created = build(packageName: _$args);
     final ref =
         this.ref as $Ref<AsyncValue<PackageMetricsScore>, PackageMetricsScore>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<PackageMetricsScore>, PackageMetricsScore>,
-        AsyncValue<PackageMetricsScore>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<PackageMetricsScore>, PackageMetricsScore>,
+              AsyncValue<PackageMetricsScore>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }

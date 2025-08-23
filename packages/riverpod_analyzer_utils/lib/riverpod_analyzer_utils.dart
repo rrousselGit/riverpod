@@ -1,3 +1,4 @@
+export 'src/build_yaml.dart' show BuildYamlOptions;
 export 'src/errors.dart'
     show
         errorReporter,
@@ -149,3 +150,4 @@ export 'src/riverpod_types.dart'
         isState,
         isStatelessWidget,
         isStatefulWidget;
+export 'src/string_utils.dart' show CaseChangeExtension;

@@ -17,15 +17,15 @@ const numberProvider = NumberProvider._();
 final class NumberProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const NumberProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'numberProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'numberProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$numberHash();
@@ -57,15 +57,15 @@ const doubledProvider = DoubledProvider._();
 final class DoubledProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const DoubledProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'doubledProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'doubledProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$doubledHash();

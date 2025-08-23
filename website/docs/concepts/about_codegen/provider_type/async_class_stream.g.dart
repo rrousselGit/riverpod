@@ -16,15 +16,15 @@ const exampleProvider = ExampleProvider._();
 
 final class ExampleProvider extends $StreamNotifierProvider<Example, String> {
   const ExampleProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'exampleProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'exampleProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$exampleHash();
@@ -43,11 +43,14 @@ abstract class _$Example extends $StreamNotifier<String> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<String>, String>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<String>, String>,
-        AsyncValue<String>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<String>, String>,
+              AsyncValue<String>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }

@@ -15,15 +15,15 @@ const integerProvider = IntegerProvider._();
 final class IntegerProvider extends $FunctionalProvider<int, int, int>
     with $Provider<int> {
   const IntegerProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'integerProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'integerProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$integerHash();
@@ -52,18 +52,20 @@ String _$integerHash() => r'8ad63bb35c89ffcf2ef281d7c39539760afff303';
 @ProviderFor(stateNotifier)
 const stateProvider = StateNotifierProvider._();
 
-final class StateNotifierProvider extends $FunctionalProvider<MyStateNotifier,
-    MyStateNotifier, MyStateNotifier> with $Provider<MyStateNotifier> {
+final class StateNotifierProvider
+    extends
+        $FunctionalProvider<MyStateNotifier, MyStateNotifier, MyStateNotifier>
+    with $Provider<MyStateNotifier> {
   const StateNotifierProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'stateProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'stateProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$stateNotifierHash();
@@ -92,19 +94,24 @@ String _$stateNotifierHash() => r'2505b564fd3a623976548c715b1623dea507f6d3';
 @ProviderFor(asyncStateNotifier)
 const asyncStateProvider = AsyncStateNotifierProvider._();
 
-final class AsyncStateNotifierProvider extends $FunctionalProvider<
-        AsyncValue<MyStateNotifier>, MyStateNotifier, FutureOr<MyStateNotifier>>
+final class AsyncStateNotifierProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<MyStateNotifier>,
+          MyStateNotifier,
+          FutureOr<MyStateNotifier>
+        >
     with $FutureModifier<MyStateNotifier>, $FutureProvider<MyStateNotifier> {
   const AsyncStateNotifierProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'asyncStateProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'asyncStateProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$asyncStateNotifierHash();
@@ -112,8 +119,8 @@ final class AsyncStateNotifierProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<MyStateNotifier> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<MyStateNotifier> create(Ref ref) {
@@ -130,15 +137,15 @@ const stateNotifierClassProvider = StateNotifierClassProvider._();
 final class StateNotifierClassProvider
     extends $NotifierProvider<StateNotifierClass, MyStateNotifier> {
   const StateNotifierClassProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'stateNotifierClassProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'stateNotifierClassProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$stateNotifierClassHash();
@@ -166,11 +173,14 @@ abstract class _$StateNotifierClass extends $Notifier<MyStateNotifier> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<MyStateNotifier, MyStateNotifier>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<MyStateNotifier, MyStateNotifier>,
-        MyStateNotifier,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<MyStateNotifier, MyStateNotifier>,
+              MyStateNotifier,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }
@@ -178,19 +188,24 @@ abstract class _$StateNotifierClass extends $Notifier<MyStateNotifier> {
 @ProviderFor(stateNotifierAsync)
 const stateNotifierAsyncProvider = StateNotifierAsyncProvider._();
 
-final class StateNotifierAsyncProvider extends $FunctionalProvider<
-        AsyncValue<MyStateNotifier>, MyStateNotifier, FutureOr<MyStateNotifier>>
+final class StateNotifierAsyncProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<MyStateNotifier>,
+          MyStateNotifier,
+          FutureOr<MyStateNotifier>
+        >
     with $FutureModifier<MyStateNotifier>, $FutureProvider<MyStateNotifier> {
   const StateNotifierAsyncProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'stateNotifierAsyncProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'stateNotifierAsyncProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$stateNotifierAsyncHash();
@@ -198,8 +213,8 @@ final class StateNotifierAsyncProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<MyStateNotifier> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<MyStateNotifier> create(Ref ref) {
@@ -216,15 +231,15 @@ const selfProvider = SelfNotifierProvider._();
 final class SelfNotifierProvider
     extends $AsyncNotifierProvider<SelfNotifier, SelfNotifier> {
   const SelfNotifierProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'selfProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'selfProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$selfNotifierHash();
@@ -243,11 +258,14 @@ abstract class _$SelfNotifier extends $AsyncNotifier<SelfNotifier> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<SelfNotifier>, SelfNotifier>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<SelfNotifier>, SelfNotifier>,
-        AsyncValue<SelfNotifier>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<SelfNotifier>, SelfNotifier>,
+              AsyncValue<SelfNotifier>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }
@@ -258,15 +276,15 @@ const syncSelfProvider = SyncSelfNotifierProvider._();
 final class SyncSelfNotifierProvider
     extends $NotifierProvider<SyncSelfNotifier, SyncSelfNotifier> {
   const SyncSelfNotifierProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'syncSelfProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'syncSelfProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$syncSelfNotifierHash();
@@ -293,11 +311,14 @@ abstract class _$SyncSelfNotifier extends $Notifier<SyncSelfNotifier> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<SyncSelfNotifier, SyncSelfNotifier>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<SyncSelfNotifier, SyncSelfNotifier>,
-        SyncSelfNotifier,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<SyncSelfNotifier, SyncSelfNotifier>,
+              SyncSelfNotifier,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }
@@ -308,15 +329,15 @@ const streamSelfProvider = StreamSelfNotifierProvider._();
 final class StreamSelfNotifierProvider
     extends $StreamNotifierProvider<StreamSelfNotifier, StreamSelfNotifier> {
   const StreamSelfNotifierProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'streamSelfProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'streamSelfProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$streamSelfNotifierHash();
@@ -338,11 +359,14 @@ abstract class _$StreamSelfNotifier
     final created = build();
     final ref =
         this.ref as $Ref<AsyncValue<StreamSelfNotifier>, StreamSelfNotifier>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<StreamSelfNotifier>, StreamSelfNotifier>,
-        AsyncValue<StreamSelfNotifier>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<StreamSelfNotifier>, StreamSelfNotifier>,
+              AsyncValue<StreamSelfNotifier>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }
@@ -353,15 +377,15 @@ const stateNotifierClassAsyncProvider = StateNotifierClassAsyncProvider._();
 final class StateNotifierClassAsyncProvider
     extends $AsyncNotifierProvider<StateNotifierClassAsync, MyStateNotifier> {
   const StateNotifierClassAsyncProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'stateNotifierClassAsyncProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'stateNotifierClassAsyncProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$stateNotifierClassAsyncHash();
@@ -382,11 +406,14 @@ abstract class _$StateNotifierClassAsync
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<MyStateNotifier>, MyStateNotifier>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<MyStateNotifier>, MyStateNotifier>,
-        AsyncValue<MyStateNotifier>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<MyStateNotifier>, MyStateNotifier>,
+              AsyncValue<MyStateNotifier>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }
@@ -394,18 +421,24 @@ abstract class _$StateNotifierClassAsync
 @ProviderFor(changeNotifier)
 const changeProvider = ChangeNotifierProvider._();
 
-final class ChangeNotifierProvider extends $FunctionalProvider<MyChangeNotifier,
-    MyChangeNotifier, MyChangeNotifier> with $Provider<MyChangeNotifier> {
+final class ChangeNotifierProvider
+    extends
+        $FunctionalProvider<
+          MyChangeNotifier,
+          MyChangeNotifier,
+          MyChangeNotifier
+        >
+    with $Provider<MyChangeNotifier> {
   const ChangeNotifierProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'changeProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'changeProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$changeNotifierHash();
@@ -437,15 +470,15 @@ const changeNotifierClassProvider = ChangeNotifierClassProvider._();
 final class ChangeNotifierClassProvider
     extends $NotifierProvider<ChangeNotifierClass, MyChangeNotifier> {
   const ChangeNotifierClassProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'changeNotifierClassProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'changeNotifierClassProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$changeNotifierClassHash();
@@ -473,11 +506,14 @@ abstract class _$ChangeNotifierClass extends $Notifier<MyChangeNotifier> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<MyChangeNotifier, MyChangeNotifier>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<MyChangeNotifier, MyChangeNotifier>,
-        MyChangeNotifier,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<MyChangeNotifier, MyChangeNotifier>,
+              MyChangeNotifier,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }
@@ -489,15 +525,15 @@ final class NotifierProvider
     extends $FunctionalProvider<MyNotifier, MyNotifier, MyNotifier>
     with $Provider<MyNotifier> {
   const NotifierProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'notifierProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'notifierProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$notifierHash();
@@ -526,20 +562,24 @@ String _$notifierHash() => r'5ad63d9ccd05ab78e7a6ba5c763cacf0b1decb7b';
 @ProviderFor(autoDisposeNotifier)
 const autoDisposeProvider = AutoDisposeNotifierProvider._();
 
-final class AutoDisposeNotifierProvider extends $FunctionalProvider<
-    MyAutoDisposeNotifier,
-    MyAutoDisposeNotifier,
-    MyAutoDisposeNotifier> with $Provider<MyAutoDisposeNotifier> {
+final class AutoDisposeNotifierProvider
+    extends
+        $FunctionalProvider<
+          MyAutoDisposeNotifier,
+          MyAutoDisposeNotifier,
+          MyAutoDisposeNotifier
+        >
+    with $Provider<MyAutoDisposeNotifier> {
   const AutoDisposeNotifierProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'autoDisposeProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'autoDisposeProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$autoDisposeNotifierHash();
@@ -547,8 +587,8 @@ final class AutoDisposeNotifierProvider extends $FunctionalProvider<
   @$internal
   @override
   $ProviderElement<MyAutoDisposeNotifier> $createElement(
-          $ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
 
   @override
   MyAutoDisposeNotifier create(Ref ref) {
@@ -573,15 +613,15 @@ const notifierClassProvider = NotifierClassProvider._();
 final class NotifierClassProvider
     extends $NotifierProvider<NotifierClass, MyNotifier> {
   const NotifierClassProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'notifierClassProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'notifierClassProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$notifierClassHash();
@@ -608,8 +648,14 @@ abstract class _$NotifierClass extends $Notifier<MyNotifier> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<MyNotifier, MyNotifier>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<MyNotifier, MyNotifier>, MyNotifier, Object?, Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<MyNotifier, MyNotifier>,
+              MyNotifier,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }
@@ -617,18 +663,20 @@ abstract class _$NotifierClass extends $Notifier<MyNotifier> {
 @ProviderFor(asyncNotifier)
 const asyncProvider = AsyncNotifierProvider._();
 
-final class AsyncNotifierProvider extends $FunctionalProvider<MyAsyncNotifier,
-    MyAsyncNotifier, MyAsyncNotifier> with $Provider<MyAsyncNotifier> {
+final class AsyncNotifierProvider
+    extends
+        $FunctionalProvider<MyAsyncNotifier, MyAsyncNotifier, MyAsyncNotifier>
+    with $Provider<MyAsyncNotifier> {
   const AsyncNotifierProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'asyncProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'asyncProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$asyncNotifierHash();
@@ -660,15 +708,15 @@ const asyncNotifierClassProvider = AsyncNotifierClassProvider._();
 final class AsyncNotifierClassProvider
     extends $NotifierProvider<AsyncNotifierClass, MyAsyncNotifier> {
   const AsyncNotifierClassProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'asyncNotifierClassProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'asyncNotifierClassProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$asyncNotifierClassHash();
@@ -696,11 +744,14 @@ abstract class _$AsyncNotifierClass extends $Notifier<MyAsyncNotifier> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<MyAsyncNotifier, MyAsyncNotifier>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<MyAsyncNotifier, MyAsyncNotifier>,
-        MyAsyncNotifier,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<MyAsyncNotifier, MyAsyncNotifier>,
+              MyAsyncNotifier,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }
@@ -708,20 +759,24 @@ abstract class _$AsyncNotifierClass extends $Notifier<MyAsyncNotifier> {
 @ProviderFor(rawNotifier)
 const rawProvider = RawNotifierProvider._();
 
-final class RawNotifierProvider extends $FunctionalProvider<
-    Raw<MyChangeNotifier>,
-    Raw<MyChangeNotifier>,
-    Raw<MyChangeNotifier>> with $Provider<Raw<MyChangeNotifier>> {
+final class RawNotifierProvider
+    extends
+        $FunctionalProvider<
+          Raw<MyChangeNotifier>,
+          Raw<MyChangeNotifier>,
+          Raw<MyChangeNotifier>
+        >
+    with $Provider<Raw<MyChangeNotifier>> {
   const RawNotifierProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'rawProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'rawProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$rawNotifierHash();
@@ -729,8 +784,8 @@ final class RawNotifierProvider extends $FunctionalProvider<
   @$internal
   @override
   $ProviderElement<Raw<MyChangeNotifier>> $createElement(
-          $ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
 
   @override
   Raw<MyChangeNotifier> create(Ref ref) {
@@ -751,21 +806,24 @@ String _$rawNotifierHash() => r'c667d10419c9ce1fdd227e2afd1f3aaf63c3380b';
 @ProviderFor(rawFutureNotifier)
 const rawFutureProvider = RawFutureNotifierProvider._();
 
-final class RawFutureNotifierProvider extends $FunctionalProvider<
-        Raw<Future<MyChangeNotifier>>,
-        Raw<Future<MyChangeNotifier>>,
-        Raw<Future<MyChangeNotifier>>>
+final class RawFutureNotifierProvider
+    extends
+        $FunctionalProvider<
+          Raw<Future<MyChangeNotifier>>,
+          Raw<Future<MyChangeNotifier>>,
+          Raw<Future<MyChangeNotifier>>
+        >
     with $Provider<Raw<Future<MyChangeNotifier>>> {
   const RawFutureNotifierProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'rawFutureProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'rawFutureProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$rawFutureNotifierHash();
@@ -773,8 +831,8 @@ final class RawFutureNotifierProvider extends $FunctionalProvider<
   @$internal
   @override
   $ProviderElement<Raw<Future<MyChangeNotifier>>> $createElement(
-          $ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
 
   @override
   Raw<Future<MyChangeNotifier>> create(Ref ref) {
@@ -785,8 +843,9 @@ final class RawFutureNotifierProvider extends $FunctionalProvider<
   Override overrideWithValue(Raw<Future<MyChangeNotifier>> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride:
-          $SyncValueProvider<Raw<Future<MyChangeNotifier>>>(value),
+      providerOverride: $SyncValueProvider<Raw<Future<MyChangeNotifier>>>(
+        value,
+      ),
     );
   }
 }
@@ -796,21 +855,24 @@ String _$rawFutureNotifierHash() => r'ff2744c369ebd96615f19451eae416d7afeef03f';
 @ProviderFor(rawStreamNotifier)
 const rawStreamProvider = RawStreamNotifierProvider._();
 
-final class RawStreamNotifierProvider extends $FunctionalProvider<
-        Raw<Stream<MyChangeNotifier>>,
-        Raw<Stream<MyChangeNotifier>>,
-        Raw<Stream<MyChangeNotifier>>>
+final class RawStreamNotifierProvider
+    extends
+        $FunctionalProvider<
+          Raw<Stream<MyChangeNotifier>>,
+          Raw<Stream<MyChangeNotifier>>,
+          Raw<Stream<MyChangeNotifier>>
+        >
     with $Provider<Raw<Stream<MyChangeNotifier>>> {
   const RawStreamNotifierProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'rawStreamProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'rawStreamProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$rawStreamNotifierHash();
@@ -818,8 +880,8 @@ final class RawStreamNotifierProvider extends $FunctionalProvider<
   @$internal
   @override
   $ProviderElement<Raw<Stream<MyChangeNotifier>>> $createElement(
-          $ProviderPointer pointer) =>
-      $ProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
 
   @override
   Raw<Stream<MyChangeNotifier>> create(Ref ref) {
@@ -830,8 +892,9 @@ final class RawStreamNotifierProvider extends $FunctionalProvider<
   Override overrideWithValue(Raw<Stream<MyChangeNotifier>> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride:
-          $SyncValueProvider<Raw<Stream<MyChangeNotifier>>>(value),
+      providerOverride: $SyncValueProvider<Raw<Stream<MyChangeNotifier>>>(
+        value,
+      ),
     );
   }
 }
@@ -841,23 +904,26 @@ String _$rawStreamNotifierHash() => r'9a13efb8fbcef6c4388d5a2535b1b0aec6e46a9a';
 @ProviderFor(futureRawNotifier)
 const futureRawProvider = FutureRawNotifierProvider._();
 
-final class FutureRawNotifierProvider extends $FunctionalProvider<
-        AsyncValue<Raw<MyChangeNotifier>>,
-        Raw<MyChangeNotifier>,
-        FutureOr<Raw<MyChangeNotifier>>>
+final class FutureRawNotifierProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<Raw<MyChangeNotifier>>,
+          Raw<MyChangeNotifier>,
+          FutureOr<Raw<MyChangeNotifier>>
+        >
     with
         $FutureModifier<Raw<MyChangeNotifier>>,
         $FutureProvider<Raw<MyChangeNotifier>> {
   const FutureRawNotifierProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'futureRawProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'futureRawProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$futureRawNotifierHash();
@@ -865,8 +931,8 @@ final class FutureRawNotifierProvider extends $FunctionalProvider<
   @$internal
   @override
   $FutureProviderElement<Raw<MyChangeNotifier>> $createElement(
-          $ProviderPointer pointer) =>
-      $FutureProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $FutureProviderElement(pointer);
 
   @override
   FutureOr<Raw<MyChangeNotifier>> create(Ref ref) {
@@ -879,23 +945,26 @@ String _$futureRawNotifierHash() => r'87103845bce1f4cae4ad62ae3b7da6ca3539581f';
 @ProviderFor(streamRawNotifier)
 const streamRawProvider = StreamRawNotifierProvider._();
 
-final class StreamRawNotifierProvider extends $FunctionalProvider<
-        AsyncValue<Raw<MyChangeNotifier>>,
-        Raw<MyChangeNotifier>,
-        Stream<Raw<MyChangeNotifier>>>
+final class StreamRawNotifierProvider
+    extends
+        $FunctionalProvider<
+          AsyncValue<Raw<MyChangeNotifier>>,
+          Raw<MyChangeNotifier>,
+          Stream<Raw<MyChangeNotifier>>
+        >
     with
         $FutureModifier<Raw<MyChangeNotifier>>,
         $StreamProvider<Raw<MyChangeNotifier>> {
   const StreamRawNotifierProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'streamRawProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'streamRawProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$streamRawNotifierHash();
@@ -903,8 +972,8 @@ final class StreamRawNotifierProvider extends $FunctionalProvider<
   @$internal
   @override
   $StreamProviderElement<Raw<MyChangeNotifier>> $createElement(
-          $ProviderPointer pointer) =>
-      $StreamProviderElement(pointer);
+    $ProviderPointer pointer,
+  ) => $StreamProviderElement(pointer);
 
   @override
   Stream<Raw<MyChangeNotifier>> create(Ref ref) {

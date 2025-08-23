@@ -23,11 +23,9 @@ final dioProvider = Provider((ref) => Dio());
 final repositoryProvider = Provider(MarvelRepository.new);
 
 class MarvelRepository {
-  MarvelRepository(
-    this.ref, {
-    int Function()? getCurrentTimestamp,
-  }) : _getCurrentTimestamp = getCurrentTimestamp ??
-            (() => DateTime.now().millisecondsSinceEpoch);
+  MarvelRepository(this.ref, {int Function()? getCurrentTimestamp})
+    : _getCurrentTimestamp =
+          getCurrentTimestamp ?? (() => DateTime.now().millisecondsSinceEpoch);
 
   final Ref ref;
   final int Function() _getCurrentTimestamp;
@@ -53,9 +51,11 @@ class MarvelRepository {
     );
 
     final result = MarvelListCharactersResponse(
-      characters: response.data.results.map((e) {
-        return Character.fromJson(e);
-      }).toList(growable: false),
+      characters: response.data.results
+          .map((e) {
+            return Character.fromJson(e);
+          })
+          .toList(growable: false),
       totalCount: response.data.total,
     );
 
@@ -94,17 +94,19 @@ class MarvelRepository {
         )
         .toString();
 
-    final result = await ref.read(dioProvider).get<Map<String, Object?>>(
-      'https://gateway.marvel.com/v1/public/$path',
-      cancelToken: cancelToken,
-      queryParameters: <String, Object?>{
-        'apikey': configs.publicKey,
-        'ts': timestamp,
-        'hash': hash,
-        ...?queryParameters,
-      },
-      // TO-DO deserialize error message
-    );
+    final result = await ref
+        .read(dioProvider)
+        .get<Map<String, Object?>>(
+          'https://gateway.marvel.com/v1/public/$path',
+          cancelToken: cancelToken,
+          queryParameters: <String, Object?>{
+            'apikey': configs.publicKey,
+            'ts': timestamp,
+            'hash': hash,
+            ...?queryParameters,
+          },
+          // TO-DO deserialize error message
+        );
     return MarvelResponse.fromJson(Map<String, Object>.from(result.data!));
   }
 }
@@ -131,10 +133,8 @@ sealed class Character with _$Character {
 
 @freezed
 sealed class Thumbnail with _$Thumbnail {
-  factory Thumbnail({
-    required String path,
-    required String extension,
-  }) = _Thumbnail;
+  factory Thumbnail({required String path, required String extension}) =
+      _Thumbnail;
   Thumbnail._();
 
   factory Thumbnail.fromJson(Map<String, Object?> json) =>
@@ -154,10 +154,8 @@ sealed class MarvelResponse with _$MarvelResponse {
 
 @freezed
 sealed class MarvelData with _$MarvelData {
-  factory MarvelData(
-    List<Map<String, Object?>> results,
-    int total,
-  ) = _MarvelData;
+  factory MarvelData(List<Map<String, Object?>> results, int total) =
+      _MarvelData;
 
   factory MarvelData.fromJson(Map<String, Object?> json) =>
       _$MarvelDataFromJson(json);

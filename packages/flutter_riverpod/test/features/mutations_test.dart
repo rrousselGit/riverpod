@@ -4,8 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  testWidgets('Can start a mutation and have the result in the same frame',
-      (tester) async {
+  testWidgets('Can start a mutation and have the result in the same frame', (
+    tester,
+  ) async {
     final mut = Mutation<int>();
 
     await tester.pumpWidget(

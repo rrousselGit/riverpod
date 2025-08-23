@@ -19,8 +19,9 @@ class RandomNumberGenerator extends Notifier<int> {
 }
 
 // Notifier provider holding the state
-final randomNumberProvider =
-    NotifierProvider<RandomNumberGenerator, int>(RandomNumberGenerator.new);
+final randomNumberProvider = NotifierProvider<RandomNumberGenerator, int>(
+  RandomNumberGenerator.new,
+);
 
 class RandomNumberApp extends StatelessWidget {
   const RandomNumberApp({super.key});
@@ -29,9 +30,7 @@ class RandomNumberApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Random number'),
-        ),
+        appBar: AppBar(title: const Text('Random number')),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,

@@ -18,15 +18,15 @@ final class BoredSuggestionProvider
     extends $FunctionalProvider<AsyncValue<String>, String, FutureOr<String>>
     with $FutureModifier<String>, $FutureProvider<String> {
   const BoredSuggestionProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'boredSuggestionProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'boredSuggestionProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$boredSuggestionHash();

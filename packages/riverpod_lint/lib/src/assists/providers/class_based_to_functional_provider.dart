@@ -1,5 +1,6 @@
 import 'package:analyzer/source/source_range.dart';
 import 'package:custom_lint_builder/custom_lint_builder.dart';
+import 'package:riverpod_analyzer_utils/riverpod_analyzer_utils.dart';
 
 import '../../riverpod_custom_lint.dart';
 
@@ -33,7 +34,7 @@ class ClassBasedToFunctionalProvider extends RiverpodAssist {
       changeBuilder.addDartFileEdit((builder) {
         final buildTypeOrNameStartOffset =
             declaration.buildMethod.returnType?.offset ??
-                declaration.buildMethod.name.offset;
+            declaration.buildMethod.name.offset;
 
         // Remove anything between the first character of the build method
         // and the start of the class.

@@ -16,15 +16,16 @@ const exampleProvider = ExampleFamily._();
 
 final class ExampleProvider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
-  const ExampleProvider._(
-      {required ExampleFamily super.from, required int super.argument})
-      : super(
-          retry: null,
-          name: r'exampleProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+  const ExampleProvider._({
+    required ExampleFamily super.from,
+    required int super.argument,
+  }) : super(
+         retry: null,
+         name: r'exampleProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
 
   @override
   String debugGetCreateSourceHash() => _$exampleHash();
@@ -44,10 +45,7 @@ final class ExampleProvider extends $FunctionalProvider<String, String, String>
   @override
   String create(Ref ref) {
     final argument = this.argument as int;
-    return example(
-      ref,
-      argument,
-    );
+    return example(ref, argument);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -74,17 +72,15 @@ String _$exampleHash() => r'7cd87bca029ed938b0e314a14fdfaa2875bd3079';
 final class ExampleFamily extends $Family
     with $FunctionalFamilyOverride<String, int> {
   const ExampleFamily._()
-      : super(
-          retry: null,
-          name: r'exampleProvider',
-          dependencies: null,
-          $allTransitiveDependencies: null,
-          isAutoDispose: true,
-        );
+    : super(
+        retry: null,
+        name: r'exampleProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
 
-  ExampleProvider call(
-    int param,
-  ) =>
+  ExampleProvider call(int param) =>
       ExampleProvider._(argument: param, from: this);
 
   @override

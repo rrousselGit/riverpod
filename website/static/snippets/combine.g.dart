@@ -18,15 +18,15 @@ final class TodosProvider
     extends $FunctionalProvider<List<Todo>, List<Todo>, List<Todo>>
     with $Provider<List<Todo>> {
   const TodosProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'todosProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'todosProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$todosHash();
@@ -58,15 +58,15 @@ const filterProvider = FilterProvider._();
 final class FilterProvider extends $FunctionalProvider<Filter, Filter, Filter>
     with $Provider<Filter> {
   const FilterProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'filterProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'filterProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$filterHash();
@@ -99,15 +99,15 @@ final class FilteredTodosProvider
     extends $FunctionalProvider<List<Todo>, List<Todo>, List<Todo>>
     with $Provider<List<Todo>> {
   const FilteredTodosProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'filteredTodosProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'filteredTodosProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$filteredTodosHash();

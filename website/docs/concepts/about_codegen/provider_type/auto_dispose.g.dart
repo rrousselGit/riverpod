@@ -17,15 +17,15 @@ const example1Provider = Example1Provider._();
 final class Example1Provider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const Example1Provider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'example1Provider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'example1Provider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$example1Hash();
@@ -57,15 +57,15 @@ const example2Provider = Example2Provider._();
 final class Example2Provider extends $FunctionalProvider<String, String, String>
     with $Provider<String> {
   const Example2Provider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'example2Provider',
-          isAutoDispose: false,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'example2Provider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$example2Hash();

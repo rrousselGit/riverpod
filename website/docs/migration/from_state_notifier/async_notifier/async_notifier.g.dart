@@ -17,15 +17,15 @@ const asyncTodosProvider = AsyncTodosNotifierProvider._();
 final class AsyncTodosNotifierProvider
     extends $AsyncNotifierProvider<AsyncTodosNotifier, List<Todo>> {
   const AsyncTodosNotifierProvider._()
-      : super(
-          from: null,
-          argument: null,
-          retry: null,
-          name: r'asyncTodosProvider',
-          isAutoDispose: true,
-          dependencies: null,
-          $allTransitiveDependencies: null,
-        );
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'asyncTodosProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
 
   @override
   String debugGetCreateSourceHash() => _$asyncTodosNotifierHash();
@@ -45,11 +45,14 @@ abstract class _$AsyncTodosNotifier extends $AsyncNotifier<List<Todo>> {
   void runBuild() {
     final created = build();
     final ref = this.ref as $Ref<AsyncValue<List<Todo>>, List<Todo>>;
-    final element = ref.element as $ClassProviderElement<
-        AnyNotifier<AsyncValue<List<Todo>>, List<Todo>>,
-        AsyncValue<List<Todo>>,
-        Object?,
-        Object?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<AsyncValue<List<Todo>>, List<Todo>>,
+              AsyncValue<List<Todo>>,
+              Object?,
+              Object?
+            >;
     element.handleValue(ref, created);
   }
 }

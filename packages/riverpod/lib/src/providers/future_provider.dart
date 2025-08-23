@@ -107,11 +107,12 @@ final class FutureProvider<ValueT>
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-          $allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-          from: null,
-          argument: null,
-        );
+         $allTransitiveDependencies: computeAllTransitiveDependencies(
+           dependencies,
+         ),
+         from: null,
+         argument: null,
+       );
 
   /// An implementation detail of Riverpod
   /// @nodoc
@@ -153,10 +154,10 @@ final class FutureProvider<ValueT>
 /// @nodoc
 @internal
 @publicInCodegen
-class $FutureProviderElement<ValueT> extends $FunctionalProviderElement<
-    AsyncValue<ValueT>,
-    ValueT,
-    FutureOr<ValueT>> with FutureModifierElement<ValueT> {
+class $FutureProviderElement<ValueT>
+    extends
+        $FunctionalProviderElement<AsyncValue<ValueT>, ValueT, FutureOr<ValueT>>
+    with FutureModifierElement<ValueT> {
   /// The element of a [FutureProvider]
   /// Implementation detail of `riverpod_generator`. Do not use.
   $FutureProviderElement(super.pointer);
@@ -169,12 +170,15 @@ class $FutureProviderElement<ValueT> extends $FunctionalProviderElement<
 
 /// The [Family] of a [FutureProvider]
 @publicInMisc
-final class FutureProviderFamily<ValueT, ArgT> extends FunctionalFamily<
-    AsyncValue<ValueT>,
-    ValueT,
-    ArgT,
-    FutureOr<ValueT>,
-    FutureProvider<ValueT>> {
+final class FutureProviderFamily<ValueT, ArgT>
+    extends
+        FunctionalFamily<
+          AsyncValue<ValueT>,
+          ValueT,
+          ArgT,
+          FutureOr<ValueT>,
+          FutureProvider<ValueT>
+        > {
   /// The [Family] of a [FutureProvider]
   /// @nodoc
   @internal
@@ -185,10 +189,11 @@ final class FutureProviderFamily<ValueT, ArgT> extends FunctionalFamily<
     super.isAutoDispose = false,
     super.retry,
   }) : super(
-          providerFactory: FutureProvider<ValueT>.internal,
-          $allTransitiveDependencies:
-              computeAllTransitiveDependencies(dependencies),
-        );
+         providerFactory: FutureProvider<ValueT>.internal,
+         $allTransitiveDependencies: computeAllTransitiveDependencies(
+           dependencies,
+         ),
+       );
 
   /// Implementation detail of the code-generator.
   /// @nodoc

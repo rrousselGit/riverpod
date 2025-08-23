@@ -35,8 +35,10 @@ final selectedCharacterId = Provider<String>((ref) {
 ///
 /// If the user leaves the detail page before the HTTP request completes,
 /// the request is cancelled.
-final character =
-    FutureProvider.autoDispose.family<Character, String>((ref, id) async {
+final character = FutureProvider.autoDispose.family<Character, String>((
+  ref,
+  id,
+) async {
   // The user used a deep-link to land in the Character page, so we fetch
   // the Character individually.
 
@@ -63,27 +65,23 @@ class CharacterView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final id = ref.watch(selectedCharacterId);
 
-    return ref.watch(character(id)).when(
-      loading: () {
-        return const Scaffold(
-          body: Center(child: CircularProgressIndicator()),
+    return ref
+        .watch(character(id))
+        .when(
+          loading: () {
+            return const Scaffold(
+              body: Center(child: CircularProgressIndicator()),
+            );
+          },
+          error: (err, stack) {
+            return Scaffold(appBar: AppBar(title: const Text('Error')));
+          },
+          data: (character) {
+            return Scaffold(
+              appBar: AppBar(title: Text(character.name)),
+              body: LoadingImage(url: character.thumbnail.url),
+            );
+          },
         );
-      },
-      error: (err, stack) {
-        return Scaffold(
-          appBar: AppBar(
-            title: const Text('Error'),
-          ),
-        );
-      },
-      data: (character) {
-        return Scaffold(
-          appBar: AppBar(
-            title: Text(character.name),
-          ),
-          body: LoadingImage(url: character.thumbnail.url),
-        );
-      },
-    );
   }
 }

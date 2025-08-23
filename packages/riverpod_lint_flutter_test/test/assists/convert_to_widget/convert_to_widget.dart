@@ -15,9 +15,7 @@ class StatelessWithComma extends StatelessWidget {
   const StatelessWithComma({super.key});
 
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     return const Placeholder();
   }
 }
@@ -35,10 +33,7 @@ class HookConsumer extends HookConsumerWidget {
   const HookConsumer({super.key});
 
   @override
-  Widget build(
-    BuildContext context,
-    WidgetRef ref,
-  ) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return const Placeholder();
   }
 }
@@ -68,9 +63,7 @@ class ExplicitCreateState extends StatefulWidget {
 
 class ExplicitCreateStateState extends State<ExplicitCreateState> {
   @override
-  Widget build(
-    BuildContext context,
-  ) {
+  Widget build(BuildContext context) {
     return const Placeholder();
   }
 }
@@ -122,54 +115,32 @@ class Consumer extends ConsumerWidget {
   const Consumer({super.key});
 
   @override
-  Widget build(
-    BuildContext context,
-    WidgetRef ref,
-  ) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return const Placeholder();
   }
 }
 
 class StatelessWithField extends StatelessWidget {
-  const StatelessWithField({
-    super.key,
-    required this.field,
-  });
+  const StatelessWithField({super.key, required this.field});
 
   final int field;
   static final int staticField = 42;
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text('$field'),
-        Text('$staticField'),
-      ],
-    );
+    return Column(children: [Text('$field'), Text('$staticField')]);
   }
 }
 
 class HookConsumerWithField extends HookConsumerWidget {
-  const HookConsumerWithField({
-    super.key,
-    required this.field,
-  });
+  const HookConsumerWithField({super.key, required this.field});
 
   final int field;
   static final int staticField = 42;
 
   @override
-  Widget build(
-    BuildContext context,
-    WidgetRef ref,
-  ) {
-    return Column(
-      children: [
-        Text('$field'),
-        Text('$staticField'),
-      ],
-    );
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Column(children: [Text('$field'), Text('$staticField')]);
   }
 }
 

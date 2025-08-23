@@ -83,10 +83,11 @@ class DidChangedMock<StateT> extends Mock {
   void call(ProviderSubscription<StateT> sub);
 }
 
-typedef VerifyOnly = VerificationResult Function<ResultT>(
-  Mock mock,
-  ResultT matchingInvocations,
-);
+typedef VerifyOnly =
+    VerificationResult Function<ResultT>(
+      Mock mock,
+      ResultT matchingInvocations,
+    );
 
 /// Syntax sugar for:
 ///
